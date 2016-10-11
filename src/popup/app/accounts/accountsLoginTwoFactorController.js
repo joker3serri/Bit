@@ -2,7 +2,7 @@
     .module('bit.accounts')
 
     .controller('accountsLoginTwoFactorController', function ($scope, $state, loginService, toastr, utilsService,
-        $analytics) {
+		) {
         $scope.model = {};
         utilsService.initListSectionItemListeners($(document), angular);
         $('#code').focus();
@@ -16,7 +16,6 @@
 
             $scope.loginPromise = loginService.logInTwoFactor(model.code);
             $scope.loginPromise.then(function () {
-                $analytics.eventTrack('Logged In From Two-step');
                 $state.go('tabs.vault', { animation: 'in-slide-left', syncOnLoad: true });
             });
         };

@@ -1,7 +1,7 @@
 ﻿angular
     .module('bit.settings')
 
-    .controller('settingsSyncController', function ($scope, syncService, toastr, $analytics) {
+    .controller('settingsSyncController', function ($scope, syncService, toastr) {
         $scope.lastSync = '--';
         $scope.loading = false;
         setLastSync();
@@ -9,7 +9,6 @@
         $scope.sync = function () {
             $scope.loading = true;
             syncService.fullSync(function () {
-                $analytics.eventTrack('Synced Full');
                 $scope.loading = false;
                 toastr.success('Syncing complete');
                 setLastSync();
