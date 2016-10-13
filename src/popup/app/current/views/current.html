@@ -32,6 +32,10 @@
         <p>
             There are no sites available to auto-fill for the current browser tab.
             <button ng-click="addSite()" style="margin-top: 20px;" class="btn btn-link btn-block">Add a Site</button>
+            <button ng-click="syncSites()" style="margin-top: 20px;" class="btn btn-link btn-block">Sync Vault</button>
+            <span ng-show="syncingSites" style="display: block; margin-top: 20px;">
+                <i class="text-muted fa fa-lg fa-spinner fa-spin"></i>
+            </span>
         </p>
     </div>
     <div class="page-loading" ng-if="!loaded">
