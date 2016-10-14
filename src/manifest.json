@@ -28,7 +28,6 @@
       "lib/sjcl/bitArray.js",
       "lib/q/q.js",
       "scripts/tld.js",
-      "scripts/analyticsCode.js",
       "models/api/requestModels.js",
       "models/api/responseModels.js",
       "models/dataModels.js",
@@ -45,7 +44,6 @@
       "services/appIdService.js",
       "services/passwordGenerationService.js",
       "background.js",
-      "scripts/analytics.js"
     ],
     "persistent": true
   },

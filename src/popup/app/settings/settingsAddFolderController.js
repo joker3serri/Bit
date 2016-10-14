@@ -2,7 +2,7 @@ angular
     .module('bit.settings')
 
     .controller('settingsAddFolderController', function ($scope, $q, folderService, $state, toastr, utilsService,
-        $analytics) {
+        ) {
         $scope.folder = {};
         utilsService.initListSectionItemListeners($(document), angular);
         $('#name').focus();
@@ -17,7 +17,6 @@ angular
             $scope.savePromise = $q.when(folderService.encrypt(model)).then(function (folderModel) {
                 var folder = new Folder(folderModel, true);
                 return $q.when(folderService.saveWithServer(folder)).then(function (folder) {
-                    $analytics.eventTrack('Added Folder');
                     toastr.success('Added folder');
                     $state.go('folders', { animation: 'out-slide-down' });
                 });

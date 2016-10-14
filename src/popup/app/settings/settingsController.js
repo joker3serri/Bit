@@ -1,7 +1,7 @@
 ﻿angular
     .module('bit.settings')
 
-    .controller('settingsController', function ($scope, loginService, $state, SweetAlert, utilsService, $analytics) {
+    .controller('settingsController', function ($scope, loginService, $state, SweetAlert, utilsService) {
         $scope.logOut = function () {
             SweetAlert.swal({
                 title: 'Log Out',
@@ -12,7 +12,6 @@
             }, function (confirmed) {
                 if (confirmed) {
                     loginService.logOut(function () {
-                        $analytics.eventTrack('Logged Out');
                         $state.go('home');
                     });
                 }
@@ -28,7 +27,6 @@
                 confirmButtonText: 'Yes',
                 cancelButtonText: 'Cancel'
             }, function (confirmed) {
-                $analytics.eventTrack('Clicked Change Password');
                 alertCallback(confirmed);
             });
         };
@@ -42,7 +40,6 @@
                 confirmButtonText: 'Yes',
                 cancelButtonText: 'Cancel'
             }, function (confirmed) {
-                $analytics.eventTrack('Clicked Change Email');
                 alertCallback(confirmed);
             });
         };
@@ -57,7 +54,6 @@
                 confirmButtonText: 'Yes',
                 cancelButtonText: 'Cancel'
             }, function (confirmed) {
-                $analytics.eventTrack('Clicked Two-step Login');
                 alertCallback(confirmed);
             });
         };
@@ -69,7 +65,6 @@
         }
 
         $scope.rate = function () {
-            $analytics.eventTrack('Rate Extension');
 
             switch (utilsService.getBrowser()) {
                 case 'chrome':

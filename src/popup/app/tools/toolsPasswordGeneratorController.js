@@ -2,7 +2,7 @@
     .module('bit.tools')
 
     .controller('toolsPasswordGeneratorController', function ($scope, $state, $stateParams, passwordGenerationService,
-        toastr, $q, utilsService, $analytics) {
+        toastr, $q, utilsService) {
         var addState = $stateParams.addState,
             editState = $stateParams.editState;
 
@@ -24,7 +24,6 @@
                     $scope.regenerate(false);
                 },
                 onEnd: function () {
-                    $analytics.eventTrack('Generated Password');
                     $scope.saveOptions($scope.options);
                 }
             }
@@ -34,12 +33,10 @@
             $scope.options = options;
             $scope.slider.value = options.length;
             $scope.regenerate(false);
-            $analytics.eventTrack('Generated Password');
         });
 
         $scope.regenerate = function (trackRegenerateEvent) {
             if (trackRegenerateEvent) {
-                $analytics.eventTrack('Regenerated Password');
             }
 
             $scope.password = passwordGenerationService.generatePassword($scope.options);
@@ -66,7 +63,6 @@
         };
 
         $scope.clipboardSuccess = function (e) {
-            $analytics.eventTrack('Copied Generated Password');
             e.clearSelection();
             toastr.info('Password copied!');
         };
@@ -76,8 +72,6 @@
         };
 
         $scope.select = function () {
-            $analytics.eventTrack('Selected Generated Password');
-
             if (addState) {
                 addState.site.password = $scope.password;
             }

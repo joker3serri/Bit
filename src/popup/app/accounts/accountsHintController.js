@@ -2,7 +2,7 @@
     .module('bit.accounts')
 
     .controller('accountsHintController', function ($scope, $state, apiService, toastr, $q, utilsService,
-        $analytics) {
+        ) {
         $scope.model = {};
 
         utilsService.initListSectionItemListeners($(document), angular);
@@ -22,7 +22,6 @@
             var request = new PasswordHintRequest(model.email);
             $scope.submitPromise = hintPromise(request);
             $scope.submitPromise.then(function () {
-                $analytics.eventTrack('Requested Hint');
                 toastr.success('We\'ve sent you an email with your master password hint.');
                 $state.go('login');
             });

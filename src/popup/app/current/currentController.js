@@ -2,7 +2,7 @@ angular
     .module('bit.current')
 
     .controller('currentController', function ($scope, siteService, tldjs, toastr, $q, $window, $state, autofillService,
-        $analytics) {
+        ) {
         var pageDetails = null,
             tabId = null,
             url = null,
@@ -57,7 +57,6 @@ angular
         $scope.clipboardSuccess = function (e, type) {
             e.clearSelection();
             toastr.info(type + ' copied!');
-            $analytics.eventTrack('Copied ' + type);
         };
 
         $scope.addSite = function () {
@@ -75,7 +74,6 @@ angular
             }
 
             if (tabId && fillScript && fillScript.script && fillScript.script.length) {
-                $analytics.eventTrack('Autofilled');
                 chrome.tabs.sendMessage(tabId, {
                     command: 'fillForm',
                     fillScript: fillScript
@@ -84,7 +82,6 @@ angular
                 });
             }
             else {
-                $analytics.eventTrack('Autofilled Error');
                 toastr.error('Unable to auto-fill the selected site on this page. ' +
                     'Copy/paste your username and/or password instead.');
             }

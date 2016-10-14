@@ -2,7 +2,7 @@ angular
     .module('bit.vault')
 
     .controller('vaultEditSiteController', function ($scope, $state, $stateParams, siteService, folderService,
-        cryptoService, $q, toastr, SweetAlert, utilsService, $analytics) {
+        cryptoService, $q, toastr, SweetAlert, utilsService) {
         var returnScrollY = $stateParams.returnScrollY;
         var returnSearchText = $stateParams.returnSearchText;
         var siteId = $stateParams.siteId;
@@ -39,7 +39,6 @@ angular
             $scope.savePromise = $q.when(siteService.encrypt(model)).then(function (siteModel) {
                 var site = new Site(siteModel, true);
                 return $q.when(siteService.saveWithServer(site)).then(function (site) {
-                    $analytics.eventTrack('Edited Site');
                     toastr.success('Edited site');
                     $scope.close();
                 });
@@ -56,7 +55,6 @@ angular
             }, function (confirmed) {
                 if (confirmed) {
                     $q.when(siteService.deleteWithServer(siteId)).then(function () {
-                        $analytics.eventTrack('Deleted Site');
                         toastr.success('Deleted site');
                         $state.go('tabs.vault', {
                             animation: 'out-slide-down'
@@ -105,7 +103,6 @@ angular
         };
 
         function goPasswordGenerator() {
-            $analytics.eventTrack('Clicked Generate Password');
             $state.go('passwordGenerator', {
                 animation: 'in-slide-up',
                 editState: {
