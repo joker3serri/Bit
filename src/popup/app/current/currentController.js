@@ -2,7 +2,7 @@ angular
     .module('bit.current')
 
     .controller('currentController', function ($scope, siteService, tldjs, toastr, $q, $window, $state, autofillService,
-        $analytics) {
+        $analytics, syncService) {
         var pageDetails = null,
             tabId = null,
             url = null,
@@ -10,6 +10,7 @@ angular
             canAutofill = false;
 
         $scope.loaded = false;
+        $scope.syncingSites = false;
 
         loadVault();
         function loadVault() {
@@ -88,6 +89,14 @@ angular
                 toastr.error('Unable to auto-fill the selected site on this page. ' +
                     'Copy/paste your username and/or password instead.');
             }
+        };
+
+        $scope.syncSites = function () {
+            $scope.syncingSites = true;
+            syncService.fullSync(function () {
+                $scope.syncingSites = false;
+                toastr.success('Syncing complete');
+            });
         };
 
         $scope.$on('syncCompleted', function (event, successfully) {
