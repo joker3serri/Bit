@@ -39,13 +39,9 @@
     "message": "Master Password",
     "description": "Master Password"
   },
-  "masterPassDesc1": {
-    "message": "The master password is the password you use to access your vault. It is very important that you do not.",
-    "description": "The master password is the password you use to access your vault. It is very important that you do not."
-  },
-  "masterPassDesc2": {
-    "message": "Forget your master password. There is no way to recover the password in the event that you forget it.",
-    "description": "Forget your master password. There is no way to recover the password in the event that you forget it."
+  "masterPassDesc": {
+    "message": "The master password is the password you use to access your vault. It is very important that you do not forget your master password. There is no way to recover the password in the event that you forget it.",
+    "description": "The master password is the password you use to access your vault. It is very important that you do not forget your master password. There is no way to recover the password in the event that you forget it."
   },
   "reTypeMasterPass": {
     "message": "Re-type Master Password",
