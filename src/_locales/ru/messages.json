@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "bitwarden",
+    "description": "bitwarden"
+  },
+  "extName": {
+    "message": "bitwarden - Бесплатный менеджер паролей",
+    "description": "Extension name"
+  },
+  "extDesc": {
+    "message": "bitwarden - защищённое и безопасное хранилище паролей для всех Ваших устройств.",
+    "description": "Extension description"
+  },
+  "loginOrCreateNewAccount": {
+    "message": "Войдите или создайте новый аккаунт для доступа к Вашему безопасному хранилищу.",
+    "description": "Войдите или создайте новый аккаунт для доступа к Вашему безопасному хранилищу."
+  },
+  "createAccount": {
+    "message": "Создать аккаунт",
+    "description": "Создание аккаунта"
+  },
+  "login": {
+    "message": "Войти",
+    "description": "Войти в аккаунт"
+  },
+  "cancel": {
+    "message": "Отмена",
+    "description": "Отмена"
+  },
+  "close": {
+    "message": "Закрыть",
+    "description": "Закрыть"
+  },
+  "submit": {
+    "message": "Отправить",
+    "description": "Отправить"
+  },
+  "emailAddress": {
+    "message": "Email",
+    "description": "Email"
+  },
+  "masterPass": {
+    "message": "Мастер-пароль",
+    "description": "Мастер-пароль"
+  },
+  "masterPassDesc": {
+    "message": "Мастер-пароль - пароль для доступа к вашему безопасному хранилищу. Он очень важен, поэтому не забывайте его. Восстановить мастер-пароль нельзя.",
+    "description": "Мастер-пароль - пароль для доступа к вашему безопасному хранилищу. Он очень важен, поэтому не забывайте его. Восстановить мастер-пароль нельзя."
+  },
+  "masterPassHintDesc": {
+    "message": "Подсказка к мастер-паролю может помочь Вам вспомнить Ваш мастер-пароль, если вы его забыли.",
+    "description": "Подсказка к мастер-паролю может помочь Вам вспомнить Ваш мастер-пароль, если вы его забыли."
+  },
+  "reTypeMasterPass": {
+    "message": "Введите мастер-пароль повторно",
+    "description": "Введите мастер-пароль повторно"
+  },
+  "masterPassHint": {
+    "message": "Подсказка к мастер-паролю (необязательно)",
+    "description": "Подсказка к мастер-паролю (необязательно)"
+  },
+  "masterPassHintDecs": {
+    "message": "A master password hint can help you remember your password if you forget it.",
+    "description": "A master password hint can help you remember your password if you forget it."
+  },
+  "tab": {
+    "message": "Вкладка",
+    "description": "Вкладка"
+  },
+  "myVault": {
+    "message": "Хранилище",
+    "description": "Хранилище"
+  },
+  "tools": {
+    "message": "Инструменты",
+    "description": "Инструменты"
+  },
+  "settings": {
+    "message": "Настройки",
+    "description": "Настройки"
+  },
+  "currentTab": {
+    "message": "Текущая вкладка",
+    "description": "Текущая вкладка"
+  },
+  "copyPassword": {
+    "message": "Копировать пароль",
+    "description": "Копировать пароль"
+  },
+  "copyUsername": {
+    "message": "Копировать имя пользователя",
+    "description": "Копировать имя пользователя"
+  },
+  "autoFill": {
+    "message": "Автозаполнение",
+    "description": "Автозаполнение"
+  },
+  "generatePasswordCopied": {
+    "message": "Сгенерировать пароль (с копированием)",
+    "description": "Сгенерировать пароль (с копированием)"
+  },
+  "autoFillInfo": {
+    "message": "Нет доступных учетных записей для автозаполнения в текущей вкладке браузера.",
+    "description": "Нет доступных учетных записей для автозаполнения в текущей вкладке браузера."
+  },
+  "addSite": {
+    "message": "Добавить сайт",
+    "description": "Добавить сайт"
+  },
+  "passwordHint": {
+    "message": "Подсказка к паролю",
+    "description": "Подсказка к паролю"
+  },
+  "enterEmailToGetHint": {
+    "message": "Введите Ваш email для получения подсказки мастер-пароля.",
+    "description": "Введите Ваш email для получения подсказки мастер-пароля."
+  },
+  "getMasterPasswordHint": {
+    "message": "Получить подсказку к мастер-паролю",
+    "description": "Получить подсказку к мастер-паролю"
+  },
+  "continue": {
+    "message": "Продолжить",
+    "description": "Продолжить"
+  },
+  "verificationCode": {
+    "message": "Код подтверждения",
+    "description": "Код подтверждения"
+  },
+  "enterTwoStepVerCode": {
+    "message": "Введите код подтверждения двухфакторной аутентификации.",
+    "description": "Введите код подтверждения двухфакторной аутентификации."
+  },
+  "account": {
+    "message": "Аккаунт",
+    "description": "Аккаунт"
+  },
+  "changeMasterPassword": {
+    "message": "Изменить мастер-пароль",
+    "description": "Изменить мастер-пароль"
+  },
+  "changeEmail": {
+    "message": "Изменить email",
+    "description": "Изменить email"
+  },
+  "twoStepLogin": {
+    "message": "Двухфакторная аутентификация",
+    "description": "Двухфакторная аутентификация"
+  },
+  "logOut": {
+    "message": "Выйти",
+    "description": "Выйти"
+  },
+  "about": {
+    "message": "О расширении",
+    "description": "О расширении"
+  },
+  "version": {
+    "message": "Версия",
+    "description": "Версия"
+  },
+  "save": {
+    "message": "Сохранить",
+    "description": "Сохранить"
+  },
+  "addFolder": {
+    "message": "Добавить папку",
+    "description": "Добавить папку"
+  },
+  "name": {
+    "message": "Наименование",
+    "description": "Наименование"
+  },
+  "editFolder": {
+    "message": "Редактировать папку",
+    "description": "Редактировать папку"
+  },
+  "deleteFolder": {
+    "message": "Удалить папку",
+    "description": "Удалить папку"
+  },
+  "folders": {
+    "message": "Папки",
+    "description": "Папки"
+  },
+  "noFolders": {
+    "message": "Нет папок для отображения.",
+    "description": "Нет папок для отображения."
+  },
+  "helpFeedback": {
+    "message": "Обратная связь",
+    "description": "Обратная связь"
+  },
+  "emailUs": {
+    "message": "Написать нам на email",
+    "description": "Написать нам на email"
+  },
+  "emailUsDirectly": {
+    "message": "Напишите нам на email, чтобы мы помогли вам или чтобы оставить отзыв.",
+    "description": "Напишите нам на email, чтобы мы помогли вам или чтобы оставить отзыв."
+  },
+  "visitOurWebsite": {
+    "message": "Перейти на наш сайт",
+    "description": "Перейти на наш сайт"
+  },
+  "visitOurWebsiteDirectly": {
+    "message": "Посетите наш сайт для чтения справки, новостей. На нём Вы так же можете написать нам или почитать о том, как использовать bitwarden.",
+    "description": "Посетите наш сайт для чтения справки, новостей. На нём Вы так же можете написать нам или почитать о том, как использовать bitwarden."
+  },
+  "fileBugReport": {
+    "message": "Сообщить о проблеме",
+    "description": "Сообщить о проблеме"
+  },
+  "gitHubIssue": {
+    "message": "Откройте \"issue\" в GitHub-репозитории.",
+    "description": "Откройте \"issue\" в GitHub-репозитории."
+  },
+  "sync": {
+    "message": "Синхронизация",
+    "description": "Синхронизация"
+  },
+  "syncVaultNow": {
+    "message": "Синхронизировать сейчас",
+    "description": "Синхронизировать сейчас"
+  },
+  "lastSync": {
+    "message": "Послед. синхронизация:",
+    "description": "Послед. синхронизация:"
+  },
+  "passGen": {
+    "message": "Генератор паролей",
+    "description": "Генератор паролей"
+  },
+  "passGenInfo": {
+    "message": "Автоматическая генерация стойких и уникальных паролей для Ваших аккаунтов.",
+    "description": "Автоматическая генерация стойких и уникальных паролей для Ваших аккаунтов."
+  },
+  "bitWebVault": {
+    "message": "Web-хранилище bitwarden",
+    "description": "Web-хранилище bitwarden"
+  },
+  "bitWebVaultInfo": {
+    "message": "Управляйте своими аккаунтами из любого браузера при помощи web-хранилища bitwarden.",
+    "description": "Управляйте своими аккаунтами из любого браузера при помощи web-хранилища bitwarden."
+  },
+  "bitIosVault": {
+    "message": "iOS-хранилище bitwarden",
+    "description": "iOS-хранилище bitwarden"
+  },
+  "bitIosVaultInfo": {
+    "message": "Управляйте своими аккаунтами со своего мобильного устройства при помощи iOS-хранилища bitwarden.",
+    "description": "Управляйте своими аккаунтами со своего мобильного устройства при помощи iOS-хранилища bitwarden."
+  },
+  "bitAndrVault": {
+    "message": "Android-хранилище bitwarden",
+    "description": "Android-хранилище bitwarden"
+  },
+  "bitAndrVaultInfo": {
+    "message": "Управляйте своими аккаунтами со своего мобильного устройства при помощи Android-хранилища bitwarden.",
+    "description": "Управляйте своими аккаунтами со своего мобильного устройства при помощи Android-хранилища bitwarden."
+  },
+  "importLogins": {
+    "message": "Импорт аккаунтов",
+    "description": "Импорт аккаунтов"
+  },
+  "importLoginsInfo": {
+    "message": "Быстрый импорт Ваших учетных записей из других менеджеров паролей.",
+    "description": "Быстрый импорт Ваших учетных записей из других менеджеров паролей."
+  },
+  "select": {
+    "message": "Выбрать",
+    "description": "Выбрать"
+  },
+  "generatePassword": {
+    "message": "Генератор паролей",
+    "description": "Генератор паролей"
+  },
+  "regeneratePassword": {
+    "message": "Регенерировать пароль",
+    "description": "Регенерировать пароль"
+  },
+  "options": {
+    "message": "Опции",
+    "description": "Опции"
+  },
+  "length": {
+    "message": "Длина",
+    "description": "Длина"
+  },
+  "minNumbers": {
+    "message": "Мин. кол-во цифр",
+    "description": "Мин. кол-во цифр"
+  },
+  "minSpecial": {
+    "message": "Мин. кол. спец. символов",
+    "description": "Мин. кол. спец. символов"
+  },
+  "avoidAmbChar": {
+    "message": "Избегать неопределенные символы",
+    "description": "Избегать неопределенные символы"
+  },
+  "searchVault": {
+    "message": "Поиск по хранилищу",
+    "description": "Поиск по хранилищу"
+  },
+  "edit": {
+    "message": "Редактирование",
+    "description": "Редактирование"
+  },
+  "noSitesInList": {
+    "message": "Нет сайтов для отображения.",
+    "description": "Нет сайтов для отображения."
+  },
+  "siteInformation": {
+    "message": "Информация о сайте",
+    "description": "Информация о сайте"
+  },
+  "username": {
+    "message": "Имя пользователя",
+    "description": "Имя пользователя"
+  },
+  "password": {
+    "message": "Пароль",
+    "description": "Пароль"
+  },
+  "favorite": {
+    "message": "Избранный",
+    "description": "Избранный"
+  },
+  "notes": {
+    "message": "Заметки",
+    "description": "Заметки"
+  },
+  "editSite": {
+    "message": "Редактировать сайт",
+    "description": "Редактировать сайт"
+  },
+  "folder": {
+    "message": "Папка",
+    "description": "Папка"
+  },
+  "deleteSite": {
+    "message": "Удалить сайт",
+    "description": "Удалить сайт"
+  },
+  "viewSite": {
+    "message": "Просмотр сайта",
+    "description": "Просмотр сайта"
+  },
+  "launchWebsite": {
+    "message": "Открыть сайт",
+    "description": "Открыть сайт"
+  },
+  "website": {
+    "message": "Сайт",
+    "description": "Сайт"
+  },
+  "togglePassword": {
+    "message": "Переключить пароль",
+    "description": "Переключить пароль"
+  },
+  "manage": {
+    "message": "Управление",
+    "description": "Управление"
+  },
+  "other": {
+    "message": "Прочее",
+    "description": "Прочее"
+  },
+  "disableGa": {
+    "message": "Отключить Google Analytics",
+    "description": "Отключить Google Analytics"
+  },
+  "rateExtension": {
+    "message": "Оценить расширение",
+    "description": "Оценить расширение"
+  },
+  "rateExtensionDesc": {
+    "message": "Пожалуйста, обратите внимание, что Вы помогаете нам хорошей оценкой!",
+    "description": "Пожалуйста, обратите внимание, что Вы помогаете нам хорошей оценкой!"
+  },
+  "browserNotSupportClipboard": {
+    "message": "Ваш web-браузер не поддерживает \"лёгкое\" копирование данных в буфер обмена. Вам придётся копировать вручную.",
+    "description": "Ваш web-браузер не поддерживает \"лёгкое\" копирование данных в буфер обмена. Вам придётся копировать вручную."
+  }
+}
