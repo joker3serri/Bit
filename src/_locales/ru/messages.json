@@ -56,8 +56,8 @@
     "description": "Введите мастер-пароль повторно"
   },
   "masterPassHint": {
-    "message": "Подсказка к мастер-паролю (необязательно)",
-    "description": "Подсказка к мастер-паролю (необязательно)"
+    "message": "Подсказка к мастер-паролю (необяз.)",
+    "description": "Подсказка к мастер-паролю (необяз.)"
   },
   "masterPassHintDecs": {
     "message": "A master password hint can help you remember your password if you forget it.",
@@ -124,8 +124,8 @@
     "description": "Продолжить"
   },
   "verificationCode": {
-    "message": "Код подтверждения",
-    "description": "Код подтверждения"
+    "message": "Введите код",
+    "description": "Введите код"
   },
   "enterTwoStepVerCode": {
     "message": "Введите код подтверждения двухфакторной аутентификации.",
@@ -172,8 +172,8 @@
     "description": "Наименование"
   },
   "editFolder": {
-    "message": "Редактировать папку",
-    "description": "Редактировать папку"
+    "message": "Изменение папки",
+    "description": "Изменение папки"
   },
   "deleteFolder": {
     "message": "Удалить папку",
