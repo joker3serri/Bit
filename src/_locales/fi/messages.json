@@ -1,0 +1,386 @@
+{
+  "appName": {
+    "message": "bitwarden",
+    "description": "bitwarden"
+  },
+  "extName": {
+    "message": "bitwarden – Ilmainen salasananhallintapalvelu",
+    "description": "Laajennuksen nimi"
+  },
+  "extDesc": {
+    "message": "bitwarden on turvallinen ja ilmainen salasananhallintapalvelu kaikille laitteillesi.",
+    "description": "Laajennuksen kuvaus"
+  },
+  "loginOrCreateNewAccount": {
+    "message": "Kirjaudu sisään tai luo tili päästäksesi suojattuun holviisi.",
+    "description": "Kirjaudu sisään tai luo tili päästäksesi suojattuun holviisi."
+  },
+  "createAccount": {
+    "message": "Luo tili",
+    "description": "Luo tili"
+  },
+  "login": {
+    "message": "Kirjaudu sisään",
+    "description": "Kirjaudu sisään"
+  },
+  "cancel": {
+    "message": "Peruuta",
+    "description": "Peruuta"
+  },
+  "close": {
+    "message": "Sulje",
+    "description": "Sulje"
+  },
+  "submit": {
+    "message": "Lisää",
+    "description": "Lisää"
+  },
+  "emailAddress": {
+    "message": "Sähköpostiosoite",
+    "description": "Sähköpostiosoite"
+  },
+  "masterPass": {
+    "message": "Pääsalasana",
+    "description": "Pääsalasana"
+  },
+  "masterPassDesc": {
+    "message": "Pääsalasanalla pääset käsiksi salasanaholviisi. On hyvin tärkeää, että muistat pääsalasanasi. Pääsalasanaa ei voida palauttaa mitenkään, jos satut unohtamaan sen.",
+    "description": "Pääsalasanalla pääset käsiksi salasanaholviisi. On hyvin tärkeää, että muistat pääsalasanasi. Pääsalasanaa ei voida palauttaa mitenkään, jos satut unohtamaan sen."
+  },
+  "masterPassHintDesc": {
+    "message": "Salasanavihje voi auttaa sinua muistamaan pääsalasanasi, jos satut unohtamaan sen.",
+    "description": "Salasanavihje voi auttaa sinua muistamaan pääsalasanasi, jos satut unohtamaan sen."
+  },
+  "reTypeMasterPass": {
+    "message": "Syötä pääsalasana uudelleen",
+    "description": "Syötä pääsalasana uudelleen"
+  },
+  "masterPassHint": {
+    "message": "Salasanavihje (valinnainen)",
+    "description": "Salasanavihje (valinnainen)"
+  },
+  "masterPassHintDecs": {
+    "message": "Salasanavihje voi auttaa sinua muistamaan pääsalasanasi, jos satut unohtamaan sen.",
+    "description": "Salasanavihje voi auttaa sinua muistamaan pääsalasanasi, jos satut unohtamaan sen."
+  },
+  "tab": {
+    "message": "Välilehti",
+    "description": "Välilehti"
+  },
+  "myVault": {
+    "message": "Minun holvini",
+    "description": "Minun holvini"
+  },
+  "tools": {
+    "message": "Työkalut",
+    "description": "Työkalut"
+  },
+  "settings": {
+    "message": "Asetukset",
+    "description": "Asetukset"
+  },
+  "currentTab": {
+    "message": "Nykyinen välilehti",
+    "description": "Nykyinen välilehti"
+  },
+  "copyPassword": {
+    "message": "Kopioi salasana",
+    "description": "Kopioi salasana"
+  },
+  "copyUsername": {
+    "message": "Kopioi käyttäjänimi",
+    "description": "Kopioi käyttäjänimi"
+  },
+  "autoFill": {
+    "message": "Täytä automaattisesti",
+    "description": "Täytä automaattisesti"
+  },
+  "generatePasswordCopied": {
+    "message": "Luo salasana (kopioitu)",
+    "description": "Luo salasana (kopioitu)"
+  },
+  "autoFillInfo": {
+    "message": "Selaimen nykyiselle välilehdelle ei ole automaattisesti täytettäviä kohteita.",
+    "description": "Selaimen nykyiselle välilehdelle ei ole automaattisesti täytettäviä kohteita."
+  },
+  "addSite": {
+    "message": "Lisää sivusto",
+    "description": "Lisää sivusto"
+  },
+  "passwordHint": {
+    "message": "Salasanavihje",
+    "description": "Salasanavihje"
+  },
+  "enterEmailToGetHint": {
+    "message": "Syötä tilisi sähköpostiosoite saadaksesi pääsalasanan vihjeen.",
+    "description": "Syötä tilisi sähköpostiosoite saadaksesi pääsalasanan vihjeen"
+  },
+  "getMasterPasswordHint": {
+    "message": "Pyydä salasanavihjettä",
+    "description": "Pyydä salasanavihjettä"
+  },
+  "continue": {
+    "message": "Jatka",
+    "description": "Jatka"
+  },
+  "verificationCode": {
+    "message": "Tunnistautumiskoodi",
+    "description": "Tunnistautumiskoodi"
+  },
+  "enterTwoStepVerCode": {
+    "message": "Syötä kaksivaiheisen tunnistautumisen koodisi.",
+    "description": "Syötä kaksivaiheisen tunnistautumisen koodisi."
+  },
+  "account": {
+    "message": "Tili",
+    "description": "Tili"
+  },
+  "changeMasterPassword": {
+    "message": "Vaihda pääsalasana",
+    "description": "Vaihda pääsalasana"
+  },
+  "changeEmail": {
+    "message": "Vaihda sähköpostiosoite",
+    "description": "Vaihda sähköpostiosoite"
+  },
+  "twoStepLogin": {
+    "message": "Kaksivaiheinen kirjautuminen",
+    "description": "Kaksivaiheinen kirjautuminen"
+  },
+  "logOut": {
+    "message": "Kirjaudu ulos",
+    "description": "Kirjaudu ulos"
+  },
+  "about": {
+    "message": "Tietoja",
+    "description": "Tietoja"
+  },
+  "version": {
+    "message": "Versio",
+    "description": "Versio"
+  },
+  "save": {
+    "message": "Tallenna",
+    "description": "Tallenna"
+  },
+  "addFolder": {
+    "message": "Lisää kansio",
+    "description": "Lisää kansio"
+  },
+  "name": {
+    "message": "Nimi",
+    "description": "Nimi"
+  },
+  "editFolder": {
+    "message": "Muokkaa kansiota",
+    "description": "Muokkaa kansiota"
+  },
+  "deleteFolder": {
+    "message": "Poista kansio",
+    "description": "Poista kansio"
+  },
+  "folders": {
+    "message": "Kansiot",
+    "description": "Kansiot"
+  },
+  "noFolders": {
+    "message": "Ei kansioita näytettäväksi.",
+    "description": "Ei kansioita näytettäväksi."
+  },
+  "helpFeedback": {
+    "message": "Tuki & palaute",
+    "description": "Tuki & palaute"
+  },
+  "emailUs": {
+    "message": "Lähetä sähköpostia",
+    "description": "Lähetä sähköpostia"
+  },
+  "emailUsDirectly": {
+    "message": "Lähetä meille sähköpostia saadaksesi tukea tai jättääksesi palautetta.",
+    "description": "Lähetä meille sähköpostia saadaksesi tukea tai jättääksesi palautetta."
+  },
+  "visitOurWebsite": {
+    "message": "Käy sivustollamme",
+    "description": "Käy sivustollamme"
+  },
+  "visitOurWebsiteDirectly": {
+    "message": "Käy sivustollamme, jossa voit saada apua bitwardenin käyttämisessä, saada tietoosi palvelun uutisia tai lähettää meille sähköpostia.",
+    "description": "Käy sivustollamme, jossa voit saada apua bitwardenin käyttämisessä, saada tietoosi palvelun uutisia tai lähettää meille sähköpostia."
+  },
+  "fileBugReport": {
+    "message": "Jätä virheilmoitus",
+    "description": "Jätä virheilmoitus"
+  },
+  "gitHubIssue": {
+    "message": "Jätä ilmoitus GitHub-pakettivarastoomme.",
+    "description": "Jätä ilmoitus GitHub-pakettivarastoomme."
+  },
+  "sync": {
+    "message": "Synkronoi",
+    "description": "Synkronoi"
+  },
+  "syncVaultNow": {
+    "message": "Synkronoi holvi nyt",
+    "description": "Synkronoi holvi nyt"
+  },
+  "lastSync": {
+    "message": "Viimeisin synkronointi:",
+    "description": "Viimeisin synkronointi:"
+  },
+  "passGen": {
+    "message": "Salasanageneraattori",
+    "description": "Salasanageneraattori"
+  },
+  "passGenInfo": {
+    "message": "Luo automaattisesti vahvoja, sivustokohtaisia salasanoja kirjautumisiasi varten.",
+    "description": "Luo automaattisesti vahvoja, sivustokohtaisia salasanoja kirjautumisiasi varten."
+  },
+  "bitWebVault": {
+    "message": "bitwardenin verkkoholvi",
+    "description": "bitwardenin verkkoholvi"
+  },
+  "bitWebVaultInfo": {
+    "message": "Hallitse kirjautumistietojasi millä tahansa selaimella bitwarden-verkkoholvissa.",
+    "description": "Hallitse kirjautumistietojasi millä tahansa selaimella bitwarden-verkkoholvissa."
+  },
+  "bitIosVault": {
+    "message": "bitwardenin iOS-holvi",
+    "description": "bitwardenin iOS-holvi"
+  },
+  "bitIosVaultInfo": {
+    "message": "Hallitse kirjautumistietojasi mobiililaitteillasi bitwardenin iOS-holvin avulla.",
+    "description": "Hallitse kirjautumistietojasi mobiililaitteillasi bitwardenin iOS-holvin avulla."
+  },
+  "bitAndrVault": {
+    "message": "bitwardenin Android-holvi",
+    "description": "bitwardenin Android-holvi"
+  },
+  "bitAndrVaultInfo": {
+    "message": "Hallitse kirjautumistietojasi mobiililaitteillasi bitwardenin Android-holvin avulla.",
+    "description": "Hallitse kirjautumistietojasi mobiililaitteillasi bitwardenin Android-holvin avulla."
+  },
+  "importLogins": {
+    "message": "Tuo kirjautumistietoja",
+    "description": "Tuo kirjautumistietoja"
+  },
+  "importLoginsInfo": {
+    "message": "Tuo kerralla kaikki kirjautumistietosi muista salasananhallintapalveluista.",
+    "description": "Tuo kerralla kaikki kirjautumistietosi muista salasananhallintapalveluista."
+  },
+  "select": {
+    "message": "Valitse",
+    "description": "Valitse"
+  },
+  "generatePassword": {
+    "message": "Luo salasana",
+    "description": "Luo salasana"
+  },
+  "regeneratePassword": {
+    "message": "Luo uusi salasana",
+    "description": "Luo uusi salasana"
+  },
+  "options": {
+    "message": "Valinnat",
+    "description": "Valinnat"
+  },
+  "length": {
+    "message": "Pituus",
+    "description": "Pituus"
+  },
+  "minNumbers": {
+    "message": "Numeroja vähintään",
+    "description": "Numeroja vähintään"
+  },
+  "minSpecial": {
+    "message": "Erikoismerkkejä vähintään",
+    "description": "Erikoismerkkejä vähintään"
+  },
+  "avoidAmbChar": {
+    "message": "Vältä epäselviä merkkejä",
+    "description": "Vältä epäselviä merkkejä"
+  },
+  "searchVault": {
+    "message": "Hae holvista",
+    "description": "Hae holvista"
+  },
+  "edit": {
+    "message": "Muokkaa",
+    "description": "Muokkaa"
+  },
+  "noSitesInList": {
+    "message": "Ei sivustoja.",
+    "description": "Ei sivustoja."
+  },
+  "siteInformation": {
+    "message": "Sivuston tiedot",
+    "description": "Sivuston tiedot"
+  },
+  "username": {
+    "message": "Käyttäjänimi",
+    "description": "Käyttäjänimi"
+  },
+  "password": {
+    "message": "Salasana",
+    "description": "Salasana"
+  },
+  "favorite": {
+    "message": "Suosikki",
+    "description": "Suosikki"
+  },
+  "notes": {
+    "message": "Merkinnät",
+    "description": "Merkinnät"
+  },
+  "editSite": {
+    "message": "Muokkaa sivustoa",
+    "description": "Muokkaa sivustoa"
+  },
+  "folder": {
+    "message": "Kansio",
+    "description": "Kansio"
+  },
+  "deleteSite": {
+    "message": "Poista sivusto",
+    "description": "Poista sivusto"
+  },
+  "viewSite": {
+    "message": "Tarkastele sivustoa",
+    "description": "Tarkastele sivustoa"
+  },
+  "launchWebsite": {
+    "message": "Avaa sivusto",
+    "description": "Avaa sivusto"
+  },
+  "website": {
+    "message": "Verkko-osoite",
+    "description": "Verkko-osoite"
+  },
+  "togglePassword": {
+    "message": "Näytä/piilota salasana",
+    "description": "Näytä/piilota salasana"
+  },
+  "manage": {
+    "message": "Hallinta",
+    "description": "Hallinta"
+  },
+  "other": {
+    "message": "Muut",
+    "description": "Muut"
+  },
+  "disableGa": {
+    "message": "Älä käytä Google Analyticsiä",
+    "description": "Älä käytä Google Analyticsiä"
+  },
+  "rateExtension": {
+    "message": "Arvostele laajennus",
+    "description": "Arvostele laajennus"
+  },
+  "rateExtensionDesc": {
+    "message": "Harkitsethan auttamistamme jättämällä positiivisen arvostelun!",
+    "description": "Harkitsethan auttamistamme jättämällä positiivisen arvostelun!"
+  },
+  "browserNotSupportClipboard": {
+    "message": "Selaimesi ei tue helppoa leikepöydälle kopiointia. Kopioi kohde manuaalisesti.",
+    "description": "Selaimesi ei tue helppoa leikepöydälle kopiointia. Kopioi kohde manuaalisesti."
+  }
+}
