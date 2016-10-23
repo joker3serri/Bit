@@ -304,8 +304,8 @@
     "description": "Поиск по хранилищу"
   },
   "edit": {
-    "message": "Редактирование",
-    "description": "Редактирование"
+    "message": "Изменить",
+    "description": "Изменить"
   },
   "noSitesInList": {
     "message": "Нет сайтов для отображения.",
@@ -332,8 +332,8 @@
     "description": "Заметки"
   },
   "editSite": {
-    "message": "Редактировать сайт",
-    "description": "Редактировать сайт"
+    "message": "Изменение сайта",
+    "description": "Изменение сайта"
   },
   "folder": {
     "message": "Папка",
@@ -352,12 +352,12 @@
     "description": "Открыть сайт"
   },
   "website": {
-    "message": "Сайт",
-    "description": "Сайт"
+    "message": "URL",
+    "description": "URL"
   },
   "togglePassword": {
-    "message": "Переключить пароль",
-    "description": "Переключить пароль"
+    "message": "Показать/скрыть пароль",
+    "description": "Показать/скрыть пароль"
   },
   "manage": {
     "message": "Управление",
