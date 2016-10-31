@@ -99,6 +99,14 @@
     "message": "Luo salasana (kopioitu)",
     "description": "Generate Password (copied)"
   },
+  "noMatchingSites": {
+    "message": "Ei täsmääviä sivustoja.",
+    "description": "No matching sites."
+  },
+  "vaultLocked": {
+    "message": "Holvi on lukittu.",
+    "description": "Vault is locked."
+  },
   "autoFillInfo": {
     "message": "Selaimen nykyiselle välilehdelle ei ole automaattisesti täytettäviä kohteita.",
     "description": "There are no sites available to auto-fill for the current browser tab."
@@ -382,5 +390,61 @@
   "browserNotSupportClipboard": {
     "message": "Selaimesi ei tue helppoa leikepöydälle kopiointia. Kopioi kohde manuaalisesti.",
     "description": "Your web browser does not support easy clipboard copying. Copy it manually instead."
+  },
+  "verifyMasterPassword": {
+    "message": "Varmista pääsalasana",
+    "description": "Verify Master Password"
+  },
+  "invalidMasterPassword": {
+    "message": "Virheellinen pääsalasana",
+    "description": "Invalid master password"
+  },
+  "errorsHaveOccurred": {
+    "message": "Virheellinen pääsalasana",
+    "description": "Invalid master password"
+  },
+  "lockOptions": {
+    "message": "Lukitseminen",
+    "description": "Lock Options"
+  },
+  "immediately": {
+    "message": "Välittömästi",
+    "description": "Immediately"
+  },
+  "oneMinute": {
+    "message": "1 minuutti",
+    "description": "1 minute"
+  },
+  "fiveMinutes": {
+    "message": "5 minuuttia",
+    "description": "5 minutes"
+  },
+  "fifteenMinutes": {
+    "message": "15 minuuttia",
+    "description": "15 minutes"
+  },
+  "thirtyMinutes": {
+    "message": "30 minuuttia",
+    "description": "30 minutes"
+  },
+  "oneHour": {
+    "message": "1 tunti",
+    "description": "1 hour"
+  },
+  "fourHours": {
+    "message": "4 tuntia",
+    "description": "4 hours"
+  },
+  "onRestart": {
+    "message": "Uudelleenkäynnistyksen yhteydessä",
+    "description": "On Restart"
+  },
+  "never": {
+    "message": "Ei koskaan",
+    "description": "Never"
+  },
+  "security": {
+    "message": "Turvallisuus",
+    "description": "Security"
   }
 }
