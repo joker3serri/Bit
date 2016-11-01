@@ -1,6 +1,6 @@
 # Tile
 
-A secure and free password manager for all of your devices
+安全免费的跨平台密码管理器
 
 # Screenshot - Sync
 
@@ -16,7 +16,7 @@ A secure and free password manager for all of your devices
 
 # Screenshot - Menu
 
-您也可以通过鼠标邮件快捷的访问密码库
+您也可以通过鼠标右键菜单快捷地访问密码库
 
 # Screenshot - Password
 
