@@ -442,7 +442,7 @@
   "security": {
     "message": "安全",
     "description": "Security"
-  }
+  },
   "errorsOccurred": {
     "message": "出错了",
     "description": "Errors have occurred"
