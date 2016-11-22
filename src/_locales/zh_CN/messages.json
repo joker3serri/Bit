@@ -484,7 +484,7 @@
     "description": "' copied'. This is part of a sentence to be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError": {
-    "message": "无法在此页面自动填充所选择的网站。请手工 复制/粘贴 您的用户名、密码",
+    "message": "无法在此页面自动填充所选择的网站。请手工 复制/粘贴 您的用户名、密码。",
     "description": "Errors have occurred"
   },
   "loggedOut": {
@@ -588,7 +588,7 @@
     "description": "Edited site"
   },
   "deleteSiteConfirmation": {
-    "message": "Are you sure you want to delete this site?",
+    "message": "您确定要删除次网站吗？",
     "description": "Are you sure you want to delete this site?"
   },
   "deletedSite": {
