@@ -11,7 +11,7 @@
         $scope.loginPromise = null;
         $scope.login = function (model) {
             if (!model.code) {
-                toastr.error('Verification code is required.', 'Errors have occurred');
+                toastr.error(i18nService.verificationCodeRequired, i18nService.errorsOccurred);
                 return;
             }
 
@@ -20,5 +20,10 @@
                 $analytics.eventTrack('Logged In From Two-step');
                 $state.go('tabs.vault', { animation: 'in-slide-left', syncOnLoad: true });
             });
+        };
+
+        $scope.lostApp = function () {
+            $analytics.eventTrack('Selected Lost 2FA App');
+            chrome.tabs.create({ url: 'https://vault.bitwarden.com/#/recover' });
         };
     });

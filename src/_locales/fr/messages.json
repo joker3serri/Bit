@@ -4,375 +4,443 @@
     "description": "bitwarden"
   },
   "extName": {
-    "message": "bitwarden - Бесплатный менеджер паролей",
+    "message": "bitwarden - Gestionnaire de mots de passe mratuit",
     "description": "Extension name"
   },
   "extDesc": {
-    "message": "bitwarden - защищённое и безопасное хранилище паролей для всех Ваших устройств.",
+    "message": "bitwarden est un gestionnaire de mot de passe sécurisé et gratuit pour tous vos appareils.",
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
-    "message": "Войдите или создайте новый аккаунт для доступа к Вашему безопасному хранилищу.",
+    "message": "S'identifier ou créer un nouveau compte pour accéder à votre coffre sécurisé.",
     "description": "Log in or create a new account to access your secure vault."
   },
   "createAccount": {
-    "message": "Создать аккаунт",
+    "message": "Créer un compte",
     "description": "Create Account"
   },
   "login": {
-    "message": "Войти",
+    "message": "S'identifier",
     "description": "Log In"
   },
   "cancel": {
-    "message": "Отмена",
+    "message": "Annuler",
     "description": "Cancel"
   },
   "close": {
-    "message": "Закрыть",
+    "message": "Fermer",
     "description": "Close"
   },
   "submit": {
-    "message": "Отправить",
+    "message": "Soumettre",
     "description": "submit"
   },
   "emailAddress": {
-    "message": "Email",
+    "message": "Adresse e-mail",
     "description": "Email Address"
   },
   "masterPass": {
-    "message": "Мастер-пароль",
+    "message": "Mot de passe maître",
     "description": "Master Password"
   },
   "masterPassDesc": {
-    "message": "Мастер-пароль - пароль для доступа к вашему безопасному хранилищу. Он очень важен, поэтому не забывайте его. Восстановить мастер-пароль нельзя.",
+    "message": "Le mot de passe maître est le mot de passe que vous utilisez pour accéder à votre coffre. Il est très important de ne pas l'oublier. Il n'existe aucun moyen de le récupérer si vous le perdez.",
     "description": "The master password is the password you use to access your vault. It is very important that you do not forget your master password. There is no way to recover the password in the event that you forget it."
   },
+  "masterPassHintDesc": {
+    "message": "Un indice de mot de passe maître peut vous aider à vous rappeler de votre mot de passe en cas d'oubli.",
+    "description": "A master password hint can help you remember your password if you forget it."
+  },
   "reTypeMasterPass": {
-    "message": "Введите мастер-пароль повторно",
+    "message": "Re-taper votre mot de passe maître",
     "description": "Re-type Master Password"
   },
   "masterPassHint": {
-    "message": "Подсказка к мастер-паролю (необяз.)",
+    "message": "Indice du mot de passe maître (facultatif)",
     "description": "Master Password Hint (optional)"
   },
   "tab": {
-    "message": "Вкладка",
+    "message": "Onglet",
     "description": "Tab"
   },
   "myVault": {
-    "message": "Хранилище",
+    "message": "Mon Coffre",
     "description": "My Vault"
   },
   "tools": {
-    "message": "Инструменты",
+    "message": "Outils",
     "description": "Tools"
   },
   "settings": {
-    "message": "Настройки",
+    "message": "Paramètres",
     "description": "Settings"
   },
   "currentTab": {
-    "message": "Текущая вкладка",
+    "message": "Onglet actif",
     "description": "Current Tab"
   },
   "copyPassword": {
-    "message": "Копировать пароль",
+    "message": "Copier mot de passe",
     "description": "Copy Password"
   },
   "copyUsername": {
-    "message": "Копировать имя пользователя",
+    "message": "Copier mom d'utilisateur",
     "description": "Copy Username"
   },
   "autoFill": {
-    "message": "Автозаполнение",
+    "message": "Auto-remplissage",
     "description": "Auto-fill"
   },
   "generatePasswordCopied": {
-    "message": "Сгенерировать пароль (с копированием)",
+    "message": "Générer un mot de passe (copié)",
     "description": "Generate Password (copied)"
   },
+  "noMatchingSites": {
+    "message": "Aucun site correspondant.",
+    "description": "No matching sites."
+  },
+  "vaultLocked": {
+    "message": "Le coffre est verrouillé.",
+    "description": "Vault is locked."
+  },
   "autoFillInfo": {
-    "message": "Нет доступных учетных записей для автозаполнения в текущей вкладке браузера.",
+    "message": "Il n'existe aucun site disponible pour le remplissage automatique pour l'onglet actuel du navigateur.",
     "description": "There are no sites available to auto-fill for the current browser tab."
   },
   "addSite": {
-    "message": "Добавить сайт",
+    "message": "Ajouter un site",
     "description": "Add a Site"
   },
   "passwordHint": {
-    "message": "Подсказка к паролю",
+    "message": "Indice mot de passe",
     "description": "Password Hint"
   },
   "enterEmailToGetHint": {
-    "message": "Введите Ваш email для получения подсказки мастер-пароля.",
+    "message": "Saisissez l'adresse e-mail de votre compte pour recevoir l'indice de votre mot de passe maître.",
     "description": "Enter your account email address to receive your master password hint."
   },
   "getMasterPasswordHint": {
-    "message": "Получить подсказку к мастер-паролю",
+    "message": "Obtenir l'indice du mot de passe maître",
     "description": "Get master password hint"
   },
   "continue": {
-    "message": "Продолжить",
+    "message": "Continuer",
     "description": "Continue"
   },
   "verificationCode": {
-    "message": "Введите код",
+    "message": "Code de Vérification",
     "description": "Verification Code"
   },
   "enterTwoStepVerCode": {
-    "message": "Введите код подтверждения двухфакторной аутентификации.",
+    "message": "Saissiez votre code d'authentification à deux facteurs.",
     "description": "Enter your two-step verification code."
   },
   "account": {
-    "message": "Аккаунт",
+    "message": "Compte",
     "description": "Account"
   },
   "changeMasterPassword": {
-    "message": "Изменить мастер-пароль",
+    "message": "Changer le mot de passe maître",
     "description": "Change Master Password"
   },
   "changeEmail": {
-    "message": "Изменить email",
+    "message": "Changer l'e-mail",
     "description": "Change Email"
   },
   "twoStepLogin": {
-    "message": "Двухфакторная аутентификация",
+    "message": "Identification à deux facteurs",
     "description": "Two-step Login"
   },
   "logOut": {
-    "message": "Выйти",
+    "message": "Déconnexion",
     "description": "Log Out"
   },
   "about": {
-    "message": "О расширении",
+    "message": "À propos",
     "description": "About"
   },
   "version": {
-    "message": "Версия",
+    "message": "Version",
     "description": "Version"
   },
   "save": {
-    "message": "Сохранить",
+    "message": "Enregistrer",
     "description": "Save"
   },
   "addFolder": {
-    "message": "Добавить папку",
+    "message": "Ajouter un dossier",
     "description": "Add Folder"
   },
   "name": {
-    "message": "Наименование",
+    "message": "Nom",
     "description": "Name"
   },
   "editFolder": {
-    "message": "Изменение папки",
+    "message": "Modifier le dossier",
     "description": "Edit Folder"
   },
   "deleteFolder": {
-    "message": "Удалить папку",
+    "message": "Supprimer le dossier",
     "description": "Delete Folder"
   },
   "folders": {
-    "message": "Папки",
+    "message": "Dossiers",
     "description": "Folders"
   },
   "noFolders": {
-    "message": "Нет папок для отображения.",
+    "message": "Aucun dossier à lister.",
     "description": "There are no folders to list."
   },
   "helpFeedback": {
-    "message": "Обратная связь",
+    "message": "Aide et commentaires",
     "description": "Help & Feedback"
   },
   "emailUs": {
-    "message": "Написать нам на email",
+    "message": "Nous contacter",
     "description": "Email Us"
   },
   "emailUsDirectly": {
-    "message": "Напишите нам на email, чтобы мы помогли вам или чтобы оставить отзыв.",
+    "message": "Nous contacter directement pour obtenir de l'aide ou pour donner un avis.",
     "description": "Email us directly to get help or leave feedback."
   },
   "visitOurWebsite": {
-    "message": "Перейти на наш сайт",
+    "message": "Visitez notre site web",
     "description": "Visit Our Website"
   },
   "visitOurWebsiteDirectly": {
-    "message": "Посетите наш сайт для чтения справки, новостей. На нём Вы так же можете написать нам или почитать о том, как использовать bitwarden.",
+    "message": "Consultez notre site web pour obtenir de l'aide, les actualités, nous envoyer un e-mail et/ou mieux apprendre à utiliser bitwarden.",
     "description": "Visit our website to get help, news, email us, and/or learn more about how to use bitwarden."
   },
   "fileBugReport": {
-    "message": "Сообщить о проблеме",
+    "message": "Envoyer un rapport de bug",
     "description": "File a Bug Report"
   },
   "gitHubIssue": {
-    "message": "Откройте \"issue\" в GitHub-репозитории.",
+    "message": "Ouvrez un ticket sur le dépôt GitHub.",
     "description": "Open an issue at our GitHub repository."
   },
   "sync": {
-    "message": "Синхронизация",
+    "message": "Synchroniser",
     "description": "Sync"
   },
   "syncVaultNow": {
-    "message": "Синхронизировать сейчас",
+    "message": "Synchroniser le Coffre maintenant",
     "description": "Sync Vault Now"
   },
   "lastSync": {
-    "message": "Послед. синхронизация:",
+    "message": "Dernière synchronisation :",
     "description": "Last Sync:"
   },
   "passGen": {
-    "message": "Генератор паролей",
+    "message": "Générateur de mot de passe",
     "description": "Password Generator"
   },
   "passGenInfo": {
-    "message": "Автоматическая генерация стойких и уникальных паролей для Ваших аккаунтов.",
+    "message": "Générer automatiquement des mots de passe forts et uniques pour vos identifiants.",
     "description": "Automatically generate strong, unique passwords for your logins."
   },
   "bitWebVault": {
-    "message": "Web-хранилище bitwarden",
+    "message": "Coffre en ligne de bitwarden",
     "description": "bitwarden Web Vault"
   },
   "bitWebVaultInfo": {
-    "message": "Управляйте своими аккаунтами из любого браузера при помощи web-хранилища bitwarden.",
+    "message": "Gérer vos identifiants depuis n'importe quel navigateur web à l'aide du coffre en ligne de bitwarden.",
     "description": "Manage your logins from any web browser with the bitwarden web vault."
   },
   "bitIosVault": {
-    "message": "iOS-хранилище bitwarden",
+    "message": "Coffre iOS bitwarden",
     "description": "bitwarden iOS Vault"
   },
   "bitIosVaultInfo": {
-    "message": "Управляйте своими аккаунтами со своего мобильного устройства при помощи iOS-хранилища bitwarden.",
+    "message": "Gérer vos identifiants depuis vos appareils mobiles à l'aide du coffre iOS bitwarden.",
     "description": "Manage your logins from your mobile devices with the bitwarden iOS vault."
   },
   "bitAndrVault": {
-    "message": "Android-хранилище bitwarden",
+    "message": "Coffre Android bitwarden",
     "description": "bitwarden Android Vault"
   },
   "bitAndrVaultInfo": {
-    "message": "Управляйте своими аккаунтами со своего мобильного устройства при помощи Android-хранилища bitwarden.",
+    "message": "Gérer vos identifiants depuis vos appareils mobiles à l'aide du coffre Android bitwarden.",
     "description": "Manage your logins from your mobile devices with the bitwarden Android vault."
   },
   "importLogins": {
-    "message": "Импорт аккаунтов",
+    "message": "Importer des identifiants",
     "description": "Import Logins"
   },
   "importLoginsInfo": {
-    "message": "Быстрый импорт Ваших учетных записей из других менеджеров паролей.",
+    "message": "Import rapide en masse depuis d'autres applications de gestion de mots de passe.",
     "description": "Quickly bulk import your logins from other password management applications."
   },
   "select": {
-    "message": "Выбрать",
+    "message": "Sélectionner",
     "description": "Select"
   },
   "generatePassword": {
-    "message": "Генератор паролей",
+    "message": "Générer un mot de passe",
     "description": "Generate Password"
   },
   "regeneratePassword": {
-    "message": "Регенерировать пароль",
+    "message": "Re-générer un mot de passe",
     "description": "Regenerate Password"
   },
   "options": {
-    "message": "Опции",
+    "message": "Options",
     "description": "Options"
   },
   "length": {
-    "message": "Длина",
+    "message": "Longueur",
     "description": "Length"
   },
   "minNumbers": {
-    "message": "Мин. кол-во цифр",
+    "message": "Minimum de nombres",
     "description": "Minimum Numbers"
   },
   "minSpecial": {
-    "message": "Мин. кол. спец. символов",
+    "message": "Minimum de caractères spéciaux",
     "description": "Minimum Special"
   },
   "avoidAmbChar": {
-    "message": "Избегать неопределенные символы",
+    "message": "Éviter le caractères ambigus",
     "description": "Avoid Ambiguous Characters"
   },
   "searchVault": {
-    "message": "Поиск по хранилищу",
+    "message": "Rechercher dans le coffre",
     "description": "Search vault"
   },
   "edit": {
-    "message": "Изменить",
+    "message": "Modifier",
     "description": "Edit"
   },
   "noSitesInList": {
-    "message": "Нет сайтов для отображения.",
+    "message": "Aucun site dans la liste.",
     "description": "There are no sites in list."
   },
   "siteInformation": {
-    "message": "Информация о сайте",
+    "message": "Informations du site",
     "description": "Site Information"
   },
   "username": {
-    "message": "Имя пользователя",
+    "message": "Nom d'utilisateur",
     "description": "Username"
   },
   "password": {
-    "message": "Пароль",
+    "message": "Mot de passe",
     "description": "Password"
   },
   "favorite": {
-    "message": "Избранный",
+    "message": "Favori",
     "description": "Favorite"
   },
   "notes": {
-    "message": "Заметки",
+    "message": "Notes",
     "description": "Notes"
   },
   "editSite": {
-    "message": "Изменение сайта",
+    "message": "Modifier site",
     "description": "Edit Site"
   },
   "folder": {
-    "message": "Папка",
+    "message": "Dossier",
     "description": "Folder"
   },
   "deleteSite": {
-    "message": "Удалить сайт",
+    "message": "Supprimer site",
     "description": "Delete Site"
   },
   "viewSite": {
-    "message": "Просмотр сайта",
+    "message": "Afficher site",
     "description": "View Site"
   },
   "launchWebsite": {
-    "message": "Открыть сайт",
+    "message": "Lancer le site web",
     "description": "Launch Website"
   },
   "website": {
-    "message": "URL",
+    "message": "Site web",
     "description": "Website"
   },
   "togglePassword": {
-    "message": "Показать/скрыть пароль",
+    "message": "Basculer le mot de passe",
     "description": "Toggle Password"
   },
   "manage": {
-    "message": "Управление",
+    "message": "Gérer",
     "description": "Manage"
   },
   "other": {
-    "message": "Прочее",
+    "message": "Autre",
     "description": "Other"
   },
   "disableGa": {
-    "message": "Отключить Google Analytics",
+    "message": "Désactiver Google Analytics",
     "description": "Disable Google Analytics"
   },
   "rateExtension": {
-    "message": "Оценить расширение",
+    "message": "Noter l'extension",
     "description": "Rate the Extension"
   },
   "rateExtensionDesc": {
-    "message": "Пожалуйста, обратите внимание, что Вы помогаете нам хорошей оценкой!",
+    "message": "Merci de nous aider en mettant une bonne note !",
     "description": "Please consider helping us out with a good review!"
   },
   "browserNotSupportClipboard": {
-    "message": "Ваш web-браузер не поддерживает \"лёгкое\" копирование данных в буфер обмена. Вам придётся копировать вручную.",
+    "message": "Votre navigateur web ne supporte pas la copie facilité du presse-papier. Copiez-le manuellement à la place.",
     "description": "Your web browser does not support easy clipboard copying. Copy it manually instead."
+  },
+  "verifyMasterPassword": {
+    "message": "Vérifiez votre mot de passe maître",
+    "description": "Verify Master Password"
+  },
+  "invalidMasterPassword": {
+    "message": "Mot de passe maître invalide",
+    "description": "Invalid master password"
+  },
+  "errorsHaveOccurred": {
+    "message": "Mot de passe maître invalide",
+    "description": "Invalid master password"
+  },
+  "lockOptions": {
+    "message": "Options de verrouillage",
+    "description": "Lock Options"
+  },
+  "immediately": {
+    "message": "Immédiatement",
+    "description": "Immediately"
+  },
+  "oneMinute": {
+    "message": "1 minute",
+    "description": "1 minute"
+  },
+  "fiveMinutes": {
+    "message": "5 minutes",
+    "description": "5 minutes"
+  },
+  "fifteenMinutes": {
+    "message": "15 minutes",
+    "description": "15 minutes"
+  },
+  "thirtyMinutes": {
+    "message": "30 minutes",
+    "description": "30 minutes"
+  },
+  "oneHour": {
+    "message": "1 heure",
+    "description": "1 hour"
+  },
+  "fourHours": {
+    "message": "4 heures",
+    "description": "4 hours"
+  },
+  "onRestart": {
+    "message": "Au redémarrage",
+    "description": "On Restart"
+  },
+  "never": {
+    "message": "Jamais",
+    "description": "Never"
+  },
+  "security": {
+    "message": "Sécurité",
+    "description": "Security"
   }
 }

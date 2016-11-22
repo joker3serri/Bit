@@ -8,6 +8,7 @@ angular
         var returnSearchText = $stateParams.returnSearchText;
         var siteId = $stateParams.siteId;
         var fromView = $stateParams.fromView;
+        var fromCurrent = $stateParams.fromCurrent;
 
         $scope.site = {
             folderId: null
@@ -33,7 +34,7 @@ angular
         $scope.savePromise = null;
         $scope.save = function (model) {
             if (!model.name) {
-                toastr.error('Name is required.', 'Errors have occurred');
+                toastr.error(i18nService.nameRequired, i18nService.errorsOccurred);
                 return;
             }
 
@@ -41,7 +42,7 @@ angular
                 var site = new Site(siteModel, true);
                 return $q.when(siteService.saveWithServer(site)).then(function (site) {
                     $analytics.eventTrack('Edited Site');
-                    toastr.success('Edited site');
+                    toastr.success(i18nService.editedSite);
                     $scope.close();
                 });
             });
@@ -49,16 +50,16 @@ angular
 
         $scope.delete = function () {
             SweetAlert.swal({
-                title: 'Delete Site',
-                text: 'Are you sure you want to delete this site?',
+                title: i18nService.deleteSite,
+                text: i18nService.deleteSiteConfirmation,
                 showCancelButton: true,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'No'
+                confirmButtonText: i18nService.yes,
+                cancelButtonText: i18nService.no
             }, function (confirmed) {
                 if (confirmed) {
                     $q.when(siteService.deleteWithServer(siteId)).then(function () {
                         $analytics.eventTrack('Deleted Site');
-                        toastr.success('Deleted site');
+                        toastr.success(i18nService.deletedSite);
                         $state.go('tabs.vault', {
                             animation: 'out-slide-down'
                         });
@@ -73,7 +74,8 @@ angular
                     siteId: siteId,
                     animation: 'out-slide-down',
                     returnScrollY: returnScrollY || 0,
-                    returnSearchText: returnSearchText
+                    returnSearchText: returnSearchText,
+                    fromCurrent: fromCurrent
                 });
             }
             else {
@@ -88,11 +90,11 @@ angular
         $scope.generatePassword = function () {
             if ($scope.site.password) {
                 SweetAlert.swal({
-                    title: 'Overwrite Password',
-                    text: 'Are you sure you want to overwrite the current password?',
+                    title: i18nService.overwritePassword,
+                    text: i18nService.overwritePasswordConfirmation,
                     showCancelButton: true,
-                    confirmButtonText: 'Yes',
-                    cancelButtonText: 'No'
+                    confirmButtonText: i18nService.yes,
+                    cancelButtonText: i18nService.no
                 }, function (confirmed) {
                     if (confirmed) {
                         goPasswordGenerator();
