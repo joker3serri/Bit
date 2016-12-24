@@ -440,7 +440,7 @@
     "description": "Security"
   },
   "errorsOccurred": {
-    "message": "Fel har inträffat",
+    "message": "Ett fel har inträffat",
     "description": "Errors have occurred"
   },
   "emailRequired": {
@@ -604,7 +604,7 @@
     "description": "Lost authenticator app?"
   },
   "credits": {
-    "message": "Tack till...",
+    "message": "Tillskrivningar",
     "description": "Credits (giving thanks to people that helped, like at the end of a movie)"
   },
   "thankYou": {
