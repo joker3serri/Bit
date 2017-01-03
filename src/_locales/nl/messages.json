@@ -600,51 +600,51 @@
     "description": "Are you sure you want to overwrite the current password?"
   },
   "lost2FAApp": {
-      "message": "Authenticatie-app kwijt?",
-      "description": "Lost authenticator app?"
+    "message": "Authenticatie-app kwijt?",
+    "description": "Lost authenticator app?"
   },
   "credits": {
-      "message": "Credits",
-      "description": "Credits (giving thanks to people that helped, like at the end of a movie)"
+    "message": "Credits",
+    "description": "Credits (giving thanks to people that helped, like at the end of a movie)"
   },
   "thankYou": {
-      "message": "Bedankt",
-      "description": "Thank You"
+    "message": "Bedankt",
+    "description": "Thank You"
   },
   "translations": {
-      "message": "Vertalingen",
-      "description": "Translations"
+    "message": "Vertalingen",
+    "description": "Translations"
   },
   "searchFolder": {
-      "message": "Zoek in map",
-      "description": "Search folder"
+    "message": "Zoek in map",
+    "description": "Search folder"
   },
   "noneFolder": {
-      "message": "(geen)",
-      "description": "(none) - this is the folder for uncategorized sites"
+    "message": "(geen)",
+    "description": "(none) - this is the folder for uncategorized sites"
   },
   "features": {
-      "message": "Features",
-      "description": "Features"
+    "message": "Features",
+    "description": "Features"
   },
   "gaDesc": {
-      "message": "We gebruiken Google Analytics om te weten te komen hoe de extensie gebruikt wordt, zodat we deze kunnen verbeteren. Alle verzamelde data is anoniem.",
-      "description": "We use Google Analytics to better learn how the extension is being used so that we can make it better. All data collection is completely anonymous."
+    "message": "We gebruiken Google Analytics om te weten te komen hoe de extensie gebruikt wordt, zodat we deze kunnen verbeteren. Alle verzamelde data is anoniem.",
+    "description": "We use Google Analytics to better learn how the extension is being used so that we can make it better. All data collection is completely anonymous."
   },
   "disableAddSiteNotification": {
-      "message": "Zet Notificatie bij Nieuwe Site Uit",
-      "description": "Disable Add Site Notification"
+    "message": "Zet Notificatie bij Nieuwe Site Uit",
+    "description": "Disable Add Site Notification"
   },
   "addSiteNotificationDesc": {
-      "message": "De \"Notificatie bij Nieuwe Site\" vraagt automatisch om nieuwe sites op te slaan in je kluis wanneer je voor de eerste keer inlogt.",
-      "description": "The \"Add Site Notification\" automatically prompts you to save new sites to your vault whenever you log into them for the first time."
+    "message": "De \"Notificatie bij Nieuwe Site\" vraagt automatisch om nieuwe sites op te slaan in je kluis wanneer je voor de eerste keer inlogt.",
+    "description": "The \"Add Site Notification\" automatically prompts you to save new sites to your vault whenever you log into them for the first time."
   },
   "notificationAddDesc": {
-      "message": "Moet bitwarden dit wachtwoord onthouden?",
-      "description": "Should bitwarden remember this password for you?"
+    "message": "Moet bitwarden dit wachtwoord onthouden?",
+    "description": "Should bitwarden remember this password for you?"
   },
   "notificationAddSave": {
-      "message": "Ja, sla nu op",
-      "description": "Yes, Save Now"
+    "message": "Ja, sla nu op",
+    "description": "Yes, Save Now"
   }
 }
