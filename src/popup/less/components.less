@@ -187,6 +187,13 @@
             background-color: transparent;
             padding: 10px 10px;
             color: @gray-light;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            small {
+                float: right;
+            }
         }
     }
 
@@ -206,6 +213,10 @@
 
             label {
                 font-weight: normal;
+            }
+
+            span {
+                float: right;
             }
         }
 
@@ -327,8 +338,14 @@
 
         .fa-chevron-right {
             float: right;
-            margin-top: 3px;
+            margin-top: 4px;
             color: @list-icon-color;
+        }
+
+        .item-sub-label {
+            float: right;
+            margin-right: 15px;
+            color: @gray-light;
         }
 
         &.condensed {
