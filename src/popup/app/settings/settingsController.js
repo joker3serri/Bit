@@ -1,21 +1,11 @@
 ﻿angular
     .module('bit.settings')
 
-    .controller('settingsController', function ($scope, loginService, $state, SweetAlert, utilsService, $analytics,
+    .controller('settingsController', function ($scope, authService, $state, SweetAlert, utilsService, $analytics,
         i18nService, constantsService, cryptoService) {
         utilsService.initListSectionItemListeners($(document), angular);
-        $scope.disableGa = false;
         $scope.lockOption = '';
         $scope.i18n = i18nService;
-
-        chrome.storage.local.get(constantsService.disableGaKey, function (obj) {
-            if (obj && obj[constantsService.disableGaKey]) {
-                $scope.disableGa = true;
-            }
-            else {
-                $scope.disableGa = false;
-            }
-        });
 
         chrome.storage.local.get(constantsService.lockOptionKey, function (obj) {
             if (obj && (obj[constantsService.lockOptionKey] || obj[constantsService.lockOptionKey] === 0)) {
@@ -48,7 +38,7 @@
                         }, function (confirmed) {
                             if (confirmed) {
                                 cryptoService.toggleKey(function () { });
-                                loginService.logOut(function () {
+                                authService.logOut(function () {
                                     $analytics.eventTrack('Logged Out');
                                     $state.go('home');
                                 });
@@ -68,7 +58,7 @@
                 cancelButtonText: i18nService.cancel
             }, function (confirmed) {
                 if (confirmed) {
-                    loginService.logOut(function () {
+                    authService.logOut(function () {
                         $analytics.eventTrack('Logged Out');
                         $state.go('home');
                     });
@@ -120,27 +110,6 @@
                 chrome.tabs.create({ url: 'https://vault.bitwarden.com' });
             }
         }
-
-        $scope.updateGa = function () {
-            chrome.storage.local.get(constantsService.disableGaKey, function (obj) {
-                if (obj[constantsService.disableGaKey]) {
-                    // enable
-                    obj[constantsService.disableGaKey] = false;
-                }
-                else {
-                    // disable
-                    $analytics.eventTrack('Disabled Google Analytics');
-                    obj[constantsService.disableGaKey] = true;
-                }
-
-                chrome.storage.local.set(obj, function () {
-                    $scope.disableGa = obj[constantsService.disableGaKey];
-                    if (!obj[constantsService.disableGaKey]) {
-                        $analytics.eventTrack('Enabled Google Analytics');
-                    }
-                });
-            });
-        };
 
         $scope.rate = function () {
             $analytics.eventTrack('Rate Extension');
