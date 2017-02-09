@@ -5,14 +5,15 @@ var constantsService = new ConstantsService();
 var utilsService = new UtilsService();
 var cryptoService = new CryptoService(constantsService);
 var tokenService = new TokenService();
-var apiService = new ApiService(tokenService);
+var appIdService = new AppIdService();
+var apiService = new ApiService(tokenService, appIdService, utilsService, logout);
 var userService = new UserService(tokenService, apiService, cryptoService);
-var loginService = new LoginService(cryptoService, userService, apiService);
+var settingsService = new SettingsService(userService);
+var loginService = new LoginService(cryptoService, userService, apiService, settingsService);
 var folderService = new FolderService(cryptoService, userService, apiService);
-var syncService = new SyncService(loginService, folderService, userService, apiService);
+var syncService = new SyncService(loginService, folderService, userService, apiService, settingsService);
 var autofillService = new AutofillService();
 var passwordGenerationService = new PasswordGenerationService();
-var appIdService = new AppIdService();
 
 chrome.commands.onCommand.addListener(function (command) {
     if (command === 'generate_password') {
@@ -27,27 +28,20 @@ chrome.commands.onCommand.addListener(function (command) {
     }
 });
 
-var loadMenuRan = false,
-    loginToAutoFill = null,
+var loginToAutoFill = null,
     pageDetailsToAutoFill = [],
-    autofillTimeout = null;
+    autofillTimeout = null,
+    menuOptionsLoaded = [];
 
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-    if (msg.command === 'loggedOut' || msg.command === 'loggedIn' || msg.command === 'unlocked' || msg.command === 'locked') {
-        if (loadMenuRan) {
-            return;
-        }
-        loadMenuRan = true;
-
+    if (msg.command === 'loggedIn' || msg.command === 'unlocked' || msg.command === 'locked') {
         setIcon();
         refreshBadgeAndMenu();
     }
+    else if (msg.command === 'logout') {
+        logout(msg.expired, function () { });
+    }
     else if (msg.command === 'syncCompleted' && msg.successfully) {
-        if (loadMenuRan) {
-            return;
-        }
-        loadMenuRan = true;
-
         setTimeout(refreshBadgeAndMenu, 2000);
     }
     else if (msg.command === 'bgOpenOverlayPopup') {
@@ -75,7 +69,6 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         saveAddLogin(sender.tab);
     }
     else if (msg.command === 'collectPageDetailsResponse') {
-        // messageCurrentTab('openNotificationBar', { type: 'add', typeData: null });
         if (msg.contentScript) {
             var forms = autofillService.getFormsWithPasswordFields(msg.details);
             messageTab(msg.tabId, 'pageDetails', { details: msg.details, forms: forms });
@@ -123,7 +116,13 @@ if (chrome.runtime.onInstalled) {
     });
 }
 
+var buildingContextMenu = false;
 function buildContextMenu(callback) {
+    if (buildingContextMenu) {
+        return;
+    }
+    buildingContextMenu = true;
+
     chrome.contextMenus.removeAll(function () {
         chrome.contextMenus.create({
             type: 'normal',
@@ -138,6 +137,15 @@ function buildContextMenu(callback) {
                 contexts: ['all'],
                 title: i18nService.autoFill
             }, function () {
+                if (utilsService.isFirefox()) {
+                    // Firefox does not support writing to the clipboard from background
+                    buildingContextMenu = false;
+                    if (callback) {
+                        callback();
+                    }
+                    return;
+                }
+
                 chrome.contextMenus.create({
                     type: 'normal',
                     id: 'copy-username',
@@ -164,6 +172,7 @@ function buildContextMenu(callback) {
                             contexts: ['all'],
                             title: i18nService.generatePasswordCopied
                         }, function () {
+                            buildingContextMenu = false;
                             if (callback) {
                                 callback();
                             }
@@ -176,7 +185,6 @@ function buildContextMenu(callback) {
 }
 
 chrome.tabs.onActivated.addListener(function (activeInfo) {
-    checkLoginsToAdd();
     refreshBadgeAndMenu();
 });
 
@@ -200,8 +208,16 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     refreshBadgeAndMenu();
 });
 
+chrome.windows.onFocusChanged.addListener(function (windowId) {
+    if (windowId === null || windowId < 0) {
+        return;
+    }
+
+    refreshBadgeAndMenu();
+});
+
 function refreshBadgeAndMenu() {
-    chrome.tabs.query({ active: true }, function (tabs) {
+    chrome.tabs.query({ active: true, windowId: chrome.windows.WINDOW_ID_CURRENT }, function (tabs) {
         var tab = null;
         if (tabs.length > 0) {
             tab = tabs[0];
@@ -213,7 +229,7 @@ function refreshBadgeAndMenu() {
 
         buildContextMenu(function () {
             loadMenuAndUpdateBadge(tab.url, tab.id, true);
-            onUpdatedRan = onReplacedRan = loadMenuRan = false;
+            onUpdatedRan = onReplacedRan = false;
         });
     });
 }
@@ -230,10 +246,12 @@ function loadMenuAndUpdateBadge(url, tabId, loadContextMenuOptions) {
 
     chrome.browserAction.setBadgeBackgroundColor({ color: '#294e5f' });
 
+    menuOptionsLoaded = [];
     loginService.getAllDecryptedForDomain(tabDomain).then(function (logins) {
         sortLogins(logins);
-        for (var i = 0; i < logins.length; i++) {
-            if (loadContextMenuOptions) {
+
+        if (loadContextMenuOptions) {
+            for (var i = 0; i < logins.length; i++) {
                 loadLoginContextMenuOptions(logins[i]);
             }
         }
@@ -331,7 +349,7 @@ function messageCurrentTab(command, data) {
     });
 }
 
-function messageTab(tabId, command, data) {
+function messageTab(tabId, command, data, callback) {
     if (!tabId) {
         return;
     }
@@ -344,11 +362,16 @@ function messageTab(tabId, command, data) {
         obj['data'] = data;
     }
 
-    chrome.tabs.sendMessage(tabId, obj);
+    chrome.tabs.sendMessage(tabId, obj, function () {
+        if (callback) {
+            callback();
+        }
+    });
 }
 
 function collectPageDetailsForContentScript(tab) {
-    chrome.tabs.sendMessage(tab.id, { command: 'collectPageDetails', tabId: tab.id, contentScript: true }, function () { });
+    chrome.tabs.sendMessage(tab.id, { command: 'collectPageDetails', tabId: tab.id, contentScript: true }, function () {
+    });
 }
 
 function addLogin(login, tab) {
@@ -374,6 +397,7 @@ function addLogin(login, tab) {
                 username: login.username,
                 password: login.password,
                 name: loginDomain,
+                domain: loginDomain,
                 uri: login.url,
                 tabId: tab.id,
                 expires: new Date((new Date()).getTime() + 30 * 60000) // 30 minutes
@@ -387,7 +411,7 @@ cleanupLoginsToAdd();
 setInterval(cleanupLoginsToAdd, 2 * 60 * 1000); // check every 2 minutes
 function cleanupLoginsToAdd() {
     var now = new Date();
-    for (var i = loginsToAdd.length - 1; i >= 0 ; i--) {
+    for (var i = loginsToAdd.length - 1; i >= 0; i--) {
         if (loginsToAdd[i].expires < now) {
             loginsToAdd.splice(i, 1);
         }
@@ -395,7 +419,7 @@ function cleanupLoginsToAdd() {
 }
 
 function removeAddLogin(tab) {
-    for (var i = loginsToAdd.length - 1; i >= 0 ; i--) {
+    for (var i = loginsToAdd.length - 1; i >= 0; i--) {
         if (loginsToAdd[i].tabId === tab.id) {
             loginsToAdd.splice(i, 1);
         }
@@ -403,35 +427,42 @@ function removeAddLogin(tab) {
 }
 
 function saveAddLogin(tab) {
-    for (var i = loginsToAdd.length - 1; i >= 0 ; i--) {
+    for (var i = loginsToAdd.length - 1; i >= 0; i--) {
         if (loginsToAdd[i].tabId === tab.id) {
             var loginToAdd = loginsToAdd[i];
-            loginsToAdd.splice(i, 1);
-            loginService.encrypt({
-                id: null,
-                folderId: null,
-                favorite: false,
-                name: loginToAdd.name,
-                uri: loginToAdd.uri,
-                username: loginToAdd.username,
-                password: loginToAdd.password,
-                notes: null
-            }).then(function (loginModel) {
-                var login = new Login(loginModel, true);
-                loginService.saveWithServer(login).then(function (login) {
-                    ga('send', {
-                        hitType: 'event',
-                        eventAction: 'Added Login from Notification Bar'
+
+            var tabDomain = tldjs.getDomain(tab.url);
+            if (tabDomain && tabDomain === loginToAdd.domain) {
+                loginsToAdd.splice(i, 1);
+                loginService.encrypt({
+                    id: null,
+                    folderId: null,
+                    favorite: false,
+                    name: loginToAdd.name,
+                    uri: loginToAdd.uri,
+                    username: loginToAdd.username,
+                    password: loginToAdd.password,
+                    notes: null
+                }).then(function (loginModel) {
+                    var login = new Login(loginModel, true);
+                    loginService.saveWithServer(login).then(function (login) {
+                        ga('send', {
+                            hitType: 'event',
+                            eventAction: 'Added Login from Notification Bar'
+                        });
                     });
                 });
-            });
-            messageTab(tab.id, 'closeNotificationBar');
+                messageTab(tab.id, 'closeNotificationBar');
+            }
         }
     }
 }
 
-function checkLoginsToAdd(tab) {
+function checkLoginsToAdd(tab, callback) {
     if (!loginsToAdd.length) {
+        if (callback) {
+            callback();
+        }
         return;
     }
 
@@ -449,18 +480,29 @@ function checkLoginsToAdd(tab) {
 
     function check() {
         if (!tab) {
+            if (callback) {
+                callback();
+            }
             return;
         }
 
         var tabDomain = tldjs.getDomain(tab.url);
         if (!tabDomain) {
+            if (callback) {
+                callback();
+            }
             return;
         }
 
         for (var i = 0; i < loginsToAdd.length; i++) {
-            // loginsToAdd[x].name is the domain here
-            if (loginsToAdd[i].tabId === tab.id && loginsToAdd[i].name === tabDomain) {
-                messageTab(tab.id, 'openNotificationBar', { type: 'add' });
+            if (loginsToAdd[i].tabId === tab.id && loginsToAdd[i].domain === tabDomain) {
+                messageTab(tab.id, 'openNotificationBar', {
+                    type: 'add'
+                }, function () {
+                    if (callback) {
+                        callback();
+                    }
+                });
                 break;
             }
         }
@@ -482,7 +524,8 @@ function startAutofillPage(login) {
             return;
         }
 
-        chrome.tabs.sendMessage(tabId, { command: 'collectPageDetails', tabId: tabId }, function () { });
+        chrome.tabs.sendMessage(tabId, { command: 'collectPageDetails', tabId: tabId }, function () {
+        });
     });
 }
 
@@ -552,6 +595,11 @@ function loadNoLoginsContextMenuOptions(noLoginsMessage) {
 }
 
 function loadContextMenuOptions(title, idSuffix, login) {
+    if (menuOptionsLoaded.indexOf(idSuffix) > -1) {
+        return;
+    }
+    menuOptionsLoaded.push(idSuffix);
+
     if (!login || (login.password && login.password !== '')) {
         chrome.contextMenus.create({
             type: 'normal',
@@ -560,6 +608,11 @@ function loadContextMenuOptions(title, idSuffix, login) {
             contexts: ['all'],
             title: title
         });
+    }
+
+    if (utilsService.isFirefox()) {
+        // Firefox does not support writing to the clipboard from background
+        return;
     }
 
     if (!login || (login.username && login.username !== '')) {
@@ -581,6 +634,34 @@ function loadContextMenuOptions(title, idSuffix, login) {
             title: title
         });
     }
+}
+
+// TODO: Fix callback hell by moving to promises
+function logout(expired, callback) {
+    userService.getUserId(function (userId) {
+        syncService.setLastSync(new Date(0), function () {
+            settingsService.clear(function () {
+                tokenService.clearToken(function () {
+                    cryptoService.clearKey(function () {
+                        cryptoService.clearKeyHash(function () {
+                            userService.clearUserIdAndEmail(function () {
+                                loginService.clear(userId, function () {
+                                    folderService.clear(userId, function () {
+                                        chrome.runtime.sendMessage({
+                                            command: 'doneLoggingOut', expired: expired
+                                        });
+                                        setIcon();
+                                        refreshBadgeAndMenu();
+                                        callback();
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
 }
 
 function copyToClipboard(text) {
@@ -617,10 +698,12 @@ setInterval(fullSync, 5 * 60 * 1000); // check every 5 minutes
 var syncInternal = 6 * 60 * 60 * 1000; // 6 hours
 
 function fullSync(override) {
+    override = override || false;
     syncService.getLastSync(function (lastSync) {
         var now = new Date();
         if (override || !lastSync || (now - lastSync) >= syncInternal) {
-            syncService.fullSync(function () { });
+            syncService.fullSync(override || false, function () {
+            });
         }
     });
 }

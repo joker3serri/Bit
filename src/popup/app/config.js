@@ -49,7 +49,7 @@
                 controller: 'accountsLoginTwoFactorController',
                 templateUrl: 'app/accounts/views/accountsLoginTwoFactor.html',
                 data: { authorize: false },
-                params: { animation: null }
+                params: { animation: null, email: null, masterPassword: null }
             })
             .state('register', {
                 url: '/register',
@@ -190,42 +190,38 @@
                 params: { animation: null }
             });
     })
-    .run(function ($rootScope, userService, authService, cryptoService, tokenService, $state, constantsService, stateService) {
+    .run(function ($rootScope, userService, cryptoService, tokenService, $state, constantsService, stateService) {
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
             if ($state.current.name.indexOf('tabs.') > -1 && toState.name.indexOf('tabs.') > -1) {
                 stateService.purgeState();
             }
 
             cryptoService.getKey(false, function (key) {
-                tokenService.getToken(function (token) {
-                    userService.isAuthenticated(function (isAuthenticated) {
-                        if (isAuthenticated) {
-                            var obj = {};
-                            obj[constantsService.lastActiveKey] = (new Date()).getTime();
-                            chrome.storage.local.set(obj, function () { });
-                        }
+                userService.isAuthenticated(function (isAuthenticated) {
+                    if (isAuthenticated) {
+                        var obj = {};
+                        obj[constantsService.lastActiveKey] = (new Date()).getTime();
+                        chrome.storage.local.set(obj, function () { });
+                    }
 
-                        if (!toState.data || !toState.data.authorize) {
-                            if (isAuthenticated && !tokenService.isTokenExpired(token)) {
-                                event.preventDefault();
-                                if (!key) {
-                                    $state.go('lock');
-                                }
-                                else {
-                                    $state.go('tabs.current');
-                                }
-                            }
-
-                            return;
-                        }
-
-                        if (!isAuthenticated || tokenService.isTokenExpired(token)) {
+                    if (!toState.data || !toState.data.authorize) {
+                        if (isAuthenticated && !tokenService.isTokenExpired()) {
                             event.preventDefault();
-                            authService.logOut(function () {
-                                $state.go('home');
-                            });
+                            if (!key) {
+                                $state.go('lock');
+                            }
+                            else {
+                                $state.go('tabs.current');
+                            }
                         }
-                    });
+
+                        return;
+                    }
+
+                    if (!isAuthenticated || tokenService.isTokenExpired()) {
+                        event.preventDefault();
+                        chrome.runtime.sendMessage({ command: 'logout' });
+                    }
                 });
             });
         });

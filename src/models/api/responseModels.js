@@ -38,22 +38,31 @@ var ProfileResponse = function (response) {
     this.twoFactorEnabled = response.TwoFactorEnabled;
 };
 
-var TokenResponse = function (response) {
-    this.token = response.Token;
+var IdentityTokenResponse = function (response) {
+    this.accessToken = response.access_token;
+    this.expiresIn = response.expires_in;
+    this.refreshToken = response.refresh_token;
+    this.tokenType = response.token_type;
 
-    if (response.Profile) {
-        this.profile = new ProfileResponse(response.Profile);
-    }
+    // TODO: extras
 };
 
 var ListResponse = function (data) {
     this.data = data;
 };
 
-var ErrorResponse = function (response) {
-    if (response.responseJSON) {
-        this.message = response.responseJSON.Message;
-        this.validationErrors = response.responseJSON.ValidationErrors;
+var ErrorResponse = function (response, identityResponse) {
+    var errorModel = null;
+    if (identityResponse && identityResponse === true && response.responseJSON && response.responseJSON.ErrorModel) {
+        errorModel = response.responseJSON.ErrorModel;
+    }
+    else if (response.responseJSON) {
+        errorModel = response.responseJSON;
+    }
+
+    if (errorModel) {
+        this.message = errorModel.Message;
+        this.validationErrors = errorModel.ValidationErrors;
     }
     this.statusCode = response.status;
 };
@@ -71,8 +80,27 @@ var CipherHistoryResponse = function (response) {
 
     var revised = response.Revised;
     for (var i = 0; i < revised.length; i++) {
-        revised.push(new CipherResponse(revised[i]));
+        this.revised.push(new CipherResponse(revised[i]));
     }
 
     this.deleted = response.Deleted;
+};
+
+var DomainsResponse = function (response) {
+    var GlobalDomainResponse = function (response) {
+        this.type = response.Type;
+        this.domains = response.Domains;
+        this.excluded = response.Excluded;
+    };
+
+    this.equivalentDomains = response.EquivalentDomains;
+    this.globalEquivalentDomains = [];
+
+    var globalEquivalentDomains = response.GlobalEquivalentDomains;
+    if (!globalEquivalentDomains) {
+        return;
+    }
+    for (var i = 0; i < globalEquivalentDomains.length; i++) {
+        this.globalEquivalentDomains.push(new GlobalDomainResponse(globalEquivalentDomains[i]));
+    }
 };

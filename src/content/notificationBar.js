@@ -3,18 +3,19 @@
         formData = [],
         barType = null;
 
-    chrome.storage.local.get('disableAddLoginNotification', function (obj) {
-        if (!obj || !obj['disableAddLoginNotification']) {
-            chrome.runtime.sendMessage({
-                command: 'bgCollectPageDetails'
-            });
-        }
-    });
+    if (window.location.hostname.indexOf('bitwarden.com') === -1) {
+        chrome.storage.local.get('disableAddLoginNotification', function (obj) {
+            if (!obj || !obj['disableAddLoginNotification']) {
+                chrome.runtime.sendMessage({
+                    command: 'bgCollectPageDetails'
+                });
+            }
+        });
+    }
 
     chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         if (msg.command === 'openNotificationBar') {
-            closeBar(false);
-            openBar(msg.data.type, msg.data.typeData);
+            closeExistingAndOpenBar(msg.data.type, msg.data.typeData);
             sendResponse();
             return true;
         }
@@ -50,39 +51,63 @@
             }
 
             if (form) {
-                forms[i].formElement = form;
-                formData.push(forms[i]);
+                var formDataObj = {
+                    data: forms[i],
+                    formEl: form,
+                    usernameEl: null,
+                    passwordEl: null
+                };
+                locateFields(formDataObj);
+                formData.push(formDataObj);
                 form.addEventListener('submit', formSubmitted, false);
             }
         }
     }
 
+    function locateFields(formDataObj) {
+        var passwordId = formDataObj.data.password ? formDataObj.data.password.htmlID : null,
+            usernameId = formDataObj.data.username ? formDataObj.data.username.htmlID : null,
+            passwordName = formDataObj.data.password ? formDataObj.data.password.htmlName : null,
+            usernameName = formDataObj.data.username ? formDataObj.data.username.htmlName : null,
+            inputs = document.getElementsByTagName('input');
+
+        if (passwordId && passwordId !== '') {
+            formDataObj.passwordEl = formDataObj.formEl.querySelector('#' + passwordId);
+        }
+        if (!formDataObj.passwordEl && passwordName !== '') {
+            formDataObj.passwordEl = formDataObj.formEl.querySelector('input[name="' + passwordName + '"]');
+        }
+        if (!formDataObj.passwordEl && formDataObj.passwordEl) {
+            formDataObj.passwordEl = inputs[formDataObj.data.password.elementNumber];
+            if (formDataObj.passwordEl && formDataObj.passwordEl.type !== 'password') {
+                formDataObj.passwordEl = null;
+            }
+        }
+        if (!formDataObj.passwordEl) {
+            formDataObj.passwordEl = formDataObj.formEl.querySelector('input[type="password"]');
+        }
+
+        if (usernameId && usernameId !== '') {
+            formDataObj.usernameEl = formDataObj.formEl.querySelector('#' + usernameId);
+        }
+        if (!formDataObj.usernameEl && usernameName !== '') {
+            formDataObj.usernameEl = formDataObj.formEl.querySelector('input[name="' + usernameName + '"]');
+        }
+        if (!formDataObj.usernameEl && formDataObj.data.username) {
+            formDataObj.usernameEl = inputs[formDataObj.data.username.elementNumber];
+        }
+    }
+
     function formSubmitted(e) {
         for (var i = 0; i < formData.length; i++) {
-            if (formData[i].formElement === e.target) {
-                var password = null,
-                    username = null,
-                    passwordId = formData[i].password ? formData[i].password.htmlID : null,
-                    usernameId = formData[i].username ? formData[i].username.htmlID : null,
-                    inputs = document.getElementsByTagName('input');
-
-                if (passwordId && passwordId !== '') {
-                    password = document.getElementById(passwordId);
-                }
-                else if (formData[i].password) {
-                    password = inputs[formData[i].password.elementNumber];
-                }
-
-                if (usernameId && usernameId !== '') {
-                    username = document.getElementById(usernameId);
-                }
-                else if (formData[i].username) {
-                    username = inputs[formData[i].username.elementNumber];
+            if (formData[i].formEl === e.target) {
+                if (!formData[i].usernameEl || !formData[i].passwordEl) {
+                    break;
                 }
 
                 var login = {
-                    username: username.value,
-                    password: password.value,
+                    username: formData[i].usernameEl.value,
+                    password: formData[i].passwordEl.value,
                     url: document.URL
                 };
 
@@ -97,9 +122,8 @@
         }
     }
 
-    function openBar(type, typeData) {
+    function closeExistingAndOpenBar(type, typeData) {
         var barPage = 'notification/bar.html';
-        barType = type;
         switch (type) {
             case 'info':
                 barPage = barPage + '?info=' + typeData.text;
@@ -120,6 +144,18 @@
                 break;
         }
 
+        var frame = document.getElementById('bit-notification-bar-iframe');
+        if (frame && frame.src.indexOf(barPage) >= 0) {
+            return;
+        }
+
+        closeBar(false);
+        openBar(type, barPage);
+    }
+
+    function openBar(type, barPage) {
+        barType = type;
+
         if (!document.body) {
             return;
         }
@@ -127,6 +163,7 @@
         var iframe = document.createElement('iframe');
         iframe.src = chrome.extension.getURL(barPage);
         iframe.style.cssText = 'height: 42px; width: 100%; border: 0;';
+        iframe.id = 'bit-notification-bar-iframe';
 
         var frameDiv = document.createElement('div');
         frameDiv.id = 'bit-notification-bar';

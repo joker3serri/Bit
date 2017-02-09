@@ -1,15 +1,16 @@
-﻿function SyncService(loginService, folderService, userService, apiService) {
+﻿function SyncService(loginService, folderService, userService, apiService, settingsService) {
     this.loginService = loginService;
     this.folderService = folderService;
     this.userService = userService;
     this.apiService = apiService;
+    this.settingsService = settingsService;
     this.syncInProgress = false;
 
     initSyncService();
 };
 
 function initSyncService() {
-    SyncService.prototype.fullSync = function (callback) {
+    SyncService.prototype.fullSync = function (forceSync, callback) {
         if (!callback || typeof callback !== 'function') {
             throw 'callback function required';
         }
@@ -26,40 +27,85 @@ function initSyncService() {
 
             self.userService.getUserId(function (userId) {
                 var now = new Date();
-                var ciphers = self.apiService.getCiphers(function (response) {
-                    var logins = {};
-                    var folders = {};
-
-                    for (var i = 0; i < response.data.length; i++) {
-                        var data = response.data[i];
-                        if (data.type === 1) {
-                            logins[data.id] = new LoginData(data, userId);
-                        }
-                        else if (data.type === 0) {
-                            folders[data.id] = new FolderData(data, userId);
-                        }
+                needsSyncing(self, forceSync, function (needsSync) {
+                    if (!needsSync) {
+                        self.syncCompleted(false);
+                        callback(false);
+                        return;
                     }
 
-                    self.folderService.replace(folders, function () {
-                        self.loginService.replace(logins, function () {
-                            self.setLastSync(now, function () {
-                                self.syncCompleted(true);
-                                callback(true);
-                            });
+                    syncVault(userId).then(function () {
+                        return syncSettings(userId);
+                    }).then(function () {
+                        self.setLastSync(new Date(), function () {
+                            self.syncCompleted(true);
+                            callback(true);
                         });
+                    }, function () {
+                        self.syncCompleted(false);
+                        callback(false);
                     });
-                }, handleError);
+                });
             });
         });
     };
 
-    SyncService.prototype.incrementalSync = function (callback) {
+    function needsSyncing(self, forceSync, callback) {
         if (!callback || typeof callback !== 'function') {
             throw 'callback function required';
         }
 
-        // TODO
-    };
+        if (forceSync) {
+            callback(true);
+            return;
+        }
+
+        self.getLastSync(function (lastSync) {
+            var now = new Date();
+
+            self.apiService.getAccountRevisionDate(function (response) {
+                var accountRevisionDate = new Date(response);
+                if (lastSync && accountRevisionDate <= lastSync) {
+                    callback(false);
+                    return;
+                }
+
+                callback(true);
+            });
+        });
+    }
+
+    function syncVault(userId) {
+        var deferred = Q.defer();
+        var self = this;
+
+        self.apiService.getCiphers(function (response) {
+            var logins = {};
+            var folders = {};
+
+            for (var i = 0; i < response.data.length; i++) {
+                var data = response.data[i];
+                if (data.type === 1) {
+                    logins[data.id] = new LoginData(data, userId);
+                }
+                else if (data.type === 0) {
+                    folders[data.id] = new FolderData(data, userId);
+                }
+            }
+
+            self.folderService.replace(folders, function () {
+                self.loginService.replace(logins, function () {
+                    deferred.resolve();
+                    return;
+                });
+            });
+        }, function () {
+            deferred.reject();
+            return;
+        });
+
+        return deferred.promise
+    }
 
     function syncFolders(serverFolders, callback) {
         var self = this;
@@ -129,6 +175,35 @@ function initSyncService() {
         });
     }
 
+    function syncSettings(userId) {
+        var deferred = Q.defer();
+        var self = this;
+
+        var ciphers = self.apiService.getIncludedDomains(function (response) {
+            var eqDomains = [];
+            if (response && response.equivalentDomains) {
+                eqDomains = eqDomains.concat(response.equivalentDomains);
+            }
+            if (response && response.globalEquivalentDomains) {
+                for (var i = 0; i < response.globalEquivalentDomains.length; i++) {
+                    if (response.globalEquivalentDomains[i].domains.length) {
+                        eqDomains.push(response.globalEquivalentDomains[i].domains);
+                    }
+                }
+            }
+
+            self.settingsService.setEquivalentDomains(eqDomains, function () {
+                deferred.resolve();
+                return;
+            });
+        }, function () {
+            deferred.reject();
+            return;
+        });
+
+        return deferred.promise;
+    };
+
     SyncService.prototype.getLastSync = function (callback) {
         if (!callback || typeof callback !== 'function') {
             throw 'callback function required';
@@ -153,10 +228,6 @@ function initSyncService() {
             throw 'callback function required';
         }
 
-        if (!(date instanceof Date)) {
-            throw 'date must be a Date object';
-        }
-
         this.userService.getUserId(function (userId) {
             var lastSyncKey = 'lastSync_' + userId;
 
@@ -178,9 +249,4 @@ function initSyncService() {
         this.syncInProgress = false;
         chrome.runtime.sendMessage({ command: 'syncCompleted', successfully: successfully });
     };
-
-    function handleError() {
-        syncCompleted(false);
-        // TODO: check for unauth or forbidden and logout
-    }
 };

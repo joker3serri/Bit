@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "__MSG_extName__",
   "short_name": "__MSG_appName__",
-  "version": "1.7.0",
+  "version": "1.9.2",
   "description": "__MSG_extDesc__",
   "default_locale": "en",
   "author": "8bit Solutions LLC",
@@ -31,11 +31,9 @@
   "background": {
     "scripts": [
       "lib/jquery/jquery.js",
-      "lib/sjcl/sjcl.js",
-      "lib/sjcl/cbc.js",
-      "lib/sjcl/bitArray.js",
       "lib/q/q.js",
       "lib/tldjs/tld.js",
+      "lib/forge/forge.js",
       "models/api/requestModels.js",
       "models/api/responseModels.js",
       "models/dataModels.js",
@@ -47,6 +45,7 @@
       "services/tokenService.js",
       "services/apiService.js",
       "services/userService.js",
+      "services/settingsService.js",
       "services/folderService.js",
       "services/loginService.js",
       "services/syncService.js",
@@ -71,6 +70,7 @@
     "contextMenus",
     "storage",
     "unlimitedStorage",
+    "clipboardWrite",
     "http://*/*",
     "https://*/*"
   ],

@@ -15,7 +15,7 @@ angular
         $scope.loaded = false;
 
         $scope.$on('$viewContentLoaded', function () {
-            $timeout(loadVault, 0);
+            $timeout(loadVault, 100);
         });
 
         function loadVault() {
@@ -41,17 +41,9 @@ angular
                     canAutofill = true;
                 });
 
-                var filteredLogins = [];
-                var loginPromise = $q.when(loginService.getAllDecrypted());
-                loginPromise.then(function (logins) {
-                    for (var i = 0; i < logins.length; i++) {
-                        if (logins[i].domain && logins[i].domain === domain) {
-                            filteredLogins.push(logins[i]);
-                        }
-                    }
-
+                $q.when(loginService.getAllDecryptedForDomain(domain)).then(function (logins) {
                     $scope.loaded = true;
-                    $scope.logins = filteredLogins;
+                    $scope.logins = logins;
                 });
             });
         }

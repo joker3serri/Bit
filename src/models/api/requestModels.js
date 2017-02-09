@@ -12,13 +12,39 @@ var FolderRequest = function (folder) {
     this.name = folder.name ? folder.name.encryptedString : null;
 };
 
-var TokenRequest = function (email, masterPasswordHash, device) {
+var TokenRequest = function (email, masterPasswordHash, token, device) {
     this.email = email;
     this.masterPasswordHash = masterPasswordHash;
-    if (device) {
-        this.device = new DeviceRequest(device);
-    }
+    this.token = token;
+    this.provider = 0; // 0 = Authenticator
     this.device = null;
+    if (device) {
+        this.device = device;
+    }
+
+    this.toIdentityToken = function () {
+        var obj = {
+            grant_type: 'password',
+            username: this.email,
+            password: this.masterPasswordHash,
+            scope: 'api offline_access',
+            client_id: 'browser'
+        };
+
+        if (this.device) {
+            obj.deviceType = this.device.type;
+            obj.deviceIdentifier = this.device.identifier;
+            obj.deviceName = this.device.name;
+            obj.devicePushToken = this.device.pushToken;
+        }
+
+        if (this.token && this.provider != null && (typeof this.provider !== 'undefined')) {
+            obj.twoFactorToken = this.token;
+            obj.twoFactorProvider = this.provider;
+        }
+
+        return obj;
+    };
 };
 
 var RegisterRequest = function (email, masterPasswordHash, masterPasswordHint) {
@@ -32,19 +58,13 @@ var PasswordHintRequest = function (email) {
     this.email = email;
 };
 
-var TokenTwoFactorRequest = function (code) {
-    this.code = code;
-    this.provider = "Authenticator";
-    this.device = null;
-};
-
 var DeviceTokenRequest = function () {
     this.pushToken = null;
 };
 
-var DeviceRequest = function () {
-    this.type = null;
-    this.name = null;
-    this.identifier = null;
+var DeviceRequest = function (appId, utilsService) {
+    this.type = utilsService.getDeviceType();
+    this.name = utilsService.getBrowser();
+    this.identifier = appId;
     this.pushToken = null;
 };
