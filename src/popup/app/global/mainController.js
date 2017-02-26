@@ -1,7 +1,7 @@
 angular
     .module('bit.global')
 
-    .controller('mainController', function ($scope, $state, loginService, toastr) {
+    .controller('mainController', function ($scope, $state, authService, toastr, i18nService) {
         var self = this;
         self.currentYear = new Date().getFullYear();
         self.animation = '';
@@ -24,9 +24,16 @@ angular
                 $scope.$broadcast('syncStarted');
             }
             else if (msg.command === 'logout') {
-                loginService.logOut(function () {
-                    toastr.warning('Your login session has expired.', 'Logged out');
+                authService.logOut(function () {
+                    toastr.warning(i18nService.loginExpired, i18nService.loggedOut);
                     $state.go('home');
+                });
+            }
+            else if (msg.command === 'collectPageDetailsResponse') {
+                $scope.$broadcast('collectPageDetailsResponse', {
+                    frameId: sender.frameId,
+                    tabId: msg.tabId,
+                    details: msg.details
                 });
             }
         });

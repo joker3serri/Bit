@@ -1,22 +1,27 @@
 ﻿angular
     .module('bit.vault')
 
-    .controller('vaultController', function ($scope, $rootScope, siteService, folderService, $q, $state, $stateParams, toastr,
-        syncService, utilsService, $analytics, i18nService) {
+    .controller('vaultController', function ($scope, $rootScope, loginService, folderService, $q, $state, $stateParams, toastr,
+        syncService, utilsService, $analytics, i18nService, stateService, $timeout) {
+        var stateKey = 'vault',
+            state = stateService.getState(stateKey) || {};
+
         $scope.i18n = i18nService;
         $('#search').focus();
 
         var syncOnLoad = $stateParams.syncOnLoad;
         if (syncOnLoad) {
-            setTimeout(function () {
-                syncService.fullSync(function () { });
-            }, utilsService.isFirefox() ? 500 : 0);
+            $scope.$on('$viewContentLoaded', function () {
+                $timeout(function () {
+                    syncService.fullSync(function () { });
+                }, 0);
+            });
         }
 
         var delayLoad = true;
         $scope.loaded = true;
-        if (!$rootScope.vaultSites) {
-            $rootScope.vaultSites = [];
+        if (!$rootScope.vaultLogins) {
+            $rootScope.vaultLogins = [];
             delayLoad = false;
         }
         if (!$rootScope.vaultFolders) {
@@ -26,8 +31,8 @@
         }
 
         if (delayLoad) {
-            setTimeout(setScrollY, 100);
-            setTimeout(loadVault, 1000);
+            $timeout(setScrollY, 100);
+            $timeout(loadVault, 1000);
         }
         else if (!syncOnLoad) {
             loadVault();
@@ -35,7 +40,7 @@
 
         function loadVault() {
             var decFolders = [];
-            var decSites = [];
+            var decLogins = [];
             var promises = [];
 
             var folderPromise = $q.when(folderService.getAllDecrypted());
@@ -44,16 +49,28 @@
             });
             promises.push(folderPromise);
 
-            var sitePromise = $q.when(siteService.getAllDecrypted());
-            sitePromise.then(function (sites) {
-                decSites = sites;
+            var loginPromise = $q.when(loginService.getAllDecrypted());
+            loginPromise.then(function (logins) {
+                decLogins = logins;
             });
-            promises.push(sitePromise);
+            promises.push(loginPromise);
 
             $q.all(promises).then(function () {
                 $scope.loaded = true;
                 $rootScope.vaultFolders = decFolders;
-                $rootScope.vaultSites = decSites;
+                $rootScope.vaultLogins = decLogins;
+
+                // compute item count for each folder
+                for (var i = 0; i < decFolders.length; i++) {
+                    var itemCount = 0;
+                    for (var j = 0; j < decLogins.length; j++) {
+                        if (decLogins[j].folderId === decFolders[i].id) {
+                            itemCount++;
+                        }
+                    }
+
+                    $rootScope.vaultFolders[i].itemCount = itemCount;
+                }
 
                 if (!delayLoad) {
                     setScrollY();
@@ -62,8 +79,8 @@
         }
 
         $scope.searchText = null;
-        if ($stateParams.searchText) {
-            $scope.searchText = $stateParams.searchText;
+        if (state.searchText) {
+            $scope.searchText = state.searchText;
         }
 
         $scope.folderSort = function (item) {
@@ -74,38 +91,51 @@
             return item.name.toLowerCase();
         };
 
-        $scope.searchSites = function () {
-            if (!$scope.searchText) {
+        $scope.searchLogins = function () {
+            if (!$scope.searchText || $scope.searchText.length < 2) {
                 return;
             }
 
-            return function (site) {
-                var searchTerm = $scope.searchText.toLowerCase();
-                if (site.name && site.name.toLowerCase().indexOf(searchTerm) !== -1) {
-                    return true;
-                }
-                if (site.username && site.username.toLowerCase().indexOf(searchTerm) !== -1) {
-                    return true;
-                }
-
-                return false;
-            };
+            return searchLogin;
         };
 
-        $scope.addSite = function () {
-            $state.go('addSite', {
+        function searchLogin(login) {
+            var searchTerm = $scope.searchText.toLowerCase();
+            if (login.name && login.name.toLowerCase().indexOf(searchTerm) !== -1) {
+                return true;
+            }
+            if (login.username && login.username.toLowerCase().indexOf(searchTerm) !== -1) {
+                return true;
+            }
+            if (login.uri && login.uri.toLowerCase().indexOf(searchTerm) !== -1) {
+                return true;
+            }
+
+            return false;
+        }
+
+        $scope.addLogin = function () {
+            storeState();
+            $state.go('addLogin', {
                 animation: 'in-slide-up',
-                returnScrollY: getScrollY(),
-                returnSearchText: $scope.searchText
+                from: 'vault'
             });
         };
 
-        $scope.viewSite = function (site) {
-            $state.go('viewSite', {
-                siteId: site.id,
+        $scope.viewLogin = function (login) {
+            storeState();
+            $state.go('viewLogin', {
+                loginId: login.id,
                 animation: 'in-slide-up',
-                returnScrollY: getScrollY(),
-                returnSearchText: $scope.searchText
+                from: 'vault'
+            });
+        };
+
+        $scope.viewFolder = function (folder) {
+            storeState();
+            $state.go('viewFolder', {
+                folderId: folder.id || '0',
+                animation: 'in-slide-left'
             });
         };
 
@@ -115,13 +145,20 @@
 
         $scope.clipboardSuccess = function (e, type) {
             e.clearSelection();
-            $analytics.eventTrack('Copied ' + type);
-            toastr.info(type + ' copied!');
+            $analytics.eventTrack('Copied ' + (type === i18nService.username ? 'Username' : 'Password'));
+            toastr.info(type + i18nService.valueCopied);
         };
 
         $scope.$on('syncCompleted', function (event, successfully) {
-            setTimeout(loadVault, 500);
+            $timeout(loadVault, 500);
         });
+
+        function storeState() {
+            stateService.saveState(stateKey, {
+                scrollY: getScrollY(),
+                searchText: $scope.searchText
+            });
+        }
 
         function getScrollY() {
             var content = document.getElementsByClassName('content')[0];
@@ -129,9 +166,9 @@
         }
 
         function setScrollY() {
-            if ($stateParams.scrollY) {
+            if (state.scrollY) {
                 var content = document.getElementsByClassName('content')[0];
-                content.scrollTop = $stateParams.scrollY;
+                content.scrollTop = state.scrollY;
             }
         }
     });

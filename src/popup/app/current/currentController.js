@@ -1,19 +1,23 @@
 angular
     .module('bit.current')
 
-    .controller('currentController', function ($scope, siteService, tldjs, toastr, $q, $window, $state, autofillService,
-        $analytics, i18nService) {
+    .controller('currentController', function ($scope, loginService, tldjs, toastr, $q, $window, $state, $timeout,
+        autofillService, $analytics, i18nService) {
         $scope.i18n = i18nService;
 
-        var pageDetails = null,
+        var pageDetails = [],
             tabId = null,
             url = null,
             domain = null,
             canAutofill = false;
 
+        $scope.logins = [];
         $scope.loaded = false;
 
-        loadVault();
+        $scope.$on('$viewContentLoaded', function () {
+            $timeout(loadVault, 0);
+        });
+
         function loadVault() {
             chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 if (tabs.length > 0) {
@@ -22,32 +26,32 @@ angular
                 }
                 else {
                     $scope.loaded = true;
+                    $scope.$apply();
                     return;
                 }
 
                 domain = tldjs.getDomain(url);
-                $scope.sites = [];
                 if (!domain) {
                     $scope.loaded = true;
+                    $scope.$apply();
                     return;
                 }
 
-                chrome.tabs.sendMessage(tabId, { command: 'collectPageDetails' }, function (details) {
-                    pageDetails = details;
+                chrome.tabs.sendMessage(tabId, { command: 'collectPageDetails', tabId: tabId }, function () {
                     canAutofill = true;
                 });
 
-                var filteredSites = [];
-                var sitePromise = $q.when(siteService.getAllDecrypted());
-                sitePromise.then(function (sites) {
-                    for (var i = 0; i < sites.length; i++) {
-                        if (sites[i].domain && sites[i].domain === domain) {
-                            filteredSites.push(sites[i]);
+                var filteredLogins = [];
+                var loginPromise = $q.when(loginService.getAllDecrypted());
+                loginPromise.then(function (logins) {
+                    for (var i = 0; i < logins.length; i++) {
+                        if (logins[i].domain && logins[i].domain === domain) {
+                            filteredLogins.push(logins[i]);
                         }
                     }
 
                     $scope.loaded = true;
-                    $scope.sites = filteredSites;
+                    $scope.logins = filteredLogins;
                 });
             });
         }
@@ -58,43 +62,65 @@ angular
 
         $scope.clipboardSuccess = function (e, type) {
             e.clearSelection();
-            toastr.info(type + ' copied!');
-            $analytics.eventTrack('Copied ' + type);
+            toastr.info(type + i18nService.valueCopied);
+            $analytics.eventTrack('Copied ' + (type === i18nService.username ? 'Username' : 'Password'));
         };
 
-        $scope.addSite = function () {
-            $state.go('addSite', {
+        $scope.addLogin = function () {
+            $state.go('addLogin', {
                 animation: 'in-slide-up',
                 name: domain,
-                uri: url
+                uri: url,
+                from: 'current'
             });
         };
 
-        $scope.fillSite = function (site) {
-            var fillScript = null;
-            if (site && canAutofill && pageDetails) {
-                fillScript = autofillService.generateFillScript(pageDetails, site.username, site.password);
+        $scope.fillLogin = function (login) {
+            var didAutofill = false;
+
+            if (login && canAutofill && pageDetails && pageDetails.length) {
+                for (var i = 0; i < pageDetails.length; i++) {
+                    if (pageDetails[i].tabId !== tabId) {
+                        continue;
+                    }
+
+                    var fillScript = autofillService.generateFillScript(pageDetails[i].details, login.username, login.password);
+                    if (tabId && fillScript && fillScript.script && fillScript.script.length) {
+                        didAutofill = true;
+                        $analytics.eventTrack('Autofilled');
+                        chrome.tabs.sendMessage(tabId, {
+                            command: 'fillForm',
+                            fillScript: fillScript
+                        }, {
+                            frameId: pageDetails[i].frameId
+                        }, $window.close);
+                    }
+                }
             }
 
-            if (tabId && fillScript && fillScript.script && fillScript.script.length) {
-                $analytics.eventTrack('Autofilled');
-                chrome.tabs.sendMessage(tabId, {
-                    command: 'fillForm',
-                    fillScript: fillScript
-                }, function () {
-                    $window.close();
-                });
-            }
-            else {
+            if (!didAutofill) {
                 $analytics.eventTrack('Autofilled Error');
-                toastr.error('Unable to auto-fill the selected site on this page. ' +
-                    'Copy/paste your username and/or password instead.');
+                toastr.error(i18nService.autofillError);
             }
+        };
+
+        $scope.viewLogin = function (login, e) {
+            e.stopPropagation();
+
+            $state.go('viewLogin', {
+                loginId: login.id,
+                animation: 'in-slide-up',
+                from: 'current'
+            });
         };
 
         $scope.$on('syncCompleted', function (event, successfully) {
             if ($scope.loaded) {
                 setTimeout(loadVault, 500);
             }
+        });
+
+        $scope.$on('collectPageDetailsResponse', function (event, details) {
+            pageDetails.push(details);
         });
     });

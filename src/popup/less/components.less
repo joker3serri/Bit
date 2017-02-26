@@ -12,7 +12,6 @@
     left: 0;
     right: 0;
     overflow: hidden;
-    position: relative;
 
     a, button {
         color: white !important;
@@ -42,6 +41,7 @@
         display: block;
         position: absolute;
         left: 0;
+        text-align: left;
 
         a, button {
             padding: 12px 10px;
@@ -101,6 +101,28 @@
             top: 15px;
             left: 15px;
             color: lighten(@brand-primary, 30%);
+        }
+    }
+
+    &.header-search {
+        .left, .right, .search {
+            display: table-cell;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            margin: 0;
+            float: none;
+        }
+
+        .search {
+            padding: 0 7px;
+        }
+
+        a {
+            white-space: nowrap;
+            float: none;
         }
     }
 }
@@ -165,6 +187,13 @@
             background-color: transparent;
             padding: 10px 10px;
             color: @gray-light;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            small {
+                float: right;
+            }
         }
     }
 
@@ -184,6 +213,10 @@
 
             label {
                 font-weight: normal;
+            }
+
+            span {
+                float: right;
             }
         }
 
@@ -255,7 +288,7 @@
             font-size: 35px;
             float: left;
             display: inline-block;
-            margin-right: 8px;
+            margin: 0 8px 5px 0;
         }
 
         .text {
@@ -305,8 +338,14 @@
 
         .fa-chevron-right {
             float: right;
-            margin-top: 3px;
+            margin-top: 4px;
             color: @list-icon-color;
+        }
+
+        .item-sub-label {
+            float: right;
+            margin-right: 15px;
+            color: @gray-light;
         }
 
         &.condensed {
@@ -356,7 +395,7 @@
                 display: inline-block;
                 border: none;
                 background: none;
-                width: 100px;
+                width: 55px;
                 text-align: right;
             }
         }
@@ -429,7 +468,8 @@
         top: 50%;
         margin-top: -70px;
         display: block;
-        width: 100%;
         text-align: center;
+        padding: 0 10px;
+        width: 100%;
     }
 }

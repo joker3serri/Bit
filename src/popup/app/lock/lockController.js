@@ -1,21 +1,21 @@
 ﻿angular
     .module('bit.lock')
 
-    .controller('lockController', function ($scope, $state, $analytics, i18nService, loginService, cryptoService, toastr,
+    .controller('lockController', function ($scope, $state, $analytics, i18nService, authService, cryptoService, toastr,
         userService, SweetAlert) {
         $scope.i18n = i18nService;
         $('#master-password').focus();
 
         $scope.logOut = function () {
             SweetAlert.swal({
-                title: 'Log Out',
-                text: 'Are you sure you want to log out?',
+                title: i18nService.logOut,
+                text: i18nService.logOutConfirmation,
                 showCancelButton: true,
-                confirmButtonText: 'Yes',
-                cancelButtonText: 'Cancel'
+                confirmButtonText: i18nService.yes,
+                cancelButtonText: i18nService.cancel
             }, function (confirmed) {
                 if (confirmed) {
-                    loginService.logOut(function () {
+                    authService.logOut(function () {
                         $analytics.eventTrack('Logged Out');
                         $state.go('home');
                     });
@@ -35,7 +35,7 @@
                             });
                         }
                         else {
-                            toastr.error(i18nService.invalidMasterPassword, i18nService.errorsHaveOccurred);
+                            toastr.error(i18nService.invalidMasterPassword, i18nService.errorsOccurred);
                         }
                     });
                 });
