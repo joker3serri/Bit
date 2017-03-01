@@ -67,15 +67,15 @@ function initPasswordGenerationService() {
         var allCharSet = '';
 
         var lowercaseCharSet = 'abcdefghijkmnopqrstuvwxyz';
-        if (o.ambiguous) lowercaseCharSet += 'l';
+        if (!o.ambiguous) lowercaseCharSet += 'l';
         if (o.lowercase) allCharSet += lowercaseCharSet;
 
         var uppercaseCharSet = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
-        if (o.ambiguous) uppercaseCharSet += 'O';
+        if (!o.ambiguous) uppercaseCharSet += 'O';
         if (o.uppercase) allCharSet += uppercaseCharSet;
 
         var numberCharSet = '23456789';
-        if (o.ambiguous) numberCharSet += '01';
+        if (!o.ambiguous) numberCharSet += '01';
         if (o.number) allCharSet += numberCharSet;
 
         var specialCharSet = '!@#$%^&*';
@@ -103,7 +103,7 @@ function initPasswordGenerationService() {
     // ref https://github.com/EFForg/OpenWireless/blob/master/app/js/diceware.js
     function randomInt(min, max) {
         var rval = 0;
-        var range = max - min;
+        var range = max - min + 1;
 
         var bits_needed = Math.ceil(Math.log2(range));
         if (bits_needed > 53) {
