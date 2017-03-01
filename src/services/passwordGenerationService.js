@@ -67,15 +67,15 @@ function initPasswordGenerationService() {
         var allCharSet = '';
 
         var lowercaseCharSet = 'abcdefghijkmnopqrstuvwxyz';
-        if (!o.ambiguous) lowercaseCharSet += 'l';
+        if (o.ambiguous) lowercaseCharSet += 'l';
         if (o.lowercase) allCharSet += lowercaseCharSet;
 
         var uppercaseCharSet = 'ABCDEFGHIJKLMNPQRSTUVWXYZ';
-        if (!o.ambiguous) uppercaseCharSet += 'O';
+        if (o.ambiguous) uppercaseCharSet += 'O';
         if (o.uppercase) allCharSet += uppercaseCharSet;
 
         var numberCharSet = '23456789';
-        if (!o.ambiguous) numberCharSet += '01';
+        if (o.ambiguous) numberCharSet += '01';
         if (o.number) allCharSet += numberCharSet;
 
         var specialCharSet = '!@#$%^&*';
