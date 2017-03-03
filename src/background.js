@@ -231,17 +231,17 @@ function refreshBadgeAndMenu() {
 
         chrome.storage.local.get(constantsService.disableContextMenuItemKey, function (obj) {
             if (! obj[constantsService.disableContextMenuItemKey]) {
-                buildContextMenu(contextMenuReady);
+                buildContextMenu(function() { contextMenuReady(tab) });
             }
             else {
                 chrome.contextMenus.removeAll();
-                contextMenuReady();
+                contextMenuReady(tab);
             }
         });
     });
 }
 
-function contextMenuReady() {
+function contextMenuReady(tab) {
     loadMenuAndUpdateBadge(tab.url, tab.id, true);
     onUpdatedRan = onReplacedRan = false;
 }
