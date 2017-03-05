@@ -564,7 +564,7 @@
     "description": "Syncing complete"
   },
   "importLoginsConfirmation": {
-    "message": "Vous pouvez importer en masse vos identifiants depuis le coffre web sur bitwarden.com. Souhaitez-vous vous visiter le site maintenant ?",
+    "message": "Vous pouvez importer en masse vos identifiants depuis le coffre web sur bitwarden.com. Souhaitez-vous visiter le site maintenant ?",
     "description": "You can bulk import logins from the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "passwordCopied": {
