@@ -480,7 +480,7 @@
     "description": "' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError": {
-    "message": "Impossible de remplir automatiquement le site sélectionné sur cette page. Copiez/collez plutôt votre nom d'utilisateur et/ou votre mot de pase.",
+    "message": "Impossible de remplir automatiquement le site sélectionné sur cette page. Copiez/collez plutôt votre nom d'utilisateur et/ou votre mot de passe.",
     "description": "Unable to auto-fill the selected login on this page. Copy/paste your username and/or password instead."
   },
   "loggedOut": {
