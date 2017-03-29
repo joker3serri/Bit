@@ -1,12 +1,12 @@
-# Nome
+# Name
 
 bitwarden - Gestor de palavras-passe gratuito
 
-# Sumário
+# Summary
 
 Um gestor de palavras-passe seguro e gratuito para todos os seus dispositivos
 
-# Descrição
+# Description
 
 O bitwarden é a maneira mais fácil e segura de armazenar todos as as suas credenciais e palavras-passe mantendo-as convenientemente sincronizadas entre todos os seus dispositivos.
 
