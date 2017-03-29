@@ -620,7 +620,7 @@
     "description": "Search folder"
   },
   "noneFolder": {
-    "message": "(nenhum)",
+    "message": "(nenhuma)",
     "description": "(none) - this is the folder for uncategorized logins"
   },
   "features": {
