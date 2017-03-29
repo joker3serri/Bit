@@ -148,7 +148,7 @@
     "description": "Change Email"
   },
   "twoStepLogin": {
-    "message": "Início de sessão de dois passos",
+    "message": "Inicio de sessão de dois passos",
     "description": "Two-step Login"
   },
   "logOut": {
@@ -280,7 +280,7 @@
     "description": "Generate Password"
   },
   "regeneratePassword": {
-    "message": "Regerar palavra-passe",
+    "message": "Re-gerar palavra-passe",
     "description": "Regenerate Password"
   },
   "options": {
@@ -528,7 +528,7 @@
     "description": "You can change your email address on the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "twoStepLoginConfirmation": {
-    "message": "O início de sessão de dois passos torna a sua conta mais segura ao requerer que digite um código de segurança de uma aplicação de autenticação quando inciar sessão. O início de sessão de dois passos pode ser ativado no cofre web bitwarden.com. Pretende visitar o website agora?",
+    "message": "O inicio de sessão de dois passos torna a sua conta mais segura ao requerer que digite um código de segurança de uma aplicação de autenticação quando inciar sessão. O inicio de sessão de dois passos pode ser ativado no cofre web bitwarden.com. Pretende visitar o website agora?",
     "description": "Two-step login makes your account more secure by requiring you to enter a security code from an authenticator app whenever you log in. Two-step login can be enabled on the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "loggingOut": {
@@ -600,7 +600,7 @@
     "description": "Are you sure you want to overwrite the current password?"
   },
   "lost2FAApp": {
-    "message": "Perdeu a aplicação do atenticador?",
+    "message": "Perdeu a aplicação do autenticador?",
     "description": "Lost authenticator app?"
   },
   "credits": {
@@ -620,7 +620,7 @@
     "description": "Search folder"
   },
   "noneFolder": {
-    "message": "(nenhuma)",
+    "message": "(nenhum)",
     "description": "(none) - this is the folder for uncategorized logins"
   },
   "features": {
