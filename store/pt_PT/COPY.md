@@ -1,6 +1,6 @@
 # Nome
 
-bitwarden � Gestor de palavras-passe gratuito
+bitwarden - Gestor de palavras-passe gratuito
 
 # Sumário
 
