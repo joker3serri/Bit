@@ -654,8 +654,8 @@
   "disableContextMenuItemDesc": {
     "message": "右鍵選項幫你快速使用密碼生成器，也可以登入分頁的網頁。",
     "desription": "Context menu options provide quick access to password generation and logins for the website in your current tab."
-  }
-    "exportVault": {
+  },
+  "exportVault": {
     "message": "匯出密碼庫",
     "desription": "Export Vault"
   },
@@ -674,5 +674,5 @@
   "exportVaultInfo": {
     "message": "將密碼庫資料匯出成 .csv 檔案，方便修改和轉移資料。",
     "desription": "Export your vault data in .csv format so that you can easily modify it or move it elsewhere."
-}
+  }
 }
