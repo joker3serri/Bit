@@ -56,15 +56,15 @@
     "description": "Re-type Master Password"
   },
   "masterPassHint": {
-    "message": "主密码提示 (可选)",
+    "message": "主密码提示（非必須）",
     "description": "Master Password Hint (optional)"
   },
   "tab": {
-    "message": "标签",
+    "message": "分頁",
     "description": "Tab"
   },
   "myVault": {
-    "message": "密码库",
+    "message": "密碼庫",
     "description": "My Vault"
   },
   "tools": {
@@ -72,75 +72,75 @@
     "description": "Tools"
   },
   "settings": {
-    "message": "设置",
+    "message": "設定",
     "description": "Settings"
   },
   "currentTab": {
-    "message": "当前标签",
+    "message": "目前分頁",
     "description": "Current Tab"
   },
   "copyPassword": {
-    "message": "复制密码",
+    "message": "複製密碼",
     "description": "Copy Password"
   },
   "copyUsername": {
-    "message": "复制用户名",
+    "message": "複製用戶名稱",
     "description": "Copy Username"
   },
   "autoFill": {
-    "message": "自动填充",
+    "message": "自動輸入",
     "description": "Auto-fill"
   },
   "generatePasswordCopied": {
-    "message": "生成密码 (并复制)",
+    "message": "生成及複製密碼",
     "description": "Generate Password (copied)"
   },
   "noMatchingLogins": {
-    "message": "没有匹配的网站。",
+    "message": "無吻合網頁。",
     "description": "No matching logins."
   },
   "vaultLocked": {
-    "message": "密码库已锁定",
+    "message": "密碼庫已上鎖",
     "description": "Vault is locked."
   },
   "autoFillInfo": {
-    "message": "当前浏览器标签中没有可以自动填充的网站。",
+    "message": "目前瀏覽器分頁無可以自動填寫登入資訊的位置。",
     "description": "There are no logins available to auto-fill for the current browser tab."
   },
   "addLogin": {
-    "message": "添加网站",
+    "message": "新增網頁",
     "description": "Add a Login"
   },
   "passwordHint": {
-    "message": "密码提示",
+    "message": "密碼提示",
     "description": "Password Hint"
   },
   "enterEmailToGetHint": {
-    "message": "请输入您帐号的 Email 地址来接收密码提示。",
+    "message": "請輸入帳戶 email 以獲取主密碼提示。",
     "description": "Enter your account email address to receive your master password hint."
   },
   "getMasterPasswordHint": {
-    "message": "获取主密码提示",
+    "message": "獲取主密碼提示",
     "description": "Get master password hint"
   },
   "continue": {
-    "message": "继续",
+    "message": "繼續",
     "description": "Continue"
   },
   "verificationCode": {
-    "message": "验证码",
+    "message": "驗證碼",
     "description": "Verification Code"
   },
   "enterTwoStepVerCode": {
-    "message": "输入您的两步登录验证码。",
+    "message": "輸入你的兩步驟驗證碼。",
     "description": "Enter your two-step verification code."
   },
   "account": {
-    "message": "账户",
+    "message": "帳戶",
     "description": "Account"
   },
   "changeMasterPassword": {
-    "message": "修改主密码",
+    "message": "修改主密碼",
     "description": "Change Master Password"
   },
   "changeEmail": {
@@ -148,15 +148,15 @@
     "description": "Change Email"
   },
   "twoStepLogin": {
-    "message": "两步登录",
+    "message": "兩步驟登入",
     "description": "Two-step Login"
   },
   "logOut": {
-    "message": "退出",
+    "message": "登出",
     "description": "Log Out"
   },
   "about": {
-    "message": "关于",
+    "message": "關於",
     "description": "About"
   },
   "version": {
@@ -164,59 +164,59 @@
     "description": "Version"
   },
   "save": {
-    "message": "保存",
+    "message": "儲存",
     "description": "Save"
   },
   "addFolder": {
-    "message": "添加文件夹",
+    "message": "新增文件夾",
     "description": "Add Folder"
   },
   "name": {
-    "message": "名称",
+    "message": "名稱",
     "description": "Name"
   },
   "editFolder": {
-    "message": "编辑文件夹",
+    "message": "編輯文件夾",
     "description": "Edit Folder"
   },
   "deleteFolder": {
-    "message": "删除文件夹",
+    "message": "刪除文件夾",
     "description": "Delete Folder"
   },
   "folders": {
-    "message": "文件夹",
+    "message": "文件夾",
     "description": "Folders"
   },
   "noFolders": {
-    "message": "没有可以显示的文件夹。",
+    "message": "無文件夾可顯示。",
     "description": "There are no folders to list."
   },
   "helpFeedback": {
-    "message": "帮助和反馈",
+    "message": "協助與反映",
     "description": "Help & Feedback"
   },
   "emailUs": {
-    "message": "给我们发邮件",
+    "message": "Email 我們",
     "description": "Email Us"
   },
   "emailUsDirectly": {
-    "message": "给我们直接发邮件来获得帮助或者留下反馈。",
+    "message": "直接 email 我們以獲取協助或提供反映。",
     "description": "Email us directly to get help or leave feedback."
   },
   "visitOurWebsite": {
-    "message": "访问我们的网站",
+    "message": "瀏覽我們的網頁",
     "description": "Visit Our Website"
   },
   "visitOurWebsiteDirectly": {
-    "message": "访问我们的网站来获得帮助、新闻，或者学习如何使用 bitwarden。",
+    "message": "瀏覽我們的網頁以獲取協助、了解新消息、email 我們或瀏覽更多使用 bitwarden 的秘訣。",
     "description": "Visit our website to get help, news, email us, and/or learn more about how to use bitwarden."
   },
   "fileBugReport": {
-    "message": "Bug 报告",
+    "message": "提交 Bug",
     "description": "File a Bug Report"
   },
   "gitHubIssue": {
-    "message": "在我们的 GitHub 存储库打开一个问题。",
+    "message": "在我們的 GitHub 庫中新增問題。",
     "description": "Open an issue at our GitHub repository."
   },
   "sync": {
@@ -224,27 +224,27 @@
     "description": "Sync"
   },
   "syncVaultNow": {
-    "message": "立即同步密码库",
+    "message": "立即同步密碼庫",
     "description": "Sync Vault Now"
   },
   "lastSync": {
-    "message": "上次同步:",
+    "message": "上次同步在：",
     "description": "Last Sync:"
   },
   "passGen": {
-    "message": "密码生成器",
+    "message": "密碼生成器",
     "description": "Password Generator"
   },
   "passGenInfo": {
-    "message": "自动生成安全可靠唯一的登录密码。",
+    "message": "自動生成安全、獨特的密碼予帳戶。",
     "description": "Automatically generate strong, unique passwords for your logins."
   },
   "bitWebVault": {
-    "message": "bitwarden 网页版",
+    "message": "bitwarden 網頁版",
     "description": "bitwarden Web Vault"
   },
   "bitWebVaultInfo": {
-    "message": "使用 bitwarden 网页版可以从浏览器管理您的登录密码。",
+    "message": "使用 bitwarden 網頁版，從瀏覽器管理你的密碼。",
     "description": "Manage your logins from any web browser with the bitwarden web vault."
   },
   "bitIosVault": {
@@ -252,7 +252,7 @@
     "description": "bitwarden iOS Vault"
   },
   "bitIosVaultInfo": {
-    "message": "使用 bitwarden iOS 版可以从 iOS 设备管理您的登录密码。",
+    "message": "使用 bitwarden iOS 版，從 iOS 裝置管理你的密碼。",
     "description": "Manage your logins from your mobile devices with the bitwarden iOS vault."
   },
   "bitAndrVault": {
@@ -260,107 +260,107 @@
     "description": "bitwarden Android Vault"
   },
   "bitAndrVaultInfo": {
-    "message": "使用 bitwarden Android 版可以从 Android 设备管理您的登录密码。",
+    "message": "使用 bitwarden Android 版，從 Android 裝置管理您的密碼。",
     "description": "Manage your logins from your mobile devices with the bitwarden Android vault."
   },
   "importLogins": {
-    "message": "导入登录信息",
+    "message": "導入密碼",
     "description": "Import Logins"
   },
   "importLoginsInfo": {
-    "message": "快速从其他密码管理应用批量导入您的登录信息。",
+    "message": "從其他密碼管理器導入你的密碼。",
     "description": "Quickly bulk import your logins from other password management applications."
   },
   "select": {
-    "message": "选择",
+    "message": "選擇",
     "description": "Select"
   },
   "generatePassword": {
-    "message": "生成密码",
+    "message": "生成密碼",
     "description": "Generate Password"
   },
   "regeneratePassword": {
-    "message": "重新生成密码",
+    "message": "重新生成密碼",
     "description": "Regenerate Password"
   },
   "options": {
-    "message": "选项",
+    "message": "設定",
     "description": "Options"
   },
   "length": {
-    "message": "长度",
+    "message": "長度",
     "description": "Length"
   },
   "minNumbers": {
-    "message": "数字",
+    "message": "數字",
     "description": "Minimum Numbers"
   },
   "minSpecial": {
-    "message": "符号",
+    "message": "符號",
     "description": "Minimum Special"
   },
   "avoidAmbChar": {
-    "message": "避免模棱两可",
+    "message": "避免易混淆的字符",
     "description": "Avoid Ambiguous Characters"
   },
   "searchVault": {
-    "message": "搜索",
+    "message": "搜尋",
     "description": "Search vault"
   },
   "edit": {
-    "message": "编辑",
+    "message": "編輯",
     "description": "Edit"
   },
   "noLoginsInList": {
-    "message": "列表里没有网站。",
+    "message": "無紀錄可顯示。",
     "description": "There are no logins in list."
   },
   "loginInformation": {
-    "message": "网站信息",
+    "message": "網頁資訊",
     "description": "Login Information"
   },
   "username": {
-    "message": "用户名",
+    "message": "帳戶名稱",
     "description": "Username"
   },
   "password": {
-    "message": "密码",
+    "message": "密碼",
     "description": "Password"
   },
   "favorite": {
-    "message": "收藏",
+    "message": "書籤",
     "description": "Favorite"
   },
   "notes": {
-    "message": "笔记",
+    "message": "筆記",
     "description": "Notes"
   },
   "editLogin": {
-    "message": "编辑网站",
+    "message": "編輯網頁",
     "description": "Edit Login"
   },
   "folder": {
-    "message": "文件夹",
+    "message": "文件夾",
     "description": "Folder"
   },
   "deleteLogin": {
-    "message": "删除网站",
+    "message": "刪除網頁",
     "description": "Delete Login"
   },
   "viewLogin": {
-    "message": "查看网站",
+    "message": "查看網頁",
     "description": "View Login"
   },
   "launchWebsite": {
-    "message": "打开网站",
+    "message": "開啟網頁",
     "description": "Launch Website"
   },
   "website": {
-    "message": "网站",
+    "message": "網頁",
     "description": "Website"
   },
   "togglePassword": {
-    "message": "切换 Password",
+    "message": "切換密碼能見度",
     "description": "Toggle Password"
   },
   "manage": {
@@ -376,63 +376,63 @@
     "description": "Disable Google Analytics"
   },
   "rateExtension": {
-    "message": "为本扩展打分",
+    "message": "為本擴充元件評分",
     "description": "Rate the Extension"
   },
   "rateExtensionDesc": {
-    "message": "请给我们好评！",
+    "message": "給我們留個好評吧！",
     "description": "Please consider helping us out with a good review!"
   },
   "browserNotSupportClipboard": {
-    "message": "您的浏览器不支持剪贴板简单复制，请手动复制。",
+    "message": "你的瀏覽器不支援簡單複製，請手動複製。",
     "description": "Your web browser does not support easy clipboard copying. Copy it manually instead."
   },
   "verifyMasterPassword": {
-    "message": "验证主密码",
+    "message": "驗證主密碼",
     "description": "Verify Master Password"
   },
   "invalidMasterPassword": {
-    "message": "无效的主密码",
+    "message": "主密碼無效",
     "description": "Invalid master password"
   },
   "lockOptions": {
-    "message": "锁定选项",
+    "message": "自動上鎖時間",
     "description": "Lock Options"
   },
   "immediately": {
-    "message": "立即",
+    "message": "即時",
     "description": "Immediately"
   },
   "oneMinute": {
-    "message": "1 分钟",
+    "message": "1 分鐘",
     "description": "1 minute"
   },
   "fiveMinutes": {
-    "message": "5 分钟",
+    "message": "5 分鐘",
     "description": "5 minutes"
   },
   "fifteenMinutes": {
-    "message": "15 分钟",
+    "message": "15 分鐘",
     "description": "15 minutes"
   },
   "thirtyMinutes": {
-    "message": "30 分钟",
+    "message": "30 分鐘",
     "description": "30 minutes"
   },
   "oneHour": {
-    "message": "1 小时",
+    "message": "1 小時",
     "description": "1 hour"
   },
   "fourHours": {
-    "message": "4 小时",
+    "message": "4 小時",
     "description": "4 hours"
   },
   "onRestart": {
-    "message": "重启时",
+    "message": "重新啟動時",
     "description": "On Restart"
   },
   "never": {
-    "message": "从不",
+    "message": "永不",
     "description": "Never"
   },
   "security": {
@@ -440,47 +440,47 @@
     "description": "Security"
   },
   "errorsOccurred": {
-    "message": "出错了",
+    "message": "錯誤",
     "description": "Errors have occurred"
   },
   "emailRequired": {
-    "message": "必须填写 Email 地址。",
+    "message": "必須填寫 email 。",
     "description": "Email address is required."
   },
   "invalidEmail": {
-    "message": "无效的 email 地址.",
+    "message": "Email 無效。",
     "description": "Invalid email address."
   },
   "masterPassRequired": {
-    "message": "必须填写主密码。",
+    "message": "必須填寫主密碼。",
     "description": "Master password is required."
   },
   "masterPassLength": {
-    "message": "主密码至少需要 8 个字符。",
+    "message": "主密碼需要至少8個字符。",
     "description": "Master password must be at least 8 characters long."
   },
   "masterPassDoesntMatch": {
-    "message": "两次填写的主密码不一致。",
+    "message": "兩次主密碼輸入不一致。",
     "description": "Master password confirmation does not match."
   },
   "newAccountCreated": {
-    "message": "已经为您建立了账户，您可以登录了。",
+    "message": "帳戶已建立！你可以登入了。",
     "description": "Your new account has been created! You may now log in."
   },
   "masterPassSent": {
-    "message": "我们已经为您发送了包含主密码提示的邮件。",
+    "message": "包含你的主密碼提示的 email 已寄出。",
     "description": "We've sent you an email with your master password hint."
   },
   "verificationCodeRequired": {
-    "message": "必须填写验证码。",
+    "message": "必須填寫驗證碼。",
     "description": "Verification code is required."
   },
   "valueCopied": {
-    "message": " 已复制",
+    "message": " 已複製",
     "description": "' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError": {
-    "message": "无法在此页面自动填充所选择的网站。请手工 复制/粘贴 您的用户名、密码。",
+    "message": "無法自動輸入你的帳戶資料。請手動複製／貼上你的帳戶名稱及密碼。",
     "description": "Unable to auto-fill the selected login on this page. Copy/paste your username and/or password instead."
   },
   "loggedOut": {
@@ -488,11 +488,11 @@
     "description": "Logged out"
   },
   "loginExpired": {
-    "message": "您的登录会话已过期。",
+    "message": "你的登入階段已過期。",
     "description": "Your login session has expired."
   },
   "logOutConfirmation": {
-    "message": "您确定要登出吗？",
+    "message": "您決定要登出嗎？",
     "description": "Are you sure you want to log out?"
   },
   "yes": {
@@ -504,59 +504,59 @@
     "description": "No"
   },
   "unexpectedError": {
-    "message": "发生意外错误。",
+    "message": "非預期錯誤。",
     "description": "An unexpected error has occured."
   },
   "nameRequired": {
-    "message": "必须填写名称。",
+    "message": "必須填寫名稱。",
     "description": "Name is required."
   },
   "addedFolder": {
-    "message": "已添加的文件夹",
+    "message": "已新增文件夾",
     "description": "Added folder"
   },
   "changeMasterPass": {
-    "message": "修改主密码",
+    "message": "修改主密碼",
     "description": "Change Master Password"
   },
   "changeMasterPasswordConfirmation": {
-    "message": "您可以在 bitwarden.com 网页版修改您的主密码。现在为您跳转吗？",
+    "message": "你可以在 bitwarden 網頁版修改主密碼。現在前往？",
     "description": "You can change your master password on the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "changeEmailConfirmation": {
-    "message": "您可以在 bitwarden.com 网页版修改您的 email 地址。现在为您跳转吗？",
+    "message": "你可以在 bitwarden 網頁版修改 email 。現在前往？",
     "description": "You can change your email address on the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "twoStepLoginConfirmation": {
-    "message": "两步登录需要您登录时输入一个从认证应用获得的安全吗，这样能使您的账户更安全。两步登录可以在 bitwarden.com 网页版打开。现在为您跳转吗？",
+    "message": "兩步驟登入需要你登入時輸入由驗證碼程式提供的安全碼，令你的帳戶更安全。兩步驟登入可以在 bitwarden 網頁版開啟。現在前往？",
     "description": "Two-step login makes your account more secure by requiring you to enter a security code from an authenticator app whenever you log in. Two-step login can be enabled on the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "loggingOut": {
-    "message": "登出...",
+    "message": "登出中...",
     "description": "Logging out"
   },
   "loggingOutConfirmation": {
-    "message": "您最近从一个旧版本更新了，您必须重新登录才能修改锁定的选项。您要立即登出吗？",
+    "message": "你最近由一個舊版本更新。你需要重新登入才可修改上鎖設定。立即登出？",
     "description": "You've recently updated from an older version. You must re-log in to change your lock options. Do you want to log out now?"
   },
   "editedFolder": {
-    "message": "已编辑的文件夹",
+    "message": "文件夾已編輯",
     "description": "Edited Folder"
   },
   "deleteFolderConfirmation": {
-    "message": "您确定要删除此文件夹吗？",
+    "message": "您肯定要删除此文件夾嗎？",
     "description": "Are you sure you want to delete this folder?"
   },
   "deletedFolder": {
-    "message": "已删除的文件夹",
+    "message": "文件夾已刪除",
     "description": "Deleted folder"
   },
   "gettingStartedTutorial": {
-    "message": "入门教程",
+    "message": "新手教學",
     "description": "Getting Started Tutorial"
   },
   "gettingStartedTutorialVideo": {
-    "message": "观看我们的入门教程，了解如何充分利用浏览器扩展。",
+    "message": "觀看我們的新手教學，了解如何充分利用我們的瀏覽器擴充元件。",
     "description": "Watch our getting started tutorial to learn how to get the most out of the browser extension."
   },
   "syncingComplete": {
@@ -564,11 +564,11 @@
     "description": "Syncing complete"
   },
   "importLoginsConfirmation": {
-    "message": "您可以在 bitwarden.com 网页版批量导入登录信息。现在为您跳转吗？",
+    "message": "你可以在 bitwarden 網頁版導入密碼。現在前往？",
     "description": "You can bulk import logins from the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "passwordCopied": {
-    "message": "密码已复制",
+    "message": "密碼已複製",
     "description": "Password copied"
   },
   "uri": {
@@ -576,51 +576,51 @@
     "description": "URI"
   },
   "addedLogin": {
-    "message": "已添加的网站",
+    "message": "已添加網頁",
     "description": "Added login"
   },
   "editedLogin": {
-    "message": "已编辑的网站",
+    "message": "已編輯網頁",
     "description": "Edited login"
   },
   "deleteLoginConfirmation": {
-    "message": "您确定要删除此网站吗？",
+    "message": "您確定要删除網頁嗎？",
     "description": "Are you sure you want to delete this login?"
   },
   "deletedLogin": {
-    "message": "已删除的的网站",
+    "message": "已删除的網頁",
     "description": "Deleted login"
   },
   "overwritePassword": {
-    "message": "覆盖密码",
+    "message": "修改密碼",
     "description": "Overwrite Password"
   },
   "overwritePasswordConfirmation": {
-    "message": "您确定要覆盖当前密码吗？",
+    "message": "您确定要修改目的密碼嗎？",
     "description": "Are you sure you want to overwrite the current password?"
   },
   "lost2FAApp": {
-    "message": "认证应用已丢失？",
+    "message": "違失了驗證碼程式？",
     "description": "Lost authenticator app?"
   },
   "credits": {
-    "message": "贡献人员",
+    "message": "製作人員",
     "description": "Credits (giving thanks to people that helped, like at the end of a movie)"
   },
   "thankYou": {
-    "message": "非常感谢",
+    "message": "感謝",
     "description": "Thank You"
   },
   "translations": {
-    "message": "译者",
+    "message": "譯者",
     "description": "Translations"
   },
   "searchFolder": {
-    "message": "搜索文件夹",
+    "message": "文件夾",
     "description": "Search folder"
   },
   "noneFolder": {
-    "message": "(无)",
+    "message": "(未分類)",
     "description": "(none) - this is the folder for uncategorized logins"
   },
   "features": {
@@ -628,31 +628,31 @@
     "description": "Features"
   },
   "gaDesc": {
-    "message": "我们使用 Google Analytics 来帮助分析扩展的使用情况，以便我们改进扩展。所有的数据收集完全是匿名的。",
+    "message": "我们使用 Google Analytics 協助分析擴充元件的使用情況，以便我們改善程式。所有資料均為匿名。",
     "description": "We use Google Analytics to better learn how the extension is being used so that we can make it better. All data collection is completely anonymous."
   },
   "disableAddLoginNotification": {
-    "message": "禁止添加登录提醒",
+    "message": "關閉新增網頁提示",
     "description": "Disable Add Login Notification"
   },
   "addLoginNotificationDesc": {
-    "message": "当您第一次登录时，\"添加登录提醒\" 会自动提醒您在密码库里保存新的登录信息。",
+    "message": "當你首次登入時，\"新增網頁提示\" 會自動提醒你在密碼庫加入新網頁。",
     "description": "The \"Add Login Notification\" automatically prompts you to save new logins to your vault whenever you log into them for the first time."
   },
   "notificationAddDesc": {
-    "message": "希望 bitwarden 为您保存这个密码吗？",
+    "message": "希望 bitwarden 幫你儲存這個密碼嗎？",
     "description": "Should bitwarden remember this password for you?"
   },
   "notificationAddSave": {
-    "message": "是，现在保存",
+    "message": "好，立即儲存",
     "description": "Yes, Save Now"
   },
   "disableContextMenuItem": {
-    "message": "关闭上下文菜单选项",
+    "message": "關閉右鍵選項",
     "description": "Disable Context Menu Options"
   },
   "disableContextMenuItemDesc": {
-    "message": "上下文菜单选项可以让您快速访问密码生成器，也可以登陆当前标签的网站。",
+    "message": "右鍵選項幫你快速使用密碼生成器，也可以登入分頁的網頁。",
     "desription": "Context menu options provide quick access to password generation and logins for the website in your current tab."
   }
 }
