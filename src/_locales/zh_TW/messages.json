@@ -36,7 +36,7 @@
     "description": "Submit"
   },
   "emailAddress": {
-    "message": "Email",
+    "message": "電郵",
     "description": "Email Address"
   },
   "masterPass": {
@@ -116,7 +116,7 @@
     "description": "Password Hint"
   },
   "enterEmailToGetHint": {
-    "message": "請輸入帳戶 email 以獲取主密碼提示。",
+    "message": "請輸入帳戶電郵以獲取主密碼提示。",
     "description": "Enter your account email address to receive your master password hint."
   },
   "getMasterPasswordHint": {
@@ -144,7 +144,7 @@
     "description": "Change Master Password"
   },
   "changeEmail": {
-    "message": "修改 Email",
+    "message": "修改電郵",
     "description": "Change Email"
   },
   "twoStepLogin": {
@@ -196,11 +196,11 @@
     "description": "Help & Feedback"
   },
   "emailUs": {
-    "message": "Email 我們",
+    "message": "電郵我們",
     "description": "Email Us"
   },
   "emailUsDirectly": {
-    "message": "直接 email 我們以獲取協助或提供反映。",
+    "message": "直接電郵我們以獲取協助或提供反映。",
     "description": "Email us directly to get help or leave feedback."
   },
   "visitOurWebsite": {
@@ -264,11 +264,11 @@
     "description": "Manage your logins from your mobile devices with the bitwarden Android vault."
   },
   "importLogins": {
-    "message": "導入密碼",
+    "message": "匯入密碼",
     "description": "Import Logins"
   },
   "importLoginsInfo": {
-    "message": "從其他密碼管理器導入你的密碼。",
+    "message": "從其他密碼管理器匯入你的密碼。",
     "description": "Quickly bulk import your logins from other password management applications."
   },
   "select": {
@@ -444,11 +444,11 @@
     "description": "Errors have occurred"
   },
   "emailRequired": {
-    "message": "必須填寫 email 。",
+    "message": "必須填寫電郵 。",
     "description": "Email address is required."
   },
   "invalidEmail": {
-    "message": "Email 無效。",
+    "message": "電郵無效。",
     "description": "Invalid email address."
   },
   "masterPassRequired": {
@@ -468,7 +468,7 @@
     "description": "Your new account has been created! You may now log in."
   },
   "masterPassSent": {
-    "message": "包含你的主密碼提示的 email 已寄出。",
+    "message": "包含你的主密碼提示的電郵已寄出。",
     "description": "We've sent you an email with your master password hint."
   },
   "verificationCodeRequired": {
@@ -524,7 +524,7 @@
     "description": "You can change your master password on the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "changeEmailConfirmation": {
-    "message": "你可以在 bitwarden 網頁版修改 email 。現在前往？",
+    "message": "你可以在 bitwarden 網頁版修改電郵。現在前往？",
     "description": "You can change your email address on the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "twoStepLoginConfirmation": {
@@ -564,7 +564,7 @@
     "description": "Syncing complete"
   },
   "importLoginsConfirmation": {
-    "message": "你可以在 bitwarden 網頁版導入密碼。現在前往？",
+    "message": "你可以在 bitwarden 網頁版匯入密碼。現在前往？",
     "description": "You can bulk import logins from the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "passwordCopied": {
@@ -655,4 +655,24 @@
     "message": "右鍵選項幫你快速使用密碼生成器，也可以登入分頁的網頁。",
     "desription": "Context menu options provide quick access to password generation and logins for the website in your current tab."
   }
+    "exportVault": {
+    "message": "匯出密碼庫",
+    "desription": "Export Vault"
+  },
+  "warning": {
+    "message": "警告",
+    "desription": "WARNING (should stay in capitalized letters if the language permits)"
+  },
+  "exportWarning": {
+    "message": "你的密碼將匯出成未加密的 .csv 檔案。你不應將它存放或經由未加密的方法傳送（例如電郵）。用完後請立即將它刪除。",
+    "desription": "This export contains your unencrypted data in .csv format. You should not store or send it over unsecure channels (such as email). Delete it immediately after your are done using it."
+  },
+  "exportMasterPassword": {
+    "message": "輸入你的主密碼以匯出密碼庫資料。",
+    "desription": "Enter your master password to export your vault data."
+  },
+  "exportVaultInfo": {
+    "message": "將密碼庫資料匯出成 .csv 檔案，方便修改和轉移資料。",
+    "desription": "Export your vault data in .csv format so that you can easily modify it or move it elsewhere."
+}
 }
