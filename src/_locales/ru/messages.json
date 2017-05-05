@@ -209,7 +209,7 @@
   },
   "visitOurWebsiteDirectly":{
     "message":"Посетите наш сайт для чтения справки, новостей. На нём Вы так же можете написать нам или почитать о том, как использовать bitwarden.",
-    "description":"Visit our website to get help, news, email us, and/or learn more about how to use bitwarden."
+    "description":"Visit our website to get help, news, email us, and\/or learn more about how to use bitwarden."
   },
   "fileBugReport":{
     "message":"Сообщить о проблеме",
@@ -313,7 +313,7 @@
   },
   "noLoginsInList":{
     "message":"Нет сайтов для отображения.",
-    "description":"There are no logins in list."
+    "description":"There are no logins to list."
   },
   "loginInformation":{
     "message":"Информация о сайте",
@@ -360,7 +360,7 @@
     "description":"Website"
   },
   "togglePassword":{
-    "message":"Показать/скрыть пароль",
+    "message":"Показать\/скрыть пароль",
     "description":"Toggle Password"
   },
   "manage":{
@@ -480,8 +480,8 @@
     "description":"' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError":{
-    "message":"Не получается автоматически заполнить данные сайта на этой странице. Скопируйте и вставьте логин/пароль напрямую из своего хранилища.",
-    "description":"Unable to auto-fill the selected login on this page. Copy/paste your username and/or password instead."
+    "message":"Не получается автоматически заполнить данные сайта на этой странице. Скопируйте и вставьте логин\/пароль напрямую из своего хранилища.",
+    "description":"Unable to auto-fill the selected login on this page. Copy\/paste your username and\/or password instead."
   },
   "loggedOut":{
     "message":"Вы вышли из хранилища",
