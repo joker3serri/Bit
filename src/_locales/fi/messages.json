@@ -209,7 +209,7 @@
   },
   "visitOurWebsiteDirectly":{
     "message":"Käy sivustollamme, jossa voit saada apua bitwardenin käyttämisessä, saada tietoosi palvelun uutisia tai lähettää meille sähköpostia.",
-    "description":"Visit our website to get help, news, email us, and/or learn more about how to use bitwarden."
+    "description":"Visit our website to get help, news, email us, and\/or learn more about how to use bitwarden."
   },
   "fileBugReport":{
     "message":"Jätä virheilmoitus",
@@ -313,7 +313,7 @@
   },
   "noLoginsInList":{
     "message":"Ei kohteita.",
-    "description":"There are no logins in list."
+    "description":"There are no logins to list."
   },
   "loginInformation":{
     "message":"Kohteen tiedot",
@@ -360,7 +360,7 @@
     "description":"Website"
   },
   "togglePassword":{
-    "message":"Näytä/piilota salasana",
+    "message":"Näytä\/piilota salasana",
     "description":"Toggle Password"
   },
   "manage":{
@@ -480,8 +480,8 @@
     "description":"' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError":{
-    "message":"Automaattinen täydennys tälle sivustolle ei onnistu. Kopioi ja liitä käyttäjänimesi/salasanasi manuaalisesti.",
-    "description":"Unable to auto-fill the selected login on this page. Copy/paste your username and/or password instead."
+    "message":"Automaattinen täydennys tälle sivustolle ei onnistu. Kopioi ja liitä käyttäjänimesi\/salasanasi manuaalisesti.",
+    "description":"Unable to auto-fill the selected login on this page. Copy\/paste your username and\/or password instead."
   },
   "loggedOut":{
     "message":"Kirjauduttu ulos",
@@ -593,7 +593,7 @@
   },
   "overwritePassword":{
     "message":"Salasanan korvaus",
-    "description":"Salasanan korvaus"
+    "description":"Overwrite Password"
   },
   "overwritePasswordConfirmation":{
     "message":"Haluatko varmasti korvata nykyisen salasanasi?",
