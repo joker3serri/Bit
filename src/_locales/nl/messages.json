@@ -1,8 +1,4 @@
 {
-  "appName":{
-    "message":"bitwarden",
-    "description":"bitwarden"
-  },
   "extName":{
     "message":"bitwarden - Gratis Wachtwoordbeheerder",
     "description":"Extension name"
@@ -18,10 +14,6 @@
   "createAccount":{
     "message":"Maak Account",
     "description":"Create Account"
-  },
-  "login":{
-    "message":"Log In",
-    "description":"Log In"
   },
   "cancel":{
     "message":"Annuleer",
@@ -58,10 +50,6 @@
   "masterPassHint":{
     "message":"Hint voor hoofdwachtwoord (optioneel)",
     "description":"Master Password Hint (optional)"
-  },
-  "tab":{
-    "message":"Tab",
-    "description":"Tab"
   },
   "myVault":{
     "message":"Mijn Kluis",
@@ -134,10 +122,6 @@
   "enterTwoStepVerCode":{
     "message":"Voer je tweestaps-verificatiecode in.",
     "description":"Enter your two-step verification code."
-  },
-  "account":{
-    "message":"Account",
-    "description":"Account"
   },
   "changeMasterPassword":{
     "message":"Wijzig Hoofdwachtwoord",
@@ -218,10 +202,6 @@
   "gitHubIssue":{
     "message":"Open een issue in onze GitHub-repository.",
     "description":"Open an issue at our GitHub repository."
-  },
-  "sync":{
-    "message":"Sync",
-    "description":"Sync"
   },
   "syncVaultNow":{
     "message":"Sync Kluis Nu",
@@ -315,10 +295,6 @@
     "message":"Er zijn geen websites in de lijst.",
     "description":"There are no logins to list."
   },
-  "loginInformation":{
-    "message":"Login Information",
-    "description":"Login Information"
-  },
   "username":{
     "message":"Gebruikersnaam",
     "description":"Username"
@@ -354,10 +330,6 @@
   "launchWebsite":{
     "message":"Open Website",
     "description":"Launch Website"
-  },
-  "website":{
-    "message":"Website",
-    "description":"Website"
   },
   "togglePassword":{
     "message":"Wachtwoord Aan\/Uit",
@@ -571,10 +543,6 @@
     "message":"Wachtwoord gekopieerd",
     "description":"Password copied"
   },
-  "uri":{
-    "message":"URI",
-    "description":"URI"
-  },
   "addedLogin":{
     "message":"Website toegevoegd",
     "description":"Added login"
@@ -603,10 +571,6 @@
     "message":"Authenticatie-app kwijt?",
     "description":"Lost authenticator app?"
   },
-  "credits":{
-    "message":"Credits",
-    "description":"Credits (giving thanks to people that helped, like at the end of a movie)"
-  },
   "thankYou":{
     "message":"Bedankt",
     "description":"Thank You"
@@ -622,10 +586,6 @@
   "noneFolder":{
     "message":"Geen map",
     "description":"No Folder - this is the folder for uncategorized logins"
-  },
-  "features":{
-    "message":"Features",
-    "description":"Features"
   },
   "gaDesc":{
     "message":"We gebruiken analytics om te weten te komen hoe de extensie gebruikt wordt, zodat we deze kunnen verbeteren. Alle verzamelde data is anoniem.",
@@ -646,45 +606,5 @@
   "notificationAddSave":{
     "message":"Ja, sla nu op",
     "description":"Yes, Save Now"
-  },
-  "disableContextMenuItem":{
-    "message":"Disable Context Menu Options",
-    "description":"Disable Context Menu Options"
-  },
-  "disableContextMenuItemDesc":{
-    "message":"Context menu options provide quick access to password generation and logins for the website in your current tab.",
-    "description":"Context menu options provide quick access to password generation and logins for the website in your current tab."
-  },
-  "exportVault":{
-    "message":"Export Vault",
-    "description":"Export Vault"
-  },
-  "warning":{
-    "message":"WARNING",
-    "description":"WARNING (should stay in capitalized letters if the language permits)"
-  },
-  "exportWarning":{
-    "message":"This export contains your unencrypted data in .csv format. You should not store or send it over unsecure channels (such as email). Delete it immediately after your are done using it.",
-    "description":"This export contains your unencrypted data in .csv format. You should not store or send it over unsecure channels (such as email). Delete it immediately after your are done using it."
-  },
-  "exportMasterPassword":{
-    "message":"Enter your master password to export your vault data.",
-    "description":"Enter your master password to export your vault data."
-  },
-  "exportVaultInfo":{
-    "message":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere.",
-    "description":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere."
-  },
-  "shared":{
-    "message":"Shared",
-    "description":"Shared"
-  },
-  "shareVault":{
-    "message":"Share Your Vault",
-    "description":"Share Your Vault"
-  },
-  "shareVaultInfo":{
-    "message":"Create an organization to securely share your logins with other users.",
-    "description":"Create an organization to securely share your logins with other users."
   }
 }
