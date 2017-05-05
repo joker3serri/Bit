@@ -208,8 +208,8 @@
     "description":"Visit Our Website"
   },
   "visitOurWebsiteDirectly":{
-    "message":"Visit our website to get help, news, email us, and/or learn more about how to use bitwarden.",
-    "description":"Visit our website to get help, news, email us, and/or learn more about how to use bitwarden."
+    "message":"Visit our website to get help, news, email us, and\/or learn more about how to use bitwarden.",
+    "description":"Visit our website to get help, news, email us, and\/or learn more about how to use bitwarden."
   },
   "fileBugReport":{
     "message":"File a Bug Report",
@@ -480,8 +480,8 @@
     "description":"' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError":{
-    "message":"Unable to auto-fill the selected login on this page. Copy/paste your username and/or password instead.",
-    "description":"Unable to auto-fill the selected login on this page. Copy/paste your username and/or password instead."
+    "message":"Unable to auto-fill the selected login on this page. Copy\/paste your username and\/or password instead.",
+    "description":"Unable to auto-fill the selected login on this page. Copy\/paste your username and\/or password instead."
   },
   "loggedOut":{
     "message":"Logged out",
