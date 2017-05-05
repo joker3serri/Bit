@@ -208,8 +208,8 @@
     "description":"Visit Our Website"
   },
   "visitOurWebsiteDirectly":{
-    "message":"Besök vår webbplats för att få hjälp, nyheter, mejla oss och/eller lära er mer om hur man använder bitwarden.",
-    "description":"Visit our website to get help, news, email us, and/or learn more about how to use bitwarden."
+    "message":"Besök vår webbplats för att få hjälp, nyheter, mejla oss och\/eller lära er mer om hur man använder bitwarden.",
+    "description":"Visit our website to get help, news, email us, and\/or learn more about how to use bitwarden."
   },
   "fileBugReport":{
     "message":"Skicka en buggrapport",
@@ -360,7 +360,7 @@
     "description":"Website"
   },
   "togglePassword":{
-    "message":"Visa/göm lösenord",
+    "message":"Visa\/göm lösenord",
     "description":"Toggle Password"
   },
   "manage":{
@@ -441,7 +441,7 @@
   },
   "errorsOccurred":{
     "message":"Ett fel har inträffat",
-    "description":"An error has occurred"
+    "description":"Errors have occurred"
   },
   "emailRequired":{
     "message":"E-postadress krävs.",
@@ -480,8 +480,8 @@
     "description":"' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError":{
-    "message":"Kunde inte automatiskt fylla i din inloggningsinformation på den här webbsidan. Klipp/klistra ditt användarnamn och/eller lösenord istället.",
-    "description":"Unable to auto-fill the selected login on this page. Copy/paste your username and/or password instead."
+    "message":"Kunde inte automatiskt fylla i din inloggningsinformation på den här webbsidan. Klipp\/klistra ditt användarnamn och\/eller lösenord istället.",
+    "description":"Unable to auto-fill the selected login on this page. Copy\/paste your username and\/or password instead."
   },
   "loggedOut":{
     "message":"Loggade ut",
