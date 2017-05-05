@@ -1,8 +1,4 @@
 {
-  "appName":{
-    "message":"bitwarden",
-    "description":"bitwarden"
-  },
   "extName":{
     "message":"bitwarden - Gestore Di Password Gratuito",
     "description":"Extension name"
@@ -18,10 +14,6 @@
   "createAccount":{
     "message":"Crea Account",
     "description":"Create Account"
-  },
-  "login":{
-    "message":"Log In",
-    "description":"Log In"
   },
   "cancel":{
     "message":"Annulla",
@@ -134,10 +126,6 @@
   "enterTwoStepVerCode":{
     "message":"Inserisci il codice di verifica in due passaggi.",
     "description":"Enter your two-step verification code."
-  },
-  "account":{
-    "message":"Account",
-    "description":"Account"
   },
   "changeMasterPassword":{
     "message":"Cambia Password Principale",
@@ -323,10 +311,6 @@
     "message":"Nome Utente",
     "description":"Username"
   },
-  "password":{
-    "message":"Password",
-    "description":"Password"
-  },
   "favorite":{
     "message":"Preferito",
     "description":"Favorite"
@@ -499,10 +483,6 @@
     "message":"Sì",
     "description":"Yes"
   },
-  "no":{
-    "message":"No",
-    "description":"No"
-  },
   "unexpectedError":{
     "message":"È occorso un errore inaspettato.",
     "description":"An unexpected error has occured."
@@ -570,10 +550,6 @@
   "passwordCopied":{
     "message":"Password copiata",
     "description":"Password copied"
-  },
-  "uri":{
-    "message":"URI",
-    "description":"URI"
   },
   "addedLogin":{
     "message":"Login aggiunto",
@@ -674,17 +650,5 @@
   "exportVaultInfo":{
     "message":"Esporta i dati della tua cassaforte in formato .csv, così da poterli modificare facilmente o spostarli altrove.",
     "description":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere."
-  },
-  "shared":{
-    "message":"Shared",
-    "description":"Shared"
-  },
-  "shareVault":{
-    "message":"Share Your Vault",
-    "description":"Share Your Vault"
-  },
-  "shareVaultInfo":{
-    "message":"Create an organization to securely share your logins with other users.",
-    "description":"Create an organization to securely share your logins with other users."
   }
 }
