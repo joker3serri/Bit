@@ -33,7 +33,7 @@
   },
   "submit":{
     "message":"Absenden",
-    "description":"submit"
+    "description":"Submit"
   },
   "emailAddress":{
     "message":"E-Mail Adresse",
@@ -209,7 +209,7 @@
   },
   "visitOurWebsiteDirectly":{
     "message":"Besuche unsere Website um Hilfe, News und mehr über die Verwendung von bitwarden zu erfahren.",
-    "description":"Visit our website to get help, news, email us, and/or learn more about how to use bitwarden."
+    "description":"Visit our website to get help, news, email us, and\/or learn more about how to use bitwarden."
   },
   "fileBugReport":{
     "message":"Einen Fehler Melden",
@@ -313,7 +313,7 @@
   },
   "noLoginsInList":{
     "message":"In dieser Liste sind keine Seiten vorhanden.",
-    "description":"There are no logins in list."
+    "description":"There are no logins to list."
   },
   "loginInformation":{
     "message":"Seiten-Informationen",
@@ -480,8 +480,8 @@
     "description":"' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError":{
-    "message":"Die Felder dieser Seite konnten nicht automatisch ausgefüllt werden. Bitte Nutzernamen und/oder Passwort manuell kopieren.",
-    "description":"Unable to auto-fill the selected login on this page. Copy/paste your username and/or password instead."
+    "message":"Die Felder dieser Seite konnten nicht automatisch ausgefüllt werden. Bitte Nutzernamen und\/oder Passwort manuell kopieren.",
+    "description":"Unable to auto-fill the selected login on this page. Copy\/paste your username and\/or password instead."
   },
   "loggedOut":{
     "message":"Ausgeloggt",
@@ -577,7 +577,7 @@
   },
   "addedLogin":{
     "message":"Seite hinzugefügt",
-    "description":"Added site"
+    "description":"Added login"
   },
   "editedLogin":{
     "message":"Seite bearbeitet",
