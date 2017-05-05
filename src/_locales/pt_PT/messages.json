@@ -355,6 +355,10 @@
     "message":"Iniciar website",
     "description":"Launch Website"
   },
+  "website":{
+    "message":"Website",
+    "description":"Website"
+  },
   "togglePassword":{
     "message":"Alternar palavra-passe",
     "description":"Toggle Password"
@@ -670,5 +674,17 @@
   "exportVaultInfo":{
     "message":"Exporte os dados do seu cofre em formato .csv para que possa modificá-los facilmente ou movê-los para outro lugar.",
     "description":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere."
+  },
+  "shared":{
+    "message":"Partilhado",
+    "description":"Shared"
+  },
+  "shareVault":{
+    "message":"Partilhe o seu cofre",
+    "description":"Share Your Vault"
+  },
+  "shareVaultInfo":{
+    "message":"Crie uma organização para partilhar as suas credenciais em segurança com outros utilizadores.",
+    "description":"Create an organization to securely share your logins with other users."
   }
 }
