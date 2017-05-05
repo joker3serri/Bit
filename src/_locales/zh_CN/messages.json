@@ -209,7 +209,7 @@
   },
   "visitOurWebsiteDirectly":{
     "message":"访问我们的网站来获得帮助、新闻，或者学习如何使用 bitwarden。",
-    "description":"Visit our website to get help, news, email us, and/or learn more about how to use bitwarden."
+    "description":"Visit our website to get help, news, email us, and\/or learn more about how to use bitwarden."
   },
   "fileBugReport":{
     "message":"Bug 报告",
@@ -313,7 +313,7 @@
   },
   "noLoginsInList":{
     "message":"列表里没有网站。",
-    "description":"There are no logins in list."
+    "description":"There are no logins to list."
   },
   "loginInformation":{
     "message":"网站信息",
@@ -480,8 +480,8 @@
     "description":"' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError":{
-    "message":"无法在此页面自动填充所选择的网站。请手工 复制/粘贴 您的用户名、密码。",
-    "description":"Unable to auto-fill the selected login on this page. Copy/paste your username and/or password instead."
+    "message":"无法在此页面自动填充所选择的网站。请手工 复制\/粘贴 您的用户名、密码。",
+    "description":"Unable to auto-fill the selected login on this page. Copy\/paste your username and\/or password instead."
   },
   "loggedOut":{
     "message":"已登出",
@@ -621,7 +621,7 @@
   },
   "noneFolder":{
     "message":"没有文件夹",
-    "description":"No folder - this is the folder for uncategorized logins"
+    "description":"No Folder - this is the folder for uncategorized logins"
   },
   "features":{
     "message":"功能",
