@@ -208,8 +208,8 @@
     "description":"Visit Our Website"
   },
   "visitOurWebsiteDirectly":{
-    "message":"Bezoek onze website voor hulp, voor nieuws, om ons te mailen, en/of om meer te weten te komen over het gebruik van bitwarden.",
-    "description":"Visit our website to get help, news, email us, and/or learn more about how to use bitwarden."
+    "message":"Bezoek onze website voor hulp, voor nieuws, om ons te mailen, en\/of om meer te weten te komen over het gebruik van bitwarden.",
+    "description":"Visit our website to get help, news, email us, and\/or learn more about how to use bitwarden."
   },
   "fileBugReport":{
     "message":"Meld een Bug",
@@ -313,7 +313,7 @@
   },
   "noLoginsInList":{
     "message":"Er zijn geen websites in de lijst.",
-    "description":"There are no logins in list."
+    "description":"There are no logins to list."
   },
   "loginInformation":{
     "message":"Login Information",
@@ -360,7 +360,7 @@
     "description":"Website"
   },
   "togglePassword":{
-    "message":"Wachtwoord Aan/Uit",
+    "message":"Wachtwoord Aan\/Uit",
     "description":"Toggle Password"
   },
   "manage":{
@@ -480,8 +480,8 @@
     "description":"' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError":{
-    "message":"Automatisch invullen mislukt. Kopieer en plak je gebruikersnaam en/of wachtwoord handmatig.",
-    "description":"Unable to auto-fill the selected login on this page. Copy/paste your username and/or password instead."
+    "message":"Automatisch invullen mislukt. Kopieer en plak je gebruikersnaam en\/of wachtwoord handmatig.",
+    "description":"Unable to auto-fill the selected login on this page. Copy\/paste your username and\/or password instead."
   },
   "loggedOut":{
     "message":"Uitgelogd",
