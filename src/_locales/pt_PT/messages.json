@@ -1,8 +1,4 @@
 {
-  "appName":{
-    "message":"bitwarden",
-    "description":"bitwarden"
-  },
   "extName":{
     "message":"bitwarden - Gestor de palavras-passe gratuito",
     "description":"Extension name"
@@ -355,10 +351,6 @@
     "message":"Iniciar website",
     "description":"Launch Website"
   },
-  "website":{
-    "message":"Website",
-    "description":"Website"
-  },
   "togglePassword":{
     "message":"Alternar palavra-passe",
     "description":"Toggle Password"
@@ -571,10 +563,6 @@
     "message":"Palavra-passe copiada",
     "description":"Password copied"
   },
-  "uri":{
-    "message":"URI",
-    "description":"URI"
-  },
   "addedLogin":{
     "message":"Credencial adicionada",
     "description":"Added login"
@@ -674,17 +662,5 @@
   "exportVaultInfo":{
     "message":"Exporte os dados do seu cofre em formato .csv para que possa modificá-los facilmente ou movê-los para outro lugar.",
     "description":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere."
-  },
-  "shared":{
-    "message":"Shared",
-    "description":"Shared"
-  },
-  "shareVault":{
-    "message":"Share Your Vault",
-    "description":"Share Your Vault"
-  },
-  "shareVaultInfo":{
-    "message":"Create an organization to securely share your logins with other users.",
-    "description":"Create an organization to securely share your logins with other users."
   }
 }
