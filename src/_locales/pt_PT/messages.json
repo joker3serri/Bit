@@ -208,8 +208,8 @@
     "description":"Visit Our Website"
   },
   "visitOurWebsiteDirectly":{
-    "message":"Visite o nosso website para obter ajuda, notícias, enviar-nos um email, e/ou saber mais acerca de como utilizar o bitwarden.",
-    "description":"Visit our website to get help, news, email us, and/or learn more about how to use bitwarden."
+    "message":"Visite o nosso website para obter ajuda, notícias, enviar-nos um email, e\/ou saber mais acerca de como utilizar o bitwarden.",
+    "description":"Visit our website to get help, news, email us, and\/or learn more about how to use bitwarden."
   },
   "fileBugReport":{
     "message":"Submeter um relatório de bug",
@@ -476,12 +476,12 @@
     "description":"Verification code is required."
   },
   "valueCopied":{
-    "message":" copiado/a",
+    "message":" copiado\/a",
     "description":"' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError":{
-    "message":"Não é possível auto-preencher a credencial selecionada nesta página. Em alternativa, copie e cole o seu nome de utilizador e/ou palavra-passe.",
-    "description":"Unable to auto-fill the selected login on this page. Copy/paste your username and/or password instead."
+    "message":"Não é possível auto-preencher a credencial selecionada nesta página. Em alternativa, copie e cole o seu nome de utilizador e\/ou palavra-passe.",
+    "description":"Unable to auto-fill the selected login on this page. Copy\/paste your username and\/or password instead."
   },
   "loggedOut":{
     "message":"Sessão terminada",
