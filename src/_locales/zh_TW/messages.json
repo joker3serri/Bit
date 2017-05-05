@@ -1,4 +1,8 @@
 {
+  "appName":{
+    "message":"bitwarden",
+    "description":"bitwarden"
+  },
   "extName":{
     "message":"bitwarden - 免費密碼管理器",
     "description":"Extension name"
@@ -566,6 +570,10 @@
   "passwordCopied":{
     "message":"密碼已複製",
     "description":"Password copied"
+  },
+  "uri":{
+    "message":"URI",
+    "description":"URI"
   },
   "addedLogin":{
     "message":"已添加網頁",
