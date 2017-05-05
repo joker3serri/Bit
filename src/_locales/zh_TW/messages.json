@@ -209,7 +209,7 @@
   },
   "visitOurWebsiteDirectly":{
     "message":"瀏覽我們的網頁以獲取協助、了解新消息、email 我們或瀏覽更多使用 bitwarden 的秘訣。",
-    "description":"Visit our website to get help, news, email us, and/or learn more about how to use bitwarden."
+    "description":"Visit our website to get help, news, email us, and\/or learn more about how to use bitwarden."
   },
   "fileBugReport":{
     "message":"提交 Bug",
@@ -313,7 +313,7 @@
   },
   "noLoginsInList":{
     "message":"無紀錄可顯示。",
-    "description":"There are no logins in list."
+    "description":"There are no logins to list."
   },
   "loginInformation":{
     "message":"網頁資訊",
@@ -481,7 +481,7 @@
   },
   "autofillError":{
     "message":"無法自動輸入你的帳戶資料。請手動複製／貼上你的帳戶名稱及密碼。",
-    "description":"Unable to auto-fill the selected login on this page. Copy/paste your username and/or password instead."
+    "description":"Unable to auto-fill the selected login on this page. Copy\/paste your username and\/or password instead."
   },
   "loggedOut":{
     "message":"已登出",
