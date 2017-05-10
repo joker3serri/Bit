@@ -1,45 +1,45 @@
 # Name
 
-bitwarden - gratis lösenordshanterare
+bitwarden – Free Password Manager
 
 # Summary
 
-En säker och gratis lösenordshanterare för alla dina enheter
+A secure and free password manager for all of your devices
 
 # Description
 
-bitwarden är det lättaste - och säkraste - sättet att lagra alla dina inloggningar och lösenord, samtidigt som de hålls synkroniserade mellan alla dina enheter.
+bitwarden is the easiest and safest way to store all of your logins and passwords while conveniently keeping them synced between all of your devices.
 
-Lösenordsstöld är ett allvarligt problem. Webbplatser och program som du använder är under attack varje dag. Säkerhetsintrång inträffar och dina lösenord blir stulna. När du återanvänder samma lösenord på flera olika webbplatser och program så kan hackare enkelt komma åt ditt e-postkonto, bank-konto och andra viktiga konton.
+Password theft is a serious problem. The websites and apps that you use are under attack every day. Security breaches occur and your passwords are stolen. When you reuse the same passwords across apps and websites hackers can easily access your email, bank, and other important accounts.
 
-Säkerhetsexperter rekommenderar att du använder ett annorlunda, slumpmässigt genererat lösenord för varenda konto du skapar. Men hur ska du komma ihåg alla dessa lösenord? bitwarden gör det enkelt för dig att skapa, lagra, och komma åt dina lösenord.
+Security experts recommend that you use a different, randomly generated password for every account that you create. But how do you manage all those passwords? bitwarden makes it easy for you to create, store, and access your passwords.
 
-bitwarden lagrar alla dina inloggningar i ett krypterat valv som synkroniseras mellan alla dina enheter. Eftersom din data är helt krypterad innan den någonsin lämnar din enhet så är det endast du som har åtkomst till din data. Inte ens teamet på bitwarden kan läsa din data. Din data är sluten med AES-256 bitars kryptering, saltad hash, och PBKDF2 SHA-256.
+bitwarden stores all of your logins in an encrypted vault that syncs across all of your devices. Since it's fully encrypted before it ever leaves your device, only you have access to your data. Not even the team at bitwarden can read your data, even if we wanted to. Your data is sealed with AES-256 bit encryption, salted hashing, and PBKDF2 SHA-256.
 
 # Asset - Tile
 
-En säker och gratis lösenordshanterare för alla dina enheter
+A secure and free password manager for all of your devices
 
 # Screenshot - Sync
 
-Synkronisera och kom åt ditt valv från flera enheter
+Sync and access your vault from multiple devices
 
 # Screenshot - Vault
 
-Hantera alla dina inloggningar och lösenord från ett säkert valv
+Manage all your logins and passwords from a secure vault
 
 # Screenshot - Autofill
 
-Fyll snabbt och automatiskt in din inloggningsinformation på alla webbplatser du besöker
+Quickly auto-fill your login credentials into any website that you visit
 
 # Screenshot - Menu
 
-Ditt valv är bekvämt tillgängligt genom högerklicksmenyn
+Your vault is also conveniently accessible from the right-click context menu
 
 # Screenshot - Password
 
-Skapa automatiskt starka, slumpmässiga, och säkra lösenord
+Automatically generate strong, random, and secure passwords
 
 # Screenshot - Edit
 
-Din information är säkert hanterad med AES-256 bitars kryptering
+Your information is managed securely using AES-256 bit encryption

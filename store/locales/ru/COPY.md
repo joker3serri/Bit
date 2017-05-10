@@ -1,45 +1,45 @@
 # Name
 
-bitwarden – Бесплатный менеджер паролей
+bitwarden вЂ“ Free Password Manager
 
 # Summary
 
-Надёжный и свободный менеджер паролей для всех Ваших устройств.
+A secure and free password manager for all of your devices
 
 # Description
 
-bitwarden - простой и надёжный способ хранить все Ваши логины и пароли и легко их синхронизировать между всеми Вашими устройствами.
+bitwarden is the easiest and safest way to store all of your logins and passwords while conveniently keeping them synced between all of your devices.
 
-Кража паролей - серьёзная проблема. Web-сайты и приложения, которые Вы используете подвергаются атакам каждый день. Проблемы в их безопасности могут привести к краже Вашего пароля. Кроме того, когда Вы используете одни и те же пароли на разных сайтах и приложениях, то хакеры могут легко получить доступ к нескольким Вашим аккаунтам сразу (к почтовому ящику, к аккаунту банка и т.д.).
+Password theft is a serious problem. The websites and apps that you use are under attack every day. Security breaches occur and your passwords are stolen. When you reuse the same passwords across apps and websites hackers can easily access your email, bank, and other important accounts.
 
-Эксперты по безопасности рекомендуют использовать разные случайно сгенерированные пароли для каждого созданного Вами аккаунта. Но как же управлять всеми этими паролями? bitwarden позволяет Вам легко получить доступ к Вашим паролям, а так же создавать и хранить их.
+Security experts recommend that you use a different, randomly generated password for every account that you create. But how do you manage all those passwords? bitwarden makes it easy for you to create, store, and access your passwords.
 
-bitwarden хранит все Ваши логины и пароли в зашифрованном хранилище, которое синхронизируется между всеми Вашими устройствами. До того, как данные покинут Ваше устройство они будут зашифрованы и только потом отправлены. Мы в bitwarden не сможем прочесть Ваши данные, даже если мы этого захотим. Ваши данные зашифрованны при помощи алгоритма AES-256 и PBKDF2 SHA256.
+bitwarden stores all of your logins in an encrypted vault that syncs across all of your devices. Since it's fully encrypted before it ever leaves your device, only you have access to your data. Not even the team at bitwarden can read your data, even if we wanted to. Your data is sealed with AES-256 bit encryption, salted hashing, and PBKDF2 SHA-256.
 
 # Asset - Tile
 
-Надёжный и бесплатный менеджер паролей для всех Ваших устройств
+A secure and free password manager for all of your devices
 
 # Screenshot - Sync
 
-Синхронизируйте Ваше хранилище между несколькими устройствами
+Sync and access your vault from multiple devices
 
 # Screenshot - Vault
 
-Управляйте всеми своими логинами и паролями из безопасного хранилища
+Manage all your logins and passwords from a secure vault
 
 # Screenshot - Autofill
 
-Быстро заполняйте данны для ввода логина и пароля на любом сайте
+Quickly auto-fill your login credentials into any website that you visit
 
 # Screenshot - Menu
 
-У вас есть удобный доступ к хранилищу из контекстного меню
+Your vault is also conveniently accessible from the right-click context menu
 
 # Screenshot - Password
 
-Генерируйте стойкие, случайные и надёжные пароли
+Automatically generate strong, random, and secure passwords
 
 # Screenshot - Edit
 
-Ваша информация надёжно хранится благодаря шифрованию AES-256
+Your information is managed securely using AES-256 bit encryption

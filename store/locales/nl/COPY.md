@@ -1,45 +1,45 @@
 # Name
 
-bitwarden - Gratis Wachtwoordbeheerder
+bitwarden – Free Password Manager
 
 # Summary
 
-Een gratis, veilige wachtwoordbeheerder voor al je apparaten
+A secure and free password manager for all of your devices
 
 # Description
 
-bitwarden is de makkelijkste en veiligste manier om al je logins en wachtwoorden op te slaan en ze tegelijkertijd te synchroniseren tussen al je apparaten.
+bitwarden is the easiest and safest way to store all of your logins and passwords while conveniently keeping them synced between all of your devices.
 
-Diefstal van wachtwoorden is een ernstig probleem. De websites en apps die je gebruikt worden dagelijks aangevallen. Beveiligingslekken komen voor en wachtwoorden worden gestolen. Wanneer je hetzelfde wachtwoorden voor meerdere apps en websites gebruikt kunnen hackers makkelijk bij je e-mail, bankgegevens en andere belangrijke accounts.
+Password theft is a serious problem. The websites and apps that you use are under attack every day. Security breaches occur and your passwords are stolen. When you reuse the same passwords across apps and websites hackers can easily access your email, bank, and other important accounts.
 
-Beveiligingsexperts bevelen aan dat je een verschillend, willekeurig gegereneerd wachtwoord gebruikt voor ieder account. Maar hoe beheer je al die wachtwoorden? bitwarden maakt het makkelijk voor je om ze te genereren, op te slaan en te gebruiken.
+Security experts recommend that you use a different, randomly generated password for every account that you create. But how do you manage all those passwords? bitwarden makes it easy for you to create, store, and access your passwords.
 
-bitwarden slaat al je logins op in een versleutelde kluis die synchroniseert tussen al je apparaten. Omdat het volledig versleuteld is voor het zelfs maar het internet opgaat, heb alleen jij toegang tot je data. Zelfs het bitwarden-team kan het niet lezen, al zouden we dat willen. Je data is beveiligd met AES-256 bit encryptie, salted hashing en PBKDF2 SHA-256.
+bitwarden stores all of your logins in an encrypted vault that syncs across all of your devices. Since it's fully encrypted before it ever leaves your device, only you have access to your data. Not even the team at bitwarden can read your data, even if we wanted to. Your data is sealed with AES-256 bit encryption, salted hashing, and PBKDF2 SHA-256.
 
 # Asset - Tile
 
-Een gratis, veilige wachtwoordbeheerder voor al je apparaten
+A secure and free password manager for all of your devices
 
 # Screenshot - Sync
 
-Synchroniseer en krijg toegang tot je kluis vanaf meerdere apparaten
+Sync and access your vault from multiple devices
 
 # Screenshot - Vault
 
-Beheer al je logins en wachtwoorden vanuit een beveiligde kluis
+Manage all your logins and passwords from a secure vault
 
 # Screenshot - Autofill
 
-Vul snel automatisch al je login-gegevens in op elke website die je bezoekt
+Quickly auto-fill your login credentials into any website that you visit
 
 # Screenshot - Menu
 
-Je kluis is ook handig te bereiken vanuit het contextmenu (rechts klikken)
+Your vault is also conveniently accessible from the right-click context menu
 
 # Screenshot - Password
 
-Genereer automatisch sterke, willekeurige en veilige wachtwoorden
+Automatically generate strong, random, and secure passwords
 
 # Screenshot - Edit
 
-Je informatie wordt veilig beheerd met AES-256 bit versleuteling
+Your information is managed securely using AES-256 bit encryption

@@ -1,45 +1,45 @@
 # Name
 
-bitwarden - Gestor de palavras-passe gratuito
+bitwarden – Free Password Manager
 
 # Summary
 
-Um gestor de palavras-passe seguro e gratuito para todos os seus dispositivos
+A secure and free password manager for all of your devices
 
 # Description
 
-O bitwarden é a maneira mais fácil e segura de armazenar todas as suas credenciais e palavras-passe mantendo-as convenientemente sincronizadas entre todos os seus dispositivos.
+bitwarden is the easiest and safest way to store all of your logins and passwords while conveniently keeping them synced between all of your devices.
 
-O furto de palavras-passe é um problema sério. Os websites e aplicações que utiliza estão sob ataque todos os dias. Quebras de segurança ocorrem e as suas palavras-passe são furtadas. Quando reutiliza as mesmas palavras-passe entre aplicações e websites, os hackers podem facilmente aceder ao seu email, banco, e outras contas importantes.
+Password theft is a serious problem. The websites and apps that you use are under attack every day. Security breaches occur and your passwords are stolen. When you reuse the same passwords across apps and websites hackers can easily access your email, bank, and other important accounts.
 
-Os especialistas de segurança recomendam que utilize uma palavra-passe diferente e aleatoriamente gerada para todas as contas que cria. Mas como é que gere todas essas palavras-passe? O bitwarden torna-lhe fácil criar, armazenar, e aceder às suas palavras-passe.
+Security experts recommend that you use a different, randomly generated password for every account that you create. But how do you manage all those passwords? bitwarden makes it easy for you to create, store, and access your passwords.
 
-O bitwarden armazena todas as suas credenciais num cofre encriptado que sincroniza entre todos os seus dispositivos. Como são completamente encriptados antes de se quer sair do seu dispositivo, apenas você tem acesso aos seus dados. Nem se quer a equipa do bitwarden pode ler os seus dados, mesmo se quiséssemos. Os seus dados são selados com encriptação AES-256 bits, salted hashing, e PBKDF2 SHA-256.
+bitwarden stores all of your logins in an encrypted vault that syncs across all of your devices. Since it's fully encrypted before it ever leaves your device, only you have access to your data. Not even the team at bitwarden can read your data, even if we wanted to. Your data is sealed with AES-256 bit encryption, salted hashing, and PBKDF2 SHA-256.
 
 # Asset - Tile
 
-Um gestor de palavras-passe seguro e gratuito para todos os seus dispositivos
+A secure and free password manager for all of your devices
 
 # Screenshot - Sync
 
-Sincronize e acesse o seu cofre através de múltiplos dispositivos
+Sync and access your vault from multiple devices
 
 # Screenshot - Vault
 
-Gira todas as suas credenciais e palavras-passe a partir de um cofre seguro
+Manage all your logins and passwords from a secure vault
 
 # Screenshot - Autofill
 
-Rapidamente auto-preencha as suas credenciais dentro de qualquer website que visitar
+Quickly auto-fill your login credentials into any website that you visit
 
 # Screenshot - Menu
 
-O seu cofre é também convenientemente acessível a partir do menu de contexto de clique de lado direito do rato
+Your vault is also conveniently accessible from the right-click context menu
 
 # Screenshot - Password
 
-Gira automaticamente palvras-passe fortes, aleatórias e seguras
+Automatically generate strong, random, and secure passwords
 
 # Screenshot - Edit
 
-A sua informação é gerida com segurança utilizando encriptação AES-256 bits
+Your information is managed securely using AES-256 bit encryption
