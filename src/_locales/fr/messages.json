@@ -664,7 +664,7 @@
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
   "exportWarning": {
-    "message": "Cet export contient des données non chiffrées au format .csv. Vous ne devriez ni le stocker ni l\'envoyer via des canaux non sécurisés (tel que l\'e-mail). Supprimez-le immédiatement après l\'avoir utilisé.",
+    "message": "Cet export contient des données non chiffrées au format .csv. Vous ne devriez ni le stocker ni l'envoyer via des canaux non sécurisés (tel que l'e-mail). Supprimez-le immédiatement après l'avoir utilisé.",
     "description": "This export contains your unencrypted data in .csv format. You should not store or send it over unsecure channels (such as email). Delete it immediately after your are done using it."
   },
   "exportMasterPassword": {
@@ -684,7 +684,7 @@
     "description": "Share Your Vault"
   },
   "shareVaultInfo": {
-    "message": "Créez une organisation pour partager de manière sécurisée vos identifiants avec d\'autres utilisateurs.",
+    "message": "Créez une organisation pour partager de manière sécurisée vos identifiants avec d'autres utilisateurs.",
     "description": "Create an organization to securely share your logins with other users."
   }
 }
