@@ -1,4 +1,8 @@
 {
+  "appName":{
+    "message":"bitwarden",
+    "description":"bitwarden"
+  },
   "extName":{
     "message":"bitwarden - 免费密码管理器",
     "description":"Extension name"
@@ -566,6 +570,10 @@
   "passwordCopied":{
     "message":"密码已复制",
     "description":"Password copied"
+  },
+  "uri":{
+    "message":"URI",
+    "description":"URI"
   },
   "addedLogin":{
     "message":"已添加的网站",
