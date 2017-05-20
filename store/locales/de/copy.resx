@@ -117,14 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="Name" xml:space="preserve">
+    <value>bitwarden - Kostenloser Passwort-Manager</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Ein sicherer und kostenloser Passwort-Manager für all deine Geräte</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>bitwarden ist der einfachste und sicherste Weg all deine Logins und Passwörter zu speichern, während du sie zwischen all deinen Geräten synchronisierst.
+
+Passwort-Diebstahl ist ein echtes Problem. Die Webseiten und Apps, welche du verwendest, werden jeden Tag angegriffen und oftmals werden deine Passwörter dabei gestohlen. Wenn das gleiche Passwort bei mehreren Apps und Websites verwendet wird, können Hacker sich damit ganz einfach auch in deine E-Mails oder deinen Bank-Account einloggen.
+
+Sicherheitsexperten empfehlen daher, dass du für jeden Account, den du erstellst, ein anderes, zufällig generiertes Passwort verwendest. Aber wie sollst du dir all diese Passwörter merken? bitwarden hilft dir dabei, deine Passwörter zu erstellen, speichern und zu verwalten.
+
+bitwarden speichert all deine Logins in einem verschlüsselten Tresor, der mit allen Geräten synchronisiert wird. Da er komplett verschlüsselt ist, bevor er überhaupt dein Gerät verlässt, hast nur du Zugriff auf deine Daten. Nicht einmal bitwarden kann deine Daten lesen, selbst, wenn wir es wollten. Deine Daten sind mit einer AES-256-Bit-Verschlüsselung, sowie Salted Hashing und PBKDR2 SHA-256 abgesichert.</value>
+  </data>
+  <data name="AssetTitle" xml:space="preserve">
+    <value>Ein sicherer und kostenloser Passwort-Manager für all deine Geräte</value>
+  </data>
+  <data name="ScreenshotSync" xml:space="preserve">
+    <value>Synchronisiere und greife auf deinen Tresor von unterschiedlichen Geräten aus zu</value>
+  </data>
+  <data name="ScreenshotVault" xml:space="preserve">
+    <value>Verwalte all deine Logins und Passwörter mit einem sicheren Tresor</value>
+  </data>
+  <data name="ScreenshotAutofill" xml:space="preserve">
+    <value>Auto-Vervollständige alle Login-Informationen schnell auf jeder Website, die du besuchst</value>
+  </data>
+  <data name="ScreenshotMenu" xml:space="preserve">
+    <value>Dein Tresor kann auch über das Kontextmenü einfach erreicht werden</value>
+  </data>
+  <data name="ScreenshotPassword" xml:space="preserve">
+    <value>Generiere automatisch starke, zufällige und sichere Passwörter</value>
+  </data>
+  <data name="ScreenshotEdit" xml:space="preserve">
+    <value>Deine Informationen sind sicher dank AES-256-Bit-Verschlüsselung</value>
+  </data>
 </root>
