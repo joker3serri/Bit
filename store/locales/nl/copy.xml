@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <data name="Name">
+    <value></value>
+    <comment></comment>
+  </data>
+  <data name="Summary">
+    <value></value>
+    <comment></comment>
+  </data>
+  <data name="Description">
+    <value>
+      
+    </value>
+    <comment></comment>
+  </data>
+  <data name="AssetTitle">
+    <value></value>
+    <comment></comment>
+  </data>
+  <data name="ScreenshotSync">
+    <value></value>
+    <comment></comment>
+  </data>
+  <data name="ScreenshotVault">
+    <value></value>
+    <comment></comment>
+  </data>
+  <data name="ScreenshotAutofill">
+    <value></value>
+    <comment></comment>
+  </data>
+  <data name="ScreenshotMenu">
+    <value></value>
+    <comment></comment>
+  </data>
+  <data name="ScreenshotMenu">
+    <value></value>
+    <comment></comment>
+  </data>
+  <data name="ScreenshotEdit">
+    <value></value>
+    <comment></comment>
+  </data>
+</root>
