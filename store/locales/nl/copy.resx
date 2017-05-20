@@ -117,14 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="Name" xml:space="preserve">
+    <value>bitwarden - Gratis Wachtwoordbeheerder</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Een gratis, veilige wachtwoordbeheerder voor al je apparaten</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>bitwarden is de makkelijkste en veiligste manier om al je logins en wachtwoorden op te slaan en ze tegelijkertijd te synchroniseren tussen al je apparaten.
+
+Diefstal van wachtwoorden is een ernstig probleem. De websites en apps die je gebruikt worden dagelijks aangevallen. Beveiligingslekken komen voor en wachtwoorden worden gestolen. Wanneer je hetzelfde wachtwoorden voor meerdere apps en websites gebruikt kunnen hackers makkelijk bij je e-mail, bankgegevens en andere belangrijke accounts.
+
+Beveiligingsexperts bevelen aan dat je een verschillend, willekeurig gegereneerd wachtwoord gebruikt voor ieder account. Maar hoe beheer je al die wachtwoorden? bitwarden maakt het makkelijk voor je om ze te genereren, op te slaan en te gebruiken.
+
+bitwarden slaat al je logins op in een versleutelde kluis die synchroniseert tussen al je apparaten. Omdat het volledig versleuteld is voor het zelfs maar het internet opgaat, heb alleen jij toegang tot je data. Zelfs het bitwarden-team kan het niet lezen, al zouden we dat willen. Je data is beveiligd met AES-256 bit encryptie, salted hashing en PBKDF2 SHA-256.</value>
+  </data>
+  <data name="AssetTitle" xml:space="preserve">
+    <value>Een gratis, veilige wachtwoordbeheerder voor al je apparaten</value>
+  </data>
+  <data name="ScreenshotSync" xml:space="preserve">
+    <value>Synchroniseer en krijg toegang tot je kluis vanaf meerdere apparaten</value>
+  </data>
+  <data name="ScreenshotVault" xml:space="preserve">
+    <value>Beheer al je logins en wachtwoorden vanuit een beveiligde kluis</value>
+  </data>
+  <data name="ScreenshotAutofill" xml:space="preserve">
+    <value>Vul snel automatisch al je login-gegevens in op elke website die je bezoekt</value>
+  </data>
+  <data name="ScreenshotMenu" xml:space="preserve">
+    <value>Je kluis is ook handig te bereiken vanuit het contextmenu (rechts klikken)</value>
+  </data>
+  <data name="ScreenshotPassword" xml:space="preserve">
+    <value>Genereer automatisch sterke, willekeurige en veilige wachtwoorden</value>
+  </data>
+  <data name="ScreenshotEdit" xml:space="preserve">
+    <value>Je informatie wordt veilig beheerd met AES-256 bit versleuteling</value>
+  </data>
 </root>
