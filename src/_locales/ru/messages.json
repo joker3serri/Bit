@@ -1,4 +1,8 @@
 {
+  "appName":{
+    "message":"bitwarden",
+    "description":"bitwarden"
+  },
   "extName":{
     "message":"bitwarden - Бесплатный менеджер паролей",
     "description":"Extension name"
@@ -566,6 +570,10 @@
   "passwordCopied":{
     "message":"Пароль скопирован",
     "description":"Password copied"
+  },
+  "uri":{
+    "message":"URI",
+    "description":"URI"
   },
   "addedLogin":{
     "message":"Сайт добавлен",
