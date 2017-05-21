@@ -145,7 +145,7 @@ bitwarden 将您的登录信息保存在加密的密码库，可以在您的所�
     <value>在您访问网站的时候快速自动填充登录信息</value>
   </data>
   <data name="ScreenshotMenu" xml:space="preserve">
-    <value>您也可以通过鼠标右键菜单快捷地访问密码库</value>
+    <value>Your vault is also conveniently accessible from the right-click menu</value>
   </data>
   <data name="ScreenshotPassword" xml:space="preserve">
     <value>自动生成强力、随机和安全的密码</value>
