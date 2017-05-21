@@ -159,6 +159,10 @@
     "message":"Om",
     "description":"About"
   },
+  "version":{
+    "message":"Version",
+    "description":"Version"
+  },
   "save":{
     "message":"Spara",
     "description":"Save"
@@ -598,6 +602,10 @@
   "lost2FAApp":{
     "message":"Förlorat autentiseringsapp?",
     "description":"Lost authenticator app?"
+  },
+  "credits":{
+    "message":"Credits",
+    "description":"Credits (giving thanks to people that helped, like at the end of a movie)"
   },
   "thankYou":{
     "message":"Tack",
