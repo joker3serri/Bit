@@ -159,6 +159,10 @@
     "message":"À propos",
     "description":"About"
   },
+  "version":{
+    "message":"Version",
+    "description":"Version"
+  },
   "save":{
     "message":"Enregistrer",
     "description":"Save"
@@ -279,6 +283,10 @@
     "message":"Re-générer un mot de passe",
     "description":"Regenerate Password"
   },
+  "options":{
+    "message":"Options",
+    "description":"Options"
+  },
   "length":{
     "message":"Longueur",
     "description":"Length"
@@ -322,6 +330,10 @@
   "favorite":{
     "message":"Favori",
     "description":"Favorite"
+  },
+  "notes":{
+    "message":"Notes",
+    "description":"Notes"
   },
   "editLogin":{
     "message":"Modifier site",
@@ -390,6 +402,22 @@
   "immediately":{
     "message":"Immédiatement",
     "description":"Immediately"
+  },
+  "oneMinute":{
+    "message":"1 minute",
+    "description":"1 minute"
+  },
+  "fiveMinutes":{
+    "message":"5 minutes",
+    "description":"5 minutes"
+  },
+  "fifteenMinutes":{
+    "message":"15 minutes",
+    "description":"15 minutes"
+  },
+  "thirtyMinutes":{
+    "message":"30 minutes",
+    "description":"30 minutes"
   },
   "oneHour":{
     "message":"1 heure",
