@@ -145,7 +145,7 @@ bitwarden 將你所有登入資料儲存在加密的密碼庫中，並同步至�
     <value>幫你在網頁自動填寫帳戶和密碼</value>
   </data>
   <data name="ScreenshotMenu" xml:space="preserve">
-    <value>Your vault is also conveniently accessible from the right-click menu</value>
+    <value>右鍵一按，進入密碼庫</value>
   </data>
   <data name="ScreenshotPassword" xml:space="preserve">
     <value>自動生成隨機、安全的強密碼</value>
