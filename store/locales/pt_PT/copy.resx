@@ -145,7 +145,7 @@ O bitwarden armazena todas as suas credenciais num cofre encriptado que sincroni
     <value>Rapidamente auto-preencha as suas credenciais dentro de qualquer website que visitar</value>
   </data>
   <data name="ScreenshotMenu" xml:space="preserve">
-    <value>Your vault is also conveniently accessible from the right-click menu</value>
+    <value>O seu cofre é também convenientemente acessível a partir do menu de contexto de clique de lado direito do rato</value>
   </data>
   <data name="ScreenshotPassword" xml:space="preserve">
     <value>Gira automaticamente palvras-passe fortes, aleatórias e seguras</value>
