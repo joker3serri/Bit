@@ -1,4 +1,8 @@
 {
+  "appName":{
+    "message":"bitwarden",
+    "description":"bitwarden"
+  },
   "extName":{
     "message":"bitwarden - Gratis Wachtwoordbeheerder",
     "description":"Extension name"
@@ -542,6 +546,10 @@
   "passwordCopied":{
     "message":"Wachtwoord gekopieerd",
     "description":"Password copied"
+  },
+  "uri":{
+    "message":"URI",
+    "description":"URI"
   },
   "addedLogin":{
     "message":"Website toegevoegd",
