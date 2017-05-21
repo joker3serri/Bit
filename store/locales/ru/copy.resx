@@ -145,7 +145,7 @@ bitwarden хранит все Ваши логины и пароли в заши�
     <value>Быстро заполняйте данны для ввода логина и пароля на любом сайте</value>
   </data>
   <data name="ScreenshotMenu" xml:space="preserve">
-    <value>Your vault is also conveniently accessible from the right-click menu</value>
+    <value>У вас есть удобный доступ к хранилищу из контекстного меню</value>
   </data>
   <data name="ScreenshotPassword" xml:space="preserve">
     <value>Генерируйте стойкие, случайные и надёжные пароли</value>
