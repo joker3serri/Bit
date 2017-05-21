@@ -602,5 +602,89 @@
   "lost2FAApp":{
     "message":"Потеряли доступ к приложению Authenticator?",
     "description":"Lost authenticator app?"
+  },
+  "credits":{
+    "message":"Credits",
+    "description":"Credits (giving thanks to people that helped, like at the end of a movie)"
+  },
+  "thankYou":{
+    "message":"Thank You",
+    "description":"Thank You"
+  },
+  "translations":{
+    "message":"Translations",
+    "description":"Translations"
+  },
+  "searchFolder":{
+    "message":"Search folder",
+    "description":"Search folder"
+  },
+  "noneFolder":{
+    "message":"No Folder",
+    "description":"No Folder - this is the folder for uncategorized logins"
+  },
+  "features":{
+    "message":"Features",
+    "description":"Features"
+  },
+  "gaDesc":{
+    "message":"We use analytics to better learn how the extension is being used so that we can make it better. All data collection is completely anonymous.",
+    "description":"We use analytics to better learn how the extension is being used so that we can make it better. All data collection is completely anonymous."
+  },
+  "disableAddLoginNotification":{
+    "message":"Disable Add Login Notification",
+    "description":"Disable Add Login Notification"
+  },
+  "addLoginNotificationDesc":{
+    "message":"The \"Add Login Notification\" automatically prompts you to save new logins to your vault whenever you log into them for the first time.",
+    "description":"The \"Add Login Notification\" automatically prompts you to save new logins to your vault whenever you log into them for the first time."
+  },
+  "notificationAddDesc":{
+    "message":"Should bitwarden remember this password for you?",
+    "description":"Should bitwarden remember this password for you?"
+  },
+  "notificationAddSave":{
+    "message":"Yes, Save Now",
+    "description":"Yes, Save Now"
+  },
+  "disableContextMenuItem":{
+    "message":"Disable Context Menu Options",
+    "description":"Disable Context Menu Options"
+  },
+  "disableContextMenuItemDesc":{
+    "message":"Context menu options provide quick access to password generation and logins for the website in your current tab.",
+    "description":"Context menu options provide quick access to password generation and logins for the website in your current tab."
+  },
+  "exportVault":{
+    "message":"Export Vault",
+    "description":"Export Vault"
+  },
+  "warning":{
+    "message":"WARNING",
+    "description":"WARNING (should stay in capitalized letters if the language permits)"
+  },
+  "exportWarning":{
+    "message":"This export contains your unencrypted data in .csv format. You should not store or send it over unsecure channels (such as email). Delete it immediately after your are done using it.",
+    "description":"This export contains your unencrypted data in .csv format. You should not store or send it over unsecure channels (such as email). Delete it immediately after your are done using it."
+  },
+  "exportMasterPassword":{
+    "message":"Enter your master password to export your vault data.",
+    "description":"Enter your master password to export your vault data."
+  },
+  "exportVaultInfo":{
+    "message":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere.",
+    "description":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere."
+  },
+  "shared":{
+    "message":"Shared",
+    "description":"Shared"
+  },
+  "shareVault":{
+    "message":"Share Your Vault",
+    "description":"Share Your Vault"
+  },
+  "shareVaultInfo":{
+    "message":"Create an organization to securely share your logins with other users.",
+    "description":"Create an organization to securely share your logins with other users."
   }
 }
