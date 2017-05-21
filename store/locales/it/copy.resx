@@ -145,7 +145,7 @@ bitwarden salva tutti i tuoi login in una cassaforte criptata che si sincronizza
     <value>Completa velocemente tutte le tue credenziali di login in qualunque sito tu visiti</value>
   </data>
   <data name="ScreenshotMenu" xml:space="preserve">
-    <value>La tua cassaforte è facilmente accessibile dal menu contestuale del tasto destro del mouse</value>
+    <value>Your vault is also conveniently accessible from the right-click menu</value>
   </data>
   <data name="ScreenshotPassword" xml:space="preserve">
     <value>Genera automaticamente password complesse, casuali e sicure</value>
