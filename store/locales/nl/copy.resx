@@ -145,7 +145,7 @@ bitwarden slaat al je logins op in een versleutelde kluis die synchroniseert tus
     <value>Vul snel automatisch al je login-gegevens in op elke website die je bezoekt</value>
   </data>
   <data name="ScreenshotMenu" xml:space="preserve">
-    <value>Je kluis is ook handig te bereiken vanuit het contextmenu (rechts klikken)</value>
+    <value>Your vault is also conveniently accessible from the right-click menu</value>
   </data>
   <data name="ScreenshotPassword" xml:space="preserve">
     <value>Genereer automatisch sterke, willekeurige en veilige wachtwoorden</value>
