@@ -145,7 +145,7 @@ bitwarden säilöö kaikki kirjautumistietosi salattuun holviin, joka synkronoid
     <value>Käytä automaattista kirjautumistietojen täydennystä millä tahansa sivustolla</value>
   </data>
   <data name="ScreenshotMenu" xml:space="preserve">
-    <value>Your vault is also conveniently accessible from the right-click menu</value>
+    <value>Pääse käsiksi holvisi tietoihin suoraan selaimesi kontekstivalikosta</value>
   </data>
   <data name="ScreenshotPassword" xml:space="preserve">
     <value>Luo automaattiseti vahvoja, satunnaisia ja turvallisia salasanoja</value>
