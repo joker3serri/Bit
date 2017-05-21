@@ -1,4 +1,8 @@
 {
+  "appName":{
+    "message":"bitwarden",
+    "description":"bitwarden"
+  },
   "extName":{
     "message":"bitwarden - Kostenloser Passwort Manager",
     "description":"Extension name"
@@ -538,6 +542,10 @@
   "passwordCopied":{
     "message":"Passwort kopiert",
     "description":"Password copied"
+  },
+  "uri":{
+    "message":"URI",
+    "description":"URI"
   },
   "addedLogin":{
     "message":"Seite hinzugefügt",
