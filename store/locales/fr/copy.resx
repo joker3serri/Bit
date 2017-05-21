@@ -145,7 +145,7 @@ bitwarden stocke tous vos identifiants dans un coffre chiffré qui est synchroni
     <value>Remplissage automatique et rapide de vos identifiants sur n'importe quel site que vous visitez</value>
   </data>
   <data name="ScreenshotMenu" xml:space="preserve">
-    <value>Votre coffre est facilement accessible depuis le menu contextuel de droite</value>
+    <value>Your vault is also conveniently accessible from the right-click menu</value>
   </data>
   <data name="ScreenshotPassword" xml:space="preserve">
     <value>Générer automatiquement des mots de passe forts, aléatoires et sécurisés</value>
