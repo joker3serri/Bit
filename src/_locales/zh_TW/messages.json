@@ -674,5 +674,17 @@
   "exportVaultInfo":{
     "message":"將密碼庫資料匯出成 .csv 檔案，方便修改和轉移資料。",
     "description":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere."
+  },
+  "shared":{
+    "message":"Shared",
+    "description":"Shared"
+  },
+  "shareVault":{
+    "message":"Share Your Vault",
+    "description":"Share Your Vault"
+  },
+  "shareVaultInfo":{
+    "message":"Create an organization to securely share your logins with other users.",
+    "description":"Create an organization to securely share your logins with other users."
   }
 }
