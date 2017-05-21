@@ -145,7 +145,7 @@ bitwarden speichert all deine Logins in einem verschlüsselten Tresor, der mit a
     <value>Auto-Vervollständige alle Login-Informationen schnell auf jeder Website, die du besuchst</value>
   </data>
   <data name="ScreenshotMenu" xml:space="preserve">
-    <value>Your vault is also conveniently accessible from the right-click menu</value>
+    <value>Dein Tresor kann auch über das Kontextmenü einfach erreicht werden</value>
   </data>
   <data name="ScreenshotPassword" xml:space="preserve">
     <value>Generiere automatisch starke, zufällige und sichere Passwörter</value>
