@@ -145,7 +145,7 @@ bitwarden lagrar alla dina inloggningar i ett krypterat valv som synkroniseras m
     <value>Fyll snabbt och automatiskt in din inloggningsinformation på alla webbplatser du besöker</value>
   </data>
   <data name="ScreenshotMenu" xml:space="preserve">
-    <value>Your vault is also conveniently accessible from the right-click menu</value>
+    <value>Ditt valv är bekvämt tillgängligt genom högerklicksmenyn</value>
   </data>
   <data name="ScreenshotPassword" xml:space="preserve">
     <value>Skapa automatiskt starka, slumpmässiga, och säkra lösenord</value>
