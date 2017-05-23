@@ -244,7 +244,7 @@
     "description":"bitwarden Web Vault"
   },
   "bitWebVaultInfo":{
-    "message":"Manage your logins from any web browser with the bitwarden web vault.",
+    "message":"Spravujte vaše prihlasovacie údaje z akéhokoľvek prehliadača s webovým trezorom bitwarden.",
     "description":"Manage your logins from any web browser with the bitwarden web vault."
   },
   "bitIosVault":{
@@ -252,7 +252,7 @@
     "description":"bitwarden iOS Vault"
   },
   "bitIosVaultInfo":{
-    "message":"Manage your logins from your mobile devices with the bitwarden iOS vault.",
+    "message":"Spravujte vaše prihlasovacie údaje z vašich mobilných zariadení s bitwarden iOS trezorom.",
     "description":"Manage your logins from your mobile devices with the bitwarden iOS vault."
   },
   "bitAndrVault":{
@@ -260,7 +260,7 @@
     "description":"bitwarden Android Vault"
   },
   "bitAndrVaultInfo":{
-    "message":"Manage your logins from your mobile devices with the bitwarden Android vault.",
+    "message":"Spravujte vaše prihlasovacie údaje z vašich mobilných zariadení s bitwarden Android trezorom.",
     "description":"Manage your logins from your mobile devices with the bitwarden Android vault."
   },
   "importLogins":{
@@ -268,7 +268,7 @@
     "description":"Import Logins"
   },
   "importLoginsInfo":{
-    "message":"Quickly bulk import your logins from other password management applications.",
+    "message":"Rýchlo hromadne importovať vaše prihlasovacie údaje z iných aplikácií na správu hesiel.",
     "description":"Quickly bulk import your logins from other password management applications."
   },
   "select":{
@@ -300,11 +300,11 @@
     "description":"Minimum Special"
   },
   "avoidAmbChar":{
-    "message":"Avoid Ambiguous Characters",
+    "message":"Vyhnúť sa dvojvýznamovým znakom",
     "description":"Avoid Ambiguous Characters"
   },
   "searchVault":{
-    "message":"Search vault",
+    "message":"Prehľadávať trezor",
     "description":"Search vault"
   },
   "edit":{
@@ -312,11 +312,11 @@
     "description":"Edit"
   },
   "noLoginsInList":{
-    "message":"There are no logins to list.",
+    "message":"Neexistujú žiadne prihlasovacie údaje.",
     "description":"There are no logins to list."
   },
   "loginInformation":{
-    "message":"Login Information",
+    "message":"Prihlasovacie údaje",
     "description":"Login Information"
   },
   "username":{
@@ -336,7 +336,7 @@
     "description":"Notes"
   },
   "editLogin":{
-    "message":"Edit Login",
+    "message":"Upraviť prihlásenie",
     "description":"Edit Login"
   },
   "folder":{
@@ -344,15 +344,15 @@
     "description":"Folder"
   },
   "deleteLogin":{
-    "message":"Delete Login",
+    "message":"Odstrániť prihlásenie",
     "description":"Delete Login"
   },
   "viewLogin":{
-    "message":"View Login",
+    "message":"Zobraziť prihlásenie",
     "description":"View Login"
   },
   "launchWebsite":{
-    "message":"Launch Website",
+    "message":"Spustiť stránku",
     "description":"Launch Website"
   },
   "website":{
@@ -360,11 +360,11 @@
     "description":"Website"
   },
   "togglePassword":{
-    "message":"Toggle Password",
+    "message":"Prepnúť heslo",
     "description":"Toggle Password"
   },
   "manage":{
-    "message":"Manage",
+    "message":"Spravovať",
     "description":"Manage"
   },
   "other":{
@@ -372,19 +372,19 @@
     "description":"Other"
   },
   "disableGa":{
-    "message":"Disable Analytics",
+    "message":"Vypnúť analytiku",
     "description":"Disable Analytics"
   },
   "rateExtension":{
-    "message":"Rate the Extension",
+    "message":"Ohodnotiť rozšírenie",
     "description":"Rate the Extension"
   },
   "rateExtensionDesc":{
-    "message":"Please consider helping us out with a good review!",
+    "message":"Prosíme, zvážte pomôcť nám s dobrým hodnotením!",
     "description":"Please consider helping us out with a good review!"
   },
   "browserNotSupportClipboard":{
-    "message":"Your web browser does not support easy clipboard copying. Copy it manually instead.",
+    "message":"Váš webový prehliadač nepodporuje jednoduché kopírovanie do schránky. Skopírujte manuálne.",
     "description":"Your web browser does not support easy clipboard copying. Copy it manually instead."
   },
   "verifyMasterPassword":{
