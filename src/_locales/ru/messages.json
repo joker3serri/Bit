@@ -1,6 +1,6 @@
 {
   "appName":{
-    "message":"Bitwarden",
+    "message":"bitwarden",
     "description":"bitwarden"
   },
   "extName":{
@@ -640,7 +640,7 @@
     "description":"The \"Add Login Notification\" automatically prompts you to save new logins to your vault whenever you log into them for the first time."
   },
   "notificationAddDesc":{
-    "message":"Разрешить Bitwarden запомнить этот пароль для вас?",
+    "message":"Разрешить bitwarden запомнить этот пароль для вас?",
     "description":"Should bitwarden remember this password for you?"
   },
   "notificationAddSave":{
