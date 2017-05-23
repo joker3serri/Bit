@@ -220,19 +220,19 @@
     "description":"Open an issue at our GitHub repository."
   },
   "sync":{
-    "message":"Sync",
+    "message":"Synchronizácia",
     "description":"Sync"
   },
   "syncVaultNow":{
-    "message":"Sync Vault Now",
+    "message":"Synchronizovať trezor teraz",
     "description":"Sync Vault Now"
   },
   "lastSync":{
-    "message":"Last Sync:",
+    "message":"Posledná synchronizácia:",
     "description":"Last Sync:"
   },
   "passGen":{
-    "message":"Password Generator",
+    "message":"Generátor hesla",
     "description":"Password Generator"
   },
   "passGenInfo":{
@@ -256,7 +256,7 @@
     "description":"Manage your logins from your mobile devices with the bitwarden iOS vault."
   },
   "bitAndrVault":{
-    "message":"bitwarden Android Vault",
+    "message":"bitwarden Android trezor",
     "description":"bitwarden Android Vault"
   },
   "bitAndrVaultInfo":{
@@ -264,7 +264,7 @@
     "description":"Manage your logins from your mobile devices with the bitwarden Android vault."
   },
   "importLogins":{
-    "message":"Import Logins",
+    "message":"Importovať prihlásenia",
     "description":"Import Logins"
   },
   "importLoginsInfo":{
@@ -272,31 +272,31 @@
     "description":"Quickly bulk import your logins from other password management applications."
   },
   "select":{
-    "message":"Select",
+    "message":"Vybrať",
     "description":"Select"
   },
   "generatePassword":{
-    "message":"Generate Password",
+    "message":"Generovať heslo",
     "description":"Generate Password"
   },
   "regeneratePassword":{
-    "message":"Regenerate Password",
+    "message":"Vygenerovať nové heslo",
     "description":"Regenerate Password"
   },
   "options":{
-    "message":"Options",
+    "message":"Možnosti",
     "description":"Options"
   },
   "length":{
-    "message":"Length",
+    "message":"Dĺžka",
     "description":"Length"
   },
   "minNumbers":{
-    "message":"Minimum Numbers",
+    "message":"Minimum číslic",
     "description":"Minimum Numbers"
   },
   "minSpecial":{
-    "message":"Minimum Special",
+    "message":"Minimum špeciálnych",
     "description":"Minimum Special"
   },
   "avoidAmbChar":{
@@ -308,7 +308,7 @@
     "description":"Search vault"
   },
   "edit":{
-    "message":"Edit",
+    "message":"Upraviť",
     "description":"Edit"
   },
   "noLoginsInList":{
@@ -320,19 +320,19 @@
     "description":"Login Information"
   },
   "username":{
-    "message":"Username",
+    "message":"Používateľské meno",
     "description":"Username"
   },
   "password":{
-    "message":"Password",
+    "message":"Heslo",
     "description":"Password"
   },
   "favorite":{
-    "message":"Favorite",
+    "message":"Obľúbené",
     "description":"Favorite"
   },
   "notes":{
-    "message":"Notes",
+    "message":"Poznámky",
     "description":"Notes"
   },
   "editLogin":{
@@ -340,7 +340,7 @@
     "description":"Edit Login"
   },
   "folder":{
-    "message":"Folder",
+    "message":"Priečinok",
     "description":"Folder"
   },
   "deleteLogin":{
@@ -356,7 +356,7 @@
     "description":"Launch Website"
   },
   "website":{
-    "message":"Website",
+    "message":"Webstránka",
     "description":"Website"
   },
   "togglePassword":{
@@ -368,7 +368,7 @@
     "description":"Manage"
   },
   "other":{
-    "message":"Other",
+    "message":"Ostatné",
     "description":"Other"
   },
   "disableGa":{
@@ -600,39 +600,39 @@
     "description":"Are you sure you want to overwrite the current password?"
   },
   "lost2FAApp":{
-    "message":"Lost authenticator app?",
+    "message":"Stratili ste overovaciu aplikáciu?",
     "description":"Lost authenticator app?"
   },
   "credits":{
-    "message":"Credits",
+    "message":"Poďakovania",
     "description":"Credits (giving thanks to people that helped, like at the end of a movie)"
   },
   "thankYou":{
-    "message":"Thank You",
+    "message":"Ďakujeme Vám",
     "description":"Thank You"
   },
   "translations":{
-    "message":"Translations",
+    "message":"Preklady",
     "description":"Translations"
   },
   "searchFolder":{
-    "message":"Search folder",
+    "message":"Prehľadávať priečinok",
     "description":"Search folder"
   },
   "noneFolder":{
-    "message":"No Folder",
+    "message":"Žiadny priečinok",
     "description":"No Folder - this is the folder for uncategorized logins"
   },
   "features":{
-    "message":"Features",
+    "message":"Funkcie",
     "description":"Features"
   },
   "gaDesc":{
-    "message":"We use analytics to better learn how the extension is being used so that we can make it better. All data collection is completely anonymous.",
+    "message":"Používame analytiku, aby sme zistili, ako je rozšírenie používané, aby sme ho mohli vylepšiť. Všetky zhromaždené údaje sú kompletne anonymné.",
     "description":"We use analytics to better learn how the extension is being used so that we can make it better. All data collection is completely anonymous."
   },
   "disableAddLoginNotification":{
-    "message":"Disable Add Login Notification",
+    "message":"Vypnúť notifikáciu pridania prihlasovacích údajov",
     "description":"Disable Add Login Notification"
   },
   "addLoginNotificationDesc":{
@@ -656,11 +656,11 @@
     "description":"Context menu options provide quick access to password generation and logins for the website in your current tab."
   },
   "exportVault":{
-    "message":"Export Vault",
+    "message":"Export trezoru",
     "description":"Export Vault"
   },
   "warning":{
-    "message":"WARNING",
+    "message":"UPOZORNENIE",
     "description":"WARNING (should stay in capitalized letters if the language permits)"
   },
   "exportWarning":{
@@ -676,11 +676,11 @@
     "description":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere."
   },
   "shared":{
-    "message":"Shared",
+    "message":"Zdieľané",
     "description":"Shared"
   },
   "shareVault":{
-    "message":"Share Your Vault",
+    "message":"Zdieľať trezor",
     "description":"Share Your Vault"
   },
   "shareVaultInfo":{
