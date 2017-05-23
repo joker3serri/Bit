@@ -132,71 +132,71 @@
     "description":"Verification Code"
   },
   "enterTwoStepVerCode":{
-    "message":"Enter your two-step verification code.",
+    "message":"Zadajte dvojstupňový overovací kód.",
     "description":"Enter your two-step verification code."
   },
   "account":{
-    "message":"Account",
+    "message":"Účet",
     "description":"Account"
   },
   "changeMasterPassword":{
-    "message":"Change Master Password",
+    "message":"Zmeniť hlavné heslo",
     "description":"Change Master Password"
   },
   "changeEmail":{
-    "message":"Change Email",
+    "message":"Zmeniť email",
     "description":"Change Email"
   },
   "twoStepLogin":{
-    "message":"Two-step Login",
+    "message":"Dvojstupňové prihlásenie",
     "description":"Two-step Login"
   },
   "logOut":{
-    "message":"Log Out",
+    "message":"Odhlásiť sa",
     "description":"Log Out"
   },
   "about":{
-    "message":"About",
+    "message":"O aplikácii",
     "description":"About"
   },
   "version":{
-    "message":"Version",
+    "message":"Verzia",
     "description":"Version"
   },
   "save":{
-    "message":"Save",
+    "message":"Uložiť",
     "description":"Save"
   },
   "addFolder":{
-    "message":"Add Folder",
+    "message":"Pridať priečinok",
     "description":"Add Folder"
   },
   "name":{
-    "message":"Name",
+    "message":"Meno",
     "description":"Name"
   },
   "editFolder":{
-    "message":"Edit Folder",
+    "message":"Upraviť priečinok",
     "description":"Edit Folder"
   },
   "deleteFolder":{
-    "message":"Delete Folder",
+    "message":"Odstrániť priečinok",
     "description":"Delete Folder"
   },
   "folders":{
-    "message":"Folders",
+    "message":"Priečinky",
     "description":"Folders"
   },
   "noFolders":{
-    "message":"There are no folders to list.",
+    "message":"V zozname nie sú žiadne priečinky.",
     "description":"There are no folders to list."
   },
   "helpFeedback":{
-    "message":"Help & Feedback",
+    "message":"Pomoc a spätná väzba",
     "description":"Help & Feedback"
   },
   "emailUs":{
-    "message":"Email Us",
+    "message":"Napíšte nám",
     "description":"Email Us"
   },
   "emailUsDirectly":{
@@ -400,111 +400,111 @@
     "description":"Lock Options"
   },
   "immediately":{
-    "message":"Immediately",
+    "message":"Okamžite",
     "description":"Immediately"
   },
   "oneMinute":{
-    "message":"1 minute",
+    "message":"1 minúta",
     "description":"1 minute"
   },
   "fiveMinutes":{
-    "message":"5 minutes",
+    "message":"5 minút",
     "description":"5 minutes"
   },
   "fifteenMinutes":{
-    "message":"15 minutes",
+    "message":"15 minút",
     "description":"15 minutes"
   },
   "thirtyMinutes":{
-    "message":"30 minutes",
+    "message":"30 minút",
     "description":"30 minutes"
   },
   "oneHour":{
-    "message":"1 hour",
+    "message":"1 hodina",
     "description":"1 hour"
   },
   "fourHours":{
-    "message":"4 hours",
+    "message":"4 hodiny",
     "description":"4 hours"
   },
   "onRestart":{
-    "message":"On Restart",
+    "message":"Po reštarte",
     "description":"On Restart"
   },
   "never":{
-    "message":"Never",
+    "message":"Nikdy",
     "description":"Never"
   },
   "security":{
-    "message":"Security",
+    "message":"Zabezpečenie",
     "description":"Security"
   },
   "errorsOccurred":{
-    "message":"Errors have occurred",
+    "message":"Vyskytli sa chyby",
     "description":"Errors have occurred"
   },
   "emailRequired":{
-    "message":"Email address is required.",
+    "message":"Emailová adresa je povinná.",
     "description":"Email address is required."
   },
   "invalidEmail":{
-    "message":"Invalid email address.",
+    "message":"Neplatná emailová adresa.",
     "description":"Invalid email address."
   },
   "masterPassRequired":{
-    "message":"Master password is required.",
+    "message":"Hlavné heslo je povinné.",
     "description":"Master password is required."
   },
   "masterPassLength":{
-    "message":"Master password must be at least 8 characters long.",
+    "message":"Hlavné heslo musí obsahovať aspoň 8 znakov.",
     "description":"Master password must be at least 8 characters long."
   },
   "masterPassDoesntMatch":{
-    "message":"Master password confirmation does not match.",
+    "message":"Potvrdenie hlavného hesla sa nezhoduje.",
     "description":"Master password confirmation does not match."
   },
   "newAccountCreated":{
-    "message":"Your new account has been created! You may now log in.",
+    "message":"Váš nový účet bol vytvorený! Teraz sa môžete prihlásiť.",
     "description":"Your new account has been created! You may now log in."
   },
   "masterPassSent":{
-    "message":"We've sent you an email with your master password hint.",
+    "message":"Poslali sme vám email s nápovedou k hlavnému heslu.",
     "description":"We've sent you an email with your master password hint."
   },
   "verificationCodeRequired":{
-    "message":"Verification code is required.",
+    "message":"Overovací kód je povinný.",
     "description":"Verification code is required."
   },
   "valueCopied":{
-    "message":" copied",
+    "message":" skopírované",
     "description":"' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError":{
-    "message":"Unable to auto-fill the selected login on this page. Copy\/paste your username and\/or password instead.",
+    "message":"Na tejto stránke sa nedajú automaticky vyplniť prihlasovacie údaje. Namiesto toho skopírujte\/vložte prihlasovacie meno a\/alebo heslo.",
     "description":"Unable to auto-fill the selected login on this page. Copy\/paste your username and\/or password instead."
   },
   "loggedOut":{
-    "message":"Logged out",
+    "message":"Odhlásený",
     "description":"Logged out"
   },
   "loginExpired":{
-    "message":"Your login session has expired.",
+    "message":"Vaša relácia vypršala.",
     "description":"Your login session has expired."
   },
   "logOutConfirmation":{
-    "message":"Are you sure you want to log out?",
+    "message":"Naozaj sa chcete odhlásiť?",
     "description":"Are you sure you want to log out?"
   },
   "yes":{
-    "message":"Yes",
+    "message":"Áno",
     "description":"Yes"
   },
   "no":{
-    "message":"No",
+    "message":"Nie",
     "description":"No"
   },
   "unexpectedError":{
-    "message":"An unexpected error has occured.",
+    "message":"Vyskytla sa neočakávaná chyba.",
     "description":"An unexpected error has occured."
   },
   "nameRequired":{
