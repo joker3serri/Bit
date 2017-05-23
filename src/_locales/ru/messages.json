@@ -604,27 +604,27 @@
     "description":"Lost authenticator app?"
   },
   "credits":{
-    "message":"Credits",
+    "message":"Благодарности",
     "description":"Credits (giving thanks to people that helped, like at the end of a movie)"
   },
   "thankYou":{
-    "message":"Thank You",
+    "message":"Спасибо",
     "description":"Thank You"
   },
   "translations":{
-    "message":"Translations",
+    "message":"Локализации",
     "description":"Translations"
   },
   "searchFolder":{
-    "message":"Search folder",
+    "message":"Поиск по папкам",
     "description":"Search folder"
   },
   "noneFolder":{
-    "message":"No Folder",
+    "message":"Без папки",
     "description":"No Folder - this is the folder for uncategorized logins"
   },
   "features":{
-    "message":"Features",
+    "message":"Функции",
     "description":"Features"
   },
   "gaDesc":{
