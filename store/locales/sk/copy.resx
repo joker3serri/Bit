@@ -136,21 +136,21 @@ bitwarden skladuje všetky vaše prihlasovacie údaje v zašifrovanom trezore, k
     <value>Bezpečný a bezplatný správca hesiel pre všetky vaše zariadenia</value>
   </data>
   <data name="ScreenshotSync" xml:space="preserve">
-    <value>Sync and access your vault from multiple devices</value>
+    <value>Synchronizujte a pristupujte k vášmu trezoru z viacerých zariadení</value>
   </data>
   <data name="ScreenshotVault" xml:space="preserve">
-    <value>Manage all your logins and passwords from a secure vault</value>
+    <value>Spravujte všetky vaše prihlasovacie mená a heslá z bezpečného trezoru</value>
   </data>
   <data name="ScreenshotAutofill" xml:space="preserve">
-    <value>Quickly auto-fill your login credentials into any website that you visit</value>
+    <value>Rýchlo automaticky vyplňte vaše prihlasovacie údaje na akejkoľvek stránke, ktorú navštívite</value>
   </data>
   <data name="ScreenshotMenu" xml:space="preserve">
-    <value>Your vault is also conveniently accessible from the right-click menu</value>
+    <value>Váš trezor je pohodlne dostupný aj z kontextovej ponuky</value>
   </data>
   <data name="ScreenshotPassword" xml:space="preserve">
-    <value>Automatically generate strong, random, and secure passwords</value>
+    <value>Automaticky generujte silné, náhodné a bezpečné heslá</value>
   </data>
   <data name="ScreenshotEdit" xml:space="preserve">
-    <value>Your information is managed securely using AES-256 bit encryption</value>
+    <value>Vaše informácie sú spravované bezpečne, použitím AES-256 bitového šifrovania</value>
   </data>
 </root>
