@@ -48,87 +48,87 @@
     "description":"The master password is the password you use to access your vault. It is very important that you do not forget your master password. There is no way to recover the password in the event that you forget it."
   },
   "masterPassHintDesc":{
-    "message":"A master password hint can help you remember your password if you forget it.",
+    "message":"Nápoveda k hlavnému heslu vám môže pomôcť spomenúť si na heslo, ak ho zabudnete.",
     "description":"A master password hint can help you remember your password if you forget it."
   },
   "reTypeMasterPass":{
-    "message":"Re-type Master Password",
+    "message":"Znovu zadajte hlavné heslo",
     "description":"Re-type Master Password"
   },
   "masterPassHint":{
-    "message":"Master Password Hint (optional)",
+    "message":"Nápoveda k hlavnému heslo (voliteľné)",
     "description":"Master Password Hint (optional)"
   },
   "tab":{
-    "message":"Tab",
+    "message":"Karta",
     "description":"Tab"
   },
   "myVault":{
-    "message":"My Vault",
+    "message":"Môj trezor",
     "description":"My Vault"
   },
   "tools":{
-    "message":"Tools",
+    "message":"Nástroje",
     "description":"Tools"
   },
   "settings":{
-    "message":"Settings",
+    "message":"Nastavenia",
     "description":"Settings"
   },
   "currentTab":{
-    "message":"Current Tab",
+    "message":"Aktuálna karta",
     "description":"Current Tab"
   },
   "copyPassword":{
-    "message":"Copy Password",
+    "message":"Kopírovať heslo",
     "description":"Copy Password"
   },
   "copyUsername":{
-    "message":"Copy Username",
+    "message":"Kopírovať používateľské meno",
     "description":"Copy Username"
   },
   "autoFill":{
-    "message":"Auto-fill",
+    "message":"Automatické dopĺňanie",
     "description":"Auto-fill"
   },
   "generatePasswordCopied":{
-    "message":"Generate Password (copied)",
+    "message":"Vygenerovať heslo (skopírované)",
     "description":"Generate Password (copied)"
   },
   "noMatchingLogins":{
-    "message":"No matching logins.",
+    "message":"Žiadne zodpovedajúce prihlasovacie mená.",
     "description":"No matching logins."
   },
   "vaultLocked":{
-    "message":"Vault is locked.",
+    "message":"Trezor je zamknutý.",
     "description":"Vault is locked."
   },
   "autoFillInfo":{
-    "message":"There are no logins available to auto-fill for the current browser tab.",
+    "message":"Nie sú prístupné žiadne prihlasovacie mená na automatické vyplnenie pre aktuálnu kartu.",
     "description":"There are no logins available to auto-fill for the current browser tab."
   },
   "addLogin":{
-    "message":"Add a Login",
+    "message":"Pridať prihlasovacie údaje",
     "description":"Add a Login"
   },
   "passwordHint":{
-    "message":"Password Hint",
+    "message":"Nápoveda pre heslo",
     "description":"Password Hint"
   },
   "enterEmailToGetHint":{
-    "message":"Enter your account email address to receive your master password hint.",
+    "message":"Zadajte emailovú adresu na zaslanie nápovedy pre vaše hlavné heslo.",
     "description":"Enter your account email address to receive your master password hint."
   },
   "getMasterPasswordHint":{
-    "message":"Get master password hint",
+    "message":"Získať nápovedu pre hlavné heslo",
     "description":"Get master password hint"
   },
   "continue":{
-    "message":"Continue",
+    "message":"Pokračovať",
     "description":"Continue"
   },
   "verificationCode":{
-    "message":"Verification Code",
+    "message":"Overovací kód",
     "description":"Verification Code"
   },
   "enterTwoStepVerCode":{
