@@ -200,23 +200,23 @@
     "description":"Email Us"
   },
   "emailUsDirectly":{
-    "message":"Email us directly to get help or leave feedback.",
+    "message":"Získajte pomoc alebo zanechajte spätnú väzbu zaslaním emailu.",
     "description":"Email us directly to get help or leave feedback."
   },
   "visitOurWebsite":{
-    "message":"Visit Our Website",
+    "message":"Navštívte našu stránku",
     "description":"Visit Our Website"
   },
   "visitOurWebsiteDirectly":{
-    "message":"Visit our website to get help, news, email us, and\/or learn more about how to use bitwarden.",
+    "message":"Navštívte našu stránku pre získanie pomoci, noviniek, poslať nám email, alebo sa dozvedieť viac, ako používať bitwarden.",
     "description":"Visit our website to get help, news, email us, and\/or learn more about how to use bitwarden."
   },
   "fileBugReport":{
-    "message":"File a Bug Report",
+    "message":"Nahlásiť chybu",
     "description":"File a Bug Report"
   },
   "gitHubIssue":{
-    "message":"Open an issue at our GitHub repository.",
+    "message":"Nahlásiť problém v našom GitHub repozitári.",
     "description":"Open an issue at our GitHub repository."
   },
   "sync":{
@@ -236,11 +236,11 @@
     "description":"Password Generator"
   },
   "passGenInfo":{
-    "message":"Automatically generate strong, unique passwords for your logins.",
+    "message":"Automaticky generovať silné a unikátne heslá pre vaše prihlásenia.",
     "description":"Automatically generate strong, unique passwords for your logins."
   },
   "bitWebVault":{
-    "message":"bitwarden Web Vault",
+    "message":"bitwarden webový trezor",
     "description":"bitwarden Web Vault"
   },
   "bitWebVaultInfo":{
@@ -248,7 +248,7 @@
     "description":"Manage your logins from any web browser with the bitwarden web vault."
   },
   "bitIosVault":{
-    "message":"bitwarden iOS Vault",
+    "message":"bitwarden iOS trezor",
     "description":"bitwarden iOS Vault"
   },
   "bitIosVaultInfo":{
@@ -388,15 +388,15 @@
     "description":"Your web browser does not support easy clipboard copying. Copy it manually instead."
   },
   "verifyMasterPassword":{
-    "message":"Verify Master Password",
+    "message":"Overenie hlavného hesla",
     "description":"Verify Master Password"
   },
   "invalidMasterPassword":{
-    "message":"Invalid master password",
+    "message":"Neplatné hlavné heslo",
     "description":"Invalid master password"
   },
   "lockOptions":{
-    "message":"Lock Options",
+    "message":"Možnosti zámku",
     "description":"Lock Options"
   },
   "immediately":{
@@ -644,7 +644,7 @@
     "description":"Should bitwarden remember this password for you?"
   },
   "notificationAddSave":{
-    "message":"Yes, Save Now",
+    "message":"Áno, uložiť teraz",
     "description":"Yes, Save Now"
   },
   "disableContextMenuItem":{
