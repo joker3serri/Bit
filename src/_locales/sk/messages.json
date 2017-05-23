@@ -4,11 +4,11 @@
     "description":"bitwarden"
   },
   "extName":{
-    "message":"bitwarden - Free Password Manager",
+    "message":"bitwarden - Bezplatný správca hesiel",
     "description":"Extension name"
   },
   "extDesc":{
-    "message":"bitwarden is a secure and free password manager for all of your devices.",
+    "message":"bitwarden je bezpečný a bezplatný správca hesiel pre všetky Vaše zariadenia.",
     "description":"Extension description"
   },
   "loginOrCreateNewAccount":{
