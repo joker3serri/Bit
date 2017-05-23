@@ -20,7 +20,7 @@
     "description":"Create Account"
   },
   "login":{
-    "message":"Log In",
+    "message":"Login",
     "description":"Log In"
   },
   "cancel":{
@@ -316,7 +316,7 @@
     "description":"There are no logins to list."
   },
   "loginInformation":{
-    "message":"Login Information",
+    "message":"Login informatie",
     "description":"Login Information"
   },
   "username":{
@@ -648,19 +648,19 @@
     "description":"Yes, Save Now"
   },
   "disableContextMenuItem":{
-    "message":"Disable Context Menu Options",
+    "message":"Context Menu-opties uitschakelen",
     "description":"Disable Context Menu Options"
   },
   "disableContextMenuItemDesc":{
-    "message":"Context menu options provide quick access to password generation and logins for the website in your current tab.",
+    "message":"Context menu-opties bieden snelle toegang tot wachtwoordgeneratie en logins voor de website in de huidige tab.",
     "description":"Context menu options provide quick access to password generation and logins for the website in your current tab."
   },
   "exportVault":{
-    "message":"Export Vault",
+    "message":"Exporteer Kluis",
     "description":"Export Vault"
   },
   "warning":{
-    "message":"WARNING",
+    "message":"WAARSCHUWING",
     "description":"WARNING (should stay in capitalized letters if the language permits)"
   },
   "exportWarning":{
