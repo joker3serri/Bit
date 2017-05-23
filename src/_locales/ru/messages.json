@@ -1,6 +1,6 @@
 {
   "appName":{
-    "message":"bitwarden",
+    "message":"Bitwarden",
     "description":"bitwarden"
   },
   "extName":{
@@ -680,11 +680,11 @@
     "description":"Shared"
   },
   "shareVault":{
-    "message":"Share Your Vault",
+    "message":"Расшарить хранилище",
     "description":"Share Your Vault"
   },
   "shareVaultInfo":{
-    "message":"Create an organization to securely share your logins with other users.",
+    "message":"Создание организации для безопасного обмена логинами с другими пользователями.",
     "description":"Create an organization to securely share your logins with other users."
   }
 }
