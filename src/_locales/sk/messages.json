@@ -8,43 +8,43 @@
     "description":"Extension name"
   },
   "extDesc":{
-    "message":"bitwarden je bezpečný a bezplatný správca hesiel pre všetky Vaše zariadenia.",
+    "message":"bitwarden je bezpečný a bezplatný správca hesiel pre všetky vaše zariadenia.",
     "description":"Extension description"
   },
   "loginOrCreateNewAccount":{
-    "message":"Log in or create a new account to access your secure vault.",
+    "message":"Prihláste sa, alebo vytvorte nový účet pre prístup k vášmu bezpečnému trezoru.",
     "description":"Log in or create a new account to access your secure vault."
   },
   "createAccount":{
-    "message":"Create Account",
+    "message":"Vytvoriť účet",
     "description":"Create Account"
   },
   "login":{
-    "message":"Log In",
+    "message":"Prihlásiť sa",
     "description":"Log In"
   },
   "cancel":{
-    "message":"Cancel",
+    "message":"Zrušiť",
     "description":"Cancel"
   },
   "close":{
-    "message":"Close",
+    "message":"Zavrieť",
     "description":"Close"
   },
   "submit":{
-    "message":"Submit",
+    "message":"Potvrdiť",
     "description":"Submit"
   },
   "emailAddress":{
-    "message":"Email Address",
+    "message":"Emailová adresa",
     "description":"Email Address"
   },
   "masterPass":{
-    "message":"Master Password",
+    "message":"Hlavné heslo",
     "description":"Master Password"
   },
   "masterPassDesc":{
-    "message":"The master password is the password you use to access your vault. It is very important that you do not forget your master password. There is no way to recover the password in the event that you forget it.",
+    "message":"Hlavné heslo je heslo, ktoré použijete na prístup k svojmu trezoru. Je veľmi dôležité, aby ste svoje hlavné heslo nezabudli. Neexistuje možnosť, ako heslo obnoviť v prípade, že ho zabudnete.",
     "description":"The master password is the password you use to access your vault. It is very important that you do not forget your master password. There is no way to recover the password in the event that you forget it."
   },
   "masterPassHintDesc":{
