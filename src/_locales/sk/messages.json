@@ -632,15 +632,15 @@
     "description":"We use analytics to better learn how the extension is being used so that we can make it better. All data collection is completely anonymous."
   },
   "disableAddLoginNotification":{
-    "message":"Vypnúť notifikáciu pridania prihlasovacích údajov",
+    "message":"Vypnúť notifikáciu Pridať prihlasovacie údaje",
     "description":"Disable Add Login Notification"
   },
   "addLoginNotificationDesc":{
-    "message":"The \"Add Login Notification\" automatically prompts you to save new logins to your vault whenever you log into them for the first time.",
+    "message":"\"Notifikácia Pridať prihlasovacie údaje\" vás automaticky upozorní na uloženie nových údajov do vášho trezoru vždy, keď sa s nimi prihlasujete po prvý krát.",
     "description":"The \"Add Login Notification\" automatically prompts you to save new logins to your vault whenever you log into them for the first time."
   },
   "notificationAddDesc":{
-    "message":"Should bitwarden remember this password for you?",
+    "message":"Má si bitwarden pre vás zapamätať toto heslo?",
     "description":"Should bitwarden remember this password for you?"
   },
   "notificationAddSave":{
@@ -648,11 +648,11 @@
     "description":"Yes, Save Now"
   },
   "disableContextMenuItem":{
-    "message":"Disable Context Menu Options",
+    "message":"Vypnúť možnosti kontextového menu",
     "description":"Disable Context Menu Options"
   },
   "disableContextMenuItemDesc":{
-    "message":"Context menu options provide quick access to password generation and logins for the website in your current tab.",
+    "message":"Možnosti kontextového menu ponúkajú rýchly prístup k prihlasovacím údajom a generovaniu hesiel pre stránku vo vašej aktuálnej karte.",
     "description":"Context menu options provide quick access to password generation and logins for the website in your current tab."
   },
   "exportVault":{
@@ -664,15 +664,15 @@
     "description":"WARNING (should stay in capitalized letters if the language permits)"
   },
   "exportWarning":{
-    "message":"This export contains your unencrypted data in .csv format. You should not store or send it over unsecure channels (such as email). Delete it immediately after your are done using it.",
+    "message":"Tento export obsahuje vaše nešifrované dáta vo formáte .csv. Nemali by ste ich ukladať, ani posielať cez nezabezpečené kanály (napr. email). Okamžite ho odstránte, keď ho prestanete používať.",
     "description":"This export contains your unencrypted data in .csv format. You should not store or send it over unsecure channels (such as email). Delete it immediately after your are done using it."
   },
   "exportMasterPassword":{
-    "message":"Enter your master password to export your vault data.",
+    "message":"Zadajte vaše hlavné heslo pre export údajov trezoru.",
     "description":"Enter your master password to export your vault data."
   },
   "exportVaultInfo":{
-    "message":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere.",
+    "message":"Export vašich dát trezoru v .csv formáte, aby ste ich mohli ľahko upraviť alebo premiestniť inde.",
     "description":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere."
   },
   "shared":{
@@ -684,7 +684,7 @@
     "description":"Share Your Vault"
   },
   "shareVaultInfo":{
-    "message":"Create an organization to securely share your logins with other users.",
+    "message":"Vytvorte organizáciu pre bezpečné zdieľanie vašich prihlasovacích údajov s inými používateľmi.",
     "description":"Create an organization to securely share your logins with other users."
   }
 }
