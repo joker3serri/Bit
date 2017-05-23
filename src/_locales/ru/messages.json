@@ -628,55 +628,55 @@
     "description":"Features"
   },
   "gaDesc":{
-    "message":"We use analytics to better learn how the extension is being used so that we can make it better. All data collection is completely anonymous.",
+    "message":"Мы собираем данные для того, чтобы лучше понять как используется расширение, и сделать его лучше. Все собранные данные полностью анонимны.",
     "description":"We use analytics to better learn how the extension is being used so that we can make it better. All data collection is completely anonymous."
   },
   "disableAddLoginNotification":{
-    "message":"Disable Add Login Notification",
+    "message":"Отключить уведомления о добавлении логина",
     "description":"Disable Add Login Notification"
   },
   "addLoginNotificationDesc":{
-    "message":"The \"Add Login Notification\" automatically prompts you to save new logins to your vault whenever you log into them for the first time.",
+    "message":"\"Уведомление о добавлении логина\" автоматически напоминает вам сохранить новый логин в ваше хранилище сразу после того, как вы воспользуетесь им в первый раз.",
     "description":"The \"Add Login Notification\" automatically prompts you to save new logins to your vault whenever you log into them for the first time."
   },
   "notificationAddDesc":{
-    "message":"Should bitwarden remember this password for you?",
+    "message":"Разрешить Bitwarden запомнить этот пароль для вас?",
     "description":"Should bitwarden remember this password for you?"
   },
   "notificationAddSave":{
-    "message":"Yes, Save Now",
+    "message":"Да, сохранить сейчас",
     "description":"Yes, Save Now"
   },
   "disableContextMenuItem":{
-    "message":"Disable Context Menu Options",
+    "message":"Отключить опции контекстного меню",
     "description":"Disable Context Menu Options"
   },
   "disableContextMenuItemDesc":{
-    "message":"Context menu options provide quick access to password generation and logins for the website in your current tab.",
+    "message":"Опции контекстного меню обеспечивают быстрый доступ к генератору паролей и логинам для сайта в текущей вкладке.",
     "description":"Context menu options provide quick access to password generation and logins for the website in your current tab."
   },
   "exportVault":{
-    "message":"Export Vault",
+    "message":"Экспортировать хранилище",
     "description":"Export Vault"
   },
   "warning":{
-    "message":"WARNING",
+    "message":"ВНИМАНИЕ",
     "description":"WARNING (should stay in capitalized letters if the language permits)"
   },
   "exportWarning":{
-    "message":"This export contains your unencrypted data in .csv format. You should not store or send it over unsecure channels (such as email). Delete it immediately after your are done using it.",
+    "message":"Этот файл содержит ваши незашифрованные данные в формате .csv. Не храните и не передавайте его по незащищенным каналам (например, email). Удалите их сразу после использования.",
     "description":"This export contains your unencrypted data in .csv format. You should not store or send it over unsecure channels (such as email). Delete it immediately after your are done using it."
   },
   "exportMasterPassword":{
-    "message":"Enter your master password to export your vault data.",
+    "message":"Для экспорта данных из хранилища введите мастер-пароль.",
     "description":"Enter your master password to export your vault data."
   },
   "exportVaultInfo":{
-    "message":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere.",
+    "message":"Экспортировать хранилище в формате .csv для быстрого редактирования или перемещения.",
     "description":"Export your vault data in .csv format so that you can easily modify it or move it elsewhere."
   },
   "shared":{
-    "message":"Shared",
+    "message":"Общие",
     "description":"Shared"
   },
   "shareVault":{
