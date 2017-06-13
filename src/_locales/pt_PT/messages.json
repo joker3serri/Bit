@@ -400,7 +400,7 @@
     "description":"Lock Options"
   },
   "lockNow":{
-    "message":"Lock Now",
+    "message":"Bloquear agora",
     "description":"Lock Now"
   },
   "immediately":{
@@ -656,7 +656,7 @@
     "description":"Yes, Save Now"
   },
   "notificationNeverSave":{
-    "message":"Never for this website",
+    "message":"Nunca para este site",
     "description":"Never for this website"
   },
   "disableContextMenuItem":{
@@ -700,11 +700,11 @@
     "description":"Create an organization to securely share your logins with other users."
   },
   "contribute":{
-    "message":"You can contribute to!",
+    "message":"Também pode contribuir!",
     "description":"You can contribute to!"
   },
   "learnMore":{
-    "message":"Learn more",
+    "message":"Saber mais",
     "description":"Learn more"
   }
 }
