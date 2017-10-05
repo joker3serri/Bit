@@ -2,13 +2,18 @@
     .module('bit.vault')
 
     .controller('vaultController', function ($scope, $rootScope, loginService, folderService, $q, $state, $stateParams, toastr,
-        syncService, utilsService, $analytics, i18nService, stateService, $timeout) {
+        syncService, utilsService, $analytics, i18nService, stateService, constantsService, $timeout) {
         var stateKey = 'vault',
             state = stateService.getState(stateKey) || {};
 
         $scope.i18n = i18nService;
         $scope.showFolderCounts = !utilsService.isEdge();
         $scope.showOnlyFolderView = utilsService.isEdge();
+
+        chrome.storage.local.get(constantsService.disableFaviconKey, function(obj) {
+            $scope.showFavicon = !obj[constantsService.disableFaviconKey];
+        });
+
         $('#search').focus();
 
         var syncOnLoad = $stateParams.syncOnLoad;
