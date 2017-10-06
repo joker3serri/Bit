@@ -1,28 +1,53 @@
 ﻿document.addEventListener('DOMContentLoaded', function (event) {
     var pageDetails = [],
         formData = [],
-        barType = null;
+        barType = null,
+        pageHref = null,
+        observer = null,
+        domObservationCollectTimeout = null,
+        iframed = isIframed();
 
-    setTimeout(collect, 1000);
-    window.addEventListener('popstate', collect);
+    if (window.location.hostname.indexOf('bitwarden.com') === -1) {
+        chrome.storage.local.get('neverDomains', function (obj) {
+            var domains = obj.neverDomains;
+            if (domains && domains.hasOwnProperty(window.location.hostname)) {
+                return;
+            }
+
+            chrome.storage.local.get('disableAddLoginNotification', function (obj) {
+                if (!obj || !obj.disableAddLoginNotification) {
+                    setInterval(collectIfNeeded, 1000);
+                }
+            });
+        });
+    }
 
     chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
         if (msg.command === 'openNotificationBar') {
+            if (iframed) {
+                return;
+            }
             closeExistingAndOpenBar(msg.data.type, msg.data.typeData);
             sendResponse();
             return true;
         }
         else if (msg.command === 'closeNotificationBar') {
+            if (iframed) {
+                return;
+            }
             closeBar(true);
             sendResponse();
             return true;
         }
         else if (msg.command === 'adjustNotificationBar') {
+            if (iframed) {
+                return;
+            }
             adjustBar(msg.data);
             sendResponse();
             return true;
         }
-        else if (msg.command === 'pageDetails') {
+        else if (msg.command === 'notificationBarPageDetails') {
             pageDetails.push(msg.data.details);
             watchForms(msg.data.forms);
             sendResponse();
@@ -30,24 +55,77 @@
         }
     });
 
-    function collect() {
-        if (window.location.hostname.indexOf('bitwarden.com') === -1) {
-            chrome.storage.local.get('neverDomains', function (obj) {
-                var domains = obj.neverDomains;
-                if (domains && domains.hasOwnProperty(window.location.hostname)) {
+    function isIframed() {
+        try {
+            return window.self !== window.top;
+        }
+        catch (e) {
+            return true;
+        }
+    }
+
+    function observeDom() {
+        var bodies = document.querySelectorAll('body');
+        if (bodies && bodies.length > 0) {
+            observer = new window.MutationObserver(function (mutations) {
+                if (!mutations || !mutations.length) {
                     return;
                 }
 
-                chrome.storage.local.get('disableAddLoginNotification', function (obj) {
-                    if (!obj || !obj.disableAddLoginNotification) {
-                        chrome.runtime.sendMessage({
-                            command: 'bgCollectPageDetails',
-                            sender: 'notificationBar'
-                        });
+                var doCollect = false;
+                for (var i = 0; i < mutations.length; i++) {
+                    if (!mutations[i].addedNodes || !mutations[i].addedNodes.length) {
+                        continue;
                     }
-                });
+
+                    for (var j = 0; j < mutations[i].addedNodes.length; j++) {
+                        if (!mutations[i].addedNodes[j]) {
+                            continue;
+                        }
+
+                        var forms = mutations[i].addedNodes[j].querySelectorAll('form:not([data-bitwarden-watching])');
+                        if (forms && forms.length) {
+                            doCollect = true;
+                            break;
+                        }
+                    }
+
+                    if (doCollect) {
+                        break;
+                    }
+                }
+
+                if (doCollect) {
+                    if (domObservationCollectTimeout) {
+                        clearTimeout(domObservationCollectTimeout);
+                    }
+
+                    domObservationCollectTimeout = setTimeout(collect, 1000);
+                }
             });
+
+            observer.observe(bodies[0], { childList: true });
         }
+    }
+
+    function collectIfNeeded() {
+        if (pageHref !== window.location.href) {
+            pageHref = window.location.href;
+            if (observer) {
+                observer.disconnect();
+                observer = null;
+            }
+
+            collect();
+            observeDom();
+        }
+    }
+
+    function collect() {
+        chrome.runtime.sendMessage({
+            command: 'bgCollectPageDetails',
+            sender: 'notificationBar'
+        });
     }
 
     function watchForms(forms) {

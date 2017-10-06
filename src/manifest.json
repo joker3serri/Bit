@@ -40,7 +40,7 @@
       "run_at": "document_start"
     },
     {
-      "all_frames": false,
+      "all_frames": true,
       "js": [
         "content/notificationBar.js"
       ],
@@ -62,7 +62,7 @@
       "38": "images/icon38.png"
     },
     "default_title": "bitwarden",
-    "default_popup": "popup/index.html"
+    "default_popup": "popup/index.html?uilocation=popup"
   },
   "permissions": [
     "tabs",

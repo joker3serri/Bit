@@ -2,7 +2,7 @@
     .module('bit.vault')
 
     .controller('vaultController', function ($scope, $rootScope, loginService, folderService, $q, $state, $stateParams, toastr,
-        syncService, utilsService, $analytics, i18nService, stateService, constantsService, $timeout) {
+        syncService, utilsService, $analytics, i18nService, stateService, constantsService, $timeout, $window) {
         var stateKey = 'vault',
             state = stateService.getState(stateKey) || {};
 
@@ -183,6 +183,9 @@
                 if (login.uri.startsWith('http://') || login.uri.startsWith('https://')) {
                     $analytics.eventTrack('Launched Website From Listing');
                     chrome.tabs.create({ url: login.uri });
+                    if (utilsService.inPopup($window)) {
+                        $window.close();
+                    }
                 }
             });
         };

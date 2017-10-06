@@ -24,7 +24,17 @@ angular
 
         self.expandVault = function (e) {
             $analytics.eventTrack('Expand Vault');
-            chrome.tabs.create({ url: $window.location.href });
+
+            var href = $window.location.href;
+            if (utilsService.isEdge()) {
+                var popupIndex = href.indexOf('/popup/');
+                if (popupIndex > -1) {
+                    href = href.substring(popupIndex);
+                }
+            }
+
+            href = href.replace('uilocation=popup', 'uilocation=tab').replace('uilocation=sidebar', 'uilocation=tab');
+            chrome.tabs.create({ url: href });
         };
 
         chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
