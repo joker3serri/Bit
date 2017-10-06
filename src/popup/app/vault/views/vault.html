@@ -55,8 +55,8 @@
                           ng-class="{'disabled': !login.uri}">
                         <i class="fa fa-lg fa-share-square-o"></i>
                     </span>
-                    <span class="favicon" ng-if="showFavicon">
-                        <img src="https://www.google.com/s2/favicons?domain={{login.uri}}">
+                    <span class="favicon" ng-if="favicons[login.uri]">
+                        <img ng-src="{{favicons[login.uri]}}">
                     </span>
                     <span class="text">
                         {{login.name}}
@@ -90,10 +90,11 @@
                           ng-class="{'disabled': !login.uri}">
                         <i class="fa fa-lg fa-share-square-o"></i>
                     </span>
-                    <span class="favicon" ng-if="showFavicon">
-                        <img src="https://www.google.com/s2/favicons?domain={{login.uri}}">
+                    <span class="favicon" ng-if="favicons[login.uri]">
+                        <img ng-src="{{favicons[login.uri]}}">
                     </span>
                     <span class="text">
+                        <img src="https://www.google.com/s2/favicons?domain={{login.uri}}">
                         {{login.name}}
                         <i class="fa fa-share-alt text-muted" ng-if="login.organizationId" title="{{i18n.shared}}"></i>
                         <i class="fa fa-paperclip text-muted" ng-if="login.attachments" title="{{i18n.attachments}}"></i>

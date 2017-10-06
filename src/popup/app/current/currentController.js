@@ -2,7 +2,7 @@ angular
     .module('bit.current')
 
     .controller('currentController', function ($scope, loginService, utilsService, toastr, $q, $window, $state, $timeout,
-        autofillService, $analytics, i18nService, totpService, tokenService, constantsService) {
+        autofillService, $analytics, i18nService, totpService, tokenService, faviconService, constantsService) {
         $scope.i18n = i18nService;
 
         var pageDetails = [],
@@ -15,9 +15,7 @@ angular
         $scope.searchText = null;
         $('#search').focus();
 
-        chrome.storage.local.get(constantsService.disableFaviconKey, function(obj) {
-            $scope.showFavicon = !obj[constantsService.disableFaviconKey];
-        });
+        $scope.favicons = faviconService.favicons;
 
         $scope.$on('$viewContentLoaded', function () {
             $timeout(loadVault, 100);
@@ -49,6 +47,7 @@ angular
                 $q.when(loginService.getAllDecryptedForDomain(domain)).then(function (logins) {
                     $scope.loaded = true;
                     $scope.logins = logins;
+                    faviconService.loadFavicons(logins);
                 });
             });
         }

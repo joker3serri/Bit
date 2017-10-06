@@ -37,8 +37,8 @@
                           title="{{i18n.edit}} {{login.name}}">
                         <i class="fa fa-lg fa-pencil"></i>
                     </span>
-                    <span class="favicon" ng-if="showFavicon">
-                        <img src="https://www.google.com/s2/favicons?domain={{login.uri}}">
+                    <span class="favicon" ng-if="favicons[login.uri]">
+                        <img ng-src="{{favicons[login.uri]}}">
                     </span>
                     <span class="text">
                         {{login.name}}
