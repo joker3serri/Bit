@@ -3,84 +3,110 @@ angular
 
     .factory('faviconService', function ($http, $q, settingsService, utilsService, constantsService) {
         var _service = {};
+        _service.favicons = {};
 
         // Expire favicons after 30 days.
         var expire = 30 * 24 * 60 * 60 * 1000;
 
-        _service.buildUrl = function (domain) {
+        var faviconKey = 'favicon';
+
+        function buildUrl (domain) {
             // TODO: Replace with url to "icons.bitwarden.com".
             return "https://www.google.com/s2/favicons?domain=" + domain;
-        };
+        }
 
-        _service.favicons = {};
+        // Load the favicon and encode it using base64.
+        function loadFavicon(domain) {
+            return $http
+                .get(buildUrl(domain), {responseType: 'blob'})
+                .then(function (body) {
+                    var deferred = $q.defer();
 
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                        deferred.resolve(reader.result);
+                    };
+                    reader.readAsDataURL(body.data);
+
+                    return deferred.promise;
+                });
+        }
+
+        function getStorage() {
+            var deferred = $q.defer();
+            chrome.storage.local.get(faviconKey, function (data) {
+
+                var d = data[faviconKey];
+                if (d == null) {
+                    d = {};
+                }
+
+                deferred.resolve(d);
+            });
+            return deferred.promise;
+        }
+
+        // Check if the cached favicon is valid.
+        function isValid(favicon) {
+            return favicon.date > new Date().getTime() - expire;
+        }
+
+        function remoteFaviconsEnabled() {
+            var deferred = $q.defer();
+            chrome.storage.local.get(constantsService.disableFaviconKey, function(obj) {
+                deferred.resolve(obj[constantsService.disableFaviconKey]);
+            });
+            return deferred.promise;
+        }
+
+        // Load all the favicons for the specified array of logins.
         _service.loadFavicons = function(logins) {
-            logins.forEach((item) => {
-                _service.getFavicon(item.uri).then((img) => {
+            logins.forEach(function (item) {
+                _service.getFavicon(item.uri).then(function(img) {
                     _service.favicons[item.uri] = img;
                 });
             });
         };
 
+        // Return the favicon for a specific uri.
         _service.getFavicon = function (uri) {
             var domain = utilsService.getDomain(uri);
-            var faviconKey = 'favicon';
 
-            var deferred = $q.defer();
-            chrome.storage.local.get(faviconKey, function (data) {
-                deferred.resolve(data);
-            });
+            return getStorage()
+                .then(function (favicon) {
 
-            return deferred.promise
-                .then(function (storage) {
-                    var favicon = storage[faviconKey];
-                    if (favicon == null) {
-                        favicon = {};
-                    }
-
+                    // Use cached favicon if possible.
                     if (favicon.hasOwnProperty(domain)) {
-                        if (favicon[domain].date > new Date().getTime() - expire) {
+                        if (isValid(favicon[domain])) {
                             return favicon[domain].img;
                         }
                     }
 
-                    var deferred = $q.defer();
-                    chrome.storage.local.get(constantsService.disableFaviconKey, function(obj) {
-                        deferred.resolve(obj);
-                    });
-                    return deferred.promise.then((showFavicon) => {
-                        if (showFavicon.disableFavicon) {
-                            if (utilsService.getBrowser() === 'chrome') {
-                                return 'chrome://favicon/' + uri;
-                            }
-                            return;
-                        }
+                    return remoteFaviconsEnabled()
+                        .then(function (disableFavicon) {
 
-                        return $http
-                            .get(_service.buildUrl(domain), {responseType: 'blob'})
-                            .then(function (body) {
-                                var deferred = $q.defer();
-
-                                var reader = new FileReader();
-                                reader.onload = function () {
-                                    deferred.resolve(reader.result);
+                            if (disableFavicon) {
+                                if (utilsService.getBrowser() === 'chrome') {
+                                    return 'chrome://favicon/' + uri;
                                 }
-                                reader.readAsDataURL(body.data);
+                                return;
+                            }
 
-                                return deferred.promise;
-                            })
-                            .then(function(img) {
-                                favicon[domain] = {
-                                    img: img,
-                                    date: new Date()
-                                };
+                            // Load and cache the remote favicon.
+                            return loadFavicon(domain)
+                                .then(function(img) {
+                                    favicon[domain] = {
+                                        img: img,
+                                        date: new Date()
+                                    };
 
-                                storage[faviconKey] = favicon;
-                                chrome.storage.local.set(storage);
+                                    var storage = {};
+                                    storage[faviconKey] = favicon;
+                                    chrome.storage.local.set(storage);
 
-                                return img;
-                            });
-                    })
+                                    return img;
+                                });
+                    });
                 });
         };
 

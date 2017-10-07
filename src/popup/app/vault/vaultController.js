@@ -2,7 +2,7 @@
     .module('bit.vault')
 
     .controller('vaultController', function ($scope, $rootScope, loginService, folderService, $q, $state, $stateParams, toastr,
-        syncService, utilsService, $analytics, i18nService, stateService, constantsService, faviconService, $timeout, $window) {
+        syncService, utilsService, $analytics, i18nService, stateService, faviconService, $timeout, $window) {
         var stateKey = 'vault',
             state = stateService.getState(stateKey) || {};
 

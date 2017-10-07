@@ -2,7 +2,7 @@ angular
     .module('bit.current')
 
     .controller('currentController', function ($scope, loginService, utilsService, toastr, $q, $window, $state, $timeout,
-        autofillService, $analytics, i18nService, totpService, tokenService, faviconService, constantsService) {
+        autofillService, $analytics, i18nService, totpService, tokenService, faviconService) {
         $scope.i18n = i18nService;
 
         var pageDetails = [],
