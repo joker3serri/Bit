@@ -1,69 +1,71 @@
 angular
     .module('bit.vault')
 
-    .controller('vaultShareLoginController', function ($scope, apiService, $uibModalInstance, authService, cipherService,
-                                                       loginId, $analytics, $state, cryptoService, $q, toastr) {
-      $analytics.eventTrack('vaultShareLoginController', { category: 'Modal' });
-      $scope.model = {};
-      $scope.login = {};
-      $scope.collections = [];
-      $scope.selectedCollections = {};
-      $scope.organizations = [];
-      var organizationCollectionCounts = {};
-      $scope.loadingCollections = true;
-      $scope.loading = true;
-      $scope.readOnly = false;
+    .controller('vaultShareLoginController', function ($scope, $state, $stateParams, loginService, folderService,
+                                                       cryptoService, $q, toastr, SweetAlert, utilsService, $analytics, i18nService, constantsService) {
+      $scope.i18n = i18nService;
+      $scope.constants = constantsService;
+      $scope.showAttachments = !utilsService.isEdge();
+      $scope.addFieldType = constantsService.fieldType.text.toString();
+      var loginId = $stateParams.loginId;
+      var fromView = $stateParams.fromView;
+      var from = $stateParams.from;
 
-      apiService.ciphers.get({ id: loginId }).$promise.then(function (login) {
-        $scope.readOnly = !login.Edit;
-        if (login.Edit) {
-          $scope.login = cipherService.decryptLogin(login);
-        }
+      $scope.login = {
+        folderId: null
+      };
 
-        return login.Edit;
-      }).then(function (canEdit) {
-        $scope.loading = false;
-        if (!canEdit) {
-          return;
-        }
+      $('#name').focus();
 
-        return authService.getUserProfile();
-      }).then(function (profile) {
-        if (profile && profile.organizations) {
-          var orgs = [],
-              setFirstOrg = false;
+      if ($stateParams.login) {
+        angular.extend($scope.login, $stateParams.login);
+      }
+      else {
+        loginService.get(loginId, function (login) {
+          $q.when(login.decrypt()).then(function (model) {
+            $scope.login = model;
+          });
+        });
+      }
 
-          for (var i in profile.organizations) {
-            if (profile.organizations.hasOwnProperty(i) && profile.organizations[i].enabled) {
-              orgs.push({
-                id: profile.organizations[i].id,
-                name: profile.organizations[i].name
-              });
+      // @todo: get profile so we can get orgs from it.
+      var profile = [];
 
-              organizationCollectionCounts[profile.organizations[i].id] = 0;
+      if (profile && profile.organizations) {
+        var orgs = [],
+            setFirstOrg = false;
+        var organizationCollectionCounts = [];
+        for (var i in profile.organizations) {
+          if (profile.organizations.hasOwnProperty(i) && profile.organizations[i].enabled) {
+            orgs.push({
+              id: profile.organizations[i].id,
+              name: profile.organizations[i].name
+            });
 
-              if (!setFirstOrg) {
-                setFirstOrg = true;
-                $scope.model.organizationId = profile.organizations[i].id;
-              }
+            organizationCollectionCounts[profile.organizations[i].id] = 0;
+
+            if (!setFirstOrg) {
+              setFirstOrg = true;
+              $scope.model.organizationId = profile.organizations[i].id;
             }
           }
-
-          $scope.organizations = orgs;
-
-          apiService.collections.listMe({ writeOnly: true }, function (response) {
-            var collections = [];
-            for (var i = 0; i < response.Data.length; i++) {
-              var decCollection = cipherService.decryptCollection(response.Data[i]);
-              decCollection.organizationId = response.Data[i].OrganizationId;
-              collections.push(decCollection);
-              organizationCollectionCounts[decCollection.organizationId]++;
-            }
-
-            $scope.collections = collections;
-            $scope.loadingCollections = false;
-          });
         }
+
+        $scope.organizations = orgs;
+      }
+
+      apiService.listCollections(function (response) {
+        var collections = [];
+        for (var i = 0; i < response.Data.length; i++) {
+          // @todo: decrypt the collections data.
+          var decCollection = [];
+          decCollection.organizationId = response.Data[i].OrganizationId;
+          collections.push(decCollection);
+          organizationCollectionCounts[decCollection.organizationId]++;
+        }
+
+        $scope.collections = collections;
+        $scope.loadingCollections = false;
       });
 
       $scope.toggleCollectionSelectionAll = function ($event) {
@@ -98,10 +100,6 @@ angular
         }
 
         return Object.keys($scope.selectedCollections).length === organizationCollectionCounts[$scope.model.organizationId];
-      };
-
-      $scope.orgChanged = function () {
-        $scope.selectedCollections = {};
       };
 
       $scope.submitPromise = null;

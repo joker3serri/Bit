@@ -24,11 +24,11 @@
                         <div ng-show="loadingCollections && !orgCollections.length" class="ng-hide">
                             <p>Loading...</p>
                         </div>
-                        <div ng-show="!loadingCollections &amp;&amp; !orgCollections.length" class="callout callout-default ng-hide">
+                        <div ng-show="!loadingCollections && !orgCollections.length" class="callout callout-default ng-hide">
                             <h4><i class="fa fa-info-circle"></i> No Collections</h4>
                             <p>You do not have write access to any collections for this organization.</p>
                         </div>
-                        <div ng-repeat="collection in orgCollections =
+                        <div ng-repeat="collection in collections =
                         (collections | filter: { organizationId: model.organizationId } | orderBy: ['name'])">
                             <input type="checkbox"
                                    name="selectedCollections[]"
