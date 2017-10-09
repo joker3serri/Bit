@@ -164,3 +164,9 @@ var SyncResponse = function (response) {
         this.domains = new DomainsResponse(response.Domains);
     }
 };
+
+var CollectionResponse = function(response) {
+  this.id = response.Id;
+  this.organizationId = response.organizationId;
+  this.name = response.Name;
+};
