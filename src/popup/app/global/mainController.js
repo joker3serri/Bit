@@ -6,9 +6,11 @@ angular
         var self = this;
         self.currentYear = new Date().getFullYear();
         self.animation = '';
-        self.xsBody = $window.screen.availHeight < 600;
-        self.smBody = !self.xsBody && $window.screen.availHeight <= 800;
-        self.lgBody = !self.xsBody && !self.smBody && utilsService && !utilsService.isFirefox() && !utilsService.isEdge();
+        setTimeout(function() {        
+            self.xsBody = $window.screen.availHeight < 600;
+            self.smBody = !self.xsBody && $window.screen.availHeight <= 800;
+            self.lgBody = !self.xsBody && !self.smBody && utilsService && !utilsService.isFirefox() && !utilsService.isEdge();
+        }, 0);
         self.disableSearch = utilsService && utilsService.isEdge();
         self.inSidebar = utilsService && utilsService.inSidebar($window);
 
