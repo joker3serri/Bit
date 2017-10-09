@@ -11,8 +11,7 @@ angular
         var faviconKey = 'favicon';
 
         function buildUrl (domain) {
-            // TODO: Replace with url to "icons.bitwarden.com".
-            return "https://www.google.com/s2/favicons?domain=" + domain;
+            return "https://icons.bitwarden.com/?url=" + domain;
         }
 
         // Load the favicon and encode it using base64.
