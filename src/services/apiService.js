@@ -408,6 +408,50 @@ function initApiService() {
         });
     };
 
+  // Collection APIs.
+
+  ApiService.prototype.getCollection = function (id, orgId) {
+    var self = this;
+    handleTokenState(self).then(function (tokenHeader) {
+      $.ajax({
+        type: 'GET',
+        url: self.baseUrl + '/organizations/' + orgId + '/collections/' + id + '/details',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        headers: tokenHeader,
+        success: function (response) {
+          new CollectionResponse(response);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          handleError(error, jqXHR, false, self);
+        }
+      });
+    }, function (jqXHR) {
+      handleError(error, jqXHR, true, self);
+    });
+  };
+
+  ApiService.prototype.listCollections = function (orgId) {
+    var self = this;
+    handleTokenState(self).then(function (tokenHeader) {
+      $.ajax({
+        type: 'GET',
+        url: self.baseUrl + '/organizations/' + orgId + '/collections',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        headers: tokenHeader,
+        success: function (response) {
+          new ListResponse(response);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          handleError(error, jqXHR, false, self);
+        }
+      });
+    }, function (jqXHR) {
+      handleError(error, jqXHR, true, self);
+    });
+  };
+
     // Helpers
 
     function handleError(errorCallback, jqXHR, tokenError, self) {
