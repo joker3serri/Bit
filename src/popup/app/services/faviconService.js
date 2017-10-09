@@ -10,14 +10,14 @@ angular
 
         var faviconKey = 'favicon';
 
-        function buildUrl (domain) {
-            return "https://icons.bitwarden.com/?url=" + domain;
+        function buildUrl (hostname) {
+            return "https://icons.bitwarden.com/?url=" + hostname;
         }
 
         // Load the favicon and encode it using base64.
-        function loadFavicon(domain) {
+        function loadFavicon(hostname) {
             return $http
-                .get(buildUrl(domain), {responseType: 'blob'})
+                .get(buildUrl(hostname), {responseType: 'blob'})
                 .then(function (body) {
                     var deferred = $q.defer();
 
@@ -69,15 +69,15 @@ angular
 
         // Return the favicon for a specific uri.
         _service.getFavicon = function (uri) {
-            var domain = utilsService.getDomain(uri);
+            var hostname = new URL(uri).hostname;
 
             return getStorage()
                 .then(function (favicon) {
 
                     // Use cached favicon if possible.
-                    if (favicon.hasOwnProperty(domain)) {
-                        if (isValid(favicon[domain])) {
-                            return favicon[domain].img;
+                    if (favicon.hasOwnProperty(hostname)) {
+                        if (isValid(favicon[hostname])) {
+                            return favicon[hostname].img;
                         }
                     }
 
@@ -92,9 +92,9 @@ angular
                             }
 
                             // Load and cache the remote favicon.
-                            return loadFavicon(domain)
+                            return loadFavicon(hostname)
                                 .then(function(img) {
-                                    favicon[domain] = {
+                                    favicon[hostname] = {
                                         img: img,
                                         date: new Date()
                                     };
