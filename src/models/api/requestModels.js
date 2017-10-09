@@ -35,6 +35,31 @@ var FolderRequest = function (folder) {
     this.name = folder.name ? folder.name.encryptedString : null;
 };
 
+var ShareRequest = function (cipher, collections) {
+    this.collectionIds = [];
+    for (var i = 0; i < collections.length; i++) {
+        this.collectionIds.push(collection.collectionId);
+    }
+    this.cipher = cipher;
+    this.login = {
+        uri: cipher.uri ? cipher.uri.encryptedString : null,
+        username: cipher.username ? cipher.username.encryptedString : null,
+        password: cipher.password ? cipher.password.encryptedString : null,
+        totp: cipher.totp ? cipher.totp.encryptedString : null
+    };
+
+    if (cipher.fields) {
+    this.fields = [];
+        for (var i = 0; i < cipher.fields.length; i++) {
+          this.fields.push({
+            type: cipher.fields[i].type,
+            name: cipher.fields[i].name ? cipher.fields[i].name.encryptedString : null,
+            value: cipher.fields[i].value ? cipher.fields[i].value.encryptedString : null,
+          });
+        }
+    }
+};
+
 var TokenRequest = function (email, masterPasswordHash, provider, token, remember, device) {
     this.email = email;
     this.masterPasswordHash = masterPasswordHash;

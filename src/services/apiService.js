@@ -364,6 +364,28 @@ function initApiService() {
         });
     };
 
+    ApiService.prototype.shareCipher = function (id, shareRequest, success, error) {
+      var self = this;
+      handleTokenState(self).then(function (tokenHeader) {
+        $.ajax({
+          type: 'POST',
+          url: self.baseUrl + '/ciphers/' + id + '/share',
+          data: JSON.stringify(shareRequest),
+          contentType: 'application/json; charset=utf-8',
+          dataType: 'json',
+          headers: tokenHeader,
+          success: function (response) {
+            success();
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            handleError(error, jqXHR, false, self);
+          }
+        });
+      }, function (jqXHR) {
+        handleError(error, jqXHR, true, self);
+      });
+    };
+
     // Sync APIs
 
     ApiService.prototype.getSync = function (success, error) {

@@ -320,6 +320,28 @@ function initLoginService() {
         });
     };
 
+    LoginService.prototype.share = function (login, collections) {
+        var deferred = Q.defer();
+
+        var self = this, request = new ShareRequest(login, collections);
+        self.apiService.shareCipher(login.id, request, apiSuccess, function (response) {
+            handleError(response, deferred);
+        });
+
+
+        function apiSuccess(response) {
+            login.id = response.id;
+            self.userService.getUserId(function (userId) {
+                var data = new LoginData(response, userId);
+                self.upsert(data, function () {
+                    deferred.resolve(login);
+                });
+            });
+        }
+
+        return deferred.promise;
+    };
+
     LoginService.prototype.updateLastUsedDate = function (id, callback) {
         if (!callback || typeof callback !== 'function') {
             throw 'callback function required';
