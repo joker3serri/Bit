@@ -21,10 +21,10 @@
                     </div>
                     <div class="list-section-items">
                         <h4 class="item-label">{{i18n.collections}}</h4>
-                        <div ng-show="loadingCollections && !orgCollections.length" class="ng-hide">
+                        <div ng-show="loadingCollections && !collections.length" class="ng-hide">
                             <p>Loading...</p>
                         </div>
-                        <div ng-show="!loadingCollections && !orgCollections.length" class="callout callout-default ng-hide">
+                        <div ng-show="!loadingCollections && !collections.length" class="callout callout-default ng-hide">
                             <h4><i class="fa fa-info-circle"></i> No Collections</h4>
                             <p>You do not have write access to any collections for this organization.</p>
                         </div>

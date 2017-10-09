@@ -408,7 +408,30 @@ function initApiService() {
         });
     };
 
-  // Collection APIs.
+  // Collection and Organization APIs.
+
+  ApiService.prototype.getProfile = function () {
+    var self = this;
+    handleTokenState(self).then(function (tokenHeader) {
+      $.ajax({
+        type: 'GET',
+        url: self.baseUrl + '/accounts/profile',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        headers: tokenHeader,
+        success: function (response) {
+          new ProfileResponse(response);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
+            console.log(errorThrown);
+          handleError(error, jqXHR, false, self);
+        }
+      });
+    }, function (jqXHR) {
+      handleError(error, jqXHR, true, self);
+    });
+  };
 
   ApiService.prototype.getCollection = function (id, orgId) {
     var self = this;
@@ -431,7 +454,7 @@ function initApiService() {
     });
   };
 
-  ApiService.prototype.listCollections = function (orgId) {
+  ApiService.prototype.listCollections = function (orgId, success) {
     var self = this;
     handleTokenState(self).then(function (tokenHeader) {
       $.ajax({
@@ -441,7 +464,7 @@ function initApiService() {
         dataType: 'json',
         headers: tokenHeader,
         success: function (response) {
-          new ListResponse(response);
+          success(new ListResponse(response));
         },
         error: function (jqXHR, textStatus, errorThrown) {
           handleError(error, jqXHR, false, self);

@@ -153,6 +153,13 @@
                 data: { authorize: true },
                 params: { animation: null, fromView: true, login: null, from: 'vault' }
             })
+            .state('shareLogin', {
+              url: '/share-login?loginId',
+              templateUrl: 'app/vault/views/vaultShareLogin.html',
+              controller: 'vaultShareLoginController',
+              data: { authorize: true },
+              params: { animation: null, fromView: true, login: null, from: 'vault' }
+            })
             .state('attachments', {
                 url: '/attachments?id',
                 templateUrl: 'app/vault/views/vaultAttachments.html',

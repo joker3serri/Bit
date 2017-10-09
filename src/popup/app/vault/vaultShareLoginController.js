@@ -2,7 +2,7 @@ angular
     .module('bit.vault')
 
     .controller('vaultShareLoginController', function ($scope, $state, $stateParams, loginService, folderService,
-                                                       cryptoService, $q, toastr, SweetAlert, utilsService, $analytics, i18nService, constantsService) {
+                                                       cryptoService, $q, toastr, SweetAlert, utilsService, $analytics, i18nService, constantsService, apiService) {
       $scope.i18n = i18nService;
       $scope.constants = constantsService;
       $scope.showAttachments = !utilsService.isEdge();
@@ -29,7 +29,7 @@ angular
       }
 
       // @todo: get profile so we can get orgs from it.
-      var profile = [];
+      var profile = apiService.getProfile();
 
       if (profile && profile.organizations) {
         var orgs = [],
@@ -46,7 +46,7 @@ angular
 
             if (!setFirstOrg) {
               setFirstOrg = true;
-              $scope.model.organizationId = profile.organizations[i].id;
+              $scope.organizationId = profile.organizations[i].id;
             }
           }
         }
@@ -54,12 +54,15 @@ angular
         $scope.organizations = orgs;
       }
 
-      apiService.listCollections(function (response) {
+      apiService.listCollections($scope.organizationId, function (response) {
         var collections = [];
         for (var i = 0; i < response.Data.length; i++) {
-          // @todo: decrypt the collections data.
-          var decCollection = [];
-          decCollection.organizationId = response.Data[i].OrganizationId;
+          var key = cryptoService.getOrgKey($scope.organizationId);
+          // @todo: catch a decryption error.
+          var decCollection = {
+            name: cryptoService.decrypt(response.Data[i].Name),
+            id: response.Data[i].Id
+          };
           collections.push(decCollection);
           organizationCollectionCounts[decCollection.organizationId]++;
         }
@@ -72,7 +75,7 @@ angular
         var collections = {};
         if ($event.target.checked) {
           for (var i = 0; i < $scope.collections.length; i++) {
-            if ($scope.model.organizationId && $scope.collections[i].organizationId === $scope.model.organizationId) {
+            if ($scope.organizationId && $scope.collections[i].organizationId === $scope.organizationId) {
               collections[$scope.collections[i].id] = true;
             }
           }
@@ -95,11 +98,11 @@ angular
       };
 
       $scope.allSelected = function () {
-        if (!$scope.model.organizationId) {
+        if (!$scope.organizationId) {
           return false;
         }
 
-        return Object.keys($scope.selectedCollections).length === organizationCollectionCounts[$scope.model.organizationId];
+        return Object.keys($scope.selectedCollections).length === organizationCollectionCounts[$scope.organizationId];
       };
 
       $scope.submitPromise = null;
@@ -125,7 +128,7 @@ angular
 
           var request = new ShareRequest({
             collectionIds: [],
-            cipher: cipherService.encryptLogin($scope.login, null, true)
+            cipher: loginService.encrypt($scope.login)
           });
 
           for (var id in $scope.selectedCollections) {
@@ -136,7 +139,6 @@ angular
 
           return apiService.shareCipher({ id: loginId }, request).$promise;
         }).then(function (response) {
-          $analytics.eventTrack('Shared Login');
           toastr.success('Login has been shared.');
           $uibModalInstance.close(model.organizationId);
         });
