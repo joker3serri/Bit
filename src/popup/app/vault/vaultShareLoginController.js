@@ -28,7 +28,6 @@ angular
         });
       }
 
-      // @todo: get profile so we can get orgs from it.
       var profile = apiService.getProfile();
 
       if (profile && profile.organizations) {

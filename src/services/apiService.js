@@ -423,8 +423,6 @@ function initApiService() {
           new ProfileResponse(response);
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            console.log(errorThrown);
           handleError(error, jqXHR, false, self);
         }
       });
@@ -456,6 +454,7 @@ function initApiService() {
 
   ApiService.prototype.listCollections = function (orgId, success) {
     var self = this;
+    console.log(orgId);
     handleTokenState(self).then(function (tokenHeader) {
       $.ajax({
         type: 'GET',
