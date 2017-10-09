@@ -1,0 +1,47 @@
+﻿<form name="theForm" ng-submit="save(login)" bit-form="savePromise" autocomplete="off">
+    <div class="header">
+        <div class="left">
+            <a ng-click="close()" href="">{{i18n.cancel}}</a>
+        </div>
+        <div class="right">
+            <button type="submit" class="btn btn-link" ng-show="!theForm.$loading">{{i18n.save}}</button>
+            <i class="fa fa-spinner fa-lg" ng-show="theForm.$loading" ng-class="{'fa-spin' : theForm.$loading}"></i>
+        </div>
+        <div class="title">{{i18n.shareLogin}}</div>
+    </div>
+    <div class="content">
+        <div class="list">
+            <div class="list-section">
+                <div class="list-section-items">
+                    <div class="list-section-item">
+                        <label for="organization" class="item-label">{{i18n.organization}}</label>
+                        <select id="organization" name="Organization" ng-model="model.organizationId" ng-change="orgChanged()">
+                            <option ng-repeat="org in organizations | orderBy: ['name']" value="{{org.id}}">{{org.name}}</option>
+                        </select>
+                    </div>
+                    <div class="list-section-items">
+                        <h4 class="item-label">{{i18n.collections}}</h4>
+                        <div ng-show="loadingCollections && !orgCollections.length" class="ng-hide">
+                            <p>Loading...</p>
+                        </div>
+                        <div ng-show="!loadingCollections &amp;&amp; !orgCollections.length" class="callout callout-default ng-hide">
+                            <h4><i class="fa fa-info-circle"></i> No Collections</h4>
+                            <p>You do not have write access to any collections for this organization.</p>
+                        </div>
+                        <div ng-repeat="collection in orgCollections =
+                        (collections | filter: { organizationId: model.organizationId } | orderBy: ['name'])">
+                            <input type="checkbox"
+                                   name="selectedCollections[]"
+                                   value="{{collection.id}}"
+                                   ng-checked="collectionSelected(collection)"
+                                   ng-click="toggleCollectionSelection(collection.id)">
+                            <span ng-click="toggleCollectionSelection(collection.id)">
+                                {{collection.name}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

@@ -62,6 +62,15 @@ angular
             });
         };
 
+        $scope.share = function(login) {
+            $state.go('shareLogin', {
+                animation: 'in-slide-up',
+                loginId: login.id,
+                fromView: true,
+                from: from
+            });
+        };
+
         $scope.toggleFieldValue = function (field) {
             field.showValue = !field.showValue;
         };

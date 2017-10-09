@@ -35,11 +35,8 @@ var FolderRequest = function (folder) {
     this.name = folder.name ? folder.name.encryptedString : null;
 };
 
-var ShareRequest = function (cipher, collections) {
-    this.collectionIds = [];
-    for (var i = 0; i < collections.length; i++) {
-        this.collectionIds.push(collection.collectionId);
-    }
+var ShareRequest = function (cipher, collectionIds) {
+    this.collectionIds = collectionIds;
     this.cipher = cipher;
     this.login = {
         uri: cipher.uri ? cipher.uri.encryptedString : null,
