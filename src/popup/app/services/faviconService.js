@@ -8,6 +8,7 @@ angular
         // Expire favicons after 30 days.
         var expire = 30 * 24 * 60 * 60 * 1000;
         var faviconKey = 'favicon';
+        var defaultIcon = chrome.extension.getURL('images/fa-globe.png');
 
         _service.enabled = false;
 
@@ -82,7 +83,7 @@ angular
             try {
                 hostname = new URL(uri).hostname;
             } catch (e) {
-                return $q.when();
+                return $q.when(defaultIcon);
             }
 
             return getStorage()

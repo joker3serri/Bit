@@ -2,7 +2,7 @@
     .module('bit')
 
     .config(function ($stateProvider, $urlRouterProvider, $compileProvider, toastrConfig) {
-        $compileProvider.imgSrcSanitizationWhitelist(/^\s*(chrome:\/\/favicon|data:image)/);
+        $compileProvider.imgSrcSanitizationWhitelist(/^\s*(chrome:\/\/favicon|data:image|(moz|chrome)-extension)/);
         
         angular.extend(toastrConfig, {
             closeButton: true,
