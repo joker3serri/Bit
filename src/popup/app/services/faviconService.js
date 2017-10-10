@@ -63,6 +63,10 @@ angular
             return deferred.promise;
         }
 
+        _service.disable = function (disabled) {
+            _service.enabled = !disabled || (utilsService.getBrowser() === 'chrome');
+        };
+
         // Load all the favicons for the specified array of logins.
         _service.loadFavicons = function(logins) {
             logins.forEach(function (item) {

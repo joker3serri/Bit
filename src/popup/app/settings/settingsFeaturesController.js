@@ -199,7 +199,7 @@
                 chrome.storage.local.set(obj, function () {
                     $timeout(function () {
                         $scope.disableFavicon = obj[constantsService.disableFaviconKey];
-                        faviconService.enabled = !$scope.disableFavicon;
+                        faviconService.disable($scope.disableFavicon);
                     });
                     if (!obj[constantsService.disableFaviconKey]) {
                         $analytics.eventTrack('Enabled Favicon');
