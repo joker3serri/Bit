@@ -12,7 +12,7 @@ angular
 
         _service.enabled = false;
 
-        remoteFaviconsEnabled().then((disabled) => {
+        remoteFaviconsEnabled().then(function (disabled) {
             _service.enabled = !disabled || (utilsService.getBrowser() === 'chrome');
         });
 
