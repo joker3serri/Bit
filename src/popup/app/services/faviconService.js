@@ -69,7 +69,12 @@ angular
 
         // Return the favicon for a specific uri.
         _service.getFavicon = function (uri) {
-            var hostname = new URL(uri).hostname;
+            var hostname;
+            try {
+                hostname = new URL(uri).hostname;
+            } catch (e) {
+                return $q.when();
+            }
 
             return getStorage()
                 .then(function (favicon) {
