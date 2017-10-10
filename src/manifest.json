@@ -73,6 +73,7 @@
     "idle",
     "http://*/*",
     "https://*/*",
+    "chrome://favicon/",
     "webRequest",
     "webRequestBlocking"
   ],

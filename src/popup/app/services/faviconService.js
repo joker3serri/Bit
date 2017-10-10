@@ -7,8 +7,13 @@ angular
 
         // Expire favicons after 30 days.
         var expire = 30 * 24 * 60 * 60 * 1000;
-
         var faviconKey = 'favicon';
+
+        _service.enabled = false;
+
+        remoteFaviconsEnabled().then((disabled) => {
+            _service.enabled = !disabled || (utilsService.getBrowser() === 'chrome');
+        });
 
         function buildUrl (hostname) {
             return "https://icons.bitwarden.com/?url=" + hostname;
@@ -90,6 +95,7 @@ angular
                         .then(function (disableFavicon) {
 
                             if (disableFavicon) {
+                                // Display the cached favicon.
                                 if (utilsService.getBrowser() === 'chrome') {
                                     return 'chrome://favicon/' + uri;
                                 }
@@ -112,12 +118,6 @@ angular
                                 });
                     });
                 });
-        };
-
-        _service.enabled = function() {
-            chrome.storage.local.get(constantsService.disableFaviconKey, function(obj) {
-                $scope.showFavicon = !obj[constantsService.disableFaviconKey];
-            });
         };
 
         return _service;

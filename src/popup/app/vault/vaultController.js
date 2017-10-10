@@ -10,7 +10,7 @@
         $scope.showFolderCounts = !utilsService.isEdge();
         $scope.showOnlyFolderView = utilsService.isEdge();
 
-        $scope.favicons = faviconService.favicons;
+        $scope.faviconService = faviconService;
 
         $('#search').focus();
 

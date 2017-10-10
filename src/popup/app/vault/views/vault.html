@@ -55,8 +55,8 @@
                           ng-class="{'disabled': !login.uri}">
                         <i class="fa fa-lg fa-share-square-o"></i>
                     </span>
-                    <span class="favicon" ng-if="favicons[login.uri]">
-                        <img ng-src="{{favicons[login.uri]}}">
+                    <span class="favicon" ng-if="faviconService.enabled">
+                        <img ng-src="{{faviconService.favicons[login.uri]}}">
                     </span>
                     <span class="text">
                         {{login.name}}
@@ -90,8 +90,8 @@
                           ng-class="{'disabled': !login.uri}">
                         <i class="fa fa-lg fa-share-square-o"></i>
                     </span>
-                    <span class="favicon" ng-if="favicons[login.uri]">
-                        <img ng-src="{{favicons[login.uri]}}">
+                    <span class="favicon" ng-if="faviconService.enabled">
+                        <img ng-src="{{faviconService.favicons[login.uri]}}">
                     </span>
                     <span class="text">
                         {{login.name}}

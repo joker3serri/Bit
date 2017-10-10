@@ -2,7 +2,7 @@
     .module('bit.settings')
 
     .controller('settingsFeaturesController', function ($scope, i18nService, $analytics, constantsService, utilsService,
-        totpService, $timeout) {
+        faviconService, totpService, $timeout) {
         $scope.i18n = i18nService;
         $scope.disableGa = false;
         $scope.disableAddLoginNotification = false;
@@ -199,6 +199,7 @@
                 chrome.storage.local.set(obj, function () {
                     $timeout(function () {
                         $scope.disableFavicon = obj[constantsService.disableFaviconKey];
+                        faviconService.enabled = !$scope.disableFavicon;
                     });
                     if (!obj[constantsService.disableFaviconKey]) {
                         $analytics.eventTrack('Enabled Favicon');

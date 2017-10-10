@@ -15,7 +15,7 @@ angular
         $scope.searchText = null;
         $('#search').focus();
 
-        $scope.favicons = faviconService.favicons;
+        $scope.faviconService = faviconService;
 
         $scope.$on('$viewContentLoaded', function () {
             $timeout(loadVault, 100);

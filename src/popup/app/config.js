@@ -1,7 +1,9 @@
 ﻿angular
     .module('bit')
 
-    .config(function ($stateProvider, $urlRouterProvider, toastrConfig) {
+    .config(function ($stateProvider, $urlRouterProvider, $compileProvider, toastrConfig) {
+        $compileProvider.imgSrcSanitizationWhitelist(/^\s*(chrome:\/\/favicon|data:image)/);
+        
         angular.extend(toastrConfig, {
             closeButton: true,
             progressBar: true,
