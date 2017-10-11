@@ -2,16 +2,13 @@
     .module('bit.vault')
 
     .controller('vaultController', function ($scope, $rootScope, loginService, folderService, $q, $state, $stateParams, toastr,
-        syncService, utilsService, $analytics, i18nService, stateService, faviconService, $timeout, $window) {
+        syncService, utilsService, $analytics, i18nService, stateService, $timeout, $window) {
         var stateKey = 'vault',
             state = stateService.getState(stateKey) || {};
 
         $scope.i18n = i18nService;
         $scope.showFolderCounts = !utilsService.isEdge();
         $scope.showOnlyFolderView = utilsService.isEdge();
-
-        $scope.faviconService = faviconService;
-
         $('#search').focus();
 
         var syncOnLoad = $stateParams.syncOnLoad;
@@ -57,7 +54,6 @@
             var loginPromise = $q.when(loginService.getAllDecrypted());
             loginPromise.then(function (logins) {
                 decLogins = logins;
-                faviconService.loadFavicons(logins);
             });
             promises.push(loginPromise);
 

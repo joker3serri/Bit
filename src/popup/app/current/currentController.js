@@ -2,7 +2,7 @@ angular
     .module('bit.current')
 
     .controller('currentController', function ($scope, loginService, utilsService, toastr, $q, $window, $state, $timeout,
-        autofillService, $analytics, i18nService, totpService, tokenService, faviconService) {
+        autofillService, $analytics, i18nService, totpService, tokenService) {
         $scope.i18n = i18nService;
 
         var pageDetails = [],
@@ -14,8 +14,6 @@ angular
         $scope.loaded = false;
         $scope.searchText = null;
         $('#search').focus();
-
-        $scope.faviconService = faviconService;
 
         $scope.$on('$viewContentLoaded', function () {
             $timeout(loadVault, 100);
@@ -47,7 +45,6 @@ angular
                 $q.when(loginService.getAllDecryptedForDomain(domain)).then(function (logins) {
                     $scope.loaded = true;
                     $scope.logins = logins;
-                    faviconService.loadFavicons(logins);
                 });
             });
         }

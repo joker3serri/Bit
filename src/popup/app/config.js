@@ -2,8 +2,8 @@
     .module('bit')
 
     .config(function ($stateProvider, $urlRouterProvider, $compileProvider, toastrConfig) {
-        $compileProvider.imgSrcSanitizationWhitelist(/^\s*(chrome:\/\/favicon|data:image|(moz|chrome)-extension)/);
-        
+        $compileProvider.imgSrcSanitizationWhitelist(/^\s*(chrome:\/\/favicon|(moz|chrome)-extension|https:\/\/icons\.bitwarden\.com)/);
+
         angular.extend(toastrConfig, {
             closeButton: true,
             progressBar: true,
@@ -257,7 +257,7 @@
                 params: { animation: null }
             });
     })
-    .run(function ($rootScope, userService, $state, constantsService, stateService) {
+    .run(function ($rootScope, userService, $state, constantsService, stateService, faviconService) {
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
             if ($state.current.name.indexOf('tabs.') > -1 && toState.name.indexOf('tabs.') > -1) {
                 stateService.purgeState();
