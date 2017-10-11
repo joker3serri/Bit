@@ -123,7 +123,7 @@ var bg_isBackground = true,
             else if (msg.sender === 'autofiller' || msg.sender === 'autofill_cmd') {
                 bg_autofillService.doAutoFillForLastUsedLogin([{
                     frameId: sender.frameId, tab: msg.tab, details: msg.details
-                }]);
+                }], msg.sender === 'autofill_cmd');
             }
             else {
                 clearTimeout(autofillTimeout);
@@ -734,7 +734,11 @@ var bg_isBackground = true,
     }
 
     function autofillPage() {
-        bg_autofillService.doAutoFill(loginToAutoFill, pageDetailsToAutoFill, true);
+        bg_autofillService.doAutoFill({
+            login: loginToAutoFill,
+            pageDetails: pageDetailsToAutoFill,
+            fromBackground: true
+        });
         // reset
         loginToAutoFill = null;
         pageDetailsToAutoFill = [];

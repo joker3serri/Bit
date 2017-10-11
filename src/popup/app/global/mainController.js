@@ -8,9 +8,8 @@ angular
         self.animation = '';
         self.xsBody = $window.screen.availHeight < 600;
         self.smBody = !self.xsBody && $window.screen.availHeight <= 800;
-        self.lgBody = !self.xsBody && !self.smBody && utilsService && !utilsService.isFirefox() && !utilsService.isEdge();
-        self.disableSearch = utilsService.isEdge();
-        self.inSidebar = utilsService.inSidebar($window);
+        self.disableSearch = utilsService && utilsService.isEdge();
+        self.inSidebar = utilsService && utilsService.inSidebar($window);
 
         $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
             if (toParams.animation) {
@@ -33,8 +32,28 @@ angular
                 }
             }
 
-            href = href.replace('uilocation=popup', 'uilocation=tab').replace('uilocation=sidebar', 'uilocation=tab');
-            chrome.tabs.create({ url: href });
+            if (chrome.windows.create) {
+                href = href.replace('uilocation=popup', 'uilocation=popout').replace('uilocation=tab', 'uilocation=popout')
+                    .replace('uilocation=sidebar', 'uilocation=popout');
+
+                chrome.windows.create({
+                    url: href,
+                    type: 'popup',
+                    width: $('body').width() + 60,
+                    height: $('body').height()
+                });
+
+                if (utilsService.inPopup($window)) {
+                    $window.close();
+                }
+            }
+            else {
+                href = href.replace('uilocation=popup', 'uilocation=tab').replace('uilocation=popout', 'uilocation=tab')
+                    .replace('uilocation=sidebar', 'uilocation=tab');
+                chrome.tabs.create({
+                    url: href
+                });
+            }
         };
 
         chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
