@@ -2,7 +2,7 @@
     .module('bit')
 
     .config(function ($stateProvider, $urlRouterProvider, $compileProvider, toastrConfig) {
-        $compileProvider.imgSrcSanitizationWhitelist(/^\s*(chrome:\/\/favicon|(moz|chrome)-extension|https:\/\/icons\.bitwarden\.com)/);
+        $compileProvider.imgSrcSanitizationWhitelist(/^\s*((moz|chrome)-extension|https:\/\/icons\.bitwarden\.com)/);
 
         angular.extend(toastrConfig, {
             closeButton: true,
@@ -257,10 +257,15 @@
                 params: { animation: null }
             });
     })
-    .run(function ($rootScope, userService, $state, constantsService, stateService, faviconService) {
+    .run(function ($rootScope, userService, $state, constantsService, stateService) {
+        chrome.storage.local.get(constantsService.disableFaviconKey, function(obj) {
+            stateService.saveState('faviconEnabled', !obj[constantsService.disableFaviconKey]);
+        });
+
         $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
             if ($state.current.name.indexOf('tabs.') > -1 && toState.name.indexOf('tabs.') > -1) {
-                stateService.purgeState();
+                stateService.removeState('vault');
+                stateService.removeState('viewFolder');
             }
 
             if (!userService) {
