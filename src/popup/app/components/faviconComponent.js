@@ -10,10 +10,11 @@ angular
         		this.enabled = function() {
                     return stateService.getState('faviconEnabled');
                 };
+            }).bind(this);
 
+            this.$onChanges = (function () {
                 var hostname;
                 try {
-                    console.log(this);
                     hostname = new URL(this.uri).hostname;
                     this.url = 'https://icons.bitwarden.com/' + hostname + '/icon.png';
                 } catch (e) {
