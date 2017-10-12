@@ -1,8 +1,8 @@
 ﻿angular
     .module('bit')
 
-    .config(function ($stateProvider, $urlRouterProvider, $compileProvider, toastrConfig) {
-        $compileProvider.imgSrcSanitizationWhitelist(/^\s*((moz|chrome)-extension|https:\/\/icons\.bitwarden\.com)/);
+    .config(function ($stateProvider, $urlRouterProvider, $compileProvider, $sceDelegateProvider, toastrConfig) {
+        $compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob):|data:image\/|(moz|chrome|ms-browser)-extension)/);
 
         angular.extend(toastrConfig, {
             closeButton: true,
