@@ -1,10 +1,10 @@
 angular
     .module('bit.components')
-    .component('favicon', {
+    .component('icon', {
     	bindings: {
     		uri: '<'
     	},
-        template: '<div class="favicon" ng-if="$ctrl.enabled()"><img src="{{$ctrl.url}}"></div>',
+        template: '<div class="icon" ng-if="$ctrl.enabled()"><img src="{{$ctrl.url}}"></div>',
         controller: function(stateService) {
             this.$onInit = (function() {
         		this.enabled = function() {
