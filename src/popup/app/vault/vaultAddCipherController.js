@@ -1,25 +1,34 @@
 ﻿angular
     .module('bit.vault')
 
-    .controller('vaultAddLoginController', function ($scope, $state, $stateParams, loginService, folderService,
-        cryptoService, $q, toastr, utilsService, $analytics, i18nService, constantsService) {
+    .controller('vaultAddCipherController', function ($scope, $state, $stateParams, loginService, folderService,
+        cryptoService, toastr, utilsService, $analytics, i18nService, constantsService) {
         $scope.i18n = i18nService;
         $scope.constants = constantsService;
         $scope.addFieldType = constantsService.fieldType.text.toString();
+        $scope.selectedType = constantsService.cipherType.login.toString();
         var from = $stateParams.from,
             folderId = $stateParams.folderId;
 
-        $scope.login = {
+        $scope.cipher = {
             folderId: folderId,
             name: $stateParams.name,
-            uri: $stateParams.uri
+            type: constantsService.cipherType.login,
+            login: {},
+            secureNote: {
+                type: 0 // generic note
+            }
         };
 
-        if ($stateParams.login) {
-            angular.extend($scope.login, $stateParams.login);
+        if($stateParams.uri) {
+            $scope.cipher.login.uri = $stateParams.uri;
         }
 
-        if (!$stateParams.login && $scope.login.name && $scope.login.uri) {
+        if ($stateParams.cipher) {
+            angular.extend($scope.cipher, $stateParams.cipher);
+        }
+
+        if (!$stateParams.cipher && $scope.cipher.name && $scope.cipher.login && $scope.cipher.login.uri) {
             $('#username').focus();
         }
         else {
@@ -27,24 +36,28 @@
         }
         utilsService.initListSectionItemListeners($(document), angular);
 
-        $q.when(folderService.getAllDecrypted()).then(function (folders) {
+        folderService.getAllDecrypted().then(function (folders) {
             $scope.folders = folders;
         });
 
+        $scope.typeChanged = function() {
+            $scope.cipher.type = parseInt($scope.selectedType);
+        };
+
         $scope.savePromise = null;
-        $scope.save = function (model) {
-            if (!model.name) {
+        $scope.save = function () {
+            if (!cipher.name || cipher.name === '') {
                 toastr.error(i18nService.nameRequired, i18nService.errorsOccurred);
                 return;
             }
 
-            $scope.savePromise = $q.when(loginService.encrypt(model)).then(function (loginModel) {
-                var login = new Login(loginModel, true);
-                return $q.when(loginService.saveWithServer(login)).then(function (login) {
-                    $analytics.eventTrack('Added Login');
-                    toastr.success(i18nService.addedLogin);
-                    $scope.close();
-                });
+            $scope.savePromise = loginService.encrypt($scope.cipher).then(function (cipherModel) {
+                var cipher = new Cipher(cipherModel, true);
+                return loginService.saveWithServer(cipher);
+            }).then(function (c) {
+                $analytics.eventTrack('Added Cipher');
+                toastr.success(i18nService.addedLogin);
+                $scope.close();
             });
         };
 
@@ -68,11 +81,11 @@
         };
 
         $scope.addField = function (type) {
-            if (!$scope.login.fields) {
-                $scope.login.fields = [];
+            if (!$scope.cipher.fields) {
+                $scope.cipher.fields = [];
             }
 
-            $scope.login.fields.push({
+            $scope.cipher.fields.push({
                 type: parseInt(type),
                 name: null,
                 value: null
@@ -80,9 +93,9 @@
         };
 
         $scope.removeField = function (field) {
-            var index = $scope.login.fields.indexOf(field);
+            var index = $scope.cipher.fields.indexOf(field);
             if (index > -1) {
-                $scope.login.fields.splice(index, 1);
+                $scope.cipher.fields.splice(index, 1);
             }
         };
 
@@ -92,7 +105,7 @@
                 animation: 'in-slide-up',
                 addState: {
                     from: from,
-                    login: $scope.login
+                    cipher: $scope.cipher
                 }
             });
         };

@@ -787,6 +787,21 @@
   "disableFaviconDesc": {
     "message": "Website Icons, also known as \"Favicons\", provides an image next to the login vault."
   },
+  "type": {
+    "message": "Type"
+  },
+  "typeLogin": {
+    "message": "Login"
+  },
+  "typeSecureNote": {
+    "message": "Secure Note"
+  },
+  "typeCard": {
+    "message": "Card"
+  },
+  "typeIdentity": {
+    "message": "Identity"
+  },
   "viewPasswordHistory": {
     "message": "View Password History"
   },

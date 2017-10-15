@@ -1,16 +1,20 @@
-function LoginService(cryptoService, userService, apiService, settingsService) {
+function LoginService(cryptoService, userService, apiService, settingsService, utilsService, constantsService) {
     this.cryptoService = cryptoService;
     this.userService = userService;
     this.apiService = apiService;
     this.settingsService = settingsService;
-    this.decryptedLoginCache = null;
+    this.utilsService = utilsService;
+    this.constantsService = constantsService;
+    this.decryptedCipherCache = null;
+    this.localDataKey = 'sitesLocalData';
+    this.neverDomainsKey = 'neverDomains';
 
     initLoginService();
 }
 
 function initLoginService() {
     LoginService.prototype.clearCache = function () {
-        this.decryptedLoginCache = null;
+        this.decryptedCipherCache = null;
     };
 
     LoginService.prototype.encrypt = function (login) {
@@ -20,33 +24,71 @@ function initLoginService() {
             id: login.id,
             folderId: login.folderId,
             favorite: login.favorite,
-            organizationId: login.organizationId
+            organizationId: login.organizationId,
+            type: login.type
         };
 
-        var orgKey = null;
+        function encryptCipherData(cipher, model, key, self) {
+            switch (cipher.type) {
+                case constantsService.cipherType.login:
+                    return encryptObjProperty(cipher.login, model.login, {
+                        uri: null,
+                        username: null,
+                        password: null,
+                        totp: null
+                    }, key, self);
+                case constantsService.cipherType.secureNote:
+                    model.secureNote = {
+                        type: cipher.secureNote.type
+                    };
+                    return Q();
+                case constantsService.cipherType.card:
+                    return encryptObjProperty(cipher.card, model.card, {
+                        cardholderName: null,
+                        brand: null,
+                        number: null,
+                        expMonth: null,
+                        expYear: null,
+                        code: null
+                    }, key, self);
+                case constantsService.cipherType.identity:
+                    return encryptObjProperty(cipher.identity, model.identity, {
+                        title: null,
+                        firstName: null,
+                        middleName: null,
+                        lastName: null,
+                        address1: null,
+                        address2: null,
+                        address3: null,
+                        city: null,
+                        state: null,
+                        postalCode: null,
+                        country: null,
+                        company: null,
+                        email: null,
+                        phone: null,
+                        ssn: null,
+                        username: null,
+                        passportNumber: null,
+                        licenseNumber: null
+                    }, key, self);
+                default:
+                    throw 'Unknown type.';
+            }
+        }
+
         return self.cryptoService.getOrgKey(login.organizationId).then(function (key) {
-            orgKey = key;
-            return self.cryptoService.encrypt(login.name, orgKey);
-        }).then(function (cs) {
-            model.name = cs;
-            return self.cryptoService.encrypt(login.uri, orgKey);
-        }).then(function (cs) {
-            model.uri = cs;
-            return self.cryptoService.encrypt(login.username, orgKey);
-        }).then(function (cs) {
-            model.username = cs;
-            return self.cryptoService.encrypt(login.password, orgKey);
-        }).then(function (cs) {
-            model.password = cs;
-            return self.cryptoService.encrypt(login.notes, orgKey);
-        }).then(function (cs) {
-            model.notes = cs;
-            return self.cryptoService.encrypt(login.totp, orgKey);
-        }).then(function (cs) {
-            model.totp = cs;
-            return self.encryptFields(login.fields, orgKey);
-        }).then(function (fields) {
-            model.fields = fields;
+            return Q.all([
+                encryptObjProperty(login, model, {
+                    name: null,
+                    notes: null
+                }, key, self),
+                encryptCipherData(login, model, key),
+                self.encryptFields(login.fields, key).then(function (fields) {
+                    model.fields = fields;
+                })
+            ]);
+        }).then(function () {
             return model;
         });
     };
@@ -76,131 +118,143 @@ function initLoginService() {
             type: field.type
         };
 
-        return Q().then(function () {
-            if (!field.name || field.name === '') {
-                return null;
-            }
-            return self.cryptoService.encrypt(field.name, key);
-        }).then(function (cs) {
-            model.name = cs;
-            if (!field.value || field.value === '') {
-                return null;
-            }
-            return self.cryptoService.encrypt(field.value, key);
-        }).then(function (cs) {
-            model.value = cs;
+        return encryptObjProperty(field, model, {
+            name: null,
+            value: null
+        }, key, self).then(function () {
             return model;
         });
     };
 
-    LoginService.prototype.get = function (id, callback) {
-        if (!callback || typeof callback !== 'function') {
-            throw 'callback function required';
+    function encryptObjProperty(obj, model, map, key, self) {
+        var promises = [];
+
+        for (var prop in map) {
+            if (map.hasOwnProperty(prop)) {
+                /* jshint ignore:start */
+                (function (theProp) {
+                    var promise = Q().then(function () {
+                        var objProb = obj[(map[theProp] || theProp)];
+                        if (objProb && objProb !== '') {
+                            return self.cryptoService.encrypt(objProb, key);
+                        }
+                        return null;
+                    }).then(function (val) {
+                        model[theProp] = val;
+                        return;
+                    });
+
+                    promises.push(promise);
+                })(prop);
+                /* jshint ignore:end */
+            }
         }
 
-        this.userService.getUserId(function (userId) {
-            var loginsKey = 'sites_' + userId;
-            var localDataKey = 'sitesLocalData';
+        return Q.all(promises);
+    }
 
-            chrome.storage.local.get(localDataKey, function (localDataObj) {
-                var localData = localDataObj[localDataKey];
-                if (!localData) {
-                    localData = {};
-                }
+    LoginService.prototype.get = function (id) {
+        var self = this,
+            key = null,
+            localData;
 
-                chrome.storage.local.get(loginsKey, function (obj) {
-                    var logins = obj[loginsKey];
-                    if (logins && id in logins) {
-                        callback(new Login(logins[id], false, localData[id]));
-                        return;
-                    }
+        return self.userService.getUserIdPromise().then(function (userId) {
+            key = 'ciphers_' + userId;
+            return self.utilsService.getObjFromStorage(self.localDataKey);
+        }).then(function (data) {
+            localData = data;
+            if (!localData) {
+                localData = {};
+            }
+            return self.utilsService.getObjFromStorage(key);
+        }).then(function (ciphers) {
+            if (ciphers && id in ciphers) {
+                return new Login(ciphers[id], false, localData[id]);
+            }
 
-                    callback(null);
-                });
-            });
+            return null;
         });
     };
 
-    LoginService.prototype.getAll = function (callback) {
-        if (!callback || typeof callback !== 'function') {
-            throw 'callback function required';
-        }
+    LoginService.prototype.getAll = function () {
+        var self = this,
+            key = null,
+            localData = null;
 
-        this.userService.getUserId(function (userId) {
-            var loginsKey = 'sites_' + userId;
-            var localDataKey = 'sitesLocalData';
-
-            chrome.storage.local.get(localDataKey, function (localDataObj) {
-                var localData = localDataObj[localDataKey];
-                if (!localData) {
-                    localData = {};
+        return self.userService.getUserIdPromise().then(function (userId) {
+            key = 'ciphers_' + userId;
+            return self.utilsService.getObjFromStorage(self.localDataKey);
+        }).then(function (data) {
+            localData = data;
+            if (!localData) {
+                localData = {};
+            }
+            return self.utilsService.getObjFromStorage(key);
+        }).then(function (ciphers) {
+            var response = [];
+            for (var id in ciphers) {
+                if (id) {
+                    response.push(new Cipher(ciphers[id], false, localData[id]));
                 }
+            }
 
-                chrome.storage.local.get(loginsKey, function (obj) {
-                    var logins = obj[loginsKey];
-                    var response = [];
-                    for (var id in logins) {
-                        if (!id) {
-                            continue;
-                        }
-
-                        response.push(new Login(logins[id], false, localData[id]));
-                    }
-
-                    callback(response);
-                });
-            });
+            return response;
         });
     };
 
     LoginService.prototype.getAllDecrypted = function () {
-        var deferred = Q.defer();
-        var self = this;
+        if (this.decryptedCipherCache) {
+            return Q(this.decryptedCipherCache);
+        }
+
+        var deferred = Q.defer(),
+            decCiphers = [],
+            self = this;
 
         self.cryptoService.getKey().then(function (key) {
             if (!key) {
                 deferred.reject();
-                return;
+                return true;
             }
 
-            if (self.decryptedLoginCache) {
-                deferred.resolve(self.decryptedLoginCache);
+            return self.getAll();
+        }).then(function (ciphers) {
+            if (ciphers === true) {
                 return;
             }
 
             var promises = [];
-            var decLogins = [];
-            self.getAll(function (logins) {
-                for (var i = 0; i < logins.length; i++) {
-                    /* jshint ignore:start */
-                    promises.push(logins[i].decrypt().then(function (login) {
-                        decLogins.push(login);
-                    }));
-                    /* jshint ignore:end */
-                }
+            for (var i = 0; i < ciphers.length; i++) {
+                /* jshint ignore:start */
+                promises.push(ciphers[i].decrypt().then(function (cipher) {
+                    decCiphers.push(cipher);
+                }));
+                /* jshint ignore:end */
+            }
 
-                Q.all(promises).then(function () {
-                    self.decryptedLoginCache = decLogins;
-                    deferred.resolve(self.decryptedLoginCache);
-                });
-            });
+            return Q.all(promises);
+        }).then(function (stop) {
+            if (stop === true) {
+                return;
+            }
+
+            self.decryptedCipherCache = decCiphers;
+            deferred.resolve(self.decryptedCipherCache);
         });
 
         return deferred.promise;
     };
 
     LoginService.prototype.getAllDecryptedForFolder = function (folderId) {
-        var self = this;
-
-        return self.getAllDecrypted().then(function (logins) {
-            var loginsToReturn = [];
-            for (var i = 0; i < logins.length; i++) {
-                if (logins[i].folderId === folderId) {
-                    loginsToReturn.push(logins[i]);
+        return this.getAllDecrypted().then(function (ciphers) {
+            var ciphersToReturn = [];
+            for (var i = 0; i < ciphers.length; i++) {
+                if (ciphers[i].folderId === folderId) {
+                    ciphersToReturn.push(ciphers[i]);
                 }
             }
 
-            return loginsToReturn;
+            return ciphersToReturn;
         });
     };
 
@@ -222,265 +276,222 @@ function initLoginService() {
             return matchingDomains;
         });
 
-        var loginsPromise = self.getAllDecrypted().then(function (logins) {
-            return logins;
-        });
+        return Q.all([eqDomainsPromise, self.getAllDecrypted()]).then(function (result) {
+            var matchingDomains = result[0],
+                ciphers = result[1],
+                ciphersToReturn = [];
 
-        return Q.all([eqDomainsPromise, loginsPromise]).then(function (result) {
-            var matchingDomains = result[0];
-            var logins = result[1];
-            var loginsToReturn = [];
-            for (var i = 0; i < logins.length; i++) {
-                if (logins[i].domain && matchingDomains.indexOf(logins[i].domain) >= 0) {
-                    loginsToReturn.push(logins[i]);
+            for (var i = 0; i < ciphers.length; i++) {
+                if (ciphers[i].domain && matchingDomains.indexOf(ciphers[i].domain) > -1) {
+                    ciphersToReturn.push(ciphers[i]);
                 }
             }
 
-            return loginsToReturn;
+            return ciphersToReturn;
         });
     };
 
     LoginService.prototype.getLastUsedForDomain = function (domain) {
-        var self = this;
-        var deferred = Q.defer();
-        self.getAllDecryptedForDomain(domain).then(function (logins) {
-            if (!logins.length) {
+        var self = this,
+            deferred = Q.defer();
+
+        self.getAllDecryptedForDomain(domain).then(function (ciphers) {
+            if (!ciphers.length) {
                 deferred.reject();
                 return;
             }
 
-            var sortedLogins = logins.sort(self.sortLoginsByLastUsed);
-            deferred.resolve(sortedLogins[0]);
+            var sortedCiphers = ciphers.sort(self.sortCiphersByLastUsed);
+            deferred.resolve(sortedCiphers[0]);
         });
+
         return deferred.promise;
     };
 
-    LoginService.prototype.saveWithServer = function (login) {
+    LoginService.prototype.saveWithServer = function (cipher) {
         var deferred = Q.defer();
 
         var self = this,
-            request = new CipherRequest(login, 1); // 1 = Login
+            // TODO
+            request = new CipherRequest(cipher, 1); // 1 = Login
 
-        if (!login.id) {
-            self.apiService.postCipher(request, apiSuccess, function (response) {
-                handleError(response, deferred);
+        if (!cipher.id) {
+            self.apiService.postCipher(request).then(apiSuccess, function (response) {
+                deferred.reject(response);
             });
         }
         else {
-            self.apiService.putCipher(login.id, request, apiSuccess, function (response) {
-                handleError(response, deferred);
+            self.apiService.putCipher(cipher.id, request).then(apiSuccess, function (response) {
+                deferred.reject(response);
             });
         }
 
         function apiSuccess(response) {
-            login.id = response.id;
-            self.userService.getUserId(function (userId) {
+            cipher.id = response.id;
+            self.userService.getUserIdPromise().then(function (userId) {
                 var data = new LoginData(response, userId);
-                self.upsert(data, function () {
-                    deferred.resolve(login);
-                });
+                return self.upsert(data);
+            }).then(function () {
+                deferred.resolve(cipher);
             });
         }
 
         return deferred.promise;
     };
 
-    LoginService.prototype.upsert = function (login, callback) {
-        if (!callback || typeof callback !== 'function') {
-            throw 'callback function required';
-        }
+    LoginService.prototype.upsert = function (cipher) {
+        var self = this,
+            key = null;
 
-        var self = this;
+        return self.userService.getUserIdPromise().then(function (userId) {
+            key = 'ciphers_' + userId;
+            return self.utilsService.getObjFromStorage(key);
+        }).then(function (ciphers) {
+            if (!ciphers) {
+                ciphers = {};
+            }
 
-        self.userService.getUserId(function (userId) {
-            var loginsKey = 'sites_' + userId;
-
-            chrome.storage.local.get(loginsKey, function (obj) {
-                var logins = obj[loginsKey];
-                if (!logins) {
-                    logins = {};
+            if (cipher.constructor === Array) {
+                for (var i = 0; i < cipher.length; i++) {
+                    ciphers[cipher[i].id] = cipher[i];
                 }
+            }
+            else {
+                ciphers[cipher.id] = cipher;
+            }
 
-                if (login.constructor === Array) {
-                    for (var i = 0; i < login.length; i++) {
-                        logins[login[i].id] = login[i];
-                    }
-                }
-                else {
-                    logins[login.id] = login;
-                }
-
-                obj[loginsKey] = logins;
-
-                chrome.storage.local.set(obj, function () {
-                    self.decryptedLoginCache = null;
-                    callback();
-                });
-            });
+            return self.utilsService.saveObjToStorage(key, ciphers);
+        }).then(function () {
+            self.decryptedCipherCache = null;
         });
     };
 
-    LoginService.prototype.updateLastUsedDate = function (id, callback) {
-        if (!callback || typeof callback !== 'function') {
-            throw 'callback function required';
-        }
-
+    LoginService.prototype.updateLastUsedDate = function (id) {
         var self = this;
-        var localDataKey = 'sitesLocalData';
 
-        chrome.storage.local.get(localDataKey, function (obj) {
-            var loginsLocalData = obj[localDataKey];
-            if (!loginsLocalData) {
-                loginsLocalData = {};
+        var ciphersLocalData = null;
+        return self.utilsService.getObjFromStorage(self.localDataKey).then(function (obj) {
+            ciphersLocalData = obj;
+
+            if (!ciphersLocalData) {
+                ciphersLocalData = {};
             }
 
-            if (loginsLocalData[id]) {
-                loginsLocalData[id].lastUsedDate = new Date().getTime();
+            if (ciphersLocalData[id]) {
+                ciphersLocalData[id].lastUsedDate = new Date().getTime();
             }
             else {
-                loginsLocalData[id] = {
+                ciphersLocalData[id] = {
                     lastUsedDate: new Date().getTime()
                 };
             }
 
-            obj[localDataKey] = loginsLocalData;
+            return self.utilsService.saveObjToStorage(key, ciphersLocalData);
+        }).then(function () {
+            if (!self.decryptedCipherCache) {
+                return;
+            }
 
-            chrome.storage.local.set(obj, function () {
-                if (self.decryptedLoginCache) {
-                    for (var i = 0; i < self.decryptedLoginCache.length; i++) {
-                        if (self.decryptedLoginCache[i].id === id) {
-                            self.decryptedLoginCache[i].localData = loginsLocalData[id];
-                            break;
-                        }
+            for (var i = 0; i < self.decryptedCipherCache.length; i++) {
+                if (self.decryptedCipherCache[i].id === id) {
+                    self.decryptedCipherCache[i].localData = ciphersLocalData[id];
+                    break;
+                }
+            }
+        });
+    };
+
+    LoginService.prototype.replace = function (ciphers) {
+        var self = this;
+        self.userService.getUserIdPromise().then(function (userId) {
+            return self.utilsService.saveObjToStorage('ciphers_' + userId, ciphers);
+        }).then(function () {
+            self.decryptedCipherCache = null;
+        });
+    };
+
+    LoginService.prototype.clear = function (userId) {
+        var self = this;
+        return self.utilsService.removeFromStorage('ciphers_' + userId).then(function () {
+            self.decryptedCipherCache = null;
+        });
+    };
+
+    LoginService.prototype.delete = function (id) {
+        var self = this,
+            key = null;
+
+        self.userService.getUserIdPromise().then(function () {
+            key = 'ciphers_' + userId;
+            return self.utilsService.getObjFromStorage(key);
+        }).then(function (logins) {
+            if (!logins) {
+                return null;
+            }
+
+            if (id.constructor === Array) {
+                for (var i = 0; i < id.length; i++) {
+                    if (id[i] in logins) {
+                        delete logins[id[i]];
                     }
                 }
+            }
+            else if (id in logins) {
+                delete logins[id];
+            }
+            else {
+                return null;
+            }
 
-                callback();
-            });
-        });
-    };
+            return logins;
+        }).then(function (logins) {
+            if (!logins) {
+                return false;
+            }
 
-    LoginService.prototype.replace = function (logins, callback) {
-        if (!callback || typeof callback !== 'function') {
-            throw 'callback function required';
-        }
-
-        var self = this;
-
-        self.userService.getUserId(function (userId) {
-            var obj = {};
-            obj['sites_' + userId] = logins;
-            chrome.storage.local.set(obj, function () {
-                self.decryptedLoginCache = null;
-                callback();
-            });
-        });
-    };
-
-    LoginService.prototype.clear = function (userId, callback) {
-        if (!callback || typeof callback !== 'function') {
-            throw 'callback function required';
-        }
-
-        var self = this;
-
-        chrome.storage.local.remove('sites_' + userId, function () {
-            self.decryptedLoginCache = null;
-            callback();
-        });
-    };
-
-    LoginService.prototype.delete = function (id, callback) {
-        if (!callback || typeof callback !== 'function') {
-            throw 'callback function required';
-        }
-
-        var self = this;
-
-        self.userService.getUserId(function (userId) {
-            var loginsKey = 'sites_' + userId;
-
-            chrome.storage.local.get(loginsKey, function (obj) {
-                var logins = obj[loginsKey];
-                if (!logins) {
-                    callback();
-                    return;
-                }
-
-                if (id.constructor === Array) {
-                    for (var i = 0; i < id.length; i++) {
-                        if (id[i] in logins) {
-                            delete logins[id[i]];
-                        }
-                    }
-                }
-                else if (id in logins) {
-                    delete logins[id];
-                }
-                else {
-                    callback();
-                    return;
-                }
-
-                obj[loginsKey] = logins;
-                chrome.storage.local.set(obj, function () {
-                    self.decryptedLoginCache = null;
-                    callback();
-                });
-            });
+            return self.utilsService.saveObjToStorage(key, logins);
+        }).then(function (clearCache) {
+            if (clearCache !== false) {
+                self.decryptedCipherCache = null;
+            }
         });
     };
 
     LoginService.prototype.deleteWithServer = function (id) {
-        var deferred = Q.defer();
-
         var self = this;
-        self.apiService.deleteCipher(id, function () {
-            self.delete(id, function () {
-                deferred.resolve();
-            });
-        }, function (response) {
-            handleError(response, deferred);
+        return self.apiService.deleteCipher(id).then(function () {
+            return self.delete(id);
         });
-
-        return deferred.promise;
     };
 
     LoginService.prototype.saveNeverDomain = function (domain) {
-        var deferred = Q.defer();
-        var neverKey = 'neverDomains';
-
         if (!domain) {
-            deferred.resolve();
-        }
-        else {
-            chrome.storage.local.get(neverKey, function (obj) {
-                var domains = obj[neverKey];
-                if (!domains) {
-                    domains = {};
-                }
-
-                domains[domain] = null;
-                obj[neverKey] = domains;
-
-                chrome.storage.local.set(obj, function () {
-                    deferred.resolve();
-                });
-            });
+            return Q();
         }
 
-        return deferred.promise;
+        var self = this;
+        return self.utilsService.getObjFromStorage(self.neverDomainsKey).then(function (domains) {
+            if (!domains) {
+                domains = {};
+            }
+
+            domains[domain] = null;
+            return self.utilsService.saveObjToStorage(key, domains);
+        });
     };
 
-    LoginService.prototype.saveAttachmentWithServer = function (login, unencryptedFile) {
-        var deferred = Q.defer();
-        var self = this;
+    LoginService.prototype.saveAttachmentWithServer = function (cipher, unencryptedFile) {
+        var deferred = Q.defer(),
+            self = this,
+            response = null,
+            data = null,
+            apiErrored = false;
 
         var key, encFileName;
         var reader = new FileReader();
         reader.readAsArrayBuffer(unencryptedFile);
         reader.onload = function (evt) {
-            self.cryptoService.getOrgKey(login.organizationId).then(function (theKey) {
+            self.cryptoService.getOrgKey(cipher.organizationId).then(function (theKey) {
                 key = theKey;
                 return self.cryptoService.encrypt(unencryptedFile.name, key);
             }).then(function (fileName) {
@@ -491,18 +502,24 @@ function initLoginService() {
                 var blob = new Blob([encData], { type: 'application/octet-stream' });
                 fd.append('data', blob, encFileName.encryptedString);
 
-                self.apiService.postCipherAttachment(login.id, fd,
-                    function (response) {
-                        self.userService.getUserId(function (userId) {
-                            var data = new LoginData(response, userId);
-                            self.upsert(data, function () {
-                                deferred.resolve(new Login(data));
-                            });
-                        });
-                    },
-                    function (response) {
-                        handleErrorMessage(response, deferred);
-                    });
+                return self.apiService.postCipherAttachment(cipher.id, fd);
+            }).then(function (resp) {
+                response = resp;
+                return self.userService.getUserIdPromise();
+            }, function (resp) {
+                apiErrored = true;
+                handleErrorMessage(resp, deferred);
+            }).then(function (userId) {
+                if (apiErrored === true) {
+                    return;
+                }
+
+                data = new LoginData(response, userId);
+                return self.upsert(data);
+            }).then(function () {
+                if (data) {
+                    deferred.resolve(new Login(data));
+                }
             });
         };
         reader.onerror = function (evt) {
@@ -512,48 +529,46 @@ function initLoginService() {
         return deferred.promise;
     };
 
-    LoginService.prototype.deleteAttachment = function (id, attachmentId, callback) {
-        if (!callback || typeof callback !== 'function') {
-            throw 'callback function required';
-        }
+    LoginService.prototype.deleteAttachment = function (id, attachmentId) {
+        var self = this,
+            key = null;
 
-        var self = this;
-
-        self.userService.getUserId(function (userId) {
-            var loginsKey = 'sites_' + userId;
-
-            chrome.storage.local.get(loginsKey, function (obj) {
-                var logins = obj[loginsKey];
-                if (logins && id in logins && logins[id].attachments) {
-                    for (var i = 0; i < logins[id].attachments.length; i++) {
-                        if (logins[id].attachments[i].id === attachmentId) {
-                            logins[id].attachments.splice(i, 1);
-                        }
+        self.userService.getUserIdPromise().then(function () {
+            key = 'ciphers_' + userId;
+            return self.utilsService.getObjFromStorage(key);
+        }).then(function (logins) {
+            if (logins && id in logins && logins[id].attachments) {
+                for (var i = 0; i < logins[id].attachments.length; i++) {
+                    if (logins[id].attachments[i].id === attachmentId) {
+                        logins[id].attachments.splice(i, 1);
                     }
+                }
 
-                    obj[loginsKey] = logins;
-                    chrome.storage.local.set(obj, function () {
-                        self.decryptedLoginCache = null;
-                        callback();
-                    });
-                }
-                else {
-                    callback();
-                }
-            });
+                return self.utilsService.saveObjToStorage(key, logins);
+            }
+            else {
+                return false;
+            }
+        }).then(function (clearCache) {
+            if (clearCache !== false) {
+                self.decryptedCipherCache = null;
+            }
         });
     };
 
     LoginService.prototype.deleteAttachmentWithServer = function (id, attachmentId) {
-        var deferred = Q.defer();
+        var self = this,
+            deferred = Q.defer();
 
-        var self = this;
-        self.apiService.deleteCipherAttachment(id, attachmentId, function () {
-            self.deleteAttachment(id, attachmentId, function () {
-                deferred.resolve();
-            });
+        self.apiService.deleteCipherAttachment(id, attachmentId).then(function () {
+            return self.deleteAttachment(id, attachmentId);
         }, function (response) {
             handleErrorMessage(response, deferred);
+            return false;
+        }).then(function (apiSuccess) {
+            if (apiSuccess !== false) {
+                deferred.resolve();
+            }
         });
 
         return deferred.promise;

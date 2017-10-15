@@ -10,7 +10,7 @@
 
         var pageSize = 100,
             decFolder = null,
-            decLogins = [];
+            decCiphers = [];
 
         $scope.folder = {
             id: !state.folderId || state.folderId === '0' ? null : state.folderId,
@@ -20,8 +20,8 @@
         $('#search').focus();
 
         $scope.loaded = false;
-        $scope.vaultLogins = [];
-        $scope.pagedVaultLogins = [];
+        $scope.vaultCiphers = [];
+        $scope.pagedVaultCiphers = [];
         $scope.searchText = null;
         loadVault();
 
@@ -31,7 +31,7 @@
             if ($scope.folder.id) {
                 var folderDeferred = $q.defer();
                 folderService.get($scope.folder.id, function (folder) {
-                    $q.when(folder.decrypt()).then(function (model) {
+                    folder.decrypt().then(function (model) {
                         decFolder = model;
                         folderDeferred.resolve();
                     });
@@ -39,21 +39,20 @@
                 promises.push(folderDeferred.promise);
             }
 
-            var loginPromise = $q.when(loginService.getAllDecryptedForFolder($scope.folder.id));
-            loginPromise.then(function (logins) {
+            var cipherPromise = loginService.getAllDecryptedForFolder($scope.folder.id).then(function (ciphers) {
                 if (utilsService.isEdge()) {
                     // Edge is super slow at sorting
-                    decLogins = logins;
+                    decCiphers = ciphers;
                 }
                 else {
-                    decLogins = logins.sort(loginSort);
+                    decCiphers = ciphers.sort(cipherSort);
                 }
             });
-            promises.push(loginPromise);
+            promises.push(cipherPromise);
 
             $q.all(promises).then(function () {
                 $scope.loaded = true;
-                $scope.vaultLogins = decLogins;
+                $scope.vaultCiphers = decCiphers;
 
                 if (decFolder) {
                     $scope.folder.name = decFolder.name;
@@ -61,14 +60,14 @@
 
                 if (state.searchText) {
                     $scope.searchText = state.searchText;
-                    $scope.searchLogins();
+                    $scope.searchCiphers();
                 }
 
                 $timeout(setScrollY, 200);
             });
         }
 
-        function loginSort(a, b) {
+        function cipherSort(a, b) {
             if (!a.name) {
                 return -1;
             }
@@ -85,19 +84,19 @@
                 return -1;
             }
 
-            if (!a.username) {
+            if (!a.subTitle) {
                 return -1;
             }
-            if (!b.username) {
+            if (!b.subTitle) {
                 return 1;
             }
 
-            var aUsername = a.username.toLowerCase(),
-                bUsername = b.username.toLowerCase();
-            if (aUsername > bUsername) {
+            var aSubTitle = a.subTitle.toLowerCase(),
+                bSubTitle = b.subTitle.toLowerCase();
+            if (aSubTitle > bSubTitle) {
                 return 1;
             }
-            if (aUsername < bUsername) {
+            if (aSubTitle < bSubTitle) {
                 return -1;
             }
 
@@ -106,36 +105,36 @@
         }
 
         $scope.loadMore = function () {
-            var pagedLength = $scope.pagedVaultLogins.length;
-            if ($scope.vaultLogins.length > pagedLength) {
-                $scope.pagedVaultLogins =
-                    $scope.pagedVaultLogins.concat($scope.vaultLogins.slice(pagedLength, pagedLength + pageSize));
+            var pagedLength = $scope.pagedVaultCiphers.length;
+            if ($scope.vaultCiphers.length > pagedLength) {
+                $scope.pagedVaultCiphers =
+                    $scope.pagedVaultCiphers.concat($scope.vaultCiphers.slice(pagedLength, pagedLength + pageSize));
             }
         };
 
-        $scope.searchLogins = function () {
+        $scope.searchCiphers = function () {
             if (!$scope.searchText || $scope.searchText.length < 2) {
-                if ($scope.vaultLogins.length !== decLogins.length) {
-                    resetList(decLogins);
+                if ($scope.vaultCiphers.length !== decCiphers.length) {
+                    resetList(decCiphers);
                 }
                 return;
             }
 
-            var matchedLogins = [];
-            for (var i = 0; i < decLogins.length; i++) {
-                if (searchLogin(decLogins[i])) {
-                    matchedLogins.push(decLogins[i]);
+            var matchedCiphers = [];
+            for (var i = 0; i < decCiphers.length; i++) {
+                if (searchCipher(decCiphers[i])) {
+                    matchedCiphers.push(decCiphers[i]);
                 }
             }
 
-            resetList(matchedLogins);
+            resetList(matchedCiphers);
         };
 
-        $scope.launchWebsite = function (login) {
+        $scope.launchWebsite = function (cipher) {
             $timeout(function () {
-                if (login.uri.startsWith('http://') || login.uri.startsWith('https://')) {
+                if (cipher.uri.startsWith('http://') || cipher.uri.startsWith('https://')) {
                     $analytics.eventTrack('Launched Website From Listing');
-                    chrome.tabs.create({ url: login.uri });
+                    chrome.tabs.create({ url: cipher.uri });
                     if (utilsService.inPopup($window)) {
                         $window.close();
                     }
@@ -143,28 +142,28 @@
             });
         };
 
-        function resetList(logins) {
-            $scope.vaultLogins = logins;
-            $scope.pagedVaultLogins = [];
+        function resetList(ciphers) {
+            $scope.vaultCiphers = ciphers;
+            $scope.pagedVaultCiphers = [];
             $scope.loadMore();
         }
 
-        function searchLogin(login) {
+        function searchCipher(cipher) {
             var searchTerm = $scope.searchText.toLowerCase();
-            if (login.name && login.name.toLowerCase().indexOf(searchTerm) !== -1) {
+            if (cipher.name && cipher.name.toLowerCase().indexOf(searchTerm) !== -1) {
                 return true;
             }
-            if (login.username && login.username.toLowerCase().indexOf(searchTerm) !== -1) {
+            if (cipher.subTitle && cipher.subTitle.toLowerCase().indexOf(searchTerm) !== -1) {
                 return true;
             }
-            if (login.uri && login.uri.toLowerCase().indexOf(searchTerm) !== -1) {
+            if (cipher.login && cipher.login.uri && cipher.login.uri.toLowerCase().indexOf(searchTerm) !== -1) {
                 return true;
             }
 
             return false;
         }
 
-        $scope.addLogin = function () {
+        $scope.addCipher = function () {
             storeState();
             $state.go('addLogin', {
                 animation: 'in-slide-up',
@@ -173,32 +172,32 @@
             });
         };
 
-        $scope.viewLogin = function (login) {
-            if (login.clicked) {
-                login.cancelClick = true;
-                $scope.launchWebsite(login);
+        $scope.viewCipher = function (cipher) {
+            if (cipher.clicked) {
+                cipher.cancelClick = true;
+                $scope.launchWebsite(cipher);
                 return;
             }
 
-            login.clicked = true;
+            cipher.clicked = true;
 
             $timeout(function () {
-                if (login.cancelClick) {
-                    login.cancelClick = false;
-                    login.clicked = false;
+                if (cipher.cancelClick) {
+                    cipher.cancelClick = false;
+                    cipher.clicked = false;
                     return;
                 }
 
                 storeState();
                 $state.go('viewLogin', {
-                    loginId: login.id,
+                    cipherId: cipher.id,
                     animation: 'in-slide-up',
                     from: 'folder'
                 });
 
                 // clean up
-                login.cancelClick = false;
-                login.clicked = false;
+                cipher.cancelClick = false;
+                cipher.clicked = false;
             }, 200);
         };
 

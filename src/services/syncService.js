@@ -131,38 +131,19 @@ function initSyncService() {
     }
 
     function syncFolders(self, userId, response) {
-        var deferred = Q.defer();
-
         var folders = {};
-
         for (var i = 0; i < response.length; i++) {
             folders[response[i].id] = new FolderData(response[i], userId);
         }
-
-        self.folderService.replace(folders, function () {
-            deferred.resolve();
-        });
-
-        return deferred.promise;
+        return self.folderService.replace(folders);
     }
 
     function syncCiphers(self, userId, response) {
-        var deferred = Q.defer();
-
-        var logins = {};
-
+        var ciphers = {};
         for (var i = 0; i < response.length; i++) {
-            var data = response[i];
-            if (data.type === 1) {
-                logins[data.id] = new LoginData(data, userId);
-            }
+            ciphers[response[i].id] = new CipherData(response[i], userId);
         }
-
-        self.loginService.replace(logins, function () {
-            deferred.resolve();
-        });
-
-        return deferred.promise;
+        return self.loginService.replace(ciphers);
     }
 
     function syncSettings(self, userId, response) {

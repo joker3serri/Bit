@@ -1,7 +1,7 @@
 angular
     .module('bit.vault')
 
-    .controller('vaultViewLoginController', function ($scope, $state, $stateParams, loginService, toastr, $q,
+    .controller('vaultViewCipherController', function ($scope, $state, $stateParams, loginService, toastr,
         $analytics, i18nService, utilsService, totpService, $timeout, tokenService, $window, cryptoService, SweetAlert,
         constantsService) {
         $scope.constants = constantsService;
@@ -11,52 +11,52 @@ angular
             totpInterval = null;
 
         $scope.isPremium = tokenService.getPremium();
-        $scope.login = null;
-        loginService.get($stateParams.loginId, function (login) {
-            if (!login) {
+        $scope.cipher = null;
+        loginService.get($stateParams.cipherId).then(function (cipher) {
+            if (!cipher) {
                 return;
             }
 
-            $q.when(login.decrypt()).then(function (model) {
-                $scope.login = model;
+            return cipher.decrypt();
+        }).then(function (model) {
+            $scope.cipher = model;
 
-                if (model.password) {
-                    $scope.login.maskedPassword = $scope.maskValue(model.password);
-                }
+            if (model.password) {
+                $scope.cipher.maskedPassword = $scope.maskValue(model.password);
+            }
 
-                if (model.uri) {
-                    $scope.login.showLaunch = model.uri.startsWith('http://') || model.uri.startsWith('https://');
-                    var domain = utilsService.getDomain(model.uri);
-                    if (domain) {
-                        $scope.login.website = domain;
-                    }
-                    else {
-                        $scope.login.website = model.uri;
-                    }
+            if (model.uri) {
+                $scope.cipher.showLaunch = model.uri.startsWith('http://') || model.uri.startsWith('https://');
+                var domain = utilsService.getDomain(model.uri);
+                if (domain) {
+                    $scope.cipher.website = domain;
                 }
                 else {
-                    $scope.login.showLaunch = false;
+                    $scope.cipher.website = model.uri;
+                }
+            }
+            else {
+                $scope.cipher.showLaunch = false;
+            }
+
+            if (model.totp && (cipher.organizationUseTotp || tokenService.getPremium())) {
+                totpUpdateCode();
+                totpTick();
+
+                if (totpInterval) {
+                    clearInterval(totpInterval);
                 }
 
-                if (model.totp && (login.organizationUseTotp || tokenService.getPremium())) {
-                    totpUpdateCode();
+                totpInterval = setInterval(function () {
                     totpTick();
-
-                    if (totpInterval) {
-                        clearInterval(totpInterval);
-                    }
-
-                    totpInterval = setInterval(function () {
-                        totpTick();
-                    }, 1000);
-                }
-            });
+                }, 1000);
+            }
         });
 
-        $scope.edit = function (login) {
-            $state.go('editLogin', {
+        $scope.edit = function (cipher) {
+            $state.go('editCipher', {
                 animation: 'in-slide-up',
-                loginId: login.id,
+                cipherId: cipher.id,
                 fromView: true,
                 from: from
             });
@@ -84,10 +84,10 @@ angular
             }
         };
 
-        $scope.launchWebsite = function (login) {
-            if (login.showLaunch) {
+        $scope.launchWebsite = function (cipher) {
+            if (cipher.showLaunch) {
                 $analytics.eventTrack('Launched Website');
-                chrome.tabs.create({ url: login.uri });
+                chrome.tabs.create({ url: cipher.uri });
             }
         };
 
@@ -120,7 +120,7 @@ angular
         };
 
         $scope.download = function (attachment) {
-            if (!$scope.login.organizationId && !tokenService.getPremium()) {
+            if (!$scope.cipher.organizationId && !tokenService.getPremium()) {
                 SweetAlert.swal({
                     title: i18nService.premiumRequired,
                     text: i18nService.premiumRequiredDesc,
@@ -152,7 +152,7 @@ angular
                     return;
                 }
 
-                cryptoService.getOrgKey($scope.login.organizationId).then(function (key) {
+                cryptoService.getOrgKey($scope.cipher.organizationId).then(function (key) {
                     return cryptoService.decryptFromBytes(req.response, key);
                 }).then(function (decBuf) {
                     var blob = new Blob([decBuf]);
@@ -192,11 +192,11 @@ angular
         });
 
         function totpUpdateCode() {
-            if (!$scope.login.totp) {
+            if (!$scope.cipher.totp) {
                 return;
             }
 
-            totpService.getCode($scope.login.totp).then(function (code) {
+            totpService.getCode($scope.cipher.totp).then(function (code) {
                 $timeout(function () {
                     if (code) {
                         $scope.totpCodeFormatted = code.substring(0, 3) + ' ' + code.substring(3);
