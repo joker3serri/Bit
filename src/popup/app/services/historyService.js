@@ -7,6 +7,8 @@ angular
         var _history = [];
         var key = constantsService.generatedPasswordHistory;
 
+        var MAX_PASSWORDS_IN_HISTORY = 10;
+
         chrome.storage.local.get(key, function(obj) {
             var encrypted = obj[key];
 
@@ -33,7 +35,7 @@ angular
             });
 
             // Remove old items.
-            if (_history.length > 5) {
+            if (_history.length > MAX_PASSWORDS_IN_HISTORY) {
                 _history.pop();
             }
 
