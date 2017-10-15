@@ -2,12 +2,14 @@
     .module('bit.tools')
 
     .controller('toolsPasswordGeneratorController', function ($scope, $state, $stateParams, passwordGenerationService,
-        toastr, $q, utilsService, $analytics, i18nService) {
+        toastr, $q, utilsService, $analytics, i18nService, historyService) {
         $scope.i18n = i18nService;
         var addState = $stateParams.addState,
             editState = $stateParams.editState;
 
         $scope.showSelect = $stateParams.addState || $stateParams.editState;
+
+        $scope.passwords = historyService.get();
 
         utilsService.initListSectionItemListeners($(document), angular);
         $scope.password = '-';
@@ -61,6 +63,11 @@
             e.clearSelection();
             toastr.info(i18nService.passwordCopied);
         };
+
+        $scope.clipboardSuccessSave = function (e) {
+            historyService.add(e.text);
+            return $scope.clipboardSuccess(e);
+        }
 
         $scope.close = function () {
             dismiss();
