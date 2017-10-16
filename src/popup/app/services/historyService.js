@@ -1,7 +1,7 @@
 angular
     .module('bit.services')
 
-    .factory('historyService', function ($q, constantsService, cryptoService) {
+    .factory('historyService', function ($q, constantsService, cryptoService, utilsService) {
         console.log(cryptoService);
         var _service = {};
         var _history = [];
@@ -9,16 +9,15 @@ angular
 
         var MAX_PASSWORDS_IN_HISTORY = 10;
 
-        chrome.storage.local.get(key, function(obj) {
-            var encrypted = obj[key];
-
-            decrypt(encrypted)
-                .then(function(history) {
-                    history.forEach(function(item) {
-                        _history.push(item);
-                    });
+        utilsService
+            .getObjFromStorage(key)
+            .then(function(encrypted) {
+                return decrypt(encrypted);
+            }).then(function(history) {
+                history.forEach(function(item) {
+                    _history.push(item);
                 });
-        });
+            });
 
         _service.get = function () {
             return _history;
@@ -45,10 +44,7 @@ angular
         function save() {
             return encryptHistory()
                 .then(function(history) {
-                    console.log(history);
-                    var obj = {};
-                    obj[key] = history;
-                    chrome.storage.local.set(obj);
+                    return utilsService.saveObjToStorage(key, history);
                 });
         }
 
