@@ -2,7 +2,7 @@ angular
     .module('bit.tools')
 
     .controller('toolsPasswordGeneratorHistoryController', function (
-        $scope, $state, toastr, $analytics, i18nService, passwordGenerationService) {
+        $scope, $state, $stateParams, toastr, $analytics, i18nService, passwordGenerationService) {
         $scope.i18n = i18nService;
 
         $scope.passwords = passwordGenerationService.getHistory();
@@ -23,7 +23,9 @@ angular
 
         function dismiss() {
             $state.go('^.passwordGenerator', {
-                animation: 'out-slide-right'
+                animation: 'out-slide-right',
+                addState: $stateParams.addState,
+                editState: $stateParams.editState
             });
         }
     });

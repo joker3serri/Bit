@@ -7,6 +7,12 @@
         var addState = $stateParams.addState,
             editState = $stateParams.editState;
 
+        $scope.historyState = {
+            animation: 'in-slide-left',
+            addState: $stateParams.addState,
+            editState: $stateParams.editState
+        };
+
         $scope.showSelect = $stateParams.addState || $stateParams.editState;
 
         utilsService.initListSectionItemListeners($(document), angular);
