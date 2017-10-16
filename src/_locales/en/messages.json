@@ -807,5 +807,8 @@
   },
   "generatePasswordHistory": {
     "message": "Generated Passwords History"
+  },
+  "back": {
+    "message": "Back"
   }
 }
