@@ -45,7 +45,7 @@ var bg_isBackground = true,
         setIcon, refreshBadgeAndMenu);
     bg_syncService = new SyncService(bg_loginService, bg_folderService, bg_userService, bg_apiService, bg_settingsService,
         bg_cryptoService, logout);
-    bg_passwordGenerationService = new PasswordGenerationService();
+    bg_passwordGenerationService = new PasswordGenerationService(bg_constantsService, bg_utilsService, bg_cryptoService);
     bg_totpService = new TotpService(bg_constantsService);
     bg_autofillService = new AutofillService(bg_utilsService, bg_totpService, bg_tokenService, bg_loginService);
 

@@ -2,7 +2,7 @@
     .module('bit.tools')
 
     .controller('toolsPasswordGeneratorController', function ($scope, $state, $stateParams, passwordGenerationService,
-        toastr, $q, utilsService, $analytics, i18nService, historyService) {
+        toastr, $q, utilsService, $analytics, i18nService) {
         $scope.i18n = i18nService;
         var addState = $stateParams.addState,
             editState = $stateParams.editState;
@@ -57,7 +57,7 @@
         };
 
         $scope.clipboardSuccess = function (e) {
-            historyService.add(e.text);
+            passwordGenerationService.addHistory(e.text);
             $analytics.eventTrack('Copied Generated Password');
             e.clearSelection();
             toastr.info(i18nService.passwordCopied);

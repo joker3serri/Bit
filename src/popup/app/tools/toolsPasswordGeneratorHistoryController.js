@@ -2,10 +2,10 @@ angular
     .module('bit.tools')
 
     .controller('toolsPasswordGeneratorHistoryController', function (
-        $scope, $state, toastr, $analytics, i18nService, historyService) {
+        $scope, $state, toastr, $analytics, i18nService, passwordGenerationService) {
         $scope.i18n = i18nService;
 
-        $scope.passwords = historyService.get();
+        $scope.passwords = passwordGenerationService.getHistory();
 
         $scope.clipboardError = function (e, password) {
             toastr.info(i18n.browserNotSupportClipboard);
