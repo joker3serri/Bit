@@ -59,6 +59,7 @@ var bg_isBackground = true,
                 bg_passwordGenerationService.getOptions().then(function (options) {
                     var password = bg_passwordGenerationService.generatePassword(options);
                     bg_utilsService.copyToClipboard(password);
+                    bg_passwordGenerationService.addHistory(password);
                 });
             }
             else if (command === 'autofill_login') {
@@ -193,6 +194,7 @@ var bg_isBackground = true,
                 bg_passwordGenerationService.getOptions().then(function (options) {
                     var password = bg_passwordGenerationService.generatePassword(options);
                     bg_utilsService.copyToClipboard(password);
+                    bg_passwordGenerationService.addHistory(password);
                 });
             }
             else if (info.parentMenuItemId === 'autofill' || info.parentMenuItemId === 'copy-username' ||
