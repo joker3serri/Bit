@@ -19,52 +19,117 @@
                     <span class="item-label">{{i18n.name}}</span>
                     {{cipher.name}}
                 </div>
-                <div class="list-section-item" ng-if="cipher.uri" title="{{cipher.uri}}">
-                    <a class="btn-list" href="" title="{{i18n.launchWebsite}}" ng-click="launchWebsite(cipher)"
-                       ng-show="cipher.showLaunch">
-                        <i class="fa fa-lg fa-share-square-o"></i>
-                    </a>
-                    <span class="item-label">{{i18n.website}}</span>
-                    {{cipher.website}}
+                <div ng-if="cipher.type === constants.cipherType.login">
+                    <div class="list-section-item" ng-if="cipher.login.uri" title="{{cipher.login.uri}}">
+                        <div class="action-buttons">
+                            <a class="btn-list" href="" title="{{i18n.launchWebsite}}" ng-click="launchWebsite(cipher)"
+                               ng-show="cipher.showLaunch">
+                                <i class="fa fa-lg fa-share-square-o"></i>
+                            </a>
+                            <a class="btn-list" href="" title="{{i18n.copyUri}}"
+                               ngclipboard ngclipboard-error="clipboardError(e)"
+                               ngclipboard-success="clipboardSuccess(e, i18n.uri, 'URI')"
+                               data-clipboard-text="{{cipher.login.uri}}">
+                                <i class="fa fa-lg fa-clipboard"></i>
+                            </a>
+                        </div>
+                        <span class="item-label">{{i18n.website}}</span>
+                        {{cipher.login.website}}
+                    </div>
+                    <div class="list-section-item" ng-if="cipher.login.username">
+                        <div class="action-buttons">
+                            <a class="btn-list" href="" title="{{i18n.copyUsername}}"
+                               ngclipboard ngclipboard-error="clipboardError(e)"
+                               ngclipboard-success="clipboardSuccess(e, i18n.username, 'Username')"
+                               data-clipboard-text="{{cipher.login.username}}">
+                                <i class="fa fa-lg fa-clipboard"></i>
+                            </a>
+                        </div>
+                        <span class="item-label">{{i18n.username}}</span>
+                        <span id="username">{{cipher.login.username}}</span>
+                    </div>
+                    <div class="list-section-item" ng-if="cipher.login.password">
+                        <div class="action-buttons">
+                            <a class="btn-list" href="" title="{{i18n.togglePassword}}" ng-click="togglePassword()">
+                                <i class="fa fa-lg" ng-class="[{'fa-eye': !showPassword}, {'fa-eye-slash': showPassword}]"></i>
+                            </a>
+                            <a class="btn-list" href="" title="{{i18n.copyPassword}}"
+                               ngclipboard ngclipboard-error="clipboardError(e)"
+                               ngclipboard-success="clipboardSuccess(e, i18n.password, 'Password')"
+                               data-clipboard-text="{{cipher.login.password}}">
+                                <i class="fa fa-lg fa-clipboard"></i>
+                            </a>
+                        </div>
+                        <span class="item-label">{{i18n.password}}</span>
+                        <span ng-show="!showPassword" class="monospaced">{{cipher.maskedPassword}}</span>
+                        <span id="password" ng-show="showPassword" class="monospaced">{{cipher.login.password}}</span>
+                    </div>
+                    <div class="list-section-item totp" ng-class="{'low': totpLow}" ng-if="cipher.login.totp && totpCode">
+                        <div class="action-buttons">
+                            <a class="btn-list" href="" title="{{i18n.copyVerificationCode}}"
+                               ngclipboard ngclipboard-error="clipboardError(e)"
+                               ngclipboard-success="clipboardSuccess(e, i18n.verificationCodeTotp, 'TOTP')"
+                               data-clipboard-text="{{totpCode}}">
+                                <i class="fa fa-lg fa-clipboard"></i>
+                            </a>
+                        </div>
+                        <span class="totp-countdown">
+                            <span class="totp-sec">{{totpSec}}</span>
+                            <svg>
+                                <g>
+                                    <circle class="totp-circle inner" r="12.6" cy="16" cx="16"
+                                            style="stroke-dashoffset: {{totpDash}}px;"></circle>
+                                    <circle class="totp-circle outer" r="14" cy="16" cx="16"></circle>
+                                </g>
+                            </svg>
+                        </span>
+                        <span class="item-label">{{i18n.verificationCodeTotp}}</span>
+                        <span id="totp" class="totp-code">{{totpCodeFormatted}}</span>
+
+                    </div>
                 </div>
-                <div class="list-section-item" ng-if="cipher.username">
-                    <a class="btn-list" href="" title="{{i18n.copyUsername}}" ngclipboard ngclipboard-error="clipboardError(e)"
-                       ngclipboard-success="clipboardSuccess(e, i18n.username)" data-clipboard-text="{{cipher.username}}">
-                        <i class="fa fa-lg fa-clipboard"></i>
-                    </a>
-                    <span class="item-label">{{i18n.username}}</span>
-                    <span id="username">{{cipher.username}}</span>
+                <div ng-if="cipher.type === constants.cipherType.card">
+                    <div class="list-section-item" ng-if="cipher.card.cardholderName">
+                        <div class="action-buttons">
+                            <a class="btn-list" href="" title="{{i18n.copy}}"
+                               ngclipboard ngclipboard-error="clipboardError(e)"
+                               ngclipboard-success="clipboardSuccess(e, i18n.cardholderName, 'Cardholder Name')"
+                               data-clipboard-text="{{cipher.card.cardholderName}}">
+                                <i class="fa fa-lg fa-clipboard"></i>
+                            </a>
+                        </div>
+                        <span class="item-label">{{i18n.cardholderName}}</span>
+                        <span id="username">{{cipher.card.cardholderName}}</span>
+                    </div>
+                    <div class="list-section-item" ng-if="cipher.card.number">
+                        <div class="action-buttons">
+                            <a class="btn-list" href="" title="{{i18n.copy}}"
+                               ngclipboard ngclipboard-error="clipboardError(e)"
+                               ngclipboard-success="clipboardSuccess(e, i18n.number, 'Number')"
+                               data-clipboard-text="{{cipher.card.number}}">
+                                <i class="fa fa-lg fa-clipboard"></i>
+                            </a>
+                        </div>
+                        <span class="item-label">{{i18n.number}}</span>
+                        <span id="username">{{cipher.card.number}}</span>
+                    </div>
                 </div>
-                <div class="list-section-item" ng-if="cipher.password">
-                    <a class="btn-list" href="" title="{{i18n.copyPassword}}" ngclipboard ngclipboard-error="clipboardError(e)"
-                       ngclipboard-success="clipboardSuccess(e, i18n.password)" data-clipboard-text="{{cipher.password}}">
-                        <i class="fa fa-lg fa-clipboard"></i>
-                    </a>
-                    <a class="btn-list" href="" title="{{i18n.togglePassword}}" ng-click="togglePassword()">
-                        <i class="fa fa-lg" ng-class="[{'fa-eye': !showPassword}, {'fa-eye-slash': showPassword}]"></i>
-                    </a>
-                    <span class="item-label">{{i18n.password}}</span>
-                    <span ng-show="!showPassword" class="monospaced">{{cipher.maskedPassword}}</span>
-                    <span id="password" ng-show="showPassword" class="monospaced">{{cipher.password}}</span>
+                <div ng-if="cipher.type === constants.cipherType.identity">
+                    <div class="list-section-item" ng-if="cipher.identity.firstName">
+                        <span class="item-label">{{i18n.firstName}}</span>
+                        {{cipher.identity.firstName}}
+                    </div>
+                    <div class="list-section-item" ng-if="cipher.identity.middleName">
+                        <span class="item-label">{{i18n.middleName}}</span>
+                        {{cipher.identity.middleName}}
+                    </div>
+                    <div class="list-section-item" ng-if="cipher.identity.lastName">
+                        <span class="item-label">{{i18n.lastName}}</span>
+                        {{cipher.identity.lastName}}
+                    </div>
                 </div>
-                <div class="list-section-item totp" ng-class="{'low': totpLow}" ng-if="cipher.totp && totpCode">
-                    <a class="btn-list" href="" title="{{i18n.copyVerificationCode}}"
-                       ngclipboard ngclipboard-error="clipboardError(e)"
-                       ngclipboard-success="clipboardSuccess(e, i18n.verificationCodeTotp)" data-clipboard-text="{{totpCode}}">
-                        <i class="fa fa-lg fa-clipboard"></i>
-                    </a>
-                    <span class="totp-countdown">
-                        <span class="totp-sec">{{totpSec}}</span>
-                        <svg>
-                            <g>
-                                <circle class="totp-circle inner" r="12.6" cy="16" cx="16"
-                                        style="stroke-dashoffset: {{totpDash}}px;"></circle>
-                                <circle class="totp-circle outer" r="14" cy="16" cx="16"></circle>
-                            </g>
-                        </svg>
-                    </span>
-                    <span class="item-label">{{i18n.verificationCodeTotp}}</span>
-                    <span id="totp" class="totp-code">{{totpCodeFormatted}}</span>
+                <div ng-if="cipher.type === constants.cipherType.secureNote">
+                    <!-- Nothing for now -->
                 </div>
             </div>
         </div>
@@ -82,15 +147,17 @@
             </div>
             <div class="list-section-items">
                 <div class="list-section-item" ng-repeat="field in cipher.fields">
-                    <a class="btn-list" href="" title="{{i18n.copyValue}}" ngclipboard ngclipboard-error="clipboardError(e)"
-                       ngclipboard-success="clipboardSuccess(e, i18n.value)" data-clipboard-text="{{field.value}}"
-                       ng-if="field.type !== constants.fieldType.boolean && field.value">
-                        <i class="fa fa-lg fa-clipboard"></i>
-                    </a>
-                    <a class="btn-list" href="" title="{{i18n.toggleValue}}" ng-click="toggleFieldValue(field)"
-                       ng-if="field.type === constants.fieldType.hidden">
-                        <i class="fa fa-lg" ng-class="[{'fa-eye': !field.showValue}, {'fa-eye-slash': field.showValue}]"></i>
-                    </a>
+                    <div class="action-buttons">
+                        <a class="btn-list" href="" title="{{i18n.toggleValue}}" ng-click="toggleFieldValue(field)"
+                           ng-if="field.type === constants.fieldType.hidden">
+                            <i class="fa fa-lg" ng-class="[{'fa-eye': !field.showValue}, {'fa-eye-slash': field.showValue}]"></i>
+                        </a>
+                        <a class="btn-list" href="" title="{{i18n.copyValue}}" ngclipboard ngclipboard-error="clipboardError(e)"
+                           ngclipboard-success="clipboardSuccess(e, i18n.value, 'Field')" data-clipboard-text="{{field.value}}"
+                           ng-if="field.type !== constants.fieldType.boolean && field.value">
+                            <i class="fa fa-lg fa-clipboard"></i>
+                        </a>
+                    </div>
                     <span class="item-label">{{field.name}}</span>
                     <div ng-if="field.type === constants.fieldType.text">
                         {{field.value || '&nbsp;'}}

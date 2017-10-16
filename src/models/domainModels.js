@@ -140,6 +140,7 @@ var Login = function (obj, alreadyEncrypted, localData) {
 
 var Cipher = function (obj, alreadyEncrypted, localData) {
     this.constantsService = chrome.extension.getBackgroundPage().bg_constantsService;
+    this.utilsService = chrome.extension.getBackgroundPage().bg_utilsService;
 
     buildDomainModel(this, obj, {
         id: null,
@@ -417,18 +418,39 @@ function buildDomainModel(model, obj, map, alreadyEncrypted, notEncList) {
                 case self.constantsService.cipherType.login:
                     model.login = decObj;
                     model.subTitle = model.login.username;
+                    if (model.login.uri) {
+                        model.login.domain = self.utilsService.getDomain(model.login.uri);
+                    }
                     break;
                 case self.constantsService.cipherType.secureNote:
                     model.secureNote = decObj;
-                    model.subTitle = '-';
+                    model.subTitle = null;
                     break;
                 case self.constantsService.cipherType.card:
                     model.card = decObj;
-                    model.subTitle = model.identity.brand;
+                    model.subTitle = model.card.brand;
+                    if (model.card.brand) {
+                        model.subTitle = model.card.brand;
+                    }
+                    if (model.card.number && model.card.number.length >= 4) {
+                        if (model.subTitle !== '') {
+                            model.subTitle += ', ';
+                        }
+                        model.subTitle += ('*' + model.card.number.substr(model.card.number.length - 4));
+                    }
                     break;
                 case self.constantsService.cipherType.identity:
                     model.identity = decObj;
-                    model.subTitle = model.identity.firstName;
+                    model.subTitle = '';
+                    if (model.identity.firstName) {
+                        model.subTitle = model.identity.firstName;
+                    }
+                    if (model.identity.lastName) {
+                        if (model.subTitle !== '') {
+                            model.subTitle += ' ';
+                        }
+                        model.subTitle += model.identity.lastName;
+                    }
                     break;
                 default:
                     break;

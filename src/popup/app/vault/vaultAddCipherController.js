@@ -20,7 +20,7 @@
             }
         };
 
-        if($stateParams.uri) {
+        if ($stateParams.uri) {
             $scope.cipher.login.uri = $stateParams.uri;
         }
 
@@ -40,13 +40,13 @@
             $scope.folders = folders;
         });
 
-        $scope.typeChanged = function() {
+        $scope.typeChanged = function () {
             $scope.cipher.type = parseInt($scope.selectedType);
         };
 
         $scope.savePromise = null;
         $scope.save = function () {
-            if (!cipher.name || cipher.name === '') {
+            if (!$scope.cipher.name || $scope.cipher.name === '') {
                 toastr.error(i18nService.nameRequired, i18nService.errorsOccurred);
                 return;
             }
