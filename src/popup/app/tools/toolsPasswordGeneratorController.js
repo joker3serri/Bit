@@ -86,7 +86,7 @@
                 addState: $stateParams.addState,
                 editState: $stateParams.editState
             });
-        }
+        };
 
         function dismiss() {
             if (addState) {
