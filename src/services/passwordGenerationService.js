@@ -223,6 +223,13 @@ function initPasswordGenerationService(self) {
         save();
     };
 
+    PasswordGenerationService.prototype.clear = function () {
+        while (self.history.length > 0) {
+            self.history.pop();
+        }
+        self.utilsService.removeFromStorage(key);
+    };
+
     function save() {
         return encryptHistory()
             .then(function(history) {

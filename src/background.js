@@ -819,7 +819,8 @@ var bg_isBackground = true,
                     bg_userService.clear(),
                     bg_settingsService.clear(userId),
                     bg_cipherService.clear(userId),
-                    bg_folderService.clear(userId)
+                    bg_folderService.clear(userId),
+                    bg_passwordGenerationService.clear()
                 ]).then(function () {
                     chrome.runtime.sendMessage({
                         command: 'doneLoggingOut', expired: expired
