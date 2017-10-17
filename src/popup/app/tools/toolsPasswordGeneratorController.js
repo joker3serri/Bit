@@ -7,12 +7,6 @@
         var addState = $stateParams.addState,
             editState = $stateParams.editState;
 
-        $scope.historyState = {
-            animation: 'in-slide-left',
-            addState: $stateParams.addState,
-            editState: $stateParams.editState
-        };
-
         $scope.showSelect = $stateParams.addState || $stateParams.editState;
 
         utilsService.initListSectionItemListeners($(document), angular);
@@ -85,6 +79,14 @@
 
             dismiss();
         };
+
+        $scope.goHistory = function () {
+            $state.go('^.passwordGeneratorHistory', {
+                animation: 'in-slide-left',
+                addState: $stateParams.addState,
+                editState: $stateParams.editState
+            });
+        }
 
         function dismiss() {
             if (addState) {
