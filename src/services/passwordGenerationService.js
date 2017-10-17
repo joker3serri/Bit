@@ -224,9 +224,7 @@ function initPasswordGenerationService(self) {
     };
 
     PasswordGenerationService.prototype.clear = function () {
-        while (self.history.length > 0) {
-            self.history.pop();
-        }
+        self.history = [];
         self.utilsService.removeFromStorage(key);
     };
 
