@@ -1,7 +1,7 @@
 ﻿angular
     .module('bit.vault')
 
-    .controller('vaultViewFolderController', function ($scope, loginService, folderService, $q, $state, $stateParams, toastr,
+    .controller('vaultViewFolderController', function ($scope, cipherService, folderService, $q, $state, $stateParams, toastr,
         syncService, $analytics, i18nService, stateService, utilsService, $timeout, $window) {
         var stateKey = 'viewFolder',
             state = stateService.getState(stateKey) || {};
@@ -29,17 +29,15 @@
             var promises = [];
 
             if ($scope.folder.id) {
-                var folderDeferred = $q.defer();
-                folderService.get($scope.folder.id, function (folder) {
-                    folder.decrypt().then(function (model) {
-                        decFolder = model;
-                        folderDeferred.resolve();
-                    });
+                var getPromise = folderService.get($scope.folder.id).then(function (folder) {
+                    return folder.decrypt();
+                }).then(function (model) {
+                    decFolder = model;
                 });
-                promises.push(folderDeferred.promise);
+                promises.push(getPromise);
             }
 
-            var cipherPromise = loginService.getAllDecryptedForFolder($scope.folder.id).then(function (ciphers) {
+            var cipherPromise = cipherService.getAllDecryptedForFolder($scope.folder.id).then(function (ciphers) {
                 if (utilsService.isEdge()) {
                     // Edge is super slow at sorting
                     decCiphers = ciphers;

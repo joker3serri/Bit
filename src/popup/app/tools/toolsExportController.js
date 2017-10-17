@@ -2,7 +2,7 @@
     .module('bit.tools')
 
     .controller('toolsExportController', function ($scope, $state, toastr, $q, $analytics,
-        i18nService, cryptoService, userService, folderService, loginService, $window) {
+        i18nService, cryptoService, userService, folderService, cipherService, $window) {
         $scope.i18n = i18nService;
 
         $('#master-password').focus();
@@ -45,14 +45,12 @@
             var decLogins = [];
             var promises = [];
 
-            var folderPromise = $q.when(folderService.getAllDecrypted());
-            folderPromise.then(function (folders) {
+            var folderPromise = folderService.getAllDecrypted().then(function (folders) {
                 decFolders = folders;
             });
             promises.push(folderPromise);
 
-            var loginPromise = $q.when(loginService.getAllDecrypted());
-            loginPromise.then(function (logins) {
+            var loginPromise = cipherService.getAllDecrypted().then(function (logins) {
                 decLogins = logins;
             });
             promises.push(loginPromise);

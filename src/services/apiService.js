@@ -38,16 +38,16 @@ function initApiService() {
         //self.identityBaseUrl = 'https://localhost:44392';
 
         // Desktop external
-        //self.baseUrl = 'http://192.168.1.4:4000';
-        //self.identityBaseUrl = 'http://192.168.1.4:33656';
+        self.baseUrl = 'http://192.168.1.3:4000';
+        self.identityBaseUrl = 'http://192.168.1.3:33656';
 
         // Preview
         //self.baseUrl = 'https://preview-api.bitwarden.com';
         //self.identityBaseUrl = 'https://preview-identity.bitwarden.com';
 
         // Production
-        self.baseUrl = 'https://api.bitwarden.com';
-        self.identityBaseUrl = 'https://identity.bitwarden.com';
+        //self.baseUrl = 'https://api.bitwarden.com';
+        //self.identityBaseUrl = 'https://identity.bitwarden.com';
     };
 
     // Auth APIs
@@ -191,8 +191,10 @@ function initApiService() {
 
     // Folder APIs
 
-    ApiService.prototype.postFolder = function (folderRequest, success, error) {
-        var self = this;
+    ApiService.prototype.postFolder = function (folderRequest) {
+        var self = this,
+            deferred = Q.defer();
+
         handleTokenState(self).then(function (tokenHeader) {
             $.ajax({
                 type: 'POST',
@@ -202,19 +204,23 @@ function initApiService() {
                 dataType: 'json',
                 headers: tokenHeader,
                 success: function (response) {
-                    success(new FolderResponse(response));
+                    deferred.resolve(new FolderResponse(response));
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    handleError(error, jqXHR, false, self);
+                    handleError(deferred.reject, jqXHR, false, self);
                 }
             });
         }, function (jqXHR) {
-            handleError(error, jqXHR, true, self);
+            handleError(deferred.reject, jqXHR, true, self);
         });
+
+        return deferred.promise;
     };
 
-    ApiService.prototype.putFolder = function (id, folderRequest, success, error) {
-        var self = this;
+    ApiService.prototype.putFolder = function (id, folderRequest) {
+        var self = this,
+            deferred = Q.defer();
+
         handleTokenState(self).then(function (tokenHeader) {
             $.ajax({
                 type: 'PUT',
@@ -224,19 +230,23 @@ function initApiService() {
                 dataType: 'json',
                 headers: tokenHeader,
                 success: function (response) {
-                    success(new FolderResponse(response));
+                    deferred.resolve(new FolderResponse(response));
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    handleError(error, jqXHR, false, self);
+                    handleError(deferred.reject, jqXHR, false, self);
                 }
             });
         }, function (jqXHR) {
-            handleError(error, jqXHR, true, self);
+            handleError(deferred.reject, jqXHR, true, self);
         });
+
+        return deferred.promise;
     };
 
-    ApiService.prototype.deleteFolder = function (id, success, error) {
-        var self = this;
+    ApiService.prototype.deleteFolder = function (id) {
+        var self = this,
+            deferred = Q.defer();
+
         handleTokenState(self).then(function (tokenHeader) {
             $.ajax({
                 type: 'DELETE',
@@ -244,15 +254,17 @@ function initApiService() {
                 dataType: 'text',
                 headers: tokenHeader,
                 success: function (response) {
-                    success();
+                    deferred.resolve();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
-                    handleError(error, jqXHR, false, self);
+                    handleError(deferred.reject, jqXHR, false, self);
                 }
             });
         }, function (jqXHR) {
-            handleError(error, jqXHR, true, self);
+            handleError(deferred.reject, jqXHR, true, self);
         });
+
+        return deferred.promise;
     };
 
     // Cipher APIs
