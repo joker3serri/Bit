@@ -197,6 +197,9 @@ var bg_isBackground = true,
                     bg_passwordGenerationService.addHistory(password);
                 });
             }
+            else if (info.menuItemId === 'vault-locked') {
+                chrome.browserAction.openPopup();
+            }
             else if (info.parentMenuItemId === 'autofill' || info.parentMenuItemId === 'copy-username' ||
                 info.parentMenuItemId === 'copy-password') {
                 var id = info.menuItemId.split('_')[1];
@@ -484,7 +487,17 @@ var bg_isBackground = true,
             setSidebarActionText(theText, tabId);
         }, function () {
             if (contextMenuEnabled) {
-                loadNoLoginsContextMenuOptions(bg_i18nService.vaultLocked);
+                if (bg_utilsService.isFirefox() && chrome.browserAction.openPopup) {
+                    chrome.contextMenus.create({
+                        type: 'normal',
+                        id: 'vault-locked',
+                        parentId: 'autofill',
+                        contexts: ['all'],
+                        title: bg_i18nService.vaultLocked
+                    });
+                } else {
+                    loadNoLoginsContextMenuOptions(bg_i18nService.vaultLocked);
+                }
             }
             setBrowserActionText('', tabId);
             setSidebarActionText('', tabId);
