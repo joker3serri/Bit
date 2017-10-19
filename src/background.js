@@ -197,8 +197,10 @@ var bg_isBackground = true,
                     bg_passwordGenerationService.addHistory(password);
                 });
             }
-            else if (info.menuItemId === 'vault-locked') {
-                chrome.browserAction.openPopup();
+            else if (info.menuItemId === 'autofill_noop') {
+                if (bg_utilsService.isFirefox() && chrome.browserAction.openPopup) {
+                    chrome.browserAction.openPopup();
+                }
             }
             else if (info.parentMenuItemId === 'autofill' || info.parentMenuItemId === 'copy-username' ||
                 info.parentMenuItemId === 'copy-password') {
@@ -487,17 +489,7 @@ var bg_isBackground = true,
             setSidebarActionText(theText, tabId);
         }, function () {
             if (contextMenuEnabled) {
-                if (bg_utilsService.isFirefox() && chrome.browserAction.openPopup) {
-                    chrome.contextMenus.create({
-                        type: 'normal',
-                        id: 'vault-locked',
-                        parentId: 'autofill',
-                        contexts: ['all'],
-                        title: bg_i18nService.vaultLocked
-                    });
-                } else {
-                    loadNoLoginsContextMenuOptions(bg_i18nService.vaultLocked);
-                }
+                loadNoLoginsContextMenuOptions(bg_i18nService.vaultLocked);
             }
             setBrowserActionText('', tabId);
             setSidebarActionText('', tabId);
