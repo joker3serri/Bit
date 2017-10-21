@@ -34,9 +34,9 @@ module.exports = {
         ]
     },
     plugins: [
-        /*new CleanWebpackPlugin([
-            path.resolve(__dirname, 'src/popup/dist/')
-        ]),*/
+        new CleanWebpackPlugin([
+            path.resolve(__dirname, 'dist')
+        ]),
         new webpack.ProvidePlugin({
             $: 'jquery',
             jQuery: 'jquery',
