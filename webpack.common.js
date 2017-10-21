@@ -3,7 +3,6 @@ const webpack = require("webpack");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const GoogleFontsPlugin = require("google-fonts-webpack-plugin");
 
 module.exports = {
     entry: {
@@ -78,20 +77,7 @@ module.exports = {
             { from: './src/scripts', to: 'scripts' },
             { from: './src/services', to: 'services' },
             './src/background.js'
-        ]),
-        new GoogleFontsPlugin({
-            fonts: [
-                {
-                    family: "Open Sans",
-                    variants: [
-                        "300italic", "400italic","600italic", "700italic","800italic",
-                        "300", "400", "600", "700", "800"
-                    ]
-                },
-            ],
-            filename: "popup/css/fonts.css",
-            path: "popup/fonts/",
-		})
+        ])
     ],
     resolve: {
         extensions: [ ".tsx", ".ts", ".js" ]
