@@ -8,6 +8,10 @@ module.exports = {
     entry: {
         'popup/app': './src/popup/app/app.js',
         'background': './src/background.js',
+        'content/autofill': './src/content/autofill.js',
+        'content/autofiller': './src/content/autofiller.js',
+        'content/notificationBar': './src/content/notificationBar.js',
+        'notification/bar': './src/notification/bar.js',
     },
     module: {
         rules: [
@@ -61,18 +65,21 @@ module.exports = {
             filename: 'background.html',
             chunks: ['background']
         }),
+        new HtmlWebpackPlugin({
+            template: './src/notification/bar.html',
+            filename: 'notification/bar.html',
+            chunks: ['notification/bar']
+        }),
         new CopyWebpackPlugin([
             // Temporarily copy the whole app folder, can be removed once
             // the templates uses template rather than using templateUrl.
             { from: './src/popup/app', to: 'popup/app' },
             './src/manifest.json',
             { from: './src/_locales', to: '_locales' },
-            { from: './src/content', to: 'content' },
             { from: './src/edge', to: 'edge' },
             { from: './src/images', to: 'images' },
             { from: './src/lib', to: 'lib' },
             { from: './src/models', to: 'models' },
-            { from: './src/notification', to: 'notification' },
             { from: './src/overlay', to: 'overlay' },
             { from: './src/scripts', to: 'scripts' },
             { from: './src/services', to: 'services' },
