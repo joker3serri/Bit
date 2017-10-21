@@ -61,5 +61,8 @@
     "webpack": "^3.8.1",
     "webpack-merge": "^4.1.0",
     "webpack-stream": "4.0.0"
+  },
+  "dependencies": {
+    "@types/angular": "^1.6.34"
   }
 }

@@ -29,6 +29,8 @@ require('../../models/domainModels.js');
 require('../less/libs.less');
 require('../less/popup.less');
 
+import ComponentsModule from './components/components.module';
+
 angular
     .module('bit', [
         'ui.router',
@@ -38,7 +40,7 @@ angular
         'angulartics.google.analytics',
 
         'bit.directives',
-        'bit.components',
+        ComponentsModule,
         'bit.services',
 
         'bit.global',
@@ -57,10 +59,8 @@ require('./directives/formDirective.js');
 require('./directives/stopClickDirective.js');
 require('./directives/stopPropDirective.js');
 require('./directives/fallbackSrcDirective.js');
-require('./components/componentsModule.js');
 require('./components/iconComponent.js');
 require('./components/actionButtonsComponent.js');
-require('./components/cipherItemsComponent.js');
 require('./services/backgroundService.js');
 require('./services/authService.js');
 require('./services/validationService.js');
