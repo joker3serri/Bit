@@ -69,13 +69,13 @@ module.exports = {
             { from: './src/scripts', to: 'scripts' },
             { from: './src/services', to: 'services' },
             './src/background.html',
-            './src/background.js'            
+            './src/background.js'
         ]),
         new GoogleFontsPlugin({
-			fonts: [
-				{
-                     family: "Open Sans",
-                     variants: [
+            fonts: [
+                {
+                    family: "Open Sans",
+                    variants: [
                         "300italic", "400italic","600italic", "700italic","800italic",
                         "300", "400", "600", "700", "800"
                     ]
