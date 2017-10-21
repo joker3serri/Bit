@@ -1,4 +1,4 @@
-﻿window.CipherRequest = function (cipher) {
+window.CipherRequest = function (cipher) {
     this.type = cipher.type;
     this.folderId = cipher.folderId;
     this.organizationId = cipher.organizationId;

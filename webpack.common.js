@@ -7,7 +7,8 @@ const GoogleFontsPlugin = require("google-fonts-webpack-plugin");
 
 module.exports = {
     entry: {
-        'popup/app': './src/popup/app/app.js'
+        'popup/app': './src/popup/app/app.js',
+        'background': './src/background.js',
     },
     module: {
         rules: [
@@ -41,9 +42,11 @@ module.exports = {
             $: 'jquery',
             jQuery: 'jquery',
             'window.jQuery': 'jquery',
+            'Q': 'q'
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: "popup/vendor",
+            chunks: ['popup/app'],
             minChunks: function (module) {
                 // this assumes your vendor imports exist in the node_modules directory
                 return module.context && module.context.indexOf("node_modules") !== -1;
@@ -51,7 +54,13 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: './src/popup/index.html',
-            filename: 'popup/index.html'
+            filename: 'popup/index.html',
+            chunks: ['popup/vendor', 'popup/app', 'fonts']
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/background.html',
+            filename: 'background.html',
+            chunks: ['background']
         }),
         new CopyWebpackPlugin([
             // Temporarily copy the whole app folder, can be removed once
@@ -68,7 +77,6 @@ module.exports = {
             { from: './src/overlay', to: 'overlay' },
             { from: './src/scripts', to: 'scripts' },
             { from: './src/services', to: 'services' },
-            './src/background.html',
             './src/background.js'
         ]),
         new GoogleFontsPlugin({
@@ -82,7 +90,7 @@ module.exports = {
                 },
             ],
             filename: "popup/css/fonts.css",
-            path: "popup/fonts/"
+            path: "popup/fonts/",
 		})
     ],
     resolve: {

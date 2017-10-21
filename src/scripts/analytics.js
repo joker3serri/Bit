@@ -1,4 +1,5 @@
-﻿(function () {
+(function () {
+
     var bgPage = chrome.extension.getBackgroundPage();
     if (!bgPage) {
         return;
