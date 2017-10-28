@@ -7,6 +7,7 @@ const gulp = require('gulp'),
     merge = require('merge-stream'),
     browserify = require('browserify'),
     source = require('vinyl-source-stream'),
+    googleWebFonts = require('gulp-google-webfonts'),
     webpack = require('webpack-stream'),
     jeditor = require("gulp-json-editor"),
     child = require('child_process'),
@@ -20,6 +21,7 @@ paths.dist = './dist/';
 paths.libDir = './src/lib/';
 paths.npmDir = './node_modules/';
 paths.popupDir = './src/popup/';
+paths.cssDir = paths.popupDir + 'css/';
 
 const sidebarActionManifestObj = {
     "default_title": "bitwarden",
@@ -113,6 +115,21 @@ function copyAssetsEdge(source, dest) {
     });
 }
 
+gulp.task('build', function (cb) {
+    return runSequence(
+        'clean',
+        ['browserify', 'webpack', 'lib', 'lint', 'webfonts'],
+        cb);
+});
+
+gulp.task('webfonts', function () {
+    return gulp.src('./webfonts.list')
+        .pipe(googleWebFonts({
+            fontsDir: 'webfonts',
+            cssFilename: 'webfonts.css'
+        }))
+        .pipe(gulp.dest(paths.cssDir));
+});
 
 // LEGACY CODE!
 //
@@ -133,13 +150,6 @@ gulp.task('lint', function () {
             esversion: 6
         }))
         .pipe(jshint.reporter('default'));
-});
-
-gulp.task('build', function (cb) {
-    return runSequence(
-        'clean',
-        ['browserify', 'webpack', 'lib', 'lint'],
-        cb);
 });
 
 gulp.task('clean:lib', function (cb) {
@@ -201,90 +211,4 @@ gulp.task('webpack:forge', function () {
             setImmediate: false
         }
     })).pipe(gulp.dest(paths.libDir + 'forge'));
-});
-
-gulp.task('dist-edge', ['dist:edge'], function (cb) {
-    // move dist to temp extension folder
-    new Promise(function (resolve, reject) {
-        gulp.src(paths.dist + '**/*')
-            .on('error', reject)
-            .pipe(gulp.dest('temp/Extension/'))
-            .on('end', resolve);
-    }).then(function () {
-        // move windows store files to temp folder
-        return new Promise(function (resolve, reject) {
-            gulp.src('store/windows/**/*')
-                .on('error', reject)
-                .pipe(gulp.dest('temp/'))
-                .on('end', resolve);
-        });
-    }).then(function () {
-        // delete dist folder
-        return new Promise(function (resolve, reject) {
-            rimraf(paths.dist, function () {
-                resolve();
-            })
-        });
-    }).then(function () {
-        // move temp back to dist
-        return new Promise(function (resolve, reject) {
-            gulp.src('temp/**/*')
-                .on('error', reject)
-                .pipe(gulp.dest(paths.dist))
-                .on('end', resolve);
-        });
-    }).then(function () {
-        // delete temp folder
-        return new Promise(function (resolve, reject) {
-            rimraf('temp', function () {
-                resolve();
-            })
-        });
-    }).then(function () {
-        // move src edge folder to dist
-        return new Promise(function (resolve, reject) {
-            gulp.src(['src/edge/**/*', '!src/edge/angular.js'])
-                .on('error', reject)
-                .pipe(gulp.dest(paths.dist + 'Extension/edge'))
-                .on('end', resolve);
-        });
-    }).then(function () {
-        // modify manifest with edge preload stuff
-        return new Promise(function (resolve, reject) {
-            gulp.src(paths.dist + 'Extension/manifest.json')
-                .pipe(jeditor(function (manifest) {
-                    manifest['-ms-preload'] = {
-                        backgroundScript: 'edge/backgroundScriptsAPIBridge.js',
-                        contentScript: 'edge/contentScriptsAPIBridge.js'
-                    };
-                    return manifest;
-                }))
-                .on('error', reject)
-                .pipe(gulp.dest(paths.dist + 'Extension'))
-                .on('end', resolve);
-        });
-    }).then(function () {
-        // modify appxmanifest
-        return new Promise(function (resolve, reject) {
-            gulp.src(paths.dist + '/AppxManifest.xml')
-                .pipe(xmlpoke({
-                    replacements: [{
-                        xpath: '/p:Package/p:Identity/@Version',
-                        value: manifest.version + '.0',
-                        namespaces: {
-                            'p': 'http://schemas.microsoft.com/appx/manifest/foundation/windows10'
-                        }
-                    }]
-                }))
-                .on('error', reject)
-                .pipe(gulp.dest(paths.dist))
-                .on('end', resolve);
-        });
-    }).then(function () {
-        // makeappx.exe must be in your system's path already
-        child.spawn('makeappx.exe', ['pack', '/h', 'SHA256', '/d', paths.dist, '/p', paths.dist + 'bitwarden.appx']);
-        cb();
-    }, function () {
-        cb();
-    });
 });
