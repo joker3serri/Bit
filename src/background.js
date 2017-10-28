@@ -68,7 +68,7 @@ var bg_isBackground = true,
                 });
             }
             else if (command === 'autofill_login') {
-                chrome.tabs.query({ active: true }, function (tabs) {
+                chrome.tabs.query({ active: true, windowId: chrome.windows.WINDOW_ID_CURRENT }, function (tabs) {
                     if (tabs.length) {
                         ga('send', {
                             hitType: 'event',
@@ -108,7 +108,7 @@ var bg_isBackground = true,
             messageTab(sender.tab.id, 'adjustNotificationBar', msg.data);
         }
         else if (msg.command === 'bgCollectPageDetails') {
-            collectPageDetailsForContentScript(sender.tab, msg.sender);
+            collectPageDetailsForContentScript(sender.tab, msg.sender, sender.frameId);
         }
         else if (msg.command === 'bgAddLogin') {
             addLogin(msg.login, sender.tab);
@@ -572,16 +572,21 @@ var bg_isBackground = true,
         });
     }
 
-    function collectPageDetailsForContentScript(tab, sender) {
+    function collectPageDetailsForContentScript(tab, sender, frameId) {
         if (!tab || !tab.id) {
             return;
+        }
+
+        var options = {};
+        if (frameId || frameId === 0) {
+            options.frameId = frameId;
         }
 
         chrome.tabs.sendMessage(tab.id, {
             command: 'collectPageDetails',
             tab: tab,
             sender: sender
-        }, function () {
+        }, options, function () {
             if (chrome.runtime.lastError) {
                 return;
             }
@@ -664,7 +669,7 @@ var bg_isBackground = true,
                 login: {
                     uri: loginInfo.uri,
                     username: loginInfo.username,
-                    password: loginInfo
+                    password: loginInfo.password
                 }
             }).then(function (model) {
                 var cipher = new Cipher(model, true);

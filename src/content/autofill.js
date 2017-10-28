@@ -35,10 +35,13 @@
     2. Remove isChrome and isSafari since they are not used.
     3. Unminify and format to meet Mozilla review requirements.
     4. Remove unnecessary input types from getFormElements query selector and limit number of elements returned.
+    5. Remove fakeTested prop.
     */
 
     function collect(document, undefined) {
+        // START MODIFICATION
         var isFirefox = navigator.userAgent.indexOf('Firefox') !== -1 || navigator.userAgent.indexOf('Gecko/') !== -1;
+        // END MODIFICATION
 
         document.elementsByOPID = {};
         document.addEventListener('input', function (canuf) {
@@ -309,7 +312,9 @@
                     field.form = getElementAttrValue(el.form, 'opid');
                 }
 
-                addProp(field, 'fakeTested', checkIfFakeTested(field, el), false);
+                // START MODIFICATION
+                //addProp(field, 'fakeTested', checkIfFakeTested(field, el), false);
+                // END MODIFICATION
 
                 return field;
             });
@@ -549,6 +554,7 @@
 
         // get all the form elements that we care about
         function getFormElements(theDoc, limit) {
+            // START MODIFICATION
             var els = [];
             try {
                 var elsList = theDoc.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="reset"])' +
@@ -556,7 +562,26 @@
                 els = Array.prototype.slice.call(elsList);
             } catch (e) { }
 
-            return limit && els.length > limit ? els.slice(0, limit) : els;
+            if (!limit || els.length <= limit) {
+                return els;
+            }
+
+            // non-checkboxes have higher priority
+            els = els.sort(function (a, b) {
+                var aType = a.type ? a.type.toLowerCase() : a.type;
+                var bType = b.type ? b.type.toLowerCase() : b.type;
+
+                if (aType !== 'checkbox' && bType === 'checkbox') {
+                    return -1;
+                }
+                if (aType === 'checkbox' && bType !== 'checkbox') {
+                    return 1;
+                }
+                return 0;
+            });
+
+            return els.slice(0, limit);
+            // END MODIFICATION
         }
 
         // focus the element and optionally restore its original value

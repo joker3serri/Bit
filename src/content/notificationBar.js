@@ -5,7 +5,10 @@
         pageHref = null,
         observer = null,
         domObservationCollectTimeout = null,
-        iframed = isIframed();
+        collectIfNeededTimeout = null,
+        observeDomTimeout = null,
+        iframed = isIframed(),
+        submitButtonNames = ['log in', 'sign in', 'login', 'go', 'submit', 'continue', 'next'];
 
     if (window.location.hostname.indexOf('bitwarden.com') === -1) {
         chrome.storage.local.get('neverDomains', function (obj) {
@@ -16,7 +19,10 @@
 
             chrome.storage.local.get('disableAddLoginNotification', function (obj) {
                 if (!obj || !obj.disableAddLoginNotification) {
-                    setInterval(collectIfNeeded, 1000);
+                    if (collectIfNeededTimeout) {
+                        clearTimeout(collectIfNeededTimeout);
+                    }
+                    collectIfNeededTimeout = setTimeout(collectIfNeeded, 1000);
                 }
             });
         });
@@ -68,7 +74,7 @@
         var bodies = document.querySelectorAll('body');
         if (bodies && bodies.length > 0) {
             observer = new window.MutationObserver(function (mutations) {
-                if (!mutations || !mutations.length) {
+                if (!mutations || !mutations.length || pageHref !== window.location.href) {
                     return;
                 }
 
@@ -79,7 +85,18 @@
                     }
 
                     for (var j = 0; j < mutations[i].addedNodes.length; j++) {
-                        if (!mutations[i].addedNodes[j]) {
+                        var addedNode = mutations[i].addedNodes[j];
+                        if (!addedNode) {
+                            continue;
+                        }
+
+                        if (addedNode.tagName && addedNode.tagName.toLowerCase() == 'form' &&
+                            (!addedNode.dataset || !addedNode.dataset.bitwardenWatching)) {
+                            doCollect = true;
+                            break;
+                        }
+
+                        if (!addedNode.querySelectorAll) {
                             continue;
                         }
 
@@ -117,8 +134,17 @@
             }
 
             collect();
-            observeDom();
+
+            if (observeDomTimeout) {
+                clearTimeout(observeDomTimeout);
+            }
+            observeDomTimeout = setTimeout(observeDom, 1000);
         }
+
+        if (collectIfNeededTimeout) {
+            clearTimeout(collectIfNeededTimeout);
+        }
+        collectIfNeededTimeout = setTimeout(collectIfNeeded, 1000);
     }
 
     function collect() {
@@ -164,10 +190,38 @@
     function listen(form) {
         form.removeEventListener('submit', formSubmitted, false);
         form.addEventListener('submit', formSubmitted, false);
-        var submitButton = form.querySelector('input[type="submit"], button[type="submit"]');
+        var submitButton = form.querySelector(
+            'input[type="submit"], input[type="image"], button[type="submit"], button:not([type])');
         if (submitButton) {
             submitButton.removeEventListener('click', formSubmitted, false);
             submitButton.addEventListener('click', formSubmitted, false);
+        }
+        else {
+            var possibleSubmitButtons = form.querySelectorAll('a, span, button[type="button"], input[type="button"]');
+            for (var i = 0; i < possibleSubmitButtons.length; i++) {
+                var button = possibleSubmitButtons[i];
+                if (!button || !button.tagName) {
+                    continue;
+                }
+
+                var buttonText;
+                if (button.tagName.toLowerCase() === 'input') {
+                    buttonText = button.value;
+                }
+                else {
+                    buttonText = button.innerText;
+                }
+
+                if (!buttonText) {
+                    continue;
+                }
+
+                buttonText = buttonText.trim().toLowerCase();
+                if (submitButtonNames.indexOf(buttonText) > -1) {
+                    button.removeEventListener('click', formSubmitted, false);
+                    button.addEventListener('click', formSubmitted, false);
+                }
+            }
         }
     }
 
