@@ -103,3 +103,8 @@ require('./tools/toolsPasswordGeneratorHistoryController.js');
 require('./tools/toolsExportController.js');
 require('./lock/lockModule.js');
 require('./lock/lockController.js');
+
+// Bootstrap the angular application
+angular.element(function() {
+    angular.bootstrap(document, ['bit']);
+});
