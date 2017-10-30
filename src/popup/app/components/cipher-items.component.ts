@@ -21,9 +21,9 @@ class CipherItemsController implements ng.IController {
 export const CipherItemsComponent = {
     bindings: {
         ciphers: '<',
+        selectionTitle: '<',
         onSelected: '&',
         onView: '&',
-        selectionTitle: '<',
     },
     controller: CipherItemsController,
     template,
