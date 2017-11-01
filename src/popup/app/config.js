@@ -125,7 +125,8 @@
             .state('tabs.tools', {
                 url: '/tools',
                 templateUrl: 'app/tools/views/tools.html',
-                controller: 'toolsController'
+                controller: 'toolsController',
+                controllerAs: '$ctrl'
             })
 
             .state('viewFolder', {
