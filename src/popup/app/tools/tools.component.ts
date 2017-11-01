@@ -1,6 +1,7 @@
 ﻿import UtilsService from '../../../services/utils.service';
+import * as template from './views/tools.html';
 
-export class ToolsController {
+class ToolsController {
     showExport: boolean;
     i18n: any;
 
@@ -41,3 +42,9 @@ export class ToolsController {
         });
     };
 }
+
+export const ToolsComponent = {
+    bindings: {},
+    controller: ToolsController,
+    template,
+};

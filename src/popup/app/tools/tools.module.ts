@@ -1,7 +1,7 @@
 import * as angular from 'angular';
-import { ToolsController } from './tools.controller';
+import { ToolsComponent } from './tools.component';
 
 export default angular
     .module('bit.tools', ['ngAnimate', 'ngclipboard', 'toastr', 'oitozero.ngSweetAlert'])
-    .controller('toolsController', ToolsController) 
+    .component('tools', ToolsComponent) 
     .name;
