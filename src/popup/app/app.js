@@ -6,7 +6,6 @@ require('clipboard');
 require('angular');
 
 require('angular-animate');
-require('@uirouter/angularjs/release/stateEvents.js');
 const uiRouter = require('@uirouter/angularjs').default;
 require('angular-toastr');
 
@@ -67,7 +66,6 @@ import { SyncResponse } from '../../models/response/syncResponse';
 angular
     .module('bit', [
         uiRouter,
-        'ui.router.state.events',
         'ngAnimate',
         'toastr',
         'angulartics',
