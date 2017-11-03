@@ -14,12 +14,8 @@ class ValidationService {
         } else if (!data.validationErrors) {
             errors.push(data.message ? data.message : defaultErrorMessage);
         } else {
-            for (const key in data.validationErrors) {
-                if (!data.validationErrors.hasOwnProperty(key)) {
-                    continue;
-                }
-
-                data.validationErrors[key].forEach((item: string) => {
+            for (const error of data.validationErrors) {
+                error.forEach((item: string) => {
                     errors.push(item);
                 });
             }
