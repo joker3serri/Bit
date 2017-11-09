@@ -31,12 +31,11 @@ export class PasswordGeneratorController {
             $analytics.eventTrack('Generated Password');
             this.saveOptions(this.options, false);
             passwordGenerationService.addHistory(this.password);
-        })
+        });
     }
 
     $onInit() {
         const params = this.$transition$.params('to');
-        console.log(params);
         this.addState = params.addState;
         this.editState = params.editState;
 
@@ -104,7 +103,7 @@ export class PasswordGeneratorController {
         this.$state.go('^.passwordGeneratorHistory', {
             animation: 'in-slide-left',
             addState: this.addState,
-            editState: this.editState
+            editState: this.editState,
         });
     }
 
@@ -113,7 +112,7 @@ export class PasswordGeneratorController {
             this.$state.go('addCipher', {
                 animation: 'out-slide-down',
                 from: this.addState.from,
-                cipher: this.addState.cipher
+                cipher: this.addState.cipher,
             });
         } else if (this.editState) {
             this.$state.go('editCipher', {
@@ -121,11 +120,11 @@ export class PasswordGeneratorController {
                 cipher: this.editState.cipher,
                 fromView: this.editState.fromView,
                 cipherId: this.editState.cipherId,
-                from: this.editState.from
+                from: this.editState.from,
             });
         } else {
             this.$state.go('tabs.tools', {
-                animation: 'out-slide-down'
+                animation: 'out-slide-down',
             });
         }
     }
@@ -133,7 +132,7 @@ export class PasswordGeneratorController {
 
 export const PasswordGeneratorComponent = {
     bindings: {
-        $transition$: '<'
+        $transition$: '<',
     },
     controller: PasswordGeneratorController,
     template,
