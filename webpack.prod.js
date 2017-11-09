@@ -1,16 +1,16 @@
 const merge = require('webpack-merge');
-//const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const common = require('./webpack.common.js');
+const webpack = require('webpack');
 
 const extractLess = new ExtractTextPlugin({
-    filename: 'popup/css/[name].css',
+    filename: '[name].css',
     disable: false,
     allChunks: true
 });
 
 module.exports = merge(common, {
-    devtool: 'source-map',
     module: {
         rules: [
             {
@@ -29,7 +29,13 @@ module.exports = merge(common, {
         ]
     },
     plugins: [
+        new UglifyJSPlugin({
+            include: ['vendor.js', 'popup/vendor.js']
+        }),
+        new webpack.SourceMapDevToolPlugin({
+            filename: '[name].js.map',
+            include: ['background.js', 'popup/app.js']
+        }),
         extractLess
-        //new UglifyJSPlugin()
     ]
 });

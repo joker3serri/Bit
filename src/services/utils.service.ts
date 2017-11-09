@@ -8,6 +8,31 @@ const AnalyticsIds = {
 };
 
 export default class UtilsService {
+    static copyToClipboard(text: string, doc?: Document): void {
+        doc = doc || document;
+        if ((window as any).clipboardData && (window as any).clipboardData.setData) {
+            // IE specific code path to prevent textarea being shown while dialog is visible.
+            (window as any).clipboardData.setData('Text', text);
+        } else if (doc.queryCommandSupported && doc.queryCommandSupported('copy')) {
+            const textarea = doc.createElement('textarea');
+            textarea.textContent = text;
+            // Prevent scrolling to bottom of page in MS Edge.
+            textarea.style.position = 'fixed';
+            doc.body.appendChild(textarea);
+            textarea.select();
+
+            try {
+                // Security exception may be thrown by some browsers.
+                doc.execCommand('copy');
+            } catch (e) {
+                // tslint:disable-next-line
+                console.warn('Copy to clipboard failed.', e);
+            } finally {
+                doc.body.removeChild(textarea);
+            }
+        }
+    }
+
     static urlBase64Decode(str: string): string {
         let output = str.replace(/-/g, '+').replace(/_/g, '/');
         switch (output.length % 4) {
@@ -95,6 +120,15 @@ export default class UtilsService {
         return bytes;
     }
 
+    static fromUtf8ToArray(str: string): Uint8Array {
+        const strUtf8 = unescape(encodeURIComponent(str));
+        const arr = new Uint8Array(strUtf8.length);
+        for (let i = 0; i < strUtf8.length; i++) {
+            arr[i] = strUtf8.charCodeAt(i);
+        }
+        return arr;
+    }
+
     static fromBufferToB64(buffer: ArrayBuffer): string {
         let binary = '';
         const bytes = new Uint8Array(buffer);
@@ -108,15 +142,6 @@ export default class UtilsService {
         const bytes = new Uint8Array(buffer);
         const encodedString = String.fromCharCode.apply(null, bytes);
         return decodeURIComponent(escape(encodedString));
-    }
-
-    static fromUtf8ToArray(str: string): Uint8Array {
-        const strUtf8 = unescape(encodeURIComponent(str));
-        const arr = new Uint8Array(strUtf8.length);
-        for (let i = 0; i < strUtf8.length; i++) {
-            arr[i] = strUtf8.charCodeAt(i);
-        }
-        return arr;
     }
 
     static saveObjToStorage(key: string, obj: any) {
@@ -138,13 +163,83 @@ export default class UtilsService {
     static getObjFromStorage<T>(key: string): Promise<T> {
         return new Promise((resolve) => {
             chrome.storage.local.get(key, (obj: any) => {
-                if (obj && obj[key]) {
+                if (obj && (typeof obj[key] !== 'undefined') && obj[key] !== null) {
                     resolve(obj[key] as T);
                 } else {
                     resolve(null);
                 }
             });
         });
+    }
+
+    static getDomain(uriString: string): string {
+        if (uriString == null) {
+            return null;
+        }
+
+        uriString = uriString.trim();
+        if (uriString === '') {
+            return null;
+        }
+
+        if (uriString.startsWith('http://') || uriString.startsWith('https://')) {
+            try {
+                const url = new URL(uriString);
+                if (!url.hostname) {
+                    return null;
+                }
+
+                if (url.hostname === 'localhost' || UtilsService.validIpAddress(url.hostname)) {
+                    return url.hostname;
+                }
+
+                if (typeof tldjs !== 'undefined' && tldjs) {
+                    const domain = tldjs.getDomain(url.hostname);
+                    if (domain != null) {
+                        return domain;
+                    }
+                }
+
+                return url.hostname;
+            } catch (e) { }
+        } else if (typeof tldjs !== 'undefined' && tldjs) {
+            const domain = tldjs.getDomain(uriString);
+            if (domain != null) {
+                return domain;
+            }
+        }
+
+        return null;
+    }
+
+    static getHostname(uriString: string): string {
+        if (uriString == null) {
+            return null;
+        }
+
+        uriString = uriString.trim();
+        if (uriString === '') {
+            return null;
+        }
+
+        if (uriString.startsWith('http://') || uriString.startsWith('https://')) {
+            try {
+                const url = new URL(uriString);
+                if (!url.hostname) {
+                    return null;
+                }
+
+                return url.hostname;
+            } catch (e) { }
+        }
+
+        return null;
+    }
+
+    private static validIpAddress(ipString: string): boolean {
+        // tslint:disable-next-line
+        const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+        return ipRegex.test(ipString);
     }
 
     private browserCache: BrowserType = null;
@@ -157,7 +252,7 @@ export default class UtilsService {
 
         if (navigator.userAgent.indexOf('Firefox') !== -1 || navigator.userAgent.indexOf('Gecko/') !== -1) {
             this.browserCache = BrowserType.Firefox;
-        } else if ((!!(window as any).opr && !!(window as any).opr.addons) || !!(window as any).opera ||
+        } else if ((!!(window as any).opr && !!opr.addons) || !!(window as any).opera ||
             navigator.userAgent.indexOf(' OPR/') >= 0) {
             this.browserCache = BrowserType.Opera;
         } else if (navigator.userAgent.indexOf(' Edge/') !== -1) {
@@ -195,7 +290,6 @@ export default class UtilsService {
         }
 
         this.analyticsIdCache = AnalyticsIds[this.getBrowser()];
-
         return this.analyticsIdCache;
     }
 
@@ -238,111 +332,26 @@ export default class UtilsService {
             }
         });
 
-        doc.on(
-            'focus',
-            '.list-section-item input, .list-section-item select, .list-section-item textarea',
+        doc.on('focus', '.list-section-item input, .list-section-item select, .list-section-item textarea',
             function(e: Event) {
                 $(this).parent().addClass('active');
             });
-        doc.on(
-            'blur', '.list-section-item input, .list-section-item select, .list-section-item textarea',
+        doc.on('blur', '.list-section-item input, .list-section-item select, .list-section-item textarea',
             function(e: Event) {
                 $(this).parent().removeClass('active');
             });
     }
 
-    getDomain(uriString: string) {
-        if (!uriString) {
-            return null;
-        }
-
-        uriString = uriString.trim();
-        if (uriString === '') {
-            return null;
-        }
-
-        if (uriString.startsWith('http://') || uriString.startsWith('https://')) {
-            try {
-                const url = new URL(uriString);
-                if (!url || !url.hostname) {
-                    return null;
-                }
-
-                if (url.hostname === 'localhost' || this.validIpAddress(url.hostname)) {
-                    return url.hostname;
-                }
-
-                if ((window as any).tldjs) {
-                    const domain = (window as any).tldjs.getDomain(uriString);
-                    if (domain) {
-                        return domain;
-                    }
-                }
-
-                return url.hostname;
-            } catch (e) {
-                return null;
-            }
-        } else if ((window as any).tldjs) {
-            const domain2 = (window as any).tldjs.getDomain(uriString);
-            if (domain2) {
-                return domain2;
-            }
-        }
-
-        return null;
+    getDomain(uriString: string): string {
+        return UtilsService.getDomain(uriString);
     }
 
-    getHostname(uriString: string) {
-        if (!uriString) {
-            return null;
-        }
-
-        uriString = uriString.trim();
-        if (uriString === '') {
-            return null;
-        }
-
-        if (uriString.startsWith('http://') || uriString.startsWith('https://')) {
-            try {
-                const url = new URL(uriString);
-                if (!url || !url.hostname) {
-                    return null;
-                }
-
-                return url.hostname;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        return null;
+    getHostname(uriString: string): string {
+        return UtilsService.getHostname(uriString);
     }
 
-    copyToClipboard(text: string, doc: Document) {
-        doc = doc || document;
-        if ((window as any).clipboardData && (window as any).clipboardData.setData) {
-            // IE specific code path to prevent textarea being shown while dialog is visible.
-            return (window as any).clipboardData.setData('Text', text);
-        } else if (doc.queryCommandSupported && doc.queryCommandSupported('copy')) {
-            const textarea = doc.createElement('textarea');
-            textarea.textContent = text;
-            // Prevent scrolling to bottom of page in MS Edge.
-            textarea.style.position = 'fixed';
-            doc.body.appendChild(textarea);
-            textarea.select();
-
-            try {
-                // Security exception may be thrown by some browsers.
-                return doc.execCommand('copy');
-            } catch (ex) {
-                // tslint:disable-next-line
-                console.warn('Copy to clipboard failed.', ex);
-                return false;
-            } finally {
-                doc.body.removeChild(textarea);
-            }
-        }
+    copyToClipboard(text: string, doc?: Document) {
+        UtilsService.copyToClipboard(text, doc);
     }
 
     inSidebar(theWindow: Window) {
@@ -374,11 +383,5 @@ export default class UtilsService {
 
     getObjFromStorage(key: string) {
         return UtilsService.getObjFromStorage(key);
-    }
-
-    private validIpAddress(ipString: string) {
-        // tslint:disable-next-line
-        const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-        return ipRegex.test(ipString);
     }
 }

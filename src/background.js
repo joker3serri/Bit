@@ -1,19 +1,36 @@
+window.$ = window.jQuery = require('jquery');
+window.forge = require('node-forge');
+window.tldjs = require('tldjs');
+
 // Service imports
 import ApiService from './services/api.service';
 import AppIdService from './services/appId.service';
+import AutofillService from './services/autofill.service';
+import CipherService from './services/cipher.service';
 import ConstantsService from './services/constants.service';
 import CryptoService from './services/crypto.service';
 import EnvironmentService from './services/environment.service';
+import FolderService from './services/folder.service';
 import i18nService from './services/i18nService.js';
-import LockService from './services/lockService.js';
+import LockService from './services/lock.service';
 import PasswordGenerationService from './services/passwordGeneration.service';
 import SettingsService from './services/settings.service';
+import SyncService from './services/sync.service';
 import TokenService from './services/token.service';
 import TotpService from './services/totp.service';
 import UserService from './services/user.service';
 import UtilsService from './services/utils.service';
 
 // Model imports
+import { Attachment } from './models/domain/attachment';
+import { Card } from './models/domain/card';
+import { Cipher } from './models/domain/cipher';
+import { Field } from './models/domain/field';
+import { Folder } from './models/domain/folder';
+import { Identity } from './models/domain/identity';
+import { Login } from './models/domain/login';
+import { SecureNote } from './models/domain/secureNote';
+
 import { AttachmentData } from './models/data/attachmentData';
 import { CardData } from './models/data/cardData';
 import { CipherData } from './models/data/cipherData';
@@ -88,17 +105,13 @@ var bg_isBackground = true,
     window.bg_environmentService = bg_environmentService = new EnvironmentService(bg_apiService);
     window.bg_userService = bg_userService = new UserService(bg_tokenService);
     window.bg_settingsService = bg_settingsService = new SettingsService(bg_userService);
-    window.bg_cipherService = bg_cipherService = new CipherService(bg_cryptoService, bg_userService, bg_apiService, bg_settingsService, bg_utilsService,
-        bg_constantsService);
-    window.bg_folderService = bg_folderService = new FolderService(bg_cryptoService, bg_userService, bg_apiService, bg_i18nService, bg_utilsService);
-    window.bg_lockService = bg_lockService = new LockService(bg_constantsService, bg_cryptoService, bg_folderService, bg_cipherService, bg_utilsService,
-        setIcon, refreshBadgeAndMenu);
-    window.bg_syncService = bg_syncService = new SyncService(bg_cipherService, bg_folderService, bg_userService, bg_apiService, bg_settingsService,
-        bg_cryptoService, logout);
+    window.bg_cipherService = bg_cipherService = new CipherService(bg_cryptoService, bg_userService, bg_settingsService, bg_apiService);
+    window.bg_folderService = bg_folderService = new FolderService(bg_cryptoService, bg_userService, bg_i18nService, bg_apiService);
+    window.bg_lockService = bg_lockService = new LockService(bg_cipherService, bg_folderService, bg_cryptoService, bg_utilsService, setIcon, refreshBadgeAndMenu);
+    window.bg_syncService = bg_syncService = new SyncService(bg_userService, bg_apiService, bg_settingsService, bg_folderService, bg_cipherService, bg_cryptoService, logout);
     window.bg_passwordGenerationService = bg_passwordGenerationService = new PasswordGenerationService(bg_cryptoService);
     window.bg_totpService = bg_totpService = new TotpService();
-    window.bg_autofillService = bg_autofillService = new AutofillService(bg_utilsService, bg_totpService, bg_tokenService, bg_cipherService,
-        bg_constantsService);
+    window.bg_autofillService = bg_autofillService = new AutofillService(bg_cipherService, bg_tokenService, bg_totpService, bg_utilsService);
 
     require('./scripts/analytics.js');
 
@@ -899,26 +912,25 @@ var bg_isBackground = true,
     }
 
     function logout(expired, callback) {
-        bg_syncService.setLastSync(new Date(0), function () {
-            bg_userService.getUserId().then(function (userId) {
-                return Q.all([
-                    bg_tokenService.clearToken(),
-                    bg_cryptoService.clearKeys(),
-                    bg_userService.clear(),
-                    bg_settingsService.clear(userId),
-                    bg_cipherService.clear(userId),
-                    bg_folderService.clear(userId),
-                    bg_passwordGenerationService.clear()
-                ]).then(function () {
-                    chrome.runtime.sendMessage({
-                        command: 'doneLoggingOut', expired: expired
-                    });
-                    setIcon();
-                    refreshBadgeAndMenu();
-                    if (callback) {
-                        callback();
-                    }
+        bg_userService.getUserId().then(function (userId) {
+            return Promise.all([
+                bg_syncService.setLastSync(new Date(0)),
+                bg_tokenService.clearToken(),
+                bg_cryptoService.clearKeys(),
+                bg_userService.clear(),
+                bg_settingsService.clear(userId),
+                bg_cipherService.clear(userId),
+                bg_folderService.clear(userId),
+                bg_passwordGenerationService.clear()
+            ]).then(function () {
+                chrome.runtime.sendMessage({
+                    command: 'doneLoggingOut', expired: expired
                 });
+                setIcon();
+                refreshBadgeAndMenu();
+                if (callback) {
+                    callback();
+                }
             });
         });
     }
@@ -929,7 +941,7 @@ var bg_isBackground = true,
             var syncInternal = 6 * 60 * 60 * 1000; // 6 hours
             var lastSyncAgo = new Date() - lastSync;
             if (override || !lastSync || lastSyncAgo >= syncInternal) {
-                bg_syncService.fullSync(override || false, function () {
+                bg_syncService.fullSync(override || false).then(function () {
                     scheduleNextSync();
                 });
             }
