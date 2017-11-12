@@ -20,7 +20,7 @@
                 {{$ctrl.i18n.typeLogins}}
             </div>
             <div class="list-section-items" ng-class="{'list-no-selection': !$ctrl.loginCiphers.length}">
-                <div class="list-section-item" ng-if="$ctrl.loaded && !$ctrl.loginCiphers.length">
+                <div class="list-section-item" ng-if="!$ctrl.loginCiphers.length">
                     <p>{{$ctrl.i18n.autoFillInfo}}</p>
                     <button ng-click="$ctrl.addCipher()" class="btn btn-link btn-block">{{$ctrl.i18n.addLogin}}</button>
                 </div>
@@ -33,7 +33,7 @@
                 {{$ctrl.i18n.other}}
             </div>
             <div class="list-section-items">
-                <div class="list-section-item" ng-if="$ctrl.loaded && !$ctrl.otherCiphers.length">{{$ctrl.i18n.noItemsInList}}</div>
+                <div class="list-section-item" ng-if="!$ctrl.otherCiphers.length">{{$ctrl.i18n.noItemsInList}}</div>
                 <cipher-items ng-if="$ctrl.otherCiphers.length" ciphers="$ctrl.otherCiphers" on-view="$ctrl.viewCipher"
                               on-selected="$ctrl.fillCipher" selection-title="$ctrl.i18n.autoFill"></cipher-items>
             </div>
