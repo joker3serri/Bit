@@ -154,4 +154,3 @@ export const CurrentComponent = {
     controller: CurrentController,
     template,
 };
-
