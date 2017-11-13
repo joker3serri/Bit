@@ -1,7 +1,6 @@
 import * as template from './current.component.html';
 
 class CurrentController {
-    fillCipher: (cipher: any) => void;
     i18n: any;
     pageDetails: any = [];
     loaded: boolean = false;
@@ -30,33 +29,6 @@ class CurrentController {
         $scope.$on('collectPageDetailsResponse', (event: any, details: any) => {
             this.pageDetails.push(details);
         });
-
-        this.fillCipher = (cipher: any) => {
-            if (!this.canAutofill) {
-                this.$analytics.eventTrack('Autofilled Error');
-                this.toastr.error(this.i18nService.autofillError);
-            }
-
-            this.autofillService
-                .doAutoFill({
-                    cipher,
-                    pageDetails: this.pageDetails,
-                    fromBackground: false,
-                })
-                .then((totpCode: string) => {
-                    this.$analytics.eventTrack('Autofilled');
-                    if (totpCode && this.utilsService.isFirefox()) {
-                        this.utilsService.copyToClipboard(totpCode, document);
-                    }
-                    if (this.utilsService.inPopup(this.$window)) {
-                        this.$window.close();
-                    }
-                })
-                .catch(() => {
-                    this.$analytics.eventTrack('Autofilled Error');
-                    this.toastr.error(this.i18nService.autofillError);
-                });
-        }
     }
 
     $onInit() {
@@ -82,6 +54,33 @@ class CurrentController {
             animation: 'in-slide-up',
             from: 'current',
         });
+    }
+
+    fillCipher(cipher: any) {
+        if (!this.canAutofill) {
+            this.$analytics.eventTrack('Autofilled Error');
+            this.toastr.error(this.i18nService.autofillError);
+        }
+
+        this.autofillService
+            .doAutoFill({
+                cipher,
+                pageDetails: this.pageDetails,
+                fromBackground: false,
+            })
+            .then((totpCode: string) => {
+                this.$analytics.eventTrack('Autofilled');
+                if (totpCode && this.utilsService.isFirefox()) {
+                    this.utilsService.copyToClipboard(totpCode, document);
+                }
+                if (this.utilsService.inPopup(this.$window)) {
+                    this.$window.close();
+                }
+            })
+            .catch(() => {
+                this.$analytics.eventTrack('Autofilled Error');
+                this.toastr.error(this.i18nService.autofillError);
+            });
     }
 
     searchVault() {
