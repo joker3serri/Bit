@@ -1,19 +1,21 @@
+import { DeviceRequest } from './deviceRequest';
+
 class TokenRequest {
     email: string;
     masterPasswordHash: string;
     token: string;
     provider: number;
     remember: boolean;
-    device?: any;
+    device?: DeviceRequest;
 
     constructor(email: string, masterPasswordHash: string, provider: number,
-                token: string, remember: boolean, device?: any) {
+        token: string, remember: boolean, device?: DeviceRequest) {
         this.email = email;
         this.masterPasswordHash = masterPasswordHash;
         this.token = token;
         this.provider = provider;
         this.remember = remember;
-        this.device = device ? device : null;
+        this.device = device != null ? device : null;
     }
 
     toIdentityToken() {
@@ -29,7 +31,8 @@ class TokenRequest {
             obj.deviceType = this.device.type;
             obj.deviceIdentifier = this.device.identifier;
             obj.deviceName = this.device.name;
-            obj.devicePushToken = this.device.pushToken;
+            // no push tokens for browser apps yet
+            // obj.devicePushToken = this.device.pushToken;
         }
 
         if (this.token && this.provider !== null && (typeof this.provider !== 'undefined')) {

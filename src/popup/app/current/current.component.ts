@@ -10,6 +10,8 @@ class CurrentController {
     domain: any;
     canAutofill: boolean = false;
     searchText: string = null;
+    inSidebar: boolean = false;
+    disableSearch: boolean = false;
 
     constructor($scope: any, private cipherService: any, private utilsService: any, private toastr: any,
                 private $window: any, private $state: any, private $timeout: any, private autofillService: any,
@@ -17,6 +19,8 @@ class CurrentController {
                 private $filter: any) {
 
         this.i18n = i18nService;
+        this.inSidebar = utilsService.inSidebar($window);
+        this.disableSearch = utilsService.isEdge();
 
         document.getElementById('search').focus();
 
