@@ -25,9 +25,9 @@ class CurrentController {
 
         document.getElementById('search').focus();
 
-        $scope.$on('syncCompleted', (event: any, successfully: any) => {
+        $scope.$on('syncCompleted', (event: any, successfully: boolean) => {
             if (this.loaded) {
-                setTimeout(this.loadVault.bind(this), 500);
+                $timeout(this.loadVault.bind(this), 500);
             }
         });
 
