@@ -1,3 +1,4 @@
+import { UtilsService } from '../../../services/abstractions/utils.service';
 import * as template from './current.component.html';
 
 class CurrentController {
@@ -13,7 +14,7 @@ class CurrentController {
     inSidebar: boolean = false;
     disableSearch: boolean = false;
 
-    constructor($scope: any, private cipherService: any, private utilsService: any, private toastr: any,
+    constructor($scope: any, private cipherService: any, private utilsService: UtilsService, private toastr: any,
                 private $window: any, private $state: any, private $timeout: any, private autofillService: any,
                 private $analytics: any, private i18nService: any, private constantsService: any,
                 private $filter: any) {
