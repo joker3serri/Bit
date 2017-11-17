@@ -175,7 +175,6 @@ export default class UtilsService implements UtilsServiceInterface {
     }
 
     static getDomain(uriString: string): string {
-
         if (uriString == null) {
             return null;
         }
@@ -218,10 +217,6 @@ export default class UtilsService implements UtilsServiceInterface {
         if (uriString.startsWith('http://') || uriString.startsWith('https://')) {
             try {
                 const url = new URL(uriString);
-                if (!url.hostname) {
-                    return null;
-                }
-
                 return url.hostname;
             } catch (e) { }
         }
