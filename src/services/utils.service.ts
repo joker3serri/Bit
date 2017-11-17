@@ -1,3 +1,4 @@
+import * as tldjs from 'tldjs';
 import { BrowserType } from '../enums/browserType.enum';
 import { UtilsService as UtilsServiceInterface } from './abstractions/utils.service';
 
@@ -174,6 +175,7 @@ export default class UtilsService implements UtilsServiceInterface {
     }
 
     static getDomain(uriString: string): string {
+
         if (uriString == null) {
             return null;
         }
@@ -186,28 +188,18 @@ export default class UtilsService implements UtilsServiceInterface {
         if (uriString.startsWith('http://') || uriString.startsWith('https://')) {
             try {
                 const url = new URL(uriString);
-                if (!url.hostname) {
-                    return null;
-                }
 
                 if (url.hostname === 'localhost' || UtilsService.validIpAddress(url.hostname)) {
                     return url.hostname;
                 }
 
-                if (typeof tldjs !== 'undefined' && tldjs) {
-                    const domain = tldjs.getDomain(url.hostname);
-                    if (domain != null) {
-                        return domain;
-                    }
-                }
-
-                return url.hostname;
+                return tldjs.getDomain(url.hostname);
             } catch (e) { }
-        } else if (typeof tldjs !== 'undefined' && tldjs) {
-            const domain = tldjs.getDomain(uriString);
-            if (domain != null) {
-                return domain;
-            }
+        }
+
+        const domain = tldjs.getDomain(uriString);
+        if (domain != null) {
+            return domain;
         }
 
         return null;

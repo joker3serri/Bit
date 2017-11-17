@@ -9,7 +9,7 @@
     "dist": "gulp build && webpack --config webpack.prod.js && gulp dist",
     "lint": "tslint src/**/*.ts || true",
     "lint:fix": "tslint src/**/*.ts --fix",
-    "tests": "karma start"
+    "test": "karma start"
   },
   "devDependencies": {
     "@types/jasmine": "^2.8.2",
