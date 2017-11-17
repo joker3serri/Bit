@@ -192,7 +192,8 @@ export default class UtilsService implements UtilsServiceInterface {
                     return url.hostname;
                 }
 
-                return tldjs.getDomain(url.hostname);
+                const domain = tldjs.getDomain(url.hostname);
+                return domain ? domain : url.hostname;
             } catch (e) { }
         }
 

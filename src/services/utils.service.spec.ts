@@ -16,10 +16,12 @@ describe('Utils Service', () => {
         });
 
         it('should handle valid urls', () => {
+            expect(UtilsService.getDomain('https://bitwarden')).toBe('bitwarden');
             expect(UtilsService.getDomain('https://bitwarden.com')).toBe('bitwarden.com');
             expect(UtilsService.getDomain('http://bitwarden.com')).toBe('bitwarden.com');
             expect(UtilsService.getDomain('http://vault.bitwarden.com')).toBe('bitwarden.com');
             expect(UtilsService.getDomain('https://user:password@bitwarden.com:8080/password/sites?and&query#hash')).toBe('bitwarden.com');
+            expect(UtilsService.getDomain('https://bitwarden.unknown')).toBe('bitwarden.unknown');
         });
 
         it('should support localhost and IP', () => {
