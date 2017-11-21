@@ -51,4 +51,11 @@ describe('Utils Service', () => {
             expect(UtilsService.getHostname('https://192.168.1.1')).toBe('192.168.1.1');
         });
     });
+
+    describe('newGuid', () => {
+        it('should create a valid guid', () => {
+            const validGuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+            expect(UtilsService.newGuid()).toMatch(validGuid);
+        });
+    });
 });
