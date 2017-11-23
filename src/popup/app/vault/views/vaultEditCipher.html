@@ -34,8 +34,7 @@
                         <div class="list-section-item flex">
                             <div class="flex-grow">
                                 <label for="loginPassword" class="item-label">{{i18n.password}}</label>
-                                <input id="loginPasswordPlain" type="text" name="Login.Password.Plain" ng-model="cipher.login.password" ng-if="showPassword">
-                                <input id="loginPassword" type="password" name="Login.Password" ng-model="cipher.login.password" ng-if="!showPassword">
+                                <input id="loginPassword" type="{{showPassword ? 'text' : 'password'}}" name="Login.Password" ng-model="cipher.login.password">
                             </div>
                             <div class="action-buttons">
                                 <a class="btn-list" href="" title="{{i18n.togglePassword}}" ng-click="togglePassword()">
