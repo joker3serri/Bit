@@ -61,7 +61,7 @@ describe('Utils Service', () => {
     });
 
     describe('getBrowser', () => {
-        var original = navigator.userAgent;
+        const original = navigator.userAgent;
 
         // Reset the userAgent.
         afterAll(() => {
