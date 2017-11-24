@@ -7,7 +7,8 @@ export class CurrentController {
     i18n: any;
     pageDetails: any = [];
     loaded: boolean = false;
-    otherCiphers: any = [];
+    cardCiphers: any = [];
+    identityCiphers: any = [];
     loginCiphers: any = [];
     url: any;
     domain: any;
@@ -119,22 +120,32 @@ export class CurrentController {
 
             this.cipherService.getAllDecryptedForDomain(this.domain, otherTypes).then((ciphers: any[]) => {
                 const loginCiphers: any = [];
-                const otherCiphers: any = [];
+                const cardCiphers: any = [];
+                const identityCiphers: any = [];
 
-                ciphers.forEach((cipher) => {
-                    if (cipher.type === CipherType.Login) {
-                        loginCiphers.push(cipher);
-                    } else {
-                        otherCiphers.push(cipher);
+                const sortedCiphers = this.$filter('orderBy')(ciphers,
+                    [this.sortUriMatch, this.sortLastUsed, 'name', 'subTitle']);
+
+                sortedCiphers.forEach((cipher: any) => {
+                    switch (cipher.type) {
+                        case CipherType.Login:
+                            loginCiphers.push(cipher);
+                            break;
+                        case CipherType.Card:
+                            cardCiphers.push(cipher);
+                            break;
+                        case CipherType.Identity:
+                            identityCiphers.push(cipher);
+                            break;
+                        default:
+                            break;
                     }
                 });
 
                 this.$timeout(() => {
-                    this.loginCiphers = this.$filter('orderBy')(
-                        loginCiphers,
-                        [this.sortUriMatch, this.sortLastUsed, 'name', 'subTitle'],
-                    );
-                    this.otherCiphers = this.$filter('orderBy')(otherCiphers, [this.sortLastUsed, 'name', 'subTitle']);
+                    this.loginCiphers = loginCiphers;
+                    this.cardCiphers = cardCiphers;
+                    this.identityCiphers = identityCiphers;
                     this.loaded = true;
                 });
             });
@@ -143,7 +154,7 @@ export class CurrentController {
 
     private sortUriMatch(cipher: any) {
         // exact matches should sort earlier.
-        return this.url && this.url.startsWith(cipher.uri) ? 0 : 1;
+        return cipher.login && cipher.login.uri && this.url && this.url.startsWith(cipher.login.uri) ? 0 : 1;
     }
 
     private sortLastUsed(cipher: any) {

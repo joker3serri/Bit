@@ -8,7 +8,7 @@ angular
         $scope.addFieldType = constantsService.fieldType.text.toString();
         $scope.selectedType = constantsService.cipherType.login.toString();
         var from = $stateParams.from,
-            folderId = $stateParams.folderId;
+            folderId = $stateParams.folderId && $stateParams.folderId !== '0' ? $stateParams.folderId : null;
 
         $scope.cipher = {
             folderId: folderId,
@@ -76,10 +76,9 @@ angular
                     animation: 'out-slide-down'
                 });
             }
-            else if (from === 'folder') {
-                $state.go('viewFolder', {
-                    animation: 'out-slide-down',
-                    folderId: folderId
+            else if (from === 'grouping') {
+                $state.go('viewGrouping', {
+                    animation: 'out-slide-down'
                 });
             }
             else {
@@ -87,6 +86,12 @@ angular
                     animation: 'out-slide-down'
                 });
             }
+        };
+
+        $scope.showPassword = false;
+        $scope.togglePassword = function () {
+            $analytics.eventTrack('Toggled Password');
+            $scope.showPassword = !$scope.showPassword;
         };
 
         $scope.addField = function (type) {

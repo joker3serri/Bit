@@ -82,6 +82,7 @@ export default class CipherService {
         cipher.favorite = model.favorite;
         cipher.organizationId = model.organizationId;
         cipher.type = model.type;
+        cipher.collectionIds = model.collectionIds;
 
         const key = await this.cryptoService.getOrgKey(cipher.organizationId);
         await Promise.all([
@@ -178,12 +179,14 @@ export default class CipherService {
         return this.decryptedCipherCache;
     }
 
-    async getAllDecryptedForFolder(folderId: string): Promise<any[]> {
+    async getAllDecryptedForGrouping(groupingId: string, folder: boolean = true): Promise<any[]> {
         const ciphers = await this.getAllDecrypted();
         const ciphersToReturn: any[] = [];
 
         ciphers.forEach((cipher) => {
-            if (cipher.folderId === folderId) {
+            if (folder && cipher.folderId === groupingId) {
+                ciphersToReturn.push(cipher);
+            } else if (!folder && cipher.collectionIds != null && cipher.collectionIds.indexOf(groupingId) > -1) {
                 ciphersToReturn.push(cipher);
             }
         });
@@ -293,7 +296,7 @@ export default class CipherService {
         }
 
         const userId = await this.userService.getUserId();
-        const data = new CipherData(response, userId);
+        const data = new CipherData(response, userId, cipher.collectionIds);
         await this.upsert(data);
     }
 
@@ -322,7 +325,7 @@ export default class CipherService {
                 }
 
                 const userId = await self.userService.getUserId();
-                const data = new CipherData(response, userId);
+                const data = new CipherData(response, userId, cipher.collectionIds);
                 this.upsert(data);
                 resolve(new Cipher(data));
 

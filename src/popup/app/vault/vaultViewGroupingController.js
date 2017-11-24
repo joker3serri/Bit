@@ -1,21 +1,34 @@
 angular
     .module('bit.vault')
 
-    .controller('vaultViewFolderController', function ($scope, cipherService, folderService, $q, $state, $stateParams, toastr,
-        syncService, $analytics, i18nService, stateService, utilsService, $timeout, $window) {
-        var stateKey = 'viewFolder',
+    .controller('vaultViewGroupingController', function ($scope, cipherService, folderService, $q, $state, $stateParams, toastr,
+        syncService, $analytics, i18nService, stateService, utilsService, $timeout, $window, collectionService) {
+        var stateKey = 'viewGrouping',
             state = stateService.getState(stateKey) || {};
 
         state.folderId = $stateParams.folderId || state.folderId;
+        state.collectionId = $stateParams.collectionId || state.collectionId;
 
         var pageSize = 100,
-            decFolder = null,
+            decGrouping = null,
             decCiphers = [];
 
-        $scope.folder = {
-            id: !state.folderId || state.folderId === '0' ? null : state.folderId,
+        $scope.grouping = {
+            id: null,
             name: i18nService.noneFolder
         };
+        $scope.folderGrouping = true;
+        $scope.collectionGrouping = false;
+
+        if (state.folderId && state.folderId !== '0') {
+            $scope.grouping.id = state.folderId;
+        }
+        else if (state.collectionId && state.collectionId !== '0') {
+            $scope.grouping.id = state.collectionId;
+            $scope.folderGrouping = false;
+            $scope.collectionGrouping = true;
+        }
+
         $scope.i18n = i18nService;
         document.getElementById('search').focus();
 
@@ -28,32 +41,41 @@ angular
         function loadVault() {
             var promises = [];
 
-            if ($scope.folder.id) {
-                var getPromise = folderService.get($scope.folder.id).then(function (folder) {
+            if ($scope.grouping.id && $scope.folderGrouping) {
+                var getPromise = folderService.get($scope.grouping.id).then(function (folder) {
                     return folder.decrypt();
                 }).then(function (model) {
-                    decFolder = model;
+                    decGrouping = model;
+                });
+                promises.push(getPromise);
+            }
+            else if ($scope.grouping.id && $scope.collectionGrouping) {
+                var getPromise = collectionService.get($scope.grouping.id).then(function (collection) {
+                    return collection.decrypt();
+                }).then(function (model) {
+                    decGrouping = model;
                 });
                 promises.push(getPromise);
             }
 
-            var cipherPromise = cipherService.getAllDecryptedForFolder($scope.folder.id).then(function (ciphers) {
-                if (utilsService.isEdge()) {
-                    // Edge is super slow at sorting
-                    decCiphers = ciphers;
-                }
-                else {
-                    decCiphers = ciphers.sort(cipherSort);
-                }
-            });
+            var cipherPromise = cipherService.getAllDecryptedForGrouping($scope.grouping.id, $scope.folderGrouping)
+                .then(function (ciphers) {
+                    if (utilsService.isEdge()) {
+                        // Edge is super slow at sorting
+                        decCiphers = ciphers;
+                    }
+                    else {
+                        decCiphers = ciphers.sort(cipherSort);
+                    }
+                });
             promises.push(cipherPromise);
 
             $q.all(promises).then(function () {
                 $scope.loaded = true;
                 $scope.vaultCiphers = decCiphers;
 
-                if (decFolder) {
-                    $scope.folder.name = decFolder.name;
+                if (decGrouping) {
+                    $scope.grouping.name = decGrouping.name;
                 }
 
                 if (state.searchText) {
@@ -153,19 +175,23 @@ angular
             storeState();
             $state.go('addCipher', {
                 animation: 'in-slide-up',
-                from: 'folder',
-                folderId: $scope.folder.id
+                from: 'grouping',
+                folderId: state.folderId
             });
         };
 
         $scope.viewCipher = function (cipher) {
-            if (cipher.clicked) {
+            var canLaunch = cipher.login && cipher.login.uri &&
+                (cipher.login.uri.startsWith('http://') || cipher.login.uri.startsWith('https://'));
+            if (canLaunch && cipher.clicked) {
                 cipher.cancelClick = true;
+                cipher.clicked = false;
                 $scope.launchWebsite(cipher);
                 return;
             }
 
             cipher.clicked = true;
+            cipher.cancelClick = false;
 
             $timeout(function () {
                 if (cipher.cancelClick) {
@@ -178,13 +204,20 @@ angular
                 $state.go('viewCipher', {
                     cipherId: cipher.id,
                     animation: 'in-slide-up',
-                    from: 'folder'
+                    from: 'grouping'
                 });
 
                 // clean up
                 cipher.cancelClick = false;
                 cipher.clicked = false;
             }, 200);
+        };
+
+        $scope.launchWebsite = function (cipher) {
+            if (cipher.login && cipher.login.uri) {
+                $analytics.eventTrack('Launched Website');
+                chrome.tabs.create({ url: cipher.login.uri });
+            }
         };
 
         function storeState() {

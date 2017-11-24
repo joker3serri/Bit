@@ -28,8 +28,9 @@ class CipherData {
     identity?: IdentityData;
     fields?: FieldData[];
     attachments?: AttachmentData[];
+    collectionIds?: string[];
 
-    constructor(response: CipherResponse, userId: string) {
+    constructor(response: CipherResponse, userId: string, collectionIds?: string[]) {
         this.id = response.id;
         this.organizationId = response.organizationId;
         this.folderId = response.folderId;
@@ -39,6 +40,12 @@ class CipherData {
         this.favorite = response.favorite;
         this.revisionDate = response.revisionDate;
         this.type = response.type;
+
+        if (collectionIds != null) {
+            this.collectionIds = collectionIds;
+        } else {
+            this.collectionIds = response.collectionIds;
+        }
 
         this.name = response.data.Name;
         this.notes = response.data.Notes;

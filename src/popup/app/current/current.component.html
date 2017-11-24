@@ -1,14 +1,14 @@
 ﻿<div class="header header-search">
     <pop-out ng-if="!$ctrl.inSidebar" class="left"></pop-out>
     <div class="left" ng-if="$ctrl.inSidebar">
-        <a href="" ng-click="$ctrl.refresh()"><i class="fa fa-refresh fa-lg"></i></a>
+        <a href="" ng-click="$ctrl.refresh()" title="{{::$ctrl.i18n.refresh}}"><i class="fa fa-refresh fa-lg"></i></a>
     </div>
     <div class="search" ng-style="{'visibility': $ctrl.disableSearch ? 'hidden' : 'visible'}">
-        <input type="search" placeholder="{{$ctrl.i18n.searchVault}}" id="search" ng-model="searchText" ng-change="$ctrl.searchVault()" />
+        <input type="search" placeholder="{{$ctrl.i18n.searchVault}}" id="search" ng-model="$ctrl.searchText" ng-change="$ctrl.searchVault()" />
         <i class="fa fa-search"></i>
     </div>
     <div class="right">
-        <a href="" ng-click="$ctrl.addCipher()"><i class="fa fa-plus fa-lg"></i></a>
+        <a href="" ng-click="$ctrl.addCipher()" title="{{::$ctrl.i18n.addItem}}"><i class="fa fa-plus fa-lg"></i></a>
     </div>
 </div>
 <div class="content content-tabs">
@@ -18,12 +18,11 @@
                 {{$ctrl.i18n.typeLogins}}
             </div>
             <div class="list-section-items" ng-class="{'list-no-selection': !$ctrl.loginCiphers.length}">
-                <cipher-items
-                    ng-if="$ctrl.loginCiphers.length"
-                    ciphers="$ctrl.loginCiphers"
-                    on-view="$ctrl.viewCipher(cipher)"
-                    on-selected="$ctrl.fillCipher(cipher)"
-                    selection-title="$ctrl.i18n.autoFill">
+                <cipher-items ng-if="$ctrl.loginCiphers.length"
+                              ciphers="$ctrl.loginCiphers"
+                              on-view="$ctrl.viewCipher(cipher)"
+                              on-selected="$ctrl.fillCipher(cipher)"
+                              selection-title="$ctrl.i18n.autoFill">
                 </cipher-items>
                 <div class="list-section-item" ng-if="!$ctrl.loginCiphers.length">
                     <p>{{$ctrl.i18n.autoFillInfo}}</p>
@@ -31,18 +30,29 @@
                 </div>
             </div>
         </div>
-        <div class="list-section" ng-class="{'list-no-selection': !$ctrl.otherCiphers.length}">
+        <div class="list-section" ng-if="$ctrl.cardCiphers.length">
             <div class="list-section-header">
-                {{$ctrl.i18n.other}}
+                {{$ctrl.i18n.cards}}
             </div>
             <div class="list-section-items">
-                <div class="list-section-item" ng-if="!$ctrl.otherCiphers.length">{{$ctrl.i18n.noItemsInList}}</div>
-                <cipher-items
-                    ng-if="$ctrl.otherCiphers.length"
-                    ciphers="$ctrl.otherCiphers"
-                    on-view="$ctrl.viewCipher(cipher)"
-                    on-selected="$ctrl.fillCipher(cipher)"
-                    selection-title="$ctrl.i18n.autoFill">
+                <cipher-items ng-if="$ctrl.cardCiphers.length"
+                              ciphers="$ctrl.cardCiphers"
+                              on-view="$ctrl.viewCipher(cipher)"
+                              on-selected="$ctrl.fillCipher(cipher)"
+                              selection-title="$ctrl.i18n.autoFill">
+                </cipher-items>
+            </div>
+        </div>
+        <div class="list-section" ng-if="$ctrl.identityCiphers.length">
+            <div class="list-section-header">
+                {{$ctrl.i18n.identities}}
+            </div>
+            <div class="list-section-items">
+                <cipher-items ng-if="$ctrl.identityCiphers.length"
+                              ciphers="$ctrl.identityCiphers"
+                              on-view="$ctrl.viewCipher(cipher)"
+                              on-selected="$ctrl.fillCipher(cipher)"
+                              selection-title="$ctrl.i18n.autoFill">
                 </cipher-items>
             </div>
         </div>
