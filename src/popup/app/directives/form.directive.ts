@@ -1,4 +1,6 @@
-﻿export function FormDirective($rootScope: ng.IRootScopeService, validationService: any) {
+﻿import { ValidationService } from '../services/validation.service';
+
+export function FormDirective($rootScope: ng.IRootScopeService, validationService: ValidationService) {
     return {
         require: 'form',
         restrict: 'A',
