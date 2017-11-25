@@ -20,6 +20,7 @@ require('../../scripts/u2f.js');
 require('../less/libs.less');
 require('../less/popup.less');
 
+import DirectivesModule from './directives/directives.module';
 import ComponentsModule from './components/components.module';
 import ToolsModule from './tools/tools.module';
 import ServicesModule from './services/services.module';
@@ -79,7 +80,7 @@ angular
         'angulartics',
         'angulartics.google.analytics',
 
-        'bit.directives',
+        DirectivesModule,
         ComponentsModule,
         ServicesModule,
 
@@ -93,11 +94,6 @@ angular
     ]);
 
 require('./config');
-require('./directives/directivesModule.js');
-require('./directives/formDirective.js');
-require('./directives/stopClickDirective.js');
-require('./directives/stopPropDirective.js');
-require('./directives/fallbackSrcDirective.js');
 require('./accounts/accountsModule.js');
 require('./accounts/accountsLoginController.js');
 require('./accounts/accountsLoginTwoFactorController.js');
