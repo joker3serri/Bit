@@ -21,58 +21,26 @@ class FeaturesController {
             utilsService.initListSectionItemListeners(document, angular);
         }, 500);
 
-        chrome.storage.local.get(constantsService.enableAutoFillOnPageLoadKey, (obj: any) => {
-            $timeout(() => {
-                this.enableAutoFillOnPageLoad = obj && obj[constantsService.enableAutoFillOnPageLoadKey] === true;
-            });
-        });
+        this.loadSettings();
+    }
 
-        chrome.storage.local.get(constantsService.disableGaKey, (obj: any) => {
-            $timeout(() => {
-                // Default for Firefox is disabled.
-                if ((utilsService.isFirefox() && obj[constantsService.disableGaKey] === undefined) ||
-                    obj[constantsService.disableGaKey]) {
-                    this.disableGa = true;
-                } else {
-                    this.disableGa = false;
-                }
-            });
-        });
+    async loadSettings() {
+        this.enableAutoFillOnPageLoad = await this.utilsService
+            .getObjFromStorage<boolean>(this.constantsService.enableAutoFillOnPageLoadKey);
 
-        chrome.storage.local.get(constantsService.disableAddLoginNotificationKey, (obj: any) => {
-            $timeout(() => {
-                if (obj && obj[constantsService.disableAddLoginNotificationKey]) {
-                    this.disableAddLoginNotification = true;
-                } else {
-                    this.disableAddLoginNotification = false;
-                }
-            });
-        });
+        const disableGa = await this.utilsService.getObjFromStorage<boolean>(this.constantsService.disableGaKey);
+        this.disableGa = disableGa || (this.utilsService.isFirefox() && disableGa === undefined);
 
-        chrome.storage.local.get(constantsService.disableContextMenuItemKey, (obj: any) => {
-            $timeout(() => {
-                if (obj && obj[constantsService.disableContextMenuItemKey]) {
-                    this.disableContextMenuItem = true;
-                } else {
-                    this.disableContextMenuItem = false;
-                }
-            });
-        });
+        this.disableAddLoginNotification = await this.utilsService
+            .getObjFromStorage<boolean>(this.constantsService.disableAddLoginNotificationKey);
 
-        totpService
-            .isAutoCopyEnabled()
-            .then((enabled: boolean) => {
-                $timeout(() => {
-                    this.disableAutoTotpCopy = !enabled;
-                });
-            });
+        this.disableContextMenuItem = await this.utilsService
+            .getObjFromStorage<boolean>(this.constantsService.disableContextMenuItemKey);
 
-        chrome.storage.local.get(constantsService.disableFaviconKey, (obj: any) => {
-            $timeout(() => {
-                this.disableFavicon = obj && obj[constantsService.disableFaviconKey] === true;
-            });
-        });
+        this.disableAutoTotpCopy = ! await this.totpService.isAutoCopyEnabled();
 
+        this.disableFavicon = await this.utilsService
+            .getObjFromStorage<boolean>(this.constantsService.disableFaviconKey);
     }
 
     updateGa() {
