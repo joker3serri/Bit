@@ -1,8 +1,21 @@
 import * as angular from 'angular';
+import { BrowserType } from '../../../enums/browserType.enum';
 import { CryptoService } from '../../../services/abstractions/crypto.service';
 import { UtilsService } from '../../../services/abstractions/utils.service';
 import ConstantsService from '../../../services/constants.service';
+
 import * as template from './settings.component.html';
+
+const RateUrls = {
+    [BrowserType.Chrome]:
+    'https://chrome.google.com/webstore/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews',
+    [BrowserType.Firefox]:
+    'https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/#reviews',
+    [BrowserType.Opera]:
+    'https://addons.opera.com/en/extensions/details/bitwarden-free-password-manager/#feedback-container',
+    [BrowserType.Edge]:
+    'https://www.microsoft.com/store/p/bitwarden-free-password-manager/9p6kxl0svnnl',
+};
 
 class SettingsController {
     lockOption = '';
@@ -135,33 +148,9 @@ class SettingsController {
     rate() {
         this.$analytics.eventTrack('Rate Extension');
 
-        switch (this.utilsService.getBrowserString()) {
-            case 'chrome':
-                chrome.tabs.create({
-                    url: 'https://chrome.google.com/webstore/detail/bitwarden-free-password-m/' +
-                    'nngceckbapebfimnlniiiahkandclblb/reviews',
-                });
-                break;
-            case 'firefox':
-                chrome.tabs.create({
-                    url: 'https://addons.mozilla.org/en-US/firefox/addon/' +
-                    'bitwarden-password-manager/#reviews',
-                });
-                break;
-            case 'edge':
-                chrome.tabs.create({
-                    url: 'https://www.microsoft.com/store/p/bitwarden-free-password-manager/9p6kxl0svnnl',
-                });
-                break;
-            case 'opera':
-                chrome.tabs.create({
-                    url: 'https://addons.opera.com/en/extensions/details/' +
-                    'bitwarden-free-password-manager/#feedback-container',
-                });
-                break;
-            default:
-                return;
-        }
+        chrome.tabs.create({
+            url: RateUrls[this.utilsService.getBrowser()],
+        });
     }
 }
 

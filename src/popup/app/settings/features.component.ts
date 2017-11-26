@@ -37,7 +37,7 @@ class FeaturesController {
         this.disableContextMenuItem = await this.utilsService
             .getObjFromStorage<boolean>(this.constantsService.disableContextMenuItemKey);
 
-        this.disableAutoTotpCopy = ! await this.totpService.isAutoCopyEnabled();
+        this.disableAutoTotpCopy = !await this.totpService.isAutoCopyEnabled();
 
         this.disableFavicon = await this.utilsService
             .getObjFromStorage<boolean>(this.constantsService.disableFaviconKey);
