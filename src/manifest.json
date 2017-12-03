@@ -109,7 +109,8 @@
     },
     "_execute_sidebar_action": {
       "suggested_key": {
-        "default": "Ctrl+Shift+Comma"
+        "default": "Alt+Shift+Y",
+        "linux": "Alt+Shift+U"
       }
     }
   },
