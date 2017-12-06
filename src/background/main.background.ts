@@ -11,7 +11,7 @@ import ConstantsService from '../services/constants.service';
 import CryptoService from '../services/crypto.service';
 import EnvironmentService from '../services/environment.service';
 import FolderService from '../services/folder.service';
-import i18nService from '../services/i18nService.js';
+import i18nService from '../services/i18n.service';
 import LockService from '../services/lock.service';
 import PasswordGenerationService from '../services/passwordGeneration.service';
 import SettingsService from '../services/settings.service';
@@ -52,6 +52,7 @@ export default class MainBackground {
     private autofillTimeout: number;
     private pendingAuthRequests: any[] = [];
 
+    // tslint:disable-next-line:no-shadowed-variable
     constructor(public i18nService: any) {
         // Services
         this.utilsService = new UtilsService();
