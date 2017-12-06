@@ -1,9 +1,7 @@
-import { UtilsService } from './abstractions/utils.service';
-
-export default function i18nService(utilsService: UtilsService) {
+export default function i18nService() {
     const edgeMessages: any = {};
 
-    if (utilsService.isEdge()) {
+    if (navigator.userAgent.indexOf(' Edge/') !== -1) {
         fetch('../_locales/en/messages.json')
             .then((file) => {
                 return file.json();
