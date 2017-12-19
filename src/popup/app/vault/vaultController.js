@@ -66,6 +66,7 @@ angular
             $q.all([folderPromise, collectionPromise, cipherPromise]).then(function () {
                 $scope.loaded = true;
                 $rootScope.vaultFolders = decFolders;
+                $rootScope.vaultFoldersById = {};
                 $rootScope.vaultCollections = decCollections;
                 $rootScope.vaultCiphers = decCiphers;
 
@@ -96,6 +97,7 @@ angular
 
                     $rootScope.vaultFolders.forEach((folder) => {
                         folder.itemCount = folderCounts[folder.id || 'none'] || 0;
+                        $rootScope.vaultFoldersById[folder.id] = folder;
                     });
 
                     $rootScope.vaultCollections.forEach((collection) => {
@@ -139,6 +141,13 @@ angular
                 return true;
             }
             if (cipher.login && cipher.login.uri && cipher.login.uri.toLowerCase().indexOf(searchTerm) !== -1) {
+                return true;
+            }
+            if (
+                cipher.folderId &&
+                $rootScope.vaultFoldersById.hasOwnProperty(cipher.folderId) &&
+                $rootScope.vaultFoldersById[cipher.folderId].name.toLowerCase().indexOf(searchTerm) !== -1
+            ) {
                 return true;
             }
 
