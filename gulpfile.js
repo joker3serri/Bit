@@ -157,7 +157,6 @@ gulp.task('lint', () => {
         './src/notification/**/*.js',
         './src/scripts/**/*.js',
         //'./src/content/**/*.js',
-        './src/overlay/**/*.js',
         './src/background.js'
     ]).pipe(jshint({
         esversion: 6
