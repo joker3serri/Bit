@@ -15,7 +15,6 @@ const paths = {
     build: './build/',
     dist: './dist/',
     coverage: './coverage/',
-    libDir: './src/lib/',
     npmDir: './node_modules/',
     popupDir: './src/popup/',
     cssDir: './src/popup/css/'
