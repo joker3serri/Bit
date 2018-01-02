@@ -153,11 +153,9 @@ gulp.task('ci:coverage', (cb) => {
 gulp.task('lint', () => {
     return gulp.src([
         paths.popupDir + '**/*.js',
-        './src/services/**/*.js',
         './src/notification/**/*.js',
-        './src/scripts/**/*.js',
-        //'./src/content/**/*.js',
-        './src/background.js'
+        './src/scripts/**/*.js'
+        //'./src/content/**/*.js'
     ]).pipe(jshint({
         esversion: 6
     })).pipe(jshint.reporter('default'));
