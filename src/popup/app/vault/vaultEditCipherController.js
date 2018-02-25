@@ -1,11 +1,9 @@
-import * as forge from 'node-forge';
-
 angular
     .module('bit.vault')
 
     .controller('vaultEditCipherController', function ($scope, $state, $stateParams, cipherService, folderService,
         cryptoService, toastr, SweetAlert, platformUtilsService, $analytics, i18nService, constantsService, $timeout,
-        popupUtilsService, $http) {
+        popupUtilsService, auditService) {
         $timeout(function () {
             popupUtilsService.initListSectionItemListeners(document, angular);
             document.getElementById('name').focus();
@@ -117,31 +115,15 @@ angular
         $scope.checkPassword = () => {
             $analytics.eventTrack('Check Password');
 
-            const md = forge.md.sha1.create();
-            md.update($scope.cipher.login.password);
-
-            const hash = md.digest().toHex().toUpperCase();
-            $http
-                .get('https://api.pwnedpasswords.com/range/' + hash.substr(0, 5))
-                .then((resp) => {
-                    const data = resp.data.split(/\r?\n/);
-                    const remaining = hash.substr(5);
-
-                    let matches = 0;
-                    data.forEach(element => {
-                        const d = element.split(':');
-                        if (d[0] == remaining) {
-                            console.log(d);
-                            matches = d[1];
-                        }
-                    });
-
+            auditService
+                .passwordLeaked($scope.cipher.login.password)
+                .then((matches) => {
                     if (matches != 0) {
                         toastr.error(i18nService.passwordExposed, i18nService.errorsOccurred);
                     } else {
-                        toastr.success(i18nService.passwordSafe);
+                        toastr.success(i18nService.passwordSafe)
                     }
-                });
+                })
         };
 
         $scope.addField = function (type) {
