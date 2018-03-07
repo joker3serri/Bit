@@ -430,9 +430,10 @@ export default class AutofillService implements AutofillServiceInterface {
                     ['cc-name', 'card-name', 'cardholder-name', 'cardholder'])) {
                     fillFields.cardholderName = f;
                 } else if (!fillFields.number && this.isFieldMatch(f[attr],
-                    ['cc-number', 'cc-num', 'card-number', 'card-num', 'number', 'cc', 'cc-no', 'card-no', 'numero-carte',
-                        'carte', 'carte-credit'],
-                    ['cc-number', 'cc-num', 'card-number', 'card-num', 'cc-no', 'card-no', 'carte-credit', 'numero-carte'])) {
+                    ['cc-number', 'cc-num', 'card-number', 'card-num', 'number', 'cc', 'cc-no', 'card-no', 'credit-card',
+                        'numero-carte', 'carte', 'carte-credit'],
+                    ['cc-number', 'cc-num', 'card-number', 'card-num', 'cc-no', 'card-no', 'credit-card',
+                        'carte-credit', 'numero-carte'])) {
                     fillFields.number = f;
                 } else if (!fillFields.exp && this.isFieldMatch(f[attr],
                     ['cc-exp', 'card-exp', 'cc-expiration', 'card-expiration', 'cc-ex', 'card-ex', 'card-expire',
