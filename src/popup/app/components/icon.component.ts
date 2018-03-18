@@ -14,6 +14,7 @@ export class IconController implements ng.IController {
     imageEnabled: boolean;
 
     private iconsUrl: string;
+    private fallbackUrl: string;
 
     constructor(private stateService: any, private environmentService: EnvironmentService) {
         this.imageEnabled = stateService.getState('faviconEnabled');
@@ -25,6 +26,10 @@ export class IconController implements ng.IController {
             } else {
                 this.iconsUrl = 'https://icons.bitwarden.com';
             }
+        }
+        
+        if (!this.fallbackUrl) {
+            this.fallbackUrl = 'https://icons.karahanbuhan';   
         }
     }
 
@@ -70,7 +75,7 @@ export class IconController implements ng.IController {
                 try {
                     const url = new URL(hostnameUri);
                     this.image = this.iconsUrl + '/' + url.hostname + '/icon.png';
-                    this.fallbackImage = BrowserApi.getAssetUrl('images/fa-globe.png');
+                    this.fallbackImage = this.fallbackUrl + '/' + url.hostname + '/icon.png';
                 } catch (e) { }
             }
         } else {
