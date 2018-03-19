@@ -167,7 +167,7 @@
     "message": "Besøg Vores Hjemmeside"
   },
   "visitOurWebsiteDirectly": {
-    "message": "Besøg vores hjemmeside for at få hjælp, nyheder, sende os en e-mail og\/eller lære mere om hvordan du bruger bitwarden."
+    "message": "Besøg vores hjemmeside for at få hjælp, nyheder, sende os en e-mail og\/eller lære mere om hvordan du bruger Bitwarden."
   },
   "fileBugReport": {
     "message": "Indsend en Fejlrapport"
@@ -194,7 +194,7 @@
     "message": "Bitwarden web-boks"
   },
   "bitWebVaultInfo": {
-    "message": "Administrer dine logins fra enhver webbrowser med bitwarden web-boks."
+    "message": "Administrer dine emner fra enhver webbrowser med Bitwarden web-boks."
   },
   "bitIosVault": {
     "message": "Bitwarden iOS-boks"
@@ -338,7 +338,7 @@
     "message": "4 timer"
   },
   "onLocked": {
-    "message": "Når systemet er låst"
+    "message": "Når systemet låses"
   },
   "onRestart": {
     "message": "Ved Genstart"
@@ -970,13 +970,13 @@
     "message": "Åben i nyt vindue"
   },
   "refresh": {
-    "message": "Genindlæs"
+    "message": "Opdater"
   },
   "cards": {
     "message": "Kort"
   },
   "identities": {
-    "message": "Identitet"
+    "message": "Identiteter"
   },
   "clear": {
     "message": "Ryd"
