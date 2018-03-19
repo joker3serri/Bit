@@ -985,7 +985,7 @@
     "message": "Schließen Sie die Zwei-Faktor Authentifizierung im neuen Tab ab."
   },
   "checkPassword": {
-    "message": "Überprüfen Sie, ob Ihr Kennwort kompromittiert ist."
+    "message": "Überprüfe ob dein Kennwort kompromittiert ist."
   },
   "passwordExposed": {
     "message": "Dieses Passwort hat in Datenschutzverletzungen ausgesetzt. Sie sollten es ändern."
