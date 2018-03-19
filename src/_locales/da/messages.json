@@ -3,11 +3,11 @@
     "message": "bitwarden"
   },
   "extName": {
-    "message": "bitwarden - gratis adgangskode-administrator",
+    "message": "Bitwarden - Gratis adgangskode manager",
     "description": "Extension name"
   },
   "extDesc": {
-    "message": "bitwarden er en sikker og gratis adgangskode-administrator for alle dine enheder.",
+    "message": "En sikker og gratis adgangskode manager til alle dine enheder.",
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
@@ -191,28 +191,28 @@
     "message": "Automatisk generere stærke, unikke adgangskoder til dine logins."
   },
   "bitWebVault": {
-    "message": "bitwarden web-boks"
+    "message": "Bitwarden web-boks"
   },
   "bitWebVaultInfo": {
     "message": "Administrer dine logins fra enhver webbrowser med bitwarden web-boks."
   },
   "bitIosVault": {
-    "message": "bitwarden iOS-boks"
+    "message": "Bitwarden iOS-boks"
   },
   "bitIosVaultInfo": {
-    "message": "Administrer dine logins fra dine mobile enheder med bitwarden iOS-boks."
+    "message": "Administrer dine emner fra dine mobile enheder med Bitwarden iOS-boks."
   },
   "bitAndrVault": {
-    "message": "bitwarden Android-boks"
+    "message": "Bitwarden Android-boks"
   },
   "bitAndrVaultInfo": {
-    "message": "Administrer dine logins fra dine mobile enheder med bitwarden Android-boks."
+    "message": "Administrer dine emner fra dine mobile enheder med Bitwarden Android-boks."
   },
   "importItems": {
     "message": "Importer elementer"
   },
   "importItemsInfo": {
-    "message": "Importer hurtigt dine elementer fra andre adgangskode-administrator-programmer."
+    "message": "Importer hurtigt dine elementer fra andre adgangskode manager-programmer."
   },
   "select": {
     "message": "Vælg"
@@ -381,7 +381,7 @@
     "description": "' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError": {
-    "message": "Ikke i stand til at auto-udfylde det valgte login på denne side. Kopier\/indsæt dit brugernavn og\/eller adgangskoden i stedet."
+    "message": "Ikke i stand til automatisk at udfylde det valgte emne på denne side. Kopier og indsæt dataene i stedet for."
   },
   "loggedOut": {
     "message": "Logget ud"
@@ -447,7 +447,7 @@
     "message": "Synkronisering mislykkedes"
   },
   "importItemsConfirmation": {
-    "message": "Du kan importere logins fra din web-boks på bitwarden.com. Vil du besøge hjemmesiden nu?"
+    "message": "Du kan importere emner i din web-boks på bitwarden.com. Vil du besøge hjemmesiden nu?"
   },
   "passwordCopied": {
     "message": "Adgangskode kopieret"
@@ -505,7 +505,7 @@
     "message": "\"Tilføje Login anmeldelse\" beder automatisk dig gemme nye login til din boks, hver gang du logger ind på dem for første gang."
   },
   "notificationAddDesc": {
-    "message": "Skal bitwarden huske denne adgangskode for dig?"
+    "message": "Skal Bitwarden huske denne adgangskode for dig?"
   },
   "notificationAddSave": {
     "message": "Ja, Gem Nu"
@@ -542,7 +542,7 @@
     "message": "Del Din Boks"
   },
   "shareVaultInfo": {
-    "message": "Oprett en organisation for sikkert at dele dine logins med andre brugere."
+    "message": "Opret en organisation for at dele dine emner med andre brugere på en sikker måde."
   },
   "contribute": {
     "message": "Du kan også bidrage!"
@@ -638,7 +638,7 @@
     "message": "Du er premium-medlem!"
   },
   "premiumCurrentMemberThanks": {
-    "message": "Tak fordi du støtter bitwarden."
+    "message": "Tak fordi du støtter Bitwarden."
   },
   "premiumPrice": {
     "message": "Alt for kun %price% \/år!"
@@ -730,7 +730,7 @@
     "message": "Self-Hosted miljø"
   },
   "selfHostedEnvironmentFooter": {
-    "message": "Angiv grund-URL i din lokal-hostede bitwarden installation."
+    "message": "Angiv basis-URL'en i din lokal-hostede Bitwarden-installation."
   },
   "customEnvironment": {
     "message": "Brugerdefinerede Miljø"
@@ -985,40 +985,40 @@
     "message": "Fuldfør din to-trins loginanmodning ved hjælp af den nye fane."
   },
   "checkPassword": {
-    "message": "Check if password has been exposed."
+    "message": "Undersøg om adgangskoden er blevet afsløret."
   },
   "passwordExposed": {
-    "message": "This password has been exposed in data breaches. You should change it."
+    "message": "Denne adgangskode er blevet afsløret i datalæk. Du burde skifte den."
   },
   "passwordSafe": {
-    "message": "This password was not found in any known data breaches. It should be safe to use."
+    "message": "Denne adgangskode er ikke fundet i nogen kendte datalæk. Den burde være sikker at bruge."
   },
   "baseDomain": {
-    "message": "Base domain"
+    "message": "Basis domæne"
   },
   "host": {
-    "message": "Host",
+    "message": "Vært",
     "description": "A URL's host value. For example, the host of https:\/\/sub.domain.com:443 is 'sub.domain.com:443'."
   },
   "exact": {
-    "message": "Exact"
+    "message": "Nøjagtig"
   },
   "startsWith": {
-    "message": "Starts with"
+    "message": "Begynder med"
   },
   "regEx": {
-    "message": "Regular expression",
+    "message": "Regulært udtryk",
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
-    "message": "Match Detection",
+    "message": "Matchgenkendelse",
     "description": "URI match detection for auto-fill."
   },
   "defaultMatchDetection": {
-    "message": "Default match detection",
+    "message": "Standard matchgenkendelse",
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
-    "message": "Toggle Options"
+    "message": "Skift indstillinger"
   }
 }
