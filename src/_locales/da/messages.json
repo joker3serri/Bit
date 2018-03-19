@@ -985,40 +985,40 @@
     "message": "Fuldfør din to-trins loginanmodning ved hjælp af den nye fane."
   },
   "checkPassword": {
-    "message": "Check if password has been exposed."
+    "message": "Undersøg om adgangskoden er blevet afsløret."
   },
   "passwordExposed": {
-    "message": "This password has been exposed in data breaches. You should change it."
+    "message": "Denne adgangskode er blevet afsløret i datalæk. Du burde skifte den."
   },
   "passwordSafe": {
-    "message": "This password was not found in any known data breaches. It should be safe to use."
+    "message": "Denne adgangskode er ikke fundet i nogen kendte datalæk. Den burde være sikker at bruge."
   },
   "baseDomain": {
-    "message": "Base domain"
+    "message": "Basis domæne"
   },
   "host": {
-    "message": "Host",
+    "message": "Vært",
     "description": "A URL's host value. For example, the host of https:\/\/sub.domain.com:443 is 'sub.domain.com:443'."
   },
   "exact": {
-    "message": "Exact"
+    "message": "Nøjagtig"
   },
   "startsWith": {
-    "message": "Starts with"
+    "message": "Begynder med"
   },
   "regEx": {
-    "message": "Regular expression",
+    "message": "Regulært udtryk",
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
-    "message": "Match Detection",
+    "message": "Matchgenkendelse",
     "description": "URI match detection for auto-fill."
   },
   "defaultMatchDetection": {
-    "message": "Default match detection",
+    "message": "Standard matchgenkendelse",
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
-    "message": "Toggle Options"
+    "message": "Skift indstillinger"
   }
 }
