@@ -11,7 +11,7 @@
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
-    "message": "Sie müssen sich anmelden oder einen neuen Account erstellen, um auf den Tresor zugreifen zu können."
+    "message": "Einloggen oder einen neuen Account erstellen um auf den Tresor zuzugreifen."
   },
   "createAccount": {
     "message": "Account erstellen"
@@ -35,10 +35,10 @@
     "message": "Masterpasswort"
   },
   "masterPassDesc": {
-    "message": "Das Masterpasswort wird verwendet, um den Tresor zu öffnen. Es ist sehr wichtig, dass Sie das Passwort nicht vergessen, da es keine Möglichkeit gibt es zurückzusetzen."
+    "message": "Das Master-Passwort wird verwendet, um den Tresor zu öffnen. Es ist sehr wichtig, dass du das Passwort nicht vergisst, da es keine Möglichkeit gibt es zurückzusetzen."
   },
   "masterPassHintDesc": {
-    "message": "Ein Hinweis auf Ihr Masterpasswort kann Ihnen helfen, sich an das Passwort zu erinnern, sollten Sie es vergessen."
+    "message": "Ein Master-Passwort-Hinweis kann dir helfen, dich an das Passwort zu erinnern, solltest du es vergessen."
   },
   "reTypeMasterPass": {
     "message": "Masterpasswort wiederholen"
@@ -158,16 +158,16 @@
     "message": "Hilfe & Feedback"
   },
   "emailUs": {
-    "message": "Schreiben Sie uns"
+    "message": "Kontaktiere Uns"
   },
   "emailUsDirectly": {
-    "message": "Schreiben Sie uns direkt, um Hilfe zu erhalten oder um Feedback abzugeben."
+    "message": "Kontaktiere uns direkt, um Hilfe zu bekommen oder um Feedback abzugeben."
   },
   "visitOurWebsite": {
     "message": "Besuchen Sie unsere Website"
   },
   "visitOurWebsiteDirectly": {
-    "message": "Besuchen Sie unsere Webseite um Hilfe zu erhalten, Neuigkeiten zu erfahren, Kontakt aufzunehmen und mehr über die Verwendung von Bitwarden zu lernen."
+    "message": "Besuche unsere Website um Hilfe, News und mehr über die Verwendung von Bitwarden zu erfahren."
   },
   "fileBugReport": {
     "message": "Einen Fehler melden"
@@ -299,7 +299,7 @@
     "message": "Bewerte die Erweiterung"
   },
   "rateExtensionDesc": {
-    "message": "Wir würden uns freuen, wenn Sie uns mit einer positiven Bewertung helfen könnten!"
+    "message": "Wir würden uns freuen, wenn du uns mit einer positiven Bewertung helfen könntest!"
   },
   "browserNotSupportClipboard": {
     "message": "Den Browser unterstützt das einfache Kopieren nicht. Bitte kopiere es manuell."
