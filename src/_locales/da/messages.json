@@ -1,6 +1,6 @@
 {
   "appName": {
-    "message": "bitwarden"
+    "message": "Bitwarden"
   },
   "extName": {
     "message": "Bitwarden - Gratis adgangskode manager",
@@ -200,13 +200,13 @@
     "message": "Bitwarden iOS-boks"
   },
   "bitIosVaultInfo": {
-    "message": "Administrer dine emner fra dine mobile enheder med Bitwarden iOS-boks."
+    "message": "Administrer dine elementer fra dine mobile enheder med Bitwarden iOS-boks."
   },
   "bitAndrVault": {
     "message": "Bitwarden Android-boks"
   },
   "bitAndrVaultInfo": {
-    "message": "Administrer dine emner fra dine mobile enheder med Bitwarden Android-boks."
+    "message": "Administrer dine elementer fra dine mobile enheder med Bitwarden Android-boks."
   },
   "importItems": {
     "message": "Importer elementer"
@@ -381,7 +381,7 @@
     "description": "' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError": {
-    "message": "Ikke i stand til automatisk at udfylde det valgte emne på denne side. Kopier og indsæt dataene i stedet for."
+    "message": "Ikke i stand til at auto-udfylde det valgte element på denne side. Kopier og indsæt dataene i stedet for."
   },
   "loggedOut": {
     "message": "Logget ud"
@@ -730,7 +730,7 @@
     "message": "Self-Hosted miljø"
   },
   "selfHostedEnvironmentFooter": {
-    "message": "Angiv basis-URL'en i din lokal-hostede Bitwarden-installation."
+    "message": "Angiv grund-URL'en i din lokal-hostede Bitwarden-installation."
   },
   "customEnvironment": {
     "message": "Brugerdefinerede Miljø"
@@ -871,13 +871,13 @@
     "message": "Titel"
   },
   "mr": {
-    "message": "Hr."
+    "message": "Hr"
   },
   "mrs": {
     "message": "Fru"
   },
   "ms": {
-    "message": "Frøken"
+    "message": "Frk"
   },
   "dr": {
     "message": "Doktor"
@@ -895,7 +895,7 @@
     "message": "Identitetsbenævnelse"
   },
   "company": {
-    "message": "Firma"
+    "message": "Virksomhed"
   },
   "ssn": {
     "message": "CPR-nummer"
@@ -967,7 +967,7 @@
     "message": "Favoritter"
   },
   "popOutNewWindow": {
-    "message": "Åben i nyt vindue"
+    "message": "Åbn i et nyt vindue"
   },
   "refresh": {
     "message": "Opdater"
