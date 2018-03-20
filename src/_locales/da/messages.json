@@ -194,7 +194,7 @@
     "message": "Bitwarden web-boks"
   },
   "bitWebVaultInfo": {
-    "message": "Administrer dine emner fra enhver webbrowser med Bitwarden web-boks."
+    "message": "Administrer dine elementer fra enhver webbrowser med Bitwarden web-boksen."
   },
   "bitIosVault": {
     "message": "Bitwarden iOS-boks"
@@ -814,7 +814,7 @@
     "message": "Nummer"
   },
   "brand": {
-    "message": "Mærke"
+    "message": "Type"
   },
   "expirationMonth": {
     "message": "Udløbsmåned"
@@ -880,7 +880,7 @@
     "message": "Frk"
   },
   "dr": {
-    "message": "Doktor"
+    "message": "Dr"
   },
   "firstName": {
     "message": "Fornavn"
@@ -892,7 +892,7 @@
     "message": "Efternavn"
   },
   "identityName": {
-    "message": "Identitetsbenævnelse"
+    "message": "Identitetsnavn"
   },
   "company": {
     "message": "Virksomhed"
@@ -994,7 +994,7 @@
     "message": "Denne adgangskode er ikke fundet i nogen kendte datalæk. Den burde være sikker at bruge."
   },
   "baseDomain": {
-    "message": "Basis domæne"
+    "message": "Grund-domæne"
   },
   "host": {
     "message": "Vært",
