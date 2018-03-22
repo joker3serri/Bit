@@ -423,7 +423,7 @@
     "message": "Logge aus"
   },
   "loggingOutConfirmation": {
-    "message": "Aufgrund einer neuen Version müssen Sie sich erneut einloggen, um die Sperroptionen zu ändern. Möchten Sie sich jetzt ausloggen?"
+    "message": "Aufgrund einer neuen Version musst du dich erneut einloggen um deine Sperroptionen zu ändern. Möchtest du dich jetzt ausloggen?"
   },
   "editedFolder": {
     "message": "Ordner bearbeitet"
@@ -438,7 +438,7 @@
     "message": "Erste Schritte Anleitung"
   },
   "gettingStartedTutorialVideo": {
-    "message": "Sehen Sie sich unser Tutorial an, um hilfreiche Tipps zum Umgang mit der Browser-Erweiterung zu erfahren."
+    "message": "Sieh dir unser Tutorial an, um hilfreiche Tipps zum Umgang mit der Browser-Erweiterung zu erfahren."
   },
   "syncingComplete": {
     "message": "Synchronisierung abgeschlossen"
@@ -447,7 +447,7 @@
     "message": "Synchronisierung fehlgeschlagen"
   },
   "importItemsConfirmation": {
-    "message": "Sie können all Ihre Zugangsdaten über den Bitwarden.com Web-Tresor importieren. Möchten Sie die Seite jetzt öffnen?"
+    "message": "Du kannst all deine Zugangsdaten über den Bitwarden.com Web-Tresor importieren. Möchtest du die Seite jetzt öffnen?"
   },
   "passwordCopied": {
     "message": "Passwort kopiert"
@@ -502,7 +502,7 @@
     "message": "\"Login hinzufügen\" Benachrichtigung deaktivieren"
   },
   "addLoginNotificationDesc": {
-    "message": "Die \"Login hinzufügen\" Benachrichtigung fragt Sie automatisch, ob Sie neue Zugangsdaten im Tresor speichern möchten, wenn Sie sich erstmals mit ihnen anmelden."
+    "message": "Die \"Login hinzufügen\" Benachrichtigung fragt dich automatisch ob du neue Zugangsdaten im Tresor speichern möchtest wenn du dich zum ersten mal mit ihnen anmeldest."
   },
   "notificationAddDesc": {
     "message": "Soll Bitwarden sich dieses Passwort merken?"
@@ -527,10 +527,10 @@
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
   "exportWarning": {
-    "message": "Dieser Export enthält Ihre unverschlüsselten Daten im Csv-Format. Sie sollten sie nicht speichern oder über unsichere Kanäle (z. B. E-Mail) senden. Löschen Sie sie sofort nach ihrer Verwendung."
+    "message": "Dieser Export enthält deine unverschlüsselten Daten im CSV-Format. Du solltest sie nicht speichern oder über unsichere Kanäle (z. B. E-Mail) senden. Lösche sie sofort nach ihrer Verwendung."
   },
   "exportMasterPassword": {
-    "message": "Geben Sie das Masterpasswort ein, um Ihre Tresordaten zu exportieren."
+    "message": "Gib das Masterpasswort ein, um deine Tresordaten zu exportieren."
   },
   "exportVaultInfo": {
     "message": "Exportieren Sie Ihre Tresordaten im .csv-Format, sodass Sie sie einfach ändern oder übertragen können."
