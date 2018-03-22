@@ -650,7 +650,7 @@
     "message": "Automatisches TOTP Kopieren deaktivieren"
   },
   "disableAutoTotpCopyDesc": {
-    "message": "Ist ein Authentifizierungsschlüssel mit Ihren Zugangsdaten verknüpft, wird der TOTP Bestätigungscode automatisch in die Zwischenablage kopiert, wenn Sie die Zugangsdaten einfügen lassen."
+    "message": "Ist ein Authentifizierungsschlüssel mit deinen Zugangsdaten verknüpft, wird der TOTP Bestätigungscode automatisch in die Zwischenablage kopiert, wenn du die Zugangsdaten einfügen lässt."
   },
   "premiumRequired": {
     "message": "Erweiterte Mitgliedschaft wird benötigt"
@@ -659,7 +659,7 @@
     "message": "Eine Premium-Mitgliedschaft ist für diese Funktion notwendig."
   },
   "enterVerificationCodeApp": {
-    "message": "Geben Sie den 6-stelliegn Bestätigungscode aus Ihrer Authenticator App ein."
+    "message": "Gib den 6-stelligen Verifizierungscode aus deiner Authenticator App ein."
   },
   "enterVerificationCodeEmail": {
     "message": "Gib den 6-stelligen Bestätigungscode ein der per E-Mail gesendet wurde an"
@@ -674,10 +674,10 @@
     "message": "Verwende eine andere zweistufige Login-Methode"
   },
   "insertYubiKey": {
-    "message": "Stecken Sie Ihren YubiKey in den USB-Port Ihres Computers, dann drücken Sie den Knopf."
+    "message": "Stecke deinen YubiKey in den USB-Port Ihres Computers, dann berühre den Button."
   },
   "insertU2f": {
-    "message": "Stecken Sie Ihren Sicherheitsschlüssel in den USB-Port Ihres Computers. Falls ein Knopf vorhanden ist, berühren Sie diesen."
+    "message": "Stecke deinen Sicherheitsschlüssel in den USB-Port deines Computers. Falls ein Knopf vorhanden ist, berühre diesen."
   },
   "loginUnavailable": {
     "message": "Login nicht verfügbar"
@@ -692,7 +692,7 @@
     "message": "Optionen für Zwei-Faktor Authentifizierung"
   },
   "recoveryCodeDesc": {
-    "message": "Zugang zu allen Zwei-Faktor Anbietern verloren? Benutzen Sie Ihren Wiederherstellungscode, um alle Zwei-Faktor Anbieter in Ihrem Konto zu deaktivieren."
+    "message": "Zugang zu allen Zwei-Faktor Anbietern verloren? Benutze deinen Wiederherstellungscode, um alle Zwei-Faktor Anbieter in deinem Konto zu deaktivieren."
   },
   "recoveryCodeTitle": {
     "message": "Wiederherstellungscode"
@@ -701,21 +701,21 @@
     "message": "Authentifizierungs-App"
   },
   "authenticatorAppDesc": {
-    "message": "Verwenden Sie eine Authentifizierungs-App (wie zum Beispiel Authy oder Google Authenticator), um zeitbasierte Verifizierungscodes zu generieren.",
+    "message": "Verwende eine Authentifizierungs-App (wie zum Beispiel Authy oder Google Authenticator), um zeitbasierte Verifizierungscodes zu generieren.",
     "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
   },
   "yubiKeyTitle": {
     "message": "YubiKey OTP Sicherheitsschlüssel"
   },
   "yubiKeyDesc": {
-    "message": "Verwenden Sie einen YubiKey, um auf Ihr Konto zuzugreifen. Funtioniert mit YubiKey 4, Nano 4, 4C und NEO Geräten."
+    "message": "Verwende einen YubiKey um auf dein Konto zuzugreifen. Funtioniert mit YubiKey 4, Nano 4, 4C und NEO Geräten."
   },
   "duoDesc": {
-    "message": "Verifizieren Sie mit Duo Security, indem Sie die Duo Mobile App, SMS, Anrufe oder U2F Sicherheitsschlüssel benutzen.",
+    "message": "Verifiziere mit Duo Security, indem du die Duo Mobile App, SMS, Anrufe oder U2F Sicherheitsschlüssel benutzt.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "u2fDesc": {
-    "message": "Benutzen Sie einen FIDO U2F-kompatiblen Sicherheitsschlüssel, um auf Ihr Konto zuzugreifen."
+    "message": "Benutze einen FIDO U2F-kompatiblen Sicherheitsschlüssel um auf dein Konto zuzugreifen."
   },
   "u2fTitle": {
     "message": "FIDO U2F Sicherheitsschlüssel"
@@ -730,13 +730,13 @@
     "message": "Selbstgehostete Umgebung"
   },
   "selfHostedEnvironmentFooter": {
-    "message": "Bitte geben Sie die Basis-URL Ihrer vor Ort gehosteten Bitwarden-Installation an."
+    "message": "Bitte gib die Basis-URL deiner selbst gehosteten Bitwarden-Installation an."
   },
   "customEnvironment": {
     "message": "Benutzerdefinierte Umgebung"
   },
   "customEnvironmentFooter": {
-    "message": "Für fortgeschrittene Benutzer. Sie können die Basis-URL der jeweiligen Dienste unabhängig voneinander festlegen."
+    "message": "Für fortgeschrittene Benutzer. Du kannst die Basis-URL der jeweiligen Dienste unabhängig voneinander festlegen."
   },
   "baseUrl": {
     "message": "Server URL"
@@ -982,7 +982,7 @@
     "message": "Löschen"
   },
   "twoStepNewWindowMessage": {
-    "message": "Schließen Sie die Zwei-Faktor Authentifizierung im neuen Tab ab."
+    "message": "Schließe deine Zwei-Faktor Authentifizierung im neuen Tab ab."
   },
   "checkPassword": {
     "message": "Überprüfe ob dein Kennwort kompromittiert ist."
