@@ -456,7 +456,7 @@
     "message": "URI"
   },
   "newUri": {
-    "message": "New URI"
+    "message": "Ny URI"
   },
   "addedItem": {
     "message": "La til gjenstanden"
@@ -988,37 +988,37 @@
     "message": "Sjekk om passord har blitt utsatt."
   },
   "passwordExposed": {
-    "message": "This password has been exposed in data breaches. You should change it."
+    "message": "Dette passordet har blitt utsatt i et databrudd. Du burde endre det."
   },
   "passwordSafe": {
-    "message": "This password was not found in any known data breaches. It should be safe to use."
+    "message": "Dette passordet ble ikke funnet i noen kjente databrudd. Det bør være trygt å bruke."
   },
   "baseDomain": {
-    "message": "Base domain"
+    "message": "Grunndomene"
   },
   "host": {
-    "message": "Host",
+    "message": "Vert",
     "description": "A URL's host value. For example, the host of https:\/\/sub.domain.com:443 is 'sub.domain.com:443'."
   },
   "exact": {
-    "message": "Exact"
+    "message": "Nøyaktig"
   },
   "startsWith": {
-    "message": "Starts with"
+    "message": "Starter med"
   },
   "regEx": {
-    "message": "Regular expression",
+    "message": "Regulært uttrykk",
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
-    "message": "Match Detection",
+    "message": "Match-gjenkjenning",
     "description": "URI match detection for auto-fill."
   },
   "defaultMatchDetection": {
-    "message": "Default match detection",
+    "message": "Standard match-gjenkjenning",
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
-    "message": "Toggle Options"
+    "message": "Veksle Alternativer"
   }
 }
