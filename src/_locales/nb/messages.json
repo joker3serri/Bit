@@ -985,7 +985,7 @@
     "message": "Fullfør din 2-trinnsinnloggingsforespørsel i den nye fanen."
   },
   "checkPassword": {
-    "message": "Check if password has been exposed."
+    "message": "Sjekk om passord har blitt utsatt."
   },
   "passwordExposed": {
     "message": "This password has been exposed in data breaches. You should change it."
