@@ -533,19 +533,19 @@
     "message": "Gib das Masterpasswort ein, um deine Tresordaten zu exportieren."
   },
   "exportVaultInfo": {
-    "message": "Exportieren Sie Ihre Tresordaten im .csv-Format, sodass Sie sie einfach ändern oder übertragen können."
+    "message": "Exportiere deine Tresordaten im .csv-Format, so dass du sie leicht ändern oder verschieben kannst."
   },
   "shared": {
     "message": "Geteilt"
   },
   "shareVault": {
-    "message": "Teilen Sie Ihren Tresor"
+    "message": "Teile deinen Tresor"
   },
   "shareVaultInfo": {
-    "message": "Erstellen Sie eine Organisation, um Ihre Einträge sicher für andere Benutzer freizugeben."
+    "message": "Erstelle eine Organisation um deine Logindaten sicher für andere Benutzer freizugeben."
   },
   "contribute": {
-    "message": "Sie können auch dazu beitragen!"
+    "message": "Du kannst auch dazu beitragen!"
   },
   "learnMore": {
     "message": "Erfahre mehr"
@@ -566,7 +566,7 @@
     "message": "Anhang löschen"
   },
   "deleteAttachmentConfirmation": {
-    "message": "Möchten Sie diesen Anhang wirklich löschen?"
+    "message": "Möchtest du diesen Anhang wirklich löschen?"
   },
   "deletedAttachment": {
     "message": "Gelöschter Anhang"
@@ -593,7 +593,7 @@
     "message": "Eigenschaft nicht verfügbar"
   },
   "updateKey": {
-    "message": "Sie können diese Funktion nicht nutzen, solange Sie Ihren Verschlüsselungsschlüssel nicht aktualisiert haben."
+    "message": "Du kannst diese Funktion nicht nutzen, solange du deinen Verschlüsselungsschlüssel nicht aktualisiert hast."
   },
   "premiumMembership": {
     "message": "Premium-Mitgliedschaft"
@@ -602,13 +602,13 @@
     "message": "Mitgliedschaft verwalten"
   },
   "premiumManageAlert": {
-    "message": "Sie können Ihre Mitgliedschaft im Bitwarden.com Webtresor verwalten. Möchten Sie die Seite jetzt aufrufen?"
+    "message": "Du kannst deine Mitgliedschaft im Bitwarden.com Webtresor verwalten. Möchtest du die Seite jetzt aufrufen?"
   },
   "premiumRefresh": {
     "message": "Mitgliedschaft erneuern"
   },
   "premiumNotCurrentMember": {
-    "message": "Sie haben derzeit keine Premium-Mitgliedschaft."
+    "message": "Du hast derzeit keine Premium-Mitgliedschaft."
   },
   "premiumSignUpAndGet": {
     "message": "Werde Premium-Mitglied und erhalte dafür:"
@@ -632,13 +632,13 @@
     "message": "Premium-Mitgliedschaft kaufen"
   },
   "premiumPurchaseAlert": {
-    "message": "Sie können Ihre Premium-Mitgliedschaft im Bitwarden.com Web-Tresor kaufen. Möchten Sie die Webseite jetzt besuchen?"
+    "message": "Du kannst deine Premium-Mitgliedschaft im Bitwarden.com Web-Tresor kaufen. Möchtest du die Webseite jetzt besuchen?"
   },
   "premiumCurrentMember": {
-    "message": "Sie sind jetzt Premium-Mitglied!"
+    "message": "Du bist jetzt Premium-Mitglied!"
   },
   "premiumCurrentMemberThanks": {
-    "message": "Vielen Dank, dass Sie Bitwarden unterstützen."
+    "message": "Vielen Dank, dass du Bitwarden unterstützt."
   },
   "premiumPrice": {
     "message": "Das alles für %price% pro Jahr!"
