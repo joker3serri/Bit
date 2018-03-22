@@ -11,7 +11,7 @@
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
-    "message": "Einloggen oder einen neuen Account erstellen um auf den Tresor zuzugreifen."
+    "message": "Du musst dich anmelden oder einen neuen Account erstellen, um auf den Tresor zugreifen zu können."
   },
   "createAccount": {
     "message": "Account erstellen"
@@ -101,7 +101,7 @@
     "message": "Passworthinweis"
   },
   "enterEmailToGetHint": {
-    "message": "Geben Sie die E-Mail Adresse Ihres Kontos ein, um den Hinweis für Ihr Masterpasswort zu erhalten."
+    "message": "Gebe die E-Mail Adresse deines Kontos ein, um den Hinweis für dein Master-Passwort zu erhalten."
   },
   "getMasterPasswordHint": {
     "message": "Hinweis zum Masterpasswort erhalten"
@@ -164,7 +164,7 @@
     "message": "Kontaktiere uns direkt, um Hilfe zu bekommen oder um Feedback abzugeben."
   },
   "visitOurWebsite": {
-    "message": "Besuchen Sie unsere Website"
+    "message": "Besuche unsere Website"
   },
   "visitOurWebsiteDirectly": {
     "message": "Besuche unsere Website um Hilfe, News und mehr über die Verwendung von Bitwarden zu erfahren."
@@ -194,25 +194,25 @@
     "message": "Bitwarden Web-Tresor"
   },
   "bitWebVaultInfo": {
-    "message": "Verwalten Sie Ihre Einträge in jedem Browser mit dem Bitwarden Web-Tresor."
+    "message": "Verwalte deine Zugangsdaten in jedem Browser mit dem Bitwarden Web-Tresor."
   },
   "bitIosVault": {
     "message": "Bitwarden iOS-Tresor"
   },
   "bitIosVaultInfo": {
-    "message": "Verwalten Sie Ihre Einträge von Ihrem Smartphone aus mit dem Bitwarden iOS-Tresor."
+    "message": "Verwalte deine Logins von deinem Smartphone aus mit dem Bitwarden iOS-Tresor."
   },
   "bitAndrVault": {
     "message": "Bitwarden Android-Tresor"
   },
   "bitAndrVaultInfo": {
-    "message": "Verwalten Sie Ihre Einträge von Ihrem Smartphone aus mit dem Bitwarden Android-Tresor."
+    "message": "Verwalte deine Logins von deinem Smartphone aus mit dem Bitwarden Android-Tresor."
   },
   "importItems": {
     "message": "Einträge importieren"
   },
   "importItemsInfo": {
-    "message": "Importieren Sie all Ihre Zugangsdaten schnell und einfach von anderen Passwortmanagern."
+    "message": "Importiere all deine Zugangsdaten schnell und einfach von anderen Passwort-Managern."
   },
   "select": {
     "message": "Auswählen"
@@ -368,7 +368,7 @@
     "message": "Die Master-Passwort-Wiederholung stimmt nicht überein."
   },
   "newAccountCreated": {
-    "message": "Ihr neues Konto wurde erstellt! Sie können sich jetzt anmelden."
+    "message": "Dein neues Konto wurde erstellt! Du kannst dich jetzt anmelden."
   },
   "masterPassSent": {
     "message": "Wir haben dir eine E-Mail mit dem Master-Passwort-Hinweis geschickt."
@@ -390,7 +390,7 @@
     "message": "Ihre Login-Sitzung ist abgelaufen."
   },
   "logOutConfirmation": {
-    "message": "Sind Sie sicher, dass Sie sich abmelden möchten?"
+    "message": "Bist du sicher, dass du dich abmelden willst?"
   },
   "yes": {
     "message": "Ja"
@@ -411,13 +411,13 @@
     "message": "Master-Passwort Ändern"
   },
   "changeMasterPasswordConfirmation": {
-    "message": "Sie können Ihr Masterpasswort im Bitwarden.com Web-Tresor ändern. Möchten Sie die Website jetzt besuchen?"
+    "message": "Du kannst dein Master-Passwort im Bitwarden.com Web-Tresor ändern. Möchtest du die Seite jetzt öffnen?"
   },
   "changeEmailConfirmation": {
-    "message": "Sie können Ihre E-Mail Adresse im Bitwarden.com Web-Tresor ändern. Möchten Sie die Website jetzt besuchen?"
+    "message": "Du kannst deine E-Mail Adresse im Bitwarden.com Web-Tresor ändern. Möchtest du die Seite jetzt öffnen?"
   },
   "twoStepLoginConfirmation": {
-    "message": "Mit der Zwei-Faktor Authentifizierung wird Ihr Account zusätzlich abgesichert, da jede Anmeldung durch einen Sicherheitscode, eine Authentifizierungs-App, SMS, einen Anruf oder eine E-Mail verifiziert werden muss. Die Zwei-Faktor Authentifizierung kann im Bitwarden.com Web-Tresor aktiviert werden. Möchten Sie die Seite jetzt öffnen?"
+    "message": "Mit der Zwei-Faktor Authentifizierung wird dein Account zusätzlich abgesichert, da jede Anmeldung durch einen Sicherheitscode, eine Authentifizierungs-App, SMS, einen Anruf oder eine E-Mail verifiziert werden muss. Die Zwei-Faktor Authentifizierung kann im Bitwarden.com Web-Tresor aktiviert werden. Möchtest du die Seite jetzt öffnen?"
   },
   "loggingOut": {
     "message": "Logge aus"
