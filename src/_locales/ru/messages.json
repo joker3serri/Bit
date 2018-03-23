@@ -1019,6 +1019,6 @@
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
-    "message": "Варианты переключения"
+    "message": "Настройки перебора"
   }
 }
