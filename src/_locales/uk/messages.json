@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Копіювати пароль"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "Копіювати URI"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "Нотатки"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Зміна запису"
