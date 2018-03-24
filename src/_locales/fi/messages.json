@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Kopioi salasana"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "Kopioi URI"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "Merkinnät"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Muokkaa kohdetta"
