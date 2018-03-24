@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Sao chép Mật khẩu"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "Sao chép URL"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "Ghi chú"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Chỉnh sửa mục"
