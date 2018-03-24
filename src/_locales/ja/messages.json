@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "パスワードをコピー"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "URI のコピー"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "メモ"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "アイテムの編集"
