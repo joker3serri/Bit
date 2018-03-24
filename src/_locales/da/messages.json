@@ -548,7 +548,7 @@
     "message": "Del din boks"
   },
   "shareVaultInfo": {
-    "message": "Opret en organisation for at dele dine emner med andre brugere på en sikker måde."
+    "message": "Opret en organisation for at dele dine elementer med andre brugere på en sikker måde."
   },
   "contribute": {
     "message": "Du kan også bidrage!"
@@ -733,49 +733,49 @@
     "message": "Bekræftelseskoder vil blive e-mailet til dig."
   },
   "selfHostedEnvironment": {
-    "message": "Self-Hosted miljø"
+    "message": "Selv-hosted miljø"
   },
   "selfHostedEnvironmentFooter": {
     "message": "Angiv grund-URL'en i din lokal-hostede Bitwarden-installation."
   },
   "customEnvironment": {
-    "message": "Brugerdefinerede Miljø"
+    "message": "Brugerdefineret miljø"
   },
   "customEnvironmentFooter": {
-    "message": "For avancerede brugere. Du kan angive grund URL for hver service uafhængigt."
+    "message": "Til avancerede brugere. Du kan angive grund-URL'en for hver service uafhængigt."
   },
   "baseUrl": {
     "message": "Server URL"
   },
   "apiUrl": {
-    "message": "API Server URL"
+    "message": "API server URL"
   },
   "webVaultUrl": {
-    "message": "Web Boks Server URL"
+    "message": "Web-boks server URL"
   },
   "identityUrl": {
-    "message": "Identificering Server URL"
+    "message": "Identitets-server URL"
   },
   "iconsUrl": {
     "message": "Ikonserver URL"
   },
   "environmentSaved": {
-    "message": "Miljøet URLs er blevet gemt."
+    "message": "Miljøets URLs er blevet gemt."
   },
   "enableAutoFillOnPageLoad": {
-    "message": "Aktivere Auto-udfyld Ved Side Indlæsning"
+    "message": "Aktiver Auto-udfyld ved sideindlæsning"
   },
   "enableAutoFillOnPageLoadDesc": {
-    "message": "Hvis en login-formular er opdaget, automatisk udføre en auto-udfyld, når hjemmesiden indlæses."
+    "message": "Hvis en login-formular er opdaget, så udfør automatisk en auto-udfyld når hjemmesiden indlæses."
   },
   "experimentalFeature": {
     "message": "Dette er i øjeblikket en eksperimentel funktion. Brug på egen risiko."
   },
   "commandAutofillDesc": {
-    "message": "Auto-udfyld den sidste anvendte login for den aktuelle hjemmeside."
+    "message": "Auto-udfyld det sidste anvendte login for den aktuelle hjemmeside."
   },
   "commandGeneratePasswordDesc": {
-    "message": "Generere og kopiere en ny tilfældig adgangskode til udklipsholderen."
+    "message": "Generer og kopier en ny tilfældig adgangskode til udklipsholderen."
   },
   "privateModeMessage": {
     "message": "Desværre er dette vindue ikke tilgængelig i privat modus i denne browser."
@@ -784,16 +784,16 @@
     "message": "Brugerdefinerede felter"
   },
   "copyValue": {
-    "message": "Kopier Værdi"
+    "message": "Kopier værdi"
   },
   "toggleValue": {
-    "message": "Skift Værdien"
+    "message": "Vis\/skjul værdien"
   },
   "value": {
     "message": "Værdi"
   },
   "newCustomField": {
-    "message": "Nye Brugerdefinerede Felt"
+    "message": "Nyt brugerdefineret felt"
   },
   "cfTypeText": {
     "message": "Tekst"
