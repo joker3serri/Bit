@@ -14,10 +14,10 @@
     "message": "Log ind eller opret en ny konto for at få adgang til din sikre boks."
   },
   "createAccount": {
-    "message": "Opret Konto"
+    "message": "Opret konto"
   },
   "login": {
-    "message": "Log Ind"
+    "message": "Log ind"
   },
   "cancel": {
     "message": "Annuller"
@@ -29,16 +29,16 @@
     "message": "Bekræft"
   },
   "emailAddress": {
-    "message": "E-post Adresse"
+    "message": "E-mailadresse"
   },
   "masterPass": {
     "message": "Hovedadgangskode"
   },
   "masterPassDesc": {
-    "message": "Hovedadgangskoden er den adgangskode, du bruger til at få adgang til din boks. Det er meget vigtigt, at du ikke glemmer din hovedadgangskode. Der er ingen måde at genoprette koden i tilfælde af at du glemmer det."
+    "message": "Hovedadgangskoden er den adgangskode, du bruger til at få adgang til din boks. Det er meget vigtigt, at du ikke glemmer din hovedadgangskode. Der er ingen måde hvorpå koden kan genoprettes, i tilfælde af at du glemmer den."
   },
   "masterPassHintDesc": {
-    "message": "Et tip til hovedeadgangskoden kan hjælpe dig med at huske din adgangskode, hvis du glemmer det."
+    "message": "Et tip til hovedadgangskoden kan hjælpe dig med at huske din adgangskode, hvis du glemmer den."
   },
   "reTypeMasterPass": {
     "message": "Bekræft hovedadgangskode"
@@ -50,7 +50,7 @@
     "message": "Fane"
   },
   "myVault": {
-    "message": "Min Boks"
+    "message": "Min boks"
   },
   "tools": {
     "message": "Værktøjer"
@@ -59,10 +59,10 @@
     "message": "Indstillinger"
   },
   "currentTab": {
-    "message": "Aktuel Fane"
+    "message": "Aktuel fane"
   },
   "copyPassword": {
-    "message": "Kopier Adgangskode"
+    "message": "Kopier adgangskode"
   },
   "copyNote": {
     "message": "Kopier note"
@@ -71,7 +71,7 @@
     "message": "Kopier URI"
   },
   "copyUsername": {
-    "message": "Kopier Brugernavn"
+    "message": "Kopier brugernavn"
   },
   "copyNumber": {
     "message": "Kopier nummer"
@@ -80,10 +80,10 @@
     "message": "Kopier sikkerhedskode"
   },
   "autoFill": {
-    "message": "Auto-fyld"
+    "message": "Auto-udfyld"
   },
   "generatePasswordCopied": {
-    "message": "Generer Adgangskode (kopieret)"
+    "message": "Generer adgangskode (kopieret)"
   },
   "noMatchingLogins": {
     "message": "Ingen matchende logins."
@@ -92,10 +92,10 @@
     "message": "Boksen er låst."
   },
   "autoFillInfo": {
-    "message": "Der findes ingen logins til auto-fyld for den nuværende browserfane."
+    "message": "Der findes ingen login til at auto-udfylde i den nuværende browserfane."
   },
   "addLogin": {
-    "message": "Tilføj et Login"
+    "message": "Tilføj et login"
   },
   "addItem": {
     "message": "Tilføj element"
@@ -104,7 +104,7 @@
     "message": "Adgangskodetip"
   },
   "enterEmailToGetHint": {
-    "message": "Indtast din kontos e-post adresse for at modtage din hovedadgangskodetip."
+    "message": "Indtast din kontos e-mail adresse for at modtage dit hovedadgangskodetip."
   },
   "getMasterPasswordHint": {
     "message": "Få hovedadgangskodetip"
