@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Parolayı Kopyala"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "Linki kopyala"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "Notlar"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Hesabı düzenle"
