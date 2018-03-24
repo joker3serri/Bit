@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Salin Kata Sandi"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "Salin URI"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "Catatan"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Edit Item"
