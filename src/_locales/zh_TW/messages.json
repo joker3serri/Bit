@@ -65,7 +65,7 @@
     "message": "複製密碼"
   },
   "copyNote": {
-    "message": "Copy Note"
+    "message": "複製筆記"
   },
   "copyUri": {
     "message": "複製 URI"
@@ -269,7 +269,7 @@
     "message": "筆記"
   },
   "note": {
-    "message": "Note"
+    "message": "筆記"
   },
   "editItem": {
     "message": "編輯項目"
