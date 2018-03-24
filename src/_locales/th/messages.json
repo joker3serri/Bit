@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "คัดลอกรหัสผ่าน"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "คัดลอก URI"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "โน้ต"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "แก้ไขรายการ"
