@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Kopeeri parool"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "Kopeeri URL"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "Märkmed"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Kirje muutmine"
