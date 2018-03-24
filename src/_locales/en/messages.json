@@ -64,8 +64,8 @@
   "copyPassword": {
     "message": "Copy Password"
   },
-  "copySecurityNote": {
-    "message": "Copy Secure Note"
+  "copyNote": {
+    "message": "Copy Note"
   },
   "copyUri": {
     "message": "Copy URI"
@@ -267,6 +267,9 @@
   },
   "notes": {
     "message": "Notes"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Edit Item"
@@ -866,9 +869,6 @@
   },
   "securityCode": {
     "message": "Security Code"
-  },
-  "secureNote": {
-    "message": "Secure Note"
   },
   "ex": {
     "message": "ex."

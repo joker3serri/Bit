@@ -50,9 +50,9 @@
               ng-if="$ctrl.showView">
             <i class="fa fa-lg fa-eye"></i>
         </span>
-        <span class="btn-list" stop-prop stop-click title="{{::$ctrl.i18n.copySecureNote}}" ngclipboard
+        <span class="btn-list" stop-prop stop-click title="{{::$ctrl.i18n.copyNote}}" ngclipboard
               ngclipboard-error="$ctrl.clipboardError(e)"
-              ngclipboard-success="$ctrl.clipboardSuccess(e, $ctrl.i18n.secureNote, 'Secure Note')"
+              ngclipboard-success="$ctrl.clipboardSuccess(e, $ctrl.i18n.note, 'Note')"
               data-clipboard-text="{{$ctrl.cipher.notes}}" ng-class="{disabled: !$ctrl.cipher.notes}">
             <i class="fa fa-lg fa-key"></i>
         </span>
