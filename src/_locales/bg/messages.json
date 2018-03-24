@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Копиране на паролата"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "Копиране на адреса"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "Бележки"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Редактиране на елемента"
