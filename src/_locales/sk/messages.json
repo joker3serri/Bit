@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Kopírovať heslo"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "Kopírovať URI"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "Poznámky"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Upraviť položku"
