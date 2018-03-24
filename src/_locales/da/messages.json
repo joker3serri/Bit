@@ -236,7 +236,7 @@
     "message": "Mindste antal tal"
   },
   "minSpecial": {
-    "message": "Mindste antal specielle"
+    "message": "Mindste antal specialtegn"
   },
   "avoidAmbChar": {
     "message": "Undgå tvetydige tegn"
