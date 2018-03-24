@@ -104,7 +104,7 @@
     "message": "Adgangskodetip"
   },
   "enterEmailToGetHint": {
-    "message": "Indtast din kontos e-mail adresse for at modtage dit hovedadgangskodetip."
+    "message": "Indtast din kontos e-mailadresse for at modtage dit hovedadgangskodetip."
   },
   "getMasterPasswordHint": {
     "message": "Få hovedadgangskodetip"
@@ -119,16 +119,16 @@
     "message": "Konto"
   },
   "changeMasterPassword": {
-    "message": "Skift Hovedadgangskode"
+    "message": "Skift hovedadgangskode"
   },
   "changeEmail": {
-    "message": "Skift E-postadresse"
+    "message": "Skift e-mailadresse"
   },
   "twoStepLogin": {
-    "message": "To-trins Login"
+    "message": "To-trins login"
   },
   "logOut": {
-    "message": "Log Ud"
+    "message": "Log af"
   },
   "about": {
     "message": "Om"
@@ -140,16 +140,16 @@
     "message": "Gem"
   },
   "addFolder": {
-    "message": "Tilføj Mappe"
+    "message": "Tilføj mappe"
   },
   "name": {
     "message": "Navn"
   },
   "editFolder": {
-    "message": "Rediger Mappe"
+    "message": "Rediger mappe"
   },
   "deleteFolder": {
-    "message": "Slet Mappe"
+    "message": "Slet mappe"
   },
   "folders": {
     "message": "Mapper"
@@ -161,37 +161,37 @@
     "message": "Hjælp & Feedback"
   },
   "emailUs": {
-    "message": "Email Os"
+    "message": "Email os"
   },
   "emailUsDirectly": {
     "message": "Email os direkte for at få hjælp eller give feedback."
   },
   "visitOurWebsite": {
-    "message": "Besøg Vores Hjemmeside"
+    "message": "Besøg vores hjemmeside"
   },
   "visitOurWebsiteDirectly": {
     "message": "Besøg vores hjemmeside for at få hjælp, nyheder, sende os en e-mail og\/eller lære mere om hvordan du bruger Bitwarden."
   },
   "fileBugReport": {
-    "message": "Indsend en Fejlrapport"
+    "message": "Indsend en fejlrapport"
   },
   "gitHubIssue": {
-    "message": "Åbn et emne på vores GitHub opbevaringssted."
+    "message": "Åbn et problem på vores GitHub depot."
   },
   "sync": {
     "message": "Synkroniser"
   },
   "syncVaultNow": {
-    "message": "Synkroniser Boksen Nu"
+    "message": "Synkroniser boks nu"
   },
   "lastSync": {
-    "message": "Sidst Synkroniseret:"
+    "message": "Sidst synkroniseret:"
   },
   "passGen": {
     "message": "Adgangskodegenerator"
   },
   "passGenInfo": {
-    "message": "Automatisk generere stærke, unikke adgangskoder til dine logins."
+    "message": "Opret automatisk stærke, unikke adgangskoder til dine logins."
   },
   "bitWebVault": {
     "message": "Bitwarden web-boks"
@@ -221,10 +221,10 @@
     "message": "Vælg"
   },
   "generatePassword": {
-    "message": "Generere Adgangskode"
+    "message": "Generer adgangskode"
   },
   "regeneratePassword": {
-    "message": "Regenerere Adgangskode"
+    "message": "Regenerer adgangskode"
   },
   "options": {
     "message": "Indstillinger"
@@ -233,16 +233,16 @@
     "message": "Længde"
   },
   "minNumbers": {
-    "message": "Mindste Antal Tal"
+    "message": "Mindste antal tal"
   },
   "minSpecial": {
-    "message": "Mindste Antal Special"
+    "message": "Mindste antal specielle"
   },
   "avoidAmbChar": {
-    "message": "Undgå tvetydige figurer"
+    "message": "Undgå tvetydige tegn"
   },
   "searchVault": {
-    "message": "Søg i Boksen"
+    "message": "Søg i boks"
   },
   "edit": {
     "message": "Redigér"
@@ -284,13 +284,13 @@
     "message": "Vis element"
   },
   "launchWebsite": {
-    "message": "Åben Hjemmeside"
+    "message": "Åbn hjemmeside"
   },
   "website": {
     "message": "Hjemmeside"
   },
   "togglePassword": {
-    "message": "Skifte Adgangskode"
+    "message": "Vise\/skjule adgangskode"
   },
   "manage": {
     "message": "Administrer"
@@ -299,19 +299,19 @@
     "message": "Andre"
   },
   "disableGa": {
-    "message": "Deaktivere Analytics"
+    "message": "Deaktiver Analytics"
   },
   "rateExtension": {
-    "message": "Vurder Udvidelsen"
+    "message": "Bedøm udvidelsen"
   },
   "rateExtensionDesc": {
-    "message": "Vil du overveje at hjælpe os med en god anmeldelse!"
+    "message": "Overvej om du vil hjælpe os med en god anmeldelse!"
   },
   "browserNotSupportClipboard": {
-    "message": "Din webbrowser understøtter ikke let udklipsholderen kopiering. Kopiere det manuelt i stedet."
+    "message": "Din webbrowser understøtter ikke udklipsholder kopiering. Kopier det manuelt i stedet."
   },
   "verifyMasterPassword": {
-    "message": "Bekræft Hovedadgangskode"
+    "message": "Bekræft hovedadgangskode"
   },
   "invalidMasterPassword": {
     "message": "Ugyldig hovedadgangskode"
@@ -320,7 +320,7 @@
     "message": "Låseindstillinger"
   },
   "lockNow": {
-    "message": "Lås Nu"
+    "message": "Lås nu"
   },
   "immediately": {
     "message": "Straks"
@@ -347,7 +347,7 @@
     "message": "Når systemet låses"
   },
   "onRestart": {
-    "message": "Ved Genstart"
+    "message": "Ved genstart"
   },
   "never": {
     "message": "Aldrig"
@@ -359,16 +359,16 @@
     "message": "Der er opstået fejl"
   },
   "emailRequired": {
-    "message": "E-post adresse er påkrævet."
+    "message": "E-mail adresse er påkrævet."
   },
   "invalidEmail": {
-    "message": "Ugyldig e-post adresse."
+    "message": "Ugyldig e-mail adresse."
   },
   "masterPassRequired": {
     "message": "Hovedadgangskode er påkrævet."
   },
   "masterPassLength": {
-    "message": "Hovedadgangskode skal være mindst 8 tegn."
+    "message": "Hovedadgangskoden skal være på mindst 8 tegn."
   },
   "masterPassDoesntMatch": {
     "message": "De to adgangskoder matcher ikke."
@@ -390,13 +390,13 @@
     "message": "Ikke i stand til at auto-udfylde det valgte element på denne side. Kopier og indsæt dataene i stedet for."
   },
   "loggedOut": {
-    "message": "Logget ud"
+    "message": "Logget af"
   },
   "loginExpired": {
     "message": "Din login-session er udløbet."
   },
   "logOutConfirmation": {
-    "message": "Er du sikker på, du vil logge ud?"
+    "message": "Er du sikker på, at du vil logge af?"
   },
   "yes": {
     "message": "Ja"
@@ -414,13 +414,13 @@
     "message": "Tilføjede mappe"
   },
   "changeMasterPass": {
-    "message": "Ændre Hovedadgangskode"
+    "message": "Ændre hovedadgangskode"
   },
   "changeMasterPasswordConfirmation": {
-    "message": "Du kan ændre din hovedadgangskode på bitwarden.com web boks. Vil du besøge hjemmesiden nu?"
+    "message": "Du kan ændre din hovedadgangskode i bitwarden.com web-boksen. Vil du besøge hjemmesiden nu?"
   },
   "changeEmailConfirmation": {
-    "message": "Du kan ændre din e-mail adresse på bitwarden.com web boks. Vil du besøge hjemmesiden nu?"
+    "message": "Du kan ændre din e-mail adresse i bitwarden.com web-boksen. Vil du besøge hjemmesiden nu?"
   },
   "twoStepLoginConfirmation": {
     "message": "To-trins login gør din konto mere sikker ved at kræve du verificere dit login med en anden enhed med en sikkerhedsnøgle, autentificering app, SMS, telefonopkald eller e-mail. To-trins login kan aktiveres på bitwarden.com web boks. Vil du besøge hjemmesiden nu?"
