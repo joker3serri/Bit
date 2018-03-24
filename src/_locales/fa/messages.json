@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "کپی رمز عبور"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "کپی آدرس اینترنتی"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "یادداشت ها"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "ویرایش مورد"
