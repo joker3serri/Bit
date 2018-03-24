@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Copiere parolă"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "Copiere URL"
   },
@@ -263,6 +266,9 @@
     "message": "Favorit"
   },
   "notes": {
+    "message": "Note"
+  },
+  "note": {
     "message": "Note"
   },
   "editItem": {
