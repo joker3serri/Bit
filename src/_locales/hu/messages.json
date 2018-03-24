@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Jelszó másolása"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "URI másolása"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "Jegyzetek"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Elem szerkesztése"
