@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "复制密码"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "复制 URI"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "笔记"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "编辑项目"
