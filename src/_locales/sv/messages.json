@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Kopiera lösenord"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "Kopiera URI"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "Anteckningar"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Redigera objekt"
