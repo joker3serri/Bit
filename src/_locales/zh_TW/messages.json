@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "複製密碼"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "複製 URI"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "筆記"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "編輯項目"
