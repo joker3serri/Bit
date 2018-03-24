@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Копировать пароль"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "Копировать URI"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "Заметки"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Изменить элемент"
