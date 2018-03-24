@@ -64,6 +64,9 @@
   "copyPassword": {
     "message": "Kopiraj lozinku"
   },
+  "copyNote": {
+    "message": "Copy Note"
+  },
   "copyUri": {
     "message": "Kopiraj URI"
   },
@@ -264,6 +267,9 @@
   },
   "notes": {
     "message": "Bilješke"
+  },
+  "note": {
+    "message": "Note"
   },
   "editItem": {
     "message": "Uredi stavku"
