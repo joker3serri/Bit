@@ -997,23 +997,23 @@
     "message": "Ova lozinka je kompromitirana u krađi podataka. Trebali bi ste je promijeniti."
   },
   "passwordSafe": {
-    "message": "This password was not found in any known data breaches. It should be safe to use."
+    "message": "Lozinka nije pronađena niti u jednoj krađi podataka. Sigurna je za korištenje."
   },
   "baseDomain": {
-    "message": "Base domain"
+    "message": "Primarna domena"
   },
   "host": {
-    "message": "Host",
+    "message": "Domaćin",
     "description": "A URL's host value. For example, the host of https:\/\/sub.domain.com:443 is 'sub.domain.com:443'."
   },
   "exact": {
-    "message": "Exact"
+    "message": "Točno"
   },
   "startsWith": {
-    "message": "Starts with"
+    "message": "Počinje sa"
   },
   "regEx": {
-    "message": "Regular expression",
+    "message": "Regularni izraz",
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
