@@ -65,7 +65,7 @@
     "message": "Kopiraj lozinku"
   },
   "copyNote": {
-    "message": "Copy Note"
+    "message": "Kopiraj bilješku"
   },
   "copyUri": {
     "message": "Kopiraj URI"
@@ -269,7 +269,7 @@
     "message": "Bilješke"
   },
   "note": {
-    "message": "Note"
+    "message": "Bilješka"
   },
   "editItem": {
     "message": "Uredi stavku"
@@ -462,7 +462,7 @@
     "message": "URL"
   },
   "newUri": {
-    "message": "New URI"
+    "message": "Novi URL"
   },
   "addedItem": {
     "message": "Dodaj stavku"
