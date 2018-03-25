@@ -1017,14 +1017,14 @@
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
-    "message": "Match Detection",
+    "message": "Otkrivanje podudaranja",
     "description": "URI match detection for auto-fill."
   },
   "defaultMatchDetection": {
-    "message": "Default match detection",
+    "message": "Zadano otkrivanje podudaranja",
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
-    "message": "Toggle Options"
+    "message": "Uključi\/isključi opcije"
   }
 }
