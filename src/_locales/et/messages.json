@@ -65,7 +65,7 @@
     "message": "Kopeeri parool"
   },
   "copyNote": {
-    "message": "Copy Note"
+    "message": "Kopeeri märkus"
   },
   "copyUri": {
     "message": "Kopeeri URL"
@@ -269,7 +269,7 @@
     "message": "Märkmed"
   },
   "note": {
-    "message": "Note"
+    "message": "Märkus"
   },
   "editItem": {
     "message": "Kirje muutmine"
