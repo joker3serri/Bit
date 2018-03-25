@@ -991,10 +991,10 @@
     "message": "Dovršite zahtjev za prijavu u dva koraka pomoću nove kartice."
   },
   "checkPassword": {
-    "message": "Check if password has been exposed."
+    "message": "Provjerite je li lozinka kompromitirana."
   },
   "passwordExposed": {
-    "message": "This password has been exposed in data breaches. You should change it."
+    "message": "Ova lozinka je kompromitirana u krađi podataka. Trebali bi ste je promijeniti."
   },
   "passwordSafe": {
     "message": "This password was not found in any known data breaches. It should be safe to use."
