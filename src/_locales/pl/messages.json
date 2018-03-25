@@ -65,7 +65,7 @@
     "message": "Skopiuj hasło"
   },
   "copyNote": {
-    "message": "Copy Note"
+    "message": "Kopiuj notatkę"
   },
   "copyUri": {
     "message": "Skopiuj URI"
@@ -206,7 +206,7 @@
     "message": "Zarządzaj swoimi danymi z poziomu urządzeń mobilnych za pomocą sejfu Bitwarden iOS."
   },
   "bitAndrVault": {
-    "message": "Sejf Android bitwarden"
+    "message": "Sejf Android Bitwarden"
   },
   "bitAndrVaultInfo": {
     "message": "Zarządzaj swoimi danymi z poziomu urządzeń mobilnych za pomocą sejfu Bitwarden Android."
@@ -269,7 +269,7 @@
     "message": "Notatki"
   },
   "note": {
-    "message": "Note"
+    "message": "Notatka"
   },
   "editItem": {
     "message": "Edytuj element"
