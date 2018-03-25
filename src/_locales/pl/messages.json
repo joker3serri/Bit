@@ -3,11 +3,11 @@
     "message": "Bitwarden"
   },
   "extName": {
-    "message": "bitwarden - Darmowy Menedżer Haseł",
+    "message": "Bitwarden - Darmowy Menedżer Haseł",
     "description": "Extension name"
   },
   "extDesc": {
-    "message": "bitwarden to bezpieczny i darmowy menedżer haseł dla wszystkich Twoich urządzeń.",
+    "message": "Bezpieczny i darmowy menedżer haseł dla wszystkich Twoich urządzeń.",
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
