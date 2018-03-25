@@ -65,7 +65,7 @@
     "message": "Копіювати пароль"
   },
   "copyNote": {
-    "message": "Copy Note"
+    "message": "Копіювати нотатку"
   },
   "copyUri": {
     "message": "Копіювати URI"
@@ -269,7 +269,7 @@
     "message": "Нотатки"
   },
   "note": {
-    "message": "Note"
+    "message": "Нотатка"
   },
   "editItem": {
     "message": "Зміна запису"
