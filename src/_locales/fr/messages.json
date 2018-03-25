@@ -269,7 +269,7 @@
     "message": "Notes"
   },
   "note": {
-    "message": "Noter"
+    "message": "Note"
   },
   "editItem": {
     "message": "Modifier l'identifiant"
@@ -1025,6 +1025,6 @@
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
-    "message": "Options de basculement"
+    "message": "Activer\/désactiver les options"
   }
 }
