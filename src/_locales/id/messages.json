@@ -997,34 +997,34 @@
     "message": "Kata sandi ini telah terpapar di data pelanggaran. Anda harus mengubahnya."
   },
   "passwordSafe": {
-    "message": "This password was not found in any known data breaches. It should be safe to use."
+    "message": "Kata sandi ini tidak ditemukan dalam data pelanggaran yang dikenal. Kata sandi tersebut harusnya aman untuk digunakan."
   },
   "baseDomain": {
-    "message": "Base domain"
+    "message": "Basis domain"
   },
   "host": {
     "message": "Host",
     "description": "A URL's host value. For example, the host of https:\/\/sub.domain.com:443 is 'sub.domain.com:443'."
   },
   "exact": {
-    "message": "Exact"
+    "message": "Tepat"
   },
   "startsWith": {
-    "message": "Starts with"
+    "message": "Mulai dengan"
   },
   "regEx": {
-    "message": "Regular expression",
+    "message": "Ekspresi umum",
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
-    "message": "Match Detection",
+    "message": "Deteksi kecocokan",
     "description": "URI match detection for auto-fill."
   },
   "defaultMatchDetection": {
-    "message": "Default match detection",
+    "message": "Deteksi kecocokan standar",
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
-    "message": "Toggle Options"
+    "message": "Ubah Opsi"
   }
 }
