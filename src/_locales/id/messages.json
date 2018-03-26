@@ -65,7 +65,7 @@
     "message": "Salin Kata Sandi"
   },
   "copyNote": {
-    "message": "Copy Note"
+    "message": "Salin Catatan"
   },
   "copyUri": {
     "message": "Salin URI"
@@ -269,7 +269,7 @@
     "message": "Catatan"
   },
   "note": {
-    "message": "Note"
+    "message": "Catatan"
   },
   "editItem": {
     "message": "Edit Item"
@@ -462,7 +462,7 @@
     "message": "URI"
   },
   "newUri": {
-    "message": "New URI"
+    "message": "URl Batu"
   },
   "addedItem": {
     "message": "Item yang Ditambahkan"
@@ -991,10 +991,10 @@
     "message": "Selesaikan permintaan masuk dua langkah Anda menggunakan tab baru."
   },
   "checkPassword": {
-    "message": "Check if password has been exposed."
+    "message": "Periksalah jika kata sandi telah terpapar."
   },
   "passwordExposed": {
-    "message": "This password has been exposed in data breaches. You should change it."
+    "message": "Kata sandi ini telah terpapar di data pelanggaran. Anda harus mengubahnya."
   },
   "passwordSafe": {
     "message": "This password was not found in any known data breaches. It should be safe to use."
