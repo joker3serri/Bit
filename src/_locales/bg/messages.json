@@ -104,7 +104,7 @@
     "message": "Подсказка за паролата"
   },
   "enterEmailToGetHint": {
-    "message": "Enter your account email address to receive your master password hint."
+    "message": "Въведете електронната си поща, за да получите подсказка за главната парола."
   },
   "getMasterPasswordHint": {
     "message": "Получете подсказване за главната парола"
@@ -155,7 +155,7 @@
     "message": "Папки"
   },
   "noFolders": {
-    "message": "There are no folders to list."
+    "message": "Няма папки за показване."
   },
   "helpFeedback": {
     "message": "Помощ и обратна връзка"
@@ -164,7 +164,7 @@
     "message": "Пишете ни"
   },
   "emailUsDirectly": {
-    "message": "Email us directly to get help or leave feedback."
+    "message": "Пишете ни, за да получите помощ или да ни оставите обратна връзка."
   },
   "visitOurWebsite": {
     "message": "Посетете сайта ни"
@@ -173,7 +173,7 @@
     "message": "Visit our website to get help, news, email us, and\/or learn more about how to use Bitwarden."
   },
   "fileBugReport": {
-    "message": "File a Bug Report"
+    "message": "Съобщаване за грешка"
   },
   "gitHubIssue": {
     "message": "Open an issue at our GitHub repository."
@@ -191,7 +191,7 @@
     "message": "Генератор на пароли"
   },
   "passGenInfo": {
-    "message": "Automatically generate strong, unique passwords for your logins."
+    "message": "Автоматично създаване на силни и неповторими пароли."
   },
   "bitWebVault": {
     "message": "Интернетен трезор"
@@ -269,7 +269,7 @@
     "message": "Бележки"
   },
   "note": {
-    "message": "Note"
+    "message": "Бележка"
   },
   "editItem": {
     "message": "Редактиране на елемента"
@@ -344,7 +344,7 @@
     "message": "4 часа"
   },
   "onLocked": {
-    "message": "On System Lock"
+    "message": "При заключване на системата"
   },
   "onRestart": {
     "message": "При повторно пускане"
@@ -374,7 +374,7 @@
     "message": "Потвърждаването на главната парола не отговаря."
   },
   "newAccountCreated": {
-    "message": "Your new account has been created! You may now log in."
+    "message": "Вашата сметка беше създадена. Вече можете да се впишете."
   },
   "masterPassSent": {
     "message": "Изпратили сме ви ел. писмо с подсказка за главната ви парола."
@@ -435,13 +435,13 @@
     "message": "Редактирана папка"
   },
   "deleteFolderConfirmation": {
-    "message": "Are you sure you want to delete this folder?"
+    "message": "Сигурни ли сте, че искате да изтриете тази папка?"
   },
   "deletedFolder": {
     "message": "Изтрита папка"
   },
   "gettingStartedTutorial": {
-    "message": "Getting Started Tutorial"
+    "message": "Въведение"
   },
   "gettingStartedTutorialVideo": {
     "message": "Watch our getting started tutorial to learn how to get the most out of the browser extension."
@@ -462,7 +462,7 @@
     "message": "Адрес"
   },
   "newUri": {
-    "message": "New URI"
+    "message": "Нов адрес"
   },
   "addedItem": {
     "message": "Елементът е добавен"
@@ -511,7 +511,7 @@
     "message": "The \"Add Login Notification\" automatically prompts you to save new logins to your vault whenever you log into them for the first time."
   },
   "notificationAddDesc": {
-    "message": "Should Bitwarden remember this password for you?"
+    "message": "Искате ли тази парола да бъде запазена?"
   },
   "notificationAddSave": {
     "message": "Да, нека се запише сега"
@@ -551,7 +551,7 @@
     "message": "Създайте организация, за да споделяте сигурно елементите си с други потребители."
   },
   "contribute": {
-    "message": "You can contribute too!"
+    "message": "И вие можете да допринесете!"
   },
   "learnMore": {
     "message": "Научете повече"
@@ -560,10 +560,10 @@
     "message": "Удостоверителен ключ (TOTP)"
   },
   "verificationCodeTotp": {
-    "message": "Verification Code (TOTP)"
+    "message": "Код за потвърждаване (TOTP)"
   },
   "copyVerificationCode": {
-    "message": "Copy Verification Code"
+    "message": "Копиране на кода за потвърждаване"
   },
   "attachments": {
     "message": "Прикачени файлове"
@@ -584,7 +584,7 @@
     "message": "Няма прикачени файлове."
   },
   "attachmentSaved": {
-    "message": "The attachment has been saved."
+    "message": "Прикаченият файл е запазен."
   },
   "file": {
     "message": "Файл"
@@ -596,7 +596,7 @@
     "message": "Големината на файла да е най-много 100 МБ."
   },
   "featureUnavailable": {
-    "message": "Feature Unavailable"
+    "message": "Функцията е недостъпна"
   },
   "updateKey": {
     "message": "You cannot use this feature until you update your encryption key."
@@ -611,7 +611,7 @@
     "message": "You can manage your membership on the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "premiumRefresh": {
-    "message": "Освежаване на членството"
+    "message": "Опресняване на абонамента"
   },
   "premiumNotCurrentMember": {
     "message": "You are not currently a premium member."
@@ -659,7 +659,7 @@
     "message": "If your login has an authenticator key attached to it, the TOTP verification code is automatically copied to your clipboard whenever you auto-fill the login."
   },
   "premiumRequired": {
-    "message": "Изисква се премиум членство"
+    "message": "Изисква се премийно членство"
   },
   "premiumRequiredDesc": {
     "message": "A premium membership is required to use this feature."
