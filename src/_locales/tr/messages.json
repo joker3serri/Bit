@@ -1010,7 +1010,7 @@
     "message": "Exact"
   },
   "startsWith": {
-    "message": "Starts with"
+    "message": "İle başlar"
   },
   "regEx": {
     "message": "Regular expression",
@@ -1021,7 +1021,7 @@
     "description": "URI match detection for auto-fill."
   },
   "defaultMatchDetection": {
-    "message": "Default match detection",
+    "message": "Varsayılan eşleme tanıma",
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
