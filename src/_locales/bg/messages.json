@@ -86,16 +86,16 @@
     "message": "Generate Password (copied)"
   },
   "noMatchingLogins": {
-    "message": "No matching logins."
+    "message": "Няма съвпадащи записи."
   },
   "vaultLocked": {
     "message": "Трезорът е заключен."
   },
   "autoFillInfo": {
-    "message": "There are no logins available to auto-fill for the current browser tab."
+    "message": "В текущия подпрозорец няма записи, които да бъдат попълнени."
   },
   "addLogin": {
-    "message": "Add a Login"
+    "message": "Добавяне на запис"
   },
   "addItem": {
     "message": "Добавяне на елемент"
@@ -677,7 +677,7 @@
     "message": "Send verification code email again"
   },
   "useAnotherTwoStepMethod": {
-    "message": "Използвайте друг начин на метод двуфакторното удостоверяване"
+    "message": "Използвайте друг начин на двустепенно удостоверяване"
   },
   "insertYubiKey": {
     "message": "Insert your YubiKey into your computer's USB port, then touch its button."
@@ -686,7 +686,7 @@
     "message": "Insert your security key into your computer's USB port. If it has a button, touch it."
   },
   "loginUnavailable": {
-    "message": "Login Unavailable"
+    "message": "Записът не е наличен"
   },
   "noTwoStepProviders": {
     "message": "This account has two-step login enabled, however, none of the configured two-step providers are supported by this web browser."
@@ -695,13 +695,13 @@
     "message": "Please use a supported web browser (such as Chrome) and\/or add additional providers that are better supported across web browsers (such as an authenticator app)."
   },
   "twoStepOptions": {
-    "message": "Two-step Login Options"
+    "message": "Настройки на двустепенното удостоверяване"
   },
   "recoveryCodeDesc": {
     "message": "Lost access to all of your two-factor providers? Use your recovery code to disable all two-factor providers from your account."
   },
   "recoveryCodeTitle": {
-    "message": "Recovery Code"
+    "message": "Код за възстановяване"
   },
   "authenticatorAppTitle": {
     "message": "Authenticator App"
@@ -772,7 +772,7 @@
     "message": "This is currently an experimental feature. Use at your own risk."
   },
   "commandAutofillDesc": {
-    "message": "Auto-fill the last used login for the current website."
+    "message": "Автоматично попълване на последно използвания запис в текущия сайт."
   },
   "commandGeneratePasswordDesc": {
     "message": "Generate and copy a new random password to the clipboard."
@@ -811,7 +811,7 @@
     "message": "Изключване на иконките на сайтовете"
   },
   "disableFaviconDesc": {
-    "message": "Website Icons provide a recognizable image next to each login item in your vault."
+    "message": "Иконките на сайтовете са разпознаваемо изображение за всеки запис в трезора."
   },
   "cardholderName": {
     "message": "Име на притежателя на картата"
@@ -898,13 +898,13 @@
     "message": "Фамилно име"
   },
   "identityName": {
-    "message": "Identity Name"
+    "message": "Име на самоличността"
   },
   "company": {
     "message": "Фирма"
   },
   "ssn": {
-    "message": "Social Security Number"
+    "message": "Номер на осигуровката"
   },
   "passportNumber": {
     "message": "Номер на паспорта"
@@ -946,10 +946,10 @@
     "message": "Вид"
   },
   "typeLogin": {
-    "message": "Вход"
+    "message": "Запис"
   },
   "typeLogins": {
-    "message": "Logins"
+    "message": "Записи"
   },
   "typeSecureNote": {
     "message": "Бележка за сигурност"
@@ -1013,18 +1013,18 @@
     "message": "Започва с"
   },
   "regEx": {
-    "message": "Regular expression",
+    "message": "Регулярен израз",
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
-    "message": "Match Detection",
+    "message": "Откриване на съвпадения",
     "description": "URI match detection for auto-fill."
   },
   "defaultMatchDetection": {
-    "message": "Default match detection",
+    "message": "Стандартно откриване на съвпадения",
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
-    "message": "Toggle Options"
+    "message": "Настройки на превключване"
   }
 }
