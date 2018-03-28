@@ -991,40 +991,40 @@
     "message": "Hoàn tất yêu cầu đăng nhập hai bước của bạn bằng cách sử dụng tab mới."
   },
   "checkPassword": {
-    "message": "Check if password has been exposed."
+    "message": "Kiểm tra xem mật khẩu có bị lộ không."
   },
   "passwordExposed": {
-    "message": "This password has been exposed in data breaches. You should change it."
+    "message": "Mật khẩu này đã bị lộ trong các dữ liệu vi phạm. Bạn nên thay đổi nó."
   },
   "passwordSafe": {
-    "message": "This password was not found in any known data breaches. It should be safe to use."
+    "message": "Mật khẩu này không được tìm thấy trong bất kỳ dữ liệu vi phạm nào được biết đến. Nó an toàn để sử dụng."
   },
   "baseDomain": {
-    "message": "Base domain"
+    "message": "Tên miền cơ sở"
   },
   "host": {
-    "message": "Host",
+    "message": "Máy chủ",
     "description": "A URL's host value. For example, the host of https:\/\/sub.domain.com:443 is 'sub.domain.com:443'."
   },
   "exact": {
-    "message": "Exact"
+    "message": "Chính xác"
   },
   "startsWith": {
-    "message": "Starts with"
+    "message": "Bắt đầu với"
   },
   "regEx": {
-    "message": "Regular expression",
+    "message": "Biểu thức chính quy",
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
-    "message": "Match Detection",
+    "message": "Độ phù hợp",
     "description": "URI match detection for auto-fill."
   },
   "defaultMatchDetection": {
-    "message": "Default match detection",
+    "message": "Độ phù hợp mặc định",
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
-    "message": "Toggle Options"
+    "message": "Bật\/tắt tùy chọn"
   }
 }
