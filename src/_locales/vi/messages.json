@@ -65,7 +65,7 @@
     "message": "Sao chép Mật khẩu"
   },
   "copyNote": {
-    "message": "Copy Note"
+    "message": "Sao chép Ghi chú"
   },
   "copyUri": {
     "message": "Sao chép URL"
@@ -269,7 +269,7 @@
     "message": "Ghi chú"
   },
   "note": {
-    "message": "Note"
+    "message": "Ghi chú"
   },
   "editItem": {
     "message": "Chỉnh sửa mục"
@@ -462,7 +462,7 @@
     "message": "Đường dẫn"
   },
   "newUri": {
-    "message": "New URI"
+    "message": "URI Mới"
   },
   "addedItem": {
     "message": "Đã thêm mục"
@@ -988,7 +988,7 @@
     "message": "Xoá"
   },
   "twoStepNewWindowMessage": {
-    "message": "Complete your two-step login request using the new tab."
+    "message": "Hoàn tất yêu cầu đăng nhập hai bước của bạn bằng cách sử dụng tab mới."
   },
   "checkPassword": {
     "message": "Check if password has been exposed."
