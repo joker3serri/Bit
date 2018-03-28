@@ -432,7 +432,7 @@
     "message": "Bạn vừa cập nhật từ một phiên bản cũ hơn. Bạn sẽ phải đăng nhập lại để thay đổi các tùy chọn khóa. Bạn có muốn đăng xuất ngay bây giờ không?"
   },
   "editedFolder": {
-    "message": "Chỉnh sửa Thư mục"
+    "message": "Đã chỉnh sửa thư mục"
   },
   "deleteFolderConfirmation": {
     "message": "Bạn có chắc chắn muốn xóa thư mục này không?"
@@ -459,10 +459,10 @@
     "message": "Đã sao chép mật khẩu"
   },
   "uri": {
-    "message": "Đường dẫn"
+    "message": "URL"
   },
   "newUri": {
-    "message": "URI Mới"
+    "message": "URL Mới"
   },
   "addedItem": {
     "message": "Đã thêm mục"
