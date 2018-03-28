@@ -704,7 +704,7 @@
     "message": "Mã phục hồi"
   },
   "authenticatorAppTitle": {
-    "message": "Ứng dụng Authenticator"
+    "message": "Ứng dụng xác thực"
   },
   "authenticatorAppDesc": {
     "message": "Sử dụng một ứng dụng xác thực (chẳng hạn như Authy hoặc Google Authenticator) để tạo các mã xác nhận theo thời gian thực.",
