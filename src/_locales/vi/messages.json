@@ -802,7 +802,7 @@
     "message": "Ẩn"
   },
   "cfTypeBoolean": {
-    "message": "Boolean"
+    "message": "Đúng\/Sai"
   },
   "popup2faCloseMessage": {
     "message": "Nhấp bên ngoài popup để xem mã xác thực trong email của bạn sẽ làm cho popup này đóng lại. Bạn có muốn mở popup này trong một cửa sổ mới để nó không bị đóng?"
