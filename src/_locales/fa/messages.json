@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "بیت واردن"
+    "message": "Bitwarden"
   },
   "extName": {
-    "message": "بیت واردن - مدیریت گذرواژه رایگان",
+    "message": "Bitwarden - مدیریت گذرواژه رایگان",
     "description": "Extension name"
   },
   "extDesc": {
@@ -644,7 +644,7 @@
     "message": "شما یک عضو پرمیوم هستید!"
   },
   "premiumCurrentMemberThanks": {
-    "message": "برای حمایتتان از بیت واردن سپاسگزاریم."
+    "message": "برای حمایتتان از Bitwarden سپاسگزاریم."
   },
   "premiumPrice": {
     "message": "تمامش فقط $PRICE$ در سال!"
@@ -736,7 +736,7 @@
     "message": "محیط خود میزبان"
   },
   "selfHostedEnvironmentFooter": {
-    "message": "آدرس اینترنتی پایه فرضی نصب بیت واردن میزبانی شده را مشخص کنید."
+    "message": "آدرس اینترنتی پایه فرضی نصب Bitwarden میزبانی شده را مشخص کنید."
   },
   "customEnvironment": {
     "message": "محیط های سفارشی"
