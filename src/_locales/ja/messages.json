@@ -83,7 +83,7 @@
     "message": "自動入力"
   },
   "generatePasswordCopied": {
-    "message": "パスワードを生成 (コピーしました)"
+    "message": "パスワードを生成してコピー"
   },
   "noMatchingLogins": {
     "message": "一致するログインがありません。"
@@ -383,7 +383,7 @@
     "message": "認証コードは必須項目です。"
   },
   "valueCopied": {
-    "message": " コピーしました",
+    "message": "をコピーしました",
     "description": "' copied'. This is part of a sentence so be sure to leave the space prefix. For example: 'Password copied'"
   },
   "autofillError": {
