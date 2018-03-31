@@ -994,7 +994,7 @@
     "message": "Parolanız herhangi bir saldırı sonucu açığa çıkmış mı kontrol edin."
   },
   "passwordExposed": {
-    "message": "Bu parola $Value$ sefer saldırı sonucu veri ele geçmesiyle açığa çıkmış. Değiştirmeniz gerekiyor."
+    "message": "Bu şifre veri ihlallerinde açığa çıktı. Değiştirmezi gerekiyor."
   },
   "passwordSafe": {
     "message": "Parolanız, herhangi bir saldırı sonucu ele geçirilen veride bulunmadı. Kullanılması güvenli görünüyor."
@@ -1017,7 +1017,7 @@
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
-    "message": "Match Detection",
+    "message": "Eşleme Tanıma",
     "description": "URI match detection for auto-fill."
   },
   "defaultMatchDetection": {
