@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "bitwarden"
+    "message": "Bitwarden"
   },
   "extName": {
-    "message": "bitwarden - Manager de parole gratuit",
+    "message": "Bitwarden - Manager de parole gratuit",
     "description": "Extension name"
   },
   "extDesc": {
@@ -170,7 +170,7 @@
     "message": "Vizitați-ne site-ul web"
   },
   "visitOurWebsiteDirectly": {
-    "message": "Vizitați saitul nostru pentru a obține ajutor, a afla noutăți, a ne trimite un e-mail, și\/sau pentru a afla mai multe despre cum să utilizați bitwarden."
+    "message": "Vizitați saitul nostru pentru a obține ajutor, a afla noutăți, a ne trimite un e-mail, și\/sau pentru a afla mai multe despre cum să utilizați Bitwarden."
   },
   "fileBugReport": {
     "message": "Raport de Bug"
@@ -194,22 +194,22 @@
     "message": "Generează automat parole puternice, unice pentru datele de conectare."
   },
   "bitWebVault": {
-    "message": "Seif bitwarden Web"
+    "message": "Seif web Bitwarden"
   },
   "bitWebVaultInfo": {
-    "message": "Gestionați datele de conectare din orice navigator cu seiful web bitwarden."
+    "message": "Gestionați datele de conectare din orice navigator cu seiful web Bitwarden."
   },
   "bitIosVault": {
-    "message": "Seif bitwarden iOS"
+    "message": "Seif Bitwarden iOS"
   },
   "bitIosVaultInfo": {
-    "message": "Gestionați datele de conectare de pe dispozitivele mobile cu seiful bitwarden iOS."
+    "message": "Gestionați datele de conectare de pe dispozitivele mobile cu seiful Bitwarden iOS."
   },
   "bitAndrVault": {
-    "message": "Seif bitwarden Android"
+    "message": "Seif Bitwarden Android"
   },
   "bitAndrVaultInfo": {
-    "message": "Gestionați datele de conectare de pe dispozitivele mobile cu seiful bitwarden Android."
+    "message": "Gestionați datele de conectare de pe dispozitivele mobile cu seiful Bitwarden Android."
   },
   "importItems": {
     "message": "Import articole"
@@ -511,7 +511,7 @@
     "message": "\"Notificarea de adăugare a datelor de autentificare\" vă solicită automat salvarea de noi conturi în seiful dvs. de fiecare dată când vă conectați pentru prima dată."
   },
   "notificationAddDesc": {
-    "message": "Ar trebui ca bitwarden să memoreze această parolă pentru dvs.?"
+    "message": "Ar trebui ca Bitwarden să memoreze această parolă pentru dvs.?"
   },
   "notificationAddSave": {
     "message": "Da, salvează acum"
@@ -548,7 +548,7 @@
     "message": "Partajaţi seiful"
   },
   "shareVaultInfo": {
-    "message": "Creați o organizație pentru a partaja în siguranță accesul la datele de conectare cu alţi utilizatori."
+    "message": "Creați o organizație pentru a partaja în siguranță accesul la datele de conectare cu alți utilizatori."
   },
   "contribute": {
     "message": "Puteţi contribui şi dvs!"
@@ -644,7 +644,7 @@
     "message": "Sunteţi un membru premium!"
   },
   "premiumCurrentMemberThanks": {
-    "message": "Vă mulțumim pentru susținerea bitwarden."
+    "message": "Vă mulțumim pentru susținerea Bitwarden."
   },
   "premiumPrice": {
     "message": "Totul pentru doar %price% \/an!"
@@ -736,7 +736,7 @@
     "message": "Mediu de găzduire personal"
   },
   "selfHostedEnvironmentFooter": {
-    "message": "Specificați URL-ul implementări locale, personale a bitwarden."
+    "message": "Specificați URL-ul implementări locale, personale a Bitwarden."
   },
   "customEnvironment": {
     "message": "Mediu personalizat"
@@ -760,7 +760,7 @@
     "message": "URL server de pictograme"
   },
   "environmentSaved": {
-    "message": "URL-urile mediului bitwarden au fost salvate."
+    "message": "URL-urile mediului Bitwarden au fost salvate."
   },
   "enableAutoFillOnPageLoad": {
     "message": "Activare completare automată la încărcarea paginii"
