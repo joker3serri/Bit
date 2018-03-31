@@ -7,7 +7,7 @@
     "description": "Extension name"
   },
   "extDesc": {
-    "message": "bitwarden este un manager de parole sigur și gratuit pentru toate dispozitivele dvs.",
+    "message": "Un manager de parole sigur și gratuit pentru toate dispozitivele dvs.",
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
@@ -65,7 +65,7 @@
     "message": "Copiere parolă"
   },
   "copyNote": {
-    "message": "Copy Note"
+    "message": "Copiere notă"
   },
   "copyUri": {
     "message": "Copiere URL"
@@ -269,7 +269,7 @@
     "message": "Note"
   },
   "note": {
-    "message": "Observație"
+    "message": "Notă"
   },
   "editItem": {
     "message": "Editare articol"
@@ -1017,14 +1017,14 @@
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
-    "message": "Match Detection",
+    "message": "Detectare de potriviri",
     "description": "URI match detection for auto-fill."
   },
   "defaultMatchDetection": {
-    "message": "Default match detection",
+    "message": "Detectarea de potriviri implicite",
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
-    "message": "Toggle Options"
+    "message": "Activare\/dezactivare opțiuni"
   }
 }
