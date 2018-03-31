@@ -269,7 +269,7 @@
     "message": "Note"
   },
   "note": {
-    "message": "Note"
+    "message": "Observație"
   },
   "editItem": {
     "message": "Editare articol"
@@ -462,7 +462,7 @@
     "message": "URI"
   },
   "newUri": {
-    "message": "New URI"
+    "message": "URI nou"
   },
   "addedItem": {
     "message": "Articol adăugat"
@@ -991,29 +991,29 @@
     "message": "Finalizați solicitarea de conectare în doi pași utilizând o filă nouă."
   },
   "checkPassword": {
-    "message": "Check if password has been exposed."
+    "message": "Verifică dacă parola a fost dezvăluită."
   },
   "passwordExposed": {
-    "message": "This password has been exposed in data breaches. You should change it."
+    "message": "Această parolă a fost dezvăluită într-o breșă de date. Ar trebui să o schimbați."
   },
   "passwordSafe": {
-    "message": "This password was not found in any known data breaches. It should be safe to use."
+    "message": "Aceasta parola nu a fost găsită în nicio breșă de date cunoscută. Ar trebui să fie sigură pentru a fi utilizată."
   },
   "baseDomain": {
-    "message": "Base domain"
+    "message": "Domeniu de bază"
   },
   "host": {
-    "message": "Host",
+    "message": "Gazdă",
     "description": "A URL's host value. For example, the host of https:\/\/sub.domain.com:443 is 'sub.domain.com:443'."
   },
   "exact": {
     "message": "Exact"
   },
   "startsWith": {
-    "message": "Starts with"
+    "message": "Începe cu"
   },
   "regEx": {
-    "message": "Regular expression",
+    "message": "Expresie regulată",
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
