@@ -29,7 +29,7 @@
     "message": "Bekræft"
   },
   "emailAddress": {
-    "message": "E-mailadresse"
+    "message": "Emailadresse"
   },
   "masterPass": {
     "message": "Hovedadgangskode"
@@ -104,7 +104,7 @@
     "message": "Adgangskodetip"
   },
   "enterEmailToGetHint": {
-    "message": "Indtast din kontos e-mailadresse for at modtage dit hovedadgangskodetip."
+    "message": "Indtast din kontos emailadresse for at modtage dit hovedadgangskodetip."
   },
   "getMasterPasswordHint": {
     "message": "Få hovedadgangskodetip"
@@ -122,7 +122,7 @@
     "message": "Skift hovedadgangskode"
   },
   "changeEmail": {
-    "message": "Skift e-mailadresse"
+    "message": "Skift emailadresse"
   },
   "twoStepLogin": {
     "message": "To-trins login"
@@ -170,7 +170,7 @@
     "message": "Besøg vores hjemmeside"
   },
   "visitOurWebsiteDirectly": {
-    "message": "Besøg vores hjemmeside for at få hjælp, nyheder, sende os en e-mail og\/eller lære mere om hvordan du bruger Bitwarden."
+    "message": "Besøg vores hjemmeside for at få hjælp, nyheder, sende os en email og\/eller lære mere om hvordan du bruger Bitwarden."
   },
   "fileBugReport": {
     "message": "Indsend en fejlrapport"
@@ -359,10 +359,10 @@
     "message": "Der er opstået fejl"
   },
   "emailRequired": {
-    "message": "E-mail adresse er påkrævet."
+    "message": "Emailadresse er påkrævet."
   },
   "invalidEmail": {
-    "message": "Ugyldig e-mail adresse."
+    "message": "Ugyldig emailadresse."
   },
   "masterPassRequired": {
     "message": "Hovedadgangskode er påkrævet."
@@ -377,7 +377,7 @@
     "message": "Din nye konto er oprettet! Du kan nu logge ind."
   },
   "masterPassSent": {
-    "message": "Vi har sendt dig en e-mail med dit hovedadgangskodetip."
+    "message": "Vi har sendt dig en email med dit hovedadgangskodetip."
   },
   "verificationCodeRequired": {
     "message": "Bekræftelseskode er påkrævet."
@@ -420,10 +420,10 @@
     "message": "Du kan ændre din hovedadgangskode i bitwarden.com web-boksen. Vil du besøge hjemmesiden nu?"
   },
   "changeEmailConfirmation": {
-    "message": "Du kan ændre din e-mail adresse i bitwarden.com web-boksen. Vil du besøge hjemmesiden nu?"
+    "message": "Du kan ændre din emailadresse i bitwarden.com web-boksen. Vil du besøge hjemmesiden nu?"
   },
   "twoStepLoginConfirmation": {
-    "message": "To-trins login gør din konto mere sikker ved at kræve, at du verificerer dit login med en anden enhed med en sikkerhedsnøgle, autentificering app, SMS, telefonopkald eller e-mail. To-trins login kan aktiveres i bitwarden.com web-boksen. Vil du besøge hjemmesiden nu?"
+    "message": "To-trins login gør din konto mere sikker ved at kræve, at du verificerer dit login med en anden enhed, med en sikkerhedsnøgle, autentificerings app, SMS, telefonopkald eller email. To-trins login kan aktiveres i bitwarden.com web-boksen. Vil du besøge hjemmesiden nu?"
   },
   "loggingOut": {
     "message": "Logger af"
@@ -533,7 +533,7 @@
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
   "exportWarning": {
-    "message": "Denne eksport indeholder dine ikke-krypterede data i .csv-format. Du bør ikke gemme eller sende den over usikre kanaler (f.eks. e-mail). Slet den umiddelbart efter at du er færdig med at bruge den."
+    "message": "Denne eksport indeholder dine ikke-krypterede data i .csv-format. Du bør ikke gemme eller sende den over usikre kanaler (f.eks. email). Slet den umiddelbart efter at du er færdig med at bruge den."
   },
   "exportMasterPassword": {
     "message": "Indtast din hovedadgangskode for at eksportere dine data fra boksen."
@@ -727,10 +727,10 @@
     "message": "FIDO U2F sikkerhedsnøgle"
   },
   "emailTitle": {
-    "message": "E-mail"
+    "message": "Email"
   },
   "emailDesc": {
-    "message": "Bekræftelseskoder vil blive e-mailet til dig."
+    "message": "Bekræftelseskoder vil blive emailet til dig."
   },
   "selfHostedEnvironment": {
     "message": "Selv-hosted miljø"
@@ -805,7 +805,7 @@
     "message": "Boolsk"
   },
   "popup2faCloseMessage": {
-    "message": "Ved at klikke uden for pop-up-vinduet for at tjekke din e-mail for din bekræftelseskode vil få denne popup til at lukke. Vil du åbne denne popup i et nyt vindue, så det ikke lukker?"
+    "message": "Ved at klikke uden for pop-up-vinduet for at tjekke din email for din bekræftelseskode vil få denne popup til at lukke. Vil du åbne denne popup i et nyt vindue, så det ikke lukker?"
   },
   "disableFavicon": {
     "message": "Slå webikoner fra"
@@ -913,7 +913,7 @@
     "message": "Kørekortnummer"
   },
   "email": {
-    "message": "E-mail"
+    "message": "Email"
   },
   "phone": {
     "message": "Telefon"
@@ -1017,11 +1017,11 @@
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
-    "message": "Matchgenkendelse",
+    "message": "Matchmetode",
     "description": "URI match detection for auto-fill."
   },
   "defaultMatchDetection": {
-    "message": "Standard matchgenkendelse",
+    "message": "Standard matchmetode",
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
