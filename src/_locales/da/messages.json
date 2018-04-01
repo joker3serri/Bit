@@ -233,10 +233,10 @@
     "message": "Længde"
   },
   "minNumbers": {
-    "message": "Mindste antal tal"
+    "message": "Minimum tal"
   },
   "minSpecial": {
-    "message": "Mindste antal specialtegn"
+    "message": "Minimum specialtegn"
   },
   "avoidAmbChar": {
     "message": "Undgå tvetydige tegn"
@@ -420,7 +420,7 @@
     "message": "Du kan ændre din hovedadgangskode i bitwarden.com web-boksen. Vil du besøge hjemmesiden nu?"
   },
   "changeEmailConfirmation": {
-    "message": "Du kan ændre din emailadresse i bitwarden.com web-boksen. Vil du besøge hjemmesiden nu?"
+    "message": "Du kan ændre din e-mail adresse i bitwarden.com web-boksen. Vil du besøge hjemmesiden nu?"
   },
   "twoStepLoginConfirmation": {
     "message": "To-trins login gør din konto mere sikker ved at kræve, at du verificerer dit login med en anden enhed, med en sikkerhedsnøgle, autentificerings app, SMS, telefonopkald eller email. To-trins login kan aktiveres i bitwarden.com web-boksen. Vil du besøge hjemmesiden nu?"
@@ -453,7 +453,7 @@
     "message": "Synkronisering mislykkedes"
   },
   "importItemsConfirmation": {
-    "message": "Du kan importere emner i din web-boks på bitwarden.com. Vil du besøge hjemmesiden nu?"
+    "message": "Du kan importere elementer i din web-boks på bitwarden.com. Vil du besøge hjemmesiden nu?"
   },
   "passwordCopied": {
     "message": "Adgangskode kopieret"
