@@ -16,7 +16,8 @@
                     <div class="list-section-item list-section-item-icon-input">
                         <i class="fa fa-envelope fa-lg fa-fw"></i>
                         <label for="email" class="sr-only">{{i18n.emailAddress}}</label>
-                        <input id="email" type="text" name="Email" placeholder="{{i18n.emailAddress}}" ng-model="model.email">
+                        <input id="email" type="email" name="Email" placeholder="{{i18n.emailAddress}}" ng-model="model.email"
+                               autocapitalize="none" autocomplete="none" autocorrect="none" inputmode="verbatim" spellcheck="false">
                     </div>
                     <div class="list-section-item list-section-item-icon-input">
                         <i class="fa fa-lock fa-lg fa-fw"></i>
