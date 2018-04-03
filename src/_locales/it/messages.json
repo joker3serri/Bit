@@ -720,6 +720,10 @@
     "message": "Verifica con Duo Security usando l'app Duo Mobile, SMS, chiamata telefonica, o chiave di sicurezza U2F.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
+  "duoOrganizationDesc": {
+    "message": "Verifica con Duo Security per la tua azienda usando l'app Duo Mobile, SMS, chiamata telefonica, o chiave di sicurezza U2F.",
+    "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
+  },
   "u2fDesc": {
     "message": "Usa una chiave di sicurezza compatibile con FIDO U2F per accedere al tuo account."
   },
@@ -1026,5 +1030,9 @@
   },
   "toggleOptions": {
     "message": "Attiva\/Disattiva opzioni"
+  },
+  "organization": {
+    "message": "Società",
+    "description": "An entity of multiple related people (ex. a team or business organization)."
   }
 }
