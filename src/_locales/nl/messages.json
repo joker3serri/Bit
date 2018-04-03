@@ -720,6 +720,10 @@
     "message": "Verifiëren met Duo Security middels de Duo Mobile-app, sms, spraakoproep of een U2F-beveiligingssleutel.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
+  "duoOrganizationDesc": {
+    "message": "Verify with Duo Security for your organization using the Duo Mobile app, SMS, phone call, or U2F security key.",
+    "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
+  },
   "u2fDesc": {
     "message": "Gebruik een FIDO U2F-beveiligingssleutel om toegang te krijgen tot uw account."
   },
@@ -1026,5 +1030,9 @@
   },
   "toggleOptions": {
     "message": "Schakel Context"
+  },
+  "organization": {
+    "message": "Organization",
+    "description": "An entity of multiple related people (ex. a team or business organization)."
   }
 }
