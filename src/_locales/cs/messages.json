@@ -1,13 +1,13 @@
 {
   "appName": {
-    "message": "bitwarden"
+    "message": "Bitwarden"
   },
   "extName": {
-    "message": "bitwarden – Bezplatný správce hesel",
+    "message": "Bitwarden – Bezplatný správce hesel",
     "description": "Extension name"
   },
   "extDesc": {
-    "message": "bitwarden je bezpečný a bezplatný správce hesel pro všechna vaše zařízení.",
+    "message": "Bezpečný a bezplatný správce hesel pro všechna vaše zařízení.",
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
@@ -65,7 +65,7 @@
     "message": "Kopírovat heslo"
   },
   "copyNote": {
-    "message": "Copy Note"
+    "message": "Kopírovat poznámku"
   },
   "copyUri": {
     "message": "Kopírovat URL"
@@ -170,7 +170,7 @@
     "message": "Navštivit naší webovou stránku"
   },
   "visitOurWebsiteDirectly": {
-    "message": "Navštivte webovou stránku aplikace pro zobrazení nejnovějších zpráv, nápovědy nebo návodu jak používat bitwarden."
+    "message": "Navštivte webovou stránku aplikace pro zobrazení nápovědy, novinek, nebo návody jak používat Bitwarden."
   },
   "fileBugReport": {
     "message": "Nahlásit chybu"
@@ -197,19 +197,19 @@
     "message": "Webová aplikace"
   },
   "bitWebVaultInfo": {
-    "message": "Spravujte přihlašovací údaje z jakéhokoliv prohlížeče pomocí webové aplikace bitwarden."
+    "message": "Spravujte přihlašovací údaje z jakéhokoliv prohlížeče pomocí webové aplikace Bitwarden."
   },
   "bitIosVault": {
     "message": "Aplikace pro iOS"
   },
   "bitIosVaultInfo": {
-    "message": "Spravujte přihlašovací údaje z jakéhokoliv mobilního zařízení pomocí iOS aplikace bitwarden."
+    "message": "Spravujte přihlašovací údaje z jakéhokoliv mobilního zařízení pomocí aplikace Bitwarden pro iOS."
   },
   "bitAndrVault": {
     "message": "Aplikace pro Android"
   },
   "bitAndrVaultInfo": {
-    "message": "Spravujte přihlašovací údaje z jakéhokoliv mobilního zařízení pomocí Android aplikace bitwarden."
+    "message": "Spravujte přihlašovací údaje z jakéhokoliv mobilního zařízení pomocí aplikace Bitwarden pro Android."
   },
   "importItems": {
     "message": "Importovat položky"
@@ -269,7 +269,7 @@
     "message": "Poznámky"
   },
   "note": {
-    "message": "Note"
+    "message": "Poznámka"
   },
   "editItem": {
     "message": "Upravit položku"
@@ -344,7 +344,7 @@
     "message": "Po 4 hodinách"
   },
   "onLocked": {
-    "message": "Při uzamčení"
+    "message": "Při uzamknutí systému"
   },
   "onRestart": {
     "message": "Při restartu"
@@ -462,7 +462,7 @@
     "message": "URL"
   },
   "newUri": {
-    "message": "New URI"
+    "message": "Nová URI"
   },
   "addedItem": {
     "message": "Položka byla přidána"
@@ -511,7 +511,7 @@
     "message": "Notifikace \"Přidat přihlašovací údaje\" automaticky vyzve k uložení přihlašovacích údajů do trezoru, pokud se s nimi poprvé přihlašujete."
   },
   "notificationAddDesc": {
-    "message": "Má si pro vás bitwarden toto heslo pamatovat?"
+    "message": "Má si pro vás Bitwarden toto heslo pamatovat?"
   },
   "notificationAddSave": {
     "message": "Ano, uložit nyní"
@@ -991,40 +991,40 @@
     "message": "Dokončete dvoufázové přihlášení pomocí nové karty."
   },
   "checkPassword": {
-    "message": "Check if password has been exposed."
+    "message": "Zkontrolujte, zda nedošlo k úniku hesla."
   },
   "passwordExposed": {
-    "message": "This password has been exposed in data breaches. You should change it."
+    "message": "Došlo k úniku tohoto hesla v některém ze známých případů. Měli byste jej změnit."
   },
   "passwordSafe": {
-    "message": "This password was not found in any known data breaches. It should be safe to use."
+    "message": "K úniku tohoto hesla nedošlo v žádném ze známých případů. Mělo by být bezpečné používat jej i nadále."
   },
   "baseDomain": {
-    "message": "Base domain"
+    "message": "Základní doména"
   },
   "host": {
     "message": "Host",
     "description": "A URL's host value. For example, the host of https:\/\/sub.domain.com:443 is 'sub.domain.com:443'."
   },
   "exact": {
-    "message": "Exact"
+    "message": "Přesně"
   },
   "startsWith": {
-    "message": "Starts with"
+    "message": "Začíná na"
   },
   "regEx": {
-    "message": "Regular expression",
+    "message": "Regulární výraz",
     "description": "A programming term, also known as 'RegEx'."
   },
   "matchDetection": {
-    "message": "Match Detection",
+    "message": "Zjišťování shody",
     "description": "URI match detection for auto-fill."
   },
   "defaultMatchDetection": {
-    "message": "Default match detection",
+    "message": "Výchozí",
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
-    "message": "Toggle Options"
+    "message": "Přepnout možnosti"
   }
 }
