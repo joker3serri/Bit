@@ -644,7 +644,7 @@
     "message": "Jste prémiovým členem!"
   },
   "premiumCurrentMemberThanks": {
-    "message": "Děkujeme za podporu bitwarden."
+    "message": "Děkujeme za podporu Bitwarden."
   },
   "premiumPrice": {
     "message": "Vše jen za %price% ročně!"
@@ -736,7 +736,7 @@
     "message": "Vlastnoručně hostované prostředí"
   },
   "selfHostedEnvironmentFooter": {
-    "message": "Zadejte základní URL adresu vlastnoručně hostované aplikace bitwarden."
+    "message": "Zadejte základní URL adresu vlastnoručně hostované aplikace Bitwarden."
   },
   "customEnvironment": {
     "message": "Vlastní prostředí"
