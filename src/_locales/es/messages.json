@@ -720,6 +720,10 @@
     "message": "Verificar con Duo Security usando la aplicación Duo Mobile, SMS, llamada telefónica o llave de seguridad U2F.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
+  "duoOrganizationDesc": {
+    "message": "Verify with Duo Security for your organization using the Duo Mobile app, SMS, phone call, or U2F security key.",
+    "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
+  },
   "u2fDesc": {
     "message": "Usa cualquier llave de seguridad FIDO U2F habilitada para acceder a tu cuenta."
   },
@@ -1026,5 +1030,9 @@
   },
   "toggleOptions": {
     "message": "Alternar opciones"
+  },
+  "organization": {
+    "message": "Organization",
+    "description": "An entity of multiple related people (ex. a team or business organization)."
   }
 }
