@@ -1025,6 +1025,6 @@
     "description": "Default URI match detection for auto-fill."
   },
   "toggleOptions": {
-    "message": "Activer\/désactiver les options"
+    "message": "Afficher\/masquer les options"
   }
 }
