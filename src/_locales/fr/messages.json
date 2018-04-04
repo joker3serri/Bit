@@ -1032,7 +1032,7 @@
     "message": "Afficher\/masquer les options"
   },
   "organization": {
-    "message": "Organization",
+    "message": "Organisation",
     "description": "An entity of multiple related people (ex. a team or business organization)."
   }
 }
