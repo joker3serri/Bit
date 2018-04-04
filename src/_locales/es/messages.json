@@ -721,7 +721,7 @@
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
-    "message": "Verify with Duo Security for your organization using the Duo Mobile app, SMS, phone call, or U2F security key.",
+    "message": "Verificar con Duo Security para tu organización usando la aplicación Duo Mobile, SMS, llamada telefónica o llave de seguridad U2F.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "u2fDesc": {
@@ -1032,7 +1032,7 @@
     "message": "Alternar opciones"
   },
   "organization": {
-    "message": "Organization",
+    "message": "Organización",
     "description": "An entity of multiple related people (ex. a team or business organization)."
   }
 }
