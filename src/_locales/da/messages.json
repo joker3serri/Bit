@@ -11,7 +11,7 @@
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
-    "message": "Log ind eller opret en ny konto for at få adgang til din sikre boks."
+    "message": "Log ind eller opret en ny konto for at få adgang til din sikre Boks."
   },
   "createAccount": {
     "message": "Opret Konto"
@@ -29,13 +29,13 @@
     "message": "Bekræft"
   },
   "emailAddress": {
-    "message": "E-post Adresse"
+    "message": "E-mailadresse"
   },
   "masterPass": {
     "message": "Hovedadgangskode"
   },
   "masterPassDesc": {
-    "message": "Hovedadgangskoden er den adgangskode, du bruger til at få adgang til din boks. Det er meget vigtigt, at du ikke glemmer din hovedadgangskode. Der er ingen måde at genoprette koden i tilfælde af at du glemmer det."
+    "message": "Hovedadgangskoden er den adgangskode du bruger til at få adgang til din boks. Det er meget vigtigt, at du ikke glemmer din hovedadgangskode. Der er ingen måde at genoprette koden i tilfælde af at du glemmer den."
   },
   "masterPassHintDesc": {
     "message": "Et tip til hovedeadgangskoden kan hjælpe dig med at huske din adgangskode, hvis du glemmer det."
@@ -101,7 +101,7 @@
     "message": "Adgangskodetip"
   },
   "enterEmailToGetHint": {
-    "message": "Indtast din kontos e-post adresse for at modtage din hovedadgangskodetip."
+    "message": "Indtast din kontos e-mailadresse for at modtage din hovedadgangskodetip."
   },
   "getMasterPasswordHint": {
     "message": "Få hovedadgangskodetip"
@@ -119,7 +119,7 @@
     "message": "Skift Hovedadgangskode"
   },
   "changeEmail": {
-    "message": "Skift E-postadresse"
+    "message": "Skift E-mailadresse"
   },
   "twoStepLogin": {
     "message": "To-trins Login"
@@ -173,7 +173,7 @@
     "message": "Indsend en Fejlrapport"
   },
   "gitHubIssue": {
-    "message": "Åbn et emne på vores GitHub opbevaringssted."
+    "message": "Åbn et problem på vores GitHub."
   },
   "sync": {
     "message": "Synkroniser"
@@ -353,10 +353,10 @@
     "message": "Der er opstået fejl"
   },
   "emailRequired": {
-    "message": "E-post adresse er påkrævet."
+    "message": "E-mailadresse er påkrævet."
   },
   "invalidEmail": {
-    "message": "Ugyldig e-post adresse."
+    "message": "Ugyldig E-mailadresse."
   },
   "masterPassRequired": {
     "message": "Hovedadgangskode er påkrævet."
@@ -724,7 +724,7 @@
     "message": "E-mail"
   },
   "emailDesc": {
-    "message": "Bekræftelseskoder vil blive E-mailet til dig."
+    "message": "Bekræftelseskoder vil blive e-mailet til dig."
   },
   "selfHostedEnvironment": {
     "message": "Self-Hosted miljø"
@@ -805,7 +805,7 @@
     "message": "Slå webikoner fra"
   },
   "disableFaviconDesc": {
-    "message": "Webikoner vises som et genkendeligt billede ved siden af hvert loginelement i din boks."
+    "message": "Webikoner vises som et genkendeligt billede ved siden af hvert loginelement i din Boks."
   },
   "cardholderName": {
     "message": "Kortindehaverens navn"
@@ -985,30 +985,30 @@
     "message": "Fuldfør din to-trins loginanmodning ved hjælp af den nye fane."
   },
   "checkPassword": {
-    "message": "Check if password has been exposed."
+    "message": "Se om kodeordet er blevet udsat."
   },
   "passwordExposed": {
-    "message": "This password has been exposed in data breaches. You should change it."
+    "message": "Dette kodeord er blevet udsat i databrud. Du bør ændre det."
   },
   "passwordSafe": {
-    "message": "This password was not found in any known data breaches. It should be safe to use."
+    "message": "Dette kodeord blev ikke fundet i nogen kendte databrud. Det bør være sikkert at bruge."
   },
   "baseDomain": {
-    "message": "Base domain"
+    "message": "Base domæne"
   },
   "host": {
     "message": "Host",
     "description": "A URL's host value. For example, the host of https:\/\/sub.domain.com:443 is 'sub.domain.com:443'."
   },
   "exact": {
-    "message": "Exact"
+    "message": "Præcis"
   },
   "startsWith": {
-    "message": "Starts with"
+    "message": "Starter med"
   },
   "regEx": {
-    "message": "Regular expression",
-    "description": "A programming term, also known as 'RegEx'."
+    "message": "Regulære udtryk",
+    "description": "Matchingsprog brugt til at sammenligne tekststrenge. Ogå kendt som 'RegEx'."
   },
   "matchDetection": {
     "message": "Match Detection",
