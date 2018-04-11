@@ -36,6 +36,7 @@
     3. Unminify and format to meet Mozilla review requirements.
     4. Remove unnecessary input types from getFormElements query selector and limit number of elements returned.
     5. Remove fakeTested prop.
+    6. Replace "onepassword" references in CSS, DOM with "bitwarden".
     */
 
     function collect(document, undefined) {
@@ -45,7 +46,7 @@
 
         document.elementsByOPID = {};
         document.addEventListener('input', function (canuf) {
-            false !== canuf.a && 'input' === canuf.target.tagName.toLowerCase() && (canuf.target.dataset['com.agilebits.onepassword.userEdited'] = 'yes');
+            false !== canuf.a && 'input' === canuf.target.tagName.toLowerCase() && (canuf.target.dataset['com.bitwarden.userEdited'] = 'yes');
         }, true);
 
         function getPageDetails(theDoc, oneShotId) {
@@ -264,7 +265,7 @@
                 addProp(field, 'htmlClass', getElementAttrValue(el, 'class'));
                 addProp(field, 'tabindex', getElementAttrValue(el, 'tabindex'));
                 addProp(field, 'title', getElementAttrValue(el, 'title'));
-                addProp(field, 'userEdited', !!el.dataset['com.agilebits.onepassword.userEdited']);
+                addProp(field, 'userEdited', !!el.dataset['com.bitwarden.userEdited']);
 
                 if ('hidden' != toLowerString(el.type)) {
                     addProp(field, 'label-tag', getLabelTag(el));
@@ -300,13 +301,13 @@
                 addProp(field, 'aria-haspopup', 'true' == el.getAttribute('aria-haspopup'), false);
                 addProp(field, 'data-unmasked', el.dataset.unmasked);
                 addProp(field, 'data-stripe', getElementAttrValue(el, 'data-stripe'));
-                addProp(field, 'onepasswordFieldType', el.dataset.onepasswordFieldType || el.type);
-                addProp(field, 'onepasswordDesignation', el.dataset.onepasswordDesignation);
-                addProp(field, 'onepasswordSignInUrl', el.dataset.onepasswordSignInUrl);
-                addProp(field, 'onepasswordSectionTitle', el.dataset.onepasswordSectionTitle);
-                addProp(field, 'onepasswordSectionFieldKind', el.dataset.onepasswordSectionFieldKind);
-                addProp(field, 'onepasswordSectionFieldTitle', el.dataset.onepasswordSectionFieldTitle);
-                addProp(field, 'onepasswordSectionFieldValue', el.dataset.onepasswordSectionFieldValue);
+                addProp(field, 'bitwardenFieldType', el.dataset.bitwardenFieldType || el.type);
+                addProp(field, 'bitwardenDesignation', el.dataset.bitwardenDesignation);
+                addProp(field, 'bitwardenSignInUrl', el.dataset.bitwardenSignInUrl);
+                addProp(field, 'bitwardenSectionTitle', el.dataset.bitwardenSectionTitle);
+                addProp(field, 'bitwardenSectionFieldKind', el.dataset.bitwardenSectionFieldKind);
+                addProp(field, 'bitwardenSectionFieldTitle', el.dataset.bitwardenSectionFieldTitle);
+                addProp(field, 'bitwardenSectionFieldValue', el.dataset.bitwardenSectionFieldValue);
 
                 if (el.form) {
                     field.form = getElementAttrValue(el.form, 'opid');
@@ -377,9 +378,9 @@
             };
 
             // get proper page title. maybe they are using the special meta tag?
-            var theTitle = document.querySelector('[data-onepassword-title]')
+            var theTitle = document.querySelector('[data-bitwarden-title]')
             if (theTitle && theTitle.dataset[DISPLAY_TITLE_ATTRIBUE]) {
-                pageDetails.displayTitle = theTitle.dataset.onepasswordTitle;
+                pageDetails.displayTitle = theTitle.dataset.bitwardenTitle;
             }
 
             return pageDetails;
@@ -823,9 +824,9 @@
             setValueForElement(el);
             afterValSetFunc(el);
             setValueForElementByEvent(el);
-            canSeeElementToStyle(el) && (el.className += ' com-agilebits-onepassword-extension-animated-fill',
+            canSeeElementToStyle(el) && (el.className += ' com-bitwarden-extension-animated-fill',
                 setTimeout(function () {
-                    el && el.className && (el.className = el.className.replace(/(\\s)?com-agilebits-onepassword-extension-animated-fill/, ''));
+                    el && el.className && (el.className = el.className.replace(/(\\s)?com-bitwarden-extension-animated-fill/, ''));
                 }, styleTimeout));
         }
 

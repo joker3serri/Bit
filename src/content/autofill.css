@@ -1,4 +1,4 @@
-﻿@-webkit-keyframes onepasswordfill {
+﻿@-webkit-keyframes bitwardenfill {
     0% {
         -webkit-transform: scale(1.0,1.0);
     }
@@ -12,7 +12,7 @@
     }
 }
 
-@-moz-keyframes onepasswordfill {
+@-moz-keyframes bitwardenfill {
     0% {
         transform: scale(1.0,1.0);
     }
@@ -26,7 +26,7 @@
     }
 }
 
-.com-agilebits-onepassword-extension-animated-fill {
-    animation: onepasswordfill 200ms ease-in-out 0ms 1;
-    -webkit-animation: onepasswordfill 200ms ease-in-out 0ms 1;
+.com-bitwarden-extension-animated-fill {
+    animation: bitwardenfill 200ms ease-in-out 0ms 1;
+    -webkit-animation: bitwardenfill 200ms ease-in-out 0ms 1;
 }
