@@ -15,7 +15,7 @@ export default class AutofillField {
     value: string;
     disabled: boolean;
     readonly: boolean;
-    onePasswordFieldType: string;
+    bitwardenFieldType: string;
     form: string;
     autoCompleteType: string;
     selectInfo: any;
