@@ -182,26 +182,8 @@
   "bitWebVault": {
     "message": "Internetowy Sejf Bitwarden"
   },
-  "bitWebVaultInfo": {
-    "message": "Zarządzaj swoimi danymi z poziomu dowolnej przeglądarki za pomocą sejfu internetowego Bitwarden."
-  },
-  "bitIosVault": {
-    "message": "Sejf iOS bitwarden"
-  },
-  "bitIosVaultInfo": {
-    "message": "Zarządzaj swoimi danymi z poziomu urządzeń mobilnych za pomocą sejfu Bitwarden iOS."
-  },
-  "bitAndrVault": {
-    "message": "Sejf Android Bitwarden"
-  },
-  "bitAndrVaultInfo": {
-    "message": "Zarządzaj swoimi danymi z poziomu urządzeń mobilnych za pomocą sejfu Bitwarden Android."
-  },
   "importItems": {
     "message": "Importuj elementy"
-  },
-  "importItemsInfo": {
-    "message": "Szybko zaimportuj wiele elementów z innych menedżerów haseł."
   },
   "select": {
     "message": "Wybierz"
@@ -449,6 +431,7 @@
   },
   "uriPosition": {
     "message": "URI $POSITION$",
+    "description": "A listing of URIs. Ex: URI 1, URI 2, URI 3, etc.",
     "placeholders": {
       "position": {
         "content": "$1",
@@ -527,17 +510,14 @@
   "exportMasterPassword": {
     "message": "Wprowadź hasło główne, aby wyeksportować dane z sejfu."
   },
-  "exportVaultInfo": {
-    "message": "Eksportowanie danych z sejfu w formacie .csv w celu ich łatwej edycji lub przeniesienia."
-  },
   "shared": {
     "message": "Udostępnione"
   },
   "shareVault": {
     "message": "Udostępnij swój sejf"
   },
-  "shareVaultInfo": {
-    "message": "Utwórz organizację, aby bezpiecznie udostępniać innym użytkownikom swoje dane."
+  "shareVaultConfirmation": {
+    "message": "Bitwarden allows you to share your vault with others by using an organization account. Would you like to visit the bitwarden.com website to learn more?"
   },
   "learnMore": {
     "message": "Dowiedz się więcej"
