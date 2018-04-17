@@ -182,26 +182,8 @@
   "bitWebVault": {
     "message": "Bitwarden Web-Tresor"
   },
-  "bitWebVaultInfo": {
-    "message": "Verwalte deine Zugangsdaten in jedem Browser mit dem Bitwarden Web-Tresor."
-  },
-  "bitIosVault": {
-    "message": "Bitwarden iOS-Tresor"
-  },
-  "bitIosVaultInfo": {
-    "message": "Verwalte deine Logins von deinem Smartphone aus mit dem Bitwarden iOS-Tresor."
-  },
-  "bitAndrVault": {
-    "message": "Bitwarden Android-Tresor"
-  },
-  "bitAndrVaultInfo": {
-    "message": "Verwalte deine Logins von deinem Smartphone aus mit dem Bitwarden Android-Tresor."
-  },
   "importItems": {
     "message": "Einträge importieren"
-  },
-  "importItemsInfo": {
-    "message": "Importiere all deine Zugangsdaten schnell und einfach von anderen Passwort-Managern."
   },
   "select": {
     "message": "Auswählen"
@@ -449,6 +431,7 @@
   },
   "uriPosition": {
     "message": "URI $POSITION$",
+    "description": "A listing of URIs. Ex: URI 1, URI 2, URI 3, etc.",
     "placeholders": {
       "position": {
         "content": "$1",
@@ -527,17 +510,14 @@
   "exportMasterPassword": {
     "message": "Gib das Masterpasswort ein, um deine Tresordaten zu exportieren."
   },
-  "exportVaultInfo": {
-    "message": "Exportiere deine Tresordaten im .csv-Format, so dass du sie leicht ändern oder verschieben kannst."
-  },
   "shared": {
     "message": "Geteilt"
   },
   "shareVault": {
     "message": "Teile deinen Tresor"
   },
-  "shareVaultInfo": {
-    "message": "Erstelle eine Organisation um deine Logindaten sicher für andere Benutzer freizugeben."
+  "shareVaultConfirmation": {
+    "message": "Bitwarden allows you to share your vault with others by using an organization account. Would you like to visit the bitwarden.com website to learn more?"
   },
   "learnMore": {
     "message": "Erfahre mehr"
