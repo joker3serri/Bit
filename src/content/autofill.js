@@ -37,6 +37,7 @@
     4. Remove unnecessary input types from getFormElements query selector and limit number of elements returned.
     5. Remove fakeTested prop.
     6. Rename com.agilebits.* stuff to com.bitwarden.*
+    7. Remove "some useful globals" on window
     */
 
     function collect(document, undefined) {
