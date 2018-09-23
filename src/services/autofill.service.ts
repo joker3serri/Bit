@@ -438,13 +438,12 @@ export default class AutofillService implements AutofillServiceInterface {
                     fillFields.exp = f;
                     break;
                 } else if (!fillFields.expMonth && this.isFieldMatch(f[attr],
-                    ['exp-month', 'cc-exp-month', 'cc-month', 'card-month', 'cc-mo', 'card-mo', 'exp-mo',
-                        'card-exp-mo', 'cc-exp-mo', 'card-expiration-month', 'expiration-month',
-                        'cc-mm', 'cc-m', 'card-mm', 'card-m', 'card-exp-mm', 'cc-exp-mm', 'exp-mm', 'exp-m',
-                        'expire-month', 'expire-mo', 'expiry-month', 'expiry-mo', 'card-expire-month',
-                        'card-expire-mo', 'card-expiry-month', 'card-expiry-mo', 'mois-validite',
-                        'mois-expiration', 'm-validite', 'm-expiration', 'expiry-date-field-month',
-                        'expiration-date-month', 'expiration-date-mm', 'exp-mon', 'validity-mo',
+                    ['cc-mo', 'card-mo', 'cc-mo', 'card-mo', 'exp-mo',
+                        'expiration-mo', 'cc-mm', 'cc-m', 'card-mm', 'card-m', 'card-exp-mm',
+                        'cc-exp-mm', 'exp-mm', 'exp-m', 'expire-mo', 'expiry-mo',
+                        'card-expire-mo', 'card-expiry-mo', 'mois-validite',
+                        'mois-expiration', 'm-validite', 'm-expiration', 'expiry-date-field-mo',
+                        'expiration-date-mo', 'expiration-date-mm', 'validity-mo',
                         'exp-date-mo'])) {
                     fillFields.expMonth = f;
                     break;
