@@ -445,7 +445,7 @@ export default class AutofillService implements AutofillServiceInterface {
                         'card-expire-mo', 'card-expiry-month', 'card-expiry-mo', 'mois-validite',
                         'mois-expiration', 'm-validite', 'm-expiration', 'expiry-date-field-month',
                         'expiration-date-month', 'expiration-date-mm', 'exp-mon', 'validity-mo',
-                        'exp-date-month'])) {
+                        'exp-date-mo'])) {
                     fillFields.expMonth = f;
                     break;
                 } else if (!fillFields.expYear && this.isFieldMatch(f[attr],
@@ -462,7 +462,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 } else if (!fillFields.code && this.isFieldMatch(f[attr],
                     ['cvv', 'cvc', 'cvv2', 'cc-csc', 'cc-cvv', 'card-csc', 'card-cvv', 'cvd', 'cid', 'cvc2',
                         'cnv', 'cvn2', 'cc-code', 'card-code', 'code-securite', 'security-code', 'crypto',
-                        'card-verification'])) {
+                        'card-verif'])) {
                     fillFields.code = f;
                     break;
                 } else if (!fillFields.brand && this.isFieldMatch(f[attr],
