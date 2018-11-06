@@ -329,6 +329,12 @@ header {
             }
         }
     }
+
+    &.tabs-3 {
+        ul li {
+            width: 33.33%;
+        }
+    }
 }
 
 app-root {
@@ -368,6 +374,7 @@ content {
     align-items: center;
     height: 100%;
     flex-direction: column;
+    flex-grow: 1;
 }
 
 .no-items {

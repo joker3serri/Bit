@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import {
+    ActivatedRouteSnapshot,
+    RouteReuseStrategy,
     RouterModule,
     Routes,
 } from '@angular/router';
@@ -30,9 +32,11 @@ import { TabsComponent } from './tabs.component';
 import { AddEditComponent } from './vault/add-edit.component';
 import { AttachmentsComponent } from './vault/attachments.component';
 import { CiphersComponent } from './vault/ciphers.component';
+import { CollectionsComponent } from './vault/collections.component';
 import { CurrentTabComponent } from './vault/current-tab.component';
 import { GroupingsComponent } from './vault/groupings.component';
 import { PasswordHistoryComponent } from './vault/password-history.component';
+import { ShareComponent } from './vault/share.component';
 import { ViewComponent } from './vault/view.component';
 
 const routes: Routes = [
@@ -122,6 +126,18 @@ const routes: Routes = [
         component: AddEditComponent,
         canActivate: [AuthGuardService],
         data: { state: 'edit-cipher' },
+    },
+    {
+        path: 'share-cipher',
+        component: ShareComponent,
+        canActivate: [AuthGuardService],
+        data: { state: 'share-cipher' },
+    },
+    {
+        path: 'collections',
+        component: CollectionsComponent,
+        canActivate: [AuthGuardService],
+        data: { state: 'collections' },
     },
     {
         path: 'attachments',
@@ -226,11 +242,34 @@ const routes: Routes = [
     },
 ];
 
+export class NoRouteReuseStrategy implements RouteReuseStrategy {
+    shouldDetach(route: ActivatedRouteSnapshot) {
+        return false;
+    }
+
+    store(route: ActivatedRouteSnapshot, handle: {}) { /* Nothing */ }
+
+    shouldAttach(route: ActivatedRouteSnapshot) {
+        return false;
+    }
+
+    retrieve(route: ActivatedRouteSnapshot): any {
+        return null;
+    }
+
+    shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
+        return false;
+    }
+}
+
 @NgModule({
     imports: [RouterModule.forRoot(routes, {
         useHash: true,
         /*enableTracing: true,*/
     })],
     exports: [RouterModule],
+    providers: [
+        { provide: RouteReuseStrategy, useClass: NoRouteReuseStrategy },
+    ],
 })
 export class AppRoutingModule { }

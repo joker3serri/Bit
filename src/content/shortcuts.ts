@@ -10,6 +10,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
         return;
     }
 
+    if (isSafari && (window as any).__bitwardenFrameId == null) {
+        (window as any).__bitwardenFrameId = Math.floor(Math.random() * Math.floor(99999999));
+    }
+
     Mousetrap.prototype.stopCallback = () => {
         return false;
     };
@@ -23,19 +27,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
         Mousetrap.bind('mod+shift+y', () => {
             sendMessage('open_popup');
         });
-    } else if (!this.isEdge) {
+    } else if (!isEdge) {
         Mousetrap.bind('mod+shift+9', () => {
             sendMessage('generate_password');
         });
     }
 
     function sendMessage(shortcut: string) {
-        const msg = {
+        const msg: any = {
             command: 'keyboardShortcutTriggered',
             shortcut: shortcut,
         };
 
         if (isSafari) {
+            msg.bitwardenFrameId = (window as any).__bitwardenFrameId;
             safari.self.tab.dispatchMessage('bitwarden', msg);
         } else {
             chrome.runtime.sendMessage(msg);

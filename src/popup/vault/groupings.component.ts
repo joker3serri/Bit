@@ -82,7 +82,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     }
 
     get folderCount(): number {
-        return this.folders.length - (this.showNoFolderCiphers ? 0 : 1);
+        return this.nestedFolders.length - (this.showNoFolderCiphers ? 0 : 1);
     }
 
     async ngOnInit() {

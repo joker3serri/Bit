@@ -1,5 +1,3 @@
-import * as tldjs from 'tldjs';
-
 import { BrowserApi } from '../browser/browserApi';
 
 import { DeviceType } from 'jslib/enums/deviceType';
@@ -12,43 +10,6 @@ import { AnalyticsIds } from 'jslib/misc/analytics';
 const DialogPromiseExpiration = 600000; // 10 minutes
 
 export default class BrowserPlatformUtilsService implements PlatformUtilsService {
-    static getDomain(uriString: string): string {
-        if (uriString == null) {
-            return null;
-        }
-
-        uriString = uriString.trim();
-        if (uriString === '') {
-            return null;
-        }
-
-        if (uriString.startsWith('http://') || uriString.startsWith('https://')) {
-            try {
-                const url = new URL(uriString);
-
-                if (url.hostname === 'localhost' || BrowserPlatformUtilsService.validIpAddress(url.hostname)) {
-                    return url.hostname;
-                }
-
-                const urlDomain = tldjs.getDomain(url.hostname);
-                return urlDomain != null ? urlDomain : url.hostname;
-            } catch (e) { }
-        }
-
-        const domain = tldjs.getDomain(uriString);
-        if (domain != null) {
-            return domain;
-        }
-
-        return null;
-    }
-
-    private static validIpAddress(ipString: string): boolean {
-        // tslint:disable-next-line
-        const ipRegex = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-        return ipRegex.test(ipString);
-    }
-
     identityClientId: string = 'browser';
 
     private showDialogResolves = new Map<number, { resolve: (value: boolean) => void, date: Date }>();
@@ -127,10 +88,6 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         return this.analyticsIdCache;
     }
 
-    getDomain(uriString: string): string {
-        return BrowserPlatformUtilsService.getDomain(uriString);
-    }
-
     isViewOpen(): boolean {
         if (BrowserApi.isPopupOpen()) {
             return true;
@@ -178,8 +135,14 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         return true;
     }
 
-    showToast(type: 'error' | 'success' | 'warning' | 'info', title: string, text: string, global?: any): void {
-        throw new Error('showToast not implemented');
+    showToast(type: 'error' | 'success' | 'warning' | 'info', title: string, text: string | string[],
+        options?: any): void {
+        this.messagingService.send('showToast', {
+            text: text,
+            title: title,
+            type: type,
+            options: options,
+        });
     }
 
     showDialog(text: string, title?: string, confirmText?: string, cancelText?: string, type?: string) {
@@ -194,6 +157,14 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         });
         return new Promise<boolean>((resolve) => {
             this.showDialogResolves.set(dialogId, { resolve: resolve, date: new Date() });
+        });
+    }
+
+    eventTrack(action: string, label?: string, options?: any) {
+        this.messagingService.send('analyticsEventTrack', {
+            action: action,
+            label: label,
+            options: options,
         });
     }
 

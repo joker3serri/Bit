@@ -5,10 +5,31 @@ import 'web-animations-js';
 // tslint:disable-next-line
 require('./scss/popup.scss');
 
+import { BrowserApi } from '../browser/browserApi';
 import { AppModule } from './app.module';
 
 if (process.env.ENV === 'production') {
     enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule, { preserveWhitespaces: true });
+function init() {
+    if (BrowserApi.isEdge18) {
+        const inPopup = window.location.search === '' || window.location.search.indexOf('uilocation=') === -1 ||
+            window.location.search.indexOf('uilocation=popup') > -1;
+        if (inPopup) {
+            const bodyRect = document.querySelector('body').getBoundingClientRect();
+            chrome.windows.create({
+                url: 'popup/index.html?uilocation=popout',
+                type: 'popup',
+                width: bodyRect.width + 60,
+                height: bodyRect.height,
+            });
+            BrowserApi.closePopup(window);
+            return;
+        }
+    }
+
+    platformBrowserDynamic().bootstrapModule(AppModule, { preserveWhitespaces: true });
+}
+
+init();

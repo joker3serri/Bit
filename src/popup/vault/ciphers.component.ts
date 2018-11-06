@@ -25,6 +25,10 @@ import { StateService } from 'jslib/abstractions/state.service';
 import { CipherType } from 'jslib/enums/cipherType';
 
 import { CipherView } from 'jslib/models/view/cipherView';
+import { CollectionView } from 'jslib/models/view/collectionView';
+import { FolderView } from 'jslib/models/view/folderView';
+
+import { TreeNode } from 'jslib/models/domain/treeNode';
 
 import { BroadcasterService } from 'jslib/angular/services/broadcaster.service';
 
@@ -41,15 +45,18 @@ const ComponentId = 'CiphersComponent';
 export class CiphersComponent extends BaseCiphersComponent implements OnInit, OnDestroy {
     groupingTitle: string;
     state: any;
-    showAdd = true;
     folderId: string = null;
+    collectionId: string = null;
     type: CipherType = null;
     pagedCiphers: CipherView[] = [];
+    nestedFolders: Array<TreeNode<FolderView>>;
+    nestedCollections: Array<TreeNode<CollectionView>>;
 
     private didScroll = false;
     private selectedTimeout: number;
     private preventSelected = false;
     private pageSize = 100;
+    private applySavedState = true;
 
     constructor(searchService: SearchService, private route: ActivatedRoute,
         private router: Router, private location: Location,
@@ -60,6 +67,8 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
         private analytics: Angulartics2, private platformUtilsService: PlatformUtilsService) {
         super(searchService);
         this.pageSize = platformUtilsService.isEdge() ? 25 : 100;
+        this.applySavedState = (window as any).previousPopupUrl != null &&
+            !(window as any).previousPopupUrl.startsWith('/ciphers');
     }
 
     async ngOnInit() {
@@ -88,33 +97,40 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
                 this.folderId = params.folderId === 'none' ? null : params.folderId;
                 this.searchPlaceholder = this.i18nService.t('searchFolder');
                 if (this.folderId != null) {
-                    const folder = await this.folderService.get(this.folderId);
-                    if (folder != null) {
-                        this.groupingTitle = (await folder.decrypt()).name;
+                    const folderNode = await this.folderService.getNested(this.folderId);
+                    if (folderNode != null && folderNode.node != null) {
+                        this.groupingTitle = folderNode.node.name;
+                        this.nestedFolders = folderNode.children != null && folderNode.children.length > 0 ?
+                            folderNode.children : null;
                     }
                 } else {
                     this.groupingTitle = this.i18nService.t('noneFolder');
                 }
                 await super.load((c) => c.folderId === this.folderId);
             } else if (params.collectionId) {
-                this.showAdd = false;
+                this.collectionId = params.collectionId;
                 this.searchPlaceholder = this.i18nService.t('searchCollection');
-                const collection = await this.collectionService.get(params.collectionId);
-                if (collection != null) {
-                    this.groupingTitle = (await collection.decrypt()).name;
+                const collectionNode = await this.collectionService.getNested(this.collectionId);
+                if (collectionNode != null && collectionNode.node != null) {
+                    this.groupingTitle = collectionNode.node.name;
+                    this.nestedCollections = collectionNode.children != null && collectionNode.children.length > 0 ?
+                        collectionNode.children : null;
                 }
-                await super.load((c) => c.collectionIds != null && c.collectionIds.indexOf(params.collectionId) > -1);
+                await super.load((c) => c.collectionIds != null && c.collectionIds.indexOf(this.collectionId) > -1);
             } else {
                 this.groupingTitle = this.i18nService.t('allItems');
                 await super.load();
             }
 
             this.loadMore();
-            this.state = (await this.stateService.get<any>(ComponentId)) || {};
-            if (this.state.searchText) {
-                this.searchText = this.state.searchText;
+            if (this.applySavedState) {
+                this.state = (await this.stateService.get<any>(ComponentId)) || {};
+                if (this.state.searchText) {
+                    this.searchText = this.state.searchText;
+                }
+                window.setTimeout(() => this.popupUtils.setContentScrollY(window, this.state.scrollY), 0);
             }
-            window.setTimeout(() => this.popupUtils.setContentScrollY(window, this.state.scrollY), 0);
+            this.stateService.remove(ComponentId);
         });
 
         this.broadcasterService.subscribe(ComponentId, (message: any) => {
@@ -151,6 +167,16 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
         }, 200);
     }
 
+    selectFolder(folder: FolderView) {
+        if (folder.id != null) {
+            this.router.navigate(['/ciphers'], { queryParams: { folderId: folder.id } });
+        }
+    }
+
+    selectCollection(collection: CollectionView) {
+        this.router.navigate(['/ciphers'], { queryParams: { collectionId: collection.id } });
+    }
+
     async launchCipher(cipher: CipherView) {
         if (cipher.type !== CipherType.Login || !cipher.login.canLaunch) {
             return;
@@ -169,10 +195,17 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
 
     addCipher() {
         super.addCipher();
-        this.router.navigate(['/add-cipher'], { queryParams: { folderId: this.folderId, type: this.type } });
+        this.router.navigate(['/add-cipher'], {
+            queryParams: {
+                folderId: this.folderId,
+                type: this.type,
+                collectionId: this.collectionId,
+            },
+        });
     }
 
     back() {
+        (window as any).routeDirection = 'b';
         this.location.back();
     }
 
@@ -186,6 +219,12 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
             this.pagedCiphers = this.pagedCiphers.concat(this.ciphers.slice(pagedLength, pagedLength + this.pageSize));
         }
         this.didScroll = this.pagedCiphers.length > this.pageSize;
+    }
+
+    showGroupings() {
+        return !this.isSearching() &&
+            ((this.nestedFolders && this.nestedFolders.length) ||
+                (this.nestedCollections && this.nestedCollections.length));
     }
 
     isSearching() {

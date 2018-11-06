@@ -5,6 +5,7 @@ export class BrowserApi {
     static isChromeApi: boolean = !BrowserApi.isSafariApi && (typeof chrome !== 'undefined');
     static isFirefoxOnAndroid: boolean = navigator.userAgent.indexOf('Firefox/') !== -1 &&
         navigator.userAgent.indexOf('Android') !== -1;
+    static isEdge18: boolean = navigator.userAgent.indexOf(' Edge/18.') !== -1;
 
     static async getTabFromCurrentWindowId(): Promise<any> {
         if (BrowserApi.isChromeApi) {
@@ -120,6 +121,10 @@ export class BrowserApi {
                 delete obj.tab.safariTab;
             }
 
+            if (options != null && options.frameId != null && obj.bitwardenFrameId == null) {
+                obj.bitwardenFrameId = options.frameId;
+            }
+
             if (t.page) {
                 t.page.dispatchMessage('bitwarden', obj);
             }
@@ -199,7 +204,8 @@ export class BrowserApi {
             safari.application.addEventListener('message', async (msgEvent: any) => {
                 callback(msgEvent.message, {
                     tab: BrowserApi.makeTabObject(msgEvent.target),
-                    frameId: null,
+                    frameId: msgEvent.message != null && msgEvent.message.bitwardenFrameId != null ?
+                        msgEvent.message.bitwardenFrameId : null,
                 }, () => { /* No responses in Safari */ });
             }, false);
         }
@@ -211,7 +217,7 @@ export class BrowserApi {
             // condition is only called if the popup wasn't already dismissed (future proofing).
             // ref: https://bugzilla.mozilla.org/show_bug.cgi?id=1433604
             browser.tabs.update({ active: true }).finally(win.close);
-        }  else if (BrowserApi.isWebExtensionsApi || BrowserApi.isChromeApi) {
+        } else if (BrowserApi.isWebExtensionsApi || BrowserApi.isChromeApi) {
             win.close();
         } else if (BrowserApi.isSafariApi && safari.extension.popovers && safari.extension.popovers.length > 0) {
             safari.extension.popovers[0].hide();

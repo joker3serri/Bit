@@ -423,9 +423,9 @@ export default class AutofillService implements AutofillServiceInterface {
                     break;
                 } else if (!fillFields.number && this.isFieldMatch(f[attr],
                     ['cc-number', 'cc-num', 'card-number', 'card-num', 'number', 'cc', 'cc-no', 'card-no',
-                        'credit-card', 'numero-carte', 'carte', 'carte-credit', 'num-carte'],
+                        'credit-card', 'numero-carte', 'carte', 'carte-credit', 'num-carte', 'cb-num'],
                     ['cc-number', 'cc-num', 'card-number', 'card-num', 'cc-no', 'card-no', 'numero-carte',
-                        'num-carte'])) {
+                        'num-carte', 'cb-num'])) {
                     fillFields.number = f;
                     break;
                 } else if (!fillFields.exp && this.isFieldMatch(f[attr],
@@ -438,13 +438,11 @@ export default class AutofillService implements AutofillServiceInterface {
                     fillFields.exp = f;
                     break;
                 } else if (!fillFields.expMonth && this.isFieldMatch(f[attr],
-                    ['cc-mo', 'card-mo', 'cc-mo', 'card-mo', 'exp-mo',
-                        'expiration-mo', 'cc-mm', 'cc-m', 'card-mm', 'card-m', 'card-exp-mm',
-                        'cc-exp-mm', 'exp-mm', 'exp-m', 'expire-mo', 'expiry-mo',
-                        'card-expire-mo', 'card-expiry-mo', 'mois-validite',
+                    ['expiration-mo', 'cc-m', 'card-m', 'exp-m',
+                        'expire-mo', 'expiry-mo', 'mois-validite',
                         'mois-expiration', 'm-validite', 'm-expiration', 'expiry-date-field-mo',
                         'expiration-date-mo', 'expiration-date-mm', 'validity-mo',
-                        'exp-date-mo'])) {
+                        'exp-date-mo', 'cb-date-mois'])) {
                     fillFields.expMonth = f;
                     break;
                 } else if (!fillFields.expYear && this.isFieldMatch(f[attr],
@@ -454,7 +452,7 @@ export default class AutofillService implements AutofillServiceInterface {
                         'cc-yyyy', 'card-yyyy', 'card-exp-yyyy', 'cc-exp-yyyy', 'expire-year', 'expire-yr',
                         'expiry-year', 'expiry-yr', 'card-expire-year', 'card-expire-yr', 'card-expiry-year',
                         'card-expiry-yr', 'an-validite', 'an-expiration', 'annee-validite',
-                        'annee-expiration', 'expiry-date-field-year', 'expiration-date-year',
+                        'annee-expiration', 'expiry-date-field-year', 'expiration-date-year', 'cb-date-ann',
                         'expiration-date-yy', 'expiration-date-yyyy', 'validity-year', 'exp-date-year'])) {
                     fillFields.expYear = f;
                     break;
@@ -465,7 +463,7 @@ export default class AutofillService implements AutofillServiceInterface {
                     fillFields.code = f;
                     break;
                 } else if (!fillFields.brand && this.isFieldMatch(f[attr],
-                    ['cc-type', 'card-type', 'card-brand', 'cc-brand'])) {
+                    ['cc-type', 'card-type', 'card-brand', 'cc-brand', 'cb-type'])) {
                     fillFields.brand = f;
                     break;
                 }

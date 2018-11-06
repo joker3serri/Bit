@@ -37,9 +37,11 @@ import { TabsComponent } from './tabs.component';
 import { AddEditComponent } from './vault/add-edit.component';
 import { AttachmentsComponent } from './vault/attachments.component';
 import { CiphersComponent } from './vault/ciphers.component';
+import { CollectionsComponent } from './vault/collections.component';
 import { CurrentTabComponent } from './vault/current-tab.component';
 import { GroupingsComponent } from './vault/groupings.component';
 import { PasswordHistoryComponent } from './vault/password-history.component';
+import { ShareComponent } from './vault/share.component';
 import { ViewComponent } from './vault/view.component';
 
 import { ApiActionDirective } from 'jslib/angular/directives/api-action.directive';
@@ -153,6 +155,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         BoxRowDirective,
         CiphersComponent,
         CiphersListComponent,
+        CollectionsComponent,
         CurrentTabComponent,
         EnvironmentComponent,
         ExportComponent,
@@ -177,6 +180,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         RegisterComponent,
         SearchCiphersPipe,
         SettingsComponent,
+        ShareComponent,
         StopClickDirective,
         StopPropDirective,
         SyncComponent,

@@ -1,24 +1,18 @@
 import { Location } from '@angular/common';
-import {
-    Component,
-    OnInit,
-} from '@angular/core';
+import { Component } from '@angular/core';
 import {
     ActivatedRoute,
     Router,
 } from '@angular/router';
 
-import { ToasterService } from 'angular2-toaster';
-import { Angulartics2 } from 'angulartics2';
-
-import { CipherType } from 'jslib/enums/cipherType';
-
 import { AuditService } from 'jslib/abstractions/audit.service';
 import { CipherService } from 'jslib/abstractions/cipher.service';
+import { CollectionService } from 'jslib/abstractions/collection.service';
 import { FolderService } from 'jslib/abstractions/folder.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { StateService } from 'jslib/abstractions/state.service';
+import { UserService } from 'jslib/abstractions/user.service';
 
 import { AddEditComponent as BaseAddEditComponent } from 'jslib/angular/components/add-edit.component';
 
@@ -26,20 +20,21 @@ import { AddEditComponent as BaseAddEditComponent } from 'jslib/angular/componen
     selector: 'app-vault-add-edit',
     templateUrl: 'add-edit.component.html',
 })
-export class AddEditComponent extends BaseAddEditComponent implements OnInit {
+export class AddEditComponent extends BaseAddEditComponent {
     showAttachments = true;
 
     constructor(cipherService: CipherService, folderService: FolderService,
         i18nService: I18nService, platformUtilsService: PlatformUtilsService,
-        analytics: Angulartics2, toasterService: ToasterService,
         auditService: AuditService, stateService: StateService,
+        userService: UserService, collectionService: CollectionService,
         private route: ActivatedRoute, private router: Router,
         private location: Location) {
-        super(cipherService, folderService, i18nService, platformUtilsService, analytics,
-            toasterService, auditService, stateService);
+        super(cipherService, folderService, i18nService, platformUtilsService, auditService, stateService,
+            userService, collectionService);
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        await super.ngOnInit();
         this.showAttachments = !this.platformUtilsService.isEdge();
         this.route.queryParams.subscribe(async (params) => {
             if (params.cipherId) {
@@ -47,6 +42,13 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit {
             }
             if (params.folderId) {
                 this.folderId = params.folderId;
+            }
+            if (params.collectionId) {
+                const collection = this.writeableCollections.filter((c) => c.id === params.collectionId);
+                if (collection != null && collection.length > 0) {
+                    this.collectionIds = [collection[0].id];
+                    this.organizationId = collection[0].organizationId;
+                }
             }
             if (params.type) {
                 const type = parseInt(params.type, null);
@@ -88,6 +90,20 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit {
     attachments() {
         super.attachments();
         this.router.navigate(['/attachments'], { queryParams: { cipherId: this.cipher.id } });
+    }
+
+    share() {
+        super.share();
+        if (this.cipher.organizationId == null) {
+            this.router.navigate(['/share-cipher'], { queryParams: { cipherId: this.cipher.id } });
+        }
+    }
+
+    editCollections() {
+        super.editCollections();
+        if (this.cipher.organizationId != null) {
+            this.router.navigate(['/collections'], { queryParams: { cipherId: this.cipher.id } });
+        }
     }
 
     cancel() {

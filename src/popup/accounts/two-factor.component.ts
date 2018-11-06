@@ -2,14 +2,9 @@ import {
     ChangeDetectorRef,
     Component,
     NgZone,
-    OnDestroy,
-    OnInit,
 } from '@angular/core';
 
 import { Router } from '@angular/router';
-
-import { ToasterService } from 'angular2-toaster';
-import { Angulartics2 } from 'angulartics2';
 
 import { BrowserApi } from '../../browser/browserApi';
 
@@ -36,13 +31,11 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     showNewWindowMessage = false;
 
     constructor(authService: AuthService, router: Router,
-        analytics: Angulartics2, toasterService: ToasterService,
         i18nService: I18nService, apiService: ApiService,
         platformUtilsService: PlatformUtilsService, syncService: SyncService,
         environmentService: EnvironmentService, private ngZone: NgZone,
         private broadcasterService: BroadcasterService, private changeDetectorRef: ChangeDetectorRef) {
-        super(authService, router, analytics, toasterService, i18nService, apiService,
-            platformUtilsService, window, environmentService);
+        super(authService, router, i18nService, apiService, platformUtilsService, window, environmentService);
         super.onSuccessfulLogin = () => {
             return syncService.fullSync(true);
         };
