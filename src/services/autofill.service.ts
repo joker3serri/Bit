@@ -365,11 +365,19 @@ export default class AutofillService implements AutofillServiceInterface {
         if (!passwordFields.length && !options.skipUsernameOnlyFill) {
             // No password fields on this page. Let's try to just fuzzy fill the username.
             pageDetails.fields.forEach((f: any) => {
-                if (f.viewable && (f.type === 'text' || f.type === 'email' || f.type === 'tel') &&
+                if (f.viewable && this.isUsernameFieldType(f) &&
                     this.fieldIsFuzzyMatch(f, UsernameFieldNames)) {
                     usernames.push(f);
                 }
             });
+        }
+
+        if (!usernames.length) {
+            // maybe there's just single field for login, but with custom id
+            let potentiallyUsernameFields = pageDetails.fields.filter((pf) => pf.viewable && !pf.readonly && this.isUsernameFieldType(pf));
+            if (potentiallyUsernameFields.length === 1) {
+                usernames.push(potentiallyUsernameFields[0]);
+            }
         }
 
         usernames.forEach((u) => {
@@ -836,7 +844,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
             if (!f.disabled && !f.readonly &&
                 (withoutForm || f.form === passwordField.form) && (canBeHidden || f.viewable) &&
-                (f.type === 'text' || f.type === 'email' || f.type === 'tel')) {
+                this.isUsernameFieldType(f)) {
                 usernameField = f;
 
                 if (this.findMatchingFieldIndex(f, UsernameFieldNames) > -1) {
@@ -972,5 +980,9 @@ export default class AutofillService implements AutofillServiceInterface {
         }
 
         return fillScript;
+    }
+
+    private isUsernameFieldType(testedField: AutofillField) {
+        return testedField.type === 'text' || testedField.type === 'email' || testedField.type === 'tel';
     }
 }
