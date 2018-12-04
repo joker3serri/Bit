@@ -97,6 +97,8 @@ const IsoStates: { [id: string]: string; } = {
     'west virginia': 'WV', wisconsin: 'WI', wyoming: 'WY',
 };
 
+const MaskedPasswordFieldNameRegex = new RegExp("(\\d+)(?!.*\\d)");
+
 var IsoProvinces: { [id: string]: string; } = {
     alberta: 'AB', 'british columbia': 'BC', manitoba: 'MB', 'new brunswick': 'NB', 'newfoundland and labrador': 'NL',
     'nova scotia': 'NS', ontario: 'ON', 'prince edward island': 'PE', quebec: 'QC', saskatchewan: 'SK',
@@ -382,6 +384,8 @@ export default class AutofillService implements AutofillServiceInterface {
             fillScript.script.push(['fill_by_opid', u.opid, login.username]);
         });
 
+        const isMaskedPassword = this.isPossiblyMaskedPassword(passwords);
+
         passwords.forEach((p) => {
             if (filledFields.hasOwnProperty(p.opid)) {
                 return;
@@ -389,7 +393,18 @@ export default class AutofillService implements AutofillServiceInterface {
 
             filledFields[p.opid] = p;
             fillScript.script.push(['click_on_opid', p.opid]);
-            fillScript.script.push(['fill_by_opid', p.opid, login.password]);
+
+            if (isMaskedPassword) {
+                const detectedPosition =
+                    this.getMaskedPasswordElementPosition(p.htmlID) ||
+                    this.getMaskedPasswordElementPosition(p.htmlName);
+
+                if (detectedPosition && login.password.length >= detectedPosition) {
+                    fillScript.script.push(['fill_by_opid', p.opid, login.password[detectedPosition - 1]]);
+                }
+            } else {
+                fillScript.script.push(['fill_by_opid', p.opid, login.password]);
+            }
         });
 
         fillScript = this.setFillScriptForFocus(filledFields, fillScript);
@@ -972,5 +987,20 @@ export default class AutofillService implements AutofillServiceInterface {
         }
 
         return fillScript;
+    }
+
+    private isPossiblyMaskedPassword(passwordFields: any[]) {
+        // Masked password has to be filled with at least two characters.
+        return passwordFields && passwordFields.length > 1 &&
+            (passwordFields.every((pf) =>
+                pf.maxLength === 1 &&
+                (this.getMaskedPasswordElementPosition(pf.htmlID) != null ||
+                this.getMaskedPasswordElementPosition(pf.htmlName) != null)));
+    }
+
+    private getMaskedPasswordElementPosition(fieldName: string) {
+        // For now, let's to assume that fields are counted from 1, just like regular people do.
+        const matchResult = MaskedPasswordFieldNameRegex.exec(fieldName);
+        return matchResult && Number(matchResult[0]) || null;
     }
 }
