@@ -374,7 +374,9 @@ export default class AutofillService implements AutofillServiceInterface {
 
         if (!usernames.length) {
             // maybe there's just single field for login, but with custom id
-            let potentiallyUsernameFields = pageDetails.fields.filter((pf) => pf.viewable && !pf.readonly && this.isUsernameFieldType(pf));
+            const potentiallyUsernameFields = pageDetails.fields.filter((passwordField) => passwordField.viewable &&
+                !passwordField.readonly &&
+                this.isUsernameFieldType(passwordField));
             if (potentiallyUsernameFields.length === 1) {
                 usernames.push(potentiallyUsernameFields[0]);
             }
