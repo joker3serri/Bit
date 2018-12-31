@@ -411,7 +411,7 @@
     "message": "Dvojstupňové prihlasovanie robí váš účet bezpečnejším vďaka vyžadovaniu bezpečnostného kódu z overovacej aplikácie vždy, keď sa prihlásite. Dvojstupňové prihlasovanie môžete povoliť vo webovom trezore bitwarden.com. Chcete navštíviť túto stránku teraz?"
   },
   "editedFolder": {
-    "message": "Upravený priečinok"
+    "message": "Priečinok upravený"
   },
   "deleteFolderConfirmation": {
     "message": "Naozaj chcete odstrániť tento priečinok?"
@@ -491,16 +491,16 @@
     "message": "\"Notifikácia Pridať prihlasovacie údaje\" vás automaticky upozorní na uloženie nových údajov do vášho trezoru vždy, keď sa s nimi prihlasujete poprvýkrát."
   },
   "dontShowCardsCurrentTab": {
-    "message": "Don't Show Cards on Tab Page"
+    "message": "Nezobrazovať platobné karty na stránke \"Aktuálna karta\""
   },
   "dontShowCardsCurrentTabDesc": {
-    "message": "Card items from your vault are listed on the 'Current Tab' page for easy auto-fill access."
+    "message": "Položky kariet sa zobrazujú na stránke „Aktuálna karta“ pre ľahšie automatické vypĺňanie."
   },
   "dontShowIdentitiesCurrentTab": {
-    "message": "Don't Show Identities on Tab Page"
+    "message": "Nezobrazovať identity na stránke Karta"
   },
   "dontShowIdentitiesCurrentTabDesc": {
-    "message": "Identity items from your vault are listed on the 'Current Tab' page for easy auto-fill access."
+    "message": "Identity z vášho trezoru sa zobrazujú na stránke \"Aktuálna karta\" pre ľahké automatické vypĺňanie."
   },
   "notificationAddDesc": {
     "message": "Má si bitwarden zapamätať toto heslo?"
@@ -546,12 +546,15 @@
   "exportVault": {
     "message": "Export trezoru"
   },
+  "fileFormat": {
+    "message": "Formát Súboru"
+  },
   "warning": {
     "message": "UPOZORNENIE",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
-  "exportWarning": {
-    "message": "Tento export obsahuje vaše nešifrované dáta vo formáte .csv. Nemali by ste ich ukladať, ani posielať cez nezabezpečené kanály (napr. email). Odstráňte ho okamžite po použití."
+  "exportWarningDesc": {
+    "message": "Tento export obsahuje vaše dáta v nešifrovanom formáte. Nemali by ste ich ukladať, ani posielať cez nezabezpečené kanály (napr. email). Okamžite ho odstráňte, keď ho prestanete používať."
   },
   "exportMasterPassword": {
     "message": "Zadajte vaše hlavné heslo pre export údajov trezoru."
@@ -648,6 +651,9 @@
   },
   "ppremiumSignUpTwoStep": {
     "message": "Ďalšie možnosti dvojstupňového prihlásenia ako YubiKey, FIDO U2F a Duo."
+  },
+  "ppremiumSignUpReports": {
+    "message": "Správy o sile hesla, zabezpečení účtov a únikoch dát ktoré vám pomôžu udržať vaše kontá v bezpečí."
   },
   "ppremiumSignUpTotp": {
     "message": "Generátor TOTP verifikačného kódu (2FA) pre prihlásenie do vášho trezora."

@@ -491,16 +491,16 @@
     "message": "A \"Notificação de Adicionar Credencial\" pede para salvar automaticamente novas credenciais para o seu cofre quando você iniciar uma sessão em um site pela primeira vez."
   },
   "dontShowCardsCurrentTab": {
-    "message": "Don't Show Cards on Tab Page"
+    "message": "Não Mostrar Cartões na Página \"Aba\""
   },
   "dontShowCardsCurrentTabDesc": {
-    "message": "Card items from your vault are listed on the 'Current Tab' page for easy auto-fill access."
+    "message": "Os itens de cartão do seu cofre estão listados na página \"Aba Atual\" para facilitar o acesso ao preenchimento automático."
   },
   "dontShowIdentitiesCurrentTab": {
-    "message": "Don't Show Identities on Tab Page"
+    "message": "Não Mostrar Identidades na Página \"Aba\""
   },
   "dontShowIdentitiesCurrentTabDesc": {
-    "message": "Identity items from your vault are listed on the 'Current Tab' page for easy auto-fill access."
+    "message": "Os itens de identidade do seu cofre estão listados na página \"Aba Atual\" para facilitar o acesso ao preenchimento automático."
   },
   "notificationAddDesc": {
     "message": "O Bitwarden deve lembrar esta senha para você?"
@@ -546,12 +546,15 @@
   "exportVault": {
     "message": "Exportar Cofre"
   },
+  "fileFormat": {
+    "message": "Formato do Arquivo"
+  },
   "warning": {
     "message": "AVISO",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
-  "exportWarning": {
-    "message": "Essa exportação contém seus dados não criptografados no formato .csv. Você não deve armazená-lo ou enviá-lo por canais inseguros (como e-mail). Exclua imediatamente após terminar de usá-lo."
+  "exportWarningDesc": {
+    "message": "Esta exportação contém os dados do seu cofre em um formato não criptografado. Você não deve armazenar ou enviar o arquivo exportado por canais inseguros (como e-mail). Exclua imediatamente após terminar de usá-lo."
   },
   "exportMasterPassword": {
     "message": "Insira a sua senha mestra para exportar os dados do seu cofre."
@@ -648,6 +651,9 @@
   },
   "ppremiumSignUpTwoStep": {
     "message": "Opções de autenticação de duas etapas adicionais como YubiKey, FIDO U2F, e Duo."
+  },
+  "ppremiumSignUpReports": {
+    "message": "Higiene de senha, saúde da conta, e relatórios sobre violação de dados para manter o seu cofre seguro."
   },
   "ppremiumSignUpTotp": {
     "message": "Gerador de códigos de verificação TOTP (2FA) para credenciais no seu cofre."
@@ -1049,7 +1055,7 @@
     "message": "Verifique se a senha foi exposta."
   },
   "passwordExposed": {
-    "message": "Esta senha foi exposta $VALUE$ vez(es) em brechas de dados. Você deve alterá-la.",
+    "message": "Esta senha foi exposta $VALUE$ vez(es) em violações de dados. Você deve alterá-la.",
     "placeholders": {
       "value": {
         "content": "$1",
@@ -1058,7 +1064,7 @@
     }
   },
   "passwordSafe": {
-    "message": "Esta senha não foi encontrada em brechas de dados conhecidas. Deve ser seguro de usar."
+    "message": "Esta senha não foi encontrada em violações de dados conhecidas. Deve ser seguro de usar."
   },
   "baseDomain": {
     "message": "Domínio de base"

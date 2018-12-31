@@ -546,12 +546,15 @@
   "exportVault": {
     "message": "Vie holvi"
   },
+  "fileFormat": {
+    "message": "File Format"
+  },
   "warning": {
     "message": "VAROITUS",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
-  "exportWarning": {
-    "message": "Tämä vienti sisältää tietosi suojaamattomana .csv-muodossa. Tiedostoa ei kannata tallentaa tai lähettää turvattomia kanavia pitkin (kuten sähköposti). Poista se välittömästi, kun et enää tarvitse sitä."
+  "exportWarningDesc": {
+    "message": "This export contains your vault data in an unencrypted format. You should not store or send the exported file over unsecure channels (such as email). Delete it immediately after you are done using it."
   },
   "exportMasterPassword": {
     "message": "Syötä pääsalasanasi viedäksesi holvisi tiedot."
@@ -644,10 +647,13 @@
     "message": "Ryhdy premium-jäseneksi saadaksesi"
   },
   "ppremiumSignUpStorage": {
-    "message": "yhden gigatavun salattua tallennustilaa"
+    "message": "1 Gt salattua tallennustilaa."
   },
   "ppremiumSignUpTwoStep": {
     "message": "lisävaihtoehtoja kaksivaiheiselle kirjautumiselle, kuten YubiKey, FIDO U2F ja Duo"
+  },
+  "ppremiumSignUpReports": {
+    "message": "Password hygiene, account health, and data breach reports to keep your vault safe."
   },
   "ppremiumSignUpTotp": {
     "message": "TOTP-vahvistuskoodigeneraattorin (2FA) holvisi käyttäjätunnuksille"

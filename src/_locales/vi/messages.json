@@ -546,12 +546,15 @@
   "exportVault": {
     "message": "Xuất kho"
   },
+  "fileFormat": {
+    "message": "File Format"
+  },
   "warning": {
     "message": "CẢNH BÁO",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
-  "exportWarning": {
-    "message": "Bản xuất ra này chứa dữ liệu không được mã hóa của bạn ở định dạng .csv. Bạn không nên lưu trữ hoặc gửi qua kênh không an toàn (chẳng hạn như email). Xóa nó ngay lập tức sau khi bạn dùng xong nó."
+  "exportWarningDesc": {
+    "message": "This export contains your vault data in an unencrypted format. You should not store or send the exported file over unsecure channels (such as email). Delete it immediately after you are done using it."
   },
   "exportMasterPassword": {
     "message": "Nhập mật khẩu chủ để xuất kho dữ liệu của bạn."
@@ -648,6 +651,9 @@
   },
   "ppremiumSignUpTwoStep": {
     "message": "Các tùy chọn xác thực hai lớp bổ sung như YubiKey, FIDO U2F và Duo."
+  },
+  "ppremiumSignUpReports": {
+    "message": "Password hygiene, account health, and data breach reports to keep your vault safe."
   },
   "ppremiumSignUpTotp": {
     "message": "Mã xác nhận TOTP (2FA) để đăng nhập vào kho mật khẩu của bạn."

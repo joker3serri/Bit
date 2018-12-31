@@ -278,7 +278,7 @@
     "message": "Gerir"
   },
   "other": {
-    "message": "Outro(s)"
+    "message": "Outros"
   },
   "disableGa": {
     "message": "Desativar analítica"
@@ -491,16 +491,16 @@
     "message": "A \"notificação de adicionar credencial\" solicita-lhe automaticamente a guardar novas credenciais para o seu cofre quando inicia sessão nas mesmas pela primeira vez."
   },
   "dontShowCardsCurrentTab": {
-    "message": "Don't Show Cards on Tab Page"
+    "message": "Não mostrar cartões na página do separador"
   },
   "dontShowCardsCurrentTabDesc": {
-    "message": "Card items from your vault are listed on the 'Current Tab' page for easy auto-fill access."
+    "message": "Os itens de cartões do seu cofre estão listados na página 'Separador atual' para acesso de auto-preenchimento fácil."
   },
   "dontShowIdentitiesCurrentTab": {
-    "message": "Don't Show Identities on Tab Page"
+    "message": "Não mostrar identidades na página do separador"
   },
   "dontShowIdentitiesCurrentTabDesc": {
-    "message": "Identity items from your vault are listed on the 'Current Tab' page for easy auto-fill access."
+    "message": "Os itens de identidades do seu cofre estão listados na página 'Separador atual' para acesso de auto-preenchimento fácil."
   },
   "notificationAddDesc": {
     "message": "Deve o Bitwarden memorizar esta palavra-passe para si?"
@@ -546,12 +546,15 @@
   "exportVault": {
     "message": "Exportar cofre"
   },
+  "fileFormat": {
+    "message": "Formato do ficheiro"
+  },
   "warning": {
     "message": "AVISO",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
-  "exportWarning": {
-    "message": "Esta exportação contém os seus dados desencriptados no formato .csv. Não a deve armazenar ou transmitir em vias inseguras (como email). Apague-a imediatamente após a utilizar."
+  "exportWarningDesc": {
+    "message": "Esta exportação contém os seus dados do cofre num formato desencriptado. Não deve armazenar ou enviar o ficheiro exportado através de canais inseguros (como email). Apague-a imediatamente após a utilizar."
   },
   "exportMasterPassword": {
     "message": "Introduza a sua palavra-passe mestra para exportar os dados do seu cofre."
@@ -644,10 +647,13 @@
     "message": "Registe-se para uma adesão premium e obtenha:"
   },
   "ppremiumSignUpStorage": {
-    "message": "1 GB de armazenamento de ficheiros encriptado."
+    "message": "1 GB de armazenamento encriptado para anexos de ficheiros."
   },
   "ppremiumSignUpTwoStep": {
     "message": "Opções de início de sessão de dois passos adicionais como YubiKey, FIDO U2F, e Duo."
+  },
+  "ppremiumSignUpReports": {
+    "message": "Higiene de palavras-passe, saúde das contas, e relatórios de brechas de dados para manter o seu cofre seguro."
   },
   "ppremiumSignUpTotp": {
     "message": "Gerador de códigos de verificação TOTP (2FA) para credenciais no seu cofre."
@@ -818,7 +824,7 @@
     "message": "Ativar auto-preenchimento no carregar da página"
   },
   "enableAutoFillOnPageLoadDesc": {
-    "message": "Se um formulário de início de sessão foram detetado, realizar automaticamente um auto-preenchimento quando a página web carregar."
+    "message": "Se um formulário de início de sessão for detetado, realizar automaticamente um auto-preenchimento quando a página web carregar."
   },
   "experimentalFeature": {
     "message": "Esta é atualmente uma funcionalidade experimental. Utilize por sua conta e risco."

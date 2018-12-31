@@ -491,16 +491,16 @@
     "message": "Уведомление о добавлении логина автоматически предложит вам сохранить новые логины в хранилище."
   },
   "dontShowCardsCurrentTab": {
-    "message": "Don't Show Cards on Tab Page"
+    "message": "Не показывать карты на вкладке"
   },
   "dontShowCardsCurrentTabDesc": {
-    "message": "Card items from your vault are listed on the 'Current Tab' page for easy auto-fill access."
+    "message": "Карты из вашего хранилища перечислены на 'Текущей вкладке' для упрощения доступа к автозаполнению."
   },
   "dontShowIdentitiesCurrentTab": {
-    "message": "Don't Show Identities on Tab Page"
+    "message": "Не показывать Личности на вкладке"
   },
   "dontShowIdentitiesCurrentTabDesc": {
-    "message": "Identity items from your vault are listed on the 'Current Tab' page for easy auto-fill access."
+    "message": "Личности из вашего хранилища перечислены на 'Текущей вкладке' для упрощения доступа к автозаполнению."
   },
   "notificationAddDesc": {
     "message": "Должен ли Bitwarden запомнить этот пароль?"
@@ -546,12 +546,15 @@
   "exportVault": {
     "message": "Экспорт хранилища"
   },
+  "fileFormat": {
+    "message": "Формат файла"
+  },
   "warning": {
     "message": "ВНИМАНИЕ",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
-  "exportWarning": {
-    "message": "Файл экспорта содержит ваши данные в открытом виде. Его не следует хранить или отправлять по небезопасным каналам (например, email). Удалите его сразу после использования."
+  "exportWarningDesc": {
+    "message": "Экспортируемый файл содержит данные вашего хранилища в незашифрованном формате. Его не следует хранить или отправлять по небезопасным каналам (например, по электронной почте). Удалите его сразу после использования."
   },
   "exportMasterPassword": {
     "message": "Для экспорта данных из хранилища введите мастер-пароль."
@@ -626,46 +629,49 @@
     "message": "Вы не можете использовать эту функцию, пока не обновите свой ключ шифрования."
   },
   "premiumMembership": {
-    "message": "Премиум-статус"
+    "message": "Премиум"
   },
   "premiumManage": {
-    "message": "Управление статусом"
+    "message": "Управление Премиум"
   },
   "premiumManageAlert": {
-    "message": "Вы можете управлять своим статусом на bitwarden.com. Перейти на сайт сейчас?"
+    "message": "Вы можете управлять Премиум на bitwarden.com. Перейти на сайт сейчас?"
   },
   "premiumRefresh": {
-    "message": "Обновить статус"
+    "message": "Обновить Премиум"
   },
   "premiumNotCurrentMember": {
-    "message": "В настоящее время у вас нет премиум-статуса."
+    "message": "На текущий момент у вас отсутствует Премиум."
   },
   "premiumSignUpAndGet": {
-    "message": "Подпишитесь на премиум-статус и получите:"
+    "message": "Подпишитесь на Премиум и получите:"
   },
   "ppremiumSignUpStorage": {
-    "message": "1 ГБ зашифрованного хранилища файлов."
+    "message": "1 ГБ зашифрованного хранилища для вложенных файлов."
   },
   "ppremiumSignUpTwoStep": {
     "message": "Дополнительные варианты двухфакторной аутентификации, такие как YubiKey, FIDO U2F и Duo."
   },
+  "ppremiumSignUpReports": {
+    "message": "Гигиена паролей, здоровье учетной записи и отчеты об утечках данных для обеспечения безопасности вашего хранилища."
+  },
   "ppremiumSignUpTotp": {
-    "message": "Генератор кода подтверждения TOTP для входа в ваше хранилище."
+    "message": "TOTP-генератор кодов (2ФА) для логинов вашего хранилища."
   },
   "ppremiumSignUpSupport": {
-    "message": "Приоритетную поддержку."
+    "message": "Приоритетная поддержка."
   },
   "ppremiumSignUpFuture": {
-    "message": "Все будущие функции премиум-статуса. Их будет больше!"
+    "message": "Все будущие функции Премиум. Их будет больше!"
   },
   "premiumPurchase": {
     "message": "Купить премиум"
   },
   "premiumPurchaseAlert": {
-    "message": "Вы можете купить премиум-статус на bitwarden.com. Перейти на сайт сейчас?"
+    "message": "Вы можете купить Премиум на bitwarden.com. Перейти на сайт сейчас?"
   },
   "premiumCurrentMember": {
-    "message": "У вас премиум-статус!"
+    "message": "У вас есть Премиум!"
   },
   "premiumCurrentMemberThanks": {
     "message": "Благодарим вас за поддержку Bitwarden."
@@ -689,10 +695,10 @@
     "message": "Если к вашему логину прикреплен ключ аутентификации, то код подтверждения TOTP будет скопирован при автозаполнении логина."
   },
   "premiumRequired": {
-    "message": "Необходим премиум-статус"
+    "message": "Необходим Премиум"
   },
   "premiumRequiredDesc": {
-    "message": "Для использования этой функции требуется премиум-статус."
+    "message": "Для использования этой функции требуется Премиум."
   },
   "enterVerificationCodeApp": {
     "message": "Введите 6-значный код подтверждения из вашего приложения-аутентификатора."
@@ -1049,7 +1055,7 @@
     "message": "Проверьте, не скомпрометирован ли пароль."
   },
   "passwordExposed": {
-    "message": "Этот пароль был найден в базах утечек $VALUE$ раз(а). Вы должны изменить его.",
+    "message": "Этот пароль был скомпрометирован $VALUE$ раз(а). Вы должны изменить его.",
     "placeholders": {
       "value": {
         "content": "$1",
