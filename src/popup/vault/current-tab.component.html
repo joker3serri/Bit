@@ -4,6 +4,7 @@
         <button type="button" appBlurClick (click)="refresh()" title="{{'refresh' | i18n}}" *ngIf="inSidebar">
             <i class="fa fa-retweet fa-lg fa-fw"></i>
         </button>
+        <app-lock-logout></app-lock-logout>
     </div>
     <div class="search">
         <input type="search" placeholder="{{'searchVault' | i18n}}" id="search"

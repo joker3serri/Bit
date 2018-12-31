@@ -60,6 +60,7 @@ import { SearchCiphersPipe } from 'jslib/angular/pipes/search-ciphers.pipe';
 
 import { ActionButtonsComponent } from './components/action-buttons.component';
 import { CiphersListComponent } from './components/ciphers-list.component';
+import { LockLogoutComponent } from './components/lock-logout-buttons.component';
 import { PopOutComponent } from './components/pop-out.component';
 
 import { IconComponent } from 'jslib/angular/components/icon.component';
@@ -171,6 +172,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         IconComponent,
         InputVerbatimDirective,
         LockComponent,
+        LockLogoutComponent,
         LoginComponent,
         OptionsComponent,
         PasswordGeneratorComponent,
