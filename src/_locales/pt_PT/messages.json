@@ -293,7 +293,7 @@
     "message": "Verificar palavra-passe mestra"
   },
   "yourVaultIsLocked": {
-    "message": "Your vault is locked. Verify your master password to continue."
+    "message": "O seu cofre está bloqueado. Verifique a sua palavra-passe mestra para continuar."
   },
   "unlock": {
     "message": "Unlock"
