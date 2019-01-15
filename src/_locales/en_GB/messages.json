@@ -539,7 +539,7 @@
     "message": "Context menu options provide quick access to password generation and logins for the website in your current tab."
   },
   "defaultUriMatchDetection": {
-    "message": "Default URI Match Detection",
+    "message": "Default URI match detection",
     "description": "Default URI match detection for auto-fill."
   },
   "defaultUriMatchDetectionDesc": {
