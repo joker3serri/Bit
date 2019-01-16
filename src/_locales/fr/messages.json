@@ -293,10 +293,10 @@
     "message": "Vérifiez votre mot de passe maître"
   },
   "yourVaultIsLocked": {
-    "message": "Your vault is locked. Verify your master password to continue."
+    "message": "Votre coffre est verrouillé. Vérifiez votre mot de passe maître pour continuer."
   },
   "unlock": {
-    "message": "Unlock"
+    "message": "Déverrouiller"
   },
   "loggedInAs": {
     "message": "Logged in as $EMAIL$.",
@@ -539,11 +539,11 @@
     "message": "Les options du menu contextuel permettent un accès rapide à la génération de mots de passe et aux identifiants enregistrés pour le site web de l'onglet actuel."
   },
   "defaultUriMatchDetection": {
-    "message": "Default URI Match Detection",
+    "message": "Détection de correspondance URI par défaut",
     "description": "Default URI match detection for auto-fill."
   },
   "defaultUriMatchDetectionDesc": {
-    "message": "Choose the default way that URI match detection is handled for logins when performing actions such as auto-fill."
+    "message": "Choisissez le mode de traitement par défaut de la détection de correspondance URI, pour les connexions lors de l'exécution d'actions telles que le remplissage automatique."
   },
   "theme": {
     "message": "Thème"
