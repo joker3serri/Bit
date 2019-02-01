@@ -215,7 +215,7 @@
                         </a>
                         <div class="row-main">
                             <label for="loginUri{{i}}">{{'uriPosition' | i18n : (i + 1)}}</label>
-                            <input id="loginUri{{i}}" type="text" name="Login.Uris[{{i}}].Uri" [(ngModel)]="u.uri"
+                            <input id="loginUri{{i}}" type="text" name="Login.Uris[{{i}}].Uri" [(ngModel)]="u._uri"
                                    placeholder="{{'ex' | i18n}} https://google.com" inputmode="url"
                                    appInputVerbatim>
                             <label for="loginUriMatch{{i}}" class="sr-only">
