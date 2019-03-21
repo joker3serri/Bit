@@ -8,16 +8,19 @@ app-sync {
     }
 }
 
-app-password-generator .password-block {
-    font-size: $font-size-large;
-    font-family: $font-family-monospace;
-    text-align: center;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+/*
+1. Using `white-space: pre` is not sufficient because lines would not be broken to fill line boxes.
+   See: https://developer.mozilla.org/en-US/docs/Web/CSS/white-space
+*/
+.password-block {
+    word-break: break-all;
+    white-space: pre-wrap; /* 1. */
+}
+
+.generated-password {
     margin: 20px;
+    font-size: $font-size-large;
+    text-align: center;
 }
 
 app-home {

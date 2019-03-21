@@ -116,8 +116,11 @@
                 margin-left: 10px;
             }
 
+            // 1. Stops main content from pushing other content off-screen.
+            // This allows long passwords to wrap properly (e.g. in the “View item” dialog).
             .row-main {
                 flex-grow: 1;
+                min-width: 0; /* 1. */
             }
 
             &.box-content-row-flex, .box-content-row-flex, &.box-content-row-checkbox,
@@ -141,7 +144,7 @@
                 > a {
                     padding: 8px 8px 8px 4px;
                     margin: 0;
-                
+
                     @include themify($themes) {
                         color: themed('dangerColor');
                     }
@@ -159,7 +162,7 @@
                     display: block;
                     width: initial;
                     margin-bottom: 0;
-                
+
                     @include themify($themes) {
                         color: themed('textColor');
                     }
@@ -233,7 +236,7 @@
                 width: 100%;
                 border: 1px solid #000000;
                 border-radius: $border-radius;
-                
+
                 @include themify($themes) {
                     border-color: themed('inputBorderColor');
                 }
@@ -248,7 +251,7 @@
                     padding: 10px 8px;
                     background: none;
                     border: none;
-                    
+
                     @include themify($themes) {
                         color: themed('boxRowButtonColor');
                     }
@@ -296,7 +299,7 @@
             .row-sub-label {
                 margin: 0 15px;
                 white-space: nowrap;
-                
+
                 @include themify($themes) {
                     color: themed('mutedColor');
                 }

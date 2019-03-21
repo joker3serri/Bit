@@ -145,15 +145,6 @@ p.lead {
     border: 0 !important;
 }
 
-.password-wrapper {
-    display: flex !important;
-    flex-wrap: wrap;
-
-    span {
-        white-space: pre;
-    }
-}
-
 .password-number {
     @include themify($themes) {
         color: themed('passwordNumberColor');
