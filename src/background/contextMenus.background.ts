@@ -26,6 +26,8 @@ export default class ContextMenusBackground {
         this.contextMenus.onClicked.addListener(async (info: any, tab: any) => {
             if (info.menuItemId === 'generate-password') {
                 await this.generatePasswordToClipboard();
+            } else if (info.menuItemId === 'clear-clipboard') {
+                await this.clearClipboard();
             } else if (info.parentMenuItemId === 'autofill' || info.parentMenuItemId === 'copy-username' ||
                 info.parentMenuItemId === 'copy-password') {
                 await this.cipherAction(info);
@@ -47,6 +49,10 @@ export default class ContextMenusBackground {
             hitType: 'event',
             eventAction: 'Generated Password From Context Menu',
         });
+    }
+
+    private async clearClipboard() {
+        this.platformUtilsService.copyToClipboard('', { window: window });
     }
 
     private async cipherAction(info: any) {

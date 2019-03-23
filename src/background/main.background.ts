@@ -449,6 +449,14 @@ export default class MainBackground {
                 contexts: ['all'],
                 title: this.i18nService.t('generatePasswordCopied'),
             });
+
+            await this.contextMenusCreate({
+                type: 'normal',
+                id: 'clear-clipboard',
+                parentId: 'root',
+                contexts: ['all'],
+                title: this.i18nService.t('clearClipboard'),
+            });
         }
 
         this.buildingContextMenu = false;
