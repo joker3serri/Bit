@@ -186,6 +186,7 @@ app-root > #loading {
     color: $text-muted;
 
     @include themify($themes) {
+        background-color: themed('backgroundColor');
         color: themed('mutedColor');
     }
 }
