@@ -1,13 +1,13 @@
-import {
-    CipherType,
-    FieldType,
-} from 'jslib/enums';
+import { CipherService, TotpService, UserService } from 'jslib/abstractions';
+import { CipherType, FieldType } from 'jslib/enums';
+
+import { CipherView } from 'jslib/models/view';
+
+import { BrowserApi } from '../browser/browserApi';
 
 import AutofillField from '../models/autofillField';
 import AutofillPageDetails from '../models/autofillPageDetails';
 import AutofillScript from '../models/autofillScript';
-
-import { BrowserApi } from '../browser/browserApi';
 
 import { AutofillService as AutofillServiceInterface } from './abstractions/autofill.service';
 
@@ -117,8 +117,18 @@ var IsoProvinces: { [id: string]: string; } = {
 /* tslint:enable */
 
 export default class AutofillService implements AutofillServiceInterface {
+
+    private lastUsedCipher: CipherView;
+    private lastSortedCiphers: CipherView[] = [];
+
     constructor(private cipherService: CipherService, private userService: UserService,
-        private totpService: TotpService, private eventService: EventService) { }
+        private totpService: TotpService, private eventService: EventService) { 
+
+		chrome.tabs.onUpdated.addListener(() => {
+            this.lastUsedCipher = null;
+            this.lastSortedCiphers = [];
+        });
+	}
 
     getFormsWithPasswordFields(pageDetails: AutofillPageDetails): any[] {
         const formData: any[] = [];
@@ -186,6 +196,8 @@ export default class AutofillService implements AutofillServiceInterface {
                 this.cipherService.updateLastUsedDate(options.cipher.id);
             }
 
+            this.lastUsedCipher = options.cipher;
+
             BrowserApi.tabSendMessage(tab, {
                 command: 'fillForm',
                 fillScript: fillScript,
@@ -217,26 +229,51 @@ export default class AutofillService implements AutofillServiceInterface {
         }
     }
 
-    async doAutoFillForLastUsedLogin(pageDetails: any, fromCommand: boolean) {
+    async doAutoFillForLastUsedLogin(pageDetails: any) {
         const tab = await this.getActiveTab();
         if (!tab || !tab.url) {
             return;
         }
 
-        const lastUsedCipher = await this.cipherService.getLastUsedForUrl(tab.url);
-        if (!lastUsedCipher) {
+        const ciphers = await this.cipherService.getAllDecryptedForUrl(tab.url);
+        if (!ciphers.length) {
             return;
         }
 
-        return await this.doAutoFill({
-            cipher: lastUsedCipher,
-            // tslint:disable-next-line
+        this.lastSortedCiphers = ciphers.sort(this.cipherService.sortCiphersByLastUsed);
+
+        this.doAutoFill({
+            cipher: this.lastSortedCiphers[0],
             pageDetails: pageDetails,
-            skipTotp: !fromCommand,
+            skipTotp: true,
             skipLastUsed: true,
-            skipUsernameOnlyFill: !fromCommand,
-            onlyEmptyFields: !fromCommand,
-            onlyVisibleFields: !fromCommand,
+            skipUsernameOnlyFill: true,
+            onlyEmptyFields: true,
+            onlyVisibleFields: true,
+        });
+    }
+
+    async cycleThroughLoginsByLastUsed(pageDetails: any) {
+        const tab = await this.getActiveTab();
+        if (!tab || !tab.url) {
+            return;
+        }
+
+        const ciphers = await this.cipherService.getAllDecryptedForUrl(tab.url);
+        if (!ciphers.length) {
+            return;
+        }
+
+        if (!this.arraysContainSameElements(this.lastSortedCiphers, ciphers)) {
+            this.lastSortedCiphers = ciphers.sort(this.cipherService.sortCiphersByLastUsed);
+        }
+
+        const lastUsedIndex = this.lastSortedCiphers.indexOf(this.lastUsedCipher);
+        const cipher = this.lastSortedCiphers[(lastUsedIndex + 1) % this.lastSortedCiphers.length];
+
+        return await this.doAutoFill({
+            cipher: cipher,
+            pageDetails: pageDetails,
         });
     }
 
@@ -1114,5 +1151,9 @@ export default class AutofillService implements AutofillServiceInterface {
         fillScript.script.push(['click_on_opid', field.opid]);
         fillScript.script.push(['focus_by_opid', field.opid]);
         fillScript.script.push(['fill_by_opid', field.opid, value]);
+    }
+
+    private arraysContainSameElements(arrayA: any[], arrayB: any[]) {
+        return arrayA.length === arrayB.length && arrayA.every((cipher) => arrayB.includes(cipher));
     }
 }

@@ -139,14 +139,20 @@ export default class RuntimeBackground {
                         });
                         break;
                     case 'autofiller':
-                    case 'autofill_cmd':
-                        const totpCode = await this.autofillService.doAutoFillForLastUsedLogin([{
+                        this.autofillService.doAutoFillForLastUsedLogin([{
                             frameId: sender.frameId,
                             tab: msg.tab,
                             details: msg.details,
-                        }], msg.sender === 'autofill_cmd');
+                        }]);
+                        break;
+                    case 'autofill_cmd':
+                        const totpCode = await this.autofillService.cycleThroughLoginsByLastUsed([{
+                            frameId: sender.frameId,
+                            tab: msg.tab,
+                            details: msg.details,
+                        }]);
                         if (totpCode != null) {
-                            this.platformUtilsService.copyToClipboard(totpCode, { window: window });
+                            this.platformUtilsService.copyToClipboard(totpCode, {window: window});
                         }
                         break;
                     case 'contextMenu':
