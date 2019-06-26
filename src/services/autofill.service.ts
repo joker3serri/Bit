@@ -124,13 +124,13 @@ export default class AutofillService implements AutofillServiceInterface {
     private lastSortedCiphers: CipherView[] = [];
 
     constructor(private cipherService: CipherService, private userService: UserService,
-        private totpService: TotpService, private eventService: EventService) { 
+        private totpService: TotpService, private eventService: EventService) {
 
-		chrome.tabs.onUpdated.addListener(() => {
+        chrome.tabs.onUpdated.addListener(() => {
             this.lastUsedCipher = null;
             this.lastSortedCiphers = [];
         });
-	}
+    }
 
     getFormsWithPasswordFields(pageDetails: AutofillPageDetails): any[] {
         const formData: any[] = [];

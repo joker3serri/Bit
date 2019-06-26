@@ -152,7 +152,7 @@ export default class RuntimeBackground {
                             details: msg.details,
                         }]);
                         if (totpCode != null) {
-                            this.platformUtilsService.copyToClipboard(totpCode, {window: window});
+                            this.platformUtilsService.copyToClipboard(totpCode, { window: window });
                         }
                         break;
                     case 'contextMenu':
