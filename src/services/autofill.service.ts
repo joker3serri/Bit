@@ -1,13 +1,15 @@
-import { CipherService, TotpService, UserService } from 'jslib/abstractions';
-import { CipherType, FieldType } from 'jslib/enums';
+import {
+    CipherType,
+    FieldType,
+} from 'jslib/enums';
 
 import { CipherView } from 'jslib/models/view';
-
-import { BrowserApi } from '../browser/browserApi';
 
 import AutofillField from '../models/autofillField';
 import AutofillPageDetails from '../models/autofillPageDetails';
 import AutofillScript from '../models/autofillScript';
+
+import { BrowserApi } from '../browser/browserApi';
 
 import { AutofillService as AutofillServiceInterface } from './abstractions/autofill.service';
 
