@@ -212,7 +212,7 @@
     "message": "Woordscheidingsteken"
   },
   "capitalize": {
-    "message": "Capitalize",
+    "message": "Beginhoofdletters",
     "description": "Make the first letter of a work uppercase."
   },
   "includeNumber": {
