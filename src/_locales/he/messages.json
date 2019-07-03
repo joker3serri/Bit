@@ -154,10 +154,10 @@
     "message": "ערוך תיקייה"
   },
   "deleteFolder": {
-    "message": "Delete Folder"
+    "message": "מחק תיקייה"
   },
   "folders": {
-    "message": "Folders"
+    "message": "תיקיות"
   },
   "noFolders": {
     "message": "There are no folders to list."
