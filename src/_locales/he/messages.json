@@ -724,7 +724,7 @@
     "message": "תודה על כך שתמכת בBitwarden."
   },
   "premiumPrice": {
-    "message": "All for just $PRICE$ \/year!",
+    "message": "הכל רק ב$PRICE$ לשנה!",
     "placeholders": {
       "price": {
         "content": "$1",
@@ -739,19 +739,19 @@
     "message": "Disable Automatic TOTP Copy"
   },
   "disableAutoTotpCopyDesc": {
-    "message": "If your login has an authenticator key attached to it, the TOTP verification code is automatically copied to your clipboard whenever you auto-fill the login."
+    "message": "אם פרטי הכניסה שלך מקושרים לאפליקציית אימות, קוד האימות TOTP מועתק אוטומטית ללוח שלך ברגע שמתבצעת ההשלמה האוטומטית לטופס הכניסה."
   },
   "premiumRequired": {
-    "message": "Premium Required"
+    "message": "נדרש חשבון פרימיום"
   },
   "premiumRequiredDesc": {
-    "message": "A premium membership is required to use this feature."
+    "message": "בכדי להשתמש ביכולת זו יש צורך בחשבון פרימיום."
   },
   "enterVerificationCodeApp": {
-    "message": "Enter the 6 digit verification code from your authenticator app."
+    "message": "הכנס את קוד האימות בן 6 הספרות מאפליקציית האימות שלך."
   },
   "enterVerificationCodeEmail": {
-    "message": "Enter the 6 digit verification code that was emailed to $EMAIL$.",
+    "message": "הכנס את קוד האימות בן 6 הספרות שנשלח ל-$EMAIL$.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -760,7 +760,7 @@
     }
   },
   "verificationCodeEmailSent": {
-    "message": "Verification email sent to $EMAIL$.",
+    "message": "מייל אימות נשלח לכתובת $EMAIL$.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -769,19 +769,19 @@
     }
   },
   "rememberMe": {
-    "message": "Remember me"
+    "message": "זכור אותי"
   },
   "sendVerificationCodeEmailAgain": {
-    "message": "Send verification code email again"
+    "message": "שלח שוב קוד אימות לאימייל"
   },
   "useAnotherTwoStepMethod": {
-    "message": "Use another two-step login method"
+    "message": "השתמש בשיטה אחרת עבור כניסה דו שלבית"
   },
   "insertYubiKey": {
-    "message": "Insert your YubiKey into your computer's USB port, then touch its button."
+    "message": "הכנס את ה-YubiKey אל כניסת ה-USB במחשבך, ואז גע בכפתור שלו."
   },
   "insertU2f": {
-    "message": "Insert your security key into your computer's USB port. If it has a button, touch it."
+    "message": "הכנס את מפתח האבטחה שלך אל כניסת ה-USB במחשבך. אם יש לו כפתור, לחץ עליו."
   },
   "loginUnavailable": {
     "message": "Login Unavailable"
