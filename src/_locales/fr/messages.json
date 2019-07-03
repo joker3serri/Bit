@@ -898,7 +898,7 @@
     "message": "Nouveau champ personnalisé"
   },
   "dragToSort": {
-    "message": "Drag to sort"
+    "message": "Glissez pour trier"
   },
   "cfTypeText": {
     "message": "Texte"
@@ -1234,6 +1234,6 @@
     "message": "Verrouiller avec le mot de passe maître lors du redémarrage"
   },
   "selectOneCollection": {
-    "message": "You must select at least one collection."
+    "message": "Vous devez sélectionner au moins une collection."
   }
 }
