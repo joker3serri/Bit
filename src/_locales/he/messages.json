@@ -178,7 +178,7 @@
     "message": "מחולל סיסמאות"
   },
   "generator": {
-    "message": "Generator",
+    "message": "מחולל",
     "description": "Short for 'Password Generator'."
   },
   "passGenInfo": {
@@ -188,25 +188,25 @@
     "message": "Bitwarden Web Vault"
   },
   "importItems": {
-    "message": "Import Items"
+    "message": "יבא פריטים"
   },
   "select": {
-    "message": "Select"
+    "message": "בחר"
   },
   "generatePassword": {
-    "message": "Generate Password"
+    "message": "צור סיסמה"
   },
   "regeneratePassword": {
-    "message": "Regenerate Password"
+    "message": "יצירת ססמה חדשה"
   },
   "options": {
-    "message": "Options"
+    "message": "אפשרויות"
   },
   "length": {
-    "message": "Length"
+    "message": "אורך"
   },
   "numWords": {
-    "message": "Number of Words"
+    "message": "מספר מילים"
   },
   "wordSeparator": {
     "message": "Word Separator"
@@ -219,34 +219,34 @@
     "message": "Include Number"
   },
   "minNumbers": {
-    "message": "Minimum Numbers"
+    "message": "מינימום ספרות"
   },
   "minSpecial": {
-    "message": "Minimum Special"
+    "message": "מינימום תוים מיוחדים"
   },
   "avoidAmbChar": {
-    "message": "Avoid Ambiguous Characters"
+    "message": "המנע מאותיות ותוים דומים"
   },
   "searchVault": {
-    "message": "Search vault"
+    "message": "חיפוש בכספת"
   },
   "edit": {
-    "message": "Edit"
+    "message": "ערוך"
   },
   "view": {
     "message": "View"
   },
   "noItemsInList": {
-    "message": "There are no items to list."
+    "message": "אין פריטים להצגה."
   },
   "itemInformation": {
-    "message": "Item Information"
+    "message": "מידע על הפריט"
   },
   "username": {
-    "message": "Username"
+    "message": "שם משתמש"
   },
   "password": {
-    "message": "Password"
+    "message": "סיסמה"
   },
   "passphrase": {
     "message": "Passphrase"
