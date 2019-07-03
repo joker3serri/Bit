@@ -249,25 +249,25 @@
     "message": "סיסמה"
   },
   "passphrase": {
-    "message": "Passphrase"
+    "message": "סיסמה (מילות מפתח)"
   },
   "favorite": {
     "message": "Favorite"
   },
   "notes": {
-    "message": "Notes"
+    "message": "פתקים"
   },
   "note": {
-    "message": "Note"
+    "message": "פתק"
   },
   "editItem": {
-    "message": "Edit Item"
+    "message": "ערוך פריט"
   },
   "folder": {
-    "message": "Folder"
+    "message": "תיקייה"
   },
   "deleteItem": {
-    "message": "Delete Item"
+    "message": "מחק פריט"
   },
   "viewItem": {
     "message": "View Item"
