@@ -212,11 +212,11 @@
     "message": "Séparateur de mots"
   },
   "capitalize": {
-    "message": "Capitalize",
+    "message": "Majuscules",
     "description": "Make the first letter of a work uppercase."
   },
   "includeNumber": {
-    "message": "Include Number"
+    "message": "Inclure le numéro"
   },
   "minNumbers": {
     "message": "Nombre minimum de chiffres"
