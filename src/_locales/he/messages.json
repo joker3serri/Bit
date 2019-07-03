@@ -300,13 +300,13 @@
     "message": "Verify Master Password"
   },
   "yourVaultIsLocked": {
-    "message": "Your vault is locked. Verify your master password to continue."
+    "message": "הכספת שלך נעולה. הזן את הסיסמה הראשית שלך כדי להמשיך."
   },
   "unlock": {
-    "message": "Unlock"
+    "message": "בטל נעילה"
   },
   "loggedInAsOn": {
-    "message": "Logged in as $EMAIL$ on $HOSTNAME$.",
+    "message": "מחובר בתור $EMAIL$ באתר $HOSTNAME$.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -715,13 +715,13 @@
     "message": "רכוש פרימיום"
   },
   "premiumPurchaseAlert": {
-    "message": "You can purchase premium membership on the bitwarden.com web vault. Do you want to visit the website now?"
+    "message": "באפשרותך לרכוש מנוי פרימיום בכספת באתר bitwarden.com. האם ברצונך לפתוח את האתר כעת?"
   },
   "premiumCurrentMember": {
-    "message": "You are a premium member!"
+    "message": "אתה מנוי פרימיום!"
   },
   "premiumCurrentMemberThanks": {
-    "message": "Thank you for supporting Bitwarden."
+    "message": "תודה על כך שתמכת בBitwarden."
   },
   "premiumPrice": {
     "message": "All for just $PRICE$ \/year!",
