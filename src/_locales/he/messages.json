@@ -160,22 +160,22 @@
     "message": "תיקיות"
   },
   "noFolders": {
-    "message": "There are no folders to list."
+    "message": "אין תיקיות להצגה."
   },
   "helpFeedback": {
-    "message": "Help & Feedback"
+    "message": "עזרה ומשוב"
   },
   "sync": {
-    "message": "Sync"
+    "message": "סנכרן"
   },
   "syncVaultNow": {
     "message": "Sync Vault Now"
   },
   "lastSync": {
-    "message": "Last Sync:"
+    "message": "סנכרון אחרון:"
   },
   "passGen": {
-    "message": "Password Generator"
+    "message": "מחולל סיסמאות"
   },
   "generator": {
     "message": "Generator",
