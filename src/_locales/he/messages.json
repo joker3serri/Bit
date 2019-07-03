@@ -1,0 +1,1239 @@
+{
+  "appName": {
+    "message": "Bitwarden"
+  },
+  "extName": {
+    "message": "Bitwarden - מנהל סיסמאות חינמי",
+    "description": "Extension name"
+  },
+  "extDesc": {
+    "message": "מנהל סיסמאות חינמי ומאובטח עבור כל המכשירים שלך.",
+    "description": "Extension description"
+  },
+  "loginOrCreateNewAccount": {
+    "message": "צור חשבון חדש או התחבר כדי לגשת לכספת המאובטחת שלך."
+  },
+  "createAccount": {
+    "message": "צור חשבון"
+  },
+  "login": {
+    "message": "התחבר"
+  },
+  "cancel": {
+    "message": "בטל"
+  },
+  "close": {
+    "message": "סגור"
+  },
+  "submit": {
+    "message": "שלח"
+  },
+  "emailAddress": {
+    "message": "כתובת אימייל"
+  },
+  "masterPass": {
+    "message": "סיסמה ראשית"
+  },
+  "masterPassDesc": {
+    "message": "הסיסמה הראשית היא הסיסמה שבאמצעותה תיגש לכספת שלך. חשוב מאוד שלא תשכח את הסיסמה הזו. אין שום דרך לשחזר אותה במקרה ושכחת אותה."
+  },
+  "masterPassHintDesc": {
+    "message": "ניתן להשתמש ברמז לסיסמה הראשית אם שכחת אותה."
+  },
+  "reTypeMasterPass": {
+    "message": "הקלד שוב סיסמה ראשית"
+  },
+  "masterPassHint": {
+    "message": "רמז לסיסמה ראשית (אופציונאלי)"
+  },
+  "tab": {
+    "message": "לשונית"
+  },
+  "myVault": {
+    "message": "הכספת שלי"
+  },
+  "tools": {
+    "message": "כלים"
+  },
+  "settings": {
+    "message": "הגדרות"
+  },
+  "currentTab": {
+    "message": "לשונית נוכחית"
+  },
+  "copyPassword": {
+    "message": "העתק סיסמה"
+  },
+  "copyNote": {
+    "message": "העתק פתק"
+  },
+  "copyUri": {
+    "message": "העתק שורת כתובת"
+  },
+  "copyUsername": {
+    "message": "העתק שם משתמש"
+  },
+  "copyNumber": {
+    "message": "העתק מספר"
+  },
+  "copySecurityCode": {
+    "message": "העתק קוד אבטחה"
+  },
+  "autoFill": {
+    "message": "השלמה אוטומטית"
+  },
+  "generatePasswordCopied": {
+    "message": "צור סיסמה חדשה (והעתק לזיכרון)"
+  },
+  "noMatchingLogins": {
+    "message": "לא נמצאו פרטי כניסה תואמים."
+  },
+  "vaultLocked": {
+    "message": "הכספת נעולה."
+  },
+  "autoFillInfo": {
+    "message": "לא נמצאו פרטי כניסה להשלמה אוטומטית בלשונית הנוכחית בדפדפן."
+  },
+  "addLogin": {
+    "message": "הוסף פרטי כניסה"
+  },
+  "addItem": {
+    "message": "הוסף פריט"
+  },
+  "passwordHint": {
+    "message": "רמז לסיסמה"
+  },
+  "enterEmailToGetHint": {
+    "message": "הכנס את פרטי האימייל שלך לקבלת רמז עבור הסיסמה הראשית."
+  },
+  "getMasterPasswordHint": {
+    "message": "הצג את הרמז לסיסמה הראשית"
+  },
+  "continue": {
+    "message": "המשך"
+  },
+  "verificationCode": {
+    "message": "קוד אימות"
+  },
+  "account": {
+    "message": "חשבון"
+  },
+  "changeMasterPassword": {
+    "message": "החלף סיסמה ראשית"
+  },
+  "fingerprintPhrase": {
+    "message": "סיסמת טביעת אצבע",
+    "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
+  },
+  "yourAccountsFingerprint": {
+    "message": "הסיסמה של טביעת האצבעות בחשבון שלך",
+    "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
+  },
+  "twoStepLogin": {
+    "message": "התחברות בשני-שלבים"
+  },
+  "logOut": {
+    "message": "התנתק"
+  },
+  "about": {
+    "message": "אודות"
+  },
+  "version": {
+    "message": "גירסה"
+  },
+  "save": {
+    "message": "שמור"
+  },
+  "addFolder": {
+    "message": "הוסף תיקיה"
+  },
+  "name": {
+    "message": "שם"
+  },
+  "editFolder": {
+    "message": "ערוך תיקייה"
+  },
+  "deleteFolder": {
+    "message": "Delete Folder"
+  },
+  "folders": {
+    "message": "Folders"
+  },
+  "noFolders": {
+    "message": "There are no folders to list."
+  },
+  "helpFeedback": {
+    "message": "Help & Feedback"
+  },
+  "sync": {
+    "message": "Sync"
+  },
+  "syncVaultNow": {
+    "message": "Sync Vault Now"
+  },
+  "lastSync": {
+    "message": "Last Sync:"
+  },
+  "passGen": {
+    "message": "Password Generator"
+  },
+  "generator": {
+    "message": "Generator",
+    "description": "Short for 'Password Generator'."
+  },
+  "passGenInfo": {
+    "message": "Automatically generate strong, unique passwords for your logins."
+  },
+  "bitWebVault": {
+    "message": "Bitwarden Web Vault"
+  },
+  "importItems": {
+    "message": "Import Items"
+  },
+  "select": {
+    "message": "Select"
+  },
+  "generatePassword": {
+    "message": "Generate Password"
+  },
+  "regeneratePassword": {
+    "message": "Regenerate Password"
+  },
+  "options": {
+    "message": "Options"
+  },
+  "length": {
+    "message": "Length"
+  },
+  "numWords": {
+    "message": "Number of Words"
+  },
+  "wordSeparator": {
+    "message": "Word Separator"
+  },
+  "capitalize": {
+    "message": "Capitalize",
+    "description": "Make the first letter of a work uppercase."
+  },
+  "includeNumber": {
+    "message": "Include Number"
+  },
+  "minNumbers": {
+    "message": "Minimum Numbers"
+  },
+  "minSpecial": {
+    "message": "Minimum Special"
+  },
+  "avoidAmbChar": {
+    "message": "Avoid Ambiguous Characters"
+  },
+  "searchVault": {
+    "message": "Search vault"
+  },
+  "edit": {
+    "message": "Edit"
+  },
+  "view": {
+    "message": "View"
+  },
+  "noItemsInList": {
+    "message": "There are no items to list."
+  },
+  "itemInformation": {
+    "message": "Item Information"
+  },
+  "username": {
+    "message": "Username"
+  },
+  "password": {
+    "message": "Password"
+  },
+  "passphrase": {
+    "message": "Passphrase"
+  },
+  "favorite": {
+    "message": "Favorite"
+  },
+  "notes": {
+    "message": "Notes"
+  },
+  "note": {
+    "message": "Note"
+  },
+  "editItem": {
+    "message": "Edit Item"
+  },
+  "folder": {
+    "message": "Folder"
+  },
+  "deleteItem": {
+    "message": "Delete Item"
+  },
+  "viewItem": {
+    "message": "View Item"
+  },
+  "launch": {
+    "message": "Launch"
+  },
+  "website": {
+    "message": "Website"
+  },
+  "toggleVisibility": {
+    "message": "Toggle Visibility"
+  },
+  "manage": {
+    "message": "Manage"
+  },
+  "other": {
+    "message": "Other"
+  },
+  "rateExtension": {
+    "message": "Rate the Extension"
+  },
+  "rateExtensionDesc": {
+    "message": "Please consider helping us out with a good review!"
+  },
+  "browserNotSupportClipboard": {
+    "message": "Your web browser does not support easy clipboard copying. Copy it manually instead."
+  },
+  "verifyMasterPassword": {
+    "message": "Verify Master Password"
+  },
+  "yourVaultIsLocked": {
+    "message": "Your vault is locked. Verify your master password to continue."
+  },
+  "unlock": {
+    "message": "Unlock"
+  },
+  "loggedInAsOn": {
+    "message": "Logged in as $EMAIL$ on $HOSTNAME$.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      },
+      "hostname": {
+        "content": "$2",
+        "example": "bitwarden.com"
+      }
+    }
+  },
+  "invalidMasterPassword": {
+    "message": "סיסמה ראשית שגויה"
+  },
+  "lockOptions": {
+    "message": "אפשרויות נעילה"
+  },
+  "lockNow": {
+    "message": "נעל עכשיו"
+  },
+  "immediately": {
+    "message": "באופן מיידי"
+  },
+  "tenSeconds": {
+    "message": "10 שניות"
+  },
+  "twentySeconds": {
+    "message": "20 שניות"
+  },
+  "thirtySeconds": {
+    "message": "30 שניות"
+  },
+  "oneMinute": {
+    "message": "דקה"
+  },
+  "twoMinutes": {
+    "message": "2 דקות"
+  },
+  "fiveMinutes": {
+    "message": "5 דקות"
+  },
+  "fifteenMinutes": {
+    "message": "15 דקות"
+  },
+  "thirtyMinutes": {
+    "message": "30 דקות"
+  },
+  "oneHour": {
+    "message": "שעה"
+  },
+  "fourHours": {
+    "message": "4 שעות"
+  },
+  "onLocked": {
+    "message": "בזמן נעילת המערכת"
+  },
+  "onRestart": {
+    "message": "בהפעלת הדפדפן מחדש"
+  },
+  "never": {
+    "message": "לעולם לא"
+  },
+  "security": {
+    "message": "אבטחה"
+  },
+  "errorOccurred": {
+    "message": "אירעה שגיאה"
+  },
+  "emailRequired": {
+    "message": "נדרשת כתובת אימייל."
+  },
+  "invalidEmail": {
+    "message": "כתובת אימייל לא תקינה."
+  },
+  "masterPassRequired": {
+    "message": "יש להזין את הסיסמה הראשית."
+  },
+  "masterPassLength": {
+    "message": "הסיסמה הראשית חייבת להיות לפחות באורך 8 תווים."
+  },
+  "masterPassDoesntMatch": {
+    "message": "שדה אימות סיסמה ראשית לא תואם."
+  },
+  "newAccountCreated": {
+    "message": "החשבון שלך נוצר בהצלחה! כעת ניתן להכנס למערכת."
+  },
+  "masterPassSent": {
+    "message": "שלחנו לך אימייל עם רמז לסיסמה הראשית."
+  },
+  "verificationCodeRequired": {
+    "message": "נדרש קוד אימות."
+  },
+  "valueCopied": {
+    "message": "השדה $VALUE$ הועתק לזיכרון",
+    "description": "Value has been copied to the clipboard.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "Password"
+      }
+    }
+  },
+  "autofillError": {
+    "message": "לא הצלחנו לבצע פעולת השלמה האוטומטית בעמוד זה. אנא העתק והדבק את המידע הנחוץ בצורה ידנית."
+  },
+  "loggedOut": {
+    "message": "בוצעה יציאה"
+  },
+  "loginExpired": {
+    "message": "תוקף החיבור שלך הסתיים."
+  },
+  "logOutConfirmation": {
+    "message": "האם אתה בטוח שברצונך להתנתק?"
+  },
+  "yes": {
+    "message": "כן"
+  },
+  "no": {
+    "message": "לא"
+  },
+  "unexpectedError": {
+    "message": "אירעה שגיאה לא צפויה."
+  },
+  "nameRequired": {
+    "message": "דרוש שם."
+  },
+  "addedFolder": {
+    "message": "נוספה תיקיה"
+  },
+  "changeMasterPass": {
+    "message": "החלף סיסמה ראשית"
+  },
+  "changeMasterPasswordConfirmation": {
+    "message": "באפשרותך לשנות את הסיסמה הראשית שלך דרך הכספת באתר bitwarden.com. האם ברצונך לפתוח את האתר כעת?"
+  },
+  "twoStepLoginConfirmation": {
+    "message": "התחברות בשני-שלבים הופכת את החשבון שלך למאובטח יותר בכך שאתה נדרש לוודא בכל כניסה בעזרת מכשיר אחר כדוגמת מפתח אבטחה, תוכנת אימות, SMS, שיחת טלפון, או אימייל. ניתן להפעיל את \"התחברות בשני-שלבים\" בכספת שבאתר bitwarden.com. האם ברצונך לפתוח את האתר כעת?"
+  },
+  "editedFolder": {
+    "message": "תיקיה שנערכה"
+  },
+  "deleteFolderConfirmation": {
+    "message": "האם אתה בטוח שברצונך למחוק את התיקייה?"
+  },
+  "deletedFolder": {
+    "message": "תיקיה שנמחקה"
+  },
+  "gettingStartedTutorial": {
+    "message": "מדריך שימוש ראשוני"
+  },
+  "gettingStartedTutorialVideo": {
+    "message": "צפה במדריך השימוש הראשוני כדי ללמוד איך לנצל את המקסימום שהתוסף לדפדפן יכול להציע."
+  },
+  "syncingComplete": {
+    "message": "הסינכרון הושלם"
+  },
+  "syncingFailed": {
+    "message": "הסינכרון נכשל"
+  },
+  "passwordCopied": {
+    "message": "הסיסמה הועתקה"
+  },
+  "uri": {
+    "message": "כתובת"
+  },
+  "uriPosition": {
+    "message": "כתובת $POSITION$",
+    "description": "A listing of URIs. Ex: URI 1, URI 2, URI 3, etc.",
+    "placeholders": {
+      "position": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "newUri": {
+    "message": "כתובת חדשה"
+  },
+  "addedItem": {
+    "message": "פריט שהתווסף"
+  },
+  "editedItem": {
+    "message": "פריט שנערך"
+  },
+  "deleteItemConfirmation": {
+    "message": "האם אתה בטוח שברצונך למחוק פריט זה?"
+  },
+  "deletedItem": {
+    "message": "פריט שנמחק"
+  },
+  "overwritePassword": {
+    "message": "דרוס סיסמה"
+  },
+  "overwritePasswordConfirmation": {
+    "message": "האם אתה בטוח שברצונך לדרוס את הסיסמה הנוכחית?"
+  },
+  "searchFolder": {
+    "message": "חפש תיקייה"
+  },
+  "searchCollection": {
+    "message": "חפש אוסף"
+  },
+  "searchType": {
+    "message": "חפש סוג"
+  },
+  "noneFolder": {
+    "message": "ללא תיקיה",
+    "description": "This is the folder for uncategorized items"
+  },
+  "disableAddLoginNotification": {
+    "message": "בטל את ההודעה \"שמור פרטי כניסה\""
+  },
+  "addLoginNotificationDesc": {
+    "message": "ההודעה \"שמור פרטי כניסה\" מופיעה בכל פעם שתכנס לאתר חדש בפעם הראשונה."
+  },
+  "dontShowCardsCurrentTab": {
+    "message": "אל תציג כרטיסים העמוד הלשונית"
+  },
+  "dontShowCardsCurrentTabDesc": {
+    "message": "פרטי כרטיס מהכספת שלך מופיעים בעמוד 'הלשונית הנוכחית' לגישה קלה להשלמה האוטומטית."
+  },
+  "dontShowIdentitiesCurrentTab": {
+    "message": "אל תציג זהויות בעמוד הלשונית"
+  },
+  "dontShowIdentitiesCurrentTabDesc": {
+    "message": "פרטי זהות מהכספת שלך מופיעים בעמוד 'הלשונית הנוכחית' לגישה קלה להשלמה האוטומטית."
+  },
+  "clearClipboard": {
+    "message": "נקה לוח העתקות",
+    "description": "Clipboard is the operating system thing where you copy\/paste data to on your device."
+  },
+  "clearClipboardDesc": {
+    "message": "נקה אוטומטית ערכים שהועתקו ללוח ההעתקות (clipboard).",
+    "description": "Clipboard is the operating system thing where you copy\/paste data to on your device."
+  },
+  "notificationAddDesc": {
+    "message": "האם ברצונך שתוכנת Bitwarden תזכור סיסמה זו עבורך?"
+  },
+  "notificationAddSave": {
+    "message": "כן, שמור עכשיו"
+  },
+  "notificationNeverSave": {
+    "message": "אף פעם עבור אתר זה"
+  },
+  "disableChangedPasswordNotification": {
+    "message": "בטל התראת \"סיסמה שונתה\""
+  },
+  "disableChangedPasswordNotificationDesc": {
+    "message": "ההתראה \"סיסמה שונתה\" תופיע בכל פעם שהמערכת מזהה שינוי בסיסמה באתר אם פרטי הכניסה הקודמים שמורים שבכספת."
+  },
+  "notificationChangeDesc": {
+    "message": "האם ברצונך לעדכן את הסיסמה הזו בתוכנת Bitwarden?"
+  },
+  "notificationChangeSave": {
+    "message": "כן, עדכן עכשיו"
+  },
+  "disableContextMenuItem": {
+    "message": "בטל את אפשרויות תפריט ההקשר"
+  },
+  "disableContextMenuItemDesc": {
+    "message": "אפשרויות תפריט ההקשר מספקים גישה מהירה ליצירת סיסמאות חדשות ולפרטי כניסה לאתר עבור הלשונית הנוכחית בדפדפן."
+  },
+  "defaultUriMatchDetection": {
+    "message": "ברירת מחדל לזיהוי התאמת כתובות",
+    "description": "Default URI match detection for auto-fill."
+  },
+  "defaultUriMatchDetectionDesc": {
+    "message": "בחר את שיטת ברירת המחדל עבור זיהוי התאמת כתובות כשמבצעים פעולות השלמה אוטומטית."
+  },
+  "theme": {
+    "message": "ערכת נושא"
+  },
+  "themeDesc": {
+    "message": "שנה את ערכת הצבע של האפליקציה."
+  },
+  "dark": {
+    "message": "כהה",
+    "description": "Dark color"
+  },
+  "light": {
+    "message": "בהיר",
+    "description": "Light color"
+  },
+  "exportVault": {
+    "message": "יצוא כספת"
+  },
+  "fileFormat": {
+    "message": "פורמט קובץ"
+  },
+  "warning": {
+    "message": "אזהרה",
+    "description": "WARNING (should stay in capitalized letters if the language permits)"
+  },
+  "exportWarningDesc": {
+    "message": "הקובץ מכיל את פרטי הכספת שלך בפורמט לא מוצפן. מומלץ להעביר את הקובץ רק בדרכים מוצפנות, ומאוד לא מומלץ לשמור או לשלוח את הקובץ הזה בדרכים לא מוצפנות (כדוגמת סתם אימייל). מחק את הקובץ מיד לאחר שסיימת את השימוש בו."
+  },
+  "exportMasterPassword": {
+    "message": "הזן את הסיסמה הראשית שלך עבור יצוא המידע מהכספת."
+  },
+  "shared": {
+    "message": "משותף"
+  },
+  "shareVault": {
+    "message": "שתף את הכספת שלך"
+  },
+  "shareVaultConfirmation": {
+    "message": "תוכנת Bitwarden מאפשרת לך לשתף את הכספת עם אחרים בעזרת חשבון ארגון. האם תרצה לבקר באתר bitwarden.com ללמוד עוד בנושא זה?"
+  },
+  "shareItem": {
+    "message": "שתף פריט"
+  },
+  "share": {
+    "message": "שתף"
+  },
+  "sharedItem": {
+    "message": "פריט משותף"
+  },
+  "shareDesc": {
+    "message": "בחר ארגון שאיתו תרצה לשתף פריט זה. השיתוף מעביר את הבעלות על הפריט לארגון. אתה לא תהיה הבעלים הישיר של הפריט לאחר השיתוף."
+  },
+  "learnMore": {
+    "message": "למידע נוסף"
+  },
+  "authenticatorKeyTotp": {
+    "message": "מפתח אימות (TOTP)"
+  },
+  "verificationCodeTotp": {
+    "message": "קוד אימות (TOTP)"
+  },
+  "copyVerificationCode": {
+    "message": "העתק קוד אימות"
+  },
+  "attachments": {
+    "message": "קבצים מצורפים"
+  },
+  "deleteAttachment": {
+    "message": "מחק קובץ מצורף"
+  },
+  "deleteAttachmentConfirmation": {
+    "message": "האם אתה בטוח שברצונך למחוק קובץ מצורף זה?"
+  },
+  "deletedAttachment": {
+    "message": "קובץ מצורף שנמחק"
+  },
+  "newAttachment": {
+    "message": "צרף קובץ חדש"
+  },
+  "noAttachments": {
+    "message": "אין קבצים מצורפים."
+  },
+  "attachmentSaved": {
+    "message": "הקובץ המצורף נשמר."
+  },
+  "file": {
+    "message": "קובץ"
+  },
+  "selectFile": {
+    "message": "בחר קובץ."
+  },
+  "maxFileSize": {
+    "message": "גודל הקובץ המירבי הוא 100 מגה."
+  },
+  "featureUnavailable": {
+    "message": "יכולת זו לא זמינה"
+  },
+  "updateKey": {
+    "message": "לא ניתן להשתמש ביכולת זו עד שתעדכן את מפתח ההצפנה שלך."
+  },
+  "premiumMembership": {
+    "message": "חשבון פרימיום"
+  },
+  "premiumManage": {
+    "message": "נהל חשבון"
+  },
+  "premiumManageAlert": {
+    "message": "באפשרותך לנהל את החשבון שלך דרך הכספת באתר bitwarden.com. האם ברצונך לפתוח את האתר כעת?"
+  },
+  "premiumRefresh": {
+    "message": "רענן פרטי חשבון"
+  },
+  "premiumNotCurrentMember": {
+    "message": "חשבונך אינו חשבון פרמיום כרגע."
+  },
+  "premiumSignUpAndGet": {
+    "message": "צור חשבון פרמיום לשנה, וקבל:"
+  },
+  "ppremiumSignUpStorage": {
+    "message": "1 ג'יגה של מקום אחסון עבור קבצים מצורפים."
+  },
+  "ppremiumSignUpTwoStep": {
+    "message": "אפשרויות כניסה דו שלבית מתקדמות כמו YubiKey, FIDO U2F, וגם Duo."
+  },
+  "ppremiumSignUpReports": {
+    "message": "היגיינת סיסמאות, מצב בריאות החשבון, ופריצות מפורסמות ידווחו ישירות לכספת שלך."
+  },
+  "ppremiumSignUpTotp": {
+    "message": "קוד אימות TOTP לייצור סיסמאות עבור כניסה דו-שלבית (2FA) בכספת שלך."
+  },
+  "ppremiumSignUpSupport": {
+    "message": "קדימות בתמיכה הטכנית."
+  },
+  "ppremiumSignUpFuture": {
+    "message": "כל יכולות הפרימיום העתידיות שנפתח. עוד יכולות מגיעות בקרוב!"
+  },
+  "premiumPurchase": {
+    "message": "רכוש פרימיום"
+  },
+  "premiumPurchaseAlert": {
+    "message": "You can purchase premium membership on the bitwarden.com web vault. Do you want to visit the website now?"
+  },
+  "premiumCurrentMember": {
+    "message": "You are a premium member!"
+  },
+  "premiumCurrentMemberThanks": {
+    "message": "Thank you for supporting Bitwarden."
+  },
+  "premiumPrice": {
+    "message": "All for just $PRICE$ \/year!",
+    "placeholders": {
+      "price": {
+        "content": "$1",
+        "example": "$10"
+      }
+    }
+  },
+  "refreshComplete": {
+    "message": "Refresh complete"
+  },
+  "disableAutoTotpCopy": {
+    "message": "Disable Automatic TOTP Copy"
+  },
+  "disableAutoTotpCopyDesc": {
+    "message": "If your login has an authenticator key attached to it, the TOTP verification code is automatically copied to your clipboard whenever you auto-fill the login."
+  },
+  "premiumRequired": {
+    "message": "Premium Required"
+  },
+  "premiumRequiredDesc": {
+    "message": "A premium membership is required to use this feature."
+  },
+  "enterVerificationCodeApp": {
+    "message": "Enter the 6 digit verification code from your authenticator app."
+  },
+  "enterVerificationCodeEmail": {
+    "message": "Enter the 6 digit verification code that was emailed to $EMAIL$.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "example@gmail.com"
+      }
+    }
+  },
+  "verificationCodeEmailSent": {
+    "message": "Verification email sent to $EMAIL$.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "example@gmail.com"
+      }
+    }
+  },
+  "rememberMe": {
+    "message": "Remember me"
+  },
+  "sendVerificationCodeEmailAgain": {
+    "message": "Send verification code email again"
+  },
+  "useAnotherTwoStepMethod": {
+    "message": "Use another two-step login method"
+  },
+  "insertYubiKey": {
+    "message": "Insert your YubiKey into your computer's USB port, then touch its button."
+  },
+  "insertU2f": {
+    "message": "Insert your security key into your computer's USB port. If it has a button, touch it."
+  },
+  "loginUnavailable": {
+    "message": "Login Unavailable"
+  },
+  "noTwoStepProviders": {
+    "message": "This account has two-step login enabled, however, none of the configured two-step providers are supported by this web browser."
+  },
+  "noTwoStepProviders2": {
+    "message": "Please use a supported web browser (such as Chrome) and\/or add additional providers that are better supported across web browsers (such as an authenticator app)."
+  },
+  "twoStepOptions": {
+    "message": "Two-step Login Options"
+  },
+  "recoveryCodeDesc": {
+    "message": "Lost access to all of your two-factor providers? Use your recovery code to disable all two-factor providers from your account."
+  },
+  "recoveryCodeTitle": {
+    "message": "Recovery Code"
+  },
+  "authenticatorAppTitle": {
+    "message": "Authenticator App"
+  },
+  "authenticatorAppDesc": {
+    "message": "Use an authenticator app (such as Authy or Google Authenticator) to generate time-based verification codes.",
+    "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
+  },
+  "yubiKeyTitle": {
+    "message": "YubiKey OTP Security Key"
+  },
+  "yubiKeyDesc": {
+    "message": "Use a YubiKey to access your account. Works with YubiKey 4, 4 Nano, 4C, and NEO devices."
+  },
+  "duoDesc": {
+    "message": "Verify with Duo Security using the Duo Mobile app, SMS, phone call, or U2F security key.",
+    "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
+  },
+  "duoOrganizationDesc": {
+    "message": "Verify with Duo Security for your organization using the Duo Mobile app, SMS, phone call, or U2F security key.",
+    "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
+  },
+  "u2fDesc": {
+    "message": "Use any FIDO U2F enabled security key to access your account."
+  },
+  "u2fTitle": {
+    "message": "FIDO U2F Security Key"
+  },
+  "emailTitle": {
+    "message": "Email"
+  },
+  "emailDesc": {
+    "message": "Verification codes will be emailed to you."
+  },
+  "selfHostedEnvironment": {
+    "message": "Self-hosted Environment"
+  },
+  "selfHostedEnvironmentFooter": {
+    "message": "Specify the base URL of your on-premises hosted Bitwarden installation."
+  },
+  "customEnvironment": {
+    "message": "Custom Environment"
+  },
+  "customEnvironmentFooter": {
+    "message": "For advanced users. You can specify the base URL of each service independently."
+  },
+  "baseUrl": {
+    "message": "Server URL"
+  },
+  "apiUrl": {
+    "message": "API Server URL"
+  },
+  "webVaultUrl": {
+    "message": "Web Vault Server URL"
+  },
+  "identityUrl": {
+    "message": "Identity Server URL"
+  },
+  "notificationsUrl": {
+    "message": "Notifications Server URL"
+  },
+  "iconsUrl": {
+    "message": "Icons Server URL"
+  },
+  "environmentSaved": {
+    "message": "The environment URLs have been saved."
+  },
+  "enableAutoFillOnPageLoad": {
+    "message": "Enable Auto-fill On Page Load"
+  },
+  "enableAutoFillOnPageLoadDesc": {
+    "message": "If a login form is detected, automatically perform an auto-fill when the web page loads."
+  },
+  "experimentalFeature": {
+    "message": "This is currently an experimental feature. Use at your own risk."
+  },
+  "commandAutofillDesc": {
+    "message": "Auto-fill the last used login for the current website."
+  },
+  "commandGeneratePasswordDesc": {
+    "message": "Generate and copy a new random password to the clipboard."
+  },
+  "privateModeMessage": {
+    "message": "Unfortunately this window is not available in private mode for this browser."
+  },
+  "customFields": {
+    "message": "Custom Fields"
+  },
+  "copyValue": {
+    "message": "Copy Value"
+  },
+  "value": {
+    "message": "Value"
+  },
+  "newCustomField": {
+    "message": "New Custom Field"
+  },
+  "dragToSort": {
+    "message": "Drag to sort"
+  },
+  "cfTypeText": {
+    "message": "Text"
+  },
+  "cfTypeHidden": {
+    "message": "Hidden"
+  },
+  "cfTypeBoolean": {
+    "message": "Boolean"
+  },
+  "popup2faCloseMessage": {
+    "message": "Clicking outside the popup window to check your email for your verification code will cause this popup to close. Do you want to open this popup in a new window so that it does not close?"
+  },
+  "popupU2fCloseMessage": {
+    "message": "This browser cannot process U2F requests in this popup window. Do you want to open this popup in a new window so that you can log in using U2F?"
+  },
+  "disableFavicon": {
+    "message": "Disable Website Icons"
+  },
+  "disableFaviconDesc": {
+    "message": "Website Icons provide a recognizable image next to each login item in your vault."
+  },
+  "cardholderName": {
+    "message": "Cardholder Name"
+  },
+  "number": {
+    "message": "Number"
+  },
+  "brand": {
+    "message": "Brand"
+  },
+  "expirationMonth": {
+    "message": "Expiration Month"
+  },
+  "expirationYear": {
+    "message": "Expiration Year"
+  },
+  "expiration": {
+    "message": "Expiration"
+  },
+  "january": {
+    "message": "January"
+  },
+  "february": {
+    "message": "February"
+  },
+  "march": {
+    "message": "March"
+  },
+  "april": {
+    "message": "April"
+  },
+  "may": {
+    "message": "May"
+  },
+  "june": {
+    "message": "June"
+  },
+  "july": {
+    "message": "July"
+  },
+  "august": {
+    "message": "August"
+  },
+  "september": {
+    "message": "September"
+  },
+  "october": {
+    "message": "October"
+  },
+  "november": {
+    "message": "November"
+  },
+  "december": {
+    "message": "December"
+  },
+  "securityCode": {
+    "message": "Security Code"
+  },
+  "ex": {
+    "message": "ex."
+  },
+  "title": {
+    "message": "Title"
+  },
+  "mr": {
+    "message": "Mr"
+  },
+  "mrs": {
+    "message": "Mrs"
+  },
+  "ms": {
+    "message": "Ms"
+  },
+  "dr": {
+    "message": "Dr"
+  },
+  "firstName": {
+    "message": "First Name"
+  },
+  "middleName": {
+    "message": "Middle Name"
+  },
+  "lastName": {
+    "message": "Last Name"
+  },
+  "identityName": {
+    "message": "Identity Name"
+  },
+  "company": {
+    "message": "Company"
+  },
+  "ssn": {
+    "message": "Social Security Number"
+  },
+  "passportNumber": {
+    "message": "Passport Number"
+  },
+  "licenseNumber": {
+    "message": "License Number"
+  },
+  "email": {
+    "message": "Email"
+  },
+  "phone": {
+    "message": "Phone"
+  },
+  "address": {
+    "message": "Address"
+  },
+  "address1": {
+    "message": "Address 1"
+  },
+  "address2": {
+    "message": "Address 2"
+  },
+  "address3": {
+    "message": "Address 3"
+  },
+  "cityTown": {
+    "message": "City \/ Town"
+  },
+  "stateProvince": {
+    "message": "State \/ Province"
+  },
+  "zipPostalCode": {
+    "message": "Zip \/ Postal Code"
+  },
+  "country": {
+    "message": "Country"
+  },
+  "type": {
+    "message": "Type"
+  },
+  "typeLogin": {
+    "message": "Login"
+  },
+  "typeLogins": {
+    "message": "Logins"
+  },
+  "typeSecureNote": {
+    "message": "Secure Note"
+  },
+  "typeCard": {
+    "message": "Card"
+  },
+  "typeIdentity": {
+    "message": "Identity"
+  },
+  "passwordHistory": {
+    "message": "Password History"
+  },
+  "back": {
+    "message": "Back"
+  },
+  "collections": {
+    "message": "Collections"
+  },
+  "favorites": {
+    "message": "Favorites"
+  },
+  "popOutNewWindow": {
+    "message": "Pop out to a new window"
+  },
+  "refresh": {
+    "message": "Refresh"
+  },
+  "cards": {
+    "message": "Cards"
+  },
+  "identities": {
+    "message": "Identities"
+  },
+  "logins": {
+    "message": "Logins"
+  },
+  "secureNotes": {
+    "message": "Secure Notes"
+  },
+  "clear": {
+    "message": "Clear",
+    "description": "To clear something out. example: To clear browser history."
+  },
+  "twoStepNewWindowMessage": {
+    "message": "Complete your two-step login request using the new tab."
+  },
+  "checkPassword": {
+    "message": "Check if password has been exposed."
+  },
+  "passwordExposed": {
+    "message": "This password has been exposed $VALUE$ time(s) in data breaches. You should change it.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "passwordSafe": {
+    "message": "This password was not found in any known data breaches. It should be safe to use."
+  },
+  "baseDomain": {
+    "message": "Base domain"
+  },
+  "host": {
+    "message": "Host",
+    "description": "A URL's host value. For example, the host of https:\/\/sub.domain.com:443 is 'sub.domain.com:443'."
+  },
+  "exact": {
+    "message": "Exact"
+  },
+  "startsWith": {
+    "message": "Starts with"
+  },
+  "regEx": {
+    "message": "Regular expression",
+    "description": "A programming term, also known as 'RegEx'."
+  },
+  "matchDetection": {
+    "message": "Match Detection",
+    "description": "URI match detection for auto-fill."
+  },
+  "defaultMatchDetection": {
+    "message": "Default match detection",
+    "description": "Default URI match detection for auto-fill."
+  },
+  "toggleOptions": {
+    "message": "Toggle Options"
+  },
+  "organization": {
+    "message": "Organization",
+    "description": "An entity of multiple related people (ex. a team or business organization)."
+  },
+  "types": {
+    "message": "Types"
+  },
+  "allItems": {
+    "message": "All Items"
+  },
+  "noPasswordsInList": {
+    "message": "There are no passwords to list."
+  },
+  "remove": {
+    "message": "Remove"
+  },
+  "default": {
+    "message": "Default"
+  },
+  "dateUpdated": {
+    "message": "Updated",
+    "description": "ex. Date this item was updated"
+  },
+  "datePasswordUpdated": {
+    "message": "Password Updated",
+    "description": "ex. Date this password was updated"
+  },
+  "neverLockWarning": {
+    "message": "Are you sure you want to use the \"Never\" option? Setting your lock options to \"Never\" stores your vault's encryption key on your device. If you use this option you should ensure that you keep your device properly protected."
+  },
+  "noOrganizationsList": {
+    "message": "You do not belong to any organizations. Organizations allow you to securely share items with other users."
+  },
+  "noCollectionsInList": {
+    "message": "There are no collections to list."
+  },
+  "ownership": {
+    "message": "Ownership"
+  },
+  "whoOwnsThisItem": {
+    "message": "Who owns this item?"
+  },
+  "strong": {
+    "message": "Strong",
+    "description": "ex. A strong password. Scale: Weak -> Good -> Strong"
+  },
+  "good": {
+    "message": "Good",
+    "description": "ex. A good password. Scale: Weak -> Good -> Strong"
+  },
+  "weak": {
+    "message": "Weak",
+    "description": "ex. A weak password. Scale: Weak -> Good -> Strong"
+  },
+  "weakMasterPassword": {
+    "message": "Weak Master Password"
+  },
+  "weakMasterPasswordDesc": {
+    "message": "The master password you have chosen is weak. You should use a strong master password (or a passphrase) to properly protect your Bitwarden account. Are you sure you want to use this master password?"
+  },
+  "pin": {
+    "message": "PIN",
+    "description": "PIN code. Ex. The short code (often numeric) that you use to unlock a device."
+  },
+  "unlockWithPin": {
+    "message": "Unlock with PIN"
+  },
+  "setYourPinCode": {
+    "message": "Set your PIN code for unlocking Bitwarden. Your PIN settings will be reset if you ever fully log out of the application."
+  },
+  "pinRequired": {
+    "message": "PIN code is required."
+  },
+  "invalidPin": {
+    "message": "Invalid PIN code."
+  },
+  "verifyPin": {
+    "message": "Verify PIN"
+  },
+  "yourVaultIsLockedPinCode": {
+    "message": "Your vault is locked. Verify your PIN code to continue."
+  },
+  "lockWithMasterPassOnRestart": {
+    "message": "Lock with master password on browser restart"
+  },
+  "selectOneCollection": {
+    "message": "You must select at least one collection."
+  }
+}
