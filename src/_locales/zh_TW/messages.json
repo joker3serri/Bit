@@ -212,11 +212,11 @@
     "message": "文字分隔字元"
   },
   "capitalize": {
-    "message": "Capitalize",
+    "message": "大寫",
     "description": "Make the first letter of a work uppercase."
   },
   "includeNumber": {
-    "message": "Include Number"
+    "message": "包含數字"
   },
   "minNumbers": {
     "message": "最少數字位數"
