@@ -212,7 +212,7 @@
     "message": "Séparateur de mots"
   },
   "capitalize": {
-    "message": "Majuscules",
+    "message": "Mettre la première lettre en majuscule",
     "description": "Make the first letter of a work uppercase."
   },
   "includeNumber": {
@@ -306,7 +306,7 @@
     "message": "Déverrouiller"
   },
   "loggedInAsOn": {
-    "message": "Logged in as $EMAIL$ on $HOSTNAME$.",
+    "message": "Connecté en tant que $EMAIL$ sur $HOSTNAME$.",
     "placeholders": {
       "email": {
         "content": "$1",
