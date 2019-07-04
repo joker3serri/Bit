@@ -169,7 +169,7 @@
     "message": "סנכרן"
   },
   "syncVaultNow": {
-    "message": "Sync Vault Now"
+    "message": "סנכרן את הכספת עכשיו"
   },
   "lastSync": {
     "message": "סנכרון אחרון:"
@@ -276,16 +276,16 @@
     "message": "Launch"
   },
   "website": {
-    "message": "Website"
+    "message": "אתר"
   },
   "toggleVisibility": {
     "message": "Toggle Visibility"
   },
   "manage": {
-    "message": "Manage"
+    "message": "נהל"
   },
   "other": {
-    "message": "Other"
+    "message": "אחר"
   },
   "rateExtension": {
     "message": "Rate the Extension"
