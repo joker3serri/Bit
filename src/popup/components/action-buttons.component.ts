@@ -16,6 +16,7 @@ import { CipherView } from 'jslib/models/view/cipherView';
 
 import { I18nService } from 'jslib/abstractions/i18n.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
+import { TotpService } from 'jslib/abstractions/totp.service';
 
 import { PopupUtilsService } from '../services/popup-utils.service';
 
@@ -32,7 +33,7 @@ export class ActionButtonsComponent {
 
     constructor(private analytics: Angulartics2, private toasterService: ToasterService,
         private i18nService: I18nService, private platformUtilsService: PlatformUtilsService,
-        private popupUtilsService: PopupUtilsService) { }
+        private totpService: TotpService, private popupUtilsService: PopupUtilsService) { }
 
     launch() {
         if (this.cipher.type !== CipherType.Login || !this.cipher.login.canLaunch) {
@@ -46,9 +47,14 @@ export class ActionButtonsComponent {
         }
     }
 
-    copy(value: string, typeI18nKey: string, aType: string) {
+    async copy(value: string, typeI18nKey: string, aType: string) {
         if (value == null) {
             return;
+        }
+
+        if (aType === 'TOTP') {
+            const totpCode = await this.totpService.getCode(value);
+            value = totpCode;
         }
 
         this.analytics.eventTrack.next({ action: 'Copied ' + aType });

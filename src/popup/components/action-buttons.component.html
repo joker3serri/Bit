@@ -14,6 +14,10 @@
         (click)="copy(cipher.login.password, 'password', 'Password')" [ngClass]="{disabled: !cipher.login.password}">
         <i class="fa fa-lg fa-key"></i>
     </span>
+    <span class="row-btn" appStopClick appStopProp title="{{'copyVerificationCode' | i18n}}"
+        (click)="copy(cipher.login.totp, 'verificationCodeTotp', 'TOTP')" [ngClass]="{disabled: !cipher.login.totp}">
+        <i class="fa fa-lg fa-clipboard"></i>
+    </span>
 </ng-container>
 <ng-container *ngIf="cipher.type === cipherType.Card">
     <span class="row-btn" appStopClick appStopProp title="{{'copyNumber' | i18n}}"
