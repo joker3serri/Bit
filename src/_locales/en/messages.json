@@ -590,10 +590,6 @@
     "message": "Light",
     "description": "Light color"
   },
-  "nord": {
-    "message": "Nord",
-    "description": "Nord color"
-  },
   "exportVault": {
     "message": "Export Vault"
   },
