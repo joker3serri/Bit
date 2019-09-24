@@ -41,7 +41,7 @@
     "message": "Een geheugensteuntje voor je hoofdwachtwoord, indien je deze vergeet."
   },
   "reTypeMasterPass": {
-    "message": "Hoofdwachtwoord herhalen"
+    "message": "Herhaal hoofdwachtwoord"
   },
   "masterPassHint": {
     "message": "Hint voor hoofdwachtwoord (optioneel)"
@@ -50,7 +50,7 @@
     "message": "Tab"
   },
   "myVault": {
-    "message": "Mijn kluis"
+    "message": "Mijn Kluis"
   },
   "tools": {
     "message": "Gereedschap"
@@ -130,7 +130,7 @@
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
   },
   "twoStepLogin": {
-    "message": "Tweestapslogin"
+    "message": "Tweestaps-authenticatie"
   },
   "logOut": {
     "message": "Uitloggen"
@@ -145,7 +145,7 @@
     "message": "Opslaan"
   },
   "addFolder": {
-    "message": "Map toevoegen"
+    "message": "Nieuwe Map"
   },
   "name": {
     "message": "Naam"
@@ -163,7 +163,7 @@
     "message": "Er zijn geen mappen."
   },
   "helpFeedback": {
-    "message": "Hulp & Reacties"
+    "message": "Hulp & Feedback"
   },
   "sync": {
     "message": "Sync"
@@ -194,7 +194,7 @@
     "message": "Selecteer"
   },
   "generatePassword": {
-    "message": "Wachtwoord genereren"
+    "message": "Genereer Wachtwoord"
   },
   "regeneratePassword": {
     "message": "Wachtwoord opnieuw genereren"
@@ -212,11 +212,11 @@
     "message": "Woordscheidingsteken"
   },
   "capitalize": {
-    "message": "Beginhoofdletters",
+    "message": "Schrijf met hoofdletters",
     "description": "Make the first letter of a work uppercase."
   },
   "includeNumber": {
-    "message": "Nummer opnemen"
+    "message": "Gebruik Cijfer"
   },
   "minNumbers": {
     "message": "Minimum aantal getallen"
@@ -240,7 +240,7 @@
     "message": "Er zijn geen items om weer te geven."
   },
   "itemInformation": {
-    "message": "Item-informatie"
+    "message": "Informatie over item"
   },
   "username": {
     "message": "Gebruikersnaam"
@@ -279,7 +279,7 @@
     "message": "Website"
   },
   "toggleVisibility": {
-    "message": "Zichtbaarheid"
+    "message": "Toon/verberg"
   },
   "manage": {
     "message": "Beheer"
@@ -297,7 +297,7 @@
     "message": "Je browser ondersteunt geen kopiëren naar plakbord. Kopieer handmatig."
   },
   "verifyMasterPassword": {
-    "message": "Hoofdwachtwoord verifiëren"
+    "message": "Verifieer Hoofdwachtwoord"
   },
   "yourVaultIsLocked": {
     "message": "Uw kluis is vergrendeld. Controleer uw hoofdwachtwoord om door te gaan."
@@ -464,7 +464,7 @@
     "message": "Synchronisatie voltooid"
   },
   "syncingFailed": {
-    "message": "De synchronisatie is mislukt"
+    "message": "Synchronisatie mislukt"
   },
   "passwordCopied": {
     "message": "Wachtwoord gekopieerd"
@@ -536,11 +536,11 @@
   },
   "clearClipboard": {
     "message": "Klembord wissen",
-    "description": "Clipboard is the operating system thing where you copy\/paste data to on your device."
+    "description": "Clipboard is the operating system thing where you copy/paste data to on your device."
   },
   "clearClipboardDesc": {
     "message": "Automatisch gekopieerde waarden van uw klembord wissen.",
-    "description": "Clipboard is the operating system thing where you copy\/paste data to on your device."
+    "description": "Clipboard is the operating system thing where you copy/paste data to on your device."
   },
   "notificationAddDesc": {
     "message": "Moet Bitwarden dit wachtwoord onthouden?"
@@ -790,7 +790,7 @@
     "message": "Er is tweestapsverificatie ingeschakeld voor dit account, maar geen van de ingestelde aanbieders wordt ondersteund door deze webbrowser."
   },
   "noTwoStepProviders2": {
-    "message": "Gebruik een ondersteunde webbrowser (zoals Chrome) en\/of voeg extra aanbieders toe die beter worden ondersteund in webbrowsers (zoals een authenticator-app)."
+    "message": "Gebruik een ondersteunde webbrowser (zoals Chrome) en/of voeg extra aanbieders toe die beter worden ondersteund in webbrowsers (zoals een authenticator-app)."
   },
   "twoStepOptions": {
     "message": "Tweestapsinlogopties"
@@ -1039,10 +1039,10 @@
     "message": "Adres 3"
   },
   "cityTown": {
-    "message": "Stad \/ Dorp"
+    "message": "Stad / Dorp"
   },
   "stateProvince": {
-    "message": "Staat \/ Provincie"
+    "message": "Staat / Provincie"
   },
   "zipPostalCode": {
     "message": "Postcode"
@@ -1060,7 +1060,7 @@
     "message": "Logins"
   },
   "typeSecureNote": {
-    "message": "Veilige notitie"
+    "message": "Veilige Notitie"
   },
   "typeCard": {
     "message": "Creditkaart"
@@ -1102,9 +1102,6 @@
     "message": "Wissen",
     "description": "To clear something out. example: To clear browser history."
   },
-  "twoStepNewWindowMessage": {
-    "message": "Voltooi uw tweestapsloginaanvraag middels het nieuwe tabblad."
-  },
   "checkPassword": {
     "message": "Controleer of wachtwoord is gelekt."
   },
@@ -1125,7 +1122,7 @@
   },
   "host": {
     "message": "Hostnaam",
-    "description": "A URL's host value. For example, the host of https:\/\/sub.domain.com:443 is 'sub.domain.com:443'."
+    "description": "A URL's host value. For example, the host of https://sub.domain.com:443 is 'sub.domain.com:443'."
   },
   "exact": {
     "message": "Exact"
