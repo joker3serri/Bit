@@ -446,7 +446,7 @@
     "message": "A kétlépcsős bejelentkezés biztonságosabbá teszi a felhasználódat azáltal, hogy ellenőrizned kell a bejelentkezésedet egy másik készülékkel mint például biztonsági kulcs, hitelesítő alkalmazás, SMS, telefon hívás vagy e-mail. Kétlépcsős bejelentkezést a bitwarden.com webes széfén tudod megváltoztatni. Szeretnéd meglátogatni a most a weboldalt?"
   },
   "editedFolder": {
-    "message": "Szerkesztett mappa"
+    "message": "A mappa módosításra került."
   },
   "deleteFolderConfirmation": {
     "message": "Biztos, hogy törölni akarod ezt a mappát?"
