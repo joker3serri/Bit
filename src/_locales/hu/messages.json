@@ -742,7 +742,7 @@
     "message": "Ha a bejelentkezésedhez csatolva van egy hitelesítő kód, a TOTP ellenőrző kód automatikusan másolva lesz a vágólapodra bejelentkezésed automatikus kitöltése esetén."
   },
   "premiumRequired": {
-    "message": "Prémium verzió szükséges"
+    "message": "Prémium funkció szükséges"
   },
   "premiumRequiredDesc": {
     "message": "Prémium tagság szükséges ennek a funkciónak eléréséhez."
@@ -751,7 +751,7 @@
     "message": "Add meg a 6 számjegyű ellenőrző kódot a hitelesítő alkalmazásodból."
   },
   "enterVerificationCodeEmail": {
-    "message": "$EMAIL$ email címre elküldött  6 számjegyű ellenőrző kód megadása.",
+    "message": "$EMAIL$ email címre elküldött 6 számjegyű ellenőrző kód megadása.",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -784,7 +784,7 @@
     "message": "Illesz be biztonsági kulcsod a számítógéped egyik USB portjába. Ha van rajta egy gomb, nyomd le."
   },
   "loginUnavailable": {
-    "message": "Bejelentkezés nem érhető el."
+    "message": "A bejelentkezés nem érhető el."
   },
   "noTwoStepProviders": {
     "message": "Ezen a fiókon kétlépcsős bejelentkezés van engedélyezve, de ez az eszköz nem támogatja egyik beállított kétlépcsős szolgáltatót sem."
