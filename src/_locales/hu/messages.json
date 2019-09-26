@@ -517,10 +517,10 @@
     "description": "This is the folder for uncategorized items"
   },
   "disableAddLoginNotification": {
-    "message": "Automatikus bejelentkezés értesítés letiltása"
+    "message": "Bejelentkezés értesítés hozzáadás letiltása"
   },
   "addLoginNotificationDesc": {
-    "message": "A \"Bejelentkezés értesítés hozzáadása\" automatikusan felajánlja a bejelentkezés mentését a széfbe az első bejelentkezéskor."
+    "message": "A \"Bejelentkezés értesítés hozzáadása\" automatikusan felajánlja a bejelentkezés széfbe mentését az első bejelentkezéskor."
   },
   "dontShowCardsCurrentTab": {
     "message": "A kártyák ne jelenjenek meg a fül oldalon"
@@ -552,7 +552,7 @@
     "message": "Ezen az weboldalon soha"
   },
   "disableChangedPasswordNotification": {
-    "message": "A megváltozott jelszó értesítés letiltása"
+    "message": "Megváltozott jelszó értesítés letiltása"
   },
   "disableChangedPasswordNotificationDesc": {
     "message": "A \"Megváltozott jelszó értesítés\" automatikusan felajánlja a bejelentkezési jelszó frissítését a széfben, ha annak megváltoztatását érzékeli a webhelyen."
@@ -564,7 +564,7 @@
     "message": "Igen, frissítés most"
   },
   "disableContextMenuItem": {
-    "message": "Helyi menü opciók kikapcsolása"
+    "message": "Helyi menüopciók kikapcsolása"
   },
   "disableContextMenuItemDesc": {
     "message": "Helyi menü opciók gyors hozzáférést biztosít jelszó generáláshoz és bejelentkezésekhez a weboldalhoz amin éppen vagy."
