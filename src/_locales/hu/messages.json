@@ -685,7 +685,7 @@
     "message": "Prémium tagságod a bitwarden.com webes széfén tudod kezelni. Szeretnéd meglátogatni a most a weboldalt?"
   },
   "premiumRefresh": {
-    "message": "Tagság frissítése"
+    "message": "Tagságod frissítése"
   },
   "premiumNotCurrentMember": {
     "message": "Pillanatnyilag nem vagy prémium tag."
@@ -694,13 +694,13 @@
     "message": "Regisztrálj prémium tagságra az alábbi funkciókért:"
   },
   "ppremiumSignUpStorage": {
-    "message": "1 GB titkosított fájlmelléklet tárhely."
+    "message": "1 GB titkosított tárhely a fájlmellékleteknek."
   },
   "ppremiumSignUpTwoStep": {
     "message": "További két lépcsős bejelentkezés lehetőségek, mint például YubiKey, FIDO U2F és Duo."
   },
   "ppremiumSignUpReports": {
-    "message": "Jelszó higiénia, felhasználói fiók biztonsága, és adatszivárgási jelentések a széf biztonsága érdekében."
+    "message": "Jelszó higiénia, fiók biztonság és adatszivárgási jelentések a széf biztonsága érdekében."
   },
   "ppremiumSignUpTotp": {
     "message": "TOTP ellenőrző kód (2FA) generátor a széfedben lévő bejelentkezésekhez."
@@ -712,7 +712,7 @@
     "message": "Minden jövőbeli prémium funkció. Hamarosan jön még több!"
   },
   "premiumPurchase": {
-    "message": "Prémium verzió megvásárlása"
+    "message": "Prémium funkció megvásárlása"
   },
   "premiumPurchaseAlert": {
     "message": "Prémium tagságot a bitwarden.com webes széfén tudsz venni. Szeretnéd meglátogatni a most a weboldalt?"
