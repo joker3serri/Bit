@@ -113,7 +113,7 @@
     "message": "Folytatás"
   },
   "verificationCode": {
-    "message": "Ellenőrző Kód"
+    "message": "Ellenőrző kód"
   },
   "account": {
     "message": "Felhasználó"
@@ -361,10 +361,10 @@
     "message": "4 óra"
   },
   "onLocked": {
-    "message": "Zároláskor"
+    "message": "Rendszerzároláskor"
   },
   "onRestart": {
-    "message": "Újraindításkor"
+    "message": "Böngésző újraindításkor"
   },
   "never": {
     "message": "Soha"
