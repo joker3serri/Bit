@@ -610,10 +610,10 @@
     "message": "Megosztott"
   },
   "shareVault": {
-    "message": "Széfed megosztása"
+    "message": "Széf megosztása"
   },
   "shareVaultConfirmation": {
-    "message": "A Bitwarden lehetővé teszi egy szervezeti fiók használatával a fiók megosztását másokkal. Szeretnénk többet megtudni a bitwarden.com webhelyen?"
+    "message": "A Bitwarden lehetővé teszi egy szervezeti fiók használatával a fiók megosztását másokkal. Szeretnénk felkeresni a bitwarden.com webhelyet további információért?"
   },
   "shareItem": {
     "message": "Elem megosztása"
@@ -631,10 +631,10 @@
     "message": "Tudjon meg többet"
   },
   "authenticatorKeyTotp": {
-    "message": "Hitelesítő kulcs (egyszeri-idő alapú)"
+    "message": "Hitelesítő kulcs (egyszeri időalapú)"
   },
   "verificationCodeTotp": {
-    "message": "Ellenőrző kód (egyszeri-idő alapú)"
+    "message": "Ellenőrző kód (egyszeri időalapú)"
   },
   "copyVerificationCode": {
     "message": "Ellenőrző kód másolása"
