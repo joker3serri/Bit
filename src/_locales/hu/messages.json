@@ -913,7 +913,7 @@
     "message": "Az ellenőrző kódot tartalmazó email egy olyan felugró ablakban nyílik meg, mely a mellette levő területre kattinva bezáródik. Szeretnéd az emailt egy olyan ablakban megnyitni, ami nem záródhat így be?"
   },
   "popupU2fCloseMessage": {
-    "message": "Ez a böngésző nem dolgozza fel az U2F kéréseket ebben a felbukkanó ablakban. Szeretnénk megnyitni a felbukkanó ablakot új ablakban az U2F segítségével történő bejelentkezéshez?"
+    "message": "Ez a böngésző nem dolgozza fel az U2F kéréseket ebben a felbukkanó ablakban. Szeretnénk megnyitni a felbukkanó ablakot új böngészőablakban az U2F segítségével történő bejelentkezéshez?"
   },
   "disableFavicon": {
     "message": "Webhely ikonok letiltása"
@@ -976,7 +976,7 @@
     "message": "December"
   },
   "securityCode": {
-    "message": "Biztonsági kód"
+    "message": "Biztonsági Kód"
   },
   "ex": {
     "message": "pl."
@@ -1081,7 +1081,7 @@
     "message": "Kedvencek"
   },
   "popOutNewWindow": {
-    "message": "Megnyitás új ablakban"
+    "message": "Megnyitás új böngészőablakban"
   },
   "refresh": {
     "message": "Frissítés"
@@ -1103,7 +1103,7 @@
     "description": "To clear something out. example: To clear browser history."
   },
   "checkPassword": {
-    "message": "A jelszóvédelem ellenőrzése."
+    "message": "A jelszóvédelemi állapot ellenőrzése."
   },
   "passwordExposed": {
     "message": "Ez a jelszó már $VALUE$ alkalommal volt kitéve az adatszivárgásnak. Célszerű megváltoztatni.",
