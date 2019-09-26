@@ -809,7 +809,7 @@
     "description": "'Authy' and 'Google Authenticator' are product names and should not be translated."
   },
   "yubiKeyTitle": {
-    "message": "YubiKey OTP egyszeri időalapú jelszó biztonsági kulcs"
+    "message": "YubiKey OTP biztonsági kulcs"
   },
   "yubiKeyDesc": {
     "message": "Használj egy YubiKey-t, hogy hozzá férhess a felhasználódhoz. Működik a YubiKey 4, 4 Nano, 4C, és NEO eszközökkel."
@@ -826,7 +826,7 @@
     "message": "Használj bármilyen FIDO U2F engedélyezett biztonsági kulcsot ennek a felhasználónak eléréséhez."
   },
   "u2fTitle": {
-    "message": "FIDO U2F Biztonsági kulcs"
+    "message": "FIDO U2F biztonsági kulcs"
   },
   "emailTitle": {
     "message": "E-mail"
