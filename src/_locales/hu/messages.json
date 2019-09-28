@@ -209,20 +209,20 @@
     "message": "Szavak száma"
   },
   "wordSeparator": {
-    "message": "Word Separator"
+    "message": "Szó elválasztó"
   },
   "capitalize": {
     "message": "Nagy kezdőbetű",
     "description": "Make the first letter of a work uppercase."
   },
   "includeNumber": {
-    "message": "Tartalmazzon számot"
+    "message": "Szám is"
   },
   "minNumbers": {
-    "message": "Legkevesebb szám"
+    "message": "Minimális szám"
   },
   "minSpecial": {
-    "message": "Legkevesebb speciális"
+    "message": "Minimális speciális"
   },
   "avoidAmbChar": {
     "message": "Félreérthető karakterek mellőzése"
@@ -258,7 +258,7 @@
     "message": "Jegyzetek"
   },
   "note": {
-    "message": "Megjegyzés"
+    "message": "Jegyzet"
   },
   "editItem": {
     "message": "Elem szerkesztése"
