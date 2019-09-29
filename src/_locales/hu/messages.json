@@ -841,7 +841,7 @@
     "message": "A helyileg működtetett Bitwarden telepítés alap webcímének megadása."
   },
   "customEnvironment": {
-    "message": "Egyedi környezet"
+    "message": "Egyéni környezet"
   },
   "customEnvironmentFooter": {
     "message": "Haladó felhasználóknak. Minden egyes szolgáltatás alap URL-jét külön megadhatod."
