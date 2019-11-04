@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "Bitwarden"
+    "message": "Cozy Keys"
   },
   "extName": {
-    "message": "Bitwarden - Gestionnaire de mots de passe gratuit",
+    "message": "Cozy Keys - Gestionnaire de mots de passe",
     "description": "Extension name"
   },
   "extDesc": {
@@ -543,7 +543,7 @@
     "description": "Clipboard is the operating system thing where you copy/paste data to on your device."
   },
   "notificationAddDesc": {
-    "message": "Est-ce que Bitwarden doit se souvenir de ce mot de passe pour vous ?"
+    "message": "Est-ce que Cozy Keys doit se souvenir de ce mot de passe pour vous ?"
   },
   "notificationAddSave": {
     "message": "Oui, enregistrer maintenant"
@@ -558,7 +558,7 @@
     "message": "La \"Notification de changement de mot de passe\" vous propose automatiquement de mettre à jour un mot de passe dans votre coffre lorsqu'il est changé sur un site web."
   },
   "notificationChangeDesc": {
-    "message": "Souhaitez-vous mettre à jour ce mot de passe dans Bitwarden ?"
+    "message": "Souhaitez-vous mettre à jour ce mot de passe dans Cozy Keys ?"
   },
   "notificationChangeSave": {
     "message": "Oui, mettre à jour maintenant"
@@ -838,7 +838,7 @@
     "message": "Environnement auto-hébergé"
   },
   "selfHostedEnvironmentFooter": {
-    "message": "Spécifiez l'URL de base de votre installation Bitwarden auto-hébergée."
+    "message": "Spécifiez l'URL de base de votre Cozy, suivie de /bitwarden."
   },
   "customEnvironment": {
     "message": "Environnement personnalisé"
