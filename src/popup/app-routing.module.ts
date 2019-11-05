@@ -10,12 +10,10 @@ import { AuthGuardService } from 'jslib/angular/services/auth-guard.service';
 
 import { LaunchGuardService } from './services/launch-guard.service';
 
-import { EnvironmentComponent } from './accounts/environment.component';
 import { HintComponent } from './accounts/hint.component';
 import { HomeComponent } from './accounts/home.component';
 import { LockComponent } from './accounts/lock.component';
 import { LoginComponent } from './accounts/login.component';
-import { RegisterComponent } from './accounts/register.component';
 import { TwoFactorOptionsComponent } from './accounts/two-factor-options.component';
 import { TwoFactorComponent } from './accounts/two-factor.component';
 import { PasswordGeneratorHistoryComponent } from './generator/password-generator-history.component';
@@ -80,22 +78,10 @@ const routes: Routes = [
         data: { state: '2fa-options' },
     },
     {
-        path: 'register',
-        component: RegisterComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: 'register' },
-    },
-    {
         path: 'hint',
         component: HintComponent,
         canActivate: [LaunchGuardService],
         data: { state: 'hint' },
-    },
-    {
-        path: 'environment',
-        component: EnvironmentComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: 'environment' },
     },
     {
         path: 'ciphers',
