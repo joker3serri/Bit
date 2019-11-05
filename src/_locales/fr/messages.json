@@ -31,6 +31,9 @@
   "emailAddress": {
     "message": "Adresse e-mail"
   },
+  "cozyUrl": {
+    "message": "URL du Cozy"
+  },
   "masterPass": {
     "message": "Mot de passe maître"
   },
@@ -380,6 +383,12 @@
   },
   "invalidEmail": {
     "message": "Adresse e-mail invalide."
+  },
+  "cozyUrlRequired": {
+    "message": "L'URL du Cozy est requise"
+  },
+  "invalidCozyUrl": {
+    "message": "URL du Cozy invalide"
   },
   "masterPassRequired": {
     "message": "Le mot de passe maître est requis."

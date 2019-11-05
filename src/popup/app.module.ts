@@ -15,7 +15,6 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { EnvironmentComponent } from './accounts/environment.component';
 import { HintComponent } from './accounts/hint.component';
 import { HomeComponent } from './accounts/home.component';
 import { LockComponent } from './accounts/lock.component';
@@ -170,7 +169,6 @@ registerLocaleData(localeZhTw, 'zh-TW');
         CollectionsComponent,
         ColorPasswordPipe,
         CurrentTabComponent,
-        EnvironmentComponent,
         ExportComponent,
         FallbackSrcDirective,
         FolderAddEditComponent,
