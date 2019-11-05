@@ -1,3 +1,5 @@
+@import "../popup/scss/variables.scss";
+
 body {
     background-color: #ffffff;
     padding: 0;
@@ -15,7 +17,7 @@ table {
 
 .outter-table > tbody > tr > td {
     padding: 0 0 0 10px;
-    border-bottom: 2px solid #297EF2;
+    border-bottom: 2px solid $brand-primary;
     height: 40px;
 }
 
@@ -56,7 +58,7 @@ img {
 }
 
 button:not(.link) {
-    background-color: #297EF2;
+    background-color: $brand-primary;
     padding: 5px 15px;
     border-radius: 3px;
     color: #ffffff;
@@ -71,7 +73,7 @@ button:not(.link) {
 button.link {
     background: none;
     padding: 5px 15px;
-    color: #297EF2;
+    color: $brand-primary;
     border: 0;
 }
 
