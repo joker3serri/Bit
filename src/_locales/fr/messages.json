@@ -11,7 +11,7 @@
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
-    "message": "S'identifier ou créer un nouveau compte pour accéder à votre coffre sécurisé."
+    "message": "Se connecter à votre Cozy pour accéder à votre coffre sécurisé."
   },
   "createAccount": {
     "message": "Créer un compte"

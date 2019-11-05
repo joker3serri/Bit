@@ -19,7 +19,6 @@ import { HintComponent } from './accounts/hint.component';
 import { HomeComponent } from './accounts/home.component';
 import { LockComponent } from './accounts/lock.component';
 import { LoginComponent } from './accounts/login.component';
-import { RegisterComponent } from './accounts/register.component';
 import { TwoFactorOptionsComponent } from './accounts/two-factor-options.component';
 import { TwoFactorComponent } from './accounts/two-factor.component';
 import { AppComponent } from './app.component';
@@ -188,7 +187,6 @@ registerLocaleData(localeZhTw, 'zh-TW');
         PopOutComponent,
         PremiumComponent,
         PrivateModeComponent,
-        RegisterComponent,
         SearchCiphersPipe,
         SelectCopyDirective,
         SettingsComponent,

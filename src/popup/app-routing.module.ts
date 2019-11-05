@@ -14,7 +14,6 @@ import { HintComponent } from './accounts/hint.component';
 import { HomeComponent } from './accounts/home.component';
 import { LockComponent } from './accounts/lock.component';
 import { LoginComponent } from './accounts/login.component';
-import { RegisterComponent } from './accounts/register.component';
 import { TwoFactorOptionsComponent } from './accounts/two-factor-options.component';
 import { TwoFactorComponent } from './accounts/two-factor.component';
 import { PasswordGeneratorHistoryComponent } from './generator/password-generator-history.component';
@@ -77,12 +76,6 @@ const routes: Routes = [
         component: TwoFactorOptionsComponent,
         canActivate: [LaunchGuardService],
         data: { state: '2fa-options' },
-    },
-    {
-        path: 'register',
-        component: RegisterComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: 'register' },
     },
     {
         path: 'hint',

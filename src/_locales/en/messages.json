@@ -11,7 +11,7 @@
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
-    "message": "Log in or create a new account to access your secure vault."
+    "message": "Log in to your Cozy to access your secure vault."
   },
   "createAccount": {
     "message": "Create Account"
