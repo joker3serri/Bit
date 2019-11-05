@@ -26,7 +26,8 @@ const Keys = {
  *    This class used to extend the LoginComponent from jslib. We copied the
  *    component here to avoid having to modify jslib, as the private storageService
  *    prevented us to just override methods.
- *    See the original component: https://github.com/cozy/cozy-keys-browser/blob/master/src/popup/accounts/login.component.ts
+ *    See the original component:
+ *      https://github.com/cozy/cozy-keys-browser/blob/master/src/popup/accounts/login.component.ts
  */
 export class LoginComponent implements OnInit {
     @Input() cozyUrl: string = '';
