@@ -7,7 +7,7 @@
     "description": "Extension name"
   },
   "extDesc": {
-    "message": "Un gestionnaire de mots de passe sécurisé et gratuit pour tous vos appareils.",
+    "message": "Un gestionnaire de mots de passe sécurisé pour tous vos appareils.",
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
@@ -38,7 +38,7 @@
     "message": "Mot de passe maître"
   },
   "masterPassDesc": {
-    "message": "Le mot de passe maître est le mot de passe que vous utilisez pour accéder à votre coffre. Il est très important de ne pas l'oublier. Il n'existe aucun moyen de le récupérer si vous le perdez."
+    "message": "Le mot de passe maître est le mot de passe que vous utilisez pour accéder à votre Cozy. Il est très important de ne pas l'oublier. Il n'existe aucun moyen de le récupérer si vous le perdez."
   },
   "masterPassHintDesc": {
     "message": "Un indice de mot de passe maître peut vous aider à vous rappeler de votre mot de passe en cas d'oubli."

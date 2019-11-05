@@ -1,13 +1,13 @@
 {
   "appName": {
-    "message": "Bitwarden"
+    "message": "Cozy Keys"
   },
   "extName": {
-    "message": "Bitwarden - Free Password Manager",
+    "message": "Cozy Keys - Password Manager",
     "description": "Extension name"
   },
   "extDesc": {
-    "message": "A secure and free password manager for all of your devices.",
+    "message": "A secure password manager for all of your devices.",
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
@@ -31,11 +31,14 @@
   "emailAddress": {
     "message": "Email Address"
   },
+  "cozyUrl": {
+    "message": "Cozy URL"
+  },
   "masterPass": {
     "message": "Master Password"
   },
   "masterPassDesc": {
-    "message": "The master password is the password you use to access your vault. It is very important that you do not forget your master password. There is no way to recover the password in the event that you forget it."
+    "message": "The master password is the password you use to access your Cozy. It is very important that you do not forget your master password. There is no way to recover the password in the event that you forget it."
   },
   "masterPassHintDesc": {
     "message": "A master password hint can help you remember your password if you forget it."
@@ -381,6 +384,12 @@
   "invalidEmail": {
     "message": "Invalid email address."
   },
+  "cozyUrlRequired": {
+    "message": "Cozy URL is required"
+  },
+  "invalidCozyUrl": {
+    "message": "Invalid Cozy URL"
+  },
   "masterPassRequired": {
     "message": "Master password is required."
   },
@@ -543,7 +552,7 @@
     "description": "Clipboard is the operating system thing where you copy/paste data to on your device."
   },
   "notificationAddDesc": {
-    "message": "Should Bitwarden remember this password for you?"
+    "message": "Should Cozy Keys remember this password for you?"
   },
   "notificationAddSave": {
     "message": "Yes, Save Now"
@@ -558,7 +567,7 @@
     "message": "The \"Changed Password Notification\" automatically prompts you to update a login's password in your vault whenever it detects that you have changed it on a website."
   },
   "notificationChangeDesc": {
-    "message": "Do you want to update this password in Bitwarden?"
+    "message": "Do you want to update this password in Cozy Keys?"
   },
   "notificationChangeSave": {
     "message": "Yes, Update Now"
@@ -838,7 +847,7 @@
     "message": "Self-hosted Environment"
   },
   "selfHostedEnvironmentFooter": {
-    "message": "Specify the base URL of your on-premises hosted Bitwarden installation."
+    "message": "Specify the base URL of Cozy, followed by /bitwarden."
   },
   "customEnvironment": {
     "message": "Custom Environment"
