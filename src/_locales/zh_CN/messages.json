@@ -379,7 +379,7 @@
     "message": "必须填写 Email 地址。"
   },
   "invalidEmail": {
-    "message": "无效的 email 地址."
+    "message": "无效的 Email 地址."
   },
   "masterPassRequired": {
     "message": "必须填写主密码。"
@@ -736,7 +736,7 @@
     "message": "刷新完成"
   },
   "disableAutoTotpCopy": {
-    "message": "禁用自动 TOTP 备份"
+    "message": "禁用自动复制 TOTP 验证码"
   },
   "disableAutoTotpCopyDesc": {
     "message": "如果您的登录信息包含一个验证密钥，当自动填写该登录项目时，TOTP 验证码将会自动复制到剪贴板。"
@@ -868,7 +868,7 @@
     "message": "各环境 URL 已保存。"
   },
   "enableAutoFillOnPageLoad": {
-    "message": "Enable Auto-fill On Page Load."
+    "message": "页面加载时自动填充用户名和密码"
   },
   "enableAutoFillOnPageLoadDesc": {
     "message": "如果网页加载时检测到登录表单，自动进行表单填写。"
