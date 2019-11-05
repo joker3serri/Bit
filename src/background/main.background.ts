@@ -407,7 +407,7 @@ export default class MainBackground {
             type: 'normal',
             id: 'root',
             contexts: ['all'],
-            title: 'Bitwarden',
+            title: 'Cozy Keys',
         });
 
         await this.contextMenusCreate({
@@ -702,7 +702,7 @@ export default class MainBackground {
                 tabId: tabId,
             });
         } else if (this.sidebarAction.setTitle) {
-            let title = 'Bitwarden';
+            let title = 'Cozy Keys';
             if (text && text !== '') {
                 title += (' [' + text + ']');
             }
