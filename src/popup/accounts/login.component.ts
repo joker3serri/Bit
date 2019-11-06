@@ -27,7 +27,9 @@ const Keys = {
  *    component here to avoid having to modify jslib, as the private storageService
  *    prevented us to just override methods.
  *    See the original component:
- *      https://github.com/bitwarden/browser/blob/af8274247b2242fe93ad2f7ca4c13f9f7ecf2860/src/popup/accounts/login.component.ts
+ *
+ *    https://github.com/bitwarden/browser/blob/
+ *    af8274247b2242fe93ad2f7ca4c13f9f7ecf2860/src/popup/accounts/login.component.ts
  */
 export class LoginComponent implements OnInit {
     @Input() cozyUrl: string = '';
