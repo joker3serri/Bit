@@ -129,4 +129,10 @@ export class LoginComponent implements OnInit {
             }
         } catch { }
     }
+
+    togglePassword() {
+        this.platformUtilsService.eventTrack('Toggled Master Password on Login');
+        this.showPassword = !this.showPassword;
+        document.getElementById('masterPassword').focus();
+    }
 }
