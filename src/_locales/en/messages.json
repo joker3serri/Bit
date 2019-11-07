@@ -1,13 +1,13 @@
 {
   "appName": {
-    "message": "Cozy Keys"
+    "message": "Cozy"
   },
   "extName": {
-    "message": "Cozy Keys - Password Manager",
+    "message": "Cozy - Personal Cloud & password manager",
     "description": "Extension name"
   },
   "extDesc": {
-    "message": "A secure password manager for all of your devices.",
+    "message": "Store and sync all your passwords with your Cozy.",
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
