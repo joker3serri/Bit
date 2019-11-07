@@ -1,13 +1,13 @@
 {
   "appName": {
-    "message": "Cozy Keys"
+    "message": "Cozy"
   },
   "extName": {
-    "message": "Cozy Keys - Gestionnaire de mots de passe",
+    "message": "Cozy - Cloud personnel & gestionnaire de mots de passe",
     "description": "Extension name"
   },
   "extDesc": {
-    "message": "Un gestionnaire de mots de passe sécurisé pour tous vos appareils.",
+    "message": "Stockez et synchronisez tous vos mots de passe avec votre Cozy.",
     "description": "Extension description"
   },
   "loginOrCreateNewAccount": {
