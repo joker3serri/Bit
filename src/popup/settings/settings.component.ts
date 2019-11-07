@@ -245,7 +245,7 @@ export class SettingsComponent implements OnInit {
             this.i18nService.t('version') + ': ' + BrowserApi.getApplicationVersion());
         const div = document.createElement('div');
         div.innerHTML = `<p class="text-center"><i class="fa fa-shield fa-3x" aria-hidden="true"></i></p>
-            <p class="text-center"><b>Cozy Keys</b><br>Made by Cozy Cloud, based on
+            <p class="text-center"><b>Cozy</b><br>Made by Cozy Cloud, based on
             <a href="https://bitwarden.com/">Bitwarden</a></p>`;
         div.appendChild(versionText);
 

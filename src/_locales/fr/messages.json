@@ -552,7 +552,7 @@
     "description": "Clipboard is the operating system thing where you copy/paste data to on your device."
   },
   "notificationAddDesc": {
-    "message": "Est-ce que Cozy Keys doit se souvenir de ce mot de passe pour vous ?"
+    "message": "Est-ce que Cozy doit se souvenir de ce mot de passe pour vous ?"
   },
   "notificationAddSave": {
     "message": "Oui, enregistrer maintenant"
@@ -567,7 +567,7 @@
     "message": "La \"Notification de changement de mot de passe\" vous propose automatiquement de mettre à jour un mot de passe dans votre coffre lorsqu'il est changé sur un site web."
   },
   "notificationChangeDesc": {
-    "message": "Souhaitez-vous mettre à jour ce mot de passe dans Cozy Keys ?"
+    "message": "Souhaitez-vous mettre à jour ce mot de passe dans Cozy ?"
   },
   "notificationChangeSave": {
     "message": "Oui, mettre à jour maintenant"
@@ -1222,7 +1222,7 @@
     "message": "Déverrouiller avec un code PIN"
   },
   "setYourPinCode": {
-    "message": "Définissez votre code PIN pour déverrouiller Cozy Keys. Les paramètres relatifs à votre code PIN seront réinitialisés si vous vous déconnectez complètement de l'application."
+    "message": "Définissez votre code PIN pour déverrouiller Cozy. Les paramètres relatifs à votre code PIN seront réinitialisés si vous vous déconnectez complètement de l'application."
   },
   "pinRequired": {
     "message": "Le code PIN est requis."

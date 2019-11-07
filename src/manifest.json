@@ -63,7 +63,7 @@
       "19": "images/icon19.png",
       "38": "images/icon38.png"
     },
-    "default_title": "Cozy Keys",
+    "default_title": "Cozy",
     "default_popup": "popup/index.html"
   },
   "permissions": [

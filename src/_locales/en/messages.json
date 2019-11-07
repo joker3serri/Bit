@@ -552,7 +552,7 @@
     "description": "Clipboard is the operating system thing where you copy/paste data to on your device."
   },
   "notificationAddDesc": {
-    "message": "Should Cozy Keys remember this password for you?"
+    "message": "Should Cozy remember this password for you?"
   },
   "notificationAddSave": {
     "message": "Yes, Save Now"
@@ -567,7 +567,7 @@
     "message": "The \"Changed Password Notification\" automatically prompts you to update a login's password in your vault whenever it detects that you have changed it on a website."
   },
   "notificationChangeDesc": {
-    "message": "Do you want to update this password in Cozy Keys?"
+    "message": "Do you want to update this password in Cozy?"
   },
   "notificationChangeSave": {
     "message": "Yes, Update Now"
@@ -1222,7 +1222,7 @@
     "message": "Unlock with PIN"
   },
   "setYourPinCode": {
-    "message": "Set your PIN code for unlocking Cozy Keys. Your PIN settings will be reset if you ever fully log out of the application."
+    "message": "Set your PIN code for unlocking Cozy. Your PIN settings will be reset if you ever fully log out of the application."
   },
   "pinRequired": {
     "message": "PIN code is required."
