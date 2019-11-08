@@ -124,14 +124,9 @@ export const routerTransition = trigger('routerTransition', [
 
     transition('login => home', outSlideDown),
     transition('login => hint', inSlideUp),
-    transition('login => tabs, login => 2fa', inSlideLeft),
+    transition('login => tabs', inSlideLeft),
 
     transition('hint => login, register => home, environment => home', outSlideDown),
-
-    transition('2fa => login', outSlideRight),
-    transition('2fa => 2fa-options', inSlideUp),
-    transition('2fa-options => 2fa', outSlideDown),
-    transition('2fa => tabs', inSlideLeft),
 
     transition(tabsToCiphers, inSlideLeft),
     transition(ciphersToTabs, outSlideRight),
@@ -174,9 +169,6 @@ export const routerTransition = trigger('routerTransition', [
 
     transition('tabs => options', inSlideLeft),
     transition('options => tabs', outSlideRight),
-
-    transition('tabs => premium', inSlideLeft),
-    transition('premium => tabs', outSlideRight),
 ]);
 
 if (!BrowserApi.isSafariApi) {

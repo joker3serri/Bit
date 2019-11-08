@@ -19,8 +19,6 @@ import { HintComponent } from './accounts/hint.component';
 import { HomeComponent } from './accounts/home.component';
 import { LockComponent } from './accounts/lock.component';
 import { LoginComponent } from './accounts/login.component';
-import { TwoFactorOptionsComponent } from './accounts/two-factor-options.component';
-import { TwoFactorComponent } from './accounts/two-factor.component';
 import { AppComponent } from './app.component';
 import { PasswordGeneratorHistoryComponent } from './generator/password-generator-history.component';
 import { PasswordGeneratorComponent } from './generator/password-generator.component';
@@ -29,7 +27,6 @@ import { ExportComponent } from './settings/export.component';
 import { FolderAddEditComponent } from './settings/folder-add-edit.component';
 import { FoldersComponent } from './settings/folders.component';
 import { OptionsComponent } from './settings/options.component';
-import { PremiumComponent } from './settings/premium.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SyncComponent } from './settings/sync.component';
 import { TabsComponent } from './tabs.component';
@@ -75,6 +72,8 @@ import localeFr from '@angular/common/locales/fr';
 
 registerLocaleData(localeEnGb, 'en-GB');
 registerLocaleData(localeFr, 'fr');
+
+// TODO: remove google tracking
 
 @NgModule({
     imports: [
@@ -124,7 +123,6 @@ registerLocaleData(localeFr, 'fr');
         PasswordGeneratorHistoryComponent,
         PasswordHistoryComponent,
         PopOutComponent,
-        PremiumComponent,
         PrivateModeComponent,
         SearchCiphersPipe,
         SelectCopyDirective,
@@ -135,8 +133,6 @@ registerLocaleData(localeFr, 'fr');
         SyncComponent,
         TabsComponent,
         TrueFalseValueDirective,
-        TwoFactorOptionsComponent,
-        TwoFactorComponent,
         ViewComponent,
     ],
     entryComponents: [],
