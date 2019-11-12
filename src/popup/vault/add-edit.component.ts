@@ -22,9 +22,13 @@ import { AddEditComponent as BaseAddEditComponent } from 'jslib/angular/componen
     selector: 'app-vault-add-edit',
     templateUrl: 'add-edit.component.html',
 })
-export class AddEditComponent extends BaseAddEditComponent {
-    showAttachments = true;
 
+/**
+ * See the original component:
+ * https://github.com/bitwarden/browser/blob/
+ * 7bfb8d91e3fcec00424d28410ef33401d582c3cc/src/popup/vault/add-edit.component.ts
+ */
+export class AddEditComponent extends BaseAddEditComponent {
     constructor(cipherService: CipherService, folderService: FolderService,
         i18nService: I18nService, platformUtilsService: PlatformUtilsService,
         auditService: AuditService, stateService: StateService,
@@ -38,7 +42,6 @@ export class AddEditComponent extends BaseAddEditComponent {
 
     async ngOnInit() {
         await super.ngOnInit();
-        this.showAttachments = !this.platformUtilsService.isEdge();
         const queryParamsSub = this.route.queryParams.subscribe(async (params) => {
             if (params.cipherId) {
                 this.cipherId = params.cipherId;
@@ -91,25 +94,6 @@ export class AddEditComponent extends BaseAddEditComponent {
         }
 
         return false;
-    }
-
-    attachments() {
-        super.attachments();
-        this.router.navigate(['/attachments'], { queryParams: { cipherId: this.cipher.id } });
-    }
-
-    share() {
-        super.share();
-        if (this.cipher.organizationId == null) {
-            this.router.navigate(['/share-cipher'], { queryParams: { cipherId: this.cipher.id } });
-        }
-    }
-
-    editCollections() {
-        super.editCollections();
-        if (this.cipher.organizationId != null) {
-            this.router.navigate(['/collections'], { queryParams: { cipherId: this.cipher.id } });
-        }
     }
 
     cancel() {
