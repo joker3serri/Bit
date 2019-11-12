@@ -24,25 +24,24 @@ import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
 import { UserService } from 'jslib/abstractions/user.service';
 
+// TODO: change URLs when add-on is published
 const RateUrls = {
     [DeviceType.ChromeExtension]:
         'https://chrome.google.com/webstore/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews',
     [DeviceType.FirefoxExtension]:
-        'https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/#reviews',
-    [DeviceType.OperaExtension]:
-        'https://addons.opera.com/en/extensions/details/bitwarden-free-password-manager/#feedback-container',
-    [DeviceType.EdgeExtension]:
-        'https://www.microsoft.com/store/p/bitwarden-free-password-manager/9p6kxl0svnnl',
-    [DeviceType.VivaldiExtension]:
-        'https://chrome.google.com/webstore/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews',
-    [DeviceType.SafariExtension]:
-        'https://apps.apple.com/app/bitwarden/id1352778147',
+        'https://addons.mozilla.org/en-US/firefox/addon/cozy-personal-cloud/reviews',
 };
 
 @Component({
     selector: 'app-settings',
     templateUrl: 'settings.component.html',
 })
+
+/**
+ * See the original component:
+ * https://github.com/bitwarden/browser/blob/
+ * 60f6863e4f96fbf8d012e5691e4e2cc5f18ac7a8/src/popup/settings/settings.component.ts
+ */
 export class SettingsComponent implements OnInit {
     @ViewChild('lockOptionsSelect', { read: ElementRef }) lockOptionsSelectRef: ElementRef;
     lockOptions: any[];
@@ -179,6 +178,7 @@ export class SettingsComponent implements OnInit {
         }
     }
 
+    // TODO: redirect to the Cozy settings
     async changePassword() {
         this.analytics.eventTrack.next({ action: 'Clicked Change Password' });
         const confirmed = await this.platformUtilsService.showDialog(
@@ -189,40 +189,13 @@ export class SettingsComponent implements OnInit {
         }
     }
 
-    async twoStep() {
-        this.analytics.eventTrack.next({ action: 'Clicked Two-step Login' });
-        const confirmed = await this.platformUtilsService.showDialog(
-            this.i18nService.t('twoStepLoginConfirmation'), this.i18nService.t('twoStepLogin'),
-            this.i18nService.t('yes'), this.i18nService.t('cancel'));
-        if (confirmed) {
-            BrowserApi.createNewTab('https://help.bitwarden.com/article/setup-two-step-login/');
-        }
-    }
-
-    async share() {
-        this.analytics.eventTrack.next({ action: 'Clicked Share Vault' });
-        const confirmed = await this.platformUtilsService.showDialog(
-            this.i18nService.t('shareVaultConfirmation'), this.i18nService.t('shareVault'),
-            this.i18nService.t('yes'), this.i18nService.t('cancel'));
-        if (confirmed) {
-            BrowserApi.createNewTab('https://help.bitwarden.com/article/what-is-an-organization/');
-        }
-    }
-
-    async webVault() {
-        this.analytics.eventTrack.next({ action: 'Clicked Web Vault' });
-        let url = this.environmentService.getWebVaultUrl();
-        if (url == null) {
-            url = 'https://vault.bitwarden.com';
-        }
-        BrowserApi.createNewTab(url);
-    }
-
+    // TODO: Add a Cozy help
     import() {
         this.analytics.eventTrack.next({ action: 'Clicked Import Items' });
         BrowserApi.createNewTab('https://help.bitwarden.com/article/import-data/');
     }
 
+    // TODO: Add a Cozy help
     export() {
         if (this.platformUtilsService.isEdge()) {
             BrowserApi.createNewTab('https://help.bitwarden.com/article/export-your-data/');
@@ -232,15 +205,15 @@ export class SettingsComponent implements OnInit {
         this.router.navigate(['/export']);
     }
 
+    // TODO: add-on entry in FAQ
     help() {
-        this.analytics.eventTrack.next({ action: 'Clicked Help and Feedback' });
-        BrowserApi.createNewTab('https://help.bitwarden.com/');
+        BrowserApi.createNewTab('https://help.cozy.io/');
     }
 
+    // TODO: use a Cozy icon in the about modale
     about() {
         this.analytics.eventTrack.next({ action: 'Clicked About' });
 
-        const year = (new Date()).getFullYear();
         const versionText = document.createTextNode(
             this.i18nService.t('version') + ': ' + BrowserApi.getApplicationVersion());
         const div = document.createElement('div');
@@ -255,30 +228,12 @@ export class SettingsComponent implements OnInit {
         });
     }
 
-    async fingerprint() {
-        this.analytics.eventTrack.next({ action: 'Clicked Fingerprint' });
-
-        const fingerprint = await this.cryptoService.getFingerprint(await this.userService.getUserId());
-        const p = document.createElement('p');
-        p.innerText = this.i18nService.t('yourAccountsFingerprint') + ':';
-        const p2 = document.createElement('p');
-        p2.innerText = fingerprint.join('-');
-        const div = document.createElement('div');
-        div.appendChild(p);
-        div.appendChild(p2);
-
-        const result = await swal({
-            content: { element: div },
-            buttons: [this.i18nService.t('close'), this.i18nService.t('learnMore')],
-        });
-
-        if (result) {
-            this.platformUtilsService.launchUri('https://help.bitwarden.com/article/fingerprint-phrase/');
-        }
-    }
-
     rate() {
         this.analytics.eventTrack.next({ action: 'Rate Extension' });
         BrowserApi.createNewTab((RateUrls as any)[this.platformUtilsService.getDevice()]);
+    }
+
+    premium() {
+        BrowserApi.createNewTab('https://cozy.io/fr/pricing/');
     }
 }

@@ -155,7 +155,9 @@ export default class AutofillService implements AutofillServiceInterface {
             throw new Error('Nothing to auto-fill.');
         }
 
-        const canAccessPremium = await this.userService.canAccessPremium();
+        // This is changed from the original component
+        const canAccessPremium = false;
+
         let didAutofill = false;
         options.pageDetails.forEach((pd: any) => {
             // make sure we're still on correct tab

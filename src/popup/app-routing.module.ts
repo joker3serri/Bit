@@ -14,8 +14,6 @@ import { HintComponent } from './accounts/hint.component';
 import { HomeComponent } from './accounts/home.component';
 import { LockComponent } from './accounts/lock.component';
 import { LoginComponent } from './accounts/login.component';
-import { TwoFactorOptionsComponent } from './accounts/two-factor-options.component';
-import { TwoFactorComponent } from './accounts/two-factor.component';
 import { PasswordGeneratorHistoryComponent } from './generator/password-generator-history.component';
 import { PasswordGeneratorComponent } from './generator/password-generator.component';
 import { PrivateModeComponent } from './private-mode.component';
@@ -23,7 +21,6 @@ import { ExportComponent } from './settings/export.component';
 import { FolderAddEditComponent } from './settings/folder-add-edit.component';
 import { FoldersComponent } from './settings/folders.component';
 import { OptionsComponent } from './settings/options.component';
-import { PremiumComponent } from './settings/premium.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SyncComponent } from './settings/sync.component';
 import { TabsComponent } from './tabs.component';
@@ -64,18 +61,6 @@ const routes: Routes = [
         path: 'lock',
         component: LockComponent,
         data: { state: 'lock' },
-    },
-    {
-        path: '2fa',
-        component: TwoFactorComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: '2fa' },
-    },
-    {
-        path: '2fa-options',
-        component: TwoFactorOptionsComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: '2fa-options' },
     },
     {
         path: 'hint',
@@ -172,12 +157,6 @@ const routes: Routes = [
         component: SyncComponent,
         canActivate: [AuthGuardService],
         data: { state: 'sync' },
-    },
-    {
-        path: 'premium',
-        component: PremiumComponent,
-        canActivate: [AuthGuardService],
-        data: { state: 'premium' },
     },
     {
         path: 'options',

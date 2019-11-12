@@ -19,8 +19,6 @@ import { HintComponent } from './accounts/hint.component';
 import { HomeComponent } from './accounts/home.component';
 import { LockComponent } from './accounts/lock.component';
 import { LoginComponent } from './accounts/login.component';
-import { TwoFactorOptionsComponent } from './accounts/two-factor-options.component';
-import { TwoFactorComponent } from './accounts/two-factor.component';
 import { AppComponent } from './app.component';
 import { PasswordGeneratorHistoryComponent } from './generator/password-generator-history.component';
 import { PasswordGeneratorComponent } from './generator/password-generator.component';
@@ -29,7 +27,6 @@ import { ExportComponent } from './settings/export.component';
 import { FolderAddEditComponent } from './settings/folder-add-edit.component';
 import { FoldersComponent } from './settings/folders.component';
 import { OptionsComponent } from './settings/options.component';
-import { PremiumComponent } from './settings/premium.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SyncComponent } from './settings/sync.component';
 import { TabsComponent } from './tabs.component';
@@ -69,73 +66,14 @@ import {
     CurrencyPipe,
     registerLocaleData,
 } from '@angular/common';
-import localeBg from '@angular/common/locales/bg';
-import localeCa from '@angular/common/locales/ca';
-import localeCs from '@angular/common/locales/cs';
-import localeDa from '@angular/common/locales/da';
-import localeDe from '@angular/common/locales/de';
-import localeEnGb from '@angular/common/locales/en-GB';
-import localeEs from '@angular/common/locales/es';
-import localeEt from '@angular/common/locales/et';
-import localeFa from '@angular/common/locales/fa';
-import localeFi from '@angular/common/locales/fi';
-import localeFr from '@angular/common/locales/fr';
-import localeHe from '@angular/common/locales/he';
-import localeHr from '@angular/common/locales/hr';
-import localeHu from '@angular/common/locales/hu';
-import localeId from '@angular/common/locales/id';
-import localeIt from '@angular/common/locales/it';
-import localeJa from '@angular/common/locales/ja';
-import localeKo from '@angular/common/locales/ko';
-import localeNb from '@angular/common/locales/nb';
-import localeNl from '@angular/common/locales/nl';
-import localePl from '@angular/common/locales/pl';
-import localePtBr from '@angular/common/locales/pt';
-import localePtPt from '@angular/common/locales/pt-PT';
-import localeRo from '@angular/common/locales/ro';
-import localeRu from '@angular/common/locales/ru';
-import localeSk from '@angular/common/locales/sk';
-import localeSv from '@angular/common/locales/sv';
-import localeTh from '@angular/common/locales/th';
-import localeTr from '@angular/common/locales/tr';
-import localeUk from '@angular/common/locales/uk';
-import localeVi from '@angular/common/locales/vi';
-import localeZhCn from '@angular/common/locales/zh-Hans';
-import localeZhTw from '@angular/common/locales/zh-Hant';
 
-registerLocaleData(localeBg, 'bg');
-registerLocaleData(localeCa, 'ca');
-registerLocaleData(localeCs, 'cs');
-registerLocaleData(localeDa, 'da');
-registerLocaleData(localeDe, 'de');
+import localeEnGb from '@angular/common/locales/en-GB';
+import localeFr from '@angular/common/locales/fr';
+
 registerLocaleData(localeEnGb, 'en-GB');
-registerLocaleData(localeEs, 'es');
-registerLocaleData(localeEt, 'et');
-registerLocaleData(localeFa, 'fa');
-registerLocaleData(localeFi, 'fi');
 registerLocaleData(localeFr, 'fr');
-registerLocaleData(localeHe, 'he');
-registerLocaleData(localeHr, 'hr');
-registerLocaleData(localeHu, 'hu');
-registerLocaleData(localeId, 'id');
-registerLocaleData(localeIt, 'it');
-registerLocaleData(localeJa, 'ja');
-registerLocaleData(localeKo, 'ko');
-registerLocaleData(localeNb, 'nb');
-registerLocaleData(localeNl, 'nl');
-registerLocaleData(localePl, 'pl');
-registerLocaleData(localePtBr, 'pt-BR');
-registerLocaleData(localePtPt, 'pt-PT');
-registerLocaleData(localeRo, 'ro');
-registerLocaleData(localeRu, 'ru');
-registerLocaleData(localeSk, 'sk');
-registerLocaleData(localeSv, 'sv');
-registerLocaleData(localeTh, 'th');
-registerLocaleData(localeTr, 'tr');
-registerLocaleData(localeUk, 'uk');
-registerLocaleData(localeVi, 'vi');
-registerLocaleData(localeZhCn, 'zh-CN');
-registerLocaleData(localeZhTw, 'zh-TW');
+
+// TODO: remove google tracking
 
 @NgModule({
     imports: [
@@ -185,7 +123,6 @@ registerLocaleData(localeZhTw, 'zh-TW');
         PasswordGeneratorHistoryComponent,
         PasswordHistoryComponent,
         PopOutComponent,
-        PremiumComponent,
         PrivateModeComponent,
         SearchCiphersPipe,
         SelectCopyDirective,
@@ -196,8 +133,6 @@ registerLocaleData(localeZhTw, 'zh-TW');
         SyncComponent,
         TabsComponent,
         TrueFalseValueDirective,
-        TwoFactorOptionsComponent,
-        TwoFactorComponent,
         ViewComponent,
     ],
     entryComponents: [],
