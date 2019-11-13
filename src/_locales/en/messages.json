@@ -1154,5 +1154,8 @@
   },
   "advancedOptions": {
     "message": "Advanced options"
+  },
+  "fillForm": {
+    "message": "Fill a form"
   }
 }

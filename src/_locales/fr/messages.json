@@ -1151,5 +1151,8 @@
   },
   "advancedOptions": {
     "message": "Options avancées"
+  },
+  "fillForm": {
+    "message": "Renseigner un formulaire"
   }
 }
