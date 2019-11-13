@@ -10,8 +10,14 @@ app-sync {
 
 app-password-generator .password-block {
     font-size: $font-size-large;
-    font-family: $font-family-monospace;
+    font-family: $font-family-sans-serif;
     margin: 20px;
+    box-sizing: border-box;
+    border-radius: .188rem;
+    border-top: .063rem solid $gray;
+    border-bottom: .063rem solid $gray;
+    border-left: .063rem solid $gray;
+    border-right: .063rem solid $gray;
 
     .password-wrapper {
         text-align: center;
