@@ -39,7 +39,7 @@ export class PasswordGeneratorComponent extends BasePasswordGeneratorComponent {
         }
         this.showSelect = this.cipherState != null;
         // Copy the password in the clipboard
-        super.copy();
+        this.copy();
     }
 
     select() {

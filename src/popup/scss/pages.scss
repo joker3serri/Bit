@@ -14,10 +14,7 @@ app-password-generator .password-block {
     margin: 20px;
     box-sizing: border-box;
     border-radius: .188rem;
-    border-top: .063rem solid $gray;
-    border-bottom: .063rem solid $gray;
-    border-left: .063rem solid $gray;
-    border-right: .063rem solid $gray;
+    border: .063rem solid $gray;
 
     .password-wrapper {
         text-align: center;
