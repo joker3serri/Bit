@@ -17,6 +17,7 @@ const extractCss = new ExtractTextPlugin({
     allChunks: true,
 });
 
+
 const moduleRules = [
     {
         test: /\.ts$/,
@@ -29,7 +30,7 @@ const moduleRules = [
     },
     {
         test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-        exclude: /loading.svg/,
+        include: [path.resolve('src/popup/css/webfonts/'), path.resolve('node_modules/font-awesome')],
         use: [{
             loader: 'file-loader',
             options: {
@@ -179,5 +180,4 @@ const config = {
     module: { rules: moduleRules },
     plugins: plugins,
 };
-
 module.exports = config;

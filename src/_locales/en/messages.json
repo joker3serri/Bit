@@ -1157,5 +1157,8 @@
   },
   "selectOneCollection": {
     "message": "You must select at least one collection."
+  },
+  "advancedOptions": {
+    "message": "Advanced options"
   }
 }
