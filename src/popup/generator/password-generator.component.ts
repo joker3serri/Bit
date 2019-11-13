@@ -16,6 +16,12 @@ import {
     selector: 'app-password-generator',
     templateUrl: 'password-generator.component.html',
 })
+
+/**
+ * See the original component:
+ * https://github.com/bitwarden/browser/blob/
+ * 6c7a0d90df5185daa9624133c0f8c2b05f6bca3b/src/popup/generator/password-generator.component.ts
+ */
 export class PasswordGeneratorComponent extends BasePasswordGeneratorComponent {
     private cipherState: CipherView;
 
@@ -32,6 +38,8 @@ export class PasswordGeneratorComponent extends BasePasswordGeneratorComponent {
             this.cipherState = addEditCipherInfo.cipher;
         }
         this.showSelect = this.cipherState != null;
+        // Copy the password in the clipboard
+        super.copy();
     }
 
     select() {
