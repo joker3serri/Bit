@@ -46,7 +46,6 @@ const ScopeStateId = ComponentId + 'Scope';
 })
 export class GroupingsComponent extends BaseGroupingsComponent implements OnInit, OnDestroy {
     ciphers: CipherView[];
-    favoriteCiphers: CipherView[];
     noFolderCiphers: CipherView[];
     folderCounts = new Map<string, number>();
     collectionCounts = new Map<string, number>();
@@ -168,20 +167,12 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
             this.hasLoadedAllCiphers = !this.searchService.isSearchable(this.searchText);
         }
         await this.search(null);
-        let favoriteCiphers: CipherView[] = null;
         let noFolderCiphers: CipherView[] = null;
         const folderCounts = new Map<string, number>();
         const collectionCounts = new Map<string, number>();
         const typeCounts = new Map<CipherType, number>();
 
         this.ciphers.forEach((c) => {
-            if (c.favorite) {
-                if (favoriteCiphers == null) {
-                    favoriteCiphers = [];
-                }
-                favoriteCiphers.push(c);
-            }
-
             if (c.folderId == null) {
                 if (noFolderCiphers == null) {
                     noFolderCiphers = [];
@@ -212,7 +203,6 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
             }
         });
 
-        this.favoriteCiphers = favoriteCiphers;
         this.noFolderCiphers = noFolderCiphers;
         this.typeCounts = typeCounts;
         this.folderCounts = folderCounts;
@@ -297,7 +287,6 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         await this.stateService.save(ComponentId, this.state);
 
         this.scopeState = {
-            favoriteCiphers: this.favoriteCiphers,
             noFolderCiphers: this.noFolderCiphers,
             ciphers: this.ciphers,
             collectionCounts: this.collectionCounts,
@@ -315,9 +304,6 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
             return false;
         }
 
-        if (this.scopeState.favoriteCiphers != null) {
-            this.favoriteCiphers = this.scopeState.favoriteCiphers;
-        }
         if (this.scopeState.noFolderCiphers != null) {
             this.noFolderCiphers = this.scopeState.noFolderCiphers;
         }
