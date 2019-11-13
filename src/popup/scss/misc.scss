@@ -214,6 +214,31 @@ app-vault-icon {
         background-size: 284px 43px;
     }
 }
+.icon-cozy {
+    display: inline-block;
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+}
+
+.icon-copy {
+    background-image: url('../images/icons-16-copy.svg');
+}
+
+.icon-refresh {
+    background-image: url('../images/icons-16-icon-sync.svg');
+}
+
+.icon-arrow-right {
+    background-image: url('../images/icons-16-icon-arrow-right.svg');
+    background-size: 12px 16px;
+}
+
+.icon-arrow-down {
+    background-image: url('../images/icons-16-icon-arrow-down.svg');
+    background-size: 12px 16px;
+}
 
 [hidden] {
     display: none !important;
