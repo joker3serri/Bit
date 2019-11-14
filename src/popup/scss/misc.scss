@@ -214,6 +214,7 @@ app-vault-icon {
         background-size: 284px 43px;
     }
 }
+
 .icon-cozy {
     display: inline-block;
     background-size: contain;
@@ -247,7 +248,7 @@ app-vault-icon {
     margin-top: 8px;
 }
 
-.icon-card {
+.icon-bank {
     background-image: url('../images/icons-card.svg');
     width: 24px;
     height: 24px;
@@ -266,7 +267,13 @@ app-vault-icon {
     background-image: url('../images/icons-16-icon-profile.svg');
 }
 
+.icon-hashtag {
+    background-image: url('../images/icons-16-icon-hashtag.svg');
+}
 
+.icon-card {
+    background-image: url('../images/icons-files-cb.svg');
+}
 
 [hidden] {
     display: none !important;

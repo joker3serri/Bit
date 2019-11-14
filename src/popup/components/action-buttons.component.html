@@ -20,7 +20,7 @@
 <ng-container *ngIf="cipher.type === cipherType.Card">
     <span class="row-btn" appStopClick appStopProp appA11yTitle="{{'copyNumber' | i18n}}"
         (click)="copy(cipher, cipher.card.number, 'number', 'Card Number')" [ngClass]="{disabled: !cipher.card.number}">
-        <i class="fa fa-lg fa-hashtag" aria-hidden="true"></i>
+        <i class="icon-cozy icon-hashtag" aria-hidden="true"></i>
     </span>
     <span class="row-btn" appStopClick appStopProp appA11yTitle="{{'copySecurityCode' | i18n}}"
         (click)="copy(cipher, cipher.card.code, 'securityCode', 'Security Code')"
