@@ -240,6 +240,20 @@ app-vault-icon {
     background-size: 12px 16px;
 }
 
+.icon-identity {
+    background-image: url('../images/icons-identity.svg');
+    width: 24px;
+    height: 24px;
+    margin-top: 8px;
+}
+
+.icon-card {
+    background-image: url('../images/icons-card.svg');
+    width: 24px;
+    height: 24px;
+    margin-top: 8px;
+}
+
 [hidden] {
     display: none !important;
 }
