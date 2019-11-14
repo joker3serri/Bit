@@ -10,10 +10,10 @@
     }
 
     .box-header {
-        margin: 0 10px 5px 10px;
-        text-transform: uppercase;
+        margin: 15px 10px 5px 10px;
         display: flex;
-
+        font-size: $font-size-large;
+        font-weight: bold;
         @include themify($themes) {
             color: themed('headingColor');
         }
