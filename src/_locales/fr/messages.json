@@ -251,9 +251,6 @@
   "passphrase": {
     "message": "Phrase de passe"
   },
-  "favorite": {
-    "message": "Favori"
-  },
   "notes": {
     "message": "Notes"
   },
@@ -999,9 +996,6 @@
   "collections": {
     "message": "Collections"
   },
-  "favorites": {
-    "message": "Favoris"
-  },
   "popOutNewWindow": {
     "message": "Ouvrir dans une nouvelle fenêtre"
   },
@@ -1157,5 +1151,8 @@
   },
   "advancedOptions": {
     "message": "Options avancées"
+  },
+  "fillForm": {
+    "message": "Renseigner un formulaire"
   }
 }

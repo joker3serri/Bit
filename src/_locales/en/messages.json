@@ -251,9 +251,6 @@
   "passphrase": {
     "message": "Passphrase"
   },
-  "favorite": {
-    "message": "Favorite"
-  },
   "notes": {
     "message": "Notes"
   },
@@ -1002,9 +999,6 @@
   "collections": {
     "message": "Collections"
   },
-  "favorites": {
-    "message": "Favorites"
-  },
   "popOutNewWindow": {
     "message": "Pop out to a new window"
   },
@@ -1160,5 +1154,8 @@
   },
   "advancedOptions": {
     "message": "Advanced options"
+  },
+  "fillForm": {
+    "message": "Fill a form"
   }
 }
