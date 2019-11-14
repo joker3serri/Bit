@@ -223,6 +223,20 @@ app-vault-icon {
     height: 16px;
 }
 
+.icon-cozy-inline {
+    color: $gray-light;
+    &:hover, &:active {
+        color: $brand-primary;
+    }
+    svg {
+        fill: $gray-light;
+        &:hover, &:active {
+            fill: $brand-primary;
+        }
+    }
+
+}
+
 .icon-copy {
     background-image: url('../images/icons-16-copy.svg');
 }
