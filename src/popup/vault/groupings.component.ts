@@ -42,6 +42,13 @@ const ScopeStateId = ComponentId + 'Scope';
     selector: 'app-vault-groupings',
     templateUrl: 'groupings.component.html',
 })
+
+/**
+ *  See the original component:
+ *
+ *  https://github.com/bitwarden/browser/blob/
+ *  0bbe17f6e2becdf5146677d51cbc71cc099aaec9/src/popup/vault/groupings.component.ts
+ */
 export class GroupingsComponent extends BaseGroupingsComponent implements OnInit, OnDestroy {
     ciphers: CipherView[];
     typeCounts = new Map<CipherType, number>();
