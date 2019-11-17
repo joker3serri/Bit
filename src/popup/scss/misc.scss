@@ -226,15 +226,14 @@ app-vault-icon {
 .icon-cozy-inline {
     color: $gray-light;
     &:hover, &:active {
-        color: $brand-primary;
+      color: $brand-primary;
+      svg {
+        fill: $brand-primary;
+      }
     }
     svg {
         fill: $gray-light;
-        &:hover, &:active {
-            fill: $brand-primary;
-        }
     }
-
 }
 
 .icon-copy {
