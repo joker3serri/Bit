@@ -1,5 +1,9 @@
 <span class="row-btn" (click)="view()" appStopClick appStopProp appA11yTitle="{{'view' | i18n}}" *ngIf="showView">
-    <i class="fa fa-lg fa-list-alt" aria-hidden="true"></i>
+    <div class="icon-cozy-inline">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M2 13v2H0v-2h2zm14 0v2H4v-2h12zM2 9v2H0V9h2zm14 0v2H4V9h12zM2 5v2H0V5h2zm14 0v2H4V5h12zM2 1v2H0V1h2zm14 0v2H4V1h12z"/>
+        </svg>
+    </div>
 </span>
 <ng-container *ngIf="cipher.type === cipherType.Login">
     <span class="row-btn" appStopClick appStopProp appA11yTitle="{{'launch' | i18n}}" (click)="launch()"
