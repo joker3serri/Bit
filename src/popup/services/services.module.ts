@@ -85,6 +85,9 @@ export function initFactory(i18nService: I18nService, storageService: StorageSer
             stateService.save(ConstantsService.disableFaviconKey,
                 await storageService.get<boolean>(ConstantsService.disableFaviconKey));
 
+            stateService.save(ConstantsService.disableLockIcon,
+                await storageService.get<boolean>(ConstantsService.disableLockIcon));
+
             let theme = await storageService.get<string>(ConstantsService.themeKey);
             if (theme == null) {
                 theme = 'light';

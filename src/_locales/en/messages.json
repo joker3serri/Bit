@@ -1232,5 +1232,11 @@
   },
   "selectOneCollection": {
     "message": "You must select at least one collection."
+  },
+  "disableLockIcon": {
+    "message": "Disable Lock Icon"
+  },
+  "disableLockIconDesc": {
+    "message": "A lock icon is displayed when you are logged in, but your vault is locked. With the lock icon disabled, a gray icon will be shown instead."
   }
 }

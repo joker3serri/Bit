@@ -255,7 +255,7 @@ export default class MainBackground {
         const locked = await this.lockService.isLocked();
 
         let suffix = '';
-        if (!isAuthenticated) {
+        if (!isAuthenticated || (await this.storageService.get<boolean>(ConstantsService.disableLockIcon) && locked)) {
             suffix = '_gray';
         } else if (locked) {
             suffix = '_locked';
