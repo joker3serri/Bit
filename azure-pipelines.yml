@@ -28,11 +28,11 @@ steps:
 
 - script: |
     node --version
-    npm --version
+    call npm --version
   displayName: 'Version checks'
 
-- script: npm install
+- script: call npm install
   displayName: 'npm install'
 
-- script: npm run build
+- script: call npm run build
   displayName: 'npm run build'
