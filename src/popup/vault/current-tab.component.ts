@@ -36,7 +36,7 @@ import { Utils } from 'jslib/misc/utils';
 
 const BroadcasterSubscriptionId = 'CurrentTabComponent';
 
-export interface IPageDetail { // TODO relocate
+export interface IPageDetail {
     frameId: any;
     tab: any;
     details: any;

@@ -19,6 +19,7 @@ import {
 
 import { EventService } from 'jslib/abstractions/event.service';
 import { EventType } from 'jslib/enums/eventType';
+import { CardView, CipherView, IdentityView } from 'jslib/models/view';
 import AutofillForm from 'src/models/autofillForm';
 import { IPageDetail } from 'src/popup/vault/current-tab.component';
 
@@ -119,6 +120,13 @@ interface IFormData {
     password: AutofillField;
     username: AutofillField;
     passwords: AutofillField[];
+}
+
+interface IGenerateFillScriptOptions {
+    skipUsernameOnlyFill: boolean;
+    onlyEmptyFields: boolean;
+    onlyVisibleFields: boolean;
+    cipher: CipherView;
 }
 
 export default class AutofillService implements AutofillServiceInterface {
@@ -244,7 +252,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
     // Helpers
 
-    private async getActiveTab(): Promise<any> {
+    private async getActiveTab(): Promise<{url: string, id: number}> {
         const tab = await BrowserApi.getTabFromCurrentWindow();
         if (!tab) {
             throw new Error('No tab found.');
@@ -253,7 +261,7 @@ export default class AutofillService implements AutofillServiceInterface {
         return tab;
     }
 
-    private generateFillScript(pageDetails: AutofillPageDetails, options: any): AutofillScript {
+    private generateFillScript(pageDetails: AutofillPageDetails, options: IGenerateFillScriptOptions): AutofillScript {
         if (!pageDetails || !options.cipher) {
             return null;
         }
@@ -307,7 +315,7 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     private generateLoginFillScript(fillScript: AutofillScript, pageDetails: AutofillPageDetails,
-        filledFields: { [id: string]: AutofillField; }, options: any): AutofillScript {
+        filledFields: { [id: string]: AutofillField; }, options: IGenerateFillScriptOptions): AutofillScript {
         if (!options.cipher.login) {
             return null;
         }
@@ -415,39 +423,40 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     private generateCardFillScript(fillScript: AutofillScript, pageDetails: AutofillPageDetails,
-        filledFields: { [id: string]: AutofillField; }, options: any): AutofillScript {
+        filledFields: { [id: string]: AutofillField; }, options: IGenerateFillScriptOptions): AutofillScript {
         if (!options.cipher.card) {
             return null;
         }
 
         const fillFields: { [id: string]: AutofillField; } = {};
 
-        pageDetails.fields.forEach((f: any) => {
+        pageDetails.fields.forEach((f) => {
             if (this.isExcludedType(f.type, ExcludedAutofillTypes)) {
                 return;
             }
 
             for (let i = 0; i < CardAttributes.length; i++) {
                 const attr = CardAttributes[i];
-                if (!f.hasOwnProperty(attr) || !f[attr] || !f.viewable) {
+                const value: string = (f as any)[attr];
+                if (!f.hasOwnProperty(attr) || !value || !f.viewable) {
                     continue;
                 }
 
                 // ref https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill
                 // ref https://developers.google.com/web/fundamentals/design-and-ux/input/forms/
-                if (!fillFields.cardholderName && this.isFieldMatch(f[attr],
+                if (!fillFields.cardholderName && this.isFieldMatch(value,
                     ['cc-name', 'card-name', 'cardholder-name', 'cardholder', 'name', 'nom'],
                     ['cc-name', 'card-name', 'cardholder-name', 'cardholder', 'tbName'])) {
                     fillFields.cardholderName = f;
                     break;
-                } else if (!fillFields.number && this.isFieldMatch(f[attr],
+                } else if (!fillFields.number && this.isFieldMatch(value,
                     ['cc-number', 'cc-num', 'card-number', 'card-num', 'number', 'cc', 'cc-no', 'card-no',
                         'credit-card', 'numero-carte', 'carte', 'carte-credit', 'num-carte', 'cb-num'],
                     ['cc-number', 'cc-num', 'card-number', 'card-num', 'cc-no', 'card-no', 'numero-carte',
                         'num-carte', 'cb-num'])) {
                     fillFields.number = f;
                     break;
-                } else if (!fillFields.exp && this.isFieldMatch(f[attr],
+                } else if (!fillFields.exp && this.isFieldMatch(value,
                     ['cc-exp', 'card-exp', 'cc-expiration', 'card-expiration', 'cc-ex', 'card-ex',
                         'card-expire', 'card-expiry', 'validite', 'expiration', 'expiry', 'mm-yy',
                         'mm-yyyy', 'yy-mm', 'yyyy-mm', 'expiration-date', 'payment-card-expiration',
@@ -456,7 +465,7 @@ export default class AutofillService implements AutofillServiceInterface {
                         'payment-card-expiration'])) {
                     fillFields.exp = f;
                     break;
-                } else if (!fillFields.expMonth && this.isFieldMatch(f[attr],
+                } else if (!fillFields.expMonth && this.isFieldMatch(value,
                     ['exp-month', 'cc-exp-month', 'cc-month', 'card-month', 'cc-mo', 'card-mo', 'exp-mo',
                         'card-exp-mo', 'cc-exp-mo', 'card-expiration-month', 'expiration-month',
                         'cc-mm', 'cc-m', 'card-mm', 'card-m', 'card-exp-mm', 'cc-exp-mm', 'exp-mm', 'exp-m',
@@ -467,7 +476,7 @@ export default class AutofillService implements AutofillServiceInterface {
                         'exp-date-mo', 'cb-date-mois', 'date-m'])) {
                     fillFields.expMonth = f;
                     break;
-                } else if (!fillFields.expYear && this.isFieldMatch(f[attr],
+                } else if (!fillFields.expYear && this.isFieldMatch(value,
                     ['exp-year', 'cc-exp-year', 'cc-year', 'card-year', 'cc-yr', 'card-yr', 'exp-yr',
                         'card-exp-yr', 'cc-exp-yr', 'card-expiration-year', 'expiration-year',
                         'cc-yy', 'cc-y', 'card-yy', 'card-y', 'card-exp-yy', 'cc-exp-yy', 'exp-yy', 'exp-y',
@@ -478,13 +487,13 @@ export default class AutofillService implements AutofillServiceInterface {
                         'expiration-date-yy', 'expiration-date-yyyy', 'validity-year', 'exp-date-year', 'date-y'])) {
                     fillFields.expYear = f;
                     break;
-                } else if (!fillFields.code && this.isFieldMatch(f[attr],
+                } else if (!fillFields.code && this.isFieldMatch(value,
                     ['cvv', 'cvc', 'cvv2', 'cc-csc', 'cc-cvv', 'card-csc', 'card-cvv', 'cvd', 'cid', 'cvc2',
                         'cnv', 'cvn2', 'cc-code', 'card-code', 'code-securite', 'security-code', 'crypto',
                         'card-verif', 'verification-code', 'csc', 'ccv'])) {
                     fillFields.code = f;
                     break;
-                } else if (!fillFields.brand && this.isFieldMatch(f[attr],
+                } else if (!fillFields.brand && this.isFieldMatch(value,
                     ['cc-type', 'card-type', 'card-brand', 'cc-brand', 'cb-type'])) {
                     fillFields.brand = f;
                     break;
@@ -646,7 +655,7 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     private generateIdentityFillScript(fillScript: AutofillScript, pageDetails: AutofillPageDetails,
-        filledFields: { [id: string]: AutofillField; }, options: any): AutofillScript {
+        filledFields: { [id: string]: AutofillField; }, options: IGenerateFillScriptOptions): AutofillScript {
         if (!options.cipher.identity) {
             return null;
         }
@@ -849,10 +858,14 @@ export default class AutofillService implements AutofillServiceInterface {
         return false;
     }
 
-    private makeScriptAction(fillScript: AutofillScript, cipherData: any, fillFields: { [id: string]: AutofillField; },
-        filledFields: { [id: string]: AutofillField; }, dataProp: string, fieldProp?: string) {
-        fieldProp = fieldProp || dataProp;
-        this.makeScriptActionWithValue(fillScript, cipherData[dataProp], fillFields[fieldProp], filledFields);
+    private makeScriptAction<T extends IdentityView | CardView>(fillScript: AutofillScript, cipherData: T,
+        fillFields: { [id: string]: AutofillField; }, filledFields: { [id: string]: AutofillField; },
+        dataProp: keyof T, fieldProp?: string) {
+
+        fieldProp = fieldProp || dataProp as string;
+        // Compiler complains if this is cast directly to string (ts(2352))
+        const dataValue = cipherData[dataProp] as unknown as string;
+        this.makeScriptActionWithValue(fillScript, dataValue, fillFields[fieldProp], filledFields);
     }
 
     private makeScriptActionWithValue(fillScript: AutofillScript, dataValue: string, field: AutofillField,
