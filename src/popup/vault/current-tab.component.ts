@@ -36,12 +36,26 @@ import { Utils } from 'jslib/misc/utils';
 
 const BroadcasterSubscriptionId = 'CurrentTabComponent';
 
+export interface IPageDetail { // TODO relocate
+    frameId: any;
+    tab: any;
+    details: any;
+}
+
+interface ICurrentTabMessage {
+    command: 'syncCompleted' | 'collectPageDetailsResponse';
+    sender: string;
+    webExtSender: any;
+    tab: any;
+    details: any;
+}
+
 @Component({
     selector: 'app-current-tab',
     templateUrl: 'current-tab.component.html',
 })
 export class CurrentTabComponent implements OnInit, OnDestroy {
-    pageDetails: any[] = [];
+    pageDetails: IPageDetail[] = [];
     cardCiphers: CipherView[];
     identityCiphers: CipherView[];
     loginCiphers: CipherView[];
@@ -71,7 +85,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         this.showLeftHeader = this.searchTypeSearch = !this.platformUtilsService.isSafari();
         this.inSidebar = this.popupUtilsService.inSidebar(window);
 
-        this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
+        this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: ICurrentTabMessage) => {
             this.ngZone.run(async () => {
                 switch (message.command) {
                     case 'syncCompleted':

@@ -9,7 +9,7 @@ import AutofillScript from '../models/autofillScript';
 
 import { BrowserApi } from '../browser/browserApi';
 
-import { AutofillService as AutofillServiceInterface } from './abstractions/autofill.service';
+import { AutofillService as AutofillServiceInterface, IAutoFillOptions } from './abstractions/autofill.service';
 
 import {
     CipherService,
@@ -19,6 +19,8 @@ import {
 
 import { EventService } from 'jslib/abstractions/event.service';
 import { EventType } from 'jslib/enums/eventType';
+import AutofillForm from 'src/models/autofillForm';
+import { IPageDetail } from 'src/popup/vault/current-tab.component';
 
 const CardAttributes: string[] = ['autoCompleteType', 'data-stripe', 'htmlName', 'htmlID', 'label-tag',
     'placeholder', 'label-left', 'label-top', 'data-recurly'];
@@ -112,12 +114,19 @@ var IsoProvinces: { [id: string]: string; } = {
 };
 /* tslint:enable */
 
+interface IFormData {
+    form: AutofillForm;
+    password: AutofillField;
+    username: AutofillField;
+    passwords: AutofillField[];
+}
+
 export default class AutofillService implements AutofillServiceInterface {
     constructor(private cipherService: CipherService, private userService: UserService,
         private totpService: TotpService, private eventService: EventService) { }
 
-    getFormsWithPasswordFields(pageDetails: AutofillPageDetails): any[] {
-        const formData: any[] = [];
+    getFormsWithPasswordFields(pageDetails: AutofillPageDetails): IFormData[] {
+        const formData: IFormData[] = [];
 
         const passwordFields = this.loadPasswordFields(pageDetails, true, true, false);
         if (passwordFields.length === 0) {
@@ -148,7 +157,7 @@ export default class AutofillService implements AutofillServiceInterface {
         return formData;
     }
 
-    async doAutoFill(options: any) {
+    async doAutoFill(options: IAutoFillOptions) {
         let totpPromise: Promise<string> = null;
         const tab = await this.getActiveTab();
         if (!tab || !options.cipher || !options.pageDetails || !options.pageDetails.length) {
@@ -157,7 +166,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
         const canAccessPremium = await this.userService.canAccessPremium();
         let didAutofill = false;
-        options.pageDetails.forEach((pd: any) => {
+        options.pageDetails.forEach((pd) => {
             // make sure we're still on correct tab
             if (pd.tab.id !== tab.id || pd.tab.url !== tab.url) {
                 return;
@@ -210,7 +219,7 @@ export default class AutofillService implements AutofillServiceInterface {
         }
     }
 
-    async doAutoFillForLastUsedLogin(pageDetails: any, fromCommand: boolean) {
+    async doAutoFillForLastUsedLogin(pageDetails: IPageDetail[], fromCommand: boolean) {
         const tab = await this.getActiveTab();
         if (!tab || !tab.url) {
             return;
