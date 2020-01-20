@@ -265,13 +265,13 @@ export default class AutofillService implements AutofillServiceInterface {
         if (fields && fields.length) {
             const fieldNames: string[] = [];
 
-            fields.forEach((f: any) => {
+            fields.forEach((f) => {
                 if (this.hasValue(f.name)) {
                     fieldNames.push(f.name.toLowerCase());
                 }
             });
 
-            pageDetails.fields.forEach((field: any) => {
+            pageDetails.fields.forEach((field) => {
                 if (filledFields.hasOwnProperty(field.opid) || !field.viewable) {
                     return;
                 }
@@ -306,7 +306,7 @@ export default class AutofillService implements AutofillServiceInterface {
         return fillScript;
     }
 
-    private generateLoginFillScript(fillScript: AutofillScript, pageDetails: any,
+    private generateLoginFillScript(fillScript: AutofillScript, pageDetails: AutofillPageDetails,
         filledFields: { [id: string]: AutofillField; }, options: any): AutofillScript {
         if (!options.cipher.login) {
             return null;
@@ -414,7 +414,7 @@ export default class AutofillService implements AutofillServiceInterface {
         return fillScript;
     }
 
-    private generateCardFillScript(fillScript: AutofillScript, pageDetails: any,
+    private generateCardFillScript(fillScript: AutofillScript, pageDetails: AutofillPageDetails,
         filledFields: { [id: string]: AutofillField; }, options: any): AutofillScript {
         if (!options.cipher.card) {
             return null;
@@ -627,26 +627,25 @@ export default class AutofillService implements AutofillServiceInterface {
         return fillScript;
     }
 
-    private fieldAttrsContain(field: any, containsVal: string) {
+    private fieldAttrsContain(field: AutofillField, containsVal: string) {
         if (!field) {
             return false;
         }
 
         let doesContain = false;
         CardAttributesExtended.forEach((attr) => {
-            if (doesContain || !field.hasOwnProperty(attr) || !field[attr]) {
+            if (doesContain || !field.hasOwnProperty(attr) || !(field as any)[attr]) {
                 return;
             }
 
-            let val = field[attr];
-            val = val.replace(/ /g, '').toLowerCase();
+            const val = (field as any)[attr].replace(/ /g, '').toLowerCase();
             doesContain = val.indexOf(containsVal) > -1;
         });
 
         return doesContain;
     }
 
-    private generateIdentityFillScript(fillScript: AutofillScript, pageDetails: any,
+    private generateIdentityFillScript(fillScript: AutofillScript, pageDetails: AutofillPageDetails,
         filledFields: { [id: string]: AutofillField; }, options: any): AutofillScript {
         if (!options.cipher.identity) {
             return null;
@@ -654,88 +653,89 @@ export default class AutofillService implements AutofillServiceInterface {
 
         const fillFields: { [id: string]: AutofillField; } = {};
 
-        pageDetails.fields.forEach((f: any) => {
+        pageDetails.fields.forEach((f) => {
             if (this.isExcludedType(f.type, ExcludedAutofillTypes)) {
                 return;
             }
 
             for (let i = 0; i < IdentityAttributes.length; i++) {
                 const attr = IdentityAttributes[i];
-                if (!f.hasOwnProperty(attr) || !f[attr] || !f.viewable) {
+                const value: string = (f as any)[attr];
+                if (!f.hasOwnProperty(attr) || !value || !f.viewable) {
                     continue;
                 }
 
                 // ref https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#autofill
                 // ref https://developers.google.com/web/fundamentals/design-and-ux/input/forms/
-                if (!fillFields.name && this.isFieldMatch(f[attr],
+                if (!fillFields.name && this.isFieldMatch(value,
                     ['name', 'full-name', 'your-name'], ['full-name', 'your-name'])) {
                     fillFields.name = f;
                     break;
-                } else if (!fillFields.firstName && this.isFieldMatch(f[attr],
+                } else if (!fillFields.firstName && this.isFieldMatch(value,
                     ['f-name', 'first-name', 'given-name', 'first-n'])) {
                     fillFields.firstName = f;
                     break;
-                } else if (!fillFields.middleName && this.isFieldMatch(f[attr],
+                } else if (!fillFields.middleName && this.isFieldMatch(value,
                     ['m-name', 'middle-name', 'additional-name', 'middle-initial', 'middle-n', 'middle-i'])) {
                     fillFields.middleName = f;
                     break;
-                } else if (!fillFields.lastName && this.isFieldMatch(f[attr],
+                } else if (!fillFields.lastName && this.isFieldMatch(value,
                     ['l-name', 'last-name', 's-name', 'surname', 'family-name', 'family-n', 'last-n'])) {
                     fillFields.lastName = f;
                     break;
-                } else if (!fillFields.title && this.isFieldMatch(f[attr],
+                } else if (!fillFields.title && this.isFieldMatch(value,
                     ['honorific-prefix', 'prefix', 'title'])) {
                     fillFields.title = f;
                     break;
-                } else if (!fillFields.email && this.isFieldMatch(f[attr],
+                } else if (!fillFields.email && this.isFieldMatch(value,
                     ['e-mail', 'email-address'])) {
                     fillFields.email = f;
                     break;
-                } else if (!fillFields.address && this.isFieldMatch(f[attr],
+                } else if (!fillFields.address && this.isFieldMatch(value,
                     ['address', 'street-address', 'addr', 'street', 'mailing-addr', 'billing-addr',
                         'mail-addr', 'bill-addr'], ['mailing-addr', 'billing-addr', 'mail-addr', 'bill-addr'])) {
                     fillFields.address = f;
                     break;
-                } else if (!fillFields.address1 && this.isFieldMatch(f[attr],
+                } else if (!fillFields.address1 && this.isFieldMatch(value,
                     ['address-1', 'address-line-1', 'addr-1', 'street-1'])) {
                     fillFields.address1 = f;
                     break;
-                } else if (!fillFields.address2 && this.isFieldMatch(f[attr],
+                } else if (!fillFields.address2 && this.isFieldMatch(value,
                     ['address-2', 'address-line-2', 'addr-2', 'street-2'])) {
                     fillFields.address2 = f;
                     break;
-                } else if (!fillFields.address3 && this.isFieldMatch(f[attr],
+                } else if (!fillFields.address3 && this.isFieldMatch(value,
                     ['address-3', 'address-line-3', 'addr-3', 'street-3'])) {
                     fillFields.address3 = f;
                     break;
-                } else if (!fillFields.postalCode && this.isFieldMatch(f[attr],
+                } else if (!fillFields.postalCode && this.isFieldMatch(value,
                     ['postal', 'zip', 'zip2', 'zip-code', 'postal-code', 'post-code', 'address-zip',
                         'address-postal', 'address-code', 'address-postal-code', 'address-zip-code'])) {
                     fillFields.postalCode = f;
                     break;
-                } else if (!fillFields.city && this.isFieldMatch(f[attr],
+                } else if (!fillFields.city && this.isFieldMatch(value,
                     ['city', 'town', 'address-level-2', 'address-city', 'address-town'])) {
                     fillFields.city = f;
                     break;
-                } else if (!fillFields.state && this.isFieldMatch(f[attr],
+                } else if (!fillFields.state && this.isFieldMatch(value,
                     ['state', 'province', 'provence', 'address-level-1', 'address-state',
                         'address-province'])) {
                     fillFields.state = f;
                     break;
-                } else if (!fillFields.country && this.isFieldMatch(f[attr],
+                } else if (!fillFields.country && this.isFieldMatch(value,
                     ['country', 'country-code', 'country-name', 'address-country', 'address-country-name',
                         'address-country-code'])) {
                     fillFields.country = f;
                     break;
-                } else if (!fillFields.phone && this.isFieldMatch(f[attr],
+                } else if (!fillFields.phone && this.isFieldMatch(value,
                     ['phone', 'mobile', 'mobile-phone', 'tel', 'telephone', 'phone-number'])) {
                     fillFields.phone = f;
                     break;
-                } else if (!fillFields.username && this.isFieldMatch(f[attr],
+                } else if (!fillFields.username && this.isFieldMatch(value,
                     ['user-name', 'user-id', 'screen-name'])) {
                     fillFields.username = f;
                     break;
-                } else if (!fillFields.company && this.isFieldMatch(f[attr],
+                } else if (!fillFields.company && this.isFieldMatch(value,
                     ['company', 'company-name', 'organization', 'organization-name'])) {
                     fillFields.company = f;
                     break;
@@ -855,7 +855,7 @@ export default class AutofillService implements AutofillServiceInterface {
         this.makeScriptActionWithValue(fillScript, cipherData[dataProp], fillFields[fieldProp], filledFields);
     }
 
-    private makeScriptActionWithValue(fillScript: AutofillScript, dataValue: any, field: AutofillField,
+    private makeScriptActionWithValue(fillScript: AutofillScript, dataValue: string, field: AutofillField,
         filledFields: { [id: string]: AutofillField; }) {
 
         let doFill = false;
