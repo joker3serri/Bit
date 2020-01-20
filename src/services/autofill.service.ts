@@ -993,7 +993,7 @@ export default class AutofillService implements AutofillServiceInterface {
         return -1;
     }
 
-    private fieldPropertyIsPrefixMatch(field: any, property: string, name: string, prefix: string,
+    private fieldPropertyIsPrefixMatch(field: AutofillField, property: string, name: string, prefix: string,
         separator = '='): boolean {
         if (name.indexOf(prefix + separator) === 0) {
             const sepIndex = name.indexOf(separator);
@@ -1003,8 +1003,8 @@ export default class AutofillService implements AutofillServiceInterface {
         return false;
     }
 
-    private fieldPropertyIsMatch(field: any, property: string, name: string): boolean {
-        let fieldVal = field[property] as string;
+    private fieldPropertyIsMatch(field: AutofillField, property: string, name: string): boolean {
+        let fieldVal: string = (field as any)[property];
         if (!this.hasValue(fieldVal)) {
             return false;
         }
