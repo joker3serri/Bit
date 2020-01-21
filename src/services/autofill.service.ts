@@ -392,7 +392,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
         if (!passwordFields.length && !options.skipUsernameOnlyFill) {
             // No password fields on this page. Let's try to just fuzzy fill the username.
-            pageDetails.fields.forEach((f: any) => {
+            pageDetails.fields.forEach((f) => {
                 if (f.viewable && (f.type === 'text' || f.type === 'email' || f.type === 'tel') &&
                     this.fieldIsFuzzyMatch(f, UsernameFieldNames)) {
                     usernames.push(f);
