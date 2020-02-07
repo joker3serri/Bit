@@ -49,13 +49,11 @@ export class KonnectorsService {
     }
 
     async getInstalledKonnectors(client: any) {
-        const konnectors = await client.queryAll(client.find('io.cozy.konnectors'));
-        return konnectors.data;
+        return client.queryAll(client.find('io.cozy.konnectors'));
     }
 
     async getSuggestedKonnectors(client: any) {
-        const suggestions = await client.queryAll(client.find('io.cozy.apps.suggestions'));
-        return suggestions.data;
+        return client.queryAll(client.find('io.cozy.apps.suggestions'));
     }
 
     async sendKonnectorsSuggestion(client: any, konnectors: any[]) {

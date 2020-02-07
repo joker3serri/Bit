@@ -128,10 +128,10 @@ export class AddEditComponent extends BaseAddEditComponent {
     async delete(): Promise<boolean> {
         const organizations = await this.userService.getAllOrganizations();
         const [cozyOrganization] = organizations.filter(
-            org => org.name === 'Cozy'
+            (org) => org.name === 'Cozy',
         );
         const isCozyOrganization =
-            this.cipher.organizationId === cozyOrganization.id
+            this.cipher.organizationId === cozyOrganization.id;
 
         const confirmationMessage = isCozyOrganization
             ? this.i18nService.t('deleteSharedItemConfirmation')
@@ -146,7 +146,7 @@ export class AddEditComponent extends BaseAddEditComponent {
             confirmationTitle,
             this.i18nService.t('yes'),
             this.i18nService.t('no'),
-            'warning'
+            'warning',
         );
 
         if (!confirmed) {
