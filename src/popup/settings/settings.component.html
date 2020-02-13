@@ -32,6 +32,10 @@
                 </select>
             </div>
             <div class="box-content-row box-content-row-checkbox" appBoxRow>
+                <label for="lockOptionsLogout">{{'lockOptionsLogout' | i18n}}</label>
+                <input id="lockOptionsLogout" type="checkbox" (change)="updateLockOptionsLogout()" [(ngModel)]="lockOptionsLogout">
+            </div>
+            <div class="box-content-row box-content-row-checkbox" appBoxRow>
                 <label for="pin">{{'unlockWithPin' | i18n}}</label>
                 <input id="pin" type="checkbox" (change)="updatePin()" [(ngModel)]="pin">
             </div>

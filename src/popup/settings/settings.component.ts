@@ -48,6 +48,7 @@ export class SettingsComponent implements OnInit {
     lockOptions: any[];
     lockOption: number = null;
     pin: boolean = null;
+    lockOptionsLogout: boolean = null;
     previousLockOption: number = null;
 
     constructor(private platformUtilsService: PlatformUtilsService, private i18nService: I18nService,
@@ -91,6 +92,8 @@ export class SettingsComponent implements OnInit {
 
         const pinSet = await this.lockService.isPinLockSet();
         this.pin = pinSet[0] || pinSet[1];
+
+        this.lockOptionsLogout = await this.lockService.isLogoutInstead();
     }
 
     async saveLockOption(newValue: number) {
@@ -113,6 +116,12 @@ export class SettingsComponent implements OnInit {
         if (this.previousLockOption == null) {
             this.messagingService.send('bgReseedStorage');
         }
+    }
+
+    async updateLockOptionsLogout() {
+        // if (this.lockOptionsLogout) {
+            await this.storageService.save(ConstantsService.lockOptionLogout, this.lockOptionsLogout)
+        // }
     }
 
     async updatePin() {

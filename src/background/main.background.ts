@@ -168,7 +168,7 @@ export default class MainBackground {
                     this.systemService.startProcessReload();
                     await this.systemService.clearPendingClipboard();
                 }
-            });
+            }, async () => this.logout(true));
         this.syncService = new SyncService(this.userService, this.apiService, this.settingsService,
             this.folderService, this.cipherService, this.cryptoService, this.collectionService,
             this.storageService, this.messagingService, this.policyService,
