@@ -262,6 +262,27 @@ export default class MainBackground {
             await this.windowsBackground.init();
         }
 
+        const checkCurrentStatus = async (msg: any) => {
+            const isAuthenticated = await this.userService.isAuthenticated();
+            const status = isAuthenticated ? 'connected' : 'installed';
+
+            return status;
+        };
+
+        BrowserApi.messageListener(
+            'main.background',
+            (msg: any, sender: any, sendResponse: any) => {
+                if (msg.command === 'checkextensionstatus') {
+                    checkCurrentStatus(msg).then(sendResponse);
+
+                    // The callback should return true if it's sending the
+                    // response asynchronously.
+                    // See https://developer.chrome.com/apps/runtime#event-onMessage
+                    return true;
+                }
+            },
+        );
+
         return new Promise((resolve) => {
             setTimeout(async () => {
                 await this.environmentService.setUrlsFromStorage();

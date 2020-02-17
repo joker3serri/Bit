@@ -150,7 +150,7 @@ export class BrowserApi {
     static messageListener(name: string, callback: (message: any, sender: any, response: any) => void) {
         if (BrowserApi.isChromeApi) {
             chrome.runtime.onMessage.addListener((msg: any, sender: any, response: any) => {
-                callback(msg, sender, response);
+                return callback(msg, sender, response);
             });
         } else if (BrowserApi.isSafariApi) {
             SafariApp.addMessageListener(name, (message: any, sender: any, response: any) => {
