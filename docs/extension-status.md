@@ -12,16 +12,16 @@ application to ask to the extension what's its status.
 To achieve this, the extension injects a script in each tab (this script is
 called a content script, and is located in `src/content/appInfo.ts`). This
 script adds an event listener on the `document` for the event
-`check-cozy-extension-status`. Here, it's important to have in mind that the
-`document` is the same for the script and the app. When an event is received,
-the script will send a message to the extension's main background
+`cozy.passwordextension.check-status`. Here, it's important to have in mind
+that the `document` is the same for the script and the app. When an event is
+received, the script will send a message to the extension's main background
 (`src/backgound/main.background.ts`), which will check if the extension is
 currently authenticated or not and responds to the message with `installed` if
 it's not authenticated, or `connected` if it's authenticated. The script will
 then get the response and trigger an event on the `document` :
 
-* `cozy-extension-connected`: when the extension is connected
-* `cozy-extension-installed`: when the extension is not connected
+* `cozy.passwordextension.connected`: when the extension is connected
+* `cozy.passwordextension.installed`: when the extension is not connected
 
 The app is then able to listen to these events and do what it wants when it
 receives one of them.
