@@ -47,6 +47,7 @@ export class SettingsComponent implements OnInit {
     @ViewChild('lockOptionsSelect', { read: ElementRef }) lockOptionsSelectRef: ElementRef;
     lockOptions: any[];
     lockOption: number = null;
+    lockAfterIdle = false;
     pin: boolean = null;
     previousLockOption: number = null;
 
@@ -89,6 +90,8 @@ export class SettingsComponent implements OnInit {
         }
         this.previousLockOption = this.lockOption;
 
+        this.lockAfterIdle = await this.storageService.get<boolean>(ConstantsService.lockAfterIdleKey);
+
         const pinSet = await this.lockService.isPinLockSet();
         this.pin = pinSet[0] || pinSet[1];
     }
@@ -113,6 +116,10 @@ export class SettingsComponent implements OnInit {
         if (this.previousLockOption == null) {
             this.messagingService.send('bgReseedStorage');
         }
+    }
+
+    updateLockAfterIdle() {
+        this.storageService.save(ConstantsService.lockAfterIdleKey, this.lockAfterIdle);
     }
 
     async updatePin() {

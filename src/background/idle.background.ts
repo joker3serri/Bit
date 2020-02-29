@@ -16,6 +16,9 @@ export default class IdleBackground {
     constructor(private lockService: LockService, private storageService: StorageService,
         private notificationsService: NotificationsService) {
         this.idle = chrome.idle || (browser != null ? browser.idle : null);
+
+        // Set default state
+        this.storageService.save(ConstantsService.idleStateKey, this.idleState);
     }
 
     async init() {
@@ -44,7 +47,17 @@ export default class IdleBackground {
                     if (lockOption === -2) {
                         this.lockService.lock(true);
                     }
+                } else if (newState === 'idle') {
+                    const lockAfterIdle = await this.storageService.get<boolean>(ConstantsService.lockAfterIdleKey);
+                    if (lockAfterIdle) {
+                        // Subtract the 5 minute time idle time interval from the last active time
+                        const now = (new Date()).getTime() - 5 * 60 * 1000;
+
+                        this.storageService.save(ConstantsService.lastActiveKey, now);
+                    }
                 }
+
+                this.storageService.save(ConstantsService.idleStateKey, newState);
             });
         }
     }
