@@ -48,6 +48,7 @@ export class SettingsComponent implements OnInit {
     lockOptions: any[];
     lockOption: number = null;
     lockAfterIdle = false;
+    lockOnSystemLock = false;
     pin: boolean = null;
     previousLockOption: number = null;
 
@@ -91,6 +92,7 @@ export class SettingsComponent implements OnInit {
         this.previousLockOption = this.lockOption;
 
         this.lockAfterIdle = await this.storageService.get<boolean>(ConstantsService.lockAfterIdleKey);
+        this.lockOnSystemLock = await this.storageService.get<boolean>(ConstantsService.lockOnSystemLockKey);
 
         const pinSet = await this.lockService.isPinLockSet();
         this.pin = pinSet[0] || pinSet[1];
@@ -120,6 +122,9 @@ export class SettingsComponent implements OnInit {
 
     updateLockAfterIdle() {
         this.storageService.save(ConstantsService.lockAfterIdleKey, this.lockAfterIdle);
+    }
+    updateLockOnSystemLock() {
+        this.storageService.save(ConstantsService.lockOnSystemLockKey, this.lockOnSystemLock);
     }
 
     async updatePin() {

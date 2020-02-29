@@ -44,7 +44,8 @@ export default class IdleBackground {
             this.idle.onStateChanged.addListener(async (newState: string) => {
                 if (newState === 'locked') {
                     const lockOption = await this.storageService.get<number>(ConstantsService.lockOptionKey);
-                    if (lockOption === -2) {
+                    const lockOnSystemLock = await this.storageService.get<boolean>(ConstantsService.lockOnSystemLockKey);
+                    if (lockOption === -2 || lockOnSystemLock) {
                         this.lockService.lock(true);
                     }
                 } else if (newState === 'idle') {

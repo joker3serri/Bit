@@ -1250,5 +1250,8 @@
   },
   "lockAfterIdle": {
     "message": "Lock After Idle"
+  },
+  "lockOnSystemLock": {
+    "message": "Lock On System Lock"
   }
 }
