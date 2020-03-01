@@ -5,7 +5,7 @@ import {
     SeparatorKey,
 } from './privateBrowsingProxyCommon';
 
-const CONST_TYPES = ['string', 'number', 'undefined'];
+const CONST_TYPES = ['string', 'number', 'boolean', 'undefined'];
 
 interface IParentChildObject {
     parent: any;
@@ -14,6 +14,7 @@ interface IParentChildObject {
 
 let exclude: string[] = [];
 const getPropertiesList = (obj: any): string[] => {
+    console.log('Listing properties');
     const knownProperties = new Set<string>();
     let currentObj: any = obj;
     while (currentObj) {
@@ -23,6 +24,7 @@ const getPropertiesList = (obj: any): string[] => {
             .map((item: string) => knownProperties.add(item));
         currentObj = Object.getPrototypeOf(currentObj);
     }
+    console.log('Listing properties done');
     return [...knownProperties.keys()];
 };
 exclude = getPropertiesList({});
@@ -65,8 +67,14 @@ export class FirefoxProxyReceiver {
             return obj.every(this.isConstantType);
         }
         if (objType === 'object') {
-            return getPropertiesList(obj)
-                .every((prop: any) => this.isConstantType(obj[prop]));
+            try {
+                JSON.stringify(obj);
+                return true;
+            } catch (e) {
+                return false;
+            }
+            // return getPropertiesList(obj)
+            //     .every((prop: any) => this.isConstantType(obj[prop]));
         }
         return false;
     }
@@ -91,7 +99,12 @@ export class FirefoxProxyReceiver {
     private async receiveCallOverMessageBus(message: IFirefoxProxyRequest): Promise<IFirefoxProxyResponse> {
         try {
             const { parent, child } = this.getParentAndChildObject(message.key);
-            const result = await child.apply(parent, message.value);
+            let result: any;
+            if (message.type === 'func') {
+                result = await child.apply(parent, message.value);
+            } else {
+                result = child;
+            }
             return this.getResponseMessage(result);
         } catch (e) {
             return {

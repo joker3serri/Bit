@@ -23,18 +23,30 @@ class FirefoxProxyClient {
     }
 
     get(_: object, property: string) {
+        if (property === 'isPrivateBrowsingProxy') {
+            return true;
+        }
+        if (property === 'getRawValue') {
+            return this.dispatchMessage('get', this.path);
+        }
         const nextPath = this.path === '' ? property : this.path + SeparatorKey + property;
+        console.log(nextPath);
         return FirefoxProxyClient.createInternal(nextPath, this.dispatchFunction);
     }
 
     async apply(_1: object, _2: object, argumentsList: any[]): Promise<any> {
-        const busSendMessage: IFirefoxProxyRequest = {
-            key: this.path,
-            value: argumentsList,
+        return await this.dispatchMessage('func', this.path, argumentsList);
+    }
+
+    private async dispatchMessage(type: string, path: string, value?: any[]): Promise<any> {
+        const message: IFirefoxProxyRequest = {
+            type: type,
+            key: path,
+            value: value,
             command: HandlerCommandKey,
         };
 
-        const response = await this.dispatchFunction(busSendMessage);
+        const response = await this.dispatchFunction(message);
 
         if (response.type === 'const') {
             return response.value;
