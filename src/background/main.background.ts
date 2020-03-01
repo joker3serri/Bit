@@ -77,6 +77,8 @@ import I18nService from '../services/i18n.service';
 
 import { AutofillService as AutofillServiceAbstraction } from '../services/abstractions/autofill.service';
 
+import { FirefoxProxyReceiver } from '../firefox/privateBrowsingProxyServer';
+
 export default class MainBackground {
     messagingService: MessagingServiceAbstraction;
     storageService: StorageServiceAbstraction;
@@ -218,6 +220,11 @@ export default class MainBackground {
             this.webRequestBackground = new WebRequestBackground(this.platformUtilsService, this.cipherService,
                 this.lockService);
             this.windowsBackground = new WindowsBackground(this);
+        }
+
+        if (BrowserApi.isFirefox) {
+            const privateBrowsingProxyServer = new FirefoxProxyReceiver(this);
+            chrome.runtime.onMessage.addListener(privateBrowsingProxyServer.handleMessage);
         }
     }
 
