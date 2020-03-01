@@ -98,7 +98,7 @@ export class BrowserApi {
 
     static getBackgroundPage(): any {
         if (chrome.extension.getBackgroundPage() === null && BrowserApi.isFirefox) {
-            return firefoxClient(chrome.runtime.sendMessage);
+            return firefoxClient(browser.runtime.sendMessage);
         } else if (BrowserApi.isChromeApi) {
             return chrome.extension.getBackgroundPage();
         } else if (BrowserApi.isSafariApi) {

@@ -224,7 +224,7 @@ export default class MainBackground {
 
         if (BrowserApi.isFirefox) {
             const privateBrowsingProxyServer = new FirefoxProxyReceiver(this);
-            chrome.runtime.onMessage.addListener(privateBrowsingProxyServer.handleMessage);
+            browser.runtime.onMessage.addListener(privateBrowsingProxyServer.handleMessage);
         }
     }
 
