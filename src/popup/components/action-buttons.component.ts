@@ -19,7 +19,6 @@ import { EventService } from 'jslib/abstractions/event.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 
-import { TotpService } from 'jslib/abstractions';
 import { PopupUtilsService } from '../services/popup-utils.service';
 
 @Component({
@@ -35,8 +34,7 @@ export class ActionButtonsComponent {
 
     constructor(private analytics: Angulartics2, private toasterService: ToasterService,
         private i18nService: I18nService, private platformUtilsService: PlatformUtilsService,
-        private popupUtilsService: PopupUtilsService, private eventService: EventService,
-        private totpService: TotpService) { }
+        private popupUtilsService: PopupUtilsService, private eventService: EventService) { }
 
     launch() {
         if (this.cipher.type !== CipherType.Login || !this.cipher.login.canLaunch) {
@@ -48,11 +46,6 @@ export class ActionButtonsComponent {
         if (this.popupUtilsService.inPopup(window)) {
             BrowserApi.closePopup(window);
         }
-    }
-
-    async copyTotp(cipher: CipherView, value: string) {
-        const totpValue = await this.totpService.getCode(value);
-        this.copy(cipher, totpValue, 'verificationCodeTotp', 'TOTP');
     }
 
     copy(cipher: CipherView, value: string, typeI18nKey: string, aType: string) {
