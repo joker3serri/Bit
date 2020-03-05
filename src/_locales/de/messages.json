@@ -876,6 +876,12 @@
   "experimentalFeature": {
     "message": "Dies ist derzeit ein experimentelles Feature. Verwendung auf eigene Gefahr."
   },
+  "commandOpenPopup": {
+    "message": "Open vault popup"
+  },
+  "commandOpenSidebar": {
+    "message": "Open vault in sidebar"
+  },
   "commandAutofillDesc": {
     "message": "Den zuletzt verwendeten Login für die aktuelle Webseite automatisch ausfüllen lassen."
   },
@@ -1232,5 +1238,14 @@
   },
   "selectOneCollection": {
     "message": "Sie müssen mindestens eine Sammlung auswählen."
+  },
+  "cloneItem": {
+    "message": "Clone Item"
+  },
+  "clone": {
+    "message": "Clone"
+  },
+  "passwordGeneratorPolicyInEffect": {
+    "message": "One or more organization policies are affecting your generator settings."
   }
 }
