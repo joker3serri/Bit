@@ -69,6 +69,8 @@ export class SettingsComponent implements OnInit {
             { name: this.i18nService.t('thirtyMinutes'), value: 30 },
             { name: this.i18nService.t('oneHour'), value: 60 },
             { name: this.i18nService.t('fourHours'), value: 240 },
+            { name: this.i18nService.t('twelveHours'), value: 720 },
+            { name: this.i18nService.t('twentyfourHours'), value: 1440 },
             // { name: i18nService.t('onIdle'), value: -4 },
             // { name: i18nService.t('onSleep'), value: -3 },
         ];

@@ -360,6 +360,12 @@
   "fourHours": {
     "message": "4 hodiny"
   },
+  "twelveHours": {
+    "message": "12 hodiny"
+  },
+  "twentyfourHours": {
+    "message": "24 hodiny"
+  },
   "onLocked": {
     "message": "Pri uzamknutí"
   },

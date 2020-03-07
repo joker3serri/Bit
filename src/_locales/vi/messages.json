@@ -360,6 +360,12 @@
   "fourHours": {
     "message": "4 giờ"
   },
+  "twelveHours": {
+    "message": "12 giờ"
+  },
+  "twentyfourHours": {
+    "message": "24 giờ"
+  },
   "onLocked": {
     "message": "Mỗi khi khóa"
   },

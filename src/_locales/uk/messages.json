@@ -360,6 +360,12 @@
   "fourHours": {
     "message": "4 години"
   },
+  "twelveHours": {
+    "message": "12 години"
+  },
+  "twentyfourHours": {
+    "message": "24 години"
+  },
   "onLocked": {
     "message": "При блокуванні системи"
   },

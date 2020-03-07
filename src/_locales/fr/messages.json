@@ -360,6 +360,12 @@
   "fourHours": {
     "message": "4 heures"
   },
+  "twelveHours": {
+    "message": "12 heures"
+  },
+  "twentyfourHours": {
+    "message": "24 heures"
+  },
   "onLocked": {
     "message": "Au verrouillage du système"
   },

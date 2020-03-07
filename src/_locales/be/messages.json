@@ -360,6 +360,12 @@
   "fourHours": {
     "message": "4 гадзіны"
   },
+  "twelveHours": {
+    "message": "12 гадзіны"
+  },
+  "twentyfourHours": {
+    "message": "24 гадзіны"
+  },
   "onLocked": {
     "message": "Разам з камп'ютарам"
   },

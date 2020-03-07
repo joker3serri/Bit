@@ -360,6 +360,12 @@
   "fourHours": {
     "message": "4 ore"
   },
+  "twelveHours": {
+    "message": "12 ore"
+  },
+  "twentyfourHours": {
+    "message": "24 ore"
+  },
   "onLocked": {
     "message": "La blocarea computerului"
   },

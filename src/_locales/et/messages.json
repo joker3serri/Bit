@@ -360,6 +360,12 @@
   "fourHours": {
     "message": "4 tunni pärast"
   },
+  "twelveHours": {
+    "message": "12 tunni pärast"
+  },
+  "twentyfourHours": {
+    "message": "24 tunni pärast"
+  },
   "onLocked": {
     "message": "Arvutist väljalogimisel"
   },

@@ -360,6 +360,12 @@
   "fourHours": {
     "message": "4 tuntia"
   },
+  "twelveHours": {
+    "message": "12 tuntia"
+  },
+  "twentyfourHours": {
+    "message": "24 tuntia"
+  },
   "onLocked": {
     "message": "Tietokoneen lukitsemisen yhteydessä"
   },

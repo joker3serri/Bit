@@ -360,6 +360,12 @@
   "fourHours": {
     "message": "4 小时"
   },
+  "twelveHours": {
+    "message": "12 小时"
+  },
+  "twentyfourHours": {
+    "message": "24 小时"
+  },
   "onLocked": {
     "message": "系统锁定时"
   },

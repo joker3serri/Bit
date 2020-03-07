@@ -360,6 +360,12 @@
   "fourHours": {
     "message": "po 4 godzinach"
   },
+  "twelveHours": {
+    "message": "po 12 godzinach"
+  },
+  "twentyfourHours": {
+    "message": "po 24 godzinach"
+  },
   "onLocked": {
     "message": "Gdy zablokujesz komputer"
   },

@@ -360,6 +360,12 @@
   "fourHours": {
     "message": "4시간"
   },
+  "twelveHours": {
+    "message": "12시간"
+  },
+  "twentyfourHours": {
+    "message": "24시간"
+  },
   "onLocked": {
     "message": "시스템 잠금 시"
   },
