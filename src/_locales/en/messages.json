@@ -1247,14 +1247,5 @@
   },
   "passwordGeneratorPolicyInEffect": {
     "message": "One or more organization policies are affecting your generator settings."
-  },
-  "minimumNumberOfWords": {
-    "message": "Minimum Number of Words"
-  },
-  "passwordGeneratorPolicyDefaultType": {
-    "message": "Default Type"
-  },
-  "passwordGeneratorPolicyUserPreference": {
-    "message": "User Preference"
   }
 }
