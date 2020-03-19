@@ -8,6 +8,31 @@ some methods in it.
 The purpose of this document is to list all the overrides, so we have a global
 vision of what we did.
 
+<!-- MarkdownTOC autolink=true -->
+
+- Login
+    - Replace email/password with cozy instance/password
+- Password generation
+    - Hide generation options
+    - Place the regenerate and copy actions next to the password
+    - Automatically copy the password to the clipboard
+- Highlight ciphers shared with cozy organization
+- Notification bar
+    - Restyle the notification bar to fit our needs
+- Konnectors suggestions
+- Autofill and save password popup improvements
+- OAuth client
+    - Update synchronized_at on oauth client
+    - Set client name according to the browser being used
+    - Remove OAuth client on logout
+- Export
+    - Export all ciphers
+- Extension status
+- Features removed
+
+<!-- /MarkdownTOC -->
+
+
 ## Login
 
 ### Replace email/password with cozy instance/password
