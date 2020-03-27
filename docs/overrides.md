@@ -72,9 +72,10 @@ Related PRs:
 
 ### Reorganize vault display
 
-we made some change to be able to show all logins in the vault : by removing favorite feature, folders and collections
-we also use Cozy icons for card and identity
-and group cards and identity
+We made some change to be able to show all logins in the vault : by removing favorite feature, folders and collections.
+We replaced the icons displayed by bitwarden with Cozy icons for card paiements ( with Cozy Banks logo) and identity (with Cozy Contact logo). 
+
+their has been also a small change in the "tab" tab to group in a single section the identity and payment cards sections.
 
 Related PRs:
 
