@@ -40,7 +40,7 @@ Related PRs:
 * https://github.com/cozy/cozy-keys-browser/pull/2
 * https://github.com/cozy/cozy-keys-browser/pull/33
 
-## Password generation
+## Password generation tab
 
 ### Hide generation options
 
@@ -68,13 +68,26 @@ Related PRs:
 
 * https://github.com/cozy/cozy-keys-browser/pull/8
 
-## Highlight ciphers shared with cozy organization
+## "My vault" tab
+
+### Reorganize vault display
+
+we made some change to be able to show all logins in the vault : by removing favorite feature, folders and collections
+we also use Cozy icons for card and identity
+and group cards and identity
+
+Related PRs:
+
+* https://github.com/cozy/cozy-keys-browser/pull/9
+
+### Highlight ciphers shared with cozy organization
 
 We add a cozy icon on ciphers that are shared with cozy organization.
 
 Related PRs:
 
 * https://github.com/cozy/cozy-keys-browser/pull/19
+
 
 ## Notification bar
 
