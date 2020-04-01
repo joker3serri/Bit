@@ -24,6 +24,8 @@ export class CiphersListComponent {
     cipherType = CipherType;
 
     selectCipher(c: CipherView) {
+        // tslint:disable-next-line: no-console
+        console.log('cipher', c);
         this.onSelected.emit(c);
     }
 

@@ -19,6 +19,18 @@
         }
     }
 
+    .box-subheader {
+        margin: 0 10px 0 0;
+        text-transform: none;
+        display: flex;
+        font-weight: bold;
+        font-size: 14px;
+
+        @include themify($themes) {
+            color: themed('headingColor');
+        }
+    }
+
     .box-content {
         border-top: 1px solid #000000;
         border-bottom: 1px solid #000000;

@@ -135,6 +135,7 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
             if (queryParamsSub != null) {
                 queryParamsSub.unsubscribe();
             }
+
         });
 
         this.broadcasterService.subscribe(ComponentId, (message: any) => {
@@ -154,6 +155,8 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
                 this.changeDetectorRef.detectChanges();
             });
         });
+        this.setCollectionPath();
+
     }
 
     ngOnDestroy() {
@@ -197,6 +200,24 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
         }
     }
 
+    async setCollectionPath() {
+        if (this.collectionId == null) {
+            // tslint:disable-next-line: no-console
+            console.log('no collection Id');
+            return;
+        }
+        this.searchPlaceholder = this.i18nService.t('searchCollection');
+        const collectionNode = await this.collectionService.getNested(this.collectionId);
+        // tslint:disable-next-line: no-console
+        console.log('collectionNode', collectionNode);
+        if (collectionNode != null && collectionNode.node != null) {
+            this.groupingTitle = collectionNode.node.name;
+            this.nestedCollections = collectionNode.children != null && collectionNode.children.length > 0 ?
+                collectionNode.children : null;
+        }
+        await this.load((c) => c.collectionIds != null && c.collectionIds.indexOf(this.collectionId) > -1);
+    }
+
     addCipher() {
         super.addCipher();
         this.router.navigate(['/add-cipher'], {
@@ -214,9 +235,7 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
     }
 
     showGroupings() {
-        return !this.isSearching() &&
-            ((this.nestedFolders && this.nestedFolders.length) ||
-                (this.nestedCollections && this.nestedCollections.length));
+        return true;
     }
 
     private async saveState() {

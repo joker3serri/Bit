@@ -20,6 +20,8 @@ import { CipherType } from 'jslib/enums/cipherType';
 import { CipherView } from 'jslib/models/view/cipherView';
 
 import { CipherService } from 'jslib/abstractions/cipher.service';
+import { CollectionService } from 'jslib/abstractions/collection.service';
+
 import { I18nService } from 'jslib/abstractions/i18n.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { SearchService } from 'jslib/abstractions/search.service';
@@ -32,7 +34,11 @@ import { AutofillService } from '../../services/abstractions/autofill.service';
 
 import { PopupUtilsService } from '../services/popup-utils.service';
 
+import { UserService } from 'jslib/abstractions/user.service';
+
 import { Utils } from 'jslib/misc/utils';
+import { Organization } from 'jslib/models/domain/organization';
+import { forEach } from '@angular/router/src/utils/collection';
 
 const BroadcasterSubscriptionId = 'CurrentTabComponent';
 
@@ -52,11 +58,14 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     showLeftHeader = false;
     searchTypeSearch = false;
     loaded = false;
+    groupedLoginCiphers: any[] = [];
+    collections: any[] = [];
 
     private totpCode: string;
     private totpTimeout: number;
     private loadedTimeout: number;
     private searchTimeout: number;
+
 
     constructor(private platformUtilsService: PlatformUtilsService, private cipherService: CipherService,
         private popupUtilsService: PopupUtilsService, private autofillService: AutofillService,
@@ -64,7 +73,10 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         private i18nService: I18nService, private router: Router,
         private ngZone: NgZone, private broadcasterService: BroadcasterService,
         private changeDetectorRef: ChangeDetectorRef, private syncService: SyncService,
-        private searchService: SearchService, private storageService: StorageService) {
+        private searchService: SearchService, private storageService: StorageService,
+        protected userService: UserService,
+        protected collectionService: CollectionService,
+        ) {
     }
 
     async ngOnInit() {
@@ -229,6 +241,49 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         });
 
         this.loginCiphers = this.loginCiphers.sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
+        const collections = await this.collectionService.getAllDecrypted();
+       
+
+        // tslint:disable-next-line: no-console
+        console.log('loginChiphers', this.loginCiphers);
+        this.groupedLoginCiphers = this.loginCiphers.reduce( (acc: any, login: CipherView) => {
+            const temp: any = acc.find( (a: any) => a.id == login.organizationId + ';' + login.collectionIds[0]);
+            if (temp != null ) {
+                temp.ciphers.push(login);
+            } else {
+                const collectionObj = collections.find((c) => c.id == login.collectionIds[0]);
+                console.log(login.organizationId + ';' + login.collectionIds[0]);
+                acc.push({  id: login.organizationId + ';' + login.collectionIds[0],
+                            organizationId: login.organizationId,
+                            ciphers: [login],
+                            org: {name: 'none'},
+                            collectionName: collectionObj ? collectionObj.name : '',
+                        });
+            }
+            return acc;
+        }, []);
+
+        const organizations: Organization[] = [{name: 'none', id: '-1'} as Organization];
+
+        for (let i = 0; i < this.groupedLoginCiphers.length; i++) {
+            const login = this.groupedLoginCiphers[i];
+            // tslint:disable-next-line: no-console
+            console.log(organizations);
+            let org = organizations.find( (o) => o.id == login.organizationId);
+            if (org == null) {
+                org = await this.userService.getOrganization(login.organizationId);
+                if (org == null) {
+                    org = {name: 'none', id: '-1'} as Organization;
+                } else {
+                    organizations.push(org);
+                }
+            }
+            
+            login.org = org;
+        }
+        // tslint:disable-next-line: no-console
+        console.log('grouped', this.groupedLoginCiphers);
+
         this.loaded = true;
     }
 }
