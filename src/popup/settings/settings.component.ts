@@ -23,6 +23,7 @@ import { MessagingService } from 'jslib/abstractions/messaging.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
 import { UserService } from 'jslib/abstractions/user.service';
+import { CozyClientService } from '../services/cozyClient.service';
 
 // TODO: change URLs when add-on is published
 const RateUrls = {
@@ -53,7 +54,8 @@ export class SettingsComponent implements OnInit {
         private analytics: Angulartics2, private lockService: LockService,
         private storageService: StorageService, public messagingService: MessagingService,
         private router: Router, private environmentService: EnvironmentService,
-        private cryptoService: CryptoService, private userService: UserService) {
+        private cryptoService: CryptoService, private userService: UserService,
+        private cozyClientService: CozyClientService) {
     }
 
     async ngOnInit() {
@@ -191,8 +193,9 @@ export class SettingsComponent implements OnInit {
 
     // TODO: Add a Cozy help
     import() {
+        const url = this.cozyClientService.getAppURL('passwords', '/installation/import');
         this.analytics.eventTrack.next({ action: 'Clicked Import Items' });
-        BrowserApi.createNewTab('https://help.bitwarden.com/article/import-data/');
+        BrowserApi.createNewTab(url);
     }
 
     // TODO: Add a Cozy help
