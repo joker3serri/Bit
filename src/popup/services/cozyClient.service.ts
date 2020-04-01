@@ -19,13 +19,17 @@ export class CozyClientService {
         protected apiService: ApiService) {
     }
 
+    getCozyURL(): string {
+        const vaultUrl = this.environmentService.getWebVaultUrl();
+        return new URL(vaultUrl).origin; // Remove the /bitwarden part
+    }
+
     async createClient() {
         if (this.instance) {
             return this.instance;
         }
 
-        const vaultUrl = this.environmentService.getWebVaultUrl();
-        const uri = new URL(vaultUrl).origin; // Remove the /bitwarden part
+        const uri = this.getCozyURL();
         const token = await this.apiService.getActiveBearerToken();
         this.instance = new CozyClient({ uri: uri, token: token });
         return this.instance;
