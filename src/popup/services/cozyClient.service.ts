@@ -10,6 +10,7 @@ interface ICozyStackClient {
 
 interface ICozyClient {
     getStackClient: () => ICozyStackClient;
+    getAppURL: () => string;
 }
 
 export class CozyClientService {
@@ -19,13 +20,17 @@ export class CozyClientService {
         protected apiService: ApiService) {
     }
 
+    getCozyURL(): string {
+        const vaultUrl = this.environmentService.getWebVaultUrl();
+        return new URL(vaultUrl).origin; // Remove the /bitwarden part
+    }
+
     async createClient() {
         if (this.instance) {
             return this.instance;
         }
 
-        const vaultUrl = this.environmentService.getWebVaultUrl();
-        const uri = new URL(vaultUrl).origin; // Remove the /bitwarden part
+        const uri = this.getCozyURL();
         const token = await this.apiService.getActiveBearerToken();
         this.instance = new CozyClient({ uri: uri, token: token });
         return this.instance;
@@ -64,5 +69,18 @@ export class CozyClientService {
             /* tslint:disable-next-line */
             console.error(err);
         }
+    }
+
+    getAppURL(appName: string, hash: string) {
+        const url = new URL(this.getCozyURL());
+        const hostParts = url.host.split('.');
+        url.host = [
+            `${hostParts[0]}-${appName}`,
+            ...hostParts.slice(1),
+        ].join('.');
+        if (hash) {
+            url.hash = hash;
+        }
+        return url.toString();
     }
 }
