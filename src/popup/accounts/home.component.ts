@@ -8,6 +8,6 @@ import { BrowserApi } from '../../browser/browserApi';
 export class HomeComponent {
 
     openCozyWebsite() {
-        BrowserApi.createNewTab("https://cozy.io");
+        BrowserApi.createNewTab("https://manager.cozycloud.cc/cozy/create");
     }
  }
