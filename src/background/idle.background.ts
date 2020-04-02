@@ -1,8 +1,8 @@
 import { ConstantsService } from 'jslib/services/constants.service';
 
 import {
-    LockService,
     StorageService,
+    VaultTimeoutService,
 } from 'jslib/abstractions';
 import { NotificationsService } from 'jslib/abstractions/notifications.service';
 
@@ -13,7 +13,7 @@ export default class IdleBackground {
     private idleTimer: number = null;
     private idleState = 'active';
 
-    constructor(private lockService: LockService, private storageService: StorageService,
+    constructor(private vaultTimeoutService: VaultTimeoutService, private storageService: StorageService,
         private notificationsService: NotificationsService) {
         this.idle = chrome.idle || (browser != null ? browser.idle : null);
     }
@@ -39,10 +39,10 @@ export default class IdleBackground {
 
         if (this.idle.onStateChanged) {
             this.idle.onStateChanged.addListener(async (newState: string) => {
-                if (newState === 'locked') {
-                    const lockOption = await this.storageService.get<number>(ConstantsService.lockOptionKey);
-                    if (lockOption === -2) {
-                        this.lockService.lock(true);
+                if (newState === 'locked') { // If the screen is locked or the screensaver activates
+                    const options = await this.getVaultTimeoutOptions();
+                    if (options[0] === -2) { // On System Lock vault timeout option
+                        options[1] === 'lock' ? this.vaultTimeoutService.lock(true) : this.vaultTimeoutService.logOut();
                     }
                 }
             });
@@ -61,5 +61,11 @@ export default class IdleBackground {
             }
             this.idleTimer = window.setTimeout(() => this.pollIdle(handler), 5000);
         });
+    }
+
+    private async getVaultTimeoutOptions(): Promise<[number, string]> {
+        const timeout = await this.storageService.get<number>(ConstantsService.vaultTimeoutKey);
+        const action = await this.storageService.get<string>(ConstantsService.vaultTimeoutActionKey);
+        return [timeout, action];
     }
 }
