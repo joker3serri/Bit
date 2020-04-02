@@ -18,10 +18,12 @@
 		27E5E9B022F3D5FE005EA1D9 /* ToolbarItemIcon.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 27E5E9AF22F3D5FE005EA1D9 /* ToolbarItemIcon.pdf */; };
 		27E5E9B422F3D5FE005EA1D9 /* safari.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 27E5E9A022F3D5FE005EA1D9 /* safari.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		27E5E9BC22F4B9D5005EA1D9 /* app in Resources */ = {isa = PBXBuildFile; fileRef = 27E5E9BB22F4B9D5005EA1D9 /* app */; };
+		99690D3A2436059D0017EF42 /* icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 99690D392436059D0017EF42 /* icon.icns */; };
+		99801C69242E03C800A7460A /* SuccessViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99801C68242E03C800A7460A /* SuccessViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		27E5E9B222F3D5FE005EA1D9 /* PBXContainerItemProxy */ = {
+		99B0B5DD242A7AE90054A1DE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 27E5E98122F3D5B2005EA1D9 /* Project object */;
 			proxyType = 1;
@@ -45,7 +47,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		27E5E98922F3D5B2005EA1D9 /* desktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = desktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		27E5E98922F3D5B2005EA1D9 /* Cozy Pass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cozy Pass.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		27E5E98C22F3D5B2005EA1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		27E5E98E22F3D5B2005EA1D9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		27E5E99022F3D5B4005EA1D9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -61,6 +63,8 @@
 		27E5E9AF22F3D5FE005EA1D9 /* ToolbarItemIcon.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = ToolbarItemIcon.pdf; sourceTree = "<group>"; };
 		27E5E9B122F3D5FE005EA1D9 /* safari.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = safari.entitlements; sourceTree = "<group>"; };
 		27E5E9BB22F4B9D5005EA1D9 /* app */ = {isa = PBXFileReference; lastKnownFileType = folder; path = app; sourceTree = "<group>"; };
+		99690D392436059D0017EF42 /* icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = icon.icns; sourceTree = "<group>"; };
+		99801C68242E03C800A7460A /* SuccessViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,7 +99,7 @@
 		27E5E98A22F3D5B2005EA1D9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				27E5E98922F3D5B2005EA1D9 /* desktop.app */,
+				27E5E98922F3D5B2005EA1D9 /* Cozy Pass.app */,
 				27E5E9A022F3D5FE005EA1D9 /* safari.appex */,
 			);
 			name = Products;
@@ -106,10 +110,12 @@
 			children = (
 				27E5E98C22F3D5B2005EA1D9 /* AppDelegate.swift */,
 				27E5E98E22F3D5B2005EA1D9 /* ViewController.swift */,
+				99690D392436059D0017EF42 /* icon.icns */,
 				27E5E99022F3D5B4005EA1D9 /* Assets.xcassets */,
 				27E5E99222F3D5B4005EA1D9 /* Main.storyboard */,
 				27E5E99522F3D5B4005EA1D9 /* Info.plist */,
 				27E5E99622F3D5B4005EA1D9 /* desktop.entitlements */,
+				99801C68242E03C800A7460A /* SuccessViewController.swift */,
 			);
 			path = desktop;
 			sourceTree = "<group>";
@@ -151,11 +157,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				27E5E9B322F3D5FE005EA1D9 /* PBXTargetDependency */,
+				99B0B5DE242A7AE90054A1DE /* PBXTargetDependency */,
 			);
 			name = desktop;
 			productName = desktop;
-			productReference = 27E5E98922F3D5B2005EA1D9 /* desktop.app */;
+			productReference = 27E5E98922F3D5B2005EA1D9 /* Cozy Pass.app */;
 			productType = "com.apple.product-type.application";
 		};
 		27E5E99F22F3D5FD005EA1D9 /* safari */ = {
@@ -187,6 +193,7 @@
 				TargetAttributes = {
 					27E5E98822F3D5B2005EA1D9 = {
 						CreatedOnToolsVersion = 10.3;
+						LastSwiftMigration = 1130;
 					};
 					27E5E99F22F3D5FD005EA1D9 = {
 						CreatedOnToolsVersion = 10.3;
@@ -224,6 +231,7 @@
 			files = (
 				27E5E99122F3D5B4005EA1D9 /* Assets.xcassets in Resources */,
 				27E5E99422F3D5B4005EA1D9 /* Main.storyboard in Resources */,
+				99690D3A2436059D0017EF42 /* icon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -245,6 +253,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				27E5E98F22F3D5B2005EA1D9 /* ViewController.swift in Sources */,
+				99801C69242E03C800A7460A /* SuccessViewController.swift in Sources */,
 				27E5E98D22F3D5B2005EA1D9 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -261,10 +270,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		27E5E9B322F3D5FE005EA1D9 /* PBXTargetDependency */ = {
+		99B0B5DE242A7AE90054A1DE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 27E5E99F22F3D5FD005EA1D9 /* safari */;
-			targetProxy = 27E5E9B222F3D5FE005EA1D9 /* PBXContainerItemProxy */;
+			targetProxy = 99B0B5DD242A7AE90054A1DE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -340,7 +349,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -396,7 +405,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -409,20 +418,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = desktop/desktop.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = LTZ2PFU5D6;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = 3AKXFMV43J;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = desktop/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bitwarden.desktop;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MARKETING_VERSION = 0.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = io.cozy.pass.desktop;
+				PRODUCT_NAME = "Cozy Pass";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -431,20 +444,23 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = desktop/desktop.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = LTZ2PFU5D6;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = 3AKXFMV43J;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = desktop/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bitwarden.desktop;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MARKETING_VERSION = 0.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = io.cozy.pass.desktop;
+				PRODUCT_NAME = "Cozy Pass";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -454,8 +470,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_ENTITLEMENTS = safari/safari.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LTZ2PFU5D6;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = 3AKXFMV43J;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = safari/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -463,8 +481,9 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bitwarden.desktop.safari;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MARKETING_VERSION = 0.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = io.cozy.pass.desktop.safari;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -476,8 +495,10 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_ENTITLEMENTS = safari/safari.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LTZ2PFU5D6;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = 3AKXFMV43J;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = safari/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -485,8 +506,9 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = com.bitwarden.desktop.safari;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MARKETING_VERSION = 0.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = io.cozy.pass.desktop.safari;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
