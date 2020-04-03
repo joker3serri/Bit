@@ -135,7 +135,6 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
             if (queryParamsSub != null) {
                 queryParamsSub.unsubscribe();
             }
-
         });
 
         this.broadcasterService.subscribe(ComponentId, (message: any) => {
@@ -156,7 +155,6 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
             });
         });
         this.setCollectionPath();
-
     }
 
     ngOnDestroy() {

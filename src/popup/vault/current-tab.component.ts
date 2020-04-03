@@ -66,7 +66,6 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     private loadedTimeout: number;
     private searchTimeout: number;
 
-
     constructor(private platformUtilsService: PlatformUtilsService, private cipherService: CipherService,
         private popupUtilsService: PopupUtilsService, private autofillService: AutofillService,
         private analytics: Angulartics2, private toasterService: ToasterService,
@@ -242,17 +241,13 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
 
         this.loginCiphers = this.loginCiphers.sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
         const collections = await this.collectionService.getAllDecrypted();
-       
 
-        // tslint:disable-next-line: no-console
-        console.log('loginChiphers', this.loginCiphers);
         this.groupedLoginCiphers = this.loginCiphers.reduce( (acc: any, login: CipherView) => {
             const temp: any = acc.find( (a: any) => a.id == login.organizationId + ';' + login.collectionIds[0]);
             if (temp != null ) {
                 temp.ciphers.push(login);
             } else {
                 const collectionObj = collections.find((c) => c.id == login.collectionIds[0]);
-                console.log(login.organizationId + ';' + login.collectionIds[0]);
                 acc.push({  id: login.organizationId + ';' + login.collectionIds[0],
                             organizationId: login.organizationId,
                             ciphers: [login],
@@ -267,8 +262,6 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
 
         for (let i = 0; i < this.groupedLoginCiphers.length; i++) {
             const login = this.groupedLoginCiphers[i];
-            // tslint:disable-next-line: no-console
-            console.log(organizations);
             let org = organizations.find( (o) => o.id == login.organizationId);
             if (org == null) {
                 org = await this.userService.getOrganization(login.organizationId);
@@ -278,7 +271,6 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
                     organizations.push(org);
                 }
             }
-            
             login.org = org;
         }
         // tslint:disable-next-line: no-console
