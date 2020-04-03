@@ -43,7 +43,8 @@ export default class IdleBackground {
                     const timeout = await this.storageService.get<number>(ConstantsService.vaultTimeoutKey);
                     if (timeout === -2) { // On System Lock vault timeout option
                         const action = await this.storageService.get<string>(ConstantsService.vaultTimeoutActionKey);
-                        action === 'lock' ? this.vaultTimeoutService.lock(true) : this.vaultTimeoutService.logOut();
+                        action === 'lock' ? await this.vaultTimeoutService.lock(true) :
+                            await this.vaultTimeoutService.logOut();
                     }
                 }
             });
