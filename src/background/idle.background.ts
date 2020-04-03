@@ -40,9 +40,10 @@ export default class IdleBackground {
         if (this.idle.onStateChanged) {
             this.idle.onStateChanged.addListener(async (newState: string) => {
                 if (newState === 'locked') { // If the screen is locked or the screensaver activates
-                    const options = await this.getVaultTimeoutOptions();
-                    if (options[0] === -2) { // On System Lock vault timeout option
-                        options[1] === 'lock' ? this.vaultTimeoutService.lock(true) : this.vaultTimeoutService.logOut();
+                    const timeout = await this.storageService.get<number>(ConstantsService.vaultTimeoutKey);
+                    const action = await this.storageService.get<string>(ConstantsService.vaultTimeoutActionKey);
+                    if (timeout === -2) { // On System Lock vault timeout option
+                        action === 'lock' ? this.vaultTimeoutService.lock(true) : this.vaultTimeoutService.logOut();
                     }
                 }
             });
@@ -61,11 +62,5 @@ export default class IdleBackground {
             }
             this.idleTimer = window.setTimeout(() => this.pollIdle(handler), 5000);
         });
-    }
-
-    private async getVaultTimeoutOptions(): Promise<[number, string]> {
-        const timeout = await this.storageService.get<number>(ConstantsService.vaultTimeoutKey);
-        const action = await this.storageService.get<string>(ConstantsService.vaultTimeoutActionKey);
-        return [timeout, action];
     }
 }
