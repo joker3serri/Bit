@@ -286,7 +286,7 @@ export default class MainBackground {
         }
 
         if (forLocked) {
-            await this.loadMenuAndUpdateBadgeForLockedState(!menuDisabled);
+            await this.loadMenuAndUpdateBadgeForNoAccessState(!menuDisabled);
             this.onUpdatedRan = this.onReplacedRan = false;
             return;
         }
@@ -513,12 +513,19 @@ export default class MainBackground {
             } catch { }
         }
 
-        await this.loadMenuAndUpdateBadgeForLockedState(contextMenuEnabled);
+        await this.loadMenuAndUpdateBadgeForNoAccessState(contextMenuEnabled);
     }
 
-    private async loadMenuAndUpdateBadgeForLockedState(contextMenuEnabled: boolean) {
+    private async loadMenuAndUpdateBadgeForNoAccessState(contextMenuEnabled: boolean) {
         if (contextMenuEnabled) {
-            await this.loadNoLoginsContextMenuOptions(this.i18nService.t('vaultLocked'));
+            const authed = await this.userService.isAuthenticated();
+            let title: string = null;
+            if (!authed) {
+                title = this.i18nService.t('vaultLoggedOut');
+            } else {
+                title = this.i18nService.t('vaultLocked');
+            }
+            await this.loadNoLoginsContextMenuOptions(title);
         }
 
         const tabs = await BrowserApi.getActiveTabs();
