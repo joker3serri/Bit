@@ -519,13 +519,7 @@ export default class MainBackground {
     private async loadMenuAndUpdateBadgeForNoAccessState(contextMenuEnabled: boolean) {
         if (contextMenuEnabled) {
             const authed = await this.userService.isAuthenticated();
-            let title: string = null;
-            if (!authed) {
-                title = this.i18nService.t('vaultLoggedOut');
-            } else {
-                title = this.i18nService.t('vaultLocked');
-            }
-            await this.loadNoLoginsContextMenuOptions(title);
+            await this.loadNoLoginsContextMenuOptions(this.i18nService.t(authed ? 'vaultLocked' : 'vaultLoggedOut'));
         }
 
         const tabs = await BrowserApi.getActiveTabs();
