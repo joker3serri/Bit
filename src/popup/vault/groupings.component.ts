@@ -66,6 +66,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     private hasSearched = false;
     private hasLoadedAllCiphers = false;
     private allCiphers: CipherView[] = null;
+    private ciphersByType: any;
 
     constructor(collectionService: CollectionService, folderService: FolderService,
         storageService: StorageService, userService: UserService,
@@ -158,6 +159,10 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
                 typeCounts.set(c.type, 1);
             }
         });
+        this.ciphersByType = {}
+        this.ciphersByType[CipherType.Card] = this._ciphersByType(CipherType.Card)
+        this.ciphersByType[CipherType.Identity] = this._ciphersByType(CipherType.Identity)
+        this.ciphersByType[CipherType.Login] = this._ciphersByType(CipherType.Login)
         this.typeCounts = typeCounts;
     }
 
@@ -183,7 +188,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         }, timeout);
     }
 
-    ciphersByType(type: CipherType) {
+    _ciphersByType(type: CipherType) {
         return this.ciphers.filter((c) => c.type === type);
     }
 
