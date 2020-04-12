@@ -27,35 +27,35 @@
         </ng-container>
     </div>
     <ng-container *ngIf="ciphers && ciphers.length && !showSearching()">
-        <div class="box list">
+        <div *ngIf="ciphersByType[cipherType.Card].length > 0" class="box list">
             <div class="box-header">
                 {{'cards' | i18n}}
                 <span class="flex-right">{{countByType(cipherType.Card)}}</span>
             </div>
             <div class="box-content">
-                <app-ciphers-list [ciphers]="ciphersByType(cipherType.Card)" title="{{'viewItem' | i18n}}"
+                <app-ciphers-list [ciphers]="ciphersByType[cipherType.Card]" title="{{'viewItem' | i18n}}"
                     (onSelected)="selectCipher($event)" (onDoubleSelected)="launchCipher($event)">
                 </app-ciphers-list>
             </div>
         </div>
-        <div class="box list">
+        <div *ngIf="ciphersByType[cipherType.Card].Identity > 0" class="box list">
             <div class="box-header">
                 {{'identities' | i18n}}
                 <span class="flex-right">{{countByType(cipherType.Identity)}}</span>
             </div>
             <div class="box-content">
-                <app-ciphers-list [ciphers]="ciphersByType(cipherType.Identity)" title="{{'viewItem' | i18n}}"
+                <app-ciphers-list [ciphers]="ciphersByType[cipherType.Identity]" title="{{'viewItem' | i18n}}"
                     (onSelected)="selectCipher($event)" (onDoubleSelected)="launchCipher($event)">
                 </app-ciphers-list>
             </div>
         </div>
-        <div class="box list">
+        <div *ngIf="ciphersByType[cipherType.Login].length > 0" class="box list">
             <div class="box-header">
                 {{'logins' | i18n}}
                 <div class="flex-right">{{countByType(cipherType.Login)}}</div>
             </div>
             <div class="box-content">
-                <app-ciphers-list [ciphers]="ciphersByType(cipherType.Login)" title="{{'viewItem' | i18n}}"
+                <app-ciphers-list [ciphers]="ciphersByType[cipherType.Login]" title="{{'viewItem' | i18n}}"
                     (onSelected)="selectCipher($event)" (onDoubleSelected)="launchCipher($event)"></app-ciphers-list>
             </div>
         </div>
