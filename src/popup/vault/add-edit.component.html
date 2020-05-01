@@ -233,6 +233,16 @@
                 </a>
             </div>
         </div>
+        <div class="box">
+            <div class="box-header">
+                <label for="notes">{{'notes' | i18n}}</label>
+            </div>
+            <div class="box-content">
+                <div class="box-content-row" appBoxRow>
+                    <textarea id="notes" name="Notes" rows="6" [(ngModel)]="cipher.notes"></textarea>
+                </div>
+            </div>
+        </div>
         <div class="box list" *ngIf="editMode">
             <div class="box-content single-line">
                 <a class="box-content-row" href="#" appStopClick appBlurClick (click)="delete()"
