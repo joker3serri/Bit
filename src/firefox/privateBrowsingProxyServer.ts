@@ -4,6 +4,15 @@ import {
     IFirefoxProxyResponse,
     SeparatorKey,
 } from './privateBrowsingProxyCommon';
+import { TokenRequest } from 'jslib/models/request';
+
+interface IValueTypeMappings {
+    [key: string]: any
+}
+
+const VALUE_TYPE_MAPPINGS: IValueTypeMappings = {
+    'TokenRequest': TokenRequest
+};
 
 const CONST_TYPES = ['string', 'number', 'boolean', 'undefined'];
 
@@ -96,11 +105,28 @@ export class FirefoxProxyReceiver {
         }
     }
 
+    private convertValuesToTypes(values?: any, valueTypes?: any): any {
+        if (!values) {
+            return;
+        }
+
+        if (Array.isArray(values)) {
+            return values.map((val, index) => this.convertValuesToTypes(val, valueTypes[index]));
+        }
+
+        if (valueTypes && VALUE_TYPE_MAPPINGS[valueTypes]) {
+            console.log('Setting prototype');
+            return Object.assign(new VALUE_TYPE_MAPPINGS[valueTypes](), values);
+        }
+        return values;
+    }
+
     private async receiveCallOverMessageBus(message: IFirefoxProxyRequest): Promise<IFirefoxProxyResponse> {
         try {
             const { parent, child } = this.getParentAndChildObject(message.key);
             let result: any;
             if (message.type === 'func') {
+                message.value = this.convertValuesToTypes(message.value, message.valueTypes);
                 result = await child.apply(parent, message.value);
             } else {
                 result = child;

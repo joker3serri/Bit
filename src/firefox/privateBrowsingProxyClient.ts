@@ -38,11 +38,26 @@ class FirefoxProxyClient {
         return await this.dispatchMessage('func', this.path, argumentsList);
     }
 
+    private getTypesForValue(value?: any): any {
+        if (!value) {
+            return;
+        }
+
+        if (Array.isArray(value)) {
+            return value.map(val => this.getTypesForValue(val));
+        }
+
+        if (value.constructor) {
+            return value.constructor.name;
+        }
+    }
+
     private async dispatchMessage(type: string, path: string, value?: any[]): Promise<any> {
         const message: IFirefoxProxyRequest = {
             type: type,
             key: path,
             value: value,
+            valueTypes: this.getTypesForValue(value),
             command: HandlerCommandKey,
         };
 

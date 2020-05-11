@@ -6,6 +6,7 @@ export interface IFirefoxProxyRequest {
     key: string;
     command: string;
     value?: any;
+    valueTypes?: any;
 }
 
 export interface IFirefoxProxyResponse {
