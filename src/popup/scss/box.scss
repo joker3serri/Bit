@@ -59,6 +59,10 @@
         @include themify($themes) {
             color: themed('mutedColor');
         }
+        &.in-flex-row-full-width {
+          flex : 0 0 100%;
+          margin: 5px 0;
+        }
     }
 
     &.list {
@@ -246,6 +250,14 @@
     &.box-content-row-flex, .box-content-row-flex, &.box-content-row-checkbox,
     &.box-content-row-input, &.box-content-row-slider, &.box-content-row-multi {
         display: flex;
+        align-items: center;
+        //cozy-customisations break on word, not all. Mainly used for option panel
+        //word-break: break-all;
+    }
+
+    &.box-content-row-flex-wrap {
+        display: flex;
+        flex-wrap: wrap;
         align-items: center;
         //cozy-customisations break on word, not all. Mainly used for option panel
         //word-break: break-all;
