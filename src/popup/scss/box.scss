@@ -28,6 +28,14 @@
             border-color: themed('borderColor');
         }
 
+        &.box-content-settings {
+            border-top:none;
+        }
+
+        &.box-content-options {
+            border-bottom:none;
+        }
+
         &.box-content-padded {
             padding: 10px 15px;
         }
@@ -158,6 +166,13 @@
         }
     }
 
+    &.settings-row {
+        &:before {
+            border: none;
+            height: 0;
+        }
+    }
+
     &:last-child {
         &:before {
             border: none;
@@ -236,6 +251,12 @@
         //word-break: break-all;
     }
 
+    &.options-row label:first-child {
+      @include themify($themes) {
+          color: themed('textColor');
+      }
+    }
+
     &.box-content-row-multi {
         width: 100%;
 
@@ -265,7 +286,7 @@
     &.box-content-row-checkbox, &.box-content-row-input, &.box-content-row-slider {
         label, .row-label {
             //cozy-customisations
-            //In the option panel, French sentences are pretty long, 
+            //In the option panel, French sentences are pretty long,
             //so let's use a smaller font-size in this view
             font-size: 13px;
             display: block;
@@ -464,7 +485,7 @@
             max-width: 20px;
         }
     }
-    
+
     .progress {
         display: flex;
         height: 5px;
@@ -479,4 +500,8 @@
             background-color: $brand-primary;
         }
     }
+}
+
+.options-row {
+    padding: 15px 15px 0px 10px;
 }
