@@ -191,6 +191,10 @@ export class SettingsComponent implements OnInit {
         }
     }
 
+    getCozyURL() {
+        return this.cozyClientService.getAppURL('', '');
+    }
+
     // TODO: Add a Cozy help
     import() {
         const url = this.cozyClientService.getAppURL('passwords', '/installation/import');

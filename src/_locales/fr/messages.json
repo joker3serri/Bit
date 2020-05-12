@@ -299,6 +299,9 @@
   "rateExtensionDesc": {
     "message": "Merci de nous aider en mettant une bonne note !"
   },
+  "connectedCozy": {
+    "message": "Connecté à :"
+  },
   "browserNotSupportClipboard": {
     "message": "Votre navigateur web ne supporte pas la copie facilitée du presse-papier. Copiez-le manuellement à la place."
   },
