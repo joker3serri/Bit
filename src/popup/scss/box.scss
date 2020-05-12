@@ -28,6 +28,14 @@
             border-color: themed('borderColor');
         }
 
+        &.box-content-settings {
+            border-top:none;
+        }
+
+        &.box-content-options {
+            border-bottom:none;
+        }
+
         &.box-content-padded {
             padding: 10px 15px;
         }
@@ -155,6 +163,13 @@
 
         @include themify($themes) {
             border-bottom-color: themed('boxBorderColor');
+        }
+    }
+
+    &.settings-row {
+        &:before {
+            border: none;
+            height: 0;
         }
     }
 
