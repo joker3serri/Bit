@@ -9,6 +9,11 @@
         margin-top: 0;
     }
 
+    &.box-uri { // snap the bo-ui to the previous block
+      margin-top: -11px;
+      z-index: 1;
+    }
+
     .box-header {
         margin: 15px 10px 5px 10px;
         display: flex;
