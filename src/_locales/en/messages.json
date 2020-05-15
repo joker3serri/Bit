@@ -125,7 +125,7 @@
     "message": "Account"
   },
   "changeMasterPassword": {
-    "message": "Change Master Password"
+    "message": "The modification of your password must be done from your Cozy. Do you want to open it now ?"
   },
   "fingerprintPhrase": {
     "message": "Fingerprint Phrase",
@@ -302,6 +302,9 @@
   "rateExtensionDesc": {
     "message": "Please consider helping us out with a good review!"
   },
+  "connectedCozy": {
+    "message": "Connected to:"
+  },
   "browserNotSupportClipboard": {
     "message": "Your web browser does not support easy clipboard copying. Copy it manually instead."
   },
@@ -458,7 +461,7 @@
     "message": "Change Master Password"
   },
   "changeMasterPasswordConfirmation": {
-    "message": "You can change your master password on the bitwarden.com web vault. Do you want to visit the website now?"
+    "message": "To change your password, you need to go on your Cozy. Do you want to visit the website now?"
   },
   "twoStepLoginConfirmation": {
     "message": "Two-step login makes your account more secure by requiring you to verify your login with another device such as a security key, authenticator app, SMS, phone call, or email. Two-step login can be enabled on the bitwarden.com web vault. Do you want to visit the website now?"

@@ -182,13 +182,17 @@ export class SettingsComponent implements OnInit {
 
     // TODO: redirect to the Cozy settings
     async changePassword() {
-        this.analytics.eventTrack.next({ action: 'Clicked Change Password' });
+      this.analytics.eventTrack.next({ action: 'Clicked Change Password' });
         const confirmed = await this.platformUtilsService.showDialog(
             this.i18nService.t('changeMasterPasswordConfirmation'), this.i18nService.t('changeMasterPassword'),
             this.i18nService.t('yes'), this.i18nService.t('cancel'));
         if (confirmed) {
-            BrowserApi.createNewTab('https://help.bitwarden.com/article/change-your-master-password/');
+            BrowserApi.createNewTab(this.cozyClientService.getAppURL('settings', '/profile/password'));
         }
+    }
+
+    getCozyURL() {
+        return this.cozyClientService.getAppURL('', '');
     }
 
     // TODO: Add a Cozy help

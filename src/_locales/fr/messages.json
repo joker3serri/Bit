@@ -125,7 +125,7 @@
     "message": "Compte"
   },
   "changeMasterPassword": {
-    "message": "Changer le mot de passe maître"
+    "message": "Changer le mot de passe mon Cozy"
   },
   "fingerprintPhrase": {
     "message": "Phrase d'empreinte",
@@ -299,6 +299,9 @@
   "rateExtensionDesc": {
     "message": "Merci de nous aider en mettant une bonne note !"
   },
+  "connectedCozy": {
+    "message": "Connecté à :"
+  },
   "browserNotSupportClipboard": {
     "message": "Votre navigateur web ne supporte pas la copie facilitée du presse-papier. Copiez-le manuellement à la place."
   },
@@ -455,7 +458,7 @@
     "message": "Modifier le mot de passe maître"
   },
   "changeMasterPasswordConfirmation": {
-    "message": "Vous pouvez modifier votre mot de passe maître depuis le coffre web sur bitwarden.com. Souhaitez-vous visiter le site maintenant ?"
+    "message": "Modifier votre mot de passe doit se faire directement depuis votre Cozy. Voulez vous l'ouvrir maintenant ?"
   },
   "editedFolder": {
     "message": "Dossier modifié"

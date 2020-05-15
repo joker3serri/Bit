@@ -72,6 +72,7 @@ export class CozyClientService {
     }
 
     getAppURL(appName: string, hash: string) {
+        if (!appName) return (new URL(this.getCozyURL())).toString();
         const url = new URL(this.getCozyURL());
         const hostParts = url.host.split('.');
         url.host = [
