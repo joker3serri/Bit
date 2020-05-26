@@ -445,13 +445,15 @@ export default class MainBackground {
                 title: this.i18nService.t('copyPassword'),
             });
 
-            await this.contextMenusCreate({
-                type: 'normal',
-                id: 'copy-totp',
-                parentId: 'root',
-                contexts: ['all'],
-                title: this.i18nService.t('copyVerificationCode'),
-            });
+            if (await this.userService.canAccessPremium()) {
+                await this.contextMenusCreate({
+                    type: 'normal',
+                    id: 'copy-totp',
+                    parentId: 'root',
+                    contexts: ['all'],
+                    title: this.i18nService.t('copyVerificationCode'),
+                });
+            }
 
             await this.contextMenusCreate({
                 type: 'separator',
@@ -557,7 +559,7 @@ export default class MainBackground {
 
         this.menuOptionsLoaded.push(idSuffix);
 
-        if (cipher == null || (cipher.login.password && cipher.login.password !== '')) {
+        if (cipher != null && cipher.login.password && cipher.login.password !== '') {
             await this.contextMenusCreate({
                 type: 'normal',
                 id: 'autofill_' + idSuffix,
@@ -567,7 +569,7 @@ export default class MainBackground {
             });
         }
 
-        if (cipher == null || (cipher.login.username && cipher.login.username !== '')) {
+        if (cipher != null && cipher.login.username && cipher.login.username !== '') {
             await this.contextMenusCreate({
                 type: 'normal',
                 id: 'copy-username_' + idSuffix,
@@ -577,7 +579,7 @@ export default class MainBackground {
             });
         }
 
-        if (cipher == null || (cipher.login.password && cipher.login.password !== '')) {
+        if (cipher != null && cipher.login.password && cipher.login.password !== '') {
             await this.contextMenusCreate({
                 type: 'normal',
                 id: 'copy-password_' + idSuffix,
@@ -587,7 +589,8 @@ export default class MainBackground {
             });
         }
 
-        if (cipher == null || (cipher.login.totp && cipher.login.totp !== '')) {
+        const canAccessPremium = await this.userService.canAccessPremium();
+        if (canAccessPremium && cipher != null && cipher.login.totp && cipher.login.totp !== '') {
             await this.contextMenusCreate({
                 type: 'normal',
                 id: 'copy-totp_' + idSuffix,
