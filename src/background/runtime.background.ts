@@ -383,6 +383,9 @@ export default class RuntimeBackground {
             }
         }
 
+        // Regardless of installed reason - new vaultTimeoutAction key must have a non-null value
+        await this.setDefaultVaultTimeoutAction();
+
         setTimeout(async () => {
             if (this.onInstalledReason != null) {
                 if (this.onInstalledReason === 'install') {
@@ -405,7 +408,9 @@ export default class RuntimeBackground {
         if (currentVaultTimeout == null) {
             await this.storageService.save(ConstantsService.vaultTimeoutKey, -1);
         }
+    }
 
+    private async setDefaultVaultTimeoutAction() {
         // Default action to "lock".
         const currentVaultTimeoutAction = await this.storageService.get<string>(ConstantsService.vaultTimeoutActionKey);
         if (currentVaultTimeoutAction == null) {
