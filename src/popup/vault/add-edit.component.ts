@@ -24,6 +24,7 @@ import { AddEditComponent as BaseAddEditComponent } from 'jslib/angular/componen
 })
 export class AddEditComponent extends BaseAddEditComponent {
     showAttachments = true;
+    currentDate = new Date();
 
     constructor(cipherService: CipherService, folderService: FolderService,
         i18nService: I18nService, platformUtilsService: PlatformUtilsService,
