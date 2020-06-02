@@ -44,6 +44,10 @@ export class PasswordGeneratorComponent extends BasePasswordGeneratorComponent {
         document.getElementById('length').focus();
     }
 
+    numWordsChanged() {
+        document.getElementById('num-words').focus();
+    }
+
     close() {
         this.location.back();
     }
