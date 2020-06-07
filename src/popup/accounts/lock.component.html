@@ -1,6 +1,8 @@
 <form (ngSubmit)="submit()">
     <header>
-        <div class="left"></div>
+        <div class="left">
+            <app-pop-out></app-pop-out>
+        </div>
         <div class="center">
             <span class="title">{{(pinLock ? 'verifyPin' : 'verifyMasterPassword') | i18n}}</span>
         </div>
