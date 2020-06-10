@@ -5,6 +5,8 @@ import {
     Router,
 } from '@angular/router';
 
+import { BrowserApi } from '../../browser/browserApi';
+
 import { AuditService } from 'jslib/abstractions/audit.service';
 import { CipherService } from 'jslib/abstractions/cipher.service';
 import { CollectionService } from 'jslib/abstractions/collection.service';
@@ -76,6 +78,11 @@ export class AddEditComponent extends BaseAddEditComponent {
                 queryParamsSub.unsubscribe();
             }
         });
+
+        if (!this.editMode) {
+            const tabs = await BrowserApi.tabsQuery({ windowType: 'normal' });
+            this.uriOptions = tabs.map(({url}) => url);
+        }
 
         window.setTimeout(() => {
             if (!this.editMode) {
