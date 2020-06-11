@@ -219,7 +219,7 @@
                             <select *ngIf="uriOptions != null && uriOptions.length"
                                 id="loginUriOptions{{i}}" name="Login.Uris[{{i}}].Options" [(ngModel)]="u.uri"
                                 [hidden]="u.showUriOptionsInput === false || u.showUriOptionsInput == null || uriOptions == null">
-                                <option *ngFor="let o of uriOptions" [ngValue]="o">{{o}}</option>
+                                <option *ngFor="let o of uriOptions" [ngValue]="o.url">{{o.url}}</option>
                             </select>
                             <label for="loginUriMatch{{i}}" class="sr-only">
                                 {{'matchDetection' | i18n}} {{(i + 1)}}

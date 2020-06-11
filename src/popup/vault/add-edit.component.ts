@@ -27,7 +27,7 @@ import { AddEditComponent as BaseAddEditComponent } from 'jslib/angular/componen
     templateUrl: 'add-edit.component.html',
 })
 export class AddEditComponent extends BaseAddEditComponent {
-    uriOptions: string[];
+    uriOptions: any[];
     showAttachments = true;
 
     constructor(cipherService: CipherService, folderService: FolderService,
@@ -84,7 +84,7 @@ export class AddEditComponent extends BaseAddEditComponent {
 
         if (!this.editMode) {
             const tabs = await BrowserApi.tabsQuery({ windowType: 'normal' });
-            this.uriOptions = tabs.map(({url}) => url);
+            this.uriOptions = tabs.filter((tab) => tab.url);
         }
 
         window.setTimeout(() => {
