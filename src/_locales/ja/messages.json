@@ -83,7 +83,7 @@
     "message": "自動入力"
   },
   "generatePasswordCopied": {
-    "message": "パスワードを生成 (コピーしました)"
+    "message": "パスワードを生成してコピー"
   },
   "noMatchingLogins": {
     "message": "一致するログインがありません。"
