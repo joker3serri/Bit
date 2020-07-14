@@ -48,10 +48,8 @@ import menuCtrler from './menuCtrler';
     //     setHeight: null,
     //     getCipher: null,
     //     state    : {islocked:false},
-    //     unlock   : function() {
-    //         this.state.isLocked = false
-    //     },
-    //     lock     : function() {this.state.isLocked = true }
+    //     unlock   : function() { this.state.isLocked = false },
+    //     lock     : function() { this.state.isLocked = true  },
     // }
 
     function collect(document, undefined) {
@@ -773,7 +771,7 @@ import menuCtrler from './menuCtrler';
         // add the menu buton in the element by opid operation
         function addMenuBtnByOpId(opId, op) {
             var el = getElementByOpId(opId);
-            return el ? (menuCtrler.addMenuButton(el, op, markTheFilling), [el]) : null; // todo BJA : comprendre cette syntaxe
+            return el ? (menuCtrler.addMenuButton(el, op, markTheFilling), [el]) : null;
         }
 
         // do a fill by opid operation

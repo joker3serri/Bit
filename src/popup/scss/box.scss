@@ -9,6 +9,11 @@
         margin-top: 0;
     }
 
+    &.box-uri { // snap the box-ui to the previous block
+      margin-top: -11px;
+      z-index: 1;
+    }
+
     .box-header {
         margin: 15px 10px 5px 10px;
         display: flex;
@@ -26,6 +31,14 @@
         @include themify($themes) {
             background-color: themed('boxBackgroundColor');
             border-color: themed('borderColor');
+        }
+
+        &.box-content-settings {
+            border-top:none;
+        }
+
+        &.box-content-options {
+            border-bottom:none;
         }
 
         &.box-content-padded {
@@ -50,6 +63,10 @@
 
         @include themify($themes) {
             color: themed('mutedColor');
+        }
+        &.in-flex-row-full-width {
+          flex : 0 0 100%;
+          margin: 5px 0;
         }
     }
 
@@ -158,6 +175,13 @@
         }
     }
 
+    &.settings-row {
+        &:before {
+            border: none;
+            height: 0;
+        }
+    }
+
     &:last-child {
         &:before {
             border: none;
@@ -236,6 +260,18 @@
         //word-break: break-all;
     }
 
+    &.box-content-row-multi-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    &.options-row label:first-child {
+      @include themify($themes) {
+          color: themed('textColor');
+      }
+    }
+
     &.box-content-row-multi {
         width: 100%;
 
@@ -265,7 +301,7 @@
     &.box-content-row-checkbox, &.box-content-row-input, &.box-content-row-slider {
         label, .row-label {
             //cozy-customisations
-            //In the option panel, French sentences are pretty long, 
+            //In the option panel, French sentences are pretty long,
             //so let's use a smaller font-size in this view
             font-size: 13px;
             display: block;
@@ -464,7 +500,7 @@
             max-width: 20px;
         }
     }
-    
+
     .progress {
         display: flex;
         height: 5px;
@@ -479,4 +515,8 @@
             background-color: $brand-primary;
         }
     }
+}
+
+.options-row {
+    padding: 15px 15px 0px 10px;
 }

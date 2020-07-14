@@ -102,7 +102,8 @@ function _initInPageMenuForEl(targetEl) {
 
     }
     // hide menu if focus leaves the input
-    targetEl.addEventListener('blur' , ()=>{
+    targetEl.addEventListener('blur' , (event)=>{
+        if (!event.isTrusted) return;
         menuCtrler.hide()
         return true
     })
@@ -114,8 +115,14 @@ function _initInPageMenuForEl(targetEl) {
         menuEl.setAttribute('data-show', '');
     }
     // show menu when input receives focus or is clicked (it can be click while if already has focus)
-    targetEl.addEventListener('focus', ()=>{_show()})
-    targetEl.addEventListener('click', ()=>{_show()})
+    targetEl.addEventListener('focus', (event)=>{
+        if (!event.isTrusted) return;
+        _show()
+    })
+    targetEl.addEventListener('click', (event)=>{
+        if (!event.isTrusted) return;
+        _show()
+    })
 
     // if targetEl already has focus, then show menu
     if(document.activeElement === targetEl) _show()
@@ -124,7 +131,7 @@ function _initInPageMenuForEl(targetEl) {
     targetEl.addEventListener('keyup', (event) => {
         if (!event.isTrusted) return;
         const keyName = event.key;
-        console.log(keyName);
+        console.log(keyName); // BJA
         if (keyName === 'Escape') {
             // then hide menu
             menuCtrler.hide(true)

@@ -4,7 +4,7 @@ import { CipherView } from 'jslib/models/view/cipherView';
 import { LoginUriView } from 'jslib/models/view/loginUriView';
 import { LoginView } from 'jslib/models/view/loginView';
 
-import { ConstantsService } from 'jslib/services/constants.service';
+import { LocalConstantsService } from '../popup/services/constants.service';
 
 import { I18nService } from 'jslib/abstractions/i18n.service';
 
@@ -64,7 +64,7 @@ export default class RuntimeBackground {
     }
 
     async processMessage(msg: any, sender: any, sendResponse: any) {
-        console.log("BJA - step 05 - Background.processMessage, msg.command", msg.subcommand ,"msg.subcommand", msg.command , ", msg.sender", msg.sender, );
+        console.log('BJA - step 05 - Background.processMessage, msg.command', msg.subcommand, 'msg.subcommand', msg.command, ', msg.sender', msg.sender);
         switch (msg.command) {
             case 'loggedIn':
             case 'unlocked':
@@ -105,9 +105,9 @@ export default class RuntimeBackground {
             case 'bgAnswerMenuRequest':
                 switch (msg.subcommand) {
                     case 'getCiphersForTab':
-                        console.log("BJA - get proper ciphers for sender ", sender);
+                        console.log('BJA - get proper ciphers for sender ', sender);
 
-                        var ciphers = await this.cipherService.getAllDecryptedForUrl(sender.tab.url, null);
+                        const ciphers = await this.cipherService.getAllDecryptedForUrl(sender.tab.url, null);
                         await BrowserApi.tabSendMessageData(sender.tab, 'updateMenuCiphers', ciphers);
                         break;
                     case 'closeMenu':
@@ -168,23 +168,28 @@ export default class RuntimeBackground {
                 }
                 switch (msg.sender) {
                     case 'notificationBar':
+                        // auttofill.js sends the page details requested by the notification bar.
+                        // 1- request autofill for the in page menu (if activated)
+                        const enableInPageMenu = await this.storageService.get<any>(LocalConstantsService.enableInPageMenuKey);
+                        console.log('              -  Background.processMessage, about to autofillService.doAutoFillForLastUsedLogin(), msg.sender = autofillerMenu, enableInPageMenu', enableInPageMenu);
+                        if (enableInPageMenu) {
+                            const totpCode1 = await this.autofillService.doAutoFillForLastUsedLogin([{
+                                frameId: sender.frameId,
+                                tab: msg.tab,
+                                details: msg.details,
+                                sender: 'autofillerMenu', // in order to prepare a fillscript for the menu
+                            }], true);
+                            if (totpCode1 != null) {
+                                this.platformUtilsService.copyToClipboard(totpCode1, { window: window });
+                            }
+                        }
+                        // 2- send page details to the notification bar
                         const forms = this.autofillService.getFormsWithPasswordFields(msg.details);
                         await BrowserApi.tabSendMessageData(msg.tab, 'notificationBarPageDetails', {
                             details: msg.details,
                             forms: forms,
                         });
-                        break;
-                    case 'autofillerMenu':
-                        console.log("              -  Background.processMessage, about to autofillService.doAutoFillForLastUsedLogin(), msg.sender = autofillerMenu");
-                        const totpCode3 = await this.autofillService.doAutoFillForLastUsedLogin([{
-                            frameId: sender.frameId,
-                            tab: msg.tab,
-                            details: msg.details,
-                            sender: msg.sender, // BJA
-                        }], true);
-                        if (totpCode3 != null) {
-                            this.platformUtilsService.copyToClipboard(totpCode3, { window: window });
-                        }
+
                         break;
                     case 'autofiller':
                     case 'autofill_cmd':
@@ -199,17 +204,16 @@ export default class RuntimeBackground {
                         }
                         break;
 
-
                     case 'menu.js':
-                        console.log("BJA - step B03 - runtime.Background.processMessage, about to autofillService.doAutoFill(), cipher:", msg.cipher);
-                        var tab = await BrowserApi.getTabFromCurrentWindow();
+                        console.log('BJA - step B03 - runtime.Background.processMessage, about to autofillService.doAutoFill(), cipher:', msg.cipher);
+                        const tab = await BrowserApi.getTabFromCurrentWindow();
                         const totpCode2 = await this.autofillService.doAutoFill({
                             cipher     : msg.cipher,
                             pageDetails: [{
                                 frameId: sender.frameId,
                                 tab    : tab,
                                 details: msg.details,
-                            }]
+                            }],
 
                             // doc        : window.document,
                             // frameId    : sender.frameId,
@@ -220,7 +224,6 @@ export default class RuntimeBackground {
                             this.platformUtilsService.copyToClipboard(totpCode2, { window: window });
                         }
                         break;
-
 
                     case 'contextMenu':
                         clearTimeout(this.autofillTimeout);
@@ -363,7 +366,7 @@ export default class RuntimeBackground {
         const usernameMatches = ciphers.filter((c) => c.login.username === loginInfo.username);
         if (usernameMatches.length === 0) {
             const disabledAddLogin = await this.storageService.get<boolean>(
-                ConstantsService.disableAddLoginNotificationKey);
+                LocalConstantsService.disableAddLoginNotificationKey);
             if (disabledAddLogin) {
                 return;
             }
@@ -381,7 +384,7 @@ export default class RuntimeBackground {
             await this.main.checkNotificationQueue(tab);
         } else if (usernameMatches.length === 1 && usernameMatches[0].login.password !== loginInfo.password) {
             const disabledChangePassword = await this.storageService.get<boolean>(
-                ConstantsService.disableChangedPasswordNotificationKey);
+                LocalConstantsService.disableChangedPasswordNotificationKey);
             if (disabledChangePassword) {
                 return;
             }
@@ -438,7 +441,7 @@ export default class RuntimeBackground {
 
     private async checkOnInstalled() {
         if (this.isSafari) {
-            const installedVersion = await this.storageService.get<string>(ConstantsService.installedVersionKey);
+            const installedVersion = await this.storageService.get<string>(LocalConstantsService.installedVersionKey);
             if (installedVersion == null) {
                 this.onInstalledReason = 'install';
             } else if (BrowserApi.getApplicationVersion() !== installedVersion) {
@@ -446,7 +449,7 @@ export default class RuntimeBackground {
             }
 
             if (this.onInstalledReason != null) {
-                await this.storageService.save(ConstantsService.installedVersionKey,
+                await this.storageService.save(LocalConstantsService.installedVersionKey,
                     BrowserApi.getApplicationVersion());
             }
         }
@@ -474,23 +477,23 @@ export default class RuntimeBackground {
 
     private async setDefaultSettings() {
         // Default lock options to "on restart".
-        const currentLockOption = await this.storageService.get<number>(ConstantsService.lockOptionKey);
+        const currentLockOption = await this.storageService.get<number>(LocalConstantsService.lockOptionKey);
         if (currentLockOption == null) {
-            await this.storageService.save(ConstantsService.lockOptionKey, -1);
+            await this.storageService.save(LocalConstantsService.lockOptionKey, -1);
         }
     }
 
     private async getDataForTab(tab: any, responseCommand: string) {
         const responseData: any = {};
         if (responseCommand === 'notificationBarDataResponse') {
-            responseData.neverDomains = await this.storageService.get<any>(ConstantsService.neverDomainsKey);
+            responseData.neverDomains = await this.storageService.get<any>(LocalConstantsService.neverDomainsKey);
             responseData.disabledAddLoginNotification = await this.storageService.get<boolean>(
-                ConstantsService.disableAddLoginNotificationKey);
+                LocalConstantsService.disableAddLoginNotificationKey);
             responseData.disabledChangedPasswordNotification = await this.storageService.get<boolean>(
-                ConstantsService.disableChangedPasswordNotificationKey);
+                LocalConstantsService.disableChangedPasswordNotificationKey);
         } else if (responseCommand === 'autofillerAutofillOnPageLoadEnabledResponse') {
             responseData.autofillEnabled = await this.storageService.get<boolean>(
-                ConstantsService.enableAutoFillOnPageLoadKey);
+                LocalConstantsService.enableAutoFillOnPageLoadKey);
         } else if (responseCommand === 'notificationBarFrameDataResponse') {
             responseData.i18n = {
                 appName: this.i18nService.t('appName'),
@@ -502,7 +505,7 @@ export default class RuntimeBackground {
                 notificationAddDesc: this.i18nService.t('notificationAddDesc'),
                 notificationChangeSave: this.i18nService.t('notificationChangeSave'),
                 notificationChangeDesc: this.i18nService.t('notificationChangeDesc'),
-                notificationDontSave: this.i18nService.t('notificationDontSave')
+                notificationDontSave: this.i18nService.t('notificationDontSave'),
             };
         }
 

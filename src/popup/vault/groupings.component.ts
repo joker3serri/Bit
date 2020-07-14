@@ -159,10 +159,10 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
                 typeCounts.set(c.type, 1);
             }
         });
-        this.ciphersByType = {}
-        this.ciphersByType[CipherType.Card] = this._ciphersByType(CipherType.Card)
-        this.ciphersByType[CipherType.Identity] = this._ciphersByType(CipherType.Identity)
-        this.ciphersByType[CipherType.Login] = this._ciphersByType(CipherType.Login)
+        this.ciphersByType = {};
+        this.ciphersByType[CipherType.Card] = this._ciphersByType(CipherType.Card);
+        this.ciphersByType[CipherType.Identity] = this._ciphersByType(CipherType.Identity);
+        this.ciphersByType[CipherType.Login] = this._ciphersByType(CipherType.Login);
         this.typeCounts = typeCounts;
     }
 

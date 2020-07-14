@@ -3,10 +3,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     let filledThisHref = false;
     let delayFillTimeout: number;
 
-    // Test if inPageMenu should be displayed
-    // setInterval(showInPageMenuIfNeeded, 500);
-    setTimeout(showInPageMenuIfNeeded, 500); // TODO BJA : juste once at load, to simplify debug, should be a user parameter
-
     const isSafari = (typeof safari !== 'undefined') && navigator.userAgent.indexOf(' Safari/') !== -1 &&
         navigator.userAgent.indexOf('Chrome') === -1;
 
@@ -47,6 +43,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
     function doFillIfNeeded(force: boolean = false) {
+
         if (force || pageHref !== window.location.href) {
             if (!force) {
                 // Some websites are slow and rendering all page content. Try to fill again later
@@ -77,39 +74,4 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 
-    var isMenuRequested = false;
-
-    function showInPageMenuIfNeeded(force: boolean = false) {
-        console.log("BJA - 0A - autofiller.ts showInPageMenuIfNeeded(), force:", force, "isMenuRequested", isMenuRequested, "filledThisHref", filledThisHref);
-        if (force || !isMenuRequested) {
-            // if (!force) {
-            //     // Some websites are slow and rendering all page content. Try to fill again later
-            //     // if we haven't already.
-            //     filledThisHref = false;
-            //     if (delayFillTimeout != null) {
-            //         window.clearTimeout(delayFillTimeout);
-            //     }
-            //     delayFillTimeout = window.setTimeout(() => {
-            //         if (!filledThisHref) {
-            //             showInPageMenuIfNeeded(true);
-            //         }
-            //     }, 1500);
-            // }
-
-            console.log("      0B - autofiller.ts showInPageMenuIfNeeded()");
-            isMenuRequested = true;
-            const msg: any = {
-                command: 'bgCollectPageDetails',
-                sender : 'autofillerMenu',
-                BJA: 'toto',
-            };
-
-            if (isSafari) {
-                msg.bitwardenFrameId = (window as any).__bitwardenFrameId;
-                safari.extension.dispatchMessage('bitwarden', msg);
-            } else {
-                chrome.runtime.sendMessage(msg);
-            }
-        }
-    }
 });

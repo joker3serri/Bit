@@ -177,7 +177,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     if (domObservationCollectTimeout != null) {
                         window.clearTimeout(domObservationCollectTimeout);
                     }
-                    domObservationCollectTimeout = window.setTimeout(collect, 1000);
+                    // Cozy : the timeout is tightened compared to BW because when mutations are trigered,
+                    // the browser has already differed the event : there is no need to wait more.
+                    domObservationCollectTimeout = window.setTimeout(collect, 100);
                 }
             });
 
@@ -186,10 +188,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
     function collectIfNeededWithTimeout() {
+        console.log(0, document.URL);
+        collectIfNeeded();
         if (collectIfNeededTimeout != null) {
             window.clearTimeout(collectIfNeededTimeout);
         }
-        collectIfNeededTimeout = window.setTimeout(collectIfNeeded, 1000);
+        // collectIfNeededTimeout = window.setTimeout(collectIfNeeded, 1000);
+        // TODO BJA : inutile puisque collectIfNeeded n'est utile que tant que pageHref === window.location.href
+        // A supprimer ?
     }
 
     function collectIfNeeded() {
@@ -199,6 +205,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 observer.disconnect();
                 observer = null;
             }
+            console.log(1);
             collect();
             // The DOM might change during the collect: watch the DOM body for changes.
             // Note: a setTimeout was present here, apparently related to the autofill:
@@ -209,10 +216,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (collectIfNeededTimeout != null) {
             window.clearTimeout(collectIfNeededTimeout);
         }
-        collectIfNeededTimeout = window.setTimeout(collectIfNeeded, 1000);
+        console.log(2);
+        // collectIfNeededTimeout = window.setTimeout(collectIfNeeded, 1000);
+        // TODO BJA : quelle utilité ? se relance lui meme et ne fait plus rien
+        // tant que pageHref === window.location.href : une boucle inutile non ? A supprimer ?
     }
 
     function collect() {
+        console.log('BJA - step 00 - content.notificationBar, COLLECT requested by notificationBar');
         sendPlatformMessage({
             command: 'bgCollectPageDetails',
             sender: 'notificationBar',
@@ -556,12 +567,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         const iframe = document.createElement('iframe');
         iframe.id = 'notification-bar-iframe';
-        if(isSafari) iframe.style.cssText = ' width: 100%;max-width: 430px; border: solid 1px rgba(50, 54, 63, 0.12); top: 8px; right: 17px;  border-radius: 8px;   animation: fadein 0.2s;'
+        if (isSafari) {
+            iframe.style.cssText = ' width: 100%;max-width: 430px; border: solid 1px rgba(50, 54, 63, 0.12); top: 8px; right: 17px;  border-radius: 8px;   animation: fadein 0.2s;' // tslint:disable-line
+        }
         const frameDiv = document.createElement('div');
         frameDiv.setAttribute('aria-live', 'polite');
         frameDiv.id = 'notification-bar';
-        if(isSafari)  frameDiv.style.cssText = 'height: 42px; top: 0; right: 0; padding: 0; position: fixed; ' +
-        'z-index: 2147483647; visibility: visible;';
+        if (isSafari)  {
+            frameDiv.style.cssText = 'height: 42px; top: 0; right: 0; padding: 0; position: fixed; ' +
+            'z-index: 2147483647; visibility: visible;';
+        }
         frameDiv.appendChild(iframe);
         document.body.appendChild(frameDiv);
 
