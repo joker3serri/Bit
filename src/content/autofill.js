@@ -1,3 +1,5 @@
+import menuCtrler from './menuCtrler';
+
 !(function () {
     /*
     1Password Extension
@@ -39,6 +41,18 @@
     6. Rename com.agilebits.* stuff to com.bitwarden.*
     7. Remove "some useful globals" on window
     */
+
+	// TODO BJA : add more explanations here
+    // var menuCtrler = {
+    //     hide     : null,
+    //     setHeight: null,
+    //     getCipher: null,
+    //     state    : {islocked:false},
+    //     unlock   : function() {
+    //         this.state.isLocked = false
+    //     },
+    //     lock     : function() {this.state.isLocked = true }
+    // }
 
     function collect(document, undefined) {
         // START MODIFICATION
@@ -703,7 +717,10 @@
 
             fillScriptOps = fillScript.script;
             doOperation(fillScriptOps, function () {
-                // Done now
+                // All ops are done now
+                // unlock menu and hide it after autofill (should be already hidden)
+                menuCtrler.unlock()
+                // menuCtrler.hide(true) // TODO BJA : uncomment ?
                 // Do we have anything to autosubmit?
                 if (fillScript.hasOwnProperty('autosubmit') && 'function' == typeof autosubmit) {
                     fillScript.itemType && 'fillLogin' !== fillScript.itemType || (0 < operationsToDo.length ? setTimeout(function () {
@@ -733,6 +750,7 @@
             touch_all_fields: touchAllFields,
             simple_set_value_by_query: doSimpleSetByQuery,
             focus_by_opid: doFocusByOpId,
+            add_menu_btn_by_opid:addMenuBtnByOpId,
             delay: null
         };
 
@@ -750,6 +768,12 @@
                 }
             }
             return thisFill.hasOwnProperty(thisOperation) ? thisFill[thisOperation].apply(this, op) : null;
+        }
+
+        // add the menu buton in the element by opid operation
+        function addMenuBtnByOpId(opId, op) {
+            var el = getElementByOpId(opId);
+            return el ? (menuCtrler.addMenuButton(el, op, markTheFilling), [el]) : null; // todo BJA : comprendre cette syntaxe
         }
 
         // do a fill by opid operation
@@ -1002,6 +1026,8 @@
         });
     }
 
+
+
     /*
     End 1Password Extension
     */
@@ -1036,14 +1062,17 @@
     }
 
     chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+        console.log("BJA - step 04 - content.autofill.onMessage(), command=", msg.command, 'subcommand=', msg.subcommand, "sender :", msg.sender);
         if (msg.command === 'collectPageDetails') {
+            console.log("              - content.autoFill.onMessage, about to collect(), sender :", msg.sender);
             var pageDetails = collect(document);
             var pageDetailsObj = JSON.parse(pageDetails);
+            console.log("              - collected pageDetails :", pageDetailsObj);
             chrome.runtime.sendMessage({
                 command: 'collectPageDetailsResponse',
                 tab: msg.tab,
                 details: pageDetailsObj,
-                sender: msg.sender
+                sender: msg.sender,
             });
             sendResponse();
             return true;
@@ -1053,5 +1082,29 @@
             sendResponse();
             return true;
         }
+        else if (msg.command === 'autofillAnswerMenuRequest') {
+            if (msg.subcommand === 'closeMenu') {
+                menuCtrler.hide(true);
+            }else if (msg.subcommand === 'setMenuHeight') {
+                menuCtrler.setHeight(msg.height)
+            }else if (msg.subcommand === 'fillWithCipher') {
+                menuCtrler.hide(true)
+                menuCtrler.lock() // lock menu to avoid clipping during autofill
+                var pageDetails = collect(document);
+                var pageDetailsObj = JSON.parse(pageDetails);
+                var selectedCipher = menuCtrler.getCipher(msg.cipherId)
+                chrome.runtime.sendMessage({
+                    command     : 'collectPageDetailsResponse',
+                    details     : pageDetailsObj,
+                    sender      : 'menu.js',
+                    cipher      : selectedCipher,
+                });
+            }
+        }else if (msg.command === 'updateMenuCiphers') {
+            // store the ciphers sent to the menu to reuse them later on
+            menuCtrler.ciphers = msg.data
+        }
+        sendResponse();
+        return true;
     });
 })();

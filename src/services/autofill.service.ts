@@ -151,6 +151,7 @@ export default class AutofillService implements AutofillServiceInterface {
     async doAutoFill(options: any) {
         let totpPromise: Promise<string> = null;
         const tab = await this.getActiveTab();
+        console.log("BJA - step 060 - services/autofill.service doAutoFill(), with options:", options);
         if (!tab || !options.cipher || !options.pageDetails || !options.pageDetails.length) {
             throw new Error('Nothing to auto-fill.');
         }
@@ -170,6 +171,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 onlyEmptyFields: options.onlyEmptyFields || false,
                 onlyVisibleFields: options.onlyVisibleFields || false,
                 cipher: options.cipher,
+                sender:pd.sender,
             });
 
             if (!fillScript || !fillScript.script || !fillScript.script.length) {
@@ -182,6 +184,7 @@ export default class AutofillService implements AutofillServiceInterface {
             }
 
             BrowserApi.tabSendMessage(tab, {
+              // command: pd.sender !== 'autofillerMenu' ? 'fillForm' : 'appendInPageMenu',
                 command: 'fillForm',
                 fillScript: fillScript,
                 url: tab.url,
@@ -282,6 +285,7 @@ export default class AutofillService implements AutofillServiceInterface {
             });
         }
 
+        console.log("BJA - step 07 - services/autofill.service generateFillScript()");
         switch (options.cipher.type) {
             case CipherType.Login:
                 fillScript = this.generateLoginFillScript(fillScript, pageDetails, filledFields, options);
@@ -301,6 +305,9 @@ export default class AutofillService implements AutofillServiceInterface {
 
     private generateLoginFillScript(fillScript: AutofillScript, pageDetails: any,
         filledFields: { [id: string]: AutofillField; }, options: any): AutofillScript {
+
+        console.log("BJA - STEP 08 - services/autofill.service generateFillScript(), sender", options.sender);
+
         if (!options.cipher.login) {
             return null;
         }
@@ -313,27 +320,34 @@ export default class AutofillService implements AutofillServiceInterface {
 
         if (!login.password || login.password === '') {
             // No password for this login. Maybe they just wanted to auto-fill some custom fields?
+            console.log("    STEP 08- A - `!login.password || login.password === ''` == true", );
             fillScript = this.setFillScriptForFocus(filledFields, fillScript);
             return fillScript;
         }
 
         let passwordFields = this.loadPasswordFields(pageDetails, false, false, options.onlyEmptyFields);
+        console.log("    STEP 08- B0 - passwordFields=",passwordFields );
         if (!passwordFields.length && !options.onlyVisibleFields) {
             // not able to find any viewable password fields. maybe there are some "hidden" ones?
             passwordFields = this.loadPasswordFields(pageDetails, true, true, options.onlyEmptyFields);
+            console.log("    STEP 08- B1 - passwordFields=",passwordFields );
         }
 
         for (const formKey in pageDetails.forms) {
             if (!pageDetails.forms.hasOwnProperty(formKey)) {
+                console.log("    STEP 08- C0 - formKey is inherited, skip it");
                 continue;
             }
 
             const passwordFieldsForForm: AutofillField[] = [];
             passwordFields.forEach((passField) => {
+                console.log("    STEP 08- D0 - passField", passField);
                 if (formKey === passField.form) {
+                    console.log("    STEP 08- D1 - push passField because it corresponds to formKey:", formKey);
                     passwordFieldsForForm.push(passField);
                 }
             });
+            console.log("    STEP 08- D2 - in the end passwordFieldsForForm:", passwordFieldsForForm);
 
             passwordFields.forEach((passField) => {
                 pf = passField;
@@ -357,7 +371,7 @@ export default class AutofillService implements AutofillServiceInterface {
         if (passwordFields.length && !passwords.length) {
             // The page does not have any forms with password fields. Use the first password field on the page and the
             // input field just before it as the username.
-
+            console.log("    STEP 08- E1 - passwordFields.length && !passwords.length=", passwordFields.length && !passwords.length);
             pf = passwordFields[0];
             passwords.push(pf);
 
@@ -377,6 +391,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
         if (!passwordFields.length && !options.skipUsernameOnlyFill) {
             // No password fields on this page. Let's try to just fuzzy fill the username.
+            console.log("    STEP 08- F1 - !passwordFields.length && !options.skipUsernameOnlyFill")
             pageDetails.fields.forEach((f: any) => {
                 if (f.viewable && (f.type === 'text' || f.type === 'email' || f.type === 'tel') &&
                     this.fieldIsFuzzyMatch(f, UsernameFieldNames)) {
@@ -385,25 +400,32 @@ export default class AutofillService implements AutofillServiceInterface {
             });
         }
 
+        console.log("    STEP 08- G0 - before usernames loop, fillScript=", fillScript)
         usernames.forEach((u) => {
+            console.log("    STEP 08- G1 - usernames loop")
             if (filledFields.hasOwnProperty(u.opid)) {
                 return;
             }
-
             filledFields[u.opid] = u;
             this.fillByOpid(fillScript, u, login.username);
         });
 
+        console.log("    STEP 08- H0 - before passwords loop, fillScript=", fillScript)
         passwords.forEach((p) => {
+            console.log("    STEP 08- H1 - passwords loop")
             if (filledFields.hasOwnProperty(p.opid)) {
                 return;
             }
-
             filledFields[p.opid] = p;
             this.fillByOpid(fillScript, p, login.password);
         });
 
+        console.log("    STEP 08- I1 - before setFillScriptForFocus, fillScript=", fillScript)
         fillScript = this.setFillScriptForFocus(filledFields, fillScript);
+
+        if (options.sender=='autofillerMenu') {
+            fillScript = this.setFillScriptForMenu(fillScript);
+        }
         return fillScript;
     }
 
@@ -884,6 +906,7 @@ export default class AutofillService implements AutofillServiceInterface {
     private loadPasswordFields(pageDetails: AutofillPageDetails, canBeHidden: boolean, canBeReadOnly: boolean,
         mustBeEmpty: boolean) {
         const arr: AutofillField[] = [];
+        console.log("BJA - step 09 - services/autofill.service loadPasswordFields()");
         pageDetails.fields.forEach((f) => {
             const isPassword = f.type === 'password';
             const valueIsLikePassword = (value: string) => {
@@ -1096,6 +1119,18 @@ export default class AutofillService implements AutofillServiceInterface {
             fillScript.script.push(['focus_by_opid', lastField.opid]);
         }
 
+        return fillScript;
+    }
+
+    private setFillScriptForMenu(fillScript: AutofillScript): AutofillScript {
+        console.log("BJA - Step XX - setFillScriptForMenu");
+        const newScript: any[] = [];
+        fillScript.script.forEach(ope => {
+            if (ope[0].startsWith('fill')) {
+                newScript.push(['add_menu_btn_by_opid', ope[1], 'identityMenu']) // ['operation', opid, menuType]
+            }
+        });
+        fillScript.script = newScript
         return fillScript;
     }
 

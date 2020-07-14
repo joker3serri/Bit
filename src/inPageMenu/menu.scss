@@ -1,0 +1,102 @@
+@import "../popup/scss/variables.scss";
+
+body {
+    color:white;
+    padding: 0;
+    margin: 0;
+    font-size: $font-size-large;
+    line-height: 16px;
+    font-family: $font-family-sans-serif;
+    overflow: hidden;
+}
+
+.panel {
+    margin: 16px 10px 10px 10px;
+    background-color: #297EF2;
+    border-radius: 5px;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.9));
+}
+
+.panel:after {
+    content: '';
+    height: 0;
+    width: 0;
+    border-width: 0 8px 8px 8px;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0) rgba(255, 255, 255, 0) #297ef2 rgba(255, 255, 255, 0);
+    position: absolute;
+    top: -8px;
+    right: 17px;
+}
+
+#header {
+    padding: 15px 10px 15px 10px;
+    font-weight: bold;
+    font-size: large;
+    display: flex;
+    justify-content: space-between;
+    z-index: 2;
+    position: relative;
+}
+
+.close-icon {
+    width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover, &:active {
+      cursor: pointer;
+      svg {
+        fill: white;
+      }
+    }
+    svg {
+        fill: white;
+    }
+}
+
+hr {
+    margin: 0 10px 0 10px;
+    border-width: 0;
+    border-bottom: 1px solid #5892E6;
+}
+
+.row-main {
+    display: flex;
+    align-items: stretch;
+    flex-grow: 1;
+    min-width: 0;
+    padding: 10px 0px 10px 0px;
+    &:hover{
+        cursor: pointer;
+        background-color: #0d5bc5;
+    }
+    &.selected {
+        background-color: #2a6fcd;
+    }
+}
+
+.row-icon {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover, &:active {
+      color: $brand-primary;
+      svg {
+        fill: white;
+      }
+    }
+    svg {
+        fill: white;
+    }
+}
+
+.row-text {
+    display: block;
+}
+
+.row-detail {
+    display: block;
+    font-size: 12px;
+}
