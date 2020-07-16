@@ -72,7 +72,18 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
     async ngOnInit() {
         this.searchTypeSearch = !this.platformUtilsService.isSafari();
         const queryParamsSub = this.route.queryParams.subscribe(async (params) => {
-            if (params.type) {
+            if (this.applySavedState) {
+                this.state = (await this.stateService.get<any>(ComponentId)) || {};
+                if (this.state.searchText) {
+                    this.searchText = this.state.searchText;
+                }
+            }
+
+            if (params.deleted) {
+                this.groupingTitle = this.i18nService.t('trash');
+                this.searchPlaceholder = this.i18nService.t('searchTrash');
+                await this.load(null, true);
+            } else if (params.type) {
                 this.searchPlaceholder = this.i18nService.t('searchType');
                 this.type = parseInt(params.type, null);
                 switch (this.type) {
@@ -121,11 +132,7 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
                 await this.load();
             }
 
-            if (this.applySavedState) {
-                this.state = (await this.stateService.get<any>(ComponentId)) || {};
-                if (this.state.searchText) {
-                    this.searchText = this.state.searchText;
-                }
+            if (this.applySavedState && this.state != null) {
                 window.setTimeout(() => this.popupUtils.setContentScrollY(window, this.state.scrollY), 0);
             }
             this.stateService.remove(ComponentId);
@@ -195,6 +202,9 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
     }
 
     addCipher() {
+        if (this.deleted) {
+            return false;
+        }
         super.addCipher();
         this.router.navigate(['/add-cipher'], {
             queryParams: {
