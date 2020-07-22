@@ -1,5 +1,7 @@
 /* -----------------------------------------------------------------------------------
 
+    @override by Cozy
+
     COZY DUPLICATE -
     This file is duplicated from the JSlib file : jslib/abstractions/sync.service.ts
     For more context, see commit f1956682454d00328dea38d37257ab32dc80129f
@@ -19,7 +21,6 @@ import { SettingsService } from 'jslib/abstractions/settings.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
 import { UserService } from 'jslib/abstractions/user.service';
 
-// TODO BJA : should be imported ?
 // import { PolicyData } from 'jslib/models/data/policyData';
 // import { PolicyResponse } from '../models/response/policyResponse';
 
@@ -83,7 +84,6 @@ export class SyncService extends BaseSyncService {
     }
 
 
-    // TODO BJA : should be added ?
     // private async syncPolicies(response: PolicyResponse[]) {
     //     const policies: { [id: string]: PolicyData; } = {};
     //     if (response != null) {
