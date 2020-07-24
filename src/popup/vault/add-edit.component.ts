@@ -5,8 +5,8 @@ import {
     Router,
 } from '@angular/router';
 
-import { KonnectorsService } from '../services/konnectors.service';
 import { BrowserApi } from '../../browser/browserApi';
+import { KonnectorsService } from '../services/konnectors.service';
 
 import { AuditService } from 'jslib/abstractions/audit.service';
 import { CipherService } from 'jslib/abstractions/cipher.service';

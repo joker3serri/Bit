@@ -33,8 +33,6 @@ const Keys = {
     lastSyncPrefix: 'lastSync_',
 };
 
-
-
 export class SyncService extends BaseSyncService {
     // We need to store these two service instances here because in the extended
     // class they are private, meaning we can't access this.userService or
@@ -82,7 +80,6 @@ export class SyncService extends BaseSyncService {
         const cozyClientService = this.cozyClientService();
         await cozyClientService.updateSynchronizedAt();
     }
-
 
     // private async syncPolicies(response: PolicyResponse[]) {
     //     const policies: { [id: string]: PolicyData; } = {};

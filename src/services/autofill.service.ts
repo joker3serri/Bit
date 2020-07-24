@@ -220,7 +220,6 @@ export default class AutofillService implements AutofillServiceInterface {
         }
     }
 
-
     async doAutoFillForLastUsedLogin(pageDetails: any, fromCommand: boolean) {
         const tab = await this.getActiveTab();
         if (!tab || !tab.url) {

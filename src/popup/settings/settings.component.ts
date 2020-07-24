@@ -22,8 +22,8 @@ import { MessagingService } from 'jslib/abstractions/messaging.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
 import { UserService } from 'jslib/abstractions/user.service';
-import { CozyClientService } from '../services/cozyClient.service';
 import { VaultTimeoutService } from 'jslib/abstractions/vaultTimeout.service';
+import { CozyClientService } from '../services/cozyClient.service';
 
 // TODO: Add Safari URL when published
 const RateUrls = {
