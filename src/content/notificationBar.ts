@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             sendResponse();
             return true;
         } else if (msg.command === 'notificationBarCollect') {
-            collect()
+            collect();
             sendResponse();
             return true;
         }

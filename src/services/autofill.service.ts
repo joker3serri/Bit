@@ -162,7 +162,7 @@ export default class AutofillService implements AutofillServiceInterface {
         the pageDetails
         */
         if (options.pageDetails[0].sender === 'notifBarForInPageMenu') {
-            tab = options.pageDetails[0].tab
+            tab = options.pageDetails[0].tab;
         }
         /* END @override by Cozy */
 
@@ -240,7 +240,7 @@ export default class AutofillService implements AutofillServiceInterface {
         the pageDetails
         */
         if (pageDetails[0].sender === 'notifBarForInPageMenu') {
-            tab = pageDetails[0].tab
+            tab = pageDetails[0].tab;
         }
         if (!tab || !tab.url) {
             return;

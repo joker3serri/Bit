@@ -169,6 +169,16 @@ export default class MainBackground {
             this.collectionService, this.cryptoService, this.platformUtilsService, this.storageService,
             this.messagingService, this.searchService, this.userService, this.tokenService,
             async () => {
+                /* @override by Cozy :
+                This callback is the lockedCallback of the VaultTimeoutService
+                (see jslib/src/services/vaultTimeout.service.ts )
+                When CB is fired, ask all tabs to deactivate in-page-menu
+                */
+                const allTabs = await BrowserApi.getAllTabs();
+                for (const tab of allTabs) {
+                    BrowserApi.tabSendMessage(tab, {command: 'autofillAnswerRequest', subcommand: 'deactivateMenu'});
+                }
+                /* end @override by Cozy */
                 if (this.notificationsService != null) {
                     this.notificationsService.updateConnection(false);
                 }
@@ -178,7 +188,19 @@ export default class MainBackground {
                     this.systemService.startProcessReload();
                     await this.systemService.clearPendingClipboard();
                 }
-            }, async () => await this.logout(false));
+            }, async () => {
+                /* @override by Cozy :
+                This callback is the loggedOutCallback of the VaultTimeoutService
+                (see jslib/src/services/vaultTimeout.service.ts )
+                When CB is fired, ask all tabs to deactivate in-page-menu
+                */
+                const allTabs = await BrowserApi.getAllTabs();
+                for (const tab of allTabs) {
+                    BrowserApi.tabSendMessage(tab, {command: 'autofillAnswerRequest', subcommand: 'deactivateMenu'});
+                }
+                /* end @override by Cozy */
+                await this.logout(false);
+            });
         this.syncService = new SyncService(this.userService, this.apiService, this.settingsService,
             this.folderService, this.cipherService, this.cryptoService, this.collectionService,
             this.storageService, this.messagingService, this.policyService,
@@ -220,7 +242,7 @@ export default class MainBackground {
         this.runtimeBackground = new RuntimeBackground(this, this.autofillService, this.cipherService,
             this.platformUtilsService as BrowserPlatformUtilsService, this.storageService, this.i18nService,
             this.analytics, this.notificationsService, this.systemService, this.vaultTimeoutService,
-            this.konnectorsService);
+            this.konnectorsService, this.syncService);
         this.commandsBackground = new CommandsBackground(this, this.passwordGenerationService,
             this.platformUtilsService, this.analytics, this.vaultTimeoutService);
 

@@ -25,6 +25,7 @@ import { AutofillService } from '../services/abstractions/autofill.service';
 import BrowserPlatformUtilsService from '../services/browserPlatformUtils.service';
 
 import { NotificationsService } from 'jslib/abstractions/notifications.service';
+import { SyncService } from 'jslib/abstractions/sync.service';
 
 import { Utils } from 'jslib/misc/utils';
 
@@ -40,7 +41,7 @@ export default class RuntimeBackground {
         private storageService: StorageService, private i18nService: I18nService,
         private analytics: Analytics, private notificationsService: NotificationsService,
         private systemService: SystemService, private vaultTimeoutService: VaultTimeoutService,
-        private konnectorsService: KonnectorsService) {
+        private konnectorsService: KonnectorsService, private syncService: SyncService) {
         this.isSafari = this.platformUtilsService.isSafari();
         this.runtime = this.isSafari ? {} : chrome.runtime;
 
@@ -64,10 +65,16 @@ export default class RuntimeBackground {
     }
 
     async processMessage(msg: any, sender: any, sendResponse: any) {
+        let allTabs;
         /*
         @override by Cozy : this log is very usefoul for reverse engineer the code, keep it for tests
 
-        console.log('PROCESS MESSAGE msg.command:', msg.command, 'msg.subcommandm', msg.subcommand, 'msg.sender', msg.sender, 'sender', sender);
+        console.log('runtime.background PROCESS MESSAGE ', {
+            'msg.command:': msg.command,
+            'msg.subcommandm': msg.subcommand,
+            'msg.sender': msg.sender,
+            'sender': sender
+        });
 
         */
 
@@ -79,14 +86,20 @@ export default class RuntimeBackground {
                 this.notificationsService.updateConnection(msg.command === 'unlocked');
                 this.systemService.cancelProcessReload();
                 // ask notificationbar of all tabs to retry to collect pageDetails in order to activate in-page-menu
-                window.setTimeout(async () => {
-                    const allTabs = await BrowserApi.getAllTabs();
-                    for (const tab of allTabs) {
-                        BrowserApi.tabSendMessage(tab,{command: 'notificationBarCollect'})
-                    }
-                }, 1);
+                await this.syncService.fullSync(true);
+                allTabs = await BrowserApi.getAllTabs();
+                for (const tab of allTabs) {
+                    BrowserApi.tabSendMessage(tab, {command: 'autofillAnswerRequest', subcommand: 'activateMenu'});
+                }
+
                 break;
             case 'logout':
+                // ask all tabs to deactivate in-page-menu
+                allTabs = await BrowserApi.getAllTabs();
+                for (const tab of allTabs) {
+                    BrowserApi.tabSendMessage(tab, {command: 'autofillAnswerRequest', subcommand: 'deactivateMenu'});
+                }
+                // logout
                 await this.main.logout(msg.expired);
                 break;
             case 'syncCompleted':

@@ -32,6 +32,8 @@ import { CozyClientService } from './cozyClient.service';
 const Keys = {
     lastSyncPrefix: 'lastSync_',
 };
+let isfullSyncRunning: boolean = false;
+let fullSyncPromise: Promise<boolean>;
 
 export class SyncService extends BaseSyncService {
     // We need to store these two service instances here because in the extended
@@ -79,6 +81,26 @@ export class SyncService extends BaseSyncService {
 
         const cozyClientService = this.cozyClientService();
         await cozyClientService.updateSynchronizedAt();
+    }
+
+    /*
+        Using this function instead of the super :
+            * checks if a fullSync is already running
+            * if yes, the promise of the currently running fullSync is returned
+            * otherwise the promise of a new fullSync is created and returned
+     */
+    async fullSync(forceSync: boolean, allowThrowOnError = false): Promise<boolean> {
+        if (isfullSyncRunning) {
+            return fullSyncPromise;
+        } else {
+            isfullSyncRunning = true;
+            fullSyncPromise = super.fullSync(forceSync, allowThrowOnError)
+            .then( (resp) => {
+                isfullSyncRunning = false;
+                return resp;
+            });
+            return fullSyncPromise;
+        }
     }
 
     // private async syncPolicies(response: PolicyResponse[]) {
