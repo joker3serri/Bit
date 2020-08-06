@@ -139,18 +139,12 @@ export default class RuntimeBackground {
                         });
                         break;
                     case 'autofiller':
-                        this.autofillService.doAutoFillForLastUsedLogin([{
-                            frameId: sender.frameId,
-                            tab: msg.tab,
-                            details: msg.details,
-                        }]);
-                        break;
                     case 'autofill_cmd':
-                        const totpCode = await this.autofillService.cycleThroughLoginsByLastUsed([{
+                        const totpCode = await this.autofillService.doAutoFillActiveTab([{
                             frameId: sender.frameId,
                             tab: msg.tab,
                             details: msg.details,
-                        }]);
+                        }], msg.sender === 'autofill_cmd');
                         if (totpCode != null) {
                             this.platformUtilsService.copyToClipboard(totpCode, { window: window });
                         }

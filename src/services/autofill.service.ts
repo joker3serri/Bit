@@ -120,17 +120,8 @@ var IsoProvinces: { [id: string]: string; } = {
 
 export default class AutofillService implements AutofillServiceInterface {
 
-    private lastUsedCipher: CipherView;
-    private lastSortedCiphers: CipherView[] = [];
-
     constructor(private cipherService: CipherService, private userService: UserService,
-        private totpService: TotpService, private eventService: EventService) {
-
-        chrome.tabs.onUpdated.addListener(() => {
-            this.lastUsedCipher = null;
-            this.lastSortedCiphers = [];
-        });
-    }
+        private totpService: TotpService, private eventService: EventService) { }
 
     getFormsWithPasswordFields(pageDetails: AutofillPageDetails): any[] {
         const formData: any[] = [];
@@ -198,8 +189,6 @@ export default class AutofillService implements AutofillServiceInterface {
                 this.cipherService.updateLastUsedDate(options.cipher.id);
             }
 
-            this.lastUsedCipher = options.cipher;
-
             BrowserApi.tabSendMessage(tab, {
                 command: 'fillForm',
                 fillScript: fillScript,
@@ -231,51 +220,27 @@ export default class AutofillService implements AutofillServiceInterface {
         }
     }
 
-    async doAutoFillForLastUsedLogin(pageDetails: any) {
+    async doAutoFillActiveTab(pageDetails: any, fromCommand: boolean) {
         const tab = await this.getActiveTab();
         if (!tab || !tab.url) {
             return;
         }
 
-        const ciphers = await this.cipherService.getAllDecryptedForUrl(tab.url);
-        if (!ciphers.length) {
-            return;
+        let cipher: CipherView;
+        if (fromCommand) {
+            cipher = await this.cipherService.getNextCipherForUrl(tab.url);
+        } else {
+            cipher = await this.cipherService.getLastUsedForUrl(tab.url);
         }
-
-        this.lastSortedCiphers = ciphers.sort(this.cipherService.sortCiphersByLastUsed);
-
-        this.doAutoFill({
-            cipher: this.lastSortedCiphers[0],
-            pageDetails: pageDetails,
-            skipTotp: true,
-            skipLastUsed: true,
-            skipUsernameOnlyFill: true,
-            onlyEmptyFields: true,
-            onlyVisibleFields: true,
-        });
-    }
-
-    async cycleThroughLoginsByLastUsed(pageDetails: any) {
-        const tab = await this.getActiveTab();
-        if (!tab || !tab.url) {
-            return;
-        }
-
-        const ciphers = await this.cipherService.getAllDecryptedForUrl(tab.url);
-        if (!ciphers.length) {
-            return;
-        }
-
-        if (!this.arraysContainSameElements(this.lastSortedCiphers, ciphers)) {
-            this.lastSortedCiphers = ciphers.sort(this.cipherService.sortCiphersByLastUsed);
-        }
-
-        const lastUsedIndex = this.lastSortedCiphers.indexOf(this.lastUsedCipher);
-        const cipher = this.lastSortedCiphers[(lastUsedIndex + 1) % this.lastSortedCiphers.length];
 
         return await this.doAutoFill({
             cipher: cipher,
             pageDetails: pageDetails,
+            skipTotp: !fromCommand,
+            skipLastUsed: !fromCommand,
+            skipUsernameOnlyFill: !fromCommand,
+            onlyEmptyFields: !fromCommand,
+            onlyVisibleFields: !fromCommand,
         });
     }
 
