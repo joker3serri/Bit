@@ -114,7 +114,6 @@ export default class RuntimeBackground {
                         subcommand: subCommand,
                     });
                 }
-
                 break;
             case 'logout':
                 // ask all tabs to activate login-in-page-menu
