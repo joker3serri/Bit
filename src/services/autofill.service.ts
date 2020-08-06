@@ -1119,8 +1119,4 @@ export default class AutofillService implements AutofillServiceInterface {
         fillScript.script.push(['focus_by_opid', field.opid]);
         fillScript.script.push(['fill_by_opid', field.opid, value]);
     }
-
-    private arraysContainSameElements(arrayA: any[], arrayB: any[]) {
-        return arrayA.length === arrayB.length && arrayA.every((cipher) => arrayB.includes(cipher));
-    }
 }
