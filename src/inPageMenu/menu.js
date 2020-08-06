@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
             window.addEventListener('resize', ()=>{
                 adjustMenuHeight()
             });
-
         } else if (msg.command === 'menuAnswerRequest') {
             switch (msg.subcommand) {
                 case 'menuSetSelectionOnCipher':
@@ -43,9 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     requestFormFillingWithCipher(document.querySelector('.selected').dataset.cipherId)
                     break;
             }
-
         }
-
     })
 
     // 4- request ciphers to the background scripts
