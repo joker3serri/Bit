@@ -758,7 +758,7 @@ import menuCtrler from './menuCtrler';
             return thisFill.hasOwnProperty(thisOperation) ? thisFill[thisOperation].apply(this, op) : null;
         }
 
-        // add the menu buton in the element by opid operation
+        // add the menu button in the element by opid operation
         function addMenuBtnByOpId(opId, op) {
             var el = getElementByOpId(opId);
             return el ? (menuCtrler.addMenuButton(el, op, markTheFilling), [el]) : null;
@@ -1050,9 +1050,9 @@ import menuCtrler from './menuCtrler';
     chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 
         /*
-        @override by Cozy :
-        This log is very usefoul for reverse engineer the code, keep it for tests
-        console.log('autofil.js HEARD MESSAGE : ', {'msg.command': msg.command,'msg.subCommand': msg.subCommand, 'sender.url': sender.url, "msg": msg});
+        @override by Cozy : this log is very useful for reverse engineering the code, keep it for tests
+
+        console.log('autofil.js HEARD MESSAGE : msg.command:', msg.command, 'sender', sender);
         */
 
         if (msg.command === 'collectPageDetails') {

@@ -67,7 +67,7 @@ export default class RuntimeBackground {
     async processMessage(msg: any, sender: any, sendResponse: any) {
         let allTabs;
         /*
-        @override by Cozy : this log is very usefoul for reverse engineer the code, keep it for tests
+        @override by Cozy : this log is very useful for reverse engineering the code, keep it for tests
 
         console.log('runtime.background PROCESS MESSAGE ', {
             'msg.command:': msg.command,
