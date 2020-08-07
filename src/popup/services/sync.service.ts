@@ -21,9 +21,6 @@ import { SettingsService } from 'jslib/abstractions/settings.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
 import { UserService } from 'jslib/abstractions/user.service';
 
-// import { PolicyData } from 'jslib/models/data/policyData';
-// import { PolicyResponse } from '../models/response/policyResponse';
-
 /* start Cozy imports */
 import { SyncService as BaseSyncService } from 'jslib/services/sync.service';
 import { CozyClientService } from './cozyClient.service';
