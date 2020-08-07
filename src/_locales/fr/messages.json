@@ -1135,7 +1135,7 @@
   },
   "toggleCurrentUris": {
     "message": "Afficher/masquer les URIs actuels",
-    "description": "Toggle the display of the URIs of the currently open tabs in the browser."
+    "description": "Affiche les URL des onglets actuellement ouverts."
   },
   "currentUri": {
     "message": "URI actuel",
