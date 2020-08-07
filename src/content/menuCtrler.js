@@ -13,7 +13,7 @@ menuCtrler exposes an API to interact with the menus within the pages.
                     isMenuInited:false  ,
                     islocked:false      ,
                     isActivated:true    ,
-                    isHiden:true        ,
+                    isHidden:true        ,
                     isAutoFillInited    ,
                     currentMenuType:null,
                     lastFocusedEl       ,
@@ -37,7 +37,7 @@ var menuCtrler = {
                                isMenuInited:false,
                                islocked:false,
                                isActivated:true,
-                               isHiden:true,
+                               isHidden:true,
                                isAutoFillInited:false,
                                currentMenuType:null,
                                lastFocusedEl:null,
@@ -179,19 +179,19 @@ function _initInPageMenuForEl(targetEl) {
             menuCtrler.hide(true)
             return;
         } else if (keyName === 'ArrowUp') {
-            if (state.isHiden) return
+            if (state.isHidden) return
             event.stopPropagation()
             event.preventDefault()
             menuCtrler.moveSelection(-1)
             return;
         } else if (keyName === 'ArrowDown') {
-            if (state.isHiden) return
+            if (state.isHidden) return
             event.stopPropagation()
             event.preventDefault()
             menuCtrler.moveSelection(1)
             return;
         } else if (keyName === 'Enter') {
-            if (state.isHiden) return
+            if (state.isHidden) return
             event.stopPropagation()
             event.preventDefault()
             menuCtrler.submit()      // else request menu selection validation
@@ -224,7 +224,7 @@ function hide(force) {
         console.log('HIDE!', internN)
         console.trace()
         menuEl.removeAttribute('data-show')
-        state.isHiden = true
+        state.isHidden = true
         return
     }
     console.trace()
@@ -238,7 +238,7 @@ function hide(force) {
         // otherwise, hide
         console.log('HIDE!', internN)
         menuEl.removeAttribute('data-show')
-        state.isHiden = true
+        state.isHidden = true
     }, 1);
 }
 menuCtrler.hide = hide
@@ -248,7 +248,7 @@ menuCtrler.hide = hide
 // Remove the buttons and prevent listerners' actions
 function deactivate() {
     menuEl.removeAttribute('data-show')
-    state.isHiden = true
+    state.isHidden = true
     // remove all button inside the input of the form
     for (var el of targetsEl) {
         el.style.backgroundImage = ''
