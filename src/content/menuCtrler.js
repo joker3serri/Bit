@@ -194,7 +194,7 @@ function _initInPageMenuForEl(targetEl) {
             if (state.isHiden) return
             event.stopPropagation()
             event.preventDefault()
-            menuCtrler.validate()      // else request menu selection validation
+            menuCtrler.submit()      // else request menu selection validation
             return;
         }
     }, false);
@@ -226,7 +226,7 @@ menuCtrler.hide = hide
 
 
 /* --------------------------------------------------------------------- */
-// remove the buttons and prevent listerners' actions
+// Remove the buttons and prevent listerners' actions
 function deactivate() {
     menuEl.removeAttribute('data-show')
     state.isHiden = true
@@ -240,7 +240,7 @@ menuCtrler.deactivate = deactivate
 
 
 /* --------------------------------------------------------------------- */
-// add the buttons icons and no longuer prevent listerners' actions
+// Add the buttons icons and no longuer prevent listerners' actions
 function activate() {
     // add button icons in inputs of the form
     for (var el of targetsEl) {
@@ -253,12 +253,12 @@ menuCtrler.activate = activate
 
 
 /* --------------------------------------------------------------------- */
-// Init a target element to be able to trigger the menu
+// Moves selection of +1 or -1  (n=1 || n=-1)
 function moveSelection(n) {
     state._selectionRow += n
-    if (state._selectionRow === state._ciphers.length) {
+    if (state._selectionRow >= state._ciphers.length) {
         state._selectionRow = 0
-    } else if (state._selectionRow === -1 ) {
+    } else if (state._selectionRow < 0 ) {
         state._selectionRow = state._ciphers.length - 1
     }
     chrome.runtime.sendMessage({
@@ -272,19 +272,19 @@ menuCtrler.moveSelection = moveSelection
 
 
 /* --------------------------------------------------------------------- */
-// Init a target element to be able to trigger the menu
-function validate() {
+// Submit the currently selected cypher for autofill
+function submit() {
     chrome.runtime.sendMessage({
         command    : 'bgAnswerMenuRequest',
         subcommand : 'menuSelectionValidate',
         sender     : 'menuCtrler',
     });
 }
-menuCtrler.validate = validate
+menuCtrler.submit = submit
 
 
 /* --------------------------------------------------------------------- */
-// set the height of menuEl (iframe) taking into account the inner margin
+// Set the height of menuEl (iframe) taking into account the inner margin
 function setHeight(h) {
     menuEl.style.height = h + 28 + 'px'
 }
