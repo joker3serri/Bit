@@ -13,7 +13,7 @@ menuCtrler exposes an API to interact with the menus within the pages.
                     isMenuInited:false  ,
                     islocked:false      ,
                     isActivated:true    ,
-                    isHiden:true        ,
+                    isHidden:true        ,
                     _ciphers:[]         ,
                     _selectionRow:0     ,
                 },
@@ -34,7 +34,7 @@ var menuCtrler = {
                     isMenuInited:false,
                     islocked:false,
                     isActivated:true,
-                    isHiden:true,
+                    isHidden:true,
                     _ciphers:[],
                     _selectionRow:0,
                  },
@@ -153,7 +153,7 @@ function _initInPageMenuForEl(targetEl) {
         popperInstance.state.elements.reference = targetEl
         popperInstance.update()
         menuEl.setAttribute('data-show', '')
-        state.isHiden = false
+        state.isHidden = false
     }
     // show menu when input receives focus or is clicked (it can be click while if already has focus)
     targetEl.addEventListener('focus', (event)=>{
@@ -179,19 +179,19 @@ function _initInPageMenuForEl(targetEl) {
             menuCtrler.hide(true)
             return;
         } else if (keyName === 'ArrowUp') {
-            if (state.isHiden) return
+            if (state.isHidden) return
             event.stopPropagation()
             event.preventDefault()
             menuCtrler.moveSelection(-1)
             return;
         } else if (keyName === 'ArrowDown') {
-            if (state.isHiden) return
+            if (state.isHidden) return
             event.stopPropagation()
             event.preventDefault()
             menuCtrler.moveSelection(1)
             return;
         } else if (keyName === 'Enter') {
-            if (state.isHiden) return
+            if (state.isHidden) return
             event.stopPropagation()
             event.preventDefault()
             menuCtrler.submit()      // else request menu selection validation
@@ -208,7 +208,7 @@ function hide(force) {
     if (state.isLocked) return
     if (force && typeof force == 'boolean') {
         menuEl.removeAttribute('data-show')
-        state.isHiden = true
+        state.isHidden = true
         return
     }
     setTimeout(() => {
@@ -219,7 +219,7 @@ function hide(force) {
         }
         // otherwise, hide
         menuEl.removeAttribute('data-show')
-        state.isHiden = true
+        state.isHidden = true
     }, 1);
 }
 menuCtrler.hide = hide
@@ -229,7 +229,7 @@ menuCtrler.hide = hide
 // Remove the buttons and prevent listerners' actions
 function deactivate() {
     menuEl.removeAttribute('data-show')
-    state.isHiden = true
+    state.isHidden = true
     // remove all button inside the input of the form
     for (var el of targetsEl) {
         el.style.backgroundImage = ''
