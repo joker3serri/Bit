@@ -4,6 +4,7 @@ import { CipherView } from 'jslib/models/view/cipherView';
 import { LoginUriView } from 'jslib/models/view/loginUriView';
 import { LoginView } from 'jslib/models/view/loginView';
 
+import { ConstantsService } from 'jslib/services/constants.service';
 import { LocalConstantsService } from '../popup/services/constants.service';
 
 import { I18nService } from 'jslib/abstractions/i18n.service';
