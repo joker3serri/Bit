@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     if (domObservationCollectTimeout != null) {
                         window.clearTimeout(domObservationCollectTimeout);
                     }
-                    // Cozy : the timeout is tightened compared to BW because when mutations are trigered,
+                    // @override by Cozy : the timeout is tightened compared to BW because when mutations are trigered,
                     // the browser has already differed the event : there is no need to wait more.
                     domObservationCollectTimeout = window.setTimeout(collect, 100);
                 }
