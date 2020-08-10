@@ -1296,5 +1296,8 @@
   },
   "vaultTimeoutLogOutConfirmationTitle": {
     "message": "Timeout Action Confirmation"
+  },
+  "autoFillSuccess": {
+    "message": "Autofilled item"
   }
 }

@@ -22,6 +22,10 @@ import { UserService } from 'jslib/abstractions/user.service';
 import { BroadcasterService } from 'jslib/angular/services/broadcaster.service';
 
 import { ViewComponent as BaseViewComponent } from 'jslib/angular/components/view.component';
+import { BrowserApi } from '../../browser/browserApi';
+import { AutofillService } from '../../services/abstractions/autofill.service';
+
+const BroadcasterSubscriptionId = 'ViewComponent';
 
 @Component({
     selector: 'app-vault-view',
@@ -29,6 +33,7 @@ import { ViewComponent as BaseViewComponent } from 'jslib/angular/components/vie
 })
 export class ViewComponent extends BaseViewComponent {
     showAttachments = true;
+    pageDetails: any[] = [];
 
     constructor(cipherService: CipherService, totpService: TotpService,
         tokenService: TokenService, i18nService: I18nService,
@@ -37,7 +42,7 @@ export class ViewComponent extends BaseViewComponent {
         private router: Router, private location: Location,
         broadcasterService: BroadcasterService, ngZone: NgZone,
         changeDetectorRef: ChangeDetectorRef, userService: UserService,
-        eventService: EventService) {
+        eventService: EventService, private autofillService: AutofillService) {
         super(cipherService, totpService, tokenService, i18nService, cryptoService, platformUtilsService,
             auditService, window, broadcasterService, ngZone, changeDetectorRef, userService, eventService);
     }
@@ -56,7 +61,30 @@ export class ViewComponent extends BaseViewComponent {
                 queryParamsSub.unsubscribe();
             }
         });
-        super.ngOnInit();
+
+        this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
+            this.ngZone.run(async () => {
+                switch (message.command) {
+                    case 'syncCompleted':
+                        if (message.successfully) {
+                            await this.load();
+                            this.changeDetectorRef.detectChanges();
+                        }
+                        break;
+                    case 'collectPageDetailsResponse':
+                        if (message.sender === BroadcasterSubscriptionId) {
+                            this.pageDetails.push({
+                                frameId: message.webExtSender.frameId,
+                                tab: message.tab,
+                                details: message.details,
+                            });
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            });
+        });
     }
 
     edit() {
@@ -77,6 +105,52 @@ export class ViewComponent extends BaseViewComponent {
                 cloneMode: true,
                 cipherId: this.cipher.id,
             },
+        });
+    }
+
+    async fillCipher() {
+
+        if (this.pageDetails == null || this.pageDetails.length === 0) {
+            this.platformUtilsService.showToast('error', null,
+                this.i18nService.t('autofillError'));
+            return false;
+        }
+
+        try {
+            this.totpCode = await this.autofillService.doAutoFill({
+                cipher: this.cipher,
+                pageDetails: this.pageDetails,
+                doc: window.document,
+            });
+            if (this.totpCode != null) {
+                this.platformUtilsService.copyToClipboard(this.totpCode, { window: window });
+            }
+
+            this.platformUtilsService.showToast('success', null,
+                this.i18nService.t('autoFillSuccess'));
+        } catch {
+            this.ngZone.run(() => {
+                this.platformUtilsService.showToast('error', null,
+                    this.i18nService.t('autofillError'));
+                this.changeDetectorRef.detectChanges();
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+
+    async load() {
+        await super.load();
+
+        const tab = await BrowserApi.getTabFromCurrentWindow();
+
+        this.pageDetails = [];
+        BrowserApi.tabSendMessage(tab, {
+            command: 'collectPageDetails',
+            tab: tab,
+            sender: BroadcasterSubscriptionId,
         });
     }
 
