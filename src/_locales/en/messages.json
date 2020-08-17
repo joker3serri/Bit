@@ -1297,6 +1297,15 @@
   "vaultTimeoutLogOutConfirmationTitle": {
     "message": "Timeout Action Confirmation"
   },
+  "autoFillAndSave": {
+    "message": "Auto-fill and Save"
+  },
+  "savedUri": {
+    "message": "Saved URI"
+  },
+  "uriExists": {
+    "message": "URI already saved"
+  },
   "autoFillSuccess": {
     "message": "Autofilled item"
   }

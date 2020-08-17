@@ -14,10 +14,13 @@ import { CipherService } from 'jslib/abstractions/cipher.service';
 import { CryptoService } from 'jslib/abstractions/crypto.service';
 import { EventService } from 'jslib/abstractions/event.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
+import { MessagingService } from 'jslib/abstractions/messaging.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { TokenService } from 'jslib/abstractions/token.service';
 import { TotpService } from 'jslib/abstractions/totp.service';
 import { UserService } from 'jslib/abstractions/user.service';
+import { Cipher } from 'jslib/models/domain';
+import { LoginUriView } from 'jslib/models/view';
 
 import { BroadcasterService } from 'jslib/angular/services/broadcaster.service';
 
@@ -42,7 +45,8 @@ export class ViewComponent extends BaseViewComponent {
         private router: Router, private location: Location,
         broadcasterService: BroadcasterService, ngZone: NgZone,
         changeDetectorRef: ChangeDetectorRef, userService: UserService,
-        eventService: EventService, private autofillService: AutofillService) {
+        eventService: EventService, private autofillService: AutofillService,
+        private messagingService: MessagingService) {
         super(cipherService, totpService, tokenService, i18nService, cryptoService, platformUtilsService,
             auditService, window, broadcasterService, ngZone, changeDetectorRef, userService, eventService);
     }
@@ -140,6 +144,43 @@ export class ViewComponent extends BaseViewComponent {
         return true;
     }
 
+    async fillCipherAndSave() {
+        const didAutofill: boolean = await this.fillCipher();
+
+        if (didAutofill) {
+            const tab = await BrowserApi.getTabFromCurrentWindow();
+            if (!tab) {
+                throw new Error('No tab found.');
+            }
+
+            if (this.cipher.login.uris == null) {
+                this.cipher.login.uris = [];
+            } else {
+                if (this.cipher.login.uris.some((uri) => uri.uri === tab.url)) {
+                    this.platformUtilsService.showToast('error', null,
+                        this.i18nService.t('uriExists'));
+                    return;
+                }
+            }
+
+            const loginUri: LoginUriView = new LoginUriView();
+            loginUri.uri = tab.url;
+            this.cipher.login.uris.push(loginUri);
+
+            try {
+                const cipher: Cipher = await this.cipherService.encrypt(this.cipher);
+                await this.cipherService.saveWithServer(cipher);
+                this.cipher.id = cipher.id;
+
+                this.platformUtilsService.showToast('success', null,
+                    this.i18nService.t('savedURI'));
+                this.messagingService.send('editedCipher');
+            } catch {
+                this.platformUtilsService.showToast('error', null,
+                    this.i18nService.t('unexpectedError'));
+            }
+        }
+    }
 
     async load() {
         await super.load();
