@@ -67,9 +67,7 @@ export class AppComponent implements OnInit {
         private i18nService: I18nService, private router: Router,
         private stateService: StateService, private messagingService: MessagingService,
         private changeDetectorRef: ChangeDetectorRef, private ngZone: NgZone,
-        private sanitizer: DomSanitizer, private platformUtilsService: PlatformUtilsService) {
-            angulartics2GoogleAnalytics.startTracking();
-        }
+        private sanitizer: DomSanitizer, private platformUtilsService: PlatformUtilsService) { }
 
     ngOnInit() {
         if (BrowserApi.getBackgroundPage() == null) {
