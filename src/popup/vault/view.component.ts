@@ -27,6 +27,7 @@ import { BroadcasterService } from 'jslib/angular/services/broadcaster.service';
 import { ViewComponent as BaseViewComponent } from 'jslib/angular/components/view.component';
 import { BrowserApi } from '../../browser/browserApi';
 import { AutofillService } from '../../services/abstractions/autofill.service';
+import { PopupUtilsService } from '../services/popup-utils.service';
 
 const BroadcasterSubscriptionId = 'ViewComponent';
 
@@ -37,6 +38,7 @@ const BroadcasterSubscriptionId = 'ViewComponent';
 export class ViewComponent extends BaseViewComponent {
     showAttachments = true;
     pageDetails: any[] = [];
+    inPopout: boolean = false;
 
     constructor(cipherService: CipherService, totpService: TotpService,
         tokenService: TokenService, i18nService: I18nService,
@@ -46,13 +48,14 @@ export class ViewComponent extends BaseViewComponent {
         broadcasterService: BroadcasterService, ngZone: NgZone,
         changeDetectorRef: ChangeDetectorRef, userService: UserService,
         eventService: EventService, private autofillService: AutofillService,
-        private messagingService: MessagingService) {
+        private messagingService: MessagingService, private popupUtilsService: PopupUtilsService) {
         super(cipherService, totpService, tokenService, i18nService, cryptoService, platformUtilsService,
             auditService, window, broadcasterService, ngZone, changeDetectorRef, userService, eventService);
     }
 
     ngOnInit() {
         this.showAttachments = !this.platformUtilsService.isEdge();
+        this.inPopout = this.popupUtilsService.inPopout(window);
         const queryParamsSub = this.route.queryParams.subscribe(async (params) => {
             if (params.cipherId) {
                 this.cipherId = params.cipherId;
