@@ -29,7 +29,7 @@ import { BrowserApi } from '../../browser/browserApi';
 import { AutofillService } from '../../services/abstractions/autofill.service';
 import { PopupUtilsService } from '../services/popup-utils.service';
 
-const BroadcasterSubscriptionId = 'ViewComponent';
+const BroadcasterSubscriptionId = 'ChildViewComponent';
 
 @Component({
     selector: 'app-vault-view',
@@ -68,16 +68,11 @@ export class ViewComponent extends BaseViewComponent {
                 queryParamsSub.unsubscribe();
             }
         });
+        super.ngOnInit();
 
         this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
             this.ngZone.run(async () => {
                 switch (message.command) {
-                    case 'syncCompleted':
-                        if (message.successfully) {
-                            await this.load();
-                            this.changeDetectorRef.detectChanges();
-                        }
-                        break;
                     case 'collectPageDetailsResponse':
                         if (message.sender === BroadcasterSubscriptionId) {
                             this.pageDetails.push({
@@ -92,6 +87,11 @@ export class ViewComponent extends BaseViewComponent {
                 }
             });
         });
+    }
+
+    ngOnDestroy() {
+        this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
+        super.ngOnDestroy();
     }
 
     edit() {
@@ -116,39 +116,15 @@ export class ViewComponent extends BaseViewComponent {
     }
 
     async fillCipher() {
-
-        if (this.pageDetails == null || this.pageDetails.length === 0) {
-            this.platformUtilsService.showToast('error', null,
-                this.i18nService.t('autofillError'));
-            return false;
-        }
-
-        try {
-            this.totpCode = await this.autofillService.doAutoFill({
-                cipher: this.cipher,
-                pageDetails: this.pageDetails,
-                doc: window.document,
-            });
-            if (this.totpCode != null) {
-                this.platformUtilsService.copyToClipboard(this.totpCode, { window: window });
-            }
-
+        const didAutofill: boolean = await this.doAutofill();
+        if (didAutofill) {
             this.platformUtilsService.showToast('success', null,
                 this.i18nService.t('autoFillSuccess'));
-        } catch {
-            this.ngZone.run(() => {
-                this.platformUtilsService.showToast('error', null,
-                    this.i18nService.t('autofillError'));
-                this.changeDetectorRef.detectChanges();
-            });
-            return false;
-        }
-
-        return true;
+        }        
     }
 
     async fillCipherAndSave() {
-        const didAutofill: boolean = await this.fillCipher();
+        const didAutofill: boolean = await this.doAutofill();
 
         if (didAutofill) {
             const tab = await BrowserApi.getTabFromCurrentWindow();
@@ -160,8 +136,8 @@ export class ViewComponent extends BaseViewComponent {
                 this.cipher.login.uris = [];
             } else {
                 if (this.cipher.login.uris.some((uri) => uri.uri === tab.url)) {
-                    this.platformUtilsService.showToast('error', null,
-                        this.i18nService.t('uriExists'));
+                    this.platformUtilsService.showToast('success', null,
+                        this.i18nService.t('savedURI'));
                     return;
                 }
             }
@@ -183,6 +159,32 @@ export class ViewComponent extends BaseViewComponent {
                     this.i18nService.t('unexpectedError'));
             }
         }
+    }
+
+    async doAutofill() {
+        if (this.pageDetails == null || this.pageDetails.length === 0) {
+            this.platformUtilsService.showToast('error', null,
+                this.i18nService.t('autofillError'));
+            return false;
+        }
+
+        try {
+            this.totpCode = await this.autofillService.doAutoFill({
+                cipher: this.cipher,
+                pageDetails: this.pageDetails,
+                doc: window.document,
+            });
+            if (this.totpCode != null) {
+                this.platformUtilsService.copyToClipboard(this.totpCode, { window: window });
+            }
+        } catch {
+            this.platformUtilsService.showToast('error', null,
+                this.i18nService.t('autofillError'));
+            this.changeDetectorRef.detectChanges();
+            return false;
+        }
+
+        return true;
     }
 
     async load() {

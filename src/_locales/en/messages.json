@@ -1304,12 +1304,9 @@
     "message": "Auto-fill and Save"
   },
   "savedUri": {
-    "message": "Saved URI"
-  },
-  "uriExists": {
-    "message": "URI already saved"
+    "message": "Auto-filled and Saved Item"
   },
   "autoFillSuccess": {
-    "message": "Autofilled item"
+    "message": "Auto-filled Item"
   }
 }
