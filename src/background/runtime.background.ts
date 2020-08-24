@@ -169,11 +169,7 @@ export default class RuntimeBackground {
                     vaultUrl = 'https://vault.bitwarden.com';
                 }
 
-                if (msg.referrer == null) {
-                    return;
-                }
-
-                if (!vaultUrl.includes(msg.referrer)) {
+                if (msg.referrer == null || Utils.getHostname(vaultUrl) !== msg.referrer) {
                     return;
                 }
 
