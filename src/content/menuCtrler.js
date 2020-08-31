@@ -146,8 +146,6 @@ function _initInPageMenuForEl(targetEl) {
         setTimeout(popperInstance.update, 1800)
 
         state.isMenuInited = true
-
-
     }
     // hide menu if focus leaves the input
     targetEl.addEventListener('blur' , (event)=>{
@@ -174,6 +172,7 @@ function _initInPageMenuForEl(targetEl) {
     if(document.activeElement === targetEl) show(targetEl)
 
     // listen keystrokes on the input form
+    var hasTypedSomething = false
     targetEl.addEventListener('keydown', (event) => {
         if (!event.isTrusted) return;
         if (!state.isActivated) return;
@@ -182,22 +181,31 @@ function _initInPageMenuForEl(targetEl) {
             menuCtrler.hide(true)
             return;
         } else if (keyName === 'ArrowUp') {
-            if (state.isHidden) return
             event.stopPropagation()
             event.preventDefault()
-            menuCtrler.moveSelection(-1)
+            if (state.isHidden) {
+                _show()
+            } else {
+                menuCtrler.moveSelection(-1)
+            }
             return;
         } else if (keyName === 'ArrowDown') {
-            if (state.isHidden) return
             event.stopPropagation()
             event.preventDefault()
-            menuCtrler.moveSelection(1)
+            if (state.isHidden) {
+                _show()
+            } else {
+                menuCtrler.moveSelection(1)
+            }
             return;
         } else if (keyName === 'Enter') {
             if (state.isHidden) return
             event.stopPropagation()
             event.preventDefault()
             menuCtrler.submit()      // else request menu selection validation
+            return;
+        } else {
+            menuCtrler.hide(true)
             return;
         }
     }, false);
