@@ -52,7 +52,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
         if (this.popupUtilsService.inPopup(window) && isFirefox &&
             this.win.navigator.userAgent.indexOf('Windows NT 10.0;') > -1) {
             // ref: https://bugzilla.mozilla.org/show_bug.cgi?id=1562620
-            this.initU2f = false;
+            this.initWebAuthn = false;
         }
         const isSafari = this.platformUtilsService.isSafari();
         await super.ngOnInit();
@@ -69,7 +69,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
             }
         }
 
-        if (!this.initU2f && this.selectedProviderType === TwoFactorProviderType.U2f &&
+        if (!this.initWebAuthn && this.selectedProviderType === TwoFactorProviderType.WebAuthn &&
             this.popupUtilsService.inPopup(window)) {
             const confirmed = await this.platformUtilsService.showDialog(this.i18nService.t('popupU2fCloseMessage'),
                 null, this.i18nService.t('yes'), this.i18nService.t('no'));
