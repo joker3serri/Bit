@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
     function doFillIfNeeded(force: boolean = false) {
+
         if (force || pageHref !== window.location.href) {
             if (!force) {
                 // Some websites are slow and rendering all page content. Try to fill again later
@@ -72,4 +73,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
         }
     }
+
 });

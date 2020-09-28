@@ -1,3 +1,5 @@
+import { BrowserApi } from '../../browser/browserApi';
+
 import {
     Component,
     OnInit,
@@ -23,6 +25,7 @@ import { LocalConstantsService as ConstantsService } from '..//services/constant
 export class OptionsComponent implements OnInit {
     disableFavicon = false;
     disableKonnectorsSuggestions = false;
+    enableInPageMenu = true;
     enableAutoFillOnPageLoad = false;
     disableAutoTotpCopy = false;
     disableContextMenuItem = false;
@@ -74,6 +77,12 @@ export class OptionsComponent implements OnInit {
         this.disableKonnectorsSuggestions = await this.storageService.get(
             ConstantsService.disableKonnectorsSuggestionsKey,
         );
+
+        this.enableInPageMenu = await this.storageService.get<boolean>(
+            ConstantsService.enableInPageMenuKey);
+        if (this.enableInPageMenu === null) { // if not yet set, then default to true
+            this.enableInPageMenu = true;
+        }
 
         this.enableAutoFillOnPageLoad = await this.storageService.get<boolean>(
             ConstantsService.enableAutoFillOnPageLoadKey);
@@ -134,6 +143,20 @@ export class OptionsComponent implements OnInit {
             ConstantsService.disableKonnectorsSuggestionsKey,
             this.disableKonnectorsSuggestions,
         );
+    }
+
+    async updateEnableInPageMenu() {
+        await this.storageService.save(ConstantsService.enableInPageMenuKey, this.enableInPageMenu);
+        // activate or deactivate the menu from all tabs
+        let subcommand = 'activateMenu';
+        if (!this.enableInPageMenu) {
+            subcommand = 'deactivateMenu';
+        }
+        const allTabs = await BrowserApi.getAllTabs();
+        for (const tab of allTabs) {
+            BrowserApi.tabSendMessage(tab, {command: 'autofillAnswerRequest', subcommand: subcommand});
+        }
+        this.callAnalytics('In-Page-Menu activate', this.enableInPageMenu);
     }
 
     async updateAutoFillOnPageLoad() {

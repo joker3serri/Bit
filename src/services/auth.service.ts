@@ -25,6 +25,7 @@ import { IdentityTokenResponse } from '../models/response/identityTokenResponse'
 import { CozyClientService } from '../popup/services/cozyClient.service';
 
 /**
+ * @override by Cozy :
  * We extend the jslib's AuthService and override some methods (particularly
  * the logInHelper) to store the clientId and registrationAccessToken returned
  * by the stack on login. We also add a clear method that pass these infos

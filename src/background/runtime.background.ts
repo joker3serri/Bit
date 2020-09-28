@@ -5,15 +5,16 @@ import { LoginUriView } from 'jslib/models/view/loginUriView';
 import { LoginView } from 'jslib/models/view/loginView';
 
 import { ConstantsService } from 'jslib/services/constants.service';
+import { LocalConstantsService } from '../popup/services/constants.service';
 
 import { I18nService } from 'jslib/abstractions/i18n.service';
 
 import { Analytics } from 'jslib/misc';
 
 import { CipherService } from 'jslib/abstractions/cipher.service';
-import { LockService } from 'jslib/abstractions/lock.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
 import { SystemService } from 'jslib/abstractions/system.service';
+import { VaultTimeoutService } from 'jslib/abstractions/vaultTimeout.service';
 
 import { BrowserApi } from '../browser/browserApi';
 
@@ -25,6 +26,7 @@ import { AutofillService } from '../services/abstractions/autofill.service';
 import BrowserPlatformUtilsService from '../services/browserPlatformUtils.service';
 
 import { NotificationsService } from 'jslib/abstractions/notifications.service';
+import { SyncService } from 'jslib/abstractions/sync.service';
 
 import { Utils } from 'jslib/misc/utils';
 
@@ -39,8 +41,8 @@ export default class RuntimeBackground {
         private cipherService: CipherService, private platformUtilsService: BrowserPlatformUtilsService,
         private storageService: StorageService, private i18nService: I18nService,
         private analytics: Analytics, private notificationsService: NotificationsService,
-        private systemService: SystemService, private lockService: LockService,
-        private konnectorsService: KonnectorsService) {
+        private systemService: SystemService, private vaultTimeoutService: VaultTimeoutService,
+        private konnectorsService: KonnectorsService, private syncService: SyncService) {
         this.isSafari = this.platformUtilsService.isSafari();
         this.runtime = this.isSafari ? {} : chrome.runtime;
 
@@ -64,6 +66,19 @@ export default class RuntimeBackground {
     }
 
     async processMessage(msg: any, sender: any, sendResponse: any) {
+        let allTabs;
+        /*
+        @override by Cozy : this log is very useful for reverse engineering the code, keep it for tests
+
+        console.log('runtime.background PROCESS MESSAGE ', {
+            'msg.command:': msg.command,
+            'msg.subcommandm': msg.subcommand,
+            'msg.sender': msg.sender,
+            'sender': sender
+        });
+
+        */
+
         switch (msg.command) {
             case 'loggedIn':
             case 'unlocked':
@@ -71,8 +86,21 @@ export default class RuntimeBackground {
                 await this.main.refreshBadgeAndMenu(false);
                 this.notificationsService.updateConnection(msg.command === 'unlocked');
                 this.systemService.cancelProcessReload();
+                // ask notificationbar of all tabs to retry to collect pageDetails in order to activate in-page-menu
+                await this.syncService.fullSync(true);
+                allTabs = await BrowserApi.getAllTabs();
+                for (const tab of allTabs) {
+                    BrowserApi.tabSendMessage(tab, {command: 'autofillAnswerRequest', subcommand: 'activateMenu'});
+                }
+
                 break;
             case 'logout':
+                // ask all tabs to deactivate in-page-menu
+                allTabs = await BrowserApi.getAllTabs();
+                for (const tab of allTabs) {
+                    BrowserApi.tabSendMessage(tab, {command: 'autofillAnswerRequest', subcommand: 'deactivateMenu'});
+                }
+                // logout
                 await this.main.logout(msg.expired);
                 break;
             case 'syncCompleted':
@@ -101,6 +129,49 @@ export default class RuntimeBackground {
             case 'bgCollectPageDetails':
                 await this.main.collectPageDetailsForContentScript(sender.tab, msg.sender, sender.frameId);
                 break;
+            case 'bgAnswerMenuRequest':
+                switch (msg.subcommand) {
+                    case 'getCiphersForTab':
+                        const ciphers = await this.cipherService.getAllDecryptedForUrl(sender.tab.url, null);
+                        await BrowserApi.tabSendMessageData(sender.tab, 'updateMenuCiphers', ciphers);
+                        break;
+                    case 'closeMenu':
+                        await BrowserApi.tabSendMessage(sender.tab, {
+                            command    : 'autofillAnswerRequest',
+                            subcommand : 'closeMenu',
+                        });
+                        break;
+                    case 'setMenuHeight':
+                        await BrowserApi.tabSendMessage(sender.tab, {
+                            command   : 'autofillAnswerRequest',
+                            subcommand: 'setMenuHeight',
+                            height    : msg.height,
+                        });
+                        break;
+                    case 'fillFormWithCipher':
+                        await BrowserApi.tabSendMessage(sender.tab, {
+                            command   : 'autofillAnswerRequest',
+                            subcommand: 'fillFormWithCipher',
+                            cipherId  : msg.cipherId,
+                        });
+                        break;
+                    case 'menuMoveSelection':
+                        await BrowserApi.tabSendMessage(sender.tab, {
+                            command     : 'menuAnswerRequest',
+                            subcommand  : 'menuSetSelectionOnCipher',
+                            targetCipher: msg.targetCipher,
+                        });
+                        break;
+                    case 'menuSelectionValidate':
+                        await BrowserApi.tabSendMessage(sender.tab, {
+                            command   : 'menuAnswerRequest',
+                            subcommand: 'menuSelectionValidate',
+                        });
+                        break;
+                }
+                break;
+            case 'bgGetCiphersForTab':
+
             case 'bgAddLogin':
                 await this.addLogin(msg.login, sender.tab);
                 break;
@@ -130,16 +201,36 @@ export default class RuntimeBackground {
                 await this.main.reseedStorage();
                 break;
             case 'collectPageDetailsResponse':
-                if (await this.lockService.isLocked()) {
+                if (await this.vaultTimeoutService.isLocked()) {
                     return;
                 }
                 switch (msg.sender) {
                     case 'notificationBar':
+                        // auttofill.js sends the page details requested by the notification bar.
+                        // 1- request autofill for the in page menu (if activated)
+                        let enableInPageMenu = await this.storageService.get<any>(
+                            LocalConstantsService.enableInPageMenuKey);
+                        if (enableInPageMenu === null) { // if not yet set, then default to true
+                            enableInPageMenu = true;
+                        }
+                        if (enableInPageMenu) {
+                            const totpCode1 = await this.autofillService.doAutoFillForLastUsedLogin([{
+                                frameId: sender.frameId,
+                                tab: msg.tab,
+                                details: msg.details,
+                                sender: 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
+                            }], true);
+                            if (totpCode1 != null) {
+                                this.platformUtilsService.copyToClipboard(totpCode1, { window: window });
+                            }
+                        }
+                        // 2- send page details to the notification bar
                         const forms = this.autofillService.getFormsWithPasswordFields(msg.details);
                         await BrowserApi.tabSendMessageData(msg.tab, 'notificationBarPageDetails', {
                             details: msg.details,
                             forms: forms,
                         });
+
                         break;
                     case 'autofiller':
                     case 'autofill_cmd':
@@ -147,11 +238,28 @@ export default class RuntimeBackground {
                             frameId: sender.frameId,
                             tab: msg.tab,
                             details: msg.details,
+                            sender: msg.sender,
                         }], msg.sender === 'autofill_cmd');
                         if (totpCode != null) {
                             this.platformUtilsService.copyToClipboard(totpCode, { window: window });
                         }
                         break;
+
+                    case 'menu.js':
+                        const tab = await BrowserApi.getTabFromCurrentWindow();
+                        const totpCode2 = await this.autofillService.doAutoFill({
+                            cipher     : msg.cipher,
+                            pageDetails: [{
+                                frameId: sender.frameId,
+                                tab    : tab,
+                                details: msg.details,
+                            }],
+                        });
+                        if (totpCode2 != null) {
+                            this.platformUtilsService.copyToClipboard(totpCode2, { window: window });
+                        }
+                        break;
+
                     case 'contextMenu':
                         clearTimeout(this.autofillTimeout);
                         this.pageDetailsToAutoFill.push({
@@ -186,7 +294,7 @@ export default class RuntimeBackground {
     }
 
     private async saveAddLogin(tab: any) {
-        if (await this.lockService.isLocked()) {
+        if (await this.vaultTimeoutService.isLocked()) {
             return;
         }
 
@@ -227,7 +335,7 @@ export default class RuntimeBackground {
     }
 
     private async saveChangePassword(tab: any) {
-        if (await this.lockService.isLocked()) {
+        if (await this.vaultTimeoutService.isLocked()) {
             return;
         }
 
@@ -280,7 +388,7 @@ export default class RuntimeBackground {
     }
 
     private async addLogin(loginInfo: any, tab: any) {
-        if (await this.lockService.isLocked()) {
+        if (await this.vaultTimeoutService.isLocked()) {
             return;
         }
 
@@ -289,11 +397,17 @@ export default class RuntimeBackground {
             return;
         }
 
+        let normalizedUsername = loginInfo.username;
+        if (normalizedUsername != null) {
+            normalizedUsername = normalizedUsername.toLowerCase();
+        }
+
         const ciphers = await this.cipherService.getAllDecryptedForUrl(loginInfo.url);
-        const usernameMatches = ciphers.filter((c) => c.login.username === loginInfo.username);
+        const usernameMatches = ciphers.filter((c) =>
+            c.login.username != null && c.login.username.toLowerCase() === normalizedUsername);
         if (usernameMatches.length === 0) {
             const disabledAddLogin = await this.storageService.get<boolean>(
-                ConstantsService.disableAddLoginNotificationKey);
+                LocalConstantsService.disableAddLoginNotificationKey);
             if (disabledAddLogin) {
                 return;
             }
@@ -311,7 +425,7 @@ export default class RuntimeBackground {
             await this.main.checkNotificationQueue(tab);
         } else if (usernameMatches.length === 1 && usernameMatches[0].login.password !== loginInfo.password) {
             const disabledChangePassword = await this.storageService.get<boolean>(
-                ConstantsService.disableChangedPasswordNotificationKey);
+                LocalConstantsService.disableChangedPasswordNotificationKey);
             if (disabledChangePassword) {
                 return;
             }
@@ -320,7 +434,7 @@ export default class RuntimeBackground {
     }
 
     private async changedPassword(changeData: any, tab: any) {
-        if (await this.lockService.isLocked()) {
+        if (await this.vaultTimeoutService.isLocked()) {
             return;
         }
 
@@ -368,7 +482,7 @@ export default class RuntimeBackground {
 
     private async checkOnInstalled() {
         if (this.isSafari) {
-            const installedVersion = await this.storageService.get<string>(ConstantsService.installedVersionKey);
+            const installedVersion = await this.storageService.get<string>(LocalConstantsService.installedVersionKey);
             if (installedVersion == null) {
                 this.onInstalledReason = 'install';
             } else if (BrowserApi.getApplicationVersion() !== installedVersion) {
@@ -376,7 +490,7 @@ export default class RuntimeBackground {
             }
 
             if (this.onInstalledReason != null) {
-                await this.storageService.save(ConstantsService.installedVersionKey,
+                await this.storageService.save(LocalConstantsService.installedVersionKey,
                     BrowserApi.getApplicationVersion());
             }
         }
@@ -403,24 +517,31 @@ export default class RuntimeBackground {
     }
 
     private async setDefaultSettings() {
-        // Default lock options to "on restart".
-        const currentLockOption = await this.storageService.get<number>(ConstantsService.lockOptionKey);
-        if (currentLockOption == null) {
-            await this.storageService.save(ConstantsService.lockOptionKey, -1);
+        // Default timeout option to "on restart".
+        const currentVaultTimeout = await this.storageService.get<number>(LocalConstantsService.vaultTimeoutKey);
+        if (currentVaultTimeout == null) {
+            await this.storageService.save(LocalConstantsService.vaultTimeoutKey, -1);
+        }
+
+        // Default action to "lock".
+        const currentVaultTimeoutAction = await
+            this.storageService.get<string>(LocalConstantsService.vaultTimeoutActionKey);
+        if (currentVaultTimeoutAction == null) {
+            await this.storageService.save(LocalConstantsService.vaultTimeoutActionKey, 'lock');
         }
     }
 
     private async getDataForTab(tab: any, responseCommand: string) {
         const responseData: any = {};
         if (responseCommand === 'notificationBarDataResponse') {
-            responseData.neverDomains = await this.storageService.get<any>(ConstantsService.neverDomainsKey);
+            responseData.neverDomains = await this.storageService.get<any>(LocalConstantsService.neverDomainsKey);
             responseData.disabledAddLoginNotification = await this.storageService.get<boolean>(
-                ConstantsService.disableAddLoginNotificationKey);
+                LocalConstantsService.disableAddLoginNotificationKey);
             responseData.disabledChangedPasswordNotification = await this.storageService.get<boolean>(
-                ConstantsService.disableChangedPasswordNotificationKey);
+                LocalConstantsService.disableChangedPasswordNotificationKey);
         } else if (responseCommand === 'autofillerAutofillOnPageLoadEnabledResponse') {
             responseData.autofillEnabled = await this.storageService.get<boolean>(
-                ConstantsService.enableAutoFillOnPageLoadKey);
+                LocalConstantsService.enableAutoFillOnPageLoadKey);
         } else if (responseCommand === 'notificationBarFrameDataResponse') {
             responseData.i18n = {
                 appName: this.i18nService.t('appName'),
@@ -432,7 +553,7 @@ export default class RuntimeBackground {
                 notificationAddDesc: this.i18nService.t('notificationAddDesc'),
                 notificationChangeSave: this.i18nService.t('notificationChangeSave'),
                 notificationChangeDesc: this.i18nService.t('notificationChangeDesc'),
-                notificationDontSave: this.i18nService.t('notificationDontSave')
+                notificationDontSave: this.i18nService.t('notificationDontSave'),
             };
         }
 

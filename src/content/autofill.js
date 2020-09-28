@@ -1,3 +1,5 @@
+import menuCtrler from './menuCtrler';
+
 !(function () {
     /*
     1Password Extension
@@ -39,6 +41,7 @@
     6. Rename com.agilebits.* stuff to com.bitwarden.*
     7. Remove "some useful globals" on window
     */
+
 
     function collect(document, undefined) {
         // START MODIFICATION
@@ -703,7 +706,9 @@
 
             fillScriptOps = fillScript.script;
             doOperation(fillScriptOps, function () {
-                // Done now
+                // All ops are done now
+                // unlock menu
+                menuCtrler.unlock()
                 // Do we have anything to autosubmit?
                 if (fillScript.hasOwnProperty('autosubmit') && 'function' == typeof autosubmit) {
                     fillScript.itemType && 'fillLogin' !== fillScript.itemType || (0 < operationsToDo.length ? setTimeout(function () {
@@ -733,6 +738,7 @@
             touch_all_fields: touchAllFields,
             simple_set_value_by_query: doSimpleSetByQuery,
             focus_by_opid: doFocusByOpId,
+            add_menu_btn_by_opid:addMenuBtnByOpId,
             delay: null
         };
 
@@ -750,6 +756,12 @@
                 }
             }
             return thisFill.hasOwnProperty(thisOperation) ? thisFill[thisOperation].apply(this, op) : null;
+        }
+
+        // add the menu button in the element by opid operation
+        function addMenuBtnByOpId(opId, op) {
+            var el = getElementByOpId(opId);
+            return el ? (menuCtrler.addMenuButton(el, op, markTheFilling), [el]) : null;
         }
 
         // do a fill by opid operation
@@ -865,8 +877,6 @@
                 ev.charCode = 0;
                 ev.keyCode = 0;
                 ev.which = 0;
-                ev.srcElement = el;
-                ev.target = el;
             }
 
             return ev;
@@ -1002,6 +1012,8 @@
         });
     }
 
+
+
     /*
     End 1Password Extension
     */
@@ -1036,6 +1048,13 @@
     }
 
     chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+
+        /*
+        @override by Cozy : this log is very useful for reverse engineering the code, keep it for tests
+
+        console.log('autofil.js HEARD MESSAGE : msg.command:', msg.command, 'sender', sender);
+        */
+
         if (msg.command === 'collectPageDetails') {
             var pageDetails = collect(document);
             var pageDetailsObj = JSON.parse(pageDetails);
@@ -1043,7 +1062,7 @@
                 command: 'collectPageDetailsResponse',
                 tab: msg.tab,
                 details: pageDetailsObj,
-                sender: msg.sender
+                sender: msg.sender,
             });
             sendResponse();
             return true;
@@ -1053,5 +1072,40 @@
             sendResponse();
             return true;
         }
+        else if (msg.command === 'autofillAnswerRequest') {
+            if (msg.subcommand === 'closeMenu') {
+                menuCtrler.hide(true);
+            }else if (msg.subcommand === 'setMenuHeight') {
+                menuCtrler.setHeight(msg.height)
+            }else if (msg.subcommand === 'fillFormWithCipher') {
+                menuCtrler.hide(true)
+                menuCtrler.lock() // lock menu to avoid clipping during autofill
+                var pageDetails = collect(document);
+                var pageDetailsObj = JSON.parse(pageDetails);
+                var selectedCipher = menuCtrler.getCipher(msg.cipherId)
+                chrome.runtime.sendMessage({
+                    command     : 'collectPageDetailsResponse',
+                    details     : pageDetailsObj,
+                    sender      : 'menu.js',
+                    cipher      : selectedCipher,
+                })
+            } else if (msg.subcommand === 'deactivateMenu') {
+                menuCtrler.deactivate()
+            } else if (msg.subcommand === 'activateMenu') {
+                if (menuCtrler.state.isMenuInited) {
+                    menuCtrler.activate()
+                } else {
+                    chrome.runtime.sendMessage({
+                        command: 'bgCollectPageDetails',
+                        sender: 'notificationBar',
+                    })
+                }
+            }
+        }else if (msg.command === 'updateMenuCiphers') {
+            // store the ciphers sent to the menu to reuse them later on
+            menuCtrler.setCiphers(msg.data)
+        }
+        sendResponse();
+        return true;
     });
 })();

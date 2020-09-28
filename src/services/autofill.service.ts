@@ -43,6 +43,10 @@ const MonthAbbr = ['mm', 'mm', 'mm', 'mm', 'mm', 'mm'];
 const YearAbbrShort = ['yy', 'åå', 'jj', 'aa', 'гг', 'rr'];
 const YearAbbrLong = ['yyyy', 'åååå', 'jjjj', 'aa', 'гггг', 'rrrr'];
 
+const OperationDelays = new Map<string, number>([
+    ['buzzsprout.com', 100],
+]);
+
 /* tslint:disable */
 const IsoCountries: { [id: string]: string; } = {
     afghanistan: "AF", "aland islands": "AX", albania: "AL", algeria: "DZ", "american samoa": "AS", andorra: "AD",
@@ -150,7 +154,18 @@ export default class AutofillService implements AutofillServiceInterface {
 
     async doAutoFill(options: any) {
         let totpPromise: Promise<string> = null;
-        const tab = await this.getActiveTab();
+        let tab = await this.getActiveTab();
+
+        /*
+        @override by Cozy : when the user logins into the addon, all tabs requests a pageDetail in order to
+        activate the in-page-menu : then the tab to take into account is not the active tab, but the tab sent with
+        the pageDetails
+        */
+        if (options.pageDetails[0].sender === 'notifBarForInPageMenu') {
+            tab = options.pageDetails[0].tab;
+        }
+        /* END @override by Cozy */
+
         if (!tab || !options.cipher || !options.pageDetails || !options.pageDetails.length) {
             throw new Error('Nothing to auto-fill.');
         }
@@ -170,11 +185,15 @@ export default class AutofillService implements AutofillServiceInterface {
                 onlyEmptyFields: options.onlyEmptyFields || false,
                 onlyVisibleFields: options.onlyVisibleFields || false,
                 cipher: options.cipher,
+                sender: pd.sender,
             });
 
             if (!fillScript || !fillScript.script || !fillScript.script.length) {
                 return;
             }
+
+            // Add a small delay between operations
+            fillScript.properties.delay_between_operations = 20;
 
             didAutofill = true;
             if (!options.skipLastUsed) {
@@ -213,10 +232,20 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     async doAutoFillForLastUsedLogin(pageDetails: any, fromCommand: boolean) {
-        const tab = await this.getActiveTab();
+        let tab = await this.getActiveTab();
+
+        /*
+        @override by Cozy : when the user logins into the addon, all tabs requests a pageDetail in order to
+        activate the in-page-menu : then the tab to take into account is not the active tab, but the tab sent with
+        the pageDetails
+        */
+        if (pageDetails[0].sender === 'notifBarForInPageMenu') {
+            tab = pageDetails[0].tab;
+        }
         if (!tab || !tab.url) {
             return;
         }
+        /* END @override by Cozy */
 
         const lastUsedCipher = await this.cipherService.getLastUsedForUrl(tab.url);
         if (!lastUsedCipher) {
@@ -301,6 +330,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
     private generateLoginFillScript(fillScript: AutofillScript, pageDetails: any,
         filledFields: { [id: string]: AutofillField; }, options: any): AutofillScript {
+
         if (!options.cipher.login) {
             return null;
         }
@@ -323,7 +353,7 @@ export default class AutofillService implements AutofillServiceInterface {
             passwordFields = this.loadPasswordFields(pageDetails, true, true, options.onlyEmptyFields);
         }
 
-        for (const formKey in pageDetails.forms) {
+        for (const formKey in pageDetails.forms) { // tslint:disable-line
             if (!pageDetails.forms.hasOwnProperty(formKey)) {
                 continue;
             }
@@ -357,7 +387,6 @@ export default class AutofillService implements AutofillServiceInterface {
         if (passwordFields.length && !passwords.length) {
             // The page does not have any forms with password fields. Use the first password field on the page and the
             // input field just before it as the username.
-
             pf = passwordFields[0];
             passwords.push(pf);
 
@@ -389,7 +418,6 @@ export default class AutofillService implements AutofillServiceInterface {
             if (filledFields.hasOwnProperty(u.opid)) {
                 return;
             }
-
             filledFields[u.opid] = u;
             this.fillByOpid(fillScript, u, login.username);
         });
@@ -398,12 +426,15 @@ export default class AutofillService implements AutofillServiceInterface {
             if (filledFields.hasOwnProperty(p.opid)) {
                 return;
             }
-
             filledFields[p.opid] = p;
             this.fillByOpid(fillScript, p, login.password);
         });
 
         fillScript = this.setFillScriptForFocus(filledFields, fillScript);
+
+        if (options.sender === 'notifBarForInPageMenu') {
+            fillScript = this.setFillScriptForMenu(fillScript);
+        }
         return fillScript;
     }
 
@@ -891,6 +922,9 @@ export default class AutofillService implements AutofillServiceInterface {
                     return false;
                 }
                 const lowerValue = value.toLowerCase();
+                if (lowerValue.indexOf('onetimepassword') >= 0) {
+                    return false;
+                }
                 if (lowerValue.indexOf('password') < 0) {
                     return false;
                 }
@@ -1096,6 +1130,21 @@ export default class AutofillService implements AutofillServiceInterface {
             fillScript.script.push(['focus_by_opid', lastField.opid]);
         }
 
+        return fillScript;
+    }
+
+    /*
+        @override by Cozy
+        function in charge of adapting the fillScript for a menu fillscript
+     */
+    private setFillScriptForMenu(fillScript: AutofillScript): AutofillScript {
+        const newScript: any[] = [];
+        fillScript.script.forEach((ope) => {
+            if (ope[0].startsWith('fill')) {
+                newScript.push(['add_menu_btn_by_opid', ope[1], 'identityMenu']); // ['operation', opid, menuType]
+            }
+        });
+        fillScript.script = newScript;
         return fillScript;
     }
 
