@@ -36,9 +36,9 @@ var menuCtrler = {
     getCipher              : null,
     setCiphers             : null,
     state                  : {
-                               isMenuInited:false,
-                               isFrozen:false,
-                               isActivated:true,
+                               isMenuInited:false,  // menu is not yet initiated, there is no iframe yet for the menu
+                               isFrozen:false,      // when frozen, you can't hide nor show the menu
+                               isActivated:true,    // false => in page butons have been removed and menu is hidden
                                isHidden:true,
                                isAutoFillInited:false,
                                currentMenuType:null,
@@ -47,11 +47,11 @@ var menuCtrler = {
                                _selectionRow:0,
                                isPinLocked:false,
                              },
-    unFreeze               : function() {this.state.isFrozen = false},
+    unFreeze               : function() {this.state.isFrozen = false}, // when frozen, you can't hide nor show the menu
     freeze                 : function() {this.state.isFrozen = true },
     deactivate             : null,
     activate               : null,
-    displayLoginIPMenu : null,
+    // displayLoginIPMenu : null,  // to be removed ? BJA
 }
 
 /* --------------------------------------------------------------------- */
@@ -101,7 +101,7 @@ function _initInPageMenuForEl(targetEl) {
     // prevent browser autocomplet with history for this field
     targetEl.autocomplete='off'
 
-	if(!state.isMenuInited) { // menu is not yet initiated, there is no ifram elemeent for the menu
+	if(!state.isMenuInited) { // menu is not yet initiated, there is no iframe elemeent for the menu
         // initIframe()
         menuEl = document.createElement('iframe')
         _setIframeURL(state.currentMenuType, state.isPinLocked )
@@ -289,6 +289,7 @@ function deactivate() {
     if (!menuEl) return; // can happen
     hide(true)
     removeInPageButtons()
+    state.isActivated = false;
 }
 menuCtrler.deactivate = deactivate
 

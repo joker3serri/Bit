@@ -631,7 +631,7 @@ import menuCtrler from './menuCtrler';
         return getPageDetails(document, 'oneshotUUID');
     }
 
-    function fill(document, fillScript, undefined) {
+    function fill(document, fillScripts, undefined) {
         var isFirefox = navigator.userAgent.indexOf('Firefox') !== -1 || navigator.userAgent.indexOf('Gecko/') !== -1;
 
         var markTheFilling = true,
@@ -1004,47 +1004,6 @@ import menuCtrler from './menuCtrler';
             }
         }
 
-        function displayLoginIPMenu(fillScripts, isPinLocked) {
-            // console.log('============== displayLoginIPMenu()', document.URL);
-            // console.log('==== fillScripts');
-            // console.log(fillScripts);
-            // console.log('number of fields', fillScripts.loginLoginMenuFillScript.script.length);
-            // console.log('=== list login FillScript actions');
-            // fillScripts.loginLoginMenuFillScript.script.forEach((action, i) => {
-            //     if (action[0] !== 'fill_by_opid') return
-            //     const el = getElementByOpId(action[1])
-            //     if (!el) {
-            //         console.log('no element  for action', i, action);
-            //         return
-            //     }
-            //     console.log('==== action[',i,'] =', action, 'corresonding to', {id:el.id, name:el.name});
-            // });
-            // console.log('=== list card FillScript actions');
-            // fillScripts.cardLoginMenuFillScript.script.forEach((action, i) => {
-            //     if (action[0] !== 'fill_by_opid') return
-            //     const el = getElementByOpId(action[1])
-            //     if (!el) {
-            //         console.log('no element  for action', i, action);
-            //         return
-            //     }
-            //     console.log('==== action[',i,'] =', action, 'corresonding to', {id:el.id, name:el.name});
-            // });
-            // console.log('=== list identity FillScript actions');
-            // fillScripts.identityLoginMenuFillScript.script.forEach((action, i) => {
-            //     if (action[0] !== 'fill_by_opid') return
-            //     const el = getElementByOpId(action[1])
-            //     if (!el) {
-            //         console.log('no element  for action', i, action);
-            //         return
-            //     }
-            //     console.log('==== action[',i,'] =', action, 'corresonding to', {id:el.id, name:el.name});
-            // });
-            menuCtrler.setMenuType('loginMenu', isPinLocked)
-            runLoginMenuFillScript(fillScripts.loginLoginMenuFillScript.script)
-            runLoginMenuFillScript(fillScripts.cardLoginMenuFillScript.script)
-            runLoginMenuFillScript(fillScripts.identityLoginMenuFillScript.script)
-        }
-
         function runLoginMenuFillScript(script) {
             script.forEach((action) => {
                 if (action[0] !== 'fill_by_opid') return
@@ -1053,13 +1012,30 @@ import menuCtrler from './menuCtrler';
             });
         }
 
-        if (fillScript.type === 'inPageLoginMenuScript') {
-            displayLoginIPMenu(fillScript, fillScript.isPinLocked)
-        } else if (fillScript.type === 'inPageMenuScript') {
-            menuCtrler.setMenuType('autofillMenu', false)
-            doFill(fillScript);
+
+        if (fillScripts.isForLoginMenu) {
+            menuCtrler.setMenuType('loginMenu', fillScripts.isPinLocked) // BJA : à améliorer pour n'être appelé qu'une fois
         } else {
-            doFill(fillScript);
+            menuCtrler.setMenuType('autofillMenu', fillScripts.isPinLocked) // BJA : à améliorer pour n'être appelé qu'une fois
+        }
+        for (let fillScript of fillScripts) {
+            console.log(fillScript.type);
+            if (fillScript.type === 'existingLoginFieldsForInPageMenuScript') {
+                doFill(fillScript);
+            } else if (fillScript.type === 'loginFieldsForInPageMenuScript') {
+                runLoginMenuFillScript(fillScript.script);
+                // doFill(fillScript);
+            } else if (fillScript.type === 'cardFieldsForInPageMenuScript') {
+                runLoginMenuFillScript(fillScript.script);
+            } else if (fillScript.type === 'identityFieldsForInPageMenuScript') {
+                // displayLoginIPMenu(fillScript, fillScript.isPinLocked)
+                runLoginMenuFillScript(fillScript.script);
+            // } else if (fillScript.type === 'inPageMenuScript') {
+            //     menuCtrler.setMenuType('autofillMenu', false)
+            //     doFill(fillScript);
+            } else {
+                doFill(fillScript);
+            }
         }
 
         return '{"success": true}';
@@ -1094,7 +1070,7 @@ import menuCtrler from './menuCtrler';
                 });
             }
             else if (msg.command === 'fillForm') {
-                fill(document, msg.fillScript);
+                fill(document, msg.fillScripts);
             }
         }, false);
         return;
@@ -1112,6 +1088,13 @@ import menuCtrler from './menuCtrler';
             "heard in": document.location.pathname
         });
         */
+        console.log('autofil.js HEARD : ', {
+            'command': msg.command,
+            'subcommand': msg.subcommand,
+            'sender': sender.url ? new URL(sender.url).pathname : sender,
+            "msg": msg,
+            "heard in": document.location.pathname
+        });
 
        if (msg.command === 'notificationBarPageDetails') return
 
@@ -1127,7 +1110,8 @@ import menuCtrler from './menuCtrler';
             return true;
         }
         else if (msg.command === 'fillForm') {
-            fill(document, msg.fillScript);
+            msg.fillScripts.isForLoginMenu = msg.isForLoginMenu
+            fill(document, msg.fillScripts);
             sendResponse();
             return true;
         }
@@ -1158,9 +1142,10 @@ import menuCtrler from './menuCtrler';
                     isPinLocked: msg.isPinLocked,
                 })
             } else if (msg.subcommand === 'loginIPMenuSetFields') {
-                msg.loginFillScripts.isPinLocked = msg.isPinLocked
+                msg.fieldsForInPageMenuScripts.isPinLocked = msg.isPinLocked
+                msg.fieldsForInPageMenuScripts.isForLoginMenu = msg.isForLoginMenu
                 // and then send the script for filling
-                fill(document, msg.loginFillScripts)
+                fill(document, msg.fieldsForInPageMenuScripts)
 
             } else if (msg.subcommand === 'autofilIPMenuActivate') {
                 var pageDetails = collect(document);

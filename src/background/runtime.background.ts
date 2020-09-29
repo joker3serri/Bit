@@ -85,6 +85,13 @@ export default class RuntimeBackground {
         });
 
         */
+        console.log('runtime.background PROCESS MESSAGE ', {
+            'msg.command:': msg.command,
+            'msg.subcommand': msg.subcommand,
+            'msg.sender': msg.sender,
+            'msg': msg,
+            'sender': sender
+        });
 
         switch (msg.command) {
             case 'loggedIn':
@@ -135,8 +142,21 @@ export default class RuntimeBackground {
                 switch (msg.subcommand) {
                     case 'getCiphersForTab':
                         // console.time("getAllDecryptedForUrl")
-                        const ciphers = await this.cipherService.getAllDecryptedForUrl(sender.tab.url, null);
-                        ciphers.sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
+                        const logins = await this.cipherService.getAllDecryptedForUrl(sender.tab.url, null);
+                        logins.sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
+                        const allCiphers = await this.cipherService.getAllDecrypted();
+                        const ciphers = {logins: logins, cards: new Array(), identities: new Array()};
+                        for (const cipher of allCiphers) {
+                            // cipher.type : 1:login 2:notes  3:Card 4: identities
+                            switch (cipher.type) {
+                                case 3:
+                                    ciphers.cards.push(cipher);
+                                    break;
+                                case 4:
+                                    ciphers.identities.push(cipher);
+                                    break;
+                            }
+                        }
                         // console.timeEnd("getAllDecryptedForUrl")
                         const vaultUrl = this.environmentService.getWebVaultUrl();
                         const cozyUrl = new URL(vaultUrl).origin; // Remove the /bitwarden part
@@ -230,22 +250,28 @@ export default class RuntimeBackground {
                 await this.main.reseedStorage();
                 break;
             case 'bgGetLoginMenuFillScript':
-                const loginFillScripts = this.autofillService.generateLoginMenuFillScript(msg.pageDetails);
+                const fieldsForInPageMenuScripts =
+                    this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails);
                 const pinSet = await this.vaultTimeoutService.isPinLockSet();
                 const isPinLocked = (pinSet[0] && this.vaultTimeoutService.pinProtectedKey != null) || pinSet[1];
                 await BrowserApi.tabSendMessage(sender.tab, {
-                    command         : 'autofillAnswerRequest',
-                    subcommand      : 'loginIPMenuSetFields',
-                    loginFillScripts: loginFillScripts,
-                    isPinLocked     : isPinLocked,
+                    command                   : 'autofillAnswerRequest',
+                    subcommand                : 'loginIPMenuSetFields',
+                    fieldsForInPageMenuScripts: fieldsForInPageMenuScripts,
+                    isForLoginMenu            : true,
+                    isPinLocked               : isPinLocked,
                 }, {frameId: sender.frameId});
                 break;
             case 'bgGetAutofillMenuScript':
+                const fieldsForAutofillMenuScripts =
+                    this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
+                fieldsForAutofillMenuScripts.isForLoginMenu = false;
                 await this.autofillService.doAutoFillForLastUsedLogin([{
-                    frameId: sender.frameId,
-                    tab: sender.tab,
-                    details: msg.details,
-                    sender: 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
+                    frameId                   : sender.frameId,
+                    tab                       : sender.tab,
+                    details                   : msg.details,
+                    fieldsForInPageMenuScripts: fieldsForAutofillMenuScripts,
+                    sender                    : 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
                 }], true);
                 break;
             case 'collectPageDetailsResponse':
@@ -269,10 +295,14 @@ export default class RuntimeBackground {
                         // console.timeEnd('collectPageDetailsResponse - getkey');
                         if (enableInPageMenu) {
                             // console.time('collectPageDetailsResponse - doAutoFillForLastUsedLogin');
+                            const fieldsForAutofillMenuScripts =
+                                this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
+                            // fieldsForAutofillMenuScripts.isForLoginMenu = false; // BJA : pas sûr...
                             const totpCode1 = await this.autofillService.doAutoFillForLastUsedLogin([{
                                 frameId: sender.frameId,
                                 tab: msg.tab,
                                 details: msg.details,
+                                fieldsForInPageMenuScripts: fieldsForAutofillMenuScripts,
                                 sender: 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
                             }], true);
                             // console.timeEnd('collectPageDetailsResponse - doAutoFillForLastUsedLogin');

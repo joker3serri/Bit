@@ -81,8 +81,15 @@ document.addEventListener('DOMContentLoaded', () => {
             sender    : 'menu.js'            ,
         });
     })
-    const rowsList = document.querySelector('#rows-list')
-    rowsList.addEventListener('click',(e)=>{
+    document.querySelector('#login-rows-list').addEventListener('click',(e)=>{
+        const rowEl = e.target.closest('.row-main')
+        requestFormFillingWithCipher(rowEl.dataset.cipherId)
+    })
+    document.querySelector('#card-rows-list').addEventListener('click',(e)=>{
+        const rowEl = e.target.closest('.row-main')
+        requestFormFillingWithCipher(rowEl.dataset.cipherId)
+    })
+    document.querySelector('#ids-rows-list').addEventListener('click',(e)=>{
         const rowEl = e.target.closest('.row-main')
         requestFormFillingWithCipher(rowEl.dataset.cipherId)
     })
@@ -107,14 +114,24 @@ function requestFormFillingWithCipher(cipherId) {
 
 
 /* --------------------------------------------------------------------- */
-// request the background to autofill the page with a cipher
+// upadate all rows
 function updateRows() {
+    updateLoginRows()
+    updateCardRows()
+    updateIdsRows()
+    selectFirstVisibleRow()
+}
+
+
+/* --------------------------------------------------------------------- */
+// update login rows. Existing rows will be deleted
+function updateLoginRows() {
     // 1- generate rows
-    const rowsList = document.querySelector('#rows-list')
+    const rowsList = document.querySelector('#login-rows-list')
     // 2- remove all previous rows
     while (rowsList.firstElementChild) {rowsList.firstElementChild.remove();}
     // 3- add rows
-    ciphers.forEach((cipher, i) => {
+    ciphers.logins.forEach((cipher, i) => {
         rowsList.insertAdjacentHTML('beforeend', rowTemplate)
         const row = rowsList.lastElementChild
         const text = row.querySelector('.row-text')
@@ -122,9 +139,46 @@ function updateRows() {
         text.textContent = cipher.name
         detail.textContent = cipher.login.username
         row.dataset.cipherId = cipher.id
-        if (i === 0) {
-            row.classList.add('selected')
-        }
+    });
+}
+
+
+/* --------------------------------------------------------------------- */
+// update card rows. Existing rows will be deleted
+function updateCardRows() {
+    // 1- generate rows
+    const rowsList = document.querySelector('#card-rows-list')
+    // 2- remove all previous rows
+    while (rowsList.firstElementChild) {rowsList.firstElementChild.remove();}
+    // 3- add rows
+    ciphers.cards.forEach((cipher, i) => {
+        rowsList.insertAdjacentHTML('beforeend', rowTemplate)
+        const row = rowsList.lastElementChild
+        const text = row.querySelector('.row-text')
+        const detail = row.querySelector('.row-detail')
+        text.textContent = cipher.name
+        detail.textContent = cipher.login.username
+        row.dataset.cipherId = cipher.id
+    });
+}
+
+
+/* --------------------------------------------------------------------- */
+// update identities rows. Existing rows will be deleted
+function updateIdsRows() {
+    // 1- generate rows
+    const rowsList = document.querySelector('#ids-rows-list')
+    // 2- remove all previous rows
+    while (rowsList.firstElementChild) {rowsList.firstElementChild.remove();}
+    // 3- add rows
+    ciphers.identities.forEach((cipher, i) => {
+        rowsList.insertAdjacentHTML('beforeend', rowTemplate)
+        const row = rowsList.lastElementChild
+        const text = row.querySelector('.row-text')
+        const detail = row.querySelector('.row-detail')
+        text.textContent = cipher.name
+        detail.textContent = cipher.login.username
+        row.dataset.cipherId = cipher.id
     });
 }
 

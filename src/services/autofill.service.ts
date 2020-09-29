@@ -155,6 +155,7 @@ export default class AutofillService implements AutofillServiceInterface {
     async doAutoFill(options: any) {
         let totpPromise: Promise<string> = null;
         let tab: any;
+        let fillScripts: any[];
         /*
         @override by Cozy : when the user logins into the addon, all tabs requests a pageDetail in order to
         activate the in-page-menu : then the tab to take into account is not the active tab, but the tab sent with
@@ -204,9 +205,17 @@ export default class AutofillService implements AutofillServiceInterface {
                 this.cipherService.updateLastUsedDate(options.cipher.id);
             }
 
+            if (options.fieldsForInPageMenuScripts) {
+                fillScripts = [fillScript, ...options.fieldsForInPageMenuScripts];
+            } else {
+                fillScripts = [fillScript];
+            }
+
             BrowserApi.tabSendMessage(tab, {
                 command: 'fillForm',
-                fillScript: fillScript,
+                fillScripts: fillScripts,
+                isForLoginMenu: options.isForLoginMenu,
+                // loginFillScripts: options.loginFillScripts,
                 url: tab.url,
             }, { frameId: pd.frameId });
 
@@ -239,19 +248,16 @@ export default class AutofillService implements AutofillServiceInterface {
         let tab = await this.getActiveTab();
         let lastUsedCipher: any;
         console.log('doAutoFillForLastUsedLogin()');
-
         /*
         @override by Cozy : when the user logins into the addon, all tabs request a pageDetail in order to
         activate the in-page-menu :
-            * then the tab to take into account is not the active tab, but the tab sent with
-        the pageDetails
+            * then the tab to take into account is not the active tab, but the tab sent with the pageDetails
             * and if there is no cipher for the tab, then request to close in page menu
         */
         if (pageDetails[0].sender === 'notifBarForInPageMenu') {
             tab = pageDetails[0].tab;
             if(tab === undefined){
                 console.log("pb !!!!!");
-
             }
             lastUsedCipher = await this.cipherService.getLastUsedForUrl(tab.url);
             if (!lastUsedCipher) { // there is no cipher for this URL : deactivate in page menu
@@ -278,6 +284,7 @@ export default class AutofillService implements AutofillServiceInterface {
             skipUsernameOnlyFill: !fromCommand,
             onlyEmptyFields: !fromCommand,
             onlyVisibleFields: !fromCommand,
+            fieldsForInPageMenuScripts: pageDetails[0].fieldsForInPageMenuScripts,
         });
         return res;
     }
@@ -285,7 +292,7 @@ export default class AutofillService implements AutofillServiceInterface {
     /* --------------------------------------------------------------------- */
     // Select in pageDetails the inputs that could be filled
     // in order to activate the loginMenu into it.
-    generateLoginMenuFillScript(pageDetails: any) {
+    generateFieldsForInPageMenuScripts(pageDetails: any) {
 
         if (!pageDetails ) {
             return null;
@@ -506,23 +513,25 @@ export default class AutofillService implements AutofillServiceInterface {
         const loginFilledFields: { [id: string]: AutofillField; } = {};
         const loginLoginMenuFillScript    =
             this.generateLoginFillScript(loginFS, pageDetails, loginFilledFields, options);
+        loginLoginMenuFillScript.type    = 'loginFieldsForInPageMenuScript';
 
         const cardFS = new AutofillScript(pageDetails.documentUUID);
         const cardFilledFields: { [id: string]: AutofillField; } = {};
         const cardLoginMenuFillScript     =
             this.generateCardFillScript(cardFS, pageDetails, cardFilledFields, options);
+        cardLoginMenuFillScript.type    = 'cardFieldsForInPageMenuScript';
 
         const idFS = new AutofillScript(pageDetails.documentUUID);
         const idFilledFields: { [id: string]: AutofillField; } = {};
         const identityLoginMenuFillScript =
             this.generateIdentityFillScript(idFS, pageDetails, idFilledFields, options);
+        identityLoginMenuFillScript.type = 'identityFieldsForInPageMenuScript';
 
-        return {
-            loginLoginMenuFillScript: loginLoginMenuFillScript,
-            cardLoginMenuFillScript: cardLoginMenuFillScript,
-            identityLoginMenuFillScript: identityLoginMenuFillScript,
-            type: 'inPageLoginMenuScript',
-        };
+        return [
+            loginLoginMenuFillScript,
+            cardLoginMenuFillScript,
+            identityLoginMenuFillScript,
+        ];
     }
 
     // Helpers
@@ -693,8 +702,10 @@ export default class AutofillService implements AutofillServiceInterface {
 
         fillScript = this.setFillScriptForFocus(filledFields, fillScript);
 
+        fillScript.type = 'autofillScript';
         if (options.sender === 'notifBarForInPageMenu') {
             fillScript = this.setFillScriptForMenu(fillScript);
+            fillScript.type = 'existingLoginFieldsForInPageMenuScript';
         }
         return fillScript;
     }
@@ -908,7 +919,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
             this.makeScriptActionWithValue(fillScript, exp, fillFields.exp, filledFields);
         }
-
+        fillScript.type = 'autofillScript';
         return fillScript;
     }
 
@@ -1116,6 +1127,7 @@ export default class AutofillService implements AutofillServiceInterface {
             this.makeScriptActionWithValue(fillScript, address, fillFields.address, filledFields);
         }
 
+        fillScript.type = 'autofillScript';
         return fillScript;
     }
 
@@ -1409,7 +1421,7 @@ export default class AutofillService implements AutofillServiceInterface {
             }
         });
         fillScript.script = newScript;
-        fillScript.type = 'inPageMenuScript';
+        fillScript.type = 'loginFieldsForInPageMenuScript';
         return fillScript;
     }
 
