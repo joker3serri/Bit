@@ -1,9 +1,39 @@
 require('./menu.scss');
 
 // Globals
-var ciphers,
-    panel,
-    resizeListener = null
+var ciphers                 ,
+    panel                   ,
+    resizeListener   = null
+
+const loginRowTemplate = `
+<div class="row-main">
+    <div class="row-icon icon-login"></div>
+    <div class="row-main-content">
+        <div class="row-text">site description</div>
+        <div class="row-detail">account login</div>
+    </div>
+</div>
+`;
+
+const cardRowTemplate = `
+<div class="row-main">
+    <div class="row-icon icon-card"></div>
+    <div class="row-main-content">
+        <div class="row-text">site description</div>
+        <div class="row-detail">account login</div>
+    </div>
+</div>
+`;
+
+const idsRowTemplate = `
+<div class="row-main">
+    <i class="row-icon icon-identity"></i>
+    <div class="row-main-content">
+        <div class="row-text">site description</div>
+        <div class="row-detail">account login</div>
+    </div>
+</div>
+`;
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -102,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /* --------------------------------------------------------------------- */
-// request the background to autofill the page with a cipher
+// Request the background to autofill the page with a cipher
 function requestFormFillingWithCipher(cipherId) {
     chrome.runtime.sendMessage({
         command   : 'bgAnswerMenuRequest',
@@ -114,7 +144,7 @@ function requestFormFillingWithCipher(cipherId) {
 
 
 /* --------------------------------------------------------------------- */
-// upadate all rows
+// Update all rows
 function updateRows() {
     updateLoginRows()
     updateCardRows()
@@ -124,7 +154,8 @@ function updateRows() {
 
 
 /* --------------------------------------------------------------------- */
-// update login rows. Existing rows will be deleted
+// Update login rows.
+// Existing rows will be deleted
 function updateLoginRows() {
     // 1- generate rows
     const rowsList = document.querySelector('#login-rows-list')
@@ -132,7 +163,7 @@ function updateLoginRows() {
     while (rowsList.firstElementChild) {rowsList.firstElementChild.remove();}
     // 3- add rows
     ciphers.logins.forEach((cipher, i) => {
-        rowsList.insertAdjacentHTML('beforeend', rowTemplate)
+        rowsList.insertAdjacentHTML('beforeend', loginRowTemplate)
         const row = rowsList.lastElementChild
         const text = row.querySelector('.row-text')
         const detail = row.querySelector('.row-detail')
@@ -152,7 +183,7 @@ function updateCardRows() {
     while (rowsList.firstElementChild) {rowsList.firstElementChild.remove();}
     // 3- add rows
     ciphers.cards.forEach((cipher, i) => {
-        rowsList.insertAdjacentHTML('beforeend', rowTemplate)
+        rowsList.insertAdjacentHTML('beforeend', cardRowTemplate)
         const row = rowsList.lastElementChild
         const text = row.querySelector('.row-text')
         const detail = row.querySelector('.row-detail')
@@ -172,7 +203,7 @@ function updateIdsRows() {
     while (rowsList.firstElementChild) {rowsList.firstElementChild.remove();}
     // 3- add rows
     ciphers.identities.forEach((cipher, i) => {
-        rowsList.insertAdjacentHTML('beforeend', rowTemplate)
+        rowsList.insertAdjacentHTML('beforeend', idsRowTemplate)
         const row = rowsList.lastElementChild
         const text = row.querySelector('.row-text')
         const detail = row.querySelector('.row-detail')
@@ -183,22 +214,26 @@ function updateIdsRows() {
 }
 
 
-const rowTemplate = `
-<div class="row-main">
-    <div class="row-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-            <g fill="none" fill-rule="evenodd">
-                <path fill="#BFC3C7" d="M22 0l.28.004c5.3.146 9.57 4.416 9.716 9.716L32 10l-.004.28c-.146 5.3-4.416 9.57-9.716 9.716L22 20l-.28-.004c-1.206-.033-2.358-.28-3.421-.703L7.179 30.782C6.425 31.56 5.389 32 4.305 32H2c-1.105 0-2-.895-2-2v-3.793c0-.453.18-.887.5-1.207l.047-.047c.295-.295.674-.49 1.085-.558l.888-.148C3.374 24.104 4 23.366 4 22.5V22c0-.552.448-1 1-1h.5c.828 0 1.5-.672 1.5-1.5V19c0-.552.448-1 1-1h.75c.69 0 1.25-.56 1.25-1.25v-.422c0-.53.21-1.039.586-1.414l1.882-1.882C12.164 12.076 12 11.057 12 10c0-5.523 4.477-10 10-10zm.142 4c-.466 0-.933.055-1.389.166-1.465.357-2.005 2.137-1.044 3.251l.105.113 4.656 4.656c1.065 1.065 2.87.61 3.322-.79l.042-.149c.447-1.837-.006-3.848-1.36-5.332l-.19-.199c-1.072-1.072-2.457-1.643-3.861-1.71L22.142 4z"/>
-                <path fill="#95999D" d="M15.447 17.554c.542.47 1.136.884 1.77 1.23L4 32H2c-.293 0-.572-.063-.823-.177l14.27-14.27z"/>
-            </g>
-        </svg>
-    </div>
-    <div class="row-main-content">
-        <div class="row-text">site description</div>
-        <div class="row-detail">account login</div>
-    </div>
-</div>
-`
+/* --------------------------------------------------------------------- */
+// Select the first visible row
+function selectFirstVisibleRow() {
+    const hash = window.location.hash
+    const currentSelection = document.querySelector('.selected')
+    if(currentSelection) currentSelection.classList.remove('selected')
+    if (hash.includes('login_')) {
+        document.querySelector('#login-rows-list').firstElementChild.classList.add('selected')
+        return
+    }
+    if (hash.includes('card_')) {
+        document.querySelector('#card-rows-list').firstElementChild.classList.add('selected')
+        return
+    }
+    if (hash.includes('identity_')) {
+        document.querySelector('#ids-rows-list').firstElementChild.classList.add('selected')
+        return
+    }
+}
+
 
 /* --------------------------------------------------------------------- */
 // Ask parent page to adjuste iframe height
@@ -228,11 +263,29 @@ function setSelectionOnCipher(targetCipherId) {
 /* --------------------------------------------------------------------- */
 // Test if iframe content should fadeIn or not
 function _testHash(){
-    if (window.location.hash === '#applyFadeIn') {
+    const hash = window.location.hash
+    if (hash.includes('login_')) {
+        document.querySelector('#login-rows-list').classList.remove('hidden')
+    } else {
+        document.querySelector('#login-rows-list').classList.add('hidden')
+    }
+    if (hash.includes('card_')) {
+        document.querySelector('#card-rows-list').classList.remove('hidden')
+    } else {
+        document.querySelector('#card-rows-list').classList.add('hidden')
+    }
+    if (hash.includes('identity_')) {
+        document.querySelector('#ids-rows-list').classList.remove('hidden')
+    } else {
+        document.querySelector('#ids-rows-list').classList.add('hidden')
+    }
+    adjustMenuHeight()
+    if (hash.includes('applyFadeIn')) {
         // console.log('autofillMenu._testHash() : add fade-in');
         panel.classList.add('fade-in')
     } else {
         // console.log('autofillMenu._testHash() : remove fade-in');
         panel.className = "panel";
     }
+    selectFirstVisibleRow()
 }

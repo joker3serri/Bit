@@ -102,6 +102,7 @@ const plugins = [
         { from: './src/_locales', to: '_locales' },
         { from: './src/images', to: 'images' },
         { from: './src/popup/images', to: 'popup/images' },
+        { from: './src/inPageMenu/images', to: 'inPageMenu/images' },
         { from: './src/content/autofill.css', to: 'content' },
         { from: './src/content/notification.css', to: 'content' },
         { from: './node_modules/font-awesome/fonts/*', to: 'inPageMenu/fonts/', flatten:true },

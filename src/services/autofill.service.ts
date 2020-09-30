@@ -204,6 +204,7 @@ export default class AutofillService implements AutofillServiceInterface {
             if (!options.skipLastUsed) {
                 this.cipherService.updateLastUsedDate(options.cipher.id);
             }
+            console.log('about to send fillScripts');
 
             if (options.fieldsForInPageMenuScripts) {
                 fillScripts = [fillScript, ...options.fieldsForInPageMenuScripts];
@@ -302,6 +303,8 @@ export default class AutofillService implements AutofillServiceInterface {
 
         /*
         Exemples of ciphers :
+
+        0/ cipher.type : 1:login 2:notes  3:Card 4: identities
 
         1/ Login Cipher :
         `{
@@ -576,7 +579,7 @@ export default class AutofillService implements AutofillServiceInterface {
                     }
 
                     filledFields[field.opid] = field;
-                    this.fillByOpid(fillScript, field, val);
+                    this.fillByOpid(fillScript, field, val, 'BJA2');
                 }
             });
         }
@@ -689,7 +692,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 return;
             }
             filledFields[u.opid] = u;
-            this.fillByOpid(fillScript, u, login.username);
+            this.fillByOpid(fillScript, u, login.username, 'login_username');
         });
 
         passwords.forEach((p) => {
@@ -697,7 +700,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 return;
             }
             filledFields[p.opid] = p;
-            this.fillByOpid(fillScript, p, login.password);
+            this.fillByOpid(fillScript, p, login.password, 'login_password');
         });
 
         fillScript = this.setFillScriptForFocus(filledFields, fillScript);
@@ -789,10 +792,10 @@ export default class AutofillService implements AutofillServiceInterface {
         });
 
         const card = options.cipher.card;
-        this.makeScriptAction(fillScript, card, fillFields, filledFields, 'cardholderName');
-        this.makeScriptAction(fillScript, card, fillFields, filledFields, 'number');
-        this.makeScriptAction(fillScript, card, fillFields, filledFields, 'code');
-        this.makeScriptAction(fillScript, card, fillFields, filledFields, 'brand');
+        this.makeScriptAction(fillScript, card, fillFields, filledFields, 'cardholderName', 'card');
+        this.makeScriptAction(fillScript, card, fillFields, filledFields, 'number'        , 'card');
+        this.makeScriptAction(fillScript, card, fillFields, filledFields, 'code'          , 'card');
+        this.makeScriptAction(fillScript, card, fillFields, filledFields, 'brand'         , 'card');
 
         if (fillFields.expMonth && this.hasValue(card.expMonth)) {
             let expMonth: string = card.expMonth;
@@ -823,7 +826,7 @@ export default class AutofillService implements AutofillServiceInterface {
             }
 
             filledFields[fillFields.expMonth.opid] = fillFields.expMonth;
-            this.fillByOpid(fillScript, fillFields.expMonth, expMonth);
+            this.fillByOpid(fillScript, fillFields.expMonth, expMonth, 'card_expMonth');
         }
 
         if (fillFields.expYear && this.hasValue(card.expYear)) {
@@ -859,7 +862,7 @@ export default class AutofillService implements AutofillServiceInterface {
             }
 
             filledFields[fillFields.expYear.opid] = fillFields.expYear;
-            this.fillByOpid(fillScript, fillFields.expYear, expYear);
+            this.fillByOpid(fillScript, fillFields.expYear, expYear, 'card_expYear');
         }
 
         if (fillFields.exp && this.hasValue(card.expMonth) && this.hasValue(card.expYear)) {
@@ -917,7 +920,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 exp = fullYear + '-' + fullMonth;
             }
 
-            this.makeScriptActionWithValue(fillScript, exp, fillFields.exp, filledFields);
+            this.makeScriptActionWithValue(fillScript, exp, fillFields.exp, filledFields, 'BJA3');
         }
         fillScript.type = 'autofillScript';
         return fillScript;
@@ -1043,19 +1046,19 @@ export default class AutofillService implements AutofillServiceInterface {
         });
 
         const identity = options.cipher.identity;
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'title');
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'firstName');
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'middleName');
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'lastName');
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'address1');
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'address2');
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'address3');
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'city');
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'postalCode');
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'company');
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'email');
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'phone');
-        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'username');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'title'     , 'identity');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'firstName' , 'identity');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'middleName', 'identity');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'lastName'  , 'identity');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'address1'  , 'identity');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'address2'  , 'identity');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'address3'  , 'identity');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'city'      , 'identity');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'postalCode', 'identity');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'company'   , 'identity');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'email'     , 'identity');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'phone'     , 'identity');
+        this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'username'  , 'identity');
 
         let filledState = false;
         if (fillFields.state && identity.state && identity.state.length > 2) {
@@ -1063,12 +1066,12 @@ export default class AutofillService implements AutofillServiceInterface {
             const isoState = IsoStates[stateLower] || IsoProvinces[stateLower];
             if (isoState) {
                 filledState = true;
-                this.makeScriptActionWithValue(fillScript, isoState, fillFields.state, filledFields);
+                this.makeScriptActionWithValue(fillScript, isoState, fillFields.state, filledFields, 'identity_state');
             }
         }
 
         if (!filledState) {
-            this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'state');
+            this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'state', 'identity');
         }
 
         let filledCountry = false;
@@ -1077,12 +1080,18 @@ export default class AutofillService implements AutofillServiceInterface {
             const isoCountry = IsoCountries[countryLower];
             if (isoCountry) {
                 filledCountry = true;
-                this.makeScriptActionWithValue(fillScript, isoCountry, fillFields.country, filledFields);
+                this.makeScriptActionWithValue(
+                    fillScript,
+                    isoCountry,
+                    fillFields.country,
+                    filledFields,
+                    'identity_country',
+                );
             }
         }
 
         if (!filledCountry) {
-            this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'country');
+            this.makeScriptAction(fillScript, identity, fillFields, filledFields, 'country', 'identity');
         }
 
         if (fillFields.name && (identity.firstName || identity.lastName)) {
@@ -1103,7 +1112,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 fullName += identity.lastName;
             }
 
-            this.makeScriptActionWithValue(fillScript, fullName, fillFields.name, filledFields);
+            this.makeScriptActionWithValue(fillScript, fullName, fillFields.name, filledFields, 'identity_name');
         }
 
         if (fillFields.address && this.hasValue(identity.address1)) {
@@ -1124,7 +1133,12 @@ export default class AutofillService implements AutofillServiceInterface {
                 address += identity.address3;
             }
 
-            this.makeScriptActionWithValue(fillScript, address, fillFields.address, filledFields);
+            this.makeScriptActionWithValue(fillScript,
+                address,
+                fillFields.address,
+                filledFields,
+                'identity_address', // BJA probably a bug here : address is not a fild in an identity cipher
+            );
         }
 
         fillScript.type = 'autofillScript';
@@ -1149,14 +1163,32 @@ export default class AutofillService implements AutofillServiceInterface {
         return false;
     }
 
-    private makeScriptAction(fillScript: AutofillScript, cipherData: any, fillFields: { [id: string]: AutofillField; },
-        filledFields: { [id: string]: AutofillField; }, dataProp: string, fieldProp?: string) {
+    private makeScriptAction(
+        fillScript: AutofillScript,
+        cipherData: any,
+        fillFields: { [id: string]: AutofillField; },
+        filledFields: { [id: string]: AutofillField; },
+        dataProp: string,
+        cipherType: string,
+    ) {
+        let fieldProp;
         fieldProp = fieldProp || dataProp;
-        this.makeScriptActionWithValue(fillScript, cipherData[dataProp], fillFields[fieldProp], filledFields);
+        this.makeScriptActionWithValue(
+            fillScript,
+            cipherData[dataProp],
+            fillFields[fieldProp],
+            filledFields,
+            cipherType + '_' + dataProp,
+        );
     }
 
-    private makeScriptActionWithValue(fillScript: AutofillScript, dataValue: any, field: AutofillField,
-        filledFields: { [id: string]: AutofillField; }) {
+    private makeScriptActionWithValue(
+        fillScript: AutofillScript,
+        dataValue: any,
+        field: AutofillField,
+        filledFields: { [id: string]: AutofillField; },
+        fieldType: string,
+    ) {
 
         let doFill = false;
         if (this.hasValue(dataValue) && field) {
@@ -1184,7 +1216,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
         if (doFill) {
             filledFields[field.opid] = field;
-            this.fillByOpid(fillScript, field, dataValue);
+            this.fillByOpid(fillScript, field, dataValue, fieldType);
         }
     }
 
@@ -1417,7 +1449,7 @@ export default class AutofillService implements AutofillServiceInterface {
         const newScript: any[] = [];
         fillScript.script.forEach((ope) => {
             if (ope[0].startsWith('fill')) {
-                newScript.push(['add_menu_btn_by_opid', ope[1], 'identityMenu']); // ['operation', opid, menuType]
+                newScript.push(['add_menu_btn_by_opid', ope[1], ope[3]]); // ['operation', opid, fieldType]
             }
         });
         fillScript.script = newScript;
@@ -1425,12 +1457,12 @@ export default class AutofillService implements AutofillServiceInterface {
         return fillScript;
     }
 
-    private fillByOpid(fillScript: AutofillScript, field: AutofillField, value: string): void {
+    private fillByOpid(fillScript: AutofillScript, field: AutofillField, value: string, fieldType: string): void {
         if (field.maxLength && value && value.length > field.maxLength) {
             value = value.substr(0, value.length);
         }
         fillScript.script.push(['click_on_opid', field.opid]);
         fillScript.script.push(['focus_by_opid', field.opid]);
-        fillScript.script.push(['fill_by_opid', field.opid, value]);
+        fillScript.script.push(['fill_by_opid', field.opid, value, fieldType]);
     }
 }

@@ -758,9 +758,9 @@ import menuCtrler from './menuCtrler';
         }
 
         // add the menu button in the element by opid operation
-        function addMenuBtnByOpId(opId, op) {
+        function addMenuBtnByOpId(opId, fieldType) {
             var el = getElementByOpId(opId);
-            return el ? (menuCtrler.addMenuButton(el, op, markTheFilling), [el]) : null;
+            return el ? (menuCtrler.addMenuButton(el, fieldType, false, fieldType), [el]) : null;
         }
 
         // do a fill by opid operation
@@ -1004,11 +1004,11 @@ import menuCtrler from './menuCtrler';
             }
         }
 
-        function runLoginMenuFillScript(script) {
-            script.forEach((action) => {
+        function runLoginMenuFillScript(fillScript) {
+            fillScript.script.forEach((action) => {
                 if (action[0] !== 'fill_by_opid') return
                 const el = getElementByOpId(action[1])
-                menuCtrler.addMenuButton(el, true)
+                menuCtrler.addMenuButton(el, true, true, action[3])
             });
         }
 
@@ -1020,22 +1020,40 @@ import menuCtrler from './menuCtrler';
         }
         for (let fillScript of fillScripts) {
             console.log(fillScript.type);
-            if (fillScript.type === 'existingLoginFieldsForInPageMenuScript') {
-                doFill(fillScript);
-            } else if (fillScript.type === 'loginFieldsForInPageMenuScript') {
-                runLoginMenuFillScript(fillScript.script);
-                // doFill(fillScript);
-            } else if (fillScript.type === 'cardFieldsForInPageMenuScript') {
-                runLoginMenuFillScript(fillScript.script);
-            } else if (fillScript.type === 'identityFieldsForInPageMenuScript') {
-                // displayLoginIPMenu(fillScript, fillScript.isPinLocked)
-                runLoginMenuFillScript(fillScript.script);
+            switch (fillScript.type) {
+                case 'existingLoginFieldsForInPageMenuScript':
+                    doFill(fillScript);
+                    break;
+                case 'loginFieldsForInPageMenuScript':
+                    // we could offer to generate a password for input corresponding to a password for which there
+                    // is no existing cipher.
+                    break;
+                case 'cardFieldsForInPageMenuScript':
+                case 'identityFieldsForInPageMenuScript':
+                    runLoginMenuFillScript(fillScript);
+                    break;
+                default:
+                    doFill(fillScript);
+                    break;
+
+            }
+            // if (fillScript.type === 'existingLoginFieldsForInPageMenuScript') {
+            //     doFill(fillScript);
+            // } else if (fillScript.type === 'loginFieldsForInPageMenuScript') {
+            //     runLoginMenuFillScript(fillScript.script);
+            //     // doFill(fillScript);
+            // } else if (fillScript.type === 'cardFieldsForInPageMenuScript') {
+            //     runLoginMenuFillScript(fillScript.script);
+            // } else if (fillScript.type === 'identityFieldsForInPageMenuScript') {
+            //     runLoginMenuFillScript(fillScript.script);
+
             // } else if (fillScript.type === 'inPageMenuScript') {
             //     menuCtrler.setMenuType('autofillMenu', false)
             //     doFill(fillScript);
-            } else {
-                doFill(fillScript);
-            }
+
+            // } else {
+            //     doFill(fillScript);
+            // }
         }
 
         return '{"success": true}';

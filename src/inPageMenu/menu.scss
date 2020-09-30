@@ -128,6 +128,19 @@ hr {
     display: flex;
     align-items: center;
     justify-content: center;
+    background-repeat: no-repeat;
+}
+
+.icon-login {
+    background-image: url(./images/icons-login.svg);
+}
+
+.icon-card {
+    background-image: url(./images/icons-card.svg);
+}
+
+.icon-identity {
+    background-image: url(./images/icons-identity.svg);
 }
 
 .row-text {
@@ -140,4 +153,8 @@ hr {
     display: block;
     font-size: $font-size-small;
     color: #95999d;
+}
+
+.hidden {
+    display: none;
 }
