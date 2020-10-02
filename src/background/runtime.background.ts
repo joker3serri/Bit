@@ -134,14 +134,11 @@ export default class RuntimeBackground {
                 await BrowserApi.tabSendMessageData(sender.tab, 'adjustNotificationBar', msg.data);
                 break;
             case 'bgCollectPageDetails':
-                // console.time('bgCollectPageDetails')
                 await this.main.collectPageDetailsForContentScript(sender.tab, msg.sender, sender.frameId);
-                // console.timeEnd('bgCollectPageDetails')
                 break;
             case 'bgAnswerMenuRequest':
                 switch (msg.subcommand) {
                     case 'getCiphersForTab':
-                        // console.time("getAllDecryptedForUrl")
                         const logins = await this.cipherService.getAllDecryptedForUrl(sender.tab.url, null);
                         logins.sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
                         const allCiphers = await this.cipherService.getAllDecrypted();
@@ -200,13 +197,13 @@ export default class RuntimeBackground {
                         });
                         break;
                     case 'login':
-                        await this.logIn (msg.email, msg.pwd, sender.tab, msg.loginUrl);
+                        await this.logIn(msg.email, msg.pwd, sender.tab, msg.loginUrl);
                         break;
                     case 'pinLogin':
-                        await this.pinLogIn (msg.email, msg.pwd, sender.tab, msg.loginUrl);
+                        await this.pinLogIn(msg.email, msg.pwd, sender.tab, msg.loginUrl);
                         break;
                     case '2faCheck':
-                        await this.twoFaCheck (msg.token, sender.tab);
+                        await this.twoFaCheck(msg.token, sender.tab);
                         break;
                     case 'getRememberedCozyUrl':
                         let rememberedCozyUrl = await this.storageService.get<string>('rememberedCozyUrl');
@@ -287,14 +284,11 @@ export default class RuntimeBackground {
                         /* auttofill.js sends the page details requested by the notification bar.
                            Result will be used by both the notificationBar and for the inPageMenu. */
                         // 1- request a fill script for the autofill-in-page-menu (if activated)
-                        // console.time('collectPageDetailsResponse - getkey');
                         let enableInPageMenu = await this.storageService.get<any>(
                             LocalConstantsService.enableInPageMenuKey);
                         // default to true
                         if (enableInPageMenu === null) {enableInPageMenu = true; }
-                        // console.timeEnd('collectPageDetailsResponse - getkey');
                         if (enableInPageMenu) {
-                            // console.time('collectPageDetailsResponse - doAutoFillForLastUsedLogin');
                             const fieldsForAutofillMenuScripts =
                                 this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
                             // fieldsForAutofillMenuScripts.isForLoginMenu = false; // BJA : pas sûr...
@@ -305,7 +299,6 @@ export default class RuntimeBackground {
                                 fieldsForInPageMenuScripts: fieldsForAutofillMenuScripts,
                                 sender: 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
                             }], true);
-                            // console.timeEnd('collectPageDetailsResponse - doAutoFillForLastUsedLogin');
                         }
                         // 2- send page details to the notification bar
                         const forms = this.autofillService.getFormsWithPasswordFields(msg.details);
@@ -643,6 +636,10 @@ export default class RuntimeBackground {
         await BrowserApi.tabSendMessageData(tab, responseCommand, responseData);
     }
 
+    /*
+    @override by Cozy
+    this function is based on the submit() function in src\popup\accounts\login.component.ts
+    */
     private async logIn(email: string, pwd: string, tab: any, loginUrl: string) {
         try {
             // This adds the scheme if missing
@@ -686,6 +683,7 @@ export default class RuntimeBackground {
     private invalidPinAttempts = 0;
 
     /*
+    @override by Cozy
     this function is based on the submit() function in jslib/src/angular/components/lock.component.ts
     */
     private async pinLogIn(email: string, pin: string, tab: any, loginUrl: string) {
@@ -750,11 +748,7 @@ export default class RuntimeBackground {
             } else {
                 // validation succeeded, nothing to do
             }
-        } catch (e) {
-            // if (this.selectedProviderType === TwoFactorProviderType.U2f && this.u2f != null) {
-            //     this.u2f.start();
-            // }
-        }
+        } catch (e) {}
     }
 
     private async loggedinAndUnlocked(command: string) {
