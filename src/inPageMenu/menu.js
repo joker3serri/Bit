@@ -3,7 +3,8 @@ require('./menu.scss');
 // Globals
 var ciphers                 ,
     panel                   ,
-    resizeListener   = null
+    resizeListener   = null ,
+    focusedFieldTypes;
 
 const loginRowTemplate = `
 <div class="row-main">
@@ -188,7 +189,7 @@ function updateCardRows() {
         const text = row.querySelector('.row-text')
         const detail = row.querySelector('.row-detail')
         text.textContent = cipher.name
-        detail.textContent = cipher.login.username
+        detail.textContent = cipher.card[focusedFieldTypes.card]
         row.dataset.cipherId = cipher.id
     });
 }
@@ -208,7 +209,7 @@ function updateIdsRows() {
         const text = row.querySelector('.row-text')
         const detail = row.querySelector('.row-detail')
         text.textContent = cipher.name
-        detail.textContent = cipher.login.username
+        detail.textContent = cipher.identity[focusedFieldTypes.identity]
         row.dataset.cipherId = cipher.id
     });
 }
@@ -217,6 +218,7 @@ function updateIdsRows() {
 /* --------------------------------------------------------------------- */
 // Select the first visible row
 function selectFirstVisibleRow() {
+    if (!ciphers) return // no received ciphers yet, rows are not ready
     const hash = window.location.hash
     const currentSelection = document.querySelector('.selected')
     if(currentSelection) currentSelection.classList.remove('selected')
@@ -263,18 +265,26 @@ function setSelectionOnCipher(targetCipherId) {
 /* --------------------------------------------------------------------- */
 // Test if iframe content should fadeIn or not
 function _testHash(){
+    // structure of the hash : "#applyFadeIn*login_username*identity_email*..."
+    // turn it into focusedFieldTypes = {login:"username", identity:"email"}
     const hash = window.location.hash
-    if (hash.includes('login_')) {
+    focusedFieldTypes = {}
+    const focusedFieldTypesArr = hash.split('*').map(t => t.split('_'))
+    focusedFieldTypesArr.shift()
+    focusedFieldTypesArr.forEach(t=>focusedFieldTypes[t[0]]=t[1])
+    if (focusedFieldTypes.login) {
         document.querySelector('#login-rows-list').classList.remove('hidden')
     } else {
         document.querySelector('#login-rows-list').classList.add('hidden')
     }
-    if (hash.includes('card_')) {
+    if (focusedFieldTypes.card) {
+        updateCardRows()
         document.querySelector('#card-rows-list').classList.remove('hidden')
     } else {
         document.querySelector('#card-rows-list').classList.add('hidden')
     }
-    if (hash.includes('identity_')) {
+    if (focusedFieldTypes.identity) {
+        updateIdsRows()
         document.querySelector('#ids-rows-list').classList.remove('hidden')
     } else {
         document.querySelector('#ids-rows-list').classList.add('hidden')

@@ -131,6 +131,12 @@ function _initInPageMenuForEl(targetEl) {
                         adaptive: false,
                     },
                 },
+                {
+                    name: 'flip',
+                    options: {
+                        fallbackPlacements: ['bottom'], // force the menu ot go only under the field
+                    },
+                },
                 sameWidth,
             ],
         });
@@ -224,6 +230,9 @@ function show(targetEl) {
     popperInstance.update()
     menuEl.setAttribute('data-show', '')
     state.isHidden = false
+    // find the first cipher to display
+    selectFirstCipherToSuggestFor(targetEl)
+    // in the end show the menu
     _setApplyFadeInUrl(true, targetEl.dataset.fieldTypes)
 }
 
@@ -319,8 +328,6 @@ function moveSelection(n) {
                 newCipherNode = ciphers.tail()
             }
         }
-        // if (true) { // TODO BJA : check it is visible
-
         if (cipherTypesToSuggest.includes(newCipherNode.data.type)) {
             break
         }
@@ -401,9 +408,29 @@ function setCiphers(newCiphers) {
         }
     }
     state.isAutoFillInited = true
-    state.selectedCipher = ciphers.head() // TODO BJA : check this is the first visible cipher.
+    // state.selectedCipher = ciphers.head() // TODO BJA : check this is the first visible cipher.
+    selectFirstCipherToSuggestFor(state.lastFocusedEl)
 }
 menuCtrler.setCiphers = setCiphers
+
+
+/* --------------------------------------------------------------------- */
+// Run this so that menuCtrler.state.selectedCipher corresponds to the
+// initial selection within the menu
+function selectFirstCipherToSuggestFor(fieldEl) {
+    if (state.isHidden) return
+    if (!ciphers || ciphers._length == 0) return
+    if (!fieldEl) return
+    let newCipherNode = ciphers.head()
+    const cipherTypesToSuggest = getPossibleTypesForField(fieldEl).cipherTypes
+    do {
+        if (cipherTypesToSuggest.includes(newCipherNode.data.type)) {
+            state.selectedCipher = newCipherNode;
+            return // found
+        }
+        newCipherNode = newCipherNode.prev;
+    } while (newCipherNode!== null) // we could not find a cipher other than the current selected one
+}
 
 
 /* --------------------------------------------------------------------- */
