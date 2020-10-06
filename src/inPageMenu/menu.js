@@ -68,6 +68,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3- listen to the commands and ciphers sent by the addon
     chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
+        /*
+        @override by Cozy : this log is very useful for reverse engineering the code, keep it for tests
+        console.log('menu.js HEARD : ', {
+            'command': msg.command,
+            'subcommand': msg.subcommand,
+            'sender': sender.url ? new URL(sender.url).pathname : sender,
+            "msg": msg,
+            "heard in": document.location.pathname
+        });
+        */
         if (msg.command !== 'updateMenuCiphers' && msg.command !== 'menuAnswerRequest') return
 
         if (msg.command === 'updateMenuCiphers') {
@@ -291,10 +301,8 @@ function _testHash(){
     }
     adjustMenuHeight()
     if (hash.includes('applyFadeIn')) {
-        // console.log('autofillMenu._testHash() : add fade-in');
         panel.classList.add('fade-in')
     } else {
-        // console.log('autofillMenu._testHash() : remove fade-in');
         panel.className = "panel";
     }
     selectFirstVisibleRow()

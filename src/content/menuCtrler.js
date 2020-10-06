@@ -251,7 +251,9 @@ function hide(force) {
         // a proper start for the next display of the menu.
         // There is an explanation in MDN but their solution didnot work as well as this one :
         // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Tips#Run_an_animation_again
-        setTimeout(()=>{menuEl.removeAttribute('data-show')}, 50)
+        // but don't delay this execution, other wise the menu will still be displayed when the page details will be run
+        // and there fore will consider fields under the iframe as being hidden. These fields would then not be filled...
+        menuEl.removeAttribute('data-show')
         state.isHidden = true
         return
     }
@@ -406,8 +408,8 @@ menuCtrler.setCiphers = setCiphers
 
 
 /* --------------------------------------------------------------------- */
-// Run this so that menuCtrler.state.selectedCipher corresponds to the
-// initial selection within the menu
+// Run this function so that menuCtrler.state.selectedCipher corresponds
+// to the initial selection within the menu
 function selectFirstCipherToSuggestFor(fieldEl) {
     if (state.isHidden) return
     if (!ciphers || ciphers._length == 0) return

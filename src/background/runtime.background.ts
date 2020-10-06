@@ -156,7 +156,7 @@ export default class RuntimeBackground {
                         }
                         // console.timeEnd("getAllDecryptedForUrl")
                         const vaultUrl = this.environmentService.getWebVaultUrl();
-                        const cozyUrl = new URL(vaultUrl).origin; // Remove the /bitwarden part
+                        const cozyUrl = new URL(vaultUrl).origin;
                         await BrowserApi.tabSendMessageData(sender.tab, 'updateMenuCiphers', {
                             ciphers: ciphers,
                             cozyUrl: cozyUrl,
@@ -323,8 +323,9 @@ export default class RuntimeBackground {
 
                     case 'menu.js':
                         const tab = await BrowserApi.getTabFromCurrentWindow();
+                        const cipher = new CipherView() // TODO BJA
                         const totpCode2 = await this.autofillService.doAutoFill({
-                            cipher     : msg.cipher,
+                            cipher     : msg.cipher, // BUG BJA : this must be a Cipher object or a CipherView, see current-tab.component fillCipher(
                             pageDetails: [{
                                 frameId: sender.frameId,
                                 tab    : tab,

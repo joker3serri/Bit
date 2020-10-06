@@ -535,7 +535,13 @@ import menuCtrler from './menuCtrler';
             }
 
             // walk the tree
-            for (var pointEl = el.ownerDocument.elementFromPoint(leftOffset + (rect.right > window.innerWidth ? (window.innerWidth - leftOffset) / 2 : rect.width / 2), topOffset + (rect.bottom > window.innerHeight ? (window.innerHeight - topOffset) / 2 : rect.height / 2)); pointEl && pointEl !== el && pointEl !== document;) {
+            for (var pointEl = el.ownerDocument.elementFromPoint(
+                leftOffset +
+                (rect.right > window.innerWidth ? (window.innerWidth - leftOffset) / 2 : rect.width / 2),
+                topOffset +
+                (rect.bottom > window.innerHeight ? (window.innerHeight - topOffset) / 2 : rect.height / 2));
+
+                pointEl && pointEl !== el && pointEl !== document;) {
                 if (pointEl.tagName && 'string' === typeof pointEl.tagName && 'label' === pointEl.tagName.toLowerCase()
                     && el.labels && 0 < el.labels.length) {
                     return 0 <= Array.prototype.slice.call(el.labels).indexOf(pointEl);
@@ -1012,12 +1018,12 @@ import menuCtrler from './menuCtrler';
             });
         }
 
-
         if (fillScripts.isForLoginMenu) {
             menuCtrler.setMenuType('loginMenu', fillScripts.isPinLocked) // BJA : à améliorer pour n'être appelé qu'une fois
         } else {
             menuCtrler.setMenuType('autofillMenu', fillScripts.isPinLocked) // BJA : à améliorer pour n'être appelé qu'une fois
         }
+
         for (let fillScript of fillScripts) {
             console.log(fillScript.type);
             switch (fillScript.type) {
@@ -1025,6 +1031,10 @@ import menuCtrler from './menuCtrler';
                     doFill(fillScript);
                     break;
                 case 'loginFieldsForInPageMenuScript':
+                    // BJA : this is a bug : when loginMenu, we should run this script
+                    if (fillScripts[0].type !== 'existingLoginFieldsForInPageMenuScript') {
+                        runLoginMenuFillScript(fillScript);
+                    }
                     // we could offer to generate a password for input corresponding to a password for which there
                     // is no existing cipher.
                     break;
@@ -1037,23 +1047,6 @@ import menuCtrler from './menuCtrler';
                     break;
 
             }
-            // if (fillScript.type === 'existingLoginFieldsForInPageMenuScript') {
-            //     doFill(fillScript);
-            // } else if (fillScript.type === 'loginFieldsForInPageMenuScript') {
-            //     runLoginMenuFillScript(fillScript.script);
-            //     // doFill(fillScript);
-            // } else if (fillScript.type === 'cardFieldsForInPageMenuScript') {
-            //     runLoginMenuFillScript(fillScript.script);
-            // } else if (fillScript.type === 'identityFieldsForInPageMenuScript') {
-            //     runLoginMenuFillScript(fillScript.script);
-
-            // } else if (fillScript.type === 'inPageMenuScript') {
-            //     menuCtrler.setMenuType('autofillMenu', false)
-            //     doFill(fillScript);
-
-            // } else {
-            //     doFill(fillScript);
-            // }
         }
 
         return '{"success": true}';
