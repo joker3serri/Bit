@@ -201,7 +201,7 @@ function adjustMenuHeight() {
         command   : 'bgAnswerMenuRequest' ,
         subcommand: 'setMenuHeight'       ,
         height    : panel.offsetHeight    ,
-        sender    : 'menu.js'             ,
+        sender    : 'loginMenu.js'             ,
     });
 }
 
@@ -334,7 +334,7 @@ function _setWaitingMode() {
 /* --------------------------------------------------------------------- */
 // Request the iframe content to fadeIn or not
 function _testHash(){
-    if (window.location.hash === '#applyFadeIn') {
+    if (window.location.hash.includes('applyFadeIn')) {
         panel.classList.add('fade-in')
         setFocusOnEmptyField()
     } else {

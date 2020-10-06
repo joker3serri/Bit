@@ -1135,12 +1135,12 @@ import menuCtrler from './menuCtrler';
                 menuCtrler.hide(true)
                 menuCtrler.freeze() // freeze menu to avoid clipping during autofill
                 var pageDetailsObj = collect(document);
-                var selectedCipher = menuCtrler.getCipher(msg.cipherId)
+                // var selectedCipher = menuCtrler.getCipher(msg.cipherId)
                 chrome.runtime.sendMessage({
                     command     : 'collectPageDetailsResponse',
                     details     : pageDetailsObj,
-                    sender      : 'menu.js',
-                    cipher      : selectedCipher,
+                    sender      : 'autofillForMenu.js',
+                    cipherId    : msg.cipherId,
                 })
             } else if (msg.subcommand === 'inPageMenuDeactivate') {
                 menuCtrler.deactivate()

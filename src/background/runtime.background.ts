@@ -190,12 +190,6 @@ export default class RuntimeBackground {
                             targetCipher: msg.targetCipher,
                         });
                         break;
-                    case 'menuSelectionValidate':
-                        await BrowserApi.tabSendMessage(sender.tab, {
-                            command   : 'menuAnswerRequest',
-                            subcommand: 'menuSelectionValidate',
-                        });
-                        break;
                     case 'login':
                         await this.logIn(msg.email, msg.pwd, sender.tab, msg.loginUrl);
                         break;
@@ -260,14 +254,13 @@ export default class RuntimeBackground {
                 }, {frameId: sender.frameId});
                 break;
             case 'bgGetAutofillMenuScript':
-                const fieldsForAutofillMenuScripts =
-                    this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
-                fieldsForAutofillMenuScripts.isForLoginMenu = false;
+                const script = this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
+                script.isForLoginMenu = false;
                 await this.autofillService.doAutoFillForLastUsedLogin([{
                     frameId                   : sender.frameId,
                     tab                       : sender.tab,
                     details                   : msg.details,
-                    fieldsForInPageMenuScripts: fieldsForAutofillMenuScripts,
+                    fieldsForInPageMenuScripts: script,
                     sender                    : 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
                 }], true);
                 break;
@@ -321,11 +314,12 @@ export default class RuntimeBackground {
                         }
                         break;
 
-                    case 'menu.js':
+                    case 'autofillForMenu.js':
                         const tab = await BrowserApi.getTabFromCurrentWindow();
-                        const cipher = new CipherView() // TODO BJA
+                        const c = await this.cipherService.get(msg.cipherId);
+                        const cipher = await c.decrypt();
                         const totpCode2 = await this.autofillService.doAutoFill({
-                            cipher     : msg.cipher, // BUG BJA : this must be a Cipher object or a CipherView, see current-tab.component fillCipher(
+                            cipher     : cipher,
                             pageDetails: [{
                                 frameId: sender.frameId,
                                 tab    : tab,

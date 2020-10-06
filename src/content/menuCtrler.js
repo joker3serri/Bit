@@ -362,8 +362,9 @@ function getPossibleTypesForField(fieldEl) {
 function submit() {
     chrome.runtime.sendMessage({
         command    : 'bgAnswerMenuRequest',
-        subcommand : 'menuSelectionValidate',
+        subcommand : 'fillFormWithCipher',
         sender     : 'menuCtrler',
+        cipherId   : state.selectedCipher.data.id,
     });
 }
 menuCtrler.submit = submit
