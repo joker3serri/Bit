@@ -47,6 +47,7 @@ var menuEl,
         isPinLocked      :false,
         lastFocusedEl    :null,
         selectedCipher   : null, // a cipher node of the linkedList `ciphers`
+        lastHeight       : null,
     },
     menuBtnSvg = "url(\"data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2732%27%20height%3D%2732%27%20viewBox%3D%270%200%2032%2032%27%3E%0A%20%20%20%20%20%20%3Cg%20fill%3D%27none%27%20fill-rule%3D%27evenodd%27%3E%0A%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2716%27%20cy%3D%2716%27%20r%3D%2716%27%20fill%3D%27%23297EF1%27%20fill-rule%3D%27nonzero%27%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cpath%20fill%3D%27%23FFF%27%20d%3D%27M19.314%2017.561a.555.555%200%200%201-.82.12%204.044%204.044%200%200%201-2.499.862%204.04%204.04%200%200%201-2.494-.86.557.557%200%200%201-.815-.12.547.547%200%200%201%20.156-.748c.214-.14.229-.421.229-.424a.555.555%200%200%201%20.176-.385.504.504%200%200%201%20.386-.145.544.544%200%200%201%20.528.553c0%20.004%200%20.153-.054.36a2.954%202.954%200%200%200%203.784-.008%201.765%201.765%200%200%201-.053-.344.546.546%200%200%201%20.536-.561h.01c.294%200%20.538.237.545.532%200%200%20.015.282.227.422a.544.544%200%200%201%20.158.746m2.322-6.369a5.94%205.94%200%200%200-1.69-3.506A5.651%205.651%200%200%200%2015.916%206a5.648%205.648%200%200%200-4.029%201.687%205.936%205.936%200%200%200-1.691%203.524%205.677%205.677%200%200%200-3.433%201.737%205.966%205.966%200%200%200-1.643%204.137C5.12%2020.347%207.704%2023%2010.882%2023h10.236c3.176%200%205.762-2.653%205.762-5.915%200-3.083-2.31-5.623-5.244-5.893%27%2F%3E%0A%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%3C%2Fsvg%3E\")";
     // the string after ";utf8,...')" is just the svg inlined. Done here : https://yoksel.github.io/url-encoder/
@@ -97,7 +98,7 @@ function _initInPageMenuForEl(targetEl) {
         menuEl = document.createElement('iframe')
         _setIframeURL(state.currentMenuType, state.isPinLocked )
         menuEl.id  = 'cozy-menu-in-page'
-        menuEl.style.cssText = 'z-index: 2147483647 !important; border:0; height:0; transition: transform 30ms linear 0s; display:block;'
+        menuEl.style.cssText = 'z-index: 2147483647 !important; border:0; transition: transform 30ms linear 0s; display:block;'
         // Append <style> element to add popperjs styles
         // relevant doc for css stylesheet manipulation : https://www.w3.org/wiki/Dynamic_style_-_manipulating_CSS_with_JavaScript
         const styleEl = document.createElement('style')
@@ -167,7 +168,7 @@ function _onBlur(event) {
 }
 
 function _onFocus(event) {
-    // console.log('focus event in an input', event.target.id);
+    console.log('focus event in an input', event.target.id);
     if (!event.isTrusted) return;
     show(this)
 }
@@ -223,7 +224,7 @@ function _onKeyDown(event) {
 /* --------------------------------------------------------------------- */
 //
 function show(targetEl) {
-    // console.log('menuCtrler.show() ');
+    console.log('menuCtrler.show() ');
     if (state.isFrozen) return
     state.lastFocusedEl = targetEl
     popperInstance.state.elements.reference = targetEl
@@ -260,17 +261,19 @@ function hide(force) {
     setTimeout(() => {
         const target = document.activeElement;
         if (!force && (targetsEl.indexOf(target) != -1 || target.tagName == 'IFRAME' && target.id == 'cozy-menu-in-page')) {
+            console.log('log after timeout concludes DONT HIDE');
             // Focus is know in iframe or in one of the input => do NOT hide
             // console.log('After hide, focus is now in iframe or in one of the input => do NOT hide', internN);
             return
         }
+        console.log('log after timeout concludes DO HIDE');
         // otherwise, hide
         _setApplyFadeInUrl(false)
         // hide menu element after a delay so that the inner pannel has been scaled to 0 and therefore enables
         // a proper start for the next display of the menu.
         // There is an explanation in MDN but their solution didnot work as well as this one :
         // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Tips#Run_an_animation_again
-        setTimeout(()=>{menuEl.removeAttribute('data-show')}, 50)
+        setTimeout(()=>{menuEl.removeAttribute('data-show')}, 600)
         state.isHidden = true
     }, 1);
 }
@@ -373,9 +376,11 @@ menuCtrler.submit = submit
 /* --------------------------------------------------------------------- */
 // Set the height of menuEl (iframe) taking into account the inner margin
 function setHeight(h) {
-    // console.log('setHeight');
+    console.log('setHeight', h);
     if (!state.isMenuInited) return // happens if in an iframe without relevant inputs for the menu
+    if (state.lastHeight === h )  return
     menuEl.style.height = h + 28 + 'px'
+    state.lastHeight = h
 }
 menuCtrler.setHeight = setHeight
 
@@ -443,6 +448,7 @@ function setMenuType(menuType, isPinLocked) {
             if (state.lastFocusedEl) {
                 window.setTimeout(()=>{
                     // timeout is required in order to move focus only when iframe url has been setup
+                    console.log('focus last focusedEl', state.lastFocusedEl);
                     state.lastFocusedEl.focus()
                 },100)
             }
@@ -494,7 +500,8 @@ function _setApplyFadeInUrl(doApply, fieldTypes) {
         menuEl.src = url.origin + url.pathname + url.search + '#applyFadeIn*' + fieldTypes
     } else {
         // console.log('menuCtrler.removeFadeIn()');
-        menuEl.src = url.origin + url.pathname + url.search + '#dontApplyFadeIn'
+        const currentFieldTypes = menuEl.src.slice(menuEl.src.search(/\*.*/gi))
+        menuEl.src = url.origin + url.pathname + url.search + '#dontApplyFadeIn' + currentFieldTypes
     }
 }
 

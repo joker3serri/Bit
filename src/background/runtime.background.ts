@@ -275,16 +275,23 @@ export default class RuntimeBackground {
                 switch (msg.sender) {
                     case 'notificationBar':
                         /* auttofill.js sends the page details requested by the notification bar.
-                           Result will be used by both the notificationBar and for the inPageMenu. */
-                        // 1- request a fill script for the autofill-in-page-menu (if activated)
+                           Result will be used by both the notificationBar and for the inPageMenu.
+                           inPageMenu requires a fillscrip to know wich fields are relevant for the menu and which
+                           is the type of each field in order to adapt the menu content (cards, identities, login or
+                            existing logins)
+                        */
+                        // 1- request a fill script for the in-page-menu (if activated)
                         let enableInPageMenu = await this.storageService.get<any>(
                             LocalConstantsService.enableInPageMenuKey);
                         // default to true
                         if (enableInPageMenu === null) {enableInPageMenu = true; }
                         if (enableInPageMenu) {
+                            // get scripts for logins, cards and identities
                             const fieldsForAutofillMenuScripts =
                                 this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
-                            // fieldsForAutofillMenuScripts.isForLoginMenu = false; // BJA : pas sûr...
+                            // get script for existing logins.
+                            // the 4 scripts (existing logins, logins, cards and identities) will be sent
+                            // to autofill.js by autofill.service
                             const totpCode1 = await this.autofillService.doAutoFillForLastUsedLogin([{
                                 frameId: sender.frameId,
                                 tab: msg.tab,
@@ -314,6 +321,7 @@ export default class RuntimeBackground {
                         }
                         break;
 
+                    // autofill request for a specific cipher from menu.js
                     case 'autofillForMenu.js':
                         const tab = await BrowserApi.getTabFromCurrentWindow();
                         const c = await this.cipherService.get(msg.cipherId);

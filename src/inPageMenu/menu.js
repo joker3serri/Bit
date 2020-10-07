@@ -4,6 +4,7 @@ require('./menu.scss');
 var ciphers                 ,
     panel                   ,
     resizeListener   = null ,
+    lastSentHeight          ,
     focusedFieldTypes;
 
 const loginRowTemplate = `
@@ -135,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         requestFormFillingWithCipher(rowEl.dataset.cipherId)
     })
 
-    // 4- detect when to apply the fadeIn effect
+    // 6- detect when to apply the fadeIn effect
     window.addEventListener('hashchange', _testHash)
     _testHash()
 
@@ -252,10 +253,12 @@ function selectFirstVisibleRow() {
 // Width is constraint by the parent page, but height is decided by the
 // iframe content
 function adjustMenuHeight() {
+    if (lastSentHeight === panel.offsetHeight) return
+    lastSentHeight = panel.offsetHeight
     chrome.runtime.sendMessage({
         command   : 'bgAnswerMenuRequest' ,
         subcommand: 'setMenuHeight'       ,
-        height    : panel.offsetHeight    ,
+        height    : lastSentHeight        ,
         sender    : 'menu.js'             ,
     });
 }
@@ -299,8 +302,8 @@ function _testHash(){
     } else {
         document.querySelector('#ids-rows-list').classList.add('hidden')
     }
-    adjustMenuHeight()
     if (hash.includes('applyFadeIn')) {
+        adjustMenuHeight()
         panel.classList.add('fade-in')
     } else {
         panel.className = "panel";

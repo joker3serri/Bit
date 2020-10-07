@@ -204,7 +204,6 @@ export default class AutofillService implements AutofillServiceInterface {
             if (!options.skipLastUsed) {
                 this.cipherService.updateLastUsedDate(options.cipher.id);
             }
-            console.log('about to send fillScripts');
 
             if (options.fieldsForInPageMenuScripts) {
                 fillScripts = [fillScript, ...options.fieldsForInPageMenuScripts];
@@ -216,7 +215,6 @@ export default class AutofillService implements AutofillServiceInterface {
                 command: 'fillForm',
                 fillScripts: fillScripts,
                 isForLoginMenu: options.isForLoginMenu,
-                // loginFillScripts: options.loginFillScripts,
                 url: tab.url,
             }, { frameId: pd.frameId });
 
@@ -248,7 +246,6 @@ export default class AutofillService implements AutofillServiceInterface {
     async doAutoFillForLastUsedLogin(pageDetails: any, fromCommand: boolean) {
         let tab = await this.getActiveTab();
         let lastUsedCipher: any;
-        console.log('doAutoFillForLastUsedLogin()');
         /*
         @override by Cozy : when the user logins into the addon, all tabs request a pageDetail in order to
         activate the in-page-menu :
@@ -257,9 +254,6 @@ export default class AutofillService implements AutofillServiceInterface {
         */
         if (pageDetails[0].sender === 'notifBarForInPageMenu') {
             tab = pageDetails[0].tab;
-            if(tab === undefined){
-                console.log("pb !!!!!");
-            }
             lastUsedCipher = await this.cipherService.getLastUsedForUrl(tab.url);
             if (!lastUsedCipher) { // there is no cipher for this URL : deactivate in page menu
                 BrowserApi.tabSendMessage(tab, {command: 'autofillAnswerRequest', subcommand: 'inPageMenuDeactivate'});
@@ -291,8 +285,9 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     /* --------------------------------------------------------------------- */
-    // Select in pageDetails the inputs that could be filled
-    // in order to activate the loginMenu into it.
+    // Select in pageDetails the inputs that could be filled in order to
+    // activate the inPageMneu into these fields, wheter to login or select
+    // a cipher for autofill.
     generateFieldsForInPageMenuScripts(pageDetails: any) {
 
         if (!pageDetails ) {
@@ -302,132 +297,12 @@ export default class AutofillService implements AutofillServiceInterface {
         const filledFields: { [id: string]: AutofillField; } = {};
 
         /*
-        Exemples of ciphers :
-
-        0/ cipher.type : 1:login 2:notes  3:Card 4: identities
-
-        1/ Login Cipher :
-        `{
-            "id": "b9a67ec355b1e5bbe672d6632955bd31",
-            "organizationId": null,
-            "folderId": null,
-            "name": "bbox - Verdun - benbox",
-            "notes": "dd",
-            "type": 1,
-            "favorite": false,
-            "organizationUseTotp": false,
-            "edit": true,
-            "viewPassword": true,
-            "login": {
-              "username": "admin",
-              "password": "1234",
-              "passwordRevisionDate": null,
-              "totp": null,
-              "uris": [
-                 {
-                    "match": null,
-                    "_uri": "http://gestionbbox.lan/",
-                    "_domain": "gestionbbox.lan",
-                    "_hostname": "gestionbbox.lan",
-                    "_host": null,
-                    "_canLaunch": null
-                 },
-                 {
-                    "match": null,
-                    "_uri": "https://mabbox.bytel.fr/",
-                    "_domain": "bytel.fr",
-                    "_hostname": "mabbox.bytel.fr",
-                    "_host": null,
-                    "_canLaunch": null
-                 }
-              ]
-            },
-            "identity": {
-              "title": null,
-              "middleName": null,
-              "address1": null,
-              "address2": null,
-              "address3": null,
-              "city": null,
-              "state": null,
-              "postalCode": null,
-              "country": null,
-              "company": null,
-              "email": null,
-              "phone": null,
-              "ssn": null,
-              "username": null,
-              "passportNumber": null,
-              "licenseNumber": null,
-              "_firstName": null,
-              "_lastName": null,
-              "_subTitle": null
-            },
-            "card": {
-              "cardholderName": "Smith",
-              "expMonth": "",
-              "expYear": null,
-              "code": null,
-              "_brand": null,
-              "_number": null,
-              "_subTitle": null
-            },
-            "secureNote": {
-              "type": null
-            },
-            "attachments": null,
-            "fields": [
-              {
-                 "name": "Clé Wifi SSID : benbox",
-                 "value": "4567",
-                 "type": 0,
-                 "newField": false
-              }
-            ],
-            "passwordHistory": null,
-            "collectionIds": null,
-            "revisionDate": "2020-09-07T13:32:53.543Z",
-            "deletedDate": null,
-            "localData": null
-        }`
-
-        2/ Card Cipher (extract) :
-        `{
-            "card": {
-                "cardholderName": "SMITH",
-                "expMonth": "6",
-                "expYear": "2028",
-                "code": "346",
-                "_brand": "Mastercard",
-                "_number": "5581692893367425",
-                "_subTitle": "Mastercard, *7425"
-            },
-        }`
-
-        3/ identity cipher (extract) :
-        {
-            "identity": {
-                "title": "M.",
-                "middleName": "Thimothée",
-                "address1": "158, rue de Verdun, 92800 Puteaux",
-                "address2": null,
-                "address3": null,
-                "city": "Puteaux",
-                "state": null,
-                "postalCode": "92800",
-                "country": "France",
-                "company": "Cozy Cloud",
-                "email": "mail1@sonadresse.com",
-                "phone": "+33686253666",
-                "ssn": "1 77 02 93 010 075   -   16",
-                "username": "Benibur",
-                "passportNumber": null,
-                "licenseNumber": null,
-                "firstName": "Benjamin",
-                "lastName": "ANDRE",
-                "subTitle": "Benjamin ANDRE"
-            },
-        }
+        For the data structure of ciphers, logins, cards, identities... go there :
+            * cipher   : jslib\src\models\data\cipherData.ts
+            * login    : jslib\src\models\data\loginData.ts
+            * card     : jslib\src\models\data\cardData.ts
+            * identity : jslib\src\models\data\identityData.ts
+            * ...
         */
 
         const cipherModel = JSON.parse(`{
@@ -579,7 +454,19 @@ export default class AutofillService implements AutofillServiceInterface {
                     }
 
                     filledFields[field.opid] = field;
-                    this.fillByOpid(fillScript, field, val, 'BJA2');
+                    let fieldtype;
+                    switch (options.cipher.type) {
+                        case CipherType.Login:
+                            fieldtype = 'login_customField';
+                            break;
+                        case CipherType.Card:
+                            fieldtype = 'card_customField';
+                            break;
+                        case CipherType.Identity:
+                            fieldtype = 'identity_customField';
+                            break;
+                    }
+                    this.fillByOpid(fillScript, field, val, fieldtype);
                 }
             });
         }

@@ -25,7 +25,8 @@ var panel               ,
     is2faHidden = true  ,
     isIn2FA     = false ,
     isLocked            ,
-    isPinLocked
+    isPinLocked         ,
+    lastSentHeight
 
 /* --------------------------------------------------------------------- */
 // initialization of the login menu
@@ -197,11 +198,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // Width is constraint by the parent page, but height is decided by the
 // iframe content
 function adjustMenuHeight() {
+    if (lastSentHeight === panel.offsetHeight) return
+    lastSentHeight = panel.offsetHeight
     chrome.runtime.sendMessage({
         command   : 'bgAnswerMenuRequest' ,
         subcommand: 'setMenuHeight'       ,
-        height    : panel.offsetHeight    ,
-        sender    : 'loginMenu.js'             ,
+        height    : lastSentHeight        ,
+        sender    : 'loginMenu.js'        ,
     });
 }
 
