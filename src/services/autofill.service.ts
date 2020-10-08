@@ -193,7 +193,8 @@ export default class AutofillService implements AutofillServiceInterface {
                 sender              : pd.sender,
             });
 
-            if (!fillScript || !fillScript.script || !fillScript.script.length) {
+            if (!options.fieldsForInPageMenuScripts &&
+                (!fillScript || !fillScript.script || !fillScript.script.length)) {
                 return;
             }
 

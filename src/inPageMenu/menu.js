@@ -5,6 +5,8 @@ var ciphers                 ,
     panel                   ,
     resizeListener   = null ,
     lastSentHeight          ,
+    titleEl                 ,
+    i18nGetMessage          ,
     focusedFieldTypes;
 
 const loginRowTemplate = `
@@ -42,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1- get elements references
     panel = document.querySelector('.panel')
-    title = document.getElementById('title-content')
+    titleEl = document.getElementById('title-content')
 
     // 2- prepare i18n and apply
     var i18n = {};
@@ -63,8 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         // retrieve i18n values and set elements textcontent
         lang = chrome.i18n.getUILanguage();
-        const i18nGetMessage = chrome.i18n.getMessage
-        title.textContent = i18nGetMessage('inPageMenuSelectAnAccount')
+        i18nGetMessage = chrome.i18n.getMessage
+        titleEl.textContent = i18nGetMessage('inPageMenuSelectAnAccount')
     }
 
     // 3- listen to the commands and ciphers sent by the addon
@@ -285,22 +287,25 @@ function _testHash(){
     const focusedFieldTypesArr = hash.split('*').map(t => t.split('_'))
     focusedFieldTypesArr.shift()
     focusedFieldTypesArr.forEach(t=>focusedFieldTypes[t[0]]=t[1])
-    if (focusedFieldTypes.login) {
-        document.querySelector('#login-rows-list').classList.remove('hidden')
-    } else {
-        document.querySelector('#login-rows-list').classList.add('hidden')
-    }
     if (focusedFieldTypes.card) {
+        titleEl.textContent = i18nGetMessage('inPageMenuSelectACard')
         updateCardRows()
         document.querySelector('#card-rows-list').classList.remove('hidden')
     } else {
         document.querySelector('#card-rows-list').classList.add('hidden')
     }
     if (focusedFieldTypes.identity) {
+        titleEl.textContent = i18nGetMessage('inPageMenuSelectAnIdentity')
         updateIdsRows()
         document.querySelector('#ids-rows-list').classList.remove('hidden')
     } else {
         document.querySelector('#ids-rows-list').classList.add('hidden')
+    }
+    if (focusedFieldTypes.login) {
+        titleEl.textContent = i18nGetMessage('inPageMenuSelectAnAccount')
+        document.querySelector('#login-rows-list').classList.remove('hidden')
+    } else {
+        document.querySelector('#login-rows-list').classList.add('hidden')
     }
     if (hash.includes('applyFadeIn')) {
         adjustMenuHeight()
