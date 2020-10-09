@@ -273,6 +273,7 @@ export default class AutofillService implements AutofillServiceInterface {
             if (!tab || !tab.url) {
                 return;
             }
+            lastUsedCipher = await this.cipherService.getLastUsedForUrl(tab.url);
         }
         if (!lastUsedCipher && !hasFieldsForInPageMenu) {
             // no lastUsedCipher nor fields for inPageMenu : break

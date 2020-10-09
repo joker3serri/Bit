@@ -159,6 +159,9 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         await this.search(null);
         const typeCounts = new Map<CipherType, number>();
         this.ciphers.forEach((c) => {
+            if (c.isDeleted) {
+                return;
+            }
             if (typeCounts.has(c.type)) {
                 typeCounts.set(c.type, typeCounts.get(c.type) + 1);
             } else {
@@ -169,6 +172,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         this.ciphersByType[CipherType.Card] = this._ciphersByType(CipherType.Card);
         this.ciphersByType[CipherType.Identity] = this._ciphersByType(CipherType.Identity);
         this.ciphersByType[CipherType.Login] = this._ciphersByType(CipherType.Login);
+
         this.typeCounts = typeCounts;
     }
 

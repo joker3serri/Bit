@@ -18,7 +18,6 @@ const loginRowTemplate = `
     </div>
 </div>
 `;
-
 const cardRowTemplate = `
 <div class="row-main">
     <div class="row-icon icon-card"></div>
@@ -248,7 +247,6 @@ function selectFirstVisibleRow() {
         return
     }
 }
-
 
 /* --------------------------------------------------------------------- */
 // Ask parent page to adjuste iframe height

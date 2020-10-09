@@ -83,7 +83,6 @@ export default class RuntimeBackground {
             'msg': msg,
             'sender': sender
         });
-
         */
         console.log('runtime.background PROCESS MESSAGE ', {
             'msg.command:': msg.command,
@@ -188,6 +187,11 @@ export default class RuntimeBackground {
                             command     : 'menuAnswerRequest',
                             subcommand  : 'menuSetSelectionOnCipher',
                             targetCipher: msg.targetCipher,
+                        });
+                        break;
+                        await BrowserApi.tabSendMessage(sender.tab, {
+                            command   : 'menuAnswerRequest',
+                            subcommand: 'menuSelectionValidate',
                         });
                         break;
                     case 'login':
@@ -769,7 +773,7 @@ export default class RuntimeBackground {
         if (enableInPageMenu) {
             subCommand = 'autofilIPMenuActivate';
         }
-        await this.syncService.fullSync(true); // BJA : nécessaire ?
+        await this.syncService.fullSync(true);
         const allTabs = await BrowserApi.getAllTabs();
         for (const tab of allTabs) {
             BrowserApi.tabSendMessage(tab, {

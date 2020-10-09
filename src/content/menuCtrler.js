@@ -10,6 +10,13 @@ menuCtrler exposes an API to interact with the menus within the pages.
         setHeight(integer in px)
         getCipher(id)
         setCiphers([array of ciphers])
+                    isFrozen:false      ,
+                    isHidden:true       ,
+                    isAutoFillInited    ,
+                    currentMenuType:null,
+                    lastFocusedEl       ,
+                    islocked            ,
+                    isPinLocked         ,
         unFreeze()
         freeze()
         deactivate()
