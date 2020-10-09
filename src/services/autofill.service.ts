@@ -171,7 +171,7 @@ export default class AutofillService implements AutofillServiceInterface {
         }
         /* END @override by Cozy */
 
-        if (!tab || !options.cipher || !options.pageDetails || !options.pageDetails.length) {
+        if (!tab || !options.pageDetails || !options.pageDetails.length) {
             throw new Error('Nothing to auto-fill.');
         }
 
@@ -199,17 +199,20 @@ export default class AutofillService implements AutofillServiceInterface {
             }
 
             // Add a small delay between operations
-            fillScript.properties.delay_between_operations = 20;
+            if (fillScript) {
+                fillScript.properties.delay_between_operations = 20;
+                didAutofill = true;
+            }
 
-            didAutofill = true;
             if (!options.skipLastUsed) {
                 this.cipherService.updateLastUsedDate(options.cipher.id);
             }
 
             if (options.fieldsForInPageMenuScripts) {
-                fillScripts = [fillScript, ...options.fieldsForInPageMenuScripts];
+                fillScripts = fillScript ?
+                [fillScript, ...options.fieldsForInPageMenuScripts] : options.fieldsForInPageMenuScripts;
             } else {
-                fillScripts = [fillScript];
+                fillScripts = fillScript ? [fillScript] : [];
             }
 
             BrowserApi.tabSendMessage(tab, {
@@ -218,6 +221,8 @@ export default class AutofillService implements AutofillServiceInterface {
                 isForLoginMenu: options.isForLoginMenu,
                 url: tab.url,
             }, { frameId: pd.frameId });
+
+            if (!fillScript) { return; }
 
             if (options.cipher.type !== CipherType.Login || totpPromise || options.skipTotp ||
                 !options.cipher.login.totp || (!canAccessPremium && !options.cipher.organizationUseTotp)) {
@@ -253,10 +258,14 @@ export default class AutofillService implements AutofillServiceInterface {
             * then the tab to take into account is not the active tab, but the tab sent with the pageDetails
             * and if there is no cipher for the tab, then request to close in page menu
         */
+        lastUsedCipher = await this.cipherService.getLastUsedForUrl(tab.url);
+        let r = 0;
+        pageDetails[0].fieldsForInPageMenuScripts.forEach( (s: any) => r = r + s.script.length);
+        const hasFieldsForInPageMenu = r > 0;
         if (pageDetails[0].sender === 'notifBarForInPageMenu') {
             tab = pageDetails[0].tab;
-            lastUsedCipher = await this.cipherService.getLastUsedForUrl(tab.url);
-            if (!lastUsedCipher) { // there is no cipher for this URL : deactivate in page menu
+            if (!lastUsedCipher && !hasFieldsForInPageMenu) {
+                // there is no cipher for this URL : deactivate in page menu
                 BrowserApi.tabSendMessage(tab, {command: 'autofillAnswerRequest', subcommand: 'inPageMenuDeactivate'});
                 return;
             }
@@ -264,12 +273,12 @@ export default class AutofillService implements AutofillServiceInterface {
             if (!tab || !tab.url) {
                 return;
             }
-            lastUsedCipher = await this.cipherService.getLastUsedForUrl(tab.url);
         }
-        /* END @override by Cozy */
-        if (!lastUsedCipher) {
+        if (!lastUsedCipher && !hasFieldsForInPageMenu) {
+            // no lastUsedCipher nor fields for inPageMenu : break
             return;
         }
+        /* END @override by Cozy */
         const res = await this.doAutoFill({
             cipher: lastUsedCipher,
             tab : tab,
