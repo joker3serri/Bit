@@ -470,6 +470,7 @@ menuCtrler.setMenuType = setMenuType
 /* --------------------------------------------------------------------- */
 //
 function _setIframeURL(menuType, isPinLocked, hash) {
+    if (!menuEl) return
     const rand = '?' + Math.floor((Math.random()*1000000)+1)
     if (menuEl.src) {
         const location = new URL(menuEl.src)
@@ -490,7 +491,7 @@ function _setIframeURL(menuType, isPinLocked, hash) {
 /* --------------------------------------------------------------------- */
 // just modify the random part of the iframe url in order to force refresh
 function _forceIframeRefresh() {
-    if (!menuEl.src) return
+    if (!menuEl || !menuEl.src) return
     const url = new URL(menuEl.src)
     const rand = '?' + Math.floor((Math.random()*1000000)+1)
     menuEl.src = url.origin + url.pathname + url.search + rand + url.hash
@@ -500,7 +501,7 @@ function _forceIframeRefresh() {
 /* --------------------------------------------------------------------- */
 //
 function _setApplyFadeInUrl(doApply, fieldTypes) {
-    if (!menuEl.src) return
+    if (!menuEl || !menuEl.src) return
     const url = new URL(menuEl.src)
     if (doApply) {
         // console.log('menuCtrler.applyFadeIn()');
