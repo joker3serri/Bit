@@ -170,6 +170,7 @@ function updateRows() {
 // Update login rows.
 // Existing rows will be deleted
 function updateLoginRows() {
+    if (!ciphers || !ciphers.logins) return
     // 1- generate rows
     const rowsList = document.querySelector('#login-rows-list')
     // 2- remove all previous rows
@@ -190,6 +191,7 @@ function updateLoginRows() {
 /* --------------------------------------------------------------------- */
 // update card rows. Existing rows will be deleted
 function updateCardRows() {
+    if (!ciphers || !ciphers.cards) return
     // 1- generate rows
     const rowsList = document.querySelector('#card-rows-list')
     // 2- remove all previous rows
@@ -210,6 +212,7 @@ function updateCardRows() {
 /* --------------------------------------------------------------------- */
 // update identities rows. Existing rows will be deleted
 function updateIdsRows() {
+    if (!ciphers || !ciphers.identities) return
     // 1- generate rows
     const rowsList = document.querySelector('#ids-rows-list')
     // 2- remove all previous rows
@@ -307,7 +310,6 @@ function _testHash(){
     }
     if (hash.includes('applyFadeIn')) {
         adjustMenuHeight()
-        // setTimeout( ()=> panel.classList.add('fade-in'), 10)
         panel.classList.add('fade-in')
     } else {
         panel.className = "panel";
