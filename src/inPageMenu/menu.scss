@@ -154,6 +154,7 @@ hr {
     display: block;
     font-size: $font-size-small;
     color: #95999d;
+    min-height: 5px;
 }
 
 .hidden {
@@ -179,5 +180,10 @@ hr {
         padding-top: 0.125rem;
         padding-bottom: 0.125rem;
         margin-right: 0.5rem;
+    }
+}
+@media (max-width: 160px) {
+    #title-content{
+        display: none;
     }
 }

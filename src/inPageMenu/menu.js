@@ -307,9 +307,10 @@ function _testHash(){
     }
     if (hash.includes('applyFadeIn')) {
         adjustMenuHeight()
+        // setTimeout( ()=> panel.classList.add('fade-in'), 10)
         panel.classList.add('fade-in')
     } else {
         panel.className = "panel";
     }
-    selectFirstVisibleRow()
+    shouldShowOnNextResize = true
 }

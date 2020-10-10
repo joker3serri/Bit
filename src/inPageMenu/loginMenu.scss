@@ -142,6 +142,7 @@ input {
     background-color: transparent;
     color: inherit;
     padding-left: 1rem;
+    margin-bottom: 0.2rem;
     box-sizing: border-box;
     top: -0.25rem;
     position: relative;
@@ -221,4 +222,26 @@ button {
 
 .twoFa-mode #twoFa-row {
     display: block;
+}
+
+@media (max-width: 300px) {
+    #title-content{
+        font-size: 0.9em;
+    }
+    #login-form {
+        padding: 0 0.5rem 0.5rem 0.5rem;
+    }
+    .row-main {
+        padding: 0.475rem 0 0.475rem 0.5rem;
+    }
+    .row-text {
+        font-size: 13px;
+    }
+    .row-icon {
+        width: 1rem;
+        height: 1rem;
+        padding-top: 0.125rem;
+        padding-bottom: 0.125rem;
+        margin-right: 0.5rem;
+    }
 }
