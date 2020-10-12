@@ -289,7 +289,7 @@ export default class AutofillService implements AutofillServiceInterface {
         const filledFields: { [id: string]: AutofillField; } = {};
 
         /*
-        For the data structure of ciphers, logins, cards, identities... go there :
+        Info : for the data structure of ciphers, logins, cards, identities... go there :
             * cipher   : jslib\src\models\data\cipherData.ts
             * login    : jslib\src\models\data\loginData.ts
             * card     : jslib\src\models\data\cardData.ts
@@ -297,6 +297,7 @@ export default class AutofillService implements AutofillServiceInterface {
             * ...
         */
 
+        // A] Prepare the model of cipher (wiht a card, identity and login)
         const cipherModel = JSON.parse(`{
             "id": "b9a67ec355b1e5bbe672d6632955bd31",
             "organizationId": null,
@@ -379,20 +380,43 @@ export default class AutofillService implements AutofillServiceInterface {
            onlyVisibleFields   : false,
            cipher              : cipherModel,
         };
+
+        // B] generate a standard login fillscript for the generic cipher
         const loginFS = new AutofillScript(pageDetails.documentUUID);
         const loginFilledFields: { [id: string]: AutofillField; } = {};
         const loginLoginMenuFillScript    =
             this.generateLoginFillScript(loginFS, pageDetails, loginFilledFields, options);
+        loginLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
+            loginLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
 
+        // C] generate a standard card fillscript for the generic cipher
         const cardFS = new AutofillScript(pageDetails.documentUUID);
         const cardFilledFields: { [id: string]: AutofillField; } = {};
         const cardLoginMenuFillScript     =
             this.generateCardFillScript(cardFS, pageDetails, cardFilledFields, options);
+        cardLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
+            cardLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
 
+        // D] generate a standard identity fillscript for the generic cipher
         const idFS = new AutofillScript(pageDetails.documentUUID);
         const idFilledFields: { [id: string]: AutofillField; } = {};
         const identityLoginMenuFillScript =
             this.generateIdentityFillScript(idFS, pageDetails, idFilledFields, options);
+        identityLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
+            identityLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
+
+        // E] filter scripts on different rules to limit the inputs where to add the loginMenu
+
+        // Rule 1 : inputs which might correspond to a Card are acceptable only if there are at least
+        // two inputs for the card
+        if (cardLoginMenuFillScript.script.length < 2) {
+            cardLoginMenuFillScript.script = [];
+        }
+        // Rule 2 : inputs which might correspond to an identity are acceptable only if there are at least three
+        // to inputs for the identity
+        if (identityLoginMenuFillScript.script.length < 3) {
+            identityLoginMenuFillScript.script = [];
+        }
 
         return {
             loginLoginMenuFillScript: loginLoginMenuFillScript,
