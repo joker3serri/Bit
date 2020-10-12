@@ -441,16 +441,18 @@ export default class AutofillService implements AutofillServiceInterface {
         // 1- test if the forms into the page might be a search form
         const isSearchForm: any = {};
         const attributesToCheck: any = ['htmlClass', 'htmlAction', 'htmlMethod', 'htmlID'];
-        Object.keys(pageDetails.forms).forEach((formId: string) => {
+        const isSearchFormHelper = (formId: string) => {
             const form = pageDetails.forms[formId];
             for (const attr of attributesToCheck) {
                 if (!form.hasOwnProperty(attr) || !form[attr] ) { continue; }
                 if (this.isFieldMatch(form[attr], ['search', 'recherche'])) {
-                    isSearchForm[formId] = true;
-                    return;
+                    return true;
                 }
+                return false;
             }
-            isSearchForm[formId] = false;
+        };
+        Object.keys(pageDetails.forms).forEach((formId: string) => {
+            isSearchForm[formId] = isSearchFormHelper(formId);
         });
         // 2- filter pageDetails fields that have no form or a form which might be a search form
         pageDetails.fields = pageDetails.fields.filter((field: any) => {
