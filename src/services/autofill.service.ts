@@ -412,12 +412,12 @@ export default class AutofillService implements AutofillServiceInterface {
 
         // Rule 1 : inputs which might correspond to a Card are acceptable only if there are at least
         // two inputs for the card
-        if (cardLoginMenuFillScript.script.length < 2) {
+        if (cardLoginMenuFillScript.script.length <= 2) {
             cardLoginMenuFillScript.script = [];
         }
         // Rule 2 : inputs which might correspond to an identity are acceptable only if there are at least three
         // to inputs for the identity
-        if (identityLoginMenuFillScript.script.length < 3) {
+        if (identityLoginMenuFillScript.script.length <= 3) {
             identityLoginMenuFillScript.script = [];
         }
 
@@ -435,6 +435,7 @@ export default class AutofillService implements AutofillServiceInterface {
         * fields which are not into a form
         * fields into a form which look like a search form.
           a form is a search if certain of its attibutes includes some keywords such as 'search'
+    Will be marked as visible even if it is not the case
      */
     preFilterFieldsForInPageMenu(pageDetails: any) {
         // 1- test if the forms into the page might be a search form
@@ -455,6 +456,12 @@ export default class AutofillService implements AutofillServiceInterface {
         pageDetails.fields = pageDetails.fields.filter((field: any) => {
             if (field.form && !isSearchForm[field.form]) { return true; }
         });
+        // 3- specify all fields as "viewable"
+        // a field should have a the menu activated even if its not viewable at first
+        pageDetails.fields.forEach( (field: any) => {
+            field.viewable = true;
+        });
+
     }
 
     // Helpers
