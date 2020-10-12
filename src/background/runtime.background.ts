@@ -290,6 +290,7 @@ export default class RuntimeBackground {
                         // default to true
                         if (enableInPageMenu === null) {enableInPageMenu = true; }
                         if (enableInPageMenu) {
+                            this.autofillService.preFilterFieldsForInPageMenu(msg.details) // BJA : check this is the relevant way to do this
                             // get scripts for logins, cards and identities
                             const fieldsForAutofillMenuScripts =
                                 this.autofillService.generateFieldsForInPageMenuScripts(msg.details);

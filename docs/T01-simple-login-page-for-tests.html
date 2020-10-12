@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8" />
+        <style media="screen" type="text/css" >
+            .form-row {
+                margin-bottom: 10px;
+            }
+            hr {
+                height: 4px;
+                background-color: black;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <a href="./">Back to menu</a>
+        <hr>
+
+        <form action="" method="get" class="form-example" style="max-width: 400px;">
+
+          <div class="form-row">
+            <label for="email">Enter your email: </label>
+            <br>
+            <input type="text" name="email" id="email" value="" autocomplete="off" style="width:100%; box-sizing: border-box;" >
+          </div>
+
+          <div class="form-row">
+            <label for="password">Enter your password: </label>
+            <br>
+            <input type="text" name="password" id="password" value="" autocomplete=“off” style="width:100%; box-sizing: border-box;" autofocus >
+          </div>
+
+          <div class="form-row">
+            <br>
+            <input type="submit" value="login" onClick="document.querySelector('form').submit(); console.log('toto')">
+          </div>
+
+        </form>
+
+    </body>
+</html>

@@ -308,7 +308,7 @@ export default class AutofillService implements AutofillServiceInterface {
         const filledFields: { [id: string]: AutofillField; } = {};
 
         /*
-        For the data structure of ciphers, logins, cards, identities... go there :
+        Info : for the data structure of ciphers, logins, cards, identities... go there :
             * cipher   : jslib\src\models\data\cipherData.ts
             * login    : jslib\src\models\data\loginData.ts
             * card     : jslib\src\models\data\cardData.ts
@@ -316,6 +316,7 @@ export default class AutofillService implements AutofillServiceInterface {
             * ...
         */
 
+        // A] Prepare the model of cipher (wiht a card, identity and login)
         const cipherModel = JSON.parse(`{
             "id": "b9a67ec355b1e5bbe672d6632955bd31",
             "organizationId": null,
@@ -398,29 +399,95 @@ export default class AutofillService implements AutofillServiceInterface {
            onlyVisibleFields   : false,
            cipher              : cipherModel,
         };
+
+        // B] pre filter the fields into which a login menu should be inserted
+        this.preFilterFieldsForInPageMenu(pageDetails);
+
+        // C] generate a standard login fillscript for the generic cipher
         const loginFS = new AutofillScript(pageDetails.documentUUID);
         const loginFilledFields: { [id: string]: AutofillField; } = {};
         const loginLoginMenuFillScript    =
             this.generateLoginFillScript(loginFS, pageDetails, loginFilledFields, options);
-        loginLoginMenuFillScript.type    = 'loginFieldsForInPageMenuScript';
+        loginLoginMenuFillScript.type   = 'loginFieldsForInPageMenuScript';
+        loginLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
+            loginLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
 
+        // D] generate a standard card fillscript for the generic cipher
         const cardFS = new AutofillScript(pageDetails.documentUUID);
         const cardFilledFields: { [id: string]: AutofillField; } = {};
         const cardLoginMenuFillScript     =
             this.generateCardFillScript(cardFS, pageDetails, cardFilledFields, options);
-        cardLoginMenuFillScript.type    = 'cardFieldsForInPageMenuScript';
+        cardLoginMenuFillScript.type   = 'cardFieldsForInPageMenuScript';
+        cardLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
+            cardLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
 
+        // E] generate a standard identity fillscript for the generic cipher
         const idFS = new AutofillScript(pageDetails.documentUUID);
         const idFilledFields: { [id: string]: AutofillField; } = {};
         const identityLoginMenuFillScript =
             this.generateIdentityFillScript(idFS, pageDetails, idFilledFields, options);
-        identityLoginMenuFillScript.type = 'identityFieldsForInPageMenuScript';
+        identityLoginMenuFillScript.type   = 'identityFieldsForInPageMenuScript';
+        identityLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
+            identityLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
+
+        // F] filter scripts on different rules to limit the inputs where to add the loginMenu
+
+        // Rule 1 : inputs which might correspond to a Card are acceptable only if there are at least
+        // two inputs for the card
+        if (cardLoginMenuFillScript.script.length <= 2) {
+            cardLoginMenuFillScript.script = [];
+        }
+        // Rule 2 : inputs which might correspond to an identity are acceptable only if there are at least three
+        // to inputs for the identity
+        if (identityLoginMenuFillScript.script.length <= 3) {
+            identityLoginMenuFillScript.script = [];
+        }
 
         return [
             loginLoginMenuFillScript,
             cardLoginMenuFillScript,
             identityLoginMenuFillScript,
         ];
+    }
+
+    /*
+    filter the fields of a page detail for the login menu.
+    Will be excluded :
+        * fields which are not into a form
+        * fields into a form which look like a search form.
+          a form is a search if certain of its attibutes includes some keywords such as 'search'
+    Will be marked as visible even if it is not the case
+     */
+    preFilterFieldsForInPageMenu(pageDetails: any) {
+        // 1- test if the forms into the page might be a search form
+        const isSearchForm: any = {};
+        const attributesToCheck: any = ['htmlClass', 'htmlAction', 'htmlMethod', 'htmlID'];
+        const isSearchFormHelper = (formId: string) => {
+            const form = pageDetails.forms[formId];
+            for (const attr of attributesToCheck) {
+                if (!form.hasOwnProperty(attr) || !form[attr] ) { continue; }
+                if (this.isFieldMatch(form[attr], ['search', 'recherche'])) {
+                    return true;
+                }
+                return false;
+            }
+        };
+        Object.keys(pageDetails.forms).forEach((formId: string) => {
+            isSearchForm[formId] = isSearchFormHelper(formId);
+        });
+        // 2- filter pageDetails fields that have no form or a form which might be a search form
+        pageDetails.fields = pageDetails.fields.filter((field: any) => {
+            return field.form && !isSearchForm[field.form];
+        });
+        // 3- specify all fields as "viewable"
+        // A field should have a the menu activated even if you have to scroll to access it.
+        // reminder :
+        //    * visible : when none of its parent is `display=none` ou `visibility=hidden`
+        //    * viewable : when visible and you don't have to scroll to have it displayed in the viewport
+        pageDetails.fields.forEach( (field: any) => {
+            field.viewable = true;
+        });
+
     }
 
     // Helpers
@@ -1047,8 +1114,27 @@ export default class AutofillService implements AutofillServiceInterface {
         return excludedTypes.indexOf(type) > -1;
     }
 
+    /*
+    Test if a value matches some criteria
+        * value : String : the value to test
+        * containsOptions : [String] : array of strings to test if they are contained into the value string
+        * options : [String] : array of strings to look into the value.
+            * if there is no containsOptions : the test is to look for the sting into value
+            * if there are some containsOptions provided, then a strict equality between the string and the
+              value is expected
+     */
     private isFieldMatch(value: string, options: string[], containsOptions?: string[]): boolean {
         value = value.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g, '');
+
+        /*
+            @override by Cozy : don't take into account too long values :
+            A long string is not coherent with the description of a form to fill. It is likely a search form where
+            the element before the input ("label-left") is a select for the user to choose the category where to run
+            the search.
+        */
+        if (value.length > 100) { return false; }
+        /* end override by Cozy */
+
         for (let i = 0; i < options.length; i++) {
             let option = options[i];
             const checkValueContains = containsOptions == null || containsOptions.indexOf(option) > -1;
