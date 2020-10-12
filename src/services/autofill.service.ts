@@ -459,7 +459,10 @@ export default class AutofillService implements AutofillServiceInterface {
             if (field.form && !isSearchForm[field.form]) { return true; }
         });
         // 3- specify all fields as "viewable"
-        // a field should have a the menu activated even if its not viewable at first
+        // A field should have a the menu activated even if you have to scroll to access it.
+        // reminder :
+        //    * visible : when none of its parent is `display=none` ou `visibility=hidden`
+        //    * viewable : when visible and you don't have to scroll to have it displayed in the viewport
         pageDetails.fields.forEach( (field: any) => {
             field.viewable = true;
         });
