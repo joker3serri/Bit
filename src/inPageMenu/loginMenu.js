@@ -100,11 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 5- activate material inputs and put focus
+    // 5- activate material inputs
     _turnIntoMaterialInput(urlInput, urlLabel)
     _turnIntoMaterialInput(pwdInput, pwdLabel)
     _turnIntoMaterialInput(twoFaInput, twoFaLabel)
-    urlInput.focus()
 
     // 6- request to adjust the menu height
     adjustMenuHeight()
@@ -141,7 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 urlInput.value = msg.rememberedCozyUrl
                 // input event not triggered in Chrome by the previous instruction... so we triger event manually...
                 urlInput.dispatchEvent(new Event('input', { 'bubbles': true }))
-                pwdInput.focus()
                 break;
         }
     })
@@ -336,7 +334,6 @@ function _setWaitingMode() {
 function _testHash(){
     if (window.location.hash === '#applyFadeIn') {
         panel.classList.add('fade-in')
-        setFocusOnEmptyField()
     } else {
         panel.className = "panel";
     }
