@@ -381,25 +381,8 @@ export default class AutofillService implements AutofillServiceInterface {
            cipher              : cipherModel,
         };
 
-        // B] filter the fields into which a login menu should be inserted
-        // test if the forms into the page might be a search form
-        const isSearchForm: any = {};
-        const attributesTodCheck: any = ['htmlClass', 'htmlAction', 'htmlMethod', 'htmlID'];
-        Object.keys(pageDetails.forms).forEach((formId: string) => {
-            const form = pageDetails.forms[formId];
-            for (const attr of attributesTodCheck) {
-                if (!form.hasOwnProperty(attr) || !form[attr] ) { continue; }
-                if (this.isFieldMatch(form[attr], ['search', 'recherche'])) {
-                    isSearchForm[formId] = true;
-                    return;
-                }
-            }
-            isSearchForm[formId] = false;
-        });
-        // filter pageDetails fields that have no form or a form which might be a search form
-        pageDetails.fields = pageDetails.fields.filter((field: any) => {
-            if (field.form && !isSearchForm[field.form]) { return true; }
-        });
+        // B] pre filter the fields into which a login menu should be inserted
+        this.preFilterFieldsForInPageMenu(pageDetails);
 
         // C] generate a standard login fillscript for the generic cipher
         const loginFS = new AutofillScript(pageDetails.documentUUID);
@@ -444,6 +427,34 @@ export default class AutofillService implements AutofillServiceInterface {
             identityLoginMenuFillScript: identityLoginMenuFillScript,
             type: 'inPageLoginMenuScript',
         };
+    }
+
+    /*
+    filter the fields of a page detail for the login menu.
+    Will be excluded :
+        * fields which are not into a form
+        * fields into a form which look like a search form.
+          a form is a search if certain of its attibutes includes some keywords such as 'search'
+     */
+    preFilterFieldsForInPageMenu(pageDetails: any) {
+        // 1- test if the forms into the page might be a search form
+        const isSearchForm: any = {};
+        const attributesToCheck: any = ['htmlClass', 'htmlAction', 'htmlMethod', 'htmlID'];
+        Object.keys(pageDetails.forms).forEach((formId: string) => {
+            const form = pageDetails.forms[formId];
+            for (const attr of attributesToCheck) {
+                if (!form.hasOwnProperty(attr) || !form[attr] ) { continue; }
+                if (this.isFieldMatch(form[attr], ['search', 'recherche'])) {
+                    isSearchForm[formId] = true;
+                    return;
+                }
+            }
+            isSearchForm[formId] = false;
+        });
+        // 2- filter pageDetails fields that have no form or a form which might be a search form
+        pageDetails.fields = pageDetails.fields.filter((field: any) => {
+            if (field.form && !isSearchForm[field.form]) { return true; }
+        });
     }
 
     // Helpers
