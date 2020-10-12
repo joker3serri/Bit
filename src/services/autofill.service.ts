@@ -1077,7 +1077,7 @@ export default class AutofillService implements AutofillServiceInterface {
         value = value.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g, '');
 
         /*
-            @override by Cozy : don't take into accout too long values :
+            @override by Cozy : don't take into account too long values :
             A long string is not coherent with the description of a form to fill. It is likely a search form where
             the element before the input ("label-left") is a select for the user to choose the category where to run
             the search.
