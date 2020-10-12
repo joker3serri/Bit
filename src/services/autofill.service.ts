@@ -381,7 +381,27 @@ export default class AutofillService implements AutofillServiceInterface {
            cipher              : cipherModel,
         };
 
-        // B] generate a standard login fillscript for the generic cipher
+        // B] filter the fields into which a login menu should be inserted
+        // test if the forms into the page might be a search form
+        const isSearchForm: any = {};
+        const attributesTodCheck: any = ['htmlClass', 'htmlAction', 'htmlMethod', 'htmlID'];
+        Object.keys(pageDetails.forms).forEach((formId: string) => {
+            const form = pageDetails.forms[formId];
+            for (const attr of attributesTodCheck) {
+                if (!form.hasOwnProperty(attr) || !form[attr] ) { continue; }
+                if (this.isFieldMatch(form[attr], ['search', 'recherche'])) {
+                    isSearchForm[formId] = true;
+                    return;
+                }
+            }
+            isSearchForm[formId] = false;
+        });
+        // filter pageDetails fields that have no form or a form which might be a search form
+        pageDetails.fields = pageDetails.fields.filter((field: any) => {
+            if (field.form && !isSearchForm[field.form]) { return true; }
+        });
+
+        // C] generate a standard login fillscript for the generic cipher
         const loginFS = new AutofillScript(pageDetails.documentUUID);
         const loginFilledFields: { [id: string]: AutofillField; } = {};
         const loginLoginMenuFillScript    =
@@ -389,7 +409,7 @@ export default class AutofillService implements AutofillServiceInterface {
         loginLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
             loginLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
 
-        // C] generate a standard card fillscript for the generic cipher
+        // D] generate a standard card fillscript for the generic cipher
         const cardFS = new AutofillScript(pageDetails.documentUUID);
         const cardFilledFields: { [id: string]: AutofillField; } = {};
         const cardLoginMenuFillScript     =
@@ -397,7 +417,7 @@ export default class AutofillService implements AutofillServiceInterface {
         cardLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
             cardLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
 
-        // D] generate a standard identity fillscript for the generic cipher
+        // E] generate a standard identity fillscript for the generic cipher
         const idFS = new AutofillScript(pageDetails.documentUUID);
         const idFilledFields: { [id: string]: AutofillField; } = {};
         const identityLoginMenuFillScript =
@@ -405,7 +425,7 @@ export default class AutofillService implements AutofillServiceInterface {
         identityLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
             identityLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
 
-        // E] filter scripts on different rules to limit the inputs where to add the loginMenu
+        // F] filter scripts on different rules to limit the inputs where to add the loginMenu
 
         // Rule 1 : inputs which might correspond to a Card are acceptable only if there are at least
         // two inputs for the card
@@ -1024,6 +1044,15 @@ export default class AutofillService implements AutofillServiceInterface {
         return excludedTypes.indexOf(type) > -1;
     }
 
+    /*
+    Test if a value matches some criteria
+        * value : String : the value to test
+        * containsOptions : [String] : array of strings to test if they are contained into the value string
+        * options : [String] : array of strings to look into the value.
+            * if there is no containsOptions : the test is to look for the sting into value
+            * if there are some containsOptions provided, then a strict equality between the string and the
+              value is expected
+     */
     private isFieldMatch(value: string, options: string[], containsOptions?: string[]): boolean {
         value = value.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g, '');
 
