@@ -268,6 +268,7 @@ export default class RuntimeBackground {
                         // default to true
                         if (enableInPageMenu === null) {enableInPageMenu = true; }
                         if (enableInPageMenu) {
+                            this.autofillService.preFilterFieldsForInPageMenu(msg.details)
                             const totpCode1 = await this.autofillService.doAutoFillForLastUsedLogin([{
                                 frameId: sender.frameId,
                                 tab: msg.tab,
