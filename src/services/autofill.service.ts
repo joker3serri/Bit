@@ -456,7 +456,7 @@ export default class AutofillService implements AutofillServiceInterface {
         });
         // 2- filter pageDetails fields that have no form or a form which might be a search form
         pageDetails.fields = pageDetails.fields.filter((field: any) => {
-            if (field.form && !isSearchForm[field.form]) { return true; }
+            return field.form && !isSearchForm[field.form];
         });
         // 3- specify all fields as "viewable"
         // A field should have a the menu activated even if you have to scroll to access it.
