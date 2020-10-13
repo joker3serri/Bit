@@ -251,7 +251,10 @@ function show(targetEl) {
 //       goes so that to not hide if target is an input or the iframe of
 //       the menu.
 // force = true : hide the menu without waiting to check the target of the focus.
+// let n = 0 // usefull for debug...
 function hide(force) {
+    // n++  // usefull for debug...
+    // console.log(`Hide call id=0${n}, force=${!!force}`); // usefull for debug...
     if (state.isFrozen) return
     if (force && typeof force == 'boolean') {
         _setApplyFadeInUrl(false)
@@ -261,19 +264,26 @@ function hide(force) {
         // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Tips#Run_an_animation_again
         // but don't delay this execution, other wise the menu will still be displayed when the page details will be run
         // and there fore will consider fields under the iframe as being hidden. These fields would then not be filled...
-        menuEl.removeAttribute('data-show')
+        // console.log(`FORCE HIDE _ call id=0${n}`, state.lastFocusedEl, ); // usefull for debug...
+        if (document.activeElement === menuEl) {
+            // the focus is in the iframe, then when closing it, put focus back in the correct input in the page
+            state.lastFocusedEl.focus()
+            // hide after focus event to avoid to open the menu again
+            setTimeout( () => menuEl.removeAttribute('data-show') , 5)
+        }else{
+            menuEl.removeAttribute('data-show')
+        }
         state.isHidden = true
         return
     }
     setTimeout(() => {
         const target = document.activeElement;
         if (!force && (targetsEl.indexOf(target) != -1 || target.tagName == 'IFRAME' && target.id == 'cozy-menu-in-page')) {
-            console.log('log after timeout concludes DONT HIDE');
             // Focus is know in iframe or in one of the input => do NOT hide
-            // console.log('After hide, focus is now in iframe or in one of the input => do NOT hide', internN);
+            // console.log(`After hide, focus is now in iframe or in one of the input => do NOT hide _ call id=0${n}`); // usefull for debug...
             return
         }
-        console.log('log after timeout concludes DO HIDE');
+        // console.log(`log after timeout concludes DO HIDE call id=0${n}`); // usefull for debug...
         // otherwise, hide
         _setApplyFadeInUrl(false)
         // hide menu element after a delay so that the inner pannel has been scaled to 0 and therefore enables
