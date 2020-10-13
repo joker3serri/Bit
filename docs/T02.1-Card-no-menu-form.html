@@ -3,36 +3,18 @@
 
     <head>
         <meta charset="utf-8" />
-        <style media="screen" type="text/css" >
-            label {
-                display: block;
-                margin-top: 13px;
-            }
-            button {
-                margin-top: 20px;
-            }
-            hr {
-                height: 4px;
-                background-color: black;
-            }
-        </style>
+        <link rel="stylesheet" media="screen" type="text/css" href="TXX.css"/>
     </head>
 
     <body>
 
         <a href="./">Back to menu</a>
         <hr>
+        <h2>No-menu card form</h2>
+        <p>❗❗ login menu and autofil menu should not be displayed - not enough CB fields in the page for a login menu, but ok for an autofill menu</p>
 
         <div class="payment">
-                <form>
-                    <div class="form-group owner">
-                        <label for="owner">Card Owner</label>
-                        <input type="text" class="form-control" id="card-owner">
-                    </div>
-                    <div class="form-group CVV">
-                        <label for="cvv">CVV</label>
-                        <input type="text" class="form-control" id="cvv" autocomplete="off" >
-                    </div>
+                <form class="normal form">
                     <div class="form-group" id="card-number-field">
                         <label for="cardNumber">Card Number</label>
                         <input type="text" class="form-control" id="cardNumber" autocomplete="off" >

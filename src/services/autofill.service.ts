@@ -295,10 +295,11 @@ export default class AutofillService implements AutofillServiceInterface {
         return res;
     }
 
-    /* --------------------------------------------------------------------- */
-    // Select in pageDetails the inputs that could be filled in order to
-    // activate the inPageMneu into these fields, wheter to login or select
-    // a cipher for autofill.
+    /* ----------------------------------------------------------------------------- */
+    // Select in pageDetails the inputs where the inPageMenu (login or autofill)
+    // should be displayed.
+    // The selection creteria here a the one common to both login and autofill menu.
+    // Add prefilters and postFilters depending on the type of menu.
     generateFieldsForInPageMenuScripts(pageDetails: any) {
 
         if (!pageDetails ) {
@@ -401,6 +402,7 @@ export default class AutofillService implements AutofillServiceInterface {
         };
 
         // B] pre filter the fields into which a login menu should be inserted
+        // (field of search forms, field outside any form, include even not viewable fields )
         this.preFilterFieldsForInPageMenu(pageDetails);
 
         // C] generate a standard login fillscript for the generic cipher
@@ -430,19 +432,6 @@ export default class AutofillService implements AutofillServiceInterface {
         identityLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
             identityLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
 
-        // F] filter scripts on different rules to limit the inputs where to add the loginMenu
-
-        // Rule 1 : inputs which might correspond to a Card are acceptable only if there are at least
-        // two inputs for the card
-        if (cardLoginMenuFillScript.script.length <= 2) {
-            cardLoginMenuFillScript.script = [];
-        }
-        // Rule 2 : inputs which might correspond to an identity are acceptable only if there are at least three
-        // to inputs for the identity
-        if (identityLoginMenuFillScript.script.length <= 3) {
-            identityLoginMenuFillScript.script = [];
-        }
-
         return [
             loginLoginMenuFillScript,
             cardLoginMenuFillScript,
@@ -450,14 +439,14 @@ export default class AutofillService implements AutofillServiceInterface {
         ];
     }
 
-    /*
-    filter the fields of a page detail for the login menu.
-    Will be excluded :
-        * fields which are not into a form
-        * fields into a form which look like a search form.
-          a form is a search if certain of its attibutes includes some keywords such as 'search'
-    Will be marked as visible even if it is not the case
-     */
+    /* ----------------------------------------------------------------------------- */
+    // filter the fields of a page detail for the login menu.
+    // Will be excluded :
+    //     * fields which are not into a form
+    //     * fields into a form which look like a search form.
+    //       a form is a search if certain of its attibutes includes some keywords such as 'search'
+    // Will be marked as visible even if it is not the case
+    // These criteria are common to both login and autofill menus.
     preFilterFieldsForInPageMenu(pageDetails: any) {
         // 1- test if the forms into the page might be a search form
         const isSearchForm: any = {};
@@ -489,6 +478,32 @@ export default class AutofillService implements AutofillServiceInterface {
         });
 
     }
+
+    // F] filter scripts on different rules to limit the inputs where to add the loginMenu
+    postFilterFieldsForLoginInPageMenu(scriptsObj: any[]) {
+        const res: any = [];
+        scriptsObj.forEach( (scriptObj) => {
+            switch (scriptObj.type) {
+                case 'cardFieldsForInPageMenuScript':
+                    // Inputs which might correspond to a Card are acceptable only if in the page there are at least
+                    // two inputs for the card
+                    if (scriptObj.script.length < 2) {
+                        scriptObj.script = [];
+                    }
+                    break;
+                case 'identityFieldsForInPageMenuScript':
+                    // Inputs which might correspond to an identity are acceptable only if in the page there are
+                    // at least three inputs for the identity
+                    if (scriptObj.script.length < 3) {
+                        scriptObj.script = [];
+                    }
+                    break;
+                default:
+                    break;
+            }
+        });
+    }
+
 
     // Helpers
 

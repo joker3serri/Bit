@@ -245,8 +245,12 @@ export default class RuntimeBackground {
                 await this.main.reseedStorage();
                 break;
             case 'bgGetLoginMenuFillScript':
+                // addon has been disconnected or the page was loaded while addon was not connected
+                console.log('==== bgGetLoginMenuFillScript : on passe là quand on est connecté et que l\'on se déconnect ou que l\'on charge une page addon déconnecté');
+
                 const fieldsForInPageMenuScripts =
                     this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails);
+                this.autofillService.postFilterFieldsForLoginInPageMenu(fieldsForInPageMenuScripts);
                 const pinSet = await this.vaultTimeoutService.isPinLockSet();
                 const isPinLocked = (pinSet[0] && this.vaultTimeoutService.pinProtectedKey != null) || pinSet[1];
                 await BrowserApi.tabSendMessage(sender.tab, {
@@ -258,6 +262,8 @@ export default class RuntimeBackground {
                 }, {frameId: sender.frameId});
                 break;
             case 'bgGetAutofillMenuScript':
+                // the page was already loaded when the addon has been connected
+                console.log('==== bgGetAutofillMenuScript, on passe là quand on connecte l\'addon et que la page est déjà chargée');
                 const script = this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
                 script.isForLoginMenu = false;
                 await this.autofillService.doAutoFillForLastUsedLogin([{
@@ -290,7 +296,8 @@ export default class RuntimeBackground {
                         // default to true
                         if (enableInPageMenu === null) {enableInPageMenu = true; }
                         if (enableInPageMenu) {
-                            this.autofillService.preFilterFieldsForInPageMenu(msg.details) // BJA : check this is the relevant way to do this
+                            // If goes here : means that the page has just been loaded while addon was connected
+                            console.log('==== collectPageDetailsResponse/notificationBar : on passe là quand on charge une page et addon connecté');
                             // get scripts for logins, cards and identities
                             const fieldsForAutofillMenuScripts =
                                 this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
