@@ -262,7 +262,7 @@ export default class RuntimeBackground {
                 }, {frameId: sender.frameId});
                 break;
             case 'bgGetAutofillMenuScript':
-                // the page was already loaded when the addon has been connected
+                // If goes here : means that addon has just been connected (page was already loaded)
                 console.log('==== bgGetAutofillMenuScript, on passe là quand on connecte l\'addon et que la page est déjà chargée');
                 const script = this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
                 script.isForLoginMenu = false;
