@@ -304,6 +304,7 @@ function _testHash(){
     }
     if (focusedFieldTypes.login) {
         titleEl.textContent = i18nGetMessage('inPageMenuSelectAnAccount')
+        updateLoginRows()
         document.querySelector('#login-rows-list').classList.remove('hidden')
     } else {
         document.querySelector('#login-rows-list').classList.add('hidden')
@@ -314,5 +315,5 @@ function _testHash(){
     } else {
         panel.className = "panel";
     }
-    shouldShowOnNextResize = true
+    selectFirstVisibleRow()
 }

@@ -175,7 +175,7 @@ function _onBlur(event) {
 }
 
 function _onFocus(event) {
-    console.log('focus event in an input', event.target.id);
+    // console.log('focus event in an input', event.target.id);
     if (!event.isTrusted) return;
     show(this)
 }
@@ -231,7 +231,7 @@ function _onKeyDown(event) {
 /* --------------------------------------------------------------------- */
 //
 function show(targetEl) {
-    console.log('menuCtrler.show() ');
+    // console.log('menuCtrler.show() ');
     if (state.isFrozen) return
     state.lastFocusedEl = targetEl
     popperInstance.state.elements.reference = targetEl
@@ -393,7 +393,7 @@ menuCtrler.submit = submit
 /* --------------------------------------------------------------------- */
 // Set the height of menuEl (iframe) taking into account the inner margin
 function setHeight(h) {
-    console.log('setHeight', h);
+    // console.log('setHeight', h);
     if (!state.isMenuInited) return // happens if in an iframe without relevant inputs for the menu
     if (state.lastHeight === h )  return
     menuEl.style.height = h + 28 + 'px'
@@ -465,7 +465,6 @@ function setMenuType(menuType, isPinLocked) {
             if (state.lastFocusedEl) {
                 window.setTimeout(()=>{
                     // timeout is required in order to move focus only when iframe url has been setup
-                    console.log('focus last focusedEl', state.lastFocusedEl);
                     state.lastFocusedEl.focus()
                 },100)
             }
@@ -479,14 +478,13 @@ menuCtrler.setMenuType = setMenuType
 
 /* --------------------------------------------------------------------- */
 //
-function _setIframeURL(menuType, isPinLocked, hash) {
+function _setIframeURL(menuType, isPinLocked) {
     if (!menuEl) return
+    let hash = '';
     const rand = '?' + Math.floor((Math.random()*1000000)+1)
     if (menuEl.src) {
         const location = new URL(menuEl.src)
-        hash = (hash ? hash : location.hash)
-    } else {
-        hash = (hash ? hash : '')
+        hash = location.hash
     }
     if (menuType === 'autofillMenu') {
         menuEl.src = chrome.runtime.getURL('inPageMenu/menu.html' + rand)  + hash
