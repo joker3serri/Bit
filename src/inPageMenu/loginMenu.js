@@ -275,6 +275,7 @@ function sanitizeUrlInput(inputUrl) {
     }
     // String sanitize
     inputUrl = inputUrl.trim().toLowerCase();
+    inputUrl = inputUrl.replace(/\/+$/, '') // remove trailing '/'
 
     // Extract protocol
     const regexpProtocol = /^(https?:\/\/)?(www\.)?/;
