@@ -84,13 +84,6 @@ export default class RuntimeBackground {
             'sender': sender
         });
         */
-        console.log('runtime.background PROCESS MESSAGE ', {
-            'msg.command:': msg.command,
-            'msg.subcommand': msg.subcommand,
-            'msg.sender': msg.sender,
-            'msg': msg,
-            'sender': sender
-        });
 
         switch (msg.command) {
             case 'loggedIn':
@@ -153,7 +146,6 @@ export default class RuntimeBackground {
                                     break;
                             }
                         }
-                        // console.timeEnd("getAllDecryptedForUrl")
                         const vaultUrl = this.environmentService.getWebVaultUrl();
                         const cozyUrl = new URL(vaultUrl).origin;
                         await BrowserApi.tabSendMessageData(sender.tab, 'updateMenuCiphers', {
@@ -246,8 +238,6 @@ export default class RuntimeBackground {
                 break;
             case 'bgGetLoginMenuFillScript':
                 // addon has been disconnected or the page was loaded while addon was not connected
-                console.log('==== bgGetLoginMenuFillScript : on passe là quand on est connecté et que l\'on se déconnect ou que l\'on charge une page addon déconnecté');
-
                 const fieldsForInPageMenuScripts =
                     this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails);
                 this.autofillService.postFilterFieldsForLoginInPageMenu(fieldsForInPageMenuScripts);
@@ -263,7 +253,6 @@ export default class RuntimeBackground {
                 break;
             case 'bgGetAutofillMenuScript':
                 // If goes here : means that addon has just been connected (page was already loaded)
-                console.log('==== bgGetAutofillMenuScript, on passe là quand on connecte l\'addon et que la page est déjà chargée');
                 const script = this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
                 script.isForLoginMenu = false;
                 await this.autofillService.doAutoFillForLastUsedLogin([{
@@ -297,7 +286,6 @@ export default class RuntimeBackground {
                         if (enableInPageMenu === null) {enableInPageMenu = true; }
                         if (enableInPageMenu) {
                             // If goes here : means that the page has just been loaded while addon was connected
-                            console.log('==== collectPageDetailsResponse/notificationBar : on passe là quand on charge une page et addon connecté');
                             // get scripts for logins, cards and identities
                             const fieldsForAutofillMenuScripts =
                                 this.autofillService.generateFieldsForInPageMenuScripts(msg.details);

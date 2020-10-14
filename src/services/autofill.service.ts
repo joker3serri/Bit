@@ -504,7 +504,6 @@ export default class AutofillService implements AutofillServiceInterface {
         });
     }
 
-
     // Helpers
 
     private async getActiveTab(): Promise<any> {
