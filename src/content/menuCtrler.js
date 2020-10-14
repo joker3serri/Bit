@@ -4,22 +4,16 @@ import LinkedList from '../scripts/doublyLinkedList';
 
 /* =========================================================================
 
-menuCtrler exposes an API to interact with the menus within the pages.
+menuCtrler API to interact with the menus within the page
 
     menuCtrler = {
         hide()
         setHeight(integer in px)
         getCipher(id)
         setCiphers([array of ciphers])
-                    isFrozen:false      ,
-                    isHidden:true       ,
-                    isAutoFillInited    ,
-                    currentMenuType:null,
-                    lastFocusedEl       ,
-                    islocked            ,
-                    isPinLocked         ,
-        unFreeze()
         freeze()
+        unFreeze()
+        activate()
         deactivate()
     }
 
@@ -35,14 +29,14 @@ var menuCtrler = {
     freeze                 : function() {state.isFrozen = true },
     deactivate             : null,
     activate               : null,
-    // displayLoginIPMenu : null,  // to be removed ? BJA
 }
 
 /* --------------------------------------------------------------------- */
 // GLOBALS
 var menuEl,
     popperInstance,
-    targetsEl = [],
+    targetsEl = [],  // fields where
+    formsEl = [],    // store all parent forms of fields where a menu has been added (ie forms of targetsEl)
     ciphers ,        // linked list of ciphers to suggest in the menu
     ciphersById,     // a dictionnary of cyphers to suggest in the menu by id : {idCipher:cipher, ...}
 
@@ -58,6 +52,7 @@ var menuEl,
         selectedCipher   : null, // a cipher node of the linkedList `ciphers`
         lastHeight       : null,
     },
+    // menuBtnSvg = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23297EF1' fill-rule='evenodd' d='M21 11a3 3 0 1 1-.83 5.88l-.04-.01-2.95 2.94c-.1.1-.22.16-.35.18l-.1.01h-.99c-.32 0-.68-.24-.73-.55l-.01-.09v-1.03c0-.16.11-.29.26-.32h.42c.16 0 .29-.11.32-.26v-.43c0-.15.11-.28.26-.31h.42c.15 0 .28-.12.31-.26v-.43c0-.15.12-.28.26-.31l.07-.01h.6c.16 0 .3-.11.32-.26l.01-.06v-.48c-.13-.3-.22-.64-.24-.99L18 14a3 3 0 0 1 3-3zM10.94 5a4.24 4.24 0 0 1 4.2 3.67c1.1.1 2.1.61 2.79 1.38a4.99 4.99 0 0 0-1.92 3.68L16 14v.28l.02.12-.04.03-.15.1c-.18.16-.35.35-.48.55l-.09.16-.01.03-.13.07-.15.1c-.24.17-.44.38-.6.62l-.11.2-.16.1c-.27.16-.5.38-.68.64H7.24A4.21 4.21 0 0 1 3 12.82c0-1.1.43-2.13 1.2-2.92a4.24 4.24 0 0 1 2.53-1.22A4.24 4.24 0 0 1 10.93 5zm9.65 7.52l-.16.03h-.04a.57.57 0 0 0-.29.88l.07.08 1.36 1.35c.31.28.82.12.92-.3.02-.08.04-.17.04-.26l.01-.13v-.08c-.02-.35-.14-.7-.38-.98l-.1-.12-.07-.06a1.67 1.67 0 0 0-1.36-.41zm-7.44-.72a.4.4 0 0 0-.4.4v.1l.02.1.03.1-.18.14a3 3 0 0 1-3.42-.13.97.97 0 0 0 .05-.3.4.4 0 0 0-.4-.41.4.4 0 0 0-.42.39.4.4 0 0 1-.1.25l-.05.06-.15.12a.39.39 0 0 0-.06.52.42.42 0 0 0 .5.14l.06-.03.1-.07.23.15a3.81 3.81 0 0 0 4.1-.02l.2-.13.1.07.08.03a.43.43 0 0 0 .49-.14.4.4 0 0 0 0-.46l-.06-.06-.13-.1a.46.46 0 0 1-.09-.1.55.55 0 0 1-.05-.11l-.02-.06-.02-.15a.4.4 0 0 0-.25-.27l-.07-.02-.09-.01z'/%3E%3C/svg%3E")`;
     menuBtnSvg = "url(\"data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2732%27%20height%3D%2732%27%20viewBox%3D%270%200%2032%2032%27%3E%0A%20%20%20%20%20%20%3Cg%20fill%3D%27none%27%20fill-rule%3D%27evenodd%27%3E%0A%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2716%27%20cy%3D%2716%27%20r%3D%2716%27%20fill%3D%27%23297EF1%27%20fill-rule%3D%27nonzero%27%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cpath%20fill%3D%27%23FFF%27%20d%3D%27M19.314%2017.561a.555.555%200%200%201-.82.12%204.044%204.044%200%200%201-2.499.862%204.04%204.04%200%200%201-2.494-.86.557.557%200%200%201-.815-.12.547.547%200%200%201%20.156-.748c.214-.14.229-.421.229-.424a.555.555%200%200%201%20.176-.385.504.504%200%200%201%20.386-.145.544.544%200%200%201%20.528.553c0%20.004%200%20.153-.054.36a2.954%202.954%200%200%200%203.784-.008%201.765%201.765%200%200%201-.053-.344.546.546%200%200%201%20.536-.561h.01c.294%200%20.538.237.545.532%200%200%20.015.282.227.422a.544.544%200%200%201%20.158.746m2.322-6.369a5.94%205.94%200%200%200-1.69-3.506A5.651%205.651%200%200%200%2015.916%206a5.648%205.648%200%200%200-4.029%201.687%205.936%205.936%200%200%200-1.691%203.524%205.677%205.677%200%200%200-3.433%201.737%205.966%205.966%200%200%200-1.643%204.137C5.12%2020.347%207.704%2023%2010.882%2023h10.236c3.176%200%205.762-2.653%205.762-5.915%200-3.083-2.31-5.623-5.244-5.893%27%2F%3E%0A%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%3C%2Fsvg%3E\")";
     // the string after ";utf8,...')" is just the svg inlined. Done here : https://yoksel.github.io/url-encoder/
     // Might be optimized, see here :
@@ -80,12 +75,6 @@ function addMenuButton(el, op, markTheFilling, fieldType) {
                 // store in the input element the fieldTypes so that when clicked we can pass it to the menu
                 el.dataset.fieldTypes = el.dataset.fieldTypes === undefined ?  fieldType : el.dataset.fieldTypes + '*' + fieldType;
                 if (targetsEl.includes(el)) break; // no need to add again the "button" into the field
-                el.style.backgroundImage = menuBtnSvg
-                el.style.backgroundRepeat = "no-repeat"
-                el.style.backgroundAttachment = "scroll"
-                el.style.backgroundSize = "16px 18px"
-                el.style.backgroundPosition = "calc(100% - 16px) 50%"
-                el.style.cursor = "pointer"
                 _initInPageMenuForEl(el)
                 break;
         }
@@ -97,13 +86,35 @@ menuCtrler.addMenuButton = addMenuButton
 /* --------------------------------------------------------------------- */
 // Init a target element to be able to trigger the menu
 function _initInPageMenuForEl(targetEl) {
-    targetsEl.push(targetEl) // register this element as one of the targets for the menu
+    // register this element as one of the targets for the menu
+    targetsEl.push(targetEl)
+
+    // style the input element
+    targetEl.style.backgroundImage = menuBtnSvg
+    targetEl.style.backgroundRepeat = "no-repeat"
+    targetEl.style.backgroundAttachment = "scroll"
+    targetEl.style.backgroundSize = "16px 18px"
+    targetEl.style.backgroundPosition = "calc(100% - 16px) 50%"
+    targetEl.style.cursor = "pointer"
 
     // prevent browser autocomplet with history for this field
     targetEl.autocomplete='off'
 
-	if(!state.isMenuInited) { // menu is not yet initiated, there is no iframe elemeent for the menu
-        // initIframe()
+    // when user click in a form (not evant an input), the focus is put in the closest input. So if the focus was in an input with the menu opended, the blur event closes the menu which is reopened immmediately when the focus is put again in the menu...
+    // solution : freeze the menu half a second after a click in a form that is not in an input.
+    const parentForm = targetEl.closest('form')
+    if (parentForm && !formsEl.includes(parentForm) ) {
+        formsEl.push(parentForm)
+        parentForm.addEventListener('click', (evt) => {
+            if (evt.target.nodename !== 'INPUT') {
+                menuCtrler.freeze()
+                setTimeout(menuCtrler.unFreeze, 400)
+            }
+        })
+    }
+
+	if(!state.isMenuInited) {
+        // menu is not yet initiated, there is no iframe elemeent for the menu, create one
         menuEl = document.createElement('iframe')
         _setIframeURL(state.currentMenuType, state.isPinLocked )
         menuEl.id  = 'cozy-menu-in-page'
