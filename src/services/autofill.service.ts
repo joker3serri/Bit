@@ -209,8 +209,22 @@ export default class AutofillService implements AutofillServiceInterface {
             }
 
             if (options.fieldsForInPageMenuScripts) {
-                fillScripts = fillScript ?
-                [fillScript, ...options.fieldsForInPageMenuScripts] : options.fieldsForInPageMenuScripts;
+                // means we are preparing a script to activate menu into page fields
+                if (fillScript) {
+                    fillScript.script = fillScript.script.filter( (action) => {
+                        if (action[0] !== 'fill_by_opid') { return false; }
+                        action[0] = 'add_menu_btn_by_opid';
+                        action[3].hasExistingCipher = true;
+                        action[3].connected = true;
+                        return true;
+                    });
+                    fillScripts = [fillScript, ...options.fieldsForInPageMenuScripts];
+                } else {
+                    fillScripts = options.fieldsForInPageMenuScripts;
+                }
+                this.postFilterFieldsForLoginInPageMenu(
+                    fillScripts, pd.details.forms, pd.details.fields,
+                );
             } else {
                 fillScripts = fillScript ? [fillScript] : [];
             }
@@ -218,7 +232,6 @@ export default class AutofillService implements AutofillServiceInterface {
             BrowserApi.tabSendMessage(tab, {
                 command: 'fillForm',
                 fillScripts: fillScripts,
-                isForLoginMenu: options.isForLoginMenu,
                 url: tab.url,
             }, { frameId: pd.frameId });
 
@@ -300,7 +313,7 @@ export default class AutofillService implements AutofillServiceInterface {
     // should be displayed.
     // The selection creteria here a the one common to both login and autofill menu.
     // Add prefilters and postFilters depending on the type of menu.
-    generateFieldsForInPageMenuScripts(pageDetails: any) {
+    generateFieldsForInPageMenuScripts(pageDetails: any, connected: boolean) {
 
         if (!pageDetails ) {
             return null;
@@ -330,8 +343,8 @@ export default class AutofillService implements AutofillServiceInterface {
             "edit": true,
             "viewPassword": true,
             "login": {
-              "username": "admin",
-              "password": "1234",
+              "username": "login_username_admin",
+              "password": "login_pwd_1234",
               "passwordRevisionDate": null,
               "totp": null,
               "uris": [
@@ -359,11 +372,11 @@ export default class AutofillService implements AutofillServiceInterface {
                 "email": "mail@dude.com",
                 "phone": "+33606205636",
                 "ssn": "1 78 12 77 010 065   -   13",
-                "username": "Jojo",
+                "username": "identity_username_jojo",
                 "passportNumber": "21343245",
                 "licenseNumber": "678678678",
-                "firstName": "John",
-                "lastName": "SMITH",
+                "firstName": "identity_firstName",
+                "lastName": "identity_lastName",
                 "subTitle": "Josh SMITH"
             },
             "card": {
@@ -403,7 +416,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
         // B] pre filter the fields into which a login menu should be inserted
         // (field of search forms, field outside any form, include even not viewable fields )
-        this.preFilterFieldsForInPageMenu(pageDetails);
+        this.prepareFieldsForInPageMenu(pageDetails);
 
         // C] generate a standard login fillscript for the generic cipher
         const loginFS = new AutofillScript(pageDetails.documentUUID);
@@ -411,8 +424,16 @@ export default class AutofillService implements AutofillServiceInterface {
         const loginLoginMenuFillScript    =
             this.generateLoginFillScript(loginFS, pageDetails, loginFilledFields, options);
         loginLoginMenuFillScript.type   = 'loginFieldsForInPageMenuScript';
-        loginLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
-            loginLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
+        loginLoginMenuFillScript.script = loginLoginMenuFillScript.script.filter((action) => {
+            // only 'fill_by_opid' are relevant for the fields wher to add a menu
+            if (action[0] !== 'fill_by_opid') { return false; }
+            action[0] = 'add_menu_btn_by_opid';
+            action[3].hasLoginCipher = true;
+            action[3].connected = connected;
+            return true;
+        });
+        // loginLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
+        //     loginLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
 
         // D] generate a standard card fillscript for the generic cipher
         const cardFS = new AutofillScript(pageDetails.documentUUID);
@@ -420,8 +441,14 @@ export default class AutofillService implements AutofillServiceInterface {
         const cardLoginMenuFillScript     =
             this.generateCardFillScript(cardFS, pageDetails, cardFilledFields, options);
         cardLoginMenuFillScript.type   = 'cardFieldsForInPageMenuScript';
-        cardLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
-            cardLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
+        cardLoginMenuFillScript.script = cardLoginMenuFillScript.script.filter((action) => {
+                // only 'fill_by_opid' are relevant for the fields wher to add a menu
+                if (action[0] !== 'fill_by_opid') { return false; }
+                action[0] = 'add_menu_btn_by_opid';
+                action[3].hasCardCipher = true;
+                action[3].connected = connected;
+                return true;
+        });
 
         // E] generate a standard identity fillscript for the generic cipher
         const idFS = new AutofillScript(pageDetails.documentUUID);
@@ -429,8 +456,14 @@ export default class AutofillService implements AutofillServiceInterface {
         const identityLoginMenuFillScript =
             this.generateIdentityFillScript(idFS, pageDetails, idFilledFields, options);
         identityLoginMenuFillScript.type   = 'identityFieldsForInPageMenuScript';
-        identityLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
-            identityLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
+        identityLoginMenuFillScript.script = identityLoginMenuFillScript.script.filter((action) => {
+                // only 'fill_by_opid' are relevant for the fields wher to add a menu
+                if (action[0] !== 'fill_by_opid') { return false; }
+                action[0] = 'add_menu_btn_by_opid';
+                action[3].hasIdentityCipher = true;
+                action[3].connected = connected;
+                return true;
+        });
 
         return [
             loginLoginMenuFillScript,
@@ -440,71 +473,156 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     /* ----------------------------------------------------------------------------- */
-    // filter the fields of a page detail for the login menu.
-    // Will be excluded :
-    //     * fields which are not into a form
-    //     * fields into a form which look like a search form.
-    //       a form is a search if certain of its attibutes includes some keywords such as 'search'
-    // Will be marked as visible even if it is not the case
-    // These criteria are common to both login and autofill menus.
-    preFilterFieldsForInPageMenu(pageDetails: any) {
-        // 1- test if the forms into the page might be a search form
-        const isSearchForm: any = {};
-        const attributesToCheck: any = ['htmlClass', 'htmlAction', 'htmlMethod', 'htmlID'];
-        const isSearchFormHelper = (formId: string) => {
+    // Enrich fields of a page detail so that proper filters can be applied  for
+    // the login menu.
+    // Information added :
+    //     * isInForm
+    //     * isInSearchForm :
+    //           fields into a form which look like a search form.
+    //           a form is a "search form" if any of its attibutes includes some keywords such as 'search'
+    //     * isInLoginForm :
+    //           fields into a form which look like a login form.
+    //           a form is a "login form" if any of its attibutes includes some keywords such as 'login'
+    //
+    prepareFieldsForInPageMenu(pageDetails: any) {
+        // 1- test if the forms into the page might be a search or a login form
+        const isSpecificFormHelper = (formId: string, markers: any, attributesToCheck: any) => {
             const form = pageDetails.forms[formId];
             for (const attr of attributesToCheck) {
                 if (!form.hasOwnProperty(attr) || !form[attr] ) { continue; }
-                if (this.isFieldMatch(form[attr], ['search', 'recherche'])) {
+                if (this.isFieldMatch(form[attr], markers)) {
                     return true;
                 }
-                return false;
             }
+            return false;
         };
-        Object.keys(pageDetails.forms).forEach((formId: string) => {
-            isSearchForm[formId] = isSearchFormHelper(formId);
-        });
-        // 2- filter pageDetails fields that have no form or a form which might be a search form
-        pageDetails.fields = pageDetails.fields.filter((field: any) => {
-            return field.form && !isSearchForm[field.form];
-        });
-        // 3- specify all fields as "viewable"
-        // A field should have a the menu activated even if you have to scroll to access it.
-        // reminder :
-        //    * visible : when none of its parent is `display=none` ou `visibility=hidden`
-        //    * viewable : when visible and you don't have to scroll to have it displayed in the viewport
-        pageDetails.fields.forEach( (field: any) => {
+        // 2- enrich the field
+        pageDetails.fields.forEach((field: any) => {
+            field.isInSearchForm = field.form ?
+                isSpecificFormHelper(
+                    field.form,
+                    ['search', 'recherche'],
+                    ['htmlClass', 'htmlAction', 'htmlMethod', 'htmlID'],
+                )
+                : false;
+            field.isInloginForm  = field.form ?
+                isSpecificFormHelper(
+                    field.form,
+                    ['login', 'signin'],
+                    ['htmlAction', 'htmlID'],
+                )
+                : false;
+            field.isInForm = !! field.form;
+            field.formObj = pageDetails.forms[field.form];
+            // force to true the viewable property so that the BW process doesn't take this parameter into
+            // account for the menu scripts.
+            field.viewableOri = field.viewable;
             field.viewable = true;
         });
 
     }
 
     // F] filter scripts on different rules to limit the inputs where to add the loginMenu
-    postFilterFieldsForLoginInPageMenu(scriptsObj: any[]) {
+    postFilterFieldsForLoginInPageMenu(scriptObjs: any, forms: any, fields: any) {
         const res: any = [];
-        scriptsObj.forEach( (scriptObj) => {
-            switch (scriptObj.type) {
-                case 'cardFieldsForInPageMenuScript':
-                    // Inputs which might correspond to a Card are acceptable only if in the page there are at least
-                    // two inputs for the card
-                    if (scriptObj.script.length < 2) {
-                        scriptObj.script = [];
-                    }
+        let actions: any = [];
+        scriptObjs.forEach( (scriptObj: any) => { actions = actions.concat(scriptObj.script); });
+        for (const action of actions) {
+            // count hom many actions are linked to a field which are in the same form
+            // and are identified to the same cipher.type
+            const scriptContext: any = action[3];
+            const fieldForm: string = scriptContext.field.form;
+            const cipherType: string = scriptContext.cipher.type;
+            let nFellows: number = 1;
+            for (const a of actions) {
+                const aField = a[3].field;
+                const sCipher = a[3].cipher;
+                if (   a[3].field.form  === fieldForm
+                    && a[3].cipher.type === cipherType
+                    && a[1] !== action[1]
+                ) { nFellows += 1; }
+            }
+            switch (scriptContext.cipher.type) {
+                case 'login':
+                    scriptContext.loginFellows = nFellows;
                     break;
-                case 'identityFieldsForInPageMenuScript':
-                    // Inputs which might correspond to an identity are acceptable only if in the page there are
-                    // at least three inputs for the identity
-                    if (scriptObj.script.length < 3) {
-                        scriptObj.script = [];
-                    }
+                case 'card':
+                    scriptContext.cardFellows = nFellows;
+                    break;
+                case 'identity':
+                    scriptContext.identityFellows = nFellows;
                     break;
                 default:
                     break;
             }
+            const decisionArray = {
+                connected            : scriptContext.connected            ,
+                hasExistingCipher    : scriptContext.hasExistingCipher    ,
+                hasLoginCipher       : scriptContext.hasLoginCipher       ,
+                hasCardCipher        : scriptContext.hasCardCipher        ,
+                hasIdentityCipher    : scriptContext.hasIdentityCipher    ,
+                loginFellows         : scriptContext.loginFellows         ,
+                cardFellows          : scriptContext.cardFellows          ,
+                identityFellows      : scriptContext.identityFellows      ,
+                field_isInForm       : scriptContext.field.isInForm       ,
+                field_isInSearchForm : scriptContext.field.isInSearchForm ,
+                field_isInloginForm  : scriptContext.field.isInloginForm  ,
+                hasMultipleScript    : scriptContext.hasMultipleScript    ,
+                field_visible        : scriptContext.field.visible        ,
+                field_viewable       : scriptContext.field.viewableOri    , // restore the original value
+            };
+            scriptContext.decisionArray = decisionArray;
+        }
+
+        scriptObjs.forEach( (scriptObj: any) => {
+            scriptObj.script = scriptObj.script.filter((action: any) => {
+                if (!this.evaluateDecisionArray(action)) {
+                    // @override by Cozy : this log is required for debug and analysis
+                    // console.log("!! ELIMINATE menu for field", {
+                    //     action: `${action[1]}, ${action[3].cipher.fieldType}`,
+                    //     field: action[3].field,
+                    //     cipher: action[3].cipher,
+                    //     form: action[3].field.formObj
+                    // });
+                    // console.log(action[3].decisionArray);
+
+                    return false; // remove unwanted action
+                }
+                // @override by Cozy : this log is required for debug and analysis
+                // console.log("ACTIVATE menu for field", {
+                //     action: `${action[1]}, ${action[3].cipher.fieldType}`,
+                //     field: action[3].field,
+                //     cipher: action[3].cipher,
+                //     form: action[3].field.formObj
+                // });
+                // console.log(action[3].decisionArray);
+
+                action[3] = action[3].cipher.fieldType; // finalise the action to send to autofill.js
+                return true;
+            });
         });
     }
 
     // Helpers
+
+    // Evaluate if a decision array is valid to activate a menu for the field in the page.
+    private evaluateDecisionArray(action: any) {
+        const da = action[3].decisionArray;
+        // selection conditions
+        if (da.hasExistingCipher === true && da.field_isInForm === true && da.field_isInSearchForm === false) {
+            return true; }
+        if (da.field_isInSearchForm === true) {return false; }
+        if (da.connected === true && da.hasExistingCipher === true && da.loginFellows  > 1
+            && da.field_visible === true && da.field_viewable === true) {return true; }
+        if (da.cardFellows  > 1 && da.field_isInForm === true) {return true; }
+        if (da.connected === false && da.loginFellows === 2) {return true; }
+        if (da.connected === false && da.hasLoginCipher === true && da.field_isInloginForm === true) {return true; }
+        if (da.connected === false && da.cardFellows  > 1 && da.field_isInForm === true) {return true; }
+        if (da.identityFellows  > 1 && da.field_isInForm === true) {return true; }
+        if (da.connected === true && da.hasExistingCipher === undefined && da.hasLoginCipher === true) {return false; }
+        // end selection conditions
+        return false;
+    }
 
     private async getActiveTab(): Promise<any> {
         const tab = await BrowserApi.getTabFromCurrentWindow();
@@ -546,19 +664,20 @@ export default class AutofillService implements AutofillServiceInterface {
                     }
 
                     filledFields[field.opid] = field;
-                    let fieldtype;
+                    let cipher: any;
                     switch (options.cipher.type) {
                         case CipherType.Login:
-                            fieldtype = 'login_customField';
+                            cipher = {type: 'login', fieldType: 'login_customField'};
                             break;
                         case CipherType.Card:
-                            fieldtype = 'card_customField';
+                            cipher = {type: 'card', fieldType: 'card_customField'};
                             break;
                         case CipherType.Identity:
-                            fieldtype = 'identity_customField';
+                            field.fieldType = 'identity_customField';
+                            cipher = {type: 'identity', fieldType: 'identity_customField'};
                             break;
                     }
-                    this.fillByOpid(fillScript, field, val, fieldtype);
+                    this.fillByOpid(fillScript, field, val, cipher);
                 }
             });
         }
@@ -671,7 +790,8 @@ export default class AutofillService implements AutofillServiceInterface {
                 return;
             }
             filledFields[u.opid] = u;
-            this.fillByOpid(fillScript, u, login.username, 'login_username');
+            const cipher = {type: 'login', fieldType: 'login_username'};
+            this.fillByOpid(fillScript, u, login.username, cipher);
         });
 
         passwords.forEach((p) => {
@@ -679,16 +799,17 @@ export default class AutofillService implements AutofillServiceInterface {
                 return;
             }
             filledFields[p.opid] = p;
-            this.fillByOpid(fillScript, p, login.password, 'login_password');
+            const cipher = {type: 'login', fieldType: 'login_password'};
+            this.fillByOpid(fillScript, p, login.password, cipher);
         });
 
         fillScript = this.setFillScriptForFocus(filledFields, fillScript);
 
-        fillScript.type = 'autofillScript';
-        if (options.sender === 'notifBarForInPageMenu') {
-            fillScript = this.setFillScriptForMenu(fillScript);
-            fillScript.type = 'existingLoginFieldsForInPageMenuScript';
-        }
+        // fillScript.type = 'autofillScript';
+        // if (options.sender === 'notifBarForInPageMenu') {
+        //     fillScript = this.setFillScriptForMenu(fillScript);
+        //     fillScript.type = 'existingLoginFieldsForInPageMenuScript';
+        // }
         return fillScript;
     }
 
@@ -805,7 +926,8 @@ export default class AutofillService implements AutofillServiceInterface {
             }
 
             filledFields[fillFields.expMonth.opid] = fillFields.expMonth;
-            this.fillByOpid(fillScript, fillFields.expMonth, expMonth, 'card_expMonth');
+            const cipher = {type: 'card', fieldType: 'card_expMonth'};
+            this.fillByOpid(fillScript, fillFields.expMonth, expMonth, cipher);
         }
 
         if (fillFields.expYear && this.hasValue(card.expYear)) {
@@ -841,7 +963,8 @@ export default class AutofillService implements AutofillServiceInterface {
             }
 
             filledFields[fillFields.expYear.opid] = fillFields.expYear;
-            this.fillByOpid(fillScript, fillFields.expYear, expYear, 'card_expYear');
+            const cipher = {type: 'login', fieldType: 'card_expYear'};
+            this.fillByOpid(fillScript, fillFields.expYear, expYear, cipher);
         }
 
         if (fillFields.exp && this.hasValue(card.expMonth) && this.hasValue(card.expYear)) {
@@ -899,7 +1022,13 @@ export default class AutofillService implements AutofillServiceInterface {
                 exp = fullYear + '-' + fullMonth;
             }
 
-            this.makeScriptActionWithValue(fillScript, exp, fillFields.exp, filledFields, 'BJA3');
+            this.makeScriptActionWithValue(
+                fillScript,
+                exp,
+                fillFields.exp,
+                filledFields,
+                {type: 'card', fieldType: 'card_exp'},
+            );
         }
         fillScript.type = 'autofillScript';
         return fillScript;
@@ -952,7 +1081,9 @@ export default class AutofillService implements AutofillServiceInterface {
                     fillFields.name = f;
                     break;
                 } else if (!fillFields.firstName && this.isFieldMatch(f[attr],
-                    ['f-name', 'first-name', 'given-name', 'first-n', 'prénom'])) {
+                    // Note : whey 'prenom' and not 'prénom" : accented caractèrs will be removed in
+                    // the comparison process...
+                    ['f-name', 'first-name', 'given-name', 'first-n', 'prenom'])) {
                     fillFields.firstName = f;
                     break;
                 } else if (!fillFields.middleName && this.isFieldMatch(f[attr],
@@ -974,7 +1105,8 @@ export default class AutofillService implements AutofillServiceInterface {
                     break;
                 } else if (!fillFields.address && this.isFieldMatch(f[attr],
                     ['address', 'adresse', 'street-address', 'addr', 'street', 'mailing-addr', 'billing-addr',
-                        'mail-addr', 'bill-addr'], ['mailing-addr', 'billing-addr', 'mail-addr', 'bill-addr'])) {
+                        'mail-addr', 'bill-addr', 'adresse-personnelle'], ['mailing-addr', 'billing-addr', 'mail-addr',
+                        'bill-addr'])) {
                     fillFields.address = f;
                     break;
                 } else if (!fillFields.address1 && this.isFieldMatch(f[attr],
@@ -1045,7 +1177,8 @@ export default class AutofillService implements AutofillServiceInterface {
             const isoState = IsoStates[stateLower] || IsoProvinces[stateLower];
             if (isoState) {
                 filledState = true;
-                this.makeScriptActionWithValue(fillScript, isoState, fillFields.state, filledFields, 'identity_state');
+                const cipher = {type: 'identity', fieldType: 'identity_state'};
+                this.makeScriptActionWithValue(fillScript, isoState, fillFields.state, filledFields, cipher);
             }
         }
 
@@ -1057,6 +1190,7 @@ export default class AutofillService implements AutofillServiceInterface {
         if (fillFields.country && identity.country && identity.country.length > 2) {
             const countryLower = identity.country.toLowerCase();
             const isoCountry = IsoCountries[countryLower];
+            const cipher = {type: 'identity', fieldType: 'identity_country'};
             if (isoCountry) {
                 filledCountry = true;
                 this.makeScriptActionWithValue(
@@ -1064,7 +1198,7 @@ export default class AutofillService implements AutofillServiceInterface {
                     isoCountry,
                     fillFields.country,
                     filledFields,
-                    'identity_country',
+                    cipher,
                 );
             }
         }
@@ -1091,7 +1225,8 @@ export default class AutofillService implements AutofillServiceInterface {
                 fullName += identity.lastName;
             }
 
-            this.makeScriptActionWithValue(fillScript, fullName, fillFields.name, filledFields, 'identity_name');
+            const cipher = {type: 'identity', fieldType: 'identity_name'};
+            this.makeScriptActionWithValue(fillScript, fullName, fillFields.name, filledFields, cipher);
         }
 
         if (fillFields.address && this.hasValue(identity.address1)) {
@@ -1112,11 +1247,12 @@ export default class AutofillService implements AutofillServiceInterface {
                 address += identity.address3;
             }
 
+            const cipher = {type: 'identity', fieldType: 'identity_address'};
             this.makeScriptActionWithValue(fillScript,
                 address,
                 fillFields.address,
                 filledFields,
-                'identity_address', // BJA probably a bug here : address is not a fild in an identity cipher
+                cipher,
             );
         }
 
@@ -1138,7 +1274,8 @@ export default class AutofillService implements AutofillServiceInterface {
               value is expected
      */
     private isFieldMatch(value: string, options: string[], containsOptions?: string[]): boolean {
-        value = value.trim().toLowerCase().replace(/[^a-zA-Z0-9]+/g, '');
+        value = value.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        value = value.replace(/[^a-zA-Z0-9]+/g, '');
 
         /*
             @override by Cozy : don't take into account too long values :
@@ -1171,12 +1308,13 @@ export default class AutofillService implements AutofillServiceInterface {
     ) {
         let fieldProp;
         fieldProp = fieldProp || dataProp;
+        const cipher = {type: cipherType, fieldType: cipherType + '_' + dataProp};
         this.makeScriptActionWithValue(
             fillScript,
             cipherData[dataProp],
             fillFields[fieldProp],
             filledFields,
-            cipherType + '_' + dataProp,
+            cipher,
         );
     }
 
@@ -1185,7 +1323,7 @@ export default class AutofillService implements AutofillServiceInterface {
         dataValue: any,
         field: AutofillField,
         filledFields: { [id: string]: AutofillField; },
-        fieldType: string,
+        cipher: any,
     ) {
 
         let doFill = false;
@@ -1214,7 +1352,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
         if (doFill) {
             filledFields[field.opid] = field;
-            this.fillByOpid(fillScript, field, dataValue, fieldType);
+            this.fillByOpid(fillScript, field, dataValue, cipher);
         }
     }
 
@@ -1321,6 +1459,9 @@ export default class AutofillService implements AutofillServiceInterface {
             if (this.fieldPropertyIsMatch(field, 'placeholder', names[i])) {
                 return i;
             }
+            if (this.fieldPropertyIsMatch(field, 'label-left', names[i])) {
+                return i;
+            }
         }
 
         return -1;
@@ -1365,7 +1506,7 @@ export default class AutofillService implements AutofillServiceInterface {
             }
         }
 
-        return fieldVal.toLowerCase() === name;
+        return fieldVal.toLowerCase() === name.toLowerCase();
     }
 
     private fieldIsFuzzyMatch(field: AutofillField, names: string[]): boolean {
@@ -1443,24 +1584,25 @@ export default class AutofillService implements AutofillServiceInterface {
         @override by Cozy
         function in charge of adapting the fillScript for a menu fillscript
      */
-    private setFillScriptForMenu(fillScript: AutofillScript): AutofillScript {
-        const newScript: any[] = [];
-        fillScript.script.forEach((ope) => {
-            if (ope[0].startsWith('fill')) {
-                newScript.push(['add_menu_btn_by_opid', ope[1], ope[3]]); // ['operation', opid, fieldType]
-            }
-        });
-        fillScript.script = newScript;
-        fillScript.type = 'loginFieldsForInPageMenuScript';
-        return fillScript;
-    }
+    // private setFillScriptForMenu(fillScript: AutofillScript): AutofillScript {
+    //     const newScript: any[] = [];
+    //     fillScript.script.forEach((ope) => {
+    //         if (ope[0].startsWith('fill')) {
+    //             newScript.push(['add_menu_btn_by_opid', ope[1], ope[3]]); // ['operation', opid, fieldType]
+    //         }
+    //     });
+    //     fillScript.script = newScript;
+    //     fillScript.type = 'loginFieldsForInPageMenuScript';
+    //     return fillScript;
+    // }
 
-    private fillByOpid(fillScript: AutofillScript, field: AutofillField, value: string, fieldType: string): void {
+    private fillByOpid(fillScript: AutofillScript, field: AutofillField, value: string, cipher: any): void {
         if (field.maxLength && value && value.length > field.maxLength) {
             value = value.substr(0, value.length);
         }
         fillScript.script.push(['click_on_opid', field.opid]);
         fillScript.script.push(['focus_by_opid', field.opid]);
-        fillScript.script.push(['fill_by_opid', field.opid, value, fieldType]);
+        const script = ['fill_by_opid', field.opid, value, {field: field, cipher: cipher}];
+        fillScript.script.push(script);
     }
 }

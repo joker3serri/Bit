@@ -1,5 +1,5 @@
 export default class AutofillScript {
-    script: string[][] = [];
+    script: any[][] = [];
     documentUUID: any = {};
     properties: any = {};
     options: any = {};

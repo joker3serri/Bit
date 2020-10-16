@@ -764,7 +764,7 @@ import menuCtrler from './menuCtrler';
         }
 
         // add the menu button in the element by opid operation
-        function addMenuBtnByOpId(opId, fieldType) {
+        function addMenuBtnByOpId(opId, val, fieldType) {
             var el = getElementByOpId(opId);
             return el ? (menuCtrler.addMenuButton(el, fieldType, false, fieldType), [el]) : null;
         }
@@ -1012,16 +1012,16 @@ import menuCtrler from './menuCtrler';
 
         function runLoginMenuFillScript(fillScript) {
             fillScript.script.forEach((action) => {
-                if (action[0] !== 'fill_by_opid') return
+                if (action[0] !== 'add_menu_btn_by_opid') return
                 const el = getElementByOpId(action[1])
                 menuCtrler.addMenuButton(el, true, true, action[3])
             });
         }
 
         if (fillScripts.isForLoginMenu) {
-            menuCtrler.setMenuType('loginMenu', fillScripts.isPinLocked) // BJA : à améliorer pour n'être appelé qu'une fois
+            menuCtrler.setMenuType('loginMenu', fillScripts.isPinLocked)
         } else {
-            menuCtrler.setMenuType('autofillMenu', fillScripts.isPinLocked) // BJA : à améliorer pour n'être appelé qu'une fois
+            menuCtrler.setMenuType('autofillMenu', fillScripts.isPinLocked)
         }
 
         for (let fillScript of fillScripts) {
@@ -1030,12 +1030,11 @@ import menuCtrler from './menuCtrler';
                     doFill(fillScript);
                     break;
                 case 'loginFieldsForInPageMenuScript':
-                    // BJA : this is a bug : when loginMenu, we should run this script
                     if (fillScripts[0].type !== 'existingLoginFieldsForInPageMenuScript') {
+                        // if the first fillScript is for an existing login cipher, then do not activate menu
+                        // for a generic login
                         runLoginMenuFillScript(fillScript);
                     }
-                    // we could offer to generate a password for input corresponding to a password for which there
-                    // is no existing cipher.
                     break;
                 case 'cardFieldsForInPageMenuScript':
                 case 'identityFieldsForInPageMenuScript':
@@ -1051,6 +1050,13 @@ import menuCtrler from './menuCtrler';
         return '{"success": true}';
     }
 
+
+
+    function getDecisionVar(cell) {
+      cell.getValue
+
+      return cell;
+    }
 
 
     /*
@@ -1113,8 +1119,16 @@ import menuCtrler from './menuCtrler';
             return true;
         }
         else if (msg.command === 'fillForm') {
-            msg.fillScripts.isForLoginMenu = msg.isForLoginMenu
-            fill(document, msg.fillScripts);
+            msg.fillScripts.isForLoginMenu = false
+            let actionsNumber = 0;
+            for (var fillScript of msg.fillScripts) {
+                actionsNumber += fillScript.script.length
+            }
+            if (actionsNumber === 0) {
+                menuCtrler.deactivate()
+            } else {
+                fill(document, msg.fillScripts);
+            }
             sendResponse();
             return true;
         }
@@ -1145,9 +1159,17 @@ import menuCtrler from './menuCtrler';
                 })
             } else if (msg.subcommand === 'loginIPMenuSetFields') {
                 msg.fieldsForInPageMenuScripts.isPinLocked = msg.isPinLocked
-                msg.fieldsForInPageMenuScripts.isForLoginMenu = msg.isForLoginMenu
-                // and then send the script for filling
-                fill(document, msg.fieldsForInPageMenuScripts)
+                msg.fieldsForInPageMenuScripts.isForLoginMenu = true
+                // check there are fields where to activate the menu,
+                let nFields = 0
+                msg.fieldsForInPageMenuScripts.forEach(scriptObj => nFields += scriptObj.script.length )
+                if (nFields === 0) {
+                    // no fields =>  deactivate the menu
+                    menuCtrler.deactivate()
+                } else {
+                    // send the script for filling
+                    fill(document, msg.fieldsForInPageMenuScripts)
+                }
 
             } else if (msg.subcommand === 'autofilIPMenuActivate') {
                 var pageDetails = collect(document);

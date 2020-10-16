@@ -239,22 +239,22 @@ export default class RuntimeBackground {
             case 'bgGetLoginMenuFillScript':
                 // addon has been disconnected or the page was loaded while addon was not connected
                 const fieldsForInPageMenuScripts =
-                    this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails);
-                this.autofillService.postFilterFieldsForLoginInPageMenu(fieldsForInPageMenuScripts);
+                    this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails, false);
+                this.autofillService.postFilterFieldsForLoginInPageMenu(
+                    fieldsForInPageMenuScripts, msg.pageDetails.forms, msg.pageDetails.fields,
+                );
                 const pinSet = await this.vaultTimeoutService.isPinLockSet();
                 const isPinLocked = (pinSet[0] && this.vaultTimeoutService.pinProtectedKey != null) || pinSet[1];
                 await BrowserApi.tabSendMessage(sender.tab, {
                     command                   : 'autofillAnswerRequest',
                     subcommand                : 'loginIPMenuSetFields',
                     fieldsForInPageMenuScripts: fieldsForInPageMenuScripts,
-                    isForLoginMenu            : true,
                     isPinLocked               : isPinLocked,
                 }, {frameId: sender.frameId});
                 break;
             case 'bgGetAutofillMenuScript':
                 // If goes here : means that addon has just been connected (page was already loaded)
-                const script = this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
-                script.isForLoginMenu = false;
+                const script = this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true);
                 await this.autofillService.doAutoFillForLastUsedLogin([{
                     frameId                   : sender.frameId,
                     tab                       : sender.tab,
@@ -285,10 +285,10 @@ export default class RuntimeBackground {
                         // default to true
                         if (enableInPageMenu === null) {enableInPageMenu = true; }
                         if (enableInPageMenu) {
-                            // If goes here : means that the page has just been loaded while addon was connected
+                            // If goes here : means that the page has just been loaded while addon was already connected
                             // get scripts for logins, cards and identities
                             const fieldsForAutofillMenuScripts =
-                                this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
+                                this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true);
                             // get script for existing logins.
                             // the 4 scripts (existing logins, logins, cards and identities) will be sent
                             // to autofill.js by autofill.service
