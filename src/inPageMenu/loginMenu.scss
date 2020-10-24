@@ -86,27 +86,27 @@ body {
 
 .row {
     margin-bottom: 1em;
-    cursor:text;
 }
 
-.row-input {
-    height: 3rem;
+.material-input {
+    cursor:text;
     border: 1px solid;
     border-radius: 4px;
     border-color: #ffffffa3;
+    position: relative;
     & ::selection {
         background: #b5d4ff;;
     }
 }
 
-.waiting .row-input {
+.waiting .material-input {
     background-color: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.64);
     color: #b5d4ff;
     cursor: progress;
 }
 
-.error .row-input {
+.error .material-input {
     border-color: #fecece;
 }
 
@@ -119,33 +119,96 @@ label {
     color: #b5d4ff;
 }
 
-.row-label {
-  // margin-left: 0.75rem;
-  top: 0.8rem;
-  left: 0.75rem;
-  position: relative;
-  background-color: #297ef2;
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
-  transition: all 0.5s;
+
+$visible-label-top: 0.8rem;
+$visible-label-padding: 0.3rem;
+$visible-label-left: 0.75rem;
+$visible-label-right-for-eye: 2rem;
+$visible-label-right: 0.1rem;
+$visible-label-focused-top: -0.7rem;
+
+.visible-label {
+    position: absolute;
+    top: $visible-label-top;
+    transition: all 0.5s;
+    display: inline-block;
+    height: 0;
+    width: 100%;
+    z-index: 1;
 }
 
-.focused-or-filled .row-label {
-    top: -0.7rem;
+.visible-label > label {
+    cursor:text;
+    position: absolute;
+    left: $visible-label-left;
+    padding-left: $visible-label-padding;
+    padding-right: $visible-label-padding;
+    max-width: calc(100% - #{ 2 * $visible-label-padding + $visible-label-left});
+    transition: all 0.5s;
+    background-color: #297EF2;
+}
+
+.eyed > .visible-label > label {
+    max-width: calc(100% - #{ 2 * $visible-label-padding + $visible-label-left + $visible-label-right-for-eye});
+}
+
+.shadow-placeholder {
+    opacity: 0;
+    color: black;
+    position: relative;
+    display: block;
+    padding:
+        $visible-label-top
+        $visible-label-padding
+        $visible-label-top
+        #{$visible-label-left + $visible-label-padding};
+}
+
+.eyed > .shadow-placeholder {
+    padding-right: $visible-label-padding + $visible-label-right-for-eye;
+}
+
+.focused-or-filled .visible-label {
+    top: $visible-label-focused-top;
+}
+
+.focused-or-filled .visible-label > label {
     font-size: 12px;
+    max-width: calc(100% - #{ 2 * $visible-label-padding + $visible-label-left + $visible-label-right});
+}
+
+.box-labeled-input {
+    position: absolute;
+    top: $visible-label-focused-top;
+    height: calc(100% - #{$visible-label-focused-top});
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.shadow-label {
+    opacity: 0;
+    cursor:text;
+    position: relative;
+    left: $visible-label-left + $visible-label-padding;
+    font-size: 12px;
+    max-width: calc(100% - #{$visible-label-left + 2*$visible-label-padding + $visible-label-right});
+    display: block;
+}
+
+.box-input {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
 }
 
 input {
     width: 100%;
     border: 0;
-    height: 1.5em;
     background-color: transparent;
     color: inherit;
-    padding-left: 1rem;
-    margin-bottom: 0.2rem;
+    padding-left: $visible-label-left + $visible-label-padding;
     box-sizing: border-box;
-    top: -0.25rem;
-    position: relative;
     outline: none;
     font-size: 16px;
 }
@@ -154,19 +217,14 @@ input::placeholder {
     color: #b5d4ff;
 }
 
-.box-input {
-    display: flex;
-}
-
 .visibility-btn {
+    cursor: pointer;
+    margin-left: 0.25rem;
+    margin-right: 1rem;
+    padding-bottom: 4px;
     display: flex;
     align-items: center;
-    cursor: pointer;
     color: inherit;
-    margin-left: 1rem;
-    margin-right: 1rem;
-    position: relative;
-    top: -0.25rem;
 }
 
 hr {
