@@ -43,7 +43,8 @@ var menuEl,
     popperInstance,
     targetsEl = [],
     ciphers ,        // linked list of ciphers to suggest in the menu
-    ciphersById,     // a dictionnari of cyphers to suggest in the menu by id : {idCipher:cipher, ...}
+    ciphersById,     // a dictionnary of cyphers to suggest in the menu by id : {idCipher:cipher, ...}
+
     state = {
         currentMenuType  :null,
         isMenuInited     :false,  // menu is not yet initiated, there is no iframe yet for the menu
