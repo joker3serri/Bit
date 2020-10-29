@@ -1,4 +1,5 @@
 import { createPopper } from '@popperjs/core';
+import { CipherType } from 'jslib/enums/cipherType';
 import LinkedList from '../scripts/doublyLinkedList';
 
 /* =========================================================================
@@ -66,7 +67,6 @@ var menuEl,
 /* --------------------------------------------------------------------- */
 // Add a menu button to an element and initialize the iframe for the menu
 function addMenuButton(el, op, markTheFilling, fieldType) {
-    // if (targetsEl.includes(el)) return; // can happen if several fillscripts are requested in autofiller.js // no longer relevant, a field can be added several time, once for each corresponding cipher (far instance, an email input can correspond to a login and an identity cipher)
 
     if (el && null !== op && void 0 !== op && !(el.disabled || el.a || el.readOnly)) {
         switch (markTheFilling && el.form && !el.form.opfilled && (el.form.opfilled = true),
@@ -76,6 +76,7 @@ function addMenuButton(el, op, markTheFilling, fieldType) {
             case 'radio':
                 break;
             default:
+                // store in the input element the fieldTypes so that when clicked we can pass it to the menu
                 el.dataset.fieldTypes = el.dataset.fieldTypes === undefined ?  fieldType : el.dataset.fieldTypes + '*' + fieldType;
                 if (targetsEl.includes(el)) break; // no need to add again the "button" into the field
                 el.style.backgroundImage = menuBtnSvg
@@ -370,9 +371,9 @@ function getPossibleTypesForField(fieldEl) {
     const fieldTypes = fieldTypesStr.split('*')
     const cipherTypes = []
     // cipher.type : 1:login 2:notes  3:Card 4: identities
-    if (fieldTypesStr.includes('login_'   )) cipherTypes.push(1)
-    if (fieldTypesStr.includes('card_'    )) cipherTypes.push(3)
-    if (fieldTypesStr.includes('identity_')) cipherTypes.push(4)
+    if (fieldTypesStr.includes('login_'   )) cipherTypes.push(CipherType.Login)
+    if (fieldTypesStr.includes('card_'    )) cipherTypes.push(CipherType.Card)
+    if (fieldTypesStr.includes('identity_')) cipherTypes.push(CipherType.Identity)
     return {cipherTypes, fieldTypes }
 }
 
@@ -393,7 +394,6 @@ menuCtrler.submit = submit
 /* --------------------------------------------------------------------- */
 // Set the height of menuEl (iframe) taking into account the inner margin
 function setHeight(h) {
-    // console.log('setHeight', h);
     if (!state.isMenuInited) return // happens if in an iframe without relevant inputs for the menu
     if (state.lastHeight === h )  return
     menuEl.style.height = h + 28 + 'px'
@@ -415,12 +415,11 @@ menuCtrler.getCipher = getCipher
 function setCiphers(newCiphers) {
     ciphers = new LinkedList()
     ciphersById = {}
-    for (var cipherList in newCiphers) {
-        if (newCiphers.hasOwnProperty(cipherList)) {
-            for (var cipher of newCiphers[cipherList]) {
-                ciphers.append(cipher)
-                ciphersById[cipher.id] = cipher
-            }
+    for (var cipherListId in newCiphers) {
+        if (!newCiphers.hasOwnProperty(cipherListId)) continue
+        for (var cipher of newCiphers[cipherListId]) {
+            ciphers.append(cipher)
+            ciphersById[cipher.id] = cipher
         }
     }
     state.isAutoFillInited = true

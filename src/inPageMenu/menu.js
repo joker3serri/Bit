@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (msg.command === 'updateMenuCiphers') {
             ciphers = msg.data.ciphers
             document.getElementById('logo-link').href = msg.data.cozyUrl
-            updateRows()
+            updateAllRows()
             // then request to adjust the menu height
             adjustMenuHeight()
             // then update the height each time the iframe window is resized
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sender    : 'menu.js'            ,
     });
 
-    // 5- listen to UI events (close and click)
+    // 5- listen to click on the close menu button
     const closeIcon = document.querySelector('.close-icon')
     closeIcon.addEventListener('click',()=>{
         chrome.runtime.sendMessage({
@@ -124,20 +124,16 @@ document.addEventListener('DOMContentLoaded', () => {
             sender    : 'menu.js'            ,
         });
     })
-    document.querySelector('#login-rows-list').addEventListener('click',(e)=>{
-        const rowEl = e.target.closest('.row-main')
-        requestFormFillingWithCipher(rowEl.dataset.cipherId)
-    })
-    document.querySelector('#card-rows-list').addEventListener('click',(e)=>{
-        const rowEl = e.target.closest('.row-main')
-        requestFormFillingWithCipher(rowEl.dataset.cipherId)
-    })
-    document.querySelector('#ids-rows-list').addEventListener('click',(e)=>{
-        const rowEl = e.target.closest('.row-main')
-        requestFormFillingWithCipher(rowEl.dataset.cipherId)
+
+    // 6- listen to click on the rows
+    document.querySelectorAll('#login-rows-list, #card-rows-list, #ids-rows-list').forEach( list => {
+        list.addEventListener('click',(e)=>{
+            const rowEl = e.target.closest('.row-main')
+            requestFormFillingWithCipher(rowEl.dataset.cipherId)
+        })
     })
 
-    // 6- detect when to apply the fadeIn effect
+    // 7- detect when to apply the fadeIn effect
     window.addEventListener('hashchange', _testHash)
     _testHash()
 
@@ -158,10 +154,10 @@ function requestFormFillingWithCipher(cipherId) {
 
 /* --------------------------------------------------------------------- */
 // Update all rows
-function updateRows() {
-    updateLoginRows()
-    updateCardRows()
-    updateIdsRows()
+function updateAllRows() {
+    updateRows('login')
+    updateRows('card')
+    updateRows('ids')
     selectFirstVisibleRow()
 }
 
@@ -169,63 +165,53 @@ function updateRows() {
 /* --------------------------------------------------------------------- */
 // Update login rows.
 // Existing rows will be deleted
-function updateLoginRows() {
-    if (!ciphers || !ciphers.logins) return
+// rowsListType = 'login' or 'card' or 'ids'
+function updateRows(rowsListType) {
+    let rowsList, rowTemplate, rowsCiphers
     // 1- generate rows
-    const rowsList = document.querySelector('#login-rows-list')
+    switch (rowsListType) {
+        case 'login':
+            if (!ciphers || !ciphers.logins) return
+            rowsCiphers = ciphers.logins
+            rowsList = document.querySelector('#login-rows-list')
+            rowTemplate = loginRowTemplate
+            break;
+        case 'card':
+            if (!ciphers || !ciphers.cards) return
+            rowsCiphers = ciphers.cards
+            rowsList = document.querySelector('#card-rows-list')
+            rowTemplate = cardRowTemplate
+            break;
+        case 'ids':
+            if (!ciphers || !ciphers.identities) return
+            rowsCiphers = ciphers.identities
+            rowsList = document.querySelector('#ids-rows-list')
+            rowTemplate = idsRowTemplate
+            break;
+    }
     // 2- remove all previous rows
     while (rowsList.firstElementChild) {rowsList.firstElementChild.remove();}
     // 3- add rows
-    ciphers.logins.forEach((cipher, i) => {
-        rowsList.insertAdjacentHTML('beforeend', loginRowTemplate)
+    rowsCiphers.forEach((cipher, i) => {
+        rowsList.insertAdjacentHTML('beforeend', rowTemplate)
         const row = rowsList.lastElementChild
         const text = row.querySelector('.row-text')
         const detail = row.querySelector('.row-detail')
-        text.textContent = cipher.name
-        detail.textContent = cipher.login.username
         row.dataset.cipherId = cipher.id
-    });
-}
-
-
-/* --------------------------------------------------------------------- */
-// update card rows. Existing rows will be deleted
-function updateCardRows() {
-    if (!ciphers || !ciphers.cards) return
-    // 1- generate rows
-    const rowsList = document.querySelector('#card-rows-list')
-    // 2- remove all previous rows
-    while (rowsList.firstElementChild) {rowsList.firstElementChild.remove();}
-    // 3- add rows
-    ciphers.cards.forEach((cipher, i) => {
-        rowsList.insertAdjacentHTML('beforeend', cardRowTemplate)
-        const row = rowsList.lastElementChild
-        const text = row.querySelector('.row-text')
-        const detail = row.querySelector('.row-detail')
-        text.textContent = cipher.name
-        detail.textContent = cipher.card[focusedFieldTypes.card]
-        row.dataset.cipherId = cipher.id
-    });
-}
-
-
-/* --------------------------------------------------------------------- */
-// update identities rows. Existing rows will be deleted
-function updateIdsRows() {
-    if (!ciphers || !ciphers.identities) return
-    // 1- generate rows
-    const rowsList = document.querySelector('#ids-rows-list')
-    // 2- remove all previous rows
-    while (rowsList.firstElementChild) {rowsList.firstElementChild.remove();}
-    // 3- add rows
-    ciphers.identities.forEach((cipher, i) => {
-        rowsList.insertAdjacentHTML('beforeend', idsRowTemplate)
-        const row = rowsList.lastElementChild
-        const text = row.querySelector('.row-text')
-        const detail = row.querySelector('.row-detail')
-        text.textContent = cipher.name
-        detail.textContent = cipher.identity[focusedFieldTypes.identity]
-        row.dataset.cipherId = cipher.id
+        switch (rowsListType) {
+            case 'login':
+                text.textContent = cipher.name
+                detail.textContent = cipher.login.username
+                break;
+            case 'card':
+                text.textContent = cipher.name
+                detail.textContent = cipher.card[focusedFieldTypes.card]
+                break;
+            case 'ids':
+                text.textContent = cipher.name
+                detail.textContent = cipher.identity[focusedFieldTypes.identity]
+                break;
+        }
     });
 }
 
@@ -288,27 +274,39 @@ function _testHash(){
     const focusedFieldTypesArr = hash.split('*').map(t => t.split('_'))
     focusedFieldTypesArr.shift()
     focusedFieldTypesArr.forEach(t=>focusedFieldTypes[t[0]]=t[1])
-    if (focusedFieldTypes.card) {
-        titleEl.textContent = i18nGetMessage('inPageMenuSelectACard')
-        updateCardRows()
-        document.querySelector('#card-rows-list').classList.remove('hidden')
-    } else {
-        document.querySelector('#card-rows-list').classList.add('hidden')
+    
+    const typesOptions = [
+        {
+            fieldType:'card',
+            title:i18nGetMessage('inPageMenuSelectACard'),
+            updateFn: () => updateRows('card'),
+            selector:'#card-rows-list',
+        },
+        {
+            fieldType:'identity',
+            title:i18nGetMessage('inPageMenuSelectAnIdentity'),
+            updateFn: () => updateRows('ids'),
+            selector:'#ids-rows-list',
+        },
+        {
+            fieldType:'login',
+            title:i18nGetMessage('inPageMenuSelectAnAccount'),
+            updateFn: () => updateRows('login'),
+            selector:'#login-rows-list',
+        },
+    ]
+
+    for (let options of typesOptions) {
+        const node = document.querySelector(options.selector)
+        if (focusedFieldTypes[options.fieldType]) {
+            titleEl.textContent = options.title
+            options.updateFn()
+            node.classList.remove('hidden')
+        } else {
+            node.classList.add('hidden')
+        }
     }
-    if (focusedFieldTypes.identity) {
-        titleEl.textContent = i18nGetMessage('inPageMenuSelectAnIdentity')
-        updateIdsRows()
-        document.querySelector('#ids-rows-list').classList.remove('hidden')
-    } else {
-        document.querySelector('#ids-rows-list').classList.add('hidden')
-    }
-    if (focusedFieldTypes.login) {
-        titleEl.textContent = i18nGetMessage('inPageMenuSelectAnAccount')
-        updateLoginRows()
-        document.querySelector('#login-rows-list').classList.remove('hidden')
-    } else {
-        document.querySelector('#login-rows-list').classList.add('hidden')
-    }
+
     if (hash.includes('applyFadeIn')) {
         adjustMenuHeight()
         panel.classList.add('fade-in')

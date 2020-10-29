@@ -1127,7 +1127,6 @@ import menuCtrler from './menuCtrler';
                 menuCtrler.hide(true)
                 menuCtrler.freeze() // freeze menu to avoid clipping during autofill
                 var pageDetailsObj = collect(document);
-                // var selectedCipher = menuCtrler.getCipher(msg.cipherId)
                 chrome.runtime.sendMessage({
                     command     : 'collectPageDetailsResponse',
                     details     : pageDetailsObj,

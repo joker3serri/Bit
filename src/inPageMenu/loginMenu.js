@@ -275,7 +275,7 @@ function sanitizeUrlInput(inputUrl) {
     }
     // String sanitize
     inputUrl = inputUrl.trim().toLowerCase();
-    inputUrl = inputUrl.replace(/\/+$/, '') // remove trailing '/'
+    inputUrl = inputUrl.replace(/\/+$/, '') // remove trailing '/' that the user might have inserted by ex when pasting a url for his cozy adress
 
     // Extract protocol
     const regexpProtocol = /^(https?:\/\/)?(www\.)?/;
