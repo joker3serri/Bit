@@ -117,14 +117,13 @@ function _initInPageMenuForEl(targetEl) {
         menuEl = document.createElement('iframe')
         _setIframeURL(state.currentMenuType, state.isPinLocked )
         menuEl.id  = 'cozy-menu-in-page'
-        menuEl.style.cssText = 'z-index: 2147483647 !important; border:0; transition: transform 30ms linear 0s; visibility: visible !important;'
+        menuEl.style.cssText = 'z-index: 2147483647 !important; border:0; transition: transform 30ms linear 0s; display:block; background-color: transparent;'
         // Append <style> element to add popperjs styles
         // relevant doc for css stylesheet manipulation : https://www.w3.org/wiki/Dynamic_style_-_manipulating_CSS_with_JavaScript
         const styleEl = document.createElement('style')
         styleEl.innerHTML = `
-            #cozy-menu-in-page {display: none;}
-            #cozy-menu-in-page[data-show] {display: block;}
-            #cozy-menu-in-page[data-unvisible] {height: 1px !important; }
+            #cozy-menu-in-page {visibility: hidden; }
+            #cozy-menu-in-page[data-show] {visibility: visible;}
         `;
         document.head.appendChild(styleEl)
         // append element and configure popperjs
@@ -259,8 +258,8 @@ function show(targetEl) {
 
 
 /* --------------------------------------------------------------------- */
-// Hide the menu element
-// force = false : a short time out will wait to check where the focus
+// Init a target element to be able to trigger the menu
+// force = false : a shrot time out will wait to check where the focus
 //       goes so that to not hide if target is an input or the iframe of
 //       the menu.
 // force = true : hide the menu without waiting to check the target of the focus.
@@ -279,22 +278,11 @@ function hide(force) {
         // and there fore will consider fields under the iframe as being hidden. These fields would then not be filled...
         // console.log(`FORCE HIDE _ call id=0${n}`, state.lastFocusedEl, ); // usefull for debug...
         if (document.activeElement === menuEl) {
-            // the focus is in the iframe.
-            // When closing it, put focus back in the correct input in the page
-            // but freeze the menu so that focus event doesn't open the menu again
-            // and in order to prevent the masking of fields by the menu (not viewable fields are not autofilled...),
-            // set menu height to 1px a
-            // console.log(`Hide_A call id=0${n}, force=${!!force}, activeElement.id=${document.activeElement.id}`); // usefull for debug...
-            menuEl.setAttribute('data-unvisible', '') // to hide menu immediately
-            menuCtrler.freeze()
+            // the focus is in the iframe, then when closing it, put focus back in the correct input in the page
             state.lastFocusedEl.focus()
-            setTimeout(()=>{
-                menuEl.removeAttribute('data-show') // hide completly the menu only after fade out in the iframe is over
-                menuEl.removeAttribute('data-unvisible')
-                menuCtrler.unFreeze()
-            }, 600)
+            // hide after focus event to avoid to open the menu again
+            setTimeout( () => menuEl.removeAttribute('data-show') , 5)
         }else{
-            // console.log(`Hide_B call id=0${n}, force=${!!force}, activeElement.id=${document.activeElement.id}`); // usefull for debug...
             menuEl.removeAttribute('data-show')
         }
         state.isHidden = true
@@ -304,10 +292,10 @@ function hide(force) {
         const target = document.activeElement;
         if (!force && (targetsEl.indexOf(target) != -1 || target.tagName == 'IFRAME' && target.id == 'cozy-menu-in-page')) {
             // Focus is know in iframe or in one of the input => do NOT hide
-            // console.log(`Hide_C : After hide, focus is now in iframe or in one of the input => do NOT hide _ call id=0${n}`); // usefull for debug...
+            // console.log(`After hide, focus is now in iframe or in one of the input => do NOT hide _ call id=0${n}`); // usefull for debug...
             return
         }
-        // console.log(`Hide_D :log after timeout concludes DO HIDE call id=0${n}`); // usefull for debug...
+        // console.log(`log after timeout concludes DO HIDE call id=0${n}`); // usefull for debug...
         // otherwise, hide
         _setApplyFadeInUrl(false)
         // hide menu element after a delay so that the inner pannel has been scaled to 0 and therefore enables
@@ -446,6 +434,7 @@ function setCiphers(newCiphers) {
         }
     }
     state.isAutoFillInited = true
+    // state.selectedCipher = ciphers.head() // TODO BJA : check this is the first visible cipher.
     selectFirstCipherToSuggestFor(state.lastFocusedEl)
 }
 menuCtrler.setCiphers = setCiphers
