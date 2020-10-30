@@ -317,7 +317,7 @@ function hide(force) {
         // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Tips#Run_an_animation_again
         setTimeout(()=>{menuEl.removeAttribute('data-show')}, 600)
         state.isHidden = true
-    }, 1);
+    }, 100);
 }
 menuCtrler.hide = hide
 
