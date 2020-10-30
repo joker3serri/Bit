@@ -144,7 +144,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const bodies = document.querySelectorAll('body');
         if (bodies && bodies.length > 0) {
             observer = new MutationObserver((mutations) => {
-
                 // we remove the pageHref !== window.location.href condition since in some cases it prevents to react
                 // to the page changes (for instance second step of this page :
                 // https://secure.fnac.com/identity/server/gateway/signin-signup )
@@ -181,6 +180,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
                             doCollect = true;
                             break;
                         }
+                        // @override by Cozy : take into account when modification occurs into a form.
+                        const parentform = addedNode.closest('form:not([data-bitwarden-watching])')
+                        if (parentform != null && parentform.length > 0) {
+                            doCollect = true;
+                            break;
+                        }
+                        // end @override by Cozy
+
                     }
 
                     if (doCollect) {
