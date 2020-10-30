@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                             break;
                         }
                         // @override by Cozy : take into account when modification occurs into a form.
-                        const parentform = addedNode.closest('form:not([data-bitwarden-watching])')
+                        const parentform = addedNode.closest('form:not([data-bitwarden-watching])');
                         if (parentform != null && parentform.length > 0) {
                             doCollect = true;
                             break;
