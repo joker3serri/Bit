@@ -3,35 +3,15 @@
 
     <head>
         <meta charset="utf-8" />
-        <style media="screen" type="text/css" >
-            .form-example {
-                max-width: 400px;
-            }
-            .form-row {
-                margin-bottom: 10px;
-                width:100%;
-            }
-            input {
-                width:100%;
-            }
-            label {
-                display: block;
-                margin-top: 13px;
-            }
-            button {
-                margin-top: 20px;
-            }
-            hr {
-                height: 4px;
-                background-color: black;
-            }
-        </style>
+        <link rel="stylesheet" media="screen" type="text/css" href="TXX.css"/>
     </head>
 
     <body>
 
         <a href="./">Back to menu</a>
         <hr>
+        <h2>Multiple form in a single page</h2>
+        <p>✅ normal behaviour for login and autofill menu</p>
 
         <h2 class="header-section">Login form </h2>
 
@@ -39,13 +19,11 @@
 
           <div class="form-row">
             <label for="email">Enter your email: </label>
-            <br>
             <input type="text" name="email" id="email" value="" autocomplete="off" style="width:100%; box-sizing: border-box;" >
           </div>
 
           <div class="form-row">
             <label for="password">Enter your password: </label>
-            <br>
             <input type="text" name="password" id="password" value="" autocomplete=“off” style="width:100%; box-sizing: border-box;" autofocus >
           </div>
 

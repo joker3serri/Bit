@@ -535,7 +535,13 @@ import menuCtrler from './menuCtrler';
             }
 
             // walk the tree
-            for (var pointEl = el.ownerDocument.elementFromPoint(leftOffset + (rect.right > window.innerWidth ? (window.innerWidth - leftOffset) / 2 : rect.width / 2), topOffset + (rect.bottom > window.innerHeight ? (window.innerHeight - topOffset) / 2 : rect.height / 2)); pointEl && pointEl !== el && pointEl !== document;) {
+            for (var pointEl = el.ownerDocument.elementFromPoint(
+                leftOffset +
+                (rect.right > window.innerWidth ? (window.innerWidth - leftOffset) / 2 : rect.width / 2),
+                topOffset +
+                (rect.bottom > window.innerHeight ? (window.innerHeight - topOffset) / 2 : rect.height / 2));
+
+                pointEl && pointEl !== el && pointEl !== document;) {
                 if (pointEl.tagName && 'string' === typeof pointEl.tagName && 'label' === pointEl.tagName.toLowerCase()
                     && el.labels && 0 < el.labels.length) {
                     return 0 <= Array.prototype.slice.call(el.labels).indexOf(pointEl);
@@ -631,7 +637,7 @@ import menuCtrler from './menuCtrler';
         return getPageDetails(document, 'oneshotUUID');
     }
 
-    function fill(document, fillScript, undefined) {
+    function fill(document, fillScripts, undefined) {
         var isFirefox = navigator.userAgent.indexOf('Firefox') !== -1 || navigator.userAgent.indexOf('Gecko/') !== -1;
 
         var markTheFilling = true,
@@ -758,9 +764,9 @@ import menuCtrler from './menuCtrler';
         }
 
         // add the menu button in the element by opid operation
-        function addMenuBtnByOpId(opId, op) {
+        function addMenuBtnByOpId(opId, fieldType) {
             var el = getElementByOpId(opId);
-            return el ? (menuCtrler.addMenuButton(el, op, markTheFilling), [el]) : null;
+            return el ? (menuCtrler.addMenuButton(el, fieldType, false, fieldType), [el]) : null;
         }
 
         // do a fill by opid operation
@@ -1004,28 +1010,42 @@ import menuCtrler from './menuCtrler';
             }
         }
 
-        function displayLoginIPMenu(fillScripts, isPinLocked) {
-            menuCtrler.setMenuType('loginMenu', isPinLocked)
-            runLoginMenuFillScript(fillScripts.loginLoginMenuFillScript.script)
-            runLoginMenuFillScript(fillScripts.cardLoginMenuFillScript.script)
-            runLoginMenuFillScript(fillScripts.identityLoginMenuFillScript.script)
-        }
-
-        function runLoginMenuFillScript(script) {
-            script.forEach((action) => {
+        function runLoginMenuFillScript(fillScript) {
+            fillScript.script.forEach((action) => {
                 if (action[0] !== 'fill_by_opid') return
                 const el = getElementByOpId(action[1])
-                menuCtrler.addMenuButton(el, true)
+                menuCtrler.addMenuButton(el, true, true, action[3])
             });
         }
 
-        if (fillScript.type === 'inPageLoginMenuScript') {
-            displayLoginIPMenu(fillScript, fillScript.isPinLocked)
-        } else if (fillScript.type === 'inPageMenuScript') {
-            menuCtrler.setMenuType('autofillMenu', false)
-            doFill(fillScript);
+        if (fillScripts.isForLoginMenu) {
+            menuCtrler.setMenuType('loginMenu', fillScripts.isPinLocked) // BJA : à améliorer pour n'être appelé qu'une fois
         } else {
-            doFill(fillScript);
+            menuCtrler.setMenuType('autofillMenu', fillScripts.isPinLocked) // BJA : à améliorer pour n'être appelé qu'une fois
+        }
+
+        for (let fillScript of fillScripts) {
+            switch (fillScript.type) {
+                case 'existingLoginFieldsForInPageMenuScript':
+                    doFill(fillScript);
+                    break;
+                case 'loginFieldsForInPageMenuScript':
+                    // BJA : this is a bug : when loginMenu, we should run this script
+                    if (fillScripts[0].type !== 'existingLoginFieldsForInPageMenuScript') {
+                        runLoginMenuFillScript(fillScript);
+                    }
+                    // we could offer to generate a password for input corresponding to a password for which there
+                    // is no existing cipher.
+                    break;
+                case 'cardFieldsForInPageMenuScript':
+                case 'identityFieldsForInPageMenuScript':
+                    runLoginMenuFillScript(fillScript);
+                    break;
+                default:
+                    doFill(fillScript);
+                    break;
+
+            }
         }
 
         return '{"success": true}';
@@ -1060,7 +1080,7 @@ import menuCtrler from './menuCtrler';
                 });
             }
             else if (msg.command === 'fillForm') {
-                fill(document, msg.fillScript);
+                fill(document, msg.fillScripts);
             }
         }, false);
         return;
@@ -1093,7 +1113,8 @@ import menuCtrler from './menuCtrler';
             return true;
         }
         else if (msg.command === 'fillForm') {
-            fill(document, msg.fillScript);
+            msg.fillScripts.isForLoginMenu = msg.isForLoginMenu
+            fill(document, msg.fillScripts);
             sendResponse();
             return true;
         }
@@ -1106,12 +1127,11 @@ import menuCtrler from './menuCtrler';
                 menuCtrler.hide(true)
                 menuCtrler.freeze() // freeze menu to avoid clipping during autofill
                 var pageDetailsObj = collect(document);
-                var selectedCipher = menuCtrler.getCipher(msg.cipherId)
                 chrome.runtime.sendMessage({
                     command     : 'collectPageDetailsResponse',
                     details     : pageDetailsObj,
-                    sender      : 'menu.js',
-                    cipher      : selectedCipher,
+                    sender      : 'autofillForMenu.js',
+                    cipherId    : msg.cipherId,
                 })
             } else if (msg.subcommand === 'inPageMenuDeactivate') {
                 menuCtrler.deactivate()
@@ -1124,9 +1144,10 @@ import menuCtrler from './menuCtrler';
                     isPinLocked: msg.isPinLocked,
                 })
             } else if (msg.subcommand === 'loginIPMenuSetFields') {
-                msg.loginFillScripts.isPinLocked = msg.isPinLocked
+                msg.fieldsForInPageMenuScripts.isPinLocked = msg.isPinLocked
+                msg.fieldsForInPageMenuScripts.isForLoginMenu = msg.isForLoginMenu
                 // and then send the script for filling
-                fill(document, msg.loginFillScripts)
+                fill(document, msg.fieldsForInPageMenuScripts)
 
             } else if (msg.subcommand === 'autofilIPMenuActivate') {
                 var pageDetails = collect(document);

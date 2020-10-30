@@ -862,7 +862,7 @@
     "message": "Display a selection menu in the forms that can be filled automatically."
   },
   "loginInPageMenuTitle": {
-      "message": "Authentication on my Cozy"
+      "message": "Auhtentication on my Cozy"
   },
   "inPageMenuLoginError": {
     "message": "Address and password don't match"
@@ -871,7 +871,13 @@
     "message": "Wrong activation code, a new will be sent"
   },
   "inPageMenuSelectAnAccount": {
-    "message": "Select a login"
+    "message": "Select an account"
+  },
+  "inPageMenuSelectACard": {
+    "message": "Select a bank card"
+  },
+  "inPageMenuSelectAnIdentity": {
+    "message": "Select an identity"
   },
   "experimentalFeature": {
     "message": "This is currently an experimental feature. Use at your own risk."

@@ -20,7 +20,7 @@
     "message": "Créer un compte"
   },
   "login": {
-    "message": "Se connecter"
+    "message": "Me connecter"
   },
   "cancel": {
     "message": "Annuler"
@@ -860,6 +860,12 @@
   },
   "inPageMenuSelectAnAccount": {
     "message": "Sélectionner un compte"
+  },
+  "inPageMenuSelectACard": {
+    "message": "Sélectionner une carte bancaire"
+  },
+  "inPageMenuSelectAnIdentity": {
+    "message": "Sélectionner une identité"
   },
   "experimentalFeature": {
     "message": "Ceci est actuellement une fonctionnalité expérimentale. À utiliser avec prudence."

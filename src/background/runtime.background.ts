@@ -84,13 +84,6 @@ export default class RuntimeBackground {
             'sender': sender
         });
         */
-        console.log('runtime.background PROCESS MESSAGE ', {
-            'msg.command:': msg.command,
-            'msg.subcommand': msg.subcommand,
-            'msg.sender': msg.sender,
-            'msg': msg,
-            'sender': sender
-        });
 
         switch (msg.command) {
             case 'loggedIn':
@@ -138,10 +131,23 @@ export default class RuntimeBackground {
             case 'bgAnswerMenuRequest':
                 switch (msg.subcommand) {
                     case 'getCiphersForTab':
-                        const ciphers = await this.cipherService.getAllDecryptedForUrl(sender.tab.url, null);
-                        ciphers.sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
+                        const logins = await this.cipherService.getAllDecryptedForUrl(sender.tab.url, null);
+                        logins.sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
+                        const allCiphers = await this.cipherService.getAllDecrypted();
+                        const ciphers = {logins: logins, cards: new Array(), identities: new Array()};
+                        for (const cipher of allCiphers) {
+                            // cipher.type : 1:login 2:notes  3:Card 4: identities
+                            switch (cipher.type) {
+                                case 3:
+                                    ciphers.cards.push(cipher);
+                                    break;
+                                case 4:
+                                    ciphers.identities.push(cipher);
+                                    break;
+                            }
+                        }
                         const vaultUrl = this.environmentService.getWebVaultUrl();
-                        const cozyUrl = new URL(vaultUrl).origin; // Remove the /bitwarden part
+                        const cozyUrl = new URL(vaultUrl).origin;
                         await BrowserApi.tabSendMessageData(sender.tab, 'updateMenuCiphers', {
                             ciphers: ciphers,
                             cozyUrl: cozyUrl,
@@ -175,7 +181,6 @@ export default class RuntimeBackground {
                             targetCipher: msg.targetCipher,
                         });
                         break;
-                    case 'menuSelectionValidate':
                         await BrowserApi.tabSendMessage(sender.tab, {
                             command   : 'menuAnswerRequest',
                             subcommand: 'menuSelectionValidate',
@@ -232,22 +237,30 @@ export default class RuntimeBackground {
                 await this.main.reseedStorage();
                 break;
             case 'bgGetLoginMenuFillScript':
-                const loginFillScripts = this.autofillService.generateLoginMenuFillScript(msg.pageDetails);
+                // addon has been disconnected or the page was loaded while addon was not connected
+                const fieldsForInPageMenuScripts =
+                    this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails);
+                this.autofillService.postFilterFieldsForLoginInPageMenu(fieldsForInPageMenuScripts);
                 const pinSet = await this.vaultTimeoutService.isPinLockSet();
                 const isPinLocked = (pinSet[0] && this.vaultTimeoutService.pinProtectedKey != null) || pinSet[1];
                 await BrowserApi.tabSendMessage(sender.tab, {
-                    command         : 'autofillAnswerRequest',
-                    subcommand      : 'loginIPMenuSetFields',
-                    loginFillScripts: loginFillScripts,
-                    isPinLocked     : isPinLocked,
+                    command                   : 'autofillAnswerRequest',
+                    subcommand                : 'loginIPMenuSetFields',
+                    fieldsForInPageMenuScripts: fieldsForInPageMenuScripts,
+                    isForLoginMenu            : true,
+                    isPinLocked               : isPinLocked,
                 }, {frameId: sender.frameId});
                 break;
             case 'bgGetAutofillMenuScript':
+                // If goes here : means that addon has just been connected (page was already loaded)
+                const script = this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
+                script.isForLoginMenu = false;
                 await this.autofillService.doAutoFillForLastUsedLogin([{
-                    frameId: sender.frameId,
-                    tab: sender.tab,
-                    details: msg.details,
-                    sender: 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
+                    frameId                   : sender.frameId,
+                    tab                       : sender.tab,
+                    details                   : msg.details,
+                    fieldsForInPageMenuScripts: script,
+                    sender                    : 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
                 }], true);
                 break;
             case 'collectPageDetailsResponse':
@@ -261,18 +274,29 @@ export default class RuntimeBackground {
                 switch (msg.sender) {
                     case 'notificationBar':
                         /* auttofill.js sends the page details requested by the notification bar.
-                           Result will be used by both the notificationBar and for the inPageMenu. */
-                        // 1- request a fill script for the autofill-in-page-menu (if activated)
+                           Result will be used by both the notificationBar and for the inPageMenu.
+                           inPageMenu requires a fillscrip to know wich fields are relevant for the menu and which
+                           is the type of each field in order to adapt the menu content (cards, identities, login or
+                            existing logins)
+                        */
+                        // 1- request a fill script for the in-page-menu (if activated)
                         let enableInPageMenu = await this.storageService.get<any>(
                             LocalConstantsService.enableInPageMenuKey);
                         // default to true
                         if (enableInPageMenu === null) {enableInPageMenu = true; }
                         if (enableInPageMenu) {
-                            this.autofillService.preFilterFieldsForInPageMenu(msg.details)
+                            // If goes here : means that the page has just been loaded while addon was connected
+                            // get scripts for logins, cards and identities
+                            const fieldsForAutofillMenuScripts =
+                                this.autofillService.generateFieldsForInPageMenuScripts(msg.details);
+                            // get script for existing logins.
+                            // the 4 scripts (existing logins, logins, cards and identities) will be sent
+                            // to autofill.js by autofill.service
                             const totpCode1 = await this.autofillService.doAutoFillForLastUsedLogin([{
                                 frameId: sender.frameId,
                                 tab: msg.tab,
                                 details: msg.details,
+                                fieldsForInPageMenuScripts: fieldsForAutofillMenuScripts,
                                 sender: 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
                             }], true);
                         }
@@ -297,10 +321,13 @@ export default class RuntimeBackground {
                         }
                         break;
 
-                    case 'menu.js':
+                    // autofill request for a specific cipher from menu.js
+                    case 'autofillForMenu.js':
                         const tab = await BrowserApi.getTabFromCurrentWindow();
+                        const c = await this.cipherService.get(msg.cipherId);
+                        const cipher = await c.decrypt();
                         const totpCode2 = await this.autofillService.doAutoFill({
-                            cipher     : msg.cipher,
+                            cipher     : cipher,
                             pageDetails: [{
                                 frameId: sender.frameId,
                                 tab    : tab,

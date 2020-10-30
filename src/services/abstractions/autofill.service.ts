@@ -4,6 +4,7 @@ export abstract class AutofillService {
     getFormsWithPasswordFields: (pageDetails: AutofillPageDetails) => any[];
     doAutoFill: (options: any) => Promise<string>;
     doAutoFillForLastUsedLogin: (pageDetails: any, fromCommand: boolean) => Promise<string>;
-    generateLoginMenuFillScript: (pageDetails: any) => any;
+    generateFieldsForInPageMenuScripts: (pageDetails: any) => any;
     preFilterFieldsForInPageMenu: (pageDetails: any) => void;
+    postFilterFieldsForLoginInPageMenu: (scriptsObj: any) => void;
 }

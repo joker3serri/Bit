@@ -3,30 +3,20 @@
 
     <head>
         <meta charset="utf-8" />
-        <style media="screen" type="text/css" >
-            label {
-                display: block;
-                margin-top: 13px;
-            }
-            button {
-                margin-top: 20px;
-            }
-            hr {
-                height: 4px;
-                background-color: black;
-            }
-        </style>
+        <link rel="stylesheet" media="screen" type="text/css" href="TXX.css"/>
     </head>
 
     <body>
 
         <a href="./">Back to menu</a>
         <hr>
+        <h2>Complex Identity form</h2>
+        <p>✅ normal behaviour for login and autofill menu</p>
 
         <div class="dossier-edit container">
 
         <form class="form autosave-enabled" id="dossier-edit-form" enctype="multipart/form-data" action="https://www.demarches-simplifiees.fr/dossiers/2418643/brouillon" accept-charset="UTF-8" method="post"><input type="hidden" name="_method" value="patch"><input type="hidden" name="authenticity_token" value="O17HrclPggdmZKGYbT/izX6fKp67tLRQ07xVBCtxY9mKtO7S6MnkW5tAx1f5lR2HhHDNtUtbsqbpiqRYx8QsMQ==">
-            
+
         <div class="editable-champ editable-champ-drop_down_list" data-champ-id="91090853">
 
         <label for="dossier_champs_attributes_0_value">Type de demande
@@ -34,11 +24,11 @@
 
         </label>
         <fieldset class="radios">
-        <label>
+        <label class="small">
         <input type="radio" value="Demande initiale" name="dossier[champs_attributes][0][value]" id="dossier_champs_attributes_0_value_demande_initiale">
         Demande initiale
         </label>
-        <label>
+        <label class="small">
         <input type="radio" value="Demande de renouvellement" name="dossier[champs_attributes][0][value]" id="dossier_champs_attributes_0_value_demande_de_renouvellement">
         Demande de renouvellement
         </label>

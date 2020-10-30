@@ -25,7 +25,8 @@ var panel               ,
     is2faHidden = true  ,
     isIn2FA     = false ,
     isLocked            ,
-    isPinLocked
+    isPinLocked         ,
+    lastSentHeight
 
 /* --------------------------------------------------------------------- */
 // initialization of the login menu
@@ -195,11 +196,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // Width is constraint by the parent page, but height is decided by the
 // iframe content
 function adjustMenuHeight() {
+    if (lastSentHeight === panel.offsetHeight) return
+    lastSentHeight = panel.offsetHeight
     chrome.runtime.sendMessage({
         command   : 'bgAnswerMenuRequest' ,
         subcommand: 'setMenuHeight'       ,
-        height    : panel.offsetHeight    ,
-        sender    : 'menu.js'             ,
+        height    : lastSentHeight        ,
+        sender    : 'loginMenu.js'        ,
     });
 }
 
@@ -272,6 +275,7 @@ function sanitizeUrlInput(inputUrl) {
     }
     // String sanitize
     inputUrl = inputUrl.trim().toLowerCase();
+    inputUrl = inputUrl.replace(/\/+$/, '') // remove trailing '/' that the user might have inserted by ex when pasting a url for his cozy adress
 
     // Extract protocol
     const regexpProtocol = /^(https?:\/\/)?(www\.)?/;
@@ -332,7 +336,7 @@ function _setWaitingMode() {
 /* --------------------------------------------------------------------- */
 // Request the iframe content to fadeIn or not
 function _testHash(){
-    if (window.location.hash === '#applyFadeIn') {
+    if (window.location.hash.includes('applyFadeIn')) {
         panel.classList.add('fade-in')
     } else {
         panel.className = "panel";
