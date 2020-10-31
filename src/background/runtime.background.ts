@@ -76,11 +76,10 @@ export default class RuntimeBackground {
         /*
         @override by Cozy : this log is very useful for reverse engineering the code, keep it for tests
         console.log('runtime.background PROCESS MESSAGE ', {
-            'msg.command:': msg.command,
-            'msg.subcommand': msg.subcommand,
-            'msg.sender': msg.sender,
-            'msg': msg,
-            'sender': sender
+            'command:': msg.subcommand ? msg.subcommand : msg.command,
+            'sender': msg.sender + ' of ' + (new URL('https://www.etam.com/')).host + ' frameId:' + sender.frameId,
+            'full.msg': msg,
+            'full.sender': sender,
         });
         */
 
@@ -90,7 +89,7 @@ export default class RuntimeBackground {
                 await this.loggedinAndUnlocked(msg.command); //
                 break;
             case 'logout':
-                // 1- ask all tabs to activate login-in-page-menu
+                // 1- ask all frames of all tabs to activate login-in-page-menu
                 const allTabs = await BrowserApi.getAllTabs();
                 for (const tab of allTabs) {
                     BrowserApi.tabSendMessage(tab, {

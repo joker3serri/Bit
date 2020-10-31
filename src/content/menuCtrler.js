@@ -61,7 +61,7 @@ var menuEl,
 
 /* --------------------------------------------------------------------- */
 // Add a menu button to an element and initialize the iframe for the menu
-function addMenuButton(el, op, markTheFilling, fieldType) {
+function addMenuButton(el, op, markTheFilling, fieldType, opId) {
 
     if (el && null !== op && void 0 !== op && !(el.disabled || el.a || el.readOnly)) {
         switch (markTheFilling && el.form && !el.form.opfilled && (el.form.opfilled = true),
@@ -73,6 +73,7 @@ function addMenuButton(el, op, markTheFilling, fieldType) {
             default:
                 // store in the input element the fieldTypes so that when clicked we can pass it to the menu
                 el.dataset.fieldTypes = el.dataset.fieldTypes === undefined ?  fieldType : el.dataset.fieldTypes + '*' + fieldType;
+                el.dataset.cozyOpId = opId;
                 if (targetsEl.includes(el)) break; // no need to add again the "button" into the field
                 _initInPageMenuForEl(el)
                 break;

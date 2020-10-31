@@ -279,7 +279,11 @@ export default class AutofillService implements AutofillServiceInterface {
             tab = pageDetails[0].tab;
             if (!lastUsedCipher && !hasFieldsForInPageMenu) {
                 // there is no cipher for this URL : deactivate in page menu
-                BrowserApi.tabSendMessage(tab, {command: 'autofillAnswerRequest', subcommand: 'inPageMenuDeactivate'});
+                BrowserApi.tabSendMessage(
+                    tab,
+                    {command: 'autofillAnswerRequest', subcommand: 'inPageMenuDeactivate'},
+                    {frameId: pageDetails[0].frameId},
+                );
                 return;
             }
         } else {
@@ -587,24 +591,24 @@ export default class AutofillService implements AutofillServiceInterface {
             scriptObj.script = scriptObj.script.filter((action: any) => {
                 if (!this.evaluateDecisionArray(action)) {
                     // @override by Cozy : this log is required for debug and analysis
-                    console.log("!! ELIMINATE menu for field", {
-                        action: `${action[1]}, ${action[3].cipher.fieldType}`,
-                        field: action[3].field,
-                        cipher: action[3].cipher,
-                        form: action[3].field.formObj
-                    });
-                    console.log(action[3].decisionArray);
+                    // console.log("!! ELIMINATE menu for field", {
+                    //     action: `${action[1]}, ${action[3].cipher.fieldType}`,
+                    //     field: action[3].field,
+                    //     cipher: action[3].cipher,
+                    //     form: action[3].field.formObj
+                    // });
+                    // console.log(action[3].decisionArray);
 
                     return false; // remove unwanted action
                 }
                 // @override by Cozy : this log is required for debug and analysis
-                console.log("ACTIVATE menu for field", {
-                    action: `${action[1]}, ${action[3].cipher.fieldType}`,
-                    field: action[3].field,
-                    cipher: action[3].cipher,
-                    form: action[3].field.formObj
-                });
-                console.log(action[3].decisionArray);
+                // console.log("ACTIVATE menu for field", {
+                //     action: `${action[1]}, ${action[3].cipher.fieldType}`,
+                //     field: action[3].field,
+                //     cipher: action[3].cipher,
+                //     form: action[3].field.formObj
+                // });
+                // console.log(action[3].decisionArray);
 
                 action[3] = action[3].cipher.fieldType; // finalise the action to send to autofill.js
                 return true;
@@ -618,9 +622,11 @@ export default class AutofillService implements AutofillServiceInterface {
     private evaluateDecisionArray(action: any) {
         const da = action[3].decisionArray;
         // selection conditions
-        if (da.hasExistingCipher === true && da.field_isInForm === true && da.field_isInSearchForm === false) {return true; }
+        if (da.hasExistingCipher === true && da.field_isInForm === true && da.field_isInSearchForm === false) {
+            return true; }
         if (da.field_isInSearchForm === true) {return false; }
-        if (da.connected === true && da.hasExistingCipher === true && da.loginFellows  > 1 && da.field_visible === true && da.field_viewable === true) {return true; }
+        if (da.connected === true && da.hasExistingCipher === true && da.loginFellows  > 1
+            && da.field_visible === true && da.field_viewable === true) {return true; }
         if (da.cardFellows  > 1 && da.field_isInForm === true) {return true; }
         if (da.connected === false && da.loginFellows === 2) {return true; }
         if (da.connected === false && da.hasLoginCipher === true && da.field_isInloginForm === true) {return true; }

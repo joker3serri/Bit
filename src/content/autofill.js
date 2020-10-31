@@ -766,7 +766,7 @@ import menuCtrler from './menuCtrler';
         // add the menu button in the element by opid operation
         function addMenuBtnByOpId(opId, val, fieldType) {
             var el = getElementByOpId(opId);
-            return el ? (menuCtrler.addMenuButton(el, fieldType, false, fieldType), [el]) : null;
+            return el ? (menuCtrler.addMenuButton(el, fieldType, false, fieldType, opId), [el]) : null;
         }
 
         // do a fill by opid operation
@@ -1014,7 +1014,7 @@ import menuCtrler from './menuCtrler';
             fillScript.script.forEach((action) => {
                 if (action[0] !== 'add_menu_btn_by_opid') return
                 const el = getElementByOpId(action[1])
-                menuCtrler.addMenuButton(el, true, true, action[3])
+                menuCtrler.addMenuButton(el, true, true, action[3], action[1] )
             });
         }
 
@@ -1104,6 +1104,7 @@ import menuCtrler from './menuCtrler';
             "heard in": document.location.pathname
         });
         */
+
 
        if (msg.command === 'notificationBarPageDetails') return
 
