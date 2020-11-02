@@ -35,7 +35,7 @@ var menuCtrler = {
 // GLOBALS
 var menuEl,
     popperInstance,
-    targetsEl = [],  // fields where
+    targetsEl = [],  // fields where a menu has been configured
     formsEl = [],    // store all parent forms of fields where a menu has been added (ie forms of targetsEl)
     ciphers ,        // linked list of ciphers to suggest in the menu
     ciphersById,     // a dictionnary of cyphers to suggest in the menu by id : {idCipher:cipher, ...}
@@ -100,8 +100,10 @@ function _initInPageMenuForEl(targetEl) {
     // prevent browser autocomplet with history for this field
     targetEl.autocomplete='off'
 
-    // when user click in a form (not evant an input), the focus is put in the closest input. So if the focus was in an input with the menu opended, the blur event closes the menu which is reopened immmediately when the focus is put again in the menu...
-    // solution : freeze the menu half a second after a click in a form that is not in an input.
+    // When user click in a form (not evant an input), the focus is put in the closest input.
+    // So if the focus was in an input with the menu opended, the blur event will close the menu which is reopened
+    // immmediately when the focus is put again in the menu...
+    // Solution : freeze the menu half a second after a click in a form that is not in an input.
     const parentForm = targetEl.closest('form')
     if (parentForm && !formsEl.includes(parentForm) ) {
         formsEl.push(parentForm)
