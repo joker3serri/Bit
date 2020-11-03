@@ -35,6 +35,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
+    // Not sure if needed, but seems to handle everything not handled in commands.background.ts:29-30
+    Mousetrap.bind('mod+shift+s', () => {
+        sendMessage('lock_vault');
+    });
+
     function sendMessage(shortcut: string) {
         const msg: any = {
             command: 'keyboardShortcutTriggered',
