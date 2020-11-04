@@ -93,8 +93,9 @@ function _initInPageMenuForEl(targetEl) {
     targetEl.style.backgroundImage = menuBtnSvg
     targetEl.style.backgroundRepeat = "no-repeat"
     targetEl.style.backgroundAttachment = "scroll"
-    targetEl.style.backgroundSize = "24px 24px"
-    targetEl.style.backgroundPosition = "calc(100% - 16px) 50%"
+    targetEl.style.backgroundSize = targetEl.clientWidth > 90 ? "24px 24px" : "10px 10px"
+    const targetWidth = targetEl.clientWidth
+    targetEl.style.backgroundPosition = targetEl.clientWidth > 90 ?  "calc(100% - 16px) 50%" :  "calc(100% - 16px) 10px"
     targetEl.style.cursor = "pointer"
 
     // prevent browser autocomplet with history for this field
