@@ -50,18 +50,23 @@ body {
 }
 
 #header {
-    padding: 1rem 1rem 1.5rem;
+    padding: 1rem 1rem 2rem;
     font-weight: bold;
     font-size: medium;
     display: flex;
     justify-content: space-between;
     z-index: 2;
     position: relative;
+    & > #logo-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 #title-content {
   flex-grow: 1;
-  padding-left: 0.5rem;
+  padding: 0 1em;
 }
 
 .close-icon {
@@ -285,6 +290,7 @@ button {
 @media (max-width: 300px) {
     #title-content{
         font-size: 0.9em;
+        padding: 0 0.5em;
     }
     #login-form {
         padding: 0 0.5rem 0.5rem 0.5rem;
