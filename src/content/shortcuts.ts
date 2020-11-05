@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
-    // Not sure if needed, but seems to handle everything not handled in commands.background.ts:29-30
+    // Default Keybinding for Safari
     Mousetrap.bind('mod+shift+s', () => {
         sendMessage('lock_vault');
     });
