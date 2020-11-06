@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
-    // Default Keybinding for Safari
     Mousetrap.bind('mod+shift+s', () => {
         sendMessage('lock_vault');
     });
