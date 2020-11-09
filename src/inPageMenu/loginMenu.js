@@ -9,6 +9,7 @@ import { Utils } from 'jslib/misc/utils';
 // Globals
 // UI elements
 var panel               ,
+    arrow               ,
     title               ,
     closeIcon           ,
     visiPwdBtn          ,
@@ -26,6 +27,7 @@ var panel               ,
     isIn2FA     = false ,
     isLocked            ,
     isPinLocked         ,
+    currentArrowD       ,
     lastSentHeight
 
 /* --------------------------------------------------------------------- */
@@ -41,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1- get elements references
     panel      = document.querySelector('.panel')
+    arrow      = document.getElementById('arrow')
     title      = document.getElementById('title-content')
     urlInput   = document.getElementById('cozy-url')
     pwdInput   = document.getElementById('master-password')
@@ -329,12 +332,30 @@ function _setWaitingMode() {
 
 
 /* --------------------------------------------------------------------- */
-// Request the iframe content to fadeIn or not
+// Test if iframe content should fadeIn or not
+// and display rows corresponding to the fieldtypes of the focused field
+// content of the hash = {
+//    login:"username",
+//    identity:"email",
+//    card: "",
+//    applyFadeIn:[boolean],
+//    arrowD:[Float],
+// }
 function _testHash(){
-    if (window.location.hash.includes('applyFadeIn')) {
+    let hash = window.location.hash
+    if (hash) {
+        hash = JSON.parse(decodeURIComponent(hash).slice(1))
+    }
+    if (hash.applyFadeIn) {
+        adjustMenuHeight()
         panel.classList.add('fade-in')
     } else {
         panel.className = "panel";
+    }
+
+    if (hash.arrowD !== undefined && hash.arrowD !== currentArrowD ) {
+        currentArrowD = hash.arrowD
+        arrow.style.right = 10 - hash.arrowD + 'px'
     }
 }
 

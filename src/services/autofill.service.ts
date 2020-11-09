@@ -681,14 +681,14 @@ export default class AutofillService implements AutofillServiceInterface {
                     let cipher: any;
                     switch (options.cipher.type) {
                         case CipherType.Login:
-                            cipher = {type: 'login', fieldType: 'login_customField'};
+                            cipher = {type: 'login', fieldType: {login: 'customField'}};
                             break;
                         case CipherType.Card:
-                            cipher = {type: 'card', fieldType: 'card_customField'};
+                            cipher = {type: 'card', fieldType: {card: 'customField'}};
                             break;
                         case CipherType.Identity:
-                            field.fieldType = 'identity_customField';
-                            cipher = {type: 'identity', fieldType: 'identity_customField'};
+                            field.fieldType = {identity: 'customField'};
+                            cipher = {type: 'identity', fieldType: {identity: 'customField'}};
                             break;
                     }
                     this.fillByOpid(fillScript, field, val, cipher);
@@ -804,7 +804,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 return;
             }
             filledFields[u.opid] = u;
-            const cipher = {type: 'login', fieldType: 'login_username'};
+            const cipher = {type: 'login', fieldType: {login: 'username'}};
             this.fillByOpid(fillScript, u, login.username, cipher);
         });
 
@@ -813,7 +813,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 return;
             }
             filledFields[p.opid] = p;
-            const cipher = {type: 'login', fieldType: 'login_password'};
+            const cipher = {type: 'login', fieldType: {login: 'password'}};
             this.fillByOpid(fillScript, p, login.password, cipher);
         });
 
@@ -940,7 +940,7 @@ export default class AutofillService implements AutofillServiceInterface {
             }
 
             filledFields[fillFields.expMonth.opid] = fillFields.expMonth;
-            const cipher = {type: 'card', fieldType: 'card_expMonth'};
+            const cipher = {type: 'card', fieldType: {card: 'expMonth'}};
             this.fillByOpid(fillScript, fillFields.expMonth, expMonth, cipher);
         }
 
@@ -977,7 +977,7 @@ export default class AutofillService implements AutofillServiceInterface {
             }
 
             filledFields[fillFields.expYear.opid] = fillFields.expYear;
-            const cipher = {type: 'login', fieldType: 'card_expYear'};
+            const cipher = {type: 'card', fieldType: {card: 'expYear'}};
             this.fillByOpid(fillScript, fillFields.expYear, expYear, cipher);
         }
 
@@ -1041,7 +1041,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 exp,
                 fillFields.exp,
                 filledFields,
-                {type: 'card', fieldType: 'card_exp'},
+                {type: 'card', fieldType: {card: 'exp'}},
             );
         }
         fillScript.type = 'autofillScript';
@@ -1191,7 +1191,7 @@ export default class AutofillService implements AutofillServiceInterface {
             const isoState = IsoStates[stateLower] || IsoProvinces[stateLower];
             if (isoState) {
                 filledState = true;
-                const cipher = {type: 'identity', fieldType: 'identity_state'};
+                const cipher = {type: 'identity', fieldType: {identity: 'state'}};
                 this.makeScriptActionWithValue(fillScript, isoState, fillFields.state, filledFields, cipher);
             }
         }
@@ -1204,7 +1204,7 @@ export default class AutofillService implements AutofillServiceInterface {
         if (fillFields.country && identity.country && identity.country.length > 2) {
             const countryLower = identity.country.toLowerCase();
             const isoCountry = IsoCountries[countryLower];
-            const cipher = {type: 'identity', fieldType: 'identity_country'};
+            const cipher = {type: 'identity', fieldType: {identity: 'country'}};
             if (isoCountry) {
                 filledCountry = true;
                 this.makeScriptActionWithValue(
@@ -1239,7 +1239,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 fullName += identity.lastName;
             }
 
-            const cipher = {type: 'identity', fieldType: 'identity_name'};
+            const cipher = {type: 'identity', fieldType: {identity: 'name'}};
             this.makeScriptActionWithValue(fillScript, fullName, fillFields.name, filledFields, cipher);
         }
 
@@ -1261,7 +1261,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 address += identity.address3;
             }
 
-            const cipher = {type: 'identity', fieldType: 'identity_address'};
+            const cipher = {type: 'identity', fieldType: {identity: 'address'}};
             this.makeScriptActionWithValue(fillScript,
                 address,
                 fillFields.address,
@@ -1322,7 +1322,9 @@ export default class AutofillService implements AutofillServiceInterface {
     ) {
         let fieldProp;
         fieldProp = fieldProp || dataProp;
-        const cipher = {type: cipherType, fieldType: cipherType + '_' + dataProp};
+        const fieldType: any =  {};
+        fieldType[cipherType] = dataProp;
+        const cipher = {type: cipherType, fieldType: fieldType };
         this.makeScriptActionWithValue(
             fillScript,
             cipherData[dataProp],
