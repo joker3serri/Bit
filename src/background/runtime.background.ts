@@ -76,12 +76,18 @@ export default class RuntimeBackground {
         /*
         @override by Cozy : this log is very useful for reverse engineering the code, keep it for tests
         console.log('runtime.background PROCESS MESSAGE ', {
-            'command:': msg.subcommand ? msg.subcommand : msg.command,
-            'sender': msg.sender + ' of ' + (new URL('https://www.etam.com/')).host + ' frameId:' + sender.frameId,
+            'command': msg.subcommand ? msg.subcommand : msg.command,
+            'sender': msg.sender + ' of ' + (new URL(sender.url)).host + ' frameId:' + sender.frameId,
             'full.msg': msg,
             'full.sender': sender,
         });
         */
+        console.log('runtime.background PROCESS MESSAGE ', {
+            'command': msg.subcommand ? msg.subcommand : msg.command,
+            'sender': msg.sender + ' of ' + (new URL(sender.url)).host + ' frameId:' + sender.frameId,
+            'full.msg': msg,
+            'full.sender': sender,
+        });
 
         switch (msg.command) {
             case 'loggedIn':

@@ -365,6 +365,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
     function formSubmitted(e: Event) {
+
         let form: HTMLFormElement = null;
         if (e.type === 'click') {
             form = (e.target as HTMLElement).closest('form');

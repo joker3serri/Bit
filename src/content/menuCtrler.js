@@ -297,7 +297,7 @@ function show(targetEl) {
 function hide(force) {
     // n++  // usefull for debug...
     // console.log(`Hide call id=0${n}, force=${!!force}, isFrozen=${state.isFrozen}`); // usefull for debug...
-    if (state.isFrozen) return
+    if (state.isFrozen || !state.isMenuInited) return
     if (force && typeof force == 'boolean') {
         _setApplyFadeInUrl(false)
         // hide menu element after a delay so that the inner pannel has been scaled to 0 and therefore enables
@@ -306,7 +306,6 @@ function hide(force) {
         // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Tips#Run_an_animation_again
         // but don't delay this execution, other wise the menu will still be displayed when the page details will be run
         // and there fore will consider fields under the iframe as being hidden. These fields would then not be filled...
-        // console.log(`FORCE HIDE _ call id=0${n}`, state.lastFocusedEl.id, ); // usefull for debug...
         if (document.activeElement === menuEl) {
             // the focus is in the iframe.
             // When closing it, put focus back in the correct input in the page
