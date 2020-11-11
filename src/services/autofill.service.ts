@@ -222,7 +222,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 } else {
                     fillScripts = options.fieldsForInPageMenuScripts;
                 }
-                this.postFilterFieldsForLoginInPageMenu(
+                this.postFilterFieldsForInPageMenu(
                     fillScripts, pd.details.forms, pd.details.fields,
                 );
             } else {
@@ -436,8 +436,6 @@ export default class AutofillService implements AutofillServiceInterface {
             action[3].connected = connected;
             return true;
         });
-        // loginLoginMenuFillScript.script =  // only 'fill_by_opid' are relevant for the login menu
-        //     loginLoginMenuFillScript.script.filter((action) => action[0] === 'fill_by_opid');
 
         // D] generate a standard card fillscript for the generic cipher
         const cardFS = new AutofillScript(pageDetails.documentUUID);
@@ -526,15 +524,16 @@ export default class AutofillService implements AutofillServiceInterface {
             field.isInForm = !! field.form;
             field.formObj = pageDetails.forms[field.form];
             // force to true the viewable property so that the BW process doesn't take this parameter into
-            // account for the menu scripts.
+            // account for the menu scripts. Original value must be restored afterwhat.
             field.viewableOri = field.viewable;
             field.viewable = true;
         });
 
     }
 
-    // F] filter scripts on different rules to limit the inputs where to add the loginMenu
-    postFilterFieldsForLoginInPageMenu(scriptObjs: any, forms: any, fields: any) {
+    /* -------------------------------------------------------------------------------- */
+    // Filter scripts on different rules to limit the inputs where to add the loginMenu
+    postFilterFieldsForInPageMenu(scriptObjs: any, forms: any, fields: any) {
 
         const res: any = [];
         let actions: any = [];
@@ -567,6 +566,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 default:
                     break;
             }
+            // prepare decision array used to decide if the script should be run for this field
             const decisionArray = {
                 connected            : scriptContext.connected            ,
                 hasExistingCipher    : scriptContext.hasExistingCipher    ,
@@ -582,7 +582,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 field_isInSignupForm : scriptContext.field.isInSignupForm  ,
                 hasMultipleScript    : scriptContext.hasMultipleScript    ,
                 field_visible        : scriptContext.field.visible        ,
-                field_viewable       : scriptContext.field.viewableOri    , // restore the original value
+                field_viewable       : scriptContext.field.viewableOri    , // use the original value
             };
             scriptContext.decisionArray = decisionArray;
         }
@@ -613,6 +613,11 @@ export default class AutofillService implements AutofillServiceInterface {
                 action[3] = action[3].cipher.fieldType; // finalise the action to send to autofill.js
                 return true;
             });
+        });
+
+        // in the end, restore the modified fields' attributes so that the BW process continues without modifications
+        fields.forEach( (f: any) => {
+            f.viewable = f.viewableOri;
         });
     }
 

@@ -1105,7 +1105,6 @@ import menuCtrler from './menuCtrler';
         });
         */
 
-
        if (msg.command === 'notificationBarPageDetails') return
 
         if (msg.command === 'collectPageDetails') {

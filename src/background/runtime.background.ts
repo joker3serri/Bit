@@ -82,12 +82,6 @@ export default class RuntimeBackground {
             'full.sender': sender,
         });
         */
-        console.log('runtime.background PROCESS MESSAGE ', {
-            'command': msg.subcommand ? msg.subcommand : msg.command,
-            'sender': msg.sender + ' of ' + (new URL(sender.url)).host + ' frameId:' + sender.frameId,
-            'full.msg': msg,
-            'full.sender': sender,
-        });
 
         switch (msg.command) {
             case 'loggedIn':
@@ -244,7 +238,7 @@ export default class RuntimeBackground {
                 // addon has been disconnected or the page was loaded while addon was not connected
                 const fieldsForInPageMenuScripts =
                     this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails, false);
-                this.autofillService.postFilterFieldsForLoginInPageMenu(
+                this.autofillService.postFilterFieldsForInPageMenu(
                     fieldsForInPageMenuScripts, msg.pageDetails.forms, msg.pageDetails.fields,
                 );
                 const pinSet = await this.vaultTimeoutService.isPinLockSet();
@@ -291,18 +285,24 @@ export default class RuntimeBackground {
                         if (enableInPageMenu) {
                             // If goes here : means that the page has just been loaded while addon was already connected
                             // get scripts for logins, cards and identities
+
                             const fieldsForAutofillMenuScripts =
                                 this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true);
                             // get script for existing logins.
                             // the 4 scripts (existing logins, logins, cards and identities) will be sent
                             // to autofill.js by autofill.service
-                            const totpCode1 = await this.autofillService.doAutoFillForLastUsedLogin([{
-                                frameId: sender.frameId,
-                                tab: msg.tab,
-                                details: msg.details,
-                                fieldsForInPageMenuScripts: fieldsForAutofillMenuScripts,
-                                sender: 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
-                            }], true);
+                            try {
+                                const totpCode1 = await this.autofillService.doAutoFillForLastUsedLogin([{
+                                    frameId: sender.frameId,
+                                    tab: msg.tab,
+                                    details: msg.details,
+                                    fieldsForInPageMenuScripts: fieldsForAutofillMenuScripts,
+                                    sender: 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
+                                }], true);
+                            } catch (error) {
+                                // the `doAutoFillForLastUsedLogin` is run in a `try` because the original BW code
+                                // casts an error when no autofill is detected;
+                            }
                         }
                         // 2- send page details to the notification bar
                         const forms = this.autofillService.getFormsWithPasswordFields(msg.details);

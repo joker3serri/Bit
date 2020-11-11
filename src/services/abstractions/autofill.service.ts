@@ -5,5 +5,5 @@ export abstract class AutofillService {
     doAutoFill: (options: any) => Promise<string>;
     doAutoFillForLastUsedLogin: (pageDetails: any, fromCommand: boolean) => Promise<string>;
     generateFieldsForInPageMenuScripts: (pageDetails: any, connected: boolean) => any;
-    postFilterFieldsForLoginInPageMenu: (scriptsObj: any, forms: any, fields: any) => void;
+    postFilterFieldsForInPageMenu: (scriptsObj: any, forms: any, fields: any) => void;
 }
