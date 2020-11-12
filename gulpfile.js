@@ -43,6 +43,8 @@ function buildString() {
     var build = '';
     if (process.env.APPVEYOR_BUILD_NUMBER && process.env.APPVEYOR_BUILD_NUMBER !== '') {
         build = `-${process.env.APPVEYOR_BUILD_NUMBER}`;
+    } else if (process.env.BUILD_NUMBER && process.env.BUILD_NUMBER !== '') {
+        build = `-${process.env.BUILD_NUMBER}`;
     }
     return build;
 }
@@ -185,6 +187,7 @@ function safariCopyAssets(source, dest) {
         gulp.src(source)
             .on('error', reject)
             .pipe(gulpif('safari/Info.plist', replace('0.0.1', manifest.version)))
+            .pipe(gulpif('safari/Info.plist', replace('0.0.2', process.env.BUILD_NUMBER || manifest.version)))
             .pipe(gulp.dest(dest))
             .on('end', resolve);
     });
@@ -226,11 +229,11 @@ exports['dist:firefox'] = distFirefox;
 exports['dist:chrome'] = distChrome;
 exports['dist:opera'] = distOpera;
 exports['dist:edge'] = distEdge;
-exports['dist:distSafariMas'] = distSafariMas;
-exports['dist:distSafariMasDev'] = distSafariMasDev;
-exports['dist:distSafariDmg'] = distSafariDmg;
 exports['dist:safari'] = gulp.parallel(distSafariMas, distSafariMasDev, distSafariDmg);
-exports.dist = gulp.parallel(distFirefox, distChrome);
+exports['dist:safari:mas'] = distSafariMas;
+exports['dist:safari:masdev'] = distSafariMasDev;
+exports['dist:safari:dmg'] = distSafariDmg;
+exports.dist = gulp.parallel(distFirefox, distChrome, distOpera, distEdge);
 exports['ci:coverage'] = ciCoverage;
 exports.ci = ciCoverage;
 exports.webfonts = webfonts;

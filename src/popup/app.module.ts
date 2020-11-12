@@ -18,8 +18,10 @@ import { HintComponent } from './accounts/hint.component';
 import { HomeComponent } from './accounts/home.component';
 import { LockComponent } from './accounts/lock.component';
 import { LoginComponent } from './accounts/login.component';
+import { SetPasswordComponent } from './accounts/set-password.component';
 import { TwoFactorOptionsComponent } from './accounts/two-factor-options.component';
 import { TwoFactorComponent } from './accounts/two-factor.component';
+import { SsoComponent } from './accounts/sso.component';
 import { AppComponent } from './app.component';
 import { PasswordGeneratorHistoryComponent } from './generator/password-generator-history.component';
 import { PasswordGeneratorComponent } from './generator/password-generator.component';
@@ -80,7 +82,8 @@ registerLocaleData(localeFr, 'fr');
         FormsModule,
         AppRoutingModule,
         ServicesModule,
-        Angulartics2Module.forRoot([], {
+        // Angulartics2Module.forRoot([], {
+        Angulartics2Module.forRoot({  // BJA : hésitation avec la ligne pr�c�dante pendant le merge... (cette ligne est celle de BW)
             pageTracking: {
                 clearQueryParams: true,
             },
@@ -132,7 +135,9 @@ registerLocaleData(localeFr, 'fr');
         TrueFalseValueDirective,
         TwoFactorOptionsComponent,
         TwoFactorComponent,
+        SsoComponent,
         ViewComponent,
+        SetPasswordComponent
     ],
     entryComponents: [],
     providers: [

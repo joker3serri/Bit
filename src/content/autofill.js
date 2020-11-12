@@ -859,12 +859,17 @@ import menuCtrler from './menuCtrler';
             setValueForElement(el);
             afterValSetFunc(el);
             setValueForElementByEvent(el);
-            canSeeElementToStyle(el) && (el.className += ' com-bitwarden-browser-animated-fill',
+
+            // START MODIFICATION
+            if (canSeeElementToStyle(el)) {
+                el.classList.add('com-bitwarden-browser-animated-fill');
                 setTimeout(function () {
-                    // START MODIFICATION
-                    el && el.className && (el.className = el.className.replace(/(\\s)?com-bitwarden-browser-animated-fill/, ''));
-                    // END MODIFICATION
-                }, styleTimeout));
+                    if (el) {
+                        el.classList.remove('com-bitwarden-browser-animated-fill');
+                    }
+                }, styleTimeout);
+            }
+            // END MODIFICATION
         }
 
         document.elementForOPID = getElementByOpId;

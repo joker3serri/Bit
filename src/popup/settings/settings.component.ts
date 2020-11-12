@@ -44,8 +44,8 @@ const RateUrls = {
  * 60f6863e4f96fbf8d012e5691e4e2cc5f18ac7a8/src/popup/settings/settings.component.ts
  */
 export class SettingsComponent implements OnInit {
-    @ViewChild('vaultTimeoutSelect', { read: ElementRef }) vaultTimeoutSelectRef: ElementRef;
-    @ViewChild('vaultTimeoutActionSelect', { read: ElementRef }) vaultTimeoutActionSelectRef: ElementRef;
+    @ViewChild('vaultTimeoutSelect', { read: ElementRef, static: true }) vaultTimeoutSelectRef: ElementRef;
+    @ViewChild('vaultTimeoutActionSelect', { read: ElementRef, static: true }) vaultTimeoutActionSelectRef: ElementRef;
     vaultTimeouts: any[];
     vaultTimeout: number = null;
     vaultTimeoutActions: any[];
@@ -62,8 +62,7 @@ export class SettingsComponent implements OnInit {
     }
 
     async ngOnInit() {
-        const showOnLocked = !this.platformUtilsService.isFirefox() && !this.platformUtilsService.isEdge()
-            && !this.platformUtilsService.isSafari();
+        const showOnLocked = !this.platformUtilsService.isFirefox() && !this.platformUtilsService.isSafari();
 
         this.vaultTimeouts = [
             { name: this.i18nService.t('immediately'), value: 0 },
@@ -249,11 +248,6 @@ export class SettingsComponent implements OnInit {
 
     // TODO: Add a Cozy help
     export() {
-        if (this.platformUtilsService.isEdge()) {
-            BrowserApi.createNewTab('https://help.bitwarden.com/article/export-your-data/');
-            return;
-        }
-
         this.router.navigate(['/export']);
     }
 
@@ -288,10 +282,7 @@ export class SettingsComponent implements OnInit {
 
     rate() {
         this.analytics.eventTrack.next({ action: 'Rate Extension' });
-        let deviceType = this.platformUtilsService.getDevice();
-        if (window.navigator.userAgent.indexOf('Edg/') > -1) {
-            deviceType = DeviceType.EdgeExtension;
-        }
+        const deviceType = this.platformUtilsService.getDevice();
         BrowserApi.createNewTab((RateUrls as any)[deviceType]);
     }
     isPremiumEnabled() {

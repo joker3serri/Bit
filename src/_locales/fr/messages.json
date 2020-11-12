@@ -22,6 +22,9 @@
   "login": {
     "message": "Me connecter"
   },
+  "enterpriseSingleSignOn": {
+    "message": "Portail de connexion unique d'entreprise"
+  },
   "cancel": {
     "message": "Annuler"
   },
@@ -882,6 +885,9 @@
   "commandGeneratePasswordDesc": {
     "message": "Générer et copier un nouveau mot de passe aléatoire dans le presse-papiers."
   },
+  "commandLockVaultDesc": {
+    "message": "Lock the vault"
+  },
   "privateModeMessage": {
     "message": "Malheureusement cette fenêtre n'est pas disponible en navigation privée pour ce navigateur."
   },
@@ -1290,5 +1296,71 @@
   },
   "vaultTimeoutLogOutConfirmationTitle": {
     "message": "Confirmation de l'action lors de l'expiration du délai"
+  },
+  "autoFillAndSave": {
+    "message": "Remplir automatiquement et enregistrer"
+  },
+  "autoFillSuccessAndSavedUri": {
+    "message": "Élément rempli automatiquement et URI sauvegardée"
+  },
+  "autoFillSuccess": {
+    "message": "Élément rempli automatiquement"
+  },
+  "setMasterPassword": {
+    "message": "Définir le mot de passe maître"
+  },
+  "masterPasswordPolicyInEffect": {
+    "message": "Une ou plusieurs politiques de l'organisation exigent que votre mot de passe maître réponde aux exigences suivantes :"
+  },
+  "policyInEffectMinComplexity": {
+    "message": "Score de complexité minimum de $SCORE$",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "4"
+      }
+    }
+  },
+  "policyInEffectMinLength": {
+    "message": "Longueur minimale de $LENGTH$",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "policyInEffectUppercase": {
+    "message": "Contenir une ou plusieurs majuscules"
+  },
+  "policyInEffectLowercase": {
+    "message": "Contenir une ou plusieurs minuscules"
+  },
+  "policyInEffectNumbers": {
+    "message": "Contenir un ou plusieurs chiffres"
+  },
+  "policyInEffectSpecial": {
+    "message": "Contenir un ou plusieurs des caractères spéciaux suivants $CHARS$",
+    "placeholders": {
+      "chars": {
+        "content": "$1",
+        "example": "!@#$%^&*"
+      }
+    }
+  },
+  "masterPasswordPolicyRequirementsNotMet": {
+    "message": "Votre nouveau mot de passe maître ne répond pas aux exigences de la politique."
+  },
+  "acceptPolicies": {
+    "message": "By checking this box you agree to the following:"
+  },
+  "acceptPoliciesError": {
+    "message": "Terms of Service and Privacy Policy have not been acknowledged."
+  },
+  "termsOfService": {
+    "message": "Terms of Service"
+  },
+  "privacyPolicy": {
+    "message": "Privacy Policy"
   }
 }

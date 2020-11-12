@@ -4,19 +4,22 @@ import { CipherView } from 'jslib/models/view/cipherView';
 import { LoginUriView } from 'jslib/models/view/loginUriView';
 import { LoginView } from 'jslib/models/view/loginView';
 
+import { AutofillService } from '../services/abstractions/autofill.service';
+import BrowserPlatformUtilsService from '../services/browserPlatformUtils.service';
+import { CipherService } from 'jslib/abstractions/cipher.service';
 import { ConstantsService } from 'jslib/services/constants.service';
 import { LocalConstantsService } from '../popup/services/constants.service';
 
+import { EnvironmentService } from 'jslib/abstractions/environment.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
-
 import { CipherString } from 'jslib/models/domain/cipherString';
-
-import { Analytics } from 'jslib/misc';
-
-import { EnvironmentService as EnvironmentServiceAbstraction, UserService } from 'jslib/abstractions';
-import { CipherService } from 'jslib/abstractions/cipher.service';
+import { UserService } from 'jslib/abstractions';
 import { CryptoService } from 'jslib/abstractions/crypto.service';
+import { NotificationsService } from 'jslib/abstractions/notifications.service';
+import { PopupUtilsService } from '../popup/services/popup-utils.service';
+import { StateService } from 'jslib/abstractions/state.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
+import { SyncService } from 'jslib/abstractions/sync.service';
 import { SystemService } from 'jslib/abstractions/system.service';
 import { VaultTimeoutService } from 'jslib/abstractions/vaultTimeout.service';
 
@@ -25,14 +28,8 @@ import { BrowserApi } from '../browser/browserApi';
 import MainBackground from './main.background';
 
 import { KonnectorsService } from '../popup/services/konnectors.service';
-
-import { AutofillService } from '../services/abstractions/autofill.service';
 import { AuthService } from '../services/auth.service';
-import BrowserPlatformUtilsService from '../services/browserPlatformUtils.service';
-
-import { NotificationsService } from 'jslib/abstractions/notifications.service';
-import { SyncService } from 'jslib/abstractions/sync.service';
-
+import { Analytics } from 'jslib/misc';
 import { Utils } from 'jslib/misc/utils';
 
 export default class RuntimeBackground {
@@ -47,9 +44,10 @@ export default class RuntimeBackground {
         private storageService: StorageService, private i18nService: I18nService,
         private analytics: Analytics, private notificationsService: NotificationsService,
         private systemService: SystemService, private vaultTimeoutService: VaultTimeoutService,
+        private environmentService: EnvironmentService,
         private konnectorsService: KonnectorsService, private syncService: SyncService,
-        private authService: AuthService, private environmentService: EnvironmentServiceAbstraction,
-        private cryptoService: CryptoService, private userService: UserService) {
+        private authService: AuthService, private cryptoService: CryptoService,
+        private userService: UserService) {
         this.isSafari = this.platformUtilsService.isSafari();
         this.runtime = this.isSafari ? {} : chrome.runtime;
 
@@ -144,8 +142,7 @@ export default class RuntimeBackground {
                                     break;
                             }
                         }
-                        const vaultUrl = this.environmentService.getWebVaultUrl();
-                        const cozyUrl = new URL(vaultUrl).origin;
+                        const cozyUrl = new URL(this.environmentService.getWebVaultUrl()).origin;
                         await BrowserApi.tabSendMessageData(sender.tab, 'updateMenuCiphers', {
                             ciphers: ciphers,
                             cozyUrl: cozyUrl,
@@ -253,7 +250,7 @@ export default class RuntimeBackground {
             case 'bgGetAutofillMenuScript':
                 // If goes here : means that addon has just been connected (page was already loaded)
                 const script = this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true);
-                await this.autofillService.doAutoFillForLastUsedLogin([{
+                await this.autofillService.doAutoFillActiveTab([{
                     frameId                   : sender.frameId,
                     tab                       : sender.tab,
                     details                   : msg.details,
@@ -292,7 +289,7 @@ export default class RuntimeBackground {
                             // the 4 scripts (existing logins, logins, cards and identities) will be sent
                             // to autofill.js by autofill.service
                             try {
-                                const totpCode1 = await this.autofillService.doAutoFillForLastUsedLogin([{
+                                const totpCode1 = await this.autofillService.doAutoFillActiveTab([{
                                     frameId: sender.frameId,
                                     tab: msg.tab,
                                     details: msg.details,
@@ -300,7 +297,7 @@ export default class RuntimeBackground {
                                     sender: 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
                                 }], true);
                             } catch (error) {
-                                // the `doAutoFillForLastUsedLogin` is run in a `try` because the original BW code
+                                // the `doAutoFillActiveTab` is run in a `try` because the original BW code
                                 // casts an error when no autofill is detected;
                             }
                         }
@@ -314,7 +311,7 @@ export default class RuntimeBackground {
                         break;
                     case 'autofiller':
                     case 'autofill_cmd':
-                        const totpCode = await this.autofillService.doAutoFillForLastUsedLogin([{
+                        const totpCode = await this.autofillService.doAutoFillActiveTab([{
                             frameId: sender.frameId,
                             tab: msg.tab,
                             details: msg.details,
@@ -356,6 +353,22 @@ export default class RuntimeBackground {
                         break;
                 }
                 break;
+            case 'authResult':
+                let vaultUrl = this.environmentService.webVaultUrl;
+                if (vaultUrl == null) {
+                    vaultUrl = 'https://vault.bitwarden.com';
+                }
+
+                if (msg.referrer == null || Utils.getHostname(vaultUrl) !== msg.referrer) {
+                    return;
+                }
+
+                try {
+                    BrowserApi.createNewTab('popup/index.html?uilocation=popout#/sso?code=' +
+                        msg.code + '&state=' + msg.state);
+                }
+                catch { }
+                break;
             default:
                 break;
         }
@@ -365,6 +378,7 @@ export default class RuntimeBackground {
         const totpCode = await this.autofillService.doAutoFill({
             cipher: this.main.loginToAutoFill,
             pageDetails: this.pageDetailsToAutoFill,
+            fillNewPassword: true
         });
 
         if (totpCode != null) {

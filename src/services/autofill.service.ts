@@ -3,6 +3,8 @@ import {
     FieldType,
 } from 'jslib/enums';
 
+import { CipherView } from 'jslib/models/view';
+
 import AutofillField from '../models/autofillField';
 import AutofillPageDetails from '../models/autofillPageDetails';
 import AutofillScript from '../models/autofillScript';
@@ -34,6 +36,24 @@ const UsernameFieldNames: string[] = [
     'customer id', 'login id',
     // German
     'benutzername', 'benutzer name', 'email adresse', 'e-mail adresse', 'benutzerid', 'benutzer id'];
+
+const FirstnameFieldNames: string[] = [
+    // English
+    'f-name', 'first-name', 'given-name', 'first-n',
+    // German
+    'vorname',
+    // French
+    'prenom',
+]
+
+const LastnameFieldNames: string[] = [
+    // English
+    'l-name', 'last-name', 's-name', 'surname', 'family-name', 'family-n', 'last-n',
+    // German
+    'nachname', 'familienname',
+    // French
+    'nom-de-famille',
+]
 
 const ExcludedAutofillTypes: string[] = ['radio', 'checkbox', 'hidden', 'file', 'button', 'image', 'reset', 'search'];
 
@@ -117,13 +137,14 @@ var IsoProvinces: { [id: string]: string; } = {
 /* tslint:enable */
 
 export default class AutofillService implements AutofillServiceInterface {
+
     constructor(private cipherService: CipherService, private userService: UserService,
         private totpService: TotpService, private eventService: EventService) { }
 
     getFormsWithPasswordFields(pageDetails: AutofillPageDetails): any[] {
         const formData: any[] = [];
 
-        const passwordFields = this.loadPasswordFields(pageDetails, true, true, false);
+        const passwordFields = this.loadPasswordFields(pageDetails, true, true, false, false);
         if (passwordFields.length === 0) {
             return formData;
         }
@@ -189,6 +210,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 skipUsernameOnlyFill: options.skipUsernameOnlyFill || false,
                 onlyEmptyFields     : options.onlyEmptyFields      || false,
                 onlyVisibleFields   : options.onlyVisibleFields    || false,
+                fillNewPassword     : options.fillNewPassword      || false,
                 cipher              : options.cipher,
                 sender              : pd.sender,
             });
@@ -262,22 +284,22 @@ export default class AutofillService implements AutofillServiceInterface {
         }
     }
 
-    async doAutoFillForLastUsedLogin(pageDetails: any, fromCommand: boolean) {
+    async doAutoFillActiveTab(pageDetails: any, fromCommand: boolean) {
         let tab = await this.getActiveTab();
-        let lastUsedCipher: any;
+        let cipher: CipherView;
         /*
         @override by Cozy : when the user logins into the addon, all tabs request a pageDetail in order to
         activate the in-page-menu :
             * then the tab to take into account is not the active tab, but the tab sent with the pageDetails
             * and if there is no cipher for the tab, then request to close in page menu
         */
-        lastUsedCipher = await this.cipherService.getLastUsedForUrl(tab.url);
-        let r = 0;
-        pageDetails[0].fieldsForInPageMenuScripts.forEach( (s: any) => r = r + s.script.length);
-        const hasFieldsForInPageMenu = r > 0;
         if (pageDetails[0].sender === 'notifBarForInPageMenu') {
+            cipher = await this.cipherService.getLastUsedForUrl(tab.url);
+            let r = 0;
+            pageDetails[0].fieldsForInPageMenuScripts.forEach( (s: any) => r = r + s.script.length);
+            const hasFieldsForInPageMenu = r > 0;
             tab = pageDetails[0].tab;
-            if (!lastUsedCipher && !hasFieldsForInPageMenu) {
+            if (!cipher && !hasFieldsForInPageMenu) {
                 // there is no cipher for this URL : deactivate in page menu
                 BrowserApi.tabSendMessage(
                     tab,
@@ -290,26 +312,41 @@ export default class AutofillService implements AutofillServiceInterface {
             if (!tab || !tab.url) {
                 return;
             }
-            lastUsedCipher = await this.cipherService.getLastUsedForUrl(tab.url);
+            if (fromCommand) {
+                cipher = await this.cipherService.getNextCipherForUrl(tab.url);
+            } else {
+                const lastLaunchedCipher = await this.cipherService.getLastLaunchedForUrl(tab.url);
+                if (lastLaunchedCipher && Date.now().valueOf() - lastLaunchedCipher.localData?.lastLaunched?.valueOf() < 30000) {
+                    cipher = lastLaunchedCipher;
+                }
+                else {
+                    cipher = await this.cipherService.getLastUsedForUrl(tab.url);
+                }
+            }
         }
-        if (!lastUsedCipher && !hasFieldsForInPageMenu) {
-            // no lastUsedCipher nor fields for inPageMenu : break
+        if (!cipher) {
             return;
         }
         /* END @override by Cozy */
-        const res = await this.doAutoFill({
-            cipher: lastUsedCipher,
+        const autoFillResponse = await this.doAutoFill({
+            cipher: cipher,
             tab : tab,
-            // tslint:disable-next-line
             pageDetails: pageDetails,
             skipTotp: !fromCommand,
-            skipLastUsed: true,
+            skipLastUsed: !fromCommand,
             skipUsernameOnlyFill: !fromCommand,
             onlyEmptyFields: !fromCommand,
             onlyVisibleFields: !fromCommand,
+            fillNewPassword: fromCommand,
             fieldsForInPageMenuScripts: pageDetails[0].fieldsForInPageMenuScripts,
         });
-        return res;
+
+        // Only update last used index if doAutoFill didn't throw an exception
+        if (fromCommand) {
+            this.cipherService.updateLastUsedIndexForUrl(tab.url);
+        }
+
+        return autoFillResponse;
     }
 
     /* ----------------------------------------------------------------------------- */
@@ -737,10 +774,12 @@ export default class AutofillService implements AutofillServiceInterface {
             return fillScript;
         }
 
-        let passwordFields = this.loadPasswordFields(pageDetails, false, false, options.onlyEmptyFields);
+        let passwordFields = this.loadPasswordFields(pageDetails, false, false, options.onlyEmptyFields,
+            options.fillNewPassword);
         if (!passwordFields.length && !options.onlyVisibleFields) {
             // not able to find any viewable password fields. maybe there are some "hidden" ones?
-            passwordFields = this.loadPasswordFields(pageDetails, true, true, options.onlyEmptyFields);
+            passwordFields = this.loadPasswordFields(pageDetails, true, true, options.onlyEmptyFields,
+                options.fillNewPassword);
         }
 
         for (const formKey in pageDetails.forms) { // tslint:disable-line
@@ -1100,9 +1139,7 @@ export default class AutofillService implements AutofillServiceInterface {
                     fillFields.name = f;
                     break;
                 } else if (!fillFields.firstName && this.isFieldMatch(f[attr],
-                    // Note : whey 'prenom' and not 'prénom" : accented caractèrs will be removed in
-                    // the comparison process...
-                    ['f-name', 'first-name', 'given-name', 'first-n', 'prenom'])) {
+                    FirstnameFieldNames)) {
                     fillFields.firstName = f;
                     break;
                 } else if (!fillFields.middleName && this.isFieldMatch(f[attr],
@@ -1110,8 +1147,7 @@ export default class AutofillService implements AutofillServiceInterface {
                     fillFields.middleName = f;
                     break;
                 } else if (!fillFields.lastName && this.isFieldMatch(f[attr],
-                    ['l-name', 'last-name', 's-name', 'surname', 'family-name', 'family-n',
-                    'last-n', 'nom-de-famille'])) {
+                    LastnameFieldNames)) {
                     fillFields.lastName = f;
                     break;
                 } else if (!fillFields.title && this.isFieldMatch(f[attr],
@@ -1378,7 +1414,7 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     private loadPasswordFields(pageDetails: AutofillPageDetails, canBeHidden: boolean, canBeReadOnly: boolean,
-        mustBeEmpty: boolean) {
+        mustBeEmpty: boolean, fillNewPassword: boolean) {
         const arr: AutofillField[] = [];
         pageDetails.fields.forEach((f) => {
             const isPassword = f.type === 'password';
@@ -1386,16 +1422,18 @@ export default class AutofillService implements AutofillServiceInterface {
                 if (value == null) {
                     return false;
                 }
-                const lowerValue = value.toLowerCase();
-                if (lowerValue.indexOf('onetimepassword') >= 0) {
+                // Removes all whitespace, _ and - characters
+                const cleanedValue = value.toLowerCase().replace(/[\s_\-]/g, '');
+
+                if (cleanedValue.indexOf('password') < 0) {
                     return false;
                 }
-                if (lowerValue.indexOf('password') < 0) {
+
+                const ignoreList = ['onetimepassword', 'captcha', 'findanything'];
+                if (ignoreList.some((i) => cleanedValue.indexOf(i) > -1)) {
                     return false;
                 }
-                if (lowerValue.indexOf('captcha') >= 0) {
-                    return false;
-                }
+
                 return true;
             };
             const isLikePassword = () => {
@@ -1414,7 +1452,8 @@ export default class AutofillService implements AutofillServiceInterface {
                 return false;
             };
             if (!f.disabled && (canBeReadOnly || !f.readonly) && (isPassword || isLikePassword())
-                && (canBeHidden || f.viewable) && (!mustBeEmpty || f.value == null || f.value.trim() === '')) {
+                && (canBeHidden || f.viewable) && (!mustBeEmpty || f.value == null || f.value.trim() === '')
+                && (fillNewPassword || f.autoCompleteType !== 'new-password')) {
                 arr.push(f);
             }
         });

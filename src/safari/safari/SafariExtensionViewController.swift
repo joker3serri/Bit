@@ -96,7 +96,12 @@ class SafariExtensionViewController: SFSafariExtensionViewController, WKScriptMe
             let messagesUrl = bundleUrl.appendingPathComponent("app/_locales/\(language)/messages.json")
             do {
                 let json = try String(contentsOf: messagesUrl, encoding: .utf8)
-                webView.evaluateJavaScript("window.bitwardenLocaleStrings = \(json);", completionHandler: nil)
+                webView.evaluateJavaScript("window.bitwardenLocaleStrings = \(json);", completionHandler: {(result, error) in
+                    guard let err = error else {
+                        return;
+                    }
+                    NSLog("evaluateJavaScript error : %@", err.localizedDescription);
+                })
             } catch {
                 NSLog("ERROR on getLocaleStrings, \(error)")
             }
@@ -175,7 +180,9 @@ class SafariExtensionViewController: SFSafariExtensionViewController, WKScriptMe
         } else if command == "createNewTab" {
             if let data = m.data, let url = URL(string: data) {
                 SFSafariApplication.getActiveWindow { win in
-                    win?.openTab(with: url, makeActiveIfPossible: true, completionHandler: nil)
+                    win?.openTab(with: url, makeActiveIfPossible: true, completionHandler: { _ in
+                        // Tab opened
+                    })
                 }
             }
         } else if command == "reloadExtension" {
@@ -234,7 +241,12 @@ class SafariExtensionViewController: SFSafariExtensionViewController, WKScriptMe
             return
         }
         let json = (jsonSerialize(obj: message) ?? "null")
-        webView.evaluateJavaScript("window.bitwardenSafariAppMessageReceiver(\(json));", completionHandler: nil)
+        webView.evaluateJavaScript("window.bitwardenSafariAppMessageReceiver(\(json));", completionHandler: {(result, error) in
+            guard let err = error else {
+                return;
+            }
+            NSLog("evaluateJavaScript error : %@", err.localizedDescription);
+        })
     }
 }
 

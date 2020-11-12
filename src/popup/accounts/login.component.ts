@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 
 import { EnvironmentService as EnvironmentServiceAbstraction } from 'jslib/abstractions';
 import { AuthService } from 'jslib/abstractions/auth.service';
-import { EnvironmentService } from 'jslib/abstractions/environment.service';
-
+import { CryptoFunctionService } from 'jslib/abstractions/cryptoFunction.service';
+import { EnvironmentService } from 'jslib/abstractions/environment.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
+import { PasswordGenerationService } from 'jslib/abstractions/passwordGeneration.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { StateService } from 'jslib/abstractions/state.service';
 import { StorageService } from 'jslib/abstractions/storage.service';

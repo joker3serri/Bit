@@ -63,6 +63,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     private loadedTimeout: number;
     private selectedTimeout: number;
     private preventSelected = false;
+    private noFolderListSize = 100;
     private searchTimeout: any = null;
     private hasSearched = false;
     private hasLoadedAllCiphers = false;
@@ -79,6 +80,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         private platformUtilsService: PlatformUtilsService, private searchService: SearchService,
         private location: Location) {
         super(collectionService, folderService, storageService, userService);
+        this.noFolderListSize = 100;
     }
 
     async ngOnInit() {
@@ -231,6 +233,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         }
         this.preventSelected = true;
         this.analytics.eventTrack.next({ action: 'Launched URI From Listing' });
+        await this.cipherService.updateLastLaunchedDate(cipher.id);
         BrowserApi.createNewTab(cipher.login.launchUri);
         if (this.popupUtils.inPopup(window)) {
             BrowserApi.closePopup(window);
