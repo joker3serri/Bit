@@ -140,18 +140,18 @@ export class AuthService extends BaseAuthService {
         const storedTwoFactorToken = await this._tokenService.getTwoFactorToken(email1);
         const appId = await this._appIdService.getAppId();
         const deviceRequest = new DeviceRequest(appId, this._platformUtilsService);
-        const email: string[] = [email1];
-        const hashedPassword: string[] = [hashedPassword1];
+        const credentials: string[] = [email1, hashedPassword1];
+        const codes: string[] = [hashedPassword1];
 
         let request: TokenRequest;
         if (twoFactorToken != null && twoFactorProvider != null) {
-            request = new TokenRequest(email, hashedPassword, twoFactorProvider, twoFactorToken, remember,
+            request = new TokenRequest(credentials, codes, twoFactorProvider, twoFactorToken, remember,
                 deviceRequest);
         } else if (storedTwoFactorToken != null) {
-            request = new TokenRequest(email, hashedPassword, TwoFactorProviderType.Remember,
+            request = new TokenRequest(credentials, codes, TwoFactorProviderType.Remember,
                 storedTwoFactorToken, false, deviceRequest);
         } else {
-            request = new TokenRequest(email, hashedPassword, null, null, false, deviceRequest);
+            request = new TokenRequest(credentials, codes, null, null, false, deviceRequest);
         }
 
         const response = await this._apiService.postIdentityToken(request);

@@ -194,6 +194,10 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         }, 200);
     }
 
+    emptySearch() {
+        this.searchText = '';
+    }
+
     private async load() {
         const tab = await BrowserApi.getTabFromCurrentWindow();
         if (tab != null) {

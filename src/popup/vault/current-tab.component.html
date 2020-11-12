@@ -9,6 +9,7 @@
         <input type="{{searchTypeSearch ? 'search' : 'text'}}" placeholder="{{'searchVault' | i18n}}" id="search"
             [(ngModel)]="searchText" (input)="searchVault()" autocomplete="off">
         <i class="fa fa-search" aria-hidden="true"></i>
+        <i class="fa fa-close" aria-hidden="true" (click)="emptySearch()"></i>
     </div>
     <div class="right">
         <button type="button" appBlurClick (click)="addCipher()" appA11yTitle="{{'addItem' | i18n}}">

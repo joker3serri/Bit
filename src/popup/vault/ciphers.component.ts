@@ -229,6 +229,10 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
                 (this.nestedCollections && this.nestedCollections.length));
     }
 
+    emptySearch() {
+        this.searchText = '';
+    }
+
     private async saveState() {
         this.state = {
             scrollY: this.popupUtils.getContentScrollY(window),

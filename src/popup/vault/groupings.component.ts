@@ -179,9 +179,10 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     }
 
     async search(timeout: number = null) {
+        console.log('groupings.search()', timeout, this.searchText);
         this.searchPending = false;
         if (this.searchTimeout != null) {
-            clearTimeout(this.searchTimeout);
+            window.clearTimeout(this.searchTimeout);
         }
         const filterDeleted = (c: CipherView) => !c.isDeleted;
         if (timeout == null) {
@@ -199,6 +200,12 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
             }
             this.searchPending = false;
         }, timeout);
+    }
+
+    emptySearch() {
+        console.log('groupings.emptySearch()');
+        this.searchText = '';
+        this.hasSearched = false;
     }
 
     _ciphersByType(type: CipherType) {
@@ -245,6 +252,11 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     }
 
     showSearching() {
+        console.log('showSearching()',
+            this.hasSearched || (!this.searchPending && this.searchService.isSearchable(this.searchText)),
+            `deletedCount=${this.deletedCount}`,
+        );
+
         return this.hasSearched || (!this.searchPending && this.searchService.isSearchable(this.searchText));
     }
 

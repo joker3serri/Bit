@@ -226,6 +226,7 @@ header {
             padding: 5px 10px 5px 30px;
             border-radius: $border-radius;
 
+
             @include themify($themes) {
                 background-color: themed('headerInputBackgroundColor');
                 color: themed('headerInputColor');
@@ -238,6 +239,10 @@ header {
                 @include themify($themes) {
                     background-color: themed('headerInputBackgroundFocusColor');
                 }
+            }
+
+            &::-webkit-search-cancel-button {
+                appearance: none;
             }
 
             &::-webkit-input-placeholder {
@@ -254,11 +259,26 @@ header {
         .fa {
             left: 10px;
         }
+
+        .fa-close {
+            right: 16px;
+            left: unset;
+        }
+
+        .fa-close:hover {
+            cursor: pointer;
+            color: white !important;
+        }
+
     }
 
     .search + .right {
         margin-left: -10px;
     }
+}
+
+#search:placeholder-shown ~ .fa-close {
+    visibility: hidden;
 }
 
 .content {

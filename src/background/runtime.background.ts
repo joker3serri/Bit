@@ -75,7 +75,8 @@ export default class RuntimeBackground {
         @override by Cozy : this log is very useful for reverse engineering the code, keep it for tests
         console.log('runtime.background PROCESS MESSAGE ', {
             'command': msg.subcommand ? msg.subcommand : msg.command,
-            'sender': msg.sender + ' of ' + (new URL(sender.url)).host + ' frameId:' + sender.frameId,
+            'sender': msg.sender + ' of ' +
+                (sender.url ? (new URL(sender.url)).host + ' frameId:' + sender.frameId : sender),
             'full.msg': msg,
             'full.sender': sender,
         });
@@ -690,7 +691,7 @@ export default class RuntimeBackground {
                 });
                 // when login is processed on background side, then your messages are not receivend by the background,
                 // so you need to triger yourself "loggedIn" actions
-                this.processMessage({command: 'loggedIn'}, null, null);
+                this.processMessage({command: 'loggedIn'}, 'runtime.background.ts.login()', null);
             }
         } catch (e) {
             await BrowserApi.tabSendMessage(tab, {
@@ -724,7 +725,7 @@ export default class RuntimeBackground {
 
                 if (!failed) {
                     await this.cryptoService.setKey(key);
-                    this.processMessage({command: 'unlocked'}, null, null);
+                    this.processMessage({command: 'unlocked'}, 'runtime.background.ts.pinLogin()', null);
                 }
             } else {
                 const key = await this.cryptoService.makeKeyFromPin(pin, email, kdf, kdfIterations);
