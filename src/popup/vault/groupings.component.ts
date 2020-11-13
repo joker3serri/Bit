@@ -179,7 +179,6 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     }
 
     async search(timeout: number = null) {
-        console.log('groupings.search()', timeout, this.searchText);
         this.searchPending = false;
         if (this.searchTimeout != null) {
             window.clearTimeout(this.searchTimeout);
@@ -203,7 +202,6 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     }
 
     emptySearch() {
-        console.log('groupings.emptySearch()');
         this.searchText = '';
         this.hasSearched = false;
     }
@@ -252,11 +250,6 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     }
 
     showSearching() {
-        console.log('showSearching()',
-            this.hasSearched || (!this.searchPending && this.searchService.isSearchable(this.searchText)),
-            `deletedCount=${this.deletedCount}`,
-        );
-
         return this.hasSearched || (!this.searchPending && this.searchService.isSearchable(this.searchText));
     }
 
