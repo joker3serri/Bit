@@ -1,15 +1,15 @@
 require('./menu.scss');
 
 // Globals
-var ciphers                 ,
-    panel                   ,
-    arrow                   ,
-    currentArrowD  = null   ,
-    resizeListener = null   ,
-    lastSentHeight          ,
-    titleEl                 ,
-    i18nGetMessage          ,
-    currentArrowD           ,
+var ciphers                    ,
+    panel                      ,
+    arrow                      ,
+    currentArrowOffset  = null ,
+    resizeListener = null      ,
+    lastSentHeight             ,
+    titleEl                    ,
+    i18nGetMessage             ,
+    currentArrowOffset         ,
     focusedFieldTypes;
 
 const loginRowTemplate = `
@@ -324,8 +324,8 @@ function _testHash(){
         panel.className = "panel";
     }
 
-    if (hash.arrowD !== undefined && hash.arrowD !== currentArrowD ) {
-        currentArrowD = hash.arrowD
+    if (hash.arrowD !== undefined && hash.arrowD !== currentArrowOffset ) {
+        currentArrowOffset = hash.arrowD
         arrow.style.right = 10 - hash.arrowD + 'px'
     }
 

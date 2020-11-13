@@ -97,7 +97,6 @@ function _initInPageMenuForEl(targetEl) {
     targetEl.style.backgroundRepeat = "no-repeat"
     targetEl.style.backgroundAttachment = "scroll"
     targetEl.style.backgroundSize = targetEl.clientWidth > 90 ? "24px 24px" : "12px 12px"
-    const targetWidth = targetEl.clientWidth
     targetEl.style.backgroundPosition = targetEl.clientWidth > 90 ?  "calc(100% - 3px) 50%" :  "calc(100% - 2px) 1px"
     targetEl.style.cursor = "pointer"
 
