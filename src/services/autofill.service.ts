@@ -226,7 +226,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 didAutofill = true;
             }
 
-            if (!options.skipLastUsed) {
+            if (!options.skipLastUsed && options.cipher) {
                 this.cipherService.updateLastUsedDate(options.cipher.id);
             }
 
@@ -293,11 +293,12 @@ export default class AutofillService implements AutofillServiceInterface {
             * then the tab to take into account is not the active tab, but the tab sent with the pageDetails
             * and if there is no cipher for the tab, then request to close in page menu
         */
+        let hasFieldsForInPageMenu = false;
         if (pageDetails[0].sender === 'notifBarForInPageMenu') {
             cipher = await this.cipherService.getLastUsedForUrl(tab.url);
             let r = 0;
             pageDetails[0].fieldsForInPageMenuScripts.forEach( (s: any) => r = r + s.script.length);
-            const hasFieldsForInPageMenu = r > 0;
+            hasFieldsForInPageMenu = r > 0;
             tab = pageDetails[0].tab;
             if (!cipher && !hasFieldsForInPageMenu) {
                 // there is no cipher for this URL : deactivate in page menu
@@ -324,7 +325,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 }
             }
         }
-        if (!cipher) {
+        if (!cipher && !hasFieldsForInPageMenu) {
             return;
         }
         /* END @override by Cozy */

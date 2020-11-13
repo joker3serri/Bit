@@ -76,7 +76,7 @@ export default class RuntimeBackground {
         console.log('runtime.background PROCESS MESSAGE ', {
             'command': msg.subcommand ? msg.subcommand : msg.command,
             'sender': msg.sender + ' of ' +
-                (sender.url ? (new URL(sender.url)).host + ' frameId:' + sender.frameId : sender),
+            (sender.url ? (new URL(sender.url)).host + ' frameId:' + sender.frameId : sender),
             'full.msg': msg,
             'full.sender': sender,
         });
