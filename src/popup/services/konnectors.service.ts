@@ -19,7 +19,7 @@ export class KonnectorsService {
     }
 
     /**
-     *  Create konnector's suggestion based on the available konnectors and ciphers.
+     *  Create and send to server the konnector's suggestion based on the available konnectors and ciphers
      *
      *  On a privacy note, this discloses to the server which services having an associated konnector
      *  exist in the vault. We consider it as acceptable, as the user would eventually create it,

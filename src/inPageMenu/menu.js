@@ -3,10 +3,13 @@ require('./menu.scss');
 // Globals
 var ciphers                 ,
     panel                   ,
-    resizeListener   = null ,
+    arrow                   ,
+    currentArrowD  = null   ,
+    resizeListener = null   ,
     lastSentHeight          ,
     titleEl                 ,
     i18nGetMessage          ,
+    currentArrowD           ,
     focusedFieldTypes;
 
 const loginRowTemplate = `
@@ -43,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1- get elements references
     panel = document.querySelector('.panel')
+    arrow = document.getElementById('arrow')
     titleEl = document.getElementById('title-content')
 
     // 2- prepare i18n and apply
@@ -266,15 +270,21 @@ function setSelectionOnCipher(targetCipherId) {
 
 /* --------------------------------------------------------------------- */
 // Test if iframe content should fadeIn or not
+// and display rows corresponding to the fieldtypes of the focused field
+// content of the hash = {
+//    login:"username",
+//    identity:"email",
+//    card: "",
+//    applyFadeIn:[boolean],
+//    arrowD:[Float],
+// }
 function _testHash(){
-    // structure of the hash : "#applyFadeIn*login_username*identity_email*..."
-    // turn it into focusedFieldTypes = {login:"username", identity:"email"}
-    const hash = window.location.hash
-    focusedFieldTypes = {}
-    const focusedFieldTypesArr = hash.split('*').map(t => t.split('_'))
-    focusedFieldTypesArr.shift()
-    focusedFieldTypesArr.forEach(t=>focusedFieldTypes[t[0]]=t[1])
-    
+    let hash = window.location.hash
+    if (hash) {
+        hash = JSON.parse(decodeURIComponent(hash).slice(1))
+    }
+    focusedFieldTypes = hash
+
     const typesOptions = [
         {
             fieldType:'card',
@@ -297,21 +307,28 @@ function _testHash(){
     ]
 
     for (let options of typesOptions) {
-        const node = document.querySelector(options.selector)
+        const rowsEl = document.querySelector(options.selector)
         if (focusedFieldTypes[options.fieldType]) {
             titleEl.textContent = options.title
             options.updateFn()
-            node.classList.remove('hidden')
+            rowsEl.classList.remove('hidden')
         } else {
-            node.classList.add('hidden')
+            rowsEl.classList.add('hidden')
         }
     }
 
-    if (hash.includes('applyFadeIn')) {
+    if (hash.applyFadeIn) {
         adjustMenuHeight()
         panel.classList.add('fade-in')
     } else {
         panel.className = "panel";
     }
+
+    if (hash.arrowD !== undefined && hash.arrowD !== currentArrowD ) {
+        currentArrowD = hash.arrowD
+        arrow.style.right = 10 - hash.arrowD + 'px'
+    }
+
     selectFirstVisibleRow()
+
 }

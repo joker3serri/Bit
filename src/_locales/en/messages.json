@@ -862,7 +862,7 @@
     "message": "Display a selection menu in the forms that can be filled automatically."
   },
   "loginInPageMenuTitle": {
-      "message": "Auhtentication on my Cozy"
+      "message": "Connect your Cozy to fill forms in a single click."
   },
   "inPageMenuLoginError": {
     "message": "Address and password don't match"

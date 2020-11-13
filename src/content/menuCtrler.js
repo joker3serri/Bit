@@ -4,22 +4,16 @@ import LinkedList from '../scripts/doublyLinkedList';
 
 /* =========================================================================
 
-menuCtrler exposes an API to interact with the menus within the pages.
+menuCtrler API to interact with the menus within the page
 
     menuCtrler = {
         hide()
         setHeight(integer in px)
         getCipher(id)
         setCiphers([array of ciphers])
-                    isFrozen:false      ,
-                    isHidden:true       ,
-                    isAutoFillInited    ,
-                    currentMenuType:null,
-                    lastFocusedEl       ,
-                    islocked            ,
-                    isPinLocked         ,
-        unFreeze()
         freeze()
+        unFreeze()
+        activate()
         deactivate()
     }
 
@@ -35,17 +29,18 @@ var menuCtrler = {
     freeze                 : function() {state.isFrozen = true },
     deactivate             : null,
     activate               : null,
-    // displayLoginIPMenu : null,  // to be removed ? BJA
 }
 
 /* --------------------------------------------------------------------- */
 // GLOBALS
 var menuEl,
     popperInstance,
-    targetsEl = [],
     ciphers ,        // linked list of ciphers to suggest in the menu
-    ciphersById,     // a dictionnary of cyphers to suggest in the menu by id : {idCipher:cipher, ...}
+    ciphersById;     // a dictionnary of cyphers to suggest in the menu by id : {idCipher:cipher, ...}
 
+const
+    targetsEl = [],  // fields where a menu has been configured
+    formsEl = [],    // store all parent forms of fields where a menu has been added (ie forms of targetsEl)
     state = {
         currentMenuType  :null,
         isMenuInited     :false,  // menu is not yet initiated, there is no iframe yet for the menu
@@ -57,17 +52,18 @@ var menuEl,
         lastFocusedEl    :null,
         selectedCipher   : null, // a cipher node of the linkedList `ciphers`
         lastHeight       : null,
+        iFrameHash       : {arrowD:0},
     },
-    menuBtnSvg = "url(\"data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2732%27%20height%3D%2732%27%20viewBox%3D%270%200%2032%2032%27%3E%0A%20%20%20%20%20%20%3Cg%20fill%3D%27none%27%20fill-rule%3D%27evenodd%27%3E%0A%20%20%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2716%27%20cy%3D%2716%27%20r%3D%2716%27%20fill%3D%27%23297EF1%27%20fill-rule%3D%27nonzero%27%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cpath%20fill%3D%27%23FFF%27%20d%3D%27M19.314%2017.561a.555.555%200%200%201-.82.12%204.044%204.044%200%200%201-2.499.862%204.04%204.04%200%200%201-2.494-.86.557.557%200%200%201-.815-.12.547.547%200%200%201%20.156-.748c.214-.14.229-.421.229-.424a.555.555%200%200%201%20.176-.385.504.504%200%200%201%20.386-.145.544.544%200%200%201%20.528.553c0%20.004%200%20.153-.054.36a2.954%202.954%200%200%200%203.784-.008%201.765%201.765%200%200%201-.053-.344.546.546%200%200%201%20.536-.561h.01c.294%200%20.538.237.545.532%200%200%20.015.282.227.422a.544.544%200%200%201%20.158.746m2.322-6.369a5.94%205.94%200%200%200-1.69-3.506A5.651%205.651%200%200%200%2015.916%206a5.648%205.648%200%200%200-4.029%201.687%205.936%205.936%200%200%200-1.691%203.524%205.677%205.677%200%200%200-3.433%201.737%205.966%205.966%200%200%200-1.643%204.137C5.12%2020.347%207.704%2023%2010.882%2023h10.236c3.176%200%205.762-2.653%205.762-5.915%200-3.083-2.31-5.623-5.244-5.893%27%2F%3E%0A%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%3C%2Fsvg%3E\")";
+    menuBtnSvg = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23297EF1' fill-rule='evenodd' d='M21 11a3 3 0 1 1-.83 5.88l-.04-.01-2.95 2.94c-.1.1-.22.16-.35.18l-.1.01h-.99c-.32 0-.68-.24-.73-.55l-.01-.09v-1.03c0-.16.11-.29.26-.32h.42c.16 0 .29-.11.32-.26v-.43c0-.15.11-.28.26-.31h.42c.15 0 .28-.12.31-.26v-.43c0-.15.12-.28.26-.31l.07-.01h.6c.16 0 .3-.11.32-.26l.01-.06v-.48c-.13-.3-.22-.64-.24-.99L18 14a3 3 0 0 1 3-3zM10.94 5a4.24 4.24 0 0 1 4.2 3.67c1.1.1 2.1.61 2.79 1.38a4.99 4.99 0 0 0-1.92 3.68L16 14v.28l.02.12-.04.03-.15.1c-.18.16-.35.35-.48.55l-.09.16-.01.03-.13.07-.15.1c-.24.17-.44.38-.6.62l-.11.2-.16.1c-.27.16-.5.38-.68.64H7.24A4.21 4.21 0 0 1 3 12.82c0-1.1.43-2.13 1.2-2.92a4.24 4.24 0 0 1 2.53-1.22A4.24 4.24 0 0 1 10.93 5zm9.65 7.52l-.16.03h-.04a.57.57 0 0 0-.29.88l.07.08 1.36 1.35c.31.28.82.12.92-.3.02-.08.04-.17.04-.26l.01-.13v-.08c-.02-.35-.14-.7-.38-.98l-.1-.12-.07-.06a1.67 1.67 0 0 0-1.36-.41zm-7.44-.72a.4.4 0 0 0-.4.4v.1l.02.1.03.1-.18.14a3 3 0 0 1-3.42-.13.97.97 0 0 0 .05-.3.4.4 0 0 0-.4-.41.4.4 0 0 0-.42.39.4.4 0 0 1-.1.25l-.05.06-.15.12a.39.39 0 0 0-.06.52.42.42 0 0 0 .5.14l.06-.03.1-.07.23.15a3.81 3.81 0 0 0 4.1-.02l.2-.13.1.07.08.03a.43.43 0 0 0 .49-.14.4.4 0 0 0 0-.46l-.06-.06-.13-.1a.46.46 0 0 1-.09-.1.55.55 0 0 1-.05-.11l-.02-.06-.02-.15a.4.4 0 0 0-.25-.27l-.07-.02-.09-.01z'/%3E%3C/svg%3E")`,
     // the string after ";utf8,...')" is just the svg inlined. Done here : https://yoksel.github.io/url-encoder/
     // Might be optimized, see here :
     //    * https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
     //    * https://www.npmjs.com/package/mini-svg-data-uri
-
+    minMenuWidth = 210 ;
 
 /* --------------------------------------------------------------------- */
 // Add a menu button to an element and initialize the iframe for the menu
-function addMenuButton(el, op, markTheFilling, fieldType) {
+function addMenuButton(el, op, markTheFilling, fieldType, opId) {
 
     if (el && null !== op && void 0 !== op && !(el.disabled || el.a || el.readOnly)) {
         switch (markTheFilling && el.form && !el.form.opfilled && (el.form.opfilled = true),
@@ -78,14 +74,10 @@ function addMenuButton(el, op, markTheFilling, fieldType) {
                 break;
             default:
                 // store in the input element the fieldTypes so that when clicked we can pass it to the menu
-                el.dataset.fieldTypes = el.dataset.fieldTypes === undefined ?  fieldType : el.dataset.fieldTypes + '*' + fieldType;
+                el.fieldTypes = el.fieldTypes === undefined ?  fieldType : {...el.fieldTypes, ...fieldType};
+                el.dataset.cozyOpId = opId;
+                el.dataset.cozyFieldTypes = JSON.stringify(el.fieldTypes); // only to ease manual analysis
                 if (targetsEl.includes(el)) break; // no need to add again the "button" into the field
-                el.style.backgroundImage = menuBtnSvg
-                el.style.backgroundRepeat = "no-repeat"
-                el.style.backgroundAttachment = "scroll"
-                el.style.backgroundSize = "16px 18px"
-                el.style.backgroundPosition = "calc(100% - 16px) 50%"
-                el.style.cursor = "pointer"
                 _initInPageMenuForEl(el)
                 break;
         }
@@ -97,49 +89,97 @@ menuCtrler.addMenuButton = addMenuButton
 /* --------------------------------------------------------------------- */
 // Init a target element to be able to trigger the menu
 function _initInPageMenuForEl(targetEl) {
-    targetsEl.push(targetEl) // register this element as one of the targets for the menu
+    // register this element as one of the targets for the menu
+    targetsEl.push(targetEl)
+
+    // style the input element
+    targetEl.style.backgroundImage = menuBtnSvg
+    targetEl.style.backgroundRepeat = "no-repeat"
+    targetEl.style.backgroundAttachment = "scroll"
+    targetEl.style.backgroundSize = targetEl.clientWidth > 90 ? "24px 24px" : "12px 12px"
+    const targetWidth = targetEl.clientWidth
+    targetEl.style.backgroundPosition = targetEl.clientWidth > 90 ?  "calc(100% - 3px) 50%" :  "calc(100% - 2px) 1px"
+    targetEl.style.cursor = "pointer"
 
     // prevent browser autocomplet with history for this field
     targetEl.autocomplete='off'
 
-	if(!state.isMenuInited) { // menu is not yet initiated, there is no iframe elemeent for the menu
-        // initIframe()
+    // When user click in a form (not evant an input), the focus is put in the closest input.
+    // So if the focus was in an input with the menu opended, the blur event will close the menu which is reopened
+    // immmediately when the focus is put again in the menu...
+    // Solution : freeze the menu half a second after a click in a form that is not in an input.
+    const parentForm = targetEl.closest('form')
+    if (parentForm && !formsEl.includes(parentForm) ) {
+        formsEl.push(parentForm)
+        parentForm.addEventListener('click', (evt) => {
+            if (evt.target.nodeName !== 'INPUT') {
+                menuCtrler.freeze()
+                setTimeout(menuCtrler.unFreeze, 300)
+            }
+        })
+    }
+
+	if(!state.isMenuInited) {
+        // menu is not yet initiated, there is no iframe elemeent for the menu, create one
         menuEl = document.createElement('iframe')
-        _setIframeURL(state.currentMenuType, state.isPinLocked )
+        _setIframeURLforMenuType(state.currentMenuType, state.isPinLocked )
         menuEl.id  = 'cozy-menu-in-page'
-        menuEl.style.cssText = 'z-index: 2147483647 !important; border:0; transition: transform 30ms linear 0s; display:block;'
+        menuEl.style.cssText = `z-index: 2147483647 !important; border:0; background-color: transparent; visibility: visible !important; width: 150px`
         // Append <style> element to add popperjs styles
         // relevant doc for css stylesheet manipulation : https://www.w3.org/wiki/Dynamic_style_-_manipulating_CSS_with_JavaScript
         const styleEl = document.createElement('style')
         styleEl.innerHTML = `
-            #cozy-menu-in-page {visibility: hidden; }
-            #cozy-menu-in-page[data-show] {visibility: visible;}
+            #cozy-menu-in-page {display: none;}
+            #cozy-menu-in-page[data-show] {display: block;}
+            #cozy-menu-in-page[data-unvisible] {height: 1px !important; }
         `;
         document.head.appendChild(styleEl)
         // append element and configure popperjs
         document.body.append(menuEl)
+        const preSameWidth = {
+            name     : "preSameWidth",
+            enabled  : true,
+            phase    : "afterRead",
+            requires : ["computeStyles"],
+            fn       : (pop) => {
+                pop.state.rects.popper.width = minMenuWidth + 20
+            },
+        };
         const sameWidth = {
             name     : "sameWidth",
             enabled  : true,
             phase    : "beforeWrite",
             requires : ["computeStyles"],
-            fn       : ({ state }) => { state.styles.popper.width = `${state.rects.reference.width+20}px` },
-            effect   : ({ state }) => {
-                state.elements.popper.style.width = `${state.elements.reference.offsetWidth+20}px`;
-            }
+            fn       : (pop) => {
+                if (state.isHidden) return
+                var w = pop.state.rects.reference.width
+                var d = w -  minMenuWidth
+                if (d > 0)  {
+                    d = 0
+                } else {
+                    w = minMenuWidth
+                    d = - parseFloat(pop.state.styles.popper.transform.slice(10).split('px')[0]) - w + pop.state.rects.reference.x + pop.state.rects.reference.width
+                }
+                if (state.iFrameHash.arrowD !== d) _updateArrowPos(d)
+                pop.state.styles.popper.width = `${w+20}px`
+                pop.state.styles.popper.left = `-10px`
+            },
+        };
+        const afterWrite = {
+            name     : "afterWrite",
+            enabled  : true,
+            phase    : "afterWrite",
+            fn       : ({ popState }) => {
+                if (state.isHidden) return
+                menuEl.setAttribute('data-show', '')
+            },
         };
         popperInstance = createPopper(targetEl, menuEl, {
-            placement: 'bottom',
+            placement: 'bottom-start',
             modifiers: [
                 {
                     name: 'offset',
                     options: {offset: [0, -5]},
-                },
-                {
-                    name: 'computeStyles',
-                    options: {
-                        adaptive: false,
-                    },
                 },
                 {
                     name: 'flip',
@@ -147,14 +187,11 @@ function _initInPageMenuForEl(targetEl) {
                         fallbackPlacements: ['bottom'], // force the menu ot go only under the field
                     },
                 },
+                preSameWidth,
                 sameWidth,
+                afterWrite,
             ],
         });
-        // a serie of updates due to some late html modifications
-        // useful for instance for :  https://accounts.google.com/
-        setTimeout(popperInstance.update, 600 )
-        setTimeout(popperInstance.update, 1200)
-        setTimeout(popperInstance.update, 1800)
 
         state.isMenuInited = true
     }
@@ -177,13 +214,13 @@ function _onBlur(event) {
 }
 
 function _onFocus(event) {
-    // console.log('focus event in an input', event.target.id);
+    // console.log('focus event in an input id:', event.target.id);
     if (!event.isTrusted) return;
     show(this)
 }
 
 function _onClick(event) {
-    // console.log('click event in an input', event.target.id);
+    // console.log('click event in an input id:', event.target.id);
     if (!event.isTrusted) return;
     show(this)
 }
@@ -235,29 +272,32 @@ function _onKeyDown(event) {
 function show(targetEl) {
     // console.log('menuCtrler.show() ');
     if (state.isFrozen) return
+    if (!state.isHidden && (state.lastFocusedEl === targetEl)) return
     state.lastFocusedEl = targetEl
     popperInstance.state.elements.reference = targetEl
     popperInstance.update()
-    menuEl.setAttribute('data-show', '')
+    // setTimeout( () =>{
+    //     menuEl.setAttribute('data-show', '')
+    // }, 10)
     state.isHidden = false
     // find the first cipher to display
     selectFirstCipherToSuggestFor(targetEl)
     // in the end show the menu
-    _setApplyFadeInUrl(true, targetEl.dataset.fieldTypes)
+    _setApplyFadeInUrl(true, targetEl.fieldTypes)
 }
 
 
 /* --------------------------------------------------------------------- */
-// Init a target element to be able to trigger the menu
-// force = false : a shrot time out will wait to check where the focus
+// Hide the menu element
+// force = false : a short time out will wait to check where the focus
 //       goes so that to not hide if target is an input or the iframe of
 //       the menu.
 // force = true : hide the menu without waiting to check the target of the focus.
 // let n = 0 // usefull for debug...
 function hide(force) {
     // n++  // usefull for debug...
-    // console.log(`Hide call id=0${n}, force=${!!force}`); // usefull for debug...
-    if (state.isFrozen) return
+    // console.log(`Hide call id=0${n}, force=${!!force}, isFrozen=${state.isFrozen}`); // usefull for debug...
+    if (state.isFrozen || !state.isMenuInited) return
     if (force && typeof force == 'boolean') {
         _setApplyFadeInUrl(false)
         // hide menu element after a delay so that the inner pannel has been scaled to 0 and therefore enables
@@ -266,14 +306,30 @@ function hide(force) {
         // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Tips#Run_an_animation_again
         // but don't delay this execution, other wise the menu will still be displayed when the page details will be run
         // and there fore will consider fields under the iframe as being hidden. These fields would then not be filled...
-        // console.log(`FORCE HIDE _ call id=0${n}`, state.lastFocusedEl, ); // usefull for debug...
         if (document.activeElement === menuEl) {
-            // the focus is in the iframe, then when closing it, put focus back in the correct input in the page
+            // the focus is in the iframe.
+            // When closing it, put focus back in the correct input in the page
+            // but freeze the menu so that focus event doesn't open the menu again
+            // and in order to prevent the masking of fields by the menu (not viewable fields are not autofilled...),
+            // set menu height to 1px a
+            // console.log(`Hide_A call id=0${n}, force=${!!force}, activeElement.id=${document.activeElement.id}`); // usefull for debug...
+            menuEl.setAttribute('data-unvisible', '') // to hide menu immediately
+            menuCtrler.freeze()
             state.lastFocusedEl.focus()
-            // hide after focus event to avoid to open the menu again
-            setTimeout( () => menuEl.removeAttribute('data-show') , 5)
+            setTimeout(()=>{
+                menuEl.removeAttribute('data-show') // hide completly the menu only after fade out in the iframe is over
+                menuEl.removeAttribute('data-unvisible')
+                menuCtrler.unFreeze()
+            }, 600)
         }else{
-            menuEl.removeAttribute('data-show')
+            // focus is not in the iframe, just put a timer so that the fade-out has time to go to end
+            // console.log(`Hide_B call id=0${n}, force=${!!force}, activeElement.id=${document.activeElement.id}`); // usefull for debug...
+            menuEl.setAttribute('data-unvisible', '') // to hide menu immediately
+            setTimeout(()=>{
+                menuEl.removeAttribute('data-show') // hide completly the menu only after fade out in the iframe is over
+                menuEl.removeAttribute('data-unvisible')
+                menuCtrler.unFreeze()
+            }, 400)
         }
         state.isHidden = true
         return
@@ -282,10 +338,10 @@ function hide(force) {
         const target = document.activeElement;
         if (!force && (targetsEl.indexOf(target) != -1 || target.tagName == 'IFRAME' && target.id == 'cozy-menu-in-page')) {
             // Focus is know in iframe or in one of the input => do NOT hide
-            // console.log(`After hide, focus is now in iframe or in one of the input => do NOT hide _ call id=0${n}`); // usefull for debug...
+            // console.log(`Hide_C : After hide, focus is now in iframe or in one of the input => do NOT hide _ call id=0${n}`); // usefull for debug...
             return
         }
-        // console.log(`log after timeout concludes DO HIDE call id=0${n}`); // usefull for debug...
+        // console.log(`Hide_D :log after timeout concludes DO HIDE call id=0${n}`); // usefull for debug...
         // otherwise, hide
         _setApplyFadeInUrl(false)
         // hide menu element after a delay so that the inner pannel has been scaled to 0 and therefore enables
@@ -294,7 +350,7 @@ function hide(force) {
         // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Tips#Run_an_animation_again
         setTimeout(()=>{menuEl.removeAttribute('data-show')}, 600)
         state.isHidden = true
-    }, 1);
+    }, 100);
 }
 menuCtrler.hide = hide
 
@@ -319,16 +375,16 @@ function removeInPageButtons() {
         el.removeEventListener('focus', _onFocus)
         el.removeEventListener('click', _onClick)
         el.removeEventListener('keydown', _onKeyDown);
-        el.dataset.fieldTypes = ''
+        el.fieldTypes = {}
     }
-    targetsEl = []
+    targetsEl.length = 0
 }
 
 
 /* --------------------------------------------------------------------- */
 // Moves selection of +1 or -1  (n=1 || n=-1)
 function moveSelection(n) {
-    const cipherTypesToSuggest = getPossibleTypesForField(state.lastFocusedEl).cipherTypes
+    const cipherTypesToSuggest = getPossibleTypesForField(state.lastFocusedEl)
     let newCipherNode
     const selectedCipher = state.selectedCipher
     if (n>0) {
@@ -368,14 +424,19 @@ menuCtrler.moveSelection = moveSelection
 /* --------------------------------------------------------------------- */
 //
 function getPossibleTypesForField(fieldEl) {
-    const fieldTypesStr = fieldEl.dataset.fieldTypes
-    const fieldTypes = fieldTypesStr.split('*')
+    // const fieldTypesStr = fieldEl.dataset.fieldTypes
+    // const fieldTypes = fieldTypesStr.split('*')
     const cipherTypes = []
     // cipher.type : 1:login 2:notes  3:Card 4: identities
-    if (fieldTypesStr.includes('login_'   )) cipherTypes.push(CipherType.Login)
-    if (fieldTypesStr.includes('card_'    )) cipherTypes.push(CipherType.Card)
-    if (fieldTypesStr.includes('identity_')) cipherTypes.push(CipherType.Identity)
-    return {cipherTypes, fieldTypes }
+    if (fieldEl.fieldTypes.login   ) cipherTypes.push(CipherType.Login)
+    if (fieldEl.fieldTypes.card    ) cipherTypes.push(CipherType.Card)
+    if (fieldEl.fieldTypes.identity) cipherTypes.push(CipherType.Identity)
+
+    // if (fieldTypesStr.includes('login_'   )) cipherTypes.push(CipherType.Login)
+    // if (fieldTypesStr.includes('card_'    )) cipherTypes.push(CipherType.Card)
+    // if (fieldTypesStr.includes('identity_')) cipherTypes.push(CipherType.Identity)
+
+    return cipherTypes
 }
 
 
@@ -424,7 +485,6 @@ function setCiphers(newCiphers) {
         }
     }
     state.isAutoFillInited = true
-    // state.selectedCipher = ciphers.head() // TODO BJA : check this is the first visible cipher.
     selectFirstCipherToSuggestFor(state.lastFocusedEl)
 }
 menuCtrler.setCiphers = setCiphers
@@ -438,7 +498,7 @@ function selectFirstCipherToSuggestFor(fieldEl) {
     if (!ciphers || ciphers._length == 0) return
     if (!fieldEl) return
     let newCipherNode = ciphers.head()
-    const cipherTypesToSuggest = getPossibleTypesForField(fieldEl).cipherTypes
+    const cipherTypesToSuggest = getPossibleTypesForField(fieldEl)
     do {
         if (cipherTypesToSuggest.includes(newCipherNode.data.type)) {
             state.selectedCipher = newCipherNode;
@@ -454,12 +514,12 @@ function selectFirstCipherToSuggestFor(fieldEl) {
 function setMenuType(menuType, isPinLocked) {
     // console.log('setMenuType()', {menuType, isPinLocked});
     if (menuType === state.currentMenuType) {
-        _setIframeURL(menuType, isPinLocked)
+        _setIframeURLforMenuType(menuType, isPinLocked)
         _forceIframeRefresh()
         return
     }
     if (menuEl) {
-        _setIframeURL(menuType, isPinLocked)
+        _setIframeURLforMenuType(menuType, isPinLocked)
         removeInPageButtons() // remove all "buttons"
         if (menuType === 'autofillMenu' && state.currentMenuType === 'loginMenu' ) {
             if (state.lastFocusedEl) {
@@ -477,27 +537,29 @@ menuCtrler.setMenuType = setMenuType
 
 
 /* --------------------------------------------------------------------- */
-//
-function _setIframeURL(menuType, isPinLocked) {
+// Updates iframe's url depending on the menu type and lock state
+// Hash is note modified
+// parameters in the 'search' section of the url will reload the html and is used only to
+//     * reload if lock state is modified
+//     * force reload by modifying a random variable via _forceIframeRefresh()
+// parameters in the 'hash' section will only be listened inside the iframe
+function _setIframeURLforMenuType(menuType, isPinLocked) {
     if (!menuEl) return
-    let hash = '';
+    const hash = '#' + encodeURIComponent(JSON.stringify(state.iFrameHash));
     const rand = '?' + Math.floor((Math.random()*1000000)+1)
-    if (menuEl.src) {
-        const location = new URL(menuEl.src)
-        hash = location.hash
-    }
     if (menuType === 'autofillMenu') {
-        menuEl.src = chrome.runtime.getURL('inPageMenu/menu.html' + rand)  + hash
+        menuEl.src = chrome.runtime.getURL('inPageMenu/menu.html' + rand) + hash
     } else if (menuType === 'loginMenu') {
-        let urlParams = ''
-        if (isPinLocked) urlParams = '?isPinLocked=true'
-        menuEl.src = chrome.runtime.getURL('inPageMenu/loginMenu.html' + urlParams + rand) + hash
+        let searchParams = ''
+        if (isPinLocked) searchParams = '?isPinLocked=true'
+        menuEl.src = chrome.runtime.getURL('inPageMenu/loginMenu.html' + searchParams + rand) + hash
     }
 }
 
 
 /* --------------------------------------------------------------------- */
-// just modify the random part of the iframe url in order to force refresh
+// Modifies the random part of the iframe url in order to force
+// the iframe to reload
 function _forceIframeRefresh() {
     if (!menuEl || !menuEl.src) return
     const url = new URL(menuEl.src)
@@ -508,16 +570,31 @@ function _forceIframeRefresh() {
 
 /* --------------------------------------------------------------------- */
 //
+function _updateArrowPos(d) {
+    if (!menuEl || !menuEl.src) return
+    state.iFrameHash.arrowD = d
+    if (state.isHidden) return
+    const url = new URL(menuEl.src)
+    menuEl.src = url.origin + url.pathname + url.search + '#' +
+        encodeURIComponent(JSON.stringify(state.iFrameHash))
+}
+
+
+/* --------------------------------------------------------------------- */
+// send informations to the iframe through the url's hash (no reload)
+// the hash is a Json string
 function _setApplyFadeInUrl(doApply, fieldTypes) {
     if (!menuEl || !menuEl.src) return
     const url = new URL(menuEl.src)
     if (doApply) {
-        // console.log('menuCtrler.applyFadeIn()');
-        menuEl.src = url.origin + url.pathname + url.search + '#applyFadeIn*' + fieldTypes
+        fieldTypes = {...{login: false, identity: false, card: false},...fieldTypes}
+        state.iFrameHash = {...state.iFrameHash, ...fieldTypes, applyFadeIn: true}
+        menuEl.src = url.origin + url.pathname + url.search + '#' +
+            encodeURIComponent(JSON.stringify(state.iFrameHash))
     } else {
-        // console.log('menuCtrler.removeFadeIn()');
-        const currentFieldTypes = menuEl.src.slice(menuEl.src.search(/\*.*/gi))
-        menuEl.src = url.origin + url.pathname + url.search + '#dontApplyFadeIn' + currentFieldTypes
+        state.iFrameHash.applyFadeIn = false
+        menuEl.src = url.origin + url.pathname + url.search + '#' +
+            encodeURIComponent(JSON.stringify(state.iFrameHash))
     }
 }
 
@@ -538,8 +615,6 @@ function _hideMenuEl(isHide){
         menuEl.setAttribute('data-show','')
     }
 }
-
-
 
 
 /* --------------------------------------------------------------------- */

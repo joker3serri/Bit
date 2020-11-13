@@ -22,30 +22,50 @@
 
             <div id="login-form">
 
-                <div id="url-row" class="row row-input">
-                    <label id="cozy-url-label" class="row-label"></label>
-                    <input id="cozy-url" type="text" name="CozyUrl" inputmode="url"
-                        placeholder="ex. https://claude.mycozy.cloud" value="">
-                </div>
-
-                <div id="pwd-row" class="row row-input">
-                    <label id="master-password-label" class="row-label"></label>
-                    <div class="box-input">
-                        <input id="master-password" type="password"
-                            placeholder="" value="">
-                        <div id="visi-pwd-btn" class="visibility-btn">
-                            <i class="fa fa-mg fa-eye"></i>
+                <div id="url-row" class="row material-input">
+                    <div class="visible-label">
+                        <label></label>
+                    </div>
+                    <label class="shadow-placeholder"></label>
+                    <div class="box-labeled-input">
+                        <label class="shadow-label"></label>
+                        <div class="box-input">
+                            <input id="cozy-url" name="CozyUrl" inputmode="url"
+                                placeholder="ex. https://claude.mycozy.cloud" value="">
                         </div>
                     </div>
                 </div>
 
-                <div id="twoFa-row" class="row row-input">
-                    <label id="2fa-label" class="row-label"></label>
-                    <div class="box-input">
-                        <input id="two-fa-input" type="password"
-                            placeholder="" value="1234">
-                        <div id="visi-2fa-btn" class="visibility-btn">
-                            <i class="fa fa-mg fa-eye"></i>
+                <div id="pwd-row" class="row material-input eyed">
+                    <div class="visible-label">
+                        <label></label>
+                    </div>
+                    <label class="shadow-placeholder"></label>
+                    <div class="box-labeled-input">
+                        <label class="shadow-label"></label>
+                        <div class="box-input">
+                            <input id="master-password" type="password"
+                            placeholder="" value="">
+                            <div id="visi-pwd-btn" class="visibility-btn">
+                                <i class="fa fa-mg fa-eye"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="twoFa-row" class="row material-input eyed">
+                    <div class="visible-label">
+                        <label></label>
+                    </div>
+                    <label class="shadow-placeholder"></label>
+                    <div class="box-labeled-input">
+                        <label class="shadow-label"></label>
+                        <div class="box-input">
+                            <input id="two-fa-input" type="password"
+                            placeholder="" value="">
+                            <div id="visi-2fa-btn" class="visibility-btn">
+                                <i class="fa fa-mg fa-eye"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -53,6 +73,8 @@
                 <label id="error-label" class="row"></label>
 
                 <button id="submit-btn"></button>
+
+                <div id="arrow"></div>
 
             </div>
 

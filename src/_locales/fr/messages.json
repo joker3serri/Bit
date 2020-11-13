@@ -850,7 +850,7 @@
     "message": "Affiche un menu de sélection dans les formulaires pouvant être remplis automatiquement."
   },
   "loginInPageMenuTitle": {
-    "message": "Me connecter à mon Cozy"
+    "message": "Connectez-vous à votre Cozy pour remplir les formulaires en un seul clic"
   },
   "inPageMenuLoginError": {
     "message": "L'adresse et le mot de passe ne correspondent pas"

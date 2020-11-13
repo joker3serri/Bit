@@ -9,16 +9,17 @@ import { Utils } from 'jslib/misc/utils';
 // Globals
 // UI elements
 var panel               ,
+    arrow               ,
     title               ,
     closeIcon           ,
     visiPwdBtn          ,
     visi2faBtn          ,
-    urlLabel            ,
     urlInput            ,
-    pwdLabel            ,
     pwdInput            ,
-    twoFaLabel          ,
     twoFaInput          ,
+    urlLabelTxt         ,
+    pwdLabelTxt         ,
+    twoFaLabelTxt       ,
     errorLabel          ,
     submitBtn           ,
     isPwdHidden = true  ,
@@ -26,6 +27,7 @@ var panel               ,
     isIn2FA     = false ,
     isLocked            ,
     isPinLocked         ,
+    currentArrowD       ,
     lastSentHeight
 
 /* --------------------------------------------------------------------- */
@@ -41,14 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1- get elements references
     panel      = document.querySelector('.panel')
+    arrow      = document.getElementById('arrow')
     title      = document.getElementById('title-content')
-    urlLabel   = document.getElementById('cozy-url-label')
     urlInput   = document.getElementById('cozy-url')
-    pwdLabel   = document.getElementById('master-password-label')
     pwdInput   = document.getElementById('master-password')
-    visiPwdBtn = document.getElementById('visi-pwd-btn')
-    twoFaLabel = document.getElementById('2fa-label')
     twoFaInput = document.getElementById('two-fa-input')
+    visiPwdBtn = document.getElementById('visi-pwd-btn')
     visi2faBtn = document.getElementById('visi-2fa-btn')
     closeIcon  = document.querySelector('.close-icon')
     submitBtn  = document.querySelector('#submit-btn')
@@ -67,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 5- prepare i18n and apply
     var i18n = {};
-    var lang = window.navigator.language;
     if (typeof safari !== 'undefined') {
         const responseCommand = 'notificationBarFrameDataResponse'; // to be adapted to loginMenu
         sendPlatformMessage({
@@ -83,28 +82,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }, false);
     } else {
         // retrieve i18n values and set elements textcontent
-        lang = chrome.i18n.getUILanguage();
         const i18nGetMessage = chrome.i18n.getMessage
-        document.getElementById('cozy-url-label').textContent = i18nGetMessage('cozyUrl'             )
-        document.getElementById('2fa-label').textContent      = i18nGetMessage('verificationCode'    )
+        urlLabelTxt                                           = i18nGetMessage('cozyUrl'             )
+        twoFaLabelTxt                                         = i18nGetMessage('verificationCode'    )
         visiPwdBtn.title                                      = i18nGetMessage('toggleVisibility'    )
         visi2faBtn.title                                      = i18nGetMessage('toggleVisibility'    )
         submitBtn.textContent                                 = i18nGetMessage('login'               )
         if (isPinLocked) {
             title.textContent                                 = i18nGetMessage('unlockWithPin'       )
-            pwdLabel.textContent                              = i18nGetMessage('pin'                 )
+            pwdLabelTxt                                       = i18nGetMessage('pin'                 )
             urlInput.disabled = true
             document.getElementById('url-row').classList.add('disabled')
         } else {
             title.textContent                                 = i18nGetMessage('loginInPageMenuTitle')
-            pwdLabel.textContent                              = i18nGetMessage('masterPass'          )
+            pwdLabelTxt                                       = i18nGetMessage('masterPass'          )
         }
     }
 
     // 5- activate material inputs
-    _turnIntoMaterialInput(urlInput, urlLabel)
-    _turnIntoMaterialInput(pwdInput, pwdLabel)
-    _turnIntoMaterialInput(twoFaInput, twoFaLabel)
+    _turnIntoMaterialInput(urlInput, urlLabelTxt)
+    _turnIntoMaterialInput(pwdInput, pwdLabelTxt)
+    _turnIntoMaterialInput(twoFaInput, twoFaLabelTxt)
 
     // 6- request to adjust the menu height
     adjustMenuHeight()
@@ -334,12 +332,30 @@ function _setWaitingMode() {
 
 
 /* --------------------------------------------------------------------- */
-// Request the iframe content to fadeIn or not
+// Test if iframe content should fadeIn or not
+// and display rows corresponding to the fieldtypes of the focused field
+// content of the hash = {
+//    login:"username",
+//    identity:"email",
+//    card: "",
+//    applyFadeIn:[boolean],
+//    arrowD:[Float],
+// }
 function _testHash(){
-    if (window.location.hash.includes('applyFadeIn')) {
+    let hash = window.location.hash
+    if (hash) {
+        hash = JSON.parse(decodeURIComponent(hash).slice(1))
+    }
+    if (hash.applyFadeIn) {
+        adjustMenuHeight()
         panel.classList.add('fade-in')
     } else {
         panel.className = "panel";
+    }
+
+    if (hash.arrowD !== undefined && hash.arrowD !== currentArrowD ) {
+        currentArrowD = hash.arrowD
+        arrow.style.right = 10 - hash.arrowD + 'px'
     }
 }
 
@@ -369,8 +385,9 @@ function close(force) {
 
 /* --------------------------------------------------------------------- */
 // Prepare an input element to have a material UX
-function _turnIntoMaterialInput(inputEl, labelEl) {
-    const container = inputEl.closest('.row-input')
+function _turnIntoMaterialInput(inputEl, labelText) { // BJA : labelEL to be removed
+    const container = inputEl.closest('.material-input')
+    container.querySelectorAll('label').forEach(label => label.textContent = labelText)
     container.addEventListener('click', ()=>{
         inputEl.focus()
     })
