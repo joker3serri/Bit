@@ -210,6 +210,13 @@ export default class RuntimeBackground {
                             data    : msg.data              ,
                         }, {frameId: msg.frameId});
                         break;
+                    case 'askMenuTofillFieldWithData':
+                        await BrowserApi.tabSendMessage(sender.tab, {
+                            command       : 'menuAnswerRequest'       ,
+                            subcommand    : 'trigerFillFieldWithData' ,
+                            frameTargetId : sender.frameId            ,
+                        });
+                        break;
                 }
                 break;
             case 'bgGetCiphersForTab':
