@@ -165,6 +165,9 @@ export default class MainBackground {
         this.apiService = new ApiService(this.tokenService, this.platformUtilsService,
             (expired: boolean) => this.logout(expired));
         this.userService = new UserService(this.tokenService, this.storageService);
+        this.environmentService = new EnvironmentService(this.apiService, this.storageService,
+            this.notificationsService); // this declaration has been moved up for the cozyClientService declaration
+        this.cozyClientService = new CozyClientService(this.environmentService, this.apiService);
         // this.authService = new AuthService(this.cryptoService, this.apiService, this.userService,
         //     this.tokenService, this.appIdService, this.i18nService, this.platformUtilsService,
         //     this.messagingService, this.vaultTimeoutService);
@@ -269,8 +272,8 @@ export default class MainBackground {
         this.exportService = new ExportService(this.folderService, this.cipherService, this.apiService);
         this.notificationsService = new NotificationsService(this.userService, this.syncService, this.appIdService,
             this.apiService, this.vaultTimeoutService, () => this.logout(true));
-        this.environmentService = new EnvironmentService(this.apiService, this.storageService,
-            this.notificationsService);
+        // this.environmentService = new EnvironmentService(this.apiService, this.storageService,
+        //     this.notificationsService); // this declaration has been moved up for the cozyClientService declaration
         this.analytics = new Analytics(window, () => BrowserApi.gaFilter(), this.platformUtilsService,
             this.storageService, this.appIdService);
         this.popupUtilsService = new PopupUtilsService(this.platformUtilsService);
@@ -282,7 +285,6 @@ export default class MainBackground {
                 return Promise.resolve();
             });
 
-        this.cozyClientService = new CozyClientService(this.environmentService, this.apiService);
         this.konnectorsService = new KonnectorsService(this.cipherService, this.storageService, this.settingsService,
             this.cozyClientService);
 
