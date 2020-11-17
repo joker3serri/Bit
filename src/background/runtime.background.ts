@@ -244,6 +244,10 @@ export default class RuntimeBackground {
                 break;
             case 'bgGetLoginMenuFillScript':
                 // addon has been disconnected or the page was loaded while addon was not connected
+                let enableInPageMenu = await this.storageService.get<boolean>(
+                    LocalConstantsService.enableInPageMenuKey);
+                if (enableInPageMenu === null) {enableInPageMenu = true; }
+                if (!enableInPageMenu) { break; }
                 const fieldsForInPageMenuScripts =
                     this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails, false, sender.frameId);
                 this.autofillService.postFilterFieldsForInPageMenu(
