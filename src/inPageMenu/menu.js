@@ -123,6 +123,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'menuSelectionValidate':
                     requestFormFillingWithCipher(document.querySelector('.selected').dataset.cipherId)
                     break;
+                case 'trigerFillFieldWithData':
+                    if (hostFrameId !== msg.frameTargetId || !isDisplayed) return;
+                    const dataTxt = document.querySelector('.selected').querySelector('.row-detail').textContent
+                    if (!dataTxt) return;
+                    requestFieldFillingWithData(dataTxt)
+                    break;
             }
         }
     })
@@ -241,26 +247,25 @@ function updateRows(rowsListType) {
         switch (rowsListType) {
             case 'login':
                 text.textContent = cipher.name
-                row.title = 'fill the whole form with this login'
+                row.title = 'fill the whole form with this login (Enter)'
                 detail.textContent = cipher.login.username
-                detail.title = 'fill only this field with this value'
+                detail.title = 'fill only this field with this value (Ctrl+Enter)'
                 break;
             case 'card':
                 text.textContent = cipher.name
-                row.title = 'fill the whole form with this login'
+                row.title = 'fill the whole form with this login (Enter)'
                 detail.textContent = formatCipherData(cipher.card, currentFieldData.card ,currentFieldData.format)
-                detail.title = 'fill only this field with this value'
+                detail.title = 'fill only this field with this value (Ctrl+Enter)'
                 break;
             case 'ids':
                 text.textContent = cipher.name
-                row.title = 'fill the whole form with this login'
+                row.title = 'fill the whole form with this login (Enter)'
                 detail.textContent = cipher.identity[currentFieldData.identity]
-                detail.title = 'fill only this field with this value'
+                detail.title = 'fill only this field with this value (Ctrl+Enter)'
                 break;
         }
     });
 }
-
 
 
 /* --------------------------------------------------------------------- */

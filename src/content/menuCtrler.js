@@ -219,15 +219,25 @@ function _onBlur(event) {
 }
 
 function _onFocus(event) {
-    // console.log('focus event in an input id:', event.target.id);
+    // console.log('focus event in an input id:', event.target.id;
     if (!event.isTrusted) return;
+    if (state.currentMenuType === 'loginMenu') return;
     show(this)
 }
 
 function _onClick(event) {
-    // console.log('click event in an input id:', event.target.id);
     if (!event.isTrusted) return;
-    show(this)
+    // console.log('click event in an input id:', event.target.id);
+    const el = event.target
+    if (state.currentMenuType === 'loginMenu') {
+        if ((el.clientWidth - event.offsetX)<25) {
+            show(this)
+        } else {
+            menuCtrler.hide(true)
+        }
+    } else {
+        show(this)
+    }
 }
 
 function _onKeyDown(event) {
@@ -235,7 +245,6 @@ function _onKeyDown(event) {
     if (!event.isTrusted) return;
     const keyName = event.key;
     if (keyName === 'Escape') {
-        // console.log('escape ==> hide');
         menuCtrler.hide(true)
         return;
     } else if (keyName === 'Tab') {
@@ -258,20 +267,19 @@ function _onKeyDown(event) {
             menuCtrler.moveSelection(1)
         }
         return;
-    // } else if (keyName === 'Enter' && event.ctrlKey) {
-    //     if (state.isHidden) return
-    //     event.stopPropagation()
-    //     event.preventDefault()
-    //     menuCtrler.submit()      // else request menu selection validation
-    //     return;
+    } else if (keyName === 'Enter' && event.ctrlKey) {
+        if (state.isHidden) return
+        event.stopPropagation()
+        event.preventDefault()
+        submitDetail()
+        return;
     } else if (keyName === 'Enter') {
         if (state.isHidden) return
         event.stopPropagation()
         event.preventDefault()
-        menuCtrler.submit()      // else request menu selection validation
+        menuCtrler.submit()
         return;
     } else if  (_isCharacterKeyPress(event)){
-        // console.log('_isCharacterKeyPress ==> hide');
         menuCtrler.hide(true)
         return;
     }
@@ -456,6 +464,18 @@ function submit() {
     });
 }
 menuCtrler.submit = submit
+
+
+/* --------------------------------------------------------------------- */
+// autofill the focused field with the detail of the currently selected cypher
+function submitDetail() {
+    chrome.runtime.sendMessage({
+        command    : 'bgAnswerMenuRequest',
+        subcommand : 'askMenuTofillFieldWithData',
+        sender     : 'menuCtrler',
+    });
+}
+menuCtrler.submitDetail = submit
 
 
 /* --------------------------------------------------------------------- */
