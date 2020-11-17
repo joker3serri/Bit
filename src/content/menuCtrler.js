@@ -20,15 +20,15 @@ menuCtrler API to interact with the menus within the page
 ========================================================================= */
 
 var menuCtrler = {
-    addMenuButton          : null,
-    hide                   : null,
-    setHeight              : null,
-    getCipher              : null,
-    setCiphers             : null,
-    unFreeze               : function() {state.isFrozen = false}, // when frozen, you can't hide nor show the menu
-    freeze                 : function() {state.isFrozen = true },
-    deactivate             : null,
     activate               : null,
+    addMenuButton          : null,
+    deactivate             : null,
+    freeze                 : function() {state.isFrozen = true },
+    getCipher              : null,
+    hide                   : null,
+    setCiphers             : null,
+    setHeight              : null,
+    unFreeze               : function() {state.isFrozen = false}, // when frozen, you can't hide nor show the menu
 }
 
 /* --------------------------------------------------------------------- */
@@ -42,17 +42,20 @@ const
     targetsEl = [],  // fields where a menu has been configured
     formsEl = [],    // store all parent forms of fields where a menu has been added (ie forms of targetsEl)
     state = {
-        currentMenuType  :null,
-        isMenuInited     :false,  // menu is not yet initiated, there is no iframe yet for the menu
-        isFrozen         :false,  // when frozen, you can't hide nor show the menu
-        isActivated      :true,   // false => in page butons have been removed and menu is hidden
-        isHidden         :true,
-        isAutoFillInited :false,  // true when iframe created and ciphers have been received in the menuCtrler
-        isPinLocked      :false,
-        lastFocusedEl    :null,
-        selectedCipher   : null, // a cipher node of the linkedList `ciphers`
+        currentMenuType  : null,
+        iFrameHash       : {
+                            arrowD:0,
+                            hostFrameId:null, // id of the frame in which the menu is inserted to be sent to the menu
+                        },
+        isActivated      : true,   // false => in page butons have been removed and menu is hidden
+        isAutoFillInited : false,  // true when iframe created and ciphers have been received in the menuCtrler
+        isFrozen         : false,  // when frozen, you can't hide nor show the menu
+        isHidden         : true,
+        isMenuInited     : false,  // menu is not yet initiated, there is no iframe yet for the menu
+        isPinLocked      : false,
+        lastFocusedEl    : null,
         lastHeight       : null,
-        iFrameHash       : {arrowD:0},
+        selectedCipher   : null, // a cipher node of the linkedList `ciphers`
     },
     menuBtnSvg = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23297EF1' fill-rule='evenodd' d='M21 11a3 3 0 1 1-.83 5.88l-.04-.01-2.95 2.94c-.1.1-.22.16-.35.18l-.1.01h-.99c-.32 0-.68-.24-.73-.55l-.01-.09v-1.03c0-.16.11-.29.26-.32h.42c.16 0 .29-.11.32-.26v-.43c0-.15.11-.28.26-.31h.42c.15 0 .28-.12.31-.26v-.43c0-.15.12-.28.26-.31l.07-.01h.6c.16 0 .3-.11.32-.26l.01-.06v-.48c-.13-.3-.22-.64-.24-.99L18 14a3 3 0 0 1 3-3zM10.94 5a4.24 4.24 0 0 1 4.2 3.67c1.1.1 2.1.61 2.79 1.38a4.99 4.99 0 0 0-1.92 3.68L16 14v.28l.02.12-.04.03-.15.1c-.18.16-.35.35-.48.55l-.09.16-.01.03-.13.07-.15.1c-.24.17-.44.38-.6.62l-.11.2-.16.1c-.27.16-.5.38-.68.64H7.24A4.21 4.21 0 0 1 3 12.82c0-1.1.43-2.13 1.2-2.92a4.24 4.24 0 0 1 2.53-1.22A4.24 4.24 0 0 1 10.93 5zm9.65 7.52l-.16.03h-.04a.57.57 0 0 0-.29.88l.07.08 1.36 1.35c.31.28.82.12.92-.3.02-.08.04-.17.04-.26l.01-.13v-.08c-.02-.35-.14-.7-.38-.98l-.1-.12-.07-.06a1.67 1.67 0 0 0-1.36-.41zm-7.44-.72a.4.4 0 0 0-.4.4v.1l.02.1.03.1-.18.14a3 3 0 0 1-3.42-.13.97.97 0 0 0 .05-.3.4.4 0 0 0-.4-.41.4.4 0 0 0-.42.39.4.4 0 0 1-.1.25l-.05.06-.15.12a.39.39 0 0 0-.06.52.42.42 0 0 0 .5.14l.06-.03.1-.07.23.15a3.81 3.81 0 0 0 4.1-.02l.2-.13.1.07.08.03a.43.43 0 0 0 .49-.14.4.4 0 0 0 0-.46l-.06-.06-.13-.1a.46.46 0 0 1-.09-.1.55.55 0 0 1-.05-.11l-.02-.06-.02-.15a.4.4 0 0 0-.25-.27l-.07-.02-.09-.01z'/%3E%3C/svg%3E")`,
     // the string after ";utf8,...')" is just the svg inlined. Done here : https://yoksel.github.io/url-encoder/
@@ -74,9 +77,12 @@ function addMenuButton(el, op, markTheFilling, fieldType, opId) {
                 break;
             default:
                 // store in the input element the fieldTypes so that when clicked we can pass it to the menu
-                el.fieldTypes = el.fieldTypes === undefined ?  fieldType : {...el.fieldTypes, ...fieldType};
+                el.fieldTypes = el.fieldTypes === undefined ?
+                    {...fieldType, opId: opId}
+                    : {...el.fieldTypes, ...fieldType, opId: opId};
+                // add data in the DOM to ease manual analysis
                 el.dataset.cozyOpId = opId;
-                el.dataset.cozyFieldTypes = JSON.stringify(el.fieldTypes); // only to ease manual analysis
+                el.dataset.cozyFieldTypes = JSON.stringify(el.fieldTypes);
                 if (targetsEl.includes(el)) break; // no need to add again the "button" into the field
                 _initInPageMenuForEl(el)
                 break;
@@ -252,6 +258,12 @@ function _onKeyDown(event) {
             menuCtrler.moveSelection(1)
         }
         return;
+    // } else if (keyName === 'Enter' && event.ctrlKey) {
+    //     if (state.isHidden) return
+    //     event.stopPropagation()
+    //     event.preventDefault()
+    //     menuCtrler.submit()      // else request menu selection validation
+    //     return;
     } else if (keyName === 'Enter') {
         if (state.isHidden) return
         event.stopPropagation()
@@ -423,17 +435,11 @@ menuCtrler.moveSelection = moveSelection
 /* --------------------------------------------------------------------- */
 //
 function getPossibleTypesForField(fieldEl) {
-    // const fieldTypesStr = fieldEl.dataset.fieldTypes
-    // const fieldTypes = fieldTypesStr.split('*')
     const cipherTypes = []
     // cipher.type : 1:login 2:notes  3:Card 4: identities
     if (fieldEl.fieldTypes.login   ) cipherTypes.push(CipherType.Login)
     if (fieldEl.fieldTypes.card    ) cipherTypes.push(CipherType.Card)
     if (fieldEl.fieldTypes.identity) cipherTypes.push(CipherType.Identity)
-
-    // if (fieldTypesStr.includes('login_'   )) cipherTypes.push(CipherType.Login)
-    // if (fieldTypesStr.includes('card_'    )) cipherTypes.push(CipherType.Card)
-    // if (fieldTypesStr.includes('identity_')) cipherTypes.push(CipherType.Identity)
 
     return cipherTypes
 }
@@ -586,7 +592,7 @@ function _setApplyFadeInUrl(doApply, fieldTypes) {
     if (!menuEl || !menuEl.src) return
     const url = new URL(menuEl.src)
     if (doApply) {
-        fieldTypes = {...{login: false, identity: false, card: false},...fieldTypes}
+        fieldTypes = {...{login: false, identity: false, card: false, format:false},...fieldTypes}
         state.iFrameHash = {...state.iFrameHash, ...fieldTypes, applyFadeIn: true}
         menuEl.src = url.origin + url.pathname + url.search + '#' +
             encodeURIComponent(JSON.stringify(state.iFrameHash))
@@ -614,6 +620,14 @@ function _hideMenuEl(isHide){
         menuEl.setAttribute('data-show','')
     }
 }
+
+
+/* --------------------------------------------------------------------- */
+// set state.targetFrameId which is the id of the frame containing the menu
+function setHostFrameId(frameId) {
+    state.iFrameHash.hostFrameId = frameId
+}
+menuCtrler.setHostFrameId = setHostFrameId
 
 
 /* --------------------------------------------------------------------- */

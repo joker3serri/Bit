@@ -255,6 +255,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 command: 'fillForm',
                 fillScripts: fillScripts,
                 url: tab.url,
+                frameId: pd.frameId,
             }, { frameId: pd.frameId });
 
             if (!fillScript) { return; }
@@ -304,8 +305,14 @@ export default class AutofillService implements AutofillServiceInterface {
                 // there is no cipher for this URL : deactivate in page menu
                 BrowserApi.tabSendMessage(
                     tab,
-                    {command: 'autofillAnswerRequest', subcommand: 'inPageMenuDeactivate'},
-                    {frameId: pageDetails[0].frameId},
+                    {
+                        command   : 'autofillAnswerRequest',
+                        subcommand: 'inPageMenuDeactivate' ,
+                        frameId   : pageDetails[0].frameId ,
+                    },
+                    {
+                        frameId: pageDetails[0].frameId,
+                    },
                 );
                 return;
             }
@@ -630,7 +637,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 if (!this.evaluateDecisionArray(action)) {
                     // @override by Cozy : this log is required for debug and analysis
                     // console.log("!! ELIMINATE menu for field", {
-                    //     action: `${action[1]}, ${action[3].cipher.fieldType}`,
+                    //     action: `${action[1]}, ${JSON.stringify(action[3].cipher.fieldType)}`,
                     //     field: action[3].field,
                     //     cipher: action[3].cipher,
                     //     form: action[3].field.formObj
@@ -641,7 +648,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 }
                 // @override by Cozy : this log is required for debug and analysis
                 // console.log("ACTIVATE menu for field", {
-                //     action: `${action[1]}, ${action[3].cipher.fieldType}`,
+                //     action: `${action[1]}, ${JSON.stringify(action[3].cipher.fieldType)}`,
                 //     field: action[3].field,
                 //     cipher: action[3].cipher,
                 //     form: action[3].field.formObj
@@ -668,15 +675,18 @@ export default class AutofillService implements AutofillServiceInterface {
         if (da.hasExistingCipher === true && da.field_isInForm === true && da.field_isInSearchForm === false) {
             return true; }
         if (da.field_isInSearchForm === true) {return false; }
-        if (da.connected === true && da.hasExistingCipher === true && da.loginFellows  > 1
-            && da.field_visible === true && da.field_viewable === true) {return true; }
+        if (da.connected === true && da.hasExistingCipher === true && da.loginFellows  > 1 &&
+            da.field_visible === true) {return true; }
         if (da.cardFellows  > 1 && da.field_isInForm === true) {return true; }
+        if (da.connected === true && da.hasIdentityCipher === true && da.identityFellows  > 1
+            && da.field_visible === true) {return true; }
         if (da.connected === false && da.loginFellows === 2) {return true; }
         if (da.connected === false && da.hasLoginCipher === true && da.field_isInloginForm === true) {return true; }
         if (da.connected === false && da.hasLoginCipher === true && da.field_isInSignupForm === true) {return true; }
         if (da.connected === false && da.cardFellows  > 1 && da.field_isInForm === true) {return true; }
         if (da.identityFellows  > 0 && da.field_isInForm === true) {return true; }
         if (da.connected === true && da.hasExistingCipher === undefined && da.hasLoginCipher === true) {return false; }
+
         // end selection conditions
         return false;
     }
@@ -1039,37 +1049,50 @@ export default class AutofillService implements AutofillServiceInterface {
             }
 
             let exp: string = null;
+            let format: any;
             for (let i = 0; i < MonthAbbr.length; i++) {
-                if (this.fieldAttrsContain(fillFields.exp, MonthAbbr[i] + '/' + YearAbbrShort[i]) &&
+                if (this.fieldAttrsContain(fillFields.exp, MonthAbbr[i] + '/' + YearAbbrLong[i])) {
+                    exp = fullMonth + '/' + fullYear;
+                    format = {type: 'expDate', separator: '/', isFullYear: true, isMonthFirst: true};
+                } else if (this.fieldAttrsContain(fillFields.exp, MonthAbbr[i] + '/' + YearAbbrShort[i]) &&
                     partYear != null) {
                     exp = fullMonth + '/' + partYear;
-                } else if (this.fieldAttrsContain(fillFields.exp, MonthAbbr[i] + '/' + YearAbbrLong[i])) {
-                    exp = fullMonth + '/' + fullYear;
+                    format = {type: 'expDate', separator: '/', isFullYear: false, isMonthFirst: true};
+                } else if (this.fieldAttrsContain(fillFields.exp, YearAbbrLong[i]  + '/' + MonthAbbr[i])) {
+                    exp = fullYear + '/' + fullMonth;
+                    format = {type: 'expDate', separator: '/', isFullYear: true, isMonthFirst: false};
                 } else if (this.fieldAttrsContain(fillFields.exp, YearAbbrShort[i] + '/' + MonthAbbr[i]) &&
                     partYear != null) {
                     exp = partYear + '/' + fullMonth;
-                } else if (this.fieldAttrsContain(fillFields.exp, YearAbbrLong[i] + '/' + MonthAbbr[i])) {
-                    exp = fullYear + '/' + fullMonth;
+                    format = {type: 'expDate', separator: '/', isFullYear: false, isMonthFirst: false};
+                } else if (this.fieldAttrsContain(fillFields.exp, MonthAbbr[i] + '-' + YearAbbrLong[i])) {
+                    exp = fullMonth + '-' + fullYear;
+                    format = {type: 'expDate', separator: '-', isFullYear: true, isMonthFirst: true};
                 } else if (this.fieldAttrsContain(fillFields.exp, MonthAbbr[i] + '-' + YearAbbrShort[i]) &&
                     partYear != null) {
                     exp = fullMonth + '-' + partYear;
-                } else if (this.fieldAttrsContain(fillFields.exp, MonthAbbr[i] + '-' + YearAbbrLong[i])) {
-                    exp = fullMonth + '-' + fullYear;
+                    format = {type: 'expDate', separator: '-', isFullYear: false, isMonthFirst: true};
+                } else if (this.fieldAttrsContain(fillFields.exp, YearAbbrLong[i]  + '-' + MonthAbbr[i])) {
+                    exp = fullYear + '-' + fullMonth;
+                    format = {type: 'expDate', separator: '-', isFullYear: true, isMonthFirst: false};
                 } else if (this.fieldAttrsContain(fillFields.exp, YearAbbrShort[i] + '-' + MonthAbbr[i]) &&
                     partYear != null) {
                     exp = partYear + '-' + fullMonth;
-                } else if (this.fieldAttrsContain(fillFields.exp, YearAbbrLong[i] + '-' + MonthAbbr[i])) {
-                    exp = fullYear + '-' + fullMonth;
+                    format = {type: 'expDate', separator: '-', isFullYear: false, isMonthFirst: false};
+                } else if (this.fieldAttrsContain(fillFields.exp, YearAbbrLong[i] + MonthAbbr[i])) {
+                    exp = fullYear + fullMonth;
+                    format = {type: 'expDate', separator: '', isFullYear: true, isMonthFirst: false};
                 } else if (this.fieldAttrsContain(fillFields.exp, YearAbbrShort[i] + MonthAbbr[i]) &&
                     partYear != null) {
                     exp = partYear + fullMonth;
-                } else if (this.fieldAttrsContain(fillFields.exp, YearAbbrLong[i] + MonthAbbr[i])) {
-                    exp = fullYear + fullMonth;
+                    format = {type: 'expDate', separator: '', isFullYear: false, isMonthFirst: false};
+                } else if (this.fieldAttrsContain(fillFields.exp, MonthAbbr[i] + YearAbbrLong[i])) {
+                    exp = fullMonth + fullYear;
+                    format = {type: 'expDate', separator: '', isFullYear: true, isMonthFirst: true};
                 } else if (this.fieldAttrsContain(fillFields.exp, MonthAbbr[i] + YearAbbrShort[i]) &&
                     partYear != null) {
                     exp = fullMonth + partYear;
-                } else if (this.fieldAttrsContain(fillFields.exp, MonthAbbr[i] + YearAbbrLong[i])) {
-                    exp = fullMonth + fullYear;
+                    format = {type: 'expDate', separator: '', isFullYear: false, isMonthFirst: true};
                 }
 
                 if (exp != null) {
@@ -1079,6 +1102,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
             if (exp == null) {
                 exp = fullYear + '-' + fullMonth;
+                format = {type: 'expDate', separator: '/', isFullYear: true, isMonthFirst: true};
             }
 
             this.makeScriptActionWithValue(
@@ -1086,7 +1110,13 @@ export default class AutofillService implements AutofillServiceInterface {
                 exp,
                 fillFields.exp,
                 filledFields,
-                {type: 'card', fieldType: {card: 'exp'}},
+                {
+                    type: 'card',
+                    fieldType: {
+                        card: 'expiration',
+                        value: format,
+                    },
+                },
             );
         }
         fillScript.type = 'autofillScript';
@@ -1281,7 +1311,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 fullName += identity.lastName;
             }
 
-            const cipher = {type: 'identity', fieldType: {identity: 'name'}};
+            const cipher = {type: 'identity', fieldType: {identity: 'fullName'}};
             this.makeScriptActionWithValue(fillScript, fullName, fillFields.name, filledFields, cipher);
         }
 
@@ -1303,7 +1333,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 address += identity.address3;
             }
 
-            const cipher = {type: 'identity', fieldType: {identity: 'address'}};
+            const cipher = {type: 'identity', fieldType: {identity: 'fullAddress'}};
             this.makeScriptActionWithValue(fillScript,
                 address,
                 fillFields.address,

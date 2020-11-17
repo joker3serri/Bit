@@ -27,6 +27,8 @@ import { BrowserApi } from '../browser/browserApi';
 
 import MainBackground from './main.background';
 
+import { CipherWithIds as CipherExport } from 'jslib/models/export/cipherWithIds.ts';
+
 import { KonnectorsService } from '../popup/services/konnectors.service';
 import { AuthService } from '../services/auth.service';
 import { Analytics } from 'jslib/misc';
@@ -133,12 +135,13 @@ export default class RuntimeBackground {
                         const allCiphers = await this.cipherService.getAllDecrypted();
                         const ciphers = {logins: logins, cards: new Array(), identities: new Array()};
                         for (const cipher of allCiphers) {
-                            // cipher.type : 1:login 2:notes  3:Card 4: identities
+                            const cipherData: CipherExport = new CipherExport();
+                            cipherData.build(cipher);
                             switch (cipher.type) {
-                                case 3:
-                                    ciphers.cards.push(cipher);
+                                case CipherType.Card:
+                                    ciphers.cards.push(cipherData);
                                     break;
-                                case 4:
+                                case CipherType.Identity:
                                     ciphers.identities.push(cipher);
                                     break;
                             }
@@ -195,10 +198,17 @@ export default class RuntimeBackground {
                         let rememberedCozyUrl = await this.storageService.get<string>('rememberedCozyUrl');
                         if (!rememberedCozyUrl) { rememberedCozyUrl = ''; }
                         await BrowserApi.tabSendMessage(sender.tab, {
-                            command           : 'menuAnswerRequest',
-                            subcommand        : 'setRememberedCozyUrl',
-                            rememberedCozyUrl : rememberedCozyUrl,
+                            command           : 'menuAnswerRequest'    ,
+                            subcommand        : 'setRememberedCozyUrl' ,
+                            rememberedCozyUrl : rememberedCozyUrl      ,
                         }); // don't add the frameId, since the emiter (menu) is not the target...
+                        break;
+                    case 'fieldFillingWithData':
+                        await BrowserApi.tabSendMessage(sender.tab, {
+                            command : 'fieldFillingWithData',
+                            opId    : msg.opId              ,
+                            data    : msg.data              ,
+                        }, {frameId: msg.frameId});
                         break;
                 }
                 break;
@@ -235,7 +245,7 @@ export default class RuntimeBackground {
             case 'bgGetLoginMenuFillScript':
                 // addon has been disconnected or the page was loaded while addon was not connected
                 const fieldsForInPageMenuScripts =
-                    this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails, false);
+                    this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails, false, sender.frameId);
                 this.autofillService.postFilterFieldsForInPageMenu(
                     fieldsForInPageMenuScripts, msg.pageDetails.forms, msg.pageDetails.fields,
                 );
@@ -246,11 +256,13 @@ export default class RuntimeBackground {
                     subcommand                : 'loginIPMenuSetFields',
                     fieldsForInPageMenuScripts: fieldsForInPageMenuScripts,
                     isPinLocked               : isPinLocked,
+                    frameId                   : sender.frameId,
                 }, {frameId: sender.frameId});
                 break;
             case 'bgGetAutofillMenuScript':
                 // If goes here : means that addon has just been connected (page was already loaded)
-                const script = this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true);
+                const script =
+                    this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true, sender.frameId);
                 await this.autofillService.doAutoFillActiveTab([{
                     frameId                   : sender.frameId,
                     tab                       : sender.tab,
@@ -285,7 +297,7 @@ export default class RuntimeBackground {
                             // get scripts for logins, cards and identities
 
                             const fieldsForAutofillMenuScripts =
-                                this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true);
+                                this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true, sender.frameId);
                             // get script for existing logins.
                             // the 4 scripts (existing logins, logins, cards and identities) will be sent
                             // to autofill.js by autofill.service

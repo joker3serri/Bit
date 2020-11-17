@@ -145,7 +145,6 @@ hr {
 }
 
 .row-text {
-    margin-top: 0.3rem;
     display: block;
     font-size: $font-size-large;
 }
@@ -154,7 +153,11 @@ hr {
     display: block;
     font-size: $font-size-small;
     color: #95999d;
-    min-height: 5px;
+    // min-height: 5px;
+    &:hover {
+        color: black;
+        text-decoration: underline ;
+    }
 }
 
 .hidden {
@@ -169,7 +172,7 @@ hr {
         padding: 0 0.5rem 0.5rem 0.5rem;
     }
     .row-main {
-        padding: 0.475rem 0 0.475rem 0.5rem;
+        padding: 0.5rem 0 0.475rem 0.5rem;
     }
     .row-text {
         font-size: 13px;

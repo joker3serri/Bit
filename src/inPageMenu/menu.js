@@ -1,16 +1,20 @@
 require('./menu.scss');
+import { CipherType } from 'jslib/enums/cipherType.ts';
+import { CipherView } from 'jslib/models/view/cipherView.ts';
+
 
 // Globals
-var ciphers                    ,
-    panel                      ,
-    arrow                      ,
+var arrow                      ,
+    ciphers                    ,
     currentArrowOffset  = null ,
-    resizeListener = null      ,
-    lastSentHeight             ,
-    titleEl                    ,
+    currentFieldData           ,
+    hostFrameId                ,
+    isDisplayed                ,
     i18nGetMessage             ,
-    currentArrowOffset         ,
-    focusedFieldTypes;
+    lastSentHeight             ,
+    panel                      ,
+    resizeListener = null      ,
+    titleEl                    ;
 
 const loginRowTemplate = `
 <div class="row-main">
@@ -87,7 +91,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (msg.command !== 'updateMenuCiphers' && msg.command !== 'menuAnswerRequest') return
 
         if (msg.command === 'updateMenuCiphers') {
-            ciphers = msg.data.ciphers
+            const ciphersData = msg.data.ciphers
+            ciphers = {cards: [], identities: [], logins: []}
+
+            ciphersData.cards.forEach( cd => {
+                ciphers.cards.push( mapData2CipherView(cd, new CipherView()) )
+            });
+            ciphersData.identities.forEach( cd => {
+                ciphers.identities.push( mapData2CipherView(cd, new CipherView()) )
+            });
+            ciphersData.logins.forEach( cd => {
+                ciphers.logins.push( mapData2CipherView(cd, new CipherView()) )
+            });
+
             document.getElementById('logo-link').href = msg.data.cozyUrl
             updateAllRows()
             // then request to adjust the menu height
@@ -133,7 +149,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('#login-rows-list, #card-rows-list, #ids-rows-list').forEach( list => {
         list.addEventListener('click',(e)=>{
             const rowEl = e.target.closest('.row-main')
-            requestFormFillingWithCipher(rowEl.dataset.cipherId)
+            const detailEl = e.target.closest('.row-detail')
+            if (detailEl) {
+                requestFieldFillingWithData(detailEl.textContent)
+            } else {
+                requestFormFillingWithCipher(rowEl.dataset.cipherId)
+            }
         })
     })
 
@@ -157,8 +178,23 @@ function requestFormFillingWithCipher(cipherId) {
 
 
 /* --------------------------------------------------------------------- */
+// Request the background to autofill the page with a cipher
+function requestFieldFillingWithData(dataTxt) {
+    chrome.runtime.sendMessage({
+        command   : 'bgAnswerMenuRequest'  ,
+        subcommand: 'fieldFillingWithData' ,
+        frameId   : hostFrameId            ,
+        data      : dataTxt                ,
+        opId      : currentFieldData.opId  ,
+        sender    : 'menu.js'              ,
+    });
+}
+
+
+/* --------------------------------------------------------------------- */
 // Update all rows
 function updateAllRows() {
+    if (!isDisplayed) return
     updateRows('login')
     updateRows('card')
     updateRows('ids')
@@ -205,18 +241,53 @@ function updateRows(rowsListType) {
         switch (rowsListType) {
             case 'login':
                 text.textContent = cipher.name
+                row.title = 'fill the whole form with this login'
                 detail.textContent = cipher.login.username
+                detail.title = 'fill only this field with this value'
                 break;
             case 'card':
                 text.textContent = cipher.name
-                detail.textContent = cipher.card[focusedFieldTypes.card]
+                row.title = 'fill the whole form with this login'
+                detail.textContent = formatCipherData(cipher.card, currentFieldData.card ,currentFieldData.format)
+                detail.title = 'fill only this field with this value'
                 break;
             case 'ids':
                 text.textContent = cipher.name
-                detail.textContent = cipher.identity[focusedFieldTypes.identity]
+                row.title = 'fill the whole form with this login'
+                detail.textContent = cipher.identity[currentFieldData.identity]
+                detail.title = 'fill only this field with this value'
                 break;
         }
     });
+}
+
+
+
+/* --------------------------------------------------------------------- */
+//
+function formatCipherData(cipherData, key, format) {
+
+    if (!currentFieldData.format) return  cipherData[key];
+
+    if (format.type === 'expDate') {
+        const fullMonth = ('0' + cipherData.expMonth).slice(-2);
+        let fullYear = cipherData.expYear;
+        let partYear = null;
+        if (fullYear.length === 2) {
+            partYear = fullYear;
+            fullYear = '20' + fullYear;
+        } else if (fullYear.length === 4) {
+            partYear = fullYear.substr(2, 2);
+        }
+        const year = format.isFullYear ? fullYear : partYear
+        if (format.isMonthFirst) {
+            return fullMonth + format.separator + year;
+        } else {
+            return  year + format.separator + fullMonth;
+        }
+    } else {
+
+    }
 }
 
 
@@ -224,22 +295,23 @@ function updateRows(rowsListType) {
 // Select the first visible row
 function selectFirstVisibleRow() {
     if (!ciphers) return // no received ciphers yet, rows are not ready
-    const hash = window.location.hash
+    const hash = JSON.parse(decodeURIComponent(window.location.hash).slice(1))
     const currentSelection = document.querySelector('.selected')
     if(currentSelection) currentSelection.classList.remove('selected')
-    if (hash.includes('login_')) {
+    if (hash['login']) {
         document.querySelector('#login-rows-list').firstElementChild.classList.add('selected')
         return
     }
-    if (hash.includes('card_')) {
+    if (hash['card']) {
         document.querySelector('#card-rows-list').firstElementChild.classList.add('selected')
         return
     }
-    if (hash.includes('identity_')) {
+    if (hash['identity']) {
         document.querySelector('#ids-rows-list').firstElementChild.classList.add('selected')
         return
     }
 }
+
 
 /* --------------------------------------------------------------------- */
 // Ask parent page to adjuste iframe height
@@ -256,6 +328,40 @@ function adjustMenuHeight() {
     });
 }
 
+
+/* --------------------------------------------------------------------- */
+// copy each data property into a CipherView to have setters and getters
+function mapData2CipherView(cData, cView) {
+    switch (cData.type) {
+        case CipherType.Login:
+            _mapData2Obj(cData.login, cView.login);
+            break;
+        case CipherType.SecureNote:
+            _mapData2Obj(cData.secureNote, cView.secureNote);
+            break;
+        case CipherType.Card:
+            _mapData2Obj(cData.card, cView.card);
+            break;
+        case CipherType.Identity:
+            _mapData2Obj(cData.identity, cView.identity);
+            break;
+    }
+    const propNotTocopy = ['card', 'login', 'identity', 'secureNote']
+    for (var key in cData) {
+        if (cData.hasOwnProperty(key) && !propNotTocopy.includes(key)) {
+            cView[key] = cData[key]
+        }
+    }
+    return cView
+}
+
+function _mapData2Obj(dataObj, obj) {
+    for (var key in dataObj) {
+        if (dataObj.hasOwnProperty(key)) {
+            obj[key] = dataObj[key]
+        }
+    }
+}
 
 
 /* --------------------------------------------------------------------- */
@@ -282,8 +388,10 @@ function _testHash(){
     let hash = window.location.hash
     if (hash) {
         hash = JSON.parse(decodeURIComponent(hash).slice(1))
+        hostFrameId = hash.hostFrameId
     }
-    focusedFieldTypes = hash
+    const oldFieldData = currentFieldData
+    currentFieldData = hash
 
     const typesOptions = [
         {
@@ -308,7 +416,9 @@ function _testHash(){
 
     for (let options of typesOptions) {
         const rowsEl = document.querySelector(options.selector)
-        if (focusedFieldTypes[options.fieldType]) {
+        const key = options.fieldType
+        if (oldFieldData && oldFieldData[key] === hash[key]) continue
+        if (hash[key]) {
             titleEl.textContent = options.title
             options.updateFn()
             rowsEl.classList.remove('hidden')
@@ -319,8 +429,10 @@ function _testHash(){
 
     if (hash.applyFadeIn) {
         adjustMenuHeight()
+        isDisplayed = true
         panel.classList.add('fade-in')
     } else {
+        isDisplayed = false
         panel.className = "panel";
     }
 
@@ -330,5 +442,4 @@ function _testHash(){
     }
 
     selectFirstVisibleRow()
-
 }

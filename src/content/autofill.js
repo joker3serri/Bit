@@ -1132,6 +1132,7 @@ import menuCtrler from './menuCtrler';
             if (actionsNumber === 0) {
                 menuCtrler.deactivate()
             } else {
+                menuCtrler.setHostFrameId(msg.frameId)
                 fill(document, msg.fillScripts);
             }
             sendResponse();
@@ -1173,6 +1174,7 @@ import menuCtrler from './menuCtrler';
                     menuCtrler.deactivate()
                 } else {
                     // send the script for filling
+                    menuCtrler.setHostFrameId(msg.frameId)
                     fill(document, msg.fieldsForInPageMenuScripts)
                 }
 
@@ -1184,9 +1186,12 @@ import menuCtrler from './menuCtrler';
                     sender: 'notificationBar',
                 });
             }
-        }else if (msg.command === 'updateMenuCiphers') {
+        } else if (msg.command === 'updateMenuCiphers') {
             // store the ciphers sent to the menu to reuse them later on
             menuCtrler.setCiphers(msg.data.ciphers)
+        } else if (msg.command === 'fieldFillingWithData') {
+            document.elementsByOPID[msg.opId].value = msg.data
+            menuCtrler.hide(true);
         }
         sendResponse();
         return true;
