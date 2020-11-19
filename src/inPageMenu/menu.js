@@ -200,7 +200,6 @@ function requestFieldFillingWithData(dataTxt) {
 /* --------------------------------------------------------------------- */
 // Update all rows
 function updateAllRows() {
-    if (!isDisplayed) return
     updateRows('login')
     updateRows('card')
     updateRows('ids')
