@@ -362,7 +362,7 @@ export default class AutofillService implements AutofillServiceInterface {
     // should be displayed.
     // The selection creteria here a the one common to both login and autofill menu.
     // Add prefilters and postFilters depending on the type of menu.
-    generateFieldsForInPageMenuScripts(pageDetails: any, connected: boolean) {
+    async generateFieldsForInPageMenuScripts(pageDetails: any, connected: boolean) {
 
         if (!pageDetails ) {
             return null;
@@ -463,54 +463,76 @@ export default class AutofillService implements AutofillServiceInterface {
            cipher              : cipherModel,
         };
 
-        // B] pre filter the fields into which a login menu should be inserted
+        // B1] pre filter the fields into which a login menu should be inserted
         // (field of search forms, field outside any form, include even not viewable fields )
         this.prepareFieldsForInPageMenu(pageDetails);
 
+        // B2] check if therer are ciphers
+        let hasIdentities: boolean = false;
+        let hasLogins: boolean     = false;
+        let hasCards: boolean      = false;
+        const allCiphers = await this.cipherService.getAllDecrypted();
+        for (const cipher of allCiphers) {
+            if (cipher.isDeleted) { continue; }
+            hasCards      = hasCards      || (cipher.type === CipherType.Card    );
+            hasLogins     = hasLogins     || (cipher.type === CipherType.Login   );
+            hasIdentities = hasIdentities || (cipher.type === CipherType.Identity);
+            if (hasCards && hasLogins && hasIdentities) { break; }
+        }
+
         // C] generate a standard login fillscript for the generic cipher
-        const loginFS = new AutofillScript(pageDetails.documentUUID);
-        const loginFilledFields: { [id: string]: AutofillField; } = {};
-        const loginLoginMenuFillScript    =
+        let loginLoginMenuFillScript: any = [];
+        if (hasLogins) {
+            const loginFS = new AutofillScript(pageDetails.documentUUID);
+            const loginFilledFields: { [id: string]: AutofillField; } = {};
+            loginLoginMenuFillScript    =
             this.generateLoginFillScript(loginFS, pageDetails, loginFilledFields, options);
-        loginLoginMenuFillScript.type   = 'loginFieldsForInPageMenuScript';
-        loginLoginMenuFillScript.script = loginLoginMenuFillScript.script.filter((action) => {
-            // only 'fill_by_opid' are relevant for the fields wher to add a menu
-            if (action[0] !== 'fill_by_opid') { return false; }
-            action[0] = 'add_menu_btn_by_opid';
-            action[3].hasLoginCipher = true;
-            action[3].connected = connected;
-            return true;
-        });
+            loginLoginMenuFillScript.type   = 'loginFieldsForInPageMenuScript';
+            loginLoginMenuFillScript.script = loginLoginMenuFillScript.script.filter((action: any) => {
+                // only 'fill_by_opid' are relevant for the fields wher to add a menu
+                if (action[0] !== 'fill_by_opid') { return false; }
+                action[0] = 'add_menu_btn_by_opid';
+                action[3].hasLoginCipher = true;
+                action[3].connected = connected;
+                return true;
+            });
+        }
 
         // D] generate a standard card fillscript for the generic cipher
-        const cardFS = new AutofillScript(pageDetails.documentUUID);
-        const cardFilledFields: { [id: string]: AutofillField; } = {};
-        const cardLoginMenuFillScript     =
+        let cardLoginMenuFillScript: any = [];
+        if (hasCards) {
+            const cardFS = new AutofillScript(pageDetails.documentUUID);
+            const cardFilledFields: { [id: string]: AutofillField; } = {};
+            cardLoginMenuFillScript     =
             this.generateCardFillScript(cardFS, pageDetails, cardFilledFields, options);
-        cardLoginMenuFillScript.type   = 'cardFieldsForInPageMenuScript';
-        cardLoginMenuFillScript.script = cardLoginMenuFillScript.script.filter((action) => {
+            cardLoginMenuFillScript.type   = 'cardFieldsForInPageMenuScript';
+            cardLoginMenuFillScript.script = cardLoginMenuFillScript.script.filter((action: any) => {
                 // only 'fill_by_opid' are relevant for the fields wher to add a menu
                 if (action[0] !== 'fill_by_opid') { return false; }
                 action[0] = 'add_menu_btn_by_opid';
                 action[3].hasCardCipher = true;
                 action[3].connected = connected;
                 return true;
-        });
+            });
+        }
 
         // E] generate a standard identity fillscript for the generic cipher
-        const idFS = new AutofillScript(pageDetails.documentUUID);
-        const idFilledFields: { [id: string]: AutofillField; } = {};
-        const identityLoginMenuFillScript =
+        let identityLoginMenuFillScript: any = [];
+        if (hasIdentities) {
+            const idFS = new AutofillScript(pageDetails.documentUUID);
+            const idFilledFields: { [id: string]: AutofillField; } = {};
+            identityLoginMenuFillScript =
             this.generateIdentityFillScript(idFS, pageDetails, idFilledFields, options);
-        identityLoginMenuFillScript.type   = 'identityFieldsForInPageMenuScript';
-        identityLoginMenuFillScript.script = identityLoginMenuFillScript.script.filter((action) => {
+            identityLoginMenuFillScript.type   = 'identityFieldsForInPageMenuScript';
+            identityLoginMenuFillScript.script = identityLoginMenuFillScript.script.filter((action: any) => {
                 // only 'fill_by_opid' are relevant for the fields wher to add a menu
                 if (action[0] !== 'fill_by_opid') { return false; }
                 action[0] = 'add_menu_btn_by_opid';
                 action[3].hasIdentityCipher = true;
                 action[3].connected = connected;
                 return true;
-        });
+            });
+        }
 
         return [
             loginLoginMenuFillScript,

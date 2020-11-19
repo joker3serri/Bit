@@ -256,7 +256,7 @@ export default class RuntimeBackground {
                     LocalConstantsService.enableInPageMenuKey);
                 if (enableInPageMenu === null) {enableInPageMenu = true; }
                 if (!enableInPageMenu) { break; }
-                const fieldsForInPageMenuScripts =
+                const fieldsForInPageMenuScripts = await
                     this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails, false, sender.frameId);
                 this.autofillService.postFilterFieldsForInPageMenu(
                     fieldsForInPageMenuScripts, msg.pageDetails.forms, msg.pageDetails.fields,
@@ -273,7 +273,7 @@ export default class RuntimeBackground {
                 break;
             case 'bgGetAutofillMenuScript':
                 // If goes here : means that addon has just been connected (page was already loaded)
-                const script =
+                const script = await
                     this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true, sender.frameId);
                 await this.autofillService.doAutoFillActiveTab([{
                     frameId                   : sender.frameId,
@@ -308,8 +308,9 @@ export default class RuntimeBackground {
                             // If goes here : means that the page has just been loaded while addon was already connected
                             // get scripts for logins, cards and identities
 
-                            const fieldsForAutofillMenuScripts =
-                                this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true, sender.frameId);
+                            const fieldsForAutofillMenuScripts = await
+                                this.autofillService.generateFieldsForInPageMenuScripts(
+                                    msg.details, true, sender.frameId);
                             // get script for existing logins.
                             // the 4 scripts (existing logins, logins, cards and identities) will be sent
                             // to autofill.js by autofill.service
