@@ -135,6 +135,7 @@ export default class RuntimeBackground {
                         const allCiphers = await this.cipherService.getAllDecrypted();
                         const ciphers = {logins: logins, cards: new Array(), identities: new Array()};
                         for (const cipher of allCiphers) {
+                            if (cipher.isDeleted) { continue; }
                             const cipherData: CipherExport = new CipherExport();
                             cipherData.build(cipher);
                             switch (cipher.type) {
