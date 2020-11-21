@@ -467,17 +467,23 @@ export default class AutofillService implements AutofillServiceInterface {
         // (field of search forms, field outside any form, include even not viewable fields )
         this.prepareFieldsForInPageMenu(pageDetails);
 
-        // B2] check if therer are ciphers
+        // B2] if connected, check if therer are ciphers
         let hasIdentities: boolean = false;
         let hasLogins: boolean     = false;
         let hasCards: boolean      = false;
-        const allCiphers = await this.cipherService.getAllDecrypted();
-        for (const cipher of allCiphers) {
-            if (cipher.isDeleted) { continue; }
-            hasCards      = hasCards      || (cipher.type === CipherType.Card    );
-            hasLogins     = hasLogins     || (cipher.type === CipherType.Login   );
-            hasIdentities = hasIdentities || (cipher.type === CipherType.Identity);
-            if (hasCards && hasLogins && hasIdentities) { break; }
+        if (connected) {
+            const allCiphers = await this.cipherService.getAllDecrypted();
+            for (const cipher of allCiphers) {
+                if (cipher.isDeleted) { continue; }
+                hasCards      = hasCards      || (cipher.type === CipherType.Card    );
+                hasLogins     = hasLogins     || (cipher.type === CipherType.Login   );
+                hasIdentities = hasIdentities || (cipher.type === CipherType.Identity);
+                if (hasCards && hasLogins && hasIdentities) { break; }
+            }
+        } else {
+            hasIdentities = true;
+            hasLogins     = true;
+            hasCards      = true;
         }
 
         // C] generate a standard login fillscript for the generic cipher

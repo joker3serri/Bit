@@ -51,6 +51,7 @@ const
         isAutoFillInited : false,  // true when iframe created and ciphers have been received in the menuCtrler
         isFrozen         : false,  // when frozen, you can't hide nor show the menu
         isHidden         : true,
+        isLocked         : false,
         isMenuInited     : false,  // menu is not yet initiated, there is no iframe yet for the menu
         isPinLocked      : false,
         lastFocusedEl    : null,
@@ -127,7 +128,7 @@ function _initInPageMenuForEl(targetEl) {
 	if(!state.isMenuInited) {
         // menu is not yet initiated, there is no iframe elemeent for the menu, create one
         menuEl = document.createElement('iframe')
-        _setIframeURLforMenuType(state.currentMenuType, state.isPinLocked )
+        _setIframeURLforMenuType(state.currentMenuType, state.isPinLocked, state.isLocked )
         menuEl.id  = 'cozy-menu-in-page'
         menuEl.style.cssText = `z-index: 2147483647 !important; border:0; background-color: transparent; visibility: visible !important; width: 150px`
         // Append <style> element to add popperjs styles
@@ -536,15 +537,16 @@ function selectFirstCipherToSuggestFor(fieldEl) {
 
 /* --------------------------------------------------------------------- */
 //
-function setMenuType(menuType, isPinLocked) {
+function setMenuType(menuType, isPinLocked, isLocked) {
     // console.log('setMenuType()', {menuType, isPinLocked});
     if (menuType === state.currentMenuType) {
-        _setIframeURLforMenuType(menuType, isPinLocked)
+        state.isIn2FA = false;
+        _setIframeURLforMenuType(menuType, isPinLocked, isLocked)
         _forceIframeRefresh()
         return
     }
     if (menuEl) {
-        _setIframeURLforMenuType(menuType, isPinLocked)
+        _setIframeURLforMenuType(menuType, isPinLocked, isLocked)
         removeInPageButtons() // remove all "buttons"
         if (menuType === 'autofillMenu' && state.currentMenuType === 'loginMenu' ) {
             if (state.lastFocusedEl) {
@@ -556,7 +558,8 @@ function setMenuType(menuType, isPinLocked) {
         }
     }
     state.currentMenuType = menuType
-    state.isPinLocked = isPinLocked
+    state.isPinLocked     = isPinLocked
+    state.isLocked        = isLocked
 }
 menuCtrler.setMenuType = setMenuType
 
@@ -568,7 +571,7 @@ menuCtrler.setMenuType = setMenuType
 //     * reload if lock state is modified
 //     * force reload by modifying a random variable via _forceIframeRefresh()
 // parameters in the 'hash' section will only be listened inside the iframe
-function _setIframeURLforMenuType(menuType, isPinLocked) {
+function _setIframeURLforMenuType(menuType, isPinLocked, isLocked) {
     if (!menuEl) return
     const hash = '#' + encodeURIComponent(JSON.stringify(state.iFrameHash));
     const rand = '?' + Math.floor((Math.random()*1000000)+1)
@@ -576,7 +579,9 @@ function _setIframeURLforMenuType(menuType, isPinLocked) {
         menuEl.src = chrome.runtime.getURL('inPageMenu/menu.html' + rand) + hash
     } else if (menuType === 'loginMenu') {
         let searchParams = ''
-        if (isPinLocked) searchParams = '?isPinLocked=true'
+        if (isPinLocked) searchParams = 'isPinLocked=true'
+        if (isLocked) searchParams += 'isLocked=true'
+        if (searchParams) searchParams = '?' + searchParams
         menuEl.src = chrome.runtime.getURL('inPageMenu/loginMenu.html' + searchParams + rand) + hash
     }
 }
@@ -598,6 +603,22 @@ function _forceIframeRefresh() {
 function _updateArrowPos(d) {
     if (!menuEl || !menuEl.src) return
     state.iFrameHash.arrowD = d
+    _updateHash()
+}
+
+
+/* --------------------------------------------------------------------- */
+//
+function set2FaMode(doApply) {
+    state.iFrameHash.isIn2FA = doApply
+    _updateHash()
+}
+menuCtrler.set2FaMode = set2FaMode
+
+
+/* --------------------------------------------------------------------- */
+//
+function _updateHash() {
     if (state.isHidden) return
     const url = new URL(menuEl.src)
     menuEl.src = url.origin + url.pathname + url.search + '#' +

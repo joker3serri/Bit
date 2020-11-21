@@ -29,10 +29,11 @@ import MainBackground from './main.background';
 
 import { CipherWithIds as CipherExport } from 'jslib/models/export/cipherWithIds.ts';
 
-import { KonnectorsService } from '../popup/services/konnectors.service';
-import { AuthService } from '../services/auth.service';
 import { Analytics } from 'jslib/misc';
 import { Utils } from 'jslib/misc/utils';
+import { PasswordVerificationRequest } from 'jslib/models/request/passwordVerificationRequest';
+import { KonnectorsService } from '../popup/services/konnectors.service';
+import { AuthService } from '../services/auth.service';
 
 export default class RuntimeBackground {
     private runtime: any;
@@ -189,8 +190,11 @@ export default class RuntimeBackground {
                     case 'login':
                         await this.logIn(msg.email, msg.pwd, sender.tab, msg.loginUrl);
                         break;
-                    case 'pinLogin':
-                        await this.pinLogIn(msg.email, msg.pwd, sender.tab, msg.loginUrl);
+                    case 'unlock':
+                        await this.unlock(msg.email, msg.pwd, sender.tab, msg.loginUrl);
+                        break;
+                    case 'unPinlock':
+                        await this.unPinlock(msg.email, msg.pwd, sender.tab, msg.loginUrl);
                         break;
                     case '2faCheck':
                         await this.twoFaCheck(msg.token, sender.tab);
@@ -261,6 +265,8 @@ export default class RuntimeBackground {
                 this.autofillService.postFilterFieldsForInPageMenu(
                     fieldsForInPageMenuScripts, msg.pageDetails.forms, msg.pageDetails.fields,
                 );
+                const isAuthenticated = await this.userService.isAuthenticated(); // = connected or installed
+                const isLocked = isAuthenticated && await this.vaultTimeoutService.isLocked();
                 const pinSet = await this.vaultTimeoutService.isPinLockSet();
                 const isPinLocked = (pinSet[0] && this.vaultTimeoutService.pinProtectedKey != null) || pinSet[1];
                 await BrowserApi.tabSendMessage(sender.tab, {
@@ -268,6 +274,7 @@ export default class RuntimeBackground {
                     subcommand                : 'loginIPMenuSetFields',
                     fieldsForInPageMenuScripts: fieldsForInPageMenuScripts,
                     isPinLocked               : isPinLocked,
+                    isLocked                  : isLocked,
                     frameId                   : sender.frameId,
                 }, {frameId: sender.frameId});
                 break;
@@ -698,7 +705,7 @@ export default class RuntimeBackground {
 
             if (response.twoFactor) {
                 await BrowserApi.tabSendMessage(tab, {
-                    command   : 'menuAnswerRequest',
+                    command   : 'autofillAnswerRequest',
                     subcommand: '2faRequested',
                 });
             } else {
@@ -726,6 +733,43 @@ export default class RuntimeBackground {
         }
     }
 
+    /*
+    @override by Cozy
+    this function is based on the submit() function in src\popup\accounts\login.component.ts
+    */
+    private async unlock(email: string, pwd: string, tab: any, loginUrl: string) {
+        const kdf = await this.userService.getKdf();
+        const kdfIterations = await this.userService.getKdfIterations();
+        const key = await this.cryptoService.makeKey(pwd, email, kdf, kdfIterations);
+        const keyHash = await this.cryptoService.hashPassword(pwd, key);
+
+        let passwordValid = false;
+
+        if (keyHash != null) {
+            const storedKeyHash = await this.cryptoService.getKeyHash();
+            if (storedKeyHash != null) {
+                passwordValid = storedKeyHash === keyHash;
+            }
+        }
+
+        if (passwordValid) {
+            await this.cryptoService.setKey(key);
+            await BrowserApi.tabSendMessage(tab, {
+                command   : 'menuAnswerRequest',
+                subcommand: 'loginOK',
+            });
+            // when unlock is processed on background side, then your messages are not receivend by the background,
+            // so you need to triger yourself "loggedIn" actions
+            this.processMessage({command: 'unlocked'}, 'runtime.background.ts.unlock()', null);
+
+        } else {
+            await BrowserApi.tabSendMessage(tab, {
+                command   : 'menuAnswerRequest',
+                subcommand: 'loginNOK',
+            });
+        }
+    }
+
     // tslint:disable-next-line
     private invalidPinAttempts = 0;
 
@@ -733,7 +777,7 @@ export default class RuntimeBackground {
     @override by Cozy
     this function is based on the submit() function in jslib/src/angular/components/lock.component.ts
     */
-    private async pinLogIn(email: string, pin: string, tab: any, loginUrl: string) {
+    private async unPinlock(email: string, pin: string, tab: any, loginUrl: string) {
         const kdf = await this.userService.getKdf();
         const kdfIterations = await this.userService.getKdfIterations();
         const pinSet = await this.vaultTimeoutService.isPinLockSet();
@@ -750,7 +794,7 @@ export default class RuntimeBackground {
 
                 if (!failed) {
                     await this.cryptoService.setKey(key);
-                    this.processMessage({command: 'unlocked'}, 'runtime.background.ts.pinLogin()', null);
+                    this.processMessage({command: 'unlocked'}, 'runtime.background.ts.unPinlock()', null);
                 }
             } else {
                 const key = await this.cryptoService.makeKeyFromPin(pin, email, kdf, kdfIterations);
@@ -779,6 +823,10 @@ export default class RuntimeBackground {
         }
     }
 
+    /*
+    @override by Cozy
+    this function is based on the submit() function in jslib/src/angular/components/two-factor.component.ts
+    */
     private async twoFaCheck(token: string, tab: any) {
 
         try {
@@ -793,7 +841,8 @@ export default class RuntimeBackground {
                     subcommand: '2faCheckNOK',
                 });
             } else {
-                // validation succeeded, nothing to do
+                // validation succeeded
+                this.processMessage({command: 'loggedIn'}, 'runtime.background.ts.twoFaCheck()', null);
             }
         } catch (e) {}
     }

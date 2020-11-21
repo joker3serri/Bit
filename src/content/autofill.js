@@ -1024,9 +1024,9 @@ import menuCtrler from './menuCtrler';
         }
 
         if (fillScripts.isForLoginMenu) {
-            menuCtrler.setMenuType('loginMenu', fillScripts.isPinLocked)
+            menuCtrler.setMenuType('loginMenu', fillScripts.isPinLocked, fillScripts.isLocked )
         } else {
-            menuCtrler.setMenuType('autofillMenu', fillScripts.isPinLocked)
+            menuCtrler.setMenuType('autofillMenu', fillScripts.isPinLocked, fillScripts.isLocked )
         }
 
         for (let fillScript of fillScripts) {
@@ -1110,7 +1110,7 @@ import menuCtrler from './menuCtrler';
         });
         */
 
-       if (msg.command === 'notificationBarPageDetails') return
+        if (msg.command === 'notificationBarPageDetails') return
 
         if (msg.command === 'collectPageDetails') {
             var pageDetailsObj = collect(document);
@@ -1164,7 +1164,8 @@ import menuCtrler from './menuCtrler';
                     isPinLocked: msg.isPinLocked,
                 })
             } else if (msg.subcommand === 'loginIPMenuSetFields') {
-                msg.fieldsForInPageMenuScripts.isPinLocked = msg.isPinLocked
+                msg.fieldsForInPageMenuScripts.isPinLocked    = msg.isPinLocked
+                msg.fieldsForInPageMenuScripts.isLocked       = msg.isLocked
                 msg.fieldsForInPageMenuScripts.isForLoginMenu = true
                 // check there are fields where to activate the menu,
                 let nFields = 0
@@ -1185,6 +1186,8 @@ import menuCtrler from './menuCtrler';
                     details: pageDetails,
                     sender: 'notificationBar',
                 });
+            } else if (msg.subcommand === '2faRequested') {
+                menuCtrler.set2FaMode(true)
             }
         } else if (msg.command === 'updateMenuCiphers') {
             // store the ciphers sent to the menu to reuse them later on
