@@ -12,6 +12,7 @@ import { ConstantsService } from 'jslib/services/constants.service';
 import { EnvironmentService } from 'jslib/abstractions/environment.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
 import { NotificationsService } from 'jslib/abstractions/notifications.service';
+import { PolicyService } from 'jslib/abstractions/policy.service';
 import { PopupUtilsService } from '../popup/services/popup-utils.service';
 import { StateService } from 'jslib/abstractions/state.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
@@ -27,6 +28,8 @@ import { NativeMessagingBackground } from './nativeMessaging.background';
 import { Analytics } from 'jslib/misc';
 import { Utils } from 'jslib/misc/utils';
 
+import { PolicyType } from 'jslib/enums/policyType';
+
 export default class RuntimeBackground {
     private runtime: any;
     private autofillTimeout: any;
@@ -39,7 +42,7 @@ export default class RuntimeBackground {
         private storageService: StorageService, private i18nService: I18nService,
         private analytics: Analytics, private notificationsService: NotificationsService,
         private systemService: SystemService, private vaultTimeoutService: VaultTimeoutService,
-        private environmentService: EnvironmentService) {
+        private environmentService: EnvironmentService, private policyService: PolicyService) {
         this.isSafari = this.platformUtilsService.isSafari();
         this.runtime = this.isSafari ? {} : chrome.runtime;
 
@@ -318,6 +321,11 @@ export default class RuntimeBackground {
             if (disabledAddLogin) {
                 return;
             }
+
+            if (!(await this.allowPersonalOwnership())) {
+                return;
+            }
+
             // remove any old messages for this tab
             this.removeTabFromNotificationQueue(tab);
             this.main.notificationQueue.push({
@@ -436,10 +444,12 @@ export default class RuntimeBackground {
         const responseData: any = {};
         if (responseCommand === 'notificationBarDataResponse') {
             responseData.neverDomains = await this.storageService.get<any>(ConstantsService.neverDomainsKey);
-            responseData.disabledAddLoginNotification = await this.storageService.get<boolean>(
+            const disableAddLoginFromOptions = await this.storageService.get<boolean>(
                 ConstantsService.disableAddLoginNotificationKey);
+            responseData.disabledAddLoginNotification = disableAddLoginFromOptions || !(await this.allowPersonalOwnership());
             responseData.disabledChangedPasswordNotification = await this.storageService.get<boolean>(
                 ConstantsService.disableChangedPasswordNotificationKey);
+            // TODO Pass along allowPersonal data to the content scripts
         } else if (responseCommand === 'autofillerAutofillOnPageLoadEnabledResponse') {
             responseData.autofillEnabled = await this.storageService.get<boolean>(
                 ConstantsService.enableAutoFillOnPageLoadKey);
@@ -458,5 +468,17 @@ export default class RuntimeBackground {
         }
 
         await BrowserApi.tabSendMessageData(tab, responseCommand, responseData);
+    }
+
+    private async allowPersonalOwnership(): Promise<boolean> {
+        const personalOwnershipPolicies = await this.policyService.getAll(PolicyType.PersonalOwnership);
+        if (personalOwnershipPolicies != null) {
+            for (const policy of personalOwnershipPolicies) {
+                if (policy.enabled) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }
