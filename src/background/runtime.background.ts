@@ -18,6 +18,7 @@ import { StateService } from 'jslib/abstractions/state.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
 import { SyncService } from 'jslib/abstractions/sync.service';
 import { SystemService } from 'jslib/abstractions/system.service';
+import { UserService } from 'jslib/abstractions/user.service';
 import { VaultTimeoutService } from 'jslib/abstractions/vaultTimeout.service';
 
 import { BrowserApi } from '../browser/browserApi';
@@ -29,6 +30,7 @@ import { Analytics } from 'jslib/misc';
 import { Utils } from 'jslib/misc/utils';
 
 import { PolicyType } from 'jslib/enums/policyType';
+import { OrganizationUserStatusType } from 'jslib/enums/organizationUserStatusType';
 
 export default class RuntimeBackground {
     private runtime: any;
@@ -42,7 +44,8 @@ export default class RuntimeBackground {
         private storageService: StorageService, private i18nService: I18nService,
         private analytics: Analytics, private notificationsService: NotificationsService,
         private systemService: SystemService, private vaultTimeoutService: VaultTimeoutService,
-        private environmentService: EnvironmentService, private policyService: PolicyService) {
+        private environmentService: EnvironmentService, private policyService: PolicyService,
+        private userService: UserService) {
         this.isSafari = this.platformUtilsService.isSafari();
         this.runtime = this.isSafari ? {} : chrome.runtime;
 
@@ -449,7 +452,6 @@ export default class RuntimeBackground {
             responseData.disabledAddLoginNotification = disableAddLoginFromOptions || !(await this.allowPersonalOwnership());
             responseData.disabledChangedPasswordNotification = await this.storageService.get<boolean>(
                 ConstantsService.disableChangedPasswordNotificationKey);
-            // TODO Pass along allowPersonal data to the content scripts
         } else if (responseCommand === 'autofillerAutofillOnPageLoadEnabledResponse') {
             responseData.autofillEnabled = await this.storageService.get<boolean>(
                 ConstantsService.enableAutoFillOnPageLoadKey);
@@ -475,7 +477,11 @@ export default class RuntimeBackground {
         if (personalOwnershipPolicies != null) {
             for (const policy of personalOwnershipPolicies) {
                 if (policy.enabled) {
-                    return false;
+                    const org = await this.userService.getOrganization(policy.organizationId);
+                    if (org != null && org.enabled && org.usePolicies && !org.isAdmin
+                        && org.status == OrganizationUserStatusType.Confirmed) {
+                        return false;
+                    }
                 }
             }
         }
