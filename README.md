@@ -15,13 +15,13 @@ The Cozy browser extension is written using the Web Extension API and Angular. I
 
 # Build/Run
 
-**Requirements**
+## Requirements
 
 - [Node.js](https://nodejs.org) v10 or greater
 - [Gulp](https://gulpjs.com/) (`npm install --global gulp-cli`)
 - Chrome (preferred), Opera, Firefox browser or Safari
 
-**Run the app**
+## Build for developement
 
 ```
 npm install
@@ -37,3 +37,12 @@ You can now load the extension into your browser through the browser's extension
 - Firefox
   1. Type `about:debugging` in your address bar to bring up the add-ons page.
   2. Click the `Load Temporary Add-on` button, navigate to the `build/manifest.json` file, and "Open".
+
+## Production build
+
+Production builds can be created for each browser with the following commands:
+
+```
+npm install
+npm run dist:<firefox|chrome|opera|safari>`
+```
