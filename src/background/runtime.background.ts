@@ -29,8 +29,8 @@ import { NativeMessagingBackground } from './nativeMessaging.background';
 import { Analytics } from 'jslib/misc';
 import { Utils } from 'jslib/misc/utils';
 
-import { PolicyType } from 'jslib/enums/policyType';
 import { OrganizationUserStatusType } from 'jslib/enums/organizationUserStatusType';
+import { PolicyType } from 'jslib/enums/policyType';
 
 export default class RuntimeBackground {
     private runtime: any;
