@@ -83,18 +83,18 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
         }
 
         const queryParamsSub = this.route.queryParams.subscribe(async (qParams) => {
-            if (qParams.sso != null && qParams.sso === 'true') {
+            if (qParams.sso === 'true') {
                 super.onSuccessfulLogin = () => {
                     BrowserApi.reloadOpenWindows();
                     const thisWindow = window.open('', '_self');
                     thisWindow.close();
                     return this.syncService.fullSync(true);
-                }
+                };
                 if (queryParamsSub != null) {
                     queryParamsSub.unsubscribe();
                 }
             }
-        })
+        });
     }
 
     ngOnDestroy() {
