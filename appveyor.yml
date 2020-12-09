@@ -24,6 +24,8 @@ init:
 
 install:
 - cmd: npm install -g gulp
+# Grab jslib code for build
+- cmd: git submodule update --init --recursive
 - ps: choco install cloc --no-progress
 - ps: cloc --include-lang TypeScript,JavaScript,HTML,Sass,CSS --vcs git
 
