@@ -1415,6 +1415,6 @@
     "message": "Desktop communication interupted"
   },
   "personalOwnershipSubmitError": {
-    "message": "Due to an Enterprise Policy, you are restricted from saving items to your personal vault. Change the Ownership Option to an organization and choose from available Collections."
+    "message": "Due to an Enterprise Policy, you are restricted from saving items to your personal vault. Change the Ownership option to an organization and choose from available Collections."
   }
 }
