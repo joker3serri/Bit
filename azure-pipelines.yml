@@ -31,7 +31,9 @@ steps:
     call npm --version
   displayName: 'Version checks'
 
-- script: call npm install
+- script: |
+    git submodule update --init --recursive
+    call npm install
   displayName: 'npm install'
 
 - script: call npm run build
