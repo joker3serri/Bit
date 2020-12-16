@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     errorLabel = document.querySelector('#error-label')
 
     // 2- set isLocked & isPinLocked
+    isLocked    = window.location.search.indexOf('isLocked=true') === -1    ? false : true
     isPinLocked = window.location.search.indexOf('isPinLocked=true') === -1 ? false : true
 
     // 3- close iframe when it looses focus
@@ -121,13 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // console.log("loginNOK heard in loginInPageMenu");
                 errorLabel.innerHTML  = chrome.i18n.getMessage('inPageMenuLoginError')
                 _setErrorMode()
-                break;
-            case '2faRequested':
-                // console.log('2faRequested heard in loginInPageMenu');
-                isIn2FA = true
-                panel.classList.add('twoFa-mode')
-                panel.classList.remove('error')
-                _removeWaitingMode()
                 break;
             case '2faCheckNOK':
                 // console.log("2faCheckNOK heard in loginInPageMenu");
@@ -224,7 +218,9 @@ async function submit() {
     // decide if it's a login or pinLogin
     var subcommand = 'login'
     if (isPinLocked) {
-        subcommand = 'pinLogin'
+        subcommand = 'unPinlock'
+    } else if (isLocked) {
+        subcommand = 'unlock'
     }
 
     chrome.runtime.sendMessage({
@@ -342,6 +338,7 @@ function _setWaitingMode() {
 //    arrowD:[Float],
 // }
 function _testHash(){
+    // console.log('loginMenu._testHash()');
     let hash = window.location.hash
     if (hash) {
         hash = JSON.parse(decodeURIComponent(hash).slice(1))
@@ -351,6 +348,15 @@ function _testHash(){
         panel.classList.add('fade-in')
     } else {
         panel.className = "panel";
+    }
+    if (hash.isIn2FA) {
+        isIn2FA = true
+        panel.classList.add('twoFa-mode')
+        panel.classList.remove('error')
+        _removeWaitingMode()
+    } else {
+        panel.classList.remove('twoFa-mode')
+        isIn2FA = false
     }
 
     if (hash.arrowD !== undefined && hash.arrowD !== currentArrowD ) {

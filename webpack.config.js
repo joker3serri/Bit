@@ -75,7 +75,7 @@ const plugins = [
     new HtmlWebpackPlugin({
         template: './src/popup/index.html',
         filename: 'popup/index.html',
-        chunks: ['popup/vendor', 'popup/main'],
+        chunks: ['popup/vendor-angular', 'popup/vendor', 'popup/main'],
     }),
     new HtmlWebpackPlugin({
         template: './src/background.html',
@@ -150,6 +150,7 @@ const config = {
         'content/autofiller': './src/content/autofiller.ts',
         'content/notificationBar': './src/content/notificationBar.ts',
         'content/shortcuts': './src/content/shortcuts.ts',
+        'content/sso': './src/content/sso.ts',
         'notification/bar': './src/notification/bar.js',
         'inPageMenu/menu': './src/inPageMenu/menu.js',
         'inPageMenu/loginMenu': './src/inPageMenu/loginMenu.js',
@@ -159,8 +160,22 @@ const config = {
         splitChunks: {
             cacheGroups: {
                 commons: {
-                    test: /[\\/]node_modules[\\/]/,
+                    test(module, chunks) {
+                        return module.resource != null &&
+                            module.resource.includes(`${path.sep}node_modules${path.sep}`) &&
+                            !module.resource.includes(`${path.sep}node_modules${path.sep}@angular${path.sep}`);
+                    },
                     name: 'popup/vendor',
+                    chunks: (chunk) => {
+                        return chunk.name === 'popup/main';
+                    },
+                },
+                angular: {
+                    test(module, chunks) {
+                        return module.resource != null &&
+                            module.resource.includes(`${path.sep}node_modules${path.sep}@angular${path.sep}`);
+                    },
+                    name: 'popup/vendor-angular',
                     chunks: (chunk) => {
                         return chunk.name === 'popup/main';
                     },

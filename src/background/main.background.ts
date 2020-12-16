@@ -12,6 +12,7 @@ import {
     FolderService,
     PasswordGenerationService,
     SettingsService,
+    StateService,
     TokenService,
     TotpService,
     UserService,
@@ -44,6 +45,7 @@ import {
     PasswordGenerationService as PasswordGenerationServiceAbstraction,
     PlatformUtilsService as PlatformUtilsServiceAbstraction,
     SettingsService as SettingsServiceAbstraction,
+    StateService as StateServiceAbstraction,
     StorageService as StorageServiceAbstraction,
     SyncService as SyncServiceAbstraction,
     TokenService as TokenServiceAbstraction,
@@ -51,6 +53,7 @@ import {
     UserService as UserServiceAbstraction,
     VaultTimeoutService as VaultTimeoutServiceAbstraction,
 } from 'jslib/abstractions';
+import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from 'jslib/abstractions/cryptoFunction.service';
 import { EventService as EventServiceAbstraction } from 'jslib/abstractions/event.service';
 import { ExportService as ExportServiceAbstraction } from 'jslib/abstractions/export.service';
 import { NotificationsService as NotificationsServiceAbstraction } from 'jslib/abstractions/notifications.service';
@@ -80,6 +83,7 @@ import BrowserMessagingService from '../services/browserMessaging.service';
 import BrowserPlatformUtilsService from '../services/browserPlatformUtils.service';
 import BrowserStorageService from '../services/browserStorage.service';
 import I18nService from '../services/i18n.service';
+import { PopupUtilsService } from '../popup/services/popup-utils.service';
 
 import { AutofillService as AutofillServiceAbstraction } from '../services/abstractions/autofill.service';
 
@@ -91,6 +95,7 @@ export default class MainBackground {
     platformUtilsService: PlatformUtilsServiceAbstraction;
     constantsService: ConstantsService;
     cryptoService: CryptoServiceAbstraction;
+    cryptoFunctionService: CryptoFunctionServiceAbstraction;
     tokenService: TokenServiceAbstraction;
     appIdService: AppIdServiceAbstraction;
     apiService: ApiServiceAbstraction;
@@ -107,16 +112,19 @@ export default class MainBackground {
     autofillService: AutofillServiceAbstraction;
     containerService: ContainerService;
     auditService: AuditServiceAbstraction;
+    // authService: AuthServiceAbstraction;
+    authService: AuthService;
     exportService: ExportServiceAbstraction;
     searchService: SearchServiceAbstraction;
     notificationsService: NotificationsServiceAbstraction;
+    stateService: StateServiceAbstraction;
     systemService: SystemServiceAbstraction;
     eventService: EventServiceAbstraction;
     policyService: PolicyServiceAbstraction;
     analytics: Analytics;
+    popupUtilsService: PopupUtilsService;
     cozyClientService: CozyClientService;
     konnectorsService: KonnectorsService;
-    authService: AuthService;
 
     onUpdatedRan: boolean;
     onReplacedRan: boolean;
@@ -149,13 +157,25 @@ export default class MainBackground {
         this.storageService = new BrowserStorageService(this.platformUtilsService);
         this.secureStorageService = new BrowserStorageService(this.platformUtilsService);
         this.i18nService = new I18nService(BrowserApi.getUILanguage(window));
-        const cryptoFunctionService = new WebCryptoFunctionService(window, this.platformUtilsService);
-        this.cryptoService = new CryptoService(this.storageService, this.secureStorageService, cryptoFunctionService);
+        this.cryptoFunctionService = new WebCryptoFunctionService(window, this.platformUtilsService);
+        this.cryptoService = new CryptoService(this.storageService, this.secureStorageService,
+            this.cryptoFunctionService);
         this.tokenService = new TokenService(this.storageService);
         this.appIdService = new AppIdService(this.storageService);
         this.apiService = new ApiService(this.tokenService, this.platformUtilsService,
             (expired: boolean) => this.logout(expired));
         this.userService = new UserService(this.tokenService, this.storageService);
+        this.environmentService = new EnvironmentService(this.apiService, this.storageService,
+            this.notificationsService); // this declaration has been moved up for the cozyClientService declaration
+        this.cozyClientService = new CozyClientService(this.environmentService, this.apiService);
+        // this.authService = new AuthService(this.cryptoService, this.apiService, this.userService,
+        //     this.tokenService, this.appIdService, this.i18nService, this.platformUtilsService,
+        //     this.messagingService, this.vaultTimeoutService);
+        this.authService = new AuthService(this.cryptoService, this.apiService, this.userService,
+            this.tokenService, this.appIdService, this.i18nService, this.platformUtilsService,
+            this.messagingService, this.vaultTimeoutService,
+            true, this.cozyClientService,
+        );
         this.settingsService = new SettingsService(this.userService, this.storageService);
         this.cipherService = new CipherService(this.cryptoService, this.userService, this.settingsService,
             this.apiService, this.storageService, this.i18nService, () => this.searchService);
@@ -163,7 +183,8 @@ export default class MainBackground {
             this.storageService, this.i18nService, this.cipherService);
         this.collectionService = new CollectionService(this.cryptoService, this.userService, this.storageService,
             this.i18nService);
-        this.searchService = new SearchService(this.cipherService, this.platformUtilsService);
+        this.searchService = new SearchService(this.cipherService);
+        this.stateService = new StateService();
         this.policyService = new PolicyService(this.userService, this.storageService);
         this.vaultTimeoutService = new VaultTimeoutService(this.cipherService, this.folderService,
             this.collectionService, this.cryptoService, this.platformUtilsService, this.storageService,
@@ -243,18 +264,19 @@ export default class MainBackground {
             this.cipherService);
         this.passwordGenerationService = new PasswordGenerationService(this.cryptoService, this.storageService,
             this.policyService);
-        this.totpService = new TotpService(this.storageService, cryptoFunctionService);
+        this.totpService = new TotpService(this.storageService, this.cryptoFunctionService);
         this.autofillService = new AutofillService(this.cipherService, this.userService, this.totpService,
             this.eventService);
         this.containerService = new ContainerService(this.cryptoService);
-        this.auditService = new AuditService(cryptoFunctionService, this.apiService);
+        this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
         this.exportService = new ExportService(this.folderService, this.cipherService, this.apiService);
         this.notificationsService = new NotificationsService(this.userService, this.syncService, this.appIdService,
             this.apiService, this.vaultTimeoutService, () => this.logout(true));
-        this.environmentService = new EnvironmentService(this.apiService, this.storageService,
-            this.notificationsService);
+        // this.environmentService = new EnvironmentService(this.apiService, this.storageService,
+        //     this.notificationsService); // this declaration has been moved up for the cozyClientService declaration
         this.analytics = new Analytics(window, () => BrowserApi.gaFilter(), this.platformUtilsService,
             this.storageService, this.appIdService);
+        this.popupUtilsService = new PopupUtilsService(this.platformUtilsService);
         this.systemService = new SystemService(this.storageService, this.vaultTimeoutService,
             this.messagingService, this.platformUtilsService, () => {
                 const forceWindowReload = this.platformUtilsService.isSafari() ||
@@ -263,7 +285,6 @@ export default class MainBackground {
                 return Promise.resolve();
             });
 
-        this.cozyClientService = new CozyClientService(this.environmentService, this.apiService);
         this.konnectorsService = new KonnectorsService(this.cipherService, this.storageService, this.settingsService,
             this.cozyClientService);
 
@@ -272,6 +293,7 @@ export default class MainBackground {
         this.sidebarAction = this.isSafari ? null : (typeof opr !== 'undefined') && opr.sidebarAction ?
             opr.sidebarAction : (window as any).chrome.sidebarAction;
 
+        // Background
         this.commandsBackground = new CommandsBackground(this, this.passwordGenerationService,
             this.platformUtilsService, this.analytics, this.vaultTimeoutService);
 
@@ -287,25 +309,12 @@ export default class MainBackground {
             this.windowsBackground = new WindowsBackground(this);
         }
 
-        this.authService = new AuthService(
-            this.cryptoService,
-            this.apiService,
-            this.userService,
-            this.tokenService,
-            this.appIdService,
-            this.i18nService,
-            this.platformUtilsService,
-            this.messagingService,
-            true,
-            this.cozyClientService,
-        );
-
         // Background
         this.runtimeBackground = new RuntimeBackground(this, this.autofillService, this.cipherService,
             this.platformUtilsService as BrowserPlatformUtilsService, this.storageService, this.i18nService,
             this.analytics, this.notificationsService, this.systemService, this.vaultTimeoutService,
-            this.konnectorsService, this.syncService, this.authService, this.environmentService, this.cryptoService,
-            this.userService);
+            this.environmentService,
+            this.konnectorsService, this.syncService, this.authService, this.cryptoService, this.userService);
 
     }
 
@@ -586,47 +595,44 @@ export default class MainBackground {
             title: this.i18nService.t('autoFill'),
         });
 
-        // Edge does not support writing to the clipboard from background
-        if (!this.platformUtilsService.isEdge()) {
+        await this.contextMenusCreate({
+            type: 'normal',
+            id: 'copy-username',
+            parentId: 'root',
+            contexts: ['all'],
+            title: this.i18nService.t('copyUsername'),
+        });
+
+        await this.contextMenusCreate({
+            type: 'normal',
+            id: 'copy-password',
+            parentId: 'root',
+            contexts: ['all'],
+            title: this.i18nService.t('copyPassword'),
+        });
+
+        if (await this.userService.canAccessPremium()) {
             await this.contextMenusCreate({
                 type: 'normal',
-                id: 'copy-username',
+                id: 'copy-totp',
                 parentId: 'root',
                 contexts: ['all'],
-                title: this.i18nService.t('copyUsername'),
-            });
-
-            await this.contextMenusCreate({
-                type: 'normal',
-                id: 'copy-password',
-                parentId: 'root',
-                contexts: ['all'],
-                title: this.i18nService.t('copyPassword'),
-            });
-
-            if (await this.userService.canAccessPremium()) {
-                await this.contextMenusCreate({
-                    type: 'normal',
-                    id: 'copy-totp',
-                    parentId: 'root',
-                    contexts: ['all'],
-                    title: this.i18nService.t('copyVerificationCode'),
-                });
-            }
-
-            await this.contextMenusCreate({
-                type: 'separator',
-                parentId: 'root',
-            });
-
-            await this.contextMenusCreate({
-                type: 'normal',
-                id: 'generate-password',
-                parentId: 'root',
-                contexts: ['all'],
-                title: this.i18nService.t('generatePasswordCopied'),
+                title: this.i18nService.t('copyVerificationCode'),
             });
         }
+
+        await this.contextMenusCreate({
+            type: 'separator',
+            parentId: 'root',
+        });
+
+        await this.contextMenusCreate({
+            type: 'normal',
+            id: 'generate-password',
+            parentId: 'root',
+            contexts: ['all'],
+            title: this.i18nService.t('generatePasswordCopied'),
+        });
 
         this.buildingContextMenu = false;
     }

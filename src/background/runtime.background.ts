@@ -4,19 +4,22 @@ import { CipherView } from 'jslib/models/view/cipherView';
 import { LoginUriView } from 'jslib/models/view/loginUriView';
 import { LoginView } from 'jslib/models/view/loginView';
 
+import { AutofillService } from '../services/abstractions/autofill.service';
+import BrowserPlatformUtilsService from '../services/browserPlatformUtils.service';
+import { CipherService } from 'jslib/abstractions/cipher.service';
 import { ConstantsService } from 'jslib/services/constants.service';
 import { LocalConstantsService } from '../popup/services/constants.service';
 
+import { EnvironmentService } from 'jslib/abstractions/environment.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
-
 import { CipherString } from 'jslib/models/domain/cipherString';
-
-import { Analytics } from 'jslib/misc';
-
-import { EnvironmentService as EnvironmentServiceAbstraction, UserService } from 'jslib/abstractions';
-import { CipherService } from 'jslib/abstractions/cipher.service';
+import { UserService } from 'jslib/abstractions';
 import { CryptoService } from 'jslib/abstractions/crypto.service';
+import { NotificationsService } from 'jslib/abstractions/notifications.service';
+import { PopupUtilsService } from '../popup/services/popup-utils.service';
+import { StateService } from 'jslib/abstractions/state.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
+import { SyncService } from 'jslib/abstractions/sync.service';
 import { SystemService } from 'jslib/abstractions/system.service';
 import { VaultTimeoutService } from 'jslib/abstractions/vaultTimeout.service';
 
@@ -24,16 +27,13 @@ import { BrowserApi } from '../browser/browserApi';
 
 import MainBackground from './main.background';
 
-import { KonnectorsService } from '../popup/services/konnectors.service';
+import { CipherWithIds as CipherExport } from 'jslib/models/export/cipherWithIds.ts';
 
-import { AutofillService } from '../services/abstractions/autofill.service';
-import { AuthService } from '../services/auth.service';
-import BrowserPlatformUtilsService from '../services/browserPlatformUtils.service';
-
-import { NotificationsService } from 'jslib/abstractions/notifications.service';
-import { SyncService } from 'jslib/abstractions/sync.service';
-
+import { Analytics } from 'jslib/misc';
 import { Utils } from 'jslib/misc/utils';
+import { PasswordVerificationRequest } from 'jslib/models/request/passwordVerificationRequest';
+import { KonnectorsService } from '../popup/services/konnectors.service';
+import { AuthService } from '../services/auth.service';
 
 export default class RuntimeBackground {
     private runtime: any;
@@ -47,9 +47,10 @@ export default class RuntimeBackground {
         private storageService: StorageService, private i18nService: I18nService,
         private analytics: Analytics, private notificationsService: NotificationsService,
         private systemService: SystemService, private vaultTimeoutService: VaultTimeoutService,
+        private environmentService: EnvironmentService,
         private konnectorsService: KonnectorsService, private syncService: SyncService,
-        private authService: AuthService, private environmentService: EnvironmentServiceAbstraction,
-        private cryptoService: CryptoService, private userService: UserService) {
+        private authService: AuthService, private cryptoService: CryptoService,
+        private userService: UserService) {
         this.isSafari = this.platformUtilsService.isSafari();
         this.runtime = this.isSafari ? {} : chrome.runtime;
 
@@ -77,7 +78,8 @@ export default class RuntimeBackground {
         @override by Cozy : this log is very useful for reverse engineering the code, keep it for tests
         console.log('runtime.background PROCESS MESSAGE ', {
             'command': msg.subcommand ? msg.subcommand : msg.command,
-            'sender': msg.sender + ' of ' + (new URL(sender.url)).host + ' frameId:' + sender.frameId,
+            'sender': msg.sender + ' of ' +
+            (sender.url ? (new URL(sender.url)).host + ' frameId:' + sender.frameId : sender),
             'full.msg': msg,
             'full.sender': sender,
         });
@@ -134,18 +136,19 @@ export default class RuntimeBackground {
                         const allCiphers = await this.cipherService.getAllDecrypted();
                         const ciphers = {logins: logins, cards: new Array(), identities: new Array()};
                         for (const cipher of allCiphers) {
-                            // cipher.type : 1:login 2:notes  3:Card 4: identities
+                            if (cipher.isDeleted) { continue; }
+                            const cipherData: CipherExport = new CipherExport();
+                            cipherData.build(cipher);
                             switch (cipher.type) {
-                                case 3:
-                                    ciphers.cards.push(cipher);
+                                case CipherType.Card:
+                                    ciphers.cards.push(cipherData);
                                     break;
-                                case 4:
+                                case CipherType.Identity:
                                     ciphers.identities.push(cipher);
                                     break;
                             }
                         }
-                        const vaultUrl = this.environmentService.getWebVaultUrl();
-                        const cozyUrl = new URL(vaultUrl).origin;
+                        const cozyUrl = new URL(this.environmentService.getWebVaultUrl()).origin;
                         await BrowserApi.tabSendMessageData(sender.tab, 'updateMenuCiphers', {
                             ciphers: ciphers,
                             cozyUrl: cozyUrl,
@@ -187,8 +190,11 @@ export default class RuntimeBackground {
                     case 'login':
                         await this.logIn(msg.email, msg.pwd, sender.tab, msg.loginUrl);
                         break;
-                    case 'pinLogin':
-                        await this.pinLogIn(msg.email, msg.pwd, sender.tab, msg.loginUrl);
+                    case 'unlock':
+                        await this.unlock(msg.email, msg.pwd, sender.tab, msg.loginUrl);
+                        break;
+                    case 'unPinlock':
+                        await this.unPinlock(msg.email, msg.pwd, sender.tab, msg.loginUrl);
                         break;
                     case '2faCheck':
                         await this.twoFaCheck(msg.token, sender.tab);
@@ -197,10 +203,24 @@ export default class RuntimeBackground {
                         let rememberedCozyUrl = await this.storageService.get<string>('rememberedCozyUrl');
                         if (!rememberedCozyUrl) { rememberedCozyUrl = ''; }
                         await BrowserApi.tabSendMessage(sender.tab, {
-                            command           : 'menuAnswerRequest',
-                            subcommand        : 'setRememberedCozyUrl',
-                            rememberedCozyUrl : rememberedCozyUrl,
+                            command           : 'menuAnswerRequest'    ,
+                            subcommand        : 'setRememberedCozyUrl' ,
+                            rememberedCozyUrl : rememberedCozyUrl      ,
                         }); // don't add the frameId, since the emiter (menu) is not the target...
+                        break;
+                    case 'fieldFillingWithData':
+                        await BrowserApi.tabSendMessage(sender.tab, {
+                            command : 'fieldFillingWithData',
+                            opId    : msg.opId              ,
+                            data    : msg.data              ,
+                        }, {frameId: msg.frameId});
+                        break;
+                    case 'askMenuTofillFieldWithData':
+                        await BrowserApi.tabSendMessage(sender.tab, {
+                            command       : 'menuAnswerRequest'       ,
+                            subcommand    : 'trigerFillFieldWithData' ,
+                            frameTargetId : sender.frameId            ,
+                        });
                         break;
                 }
                 break;
@@ -236,11 +256,17 @@ export default class RuntimeBackground {
                 break;
             case 'bgGetLoginMenuFillScript':
                 // addon has been disconnected or the page was loaded while addon was not connected
-                const fieldsForInPageMenuScripts =
-                    this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails, false);
+                let enableInPageMenu = await this.storageService.get<boolean>(
+                    LocalConstantsService.enableInPageMenuKey);
+                if (enableInPageMenu === null) {enableInPageMenu = true; }
+                if (!enableInPageMenu) { break; }
+                const fieldsForInPageMenuScripts = await
+                    this.autofillService.generateFieldsForInPageMenuScripts(msg.pageDetails, false, sender.frameId);
                 this.autofillService.postFilterFieldsForInPageMenu(
                     fieldsForInPageMenuScripts, msg.pageDetails.forms, msg.pageDetails.fields,
                 );
+                const isAuthenticated = await this.userService.isAuthenticated(); // = connected or installed
+                const isLocked = isAuthenticated && await this.vaultTimeoutService.isLocked();
                 const pinSet = await this.vaultTimeoutService.isPinLockSet();
                 const isPinLocked = (pinSet[0] && this.vaultTimeoutService.pinProtectedKey != null) || pinSet[1];
                 await BrowserApi.tabSendMessage(sender.tab, {
@@ -248,12 +274,15 @@ export default class RuntimeBackground {
                     subcommand                : 'loginIPMenuSetFields',
                     fieldsForInPageMenuScripts: fieldsForInPageMenuScripts,
                     isPinLocked               : isPinLocked,
+                    isLocked                  : isLocked,
+                    frameId                   : sender.frameId,
                 }, {frameId: sender.frameId});
                 break;
             case 'bgGetAutofillMenuScript':
                 // If goes here : means that addon has just been connected (page was already loaded)
-                const script = this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true);
-                await this.autofillService.doAutoFillForLastUsedLogin([{
+                const script = await
+                    this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true, sender.frameId);
+                await this.autofillService.doAutoFillActiveTab([{
                     frameId                   : sender.frameId,
                     tab                       : sender.tab,
                     details                   : msg.details,
@@ -286,13 +315,14 @@ export default class RuntimeBackground {
                             // If goes here : means that the page has just been loaded while addon was already connected
                             // get scripts for logins, cards and identities
 
-                            const fieldsForAutofillMenuScripts =
-                                this.autofillService.generateFieldsForInPageMenuScripts(msg.details, true);
+                            const fieldsForAutofillMenuScripts = await
+                                this.autofillService.generateFieldsForInPageMenuScripts(
+                                    msg.details, true, sender.frameId);
                             // get script for existing logins.
                             // the 4 scripts (existing logins, logins, cards and identities) will be sent
                             // to autofill.js by autofill.service
                             try {
-                                const totpCode1 = await this.autofillService.doAutoFillForLastUsedLogin([{
+                                const totpCode1 = await this.autofillService.doAutoFillActiveTab([{
                                     frameId: sender.frameId,
                                     tab: msg.tab,
                                     details: msg.details,
@@ -300,7 +330,7 @@ export default class RuntimeBackground {
                                     sender: 'notifBarForInPageMenu', // to prepare a fillscript for the in-page-menu
                                 }], true);
                             } catch (error) {
-                                // the `doAutoFillForLastUsedLogin` is run in a `try` because the original BW code
+                                // the `doAutoFillActiveTab` is run in a `try` because the original BW code
                                 // casts an error when no autofill is detected;
                             }
                         }
@@ -314,7 +344,7 @@ export default class RuntimeBackground {
                         break;
                     case 'autofiller':
                     case 'autofill_cmd':
-                        const totpCode = await this.autofillService.doAutoFillForLastUsedLogin([{
+                        const totpCode = await this.autofillService.doAutoFillActiveTab([{
                             frameId: sender.frameId,
                             tab: msg.tab,
                             details: msg.details,
@@ -356,6 +386,22 @@ export default class RuntimeBackground {
                         break;
                 }
                 break;
+            case 'authResult':
+                let vaultUrl = this.environmentService.webVaultUrl;
+                if (vaultUrl == null) {
+                    vaultUrl = 'https://vault.bitwarden.com';
+                }
+
+                if (msg.referrer == null || Utils.getHostname(vaultUrl) !== msg.referrer) {
+                    return;
+                }
+
+                try {
+                    BrowserApi.createNewTab('popup/index.html?uilocation=popout#/sso?code=' +
+                        msg.code + '&state=' + msg.state);
+                }
+                catch { }
+                break;
             default:
                 break;
         }
@@ -365,6 +411,7 @@ export default class RuntimeBackground {
         const totpCode = await this.autofillService.doAutoFill({
             cipher: this.main.loginToAutoFill,
             pageDetails: this.pageDetailsToAutoFill,
+            fillNewPassword: true
         });
 
         if (totpCode != null) {
@@ -658,7 +705,7 @@ export default class RuntimeBackground {
 
             if (response.twoFactor) {
                 await BrowserApi.tabSendMessage(tab, {
-                    command   : 'menuAnswerRequest',
+                    command   : 'autofillAnswerRequest',
                     subcommand: '2faRequested',
                 });
             } else {
@@ -676,9 +723,46 @@ export default class RuntimeBackground {
                 });
                 // when login is processed on background side, then your messages are not receivend by the background,
                 // so you need to triger yourself "loggedIn" actions
-                this.processMessage({command: 'loggedIn'}, null, null);
+                this.processMessage({command: 'loggedIn'}, 'runtime.background.ts.login()', null);
             }
         } catch (e) {
+            await BrowserApi.tabSendMessage(tab, {
+                command   : 'menuAnswerRequest',
+                subcommand: 'loginNOK',
+            });
+        }
+    }
+
+    /*
+    @override by Cozy
+    this function is based on the submit() function in src\popup\accounts\login.component.ts
+    */
+    private async unlock(email: string, pwd: string, tab: any, loginUrl: string) {
+        const kdf = await this.userService.getKdf();
+        const kdfIterations = await this.userService.getKdfIterations();
+        const key = await this.cryptoService.makeKey(pwd, email, kdf, kdfIterations);
+        const keyHash = await this.cryptoService.hashPassword(pwd, key);
+
+        let passwordValid = false;
+
+        if (keyHash != null) {
+            const storedKeyHash = await this.cryptoService.getKeyHash();
+            if (storedKeyHash != null) {
+                passwordValid = storedKeyHash === keyHash;
+            }
+        }
+
+        if (passwordValid) {
+            await this.cryptoService.setKey(key);
+            await BrowserApi.tabSendMessage(tab, {
+                command   : 'menuAnswerRequest',
+                subcommand: 'loginOK',
+            });
+            // when unlock is processed on background side, then your messages are not receivend by the background,
+            // so you need to triger yourself "loggedIn" actions
+            this.processMessage({command: 'unlocked'}, 'runtime.background.ts.unlock()', null);
+
+        } else {
             await BrowserApi.tabSendMessage(tab, {
                 command   : 'menuAnswerRequest',
                 subcommand: 'loginNOK',
@@ -693,7 +777,7 @@ export default class RuntimeBackground {
     @override by Cozy
     this function is based on the submit() function in jslib/src/angular/components/lock.component.ts
     */
-    private async pinLogIn(email: string, pin: string, tab: any, loginUrl: string) {
+    private async unPinlock(email: string, pin: string, tab: any, loginUrl: string) {
         const kdf = await this.userService.getKdf();
         const kdfIterations = await this.userService.getKdfIterations();
         const pinSet = await this.vaultTimeoutService.isPinLockSet();
@@ -710,7 +794,7 @@ export default class RuntimeBackground {
 
                 if (!failed) {
                     await this.cryptoService.setKey(key);
-                    this.processMessage({command: 'unlocked'}, null, null);
+                    this.processMessage({command: 'unlocked'}, 'runtime.background.ts.unPinlock()', null);
                 }
             } else {
                 const key = await this.cryptoService.makeKeyFromPin(pin, email, kdf, kdfIterations);
@@ -739,6 +823,10 @@ export default class RuntimeBackground {
         }
     }
 
+    /*
+    @override by Cozy
+    this function is based on the submit() function in jslib/src/angular/components/two-factor.component.ts
+    */
     private async twoFaCheck(token: string, tab: any) {
 
         try {
@@ -753,7 +841,8 @@ export default class RuntimeBackground {
                     subcommand: '2faCheckNOK',
                 });
             } else {
-                // validation succeeded, nothing to do
+                // validation succeeded
+                this.processMessage({command: 'loggedIn'}, 'runtime.background.ts.twoFaCheck()', null);
             }
         } catch (e) {}
     }
