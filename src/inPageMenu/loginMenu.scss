@@ -216,11 +216,14 @@ input {
     box-sizing: border-box;
     outline: none;
     font-size: 16px;
+    &::placeholder {
+        color: #b5d4ff;
+    }
+    &::-ms-clear, &::-ms-reveal {
+        display: none;
+    }
 }
 
-input::placeholder {
-    color: #b5d4ff;
-}
 
 .visibility-btn {
     cursor: pointer;

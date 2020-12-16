@@ -859,12 +859,17 @@ import menuCtrler from './menuCtrler';
             setValueForElement(el);
             afterValSetFunc(el);
             setValueForElementByEvent(el);
-            canSeeElementToStyle(el) && (el.className += ' com-bitwarden-browser-animated-fill',
+
+            // START MODIFICATION
+            if (canSeeElementToStyle(el)) {
+                el.classList.add('com-bitwarden-browser-animated-fill');
                 setTimeout(function () {
-                    // START MODIFICATION
-                    el && el.className && (el.className = el.className.replace(/(\\s)?com-bitwarden-browser-animated-fill/, ''));
-                    // END MODIFICATION
-                }, styleTimeout));
+                    if (el) {
+                        el.classList.remove('com-bitwarden-browser-animated-fill');
+                    }
+                }, styleTimeout);
+            }
+            // END MODIFICATION
         }
 
         document.elementForOPID = getElementByOpId;
@@ -1019,9 +1024,9 @@ import menuCtrler from './menuCtrler';
         }
 
         if (fillScripts.isForLoginMenu) {
-            menuCtrler.setMenuType('loginMenu', fillScripts.isPinLocked)
+            menuCtrler.setMenuType('loginMenu', fillScripts.isPinLocked, fillScripts.isLocked )
         } else {
-            menuCtrler.setMenuType('autofillMenu', fillScripts.isPinLocked)
+            menuCtrler.setMenuType('autofillMenu', fillScripts.isPinLocked, fillScripts.isLocked )
         }
 
         for (let fillScript of fillScripts) {
@@ -1105,7 +1110,7 @@ import menuCtrler from './menuCtrler';
         });
         */
 
-       if (msg.command === 'notificationBarPageDetails') return
+        if (msg.command === 'notificationBarPageDetails') return
 
         if (msg.command === 'collectPageDetails') {
             var pageDetailsObj = collect(document);
@@ -1127,6 +1132,7 @@ import menuCtrler from './menuCtrler';
             if (actionsNumber === 0) {
                 menuCtrler.deactivate()
             } else {
+                menuCtrler.setHostFrameId(msg.frameId)
                 fill(document, msg.fillScripts);
             }
             sendResponse();
@@ -1158,7 +1164,8 @@ import menuCtrler from './menuCtrler';
                     isPinLocked: msg.isPinLocked,
                 })
             } else if (msg.subcommand === 'loginIPMenuSetFields') {
-                msg.fieldsForInPageMenuScripts.isPinLocked = msg.isPinLocked
+                msg.fieldsForInPageMenuScripts.isPinLocked    = msg.isPinLocked
+                msg.fieldsForInPageMenuScripts.isLocked       = msg.isLocked
                 msg.fieldsForInPageMenuScripts.isForLoginMenu = true
                 // check there are fields where to activate the menu,
                 let nFields = 0
@@ -1168,6 +1175,7 @@ import menuCtrler from './menuCtrler';
                     menuCtrler.deactivate()
                 } else {
                     // send the script for filling
+                    menuCtrler.setHostFrameId(msg.frameId)
                     fill(document, msg.fieldsForInPageMenuScripts)
                 }
 
@@ -1178,10 +1186,15 @@ import menuCtrler from './menuCtrler';
                     details: pageDetails,
                     sender: 'notificationBar',
                 });
+            } else if (msg.subcommand === '2faRequested') {
+                menuCtrler.set2FaMode(true)
             }
-        }else if (msg.command === 'updateMenuCiphers') {
+        } else if (msg.command === 'updateMenuCiphers') {
             // store the ciphers sent to the menu to reuse them later on
             menuCtrler.setCiphers(msg.data.ciphers)
+        } else if (msg.command === 'fieldFillingWithData') {
+            document.elementsByOPID[msg.opId].value = msg.data
+            menuCtrler.hide(true);
         }
         sendResponse();
         return true;

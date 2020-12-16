@@ -23,6 +23,7 @@ import { AuditService } from 'jslib/abstractions/audit.service';
 import { AuthService as AuthServiceAbstraction } from 'jslib/abstractions/auth.service';
 import { CipherService } from 'jslib/abstractions/cipher.service';
 import { CollectionService } from 'jslib/abstractions/collection.service';
+import { CryptoFunctionService } from 'jslib/abstractions/cryptoFunction.service';
 import { CryptoService } from 'jslib/abstractions/crypto.service';
 import { EnvironmentService } from 'jslib/abstractions/environment.service';
 import { EventService } from 'jslib/abstractions/event.service';
@@ -78,7 +79,7 @@ export const authService = getBgService<AuthService>('authService')();
 // about why we do this
 authService.setMessagingService(messagingService);
 export const searchService = new PopupSearchService(getBgService<SearchService>('searchService')(),
-    getBgService<CipherService>('cipherService')(), getBgService<PlatformUtilsService>('platformUtilsService')());
+    getBgService<CipherService>('cipherService')());
 
 export function initFactory(i18nService: I18nService, storageService: StorageService,
     popupUtilsService: PopupUtilsService): Function {
@@ -134,6 +135,11 @@ export function initFactory(i18nService: I18nService, storageService: StorageSer
         { provide: SearchServiceAbstraction, useValue: searchService },
         { provide: AuditService, useFactory: getBgService<AuditService>('auditService'), deps: [] },
         { provide: CipherService, useFactory: getBgService<CipherService>('cipherService'), deps: [] },
+        {
+            provide: CryptoFunctionService,
+            useFactory: getBgService<CryptoFunctionService>('cryptoFunctionService'),
+            deps: [],
+        },
         { provide: FolderService, useFactory: getBgService<FolderService>('folderService'), deps: [] },
         { provide: CollectionService, useFactory: getBgService<CollectionService>('collectionService'), deps: [] },
         { provide: EnvironmentService, useFactory: getBgService<EnvironmentService>('environmentService'), deps: [] },

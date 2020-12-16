@@ -32,7 +32,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         } else if ((!!(window as any).opr && !!opr.addons) || !!(window as any).opera ||
             navigator.userAgent.indexOf(' OPR/') >= 0) {
             this.deviceCache = DeviceType.OperaExtension;
-        } else if (navigator.userAgent.indexOf(' Edge/') !== -1) {
+        } else if (navigator.userAgent.indexOf(' Edg/') !== -1) {
             this.deviceCache = DeviceType.EdgeExtension;
         } else if (navigator.userAgent.indexOf(' Vivaldi/') !== -1) {
             this.deviceCache = DeviceType.VivaldiExtension;
@@ -213,6 +213,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
             if (this.isChrome() && text === '') {
                 text = '\u0000';
             }
+
             const textarea = doc.createElement('textarea');
             textarea.textContent = text == null || text === '' ? ' ' : text;
             // Prevent scrolling to bottom of page in MS Edge.
@@ -289,7 +290,15 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         });
     }
 
-    private sidebarViewName(): string {
+    supportsBiometric() {
+        return Promise.resolve(false);
+    }
+
+    authenticateBiometric() {
+        return Promise.resolve(false);
+    }
+
+    sidebarViewName(): string {
         if ((window as any).chrome.sidebarAction && this.isFirefox()) {
             return 'sidebar';
         } else if (this.isOpera() && (typeof opr !== 'undefined') && opr.sidebarAction) {

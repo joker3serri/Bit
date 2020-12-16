@@ -30,7 +30,8 @@
     "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
-    "preserveWhitespaces": true
+    "preserveWhitespaces": true,
+    "enableIvy": false
   },
   "exclude": [
     "node_modules",

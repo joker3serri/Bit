@@ -164,6 +164,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
                 cipher: cipher,
                 pageDetails: this.pageDetails,
                 doc: window.document,
+                fillNewPassword: true,
             });
             this.analytics.eventTrack.next({ action: 'Autofilled' });
             if (this.totpCode != null) {
@@ -191,6 +192,10 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         this.searchTimeout = window.setTimeout(async () => {
             this.router.navigate(['/tabs/vault'], { queryParams: { searchText: this.searchText } });
         }, 200);
+    }
+
+    emptySearch() {
+        this.searchText = '';
     }
 
     private async load() {

@@ -30,6 +30,8 @@ function getDeviceName(deviceType: DeviceType): string {
  * "Cozy Password (browser name)" in the connected devices list.
  * We also had to copy/paste some private methods because we can't access it
  * from child class.
+ * Orignal file :
+ *    https://github.com/bitwarden/jslib/blob/669f6ddf93bbfe8acd18a4834fff5e1c7f9c91ba/src/services/api.service.ts
  */
 export class ApiService extends BaseApiService {
     /* tslint:disable-next-line */

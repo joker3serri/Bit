@@ -17,6 +17,7 @@ import { MessagingService } from 'jslib/abstractions/messaging.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { TokenService } from 'jslib/abstractions/token.service';
 import { UserService } from 'jslib/abstractions/user.service';
+import { VaultTimeoutService } from 'jslib/abstractions/vaultTimeout.service';
 
 import { AuthService as BaseAuthService } from 'jslib/services/auth.service';
 
@@ -64,6 +65,8 @@ export class AuthService extends BaseAuthService {
         /* tslint:disable-next-line */
         private _messagingService: MessagingService,
         /* tslint:disable-next-line */
+        private _vaultTimeoutService: VaultTimeoutService,
+        /* tslint:disable-next-line */
         private _setCryptoKeys = true,
         /* tslint:disable-next-line */
         private _cozyClientService: CozyClientService,
@@ -77,6 +80,7 @@ export class AuthService extends BaseAuthService {
             _i18nService,
             _platformUtilsService,
             _messagingService,
+            _vaultTimeoutService,
             _setCryptoKeys,
         );
     }
@@ -131,21 +135,23 @@ export class AuthService extends BaseAuthService {
         return this._cryptoService.makeKey(masterPassword, email, this._kdf, this._kdfIterations);
     }
 
-    private async _logInHelper(email: string, hashedPassword: string, key: SymmetricCryptoKey,
+    private async _logInHelper(email1: string, hashedPassword1: string, key: SymmetricCryptoKey,
         twoFactorProvider?: TwoFactorProviderType, twoFactorToken?: string, remember?: boolean): Promise<AuthResult> {
-        const storedTwoFactorToken = await this._tokenService.getTwoFactorToken(email);
+        const storedTwoFactorToken = await this._tokenService.getTwoFactorToken(email1);
         const appId = await this._appIdService.getAppId();
         const deviceRequest = new DeviceRequest(appId, this._platformUtilsService);
+        const credentials: string[] = [email1, hashedPassword1];
+        const codes: string[] = [hashedPassword1];
 
         let request: TokenRequest;
         if (twoFactorToken != null && twoFactorProvider != null) {
-            request = new TokenRequest(email, hashedPassword, twoFactorProvider, twoFactorToken, remember,
+            request = new TokenRequest(credentials, codes, twoFactorProvider, twoFactorToken, remember,
                 deviceRequest);
         } else if (storedTwoFactorToken != null) {
-            request = new TokenRequest(email, hashedPassword, TwoFactorProviderType.Remember,
+            request = new TokenRequest(credentials, codes, TwoFactorProviderType.Remember,
                 storedTwoFactorToken, false, deviceRequest);
         } else {
-            request = new TokenRequest(email, hashedPassword, null, null, false, deviceRequest);
+            request = new TokenRequest(credentials, codes, null, null, false, deviceRequest);
         }
 
         const response = await this._apiService.postIdentityToken(request);
@@ -157,8 +163,8 @@ export class AuthService extends BaseAuthService {
         if (result.twoFactor) {
             // two factor required
             const twoFactorResponse = response as IdentityTwoFactorResponse;
-            this.email = email;
-            this.masterPasswordHash = hashedPassword;
+            this.email = email1;
+            this.masterPasswordHash = hashedPassword1;
             this._key = this._setCryptoKeys ? key : null;
             this.twoFactorProvidersData = twoFactorResponse.twoFactorProviders2;
             result.twoFactorProviders = twoFactorResponse.twoFactorProviders2;
@@ -171,7 +177,7 @@ export class AuthService extends BaseAuthService {
         this.registrationAccessToken = tokenResponse.registrationAccessToken;
 
         if (tokenResponse.twoFactorToken != null) {
-            await this._tokenService.setTwoFactorToken(tokenResponse.twoFactorToken, email);
+            await this._tokenService.setTwoFactorToken(tokenResponse.twoFactorToken, email1);
         }
 
         await this._tokenService.setTokens(tokenResponse.accessToken, tokenResponse.refreshToken);
@@ -179,7 +185,7 @@ export class AuthService extends BaseAuthService {
             this._kdf, this._kdfIterations);
         if (this._setCryptoKeys) {
             await this._cryptoService.setKey(key);
-            await this._cryptoService.setKeyHash(hashedPassword);
+            await this._cryptoService.setKeyHash(hashedPassword1);
             await this._cryptoService.setEncKey(tokenResponse.key);
 
             // User doesn't have a key pair yet (old account), let's generate one for them
