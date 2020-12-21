@@ -297,7 +297,9 @@
                 addProp(field, 'type', toLowerString(getElementAttrValue(el, 'type')));
                 addProp(field, 'value', getElementValue(el));
                 addProp(field, 'checked', el.checked, false);
-                addProp(field, 'autoCompleteType', el.getAttribute('x-autocompletetype') || el.getAttribute('autocompletetype') || el.getAttribute('autocomplete'), 'off');
+                // Change from addProp(..., 'autoCompleteType', ..., 'off') to addProp(..., 'autoCompleteType', ..., 'on') to fix #1469
+                // Maunal autocomplete override from HTML side can be ignored when they're set to 'on' (default) instead of 'off' (special case)
+                addProp(field, 'autoCompleteType', el.getAttribute('x-autocompletetype') || el.getAttribute('autocompletetype') || el.getAttribute('autocomplete'), 'on');
                 addProp(field, 'disabled', el.disabled);
                 addProp(field, 'readonly', el.b || el.readOnly);
                 addProp(field, 'selectInfo', getSelectElementOptions(el));
