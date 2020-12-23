@@ -420,7 +420,9 @@ export default class AutofillService implements AutofillServiceInterface {
             pageDetails.fields.forEach((f: any) => {
                 if (f.viewable && (f.type === 'text' || f.type === 'email' || f.type === 'tel') &&
                     this.fieldIsFuzzyMatch(f, UsernameFieldNames)) {
-                    usernames.push(f);
+                    if (f.autoCompleteType !== 'off') {
+                        usernames.push(f);
+                    }
                 }
             });
         }
@@ -962,7 +964,9 @@ export default class AutofillService implements AutofillServiceInterface {
             if (!f.disabled && (canBeReadOnly || !f.readonly) && (isPassword || isLikePassword())
                 && (canBeHidden || f.viewable) && (!mustBeEmpty || f.value == null || f.value.trim() === '')
                 && (fillNewPassword || f.autoCompleteType !== 'new-password')) {
-                arr.push(f);
+                if (f.autoCompleteType !== 'off') {
+                    arr.push(f);
+                }
             }
         });
         return arr;
@@ -980,7 +984,9 @@ export default class AutofillService implements AutofillServiceInterface {
             if (!f.disabled && (canBeReadOnly || !f.readonly) &&
                 (withoutForm || f.form === passwordField.form) && (canBeHidden || f.viewable) &&
                 (f.type === 'text' || f.type === 'email' || f.type === 'tel')) {
-                usernameField = f;
+                if (f.autoCompleteType !== 'off') {
+                    usernameField = f;
+                }
 
                 if (this.findMatchingFieldIndex(f, UsernameFieldNames) > -1) {
                     // We found an exact match. No need to keep looking.
