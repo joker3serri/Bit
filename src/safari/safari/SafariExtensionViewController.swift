@@ -178,7 +178,13 @@ class SafariExtensionViewController: SFSafariExtensionViewController, WKScriptMe
             m.responseData = popoverOpenCount > 0 ? "true" : "false"
             replyMessage(message: m)
         } else if command == "createNewTab" {
-            if let data = m.data, let url = URL(string: data) {
+            if let data = m.data, var url = URL(string: data) {
+                if !data.starts(with: "https://") && !data.starts(with: "http://") {
+                    SFSafariExtension.getBaseURI { baseURI in
+                        guard let baseURI = baseURI else {return}
+                        url = URL(string: baseURI.absoluteString + "app/" + url.absoluteString) ?? url
+                    }
+                }
                 SFSafariApplication.getActiveWindow { win in
                     win?.openTab(with: url, makeActiveIfPossible: true, completionHandler: { _ in
                         // Tab opened
