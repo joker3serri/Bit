@@ -16,14 +16,10 @@ class SafariExtensionViewController: SFSafariExtensionViewController, WKScriptMe
         if initedWebView {
             return
         }
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         initedWebView = true
         let parentHeight = SafariExtensionViewController.shared.preferredContentSize.height
         let parentWidth = SafariExtensionViewController.shared.preferredContentSize.width
         let webViewConfig = WKWebViewConfiguration()
-        let bundleURL = Bundle.main.resourceURL!.absoluteURL
-        let html = bundleURL.appendingPathComponent("app/popup/index.html")
-        let url = URL(string: "\(html.absoluteString)?appVersion=\(version!)")
         webViewConfig.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
         webViewConfig.preferences.setValue(true, forKey: "developerExtrasEnabled")
         webViewConfig.userContentController.add(self, name: "bitwardenApp")
@@ -31,10 +27,23 @@ class SafariExtensionViewController: SFSafariExtensionViewController, WKScriptMe
                             configuration: webViewConfig)
         webView.navigationDelegate = self
         webView.allowsLinkPreview = false
-        webView.loadFileURL(url!, allowingReadAccessTo: bundleURL)
+        navigateWebView("app/popup/index.html")
         webView.alphaValue = 0.0
         webView.uiDelegate = self
         view.addSubview(webView)
+    }
+
+    func navigateWebView(_ relativeUrl: String){ 
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+        let bundleUrl = Bundle.main.resourceURL!.absoluteURL
+
+        var urlComponents = URLComponents(string: bundleUrl.appendingPathComponent(relativeUrl).absoluteString)
+
+        if (urlComponents?.queryItems?.first(where: { $0.name == "appVersion" })?.value == nil) {
+            urlComponents?.queryItems?.append(URLQueryItem(name: "appVersion", value: version))
+        }
+
+        webView.loadFileURL(urlComponents!.url!, allowingReadAccessTo: bundleUrl)
     }
 
     func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
@@ -178,11 +187,13 @@ class SafariExtensionViewController: SFSafariExtensionViewController, WKScriptMe
             m.responseData = popoverOpenCount > 0 ? "true" : "false"
             replyMessage(message: m)
         } else if command == "createNewTab" {
-            if let data = m.data, var url = URL(string: data) {
+            if let data = m.data, let url = URL(string: data) {
                 if !data.starts(with: "https://") && !data.starts(with: "http://") {
-                    SFSafariExtension.getBaseURI { baseURI in
-                        guard let baseURI = baseURI else {return}
-                        url = URL(string: baseURI.absoluteString + "app/" + url.absoluteString) ?? url
+                    SFSafariApplication.getActiveWindow { win in
+                        win?.getToolbarItem(completionHandler: { item in 
+                            item?.showPopover()
+                            self.navigateWebView("app/" + url.absoluteString)
+                        })
                     }
                 }
                 SFSafariApplication.getActiveWindow { win in
