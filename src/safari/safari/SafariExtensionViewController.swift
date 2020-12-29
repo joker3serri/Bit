@@ -37,13 +37,14 @@ class SafariExtensionViewController: SFSafariExtensionViewController, WKScriptMe
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
         let bundleUrl = Bundle.main.resourceURL!.absoluteURL
 
-        var urlComponents = URLComponents(string: bundleUrl.appendingPathComponent(relativeUrl).absoluteString)
+        if var urlComponents = URLComponents(string: bundleUrl.absoluteString + relativeUrl) {
+            if (urlComponents.queryItems?.first(where: { $0.name == "appVersion" })?.value == nil) {
+                urlComponents.queryItems = urlComponents.queryItems ?? []
+                urlComponents.queryItems!.append(URLQueryItem(name: "appVersion", value: version))
+            }
 
-        if (urlComponents?.queryItems?.first(where: { $0.name == "appVersion" })?.value == nil) {
-            urlComponents?.queryItems?.append(URLQueryItem(name: "appVersion", value: version))
+            webView.loadFileURL(urlComponents.url!, allowingReadAccessTo: bundleUrl)
         }
-
-        webView.loadFileURL(urlComponents!.url!, allowingReadAccessTo: bundleUrl)
     }
 
     func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
