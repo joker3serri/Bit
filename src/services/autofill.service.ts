@@ -419,10 +419,9 @@ export default class AutofillService implements AutofillServiceInterface {
             // No password fields on this page. Let's try to just fuzzy fill the username.
             pageDetails.fields.forEach((f: any) => {
                 if (f.viewable && (f.type === 'text' || f.type === 'email' || f.type === 'tel') &&
+                    (f.autoCompleteType !== 'off') &&
                     this.fieldIsFuzzyMatch(f, UsernameFieldNames)) {
-                    if (f.autoCompleteType !== 'off') {
-                        usernames.push(f);
-                    }
+                    usernames.push(f);
                 }
             });
         }
@@ -458,7 +457,7 @@ export default class AutofillService implements AutofillServiceInterface {
         const fillFields: { [id: string]: AutofillField; } = {};
 
         pageDetails.fields.forEach((f: any) => {
-            if (this.isExcludedType(f.type, ExcludedAutofillTypes)) {
+            if (this.isExcludedType(f.type, ExcludedAutofillTypes) || f.autoCompleteType === 'off') {
                 return;
             }
 
@@ -690,7 +689,7 @@ export default class AutofillService implements AutofillServiceInterface {
         const fillFields: { [id: string]: AutofillField; } = {};
 
         pageDetails.fields.forEach((f: any) => {
-            if (this.isExcludedType(f.type, ExcludedAutofillTypes)) {
+            if (this.isExcludedType(f.type, ExcludedAutofillTypes) || f.autoCompleteType === 'off') {
                 return;
             }
 
@@ -963,10 +962,9 @@ export default class AutofillService implements AutofillServiceInterface {
             };
             if (!f.disabled && (canBeReadOnly || !f.readonly) && (isPassword || isLikePassword())
                 && (canBeHidden || f.viewable) && (!mustBeEmpty || f.value == null || f.value.trim() === '')
-                && (fillNewPassword || f.autoCompleteType !== 'new-password')) {
-                if (f.autoCompleteType !== 'off') {
-                    arr.push(f);
-                }
+                && (fillNewPassword || f.autoCompleteType !== 'new-password')
+                && (f.autoCompleteType !== 'off')) {
+                arr.push(f);
             }
         });
         return arr;
@@ -983,10 +981,10 @@ export default class AutofillService implements AutofillServiceInterface {
 
             if (!f.disabled && (canBeReadOnly || !f.readonly) &&
                 (withoutForm || f.form === passwordField.form) && (canBeHidden || f.viewable) &&
+                (f.autoCompleteType !== 'off') &&
                 (f.type === 'text' || f.type === 'email' || f.type === 'tel')) {
-                if (f.autoCompleteType !== 'off') {
-                    usernameField = f;
-                }
+
+                usernameField = f;
 
                 if (this.findMatchingFieldIndex(f, UsernameFieldNames) > -1) {
                     // We found an exact match. No need to keep looking.
