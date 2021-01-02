@@ -124,6 +124,13 @@ content::-webkit-scrollbar-thumb {
     }
 }
 
+:root {
+    @include themify($themes) {
+        scrollbar-color: themed('scrollbarColor') themed('scrollbarHoverColor');
+        scrollbar-width: thin;
+    } 
+}
+
 header {
     min-height: 44px;
     max-height: 44px;
