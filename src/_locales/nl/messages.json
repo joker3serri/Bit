@@ -1439,7 +1439,7 @@
     "message": "Dit apparaat ondersteunt geen browserbiometrie."
   },
   "nativeMessaginPermissionErrorTitle": {
-    "message": "Permission not provided"
+    "message": "Toestemming niet verleend"
   },
   "nativeMessaginPermissionErrorDesc": {
     "message": "Without permission to communicate with the Bitwarden Desktop Application we cannot provide biometrics in the browser extension. Please try again."
