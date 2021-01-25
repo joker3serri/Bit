@@ -1438,6 +1438,12 @@
   "biometricsNotSupportedDesc": {
     "message": "Biometrie im Browser wird auf diesem Gerät nicht unterstützt."
   },
+  "nativeMessaginPermissionErrorTitle": {
+    "message": "Permission not provided"
+  },
+  "nativeMessaginPermissionErrorDesc": {
+    "message": "Without permission to communicate with the Bitwarden Desktop Application we cannot provide biometrics in the browser extension. Please try again."
+  },
   "personalOwnershipSubmitError": {
     "message": "Aufgrund einer Unternehmensrichtlinie dürfen Sie keine Einträge in Ihrem persönlichen Tresor speichern. Ändern Sie die Eigentümer-Option in eine Organisation und wählen Sie aus den verfügbaren Sammlungen."
   },
