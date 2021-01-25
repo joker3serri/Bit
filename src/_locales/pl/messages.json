@@ -1439,10 +1439,10 @@
     "message": "Dane biometryczne przeglądarki nie są obsługiwane na tym urządzenie."
   },
   "nativeMessaginPermissionErrorTitle": {
-    "message": "Permission not provided"
+    "message": "Uprawnienie nie zostało przyznane"
   },
   "nativeMessaginPermissionErrorDesc": {
-    "message": "Without permission to communicate with the Bitwarden Desktop Application we cannot provide biometrics in the browser extension. Please try again."
+    "message": "Bez uprawnienia do komunikowania się z aplikacją desktopową Bitwarden nie możemy dostarczyć obsługi danych biometrycznych w rozszerzeniu przeglądarki. Spróbuj ponownie."
   },
   "personalOwnershipSubmitError": {
     "message": "Ze względu na zasadę przedsiębiorstwa nie możesz zapisywać elementów w osobistym sejfie. Zmień właściciela elementu na organizację i wybierz jedną z dostępnych kolekcji."
