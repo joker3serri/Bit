@@ -1439,10 +1439,10 @@
     "message": "Le déverrouillage biométrique dans le navigateur n’est pas pris en charge sur cet appareil"
   },
   "nativeMessaginPermissionErrorTitle": {
-    "message": "Permission not provided"
+    "message": "Permission non accordée"
   },
   "nativeMessaginPermissionErrorDesc": {
-    "message": "Without permission to communicate with the Bitwarden Desktop Application we cannot provide biometrics in the browser extension. Please try again."
+    "message": "Sans la permission de communiquer avec l'application de bureau Bitwarden, nous ne pouvons pas activer le déverrouillage biométrique dans l'extension navigateur. Veuillez réessayer."
   },
   "personalOwnershipSubmitError": {
     "message": "En raison d'une politique d'entreprise, il vous est interdit d'enregistrer des éléments dans votre coffre personnel. Sélectionnez une organisation dans l'option Propriété et choisissez parmi les collections disponibles."
