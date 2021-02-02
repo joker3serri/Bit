@@ -1,6 +1,6 @@
 <div class="tab-page">
     <router-outlet></router-outlet>
-    <nav class="tabs" [ngClass]="{'tabs-4': !showCurrentTab}">
+    <nav class="tabs">
         <ul>
             <li routerLinkActive="active" *ngIf="showCurrentTab">
                 <a routerLink="current" appA11yTitle="{{'currentTab' | i18n}}">
