@@ -272,7 +272,6 @@ const routes: Routes = [
                 canActivate: [AuthGuardService],
                 data: { state: 'tabs_send' },
             },
-
         ],
     },
 ];
