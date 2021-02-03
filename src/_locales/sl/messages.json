@@ -1438,12 +1438,6 @@
   "biometricsNotSupportedDesc": {
     "message": "Browser biometrics is not supported on this device."
   },
-  "nativeMessagingPermissionPromptTitle": {
-    "message": "Additional Permission required"
-  },
-  "nativeMessagingPermissionPromptDesc": {
-    "message": "To enable browser biometrics we need to request an additional permission. Once allowed, the browser extension will reload and you may need to unlock your vault again."
-  },
   "nativeMessaginPermissionErrorTitle": {
     "message": "Permission not provided"
   },
@@ -1455,24 +1449,5 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "An organization policy is affecting your ownership options."
-  },
-  "excludedDomains": {
-    "message": "Excluded Domains"
-  },
-  "excludedDomainsDesc": {
-    "message": "Bitwarden will not ask to save login details for these domains. You must refresh the page for changes to take effect."
-  },
-  "excludedDomainsInvalidDomain": {
-    "message": "$DOMAIN$ is not a valid domain",
-    "placeholders": {
-      "domain": {
-        "content": "$1",
-        "example": "googlecom"
-      }
-    }
-  },
-  "send": {
-    "message": "Send",
-    "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   }
 }

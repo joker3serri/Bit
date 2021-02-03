@@ -28,14 +28,25 @@ export class NativeMessagingBackground {
     private secureSetupResolve: any = null;
     private sharedSecret: SymmetricCryptoKey;
     private appId: string;
+    private validatingFingerprint: boolean;
 
     constructor(private storageService: StorageService, private cryptoService: CryptoService,
         private cryptoFunctionService: CryptoFunctionService, private vaultTimeoutService: VaultTimeoutService,
         private runtimeBackground: RuntimeBackground, private i18nService: I18nService, private userService: UserService,
-        private messagingService: MessagingService, private appIdService: AppIdService) {}
+        private messagingService: MessagingService, private appIdService: AppIdService) {
+            this.storageService.save(ConstantsService.biometricFingerprintValidated, false);
+
+            if (BrowserApi.isChromeApi) {
+                // Reload extension to activate nativeMessaging
+                chrome.permissions.onAdded.addListener((permissions) => {
+                    BrowserApi.reloadExtension(null);
+                });
+            }
+        }
 
     async connect() {
         this.appId = await this.appIdService.getAppId();
+        this.storageService.save(ConstantsService.biometricFingerprintValidated, false);
 
         return new Promise((resolve, reject) => {
             this.port = BrowserApi.connectNative('com.8bit.bitwarden');
@@ -71,6 +82,10 @@ export class NativeMessagingBackground {
                         const encrypted = Utils.fromB64ToArray(message.sharedSecret);
                         const decrypted = await this.cryptoFunctionService.rsaDecrypt(encrypted.buffer, this.privateKey, EncryptionAlgorithm);
 
+                        if (this.validatingFingerprint) {
+                            this.validatingFingerprint = false;
+                            this.storageService.save(ConstantsService.biometricFingerprintValidated, true);
+                        }
                         this.sharedSecret = new SymmetricCryptoKey(decrypted);
                         this.secureSetupResolve();
                         break;
@@ -93,10 +108,18 @@ export class NativeMessagingBackground {
                         break;
                     case 'verifyFingerprint': {
                         if (this.sharedSecret == null) {
+                            this.validatingFingerprint = true;
                             this.showFingerprintDialog();
                         }
                         break;
                     }
+                    case 'wrongUserId':
+                        this.messagingService.send('showDialog', {
+                            text: this.i18nService.t('nativeMessagingWrongUserDesc'),
+                            title: this.i18nService.t('nativeMessagingWrongUserTitle'),
+                            confirmText: this.i18nService.t('ok'),
+                            type: 'error',
+                        });
                     default:
                         // Ignore since it belongs to another device
                         if (message.appId !== this.appId) {
@@ -238,7 +261,11 @@ export class NativeMessagingBackground {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
 
-        this.sendUnencrypted({command: 'setupEncryption', publicKey: Utils.fromBufferToB64(publicKey)});
+        this.sendUnencrypted({
+            command: 'setupEncryption',
+            publicKey: Utils.fromBufferToB64(publicKey),
+            userId: await this.userService.getUserId()
+        });
 
         return new Promise((resolve, reject) => this.secureSetupResolve = resolve);
     }

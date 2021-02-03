@@ -284,7 +284,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
     }
 
     supportsBiometric() {
-        return Promise.resolve(true);
+        return Promise.resolve(!this.isFirefox() && !this.isSafari());
     }
 
     authenticateBiometric() {
