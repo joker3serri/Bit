@@ -191,6 +191,7 @@ function safariCopyBuild(source, dest) {
         gulp.src(source)
             .on('error', reject)
             .pipe(filter(['**'].concat(filters.fonts)))
+            .pipe(gulpif('popup/index.html', replace('__BROWSER__', 'browser_safari')))
             .pipe(gulp.dest(dest))
             .on('end', resolve);
     });
