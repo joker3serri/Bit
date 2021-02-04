@@ -180,15 +180,6 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
     }
 
     copyToClipboard(text: string, options?: any): void {
-        if (this.isSafari()) {
-            SafariApp.sendMessageToApp('copyToClipboard', text).then(() => {
-                if (!clearing && this.clipboardWriteCallback != null) {
-                    this.clipboardWriteCallback(text, clearMs);
-                }
-            });
-            return;
-        }
-
         let win = window;
         let doc = window.document;
         if (options && (options.window || options.win)) {
@@ -199,7 +190,14 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         }
         const clearing = options ? !!options.clearing : false;
         const clearMs: number = options && options.clearMs ? options.clearMs : null;
-        if (this.isFirefox() && (win as any).navigator.clipboard && (win as any).navigator.clipboard.writeText) {
+        
+        if (this.isSafari()) {
+            SafariApp.sendMessageToApp('copyToClipboard', text).then(() => {
+                if (!clearing && this.clipboardWriteCallback != null) {
+                    this.clipboardWriteCallback(text, clearMs);
+                }
+            });
+        } else if (this.isFirefox() && (win as any).navigator.clipboard && (win as any).navigator.clipboard.writeText) {
             (win as any).navigator.clipboard.writeText(text).then(() => {
                 if (!clearing && this.clipboardWriteCallback != null) {
                     this.clipboardWriteCallback(text, clearMs);
