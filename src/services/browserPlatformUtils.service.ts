@@ -180,6 +180,15 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
     }
 
     copyToClipboard(text: string, options?: any): void {
+        if (this.isSafari()) {
+            SafariApp.sendMessageToApp('copyToClipboard', text).then(() => {
+                if (!clearing && this.clipboardWriteCallback != null) {
+                    this.clipboardWriteCallback(text, clearMs);
+                }
+            });
+            return;
+        }
+
         let win = window;
         let doc = window.document;
         if (options && (options.window || options.win)) {
