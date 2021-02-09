@@ -69,7 +69,7 @@ export class SendGroupingsComponent extends BaseSendComponent {
         // Handle State Restore if necessary
         const restoredScopeState = await this.restoreState();
         this.state = (await this.stateService.get<any>(ComponentId)) || {};
-        if (this.state.searchText) {
+        if (this.state.searchText != null) {
             this.searchText = this.state.searchText;
         }
 
