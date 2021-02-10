@@ -38,7 +38,6 @@ const ScopeStateId = ComponentId + 'Scope';
 export class SendGroupingsComponent extends BaseSendComponent {
     // Header
     showLeftHeader = true;
-    searchTypeSearch = false;
     // Send Type Calculations
     typeCounts = new Map<SendType, number>();
     // State Handling
@@ -61,9 +60,7 @@ export class SendGroupingsComponent extends BaseSendComponent {
 
     async ngOnInit() {
         // Determine Header details
-        this.searchTypeSearch = !this.platformUtilsService.isSafari();
-        this.showLeftHeader = !this.platformUtilsService.isSafari() &&
-            !(this.popupUtils.inSidebar(window) && this.platformUtilsService.isFirefox());
+        this.showLeftHeader = !(this.popupUtils.inSidebar(window) && this.platformUtilsService.isFirefox());
         // Let super class finish
         await super.ngOnInit();
         // Handle State Restore if necessary
