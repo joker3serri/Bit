@@ -47,14 +47,13 @@ export class SendGroupingsComponent extends BaseSendComponent {
     private loadedTimeout: number;
 
     constructor(sendService: SendService, i18nService: I18nService,
-        platformUtilsService: PlatformUtilsService, environmentService: EnvironmentService,
-        broadcasterService: BroadcasterService, ngZone: NgZone, policyService: PolicyService,
-        userService: UserService, searchService: SearchService,
+        platformUtilsService: PlatformUtilsService, environmentService: EnvironmentService, ngZone: NgZone,
+        policyService: PolicyService, userService: UserService, searchService: SearchService,
         private popupUtils: PopupUtilsService, private stateService: StateService,
         private route: ActivatedRoute, private router: Router, private syncService: SyncService,
-        private changeDetectorRef: ChangeDetectorRef) {
-        super(sendService, i18nService, platformUtilsService, environmentService, broadcasterService, ngZone,
-            searchService, policyService, userService);
+        private changeDetectorRef: ChangeDetectorRef, private broadcasterService: BroadcasterService) {
+        super(sendService, i18nService, platformUtilsService, environmentService, ngZone, searchService,
+            policyService, userService);
         super.onSuccessfulLoad = async () => {
             this.calculateTypeCounts();
             this.selectAll();
