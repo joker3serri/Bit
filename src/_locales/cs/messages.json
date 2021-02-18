@@ -20,7 +20,7 @@
     "message": "Přihlásit se"
   },
   "enterpriseSingleSignOn": {
-    "message": "Enterprise Single Sign-On"
+    "message": "Jednotné podnikové přihlášení"
   },
   "cancel": {
     "message": "Zrušit"
@@ -606,8 +606,14 @@
     "message": "VAROVÁNÍ",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
+  "confirmVaultExport": {
+    "message": "Confirm Vault Export"
+  },
   "exportWarningDesc": {
     "message": "Tento export obsahuje data vašeho trezoru v nezašifrovaném formátu. Soubor exportu byste neměli ukládat ani odesílat přes nezabezpečené kanály (např. e-mailem). Odstraňte jej okamžitě po jeho použití."
+  },
+  "encExportWarningDesc": {
+    "message": "This export encrypts your data using your account's encryption key. If you ever rotate your account's encryption key you should export again since you will not be able to decrypt this export file."
   },
   "exportMasterPassword": {
     "message": "Zadejte své hlavní heslo pro export dat."
@@ -893,6 +899,9 @@
   },
   "commandGeneratePasswordDesc": {
     "message": "Vygenerovat a zkopírovat nové náhodné heslo do schránky."
+  },
+  "commandLockVaultDesc": {
+    "message": "Zamknout trezor"
   },
   "privateModeMessage": {
     "message": "Bohužel toto okno není v tomto prohlížeči k dispozici v soukromém režimu."
@@ -1247,6 +1256,15 @@
   "yourVaultIsLockedPinCode": {
     "message": "Váš trezor je uzamčen. Pro pokračování musíte zadat PIN."
   },
+  "unlockWithBiometrics": {
+    "message": "Unlock with biometrics"
+  },
+  "awaitDesktop": {
+    "message": "Awaiting confirmation from desktop"
+  },
+  "awaitDesktopDesc": {
+    "message": "Please confirm using biometrics in the Bitwarden Desktop application to enable biometrics for browser."
+  },
   "lockWithMasterPassOnRestart": {
     "message": "Zamknout trezor při restartu prohlížeče pomocí hlavního hesla"
   },
@@ -1301,22 +1319,22 @@
     "message": "Potvrzení akce při vypršení časového limitu"
   },
   "autoFillAndSave": {
-    "message": "Auto-fill and Save"
+    "message": "Automaticky vyplnit a uložit"
   },
   "autoFillSuccessAndSavedUri": {
-    "message": "Auto-filled Item and Saved URI"
+    "message": "Položka automaticky vyplněna a uložena"
   },
   "autoFillSuccess": {
-    "message": "Auto-filled Item"
+    "message": "Položka automaticky vyplněna"
   },
   "setMasterPassword": {
-    "message": "Set Master Password"
+    "message": "Nastavit hlavní heslo"
   },
   "masterPasswordPolicyInEffect": {
-    "message": "One or more organization policies require your master password to meet the following requirements:"
+    "message": "Jedna nebo více zásad organizace vyžaduje, aby hlavní heslo splňovalo následující požadavky:"
   },
   "policyInEffectMinComplexity": {
-    "message": "Minimum complexity score of $SCORE$",
+    "message": "Minimální skóre složitosti $SCORE$",
     "placeholders": {
       "score": {
         "content": "$1",
@@ -1325,7 +1343,7 @@
     }
   },
   "policyInEffectMinLength": {
-    "message": "Minimum length of $LENGTH$",
+    "message": "Minimální délka $LENGTH$",
     "placeholders": {
       "length": {
         "content": "$1",
@@ -1334,16 +1352,16 @@
     }
   },
   "policyInEffectUppercase": {
-    "message": "Contain one or more uppercase characters"
+    "message": "Obsahuje jedno nebo více velkých písmen"
   },
   "policyInEffectLowercase": {
-    "message": "Contain one or more lowercase characters"
+    "message": "Obsahuje jedno nebo více malých písmen"
   },
   "policyInEffectNumbers": {
-    "message": "Contain one or more numbers"
+    "message": "Obsahuje jednu nebo více číslic"
   },
   "policyInEffectSpecial": {
-    "message": "Contain one or more of the following special characters $CHARS$",
+    "message": "Obsahuje jeden nebo více následujících speciálních znaků: $CHARS$",
     "placeholders": {
       "chars": {
         "content": "$1",
@@ -1352,6 +1370,84 @@
     }
   },
   "masterPasswordPolicyRequirementsNotMet": {
-    "message": "Your new master password does not meet the policy requirements."
+    "message": "Vaše nové hlavní heslo nesplňuje požadavky zásad."
+  },
+  "acceptPolicies": {
+    "message": "Zaškrtnutím tohoto políčka souhlasím s následujícím:"
+  },
+  "acceptPoliciesError": {
+    "message": "Podmínky služby a zásady ochrany osobních údajů nebyly uznány."
+  },
+  "termsOfService": {
+    "message": "Podmínky použití"
+  },
+  "privacyPolicy": {
+    "message": "Zásady ochrany osobních údajů"
+  },
+  "hintEqualsPassword": {
+    "message": "Your password hint cannot be the same as your password."
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "desktopSyncVerificationTitle": {
+    "message": "Desktop sync verification"
+  },
+  "desktopIntegrationVerificationText": {
+    "message": "Please verify that the desktop application shows this fingerprint: "
+  },
+  "desktopIntegrationDisabledTitle": {
+    "message": "Browser integration is not enabled"
+  },
+  "desktopIntegrationDisabledDesc": {
+    "message": "Browser integration is not enabled in the Bitwarden Desktop application. Please enable it in the settings within the desktop application."
+  },
+  "startDesktopTitle": {
+    "message": "Start the Bitwarden Desktop application"
+  },
+  "startDesktopDesc": {
+    "message": "The Bitwarden Desktop application needs to be started before this function can be used."
+  },
+  "errorEnableBiometricTitle": {
+    "message": "Unable to enable biometrics"
+  },
+  "errorEnableBiometricDesc": {
+    "message": "Action was canceled by the desktop application"
+  },
+  "nativeMessagingInvalidEncryptionDesc": {
+    "message": "Desktop application invalidated the secure communication channel. Please retry this operation"
+  },
+  "nativeMessagingInvalidEncryptionTitle": {
+    "message": "Desktop communication interrupted"
+  },
+  "nativeMessagingWrongUserDesc": {
+    "message": "The desktop application is logged into a different account. Please ensure both applications are logged into the same account."
+  },
+  "nativeMessagingWrongUserTitle": {
+    "message": "Account missmatch"
+  },
+  "biometricsNotEnabledTitle": {
+    "message": "Biometrics not enabled"
+  },
+  "biometricsNotEnabledDesc": {
+    "message": "Browser biometrics requires desktop biometric to be enabled in the settings first."
+  },
+  "biometricsNotSupportedTitle": {
+    "message": "Biometrics not supported"
+  },
+  "biometricsNotSupportedDesc": {
+    "message": "Browser biometrics is not supported on this device."
+  },
+  "nativeMessaginPermissionErrorTitle": {
+    "message": "Permission not provided"
+  },
+  "nativeMessaginPermissionErrorDesc": {
+    "message": "Without permission to communicate with the Bitwarden Desktop Application we cannot provide biometrics in the browser extension. Please try again."
+  },
+  "personalOwnershipSubmitError": {
+    "message": "Due to an Enterprise Policy, you are restricted from saving items to your personal vault. Change the Ownership option to an organization and choose from available Collections."
+  },
+  "personalOwnershipPolicyInEffect": {
+    "message": "An organization policy is affecting your ownership options."
   }
 }

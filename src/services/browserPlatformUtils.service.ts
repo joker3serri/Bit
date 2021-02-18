@@ -16,28 +16,30 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
     private showDialogResolves = new Map<number, { resolve: (value: boolean) => void, date: Date }>();
     private deviceCache: DeviceType = null;
     private analyticsIdCache: string = null;
+    private prefersColorSchemeDark = window.matchMedia('(prefers-color-scheme: dark)');
 
     constructor(private messagingService: MessagingService,
-        private clipboardWriteCallback: (clipboardValue: string, clearMs: number) => void) { }
+        private clipboardWriteCallback: (clipboardValue: string, clearMs: number) => void,
+        private biometricCallback: () => Promise<boolean>) { }
 
     getDevice(): DeviceType {
         if (this.deviceCache) {
             return this.deviceCache;
         }
 
-        if (this.isSafariExtension()) {
-            this.deviceCache = DeviceType.SafariExtension;
-        } else if (navigator.userAgent.indexOf(' Firefox/') !== -1 || navigator.userAgent.indexOf(' Gecko/') !== -1) {
+        if (navigator.userAgent.indexOf(' Firefox/') !== -1 || navigator.userAgent.indexOf(' Gecko/') !== -1) {
             this.deviceCache = DeviceType.FirefoxExtension;
         } else if ((!!(window as any).opr && !!opr.addons) || !!(window as any).opera ||
             navigator.userAgent.indexOf(' OPR/') >= 0) {
             this.deviceCache = DeviceType.OperaExtension;
-        } else if (navigator.userAgent.indexOf(' Edge/') !== -1) {
+        } else if (navigator.userAgent.indexOf(' Edg/') !== -1) {
             this.deviceCache = DeviceType.EdgeExtension;
         } else if (navigator.userAgent.indexOf(' Vivaldi/') !== -1) {
             this.deviceCache = DeviceType.VivaldiExtension;
         } else if ((window as any).chrome && navigator.userAgent.indexOf(' Chrome/') !== -1) {
             this.deviceCache = DeviceType.ChromeExtension;
+        } else if (navigator.userAgent.indexOf(' Safari/') !== -1) {
+            this.deviceCache = DeviceType.SafariExtension;
         }
 
         return this.deviceCache;
@@ -152,7 +154,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
             type: type,
             dialogId: dialogId,
         });
-        return new Promise<boolean>((resolve) => {
+        return new Promise<boolean>(resolve => {
             this.showDialogResolves.set(dialogId, { resolve: resolve, date: new Date() });
         });
     }
@@ -184,7 +186,8 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         }
         const clearing = options ? !!options.clearing : false;
         const clearMs: number = options && options.clearMs ? options.clearMs : null;
-        if (this.isSafariExtension()) {
+
+        if (this.isSafari()) {
             SafariApp.sendMessageToApp('copyToClipboard', text).then(() => {
                 if (!clearing && this.clipboardWriteCallback != null) {
                     this.clipboardWriteCallback(text, clearMs);
@@ -238,7 +241,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
             doc = options.doc;
         }
 
-        if (this.isSafariExtension()) {
+        if (this.isSafari()) {
             return await SafariApp.sendMessageToApp('readFromClipboard');
         } else if (this.isFirefox() && (win as any).navigator.clipboard && (win as any).navigator.clipboard.readText) {
             return await (win as any).navigator.clipboard.readText();
@@ -278,17 +281,17 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
                 deleteIds.push(key);
             }
         });
-        deleteIds.forEach((id) => {
+        deleteIds.forEach(id => {
             this.showDialogResolves.delete(id);
         });
     }
 
     supportsBiometric() {
-        return Promise.resolve(false);
+        return Promise.resolve(!this.isFirefox() && !this.isSafari());
     }
 
     authenticateBiometric() {
-        return Promise.resolve(false);
+        return this.biometricCallback();
     }
 
     sidebarViewName(): string {
@@ -301,7 +304,17 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         return null;
     }
 
-    private isSafariExtension(): boolean {
-        return (window as any).safariAppExtension === true;
+    supportsSecureStorage(): boolean {
+        return false;
+    }
+
+    getDefaultSystemTheme() {
+        return this.prefersColorSchemeDark.matches ? 'dark' : 'light';
+    }
+
+    onDefaultSystemThemeChange(callback: ((theme: 'light' | 'dark') => unknown)) {
+        this.prefersColorSchemeDark.addListener(({ matches }) => {
+            callback(matches ? 'dark' : 'light');
+        });
     }
 }

@@ -20,7 +20,7 @@
     "message": "Accedi"
   },
   "enterpriseSingleSignOn": {
-    "message": "Enterprise Single Sign-On"
+    "message": "Accesso con il portale dell'organizzazione (Single Sign-On)"
   },
   "cancel": {
     "message": "Annulla"
@@ -53,7 +53,7 @@
     "message": "Pagina"
   },
   "myVault": {
-    "message": "Cassaforte"
+    "message": "Portachiavi"
   },
   "tools": {
     "message": "Strumenti"
@@ -95,7 +95,7 @@
     "message": "Cassaforte bloccata."
   },
   "vaultLoggedOut": {
-    "message": "Cassaforte bloccata."
+    "message": "Portachiavi bloccato."
   },
   "autoFillInfo": {
     "message": "Non ci sono login disponibili per completare la tab del browser corrente."
@@ -175,7 +175,7 @@
     "message": "Sincronizza"
   },
   "syncVaultNow": {
-    "message": "Sincronizza cassaforte ora"
+    "message": "Sincronizza portachiavi ora"
   },
   "lastSync": {
     "message": "Ultima sincronizzazione:"
@@ -191,7 +191,7 @@
     "message": "Genera automaticamente password complesse e uniche per i tuoi login."
   },
   "bitWebVault": {
-    "message": "Cassaforte Web Bitwarden"
+    "message": "Portachiavi Web Bitwarden"
   },
   "importItems": {
     "message": "Importa elementi"
@@ -306,7 +306,7 @@
     "message": "Verifica password principale"
   },
   "yourVaultIsLocked": {
-    "message": "La tua cassaforte è bloccata. Inserisci la tua password principale per continuare."
+    "message": "Il tuo portachiavi è bloccato. Inserisci la tua password principale per continuare."
   },
   "unlock": {
     "message": "Sblocca"
@@ -328,7 +328,7 @@
     "message": "Password principale errata"
   },
   "vaultTimeout": {
-    "message": "Timeout Cassaforte"
+    "message": "Timeout Portachiavi"
   },
   "lockNow": {
     "message": "Blocca ora"
@@ -501,7 +501,7 @@
     "message": "Sei sicuro di voler eliminare questo elemento?"
   },
   "deletedItem": {
-    "message": "Elemento eliminato"
+    "message": "Elemento spostato nel cestino"
   },
   "overwritePassword": {
     "message": "Sovrascrivi password"
@@ -526,19 +526,19 @@
     "message": "Disabilita notifica di aggiunta login"
   },
   "addLoginNotificationDesc": {
-    "message": "\"Aggiungi Notifica di Login\" richiede automaticamente di salvare i nuovi login nella tua cassaforte ogni volta che ti ci connetti per la prima volta."
+    "message": "La \"Notifica di Aggiunta Login\" chiede automaticamente di salvare i nuovi login nel tuo portachiavi ogni volta che utilizzi un'account per il primo accesso."
   },
   "dontShowCardsCurrentTab": {
     "message": "Non mostrare le carte nella pagina delle schede"
   },
   "dontShowCardsCurrentTabDesc": {
-    "message": "Gli elementi della scheda della tua cassaforte sono elencati nella pagina \"Scheda corrente\" per un facile accesso al riempimento automatico."
+    "message": "I dati della carta del tuo portachiavi sono elencati nella sezione \"Scheda corrente\" per facilitare il riempimento automatico."
   },
   "dontShowIdentitiesCurrentTab": {
     "message": "Non mostrare le identità nella pagina delle schede"
   },
   "dontShowIdentitiesCurrentTabDesc": {
-    "message": "Gli elementi di identità della tua cassaforte sono elencati nella pagina \"Scheda Corrente\" per un facile accesso al riempimento automatico."
+    "message": "Gli account del tuo portachiavi sono elencati nella sezione \"Scheda corrente\" per facilitare il riempimento automatico."
   },
   "clearClipboard": {
     "message": "Cancella appunti",
@@ -561,7 +561,7 @@
     "message": "Disabilita Notifica di Modifica Password"
   },
   "disableChangedPasswordNotificationDesc": {
-    "message": "La \"notifica di Password cambiata\" richiederà automaticamente di aggiornare la password di un account di accesso nel tuo vault ogni volta che rileva che è stato modificato su un sito Web."
+    "message": "La \"notifica di cambio password\" chiede automaticamente di aggiornare la password di un account nel tuo portachiavi ogni qualvolta viene su un sito web."
   },
   "notificationChangeDesc": {
     "message": "Vuoi aggiornare questa password in Bitwarden?"
@@ -597,7 +597,7 @@
     "description": "Light color"
   },
   "exportVault": {
-    "message": "Esporta cassaforte"
+    "message": "Esporta portachiavi"
   },
   "fileFormat": {
     "message": "Formato file"
@@ -606,8 +606,14 @@
     "message": "ATTENZIONE",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
+  "confirmVaultExport": {
+    "message": "Conferma esportazione della Cassaforte"
+  },
   "exportWarningDesc": {
-    "message": "Questa esportazione contiene i dati della cassaforte in un formato non criptato. Non archiviare o inviare il file esportato su canali non protetti (come la posta elettronica). Eliminalo immediatamente dopo aver finito di usarlo."
+    "message": "Questa esportazione contiene i dati del tuo portachiavi in un formato non criptato. Non salvare o inviare il file esportato su canali non protetti (come la posta elettronica). Eliminalo immediatamente dopo aver finito di usarlo."
+  },
+  "encExportWarningDesc": {
+    "message": "Questa esportazione cifra i tuoi dati utilizzando la chiave di crittografia del tuo account. Se cambi la chiave di crittografia del tuo account, non sarai più in grado di decifrare il file esportato e sarà necessario eseguire nuovo export."
   },
   "exportMasterPassword": {
     "message": "Inserisci la tua password principale per esportare i dati della tua cassaforte."
@@ -616,10 +622,10 @@
     "message": "Condiviso"
   },
   "shareVault": {
-    "message": "Condividi La Tua Cassaforte"
+    "message": "Condividi Il Tuo Portachiavi"
   },
   "shareVaultConfirmation": {
-    "message": "Bitwarden ti permette di condividere la tua cassaforte con altri usando un account societario. Vuoi visitare il sito bitwarden.com per saperne di più?"
+    "message": "Bitwarden ti permette di condividere il tuo portachiavi con altri usando un account societario. Vuoi visitare il sito bitwarden.com per saperne di più?"
   },
   "shareItem": {
     "message": "Condividi elemento"
@@ -706,7 +712,7 @@
     "message": "Opzioni addizionali di login in due passaggi come YubiKey, FIDO U2F, e Duo."
   },
   "ppremiumSignUpReports": {
-    "message": "Sicurezza delle password, integrità dell'account, e rapporti sulla violazione dei dati per mantenere sicura la tua cassaforte."
+    "message": "Sicurezza delle password, integrità dell'account e rapporti sulla violazione di dati per mantenere sicuro il tuo portachiavi."
   },
   "ppremiumSignUpTotp": {
     "message": "Generatore di codice di verifica TOTP (2FA) per i login nella tua cassaforte."
@@ -859,7 +865,7 @@
     "message": "URL del Server API"
   },
   "webVaultUrl": {
-    "message": "URL della Cassaforte Online"
+    "message": "URL del Portachiavi Online"
   },
   "identityUrl": {
     "message": "URL del Server di Identità"
@@ -883,16 +889,19 @@
     "message": "Al momento questa funzionalità è sperimentale. Usala tuo rischio e pericolo."
   },
   "commandOpenPopup": {
-    "message": "Apri popup cassaforte"
+    "message": "Apri popup portachiavi"
   },
   "commandOpenSidebar": {
-    "message": "Apri cassaforte nella barra laterale"
+    "message": "Apri il portachiavi nella barra laterale"
   },
   "commandAutofillDesc": {
     "message": "Auto-completa con l'ultimo login utilizzato sul sito corrente."
   },
   "commandGeneratePasswordDesc": {
     "message": "Genera e copia una nuova password casuale negli appunti."
+  },
+  "commandLockVaultDesc": {
+    "message": "Blocca la cassaforte"
   },
   "privateModeMessage": {
     "message": "Purtroppo questa finestra non è disponibile nella modalità anonima per questo browser."
@@ -931,7 +940,7 @@
     "message": "Disabilita Icone dei Siti Web"
   },
   "disableFaviconDesc": {
-    "message": "Le icone del Sito web forniscono un'immagine riconoscibile accanto a ogni elemento di login nella tua Cassaforte."
+    "message": "Le icone del sito web forniscono un'immagine riconoscibile accanto a ogni elemento di login nella tuo portachiavi."
   },
   "cardholderName": {
     "message": "Titolare della Carta"
@@ -1193,7 +1202,7 @@
     "description": "ex. Date this password was updated"
   },
   "neverLockWarning": {
-    "message": "Sei sicuro di voler usare l'opzione \"Mai\"? Impostando le opzioni di blocco su \"Mai\", la chiave di crittografia del caveau verrà archiviata sul tuo dispositivo. Se utilizzi questa opzione, è necessario assicurarsi di mantenere il dispositivo adeguatamente protetto."
+    "message": "Sei sicuro di voler usare l'opzione \"Mai\"? Impostando le opzioni di blocco su \"Mai\" la chiave di crittografia del tuo portachiavi verrà salvata sul tuo dispositivo. Se scegli questa opzione è importante che tu sia sicuro di mantenere il tuo dispositivo adeguatamente protetto."
   },
   "noOrganizationsList": {
     "message": "Non appartieni ad alcuna organizzazione. Le organizzazioni ti consentono di condividere oggetti in modo sicuro con altri utenti."
@@ -1245,7 +1254,16 @@
     "message": "Verifica PIN"
   },
   "yourVaultIsLockedPinCode": {
-    "message": "La tua cassaforte è bloccata. Inserisci il tuo codice PIN per continuare."
+    "message": "Il tuo portachiavi è bloccato. Inserisci il tuo codice PIN per continuare."
+  },
+  "unlockWithBiometrics": {
+    "message": "Sblocca utilizzando l'autenticazione biometrica"
+  },
+  "awaitDesktop": {
+    "message": "In attesa di conferma dal desktop"
+  },
+  "awaitDesktopDesc": {
+    "message": "Si prega di confermare utilizzando l'autenticazione biometrica nell'applicazione Bitwarden Desktop per abilitare l'autenticazione biometrica per il browser."
   },
   "lockWithMasterPassOnRestart": {
     "message": "Blocca con la password principale al riavvio del browser"
@@ -1260,10 +1278,10 @@
     "message": "Clona"
   },
   "passwordGeneratorPolicyInEffect": {
-    "message": "Una o più politiche dell'organizzazione stanno influenzando le impostazioni del tuo generatore."
+    "message": "Una o più policy dell'organizzazione controllano le impostazioni del tuo generatore."
   },
   "vaultTimeoutAction": {
-    "message": "Azione Timeout Cassaforte"
+    "message": "Azione Timeout Portachiavi"
   },
   "lock": {
     "message": "Blocca",
@@ -1295,28 +1313,28 @@
     "message": "Elemento Ripristinato"
   },
   "vaultTimeoutLogOutConfirmation": {
-    "message": "La disconnessione rimuove tutti gli accessi alla tua cassaforte e richiede l'autenticazione online dopo il periodo di timeout. Sei sicuro di voler utilizzare questa impostazione?"
+    "message": "La disconnessione rimuove tutti gli accessi al tuo portachiavi e richiede l'autenticazione online dopo il periodo di timeout. Sei sicuro di voler utilizzare questa impostazione?"
   },
   "vaultTimeoutLogOutConfirmationTitle": {
     "message": "Conferma Azione di Timeout"
   },
   "autoFillAndSave": {
-    "message": "Auto-fill and Save"
+    "message": "Riempi automaticamente e salva"
   },
   "autoFillSuccessAndSavedUri": {
-    "message": "Auto-filled Item and Saved URI"
+    "message": "Elemento riempito automaticamente e URI salvato"
   },
   "autoFillSuccess": {
-    "message": "Auto-filled Item"
+    "message": "Elemento Riempito Automaticamente"
   },
   "setMasterPassword": {
-    "message": "Set Master Password"
+    "message": "Impostare la password principale"
   },
   "masterPasswordPolicyInEffect": {
-    "message": "One or more organization policies require your master password to meet the following requirements:"
+    "message": "La password principale deve avere i seguenti requisiti, stabiliti da una o più regole dell'organizzazione:"
   },
   "policyInEffectMinComplexity": {
-    "message": "Minimum complexity score of $SCORE$",
+    "message": "Punteggio minimo di complessità $SCORE$",
     "placeholders": {
       "score": {
         "content": "$1",
@@ -1325,7 +1343,7 @@
     }
   },
   "policyInEffectMinLength": {
-    "message": "Minimum length of $LENGTH$",
+    "message": "Lunghezza minima $LENGTH$",
     "placeholders": {
       "length": {
         "content": "$1",
@@ -1334,16 +1352,16 @@
     }
   },
   "policyInEffectUppercase": {
-    "message": "Contain one or more uppercase characters"
+    "message": "Contiene almeno un carattere maiuscolo"
   },
   "policyInEffectLowercase": {
-    "message": "Contain one or more lowercase characters"
+    "message": "Contiene almeno un carattere minuscolo"
   },
   "policyInEffectNumbers": {
-    "message": "Contain one or more numbers"
+    "message": "Contiene almeno una cifra"
   },
   "policyInEffectSpecial": {
-    "message": "Contain one or more of the following special characters $CHARS$",
+    "message": "Contiene almeno uno dei seguenti caratteri speciali $CHARS$",
     "placeholders": {
       "chars": {
         "content": "$1",
@@ -1352,6 +1370,84 @@
     }
   },
   "masterPasswordPolicyRequirementsNotMet": {
-    "message": "Your new master password does not meet the policy requirements."
+    "message": "La tua nuova password principale non soddisfa i requisiti di sicurezza."
+  },
+  "acceptPolicies": {
+    "message": "Selezionando la casella accetti quanto segue:"
+  },
+  "acceptPoliciesError": {
+    "message": "I Termini di Servizio e l'Informativa sulla Privacy non sono stati accettati."
+  },
+  "termsOfService": {
+    "message": "Termini del servizio"
+  },
+  "privacyPolicy": {
+    "message": "Informativa sulla privacy"
+  },
+  "hintEqualsPassword": {
+    "message": "Il suggerimento password non può essere uguale alla password."
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "desktopSyncVerificationTitle": {
+    "message": "Verifica sincronizzazione desktop"
+  },
+  "desktopIntegrationVerificationText": {
+    "message": "Verifica che l'applicazione desktop mostri questa impronta digitale: "
+  },
+  "desktopIntegrationDisabledTitle": {
+    "message": "L'integrazione del browser non è abilitata"
+  },
+  "desktopIntegrationDisabledDesc": {
+    "message": "L'integrazione del browser non è abilitata nell'applicazione Bitwarden Desktop. Si prega di attivarla nelle impostazioni all'interno dell'applicazione desktop."
+  },
+  "startDesktopTitle": {
+    "message": "Avvia l'applicazione desktop Bitwarden"
+  },
+  "startDesktopDesc": {
+    "message": "L'applicazione Bitwarden Desktop deve essere avviata prima che questa funzione possa essere utilizzata."
+  },
+  "errorEnableBiometricTitle": {
+    "message": "Impossibile abilitare l'autenticazione biometrica"
+  },
+  "errorEnableBiometricDesc": {
+    "message": "L'azione è stata annullata dall'applicazione desktop"
+  },
+  "nativeMessagingInvalidEncryptionDesc": {
+    "message": "L'applicazione desktop ha invalidato il canale di comunicazione sicuro. Ritenta l'operazione"
+  },
+  "nativeMessagingInvalidEncryptionTitle": {
+    "message": "Comunicazione desktop interrotta"
+  },
+  "nativeMessagingWrongUserDesc": {
+    "message": "L'applicazione desktop è collegata a un account diverso. Assicurarsi che entrambe le applicazioni siano collegate allo stesso account."
+  },
+  "nativeMessagingWrongUserTitle": {
+    "message": "Account non corrispondente"
+  },
+  "biometricsNotEnabledTitle": {
+    "message": "Autenticazione biometrica non abilitata"
+  },
+  "biometricsNotEnabledDesc": {
+    "message": "L'autenticazione biometrica del browser richiede che l'autenticazione biometrica del desktop sia prima abilitata  nelle impostazioni."
+  },
+  "biometricsNotSupportedTitle": {
+    "message": "Autenticazione biometrica non supportata"
+  },
+  "biometricsNotSupportedDesc": {
+    "message": "L'autenticazione biometrica del browser non è supportata su questo dispositivo."
+  },
+  "nativeMessaginPermissionErrorTitle": {
+    "message": "Permesso non concesso"
+  },
+  "nativeMessaginPermissionErrorDesc": {
+    "message": "Senza l'autorizzazione per comunicare con l'applicazione Bitwarden Desktop non è possibile fornire l'autenticazione biometrica nell'estensione del browser.\nRiprova di nuovo."
+  },
+  "personalOwnershipSubmitError": {
+    "message": "A causa di una policy aziendale, non è possibile salvare elementi nella tua cassaforte personale. Cambia l'opzione proprietà in un'organizzazione e scegli tra le raccolte disponibili."
+  },
+  "personalOwnershipPolicyInEffect": {
+    "message": "Una policy dell'organizzazione controlla le opzioni di proprietà."
   }
 }

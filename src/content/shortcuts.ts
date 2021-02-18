@@ -1,12 +1,11 @@
 import * as Mousetrap from 'mousetrap';
 
-document.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', event => {
     const isSafari = (typeof safari !== 'undefined') && navigator.userAgent.indexOf(' Safari/') !== -1 &&
         navigator.userAgent.indexOf('Chrome') === -1;
-    const isEdge = !isSafari && navigator.userAgent.indexOf(' Edge/') !== -1;
     const isVivaldi = !isSafari && navigator.userAgent.indexOf(' Vivaldi/') !== -1;
 
-    if (!isSafari && !isEdge && !isVivaldi) {
+    if (!isSafari && !isVivaldi) {
         return;
     }
 
@@ -21,8 +20,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     let autofillCommand = ['mod+shift+l'];
     if (isSafari) {
         autofillCommand = ['mod+\\', 'mod+8', 'mod+shift+p'];
-    } else if (isEdge) {
-        autofillCommand = ['mod+\\', 'mod+9'];
     }
     Mousetrap.bind(autofillCommand, () => {
         sendMessage('autofill_login');
@@ -32,7 +29,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         Mousetrap.bind('mod+shift+y', () => {
             sendMessage('open_popup');
         });
-    } else if (!isEdge) {
+
+        Mousetrap.bind('mod+shift+s', () => {
+            sendMessage('lock_vault');
+        });
+    } else {
         Mousetrap.bind('mod+shift+9', () => {
             sendMessage('generate_password');
         });
@@ -44,11 +45,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
             shortcut: shortcut,
         };
 
-        if (isSafari) {
-            msg.bitwardenFrameId = (window as any).__bitwardenFrameId;
-            safari.extension.dispatchMessage('bitwarden', msg);
-        } else {
-            chrome.runtime.sendMessage(msg);
-        }
+        chrome.runtime.sendMessage(msg);
     }
 });

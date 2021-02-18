@@ -78,7 +78,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         private platformUtilsService: PlatformUtilsService, private searchService: SearchService,
         private location: Location) {
         super(collectionService, folderService, storageService, userService);
-        this.noFolderListSize = platformUtilsService.isEdge() ? 25 : 100;
+        this.noFolderListSize = 100;
     }
 
     get showNoFolderCiphers(): boolean {
@@ -92,8 +92,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
 
     async ngOnInit() {
         this.searchTypeSearch = !this.platformUtilsService.isSafari();
-        this.showLeftHeader = !this.platformUtilsService.isSafari() &&
-            !(this.popupUtils.inSidebar(window) && this.platformUtilsService.isFirefox());
+        this.showLeftHeader = !(this.popupUtils.inSidebar(window) && this.platformUtilsService.isFirefox());
         this.stateService.remove('CiphersComponent');
 
         this.broadcasterService.subscribe(ComponentId, (message: any) => {
@@ -286,6 +285,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         }
         this.preventSelected = true;
         this.analytics.eventTrack.next({ action: 'Launched URI From Listing' });
+        await this.cipherService.updateLastLaunchedDate(cipher.id);
         BrowserApi.createNewTab(cipher.login.launchUri);
         if (this.popupUtils.inPopup(window)) {
             BrowserApi.closePopup(window);

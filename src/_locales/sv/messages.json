@@ -20,7 +20,7 @@
     "message": "Logga in"
   },
   "enterpriseSingleSignOn": {
-    "message": "Enterprise Single Sign-On"
+    "message": "Single Sign-On för företag"
   },
   "cancel": {
     "message": "Avbryt"
@@ -498,7 +498,7 @@
     "message": "Ändrade objekt"
   },
   "deleteItemConfirmation": {
-    "message": "Är du säker på att du vill ta bort detta objekt?"
+    "message": "Är du säker på att du vill radera detta objekt?"
   },
   "deletedItem": {
     "message": "Raderade objekt"
@@ -606,8 +606,14 @@
     "message": "VARNING",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
+  "confirmVaultExport": {
+    "message": "Bekräfta export av valv"
+  },
   "exportWarningDesc": {
     "message": "Den här exporten innehåller ditt valvs okrypterade data i .csv-format. Du bör inte lagra eller skicka filen över osäkra anslutningar (genom t.ex. mejl). Radera filen efter du är färdig med den."
+  },
+  "encExportWarningDesc": {
+    "message": "Denna export krypterar dina data med kontots krypteringsnyckel. Om du någonsin roterar kontots krypteringsnyckel bör du exportera igen eftersom du inte kommer att kunna dekryptera denna exportfil."
   },
   "exportMasterPassword": {
     "message": "Ange ditt huvudlösenord för att exportera ditt valv."
@@ -893,6 +899,9 @@
   },
   "commandGeneratePasswordDesc": {
     "message": "Skapa och kopiera ett nytt slumpmässigt lösenord till urklipp."
+  },
+  "commandLockVaultDesc": {
+    "message": "Lås valvet"
   },
   "privateModeMessage": {
     "message": "Det här fönstret är tyvärr inte tillgängligt i privat läge för denna webbläsare."
@@ -1247,6 +1256,15 @@
   "yourVaultIsLockedPinCode": {
     "message": "Valvet är låst. Kontrollera din PIN-kod för att fortsätta."
   },
+  "unlockWithBiometrics": {
+    "message": "Lås upp med biometri"
+  },
+  "awaitDesktop": {
+    "message": "Väntar på bekräftelse från skrivbordsprogrammet"
+  },
+  "awaitDesktopDesc": {
+    "message": "Säkerställ att du använder biometri i Bitwardens skrivbordsprogram för att aktivera biometri för webbläsaren."
+  },
   "lockWithMasterPassOnRestart": {
     "message": "Lås med huvudlösenordet vid omstart av webbläsaren"
   },
@@ -1301,22 +1319,22 @@
     "message": "Bekräftelse av åtgärd när valvets tidsgräns överskrids"
   },
   "autoFillAndSave": {
-    "message": "Auto-fill and Save"
+    "message": "Fyll i automatiskt och spara"
   },
   "autoFillSuccessAndSavedUri": {
-    "message": "Auto-filled Item and Saved URI"
+    "message": "Fyllde i objektet automatiskt och sparade URI:n"
   },
   "autoFillSuccess": {
-    "message": "Auto-filled Item"
+    "message": "Fyllde i objektet automatiskt"
   },
   "setMasterPassword": {
-    "message": "Set Master Password"
+    "message": "Ange huvudlösenord"
   },
   "masterPasswordPolicyInEffect": {
-    "message": "One or more organization policies require your master password to meet the following requirements:"
+    "message": "En eller flera organisationspolicyer kräver att ditt huvudlösenord uppfyller följande krav:"
   },
   "policyInEffectMinComplexity": {
-    "message": "Minimum complexity score of $SCORE$",
+    "message": "Minsta komplexitetspoäng på $SCORE$",
     "placeholders": {
       "score": {
         "content": "$1",
@@ -1325,7 +1343,7 @@
     }
   },
   "policyInEffectMinLength": {
-    "message": "Minimum length of $LENGTH$",
+    "message": "Minsta längd på $LENGTH$",
     "placeholders": {
       "length": {
         "content": "$1",
@@ -1334,16 +1352,16 @@
     }
   },
   "policyInEffectUppercase": {
-    "message": "Contain one or more uppercase characters"
+    "message": "Innehålla en eller flera versaler"
   },
   "policyInEffectLowercase": {
-    "message": "Contain one or more lowercase characters"
+    "message": "Innehålla en eller flera gemener"
   },
   "policyInEffectNumbers": {
-    "message": "Contain one or more numbers"
+    "message": "Innehålla en eller flera siffror"
   },
   "policyInEffectSpecial": {
-    "message": "Contain one or more of the following special characters $CHARS$",
+    "message": "Innehålla ett eller flera av följande specialtecken: $CHARS$",
     "placeholders": {
       "chars": {
         "content": "$1",
@@ -1352,6 +1370,84 @@
     }
   },
   "masterPasswordPolicyRequirementsNotMet": {
-    "message": "Your new master password does not meet the policy requirements."
+    "message": "Ditt nya huvudlösenord uppfyller inte kraven i policyn."
+  },
+  "acceptPolicies": {
+    "message": "Genom att markera denna ruta godkänner du följande:"
+  },
+  "acceptPoliciesError": {
+    "message": "Användarvillkoren och Integritetspolicyn har inte accepterats."
+  },
+  "termsOfService": {
+    "message": "Användarvillkor"
+  },
+  "privacyPolicy": {
+    "message": "Integritetspolicy"
+  },
+  "hintEqualsPassword": {
+    "message": "Din lösenordsledtråd får inte vara samma som ditt lösenord."
+  },
+  "ok": {
+    "message": "OK"
+  },
+  "desktopSyncVerificationTitle": {
+    "message": "Verifiering av synkronisering med skrivbordsprogrammet"
+  },
+  "desktopIntegrationVerificationText": {
+    "message": "Vänligen bekräfta att skrivbordsprogrammet visar det här fingeravtrycket: "
+  },
+  "desktopIntegrationDisabledTitle": {
+    "message": "Webbläsarintegration är inte aktiverad"
+  },
+  "desktopIntegrationDisabledDesc": {
+    "message": "Webbläsarintegration är inte aktiverad i Bitwardens skrivbordsprogram. Aktivera det i inställningarna i skrivbordsprogrammet."
+  },
+  "startDesktopTitle": {
+    "message": "Starta Bitwardens skrivbordsprogram"
+  },
+  "startDesktopDesc": {
+    "message": "Bitwardens skrivbordsprogram måste köras innan denna funktion kan användas."
+  },
+  "errorEnableBiometricTitle": {
+    "message": "Det gick inte att aktivera biometri"
+  },
+  "errorEnableBiometricDesc": {
+    "message": "Åtgärden avbröts av skrivbordsprogrammet"
+  },
+  "nativeMessagingInvalidEncryptionDesc": {
+    "message": "Skrivbordsprogrammet ogiltigförklarade den säkra kommunikationskanalen. Försök igen"
+  },
+  "nativeMessagingInvalidEncryptionTitle": {
+    "message": "Kommunikationen med skrivbordsprogrammet avbröts"
+  },
+  "nativeMessagingWrongUserDesc": {
+    "message": "Skrivbordsprogrammet är inloggat på ett annat konto. Se till att båda applikationerna är inloggade på samma konto."
+  },
+  "nativeMessagingWrongUserTitle": {
+    "message": "Kontoavvikelse"
+  },
+  "biometricsNotEnabledTitle": {
+    "message": "Biometri är inte aktiverat"
+  },
+  "biometricsNotEnabledDesc": {
+    "message": "Biometri i webbläsaren kräver att biometri på skrivbordet aktiveras i inställningarna först."
+  },
+  "biometricsNotSupportedTitle": {
+    "message": "Biometri stöds inte"
+  },
+  "biometricsNotSupportedDesc": {
+    "message": "Biometri i webbläsaren stöds inte på den här enheten."
+  },
+  "nativeMessaginPermissionErrorTitle": {
+    "message": "Permission not provided"
+  },
+  "nativeMessaginPermissionErrorDesc": {
+    "message": "Without permission to communicate with the Bitwarden Desktop Application we cannot provide biometrics in the browser extension. Please try again."
+  },
+  "personalOwnershipSubmitError": {
+    "message": "På grund av en av företagets policyer är du begränsad från att spara objekt till ditt personliga valv. Ändra ägarskap till en organisation och välj från tillgängliga samlingar."
+  },
+  "personalOwnershipPolicyInEffect": {
+    "message": "En organisationspolicy påverkar dina ägarskapsalternativ."
   }
 }

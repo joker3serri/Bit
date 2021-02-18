@@ -51,6 +51,8 @@ export class SettingsComponent implements OnInit {
     vaultTimeoutActions: any[];
     vaultTimeoutAction: string;
     pin: boolean = null;
+    supportsBiometric: boolean;
+    biometric: boolean = false;
     previousVaultTimeout: number = null;
 
     constructor(private platformUtilsService: PlatformUtilsService, private i18nService: I18nService,
@@ -61,8 +63,7 @@ export class SettingsComponent implements OnInit {
     }
 
     async ngOnInit() {
-        const showOnLocked = !this.platformUtilsService.isFirefox() && !this.platformUtilsService.isEdge()
-            && !this.platformUtilsService.isSafari();
+        const showOnLocked = !this.platformUtilsService.isFirefox() && !this.platformUtilsService.isSafari();
 
         this.vaultTimeouts = [
             { name: this.i18nService.t('immediately'), value: 0 },
@@ -101,6 +102,9 @@ export class SettingsComponent implements OnInit {
 
         const pinSet = await this.vaultTimeoutService.isPinLockSet();
         this.pin = pinSet[0] || pinSet[1];
+
+        this.supportsBiometric = await this.platformUtilsService.supportsBiometric();
+        this.biometric = await this.vaultTimeoutService.isBiometricLockSet();
     }
 
     async saveVaultTimeout(newValue: number) {
@@ -205,6 +209,75 @@ export class SettingsComponent implements OnInit {
         }
     }
 
+    async updateBiometric() {
+        if (this.biometric && this.supportsBiometric) {
+
+            // Request permission to use the optional permission for nativeMessaging
+            if (!this.platformUtilsService.isFirefox()) {
+                const hasPermission = await new Promise((resolve) => {
+                    chrome.permissions.contains({permissions: ['nativeMessaging']}, resolve);
+                });
+
+                if (!hasPermission) {
+                    await this.platformUtilsService.showDialog(
+                        this.i18nService.t('nativeMessagingPermissionPromptDesc'), this.i18nService.t('nativeMessagingPermissionPromptTitle'),
+                        this.i18nService.t('ok'), null);
+
+                    const granted = await new Promise((resolve, reject) => {
+                        chrome.permissions.request({permissions: ['nativeMessaging']}, resolve);
+                    });
+    
+                    if (!granted) {
+                        await this.platformUtilsService.showDialog(
+                            this.i18nService.t('nativeMessaginPermissionErrorDesc'), this.i18nService.t('nativeMessaginPermissionErrorTitle'),
+                            this.i18nService.t('ok'), null);
+                        this.biometric = false;
+                        return;
+                    }
+                }
+            }
+
+            const submitted = Swal.fire({
+                heightAuto: false,
+                buttonsStyling: false,
+                title: this.i18nService.t('awaitDesktop'),
+                text: this.i18nService.t('awaitDesktopDesc'),
+                icon: 'info',
+                iconHtml: '<i class="swal-custom-icon fa fa-info-circle text-info"></i>',
+                showCancelButton: true,
+                cancelButtonText: this.i18nService.t('cancel'),
+                showConfirmButton: false,
+                allowOutsideClick: false,
+            });
+
+            await this.storageService.save(ConstantsService.biometricAwaitingAcceptance, true);
+            await this.cryptoService.toggleKey();
+
+            await Promise.race([
+                submitted.then((result) => {
+                    if (result.dismiss === Swal.DismissReason.cancel) {
+                        this.biometric = false;
+                        this.storageService.remove(ConstantsService.biometricAwaitingAcceptance);
+                    }
+                }),
+                this.platformUtilsService.authenticateBiometric().then((result) => {
+                    this.biometric = result;
+
+                    Swal.close();
+                    if (this.biometric === false) {
+                        this.platformUtilsService.showToast('error', this.i18nService.t('errorEnableBiometricTitle'), this.i18nService.t('errorEnableBiometricDesc'));
+                    }
+                }).catch((e) => {
+                    // Handle connection errors
+                    this.biometric = false;
+                })
+            ]);
+        } else {
+            await this.storageService.remove(ConstantsService.biometricUnlockKey);
+            this.vaultTimeoutService.biometricLocked = false;
+        }
+    }
+
     async lock() {
         this.analytics.eventTrack.next({ action: 'Lock Now' });
         await this.vaultTimeoutService.lock(true);
@@ -264,11 +337,6 @@ export class SettingsComponent implements OnInit {
     }
 
     export() {
-        if (this.platformUtilsService.isEdge()) {
-            BrowserApi.createNewTab('https://help.bitwarden.com/article/export-your-data/');
-            return;
-        }
-
         this.router.navigate(['/export']);
     }
 
@@ -327,10 +395,7 @@ export class SettingsComponent implements OnInit {
 
     rate() {
         this.analytics.eventTrack.next({ action: 'Rate Extension' });
-        let deviceType = this.platformUtilsService.getDevice();
-        if (window.navigator.userAgent.indexOf('Edg/') > -1) {
-            deviceType = DeviceType.EdgeExtension;
-        }
+        const deviceType = this.platformUtilsService.getDevice();
         BrowserApi.createNewTab((RateUrls as any)[deviceType]);
     }
 }

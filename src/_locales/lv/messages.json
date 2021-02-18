@@ -20,7 +20,7 @@
     "message": "Ieiet"
   },
   "enterpriseSingleSignOn": {
-    "message": "Enterprise Single Sign-On"
+    "message": "Uzņēmuma Vienotā Pierakstīšanās"
   },
   "cancel": {
     "message": "Atcelt"
@@ -62,7 +62,7 @@
     "message": "Iestatījumi"
   },
   "currentTab": {
-    "message": "Current Tab"
+    "message": "Šī Cilne"
   },
   "copyPassword": {
     "message": "Kopēt Paroli"
@@ -98,10 +98,10 @@
     "message": "No seifa ir iziets."
   },
   "autoFillInfo": {
-    "message": "There are no logins available to auto-fill for the current browser tab."
+    "message": "Nav piekļuves datu, kurus automātiski aizpildīt šajā pārlūka cilnē."
   },
   "addLogin": {
-    "message": "Add a Login"
+    "message": "Pievienot Piekļuves Datus"
   },
   "addItem": {
     "message": "Pievienot Vienumu"
@@ -606,8 +606,14 @@
     "message": "UZMANĪBU",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
   },
+  "confirmVaultExport": {
+    "message": "Confirm Vault Export"
+  },
   "exportWarningDesc": {
     "message": "Šis eksports satur jūsu datus nešifrētā formātā. Eksportēto failu nevajadzētu saglabāt vai sūtīt izmantojot nedrošus kanālus (piemēram E-pastu). Izdzēsiet to līdzko esiet beidzis to izmantot."
+  },
+  "encExportWarningDesc": {
+    "message": "This export encrypts your data using your account's encryption key. If you ever rotate your account's encryption key you should export again since you will not be able to decrypt this export file."
   },
   "exportMasterPassword": {
     "message": "Ievadiet savu galveno paroli lai eksportētu sava seifa datus."
@@ -790,19 +796,19 @@
     "message": "Insert your security key into your computer's USB port. If it has a button, touch it."
   },
   "loginUnavailable": {
-    "message": "Login Unavailable"
+    "message": "Ieeja Nav Pieejama"
   },
   "noTwoStepProviders": {
-    "message": "This account has two-step login enabled, however, none of the configured two-step providers are supported by this web browser."
+    "message": "Šim kontam ir iespējota divpakāpju piekļuve, bet šis pārlūks neatbalsta nevienu no uzstādītajiem divpakāpju verifikācijas nodrošinātājiem."
   },
   "noTwoStepProviders2": {
-    "message": "Please use a supported web browser (such as Chrome) and/or add additional providers that are better supported across web browsers (such as an authenticator app)."
+    "message": "Lūdzu izmantojiet atbalstītu tīmekļa pārlūku (piemēram Chrome) un/vai pievienojiet papildus nodrošinātājus kas ir labāk atbalstīti visos pārlūkos (piemēram autentifikatora lietotni)."
   },
   "twoStepOptions": {
-    "message": "Two-step Login Options"
+    "message": "Divpakāpju Piekļuves Iestatījumi"
   },
   "recoveryCodeDesc": {
-    "message": "Lost access to all of your two-factor providers? Use your recovery code to disable all two-factor providers from your account."
+    "message": "Zaudēji piekļuvi visiem divpakāpju nodrošinātājiem? Izmanto atjaunošanas kodus lai atspējotu visus divpakāpju nodrošinātājus no sava konta."
   },
   "recoveryCodeTitle": {
     "message": "Atjaunošanas Kods"
@@ -818,10 +824,10 @@
     "message": "YubiKey OTP Drošības Atslēga"
   },
   "yubiKeyDesc": {
-    "message": "Use a YubiKey to access your account. Works with YubiKey 4, 4 Nano, 4C, and NEO devices."
+    "message": "Izmanto YubiKey lai piekļūtu savam kontam. Strādā ar YubiKey 4, 4 Nano, 4C un NEO ierīcēm."
   },
   "duoDesc": {
-    "message": "Verify with Duo Security using the Duo Mobile app, SMS, phone call, or U2F security key.",
+    "message": "Verificē izmantojot Duo Sercurity izmantojot Duo Mobile lietotni, SMS, telefona zvanu vai U2F drošības atslēgu.",
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "duoOrganizationDesc": {
@@ -832,13 +838,13 @@
     "message": "Use any FIDO U2F enabled security key to access your account."
   },
   "u2fTitle": {
-    "message": "FIDO U2F Security Key"
+    "message": "FIDO U2F Drošības Atslēga"
   },
   "emailTitle": {
     "message": "E-pasts"
   },
   "emailDesc": {
-    "message": "Verification codes will be emailed to you."
+    "message": "Verifikācijas kodi tiks nosūtīti uz jūsu E-pastu."
   },
   "selfHostedEnvironment": {
     "message": "Pašuzturēta Vide"
@@ -893,6 +899,9 @@
   },
   "commandGeneratePasswordDesc": {
     "message": "Generate and copy a new random password to the clipboard"
+  },
+  "commandLockVaultDesc": {
+    "message": "Lock the vault"
   },
   "privateModeMessage": {
     "message": "Diemžēl šis logs nav pieejams privātajā režīmā šajā pārlūkā."
@@ -1247,6 +1256,15 @@
   "yourVaultIsLockedPinCode": {
     "message": "Jūsu seifs ir slēgts. Ievadiet savu PIN kodu lai turpinātu."
   },
+  "unlockWithBiometrics": {
+    "message": "Unlock with biometrics"
+  },
+  "awaitDesktop": {
+    "message": "Awaiting confirmation from desktop"
+  },
+  "awaitDesktopDesc": {
+    "message": "Please confirm using biometrics in the Bitwarden Desktop application to enable biometrics for browser."
+  },
   "lockWithMasterPassOnRestart": {
     "message": "Aizslēgt ar galveno paroli pēc pārlūka atsāknēšanas"
   },
@@ -1353,5 +1371,83 @@
   },
   "masterPasswordPolicyRequirementsNotMet": {
     "message": "Your new master password does not meet the policy requirements."
+  },
+  "acceptPolicies": {
+    "message": "By checking this box you agree to the following:"
+  },
+  "acceptPoliciesError": {
+    "message": "Terms of Service and Privacy Policy have not been acknowledged."
+  },
+  "termsOfService": {
+    "message": "Terms of Service"
+  },
+  "privacyPolicy": {
+    "message": "Privacy Policy"
+  },
+  "hintEqualsPassword": {
+    "message": "Your password hint cannot be the same as your password."
+  },
+  "ok": {
+    "message": "Ok"
+  },
+  "desktopSyncVerificationTitle": {
+    "message": "Desktop sync verification"
+  },
+  "desktopIntegrationVerificationText": {
+    "message": "Please verify that the desktop application shows this fingerprint: "
+  },
+  "desktopIntegrationDisabledTitle": {
+    "message": "Browser integration is not enabled"
+  },
+  "desktopIntegrationDisabledDesc": {
+    "message": "Browser integration is not enabled in the Bitwarden Desktop application. Please enable it in the settings within the desktop application."
+  },
+  "startDesktopTitle": {
+    "message": "Start the Bitwarden Desktop application"
+  },
+  "startDesktopDesc": {
+    "message": "The Bitwarden Desktop application needs to be started before this function can be used."
+  },
+  "errorEnableBiometricTitle": {
+    "message": "Unable to enable biometrics"
+  },
+  "errorEnableBiometricDesc": {
+    "message": "Action was canceled by the desktop application"
+  },
+  "nativeMessagingInvalidEncryptionDesc": {
+    "message": "Desktop application invalidated the secure communication channel. Please retry this operation"
+  },
+  "nativeMessagingInvalidEncryptionTitle": {
+    "message": "Desktop communication interrupted"
+  },
+  "nativeMessagingWrongUserDesc": {
+    "message": "The desktop application is logged into a different account. Please ensure both applications are logged into the same account."
+  },
+  "nativeMessagingWrongUserTitle": {
+    "message": "Account missmatch"
+  },
+  "biometricsNotEnabledTitle": {
+    "message": "Biometrics not enabled"
+  },
+  "biometricsNotEnabledDesc": {
+    "message": "Browser biometrics requires desktop biometric to be enabled in the settings first."
+  },
+  "biometricsNotSupportedTitle": {
+    "message": "Biometrics not supported"
+  },
+  "biometricsNotSupportedDesc": {
+    "message": "Browser biometrics is not supported on this device."
+  },
+  "nativeMessaginPermissionErrorTitle": {
+    "message": "Permission not provided"
+  },
+  "nativeMessaginPermissionErrorDesc": {
+    "message": "Without permission to communicate with the Bitwarden Desktop Application we cannot provide biometrics in the browser extension. Please try again."
+  },
+  "personalOwnershipSubmitError": {
+    "message": "Due to an Enterprise Policy, you are restricted from saving items to your personal vault. Change the Ownership option to an organization and choose from available Collections."
+  },
+  "personalOwnershipPolicyInEffect": {
+    "message": "An organization policy is affecting your ownership options."
   }
 }

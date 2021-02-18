@@ -1,12 +1,12 @@
 import { CipherService } from 'jslib/abstractions/cipher.service';
-import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 
+import { ConsoleLogService } from 'jslib/services/consoleLog.service';
 import { SearchService } from 'jslib/services/search.service';
 
 export class PopupSearchService extends SearchService {
     constructor(private mainSearchService: SearchService, cipherService: CipherService,
-        platformUtilsService: PlatformUtilsService) {
-        super(cipherService, platformUtilsService);
+        consoleLogService: ConsoleLogService) {
+        super(cipherService, consoleLogService);
     }
 
     clearIndex() {

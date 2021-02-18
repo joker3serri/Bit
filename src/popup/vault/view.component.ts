@@ -56,7 +56,6 @@ export class ViewComponent extends BaseViewComponent {
     }
 
     ngOnInit() {
-        this.showAttachments = !this.platformUtilsService.isEdge();
         this.inPopout = this.popupUtilsService.inPopout(window);
         const queryParamsSub = this.route.queryParams.subscribe(async (params) => {
             if (params.cipherId) {
@@ -128,6 +127,13 @@ export class ViewComponent extends BaseViewComponent {
                 cipherId: this.cipher.id,
             },
         });
+    }
+
+    share() {
+        super.share();
+        if (this.cipher.organizationId == null) {
+            this.router.navigate(['/share-cipher'], { replaceUrl: true, queryParams: { cipherId: this.cipher.id } });
+        }
     }
 
     async fillCipher() {
@@ -221,6 +227,7 @@ export class ViewComponent extends BaseViewComponent {
                 cipher: this.cipher,
                 pageDetails: this.pageDetails,
                 doc: window.document,
+                fillNewPassword: true,
             });
             if (this.totpCode != null) {
                 this.platformUtilsService.copyToClipboard(this.totpCode, { window: window });
