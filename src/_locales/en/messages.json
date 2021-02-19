@@ -1552,14 +1552,8 @@
     "message": "A friendly name to describe this Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
-  "chooseFile": {
-    "message": "Choose File"
-  },
-  "noFileChosen": {
-    "message": "No file chosen"
-  },
   "sendFileDesc": {
-    "message": "The file you want to send. Maximum file size is 100 MB."
+    "message": "The file you want to send."
   },
   "deletionDate": {
     "message": "Deletion Date"
@@ -1641,5 +1635,14 @@
   "editedSend": {
     "message": "Edited Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
+  },
+  "sendFirefoxFileWarning": {
+    "message": "In order to choose a file using Firefox, open the extension in the sidebar or pop out to a new window by clicking this banner."
+  },
+  "sendSafariFileWarning": {
+    "message": "In order to choose a file using Safari, pop out to a new window by clicking this banner."
+  },
+  "sendFileCalloutHeader": {
+    "message": "Before you start"
   }
 }

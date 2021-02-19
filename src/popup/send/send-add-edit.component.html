@@ -14,6 +14,12 @@
         </div>
     </header>
     <content *ngIf="send">
+        <!-- File Warning -->
+        <app-callout type="warning" icon="fa-external-link" title="{{'sendFileCalloutHeader' | i18n}}"
+            *ngIf="showFilePopoutMessage && send.type === sendType.File" (click)="popOutWindow()">
+            <div *ngIf="showFirefoxFileWarning">{{'sendFirefoxFileWarning' | i18n}}</div>
+            <div *ngIf="showSafariFileWarning">{{'sendSafariFileWarning' | i18n}}</div>
+        </app-callout>
         <!-- Name -->
         <div class="box">
             <div class="box-content">
@@ -39,18 +45,18 @@
             </div>
         </div>
         <!-- File -->
-        <div class="box" *ngIf="send.type === sendType.File">
+        <div class="box" *ngIf="send.type === sendType.File && (editMode || showFileSelector)">
             <div class="box-content no-hover">
                 <div class="box-content-row" *ngIf="editMode">
                     <label for="file">{{'file' | i18n}}</label>
                     <div class="row-main">{{send.file.fileName}} ({{send.file.sizeName}})</div>
                 </div>
-                <div class="box-content-row" *ngIf="!editMode">
+                <div class="box-content-row" *ngIf="showFileSelector">
                     <label for="file">{{'file' | i18n}}</label>
                     <input type="file" id="file" name="file" required>
                 </div>
             </div>
-            <div class="box-footer" *ngIf="!editMode">
+            <div class="box-footer" *ngIf="showFileSelector">
                 {{'sendFileDesc' | i18n}} {{'maxFileSize' | i18n}}
             </div>
         </div>

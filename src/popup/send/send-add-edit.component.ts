@@ -27,9 +27,13 @@ import { AddEditComponent as BaseAddEditComponent } from 'jslib/angular/componen
     templateUrl: 'send-add-edit.component.html',
 })
 export class SendAddEditComponent extends BaseAddEditComponent {
-    showAttachments = true;
+    // Options header
     showOptions = false;
-    openAttachmentsInPopup: boolean;
+    // File visibility
+    isFirefox = false;
+    isSafari = false;
+    inPopout = false;
+    inSidebar = false;
 
     constructor(i18nService: I18nService, platformUtilsService: PlatformUtilsService,
         userService: UserService, messagingService: MessagingService, policyService: PolicyService,
@@ -40,7 +44,35 @@ export class SendAddEditComponent extends BaseAddEditComponent {
             messagingService, policyService);
     }
 
+    get showFileSelector(): boolean {
+        return !this.editMode && (!this.isFirefox && !this.isSafari) ||
+            (this.isFirefox && (this.inSidebar || this.inPopout)) ||
+            (this.isSafari && this.inPopout);
+    }
+
+    get showFilePopoutMessage(): boolean {
+        return !this.editMode && (this.showFirefoxFileWarning || this.showSafariFileWarning);
+    }
+
+    get showFirefoxFileWarning(): boolean {
+        return this.isFirefox && !(this.inSidebar || this.inPopout);
+    }
+
+    get showSafariFileWarning(): boolean {
+        return this.isSafari && !this.inPopout;
+    }
+
+    popOutWindow() {
+        this.popupUtilsService.popOut(window);
+    }
+
     async ngOnInit() {
+        // File visilibity
+        this.isFirefox = this.platformUtilsService.isFirefox();
+        this.isSafari = this.platformUtilsService.isSafari();
+        this.inPopout = this.popupUtilsService.inPopout(window);
+        this.inSidebar = this.popupUtilsService.inSidebar(window);
+
         const queryParamsSub = this.route.queryParams.subscribe(async (params) => {
             if (params.sendId) {
                 this.sendId = params.sendId;
@@ -54,8 +86,6 @@ export class SendAddEditComponent extends BaseAddEditComponent {
             if (queryParamsSub != null) {
                 queryParamsSub.unsubscribe();
             }
-
-            this.openAttachmentsInPopup = this.popupUtilsService.inPopup(window);
         });
 
         window.setTimeout(() => {
@@ -84,6 +114,11 @@ export class SendAddEditComponent extends BaseAddEditComponent {
     }
 
     cancel() {
-        this.location.back();
+        // If true, the window was pop'd out on the add-send page. location.back will not work
+        if ((window as any).previousPopupUrl.startsWith('/add-send')) {
+            this.router.navigate(['tabs/send']);
+        } else {
+            this.location.back();
+        }
     }
 }
