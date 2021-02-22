@@ -52,11 +52,8 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     }
 
     async ngOnInit() {
-        const isFirefox = this.platformUtilsService.isFirefox();
-        if (this.popupUtilsService.inPopup(window) && isFirefox &&
-            this.win.navigator.userAgent.indexOf('Windows NT 10.0;') > -1) {
-            // ref: https://bugzilla.mozilla.org/show_bug.cgi?id=1562620
-            this.initWebAuthn = false;
+        if (this.route.snapshot.paramMap.has('webAuthnResponse')) {
+
         }
         await super.ngOnInit();
         if (this.selectedProviderType == null) {
@@ -72,13 +69,12 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
             }
         }
 
-        if (!this.initWebAuthn && this.selectedProviderType === TwoFactorProviderType.WebAuthn &&
-            this.popupUtilsService.inPopup(window)) {
-            const confirmed = await this.platformUtilsService.showDialog(this.i18nService.t('popupU2fCloseMessage'),
-                null, this.i18nService.t('yes'), this.i18nService.t('no'));
-            if (confirmed) {
-                this.popupUtilsService.popOut(window);
+        if (this.webAuthnFallback) {
+            super.onSuccessfulLogin = async () => {
+                this.syncService.fullSync(true);
+                window.close();
             }
+            await this.submit();
         }
 
         const queryParamsSub = this.route.queryParams.subscribe(async (qParams) => {

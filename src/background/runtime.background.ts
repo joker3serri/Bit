@@ -187,7 +187,7 @@ export default class RuntimeBackground {
                     return;
                 }
 
-                this.messagingService.send('webAuthnResponse', { data: msg.data });
+                BrowserApi.createNewTab('popup/index.html?uilocation=popout#/2fa;webAuthnResponse=' + msg.data);
                 break;
             default:
                 break;
