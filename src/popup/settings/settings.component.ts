@@ -63,7 +63,7 @@ export class SettingsComponent implements OnInit {
     }
 
     async ngOnInit() {
-        const showOnLocked = !this.platformUtilsService.isFirefox() && !this.platformUtilsService.isSafari();
+        const showOnLocked = true;
 
         this.vaultTimeouts = [
             { name: this.i18nService.t('immediately'), value: 0 },
@@ -210,10 +210,12 @@ export class SettingsComponent implements OnInit {
     }
 
     async updateBiometric() {
+        const granted = await new Promise((resolve, reject) => {
+            chrome.permissions.request({permissions: ['nativeMessaging']}, resolve);
+        });
         if (this.biometric && this.supportsBiometric) {
 
             // Request permission to use the optional permission for nativeMessaging
-            if (!this.platformUtilsService.isFirefox()) {
                 const hasPermission = await new Promise((resolve) => {
                     chrome.permissions.contains({permissions: ['nativeMessaging']}, resolve);
                 });
@@ -235,7 +237,6 @@ export class SettingsComponent implements OnInit {
                         return;
                     }
                 }
-            }
 
             const submitted = Swal.fire({
                 heightAuto: false,

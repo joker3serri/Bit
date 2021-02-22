@@ -111,7 +111,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
     }
 
     lockTimeout(): number {
-        return null;
+            return null;
     }
 
     launchUri(uri: string, options?: any): void {
@@ -287,7 +287,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
     }
 
     supportsBiometric() {
-        return Promise.resolve(!this.isFirefox() && !this.isSafari());
+        return Promise.resolve(true);
     }
 
     authenticateBiometric() {
