@@ -370,7 +370,7 @@
         }
     }
 
-    input:not([type="checkbox"]), textarea {
+    input:not([type="checkbox"]):not([type="radio"]), textarea {
         border: none;
         width: 100%;
         background-color: transparent !important;
@@ -585,6 +585,29 @@
             justify-content: center;
             white-space: nowrap;
             background-color: $brand-primary;
+        }
+    }
+
+    .radio-group {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-bottom: 5px;
+
+        input {
+            flex-grow: 0;
+        }
+
+        label {
+            margin: 0 0 0 5px;
+            flex-grow: 1;
+            font-size: $font-size-base;
+            display: block;
+            width: 100%;
+
+            @include themify($themes) {
+                color: themed('textColor');
+            }
         }
     }
 }

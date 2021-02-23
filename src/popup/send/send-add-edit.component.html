@@ -15,8 +15,9 @@
     </header>
     <content *ngIf="send">
         <!-- File Warning -->
-        <app-callout type="warning" icon="fa-external-link" title="{{'sendFileCalloutHeader' | i18n}}"
-            *ngIf="showFilePopoutMessage && send.type === sendType.File" (click)="popOutWindow()">
+        <app-callout type="warning" icon="fa fa-external-link fa-rotate-270 fa-fw" [clickable]="true"
+            title="{{'sendFileCalloutHeader' | i18n}}" *ngIf="showFilePopoutMessage && send.type === sendType.File"
+            (click)="popOutWindow()">
             <div *ngIf="showFirefoxFileWarning">{{'sendFirefoxFileWarning' | i18n}}</div>
             <div *ngIf="showSafariFileWarning">{{'sendSafariFileWarning' | i18n}}</div>
         </app-callout>
@@ -34,13 +35,17 @@
         </div>
         <!-- Type Options -->
         <div class="box" *ngIf="!editMode">
-            <div class="box-content">
-                <div class="box-content-row" appBoxRow>
+            <div class="box-content no-hover">
+                <div class="box-content-row">
                     <label for="sendTypeOptions">{{'sendTypeHeader' | i18n}}</label>
-                    <select id="sendTypeOptions" name="SendTypeOptions" [(ngModel)]="send.type"
-                        (change)="typeChanged()">
-                        <option *ngFor="let o of typeOptions" [ngValue]="o.value">{{o.name}}</option>
-                    </select>
+                    <div class="radio-group text-default" appBoxRow name="SendTypeOptions"
+                        *ngFor="let o of typeOptions">
+                        <input type="radio" [(ngModel)]="send.type" name="Type_{{o.value}}" id="type_{{o.value}}"
+                            [value]="o.value" (change)="typeChanged()" [checked]="send.type === o.value">
+                        <label for="type_{{o.value}}">
+                            {{o.name}}
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
