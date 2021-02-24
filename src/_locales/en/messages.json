@@ -795,6 +795,9 @@
   "insertU2f": {
     "message": "Insert your security key into your computer's USB port. If it has a button, touch it."
   },
+  "webAuthnNewTab": {
+    "message": "Continue the WebAuthn 2FA verification in the new tab."
+  },
   "loginUnavailable": {
     "message": "Login Unavailable"
   },

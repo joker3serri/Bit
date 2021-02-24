@@ -187,7 +187,7 @@ export default class RuntimeBackground {
                     return;
                 }
 
-                BrowserApi.createNewTab('popup/index.html?uilocation=popout#/2fa;webAuthnResponse=' + msg.data);
+                BrowserApi.createNewTab('popup/index.html?uilocation=popout#/2fa;webAuthnResponse=' + msg.data, undefined, false);
                 break;
             default:
                 break;
