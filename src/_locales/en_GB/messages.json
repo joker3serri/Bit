@@ -1449,5 +1449,8 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "An organisation policy is affecting your ownership options."
+  },
+  "defaultUsernames": {
+    "message": "Default Usernames"
   }
 }

@@ -1449,5 +1449,8 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "Organisatsiooni poliitika on seadnud omaniku valikutele piirangu."
+  },
+  "defaultUsernames": {
+    "message": "Default Usernames"
   }
 }

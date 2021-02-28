@@ -1449,5 +1449,8 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "Zasada organizacji ma wpływ na opcję własności elementów."
+  },
+  "defaultUsernames": {
+    "message": "Domyślne nazwy użytkownika"
   }
 }

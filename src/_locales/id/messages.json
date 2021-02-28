@@ -1449,5 +1449,8 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "Kebijakan organisasi memengaruhi opsi kepemilikan Anda."
+  },
+  "defaultUsernames": {
+    "message": "Default Usernames"
   }
 }

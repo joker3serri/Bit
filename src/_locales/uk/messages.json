@@ -1449,5 +1449,8 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "Політика організації впливає на ваші параметри власності."
+  },
+  "defaultUsernames": {
+    "message": "Default Usernames"
   }
 }

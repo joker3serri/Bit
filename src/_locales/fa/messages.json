@@ -1449,5 +1449,8 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "خط مشی سازمانی بر تنظیمات مالکیت شما تأثیر می گذارد."
+  },
+  "defaultUsernames": {
+    "message": "Default Usernames"
   }
 }

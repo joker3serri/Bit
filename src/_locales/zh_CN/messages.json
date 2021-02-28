@@ -1449,5 +1449,8 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "一个组织策略正影响您的所有权选项。"
+  },
+  "defaultUsernames": {
+    "message": "Default Usernames"
   }
 }

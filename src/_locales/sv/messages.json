@@ -1449,5 +1449,8 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "En organisationspolicy påverkar dina ägarskapsalternativ."
+  },
+  "defaultUsernames": {
+    "message": "Default Usernames"
   }
 }
