@@ -15,8 +15,8 @@ import { ApiService } from 'jslib/abstractions/api.service';
 import { AuthService } from 'jslib/abstractions/auth.service';
 import { EnvironmentService } from 'jslib/abstractions/environment.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
-import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { MessagingService } from 'jslib/abstractions/messaging.service';
+import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { StateService } from 'jslib/abstractions/state.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
 import { SyncService } from 'jslib/abstractions/sync.service';
@@ -64,8 +64,8 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
                 this.syncService.fullSync(true);
                 this.messagingService.send('reloadPopup');
                 window.close();
-            }
-            this.remember = this.route.snapshot.paramMap.get('remember') == 'true';
+            };
+            this.remember = this.route.snapshot.paramMap.get('remember') === 'true';
             await this.doSubmit();
             return;
         }
