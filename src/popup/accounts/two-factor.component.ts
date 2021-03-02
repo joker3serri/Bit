@@ -26,6 +26,7 @@ import { BroadcasterService } from 'jslib/angular/services/broadcaster.service';
 import { TwoFactorComponent as BaseTwoFactorComponent } from 'jslib/angular/components/two-factor.component';
 
 import { PopupUtilsService } from '../services/popup-utils.service';
+
 import { BrowserApi } from '../../browser/browserApi';
 
 const BroadcasterSubscriptionId = 'TwoFactorComponent';
@@ -83,7 +84,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
             }
         }
 
-        const queryParamsSub = this.route.queryParams.subscribe(async (qParams) => {
+        const queryParamsSub = this.route.queryParams.subscribe(async qParams => {
             if (qParams.sso === 'true') {
                 super.onSuccessfulLogin = () => {
                     BrowserApi.reloadOpenWindows();

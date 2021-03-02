@@ -19,7 +19,6 @@ import {
     TokenService,
     TotpService,
     UserService,
-    VaultTimeoutService,
 } from 'jslib/services';
 import { ConsoleLogService } from 'jslib/services/consoleLog.service';
 import { EventService } from 'jslib/services/event.service';
@@ -84,6 +83,7 @@ import BrowserMessagingService from '../services/browserMessaging.service';
 import BrowserPlatformUtilsService from '../services/browserPlatformUtils.service';
 import BrowserStorageService from '../services/browserStorage.service';
 import I18nService from '../services/i18n.service';
+import VaultTimeoutService from '../services/vaultTimeout.service';
 
 import { AutofillService as AutofillServiceAbstraction } from '../services/abstractions/autofill.service';
 
@@ -747,6 +747,10 @@ export default class MainBackground {
 
         if (this.platformUtilsService.isFirefox()) {
             await theAction.setIcon(options);
+        } else if (this.platformUtilsService.isSafari()) {
+            // Workaround since Safari 14.0.3 returns a pending promise
+            // which doesn't resolve within a reasonable time.
+            theAction.setIcon(options);
         } else {
             return new Promise(resolve => {
                 theAction.setIcon(options, () => resolve());

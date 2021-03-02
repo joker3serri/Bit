@@ -63,7 +63,7 @@ export class SettingsComponent implements OnInit {
     }
 
     async ngOnInit() {
-        const showOnLocked = true;
+        const showOnLocked = !this.platformUtilsService.isFirefox() && !this.platformUtilsService.isSafari();
 
         this.vaultTimeouts = [
             { name: this.i18nService.t('immediately'), value: 0 },
@@ -210,14 +210,12 @@ export class SettingsComponent implements OnInit {
     }
 
     async updateBiometric() {
-        const granted = await new Promise((resolve, reject) => {
-            chrome.permissions.request({permissions: ['nativeMessaging']}, resolve);
-        });
         if (this.biometric && this.supportsBiometric) {
 
             // Request permission to use the optional permission for nativeMessaging
-                const hasPermission = await new Promise((resolve) => {
-                    chrome.permissions.contains({permissions: ['nativeMessaging']}, resolve);
+            if (!this.platformUtilsService.isFirefox()) {
+                const hasPermission = await new Promise(resolve => {
+                    chrome.permissions.contains({ permissions: ['nativeMessaging'] }, resolve);
                 });
 
                 if (!hasPermission) {
@@ -226,9 +224,9 @@ export class SettingsComponent implements OnInit {
                         this.i18nService.t('ok'), null);
 
                     const granted = await new Promise((resolve, reject) => {
-                        chrome.permissions.request({permissions: ['nativeMessaging']}, resolve);
+                        chrome.permissions.request({ permissions: ['nativeMessaging'] }, resolve);
                     });
-    
+
                     if (!granted) {
                         await this.platformUtilsService.showDialog(
                             this.i18nService.t('nativeMessaginPermissionErrorDesc'), this.i18nService.t('nativeMessaginPermissionErrorTitle'),
@@ -237,6 +235,7 @@ export class SettingsComponent implements OnInit {
                         return;
                     }
                 }
+            }
 
             const submitted = Swal.fire({
                 heightAuto: false,
@@ -255,23 +254,23 @@ export class SettingsComponent implements OnInit {
             await this.cryptoService.toggleKey();
 
             await Promise.race([
-                submitted.then((result) => {
+                submitted.then(result => {
                     if (result.dismiss === Swal.DismissReason.cancel) {
                         this.biometric = false;
                         this.storageService.remove(ConstantsService.biometricAwaitingAcceptance);
                     }
                 }),
-                this.platformUtilsService.authenticateBiometric().then((result) => {
+                this.platformUtilsService.authenticateBiometric().then(result => {
                     this.biometric = result;
 
                     Swal.close();
                     if (this.biometric === false) {
                         this.platformUtilsService.showToast('error', this.i18nService.t('errorEnableBiometricTitle'), this.i18nService.t('errorEnableBiometricDesc'));
                     }
-                }).catch((e) => {
+                }).catch(e => {
                     // Handle connection errors
                     this.biometric = false;
-                })
+                }),
             ]);
         } else {
             await this.storageService.remove(ConstantsService.biometricUnlockKey);
