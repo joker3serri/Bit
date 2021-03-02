@@ -131,10 +131,6 @@ export class AppComponent implements OnInit {
                 this.ngZone.run(() => {
                     this.router.navigate(['/']);
                 });
-            } else if (msg.command === 'webAuthnResponse') {
-                this.ngZone.run(() => {
-                    this.router.navigate(['2fa', { webAuthnResponse: msg.data }]);
-                });
             } else {
                 msg.webExtSender = sender;
                 this.broadcasterService.send(msg);

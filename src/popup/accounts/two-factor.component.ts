@@ -16,6 +16,7 @@ import { AuthService } from 'jslib/abstractions/auth.service';
 import { EnvironmentService } from 'jslib/abstractions/environment.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
+import { MessagingService } from 'jslib/abstractions/messaging.service';
 import { StateService } from 'jslib/abstractions/state.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
 import { SyncService } from 'jslib/abstractions/sync.service';
@@ -43,7 +44,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
         environmentService: EnvironmentService, private ngZone: NgZone,
         private broadcasterService: BroadcasterService, private changeDetectorRef: ChangeDetectorRef,
         private popupUtilsService: PopupUtilsService, stateService: StateService,
-        storageService: StorageService, route: ActivatedRoute) {
+        storageService: StorageService, route: ActivatedRoute, private messagingService: MessagingService) {
         super(authService, router, i18nService, apiService, platformUtilsService, window, environmentService,
             stateService, storageService, route);
         super.onSuccessfulLogin = () => {
@@ -55,8 +56,18 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
 
     async ngOnInit() {
         if (this.route.snapshot.paramMap.has('webAuthnResponse')) {
-
+            // WebAuthn fallback response
+            this.selectedProviderType = TwoFactorProviderType.WebAuthn;
+            this.token = this.route.snapshot.paramMap.get('webAuthnResponse');
+            super.onSuccessfulLogin = async () => {
+                this.syncService.fullSync(true);
+                this.messagingService.send('reloadPopup');
+                window.close();
+            }
+            await this.doSubmit();
+            return;
         }
+
         await super.ngOnInit();
         if (this.selectedProviderType == null) {
             return;
@@ -69,14 +80,6 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
             if (confirmed) {
                 this.popupUtilsService.popOut(window);
             }
-        }
-
-        if (this.webAuthnFallback) {
-            super.onSuccessfulLogin = async () => {
-                this.syncService.fullSync(true);
-                window.close();
-            }
-            await this.submit();
         }
 
         const queryParamsSub = this.route.queryParams.subscribe(async (qParams) => {

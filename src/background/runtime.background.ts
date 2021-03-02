@@ -189,6 +189,9 @@ export default class RuntimeBackground {
 
                 BrowserApi.createNewTab('popup/index.html?uilocation=popout#/2fa;webAuthnResponse=' + msg.data, undefined, false);
                 break;
+            case 'reloadPopup':
+                this.messagingService.send('reloadPopup');
+                break;
             default:
                 break;
         }
