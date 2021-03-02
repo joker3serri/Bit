@@ -15,6 +15,7 @@ window.addEventListener('message', event => {
         chrome.runtime.sendMessage({
             command: event.data.command,
             data: event.data.data,
+            remember: event.data.remember,
             referrer: event.source.location.hostname,
         });
     }

@@ -64,6 +64,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
                 this.messagingService.send('reloadPopup');
                 window.close();
             }
+            this.remember = this.route.snapshot.paramMap.get('remember') == 'true';
             await this.doSubmit();
             return;
         }
