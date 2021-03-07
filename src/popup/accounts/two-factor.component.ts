@@ -37,7 +37,6 @@ const BroadcasterSubscriptionId = 'TwoFactorComponent';
 })
 export class TwoFactorComponent extends BaseTwoFactorComponent {
     showNewWindowMessage = false;
-    webAuthnNewTab = false;
 
     constructor(authService: AuthService, router: Router,
         i18nService: I18nService, apiService: ApiService,
@@ -52,7 +51,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
             return syncService.fullSync(true);
         };
         super.successRoute = '/tabs/vault';
-        this.webAuthnNewTab = this.platformUtilsService.isFirefox();
+        this.webAuthnNewTab = this.platformUtilsService.isFirefox() || this.platformUtilsService.isSafari();
     }
 
     async ngOnInit() {
