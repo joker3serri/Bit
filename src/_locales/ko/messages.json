@@ -1449,8 +1449,5 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "조직의 정책이 소유권 설정에 영향을 미치고 있습니다."
-  },
-  "defaultUsernames": {
-    "message": "Default Usernames"
   }
 }

@@ -1449,8 +1449,5 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "Une politique d'organisation affecte vos options de propriété."
-  },
-  "defaultUsernames": {
-    "message": "Default Usernames"
   }
 }

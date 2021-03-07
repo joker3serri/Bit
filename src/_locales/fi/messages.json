@@ -1449,8 +1449,5 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "Organisaatiokäytäntö vaikuttaa omistajuusvalintoihisi."
-  },
-  "defaultUsernames": {
-    "message": "Default Usernames"
   }
 }

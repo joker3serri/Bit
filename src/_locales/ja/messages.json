@@ -1449,8 +1449,5 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "組織のポリシーが所有者のオプションに影響を与えています。"
-  },
-  "defaultUsernames": {
-    "message": "Default Usernames"
   }
 }

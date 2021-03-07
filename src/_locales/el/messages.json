@@ -1449,8 +1449,5 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "Μια πολιτική του οργανισμού, επηρεάζει τις επιλογές ιδιοκτησίας σας."
-  },
-  "defaultUsernames": {
-    "message": "Default Usernames"
   }
 }

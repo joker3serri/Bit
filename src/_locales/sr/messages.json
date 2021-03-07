@@ -1449,8 +1449,5 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "Политика организације утичу на ваше могућности власништва."
-  },
-  "defaultUsernames": {
-    "message": "Default Usernames"
   }
 }

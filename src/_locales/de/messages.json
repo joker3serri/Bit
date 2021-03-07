@@ -1449,8 +1449,5 @@
   },
   "personalOwnershipPolicyInEffect": {
     "message": "Eine Organisationsrichtlinie beeinflusst Ihre Eigentümer-Optionen."
-  },
-  "defaultUsernames": {
-    "message": "Default Usernames"
   }
 }
