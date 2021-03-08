@@ -293,7 +293,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
     }
 
     async supportsBiometric() {
-        const isUnsuportedFirefox = this.isFirefox() && parseInt((await browser.runtime.getBrowserInfo()).version.split('.')[0]) < 88;
+        const isUnsuportedFirefox = this.isFirefox() && parseInt((await browser.runtime.getBrowserInfo()).version.split('.')[0], 10) < 88;
         return !isUnsuportedFirefox && !this.isSafari();
     }
 
