@@ -798,6 +798,9 @@
   "webAuthnNewTab": {
     "message": "Continue the WebAuthn 2FA verification in the new tab."
   },
+  "webAuthnAuthenticate": {
+    "message": "Authenticate WebAutn"
+  },
   "loginUnavailable": {
     "message": "Login Unavailable"
   },
