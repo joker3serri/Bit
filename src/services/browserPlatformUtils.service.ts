@@ -292,8 +292,9 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         });
     }
 
-    supportsBiometric() {
-        return Promise.resolve(!this.isFirefox() && !this.isSafari());
+    async supportsBiometric() {
+        const isUnsuportedFirefox = this.isFirefox() && parseInt((await browser.runtime.getBrowserInfo()).version.split('.')[0]) < 88;
+        return !isUnsuportedFirefox && !this.isSafari();
     }
 
     authenticateBiometric() {
