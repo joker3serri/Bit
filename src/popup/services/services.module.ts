@@ -81,7 +81,7 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
                 window.document.body.classList.add('body-sm');
             }
 
-            document.body.style.setProperty('height',`${window.innerHeight}px`,'important');
+            document.body.style.setProperty('height', `${window.innerHeight}px`, 'important');
         }
 
         if (BrowserApi.getBackgroundPage() != null) {
