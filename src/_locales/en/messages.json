@@ -22,6 +22,9 @@
   "login": {
     "message": "Log In"
   },
+  "forgotPassword": {
+    "message": "I forgot my password"
+  },
   "cozyPassword": {
     "message": "Cozy password"
   },

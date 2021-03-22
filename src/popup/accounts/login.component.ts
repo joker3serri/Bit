@@ -24,6 +24,14 @@ const Keys = {
     rememberCozyUrl: 'rememberCozyUrl',
 };
 
+const getPassphraseResetURL = (cozyUrl: string) => {
+    // Handle lack of protocol and trailing slash
+    cozyUrl = cozyUrl.startsWith('http') ?
+        cozyUrl : `https://${cozyUrl}`
+    cozyUrl = cozyUrl.endsWith('/') ? cozyUrl.substring(0, cozyUrl.length - 1) : cozyUrl
+    return `${cozyUrl}/auth/passphrase_reset` 
+}
+
 @Component({
     selector: 'app-login',
     templateUrl: 'login.component.html',
@@ -171,5 +179,19 @@ export class LoginComponent implements OnInit {
         this.platformUtilsService.eventTrack('Toggled Master Password on Login');
         this.showPassword = !this.showPassword;
         document.getElementById('masterPassword').focus();
+    }
+
+    async forgotPassword() {
+        if (!this.cozyUrl) {
+           this.platformUtilsService.showToast('error', this.i18nService.t('errorOccurred'),
+                this.i18nService.t('cozyUrlRequired'));
+            return
+        }
+
+        await browser.tabs.create({
+            active: true,
+            url: getPassphraseResetURL(this.cozyUrl)
+        })
+        window.close()
     }
 }
