@@ -340,7 +340,7 @@
     }
   },
   "invalidMasterPassword": {
-    "message": "Invalid Cozy password"
+    "message": "Invalid password"
   },
   "vaultTimeout": {
     "message": "Vault Timeout"

@@ -337,7 +337,7 @@
     }
   },
   "invalidMasterPassword": {
-    "message": "Mot de passe du Cozy invalide"
+    "message": "Mot de passe invalide"
   },
   "vaultTimeout": {
     "message": "Délai d'expiration du coffre"
