@@ -36,7 +36,6 @@ const getPassphraseResetURL = (cozyUrl: string) => {
     selector: 'app-login',
     templateUrl: 'login.component.html',
 })
-
 /**
  *    This class used to extend the LoginComponent from jslib. We copied the
  *    component here to avoid having to modify jslib, as the private storageService
@@ -138,8 +137,22 @@ export class LoginComponent implements OnInit {
             const hostname = Utils.getHostname(loginUrl);
             this.email = 'me@' + hostname;
 
-            this.formPromise = this.authService.logIn(this.email, this.masterPassword);
+            this.formPromise = this.authService.logIn(this.email, this.masterPassword).catch(e => {
+                if (e.response && e.response.error && e.response.error === 'invalid password') {
+                    this.platformUtilsService.showToast('error',  this.i18nService.t('errorOccurred'),
+                        this.i18nService.t('invalidMasterPassword'));
+                    // Returning null here so that the validation service in jslib
+                    // does not consider the result of the call as an error, otherwise
+                    // we would have a double toast
+                    return null
+                }
+                throw e
+            });
             const response = await this.formPromise;
+            if (!response) {
+                return
+            }
+
             // Save the URL for next time
             await this.storageService.save(Keys.rememberCozyUrl, this.rememberCozyUrl);
             if (this.rememberCozyUrl) {
