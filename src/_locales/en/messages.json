@@ -22,6 +22,9 @@
   "login": {
     "message": "Log In"
   },
+  "cozyPassword": {
+    "message": "Cozy password"
+  },
   "enterpriseSingleSignOn": {
     "message": "Enterprise Single Sign-On"
   },

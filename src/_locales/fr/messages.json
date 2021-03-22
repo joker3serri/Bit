@@ -22,6 +22,9 @@
   "login": {
     "message": "Me connecter"
   },
+  "cozyPassword": {
+    "message": "Mot de passe Cozy"
+  },
   "enterpriseSingleSignOn": {
     "message": "Portail de connexion unique d'entreprise"
   },
