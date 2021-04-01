@@ -471,14 +471,6 @@ export default class MainBackground {
 
         await this.contextMenusCreate({
             type: 'normal',
-            id: 'autofill',
-            parentId: 'root',
-            contexts: ['all'],
-            title: this.i18nService.t('autoFill'),
-        });
-
-        await this.contextMenusCreate({
-            type: 'normal',
             id: 'copy-username',
             parentId: 'root',
             contexts: ['all'],
@@ -615,7 +607,7 @@ export default class MainBackground {
             await this.contextMenusCreate({
                 type: 'normal',
                 id: 'autofill_' + idSuffix,
-                parentId: 'autofill',
+                parentId: 'root',
                 contexts: ['all'],
                 title: this.sanitizeContextMenuTitle(title),
             });
