@@ -74,6 +74,11 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
             return;
         }
 
+        const platformInfo = await BrowserApi.getPlatformInfo();
+        if (this.selectedProviderType === TwoFactorProviderType.WebAuthn && platformInfo.os == "linux") {
+            document.body.classList.add('linux-webauthn');
+        }
+
         if (this.selectedProviderType === TwoFactorProviderType.Email &&
             this.popupUtilsService.inPopup(window)) {
             const confirmed = await this.platformUtilsService.showDialog(this.i18nService.t('popup2faCloseMessage'),
@@ -98,8 +103,13 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
         });
     }
 
-    ngOnDestroy() {
+    async ngOnDestroy() {
         this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
+
+        const platformInfo = await BrowserApi.getPlatformInfo();
+        if (this.selectedProviderType === TwoFactorProviderType.WebAuthn && platformInfo.os == "linux") {
+            document.body.classList.remove('linux-webauthn');
+        }
         super.ngOnDestroy();
     }
 
