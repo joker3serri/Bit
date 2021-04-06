@@ -74,8 +74,9 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
             return;
         }
 
-        const platformInfo = await BrowserApi.getPlatformInfo();
-        if (this.selectedProviderType === TwoFactorProviderType.WebAuthn && platformInfo.os == "linux") {
+        // WebAuthn prompt appears inside the popup on linux, and requires a larger popup width
+        // than usual to avoid cutting off the dialog.
+        if (this.selectedProviderType === TwoFactorProviderType.WebAuthn && await this.isLinux()) {
             document.body.classList.add('linux-webauthn');
         }
 
@@ -106,8 +107,7 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
     async ngOnDestroy() {
         this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
 
-        const platformInfo = await BrowserApi.getPlatformInfo();
-        if (this.selectedProviderType === TwoFactorProviderType.WebAuthn && platformInfo.os == "linux") {
+        if (this.selectedProviderType === TwoFactorProviderType.WebAuthn && await this.isLinux()) {
             document.body.classList.remove('linux-webauthn');
         }
         super.ngOnDestroy();
@@ -115,5 +115,9 @@ export class TwoFactorComponent extends BaseTwoFactorComponent {
 
     anotherMethod() {
         this.router.navigate(['2fa-options']);
+    }
+
+    async isLinux() {
+        return (await BrowserApi.getPlatformInfo()).os === "linux";
     }
 }
