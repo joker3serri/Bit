@@ -107,11 +107,9 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
                     let status = SecKeychainFindGenericPassword(nil, UInt32(ServiceName.utf8.count), ServiceName, UInt32(passwordName.utf8.count), passwordName, &passwordLength, &passwordPtr, nil)
                     
                     if status == errSecSuccess {
-                        os_log(.default, "BITWARDEN STATUS: %@", String(status))
                         let result = NSString(bytes: passwordPtr!, length: Int(passwordLength), encoding: String.Encoding.utf8.rawValue) as String?
                                     SecKeychainItemFreeContent(nil, passwordPtr)
                         
-                        os_log(.default, "BITWARDEN PASS: %@", result!)
                         response.userInfo = [ SFExtensionMessageKey: [
                             "message": [
                                 "command": "biometricUnlock",
