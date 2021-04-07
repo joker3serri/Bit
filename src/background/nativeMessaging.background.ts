@@ -174,7 +174,7 @@ export class NativeMessagingBackground {
         if (!this.connected) {
             await this.connect();
         }
-        
+
         if (this.platformUtilsService.isSafari()) {
             this.postMessage(message);
         } else {
