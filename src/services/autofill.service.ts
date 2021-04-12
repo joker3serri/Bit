@@ -254,6 +254,10 @@ export default class AutofillService implements AutofillServiceInterface {
             }
         }
 
+        if (cipher.passwordPrompt) {
+            return;
+        }
+
         const totpCode = await this.doAutoFill({
             cipher: cipher,
             pageDetails: pageDetails,

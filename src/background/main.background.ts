@@ -589,7 +589,7 @@ export default class MainBackground {
     }
 
     private async loadLoginContextMenuOptions(cipher: any) {
-        if (cipher == null || cipher.type !== CipherType.Login) {
+        if (cipher == null || cipher.type !== CipherType.Login || cipher.passwordPrompt) {
             return;
         }
 

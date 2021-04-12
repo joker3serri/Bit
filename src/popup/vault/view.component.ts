@@ -29,6 +29,7 @@ import { BrowserApi } from '../../browser/browserApi';
 import { AutofillService } from '../../services/abstractions/autofill.service';
 import { PopupUtilsService } from '../services/popup-utils.service';
 
+import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.service';
 import { CipherType } from 'jslib/enums';
 
 const BroadcasterSubscriptionId = 'ChildViewComponent';
@@ -53,9 +54,11 @@ export class ViewComponent extends BaseViewComponent {
         broadcasterService: BroadcasterService, ngZone: NgZone,
         changeDetectorRef: ChangeDetectorRef, userService: UserService,
         eventService: EventService, private autofillService: AutofillService,
-        private messagingService: MessagingService, private popupUtilsService: PopupUtilsService) {
+        private messagingService: MessagingService, private popupUtilsService: PopupUtilsService,
+        passwordRepromptService: PasswordRepromptService) {
         super(cipherService, totpService, tokenService, i18nService, cryptoService, platformUtilsService,
-            auditService, window, broadcasterService, ngZone, changeDetectorRef, userService, eventService);
+            auditService, window, broadcasterService, ngZone, changeDetectorRef, userService, eventService,
+            passwordRepromptService);
     }
 
     ngOnInit() {
@@ -111,19 +114,26 @@ export class ViewComponent extends BaseViewComponent {
         await this.loadPageDetails();
     }
 
-    edit() {
+    async edit() {
         if (this.cipher.isDeleted) {
             return false;
         }
-        super.edit();
+        if (!await super.edit()) {
+            return false;
+        }
+
         this.router.navigate(['/edit-cipher'], { queryParams: { cipherId: this.cipher.id } });
     }
 
-    clone() {
+    async clone() {
         if (this.cipher.isDeleted) {
             return false;
         }
-        super.clone();
+
+        if (!await super.clone()) {
+            return false;
+        }
+
         this.router.navigate(['/clone-cipher'], {
             queryParams: {
                 cloneMode: true,
@@ -132,8 +142,11 @@ export class ViewComponent extends BaseViewComponent {
         });
     }
 
-    share() {
-        super.share();
+    async share() {
+        if (!await super.share()) {
+            return false;
+        }
+
         if (this.cipher.organizationId == null) {
             this.router.navigate(['/share-cipher'], { replaceUrl: true, queryParams: { cipherId: this.cipher.id } });
         }
@@ -219,6 +232,10 @@ export class ViewComponent extends BaseViewComponent {
     }
 
     private async doAutofill() {
+        if (!await this.promptPassword()) {
+            return false;
+        }
+
         if (this.pageDetails == null || this.pageDetails.length === 0) {
             this.platformUtilsService.showToast('error', null,
                 this.i18nService.t('autofillError'));

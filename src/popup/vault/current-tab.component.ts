@@ -33,6 +33,7 @@ import { AutofillService } from '../../services/abstractions/autofill.service';
 import { PopupUtilsService } from '../services/popup-utils.service';
 
 import { Utils } from 'jslib/misc/utils';
+import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.service';
 
 const BroadcasterSubscriptionId = 'CurrentTabComponent';
 
@@ -63,7 +64,8 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         private i18nService: I18nService, private router: Router,
         private ngZone: NgZone, private broadcasterService: BroadcasterService,
         private changeDetectorRef: ChangeDetectorRef, private syncService: SyncService,
-        private searchService: SearchService, private storageService: StorageService) {
+        private searchService: SearchService, private storageService: StorageService,
+        private passwordRepromptService: PasswordRepromptService) {
     }
 
     async ngOnInit() {
@@ -130,6 +132,10 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     }
 
     async fillCipher(cipher: CipherView) {
+        if (cipher.passwordPrompt && !await this.passwordRepromptService.showPasswordPrompt()) {
+            return;
+        }
+
         this.totpCode = null;
         if (this.totpTimeout != null) {
             window.clearTimeout(this.totpTimeout);

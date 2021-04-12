@@ -55,6 +55,8 @@ import { StateService } from 'jslib/services/state.service';
 
 import { Analytics } from 'jslib/misc/analytics';
 
+import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.service';
+import { BrowserPasswordRepromptService } from 'jslib/services/BrowserPasswordReprompt.service';
 import { PopupSearchService } from './popup-search.service';
 import { PopupUtilsService } from './popup-utils.service';
 
@@ -65,13 +67,15 @@ function getBgService<T>(service: string) {
     };
 }
 
-export const stateService = new StateService();
-export const messagingService = new BrowserMessagingService();
-export const searchService = new PopupSearchService(getBgService<SearchService>('searchService')(),
+const stateService = new StateService();
+const messagingService = new BrowserMessagingService();
+const searchService = new PopupSearchService(getBgService<SearchService>('searchService')(),
     getBgService<CipherService>('cipherService')(), getBgService<ConsoleLogService>('consoleLogService')(),
     getBgService<I18nService>('i18nService')());
+const passwordRepromptService = new BrowserPasswordRepromptService(getBgService<I18nService>('i18nService')(),
+    getBgService<CryptoService>('cryptoService')());
 
-export function initFactory(platformUtilsService: PlatformUtilsService, i18nService: I18nService, storageService: StorageService,
+function initFactory(platformUtilsService: PlatformUtilsService, i18nService: I18nService, storageService: StorageService,
     popupUtilsService: PopupUtilsService): Function {
     return async () => {
         if (!popupUtilsService.inPopup(window)) {
@@ -184,6 +188,7 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
             useFactory: () => getBgService<I18nService>('i18nService')().translationLocale,
             deps: [],
         },
+        { provide: PasswordRepromptService, useValue: passwordRepromptService },
     ],
 })
 export class ServicesModule {
