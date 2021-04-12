@@ -189,6 +189,16 @@ p.lead {
     }
 }
 
+body.linux-webauthn {
+    width: 485px !important;
+    #web-authn-frame {
+        iframe {
+            width: 375px;
+            margin: 0 55px;
+        }
+    }
+}
+
 app-root > #loading {
     display: flex;
     text-align: center;
@@ -336,5 +346,13 @@ input[type="password"]::-ms-reveal {
         > * {
             flex: 1;
         }
+    }
+}
+
+// Workaround for rendering error in Firefox sidebar
+// option elements will not render background-color correctly if identical to parent background-color
+select option {
+    @include themify($themes) {
+        background-color: adjust-color(themed('inputBackgroundColor'), +1);
     }
 }
