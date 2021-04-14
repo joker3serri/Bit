@@ -32,8 +32,9 @@ import { AutofillService } from '../../services/abstractions/autofill.service';
 
 import { PopupUtilsService } from '../services/popup-utils.service';
 
-import { Utils } from 'jslib/misc/utils';
 import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.service';
+import { CipherRepromptType } from 'jslib/enums/cipherRepromptType';
+import { Utils } from 'jslib/misc/utils';
 
 const BroadcasterSubscriptionId = 'CurrentTabComponent';
 
@@ -132,7 +133,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     }
 
     async fillCipher(cipher: CipherView) {
-        if (cipher.passwordPrompt && !await this.passwordRepromptService.showPasswordPrompt()) {
+        if (cipher.reprompt !== CipherRepromptType.None && !await this.passwordRepromptService.showPasswordPrompt()) {
             return;
         }
 
@@ -180,6 +181,13 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         this.searchTimeout = window.setTimeout(async () => {
             this.router.navigate(['/tabs/vault'], { queryParams: { searchText: this.searchText } });
         }, 200);
+    }
+
+    closeOnEsc(e: KeyboardEvent) {
+        // If input not empty, use browser default behavior of clearing input instead
+        if (e.key === 'Escape' && (this.searchText == null || this.searchText === '')) {
+            BrowserApi.closePopup(window);
+        }
     }
 
     private async load() {
@@ -236,12 +244,5 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
 
         this.loginCiphers = this.loginCiphers.sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
         this.loaded = true;
-    }
-
-    closeOnEsc(e: KeyboardEvent) {
-        // If input not empty, use browser default behavior of clearing input instead
-        if (e.key === 'Escape' && (this.searchText == null || this.searchText === '')) {
-            BrowserApi.closePopup(window);
-        }
     }
 }

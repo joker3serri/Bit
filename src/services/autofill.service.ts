@@ -20,6 +20,7 @@ import {
 } from 'jslib/abstractions';
 
 import { EventService } from 'jslib/abstractions/event.service';
+import { CipherRepromptType } from 'jslib/enums/cipherRepromptType';
 import { EventType } from 'jslib/enums/eventType';
 
 const CardAttributes: string[] = ['autoCompleteType', 'data-stripe', 'htmlName', 'htmlID', 'label-tag',
@@ -254,7 +255,7 @@ export default class AutofillService implements AutofillServiceInterface {
             }
         }
 
-        if (cipher.passwordPrompt) {
+        if (cipher.reprompt !== CipherRepromptType.None) {
             return;
         }
 

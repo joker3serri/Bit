@@ -87,6 +87,7 @@ import BrowserStorageService from '../services/browserStorage.service';
 import I18nService from '../services/i18n.service';
 import VaultTimeoutService from '../services/vaultTimeout.service';
 
+import { CipherRepromptType } from 'jslib/enums/cipherRepromptType';
 import { AutofillService as AutofillServiceAbstraction } from '../services/abstractions/autofill.service';
 
 export default class MainBackground {
@@ -589,7 +590,7 @@ export default class MainBackground {
     }
 
     private async loadLoginContextMenuOptions(cipher: any) {
-        if (cipher == null || cipher.type !== CipherType.Login || cipher.passwordPrompt) {
+        if (cipher == null || cipher.type !== CipherType.Login || cipher.reprompt !== CipherRepromptType.None) {
             return;
         }
 

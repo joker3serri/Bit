@@ -1701,7 +1701,7 @@
     "message": "One or more organization policies are affecting your Send options."
   },
   "passwordPrompt": {
-    "message": "Require master password verification to use"
+    "message": "Master password re-prompt"
   },
   "passwordConfirmation": {
     "message": "Master password confirmation"
