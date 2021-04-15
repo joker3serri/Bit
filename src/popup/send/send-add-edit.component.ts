@@ -41,9 +41,9 @@ export class SendAddEditComponent extends BaseAddEditComponent {
         userService: UserService, messagingService: MessagingService, policyService: PolicyService,
         environmentService: EnvironmentService, datePipe: DatePipe, sendService: SendService,
         private route: ActivatedRoute, private router: Router, private location: Location,
-        private popupUtilsService: PopupUtilsService, tokenService: TokenService) {
+        private popupUtilsService: PopupUtilsService) {
         super(i18nService, platformUtilsService, environmentService, datePipe, sendService, userService,
-            messagingService, policyService, tokenService);
+            messagingService, policyService);
     }
 
     get showFileSelector(): boolean {
