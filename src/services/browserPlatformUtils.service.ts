@@ -152,7 +152,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
 
     async showPasswordDialog(title: string, body: string, passwordValidation: (value: string) => Promise<boolean>) {
         const dialogId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-        
+
         this.messagingService.send('showPasswordDialog', {
             title: title,
             body: body,
@@ -175,7 +175,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
                 date: new Date(),
             });
         });
-    };
+    }
 
     isDev(): boolean {
         return process.env.ENV === 'development';

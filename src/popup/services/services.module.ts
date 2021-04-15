@@ -31,6 +31,7 @@ import { I18nService } from 'jslib/abstractions/i18n.service';
 import { MessagingService } from 'jslib/abstractions/messaging.service';
 import { NotificationsService } from 'jslib/abstractions/notifications.service';
 import { PasswordGenerationService } from 'jslib/abstractions/passwordGeneration.service';
+import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from 'jslib/abstractions/passwordReprompt.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { PolicyService } from 'jslib/abstractions/policy.service';
 import { SearchService as SearchServiceAbstraction } from 'jslib/abstractions/search.service';
@@ -43,7 +44,6 @@ import { TokenService } from 'jslib/abstractions/token.service';
 import { TotpService } from 'jslib/abstractions/totp.service';
 import { UserService } from 'jslib/abstractions/user.service';
 import { VaultTimeoutService } from 'jslib/abstractions/vaultTimeout.service';
-import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from 'jslib/abstractions/passwordReprompt.service';
 import { PasswordRepromptService } from 'jslib/services/passwordReprompt.service';
 
 import { AutofillService } from '../../services/abstractions/autofill.service';

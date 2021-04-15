@@ -33,8 +33,8 @@ import { StorageService } from 'jslib/abstractions/storage.service';
 
 import { ConstantsService } from 'jslib/services/constants.service';
 
-import { routerTransition } from './app-routing.animations';
 import BrowserPlatformUtilsService from 'src/services/browserPlatformUtils.service';
+import { routerTransition } from './app-routing.animations';
 
 @Component({
     selector: 'app-root',
