@@ -14,12 +14,14 @@ import { BrowserApi } from '../../browser/browserApi';
 
 import { BroadcasterService } from 'jslib/angular/services/broadcaster.service';
 
+import { CipherRepromptType } from 'jslib/enums/cipherRepromptType';
 import { CipherType } from 'jslib/enums/cipherType';
 
 import { CipherView } from 'jslib/models/view/cipherView';
 
 import { CipherService } from 'jslib/abstractions/cipher.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
+import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { SearchService } from 'jslib/abstractions/search.service';
 import { StorageService } from 'jslib/abstractions/storage.service';
@@ -31,8 +33,6 @@ import { AutofillService } from '../../services/abstractions/autofill.service';
 
 import { PopupUtilsService } from '../services/popup-utils.service';
 
-import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.service';
-import { CipherRepromptType } from 'jslib/enums/cipherRepromptType';
 import { Utils } from 'jslib/misc/utils';
 
 const BroadcasterSubscriptionId = 'CurrentTabComponent';

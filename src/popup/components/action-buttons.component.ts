@@ -14,12 +14,10 @@ import { CipherView } from 'jslib/models/view/cipherView';
 
 import { EventService } from 'jslib/abstractions/event.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
+import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { TotpService } from 'jslib/abstractions/totp.service';
 import { UserService } from 'jslib/abstractions/user.service';
-
-import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.service';
-import { PopupUtilsService } from '../services/popup-utils.service';
 
 @Component({
     selector: 'app-action-buttons',

@@ -15,6 +15,7 @@ import { CryptoService } from 'jslib/abstractions/crypto.service';
 import { EventService } from 'jslib/abstractions/event.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
 import { MessagingService } from 'jslib/abstractions/messaging.service';
+import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { TokenService } from 'jslib/abstractions/token.service';
 import { TotpService } from 'jslib/abstractions/totp.service';
@@ -29,7 +30,6 @@ import { BrowserApi } from '../../browser/browserApi';
 import { AutofillService } from '../../services/abstractions/autofill.service';
 import { PopupUtilsService } from '../services/popup-utils.service';
 
-import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.service';
 import { CipherType } from 'jslib/enums';
 
 const BroadcasterSubscriptionId = 'ChildViewComponent';
