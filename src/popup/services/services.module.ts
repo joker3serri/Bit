@@ -43,6 +43,8 @@ import { TokenService } from 'jslib/abstractions/token.service';
 import { TotpService } from 'jslib/abstractions/totp.service';
 import { UserService } from 'jslib/abstractions/user.service';
 import { VaultTimeoutService } from 'jslib/abstractions/vaultTimeout.service';
+import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from 'jslib/abstractions/passwordReprompt.service';
+import { PasswordRepromptService } from 'jslib/services/passwordReprompt.service';
 
 import { AutofillService } from '../../services/abstractions/autofill.service';
 import BrowserMessagingService from '../../services/browserMessaging.service';
@@ -53,10 +55,6 @@ import { ConstantsService } from 'jslib/services/constants.service';
 import { SearchService } from 'jslib/services/search.service';
 import { StateService } from 'jslib/services/state.service';
 
-import { Analytics } from 'jslib/misc/analytics';
-
-import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.service';
-import { BrowserPasswordRepromptService } from 'jslib/services/BrowserPasswordReprompt.service';
 import { PopupSearchService } from './popup-search.service';
 import { PopupUtilsService } from './popup-utils.service';
 
@@ -72,8 +70,8 @@ const messagingService = new BrowserMessagingService();
 const searchService = new PopupSearchService(getBgService<SearchService>('searchService')(),
     getBgService<CipherService>('cipherService')(), getBgService<ConsoleLogService>('consoleLogService')(),
     getBgService<I18nService>('i18nService')());
-const passwordRepromptService = new BrowserPasswordRepromptService(getBgService<I18nService>('i18nService')(),
-    getBgService<CryptoService>('cryptoService')());
+const passwordRepromptService = new PasswordRepromptService(getBgService<I18nService>('i18nService')(),
+    getBgService<CryptoService>('cryptoService')(), getBgService<PlatformUtilsService>('platformUtilsService')());
 
 function initFactory(platformUtilsService: PlatformUtilsService, i18nService: I18nService, storageService: StorageService,
     popupUtilsService: PopupUtilsService): Function {
@@ -104,14 +102,6 @@ function initFactory(platformUtilsService: PlatformUtilsService, i18nService: I1
             }
             window.document.documentElement.classList.add('locale_' + i18nService.translationLocale);
             window.document.documentElement.classList.add('theme_' + theme);
-
-            const analytics = new Analytics(window, () => BrowserApi.gaFilter(), null, null, null, () => {
-                const bgPage = BrowserApi.getBackgroundPage();
-                if (bgPage == null || bgPage.bitwardenMain == null) {
-                    throw new Error('Cannot resolve background page main.');
-                }
-                return bgPage.bitwardenMain;
-            });
         }
     };
 }
@@ -188,7 +178,7 @@ function initFactory(platformUtilsService: PlatformUtilsService, i18nService: I1
             useFactory: () => getBgService<I18nService>('i18nService')().translationLocale,
             deps: [],
         },
-        { provide: PasswordRepromptService, useValue: passwordRepromptService },
+        { provide: PasswordRepromptServiceAbstraction, useValue: passwordRepromptService },
     ],
 })
 export class ServicesModule {
