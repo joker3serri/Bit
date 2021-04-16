@@ -1,6 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -66,9 +66,7 @@ const moduleRules = [
 ];
 
 const plugins = [
-    new CleanWebpackPlugin([
-        path.resolve(__dirname, 'build/*'),
-    ]),
+    new CleanWebpackPlugin(),
     // ref: https://github.com/angular/angular/issues/20357
     new webpack.ContextReplacementPlugin(/\@angular(\\|\/)core(\\|\/)fesm5/,
         path.resolve(__dirname, './src')),
@@ -87,13 +85,15 @@ const plugins = [
         filename: 'notification/bar.html',
         chunks: ['notification/bar']
     }),
-    new CopyWebpackPlugin([
-        './src/manifest.json',
-        { from: './src/_locales', to: '_locales' },
-        { from: './src/images', to: 'images' },
-        { from: './src/popup/images', to: 'popup/images' },
-        { from: './src/content/autofill.css', to: 'content' },
-    ]),
+    new CopyWebpackPlugin({
+        patterns: [
+            './src/manifest.json',
+            { from: './src/_locales', to: '_locales' },
+            { from: './src/images', to: 'images' },
+            { from: './src/popup/images', to: 'popup/images' },
+            { from: './src/content/autofill.css', to: 'content' },
+        ]
+    }),
     new webpack.SourceMapDevToolPlugin({
         include: ['popup/main.js', 'background.js'],
     }),
