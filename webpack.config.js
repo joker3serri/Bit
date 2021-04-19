@@ -63,13 +63,14 @@ const moduleRules = [
         test: /[\/\\]@angular[\/\\].+\.js$/,
         parser: { system: true },
     },
+    {
+        test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+        loader: '@ngtools/webpack',
+    }
 ];
 
 const plugins = [
     new CleanWebpackPlugin(),
-    // ref: https://github.com/angular/angular/issues/20357
-    new webpack.ContextReplacementPlugin(/\@angular(\\|\/)core(\\|\/)fesm5/,
-        path.resolve(__dirname, './src')),
     new HtmlWebpackPlugin({
         template: './src/popup/index.html',
         filename: 'popup/index.html',
@@ -106,25 +107,13 @@ const plugins = [
             'ENV': JSON.stringify(ENV)
         }
     }),
-];
-
-if (ENV === 'production') {
-    moduleRules.push({
-        test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
-        loader: '@ngtools/webpack',
-    });
-    plugins.push(new AngularCompilerPlugin({
+    new AngularCompilerPlugin({
         tsConfigPath: 'tsconfig.json',
         entryModule: 'src/popup/app.module#AppModule',
         sourceMap: true,
-    }));
-} else {
-    moduleRules.push({
-        test: /\.ts$/,
-        loaders: ['ts-loader', 'angular2-template-loader'],
-        exclude: path.resolve(__dirname, 'node_modules'),
-    });
-}
+    }),
+];
+
 
 const config = {
     mode: ENV,
