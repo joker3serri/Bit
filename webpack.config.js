@@ -70,21 +70,23 @@ const moduleRules = [
 ];
 
 const plugins = [
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
         template: './src/popup/index.html',
         filename: 'popup/index.html',
         chunks: ['popup/polyfills', 'popup/vendor-angular', 'popup/vendor', 'popup/main'],
+        cache: false, // Remove after upgrading to Webpack 5
     }),
     new HtmlWebpackPlugin({
         template: './src/background.html',
         filename: 'background.html',
         chunks: ['vendor', 'background'],
+        cache: false, // Remove after upgrading to Webpack 5
     }),
     new HtmlWebpackPlugin({
         template: './src/notification/bar.html',
         filename: 'notification/bar.html',
-        chunks: ['notification/bar']
+        chunks: ['notification/bar'],
+        cache: false, // Remove after upgrading to Webpack 5
     }),
     new CopyWebpackPlugin({
         patterns: [
@@ -111,6 +113,9 @@ const plugins = [
         tsConfigPath: 'tsconfig.json',
         entryModule: 'src/popup/app.module#AppModule',
         sourceMap: true,
+    }),
+    new CleanWebpackPlugin({
+        cleanAfterEveryBuildPatterns: ['!popup/fonts/**/*'],
     }),
 ];
 
