@@ -1,11 +1,6 @@
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
-// Polyfills
-import 'web-animations-js';
-import 'core-js/stable';
-import 'zone.js/dist/zone';
-
 // tslint:disable-next-line
 require('./scss/popup.scss');
 
