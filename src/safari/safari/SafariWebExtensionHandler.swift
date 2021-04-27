@@ -95,10 +95,21 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
                         ],
                     ],
                 ]
-                break;
+                break
             }
 
-            let accessControl = SecAccessControlCreateWithFlags(nil, kSecAttrAccessibleWhenUnlockedThisDeviceOnly, [.privateKeyUsage, .userPresence], nil)!
+            guard let accessControl = SecAccessControlCreateWithFlags(nil, kSecAttrAccessibleWhenUnlockedThisDeviceOnly, [.privateKeyUsage, .userPresence], nil) else {
+                response.userInfo = [
+                    SFExtensionMessageKey: [
+                        "message": [
+                            "command": "biometricUnlock",
+                            "response": "not supported",
+                            "timestamp": Int64(NSDate().timeIntervalSince1970 * 1000),
+                        ],
+                    ],
+                ]
+                break
+            }
             laContext.evaluateAccessControl(accessControl, operation: .useKeySign, localizedReason: "Bitwarden Safari Extension") { (success, error) in
                 if success {
                     let passwordName = "key"
@@ -135,7 +146,7 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
                 context.completeRequest(returningItems: [response], completionHandler: nil)
             }
             
-            return;
+            return
         default:
             return
         }
