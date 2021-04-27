@@ -87,7 +87,7 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
             
             laContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
             
-            if (error != nil && error!.code != kLAErrorBiometryLockout) {
+            if let e = error, e.code != kLAErrorBiometryLockout {
                 response.userInfo = [
                     SFExtensionMessageKey: [
                         "message": [
