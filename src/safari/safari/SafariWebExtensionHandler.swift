@@ -98,7 +98,8 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
                 break;
             }
 
-            laContext.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: "Bitwarden Safari Extension") { (success, error) in
+            let accessControl = SecAccessControlCreateWithFlags(nil, kSecAttrAccessibleWhenUnlockedThisDeviceOnly, [.privateKeyUsage, .userPresence], nil)!
+            laContext.evaluateAccessControl(accessControl, operation: .useKeySign, localizedReason: "Bitwarden Safari Extension") { (success, error) in
                 if success {
                     let passwordName = "key"
                     var passwordLength: UInt32 = 0
