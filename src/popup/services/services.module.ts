@@ -73,7 +73,7 @@ const searchService = new PopupSearchService(getBgService<SearchService>('search
 const passwordRepromptService = new PasswordRepromptService(getBgService<I18nService>('i18nService')(),
     getBgService<CryptoService>('cryptoService')(), getBgService<PlatformUtilsService>('platformUtilsService')());
 
-function initFactory(platformUtilsService: PlatformUtilsService, i18nService: I18nService, storageService: StorageService,
+export function initFactory(platformUtilsService: PlatformUtilsService, i18nService: I18nService, storageService: StorageService,
     popupUtilsService: PopupUtilsService): Function {
     return async () => {
         if (!popupUtilsService.inPopup(window)) {
