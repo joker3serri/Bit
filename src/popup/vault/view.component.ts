@@ -124,6 +124,7 @@ export class ViewComponent extends BaseViewComponent {
         }
 
         this.router.navigate(['/edit-cipher'], { queryParams: { cipherId: this.cipher.id } });
+        return true;
     }
 
     async clone() {
@@ -141,6 +142,7 @@ export class ViewComponent extends BaseViewComponent {
                 cipherId: this.cipher.id,
             },
         });
+        return true;
     }
 
     async share() {
@@ -151,6 +153,7 @@ export class ViewComponent extends BaseViewComponent {
         if (this.cipher.organizationId == null) {
             this.router.navigate(['/share-cipher'], { replaceUrl: true, queryParams: { cipherId: this.cipher.id } });
         }
+        return true;
     }
 
     async fillCipher() {
