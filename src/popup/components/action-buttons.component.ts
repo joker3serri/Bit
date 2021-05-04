@@ -7,6 +7,7 @@ import {
 
 import { ToasterService } from 'angular2-toaster';
 
+import { CipherRepromptType } from 'jslib/enums/cipherRepromptType';
 import { CipherType } from 'jslib/enums/cipherType';
 import { EventType } from 'jslib/enums/eventType';
 
@@ -18,7 +19,6 @@ import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.ser
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { TotpService } from 'jslib/abstractions/totp.service';
 import { UserService } from 'jslib/abstractions/user.service';
-import { CipherRepromptType } from 'jslib/enums/cipherRepromptType';
 
 @Component({
     selector: 'app-action-buttons',
