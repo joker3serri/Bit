@@ -22,6 +22,7 @@ export class OptionsComponent implements OnInit {
     disableFavicon = false;
     disableBadgeCounter = false;
     enableAutoFillOnPageLoad = false;
+    enableAutoTotpCopyOnAutoFill = false;
     disableAutoTotpCopy = false;
     disableContextMenuItem = false;
     disableAddLoginNotification = false;
@@ -35,6 +36,9 @@ export class OptionsComponent implements OnInit {
     uriMatchOptions: any[];
     clearClipboard: number;
     clearClipboardOptions: any[];
+    showGeneral: boolean = true;
+    showAutofill: boolean = true;
+    showDisplay: boolean = true;
 
     constructor(private messagingService: MessagingService, private storageService: StorageService,
         private stateService: StateService, private totpService: TotpService, i18nService: I18nService) {
@@ -67,6 +71,8 @@ export class OptionsComponent implements OnInit {
     async ngOnInit() {
         this.enableAutoFillOnPageLoad = await this.storageService.get<boolean>(
             ConstantsService.enableAutoFillOnPageLoadKey);
+
+        this.enableAutoTotpCopyOnAutoFill = await this.totpService.isAutoCopyOnAutoFillEnabled();
 
         this.disableAddLoginNotification = await this.storageService.get<boolean>(
             ConstantsService.disableAddLoginNotificationKey);
@@ -116,6 +122,10 @@ export class OptionsComponent implements OnInit {
 
     async updateAutoFillOnPageLoad() {
         await this.storageService.save(ConstantsService.enableAutoFillOnPageLoadKey, this.enableAutoFillOnPageLoad);
+    }
+
+    async updateAutoTotpCopyOnAutoFill() {
+        await this.storageService.save(ConstantsService.enableAutoTotpCopyOnAutoFillKey, this.enableAutoTotpCopyOnAutoFill);
     }
 
     async updateDisableFavicon() {

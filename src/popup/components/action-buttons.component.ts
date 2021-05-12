@@ -7,6 +7,7 @@ import {
 
 import { ToasterService } from 'angular2-toaster';
 
+import { CipherRepromptType } from 'jslib/enums/cipherRepromptType';
 import { CipherType } from 'jslib/enums/cipherType';
 import { EventType } from 'jslib/enums/eventType';
 
@@ -14,11 +15,10 @@ import { CipherView } from 'jslib/models/view/cipherView';
 
 import { EventService } from 'jslib/abstractions/event.service';
 import { I18nService } from 'jslib/abstractions/i18n.service';
+import { PasswordRepromptService } from 'jslib/abstractions/passwordReprompt.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { TotpService } from 'jslib/abstractions/totp.service';
 import { UserService } from 'jslib/abstractions/user.service';
-
-import { PopupUtilsService } from '../services/popup-utils.service';
 
 @Component({
     selector: 'app-action-buttons',
@@ -35,7 +35,8 @@ export class ActionButtonsComponent {
 
     constructor(private toasterService: ToasterService, private i18nService: I18nService,
         private platformUtilsService: PlatformUtilsService, private eventService: EventService,
-        private totpService: TotpService, private userService: UserService) { }
+        private totpService: TotpService, private userService: UserService,
+        private passwordRepromptService: PasswordRepromptService) { }
 
     async ngOnInit() {
         this.userHasPremiumAccess = await this.userService.canAccessPremium();
@@ -46,6 +47,11 @@ export class ActionButtonsComponent {
     }
 
     async copy(cipher: CipherView, value: string, typeI18nKey: string, aType: string) {
+        if (this.cipher.reprompt !== CipherRepromptType.None && this.passwordRepromptService.protectedFields().includes(aType) &&
+            !await this.passwordRepromptService.showPasswordPrompt()) {
+            return;
+        }
+
         if (value == null || aType === 'TOTP' && !this.displayTotpCopyButton(cipher)) {
             return;
         } else if (value === cipher.login.totp) {
