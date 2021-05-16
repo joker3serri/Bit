@@ -366,6 +366,15 @@
   "fourHours": {
     "message": "4 മണിക്കൂർ"
   },
+  "eightHours": {
+    "message": "8 മണിക്കൂർ"
+  },
+  "twelveHours": {
+    "message": "12 മണിക്കൂർ"
+  },
+  "twentyFourHours": {
+    "message": "24 മണിക്കൂർ"
+  },
   "onLocked": {
     "message": "സിസ്റ്റം ലോക്കിൽ"
   },

@@ -366,6 +366,15 @@
   "fourHours": {
     "message": "4 hodiny"
   },
+  "eightHours": {
+    "message": "8 hodiny"
+  },
+  "twelveHours": {
+    "message": "12 hodiny"
+  },
+  "twentyFourHours": {
+    "message": "24 hodiny"
+  },
   "onLocked": {
     "message": "Pri uzamknutí"
   },

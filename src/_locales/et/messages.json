@@ -366,6 +366,15 @@
   "fourHours": {
     "message": "4 tunni pärast"
   },
+  "eightHours": {
+    "message": "8 tunni pärast"
+  },
+  "twelveHours": {
+    "message": "12 tunni pärast"
+  },
+  "twentyFourHours": {
+    "message": "24 tunni pärast"
+  },
   "onLocked": {
     "message": "Arvutist väljalogimisel"
   },

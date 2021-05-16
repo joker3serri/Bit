@@ -366,6 +366,15 @@
   "fourHours": {
     "message": "4 uur"
   },
+  "eightHours": {
+    "message": "8 uur"
+  },
+  "twelveHours": {
+    "message": "12 uur"
+  },
+  "twentyFourHours": {
+    "message": "24 uur"
+  },
   "onLocked": {
     "message": "Bij systeemvergrendeling"
   },

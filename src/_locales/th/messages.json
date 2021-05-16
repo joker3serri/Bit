@@ -366,6 +366,15 @@
   "fourHours": {
     "message": "4 ชั่วโมง"
   },
+  "eightHours": {
+    "message": "8 ชั่วโมง"
+  },
+  "twelveHours": {
+    "message": "12 ชั่วโมง"
+  },
+  "twentyFourHours": {
+    "message": "24 ชั่วโมง"
+  },
   "onLocked": {
     "message": "On Locked"
   },

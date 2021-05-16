@@ -366,6 +366,15 @@
   "fourHours": {
     "message": "Po 4 hodinách"
   },
+  "eightHours": {
+    "message": "Po 8 hodinách"
+  },
+  "twelveHours": {
+    "message": "Po 12 hodinách"
+  },
+  "twentyFourHours": {
+    "message": "Po 24 hodinách"
+  },
   "onLocked": {
     "message": "Při uzamknutí systému"
   },
