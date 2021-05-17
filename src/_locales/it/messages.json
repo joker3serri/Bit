@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 ore"
   },
-  "eightHours": {
-    "message": "8 ore"
-  },
-  "twelveHours": {
-    "message": "12 ore"
-  },
-  "twentyFourHours": {
-    "message": "24 ore"
-  },
   "onLocked": {
     "message": "Al blocco del computer"
   },

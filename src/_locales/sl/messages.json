@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 ure"
   },
-  "eightHours": {
-    "message": "8 ure"
-  },
-  "twelveHours": {
-    "message": "12 ure"
-  },
-  "twentyFourHours": {
-    "message": "24 ure"
-  },
   "onLocked": {
     "message": "Ob sistemskem zaklepu"
   },

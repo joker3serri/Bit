@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 óra"
   },
-  "eightHours": {
-    "message": "8 óra"
-  },
-  "twelveHours": {
-    "message": "12 óra"
-  },
-  "twentyFourHours": {
-    "message": "24 óra"
-  },
   "onLocked": {
     "message": "Rendszerzároláskor"
   },

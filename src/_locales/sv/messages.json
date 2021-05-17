@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 timmar"
   },
-  "eightHours": {
-    "message": "8 timmar"
-  },
-  "twelveHours": {
-    "message": "12 timmar"
-  },
-  "twentyFourHours": {
-    "message": "24 timmar"
-  },
   "onLocked": {
     "message": "Vid låsning av datorn"
   },

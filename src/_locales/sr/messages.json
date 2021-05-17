@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 сата"
   },
-  "eightHours": {
-    "message": "8 сата"
-  },
-  "twelveHours": {
-    "message": "12 сата"
-  },
-  "twentyFourHours": {
-    "message": "24 сата"
-  },
   "onLocked": {
     "message": "На блокирање система"
   },

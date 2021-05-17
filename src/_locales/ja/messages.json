@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4時間"
   },
-  "eightHours": {
-    "message": "8時間"
-  },
-  "twelveHours": {
-    "message": "12時間"
-  },
-  "twentyFourHours": {
-    "message": "24時間"
-  },
   "onLocked": {
     "message": "ロック時"
   },

@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 ώρες"
   },
-  "eightHours": {
-    "message": "8 ώρες"
-  },
-  "twelveHours": {
-    "message": "12 ώρες"
-  },
-  "twentyFourHours": {
-    "message": "24 ώρες"
-  },
   "onLocked": {
     "message": "Κατά το Κλείδωμα Συστήματος"
   },

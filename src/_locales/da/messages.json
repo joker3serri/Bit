@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 timer"
   },
-  "eightHours": {
-    "message": "8 timer"
-  },
-  "twelveHours": {
-    "message": "12 timer"
-  },
-  "twentyFourHours": {
-    "message": "24 timer"
-  },
   "onLocked": {
     "message": "Når systemet låses"
   },

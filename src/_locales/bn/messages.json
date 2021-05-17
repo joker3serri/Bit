@@ -361,19 +361,10 @@
     "message": "৩০ মিনিট"
   },
   "oneHour": {
-    "message": "১ ঘন্টা"
+    "message": "১ ঘণ্টা"
   },
   "fourHours": {
-    "message": "৪ ঘণ্টা"
-  },
-  "eightHours": {
-    "message": "৮ ঘন্টা"
-  },
-  "twelveHours": {
-    "message": "১২ ঘন্টা"
-  },
-  "twentyFourHours": {
-    "message": "২৪ ঘন্টা"
+    "message": "৪ ঘন্টা"
   },
   "onLocked": {
     "message": "সিস্টেম লকে"

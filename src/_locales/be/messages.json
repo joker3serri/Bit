@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 гадзіны"
   },
-  "eightHours": {
-    "message": "8 гадзіны"
-  },
-  "twelveHours": {
-    "message": "12 гадзіны"
-  },
-  "twentyFourHours": {
-    "message": "24 гадзіны"
-  },
   "onLocked": {
     "message": "Разам з камп'ютарам"
   },

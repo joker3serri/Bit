@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 giờ"
   },
-  "eightHours": {
-    "message": "8 giờ"
-  },
-  "twelveHours": {
-    "message": "12 giờ"
-  },
-  "twentyFourHours": {
-    "message": "24 giờ"
-  },
   "onLocked": {
     "message": "Mỗi khi khóa"
   },

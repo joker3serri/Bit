@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 stundas"
   },
-  "eightHours": {
-    "message": "8 stundas"
-  },
-  "twelveHours": {
-    "message": "12 stundas"
-  },
-  "twentyFourHours": {
-    "message": "24 stundas"
-  },
   "onLocked": {
     "message": "Pēc sistēmas aizslēgšanas"
   },

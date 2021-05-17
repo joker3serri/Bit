@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 saat"
   },
-  "eightHours": {
-    "message": "8 saat"
-  },
-  "twelveHours": {
-    "message": "12 saat"
-  },
-  "twentyFourHours": {
-    "message": "24 saat"
-  },
   "onLocked": {
     "message": "Sistem kilitlenince"
   },

@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 години"
   },
-  "eightHours": {
-    "message": "8 години"
-  },
-  "twelveHours": {
-    "message": "12 години"
-  },
-  "twentyFourHours": {
-    "message": "24 години"
-  },
   "onLocked": {
     "message": "При блокуванні системи"
   },

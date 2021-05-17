@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 часа"
   },
-  "eightHours": {
-    "message": "8 часа"
-  },
-  "twelveHours": {
-    "message": "12 часа"
-  },
-  "twentyFourHours": {
-    "message": "24 часа"
-  },
   "onLocked": {
     "message": "При заключване на системата"
   },

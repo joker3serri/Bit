@@ -366,15 +366,6 @@
   "fourHours": {
     "message": "4 jam"
   },
-  "eightHours": {
-    "message": "8 jam"
-  },
-  "twelveHours": {
-    "message": "12 jam"
-  },
-  "twentyFourHours": {
-    "message": "24 jam"
-  },
   "onLocked": {
     "message": "Saat Komputer Terkunci"
   },
