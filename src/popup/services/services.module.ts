@@ -31,6 +31,7 @@ import { I18nService } from 'jslib/abstractions/i18n.service';
 import { MessagingService } from 'jslib/abstractions/messaging.service';
 import { NotificationsService } from 'jslib/abstractions/notifications.service';
 import { PasswordGenerationService } from 'jslib/abstractions/passwordGeneration.service';
+import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from 'jslib/abstractions/passwordReprompt.service';
 import { PlatformUtilsService } from 'jslib/abstractions/platformUtils.service';
 import { PolicyService } from 'jslib/abstractions/policy.service';
 import { SearchService as SearchServiceAbstraction } from 'jslib/abstractions/search.service';
@@ -43,6 +44,7 @@ import { TokenService } from 'jslib/abstractions/token.service';
 import { TotpService } from 'jslib/abstractions/totp.service';
 import { UserService } from 'jslib/abstractions/user.service';
 import { VaultTimeoutService } from 'jslib/abstractions/vaultTimeout.service';
+import { PasswordRepromptService } from 'jslib/services/passwordReprompt.service';
 
 import { AutofillService } from '../../services/abstractions/autofill.service';
 import BrowserMessagingService from '../../services/browserMessaging.service';
@@ -52,8 +54,6 @@ import { ConsoleLogService } from 'jslib/services/consoleLog.service';
 import { ConstantsService } from 'jslib/services/constants.service';
 import { SearchService } from 'jslib/services/search.service';
 import { StateService } from 'jslib/services/state.service';
-
-import { Analytics } from 'jslib/misc/analytics';
 
 import { PopupSearchService } from './popup-search.service';
 import { PopupUtilsService } from './popup-utils.service';
@@ -65,10 +65,13 @@ function getBgService<T>(service: string) {
     };
 }
 
-export const stateService = new StateService();
-export const messagingService = new BrowserMessagingService();
-export const searchService = new PopupSearchService(getBgService<SearchService>('searchService')(),
-    getBgService<CipherService>('cipherService')(), getBgService<ConsoleLogService>('consoleLogService')());
+const stateService = new StateService();
+const messagingService = new BrowserMessagingService();
+const searchService = new PopupSearchService(getBgService<SearchService>('searchService')(),
+    getBgService<CipherService>('cipherService')(), getBgService<ConsoleLogService>('consoleLogService')(),
+    getBgService<I18nService>('i18nService')());
+const passwordRepromptService = new PasswordRepromptService(getBgService<I18nService>('i18nService')(),
+    getBgService<CryptoService>('cryptoService')(), getBgService<PlatformUtilsService>('platformUtilsService')());
 
 export function initFactory(platformUtilsService: PlatformUtilsService, i18nService: I18nService, storageService: StorageService,
     popupUtilsService: PopupUtilsService): Function {
@@ -90,7 +93,7 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
 
             let theme = await storageService.get<string>(ConstantsService.themeKey);
             if (theme == null) {
-                theme = platformUtilsService.getDefaultSystemTheme();
+                theme = await platformUtilsService.getDefaultSystemTheme();
 
                 platformUtilsService.onDefaultSystemThemeChange(sysTheme => {
                     window.document.documentElement.classList.remove('theme_light', 'theme_dark');
@@ -99,14 +102,6 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
             }
             window.document.documentElement.classList.add('locale_' + i18nService.translationLocale);
             window.document.documentElement.classList.add('theme_' + theme);
-
-            const analytics = new Analytics(window, () => BrowserApi.gaFilter(), null, null, null, () => {
-                const bgPage = BrowserApi.getBackgroundPage();
-                if (bgPage == null || bgPage.bitwardenMain == null) {
-                    throw new Error('Cannot resolve background page main.');
-                }
-                return bgPage.bitwardenMain;
-            });
         }
     };
 }
@@ -183,6 +178,7 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
             useFactory: () => getBgService<I18nService>('i18nService')().translationLocale,
             deps: [],
         },
+        { provide: PasswordRepromptServiceAbstraction, useValue: passwordRepromptService },
     ],
 })
 export class ServicesModule {

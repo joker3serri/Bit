@@ -20,6 +20,7 @@ import {
 } from 'jslib/abstractions';
 
 import { EventService } from 'jslib/abstractions/event.service';
+import { CipherRepromptType } from 'jslib/enums/cipherRepromptType';
 import { EventType } from 'jslib/enums/eventType';
 
 const CardAttributes: string[] = ['autoCompleteType', 'data-stripe', 'htmlName', 'htmlID', 'label-tag',
@@ -210,8 +211,8 @@ export default class AutofillService implements AutofillServiceInterface {
                 url: tab.url,
             }, { frameId: pd.frameId });
 
-            if (options.cipher.type !== CipherType.Login || totpPromise || options.skipTotp ||
-                !options.cipher.login.totp || (!canAccessPremium && !options.cipher.organizationUseTotp)) {
+            if (options.cipher.type !== CipherType.Login || totpPromise || !options.cipher.login.totp ||
+                (!canAccessPremium && !options.cipher.organizationUseTotp)) {
                 return;
             }
 
@@ -245,19 +246,26 @@ export default class AutofillService implements AutofillServiceInterface {
         if (fromCommand) {
             cipher = await this.cipherService.getNextCipherForUrl(tab.url);
         } else {
-            const lastLaunchedCipher = await this.cipherService.getLastLaunchedForUrl(tab.url);
+            const lastLaunchedCipher = await this.cipherService.getLastLaunchedForUrl(tab.url, true);
             if (lastLaunchedCipher && Date.now().valueOf() - lastLaunchedCipher.localData?.lastLaunched?.valueOf() < 30000) {
                 cipher = lastLaunchedCipher;
             }
             else {
-                cipher = await this.cipherService.getLastUsedForUrl(tab.url);
+                cipher = await this.cipherService.getLastUsedForUrl(tab.url, true);
             }
+
+            if (cipher == null) {
+                return null;
+            }
+        }
+
+        if (cipher.reprompt !== CipherRepromptType.None) {
+            return;
         }
 
         const totpCode = await this.doAutoFill({
             cipher: cipher,
             pageDetails: pageDetails,
-            skipTotp: !fromCommand,
             skipLastUsed: !fromCommand,
             skipUsernameOnlyFill: !fromCommand,
             onlyEmptyFields: !fromCommand,

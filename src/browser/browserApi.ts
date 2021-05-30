@@ -65,7 +65,7 @@ export class BrowserApi {
             return;
         }
 
-        return new Promise(resolve => {
+        return new Promise<void>(resolve => {
             chrome.tabs.sendMessage(tab.id, obj, options, () => {
                 if (chrome.runtime.lastError) {
                     // Some error happened
@@ -174,6 +174,15 @@ export class BrowserApi {
         }
         return new Promise((resolve, reject) => {
             chrome.permissions.request(permission, resolve);
+        });
+    }
+
+    static getPlatformInfo(): Promise<browser.runtime.PlatformInfo | chrome.runtime.PlatformInfo> {
+        if (BrowserApi.isWebExtensionsApi) {
+            return browser.runtime.getPlatformInfo();
+        }
+        return new Promise(resolve => {
+            chrome.runtime.getPlatformInfo(resolve);
         });
     }
 }

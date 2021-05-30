@@ -22,7 +22,6 @@ import { BrowserApi } from '../browser/browserApi';
 
 import MainBackground from './main.background';
 
-import { Analytics } from 'jslib/misc';
 import { Utils } from 'jslib/misc/utils';
 
 import { OrganizationUserStatusType } from 'jslib/enums/organizationUserStatusType';
@@ -37,7 +36,7 @@ export default class RuntimeBackground {
     constructor(private main: MainBackground, private autofillService: AutofillService,
         private cipherService: CipherService, private platformUtilsService: BrowserPlatformUtilsService,
         private storageService: StorageService, private i18nService: I18nService,
-        private analytics: Analytics, private notificationsService: NotificationsService,
+        private notificationsService: NotificationsService,
         private systemService: SystemService, private vaultTimeoutService: VaultTimeoutService,
         private environmentService: EnvironmentService, private policyService: PolicyService,
         private userService: UserService, private messagingService: MessagingService) {
@@ -193,6 +192,15 @@ export default class RuntimeBackground {
             case 'reloadPopup':
                 this.messagingService.send('reloadPopup');
                 break;
+            case 'emailVerificationRequired':
+                this.messagingService.send('showDialog', {
+                    dialogId: 'emailVerificationRequired',
+                    title: this.i18nService.t('emailVerificationRequired'),
+                    text: this.i18nService.t('emailVerificationRequiredDesc'),
+                    confirmText: this.i18nService.t('ok'),
+                    type: 'info',
+                });
+                break;
             default:
                 break;
         }
@@ -247,10 +255,6 @@ export default class RuntimeBackground {
 
             const cipher = await this.cipherService.encrypt(model);
             await this.cipherService.saveWithServer(cipher);
-            this.analytics.ga('send', {
-                hitType: 'event',
-                eventAction: 'Added Login from Notification Bar',
-            });
         }
     }
 
@@ -279,10 +283,6 @@ export default class RuntimeBackground {
                 model.login.password = queueMessage.newPassword;
                 const newCipher = await this.cipherService.encrypt(model);
                 await this.cipherService.saveWithServer(newCipher);
-                this.analytics.ga('send', {
-                    hitType: 'event',
-                    eventAction: 'Changed Password from Notification Bar',
-                });
             }
         }
     }
@@ -413,10 +413,6 @@ export default class RuntimeBackground {
                     await this.setDefaultSettings();
                 }
 
-                this.analytics.ga('send', {
-                    hitType: 'event',
-                    eventAction: 'onInstalled ' + this.onInstalledReason,
-                });
                 this.onInstalledReason = null;
             }
         }, 100);
