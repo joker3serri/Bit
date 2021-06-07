@@ -479,7 +479,6 @@ export default class MainBackground {
             title: this.i18nService.t('copyUsername'),
         });
 
-
         await this.contextMenusCreate({
             type: 'normal',
             id: 'copy-password',
@@ -495,7 +494,7 @@ export default class MainBackground {
                 parentId: 'root',
                 contexts: ['all'],
                 title: this.i18nService.t('copyVerificationCode'),
-              });
+            });
         }
 
         await this.contextMenusCreate({
