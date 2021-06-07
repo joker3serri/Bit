@@ -600,7 +600,7 @@ export default class MainBackground {
                 id: 'autofill_' + idSuffix,
                 parentId: 'root',
                 contexts: ['all'],
-                title: `Fill ${this.sanitizeContextMenuTitle(title)}`,
+                title: `${this.i18nService.t('autoFill')} ${this.sanitizeContextMenuTitle(title)}`,
             });
         }
 
