@@ -496,7 +496,13 @@ export default class MainBackground {
                 contexts: ['all'],
                 title: this.i18nService.t('copyVerificationCode'),
               });
-            }
+        }
+
+        await this.contextMenusCreate({
+            type: 'separator',
+            contexts: ['all'],
+            parentId: 'root',
+        });
 
         await this.contextMenusCreate({
             type: 'normal',
