@@ -88,10 +88,12 @@ export class AddEditComponent extends BaseAddEditComponent {
                 queryParamsSub.unsubscribe();
             }
 
-            const topUsernames = this.cipherService.topUsernames;
-            if (topUsernames != null) {
-                this.defaultUsernames = topUsernames;
-                this.defaultUsernames.unshift('');
+            if (this.cipher.type === CipherType.Login) {
+                const topUsernames = this.cipherService.topUsernames;
+                if (topUsernames != null) {
+                    this.defaultUsernames = topUsernames;
+                    this.defaultUsernames.unshift('');
+                }
             }
 
             this.openAttachmentsInPopup = this.popupUtilsService.inPopup(window);
