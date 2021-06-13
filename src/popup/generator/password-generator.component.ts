@@ -18,6 +18,7 @@ import {
 })
 export class PasswordGeneratorComponent extends BasePasswordGeneratorComponent {
     private cipherState: CipherView;
+    passTypeOptions: any[];
 
     constructor(passwordGenerationService: PasswordGenerationService, platformUtilsService: PlatformUtilsService,
         i18nService: I18nService, private stateService: StateService,
@@ -27,6 +28,10 @@ export class PasswordGeneratorComponent extends BasePasswordGeneratorComponent {
 
     async ngOnInit() {
         await super.ngOnInit();
+        this.passTypeOptions = [
+            { name: 'password', value: 'password' },
+            { name: 'passphrase', value: 'passphrase' }
+        ]
         const addEditCipherInfo = await this.stateService.get<any>('addEditCipherInfo');
         if (addEditCipherInfo != null) {
             this.cipherState = addEditCipherInfo.cipher;
