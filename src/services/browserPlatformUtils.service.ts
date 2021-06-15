@@ -10,7 +10,6 @@ const DialogPromiseExpiration = 600000; // 10 minutes
 
 export default class BrowserPlatformUtilsService implements PlatformUtilsService {
     identityClientId: string = 'browser';
-    isDesktopClient = false;
 
     private showDialogResolves = new Map<number, { resolve: (value: boolean) => void, date: Date }>();
     private passwordDialogResolves = new Map<number, { tryResolve: (canceled: boolean, password: string) => Promise<boolean>, date: Date }>();
