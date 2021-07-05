@@ -134,7 +134,7 @@ var Duo;
 
         if (!iframe) {
             throw new Error(
-                'This page does not contain an iframe for Duo to use.' +
+                'This page does not contain an iframe for Duo to use. ' +
                 'Add an element like <iframe id="duo_iframe"></iframe> ' +
                 'to this page.  ' +
                 'See https://www.duosecurity.com/docs/duoweb#3.-show-the-iframe ' +

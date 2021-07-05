@@ -149,8 +149,8 @@
                 }
 
                 el = parent.cells[el.cellIndex];
-                var elText = el.textContent || el.innerText;
-                return elText = cleanText(elText);
+                var elText = cleanText(el.textContent || el.innerText);
+                return elText;
             }
 
             // get all the tags for a given label
@@ -171,7 +171,7 @@
 
                         for (var labelIndex = 0; labelIndex < docLabel.length; labelIndex++) {
                             if (-1 === theLabels.indexOf(docLabel[labelIndex])) {
-                                theLabels.push(docLabel[labelIndex])
+                                theLabels.push(docLabel[labelIndex]);
                             }
                         }
                     }

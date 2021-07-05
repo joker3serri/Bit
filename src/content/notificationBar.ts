@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', event => {
-    if (window.location.hostname.indexOf('vault.bitwarden.com') > -1) {
+    if (window.location.hostname.endsWith('vault.bitwarden.com')) {
         return;
     }
 
