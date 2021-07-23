@@ -140,6 +140,7 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
         },
         { provide: FolderService, useFactory: getBgService<FolderService>('folderService'), deps: [] },
         { provide: CollectionService, useFactory: getBgService<CollectionService>('collectionService'), deps: [] },
+        { provide: LogServiceAbstraction, useFactory: getBgService<ConsoleLogService>('logService'), deps: [] },
         { provide: EnvironmentService, useFactory: getBgService<EnvironmentService>('environmentService'), deps: [] },
         { provide: TotpService, useFactory: getBgService<TotpService>('totpService'), deps: [] },
         { provide: TokenService, useFactory: getBgService<TokenService>('tokenService'), deps: [] },
@@ -188,7 +189,6 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
             deps: [],
         },
         { provide: PasswordRepromptServiceAbstraction, useValue: passwordRepromptService },
-        { provide: LogServiceAbstraction, useFactory: getBgService<ConsoleLogService>('consoleLogService'), deps: [] },
     ],
 })
 export class ServicesModule {
