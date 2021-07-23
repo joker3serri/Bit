@@ -318,7 +318,7 @@ export class SettingsComponent implements OnInit {
     }
 
     async webVault() {
-        let url = this.environmentService.getWebVaultUrl();
+        const url = this.environmentService.getWebVaultUrl();
         BrowserApi.createNewTab(url);
     }
 
