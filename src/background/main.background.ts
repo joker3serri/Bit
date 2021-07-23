@@ -177,7 +177,8 @@ export default class MainBackground {
             this.cryptoFunctionService, this.platformUtilsService, this.consoleLogService);
         this.tokenService = new TokenService(this.storageService);
         this.appIdService = new AppIdService(this.storageService);
-        this.apiService = new ApiService(this.tokenService, this.platformUtilsService,
+        this.environmentService = new EnvironmentService(this.storageService);
+        this.apiService = new ApiService(this.tokenService, this.platformUtilsService, this.environmentService,
             (expired: boolean) => this.logout(expired));
         this.userService = new UserService(this.tokenService, this.storageService);
         this.settingsService = new SettingsService(this.userService, this.storageService);
@@ -223,9 +224,7 @@ export default class MainBackground {
         this.exportService = new ExportService(this.folderService, this.cipherService, this.apiService,
             this.cryptoService);
         this.notificationsService = new NotificationsService(this.userService, this.syncService, this.appIdService,
-            this.apiService, this.vaultTimeoutService, () => this.logout(true), this.consoleLogService);
-        this.environmentService = new EnvironmentService(this.apiService, this.storageService,
-            this.notificationsService);
+            this.apiService, this.vaultTimeoutService, this.environmentService, () => this.logout(true), this.consoleLogService);
         this.popupUtilsService = new PopupUtilsService(this.platformUtilsService);
         this.systemService = new SystemService(this.storageService, this.vaultTimeoutService,
             this.messagingService, this.platformUtilsService, () => {
@@ -294,7 +293,7 @@ export default class MainBackground {
                 await this.setIcon();
                 this.cleanupNotificationQueue();
                 this.fullSync(true);
-                setTimeout(() => this.notificationsService.init(this.environmentService), 2500);
+                setTimeout(() => this.notificationsService.init(), 2500);
                 resolve();
             }, 500);
         });
