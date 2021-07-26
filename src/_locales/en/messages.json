@@ -977,6 +977,9 @@
   "cfTypeBoolean": {
     "message": "Boolean"
   },
+  "cfTypeTOTP": {
+    "message": "TOTP"
+  },
   "popup2faCloseMessage": {
     "message": "Clicking outside the popup window to check your email for your verification code will cause this popup to close. Do you want to open this popup in a new window so that it does not close?"
   },

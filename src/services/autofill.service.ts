@@ -170,14 +170,31 @@ export default class AutofillService implements AutofillServiceInterface {
         return formData;
     }
 
-    async doAutoFill(options: any) {
-        let totpPromise: Promise<string> = null;
+    /**
+     * @returns TOTP code _if_ it should be copied to the clipboard
+     */
+    async doAutoFill(options: any): Promise<string | null> {
         const tab = await this.getActiveTab();
         if (!tab || !options.cipher || !options.pageDetails || !options.pageDetails.length) {
             throw new Error('Nothing to auto-fill.');
         }
 
         const canAccessPremium = await this.userService.canAccessPremium();
+        const totpCode: string | null = await (async () => {
+            if (options.cipher.type !== CipherType.Login) {
+                // This is not a login page.
+                return null;
+            }
+            if (!options.cipher.login.totp) {
+                // No TOTP has been configured for this page.
+                return null;
+            }
+            if (!canAccessPremium && !options.cipher.organizationUseTotp) {
+                // The user doesn't have access to TOTP.
+                return null;
+            }
+            return this.totpService.getCode(options.cipher.login.totp);
+        })();
         let didAutofill = false;
         options.pageDetails.forEach((pd: any) => {
             // make sure we're still on correct tab
@@ -191,6 +208,7 @@ export default class AutofillService implements AutofillServiceInterface {
                 onlyVisibleFields: options.onlyVisibleFields || false,
                 fillNewPassword: options.fillNewPassword || false,
                 cipher: options.cipher,
+                totp: totpCode,
             });
 
             if (!fillScript || !fillScript.script || !fillScript.script.length) {
@@ -210,27 +228,17 @@ export default class AutofillService implements AutofillServiceInterface {
                 fillScript: fillScript,
                 url: tab.url,
             }, { frameId: pd.frameId });
-
-            if (options.cipher.type !== CipherType.Login || totpPromise || !options.cipher.login.totp ||
-                (!canAccessPremium && !options.cipher.organizationUseTotp)) {
-                return;
-            }
-
-            totpPromise = this.totpService.isAutoCopyEnabled().then(enabled => {
-                if (enabled) {
-                    return this.totpService.getCode(options.cipher.login.totp);
-                }
-                return null;
-            });
         });
 
         if (didAutofill) {
             this.eventService.collect(EventType.Cipher_ClientAutofilled, options.cipher.id);
-            if (totpPromise != null) {
-                return await totpPromise;
-            } else {
+            const isAutoCopyEnabled = await this.totpService.isAutoCopyEnabled();
+            if (!isAutoCopyEnabled) {
+                // Auto-copy isn't enabled; don't return the code because we
+                // don't want it to be put on their clipboard.
                 return null;
             }
+            return totpCode;
         } else {
             throw new Error('Did not auto-fill.');
         }
@@ -292,7 +300,14 @@ export default class AutofillService implements AutofillServiceInterface {
         return tab;
     }
 
-    private generateFillScript(pageDetails: AutofillPageDetails, options: any): AutofillScript {
+    private generateFillScript(pageDetails: AutofillPageDetails, options: {
+                skipUsernameOnlyFill: boolean;
+                onlyEmptyFields: boolean;
+                onlyVisibleFields: boolean;
+                fillNewPassword: boolean;
+                cipher: any;
+                totp: string | null;
+    }): AutofillScript {
         if (!pageDetails || !options.cipher) {
             return null;
         }
@@ -318,10 +333,21 @@ export default class AutofillService implements AutofillServiceInterface {
                 const matchingIndex = this.findMatchingFieldIndex(field, fieldNames);
                 if (matchingIndex > -1) {
                     let val = fields[matchingIndex].value;
-                    if (val == null && fields[matchingIndex].type === FieldType.Boolean) {
-                        val = 'false';
+                    const type = fields[matchingIndex].type;
+                    if (type === FieldType.Boolean) {
+                        if (val == null) {
+                            val = 'false';
+                        }
+                    } else if (type === FieldType.TOTP) {
+                        if (!options.totp) {
+                            // Don't auto fill anything if we're not using TOTP.
+                            return;
+                        }
+                        if (!val) {
+                            val = '%s';
+                        }
+                        val = val.replace(/%s/g, options.totp);
                     }
-
                     filledFields[field.opid] = field;
                     this.fillByOpid(fillScript, field, val);
                 }
