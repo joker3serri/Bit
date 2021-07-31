@@ -9,31 +9,35 @@
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
-table {
-    width: 100%;
+.outer-wrapper {
+    padding: 0 15px 0 10px;
+    border-bottom: 2px solid #175ddc;
 }
 
-.outter-table > tbody > tr > td {
-    padding: 0 0 0 10px;
-    border-bottom: 2px solid #175DDC;
-    height: 40px;
+.wrapper {
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 24px 1fr 15px;
+    column-gap: 10px;
+    grid-column-gap: 10px;
+    min-height: 40px;
 }
 
-    .outter-table > tbody > tr > td:last-child {
-        padding-right: 10px;
-    }
-
-.inner-table td {
-    padding: 0 10px 0 0;
+.inner-wrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    column-gap: 10px;
+    grid-column-gap: 10px;
 }
 
-    .inner-table td:last-child {
-        padding: 0;
-    }
+#content .change-buttons {
+    justify-self: end;
+}
 
-    .inner-table td button {
-        margin-left: 5px;
-    }
+.wrapper > *, .inner-wrapper > * {
+    align-self: center;
+}
 
 img {
     border: 0;
@@ -53,6 +57,12 @@ img {
     display: block;
     padding: 5px 0;
     margin-right: 10px;
+}
+
+button.plain {
+    background:none !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 button:not(.link) {
