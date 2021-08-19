@@ -635,7 +635,7 @@
     "message": "Dowiedz się więcej o organizacjach"
   },
   "learnOrgConfirmation": {
-    "message": "Bitwarden pozwala na udostępnianie zawartości sejfu innym osobom za pośrednictwem organizacji. Czy chcesz odwiedzić stronę bitwarden.com, aby dowiedzieć się więcej?"
+    "message": "Bitwarden pozwala na udostępnianie zawartości sejfu innym osobom za pośrednictwem organizacji. Czy chcesz odwiedzić witrynę bitwarden.com, aby dowiedzieć się więcej?"
   },
   "moveToOrganization": {
     "message": "Przenieś do organizacji"
@@ -644,7 +644,7 @@
     "message": "Udostępnij"
   },
   "movedItemToOrg": {
-    "message": "Element $ITEMNAME$ został przeniesiony do organizacji $ORGNAME$",
+    "message": "Element $ITEMNAME$ przeniesiono do organizacji $ORGNAME$",
     "placeholders": {
       "itemname": {
         "content": "$1",
@@ -657,7 +657,7 @@
     }
   },
   "moveToOrgDesc": {
-    "message": "Wybierz organizację, do której chcesz przenieść ten element. Ta czynność spowoduje utratę własności elementu i przenosi te uprawnienia do organizacji."
+    "message": "Wybierz organizację, do której chcesz przenieść ten element. Przeniesienie do organizacji przenosi uprawnienia właścicielskie względem elementu na tę organizację. Po przeniesieniu elementu utracisz bezpośrednie uprawnienia właścicielskie."
   },
   "learnMore": {
     "message": "Dowiedz się więcej"
@@ -918,22 +918,22 @@
     "message": "Obecnie jest to funkcja eksperymentalna. Używaj na własne ryzyko."
   },
   "defaultAutoFillOnPageLoad": {
-    "message": "Domyślne ustawienie autouzupełniania"
+    "message": "Domyślne ustawienia autouzupełniania dla danych logowania"
   },
   "defaultAutoFillOnPageLoadDesc": {
-    "message": "Po włączeniu autouzupełnianiu po załadowaniu strony, możesz włączyć lub wyłączyć tę funkcję dla poszczególnych wpisów."
+    "message": "Gdy włączysz opcję autouzupełniania po wczytaniu strony, możesz włączyć lub wyłączyć tę funkcję dla poszczególnych danych logowania. Jest to domyślne ustawienie dla danych logowania, które nie zostały skonfigurowane oddzielnie."
   },
   "itemAutoFillOnPageLoad": {
-    "message": "Automatycznie uzupełniaj po załadowaniu strony (jeśli włączono w opcjach)"
+    "message": "Autouzupełnianie po wczytaniu strony (jeśli włączone w Opcjach)"
   },
   "autoFillOnPageLoadUseDefault": {
-    "message": "Użyj domyślnego ustawienia"
+    "message": "Użyj ustawienia domyślnego"
   },
   "autoFillOnPageLoadYes": {
-    "message": "Automatycznie uzupełniaj po załadowaniu strony"
+    "message": "Automatycznie uzupełniaj po wczytaniu strony"
   },
   "autoFillOnPageLoadNo": {
-    "message": "Nie uzupełniaj automatycznie po załadowaniu strony"
+    "message": "Nie uzupełniaj automatycznie po wczytaniu strony"
   },
   "commandOpenPopup": {
     "message": "Otwórz sejf w oknie"
@@ -990,10 +990,10 @@
     "message": "Wyświetlaj rozpoznawalną ikonę serwisu obok danych logowania w sejfie."
   },
   "disableBadgeCounter": {
-    "message": "Wyłącz licznik logowań"
+    "message": "Wyłącz licznik danych logowania"
   },
   "disableBadgeCounterDesc": {
-    "message": "Licznik informuje, ile razy zalogowałeś się na obecnej stronie w sejfie."
+    "message": "Licznik informuje, ile danych logowania zawiera sejf dla obecnej strony."
   },
   "cardholderName": {
     "message": "Właściciel karty"
@@ -1694,7 +1694,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLinuxChromiumFileWarning": {
-    "message": "Aby wybrać plik, otwórz rozszerzenie na pasku bocznym (jeśli to możliwe) lub w nowym oknie."
+    "message": "Aby wybrać plik, otwórz rozszerzenie w pasku bocznym (jeśli to możliwe) albo w nowym oknie po kliknięciu tego banera."
   },
   "sendFirefoxFileWarning": {
     "message": "Aby wybrać plik za pomocą przeglądarki Firefox, otwórz rozszerzenie w nowym oknie."
@@ -1748,9 +1748,9 @@
     "message": "Ta operacja jest chroniona. Aby kontynuować, wpisz ponownie hasło główne."
   },
   "emailVerificationRequired": {
-    "message": "Weryfikacja adresu e-mail jest wymagana"
+    "message": "Wymagana weryfikacja adresu e-mail"
   },
   "emailVerificationRequiredDesc": {
-    "message": "Musisz zweryfikować adres e-mail, aby korzystać z tej funkcji. Adres możesz zweryfikować w sejfie internetowym."
+    "message": "Musisz zweryfikować swój adres e-mail, aby korzystać z tej funkcji. Swój adres e-mail możesz zweryfikować w sejfie internetowym."
   }
 }
