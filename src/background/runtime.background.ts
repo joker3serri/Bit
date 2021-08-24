@@ -456,6 +456,6 @@ export default class RuntimeBackground {
     }
 
     private async allowPersonalOwnership(): Promise<boolean> {
-        return await this.policyService.policyAppliesToUser(PolicyType.PersonalOwnership);
+        return !await this.policyService.policyAppliesToUser(PolicyType.PersonalOwnership);
     }
 }
