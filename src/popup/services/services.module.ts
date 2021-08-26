@@ -6,8 +6,9 @@ import {
 
 import { ToasterModule } from 'angular2-toaster';
 
-import { LockGuardService } from './lock-guard.service';
+import { DebounceNavigationService } from './debounceNavigationService';
 import { LaunchGuardService } from './launch-guard.service';
+import { LockGuardService } from './lock-guard.service';
 import { UnauthGuardService } from './unauth-guard.service';
 
 import { AuthGuardService } from 'jslib-angular/services/auth-guard.service';
@@ -30,6 +31,7 @@ import { ExportService } from 'jslib-common/abstractions/export.service';
 import { FileUploadService } from 'jslib-common/abstractions/fileUpload.service';
 import { FolderService } from 'jslib-common/abstractions/folder.service';
 import { I18nService } from 'jslib-common/abstractions/i18n.service';
+import { LogService as LogServiceAbstraction } from 'jslib-common/abstractions/log.service';
 import { MessagingService } from 'jslib-common/abstractions/messaging.service';
 import { NotificationsService } from 'jslib-common/abstractions/notifications.service';
 import { PasswordGenerationService } from 'jslib-common/abstractions/passwordGeneration.service';
@@ -121,6 +123,7 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
         LockGuardService,
         LaunchGuardService,
         UnauthGuardService,
+        DebounceNavigationService,
         PopupUtilsService,
         BroadcasterService,
         { provide: MessagingService, useValue: messagingService },
@@ -137,6 +140,7 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
         },
         { provide: FolderService, useFactory: getBgService<FolderService>('folderService'), deps: [] },
         { provide: CollectionService, useFactory: getBgService<CollectionService>('collectionService'), deps: [] },
+        { provide: LogServiceAbstraction, useFactory: getBgService<ConsoleLogService>('logService'), deps: [] },
         { provide: EnvironmentService, useFactory: getBgService<EnvironmentService>('environmentService'), deps: [] },
         { provide: TotpService, useFactory: getBgService<TotpService>('totpService'), deps: [] },
         { provide: TokenService, useFactory: getBgService<TokenService>('tokenService'), deps: [] },
@@ -181,7 +185,7 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
         },
         {
             provide: LOCALE_ID,
-            useFactory: () => getBgService<I18nService>('i18nService')().translationLocale,
+            useFactory: () => isPrivateMode ? null : getBgService<I18nService>('i18nService')().translationLocale,
             deps: [],
         },
         { provide: PasswordRepromptServiceAbstraction, useValue: passwordRepromptService },

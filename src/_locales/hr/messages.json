@@ -150,6 +150,9 @@
   "save": {
     "message": "Spremi"
   },
+  "move": {
+    "message": "Premjesti"
+  },
   "addFolder": {
     "message": "Dodaj mapu"
   },
@@ -628,23 +631,33 @@
   "shared": {
     "message": "Dijeljeno"
   },
-  "shareVault": {
-    "message": "Podijeli svoj trezor"
+  "learnOrg": {
+    "message": "Više o organizacijama"
   },
-  "shareVaultConfirmation": {
+  "learnOrgConfirmation": {
     "message": "Bitwarden omogućuje dijeljenje trezora s drugima pomoću organizacijskog računa. Želiš li sada posjetiti bitwarden.com za više informacija?"
   },
-  "shareItem": {
-    "message": "Podijeli stavku"
+  "moveToOrganization": {
+    "message": "Premjesti u organizaciju"
   },
   "share": {
     "message": "Podijeli"
   },
-  "sharedItem": {
-    "message": "Stavka podijeljena"
+  "movedItemToOrg": {
+    "message": "$ITEMNAME$ premješteno u $ORGNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "Odaberi organizaciju s kojom želiš podijeliti ovu stavku. Nakon dijeljenja više nećeš biti izravni vlasnik ove stavke jer dijeljenje prenosi vlasništvo stavke na organizaciju."
+  "moveToOrgDesc": {
+    "message": "Odaberi organizaciju u koju želiš premjestiti ovu stavku. Premještanje prenosi vlasništvo stavke na organizaciju. Nakon premještanja više nećeš biti izravni vlasnik ove stavke."
   },
   "learnMore": {
     "message": "Saznaj više"
@@ -805,6 +818,9 @@
   "webAuthnNewTab": {
     "message": "Nastavi na WebAuthn 2FA verifikaciju u novoj kartici."
   },
+  "webAuthnNewTabOpen": {
+    "message": "Otvori novu karticu"
+  },
   "webAuthnAuthenticate": {
     "message": "Ovjeri WebAuthn"
   },
@@ -898,14 +914,26 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "Ako se otkrije obrazac za prijavu, samostalno auto-ispuni kada se web stranica učita."
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "Automatsko kopiranje TOTP nakon učitavanja stranice."
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "Ako je auto-ispuna pri učitavanju stranice uključena, TOTP verifikacijski kôd će se automatski kopirati kod učitavanja stranice. Isključuje se opcijom „Onemogući automatsko kopiranje TOTP”"
-  },
   "experimentalFeature": {
     "message": "Ovo je trenutno eksperimentalna značajka. Koristi na vlastitu odgovornost."
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "Zadana postvaka Auto-ispune za prijave"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "Nakon omogućavanja Auto-ispune kod učitavanja stranice, moguće je uključiti/isključiti ovu značajku za svaku pojedinu prijavu. Ovo je zadana postavka za prijave koje nisu pojedinčano određene."
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "Auto-ispuna kod učitavanja stranice (ako je uključeno u Postavkama)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "Koristi zadane postavke"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "Auto-ispuna kod učitavanja"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "Ne koristi Auto-ispunu kod učitavanja"
   },
   "commandOpenPopup": {
     "message": "Otvori iskočni prozor trezora"
@@ -1718,5 +1746,11 @@
   },
   "passwordConfirmationDesc": {
     "message": "Ova radnja je zaštićena. Za nastavak i potvrdu identiteta, unesi svoju glavnu lozinku."
+  },
+  "emailVerificationRequired": {
+    "message": "Potrebna je potvrda e-pošte"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "Moraš ovjeriti svoju e-poštu u mrežnom trezoru za koritšenje ove značajke."
   }
 }

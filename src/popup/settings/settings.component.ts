@@ -310,7 +310,7 @@ export class SettingsComponent implements OnInit {
 
     async share() {
         const confirmed = await this.platformUtilsService.showDialog(
-            this.i18nService.t('shareVaultConfirmation'), this.i18nService.t('shareVault'),
+            this.i18nService.t('learnOrgConfirmation'), this.i18nService.t('learnOrg'),
             this.i18nService.t('yes'), this.i18nService.t('cancel'));
         if (confirmed) {
             BrowserApi.createNewTab('https://help.bitwarden.com/article/what-is-an-organization/');
@@ -318,10 +318,7 @@ export class SettingsComponent implements OnInit {
     }
 
     async webVault() {
-        let url = this.environmentService.getWebVaultUrl();
-        if (url == null) {
-            url = 'https://vault.bitwarden.com';
-        }
+        const url = this.environmentService.getWebVaultUrl();
         BrowserApi.createNewTab(url);
     }
 

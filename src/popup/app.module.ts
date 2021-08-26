@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { ServicesModule } from './services/services.module';
 
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -20,6 +20,7 @@ import { SetPasswordComponent } from './accounts/set-password.component';
 import { SsoComponent } from './accounts/sso.component';
 import { TwoFactorOptionsComponent } from './accounts/two-factor-options.component';
 import { TwoFactorComponent } from './accounts/two-factor.component';
+import { UpdateTempPasswordComponent } from './accounts/update-temp-password.component';
 
 import { PasswordGeneratorHistoryComponent } from './generator/password-generator-history.component';
 import { PasswordGeneratorComponent } from './generator/password-generator.component';
@@ -47,6 +48,7 @@ import { PasswordHistoryComponent } from './vault/password-history.component';
 import { ShareComponent } from './vault/share.component';
 import { ViewComponent } from './vault/view.component';
 
+import { EffluxDatesComponent as SendEffluxDatesComponent } from './send/efflux-dates.component';
 import { SendAddEditComponent } from './send/send-add-edit.component';
 import { SendGroupingsComponent } from './send/send-groupings.component';
 import { SendTypeComponent } from './send/send-type.component';
@@ -56,6 +58,7 @@ import { ApiActionDirective } from 'jslib-angular/directives/api-action.directiv
 import { AutofocusDirective } from 'jslib-angular/directives/autofocus.directive';
 import { BlurClickDirective } from 'jslib-angular/directives/blur-click.directive';
 import { BoxRowDirective } from 'jslib-angular/directives/box-row.directive';
+import { CipherListVirtualScroll } from 'jslib-angular/directives/cipherListVirtualScroll.directive';
 import { FallbackSrcDirective } from 'jslib-angular/directives/fallback-src.directive';
 import { InputVerbatimDirective } from 'jslib-angular/directives/input-verbatim.directive';
 import { SelectCopyDirective } from 'jslib-angular/directives/select-copy.directive';
@@ -80,6 +83,7 @@ import {
     DatePipe,
     registerLocaleData,
 } from '@angular/common';
+import localeAz from '@angular/common/locales/az';
 import localeBe from '@angular/common/locales/be';
 import localeBg from '@angular/common/locales/bg';
 import localeBn from '@angular/common/locales/bn';
@@ -101,6 +105,7 @@ import localeHu from '@angular/common/locales/hu';
 import localeId from '@angular/common/locales/id';
 import localeIt from '@angular/common/locales/it';
 import localeJa from '@angular/common/locales/ja';
+import localeKn from '@angular/common/locales/kn';
 import localeKo from '@angular/common/locales/ko';
 import localeLv from '@angular/common/locales/lv';
 import localeMl from '@angular/common/locales/ml';
@@ -121,6 +126,7 @@ import localeVi from '@angular/common/locales/vi';
 import localeZhCn from '@angular/common/locales/zh-Hans';
 import localeZhTw from '@angular/common/locales/zh-Hant';
 
+registerLocaleData(localeAz, 'az');
 registerLocaleData(localeBe, 'be');
 registerLocaleData(localeBg, 'bg');
 registerLocaleData(localeBn, 'bn');
@@ -143,6 +149,7 @@ registerLocaleData(localeId, 'id');
 registerLocaleData(localeIt, 'it');
 registerLocaleData(localeJa, 'ja');
 registerLocaleData(localeKo, 'ko');
+registerLocaleData(localeKn, 'kn');
 registerLocaleData(localeLv, 'lv');
 registerLocaleData(localeMl, 'ml');
 registerLocaleData(localeNb, 'nb');
@@ -164,14 +171,15 @@ registerLocaleData(localeZhTw, 'zh-TW');
 
 @NgModule({
     imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        FormsModule,
         AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        DragDropModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ScrollingModule,
         ServicesModule,
         ToasterModule.forRoot(),
-        DragDropModule,
-        ScrollingModule,
     ],
     declarations: [
         A11yTitleDirective,
@@ -184,6 +192,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         BlurClickDirective,
         BoxRowDirective,
         CalloutComponent,
+        CipherListVirtualScroll,
         CipherRowComponent,
         CiphersComponent,
         CollectionsComponent,
@@ -214,11 +223,14 @@ registerLocaleData(localeZhTw, 'zh-TW');
         SearchCiphersPipe,
         SelectCopyDirective,
         SendAddEditComponent,
+        SendEffluxDatesComponent,
         SendGroupingsComponent,
         SendListComponent,
         SendTypeComponent,
+        SetPasswordComponent,
         SettingsComponent,
         ShareComponent,
+        SsoComponent,
         StopClickDirective,
         StopPropDirective,
         SyncComponent,
@@ -226,9 +238,8 @@ registerLocaleData(localeZhTw, 'zh-TW');
         TrueFalseValueDirective,
         TwoFactorOptionsComponent,
         TwoFactorComponent,
-        SsoComponent,
+        UpdateTempPasswordComponent,
         ViewComponent,
-        SetPasswordComponent,
     ],
     entryComponents: [],
     providers: [

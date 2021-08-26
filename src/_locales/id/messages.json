@@ -150,6 +150,9 @@
   "save": {
     "message": "Simpan"
   },
+  "move": {
+    "message": "Pindah"
+  },
   "addFolder": {
     "message": "Tambah Folder"
   },
@@ -628,23 +631,33 @@
   "shared": {
     "message": "Dibagikan"
   },
-  "shareVault": {
-    "message": "Bagikan Brankas Anda"
+  "learnOrg": {
+    "message": "Pelajari tentang Organisasi"
   },
-  "shareVaultConfirmation": {
-    "message": "Bitwarden memungkinkan Anda berbagi brankas Anda dengan orang lain menggunakan akun organisasi. Apakah Anda ingin mengunjungi bitwarden.com untuk mempelajari lebih lanjut?"
+  "learnOrgConfirmation": {
+    "message": "Bitwarden memungkinkan Anda berbagi item brankas Anda dengan orang lain menggunakan organisasi. Maukah Anda mengunjungi laman bitwarden.com untuk mempelajari lebih lanjut?"
   },
-  "shareItem": {
-    "message": "Bagikan Item"
+  "moveToOrganization": {
+    "message": "Pindah ke Organisasi"
   },
   "share": {
     "message": "Bagikan"
   },
-  "sharedItem": {
-    "message": "Item yang Dibagikan"
+  "movedItemToOrg": {
+    "message": "$ITEMNAME$ pindah ke $ORGNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "Pilih organisasi yang Anda ingin bagikan item ini. Berbagi mentransfer kepemilikan item tersebut ke organisasi. Anda tidak akan lagi menjadi pemilik item ini setelah dibagikan."
+  "moveToOrgDesc": {
+    "message": "Choose an organization that you wish to move this item to. Moving to an organization transfers ownership of the item to that organization. You will no longer be the direct owner of this item once it has been moved."
   },
   "learnMore": {
     "message": "Pelajari lebih lanjut"
@@ -686,7 +699,7 @@
     "message": "Pilih berkas."
   },
   "maxFileSize": {
-    "message": "Ukuran berkas maksimal adalah 100 MB."
+    "message": "Ukuran berkas maksimal adalah 500 MB."
   },
   "featureUnavailable": {
     "message": "Fitur Tidak Tersedia"
@@ -803,7 +816,10 @@
     "message": "Masukkan kunci keamanan ke port USB komputer Anda. Jika ada tombolnya, tekanlah."
   },
   "webAuthnNewTab": {
-    "message": "Continue the WebAuthn 2FA verification in the new tab."
+    "message": "Untuk memulai verifikasi 2FA WebAuthn. Klik tombol di bawah untuk membuka tab baru dan ikuti instruksi yang diberikan."
+  },
+  "webAuthnNewTabOpen": {
+    "message": "Buka tab baru"
   },
   "webAuthnAuthenticate": {
     "message": "Authenticate WebAuthn"
@@ -898,14 +914,26 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "Jika formulir info masuk terdeteksi, secara otomatis melakukan pengisian otomatis ketika memuat laman web."
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "Automatic TOTP Copy after Page Load"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "If Auto-fill On Page Load is enabled, the TOTP verification code is automatically copied to your clipboard after loading the web page. This is overridden by Disable Automatic TOTP Copy."
-  },
   "experimentalFeature": {
     "message": "Fitur ini saat ini adalah fitur eksperimental. Gunakan dengan risiko Anda sendiri."
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "Default autofill setting for login items"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "After enabling Auto-fill on Page Load, you can enable or disable the feature for individual login items. This is the default setting for login items that are not separately configured."
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "Auto-fill on Page Load (if enabled in Options)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "Gunakan pengaturan baku"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "Auto-fill on page load"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "Do not auto-fill on page load"
   },
   "commandOpenPopup": {
     "message": "Buka popup brankas"
@@ -1718,5 +1746,11 @@
   },
   "passwordConfirmationDesc": {
     "message": "Aksi ini terproteksi. Untuk melanjutkan, masukkan kembali sandi utama Anda untuk verifikasi identitas."
+  },
+  "emailVerificationRequired": {
+    "message": "Verifikasi Email Diperlukan"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "Anda harus memverifikasi email Anda untuk menggunakan fitur ini. Anda dapat memverifikasi email Anda di brankas web."
   }
 }

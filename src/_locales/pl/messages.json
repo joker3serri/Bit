@@ -38,7 +38,7 @@
     "message": "Hasło główne"
   },
   "masterPassDesc": {
-    "message": "Hasło główne zapewnia dostęp do sejfu. To bardzo ważne, abyś je pamiętał. Jeśli je zapomnisz, nie będzie możliwości, aby je przywrócić."
+    "message": "Hasło główne zapewnia dostęp do sejfu. To bardzo ważne, aby je pamiętać, ponieważ zapomnianego hasła nie będzie można odzyskać."
   },
   "masterPassHintDesc": {
     "message": "Podpowiedź do hasła głównego może pomóc Ci przypomnieć hasło, jeśli je zapomnisz."
@@ -77,7 +77,7 @@
     "message": "Kopiuj nazwę użytkownika"
   },
   "copyNumber": {
-    "message": "Kopiuj numer karty"
+    "message": "Kopiuj numer"
   },
   "copySecurityCode": {
     "message": "Kopiuj kod zabezpieczający"
@@ -95,7 +95,7 @@
     "message": "Sejf jest zablokowany."
   },
   "vaultLoggedOut": {
-    "message": "Wylogowałeś się z sejfu."
+    "message": "Wylogowano z sejfu."
   },
   "autoFillInfo": {
     "message": "Brak dostępnych danych logowania do autouzupełnienia dla obecnej karty przeglądarki."
@@ -149,6 +149,9 @@
   },
   "save": {
     "message": "Zapisz"
+  },
+  "move": {
+    "message": "Przenieś"
   },
   "addFolder": {
     "message": "Dodaj folder"
@@ -394,7 +397,7 @@
     "message": "Hasło główne musi zawierać co najmniej 8 znaków."
   },
   "masterPassDoesntMatch": {
-    "message": "Potwierdzenie hasła głównego nie pasuje."
+    "message": "Hasła nie pasują do siebie."
   },
   "newAccountCreated": {
     "message": "Konto zostało utworzone! Teraz możesz się zalogować."
@@ -628,23 +631,33 @@
   "shared": {
     "message": "Udostępnione"
   },
-  "shareVault": {
-    "message": "Udostępnij sejf"
+  "learnOrg": {
+    "message": "Dowiedz się więcej o organizacjach"
   },
-  "shareVaultConfirmation": {
-    "message": "Bitwarden pozwala na udostępnianie zawartości sejfu innym osobom, przy użyciu konta organizacji. Czy chcesz odwiedzić stronę bitwarden.com, aby dowiedzieć się więcej?"
+  "learnOrgConfirmation": {
+    "message": "Bitwarden pozwala na udostępnianie zawartości sejfu innym osobom za pośrednictwem organizacji. Czy chcesz odwiedzić stronę bitwarden.com, aby dowiedzieć się więcej?"
   },
-  "shareItem": {
-    "message": "Udostępnij element"
+  "moveToOrganization": {
+    "message": "Przenieś do organizacji"
   },
   "share": {
     "message": "Udostępnij"
   },
-  "sharedItem": {
-    "message": "Element został udostępniony"
+  "movedItemToOrg": {
+    "message": "Element $ITEMNAME$ został przeniesiony do organizacji $ORGNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "Wybierz organizację, której chcesz udostępnić ten element. Udostępnianie przenosi własność elementu do wybranej organizacji. Nie będziesz już bezpośrednim właścicielem tego elementu, gdy zostanie on udostępniony."
+  "moveToOrgDesc": {
+    "message": "Wybierz organizację, do której chcesz przenieść ten element. Ta czynność spowoduje utratę własności elementu i przenosi te uprawnienia do organizacji."
   },
   "learnMore": {
     "message": "Dowiedz się więcej"
@@ -686,7 +699,7 @@
     "message": "Wybierz plik."
   },
   "maxFileSize": {
-    "message": "Maksymalny rozmiar pliku to 100 MB."
+    "message": "Maksymalny rozmiar pliku to 500 MB."
   },
   "featureUnavailable": {
     "message": "Funkcja jest niedostępna"
@@ -803,10 +816,13 @@
     "message": "Włóż klucz bezpieczeństwa do portu USB komputera. Jeśli klucz posiada przycisk, dotknij go."
   },
   "webAuthnNewTab": {
-    "message": "Continue the WebAuthn 2FA verification in the new tab."
+    "message": "Kontynuuj logowanie dwustopniowe WebAuthn w nowej karcie."
+  },
+  "webAuthnNewTabOpen": {
+    "message": "Otwórz nową kartę"
   },
   "webAuthnAuthenticate": {
-    "message": "Authenticate WebAuthn"
+    "message": "Uwierzytelnianie WebAuthn"
   },
   "loginUnavailable": {
     "message": "Logowanie jest niedostępne"
@@ -851,7 +867,7 @@
     "message": "FIDO2 WebAuthn"
   },
   "webAuthnDesc": {
-    "message": "Use any WebAuthn enabled security key to access your account."
+    "message": "Użyj dowolnego klucza bezpieczeństwa WebAuthn, aby uzyskać dostęp do swojego konta."
   },
   "emailTitle": {
     "message": "Adres e-mail"
@@ -898,14 +914,26 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "Jeśli zostanie wykryty formularz logowania, automatycznie uzupełnij dane logowania po załadowaniu strony."
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "Automatic TOTP Copy after Page Load"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "If Auto-fill On Page Load is enabled, the TOTP verification code is automatically copied to your clipboard after loading the web page. This is overridden by Disable Automatic TOTP Copy."
-  },
   "experimentalFeature": {
     "message": "Obecnie jest to funkcja eksperymentalna. Używaj na własne ryzyko."
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "Domyślne ustawienie autouzupełniania"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "Po włączeniu autouzupełnianiu po załadowaniu strony, możesz włączyć lub wyłączyć tę funkcję dla poszczególnych wpisów."
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "Automatycznie uzupełniaj po załadowaniu strony (jeśli włączono w opcjach)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "Użyj domyślnego ustawienia"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "Automatycznie uzupełniaj po załadowaniu strony"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "Nie uzupełniaj automatycznie po załadowaniu strony"
   },
   "commandOpenPopup": {
     "message": "Otwórz sejf w oknie"
@@ -962,10 +990,10 @@
     "message": "Wyświetlaj rozpoznawalną ikonę serwisu obok danych logowania w sejfie."
   },
   "disableBadgeCounter": {
-    "message": "Disable Badge Counter"
+    "message": "Wyłącz licznik logowań"
   },
   "disableBadgeCounterDesc": {
-    "message": "Badge counter indicates how many logins you have for the current page in your vault."
+    "message": "Licznik informuje, ile razy zalogowałeś się na obecnej stronie w sejfie."
   },
   "cardholderName": {
     "message": "Właściciel karty"
@@ -1625,7 +1653,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendDisableDesc": {
-    "message": "Wyłącz tę wysyłkę, aby nikt nie miał do niej dostępu.",
+    "message": "Wyłącz wysyłkę, aby nikt nie miał do niej dostępu.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendShareDesc": {
@@ -1666,7 +1694,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLinuxChromiumFileWarning": {
-    "message": "In order to choose a file, open the extension in the sidebar (if possible) or pop out to a new window by clicking this banner."
+    "message": "Aby wybrać plik, otwórz rozszerzenie na pasku bocznym (jeśli to możliwe) lub w nowym oknie."
   },
   "sendFirefoxFileWarning": {
     "message": "Aby wybrać plik za pomocą przeglądarki Firefox, otwórz rozszerzenie w nowym oknie."
@@ -1705,18 +1733,24 @@
     "message": "Wystąpił błąd podczas zapisywania dat usunięcia i wygaśnięcia."
   },
   "hideEmail": {
-    "message": "Hide my email address from recipients."
+    "message": "Ukryj mój adres e-mail przed odbiorcami."
   },
   "sendOptionsPolicyInEffect": {
-    "message": "One or more organization policies are affecting your Send options."
+    "message": "Co najmniej jedna zasada organizacji wpływa na ustawienia wysyłek."
   },
   "passwordPrompt": {
-    "message": "Master password re-prompt"
+    "message": "Powtórz hasło główne"
   },
   "passwordConfirmation": {
-    "message": "Master password confirmation"
+    "message": "Potwierdź hasło główne"
   },
   "passwordConfirmationDesc": {
-    "message": "This action is protected. To continue, please re-enter your master password to verify your identity."
+    "message": "Ta operacja jest chroniona. Aby kontynuować, wpisz ponownie hasło główne."
+  },
+  "emailVerificationRequired": {
+    "message": "Weryfikacja adresu e-mail jest wymagana"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "Musisz zweryfikować adres e-mail, aby korzystać z tej funkcji. Adres możesz zweryfikować w sejfie internetowym."
   }
 }

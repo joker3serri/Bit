@@ -150,6 +150,9 @@
   "save": {
     "message": "Salvare"
   },
+  "move": {
+    "message": "Mutare"
+  },
   "addFolder": {
     "message": "Adăugare dosar"
   },
@@ -597,7 +600,7 @@
     "description": "Light color"
   },
   "solarizedDark": {
-    "message": "Solarized Dark",
+    "message": "Întuneric solarizat",
     "description": "'Solarized' is a noun and the name of a color scheme. It should not be translated."
   },
   "exportVault": {
@@ -628,23 +631,33 @@
   "shared": {
     "message": "Partajat"
   },
-  "shareVault": {
-    "message": "Partajare seif"
+  "learnOrg": {
+    "message": "Aflați despre organizații"
   },
-  "shareVaultConfirmation": {
-    "message": "Bitwarden vă permite să vă partajați seiful cu alte persoane utilizând un cont pentru organizații. Doriți să vizitați saitul bitwarden.com pentru a afla mai multe?"
+  "learnOrgConfirmation": {
+    "message": "Bitwarden vă permite să vă partajați articolele seifului cu alte persoane utilizând o organizație. Doriți să vizitați site-ul bitwarden.com pentru a afla mai multe?"
   },
-  "shareItem": {
-    "message": "Partajare articol"
+  "moveToOrganization": {
+    "message": "Mutare la organizație"
   },
   "share": {
     "message": "Partajare"
   },
-  "sharedItem": {
-    "message": "Articol partajat"
+  "movedItemToOrg": {
+    "message": "$ITEMNAME$ mutat la $ORGNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "Alegeți o organizație cu care doriți să partajați acest articol. Partajarea transferă proprietatea asupra articolului către organizație. Nu veți mai fi proprietarul direct al acestuia după ce a fost partajat."
+  "moveToOrgDesc": {
+    "message": "Alegeți o organizație la care doriți să mutați acest articol. Mutarea într-o organizație transferă proprietatea asupra articolului către organizația respectivă. Nu veți mai fi proprietarul direct al acestui articol odată ce a fost mutat."
   },
   "learnMore": {
     "message": "Aflați mai multe"
@@ -686,7 +699,7 @@
     "message": "Selectare fișier."
   },
   "maxFileSize": {
-    "message": "Mărimea maximă a fișierului este de 100 MB."
+    "message": "Mărimea maximă a fișierului este de 500 MB."
   },
   "featureUnavailable": {
     "message": "Caracteristică indisponibilă"
@@ -803,10 +816,13 @@
     "message": "Introduceți cheia de securitate în portul USB al computerului. Dacă are un buton, apăsați-l."
   },
   "webAuthnNewTab": {
-    "message": "Continue the WebAuthn 2FA verification in the new tab."
+    "message": "Pentru a începe verificarea WebAuthn 2FA. Faceți clic pe butonul de mai jos pentru a deschide o filă nouă și urmați instrucțiunile furnizate în filă nouă."
+  },
+  "webAuthnNewTabOpen": {
+    "message": "Deschideți o filă nouă"
   },
   "webAuthnAuthenticate": {
-    "message": "Authenticate WebAuthn"
+    "message": "Autentificare WebAuthn"
   },
   "loginUnavailable": {
     "message": "Conectare indisponibilă"
@@ -851,7 +867,7 @@
     "message": "FIDO2 WebAuthn"
   },
   "webAuthnDesc": {
-    "message": "Use any WebAuthn enabled security key to access your account."
+    "message": "Utilizați orice cheie de securitate activată WebAuthn pentru a vă accesa contul."
   },
   "emailTitle": {
     "message": "E-mail"
@@ -898,14 +914,26 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "Dacă este detectat un formular de autentificare, se efectuează automat o completare a acestuia la încărcarea paginii."
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "Automatic TOTP Copy after Page Load"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "If Auto-fill On Page Load is enabled, the TOTP verification code is automatically copied to your clipboard after loading the web page. This is overridden by Disable Automatic TOTP Copy."
-  },
   "experimentalFeature": {
     "message": "În acest moment, aceasta funcțiune este experimentală. O puteți folosi pe propria răspundere."
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "Setarea implicită de completare automată pentru articole de conectare"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "După activarea completării automate la încărcarea paginii, puteți activa sau dezactiva funcția pentru elementele de conectare individuale. Aceasta este setarea implicită pentru articolele de conectare care nu sunt configurate separat."
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "Completare automată la încărcarea paginii (dacă este activată în opțiuni)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "Utilizați setarea implicită"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "Completare automată la încărcarea paginii"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "Nu completați automat la încărcarea paginii"
   },
   "commandOpenPopup": {
     "message": "Deschidere seif pop-up"
@@ -962,10 +990,10 @@
     "message": "Iconurile saiturilor oferă o imagine identificabilă lângă fiecare element de conectare din seiful dvs."
   },
   "disableBadgeCounter": {
-    "message": "Disable Badge Counter"
+    "message": "Dezactivați contorul de insigne"
   },
   "disableBadgeCounterDesc": {
-    "message": "Badge counter indicates how many logins you have for the current page in your vault."
+    "message": "Contorul de insigne arată câte conectări aveți în seiful dvs. pentru pagina curentă."
   },
   "cardholderName": {
     "message": "Deținător card"
@@ -1666,7 +1694,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLinuxChromiumFileWarning": {
-    "message": "In order to choose a file, open the extension in the sidebar (if possible) or pop out to a new window by clicking this banner."
+    "message": "Pentru a alege un fișier, deschideți extensia în bara laterală (dacă este posibil) sau deschideți-o într-o fereastră nouă, făcând clic pe acest banner."
   },
   "sendFirefoxFileWarning": {
     "message": "Pentru a alege un fișier folosind Firefox, deschideți extensia din bara laterală sau deschideți o fereastră nouă făcând clic pe acest banner."
@@ -1705,18 +1733,24 @@
     "message": "A survenit o eroare la salvarea datelor de ștergere și de expirare."
   },
   "hideEmail": {
-    "message": "Hide my email address from recipients."
+    "message": "Ascundeți adresa mea de e-mail de la destinatari."
   },
   "sendOptionsPolicyInEffect": {
-    "message": "One or more organization policies are affecting your Send options."
+    "message": "Una sau mai multe politici organizaționale vă afectează opțiunile Send-ului."
   },
   "passwordPrompt": {
-    "message": "Master password re-prompt"
+    "message": "Re-solicitare parolă principală"
   },
   "passwordConfirmation": {
-    "message": "Master password confirmation"
+    "message": "Confirmare parolă principală"
   },
   "passwordConfirmationDesc": {
-    "message": "This action is protected. To continue, please re-enter your master password to verify your identity."
+    "message": "Această acțiune este protejată. Pentru a continua, vă rugăm să reintroduceți parola principală pentru a vă verifica identitatea."
+  },
+  "emailVerificationRequired": {
+    "message": "Este necesară verificarea adresei de e-mail"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "Trebuie să vă verificați e-mailul pentru a utiliza această caracteristică. Puteți verifica e-mailul în seiful web."
   }
 }

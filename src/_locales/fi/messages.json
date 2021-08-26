@@ -3,7 +3,7 @@
     "message": "Bitwarden"
   },
   "extName": {
-    "message": "Bitwarden",
+    "message": "Bitwarden – Ilmainen salasananhallinta",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
@@ -149,6 +149,9 @@
   },
   "save": {
     "message": "Tallenna"
+  },
+  "move": {
+    "message": "Siirrä"
   },
   "addFolder": {
     "message": "Lisää kansio"
@@ -628,23 +631,33 @@
   "shared": {
     "message": "Jaettu"
   },
-  "shareVault": {
-    "message": "Jaa holvisi"
+  "learnOrg": {
+    "message": "Lisätietoja organisaatioista"
   },
-  "shareVaultConfirmation": {
+  "learnOrgConfirmation": {
     "message": "Bitwardenin avulla voit jakaa holvisi sisältöä muiden kanssa organisaatiotiliä käyttäen. Haluatko lukea bitwarden.com-sivustolta lisää?"
   },
-  "shareItem": {
-    "message": "Jaa kohde"
+  "moveToOrganization": {
+    "message": "Siirrä organisaatioon"
   },
   "share": {
     "message": "Jaa"
   },
-  "sharedItem": {
-    "message": "Jaettu kohde"
+  "movedItemToOrg": {
+    "message": "$ITEMNAME$ siirrettiin organisaatioon $ORGNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "Valitse organisaatio, jonka kanssa haluat jakaa kohteen. Jako siirtää kohteen organisaation omistukseen, etkä tämän jälkeen ole enää sen suora omistaja."
+  "moveToOrgDesc": {
+    "message": "Valitse organisaatio, johon haluat siirtää kohteen. Tämä siirtää kohteen organisaation omistukseen, etkä tämän jälkeen ole enää sen suora omistaja."
   },
   "learnMore": {
     "message": "Lue lisää"
@@ -803,10 +816,13 @@
     "message": "Kytke todennuslaitteesi tietokoneen USB-porttiin. Jos laitteessa on painike, paina sitä."
   },
   "webAuthnNewTab": {
-    "message": "Jatka kaksivaiheisen kirjautumisen (2FA) WebAuthn-todennusta uudessa välilehdessä."
+    "message": "Aloittaaksesi kaksivaiheisen WebAuthn-todennuksen, seuraa alla olevasta painikkeesta uuteen välilehteen avautuvia ohjeita."
+  },
+  "webAuthnNewTabOpen": {
+    "message": "Avaa uusi välilehti"
   },
   "webAuthnAuthenticate": {
-    "message": "Todenna WebAuthn"
+    "message": "WebAuthn-todennus"
   },
   "loginUnavailable": {
     "message": "Kirjautuminen ei ole käytettävissä"
@@ -893,19 +909,31 @@
     "message": "Palvelinten URL-osoitteet tallennettiin."
   },
   "enableAutoFillOnPageLoad": {
-    "message": "Täytä automaattisesti sivun latautuessa"
+    "message": "Käytä automaattista täyttöä sivun latautuessa"
   },
   "enableAutoFillOnPageLoadDesc": {
     "message": "Jos sivulla havaitaan kirjautumislomake, täytetään kirjautumistiedot automaattisesti sivua ladattaessa."
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "Kopioi TOTP-todennuskoodit automaattisesti sivun latauduttua"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "Jos \"Täytä automaattisesti sivun latautuessa\" on käytössä, kopioidaan TOTP-todennuskoodi automaattisesti leikepöydälle sivun latauduttua. \"Älä kopioi TOTP-todennuskoodeja automaattisesti\" ohittaa tämän."
-  },
   "experimentalFeature": {
     "message": "Tämä on vielä kokeellinen toiminto. Käytä omalla vastuullasi."
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "Automaattisen täytön oletusasetus kirjautumistiedoille"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "Kun automaattinen täyttö sivun latautuessa on otettu käyttöön, voi toiminnon ottaa käyttöön tai poistaa käytöstä yksittäisille kirjautumistiedoille. Tämä on oletusarvo niille kirjautumistiedoille, joille asetusta ei erikseen ole määritetty."
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "Automaattinen täyttö sivun latautuessa (jos otettu asetuksista käyttöön)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "Käytä oletusasetusta"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "Täytä automaattisesti sivun latautuessa"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "Älä täytä automaattisesti sivun latautuessa"
   },
   "commandOpenPopup": {
     "message": "Avaa holvin ponnahdusikkuna"
@@ -962,10 +990,10 @@
     "message": "Kirjautumistietojen vieressä näytettävät sivustojen kuvakkeet helpottavat kohteiden tunnistusta."
   },
   "disableBadgeCounter": {
-    "message": "Älä näytä laskuria kuvakkeessa"
+    "message": "Älä näytä kuvakkeen laskuria"
   },
   "disableBadgeCounterDesc": {
-    "message": "Kuvakkeen laskuri näyttää nykyiselle sivulle sopivien kirjautumistietojen määrän holvissasi."
+    "message": "Kuvakkeen laskuri näyttää nykyiseen sivuun kohdistuvien kirjautumistietojen määrän holvissasi."
   },
   "cardholderName": {
     "message": "Kortinhaltijan nimi"
@@ -1581,14 +1609,14 @@
     "message": "Tiedosto, jonka haluat lähettää."
   },
   "deletionDate": {
-    "message": "Poistopäivä"
+    "message": "Poistoajankohta"
   },
   "deletionDateDesc": {
-    "message": "Send poistetaan pysyvästi määritettynä ajankohtana.",
+    "message": "Send poistuu pysyvästi määritettynä ajankohtana.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "expirationDate": {
-    "message": "Erääntymispäivä"
+    "message": "Erääntymisajankohta"
   },
   "expirationDateDesc": {
     "message": "Jos määritetty, Send erääntyy määritettynä ajankohtana.",
@@ -1690,19 +1718,19 @@
     "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'To use a calendar style date picker click here **to pop out your window.**'"
   },
   "expirationDateIsInvalid": {
-    "message": "Asetettu erääntymismispäivä on virheellinen."
+    "message": "Määritetty erääntymismisajankohta on virheellinen."
   },
   "deletionDateIsInvalid": {
-    "message": "Asetettu poistopäivä on virheellinen."
+    "message": "Määritetty poistoajankohta on virheellinen."
   },
   "expirationDateAndTimeRequired": {
-    "message": "Viimeinen voimassaolopäivä ja aika vaaditaan."
+    "message": "Erääntymispäivä ja -aika vaaditaan."
   },
   "deletionDateAndTimeRequired": {
     "message": "Poistopäivä ja -aika vaaditaan."
   },
   "dateParsingError": {
-    "message": "Tapahtui virhe tallennettaessa poisto- ja erääntymispäiviä."
+    "message": "Tapahtui virhe tallennettaessa poisto- ja erääntymisajankohtia."
   },
   "hideEmail": {
     "message": "Piilota sähköpostiosoitteeni vastaanottajilta."
@@ -1718,5 +1746,11 @@
   },
   "passwordConfirmationDesc": {
     "message": "Toiminto on suojattu. Jatkaaksesi, syötä pääsalasanasi uudelleen vahvistaaksesi henkilöllisyytesi."
+  },
+  "emailVerificationRequired": {
+    "message": "Sähköpostiosoitteen vahvistus vaaditaan"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "Sinun on vahvistettava sähköpostiosoitteesi käyttääksesi ominaisuutta. Voit vahvistaa osoitteesi verkkoholvissa."
   }
 }

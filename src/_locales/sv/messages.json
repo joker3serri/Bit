@@ -150,6 +150,9 @@
   "save": {
     "message": "Spara"
   },
+  "move": {
+    "message": "Flytta"
+  },
   "addFolder": {
     "message": "Skapa mapp"
   },
@@ -628,23 +631,33 @@
   "shared": {
     "message": "Delad"
   },
-  "shareVault": {
-    "message": "Dela ditt valv"
+  "learnOrg": {
+    "message": "Lär dig om organisationer"
   },
-  "shareVaultConfirmation": {
-    "message": "Bitwarden gör det möjligt för dig att dela ditt valv med andra genom att använda ett organisationskonto. Vill du besöka bitwarden.com för att lära dig mer?"
+  "learnOrgConfirmation": {
+    "message": "Bitwarden gör det möjligt för dig att objekt i valvet med andra genom att använda en organisation. Vill du besöka bitwarden.com för att lära dig mer?"
   },
-  "shareItem": {
-    "message": "Dela objekt"
+  "moveToOrganization": {
+    "message": "Flytta till organisation"
   },
   "share": {
     "message": "Dela"
   },
-  "sharedItem": {
-    "message": "Delat objekt"
+  "movedItemToOrg": {
+    "message": "$ITEMNAME$ flyttades till $ORGNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "Välj en organisation som du vill dela detta objekt med. Delning överför ägandet av objektet till organisationen. Du kommer inte längre att vara direkt ägare till detta objekt när det har delats."
+  "moveToOrgDesc": {
+    "message": "Välj en organisation som du vill flytta detta objektet till. Flytt till en organisation överför ägandet av objektet till den organisationen. Du kommer inte längre att vara direkt ägare till detta objekt när det har flyttats."
   },
   "learnMore": {
     "message": "Läs mer"
@@ -686,7 +699,7 @@
     "message": "Välj en fil."
   },
   "maxFileSize": {
-    "message": "Filen får vara maximalt 100 MB."
+    "message": "Filen får vara maximalt 500 MB."
   },
   "featureUnavailable": {
     "message": "Funktionen är inte tillgänglig"
@@ -803,10 +816,13 @@
     "message": "Sätt i din säkerhetsnyckel i en av datorns USB-portar. Om nyckeln har en knapp, sätt fingret på den."
   },
   "webAuthnNewTab": {
-    "message": "Continue the WebAuthn 2FA verification in the new tab."
+    "message": "För att påbörja verifieringen av WebAuthn 2FA. Klicka på knappen nedan för att öppna en ny flik och följ instruktionerna i den nya fliken."
+  },
+  "webAuthnNewTabOpen": {
+    "message": "Öppna ny flik"
   },
   "webAuthnAuthenticate": {
-    "message": "Authenticate WebAuthn"
+    "message": "Autentisera WebAuthn"
   },
   "loginUnavailable": {
     "message": "Inloggning inte tillgänglig"
@@ -851,7 +867,7 @@
     "message": "FIDO2 WebAuthn"
   },
   "webAuthnDesc": {
-    "message": "Use any WebAuthn enabled security key to access your account."
+    "message": "Använd en WebAuthn-aktiverad säkerhetsnyckel för att komma åt ditt konto."
   },
   "emailTitle": {
     "message": "E-post"
@@ -893,19 +909,31 @@
     "message": "Miljö-URL:er har sparats."
   },
   "enableAutoFillOnPageLoad": {
-    "message": "Aktivera automatisk ifyllnad när sidan laddas"
+    "message": "Aktivera automatisk ifyllnad vid sidhämtning"
   },
   "enableAutoFillOnPageLoadDesc": {
-    "message": "Utför automatisk ifyllnad om ett inloggningsformulär upptäcks när webbsidan läses in."
-  },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "Automatic TOTP Copy after Page Load"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "If Auto-fill On Page Load is enabled, the TOTP verification code is automatically copied to your clipboard after loading the web page. This is overridden by Disable Automatic TOTP Copy."
+    "message": "Utför automatisk ifyllnad om ett inloggningsformulär upptäcks när webbsidan laddas."
   },
   "experimentalFeature": {
     "message": "Detta är för närvarande en experimentell funktion. Använd på egen risk."
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "Standardinställning för autofyll för inloggningsobjekt"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "Efter att du har aktiverat automatisk ifyllnad vid sidhämtning kan du aktivera eller inaktivera funktionen för enskilda inloggningsobjekt. Detta är standardinställningen för inloggningsobjekt som inte är konfigurerade separat."
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "Automatisk ifyllning vid sidhämtning (om aktiverat i Alternativ)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "Använd standardinställningen"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "Fyll i automatiskt vid sidladdning"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "Fyll inte i automatiskt vid sidladdning"
   },
   "commandOpenPopup": {
     "message": "Öppna valvet i ett popupfönster"
@@ -962,10 +990,10 @@
     "message": "Webbplatsikoner ger en igenkännbar ikon bredvid varje inloggningsobjekt i ditt valv."
   },
   "disableBadgeCounter": {
-    "message": "Disable Badge Counter"
+    "message": "Inaktivera märkesräknare"
   },
   "disableBadgeCounterDesc": {
-    "message": "Badge counter indicates how many logins you have for the current page in your vault."
+    "message": "Märkesräknare visar hur många inloggningar du har för den aktuella sidan i ditt valv."
   },
   "cardholderName": {
     "message": "Kortinnehavarens namn"
@@ -1666,7 +1694,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLinuxChromiumFileWarning": {
-    "message": "In order to choose a file, open the extension in the sidebar (if possible) or pop out to a new window by clicking this banner."
+    "message": "För att välja en fil, öppna tillägget i sidofältet (om möjligt) eller skapa ett nytt fönster genom att klicka på denna banner."
   },
   "sendFirefoxFileWarning": {
     "message": "För att välja en fil med Firefox, öppna tillägget i sidofältet eller öppna ett nytt fönster genom att klicka på denna banner."
@@ -1705,18 +1733,24 @@
     "message": "Det gick inte att spara raderings- och utgångsdatum."
   },
   "hideEmail": {
-    "message": "Hide my email address from recipients."
+    "message": "Dölj min e-postadress för mottagare."
   },
   "sendOptionsPolicyInEffect": {
-    "message": "One or more organization policies are affecting your Send options."
+    "message": "En eller flera organisationsriktlinjer påverkar dina Send-inställningar."
   },
   "passwordPrompt": {
-    "message": "Master password re-prompt"
+    "message": "Återupprepa huvudlösenord"
   },
   "passwordConfirmation": {
-    "message": "Master password confirmation"
+    "message": "Bekräfta huvudlösenord"
   },
   "passwordConfirmationDesc": {
-    "message": "This action is protected. To continue, please re-enter your master password to verify your identity."
+    "message": "Denna åtgärd är skyddad. För att fortsätta, vänligen verifiera din identitet genom att ange ditt huvudlösenord."
+  },
+  "emailVerificationRequired": {
+    "message": "E-postverifiering krävs"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "Du måste verifiera din e-postadress för att använda den här funktionen. Du kan verifiera din e-postadress i webbvalvet."
   }
 }

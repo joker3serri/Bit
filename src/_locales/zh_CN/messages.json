@@ -53,7 +53,7 @@
     "message": "标签页"
   },
   "myVault": {
-    "message": "我的密码库"
+    "message": "密码库"
   },
   "tools": {
     "message": "工具"
@@ -149,6 +149,9 @@
   },
   "save": {
     "message": "保存"
+  },
+  "move": {
+    "message": "移动"
   },
   "addFolder": {
     "message": "添加文件夹"
@@ -628,23 +631,33 @@
   "shared": {
     "message": "已共享"
   },
-  "shareVault": {
-    "message": "共享你的密码库"
+  "learnOrg": {
+    "message": "了解组织"
   },
-  "shareVaultConfirmation": {
-    "message": "Bitwarden 允许您使用组织帐户与他人共享您的密码库。您想访问 bitwarden.com 网站以了解更多内容吗？"
+  "learnOrgConfirmation": {
+    "message": "Bitwarden 允许您使用组织与他人共享您的密码库项目。要访问 bitwarden.com 网站以了解更多内容吗？"
   },
-  "shareItem": {
-    "message": "共享项目"
+  "moveToOrganization": {
+    "message": "移动到组织"
   },
   "share": {
     "message": "共享"
   },
-  "sharedItem": {
-    "message": "项目已共享"
+  "movedItemToOrg": {
+    "message": "$ITEMNAME$ 已移动到 $ORGNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "选择您希望与之共享此项目的组织。共享操作将会把此项目的所有权转移到该组织。一旦共享，您将不再是此项目的直接所有者。"
+  "moveToOrgDesc": {
+    "message": "选择一个您想将此项目移至的组织。移动到组织会将该项目的所有权转让给该组织。移动后，您将不再是此项目的直接所有者。"
   },
   "learnMore": {
     "message": "进一步了解"
@@ -803,7 +816,10 @@
     "message": "将您的安全钥匙插入计算机的 USB 端口。如果它有一个按钮，按下它。"
   },
   "webAuthnNewTab": {
-    "message": "在新标签中继续 WebAuthn 2FA 身份验证。"
+    "message": "要开始 WebAuthn 2FA 验证，请点击下面的按钮打开一个新标签页，并按照新标签页中提供的说明操作。"
+  },
+  "webAuthnNewTabOpen": {
+    "message": "打开新标签页"
   },
   "webAuthnAuthenticate": {
     "message": "验证 WebAuthn"
@@ -898,14 +914,26 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "如果网页加载时检测到登录表单，自动进行自动填充。"
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "页面加载后自动复制 TOTP"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "如果启用了“页面加载时自动填充”，TOTP 验证码将在加载网页后自动复制到剪贴板。此设置会被“禁用自动 TOTP 复制” 覆盖。"
-  },
   "experimentalFeature": {
     "message": "目前这是一项实验功能。使用需自担风险。"
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "登录项目的默认自动填充设置"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "启用页面加载时自动填充后，您可以为单个登录项目启用或禁用此功能。这是未单独配置的登录项目的默认设置。"
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "页面加载时自动填充（如果选项中已启用）"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "使用默认设置"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "页面加载时自动填充"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "页面加载时不自动填充"
   },
   "commandOpenPopup": {
     "message": "在弹出框中打开密码库"
@@ -962,10 +990,10 @@
     "message": "在您密码库的每个登录项目旁边显示一个可识别的图标。"
   },
   "disableBadgeCounter": {
-    "message": "禁用徽章计数器"
+    "message": "禁用角标计数器"
   },
   "disableBadgeCounterDesc": {
-    "message": "徽章计数器表示您在密码库中的当前页面的登录次数。"
+    "message": "角标计数器表示您的密码库中可用于当前页面的登录的数量。"
   },
   "cardholderName": {
     "message": "持卡人姓名"
@@ -1705,18 +1733,24 @@
     "message": "保存您的删除和到期日期时出错。"
   },
   "hideEmail": {
-    "message": "从收件人中隐藏我的电子邮件地址。"
+    "message": "对收件人隐藏我的电子邮件地址。"
   },
   "sendOptionsPolicyInEffect": {
     "message": "一个或多个组织策略正在影响您的 Send 选项。"
   },
   "passwordPrompt": {
-    "message": "重新提示主密码"
+    "message": "重新询问主密码"
   },
   "passwordConfirmation": {
     "message": "确认主密码"
   },
   "passwordConfirmationDesc": {
     "message": "此操作受到保护。若要继续，请重新输入您的主密码以验证您的身份。"
+  },
+  "emailVerificationRequired": {
+    "message": "需要验证电子邮件地址"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "您必须验证电子邮件才能使用此功能。您可以在网页密码库中验证您的电子邮件。"
   }
 }

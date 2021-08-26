@@ -150,6 +150,9 @@
   "save": {
     "message": "Guardar"
   },
+  "move": {
+    "message": "Mover"
+  },
   "addFolder": {
     "message": "Añadir carpeta"
   },
@@ -628,23 +631,33 @@
   "shared": {
     "message": "Compartido"
   },
-  "shareVault": {
-    "message": "Comparte tu caja fuerte"
+  "learnOrg": {
+    "message": "Aprende sobre Organizaciones"
   },
-  "shareVaultConfirmation": {
-    "message": "Bitwarden te permite compartir tu caja fuerte con otras personas utilizando una cuenta de organización. ¿Quieres visitar la web bitwarden.com para conocer más?"
+  "learnOrgConfirmation": {
+    "message": "Bitwarden te permite compartir tus objetos de bóveda con otros usando una organización. ¿Quieres visitar el sitio web de bitwarden.com para saber más?"
   },
-  "shareItem": {
-    "message": "Compartir elemento"
+  "moveToOrganization": {
+    "message": "Mover a la Organización"
   },
   "share": {
     "message": "Compartir"
   },
-  "sharedItem": {
-    "message": "Elemento compartido"
+  "movedItemToOrg": {
+    "message": "$ITEMNAME$ se desplazó a $ORGNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "Elige una organización con la que quieras compartir este elemento. Compartir transfiere la propiedad del elemento a la organización. No podrás volver a ser el propietario de este elemento una vez haya sido compartido."
+  "moveToOrgDesc": {
+    "message": "Elige una organización a la que deseas mover este objeto. Moviendo a una organización transfiere la propiedad del objeto a esa organización. Ya no serás el dueño directo de este objeto una vez que haya sido movido."
   },
   "learnMore": {
     "message": "Más información"
@@ -686,7 +699,7 @@
     "message": "Selecciona un archivo."
   },
   "maxFileSize": {
-    "message": "El tamaño máximo de archivo es de 100MB."
+    "message": "El tamaño máximo de archivo es de 500MB."
   },
   "featureUnavailable": {
     "message": "Característica no disponible"
@@ -803,10 +816,13 @@
     "message": "Inserta tu llave de seguridad en el puerto USB de tu equipo. Si tiene un botón, púlsalo."
   },
   "webAuthnNewTab": {
-    "message": "Continue the WebAuthn 2FA verification in the new tab."
+    "message": "Para iniciar la verificación de WebAuthn 2FA. Haga clic en el botón de abajo para abrir una nueva pestaña y siga las instrucciones proporcionadas en la nueva pestaña."
+  },
+  "webAuthnNewTabOpen": {
+    "message": "Abrir nueva pestaña"
   },
   "webAuthnAuthenticate": {
-    "message": "Authenticate WebAuthn"
+    "message": "Autenticar WebAuthn"
   },
   "loginUnavailable": {
     "message": "Entrada no disponible"
@@ -851,7 +867,7 @@
     "message": "FIDO2 WebAuthn"
   },
   "webAuthnDesc": {
-    "message": "Use any WebAuthn enabled security key to access your account."
+    "message": "Utilice cualquier clave de seguridad WebAuthn habilitada para acceder a su cuenta."
   },
   "emailTitle": {
     "message": "Correo electrónico"
@@ -898,14 +914,26 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "Si se detecta un formulario, realizar automáticamente un autorellenado cuando la web cargue."
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "Automatic TOTP Copy after Page Load"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "If Auto-fill On Page Load is enabled, the TOTP verification code is automatically copied to your clipboard after loading the web page. This is overridden by Disable Automatic TOTP Copy."
-  },
   "experimentalFeature": {
     "message": "Esta es una característica experimental. Úsala bajo tu propio riesgo."
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "Configuración de autorrelleno por defecto para elementos de inicio de sesión"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "Después de activar el autorelleno en Carga de página, puede activar o desactivar la función para entradas individuales. Esta es la configuración predeterminada para elementos de inicio de sesión que no están configurados por separado."
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "Auto-relleno en carga de página (si está habilitado en opciones)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "Usar configuración predeterminada"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "Autocompletar al cargar la página"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "No rellenar automáticamente al cargar la página"
   },
   "commandOpenPopup": {
     "message": "Abrir ventana emergente de la caja fuerte"
@@ -962,10 +990,10 @@
     "message": "Los iconos del sitio web añaden una imagen reconocible al lado de cada entrada de tu caja fuerte."
   },
   "disableBadgeCounter": {
-    "message": "Disable Badge Counter"
+    "message": "Desactivar contador de insignias"
   },
   "disableBadgeCounterDesc": {
-    "message": "Badge counter indicates how many logins you have for the current page in your vault."
+    "message": "El contador de insinuaciones indica cuántos registros tienes para la página actual en tu bóveda."
   },
   "cardholderName": {
     "message": "Nombre en la tarjeta"
@@ -1629,7 +1657,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendShareDesc": {
-    "message": "Copy this Send's link to clipboard upon save.",
+    "message": "Copiar el enlace del Send en el portapapeles al guardar.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendTextDesc": {
@@ -1640,7 +1668,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "currentAccessCount": {
-    "message": "Current Access Count"
+    "message": "Número de acceso actual"
   },
   "createSend": {
     "message": "Crear Envío nuevo",
@@ -1654,7 +1682,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendDisabledWarning": {
-    "message": "Due to an enterprise policy, you are only able to delete an existing Send.",
+    "message": "Debido a una política empresarial, sólo puede eliminar el existente Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "createdSend": {
@@ -1666,19 +1694,19 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLinuxChromiumFileWarning": {
-    "message": "In order to choose a file, open the extension in the sidebar (if possible) or pop out to a new window by clicking this banner."
+    "message": "Para elegir un archivo, abra la extensión en la barra lateral (si es posible) o salga a una nueva ventana haciendo clic en este anouncio."
   },
   "sendFirefoxFileWarning": {
-    "message": "In order to choose a file using Firefox, open the extension in the sidebar or pop out to a new window by clicking this banner."
+    "message": "Para elegir un archivo usando Firefox, abra la extensión en la barra lateral o salga a una nueva ventana haciendo clic en este anouncio."
   },
   "sendSafariFileWarning": {
-    "message": "In order to choose a file using Safari, pop out to a new window by clicking this banner."
+    "message": "Para elegir un archivo usando Safari, salga a una nueva ventana haciendo clic en este anouncio."
   },
   "sendFileCalloutHeader": {
-    "message": "Before you start"
+    "message": "Antes de empezar"
   },
   "sendFirefoxCustomDatePopoutMessage1": {
-    "message": "To use a calendar style date picker",
+    "message": "Para usar un selector de fechas de estilo calendario",
     "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read '**To use a calendar style date picker ** click here to pop out your window.'"
   },
   "sendFirefoxCustomDatePopoutMessage2": {
@@ -1686,37 +1714,43 @@
     "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'To use a calendar style date picker **click here** to pop out your window.'"
   },
   "sendFirefoxCustomDatePopoutMessage3": {
-    "message": "to pop out your window.",
+    "message": "para abrir la ventana.",
     "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'To use a calendar style date picker click here **to pop out your window.**'"
   },
   "expirationDateIsInvalid": {
-    "message": "The expiration date provided is not valid."
+    "message": "La fecha de caducidad proporcionada no es válida."
   },
   "deletionDateIsInvalid": {
-    "message": "The deletion date provided is not valid."
+    "message": "La fecha de eliminación proporcionada no es válida."
   },
   "expirationDateAndTimeRequired": {
-    "message": "An expiration date and time are required."
+    "message": "Se requiere una fecha y hora de caducidad."
   },
   "deletionDateAndTimeRequired": {
-    "message": "A deletion date and time are required."
+    "message": "Se requiere una fecha y hora de eliminación."
   },
   "dateParsingError": {
-    "message": "There was an error saving your deletion and expiration dates."
+    "message": "Hubo un error al guardar las fechas de eliminación y caducidad."
   },
   "hideEmail": {
-    "message": "Hide my email address from recipients."
+    "message": "Ocultar mi dirección de correo electrónico a los destinatarios."
   },
   "sendOptionsPolicyInEffect": {
-    "message": "One or more organization policies are affecting your Send options."
+    "message": "Una o más políticas de organización están afectando sus opciones del Send."
   },
   "passwordPrompt": {
-    "message": "Master password re-prompt"
+    "message": "Volver a preguntar contraseña maestra"
   },
   "passwordConfirmation": {
-    "message": "Master password confirmation"
+    "message": "Confirmación de contraseña maestra"
   },
   "passwordConfirmationDesc": {
-    "message": "This action is protected. To continue, please re-enter your master password to verify your identity."
+    "message": "Esta acción está protegida. Para continuar, vuelva a introducir su contraseña maestra para verificar su identidad."
+  },
+  "emailVerificationRequired": {
+    "message": "Verificación de correo electrónico requerida"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "Debes verificar tu correo electrónico para usar esta función. Puedes verificar tu correo electrónico en la bóveda web."
   }
 }

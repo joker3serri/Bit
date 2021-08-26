@@ -150,6 +150,9 @@
   "save": {
     "message": "Gem"
   },
+  "move": {
+    "message": "Flyt"
+  },
   "addFolder": {
     "message": "Tilføj mappe"
   },
@@ -597,7 +600,7 @@
     "description": "Light color"
   },
   "solarizedDark": {
-    "message": "Solarized Mørk",
+    "message": "Solariseret mørk",
     "description": "'Solarized' is a noun and the name of a color scheme. It should not be translated."
   },
   "exportVault": {
@@ -628,23 +631,33 @@
   "shared": {
     "message": "Delt"
   },
-  "shareVault": {
-    "message": "Del din boks"
+  "learnOrg": {
+    "message": "Få mere at vide om organisationer"
   },
-  "shareVaultConfirmation": {
-    "message": "Bitwarden giver dig mulighed for at dele din boks med andre ved at bruge en organisationskonto. Vil du besøge webstedet bitwarden.com for at få mere information?"
+  "learnOrgConfirmation": {
+    "message": "Bitwarden giver dig mulighed for at dele elementer i din boks med andre ved hjælp af en organisation. Vil du besøge bitwarden.com-webstedet for at få mere at vide?"
   },
-  "shareItem": {
-    "message": "Del element"
+  "moveToOrganization": {
+    "message": "Flyt til organisation"
   },
   "share": {
     "message": "Del"
   },
-  "sharedItem": {
-    "message": "Delte element"
+  "movedItemToOrg": {
+    "message": "$ITEMNAME$ flyttet til $ORGNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "Vælg en organisation, som du ønsker at dele dette element med. Deling overfører ejerskab af elementet til organisationen. Du vil ikke længere være den direkte ejer af dette element, når det er blevet delt."
+  "moveToOrgDesc": {
+    "message": "Vælg den organisation, som du vil flytte dette emne til. Flytning overfører ejerskab af emnet til organisationen, og du vil efter flytningen ikke længere være den direkte ejer af emnet."
   },
   "learnMore": {
     "message": "Lær mere"
@@ -686,7 +699,7 @@
     "message": "Vælg en fil."
   },
   "maxFileSize": {
-    "message": "Maksimum filstørrelse er 100 MB."
+    "message": "Maksimum filstørrelse er 500 MB."
   },
   "featureUnavailable": {
     "message": "Funktion ikke tilgængelig"
@@ -803,10 +816,13 @@
     "message": "Indsæt din sikkerhedsnøgle i din computers USB-port. Hvis den har en knap, tryk på den."
   },
   "webAuthnNewTab": {
-    "message": "Continue the WebAuthn 2FA verification in the new tab."
+    "message": "For at starte WebAuthn 2FA-verifikationen. Klik på knappen nedenfor for at åbne en ny fane og følg instruktionerne i den nye fane."
+  },
+  "webAuthnNewTabOpen": {
+    "message": "Åbn ny fane"
   },
   "webAuthnAuthenticate": {
-    "message": "Authenticate WebAuthn"
+    "message": "Godkend WebAuthn"
   },
   "loginUnavailable": {
     "message": "Login ikke tilgængelig"
@@ -851,7 +867,7 @@
     "message": "FIDO2 WebAuthn"
   },
   "webAuthnDesc": {
-    "message": "Use any WebAuthn enabled security key to access your account."
+    "message": "Brug en hvilken som helst WebAuthn-aktiveret sikkerhedsnøgle til at få adgang til din konto."
   },
   "emailTitle": {
     "message": "E-mail"
@@ -898,14 +914,26 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "Hvis en login-formular er opdaget, så udfør automatisk en auto-udfyld når hjemmesiden indlæses."
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "Automatic TOTP Copy after Page Load"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "If Auto-fill On Page Load is enabled, the TOTP verification code is automatically copied to your clipboard after loading the web page. This is overridden by Disable Automatic TOTP Copy."
-  },
   "experimentalFeature": {
     "message": "Dette er i øjeblikket en eksperimentel funktion. Brug på egen risiko."
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "Standardindstilling for autofyld for loginelementer"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "Når du har aktiveret auto-udfyldning ved sideindlæsning, kan du aktivere eller deaktivere funktionen for individuelle loginelementer. Dette er standardindstillingen for loginelementer, der ikke er konfigureret separat."
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "Auto-udfyld ved sideindlæsning (hvis aktiveret i Indstillinger)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "Anvend standardindstilling"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "Auto-udfyld ved sideindlæsning"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "Auto-udfyld ikke ved sideindlæsning"
   },
   "commandOpenPopup": {
     "message": "Åbn boks popup"
@@ -962,10 +990,10 @@
     "message": "Webikoner vises som et genkendeligt billede ved siden af hvert loginelement i din boks."
   },
   "disableBadgeCounter": {
-    "message": "Disable Badge Counter"
+    "message": "Deaktivér Badge-tæller"
   },
   "disableBadgeCounterDesc": {
-    "message": "Badge counter indicates how many logins you have for the current page in your vault."
+    "message": "Badge-tæller angiver, hvor mange logins du har for den aktuelle side i din boks."
   },
   "cardholderName": {
     "message": "Kortindehaverens navn"
@@ -1666,7 +1694,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLinuxChromiumFileWarning": {
-    "message": "In order to choose a file, open the extension in the sidebar (if possible) or pop out to a new window by clicking this banner."
+    "message": "For at vælge en fil, åben udvidelsen i sidepanelet (om muligt) eller pop ud til et nyt vindue ved at klikke på dette banner."
   },
   "sendFirefoxFileWarning": {
     "message": "For at vælge en fil i Firefox skal du flytte udvidelsen til sidepanelet eller åbne i et nyt vindue ved at klikke på dette banner."
@@ -1705,18 +1733,24 @@
     "message": "Der opstod en fejl under forsøget på at gemme dine sletnings- og udløbsdatoer."
   },
   "hideEmail": {
-    "message": "Skjul på e-mailadresse fra modtagere."
+    "message": "Skjul min e-mailadresse for modtagere."
   },
   "sendOptionsPolicyInEffect": {
-    "message": "One or more organization policies are affecting your Send options."
+    "message": "Én eller flere organisationspolitikker påvirker dine Send-valgmuligheder."
   },
   "passwordPrompt": {
-    "message": "Master password re-prompt"
+    "message": "Genanmodning om hovedadgangskode"
   },
   "passwordConfirmation": {
-    "message": "Master password confirmation"
+    "message": "Bekræftelse af hovedadgangskode"
   },
   "passwordConfirmationDesc": {
-    "message": "This action is protected. To continue, please re-enter your master password to verify your identity."
+    "message": "Denne handling er beskyttet. For at fortsætte, indtast venligst din hovedadgangskode igen for at bekræfte din identitet."
+  },
+  "emailVerificationRequired": {
+    "message": "E-mailbekræftelse kræves"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "Du skal bekræfte din e-mail for at bruge denne funktion. Du kan bekræfte din e-mail i web-boksen."
   }
 }

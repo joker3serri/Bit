@@ -150,6 +150,9 @@
   "save": {
     "message": "Mentés"
   },
+  "move": {
+    "message": "Áthelyezés"
+  },
   "addFolder": {
     "message": "Mappa hozzáadása"
   },
@@ -628,23 +631,33 @@
   "shared": {
     "message": "Megosztott"
   },
-  "shareVault": {
-    "message": "Széf megosztása"
+  "learnOrg": {
+    "message": "Információ szervezetekről"
   },
-  "shareVaultConfirmation": {
-    "message": "A Bitwarden lehetővé teszi egy szervezeti fiók használatával a fiók megosztását másokkal. Szeretnénk felkeresni a bitwarden.com webhelyet további információért?"
+  "learnOrgConfirmation": {
+    "message": "A Bitwarden lehetővé teszi a tároló elemeinek megosztását másokkal egy szervezet használatával. Szeretnénk ellátogatni a bitwarden.com webhelyre további információkét?"
   },
-  "shareItem": {
-    "message": "Elem megosztása"
+  "moveToOrganization": {
+    "message": "Áthelyezés szervezethez"
   },
   "share": {
     "message": "Megosztás"
   },
-  "sharedItem": {
-    "message": "Az elem megosztásra került."
+  "movedItemToOrg": {
+    "message": "$ITEMNAME$ átkerült $ORGNAME$ szervezethez",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "Szervezet választása az elem megosztásához. Az elemtulajdon átadása a szervezetnek. Innentől nem közvetlen tulajdonosa leszünk az elemnek a megosztás után."
+  "moveToOrgDesc": {
+    "message": "Válasszunk egy szervezetet, ahová áthelyezni szeretnénk ezt az elemet. A szervezetbe áthelyezés átruházza az elem tulajdonjogát az adott szervezetre. Az áthelyezés után többé nem leszünk az elem közvetlen tulajdonosa."
   },
   "learnMore": {
     "message": "Tudjon meg többet"
@@ -686,7 +699,7 @@
     "message": "Válassz ki egy fájlt."
   },
   "maxFileSize": {
-    "message": "A naximális fájl méret 100 MB."
+    "message": "A naximális fájl méret 500 MB."
   },
   "featureUnavailable": {
     "message": "Ez a funkció nem érhető el."
@@ -805,6 +818,9 @@
   "webAuthnNewTab": {
     "message": "A WebAuthn 2FA ellenőrzés folytatása az új fülön."
   },
+  "webAuthnNewTabOpen": {
+    "message": "Új fül megnyitása"
+  },
   "webAuthnAuthenticate": {
     "message": "WebAutn hitelesítés"
   },
@@ -898,14 +914,26 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "Ha egy bejelentkezési űrlap észlelésre került, automatikusan töltse ki az adatokat az oldal betöltésekor."
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "Automatikus TOTP másolat az oldal betöltés után"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "Ha az Automatikus kitöltés az oldalbetöltés funkció engedélyezve van, a weboldal betöltése után a TOTP ellenőrző kód automatikusan a vágólapra kerül. Ezt felülírja az Automatikus TOTP másolat letiltása."
-  },
   "experimentalFeature": {
     "message": "Ez jelenleg egy kísérleti funkció. Csak saját felelősségedre használd."
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "Alapértelmezett beállítások bejelentkezési elemekhez"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "Az Automatikus kitöltés engedélyezése az oldalbetöltéskor engedélyezheti vagy letilthatja a funkciót az egyes bejelentkezési elemeknél. Ez az alapértelmezett beállítás a bejelentkezési elemeknéll, amelyek nincsenek külön konfigurálva."
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "Automatikus kitöltés oldal betöltésnél (Ha engedélyezett az opcióknál)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "Alapbeállítások használata"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "Automatikus kitöltés oldalbetöltésnél"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "Nincs automatikus kitöltés oldalbetöltéskor"
   },
   "commandOpenPopup": {
     "message": "Széf megnyitása ablakban"
@@ -1718,5 +1746,11 @@
   },
   "passwordConfirmationDesc": {
     "message": "Ez a művelet védett. A folytatásért ismételten meg kell adni a mesterjelszőt az személyazonosság ellenőrzéséhez."
+  },
+  "emailVerificationRequired": {
+    "message": "Email hitelesítés szükséges"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "A funkció használatához igazolni kell email címet. Az email cím a webtárban ellenőrizhető."
   }
 }

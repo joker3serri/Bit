@@ -150,6 +150,9 @@
   "save": {
     "message": "儲存"
   },
+  "move": {
+    "message": "移動"
+  },
   "addFolder": {
     "message": "新增資料夾"
   },
@@ -628,23 +631,33 @@
   "shared": {
     "message": "已共用"
   },
-  "shareVault": {
-    "message": "共用您的密碼庫"
+  "learnOrg": {
+    "message": "瞭解組織"
   },
-  "shareVaultConfirmation": {
-    "message": "Bitwarden 允許您使用組織帳戶與他人共用您的密碼庫。您想造訪 bitwarden.com 網站以了解更多內容嗎？"
+  "learnOrgConfirmation": {
+    "message": "Bitwarden 允許您使用組織與他人分享您的密碼庫項目。您想造訪 bitwarden.com 網站以了解更多內容詳情嗎？"
   },
-  "shareItem": {
-    "message": "共用項目"
+  "moveToOrganization": {
+    "message": "移動至組織 "
   },
   "share": {
     "message": "共用"
   },
-  "sharedItem": {
-    "message": "項目已共用"
+  "movedItemToOrg": {
+    "message": "已將 $ITEMNAME$ 移動至 $ORGNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "選擇您希望共用這個項目的組織。項目的擁有權將會轉移到組織。一經共用，您將不再是此項目的直接擁有者。"
+  "moveToOrgDesc": {
+    "message": "選擇您希望將這個項目移動到哪個組織。項目的擁有權將會轉移到該組織。一經移動，您將不再是此項目的直接擁有者。"
   },
   "learnMore": {
     "message": "了解更多"
@@ -803,7 +816,10 @@
     "message": "將您的安全金鑰插入電腦的 USB 連接埠，然後按一下它的按鈕（如有的話）。"
   },
   "webAuthnNewTab": {
-    "message": "在新的分頁中繼續 WebAuthn 2FA 驗證。"
+    "message": "要開始 WebAuthn 2FA 驗證，請點擊下面的按鈕打開一個新的分頁，並按照新分頁中提供的說明操作。"
+  },
+  "webAuthnNewTabOpen": {
+    "message": "開啟新分頁"
   },
   "webAuthnAuthenticate": {
     "message": "驗證 WebAuthn"
@@ -851,7 +867,7 @@
     "message": "FIDO2 WebAuthn"
   },
   "webAuthnDesc": {
-    "message": "使用任何具有 WebAuthn 功能的安全鑰匙來存取您的帳戶。"
+    "message": "使用任何具有 WebAuthn 功能的安全金鑰來存取您的帳戶。"
   },
   "emailTitle": {
     "message": "電子郵件"
@@ -898,14 +914,26 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "如果網頁載入時偵測到登入表單，則自動執行表單填入。"
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "頁面載入后自動複製 TOTP"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "如果啓用了“頁面載入時自動填入”，TOTP 驗證碼將在載入網頁后自動複製到剪貼簿。此設置會被“停用自動 TOTP 複製” 覆寫。"
-  },
   "experimentalFeature": {
     "message": "目前這是一項實驗性功能。要使用需自行承擔風險。"
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "登入項目的預設自動填入設定"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "頁面載入時自動填入啟用後，你可以給個別登入項目啟用或停用這個功能。這是未單獨配置的登入項目的預設設定。"
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "頁面載入時自動填入 (如果選項中已啟用)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "使用預設設定"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "頁面載入時自動填入"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "不要在頁面載入時自動填入"
   },
   "commandOpenPopup": {
     "message": "在彈出式視窗中開啟密碼庫"
@@ -962,10 +990,10 @@
     "message": "在您密碼庫的每個登入資料旁顯示一個可辨識的圖示。"
   },
   "disableBadgeCounter": {
-    "message": "停用徽章計數器"
+    "message": "停用角標計數器"
   },
   "disableBadgeCounterDesc": {
-    "message": "徽章計數器指示您在密码库中當前頁面的登入次數。"
+    "message": "角標計數器表示您的密碼庫中可用於當前頁面的登入資料的數量。"
   },
   "cardholderName": {
     "message": "持卡人姓名"
@@ -1705,18 +1733,24 @@
     "message": "儲存刪除日期和逾期日期時發生錯誤。"
   },
   "hideEmail": {
-    "message": "對收件人隱藏我的電子郵件地址。"
+    "message": "對收件人隱藏我的電子郵件位址。"
   },
   "sendOptionsPolicyInEffect": {
     "message": "一個或多個組織原则正影響您的 Send 選項。"
   },
   "passwordPrompt": {
-    "message": "重新提示主密碼"
+    "message": "重新詢問主密碼"
   },
   "passwordConfirmation": {
     "message": "確認主密碼"
   },
   "passwordConfirmationDesc": {
     "message": "此操作受到保護。若要繼續，請重新輸入您的主密碼以驗證您的身份。"
+  },
+  "emailVerificationRequired": {
+    "message": "需要驗證電子郵件"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "您必須驗證您的電子郵件才能使用此功能。 您可以在網頁密碼庫裡驗證您的電子郵件。"
   }
 }

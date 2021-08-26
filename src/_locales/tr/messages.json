@@ -47,7 +47,7 @@
     "message": "Ana parolayı tekrar yazın"
   },
   "masterPassHint": {
-    "message": "Ana parola ipucu (isteğe bağlı)"
+    "message": "Ana Parola İpucu (isteğe bağlı)"
   },
   "tab": {
     "message": "Sekme"
@@ -71,7 +71,7 @@
     "message": "Notu kopyala"
   },
   "copyUri": {
-    "message": "URI'yi kopyala"
+    "message": "Linki Kopyala"
   },
   "copyUsername": {
     "message": "Kullanıcı adını kopyala"
@@ -92,7 +92,7 @@
     "message": "Eşleşen hesap yok."
   },
   "vaultLocked": {
-    "message": "Kasa kilitlendi."
+    "message": "Kasa kilitli."
   },
   "vaultLoggedOut": {
     "message": "Kasadan çıkış yaptınız."
@@ -149,6 +149,9 @@
   },
   "save": {
     "message": "Kaydet"
+  },
+  "move": {
+    "message": "Taşı"
   },
   "addFolder": {
     "message": "Klasör ekle"
@@ -628,23 +631,33 @@
   "shared": {
     "message": "Paylaşılan"
   },
-  "shareVault": {
-    "message": "Kasamı paylaş"
+  "learnOrg": {
+    "message": "Kuruluşlar hakkında bilgi al"
   },
-  "shareVaultConfirmation": {
-    "message": "Bitwarden, kuruluş hesabı kullanarak kasanızı başkalarıyla paylaşmanıza olanak verir. Daha fazla bilgi için bitwarden.com sitesini ziyaret etmek ister misiniz?"
+  "learnOrgConfirmation": {
+    "message": "Bitwarden'ın kuruluş özelliğini kullanarak kasanızdaki kayıtları başkalarıyla paylaşabilirsiniz. Daha fazla bilgi için bitwarden.com sitesini ziyaret etmek ister misiniz?"
   },
-  "shareItem": {
-    "message": "Kaydı paylaş"
+  "moveToOrganization": {
+    "message": "Kuruluşa taşı"
   },
   "share": {
     "message": "Paylaş"
   },
-  "sharedItem": {
-    "message": "Kayıt paylaşıldı"
+  "movedItemToOrg": {
+    "message": "$ITEMNAME$ $ORGNAME$ kuruluşuna taşındı",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "Bu kaydı paylaşmak istediğiniz kuruluşu seçin. Paylaştığınız kaydın sahipliği seçtiğiniz kuruluşa aktarılacak. Artık bu kaydın doğrudan sahibi olmayacaksınız."
+  "moveToOrgDesc": {
+    "message": "Bu kaydı taşımak istediğiniz kuruluşu seçin. Taşıdığınız kaydın sahipliği seçtiğiniz kuruluşa aktarılacak. Artık bu kaydın doğrudan sahibi olmayacaksınız."
   },
   "learnMore": {
     "message": "Daha fazla bilgi al"
@@ -803,7 +816,10 @@
     "message": "Güvenlik anahtarınızı bilgisayarınızın USB portuna takın. Düğmesi varsa dokunun."
   },
   "webAuthnNewTab": {
-    "message": "WebAuthn 2FA doğrulamasına yeni sekmede devam edin."
+    "message": "WebAuthn iki aşamalı doğrulamayı başlatmak için aşağıdaki düğmeye tıklayın ve açılan sekmedeki yönergeleri takip edin."
+  },
+  "webAuthnNewTabOpen": {
+    "message": "Yeni sekme aç"
   },
   "webAuthnAuthenticate": {
     "message": "WebAutn ile doğrula"
@@ -898,14 +914,26 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "Sayfa yüklendiğinde giriş formu tespit edilirse otomatik olarak formu doldur."
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "Sayfa yüklendikten sonra TOTP'yi otomatik kopyala"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "\"TOTP'yi otomatik kopyala\" açıksa web sayfası yüklendikten sonra TOTP doğrulama kodu otomatik olarak panoya kopyalanır. \"Otomatik TOTP kopyalamayı kapat\" ayarı bu ayarı devre dışı bırakır."
-  },
   "experimentalFeature": {
     "message": "Bu şu anda deneysel bir özelliktir. Kullanımı sizin sorumluluğunuzdadır."
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "Hesaplar için varsayılan otomatik doldurma ayarı"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "\"Sayfa yüklendiğinde otomatik doldur\"u açtıktan sonra her hesap için bu özelliği ayrı ayrı açıp kapatabilirsiniz. Bu ayar, özellikle ayarlama yapmadığınız hesaplarda kullanılacak varsayılan ayardır."
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "Sayfa yüklendiğinde otomatik doldur (seçeneklerde etkinleştirilmişse)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "Varsayılan ayarı kullan"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "Sayfa yüklendiğinde otomatik doldur"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "Sayfa yüklendiğinde otomatik doldurma"
   },
   "commandOpenPopup": {
     "message": "Kasayı açılır pencerede aç"
@@ -1711,12 +1739,18 @@
     "message": "Bir veya daha fazla kuruluş ilkesi Send seçeneklerinizi etkiliyor."
   },
   "passwordPrompt": {
-    "message": "Ana parola yeniden isteği"
+    "message": "Ana parolayı yeniden iste"
   },
   "passwordConfirmation": {
     "message": "Ana parola onayı"
   },
   "passwordConfirmationDesc": {
-    "message": "Bu işleme devam etmek için lütfen ana parolanızı yeniden girin."
+    "message": "Bu işlem korumalıdır. İşleme devam etmek için lütfen ana parolanızı yeniden girin."
+  },
+  "emailVerificationRequired": {
+    "message": "E-posta doğrulaması gerekiyor"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "Bu özelliği kullanmak için e-postanızı doğrulamanız gerekir. E-postanızı web kasasında doğrulayabilirsiniz."
   }
 }

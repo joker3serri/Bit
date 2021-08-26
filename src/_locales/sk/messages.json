@@ -150,6 +150,9 @@
   "save": {
     "message": "Uložiť"
   },
+  "move": {
+    "message": "Presunúť"
+  },
   "addFolder": {
     "message": "Pridať priečinok"
   },
@@ -628,23 +631,33 @@
   "shared": {
     "message": "Zdieľané"
   },
-  "shareVault": {
-    "message": "Zdieľať trezor"
+  "learnOrg": {
+    "message": "Zistiť viac o organizáciách"
   },
-  "shareVaultConfirmation": {
-    "message": "Bitwarden vám umožňuje zdieľať váš trezor s ostatnými použitím konta v organizácii. Chcete navštíviť stránku bitwarden.com a dozvedieť sa viac?"
+  "learnOrgConfirmation": {
+    "message": "Bitwarden vám umožňuje zdieľať vaše položky trezora s ostatnými pomocou organizácie. Chcete navštíviť webovú stránku bitwarden.com a dozvedieť sa viac?"
   },
-  "shareItem": {
-    "message": "Zdieľať položku"
+  "moveToOrganization": {
+    "message": "Presunúť do organizácie"
   },
   "share": {
     "message": "Zdieľať"
   },
-  "sharedItem": {
-    "message": "Položka zdieľaná"
+  "movedItemToOrg": {
+    "message": "$ITEMNAME$ presunuté do $ORGNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "Vyberte organizáciu s ktorou chcete zdieľať túto položku. Zdieľanie presunie vlastníctvo položky na organizáciu. Po zdieľaní už nebudete priamy vlastník položky."
+  "moveToOrgDesc": {
+    "message": "Vyberte organizáciu, do ktorej chcete presunúť túto položku. Presunom do organizácie sa vlastníctvo položky prenáša na túto organizáciu. Po presunutí už nebudete priamym vlastníkom danej položky."
   },
   "learnMore": {
     "message": "Zistiť viac"
@@ -686,7 +699,7 @@
     "message": "Vybrať súbor."
   },
   "maxFileSize": {
-    "message": "Maximálna veľkosť súboru je 100 MB."
+    "message": "Maximálna veľkosť súboru je 500 MB."
   },
   "featureUnavailable": {
     "message": "Funkcia nie je k dispozícii"
@@ -805,8 +818,11 @@
   "webAuthnNewTab": {
     "message": "V overovaní cez WebAuthn 2FA pokračujte na ďalšej záložke."
   },
+  "webAuthnNewTabOpen": {
+    "message": "Otvoriť v novej karte"
+  },
   "webAuthnAuthenticate": {
-    "message": "Overiť cez WebAuth"
+    "message": "Overiť cez WebAuthn"
   },
   "loginUnavailable": {
     "message": "Prihlasovací údaj nedostupný"
@@ -848,10 +864,10 @@
     "description": "'Duo Security' and 'Duo Mobile' are product names and should not be translated."
   },
   "webAuthnTitle": {
-    "message": "FIDO2 WebAuth"
+    "message": "FIDO2 WebAuthn"
   },
   "webAuthnDesc": {
-    "message": "Použiť akýkoľvek WebAuth bezpečnostný kľúč pre prístup k vášmu účtu."
+    "message": "Použiť akýkoľvek WebAuthn bezpečnostný kľúč pre prístup k vášmu účtu."
   },
   "emailTitle": {
     "message": "Email"
@@ -898,14 +914,26 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "Ak je prihlasovací formulár detegovaný, automaticky vykonať vypĺňanie pri načítaní stránky."
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "Automaticky skopírovať TOTP kód po načítaní stránky"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "If Auto-fill On Page Load is enabled, the TOTP verification code is automatically copied to your clipboard after loading the web page. This is overridden by Disable Automatic TOTP Copy."
-  },
   "experimentalFeature": {
     "message": "Toto je zatiaľ experimentálna funkcia. Použite na vlastné riziko."
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "Predvolené nastavenie automatického vypĺňania pre prihlasovacie položky"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "Po zapnutí funkcie Automatické vypĺňanie pri načítaní stránky môžete túto funkciu zapnúť alebo vypnúť pre jednotlivé položky prihlásenia. Toto je predvolené nastavenie pre prihlasovacie položky, ktoré nie sú samostatne nakonfigurované."
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "Automatické vypĺňanie pri načítaní stránky (ak je povolené v možnostiach)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "Pôvodné nastavenia"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "Automatické vypĺňanie pri načítaní stránky"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "Nevypĺňať automaticky pri načítaní stránky"
   },
   "commandOpenPopup": {
     "message": "Otvoriť vyskakovacie okno trezora"
@@ -962,10 +990,10 @@
     "message": "Ikony stránok poskytujú rozoznateľný obrázok vedľa každého prihlasovacieho údaju vo webovom trezore."
   },
   "disableBadgeCounter": {
-    "message": "Disable Badge Counter"
+    "message": "Zakázať počítadlo na ikone"
   },
   "disableBadgeCounterDesc": {
-    "message": "Badge counter indicates how many logins you have for the current page in your vault."
+    "message": "Zakáže počítadlo na ikone, ktoré zobrazuje počet prihlasovacích údajov v trezore pre aktuálnu stránku."
   },
   "cardholderName": {
     "message": "Meno vlastníka karty"
@@ -1666,10 +1694,10 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLinuxChromiumFileWarning": {
-    "message": "In order to choose a file, open the extension in the sidebar (if possible) or pop out to a new window by clicking this banner."
+    "message": "Ak chcete zvoliť súbor, otvorte rozšírenie v bočnom paneli (ak je to možné) alebo kliknite do tohto okna kliknutím na tento banner."
   },
   "sendFirefoxFileWarning": {
-    "message": "Ak chcete zvoliť súbor pomocou prehliadača Firefox, otvorte príponu v bočnom paneli alebo kliknite do tohto okna kliknutím na tento banner."
+    "message": "Ak chcete zvoliť súbor pomocou prehliadača Firefox, otvorte rozšírenie v bočnom paneli alebo kliknite do tohto okna kliknutím na tento banner."
   },
   "sendSafariFileWarning": {
     "message": "Ak chcete zvoliť súbor pomocou Safari, kliknite na tento banner a otvorte nové okno."
@@ -1705,18 +1733,24 @@
     "message": "Pri ukladaní dátumov odstránenia a vypršania platnosti sa vyskytla chyba."
   },
   "hideEmail": {
-    "message": "Hide my email address from recipients."
+    "message": "Skryť moju emailovú adresu pred príjemcami."
   },
   "sendOptionsPolicyInEffect": {
-    "message": "One or more organization policies are affecting your Send options."
+    "message": "Jedno alebo viac pravidiel organizácie ovplyvňujú vaše možnosti funkcie Send."
   },
   "passwordPrompt": {
-    "message": "Master password re-prompt"
+    "message": "Znova zadajte hlavné heslo"
   },
   "passwordConfirmation": {
-    "message": "Master password confirmation"
+    "message": "Potvrdenie hlavného hesla"
   },
   "passwordConfirmationDesc": {
-    "message": "This action is protected. To continue, please re-enter your master password to verify your identity."
+    "message": "Táto akcia je chránená. Ak chcete pokračovať, znova zadajte hlavné heslo a overte svoju totožnosť."
+  },
+  "emailVerificationRequired": {
+    "message": "Vyžaduje sa overenie e-mailu"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "Na použitie tejto funkcie musíte overiť svoj e-mail. Svoj e-mail môžete overiť vo webovom trezore."
   }
 }

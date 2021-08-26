@@ -150,6 +150,9 @@
   "save": {
     "message": "Saglabāt"
   },
+  "move": {
+    "message": "Pārvietot"
+  },
   "addFolder": {
     "message": "Pievienot mapi"
   },
@@ -628,23 +631,33 @@
   "shared": {
     "message": "Kopīgots"
   },
-  "shareVault": {
-    "message": "Kopīgot glabātavu"
+  "learnOrg": {
+    "message": "Uzzināt par apvienībām"
   },
-  "shareVaultConfirmation": {
-    "message": "Bitwarden nodrošina iespēju kopīgot glabātavu ar citiem, kad tiek izmantots apvienības konts. Vai apmeklēt bitwarden.com tīmekļa vietni, lai uzzinātu vairāk?"
+  "learnOrgConfirmation": {
+    "message": "Bitwarden nodrošina iespēju kopīgot glabātavas vienumus ar citiem, kad tiek izmantota apvienība. Vai apmeklēt bitwarden.com tīmekļa vietni, lai uzzinātu vairāk?"
   },
-  "shareItem": {
-    "message": "Kopīgot vienumu"
+  "moveToOrganization": {
+    "message": "Pārvietot uz apvienību"
   },
   "share": {
     "message": "Kopīgot"
   },
-  "sharedItem": {
-    "message": "Vienums kopīgots"
+  "movedItemToOrg": {
+    "message": "$ITEMNAME$ pārvietots uz $ORGNAME$",
+    "placeholders": {
+      "itemname": {
+        "content": "$1",
+        "example": "Secret Item"
+      },
+      "orgname": {
+        "content": "$2",
+        "example": "Company Name"
+      }
+    }
   },
-  "shareDesc": {
-    "message": "Izvēlies apvienību, ar kuru kopīgot šo vienumu. Koplietošana nodod šī vienuma piederību apvienībai. Pēc tā kopīgošanas Tu vairs nebūsi šī vienuma tiešais īpašnieks."
+  "moveToOrgDesc": {
+    "message": "Izvēlies apvienību, uz kuru pārvietot šo vienumu. Pārvietošana nodod šī vienuma piederību apvienībai. Tu vairs nebūsi šī vienuma tiešais īpašnieks pēc tā pārvietošanas."
   },
   "learnMore": {
     "message": "Uzzināt vairāk"
@@ -686,7 +699,7 @@
     "message": "Atlasīt datni."
   },
   "maxFileSize": {
-    "message": "Lielākais pieļaujamais datnes izmērs ir 100 MB."
+    "message": "Lielākais pieļaujamais datnes izmērs ir 500 MB."
   },
   "featureUnavailable": {
     "message": "Iespēja nav pieejama"
@@ -805,6 +818,9 @@
   "webAuthnNewTab": {
     "message": "Turpināt WebAuthn 2FA apstiprināšanu jaunā cilnē."
   },
+  "webAuthnNewTabOpen": {
+    "message": "Atvērt jaunu cilni"
+  },
   "webAuthnAuthenticate": {
     "message": "Autentificēt WebAuthn"
   },
@@ -898,14 +914,26 @@
   "enableAutoFillOnPageLoadDesc": {
     "message": "Ja tiek noteikta pieslēgšanās veidne, tā tiks aizpildīta lapas ielādes brīdī."
   },
-  "enableAutoTotpCopyOnAutoFill": {
-    "message": "Automātiska TOTP ievietošana starpliktuvē pēc lapas ielādes"
-  },
-  "enableAutoTotpCopyOnAutoFillDesc": {
-    "message": "Ja ir iespējota automātiskā aizpilde lapas ielādes brīdī, TOTP apstiprināšanas kods tiks automātiski ievietots starpliktuvē pēc tīmekļa lapas ielādes. Iestatījums \"Atspējot automātisku TOTP ievietošanu starpliktuvē\" ir pārāks par šo."
-  },
   "experimentalFeature": {
     "message": "Šī iespēja pašlaik ir izmēģināšanā. Izmantošanas atbildība ir katra paša pārziņā. "
+  },
+  "defaultAutoFillOnPageLoad": {
+    "message": "Noklusējuma automātiskās aizpildes iestatījums pierakstīšanās vienumiem"
+  },
+  "defaultAutoFillOnPageLoadDesc": {
+    "message": "Pēc automātiskās aizpildes lapas ielādes brīdī iespējošanas šo iespēju var ieslēgt vai izslēgt atsevišķiem pierakstīšanās vienumiem. Šis ir noklusējuma iestatījums visiem ierakstiem, kuriem nav norādīts šis uzstādījums."
+  },
+  "itemAutoFillOnPageLoad": {
+    "message": "Automātiski aizpildīt lapas ielādes brīdī (ja iespējots iestatījumos)"
+  },
+  "autoFillOnPageLoadUseDefault": {
+    "message": "Izmantot noklusējuma iestatījumu"
+  },
+  "autoFillOnPageLoadYes": {
+    "message": "Automātiski aizpildīt lapas ielādes brīdī"
+  },
+  "autoFillOnPageLoadNo": {
+    "message": "Neaizpildīt lapas ielādes brīdī"
   },
   "commandOpenPopup": {
     "message": "Atvērt glabātavas uznirstošo logu"
@@ -1718,5 +1746,11 @@
   },
   "passwordConfirmationDesc": {
     "message": "Šī darbība ir aizsargāta. Lai turpinātu, ir jāievada galvenā parole, lai apstiprinātu identitāti."
+  },
+  "emailVerificationRequired": {
+    "message": "Nepieciešama e-pasta adreses apstiprināšana"
+  },
+  "emailVerificationRequiredDesc": {
+    "message": "Ir nepieciešams apstiprināt e-pasta adresi, lai būtu iespējams izmantot šo iespēju. To var izdarīt tīmekļa glabātavā."
   }
 }
