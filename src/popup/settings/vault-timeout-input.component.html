@@ -16,7 +16,8 @@
         </div>
         <div class="box-content-row display-block" appBoxRow>
             <label for="customVaultTimeout">{{'minutes' | i18n }}</label>
-            <input id="minutes" class="form-control" type="number" min="0" name="minutes" formControlName="minutes">
+            <input id="minutes" class="form-control" type="number" min="0" max="59" name="minutes"
+                formControlName="minutes">
         </div>
     </div>
 </div>

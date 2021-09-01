@@ -91,7 +91,7 @@ export class SettingsComponent implements OnInit {
             { name: this.i18nService.t('logOut'), value: 'logOut' },
         ];
 
-        let timeout = await this.storageService.get<number>(ConstantsService.vaultTimeoutKey);
+        let timeout = await this.vaultTimeoutService.getVaultTimeout();
         if (timeout != null) {
             if (timeout === -2 && !showOnLocked) {
                 timeout = -1;
