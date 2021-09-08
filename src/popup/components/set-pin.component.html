@@ -23,10 +23,12 @@
                         </div>
                     </div>
                 </div>
-                <div>
-                    <input type="checkbox" id="masterPasswordOnRestart" name="MasterPasswordOnRestart"
-                        [(ngModel)]="masterPassOnRestart">
-                    <label for="masterPasswordOnRestart">{{'lockWithMasterPassOnRestart' | i18n }}</label>
+                <div class="checkbox">
+                    <label for="masterPasswordOnRestart">
+                        <input type="checkbox" id="masterPasswordOnRestart" name="MasterPasswordOnRestart"
+                            [(ngModel)]="masterPassOnRestart">
+                        <span>{{'lockWithMasterPassOnRestart' | i18n}}</span>
+                    </label>
                 </div>
             </div>
             <div class="modal-footer">

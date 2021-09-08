@@ -157,10 +157,11 @@ export class SettingsComponent implements OnInit {
 
     async updatePin() {
         if (this.pin) {
-            const ref = this.modalService.open(SetPinComponent, { allowMultipleModals: false });
+            const ref = this.modalService.open(SetPinComponent, { allowMultipleModals: true });
 
             if (ref == null) {
                 this.pin = false;
+                return;
             }
 
             this.pin = await ref.onClosedPromise();
