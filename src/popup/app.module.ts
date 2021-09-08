@@ -75,6 +75,7 @@ import { CipherRowComponent } from './components/cipher-row.component';
 import { PasswordRepromptComponent } from './components/password-reprompt.component';
 import { PopOutComponent } from './components/pop-out.component';
 import { SendListComponent } from './components/send-list.component';
+import { SetPinComponent } from './components/set-pin.component';
 
 import { CalloutComponent } from 'jslib-angular/components/callout.component';
 import { IconComponent } from 'jslib-angular/components/icon.component';
@@ -242,6 +243,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         UpdateTempPasswordComponent,
         ViewComponent,
         PasswordRepromptComponent,
+        SetPinComponent
     ],
     entryComponents: [],
     providers: [
