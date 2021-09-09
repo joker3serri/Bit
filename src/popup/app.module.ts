@@ -1,3 +1,4 @@
+import { A11yModule } from '@angular/cdk/a11y';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ToasterModule } from 'angular2-toaster';
@@ -173,6 +174,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
 
 @NgModule({
     imports: [
+        A11yModule,
         AppRoutingModule,
         BrowserAnimationsModule,
         BrowserModule,
@@ -243,7 +245,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         UpdateTempPasswordComponent,
         ViewComponent,
         PasswordRepromptComponent,
-        SetPinComponent
+        SetPinComponent,
     ],
     entryComponents: [],
     providers: [
