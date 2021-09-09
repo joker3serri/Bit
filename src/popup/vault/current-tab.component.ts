@@ -156,7 +156,8 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
                 this.platformUtilsService.copyToClipboard(this.totpCode, { window: window });
             }
             if (this.popupUtilsService.inPopup(window)) {
-                BrowserApi.closePopup(window);
+                // Slight delay to fix bug in Chrome where popup closes without copying totp to clipboard
+                setTimeout(() => BrowserApi.closePopup(window), 50);
             }
         } catch {
             this.ngZone.run(() => {
