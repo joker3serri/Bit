@@ -85,14 +85,14 @@ document.addEventListener('DOMContentLoaded', _ => {
                     if (args[0] && (typeof args[0] === 'string' || typeof args[0] === 'object')) {
                         const data = typeof args[0] === 'object' ? JSON.stringify(args[0]) : args[0];
                         const reqId = ++requestCounter;
-                        window.dispatchEvent(new CustomEvent('bitwarden-start', {
+                        window.dispatchEvent(new CustomEvent('bw-request-start', {
                             detail: {
                                 data: data,
                                 reqId: reqId,
                             },
                         }));
                         receiver.addEventListener('loadend', () => {
-                            window.dispatchEvent(new CustomEvent('bitwarden-end', {
+                            window.dispatchEvent(new CustomEvent('bw-request-end', {
                                 detail: {
                                     status: receiver.status,
                                     reqId: reqId,
@@ -112,14 +112,14 @@ document.addEventListener('DOMContentLoaded', _ => {
                     if (args[0] && (typeof args[0] === 'string' || typeof args[0] === 'object')) {
                         const data = typeof args[0] === 'object' ? JSON.stringify(args[0]) : args[0];
                         const reqId = ++requestCounter;
-                        window.dispatchEvent(new CustomEvent('bitwarden-start', {
+                        window.dispatchEvent(new CustomEvent('bw-request-start', {
                             detail: {
                                 data: data,
                                 reqId: reqId,
                             },
                         }));
                         const callback = (res: any) => {
-                            window.dispatchEvent(new CustomEvent('bitwarden-end', {
+                            window.dispatchEvent(new CustomEvent('bw-request-end', {
                                 detail: {
                                     status: res && res.status,
                                     reqId: reqId,
@@ -188,16 +188,16 @@ document.addEventListener('DOMContentLoaded', _ => {
     const requestListeners: any[] = [];
     function startRequestListener(formChild: HTMLElement) {
         const formData = createFormData({formChild: formChild});
-        requestListeners.forEach(listener => window.removeEventListener('bitwarden-start', listener));
+        requestListeners.forEach(listener => window.removeEventListener('bw-request-start', listener));
         const eventListener = (event: any) => {
             if (event.detail && event.detail.data) {
                 const requestData = decodeURIComponent(event.detail.data);
                 const isDataPresent = formData.fields.some(field => requestData.includes(field.value) || field.value.includes(requestData));
                 if (isDataPresent) {
-                    window.removeEventListener('bitwarden-start', eventListener);
+                    window.removeEventListener('bw-request-start', eventListener);
                     const endEventListener = (endEvent: any) => {
                         if (endEvent.detail.reqId === event.detail.reqId) {
-                            window.removeEventListener('bitwarden-end', endEventListener);
+                            window.removeEventListener('bw-request-end', endEventListener);
                             if (endEvent.detail.status >= 200 && endEvent.detail.status < 300) {
                                 sendPlatformMessage({
                                     command: 'formSubmission',
@@ -206,11 +206,11 @@ document.addEventListener('DOMContentLoaded', _ => {
                             }
                         }
                     };
-                    window.addEventListener('bitwarden-end', endEventListener);
+                    window.addEventListener('bw-request-end', endEventListener);
                 }
             }
         };
-        window.addEventListener('bitwarden-start', eventListener);
+        window.addEventListener('bw-request-start', eventListener);
         requestListeners.push(eventListener);
     }
 
