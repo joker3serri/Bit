@@ -130,7 +130,6 @@ export class OptionsComponent implements OnInit {
 
     async updateAutoBiometricsPrompt() {
         await this.storageService.save(ConstantsService.disableAutoBiometricsPromptKey, this.disableAutoBiometricsPrompt);
-        this.callAnalytics('Auto Biometrics Prompt', !this.disableAutoBiometricsPrompt);
     }
 
     async updateAutoFillOnPageLoad() {
