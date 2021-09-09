@@ -1777,8 +1777,8 @@
   "ssoCompleteRegistration": {
     "message": "In order to complete logging in with SSO, please set a master password to access and protect your vault."
   },
-  "personalVaultExportDisabled": {
-    "message": "Personal Vault Export Disabled"
+  "vaultExportDisabled": {
+    "message": "Vault Export Disabled"
   },
   "personalVaultExportPolicyInEffect": {
     "message": "One or more organization policies prevents you from exporting your personal vault."
