@@ -53,6 +53,7 @@ export class SettingsComponent implements OnInit {
     pin: boolean = null;
     supportsBiometric: boolean;
     biometric: boolean = false;
+    disableAutoBiometricsPrompt = true;
     previousVaultTimeout: number = null;
 
     constructor(private platformUtilsService: PlatformUtilsService, private i18nService: I18nService,
@@ -105,6 +106,8 @@ export class SettingsComponent implements OnInit {
 
         this.supportsBiometric = await this.platformUtilsService.supportsBiometric();
         this.biometric = await this.vaultTimeoutService.isBiometricLockSet();
+        this.disableAutoBiometricsPrompt = await this.storageService.get<boolean>(
+            ConstantsService.disableAutoBiometricsPromptKey) ?? true;
     }
 
     async saveVaultTimeout(newValue: number) {
@@ -275,6 +278,10 @@ export class SettingsComponent implements OnInit {
             await this.storageService.remove(ConstantsService.biometricUnlockKey);
             this.vaultTimeoutService.biometricLocked = false;
         }
+    }
+
+    async updateAutoBiometricsPrompt() {
+        await this.storageService.save(ConstantsService.disableAutoBiometricsPromptKey, this.disableAutoBiometricsPrompt);
     }
 
     async lock() {
