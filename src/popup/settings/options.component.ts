@@ -24,7 +24,7 @@ export class OptionsComponent implements OnInit {
     autoFillOnPageLoadDefault = false;
     autoFillOnPageLoadOptions: any[];
     disableAutoTotpCopy = false;
-    disableAutoBiometricsPrompt = false;
+    disableAutoBiometricsPrompt = true;
     disableContextMenuItem = false;
     disableAddLoginNotification = false;
     disableChangedPasswordNotification = false;
@@ -94,7 +94,7 @@ export class OptionsComponent implements OnInit {
 
         this.disableAutoTotpCopy = !(await this.totpService.isAutoCopyEnabled());
         this.disableAutoBiometricsPrompt = await this.storageService.get<boolean>(
-            ConstantsService.disableAutoBiometricsPromptKey);
+            ConstantsService.disableAutoBiometricsPromptKey) ?? true;
 
         this.disableFavicon = await this.storageService.get<boolean>(ConstantsService.disableFaviconKey);
 
