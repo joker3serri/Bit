@@ -38,19 +38,17 @@ export class LockComponent extends BaseLockComponent {
 
     async ngOnInit() {
         await super.ngOnInit();
-        window.setTimeout(() => {
-            document.getElementById(this.pinLock ? 'pin' : 'masterPassword').focus();
-        }, 100);
-
         const disableAutoBiometricsPrompt = await this.storageService.get<boolean>(
             ConstantsService.disableAutoBiometricsPromptKey);
-        if (this.biometricLock && !disableAutoBiometricsPrompt && this.isInitialLockScreen) {
-            window.setTimeout(async () => {
+
+        window.setTimeout(async () => {
+            document.getElementById(this.pinLock ? 'pin' : 'masterPassword').focus();
+            if (this.biometricLock && !disableAutoBiometricsPrompt && this.isInitialLockScreen) {
                 if (await this.vaultTimeoutService.isLocked()) {
                     await this.unlockBiometric();
                 }
-            }, 100);
-        }
+            }
+        }, 100);
     }
 
     async unlockBiometric() {
