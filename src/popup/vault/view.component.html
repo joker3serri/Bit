@@ -240,8 +240,11 @@
                         <i class="fa fa-square-o" *ngIf="field.value !== 'true'" aria-hidden="true"></i>
                         <span class="sr-only">{{field.value}}</span>
                     </div>
-                    <div *ngIf="field.type === fieldType.Linked">
-                        <i class="fa fa-link"></i>{{cipher.getLinkedFieldi18nKey(field.value) | i18n}}
+                    <div *ngIf="field.type === fieldType.Linked" class="box-content-row-flex">
+                        <div class="icon">
+                            <i class="fa fa-link fa-lg fa-fw"></i>
+                        </div>
+                        <span>{{cipher.getLinkedFieldi18nKey(field.value) | i18n}}</span>
                     </div>
                 </div>
                 <div class="action-buttons">
