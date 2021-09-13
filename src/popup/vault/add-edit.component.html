@@ -351,8 +351,7 @@
                                 [disabled]="!cipher.viewPassword && !f.newField">
                             <!--Custom Field: Linked-->
                             <select id="fieldValue{{i}}" name="Field.Value{{i}}" [(ngModel)]="f.value"
-                                *ngIf="f.type === fieldType.Linked && cipher.type !== cipherType.SecureNote"
-                                [disabled]="!cipher.viewPassword && !f.newField">
+                                *ngIf="f.type === fieldType.Linked && cipher.type !== cipherType.SecureNote">
                                 <option *ngFor="let o of linkedFieldOptions" [ngValue]="o.value">{{o.name}}</option>
                             </select>
                         </div>
