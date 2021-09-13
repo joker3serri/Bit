@@ -174,11 +174,11 @@ document.addEventListener('DOMContentLoaded', _ => {
     }
 
     function findFormElement(element: HTMLElement) {
-       while (element) {
-           if (element.nodeName === 'FORM') return element;
-           element = element.parentElement;
-       }
-       return null;
+        while (element) {
+            if (element.nodeName === 'FORM') return element;
+            element = element.parentElement;
+        }
+        return null;
     }
 
     function isVisible(element: HTMLElement) {
@@ -189,26 +189,25 @@ document.addEventListener('DOMContentLoaded', _ => {
     function startRequestListener(formChild: HTMLElement) {
         const formData = createFormData({formChild: formChild});
         requestListeners.forEach(listener => window.removeEventListener('bw-request-start', listener));
+
         const eventListener = (event: any) => {
-            if (event.detail && event.detail.data) {
-                const requestData = decodeURIComponent(event.detail.data);
-                const isDataPresent = formData.fields.some(field => requestData.includes(field.value) || field.value.includes(requestData));
-                if (isDataPresent) {
-                    window.removeEventListener('bw-request-start', eventListener);
-                    const endEventListener = (endEvent: any) => {
-                        if (endEvent.detail.reqId === event.detail.reqId) {
-                            window.removeEventListener('bw-request-end', endEventListener);
-                            if (endEvent.detail.status >= 200 && endEvent.detail.status < 300) {
-                                sendPlatformMessage({
-                                    command: 'formSubmission',
-                                    data: formData,
-                                });
-                            }
-                        }
-                    };
-                    window.addEventListener('bw-request-end', endEventListener);
+            if (!event.detail || !event.detail.data) return;
+            const requestData = decodeURIComponent(event.detail.data);
+            const isDataPresent = formData.fields.some(field => requestData.includes(field.value) || field.value.includes(requestData));
+            if (!isDataPresent) return;
+
+            window.removeEventListener('bw-request-start', eventListener);
+            const endEventListener = (endEvent: any) => {
+                if (endEvent.detail.reqId !== event.detail.reqId) return;
+                window.removeEventListener('bw-request-end', endEventListener);
+                if (endEvent.detail.status >= 200 && endEvent.detail.status < 300) {
+                    sendPlatformMessage({
+                        command: 'formSubmission',
+                        data: formData,
+                    });
                 }
-            }
+            };
+            window.addEventListener('bw-request-end', endEventListener);
         };
         window.addEventListener('bw-request-start', eventListener);
         requestListeners.push(eventListener);

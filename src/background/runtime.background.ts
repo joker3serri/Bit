@@ -478,8 +478,9 @@ export default class RuntimeBackground {
         const usernameFields = formData.fields.filter(field => field.type === 'email' || field.type === 'text');
         const mainUsernameField = formData.fields.filter(field => field.attributes.includes('email'))[0] || usernameFields[0];
 
-        if (passwordFields.length === 0 && !mainUsernameField) return;
         if (passwordFields.length === 0) {
+            if (!mainUsernameField) return;
+
             return this.usernameCache.push({
                 url: Utils.getDomain(formData.url),
                 username: mainUsernameField.value,
@@ -504,13 +505,9 @@ export default class RuntimeBackground {
                 if (passwordMatches) {
                     formData.originalPassword = password;
                     formData.password = passwordValues.find(value => value !== password);
-                } else {
-                    if (passwordFields.filter(field => field.value === password).length > 1) {
-                        if (passwordValues.length === 2) {
-                            formData.originalPassword = passwordValues.find(value => value !== password);
-                            formData.password = password;
-                        }
-                    }
+                } else if (passwordValues.length === 2 && passwordFields.filter(field => field.value === password).length > 1) {
+                    formData.originalPassword = passwordValues.find(value => value !== password);
+                    formData.password = password;
                 }
             });
         }
