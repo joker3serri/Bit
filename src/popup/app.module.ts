@@ -38,6 +38,7 @@ import { OptionsComponent } from './settings/options.component';
 import { PremiumComponent } from './settings/premium.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SyncComponent } from './settings/sync.component';
+import { VaultTimeoutInputComponent } from './settings/vault-timeout-input.component';
 
 import { AddEditComponent } from './vault/add-edit.component';
 import { AttachmentsComponent } from './vault/attachments.component';
@@ -246,6 +247,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         ViewComponent,
         PasswordRepromptComponent,
         SetPinComponent,
+        VaultTimeoutInputComponent,
     ],
     entryComponents: [],
     providers: [
