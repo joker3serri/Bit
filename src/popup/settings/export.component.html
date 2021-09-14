@@ -10,11 +10,11 @@
             <span class="title">{{'exportVault' | i18n}}</span>
         </div>
         <div class="right">
-            <button appBlurClick type="submit" [disabled]="disablePrivateVaultPolicyEnabled">{{'submit' | i18n}}</button>
+            <button appBlurClick type="submit" [disabled]="disabledByPolicy">{{'submit' | i18n}}</button>
         </div>
     </header>
     <content>
-        <app-callout type="warning" title="{{'vaultExportDisabled' | i18n}}" *ngIf="disablePrivateVaultPolicyEnabled">
+        <app-callout type="warning" title="{{'vaultExportDisabled' | i18n}}" *ngIf="disabledByPolicy">
             {{'personalVaultExportPolicyInEffect' | i18n}}
         </app-callout>
 
@@ -22,7 +22,7 @@
             <div class="box-content">
                 <div class="box-content-row" appBoxRow>
                     <label for="format">{{'fileFormat' | i18n}}</label>
-                    <select id="format" name="Format" [(ngModel)]="format" [disabled]="disablePrivateVaultPolicyEnabled">
+                    <select id="format" name="Format" [(ngModel)]="format" [disabled]="disabledByPolicy">
                         <option value="json">.json</option>
                         <option value="csv">.csv</option>
                         <option value="encrypted_json">.json (Encrypted)</option>
@@ -33,7 +33,7 @@
                         <label for="masterPassword">{{'masterPass' | i18n}}</label>
                         <input id="masterPassword" type="{{showPassword ? 'text' : 'password'}}" name="MasterPassword"
                             class="monospaced" [(ngModel)]="masterPassword" required appInputVerbatim appAutofocus
-                            [disabled]="disablePrivateVaultPolicyEnabled">
+                            [disabled]="disabledByPolicy">
                     </div>
                     <div class="action-buttons">
                         <a class="row-btn" href="#" appStopClick appBlurClick
