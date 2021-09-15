@@ -39,7 +39,7 @@ export class LockComponent extends BaseLockComponent {
     async ngOnInit() {
         await super.ngOnInit();
         const disableAutoBiometricsPrompt = await this.storageService.get<boolean>(
-            ConstantsService.disableAutoBiometricsPromptKey);
+            ConstantsService.disableAutoBiometricsPromptKey) ?? true;
 
         window.setTimeout(async () => {
             document.getElementById(this.pinLock ? 'pin' : 'masterPassword').focus();
