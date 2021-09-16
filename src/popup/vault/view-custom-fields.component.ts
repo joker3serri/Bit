@@ -3,9 +3,6 @@ import {
 } from '@angular/core';
 
 import { EventService } from 'jslib-common/abstractions/event.service';
-import { I18nService } from 'jslib-common/abstractions/i18n.service';
-import { PasswordRepromptService } from 'jslib-common/abstractions/passwordReprompt.service';
-import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.service';
 
 import {
     ViewCustomFieldsComponent as BaseViewCustomFieldsComponent
