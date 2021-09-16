@@ -1,3 +1,4 @@
+import { A11yModule } from '@angular/cdk/a11y';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { ToasterModule } from 'angular2-toaster';
@@ -37,6 +38,7 @@ import { OptionsComponent } from './settings/options.component';
 import { PremiumComponent } from './settings/premium.component';
 import { SettingsComponent } from './settings/settings.component';
 import { SyncComponent } from './settings/sync.component';
+import { VaultTimeoutInputComponent } from './settings/vault-timeout-input.component';
 
 import { AddEditComponent } from './vault/add-edit.component';
 import { AttachmentsComponent } from './vault/attachments.component';
@@ -72,8 +74,10 @@ import { SearchCiphersPipe } from 'jslib-angular/pipes/search-ciphers.pipe';
 
 import { ActionButtonsComponent } from './components/action-buttons.component';
 import { CipherRowComponent } from './components/cipher-row.component';
+import { PasswordRepromptComponent } from './components/password-reprompt.component';
 import { PopOutComponent } from './components/pop-out.component';
 import { SendListComponent } from './components/send-list.component';
+import { SetPinComponent } from './components/set-pin.component';
 
 import { CalloutComponent } from 'jslib-angular/components/callout.component';
 import { IconComponent } from 'jslib-angular/components/icon.component';
@@ -171,6 +175,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
 
 @NgModule({
     imports: [
+        A11yModule,
         AppRoutingModule,
         BrowserAnimationsModule,
         BrowserModule,
@@ -240,6 +245,9 @@ registerLocaleData(localeZhTw, 'zh-TW');
         TwoFactorComponent,
         UpdateTempPasswordComponent,
         ViewComponent,
+        PasswordRepromptComponent,
+        SetPinComponent,
+        VaultTimeoutInputComponent,
     ],
     entryComponents: [],
     providers: [
