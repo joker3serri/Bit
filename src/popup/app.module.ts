@@ -41,6 +41,7 @@ import { SyncComponent } from './settings/sync.component';
 import { VaultTimeoutInputComponent } from './settings/vault-timeout-input.component';
 
 import { AddEditComponent } from './vault/add-edit.component';
+import { AddEditCustomFieldsComponent } from './vault/add-edit-custom-fields.component';
 import { AttachmentsComponent } from './vault/attachments.component';
 import { CiphersComponent } from './vault/ciphers.component';
 import { CollectionsComponent } from './vault/collections.component';
@@ -248,6 +249,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         PasswordRepromptComponent,
         SetPinComponent,
         VaultTimeoutInputComponent,
+        AddEditCustomFieldsComponent,
     ],
     entryComponents: [],
     providers: [
