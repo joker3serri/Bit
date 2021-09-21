@@ -18,6 +18,12 @@
                     <i class="fa fa-square-o" *ngIf="field.value !== 'true'" aria-hidden="true"></i>
                     <span class="sr-only">{{field.value}}</span>
                 </div>
+                <div *ngIf="field.type === fieldType.Linked" class="box-content-row-flex">
+                    <div class="icon icon-small">
+                        <i class="fa fa-link"></i>
+                    </div>
+                    <span>{{cipher.getLinkedFieldi18nKey(field.value) | i18n}}</span>
+                </div>
             </div>
             <div class="action-buttons">
                 <a class="row-btn" href="#" appStopClick appA11yTitle="{{'toggleVisibility' | i18n}}"
