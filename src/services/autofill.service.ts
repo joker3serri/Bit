@@ -315,7 +315,7 @@ export default class AutofillService implements AutofillServiceInterface {
                     const matchingField = fields[matchingIndex];
                     let val;
                     if (matchingField.type === FieldType.Linked) {
-                        val = options.cipher.getLinkedFieldValue(matchingField.value);
+                        val = options.cipher.linkedFieldValue(matchingField.value);
                     } else {
                         val = matchingField.value;
                         if (val == null && matchingField.type === FieldType.Boolean) {
