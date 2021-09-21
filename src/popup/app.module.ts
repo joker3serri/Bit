@@ -49,6 +49,7 @@ import { CurrentTabComponent } from './vault/current-tab.component';
 import { GroupingsComponent } from './vault/groupings.component';
 import { PasswordHistoryComponent } from './vault/password-history.component';
 import { ShareComponent } from './vault/share.component';
+import { ViewCustomFieldsComponent } from './vault/view-custom-fields.component';
 import { ViewComponent } from './vault/view.component';
 
 import { EffluxDatesComponent as SendEffluxDatesComponent } from './send/efflux-dates.component';
@@ -250,6 +251,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         SetPinComponent,
         VaultTimeoutInputComponent,
         AddEditCustomFieldsComponent,
+        ViewCustomFieldsComponent,
     ],
     entryComponents: [],
     providers: [
