@@ -51,7 +51,7 @@ export class LockComponent extends BaseLockComponent {
         }, 100);
     }
 
-    async unlockBiometric() {
+    async unlockBiometric(): Promise<boolean> {
         if (!this.biometricLock) {
             return;
         }
