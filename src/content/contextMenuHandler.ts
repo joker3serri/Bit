@@ -4,12 +4,8 @@ let clickedEl: HTMLElement = null;
 
 // Find the best attribute to be used as the Name for an element in a custom field.
 function getClickedElementIdentifier() {
-    if (clickedEl == null) {
-        return 'Unable to identify clicked element.';
-    }
-
-    if (!inputTags.includes(clickedEl.nodeName.toLowerCase())) {
-        return 'Invalid element type.';
+    if (clickedEl == null || !inputTags.includes(clickedEl.nodeName.toLowerCase())) {
+        return 'Unable to identify a valid element. Try inspecting the HTML instead.';
     }
 
     for (const attr of attributes) {
