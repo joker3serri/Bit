@@ -171,6 +171,10 @@
   "noFolders": {
     "message": "Brak folderów do wyświetlenia."
   },
+  "selectFolder": {
+    "message": "Wybierz folder..."
+  
+  },
   "helpFeedback": {
     "message": "Pomoc i opinie"
   },
