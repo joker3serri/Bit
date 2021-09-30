@@ -968,8 +968,10 @@
                 return null;
             }
             try {
+                // START MODIFICATION
                 var elements = Array.prototype.slice.call(selectAllFromDoc('input, select, button, ' +
                     'span[data-bwautofill]'));
+                // END MODIFICATION
                 var filteredElements = elements.filter(function (o) {
                     return o.opid == theOpId;
                 });
