@@ -316,7 +316,6 @@ export default class AutofillService implements AutofillServiceInterface {
                     const matchingField: FieldView = fields[matchingIndex];
                     let val;
                     if (matchingField.type === FieldType.Linked) {
-                        console.log('linked field detected');
                         // Assumption: Linked Field is not being used to autofill a boolean value
                         val = options.cipher.linkedFieldValue(matchingField.linkedId);
                     } else {
