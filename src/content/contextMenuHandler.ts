@@ -1,12 +1,15 @@
 const inputTags = ['input', 'textarea', 'select'];
 const labelTags = ['label', 'span'];
 const attributes = ['id', 'name', 'label-aria', 'placeholder'];
+const invalidElement = chrome.i18n.getMessage('copyCustomFieldNameInvalidElement');
+const noUniqueIdentifier = chrome.i18n.getMessage('copyCustomFieldNameNotUnique');
+
 let clickedEl: HTMLElement = null;
 
 // Find the best attribute to be used as the Name for an element in a custom field.
 function getClickedElementIdentifier() {
     if (clickedEl == null) {
-        return 'Unable to identify the clicked element. Try inspecting the HTML instead.';
+        return invalidElement;
     }
 
     const tagName = clickedEl.nodeName.toLowerCase();
@@ -30,7 +33,7 @@ function getClickedElementIdentifier() {
     }
 
     if (inputEl == null) {
-        return 'Unable to identify a valid form element. Try inspecting the HTML instead.';
+        return invalidElement;
     }
 
     for (const attr of attributes) {
@@ -40,7 +43,7 @@ function getClickedElementIdentifier() {
             return attributeValue;
         }
     }
-    return 'No unique identifier found.';
+    return noUniqueIdentifier;
 }
 
 function isNullOrEmpty(s: string) {
