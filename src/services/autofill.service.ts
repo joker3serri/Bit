@@ -16,6 +16,7 @@ import AutofillField from '../models/autofillField';
 import AutofillPageDetails from '../models/autofillPageDetails';
 import AutofillScript from '../models/autofillScript';
 
+import { FieldView } from 'jslib-common/models/view/fieldView';
 import { BrowserApi } from '../browser/browserApi';
 
 const CardAttributes: string[] = ['autoCompleteType', 'data-stripe', 'htmlName', 'htmlID', 'label-tag',
@@ -312,11 +313,12 @@ export default class AutofillService implements AutofillServiceInterface {
 
                 const matchingIndex = this.findMatchingFieldIndex(field, fieldNames);
                 if (matchingIndex > -1) {
-                    const matchingField = fields[matchingIndex];
+                    const matchingField: FieldView = fields[matchingIndex];
                     let val;
                     if (matchingField.type === FieldType.Linked) {
+                        console.log('linked field detected');
                         // Assumption: Linked Field is not being used to autofill a boolean value
-                        val = options.cipher.linkedFieldValue(matchingField.value);
+                        val = options.cipher.linkedFieldValue(matchingField.linkedId);
                     } else {
                         val = matchingField.value;
                         if (val == null && matchingField.type === FieldType.Boolean) {
