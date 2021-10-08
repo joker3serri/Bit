@@ -169,7 +169,7 @@ export default class MainBackground {
         this.secureStorageService = new BrowserStorageService();
         this.i18nService = new I18nService(BrowserApi.getUILanguage(window));
         this.cryptoFunctionService = new WebCryptoFunctionService(window, this.platformUtilsService);
-        this.logService = new ConsoleLogService(false);
+        this.logService = new ConsoleLogService(true);
         this.cryptoService = new BrowserCryptoService(this.storageService, this.secureStorageService,
             this.cryptoFunctionService, this.platformUtilsService, this.logService);
         this.tokenService = new TokenService(this.storageService);
