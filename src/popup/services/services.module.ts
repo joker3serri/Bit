@@ -63,15 +63,30 @@ import { PopupSearchService } from './popup-search.service';
 import { PopupUtilsService } from './popup-utils.service';
 
 import { ThemeType } from 'jslib-common/enums/themeType';
+import MainBackground from '../../background/main.background';
+
+
+let bitwardenMain: MainBackground;
+
+function getLocalMainBackgroundInstance () {
+    if (!bitwardenMain) {
+        bitwardenMain = new MainBackground();
+        void bitwardenMain.bootstrap();
+    }
+    return bitwardenMain;
+}
 
 function getBgService<T>(service: string) {
     return (): T => {
         const page = BrowserApi.getBackgroundPage();
+        if (!page) {
+            return getLocalMainBackgroundInstance()[service as keyof MainBackground] as T;
+        }
         return page ? page.bitwardenMain[service] as T : null;
     };
 }
 
-const isPrivateMode = BrowserApi.getBackgroundPage() == null;
+const isPrivateMode = false;
 
 export function initFactory(platformUtilsService: PlatformUtilsService, i18nService: I18nService,
     storageService: StorageService, popupUtilsService: PopupUtilsService, stateService: StateServiceAbstraction,
