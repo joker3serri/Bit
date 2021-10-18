@@ -5,7 +5,7 @@
 - [ ] Other
 
 ## Objective
-_Describe in one line what the purpose of this PR is. For example: what bug your fixing or what new feature you're adding._
+_Describe in one line what the purpose of this PR is. For example: what bug you're fixing or what new feature you're adding._
 
 ## Code changes
 _Explain the changes you've made to each file or major component. This should help the reviewer understand your changes._
