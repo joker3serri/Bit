@@ -17,10 +17,10 @@ _What functionality requires testing by QA? This includes testing new behavior a
 _Required for any UI changes._
 
 ## Checklist
+- [ ] I have checked for linting errors (`npm run lint`)
 - [ ] This change requires a **documentation update** (alert the documentation team in Asana)
 - [ ] This change has specific **deployment requirements** (alert DevOps in Asana)
 - [ ] I have added **unit tests** where it makes sense to do so (encouraged but not required)
-- [ ] I have updated jslib (if required)
 
 ## Other repositories affected
 _Add links if this is the main PR for a change._
