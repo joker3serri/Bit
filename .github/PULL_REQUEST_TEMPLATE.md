@@ -8,8 +8,6 @@
 ## Objective
 <!--Describe what the purpose of this PR is. For example: what bug you're fixing or what new feature you're adding-->
 
-...
-
 ## Code changes
 <!--Explain the changes you've made to each file or major component. This should help the reviewer understand your changes-->
 <!--Also refer to any related changes or PRs in other repositories-->
@@ -19,12 +17,8 @@
 ## Screenshots
 <!--Required for any UI changes. Delete if not applicable-->
 
-...
-
 ## Notes for QA
 <!--What functionality requires testing by QA? This includes testing new behavior and regression testing-->
-
-...
 
 ## Before you submit
 - [ ] I have checked for **linting** errors (`npm run lint`) (required)
