@@ -12,6 +12,7 @@ import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.se
 import { UserService } from 'jslib-common/abstractions/user.service';
 
 import { AttachmentsComponent as BaseAttachmentsComponent } from 'jslib-angular/components/attachments.component';
+import { LogService } from 'jslib-common/abstractions/log.service';
 
 @Component({
     selector: 'app-vault-attachments',
@@ -23,8 +24,9 @@ export class AttachmentsComponent extends BaseAttachmentsComponent {
     constructor(cipherService: CipherService, i18nService: I18nService,
         cryptoService: CryptoService, userService: UserService,
         platformUtilsService: PlatformUtilsService, apiService: ApiService, private location: Location,
-        private route: ActivatedRoute, private router: Router) {
-        super(cipherService, i18nService, cryptoService, userService, platformUtilsService, apiService, window);
+        private route: ActivatedRoute, logService: LogService) {
+        super(cipherService, i18nService, cryptoService, userService, platformUtilsService, apiService, window,
+            logService);
     }
 
     async ngOnInit() {

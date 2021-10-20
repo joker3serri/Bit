@@ -26,6 +26,7 @@ import { BroadcasterService } from 'jslib-angular/services/broadcaster.service';
 
 import { PopupUtilsService } from '../services/popup-utils.service';
 
+import { LogService } from 'jslib-common/abstractions/log.service';
 import { SendType } from 'jslib-common/enums/sendType';
 
 const ComponentId = 'SendComponent';
@@ -50,9 +51,10 @@ export class SendGroupingsComponent extends BaseSendComponent {
         policyService: PolicyService, userService: UserService, searchService: SearchService,
         private popupUtils: PopupUtilsService, private stateService: StateService,
         private router: Router, private syncService: SyncService,
-        private changeDetectorRef: ChangeDetectorRef, private broadcasterService: BroadcasterService) {
+        private changeDetectorRef: ChangeDetectorRef, private broadcasterService: BroadcasterService,
+        logService: LogService) {
         super(sendService, i18nService, platformUtilsService, environmentService, ngZone, searchService,
-            policyService, userService);
+            policyService, userService, logService);
         super.onSuccessfulLoad = async () => {
             this.calculateTypeCounts();
             this.selectAll();
