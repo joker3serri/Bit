@@ -119,8 +119,8 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
                 window.screenTop < 0 ||
                 window.screenLeft > window.screen.width ||
                 window.screenTop > window.screen.height)) {
-                logService.info('Force redraw: On');
                 htmlEl.classList.add('force_redraw');
+                logService.info('Force redraw is on');
             }
         }
     };
