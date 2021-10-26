@@ -14,7 +14,7 @@
 <!--Explain the changes you've made to each file or major component. This should help the reviewer understand your changes-->
 <!--Also refer to any related changes or PRs in other repositories-->
 
-* file.ext: Description of what was changed and why
+* **file.ext:** Description of what was changed and why
 
 ## Screenshots
 <!--Required for any UI changes. Delete if not applicable-->
