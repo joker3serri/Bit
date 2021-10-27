@@ -985,11 +985,11 @@
   },
   "cfTypeLinked": {
     "message": "Linked",
-    "description": "This describes a field that is 'linked' (related) to another field."
+    "description": "This describes a field that is 'linked' (tied) to another field."
   },
   "linkedValue": {
     "message": "Linked value",
-    "description": "This describes a value that is 'linked' (related) to another value."
+    "description": "This describes a value that is 'linked' (tied) to another value."
   },
   "popup2faCloseMessage": {
     "message": "Clicking outside the popup window to check your email for your verification code will cause this popup to close. Do you want to open this popup in a new window so that it does not close?"
