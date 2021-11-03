@@ -58,6 +58,7 @@ export class SettingsComponent implements OnInit {
     biometric: boolean = false;
     disableAutoBiometricsPrompt = true;
     previousVaultTimeout: number = null;
+    showChangeMasterPass = true;
 
     vaultTimeout: FormControl = new FormControl(null);
 
@@ -118,6 +119,7 @@ export class SettingsComponent implements OnInit {
         this.biometric = await this.vaultTimeoutService.isBiometricLockSet();
         this.disableAutoBiometricsPrompt = await this.storageService.get<boolean>(
             ConstantsService.disableAutoBiometricsPromptKey) ?? true;
+        this.showChangeMasterPass = !await this.userService.getUsesCryptoAgent();
     }
 
     async saveVaultTimeout(newValue: number) {
