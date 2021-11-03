@@ -49,6 +49,7 @@ import { SyncService } from 'jslib-common/abstractions/sync.service';
 import { TokenService } from 'jslib-common/abstractions/token.service';
 import { TotpService } from 'jslib-common/abstractions/totp.service';
 import { UserService } from 'jslib-common/abstractions/user.service';
+import { UserVerificationService as UserVerificationServiceAbstraction } from 'jslib-common/abstractions/userVerification.service';
 import { VaultTimeoutService } from 'jslib-common/abstractions/vaultTimeout.service';
 
 import { AutofillService } from '../../services/abstractions/autofill.service';
@@ -59,6 +60,7 @@ import { ConsoleLogService } from 'jslib-common/services/consoleLog.service';
 import { ConstantsService } from 'jslib-common/services/constants.service';
 import { SearchService } from 'jslib-common/services/search.service';
 import { StateService } from 'jslib-common/services/state.service';
+import { UserVerificationService } from 'jslib-common/services/userVerification.service';
 
 import { PopupSearchService } from './popup-search.service';
 import { PopupUtilsService } from './popup-utils.service';
@@ -204,6 +206,7 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
             deps: [],
         },
         { provide: PasswordRepromptServiceAbstraction, useClass: PasswordRepromptService },
+        { provide: UserVerificationServiceAbstraction, useClass: UserVerificationService },
     ],
 })
 export class ServicesModule {

@@ -212,7 +212,7 @@ export default class MainBackground {
         this.syncService = new SyncService(this.userService, this.apiService, this.settingsService,
             this.folderService, this.cipherService, this.cryptoService, this.collectionService,
             this.storageService, this.messagingService, this.policyService, this.sendService,
-            this.logService, async (expired: boolean) => await this.logout(expired));
+            this.logService, this.tokenService, async (expired: boolean) => await this.logout(expired));
         this.eventService = new EventService(this.storageService, this.apiService, this.userService,
             this.cipherService, this.logService);
         this.passwordGenerationService = new PasswordGenerationService(this.cryptoService, this.storageService,
@@ -271,7 +271,7 @@ export default class MainBackground {
                     const message = Object.assign({}, { command: subscriber }, arg);
                     that.runtimeBackground.processMessage(message, that, null);
                 }
-            }(), this.vaultTimeoutService, this.logService);
+            }(), this.vaultTimeoutService, this.logService, this.cryptoFunctionService);
     }
 
     async bootstrap() {

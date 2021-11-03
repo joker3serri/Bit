@@ -299,7 +299,7 @@
                         </a>
                     </label>
                     <input id="passwordPrompt" type="checkbox" name="PasswordPrompt" [ngModel]="reprompt"
-                        (change)="repromptChanged()">
+                        [disabled]="!canUseReprompt" (change)="repromptChanged()">
                 </div>
                 <button type="button" class="box-content-row box-content-row-flex text-default" appStopClick appBlurClick
                     (click)="attachments()" *ngIf="editMode && showAttachments && !cloneMode">

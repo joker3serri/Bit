@@ -411,6 +411,9 @@
   "verificationCodeRequired": {
     "message": "Verification code is required."
   },
+  "invalidVerificationCode": {
+    "message": "Invalid verification code"
+  },
   "valueCopied": {
     "message": "$VALUE$ copied",
     "description": "Value has been copied to the clipboard.",

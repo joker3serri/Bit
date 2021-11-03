@@ -83,6 +83,7 @@ import { SetPinComponent } from './components/set-pin.component';
 
 import { CalloutComponent } from 'jslib-angular/components/callout.component';
 import { IconComponent } from 'jslib-angular/components/icon.component';
+import { VerifyMasterPasswordComponent } from 'jslib-angular/components/verify-master-password.component';
 
 import {
     CurrencyPipe,
@@ -192,6 +193,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         A11yTitleDirective,
         ActionButtonsComponent,
         AddEditComponent,
+        AddEditCustomFieldsComponent,
         ApiActionDirective,
         AppComponent,
         AttachmentsComponent,
@@ -212,8 +214,8 @@ registerLocaleData(localeZhTw, 'zh-TW');
         FolderAddEditComponent,
         FoldersComponent,
         GroupingsComponent,
-        HomeComponent,
         HintComponent,
+        HomeComponent,
         I18nPipe,
         IconComponent,
         InputVerbatimDirective,
@@ -223,6 +225,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         PasswordGeneratorComponent,
         PasswordGeneratorHistoryComponent,
         PasswordHistoryComponent,
+        PasswordRepromptComponent,
         PopOutComponent,
         PremiumComponent,
         PrivateModeComponent,
@@ -235,6 +238,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         SendListComponent,
         SendTypeComponent,
         SetPasswordComponent,
+        SetPinComponent,
         SettingsComponent,
         ShareComponent,
         SsoComponent,
@@ -243,14 +247,12 @@ registerLocaleData(localeZhTw, 'zh-TW');
         SyncComponent,
         TabsComponent,
         TrueFalseValueDirective,
-        TwoFactorOptionsComponent,
         TwoFactorComponent,
+        TwoFactorOptionsComponent,
         UpdateTempPasswordComponent,
-        ViewComponent,
-        PasswordRepromptComponent,
-        SetPinComponent,
         VaultTimeoutInputComponent,
-        AddEditCustomFieldsComponent,
+        VerifyMasterPasswordComponent,
+        ViewComponent,
         ViewCustomFieldsComponent,
     ],
     entryComponents: [],
