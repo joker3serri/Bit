@@ -52,7 +52,7 @@
             <label for="addFieldType" class="sr-only">{{'type' | i18n}}</label>
             <select id="addFieldType" name="AddFieldType" [(ngModel)]="addFieldType" class="field-type">
                 <option *ngFor="let o of addFieldTypeOptions" [ngValue]="o.value">{{o.name}}</option>
-                <option *ngIf="cipher.type !== cipherType.SecureNote" [ngValue]="addFieldLinkedTypeOption.value">
+                <option *ngIf="cipher.linkedFieldOptions != null" [ngValue]="addFieldLinkedTypeOption.value">
                     {{addFieldLinkedTypeOption.name}}
                 </option>
             </select>
