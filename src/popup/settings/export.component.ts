@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { CryptoService } from 'jslib-common/abstractions/crypto.service';
 import { EventService } from 'jslib-common/abstractions/event.service';

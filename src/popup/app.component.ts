@@ -33,7 +33,6 @@ import { StorageService } from 'jslib-common/abstractions/storage.service';
 
 import { ConstantsService } from 'jslib-common/services/constants.service';
 
-import BrowserPlatformUtilsService from 'src/services/browserPlatformUtils.service';
 import { routerTransition } from './app-routing.animations';
 
 @Component({
@@ -120,6 +119,10 @@ export class AppComponent implements OnInit {
             } else if (msg.command === 'reloadPopup') {
                 this.ngZone.run(() => {
                     this.router.navigate(['/']);
+                });
+            } else if (msg.command === 'convertAccountToKeyConnector') {
+                this.ngZone.run(() => {
+                    this.router.navigate(['remove-password']);
                 });
             } else {
                 msg.webExtSender = sender;
