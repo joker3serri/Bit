@@ -22,6 +22,7 @@ import { SsoComponent } from './accounts/sso.component';
 import { TwoFactorOptionsComponent } from './accounts/two-factor-options.component';
 import { TwoFactorComponent } from './accounts/two-factor.component';
 import { UpdateTempPasswordComponent } from './accounts/update-temp-password.component';
+import { RemovePasswordComponent } from './accounts/remove-password.component';
 
 import { PasswordGeneratorHistoryComponent } from './generator/password-generator-history.component';
 import { PasswordGeneratorComponent } from './generator/password-generator.component';
@@ -254,6 +255,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         VerifyMasterPasswordComponent,
         ViewComponent,
         ViewCustomFieldsComponent,
+        RemovePasswordComponent,
     ],
     entryComponents: [],
     providers: [
