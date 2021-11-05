@@ -121,8 +121,9 @@ export class AppComponent implements OnInit {
                     this.router.navigate(['/']);
                 });
             } else if (msg.command === 'convertAccountToKeyConnector') {
-                this.ngZone.run(() => {
-                    this.router.navigate(['remove-password']);
+                this.ngZone.run(async () => {
+                    await this.storageService.save(ConstantsService.convertAccountToKeyConnector, true);
+                    this.router.navigate(['/remove-password']);
                 });
             } else {
                 msg.webExtSender = sender;
