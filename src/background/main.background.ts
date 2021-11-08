@@ -197,7 +197,7 @@ export default class MainBackground {
         this.stateService = new StateService();
         this.policyService = new PolicyService(this.userService, this.storageService, this.apiService);
         this.keyConnectorService = new KeyConnectorService(this.storageService, this.userService, this.cryptoService,
-            this.apiService, this.environmentService, this.logService);
+            this.apiService, this.environmentService, this.tokenService, this.logService);
         this.vaultTimeoutService = new VaultTimeoutService(this.cipherService, this.folderService,
             this.collectionService, this.cryptoService, this.platformUtilsService, this.storageService,
             this.messagingService, this.searchService, this.userService, this.tokenService, this.policyService,
@@ -368,6 +368,7 @@ export default class MainBackground {
             this.policyService.clear(userId),
             this.passwordGenerationService.clear(),
             this.vaultTimeoutService.clear(),
+            this.keyConnectorService.clear(),
         ]);
 
         this.searchService.clearIndex();

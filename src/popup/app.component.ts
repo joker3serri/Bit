@@ -26,6 +26,7 @@ import { BroadcasterService } from 'jslib-angular/services/broadcaster.service';
 
 import { AuthService } from 'jslib-common/abstractions/auth.service';
 import { I18nService } from 'jslib-common/abstractions/i18n.service';
+import { KeyConnectorService } from 'jslib-common/abstractions/keyConnector.service';
 import { MessagingService } from 'jslib-common/abstractions/messaging.service';
 import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.service';
 import { StateService } from 'jslib-common/abstractions/state.service';
@@ -62,7 +63,8 @@ export class AppComponent implements OnInit {
         private i18nService: I18nService, private router: Router,
         private stateService: StateService, private messagingService: MessagingService,
         private changeDetectorRef: ChangeDetectorRef, private ngZone: NgZone,
-        private sanitizer: DomSanitizer, private platformUtilsService: PlatformUtilsService) { }
+        private sanitizer: DomSanitizer, private platformUtilsService: PlatformUtilsService,
+        private keyConnectoService: KeyConnectorService) { }
 
     ngOnInit() {
         if (BrowserApi.getBackgroundPage() == null) {
@@ -122,7 +124,7 @@ export class AppComponent implements OnInit {
                 });
             } else if (msg.command === 'convertAccountToKeyConnector') {
                 this.ngZone.run(async () => {
-                    await this.storageService.save(ConstantsService.convertAccountToKeyConnector, true);
+                    await this.keyConnectoService.setConvertAccountRequired(true);
                     this.router.navigate(['/remove-password']);
                 });
             } else {
