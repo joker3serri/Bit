@@ -344,7 +344,7 @@ export class NoRouteReuseStrategy implements RouteReuseStrategy {
     imports: [RouterModule.forRoot(routes, {
         useHash: true,
         onSameUrlNavigation: 'reload',
-        enableTracing: true,
+        /*enableTracing: true,*/
     })],
     exports: [RouterModule],
     providers: [
