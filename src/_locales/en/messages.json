@@ -121,6 +121,9 @@
   "continue": {
     "message": "Continue"
   },
+  "requestVerificationCode": {
+    "message": "Request one-time password"
+  },
   "verificationCode": {
     "message": "Verification Code"
   },
