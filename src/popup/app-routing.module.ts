@@ -109,6 +109,7 @@ const routes: Routes = [
     {
         path: 'remove-password',
         component: RemovePasswordComponent,
+        canActivate: [AuthGuardService],
         data: { state: 'remove-password' },
     },
     {
