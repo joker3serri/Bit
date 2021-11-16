@@ -188,7 +188,7 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
         {
             provide: UserVerificationService,
             useFactory: getBgService<UserVerificationService>('userVerificationService'),
-            deps: []
+            deps: [],
         },
         {
             provide: VaultTimeoutService,
