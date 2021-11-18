@@ -496,7 +496,8 @@ export default class AutofillService implements AutofillServiceInterface {
                     break;
                 } else if (!fillFields.number && this.isFieldMatch(f[attr],
                     ['cc-number', 'cc-num', 'card-number', 'card-num', 'number', 'cc', 'cc-no', 'card-no',
-                        'credit-card', 'numero-carte', 'carte', 'carte-credit', 'num-carte', 'cb-num'],
+                        'credit-card', 'numero-carte', 'carte', 'carte-credit', 'num-carte', 'cb-num',
+                        'pan'],
                     ['cc-number', 'cc-num', 'card-number', 'card-num', 'cc-no', 'card-no', 'numero-carte',
                         'num-carte', 'cb-num'])) {
                     fillFields.number = f;
@@ -669,6 +670,11 @@ export default class AutofillService implements AutofillServiceInterface {
                 if (exp != null) {
                     break;
                 }
+            }
+
+            // Edge case for Sberbank
+            if (exp == null && this.fieldAttrsContain(fillFields.exp, "месяц/год") && partYear) {
+                exp = fullMonth + '/' + partYear;
             }
 
             if (exp == null) {
