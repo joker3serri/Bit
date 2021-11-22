@@ -121,8 +121,20 @@
   "continue": {
     "message": "Συνέχεια"
   },
+  "sendVerificationCode": {
+    "message": "Send a verification code to your email"
+  },
+  "sendCode": {
+    "message": "Send Code"
+  },
+  "codeSent": {
+    "message": "Code Sent"
+  },
   "verificationCode": {
     "message": "Κωδικός Επαλήθευσης"
+  },
+  "confirmIdentity": {
+    "message": "Confirm your identity to continue."
   },
   "account": {
     "message": "Λογαριασμός"
@@ -411,6 +423,9 @@
   "verificationCodeRequired": {
     "message": "Απαιτείται ο κωδικός επαλήθευσης."
   },
+  "invalidVerificationCode": {
+    "message": "Invalid verification code"
+  },
   "valueCopied": {
     "message": "$VALUE$ αντιγράφηκε",
     "description": "Value has been copied to the clipboard.",
@@ -559,9 +574,6 @@
   },
   "notificationAddSave": {
     "message": "Ναι, Αποθήκευση Τώρα"
-  },
-  "notificationNeverSave": {
-    "message": "Ποτέ για αυτή την ιστοσελίδα"
   },
   "disableChangedPasswordNotification": {
     "message": "Απενεργοποίηση ειδοποίησης αλλαγής κωδικού πρόσβασης"
@@ -983,6 +995,14 @@
   "cfTypeBoolean": {
     "message": "Δυαδικό"
   },
+  "cfTypeLinked": {
+    "message": "Linked",
+    "description": "This describes a field that is 'linked' (tied) to another field."
+  },
+  "linkedValue": {
+    "message": "Linked value",
+    "description": "This describes a value that is 'linked' (tied) to another value."
+  },
   "popup2faCloseMessage": {
     "message": "Εάν κάνετε κλικ έξω από το αναδυόμενο παράθυρο για να ελέγξετε το email για κωδικό επαλήθευσης, το αναδυόμενο παράθυρο θα κλείσει. Θέλετε να ανοίξετε αυτό το αναδυόμενο σε νέο παράθυρο ώστε να μην κλείνει;"
   },
@@ -1084,6 +1104,9 @@
   },
   "lastName": {
     "message": "Επίθετο"
+  },
+  "fullName": {
+    "message": "Full Name"
   },
   "identityName": {
     "message": "Όνομα Ταυτότητας"
@@ -1813,5 +1836,29 @@
   },
   "copyCustomFieldNameNotUnique": {
     "message": "Δε βρέθηκε μοναδικό αναγνωριστικό."
+  },
+  "convertOrganizationEncryptionDesc": {
+    "message": "$ORGANIZATION$ is using SSO with a self-hosted key server. A master password is no longer required to log in for members of this organization.",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
+  "leaveOrganization": {
+    "message": "Leave Organization"
+  },
+  "removeMasterPassword": {
+    "message": "Remove Master Password"
+  },
+  "removedMasterPassword": {
+    "message": "Master password removed."
+  },
+  "leaveOrganizationConfirmation": {
+    "message": "Are you sure you want to leave this organization?"
+  },
+  "leftOrganization": {
+    "message": "You have left the organization."
   }
 }

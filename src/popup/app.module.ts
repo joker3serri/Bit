@@ -17,6 +17,7 @@ import { HomeComponent } from './accounts/home.component';
 import { LockComponent } from './accounts/lock.component';
 import { LoginComponent } from './accounts/login.component';
 import { RegisterComponent } from './accounts/register.component';
+import { RemovePasswordComponent } from './accounts/remove-password.component';
 import { SetPasswordComponent } from './accounts/set-password.component';
 import { SsoComponent } from './accounts/sso.component';
 import { TwoFactorOptionsComponent } from './accounts/two-factor-options.component';
@@ -80,6 +81,7 @@ import { PasswordRepromptComponent } from './components/password-reprompt.compon
 import { PopOutComponent } from './components/pop-out.component';
 import { SendListComponent } from './components/send-list.component';
 import { SetPinComponent } from './components/set-pin.component';
+import { VerifyMasterPasswordComponent } from './components/verify-master-password.component';
 
 import { CalloutComponent } from 'jslib-angular/components/callout.component';
 import { IconComponent } from 'jslib-angular/components/icon.component';
@@ -192,6 +194,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         A11yTitleDirective,
         ActionButtonsComponent,
         AddEditComponent,
+        AddEditCustomFieldsComponent,
         ApiActionDirective,
         AppComponent,
         AttachmentsComponent,
@@ -212,8 +215,8 @@ registerLocaleData(localeZhTw, 'zh-TW');
         FolderAddEditComponent,
         FoldersComponent,
         GroupingsComponent,
-        HomeComponent,
         HintComponent,
+        HomeComponent,
         I18nPipe,
         IconComponent,
         InputVerbatimDirective,
@@ -223,6 +226,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         PasswordGeneratorComponent,
         PasswordGeneratorHistoryComponent,
         PasswordHistoryComponent,
+        PasswordRepromptComponent,
         PopOutComponent,
         PremiumComponent,
         PrivateModeComponent,
@@ -235,6 +239,7 @@ registerLocaleData(localeZhTw, 'zh-TW');
         SendListComponent,
         SendTypeComponent,
         SetPasswordComponent,
+        SetPinComponent,
         SettingsComponent,
         ShareComponent,
         SsoComponent,
@@ -243,15 +248,14 @@ registerLocaleData(localeZhTw, 'zh-TW');
         SyncComponent,
         TabsComponent,
         TrueFalseValueDirective,
-        TwoFactorOptionsComponent,
         TwoFactorComponent,
+        TwoFactorOptionsComponent,
         UpdateTempPasswordComponent,
-        ViewComponent,
-        PasswordRepromptComponent,
-        SetPinComponent,
         VaultTimeoutInputComponent,
-        AddEditCustomFieldsComponent,
+        VerifyMasterPasswordComponent,
+        ViewComponent,
         ViewCustomFieldsComponent,
+        RemovePasswordComponent,
     ],
     entryComponents: [],
     providers: [
