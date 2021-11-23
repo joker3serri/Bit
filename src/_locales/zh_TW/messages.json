@@ -134,7 +134,7 @@
     "message": "驗證碼"
   },
   "confirmIdentity": {
-    "message": "請先確認身分後再繼續。"
+    "message": "請先確認身份後再繼續。"
   },
   "account": {
     "message": "帳戶"
@@ -556,10 +556,10 @@
     "message": "將密碼庫中的支付卡項目列在「目前分頁」頁面上，以便於自動填入。"
   },
   "dontShowIdentitiesCurrentTab": {
-    "message": "不要在分頁頁面顯示身分"
+    "message": "不要在分頁頁面顯示身份"
   },
   "dontShowIdentitiesCurrentTabDesc": {
-    "message": "將密碼庫中的身分項目列在「目前分頁」頁面上，以便於自動填入。"
+    "message": "將密碼庫中的身份項目列在「目前分頁」頁面上，以便於自動填入。"
   },
   "clearClipboard": {
     "message": "清除剪貼簿",
@@ -915,7 +915,7 @@
     "message": "網頁版密碼庫伺服器 URL"
   },
   "identityUrl": {
-    "message": "身分伺服器 URL"
+    "message": "身份伺服器 URL"
   },
   "notificationsUrl": {
     "message": "通知伺服器 URL"
@@ -1109,7 +1109,7 @@
     "message": "全名"
   },
   "identityName": {
-    "message": "身分名稱"
+    "message": "身份名稱"
   },
   "company": {
     "message": "公司"
@@ -1169,7 +1169,7 @@
     "message": "支付卡"
   },
   "typeIdentity": {
-    "message": "身分"
+    "message": "身份"
   },
   "passwordHistory": {
     "message": "密碼歷史記錄"
@@ -1193,7 +1193,7 @@
     "message": "支付卡"
   },
   "identities": {
-    "message": "身分"
+    "message": "身份"
   },
   "logins": {
     "message": "登入資料"
@@ -1765,7 +1765,7 @@
     "message": "對收件人隱藏我的電子郵件位址。"
   },
   "sendOptionsPolicyInEffect": {
-    "message": "一個或多個組織原则正影響您的 Send 選項。"
+    "message": "一個或多個組織原則正影響您的 Send 選項。"
   },
   "passwordPrompt": {
     "message": "重新詢問主密碼"
@@ -1780,7 +1780,7 @@
     "message": "需要驗證電子郵件"
   },
   "emailVerificationRequiredDesc": {
-    "message": "您必須驗證您的電子郵件才能使用此功能。 您可以在網頁密碼庫裡驗證您的電子郵件。"
+    "message": "您必須驗證您的電子郵件才能使用此功能。您可以在網頁密碼庫裡驗證您的電子郵件。"
   },
   "updatedMasterPassword": {
     "message": "已更新主密碼"
@@ -1838,7 +1838,7 @@
     "message": "找不到唯一識別元。"
   },
   "convertOrganizationEncryptionDesc": {
-    "message": "$ORGANIZATION$ 使用自我托管金輪伺服器 SSO。這個组织的成員登入時将不再需要主密碼。",
+    "message": "$ORGANIZATION$ 使用自我托管金輪伺服器 SSO。這個組織的成員登入時將不再需要主密碼。",
     "placeholders": {
       "organization": {
         "content": "$1",
