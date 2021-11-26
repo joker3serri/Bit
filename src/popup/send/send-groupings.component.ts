@@ -22,8 +22,7 @@ import { SendService } from 'jslib-common/abstractions/send.service';
 import { StateService } from 'jslib-common/abstractions/state.service';
 import { SyncService } from 'jslib-common/abstractions/sync.service';
 import { UserService } from 'jslib-common/abstractions/user.service';
-
-import { BroadcasterService } from 'jslib-angular/services/broadcaster.service';
+import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
 
 import { PopupUtilsService } from '../services/popup-utils.service';
 

@@ -12,8 +12,6 @@ import { ToasterService } from 'angular2-toaster';
 
 import { BrowserApi } from '../../browser/browserApi';
 
-import { BroadcasterService } from 'jslib-angular/services/broadcaster.service';
-
 import { CipherRepromptType } from 'jslib-common/enums/cipherRepromptType';
 import { CipherType } from 'jslib-common/enums/cipherType';
 
@@ -26,6 +24,7 @@ import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.se
 import { SearchService } from 'jslib-common/abstractions/search.service';
 import { StorageService } from 'jslib-common/abstractions/storage.service';
 import { SyncService } from 'jslib-common/abstractions/sync.service';
+import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
 
 import { ConstantsService } from 'jslib-common/services/constants.service';
 

@@ -24,8 +24,7 @@ import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.se
 import { TokenService } from 'jslib-common/abstractions/token.service';
 import { TotpService } from 'jslib-common/abstractions/totp.service';
 import { UserService } from 'jslib-common/abstractions/user.service';
-
-import { BroadcasterService } from 'jslib-angular/services/broadcaster.service';
+import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
 
 import { Cipher } from 'jslib-common/models/domain/cipher';
 import { LoginUriView } from 'jslib-common/models/view/loginUriView';

@@ -22,6 +22,7 @@ import { I18nService } from 'jslib-common/abstractions/i18n.service';
 import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.service';
 import { SearchService } from 'jslib-common/abstractions/search.service';
 import { StateService } from 'jslib-common/abstractions/state.service';
+import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
 
 import { CipherType } from 'jslib-common/enums/cipherType';
 
@@ -30,8 +31,6 @@ import { CollectionView } from 'jslib-common/models/view/collectionView';
 import { FolderView } from 'jslib-common/models/view/folderView';
 
 import { TreeNode } from 'jslib-common/models/domain/treeNode';
-
-import { BroadcasterService } from 'jslib-angular/services/broadcaster.service';
 
 import { CiphersComponent as BaseCiphersComponent } from 'jslib-angular/components/ciphers.component';
 
