@@ -154,10 +154,9 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
         { provide: StateServiceAbstraction, useClass: StateService },
         {
             provide: SearchServiceAbstraction,
-            useFactory: (cipherService: CipherService, logService: ConsoleLogService,
-                i18nService: I18nService) => {
-                return isPrivateMode ? null : new PopupSearchService(getBgService<SearchService>('searchService')(), cipherService, logService,
-                    i18nService);
+            useFactory: (cipherService: CipherService, logService: ConsoleLogService, i18nService: I18nService) => {
+                return isPrivateMode ? null : new PopupSearchService(getBgService<SearchService>('searchService')(),
+                    cipherService, logService, i18nService);
             },
             deps: [
                 CipherService,
