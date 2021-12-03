@@ -15,6 +15,7 @@ import { first } from 'rxjs/operators';
 
 import { BrowserApi } from '../../browser/browserApi';
 
+import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
 import { CipherService } from 'jslib-common/abstractions/cipher.service';
 import { CollectionService } from 'jslib-common/abstractions/collection.service';
 import { FolderService } from 'jslib-common/abstractions/folder.service';
@@ -22,7 +23,6 @@ import { I18nService } from 'jslib-common/abstractions/i18n.service';
 import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.service';
 import { SearchService } from 'jslib-common/abstractions/search.service';
 import { StateService } from 'jslib-common/abstractions/state.service';
-import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
 
 import { CipherType } from 'jslib-common/enums/cipherType';
 

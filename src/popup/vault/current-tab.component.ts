@@ -17,6 +17,7 @@ import { CipherType } from 'jslib-common/enums/cipherType';
 
 import { CipherView } from 'jslib-common/models/view/cipherView';
 
+import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
 import { CipherService } from 'jslib-common/abstractions/cipher.service';
 import { I18nService } from 'jslib-common/abstractions/i18n.service';
 import { PasswordRepromptService } from 'jslib-common/abstractions/passwordReprompt.service';
@@ -24,7 +25,6 @@ import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.se
 import { SearchService } from 'jslib-common/abstractions/search.service';
 import { StorageService } from 'jslib-common/abstractions/storage.service';
 import { SyncService } from 'jslib-common/abstractions/sync.service';
-import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
 
 import { ConstantsService } from 'jslib-common/services/constants.service';
 
