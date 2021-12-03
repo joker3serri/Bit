@@ -11,7 +11,7 @@ import { PasswordRepromptService } from './password-reprompt.service';
 import { UnauthGuardService } from './unauth-guard.service';
 
 import { JslibServicesModule } from 'jslib-angular/services/jslib-services.module';
-import { LockGuardService as LockGuardServiceAbstraction } from 'jslib-angular/services/lock-guard.service';
+import { LockGuardService as BaseLockGuardService } from 'jslib-angular/services/lock-guard.service';
 import { UnauthGuardService as UnauthGuardServiceAbstraction } from 'jslib-angular/services/unauth-guard.service';
 
 import { BrowserApi } from '../../browser/browserApi';
@@ -145,7 +145,7 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
             multi: true,
         },
         LaunchGuardService,
-        { provide: LockGuardServiceAbstraction, useClass: LockGuardService },
+        { provide: BaseLockGuardService, useClass: LockGuardService },
         { provide: UnauthGuardServiceAbstraction, useClass: UnauthGuardService },
         DebounceNavigationService,
         PopupUtilsService,
