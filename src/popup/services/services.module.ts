@@ -12,7 +12,7 @@ import { UnauthGuardService } from './unauth-guard.service';
 
 import { JslibServicesModule } from 'jslib-angular/services/jslib-services.module';
 import { LockGuardService as BaseLockGuardService } from 'jslib-angular/services/lock-guard.service';
-import { UnauthGuardService as UnauthGuardServiceAbstraction } from 'jslib-angular/services/unauth-guard.service';
+import { UnauthGuardService as BaseUnauthGuardService } from 'jslib-angular/services/unauth-guard.service';
 
 import { BrowserApi } from '../../browser/browserApi';
 
@@ -146,7 +146,7 @@ export function initFactory(platformUtilsService: PlatformUtilsService, i18nServ
         },
         LaunchGuardService,
         { provide: BaseLockGuardService, useClass: LockGuardService },
-        { provide: UnauthGuardServiceAbstraction, useClass: UnauthGuardService },
+        { provide: BaseUnauthGuardService, useClass: UnauthGuardService },
         DebounceNavigationService,
         PopupUtilsService,
         { provide: MessagingService, useClass: BrowserMessagingService },
