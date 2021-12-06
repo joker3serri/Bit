@@ -1,5 +1,3 @@
-import { BrowserApi } from '../browser/browserApi';
-import Swal, { SweetAlertIcon } from 'sweetalert2/src/sweetalert2.js';
 import {
     ChangeDetectorRef,
     Component,
@@ -17,6 +15,8 @@ import {
     IndividualConfig,
     ToastrService,
 } from 'ngx-toastr';
+import Swal, { SweetAlertIcon } from 'sweetalert2/src/sweetalert2.js';
+import { BrowserApi } from '../browser/browserApi';
 
 import { AuthService } from 'jslib-common/abstractions/auth.service';
 import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
 
     toasterConfig: Partial<IndividualConfig> = {
         closeButton: true,
-        positionClass: 'toast-bottom-full-width'
+        positionClass: 'toast-bottom-full-width',
     };
 
     private lastActivity: number = null;
