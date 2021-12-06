@@ -1,13 +1,5 @@
 import { BrowserApi } from '../browser/browserApi';
-
-import {
-    BodyOutputType,
-    Toast,
-    ToasterConfig,
-    ToasterService,
-} from 'angular2-toaster';
 import Swal, { SweetAlertIcon } from 'sweetalert2/src/sweetalert2.js';
-
 import {
     ChangeDetectorRef,
     Component,
@@ -21,6 +13,10 @@ import {
     Router,
     RouterOutlet,
 } from '@angular/router';
+import {
+    IndividualConfig,
+    ToastrService,
+} from 'ngx-toastr';
 
 import { AuthService } from 'jslib-common/abstractions/auth.service';
 import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
@@ -40,12 +36,12 @@ import { routerTransition } from './app-routing.animations';
     styles: [],
     animations: [routerTransition],
     template: `
-        <toaster-container [toasterconfig]="toasterConfig" aria-live="polite"></toaster-container>
         <main [@routerTransition]="getState(o)">
             <router-outlet #o="outlet"></router-outlet>
         </main>`,
 })
 export class AppComponent implements OnInit {
+    /*
     toasterConfig: ToasterConfig = new ToasterConfig({
         showCloseButton: false,
         mouseoverTimerStop: true,
@@ -54,10 +50,16 @@ export class AppComponent implements OnInit {
         positionClass: 'toast-bottom-full-width',
         newestOnTop: false,
     });
+    */
+
+    toasterConfig: Partial<IndividualConfig> = {
+        closeButton: true,
+        positionClass: 'toast-bottom-full-width'
+    };
 
     private lastActivity: number = null;
 
-    constructor(private toasterService: ToasterService, private storageService: StorageService,
+    constructor(private toastrService: ToastrService, private storageService: StorageService,
         private broadcasterService: BroadcasterService, private authService: AuthService,
         private i18nService: I18nService, private router: Router,
         private stateService: StateService, private messagingService: MessagingService,
@@ -183,30 +185,29 @@ export class AppComponent implements OnInit {
     }
 
     private showToast(msg: any) {
-        const toast: Toast = {
-            type: msg.type,
-            title: msg.title,
-        };
+        let message = '';
+
+        const options = Object.assign({}, this.toasterConfig);
+
         if (typeof (msg.text) === 'string') {
-            toast.body = msg.text;
+            message = msg.text;
         } else if (msg.text.length === 1) {
-            toast.body = msg.text[0];
+            message = msg.text[0];
         } else {
-            let message = '';
             msg.text.forEach((t: string) =>
                 message += ('<p>' + this.sanitizer.sanitize(SecurityContext.HTML, t) + '</p>'));
-            toast.body = message;
-            toast.bodyOutputType = BodyOutputType.TrustedHtml;
+            options.enableHtml = true;
         }
         if (msg.options != null) {
             if (msg.options.trustedHtml === true) {
-                toast.bodyOutputType = BodyOutputType.TrustedHtml;
+                options.enableHtml = true;
             }
             if (msg.options.timeout != null && msg.options.timeout > 0) {
-                toast.timeout = msg.options.timeout;
+                options.timeOut = msg.options.timeout;
             }
         }
-        this.toasterService.popAsync(toast);
+
+        this.toastrService.show(message, msg.title, options, 'toast-' + msg.type);
     }
 
     private async showDialog(msg: any) {
