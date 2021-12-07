@@ -41,16 +41,6 @@ import { routerTransition } from './app-routing.animations';
         </main>`,
 })
 export class AppComponent implements OnInit {
-    /*
-    toasterConfig: ToasterConfig = new ToasterConfig({
-        showCloseButton: false,
-        mouseoverTimerStop: true,
-        animation: 'slideUp',
-        limit: 2,
-        positionClass: 'toast-bottom-full-width',
-        newestOnTop: false,
-    });
-    */
 
     toasterConfig: Partial<IndividualConfig> = {
         closeButton: true,
