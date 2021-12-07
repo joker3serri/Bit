@@ -42,11 +42,6 @@ import { routerTransition } from './app-routing.animations';
 })
 export class AppComponent implements OnInit {
 
-    toasterConfig: Partial<IndividualConfig> = {
-        closeButton: true,
-        positionClass: 'toast-bottom-full-width',
-    };
-
     private lastActivity: number = null;
 
     constructor(private toastrService: ToastrService, private storageService: StorageService,
@@ -177,7 +172,7 @@ export class AppComponent implements OnInit {
     private showToast(msg: any) {
         let message = '';
 
-        const options = Object.assign({}, this.toasterConfig);
+        const options: Partial<IndividualConfig> = {};
 
         if (typeof (msg.text) === 'string') {
             message = msg.text;

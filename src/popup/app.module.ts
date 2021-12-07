@@ -191,6 +191,8 @@ registerLocaleData(localeZhTw, 'zh-TW');
         BitwardenToastModule.forRoot({
             maxOpened: 2,
             autoDismiss: true,
+            closeButton: true,
+            positionClass: 'toast-bottom-full-width',
         }),
     ],
     declarations: [
