@@ -167,10 +167,10 @@ const config = {
         symlinks: false,
         modules: [path.resolve('node_modules')],
         fallback: {
-            "assert": false,
-            "buffer": require.resolve("buffer/"),
-            "util": require.resolve("util/"),
-            "url": require.resolve("url/"),
+            'assert': false,
+            'buffer': require.resolve('buffer/'),
+            'util': require.resolve('util/'),
+            'url': require.resolve('url/'),
         },
     },
     output: {
