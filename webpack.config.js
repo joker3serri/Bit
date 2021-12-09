@@ -4,7 +4,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const AngularWebpackPlugin = require('@ngtools/webpack').AngularWebpackPlugin;
+const { AngularWebpackPlugin } = require('@ngtools/webpack');
 
 if (process.env.NODE_ENV == null) {
     process.env.NODE_ENV = 'development';
@@ -63,19 +63,16 @@ const plugins = [
         template: './src/popup/index.html',
         filename: 'popup/index.html',
         chunks: ['popup/polyfills', 'popup/vendor-angular', 'popup/vendor', 'popup/main'],
-        cache: false, // Remove after upgrading to Webpack 5
     }),
     new HtmlWebpackPlugin({
         template: './src/background.html',
         filename: 'background.html',
         chunks: ['vendor', 'background'],
-        cache: false, // Remove after upgrading to Webpack 5
     }),
     new HtmlWebpackPlugin({
         template: './src/notification/bar.html',
         filename: 'notification/bar.html',
         chunks: ['notification/bar'],
-        cache: false, // Remove after upgrading to Webpack 5
     }),
     new CopyWebpackPlugin({
         patterns: [
