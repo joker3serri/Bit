@@ -1,4 +1,7 @@
 @import "../../../jslib/angular/src/scss/webfonts.css";
+$dark-icon-themes: 'theme-dark', 'theme_solarizedDark', 'theme_nord';
+@import "../../../jslib/angular/src/scss/icons.css";
+
 @import "variables.scss";
 @import "base.scss";
 @import "grid.scss";
@@ -9,4 +12,3 @@
 @import "plugins.scss";
 @import "environment.scss";
 @import "pages.scss";
-@import "icons.scss";
