@@ -22,10 +22,21 @@ $fa-font-path: "~font-awesome/fonts";
         display: flex;
         padding: 15px;
 
+        @include themify($themes) {
+            color: themed('toastColor');
+        }
+
         .toast-close-button {
             position: absolute;
             right: 5px;
             top: 0;
+
+            &:hover, &:focus {
+                opacity: 1;
+                @include themify($themes) {
+                    color: themed('toastColor');
+                }
+            }
         }
 
         &:hover {
@@ -53,7 +64,7 @@ $fa-font-path: "~font-awesome/fonts";
 
         &.toast-danger, &.toast-error {
             @include themify($themes) {
-                background-color: themed('dangerColor');
+                background-color: themed('toastDangerBackgroundColor');
             }
 
             .icon i::before {
@@ -63,7 +74,7 @@ $fa-font-path: "~font-awesome/fonts";
 
         &.toast-warning {
             @include themify($themes) {
-                background-color: themed('warningColor');
+                background-color: themed('toastWarningBackgroundColor');
             }
 
             .icon i::before {
@@ -73,7 +84,7 @@ $fa-font-path: "~font-awesome/fonts";
 
         &.toast-info {
             @include themify($themes) {
-                background-color: themed('infoColor');
+                background-color: themed('toastInfoBackgroundColor');
             }
 
             .icon i:before {
@@ -83,7 +94,7 @@ $fa-font-path: "~font-awesome/fonts";
 
         &.toast-success {
             @include themify($themes) {
-                background-color: themed('successColor');
+                background-color: themed('toastSuccessBackgroundColor');
             }
 
             .icon i:before {
