@@ -15,7 +15,7 @@
         display: flex;
 
         @include themify($themes) {
-            color: themed('headingColor');
+            color: themed("headingColor");
         }
     }
 
@@ -28,12 +28,14 @@
         box-sizing: border-box;
 
         @include themify($themes) {
-            color: themed('headingColor');
+            color: themed("headingColor");
         }
 
-        &:hover, &:focus, &.active {
+        &:hover,
+        &:focus,
+        &.active {
             @include themify($themes) {
-                background-color: themed('boxBackgroundHoverColor');
+                background-color: themed("boxBackgroundHoverColor");
             }
         }
 
@@ -43,7 +45,7 @@
             margin-left: 5px;
 
             @include themify($themes) {
-                color: themed('headingColor');
+                color: themed("headingColor");
             }
         }
     }
@@ -53,21 +55,24 @@
         border-bottom: 1px solid #000000;
 
         @include themify($themes) {
-            background-color: themed('boxBackgroundColor');
-            border-color: themed('borderColor');
+            background-color: themed("boxBackgroundColor");
+            border-color: themed("borderColor");
         }
 
         &.box-content-padded {
             padding: 10px 15px;
         }
 
-        &.condensed .box-content-row, .box-content-row.condensed {
+        &.condensed .box-content-row,
+        .box-content-row.condensed {
             padding-top: 5px;
             padding-bottom: 5px;
         }
 
-        &.no-hover .box-content-row, .box-content-row.no-hover {
-            &:hover, &:focus {
+        &.no-hover .box-content-row,
+        .box-content-row.no-hover {
+            &:hover,
+            &:focus {
                 background-color: initial !important;
             }
         }
@@ -78,7 +83,7 @@
         font-size: $font-size-small;
 
         @include themify($themes) {
-            color: themed('mutedColor');
+            color: themed("mutedColor");
         }
     }
 
@@ -89,7 +94,7 @@
                 text-decoration: none;
 
                 @include themify($themes) {
-                    color: themed('textColor');
+                    color: themed("textColor");
                 }
 
                 &.padded {
@@ -97,9 +102,11 @@
                     padding-bottom: 10px;
                 }
 
-                &:hover, &:focus, &.active {
+                &:hover,
+                &:focus,
+                &.active {
                     @include themify($themes) {
-                        background-color: themed('listItemBackgroundHoverColor');
+                        background-color: themed("listItemBackgroundHoverColor");
                     }
                 }
 
@@ -108,7 +115,7 @@
                     padding-left: 5px;
 
                     @include themify($themes) {
-                        border-left-color: themed('mutedColor');
+                        border-left-color: themed("mutedColor");
                     }
                 }
 
@@ -119,7 +126,8 @@
                     }
                 }
 
-                .text:not(.no-ellipsis), .detail {
+                .text:not(.no-ellipsis),
+                .detail {
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -172,7 +180,7 @@
     padding-top: 10px;
 
     @include themify($themes) {
-        border-color: themed('borderColor');
+        border-color: themed("borderColor");
     }
 }
 
@@ -192,7 +200,7 @@
         border-bottom: 1px solid #000000;
 
         @include themify($themes) {
-            border-bottom-color: themed('boxBorderColor');
+            border-bottom-color: themed("boxBorderColor");
         }
     }
 
@@ -206,7 +214,7 @@
     &.last:last-child:before {
         border-bottom: 1px solid #000000;
         @include themify($themes) {
-            border-bottom-color: themed('boxBorderColor');
+            border-bottom-color: themed("boxBorderColor");
         }
     }
 
@@ -216,9 +224,11 @@
         clear: both;
     }
 
-    &:hover, &:focus, &.active {
+    &:hover,
+    &:focus,
+    &.active {
         @include themify($themes) {
-            background-color: themed('boxBackgroundHoverColor');
+            background-color: themed("boxBackgroundHoverColor");
         }
     }
 
@@ -232,14 +242,15 @@
         overflow-x: auto;
     }
 
-    .row-label, label {
+    .row-label,
+    label {
         font-size: $font-size-small;
         display: block;
         width: 100%;
         margin-bottom: 5px;
 
         @include themify($themes) {
-            color: themed('mutedColor');
+            color: themed("mutedColor");
         }
 
         .sub-label {
@@ -254,7 +265,7 @@
         margin-bottom: 5px;
 
         @include themify($themes) {
-            color: themed('mutedColor');
+            color: themed("mutedColor");
         }
 
         > a {
@@ -262,11 +273,12 @@
         }
     }
 
-    .text, .detail {
+    .text,
+    .detail {
         display: block;
 
         @include themify($themes) {
-            color: themed('textColor');
+            color: themed("textColor");
         }
     }
 
@@ -274,7 +286,7 @@
         font-size: $font-size-small;
 
         @include themify($themes) {
-            color: themed('mutedColor');
+            color: themed("mutedColor");
         }
     }
 
@@ -288,8 +300,12 @@
         min-width: 0;
     }
 
-    &.box-content-row-flex, .box-content-row-flex, &.box-content-row-checkbox,
-    &.box-content-row-input, &.box-content-row-slider, &.box-content-row-multi {
+    &.box-content-row-flex,
+    .box-content-row-flex,
+    &.box-content-row-checkbox,
+    &.box-content-row-input,
+    &.box-content-row-slider,
+    &.box-content-row-multi {
         display: flex;
         align-items: center;
         word-break: break-all;
@@ -316,37 +332,40 @@
             margin: 0;
 
             @include themify($themes) {
-                color: themed('dangerColor');
+                color: themed("dangerColor");
             }
         }
     }
 
-
-    &.box-content-row-multi, &.box-content-row-newmulti {
+    &.box-content-row-multi,
+    &.box-content-row-newmulti {
         padding-left: 10px;
     }
 
     &.box-content-row-newmulti {
         @include themify($themes) {
-            color: themed('primaryColor');
+            color: themed("primaryColor");
         }
     }
 
-    &.box-content-row-checkbox, &.box-content-row-input, &.box-content-row-slider {
-        label, .row-label {
+    &.box-content-row-checkbox,
+    &.box-content-row-input,
+    &.box-content-row-slider {
+        label,
+        .row-label {
             font-size: $font-size-base;
             display: block;
             width: initial;
             margin-bottom: 0;
 
             @include themify($themes) {
-                color: themed('textColor');
+                color: themed("textColor");
             }
         }
 
         > span {
             @include themify($themes) {
-                color: themed('mutedColor');
+                color: themed("mutedColor");
             }
         }
 
@@ -400,14 +419,15 @@
         }
     }
 
-    input:not([type="checkbox"]):not([type="radio"]), textarea {
+    input:not([type="checkbox"]):not([type="radio"]),
+    textarea {
         border: none;
         width: 100%;
         background-color: transparent !important;
 
         &::-webkit-input-placeholder {
             @include themify($themes) {
-                color: themed('inputPlaceholderColor');
+                color: themed("inputPlaceholderColor");
             }
         }
 
@@ -422,7 +442,7 @@
         border-radius: $border-radius;
 
         @include themify($themes) {
-            border-color: themed('inputBorderColor');
+            border-color: themed("inputBorderColor");
         }
     }
 
@@ -437,25 +457,26 @@
             border: none;
 
             @include themify($themes) {
-                color: themed('boxRowButtonColor');
+                color: themed("boxRowButtonColor");
             }
 
-            &:hover, &:focus {
+            &:hover,
+            &:focus {
                 @include themify($themes) {
-                    color: themed('boxRowButtonHoverColor');
+                    color: themed("boxRowButtonHoverColor");
                 }
             }
 
             &.disabled {
                 @include themify($themes) {
-                    color: themed('disabledIconColor');
-                    opacity: themed('disabledBoxOpacity');
+                    color: themed("disabledIconColor");
+                    opacity: themed("disabledBoxOpacity");
                 }
 
                 &:hover {
                     @include themify($themes) {
-                        color: themed('disabledIconColor');
-                        opacity: themed('disabledBoxOpacity');
+                        color: themed("disabledIconColor");
+                        opacity: themed("disabledBoxOpacity");
                     }
                 }
                 cursor: default !important;
@@ -488,7 +509,7 @@
         user-select: none;
 
         @include themify($themes) {
-            color: themed('mutedColor');
+            color: themed("mutedColor");
         }
     }
 
@@ -497,9 +518,9 @@
         display: flex;
         align-items: center;
         opacity: 0.8;
-    
+
         @include themify($themes) {
-            background-color: themed('boxBackgroundColor');
+            background-color: themed("boxBackgroundColor");
         }
     }
 
@@ -508,9 +529,10 @@
         width: calc(100% - 25px);
     }
 
-    .row-sub-icon, .row-sub-label + i.fa {
+    .row-sub-icon,
+    .row-sub-label + i.fa {
         @include themify($themes) {
-            color: themed('disabledIconColor');
+            color: themed("disabledIconColor");
         }
     }
 
@@ -519,7 +541,7 @@
         white-space: nowrap;
 
         @include themify($themes) {
-            color: themed('mutedColor');
+            color: themed("mutedColor");
         }
     }
 
@@ -531,7 +553,7 @@
         margin-left: -5px;
 
         @include themify($themes) {
-            color: themed('mutedColor');
+            color: themed("mutedColor");
         }
 
         &.icon-small {
@@ -574,7 +596,7 @@
                 fill: none;
 
                 @include themify($themes) {
-                    stroke: themed('totpStrokeColor');
+                    stroke: themed("totpStrokeColor");
                 }
 
                 &.inner {
@@ -592,15 +614,16 @@
         }
 
         &.low {
-            .totp-sec, .totp-code {
+            .totp-sec,
+            .totp-code {
                 @include themify($themes) {
-                    color: themed('dangerColor');
+                    color: themed("dangerColor");
                 }
             }
 
             .totp-circle {
                 @include themify($themes) {
-                    stroke: themed('dangerColor');
+                    stroke: themed("dangerColor");
                 }
             }
         }
@@ -639,7 +662,7 @@
             width: 100%;
 
             @include themify($themes) {
-                color: themed('textColor');
+                color: themed("textColor");
             }
         }
     }

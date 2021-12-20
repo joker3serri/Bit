@@ -1,53 +1,46 @@
-import { Location } from '@angular/common';
-import {
-    ChangeDetectorRef,
-    Component,
-    NgZone,
-    OnDestroy,
-    OnInit,
-} from '@angular/core';
-import {
-    ActivatedRoute,
-    Router,
-} from '@angular/router';
+import { Location } from "@angular/common";
+import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 
-import { first } from 'rxjs/operators';
+import { first } from "rxjs/operators";
 
-import { BrowserApi } from '../../browser/browserApi';
+import { BrowserApi } from "../../browser/browserApi";
 
-import { CipherType } from 'jslib-common/enums/cipherType';
+import { CipherType } from "jslib-common/enums/cipherType";
 
-import { CipherView } from 'jslib-common/models/view/cipherView';
-import { CollectionView } from 'jslib-common/models/view/collectionView';
-import { FolderView } from 'jslib-common/models/view/folderView';
+import { CipherView } from "jslib-common/models/view/cipherView";
+import { CollectionView } from "jslib-common/models/view/collectionView";
+import { FolderView } from "jslib-common/models/view/folderView";
 
-import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
-import { CipherService } from 'jslib-common/abstractions/cipher.service';
-import { CollectionService } from 'jslib-common/abstractions/collection.service';
-import { FolderService } from 'jslib-common/abstractions/folder.service';
-import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.service';
-import { SearchService } from 'jslib-common/abstractions/search.service';
-import { StateService } from 'jslib-common/abstractions/state.service';
-import { StorageService } from 'jslib-common/abstractions/storage.service';
-import { SyncService } from 'jslib-common/abstractions/sync.service';
-import { UserService } from 'jslib-common/abstractions/user.service';
+import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
+import { CipherService } from "jslib-common/abstractions/cipher.service";
+import { CollectionService } from "jslib-common/abstractions/collection.service";
+import { FolderService } from "jslib-common/abstractions/folder.service";
+import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
+import { SearchService } from "jslib-common/abstractions/search.service";
+import { StateService } from "jslib-common/abstractions/state.service";
+import { StorageService } from "jslib-common/abstractions/storage.service";
+import { SyncService } from "jslib-common/abstractions/sync.service";
+import { UserService } from "jslib-common/abstractions/user.service";
 
-import { GroupingsComponent as BaseGroupingsComponent } from 'jslib-angular/components/groupings.component';
+import { GroupingsComponent as BaseGroupingsComponent } from "jslib-angular/components/groupings.component";
 
-import { PopupUtilsService } from '../services/popup-utils.service';
+import { PopupUtilsService } from "../services/popup-utils.service";
 
-const ComponentId = 'GroupingsComponent';
-const ScopeStateId = ComponentId + 'Scope';
+const ComponentId = "GroupingsComponent";
+const ScopeStateId = ComponentId + "Scope";
 
 @Component({
-    selector: 'app-vault-groupings',
-    templateUrl: 'groupings.component.html',
+    selector: "app-vault-groupings",
+    templateUrl: "groupings.component.html",
 })
 export class GroupingsComponent extends BaseGroupingsComponent implements OnInit, OnDestroy {
-
     get showNoFolderCiphers(): boolean {
-        return this.noFolderCiphers != null && this.noFolderCiphers.length < this.noFolderListSize &&
-            this.collections.length === 0;
+        return (
+            this.noFolderCiphers != null &&
+            this.noFolderCiphers.length < this.noFolderListSize &&
+            this.collections.length === 0
+        );
     }
 
     get folderCount(): number {
@@ -76,14 +69,24 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     private hasLoadedAllCiphers = false;
     private allCiphers: CipherView[] = null;
 
-    constructor(collectionService: CollectionService, folderService: FolderService,
-        storageService: StorageService, userService: UserService,
-        private cipherService: CipherService, private router: Router,
-        private ngZone: NgZone, private broadcasterService: BroadcasterService,
-        private changeDetectorRef: ChangeDetectorRef, private route: ActivatedRoute,
-        private stateService: StateService, private popupUtils: PopupUtilsService,
-        private syncService: SyncService, private platformUtilsService: PlatformUtilsService,
-        private searchService: SearchService, private location: Location) {
+    constructor(
+        collectionService: CollectionService,
+        folderService: FolderService,
+        storageService: StorageService,
+        userService: UserService,
+        private cipherService: CipherService,
+        private router: Router,
+        private ngZone: NgZone,
+        private broadcasterService: BroadcasterService,
+        private changeDetectorRef: ChangeDetectorRef,
+        private route: ActivatedRoute,
+        private stateService: StateService,
+        private popupUtils: PopupUtilsService,
+        private syncService: SyncService,
+        private platformUtilsService: PlatformUtilsService,
+        private searchService: SearchService,
+        private location: Location
+    ) {
         super(collectionService, folderService, storageService, userService);
         this.noFolderListSize = 100;
     }
@@ -91,12 +94,12 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     async ngOnInit() {
         this.searchTypeSearch = !this.platformUtilsService.isSafari();
         this.showLeftHeader = !(this.popupUtils.inSidebar(window) && this.platformUtilsService.isFirefox());
-        this.stateService.remove('CiphersComponent');
+        this.stateService.remove("CiphersComponent");
 
         this.broadcasterService.subscribe(ComponentId, (message: any) => {
             this.ngZone.run(async () => {
                 switch (message.command) {
-                    case 'syncCompleted':
+                    case "syncCompleted":
                         window.setTimeout(() => {
                             this.load();
                         }, 500);
@@ -110,13 +113,13 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         });
 
         const restoredScopeState = await this.restoreState();
-        this.route.queryParams.pipe(first()).subscribe(async params => {
+        this.route.queryParams.pipe(first()).subscribe(async (params) => {
             this.state = (await this.stateService.get<any>(ComponentId)) || {};
             if (this.state.searchText) {
                 this.searchText = this.state.searchText;
             } else if (params.searchText) {
                 this.searchText = params.searchText;
-                this.location.replaceState('vault');
+                this.location.replaceState("vault");
             }
 
             if (!this.syncService.syncInProgress) {
@@ -162,7 +165,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         if (!this.hasLoadedAllCiphers) {
             this.hasLoadedAllCiphers = !this.searchService.isSearchable(this.searchText);
         }
-        this.deletedCount = this.allCiphers.filter(c => c.isDeleted).length;
+        this.deletedCount = this.allCiphers.filter((c) => c.isDeleted).length;
         await this.search(null);
         let favoriteCiphers: CipherView[] = null;
         let noFolderCiphers: CipherView[] = null;
@@ -170,7 +173,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
         const collectionCounts = new Map<string, number>();
         const typeCounts = new Map<CipherType, number>();
 
-        this.ciphers.forEach(c => {
+        this.ciphers.forEach((c) => {
             if (c.isDeleted) {
                 return;
             }
@@ -201,7 +204,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
             }
 
             if (c.collectionIds != null) {
-                c.collectionIds.forEach(colId => {
+                c.collectionIds.forEach((colId) => {
                     if (collectionCounts.has(colId)) {
                         collectionCounts.set(colId, collectionCounts.get(colId) + 1);
                     } else {
@@ -243,28 +246,28 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
 
     async selectType(type: CipherType) {
         super.selectType(type);
-        this.router.navigate(['/ciphers'], { queryParams: { type: type } });
+        this.router.navigate(["/ciphers"], { queryParams: { type: type } });
     }
 
     async selectFolder(folder: FolderView) {
         super.selectFolder(folder);
-        this.router.navigate(['/ciphers'], { queryParams: { folderId: folder.id || 'none' } });
+        this.router.navigate(["/ciphers"], { queryParams: { folderId: folder.id || "none" } });
     }
 
     async selectCollection(collection: CollectionView) {
         super.selectCollection(collection);
-        this.router.navigate(['/ciphers'], { queryParams: { collectionId: collection.id } });
+        this.router.navigate(["/ciphers"], { queryParams: { collectionId: collection.id } });
     }
 
     async selectTrash() {
         super.selectTrash();
-        this.router.navigate(['/ciphers'], { queryParams: { deleted: true } });
+        this.router.navigate(["/ciphers"], { queryParams: { deleted: true } });
     }
 
     async selectCipher(cipher: CipherView) {
         this.selectedTimeout = window.setTimeout(() => {
             if (!this.preventSelected) {
-                this.router.navigate(['/view-cipher'], { queryParams: { cipherId: cipher.id } });
+                this.router.navigate(["/view-cipher"], { queryParams: { cipherId: cipher.id } });
             }
             this.preventSelected = false;
         }, 200);
@@ -287,7 +290,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     }
 
     async addCipher() {
-        this.router.navigate(['/add-cipher']);
+        this.router.navigate(["/add-cipher"]);
     }
 
     showSearching() {
@@ -296,7 +299,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
 
     closeOnEsc(e: KeyboardEvent) {
         // If input not empty, use browser default behavior of clearing input instead
-		if (e.key === 'Escape' && (this.searchText == null || this.searchText === '')) {
+        if (e.key === "Escape" && (this.searchText == null || this.searchText === "")) {
             BrowserApi.closePopup(window);
         }
     }

@@ -1,21 +1,18 @@
-import {
-    Component,
-    OnInit,
-} from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
-import { FolderView } from 'jslib-common/models/view/folderView';
+import { FolderView } from "jslib-common/models/view/folderView";
 
-import { FolderService } from 'jslib-common/abstractions/folder.service';
+import { FolderService } from "jslib-common/abstractions/folder.service";
 
 @Component({
-    selector: 'app-folders',
-    templateUrl: 'folders.component.html',
+    selector: "app-folders",
+    templateUrl: "folders.component.html",
 })
 export class FoldersComponent implements OnInit {
     folders: FolderView[];
 
-    constructor(private folderService: FolderService, private router: Router) { }
+    constructor(private folderService: FolderService, private router: Router) {}
 
     async ngOnInit() {
         this.folders = await this.folderService.getAllDecrypted();
@@ -26,10 +23,10 @@ export class FoldersComponent implements OnInit {
     }
 
     folderSelected(folder: FolderView) {
-        this.router.navigate(['/edit-folder'], { queryParams: { folderId: folder.id } });
+        this.router.navigate(["/edit-folder"], { queryParams: { folderId: folder.id } });
     }
 
     addFolder() {
-        this.router.navigate(['/add-folder']);
+        this.router.navigate(["/add-folder"]);
     }
 }

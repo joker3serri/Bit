@@ -1,15 +1,10 @@
-import {
-    Component,
-    EventEmitter,
-    Input,
-    Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
-import { CipherView } from 'jslib-common/models/view/cipherView';
+import { CipherView } from "jslib-common/models/view/cipherView";
 
 @Component({
-    selector: 'app-cipher-row',
-    templateUrl: 'cipher-row.component.html',
+    selector: "app-cipher-row",
+    templateUrl: "cipher-row.component.html",
 })
 export class CipherRowComponent {
     @Output() onSelected = new EventEmitter<CipherView>();

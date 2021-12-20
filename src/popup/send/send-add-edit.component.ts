@@ -1,33 +1,27 @@
-import {
-    DatePipe,
-    Location,
-} from '@angular/common';
+import { DatePipe, Location } from "@angular/common";
 
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
-import {
-    ActivatedRoute,
-    Router,
-} from '@angular/router';
+import { ActivatedRoute, Router } from "@angular/router";
 
-import { first } from 'rxjs/operators';
+import { first } from "rxjs/operators";
 
-import { EnvironmentService } from 'jslib-common/abstractions/environment.service';
-import { I18nService } from 'jslib-common/abstractions/i18n.service';
-import { LogService } from 'jslib-common/abstractions/log.service';
-import { MessagingService } from 'jslib-common/abstractions/messaging.service';
-import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.service';
-import { PolicyService } from 'jslib-common/abstractions/policy.service';
-import { SendService } from 'jslib-common/abstractions/send.service';
-import { UserService } from 'jslib-common/abstractions/user.service';
+import { EnvironmentService } from "jslib-common/abstractions/environment.service";
+import { I18nService } from "jslib-common/abstractions/i18n.service";
+import { LogService } from "jslib-common/abstractions/log.service";
+import { MessagingService } from "jslib-common/abstractions/messaging.service";
+import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
+import { PolicyService } from "jslib-common/abstractions/policy.service";
+import { SendService } from "jslib-common/abstractions/send.service";
+import { UserService } from "jslib-common/abstractions/user.service";
 
-import { PopupUtilsService } from '../services/popup-utils.service';
+import { PopupUtilsService } from "../services/popup-utils.service";
 
-import { AddEditComponent as BaseAddEditComponent } from 'jslib-angular/components/send/add-edit.component';
+import { AddEditComponent as BaseAddEditComponent } from "jslib-angular/components/send/add-edit.component";
 
 @Component({
-    selector: 'app-send-add-edit',
-    templateUrl: 'send-add-edit.component.html',
+    selector: "app-send-add-edit",
+    templateUrl: "send-add-edit.component.html",
 })
 export class SendAddEditComponent extends BaseAddEditComponent {
     // Options header
@@ -39,13 +33,32 @@ export class SendAddEditComponent extends BaseAddEditComponent {
     isLinux = false;
     isUnsupportedMac = false;
 
-    constructor(i18nService: I18nService, platformUtilsService: PlatformUtilsService,
-        userService: UserService, messagingService: MessagingService, policyService: PolicyService,
-        environmentService: EnvironmentService, datePipe: DatePipe, sendService: SendService,
-        private route: ActivatedRoute, private router: Router, private location: Location,
-        private popupUtilsService: PopupUtilsService, logService: LogService) {
-        super(i18nService, platformUtilsService, environmentService, datePipe, sendService, userService,
-            messagingService, policyService, logService);
+    constructor(
+        i18nService: I18nService,
+        platformUtilsService: PlatformUtilsService,
+        userService: UserService,
+        messagingService: MessagingService,
+        policyService: PolicyService,
+        environmentService: EnvironmentService,
+        datePipe: DatePipe,
+        sendService: SendService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private location: Location,
+        private popupUtilsService: PopupUtilsService,
+        logService: LogService
+    ) {
+        super(
+            i18nService,
+            platformUtilsService,
+            environmentService,
+            datePipe,
+            sendService,
+            userService,
+            messagingService,
+            policyService,
+            logService
+        );
     }
 
     get showFileSelector(): boolean {
@@ -53,7 +66,10 @@ export class SendAddEditComponent extends BaseAddEditComponent {
     }
 
     get showFilePopoutMessage(): boolean {
-        return !this.editMode && (this.showFirefoxFileWarning || this.showSafariFileWarning || this.showChromiumFileWarning);
+        return (
+            !this.editMode &&
+            (this.showFirefoxFileWarning || this.showSafariFileWarning || this.showChromiumFileWarning)
+        );
     }
 
     get showFirefoxFileWarning(): boolean {
@@ -78,10 +94,11 @@ export class SendAddEditComponent extends BaseAddEditComponent {
         this.isFirefox = this.platformUtilsService.isFirefox();
         this.inPopout = this.popupUtilsService.inPopout(window);
         this.inSidebar = this.popupUtilsService.inSidebar(window);
-        this.isLinux = window?.navigator?.userAgent.indexOf('Linux') !== -1;
-        this.isUnsupportedMac = this.platformUtilsService.isChrome() && window?.navigator?.appVersion.includes('Mac OS X 11');
+        this.isLinux = window?.navigator?.userAgent.indexOf("Linux") !== -1;
+        this.isUnsupportedMac =
+            this.platformUtilsService.isChrome() && window?.navigator?.appVersion.includes("Mac OS X 11");
 
-        this.route.queryParams.pipe(first()).subscribe(async params => {
+        this.route.queryParams.pipe(first()).subscribe(async (params) => {
             if (params.sendId) {
                 this.sendId = params.sendId;
             }
@@ -94,7 +111,7 @@ export class SendAddEditComponent extends BaseAddEditComponent {
 
         window.setTimeout(() => {
             if (!this.editMode) {
-                document.getElementById('name').focus();
+                document.getElementById("name").focus();
             }
         }, 200);
     }
@@ -119,8 +136,8 @@ export class SendAddEditComponent extends BaseAddEditComponent {
 
     cancel() {
         // If true, the window was pop'd out on the add-send page. location.back will not work
-        if ((window as any).previousPopupUrl.startsWith('/add-send')) {
-            this.router.navigate(['tabs/send']);
+        if ((window as any).previousPopupUrl.startsWith("/add-send")) {
+            this.router.navigate(["tabs/send"]);
         } else {
             this.location.back();
         }

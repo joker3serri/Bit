@@ -1,78 +1,79 @@
 @import "variables.scss";
 
-small, .small {
+small,
+.small {
     font-size: $font-size-small;
 }
 
 .bg-primary {
     @include themify($themes) {
-        background-color: themed('primaryColor') !important;
+        background-color: themed("primaryColor") !important;
     }
 }
 
 .bg-success {
     @include themify($themes) {
-        background-color: themed('successColor') !important;
+        background-color: themed("successColor") !important;
     }
 }
 
 .bg-danger {
     @include themify($themes) {
-        background-color: themed('dangerColor') !important;
+        background-color: themed("dangerColor") !important;
     }
 }
 
 .bg-info {
     @include themify($themes) {
-        background-color: themed('infoColor') !important;
+        background-color: themed("infoColor") !important;
     }
 }
 
 .bg-warning {
     @include themify($themes) {
-        background-color: themed('warningColor') !important;
+        background-color: themed("warningColor") !important;
     }
 }
 
 .text-primary {
     @include themify($themes) {
-        color: themed('primaryColor') !important;
+        color: themed("primaryColor") !important;
     }
 }
 
 .text-success {
     @include themify($themes) {
-        color: themed('successColor') !important;
+        color: themed("successColor") !important;
     }
 }
 
 .text-muted {
     @include themify($themes) {
-        color: themed('mutedColor') !important;
+        color: themed("mutedColor") !important;
     }
 }
 
 .text-default {
     @include themify($themes) {
-        color: themed('textColor') !important;
+        color: themed("textColor") !important;
     }
 }
 
 .text-danger {
     @include themify($themes) {
-        color: themed('dangerColor') !important;
+        color: themed("dangerColor") !important;
     }
 }
 
 .text-info {
     @include themify($themes) {
-        color: themed('infoColor') !important;
+        color: themed("infoColor") !important;
     }
 }
 
 .text-warning {
     @include themify($themes) {
-        color: themed('warningColor') !important;
+        color: themed("warningColor") !important;
     }
 }
 
@@ -153,18 +154,18 @@ p.lead {
 
 .password-number {
     @include themify($themes) {
-        color: themed('passwordNumberColor');
+        color: themed("passwordNumberColor");
     }
 }
 
 .password-special {
     @include themify($themes) {
-        color: themed('passwordSpecialColor');
+        color: themed("passwordSpecialColor");
     }
 }
 
 #duo-frame {
-    background: url('../images/loading.svg') 0 0 no-repeat;
+    background: url("../images/loading.svg") 0 0 no-repeat;
     width: 100%;
     height: 470px;
     margin-bottom: -10px;
@@ -177,7 +178,7 @@ p.lead {
 }
 
 #web-authn-frame {
-    background: url('../images/loading.svg') 0 0 no-repeat;
+    background: url("../images/loading.svg") 0 0 no-repeat;
     width: 100%;
     height: 310px;
     margin-bottom: -10px;
@@ -215,7 +216,7 @@ app-root > #loading {
     color: $text-muted;
 
     @include themify($themes) {
-        color: themed('mutedColor');
+        color: themed("mutedColor");
     }
 }
 
@@ -230,7 +231,7 @@ app-vault-icon {
     background-size: 142px 21px;
     background-repeat: no-repeat;
     @include themify($themes) {
-        background-image: url('../images/logo-' + themed('logoSuffix') + '@2x.png');
+        background-image: url("../images/logo-" + themed("logoSuffix") + "@2x.png");
     }
     @media (min-width: 219px) {
         width: 189px;
@@ -259,8 +260,8 @@ app-vault-icon {
     border-left-width: 5px;
     border-radius: 3px;
     @include themify($themes) {
-        border-color: themed('calloutBorderColor');
-        background-color: themed('calloutBackgroundColor');
+        border-color: themed("calloutBorderColor");
+        background-color: themed("calloutBackgroundColor");
     }
 
     .callout-heading {
@@ -274,68 +275,70 @@ app-vault-icon {
 
     &.callout-primary {
         @include themify($themes) {
-            border-left-color: themed('primaryColor');
+            border-left-color: themed("primaryColor");
         }
 
         .callout-heading {
             @include themify($themes) {
-                color: themed('primaryColor');
+                color: themed("primaryColor");
             }
         }
     }
 
     &.callout-info {
         @include themify($themes) {
-            border-left-color: themed('infoColor');
+            border-left-color: themed("infoColor");
         }
 
         .callout-heading {
             @include themify($themes) {
-                color: themed('infoColor');
+                color: themed("infoColor");
             }
         }
     }
 
     &.callout-danger {
         @include themify($themes) {
-            border-left-color: themed('dangerColor');
+            border-left-color: themed("dangerColor");
         }
 
         .callout-heading {
             @include themify($themes) {
-                color: themed('dangerColor');
+                color: themed("dangerColor");
             }
         }
     }
 
     &.callout-success {
         @include themify($themes) {
-            border-left-color: themed('successColor');
+            border-left-color: themed("successColor");
         }
 
         .callout-heading {
             @include themify($themes) {
-                color: themed('successColor');
+                color: themed("successColor");
             }
         }
     }
 
     &.callout-warning {
         @include themify($themes) {
-            border-left-color: themed('warningColor');
+            border-left-color: themed("warningColor");
         }
 
         .callout-heading {
             @include themify($themes) {
-                color: themed('warningColor');
+                color: themed("warningColor");
             }
         }
     }
 
     &.clickable {
-        &:hover, &:focus, &.active {
+        &:hover,
+        &:focus,
+        &.active {
             @include themify($themes) {
-                background-color: themed('boxBackgroundHoverColor');
+                background-color: themed("boxBackgroundHoverColor");
             }
         }
     }

@@ -47,7 +47,7 @@ app-home {
         left: 10px;
 
         @include themify($themes) {
-            color: themed('mutedColor');
+            color: themed("mutedColor");
         }
 
         &:not(:hover):not(:focus) {
@@ -62,17 +62,19 @@ app-home {
             }
         }
 
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
             text-decoration: none;
 
             @include themify($themes) {
-                color: themed('primaryColor');
+                color: themed("primaryColor");
             }
         }
     }
 }
 
-body.body-sm, body.body-xs {
+body.body-sm,
+body.body-xs {
     app-home {
         .center-content {
             margin-top: 0;

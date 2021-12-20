@@ -1,46 +1,39 @@
-import { Location } from '@angular/common';
-import {
-    ChangeDetectorRef,
-    Component,
-    NgZone,
-} from '@angular/core';
-import {
-    ActivatedRoute,
-    Router,
-} from '@angular/router';
+import { Location } from "@angular/common";
+import { ChangeDetectorRef, Component, NgZone } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 
-import { first } from 'rxjs/operators';
+import { first } from "rxjs/operators";
 
-import { ApiService } from 'jslib-common/abstractions/api.service';
-import { AuditService } from 'jslib-common/abstractions/audit.service';
-import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
-import { CipherService } from 'jslib-common/abstractions/cipher.service';
-import { CryptoService } from 'jslib-common/abstractions/crypto.service';
-import { EventService } from 'jslib-common/abstractions/event.service';
-import { I18nService } from 'jslib-common/abstractions/i18n.service';
-import { LogService } from 'jslib-common/abstractions/log.service';
-import { MessagingService } from 'jslib-common/abstractions/messaging.service';
-import { PasswordRepromptService } from 'jslib-common/abstractions/passwordReprompt.service';
-import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.service';
-import { TokenService } from 'jslib-common/abstractions/token.service';
-import { TotpService } from 'jslib-common/abstractions/totp.service';
-import { UserService } from 'jslib-common/abstractions/user.service';
+import { ApiService } from "jslib-common/abstractions/api.service";
+import { AuditService } from "jslib-common/abstractions/audit.service";
+import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
+import { CipherService } from "jslib-common/abstractions/cipher.service";
+import { CryptoService } from "jslib-common/abstractions/crypto.service";
+import { EventService } from "jslib-common/abstractions/event.service";
+import { I18nService } from "jslib-common/abstractions/i18n.service";
+import { LogService } from "jslib-common/abstractions/log.service";
+import { MessagingService } from "jslib-common/abstractions/messaging.service";
+import { PasswordRepromptService } from "jslib-common/abstractions/passwordReprompt.service";
+import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
+import { TokenService } from "jslib-common/abstractions/token.service";
+import { TotpService } from "jslib-common/abstractions/totp.service";
+import { UserService } from "jslib-common/abstractions/user.service";
 
-import { Cipher } from 'jslib-common/models/domain/cipher';
-import { LoginUriView } from 'jslib-common/models/view/loginUriView';
+import { Cipher } from "jslib-common/models/domain/cipher";
+import { LoginUriView } from "jslib-common/models/view/loginUriView";
 
-import { CipherType } from 'jslib-common/enums/cipherType';
+import { CipherType } from "jslib-common/enums/cipherType";
 
-import { ViewComponent as BaseViewComponent } from 'jslib-angular/components/view.component';
-import { BrowserApi } from '../../browser/browserApi';
-import { AutofillService } from '../../services/abstractions/autofill.service';
-import { PopupUtilsService } from '../services/popup-utils.service';
+import { ViewComponent as BaseViewComponent } from "jslib-angular/components/view.component";
+import { BrowserApi } from "../../browser/browserApi";
+import { AutofillService } from "../../services/abstractions/autofill.service";
+import { PopupUtilsService } from "../services/popup-utils.service";
 
-const BroadcasterSubscriptionId = 'ChildViewComponent';
+const BroadcasterSubscriptionId = "ChildViewComponent";
 
 @Component({
-    selector: 'app-vault-view',
-    templateUrl: 'view.component.html',
+    selector: "app-vault-view",
+    templateUrl: "view.component.html",
 })
 export class ViewComponent extends BaseViewComponent {
     showAttachments = true;
@@ -50,25 +43,52 @@ export class ViewComponent extends BaseViewComponent {
     inPopout = false;
     cipherType = CipherType;
 
-    constructor(cipherService: CipherService, totpService: TotpService,
-        tokenService: TokenService, i18nService: I18nService,
-        cryptoService: CryptoService, platformUtilsService: PlatformUtilsService,
-        auditService: AuditService, private route: ActivatedRoute,
-        private router: Router, private location: Location,
-        broadcasterService: BroadcasterService, ngZone: NgZone,
-        changeDetectorRef: ChangeDetectorRef, userService: UserService,
-        eventService: EventService, private autofillService: AutofillService,
-        private messagingService: MessagingService, private popupUtilsService: PopupUtilsService,
-        apiService: ApiService, passwordRepromptService: PasswordRepromptService,
-        logService: LogService) {
-        super(cipherService, totpService, tokenService, i18nService, cryptoService, platformUtilsService,
-            auditService, window, broadcasterService, ngZone, changeDetectorRef, userService, eventService,
-            apiService, passwordRepromptService, logService);
+    constructor(
+        cipherService: CipherService,
+        totpService: TotpService,
+        tokenService: TokenService,
+        i18nService: I18nService,
+        cryptoService: CryptoService,
+        platformUtilsService: PlatformUtilsService,
+        auditService: AuditService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private location: Location,
+        broadcasterService: BroadcasterService,
+        ngZone: NgZone,
+        changeDetectorRef: ChangeDetectorRef,
+        userService: UserService,
+        eventService: EventService,
+        private autofillService: AutofillService,
+        private messagingService: MessagingService,
+        private popupUtilsService: PopupUtilsService,
+        apiService: ApiService,
+        passwordRepromptService: PasswordRepromptService,
+        logService: LogService
+    ) {
+        super(
+            cipherService,
+            totpService,
+            tokenService,
+            i18nService,
+            cryptoService,
+            platformUtilsService,
+            auditService,
+            window,
+            broadcasterService,
+            ngZone,
+            changeDetectorRef,
+            userService,
+            eventService,
+            apiService,
+            passwordRepromptService,
+            logService
+        );
     }
 
     ngOnInit() {
         this.inPopout = this.popupUtilsService.inPopout(window);
-        this.route.queryParams.pipe(first()).subscribe(async params => {
+        this.route.queryParams.pipe(first()).subscribe(async (params) => {
             if (params.cipherId) {
                 this.cipherId = params.cipherId;
             } else {
@@ -83,7 +103,7 @@ export class ViewComponent extends BaseViewComponent {
         this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
             this.ngZone.run(async () => {
                 switch (message.command) {
-                    case 'collectPageDetailsResponse':
+                    case "collectPageDetailsResponse":
                         if (message.sender === BroadcasterSubscriptionId) {
                             this.pageDetails.push({
                                 frameId: message.webExtSender.frameId,
@@ -92,8 +112,8 @@ export class ViewComponent extends BaseViewComponent {
                             });
                         }
                         break;
-                    case 'tabChanged':
-                    case 'windowChanged':
+                    case "tabChanged":
+                    case "windowChanged":
                         if (this.loadPageDetailsTimeout != null) {
                             window.clearTimeout(this.loadPageDetailsTimeout);
                         }
@@ -120,11 +140,11 @@ export class ViewComponent extends BaseViewComponent {
         if (this.cipher.isDeleted) {
             return false;
         }
-        if (!await super.edit()) {
+        if (!(await super.edit())) {
             return false;
         }
 
-        this.router.navigate(['/edit-cipher'], { queryParams: { cipherId: this.cipher.id } });
+        this.router.navigate(["/edit-cipher"], { queryParams: { cipherId: this.cipher.id } });
         return true;
     }
 
@@ -133,11 +153,11 @@ export class ViewComponent extends BaseViewComponent {
             return false;
         }
 
-        if (!await super.clone()) {
+        if (!(await super.clone())) {
             return false;
         }
 
-        this.router.navigate(['/clone-cipher'], {
+        this.router.navigate(["/clone-cipher"], {
             queryParams: {
                 cloneMode: true,
                 cipherId: this.cipher.id,
@@ -147,12 +167,15 @@ export class ViewComponent extends BaseViewComponent {
     }
 
     async share() {
-        if (!await super.share()) {
+        if (!(await super.share())) {
             return false;
         }
 
         if (this.cipher.organizationId == null) {
-            this.router.navigate(['/share-cipher'], { replaceUrl: true, queryParams: { cipherId: this.cipher.id } });
+            this.router.navigate(["/share-cipher"], {
+                replaceUrl: true,
+                queryParams: { cipherId: this.cipher.id },
+            });
         }
         return true;
     }
@@ -160,8 +183,7 @@ export class ViewComponent extends BaseViewComponent {
     async fillCipher() {
         const didAutofill = await this.doAutofill();
         if (didAutofill) {
-            this.platformUtilsService.showToast('success', null,
-                this.i18nService.t('autoFillSuccess'));
+            this.platformUtilsService.showToast("success", null, this.i18nService.t("autoFillSuccess"));
         }
     }
 
@@ -170,15 +192,18 @@ export class ViewComponent extends BaseViewComponent {
 
         if (didAutofill) {
             if (this.tab == null) {
-                throw new Error('No tab found.');
+                throw new Error("No tab found.");
             }
 
             if (this.cipher.login.uris == null) {
                 this.cipher.login.uris = [];
             } else {
-                if (this.cipher.login.uris.some(uri => uri.uri === this.tab.url)) {
-                    this.platformUtilsService.showToast('success', null,
-                        this.i18nService.t('autoFillSuccessAndSavedUri'));
+                if (this.cipher.login.uris.some((uri) => uri.uri === this.tab.url)) {
+                    this.platformUtilsService.showToast(
+                        "success",
+                        null,
+                        this.i18nService.t("autoFillSuccessAndSavedUri")
+                    );
                     return;
                 }
             }
@@ -190,12 +215,10 @@ export class ViewComponent extends BaseViewComponent {
             try {
                 const cipher: Cipher = await this.cipherService.encrypt(this.cipher);
                 await this.cipherService.saveWithServer(cipher);
-                this.platformUtilsService.showToast('success', null,
-                    this.i18nService.t('autoFillSuccessAndSavedUri'));
-                this.messagingService.send('editedCipher');
+                this.platformUtilsService.showToast("success", null, this.i18nService.t("autoFillSuccessAndSavedUri"));
+                this.messagingService.send("editedCipher");
             } catch {
-                this.platformUtilsService.showToast('error', null,
-                    this.i18nService.t('unexpectedError'));
+                this.platformUtilsService.showToast("error", null, this.i18nService.t("unexpectedError"));
             }
         }
     }
@@ -230,20 +253,19 @@ export class ViewComponent extends BaseViewComponent {
             return;
         }
         BrowserApi.tabSendMessage(this.tab, {
-            command: 'collectPageDetails',
+            command: "collectPageDetails",
             tab: this.tab,
             sender: BroadcasterSubscriptionId,
         });
     }
 
     private async doAutofill() {
-        if (!await this.promptPassword()) {
+        if (!(await this.promptPassword())) {
             return false;
         }
 
         if (this.pageDetails == null || this.pageDetails.length === 0) {
-            this.platformUtilsService.showToast('error', null,
-                this.i18nService.t('autofillError'));
+            this.platformUtilsService.showToast("error", null, this.i18nService.t("autofillError"));
             return false;
         }
 
@@ -258,8 +280,7 @@ export class ViewComponent extends BaseViewComponent {
                 this.platformUtilsService.copyToClipboard(this.totpCode, { window: window });
             }
         } catch {
-            this.platformUtilsService.showToast('error', null,
-                this.i18nService.t('autofillError'));
+            this.platformUtilsService.showToast("error", null, this.i18nService.t("autofillError"));
             this.changeDetectorRef.detectChanges();
             return false;
         }

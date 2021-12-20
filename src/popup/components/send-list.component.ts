@@ -1,17 +1,12 @@
-import {
-    Component,
-    EventEmitter,
-    Input,
-    Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
-import { SendView } from 'jslib-common/models/view/sendView';
+import { SendView } from "jslib-common/models/view/sendView";
 
-import { SendType } from 'jslib-common/enums/sendType';
+import { SendType } from "jslib-common/enums/sendType";
 
 @Component({
-    selector: 'app-send-list',
-    templateUrl: 'send-list.component.html',
+    selector: "app-send-list",
+    templateUrl: "send-list.component.html",
 })
 export class SendListComponent {
     @Input() sends: SendView[];

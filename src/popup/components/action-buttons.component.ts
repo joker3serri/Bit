@@ -1,26 +1,21 @@
-import {
-    Component,
-    EventEmitter,
-    Input,
-    Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
-import { CipherRepromptType } from 'jslib-common/enums/cipherRepromptType';
-import { CipherType } from 'jslib-common/enums/cipherType';
-import { EventType } from 'jslib-common/enums/eventType';
+import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
+import { CipherType } from "jslib-common/enums/cipherType";
+import { EventType } from "jslib-common/enums/eventType";
 
-import { CipherView } from 'jslib-common/models/view/cipherView';
+import { CipherView } from "jslib-common/models/view/cipherView";
 
-import { EventService } from 'jslib-common/abstractions/event.service';
-import { I18nService } from 'jslib-common/abstractions/i18n.service';
-import { PasswordRepromptService } from 'jslib-common/abstractions/passwordReprompt.service';
-import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.service';
-import { TotpService } from 'jslib-common/abstractions/totp.service';
-import { UserService } from 'jslib-common/abstractions/user.service';
+import { EventService } from "jslib-common/abstractions/event.service";
+import { I18nService } from "jslib-common/abstractions/i18n.service";
+import { PasswordRepromptService } from "jslib-common/abstractions/passwordReprompt.service";
+import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
+import { TotpService } from "jslib-common/abstractions/totp.service";
+import { UserService } from "jslib-common/abstractions/user.service";
 
 @Component({
-    selector: 'app-action-buttons',
-    templateUrl: 'action-buttons.component.html',
+    selector: "app-action-buttons",
+    templateUrl: "action-buttons.component.html",
 })
 export class ActionButtonsComponent {
     @Output() onView = new EventEmitter<CipherView>();
@@ -31,10 +26,14 @@ export class ActionButtonsComponent {
     cipherType = CipherType;
     userHasPremiumAccess = false;
 
-    constructor(private i18nService: I18nService,
-        private platformUtilsService: PlatformUtilsService, private eventService: EventService,
-        private totpService: TotpService, private userService: UserService,
-        private passwordRepromptService: PasswordRepromptService) { }
+    constructor(
+        private i18nService: I18nService,
+        private platformUtilsService: PlatformUtilsService,
+        private eventService: EventService,
+        private totpService: TotpService,
+        private userService: UserService,
+        private passwordRepromptService: PasswordRepromptService
+    ) {}
 
     async ngOnInit() {
         this.userHasPremiumAccess = await this.userService.canAccessPremium();
@@ -45,12 +44,15 @@ export class ActionButtonsComponent {
     }
 
     async copy(cipher: CipherView, value: string, typeI18nKey: string, aType: string) {
-        if (this.cipher.reprompt !== CipherRepromptType.None && this.passwordRepromptService.protectedFields().includes(aType) &&
-            !await this.passwordRepromptService.showPasswordPrompt()) {
+        if (
+            this.cipher.reprompt !== CipherRepromptType.None &&
+            this.passwordRepromptService.protectedFields().includes(aType) &&
+            !(await this.passwordRepromptService.showPasswordPrompt())
+        ) {
             return;
         }
 
-        if (value == null || aType === 'TOTP' && !this.displayTotpCopyButton(cipher)) {
+        if (value == null || (aType === "TOTP" && !this.displayTotpCopyButton(cipher))) {
             return;
         } else if (value === cipher.login.totp) {
             value = await this.totpService.getCode(value);
@@ -61,19 +63,21 @@ export class ActionButtonsComponent {
         }
 
         this.platformUtilsService.copyToClipboard(value, { window: window });
-        this.platformUtilsService.showToast('info', null,
-            this.i18nService.t('valueCopied', this.i18nService.t(typeI18nKey)));
+        this.platformUtilsService.showToast(
+            "info",
+            null,
+            this.i18nService.t("valueCopied", this.i18nService.t(typeI18nKey))
+        );
 
-        if (typeI18nKey === 'password' || typeI18nKey === 'verificationCodeTotp') {
+        if (typeI18nKey === "password" || typeI18nKey === "verificationCodeTotp") {
             this.eventService.collect(EventType.Cipher_ClientToggledHiddenFieldVisible, cipher.id);
-        } else if (typeI18nKey === 'securityCode') {
+        } else if (typeI18nKey === "securityCode") {
             this.eventService.collect(EventType.Cipher_ClientCopiedCardCode, cipher.id);
         }
     }
 
     displayTotpCopyButton(cipher: CipherView) {
-        return (cipher?.login?.hasTotp ?? false) &&
-            (cipher.organizationUseTotp || this.userHasPremiumAccess);
+        return (cipher?.login?.hasTotp ?? false) && (cipher.organizationUseTotp || this.userHasPremiumAccess);
     }
 
     view() {

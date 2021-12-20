@@ -1,41 +1,35 @@
-import {
-    ChangeDetectorRef,
-    Component,
-    NgZone,
-    OnDestroy,
-    OnInit,
-} from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
-import { BrowserApi } from '../../browser/browserApi';
+import { BrowserApi } from "../../browser/browserApi";
 
-import { CipherRepromptType } from 'jslib-common/enums/cipherRepromptType';
-import { CipherType } from 'jslib-common/enums/cipherType';
+import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
+import { CipherType } from "jslib-common/enums/cipherType";
 
-import { CipherView } from 'jslib-common/models/view/cipherView';
+import { CipherView } from "jslib-common/models/view/cipherView";
 
-import { BroadcasterService } from 'jslib-common/abstractions/broadcaster.service';
-import { CipherService } from 'jslib-common/abstractions/cipher.service';
-import { I18nService } from 'jslib-common/abstractions/i18n.service';
-import { PasswordRepromptService } from 'jslib-common/abstractions/passwordReprompt.service';
-import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.service';
-import { SearchService } from 'jslib-common/abstractions/search.service';
-import { StorageService } from 'jslib-common/abstractions/storage.service';
-import { SyncService } from 'jslib-common/abstractions/sync.service';
+import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
+import { CipherService } from "jslib-common/abstractions/cipher.service";
+import { I18nService } from "jslib-common/abstractions/i18n.service";
+import { PasswordRepromptService } from "jslib-common/abstractions/passwordReprompt.service";
+import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
+import { SearchService } from "jslib-common/abstractions/search.service";
+import { StorageService } from "jslib-common/abstractions/storage.service";
+import { SyncService } from "jslib-common/abstractions/sync.service";
 
-import { ConstantsService } from 'jslib-common/services/constants.service';
+import { ConstantsService } from "jslib-common/services/constants.service";
 
-import { AutofillService } from '../../services/abstractions/autofill.service';
+import { AutofillService } from "../../services/abstractions/autofill.service";
 
-import { PopupUtilsService } from '../services/popup-utils.service';
+import { PopupUtilsService } from "../services/popup-utils.service";
 
-import { Utils } from 'jslib-common/misc/utils';
+import { Utils } from "jslib-common/misc/utils";
 
-const BroadcasterSubscriptionId = 'CurrentTabComponent';
+const BroadcasterSubscriptionId = "CurrentTabComponent";
 
 @Component({
-    selector: 'app-current-tab',
-    templateUrl: 'current-tab.component.html',
+    selector: "app-current-tab",
+    templateUrl: "current-tab.component.html",
 })
 export class CurrentTabComponent implements OnInit, OnDestroy {
     pageDetails: any[] = [];
@@ -54,14 +48,21 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     private loadedTimeout: number;
     private searchTimeout: number;
 
-    constructor(private platformUtilsService: PlatformUtilsService, private cipherService: CipherService,
-        private popupUtilsService: PopupUtilsService, private autofillService: AutofillService,
-        private i18nService: I18nService, private router: Router,
-        private ngZone: NgZone, private broadcasterService: BroadcasterService,
-        private changeDetectorRef: ChangeDetectorRef, private syncService: SyncService,
-        private searchService: SearchService, private storageService: StorageService,
-        private passwordRepromptService: PasswordRepromptService) {
-    }
+    constructor(
+        private platformUtilsService: PlatformUtilsService,
+        private cipherService: CipherService,
+        private popupUtilsService: PopupUtilsService,
+        private autofillService: AutofillService,
+        private i18nService: I18nService,
+        private router: Router,
+        private ngZone: NgZone,
+        private broadcasterService: BroadcasterService,
+        private changeDetectorRef: ChangeDetectorRef,
+        private syncService: SyncService,
+        private searchService: SearchService,
+        private storageService: StorageService,
+        private passwordRepromptService: PasswordRepromptService
+    ) {}
 
     async ngOnInit() {
         this.searchTypeSearch = !this.platformUtilsService.isSafari();
@@ -70,14 +71,14 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
             this.ngZone.run(async () => {
                 switch (message.command) {
-                    case 'syncCompleted':
+                    case "syncCompleted":
                         if (this.loaded) {
                             window.setTimeout(() => {
                                 this.load();
                             }, 500);
                         }
                         break;
-                    case 'collectPageDetailsResponse':
+                    case "collectPageDetailsResponse":
                         if (message.sender === BroadcasterSubscriptionId) {
                             this.pageDetails.push({
                                 frameId: message.webExtSender.frameId,
@@ -105,7 +106,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         }
 
         window.setTimeout(() => {
-            document.getElementById('search').focus();
+            document.getElementById("search").focus();
         }, 100);
     }
 
@@ -119,15 +120,15 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     }
 
     addCipher() {
-        this.router.navigate(['/add-cipher'], { queryParams: { name: this.hostname, uri: this.url } });
+        this.router.navigate(["/add-cipher"], { queryParams: { name: this.hostname, uri: this.url } });
     }
 
     viewCipher(cipher: CipherView) {
-        this.router.navigate(['/view-cipher'], { queryParams: { cipherId: cipher.id } });
+        this.router.navigate(["/view-cipher"], { queryParams: { cipherId: cipher.id } });
     }
 
     async fillCipher(cipher: CipherView) {
-        if (cipher.reprompt !== CipherRepromptType.None && !await this.passwordRepromptService.showPasswordPrompt()) {
+        if (cipher.reprompt !== CipherRepromptType.None && !(await this.passwordRepromptService.showPasswordPrompt())) {
             return;
         }
 
@@ -137,7 +138,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         }
 
         if (this.pageDetails == null || this.pageDetails.length === 0) {
-            this.platformUtilsService.showToast('error', null, this.i18nService.t('autofillError'));
+            this.platformUtilsService.showToast("error", null, this.i18nService.t("autofillError"));
             return;
         }
 
@@ -161,7 +162,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
             }
         } catch {
             this.ngZone.run(() => {
-                this.platformUtilsService.showToast('error', null, this.i18nService.t('autofillError'));
+                this.platformUtilsService.showToast("error", null, this.i18nService.t("autofillError"));
                 this.changeDetectorRef.detectChanges();
             });
         }
@@ -175,13 +176,13 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
             return;
         }
         this.searchTimeout = window.setTimeout(async () => {
-            this.router.navigate(['/tabs/vault'], { queryParams: { searchText: this.searchText } });
+            this.router.navigate(["/tabs/vault"], { queryParams: { searchText: this.searchText } });
         }, 200);
     }
 
     closeOnEsc(e: KeyboardEvent) {
         // If input not empty, use browser default behavior of clearing input instead
-        if (e.key === 'Escape' && (this.searchText == null || this.searchText === '')) {
+        if (e.key === "Escape" && (this.searchText == null || this.searchText === "")) {
             BrowserApi.closePopup(window);
         }
     }
@@ -199,7 +200,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         this.hostname = Utils.getHostname(this.url);
         this.pageDetails = [];
         BrowserApi.tabSendMessage(tab, {
-            command: 'collectPageDetails',
+            command: "collectPageDetails",
             tab: tab,
             sender: BroadcasterSubscriptionId,
         });
@@ -207,7 +208,8 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         const otherTypes: CipherType[] = [];
         const dontShowCards = await this.storageService.get<boolean>(ConstantsService.dontShowCardsCurrentTab);
         const dontShowIdentities = await this.storageService.get<boolean>(
-            ConstantsService.dontShowIdentitiesCurrentTab);
+            ConstantsService.dontShowIdentitiesCurrentTab
+        );
         if (!dontShowCards) {
             otherTypes.push(CipherType.Card);
         }
@@ -215,14 +217,16 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
             otherTypes.push(CipherType.Identity);
         }
 
-        const ciphers = await this.cipherService.getAllDecryptedForUrl(this.url,
-            otherTypes.length > 0 ? otherTypes : null);
+        const ciphers = await this.cipherService.getAllDecryptedForUrl(
+            this.url,
+            otherTypes.length > 0 ? otherTypes : null
+        );
 
         this.loginCiphers = [];
         this.cardCiphers = [];
         this.identityCiphers = [];
 
-        ciphers.forEach(c => {
+        ciphers.forEach((c) => {
             switch (c.type) {
                 case CipherType.Login:
                     this.loginCiphers.push(c);

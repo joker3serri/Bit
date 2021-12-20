@@ -1,22 +1,19 @@
-import {
-    Component,
-    OnInit,
-} from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 
-import { ThemeType } from 'jslib-common/enums/themeType';
-import { UriMatchType } from 'jslib-common/enums/uriMatchType';
+import { ThemeType } from "jslib-common/enums/themeType";
+import { UriMatchType } from "jslib-common/enums/uriMatchType";
 
-import { I18nService } from 'jslib-common/abstractions/i18n.service';
-import { MessagingService } from 'jslib-common/abstractions/messaging.service';
-import { StateService } from 'jslib-common/abstractions/state.service';
-import { StorageService } from 'jslib-common/abstractions/storage.service';
-import { TotpService } from 'jslib-common/abstractions/totp.service';
+import { I18nService } from "jslib-common/abstractions/i18n.service";
+import { MessagingService } from "jslib-common/abstractions/messaging.service";
+import { StateService } from "jslib-common/abstractions/state.service";
+import { StorageService } from "jslib-common/abstractions/storage.service";
+import { TotpService } from "jslib-common/abstractions/totp.service";
 
-import { ConstantsService } from 'jslib-common/services/constants.service';
+import { ConstantsService } from "jslib-common/services/constants.service";
 
 @Component({
-    selector: 'app-options',
-    templateUrl: 'options.component.html',
+    selector: "app-options",
+    templateUrl: "options.component.html",
 })
 export class OptionsComponent implements OnInit {
     disableFavicon = false;
@@ -41,53 +38,62 @@ export class OptionsComponent implements OnInit {
     showAutofill: boolean = true;
     showDisplay: boolean = true;
 
-    constructor(private messagingService: MessagingService, private storageService: StorageService,
-        private stateService: StateService, private totpService: TotpService, i18nService: I18nService) {
+    constructor(
+        private messagingService: MessagingService,
+        private storageService: StorageService,
+        private stateService: StateService,
+        private totpService: TotpService,
+        i18nService: I18nService
+    ) {
         this.themeOptions = [
-            { name: i18nService.t('default'), value: null },
-            { name: i18nService.t('light'), value: ThemeType.Light },
-            { name: i18nService.t('dark'), value: ThemeType.Dark },
-            { name: 'Nord', value: ThemeType.Nord },
-            { name: i18nService.t('solarizedDark'), value: ThemeType.SolarizedDark },
+            { name: i18nService.t("default"), value: null },
+            { name: i18nService.t("light"), value: ThemeType.Light },
+            { name: i18nService.t("dark"), value: ThemeType.Dark },
+            { name: "Nord", value: ThemeType.Nord },
+            { name: i18nService.t("solarizedDark"), value: ThemeType.SolarizedDark },
         ];
         this.uriMatchOptions = [
-            { name: i18nService.t('baseDomain'), value: UriMatchType.Domain },
-            { name: i18nService.t('host'), value: UriMatchType.Host },
-            { name: i18nService.t('startsWith'), value: UriMatchType.StartsWith },
-            { name: i18nService.t('regEx'), value: UriMatchType.RegularExpression },
-            { name: i18nService.t('exact'), value: UriMatchType.Exact },
-            { name: i18nService.t('never'), value: UriMatchType.Never },
+            { name: i18nService.t("baseDomain"), value: UriMatchType.Domain },
+            { name: i18nService.t("host"), value: UriMatchType.Host },
+            { name: i18nService.t("startsWith"), value: UriMatchType.StartsWith },
+            { name: i18nService.t("regEx"), value: UriMatchType.RegularExpression },
+            { name: i18nService.t("exact"), value: UriMatchType.Exact },
+            { name: i18nService.t("never"), value: UriMatchType.Never },
         ];
         this.clearClipboardOptions = [
-            { name: i18nService.t('never'), value: null },
-            { name: i18nService.t('tenSeconds'), value: 10 },
-            { name: i18nService.t('twentySeconds'), value: 20 },
-            { name: i18nService.t('thirtySeconds'), value: 30 },
-            { name: i18nService.t('oneMinute'), value: 60 },
-            { name: i18nService.t('twoMinutes'), value: 120 },
-            { name: i18nService.t('fiveMinutes'), value: 300 },
+            { name: i18nService.t("never"), value: null },
+            { name: i18nService.t("tenSeconds"), value: 10 },
+            { name: i18nService.t("twentySeconds"), value: 20 },
+            { name: i18nService.t("thirtySeconds"), value: 30 },
+            { name: i18nService.t("oneMinute"), value: 60 },
+            { name: i18nService.t("twoMinutes"), value: 120 },
+            { name: i18nService.t("fiveMinutes"), value: 300 },
         ];
         this.autoFillOnPageLoadOptions = [
-            { name: i18nService.t('autoFillOnPageLoadYes'), value: true },
-            { name: i18nService.t('autoFillOnPageLoadNo'), value: false },
+            { name: i18nService.t("autoFillOnPageLoadYes"), value: true },
+            { name: i18nService.t("autoFillOnPageLoadNo"), value: false },
         ];
     }
 
     async ngOnInit() {
         this.enableAutoFillOnPageLoad = await this.storageService.get<boolean>(
-            ConstantsService.enableAutoFillOnPageLoadKey);
+            ConstantsService.enableAutoFillOnPageLoadKey
+        );
 
-        this.autoFillOnPageLoadDefault = await this.storageService.get<boolean>(
-            ConstantsService.autoFillOnPageLoadDefaultKey) ?? true;
+        this.autoFillOnPageLoadDefault =
+            (await this.storageService.get<boolean>(ConstantsService.autoFillOnPageLoadDefaultKey)) ?? true;
 
         this.disableAddLoginNotification = await this.storageService.get<boolean>(
-            ConstantsService.disableAddLoginNotificationKey);
+            ConstantsService.disableAddLoginNotificationKey
+        );
 
         this.disableChangedPasswordNotification = await this.storageService.get<boolean>(
-            ConstantsService.disableChangedPasswordNotificationKey);
+            ConstantsService.disableChangedPasswordNotificationKey
+        );
 
         this.disableContextMenuItem = await this.storageService.get<boolean>(
-            ConstantsService.disableContextMenuItemKey);
+            ConstantsService.disableContextMenuItemKey
+        );
 
         this.dontShowCards = await this.storageService.get<boolean>(ConstantsService.dontShowCardsCurrentTab);
         this.dontShowIdentities = await this.storageService.get<boolean>(ConstantsService.dontShowIdentitiesCurrentTab);
@@ -107,19 +113,22 @@ export class OptionsComponent implements OnInit {
     }
 
     async updateAddLoginNotification() {
-        await this.storageService.save(ConstantsService.disableAddLoginNotificationKey,
-            this.disableAddLoginNotification);
+        await this.storageService.save(
+            ConstantsService.disableAddLoginNotificationKey,
+            this.disableAddLoginNotification
+        );
     }
 
     async updateChangedPasswordNotification() {
-        await this.storageService.save(ConstantsService.disableChangedPasswordNotificationKey,
-            this.disableChangedPasswordNotification);
+        await this.storageService.save(
+            ConstantsService.disableChangedPasswordNotificationKey,
+            this.disableChangedPasswordNotification
+        );
     }
 
     async updateDisableContextMenuItem() {
-        await this.storageService.save(ConstantsService.disableContextMenuItemKey,
-            this.disableContextMenuItem);
-        this.messagingService.send('bgUpdateContextMenu');
+        await this.storageService.save(ConstantsService.disableContextMenuItemKey, this.disableContextMenuItem);
+        this.messagingService.send("bgUpdateContextMenu");
     }
 
     async updateAutoTotpCopy() {
@@ -142,7 +151,7 @@ export class OptionsComponent implements OnInit {
     async updateDisableBadgeCounter() {
         await this.storageService.save(ConstantsService.disableBadgeCounterKey, this.disableBadgeCounter);
         await this.stateService.save(ConstantsService.disableBadgeCounterKey, this.disableBadgeCounter);
-        this.messagingService.send('bgUpdateContextMenu');
+        this.messagingService.send("bgUpdateContextMenu");
     }
 
     async updateShowCards() {
