@@ -1,0 +1,14 @@
+# Build directories
+build
+dist
+coverage
+
+jslib
+
+# External libraries / auto synced locales
+src/_locales
+src/scripts/duo.js
+src/safari
+
+# Github Workflows
+.github/workflows 
