@@ -7,11 +7,11 @@ require("./scss/popup.scss");
 import { AppModule } from "./app.module";
 
 if (process.env.ENV === "production") {
-    enableProdMode();
+  enableProdMode();
 }
 
 function init() {
-    platformBrowserDynamic().bootstrapModule(AppModule, { preserveWhitespaces: true });
+  platformBrowserDynamic().bootstrapModule(AppModule, { preserveWhitespaces: true });
 }
 
 init();

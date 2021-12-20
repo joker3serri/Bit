@@ -14,33 +14,33 @@ import { RegisterComponent as BaseRegisterComponent } from "jslib-angular/compon
 import { LogService } from "jslib-common/abstractions/log.service";
 
 @Component({
-    selector: "app-register",
-    templateUrl: "register.component.html",
+  selector: "app-register",
+  templateUrl: "register.component.html",
 })
 export class RegisterComponent extends BaseRegisterComponent {
-    constructor(
-        authService: AuthService,
-        router: Router,
-        i18nService: I18nService,
-        cryptoService: CryptoService,
-        apiService: ApiService,
-        stateService: StateService,
-        platformUtilsService: PlatformUtilsService,
-        passwordGenerationService: PasswordGenerationService,
-        environmentService: EnvironmentService,
-        logService: LogService
-    ) {
-        super(
-            authService,
-            router,
-            i18nService,
-            cryptoService,
-            apiService,
-            stateService,
-            platformUtilsService,
-            passwordGenerationService,
-            environmentService,
-            logService
-        );
-    }
+  constructor(
+    authService: AuthService,
+    router: Router,
+    i18nService: I18nService,
+    cryptoService: CryptoService,
+    apiService: ApiService,
+    stateService: StateService,
+    platformUtilsService: PlatformUtilsService,
+    passwordGenerationService: PasswordGenerationService,
+    environmentService: EnvironmentService,
+    logService: LogService
+  ) {
+    super(
+      authService,
+      router,
+      i18nService,
+      cryptoService,
+      apiService,
+      stateService,
+      platformUtilsService,
+      passwordGenerationService,
+      environmentService,
+      logService
+    );
+  }
 }

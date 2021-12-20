@@ -50,303 +50,303 @@ import { SendGroupingsComponent } from "./send/send-groupings.component";
 import { SendTypeComponent } from "./send/send-type.component";
 
 const routes: Routes = [
-    {
+  {
+    path: "",
+    redirectTo: "home",
+    pathMatch: "full",
+  },
+  {
+    path: "vault",
+    redirectTo: "/tabs/vault",
+    pathMatch: "full",
+  },
+  {
+    path: "home",
+    component: HomeComponent,
+    canActivate: [LaunchGuardService],
+    data: { state: "home" },
+  },
+  {
+    path: "login",
+    component: LoginComponent,
+    canActivate: [LaunchGuardService],
+    data: { state: "login" },
+  },
+  {
+    path: "lock",
+    component: LockComponent,
+    canActivate: [LockGuardService],
+    data: { state: "lock" },
+  },
+  {
+    path: "2fa",
+    component: TwoFactorComponent,
+    canActivate: [LaunchGuardService],
+    data: { state: "2fa" },
+  },
+  {
+    path: "2fa-options",
+    component: TwoFactorOptionsComponent,
+    canActivate: [LaunchGuardService],
+    data: { state: "2fa-options" },
+  },
+  {
+    path: "sso",
+    component: SsoComponent,
+    canActivate: [LaunchGuardService],
+    data: { state: "sso" },
+  },
+  {
+    path: "set-password",
+    component: SetPasswordComponent,
+    data: { state: "set-password" },
+  },
+  {
+    path: "remove-password",
+    component: RemovePasswordComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "remove-password" },
+  },
+  {
+    path: "register",
+    component: RegisterComponent,
+    canActivate: [LaunchGuardService],
+    data: { state: "register" },
+  },
+  {
+    path: "hint",
+    component: HintComponent,
+    canActivate: [LaunchGuardService],
+    data: { state: "hint" },
+  },
+  {
+    path: "environment",
+    component: EnvironmentComponent,
+    canActivate: [LaunchGuardService],
+    data: { state: "environment" },
+  },
+  {
+    path: "ciphers",
+    component: CiphersComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "ciphers" },
+  },
+  {
+    path: "view-cipher",
+    component: ViewComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "view-cipher" },
+  },
+  {
+    path: "cipher-password-history",
+    component: PasswordHistoryComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "cipher-password-history" },
+  },
+  {
+    path: "add-cipher",
+    component: AddEditComponent,
+    canActivate: [AuthGuardService, DebounceNavigationService],
+    data: { state: "add-cipher" },
+    runGuardsAndResolvers: "always",
+  },
+  {
+    path: "edit-cipher",
+    component: AddEditComponent,
+    canActivate: [AuthGuardService, DebounceNavigationService],
+    data: { state: "edit-cipher" },
+    runGuardsAndResolvers: "always",
+  },
+  {
+    path: "share-cipher",
+    component: ShareComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "share-cipher" },
+  },
+  {
+    path: "collections",
+    component: CollectionsComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "collections" },
+  },
+  {
+    path: "attachments",
+    component: AttachmentsComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "attachments" },
+  },
+  {
+    path: "generator",
+    component: PasswordGeneratorComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "generator" },
+  },
+  {
+    path: "generator-history",
+    component: PasswordGeneratorHistoryComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "generator-history" },
+  },
+  {
+    path: "export",
+    component: ExportComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "export" },
+  },
+  {
+    path: "folders",
+    component: FoldersComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "folders" },
+  },
+  {
+    path: "add-folder",
+    component: FolderAddEditComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "add-folder" },
+  },
+  {
+    path: "edit-folder",
+    component: FolderAddEditComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "edit-folder" },
+  },
+  {
+    path: "sync",
+    component: SyncComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "sync" },
+  },
+  {
+    path: "excluded-domains",
+    component: ExcludedDomainsComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "excluded-domains" },
+  },
+  {
+    path: "premium",
+    component: PremiumComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "premium" },
+  },
+  {
+    path: "options",
+    component: OptionsComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "options" },
+  },
+  {
+    path: "private-mode",
+    component: PrivateModeComponent,
+    data: { state: "private-mode" },
+  },
+  {
+    path: "clone-cipher",
+    component: AddEditComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "clone-cipher" },
+  },
+  {
+    path: "send-type",
+    component: SendTypeComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "send-type" },
+  },
+  {
+    path: "add-send",
+    component: SendAddEditComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "add-send" },
+  },
+  {
+    path: "edit-send",
+    component: SendAddEditComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "edit-send" },
+  },
+  {
+    path: "update-temp-password",
+    component: UpdateTempPasswordComponent,
+    canActivate: [AuthGuardService],
+    data: { state: "update-temp-password" },
+  },
+  {
+    path: "tabs",
+    component: TabsComponent,
+    data: { state: "tabs" },
+    children: [
+      {
         path: "",
-        redirectTo: "home",
-        pathMatch: "full",
-    },
-    {
-        path: "vault",
         redirectTo: "/tabs/vault",
         pathMatch: "full",
-    },
-    {
-        path: "home",
-        component: HomeComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: "home" },
-    },
-    {
-        path: "login",
-        component: LoginComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: "login" },
-    },
-    {
-        path: "lock",
-        component: LockComponent,
-        canActivate: [LockGuardService],
-        data: { state: "lock" },
-    },
-    {
-        path: "2fa",
-        component: TwoFactorComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: "2fa" },
-    },
-    {
-        path: "2fa-options",
-        component: TwoFactorOptionsComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: "2fa-options" },
-    },
-    {
-        path: "sso",
-        component: SsoComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: "sso" },
-    },
-    {
-        path: "set-password",
-        component: SetPasswordComponent,
-        data: { state: "set-password" },
-    },
-    {
-        path: "remove-password",
-        component: RemovePasswordComponent,
+      },
+      {
+        path: "current",
+        component: CurrentTabComponent,
         canActivate: [AuthGuardService],
-        data: { state: "remove-password" },
-    },
-    {
-        path: "register",
-        component: RegisterComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: "register" },
-    },
-    {
-        path: "hint",
-        component: HintComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: "hint" },
-    },
-    {
-        path: "environment",
-        component: EnvironmentComponent,
-        canActivate: [LaunchGuardService],
-        data: { state: "environment" },
-    },
-    {
-        path: "ciphers",
-        component: CiphersComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "ciphers" },
-    },
-    {
-        path: "view-cipher",
-        component: ViewComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "view-cipher" },
-    },
-    {
-        path: "cipher-password-history",
-        component: PasswordHistoryComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "cipher-password-history" },
-    },
-    {
-        path: "add-cipher",
-        component: AddEditComponent,
-        canActivate: [AuthGuardService, DebounceNavigationService],
-        data: { state: "add-cipher" },
+        data: { state: "tabs_current" },
         runGuardsAndResolvers: "always",
-    },
-    {
-        path: "edit-cipher",
-        component: AddEditComponent,
-        canActivate: [AuthGuardService, DebounceNavigationService],
-        data: { state: "edit-cipher" },
-        runGuardsAndResolvers: "always",
-    },
-    {
-        path: "share-cipher",
-        component: ShareComponent,
+      },
+      {
+        path: "vault",
+        component: GroupingsComponent,
         canActivate: [AuthGuardService],
-        data: { state: "share-cipher" },
-    },
-    {
-        path: "collections",
-        component: CollectionsComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "collections" },
-    },
-    {
-        path: "attachments",
-        component: AttachmentsComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "attachments" },
-    },
-    {
+        data: { state: "tabs_vault" },
+      },
+      {
         path: "generator",
         component: PasswordGeneratorComponent,
         canActivate: [AuthGuardService],
-        data: { state: "generator" },
-    },
-    {
-        path: "generator-history",
-        component: PasswordGeneratorHistoryComponent,
+        data: { state: "tabs_generator" },
+      },
+      {
+        path: "settings",
+        component: SettingsComponent,
         canActivate: [AuthGuardService],
-        data: { state: "generator-history" },
-    },
-    {
-        path: "export",
-        component: ExportComponent,
+        data: { state: "tabs_settings" },
+      },
+      {
+        path: "send",
+        component: SendGroupingsComponent,
         canActivate: [AuthGuardService],
-        data: { state: "export" },
-    },
-    {
-        path: "folders",
-        component: FoldersComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "folders" },
-    },
-    {
-        path: "add-folder",
-        component: FolderAddEditComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "add-folder" },
-    },
-    {
-        path: "edit-folder",
-        component: FolderAddEditComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "edit-folder" },
-    },
-    {
-        path: "sync",
-        component: SyncComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "sync" },
-    },
-    {
-        path: "excluded-domains",
-        component: ExcludedDomainsComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "excluded-domains" },
-    },
-    {
-        path: "premium",
-        component: PremiumComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "premium" },
-    },
-    {
-        path: "options",
-        component: OptionsComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "options" },
-    },
-    {
-        path: "private-mode",
-        component: PrivateModeComponent,
-        data: { state: "private-mode" },
-    },
-    {
-        path: "clone-cipher",
-        component: AddEditComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "clone-cipher" },
-    },
-    {
-        path: "send-type",
-        component: SendTypeComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "send-type" },
-    },
-    {
-        path: "add-send",
-        component: SendAddEditComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "add-send" },
-    },
-    {
-        path: "edit-send",
-        component: SendAddEditComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "edit-send" },
-    },
-    {
-        path: "update-temp-password",
-        component: UpdateTempPasswordComponent,
-        canActivate: [AuthGuardService],
-        data: { state: "update-temp-password" },
-    },
-    {
-        path: "tabs",
-        component: TabsComponent,
-        data: { state: "tabs" },
-        children: [
-            {
-                path: "",
-                redirectTo: "/tabs/vault",
-                pathMatch: "full",
-            },
-            {
-                path: "current",
-                component: CurrentTabComponent,
-                canActivate: [AuthGuardService],
-                data: { state: "tabs_current" },
-                runGuardsAndResolvers: "always",
-            },
-            {
-                path: "vault",
-                component: GroupingsComponent,
-                canActivate: [AuthGuardService],
-                data: { state: "tabs_vault" },
-            },
-            {
-                path: "generator",
-                component: PasswordGeneratorComponent,
-                canActivate: [AuthGuardService],
-                data: { state: "tabs_generator" },
-            },
-            {
-                path: "settings",
-                component: SettingsComponent,
-                canActivate: [AuthGuardService],
-                data: { state: "tabs_settings" },
-            },
-            {
-                path: "send",
-                component: SendGroupingsComponent,
-                canActivate: [AuthGuardService],
-                data: { state: "tabs_send" },
-            },
-        ],
-    },
+        data: { state: "tabs_send" },
+      },
+    ],
+  },
 ];
 
 @Injectable()
 export class NoRouteReuseStrategy implements RouteReuseStrategy {
-    shouldDetach(route: ActivatedRouteSnapshot) {
-        return false;
-    }
+  shouldDetach(route: ActivatedRouteSnapshot) {
+    return false;
+  }
 
-    store(route: ActivatedRouteSnapshot, handle: {}) {
-        /* Nothing */
-    }
+  store(route: ActivatedRouteSnapshot, handle: {}) {
+    /* Nothing */
+  }
 
-    shouldAttach(route: ActivatedRouteSnapshot) {
-        return false;
-    }
+  shouldAttach(route: ActivatedRouteSnapshot) {
+    return false;
+  }
 
-    retrieve(route: ActivatedRouteSnapshot): any {
-        return null;
-    }
+  retrieve(route: ActivatedRouteSnapshot): any {
+    return null;
+  }
 
-    shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
-        return false;
-    }
+  shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
+    return false;
+  }
 }
 
 @NgModule({
-    imports: [
-        RouterModule.forRoot(routes, {
-            useHash: true,
-            onSameUrlNavigation: "reload",
-            /*enableTracing: true,*/
-        }),
-    ],
-    exports: [RouterModule],
-    providers: [{ provide: RouteReuseStrategy, useClass: NoRouteReuseStrategy }],
+  imports: [
+    RouterModule.forRoot(routes, {
+      useHash: true,
+      onSameUrlNavigation: "reload",
+      /*enableTracing: true,*/
+    }),
+  ],
+  exports: [RouterModule],
+  providers: [{ provide: RouteReuseStrategy, useClass: NoRouteReuseStrategy }],
 })
 export class AppRoutingModule {}

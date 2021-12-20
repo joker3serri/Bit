@@ -61,211 +61,216 @@ import { PopupUtilsService } from "./popup-utils.service";
 import { ThemeType } from "jslib-common/enums/themeType";
 
 function getBgService<T>(service: string) {
-    return (): T => {
-        const page = BrowserApi.getBackgroundPage();
-        return page ? (page.bitwardenMain[service] as T) : null;
-    };
+  return (): T => {
+    const page = BrowserApi.getBackgroundPage();
+    return page ? (page.bitwardenMain[service] as T) : null;
+  };
 }
 
 const isPrivateMode = BrowserApi.getBackgroundPage() == null;
 
 export function initFactory(
-    platformUtilsService: PlatformUtilsService,
-    i18nService: I18nService,
-    storageService: StorageService,
-    popupUtilsService: PopupUtilsService,
-    stateService: StateServiceAbstraction,
-    logService: LogServiceAbstraction
+  platformUtilsService: PlatformUtilsService,
+  i18nService: I18nService,
+  storageService: StorageService,
+  popupUtilsService: PopupUtilsService,
+  stateService: StateServiceAbstraction,
+  logService: LogServiceAbstraction
 ): Function {
-    return async () => {
-        if (!popupUtilsService.inPopup(window)) {
-            window.document.body.classList.add("body-full");
-        } else if (window.screen.availHeight < 600) {
-            window.document.body.classList.add("body-xs");
-        } else if (window.screen.availHeight <= 800) {
-            window.document.body.classList.add("body-sm");
+  return async () => {
+    if (!popupUtilsService.inPopup(window)) {
+      window.document.body.classList.add("body-full");
+    } else if (window.screen.availHeight < 600) {
+      window.document.body.classList.add("body-xs");
+    } else if (window.screen.availHeight <= 800) {
+      window.document.body.classList.add("body-sm");
+    }
+
+    if (!isPrivateMode) {
+      await stateService.save(
+        ConstantsService.disableFaviconKey,
+        await storageService.get<boolean>(ConstantsService.disableFaviconKey)
+      );
+
+      await stateService.save(
+        ConstantsService.disableBadgeCounterKey,
+        await storageService.get<boolean>(ConstantsService.disableBadgeCounterKey)
+      );
+
+      const htmlEl = window.document.documentElement;
+      const theme = await platformUtilsService.getEffectiveTheme();
+      htmlEl.classList.add("theme_" + theme);
+      platformUtilsService.onDefaultSystemThemeChange(async (sysTheme) => {
+        const bwTheme = await storageService.get<ThemeType>(ConstantsService.themeKey);
+        if (bwTheme == null || bwTheme === ThemeType.System) {
+          htmlEl.classList.remove("theme_" + ThemeType.Light, "theme_" + ThemeType.Dark);
+          htmlEl.classList.add("theme_" + sysTheme);
         }
+      });
+      htmlEl.classList.add("locale_" + i18nService.translationLocale);
 
-        if (!isPrivateMode) {
-            await stateService.save(
-                ConstantsService.disableFaviconKey,
-                await storageService.get<boolean>(ConstantsService.disableFaviconKey)
-            );
-
-            await stateService.save(
-                ConstantsService.disableBadgeCounterKey,
-                await storageService.get<boolean>(ConstantsService.disableBadgeCounterKey)
-            );
-
-            const htmlEl = window.document.documentElement;
-            const theme = await platformUtilsService.getEffectiveTheme();
-            htmlEl.classList.add("theme_" + theme);
-            platformUtilsService.onDefaultSystemThemeChange(async (sysTheme) => {
-                const bwTheme = await storageService.get<ThemeType>(ConstantsService.themeKey);
-                if (bwTheme == null || bwTheme === ThemeType.System) {
-                    htmlEl.classList.remove("theme_" + ThemeType.Light, "theme_" + ThemeType.Dark);
-                    htmlEl.classList.add("theme_" + sysTheme);
-                }
-            });
-            htmlEl.classList.add("locale_" + i18nService.translationLocale);
-
-            // Workaround for slow performance on external monitors on Chrome + MacOS
-            // See: https://bugs.chromium.org/p/chromium/issues/detail?id=971701#c64
-            if (
-                platformUtilsService.isChrome() &&
-                navigator.platform.indexOf("Mac") > -1 &&
-                popupUtilsService.inPopup(window) &&
-                (window.screenLeft < 0 ||
-                    window.screenTop < 0 ||
-                    window.screenLeft > window.screen.width ||
-                    window.screenTop > window.screen.height)
-            ) {
-                htmlEl.classList.add("force_redraw");
-                logService.info("Force redraw is on");
-            }
-        }
-    };
+      // Workaround for slow performance on external monitors on Chrome + MacOS
+      // See: https://bugs.chromium.org/p/chromium/issues/detail?id=971701#c64
+      if (
+        platformUtilsService.isChrome() &&
+        navigator.platform.indexOf("Mac") > -1 &&
+        popupUtilsService.inPopup(window) &&
+        (window.screenLeft < 0 ||
+          window.screenTop < 0 ||
+          window.screenLeft > window.screen.width ||
+          window.screenTop > window.screen.height)
+      ) {
+        htmlEl.classList.add("force_redraw");
+        logService.info("Force redraw is on");
+      }
+    }
+  };
 }
 
 @NgModule({
-    imports: [JslibServicesModule],
-    declarations: [],
-    providers: [
-        {
-            provide: LOCALE_ID,
-            useFactory: () => (isPrivateMode ? null : getBgService<I18nService>("i18nService")().translationLocale),
-            deps: [],
-        },
-        {
-            provide: APP_INITIALIZER,
-            useFactory: initFactory,
-            deps: [
-                PlatformUtilsService,
-                I18nService,
-                StorageService,
-                PopupUtilsService,
-                StateServiceAbstraction,
-                LogServiceAbstraction,
-            ],
-            multi: true,
-        },
-        LaunchGuardService,
-        { provide: BaseLockGuardService, useClass: LockGuardService },
-        { provide: BaseUnauthGuardService, useClass: UnauthGuardService },
-        DebounceNavigationService,
+  imports: [JslibServicesModule],
+  declarations: [],
+  providers: [
+    {
+      provide: LOCALE_ID,
+      useFactory: () =>
+        isPrivateMode ? null : getBgService<I18nService>("i18nService")().translationLocale,
+      deps: [],
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initFactory,
+      deps: [
+        PlatformUtilsService,
+        I18nService,
+        StorageService,
         PopupUtilsService,
-        { provide: MessagingService, useClass: BrowserMessagingService },
-        {
-            provide: AuthServiceAbstraction,
-            useFactory: getBgService<AuthService>("authService"),
-            deps: [],
-        },
-        { provide: StateServiceAbstraction, useClass: StateService },
-        {
-            provide: SearchServiceAbstraction,
-            useFactory: (cipherService: CipherService, logService: ConsoleLogService, i18nService: I18nService) => {
-                return isPrivateMode
-                    ? null
-                    : new PopupSearchService(
-                          getBgService<SearchService>("searchService")(),
-                          cipherService,
-                          logService,
-                          i18nService
-                      );
-            },
-            deps: [CipherService, LogServiceAbstraction, I18nService],
-        },
-        { provide: AuditService, useFactory: getBgService<AuditService>("auditService"), deps: [] },
-        {
-            provide: FileUploadService,
-            useFactory: getBgService<FileUploadService>("fileUploadService"),
-            deps: [],
-        },
-        { provide: CipherService, useFactory: getBgService<CipherService>("cipherService"), deps: [] },
-        {
-            provide: CryptoFunctionService,
-            useFactory: getBgService<CryptoFunctionService>("cryptoFunctionService"),
-            deps: [],
-        },
-        { provide: FolderService, useFactory: getBgService<FolderService>("folderService"), deps: [] },
-        {
-            provide: CollectionService,
-            useFactory: getBgService<CollectionService>("collectionService"),
-            deps: [],
-        },
-        {
-            provide: LogServiceAbstraction,
-            useFactory: getBgService<ConsoleLogService>("logService"),
-            deps: [],
-        },
-        {
-            provide: EnvironmentService,
-            useFactory: getBgService<EnvironmentService>("environmentService"),
-            deps: [],
-        },
-        { provide: TotpService, useFactory: getBgService<TotpService>("totpService"), deps: [] },
-        { provide: TokenService, useFactory: getBgService<TokenService>("tokenService"), deps: [] },
-        { provide: I18nService, useFactory: getBgService<I18nService>("i18nService"), deps: [] },
-        { provide: CryptoService, useFactory: getBgService<CryptoService>("cryptoService"), deps: [] },
-        { provide: EventService, useFactory: getBgService<EventService>("eventService"), deps: [] },
-        { provide: PolicyService, useFactory: getBgService<PolicyService>("policyService"), deps: [] },
-        {
-            provide: PlatformUtilsService,
-            useFactory: getBgService<PlatformUtilsService>("platformUtilsService"),
-            deps: [],
-        },
-        {
-            provide: PasswordGenerationService,
-            useFactory: getBgService<PasswordGenerationService>("passwordGenerationService"),
-            deps: [],
-        },
-        { provide: ApiService, useFactory: getBgService<ApiService>("apiService"), deps: [] },
-        { provide: SyncService, useFactory: getBgService<SyncService>("syncService"), deps: [] },
-        { provide: UserService, useFactory: getBgService<UserService>("userService"), deps: [] },
-        {
-            provide: SettingsService,
-            useFactory: getBgService<SettingsService>("settingsService"),
-            deps: [],
-        },
-        {
-            provide: StorageService,
-            useFactory: getBgService<StorageService>("storageService"),
-            deps: [],
-        },
-        { provide: AppIdService, useFactory: getBgService<AppIdService>("appIdService"), deps: [] },
-        {
-            provide: AutofillService,
-            useFactory: getBgService<AutofillService>("autofillService"),
-            deps: [],
-        },
-        { provide: ExportService, useFactory: getBgService<ExportService>("exportService"), deps: [] },
-        { provide: SendService, useFactory: getBgService<SendService>("sendService"), deps: [] },
-        {
-            provide: KeyConnectorService,
-            useFactory: getBgService<KeyConnectorService>("keyConnectorService"),
-            deps: [],
-        },
-        {
-            provide: UserVerificationService,
-            useFactory: getBgService<UserVerificationService>("userVerificationService"),
-            deps: [],
-        },
-        {
-            provide: VaultTimeoutService,
-            useFactory: getBgService<VaultTimeoutService>("vaultTimeoutService"),
-            deps: [],
-        },
-        {
-            provide: NotificationsService,
-            useFactory: getBgService<NotificationsService>("notificationsService"),
-            deps: [],
-        },
-        {
-            provide: LogServiceAbstraction,
-            useFactory: getBgService<ConsoleLogService>("logService"),
-            deps: [],
-        },
-        { provide: PasswordRepromptServiceAbstraction, useClass: PasswordRepromptService },
-    ],
+        StateServiceAbstraction,
+        LogServiceAbstraction,
+      ],
+      multi: true,
+    },
+    LaunchGuardService,
+    { provide: BaseLockGuardService, useClass: LockGuardService },
+    { provide: BaseUnauthGuardService, useClass: UnauthGuardService },
+    DebounceNavigationService,
+    PopupUtilsService,
+    { provide: MessagingService, useClass: BrowserMessagingService },
+    {
+      provide: AuthServiceAbstraction,
+      useFactory: getBgService<AuthService>("authService"),
+      deps: [],
+    },
+    { provide: StateServiceAbstraction, useClass: StateService },
+    {
+      provide: SearchServiceAbstraction,
+      useFactory: (
+        cipherService: CipherService,
+        logService: ConsoleLogService,
+        i18nService: I18nService
+      ) => {
+        return isPrivateMode
+          ? null
+          : new PopupSearchService(
+              getBgService<SearchService>("searchService")(),
+              cipherService,
+              logService,
+              i18nService
+            );
+      },
+      deps: [CipherService, LogServiceAbstraction, I18nService],
+    },
+    { provide: AuditService, useFactory: getBgService<AuditService>("auditService"), deps: [] },
+    {
+      provide: FileUploadService,
+      useFactory: getBgService<FileUploadService>("fileUploadService"),
+      deps: [],
+    },
+    { provide: CipherService, useFactory: getBgService<CipherService>("cipherService"), deps: [] },
+    {
+      provide: CryptoFunctionService,
+      useFactory: getBgService<CryptoFunctionService>("cryptoFunctionService"),
+      deps: [],
+    },
+    { provide: FolderService, useFactory: getBgService<FolderService>("folderService"), deps: [] },
+    {
+      provide: CollectionService,
+      useFactory: getBgService<CollectionService>("collectionService"),
+      deps: [],
+    },
+    {
+      provide: LogServiceAbstraction,
+      useFactory: getBgService<ConsoleLogService>("logService"),
+      deps: [],
+    },
+    {
+      provide: EnvironmentService,
+      useFactory: getBgService<EnvironmentService>("environmentService"),
+      deps: [],
+    },
+    { provide: TotpService, useFactory: getBgService<TotpService>("totpService"), deps: [] },
+    { provide: TokenService, useFactory: getBgService<TokenService>("tokenService"), deps: [] },
+    { provide: I18nService, useFactory: getBgService<I18nService>("i18nService"), deps: [] },
+    { provide: CryptoService, useFactory: getBgService<CryptoService>("cryptoService"), deps: [] },
+    { provide: EventService, useFactory: getBgService<EventService>("eventService"), deps: [] },
+    { provide: PolicyService, useFactory: getBgService<PolicyService>("policyService"), deps: [] },
+    {
+      provide: PlatformUtilsService,
+      useFactory: getBgService<PlatformUtilsService>("platformUtilsService"),
+      deps: [],
+    },
+    {
+      provide: PasswordGenerationService,
+      useFactory: getBgService<PasswordGenerationService>("passwordGenerationService"),
+      deps: [],
+    },
+    { provide: ApiService, useFactory: getBgService<ApiService>("apiService"), deps: [] },
+    { provide: SyncService, useFactory: getBgService<SyncService>("syncService"), deps: [] },
+    { provide: UserService, useFactory: getBgService<UserService>("userService"), deps: [] },
+    {
+      provide: SettingsService,
+      useFactory: getBgService<SettingsService>("settingsService"),
+      deps: [],
+    },
+    {
+      provide: StorageService,
+      useFactory: getBgService<StorageService>("storageService"),
+      deps: [],
+    },
+    { provide: AppIdService, useFactory: getBgService<AppIdService>("appIdService"), deps: [] },
+    {
+      provide: AutofillService,
+      useFactory: getBgService<AutofillService>("autofillService"),
+      deps: [],
+    },
+    { provide: ExportService, useFactory: getBgService<ExportService>("exportService"), deps: [] },
+    { provide: SendService, useFactory: getBgService<SendService>("sendService"), deps: [] },
+    {
+      provide: KeyConnectorService,
+      useFactory: getBgService<KeyConnectorService>("keyConnectorService"),
+      deps: [],
+    },
+    {
+      provide: UserVerificationService,
+      useFactory: getBgService<UserVerificationService>("userVerificationService"),
+      deps: [],
+    },
+    {
+      provide: VaultTimeoutService,
+      useFactory: getBgService<VaultTimeoutService>("vaultTimeoutService"),
+      deps: [],
+    },
+    {
+      provide: NotificationsService,
+      useFactory: getBgService<NotificationsService>("notificationsService"),
+      deps: [],
+    },
+    {
+      provide: LogServiceAbstraction,
+      useFactory: getBgService<ConsoleLogService>("logService"),
+      deps: [],
+    },
+    { provide: PasswordRepromptServiceAbstraction, useClass: PasswordRepromptService },
+  ],
 })
 export class ServicesModule {}

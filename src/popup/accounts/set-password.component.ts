@@ -15,65 +15,65 @@ import { UserService } from "jslib-common/abstractions/user.service";
 import { SetPasswordComponent as BaseSetPasswordComponent } from "jslib-angular/components/set-password.component";
 
 @Component({
-    selector: "app-set-password",
-    templateUrl: "set-password.component.html",
+  selector: "app-set-password",
+  templateUrl: "set-password.component.html",
 })
 export class SetPasswordComponent extends BaseSetPasswordComponent {
-    constructor(
-        apiService: ApiService,
-        i18nService: I18nService,
-        cryptoService: CryptoService,
-        messagingService: MessagingService,
-        userService: UserService,
-        passwordGenerationService: PasswordGenerationService,
-        platformUtilsService: PlatformUtilsService,
-        policyService: PolicyService,
-        router: Router,
-        syncService: SyncService,
-        route: ActivatedRoute
-    ) {
-        super(
-            i18nService,
-            cryptoService,
-            messagingService,
-            userService,
-            passwordGenerationService,
-            platformUtilsService,
-            policyService,
-            router,
-            apiService,
-            syncService,
-            route
-        );
-    }
+  constructor(
+    apiService: ApiService,
+    i18nService: I18nService,
+    cryptoService: CryptoService,
+    messagingService: MessagingService,
+    userService: UserService,
+    passwordGenerationService: PasswordGenerationService,
+    platformUtilsService: PlatformUtilsService,
+    policyService: PolicyService,
+    router: Router,
+    syncService: SyncService,
+    route: ActivatedRoute
+  ) {
+    super(
+      i18nService,
+      cryptoService,
+      messagingService,
+      userService,
+      passwordGenerationService,
+      platformUtilsService,
+      policyService,
+      router,
+      apiService,
+      syncService,
+      route
+    );
+  }
 
-    get masterPasswordScoreWidth() {
-        return this.masterPasswordScore == null ? 0 : (this.masterPasswordScore + 1) * 20;
-    }
+  get masterPasswordScoreWidth() {
+    return this.masterPasswordScore == null ? 0 : (this.masterPasswordScore + 1) * 20;
+  }
 
-    get masterPasswordScoreColor() {
-        switch (this.masterPasswordScore) {
-            case 4:
-                return "success";
-            case 3:
-                return "primary";
-            case 2:
-                return "warning";
-            default:
-                return "danger";
-        }
+  get masterPasswordScoreColor() {
+    switch (this.masterPasswordScore) {
+      case 4:
+        return "success";
+      case 3:
+        return "primary";
+      case 2:
+        return "warning";
+      default:
+        return "danger";
     }
+  }
 
-    get masterPasswordScoreText() {
-        switch (this.masterPasswordScore) {
-            case 4:
-                return this.i18nService.t("strong");
-            case 3:
-                return this.i18nService.t("good");
-            case 2:
-                return this.i18nService.t("weak");
-            default:
-                return this.masterPasswordScore != null ? this.i18nService.t("weak") : null;
-        }
+  get masterPasswordScoreText() {
+    switch (this.masterPasswordScore) {
+      case 4:
+        return this.i18nService.t("strong");
+      case 3:
+        return this.i18nService.t("good");
+      case 2:
+        return this.i18nService.t("weak");
+      default:
+        return this.masterPasswordScore != null ? this.i18nService.t("weak") : null;
     }
+  }
 }

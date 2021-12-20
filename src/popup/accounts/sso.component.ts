@@ -19,55 +19,55 @@ import { SsoComponent as BaseSsoComponent } from "jslib-angular/components/sso.c
 import { BrowserApi } from "../../browser/browserApi";
 
 @Component({
-    selector: "app-sso",
-    templateUrl: "sso.component.html",
+  selector: "app-sso",
+  templateUrl: "sso.component.html",
 })
 export class SsoComponent extends BaseSsoComponent {
-    constructor(
-        authService: AuthService,
-        router: Router,
-        i18nService: I18nService,
-        route: ActivatedRoute,
-        storageService: StorageService,
-        stateService: StateService,
-        platformUtilsService: PlatformUtilsService,
-        apiService: ApiService,
-        cryptoFunctionService: CryptoFunctionService,
-        passwordGenerationService: PasswordGenerationService,
-        syncService: SyncService,
-        environmentService: EnvironmentService,
-        logService: LogService,
-        private vaultTimeoutService: VaultTimeoutService
-    ) {
-        super(
-            authService,
-            router,
-            i18nService,
-            route,
-            storageService,
-            stateService,
-            platformUtilsService,
-            apiService,
-            cryptoFunctionService,
-            environmentService,
-            passwordGenerationService,
-            logService
-        );
+  constructor(
+    authService: AuthService,
+    router: Router,
+    i18nService: I18nService,
+    route: ActivatedRoute,
+    storageService: StorageService,
+    stateService: StateService,
+    platformUtilsService: PlatformUtilsService,
+    apiService: ApiService,
+    cryptoFunctionService: CryptoFunctionService,
+    passwordGenerationService: PasswordGenerationService,
+    syncService: SyncService,
+    environmentService: EnvironmentService,
+    logService: LogService,
+    private vaultTimeoutService: VaultTimeoutService
+  ) {
+    super(
+      authService,
+      router,
+      i18nService,
+      route,
+      storageService,
+      stateService,
+      platformUtilsService,
+      apiService,
+      cryptoFunctionService,
+      environmentService,
+      passwordGenerationService,
+      logService
+    );
 
-        const url = this.environmentService.getWebVaultUrl();
+    const url = this.environmentService.getWebVaultUrl();
 
-        this.redirectUri = url + "/sso-connector.html";
-        this.clientId = "browser";
+    this.redirectUri = url + "/sso-connector.html";
+    this.clientId = "browser";
 
-        super.onSuccessfulLogin = async () => {
-            await syncService.fullSync(true);
-            if (await this.vaultTimeoutService.isLocked()) {
-                // If the vault is unlocked then this will clear keys from memory, which we don't want to do
-                BrowserApi.reloadOpenWindows();
-            }
+    super.onSuccessfulLogin = async () => {
+      await syncService.fullSync(true);
+      if (await this.vaultTimeoutService.isLocked()) {
+        // If the vault is unlocked then this will clear keys from memory, which we don't want to do
+        BrowserApi.reloadOpenWindows();
+      }
 
-            const thisWindow = window.open("", "_self");
-            thisWindow.close();
-        };
-    }
+      const thisWindow = window.open("", "_self");
+      thisWindow.close();
+    };
+  }
 }

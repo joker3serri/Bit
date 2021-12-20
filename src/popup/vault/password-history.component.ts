@@ -11,32 +11,32 @@ import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.se
 import { PasswordHistoryComponent as BasePasswordHistoryComponent } from "jslib-angular/components/password-history.component";
 
 @Component({
-    selector: "app-password-history",
-    templateUrl: "password-history.component.html",
+  selector: "app-password-history",
+  templateUrl: "password-history.component.html",
 })
 export class PasswordHistoryComponent extends BasePasswordHistoryComponent {
-    constructor(
-        cipherService: CipherService,
-        platformUtilsService: PlatformUtilsService,
-        i18nService: I18nService,
-        private location: Location,
-        private route: ActivatedRoute
-    ) {
-        super(cipherService, platformUtilsService, i18nService, window);
-    }
+  constructor(
+    cipherService: CipherService,
+    platformUtilsService: PlatformUtilsService,
+    i18nService: I18nService,
+    private location: Location,
+    private route: ActivatedRoute
+  ) {
+    super(cipherService, platformUtilsService, i18nService, window);
+  }
 
-    async ngOnInit() {
-        this.route.queryParams.pipe(first()).subscribe(async (params) => {
-            if (params.cipherId) {
-                this.cipherId = params.cipherId;
-            } else {
-                this.close();
-            }
-            await this.init();
-        });
-    }
+  async ngOnInit() {
+    this.route.queryParams.pipe(first()).subscribe(async (params) => {
+      if (params.cipherId) {
+        this.cipherId = params.cipherId;
+      } else {
+        this.close();
+      }
+      await this.init();
+    });
+  }
 
-    close() {
-        this.location.back();
-    }
+  close() {
+    this.location.back();
+  }
 }

@@ -5,23 +5,26 @@ import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.se
 import { PopupUtilsService } from "../services/popup-utils.service";
 
 @Component({
-    selector: "app-pop-out",
-    templateUrl: "pop-out.component.html",
+  selector: "app-pop-out",
+  templateUrl: "pop-out.component.html",
 })
 export class PopOutComponent implements OnInit {
-    @Input() show = true;
+  @Input() show = true;
 
-    constructor(private platformUtilsService: PlatformUtilsService, private popupUtilsService: PopupUtilsService) {}
+  constructor(
+    private platformUtilsService: PlatformUtilsService,
+    private popupUtilsService: PopupUtilsService
+  ) {}
 
-    ngOnInit() {
-        if (this.show) {
-            if (this.popupUtilsService.inSidebar(window) && this.platformUtilsService.isFirefox()) {
-                this.show = false;
-            }
-        }
+  ngOnInit() {
+    if (this.show) {
+      if (this.popupUtilsService.inSidebar(window) && this.platformUtilsService.isFirefox()) {
+        this.show = false;
+      }
     }
+  }
 
-    expand() {
-        this.popupUtilsService.popOut(window);
-    }
+  expand() {
+    this.popupUtilsService.popOut(window);
+  }
 }

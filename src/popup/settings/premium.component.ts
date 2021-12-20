@@ -10,27 +10,27 @@ import { UserService } from "jslib-common/abstractions/user.service";
 import { PremiumComponent as BasePremiumComponent } from "jslib-angular/components/premium.component";
 
 @Component({
-    selector: "app-premium",
-    templateUrl: "premium.component.html",
+  selector: "app-premium",
+  templateUrl: "premium.component.html",
 })
 export class PremiumComponent extends BasePremiumComponent {
-    priceString: string;
+  priceString: string;
 
-    constructor(
-        i18nService: I18nService,
-        platformUtilsService: PlatformUtilsService,
-        apiService: ApiService,
-        userService: UserService,
-        private currencyPipe: CurrencyPipe,
-        logService: LogService
-    ) {
-        super(i18nService, platformUtilsService, apiService, userService, logService);
+  constructor(
+    i18nService: I18nService,
+    platformUtilsService: PlatformUtilsService,
+    apiService: ApiService,
+    userService: UserService,
+    private currencyPipe: CurrencyPipe,
+    logService: LogService
+  ) {
+    super(i18nService, platformUtilsService, apiService, userService, logService);
 
-        // Support old price string. Can be removed in future once all translations are properly updated.
-        const thePrice = this.currencyPipe.transform(this.price, "$");
-        this.priceString = i18nService.t("premiumPrice", thePrice);
-        if (this.priceString.indexOf("%price%") > -1) {
-            this.priceString = this.priceString.replace("%price%", thePrice);
-        }
+    // Support old price string. Can be removed in future once all translations are properly updated.
+    const thePrice = this.currencyPipe.transform(this.price, "$");
+    this.priceString = i18nService.t("premiumPrice", thePrice);
+    if (this.priceString.indexOf("%price%") > -1) {
+      this.priceString = this.priceString.replace("%price%", thePrice);
     }
+  }
 }

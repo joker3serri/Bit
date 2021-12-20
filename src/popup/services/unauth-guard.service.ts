@@ -4,5 +4,5 @@ import { UnauthGuardService as BaseUnauthGuardService } from "jslib-angular/serv
 
 @Injectable()
 export class UnauthGuardService extends BaseUnauthGuardService {
-    protected homepage = "tabs/current";
+  protected homepage = "tabs/current";
 }

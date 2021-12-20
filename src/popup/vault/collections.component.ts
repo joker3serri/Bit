@@ -12,33 +12,33 @@ import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.se
 import { CollectionsComponent as BaseCollectionsComponent } from "jslib-angular/components/collections.component";
 
 @Component({
-    selector: "app-vault-collections",
-    templateUrl: "collections.component.html",
+  selector: "app-vault-collections",
+  templateUrl: "collections.component.html",
 })
 export class CollectionsComponent extends BaseCollectionsComponent {
-    constructor(
-        collectionService: CollectionService,
-        platformUtilsService: PlatformUtilsService,
-        i18nService: I18nService,
-        cipherService: CipherService,
-        private route: ActivatedRoute,
-        private location: Location,
-        logService: LogService
-    ) {
-        super(collectionService, platformUtilsService, i18nService, cipherService, logService);
-    }
+  constructor(
+    collectionService: CollectionService,
+    platformUtilsService: PlatformUtilsService,
+    i18nService: I18nService,
+    cipherService: CipherService,
+    private route: ActivatedRoute,
+    private location: Location,
+    logService: LogService
+  ) {
+    super(collectionService, platformUtilsService, i18nService, cipherService, logService);
+  }
 
-    async ngOnInit() {
-        this.onSavedCollections.subscribe(() => {
-            this.back();
-        });
-        this.route.queryParams.pipe(first()).subscribe(async (params) => {
-            this.cipherId = params.cipherId;
-            await this.load();
-        });
-    }
+  async ngOnInit() {
+    this.onSavedCollections.subscribe(() => {
+      this.back();
+    });
+    this.route.queryParams.pipe(first()).subscribe(async (params) => {
+      this.cipherId = params.cipherId;
+      await this.load();
+    });
+  }
 
-    back() {
-        this.location.back();
-    }
+  back() {
+    this.location.back();
+  }
 }

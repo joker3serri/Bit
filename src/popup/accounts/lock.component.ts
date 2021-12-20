@@ -20,87 +20,88 @@ import { VaultTimeoutService } from "jslib-common/abstractions/vaultTimeout.serv
 import { LockComponent as BaseLockComponent } from "jslib-angular/components/lock.component";
 
 @Component({
-    selector: "app-lock",
-    templateUrl: "lock.component.html",
+  selector: "app-lock",
+  templateUrl: "lock.component.html",
 })
 export class LockComponent extends BaseLockComponent {
-    private isInitialLockScreen: boolean;
+  private isInitialLockScreen: boolean;
 
-    constructor(
-        router: Router,
-        i18nService: I18nService,
-        platformUtilsService: PlatformUtilsService,
-        messagingService: MessagingService,
-        userService: UserService,
-        cryptoService: CryptoService,
-        storageService: StorageService,
-        vaultTimeoutService: VaultTimeoutService,
-        environmentService: EnvironmentService,
-        stateService: StateService,
-        apiService: ApiService,
-        logService: LogService,
-        keyConnectorService: KeyConnectorService,
-        ngZone: NgZone
-    ) {
-        super(
-            router,
-            i18nService,
-            platformUtilsService,
-            messagingService,
-            userService,
-            cryptoService,
-            storageService,
-            vaultTimeoutService,
-            environmentService,
-            stateService,
-            apiService,
-            logService,
-            keyConnectorService,
-            ngZone
-        );
-        this.successRoute = "/tabs/current";
-        this.isInitialLockScreen = (window as any).previousPopupUrl == null;
-    }
+  constructor(
+    router: Router,
+    i18nService: I18nService,
+    platformUtilsService: PlatformUtilsService,
+    messagingService: MessagingService,
+    userService: UserService,
+    cryptoService: CryptoService,
+    storageService: StorageService,
+    vaultTimeoutService: VaultTimeoutService,
+    environmentService: EnvironmentService,
+    stateService: StateService,
+    apiService: ApiService,
+    logService: LogService,
+    keyConnectorService: KeyConnectorService,
+    ngZone: NgZone
+  ) {
+    super(
+      router,
+      i18nService,
+      platformUtilsService,
+      messagingService,
+      userService,
+      cryptoService,
+      storageService,
+      vaultTimeoutService,
+      environmentService,
+      stateService,
+      apiService,
+      logService,
+      keyConnectorService,
+      ngZone
+    );
+    this.successRoute = "/tabs/current";
+    this.isInitialLockScreen = (window as any).previousPopupUrl == null;
+  }
 
-    async ngOnInit() {
-        await super.ngOnInit();
-        const disableAutoBiometricsPrompt =
-            (await this.storageService.get<boolean>(ConstantsService.disableAutoBiometricsPromptKey)) ?? true;
+  async ngOnInit() {
+    await super.ngOnInit();
+    const disableAutoBiometricsPrompt =
+      (await this.storageService.get<boolean>(ConstantsService.disableAutoBiometricsPromptKey)) ??
+      true;
 
-        window.setTimeout(async () => {
-            document.getElementById(this.pinLock ? "pin" : "masterPassword").focus();
-            if (this.biometricLock && !disableAutoBiometricsPrompt && this.isInitialLockScreen) {
-                if (await this.vaultTimeoutService.isLocked()) {
-                    await this.unlockBiometric();
-                }
-            }
-        }, 100);
-    }
-
-    async unlockBiometric(): Promise<boolean> {
-        if (!this.biometricLock) {
-            return;
+    window.setTimeout(async () => {
+      document.getElementById(this.pinLock ? "pin" : "masterPassword").focus();
+      if (this.biometricLock && !disableAutoBiometricsPrompt && this.isInitialLockScreen) {
+        if (await this.vaultTimeoutService.isLocked()) {
+          await this.unlockBiometric();
         }
+      }
+    }, 100);
+  }
 
-        const div = document.createElement("div");
-        div.innerHTML = `<div class="swal2-text">${this.i18nService.t("awaitDesktop")}</div>`;
-
-        Swal.fire({
-            heightAuto: false,
-            buttonsStyling: false,
-            html: div,
-            showCancelButton: true,
-            cancelButtonText: this.i18nService.t("cancel"),
-            showConfirmButton: false,
-        });
-
-        const success = await super.unlockBiometric();
-
-        // Avoid closing the error dialogs
-        if (success) {
-            Swal.close();
-        }
-
-        return success;
+  async unlockBiometric(): Promise<boolean> {
+    if (!this.biometricLock) {
+      return;
     }
+
+    const div = document.createElement("div");
+    div.innerHTML = `<div class="swal2-text">${this.i18nService.t("awaitDesktop")}</div>`;
+
+    Swal.fire({
+      heightAuto: false,
+      buttonsStyling: false,
+      html: div,
+      showCancelButton: true,
+      cancelButtonText: this.i18nService.t("cancel"),
+      showConfirmButton: false,
+    });
+
+    const success = await super.unlockBiometric();
+
+    // Avoid closing the error dialogs
+    if (success) {
+      Swal.close();
+    }
+
+    return success;
+  }
 }

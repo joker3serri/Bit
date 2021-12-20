@@ -4,5 +4,5 @@ import { LockGuardService as BaseLockGuardService } from "jslib-angular/services
 
 @Injectable()
 export class LockGuardService extends BaseLockGuardService {
-    protected homepage = "tabs/current";
+  protected homepage = "tabs/current";
 }

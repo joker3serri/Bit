@@ -7,13 +7,13 @@ import { UnauthGuardService } from "jslib-angular/services/unauth-guard.service"
 
 @Injectable()
 export class LaunchGuardService implements CanActivate {
-    constructor(private router: Router, private unauthGuardService: UnauthGuardService) {}
+  constructor(private router: Router, private unauthGuardService: UnauthGuardService) {}
 
-    async canActivate() {
-        if (BrowserApi.getBackgroundPage() == null) {
-            this.router.navigate(["private-mode"]);
-            return false;
-        }
-        return await this.unauthGuardService.canActivate();
+  async canActivate() {
+    if (BrowserApi.getBackgroundPage() == null) {
+      this.router.navigate(["private-mode"]);
+      return false;
     }
+    return await this.unauthGuardService.canActivate();
+  }
 }
