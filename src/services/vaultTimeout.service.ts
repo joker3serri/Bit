@@ -1,8 +1,7 @@
-import { VaultTimeoutService as BaseVaultTimeoutService } from 'jslib-common/services/vaultTimeout.service';
-import { SafariApp } from '../browser/safariApp';
+import { VaultTimeoutService as BaseVaultTimeoutService } from "jslib-common/services/vaultTimeout.service";
+import { SafariApp } from "../browser/safariApp";
 
 export default class VaultTimeoutService extends BaseVaultTimeoutService {
-
     startCheck() {
         this.checkVaultTimeout();
         if (this.platformUtilsService.isSafari()) {
@@ -18,11 +17,11 @@ export default class VaultTimeoutService extends BaseVaultTimeoutService {
     async checkSafari() {
         while (true) {
             try {
-                await SafariApp.sendMessageToApp('sleep');
+                await SafariApp.sendMessageToApp("sleep");
                 this.checkVaultTimeout();
             } catch (e) {
                 // tslint:disable-next-line
-                console.log('Exception Safari VaultTimeout', e);
+                console.log("Exception Safari VaultTimeout", e);
             }
         }
     }

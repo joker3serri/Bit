@@ -6,11 +6,11 @@ export default class AutofillField {
     htmlID: string;
     htmlName: string;
     htmlClass: string;
-    'label-left': string;
-    'label-right': string;
-    'label-top': string;
-    'label-tag': string;
-    'label-aria': string;
+    "label-left": string;
+    "label-right": string;
+    "label-top": string;
+    "label-tag": string;
+    "label-aria": string;
     placeholder: string;
     type: string;
     value: string;

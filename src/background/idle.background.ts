@@ -1,18 +1,21 @@
-import { NotificationsService } from 'jslib-common/abstractions/notifications.service';
-import { StorageService } from 'jslib-common/abstractions/storage.service';
-import { VaultTimeoutService } from 'jslib-common/abstractions/vaultTimeout.service';
+import { NotificationsService } from "jslib-common/abstractions/notifications.service";
+import { StorageService } from "jslib-common/abstractions/storage.service";
+import { VaultTimeoutService } from "jslib-common/abstractions/vaultTimeout.service";
 
-import { ConstantsService } from 'jslib-common/services/constants.service';
+import { ConstantsService } from "jslib-common/services/constants.service";
 
 const IdleInterval = 60 * 5; // 5 minutes
 
 export default class IdleBackground {
     private idle: any;
     private idleTimer: number = null;
-    private idleState = 'active';
+    private idleState = "active";
 
-    constructor(private vaultTimeoutService: VaultTimeoutService, private storageService: StorageService,
-        private notificationsService: NotificationsService) {
+    constructor(
+        private vaultTimeoutService: VaultTimeoutService,
+        private storageService: StorageService,
+        private notificationsService: NotificationsService
+    ) {
         this.idle = chrome.idle || (browser != null ? browser.idle : null);
     }
 
@@ -22,7 +25,7 @@ export default class IdleBackground {
         }
 
         const idleHandler = (newState: string) => {
-            if (newState === 'active') {
+            if (newState === "active") {
                 this.notificationsService.reconnectFromActivity();
             } else {
                 this.notificationsService.disconnectFromInactivity();
@@ -37,11 +40,13 @@ export default class IdleBackground {
 
         if (this.idle.onStateChanged) {
             this.idle.onStateChanged.addListener(async (newState: string) => {
-                if (newState === 'locked') { // If the screen is locked or the screensaver activates
+                if (newState === "locked") {
+                    // If the screen is locked or the screensaver activates
                     const timeout = await this.storageService.get<number>(ConstantsService.vaultTimeoutKey);
-                    if (timeout === -2) { // On System Lock vault timeout option
+                    if (timeout === -2) {
+                        // On System Lock vault timeout option
                         const action = await this.storageService.get<string>(ConstantsService.vaultTimeoutActionKey);
-                        if (action === 'logOut') {
+                        if (action === "logOut") {
                             await this.vaultTimeoutService.logOut();
                         } else {
                             await this.vaultTimeoutService.lock(true);

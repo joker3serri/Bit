@@ -43,15 +43,19 @@
 
     function collect(document, undefined) {
         // START MODIFICATION
-        var isFirefox = navigator.userAgent.indexOf('Firefox') !== -1 || navigator.userAgent.indexOf('Gecko/') !== -1;
+        var isFirefox = navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Gecko/") !== -1;
         // END MODIFICATION
 
         document.elementsByOPID = {};
-        document.addEventListener('input', function (inputevent) {
-            inputevent.a !== false &&
-                inputevent.target.tagName.toLowerCase() === 'input' &&
-                (inputevent.target.dataset['com.bitwarden.browser.userEdited'] = 'yes');
-        }, true);
+        document.addEventListener(
+            "input",
+            function (inputevent) {
+                inputevent.a !== false &&
+                    inputevent.target.tagName.toLowerCase() === "input" &&
+                    (inputevent.target.dataset["com.bitwarden.browser.userEdited"] = "yes");
+            },
+            true
+        );
 
         function getPageDetails(theDoc, oneShotId) {
             // start helpers
@@ -59,20 +63,27 @@
             // get the value of a dom element's attribute
             function getElementAttrValue(el, attrName) {
                 var attrVal = el[attrName];
-                if ('string' == typeof attrVal) {
+                if ("string" == typeof attrVal) {
                     return attrVal;
                 }
                 attrVal = el.getAttribute(attrName);
-                return 'string' == typeof attrVal ? attrVal : null;
+                return "string" == typeof attrVal ? attrVal : null;
             }
 
             // has the element been fake tested?
             function checkIfFakeTested(field, el) {
-                if (-1 === ['text', 'password'].indexOf(el.type.toLowerCase()) ||
-                    !(passwordRegEx.test(field.value) ||
-                        passwordRegEx.test(field.htmlID) || passwordRegEx.test(field.htmlName) ||
-                        passwordRegEx.test(field.placeholder) || passwordRegEx.test(field['label-tag']) ||
-                        passwordRegEx.test(field['label-data']) || passwordRegEx.test(field['label-aria']))) {
+                if (
+                    -1 === ["text", "password"].indexOf(el.type.toLowerCase()) ||
+                    !(
+                        passwordRegEx.test(field.value) ||
+                        passwordRegEx.test(field.htmlID) ||
+                        passwordRegEx.test(field.htmlName) ||
+                        passwordRegEx.test(field.placeholder) ||
+                        passwordRegEx.test(field["label-tag"]) ||
+                        passwordRegEx.test(field["label-data"]) ||
+                        passwordRegEx.test(field["label-aria"])
+                    )
+                ) {
                     return false;
                 }
 
@@ -80,7 +91,7 @@
                     return true;
                 }
 
-                if ('password' == el.type.toLowerCase()) {
+                if ("password" == el.type.toLowerCase()) {
                     return false;
                 }
 
@@ -92,20 +103,20 @@
             // get the value of a dom element
             function getElementValue(el) {
                 switch (toLowerString(el.type)) {
-                    case 'checkbox':
-                        return el.checked ? '✓' : '';
+                    case "checkbox":
+                        return el.checked ? "✓" : "";
 
-                    case 'hidden':
+                    case "hidden":
                         el = el.value;
-                        if (!el || 'number' != typeof el.length) {
-                            return '';
+                        if (!el || "number" != typeof el.length) {
+                            return "";
                         }
-                        254 < el.length && (el = el.substr(0, 254) + '...SNIPPED');
+                        254 < el.length && (el = el.substr(0, 254) + "...SNIPPED");
                         return el;
 
                     default:
                         // START MODIFICATION
-                        if (!el.type && el.tagName.toLowerCase() === 'span') {
+                        if (!el.type && el.tagName.toLowerCase() === "span") {
                             return el.innerText;
                         }
                         // END MODIFICATION
@@ -120,22 +131,24 @@
                 }
 
                 var options = Array.prototype.slice.call(el.options).map(function (option) {
-                    var optionText = option.text ?
-                        toLowerString(option.text).replace(/\\s/gm, '').replace(/[~`!@$%^&*()\\-_+=:;'\"\\[\\]|\\\\,<.>\\?]/gm, '') :
-                        null;
+                    var optionText = option.text
+                        ? toLowerString(option.text)
+                              .replace(/\\s/gm, "")
+                              .replace(/[~`!@$%^&*()\\-_+=:;'\"\\[\\]|\\\\,<.>\\?]/gm, "")
+                        : null;
 
                     return [optionText ? optionText : null, option.value];
-                })
+                });
 
                 return {
-                    options: options
+                    options: options,
                 };
             }
 
             // get the top label
             function getLabelTop(el) {
                 var parent;
-                for (el = el.parentElement || el.parentNode; el && 'td' != toLowerString(el.tagName);) {
+                for (el = el.parentElement || el.parentNode; el && "td" != toLowerString(el.tagName); ) {
                     el = el.parentElement || el.parentNode;
                 }
 
@@ -144,19 +157,22 @@
                 }
 
                 parent = el.parentElement || el.parentNode;
-                if ('tr' != parent.tagName.toLowerCase()) {
+                if ("tr" != parent.tagName.toLowerCase()) {
                     return null;
                 }
 
                 parent = parent.previousElementSibling;
-                if (!parent || 'tr' != (parent.tagName + '').toLowerCase() ||
-                    parent.cells && el.cellIndex >= parent.cells.length) {
+                if (
+                    !parent ||
+                    "tr" != (parent.tagName + "").toLowerCase() ||
+                    (parent.cells && el.cellIndex >= parent.cells.length)
+                ) {
                     return null;
                 }
 
                 el = parent.cells[el.cellIndex];
                 var elText = el.textContent || el.innerText;
-                return elText = cleanText(elText);
+                return (elText = cleanText(elText));
             }
 
             // get all the tags for a given label
@@ -168,22 +184,23 @@
                     theLabels = Array.prototype.slice.call(el.labels);
                 } else {
                     if (el.id) {
-                        theLabels = theLabels.concat(Array.prototype.slice.call(
-                            queryDoc(theDoc, 'label[for=' + JSON.stringify(el.id) + ']')));
+                        theLabels = theLabels.concat(
+                            Array.prototype.slice.call(queryDoc(theDoc, "label[for=" + JSON.stringify(el.id) + "]"))
+                        );
                     }
 
                     if (el.name) {
-                        docLabel = queryDoc(theDoc, 'label[for=' + JSON.stringify(el.name) + ']');
+                        docLabel = queryDoc(theDoc, "label[for=" + JSON.stringify(el.name) + "]");
 
                         for (var labelIndex = 0; labelIndex < docLabel.length; labelIndex++) {
                             if (-1 === theLabels.indexOf(docLabel[labelIndex])) {
-                                theLabels.push(docLabel[labelIndex])
+                                theLabels.push(docLabel[labelIndex]);
                             }
                         }
                     }
 
                     for (var theEl = el; theEl && theEl != theDoc; theEl = theEl.parentNode) {
-                        if ('label' === toLowerString(theEl.tagName) && -1 === theLabels.indexOf(theEl)) {
+                        if ("label" === toLowerString(theEl.tagName) && -1 === theLabels.indexOf(theEl)) {
                             theLabels.push(theEl);
                         }
                     }
@@ -191,8 +208,11 @@
 
                 if (0 === theLabels.length) {
                     theEl = el.parentNode;
-                    if ('dd' === theEl.tagName.toLowerCase() && null !== theEl.previousElementSibling
-                        && 'dt' === theEl.previousElementSibling.tagName.toLowerCase()) {
+                    if (
+                        "dd" === theEl.tagName.toLowerCase() &&
+                        null !== theEl.previousElementSibling &&
+                        "dt" === theEl.previousElementSibling.tagName.toLowerCase()
+                    ) {
                         theLabels.push(theEl.previousElementSibling);
                     }
                 }
@@ -201,15 +221,20 @@
                     return null;
                 }
 
-                return theLabels.map(function (l) {
-                    return (l.textContent || l.innerText)
-                        .replace(/^\\s+/, '').replace(/\\s+$/, '').replace('\\n', '').replace(/\\s{2,}/, ' ');
-                }).join('');
+                return theLabels
+                    .map(function (l) {
+                        return (l.textContent || l.innerText)
+                            .replace(/^\\s+/, "")
+                            .replace(/\\s+$/, "")
+                            .replace("\\n", "")
+                            .replace(/\\s{2,}/, " ");
+                    })
+                    .join("");
             }
 
             // add property and value to the object if there is a value
             function addProp(obj, prop, val, d) {
-                if (0 !== d && d === val || null === val || void 0 === val) {
+                if ((0 !== d && d === val) || null === val || void 0 === val) {
                     return;
                 }
 
@@ -218,7 +243,7 @@
 
             // lowercase helper
             function toLowerString(s) {
-                return 'string' === typeof s ? s.toLowerCase() : ('' + s).toLowerCase();
+                return "string" === typeof s ? s.toLowerCase() : ("" + s).toLowerCase();
             }
 
             // query the document helper
@@ -226,28 +251,31 @@
                 var els = [];
                 try {
                     els = doc.querySelectorAll(query);
-                } catch (e) { }
+                } catch (e) {}
                 return els;
             }
 
             // end helpers
 
             var theView = theDoc.defaultView ? theDoc.defaultView : window,
-                passwordRegEx = RegExp('((\\\\b|_|-)pin(\\\\b|_|-)|password|passwort|kennwort|(\\\\b|_|-)passe(\\\\b|_|-)|contraseña|senha|密码|adgangskode|hasło|wachtwoord)', 'i');
+                passwordRegEx = RegExp(
+                    "((\\\\b|_|-)pin(\\\\b|_|-)|password|passwort|kennwort|(\\\\b|_|-)passe(\\\\b|_|-)|contraseña|senha|密码|adgangskode|hasło|wachtwoord)",
+                    "i"
+                );
 
             // get all the docs
-            var theForms = Array.prototype.slice.call(queryDoc(theDoc, 'form')).map(function (formEl, elIndex) {
+            var theForms = Array.prototype.slice.call(queryDoc(theDoc, "form")).map(function (formEl, elIndex) {
                 var op = {},
-                    formOpId = '__form__' + elIndex;
+                    formOpId = "__form__" + elIndex;
 
                 formEl.opid = formOpId;
                 op.opid = formOpId;
-                addProp(op, 'htmlName', getElementAttrValue(formEl, 'name'));
-                addProp(op, 'htmlID', getElementAttrValue(formEl, 'id'));
-                formOpId = getElementAttrValue(formEl, 'action');
+                addProp(op, "htmlName", getElementAttrValue(formEl, "name"));
+                addProp(op, "htmlID", getElementAttrValue(formEl, "id"));
+                formOpId = getElementAttrValue(formEl, "action");
                 formOpId = new URL(formOpId, window.location.href);
-                addProp(op, 'htmlAction', formOpId ? formOpId.href : null);
-                addProp(op, 'htmlMethod', getElementAttrValue(formEl, 'method'));
+                addProp(op, "htmlAction", formOpId ? formOpId.href : null);
+                addProp(op, "htmlMethod", getElementAttrValue(formEl, "method"));
 
                 return op;
             });
@@ -255,10 +283,10 @@
             // get all the form fields
             var theFields = Array.prototype.slice.call(getFormElements(theDoc, 50)).map(function (el, elIndex) {
                 var field = {},
-                    opId = '__' + elIndex,
+                    opId = "__" + elIndex,
                     elMaxLen = -1 == el.maxLength ? 999 : el.maxLength;
 
-                if (!elMaxLen || 'number' === typeof elMaxLen && isNaN(elMaxLen)) {
+                if (!elMaxLen || ("number" === typeof elMaxLen && isNaN(elMaxLen))) {
                     elMaxLen = 999;
                 }
 
@@ -266,70 +294,77 @@
                 el.opid = opId;
                 field.opid = opId;
                 field.elementNumber = elIndex;
-                addProp(field, 'maxLength', Math.min(elMaxLen, 999), 999);
+                addProp(field, "maxLength", Math.min(elMaxLen, 999), 999);
                 field.visible = isElementVisible(el);
                 field.viewable = isElementViewable(el);
-                addProp(field, 'htmlID', getElementAttrValue(el, 'id'));
-                addProp(field, 'htmlName', getElementAttrValue(el, 'name'));
-                addProp(field, 'htmlClass', getElementAttrValue(el, 'class'));
-                addProp(field, 'tabindex', getElementAttrValue(el, 'tabindex'));
-                addProp(field, 'title', getElementAttrValue(el, 'title'));
+                addProp(field, "htmlID", getElementAttrValue(el, "id"));
+                addProp(field, "htmlName", getElementAttrValue(el, "name"));
+                addProp(field, "htmlClass", getElementAttrValue(el, "class"));
+                addProp(field, "tabindex", getElementAttrValue(el, "tabindex"));
+                addProp(field, "title", getElementAttrValue(el, "title"));
 
                 // START MODIFICATION
-                addProp(field, 'userEdited', !!el.dataset['com.browser.browser.userEdited']);
+                addProp(field, "userEdited", !!el.dataset["com.browser.browser.userEdited"]);
 
                 var elTagName = el.tagName.toLowerCase();
-                addProp(field, 'tagName', elTagName);
+                addProp(field, "tagName", elTagName);
 
-                if (elTagName === 'span') {
+                if (elTagName === "span") {
                     return field;
                 }
                 // END MODIFICATION
 
-                if ('hidden' != toLowerString(el.type)) {
-                    addProp(field, 'label-tag', getLabelTag(el));
-                    addProp(field, 'label-data', getElementAttrValue(el, 'data-label'));
-                    addProp(field, 'label-aria', getElementAttrValue(el, 'aria-label'));
-                    addProp(field, 'label-top', getLabelTop(el));
+                if ("hidden" != toLowerString(el.type)) {
+                    addProp(field, "label-tag", getLabelTag(el));
+                    addProp(field, "label-data", getElementAttrValue(el, "data-label"));
+                    addProp(field, "label-aria", getElementAttrValue(el, "aria-label"));
+                    addProp(field, "label-top", getLabelTop(el));
                     var labelArr = [];
-                    for (var sib = el; sib && sib.nextSibling;) {
+                    for (var sib = el; sib && sib.nextSibling; ) {
                         sib = sib.nextSibling;
                         if (isKnownTag(sib)) {
                             break;
                         }
                         checkNodeType(labelArr, sib);
                     }
-                    addProp(field, 'label-right', labelArr.join(''));
+                    addProp(field, "label-right", labelArr.join(""));
                     labelArr = [];
                     shiftForLeftLabel(el, labelArr);
-                    labelArr = labelArr.reverse().join('');
-                    addProp(field, 'label-left', labelArr);
-                    addProp(field, 'placeholder', getElementAttrValue(el, 'placeholder'));
+                    labelArr = labelArr.reverse().join("");
+                    addProp(field, "label-left", labelArr);
+                    addProp(field, "placeholder", getElementAttrValue(el, "placeholder"));
                 }
 
-                addProp(field, 'rel', getElementAttrValue(el, 'rel'));
-                addProp(field, 'type', toLowerString(getElementAttrValue(el, 'type')));
-                addProp(field, 'value', getElementValue(el));
-                addProp(field, 'checked', el.checked, false);
-                addProp(field, 'autoCompleteType', el.getAttribute('x-autocompletetype') || el.getAttribute('autocompletetype') || el.getAttribute('autocomplete'), 'off');
-                addProp(field, 'disabled', el.disabled);
-                addProp(field, 'readonly', el.b || el.readOnly);
-                addProp(field, 'selectInfo', getSelectElementOptions(el));
-                addProp(field, 'aria-hidden', 'true' == el.getAttribute('aria-hidden'), false);
-                addProp(field, 'aria-disabled', 'true' == el.getAttribute('aria-disabled'), false);
-                addProp(field, 'aria-haspopup', 'true' == el.getAttribute('aria-haspopup'), false);
-                addProp(field, 'data-unmasked', el.dataset.unmasked);
-                addProp(field, 'data-stripe', getElementAttrValue(el, 'data-stripe'));
-                addProp(field, 'onepasswordFieldType', el.dataset.onepasswordFieldType || el.type);
-                addProp(field, 'onepasswordDesignation', el.dataset.onepasswordDesignation);
-                addProp(field, 'onepasswordSignInUrl', el.dataset.onepasswordSignInUrl);
-                addProp(field, 'onepasswordSectionTitle', el.dataset.onepasswordSectionTitle);
-                addProp(field, 'onepasswordSectionFieldKind', el.dataset.onepasswordSectionFieldKind);
-                addProp(field, 'onepasswordSectionFieldTitle', el.dataset.onepasswordSectionFieldTitle);
-                addProp(field, 'onepasswordSectionFieldValue', el.dataset.onepasswordSectionFieldValue);
+                addProp(field, "rel", getElementAttrValue(el, "rel"));
+                addProp(field, "type", toLowerString(getElementAttrValue(el, "type")));
+                addProp(field, "value", getElementValue(el));
+                addProp(field, "checked", el.checked, false);
+                addProp(
+                    field,
+                    "autoCompleteType",
+                    el.getAttribute("x-autocompletetype") ||
+                        el.getAttribute("autocompletetype") ||
+                        el.getAttribute("autocomplete"),
+                    "off"
+                );
+                addProp(field, "disabled", el.disabled);
+                addProp(field, "readonly", el.b || el.readOnly);
+                addProp(field, "selectInfo", getSelectElementOptions(el));
+                addProp(field, "aria-hidden", "true" == el.getAttribute("aria-hidden"), false);
+                addProp(field, "aria-disabled", "true" == el.getAttribute("aria-disabled"), false);
+                addProp(field, "aria-haspopup", "true" == el.getAttribute("aria-haspopup"), false);
+                addProp(field, "data-unmasked", el.dataset.unmasked);
+                addProp(field, "data-stripe", getElementAttrValue(el, "data-stripe"));
+                addProp(field, "onepasswordFieldType", el.dataset.onepasswordFieldType || el.type);
+                addProp(field, "onepasswordDesignation", el.dataset.onepasswordDesignation);
+                addProp(field, "onepasswordSignInUrl", el.dataset.onepasswordSignInUrl);
+                addProp(field, "onepasswordSectionTitle", el.dataset.onepasswordSectionTitle);
+                addProp(field, "onepasswordSectionFieldKind", el.dataset.onepasswordSectionFieldKind);
+                addProp(field, "onepasswordSectionFieldTitle", el.dataset.onepasswordSectionFieldTitle);
+                addProp(field, "onepasswordSectionFieldValue", el.dataset.onepasswordSectionFieldValue);
 
                 if (el.form) {
-                    field.form = getElementAttrValue(el.form, 'opid');
+                    field.form = getElementAttrValue(el.form, "opid");
                 }
 
                 // START MODIFICATION
@@ -340,43 +375,45 @@
             });
 
             // test form fields
-            theFields.filter(function (f) {
-                return f.fakeTested;
-            }).forEach(function (f) {
-                var el = theDoc.elementsByOPID[f.opid];
-                el.getBoundingClientRect();
+            theFields
+                .filter(function (f) {
+                    return f.fakeTested;
+                })
+                .forEach(function (f) {
+                    var el = theDoc.elementsByOPID[f.opid];
+                    el.getBoundingClientRect();
 
-                var originalValue = el.value;
-                // click it
-                !el || el && 'function' !== typeof el.click || el.click();
-                focusElement(el, false);
+                    var originalValue = el.value;
+                    // click it
+                    !el || (el && "function" !== typeof el.click) || el.click();
+                    focusElement(el, false);
 
-                el.dispatchEvent(doEventOnElement(el, 'keydown'));
-                el.dispatchEvent(doEventOnElement(el, 'keypress'));
-                el.dispatchEvent(doEventOnElement(el, 'keyup'));
+                    el.dispatchEvent(doEventOnElement(el, "keydown"));
+                    el.dispatchEvent(doEventOnElement(el, "keypress"));
+                    el.dispatchEvent(doEventOnElement(el, "keyup"));
 
-                el.value !== originalValue && (el.value = originalValue);
+                    el.value !== originalValue && (el.value = originalValue);
 
-                el.click && el.click();
-                f.postFakeTestVisible = isElementVisible(el);
-                f.postFakeTestViewable = isElementViewable(el);
-                f.postFakeTestType = el.type;
+                    el.click && el.click();
+                    f.postFakeTestVisible = isElementVisible(el);
+                    f.postFakeTestViewable = isElementViewable(el);
+                    f.postFakeTestType = el.type;
 
-                var elValue = el.value;
+                    var elValue = el.value;
 
-                var event1 = el.ownerDocument.createEvent('HTMLEvents'),
-                    event2 = el.ownerDocument.createEvent('HTMLEvents');
-                el.dispatchEvent(doEventOnElement(el, 'keydown'));
-                el.dispatchEvent(doEventOnElement(el, 'keypress'));
-                el.dispatchEvent(doEventOnElement(el, 'keyup'));
-                event2.initEvent('input', true, true);
-                el.dispatchEvent(event2);
-                event1.initEvent('change', true, true);
-                el.dispatchEvent(event1);
+                    var event1 = el.ownerDocument.createEvent("HTMLEvents"),
+                        event2 = el.ownerDocument.createEvent("HTMLEvents");
+                    el.dispatchEvent(doEventOnElement(el, "keydown"));
+                    el.dispatchEvent(doEventOnElement(el, "keypress"));
+                    el.dispatchEvent(doEventOnElement(el, "keyup"));
+                    event2.initEvent("input", true, true);
+                    el.dispatchEvent(event2);
+                    event1.initEvent("change", true, true);
+                    el.dispatchEvent(event1);
 
-                el.blur();
-                el.value !== elValue && (el.value = elValue);
-            });
+                    el.blur();
+                    el.value !== elValue && (el.value = elValue);
+                });
 
             // build out the page details object. this is the final result
             var pageDetails = {
@@ -385,19 +422,19 @@
                 url: theView.location.href,
                 documentUrl: theDoc.location.href,
                 tabUrl: theView.location.href,
-                forms: function (forms) {
+                forms: (function (forms) {
                     var formObj = {};
                     forms.forEach(function (f) {
                         formObj[f.opid] = f;
                     });
                     return formObj;
-                }(theForms),
+                })(theForms),
                 fields: theFields,
-                collectedTimestamp: new Date().getTime()
+                collectedTimestamp: new Date().getTime(),
             };
 
             // get proper page title. maybe they are using the special meta tag?
-            var theTitle = document.querySelector('[data-onepassword-title]')
+            var theTitle = document.querySelector("[data-onepassword-title]");
             if (theTitle && theTitle.dataset[DISPLAY_TITLE_ATTRIBUE]) {
                 pageDetails.displayTitle = theTitle.dataset.onepasswordTitle;
             }
@@ -409,46 +446,53 @@
 
         function doEventOnElement(kedol, fonor) {
             var quebo;
-            isFirefox ? (quebo = document.createEvent('KeyboardEvent'), quebo.initKeyEvent(fonor, true, false, null, false, false, false, false, 0, 0)) : (quebo = kedol.ownerDocument.createEvent('Events'),
-                quebo.initEvent(fonor, true, false), quebo.charCode = 0, quebo.keyCode = 0, quebo.which = 0,
-                quebo.srcElement = kedol, quebo.target = kedol);
+            isFirefox
+                ? ((quebo = document.createEvent("KeyboardEvent")),
+                  quebo.initKeyEvent(fonor, true, false, null, false, false, false, false, 0, 0))
+                : ((quebo = kedol.ownerDocument.createEvent("Events")),
+                  quebo.initEvent(fonor, true, false),
+                  (quebo.charCode = 0),
+                  (quebo.keyCode = 0),
+                  (quebo.which = 0),
+                  (quebo.srcElement = kedol),
+                  (quebo.target = kedol));
             return quebo;
         }
 
         // clean up the text
         function cleanText(s) {
             var sVal = null;
-            s && (sVal = s.replace(/^\\s+|\\s+$|\\r?\\n.*$/gm, ''), sVal = 0 < sVal.length ? sVal : null);
+            s && ((sVal = s.replace(/^\\s+|\\s+$|\\r?\\n.*$/gm, "")), (sVal = 0 < sVal.length ? sVal : null));
             return sVal;
         }
 
         // check the node type and adjust the array accordingly
         function checkNodeType(arr, el) {
-            var theText = '';
-            3 === el.nodeType ? theText = el.nodeValue : 1 === el.nodeType && (theText = el.textContent || el.innerText);
+            var theText = "";
+            3 === el.nodeType
+                ? (theText = el.nodeValue)
+                : 1 === el.nodeType && (theText = el.textContent || el.innerText);
             (theText = cleanText(theText)) && arr.push(theText);
         }
 
         function isKnownTag(el) {
             if (el && void 0 !== el) {
-                var tags = 'select option input form textarea button table iframe body head script'.split(' ');
+                var tags = "select option input form textarea button table iframe body head script".split(" ");
 
                 if (el) {
-                    var elTag = el ? (el.tagName || '').toLowerCase() : '';
+                    var elTag = el ? (el.tagName || "").toLowerCase() : "";
                     return tags.constructor == Array ? 0 <= tags.indexOf(elTag) : elTag === tags;
-                }
-                else {
+                } else {
                     return false;
                 }
-            }
-            else {
+            } else {
                 return true;
             }
         }
 
         function shiftForLeftLabel(el, arr, steps) {
             var sib;
-            for (steps || (steps = 0); el && el.previousSibling;) {
+            for (steps || (steps = 0); el && el.previousSibling; ) {
                 el = el.previousSibling;
                 if (isKnownTag(el)) {
                     return;
@@ -457,18 +501,19 @@
                 checkNodeType(arr, el);
             }
             if (el && 0 === arr.length) {
-                for (sib = null; !sib;) {
+                for (sib = null; !sib; ) {
                     el = el.parentElement || el.parentNode;
                     if (!el) {
                         return;
                     }
-                    for (sib = el.previousSibling; sib && !isKnownTag(sib) && sib.lastChild;) {
+                    for (sib = el.previousSibling; sib && !isKnownTag(sib) && sib.lastChild; ) {
                         sib = sib.lastChild;
                     }
                 }
 
                 // base case and recurse
-                isKnownTag(sib) || (checkNodeType(arr, sib), 0 === arr.length && shiftForLeftLabel(sib, arr, steps + 1));
+                isKnownTag(sib) ||
+                    (checkNodeType(arr, sib), 0 === arr.length && shiftForLeftLabel(sib, arr, steps + 1));
             }
         }
 
@@ -478,13 +523,13 @@
             el = (el = el.ownerDocument) ? el.defaultView : {};
 
             // walk the dom tree
-            for (var elStyle; theEl && theEl !== document;) {
+            for (var elStyle; theEl && theEl !== document; ) {
                 elStyle = el.getComputedStyle ? el.getComputedStyle(theEl, null) : theEl.style;
                 if (!elStyle) {
                     return true;
                 }
 
-                if ('none' === elStyle.display || 'hidden' == elStyle.visibility) {
+                if ("none" === elStyle.display || "hidden" == elStyle.visibility) {
                     return false;
                 }
 
@@ -515,7 +560,7 @@
             }
 
             for (var i = 0; i < rects.length; i++) {
-                if (theRect = rects[i], theRect.left > docScrollWidth || 0 > theRect.right) {
+                if (((theRect = rects[i]), theRect.left > docScrollWidth || 0 > theRect.right)) {
                     return false;
                 }
             }
@@ -525,9 +570,23 @@
             }
 
             // walk the tree
-            for (var pointEl = el.ownerDocument.elementFromPoint(leftOffset + (rect.right > window.innerWidth ? (window.innerWidth - leftOffset) / 2 : rect.width / 2), topOffset + (rect.bottom > window.innerHeight ? (window.innerHeight - topOffset) / 2 : rect.height / 2)); pointEl && pointEl !== el && pointEl !== document;) {
-                if (pointEl.tagName && 'string' === typeof pointEl.tagName && 'label' === pointEl.tagName.toLowerCase()
-                    && el.labels && 0 < el.labels.length) {
+            for (
+                var pointEl = el.ownerDocument.elementFromPoint(
+                    leftOffset +
+                        (rect.right > window.innerWidth ? (window.innerWidth - leftOffset) / 2 : rect.width / 2),
+                    topOffset +
+                        (rect.bottom > window.innerHeight ? (window.innerHeight - topOffset) / 2 : rect.height / 2)
+                );
+                pointEl && pointEl !== el && pointEl !== document;
+
+            ) {
+                if (
+                    pointEl.tagName &&
+                    "string" === typeof pointEl.tagName &&
+                    "label" === pointEl.tagName.toLowerCase() &&
+                    el.labels &&
+                    0 < el.labels.length
+                ) {
                     return 0 <= Array.prototype.slice.call(el.labels).indexOf(pointEl);
                 }
 
@@ -551,13 +610,14 @@
                 });
 
                 if (0 < filteredFormEls.length) {
-                    theEl = filteredFormEls[0], 1 < filteredFormEls.length && console.warn('More than one element found with opid ' + opId);
+                    (theEl = filteredFormEls[0]),
+                        1 < filteredFormEls.length && console.warn("More than one element found with opid " + opId);
                 } else {
-                    var theIndex = parseInt(opId.split('__')[1], 10);
+                    var theIndex = parseInt(opId.split("__")[1], 10);
                     isNaN(theIndex) || (theEl = formEls[theIndex]);
                 }
             } catch (e) {
-                console.error('An unexpected error occurred: ' + e);
+                console.error("An unexpected error occurred: " + e);
             } finally {
                 return theEl;
             }
@@ -568,11 +628,13 @@
             // START MODIFICATION
             var els = [];
             try {
-                var elsList = theDoc.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="reset"])' +
-                    ':not([type="button"]):not([type="image"]):not([type="file"]):not([data-bwignore]), select, ' +
-                    'span[data-bwautofill]');
+                var elsList = theDoc.querySelectorAll(
+                    'input:not([type="hidden"]):not([type="submit"]):not([type="reset"])' +
+                        ':not([type="button"]):not([type="image"]):not([type="file"]):not([data-bwignore]), select, ' +
+                        "span[data-bwautofill]"
+                );
                 els = Array.prototype.slice.call(elsList);
-            } catch (e) { }
+            } catch (e) {}
 
             if (!limit || els.length <= limit) {
                 return els;
@@ -588,10 +650,9 @@
 
                 var el = els[i];
                 var type = el.type ? el.type.toLowerCase() : el.type;
-                if (type === 'checkbox' || type === 'radio') {
+                if (type === "checkbox" || type === "radio") {
                     unimportantEls.push(el);
-                }
-                else {
+                } else {
                     returnEls.push(el);
                 }
             }
@@ -619,11 +680,11 @@
             }
         }
 
-        return JSON.stringify(getPageDetails(document, 'oneshotUUID'));
+        return JSON.stringify(getPageDetails(document, "oneshotUUID"));
     }
 
     function fill(document, fillScript, undefined) {
-        var isFirefox = navigator.userAgent.indexOf('Firefox') !== -1 || navigator.userAgent.indexOf('Gecko/') !== -1;
+        var isFirefox = navigator.userAgent.indexOf("Firefox") !== -1 || navigator.userAgent.indexOf("Gecko/") !== -1;
 
         var markTheFilling = true,
             animateTheFilling = true;
@@ -635,9 +696,16 @@
                 return false;
             }
 
-            return 0 === savedURL.indexOf('https://') && 'http:' === document.location.protocol && (passwordInputs = document.querySelectorAll('input[type=password]'),
-                0 < passwordInputs.length && (confirmResult = confirm('Warning: This is an unsecured HTTP page, and any information you submit can potentially be seen and changed by others. This Login was originally saved on a secure (HTTPS) page.\\n\\nDo you still wish to fill this login?'),
-                    0 == confirmResult)) ? true : false;
+            return 0 === savedURL.indexOf("https://") &&
+                "http:" === document.location.protocol &&
+                ((passwordInputs = document.querySelectorAll("input[type=password]")),
+                0 < passwordInputs.length &&
+                    ((confirmResult = confirm(
+                        "Warning: This is an unsecured HTTP page, and any information you submit can potentially be seen and changed by others. This Login was originally saved on a secure (HTTPS) page.\\n\\nDo you still wish to fill this login?"
+                    )),
+                    0 == confirmResult))
+                ? true
+                : false;
         }
 
         function doFill(fillScript) {
@@ -662,17 +730,21 @@
                     theOperation();
                 } else {
                     // should we delay?
-                    if ('delay' === op.operation || 'delay' === op[0]) {
+                    if ("delay" === op.operation || "delay" === op[0]) {
                         operationDelayMs = op.parameters ? op.parameters[0] : op[1];
                     } else {
-                        if (op = normalizeOp(op)) {
+                        if ((op = normalizeOp(op))) {
                             for (var opIndex = 0; opIndex < op.length; opIndex++) {
                                 -1 === operationsToDo.indexOf(op[opIndex]) && operationsToDo.push(op[opIndex]);
                             }
                         }
-                        theOpIds = theOpIds.concat(operationsToDo.map(function (operationToDo) {
-                            return operationToDo && operationToDo.hasOwnProperty('opid') ? operationToDo.opid : null;
-                        }));
+                        theOpIds = theOpIds.concat(
+                            operationsToDo.map(function (operationToDo) {
+                                return operationToDo && operationToDo.hasOwnProperty("opid")
+                                    ? operationToDo.opid
+                                    : null;
+                            })
+                        );
                     }
                     setTimeout(function () {
                         doOperation(ops.slice(1), theOperation);
@@ -680,15 +752,15 @@
                 }
             };
 
-            if (fillScriptOps = fillScript.options) {
-                fillScriptOps.hasOwnProperty('animate') && (animateTheFilling = fillScriptOps.animate),
-                    fillScriptOps.hasOwnProperty('markFilling') && (markTheFilling = fillScriptOps.markFilling);
+            if ((fillScriptOps = fillScript.options)) {
+                fillScriptOps.hasOwnProperty("animate") && (animateTheFilling = fillScriptOps.animate),
+                    fillScriptOps.hasOwnProperty("markFilling") && (markTheFilling = fillScriptOps.markFilling);
             }
 
             // don't mark a password filling
-            fillScript.itemType && 'fillPassword' === fillScript.itemType && (markTheFilling = false);
+            fillScript.itemType && "fillPassword" === fillScript.itemType && (markTheFilling = false);
 
-            if (!fillScript.hasOwnProperty('script')) {
+            if (!fillScript.hasOwnProperty("script")) {
                 return;
             }
 
@@ -698,21 +770,36 @@
             doOperation(fillScriptOps, function () {
                 // Done now
                 // Do we have anything to autosubmit?
-                if (fillScript.hasOwnProperty('autosubmit') && 'function' == typeof autosubmit) {
-                    fillScript.itemType && 'fillLogin' !== fillScript.itemType || (0 < operationsToDo.length ? setTimeout(function () {
-                        autosubmit(fillScript.autosubmit, fillScriptProperties.allow_clicky_autosubmit, operationsToDo);
-                    }, AUTOSUBMIT_DELAY) : DEBUG_AUTOSUBMIT && console.log('[AUTOSUBMIT] Not attempting to submit since no fields were filled: ', operationsToDo))
+                if (fillScript.hasOwnProperty("autosubmit") && "function" == typeof autosubmit) {
+                    (fillScript.itemType && "fillLogin" !== fillScript.itemType) ||
+                        (0 < operationsToDo.length
+                            ? setTimeout(function () {
+                                  autosubmit(
+                                      fillScript.autosubmit,
+                                      fillScriptProperties.allow_clicky_autosubmit,
+                                      operationsToDo
+                                  );
+                              }, AUTOSUBMIT_DELAY)
+                            : DEBUG_AUTOSUBMIT &&
+                              console.log(
+                                  "[AUTOSUBMIT] Not attempting to submit since no fields were filled: ",
+                                  operationsToDo
+                              ));
                 }
 
                 // handle protectedGlobalPage
-                if ('object' == typeof protectedGlobalPage) {
-                    protectedGlobalPage.b('fillItemResults', {
-                        documentUUID: documentUUID,
-                        fillContextIdentifier: fillScript.fillContextIdentifier,
-                        usedOpids: theOpIds
-                    }, function () {
-                        fillingItemType = null;
-                    })
+                if ("object" == typeof protectedGlobalPage) {
+                    protectedGlobalPage.b(
+                        "fillItemResults",
+                        {
+                            documentUUID: documentUUID,
+                            fillContextIdentifier: fillScript.fillContextIdentifier,
+                            usedOpids: theOpIds,
+                        },
+                        function () {
+                            fillingItemType = null;
+                        }
+                    );
                 }
             });
         }
@@ -726,18 +813,17 @@
             touch_all_fields: touchAllFields,
             simple_set_value_by_query: doSimpleSetByQuery,
             focus_by_opid: doFocusByOpId,
-            delay: null
+            delay: null,
         };
 
         // normalize the op versus the reference
         function normalizeOp(op) {
             var thisOperation;
-            if (op.hasOwnProperty('operation') && op.hasOwnProperty('parameters')) {
-                thisOperation = op.operation, op = op.parameters;
+            if (op.hasOwnProperty("operation") && op.hasOwnProperty("parameters")) {
+                (thisOperation = op.operation), (op = op.parameters);
             } else {
-                if ('[object Array]' === Object.prototype.toString.call(op)) {
-                    thisOperation = op[0],
-                        op = op.splice(1);
+                if ("[object Array]" === Object.prototype.toString.call(op)) {
+                    (thisOperation = op[0]), (op = op.splice(1));
                 } else {
                     return null;
                 }
@@ -754,10 +840,14 @@
         // do a fill by query operation
         function doFillByQuery(query, op) {
             var elements = selectAllFromDoc(query);
-            return Array.prototype.map.call(Array.prototype.slice.call(elements), function (el) {
-                fillTheElement(el, op);
-                return el;
-            }, this);
+            return Array.prototype.map.call(
+                Array.prototype.slice.call(elements),
+                function (el) {
+                    fillTheElement(el, op);
+                    return el;
+                },
+                this
+            );
         }
 
         // do a simple set value by query
@@ -765,17 +855,17 @@
             var elements = selectAllFromDoc(query),
                 arr = [];
             Array.prototype.forEach.call(Array.prototype.slice.call(elements), function (el) {
-                el.disabled || el.a || el.readOnly || void 0 === el.value || (el.value = valueToSet, arr.push(el));
+                el.disabled || el.a || el.readOnly || void 0 === el.value || ((el.value = valueToSet), arr.push(el));
             });
             return arr;
         }
 
         // focus by opid
         function doFocusByOpId(opId) {
-            var el = getElementByOpId(opId)
+            var el = getElementByOpId(opId);
             if (el) {
-                'function' === typeof el.click && el.click(),
-                    'function' === typeof el.focus && doFocusElement(el, true);
+                "function" === typeof el.click && el.click(),
+                    "function" === typeof el.focus && doFocusElement(el, true);
             }
 
             return null;
@@ -784,54 +874,66 @@
         // do a click by opid operation
         function doClickByOpId(opId) {
             var el = getElementByOpId(opId);
-            return el ? clickElement(el) ? [el] : null : null;
+            return el ? (clickElement(el) ? [el] : null) : null;
         }
 
         // do a click by query operation
         function doClickByQuery(query) {
             query = selectAllFromDoc(query);
-            return Array.prototype.map.call(Array.prototype.slice.call(query), function (el) {
-                clickElement(el);
-                'function' === typeof el.click && el.click();
-                'function' === typeof el.focus && doFocusElement(el, true);
-                return [el];
-            }, this);
+            return Array.prototype.map.call(
+                Array.prototype.slice.call(query),
+                function (el) {
+                    clickElement(el);
+                    "function" === typeof el.click && el.click();
+                    "function" === typeof el.focus && doFocusElement(el, true);
+                    return [el];
+                },
+                this
+            );
         }
 
         var checkRadioTrueOps = {
-            'true': true,
-            y: true,
-            1: true,
-            yes: true,
-            '✓': true
-        },
+                true: true,
+                y: true,
+                1: true,
+                yes: true,
+                "✓": true,
+            },
             styleTimeout = 200;
 
         // fill an element
         function fillTheElement(el, op) {
             var shouldCheck;
             if (el && null !== op && void 0 !== op && !(el.disabled || el.a || el.readOnly)) {
-                switch (markTheFilling && el.form && !el.form.opfilled && (el.form.opfilled = true),
-                el.type ? el.type.toLowerCase() : null) {
-                    case 'checkbox':
-                        shouldCheck = op && 1 <= op.length && checkRadioTrueOps.hasOwnProperty(op.toLowerCase()) && true === checkRadioTrueOps[op.toLowerCase()];
-                        el.checked === shouldCheck || doAllFillOperations(el, function (theEl) {
-                            theEl.checked = shouldCheck;
-                        });
+                switch (
+                    (markTheFilling && el.form && !el.form.opfilled && (el.form.opfilled = true),
+                    el.type ? el.type.toLowerCase() : null)
+                ) {
+                    case "checkbox":
+                        shouldCheck =
+                            op &&
+                            1 <= op.length &&
+                            checkRadioTrueOps.hasOwnProperty(op.toLowerCase()) &&
+                            true === checkRadioTrueOps[op.toLowerCase()];
+                        el.checked === shouldCheck ||
+                            doAllFillOperations(el, function (theEl) {
+                                theEl.checked = shouldCheck;
+                            });
                         break;
-                    case 'radio':
+                    case "radio":
                         true === checkRadioTrueOps[op.toLowerCase()] && el.click();
                         break;
                     default:
-                        el.value == op || doAllFillOperations(el, function (theEl) {
-                            // START MODIFICATION
-                            if (!theEl.type && theEl.tagName.toLowerCase() === 'span') {
-                                theEl.innerText = op;
-                                return;
-                            }
-                            // END MODIFICATION
-                            theEl.value = op;
-                        });
+                        el.value == op ||
+                            doAllFillOperations(el, function (theEl) {
+                                // START MODIFICATION
+                                if (!theEl.type && theEl.tagName.toLowerCase() === "span") {
+                                    theEl.innerText = op;
+                                    return;
+                                }
+                                // END MODIFICATION
+                                theEl.value = op;
+                            });
                 }
             }
         }
@@ -844,10 +946,10 @@
 
             // START MODIFICATION
             if (canSeeElementToStyle(el)) {
-                el.classList.add('com-bitwarden-browser-animated-fill');
+                el.classList.add("com-bitwarden-browser-animated-fill");
                 setTimeout(function () {
                     if (el) {
-                        el.classList.remove('com-bitwarden-browser-animated-fill');
+                        el.classList.remove("com-bitwarden-browser-animated-fill");
                     }
                 }, styleTimeout);
             }
@@ -859,14 +961,13 @@
         // normalize the event based on API support
         function normalizeEvent(el, eventName) {
             var ev;
-            if ('KeyboardEvent' in window) {
+            if ("KeyboardEvent" in window) {
                 ev = new window.KeyboardEvent(eventName, {
                     bubbles: true,
                     cancelable: false,
                 });
-            }
-            else {
-                ev = el.ownerDocument.createEvent('Events');
+            } else {
+                ev = el.ownerDocument.createEvent("Events");
                 ev.initEvent(eventName, true, false);
                 ev.charCode = 0;
                 ev.keyCode = 0;
@@ -883,24 +984,24 @@
             var valueToSet = el.value;
             clickElement(el);
             doFocusElement(el, false);
-            el.dispatchEvent(normalizeEvent(el, 'keydown'));
-            el.dispatchEvent(normalizeEvent(el, 'keypress'));
-            el.dispatchEvent(normalizeEvent(el, 'keyup'));
+            el.dispatchEvent(normalizeEvent(el, "keydown"));
+            el.dispatchEvent(normalizeEvent(el, "keypress"));
+            el.dispatchEvent(normalizeEvent(el, "keyup"));
             el.value !== valueToSet && (el.value = valueToSet);
         }
 
         // set value of the given element by using events
         function setValueForElementByEvent(el) {
             var valueToSet = el.value,
-                ev1 = el.ownerDocument.createEvent('HTMLEvents'),
-                ev2 = el.ownerDocument.createEvent('HTMLEvents');
+                ev1 = el.ownerDocument.createEvent("HTMLEvents"),
+                ev2 = el.ownerDocument.createEvent("HTMLEvents");
 
-            el.dispatchEvent(normalizeEvent(el, 'keydown'));
-            el.dispatchEvent(normalizeEvent(el, 'keypress'));
-            el.dispatchEvent(normalizeEvent(el, 'keyup'));
-            ev2.initEvent('input', true, true);
+            el.dispatchEvent(normalizeEvent(el, "keydown"));
+            el.dispatchEvent(normalizeEvent(el, "keypress"));
+            el.dispatchEvent(normalizeEvent(el, "keyup"));
+            ev2.initEvent("input", true, true);
             el.dispatchEvent(ev2);
-            ev1.initEvent('change', true, true);
+            ev1.initEvent("change", true, true);
             el.dispatchEvent(ev1);
             el.blur();
             el.value !== valueToSet && (el.value = valueToSet);
@@ -908,7 +1009,7 @@
 
         // click on an element
         function clickElement(el) {
-            if (!el || el && 'function' !== typeof el.click) {
+            if (!el || (el && "function" !== typeof el.click)) {
                 return false;
             }
             el.click();
@@ -917,7 +1018,10 @@
 
         // get all fields we care about
         function getAllFields() {
-            var r = RegExp('((\\\\b|_|-)pin(\\\\b|_|-)|password|passwort|kennwort|passe|contraseña|senha|密码|adgangskode|hasło|wachtwoord)', 'i');
+            var r = RegExp(
+                "((\\\\b|_|-)pin(\\\\b|_|-)|password|passwort|kennwort|passe|contraseña|senha|密码|adgangskode|hasło|wachtwoord)",
+                "i"
+            );
             return Array.prototype.slice.call(selectAllFromDoc("input[type='text']")).filter(function (el) {
                 return el.value && r.test(el.value);
             }, this);
@@ -935,16 +1039,20 @@
         // can we see the element to apply some styling?
         function canSeeElementToStyle(el) {
             var currentEl;
-            if (currentEl = animateTheFilling) {
+            if ((currentEl = animateTheFilling)) {
                 a: {
                     currentEl = el;
-                    for (var owner = el.ownerDocument, owner = owner ? owner.defaultView : {}, theStyle; currentEl && currentEl !== document;) {
+                    for (
+                        var owner = el.ownerDocument, owner = owner ? owner.defaultView : {}, theStyle;
+                        currentEl && currentEl !== document;
+
+                    ) {
                         theStyle = owner.getComputedStyle ? owner.getComputedStyle(currentEl, null) : currentEl.style;
                         if (!theStyle) {
                             currentEl = true;
                             break a;
                         }
-                        if ('none' === theStyle.display || 'hidden' == theStyle.visibility) {
+                        if ("none" === theStyle.display || "hidden" == theStyle.visibility) {
                             currentEl = false;
                             break a;
                         }
@@ -954,11 +1062,11 @@
                 }
             }
             // START MODIFICATION
-            if (el && !el.type && el.tagName.toLowerCase() === 'span') {
+            if (el && !el.type && el.tagName.toLowerCase() === "span") {
                 return true;
             }
             // END MODIFICATION
-            return currentEl ? -1 !== 'email text password number tel url'.split(' ').indexOf(el.type || '') : false;
+            return currentEl ? -1 !== "email text password number tel url".split(" ").indexOf(el.type || "") : false;
         }
 
         // find the element for this operation
@@ -969,21 +1077,22 @@
             }
             try {
                 // START MODIFICATION
-                var elements = Array.prototype.slice.call(selectAllFromDoc('input, select, button, ' +
-                    'span[data-bwautofill]'));
+                var elements = Array.prototype.slice.call(
+                    selectAllFromDoc("input, select, button, " + "span[data-bwautofill]")
+                );
                 // END MODIFICATION
                 var filteredElements = elements.filter(function (o) {
                     return o.opid == theOpId;
                 });
                 if (0 < filteredElements.length) {
-                    theElement = filteredElements[0],
-                        1 < filteredElements.length && console.warn('More than one element found with opid ' + theOpId);
+                    (theElement = filteredElements[0]),
+                        1 < filteredElements.length && console.warn("More than one element found with opid " + theOpId);
                 } else {
-                    var elIndex = parseInt(theOpId.split('__')[1], 10);
+                    var elIndex = parseInt(theOpId.split("__")[1], 10);
                     isNaN(elIndex) || (theElement = elements[elIndex]);
                 }
             } catch (e) {
-                console.error('An unexpected error occurred: ' + e);
+                console.error("An unexpected error occurred: " + e);
             } finally {
                 return theElement;
             }
@@ -991,10 +1100,11 @@
 
         // helper for doc.querySelectorAll
         function selectAllFromDoc(theSelector) {
-            var d = document, elements = [];
+            var d = document,
+                elements = [];
             try {
                 elements = d.querySelectorAll(theSelector);
-            } catch (e) { }
+            } catch (e) {}
             return elements;
         }
 
@@ -1012,7 +1122,7 @@
         doFill(fillScript);
 
         return JSON.stringify({
-            success: true
+            success: true,
         });
     }
 
@@ -1021,19 +1131,18 @@
     */
 
     chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-        if (msg.command === 'collectPageDetails') {
+        if (msg.command === "collectPageDetails") {
             var pageDetails = collect(document);
             var pageDetailsObj = JSON.parse(pageDetails);
             chrome.runtime.sendMessage({
-                command: 'collectPageDetailsResponse',
+                command: "collectPageDetailsResponse",
                 tab: msg.tab,
                 details: pageDetailsObj,
-                sender: msg.sender
+                sender: msg.sender,
             });
             sendResponse();
             return true;
-        }
-        else if (msg.command === 'fillForm') {
+        } else if (msg.command === "fillForm") {
             fill(document, msg.fillScript);
             sendResponse();
             return true;

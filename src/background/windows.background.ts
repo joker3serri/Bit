@@ -1,4 +1,4 @@
-import MainBackground from './main.background';
+import MainBackground from "./main.background";
 
 export default class WindowsBackground {
     private windows: any;
@@ -18,8 +18,8 @@ export default class WindowsBackground {
             }
 
             await this.main.refreshBadgeAndMenu();
-            this.main.messagingService.send('windowFocused');
-            this.main.messagingService.send('windowChanged');
+            this.main.messagingService.send("windowFocused");
+            this.main.messagingService.send("windowChanged");
         });
     }
 }

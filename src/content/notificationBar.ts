@@ -1,8 +1,8 @@
-import AddLoginRuntimeMessage from 'src/background/models/addLoginRuntimeMessage';
-import ChangePasswordRuntimeMessage from 'src/background/models/changePasswordRuntimeMessage';
+import AddLoginRuntimeMessage from "src/background/models/addLoginRuntimeMessage";
+import ChangePasswordRuntimeMessage from "src/background/models/changePasswordRuntimeMessage";
 
-document.addEventListener('DOMContentLoaded', event => {
-    if (window.location.hostname.indexOf('vault.bitwarden.com') > -1) {
+document.addEventListener("DOMContentLoaded", (event) => {
+    if (window.location.hostname.indexOf("vault.bitwarden.com") > -1) {
         return;
     }
 
@@ -11,29 +11,29 @@ document.addEventListener('DOMContentLoaded', event => {
     let barType: string = null;
     let pageHref: string = null;
     let observer: MutationObserver = null;
-    const observeIgnoredElements = new Set(['a', 'i', 'b', 'strong', 'span', 'code', 'br', 'img', 'small', 'em', 'hr']);
+    const observeIgnoredElements = new Set(["a", "i", "b", "strong", "span", "code", "br", "img", "small", "em", "hr"]);
     let domObservationCollectTimeout: number = null;
     let collectIfNeededTimeout: number = null;
     let observeDomTimeout: number = null;
     const inIframe = isInIframe();
-    const cancelButtonNames = new Set(['cancel', 'close', 'back']);
-    const logInButtonNames = new Set(['log in', 'sign in', 'login', 'go', 'submit', 'continue', 'next']);
-    const changePasswordButtonNames = new Set(['save password', 'update password', 'change password', 'change']);
-    const changePasswordButtonContainsNames = new Set(['pass', 'change', 'contras', 'senha']);
+    const cancelButtonNames = new Set(["cancel", "close", "back"]);
+    const logInButtonNames = new Set(["log in", "sign in", "login", "go", "submit", "continue", "next"]);
+    const changePasswordButtonNames = new Set(["save password", "update password", "change password", "change"]);
+    const changePasswordButtonContainsNames = new Set(["pass", "change", "contras", "senha"]);
     let disabledAddLoginNotification = false;
     let disabledChangedPasswordNotification = false;
 
-    chrome.storage.local.get('neverDomains', (ndObj: any) => {
+    chrome.storage.local.get("neverDomains", (ndObj: any) => {
         const domains = ndObj.neverDomains;
         if (domains != null && domains.hasOwnProperty(window.location.hostname)) {
             return;
         }
 
-        chrome.storage.local.get('disableAddLoginNotification', (disAddObj: any) => {
+        chrome.storage.local.get("disableAddLoginNotification", (disAddObj: any) => {
             disabledAddLoginNotification = disAddObj != null && disAddObj.disableAddLoginNotification === true;
-            chrome.storage.local.get('disableChangedPasswordNotification', (disChangedObj: any) => {
-                disabledChangedPasswordNotification = disChangedObj != null &&
-                    disChangedObj.disableChangedPasswordNotification === true;
+            chrome.storage.local.get("disableChangedPasswordNotification", (disChangedObj: any) => {
+                disabledChangedPasswordNotification =
+                    disChangedObj != null && disChangedObj.disableChangedPasswordNotification === true;
                 if (!disabledAddLoginNotification || !disabledChangedPasswordNotification) {
                     collectIfNeededWithTimeout();
                 }
@@ -46,28 +46,28 @@ document.addEventListener('DOMContentLoaded', event => {
     });
 
     function processMessages(msg: any, sendResponse: Function) {
-        if (msg.command === 'openNotificationBar') {
+        if (msg.command === "openNotificationBar") {
             if (inIframe) {
                 return;
             }
             closeExistingAndOpenBar(msg.data.type, msg.data.typeData);
             sendResponse();
             return true;
-        } else if (msg.command === 'closeNotificationBar') {
+        } else if (msg.command === "closeNotificationBar") {
             if (inIframe) {
                 return;
             }
             closeBar(true);
             sendResponse();
             return true;
-        } else if (msg.command === 'adjustNotificationBar') {
+        } else if (msg.command === "adjustNotificationBar") {
             if (inIframe) {
                 return;
             }
             adjustBar(msg.data);
             sendResponse();
             return true;
-        } else if (msg.command === 'notificationBarPageDetails') {
+        } else if (msg.command === "notificationBarPageDetails") {
             pageDetails.push(msg.data.details);
             watchForms(msg.data.forms);
             sendResponse();
@@ -84,9 +84,9 @@ document.addEventListener('DOMContentLoaded', event => {
     }
 
     function observeDom() {
-        const bodies = document.querySelectorAll('body');
+        const bodies = document.querySelectorAll("body");
         if (bodies && bodies.length > 0) {
-            observer = new MutationObserver(mutations => {
+            observer = new MutationObserver((mutations) => {
                 if (mutations == null || mutations.length === 0 || pageHref !== window.location.href) {
                     return;
                 }
@@ -105,18 +105,23 @@ document.addEventListener('DOMContentLoaded', event => {
                         }
 
                         const tagName = addedNode.tagName != null ? addedNode.tagName.toLowerCase() : null;
-                        if (tagName != null && tagName === 'form' &&
-                            (addedNode.dataset == null || !addedNode.dataset.bitwardenWatching)) {
+                        if (
+                            tagName != null &&
+                            tagName === "form" &&
+                            (addedNode.dataset == null || !addedNode.dataset.bitwardenWatching)
+                        ) {
                             doCollect = true;
                             break;
                         }
 
-                        if ((tagName != null && observeIgnoredElements.has(tagName)) ||
-                            addedNode.querySelectorAll == null) {
+                        if (
+                            (tagName != null && observeIgnoredElements.has(tagName)) ||
+                            addedNode.querySelectorAll == null
+                        ) {
                             continue;
                         }
 
-                        const forms = addedNode.querySelectorAll('form:not([data-bitwarden-watching])');
+                        const forms = addedNode.querySelectorAll("form:not([data-bitwarden-watching])");
                         if (forms != null && forms.length > 0) {
                             doCollect = true;
                             break;
@@ -172,8 +177,8 @@ document.addEventListener('DOMContentLoaded', event => {
 
     function collect() {
         sendPlatformMessage({
-            command: 'bgCollectPageDetails',
-            sender: 'notificationBar',
+            command: "bgCollectPageDetails",
+            sender: "notificationBar",
         });
     }
 
@@ -185,16 +190,16 @@ document.addEventListener('DOMContentLoaded', event => {
         forms.forEach((f: any) => {
             const formId: string = f.form != null ? f.form.htmlID : null;
             let formEl: HTMLFormElement = null;
-            if (formId != null && formId !== '') {
+            if (formId != null && formId !== "") {
                 formEl = document.getElementById(formId) as HTMLFormElement;
             }
 
             if (formEl == null) {
-                const index = parseInt(f.form.opid.split('__')[2], null);
-                formEl = document.getElementsByTagName('form')[index];
+                const index = parseInt(f.form.opid.split("__")[2], null);
+                formEl = document.getElementsByTagName("form")[index];
             }
 
-            if (formEl != null && formEl.dataset.bitwardenWatching !== '1') {
+            if (formEl != null && formEl.dataset.bitwardenWatching !== "1") {
                 const formDataObj: any = {
                     data: f,
                     formEl: formEl,
@@ -205,23 +210,23 @@ document.addEventListener('DOMContentLoaded', event => {
                 locateFields(formDataObj);
                 formData.push(formDataObj);
                 listen(formEl);
-                formEl.dataset.bitwardenWatching = '1';
+                formEl.dataset.bitwardenWatching = "1";
             }
         });
     }
 
     function listen(form: HTMLFormElement) {
-        form.removeEventListener('submit', formSubmitted, false);
-        form.addEventListener('submit', formSubmitted, false);
+        form.removeEventListener("submit", formSubmitted, false);
+        form.addEventListener("submit", formSubmitted, false);
         const submitButton = getSubmitButton(form, logInButtonNames);
         if (submitButton != null) {
-            submitButton.removeEventListener('click', formSubmitted, false);
-            submitButton.addEventListener('click', formSubmitted, false);
+            submitButton.removeEventListener("click", formSubmitted, false);
+            submitButton.addEventListener("click", formSubmitted, false);
         }
     }
 
     function locateFields(formDataObj: any) {
-        const inputs = Array.from(document.getElementsByTagName('input'));
+        const inputs = Array.from(document.getElementsByTagName("input"));
         formDataObj.usernameEl = locateField(formDataObj.formEl, formDataObj.data.username, inputs);
         if (formDataObj.usernameEl != null && formDataObj.data.password != null) {
             formDataObj.passwordEl = locatePassword(formDataObj.formEl, formDataObj.data.password, inputs, true);
@@ -239,10 +244,14 @@ document.addEventListener('DOMContentLoaded', event => {
         }
     }
 
-    function locatePassword(form: HTMLFormElement, passwordData: any, inputs: HTMLInputElement[],
-        doLastFallback: boolean) {
+    function locatePassword(
+        form: HTMLFormElement,
+        passwordData: any,
+        inputs: HTMLInputElement[],
+        doLastFallback: boolean
+    ) {
         let el = locateField(form, passwordData, inputs);
-        if (el != null && el.type !== 'password') {
+        if (el != null && el.type !== "password") {
             el = null;
         }
         if (doLastFallback && el == null) {
@@ -256,14 +265,14 @@ document.addEventListener('DOMContentLoaded', event => {
             return;
         }
         let el: HTMLInputElement = null;
-        if (fieldData.htmlID != null && fieldData.htmlID !== '') {
+        if (fieldData.htmlID != null && fieldData.htmlID !== "") {
             try {
-                el = form.querySelector('#' + fieldData.htmlID);
+                el = form.querySelector("#" + fieldData.htmlID);
             } catch {
                 // Ignore error, we perform fallbacks below.
             }
         }
-        if (el == null && fieldData.htmlName != null && fieldData.htmlName !== '') {
+        if (el == null && fieldData.htmlName != null && fieldData.htmlName !== "") {
             el = form.querySelector('input[name="' + fieldData.htmlName + '"]');
         }
         if (el == null && fieldData.elementNumber != null) {
@@ -274,12 +283,12 @@ document.addEventListener('DOMContentLoaded', event => {
 
     function formSubmitted(e: Event) {
         let form: HTMLFormElement = null;
-        if (e.type === 'click') {
-            form = (e.target as HTMLElement).closest('form');
+        if (e.type === "click") {
+            form = (e.target as HTMLElement).closest("form");
             if (form == null) {
-                const parentModal = (e.target as HTMLElement).closest('div.modal');
+                const parentModal = (e.target as HTMLElement).closest("div.modal");
                 if (parentModal != null) {
-                    const modalForms = parentModal.querySelectorAll('form');
+                    const modalForms = parentModal.querySelectorAll("form");
                     if (modalForms.length === 1) {
                         form = modalForms[0];
                     }
@@ -289,7 +298,7 @@ document.addEventListener('DOMContentLoaded', event => {
             form = e.target as HTMLFormElement;
         }
 
-        if (form == null || form.dataset.bitwardenProcessed === '1') {
+        if (form == null || form.dataset.bitwardenProcessed === "1") {
             return;
         }
 
@@ -305,11 +314,15 @@ document.addEventListener('DOMContentLoaded', event => {
                     url: document.URL,
                 };
 
-                if (login.username != null && login.username !== '' &&
-                    login.password != null && login.password !== '') {
+                if (
+                    login.username != null &&
+                    login.username !== "" &&
+                    login.password != null &&
+                    login.password !== ""
+                ) {
                     processedForm(form);
                     sendPlatformMessage({
-                        command: 'bgAddLogin',
+                        command: "bgAddLogin",
                         login: login,
                     });
                     break;
@@ -317,7 +330,7 @@ document.addEventListener('DOMContentLoaded', event => {
             }
             if (!disabledChangedPasswordNotification && formData[i].passwordEls != null) {
                 const passwords: string[] = formData[i].passwordEls
-                    .filter((el: HTMLInputElement) => el.value != null && el.value !== '')
+                    .filter((el: HTMLInputElement) => el.value != null && el.value !== "")
                     .map((el: HTMLInputElement) => el.value);
 
                 let curPass: string = null;
@@ -337,8 +350,9 @@ document.addEventListener('DOMContentLoaded', event => {
                         curPass = null;
                     } else {
                         const buttonText = getButtonText(getSubmitButton(form, changePasswordButtonNames));
-                        const matches = Array.from(changePasswordButtonContainsNames)
-                            .filter(n => buttonText.indexOf(n) > -1);
+                        const matches = Array.from(changePasswordButtonContainsNames).filter(
+                            (n) => buttonText.indexOf(n) > -1
+                        );
                         if (matches.length > 0) {
                             curPass = passwords[0];
                             newPass = passwords[1];
@@ -346,7 +360,7 @@ document.addEventListener('DOMContentLoaded', event => {
                     }
                 }
 
-                if (newPass != null && curPass != null || (newPassOnly && newPass != null)) {
+                if ((newPass != null && curPass != null) || (newPassOnly && newPass != null)) {
                     processedForm(form);
 
                     const changePasswordRuntimeMessage: ChangePasswordRuntimeMessage = {
@@ -355,7 +369,7 @@ document.addEventListener('DOMContentLoaded', event => {
                         url: document.URL,
                     };
                     sendPlatformMessage({
-                        command: 'bgChangedPassword',
+                        command: "bgChangedPassword",
                         data: changePasswordRuntimeMessage,
                     });
                     break;
@@ -369,12 +383,13 @@ document.addEventListener('DOMContentLoaded', event => {
             return null;
         }
 
-        const wrappingElIsForm = wrappingEl.tagName.toLowerCase() === 'form';
+        const wrappingElIsForm = wrappingEl.tagName.toLowerCase() === "form";
 
-        let submitButton = wrappingEl.querySelector('input[type="submit"], input[type="image"], ' +
-            'button[type="submit"]') as HTMLElement;
+        let submitButton = wrappingEl.querySelector(
+            'input[type="submit"], input[type="image"], ' + 'button[type="submit"]'
+        ) as HTMLElement;
         if (submitButton == null && wrappingElIsForm) {
-            submitButton = wrappingEl.querySelector('button:not([type])');
+            submitButton = wrappingEl.querySelector("button:not([type])");
             if (submitButton != null) {
                 const buttonText = getButtonText(submitButton);
                 if (buttonText != null && cancelButtonNames.has(buttonText.trim().toLowerCase())) {
@@ -383,18 +398,24 @@ document.addEventListener('DOMContentLoaded', event => {
             }
         }
         if (submitButton == null) {
-            const possibleSubmitButtons = Array.from(wrappingEl.querySelectorAll('a, span, button[type="button"], ' +
-                'input[type="button"], button:not([type])')) as HTMLElement[];
+            const possibleSubmitButtons = Array.from(
+                wrappingEl.querySelectorAll(
+                    'a, span, button[type="button"], ' + 'input[type="button"], button:not([type])'
+                )
+            ) as HTMLElement[];
             let typelessButton: HTMLElement = null;
-            possibleSubmitButtons.forEach(button => {
+            possibleSubmitButtons.forEach((button) => {
                 if (submitButton != null || button == null || button.tagName == null) {
                     return;
                 }
                 const buttonText = getButtonText(button);
                 if (buttonText != null) {
-                    if (typelessButton != null && button.tagName.toLowerCase() === 'button' &&
-                        button.getAttribute('type') == null &&
-                        !cancelButtonNames.has(buttonText.trim().toLowerCase())) {
+                    if (
+                        typelessButton != null &&
+                        button.tagName.toLowerCase() === "button" &&
+                        button.getAttribute("type") == null &&
+                        !cancelButtonNames.has(buttonText.trim().toLowerCase())
+                    ) {
                         typelessButton = button;
                     } else if (buttonNames.has(buttonText.trim().toLowerCase())) {
                         submitButton = button;
@@ -407,9 +428,9 @@ document.addEventListener('DOMContentLoaded', event => {
         }
         if (submitButton == null && wrappingElIsForm) {
             // Maybe it's in a modal?
-            const parentModal = wrappingEl.closest('div.modal') as HTMLElement;
+            const parentModal = wrappingEl.closest("div.modal") as HTMLElement;
             if (parentModal != null) {
-                const modalForms = parentModal.querySelectorAll('form');
+                const modalForms = parentModal.querySelectorAll("form");
                 if (modalForms.length === 1) {
                     submitButton = getSubmitButton(parentModal, buttonNames);
                 }
@@ -420,7 +441,7 @@ document.addEventListener('DOMContentLoaded', event => {
 
     function getButtonText(button: HTMLElement) {
         let buttonText: string = null;
-        if (button.tagName.toLowerCase() === 'input') {
+        if (button.tagName.toLowerCase() === "input") {
             buttonText = (button as HTMLInputElement).value;
         } else {
             buttonText = button.innerText;
@@ -429,26 +450,26 @@ document.addEventListener('DOMContentLoaded', event => {
     }
 
     function processedForm(form: HTMLFormElement) {
-        form.dataset.bitwardenProcessed = '1';
+        form.dataset.bitwardenProcessed = "1";
         window.setTimeout(() => {
-            form.dataset.bitwardenProcessed = '0';
+            form.dataset.bitwardenProcessed = "0";
         }, 500);
     }
 
     function closeExistingAndOpenBar(type: string, typeData: any) {
-        let barPage = 'notification/bar.html';
+        let barPage = "notification/bar.html";
         switch (type) {
-            case 'add':
-                barPage = barPage + '?add=1&isVaultLocked=' + typeData.isVaultLocked;
+            case "add":
+                barPage = barPage + "?add=1&isVaultLocked=" + typeData.isVaultLocked;
                 break;
-            case 'change':
-                barPage = barPage + '?change=1&isVaultLocked=' + typeData.isVaultLocked;
+            case "change":
+                barPage = barPage + "?change=1&isVaultLocked=" + typeData.isVaultLocked;
                 break;
             default:
                 break;
         }
 
-        const frame = document.getElementById('bit-notification-bar-iframe') as HTMLIFrameElement;
+        const frame = document.getElementById("bit-notification-bar-iframe") as HTMLIFrameElement;
         if (frame != null && frame.src.indexOf(barPage) >= 0) {
             return;
         }
@@ -466,34 +487,35 @@ document.addEventListener('DOMContentLoaded', event => {
 
         const barPageUrl: string = chrome.extension.getURL(barPage);
 
-        const iframe = document.createElement('iframe');
-        iframe.style.cssText = 'height: 42px; width: 100%; border: 0; min-height: initial;';
-        iframe.id = 'bit-notification-bar-iframe';
+        const iframe = document.createElement("iframe");
+        iframe.style.cssText = "height: 42px; width: 100%; border: 0; min-height: initial;";
+        iframe.id = "bit-notification-bar-iframe";
         iframe.src = barPageUrl;
 
-        const frameDiv = document.createElement('div');
-        frameDiv.setAttribute('aria-live', 'polite');
-        frameDiv.id = 'bit-notification-bar';
-        frameDiv.style.cssText = 'height: 42px; width: 100%; top: 0; left: 0; padding: 0; position: fixed; ' +
-            'z-index: 2147483647; visibility: visible;';
+        const frameDiv = document.createElement("div");
+        frameDiv.setAttribute("aria-live", "polite");
+        frameDiv.id = "bit-notification-bar";
+        frameDiv.style.cssText =
+            "height: 42px; width: 100%; top: 0; left: 0; padding: 0; position: fixed; " +
+            "z-index: 2147483647; visibility: visible;";
         frameDiv.appendChild(iframe);
         document.body.appendChild(frameDiv);
 
         (iframe.contentWindow.location as any) = barPageUrl;
 
-        const spacer = document.createElement('div');
-        spacer.id = 'bit-notification-bar-spacer';
-        spacer.style.cssText = 'height: 42px;';
+        const spacer = document.createElement("div");
+        spacer.id = "bit-notification-bar-spacer";
+        spacer.style.cssText = "height: 42px;";
         document.body.insertBefore(spacer, document.body.firstChild);
     }
 
     function closeBar(explicitClose: boolean) {
-        const barEl = document.getElementById('bit-notification-bar');
+        const barEl = document.getElementById("bit-notification-bar");
         if (barEl != null) {
             barEl.parentElement.removeChild(barEl);
         }
 
-        const spacerEl = document.getElementById('bit-notification-bar-spacer');
+        const spacerEl = document.getElementById("bit-notification-bar-spacer");
         if (spacerEl) {
             spacerEl.parentElement.removeChild(spacerEl);
         }
@@ -503,14 +525,14 @@ document.addEventListener('DOMContentLoaded', event => {
         }
 
         switch (barType) {
-            case 'add':
+            case "add":
                 sendPlatformMessage({
-                    command: 'bgAddClose',
+                    command: "bgAddClose",
                 });
                 break;
-            case 'change':
+            case "change":
                 sendPlatformMessage({
-                    command: 'bgChangeClose',
+                    command: "bgChangeClose",
                 });
                 break;
             default:
@@ -520,10 +542,10 @@ document.addEventListener('DOMContentLoaded', event => {
 
     function adjustBar(data: any) {
         if (data != null && data.height !== 42) {
-            const newHeight = data.height + 'px';
-            doHeightAdjustment('bit-notification-bar-iframe', newHeight);
-            doHeightAdjustment('bit-notification-bar', newHeight);
-            doHeightAdjustment('bit-notification-bar-spacer', newHeight);
+            const newHeight = data.height + "px";
+            doHeightAdjustment("bit-notification-bar-iframe", newHeight);
+            doHeightAdjustment("bit-notification-bar", newHeight);
+            doHeightAdjustment("bit-notification-bar-spacer", newHeight);
         }
     }
 

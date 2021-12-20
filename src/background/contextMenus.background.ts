@@ -1,27 +1,32 @@
-import { BrowserApi } from '../browser/browserApi';
+import { BrowserApi } from "../browser/browserApi";
 
-import MainBackground from './main.background';
+import MainBackground from "./main.background";
 
-import { CipherService } from 'jslib-common/abstractions/cipher.service';
-import { EventService } from 'jslib-common/abstractions/event.service';
-import { PasswordGenerationService } from 'jslib-common/abstractions/passwordGeneration.service';
-import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.service';
-import { TotpService } from 'jslib-common/abstractions/totp.service';
-import { VaultTimeoutService } from 'jslib-common/abstractions/vaultTimeout.service';
+import { CipherService } from "jslib-common/abstractions/cipher.service";
+import { EventService } from "jslib-common/abstractions/event.service";
+import { PasswordGenerationService } from "jslib-common/abstractions/passwordGeneration.service";
+import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
+import { TotpService } from "jslib-common/abstractions/totp.service";
+import { VaultTimeoutService } from "jslib-common/abstractions/vaultTimeout.service";
 
-import { CipherRepromptType } from 'jslib-common/enums/cipherRepromptType';
-import { EventType } from 'jslib-common/enums/eventType';
-import { CipherView } from 'jslib-common/models/view/cipherView';
-import LockedVaultPendingNotificationsItem from './models/lockedVaultPendingNotificationsItem';
+import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
+import { EventType } from "jslib-common/enums/eventType";
+import { CipherView } from "jslib-common/models/view/cipherView";
+import LockedVaultPendingNotificationsItem from "./models/lockedVaultPendingNotificationsItem";
 
 export default class ContextMenusBackground {
-    private readonly noopCommandSuffix = 'noop';
+    private readonly noopCommandSuffix = "noop";
     private contextMenus: any;
 
-    constructor(private main: MainBackground, private cipherService: CipherService,
+    constructor(
+        private main: MainBackground,
+        private cipherService: CipherService,
         private passwordGenerationService: PasswordGenerationService,
-        private platformUtilsService: PlatformUtilsService, private vaultTimeoutService: VaultTimeoutService,
-        private eventService: EventService, private totpService: TotpService) {
+        private platformUtilsService: PlatformUtilsService,
+        private vaultTimeoutService: VaultTimeoutService,
+        private eventService: EventService,
+        private totpService: TotpService
+    ) {
         this.contextMenus = chrome.contextMenus;
     }
 
@@ -31,23 +36,28 @@ export default class ContextMenusBackground {
         }
 
         this.contextMenus.onClicked.addListener(async (info: chrome.contextMenus.OnClickData, tab: chrome.tabs.Tab) => {
-            if (info.menuItemId === 'generate-password') {
+            if (info.menuItemId === "generate-password") {
                 await this.generatePasswordToClipboard();
-            } else if (info.menuItemId === 'copy-identifier') {
+            } else if (info.menuItemId === "copy-identifier") {
                 await this.getClickedElement(tab, info.frameId);
-            } else if (info.parentMenuItemId === 'autofill' ||
-                info.parentMenuItemId === 'copy-username' ||
-                info.parentMenuItemId === 'copy-password' ||
-                info.parentMenuItemId === 'copy-totp') {
+            } else if (
+                info.parentMenuItemId === "autofill" ||
+                info.parentMenuItemId === "copy-username" ||
+                info.parentMenuItemId === "copy-password" ||
+                info.parentMenuItemId === "copy-totp"
+            ) {
                 await this.cipherAction(tab, info);
             }
         });
 
-        BrowserApi.messageListener('contextmenus.background', async (msg: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
-            if (msg.command === 'unlockCompleted' && msg.data.target === 'contextmenus.background') {
-                await this.cipherAction(msg.data.commandToRetry.sender.tab, msg.data.commandToRetry.msg.data);
+        BrowserApi.messageListener(
+            "contextmenus.background",
+            async (msg: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
+                if (msg.command === "unlockCompleted" && msg.data.target === "contextmenus.background") {
+                    await this.cipherAction(msg.data.commandToRetry.sender.tab, msg.data.commandToRetry.msg.data);
+                }
             }
-        });
+        );
     }
 
     private async generatePasswordToClipboard() {
@@ -62,11 +72,11 @@ export default class ContextMenusBackground {
             return;
         }
 
-        BrowserApi.tabSendMessage(tab, { command: 'getClickedElement' }, { frameId: frameId });
+        BrowserApi.tabSendMessage(tab, { command: "getClickedElement" }, { frameId: frameId });
     }
 
     private async cipherAction(tab: chrome.tabs.Tab, info: chrome.contextMenus.OnClickData) {
-        const id = info.menuItemId.split('_')[1];
+        const id = info.menuItemId.split("_")[1];
 
         if (await this.vaultTimeoutService.isLocked()) {
             const retryMessage: LockedVaultPendingNotificationsItem = {
@@ -74,35 +84,35 @@ export default class ContextMenusBackground {
                     msg: { command: this.noopCommandSuffix, data: info },
                     sender: { tab: tab },
                 },
-                target: 'contextmenus.background',
+                target: "contextmenus.background",
             };
-            await BrowserApi.tabSendMessageData(tab, 'addToLockedVaultPendingNotifications', retryMessage);
+            await BrowserApi.tabSendMessageData(tab, "addToLockedVaultPendingNotifications", retryMessage);
 
-            BrowserApi.tabSendMessageData(tab, 'promptForLogin');
+            BrowserApi.tabSendMessageData(tab, "promptForLogin");
             return;
         }
 
         let cipher: CipherView;
         if (id === this.noopCommandSuffix) {
             const ciphers = await this.cipherService.getAllDecryptedForUrl(tab.url);
-            cipher = ciphers.find(c => c.reprompt === CipherRepromptType.None);
+            cipher = ciphers.find((c) => c.reprompt === CipherRepromptType.None);
         } else {
             const ciphers = await this.cipherService.getAllDecrypted();
-            cipher = ciphers.find(c => c.id === id);
+            cipher = ciphers.find((c) => c.id === id);
         }
 
         if (cipher == null) {
             return;
         }
 
-        if (info.parentMenuItemId === 'autofill') {
+        if (info.parentMenuItemId === "autofill") {
             await this.startAutofillPage(tab, cipher);
-        } else if (info.parentMenuItemId === 'copy-username') {
+        } else if (info.parentMenuItemId === "copy-username") {
             this.platformUtilsService.copyToClipboard(cipher.login.username, { window: window });
-        } else if (info.parentMenuItemId === 'copy-password') {
+        } else if (info.parentMenuItemId === "copy-password") {
             this.platformUtilsService.copyToClipboard(cipher.login.password, { window: window });
             this.eventService.collect(EventType.Cipher_ClientCopiedPassword, cipher.id);
-        } else if (info.parentMenuItemId === 'copy-totp') {
+        } else if (info.parentMenuItemId === "copy-totp") {
             const totpValue = await this.totpService.getCode(cipher.login.totp);
             this.platformUtilsService.copyToClipboard(totpValue, { window: window });
         }
@@ -115,9 +125,9 @@ export default class ContextMenusBackground {
         }
 
         BrowserApi.tabSendMessage(tab, {
-            command: 'collectPageDetails',
+            command: "collectPageDetails",
             tab: tab,
-            sender: 'contextMenu',
+            sender: "contextMenu",
         });
     }
 }

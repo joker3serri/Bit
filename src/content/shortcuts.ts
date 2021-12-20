@@ -1,9 +1,11 @@
-import * as Mousetrap from 'mousetrap';
+import * as Mousetrap from "mousetrap";
 
-document.addEventListener('DOMContentLoaded', event => {
-    const isSafari = (typeof safari !== 'undefined') && navigator.userAgent.indexOf(' Safari/') !== -1 &&
-        navigator.userAgent.indexOf('Chrome') === -1;
-    const isVivaldi = !isSafari && navigator.userAgent.indexOf(' Vivaldi/') !== -1;
+document.addEventListener("DOMContentLoaded", (event) => {
+    const isSafari =
+        typeof safari !== "undefined" &&
+        navigator.userAgent.indexOf(" Safari/") !== -1 &&
+        navigator.userAgent.indexOf("Chrome") === -1;
+    const isVivaldi = !isSafari && navigator.userAgent.indexOf(" Vivaldi/") !== -1;
 
     if (!isSafari && !isVivaldi) {
         return;
@@ -17,31 +19,31 @@ document.addEventListener('DOMContentLoaded', event => {
         return false;
     };
 
-    let autofillCommand = ['mod+shift+l'];
+    let autofillCommand = ["mod+shift+l"];
     if (isSafari) {
-        autofillCommand = ['mod+\\', 'mod+8', 'mod+shift+p'];
+        autofillCommand = ["mod+\\", "mod+8", "mod+shift+p"];
     }
     Mousetrap.bind(autofillCommand, () => {
-        sendMessage('autofill_login');
+        sendMessage("autofill_login");
     });
 
     if (isSafari) {
-        Mousetrap.bind('mod+shift+y', () => {
-            sendMessage('open_popup');
+        Mousetrap.bind("mod+shift+y", () => {
+            sendMessage("open_popup");
         });
 
-        Mousetrap.bind('mod+shift+s', () => {
-            sendMessage('lock_vault');
+        Mousetrap.bind("mod+shift+s", () => {
+            sendMessage("lock_vault");
         });
     } else {
-        Mousetrap.bind('mod+shift+9', () => {
-            sendMessage('generate_password');
+        Mousetrap.bind("mod+shift+9", () => {
+            sendMessage("generate_password");
         });
     }
 
     function sendMessage(shortcut: string) {
         const msg: any = {
-            command: 'keyboardShortcutTriggered',
+            command: "keyboardShortcutTriggered",
             shortcut: shortcut,
         };
 

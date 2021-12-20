@@ -1,46 +1,55 @@
-import { BrowserApi } from '../browser/browserApi';
-import { SafariApp } from '../browser/safariApp';
+import { BrowserApi } from "../browser/browserApi";
+import { SafariApp } from "../browser/safariApp";
 
-import { DeviceType } from 'jslib-common/enums/deviceType';
-import { ThemeType } from 'jslib-common/enums/themeType';
+import { DeviceType } from "jslib-common/enums/deviceType";
+import { ThemeType } from "jslib-common/enums/themeType";
 
-import { MessagingService } from 'jslib-common/abstractions/messaging.service';
-import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.service';
-import { StorageService } from 'jslib-common/abstractions/storage.service';
+import { MessagingService } from "jslib-common/abstractions/messaging.service";
+import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
+import { StorageService } from "jslib-common/abstractions/storage.service";
 
-import { ConstantsService } from 'jslib-common/services/constants.service';
+import { ConstantsService } from "jslib-common/services/constants.service";
 
 const DialogPromiseExpiration = 600000; // 10 minutes
 
 export default class BrowserPlatformUtilsService implements PlatformUtilsService {
-    identityClientId: string = 'browser';
+    identityClientId: string = "browser";
 
-    private showDialogResolves = new Map<number, { resolve: (value: boolean) => void, date: Date }>();
-    private passwordDialogResolves = new Map<number, { tryResolve: (canceled: boolean, password: string) => Promise<boolean>, date: Date }>();
+    private showDialogResolves = new Map<number, { resolve: (value: boolean) => void; date: Date }>();
+    private passwordDialogResolves = new Map<
+        number,
+        { tryResolve: (canceled: boolean, password: string) => Promise<boolean>; date: Date }
+    >();
     private deviceCache: DeviceType = null;
-    private prefersColorSchemeDark = window.matchMedia('(prefers-color-scheme: dark)');
+    private prefersColorSchemeDark = window.matchMedia("(prefers-color-scheme: dark)");
 
-    constructor(private messagingService: MessagingService, private storageService: StorageService,
+    constructor(
+        private messagingService: MessagingService,
+        private storageService: StorageService,
         private clipboardWriteCallback: (clipboardValue: string, clearMs: number) => void,
-        private biometricCallback: () => Promise<boolean>) { }
+        private biometricCallback: () => Promise<boolean>
+    ) {}
 
     getDevice(): DeviceType {
         if (this.deviceCache) {
             return this.deviceCache;
         }
 
-        if (navigator.userAgent.indexOf(' Firefox/') !== -1 || navigator.userAgent.indexOf(' Gecko/') !== -1) {
+        if (navigator.userAgent.indexOf(" Firefox/") !== -1 || navigator.userAgent.indexOf(" Gecko/") !== -1) {
             this.deviceCache = DeviceType.FirefoxExtension;
-        } else if ((!!(window as any).opr && !!opr.addons) || !!(window as any).opera ||
-            navigator.userAgent.indexOf(' OPR/') >= 0) {
+        } else if (
+            (!!(window as any).opr && !!opr.addons) ||
+            !!(window as any).opera ||
+            navigator.userAgent.indexOf(" OPR/") >= 0
+        ) {
             this.deviceCache = DeviceType.OperaExtension;
-        } else if (navigator.userAgent.indexOf(' Edg/') !== -1) {
+        } else if (navigator.userAgent.indexOf(" Edg/") !== -1) {
             this.deviceCache = DeviceType.EdgeExtension;
-        } else if (navigator.userAgent.indexOf(' Vivaldi/') !== -1) {
+        } else if (navigator.userAgent.indexOf(" Vivaldi/") !== -1) {
             this.deviceCache = DeviceType.VivaldiExtension;
-        } else if ((window as any).chrome && navigator.userAgent.indexOf(' Chrome/') !== -1) {
+        } else if ((window as any).chrome && navigator.userAgent.indexOf(" Chrome/") !== -1) {
             this.deviceCache = DeviceType.ChromeExtension;
-        } else if (navigator.userAgent.indexOf(' Safari/') !== -1) {
+        } else if (navigator.userAgent.indexOf(" Safari/") !== -1) {
             this.deviceCache = DeviceType.SafariExtension;
         }
 
@@ -49,7 +58,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
 
     getDeviceString(): string {
         const device = DeviceType[this.getDevice()].toLowerCase();
-        return device.replace('extension', '');
+        return device.replace("extension", "");
     }
 
     isFirefox(): boolean {
@@ -99,7 +108,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
             return true;
         }
 
-        const tabOpen = chrome.extension.getViews({ type: 'tab' }).length > 0;
+        const tabOpen = chrome.extension.getViews({ type: "tab" }).length > 0;
         return tabOpen;
     }
 
@@ -120,16 +129,20 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
     }
 
     supportsWebAuthn(win: Window): boolean {
-        return (typeof(PublicKeyCredential) !== 'undefined');
+        return typeof PublicKeyCredential !== "undefined";
     }
 
     supportsDuo(): boolean {
         return true;
     }
 
-    showToast(type: 'error' | 'success' | 'warning' | 'info', title: string, text: string | string[],
-        options?: any): void {
-        this.messagingService.send('showToast', {
+    showToast(
+        type: "error" | "success" | "warning" | "info",
+        title: string,
+        text: string | string[],
+        options?: any
+    ): void {
+        this.messagingService.send("showToast", {
             text: text,
             title: title,
             type: type,
@@ -137,10 +150,16 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         });
     }
 
-    showDialog(body: string, title?: string, confirmText?: string, cancelText?: string, type?: string,
-        bodyIsHtml: boolean = false) {
+    showDialog(
+        body: string,
+        title?: string,
+        confirmText?: string,
+        cancelText?: string,
+        type?: string,
+        bodyIsHtml: boolean = false
+    ) {
         const dialogId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-        this.messagingService.send('showDialog', {
+        this.messagingService.send("showDialog", {
             text: bodyIsHtml ? null : body,
             html: bodyIsHtml ? body : null,
             title: title,
@@ -149,13 +168,13 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
             type: type,
             dialogId: dialogId,
         });
-        return new Promise<boolean>(resolve => {
+        return new Promise<boolean>((resolve) => {
             this.showDialogResolves.set(dialogId, { resolve: resolve, date: new Date() });
         });
     }
 
     isDev(): boolean {
-        return process.env.ENV === 'development';
+        return process.env.ENV === "development";
     }
 
     isSelfHost(): boolean {
@@ -175,7 +194,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         const clearMs: number = options && options.clearMs ? options.clearMs : null;
 
         if (this.isSafari()) {
-            SafariApp.sendMessageToApp('copyToClipboard', text).then(() => {
+            SafariApp.sendMessageToApp("copyToClipboard", text).then(() => {
                 if (!clearing && this.clipboardWriteCallback != null) {
                     this.clipboardWriteCallback(text, clearMs);
                 }
@@ -188,30 +207,30 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
             });
         } else if ((win as any).clipboardData && (win as any).clipboardData.setData) {
             // IE specific code path to prevent textarea being shown while dialog is visible.
-            (win as any).clipboardData.setData('Text', text);
+            (win as any).clipboardData.setData("Text", text);
             if (!clearing && this.clipboardWriteCallback != null) {
                 this.clipboardWriteCallback(text, clearMs);
             }
-        } else if (doc.queryCommandSupported && doc.queryCommandSupported('copy')) {
-            if (this.isChrome() && text === '') {
-                text = '\u0000';
+        } else if (doc.queryCommandSupported && doc.queryCommandSupported("copy")) {
+            if (this.isChrome() && text === "") {
+                text = "\u0000";
             }
 
-            const textarea = doc.createElement('textarea');
-            textarea.textContent = text == null || text === '' ? ' ' : text;
+            const textarea = doc.createElement("textarea");
+            textarea.textContent = text == null || text === "" ? " " : text;
             // Prevent scrolling to bottom of page in MS Edge.
-            textarea.style.position = 'fixed';
+            textarea.style.position = "fixed";
             doc.body.appendChild(textarea);
             textarea.select();
 
             try {
                 // Security exception may be thrown by some browsers.
-                if (doc.execCommand('copy') && !clearing && this.clipboardWriteCallback != null) {
+                if (doc.execCommand("copy") && !clearing && this.clipboardWriteCallback != null) {
                     this.clipboardWriteCallback(text, clearMs);
                 }
             } catch (e) {
                 // tslint:disable-next-line
-                console.warn('Copy to clipboard failed.', e);
+                console.warn("Copy to clipboard failed.", e);
             } finally {
                 doc.body.removeChild(textarea);
             }
@@ -229,23 +248,23 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         }
 
         if (this.isSafari()) {
-            return await SafariApp.sendMessageToApp('readFromClipboard');
+            return await SafariApp.sendMessageToApp("readFromClipboard");
         } else if (this.isFirefox() && (win as any).navigator.clipboard && (win as any).navigator.clipboard.readText) {
             return await (win as any).navigator.clipboard.readText();
-        } else if (doc.queryCommandSupported && doc.queryCommandSupported('paste')) {
-            const textarea = doc.createElement('textarea');
+        } else if (doc.queryCommandSupported && doc.queryCommandSupported("paste")) {
+            const textarea = doc.createElement("textarea");
             // Prevent scrolling to bottom of page in MS Edge.
-            textarea.style.position = 'fixed';
+            textarea.style.position = "fixed";
             doc.body.appendChild(textarea);
             textarea.focus();
             try {
                 // Security exception may be thrown by some browsers.
-                if (doc.execCommand('paste')) {
+                if (doc.execCommand("paste")) {
                     return textarea.value;
                 }
             } catch (e) {
                 // tslint:disable-next-line
-                console.warn('Read from clipboard failed.', e);
+                console.warn("Read from clipboard failed.", e);
             } finally {
                 doc.body.removeChild(textarea);
             }
@@ -292,12 +311,12 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
 
     async supportsBiometric() {
         const platformInfo = await BrowserApi.getPlatformInfo();
-        if (platformInfo.os === 'android') {
+        if (platformInfo.os === "android") {
             return false;
         }
 
         if (this.isFirefox()) {
-            return parseInt((await browser.runtime.getBrowserInfo()).version.split('.')[0], 10) >= 87;
+            return parseInt((await browser.runtime.getBrowserInfo()).version.split(".")[0], 10) >= 87;
         }
 
         return true;
@@ -309,9 +328,9 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
 
     sidebarViewName(): string {
         if ((window as any).chrome.sidebarAction && this.isFirefox()) {
-            return 'sidebar';
-        } else if (this.isOpera() && (typeof opr !== 'undefined') && opr.sidebarAction) {
-            return 'sidebar_panel';
+            return "sidebar";
+        } else if (this.isOpera() && typeof opr !== "undefined" && opr.sidebarAction) {
+            return "sidebar_panel";
         }
 
         return null;
@@ -325,8 +344,8 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
         return Promise.resolve(this.prefersColorSchemeDark.matches ? ThemeType.Dark : ThemeType.Light);
     }
 
-    onDefaultSystemThemeChange(callback: ((theme: ThemeType.Light | ThemeType.Dark) => unknown)) {
-        this.prefersColorSchemeDark.addEventListener('change', ({ matches }) => {
+    onDefaultSystemThemeChange(callback: (theme: ThemeType.Light | ThemeType.Dark) => unknown) {
+        this.prefersColorSchemeDark.addEventListener("change", ({ matches }) => {
             callback(matches ? ThemeType.Dark : ThemeType.Light);
         });
     }

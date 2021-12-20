@@ -1,15 +1,16 @@
-import { SafariApp } from './safariApp';
+import { SafariApp } from "./safariApp";
 
-import { Utils } from 'jslib-common/misc/utils';
+import { Utils } from "jslib-common/misc/utils";
 
 export class BrowserApi {
-    static isWebExtensionsApi: boolean = (typeof browser !== 'undefined');
-    static isSafariApi: boolean = navigator.userAgent.indexOf(' Safari/') !== -1 &&
-        navigator.userAgent.indexOf(' Chrome/') === -1 &&
-        navigator.userAgent.indexOf(' Chromium/') === -1;
-    static isChromeApi: boolean = !BrowserApi.isSafariApi && (typeof chrome !== 'undefined');
-    static isFirefoxOnAndroid: boolean = navigator.userAgent.indexOf('Firefox/') !== -1 &&
-        navigator.userAgent.indexOf('Android') !== -1;
+    static isWebExtensionsApi: boolean = typeof browser !== "undefined";
+    static isSafariApi: boolean =
+        navigator.userAgent.indexOf(" Safari/") !== -1 &&
+        navigator.userAgent.indexOf(" Chrome/") === -1 &&
+        navigator.userAgent.indexOf(" Chromium/") === -1;
+    static isChromeApi: boolean = !BrowserApi.isSafariApi && typeof chrome !== "undefined";
+    static isFirefoxOnAndroid: boolean =
+        navigator.userAgent.indexOf("Firefox/") !== -1 && navigator.userAgent.indexOf("Android") !== -1;
 
     static async getTabFromCurrentWindowId(): Promise<chrome.tabs.Tab> | null {
         return await BrowserApi.tabsQueryFirst({
@@ -32,7 +33,7 @@ export class BrowserApi {
     }
 
     static async tabsQuery(options: chrome.tabs.QueryInfo): Promise<chrome.tabs.Tab[]> {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             chrome.tabs.query(options, (tabs: any[]) => {
                 resolve(tabs);
             });
@@ -60,12 +61,16 @@ export class BrowserApi {
         return BrowserApi.tabSendMessage(tab, obj);
     }
 
-    static async tabSendMessage(tab: chrome.tabs.Tab, obj: any, options: chrome.tabs.MessageSendOptions = null): Promise<any> {
+    static async tabSendMessage(
+        tab: chrome.tabs.Tab,
+        obj: any,
+        options: chrome.tabs.MessageSendOptions = null
+    ): Promise<any> {
         if (!tab || !tab.id) {
             return;
         }
 
-        return new Promise<void>(resolve => {
+        return new Promise<void>((resolve) => {
             chrome.tabs.sendMessage(tab.id, obj, options, () => {
                 if (chrome.runtime.lastError) {
                     // Some error happened
@@ -84,14 +89,17 @@ export class BrowserApi {
     }
 
     static async isPopupOpen(): Promise<boolean> {
-        return Promise.resolve(chrome.extension.getViews({ type: 'popup' }).length > 0);
+        return Promise.resolve(chrome.extension.getViews({ type: "popup" }).length > 0);
     }
 
     static createNewTab(url: string, extensionPage: boolean = false, active: boolean = true) {
         chrome.tabs.create({ url: url, active: active });
     }
 
-    static messageListener(name: string, callback: (message: any, sender: chrome.runtime.MessageSender, response: any) => void) {
+    static messageListener(
+        name: string,
+        callback: (message: any, sender: chrome.runtime.MessageSender, response: any) => void
+    ) {
         chrome.runtime.onMessage.addListener((msg: any, sender: chrome.runtime.MessageSender, response: any) => {
             callback(msg, sender, response);
         });
@@ -100,8 +108,8 @@ export class BrowserApi {
     static async closeLoginTab() {
         const tabs = await BrowserApi.tabsQuery({
             active: true,
-            title: 'Bitwarden',
-            windowType: 'normal',
+            title: "Bitwarden",
+            windowType: "normal",
             currentWindow: true,
         });
 
@@ -132,22 +140,26 @@ export class BrowserApi {
         if (BrowserApi.isSafariApi) {
             const type = blobOptions != null ? blobOptions.type : null;
             let data: string = null;
-            if (type === 'text/plain' && typeof (blobData) === 'string') {
+            if (type === "text/plain" && typeof blobData === "string") {
                 data = blobData;
             } else {
                 data = Utils.fromBufferToB64(blobData);
             }
-            SafariApp.sendMessageToApp('downloadFile', JSON.stringify({
-                blobData: data,
-                blobOptions: blobOptions,
-                fileName: fileName,
-            }), true);
+            SafariApp.sendMessageToApp(
+                "downloadFile",
+                JSON.stringify({
+                    blobData: data,
+                    blobOptions: blobOptions,
+                    fileName: fileName,
+                }),
+                true
+            );
         } else {
             const blob = new Blob([blobData], blobOptions);
             if (navigator.msSaveOrOpenBlob) {
                 navigator.msSaveBlob(blob, fileName);
             } else {
-                const a = win.document.createElement('a');
+                const a = win.document.createElement("a");
                 a.href = URL.createObjectURL(blob);
                 a.download = fileName;
                 win.document.body.appendChild(a);
@@ -158,7 +170,7 @@ export class BrowserApi {
     }
 
     static gaFilter() {
-        return process.env.ENV !== 'production';
+        return process.env.ENV !== "production";
     }
 
     static getUILanguage(win: Window) {
@@ -175,9 +187,11 @@ export class BrowserApi {
 
     static reloadOpenWindows() {
         const views = chrome.extension.getViews() as Window[];
-        views.filter(w => w.location.href != null).forEach(w => {
-            w.location.reload();
-        });
+        views
+            .filter((w) => w.location.href != null)
+            .forEach((w) => {
+                w.location.reload();
+            });
     }
 
     static connectNative(application: string): browser.runtime.Port | chrome.runtime.Port {
@@ -201,7 +215,7 @@ export class BrowserApi {
         if (BrowserApi.isWebExtensionsApi) {
             return browser.runtime.getPlatformInfo();
         }
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             chrome.runtime.getPlatformInfo(resolve);
         });
     }

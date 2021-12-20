@@ -1,32 +1,39 @@
-import { BrowserApi } from '../browser/browserApi';
+import { BrowserApi } from "../browser/browserApi";
 
-import MainBackground from './main.background';
+import MainBackground from "./main.background";
 
-import { PasswordGenerationService } from 'jslib-common/abstractions/passwordGeneration.service';
-import { PlatformUtilsService } from 'jslib-common/abstractions/platformUtils.service';
-import { VaultTimeoutService } from 'jslib-common/abstractions/vaultTimeout.service';
-import LockedVaultPendingNotificationsItem from './models/lockedVaultPendingNotificationsItem';
+import { PasswordGenerationService } from "jslib-common/abstractions/passwordGeneration.service";
+import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
+import { VaultTimeoutService } from "jslib-common/abstractions/vaultTimeout.service";
+import LockedVaultPendingNotificationsItem from "./models/lockedVaultPendingNotificationsItem";
 
 export default class CommandsBackground {
     private isSafari: boolean;
     private isVivaldi: boolean;
 
-    constructor(private main: MainBackground, private passwordGenerationService: PasswordGenerationService,
-        private platformUtilsService: PlatformUtilsService, private vaultTimeoutService: VaultTimeoutService) {
+    constructor(
+        private main: MainBackground,
+        private passwordGenerationService: PasswordGenerationService,
+        private platformUtilsService: PlatformUtilsService,
+        private vaultTimeoutService: VaultTimeoutService
+    ) {
         this.isSafari = this.platformUtilsService.isSafari();
         this.isVivaldi = this.platformUtilsService.isVivaldi();
     }
 
     async init() {
-        BrowserApi.messageListener('commands.background', async (msg: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
-            if (msg.command === 'unlockCompleted' && msg.data.target === 'commands.background') {
-                await this.processCommand(msg.data.commandToRetry.msg.command, msg.data.commandToRetry.sender);
-            }
+        BrowserApi.messageListener(
+            "commands.background",
+            async (msg: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
+                if (msg.command === "unlockCompleted" && msg.data.target === "commands.background") {
+                    await this.processCommand(msg.data.commandToRetry.msg.command, msg.data.commandToRetry.sender);
+                }
 
-            if (this.isVivaldi && msg.command === 'keyboardShortcutTriggered' && msg.shortcut) {
-                await this.processCommand(msg.shortcut, sender);
+                if (this.isVivaldi && msg.command === "keyboardShortcutTriggered" && msg.shortcut) {
+                    await this.processCommand(msg.shortcut, sender);
+                }
             }
-        });
+        );
 
         if (!this.isVivaldi && chrome && chrome.commands) {
             chrome.commands.onCommand.addListener(async (command: string) => {
@@ -37,16 +44,16 @@ export default class CommandsBackground {
 
     private async processCommand(command: string, sender?: chrome.runtime.MessageSender) {
         switch (command) {
-            case 'generate_password':
+            case "generate_password":
                 await this.generatePasswordToClipboard();
                 break;
-            case 'autofill_login':
+            case "autofill_login":
                 await this.autoFillLogin(sender ? sender.tab : null);
                 break;
-            case 'open_popup':
+            case "open_popup":
                 await this.openPopup();
                 break;
-            case 'lock_vault':
+            case "lock_vault":
                 await this.vaultTimeoutService.lock(true);
                 break;
             default:
@@ -73,18 +80,18 @@ export default class CommandsBackground {
         if (await this.vaultTimeoutService.isLocked()) {
             const retryMessage: LockedVaultPendingNotificationsItem = {
                 commandToRetry: {
-                    msg: { command: 'autofill_login' },
+                    msg: { command: "autofill_login" },
                     sender: { tab: tab },
                 },
-                target: 'commands.background',
+                target: "commands.background",
             };
-            await BrowserApi.tabSendMessageData(tab, 'addToLockedVaultPendingNotifications', retryMessage);
+            await BrowserApi.tabSendMessageData(tab, "addToLockedVaultPendingNotifications", retryMessage);
 
-            BrowserApi.tabSendMessageData(tab, 'promptForLogin');
+            BrowserApi.tabSendMessageData(tab, "promptForLogin");
             return;
         }
 
-        await this.main.collectPageDetailsForContentScript(tab, 'autofill_cmd');
+        await this.main.collectPageDetailsForContentScript(tab, "autofill_cmd");
     }
 
     private async openPopup() {

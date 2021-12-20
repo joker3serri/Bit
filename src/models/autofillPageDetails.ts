@@ -1,5 +1,5 @@
-import AutofillField from './autofillField';
-import AutofillForm from './autofillForm';
+import AutofillField from "./autofillField";
+import AutofillForm from "./autofillForm";
 
 export default class AutofillPageDetails {
     documentUUID: string;
@@ -7,7 +7,7 @@ export default class AutofillPageDetails {
     url: string;
     documentUrl: string;
     tabUrl: string;
-    forms: { [id: string]: AutofillForm; };
+    forms: { [id: string]: AutofillForm };
     fields: AutofillField[];
     collectedTimestamp: number;
 }

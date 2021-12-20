@@ -1,32 +1,29 @@
-const path = require('path');
+const path = require("path");
 
-module.exports = function(config) {
+module.exports = function (config) {
     config.set({
         // base path that will be used to resolve all patterns (eg. files, exclude)
-        basePath: '',
+        basePath: "",
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['jasmine', 'webpack'],
+        frameworks: ["jasmine", "webpack"],
 
         // list of files / patterns to load in the browser
-        files: [
-            { pattern: 'src/**/*.spec.ts', watch: false },
-        ],
+        files: [{ pattern: "src/**/*.spec.ts", watch: false }],
 
-        exclude: [
-        ],
+        exclude: [],
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'src/**/*.ts': 'webpack'
+            "src/**/*.ts": "webpack",
         },
 
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['progress', 'kjhtml'],
+        reporters: ["progress", "kjhtml"],
 
         // web server port
         port: 9876,
@@ -40,37 +37,35 @@ module.exports = function(config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Chrome'],
+        browsers: ["Chrome"],
 
         // Concurrency level
         // how many browser should be started simultaneous
         concurrency: Infinity,
 
-        client:{
-            clearContext: false // leave Jasmine Spec Runner output visible in browser
+        client: {
+            clearContext: false, // leave Jasmine Spec Runner output visible in browser
         },
 
         webpack: {
-            mode: 'production',
+            mode: "production",
             resolve: {
-                extensions: ['.js', '.ts', '.tsx'],
+                extensions: [".js", ".ts", ".tsx"],
                 alias: {
-                    "jslib-common": path.join(__dirname, 'jslib/common/src'),
-                    "jslib-angular": path.join(__dirname, 'jslib/angular/src'),
+                    "jslib-common": path.join(__dirname, "jslib/common/src"),
+                    "jslib-angular": path.join(__dirname, "jslib/angular/src"),
                 },
             },
             module: {
-                rules: [
-                    {test: /\.tsx?$/, loader: 'ts-loader'}
-                ]
+                rules: [{ test: /\.tsx?$/, loader: "ts-loader" }],
             },
             stats: {
                 colors: true,
                 modules: true,
                 reasons: true,
-                errorDetails: true
+                errorDetails: true,
             },
-            devtool: 'inline-source-map',
+            devtool: "inline-source-map",
         },
-    })
-}
+    });
+};

@@ -1,18 +1,58 @@
-import { I18nService as BaseI18nService } from 'jslib-common/services/i18n.service';
+import { I18nService as BaseI18nService } from "jslib-common/services/i18n.service";
 
 export default class I18nService extends BaseI18nService {
     constructor(systemLanguage: string) {
         super(systemLanguage, null, async (formattedLocale: string) => {
             // Deprecated
-            const file = await fetch(this.localesDirectory + formattedLocale + '/messages.json');
+            const file = await fetch(this.localesDirectory + formattedLocale + "/messages.json");
             return await file.json();
         });
 
         // Please leave 'en' where it is, as it's our fallback language in case no translation can be found
         this.supportedTranslationLocales = [
-            'en', 'az', 'be', 'bg', 'bn', 'ca', 'cs', 'da', 'de', 'el', 'en-GB', 'en-IN', 'es', 'et', 'fa', 'fi', 'fr', 'he', 'hr', 'hu',
-            'id', 'it', 'ja', 'kn', 'ko', 'lv', 'ml', 'nb', 'nl', 'pl', 'pt-BR', 'pt-PT', 'ro', 'ru', 'sk', 'sr', 'sv', 'th', 'tr', 'uk',
-            'vi', 'zh-CN', 'zh-TW',
+            "en",
+            "az",
+            "be",
+            "bg",
+            "bn",
+            "ca",
+            "cs",
+            "da",
+            "de",
+            "el",
+            "en-GB",
+            "en-IN",
+            "es",
+            "et",
+            "fa",
+            "fi",
+            "fr",
+            "he",
+            "hr",
+            "hu",
+            "id",
+            "it",
+            "ja",
+            "kn",
+            "ko",
+            "lv",
+            "ml",
+            "nb",
+            "nl",
+            "pl",
+            "pt-BR",
+            "pt-PT",
+            "ro",
+            "ru",
+            "sk",
+            "sr",
+            "sv",
+            "th",
+            "tr",
+            "uk",
+            "vi",
+            "zh-CN",
+            "zh-TW",
         ];
     }
 

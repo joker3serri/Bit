@@ -6,7 +6,7 @@
     font-size: 14px;
     line-height: 16px;
     color: #333333;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .outer-wrapper {
@@ -24,7 +24,8 @@
     grid-template-columns: auto max-content;
 }
 
-.outer-wrapper > *, .inner-wrapper > * {
+.outer-wrapper > *,
+.inner-wrapper > * {
     align-self: center;
 }
 
@@ -50,7 +51,7 @@ img {
 
 button:not(.link),
 button:not(.neutral) {
-    background-color: #175DDC;
+    background-color: #175ddc;
     padding: 5px 15px;
     border-radius: 3px;
     color: #ffffff;
@@ -66,7 +67,7 @@ button.link,
 button.neutral {
     background: none;
     padding: 5px 15px;
-    color: #175DDC;
+    color: #175ddc;
     border: 0;
 
     &:hover {
@@ -77,12 +78,12 @@ button.neutral {
 }
 
 .select-folder[isVaultLocked="true"] {
-    display: none
+    display: none;
 }
 
 @media screen and (max-width: 768px) {
     .select-folder {
-        display: none
+        display: none;
     }
 }
 
@@ -91,4 +92,3 @@ button.neutral {
         display: none;
     }
 }
-
