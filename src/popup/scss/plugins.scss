@@ -15,6 +15,9 @@ $fa-font-path: "~font-awesome/fonts";
   }
 
   .ngx-toastr {
+    @include themify($themes) {
+      color: themed("toastTextColor");
+    }
     align-items: center;
     background-image: none !important;
     border-radius: $border-radius;
