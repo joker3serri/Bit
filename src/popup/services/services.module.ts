@@ -30,19 +30,19 @@ import { KeyConnectorService } from "jslib-common/abstractions/keyConnector.serv
 import { LogService as LogServiceAbstraction } from "jslib-common/abstractions/log.service";
 import { MessagingService } from "jslib-common/abstractions/messaging.service";
 import { NotificationsService } from "jslib-common/abstractions/notifications.service";
+import { OrganizationService } from "jslib-common/abstractions/organization.service";
 import { PasswordGenerationService } from "jslib-common/abstractions/passwordGeneration.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "jslib-common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
 import { PolicyService } from "jslib-common/abstractions/policy.service";
+import { ProviderService } from "jslib-common/abstractions/provider.service";
 import { SearchService as SearchServiceAbstraction } from "jslib-common/abstractions/search.service";
 import { SendService } from "jslib-common/abstractions/send.service";
 import { SettingsService } from "jslib-common/abstractions/settings.service";
-import { StateService as StateServiceAbstraction } from "jslib-common/abstractions/state.service";
 import { StorageService } from "jslib-common/abstractions/storage.service";
 import { SyncService } from "jslib-common/abstractions/sync.service";
 import { TokenService } from "jslib-common/abstractions/token.service";
 import { TotpService } from "jslib-common/abstractions/totp.service";
-import { UserService } from "jslib-common/abstractions/user.service";
 import { UserVerificationService } from "jslib-common/abstractions/userVerification.service";
 import { VaultTimeoutService } from "jslib-common/abstractions/vaultTimeout.service";
 
@@ -51,14 +51,16 @@ import BrowserMessagingService from "../../services/browserMessaging.service";
 
 import { AuthService } from "jslib-common/services/auth.service";
 import { ConsoleLogService } from "jslib-common/services/consoleLog.service";
-import { ConstantsService } from "jslib-common/services/constants.service";
 import { SearchService } from "jslib-common/services/search.service";
-import { StateService } from "jslib-common/services/state.service";
 
 import { PopupSearchService } from "./popup-search.service";
 import { PopupUtilsService } from "./popup-utils.service";
 
 import { ThemeType } from "jslib-common/enums/themeType";
+
+import { StateService } from "../../services/state.service";
+
+import { StateService as StateServiceAbstraction } from "../../services/abstractions/state.service";
 
 function getBgService<T>(service: string) {
   return (): T => {
@@ -101,7 +103,7 @@ export function initFactory(
       const theme = await platformUtilsService.getEffectiveTheme();
       htmlEl.classList.add("theme_" + theme);
       platformUtilsService.onDefaultSystemThemeChange(async (sysTheme) => {
-        const bwTheme = await storageService.get<ThemeType>(ConstantsService.themeKey);
+        const bwTheme = await stateService.getTheme();
         if (bwTheme == null || bwTheme === ThemeType.System) {
           htmlEl.classList.remove("theme_" + ThemeType.Light, "theme_" + ThemeType.Dark);
           htmlEl.classList.add("theme_" + sysTheme);
@@ -161,7 +163,7 @@ export function initFactory(
       useFactory: getBgService<AuthService>("authService"),
       deps: [],
     },
-    { provide: StateServiceAbstraction, useClass: StateService },
+    { provide: StateServiceAbstraction, useFactory: getBgService<StateService>("stateService") },
     {
       provide: SearchServiceAbstraction,
       useFactory: (
@@ -226,7 +228,6 @@ export function initFactory(
     },
     { provide: ApiService, useFactory: getBgService<ApiService>("apiService"), deps: [] },
     { provide: SyncService, useFactory: getBgService<SyncService>("syncService"), deps: [] },
-    { provide: UserService, useFactory: getBgService<UserService>("userService"), deps: [] },
     {
       provide: SettingsService,
       useFactory: getBgService<SettingsService>("settingsService"),
@@ -271,6 +272,21 @@ export function initFactory(
       deps: [],
     },
     { provide: PasswordRepromptServiceAbstraction, useClass: PasswordRepromptService },
+    {
+      provide: OrganizationService,
+      useFactory: getBgService<OrganizationService>("organizationService"),
+      deps: [],
+    },
+    {
+      provide: ProviderService,
+      useFactory: getBgService<ProviderService>("providerService"),
+      deps: [],
+    },
+    {
+      provide: "SECURE_STORAGE",
+      useFactory: getBgService<StorageService>("secureStorageService"),
+      deps: [],
+    },
   ],
 })
 export class ServicesModule {}
