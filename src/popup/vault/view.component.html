@@ -173,7 +173,9 @@
           <div class="row-main">
             <span class="row-label">{{ "number" | i18n }}</span>
             <span [hidden]="showCardNumber" class="monospaced">{{ cipher.card.maskedNumber }}</span>
-            <span [hidden]="!showCardNumber" class="monospaced">{{ cipher.card.number | creditCardNumber :cipher.card.brand}}</span>
+            <span [hidden]="!showCardNumber" class="monospaced">{{
+              cipher.card.number | creditCardNumber: cipher.card.brand
+            }}</span>
           </div>
           <div class="action-buttons">
             <button

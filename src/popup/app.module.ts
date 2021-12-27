@@ -64,7 +64,7 @@ import { StopClickDirective } from "jslib-angular/directives/stop-click.directiv
 import { StopPropDirective } from "jslib-angular/directives/stop-prop.directive";
 import { TrueFalseValueDirective } from "jslib-angular/directives/true-false-value.directive";
 import { ColorPasswordPipe } from "jslib-angular/pipes/color-password.pipe";
-import { CreditCardNumberPipe } from 'jslib-angular/pipes/credit-card-number.pipe';
+import { CreditCardNumberPipe } from "jslib-angular/pipes/credit-card-number.pipe";
 import { I18nPipe } from "jslib-angular/pipes/i18n.pipe";
 import { SearchCiphersPipe } from "jslib-angular/pipes/search-ciphers.pipe";
 import { EnvironmentComponent } from "./accounts/environment.component";
@@ -117,19 +117,6 @@ import { PasswordHistoryComponent } from "./vault/password-history.component";
 import { ShareComponent } from "./vault/share.component";
 import { ViewCustomFieldsComponent } from "./vault/view-custom-fields.component";
 import { ViewComponent } from "./vault/view.component";
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 registerLocaleData(localeAz, "az");
 registerLocaleData(localeBe, "be");
