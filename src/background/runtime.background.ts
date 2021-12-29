@@ -3,9 +3,8 @@ import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { MessagingService } from "jslib-common/abstractions/messaging.service";
 import { NotificationsService } from "jslib-common/abstractions/notifications.service";
-import { StorageService } from "jslib-common/abstractions/storage.service";
+import { StateService } from "jslib-common/abstractions/state.service";
 import { SystemService } from "jslib-common/abstractions/system.service";
-import { ConstantsService } from "jslib-common/services/constants.service";
 
 import { AutofillService } from "../services/abstractions/autofill.service";
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
@@ -27,12 +26,12 @@ export default class RuntimeBackground {
     private main: MainBackground,
     private autofillService: AutofillService,
     private platformUtilsService: BrowserPlatformUtilsService,
-    private storageService: StorageService,
     private i18nService: I18nService,
     private notificationsService: NotificationsService,
     private systemService: SystemService,
     private environmentService: EnvironmentService,
     private messagingService: MessagingService,
+    private stateService: StateService,
     private logService: LogService
   ) {
     // onInstalled listener must be wired up before anything else, so we do it in the ctor
@@ -230,19 +229,15 @@ export default class RuntimeBackground {
 
   private async setDefaultSettings() {
     // Default timeout option to "on restart".
-    const currentVaultTimeout = await this.storageService.get<number>(
-      ConstantsService.vaultTimeoutKey
-    );
+    const currentVaultTimeout = await this.stateService.getVaultTimeout();
     if (currentVaultTimeout == null) {
-      await this.storageService.save(ConstantsService.vaultTimeoutKey, -1);
+      await this.stateService.setVaultTimeout(-1);
     }
 
     // Default action to "lock".
-    const currentVaultTimeoutAction = await this.storageService.get<string>(
-      ConstantsService.vaultTimeoutActionKey
-    );
+    const currentVaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
     if (currentVaultTimeoutAction == null) {
-      await this.storageService.save(ConstantsService.vaultTimeoutActionKey, "lock");
+      await this.stateService.setVaultTimeoutAction("lock");
     }
   }
 }

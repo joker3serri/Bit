@@ -3,7 +3,6 @@ import { CipherService } from 'jslib-common/abstractions/cipher.service';
 import { EventService } from 'jslib-common/abstractions/event.service';
 import { LogService } from 'jslib-common/abstractions/log.service';
 import { TotpService } from 'jslib-common/abstractions/totp.service';
-import { UserService } from 'jslib-common/abstractions/user.service';
 
 import { AutofillService as AutofillServiceInterface } from './abstractions/autofill.service';
 
@@ -18,6 +17,8 @@ import { FieldView } from 'jslib-common/models/view/fieldView';
 import AutofillField from '../models/autofillField';
 import AutofillPageDetails from '../models/autofillPageDetails';
 import AutofillScript from '../models/autofillScript';
+
+import { StateService } from '../services/abstractions/state.service';
 
 import { BrowserApi } from '../browser/browserApi';
 
@@ -133,7 +134,7 @@ var IsoProvinces: { [id: string]: string; } = {
 
 export default class AutofillService implements AutofillServiceInterface {
 
-    constructor(private cipherService: CipherService, private userService: UserService,
+    constructor(private cipherService: CipherService, private stateService: StateService,
         private totpService: TotpService, private eventService: EventService,
         private logService: LogService) { }
 
@@ -176,7 +177,7 @@ export default class AutofillService implements AutofillServiceInterface {
             throw new Error('Nothing to auto-fill.');
         }
 
-        const canAccessPremium = await this.userService.canAccessPremium();
+        const canAccessPremium = await this.stateService.getCanAccessPremium();
         let didAutofill = false;
         options.pageDetails.forEach((pd: any) => {
             // make sure we're still on correct tab

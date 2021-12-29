@@ -89,15 +89,15 @@ export function initFactory(
     }
 
     if (!isPrivateMode) {
-      await stateService.save(
-        ConstantsService.disableFaviconKey,
-        await storageService.get<boolean>(ConstantsService.disableFaviconKey)
-      );
+      // await stateService.save(
+      //   ConstantsService.disableFaviconKey,
+      //   await storageService.get<boolean>(ConstantsService.disableFaviconKey)
+      // );
 
-      await stateService.save(
-        ConstantsService.disableBadgeCounterKey,
-        await storageService.get<boolean>(ConstantsService.disableBadgeCounterKey)
-      );
+      // await stateService.save(
+      //   ConstantsService.disableBadgeCounterKey,
+      //   await storageService.get<boolean>(ConstantsService.disableBadgeCounterKey)
+      // );
 
       const htmlEl = window.document.documentElement;
       const theme = await platformUtilsService.getEffectiveTheme();
