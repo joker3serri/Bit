@@ -81,7 +81,7 @@ export class SendGroupingsComponent extends BaseSendComponent {
     await super.ngOnInit();
     // Handle State Restore if necessary
     const restoredScopeState = await this.restoreState();
-    if (this.state.searchText != null) {
+    if (this.state?.searchText != null) {
       this.searchText = this.state.searchText;
     }
 
@@ -96,7 +96,7 @@ export class SendGroupingsComponent extends BaseSendComponent {
     }
 
     if (!this.syncService.syncInProgress || restoredScopeState) {
-      window.setTimeout(() => this.popupUtils.setContentScrollY(window, this.state.scrollY), 0);
+      window.setTimeout(() => this.popupUtils.setContentScrollY(window, this.state?.scrollY), 0);
     }
 
     // Load all sends if sync completed in background
