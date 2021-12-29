@@ -76,7 +76,7 @@ export class SendGroupingsComponent extends BaseSendComponent {
       this.popupUtils.inSidebar(window) && this.platformUtilsService.isFirefox()
     );
     // Clear state of Send Type Component
-    await this.stateService.setBrowserSendComponentState(null);
+    await this.stateService.setBrowserSendTypeComponentState(null);
     // Let super class finish
     await super.ngOnInit();
     // Handle State Restore if necessary
