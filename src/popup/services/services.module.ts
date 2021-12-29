@@ -74,7 +74,6 @@ const isPrivateMode = BrowserApi.getBackgroundPage() == null;
 export function initFactory(
   platformUtilsService: PlatformUtilsService,
   i18nService: I18nService,
-  storageService: StorageService,
   popupUtilsService: PopupUtilsService,
   stateService: StateServiceAbstraction,
   logService: LogServiceAbstraction
@@ -89,16 +88,6 @@ export function initFactory(
     }
 
     if (!isPrivateMode) {
-      // await stateService.save(
-      //   ConstantsService.disableFaviconKey,
-      //   await storageService.get<boolean>(ConstantsService.disableFaviconKey)
-      // );
-
-      // await stateService.save(
-      //   ConstantsService.disableBadgeCounterKey,
-      //   await storageService.get<boolean>(ConstantsService.disableBadgeCounterKey)
-      // );
-
       const htmlEl = window.document.documentElement;
       const theme = await platformUtilsService.getEffectiveTheme();
       htmlEl.classList.add("theme_" + theme);
@@ -145,7 +134,6 @@ export function initFactory(
       deps: [
         PlatformUtilsService,
         I18nService,
-        StorageService,
         PopupUtilsService,
         StateServiceAbstraction,
         LogServiceAbstraction,
