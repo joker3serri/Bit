@@ -52,4 +52,10 @@ export class LoginComponent extends BaseLoginComponent {
   settings() {
     this.router.navigate(["environment"]);
   }
+
+  // TODO Still not sure why we need this, as the base component should likely handle this.
+  async submit() {
+    await super.submit();
+    this.stateService.setRememberedEmail(this.email);
+  }
 }
