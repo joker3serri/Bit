@@ -80,10 +80,10 @@ export class AppComponent implements OnInit {
           this.router.navigate(["home"]);
         });
       } else if (msg.command === "locked") {
-        // this.stateService.clean(); ??? Not sure if we need this.
-        this.ngZone.run(async () => {
+        this.ngZone.run(() => {
           this.router.navigate(["lock"]);
         });
+        await this.stateService.clean();
       } else if (msg.command === "showDialog") {
         await this.showDialog(msg);
       } else if (msg.command === "showToast") {
