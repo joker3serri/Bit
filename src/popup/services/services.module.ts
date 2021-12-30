@@ -79,6 +79,8 @@ export function initFactory(
   logService: LogServiceAbstraction
 ): Function {
   return async () => {
+    await stateService.init();
+
     if (!popupUtilsService.inPopup(window)) {
       window.document.body.classList.add("body-full");
     } else if (window.screen.availHeight < 600) {
