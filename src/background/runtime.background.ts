@@ -227,6 +227,7 @@ export default class RuntimeBackground {
     }, 100);
   }
 
+  // TODO can be deleted when https://github.com/bitwarden/jslib/pull/593 is merged and jslib is pulled in here
   private async setDefaultSettings() {
     // Default timeout option to "on restart".
     const currentVaultTimeout = await this.stateService.getVaultTimeout();
