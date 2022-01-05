@@ -219,26 +219,10 @@ export default class RuntimeBackground {
       if (this.onInstalledReason != null) {
         if (this.onInstalledReason === "install") {
           BrowserApi.createNewTab("https://bitwarden.com/browser-start/");
-          await this.setDefaultSettings();
         }
 
         this.onInstalledReason = null;
       }
     }, 100);
-  }
-
-  // TODO can be deleted when https://github.com/bitwarden/jslib/pull/593 is merged and jslib is pulled in here
-  private async setDefaultSettings() {
-    // Default timeout option to "on restart".
-    const currentVaultTimeout = await this.stateService.getVaultTimeout();
-    if (currentVaultTimeout == null) {
-      await this.stateService.setVaultTimeout(-1);
-    }
-
-    // Default action to "lock".
-    const currentVaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
-    if (currentVaultTimeoutAction == null) {
-      await this.stateService.setVaultTimeoutAction("lock");
-    }
   }
 }
