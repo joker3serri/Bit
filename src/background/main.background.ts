@@ -531,21 +531,21 @@ export default class MainBackground {
   }
 
   async logout(expired: boolean) {
-    await this.eventService.uploadEvents();
     const userId = await this.stateService.getUserId();
+    await this.eventService.uploadEvents(userId);
 
     await Promise.all([
-      this.eventService.clearEvents(),
-      this.syncService.setLastSync(new Date(0)),
-      this.tokenService.clearToken(),
-      this.cryptoService.clearKeys(),
+      this.eventService.clearEvents(userId),
+      this.syncService.setLastSync(new Date(0), userId),
+      this.tokenService.clearToken(userId),
+      this.cryptoService.clearKeys(userId),
       this.settingsService.clear(userId),
       this.cipherService.clear(userId),
       this.folderService.clear(userId),
       this.collectionService.clear(userId),
       this.policyService.clear(userId),
-      this.passwordGenerationService.clear(),
-      this.vaultTimeoutService.clear(),
+      this.passwordGenerationService.clear(userId),
+      this.vaultTimeoutService.clear(userId),
       this.keyConnectorService.clear(),
     ]);
 
