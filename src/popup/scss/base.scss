@@ -232,7 +232,8 @@ header {
     position: relative;
     display: flex;
 
-    [class^="bwi-"], [class*=" bwi-"] {
+    [class^="bwi-"],
+    [class*=" bwi-"] {
       position: absolute;
       top: 15px;
       left: 20px;
@@ -274,7 +275,8 @@ header {
   .left + .search {
     padding-left: 0;
 
-    [class^="bwi-"], [class*=" bwi-"] {
+    [class^="bwi-"],
+    [class*=" bwi-"] {
       left: 10px;
     }
   }
@@ -439,7 +441,8 @@ content {
 .full-loading-spinner {
   text-align: center;
 
-  [class^="bwi-"], [class*=" bwi-"] {
+  [class^="bwi-"],
+  [class*=" bwi-"] {
     margin-bottom: 10px;
 
     @include themify($themes) {

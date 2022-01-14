@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private platformUtilsService: PlatformUtilsService,
     private keyConnectoService: KeyConnectorService
-  ) { }
+  ) {}
 
   ngOnInit() {
     if (BrowserApi.getBackgroundPage() == null) {

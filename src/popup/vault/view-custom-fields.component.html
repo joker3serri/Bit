@@ -12,7 +12,7 @@
         <div *ngIf="field.type === fieldType.Hidden">
           <span [hidden]="!field.showValue" class="monospaced show-whitespace">{{
             field.value
-            }}</span>
+          }}</span>
           <span [hidden]="field.showValue" class="monospaced">{{ field.maskedValue }}</span>
         </div>
         <div *ngIf="field.type === fieldType.Boolean">
@@ -29,22 +29,38 @@
         </div>
       </div>
       <div class="action-buttons">
-        <button type="button" class="row-btn" appStopClick
+        <button
+          type="button"
+          class="row-btn"
+          appStopClick
           attr.aria-label="{{ 'toggleVisibility' | i18n }} {{ field.name }}"
-          appA11yTitle="{{ 'toggleVisibility' | i18n }}" *ngIf="field.type === fieldType.Hidden && cipher.viewPassword"
-          (click)="toggleFieldValue(field)" [attr.aria-pressed]="field.showValue">
-          <i class="bwi-lg" aria-hidden="true"
-            [ngClass]="{ 'bwi-eye-2': !field.showValue, 'bwi-eye-slash-2': field.showValue }"></i>
+          appA11yTitle="{{ 'toggleVisibility' | i18n }}"
+          *ngIf="field.type === fieldType.Hidden && cipher.viewPassword"
+          (click)="toggleFieldValue(field)"
+          [attr.aria-pressed]="field.showValue"
+        >
+          <i
+            class="bwi-lg"
+            aria-hidden="true"
+            [ngClass]="{ 'bwi-eye-2': !field.showValue, 'bwi-eye-slash-2': field.showValue }"
+          ></i>
         </button>
-        <button type="button" class="row-btn" appStopClick attr.aria-label="{{ 'copyValue' | i18n }} {{ field.name }}"
-          appA11yTitle="{{ 'copyValue' | i18n }}" *ngIf="
+        <button
+          type="button"
+          class="row-btn"
+          appStopClick
+          attr.aria-label="{{ 'copyValue' | i18n }} {{ field.name }}"
+          appA11yTitle="{{ 'copyValue' | i18n }}"
+          *ngIf="
             field.value &&
             field.type !== fieldType.Boolean &&
             field.type !== fieldType.Linked &&
             !(field.type === fieldType.Hidden && !cipher.viewPassword)
-          " (click)="
+          "
+          (click)="
             copy(field.value, 'value', field.type === fieldType.Hidden ? 'H_Field' : 'Field')
-          ">
+          "
+        >
           <i class="bwi-lg bwi-clone" aria-hidden="true"></i>
         </button>
       </div>

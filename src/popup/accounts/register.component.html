@@ -18,35 +18,69 @@
       <div class="box-content">
         <div class="box-content-row" appBoxRow>
           <label for="email">{{ "emailAddress" | i18n }}</label>
-          <input id="email" type="text" name="Email" [(ngModel)]="email" required [appAutofocus]="email === ''"
-            inputmode="email" appInputVerbatim="false" />
+          <input
+            id="email"
+            type="text"
+            name="Email"
+            [(ngModel)]="email"
+            required
+            [appAutofocus]="email === ''"
+            inputmode="email"
+            appInputVerbatim="false"
+          />
         </div>
         <div class="box-content-row" appBoxRow>
           <div class="box-content-row-flex">
             <div class="row-main">
               <label for="masterPassword">
                 {{ "masterPass" | i18n }}
-                <strong class="sub-label text-{{ masterPasswordScoreColor }}" *ngIf="masterPasswordScoreText">
+                <strong
+                  class="sub-label text-{{ masterPasswordScoreColor }}"
+                  *ngIf="masterPasswordScoreText"
+                >
                   {{ masterPasswordScoreText }}
                 </strong>
               </label>
-              <input id="masterPassword" type="{{ showPassword ? 'text' : 'password' }}" name="MasterPassword"
-                class="monospaced" [(ngModel)]="masterPassword" required [appAutofocus]="email !== ''" appInputVerbatim
-                (input)="updatePasswordStrength()" />
+              <input
+                id="masterPassword"
+                type="{{ showPassword ? 'text' : 'password' }}"
+                name="MasterPassword"
+                class="monospaced"
+                [(ngModel)]="masterPassword"
+                required
+                [appAutofocus]="email !== ''"
+                appInputVerbatim
+                (input)="updatePasswordStrength()"
+              />
             </div>
             <div class="action-buttons">
-              <button type="button" class="row-btn" appStopClick appBlurClick
-                appA11yTitle="{{ 'toggleVisibility' | i18n }}" (click)="togglePassword(false)"
-                [attr.aria-pressed]="showPassword">
-                <i class="bwi-lg" aria-hidden="true"
-                  [ngClass]="{ 'bwi-eye-2': !showPassword, 'bwi-eye-slash-2': showPassword }"></i>
+              <button
+                type="button"
+                class="row-btn"
+                appStopClick
+                appBlurClick
+                appA11yTitle="{{ 'toggleVisibility' | i18n }}"
+                (click)="togglePassword(false)"
+                [attr.aria-pressed]="showPassword"
+              >
+                <i
+                  class="bwi-lg"
+                  aria-hidden="true"
+                  [ngClass]="{ 'bwi-eye-2': !showPassword, 'bwi-eye-slash-2': showPassword }"
+                ></i>
               </button>
             </div>
           </div>
           <div class="progress">
-            <div class="progress-bar bg-{{ masterPasswordScoreColor }}" role="progressbar" aria-valuenow="0"
-              aria-valuemin="0" aria-valuemax="100" [ngStyle]="{ width: masterPasswordScoreWidth + '%' }"
-              attr.aria-valuenow="{{ masterPasswordScoreWidth }}"></div>
+            <div
+              class="progress-bar bg-{{ masterPasswordScoreColor }}"
+              role="progressbar"
+              aria-valuenow="0"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              [ngStyle]="{ width: masterPasswordScoreWidth + '%' }"
+              attr.aria-valuenow="{{ masterPasswordScoreWidth }}"
+            ></div>
           </div>
         </div>
       </div>
@@ -59,15 +93,31 @@
         <div class="box-content-row box-content-row-flex" appBoxRow>
           <div class="row-main">
             <label for="masterPasswordRetype">{{ "reTypeMasterPass" | i18n }}</label>
-            <input id="masterPasswordRetype" type="{{ showPassword ? 'text' : 'password' }}" name="MasterPasswordRetype"
-              class="monospaced" [(ngModel)]="confirmMasterPassword" required appInputVerbatim />
+            <input
+              id="masterPasswordRetype"
+              type="{{ showPassword ? 'text' : 'password' }}"
+              name="MasterPasswordRetype"
+              class="monospaced"
+              [(ngModel)]="confirmMasterPassword"
+              required
+              appInputVerbatim
+            />
           </div>
           <div class="action-buttons">
-            <button type="button" class="row-btn" appStopClick appBlurClick
-              appA11yTitle="{{ 'toggleVisibility' | i18n }}" (click)="togglePassword(true)"
-              [attr.aria-pressed]="showPassword">
-              <i class="bwi-lg" aria-hidden="true"
-                [ngClass]="{ 'bwi-eye-2': !showPassword, 'bwi-eye-slash-2': showPassword }"></i>
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appBlurClick
+              appA11yTitle="{{ 'toggleVisibility' | i18n }}"
+              (click)="togglePassword(true)"
+              [attr.aria-pressed]="showPassword"
+            >
+              <i
+                class="bwi-lg"
+                aria-hidden="true"
+                [ngClass]="{ 'bwi-eye-2': !showPassword, 'bwi-eye-slash-2': showPassword }"
+              ></i>
             </button>
           </div>
         </div>
@@ -83,17 +133,25 @@
     <div [hidden]="!showCaptcha()"><iframe id="hcaptcha_iframe" height="80"></iframe></div>
     <div class="box last" *ngIf="showTerms">
       <div class="box-content">
-        <div class="box-content-row box-content-row-checkbox box-content-row-checkbox-left box-content-row-word-break"
-          appBoxRow>
-          <input type="checkbox" id="acceptPolicies" [(ngModel)]="acceptPolicies" name="AcceptPolicies" />
+        <div
+          class="box-content-row box-content-row-checkbox box-content-row-checkbox-left box-content-row-word-break"
+          appBoxRow
+        >
+          <input
+            type="checkbox"
+            id="acceptPolicies"
+            [(ngModel)]="acceptPolicies"
+            name="AcceptPolicies"
+          />
           <label for="acceptPolicies">
             {{ "acceptPolicies" | i18n }}<br />
             <a href="https://bitwarden.com/terms/" target="_blank" rel="noopener">{{
               "termsOfService" | i18n
-              }}</a>,
+            }}</a
+            >,
             <a href="https://bitwarden.com/privacy/" target="_blank" rel="noopener">{{
               "privacyPolicy" | i18n
-              }}</a>
+            }}</a>
           </label>
         </div>
       </div>

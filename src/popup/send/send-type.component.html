@@ -7,13 +7,25 @@
   </div>
   <h1 class="sr-only">{{ "send" | i18n }}</h1>
   <div class="search">
-    <input type="search" placeholder="{{ 'searchType' | i18n }}" id="search" [(ngModel)]="searchText"
-      (input)="search(200)" autocomplete="off" appAutofocus />
+    <input
+      type="search"
+      placeholder="{{ 'searchType' | i18n }}"
+      id="search"
+      [(ngModel)]="searchText"
+      (input)="search(200)"
+      autocomplete="off"
+      appAutofocus
+    />
     <i class="bwi-search"></i>
   </div>
   <div class="right">
-    <button type="button" appBlurClick (click)="addSend()" appA11yTitle="{{ 'addSend' | i18n }}"
-      [disabled]="disableSend">
+    <button
+      type="button"
+      appBlurClick
+      (click)="addSend()"
+      appA11yTitle="{{ 'addSend' | i18n }}"
+      [disabled]="disableSend"
+    >
       <i class="bwi-plus bwi-lg bwi-fw" aria-hidden="true"></i>
     </button>
   </div>
@@ -26,7 +38,12 @@
     <i class="bwi-spinner bwi-spin bwi-3x" *ngIf="!loaded" aria-hidden="true"></i>
     <ng-container *ngIf="loaded">
       <p>{{ "noItemsInList" | i18n }}</p>
-      <button type="button" (click)="addSend()" class="btn block primary link" [disabled]="disableSend">
+      <button
+        type="button"
+        (click)="addSend()"
+        class="btn block primary link"
+        [disabled]="disableSend"
+      >
         {{ "addSend" | i18n }}
       </button>
     </ng-container>
@@ -37,9 +54,15 @@
       <span class="flex-right">{{ filteredSends.length }}</span>
     </h2>
     <div class="box-content">
-      <app-send-list [sends]="filteredSends" title="{{ 'editItem' | i18n }}" [disabledByPolicy]="disableSend"
-        (onSelected)="selectSend($event)" (onCopySendLink)="copy($event)" (onRemovePassword)="removePassword($event)"
-        (onDeleteSend)="delete($event)">
+      <app-send-list
+        [sends]="filteredSends"
+        title="{{ 'editItem' | i18n }}"
+        [disabledByPolicy]="disableSend"
+        (onSelected)="selectSend($event)"
+        (onCopySendLink)="copy($event)"
+        (onRemovePassword)="removePassword($event)"
+        (onDeleteSend)="delete($event)"
+      >
       </app-send-list>
     </div>
   </div>

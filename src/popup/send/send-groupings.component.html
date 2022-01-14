@@ -4,13 +4,25 @@
   </div>
   <h1 class="sr-only">{{ "send" | i18n }}</h1>
   <div class="search">
-    <input type="search" placeholder="{{ 'searchSends' | i18n }}" id="search" [(ngModel)]="searchText"
-      (input)="search(200)" autocomplete="off" appAutofocus />
+    <input
+      type="search"
+      placeholder="{{ 'searchSends' | i18n }}"
+      id="search"
+      [(ngModel)]="searchText"
+      (input)="search(200)"
+      autocomplete="off"
+      appAutofocus
+    />
     <i class="bwi-search"></i>
   </div>
   <div class="right">
-    <button type="button" appBlurClick (click)="addSend()" appA11yTitle="{{ 'addSend' | i18n }}"
-      [disabled]="disableSend">
+    <button
+      type="button"
+      appBlurClick
+      (click)="addSend()"
+      appA11yTitle="{{ 'addSend' | i18n }}"
+      [disabled]="disableSend"
+    >
       <i class="bwi-plus bwi-lg bwi-fw" aria-hidden="true"></i>
     </button>
   </div>
@@ -24,7 +36,12 @@
     <ng-container *ngIf="loaded">
       <i class="bwi-frown bwi-4x"></i>
       <p>{{ "noItemsInList" | i18n }}</p>
-      <button type="button" (click)="addSend()" class="btn block primary link" [disabled]="disableSend">
+      <button
+        type="button"
+        (click)="addSend()"
+        class="btn block primary link"
+        [disabled]="disableSend"
+      >
         {{ "addSend" | i18n }}
       </button>
     </ng-container>
@@ -35,7 +52,13 @@
         {{ "types" | i18n }}
       </h2>
       <div class="box-content single-line">
-        <button type="button" class="box-content-row" appStopClick appBlurClick (click)="selectType(sendType.Text)">
+        <button
+          type="button"
+          class="box-content-row"
+          appStopClick
+          appBlurClick
+          (click)="selectType(sendType.Text)"
+        >
           <div class="row-main">
             <div class="icon"><i class="bwi-fw bwi-lg bwi-file-text"></i></div>
             <span class="text">{{ "sendTypeText" | i18n }}</span>
@@ -43,7 +66,13 @@
           <span class="row-sub-label">{{ typeCounts.get(sendType.Text) || 0 }}</span>
           <span><i class="bwi-angle-right bwi-lg row-sub-icon"></i></span>
         </button>
-        <button type="button" class="box-content-row" appStopClick appBlurClick (click)="selectType(sendType.File)">
+        <button
+          type="button"
+          class="box-content-row"
+          appStopClick
+          appBlurClick
+          (click)="selectType(sendType.File)"
+        >
           <div class="row-main">
             <div class="icon"><i class="bwi-fw bwi-lg bwi-file"></i></div>
             <span class="text">{{ "sendTypeFile" | i18n }}</span>
@@ -59,9 +88,15 @@
         <div class="flex-right">{{ sends.length }}</div>
       </h2>
       <div class="box-content">
-        <app-send-list [sends]="sends" title="{{ 'editItem' | i18n }}" [disabledByPolicy]="disableSend"
-          (onSelected)="selectSend($event)" (onCopySendLink)="copy($event)" (onRemovePassword)="removePassword($event)"
-          (onDeleteSend)="delete($event)"></app-send-list>
+        <app-send-list
+          [sends]="sends"
+          title="{{ 'editItem' | i18n }}"
+          [disabledByPolicy]="disableSend"
+          (onSelected)="selectSend($event)"
+          (onCopySendLink)="copy($event)"
+          (onRemovePassword)="removePassword($event)"
+          (onDeleteSend)="delete($event)"
+        ></app-send-list>
       </div>
     </div>
   </ng-container>
@@ -71,9 +106,15 @@
     </div>
     <div class="box list full-list" *ngIf="filteredSends && filteredSends.length > 0">
       <div class="box-content">
-        <app-send-list [sends]="filteredSends" title="{{ 'editItem' | i18n }}" [disabledByPolicy]="disableSend"
-          (onSelected)="selectSend($event)" (onCopySendLink)="copy($event)" (onRemovePassword)="removePassword($event)"
-          (onDeleteSend)="delete($event)">
+        <app-send-list
+          [sends]="filteredSends"
+          title="{{ 'editItem' | i18n }}"
+          [disabledByPolicy]="disableSend"
+          (onSelected)="selectSend($event)"
+          (onCopySendLink)="copy($event)"
+          (onRemovePassword)="removePassword($event)"
+          (onDeleteSend)="delete($event)"
+        >
         </app-send-list>
       </div>
     </div>

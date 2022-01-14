@@ -4,8 +4,16 @@
   </div>
   <h1 class="sr-only">{{ "myVault" | i18n }}</h1>
   <div class="search">
-    <input type="{{ searchTypeSearch ? 'search' : 'text' }}" placeholder="{{ 'searchVault' | i18n }}" id="search"
-      [(ngModel)]="searchText" (input)="search(200)" autocomplete="off" appAutofocus (keydown)="closeOnEsc($event)" />
+    <input
+      type="{{ searchTypeSearch ? 'search' : 'text' }}"
+      placeholder="{{ 'searchVault' | i18n }}"
+      id="search"
+      [(ngModel)]="searchText"
+      (input)="search(200)"
+      autocomplete="off"
+      appAutofocus
+      (keydown)="closeOnEsc($event)"
+    />
     <i class="bwi-search"></i>
   </div>
   <div class="right">
@@ -32,8 +40,13 @@
         <span class="flex-right">{{ favoriteCiphers.length }}</span>
       </h2>
       <div class="box-content">
-        <app-cipher-row *ngFor="let favoriteCipher of favoriteCiphers" [cipher]="favoriteCipher"
-          title="{{ 'viewItem' | i18n }}" (onSelected)="selectCipher($event)" (launchEvent)="launchCipher($event)">
+        <app-cipher-row
+          *ngFor="let favoriteCipher of favoriteCiphers"
+          [cipher]="favoriteCipher"
+          title="{{ 'viewItem' | i18n }}"
+          (onSelected)="selectCipher($event)"
+          (launchEvent)="launchCipher($event)"
+        >
         </app-cipher-row>
       </div>
     </div>
@@ -43,7 +56,13 @@
         <span class="flex-right">4</span>
       </h2>
       <div class="box-content single-line">
-        <button type="button" class="box-content-row" appStopClick appBlurClick (click)="selectType(cipherType.Login)">
+        <button
+          type="button"
+          class="box-content-row"
+          appStopClick
+          appBlurClick
+          (click)="selectType(cipherType.Login)"
+        >
           <div class="row-main">
             <div class="icon"><i class="bwi-fw bwi-lg bwi-globe"></i></div>
             <span class="text">{{ "typeLogin" | i18n }}</span>
@@ -51,7 +70,13 @@
           <span class="row-sub-label">{{ typeCounts.get(cipherType.Login) || 0 }}</span>
           <span><i class="bwi-angle-right bwi-lg row-sub-icon"></i></span>
         </button>
-        <button type="button" class="box-content-row" appStopClick appBlurClick (click)="selectType(cipherType.Card)">
+        <button
+          type="button"
+          class="box-content-row"
+          appStopClick
+          appBlurClick
+          (click)="selectType(cipherType.Card)"
+        >
           <div class="row-main">
             <div class="icon"><i class="bwi-fw bwi-lg bwi-credit-card"></i></div>
             <span class="text">{{ "typeCard" | i18n }}</span>
@@ -59,8 +84,13 @@
           <span class="row-sub-label">{{ typeCounts.get(cipherType.Card) || 0 }}</span>
           <span><i class="bwi-angle-right bwi-lg row-sub-icon"></i></span>
         </button>
-        <button type="button" class="box-content-row" appStopClick appBlurClick
-          (click)="selectType(cipherType.Identity)">
+        <button
+          type="button"
+          class="box-content-row"
+          appStopClick
+          appBlurClick
+          (click)="selectType(cipherType.Identity)"
+        >
           <div class="row-main">
             <div class="icon"><i class="bwi-fw bwi-lg bwi-id-card"></i></div>
             <span class="text">{{ "typeIdentity" | i18n }}</span>
@@ -68,8 +98,13 @@
           <span class="row-sub-label">{{ typeCounts.get(cipherType.Identity) || 0 }}</span>
           <span><i class="bwi-angle-right bwi-lg row-sub-icon"></i></span>
         </button>
-        <button type="button" class="box-content-row" appStopClick appBlurClick
-          (click)="selectType(cipherType.SecureNote)">
+        <button
+          type="button"
+          class="box-content-row"
+          appStopClick
+          appBlurClick
+          (click)="selectType(cipherType.SecureNote)"
+        >
           <div class="row-main">
             <div class="icon"><i class="bwi-fw bwi-lg bwi-sticky-note"></i></div>
             <span class="text">{{ "typeSecureNote" | i18n }}</span>
@@ -85,12 +120,20 @@
         <span class="flex-right">{{ folderCount }}</span>
       </h2>
       <div class="box-content single-line">
-        <button type="button" *ngFor="let f of nestedFolders" class="box-content-row" appStopClick appBlurClick
-          (click)="selectFolder(f.node)">
+        <button
+          type="button"
+          *ngFor="let f of nestedFolders"
+          class="box-content-row"
+          appStopClick
+          appBlurClick
+          (click)="selectFolder(f.node)"
+        >
           <div class="row-main">
             <div class="icon">
-              <i class="bwi-fw bwi-lg"
-                [ngClass]="{ 'bwi-bw-folder-open-f': f.node.id, 'bwi-folder-open': !f.node.id }"></i>
+              <i
+                class="bwi-fw bwi-lg"
+                [ngClass]="{ 'bwi-bw-folder-open-f': f.node.id, 'bwi-folder-open': !f.node.id }"
+              ></i>
             </div>
             <span class="text">{{ f.node.name }}</span>
           </div>
@@ -105,15 +148,21 @@
         <span class="flex-right">{{ nestedCollections.length }}</span>
       </h2>
       <div class="box-content single-line">
-        <button type="button" *ngFor="let nestedCollection of nestedCollections" class="box-content-row" appStopClick
-          appBlurClick (click)="selectCollection(nestedCollection.node)">
+        <button
+          type="button"
+          *ngFor="let nestedCollection of nestedCollections"
+          class="box-content-row"
+          appStopClick
+          appBlurClick
+          (click)="selectCollection(nestedCollection.node)"
+        >
           <div class="row-main">
             <div class="icon"><i class="bwi-fw bwi-lg bwi-collection"></i></div>
             <span class="text">{{ nestedCollection.node.name }}</span>
           </div>
           <span class="row-sub-label">{{
             collectionCounts.get(nestedCollection.node.id) || 0
-            }}</span>
+          }}</span>
           <span><i class="bwi-angle-right bwi-lg row-sub-icon"></i></span>
         </button>
       </div>
@@ -124,8 +173,13 @@
         <div class="flex-right">{{ noFolderCiphers.length }}</div>
       </h2>
       <div class="box-content">
-        <app-cipher-row *ngFor="let noFolderCipher of noFolderCiphers" [cipher]="noFolderCipher"
-          title="{{ 'viewItem' | i18n }}" (onSelected)="selectCipher($event)" (launchEvent)="launchCipher($event)">
+        <app-cipher-row
+          *ngFor="let noFolderCipher of noFolderCiphers"
+          [cipher]="noFolderCipher"
+          title="{{ 'viewItem' | i18n }}"
+          (onSelected)="selectCipher($event)"
+          (launchEvent)="launchCipher($event)"
+        >
         </app-cipher-row>
       </div>
     </div>
@@ -135,7 +189,13 @@
         <span class="flex-right">{{ deletedCount }}</span>
       </h2>
       <div class="box-content single-line">
-        <button type="button" class="box-content-row" appStopClick appBlurClick (click)="selectTrash()">
+        <button
+          type="button"
+          class="box-content-row"
+          appStopClick
+          appBlurClick
+          (click)="selectTrash()"
+        >
           <div class="row-main">
             <div class="icon"><i class="bwi-fw bwi-lg bwi-trash"></i></div>
             <span class="text">{{ "trash" | i18n }}</span>
@@ -150,12 +210,21 @@
     <div class="no-items" *ngIf="!ciphers || !ciphers.length">
       <p>{{ "noItemsInList" | i18n }}</p>
     </div>
-    <cdk-virtual-scroll-viewport itemSize="46" minBufferPx="400" maxBufferPx="600"
-      *ngIf="ciphers && ciphers.length > 0">
+    <cdk-virtual-scroll-viewport
+      itemSize="46"
+      minBufferPx="400"
+      maxBufferPx="600"
+      *ngIf="ciphers && ciphers.length > 0"
+    >
       <div class="box list full-list">
         <div class="box-content">
-          <app-cipher-row *cdkVirtualFor="let searchedCipher of ciphers" [cipher]="searchedCipher"
-            title="{{ 'viewItem' | i18n }}" (onSelected)="selectCipher($event)" (launchEvent)="launchCipher($event)">
+          <app-cipher-row
+            *cdkVirtualFor="let searchedCipher of ciphers"
+            [cipher]="searchedCipher"
+            title="{{ 'viewItem' | i18n }}"
+            (onSelected)="selectCipher($event)"
+            (launchEvent)="launchCipher($event)"
+          >
           </app-cipher-row>
         </div>
       </div>

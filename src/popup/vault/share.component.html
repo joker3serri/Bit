@@ -7,8 +7,12 @@
       <span class="title">{{ "moveToOrganization" | i18n }}</span>
     </h1>
     <div class="right">
-      <button type="submit" appBlurClick [disabled]="form.loading || !canSave"
-        *ngIf="organizations && organizations.length">
+      <button
+        type="submit"
+        appBlurClick
+        [disabled]="form.loading || !canSave"
+        *ngIf="organizations && organizations.length"
+      >
         <span [hidden]="form.loading">{{ "move" | i18n }}</span>
         <i class="bwi-spinner bwi-lg bwi-spin" [hidden]="!form.loading" aria-hidden="true"></i>
       </button>
@@ -24,7 +28,12 @@
       <div class="box-content" *ngIf="organizations && organizations.length">
         <div class="box-content-row" appBoxRow>
           <label for="organization">{{ "organization" | i18n }}</label>
-          <select id="organization" name="OrganizationId" [(ngModel)]="organizationId" (change)="filterCollections()">
+          <select
+            id="organization"
+            name="OrganizationId"
+            [(ngModel)]="organizationId"
+            (change)="filterCollections()"
+          >
             <option *ngFor="let o of organizations" [ngValue]="o.id">{{ o.name }}</option>
           </select>
         </div>
@@ -43,9 +52,18 @@
         </div>
       </div>
       <div class="box-content" *ngIf="collections && collections.length">
-        <div class="box-content-row box-content-row-checkbox" *ngFor="let c of collections; let i = index" appBoxRow>
+        <div
+          class="box-content-row box-content-row-checkbox"
+          *ngFor="let c of collections; let i = index"
+          appBoxRow
+        >
           <label for="collection_{{ i }}">{{ c.name }}</label>
-          <input id="collection_{{ i }}" type="checkbox" [(ngModel)]="c.checked" name="Collection[{{ i }}].Checked" />
+          <input
+            id="collection_{{ i }}"
+            type="checkbox"
+            [(ngModel)]="c.checked"
+            name="Collection[{{ i }}].Checked"
+          />
         </div>
       </div>
     </div>

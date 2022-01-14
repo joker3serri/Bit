@@ -9,7 +9,12 @@
     <span class="title">{{ "folders" | i18n }}</span>
   </h1>
   <div class="right">
-    <button type="button" appBlurClick (click)="addFolder()" appA11yTitle="{{ 'addFolder' | i18n }}">
+    <button
+      type="button"
+      appBlurClick
+      (click)="addFolder()"
+      appA11yTitle="{{ 'addFolder' | i18n }}"
+    >
       <i class="bwi-plus bwi-lg bwi-fw" aria-hidden="true"></i>
     </button>
   </div>
@@ -17,8 +22,13 @@
 <content>
   <div class="box list full-list" *ngIf="folders && folders.length">
     <div class="box-content">
-      <button type="button" appStopClick (click)="folderSelected(f)" class="box-content-row padded"
-        *ngFor="let f of folders">
+      <button
+        type="button"
+        appStopClick
+        (click)="folderSelected(f)"
+        class="box-content-row padded"
+        *ngFor="let f of folders"
+      >
         {{ f.name }}
       </button>
     </div>

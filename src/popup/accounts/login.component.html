@@ -18,21 +18,44 @@
       <div class="box-content">
         <div class="box-content-row" appBoxRow>
           <label for="email">{{ "emailAddress" | i18n }}</label>
-          <input id="email" type="text" name="Email" [(ngModel)]="email" required inputmode="email"
-            appInputVerbatim="false" />
+          <input
+            id="email"
+            type="text"
+            name="Email"
+            [(ngModel)]="email"
+            required
+            inputmode="email"
+            appInputVerbatim="false"
+          />
         </div>
         <div class="box-content-row box-content-row-flex" appBoxRow>
           <div class="row-main">
             <label for="masterPassword">{{ "masterPass" | i18n }}</label>
-            <input id="masterPassword" type="{{ showPassword ? 'text' : 'password' }}" name="MasterPassword"
-              class="monospaced" [(ngModel)]="masterPassword" required appInputVerbatim />
+            <input
+              id="masterPassword"
+              type="{{ showPassword ? 'text' : 'password' }}"
+              name="MasterPassword"
+              class="monospaced"
+              [(ngModel)]="masterPassword"
+              required
+              appInputVerbatim
+            />
           </div>
           <div class="action-buttons">
-            <button type="button" class="row-btn" appStopClick appBlurClick
-              appA11yTitle="{{ 'toggleVisibility' | i18n }}" (click)="togglePassword()"
-              [attr.aria-pressed]="showPassword">
-              <i class="bwi-lg" [ngClass]="{ 'bwi-eye-2': !showPassword, 'bwi-eye-slash-2': showPassword }"
-                aria-hidden="true"></i>
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appBlurClick
+              appA11yTitle="{{ 'toggleVisibility' | i18n }}"
+              (click)="togglePassword()"
+              [attr.aria-pressed]="showPassword"
+            >
+              <i
+                class="bwi-lg"
+                [ngClass]="{ 'bwi-eye-2': !showPassword, 'bwi-eye-slash-2': showPassword }"
+                aria-hidden="true"
+              ></i>
             </button>
           </div>
         </div>

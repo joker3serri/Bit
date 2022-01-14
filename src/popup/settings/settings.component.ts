@@ -70,7 +70,7 @@ export class SettingsComponent implements OnInit {
     private popupUtilsService: PopupUtilsService,
     private modalService: ModalService,
     private keyConnectorService: KeyConnectorService
-  ) { }
+  ) {}
 
   async ngOnInit() {
     const showOnLocked =

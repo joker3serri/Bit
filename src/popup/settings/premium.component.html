@@ -45,10 +45,21 @@
       <button type="button" class="btn primary block" appBlurClick (click)="purchase()">
         <b>{{ "premiumPurchase" | i18n }}</b>
       </button>
-      <button #refreshBtn type="button" appBlurClick (click)="refresh()" [disabled]="refreshBtn.loading"
-        [appApiAction]="refreshPromise" class="btn link block">
+      <button
+        #refreshBtn
+        type="button"
+        appBlurClick
+        (click)="refresh()"
+        [disabled]="refreshBtn.loading"
+        [appApiAction]="refreshPromise"
+        class="btn link block"
+      >
         <span [hidden]="refreshBtn.loading">{{ "premiumRefresh" | i18n }}</span>
-        <i class="bwi-spinner bwi-spin bwi-lg bwi-fw" [hidden]="!refreshBtn.loading" aria-hidden="true"></i>
+        <i
+          class="bwi-spinner bwi-spin bwi-lg bwi-fw"
+          [hidden]="!refreshBtn.loading"
+          aria-hidden="true"
+        ></i>
       </button>
     </ng-container>
     <ng-container *ngIf="isPremium">
