@@ -2,37 +2,24 @@
   <h1 class="sr-only">{{ "currentTab" | i18n }}</h1>
   <div class="left">
     <app-pop-out [show]="!inSidebar"></app-pop-out>
-    <button
-      type="button"
-      appBlurClick
-      (click)="refresh()"
-      appA11yTitle="{{ 'refresh' | i18n }}"
-      *ngIf="inSidebar"
-    >
-      <i class="fa fa-retweet fa-lg fa-fw" aria-hidden="true"></i>
+    <button type="button" appBlurClick (click)="refresh()" appA11yTitle="{{ 'refresh' | i18n }}" *ngIf="inSidebar">
+      <i class="bwi-refresh-tab bwi-lg bwi-fw" aria-hidden="true"></i>
     </button>
   </div>
   <div class="search">
-    <input
-      type="{{ searchTypeSearch ? 'search' : 'text' }}"
-      placeholder="{{ 'searchVault' | i18n }}"
-      id="search"
-      [(ngModel)]="searchText"
-      (input)="searchVault()"
-      autocomplete="off"
-      (keydown)="closeOnEsc($event)"
-    />
-    <i class="fa fa-search" aria-hidden="true"></i>
+    <input type="{{ searchTypeSearch ? 'search' : 'text' }}" placeholder="{{ 'searchVault' | i18n }}" id="search"
+      [(ngModel)]="searchText" (input)="searchVault()" autocomplete="off" (keydown)="closeOnEsc($event)" />
+    <i class="bwi-search" aria-hidden="true"></i>
   </div>
   <div class="right">
     <button type="button" appBlurClick (click)="addCipher()" appA11yTitle="{{ 'addItem' | i18n }}">
-      <i class="fa fa-plus fa-lg fa-fw" aria-hidden="true"></i>
+      <i class="bwi-plus bwi-lg bwi-fw" aria-hidden="true"></i>
     </button>
   </div>
 </header>
 <content>
   <div class="no-items" *ngIf="!loaded">
-    <i class="fa fa-spinner fa-spin fa-3x" aria-hidden="true"></i>
+    <i class="bwi-spinner bwi-spin bwi-3x" aria-hidden="true"></i>
   </div>
   <ng-container *ngIf="loaded">
     <div class="box list" *ngIf="loginCiphers">
@@ -41,14 +28,8 @@
         <span class="flex-right">{{ loginCiphers.length }}</span>
       </h2>
       <div class="box-content">
-        <app-cipher-row
-          *ngFor="let loginCipher of loginCiphers"
-          [cipher]="loginCipher"
-          title="{{ 'autoFill' | i18n }}"
-          [showView]="true"
-          (onSelected)="fillCipher($event)"
-          (onView)="viewCipher($event)"
-        >
+        <app-cipher-row *ngFor="let loginCipher of loginCiphers" [cipher]="loginCipher" title="{{ 'autoFill' | i18n }}"
+          [showView]="true" (onSelected)="fillCipher($event)" (onView)="viewCipher($event)">
         </app-cipher-row>
         <div class="box-content-row padded no-hover" *ngIf="!loginCiphers.length">
           <p class="text-center">{{ "autoFillInfo" | i18n }}</p>
@@ -64,14 +45,8 @@
         <span class="flex-right">{{ cardCiphers.length }}</span>
       </h2>
       <div class="box-content">
-        <app-cipher-row
-          *ngFor="let cardCipher of cardCiphers"
-          [cipher]="cardCipher"
-          title="{{ 'autoFill' | i18n }}"
-          [showView]="true"
-          (onSelected)="fillCipher($event)"
-          (onView)="viewCipher($event)"
-        ></app-cipher-row>
+        <app-cipher-row *ngFor="let cardCipher of cardCiphers" [cipher]="cardCipher" title="{{ 'autoFill' | i18n }}"
+          [showView]="true" (onSelected)="fillCipher($event)" (onView)="viewCipher($event)"></app-cipher-row>
       </div>
     </div>
     <div class="box list" *ngIf="identityCiphers && identityCiphers.length">
@@ -80,14 +55,9 @@
         <span class="flex-right">{{ identityCiphers.length }}</span>
       </h2>
       <div class="box-content">
-        <app-cipher-row
-          *ngFor="let identityCipher of identityCiphers"
-          [cipher]="identityCipher"
-          title="{{ 'autoFill' | i18n }}"
-          [showView]="true"
-          (onSelected)="fillCipher($event)"
-          (onView)="viewCipher($event)"
-        ></app-cipher-row>
+        <app-cipher-row *ngFor="let identityCipher of identityCiphers" [cipher]="identityCipher"
+          title="{{ 'autoFill' | i18n }}" [showView]="true" (onSelected)="fillCipher($event)"
+          (onView)="viewCipher($event)"></app-cipher-row>
       </div>
     </div>
   </ng-container>

@@ -7,29 +7,22 @@
       <span class="title">{{ title }}</span>
     </h1>
     <div class="right">
-      <button
-        type="submit"
-        appBlurClick
-        [disabled]="form.loading"
-        *ngIf="
+      <button type="submit" appBlurClick [disabled]="form.loading" *ngIf="
           selectedProviderType != null &&
           selectedProviderType !== providerType.Duo &&
           selectedProviderType !== providerType.OrganizationDuo &&
           (selectedProviderType !== providerType.WebAuthn || form.loading)
-        "
-      >
+        ">
         <span [hidden]="form.loading">{{ "continue" | i18n }}</span>
-        <i class="fa fa-spinner fa-lg fa-spin" [hidden]="!form.loading" aria-hidden="true"></i>
+        <i class="bwi-spinner bwi-lg bwi-spin" [hidden]="!form.loading" aria-hidden="true"></i>
       </button>
     </div>
   </header>
   <content>
-    <ng-container
-      *ngIf="
+    <ng-container *ngIf="
         selectedProviderType === providerType.Authenticator ||
         selectedProviderType === providerType.Email
-      "
-    >
+      ">
       <div class="content text-center">
         <span *ngIf="selectedProviderType === providerType.Authenticator">
           {{ "enterVerificationCodeApp" | i18n }}
@@ -42,16 +35,8 @@
         <div class="box-content">
           <div class="box-content-row" appBoxRow>
             <label for="code">{{ "verificationCode" | i18n }}</label>
-            <input
-              id="code"
-              type="text"
-              name="Code"
-              [(ngModel)]="token"
-              required
-              appAutofocus
-              inputmode="tel"
-              appInputVerbatim
-            />
+            <input id="code" type="text" name="Code" [(ngModel)]="token" required appAutofocus inputmode="tel"
+              appInputVerbatim />
           </div>
           <div class="box-content-row box-content-row-checkbox" appBoxRow>
             <label for="remember">{{ "rememberMe" | i18n }}</label>
@@ -69,15 +54,7 @@
         <div class="box-content">
           <div class="box-content-row" appBoxRow>
             <label for="code" class="sr-only">{{ "verificationCode" | i18n }}</label>
-            <input
-              id="code"
-              type="password"
-              name="Code"
-              [(ngModel)]="token"
-              required
-              appAutofocus
-              appInputVerbatim
-            />
+            <input id="code" type="password" name="Code" [(ngModel)]="token" required appAutofocus appInputVerbatim />
           </div>
           <div class="box-content-row box-content-row-checkbox" appBoxRow>
             <label for="remember">{{ "rememberMe" | i18n }}</label>
@@ -105,12 +82,10 @@
         </button>
       </div>
     </ng-container>
-    <ng-container
-      *ngIf="
+    <ng-container *ngIf="
         selectedProviderType === providerType.Duo ||
         selectedProviderType === providerType.OrganizationDuo
-      "
-    >
+      ">
       <div id="duo-frame"><iframe id="duo_iframe"></iframe></div>
       <div class="box">
         <div class="box-content">

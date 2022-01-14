@@ -10,31 +10,15 @@
             <div class="box-content-row box-content-row-flex" appBoxRow>
               <div class="row-main">
                 <label for="pin">{{ "pin" | i18n }}</label>
-                <input
-                  id="pin"
-                  type="{{ showPin ? 'text' : 'password' }}"
-                  name="Pin"
-                  class="monospaced"
-                  [(ngModel)]="pin"
-                  required
-                  appInputVerbatim
-                />
+                <input id="pin" type="{{ showPin ? 'text' : 'password' }}" name="Pin" class="monospaced"
+                  [(ngModel)]="pin" required appInputVerbatim />
               </div>
               <div class="action-buttons">
-                <button
-                  type="button"
-                  class="row-btn"
-                  appStopClick
-                  appBlurClick
-                  appA11yTitle="{{ 'toggleVisibility' | i18n }}"
-                  (click)="toggleVisibility()"
-                  [attr.aria-pressed]="showPin"
-                >
-                  <i
-                    class="fa fa-lg"
-                    aria-hidden="true"
-                    [ngClass]="{ 'fa-eye': !showPin, 'fa-eye-slash': showPin }"
-                  ></i>
+                <button type="button" class="row-btn" appStopClick appBlurClick
+                  appA11yTitle="{{ 'toggleVisibility' | i18n }}" (click)="toggleVisibility()"
+                  [attr.aria-pressed]="showPin">
+                  <i class="bwi-lg" aria-hidden="true"
+                    [ngClass]="{ 'bwi-eye-2': !showPin, 'bwi-eye-slash-2': showPin }"></i>
                 </button>
               </div>
             </div>
@@ -42,12 +26,8 @@
         </div>
         <div class="checkbox" *ngIf="showMasterPassOnRestart">
           <label for="masterPasswordOnRestart">
-            <input
-              type="checkbox"
-              id="masterPasswordOnRestart"
-              name="MasterPasswordOnRestart"
-              [(ngModel)]="masterPassOnRestart"
-            />
+            <input type="checkbox" id="masterPasswordOnRestart" name="MasterPasswordOnRestart"
+              [(ngModel)]="masterPassOnRestart" />
             <span>{{ "lockWithMasterPassOnRestart" | i18n }}</span>
           </label>
         </div>
