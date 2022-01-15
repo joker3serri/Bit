@@ -229,6 +229,18 @@
   "length": {
     "message": "Дужина"
   },
+  "uppercase": {
+    "message": "Велика слова (A-Z)"
+  },
+  "lowercase": {
+    "message": "Мала слова (a-z)"
+  },
+  "numbers": {
+    "message": "Цифре (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Специјална слова (!@#$%^&*)"
+  },
   "numWords": {
     "message": "Број речи"
   },
