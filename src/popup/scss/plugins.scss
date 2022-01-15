@@ -65,40 +65,24 @@ $fa-font-path: "~font-awesome/fonts";
 
     &.toast-danger,
     &.toast-error {
-      @include themify($themes) {
-        background-color: themed("toastDangerBackgroundColor");
-      }
-
       .icon i::before {
         content: "\f0e7";
       }
     }
 
     &.toast-warning {
-      @include themify($themes) {
-        background-color: themed("toastWarningBackgroundColor");
-      }
-
       .icon i::before {
         content: "\f071";
       }
     }
 
     &.toast-info {
-      @include themify($themes) {
-        background-color: themed("toastInfoBackgroundColor");
-      }
-
       .icon i:before {
         content: "\f05a";
       }
     }
 
     &.toast-success {
-      @include themify($themes) {
-        background-color: themed("toastSuccessBackgroundColor");
-      }
-
       .icon i:before {
         content: "\f00C";
       }
