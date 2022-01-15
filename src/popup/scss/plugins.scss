@@ -71,24 +71,40 @@ $fa-font-path: "~font-awesome/fonts";
 
     &.toast-danger,
     &.toast-error {
+      @include themify($themes) {
+        background-color: themed("dangerColor");
+      }
+
       .icon i::before {
         content: "\f0e7";
       }
     }
 
     &.toast-warning {
+      @include themify($themes) {
+        background-color: themed("warningColor");
+      }
+
       .icon i::before {
         content: "\f071";
       }
     }
 
     &.toast-info {
+      @include themify($themes) {
+        background-color: themed("infoColor");
+      }
+
       .icon i:before {
         content: "\f05a";
       }
     }
 
     &.toast-success {
+      @include themify($themes) {
+        background-color: themed("successColor");
+      }
+
       .icon i:before {
         content: "\f00C";
       }
