@@ -229,6 +229,18 @@
   "length": {
     "message": "Μήκος"
   },
+  "uppercase": {
+    "message": "Κεφαλαία (A-Z)"
+  },
+  "lowercase": {
+    "message": "Πεζά (α-ω)"
+  },
+  "numbers": {
+    "message": "Αριθμοί (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Ειδικοί Χαρακτήρες (!@#$%^&*)"
+  },
   "numWords": {
     "message": "Αριθμός Λέξεων"
   },
