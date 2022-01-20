@@ -46,13 +46,19 @@ export class AppComponent implements OnInit {
     if (BrowserApi.getBackgroundPage() == null) {
       return;
     }
+    let activeUserId: string = null;
+    this.stateService.activeAccount.subscribe((userId) => {
+      activeUserId = userId;
+    });
 
     this.ngZone.runOutsideAngular(() => {
-      window.onmousedown = () => this.recordActivity();
-      window.ontouchstart = () => this.recordActivity();
-      window.onclick = () => this.recordActivity();
-      window.onscroll = () => this.recordActivity();
-      window.onkeypress = () => this.recordActivity();
+      if (activeUserId != null) {
+        window.onmousedown = () => this.recordActivity(activeUserId);
+        window.ontouchstart = () => this.recordActivity(activeUserId);
+        window.onclick = () => this.recordActivity(activeUserId);
+        window.onscroll = () => this.recordActivity(activeUserId);
+        window.onkeypress = () => this.recordActivity(activeUserId);
+      }
     });
 
     (window as any).bitwardenPopupMainMessageListener = async (
@@ -161,14 +167,14 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private async recordActivity() {
+  private async recordActivity(userId: string) {
     const now = new Date().getTime();
     if (this.lastActivity != null && now - this.lastActivity < 250) {
       return;
     }
 
     this.lastActivity = now;
-    this.stateService.setLastActive(now);
+    this.stateService.setLastActive(now, { userId: userId });
   }
 
   private showToast(msg: any) {
