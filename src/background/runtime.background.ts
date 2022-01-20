@@ -86,7 +86,7 @@ export default class RuntimeBackground {
         this.lockedVaultPendingNotifications.push(msg.data);
         break;
       case "logout":
-        await this.main.logout(msg.expired);
+        await this.main.logout(msg.expired, msg.userId);
         break;
       case "syncCompleted":
         if (msg.successfully) {

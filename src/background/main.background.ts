@@ -530,8 +530,11 @@ export default class MainBackground {
     }
   }
 
-  async logout(expired: boolean) {
-    const userId = await this.stateService.getUserId();
+  async logout(expired: boolean, userId?: string) {
+    if (!userId) {
+      userId = await this.stateService.getUserId();
+    }
+
     await this.eventService.uploadEvents(userId);
 
     await Promise.all([
