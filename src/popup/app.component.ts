@@ -76,8 +76,12 @@ export class AppComponent implements OnInit {
                 text: this.i18nService.t("loginExpired"),
               });
             }
-            this.router.navigate(["home"]);
-            await this.stateService.clean();
+
+            await this.stateService.clean({ userId: msg.userId });
+
+            if (this.stateService.activeAccount.getValue() == null) {
+              this.router.navigate(["home"]);
+            }
           });
           this.changeDetectorRef.detectChanges();
         });
@@ -86,10 +90,11 @@ export class AppComponent implements OnInit {
           this.router.navigate(["home"]);
         });
       } else if (msg.command === "locked") {
-        this.ngZone.run(() => {
-          this.router.navigate(["lock"]);
-        });
-        await this.stateService.clean();
+        if (msg.userId == null || msg.userId === (await this.stateService.getUserId())) {
+          this.ngZone.run(() => {
+            this.router.navigate(["lock"]);
+          });
+        }
       } else if (msg.command === "showDialog") {
         await this.showDialog(msg);
       } else if (msg.command === "showToast") {
