@@ -39,7 +39,8 @@ import { ProviderService } from "jslib-common/abstractions/provider.service";
 import { SearchService as SearchServiceAbstraction } from "jslib-common/abstractions/search.service";
 import { SendService } from "jslib-common/abstractions/send.service";
 import { SettingsService } from "jslib-common/abstractions/settings.service";
-import { StorageService } from "jslib-common/abstractions/storage.service";
+import { StateMigrationService as StateMigrationServiceAbstraction } from "jslib-common/abstractions/stateMigration.service";
+import { StorageService as StorageServiceAbstraction } from "jslib-common/abstractions/storage.service";
 import { SyncService } from "jslib-common/abstractions/sync.service";
 import { TokenService } from "jslib-common/abstractions/token.service";
 import { TotpService } from "jslib-common/abstractions/totp.service";
@@ -61,6 +62,10 @@ import { ThemeType } from "jslib-common/enums/themeType";
 import { StateService } from "../../services/state.service";
 
 import { StateService as StateServiceAbstraction } from "../../services/abstractions/state.service";
+
+import { Account } from "../../models/account";
+
+import { AccountFactory } from "jslib-common/models/domain/account";
 
 function getBgService<T>(service: string) {
   return (): T => {
@@ -153,7 +158,6 @@ export function initFactory(
       useFactory: getBgService<AuthService>("authService"),
       deps: [],
     },
-    { provide: StateServiceAbstraction, useFactory: getBgService<StateService>("stateService") },
     {
       provide: SearchServiceAbstraction,
       useFactory: (
@@ -224,8 +228,8 @@ export function initFactory(
       deps: [],
     },
     {
-      provide: StorageService,
-      useFactory: getBgService<StorageService>("storageService"),
+      provide: StorageServiceAbstraction,
+      useFactory: getBgService<StorageServiceAbstraction>("storageService"),
       deps: [],
     },
     { provide: AppIdService, useFactory: getBgService<AppIdService>("appIdService"), deps: [] },
@@ -274,8 +278,30 @@ export function initFactory(
     },
     {
       provide: "SECURE_STORAGE",
-      useFactory: getBgService<StorageService>("secureStorageService"),
+      useFactory: getBgService<StorageServiceAbstraction>("secureStorageService"),
       deps: [],
+    },
+    {
+      provide: StateServiceAbstraction,
+      useFactory: (
+        storageService: StorageServiceAbstraction,
+        secureStorageService: StorageServiceAbstraction,
+        logService: LogServiceAbstraction,
+        stateMigrationService: StateMigrationServiceAbstraction
+      ) =>
+        new StateService(
+          storageService,
+          secureStorageService,
+          logService,
+          stateMigrationService,
+          new AccountFactory(Account)
+        ),
+      deps: [
+        StorageServiceAbstraction,
+        "SECURE_STORAGE",
+        LogServiceAbstraction,
+        StateMigrationServiceAbstraction,
+      ],
     },
   ],
 })

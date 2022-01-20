@@ -1,6 +1,7 @@
 import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
 import { CipherType } from "jslib-common/enums/cipherType";
 
+import { AccountFactory } from "jslib-common/models/domain/account";
 import { CipherView } from "jslib-common/models/view/cipherView";
 
 import { ApiService } from "jslib-common/services/api.service";
@@ -92,6 +93,8 @@ import I18nService from "../services/i18n.service";
 import { StateService } from "../services/state.service";
 import VaultTimeoutService from "../services/vaultTimeout.service";
 
+import { Account } from "../models/account";
+
 export default class MainBackground {
   messagingService: MessagingServiceAbstraction;
   storageService: StorageServiceAbstraction;
@@ -166,7 +169,8 @@ export default class MainBackground {
       this.storageService,
       this.secureStorageService,
       this.logService,
-      this.stateMigrationService
+      this.stateMigrationService,
+      new AccountFactory(Account)
     );
     this.platformUtilsService = new BrowserPlatformUtilsService(
       this.messagingService,
