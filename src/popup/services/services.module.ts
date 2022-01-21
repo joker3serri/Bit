@@ -39,7 +39,7 @@ import { ProviderService } from "jslib-common/abstractions/provider.service";
 import { SearchService as SearchServiceAbstraction } from "jslib-common/abstractions/search.service";
 import { SendService } from "jslib-common/abstractions/send.service";
 import { SettingsService } from "jslib-common/abstractions/settings.service";
-import { StateMigrationService as StateMigrationServiceAbstraction } from "jslib-common/abstractions/stateMigration.service";
+import { StateService as BaseStateServiceAbstraction } from "jslib-common/abstractions/state.service";
 import { StorageService as StorageServiceAbstraction } from "jslib-common/abstractions/storage.service";
 import { SyncService } from "jslib-common/abstractions/sync.service";
 import { TokenService } from "jslib-common/abstractions/token.service";
@@ -59,13 +59,7 @@ import { PopupUtilsService } from "./popup-utils.service";
 
 import { ThemeType } from "jslib-common/enums/themeType";
 
-import { StateService } from "../../services/state.service";
-
 import { StateService as StateServiceAbstraction } from "../../services/abstractions/state.service";
-
-import { Account } from "../../models/account";
-
-import { AccountFactory } from "jslib-common/models/domain/account";
 
 function getBgService<T>(service: string) {
   return (): T => {
@@ -283,25 +277,13 @@ export function initFactory(
     },
     {
       provide: StateServiceAbstraction,
-      useFactory: (
-        storageService: StorageServiceAbstraction,
-        secureStorageService: StorageServiceAbstraction,
-        logService: LogServiceAbstraction,
-        stateMigrationService: StateMigrationServiceAbstraction
-      ) =>
-        new StateService(
-          storageService,
-          secureStorageService,
-          logService,
-          stateMigrationService,
-          new AccountFactory(Account)
-        ),
-      deps: [
-        StorageServiceAbstraction,
-        "SECURE_STORAGE",
-        LogServiceAbstraction,
-        StateMigrationServiceAbstraction,
-      ],
+      useFactory: getBgService<StateServiceAbstraction>("stateService"),
+      deps: [],
+    },
+    {
+      provide: BaseStateServiceAbstraction,
+      useFactory: getBgService<BaseStateServiceAbstraction>("stateService"),
+      deps: [],
     },
   ],
 })
