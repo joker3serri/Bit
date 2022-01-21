@@ -39,6 +39,7 @@
   6. Rename com.agilebits.* stuff to com.bitwarden.*
   7. Remove "some useful globals" on window
   8. Add ability to autofill span[data-bwautofill] elements
+  9. Understand ShadowRoots
   */
 
   function collect(document, undefined) {
@@ -224,9 +225,12 @@
           // query the document helper
           function queryDoc(doc, query) {
               var els = [];
+              // START MODIFICATION
               try {
-                  els = doc.querySelectorAll(query);
+                  els.push(... doc.querySelectorAll(query));
               } catch (e) { }
+              doc.querySelectorAll('*').forEach(function (srhost) { if (srhost.shadowRoot) { els.push(... queryDoc(srhost.shadowRoot, query)); } });
+              // END MODIFICATION
               return els;
           }
 
