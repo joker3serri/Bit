@@ -12,6 +12,7 @@ export class AccountSettings extends BaseAccountSettings {
 }
 
 export class Account extends BaseAccount {
+  settings?: AccountSettings = new AccountSettings();
   groupings?: BrowserGroupingsComponentState;
   send?: BrowserSendComponentState;
   ciphers?: BrowserComponentState;
@@ -23,9 +24,9 @@ export class Account extends BaseAccount {
       ...new AccountSettings(),
       ...this.settings,
     });
-    this.groupings = init.groupings ?? new BrowserGroupingsComponentState();
-    this.send = init.send ?? new BrowserSendComponentState();
-    this.ciphers = init.ciphers ?? new BrowserComponentState();
-    this.sendType = init.sendType ?? new BrowserComponentState();
+    this.groupings = init?.groupings ?? new BrowserGroupingsComponentState();
+    this.send = init?.send ?? new BrowserSendComponentState();
+    this.ciphers = init?.ciphers ?? new BrowserComponentState();
+    this.sendType = init?.sendType ?? new BrowserComponentState();
   }
 }
