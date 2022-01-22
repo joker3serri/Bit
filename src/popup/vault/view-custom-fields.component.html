@@ -10,9 +10,13 @@
           {{ field.value || "&nbsp;" }}
         </div>
         <div *ngIf="field.type === fieldType.Hidden">
-          <span [hidden]="!field.showValue" class="monospaced show-whitespace">{{
-            field.value
-          }}</span>
+          <span [hidden]="!field.showValue || field.showCount" class="monospaced">
+            {{ field.value }}
+          </span>
+          <span
+            [hidden]="!field.showValue || !field.showCount"
+            [innerHTML]="field.value | colorPasswordCount"
+          ></span>
           <span [hidden]="field.showValue" class="monospaced">{{ field.maskedValue }}</span>
         </div>
         <div *ngIf="field.type === fieldType.Boolean">
@@ -33,9 +37,19 @@
           type="button"
           class="row-btn"
           appStopClick
+          appA11yTitle="{{ 'toggleCount' | i18n }}"
+          *ngIf="field.showActionButtons && field.type === fieldType.Hidden && cipher.viewPassword"
+          (click)="toggleFieldCount(field)"
+        >
+          <i class="fa fa-lg fa-list-ol" aria-hidden="true"></i>
+        </button>
+        <button
+          type="button"
+          class="row-btn"
+          appStopClick
           attr.aria-label="{{ 'toggleVisibility' | i18n }} {{ field.name }}"
           appA11yTitle="{{ 'toggleVisibility' | i18n }}"
-          *ngIf="field.type === fieldType.Hidden && cipher.viewPassword"
+          *ngIf="field.showActionButtons && field.type === fieldType.Hidden && cipher.viewPassword"
           (click)="toggleFieldValue(field)"
           [attr.aria-pressed]="field.showValue"
         >
@@ -62,6 +76,16 @@
           "
         >
           <i class="fa fa-lg fa-clone" aria-hidden="true"></i>
+        </button>
+        <button
+          type="button"
+          class="row-btn"
+          appStopClick
+          appA11yTitle="{{ 'showMore' | i18n }}"
+          *ngIf="!field.showActionButtons && field.type === fieldType.Hidden"
+          (click)="showFieldActionButtons(field)"
+        >
+          <i class="fa fa-lg fa-chevron-right" aria-hidden="true"></i>
         </button>
       </div>
     </div>

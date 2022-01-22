@@ -120,6 +120,11 @@
         }
 
         .action-buttons {
+          &.count {
+            align-self: start;
+            margin-top: 10px;
+          }
+
           .row-btn {
             padding-left: 5px;
             padding-right: 5px;
@@ -448,6 +453,8 @@
 
   .action-buttons {
     display: flex;
+    align-self: start;
+    margin-top: 10px;
     margin-left: 5px;
 
     .row-btn {
