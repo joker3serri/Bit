@@ -359,27 +359,23 @@ export default class NotificationBackground {
 
       if (!queueMessage.wasVaultLocked) {
         await this.createNewCipher(queueMessage as AddLoginQueueMessage, folderId);
+        return;
       }
 
       // If the vault was locked, check if a cipher needs updating instead of creating a new one
-      if (
-        queueMessage.type === NotificationQueueMessageType.addLogin &&
-        queueMessage.wasVaultLocked === true
-      ) {
-        const addLoginMessage = queueMessage as AddLoginQueueMessage;
-        const ciphers = await this.cipherService.getAllDecryptedForUrl(addLoginMessage.uri);
-        const usernameMatches = ciphers.filter(
-          (c) =>
-            c.login.username != null && c.login.username.toLowerCase() === addLoginMessage.username
-        );
+      const addLoginMessage = queueMessage as AddLoginQueueMessage;
+      const ciphers = await this.cipherService.getAllDecryptedForUrl(addLoginMessage.uri);
+      const usernameMatches = ciphers.filter(
+        (c) =>
+          c.login.username != null && c.login.username.toLowerCase() === addLoginMessage.username
+      );
 
-        if (usernameMatches.length >= 1) {
-          await this.updateCipher(usernameMatches[0], addLoginMessage.password);
-          return;
-        }
-
-        await this.createNewCipher(addLoginMessage, folderId);
+      if (usernameMatches.length >= 1) {
+        await this.updateCipher(usernameMatches[0], addLoginMessage.password);
+        return;
       }
+
+      await this.createNewCipher(addLoginMessage, folderId);
     }
   }
 
