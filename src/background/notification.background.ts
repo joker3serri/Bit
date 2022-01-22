@@ -366,18 +366,19 @@ export default class NotificationBackground {
         queueMessage.type === NotificationQueueMessageType.addLogin &&
         queueMessage.wasVaultLocked === true
       ) {
-        const message = queueMessage as AddLoginQueueMessage;
-        const ciphers = await this.cipherService.getAllDecryptedForUrl(message.uri);
+        const addLoginMessage = queueMessage as AddLoginQueueMessage;
+        const ciphers = await this.cipherService.getAllDecryptedForUrl(addLoginMessage.uri);
         const usernameMatches = ciphers.filter(
-          (c) => c.login.username != null && c.login.username.toLowerCase() === message.username
+          (c) =>
+            c.login.username != null && c.login.username.toLowerCase() === addLoginMessage.username
         );
 
         if (usernameMatches.length >= 1) {
-          await this.updateCipher(usernameMatches[0], message.password);
+          await this.updateCipher(usernameMatches[0], addLoginMessage.password);
           return;
         }
 
-        await this.createNewCipher(message, folderId);
+        await this.createNewCipher(addLoginMessage, folderId);
       }
     }
   }
