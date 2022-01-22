@@ -359,6 +359,7 @@ export default class NotificationBackground {
 
       if (!queueMessage.wasVaultLocked) {
         await this.createNewCipher(queueMessage as AddLoginQueueMessage, folderId);
+        BrowserApi.tabSendMessageData(tab, "addedCipher");
         return;
       }
 
@@ -376,6 +377,7 @@ export default class NotificationBackground {
       }
 
       await this.createNewCipher(addLoginMessage, folderId);
+      BrowserApi.tabSendMessageData(tab, "addedCipher");
     }
   }
 
