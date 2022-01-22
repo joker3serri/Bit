@@ -348,12 +348,12 @@ export default class NotificationBackground {
       BrowserApi.tabSendMessageData(tab, "closeNotificationBar");
 
       if (queueMessage.type === NotificationQueueMessageType.changePassword) {
-        const message = queueMessage as AddChangePasswordQueueMessage;
-        const cipher = await this.getDecryptedCipherById(message.cipherId);
+        const changePasswordMessage = queueMessage as AddChangePasswordQueueMessage;
+        const cipher = await this.getDecryptedCipherById(changePasswordMessage.cipherId);
         if (cipher == null) {
           return;
         }
-        await this.updateCipher(cipher, message.newPassword);
+        await this.updateCipher(cipher, changePasswordMessage.newPassword);
         return;
       }
 
