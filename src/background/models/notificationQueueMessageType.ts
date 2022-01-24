@@ -1,4 +1,4 @@
 export enum NotificationQueueMessageType {
-  AddLogin = "addLogin",
-  ChangePassword = "changePassword",
+  AddLogin = 0,
+  ChangePassword = 1,
 }
