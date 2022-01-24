@@ -98,7 +98,7 @@
     "message": "Unlock your vault"
   },
   "loginToVaultMenu": {
-    "message": "Login to your vault"
+    "message": "Log in to your vault"
   },
   "autoFillInfo": {
     "message": "There are no logins available to auto-fill for the current browser tab."
