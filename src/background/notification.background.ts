@@ -357,27 +357,29 @@ export default class NotificationBackground {
         return;
       }
 
-      if (!queueMessage.wasVaultLocked) {
-        await this.createNewCipher(queueMessage as AddLoginQueueMessage, folderId);
+      if (queueMessage.type === NotificationQueueMessageType.AddLogin) {
+        if (!queueMessage.wasVaultLocked) {
+          await this.createNewCipher(queueMessage as AddLoginQueueMessage, folderId);
+          BrowserApi.tabSendMessageData(tab, "addedCipher");
+          return;
+        }
+
+        // If the vault was locked, check if a cipher needs updating instead of creating a new one
+        const addLoginMessage = queueMessage as AddLoginQueueMessage;
+        const ciphers = await this.cipherService.getAllDecryptedForUrl(addLoginMessage.uri);
+        const usernameMatches = ciphers.filter(
+          (c) =>
+            c.login.username != null && c.login.username.toLowerCase() === addLoginMessage.username
+        );
+
+        if (usernameMatches.length >= 1) {
+          await this.updateCipher(usernameMatches[0], addLoginMessage.password);
+          return;
+        }
+
+        await this.createNewCipher(addLoginMessage, folderId);
         BrowserApi.tabSendMessageData(tab, "addedCipher");
-        return;
       }
-
-      // If the vault was locked, check if a cipher needs updating instead of creating a new one
-      const addLoginMessage = queueMessage as AddLoginQueueMessage;
-      const ciphers = await this.cipherService.getAllDecryptedForUrl(addLoginMessage.uri);
-      const usernameMatches = ciphers.filter(
-        (c) =>
-          c.login.username != null && c.login.username.toLowerCase() === addLoginMessage.username
-      );
-
-      if (usernameMatches.length >= 1) {
-        await this.updateCipher(usernameMatches[0], addLoginMessage.password);
-        return;
-      }
-
-      await this.createNewCipher(addLoginMessage, folderId);
-      BrowserApi.tabSendMessageData(tab, "addedCipher");
     }
   }
 
