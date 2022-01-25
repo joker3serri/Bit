@@ -31,6 +31,7 @@ import { SyncService } from "jslib-common/services/sync.service";
 import { SystemService } from "jslib-common/services/system.service";
 import { TokenService } from "jslib-common/services/token.service";
 import { TotpService } from "jslib-common/services/totp.service";
+import { UserVerificationService } from "jslib-common/services/userVerification.service";
 import { WebCryptoFunctionService } from "jslib-common/services/webCryptoFunction.service";
 
 import { ApiService as ApiServiceAbstraction } from "jslib-common/abstractions/api.service";
@@ -64,6 +65,7 @@ import { SyncService as SyncServiceAbstraction } from "jslib-common/abstractions
 import { SystemService as SystemServiceAbstraction } from "jslib-common/abstractions/system.service";
 import { TokenService as TokenServiceAbstraction } from "jslib-common/abstractions/token.service";
 import { TotpService as TotpServiceAbstraction } from "jslib-common/abstractions/totp.service";
+import { UserVerificationService as UserVerificationServiceAbstraction } from "jslib-common/abstractions/userVerification.service";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "jslib-common/abstractions/vaultTimeout.service";
 
 import { AutofillService as AutofillServiceAbstraction } from "../services/abstractions/autofill.service";
@@ -134,6 +136,7 @@ export default class MainBackground {
   organizationService: OrganizationServiceAbstraction;
   providerService: ProviderServiceAbstraction;
   keyConnectorService: KeyConnectorServiceAbstraction;
+  userVerificationService: UserVerificationServiceAbstraction;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -350,6 +353,12 @@ export default class MainBackground {
       this.stateService
     );
     this.popupUtilsService = new PopupUtilsService(this.platformUtilsService);
+
+    this.userVerificationService = new UserVerificationService(
+      this.cryptoService,
+      this.i18nService,
+      this.apiService
+    );
 
     const systemUtilsServiceReloadCallback = () => {
       const forceWindowReload =
