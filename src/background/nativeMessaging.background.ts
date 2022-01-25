@@ -34,19 +34,20 @@ type OuterMessage = {
   appId: string;
 };
 
-type RecieveMessage = {
+type ReceiveMessage = {
   timestamp: number;
   command: string;
+  response?: any;
 
-  response: any;
-
+  // Unlock key
   keyB64?: string;
 };
 
-type RecieveMessageOuter = {
+type ReceiveMessageOuter = {
   command: string;
   appId: string;
 
+  // Should only have one of theses.
   message?: EncString;
   sharedSecret?: string;
 };
@@ -106,7 +107,7 @@ export class NativeMessagingBackground {
         connectedCallback();
       }
 
-      this.port.onMessage.addListener(async (message: RecieveMessageOuter) => {
+      this.port.onMessage.addListener(async (message: ReceiveMessageOuter) => {
         switch (message.command) {
           case "connected":
             connectedCallback();
@@ -262,8 +263,8 @@ export class NativeMessagingBackground {
     }
   }
 
-  private async onMessage(rawMessage: RecieveMessage | EncString) {
-    let message = rawMessage as RecieveMessage;
+  private async onMessage(rawMessage: ReceiveMessage | EncString) {
+    let message = rawMessage as ReceiveMessage;
     if (!this.platformUtilsService.isSafari()) {
       message = JSON.parse(
         await this.cryptoService.decryptToUtf8(rawMessage as EncString, this.sharedSecret)
