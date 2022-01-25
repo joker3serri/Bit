@@ -765,7 +765,7 @@ export default class MainBackground {
     if (contextMenuEnabled) {
       const authed = await this.stateService.getIsAuthenticated();
       await this.loadNoLoginsContextMenuOptions(
-        this.i18nService.t(authed ? "vaultLocked" : "vaultLoggedOut")
+        this.i18nService.t(authed ? "unlockVaultMenu" : "loginToVaultMenu")
       );
     }
 
