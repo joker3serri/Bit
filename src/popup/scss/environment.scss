@@ -14,13 +14,11 @@ html.browser_safari {
   }
 
   header {
-    .search [class^="bwi-"],
-    .search [class*=" bwi-"] {
+    .search .bwi {
       left: 20px;
     }
 
-    .left + .search [class^="bwi-"],
-    .left + .search [class*=" bwi-"] {
+    .left + .search .bwi {
       left: 10px;
     }
   }

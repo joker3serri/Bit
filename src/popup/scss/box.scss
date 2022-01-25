@@ -530,8 +530,7 @@
   }
 
   .row-sub-icon,
-  .row-sub-label + i[class^="bwi-"],
-  .row-sub-label + i[class*=" bwi-"] {
+  .row-sub-label + i.bwi {
     @include themify($themes) {
       color: themed("disabledIconColor");
     }

@@ -235,7 +235,7 @@ export class AppComponent implements OnInit {
       buttonsStyling: false,
       icon: type as SweetAlertIcon, // required to be any of the SweetAlertIcons to output the iconHtml.
       iconHtml:
-        iconClasses != null ? `<i class="swal-custom-icon fa ${iconClasses}"></i>` : undefined,
+        iconClasses != null ? `<i class="swal-custom-icon bwi ${iconClasses}"></i>` : undefined,
       text: msg.text,
       html: msg.html,
       titleText: msg.title,
