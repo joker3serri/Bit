@@ -441,6 +441,12 @@ content {
 .full-loading-spinner {
   text-align: center;
 
+  .no-items-image {
+    @include themify($themes) {
+      content: url("../images/search-desktop" + themed("svgSuffix"));
+    }
+  }
+
   [class^="bwi-"],
   [class*=" bwi-"] {
     margin-bottom: 10px;
