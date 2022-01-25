@@ -267,8 +267,8 @@ export default class MainBackground {
         await this.setIcon();
         await this.refreshBadgeAndMenu(true);
         if (this.systemService != null) {
-          this.systemService.startProcessReload();
           await this.systemService.clearPendingClipboard();
+          await this.reloadProcess();
         }
       },
       logout: async () => await this.logout(false),
@@ -565,8 +565,8 @@ export default class MainBackground {
     await this.refreshBadgeAndMenu();
     await this.reseedStorage();
     this.notificationsService.updateConnection(false);
-    this.systemService.startProcessReload();
     await this.systemService.clearPendingClipboard();
+    await this.reloadProcess();
   }
 
   async collectPageDetailsForContentScript(tab: any, sender: string, frameId: number = null) {
@@ -970,5 +970,17 @@ export default class MainBackground {
         tabId: tabId,
       });
     }
+  }
+
+  private async reloadProcess(): Promise<void> {
+    const accounts = Object.keys(this.stateService.accounts.getValue());
+    if (accounts.length > 0) {
+      for (const userId in accounts) {
+        if (!(await this.vaultTimeoutService.isLocked(accounts[userId]))) {
+          return;
+        }
+      }
+    }
+    await this.systemService.startProcessReload();
   }
 }
