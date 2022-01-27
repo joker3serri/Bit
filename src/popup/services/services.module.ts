@@ -282,7 +282,7 @@ export function initFactory(
     },
     {
       provide: BaseStateServiceAbstraction,
-      useFactory: getBgService<BaseStateServiceAbstraction>("stateService"),
+      useExisting: StateServiceAbstraction,
       deps: [],
     },
   ],
