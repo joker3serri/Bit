@@ -307,7 +307,7 @@ export class NativeMessagingBackground {
         }
 
         // Ignore unlock if already unlockeded
-        if (!this.stateService.getBiometricLocked()) {
+        if (!(await this.stateService.getBiometricLocked())) {
           break;
         }
 
