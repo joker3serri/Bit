@@ -47,7 +47,7 @@ type ReceiveMessageOuter = {
   command: string;
   appId: string;
 
-  // Should only have one of theses.
+  // Should only have one of these.
   message?: EncString;
   sharedSecret?: string;
 };
@@ -306,7 +306,7 @@ export class NativeMessagingBackground {
           break;
         }
 
-        // Ignore unlock if already unlockeded
+        // Ignore unlock if already unlocked
         if (!(await this.stateService.getBiometricLocked())) {
           break;
         }
