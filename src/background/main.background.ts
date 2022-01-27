@@ -984,11 +984,12 @@ export default class MainBackground {
 
   private async reloadProcess(): Promise<void> {
     const accounts = Object.keys(this.stateService.accounts.getValue());
-    const allAccountsAreLocked = accounts.every(
-      async (userId) => await this.vaultTimeoutService.isLocked(userId)
-    );
-    if (allAccountsAreLocked) {
-      await this.systemService.startProcessReload();
+    for (const userId of accounts) {
+      if (!(await this.vaultTimeoutService.isLocked(userId))) {
+        return;
+      }
     }
+
+    await this.systemService.startProcessReload();
   }
 }
