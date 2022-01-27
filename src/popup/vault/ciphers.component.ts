@@ -143,7 +143,7 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
       if (this.applySavedState && this.state != null) {
         window.setTimeout(
           () =>
-            this.popupUtils.setContentScrollY(window, this.state?.scrollY, this.scrollingContainer),
+            this.popupUtils.setContentScrollY(window, this.state.scrollY, this.scrollingContainer),
           0
         );
       }
