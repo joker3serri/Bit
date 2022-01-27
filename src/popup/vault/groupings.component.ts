@@ -77,7 +77,6 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     private broadcasterService: BroadcasterService,
     private changeDetectorRef: ChangeDetectorRef,
     private route: ActivatedRoute,
-    baseStateService: StateService,
     private popupUtils: PopupUtilsService,
     private syncService: SyncService,
     private platformUtilsService: PlatformUtilsService,
@@ -85,7 +84,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
     private location: Location,
     private browserStateService: StateService
   ) {
-    super(collectionService, folderService, baseStateService);
+    super(collectionService, folderService, browserStateService);
     this.noFolderListSize = 100;
   }
 
