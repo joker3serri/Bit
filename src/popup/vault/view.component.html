@@ -77,6 +77,16 @@
           <div class="action-buttons">
             <button
               type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'showMore' | i18n }}"
+              (click)="showPasswordActionButtons()"
+              *ngIf="!showActionButtons"
+            >
+              <i class="fa fa-lg fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button
+              type="button"
               #checkPasswordBtn
               class="row-btn btn"
               appBlurClick
@@ -132,16 +142,6 @@
               *ngIf="cipher.viewPassword"
             >
               <i class="fa fa-lg fa-clone" aria-hidden="true"></i>
-            </button>
-            <button
-              type="button"
-              class="row-btn"
-              appStopClick
-              appA11yTitle="{{ 'showMore' | i18n }}"
-              (click)="showPasswordActionButtons()"
-              *ngIf="!showActionButtons"
-            >
-              <i class="fa fa-lg fa-chevron-right" aria-hidden="true"></i>
             </button>
           </div>
         </div>
