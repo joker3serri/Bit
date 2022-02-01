@@ -349,7 +349,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
           login.username != null &&
           login.username !== "" &&
           login.password != null &&
-          login.password !== ""
+          login.password !== "" &&
+          login.password.replace(/\./g, "").length > 0
         ) {
           processedForm(form);
           sendPlatformMessage({
@@ -389,6 +390,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
               newPass = passwords[1];
             }
           }
+        }
+
+        if (newPass && newPass.replace(/\./g, "").length === 0) {
+          return;
         }
 
         if ((newPass != null && curPass != null) || (newPassOnly && newPass != null)) {
