@@ -83,9 +83,6 @@ const plugins = [
       { from: "./src/content/autofill.css", to: "content" },
     ],
   }),
-  new webpack.SourceMapDevToolPlugin({
-    include: ["popup/main.js", "background.js"],
-  }),
   new MiniCssExtractPlugin({
     filename: "[name].css",
     chunkFilename: "chunk-[id].css",
@@ -110,7 +107,7 @@ const plugins = [
 
 const config = {
   mode: ENV,
-  devtool: false,
+  devtool: ENV === "development" ? "eval-source-map" : "source-map",
   entry: {
     "popup/polyfills": "./src/popup/polyfills.ts",
     "popup/main": "./src/popup/main.ts",
@@ -124,7 +121,7 @@ const config = {
     "notification/bar": "./src/notification/bar.js",
   },
   optimization: {
-    minimize: false,
+    minimize: true,
     splitChunks: {
       cacheGroups: {
         commons: {
@@ -139,36 +136,6 @@ const config = {
           chunks: (chunk) => {
             return chunk.name === "popup/main";
           },
-        },
-        jslib: {
-          test(module, chunks) {
-            return (
-              module.resource != null &&
-              module.resource.startsWith(`${process.cwd() + path.sep}jslib`)
-            );
-          },
-          name: "jslib",
-          chunks: "all",
-        },
-        angularBundles: {
-          test(module, chunks) {
-            return (
-              module.resource != null &&
-              module.resource.includes(`${path.sep}@angular${path.sep}`) &&
-              module.resource.includes(`${path.sep}bundles${path.sep}`)
-            );
-          },
-          name: "angular-bundles",
-          chunks: "all",
-        },
-        zxcvbn: {
-          test(module, chunks) {
-            return (
-              module.resource != null && module.resource.includes(`${path.sep}zxcvbn${path.sep}`)
-            );
-          },
-          name: "zxcvbn",
-          chunks: "all",
         },
         angular: {
           test(module, chunks) {
