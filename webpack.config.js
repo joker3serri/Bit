@@ -140,6 +140,36 @@ const config = {
             return chunk.name === "popup/main";
           },
         },
+        jslib: {
+          test(module, chunks) {
+            return (
+              module.resource != null &&
+              module.resource.startsWith(`${process.cwd() + path.sep}jslib`)
+            );
+          },
+          name: "jslib",
+          chunks: "all",
+        },
+        angularBundles: {
+          test(module, chunks) {
+            return (
+              module.resource != null &&
+              module.resource.includes(`${path.sep}@angular${path.sep}`) &&
+              module.resource.includes(`${path.sep}bundles${path.sep}`)
+            );
+          },
+          name: "angular-bundles",
+          chunks: "all",
+        },
+        zxcvbn: {
+          test(module, chunks) {
+            return (
+              module.resource != null && module.resource.includes(`${path.sep}zxcvbn${path.sep}`)
+            );
+          },
+          name: "zxcvbn",
+          chunks: "all",
+        },
         angular: {
           test(module, chunks) {
             return (
