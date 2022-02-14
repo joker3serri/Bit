@@ -103,11 +103,18 @@ const plugins = [
   new webpack.ProvidePlugin({
     process: "process/browser",
   }),
+  new webpack.SourceMapDevToolPlugin({
+    exclude: /content\/.*/,
+    filename: "[file].map",
+  }),
+  new webpack.SourceMapDevToolPlugin({
+    include: /content\/.*/,
+  }),
 ];
 
 const config = {
   mode: ENV,
-  devtool: ENV === "development" ? "eval-source-map" : "source-map",
+  devtool: false,
   entry: {
     "popup/polyfills": "./src/popup/polyfills.ts",
     "popup/main": "./src/popup/main.ts",
