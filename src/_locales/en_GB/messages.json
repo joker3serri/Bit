@@ -1459,7 +1459,7 @@
     "message": "Browser integration is not enabled"
   },
   "desktopIntegrationDisabledDesc": {
-    "message": "Browser integration is not enabled in the Bitwarden Desktop application. Please enable it in the settings within the desktop application."
+    "message": "Browser integration is not enabled in the Bitwarden browser extension. Please enable it in the settings within the desktop application."
   },
   "startDesktopTitle": {
     "message": "Start the Bitwarden Desktop application"
