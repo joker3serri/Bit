@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     }
 
     const domains = obj[activeUserId].settings.neverDomains;
-    if (domains != null && domains.hasOwnProperty(window.location.hostname)) {
+    if (domains != null && Object.keys(domains).some((d) => window.location.hostname.endsWith(d))) {
       return;
     }
 
