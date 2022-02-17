@@ -83,6 +83,7 @@ import { SetPinComponent } from "./components/set-pin.component";
 import { VerifyMasterPasswordComponent } from "./components/verify-master-password.component";
 
 import { CalloutComponent } from "jslib-angular/components/callout.component";
+import { ExportScopeCalloutComponent } from "jslib-angular/components/export-scope-callout.component";
 import { IconComponent } from "jslib-angular/components/icon.component";
 import { BitwardenToastModule } from "jslib-angular/components/toastr.component";
 
@@ -212,6 +213,7 @@ registerLocaleData(localeZhTw, "zh-TW");
     EnvironmentComponent,
     ExcludedDomainsComponent,
     ExportComponent,
+    ExportScopeCalloutComponent,
     FallbackSrcDirective,
     FolderAddEditComponent,
     FoldersComponent,
