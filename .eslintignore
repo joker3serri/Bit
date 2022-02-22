@@ -1,0 +1,6 @@
+**/build
+jslib
+webpack.config.js
+src/content/autofill.js
+
+**/node_modules
