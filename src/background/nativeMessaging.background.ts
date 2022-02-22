@@ -7,13 +7,12 @@ import { MessagingService } from "jslib-common/abstractions/messaging.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
 import { StateService } from "jslib-common/abstractions/state.service";
 import { VaultTimeoutService } from "jslib-common/abstractions/vaultTimeout.service";
-
 import { Utils } from "jslib-common/misc/utils";
-
 import { EncString } from "jslib-common/models/domain/encString";
 import { SymmetricCryptoKey } from "jslib-common/models/domain/symmetricCryptoKey";
 
 import { BrowserApi } from "../browser/browserApi";
+
 import RuntimeBackground from "./runtime.background";
 
 const MessageValidTimeout = 10 * 1000;

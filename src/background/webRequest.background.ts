@@ -1,7 +1,6 @@
 import { CipherService } from "jslib-common/abstractions/cipher.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
 import { VaultTimeoutService } from "jslib-common/abstractions/vaultTimeout.service";
-
 import { UriMatchType } from "jslib-common/enums/uriMatchType";
 
 export default class WebRequestBackground {

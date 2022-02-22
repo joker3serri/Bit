@@ -5,15 +5,13 @@ import { MessagingService } from "jslib-common/abstractions/messaging.service";
 import { NotificationsService } from "jslib-common/abstractions/notifications.service";
 import { StateService } from "jslib-common/abstractions/state.service";
 import { SystemService } from "jslib-common/abstractions/system.service";
+import { Utils } from "jslib-common/misc/utils";
 
+import { BrowserApi } from "../browser/browserApi";
 import { AutofillService } from "../services/abstractions/autofill.service";
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
 
-import { BrowserApi } from "../browser/browserApi";
-
 import MainBackground from "./main.background";
-
-import { Utils } from "jslib-common/misc/utils";
 import LockedVaultPendingNotificationsItem from "./models/lockedVaultPendingNotificationsItem";
 
 export default class RuntimeBackground {
