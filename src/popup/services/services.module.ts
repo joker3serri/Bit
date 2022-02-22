@@ -80,7 +80,7 @@ export function initFactory(
   popupUtilsService: PopupUtilsService,
   stateService: StateServiceAbstraction,
   logService: LogServiceAbstraction
-): Function {
+): () => void {
   return async () => {
     await stateService.init();
 

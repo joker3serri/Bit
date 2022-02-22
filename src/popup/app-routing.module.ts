@@ -309,6 +309,7 @@ export class NoRouteReuseStrategy implements RouteReuseStrategy {
     return false;
   }
 
+  // eslint-disable-next-line
   store(route: ActivatedRouteSnapshot, handle: {}) {
     /* Nothing */
   }

@@ -40,6 +40,7 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     for (const formKey in pageDetails.forms) {
+      // eslint-disable-next-line
       if (!pageDetails.forms.hasOwnProperty(formKey)) {
         continue;
       }
@@ -214,6 +215,7 @@ export default class AutofillService implements AutofillServiceInterface {
       });
 
       pageDetails.fields.forEach((field: any) => {
+        // eslint-disable-next-line
         if (filledFields.hasOwnProperty(field.opid)) {
           return;
         }
@@ -305,6 +307,7 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     for (const formKey in pageDetails.forms) {
+      // eslint-disable-next-line
       if (!pageDetails.forms.hasOwnProperty(formKey)) {
         continue;
       }
@@ -370,6 +373,7 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     usernames.forEach((u) => {
+      // eslint-disable-next-line
       if (filledFields.hasOwnProperty(u.opid)) {
         return;
       }
@@ -379,6 +383,7 @@ export default class AutofillService implements AutofillServiceInterface {
     });
 
     passwords.forEach((p) => {
+      // eslint-disable-next-line
       if (filledFields.hasOwnProperty(p.opid)) {
         return;
       }
@@ -414,6 +419,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
       for (let i = 0; i < CreditCardAutoFillConstants.CardAttributes.length; i++) {
         const attr = CreditCardAutoFillConstants.CardAttributes[i];
+        // eslint-disable-next-line
         if (!f.hasOwnProperty(attr) || !f[attr] || !f.viewable) {
           continue;
         }
@@ -712,6 +718,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
     let doesContain = false;
     CreditCardAutoFillConstants.CardAttributesExtended.forEach((attr) => {
+      // eslint-disable-next-line
       if (doesContain || !field.hasOwnProperty(attr) || !field[attr]) {
         return;
       }
@@ -747,6 +754,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
       for (let i = 0; i < IdentityAutoFillConstants.IdentityAttributes.length; i++) {
         const attr = IdentityAutoFillConstants.IdentityAttributes[i];
+        // eslint-disable-next-line
         if (!f.hasOwnProperty(attr) || !f[attr] || !f.viewable) {
           continue;
         }
@@ -1050,6 +1058,7 @@ export default class AutofillService implements AutofillServiceInterface {
           return false;
         }
         // Removes all whitespace, _ and - characters
+        // eslint-disable-next-line
         const cleanedValue = value.toLowerCase().replace(/[\s_\-]/g, "");
 
         if (cleanedValue.indexOf("password") < 0) {
@@ -1274,6 +1283,7 @@ export default class AutofillService implements AutofillServiceInterface {
     let lastPasswordField: AutofillField = null;
 
     for (const opid in filledFields) {
+      // eslint-disable-next-line
       if (filledFields.hasOwnProperty(opid) && filledFields[opid].viewable) {
         lastField = filledFields[opid];
 

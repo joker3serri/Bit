@@ -451,6 +451,7 @@ export default class MainBackground {
 
     this.twoFactorService = new TwoFactorService(this.i18nService, this.platformUtilsService);
 
+    // eslint-disable-next-line
     const that = this;
     const backgroundMessagingService = new (class extends MessagingServiceAbstraction {
       // AuthService should send the messages to the background not popup.
@@ -649,6 +650,7 @@ export default class MainBackground {
     await clearStorage();
 
     for (const key in storage) {
+      // eslint-disable-next-line
       if (!storage.hasOwnProperty(key)) {
         continue;
       }

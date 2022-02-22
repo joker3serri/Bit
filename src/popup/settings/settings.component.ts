@@ -203,7 +203,7 @@ export class SettingsComponent implements OnInit {
       try {
         granted = await BrowserApi.requestPermission({ permissions: ["nativeMessaging"] });
       } catch (e) {
-        // tslint:disable-next-line
+        // eslint-disable-next-line
         console.error(e);
 
         if (this.platformUtilsService.isFirefox() && this.popupUtilsService.inSidebar(window)) {

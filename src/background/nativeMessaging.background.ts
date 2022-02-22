@@ -126,7 +126,7 @@ export class NativeMessagingBackground {
             this.connected = false;
             this.port.disconnect();
             break;
-          case "setupEncryption":
+          case "setupEncryption": {
             // Ignore since it belongs to another device
             if (message.appId !== this.appId) {
               return;
@@ -146,6 +146,7 @@ export class NativeMessagingBackground {
             this.sharedSecret = new SymmetricCryptoKey(decrypted);
             this.secureSetupResolve();
             break;
+          }
           case "invalidateEncryption":
             // Ignore since it belongs to another device
             if (message.appId !== this.appId) {
@@ -172,6 +173,7 @@ export class NativeMessagingBackground {
           }
           case "wrongUserId":
             this.showWrongUserDialog();
+            break;
           default:
             // Ignore since it belongs to another device
             if (!this.platformUtilsService.isSafari() && message.appId !== this.appId) {
@@ -278,7 +280,7 @@ export class NativeMessagingBackground {
     }
 
     switch (message.command) {
-      case "biometricUnlock":
+      case "biometricUnlock": {
         await this.stateService.setBiometricAwaitingAcceptance(null);
 
         if (message.response === "not enabled") {
@@ -336,8 +338,10 @@ export class NativeMessagingBackground {
           this.runtimeBackground.processMessage({ command: "unlocked" }, null, null);
         }
         break;
+      }
       default:
         this.logService.error("NativeMessage, got unknown command: " + message.command);
+        break;
     }
 
     if (this.resolver) {

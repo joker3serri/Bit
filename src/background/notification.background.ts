@@ -101,13 +101,14 @@ export default class NotificationBackground {
         break;
       case "collectPageDetailsResponse":
         switch (msg.sender) {
-          case "notificationBar":
+          case "notificationBar": {
             const forms = this.autofillService.getFormsWithPasswordFields(msg.details);
             await BrowserApi.tabSendMessageData(msg.tab, "notificationBarPageDetails", {
               details: msg.details,
               forms: forms,
             });
             break;
+          }
           default:
             break;
         }

@@ -237,7 +237,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
           this.clipboardWriteCallback(text, clearMs);
         }
       } catch (e) {
-        // tslint:disable-next-line
+        // eslint-disable-next-line
         console.warn("Copy to clipboard failed.", e);
       } finally {
         doc.body.removeChild(textarea);
@@ -275,7 +275,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
           return textarea.value;
         }
       } catch (e) {
-        // tslint:disable-next-line
+        // eslint-disable-next-line
         console.warn("Read from clipboard failed.", e);
       } finally {
         doc.body.removeChild(textarea);

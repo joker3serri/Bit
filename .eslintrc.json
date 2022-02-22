@@ -1,7 +1,8 @@
 {
   "root": true,
   "env": {
-    "browser": true
+    "browser": true,
+    "webextensions": true
   },
   "extends": ["./jslib/shared/eslintrc.json"],
   "rules": {
