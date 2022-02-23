@@ -189,6 +189,10 @@
   }
 }
 
+div.box-content-row {
+  min-height: 62px;
+}
+
 .box-content-row {
   display: block;
   padding: 10px 15px;
@@ -260,7 +264,6 @@
     display: block;
     width: 100%;
     margin-bottom: 5px;
-    min-height: 1em;
 
     @include themify($themes) {
       color: themed("mutedColor");
@@ -311,7 +314,6 @@
   .row-main {
     flex-grow: 1;
     min-width: 0;
-    align-self: start;
   }
 
   &.box-content-row-flex,
@@ -462,8 +464,6 @@
 
   .action-buttons {
     display: flex;
-    align-self: start;
-    margin-top: 10px;
     margin-left: 5px;
 
     .row-btn {
