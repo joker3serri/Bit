@@ -10,14 +10,14 @@
           {{ field.value || "&nbsp;" }}
         </div>
         <div *ngIf="field.type === fieldType.Hidden">
-          <span [hidden]="!field.showValue || field.showCount" class="monospaced">
+          <span *ngIf="!field.showValue" class="monospaced">{{ field.maskedValue }}</span>
+          <span *ngIf="field.showValue && !field.showCount" class="monospaced">
             {{ field.value }}
           </span>
           <span
-            [hidden]="!field.showValue || !field.showCount"
+            *ngIf="field.showValue && field.showCount"
             [innerHTML]="field.value | colorPasswordCount"
           ></span>
-          <span [hidden]="field.showValue" class="monospaced">{{ field.maskedValue }}</span>
         </div>
         <div *ngIf="field.type === fieldType.Boolean">
           <i class="bwi bwi-check-square" *ngIf="field.value === 'true'" aria-hidden="true"></i>
@@ -41,18 +41,8 @@
           type="button"
           class="row-btn"
           appStopClick
-          appA11yTitle="{{ 'showMore' | i18n }}"
-          *ngIf="!field.showActionButtons && field.type === fieldType.Hidden"
-          (click)="showFieldActionButtons(field)"
-        >
-          <i class="fa fa-lg fa-chevron-left" aria-hidden="true"></i>
-        </button>
-        <button
-          type="button"
-          class="row-btn"
-          appStopClick
           appA11yTitle="{{ 'toggleCount' | i18n }}"
-          *ngIf="field.showActionButtons && field.type === fieldType.Hidden && cipher.viewPassword"
+          *ngIf="field.type === fieldType.Hidden && cipher.viewPassword && field.showValue"
           (click)="toggleFieldCount(field)"
         >
           <i class="fa fa-lg fa-list-ol" aria-hidden="true"></i>
@@ -63,7 +53,7 @@
           appStopClick
           attr.aria-label="{{ 'toggleVisibility' | i18n }} {{ field.name }}"
           appA11yTitle="{{ 'toggleVisibility' | i18n }}"
-          *ngIf="field.showActionButtons && field.type === fieldType.Hidden && cipher.viewPassword"
+          *ngIf="field.type === fieldType.Hidden && cipher.viewPassword"
           (click)="toggleFieldValue(field)"
           [attr.aria-pressed]="field.showValue"
         >
