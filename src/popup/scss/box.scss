@@ -260,6 +260,7 @@
     display: block;
     width: 100%;
     margin-bottom: 5px;
+    min-height: 1em;
 
     @include themify($themes) {
       color: themed("mutedColor");
