@@ -11,7 +11,7 @@
         </div>
         <div *ngIf="field.type === fieldType.Hidden">
           <span *ngIf="!field.showValue" class="monospaced">{{ field.maskedValue }}</span>
-          <span *ngIf="field.showValue && !field.showCount" class="monospaced">
+          <span *ngIf="field.showValue && !field.showCount" class="monospaced show-whitespace">
             {{ field.value }}
           </span>
           <span
