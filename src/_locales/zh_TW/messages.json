@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "無符合的登入資料。"
   },
-  "vaultLocked": {
-    "message": "密碼庫已鎖定。"
+  "unlockVaultMenu": {
+    "message": "解鎖您的密碼庫"
   },
-  "vaultLoggedOut": {
-    "message": "密碼庫已登出。"
+  "loginToVaultMenu": {
+    "message": "登入您的密碼庫"
   },
   "autoFillInfo": {
     "message": "沒有可以自動填入目前瀏覽器分頁的登入資料。"
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "鎖定密碼庫"
   },
-  "privateModeMessage": {
-    "message": "很遺憾，在瀏覽器的隱私模式下，此視窗無法使用。"
+  "privateModeWarning": {
+    "message": "私密模式的支援是實驗性功能，部分功能無法完全發揮作用。"
   },
   "customFields": {
     "message": "自訂欄位"

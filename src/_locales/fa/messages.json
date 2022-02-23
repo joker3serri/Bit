@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "ورودیها منتطبق نیست."
   },
-  "vaultLocked": {
-    "message": "گاوصندوق قفل شد."
+  "unlockVaultMenu": {
+    "message": "بازکردن گاو‌صندوقتان"
   },
-  "vaultLoggedOut": {
-    "message": "گاوصندوق خارج شده است."
+  "loginToVaultMenu": {
+    "message": "وارد شدن به گاو‌صندوقتان"
   },
   "autoFillInfo": {
     "message": "پرکردن خودکار برای برگه فعلی مرورگر در دسترس نیست."
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "قفل گاوصندوق"
   },
-  "privateModeMessage": {
-    "message": "متأسفانه این پنجره در حالت خصوصی برای این مرورگر در دسترس نیست."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "فیلدهای سفارشی"

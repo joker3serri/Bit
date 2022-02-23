@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "No matching logins."
   },
-  "vaultLocked": {
-    "message": "Vault is locked."
+  "unlockVaultMenu": {
+    "message": "Unlock your vault"
   },
-  "vaultLoggedOut": {
-    "message": "Vault is logged out."
+  "loginToVaultMenu": {
+    "message": "Log in to your vault"
   },
   "autoFillInfo": {
     "message": "There are no logins available to auto-fill for the current browser tab."
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Lock the vault"
   },
-  "privateModeMessage": {
-    "message": "Unfortunately this window is not available in private mode for this browser."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "Custom Fields"

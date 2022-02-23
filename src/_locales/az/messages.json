@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Uyğun gələn hesab yoxdur."
   },
-  "vaultLocked": {
-    "message": "Anbar kilidlənib."
+  "unlockVaultMenu": {
+    "message": "Anbarın kilidini açın"
   },
-  "vaultLoggedOut": {
-    "message": "Anbardan çıxış edildi."
+  "loginToVaultMenu": {
+    "message": "Anbarınıza giriş edin"
   },
   "autoFillInfo": {
     "message": "Hazırkı səyyah vərəqi üçün avto-doldurulacaq giriş məlumatları yoxdur."
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Anbarı kilidlə"
   },
-  "privateModeMessage": {
-    "message": "Təəssüf ki, bu pəncərə səyyahın gizli rejimində əlçatan deyil."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "Özəl sahələr"

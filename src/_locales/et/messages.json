@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Sobivaid kontoandmeid ei leitud."
   },
-  "vaultLocked": {
-    "message": "Hoidla on lukus."
+  "unlockVaultMenu": {
+    "message": "Lukusta hoidla lahti"
   },
-  "vaultLoggedOut": {
-    "message": "Hoidlast on välja logitud."
+  "loginToVaultMenu": {
+    "message": "Logi hoidlasse sisse"
   },
   "autoFillInfo": {
     "message": "Selle vahekaardi automaatseks täitmiseks puuduvad kirjed."
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Lukusta hoidla"
   },
-  "privateModeMessage": {
-    "message": "Kahjuks ei toeta kasutatav brauser seda akent privaatses režiimis."
+  "privateModeWarning": {
+    "message": "Privaatrežiimi toetus on katsejärgus, mistõttu mõned funktsioonid on piiratud."
   },
   "customFields": {
     "message": "Kohandatud väljad"

@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Δεν υπάρχουν αντιστοιχίσεις σύνδεσης."
   },
-  "vaultLocked": {
-    "message": "Το Vault είναι κλειδωμένο."
+  "unlockVaultMenu": {
+    "message": "Ξεκλειδώστε την κρύπτη σας"
   },
-  "vaultLoggedOut": {
-    "message": "Το Vault έχει αποσυνδεθεί."
+  "loginToVaultMenu": {
+    "message": "Συνδεθείτε στο θησαυ/κιο σας"
   },
   "autoFillInfo": {
     "message": "Δεν υπάρχουν διαθέσιμες συνδέσεις για την αυτόματη συμπλήρωση, στην τρέχουσα καρτέλα του προγράμματος περιήγησης."
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Κλειδώστε το vault"
   },
-  "privateModeMessage": {
-    "message": "Δυστυχώς, αυτό το παράθυρο δεν είναι διαθέσιμο σε ιδιωτική λειτουργία για αυτό το πρόγραμμα περιήγησης."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "Προσαρμοσμένα Πεδία"

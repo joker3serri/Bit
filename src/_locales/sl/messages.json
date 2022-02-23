@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Nobenih ujemajočih prijav."
   },
-  "vaultLocked": {
-    "message": "Trezor je zaklenjen."
+  "unlockVaultMenu": {
+    "message": "Unlock your vault"
   },
-  "vaultLoggedOut": {
-    "message": "Trezor je odjavljen."
+  "loginToVaultMenu": {
+    "message": "Log in to your vault"
   },
   "autoFillInfo": {
     "message": "Nobene prijave ni na voljo za auto-izpolnitev za trenutni zavihek."
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Lock the vault"
   },
-  "privateModeMessage": {
-    "message": "Unfortunately this window is not available in private mode for this browser."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "Custom Fields"

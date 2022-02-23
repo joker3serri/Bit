@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { AngularWebpackPlugin } = require("@ngtools/webpack");
+const TerserPlugin = require("terser-webpack-plugin");
 
 if (process.env.NODE_ENV == null) {
   process.env.NODE_ENV = "development";
@@ -31,7 +32,7 @@ const moduleRules = [
   },
   {
     test: /\.(jpe?g|png|gif|svg)$/i,
-    exclude: /.*(fontawesome-webfont|glyphicons-halflings-regular)\.svg/,
+    exclude: /.*(bwi-font|glyphicons-halflings-regular)\.svg/,
     generator: {
       filename: "popup/images/[name][ext]",
     },
@@ -83,9 +84,6 @@ const plugins = [
       { from: "./src/content/autofill.css", to: "content" },
     ],
   }),
-  new webpack.SourceMapDevToolPlugin({
-    include: ["popup/main.js", "background.js"],
-  }),
   new MiniCssExtractPlugin({
     filename: "[name].css",
     chunkFilename: "chunk-[id].css",
@@ -106,6 +104,10 @@ const plugins = [
   new webpack.ProvidePlugin({
     process: "process/browser",
   }),
+  new webpack.SourceMapDevToolPlugin({
+    exclude: [/content\/.*/, /notification\/.*/],
+    filename: "[file].map",
+  }),
 ];
 
 const config = {
@@ -124,7 +126,12 @@ const config = {
     "notification/bar": "./src/notification/bar.js",
   },
   optimization: {
-    minimize: false,
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        exclude: [/content\/.*/, /notification\/.*/],
+      }),
+    ],
     splitChunks: {
       cacheGroups: {
         commons: {

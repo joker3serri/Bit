@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Nessun login corrispondente."
   },
-  "vaultLocked": {
-    "message": "La cassaforte è bloccata."
+  "unlockVaultMenu": {
+    "message": "Sblocca la tua cassaforte"
   },
-  "vaultLoggedOut": {
-    "message": "La cassaforte è bloccata."
+  "loginToVaultMenu": {
+    "message": "Accedi alla tua cassaforte"
   },
   "autoFillInfo": {
     "message": "Non ci sono login disponibili per completare la scheda attuale del browser."
@@ -439,7 +439,7 @@
     "message": "Codice di verifica non valido."
   },
   "valueCopied": {
-    "message": "$VALUE$ copiato",
+    "message": "$VALUE$ copiata",
     "description": "Value has been copied to the clipboard.",
     "placeholders": {
       "value": {
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Blocca la cassaforte"
   },
-  "privateModeMessage": {
-    "message": "Purtroppo questa finestra non è disponibile nella modalità anonima per questo browser."
+  "privateModeWarning": {
+    "message": "Il supporto della modalità privata è sperimentale e alcune funzionalità sono limitate."
   },
   "customFields": {
     "message": "Campi personalizzati"

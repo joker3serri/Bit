@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Няма падыходных уліковых даных."
   },
-  "vaultLocked": {
-    "message": "Сховішча заблакіравана."
+  "unlockVaultMenu": {
+    "message": "Unlock your vault"
   },
-  "vaultLoggedOut": {
-    "message": "Вы выйшлі са сховішча."
+  "loginToVaultMenu": {
+    "message": "Log in to your vault"
   },
   "autoFillInfo": {
     "message": "Няма ўліковых даных, даступных для аўтазапаўнення ў бягучую ўкладку браўзера."
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Заблакіраваць сховішча"
   },
-  "privateModeMessage": {
-    "message": "На жаль, гэта акно недаступна ў прыватным акне гэтага браўзара."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "Карыстальніцкія палі"

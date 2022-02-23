@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Eşleşen hesap yok."
   },
-  "vaultLocked": {
-    "message": "Kasa kilitli."
+  "unlockVaultMenu": {
+    "message": "Kasanızın kilidini açın"
   },
-  "vaultLoggedOut": {
-    "message": "Kasadan çıkış yaptınız."
+  "loginToVaultMenu": {
+    "message": "Kasanıza giriş yapın"
   },
   "autoFillInfo": {
     "message": "Mevcut sekme için otomatik doldurulacak giriş bilgisi bulunmuyor."
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Kasayı kilitle"
   },
-  "privateModeMessage": {
-    "message": "Maalesef bu pencereyi bu tarayıcının gizli modunda kullanamazsınız."
+  "privateModeWarning": {
+    "message": "Gizli mod desteği deneyseldir ve bazı özellikler kısıtlıdır."
   },
   "customFields": {
     "message": "Özel alanlar"

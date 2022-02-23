@@ -104,8 +104,8 @@ export class SettingsComponent implements OnInit {
       this.vaultTimeout.setValue(timeout);
     }
     this.previousVaultTimeout = this.vaultTimeout.value;
-    this.vaultTimeout.valueChanges.subscribe((value) => {
-      this.saveVaultTimeout(value);
+    this.vaultTimeout.valueChanges.subscribe(async (value) => {
+      await this.saveVaultTimeout(value);
     });
 
     const action = await this.stateService.getVaultTimeoutAction();
@@ -238,7 +238,7 @@ export class SettingsComponent implements OnInit {
         titleText: this.i18nService.t("awaitDesktop"),
         text: this.i18nService.t("awaitDesktopDesc"),
         icon: "info",
-        iconHtml: '<i class="swal-custom-icon fa fa-info-circle text-info"></i>',
+        iconHtml: '<i class="swal-custom-icon bwi bwi-info-circle text-info"></i>',
         showCancelButton: true,
         cancelButtonText: this.i18nService.t("cancel"),
         showConfirmButton: false,
@@ -308,7 +308,9 @@ export class SettingsComponent implements OnInit {
       this.i18nService.t("cancel")
     );
     if (confirmed) {
-      BrowserApi.createNewTab("https://help.bitwarden.com/article/change-your-master-password/");
+      BrowserApi.createNewTab(
+        "https://bitwarden.com/help/master-password/#change-your-master-password"
+      );
     }
   }
 
@@ -320,7 +322,7 @@ export class SettingsComponent implements OnInit {
       this.i18nService.t("cancel")
     );
     if (confirmed) {
-      BrowserApi.createNewTab("https://help.bitwarden.com/article/setup-two-step-login/");
+      BrowserApi.createNewTab("https://bitwarden.com/help/setup-two-step-login/");
     }
   }
 
@@ -332,7 +334,7 @@ export class SettingsComponent implements OnInit {
       this.i18nService.t("cancel")
     );
     if (confirmed) {
-      BrowserApi.createNewTab("https://help.bitwarden.com/article/what-is-an-organization/");
+      BrowserApi.createNewTab("https://bitwarden.com/help/about-organizations/");
     }
   }
 
@@ -342,7 +344,7 @@ export class SettingsComponent implements OnInit {
   }
 
   import() {
-    BrowserApi.createNewTab("https://help.bitwarden.com/article/import-data/");
+    BrowserApi.createNewTab("https://bitwarden.com/help/import-data/");
   }
 
   export() {
@@ -350,7 +352,7 @@ export class SettingsComponent implements OnInit {
   }
 
   help() {
-    BrowserApi.createNewTab("https://help.bitwarden.com/");
+    BrowserApi.createNewTab("https://bitwarden.com/help/");
   }
 
   about() {
@@ -360,7 +362,7 @@ export class SettingsComponent implements OnInit {
     );
     const div = document.createElement("div");
     div.innerHTML =
-      `<p class="text-center"><i class="fa fa-shield fa-3x" aria-hidden="true"></i></p>
+      `<p class="text-center"><i class="bwi bwi-shield bwi-3x" aria-hidden="true"></i></p>
             <p class="text-center"><b>Bitwarden</b><br>&copy; Bitwarden Inc. 2015-` +
       year +
       `</p>`;
@@ -399,7 +401,7 @@ export class SettingsComponent implements OnInit {
     });
 
     if (result.value) {
-      this.platformUtilsService.launchUri("https://help.bitwarden.com/article/fingerprint-phrase/");
+      this.platformUtilsService.launchUri("https://bitwarden.com/help/fingerprint-phrase/");
     }
   }
 

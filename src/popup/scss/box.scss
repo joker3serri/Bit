@@ -216,6 +216,13 @@
     }
   }
 
+  &.override-last:last-child:before {
+    border-bottom: 1px solid #000000;
+    @include themify($themes) {
+      border-bottom-color: themed("boxBorderColor");
+    }
+  }
+
   &.last:last-child:before {
     border-bottom: 1px solid #000000;
     @include themify($themes) {
@@ -538,7 +545,7 @@
   }
 
   .row-sub-icon,
-  .row-sub-label + i.fa {
+  .row-sub-label + i.bwi {
     @include themify($themes) {
       color: themed("disabledIconColor");
     }

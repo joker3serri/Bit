@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "কোনও মিলত লগইন নেই।"
   },
-  "vaultLocked": {
-    "message": "ভল্ট লক করা আছে।"
+  "unlockVaultMenu": {
+    "message": "Unlock your vault"
   },
-  "vaultLoggedOut": {
-    "message": "ভল্ট লগ আউট হয়েছে।"
+  "loginToVaultMenu": {
+    "message": "Log in to your vault"
   },
   "autoFillInfo": {
     "message": "বর্তমান ব্রাউজার ট্যাবের জন্য স্বয়ংক্রিয় পূরণের কোনও লগইন উপলব্ধ নেই।"
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "ভল্ট লক করুন"
   },
-  "privateModeMessage": {
-    "message": "দুর্ভাগ্যক্রমে এই উইন্ডোটি এই ব্রাউজারের জন্য ব্যক্তিগত মোডে উপলব্ধ নয়।"
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "পছন্দসই ক্ষেত্র"

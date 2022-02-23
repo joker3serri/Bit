@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Sem credenciais correspondentes."
   },
-  "vaultLocked": {
-    "message": "O cofre está trancado."
+  "unlockVaultMenu": {
+    "message": "Unlock your vault"
   },
-  "vaultLoggedOut": {
-    "message": "O cofre foi fechado."
+  "loginToVaultMenu": {
+    "message": "Log in to your vault"
   },
   "autoFillInfo": {
     "message": "Não há credenciais disponíveis para autopreenchimento para a aba do navegador atual."
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Bloquear o cofre"
   },
-  "privateModeMessage": {
-    "message": "Infelizmente esta janela não está disponível no modo privado para este navegador."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "Campos Personalizados"

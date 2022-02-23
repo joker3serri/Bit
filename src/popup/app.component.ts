@@ -8,7 +8,6 @@ import { BrowserApi } from "../browser/browserApi";
 import { AuthService } from "jslib-common/abstractions/auth.service";
 import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { KeyConnectorService } from "jslib-common/abstractions/keyConnector.service";
 import { MessagingService } from "jslib-common/abstractions/messaging.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
 
@@ -26,6 +25,7 @@ import { routerTransition } from "./app-routing.animations";
 })
 export class AppComponent implements OnInit {
   private lastActivity: number = null;
+  private activeUserId: string;
 
   constructor(
     private toastrService: ToastrService,
@@ -38,27 +38,20 @@ export class AppComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private ngZone: NgZone,
     private sanitizer: DomSanitizer,
-    private platformUtilsService: PlatformUtilsService,
-    private keyConnectoService: KeyConnectorService
+    private platformUtilsService: PlatformUtilsService
   ) {}
 
   ngOnInit() {
-    if (BrowserApi.getBackgroundPage() == null) {
-      return;
-    }
-    let activeUserId: string = null;
     this.stateService.activeAccount.subscribe((userId) => {
-      activeUserId = userId;
+      this.activeUserId = userId;
     });
 
     this.ngZone.runOutsideAngular(() => {
-      if (activeUserId != null) {
-        window.onmousedown = () => this.recordActivity(activeUserId);
-        window.ontouchstart = () => this.recordActivity(activeUserId);
-        window.onclick = () => this.recordActivity(activeUserId);
-        window.onscroll = () => this.recordActivity(activeUserId);
-        window.onkeypress = () => this.recordActivity(activeUserId);
-      }
+      window.onmousedown = () => this.recordActivity();
+      window.ontouchstart = () => this.recordActivity();
+      window.onclick = () => this.recordActivity();
+      window.onscroll = () => this.recordActivity();
+      window.onkeypress = () => this.recordActivity();
     });
 
     (window as any).bitwardenPopupMainMessageListener = async (
@@ -76,8 +69,6 @@ export class AppComponent implements OnInit {
                 text: this.i18nService.t("loginExpired"),
               });
             }
-
-            await this.stateService.clean({ userId: msg.userId });
 
             if (this.stateService.activeAccount.getValue() == null) {
               this.router.navigate(["home"]);
@@ -171,14 +162,18 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private async recordActivity(userId: string) {
+  private async recordActivity() {
+    if (this.activeUserId == null) {
+      return;
+    }
+
     const now = new Date().getTime();
     if (this.lastActivity != null && now - this.lastActivity < 250) {
       return;
     }
 
     this.lastActivity = now;
-    this.stateService.setLastActive(now, { userId: userId });
+    await this.stateService.setLastActive(now, { userId: this.activeUserId });
   }
 
   private showToast(msg: any) {
@@ -216,16 +211,16 @@ export class AppComponent implements OnInit {
       // If you add custom types to this part, the type to SweetAlertIcon cast below needs to be changed.
       switch (type) {
         case "success":
-          iconClasses = "fa-check text-success";
+          iconClasses = "bwi-check text-success";
           break;
         case "warning":
-          iconClasses = "fa-warning text-warning";
+          iconClasses = "bwi-exclamation-triangle text-warning";
           break;
         case "error":
-          iconClasses = "fa-bolt text-danger";
+          iconClasses = "bwi-error text-danger";
           break;
         case "info":
-          iconClasses = "fa-info-circle text-info";
+          iconClasses = "bwi-info-circle text-info";
           break;
         default:
           break;
@@ -239,7 +234,7 @@ export class AppComponent implements OnInit {
       buttonsStyling: false,
       icon: type as SweetAlertIcon, // required to be any of the SweetAlertIcons to output the iconHtml.
       iconHtml:
-        iconClasses != null ? `<i class="swal-custom-icon fa ${iconClasses}"></i>` : undefined,
+        iconClasses != null ? `<i class="swal-custom-icon bwi ${iconClasses}"></i>` : undefined,
       text: msg.text,
       html: msg.html,
       titleText: msg.title,

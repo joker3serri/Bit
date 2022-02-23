@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Geen overeenkomstige logins."
   },
-  "vaultLocked": {
-    "message": "Kluis is vergrendeld."
+  "unlockVaultMenu": {
+    "message": "Ontgrendel je kluis"
   },
-  "vaultLoggedOut": {
-    "message": "Kluis is uitgelogd."
+  "loginToVaultMenu": {
+    "message": "Log in op je kluis"
   },
   "autoFillInfo": {
     "message": "Er zijn geen logins beschikbaar om op het huidige browser-tabblad in te vullen."
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Kluis vergrendelen"
   },
-  "privateModeMessage": {
-    "message": "Dit scherm is helaas niet beschikbaar in het privévenster van deze browser."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "Aangepaste velden"

@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "לא נמצאו פרטי כניסה תואמים."
   },
-  "vaultLocked": {
-    "message": "הכספת נעולה."
+  "unlockVaultMenu": {
+    "message": "שחרור הכספת שלך"
   },
-  "vaultLoggedOut": {
-    "message": "בוצעה יציאה מהכספת."
+  "loginToVaultMenu": {
+    "message": "כניסה לכספת שלך"
   },
   "autoFillInfo": {
     "message": "לא נמצאו פרטי כניסה להשלמה אוטומטית בלשונית הנוכחית בדפדפן."
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "נעל את הכספת"
   },
-  "privateModeMessage": {
-    "message": "לצערנו חלון זה אינו זמין במצב גלישה פרטית בדפדפן זה."
+  "privateModeWarning": {
+    "message": "המצב הפרטי הוא במסגרת ניסוי וחלק מהיכולות מוגבלות."
   },
   "customFields": {
     "message": "שדות מותאמים אישית"

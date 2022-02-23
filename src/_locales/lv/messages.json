@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Nav atbilstošu pierakstīšanās vienumu."
   },
-  "vaultLocked": {
-    "message": "Glabātava ir slēgta."
+  "unlockVaultMenu": {
+    "message": "Atslēgt glabātavu"
   },
-  "vaultLoggedOut": {
-    "message": "Izrakstījies no glabātavas."
+  "loginToVaultMenu": {
+    "message": "Pierakstīties glabātavā"
   },
   "autoFillInfo": {
     "message": "Nav pierakstīšanās vienumu, kurus automātiski ievadīt pašreizējā pārlūka cilnē."
@@ -980,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Aizslēgt glabātavu"
   },
-  "privateModeMessage": {
-    "message": "Diemžēl šis logs nav pieejams privātajā režīmā šajā pārlūkā."
+  "privateModeWarning": {
+    "message": "Personiskā stāvokļa atbalsts ir izmēģinājuma, un dažas iespējas ir ierobežotas."
   },
   "customFields": {
     "message": "Pielāgoti lauki"
