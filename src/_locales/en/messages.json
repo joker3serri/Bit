@@ -1871,6 +1871,6 @@
     "message": "Toggle character count"
   },
   "sessionTimeout": {
-    "message": "Your session has timed out. Please go back and try to log in again."
+    "message": "Your session has timed out. Please go back and try logging in again."
   }
 }
