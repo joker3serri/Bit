@@ -64,6 +64,7 @@ import { SelectCopyDirective } from "jslib-angular/directives/select-copy.direct
 import { StopClickDirective } from "jslib-angular/directives/stop-click.directive";
 import { StopPropDirective } from "jslib-angular/directives/stop-prop.directive";
 import { TrueFalseValueDirective } from "jslib-angular/directives/true-false-value.directive";
+import { ColorPasswordCountPipe } from "jslib-angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "jslib-angular/pipes/color-password.pipe";
 import { I18nPipe } from "jslib-angular/pipes/i18n.pipe";
 import { SearchCiphersPipe } from "jslib-angular/pipes/search-ciphers.pipe";
@@ -196,6 +197,7 @@ registerLocaleData(localeZhTw, "zh-TW");
     CipherRowComponent,
     CiphersComponent,
     CollectionsComponent,
+    ColorPasswordCountPipe,
     ColorPasswordPipe,
     CurrentTabComponent,
     EnvironmentComponent,
