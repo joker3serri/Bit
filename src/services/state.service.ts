@@ -78,12 +78,8 @@ export class StateService
     await this.saveAccount(account, this.reconcileOptions(options, this.defaultInMemoryOptions));
   }
   async getBrowserSendTypeComponentState(options?: StorageOptions): Promise<BrowserComponentState> {
-    const result = (
-      await this.getAccount(this.reconcileOptions(options, this.defaultInMemoryOptions))
-    )?.sendType;
-
-    console.log(result);
-    return result;
+    return (await this.getAccount(this.reconcileOptions(options, this.defaultInMemoryOptions)))
+      ?.sendType;
   }
 
   async setBrowserSendTypeComponentState(
