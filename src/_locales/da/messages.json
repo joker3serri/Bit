@@ -1871,6 +1871,18 @@
     "message": "Slå tegnantal til/fra"
   },
   "sessionTimeout": {
-    "message": "Your session has timed out. Please go back and try logging in again."
+    "message": "Din session er udløbet. Gå tilbage og prøv at logge ind igen."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Eksporterer personlig boks"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Kun de personlige bokselementer tilknyttet $EMAIL$ eksporteres. Organisationsbokseelementer medtages ikke.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
   }
 }

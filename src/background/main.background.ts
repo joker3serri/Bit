@@ -497,8 +497,14 @@ export default class MainBackground {
     await this.webRequestBackground.init();
     await this.windowsBackground.init();
 
-    if (this.platformUtilsService.isFirefox && !this.isPrivateMode) {
-      // Set new Private Mode windows to the default icon - they do not share state with the background page
+    if (this.platformUtilsService.isFirefox() && !this.isPrivateMode) {
+      // Set Private Mode windows to the default icon - they do not share state with the background page
+      const privateWindows = await BrowserApi.getPrivateModeWindows();
+      privateWindows.forEach(async (win) => {
+        await this.actionSetIcon(chrome.browserAction, "", win.id);
+        await this.actionSetIcon(this.sidebarAction, "", win.id);
+      });
+
       BrowserApi.onWindowCreated(async (win) => {
         if (win.incognito) {
           await this.actionSetIcon(chrome.browserAction, "", win.id);
