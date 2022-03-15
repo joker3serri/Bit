@@ -171,19 +171,11 @@ export class SendGroupingsComponent extends BaseSendComponent {
       sends: this.sends,
       typeCounts: this.typeCounts,
     };
-    const obj = new BrowserSendComponentState();
-    obj.scrollY = this.state.scrollY;
-    obj.searchText = this.state.searchText;
-    obj.sends = this.state.sends;
-    obj.typeCounts = this.state.typeCounts;
-    console.log("saving obj");
-    await this.stateService.setBrowserSendComponentState(obj);
+    await this.stateService.setBrowserSendComponentState(this.state);
   }
 
   private async restoreState(): Promise<boolean> {
-    console.log("here");
     this.state = await this.stateService.getBrowserSendComponentState();
-    console.log(this.state);
     if (this.state == null) {
       return false;
     }
