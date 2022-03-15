@@ -14,8 +14,7 @@ import { SyncService } from "jslib-common/abstractions/sync.service";
 import { SendType } from "jslib-common/enums/sendType";
 import { SendView } from "jslib-common/models/view/sendView";
 
-import { BrowserSendComponentState } from "src/models/browserSendComponentState";
-
+import { BrowserSendComponentState } from "../../models/browserSendComponentState";
 import { StateService } from "../../services/abstractions/state.service";
 import { PopupUtilsService } from "../services/popup-utils.service";
 
@@ -172,11 +171,19 @@ export class SendGroupingsComponent extends BaseSendComponent {
       sends: this.sends,
       typeCounts: this.typeCounts,
     };
-    await this.stateService.setBrowserSendComponentState(this.state);
+    const obj = new BrowserSendComponentState();
+    obj.scrollY = this.state.scrollY;
+    obj.searchText = this.state.searchText;
+    obj.sends = this.state.sends;
+    obj.typeCounts = this.state.typeCounts;
+    console.log("saving obj");
+    await this.stateService.setBrowserSendComponentState(obj);
   }
 
   private async restoreState(): Promise<boolean> {
+    console.log("here");
     this.state = await this.stateService.getBrowserSendComponentState();
+    console.log(this.state);
     if (this.state == null) {
       return false;
     }
