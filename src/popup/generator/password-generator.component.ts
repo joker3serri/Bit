@@ -1,11 +1,14 @@
+
 import { Location } from "@angular/common";
 import { Component } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 
 import { PasswordGeneratorComponent as BasePasswordGeneratorComponent } from "jslib-angular/components/password-generator.component";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { PasswordGenerationService } from "jslib-common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
 import { StateService } from "jslib-common/abstractions/state.service";
+import { UsernameGenerationService } from "jslib-common/abstractions/usernameGeneration.service";
 import { CipherView } from "jslib-common/models/view/cipherView";
 
 @Component({
@@ -17,26 +20,48 @@ export class PasswordGeneratorComponent extends BasePasswordGeneratorComponent {
 
   constructor(
     passwordGenerationService: PasswordGenerationService,
+    usernameGenerationService: UsernameGenerationService,
     platformUtilsService: PlatformUtilsService,
     i18nService: I18nService,
-    private stateService: StateService,
+    stateService: StateService,
+    route: ActivatedRoute,
     private location: Location
   ) {
-    super(passwordGenerationService, platformUtilsService, i18nService, window);
+    super(
+      passwordGenerationService,
+      usernameGenerationService,
+      platformUtilsService,
+      stateService,
+      i18nService,
+      route,
+      window
+    );
   }
 
   async ngOnInit() {
-    await super.ngOnInit();
     const addEditCipherInfo = await this.stateService.getAddEditCipherInfo();
     if (addEditCipherInfo != null) {
       this.cipherState = addEditCipherInfo.cipher;
     }
     this.showSelect = this.cipherState != null;
+    this.showWebsiteOption =
+      this.cipherState != null &&
+      this.cipherState.login != null &&
+      this.cipherState.login.hasUris &&
+      this.cipherState.login.uris[0].hostname != null;
+    await super.ngOnInit();
+    if (this.showWebsiteOption) {
+      this.usernameOptions.website = this.cipherState.login.uris[0].hostname;
+    }
   }
 
   select() {
     super.select();
-    this.cipherState.login.password = this.password;
+    if (this.type === "password") {
+      this.cipherState.login.password = this.password;
+    } else if (this.type === "username") {
+      this.cipherState.login.username = this.username;
+    }
     this.close();
   }
 

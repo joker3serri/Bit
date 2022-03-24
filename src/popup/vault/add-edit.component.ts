@@ -182,6 +182,21 @@ export class AddEditComponent extends BaseAddEditComponent {
     this.location.back();
   }
 
+  async generateUsername(): Promise<boolean> {
+    const confirmed = await super.generateUsername();
+    if (confirmed) {
+      this.stateService.setAddEditCipherInfo({
+        cipher: this.cipher,
+        collectionIds:
+          this.collections == null
+            ? []
+            : this.collections.filter((c) => (c as any).checked).map((c) => c.id),
+      });
+      this.router.navigate(["generator"], { queryParams: { type: "username" } });
+    }
+    return confirmed;
+  }
+
   async generatePassword(): Promise<boolean> {
     const confirmed = await super.generatePassword();
     if (confirmed) {
@@ -192,7 +207,7 @@ export class AddEditComponent extends BaseAddEditComponent {
             ? []
             : this.collections.filter((c) => (c as any).checked).map((c) => c.id),
       });
-      this.router.navigate(["generator"]);
+      this.router.navigate(["generator"], { queryParams: { type: "password" } });
     }
     return confirmed;
   }
