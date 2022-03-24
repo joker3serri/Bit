@@ -1,4 +1,3 @@
-
 import { Location } from "@angular/common";
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
@@ -45,14 +44,11 @@ export class PasswordGeneratorComponent extends BasePasswordGeneratorComponent {
     }
     this.showSelect = this.cipherState != null;
     this.showWebsiteOption =
-      this.cipherState != null &&
-      this.cipherState.login != null &&
-      this.cipherState.login.hasUris &&
-      this.cipherState.login.uris[0].hostname != null;
-    await super.ngOnInit();
+      this.cipherState?.login?.hasUris && this.cipherState.login.uris[0].hostname != null;
     if (this.showWebsiteOption) {
-      this.usernameOptions.website = this.cipherState.login.uris[0].hostname;
+      this.usernameWebsite = this.cipherState.login.uris[0].hostname;
     }
+    await super.ngOnInit();
   }
 
   select() {
