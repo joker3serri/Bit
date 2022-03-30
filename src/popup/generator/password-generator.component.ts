@@ -15,6 +15,7 @@ import { CipherView } from "jslib-common/models/view/cipherView";
   templateUrl: "password-generator.component.html",
 })
 export class PasswordGeneratorComponent extends BasePasswordGeneratorComponent {
+  private addEditCipherInfo: any;
   private cipherState: CipherView;
 
   constructor(
@@ -38,9 +39,9 @@ export class PasswordGeneratorComponent extends BasePasswordGeneratorComponent {
   }
 
   async ngOnInit() {
-    const addEditCipherInfo = await this.stateService.getAddEditCipherInfo();
-    if (addEditCipherInfo != null) {
-      this.cipherState = addEditCipherInfo.cipher;
+    this.addEditCipherInfo = await this.stateService.getAddEditCipherInfo();
+    if (this.addEditCipherInfo != null) {
+      this.cipherState = this.addEditCipherInfo.cipher;
     }
     this.showSelect = this.cipherState != null;
     this.showWebsiteOption =
@@ -58,6 +59,8 @@ export class PasswordGeneratorComponent extends BasePasswordGeneratorComponent {
     } else if (this.type === "username") {
       this.cipherState.login.username = this.username;
     }
+    this.addEditCipherInfo.cipher = this.cipherState;
+    this.stateService.setAddEditCipherInfo(this.addEditCipherInfo);
     this.close();
   }
 
