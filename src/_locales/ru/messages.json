@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Нет подходящих логинов."
   },
-  "vaultLocked": {
-    "message": "Хранилище заблокировано."
+  "unlockVaultMenu": {
+    "message": "Разблокировать хранилище"
   },
-  "vaultLoggedOut": {
-    "message": "Вы вышли из хранилища."
+  "loginToVaultMenu": {
+    "message": "Войти в хранилище"
   },
   "autoFillInfo": {
     "message": "Нет доступных логинов для автозаполнения на текущей вкладке браузера."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Длина"
+  },
+  "uppercase": {
+    "message": "Прописные буквы (A-Z)"
+  },
+  "lowercase": {
+    "message": "Строчные буквы (a-z)"
+  },
+  "numbers": {
+    "message": "Цифры (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Специальные символы (!@#$%^&*)"
   },
   "numWords": {
     "message": "Количество слов"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Заблокировать хранилище"
   },
-  "privateModeMessage": {
-    "message": "К сожалению, это окно недоступно в приватном режиме этого браузера."
+  "privateModeWarning": {
+    "message": "Частный режим - экспериментальный, некоторые функции ограничены."
   },
   "customFields": {
     "message": "Пользовательские поля"
@@ -1482,7 +1494,7 @@
     "message": "Запустить приложение Bitwarden для компьютера"
   },
   "startDesktopDesc": {
-    "message": "Перед использованием этой функции необходимо запустить приложение Bitwarden для компьютера."
+    "message": "Перед использованием разблокировки с помощью биометрии необходимо запустить приложение Bitwarden для компьютера."
   },
   "errorEnableBiometricTitle": {
     "message": "Не удается включить биометрию"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "Вы покинули организацию."
+  },
+  "toggleCharacterCount": {
+    "message": "Показать количество символов"
+  },
+  "sessionTimeout": {
+    "message": "Время вашей сессии истекло. Пожалуйста, вернитесь и попробуйте войти снова."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Экспорт личного хранилища"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Будут экспортированы только личные элементы хранилища, связанные с $EMAIL$. Элементы хранилища организации включены не будут.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Ошибка"
   }
 }

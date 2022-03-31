@@ -1,29 +1,22 @@
 import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { BrowserApi } from "../../browser/browserApi";
-
-import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
-import { CipherType } from "jslib-common/enums/cipherType";
-
-import { CipherView } from "jslib-common/models/view/cipherView";
-
 import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
 import { CipherService } from "jslib-common/abstractions/cipher.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { PasswordRepromptService } from "jslib-common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
 import { SearchService } from "jslib-common/abstractions/search.service";
-import { StorageService } from "jslib-common/abstractions/storage.service";
+import { StateService } from "jslib-common/abstractions/state.service";
 import { SyncService } from "jslib-common/abstractions/sync.service";
-
-import { ConstantsService } from "jslib-common/services/constants.service";
-
-import { AutofillService } from "../../services/abstractions/autofill.service";
-
-import { PopupUtilsService } from "../services/popup-utils.service";
-
+import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
+import { CipherType } from "jslib-common/enums/cipherType";
 import { Utils } from "jslib-common/misc/utils";
+import { CipherView } from "jslib-common/models/view/cipherView";
+
+import { BrowserApi } from "../../browser/browserApi";
+import { AutofillService } from "../../services/abstractions/autofill.service";
+import { PopupUtilsService } from "../services/popup-utils.service";
 
 const BroadcasterSubscriptionId = "CurrentTabComponent";
 
@@ -60,7 +53,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
     private syncService: SyncService,
     private searchService: SearchService,
-    private storageService: StorageService,
+    private stateService: StateService,
     private passwordRepromptService: PasswordRepromptService
   ) {}
 
@@ -209,12 +202,8 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     });
 
     const otherTypes: CipherType[] = [];
-    const dontShowCards = await this.storageService.get<boolean>(
-      ConstantsService.dontShowCardsCurrentTab
-    );
-    const dontShowIdentities = await this.storageService.get<boolean>(
-      ConstantsService.dontShowIdentitiesCurrentTab
-    );
+    const dontShowCards = await this.stateService.getDontShowCardsCurrentTab();
+    const dontShowIdentities = await this.stateService.getDontShowIdentitiesCurrentTab();
     if (!dontShowCards) {
       otherTypes.push(CipherType.Card);
     }

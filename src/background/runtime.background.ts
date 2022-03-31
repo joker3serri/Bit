@@ -3,18 +3,14 @@ import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { MessagingService } from "jslib-common/abstractions/messaging.service";
 import { NotificationsService } from "jslib-common/abstractions/notifications.service";
-import { StorageService } from "jslib-common/abstractions/storage.service";
 import { SystemService } from "jslib-common/abstractions/system.service";
-import { ConstantsService } from "jslib-common/services/constants.service";
+import { Utils } from "jslib-common/misc/utils";
 
+import { BrowserApi } from "../browser/browserApi";
 import { AutofillService } from "../services/abstractions/autofill.service";
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
 
-import { BrowserApi } from "../browser/browserApi";
-
 import MainBackground from "./main.background";
-
-import { Utils } from "jslib-common/misc/utils";
 import LockedVaultPendingNotificationsItem from "./models/lockedVaultPendingNotificationsItem";
 
 export default class RuntimeBackground {
@@ -27,7 +23,6 @@ export default class RuntimeBackground {
     private main: MainBackground,
     private autofillService: AutofillService,
     private platformUtilsService: BrowserPlatformUtilsService,
-    private storageService: StorageService,
     private i18nService: I18nService,
     private notificationsService: NotificationsService,
     private systemService: SystemService,
@@ -47,21 +42,27 @@ export default class RuntimeBackground {
     }
 
     await this.checkOnInstalled();
-    BrowserApi.messageListener(
-      "runtime.background",
-      async (msg: any, sender: chrome.runtime.MessageSender, sendResponse: any) => {
-        await this.processMessage(msg, sender, sendResponse);
-      }
-    );
+    const backgroundMessageListener = async (
+      msg: any,
+      sender: chrome.runtime.MessageSender,
+      sendResponse: any
+    ) => {
+      await this.processMessage(msg, sender, sendResponse);
+    };
+
+    BrowserApi.messageListener("runtime.background", backgroundMessageListener);
+    if (this.main.isPrivateMode) {
+      (window as any).bitwardenBackgroundMessageListener = backgroundMessageListener;
+    }
   }
 
   async processMessage(msg: any, sender: any, sendResponse: any) {
     switch (msg.command) {
       case "loggedIn":
-      case "unlocked":
+      case "unlocked": {
         let item: LockedVaultPendingNotificationsItem;
 
-        if (this.lockedVaultPendingNotifications.length > 0) {
+        if (this.lockedVaultPendingNotifications?.length > 0) {
           await BrowserApi.closeLoginTab();
 
           item = this.lockedVaultPendingNotifications.pop();
@@ -83,11 +84,12 @@ export default class RuntimeBackground {
           );
         }
         break;
+      }
       case "addToLockedVaultPendingNotifications":
         this.lockedVaultPendingNotifications.push(msg.data);
         break;
       case "logout":
-        await this.main.logout(msg.expired);
+        await this.main.logout(msg.expired, msg.userId);
         break;
       case "syncCompleted":
         if (msg.successfully) {
@@ -118,7 +120,7 @@ export default class RuntimeBackground {
       case "collectPageDetailsResponse":
         switch (msg.sender) {
           case "autofiller":
-          case "autofill_cmd":
+          case "autofill_cmd": {
             const totpCode = await this.autofillService.doAutoFillActiveTab(
               [
                 {
@@ -133,6 +135,7 @@ export default class RuntimeBackground {
               this.platformUtilsService.copyToClipboard(totpCode, { window: window });
             }
             break;
+          }
           case "contextMenu":
             clearTimeout(this.autofillTimeout);
             this.pageDetailsToAutoFill.push({
@@ -146,7 +149,7 @@ export default class RuntimeBackground {
             break;
         }
         break;
-      case "authResult":
+      case "authResult": {
         const vaultUrl = this.environmentService.getWebVaultUrl();
 
         if (msg.referrer == null || Utils.getHostname(vaultUrl) !== msg.referrer) {
@@ -164,10 +167,11 @@ export default class RuntimeBackground {
           this.logService.error("Unable to open sso popout tab");
         }
         break;
-      case "webAuthnResult":
-        const vaultUrl2 = this.environmentService.getWebVaultUrl();
+      }
+      case "webAuthnResult": {
+        const vaultUrl = this.environmentService.getWebVaultUrl();
 
-        if (msg.referrer == null || Utils.getHostname(vaultUrl2) !== msg.referrer) {
+        if (msg.referrer == null || Utils.getHostname(vaultUrl) !== msg.referrer) {
           return;
         }
 
@@ -180,6 +184,7 @@ export default class RuntimeBackground {
           false
         );
         break;
+      }
       case "reloadPopup":
         this.messagingService.send("reloadPopup");
         break;
@@ -194,6 +199,7 @@ export default class RuntimeBackground {
         break;
       case "getClickedElementResponse":
         this.platformUtilsService.copyToClipboard(msg.identifier, { window: window });
+        break;
       default:
         break;
     }
@@ -220,29 +226,10 @@ export default class RuntimeBackground {
       if (this.onInstalledReason != null) {
         if (this.onInstalledReason === "install") {
           BrowserApi.createNewTab("https://bitwarden.com/browser-start/");
-          await this.setDefaultSettings();
         }
 
         this.onInstalledReason = null;
       }
     }, 100);
-  }
-
-  private async setDefaultSettings() {
-    // Default timeout option to "on restart".
-    const currentVaultTimeout = await this.storageService.get<number>(
-      ConstantsService.vaultTimeoutKey
-    );
-    if (currentVaultTimeout == null) {
-      await this.storageService.save(ConstantsService.vaultTimeoutKey, -1);
-    }
-
-    // Default action to "lock".
-    const currentVaultTimeoutAction = await this.storageService.get<string>(
-      ConstantsService.vaultTimeoutActionKey
-    );
-    if (currentVaultTimeoutAction == null) {
-      await this.storageService.save(ConstantsService.vaultTimeoutActionKey, "lock");
-    }
   }
 }

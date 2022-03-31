@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Ingen matchende logins."
   },
-  "vaultLocked": {
-    "message": "Boksen er låst."
+  "unlockVaultMenu": {
+    "message": "Lås din boks op"
   },
-  "vaultLoggedOut": {
-    "message": "Boksen er logget ud."
+  "loginToVaultMenu": {
+    "message": "Log ind på din boks"
   },
   "autoFillInfo": {
     "message": "Der findes ingen login til at auto-udfylde i den nuværende browserfane."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Længde"
+  },
+  "uppercase": {
+    "message": "Store bogstaver (A-Z)"
+  },
+  "lowercase": {
+    "message": "Små bogstaver (a-z)"
+  },
+  "numbers": {
+    "message": "Tal (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Specielle tegn (!@#$%^&*)"
   },
   "numWords": {
     "message": "Antal ord"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Lås boksen"
   },
-  "privateModeMessage": {
-    "message": "Desværre er dette vindue ikke tilgængelig i privat modus i denne browser."
+  "privateModeWarning": {
+    "message": "Understøttelse af privat tilstand er eksperimentel, og nogle funktioner er begrænsede."
   },
   "customFields": {
     "message": "Brugerdefinerede felter"
@@ -1482,7 +1494,7 @@
     "message": "Start Bitwarden skrivebordsapplikationen"
   },
   "startDesktopDesc": {
-    "message": "Bitwarden skrivebordsapplikationen skal startes, før denne funktion kan bruges."
+    "message": "Bitwarden skrivebordsapplikationen skal startes, før oplåsning med biometri kan bruges."
   },
   "errorEnableBiometricTitle": {
     "message": "Kan ikke aktivere biometri"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "Du har forladt organisationen."
+  },
+  "toggleCharacterCount": {
+    "message": "Slå tegnantal til/fra"
+  },
+  "sessionTimeout": {
+    "message": "Din session er udløbet. Gå tilbage og prøv at logge ind igen."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Eksporterer personlig boks"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Kun de personlige bokselementer tilknyttet $EMAIL$ eksporteres. Organisationsbokseelementer medtages ikke.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Fejl"
   }
 }

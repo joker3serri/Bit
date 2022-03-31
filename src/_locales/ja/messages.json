@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "一致するログインがありません。"
   },
-  "vaultLocked": {
-    "message": "保管庫がロックされています。"
+  "unlockVaultMenu": {
+    "message": "保管庫のロックを解除"
   },
-  "vaultLoggedOut": {
-    "message": "保管庫はログアウトされています。"
+  "loginToVaultMenu": {
+    "message": "保管庫にログイン"
   },
   "autoFillInfo": {
     "message": "現在のブラウザタブに自動入力するログイン情報はありません。"
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "長さ"
+  },
+  "uppercase": {
+    "message": "大文字（A-Z）"
+  },
+  "lowercase": {
+    "message": "小文字（a-z）"
+  },
+  "numbers": {
+    "message": "数字 (0～9)"
+  },
+  "specialCharacters": {
+    "message": "特殊文字（!@#$%^&*)"
   },
   "numWords": {
     "message": "単語数"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "保管庫をロック"
   },
-  "privateModeMessage": {
-    "message": "このウインドウはこのブラウザのプライベートモードでは使用できません。"
+  "privateModeWarning": {
+    "message": "プライベートモードのサポートは実験的であり、一部機能は制限されています。"
   },
   "customFields": {
     "message": "カスタムフィールド"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "組織から脱退しました。"
+  },
+  "toggleCharacterCount": {
+    "message": "文字カウントを切り替える"
+  },
+  "sessionTimeout": {
+    "message": "セッションがタイムアウトしました。もう一度ログインしてください。"
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "個人保管庫のエクスポート"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "$EMAIL$ に関連付けられた個人用保管庫アイテムのみがエクスポートされます。組織用保管庫アイテムは含まれません。",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "エラー"
   }
 }

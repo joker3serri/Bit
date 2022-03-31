@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Geen overeenkomstige logins."
   },
-  "vaultLocked": {
-    "message": "Kluis is vergrendeld."
+  "unlockVaultMenu": {
+    "message": "Ontgrendel je kluis"
   },
-  "vaultLoggedOut": {
-    "message": "Kluis is uitgelogd."
+  "loginToVaultMenu": {
+    "message": "Log in op je kluis"
   },
   "autoFillInfo": {
     "message": "Er zijn geen logins beschikbaar om op het huidige browser-tabblad in te vullen."
@@ -229,6 +229,18 @@
   "length": {
     "message": "Lengte"
   },
+  "uppercase": {
+    "message": "Hoofdletters (A-Z)"
+  },
+  "lowercase": {
+    "message": "Kleine letters (a-z)"
+  },
+  "numbers": {
+    "message": "Cijfers (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Speciale tekens (!@#$%^&*)"
+  },
   "numWords": {
     "message": "Aantal woorden"
   },
@@ -324,7 +336,7 @@
     "message": "Identiteit verifiëren"
   },
   "yourVaultIsLocked": {
-    "message": "Je kluis is vergrendeld. Voer je hoofdwachtwoord in om door te gaan."
+    "message": "Je kluis is vergrendeld. Bevestig je identiteit om door te gaan."
   },
   "unlock": {
     "message": "Ontgrendelen"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Kluis vergrendelen"
   },
-  "privateModeMessage": {
-    "message": "Dit scherm is helaas niet beschikbaar in het privévenster van deze browser."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "Aangepaste velden"
@@ -1804,7 +1816,7 @@
     "message": "Minuten"
   },
   "vaultTimeoutPolicyInEffect": {
-    "message": "Het beleid van je organisatie heeft invloed op de time-out van je kluis. De maximaal toegestane Kluis Time-out is $HOURS$ uur en $MINUTES$ minuten",
+    "message": "Het beleid van je organisatie heeft invloed op de time-out van je kluis. De maximaal toegestane kluis time-out is $HOURS$ uur en $MINUTES$ minuten.",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "Je hebt de organisatie verlaten."
+  },
+  "toggleCharacterCount": {
+    "message": "Tekentelling in-/uitschakelen"
+  },
+  "sessionTimeout": {
+    "message": "Je sessie is verlopen. Ga terug en probeer opnieuw in te loggen."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Persoonlijke kluis exporteren"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Exporteert alleen de persoonlijke kluis-items gerelateerd aan $EMAIL$. Geen kluis-items van de organisatie.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Fout"
   }
 }

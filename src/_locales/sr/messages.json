@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Нема одговарајућих пријављивања."
   },
-  "vaultLocked": {
-    "message": "Сеф је блокиран."
+  "unlockVaultMenu": {
+    "message": "Откључај свој сеф"
   },
-  "vaultLoggedOut": {
-    "message": "Одјављени сте из сефа."
+  "loginToVaultMenu": {
+    "message": "Пријавите се на свој налог"
   },
   "autoFillInfo": {
     "message": "Нема доступне пријаве за аутоматско допуњавање за тренутни језичак прегледача."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Дужина"
+  },
+  "uppercase": {
+    "message": "Велика слова (A-Z)"
+  },
+  "lowercase": {
+    "message": "Мала слова (a-z)"
+  },
+  "numbers": {
+    "message": "Цифре (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Специјална слова (!@#$%^&*)"
   },
   "numWords": {
     "message": "Број речи"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Закључај сеф"
   },
-  "privateModeMessage": {
-    "message": "Нажалост, овај прозор није доступан у приватном режиму за овај прегледач."
+  "privateModeWarning": {
+    "message": "Подршка за приватни режим је експериментална и неке функције су ограничене."
   },
   "customFields": {
     "message": "Прилагођена Поља"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "Напустили сте организацију."
+  },
+  "toggleCharacterCount": {
+    "message": "Пребаци бројање слова"
+  },
+  "sessionTimeout": {
+    "message": "Ваша сесија је истекла. Вратите се и покушајте поново да се пријавите."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Извоз личног сефа"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Само предмети личног сефа повезани са $EMAIL$ биће извезени. Ставке организационог сефа неће бити укључене.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Грешка"
   }
 }

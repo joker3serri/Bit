@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Keine passenden Zugangsdaten."
   },
-  "vaultLocked": {
-    "message": "Der Tresor ist gesperrt."
+  "unlockVaultMenu": {
+    "message": "Entsperre deinen Tresor"
   },
-  "vaultLoggedOut": {
-    "message": "Der Tresor ist ausgeloggt."
+  "loginToVaultMenu": {
+    "message": "In deinem Tresor anmelden"
   },
   "autoFillInfo": {
     "message": "Für den aktuellen Browser-Tab gibt es keine passenden Zugangsdaten, welche automatisch ausgefüllt werden können."
@@ -125,7 +125,7 @@
     "message": "Einen Bestätigungscode an deine E-Mail senden"
   },
   "sendCode": {
-    "message": "Code senden"
+    "message": "Send Code"
   },
   "codeSent": {
     "message": "Code gesendet"
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Länge"
+  },
+  "uppercase": {
+    "message": "Großbuchstaben (A-Z)"
+  },
+  "lowercase": {
+    "message": "Kleinbuchstaben (a-z)"
+  },
+  "numbers": {
+    "message": "Zahlen (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Sonderzeichen (!@#$%^&*)"
   },
   "numWords": {
     "message": "Anzahl der Wörter"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Den Tresor sperren"
   },
-  "privateModeMessage": {
-    "message": "Leider ist dieses Fenster nicht im privaten Modus für diesen Browser verfügbar."
+  "privateModeWarning": {
+    "message": "Die Unterstützung des privaten Modus ist experimentell und einige Funktionen sind eingeschränkt."
   },
   "customFields": {
     "message": "Benutzerdefinierte Felder"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "Du hast die Organisation verlassen."
+  },
+  "toggleCharacterCount": {
+    "message": "Zeichenzählung ein-/ausschalten"
+  },
+  "sessionTimeout": {
+    "message": "Deine Sitzung ist abgelaufen. Bitte gehe zurück und versuche dich erneut einzuloggen."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Persönlichen Tresor exportieren"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Nur die persönlichen Tresoreinträge, die mit $EMAIL$ verbunden sind, werden exportiert. Tresoreinträge der Organisation werden nicht berücksichtigt.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Fehler"
   }
 }

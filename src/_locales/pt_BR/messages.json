@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Sem credenciais correspondentes."
   },
-  "vaultLocked": {
-    "message": "O cofre está trancado."
+  "unlockVaultMenu": {
+    "message": "Desbloqueie seu cofre"
   },
-  "vaultLoggedOut": {
-    "message": "O cofre foi fechado."
+  "loginToVaultMenu": {
+    "message": "Acesse o seu cofre"
   },
   "autoFillInfo": {
     "message": "Não há credenciais disponíveis para autopreenchimento para a aba do navegador atual."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Comprimento"
+  },
+  "uppercase": {
+    "message": "Maiúsculas (A-Z)"
+  },
+  "lowercase": {
+    "message": "Minúsculas (a-z)"
+  },
+  "numbers": {
+    "message": "Números (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Caracteres Especiais (!@#$%^&*)"
   },
   "numWords": {
     "message": "Número de Palavras"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Bloquear o cofre"
   },
-  "privateModeMessage": {
-    "message": "Infelizmente esta janela não está disponível no modo privado para este navegador."
+  "privateModeWarning": {
+    "message": "O suporte para modo privado é experimental e alguns recursos são limitados."
   },
   "customFields": {
     "message": "Campos Personalizados"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "Você saiu da organização."
+  },
+  "toggleCharacterCount": {
+    "message": "Alternar contagem de caracteres"
+  },
+  "sessionTimeout": {
+    "message": "Sua sessão expirou. Por favor, volte e tente iniciar a sessão novamente."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Exportando o Cofre Pessoal"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Apenas os itens pessoais do cofre associados com $EMAIL$ serão exportados. Os itens do cofre da organização não serão incluídos.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Error"
   }
 }

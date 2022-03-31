@@ -5,6 +5,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { AngularWebpackPlugin } = require("@ngtools/webpack");
+const TerserPlugin = require("terser-webpack-plugin");
 
 if (process.env.NODE_ENV == null) {
   process.env.NODE_ENV = "development";
@@ -13,11 +14,6 @@ const ENV = (process.env.ENV = process.env.NODE_ENV);
 
 const moduleRules = [
   {
-    test: /\.ts$/,
-    enforce: "pre",
-    loader: "tslint-loader",
-  },
-  {
     test: /\.(html)$/,
     loader: "html-loader",
   },
@@ -25,15 +21,15 @@ const moduleRules = [
     test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
     exclude: /loading.svg/,
     generator: {
-      filename: "popup/fonts/[name].[ext]",
+      filename: "popup/fonts/[name][ext]",
     },
     type: "asset/resource",
   },
   {
     test: /\.(jpe?g|png|gif|svg)$/i,
-    exclude: /.*(fontawesome-webfont|glyphicons-halflings-regular)\.svg/,
+    exclude: /.*(bwi-font|glyphicons-halflings-regular)\.svg/,
     generator: {
-      filename: "popup/images/[name].[ext]",
+      filename: "popup/images/[name][ext]",
     },
     type: "asset/resource",
   },
@@ -83,9 +79,6 @@ const plugins = [
       { from: "./src/content/autofill.css", to: "content" },
     ],
   }),
-  new webpack.SourceMapDevToolPlugin({
-    include: ["popup/main.js", "background.js"],
-  }),
   new MiniCssExtractPlugin({
     filename: "[name].css",
     chunkFilename: "chunk-[id].css",
@@ -106,6 +99,10 @@ const plugins = [
   new webpack.ProvidePlugin({
     process: "process/browser",
   }),
+  new webpack.SourceMapDevToolPlugin({
+    exclude: [/content\/.*/, /notification\/.*/],
+    filename: "[file].map",
+  }),
 ];
 
 const config = {
@@ -124,7 +121,21 @@ const config = {
     "notification/bar": "./src/notification/bar.js",
   },
   optimization: {
-    minimize: false,
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        exclude: [/content\/.*/, /notification\/.*/],
+        terserOptions: {
+          // Replicate Angular CLI behaviour
+          compress: {
+            global_defs: {
+              ngDevMode: false,
+              ngI18nClosureMode: false,
+            },
+          },
+        },
+      }),
+    ],
     splitChunks: {
       cacheGroups: {
         commons: {
@@ -166,6 +177,10 @@ const config = {
     extensions: [".ts", ".js"],
     symlinks: false,
     modules: [path.resolve("node_modules")],
+    alias: {
+      sweetalert2: require.resolve("sweetalert2/dist/sweetalert2.js"),
+      "#sweetalert2": require.resolve("sweetalert2/src/sweetalert2.scss"),
+    },
     fallback: {
       assert: false,
       buffer: require.resolve("buffer/"),

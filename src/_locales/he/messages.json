@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "לא נמצאו פרטי כניסה תואמים."
   },
-  "vaultLocked": {
-    "message": "הכספת נעולה."
+  "unlockVaultMenu": {
+    "message": "שחרור הכספת שלך"
   },
-  "vaultLoggedOut": {
-    "message": "בוצעה יציאה מהכספת."
+  "loginToVaultMenu": {
+    "message": "כניסה לכספת שלך"
   },
   "autoFillInfo": {
     "message": "לא נמצאו פרטי כניסה להשלמה אוטומטית בלשונית הנוכחית בדפדפן."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "אורך"
+  },
+  "uppercase": {
+    "message": "Uppercase (A-Z)"
+  },
+  "lowercase": {
+    "message": "Lowercase (a-z)"
+  },
+  "numbers": {
+    "message": "Numbers (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Special Characters (!@#$%^&*)"
   },
   "numWords": {
     "message": "מספר מילים"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "נעל את הכספת"
   },
-  "privateModeMessage": {
-    "message": "לצערנו חלון זה אינו זמין במצב גלישה פרטית בדפדפן זה."
+  "privateModeWarning": {
+    "message": "המצב הפרטי הוא במסגרת ניסוי וחלק מהיכולות מוגבלות."
   },
   "customFields": {
     "message": "שדות מותאמים אישית"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "עזבת את הארגון."
+  },
+  "toggleCharacterCount": {
+    "message": "החלפת מצב ספירת תווים"
+  },
+  "sessionTimeout": {
+    "message": "Your session has timed out. Please go back and try logging in again."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "הכספת האישית מיוצאת"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "רק פריטי הכספת האישית שמשויכת אל $EMAIL$ ייוצאו. פריטי הכספת הארגוניים לא יהיו חלק מהייצוא.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "שגיאה"
   }
 }

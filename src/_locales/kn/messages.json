@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "ಹೊಂದಾಣಿಕೆಯ ಲಾಗಿನ್‌ಗಳು ಇಲ್ಲ."
   },
-  "vaultLocked": {
-    "message": "ವಾಲ್ಟ್ ಲಾಕ್ ಆಗಿದೆ."
+  "unlockVaultMenu": {
+    "message": "Unlock your vault"
   },
-  "vaultLoggedOut": {
-    "message": "ವಾಲ್ಟ್ ಲಾಗ್ ಔಟ್ ಆಗಿದೆ."
+  "loginToVaultMenu": {
+    "message": "Log in to your vault"
   },
   "autoFillInfo": {
     "message": "ಪ್ರಸ್ತುತ ಬ್ರೌಸರ್ ಟ್ಯಾಬ್‌ಗಾಗಿ ಸ್ವಯಂ ಭರ್ತಿ ಮಾಡಲು ಯಾವುದೇ ಲಾಗಿನ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "ಉದ್ದ"
+  },
+  "uppercase": {
+    "message": "Uppercase (A-Z)"
+  },
+  "lowercase": {
+    "message": "Lowercase (a-z)"
+  },
+  "numbers": {
+    "message": "Numbers (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Special Characters (!@#$%^&*)"
   },
   "numWords": {
     "message": "ಪದಗಳ ಸಂಖ್ಯೆ"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "ವಾಲ್ಟ್ ಅನ್ನು ಲಾಕ್ ಮಾಡಿ"
   },
-  "privateModeMessage": {
-    "message": "ದುರದೃಷ್ಟವಶಾತ್ ಈ ವಿಂಡೋ ಈ ಬ್ರೌಸರ್‌ಗಾಗಿ ಖಾಸಗಿ ಮೋಡ್‌ನಲ್ಲಿ ಲಭ್ಯವಿಲ್ಲ."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "ಕಸ್ಟಮ್ ಕ್ಷೇತ್ರಗಳು"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "You have left the organization."
+  },
+  "toggleCharacterCount": {
+    "message": "Toggle character count"
+  },
+  "sessionTimeout": {
+    "message": "Your session has timed out. Please go back and try logging in again."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Exporting Personal Vault"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Only the personal vault items associated with $EMAIL$ will be exported. Organization vault items will not be included.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Error"
   }
 }

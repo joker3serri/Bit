@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "No hi ha inicis de sessió coincidents."
   },
-  "vaultLocked": {
-    "message": "La caixa forta està bloquejada."
+  "unlockVaultMenu": {
+    "message": "1. Desbloquegeu la caixa forta."
   },
-  "vaultLoggedOut": {
-    "message": "La caixa forta està desconnectada."
+  "loginToVaultMenu": {
+    "message": "Inicia sessió a la caixa forta"
   },
   "autoFillInfo": {
     "message": "No hi ha cap inici de sessió disponible per omplir automàticament la pestanya del navegador actual."
@@ -122,19 +122,19 @@
     "message": "Continua"
   },
   "sendVerificationCode": {
-    "message": "Send a verification code to your email"
+    "message": "Envia un codi de verificació al correu electrònic"
   },
   "sendCode": {
-    "message": "Send Code"
+    "message": "Envia codi"
   },
   "codeSent": {
-    "message": "Code Sent"
+    "message": "Codi enviat"
   },
   "verificationCode": {
     "message": "Codi de verificació"
   },
   "confirmIdentity": {
-    "message": "Confirm your identity to continue."
+    "message": "Confirmeu la vostra identitat per continuar."
   },
   "account": {
     "message": "Compte"
@@ -229,6 +229,18 @@
   "length": {
     "message": "Longitud"
   },
+  "uppercase": {
+    "message": "Majúscula (A-Z)"
+  },
+  "lowercase": {
+    "message": "Minúscula (a-z)"
+  },
+  "numbers": {
+    "message": "Números (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Caràcters especials (!@#$%^&*)"
+  },
   "numWords": {
     "message": "Nombre de paraules"
   },
@@ -321,7 +333,7 @@
     "message": "El vostre navegador web no admet la còpia fàcil del porta-retalls. Copieu-ho manualment."
   },
   "verifyIdentity": {
-    "message": "Verify Identity"
+    "message": "Verifica identitat"
   },
   "yourVaultIsLocked": {
     "message": "La caixa forta està bloquejada. Comproveu la contrasenya mestra per continuar."
@@ -424,7 +436,7 @@
     "message": "El codi de verificació és obligatori."
   },
   "invalidVerificationCode": {
-    "message": "Invalid verification code"
+    "message": "Codi de verificació no vàlid"
   },
   "valueCopied": {
     "message": "S'ha copiat $VALUE$",
@@ -573,7 +585,7 @@
     "message": "Bitwarden ha de recordar aquesta contrasenya per a vosaltres?"
   },
   "notificationAddSave": {
-    "message": "Sí, guarda-la ara"
+    "message": "Guarda"
   },
   "disableChangedPasswordNotification": {
     "message": "Deshabilita la notificació de contrasenya modificada"
@@ -585,7 +597,7 @@
     "message": "Voleu actualitzar aquesta contrasenya a Bitwarden?"
   },
   "notificationChangeSave": {
-    "message": "Sí, actualitza-la ara"
+    "message": "Actualitza"
   },
   "disableContextMenuItem": {
     "message": "Inhabilita opcions del menú contextual"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Tanca la caixa forta"
   },
-  "privateModeMessage": {
-    "message": "Malauradament, aquesta finestra no està disponible en el mode privat d'aquest navegador."
+  "privateModeWarning": {
+    "message": "El suport del mode privat és experimental i algunes funcions són limitades."
   },
   "customFields": {
     "message": "Camps personalitzats"
@@ -996,11 +1008,11 @@
     "message": "Booleà"
   },
   "cfTypeLinked": {
-    "message": "Linked",
+    "message": "Enllaçat",
     "description": "This describes a field that is 'linked' (tied) to another field."
   },
   "linkedValue": {
-    "message": "Linked value",
+    "message": "Valor enllaçat",
     "description": "This describes a value that is 'linked' (tied) to another value."
   },
   "popup2faCloseMessage": {
@@ -1106,7 +1118,7 @@
     "message": "Cognoms"
   },
   "fullName": {
-    "message": "Full Name"
+    "message": "Nom complet"
   },
   "identityName": {
     "message": "Nom d'identitat"
@@ -1832,7 +1844,7 @@
     "message": "No s'ha trobat cap identificador únic."
   },
   "convertOrganizationEncryptionDesc": {
-    "message": "$ORGANIZATION$ is using SSO with a self-hosted key server. A master password is no longer required to log in for members of this organization.",
+    "message": "$ORGANIZATION$ està utilitzant SSO amb un servidor autoallotjat de claus. Ja no es requereix una contrasenya mestra d'inici de sessió per als membres d'aquesta organització.",
     "placeholders": {
       "organization": {
         "content": "$1",
@@ -1841,18 +1853,39 @@
     }
   },
   "leaveOrganization": {
-    "message": "Leave Organization"
+    "message": "Abandona organització"
   },
   "removeMasterPassword": {
-    "message": "Remove Master Password"
+    "message": "Suprimiu la contrasenya mestra"
   },
   "removedMasterPassword": {
-    "message": "Master password removed."
+    "message": "S'ha suprimit la contrasenya mestra"
   },
   "leaveOrganizationConfirmation": {
     "message": "Segur que voleu abandonar aquesta organització?"
   },
   "leftOrganization": {
     "message": "Heu deixat l'organització."
+  },
+  "toggleCharacterCount": {
+    "message": "Commuta el recompte de caràcters"
+  },
+  "sessionTimeout": {
+    "message": "La sessió ha expirat. Torneu arrere i proveu d'iniciar sessió de nou."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "S'està exportant la caixa forta personal"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Només s'exportaran els elements personals de la caixa forta  associats a $EMAIL$. Els elements de la caixa forta  de l'organització no s'inclouran.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Error"
   }
 }

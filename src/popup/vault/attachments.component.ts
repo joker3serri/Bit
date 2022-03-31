@@ -1,18 +1,16 @@
 import { Location } from "@angular/common";
 import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-
+import { ActivatedRoute } from "@angular/router";
 import { first } from "rxjs/operators";
 
+import { AttachmentsComponent as BaseAttachmentsComponent } from "jslib-angular/components/attachments.component";
 import { ApiService } from "jslib-common/abstractions/api.service";
 import { CipherService } from "jslib-common/abstractions/cipher.service";
 import { CryptoService } from "jslib-common/abstractions/crypto.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { UserService } from "jslib-common/abstractions/user.service";
-
-import { AttachmentsComponent as BaseAttachmentsComponent } from "jslib-angular/components/attachments.component";
+import { StateService } from "jslib-common/abstractions/state.service";
 
 @Component({
   selector: "app-vault-attachments",
@@ -25,22 +23,22 @@ export class AttachmentsComponent extends BaseAttachmentsComponent {
     cipherService: CipherService,
     i18nService: I18nService,
     cryptoService: CryptoService,
-    userService: UserService,
     platformUtilsService: PlatformUtilsService,
     apiService: ApiService,
     private location: Location,
     private route: ActivatedRoute,
+    stateService: StateService,
     logService: LogService
   ) {
     super(
       cipherService,
       i18nService,
       cryptoService,
-      userService,
       platformUtilsService,
       apiService,
       window,
-      logService
+      logService,
+      stateService
     );
   }
 

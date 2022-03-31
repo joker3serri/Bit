@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Nema podudarajućih prijava."
   },
-  "vaultLocked": {
-    "message": "Trezor je zaključan."
+  "unlockVaultMenu": {
+    "message": "Otključaj trezor"
   },
-  "vaultLoggedOut": {
-    "message": "Trezor je odjavljen."
+  "loginToVaultMenu": {
+    "message": "Prijavite se u svoj trezor"
   },
   "autoFillInfo": {
     "message": "Nema dostupnih prijava za auto-ispunu na web stranici u ovoj kartici."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Duljina"
+  },
+  "uppercase": {
+    "message": "Velika slova (A-Z)"
+  },
+  "lowercase": {
+    "message": "Mala slova (a-z)"
+  },
+  "numbers": {
+    "message": "Brojevi (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Posebni znakovi (!@#$%^&*)"
   },
   "numWords": {
     "message": "Broj riječi"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Zaključaj trezor"
   },
-  "privateModeMessage": {
-    "message": "Nažalost, ovaj prozor nije dostupan u privatnom načinu ovog preglednika."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "Prilagođena polja"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "Organizacija napuštena."
+  },
+  "toggleCharacterCount": {
+    "message": "Toggle character count"
+  },
+  "sessionTimeout": {
+    "message": "Your session has timed out. Please go back and try logging in again."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Exporting Personal Vault"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Only the personal vault items associated with $EMAIL$ will be exported. Organization vault items will not be included.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Error"
   }
 }

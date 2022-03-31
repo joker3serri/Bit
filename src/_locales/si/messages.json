@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "ගැලපෙන පිවිසුම් නොමැත."
   },
-  "vaultLocked": {
-    "message": "සුරක්ෂිතාගාරය අගුලු දමා ඇත."
+  "unlockVaultMenu": {
+    "message": "Unlock your vault"
   },
-  "vaultLoggedOut": {
-    "message": "සුරක්ෂිතාගාරය ලොගින් වී ඇත."
+  "loginToVaultMenu": {
+    "message": "Log in to your vault"
   },
   "autoFillInfo": {
     "message": "වත්මන් බ්රව්සර් ටැබය සඳහා ස්වයංක්රීයව පිරවීම සඳහා කිසිදු පිවිසුම් නොමැත."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "දිග"
+  },
+  "uppercase": {
+    "message": "Uppercase (A-Z)"
+  },
+  "lowercase": {
+    "message": "Lowercase (a-z)"
+  },
+  "numbers": {
+    "message": "Numbers (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Special Characters (!@#$%^&*)"
   },
   "numWords": {
     "message": "වචන ගණන"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "සුරක්ෂිතාගාරය ලොක් කරන්න"
   },
-  "privateModeMessage": {
-    "message": "අවාසනාවකට මෙන් මෙම කවුළුව මෙම බ්රව්සරය සඳහා පුද්ගලික ප්රකාරයේදී ලබා ගත නොහැක."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "අභිරුචි ක්ෂේත්ර"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "ඔබ සංවිධානයෙන් ඉවත් වී ඇත."
+  },
+  "toggleCharacterCount": {
+    "message": "Toggle character count"
+  },
+  "sessionTimeout": {
+    "message": "Your session has timed out. Please go back and try logging in again."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Exporting Personal Vault"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Only the personal vault items associated with $EMAIL$ will be exported. Organization vault items will not be included.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Error"
   }
 }

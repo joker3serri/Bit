@@ -1,28 +1,23 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { Router } from "@angular/router";
-import Swal from "sweetalert2/src/sweetalert2.js";
+import Swal from "sweetalert2";
 
-import { BrowserApi } from "../../browser/browserApi";
-
-import { DeviceType } from "jslib-common/enums/deviceType";
-
-import { ConstantsService } from "jslib-common/services/constants.service";
-
+import { ModalService } from "jslib-angular/services/modal.service";
 import { CryptoService } from "jslib-common/abstractions/crypto.service";
 import { EnvironmentService } from "jslib-common/abstractions/environment.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { KeyConnectorService } from "jslib-common/abstractions/keyConnector.service";
 import { MessagingService } from "jslib-common/abstractions/messaging.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { StorageService } from "jslib-common/abstractions/storage.service";
-import { UserService } from "jslib-common/abstractions/user.service";
+import { StateService } from "jslib-common/abstractions/state.service";
 import { VaultTimeoutService } from "jslib-common/abstractions/vaultTimeout.service";
-import { PopupUtilsService } from "../services/popup-utils.service";
+import { DeviceType } from "jslib-common/enums/deviceType";
 
-import { ModalService } from "jslib-angular/services/modal.service";
-
+import { BrowserApi } from "../../browser/browserApi";
+import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
 import { SetPinComponent } from "../components/set-pin.component";
+import { PopupUtilsService } from "../services/popup-utils.service";
 
 const RateUrls = {
   [DeviceType.ChromeExtension]:
@@ -50,7 +45,7 @@ export class SettingsComponent implements OnInit {
   vaultTimeoutAction: string;
   pin: boolean = null;
   supportsBiometric: boolean;
-  biometric: boolean = false;
+  biometric = false;
   disableAutoBiometricsPrompt = true;
   previousVaultTimeout: number = null;
   showChangeMasterPass = true;
@@ -61,12 +56,11 @@ export class SettingsComponent implements OnInit {
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private vaultTimeoutService: VaultTimeoutService,
-    private storageService: StorageService,
     public messagingService: MessagingService,
     private router: Router,
     private environmentService: EnvironmentService,
     private cryptoService: CryptoService,
-    private userService: UserService,
+    private stateService: StateService,
     private popupUtilsService: PopupUtilsService,
     private modalService: ModalService,
     private keyConnectorService: KeyConnectorService
@@ -108,11 +102,11 @@ export class SettingsComponent implements OnInit {
       this.vaultTimeout.setValue(timeout);
     }
     this.previousVaultTimeout = this.vaultTimeout.value;
-    this.vaultTimeout.valueChanges.subscribe((value) => {
-      this.saveVaultTimeout(value);
+    this.vaultTimeout.valueChanges.subscribe(async (value) => {
+      await this.saveVaultTimeout(value);
     });
 
-    const action = await this.storageService.get<string>(ConstantsService.vaultTimeoutActionKey);
+    const action = await this.stateService.getVaultTimeoutAction();
     this.vaultTimeoutAction = action == null ? "lock" : action;
 
     const pinSet = await this.vaultTimeoutService.isPinLockSet();
@@ -121,8 +115,7 @@ export class SettingsComponent implements OnInit {
     this.supportsBiometric = await this.platformUtilsService.supportsBiometric();
     this.biometric = await this.vaultTimeoutService.isBiometricLockSet();
     this.disableAutoBiometricsPrompt =
-      (await this.storageService.get<boolean>(ConstantsService.disableAutoBiometricsPromptKey)) ??
-      true;
+      (await this.stateService.getDisableAutoBiometricsPrompt()) ?? true;
     this.showChangeMasterPass = !(await this.keyConnectorService.getUsesKeyConnector());
   }
 
@@ -211,7 +204,7 @@ export class SettingsComponent implements OnInit {
       try {
         granted = await BrowserApi.requestPermission({ permissions: ["nativeMessaging"] });
       } catch (e) {
-        // tslint:disable-next-line
+        // eslint-disable-next-line
         console.error(e);
 
         if (this.platformUtilsService.isFirefox() && this.popupUtilsService.inSidebar(window)) {
@@ -243,21 +236,21 @@ export class SettingsComponent implements OnInit {
         titleText: this.i18nService.t("awaitDesktop"),
         text: this.i18nService.t("awaitDesktopDesc"),
         icon: "info",
-        iconHtml: '<i class="swal-custom-icon fa fa-info-circle text-info"></i>',
+        iconHtml: '<i class="swal-custom-icon bwi bwi-info-circle text-info"></i>',
         showCancelButton: true,
         cancelButtonText: this.i18nService.t("cancel"),
         showConfirmButton: false,
         allowOutsideClick: false,
       });
 
-      await this.storageService.save(ConstantsService.biometricAwaitingAcceptance, true);
+      await this.stateService.setBiometricAwaitingAcceptance(true);
       await this.cryptoService.toggleKey();
 
       await Promise.race([
-        submitted.then((result) => {
+        submitted.then(async (result) => {
           if (result.dismiss === Swal.DismissReason.cancel) {
             this.biometric = false;
-            this.storageService.remove(ConstantsService.biometricAwaitingAcceptance);
+            await this.stateService.setBiometricAwaitingAcceptance(null);
           }
         }),
         this.platformUtilsService
@@ -277,19 +270,26 @@ export class SettingsComponent implements OnInit {
           .catch((e) => {
             // Handle connection errors
             this.biometric = false;
+
+            const error = BiometricErrors[e as BiometricErrorTypes];
+
+            this.platformUtilsService.showDialog(
+              this.i18nService.t(error.description),
+              this.i18nService.t(error.title),
+              this.i18nService.t("ok"),
+              null,
+              "error"
+            );
           }),
       ]);
     } else {
-      await this.storageService.remove(ConstantsService.biometricUnlockKey);
-      this.vaultTimeoutService.biometricLocked = false;
+      await this.stateService.setBiometricUnlock(null);
+      await this.stateService.setBiometricLocked(false);
     }
   }
 
   async updateAutoBiometricsPrompt() {
-    await this.storageService.save(
-      ConstantsService.disableAutoBiometricsPromptKey,
-      this.disableAutoBiometricsPrompt
-    );
+    await this.stateService.setDisableAutoBiometricsPrompt(this.disableAutoBiometricsPrompt);
   }
 
   async lock() {
@@ -316,7 +316,9 @@ export class SettingsComponent implements OnInit {
       this.i18nService.t("cancel")
     );
     if (confirmed) {
-      BrowserApi.createNewTab("https://help.bitwarden.com/article/change-your-master-password/");
+      BrowserApi.createNewTab(
+        "https://bitwarden.com/help/master-password/#change-your-master-password"
+      );
     }
   }
 
@@ -328,7 +330,7 @@ export class SettingsComponent implements OnInit {
       this.i18nService.t("cancel")
     );
     if (confirmed) {
-      BrowserApi.createNewTab("https://help.bitwarden.com/article/setup-two-step-login/");
+      BrowserApi.createNewTab("https://bitwarden.com/help/setup-two-step-login/");
     }
   }
 
@@ -340,7 +342,7 @@ export class SettingsComponent implements OnInit {
       this.i18nService.t("cancel")
     );
     if (confirmed) {
-      BrowserApi.createNewTab("https://help.bitwarden.com/article/what-is-an-organization/");
+      BrowserApi.createNewTab("https://bitwarden.com/help/about-organizations/");
     }
   }
 
@@ -350,7 +352,7 @@ export class SettingsComponent implements OnInit {
   }
 
   import() {
-    BrowserApi.createNewTab("https://help.bitwarden.com/article/import-data/");
+    BrowserApi.createNewTab("https://bitwarden.com/help/import-data/");
   }
 
   export() {
@@ -358,7 +360,7 @@ export class SettingsComponent implements OnInit {
   }
 
   help() {
-    BrowserApi.createNewTab("https://help.bitwarden.com/");
+    BrowserApi.createNewTab("https://bitwarden.com/help/");
   }
 
   about() {
@@ -368,7 +370,7 @@ export class SettingsComponent implements OnInit {
     );
     const div = document.createElement("div");
     div.innerHTML =
-      `<p class="text-center"><i class="fa fa-shield fa-3x" aria-hidden="true"></i></p>
+      `<p class="text-center"><i class="bwi bwi-shield bwi-3x" aria-hidden="true"></i></p>
             <p class="text-center"><b>Bitwarden</b><br>&copy; Bitwarden Inc. 2015-` +
       year +
       `</p>`;
@@ -385,7 +387,9 @@ export class SettingsComponent implements OnInit {
   }
 
   async fingerprint() {
-    const fingerprint = await this.cryptoService.getFingerprint(await this.userService.getUserId());
+    const fingerprint = await this.cryptoService.getFingerprint(
+      await this.stateService.getUserId()
+    );
     const p = document.createElement("p");
     p.innerText = this.i18nService.t("yourAccountsFingerprint") + ":";
     const p2 = document.createElement("p");
@@ -405,7 +409,7 @@ export class SettingsComponent implements OnInit {
     });
 
     if (result.value) {
-      this.platformUtilsService.launchUri("https://help.bitwarden.com/article/fingerprint-phrase/");
+      this.platformUtilsService.launchUri("https://bitwarden.com/help/fingerprint-phrase/");
     }
   }
 

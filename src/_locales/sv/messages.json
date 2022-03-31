@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Inga matchande inloggningar."
   },
-  "vaultLocked": {
-    "message": "Valvet är låst."
+  "unlockVaultMenu": {
+    "message": "Lås upp ditt valv"
   },
-  "vaultLoggedOut": {
-    "message": "Valvet är utloggat."
+  "loginToVaultMenu": {
+    "message": "Logga in i ditt valv"
   },
   "autoFillInfo": {
     "message": "Det finns inga inloggningar tillgängliga för automatisk ifyllnad på den nuvarande fliken."
@@ -122,7 +122,7 @@
     "message": "Fortsätt"
   },
   "sendVerificationCode": {
-    "message": "Send a verification code to your email"
+    "message": "Skicka en verifieringskod till din e-postadress"
   },
   "sendCode": {
     "message": "Skicka kod"
@@ -193,7 +193,7 @@
     "message": "Synkronisera"
   },
   "syncVaultNow": {
-    "message": "Synkronisera valvet nu"
+    "message": "Synkronisera valv nu"
   },
   "lastSync": {
     "message": "Senaste synkronisering:"
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Längd"
+  },
+  "uppercase": {
+    "message": "Versaler (A-Ö)"
+  },
+  "lowercase": {
+    "message": "Gemener (a-ö)"
+  },
+  "numbers": {
+    "message": "Siffror (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Specialtecken (!@#$%^&*)"
   },
   "numWords": {
     "message": "Antal ord"
@@ -789,7 +801,7 @@
     "message": "Om din inloggning har en autentiseringsnyckel kopplad till den, kommer TOTP-verifieringskoden att automatiskt kopieras till urklipp när du automatiskt fyller i inloggningen."
   },
   "disableAutoBiometricsPrompt": {
-    "message": "Do not prompt for biometrics on launch"
+    "message": "Fråga inte efter biometri vid uppstart"
   },
   "premiumRequired": {
     "message": "Premium krävs"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Lås valvet"
   },
-  "privateModeMessage": {
-    "message": "Det här fönstret är tyvärr inte tillgängligt i privat läge för denna webbläsare."
+  "privateModeWarning": {
+    "message": "Stöd för privat läge är experimentellt och vissa funktioner är begränsade."
   },
   "customFields": {
     "message": "Anpassade fält"
@@ -1552,7 +1564,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "searchSends": {
-    "message": "Sök försändelser",
+    "message": "Sök bland Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "addSend": {
@@ -1566,7 +1578,7 @@
     "message": "Fil"
   },
   "allSends": {
-    "message": "Alla försändelser",
+    "message": "Alla Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
@@ -1582,7 +1594,7 @@
     "message": "Lösenordsskyddad"
   },
   "copySendLink": {
-    "message": "Kopiera försändelselänk",
+    "message": "Kopiera länk till Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "removePassword": {
@@ -1595,11 +1607,11 @@
     "message": "Tog bort lösenord"
   },
   "deletedSend": {
-    "message": "Deleted Send",
+    "message": "Raderade Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLink": {
-    "message": "Försändelselänk",
+    "message": "Länk till Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "disabled": {
@@ -1625,7 +1637,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendNameDesc": {
-    "message": "Ett användarvänligt namn för att beskriva denna försändelse.",
+    "message": "Ett eget namn för att beskriva denna Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendFileDesc": {
@@ -1635,14 +1647,14 @@
     "message": "Raderingsdatum"
   },
   "deletionDateDesc": {
-    "message": "Försändelsen kommer att raderas permanent på angivet datum och tid.",
+    "message": "The Send will be permanently deleted on the specified date and time.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "expirationDate": {
     "message": "Utgångsdatum"
   },
   "expirationDateDesc": {
-    "message": "Om angivet kommer åtkomst till denna försändelse upphöra på på angivet datum och tid.",
+    "message": "If set, access to this Send will expire on the specified date and time.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "oneDay": {
@@ -1664,30 +1676,30 @@
     "message": "Maximalt antal åtkomster"
   },
   "maximumAccessCountDesc": {
-    "message": "Om angivet kommer användare inte längre komma åt denna försändelse när den maximala antalet åtkomster har uppnåtts.",
+    "message": "If set, users will no longer be able to access this Send once the maximum access count is reached.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendPasswordDesc": {
-    "message": "Kräv ett lösenord från användare innan de kommer åt denna försändelse.",
+    "message": "Kräv eventuellt lösenord av användare för att komma åt denna Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendNotesDesc": {
-    "message": "Egna anteckningar om denna försändelse.",
+    "message": "Privata anteckningar om denna Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendDisableDesc": {
-    "message": "Inaktivera denna försändelse så att ingen kan komma åt den.",
+    "message": "Inaktivera denna Send så att ingen kan komma åt den.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendShareDesc": {
-    "message": "Kopiera länken till den här försändelsen när den har sparats.",
+    "message": "Copy this Send's link to clipboard upon save.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendTextDesc": {
     "message": "Texten du vill skicka."
   },
   "sendHideText": {
-    "message": "Dölj försändelsens text som standard.",
+    "message": "Hide this Send's text by default.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "currentAccessCount": {
@@ -1701,19 +1713,19 @@
     "message": "Nytt lösenord"
   },
   "sendDisabled": {
-    "message": "Send Disabled",
+    "message": "Send inaktiverad",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendDisabledWarning": {
-    "message": "På grund av en företagspolicy kan du bara radera befintliga försändelser.",
+    "message": "Due to an enterprise policy, you are only able to delete an existing Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "createdSend": {
-    "message": "Skapade försändelse",
+    "message": "Created Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "editedSend": {
-    "message": "Redigerade försändelse",
+    "message": "Edited Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLinuxChromiumFileWarning": {
@@ -1786,16 +1798,16 @@
     "message": "Ditt huvudlösenord ändrades nyligen av en administratör i din organisation. För att få tillgång till valvet måste du uppdatera det nu. Om du fortsätter kommer du att loggas ut från din nuvarande session, vilket kräver att du loggar in igen. Aktiva sessioner på andra enheter kan komma att vara aktiva i upp till en timme."
   },
   "resetPasswordPolicyAutoEnroll": {
-    "message": "Automatic Enrollment"
+    "message": "Automatiskt deltagande"
   },
   "resetPasswordAutoEnrollInviteWarning": {
-    "message": "This organization has an enterprise policy that will automatically enroll you in password reset. Enrollment will allow organization administrators to change your master password."
+    "message": "Denna organisation har en företagspolicy som automatiskt registrerar dig för lösenordsåterställning. Deltagandet gör det möjligt för organisationsadministratörer att ändra ditt huvudlösenord."
   },
   "selectFolder": {
     "message": "Välj mapp…"
   },
   "ssoCompleteRegistration": {
-    "message": "In order to complete logging in with SSO, please set a master password to access and protect your vault."
+    "message": "För att slutföra inloggning med SSO, ange ett huvudlösenord för att komma åt och skydda ditt valv."
   },
   "hours": {
     "message": "Timmar"
@@ -1804,7 +1816,7 @@
     "message": "Minuter"
   },
   "vaultTimeoutPolicyInEffect": {
-    "message": "Your organization policies are affecting your vault timeout. Maximum allowed Vault Timeout is $HOURS$ hour(s) and $MINUTES$ minute(s)",
+    "message": "Dina organisationsprinciper påverkar ditt valvs tid för timeout. Maximal tillåten tid innan timeout är $HOURS$ timmar och $MINUTES$ minuter",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -1817,22 +1829,22 @@
     }
   },
   "vaultTimeoutToLarge": {
-    "message": "Your vault timeout exceeds the restrictions set by your organization."
+    "message": "Ditt valvs tid för timeout överskrider de begränsningar som fastställts av din organisation."
   },
   "vaultExportDisabled": {
-    "message": "Vault Export Disabled"
+    "message": "Valvexport inaktiverad"
   },
   "personalVaultExportPolicyInEffect": {
-    "message": "One or more organization policies prevents you from exporting your personal vault."
+    "message": "En eller flera organisationsprinciper hindrar dig från att exportera ditt personliga valv."
   },
   "copyCustomFieldNameInvalidElement": {
-    "message": "Det gick inte att identifiera något giltigt formulärelement. Prova med att inspektera HTML-koden istället."
+    "message": "Det gick inte att identifiera något giltigt formulärelement. Prova att inspektera HTML-koden istället."
   },
   "copyCustomFieldNameNotUnique": {
     "message": "Ingen unik identifierare hittades."
   },
   "convertOrganizationEncryptionDesc": {
-    "message": "$ORGANIZATION$ is using SSO with a self-hosted key server. A master password is no longer required to log in for members of this organization.",
+    "message": "$ORGANIZATION$ använder SSO med en egen nyckelserver. Ett huvudlösenord krävs inte längre för att logga in för medlemmar i denna organisation.",
     "placeholders": {
       "organization": {
         "content": "$1",
@@ -1847,12 +1859,33 @@
     "message": "Ta bort huvudlösenord"
   },
   "removedMasterPassword": {
-    "message": "Huvudlösenord togs bort"
+    "message": "Huvudlösenord togs bort."
   },
   "leaveOrganizationConfirmation": {
     "message": "Är du säker på att du vill lämna denna organisation?"
   },
   "leftOrganization": {
     "message": "Du har lämnat organisationen."
+  },
+  "toggleCharacterCount": {
+    "message": "Toggle character count"
+  },
+  "sessionTimeout": {
+    "message": "Din session har gått ut. Gå tillbaka och försök logga in igen."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Exportera personligt valv"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Endast de personliga valvobjekt som är associerade med $EMAIL$ kommer att exporteras. Organisationens valv kommer inte att inkluderas.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Fel"
   }
 }

@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "ورودیها منتطبق نیست."
   },
-  "vaultLocked": {
-    "message": "گاوصندوق قفل شد."
+  "unlockVaultMenu": {
+    "message": "بازکردن گاو‌صندوقتان"
   },
-  "vaultLoggedOut": {
-    "message": "گاوصندوق خارج شده است."
+  "loginToVaultMenu": {
+    "message": "وارد شدن به گاو‌صندوقتان"
   },
   "autoFillInfo": {
     "message": "پرکردن خودکار برای برگه فعلی مرورگر در دسترس نیست."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "طول"
+  },
+  "uppercase": {
+    "message": "حروف بزرگ (A-Z)"
+  },
+  "lowercase": {
+    "message": "حروف کوچک (a-z)"
+  },
+  "numbers": {
+    "message": "اعداد (‪0-9‬)"
+  },
+  "specialCharacters": {
+    "message": "نویسه‌های ویژه (!@#$%^&*)"
   },
   "numWords": {
     "message": "تعداد کلمات"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "قفل گاوصندوق"
   },
-  "privateModeMessage": {
-    "message": "متأسفانه این پنجره در حالت خصوصی برای این مرورگر در دسترس نیست."
+  "privateModeWarning": {
+    "message": "پشتیبانی حالت خصوصی آزمایشی است و برخی از ویژگی‌ها محدود هستند."
   },
   "customFields": {
     "message": "فیلدهای سفارشی"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "شما از سازمان ها خارج شده اید."
+  },
+  "toggleCharacterCount": {
+    "message": "تغییر تعداد کاراکترها"
+  },
+  "sessionTimeout": {
+    "message": "زمان نشست شما به پایان رسید. لطفاً برگردید و دوباره وارد سیستم شوید."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "صادرات گاو‌صندوق شخصی"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "فقط موارد گاو‌صندوق شخصی مرتبط با $EMAIL$ صادر خواهد شد. موارد گاو‌صندوق سازمان شامل نخواهد شد.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Error"
   }
 }

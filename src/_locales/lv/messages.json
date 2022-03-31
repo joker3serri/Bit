@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Nav atbilstošu pierakstīšanās vienumu."
   },
-  "vaultLocked": {
-    "message": "Glabātava ir slēgta."
+  "unlockVaultMenu": {
+    "message": "Atslēgt glabātavu"
   },
-  "vaultLoggedOut": {
-    "message": "Izrakstījies no glabātavas."
+  "loginToVaultMenu": {
+    "message": "Pierakstīties glabātavā"
   },
   "autoFillInfo": {
     "message": "Nav pierakstīšanās vienumu, kurus automātiski ievadīt pašreizējā pārlūka cilnē."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Garums"
+  },
+  "uppercase": {
+    "message": "Lielie burti (A-Z)"
+  },
+  "lowercase": {
+    "message": "Mazie burti (a-z)"
+  },
+  "numbers": {
+    "message": "Cipari (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Īpašās rakstzīmes (!@#$%^&*)"
   },
   "numWords": {
     "message": "Vārdu skaits"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Aizslēgt glabātavu"
   },
-  "privateModeMessage": {
-    "message": "Diemžēl šis logs nav pieejams privātajā režīmā šajā pārlūkā."
+  "privateModeWarning": {
+    "message": "Personiskā stāvokļa atbalsts ir izmēģinājuma, un dažas iespējas ir ierobežotas."
   },
   "customFields": {
     "message": "Pielāgoti lauki"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "Apvienība ir pamesta."
+  },
+  "toggleCharacterCount": {
+    "message": "Pārslēgt rakstzīmju skaita attēlošanu"
+  },
+  "sessionTimeout": {
+    "message": "Sesijai iestājās noildze. Lūgums mēģināt pierakstīties vēlreiz."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Izdod personīgo glabātavu"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Tiks izdoti tikai personīgie glabātavas vienumi, kas ir saistīti ar $EMAIL$. Apvienības glabātavas vienumi netiks iekļauti.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Kļūda"
   }
 }

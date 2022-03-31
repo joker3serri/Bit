@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Uyğun gələn hesab yoxdur."
   },
-  "vaultLocked": {
-    "message": "Anbar kilidlənib."
+  "unlockVaultMenu": {
+    "message": "Anbarın kilidini açın"
   },
-  "vaultLoggedOut": {
-    "message": "Anbardan çıxış edildi."
+  "loginToVaultMenu": {
+    "message": "Anbarınıza giriş edin"
   },
   "autoFillInfo": {
     "message": "Hazırkı səyyah vərəqi üçün avto-doldurulacaq giriş məlumatları yoxdur."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Uzunluq"
+  },
+  "uppercase": {
+    "message": "Böyük hərf (A-Z)"
+  },
+  "lowercase": {
+    "message": "Kiçik hərf (a-z)"
+  },
+  "numbers": {
+    "message": "Rəqəmlər (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Xüsusi simvollar (!@#$%^&*)"
   },
   "numWords": {
     "message": "Söz sayı"
@@ -968,8 +980,8 @@
   "commandLockVaultDesc": {
     "message": "Anbarı kilidlə"
   },
-  "privateModeMessage": {
-    "message": "Təəssüf ki, bu pəncərə səyyahın gizli rejimində əlçatan deyil."
+  "privateModeWarning": {
+    "message": "Gizli rejim dəstəyi təcrübidir və bəzi özəlliklər limitlidir."
   },
   "customFields": {
     "message": "Özəl sahələr"
@@ -1854,5 +1866,26 @@
   },
   "leftOrganization": {
     "message": "Təşkilatı tərk etdiniz."
+  },
+  "toggleCharacterCount": {
+    "message": "Simvol sayını dəyişdir"
+  },
+  "sessionTimeout": {
+    "message": "Seansınızın vaxtı bitdi. Zəhmət olmasa geri qayıdıb yenidən giriş etməyə cəhd edin."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Şəxsi anbarın ixracı"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Yalnız $EMAIL$ ilə əlaqəli şəxsi anbar elementləri ixrac ediləcək. Təşkilat anbar elementləri daxil edilmir.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Xəta"
   }
 }
