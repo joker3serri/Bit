@@ -23,6 +23,8 @@ import { StateService } from "../../services/abstractions/state.service";
 import { ArrowNavService } from '../services/arrow-nav.service';
 import { PopupUtilsService } from "../services/popup-utils.service";
 
+const ComponentId = "GroupingsComponent";
+
 @Component({
   selector: "app-vault-groupings",
   templateUrl: "groupings.component.html",
@@ -37,7 +39,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
   }
 
   get folderCount(): number {
-      return this.nestedFolders.length - (this.showNoFolderCiphers ? 0 : 1);
+    return this.nestedFolders.length - (this.showNoFolderCiphers ? 0 : 1);
   }
   ciphers: CipherView[];
   favoriteCiphers: CipherView[];
@@ -46,8 +48,7 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
   collectionCounts = new Map<string, number>();
   typeCounts = new Map<CipherType, number>();
   searchText: string;
-  state: any;
-  scopeState: any;
+  state: BrowserGroupingsComponentState;
   showLeftHeader = true;
   searchPending = false;
   searchTypeSearch = false;
@@ -366,21 +367,21 @@ export class GroupingsComponent extends BaseGroupingsComponent implements OnInit
   }
 
   private initArrowNav() {
-      if (this.showSearching()) {
-          this.arrowNav.init([
-              { name: 'searchCiphers', length: this.ciphers?.length ?? 0 },
-              { name: 'search', length: 1 },
-          ]);
-      } else {
-          this.arrowNav.init([
-              { name: 'favorites', length: this.favoriteCiphers?.length ?? 0 },
-              { name: 'types', length: 4 },
-              { name: 'folders', length: this.nestedFolders?.length ?? 0 },
-              { name: 'collections', length: this.nestedCollections?.length ?? 0 },
-              { name: 'noFolder', length: this.noFolderCiphers?.length ?? 0 },
-              { name: 'trash', length: 1 },
-              { name: 'search', length: 1 },
-          ]);
-      }
+    if (this.showSearching()) {
+      this.arrowNav.init([
+        {name: 'searchCiphers', length: this.ciphers?.length ?? 0},
+        {name: 'search', length: 1},
+      ]);
+    } else {
+      this.arrowNav.init([
+        {name: 'favorites', length: this.favoriteCiphers?.length ?? 0},
+        {name: 'types', length: 4},
+        {name: 'folders', length: this.nestedFolders?.length ?? 0},
+        {name: 'collections', length: this.nestedCollections?.length ?? 0},
+        {name: 'noFolder', length: this.noFolderCiphers?.length ?? 0},
+        {name: 'trash', length: 1},
+        {name: 'search', length: 1},
+      ]);
+    }
   }
 }
