@@ -88,14 +88,17 @@
   "generatePasswordCopied": {
     "message": "Generiraj geslo (kopirano)"
   },
+  "copyElementIdentifier": {
+    "message": "Copy Custom Field Name"
+  },
   "noMatchingLogins": {
     "message": "Nobenih ujemajočih prijav."
   },
-  "vaultLocked": {
-    "message": "Trezor je zaklenjen."
+  "unlockVaultMenu": {
+    "message": "Unlock your vault"
   },
-  "vaultLoggedOut": {
-    "message": "Trezor je odjavljen."
+  "loginToVaultMenu": {
+    "message": "Log in to your vault"
   },
   "autoFillInfo": {
     "message": "Nobene prijave ni na voljo za auto-izpolnitev za trenutni zavihek."
@@ -118,8 +121,20 @@
   "continue": {
     "message": "Nadaljuj"
   },
+  "sendVerificationCode": {
+    "message": "Send a verification code to your email"
+  },
+  "sendCode": {
+    "message": "Send Code"
+  },
+  "codeSent": {
+    "message": "Code Sent"
+  },
   "verificationCode": {
     "message": "Verifikacijska koda"
+  },
+  "confirmIdentity": {
+    "message": "Confirm your identity to continue."
   },
   "account": {
     "message": "Račun"
@@ -151,7 +166,7 @@
     "message": "Shrani"
   },
   "move": {
-    "message": "Move"
+    "message": "Premakni"
   },
   "addFolder": {
     "message": "Dodaj mapo"
@@ -213,6 +228,18 @@
   },
   "length": {
     "message": "Dolžina"
+  },
+  "uppercase": {
+    "message": "Uppercase (A-Z)"
+  },
+  "lowercase": {
+    "message": "Lowercase (a-z)"
+  },
+  "numbers": {
+    "message": "Numbers (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Special Characters (!@#$%^&*)"
   },
   "numWords": {
     "message": "Število besed"
@@ -305,8 +332,8 @@
   "browserNotSupportClipboard": {
     "message": "Vaš spletni brskalnik ne podpira enostavno kopiranje odložišča. Kopirajte ročno."
   },
-  "verifyMasterPassword": {
-    "message": "Potrdite glavno geslo"
+  "verifyIdentity": {
+    "message": "Verify Identity"
   },
   "yourVaultIsLocked": {
     "message": "Vaš trezor je zaklenjen. Potrdite vaše glavno geslo za nadaljevanje."
@@ -407,6 +434,9 @@
   },
   "verificationCodeRequired": {
     "message": "Verifikacijska koda je obvezna."
+  },
+  "invalidVerificationCode": {
+    "message": "Invalid verification code"
   },
   "valueCopied": {
     "message": "$VALUE$ kopirano",
@@ -512,11 +542,17 @@
   "overwritePasswordConfirmation": {
     "message": "Ali ste prepričani, da želite prepisati vaše trenutno geslo?"
   },
+  "overwriteUsername": {
+    "message": "Overwrite Username"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Are you sure you want to overwrite the current username?"
+  },
   "searchFolder": {
-    "message": "Search folder"
+    "message": "Preišči mapo"
   },
   "searchCollection": {
-    "message": "Search collection"
+    "message": "Preišči zbirko"
   },
   "searchType": {
     "message": "Search type"
@@ -556,9 +592,6 @@
   },
   "notificationAddSave": {
     "message": "Da, shrani zdaj"
-  },
-  "notificationNeverSave": {
-    "message": "Nikoli za to stran"
   },
   "disableChangedPasswordNotification": {
     "message": "Disable Changed Password Notification"
@@ -773,6 +806,9 @@
   "disableAutoTotpCopyDesc": {
     "message": "Če za prijavo uporabljate avtentikacijski ključ je TOTP verifikacijska koda avtomatično kopirana v vaše odložišče kadarkoli avto-izpolnite prijavo."
   },
+  "disableAutoBiometricsPrompt": {
+    "message": "Do not prompt for biometrics on launch"
+  },
   "premiumRequired": {
     "message": "Premium članstvo je potrebno"
   },
@@ -870,10 +906,10 @@
     "message": "Use any WebAuthn enabled security key to access your account."
   },
   "emailTitle": {
-    "message": "Email"
+    "message": "E-pošta"
   },
   "emailDesc": {
-    "message": "Verification codes will be emailed to you."
+    "message": "Potrditvene kode vam bodo posredovane po e-pošti."
   },
   "selfHostedEnvironment": {
     "message": "Self-hosted Environment"
@@ -888,10 +924,10 @@
     "message": "For advanced users. You can specify the base URL of each service independently."
   },
   "baseUrl": {
-    "message": "Server URL"
+    "message": "URL naslov strežnika"
   },
   "apiUrl": {
-    "message": "API Server URL"
+    "message": "URL naslov API strežnika"
   },
   "webVaultUrl": {
     "message": "Web Vault Server URL"
@@ -927,7 +963,7 @@
     "message": "Auto-fill on Page Load (if enabled in Options)"
   },
   "autoFillOnPageLoadUseDefault": {
-    "message": "Use default setting"
+    "message": "Uporabi privzete nastavitve"
   },
   "autoFillOnPageLoadYes": {
     "message": "Auto-fill on page load"
@@ -950,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Lock the vault"
   },
-  "privateModeMessage": {
-    "message": "Unfortunately this window is not available in private mode for this browser."
+  "privateModeWarning": {
+    "message": "Private mode support is experimental and some features are limited."
   },
   "customFields": {
     "message": "Custom Fields"
@@ -969,13 +1005,21 @@
     "message": "Drag to sort"
   },
   "cfTypeText": {
-    "message": "Text"
+    "message": "Besedilo"
   },
   "cfTypeHidden": {
-    "message": "Hidden"
+    "message": "Skrito"
   },
   "cfTypeBoolean": {
     "message": "Boolean"
+  },
+  "cfTypeLinked": {
+    "message": "Linked",
+    "description": "This describes a field that is 'linked' (tied) to another field."
+  },
+  "linkedValue": {
+    "message": "Linked value",
+    "description": "This describes a value that is 'linked' (tied) to another value."
   },
   "popup2faCloseMessage": {
     "message": "Če kliknete izven pojavnega okna, da preverite vašo epošto za vašo verifikacijsko kodo, bo to povročilo, da se je pojavno okno zapre. Želite odpreti to pojavno okno v novem oknu, tako, da se ne bo zaprlo?"
@@ -1079,6 +1123,9 @@
   "lastName": {
     "message": "Priimek"
   },
+  "fullName": {
+    "message": "Full Name"
+  },
   "identityName": {
     "message": "Ime identitete"
   },
@@ -1152,28 +1199,28 @@
     "message": "Collections"
   },
   "favorites": {
-    "message": "Favorites"
+    "message": "Priljubljeno"
   },
   "popOutNewWindow": {
     "message": "Pop out to a new window"
   },
   "refresh": {
-    "message": "Refresh"
+    "message": "Osveži"
   },
   "cards": {
-    "message": "Cards"
+    "message": "Plačilne kartice"
   },
   "identities": {
-    "message": "Identities"
+    "message": "Identitete"
   },
   "logins": {
-    "message": "Logins"
+    "message": "Prijave"
   },
   "secureNotes": {
     "message": "Secure Notes"
   },
   "clear": {
-    "message": "Clear",
+    "message": "Počisti",
     "description": "To clear something out. example: To clear browser history."
   },
   "checkPassword": {
@@ -1192,7 +1239,12 @@
     "message": "This password was not found in any known data breaches. It should be safe to use."
   },
   "baseDomain": {
-    "message": "Base domain"
+    "message": "Base domain",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Domain Name",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Host",
@@ -1302,12 +1354,6 @@
   },
   "invalidPin": {
     "message": "Invalid PIN code."
-  },
-  "verifyPin": {
-    "message": "Verify PIN"
-  },
-  "yourVaultIsLockedPinCode": {
-    "message": "Your vault is locked. Verify your PIN code to continue."
   },
   "unlockWithBiometrics": {
     "message": "Unlock with biometrics"
@@ -1459,7 +1505,7 @@
     "message": "Start the Bitwarden Desktop application"
   },
   "startDesktopDesc": {
-    "message": "The Bitwarden Desktop application needs to be started before this function can be used."
+    "message": "The Bitwarden Desktop application needs to be started before unlock with biometrics can be used."
   },
   "errorEnableBiometricTitle": {
     "message": "Unable to enable biometrics"
@@ -1752,5 +1798,144 @@
   },
   "emailVerificationRequiredDesc": {
     "message": "You must verify your email to use this feature. You can verify your email in the web vault."
+  },
+  "updatedMasterPassword": {
+    "message": "Updated Master Password"
+  },
+  "updateMasterPassword": {
+    "message": "Update Master Password"
+  },
+  "updateMasterPasswordWarning": {
+    "message": "Your Master Password was recently changed by an administrator in your organization. In order to access the vault, you must update it now. Proceeding will log you out of your current session, requiring you to log back in. Active sessions on other devices may continue to remain active for up to one hour."
+  },
+  "resetPasswordPolicyAutoEnroll": {
+    "message": "Automatic Enrollment"
+  },
+  "resetPasswordAutoEnrollInviteWarning": {
+    "message": "This organization has an enterprise policy that will automatically enroll you in password reset. Enrollment will allow organization administrators to change your master password."
+  },
+  "selectFolder": {
+    "message": "Select folder..."
+  },
+  "ssoCompleteRegistration": {
+    "message": "In order to complete logging in with SSO, please set a master password to access and protect your vault."
+  },
+  "hours": {
+    "message": "Hours"
+  },
+  "minutes": {
+    "message": "Minutes"
+  },
+  "vaultTimeoutPolicyInEffect": {
+    "message": "Your organization policies are affecting your vault timeout. Maximum allowed Vault Timeout is $HOURS$ hour(s) and $MINUTES$ minute(s)",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutToLarge": {
+    "message": "Your vault timeout exceeds the restrictions set by your organization."
+  },
+  "vaultExportDisabled": {
+    "message": "Vault Export Disabled"
+  },
+  "personalVaultExportPolicyInEffect": {
+    "message": "One or more organization policies prevents you from exporting your personal vault."
+  },
+  "copyCustomFieldNameInvalidElement": {
+    "message": "Unable to identify a valid form element. Try inspecting the HTML instead."
+  },
+  "copyCustomFieldNameNotUnique": {
+    "message": "No unique identifier found."
+  },
+  "convertOrganizationEncryptionDesc": {
+    "message": "$ORGANIZATION$ is using SSO with a self-hosted key server. A master password is no longer required to log in for members of this organization.",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
+  "leaveOrganization": {
+    "message": "Leave Organization"
+  },
+  "removeMasterPassword": {
+    "message": "Remove Master Password"
+  },
+  "removedMasterPassword": {
+    "message": "Master password removed."
+  },
+  "leaveOrganizationConfirmation": {
+    "message": "Are you sure you want to leave this organization?"
+  },
+  "leftOrganization": {
+    "message": "You have left the organization."
+  },
+  "toggleCharacterCount": {
+    "message": "Toggle character count"
+  },
+  "sessionTimeout": {
+    "message": "Your session has timed out. Please go back and try logging in again."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Exporting Personal Vault"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Only the personal vault items associated with $EMAIL$ will be exported. Organization vault items will not be included.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Error"
+  },
+  "regenerateUsername": {
+    "message": "Regenerate Username"
+  },
+  "generateUsername": {
+    "message": "Generate Username"
+  },
+  "usernameType": {
+    "message": "Username Type"
+  },
+  "plusAddressedEmail": {
+    "message": "Plus Addressed Email"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Use your email provider's sub-addressing capabilities."
+  },
+  "catchallEmail": {
+    "message": "Catch-all Email"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "Random"
+  },
+  "randomWord": {
+    "message": "Random Word"
+  },
+  "websiteName": {
+    "message": "Website Name"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "What would you like to generate?"
+  },
+  "passwordType": {
+    "message": "Password Type"
+  },
+  "service": {
+    "message": "Service"
   }
 }

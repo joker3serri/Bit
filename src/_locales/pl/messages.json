@@ -88,14 +88,17 @@
   "generatePasswordCopied": {
     "message": "Generuj hasło (do schowka)"
   },
+  "copyElementIdentifier": {
+    "message": "Kopiuj nazwę pola niestandardowego"
+  },
   "noMatchingLogins": {
     "message": "Brak pasujących danych logowania."
   },
-  "vaultLocked": {
-    "message": "Sejf jest zablokowany."
+  "unlockVaultMenu": {
+    "message": "Odblokuj sejf"
   },
-  "vaultLoggedOut": {
-    "message": "Wylogowano z sejfu."
+  "loginToVaultMenu": {
+    "message": "Zaloguj się do sejfu"
   },
   "autoFillInfo": {
     "message": "Brak dostępnych danych logowania do autouzupełnienia dla obecnej karty przeglądarki."
@@ -118,8 +121,20 @@
   "continue": {
     "message": "Kontynuuj"
   },
+  "sendVerificationCode": {
+    "message": "Wyślij kod weryfikacyjny na adres e-mail"
+  },
+  "sendCode": {
+    "message": "Wyślij kod"
+  },
+  "codeSent": {
+    "message": "Kod został wysłany"
+  },
   "verificationCode": {
     "message": "Kod weryfikacyjny"
+  },
+  "confirmIdentity": {
+    "message": "Potwierdź swoją tożsamość, aby kontynuować."
   },
   "account": {
     "message": "Konto"
@@ -214,6 +229,18 @@
   "length": {
     "message": "Długość"
   },
+  "uppercase": {
+    "message": "Wielkie litery (A-Z)"
+  },
+  "lowercase": {
+    "message": "Małe litery (a-z)"
+  },
+  "numbers": {
+    "message": "Cyfry (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Znaki specjalne (!@#$%^&*)"
+  },
   "numWords": {
     "message": "Liczba słów"
   },
@@ -305,11 +332,11 @@
   "browserNotSupportClipboard": {
     "message": "Przeglądarka nie obsługuje łatwego kopiowania schowka. Skopiuj element ręcznie."
   },
-  "verifyMasterPassword": {
-    "message": "Zweryfikuj hasło główne"
+  "verifyIdentity": {
+    "message": "Zweryfikuj tożsamość"
   },
   "yourVaultIsLocked": {
-    "message": "Sejf jest zablokowany. Wpisz hasło główne, aby kontynuować."
+    "message": "Sejf jest zablokowany. Zweryfikuj swoją tożsamość, aby kontynuować."
   },
   "unlock": {
     "message": "Odblokuj"
@@ -407,6 +434,9 @@
   },
   "verificationCodeRequired": {
     "message": "Kod weryfikacyjny jest wymagany."
+  },
+  "invalidVerificationCode": {
+    "message": "Kod weryfikacyjny jest nieprawidłowy"
   },
   "valueCopied": {
     "message": "Skopiowano $VALUE$",
@@ -512,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "Czy na pewno chcesz zastąpić obecne hasło?"
   },
+  "overwriteUsername": {
+    "message": "Nadpisz nazwę użytkownika"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Czy na pewno chcesz nadpisać aktualną nazwę użytkownika?"
+  },
   "searchFolder": {
     "message": "Szukaj w folderze"
   },
@@ -555,10 +591,7 @@
     "message": "Czy Bitwarden powinien zapisać dla Ciebie to hasło?"
   },
   "notificationAddSave": {
-    "message": "Tak, zapisz"
-  },
-  "notificationNeverSave": {
-    "message": "Nigdy dla tej strony"
+    "message": "Zapisz"
   },
   "disableChangedPasswordNotification": {
     "message": "Wyłącz powiadomienie o zmianie hasła"
@@ -570,7 +603,7 @@
     "message": "Czy chcesz zaktualizować to hasło w Bitwarden?"
   },
   "notificationChangeSave": {
-    "message": "Tak, aktualizuj"
+    "message": "Zaktualizuj"
   },
   "disableContextMenuItem": {
     "message": "Wyłącz opcje menu kontekstowego"
@@ -635,7 +668,7 @@
     "message": "Dowiedz się więcej o organizacjach"
   },
   "learnOrgConfirmation": {
-    "message": "Bitwarden pozwala na udostępnianie zawartości sejfu innym osobom za pośrednictwem organizacji. Czy chcesz odwiedzić witrynę bitwarden.com, aby dowiedzieć się więcej?"
+    "message": "Bitwarden pozwala na udostępnianie zawartości sejfu innym osobom za pośrednictwem organizacji. Czy chcesz odwiedzić stronę bitwarden.com, aby dowiedzieć się więcej?"
   },
   "moveToOrganization": {
     "message": "Przenieś do organizacji"
@@ -644,7 +677,7 @@
     "message": "Udostępnij"
   },
   "movedItemToOrg": {
-    "message": "Element $ITEMNAME$ przeniesiono do organizacji $ORGNAME$",
+    "message": "Element $ITEMNAME$ został przeniesiony do organizacji $ORGNAME$",
     "placeholders": {
       "itemname": {
         "content": "$1",
@@ -657,7 +690,7 @@
     }
   },
   "moveToOrgDesc": {
-    "message": "Wybierz organizację, do której chcesz przenieść ten element. Przeniesienie do organizacji przenosi uprawnienia właścicielskie względem elementu na tę organizację. Po przeniesieniu elementu utracisz bezpośrednie uprawnienia właścicielskie."
+    "message": "Wybierz organizację, do której chcesz przenieść ten element. Ta czynność spowoduje utratę własności elementu i przenosi te uprawnienia do organizacji."
   },
   "learnMore": {
     "message": "Dowiedz się więcej"
@@ -772,6 +805,9 @@
   },
   "disableAutoTotpCopyDesc": {
     "message": "Jeśli dane logowania posiadają dołączony klucz uwierzytelniający TOTP, kod weryfikacyjny jest automatycznie kopiowany do schowka przy każdym autouzupełnianiu danych logowania."
+  },
+  "disableAutoBiometricsPrompt": {
+    "message": "Zapamiętaj autoryzację biometryczną"
   },
   "premiumRequired": {
     "message": "Konto Premium jest wymagane"
@@ -918,22 +954,22 @@
     "message": "Obecnie jest to funkcja eksperymentalna. Używaj na własne ryzyko."
   },
   "defaultAutoFillOnPageLoad": {
-    "message": "Domyślne ustawienia autouzupełniania dla danych logowania"
+    "message": "Domyślne ustawienie autouzupełniania"
   },
   "defaultAutoFillOnPageLoadDesc": {
-    "message": "Gdy włączysz opcję autouzupełniania po wczytaniu strony, możesz włączyć lub wyłączyć tę funkcję dla poszczególnych danych logowania. Jest to domyślne ustawienie dla danych logowania, które nie zostały skonfigurowane oddzielnie."
+    "message": "Po włączeniu autouzupełnianiu po załadowaniu strony, możesz włączyć lub wyłączyć tę funkcję dla poszczególnych wpisów."
   },
   "itemAutoFillOnPageLoad": {
-    "message": "Autouzupełnianie po wczytaniu strony (jeśli włączone w Opcjach)"
+    "message": "Automatycznie uzupełniaj po załadowaniu strony (jeśli włączono w opcjach)"
   },
   "autoFillOnPageLoadUseDefault": {
-    "message": "Użyj ustawienia domyślnego"
+    "message": "Użyj domyślnego ustawienia"
   },
   "autoFillOnPageLoadYes": {
-    "message": "Automatycznie uzupełniaj po wczytaniu strony"
+    "message": "Automatycznie uzupełniaj po załadowaniu strony"
   },
   "autoFillOnPageLoadNo": {
-    "message": "Nie uzupełniaj automatycznie po wczytaniu strony"
+    "message": "Nie uzupełniaj automatycznie po załadowaniu strony"
   },
   "commandOpenPopup": {
     "message": "Otwórz sejf w oknie"
@@ -950,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Zablokuj sejf"
   },
-  "privateModeMessage": {
-    "message": "Niestety to okno nie jest dostępne w trybie prywatnym tej przeglądarki."
+  "privateModeWarning": {
+    "message": "Obsługa trybu prywatnego jest eksperymentalna, a niektóre funkcje są ograniczone."
   },
   "customFields": {
     "message": "Pola niestandardowe"
@@ -977,6 +1013,14 @@
   "cfTypeBoolean": {
     "message": "Wartość logiczna"
   },
+  "cfTypeLinked": {
+    "message": "Powiązane pole",
+    "description": "This describes a field that is 'linked' (tied) to another field."
+  },
+  "linkedValue": {
+    "message": "Powiązana wartość",
+    "description": "This describes a value that is 'linked' (tied) to another value."
+  },
   "popup2faCloseMessage": {
     "message": "Kliknięcie poza okno, w celu sprawdzenia wiadomość z kodem weryfikacyjnym spowoduje, że zostanie ono zamknięte. Czy chcesz otworzyć nowe okno tak, aby się nie zamknęło?"
   },
@@ -990,10 +1034,10 @@
     "message": "Wyświetlaj rozpoznawalną ikonę serwisu obok danych logowania w sejfie."
   },
   "disableBadgeCounter": {
-    "message": "Wyłącz licznik danych logowania"
+    "message": "Wyłącz licznik logowań"
   },
   "disableBadgeCounterDesc": {
-    "message": "Licznik informuje, ile danych logowania zawiera sejf dla obecnej strony."
+    "message": "Licznik informuje, ile razy zalogowałeś się na obecnej stronie w sejfie."
   },
   "cardholderName": {
     "message": "Właściciel karty"
@@ -1078,6 +1122,9 @@
   },
   "lastName": {
     "message": "Nazwisko"
+  },
+  "fullName": {
+    "message": "Imię i nazwisko"
   },
   "identityName": {
     "message": "Nazwa profilu"
@@ -1192,7 +1239,12 @@
     "message": "To hasło nie znajduje się w żadnej znanej wykradzionej bazie danych. Powinno być bezpieczne."
   },
   "baseDomain": {
-    "message": "Domena podstawowa"
+    "message": "Domena podstawowa",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Nazwa domeny",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Host",
@@ -1302,12 +1354,6 @@
   },
   "invalidPin": {
     "message": "Kod PIN jest nieprawidłowy."
-  },
-  "verifyPin": {
-    "message": "Zweryfikuj kod PIN"
-  },
-  "yourVaultIsLockedPinCode": {
-    "message": "Sejf jest zablokowany. Wpisz kod PIN, aby kontynuować."
   },
   "unlockWithBiometrics": {
     "message": "Odblokuj danymi biometrycznymi"
@@ -1635,7 +1681,7 @@
     }
   },
   "custom": {
-    "message": "Niestandardowa"
+    "message": "Niestandardowe"
   },
   "maximumAccessCount": {
     "message": "Maksymalna liczba dostępów"
@@ -1694,7 +1740,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLinuxChromiumFileWarning": {
-    "message": "Aby wybrać plik, otwórz rozszerzenie w pasku bocznym (jeśli to możliwe) albo w nowym oknie po kliknięciu tego banera."
+    "message": "Aby wybrać plik, otwórz rozszerzenie na pasku bocznym (jeśli to możliwe) lub w nowym oknie."
   },
   "sendFirefoxFileWarning": {
     "message": "Aby wybrać plik za pomocą przeglądarki Firefox, otwórz rozszerzenie w nowym oknie."
@@ -1739,7 +1785,7 @@
     "message": "Co najmniej jedna zasada organizacji wpływa na ustawienia wysyłek."
   },
   "passwordPrompt": {
-    "message": "Powtórz hasło główne"
+    "message": "Potwierdź hasłem głównym"
   },
   "passwordConfirmation": {
     "message": "Potwierdź hasło główne"
@@ -1748,9 +1794,148 @@
     "message": "Ta operacja jest chroniona. Aby kontynuować, wpisz ponownie hasło główne."
   },
   "emailVerificationRequired": {
-    "message": "Wymagana weryfikacja adresu e-mail"
+    "message": "Weryfikacja adresu e-mail jest wymagana"
   },
   "emailVerificationRequiredDesc": {
-    "message": "Musisz zweryfikować swój adres e-mail, aby korzystać z tej funkcji. Swój adres e-mail możesz zweryfikować w sejfie internetowym."
+    "message": "Musisz zweryfikować adres e-mail, aby korzystać z tej funkcji. Adres możesz zweryfikować w sejfie internetowym."
+  },
+  "updatedMasterPassword": {
+    "message": "Hasło główne zostało zaktualizowane"
+  },
+  "updateMasterPassword": {
+    "message": "Zaktualizuj hasło główne"
+  },
+  "updateMasterPasswordWarning": {
+    "message": "Hasło główne zostało zmienione przez administratora Twojej organizacji. Musisz je zaktualizować, aby uzyskać dostęp do sejfu. Ta czynność spowoduje wylogowanie z bieżącej sesji, przez co konieczne będzie ponowne zalogowanie się. Aktywne sesje na innych urządzeniach mogą pozostać aktywne przez maksymalnie godzinę."
+  },
+  "resetPasswordPolicyAutoEnroll": {
+    "message": "Automatyczne rejestrowanie użytkowników do resetowania hasła"
+  },
+  "resetPasswordAutoEnrollInviteWarning": {
+    "message": "Ta organizacja posługuje się zasadą, która automatycznie rejestruje użytkowników do resetowania hasła. Rejestracja umożliwia administratorom organizacji zmianę Twojego hasła głównego."
+  },
+  "selectFolder": {
+    "message": "Wybierz folder..."
+  },
+  "ssoCompleteRegistration": {
+    "message": "W celu zakończenia jednokrotnego logowania SSO, ustaw hasło główne, aby uzyskać dostęp do sejfu."
+  },
+  "hours": {
+    "message": "Godziny"
+  },
+  "minutes": {
+    "message": "Minuty"
+  },
+  "vaultTimeoutPolicyInEffect": {
+    "message": "Zasady organizacji mają wpływ czas blokowania sejfu. Maksymalny dozwolony czas wynosi $HOURS$ godz. i $MINUTES$ min.",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutToLarge": {
+    "message": "Czas blokowania sejfu przekracza limit określony przez organizację."
+  },
+  "vaultExportDisabled": {
+    "message": "Eksportowanie sejfu zostało wyłączone"
+  },
+  "personalVaultExportPolicyInEffect": {
+    "message": "Co najmniej jedna zasada organizacji uniemożliwia wyeksportowanie Twojego sejfu."
+  },
+  "copyCustomFieldNameInvalidElement": {
+    "message": "Nie można zidentyfikować poprawnego elementu formularza. Spróbuj sprawdzić kod HTML."
+  },
+  "copyCustomFieldNameNotUnique": {
+    "message": "Nie znaleziono unikatowego identyfikatora."
+  },
+  "convertOrganizationEncryptionDesc": {
+    "message": "Organizacja $ORGANIZATION$ używa jednokrotnego logowania SSO z własnym serwerem kluczy. Użytkownicy nie muszą logować się za pomocą hasła głównego.",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
+  "leaveOrganization": {
+    "message": "Opuść organizację"
+  },
+  "removeMasterPassword": {
+    "message": "Usuń hasło główne"
+  },
+  "removedMasterPassword": {
+    "message": "Hasło główne zostało usunięte."
+  },
+  "leaveOrganizationConfirmation": {
+    "message": "Czy na pewno chcesz opuścić tę organizację?"
+  },
+  "leftOrganization": {
+    "message": "Nie należysz już do tej organizacji."
+  },
+  "toggleCharacterCount": {
+    "message": "Pokaż / Ukryj licznik znaków"
+  },
+  "sessionTimeout": {
+    "message": "Twoja sesja wygasła. Zaloguj się ponownie."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Eksportowanie osobistego sejfu"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Tylko osobiste elementy sejfu powiązane z adresem $EMAIL$ zostaną wyeksportowane. Elementy sejfu należące do organizacji nie będą uwzględnione.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Błąd"
+  },
+  "regenerateUsername": {
+    "message": "Wygeneruj ponownie nazwę użytkownika"
+  },
+  "generateUsername": {
+    "message": "Wygeneruj nazwę użytkownika"
+  },
+  "usernameType": {
+    "message": "Typ nazwy użytkownika"
+  },
+  "plusAddressedEmail": {
+    "message": "Plus Addressed Email"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Use your email provider's sub-addressing capabilities."
+  },
+  "catchallEmail": {
+    "message": "Adres catch-all"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "Losowo"
+  },
+  "randomWord": {
+    "message": "Losowe słowo"
+  },
+  "websiteName": {
+    "message": "Nazwa strony"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Co chcesz wygenerować?"
+  },
+  "passwordType": {
+    "message": "Typ hasła"
+  },
+  "service": {
+    "message": "Usługa"
   }
 }

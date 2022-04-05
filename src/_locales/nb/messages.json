@@ -88,14 +88,17 @@
   "generatePasswordCopied": {
     "message": "Generer et passord (kopiert)"
   },
+  "copyElementIdentifier": {
+    "message": "Kopier egendefinert feltnavn"
+  },
   "noMatchingLogins": {
     "message": "Ingen samsvarende innlogginger."
   },
-  "vaultLocked": {
-    "message": "Hvelvet er låst."
+  "unlockVaultMenu": {
+    "message": "Lås opp hvelvet ditt"
   },
-  "vaultLoggedOut": {
-    "message": "Hvelvet er logget ut."
+  "loginToVaultMenu": {
+    "message": "Logg inn på hvelvet ditt"
   },
   "autoFillInfo": {
     "message": "Det er ingen tilgjengelige innlogginger å auto-utfylle med i den nåværende nettleserfanen."
@@ -118,8 +121,20 @@
   "continue": {
     "message": "Fortsett"
   },
+  "sendVerificationCode": {
+    "message": "Send en bekreftelseskode til E-postadressen din"
+  },
+  "sendCode": {
+    "message": "Send kode"
+  },
+  "codeSent": {
+    "message": "Kode sendt"
+  },
   "verificationCode": {
     "message": "Verifiseringskode"
+  },
+  "confirmIdentity": {
+    "message": "Bekreft identiteten din for å fortsette."
   },
   "account": {
     "message": "Konto"
@@ -151,7 +166,7 @@
     "message": "Lagre"
   },
   "move": {
-    "message": "Move"
+    "message": "Flytt"
   },
   "addFolder": {
     "message": "Legg til en mappe"
@@ -213,6 +228,18 @@
   },
   "length": {
     "message": "Lengde"
+  },
+  "uppercase": {
+    "message": "Store bokstaver (A–Å)"
+  },
+  "lowercase": {
+    "message": "Små bokstaver (a-z)"
+  },
+  "numbers": {
+    "message": "Tall (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Spesialtegn (!@#$%^&*)"
   },
   "numWords": {
     "message": "Antall ord"
@@ -305,8 +332,8 @@
   "browserNotSupportClipboard": {
     "message": "Nettleseren din støtter ikke kopiering til utklippstavlen på noe enkelt vis. Prøv å kopiere det manuelt i stedet."
   },
-  "verifyMasterPassword": {
-    "message": "Verifiser hovedpassordet"
+  "verifyIdentity": {
+    "message": "Bekreft identitet"
   },
   "yourVaultIsLocked": {
     "message": "Hvelvet ditt er låst. Kontroller hovedpassordet ditt for å fortsette."
@@ -407,6 +434,9 @@
   },
   "verificationCodeRequired": {
     "message": "En verifiseringskode er påkrevd."
+  },
+  "invalidVerificationCode": {
+    "message": "Ugyldig bekreftelseskode"
   },
   "valueCopied": {
     "message": "$VALUE$ er kopiert",
@@ -512,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "Er du sikker på at du vil overskrive det nåværende passordet?"
   },
+  "overwriteUsername": {
+    "message": "Overwrite Username"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Are you sure you want to overwrite the current username?"
+  },
   "searchFolder": {
     "message": "Søk i mappe"
   },
@@ -557,9 +593,6 @@
   "notificationAddSave": {
     "message": "Ja, lagre nå"
   },
-  "notificationNeverSave": {
-    "message": "Aldri for dette nettstedet"
-  },
   "disableChangedPasswordNotification": {
     "message": "Deaktiver beskjeder om passordendringer"
   },
@@ -600,7 +633,7 @@
     "description": "Light color"
   },
   "solarizedDark": {
-    "message": "Solarized Dark",
+    "message": "Solarisert mørk",
     "description": "'Solarized' is a noun and the name of a color scheme. It should not be translated."
   },
   "exportVault": {
@@ -620,10 +653,10 @@
     "message": "Eksporten inneholder dine hvelvdataer i et ukryptert format. Du burde ikke lagre eller sende den eksporterte filen over usikre tjenester (f.eks. E-post). Slett det umiddelbart etter at du er ferdig med å bruke dem."
   },
   "encExportKeyWarningDesc": {
-    "message": "This export encrypts your data using your account's encryption key. If you ever rotate your account's encryption key you should export again since you will not be able to decrypt this export file."
+    "message": "Denne eksporten krypterer dataene dine ved hjelp av kontoen din sin krypteringsnøkkel. Hvis du noen gang endrer krypteringsnøkkelen til kontoen din, bør du eksportere dataene igjen, ettersom du da ikke vil kunne dekryptere denne eksportfilen."
   },
   "encExportAccountWarningDesc": {
-    "message": "Account encryption keys are unique to each Bitwarden user account, so you can't import an encrypted export into a different account."
+    "message": "Kontokrypteringsnøkler er unike for hver Bitwarden sin brukerkonto, og du kan ikke importere en kryptert eksport til en annen konto."
   },
   "exportMasterPassword": {
     "message": "Skriv inn ditt superpassord for å eksportere dine hvelvdataer."
@@ -632,19 +665,19 @@
     "message": "Delt"
   },
   "learnOrg": {
-    "message": "Learn about Organizations"
+    "message": "Lær om organisasjoner"
   },
   "learnOrgConfirmation": {
-    "message": "Bitwarden allows you to share your vault items with others by using an organization. Would you like to visit the bitwarden.com website to learn more?"
+    "message": "Bitwarden lar deg dele dine hvelvgjenstander med andre ved å bruke en organisasjon. Vil du besøke bitwarden.com-nettstedet for å lære mer?"
   },
   "moveToOrganization": {
-    "message": "Move to Organization"
+    "message": "Flytt til organisasjon"
   },
   "share": {
     "message": "Del"
   },
   "movedItemToOrg": {
-    "message": "$ITEMNAME$ moved to $ORGNAME$",
+    "message": "$ITEMNAME$ flyttet til $ORGNAME$",
     "placeholders": {
       "itemname": {
         "content": "$1",
@@ -657,7 +690,7 @@
     }
   },
   "moveToOrgDesc": {
-    "message": "Choose an organization that you wish to move this item to. Moving to an organization transfers ownership of the item to that organization. You will no longer be the direct owner of this item once it has been moved."
+    "message": "Velg en organisasjon som du ønsker å flytte denne gjenstanden til. Flytting til en organisasjon overfører eierskap til den aktuelle organisasjonen. Du vil ikke lenger være den direkte eieren av denne varen når den er flyttet."
   },
   "learnMore": {
     "message": "Lær mer"
@@ -773,6 +806,9 @@
   "disableAutoTotpCopyDesc": {
     "message": "Dersom din innlogging har en autentiseringsnøkkel knyttet til den, blir TOTP-verifiseringskoden automatisk kopiert til utklippstavlen din når enn du auto-utfyller innloggingen."
   },
+  "disableAutoBiometricsPrompt": {
+    "message": "Ikke be om biometri under åpning"
+  },
   "premiumRequired": {
     "message": "Premium er påkrevd"
   },
@@ -816,13 +852,13 @@
     "message": "Sett din sikkerhetsnøkkel inn i din datamaskins USB-uttak. Dersom den har en knapp, trykk på den."
   },
   "webAuthnNewTab": {
-    "message": "To start the WebAuthn 2FA verification. Click the button below to open a new tab and follow the instructions provided in the new tab."
+    "message": "For å starte WebAuthn 2FA bekreftelsen. Klikk på knappen nedenfor for å åpne en ny fane og følge instruksene som er gitt i den nye fanen."
   },
   "webAuthnNewTabOpen": {
-    "message": "Open new tab"
+    "message": "Åpne ny fane"
   },
   "webAuthnAuthenticate": {
-    "message": "Authenticate WebAuthn"
+    "message": "Autentiser WebAuthn"
   },
   "loginUnavailable": {
     "message": "Innloggingen er utilgjengelig"
@@ -867,7 +903,7 @@
     "message": "FIDO2 WebAuthn"
   },
   "webAuthnDesc": {
-    "message": "Use any WebAuthn enabled security key to access your account."
+    "message": "Bruk en hvilken som helst WebAuthn aktivert sikkerhetsnøkkel til å få tilgang til kontoen din."
   },
   "emailTitle": {
     "message": "E-post"
@@ -918,22 +954,22 @@
     "message": "Dette er for øyeblikket en eksperimentell egenskap. Bruk det på din egen risiko."
   },
   "defaultAutoFillOnPageLoad": {
-    "message": "Default autofill setting for login items"
+    "message": "Standard autofyll innstilling for innloggingselementer"
   },
   "defaultAutoFillOnPageLoadDesc": {
-    "message": "After enabling Auto-fill on Page Load, you can enable or disable the feature for individual login items. This is the default setting for login items that are not separately configured."
+    "message": "Etter aktivering av auto-utfylling på sidelasser, kan du aktivere eller deaktivere funksjonen for individuelle innloggingselementer. Dette er standardinnstillingen for innloggingselementer som ikke er satt opp separat."
   },
   "itemAutoFillOnPageLoad": {
-    "message": "Auto-fill on Page Load (if enabled in Options)"
+    "message": "Auto-utfyll på sideinnlastning (hvis aktivert i Alternativer)"
   },
   "autoFillOnPageLoadUseDefault": {
-    "message": "Use default setting"
+    "message": "Bruk standardinnstillinger"
   },
   "autoFillOnPageLoadYes": {
-    "message": "Auto-fill on page load"
+    "message": "Auto-utfyll ved innlasting av side"
   },
   "autoFillOnPageLoadNo": {
-    "message": "Do not auto-fill on page load"
+    "message": "Ikke fyll automatisk når du laster inn siden"
   },
   "commandOpenPopup": {
     "message": "Åpne hvelv-vindu"
@@ -950,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Lås hvelvet"
   },
-  "privateModeMessage": {
-    "message": "Dessverre er dette vinduet ikke tilgjengelig i privat modus for denne nettleseren."
+  "privateModeWarning": {
+    "message": "Støtte for privatmodus er eksperimentelt, og noen funksjoner er begrenset."
   },
   "customFields": {
     "message": "Tilpassede felter"
@@ -977,6 +1013,14 @@
   "cfTypeBoolean": {
     "message": "Boolsk verdi"
   },
+  "cfTypeLinked": {
+    "message": "Tilkoblet",
+    "description": "This describes a field that is 'linked' (tied) to another field."
+  },
+  "linkedValue": {
+    "message": "Tilkoblet verdi",
+    "description": "This describes a value that is 'linked' (tied) to another value."
+  },
   "popup2faCloseMessage": {
     "message": "Å klikke utenfor dette oppsprettsvinduet for å sjekke E-postinnboksen din for en verifiseringskoden, vil lukke denne oppspretten. Vil du åpne oppsprettet i et nytt vindu sånn at den ikke lukkes?"
   },
@@ -990,10 +1034,10 @@
     "message": "Nettstedsikoner sørger for et gjenkjennelig bilde ved siden av hver innloggingsgjenstand i hvelvet ditt."
   },
   "disableBadgeCounter": {
-    "message": "Disable Badge Counter"
+    "message": "Deaktiver Badge Teller"
   },
   "disableBadgeCounterDesc": {
-    "message": "Badge counter indicates how many logins you have for the current page in your vault."
+    "message": "Bade-teller indikerer hvor mange innlogginger du har for den nåværende siden i hvelvet ditt."
   },
   "cardholderName": {
     "message": "Kortholderens navn"
@@ -1078,6 +1122,9 @@
   },
   "lastName": {
     "message": "Etternavn"
+  },
+  "fullName": {
+    "message": "Fullt navn"
   },
   "identityName": {
     "message": "Identitetsnavn"
@@ -1192,7 +1239,12 @@
     "message": "Dette passordet ble ikke funnet i noen kjente databrudd. Det burde være trygt å bruke."
   },
   "baseDomain": {
-    "message": "Grunndomene"
+    "message": "Grunndomene",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Domain Name",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Vert",
@@ -1302,12 +1354,6 @@
   },
   "invalidPin": {
     "message": "Ugyldig PIN-kode."
-  },
-  "verifyPin": {
-    "message": "Verifiser PIN-koden"
-  },
-  "yourVaultIsLockedPinCode": {
-    "message": "Hvelvet ditt er låst. Kontroller PIN-koden din for å fortsette."
   },
   "unlockWithBiometrics": {
     "message": "Lås opp med biometri"
@@ -1498,10 +1544,10 @@
     "message": "Uten tillatelse til å kommunisere med Bitwardens skrivebordsprogram kan vi ikke tilgjengeligjøre biometri i nettleserutvidelsen. Prøv igjen."
   },
   "nativeMessaginPermissionSidebarTitle": {
-    "message": "Permission request error"
+    "message": "Feil ved forespørsel om tillatelse"
   },
   "nativeMessaginPermissionSidebarDesc": {
-    "message": "This action cannot be done in the sidebar, please retry the action in the popup or popout."
+    "message": "Denne handlingen kan ikke gjøres i sidestolpen, prøv på nytt i sprettoppvinduet eller popvindu."
   },
   "personalOwnershipSubmitError": {
     "message": "På grunn av bedrifsretningslinjer er du begrenset fra å lagre objekter til ditt personlige hvelv. Endre alternativ for eierskap til en organisasjon og velg blant tilgjengelige samlinger."
@@ -1510,13 +1556,13 @@
     "message": "En bedriftsretningslinje påvirker dine eierskapsinnstillinger."
   },
   "excludedDomains": {
-    "message": "Excluded Domains"
+    "message": "Ekskluderte domener"
   },
   "excludedDomainsDesc": {
-    "message": "Bitwarden will not ask to save login details for these domains. You must refresh the page for changes to take effect."
+    "message": "Bitwarden vil ikke be om å lagre innloggingsdetaljer for disse domenene. Du må oppdatere siden for at endringene skal tre i kraft."
   },
   "excludedDomainsInvalidDomain": {
-    "message": "$DOMAIN$ is not a valid domain",
+    "message": "$DOMAIN$ er ikke et gyldig domene",
     "placeholders": {
       "domain": {
         "content": "$1",
@@ -1547,7 +1593,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Max access count reached"
+    "message": "Maksimalt antall tilganger nådd"
   },
   "expired": {
     "message": "Utløpt"
@@ -1602,24 +1648,24 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendNameDesc": {
-    "message": "A friendly name to describe this Send.",
+    "message": "Et vennlig navn for å beskrive dette Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendFileDesc": {
-    "message": "The file you want to send."
+    "message": "Filen du vil send."
   },
   "deletionDate": {
     "message": "Dato for sletting"
   },
   "deletionDateDesc": {
-    "message": "The Send will be permanently deleted on the specified date and time.",
+    "message": "Send-en vil bli slettet permanent på den angitte dato og klokkeslett.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "expirationDate": {
-    "message": "Expiration Date"
+    "message": "Utløpsdato"
   },
   "expirationDateDesc": {
-    "message": "If set, access to this Send will expire on the specified date and time.",
+    "message": "Hvis satt, vil tilgang til denne Send gå ut på angitt dato og klokkeslett.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "oneDay": {
@@ -1635,122 +1681,261 @@
     }
   },
   "custom": {
-    "message": "Custom"
+    "message": "Egendefinert"
   },
   "maximumAccessCount": {
-    "message": "Maximum Access Count"
+    "message": "Maksimal antall tilganger"
   },
   "maximumAccessCountDesc": {
-    "message": "If set, users will no longer be able to access this Send once the maximum access count is reached.",
+    "message": "Hvis satt, vil ikke brukere lenger ha tilgang til dette Send når maksimal antall tilgang er nådd.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendPasswordDesc": {
-    "message": "Optionally require a password for users to access this Send.",
+    "message": "Eventuelt krever et passord for brukere å få tilgang til denne Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendNotesDesc": {
-    "message": "Private notes about this Send.",
+    "message": "Private notater om denne Send-en.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendDisableDesc": {
-    "message": "Disable this Send so that no one can access it.",
+    "message": "Deaktiver denne Send-en, slik at ingen får tilgang til den.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendShareDesc": {
-    "message": "Copy this Send's link to clipboard upon save.",
+    "message": "Kopier denne Send-ens lenke til utklippstavlen når den har blitt lagret.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendTextDesc": {
     "message": "Teksten du ønsker å sende."
   },
   "sendHideText": {
-    "message": "Hide this Send's text by default.",
+    "message": "Skjul denne Send-ens tekst som standard.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "currentAccessCount": {
-    "message": "Current Access Count"
+    "message": "Antall nåværende tilganger"
   },
   "createSend": {
-    "message": "Create New Send",
+    "message": "Lag en ny Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "newPassword": {
     "message": "Nytt passord"
   },
   "sendDisabled": {
-    "message": "Send Disabled",
+    "message": "Send er skrudd av",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendDisabledWarning": {
-    "message": "Due to an enterprise policy, you are only able to delete an existing Send.",
+    "message": "På grunn av en virksomhetsregel kan du kun slette en eksisterende Send.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "createdSend": {
-    "message": "Created Send",
+    "message": "Opprettet Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "editedSend": {
-    "message": "Edited Send",
+    "message": "Redigerte Send",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLinuxChromiumFileWarning": {
-    "message": "In order to choose a file, open the extension in the sidebar (if possible) or pop out to a new window by clicking this banner."
+    "message": "For å velge en fil, åpne utvidelsen i sidepanelet (hvis mulig) eller poppe ut til et nytt vindu ved å klikke på dette banneret."
   },
   "sendFirefoxFileWarning": {
-    "message": "In order to choose a file using Firefox, open the extension in the sidebar or pop out to a new window by clicking this banner."
+    "message": "For å velge en fil med Firefox må du åpne utvidelsen i sidestolpen eller sprette ut til et nytt vindu ved å klikke på dette banneret."
   },
   "sendSafariFileWarning": {
-    "message": "In order to choose a file using Safari, pop out to a new window by clicking this banner."
+    "message": "For å velge en fil med Safari, popp ut i et nytt vindu ved å klikke på dette banneret."
   },
   "sendFileCalloutHeader": {
-    "message": "Before you start"
+    "message": "Før du starter"
   },
   "sendFirefoxCustomDatePopoutMessage1": {
-    "message": "To use a calendar style date picker",
+    "message": "Hvis du vil bruke en kalenderstil-datovelger",
     "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read '**To use a calendar style date picker ** click here to pop out your window.'"
   },
   "sendFirefoxCustomDatePopoutMessage2": {
-    "message": "click here",
+    "message": "kilkk her",
     "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'To use a calendar style date picker **click here** to pop out your window.'"
   },
   "sendFirefoxCustomDatePopoutMessage3": {
-    "message": "to pop out your window.",
+    "message": "å pope ut vinduet.",
     "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'To use a calendar style date picker click here **to pop out your window.**'"
   },
   "expirationDateIsInvalid": {
-    "message": "The expiration date provided is not valid."
+    "message": "Utløpsdatoen angitt er ikke gyldig."
   },
   "deletionDateIsInvalid": {
-    "message": "The deletion date provided is not valid."
+    "message": "Slettingsdatoen som er gitt er ikke gyldig."
   },
   "expirationDateAndTimeRequired": {
-    "message": "An expiration date and time are required."
+    "message": "Utløps dato og tid er påkrevd."
   },
   "deletionDateAndTimeRequired": {
-    "message": "A deletion date and time are required."
+    "message": "Det kreves en slettingsdato og -tid."
   },
   "dateParsingError": {
-    "message": "There was an error saving your deletion and expiration dates."
+    "message": "Det oppstod en feil ved lagring av slettingen og utløpsdatoene."
   },
   "hideEmail": {
-    "message": "Hide my email address from recipients."
+    "message": "Skjul min e-postadresse fra mottakere."
   },
   "sendOptionsPolicyInEffect": {
-    "message": "One or more organization policies are affecting your Send options."
+    "message": "En eller flere av organisasjons retningslinjer påvirker generatorinnstillingene dine."
   },
   "passwordPrompt": {
-    "message": "Master password re-prompt"
+    "message": "Forespørsel om hovedpassord på nytt"
   },
   "passwordConfirmation": {
-    "message": "Master password confirmation"
+    "message": "Superpassord bekreftelse"
   },
   "passwordConfirmationDesc": {
-    "message": "This action is protected. To continue, please re-enter your master password to verify your identity."
+    "message": "Denne handlingen er beskyttet. For å fortsette, skriv inn superpassordet på nytt for å bekrefte identiteten din."
   },
   "emailVerificationRequired": {
-    "message": "Email Verification Required"
+    "message": "E-postbekreftelse kreves"
   },
   "emailVerificationRequiredDesc": {
-    "message": "You must verify your email to use this feature. You can verify your email in the web vault."
+    "message": "Du må bekrefte e-posten din for å bruke denne funksjonen. Du kan bekrefte e-postadressen din i netthvelvet."
+  },
+  "updatedMasterPassword": {
+    "message": "Oppdaterte hovedpassordet"
+  },
+  "updateMasterPassword": {
+    "message": "Oppdater hovedpassord"
+  },
+  "updateMasterPasswordWarning": {
+    "message": "Hovedpassordet ditt ble nylig endret av en administrator i organisasjonen din. For å få tilgang til hvelvet, må du oppdatere det nå. Hvis du fortsetter, logges du ut av den nåværende økten, og du må logge på igjen. Aktive økter på andre enheter kan fortsette å være aktive i opptil én time."
+  },
+  "resetPasswordPolicyAutoEnroll": {
+    "message": "Automatisk registrering"
+  },
+  "resetPasswordAutoEnrollInviteWarning": {
+    "message": "Denne organisasjonen har en bedriftsoppsettsregel som automatisk innrullerer deg i tilbakestilling av passord. Registrering vil tillate organisasjonsadministratorer å endre hovedpassordet ditt."
+  },
+  "selectFolder": {
+    "message": "Velg mappe …"
+  },
+  "ssoCompleteRegistration": {
+    "message": "For å fullføre påloggingen med SSO, vennligst velg et hovedpassord for å få tilgang til og beskytte hvelvet ditt."
+  },
+  "hours": {
+    "message": "Åpningstider"
+  },
+  "minutes": {
+    "message": "Minutter"
+  },
+  "vaultTimeoutPolicyInEffect": {
+    "message": "Organisasjonens retningslinjer påvirker tidsavbruddet for hvelvet ditt. Maksimalt tillatt tidsavbrudd for hvelv er $HOURS$ time(r) og $MINUTES$ minutt(er)",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutToLarge": {
+    "message": "Tidsavbruddet ditt for hvelvet overstiger begrensningene som er satt av organisasjonen din."
+  },
+  "vaultExportDisabled": {
+    "message": "Hvelveksportering er skrudd av"
+  },
+  "personalVaultExportPolicyInEffect": {
+    "message": "En eller flere regler i organisasjonsoppsettet forhindrer deg i å eksportere ditt personlige hvelv."
+  },
+  "copyCustomFieldNameInvalidElement": {
+    "message": "Klarte ikke å identifisere et gyldig skjemaelement. Prøv å inspisere HTML-en i stedet."
+  },
+  "copyCustomFieldNameNotUnique": {
+    "message": "Ingen unik identifikator ble funnet."
+  },
+  "convertOrganizationEncryptionDesc": {
+    "message": "$ORGANIZATION$ bruker SSO med en selvdrevet nøkkelserver. Et hovedpassord er ikke lenger nødvendig for å logge inn for medlemmer av denne organisasjonen.",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
+  "leaveOrganization": {
+    "message": "Forlat organisasjonen"
+  },
+  "removeMasterPassword": {
+    "message": "Fjern hovedpassord"
+  },
+  "removedMasterPassword": {
+    "message": "Hovedpassordet er fjernet."
+  },
+  "leaveOrganizationConfirmation": {
+    "message": "Er du sikker på at du vil forlate denne organisasjonen?"
+  },
+  "leftOrganization": {
+    "message": "Du har forlatt organisasjonen."
+  },
+  "toggleCharacterCount": {
+    "message": "Toggle character count"
+  },
+  "sessionTimeout": {
+    "message": "Your session has timed out. Please go back and try logging in again."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Exporting Personal Vault"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Only the personal vault items associated with $EMAIL$ will be exported. Organization vault items will not be included.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Feil"
+  },
+  "regenerateUsername": {
+    "message": "Regenerate Username"
+  },
+  "generateUsername": {
+    "message": "Generate Username"
+  },
+  "usernameType": {
+    "message": "Username Type"
+  },
+  "plusAddressedEmail": {
+    "message": "Plus Addressed Email"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Use your email provider's sub-addressing capabilities."
+  },
+  "catchallEmail": {
+    "message": "Catch-all Email"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "Random"
+  },
+  "randomWord": {
+    "message": "Random Word"
+  },
+  "websiteName": {
+    "message": "Website Name"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "What would you like to generate?"
+  },
+  "passwordType": {
+    "message": "Password Type"
+  },
+  "service": {
+    "message": "Service"
   }
 }

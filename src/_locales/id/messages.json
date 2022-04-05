@@ -88,14 +88,17 @@
   "generatePasswordCopied": {
     "message": "Membuat Kata Sandi (tersalin)"
   },
+  "copyElementIdentifier": {
+    "message": "Salin Nama Kolom Pilihan"
+  },
   "noMatchingLogins": {
     "message": "Tidak ada info masuk yang cocok."
   },
-  "vaultLocked": {
-    "message": "Brankas terkunci."
+  "unlockVaultMenu": {
+    "message": "Buka brankas Anda"
   },
-  "vaultLoggedOut": {
-    "message": "Brankas terkunci."
+  "loginToVaultMenu": {
+    "message": "Masuk ke brankas Anda"
   },
   "autoFillInfo": {
     "message": "Tidak ada info masuk yang tersedia untuk mengisi secara otomatis tab peramban saat ini."
@@ -118,8 +121,20 @@
   "continue": {
     "message": "Lanjutkan"
   },
+  "sendVerificationCode": {
+    "message": "Kirim kode verifikasi ke email Anda"
+  },
+  "sendCode": {
+    "message": "Kirim Kode"
+  },
+  "codeSent": {
+    "message": "Kode Terkirim!"
+  },
   "verificationCode": {
     "message": "Kode Verifikasi"
+  },
+  "confirmIdentity": {
+    "message": "Konfirmasi identitas Anda untuk melanjutkan."
   },
   "account": {
     "message": "Akun"
@@ -214,6 +229,18 @@
   "length": {
     "message": "Panjang"
   },
+  "uppercase": {
+    "message": "Huruf besar (A-Z)"
+  },
+  "lowercase": {
+    "message": "Huruf kecil (a-z)"
+  },
+  "numbers": {
+    "message": "Angka (0-9)"
+  },
+  "specialCharacters": {
+    "message": "karakter khusus (contoh.! @#$%^&*)"
+  },
   "numWords": {
     "message": "Jumlah Kata"
   },
@@ -305,8 +332,8 @@
   "browserNotSupportClipboard": {
     "message": "Peramban Anda tidak mendukung menyalin clipboard dengan mudah. Salin secara manual."
   },
-  "verifyMasterPassword": {
-    "message": "Verifikasi Kata Sandi Utama"
+  "verifyIdentity": {
+    "message": "Verifikasi Identitas Anda"
   },
   "yourVaultIsLocked": {
     "message": "Brankas Anda terkunci. Verifikasi kata sandi utama Anda untuk melanjutkan."
@@ -407,6 +434,9 @@
   },
   "verificationCodeRequired": {
     "message": "Kode verifikasi diperlukan."
+  },
+  "invalidVerificationCode": {
+    "message": "Kode verifikasi tidak valid"
   },
   "valueCopied": {
     "message": "$VALUE$ disalin",
@@ -512,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "Anda yakin ingin menimpa sandi saat ini?"
   },
+  "overwriteUsername": {
+    "message": "Overwrite Username"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Are you sure you want to overwrite the current username?"
+  },
   "searchFolder": {
     "message": "Cari folder"
   },
@@ -557,9 +593,6 @@
   "notificationAddSave": {
     "message": "Iya, Simpan Sekarang"
   },
-  "notificationNeverSave": {
-    "message": "Jangan pernah untuk situs ini"
-  },
   "disableChangedPasswordNotification": {
     "message": "Nonaktifkan Notifikasi Perubahan Kata Sandi"
   },
@@ -600,7 +633,7 @@
     "description": "Light color"
   },
   "solarizedDark": {
-    "message": "Solarized Dark",
+    "message": "Gelap Solarized",
     "description": "'Solarized' is a noun and the name of a color scheme. It should not be translated."
   },
   "exportVault": {
@@ -657,7 +690,7 @@
     }
   },
   "moveToOrgDesc": {
-    "message": "Choose an organization that you wish to move this item to. Moving to an organization transfers ownership of the item to that organization. You will no longer be the direct owner of this item once it has been moved."
+    "message": "Pilihlah sebuah organisasi yang Anda ingin memindahkan item ini. Memindahkan bearti memberikan kepemilikan kepada organisasi tersebut. Anda tidak akan lagi menjadi pemilik item ini."
   },
   "learnMore": {
     "message": "Pelajari lebih lanjut"
@@ -773,6 +806,9 @@
   "disableAutoTotpCopyDesc": {
     "message": "Jika info masuk Anda memiliki kunci autentikasi yang menyertainya, kode verifikasi TOTP akan disalin secara otomatis ke clipboard Anda setiap kali Anda mengisi info masuk secara otomatis."
   },
+  "disableAutoBiometricsPrompt": {
+    "message": "Jangan minta biometrik saat dinyalakan."
+  },
   "premiumRequired": {
     "message": "Membutuhkan Keanggotaan Premium"
   },
@@ -822,7 +858,7 @@
     "message": "Buka tab baru"
   },
   "webAuthnAuthenticate": {
-    "message": "Authenticate WebAuthn"
+    "message": "Autentikasi dengan WebAuthn."
   },
   "loginUnavailable": {
     "message": "Info Masuk Tidak Tersedia"
@@ -867,7 +903,7 @@
     "message": "FIDO2 WebAuthn"
   },
   "webAuthnDesc": {
-    "message": "Use any WebAuthn enabled security key to access your account."
+    "message": "Gunakan kunci yang mendukung WebAUthn untuk mengakses akun anda."
   },
   "emailTitle": {
     "message": "Email"
@@ -918,22 +954,22 @@
     "message": "Fitur ini saat ini adalah fitur eksperimental. Gunakan dengan risiko Anda sendiri."
   },
   "defaultAutoFillOnPageLoad": {
-    "message": "Default autofill setting for login items"
+    "message": "Konfigurasi autofill standard untuk item login."
   },
   "defaultAutoFillOnPageLoadDesc": {
-    "message": "After enabling Auto-fill on Page Load, you can enable or disable the feature for individual login items. This is the default setting for login items that are not separately configured."
+    "message": "Setelah mengaktifkan Auto-Fill waktu website terbuka, kamu dapat mengaktifkan atau meng-nonaktifkan feature ini untuk setiap item. Ini adalah konfigurasi standard untuk item yang tidak dikonfigurasi terpisah."
   },
   "itemAutoFillOnPageLoad": {
-    "message": "Auto-fill on Page Load (if enabled in Options)"
+    "message": "Auto-fill waktu website terbuka (Jika diaktifkan di Options)"
   },
   "autoFillOnPageLoadUseDefault": {
     "message": "Gunakan pengaturan baku"
   },
   "autoFillOnPageLoadYes": {
-    "message": "Auto-fill on page load"
+    "message": "Auto-Fill ketika website baru terbuka"
   },
   "autoFillOnPageLoadNo": {
-    "message": "Do not auto-fill on page load"
+    "message": "Jangan Auto-Fill ketika website baru terbuka"
   },
   "commandOpenPopup": {
     "message": "Buka popup brankas"
@@ -950,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Kunci brankas"
   },
-  "privateModeMessage": {
-    "message": "Sayangnya jendela ini tidak tersedia di mode pribadi untuk peramban ini."
+  "privateModeWarning": {
+    "message": "Dukungan mode pribadi bersifat eksperimental dan beberapa fitur terbatas."
   },
   "customFields": {
     "message": "Ruas Khusus"
@@ -977,6 +1013,14 @@
   "cfTypeBoolean": {
     "message": "Boolean"
   },
+  "cfTypeLinked": {
+    "message": "Terhubung",
+    "description": "This describes a field that is 'linked' (tied) to another field."
+  },
+  "linkedValue": {
+    "message": "Linked value",
+    "description": "This describes a value that is 'linked' (tied) to another value."
+  },
   "popup2faCloseMessage": {
     "message": "Tindakan klik diluar jendela popup untuk memeriksa  kode verifikasi di dalam surel Anda akan menyebabkan popup ini ditutup. Apakah Anda ingin membuka popup ini di jendela baru sehingga terus tetap terbuka?"
   },
@@ -990,10 +1034,10 @@
     "message": "Ikon Situs Web menyediakan gambar yang mudah dikenali di sebelah item info masuk di dalam brankas Anda."
   },
   "disableBadgeCounter": {
-    "message": "Disable Badge Counter"
+    "message": "Matikan angka penghitung "
   },
   "disableBadgeCounterDesc": {
-    "message": "Badge counter indicates how many logins you have for the current page in your vault."
+    "message": "Angka penghitung menandakan jumlah login yang kamu punya untuk website saat ini yang ada di dalam vault kamu."
   },
   "cardholderName": {
     "message": "Nama Pemegang Kartu"
@@ -1078,6 +1122,9 @@
   },
   "lastName": {
     "message": "Nama Belakang"
+  },
+  "fullName": {
+    "message": "Nama Lengkap"
   },
   "identityName": {
     "message": "Nama Identitas"
@@ -1192,7 +1239,12 @@
     "message": "Kata sandi ini tidak ditemukan dalam insiden kebocoran data yang ada. Kata sandi tersebut seharusnya aman untuk digunakan."
   },
   "baseDomain": {
-    "message": "Domain basis"
+    "message": "Domain basis",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Domain Name",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Hos",
@@ -1302,12 +1354,6 @@
   },
   "invalidPin": {
     "message": "Kode PIN tidak valid."
-  },
-  "verifyPin": {
-    "message": "Verifikasi PIN"
-  },
-  "yourVaultIsLockedPinCode": {
-    "message": "Brankas Anda terkunci. Verifikasi kode PIN Anda untuk melanjutkan."
   },
   "unlockWithBiometrics": {
     "message": "Buka kunci dengan biometrik"
@@ -1694,7 +1740,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendLinuxChromiumFileWarning": {
-    "message": "In order to choose a file, open the extension in the sidebar (if possible) or pop out to a new window by clicking this banner."
+    "message": "Untuk memilih file ini, buka Extension di sidebar (jika memungkinkan) atau keluarkan menjadi window baru dengan menekan gambar ini."
   },
   "sendFirefoxFileWarning": {
     "message": "Untuk memilih file menggunakan Firefox, buka ekstensi di sidebar atau keluar ke jendela baru dengan mengklik banner ini."
@@ -1736,10 +1782,10 @@
     "message": "Sembunyikan alamat surel dari penerima."
   },
   "sendOptionsPolicyInEffect": {
-    "message": "One or more organization policies are affecting your Send options."
+    "message": "Satu atau lebih kebijakan organisasi mempengaruhi pengaturan feature Send anda."
   },
   "passwordPrompt": {
-    "message": "Master password re-prompt"
+    "message": "Master password ditanyakan kembali"
   },
   "passwordConfirmation": {
     "message": "Konfirmasi sandi utama"
@@ -1752,5 +1798,144 @@
   },
   "emailVerificationRequiredDesc": {
     "message": "Anda harus memverifikasi email Anda untuk menggunakan fitur ini. Anda dapat memverifikasi email Anda di brankas web."
+  },
+  "updatedMasterPassword": {
+    "message": "Kata Sandi Utama Telah Diperbarui"
+  },
+  "updateMasterPassword": {
+    "message": "Perbarui Kata Sandi Utama"
+  },
+  "updateMasterPasswordWarning": {
+    "message": "Kata Sandi Utama Anda baru-baru ini diubah oleh administrator organisasi Anda. Untuk mengakses brankas tersebut, Anda diharuskan memperbarui Kata Sandi Utama Anda sekarang. Jika Anda melanjutkan, Anda akan keluar dari sesi saat ini, yang mana mengharuskan Anda untuk login kembali. Sesi yang aktif di perangkat lain akan tetap aktif selama satu jam kedepan."
+  },
+  "resetPasswordPolicyAutoEnroll": {
+    "message": "Pendaftaran Otomatis"
+  },
+  "resetPasswordAutoEnrollInviteWarning": {
+    "message": "Organisasi ini memiliki kebijakan perusahaan yang secara otomatis mendaftarkan Anda dalam pengaturan ulang kata sandi. Dengan mendaftar, akan memungkinkan administrator organisasi untuk mengubah kata sandi utama Anda."
+  },
+  "selectFolder": {
+    "message": "Pilih Folder..."
+  },
+  "ssoCompleteRegistration": {
+    "message": "Untuk menyelesaikan masuk dengan SSO, harap setel kata sandi utama untuk mengakses dan melindungi brankas Anda."
+  },
+  "hours": {
+    "message": "Jam"
+  },
+  "minutes": {
+    "message": "Menit"
+  },
+  "vaultTimeoutPolicyInEffect": {
+    "message": "Kebijakan organisasi Anda memengaruhi waktu tunggu brankas Anda. Batas maksimal Waktu Tunggu Brankas yang diizinkan adalah $HOURS$ jam dan $MINUTES$ menit",
+    "placeholders": {
+      "hours": {
+        "content": "$1",
+        "example": "5"
+      },
+      "minutes": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "vaultTimeoutToLarge": {
+    "message": "Waktu tunggu brankas Anda melebihi batasan yang diatur organisasi Anda."
+  },
+  "vaultExportDisabled": {
+    "message": "Ekspor Brankas Dinonaktifkan"
+  },
+  "personalVaultExportPolicyInEffect": {
+    "message": "Satu atau beberapa kebijakan organisasi mencegah Anda mengekspor brankas pribadi Anda."
+  },
+  "copyCustomFieldNameInvalidElement": {
+    "message": "Unable to identify a valid form element. Try inspecting the HTML instead."
+  },
+  "copyCustomFieldNameNotUnique": {
+    "message": "Tidak ada pengidentifikasi unik yang ditemukan."
+  },
+  "convertOrganizationEncryptionDesc": {
+    "message": "$ORGANIZATION$ is using SSO with a self-hosted key server. A master password is no longer required to log in for members of this organization.",
+    "placeholders": {
+      "organization": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
+  "leaveOrganization": {
+    "message": "Tinggalkan Organisasi"
+  },
+  "removeMasterPassword": {
+    "message": "Hapus Kata Sandi Utama"
+  },
+  "removedMasterPassword": {
+    "message": "Sandi utama dihapus."
+  },
+  "leaveOrganizationConfirmation": {
+    "message": "Apakah Anda yakin ingin meninggalkan organisasi ini?"
+  },
+  "leftOrganization": {
+    "message": "Anda telah keluar dari organisasi."
+  },
+  "toggleCharacterCount": {
+    "message": "Toggle character count"
+  },
+  "sessionTimeout": {
+    "message": "Your session has timed out. Please go back and try logging in again."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Exporting Personal Vault"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Only the personal vault items associated with $EMAIL$ will be exported. Organization vault items will not be included.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Error"
+  },
+  "regenerateUsername": {
+    "message": "Regenerate Username"
+  },
+  "generateUsername": {
+    "message": "Generate Username"
+  },
+  "usernameType": {
+    "message": "Username Type"
+  },
+  "plusAddressedEmail": {
+    "message": "Plus Addressed Email"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Use your email provider's sub-addressing capabilities."
+  },
+  "catchallEmail": {
+    "message": "Catch-all Email"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "Random"
+  },
+  "randomWord": {
+    "message": "Random Word"
+  },
+  "websiteName": {
+    "message": "Website Name"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "What would you like to generate?"
+  },
+  "passwordType": {
+    "message": "Password Type"
+  },
+  "service": {
+    "message": "Service"
   }
 }
