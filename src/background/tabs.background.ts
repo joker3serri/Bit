@@ -10,7 +10,7 @@ export default class TabsBackground {
   private focusedWindowId: number;
 
   async init() {
-    if (!chrome.tabs) {
+    if (!chrome.tabs || !chrome.windows) {
       return;
     }
 
