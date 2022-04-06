@@ -31,6 +31,7 @@ import { TokenService as TokenServiceAbstraction } from "jslib-common/abstractio
 import { TotpService as TotpServiceAbstraction } from "jslib-common/abstractions/totp.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "jslib-common/abstractions/twoFactor.service";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "jslib-common/abstractions/userVerification.service";
+import { UsernameGenerationService as UsernameGenerationServiceAbstraction } from "jslib-common/abstractions/usernameGeneration.service";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "jslib-common/abstractions/vaultTimeout.service";
 import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
 import { CipherType } from "jslib-common/enums/cipherType";
@@ -66,6 +67,7 @@ import { TokenService } from "jslib-common/services/token.service";
 import { TotpService } from "jslib-common/services/totp.service";
 import { TwoFactorService } from "jslib-common/services/twoFactor.service";
 import { UserVerificationService } from "jslib-common/services/userVerification.service";
+import { UsernameGenerationService } from "jslib-common/services/usernameGeneration.service";
 import { WebCryptoFunctionService } from "jslib-common/services/webCryptoFunction.service";
 
 import { BrowserApi } from "../browser/browserApi";
@@ -135,6 +137,7 @@ export default class MainBackground {
   keyConnectorService: KeyConnectorServiceAbstraction;
   userVerificationService: UserVerificationServiceAbstraction;
   twoFactorService: TwoFactorServiceAbstraction;
+  usernameGenerationService: UsernameGenerationServiceAbstraction;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -198,7 +201,7 @@ export default class MainBackground {
       }
     );
     this.i18nService = new I18nService(BrowserApi.getUILanguage(window));
-    this.cryptoFunctionService = new WebCryptoFunctionService(window, this.platformUtilsService);
+    this.cryptoFunctionService = new WebCryptoFunctionService(window);
     this.cryptoService = new BrowserCryptoService(
       this.cryptoFunctionService,
       this.platformUtilsService,
@@ -470,6 +473,10 @@ export default class MainBackground {
       this.stateService,
       this.twoFactorService,
       this.i18nService
+    );
+    this.usernameGenerationService = new UsernameGenerationService(
+      this.cryptoService,
+      this.stateService
     );
   }
 

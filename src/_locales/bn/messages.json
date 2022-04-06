@@ -542,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "আপনি কি নিশ্চিত যে আপনি বর্তমান পাসওয়ার্ডটি ওভাররাইট করতে চান?"
   },
+  "overwriteUsername": {
+    "message": "Overwrite Username"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Are you sure you want to overwrite the current username?"
+  },
   "searchFolder": {
     "message": "ফোল্ডার অনুসন্ধান"
   },
@@ -1233,7 +1239,12 @@
     "message": "এই পাসওয়ার্ডটি কোনও পরিচিত তথ্য লঙ্ঘনে পাওয়া যায় নি। এটি ব্যবহার করা নিরাপদ হওয়া উচিত।"
   },
   "baseDomain": {
-    "message": "ভিত্তি ডোমেইন"
+    "message": "ভিত্তি ডোমেইন",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Domain Name",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "নিয়ন্ত্রণকর্তা",
@@ -1575,7 +1586,7 @@
     "message": "Text"
   },
   "sendTypeFile": {
-    "message": "File"
+    "message": "ফাইল"
   },
   "allSends": {
     "message": "All Sends",
@@ -1585,26 +1596,26 @@
     "message": "Max access count reached"
   },
   "expired": {
-    "message": "Expired"
+    "message": "অবসায়িত"
   },
   "pendingDeletion": {
-    "message": "Pending deletion"
+    "message": "মুছে ফেলার জন্য অপেক্ষমান"
   },
   "passwordProtected": {
-    "message": "Password protected"
+    "message": "পাসওয়ার্ড সুরক্ষিত"
   },
   "copySendLink": {
-    "message": "Copy Send link",
+    "message": "Send লিঙ্ক কপি করুন",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "removePassword": {
-    "message": "Remove Password"
+    "message": "পাসওয়ার্ড অপসারণ করুন"
   },
   "delete": {
     "message": "Delete"
   },
   "removedPassword": {
-    "message": "Removed Password"
+    "message": "পাসওয়ার্ড অপসারিত হয়েছে"
   },
   "deletedSend": {
     "message": "Deleted Send",
@@ -1618,7 +1629,7 @@
     "message": "Disabled"
   },
   "removePasswordConfirmation": {
-    "message": "Are you sure you want to remove the password?"
+    "message": "আপনি কি নিশ্চিত যে আপনি এই পাসওয়ার্ডটি অপসারণ করতে চান?"
   },
   "deleteSend": {
     "message": "Delete Send",
@@ -1783,16 +1794,16 @@
     "message": "This action is protected. To continue, please re-enter your master password to verify your identity."
   },
   "emailVerificationRequired": {
-    "message": "Email Verification Required"
+    "message": "ইমেইল সত্যায়ন প্রয়োজন"
   },
   "emailVerificationRequiredDesc": {
     "message": "You must verify your email to use this feature. You can verify your email in the web vault."
   },
   "updatedMasterPassword": {
-    "message": "Updated Master Password"
+    "message": "প্রধান পাসওয়ার্ড আপডেট করা হয়েছে"
   },
   "updateMasterPassword": {
-    "message": "Update Master Password"
+    "message": "প্রধান পাসওয়ার্ড আপডেট করুন"
   },
   "updateMasterPasswordWarning": {
     "message": "Your Master Password was recently changed by an administrator in your organization. In order to access the vault, you must update it now. Proceeding will log you out of your current session, requiring you to log back in. Active sessions on other devices may continue to remain active for up to one hour."
@@ -1856,10 +1867,10 @@
     "message": "Leave Organization"
   },
   "removeMasterPassword": {
-    "message": "Remove Master Password"
+    "message": "প্রধান পাসওয়ার্ডটি অপসারণ করুন"
   },
   "removedMasterPassword": {
-    "message": "Master password removed."
+    "message": "প্রধান পাসওয়ার্ড অপসারিত হয়েছে।"
   },
   "leaveOrganizationConfirmation": {
     "message": "Are you sure you want to leave this organization?"
@@ -1887,5 +1898,44 @@
   },
   "error": {
     "message": "Error"
+  },
+  "regenerateUsername": {
+    "message": "Regenerate Username"
+  },
+  "generateUsername": {
+    "message": "Generate Username"
+  },
+  "usernameType": {
+    "message": "Username Type"
+  },
+  "plusAddressedEmail": {
+    "message": "Plus Addressed Email"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Use your email provider's sub-addressing capabilities."
+  },
+  "catchallEmail": {
+    "message": "Catch-all Email"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "Random"
+  },
+  "randomWord": {
+    "message": "Random Word"
+  },
+  "websiteName": {
+    "message": "Website Name"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "What would you like to generate?"
+  },
+  "passwordType": {
+    "message": "Password Type"
+  },
+  "service": {
+    "message": "Service"
   }
 }
