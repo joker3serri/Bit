@@ -44,8 +44,8 @@ export default class TabsBackground {
         if (this.focusedWindowId > 0 && tab.windowId != this.focusedWindowId) {
           return;
         }
-        const activeTab = await this.getActiveTabFromCurrentWindow();
-        if (activeTab != null && activeTab.id !== tabId) {
+
+        if (!tab.active) {
           return;
         }
 
@@ -59,17 +59,5 @@ export default class TabsBackground {
         this.main.messagingService.send("tabChanged");
       }
     );
-  }
-
-  async getActiveTabFromCurrentWindow(): Promise<chrome.tabs.Tab> | null {
-    return new Promise((resolve) => {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs: chrome.tabs.Tab[]) => {
-        if (tabs.length > 0) {
-          resolve(tabs[0]);
-        }
-
-        resolve(null);
-      });
-    });
   }
 }
