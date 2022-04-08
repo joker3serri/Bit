@@ -1,8 +1,8 @@
 import { APP_INITIALIZER, LOCALE_ID, NgModule } from "@angular/core";
 
+import { LockGuard as BaseLockGuardService } from "jslib-angular/guards/lock.guard";
+import { UnauthGuard as BaseUnauthGuardService } from "jslib-angular/guards/unauth.guard";
 import { JslibServicesModule } from "jslib-angular/services/jslib-services.module";
-import { LockGuardService as BaseLockGuardService } from "jslib-angular/services/lock-guard.service";
-import { UnauthGuardService as BaseUnauthGuardService } from "jslib-angular/services/unauth-guard.service";
 import { ApiService } from "jslib-common/abstractions/api.service";
 import { AppIdService } from "jslib-common/abstractions/appId.service";
 import { AuditService } from "jslib-common/abstractions/audit.service";
