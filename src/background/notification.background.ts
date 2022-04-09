@@ -190,7 +190,7 @@ export default class NotificationBackground {
   }
 
   private async addLogin(loginInfo: AddLoginRuntimeMessage, tab: chrome.tabs.Tab) {
-    if ((await this.authService.getAuthStatus()) === AuthenticationStatus.LoggedOut) {
+    if (!(await this.stateService.getIsAuthenticated())) {
       return;
     }
 

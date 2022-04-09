@@ -796,9 +796,9 @@ export default class MainBackground {
 
   private async loadMenuAndUpdateBadgeForNoAccessState(contextMenuEnabled: boolean) {
     if (contextMenuEnabled) {
-      const loggedOut = (await this.authService.getAuthStatus()) === AuthenticationStatus.LoggedOut;
+      const authed = await this.stateService.getIsAuthenticated();
       await this.loadNoLoginsContextMenuOptions(
-        this.i18nService.t(loggedOut ? "loginToVaultMenu" : "unlockVaultMenu")
+        this.i18nService.t(authed ? "unlockVaultMenu" : "loginToVaultMenu")
       );
     }
 
