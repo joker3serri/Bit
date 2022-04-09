@@ -83,7 +83,7 @@ export default class CommandsBackground {
       return;
     }
 
-    if ((await this.authService.authStatus()) === AuthenticationStatus.Locked) {
+    if ((await this.authService.getAuthStatus()) === AuthenticationStatus.Locked) {
       const retryMessage: LockedVaultPendingNotificationsItem = {
         commandToRetry: {
           msg: { command: "autofill_login" },

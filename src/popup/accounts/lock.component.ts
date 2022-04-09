@@ -68,7 +68,7 @@ export class LockComponent extends BaseLockComponent {
     window.setTimeout(async () => {
       document.getElementById(this.pinLock ? "pin" : "masterPassword").focus();
       if (this.biometricLock && !disableAutoBiometricsPrompt && this.isInitialLockScreen) {
-        if ((await this.authService.authStatus()) === AuthenticationStatus.Locked) {
+        if ((await this.authService.getAuthStatus()) === AuthenticationStatus.Locked) {
           await this.unlockBiometric();
         }
       }

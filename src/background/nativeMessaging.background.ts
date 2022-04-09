@@ -299,7 +299,7 @@ export class NativeMessagingBackground {
         }
 
         // Ignore unlock if already unlocked
-        if ((await this.authService.authStatus()) === AuthenticationStatus.Unlocked) {
+        if ((await this.authService.getAuthStatus()) === AuthenticationStatus.Unlocked) {
           break;
         }
 

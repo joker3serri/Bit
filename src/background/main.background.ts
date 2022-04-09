@@ -339,7 +339,6 @@ export default class MainBackground {
       this.stateService,
       this.organizationService,
       this.providerService,
-      this.authService,
       async (expired: boolean) => await this.logout(expired)
     );
     this.eventService = new EventService(
@@ -347,8 +346,7 @@ export default class MainBackground {
       this.cipherService,
       this.stateService,
       this.logService,
-      this.organizationService,
-      this.authService
+      this.organizationService
     );
     this.passwordGenerationService = new PasswordGenerationService(
       this.cryptoService,
@@ -534,7 +532,7 @@ export default class MainBackground {
       return;
     }
 
-    const authStatus = await this.authService.authStatus();
+    const authStatus = await this.authService.getAuthStatus();
 
     let suffix = "";
     if (authStatus === AuthenticationStatus.LoggedOut) {
@@ -757,7 +755,7 @@ export default class MainBackground {
     this.actionSetBadgeBackgroundColor(this.sidebarAction);
 
     this.menuOptionsLoaded = [];
-    const authStatus = await this.authService.authStatus();
+    const authStatus = await this.authService.getAuthStatus();
     if (authStatus === AuthenticationStatus.Unlocked) {
       try {
         const ciphers = await this.cipherService.getAllDecryptedForUrl(url);
@@ -798,7 +796,7 @@ export default class MainBackground {
 
   private async loadMenuAndUpdateBadgeForNoAccessState(contextMenuEnabled: boolean) {
     if (contextMenuEnabled) {
-      const loggedOut = (await this.authService.authStatus()) === AuthenticationStatus.LoggedOut;
+      const loggedOut = (await this.authService.getAuthStatus()) === AuthenticationStatus.LoggedOut;
       await this.loadNoLoginsContextMenuOptions(
         this.i18nService.t(loggedOut ? "loginToVaultMenu" : "unlockVaultMenu")
       );
@@ -1012,7 +1010,7 @@ export default class MainBackground {
     const accounts = this.stateService.accounts.getValue();
     if (accounts != null) {
       for (const userId of Object.keys(accounts)) {
-        if ((await this.authService.authStatus(userId)) === AuthenticationStatus.Unlocked) {
+        if ((await this.authService.getAuthStatus(userId)) === AuthenticationStatus.Unlocked) {
           return;
         }
       }

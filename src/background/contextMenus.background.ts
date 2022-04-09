@@ -83,7 +83,7 @@ export default class ContextMenusBackground {
   private async cipherAction(tab: chrome.tabs.Tab, info: chrome.contextMenus.OnClickData) {
     const id = info.menuItemId.split("_")[1];
 
-    if ((await this.authService.authStatus()) === AuthenticationStatus.Locked) {
+    if ((await this.authService.getAuthStatus()) === AuthenticationStatus.Locked) {
       const retryMessage: LockedVaultPendingNotificationsItem = {
         commandToRetry: {
           msg: { command: this.noopCommandSuffix, data: info },
