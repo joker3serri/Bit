@@ -270,6 +270,32 @@ export default class MainBackground {
       this.cryptoFunctionService
     );
 
+    this.twoFactorService = new TwoFactorService(this.i18nService, this.platformUtilsService);
+
+    // eslint-disable-next-line
+    const that = this;
+    const backgroundMessagingService = new (class extends MessagingServiceAbstraction {
+      // AuthService should send the messages to the background not popup.
+      send = (subscriber: string, arg: any = {}) => {
+        const message = Object.assign({}, { command: subscriber }, arg);
+        that.runtimeBackground.processMessage(message, that, null);
+      };
+    })();
+    this.authService = new AuthService(
+      this.cryptoService,
+      this.apiService,
+      this.tokenService,
+      this.appIdService,
+      this.platformUtilsService,
+      backgroundMessagingService,
+      this.logService,
+      this.keyConnectorService,
+      this.environmentService,
+      this.stateService,
+      this.twoFactorService,
+      this.i18nService
+    );
+
     const vaultTimeoutServiceCallbacks = {
       locked: async (userId?: string) => {
         if (this.notificationsService != null) {
@@ -457,31 +483,6 @@ export default class MainBackground {
     );
     this.windowsBackground = new WindowsBackground(this);
 
-    this.twoFactorService = new TwoFactorService(this.i18nService, this.platformUtilsService);
-
-    // eslint-disable-next-line
-    const that = this;
-    const backgroundMessagingService = new (class extends MessagingServiceAbstraction {
-      // AuthService should send the messages to the background not popup.
-      send = (subscriber: string, arg: any = {}) => {
-        const message = Object.assign({}, { command: subscriber }, arg);
-        that.runtimeBackground.processMessage(message, that, null);
-      };
-    })();
-    this.authService = new AuthService(
-      this.cryptoService,
-      this.apiService,
-      this.tokenService,
-      this.appIdService,
-      this.platformUtilsService,
-      backgroundMessagingService,
-      this.logService,
-      this.keyConnectorService,
-      this.environmentService,
-      this.stateService,
-      this.twoFactorService,
-      this.i18nService
-    );
     this.usernameGenerationService = new UsernameGenerationService(
       this.cryptoService,
       this.stateService
