@@ -542,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "Czy na pewno chcesz zastąpić obecne hasło?"
   },
+  "overwriteUsername": {
+    "message": "Nadpisz nazwę użytkownika"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Czy na pewno chcesz nadpisać aktualną nazwę użytkownika?"
+  },
   "searchFolder": {
     "message": "Szukaj w folderze"
   },
@@ -1233,7 +1239,12 @@
     "message": "To hasło nie znajduje się w żadnej znanej wykradzionej bazie danych. Powinno być bezpieczne."
   },
   "baseDomain": {
-    "message": "Domena podstawowa"
+    "message": "Domena podstawowa",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Nazwa domeny",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Host",
@@ -1582,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Maksymalna liczba dostępów została osiągnięta"
+    "message": "Maksymalna liczba dostępów została osiągnięta",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Wygasła"
@@ -1887,5 +1899,45 @@
   },
   "error": {
     "message": "Błąd"
+  },
+  "regenerateUsername": {
+    "message": "Wygeneruj ponownie nazwę użytkownika"
+  },
+  "generateUsername": {
+    "message": "Wygeneruj nazwę użytkownika"
+  },
+  "usernameType": {
+    "message": "Rodzaj nazwy użytkownika"
+  },
+  "plusAddressedEmail": {
+    "message": "Adres e-mail z plusem",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Użyj możliwości dodawania aliasów u swojego dostawcy poczty e-mail."
+  },
+  "catchallEmail": {
+    "message": "Adres catch-all"
+  },
+  "catchallEmailDesc": {
+    "message": "Użyj skonfigurowanej skrzynki catch-all w swojej domenie."
+  },
+  "random": {
+    "message": "Losowo"
+  },
+  "randomWord": {
+    "message": "Losowe słowo"
+  },
+  "websiteName": {
+    "message": "Nazwa witryny"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Co chcesz wygenerować?"
+  },
+  "passwordType": {
+    "message": "Rodzaj hasła"
+  },
+  "service": {
+    "message": "Usługa"
   }
 }

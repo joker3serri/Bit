@@ -542,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "Esteu segur que voleu sobreescriure la contrasenya actual?"
   },
+  "overwriteUsername": {
+    "message": "Sobrescriu el nom d'usuari"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Segur que voleu sobreescriure el nom d'usuari actual?"
+  },
   "searchFolder": {
     "message": "Cerca la carpeta"
   },
@@ -1233,7 +1239,12 @@
     "message": "Aquesta contrasenya no s'ha trobat en cap filtració de dades coneguda. Hauries de poder utilitzar-la de manera segura."
   },
   "baseDomain": {
-    "message": "Domini base"
+    "message": "Domini base",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Nom del domini",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Amfitrió",
@@ -1582,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "S'ha assolit el recompte màxim d'accesos"
+    "message": "S'ha assolit el recompte màxim d'accesos",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Caducat"
@@ -1887,5 +1899,45 @@
   },
   "error": {
     "message": "Error"
+  },
+  "regenerateUsername": {
+    "message": "Regenera el nom d'usuari"
+  },
+  "generateUsername": {
+    "message": "Genera un nom d'usuari"
+  },
+  "usernameType": {
+    "message": "Tipus de nom d'usuari"
+  },
+  "plusAddressedEmail": {
+    "message": "Adreça amb sufix",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Use your email provider's sub-addressing capabilities."
+  },
+  "catchallEmail": {
+    "message": "Catch-all Email"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "Aleatori"
+  },
+  "randomWord": {
+    "message": "Paraula aleatòria"
+  },
+  "websiteName": {
+    "message": "Nom del lloc web"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Què voleu generar?"
+  },
+  "passwordType": {
+    "message": "Tipus de contrasenya"
+  },
+  "service": {
+    "message": "Servei"
   }
 }

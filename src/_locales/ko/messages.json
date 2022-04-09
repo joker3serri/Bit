@@ -542,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "정말 현재 비밀번호를 덮어쓰시겠습니까?"
   },
+  "overwriteUsername": {
+    "message": "아이디 덮어쓰기"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "정말 현재 아이디를 덮어쓰시겠습니까?"
+  },
   "searchFolder": {
     "message": "폴더 검색"
   },
@@ -1233,7 +1239,12 @@
     "message": "이 비밀번호는 데이터 유출 목록에 없습니다. 사용하기에 안전한 비밀번호입니다."
   },
   "baseDomain": {
-    "message": "기본 도메인"
+    "message": "기본 도메인",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "도메인 이름",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "호스트",
@@ -1582,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "최대 접근 횟수 도달"
+    "message": "최대 접근 횟수 도달",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "만료됨"
@@ -1874,7 +1886,7 @@
     "message": "세션 시간이 초과되었습니다. 다시 로그인해주세요."
   },
   "exportingPersonalVaultTitle": {
-    "message": "Exporting Personal Vault"
+    "message": "개인 보관함을 내보내는 중"
   },
   "exportingPersonalVaultDescription": {
     "message": "Only the personal vault items associated with $EMAIL$ will be exported. Organization vault items will not be included.",
@@ -1886,6 +1898,46 @@
     }
   },
   "error": {
-    "message": "Error"
+    "message": "오류"
+  },
+  "regenerateUsername": {
+    "message": "아이디 재생성"
+  },
+  "generateUsername": {
+    "message": "아이디 생성"
+  },
+  "usernameType": {
+    "message": "아이디 유형"
+  },
+  "plusAddressedEmail": {
+    "message": "Plus Addressed Email",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Use your email provider's sub-addressing capabilities."
+  },
+  "catchallEmail": {
+    "message": "Catch-all Email"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "무작위"
+  },
+  "randomWord": {
+    "message": "무작위 단어"
+  },
+  "websiteName": {
+    "message": "웹사이트 이름"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "무엇을 생성하실건가요?"
+  },
+  "passwordType": {
+    "message": "비밀번호 유형"
+  },
+  "service": {
+    "message": "서비스"
   }
 }

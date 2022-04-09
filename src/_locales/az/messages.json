@@ -542,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "Hazırkı parolun üzərinə yazmaq istədiyinizə əminsiniz?"
   },
+  "overwriteUsername": {
+    "message": "İstifadəçi adının üzərinə yaz"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Hazırkı istifadəçi adının üzərinə yazmaq istədiyinizə əminsiniz?"
+  },
   "searchFolder": {
     "message": "Qovluq axtar"
   },
@@ -1233,7 +1239,12 @@
     "message": "Bu parol, məlumat pozuntularında qeydə alınmayıb. Rahatlıqla istifadə edə bilərsiniz."
   },
   "baseDomain": {
-    "message": "Baza domeni"
+    "message": "Baza domeni",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Domen adı",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Host",
@@ -1582,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Maksimal müraciət sayına çatıldı"
+    "message": "Maksimal müraciət sayına çatıldı",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Müddəti bitib"
@@ -1887,5 +1899,45 @@
   },
   "error": {
     "message": "Xəta"
+  },
+  "regenerateUsername": {
+    "message": "İstifadəçi adını yenidən yarat"
+  },
+  "generateUsername": {
+    "message": "İstifadəçi adı yarat"
+  },
+  "usernameType": {
+    "message": "İstifadəçi adı növü"
+  },
+  "plusAddressedEmail": {
+    "message": "Plyus ünvanlı e-poçt",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "E-poçt təchizatçınızın alt ünvan özəlliklərini istifadə et."
+  },
+  "catchallEmail": {
+    "message": "Catch-all E-poçt"
+  },
+  "catchallEmailDesc": {
+    "message": "Domeninizin konfiqurasiya edilmiş hamısını yaxalama gələn qutusunu istifadə edin."
+  },
+  "random": {
+    "message": "Təsadüfi"
+  },
+  "randomWord": {
+    "message": "Təsadüfi söz"
+  },
+  "websiteName": {
+    "message": "Veb sayt adı"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Nə yaratmaq istəyirsiniz?"
+  },
+  "passwordType": {
+    "message": "Parol növü"
+  },
+  "service": {
+    "message": "Xidmət"
   }
 }

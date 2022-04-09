@@ -31,6 +31,7 @@ import { TokenService as TokenServiceAbstraction } from "jslib-common/abstractio
 import { TotpService as TotpServiceAbstraction } from "jslib-common/abstractions/totp.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "jslib-common/abstractions/twoFactor.service";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "jslib-common/abstractions/userVerification.service";
+import { UsernameGenerationService as UsernameGenerationServiceAbstraction } from "jslib-common/abstractions/usernameGeneration.service";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "jslib-common/abstractions/vaultTimeout.service";
 import { AuthenticationStatus } from "jslib-common/enums/authenticationStatus";
 import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
@@ -67,6 +68,7 @@ import { TokenService } from "jslib-common/services/token.service";
 import { TotpService } from "jslib-common/services/totp.service";
 import { TwoFactorService } from "jslib-common/services/twoFactor.service";
 import { UserVerificationService } from "jslib-common/services/userVerification.service";
+import { UsernameGenerationService } from "jslib-common/services/usernameGeneration.service";
 import { WebCryptoFunctionService } from "jslib-common/services/webCryptoFunction.service";
 
 import { BrowserApi } from "../browser/browserApi";
@@ -137,6 +139,7 @@ export default class MainBackground {
   keyConnectorService: KeyConnectorServiceAbstraction;
   userVerificationService: UserVerificationServiceAbstraction;
   twoFactorService: TwoFactorServiceAbstraction;
+  usernameGenerationService: UsernameGenerationServiceAbstraction;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -280,32 +283,6 @@ export default class MainBackground {
       },
       logout: async (userId?: string) => await this.logout(false, userId),
     };
-
-    this.twoFactorService = new TwoFactorService(this.i18nService, this.platformUtilsService);
-
-    // eslint-disable-next-line
-    const that = this;
-    const backgroundMessagingService = new (class extends MessagingServiceAbstraction {
-      // AuthService should send the messages to the background not popup.
-      send = (subscriber: string, arg: any = {}) => {
-        const message = Object.assign({}, { command: subscriber }, arg);
-        that.runtimeBackground.processMessage(message, that, null);
-      };
-    })();
-    this.authService = new AuthService(
-      this.cryptoService,
-      this.apiService,
-      this.tokenService,
-      this.appIdService,
-      this.platformUtilsService,
-      backgroundMessagingService,
-      this.logService,
-      this.keyConnectorService,
-      this.environmentService,
-      this.stateService,
-      this.twoFactorService,
-      this.i18nService
-    );
 
     this.vaultTimeoutService = new VaultTimeoutService(
       this.cipherService,
@@ -478,6 +455,36 @@ export default class MainBackground {
       this.authService
     );
     this.windowsBackground = new WindowsBackground(this);
+
+    this.twoFactorService = new TwoFactorService(this.i18nService, this.platformUtilsService);
+
+    // eslint-disable-next-line
+    const that = this;
+    const backgroundMessagingService = new (class extends MessagingServiceAbstraction {
+      // AuthService should send the messages to the background not popup.
+      send = (subscriber: string, arg: any = {}) => {
+        const message = Object.assign({}, { command: subscriber }, arg);
+        that.runtimeBackground.processMessage(message, that, null);
+      };
+    })();
+    this.authService = new AuthService(
+      this.cryptoService,
+      this.apiService,
+      this.tokenService,
+      this.appIdService,
+      this.platformUtilsService,
+      backgroundMessagingService,
+      this.logService,
+      this.keyConnectorService,
+      this.environmentService,
+      this.stateService,
+      this.twoFactorService,
+      this.i18nService
+    );
+    this.usernameGenerationService = new UsernameGenerationService(
+      this.cryptoService,
+      this.stateService
+    );
   }
 
   async bootstrap() {
