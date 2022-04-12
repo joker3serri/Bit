@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Sin entradas coincidentes."
   },
-  "vaultLocked": {
-    "message": "La caja fuerte está bloqueada."
+  "unlockVaultMenu": {
+    "message": "Desbloquea tu bóveda"
   },
-  "vaultLoggedOut": {
-    "message": "La caja fuerte está desconectada."
+  "loginToVaultMenu": {
+    "message": "Inicia sesión en tu bóveda"
   },
   "autoFillInfo": {
     "message": "No hay entradas disponibles para autorellenar en la pestaña actual del navegador."
@@ -122,13 +122,13 @@
     "message": "Continuar"
   },
   "sendVerificationCode": {
-    "message": "Send a verification code to your email"
+    "message": "Envía un código de verificación a tu correo electrónico"
   },
   "sendCode": {
-    "message": "Send Code"
+    "message": "Enviar código"
   },
   "codeSent": {
-    "message": "Code Sent"
+    "message": "Código enviado"
   },
   "verificationCode": {
     "message": "Código de verificación"
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Longitud"
+  },
+  "uppercase": {
+    "message": "Mayúsculas (A-Z)"
+  },
+  "lowercase": {
+    "message": "Minúsculas (a-z)"
+  },
+  "numbers": {
+    "message": "Números (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Carácteres especiales (!@#$%^&*)"
   },
   "numWords": {
     "message": "Número de palabras"
@@ -424,7 +436,7 @@
     "message": "Código de verificación requerido."
   },
   "invalidVerificationCode": {
-    "message": "Invalid verification code"
+    "message": "Código de verificación no válido"
   },
   "valueCopied": {
     "message": "Valor de $VALUE$ copiado",
@@ -530,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "¿Estás seguro de que quieres sobreescribir la contraseña actual?"
   },
+  "overwriteUsername": {
+    "message": "Overwrite Username"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Are you sure you want to overwrite the current username?"
+  },
   "searchFolder": {
     "message": "Buscar carpeta"
   },
@@ -585,7 +603,7 @@
     "message": "¿Desea actualizar esta contraseña en Bitwarden?"
   },
   "notificationChangeSave": {
-    "message": "Sí, actualizar ahora"
+    "message": "Actualizado"
   },
   "disableContextMenuItem": {
     "message": "Deshabilitar opciones del menú contextual"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Bloquear la caja fuerte"
   },
-  "privateModeMessage": {
-    "message": "Lamentablemente esta ventana no está disponible en el modo privado de este navegador."
+  "privateModeWarning": {
+    "message": "El soporte en modo privado es experimental y algunas características son limitadas."
   },
   "customFields": {
     "message": "Campos personalizados"
@@ -996,11 +1014,11 @@
     "message": "Booleano"
   },
   "cfTypeLinked": {
-    "message": "Linked",
+    "message": "Vinculado",
     "description": "This describes a field that is 'linked' (tied) to another field."
   },
   "linkedValue": {
-    "message": "Linked value",
+    "message": "Valor vinculado",
     "description": "This describes a value that is 'linked' (tied) to another value."
   },
   "popup2faCloseMessage": {
@@ -1106,7 +1124,7 @@
     "message": "Apellido"
   },
   "fullName": {
-    "message": "Full Name"
+    "message": "Nombre completo"
   },
   "identityName": {
     "message": "Nombre de la identidad"
@@ -1221,7 +1239,12 @@
     "message": "Esta contraseña no fue encontrada en ninguna filtración de datos conocida. Deberías poder utilizarla de forma segura."
   },
   "baseDomain": {
-    "message": "Dominio base"
+    "message": "Dominio base",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Domain Name",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Servidor",
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Número máximo de accesos alcanzado"
+    "message": "Número máximo de accesos alcanzado",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Caducado"
@@ -1832,7 +1856,7 @@
     "message": "Identificador único no encontrado."
   },
   "convertOrganizationEncryptionDesc": {
-    "message": "$ORGANIZATION$ is using SSO with a self-hosted key server. A master password is no longer required to log in for members of this organization.",
+    "message": "$ORGANIZATION$ está usando SSO con un servidor de claves autoalojado. Los miembros de esta organización ya no necesitarán una contraseña maestra para iniciar sesión.",
     "placeholders": {
       "organization": {
         "content": "$1",
@@ -1841,18 +1865,79 @@
     }
   },
   "leaveOrganization": {
-    "message": "Leave Organization"
+    "message": "Abandonar organización"
   },
   "removeMasterPassword": {
-    "message": "Remove Master Password"
+    "message": "Eliminar contraseña maestra"
   },
   "removedMasterPassword": {
-    "message": "Master password removed."
+    "message": "Contraseña maestra eliminada."
   },
   "leaveOrganizationConfirmation": {
     "message": "¿Confirma que quiere abandonar esta organización?"
   },
   "leftOrganization": {
     "message": "Ha abandonado la organización."
+  },
+  "toggleCharacterCount": {
+    "message": "Alternar conteo de caracteres"
+  },
+  "sessionTimeout": {
+    "message": "Su sesión ha expirado. Por favor, vuelva e intente iniciar sesión de nuevo."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Exportando bóveda personal"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Solo se exportarán los elementos de la bóveda personal asociados con $EMAIL$. Los elementos de la bóveda de la organización no se incluirán.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Error"
+  },
+  "regenerateUsername": {
+    "message": "Regenerate Username"
+  },
+  "generateUsername": {
+    "message": "Generate Username"
+  },
+  "usernameType": {
+    "message": "Username Type"
+  },
+  "plusAddressedEmail": {
+    "message": "Plus Addressed Email",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Use your email provider's sub-addressing capabilities."
+  },
+  "catchallEmail": {
+    "message": "Catch-all Email"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "Random"
+  },
+  "randomWord": {
+    "message": "Random Word"
+  },
+  "websiteName": {
+    "message": "Website Name"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "What would you like to generate?"
+  },
+  "passwordType": {
+    "message": "Password Type"
+  },
+  "service": {
+    "message": "Service"
   }
 }

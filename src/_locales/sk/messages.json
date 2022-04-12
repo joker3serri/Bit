@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Žiadne zodpovedajúce prihlasovacie údaje."
   },
-  "vaultLocked": {
-    "message": "Trezor je zamknutý."
+  "unlockVaultMenu": {
+    "message": "Odomknúť trezor"
   },
-  "vaultLoggedOut": {
-    "message": "Trezor je odhlásený"
+  "loginToVaultMenu": {
+    "message": "Prihláste sa do trezora"
   },
   "autoFillInfo": {
     "message": "Nie sú prístupné žiadne prihlasovacie údaje na automatické vyplnenie pre aktuálnu kartu."
@@ -229,6 +229,18 @@
   "length": {
     "message": "Dĺžka"
   },
+  "uppercase": {
+    "message": "Veľké písmená (A-Z)"
+  },
+  "lowercase": {
+    "message": "Malé písmená (a-z)"
+  },
+  "numbers": {
+    "message": "Čísla (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Špeciálne znaky (!@#$%^&*)"
+  },
   "numWords": {
     "message": "Počet slov"
   },
@@ -273,7 +285,7 @@
     "message": "Heslo"
   },
   "passphrase": {
-    "message": "Heslo"
+    "message": "Prístupová fráza"
   },
   "favorite": {
     "message": "Obľúbené"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "Naozaj chcete prepísať aktuálne heslo?"
+  },
+  "overwriteUsername": {
+    "message": "Prepísať používateľské meno"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Naozaj chcete prepísať aktuálne používateľské meno?"
   },
   "searchFolder": {
     "message": "Prehľadávať priečinok"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Zamknúť trezor"
   },
-  "privateModeMessage": {
-    "message": "Bohužiaľ, toto okno nie je dostupné v privátnom režime prehliadača."
+  "privateModeWarning": {
+    "message": "Podpora privátneho režimu je experimentálna a niektoré funkcie sú obmedzené."
   },
   "customFields": {
     "message": "Vlastné polia"
@@ -1221,7 +1239,12 @@
     "message": "Heslo nebolo nájdene v žiadnom úniku dát. Malo by byť bezpečné."
   },
   "baseDomain": {
-    "message": "Základná doména"
+    "message": "Základná doména",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Názov domény",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Hostiteľ",
@@ -1482,7 +1505,7 @@
     "message": "Spustiť desktopovú aplikáciu Bitwarden Desktop"
   },
   "startDesktopDesc": {
-    "message": "Aplikácia Bitwarden Desktop musí byť pred použitím tejto funkcie spustená."
+    "message": "Aplikácia Bitwarden Desktop musí byť pred použitím odomknutia pomocou biometrických údajov spustená."
   },
   "errorEnableBiometricTitle": {
     "message": "Nie je môžné povoliť biometriu"
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Bol dosiahnutý maximálny počet prístupov"
+    "message": "Bol dosiahnutý maximálny počet prístupov",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Expirované"
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "Opustili ste organizáciu."
+  },
+  "toggleCharacterCount": {
+    "message": "Prepnúť počítadlo znakov"
+  },
+  "sessionTimeout": {
+    "message": "Vaša relácia vypršala. Vráťte sa späť a skúste sa prihlásiť znova."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Exportovanie osobného trezora"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Exportované budú iba položy osobného trezora spojené s $EMAIL$. Položky trezora organizácie nebudú zahrnuté.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Chyba"
+  },
+  "regenerateUsername": {
+    "message": "Vygenerovať nové používateľské meno"
+  },
+  "generateUsername": {
+    "message": "Vygenerovať používateľské meno"
+  },
+  "usernameType": {
+    "message": "Typ používateľského mena"
+  },
+  "plusAddressedEmail": {
+    "message": "E-mail s plusovým aliasom",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Použiť možnosti subadresovania svojho poskytovateľa e-mailu."
+  },
+  "catchallEmail": {
+    "message": "Catch-all e-mail"
+  },
+  "catchallEmailDesc": {
+    "message": "Použiť doručenú poštu typu catch-all nastavenú na doméne."
+  },
+  "random": {
+    "message": "Náhodné"
+  },
+  "randomWord": {
+    "message": "Náhodné slovo"
+  },
+  "websiteName": {
+    "message": "Názov stránky"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Čo by ste chceli vygenerovať?"
+  },
+  "passwordType": {
+    "message": "Typ hesla"
+  },
+  "service": {
+    "message": "Služba"
   }
 }

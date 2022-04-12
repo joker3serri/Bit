@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Ingen matchende logins."
   },
-  "vaultLocked": {
-    "message": "Boksen er låst."
+  "unlockVaultMenu": {
+    "message": "Lås din boks op"
   },
-  "vaultLoggedOut": {
-    "message": "Boksen er logget ud."
+  "loginToVaultMenu": {
+    "message": "Log ind på din boks"
   },
   "autoFillInfo": {
     "message": "Der findes ingen login til at auto-udfylde i den nuværende browserfane."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Længde"
+  },
+  "uppercase": {
+    "message": "Store bogstaver (A-Z)"
+  },
+  "lowercase": {
+    "message": "Små bogstaver (a-z)"
+  },
+  "numbers": {
+    "message": "Tal (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Specielle tegn (!@#$%^&*)"
   },
   "numWords": {
     "message": "Antal ord"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "Er du sikker på, at du vil overskrive den aktuelle adgangskode?"
+  },
+  "overwriteUsername": {
+    "message": "Overwrite Username"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Are you sure you want to overwrite the current username?"
   },
   "searchFolder": {
     "message": "Søg mappe"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Lås boksen"
   },
-  "privateModeMessage": {
-    "message": "Desværre er dette vindue ikke tilgængelig i privat modus i denne browser."
+  "privateModeWarning": {
+    "message": "Understøttelse af privat tilstand er eksperimentel, og nogle funktioner er begrænsede."
   },
   "customFields": {
     "message": "Brugerdefinerede felter"
@@ -1221,7 +1239,12 @@
     "message": "Denne adgangskode er ikke fundet i nogen kendte datalæk. Den burde være sikker at bruge."
   },
   "baseDomain": {
-    "message": "Grund-domæne"
+    "message": "Grund-domæne",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Domain Name",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Vært",
@@ -1482,7 +1505,7 @@
     "message": "Start Bitwarden skrivebordsapplikationen"
   },
   "startDesktopDesc": {
-    "message": "Bitwarden skrivebordsapplikationen skal startes, før denne funktion kan bruges."
+    "message": "Bitwarden skrivebordsapplikationen skal startes, før oplåsning med biometri kan bruges."
   },
   "errorEnableBiometricTitle": {
     "message": "Kan ikke aktivere biometri"
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Maksimalt adgangsantal nået"
+    "message": "Maksimalt adgangsantal nået",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Udløbet"
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "Du har forladt organisationen."
+  },
+  "toggleCharacterCount": {
+    "message": "Slå tegnantal til/fra"
+  },
+  "sessionTimeout": {
+    "message": "Din session er udløbet. Gå tilbage og prøv at logge ind igen."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Eksporterer personlig boks"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Kun de personlige bokselementer tilknyttet $EMAIL$ eksporteres. Organisationsbokseelementer medtages ikke.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Fejl"
+  },
+  "regenerateUsername": {
+    "message": "Regenerate Username"
+  },
+  "generateUsername": {
+    "message": "Generate Username"
+  },
+  "usernameType": {
+    "message": "Username Type"
+  },
+  "plusAddressedEmail": {
+    "message": "Plus Addressed Email",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Use your email provider's sub-addressing capabilities."
+  },
+  "catchallEmail": {
+    "message": "Catch-all Email"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "Random"
+  },
+  "randomWord": {
+    "message": "Random Word"
+  },
+  "websiteName": {
+    "message": "Website Name"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "What would you like to generate?"
+  },
+  "passwordType": {
+    "message": "Password Type"
+  },
+  "service": {
+    "message": "Service"
   }
 }

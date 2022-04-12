@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Немає відповідних записів."
   },
-  "vaultLocked": {
-    "message": "Сховище заблоковано."
+  "unlockVaultMenu": {
+    "message": "Розблокуйте сховище"
   },
-  "vaultLoggedOut": {
-    "message": "Ви вийшли зі сховища."
+  "loginToVaultMenu": {
+    "message": "Увійдіть до сховища"
   },
   "autoFillInfo": {
     "message": "Для поточної вкладки браузера немає записів автозаповнення."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Довжина"
+  },
+  "uppercase": {
+    "message": "Верхній регістр (A-Z)"
+  },
+  "lowercase": {
+    "message": "Нижній регістр (a-z)"
+  },
+  "numbers": {
+    "message": "Числа (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Спеціальні символи (!@#$%^&*)"
   },
   "numWords": {
     "message": "Кількість слів"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "Ви дійсно хочете перезаписати поточний пароль?"
+  },
+  "overwriteUsername": {
+    "message": "Перезаписати ім'я користувача"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Ви дійсно бажаєте перезаписати поточне ім'я користувача?"
   },
   "searchFolder": {
     "message": "Пошук в теці"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Заблокувати сховище"
   },
-  "privateModeMessage": {
-    "message": "Шкода, але це вікно недоступне в приватному режимі для цього браузера."
+  "privateModeWarning": {
+    "message": "Приватний режим - це експериментальна функція і деякі можливості обмежені."
   },
   "customFields": {
     "message": "Власні поля"
@@ -1221,7 +1239,12 @@
     "message": "Цей пароль не було знайдено у жодних відомих витоках даних. Його можна безпечно використовувати."
   },
   "baseDomain": {
-    "message": "Основний домен"
+    "message": "Основний домен",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Ім'я домену",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Вузол",
@@ -1479,10 +1502,10 @@
     "message": "Інтеграція з браузером не увімкнена в програмі Bitwarden на комп'ютері. Увімкніть її в налаштуваннях програми на комп'ютері."
   },
   "startDesktopTitle": {
-    "message": "Запустити програму Bitwarden на комп'ютері"
+    "message": "Запустіть програму Bitwarden на комп'ютері"
   },
   "startDesktopDesc": {
-    "message": "Для використання цієї функції необхідно запустити програму Bitwarden на комп'ютері."
+    "message": "Для можливості розблокування з біометрією необхідно запустити програму Bitwarden на комп'ютері."
   },
   "errorEnableBiometricTitle": {
     "message": "Не вдається увімкнути біометрію"
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Досягнуто максимальну кількість доступів"
+    "message": "Досягнуто максимальну кількість доступів",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Термін дії завершився"
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "Ви покинули організацію."
+  },
+  "toggleCharacterCount": {
+    "message": "Перемкнути лічильник символів"
+  },
+  "sessionTimeout": {
+    "message": "Час вашого сеансу завершився. Поверніться назад і спробуйте увійти знову."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Експортування особистого сховища"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Будуть експортовані лише записи особистого сховища, пов'язані з $EMAIL$. Записи сховища організації не буде включено.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Помилка"
+  },
+  "regenerateUsername": {
+    "message": "Повторно генерувати ім'я користувача"
+  },
+  "generateUsername": {
+    "message": "Генерувати ім'я користувача"
+  },
+  "usernameType": {
+    "message": "Тип імені користувача"
+  },
+  "plusAddressedEmail": {
+    "message": "Плюс адреса електронної пошти",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Використовуйте розширені можливості адрес вашого постачальника електронної пошти."
+  },
+  "catchallEmail": {
+    "message": "Адреса е-пошти Catch-all"
+  },
+  "catchallEmailDesc": {
+    "message": "Використовуйте свою скриньку вхідних Catch-All власного домену."
+  },
+  "random": {
+    "message": "Випадково"
+  },
+  "randomWord": {
+    "message": "Випадкове слово"
+  },
+  "websiteName": {
+    "message": "Назва вебсайту"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Що ви бажаєте згенерувати?"
+  },
+  "passwordType": {
+    "message": "Тип пароля"
+  },
+  "service": {
+    "message": "Послуга"
   }
 }

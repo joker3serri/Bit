@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "לא נמצאו פרטי כניסה תואמים."
   },
-  "vaultLocked": {
-    "message": "הכספת נעולה."
+  "unlockVaultMenu": {
+    "message": "שחרור הכספת שלך"
   },
-  "vaultLoggedOut": {
-    "message": "בוצעה יציאה מהכספת."
+  "loginToVaultMenu": {
+    "message": "כניסה לכספת שלך"
   },
   "autoFillInfo": {
     "message": "לא נמצאו פרטי כניסה להשלמה אוטומטית בלשונית הנוכחית בדפדפן."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "אורך"
+  },
+  "uppercase": {
+    "message": "Uppercase (A-Z)"
+  },
+  "lowercase": {
+    "message": "Lowercase (a-z)"
+  },
+  "numbers": {
+    "message": "Numbers (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Special Characters (!@#$%^&*)"
   },
   "numWords": {
     "message": "מספר מילים"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "האם אתה בטוח שברצונך לדרוס את הסיסמה הנוכחית?"
+  },
+  "overwriteUsername": {
+    "message": "Overwrite Username"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Are you sure you want to overwrite the current username?"
   },
   "searchFolder": {
     "message": "חפש תיקייה"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "נעל את הכספת"
   },
-  "privateModeMessage": {
-    "message": "לצערנו חלון זה אינו זמין במצב גלישה פרטית בדפדפן זה."
+  "privateModeWarning": {
+    "message": "המצב הפרטי הוא במסגרת ניסוי וחלק מהיכולות מוגבלות."
   },
   "customFields": {
     "message": "שדות מותאמים אישית"
@@ -1221,7 +1239,12 @@
     "message": "סיסמה זו לא נמצאה בפירצות אבטחה ידועות. ניתן להמשיך להשתמש בה בבטחה."
   },
   "baseDomain": {
-    "message": "שם בסיס הדומיין"
+    "message": "שם בסיס הדומיין",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "שם תחום",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "שרת",
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Max access count reached"
+    "message": "Max access count reached",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Expired"
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "עזבת את הארגון."
+  },
+  "toggleCharacterCount": {
+    "message": "החלפת מצב ספירת תווים"
+  },
+  "sessionTimeout": {
+    "message": "Your session has timed out. Please go back and try logging in again."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "הכספת האישית מיוצאת"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "רק פריטי הכספת האישית שמשויכת אל $EMAIL$ ייוצאו. פריטי הכספת הארגוניים לא יהיו חלק מהייצוא.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "שגיאה"
+  },
+  "regenerateUsername": {
+    "message": "Regenerate Username"
+  },
+  "generateUsername": {
+    "message": "Generate Username"
+  },
+  "usernameType": {
+    "message": "סוג שם משתמש"
+  },
+  "plusAddressedEmail": {
+    "message": "Plus Addressed Email",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Use your email provider's sub-addressing capabilities."
+  },
+  "catchallEmail": {
+    "message": "Catch-all Email"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "Random"
+  },
+  "randomWord": {
+    "message": "Random Word"
+  },
+  "websiteName": {
+    "message": "Website Name"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "What would you like to generate?"
+  },
+  "passwordType": {
+    "message": "Password Type"
+  },
+  "service": {
+    "message": "Service"
   }
 }

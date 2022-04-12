@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Aucun site correspondant."
   },
-  "vaultLocked": {
-    "message": "Le coffre est verrouillé."
+  "unlockVaultMenu": {
+    "message": "Déverrouillez votre coffre"
   },
-  "vaultLoggedOut": {
-    "message": "Le coffre est déconnecté."
+  "loginToVaultMenu": {
+    "message": "Connectez-vous à votre coffre"
   },
   "autoFillInfo": {
     "message": "Il n'existe aucun site disponible pour le remplissage automatique pour l'onglet actuel du navigateur."
@@ -229,6 +229,18 @@
   "length": {
     "message": "Longueur"
   },
+  "uppercase": {
+    "message": "Majuscules (A-Z)"
+  },
+  "lowercase": {
+    "message": "Minuscules (a-z)"
+  },
+  "numbers": {
+    "message": "Chiffres (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Caractères spéciaux (!@#$%^&*)"
+  },
   "numWords": {
     "message": "Nombre de mots"
   },
@@ -324,7 +336,7 @@
     "message": "Confirmer votre identité"
   },
   "yourVaultIsLocked": {
-    "message": "Votre coffre est verrouillé. Vérifiez votre mot de passe maître pour continuer."
+    "message": "Votre coffre est verrouillé. Vérifiez votre identité pour continuer."
   },
   "unlock": {
     "message": "Déverrouiller"
@@ -530,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "Êtes-vous sûr de vouloir écraser le mot de passe actuel ?"
   },
+  "overwriteUsername": {
+    "message": "Remplacer le nom d'utilisateur"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Êtes-vous sûr(e) de vouloir remplacer le nom d'utilisateur actuel ?"
+  },
   "searchFolder": {
     "message": "Rechercher dans le dossier"
   },
@@ -573,7 +591,7 @@
     "message": "Est-ce que Bitwarden doit se souvenir de ce mot de passe pour vous ?"
   },
   "notificationAddSave": {
-    "message": "Oui, enregistrer maintenant"
+    "message": "Enregistrer"
   },
   "disableChangedPasswordNotification": {
     "message": "Désactiver la notification de changement de mot de passe"
@@ -585,7 +603,7 @@
     "message": "Souhaitez-vous mettre à jour ce mot de passe dans Bitwarden ?"
   },
   "notificationChangeSave": {
-    "message": "Oui, mettre à jour maintenant"
+    "message": "Mettre à jour"
   },
   "disableContextMenuItem": {
     "message": "Désactiver les options de menu contextuel"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Verrouiller le coffre"
   },
-  "privateModeMessage": {
-    "message": "Malheureusement cette fenêtre n'est pas disponible en navigation privée pour ce navigateur."
+  "privateModeWarning": {
+    "message": "La prise en charge de la navigation privée est expérimentale et certaines fonctionnalités sont limitées."
   },
   "customFields": {
     "message": "Champs personnalisés"
@@ -1221,7 +1239,12 @@
     "message": "Ce mot de passe n'a été trouvé dans aucune fuite de données connue. Il semble sécurisé."
   },
   "baseDomain": {
-    "message": "Domaine de base"
+    "message": "Domaine de base",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Nom de domaine",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Hôte",
@@ -1482,7 +1505,7 @@
     "message": "Démarrer l'application de bureau Bitwarden."
   },
   "startDesktopDesc": {
-    "message": "L'application de bureau Bitwarden doit être démarrée avant que cette fonction puisse être utilisée."
+    "message": "L'application de bureau Bitwarden doit être démarrée avant que le déverrouillage par biométrie puisse être utilisé."
   },
   "errorEnableBiometricTitle": {
     "message": "Impossible d'activer la biométrie"
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Nombre maximum d'accès atteint"
+    "message": "Nombre maximum d'accès atteint",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Expiré"
@@ -1795,16 +1819,16 @@
     "message": "Sélectionnez un dossier..."
   },
   "ssoCompleteRegistration": {
-    "message": "Afin de terminer la connexion avec SSO, veuillez définir un mot de passe maître pour accéder à votre coffre-fort et le protéger."
+    "message": "Afin de terminer la connexion avec SSO, veuillez définir un mot de passe maître pour accéder à votre coffre et le protéger."
   },
   "hours": {
-    "message": "heures"
+    "message": "Heures"
   },
   "minutes": {
-    "message": "minutes"
+    "message": "Minutes"
   },
   "vaultTimeoutPolicyInEffect": {
-    "message": "Les politiques de votre organisation affectent le délai d'expiration de votre coffre-fort. Le délai d'expiration maximal autorisé est de $HOURS$ heure(s) et $MINUTES$ minute(s).",
+    "message": "Les politiques de votre organisation affectent le délai d'expiration de votre coffre-fort. Le délai d'expiration maximal autorisé est de $HOURS$ heure(s) et $MINUTES$ minute(s)",
     "placeholders": {
       "hours": {
         "content": "$1",
@@ -1817,16 +1841,16 @@
     }
   },
   "vaultTimeoutToLarge": {
-    "message": "Le délai d'expiration de votre coffre-fort dépasse la restriction définie par votre organisation."
+    "message": "Le délai d'expiration de votre coffre dépasse les restrictions définies par votre organisation."
   },
   "vaultExportDisabled": {
-    "message": "Exportation du coffre-fort désactivée"
+    "message": "Export du coffre désactivé"
   },
   "personalVaultExportPolicyInEffect": {
-    "message": "Une ou plusieurs politiques d'entreprise vous empêchent d'exporter votre coffre-fort personnel."
+    "message": "Une ou plusieurs politiques d'organisation vous empêchent d'exporter votre coffre personnel."
   },
   "copyCustomFieldNameInvalidElement": {
-    "message": "Un élément de formulaire valide n'a pu être identifié. Essayez plutôt d'inspecter le HTML."
+    "message": "Aucun élément de formulaire valide n'a pu être identifié. Essayez plutôt d'inspecter le HTML."
   },
   "copyCustomFieldNameNotUnique": {
     "message": "Aucun identifiant unique trouvé."
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "Vous avez quitté l'organisation."
+  },
+  "toggleCharacterCount": {
+    "message": "Activer/désactiver le compteur de caractères"
+  },
+  "sessionTimeout": {
+    "message": "Votre session a expiré. Veuillez revenir en arrière et essayer de vous connecter à nouveau."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Export du coffre personnel"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Seuls les éléments du coffre personnel associé à l'adresse e-mail $EMAIL$ seront exportés. Les éléments du coffre de l'organisation ne seront pas inclus.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Erreur"
+  },
+  "regenerateUsername": {
+    "message": "Régénérer un nom d'utilisateur"
+  },
+  "generateUsername": {
+    "message": "Générer un nom d'utilisateur"
+  },
+  "usernameType": {
+    "message": "Type de nom d'utilisateur"
+  },
+  "plusAddressedEmail": {
+    "message": "E-mail suffixé",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Utilisez les capacités de sous-adressage de votre fournisseur d'e-mail."
+  },
+  "catchallEmail": {
+    "message": "Collecteur d'e-mail"
+  },
+  "catchallEmailDesc": {
+    "message": "Utilisez la boîte de réception du collecteur configurée de votre domaine."
+  },
+  "random": {
+    "message": "Aléatoire"
+  },
+  "randomWord": {
+    "message": "Mots aléatoire"
+  },
+  "websiteName": {
+    "message": "Nom du site Web"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Que souhaitez-vous générer ?"
+  },
+  "passwordType": {
+    "message": "Type de mot de passe"
+  },
+  "service": {
+    "message": "Service"
   }
 }

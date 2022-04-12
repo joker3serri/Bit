@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "ورودیها منتطبق نیست."
   },
-  "vaultLocked": {
-    "message": "گاوصندوق قفل شد."
+  "unlockVaultMenu": {
+    "message": "بازکردن گاو‌صندوقتان"
   },
-  "vaultLoggedOut": {
-    "message": "گاوصندوق خارج شده است."
+  "loginToVaultMenu": {
+    "message": "وارد شدن به گاو‌صندوقتان"
   },
   "autoFillInfo": {
     "message": "پرکردن خودکار برای برگه فعلی مرورگر در دسترس نیست."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "طول"
+  },
+  "uppercase": {
+    "message": "حروف بزرگ (A-Z)"
+  },
+  "lowercase": {
+    "message": "حروف کوچک (a-z)"
+  },
+  "numbers": {
+    "message": "اعداد (‪0-9‬)"
+  },
+  "specialCharacters": {
+    "message": "نویسه‌های ویژه (!@#$%^&*)"
   },
   "numWords": {
     "message": "تعداد کلمات"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "آیا از بازنویسی بر روی پسورد فعلی مطمئن هستید؟"
+  },
+  "overwriteUsername": {
+    "message": "بازنویسی نام کاربری"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "آیا از بازنویسی نام کاربری فعلی مطمئن هستید؟"
   },
   "searchFolder": {
     "message": "جستجوی پوشه"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "قفل گاوصندوق"
   },
-  "privateModeMessage": {
-    "message": "متأسفانه این پنجره در حالت خصوصی برای این مرورگر در دسترس نیست."
+  "privateModeWarning": {
+    "message": "پشتیبانی حالت خصوصی آزمایشی است و برخی از ویژگی‌ها محدود هستند."
   },
   "customFields": {
     "message": "فیلدهای سفارشی"
@@ -1221,7 +1239,12 @@
     "message": "این کلمه عبور در هیچ رخنه داده ای شناخته نشده است. باید برای امنیت از آن استفاده کنید."
   },
   "baseDomain": {
-    "message": "دامنه پایه"
+    "message": "دامنه پایه",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "نام دامنه",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "میزبان",
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "به حداکثر تعداد دسترسی رسیده است"
+    "message": "به حداکثر تعداد دسترسی رسیده است",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "منقضی شده"
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "شما از سازمان ها خارج شده اید."
+  },
+  "toggleCharacterCount": {
+    "message": "تغییر تعداد کاراکترها"
+  },
+  "sessionTimeout": {
+    "message": "زمان نشست شما به پایان رسید. لطفاً برگردید و دوباره وارد سیستم شوید."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "صادرات گاو‌صندوق شخصی"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "فقط موارد گاو‌صندوق شخصی مرتبط با $EMAIL$ صادر خواهد شد. موارد گاو‌صندوق سازمان شامل نخواهد شد.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "خطا"
+  },
+  "regenerateUsername": {
+    "message": "ایجاد مجدد نام کاربری"
+  },
+  "generateUsername": {
+    "message": "ایجاد نام کاربری"
+  },
+  "usernameType": {
+    "message": "نوع نام کاربری"
+  },
+  "plusAddressedEmail": {
+    "message": "به علاوه ایمیل آدرس داده شده",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "از قابلیت های آدرس دهی فرعی ارائه دهنده ایمیل خود استفاده کنید."
+  },
+  "catchallEmail": {
+    "message": "رایانامه همه‌گیر"
+  },
+  "catchallEmailDesc": {
+    "message": "از صندوق ورودی پیکربندی شده دامنه خود استفاده کنید."
+  },
+  "random": {
+    "message": "تصادفی"
+  },
+  "randomWord": {
+    "message": "کلمه تصادفی"
+  },
+  "websiteName": {
+    "message": "نام وب سایت"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "چه چیزی دوست دارید تولید کنید؟"
+  },
+  "passwordType": {
+    "message": "نوع گذرواژه"
+  },
+  "service": {
+    "message": "خدمت"
   }
 }

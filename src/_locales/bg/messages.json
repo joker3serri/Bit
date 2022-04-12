@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Няма съвпадащи записи."
   },
-  "vaultLocked": {
-    "message": "Трезорът е заключен."
+  "unlockVaultMenu": {
+    "message": "Отключете трезора си"
   },
-  "vaultLoggedOut": {
-    "message": "Излезли сте от трезора."
+  "loginToVaultMenu": {
+    "message": "Влезте в трезора си"
   },
   "autoFillInfo": {
     "message": "В текущия раздел няма записи, които да бъдат попълнени."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Дължина"
+  },
+  "uppercase": {
+    "message": "Главни букви (A-Z)"
+  },
+  "lowercase": {
+    "message": "Малки букви (a-z)"
+  },
+  "numbers": {
+    "message": "Числа (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Специални знаци (!@#$%^&*)"
   },
   "numWords": {
     "message": "Брой думи"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "Наистина ли искате да презапишете текущата парола?"
+  },
+  "overwriteUsername": {
+    "message": "Замяна на потребителското име"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Наостина ли искате да замените текущото потребителско име?"
   },
   "searchFolder": {
     "message": "Търсене в папката"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Заключване на трезора"
   },
-  "privateModeMessage": {
-    "message": "За жалост този прозорец не може да се ползва в изолирани раздели на браузъра ви."
+  "privateModeWarning": {
+    "message": "Поддръжката на частния режим е експериментална и някои функционалности са ограничени."
   },
   "customFields": {
     "message": "Допълнителни полета"
@@ -1221,7 +1239,12 @@
     "message": "Паролата не е била разкрита в известните пробиви. Засега ползването ѝ изглежда безопасно."
   },
   "baseDomain": {
-    "message": "Основен домейн"
+    "message": "Основен домейн",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Име на домейн",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Сървър",
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Достигнат е максималният брой достъпвания"
+    "message": "Достигнат е максималният брой достъпвания",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Изтекъл"
@@ -1798,10 +1822,10 @@
     "message": "За да завършите настройките за еднократна идентификация, трябва да зададете главна парола за трезора."
   },
   "hours": {
-    "message": "Hours"
+    "message": "Часа"
   },
   "minutes": {
-    "message": "Minutes"
+    "message": "Минути"
   },
   "vaultTimeoutPolicyInEffect": {
     "message": "Настройките на организацията Ви влияят върху времето за достъп до трезора Ви. Максималното разрешено време за достъп е $HOURS$ час(а) и $MINUTES$ минути",
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "Напуснахте организацията."
+  },
+  "toggleCharacterCount": {
+    "message": "Превключване на броя знаци"
+  },
+  "sessionTimeout": {
+    "message": "Сесията Ви изтече. Моля, върнете се назад и се опитайте да влезете отново."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Изнасяне на личния трезор"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Ще бъдат изнесени само записите от личния трезор свързан с $EMAIL$. Записите в трезора на организацията няма да бъдат включени.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Грешка"
+  },
+  "regenerateUsername": {
+    "message": "Повторно генериране на потр. име"
+  },
+  "generateUsername": {
+    "message": "Генериране на потр. име"
+  },
+  "usernameType": {
+    "message": "Тип потребителско име"
+  },
+  "plusAddressedEmail": {
+    "message": "Plus Addressed Email",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Използвайте възможностите за под-адресиране на е-поща на своя доставчик."
+  },
+  "catchallEmail": {
+    "message": "Catch-all Email"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "Произволно"
+  },
+  "randomWord": {
+    "message": "Произволна дума"
+  },
+  "websiteName": {
+    "message": "Име на уеб сайт"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Какво бихте искали да генерирате?"
+  },
+  "passwordType": {
+    "message": "Тип парола"
+  },
+  "service": {
+    "message": "Услуга"
   }
 }

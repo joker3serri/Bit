@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Keine passenden Zugangsdaten."
   },
-  "vaultLocked": {
-    "message": "Der Tresor ist gesperrt."
+  "unlockVaultMenu": {
+    "message": "Entsperre deinen Tresor"
   },
-  "vaultLoggedOut": {
-    "message": "Der Tresor ist ausgeloggt."
+  "loginToVaultMenu": {
+    "message": "In deinem Tresor anmelden"
   },
   "autoFillInfo": {
     "message": "Für den aktuellen Browser-Tab gibt es keine passenden Zugangsdaten, welche automatisch ausgefüllt werden können."
@@ -125,7 +125,7 @@
     "message": "Einen Bestätigungscode an deine E-Mail senden"
   },
   "sendCode": {
-    "message": "Code senden"
+    "message": "Send Code"
   },
   "codeSent": {
     "message": "Code gesendet"
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Länge"
+  },
+  "uppercase": {
+    "message": "Großbuchstaben (A-Z)"
+  },
+  "lowercase": {
+    "message": "Kleinbuchstaben (a-z)"
+  },
+  "numbers": {
+    "message": "Zahlen (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Sonderzeichen (!@#$%^&*)"
   },
   "numWords": {
     "message": "Anzahl der Wörter"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "Sind Sie sicher, dass Sie das aktuelle Passwort ersetzen möchten?"
+  },
+  "overwriteUsername": {
+    "message": "Benutzername überschreiben"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Bist du sicher, dass du den aktuellen Benutzernamen überschreiben möchtest?"
   },
   "searchFolder": {
     "message": "Ordner durchsuchen"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Den Tresor sperren"
   },
-  "privateModeMessage": {
-    "message": "Leider ist dieses Fenster nicht im privaten Modus für diesen Browser verfügbar."
+  "privateModeWarning": {
+    "message": "Die Unterstützung des privaten Modus ist experimentell und einige Funktionen sind eingeschränkt."
   },
   "customFields": {
     "message": "Benutzerdefinierte Felder"
@@ -1221,7 +1239,12 @@
     "message": "Dieses Kennwort wurde in keinen bekannten Datensätzen gefunden. Es sollte sicher sein."
   },
   "baseDomain": {
-    "message": "Basis-Domäne"
+    "message": "Basis-Domäne",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Domain-Name",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Server",
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Maximale Zugriffsanzahl erreicht"
+    "message": "Maximale Zugriffsanzahl erreicht",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Abgelaufen"
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "Du hast die Organisation verlassen."
+  },
+  "toggleCharacterCount": {
+    "message": "Zeichenzählung ein-/ausschalten"
+  },
+  "sessionTimeout": {
+    "message": "Deine Sitzung ist abgelaufen. Bitte gehe zurück und versuche dich erneut einzuloggen."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Persönlichen Tresor exportieren"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Nur die persönlichen Tresoreinträge, die mit $EMAIL$ verbunden sind, werden exportiert. Tresoreinträge der Organisation werden nicht berücksichtigt.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Fehler"
+  },
+  "regenerateUsername": {
+    "message": "Benutzername neu generieren"
+  },
+  "generateUsername": {
+    "message": "Benutzernamen generieren"
+  },
+  "usernameType": {
+    "message": "Benutzernamentyp"
+  },
+  "plusAddressedEmail": {
+    "message": "Mit Plus adressierte E-Mail",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Verwende die Unteradressierungsmöglichkeiten deines E-Mail-Providers."
+  },
+  "catchallEmail": {
+    "message": "Catch-All E-Mail-Adresse"
+  },
+  "catchallEmailDesc": {
+    "message": "Verwende den konfigurierten Catch-All-Posteingang deiner Domain."
+  },
+  "random": {
+    "message": "Zufällig"
+  },
+  "randomWord": {
+    "message": "Zufälliges Wort"
+  },
+  "websiteName": {
+    "message": "Webseiten-Name"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Was möchtest du generieren?"
+  },
+  "passwordType": {
+    "message": "Passworttyp"
+  },
+  "service": {
+    "message": "Dienst"
   }
 }

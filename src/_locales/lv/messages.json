@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Nav atbilstošu pierakstīšanās vienumu."
   },
-  "vaultLocked": {
-    "message": "Glabātava ir slēgta."
+  "unlockVaultMenu": {
+    "message": "Atslēgt glabātavu"
   },
-  "vaultLoggedOut": {
-    "message": "Izrakstījies no glabātavas."
+  "loginToVaultMenu": {
+    "message": "Pierakstīties glabātavā"
   },
   "autoFillInfo": {
     "message": "Nav pierakstīšanās vienumu, kurus automātiski ievadīt pašreizējā pārlūka cilnē."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Garums"
+  },
+  "uppercase": {
+    "message": "Lielie burti (A-Z)"
+  },
+  "lowercase": {
+    "message": "Mazie burti (a-z)"
+  },
+  "numbers": {
+    "message": "Cipari (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Īpašās rakstzīmes (!@#$%^&*)"
   },
   "numWords": {
     "message": "Vārdu skaits"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "Vai tiešām pārrakstīt esošo paroli?"
+  },
+  "overwriteUsername": {
+    "message": "Pārrakstīt lietotājvārdu"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Vai tiešām pārrakstīt pašreizējo lietotājvārdu?"
   },
   "searchFolder": {
     "message": "Meklēt mapē"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Aizslēgt glabātavu"
   },
-  "privateModeMessage": {
-    "message": "Diemžēl šis logs nav pieejams privātajā režīmā šajā pārlūkā."
+  "privateModeWarning": {
+    "message": "Personiskā stāvokļa atbalsts ir izmēģinājuma, un dažas iespējas ir ierobežotas."
   },
   "customFields": {
     "message": "Pielāgoti lauki"
@@ -1221,7 +1239,12 @@
     "message": "Šī parole netika atrasta nevienā no zināmajiem datu pārkāpumiem. Tai vajadzētu būt droši izmantojamai."
   },
   "baseDomain": {
-    "message": "Pamata domēns"
+    "message": "Pamata domēns",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Domēna vārds",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Saimniekdators",
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Sasniegts lielākais pieļaujamais piekļuvju skaits"
+    "message": "Sasniegts lielākais pieļaujamais piekļuvju skaits",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Beidzies izmantošanas laiks"
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "Apvienība ir pamesta."
+  },
+  "toggleCharacterCount": {
+    "message": "Pārslēgt rakstzīmju skaita attēlošanu"
+  },
+  "sessionTimeout": {
+    "message": "Sesijai iestājās noildze. Lūgums mēģināt pierakstīties vēlreiz."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Izdod personīgo glabātavu"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Tiks izdoti tikai personīgie glabātavas vienumi, kas ir saistīti ar $EMAIL$. Apvienības glabātavas vienumi netiks iekļauti.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Kļūda"
+  },
+  "regenerateUsername": {
+    "message": "Pārizveidot lietotājvārdu"
+  },
+  "generateUsername": {
+    "message": "Izveidot lietotājvārdu"
+  },
+  "usernameType": {
+    "message": "Lietotājvārda veids"
+  },
+  "plusAddressedEmail": {
+    "message": "E-pasta adrese ar plusu",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Izmantot e-pasta pakalpojuma nodrošinātāja apakšadresēšanas spējas."
+  },
+  "catchallEmail": {
+    "message": "Visu tveroša e-pasta adrese"
+  },
+  "catchallEmailDesc": {
+    "message": "Izmantot uzstādīto domēna visu tverošo iesūtni."
+  },
+  "random": {
+    "message": "Nejauši"
+  },
+  "randomWord": {
+    "message": "Nejaušs vārds"
+  },
+  "websiteName": {
+    "message": "Tīmekļa vietnes nosaukums"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Ko ir nepieciešams izveidot?"
+  },
+  "passwordType": {
+    "message": "Paroles veids"
+  },
+  "service": {
+    "message": "Pakalpojums"
   }
 }

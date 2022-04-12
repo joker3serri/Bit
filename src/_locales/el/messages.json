@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Δεν υπάρχουν αντιστοιχίσεις σύνδεσης."
   },
-  "vaultLocked": {
-    "message": "Το Vault είναι κλειδωμένο."
+  "unlockVaultMenu": {
+    "message": "Ξεκλειδώστε το vault σας"
   },
-  "vaultLoggedOut": {
-    "message": "Το Vault έχει αποσυνδεθεί."
+  "loginToVaultMenu": {
+    "message": "Συνδεθείτε στο vault σας"
   },
   "autoFillInfo": {
     "message": "Δεν υπάρχουν διαθέσιμες συνδέσεις για την αυτόματη συμπλήρωση, στην τρέχουσα καρτέλα του προγράμματος περιήγησης."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Μήκος"
+  },
+  "uppercase": {
+    "message": "Κεφαλαία (A-Z)"
+  },
+  "lowercase": {
+    "message": "Πεζά (α-ω)"
+  },
+  "numbers": {
+    "message": "Αριθμοί (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Ειδικοί Χαρακτήρες (!@#$%^&*)"
   },
   "numWords": {
     "message": "Αριθμός Λέξεων"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "Είστε βέβαιοι ότι θέλετε να αντικαταστήσετε τον τρέχον κωδικό πρόσβασης;"
+  },
+  "overwriteUsername": {
+    "message": "Αντικατάσταση Username"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Είστε βέβαιοι ότι θέλετε να αντικαταστήσετε το τρέχον username;"
   },
   "searchFolder": {
     "message": "Αναζήτηση σε φάκελο"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Κλειδώστε το vault"
   },
-  "privateModeMessage": {
-    "message": "Δυστυχώς, αυτό το παράθυρο δεν είναι διαθέσιμο σε ιδιωτική λειτουργία για αυτό το πρόγραμμα περιήγησης."
+  "privateModeWarning": {
+    "message": "Η υποστήριξη ιδιωτικής λειτουργίας είναι πειραματική και ορισμένες δυνατότητες είναι περιορισμένες."
   },
   "customFields": {
     "message": "Προσαρμοσμένα Πεδία"
@@ -1221,7 +1239,12 @@
     "message": "Αυτός ο κωδικός δεν βρέθηκε σε κάποια γνωστή διαρροή δεδομένων. Θα πρέπει να είναι ασφαλής για χρήση."
   },
   "baseDomain": {
-    "message": "Βασικός τομέας"
+    "message": "Βασικός τομέας",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Όνομα τομέα",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Διακομιστής",
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Φτάσατε στον μέγιστο αριθμό πρόσβασης"
+    "message": "Φτάσατε στον μέγιστο αριθμό πρόσβασης",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Έληξε"
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "Έχετε φύγει από τον οργανισμό."
+  },
+  "toggleCharacterCount": {
+    "message": "Εναλλαγή αριθμού χαρακτήρων"
+  },
+  "sessionTimeout": {
+    "message": "Έχει λήξει το χρονικό όριο. Παρακαλώ επιστρέψτε και προσπαθήστε να συνδεθείτε ξανά."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Εξαγωγή Προσωπικού Vault"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Θα εξαχθούν μόνο τα προσωπικά αντικείμενα Vault που σχετίζονται με το $EMAIL$ . Τα αντικείμενα Vault οργανισμού δεν θα συμπεριληφθούν.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Σφάλμα"
+  },
+  "regenerateUsername": {
+    "message": "Επαναδημιουργία Ονόματος Χρήστη"
+  },
+  "generateUsername": {
+    "message": "Δημιουργία Όνομα Χρήστη"
+  },
+  "usernameType": {
+    "message": "Τύπος Ονόματος Χρήστη"
+  },
+  "plusAddressedEmail": {
+    "message": "Συν Διεύθυνση Email",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Χρησιμοποιήστε τις δυνατότητες δευτερεύουσας διεύθυνσης του παρόχου email σας."
+  },
+  "catchallEmail": {
+    "message": "Catch-all Email"
+  },
+  "catchallEmailDesc": {
+    "message": "Χρησιμοποιήστε τα διαμορφωμένα εισερχόμενα catch-all του domain σας."
+  },
+  "random": {
+    "message": "Τυχαίο"
+  },
+  "randomWord": {
+    "message": "Τυχαία Λέξη"
+  },
+  "websiteName": {
+    "message": "Όνομα Ιστοσελίδας"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Τι θα θέλατε να δημιουργήσετε?"
+  },
+  "passwordType": {
+    "message": "Τύπος Κωδικού"
+  },
+  "service": {
+    "message": "Υπηρεσία"
   }
 }

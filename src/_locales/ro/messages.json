@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Nu există potrivire de autentificări."
   },
-  "vaultLocked": {
-    "message": "Seiful este blocat."
+  "unlockVaultMenu": {
+    "message": "Deblocați-vă seiful"
   },
-  "vaultLoggedOut": {
-    "message": "Seiful este deconectat."
+  "loginToVaultMenu": {
+    "message": "Conectați-vă la seif"
   },
   "autoFillInfo": {
     "message": "Nu sunt disponibile autentificări pentru auto-completare în fila curentă a browserului."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Lungime"
+  },
+  "uppercase": {
+    "message": "Litere mari (A-Z)"
+  },
+  "lowercase": {
+    "message": "Litere mici (a-z)"
+  },
+  "numbers": {
+    "message": "Numere (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Caractere speciale (!@#$%^&*)"
   },
   "numWords": {
     "message": "Număr de cuvinte"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "Sigur doriți să modificați parola curentă?"
+  },
+  "overwriteUsername": {
+    "message": "Suprascrieți numele de utilizator"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Sunteți sigur că doriți să suprascrieți numele de utilizator curent?"
   },
   "searchFolder": {
     "message": "Căutare în dosar"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Blocare seif"
   },
-  "privateModeMessage": {
-    "message": "Din păcate, această fereastră nu este disponibilă în modul privat pentru acest browser."
+  "privateModeWarning": {
+    "message": "Suportul pentru modul privat este experimental, iar unele caracteristici sunt limitate."
   },
   "customFields": {
     "message": "Câmpuri particularizate"
@@ -1221,7 +1239,12 @@
     "message": "Aceasta parola nu a fost găsită în nicio breșă de date cunoscută. Ar trebui să fie sigură de utilizat."
   },
   "baseDomain": {
-    "message": "Domeniu de bază"
+    "message": "Domeniu de bază",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Nume de domeniu",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Gazdă",
@@ -1482,7 +1505,7 @@
     "message": "Porniți aplicația Bitwarden Desktop"
   },
   "startDesktopDesc": {
-    "message": "Aplicația Bitwarden Desktop trebuie pornită înainte de a putea utiliza această funcție."
+    "message": "Aplicația Bitwarden Desktop trebuie să fie pornită înainte de a putea fi utilizată deblocarea cu date biometrice."
   },
   "errorEnableBiometricTitle": {
     "message": "Nu se poate activa biometria"
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "S-a atins numărul maxim de accesări"
+    "message": "S-a atins numărul maxim de accesări",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Expirat"
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "Ați părăsit organizația."
+  },
+  "toggleCharacterCount": {
+    "message": "Comutare pe contorizare de caractere"
+  },
+  "sessionTimeout": {
+    "message": "Sesiunea dvs. a expirat. Vă rugăm reveniți și încercați să vă autentificați din nou."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Exportarea seifului personal"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Numai elementele personale din seif asociate cu $EMAIL$ vor fi exportate. Elementele seifului organizației nu vor fi incluse.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Eroare"
+  },
+  "regenerateUsername": {
+    "message": "Regenerare nume de utilizator"
+  },
+  "generateUsername": {
+    "message": "Generare nume de utilizator"
+  },
+  "usernameType": {
+    "message": "Tip de nume de utilizator"
+  },
+  "plusAddressedEmail": {
+    "message": "Plus e-mail adresat",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Utilizați capacitățile de subadresare ale furnizorului dvs. de e-mail."
+  },
+  "catchallEmail": {
+    "message": "E-mail Catch-all"
+  },
+  "catchallEmailDesc": {
+    "message": "Utilizați inbox-ul catch-all configurat pentru domeniul dvs."
+  },
+  "random": {
+    "message": "Aleatoriu"
+  },
+  "randomWord": {
+    "message": "Cuvânt aleatoriu"
+  },
+  "websiteName": {
+    "message": "Numele site-ului web"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Ce doriți să generați?"
+  },
+  "passwordType": {
+    "message": "Tip de parolă"
+  },
+  "service": {
+    "message": "Serviciu"
   }
 }

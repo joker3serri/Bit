@@ -71,7 +71,7 @@
     "message": "Notu kopyala"
   },
   "copyUri": {
-    "message": "Linki Kopyala"
+    "message": "URI'yi kopyala"
   },
   "copyUsername": {
     "message": "Kullanıcı adını kopyala"
@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Eşleşen hesap yok."
   },
-  "vaultLocked": {
-    "message": "Kasa kilitli."
+  "unlockVaultMenu": {
+    "message": "Kasanızın kilidini açın"
   },
-  "vaultLoggedOut": {
-    "message": "Kasadan çıkış yaptınız."
+  "loginToVaultMenu": {
+    "message": "Kasanıza giriş yapın"
   },
   "autoFillInfo": {
     "message": "Mevcut sekme için otomatik doldurulacak giriş bilgisi bulunmuyor."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Uzunluk"
+  },
+  "uppercase": {
+    "message": "Büyük harf (A-Z)"
+  },
+  "lowercase": {
+    "message": "Küçük harf (a-z)"
+  },
+  "numbers": {
+    "message": "Rakamlar (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Özel karakterler (!@#$%^&*)"
   },
   "numWords": {
     "message": "Kelime sayısı"
@@ -500,7 +512,7 @@
     "message": "URl"
   },
   "uriPosition": {
-    "message": "URL $POSITION$",
+    "message": "URI $POSITION$",
     "description": "A listing of URIs. Ex: URI 1, URI 2, URI 3, etc.",
     "placeholders": {
       "position": {
@@ -519,7 +531,7 @@
     "message": "Kayıt düzenlendi"
   },
   "deleteItemConfirmation": {
-    "message": "Bu kaydı çöp kutusuna göndermek istediğinizden emin misiniz?"
+    "message": "Çöp kutusuna göndermek istediğinizden emin misiniz?"
   },
   "deletedItem": {
     "message": "Kayıt çöp kutusuna gönderildi"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "Mevcut parolanın üzerine kaydetmek istediğinize emin misiniz?"
+  },
+  "overwriteUsername": {
+    "message": "Kullanıcı adının üzerine yaz"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Kullanıcı adının üzerine kaydetmek istediğinizden emin misiniz?"
   },
   "searchFolder": {
     "message": "Klasörde ara"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Kasayı kilitle"
   },
-  "privateModeMessage": {
-    "message": "Maalesef bu pencereyi bu tarayıcının gizli modunda kullanamazsınız."
+  "privateModeWarning": {
+    "message": "Gizli mod desteği deneyseldir ve bazı özellikler kısıtlıdır."
   },
   "customFields": {
     "message": "Özel alanlar"
@@ -1221,7 +1239,12 @@
     "message": "Bilinen veri ihlallerinde bu parola bulunamadı. Güvenle kullanabilirsiniz."
   },
   "baseDomain": {
-    "message": "Ana alan adı"
+    "message": "Ana alan adı",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Alan adı",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Sunucu",
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Maksimum erişim sayısına ulaşıldı"
+    "message": "Maksimum erişim sayısına ulaşıldı",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Süresi dolmuş"
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "Kuruluştan ayrıldınız."
+  },
+  "toggleCharacterCount": {
+    "message": "Karakter sayacını aç/kapat"
+  },
+  "sessionTimeout": {
+    "message": "Oturumunuzun süresi doldu. Lütfen geri dönüp yeniden giriş yapın."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Kişisel Kasayı Dışa Aktarma"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Yalnızca $EMAIL$ ile ilişkili kişisel kasa öğeleri dışa aktarılacaktır. Kuruluş kasası öğeleri dahil edilmeyecektir.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Hata"
+  },
+  "regenerateUsername": {
+    "message": "Kullanıcı adını yeniden oluştur"
+  },
+  "generateUsername": {
+    "message": "Kullanıcı adı oluştur"
+  },
+  "usernameType": {
+    "message": "Kullanıcı adı türü"
+  },
+  "plusAddressedEmail": {
+    "message": "Artı adresli e-posta",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "E-posta sağlayıcınızın alt adres özelliklerini kullanın."
+  },
+  "catchallEmail": {
+    "message": "Catch-all e-posta"
+  },
+  "catchallEmailDesc": {
+    "message": "Alan adınızın tüm iletileri yakalamaya ayarlanmış adresini kullanın."
+  },
+  "random": {
+    "message": "Rastgele"
+  },
+  "randomWord": {
+    "message": "Rastgele kelime"
+  },
+  "websiteName": {
+    "message": "Web sitesi adı"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Ne oluşturmak istersiniz?"
+  },
+  "passwordType": {
+    "message": "Parola türü"
+  },
+  "service": {
+    "message": "Servis"
   }
 }

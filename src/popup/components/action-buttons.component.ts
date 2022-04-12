@@ -1,17 +1,15 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
-import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
-import { CipherType } from "jslib-common/enums/cipherType";
-import { EventType } from "jslib-common/enums/eventType";
-
-import { CipherView } from "jslib-common/models/view/cipherView";
-
 import { EventService } from "jslib-common/abstractions/event.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { PasswordRepromptService } from "jslib-common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
+import { StateService } from "jslib-common/abstractions/state.service";
 import { TotpService } from "jslib-common/abstractions/totp.service";
-import { UserService } from "jslib-common/abstractions/user.service";
+import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
+import { CipherType } from "jslib-common/enums/cipherType";
+import { EventType } from "jslib-common/enums/eventType";
+import { CipherView } from "jslib-common/models/view/cipherView";
 
 @Component({
   selector: "app-action-buttons",
@@ -31,12 +29,12 @@ export class ActionButtonsComponent {
     private platformUtilsService: PlatformUtilsService,
     private eventService: EventService,
     private totpService: TotpService,
-    private userService: UserService,
+    private stateService: StateService,
     private passwordRepromptService: PasswordRepromptService
   ) {}
 
   async ngOnInit() {
-    this.userHasPremiumAccess = await this.userService.canAccessPremium();
+    this.userHasPremiumAccess = await this.stateService.getCanAccessPremium();
   }
 
   launchCipher() {

@@ -2,19 +2,16 @@ import { ChangeDetectorRef, Component, NgZone, OnInit, SecurityContext } from "@
 import { DomSanitizer } from "@angular/platform-browser";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { IndividualConfig, ToastrService } from "ngx-toastr";
-import Swal, { SweetAlertIcon } from "sweetalert2/src/sweetalert2.js";
-import { BrowserApi } from "../browser/browserApi";
+import Swal, { SweetAlertIcon } from "sweetalert2";
 
 import { AuthService } from "jslib-common/abstractions/auth.service";
 import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { KeyConnectorService } from "jslib-common/abstractions/keyConnector.service";
 import { MessagingService } from "jslib-common/abstractions/messaging.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { StorageService } from "jslib-common/abstractions/storage.service";
 
-import { ConstantsService } from "jslib-common/services/constants.service";
+import { BrowserApi } from "../browser/browserApi";
+import { StateService } from "../services/abstractions/state.service";
 
 import { routerTransition } from "./app-routing.animations";
 
@@ -28,10 +25,10 @@ import { routerTransition } from "./app-routing.animations";
 })
 export class AppComponent implements OnInit {
   private lastActivity: number = null;
+  private activeUserId: string;
 
   constructor(
     private toastrService: ToastrService,
-    private storageService: StorageService,
     private broadcasterService: BroadcasterService,
     private authService: AuthService,
     private i18nService: I18nService,
@@ -41,17 +38,19 @@ export class AppComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private ngZone: NgZone,
     private sanitizer: DomSanitizer,
-    private platformUtilsService: PlatformUtilsService,
-    private keyConnectoService: KeyConnectorService
+    private platformUtilsService: PlatformUtilsService
   ) {}
 
-  ngOnInit() {
-    if (BrowserApi.getBackgroundPage() == null) {
-      return;
-    }
+  async ngOnInit() {
+    // Component states must not persist between closing and reopening the popup, otherwise they become dead objects
+    // Clear them aggressively to make sure this doesn't occur
+    await this.clearComponentStates();
+
+    this.stateService.activeAccount.subscribe((userId) => {
+      this.activeUserId = userId;
+    });
 
     this.ngZone.runOutsideAngular(() => {
-      window.onmousemove = () => this.recordActivity();
       window.onmousedown = () => this.recordActivity();
       window.ontouchstart = () => this.recordActivity();
       window.onclick = () => this.recordActivity();
@@ -66,7 +65,7 @@ export class AppComponent implements OnInit {
     ) => {
       if (msg.command === "doneLoggingOut") {
         this.ngZone.run(async () => {
-          this.authService.logOut(() => {
+          this.authService.logOut(async () => {
             if (msg.expired) {
               this.showToast({
                 type: "warning",
@@ -74,8 +73,10 @@ export class AppComponent implements OnInit {
                 text: this.i18nService.t("loginExpired"),
               });
             }
-            this.router.navigate(["home"]);
-            this.stateService.purge();
+
+            if (this.stateService.activeAccount.getValue() == null) {
+              this.router.navigate(["home"]);
+            }
           });
           this.changeDetectorRef.detectChanges();
         });
@@ -84,10 +85,11 @@ export class AppComponent implements OnInit {
           this.router.navigate(["home"]);
         });
       } else if (msg.command === "locked") {
-        this.stateService.purge();
-        this.ngZone.run(() => {
-          this.router.navigate(["lock"]);
-        });
+        if (msg.userId == null || msg.userId === (await this.stateService.getUserId())) {
+          this.ngZone.run(() => {
+            this.router.navigate(["lock"]);
+          });
+        }
       } else if (msg.command === "showDialog") {
         await this.showDialog(msg);
       } else if (msg.command === "showToast") {
@@ -109,7 +111,6 @@ export class AppComponent implements OnInit {
         });
       } else if (msg.command === "convertAccountToKeyConnector") {
         this.ngZone.run(async () => {
-          await this.keyConnectoService.setConvertAccountRequired(true);
           this.router.navigate(["/remove-password"]);
         });
       } else {
@@ -120,7 +121,7 @@ export class AppComponent implements OnInit {
 
     BrowserApi.messageListener("app.component", (window as any).bitwardenPopupMainMessageListener);
 
-    this.router.events.subscribe((event) => {
+    this.router.events.subscribe(async (event) => {
       if (event instanceof NavigationEnd) {
         const url = event.urlAfterRedirects || event.url || "";
         if (
@@ -128,15 +129,10 @@ export class AppComponent implements OnInit {
           (window as any).previousPopupUrl != null &&
           (window as any).previousPopupUrl.startsWith("/tabs/")
         ) {
-          this.stateService.remove("GroupingsComponent");
-          this.stateService.remove("GroupingsComponentScope");
-          this.stateService.remove("CiphersComponent");
-          this.stateService.remove("SendGroupingsComponent");
-          this.stateService.remove("SendGroupingsComponentScope");
-          this.stateService.remove("SendTypeComponent");
+          await this.clearComponentStates();
         }
         if (url.startsWith("/tabs/")) {
-          this.stateService.remove("addEditCipherInfo");
+          await this.stateService.setAddEditCipherInfo(null);
         }
         (window as any).previousPopupUrl = url;
 
@@ -168,13 +164,17 @@ export class AppComponent implements OnInit {
   }
 
   private async recordActivity() {
+    if (this.activeUserId == null) {
+      return;
+    }
+
     const now = new Date().getTime();
     if (this.lastActivity != null && now - this.lastActivity < 250) {
       return;
     }
 
     this.lastActivity = now;
-    this.storageService.save(ConstantsService.lastActiveKey, now);
+    await this.stateService.setLastActive(now, { userId: this.activeUserId });
   }
 
   private showToast(msg: any) {
@@ -212,16 +212,16 @@ export class AppComponent implements OnInit {
       // If you add custom types to this part, the type to SweetAlertIcon cast below needs to be changed.
       switch (type) {
         case "success":
-          iconClasses = "fa-check text-success";
+          iconClasses = "bwi-check text-success";
           break;
         case "warning":
-          iconClasses = "fa-warning text-warning";
+          iconClasses = "bwi-exclamation-triangle text-warning";
           break;
         case "error":
-          iconClasses = "fa-bolt text-danger";
+          iconClasses = "bwi-error text-danger";
           break;
         case "info":
-          iconClasses = "fa-info-circle text-info";
+          iconClasses = "bwi-info-circle text-info";
           break;
         default:
           break;
@@ -235,7 +235,7 @@ export class AppComponent implements OnInit {
       buttonsStyling: false,
       icon: type as SweetAlertIcon, // required to be any of the SweetAlertIcons to output the iconHtml.
       iconHtml:
-        iconClasses != null ? `<i class="swal-custom-icon fa ${iconClasses}"></i>` : undefined,
+        iconClasses != null ? `<i class="swal-custom-icon bwi ${iconClasses}"></i>` : undefined,
       text: msg.text,
       html: msg.html,
       titleText: msg.title,
@@ -250,5 +250,14 @@ export class AppComponent implements OnInit {
       dialogId: msg.dialogId,
       confirmed: confirmed.value,
     });
+  }
+
+  private async clearComponentStates() {
+    await Promise.all([
+      this.stateService.setBrowserGroupingComponentState(null),
+      this.stateService.setBrowserCipherComponentState(null),
+      this.stateService.setBrowserSendComponentState(null),
+      this.stateService.setBrowserSendTypeComponentState(null),
+    ]);
   }
 }

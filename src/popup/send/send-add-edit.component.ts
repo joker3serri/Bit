@@ -1,11 +1,9 @@
 import { DatePipe, Location } from "@angular/common";
-
 import { Component } from "@angular/core";
-
 import { ActivatedRoute, Router } from "@angular/router";
-
 import { first } from "rxjs/operators";
 
+import { AddEditComponent as BaseAddEditComponent } from "jslib-angular/components/send/add-edit.component";
 import { EnvironmentService } from "jslib-common/abstractions/environment.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
@@ -13,11 +11,9 @@ import { MessagingService } from "jslib-common/abstractions/messaging.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
 import { PolicyService } from "jslib-common/abstractions/policy.service";
 import { SendService } from "jslib-common/abstractions/send.service";
-import { UserService } from "jslib-common/abstractions/user.service";
 
+import { StateService } from "../../services/abstractions/state.service";
 import { PopupUtilsService } from "../services/popup-utils.service";
-
-import { AddEditComponent as BaseAddEditComponent } from "jslib-angular/components/send/add-edit.component";
 
 @Component({
   selector: "app-send-add-edit",
@@ -36,7 +32,7 @@ export class SendAddEditComponent extends BaseAddEditComponent {
   constructor(
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
-    userService: UserService,
+    stateService: StateService,
     messagingService: MessagingService,
     policyService: PolicyService,
     environmentService: EnvironmentService,
@@ -54,10 +50,10 @@ export class SendAddEditComponent extends BaseAddEditComponent {
       environmentService,
       datePipe,
       sendService,
-      userService,
       messagingService,
       policyService,
-      logService
+      logService,
+      stateService
     );
   }
 

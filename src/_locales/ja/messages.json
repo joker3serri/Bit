@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "一致するログインがありません。"
   },
-  "vaultLocked": {
-    "message": "保管庫がロックされています。"
+  "unlockVaultMenu": {
+    "message": "保管庫のロックを解除"
   },
-  "vaultLoggedOut": {
-    "message": "保管庫はログアウトされています。"
+  "loginToVaultMenu": {
+    "message": "保管庫にログイン"
   },
   "autoFillInfo": {
     "message": "現在のブラウザタブに自動入力するログイン情報はありません。"
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "長さ"
+  },
+  "uppercase": {
+    "message": "大文字（A-Z）"
+  },
+  "lowercase": {
+    "message": "小文字（a-z）"
+  },
+  "numbers": {
+    "message": "数字 (0～9)"
+  },
+  "specialCharacters": {
+    "message": "特殊文字（!@#$%^&*)"
   },
   "numWords": {
     "message": "単語数"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "現在のパスワードを上書きしてよろしいですか?"
+  },
+  "overwriteUsername": {
+    "message": "ユーザー名を上書き"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "現在のユーザー名を上書きしてもよろしいですか？"
   },
   "searchFolder": {
     "message": "フォルダーの検索"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "保管庫をロック"
   },
-  "privateModeMessage": {
-    "message": "このウインドウはこのブラウザのプライベートモードでは使用できません。"
+  "privateModeWarning": {
+    "message": "プライベートモードのサポートは実験的であり、一部機能は制限されています。"
   },
   "customFields": {
     "message": "カスタムフィールド"
@@ -1221,7 +1239,12 @@
     "message": "このパスワードは過去に漏洩したデータ内にはないため、安全であると思われます。"
   },
   "baseDomain": {
-    "message": "ベースドメイン"
+    "message": "ベースドメイン",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "ドメイン名",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "ホスト",
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "最大アクセス数に達しました"
+    "message": "最大アクセス数に達しました",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "有効期限切れ"
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "組織から脱退しました。"
+  },
+  "toggleCharacterCount": {
+    "message": "文字カウントを切り替える"
+  },
+  "sessionTimeout": {
+    "message": "セッションがタイムアウトしました。もう一度ログインしてください。"
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "個人保管庫のエクスポート"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "$EMAIL$ に関連付けられた個人用保管庫アイテムのみがエクスポートされます。組織用保管庫アイテムは含まれません。",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "エラー"
+  },
+  "regenerateUsername": {
+    "message": "ユーザー名を再生成"
+  },
+  "generateUsername": {
+    "message": "ユーザー名を生成"
+  },
+  "usernameType": {
+    "message": "ユーザー名の種類"
+  },
+  "plusAddressedEmail": {
+    "message": "プラス付きのメールアドレス",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "メールプロバイダのエイリアス機能を使用します。"
+  },
+  "catchallEmail": {
+    "message": "キャッチオールメール"
+  },
+  "catchallEmailDesc": {
+    "message": "ドメインに設定されたキャッチオール受信トレイを使用します。"
+  },
+  "random": {
+    "message": "ランダム"
+  },
+  "randomWord": {
+    "message": "ランダムな単語"
+  },
+  "websiteName": {
+    "message": "ウェブサイト名"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "何を生成しますか？"
+  },
+  "passwordType": {
+    "message": "パスワードの種類"
+  },
+  "service": {
+    "message": "サービス"
   }
 }

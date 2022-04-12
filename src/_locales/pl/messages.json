@@ -94,11 +94,11 @@
   "noMatchingLogins": {
     "message": "Brak pasujących danych logowania."
   },
-  "vaultLocked": {
-    "message": "Sejf jest zablokowany."
+  "unlockVaultMenu": {
+    "message": "Odblokuj sejf"
   },
-  "vaultLoggedOut": {
-    "message": "Wylogowano z sejfu."
+  "loginToVaultMenu": {
+    "message": "Zaloguj się do sejfu"
   },
   "autoFillInfo": {
     "message": "Brak dostępnych danych logowania do autouzupełnienia dla obecnej karty przeglądarki."
@@ -228,6 +228,18 @@
   },
   "length": {
     "message": "Długość"
+  },
+  "uppercase": {
+    "message": "Wielkie litery (A-Z)"
+  },
+  "lowercase": {
+    "message": "Małe litery (a-z)"
+  },
+  "numbers": {
+    "message": "Cyfry (0-9)"
+  },
+  "specialCharacters": {
+    "message": "Znaki specjalne (!@#$%^&*)"
   },
   "numWords": {
     "message": "Liczba słów"
@@ -529,6 +541,12 @@
   },
   "overwritePasswordConfirmation": {
     "message": "Czy na pewno chcesz zastąpić obecne hasło?"
+  },
+  "overwriteUsername": {
+    "message": "Nadpisz nazwę użytkownika"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Czy na pewno chcesz nadpisać aktualną nazwę użytkownika?"
   },
   "searchFolder": {
     "message": "Szukaj w folderze"
@@ -968,8 +986,8 @@
   "commandLockVaultDesc": {
     "message": "Zablokuj sejf"
   },
-  "privateModeMessage": {
-    "message": "Niestety to okno nie jest dostępne w trybie prywatnym tej przeglądarki."
+  "privateModeWarning": {
+    "message": "Obsługa trybu prywatnego jest eksperymentalna, a niektóre funkcje są ograniczone."
   },
   "customFields": {
     "message": "Pola niestandardowe"
@@ -1221,7 +1239,12 @@
     "message": "To hasło nie znajduje się w żadnej znanej wykradzionej bazie danych. Powinno być bezpieczne."
   },
   "baseDomain": {
-    "message": "Domena podstawowa"
+    "message": "Domena podstawowa",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Nazwa domeny",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Host",
@@ -1570,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Maksymalna liczba dostępów została osiągnięta"
+    "message": "Maksymalna liczba dostępów została osiągnięta",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Wygasła"
@@ -1854,5 +1878,66 @@
   },
   "leftOrganization": {
     "message": "Nie należysz już do tej organizacji."
+  },
+  "toggleCharacterCount": {
+    "message": "Pokaż / Ukryj licznik znaków"
+  },
+  "sessionTimeout": {
+    "message": "Twoja sesja wygasła. Zaloguj się ponownie."
+  },
+  "exportingPersonalVaultTitle": {
+    "message": "Eksportowanie osobistego sejfu"
+  },
+  "exportingPersonalVaultDescription": {
+    "message": "Tylko osobiste elementy sejfu powiązane z adresem $EMAIL$ zostaną wyeksportowane. Elementy sejfu należące do organizacji nie będą uwzględnione.",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "error": {
+    "message": "Błąd"
+  },
+  "regenerateUsername": {
+    "message": "Wygeneruj ponownie nazwę użytkownika"
+  },
+  "generateUsername": {
+    "message": "Wygeneruj nazwę użytkownika"
+  },
+  "usernameType": {
+    "message": "Rodzaj nazwy użytkownika"
+  },
+  "plusAddressedEmail": {
+    "message": "Adres e-mail z plusem",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Użyj możliwości dodawania aliasów u swojego dostawcy poczty e-mail."
+  },
+  "catchallEmail": {
+    "message": "Adres catch-all"
+  },
+  "catchallEmailDesc": {
+    "message": "Użyj skonfigurowanej skrzynki catch-all w swojej domenie."
+  },
+  "random": {
+    "message": "Losowo"
+  },
+  "randomWord": {
+    "message": "Losowe słowo"
+  },
+  "websiteName": {
+    "message": "Nazwa witryny"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Co chcesz wygenerować?"
+  },
+  "passwordType": {
+    "message": "Rodzaj hasła"
+  },
+  "service": {
+    "message": "Usługa"
   }
 }
