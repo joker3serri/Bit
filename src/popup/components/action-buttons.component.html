@@ -1,4 +1,5 @@
-<span
+<button
+  type="button"
   class="row-btn"
   (click)="view()"
   appStopClick
@@ -7,9 +8,10 @@
   *ngIf="showView"
 >
   <i class="bwi bwi-lg bwi-list-alt" aria-hidden="true"></i>
-</span>
+</button>
 <ng-container *ngIf="cipher.type === cipherType.Login">
-  <span
+  <button
+    type="button"
     class="row-btn"
     appStopClick
     appStopProp
@@ -19,8 +21,9 @@
     [ngClass]="{ disabled: !cipher.login.canLaunch }"
   >
     <i class="bwi bwi-lg bwi-share-square" aria-hidden="true"></i>
-  </span>
-  <span
+  </button>
+  <button
+    type="button"
     class="row-btn"
     appStopClick
     appStopProp
@@ -29,8 +32,9 @@
     [ngClass]="{ disabled: !cipher.login.username }"
   >
     <i class="bwi bwi-lg bwi-user" aria-hidden="true"></i>
-  </span>
-  <span
+  </button>
+  <button
+    type="button"
     class="row-btn"
     appStopClick
     appStopProp
@@ -39,8 +43,9 @@
     [ngClass]="{ disabled: !cipher.login.password || !cipher.viewPassword }"
   >
     <i class="bwi bwi-lg bwi-key" aria-hidden="true"></i>
-  </span>
-  <span
+  </button>
+  <button
+    type="button"
     class="row-btn"
     appStopClick
     appStopProp
@@ -49,10 +54,11 @@
     [ngClass]="{ disabled: !displayTotpCopyButton(cipher) }"
   >
     <i class="bwi bwi-lg bwi-clock" aria-hidden="true"></i>
-  </span>
+  </button>
 </ng-container>
 <ng-container *ngIf="cipher.type === cipherType.Card">
-  <span
+  <button
+    type="button"
     class="row-btn"
     appStopClick
     appStopProp
@@ -61,8 +67,9 @@
     [ngClass]="{ disabled: !cipher.card.number }"
   >
     <i class="bwi bwi-lg bwi-hashtag" aria-hidden="true"></i>
-  </span>
-  <span
+  </button>
+  <button
+    type="button"
     class="row-btn"
     appStopClick
     appStopProp
@@ -71,10 +78,11 @@
     [ngClass]="{ disabled: !cipher.card.code }"
   >
     <i class="bwi bwi-lg bwi-key" aria-hidden="true"></i>
-  </span>
+  </button>
 </ng-container>
 <ng-container *ngIf="cipher.type === cipherType.SecureNote">
-  <span
+  <button
+    type="button"
     class="row-btn"
     appStopClick
     appStopProp
@@ -83,5 +91,5 @@
     [ngClass]="{ disabled: !cipher.notes }"
   >
     <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
-  </span>
+  </button>
 </ng-container>
