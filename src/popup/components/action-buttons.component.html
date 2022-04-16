@@ -19,6 +19,7 @@
     (click)="launchCipher()"
     *ngIf="!showView"
     [ngClass]="{ disabled: !cipher.login.canLaunch }"
+    [attr.disabled]="!cipher.login.canLaunch ? '' : null"
   >
     <i class="bwi bwi-lg bwi-share-square" aria-hidden="true"></i>
   </button>
@@ -30,6 +31,7 @@
     appA11yTitle="{{ 'copyUsername' | i18n }}"
     (click)="copy(cipher, cipher.login.username, 'username', 'Username')"
     [ngClass]="{ disabled: !cipher.login.username }"
+    [attr.disabled]="!cipher.login.username ? '' : null"
   >
     <i class="bwi bwi-lg bwi-user" aria-hidden="true"></i>
   </button>
@@ -41,6 +43,7 @@
     appA11yTitle="{{ 'copyPassword' | i18n }}"
     (click)="copy(cipher, cipher.login.password, 'password', 'Password')"
     [ngClass]="{ disabled: !cipher.login.password || !cipher.viewPassword }"
+    [attr.disabled]="!cipher.login.password ? '' : null"
   >
     <i class="bwi bwi-lg bwi-key" aria-hidden="true"></i>
   </button>
@@ -52,6 +55,7 @@
     appA11yTitle="{{ 'copyVerificationCode' | i18n }}"
     (click)="copy(cipher, cipher.login.totp, 'verificationCodeTotp', 'TOTP')"
     [ngClass]="{ disabled: !displayTotpCopyButton(cipher) }"
+    [attr.disabled]="!displayTotpCopyButton(cipher) ? '' : null"
   >
     <i class="bwi bwi-lg bwi-clock" aria-hidden="true"></i>
   </button>
@@ -65,6 +69,7 @@
     appA11yTitle="{{ 'copyNumber' | i18n }}"
     (click)="copy(cipher, cipher.card.number, 'number', 'Card Number')"
     [ngClass]="{ disabled: !cipher.card.number }"
+    [attr.disabled]="!cipher.card.number ? '' : null"
   >
     <i class="bwi bwi-lg bwi-hashtag" aria-hidden="true"></i>
   </button>
@@ -76,6 +81,7 @@
     appA11yTitle="{{ 'copySecurityCode' | i18n }}"
     (click)="copy(cipher, cipher.card.code, 'securityCode', 'Security Code')"
     [ngClass]="{ disabled: !cipher.card.code }"
+    [attr.disabled]="!cipher.card.code ? '' : null"
   >
     <i class="bwi bwi-lg bwi-key" aria-hidden="true"></i>
   </button>
@@ -89,6 +95,7 @@
     appA11yTitle="{{ 'copyNote' | i18n }}"
     (click)="copy(cipher, cipher.notes, 'note', 'Note')"
     [ngClass]="{ disabled: !cipher.notes }"
+    [attr.disabled]="!cipher.notes ? '' : null"
   >
     <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
   </button>
