@@ -37,6 +37,7 @@ import { TokenService } from "jslib-common/abstractions/token.service";
 import { TotpService } from "jslib-common/abstractions/totp.service";
 import { TwoFactorService } from "jslib-common/abstractions/twoFactor.service";
 import { UserVerificationService } from "jslib-common/abstractions/userVerification.service";
+import { UsernameGenerationService } from "jslib-common/abstractions/usernameGeneration.service";
 import { VaultTimeoutService } from "jslib-common/abstractions/vaultTimeout.service";
 import { AuthService } from "jslib-common/services/auth.service";
 import { ConsoleLogService } from "jslib-common/services/consoleLog.service";
@@ -241,6 +242,11 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: StateServiceAbstraction,
       useFactory: getBgService<StateServiceAbstraction>("stateService"),
+      deps: [],
+    },
+    {
+      provide: UsernameGenerationService,
+      useFactory: getBgService<UsernameGenerationService>("usernameGenerationService"),
       deps: [],
     },
     {

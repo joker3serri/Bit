@@ -542,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "Anda yakin ingin menimpa sandi saat ini?"
   },
+  "overwriteUsername": {
+    "message": "Menimpa nama pengguna"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Anda yakin ingin menimpa nama pengguna saat ini?"
+  },
   "searchFolder": {
     "message": "Cari folder"
   },
@@ -1233,7 +1239,12 @@
     "message": "Kata sandi ini tidak ditemukan dalam insiden kebocoran data yang ada. Kata sandi tersebut seharusnya aman untuk digunakan."
   },
   "baseDomain": {
-    "message": "Domain basis"
+    "message": "Domain basis",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Nama Domain",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Hos",
@@ -1582,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Jumlah akses maksimum tercapai"
+    "message": "Jumlah akses maksimum tercapai",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Kedaluwarsa"
@@ -1838,7 +1850,7 @@
     "message": "Satu atau beberapa kebijakan organisasi mencegah Anda mengekspor brankas pribadi Anda."
   },
   "copyCustomFieldNameInvalidElement": {
-    "message": "Unable to identify a valid form element. Try inspecting the HTML instead."
+    "message": "Tidak dapat mengidentifikasi elemen yang valid. Coba inspeksi HTML saja."
   },
   "copyCustomFieldNameNotUnique": {
     "message": "Tidak ada pengidentifikasi unik yang ditemukan."
@@ -1887,5 +1899,45 @@
   },
   "error": {
     "message": "Error"
+  },
+  "regenerateUsername": {
+    "message": "Regenerate Username"
+  },
+  "generateUsername": {
+    "message": "Generate Username"
+  },
+  "usernameType": {
+    "message": "Username Type"
+  },
+  "plusAddressedEmail": {
+    "message": "Plus Addressed Email",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Use your email provider's sub-addressing capabilities."
+  },
+  "catchallEmail": {
+    "message": "Catch-all Email"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "Random"
+  },
+  "randomWord": {
+    "message": "Random Word"
+  },
+  "websiteName": {
+    "message": "Website Name"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "What would you like to generate?"
+  },
+  "passwordType": {
+    "message": "Password Type"
+  },
+  "service": {
+    "message": "Service"
   }
 }

@@ -542,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "Сигурно преписати тренутну лозинку?"
   },
+  "overwriteUsername": {
+    "message": "Препиши име"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "Сигурно преписати тренутно име?"
+  },
   "searchFolder": {
     "message": "Претражи фасциклу"
   },
@@ -1233,7 +1239,12 @@
     "message": "Ова лозинка није никада изложена. Треба да је сигурна за употребу."
   },
   "baseDomain": {
-    "message": "Главни домен"
+    "message": "Главни домен",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "Име домена",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "Хост",
@@ -1582,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "Достигнут максималан број приступа"
+    "message": "Достигнут максималан број приступа",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "Истекло"
@@ -1887,5 +1899,45 @@
   },
   "error": {
     "message": "Грешка"
+  },
+  "regenerateUsername": {
+    "message": "Поново генериши име"
+  },
+  "generateUsername": {
+    "message": "Генериши име"
+  },
+  "usernameType": {
+    "message": "Тип имена"
+  },
+  "plusAddressedEmail": {
+    "message": "Плус имејл адресе",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "Користите могућности подадресирања вашег добављача е-поште."
+  },
+  "catchallEmail": {
+    "message": "„Ухвати све“ е-порука"
+  },
+  "catchallEmailDesc": {
+    "message": "Use your domain's configured catch-all inbox."
+  },
+  "random": {
+    "message": "Случајно"
+  },
+  "randomWord": {
+    "message": "Случајна реч"
+  },
+  "websiteName": {
+    "message": "Име Вашег веб-сајта"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "Шта желите да генеришете?"
+  },
+  "passwordType": {
+    "message": "Тип лозинке"
+  },
+  "service": {
+    "message": "Сервис"
   }
 }

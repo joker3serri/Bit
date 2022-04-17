@@ -31,6 +31,7 @@ import { TokenService as TokenServiceAbstraction } from "jslib-common/abstractio
 import { TotpService as TotpServiceAbstraction } from "jslib-common/abstractions/totp.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "jslib-common/abstractions/twoFactor.service";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "jslib-common/abstractions/userVerification.service";
+import { UsernameGenerationService as UsernameGenerationServiceAbstraction } from "jslib-common/abstractions/usernameGeneration.service";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "jslib-common/abstractions/vaultTimeout.service";
 import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
 import { CipherType } from "jslib-common/enums/cipherType";
@@ -66,6 +67,7 @@ import { TokenService } from "jslib-common/services/token.service";
 import { TotpService } from "jslib-common/services/totp.service";
 import { TwoFactorService } from "jslib-common/services/twoFactor.service";
 import { UserVerificationService } from "jslib-common/services/userVerification.service";
+import { UsernameGenerationService } from "jslib-common/services/usernameGeneration.service";
 import { WebCryptoFunctionService } from "jslib-common/services/webCryptoFunction.service";
 
 import { BrowserApi } from "../browser/browserApi";
@@ -93,7 +95,6 @@ import NotificationBackground from "./notification.background";
 import RuntimeBackground from "./runtime.background";
 import TabsBackground from "./tabs.background";
 import WebRequestBackground from "./webRequest.background";
-import WindowsBackground from "./windows.background";
 
 export default class MainBackground {
   messagingService: MessagingServiceAbstraction;
@@ -136,6 +137,7 @@ export default class MainBackground {
   keyConnectorService: KeyConnectorServiceAbstraction;
   userVerificationService: UserVerificationServiceAbstraction;
   twoFactorService: TwoFactorServiceAbstraction;
+  usernameGenerationService: UsernameGenerationServiceAbstraction;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -148,7 +150,6 @@ export default class MainBackground {
   private runtimeBackground: RuntimeBackground;
   private tabsBackground: TabsBackground;
   private webRequestBackground: WebRequestBackground;
-  private windowsBackground: WindowsBackground;
 
   private sidebarAction: any;
   private buildingContextMenu: boolean;
@@ -200,7 +201,7 @@ export default class MainBackground {
       }
     );
     this.i18nService = new I18nService(BrowserApi.getUILanguage(window));
-    this.cryptoFunctionService = new WebCryptoFunctionService(window, this.platformUtilsService);
+    this.cryptoFunctionService = new WebCryptoFunctionService(window);
     this.cryptoService = new BrowserCryptoService(
       this.cryptoFunctionService,
       this.platformUtilsService,
@@ -419,7 +420,6 @@ export default class MainBackground {
       this.vaultTimeoutService
     );
     this.notificationBackground = new NotificationBackground(
-      this,
       this.autofillService,
       this.cipherService,
       this.vaultTimeoutService,
@@ -448,7 +448,6 @@ export default class MainBackground {
       this.cipherService,
       this.vaultTimeoutService
     );
-    this.windowsBackground = new WindowsBackground(this);
 
     this.twoFactorService = new TwoFactorService(this.i18nService, this.platformUtilsService);
 
@@ -475,6 +474,10 @@ export default class MainBackground {
       this.twoFactorService,
       this.i18nService
     );
+    this.usernameGenerationService = new UsernameGenerationService(
+      this.cryptoService,
+      this.stateService
+    );
   }
 
   async bootstrap() {
@@ -495,7 +498,6 @@ export default class MainBackground {
     await this.contextMenusBackground.init();
     await this.idleBackground.init();
     await this.webRequestBackground.init();
-    await this.windowsBackground.init();
 
     if (this.platformUtilsService.isFirefox() && !this.isPrivateMode) {
       // Set Private Mode windows to the default icon - they do not share state with the background page
@@ -592,7 +594,7 @@ export default class MainBackground {
     }
 
     await this.setIcon();
-    await this.refreshBadgeAndMenu();
+    await this.refreshBadgeAndMenu(true);
     await this.reseedStorage();
     this.notificationsService.updateConnection(false);
     await this.systemService.clearPendingClipboard();

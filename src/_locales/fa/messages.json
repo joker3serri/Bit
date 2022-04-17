@@ -542,6 +542,12 @@
   "overwritePasswordConfirmation": {
     "message": "آیا از بازنویسی بر روی پسورد فعلی مطمئن هستید؟"
   },
+  "overwriteUsername": {
+    "message": "بازنویسی نام کاربری"
+  },
+  "overwriteUsernameConfirmation": {
+    "message": "آیا از بازنویسی نام کاربری فعلی مطمئن هستید؟"
+  },
   "searchFolder": {
     "message": "جستجوی پوشه"
   },
@@ -1233,7 +1239,12 @@
     "message": "این کلمه عبور در هیچ رخنه داده ای شناخته نشده است. باید برای امنیت از آن استفاده کنید."
   },
   "baseDomain": {
-    "message": "دامنه پایه"
+    "message": "دامنه پایه",
+    "description": "Domain name. Ex. website.com"
+  },
+  "domainName": {
+    "message": "نام دامنه",
+    "description": "Domain name. Ex. website.com"
   },
   "host": {
     "message": "میزبان",
@@ -1582,7 +1593,8 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "maxAccessCountReached": {
-    "message": "به حداکثر تعداد دسترسی رسیده است"
+    "message": "به حداکثر تعداد دسترسی رسیده است",
+    "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "expired": {
     "message": "منقضی شده"
@@ -1886,6 +1898,46 @@
     }
   },
   "error": {
-    "message": "Error"
+    "message": "خطا"
+  },
+  "regenerateUsername": {
+    "message": "ایجاد مجدد نام کاربری"
+  },
+  "generateUsername": {
+    "message": "ایجاد نام کاربری"
+  },
+  "usernameType": {
+    "message": "نوع نام کاربری"
+  },
+  "plusAddressedEmail": {
+    "message": "به علاوه ایمیل آدرس داده شده",
+    "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
+  },
+  "plusAddressedEmailDesc": {
+    "message": "از قابلیت های آدرس دهی فرعی ارائه دهنده ایمیل خود استفاده کنید."
+  },
+  "catchallEmail": {
+    "message": "رایانامه همه‌گیر"
+  },
+  "catchallEmailDesc": {
+    "message": "از صندوق ورودی پیکربندی شده دامنه خود استفاده کنید."
+  },
+  "random": {
+    "message": "تصادفی"
+  },
+  "randomWord": {
+    "message": "کلمه تصادفی"
+  },
+  "websiteName": {
+    "message": "نام وب سایت"
+  },
+  "whatWouldYouLikeToGenerate": {
+    "message": "چه چیزی دوست دارید تولید کنید؟"
+  },
+  "passwordType": {
+    "message": "نوع گذرواژه"
+  },
+  "service": {
+    "message": "خدمت"
   }
 }
