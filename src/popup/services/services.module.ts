@@ -1,6 +1,6 @@
 import { APP_INITIALIZER, LOCALE_ID, NgModule } from "@angular/core";
 
-import { JslibServicesModule } from "jslib-angular/services/jslib-services.module";
+import { JslibServicesModule, SECURE_STORAGE } from "jslib-angular/services/jslib-services.module";
 import { LockGuardService as BaseLockGuardService } from "jslib-angular/services/lock-guard.service";
 import { UnauthGuardService as BaseUnauthGuardService } from "jslib-angular/services/unauth-guard.service";
 import { ApiService } from "jslib-common/abstractions/api.service";
@@ -235,7 +235,7 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [],
     },
     {
-      provide: "SECURE_STORAGE",
+      provide: SECURE_STORAGE,
       useFactory: getBgService<StorageServiceAbstraction>("secureStorageService"),
       deps: [],
     },
