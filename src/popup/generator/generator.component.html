@@ -14,7 +14,7 @@
     </button>
   </div>
 </header>
-<content tabindex="-1">
+<main tabindex="-1">
   <app-callout type="info" *ngIf="enforcedPasswordPolicyOptions?.inEffect() && type === 'password'">
     {{ "passwordGeneratorPolicyInEffect" | i18n }}
   </app-callout>
@@ -441,4 +441,4 @@
       </div>
     </div>
   </ng-container>
-</content>
+</main>
