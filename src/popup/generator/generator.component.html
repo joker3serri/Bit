@@ -72,7 +72,7 @@
           <input
             type="radio"
             [(ngModel)]="type"
-            name="Type_{{ o.value }}"
+            name="Type"
             id="type_{{ o.value }}"
             [value]="o.value"
             (change)="typeChanged()"
@@ -98,7 +98,7 @@
             <input
               type="radio"
               [(ngModel)]="passwordOptions.type"
-              name="PasswordType_{{ o.value }}"
+              name="PasswordType"
               id="passwordtype_{{ o.value }}"
               [value]="o.value"
               (change)="savePasswordOptions()"
@@ -299,7 +299,7 @@
             <input
               type="radio"
               [(ngModel)]="usernameOptions.type"
-              name="Type_{{ o.value }}"
+              name="UsernameType"
               id="type_{{ o.value }}"
               [value]="o.value"
               (change)="saveUsernameOptions()"
@@ -321,7 +321,7 @@
             <input
               type="radio"
               [(ngModel)]="usernameOptions.forwardedService"
-              name="ForwardType_{{ o.value }}"
+              name="ForwardType"
               id="forwardtype_{{ o.value }}"
               [value]="o.value"
               (change)="saveUsernameOptions()"
@@ -352,7 +352,7 @@
             <input
               type="radio"
               [(ngModel)]="usernameOptions.subaddressType"
-              name="SubaddressType_{{ o.value }}"
+              name="SubaddressType"
               id="subaddresstype_{{ o.value }}"
               [value]="o.value"
               (change)="saveUsernameOptions()"
@@ -394,7 +394,7 @@
             <input
               type="radio"
               [(ngModel)]="usernameOptions.catchallType"
-              name="CatchallType_{{ o.value }}"
+              name="CatchallType"
               id="catchalltype_{{ o.value }}"
               [value]="o.value"
               (change)="saveUsernameOptions()"
