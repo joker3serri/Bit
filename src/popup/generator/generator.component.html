@@ -317,8 +317,8 @@
     </div>
     <div class="box" *ngIf="usernameOptions.type === 'forwarded'">
       <div class="box-content">
-        <div class="box-content-row" role="radiogroup" aria-labelledby="serviceHeading">
-          <label id="serviceHeading" class="radio-header">{{ "service" | i18n }}</label>
+        <div class="box-content-row" role="radiogroup" aria-labelledby="forwardTypeHeading">
+          <label id="forwardTypeHeading" class="radio-header">{{ "service" | i18n }}</label>
           <div class="radio-group text-default" appBoxRow *ngFor="let o of forwardOptions">
             <input
               type="radio"
