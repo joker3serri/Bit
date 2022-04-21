@@ -66,7 +66,7 @@
   </div>
   <div class="box">
     <div class="box-content">
-      <div class="box-content-row">
+      <div class="box-content-row" role="radiogroup">
         <label class="radio-header">{{ "whatWouldYouLikeToGenerate" | i18n }}</label>
         <div class="radio-group text-default" appBoxRow *ngFor="let o of typeOptions">
           <input
@@ -92,7 +92,7 @@
         {{ "options" | i18n }}
       </h2>
       <div class="box-content">
-        <div class="box-content-row">
+        <div class="box-content-row" role="radiogroup">
           <label class="radio-header">{{ "passwordType" | i18n }}</label>
           <div class="radio-group text-default" appBoxRow *ngFor="let o of passTypeOptions">
             <input
@@ -279,7 +279,7 @@
         {{ "options" | i18n }}
       </h2>
       <div class="box-content">
-        <div class="box-content-row">
+        <div class="box-content-row" role="radiogroup">
           <label class="radio-header">
             {{ "usernameType" | i18n }}
             <a
@@ -315,7 +315,7 @@
     </div>
     <div class="box" *ngIf="usernameOptions.type === 'forwarded'">
       <div class="box-content">
-        <div class="box-content-row">
+        <div class="box-content-row" role="radiogroup">
           <label class="radio-header">{{ "service" | i18n }}</label>
           <div class="radio-group text-default" appBoxRow *ngFor="let o of forwardOptions">
             <input
@@ -346,7 +346,7 @@
             (blur)="saveUsernameOptions()"
           />
         </div>
-        <div class="box-content-row" *ngIf="subaddressOptions.length > 1">
+        <div class="box-content-row" role="radiogroup" *ngIf="subaddressOptions.length > 1">
           <label class="radio-header">{{ "type" | i18n }}</label>
           <div class="radio-group text-default" appBoxRow *ngFor="let o of subaddressOptions">
             <input
@@ -388,7 +388,7 @@
             (blur)="saveUsernameOptions()"
           />
         </div>
-        <div class="box-content-row" *ngIf="catchallOptions.length > 1">
+        <div class="box-content-row" role="radiogroup" *ngIf="catchallOptions.length > 1">
           <label class="radio-header">{{ "type" | i18n }}</label>
           <div class="radio-group text-default" appBoxRow *ngFor="let o of catchallOptions">
             <input
