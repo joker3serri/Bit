@@ -111,13 +111,13 @@ main {
   height: 100%;
 }
 
-content::-webkit-scrollbar,
+main::-webkit-scrollbar,
 cdk-virtual-scroll-viewport::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
-content::-webkit-scrollbar-track {
+main::-webkit-scrollbar-track {
   background-color: transparent;
 }
 
@@ -127,7 +127,7 @@ cdk-virtual-scroll-viewport::-webkit-scrollbar-track {
   }
 }
 
-content::-webkit-scrollbar-thumb,
+main::-webkit-scrollbar-thumb,
 cdk-virtual-scroll-viewport::-webkit-scrollbar-thumb {
   border-radius: 10px;
   margin-right: 1px;
@@ -370,7 +370,7 @@ app-root {
     padding: 0 calc((100% - 500px) / 2);
   }
 
-  app-login content {
+  app-login main {
     padding: 0 calc((100% - 500px) / 2);
   }
 
@@ -378,7 +378,7 @@ app-root {
     padding: 0 calc((100% - 500px) / 2);
   }
 
-  app-two-factor content {
+  app-two-factor main {
     padding: 0 calc((100% - 500px) / 2);
   }
 
@@ -386,12 +386,12 @@ app-root {
     padding: 0 calc((100% - 500px) / 2);
   }
 
-  app-lock content {
+  app-lock main {
     padding: 0 calc((100% - 500px) / 2);
   }
 }
 
-content {
+main {
   position: absolute;
   top: 44px;
   bottom: 0;
@@ -420,7 +420,7 @@ content {
 }
 
 .tab-page {
-  content {
+  main {
     bottom: 55px;
   }
 }
