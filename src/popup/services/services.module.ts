@@ -109,11 +109,6 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [],
     },
     {
-      provide: TwoFactorService,
-      useFactory: getBgService<TwoFactorService>("twoFactorService"),
-      deps: [],
-    },
-    {
       provide: AuthServiceAbstraction,
       useFactory: getBgService<AuthService>("authService"),
       deps: [],
