@@ -7,7 +7,6 @@ import { ThemeType } from "jslib-common/enums/themeType";
 
 import { StateService as StateServiceAbstraction } from "../../services/abstractions/state.service";
 
-
 import { PopupUtilsService } from "./popup-utils.service";
 
 @Injectable()
