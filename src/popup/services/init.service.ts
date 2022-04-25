@@ -57,22 +57,6 @@ export class InitService {
         htmlEl.classList.add("force_redraw");
         this.logService.info("Force redraw is on");
       }
-      htmlEl.classList.add("locale_" + this.i18nService.translationLocale);
-
-      // Workaround for slow performance on external monitors on Chrome + MacOS
-      // See: https://bugs.chromium.org/p/chromium/issues/detail?id=971701#c64
-      if (
-        this.platformUtilsService.isChrome() &&
-        navigator.platform.indexOf("Mac") > -1 &&
-        this.popupUtilsService.inPopup(window) &&
-        (window.screenLeft < 0 ||
-          window.screenTop < 0 ||
-          window.screenLeft > window.screen.width ||
-          window.screenTop > window.screen.height)
-      ) {
-        htmlEl.classList.add("force_redraw");
-        this.logService.info("Force redraw is on");
-      }
     };
   }
 }
