@@ -14,7 +14,6 @@ import { BrowserApi } from "../browser/browserApi";
 import { AutofillService } from "../services/abstractions/autofill.service";
 import { StateService } from "../services/abstractions/state.service";
 
-import MainBackground from "./main.background";
 import AddChangePasswordQueueMessage from "./models/addChangePasswordQueueMessage";
 import AddLoginQueueMessage from "./models/addLoginQueueMessage";
 import AddLoginRuntimeMessage from "./models/addLoginRuntimeMessage";
@@ -26,7 +25,6 @@ export default class NotificationBackground {
   private notificationQueue: (AddLoginQueueMessage | AddChangePasswordQueueMessage)[] = [];
 
   constructor(
-    private main: MainBackground,
     private autofillService: AutofillService,
     private cipherService: CipherService,
     private authService: AuthService,

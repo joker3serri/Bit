@@ -96,7 +96,6 @@ import NotificationBackground from "./notification.background";
 import RuntimeBackground from "./runtime.background";
 import TabsBackground from "./tabs.background";
 import WebRequestBackground from "./webRequest.background";
-import WindowsBackground from "./windows.background";
 
 export default class MainBackground {
   messagingService: MessagingServiceAbstraction;
@@ -152,7 +151,6 @@ export default class MainBackground {
   private runtimeBackground: RuntimeBackground;
   private tabsBackground: TabsBackground;
   private webRequestBackground: WebRequestBackground;
-  private windowsBackground: WindowsBackground;
 
   private sidebarAction: any;
   private buildingContextMenu: boolean;
@@ -296,20 +294,20 @@ export default class MainBackground {
       this.i18nService
     );
 
-    const vaultTimeoutServiceCallbacks = {
-      locked: async (userId?: string) => {
-        if (this.notificationsService != null) {
-          this.notificationsService.updateConnection(false);
-        }
-        await this.setIcon();
-        await this.refreshBadgeAndMenu(true);
-        if (this.systemService != null) {
-          await this.systemService.clearPendingClipboard();
-          await this.reloadProcess();
-        }
-      },
-      logout: async (userId?: string) => await this.logout(false, userId),
+    const lockedCallback = async (userId?: string) => {
+      if (this.notificationsService != null) {
+        this.notificationsService.updateConnection(false);
+      }
+      await this.setIcon();
+      await this.refreshBadgeAndMenu(true);
+      if (this.systemService != null) {
+        await this.systemService.clearPendingClipboard();
+        await this.reloadProcess();
+      }
     };
+
+    const logoutCallback = async (expired: boolean, userId?: string) =>
+      await this.logout(expired, userId);
 
     this.vaultTimeoutService = new VaultTimeoutService(
       this.cipherService,
@@ -324,8 +322,8 @@ export default class MainBackground {
       this.keyConnectorService,
       this.stateService,
       this.authService,
-      vaultTimeoutServiceCallbacks.locked,
-      vaultTimeoutServiceCallbacks.logout
+      lockedCallback,
+      logoutCallback
     );
     this.providerService = new ProviderService(this.stateService);
     this.syncService = new SyncService(
@@ -343,7 +341,7 @@ export default class MainBackground {
       this.stateService,
       this.organizationService,
       this.providerService,
-      async (expired: boolean) => await this.logout(expired)
+      logoutCallback
     );
     this.eventService = new EventService(
       this.apiService,
@@ -383,7 +381,7 @@ export default class MainBackground {
       this.appIdService,
       this.apiService,
       this.environmentService,
-      () => this.logout(true),
+      logoutCallback,
       this.logService,
       this.stateService,
       this.authService
@@ -452,7 +450,6 @@ export default class MainBackground {
       this.authService
     );
     this.notificationBackground = new NotificationBackground(
-      this,
       this.autofillService,
       this.cipherService,
       this.authService,
@@ -481,11 +478,11 @@ export default class MainBackground {
       this.cipherService,
       this.authService
     );
-    this.windowsBackground = new WindowsBackground(this);
 
     this.usernameGenerationService = new UsernameGenerationService(
       this.cryptoService,
-      this.stateService
+      this.stateService,
+      this.apiService
     );
   }
 
@@ -507,7 +504,6 @@ export default class MainBackground {
     await this.contextMenusBackground.init();
     await this.idleBackground.init();
     await this.webRequestBackground.init();
-    await this.windowsBackground.init();
 
     if (this.platformUtilsService.isFirefox() && !this.isPrivateMode) {
       // Set Private Mode windows to the default icon - they do not share state with the background page
@@ -603,7 +599,7 @@ export default class MainBackground {
     }
 
     await this.setIcon();
-    await this.refreshBadgeAndMenu();
+    await this.refreshBadgeAndMenu(true);
     await this.reseedStorage();
     this.notificationsService.updateConnection(false);
     await this.systemService.clearPendingClipboard();
