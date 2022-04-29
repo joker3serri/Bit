@@ -58,8 +58,9 @@ export class SsoComponent extends BaseSsoComponent {
 
     super.onSuccessfulLogin = async () => {
       await syncService.fullSync(true);
-      if ((await this.authService.getAuthStatus()) === AuthenticationStatus.Locked) {
-        // If the vault is unlocked then this will clear keys from memory, which we don't want to do
+
+      // If the vault is unlocked then this will clear keys from memory, which we don't want to do
+      if ((await this.authService.getAuthStatus()) !== AuthenticationStatus.Unlocked) {
         BrowserApi.reloadOpenWindows();
       }
 

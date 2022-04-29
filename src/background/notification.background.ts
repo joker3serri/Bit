@@ -77,7 +77,7 @@ export default class NotificationBackground {
         break;
       case "bgAddSave":
       case "bgChangeSave":
-        if ((await this.authService.getAuthStatus()) === AuthenticationStatus.Locked) {
+        if ((await this.authService.getAuthStatus()) < AuthenticationStatus.Unlocked) {
           const retryMessage: LockedVaultPendingNotificationsItem = {
             commandToRetry: {
               msg: msg,
@@ -188,7 +188,8 @@ export default class NotificationBackground {
   }
 
   private async addLogin(loginInfo: AddLoginRuntimeMessage, tab: chrome.tabs.Tab) {
-    if (!(await this.stateService.getIsAuthenticated())) {
+    const authStatus = await this.authService.getAuthStatus();
+    if (authStatus === AuthenticationStatus.LoggedOut) {
       return;
     }
 
@@ -203,7 +204,7 @@ export default class NotificationBackground {
     }
 
     const disabledAddLogin = await this.stateService.getDisableAddLoginNotification();
-    if ((await this.authService.getAuthStatus()) === AuthenticationStatus.Locked) {
+    if (authStatus === AuthenticationStatus.Locked) {
       if (disabledAddLogin) {
         return;
       }
@@ -271,7 +272,7 @@ export default class NotificationBackground {
       return;
     }
 
-    if ((await this.authService.getAuthStatus()) === AuthenticationStatus.Locked) {
+    if ((await this.authService.getAuthStatus()) < AuthenticationStatus.Unlocked) {
       this.pushChangePasswordToQueue(null, loginDomain, changeData.newPassword, tab, true);
       return;
     }

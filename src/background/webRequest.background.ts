@@ -60,7 +60,7 @@ export default class WebRequestBackground {
 
   // eslint-disable-next-line
   private async resolveAuthCredentials(domain: string, success: Function, error: Function) {
-    if ((await this.authService.getAuthStatus()) === AuthenticationStatus.Locked) {
+    if ((await this.authService.getAuthStatus()) < AuthenticationStatus.Unlocked) {
       error();
       return;
     }
