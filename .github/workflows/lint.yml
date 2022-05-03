@@ -11,7 +11,12 @@ on:
   workflow_dispatch:
     inputs: {}
 
-lint:
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  lint:
     name: Lint
     runs-on: ubuntu-20.04
     steps:
@@ -21,7 +26,7 @@ lint:
       - name: Set up Node
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
-          cache: 'npm-lint'
+          cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
           node-version: '16'
 
