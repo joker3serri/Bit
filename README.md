@@ -10,7 +10,7 @@
   </a>
 </p>
 
--------------------
+---
 
 # Bitwarden Client Applications
 
@@ -20,9 +20,9 @@ Please check the readmes for each application under `apps` for instructions on h
 
 ## Related projects:
 
-* [bitwarden/server](https://github.com/bitwarden/server): The core infrastructure backend (API, database, Docker, etc).
-* [bitwarden/mobile](https://github.com/bitwarden/mobile): The mobile app vault (iOS and Android). 
-* [bitwarden/directory-connector](https://github.com/bitwarden/directory-connector): A tool for syncing a directory (AD, LDAP, Azure, G Suite, Okta) to an organization.
+- [bitwarden/server](https://github.com/bitwarden/server): The core infrastructure backend (API, database, Docker, etc).
+- [bitwarden/mobile](https://github.com/bitwarden/mobile): The mobile app vault (iOS and Android).
+- [bitwarden/directory-connector](https://github.com/bitwarden/directory-connector): A tool for syncing a directory (AD, LDAP, Azure, G Suite, Okta) to an organization.
 
 # We're Hiring!
 

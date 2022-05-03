@@ -29,9 +29,9 @@ We use a translation tool called [Crowdin](https://crowdin.com) to help manage o
 
 If you are interested in helping translate the Bitwarden applications into another language (or make a translation correction), please register an account at Crowdin and join our projects here:
 
-* https://crowdin.com/project/bitwarden-web
-* https://crowdin.com/project/bitwarden-desktop
-* https://crowdin.com/project/bitwarden-browser
+- https://crowdin.com/project/bitwarden-web
+- https://crowdin.com/project/bitwarden-desktop
+- https://crowdin.com/project/bitwarden-browser
 
 If the language that you are interested in translating is not already listed, create a new account on Crowdin, join the project, and contact the project owner (https://crowdin.com/profile/dwbit).
 
