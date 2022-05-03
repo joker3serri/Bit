@@ -3,7 +3,7 @@
 </p>
 <p align="center">
   <a href="https://github.com/bitwarden/bitwarden/actions/workflows/build-browser.yml?query=branch:master" target="_blank">
-    <img src="https://github.com/bitwarden/bitwarden/actions/workflows/build-browser.yml/badge.svg?branch=master" alt="Github Workflow build on master" />
+    <img src="https://github.com/bitwarden/bitwarden/actions/workflows/build-browser.yml/badge.svg?branch=master" alt="Github Workflow browser build on master" />
   </a>
   <a href="https://gitter.im/bitwarden/Lobby" target="_blank">
     <img src="https://badges.gitter.im/bitwarden/Lobby.svg" alt="gitter chat" />
