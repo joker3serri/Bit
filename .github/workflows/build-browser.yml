@@ -222,6 +222,9 @@ jobs:
       - locales-test
       - build
       - crowdin-push
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}
     steps:
       - name: Check if any job failed
         if: ${{ (github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') }}
