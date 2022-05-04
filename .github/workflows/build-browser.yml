@@ -27,7 +27,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt -y install cloc
-          
+
       - name: Print lines of code
         run: cloc --include-lang TypeScript,JavaScript,HTML,Sass,CSS --vcs git
 
@@ -135,7 +135,7 @@ jobs:
           call 7z a browser-source.zip "Source\*"
 
       - name: Upload Opera artifact
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0 
+        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
         with:
           name: dist-opera-${{ env._BUILD_NUMBER }}.zip
           path: apps/browser/dist/dist-opera.zip
