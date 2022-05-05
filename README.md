@@ -44,3 +44,28 @@ We recommend that you configure git to ignore specific revision using:
 ```bash
 git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
+
+## Migrate PRs from old repositories
+
+### Desktop
+
+```
+# Merge master
+git merge master
+
+# Merge branch mono-repo-prep
+git merge 28bc4113b9bbae4dba2b5af14d460764fce79acf
+
+# Verify files are placed in apps/desktop
+
+# Add remote
+git remote add clients git@github.com:bitwarden/clients.git
+
+# Merge against clients master
+git fetch clients
+git merge clients/master
+```
+
+3. Merge against 28bc4113b9bbae4dba2b5af14d460764fce79acf
+   Verify added files accurately are placed in apps/desktop
+   Merge against clients master
