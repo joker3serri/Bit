@@ -472,9 +472,9 @@ jobs:
           BUILD_NUMBER: ${{ needs.setup.outputs.build_number }}
         run: |
           Get-ChildItem
-          $package = Get-Content -Raw -Path package.json | ConvertFrom-Json;
+          $package = Get-Content -Raw -Path electron-builder.json | ConvertFrom-Json;
           $package.build | Add-Member -MemberType NoteProperty -Name buildVersion -Value "$env:BUILD_NUMBER";
-          $package | ConvertTo-Json -Depth 32 | Set-Content -Path package.json;
+          $package | ConvertTo-Json -Depth 32 | Set-Content -Path electron-builder.json;
 
       - name: Install Node dependencies
         run: npm ci
@@ -612,9 +612,9 @@ jobs:
         env:
           BUILD_NUMBER: ${{ needs.setup.outputs.build_number }}
         run: |
-          $package = Get-Content -Raw -Path package.json | ConvertFrom-Json;
+          $package = Get-Content -Raw -Path electron-builder.json | ConvertFrom-Json;
           $package.build | Add-Member -MemberType NoteProperty -Name buildVersion -Value "$env:BUILD_NUMBER";
-          $package | ConvertTo-Json -Depth 32 | Set-Content -Path package.json;
+          $package | ConvertTo-Json -Depth 32 | Set-Content -Path electron-builder.json;
 
       - name: NPM install
         run: npm ci
@@ -795,9 +795,9 @@ jobs:
         env:
           BUILD_NUMBER: ${{ needs.setup.outputs.build_number }}
         run: |
-          $package = Get-Content -Raw -Path package.json | ConvertFrom-Json;
+          $package = Get-Content -Raw -Path electron-builder.json | ConvertFrom-Json;
           $package.build | Add-Member -MemberType NoteProperty -Name buildVersion -Value "$env:BUILD_NUMBER";
-          $package | ConvertTo-Json -Depth 32 | Set-Content -Path package.json;
+          $package | ConvertTo-Json -Depth 32 | Set-Content -Path electron-builder.json;
 
       - name: NPM install
         run: npm ci
@@ -970,9 +970,9 @@ jobs:
         env:
           BUILD_NUMBER: ${{ needs.setup.outputs.build_number }}
         run: |
-          $package = Get-Content -Raw -Path package.json | ConvertFrom-Json;
+          $package = Get-Content -Raw -Path electron-builder.json | ConvertFrom-Json;
           $package.build | Add-Member -MemberType NoteProperty -Name buildVersion -Value "$env:BUILD_NUMBER";
-          $package | ConvertTo-Json -Depth 32 | Set-Content -Path package.json;
+          $package | ConvertTo-Json -Depth 32 | Set-Content -Path electron-builder.json;
 
       - name: NPM install
         run: npm ci
