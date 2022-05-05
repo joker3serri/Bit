@@ -47,6 +47,8 @@ git config blame.ignoreRevsFile .git-blame-ignore-revs
 
 ## Migrate PRs from old repositories
 
+We recently migrated from individual client repositories. And some PRs were unfortunately left behind in the old repositories. Luckily it's fairly straightforward to sync them up again. Please follow all the instructions below in order to avoid most merge conflicts.
+
 ### Desktop
 
 ```
@@ -64,8 +66,6 @@ git remote add clients git@github.com:bitwarden/clients.git
 # Merge against clients master
 git fetch clients
 git merge clients/master
-```
 
-3. Merge against 28bc4113b9bbae4dba2b5af14d460764fce79acf
-   Verify added files accurately are placed in apps/desktop
-   Merge against clients master
+# Push to clients or your own fork
+```
