@@ -170,6 +170,7 @@ jobs:
     defaults:
       run:
         shell: pwsh
+        working-directory: apps/desktop
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
     steps:
@@ -265,91 +266,91 @@ jobs:
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-Portable-${{ env._PACKAGE_VERSION }}.exe
-          path: ./dist/Bitwarden-Portable-${{ env._PACKAGE_VERSION }}.exe
+          path: apps/desktop/dist/Bitwarden-Portable-${{ env._PACKAGE_VERSION }}.exe
           if-no-files-found: error
 
       - name: Upload installer exe artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-Installer-${{ env._PACKAGE_VERSION }}.exe
-          path: ./dist/nsis-web/Bitwarden-Installer-${{ env._PACKAGE_VERSION }}.exe
+          path: apps/desktop/dist/nsis-web/Bitwarden-Installer-${{ env._PACKAGE_VERSION }}.exe
           if-no-files-found: error
 
       - name: Upload appx ia32 artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-ia32.appx
-          path: ./dist/Bitwarden-${{ env._PACKAGE_VERSION }}-ia32.appx
+          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-ia32.appx
           if-no-files-found: error
 
       - name: Upload store appx ia32 artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-ia32-store.appx
-          path: ./dist/Bitwarden-${{ env._PACKAGE_VERSION }}-ia32-store.appx
+          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-ia32-store.appx
           if-no-files-found: error
 
       - name: Upload NSIS ia32 artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-ia32.nsis.7z
-          path: ./dist/nsis-web/Bitwarden-${{ env._PACKAGE_VERSION }}-ia32.nsis.7z
+          path: apps/desktop/dist/nsis-web/Bitwarden-${{ env._PACKAGE_VERSION }}-ia32.nsis.7z
           if-no-files-found: error
 
       - name: Upload appx x64 artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-x64.appx
-          path: ./dist/Bitwarden-${{ env._PACKAGE_VERSION }}-x64.appx
+          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-x64.appx
           if-no-files-found: error
 
       - name: Upload store appx x64 artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-x64-store.appx
-          path: ./dist/Bitwarden-${{ env._PACKAGE_VERSION }}-x64-store.appx
+          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-x64-store.appx
           if-no-files-found: error
 
       - name: Upload NSIS x64 artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-x64.nsis.7z
-          path: ./dist/nsis-web/Bitwarden-${{ env._PACKAGE_VERSION }}-x64.nsis.7z
+          path: apps/desktop/dist/nsis-web/Bitwarden-${{ env._PACKAGE_VERSION }}-x64.nsis.7z
           if-no-files-found: error
 
       - name: Upload appx ARM64 artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-arm64.appx
-          path: ./dist/Bitwarden-${{ env._PACKAGE_VERSION }}-arm64.appx
+          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-arm64.appx
           if-no-files-found: error
 
       - name: Upload store appx ARM64 artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-arm64-store.appx
-          path: ./dist/Bitwarden-${{ env._PACKAGE_VERSION }}-arm64-store.appx
+          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-arm64-store.appx
           if-no-files-found: error
 
       - name: Upload NSIS ARM64 artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-arm64.nsis.7z
-          path: ./dist/nsis-web/Bitwarden-${{ env._PACKAGE_VERSION }}-arm64.nsis.7z
+          path: apps/desktop/dist/nsis-web/Bitwarden-${{ env._PACKAGE_VERSION }}-arm64.nsis.7z
           if-no-files-found: error
 
       - name: Upload nupkg artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: bitwarden.${{ env._PACKAGE_VERSION }}.nupkg
-          path: ./dist/chocolatey/bitwarden.${{ env._PACKAGE_VERSION }}.nupkg
+          path: apps/desktop/dist/chocolatey/bitwarden.${{ env._PACKAGE_VERSION }}.nupkg
           if-no-files-found: error
 
       - name: Upload latest auto-update artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: latest.yml
-          path: ./dist/nsis-web/latest.yml
+          path: apps/desktop/dist/nsis-web/latest.yml
           if-no-files-found: error
 
 
@@ -625,28 +626,28 @@ jobs:
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-universal-mac.zip
-          path: ./dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal-mac.zip
+          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal-mac.zip
           if-no-files-found: error
 
       - name: Upload .dmg artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg
-          path: ./dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg
+          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg
           if-no-files-found: error
 
       - name: Upload .dmg blockmap artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg.blockmap
-          path: ./dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg.blockmap
+          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg.blockmap
           if-no-files-found: error
 
       - name: Upload latest auto-update artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: latest-mac.yml
-          path: ./dist/latest-mac.yml
+          path: apps/desktop/dist/latest-mac.yml
           if-no-files-found: error
 
 
@@ -795,7 +796,7 @@ jobs:
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-universal.pkg
-          path: ./dist/mas-universal/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.pkg
+          path: apps/desktop/dist/mas-universal/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.pkg
           if-no-files-found: error
 
       - name: Deploy to TestFlight
@@ -961,7 +962,7 @@ jobs:
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
           name: Bitwarden-${{ env._PACKAGE_VERSION }}-masdev-universal.zip
-          path: ./dist/mas-universal/Bitwarden-${{ env._PACKAGE_VERSION }}-masdev-universal.zip
+          path: apps/desktop/dist/mas-universal/Bitwarden-${{ env._PACKAGE_VERSION }}-masdev-universal.zip
           if-no-files-found: error
 
 
