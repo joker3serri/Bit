@@ -1,5 +1,5 @@
 ---
-name: Crowdin Sync
+name: Crowdin Sync Browser
 
 on:
   workflow_dispatch:
