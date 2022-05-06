@@ -54,7 +54,7 @@ jobs:
       - name: Increment Version
         id: increment-version
         run: |
-          BUILD_NUMBER=$(expr 500 + $GITHUB_RUN_NUMBER)
+          BUILD_NUMBER=$(expr 3000 + $GITHUB_RUN_NUMBER)
           echo "Setting build number to $BUILD_NUMBER"
           echo "::set-output name=build_number::$BUILD_NUMBER"
 
@@ -450,7 +450,7 @@ jobs:
       - name: Set up provisioning profiles
         run: |
           cp $HOME/secrets/bitwarden_desktop_appstore.provisionprofile \
-            $GITHUB_WORKSPACE/bitwarden_desktop_appstore.provisionprofile
+            $GITHUB_WORKSPACE/apps/desktop/bitwarden_desktop_appstore.provisionprofile
 
       - name: Increment version
         shell: pwsh
@@ -579,7 +579,7 @@ jobs:
       - name: Set up provisioning profiles
         run: |
           cp $HOME/secrets/bitwarden_desktop_appstore.provisionprofile \
-            $GITHUB_WORKSPACE/bitwarden_desktop_appstore.provisionprofile
+            $GITHUB_WORKSPACE/apps/desktop/bitwarden_desktop_appstore.provisionprofile
 
       - name: Increment version
         shell: pwsh
@@ -660,7 +660,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache-dependency-path: 'apps/desktop/**/package-lock.json'
           node-version: '16'
 
       - name: Set Node options
@@ -749,7 +749,7 @@ jobs:
       - name: Set up provisioning profiles
         run: |
           cp $HOME/secrets/bitwarden_desktop_appstore.provisionprofile \
-            $GITHUB_WORKSPACE/bitwarden_desktop_appstore.provisionprofile
+            $GITHUB_WORKSPACE/apps/desktop/bitwarden_desktop_appstore.provisionprofile
 
       - name: Increment version
         shell: pwsh
@@ -911,7 +911,7 @@ jobs:
       - name: Set up provisioning profiles
         run: |
           cp $HOME/secrets/bitwarden_desktop_appstore.provisionprofile \
-            $GITHUB_WORKSPACE/bitwarden_desktop_appstore.provisionprofile
+            $GITHUB_WORKSPACE/apps/desktop/bitwarden_desktop_appstore.provisionprofile
 
       - name: Increment version
         shell: pwsh
