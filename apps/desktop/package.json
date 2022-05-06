@@ -33,7 +33,6 @@
     "electron": "npm run build:main:dev && concurrently -k -n Main,Rend -c yellow,cyan \"electron --inspect=5858 ./build --watch\" \"npm run build:renderer:watch\"",
     "electron:ignore": "npm run build:main:dev && concurrently -k -n Main,Rend -c yellow,cyan \"electron --inspect=5858 --ignore-certificate-errors ./build --watch\" \"npm run build:renderer:watch\"",
     "clean:dist": "rimraf ./dist/*",
-    "clean:l10n": "git push origin --delete l10n_master",
     "pack:dir": "npm run clean:dist && electron-builder --dir -p never",
     "pack:lin": "npm run clean:dist && electron-builder --linux --x64 -p never",
     "pack:mac": "npm run clean:dist && electron-builder --mac --universal -p never",
