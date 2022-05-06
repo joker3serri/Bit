@@ -54,7 +54,7 @@ jobs:
       - name: Increment Version
         id: increment-version
         run: |
-          BUILD_NUMBER=$(expr 3000 + $GITHUB_RUN_NUMBER)
+          BUILD_NUMBER=$(expr 500 + $GITHUB_RUN_NUMBER)
           echo "Setting build number to $BUILD_NUMBER"
           echo "::set-output name=build_number::$BUILD_NUMBER"
 
@@ -796,12 +796,12 @@ jobs:
         env:
           APPLE_ID_USERNAME: ${{ secrets.APPLE_ID_USERNAME }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-        if: |
-            (github.ref == 'refs/heads/master'
-              && needs.setup.outputs.rc_branch_exists == 0
-              && needs.setup.outputs.hotfix_branch_exists == 0)
-            || (github.ref == 'refs/heads/rc' && needs.setup.outputs.hotfix_branch_exists == 0)
-            || github.ref == 'refs/heads/hotfix-rc'
+        # if: |
+        #     (github.ref == 'refs/heads/master'
+        #       && needs.setup.outputs.rc_branch_exists == 0
+        #       && needs.setup.outputs.hotfix_branch_exists == 0)
+        #     || (github.ref == 'refs/heads/rc' && needs.setup.outputs.hotfix_branch_exists == 0)
+        #     || github.ref == 'refs/heads/hotfix-rc'
         run: npm run upload:mas
 
 
