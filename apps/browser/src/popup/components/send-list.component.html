@@ -1,7 +1,7 @@
 <div
   role="group"
   *ngFor="let s of sends"
-  appA11yTitle="{{ title }}"
+  appA11yTitle="{{ s.name }}"
   class="box-content-row box-content-row-flex"
 >
   <button type="button" class="row-main" (click)="selectSend(s)" appStopClick title="{{ title }} - {{ s.name }}">
