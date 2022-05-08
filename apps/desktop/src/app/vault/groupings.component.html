@@ -77,7 +77,7 @@
     <ng-container *ngIf="loaded">
       <div class="heading">
         <h2>{{ "folders" | i18n }}</h2>
-        <button (click)="addFolder()" appA11yTitle="{{ 'addFolder' | i18n }}">
+        <button type="button" (click)="addFolder()" appA11yTitle="{{ 'addFolder' | i18n }}">
           <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
         </button>
       </div>

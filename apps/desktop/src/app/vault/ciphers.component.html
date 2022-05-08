@@ -48,7 +48,7 @@
     <ng-container *ngIf="loaded">
       <img class="no-items-image" aria-hidden="true" />
       <p>{{ "noItemsInList" | i18n }}</p>
-      <button (click)="addCipher()" class="btn block primary link">{{ "addItem" | i18n }}</button>
+      <button type="button" (click)="addCipher()" class="btn block primary link">{{ "addItem" | i18n }}</button>
     </ng-container>
   </div>
 </div>
