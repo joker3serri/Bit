@@ -507,14 +507,14 @@
       </div>
       <div *ngIf="cipher.hasPasswordHistory">
         <b class="font-weight-semibold">{{ "passwordHistory" | i18n }}:</b>
-        <a
+        <button
           routerLink="/cipher-password-history"
           [queryParams]="{ cipherId: cipher.id }"
           appStopClick
           title="{{ 'passwordHistory' | i18n }}"
         >
           {{ cipher.passwordHistory.length }}
-        </a>
+        </button>
       </div>
     </div>
   </div>
