@@ -171,10 +171,11 @@
               type="button"
               class="row-btn"
               appStopClick
-              appA11yTitle="{{ 'copyVerificationCode' | i18n }}"
+              title="{{ 'copyVerificationCode' | i18n }}"
               (click)="copy(totpCode, 'verificationCodeTotp', 'TOTP')"
             >
               <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+              <span class="sr-only">{{ 'copyValue' | i18n }}</span>
               <span class="sr-only exists-only-on-parent-focus" aria-live="polite">{{ totpSec }}</span>
             </button>
           </div>
