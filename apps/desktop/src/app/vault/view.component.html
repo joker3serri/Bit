@@ -111,7 +111,7 @@
               >
               <span class="totp-code">{{ totpCodeFormatted }}</span>
             </div>
-            <span class="totp-countdown">
+            <span class="totp-countdown" aria-hidden="true">
               <span class="totp-sec">{{ totpSec }}</span>
               <svg>
                 <g>
@@ -135,6 +135,7 @@
                 (click)="copy(totpCode, 'verificationCodeTotp', 'TOTP')"
               >
                 <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                <span class="sr-only exists-only-on-parent-focus" aria-live="polite">{{ totpSec }}</span>
               </button>
             </div>
           </div>
