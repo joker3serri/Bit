@@ -202,12 +202,6 @@ jobs:
           keyvault: "bitwarden-prod-kv"
           secrets: "crowdin-api-token"
 
-      - name: TEST STEP
-        run: |
-          pwd
-          echo "**********"
-          ls -alh
-
       - name: Upload Sources
         uses: crowdin/github-action@ecd7eb0ef6f3cfa16293c79e9cbc4bc5b5fd9c49  # v1.4.9
         env:
