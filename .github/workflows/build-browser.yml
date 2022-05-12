@@ -261,6 +261,11 @@ jobs:
           npm run dist:safari
         working-directory: apps/browser
 
+      - name: Zip Safari build artifact
+        run: |
+          cd $GITHUB_WORKSPACE/apps/browser/dist
+          zip dist-safari.zip ./Safari/**/build/Release/safari.appex -r
+
       - name: Upload Safari artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
         with:
