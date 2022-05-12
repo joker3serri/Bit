@@ -118,6 +118,7 @@ jobs:
           npm ci
           npm run dist
           npm run test
+          npm run dist:safari
 
       - name: Gulp
         run: gulp ci
