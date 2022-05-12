@@ -179,7 +179,7 @@ jobs:
 
   build-safari:
     name: Build Safari
-    runs-on: windows-2019
+    runs-on: macos-11
     needs:
       - setup
       - locales-test
