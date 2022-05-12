@@ -270,7 +270,7 @@ jobs:
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
         with:
           name: dist-safari-${{ env._BUILD_NUMBER }}.zip
-          path: $GITHUB_WORKSPACE/apps/browser/dist/Safari/**/build/Release/safari.appex
+          path: $GITHUB_WORKSPACE/apps/browser/dist/dist-safari.zip
           if-no-files-found: error
 
   crowdin-push:
