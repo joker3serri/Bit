@@ -618,7 +618,7 @@ jobs:
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
-          branch: master
+          branch: DEVOPS-810_safari_build_browser #master
           # name: dist-safari-32a0a5c.zip
           path: ~/browser-build-artifacts
 
