@@ -610,7 +610,7 @@ jobs:
           workflow_conclusion: success
           branch: rc
           # name: dist-safari-32a0a5c.zip
-          # path: $GITHUB_WORKSPACE/browser-build-artifacts
+          path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Download artifact from master
         if: github.ref != 'refs/heads/rc'
@@ -618,16 +618,17 @@ jobs:
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
-          branch: DEVOPS-810_safari_build_browser #master
+          branch: DEVOPS-810_safari_build_browser # master
           # name: dist-safari-32a0a5c.zip
-          # path: $GITHUB_WORKSPACE/browser-build-artifacts
+          path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Load Safari extension for .dmg
         run: |
           ls -la
-          ls -la ./browser-build-artifacts
+          ls -la $GITHUB_WORKSPACE/browser-build-artifacts
+          ls -la browser-build-artifacts
           mkdir PlugIns
-          cp -r ./browser-build-artifacts/Safari/dmg/build/Release/safari.appex PlugIns/safari.appex
+          cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/dmg/build/Release/safari.appex PlugIns/safari.appex
 
       - name: Build application (dist)
         env:
@@ -798,7 +799,7 @@ jobs:
           workflow_conclusion: success
           branch: rc
           # name: dist-safari-32a0a5c.zip
-          # path: $GITHUB_WORKSPACE/browser-build-artifacts
+          path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Download artifact from master
         if: github.ref != 'refs/heads/rc'
@@ -806,16 +807,16 @@ jobs:
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
-          branch: master
+          branch: DEVOPS-810_safari_build_browser # master
           # name: dist-safari-32a0a5c.zip
-          # path: $GITHUB_WORKSPACE/browser-build-artifacts
+          path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Load Safari extension for App Store
         run: |
           ls -la
-          ls -la ./browser-build-artifacts
+          ls -la $GITHUB_WORKSPACE/browser-build-artifacts
           mkdir PlugIns
-          cp -r ./browser-build-artifacts/Safari/mas/build/Release/safari.appex PlugIns/safari.appex
+          cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/mas/build/Release/safari.appex PlugIns/safari.appex
 
       - name: Build application for App Store
         run: npm run pack:mac:mas
@@ -978,7 +979,7 @@ jobs:
           workflow_conclusion: success
           branch: rc
           # name: dist-safari-32a0a5c.zip
-          # path: $GITHUB_WORKSPACE/browser-build-artifacts
+          path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Download artifact from master
         if: github.ref != 'refs/heads/rc'
@@ -986,16 +987,17 @@ jobs:
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
-          branch: master
+          branch: DEVOPS-810_safari_build_browser # master
           # name: dist-safari-32a0a5c.zip
-          # path: $GITHUB_WORKSPACE/browser-build-artifacts
+          path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Load Safari extension for App Store
         run: |
           ls -la
-          ls -la ./browser-build-artifacts
+          ls -la $GITHUB_WORKSPACE/browser-build-artifacts
+          ls -la browser-build-artifacts
           mkdir PlugIns
-          cp -r ./browser-build-artifacts/Safari/masdev/build/Release/safari.appex PlugIns/safari.appex
+          cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/masdev/build/Release/safari.appex PlugIns/safari.appex
 
       - name: Build dev application for App Store
         run: npm run pack:mac:masdev
