@@ -622,11 +622,14 @@ jobs:
           # name: dist-safari-32a0a5c.zip
           path: ${{ github.workspace }}/browser-build-artifacts
 
-      - name: Load Safari extension for .dmg
+      - name: Unzip Safari artifact
         run: |
           SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
           echo $SAFARI_DIR
           unzip $SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts/Safari
+
+      - name: Load Safari extension for .dmg
+        run: |
           mkdir PlugIns
           cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/dmg/build/Release/safari.appex PlugIns/safari.appex
 
@@ -811,11 +814,14 @@ jobs:
           # name: dist-safari-32a0a5c.zip
           path: ${{ github.workspace }}/browser-build-artifacts
 
-      - name: Load Safari extension for App Store
+      - name: Unzip Safari artifact
         run: |
           SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
           echo $SAFARI_DIR
           unzip $SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts/Safari
+
+      - name: Load Safari extension for App Store
+        run: |
           mkdir PlugIns
           cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/mas/build/Release/safari.appex PlugIns/safari.appex
 
@@ -992,11 +998,14 @@ jobs:
           # name: dist-safari-32a0a5c.zip
           path: ${{ github.workspace }}/browser-build-artifacts
 
-      - name: Load Safari extension for App Store
+      - name: Unzip Safari artifact
         run: |
           SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
           echo $SAFARI_DIR
           unzip $SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts/Safari
+
+      - name: Load Safari extension for App Store
+        run: |
           mkdir PlugIns
           cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/Safari/masdev/build/Release/safari.appex PlugIns/safari.appex
 
