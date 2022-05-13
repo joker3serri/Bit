@@ -624,9 +624,9 @@ jobs:
 
       - name: Load Safari extension for .dmg
         run: |
-          ls -la
-          ls -la $GITHUB_WORKSPACE/browser-build-artifacts
-          ls -la browser-build-artifacts
+          ls -laR $GITHUB_WORKSPACE/browser-build-artifacts
+          SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
+          print $SAFARI_DIR
           mkdir PlugIns
           cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/dmg/build/Release/safari.appex PlugIns/safari.appex
 
@@ -813,8 +813,9 @@ jobs:
 
       - name: Load Safari extension for App Store
         run: |
-          ls -la
-          ls -la $GITHUB_WORKSPACE/browser-build-artifacts
+          ls -laR $GITHUB_WORKSPACE/browser-build-artifacts
+          SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
+          print $SAFARI_DIR
           mkdir PlugIns
           cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/mas/build/Release/safari.appex PlugIns/safari.appex
 
@@ -993,11 +994,11 @@ jobs:
 
       - name: Load Safari extension for App Store
         run: |
-          ls -la
-          ls -la $GITHUB_WORKSPACE/browser-build-artifacts
-          ls -la browser-build-artifacts
+          ls -laR $GITHUB_WORKSPACE/browser-build-artifacts
+          SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
+          print $SAFARI_DIR
           mkdir PlugIns
-          cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/masdev/build/Release/safari.appex PlugIns/safari.appex
+          cp -r $GITHUB_WORKSPACE/browser-build-artifacts/$SAFARI_DIR/Safari/masdev/build/Release/safari.appex PlugIns/safari.appex
 
       - name: Build dev application for App Store
         run: npm run pack:mac:masdev
