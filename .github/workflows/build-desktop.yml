@@ -626,7 +626,7 @@ jobs:
         run: |
           ls -laR $GITHUB_WORKSPACE/browser-build-artifacts
           SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
-          print $SAFARI_DIR
+          echo $SAFARI_DIR
           unzip $GITHUB_WORKSPACE/browser-build-artifacts/$SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts/Safari
           ls -laR $GITHUB_WORKSPACE/browser-build-artifacts/Safari
           mkdir PlugIns
@@ -817,7 +817,7 @@ jobs:
         run: |
           ls -laR $GITHUB_WORKSPACE/browser-build-artifacts
           SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
-          print $SAFARI_DIR
+          echo $SAFARI_DIR
           unzip $GITHUB_WORKSPACE/browser-build-artifacts/$SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts/Safari
           ls -laR $GITHUB_WORKSPACE/browser-build-artifacts/Safari
           mkdir PlugIns
@@ -1000,7 +1000,7 @@ jobs:
         run: |
           ls -laR $GITHUB_WORKSPACE/browser-build-artifacts
           SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
-          print $SAFARI_DIR
+          echo $SAFARI_DIR
           unzip $GITHUB_WORKSPACE/browser-build-artifacts/$SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts/Safari
           ls -laR $GITHUB_WORKSPACE/browser-build-artifacts/Safari
           mkdir PlugIns
