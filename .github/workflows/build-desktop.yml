@@ -609,7 +609,7 @@ jobs:
           workflow: build-browser.yml
           workflow_conclusion: success
           branch: rc
-          # name: dist-safari-32a0a5c.zip
+
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Download artifact from master
@@ -619,7 +619,7 @@ jobs:
           workflow: build-browser.yml
           workflow_conclusion: success
           branch: DEVOPS-810_safari_build_browser # master
-          # name: dist-safari-32a0a5c.zip
+
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Unzip Safari artifact
@@ -801,7 +801,6 @@ jobs:
           workflow: build-browser.yml
           workflow_conclusion: success
           branch: rc
-          # name: dist-safari-32a0a5c.zip
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Download artifact from master
@@ -811,7 +810,6 @@ jobs:
           workflow: build-browser.yml
           workflow_conclusion: success
           branch: DEVOPS-810_safari_build_browser # master
-          # name: dist-safari-32a0a5c.zip
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Unzip Safari artifact
@@ -985,7 +983,6 @@ jobs:
           workflow: build-browser.yml
           workflow_conclusion: success
           branch: rc
-          # name: dist-safari-32a0a5c.zip
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Download artifact from master
@@ -995,7 +992,6 @@ jobs:
           workflow: build-browser.yml
           workflow_conclusion: success
           branch: DEVOPS-810_safari_build_browser # master
-          # name: dist-safari-32a0a5c.zip
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Unzip Safari artifact
