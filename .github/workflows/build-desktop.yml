@@ -627,7 +627,7 @@ jobs:
           ls -laR $GITHUB_WORKSPACE/browser-build-artifacts
           SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
           echo $SAFARI_DIR
-          unzip $GITHUB_WORKSPACE/browser-build-artifacts/$SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts/Safari
+          unzip $SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts/Safari
           ls -laR $GITHUB_WORKSPACE/browser-build-artifacts/Safari
           mkdir PlugIns
           cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/dmg/build/Release/safari.appex PlugIns/safari.appex
@@ -818,7 +818,7 @@ jobs:
           ls -laR $GITHUB_WORKSPACE/browser-build-artifacts
           SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
           echo $SAFARI_DIR
-          unzip $GITHUB_WORKSPACE/browser-build-artifacts/$SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts/Safari
+          unzip $SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts/Safari
           ls -laR $GITHUB_WORKSPACE/browser-build-artifacts/Safari
           mkdir PlugIns
           cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/mas/build/Release/safari.appex PlugIns/safari.appex
@@ -1001,7 +1001,7 @@ jobs:
           ls -laR $GITHUB_WORKSPACE/browser-build-artifacts
           SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
           echo $SAFARI_DIR
-          unzip $GITHUB_WORKSPACE/browser-build-artifacts/$SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts/Safari
+          unzip $SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts/Safari
           ls -laR $GITHUB_WORKSPACE/browser-build-artifacts/Safari
           mkdir PlugIns
           cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/Safari/masdev/build/Release/safari.appex PlugIns/safari.appex
