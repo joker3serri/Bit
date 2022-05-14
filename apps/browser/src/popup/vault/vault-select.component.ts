@@ -12,12 +12,12 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
+import { merge } from "rxjs";
 
 import { VaultFilter } from "jslib-angular/modules/vault-filter/models/vault-filter.model";
 import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { Organization } from "jslib-common/models/domain/organization";
-import { merge } from "rxjs";
 
 import { VaultFilterService } from "../../services/vaultFilter.service";
 
@@ -128,7 +128,7 @@ export class VaultSelectComponent implements OnInit {
     this.loaded = true;
   }
 
-  public openOverlay() {
+  openOverlay() {
     const viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
     const positionStrategyBuilder = this.overlay.position();
 

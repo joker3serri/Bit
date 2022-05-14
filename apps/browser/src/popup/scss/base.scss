@@ -486,9 +486,9 @@ main {
   }
 }
 .vault-select {
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 
   @include themify($themes) {
     background-color: themed("boxBackgroundColor");
