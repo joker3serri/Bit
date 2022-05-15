@@ -26,6 +26,10 @@
 </header>
 <main tabindex="-1" [ngClass]="{ 'stacked-boxes': showGroupings() }">
   <ng-container *ngIf="showGroupings()">
+    <app-vault-select
+      *ngIf="showVaultFilter"
+      (onVaultSelectionChanged)="changeVaultSelection()"
+    ></app-vault-select>
     <div class="box list" *ngIf="nestedFolders && nestedFolders.length">
       <h2 class="box-header">
         {{ "folders" | i18n }}
@@ -72,14 +76,20 @@
     </div>
   </ng-container>
   <ng-container *ngIf="ciphers">
-    <div class="no-items" *ngIf="!ciphers.length">
-      <i class="bwi bwi-spinner bwi-spin bwi-3x" *ngIf="!loaded" aria-hidden="true"></i>
-      <ng-container *ngIf="loaded">
-        <p>{{ "noItemsInList" | i18n }}</p>
-        <button type="button" (click)="addCipher()" class="btn block primary link">
-          {{ "addItem" | i18n }}
-        </button>
-      </ng-container>
+    <div *ngIf="!ciphers.length">
+      <app-vault-select
+        *ngIf="showVaultFilter && !showGroupings()"
+        (onVaultSelectionChanged)="changeVaultSelection()"
+      ></app-vault-select>
+      <div class="no-items">
+        <i class="bwi bwi-spinner bwi-spin bwi-3x" *ngIf="!loaded" aria-hidden="true"></i>
+        <ng-container *ngIf="loaded">
+          <p>{{ "noItemsInList" | i18n }}</p>
+          <button type="button" (click)="addCipher()" class="btn block primary link">
+            {{ "addItem" | i18n }}
+          </button>
+        </ng-container>
+      </div>
     </div>
     <cdk-virtual-scroll-viewport
       itemSize="46"
@@ -87,7 +97,10 @@
       maxBufferPx="600"
       *ngIf="ciphers.length"
       #virtualScrollViewport
-    >
+      ><app-vault-select
+        *ngIf="showVaultFilter && !showGroupings()"
+        (onVaultSelectionChanged)="changeVaultSelection()"
+      ></app-vault-select>
       <div class="box list only-list">
         <h2 class="box-header">
           {{ groupingTitle }}
