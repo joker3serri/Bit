@@ -33,7 +33,7 @@ export class SearchComponent {
     this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
       this.ngZone.run(async () => {
         switch (message.command) {
-          case "clearSearchBarText":
+          case "switchAccount":
             this.searchBarService.setSearchText("");
             this.searchText.patchValue("");
             break;

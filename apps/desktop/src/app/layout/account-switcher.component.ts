@@ -105,7 +105,6 @@ export class AccountSwitcherComponent implements OnInit {
   }
 
   async switch(userId: string) {
-    this.messagingService.send("clearSearchBarText");
     this.close();
     this.messagingService.send("switchAccount", { userId: userId });
   }
