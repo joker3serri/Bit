@@ -609,7 +609,6 @@ jobs:
           workflow: build-browser.yml
           workflow_conclusion: success
           branch: rc
-
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Download artifact from master
@@ -619,7 +618,6 @@ jobs:
           workflow: build-browser.yml
           workflow_conclusion: success
           branch: master
-
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Unzip Safari artifact
