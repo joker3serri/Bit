@@ -330,6 +330,7 @@ jobs:
           SETUP_STATUS: ${{ needs.setup.result }}
           LOCALES_TEST_STATUS: ${{ needs.locales-test.result }}
           BUILD_STATUS: ${{ needs.build.result }}
+          SAFARI_BUILD_STATUS: ${{ needs.build-safari.result }}
           CROWDIN_PUSH_STATUS: ${{ needs.crowdin-push.result }}
         run: |
           if [ "$CLOC_STATUS" = "failure" ]; then
@@ -339,6 +340,8 @@ jobs:
           elif [ "$LOCALES_TEST_STATUS" = "failure" ]; then
               exit 1
           elif [ "$BUILD_STATUS" = "failure" ]; then
+              exit 1
+          elif [ "$SAFARI_BUILD_STATUS" = "failure" ]; then
               exit 1
           elif [ "$CROWDIN_PUSH_STATUS" = "failure" ]; then
               exit 1
