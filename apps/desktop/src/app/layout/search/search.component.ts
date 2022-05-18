@@ -1,11 +1,9 @@
-import { Component, NgZone } from "@angular/core";
+import { Component } from "@angular/core";
 import { FormControl } from "@angular/forms";
 
-import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
+import { StateService } from "jslib-common/abstractions/state.service";
 
 import { SearchBarService, SearchBarState } from "./search-bar.service";
-
-const BroadcasterSubscriptionId = "SearchComponent";
 
 @Component({
   selector: "app-search",
@@ -15,11 +13,7 @@ export class SearchComponent {
   state: SearchBarState;
   searchText: FormControl = new FormControl(null);
 
-  constructor(
-    private searchBarService: SearchBarService,
-    private broadcasterService: BroadcasterService,
-    private ngZone: NgZone
-  ) {
+  constructor(private searchBarService: SearchBarService, private stateService: StateService) {
     this.searchBarService.state.subscribe((state) => {
       this.state = state;
     });
@@ -30,19 +24,13 @@ export class SearchComponent {
   }
 
   ngOnInit() {
-    this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
-      this.ngZone.run(async () => {
-        switch (message.command) {
-          case "switchAccount":
-            this.searchBarService.setSearchText("");
-            this.searchText.patchValue("");
-            break;
-        }
-      });
+    this.stateService.activeAccount.subscribe((value) => {
+      this.searchBarService.setSearchText("");
+      this.searchText.patchValue("");
     });
   }
 
   ngOnDestroy() {
-    this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
+    this.stateService.activeAccount.unsubscribe();
   }
 }
