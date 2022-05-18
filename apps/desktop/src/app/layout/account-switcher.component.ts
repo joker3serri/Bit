@@ -106,6 +106,7 @@ export class AccountSwitcherComponent implements OnInit {
 
   async switch(userId: string) {
     this.close();
+    
     this.messagingService.send("switchAccount", { userId: userId });
   }
 
