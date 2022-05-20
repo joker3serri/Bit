@@ -84,7 +84,7 @@ jobs:
       - name: Download all artifacts
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
-          workflow: build.yml
+          workflow: build-desktop.yml
           workflow_conclusion: success
           branch: ${{ steps.branch.outputs.branch-name }}
           path: ./artifacts
@@ -101,8 +101,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
           AWS_DEFAULT_REGION: 'us-west-2'
           AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
+        working-directory: ./artifacts
         run: |
-          aws s3 cp ./artifacts $AWS_S3_BUCKET_NAME/desktop/ \
+          aws s3 cp ./ $AWS_S3_BUCKET_NAME/desktop/ \
           --acl "public-read" \
           --recursive \
           --quiet
@@ -135,7 +136,7 @@ jobs:
             artifacts/Bitwarden-${{ env.PKG_VERSION }}-universal.pkg.archive"
           commit: ${{ github.sha }}
           tag: desktop-v${{ env.PKG_VERSION }}
-          name: Version ${{ env.PKG_VERSION }}
+          name: Desktop ${{ env.PKG_VERSION }}
           body: "<insert release notes here>"
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: true
@@ -173,7 +174,7 @@ jobs:
       - name: Download Snap artifact
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
-          workflow: build.yml
+          workflow: build-desktop.yml
           workflow_conclusion: success
           branch: ${{ needs.setup.outputs.branch-name }}
           artifacts: bitwarden_${{ env._PKG_VERSION }}_amd64.snap
@@ -210,7 +211,7 @@ jobs:
       - name: Download choco artifact
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
-          workflow: build.yml
+          workflow: build-desktop.yml
           workflow_conclusion: success
           branch: ${{ needs.setup.outputs.branch-name }}
           artifacts: bitwarden.${{ env._PKG_VERSION }}.nupkg
