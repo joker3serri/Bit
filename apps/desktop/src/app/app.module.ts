@@ -98,6 +98,7 @@ import { ShareComponent } from "./vault/share.component";
 import { VaultComponent } from "./vault/vault.component";
 import { ViewCustomFieldsComponent } from "./vault/view-custom-fields.component";
 import { ViewComponent } from "./vault/view.component";
+import { AccessibilityCookieComponent } from "./accounts/accessibility-cookie.component";
 
 registerLocaleData(localeAf, "af");
 registerLocaleData(localeAz, "az");
@@ -155,7 +156,8 @@ registerLocaleData(localeZhTw, "zh-TW");
 
 @NgModule({
   imports: [SharedModule, AppRoutingModule, VaultFilterModule],
-  declarations: [
+  declarations: [    
+    AccessibilityCookieComponent,
     AccountSwitcherComponent,
     AddEditComponent,
     AddEditCustomFieldsComponent,

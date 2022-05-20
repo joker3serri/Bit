@@ -1273,6 +1273,36 @@
   "fileFormat": {
     "message": "File Format"
   },
+  "hCaptchaUrl": {
+    "message": "hCaptcha Url"
+  },
+  "loadAccessibilityCookie": {
+    "message": "Load Accessibility Cookie"
+  },
+  "registerAccessibilityUser": {
+    "message": "Register as an accessibility user at"
+  },
+  "copyPasteLink": {
+    "message": "Copy and paste the link sent to your email below"
+  },
+  "enterhCaptchaUrl": {
+    "message": "Enter URL to load accessibility cookie for hCaptcha"
+  },
+  "hCaptchaUrlRequired": {
+    "message": "hCaptcha Url is required"
+  },
+  "invalidUrl": {
+    "message": "Invalid Url"
+  },
+  "done": {
+    "message": "Done"
+  },
+  "accessibilityCookieSaved": {
+    "message": "Accessibility cookie saved!"
+  },
+  "noAccessibilityCookieSaved": {
+    "message": "No accessibility cookie saved"
+  },
   "warning": {
     "message": "WARNING",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
