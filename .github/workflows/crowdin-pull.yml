@@ -19,9 +19,6 @@ jobs:
             crowdin_project_id: "268134"
           - app_name: desktop
             crowdin_project_id: "299360"
-    defaults:
-      run:
-        working-directory: apps/${{ matrix.app_name }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f  # v2.3.4
@@ -39,7 +36,6 @@ jobs:
           secrets: "crowdin-api-token"
 
       - name: Download translations
-        #uses: crowdin/github-action@e39093fd75daae7859c68eded4b43d42ec78d8ea  # v1.3.2
         uses: bitwarden/gh-actions/crowdin@dc364533f642b614074a4acf3523eba4c55c3a7c
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
