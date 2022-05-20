@@ -52,8 +52,14 @@
   "tab": {
     "message": "Раздел"
   },
+  "vault": {
+    "message": "Трезор"
+  },
   "myVault": {
     "message": "Моят трезор"
+  },
+  "allVaults": {
+    "message": "Всички трезори"
   },
   "tools": {
     "message": "Средства"
@@ -1939,5 +1945,21 @@
   },
   "service": {
     "message": "Услуга"
+  },
+  "forwardedEmail": {
+    "message": "Forwarded Email Alias"
+  },
+  "forwardedEmailDesc": {
+    "message": "Generate an email alias with an external forwarding service."
+  },
+  "hostname": {
+    "message": "Име на сървъра",
+    "description": "Part of a URL."
+  },
+  "apiAccessToken": {
+    "message": "Идентификатор за достъп до API"
+  },
+  "apiKey": {
+    "message": "Ключ за API"
   }
 }

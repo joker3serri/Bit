@@ -52,8 +52,14 @@
   "tab": {
     "message": "زبانه"
   },
+  "vault": {
+    "message": "Vault"
+  },
   "myVault": {
     "message": "گاوصندوق من"
+  },
+  "allVaults": {
+    "message": "All Vaults"
   },
   "tools": {
     "message": "ابزار"
@@ -1939,5 +1945,21 @@
   },
   "service": {
     "message": "خدمت"
+  },
+  "forwardedEmail": {
+    "message": "نام مستعار ایمیل فوروارد شده"
+  },
+  "forwardedEmailDesc": {
+    "message": "یک نام مستعار ایمیل با یک سرویس فروارد خارجی ایجاد کنید."
+  },
+  "hostname": {
+    "message": "نام میزبان",
+    "description": "Part of a URL."
+  },
+  "apiAccessToken": {
+    "message": "توکن دسترسی API"
+  },
+  "apiKey": {
+    "message": "کلید API"
   }
 }
