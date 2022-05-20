@@ -1,12 +1,12 @@
 import { Component, NgZone } from "@angular/core";
 import { Router } from "@angular/router";
-import { Utils } from "jslib-common/misc/utils";
-import { getCookie } from "jslib-electron/utils";
 
+import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
 import { EnvironmentService } from "jslib-common/abstractions/environment.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
+import { Utils } from "jslib-common/misc/utils";
+import { getCookie } from "jslib-electron/utils";
 
 const BroadcasterSubscriptionId = "AccessibilityCookieComponent";
 
@@ -37,6 +37,7 @@ export class AccessibilityCookieComponent {
               this.listenForCookie = false;
               this.checkForCookie();
             }
+            break;
           default:
         }
       });
@@ -49,7 +50,7 @@ export class AccessibilityCookieComponent {
 
   async checkForCookie() {
     this.hCaptchaWindow.close();
-    var [cookie] = await getCookie("https://www.hcaptcha.com/", "hc_accessibility");
+    const [cookie] = await getCookie("https://www.hcaptcha.com/", "hc_accessibility");
     if (cookie) {
       this.onCookieSavedSuccess();
     } else {

@@ -56,6 +56,7 @@ import localeZhCn from "@angular/common/locales/zh-Hans";
 import localeZhTw from "@angular/common/locales/zh-Hant";
 import { NgModule } from "@angular/core";
 
+import { AccessibilityCookieComponent } from "./accounts/accessibility-cookie.component";
 import { EnvironmentComponent } from "./accounts/environment.component";
 import { HintComponent } from "./accounts/hint.component";
 import { LockComponent } from "./accounts/lock.component";
@@ -98,7 +99,6 @@ import { ShareComponent } from "./vault/share.component";
 import { VaultComponent } from "./vault/vault.component";
 import { ViewCustomFieldsComponent } from "./vault/view-custom-fields.component";
 import { ViewComponent } from "./vault/view.component";
-import { AccessibilityCookieComponent } from "./accounts/accessibility-cookie.component";
 
 registerLocaleData(localeAf, "af");
 registerLocaleData(localeAz, "az");
