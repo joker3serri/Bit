@@ -367,6 +367,7 @@
       display: block;
       width: initial;
       margin-bottom: 0;
+      word-break: normal;
 
       @include themify($themes) {
         color: themed("textColor");
