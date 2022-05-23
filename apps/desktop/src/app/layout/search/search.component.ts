@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl } from "@angular/forms";
 
 import { StateService } from "jslib-common/abstractions/state.service";
@@ -9,7 +9,7 @@ import { SearchBarService, SearchBarState } from "./search-bar.service";
   selector: "app-search",
   templateUrl: "search.component.html",
 })
-export class SearchComponent {
+export class SearchComponent implements OnInit, OnDestroy {
   state: SearchBarState;
   searchText: FormControl = new FormControl(null);
 
