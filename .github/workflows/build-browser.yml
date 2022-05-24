@@ -9,6 +9,13 @@ on:
     paths:
       - 'apps/browser/**'
       - '.github/workflows/build-browser.yml'
+  push:
+    branches-ignore:
+      - 'l10n_master'
+      - 'gh-pages'
+    paths:
+      - 'apps/browser/**'
+      - '.github/workflows/build-browser.yml'
   workflow_dispatch:
     inputs: {}
 
