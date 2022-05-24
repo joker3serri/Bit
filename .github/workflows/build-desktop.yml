@@ -94,7 +94,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: 'apps/desktop/**/package-lock.json'
+          cache-dependency-path: '**/package-lock.json'
           node-version: '16'
 
       - name: Set Node options
@@ -122,6 +122,7 @@ jobs:
 
       - name: Install Node dependencies
         run: npm ci
+        working-directory: ./
 
       - name: Build application
         run: npm run dist:lin
@@ -187,7 +188,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: 'apps/desktop/**/package-lock.json'
+          cache-dependency-path: '**/package-lock.json'
           node-version: '16'
 
       - name: Set Node options
@@ -228,6 +229,7 @@ jobs:
 
       - name: Install Node dependencies
         run: npm ci
+        working-directory: ./
 
       - name: Build & Sign (dev)
         env:
@@ -370,7 +372,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: 'apps/desktop/**/package-lock.json'
+          cache-dependency-path: '**/package-lock.json'
           node-version: '16'
 
       - name: Set Node options
@@ -472,6 +474,7 @@ jobs:
 
       - name: Install Node dependencies
         run: npm ci
+        working-directory: ./
 
       - name: Build application (dev)
         run: npm run build
@@ -496,7 +499,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: 'apps/desktop/**/package-lock.json'
+          cache-dependency-path: '**/package-lock.json'
           node-version: '16'
 
       - name: Set Node options
@@ -596,8 +599,9 @@ jobs:
           $package | Add-Member -MemberType NoteProperty -Name buildVersion -Value "$env:BUILD_NUMBER"
           $package | ConvertTo-Json -Depth 32 | Set-Content -Path electron-builder.json
 
-      - name: NPM install
+      - name: Install Node dependencies
         run: npm ci
+        working-directory: ./
 
       - name: Build
         if: steps.build-cache.outputs.cache-hit != 'true'
@@ -686,7 +690,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: 'apps/desktop/**/package-lock.json'
+          cache-dependency-path: '**/package-lock.json'
           node-version: '16'
 
       - name: Set Node options
@@ -786,8 +790,9 @@ jobs:
           $package | Add-Member -MemberType NoteProperty -Name buildVersion -Value "$env:BUILD_NUMBER"
           $package | ConvertTo-Json -Depth 32 | Set-Content -Path electron-builder.json
 
-      - name: NPM install
+      - name: Install Node dependencies
         run: npm ci
+        working-directory: ./
 
       - name: Build
         if: steps.build-cache.outputs.cache-hit != 'true'
@@ -868,7 +873,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: 'apps/desktop/**/package-lock.json'
+          cache-dependency-path: '**/package-lock.json'
           node-version: '16'
 
       - name: Set Node options
@@ -968,8 +973,9 @@ jobs:
           $package | Add-Member -MemberType NoteProperty -Name buildVersion -Value "$env:BUILD_NUMBER"
           $package | ConvertTo-Json -Depth 32 | Set-Content -Path electron-builder.json
 
-      - name: NPM install
+      - name: Install Node dependencies
         run: npm ci
+        working-directory: ./
 
       - name: Build
         if: steps.build-cache.outputs.cache-hit != 'true'
