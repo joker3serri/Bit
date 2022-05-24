@@ -116,7 +116,7 @@ jobs:
 
       - name: NPM setup
         run: npm ci
-        working-directory: ./
+        working-directory: ${{env.GITHUB_WORKSPACE}}
 
       - name: Build & Test
         run: |
@@ -261,7 +261,7 @@ jobs:
 
       - name: NPM setup
         run: npm ci
-        working-directory: ./
+        working-directory: ${{env.GITHUB_WORKSPACE}}
 
       - name: Build Safari extension
         run: npm run dist:safari
