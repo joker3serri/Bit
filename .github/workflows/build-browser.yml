@@ -106,7 +106,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: 'apps/browser/**/package-lock.json'
+          cache-dependency-path: '**/package-lock.json'
           node-version: '16'
 
       - name: Print environment
@@ -116,7 +116,7 @@ jobs:
 
       - name: NPM setup
         run: npm ci
-        working-directory: ${{env.GITHUB_WORKSPACE}}
+        working-directory: ./
 
       - name: Build & Test
         run: |
@@ -197,7 +197,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: 'apps/browser/**/package-lock.json'
+          cache-dependency-path: '**/package-lock.json'
           node-version: '16'
 
       - name: Print environment
@@ -261,7 +261,7 @@ jobs:
 
       - name: NPM setup
         run: npm ci
-        working-directory: ${{env.GITHUB_WORKSPACE}}
+        working-directory: ./
 
       - name: Build Safari extension
         run: npm run dist:safari
