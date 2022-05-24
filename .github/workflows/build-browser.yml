@@ -114,9 +114,12 @@ jobs:
           node --version
           npm --version
 
-      - name: NPM setup & test
+      - name: NPM setup
+        run: npm ci
+        working-directory: ./
+
+      - name: Build & Test
         run: |
-          npm ci
           npm run dist
           npm run test
 
@@ -256,10 +259,12 @@ jobs:
             -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $KEYCHAIN_PASSWORD build.keychain
 
+      - name: NPM setup
+        run: npm ci
+        working-directory: ./
+
       - name: Build Safari extension
-        run: |
-          npm ci
-          npm run dist:safari
+        run: npm run dist:safari
         working-directory: apps/browser
 
       - name: Zip Safari build artifact
