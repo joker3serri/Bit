@@ -2,10 +2,6 @@
   "name": "@bitwarden/browser",
   "version": "0.0.0",
   "scripts": {
-    "sub:init": "git submodule update --init --recursive",
-    "sub:update": "git submodule update --remote",
-    "sub:pull": "git submodule foreach git pull origin master",
-    "preinstall": "npm run sub:init",
     "build": "webpack",
     "build:watch": "webpack --watch",
     "build:prod": "cross-env NODE_ENV=production webpack",
