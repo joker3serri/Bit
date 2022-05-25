@@ -77,7 +77,7 @@ jobs:
           choco install nasm --no-progress
 
       - name: Set up Node
-        uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854  # v3.1.1
+        uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048  # v3.2.0
         with:
           cache: 'npm'
           cache-dependency-path: 'apps/cli/**/package-lock.json'
@@ -186,56 +186,56 @@ jobs:
             -t sha256 | Out-File -Encoding ASCII ./dist/bw-linux-sha256-${env:_PACKAGE_VERSION}.txt
 
       - name: Upload windows zip asset
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-windows-${{ env._PACKAGE_VERSION }}.zip
           path: apps/cli/dist/bw-windows-${{ env._PACKAGE_VERSION }}.zip
           if-no-files-found: error
 
       - name: Upload windows checksum asset
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-windows-sha256-${{ env._PACKAGE_VERSION }}.txt
           path: apps/cli/dist/bw-windows-sha256-${{ env._PACKAGE_VERSION }}.txt
           if-no-files-found: error
 
       - name: Upload macos zip asset
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-macos-${{ env._PACKAGE_VERSION }}.zip
           path: apps/cli/dist/bw-macos-${{ env._PACKAGE_VERSION }}.zip
           if-no-files-found: error
 
       - name: Upload macos checksum asset
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-macos-sha256-${{ env._PACKAGE_VERSION }}.txt
           path: apps/cli/dist/bw-macos-sha256-${{ env._PACKAGE_VERSION }}.txt
           if-no-files-found: error
 
       - name: Upload linux zip asset
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-linux-${{ env._PACKAGE_VERSION }}.zip
           path: apps/cli/dist/bw-linux-${{ env._PACKAGE_VERSION }}.zip
           if-no-files-found: error
 
       - name: Upload linux checksum asset
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-linux-sha256-${{ env._PACKAGE_VERSION }}.txt
           path: apps/cli/dist/bw-linux-sha256-${{ env._PACKAGE_VERSION }}.txt
           if-no-files-found: error
 
       - name: Upload Chocolatey asset
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bitwarden-cli.${{ env._PACKAGE_VERSION }}.nupkg
           path: apps/cli/dist/chocolatey/bitwarden-cli.${{ env._PACKAGE_VERSION }}.nupkg
           if-no-files-found: error
 
       - name: Upload NPM Build Directory asset
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bitwarden-cli-${{ env._PACKAGE_VERSION }}-npm-build.zip
           path: apps/cli/build
@@ -301,14 +301,14 @@ jobs:
         run: sudo snap remove bw
 
       - name: Upload snap asset
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw_${{ env._PACKAGE_VERSION }}_amd64.snap
           path: apps/cli/dist/snap/bw_${{ env._PACKAGE_VERSION }}_amd64.snap
           if-no-files-found: error
 
       - name: Upload snap checksum asset
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-snap-sha256-${{ env._PACKAGE_VERSION }}.txt
           path: apps/cli/dist/snap/bw-snap-sha256-${{ env._PACKAGE_VERSION }}.txt
