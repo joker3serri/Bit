@@ -155,7 +155,7 @@ jobs:
         run: |
           Copy-Item -Path stores/chocolatey -Destination dist/chocolatey -Recurse
           Copy-Item dist/windows/bw.exe -Destination dist/chocolatey/tools
-          Copy-Item LICENSE.txt -Destination dist/chocolatey/tools
+          Copy-Item ${{ github.workspace }}/LICENSE.txt -Destination dist/chocolatey/tools
           choco pack dist/chocolatey/bitwarden-cli.nuspec --version ${{ env._PACKAGE_VERSION }} --out dist/chocolatey
 
       - name: Zip
