@@ -1,0 +1,30 @@
+---
+name: Release Desktop
+
+on:
+  push:
+    tags:
+      - desktop-v**
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+    working-directory: apps/desktop
+
+jobs:
+  name: Update Bitwarden Desktop Cask
+  runs-on: macos-11
+  steps:
+    - name: Update Homebrew cask
+    uses: macauley/action-homebrew-bump-cask@445c42390d790569d938f9068d01af39ca030feb
+    with:
+      # Required, custom GitHub access token with the 'public_repo' and 'workflow' scopes
+      token: ${{secrets.TOKEN}}
+      org: bitwarden
+      tap: Homebrew/homebrew-cask
+      cask: bitwarden
+      tag: ${{github.ref}}
+      revision: ${{github.sha}}
+      force: false
+      dryrun: true
