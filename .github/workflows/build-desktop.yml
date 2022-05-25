@@ -37,16 +37,16 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Verify
-      run: |
-        PACKAGE_VERSION=$(jq -r .devDependencies.electron package.json)
-        ELECTRON_BUILDER_VERSION=$(jq -r .electronVersion ./apps/desktop/electron-builder.json)
+        run: |
+          PACKAGE_VERSION=$(jq -r .devDependencies.electron package.json)
+          ELECTRON_BUILDER_VERSION=$(jq -r .electronVersion ./apps/desktop/electron-builder.json)
 
-        if [[ "$PACKAGE_VERSION" == "$ELECTRON_BUILDER_VERSION"  ]]; then
-          echo "Versions matches"
-        else
-          echo "Version missmatch, package.json: $PACKAGE_VERSION, electron-builder.json: $ELECTRON_BUILDER_VERSION"
-          exit 1
-        fi
+          if [[ "$PACKAGE_VERSION" == "$ELECTRON_BUILDER_VERSION"  ]]; then
+            echo "Versions matches"
+          else
+            echo "Version missmatch, package.json: $PACKAGE_VERSION, electron-builder.json: $ELECTRON_BUILDER_VERSION"
+            exit 1
+          fi
 
   setup:
     name: Setup
