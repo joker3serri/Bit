@@ -64,8 +64,8 @@ jobs:
       - setup
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
-      _WIN_PKG_FETCH_VERSION: 16.14.2
-      _WIN_PKG_VERSION: 3.3
+      _WIN_PKG_FETCH_VERSION: 16.15.0
+      _WIN_PKG_VERSION: 3.4.1
     steps:
       - name: Checkout repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
