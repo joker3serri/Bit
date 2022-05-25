@@ -59,7 +59,7 @@ jobs:
 
   cli:
     name: Build CLI
-    runs-on: windows-2019
+    runs-on: windows-2022
     needs:
       - setup
     env:
@@ -74,6 +74,7 @@ jobs:
         run: |
           choco install checksum --no-progress
           choco install reshack --no-progress
+          choco install nasm --no-progress
 
       - name: Set up Node
         uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854  # v3.1.1
