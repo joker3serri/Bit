@@ -32,6 +32,21 @@ jobs:
       - name: Print lines of code
         run: cloc --include-lang TypeScript,JavaScript,HTML,Sass,CSS --vcs git
 
+  electron-verify:
+    name: Verify Electron Version
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Verify
+      run: |
+        PACKAGE_VERSION=$(jq -r .devDependencies.electron package.json)
+        ELECTRON_BUILDER_VERSION=$(jq -r .electronVersion ./apps/desktop/electron-builder.json)
+
+        if [[ "$PACKAGE_VERSION" == "$ELECTRON_BUILDER_VERSION"  ]]; then
+          echo "Versions matches"
+        else
+          echo "Version missmatch, package.json: $PACKAGE_VERSION, electron-builder.json: $ELECTRON_BUILDER_VERSION"
+          exit 1
+        fi
 
   setup:
     name: Setup
@@ -1072,6 +1087,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs:
       - cloc
+      - electron-verify
       - setup
       - linux
       - windows
@@ -1084,6 +1100,7 @@ jobs:
         if: ${{ (github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') }}
         env:
           CLOC_STATUS: ${{ needs.cloc.result }}
+          ELECTRON_VERIFY_STATUS: ${{ needs.electron-verify.result }}
           SETUP_STATUS: ${{ needs.setup.result }}
           LINUX_STATUS: ${{ needs.linux.result }}
           WINDOWS_STATUS: ${{ needs.windows.result }}
@@ -1093,6 +1110,8 @@ jobs:
           CROWDIN_PUSH_STATUS: ${{ needs.crowdin-push.result }}
         run: |
           if [ "$CLOC_STATUS" = "failure" ]; then
+              exit 1
+          if [ "$ELECTRON_VERIFY_STATUS" = "failure" ]; then
               exit 1
           elif [ "$SETUP_STATUS" = "failure" ]; then
               exit 1
