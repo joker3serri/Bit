@@ -16,5 +16,7 @@ apps/desktop/dist-safari
 apps/desktop/desktop_native
 apps/desktop/src/scripts/duo.js
 
+apps/cli/src/locales
+
 # Github Workflows
 .github/workflows 
