@@ -59,7 +59,7 @@ jobs:
 
   cli:
     name: Build CLI
-    runs-on: windows-2022
+    runs-on: windows-2019
     needs:
       - setup
     env:
@@ -148,7 +148,7 @@ jobs:
         run: npm run test
 
       - name: Build & Package
-        run: npm run dist
+        run: npm run dist --quiet
 
       - name: Package Chocolatey
         shell: pwsh
