@@ -59,7 +59,7 @@ jobs:
 
   cli:
     name: Build CLI
-    runs-on: windows-2019
+    runs-on: windows-2022
     needs:
       - setup
     env:
