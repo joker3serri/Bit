@@ -1,5 +1,5 @@
 ---
-name: Release Desktop
+name: Bump Desktop Cask
 
 on:
   push:
@@ -10,7 +10,6 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: apps/desktop
 
 jobs:
   name: Update Bitwarden Desktop Cask
