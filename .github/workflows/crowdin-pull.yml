@@ -36,7 +36,7 @@ jobs:
           secrets: "crowdin-api-token"
 
       - name: Download translations
-        uses: bitwarden/gh-actions/crowdin@dc364533f642b614074a4acf3523eba4c55c3a7c
+        uses: bitwarden/gh-actions/crowdin@05052c5c575ceb09ceea397fe241879e199ed44b
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CROWDIN_API_TOKEN: ${{ steps.retrieve-secrets.outputs.crowdin-api-token }}
