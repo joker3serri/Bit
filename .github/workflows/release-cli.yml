@@ -29,7 +29,7 @@ jobs:
       - name: Branch check
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         run: |
-          if [[ "$GITHUB_REF" != "refs/heads/rc" ]] && [[ "$GITHUB_REF" != "refs/heads/hotfix-rc/*" ]]; then
+          if [[ "$GITHUB_REF" != "refs/heads/rc" ]] && [[ $GITHUB_REF != refs/heads/hotfix-rc/* ]]; then
             echo "==================================="
             echo "[!] Can only release from the 'rc' or 'hotfix-rc/*' branches"
             echo "==================================="
@@ -72,7 +72,7 @@ jobs:
       - name: Download all artifacts
         uses: bitwarden/gh-actions/download-artifacts@c1fa8e09871a860862d6bbe36184b06d2c7e35a8
         with:
-          workflow: build-ci.yml
+          workflow: build-cli.yml
           path: apps/cli
           workflow_conclusion: success
           branch: ${{ steps.branch.outputs.branch-name }}
@@ -93,7 +93,7 @@ jobs:
                       apps/cli/bw-snap-sha256-${{ env.PKG_VERSION }}.txt"
           commit: ${{ github.sha }}
           tag: cli-v${{ env.PKG_VERSION }}
-          name: CLI ${{ env.PKG_VERSION }}
+          name: CLI v${{ env.PKG_VERSION }}
           body: "<insert release notes here>"
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: true
