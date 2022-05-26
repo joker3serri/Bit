@@ -19,6 +19,14 @@ on:
       - '.github/workflows/build-desktop.yml'
   workflow_dispatch:
     inputs: {}
+  workflow_run:
+    workflows: [Build Browser]
+    types:
+      - completed
+    branches:
+      - 'master'
+      - 'rc'
+      - 'hotfix-rc/**'
 
 defaults:
   run:
