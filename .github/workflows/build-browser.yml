@@ -321,7 +321,7 @@ jobs:
 
   trigger-desktop-build:
     name: Trigger desktop build
-    if: ${{ (github.ref == 'refs/heads/DEVOPS-818_trigger_desktop_on_browser_build' || github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') || contains(github.ref, 'hotfix-rc') }}
+    if: ${{ ( contains(github.ref, 'DEVOPS-818' || github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') || contains(github.ref, 'hotfix-rc') }}
     runs-on: ubuntu-20.04
     needs:
       - build
