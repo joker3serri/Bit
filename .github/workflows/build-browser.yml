@@ -350,12 +350,16 @@ jobs:
           TOKEN: ${{ steps.retrieve-secrets.outputs.github-pat-trigger-desktop-build-bitwarden-devops-bot }}
           BRANCH_NAME: ${{ steps.extract_branch.outputs.branch }}
         run: |
+          JSON_STRING=$( jq -n \
+                  --arg bn "$BRANCH_NAME" \
+                  '{ref: $bn}' )
+
           curl \
             -X POST \
             -i -u bitwarden-devops-bot:$TOKEN \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/bitwarden/clients/actions/workflows/build-desktop.yml/dispatches \
-            -d '{"ref":"$BRANCH_NAME"}'
+            -d $JSON_STRING
 
   check-failures:
     name: Check for failures
