@@ -327,6 +327,19 @@ jobs:
       - build
       - build-safari
     steps:
+
+      - name: Login to Azure
+        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010
+        with:
+          creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
+
+      - name: Retrieve secrets
+        id: retrieve-secrets
+        uses: Azure/get-keyvault-secrets@b5c723b9ac7870c022b8c35befe620b7009b336f
+        with:
+          keyvault: "bitwarden-prod-kv"
+          secrets: "github-pat-trigger-desktop-build-bitwarden-devops-bot"
+
       - name: Extract branch name
         id: extract_branch
         shell: bash
@@ -334,7 +347,7 @@ jobs:
 
       - name: Call GitHub API to trigger desktop build workflow
         env:
-          TOKEN: ${{ secrets.TOKEN }} # replace this value with actual token secret name
+          TOKEN: ${{ steps.retrieve-secrets.outputs.github-pat-trigger-desktop-build-bitwarden-devops-bot }}
           BRANCH_NAME: ${{ steps.extract_branch.outputs.branch }}
         run: |
           curl \
