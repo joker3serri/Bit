@@ -320,8 +320,8 @@ jobs:
           upload_translations: false
 
   trigger-desktop-build:
-    name: Crowdin Push
-    if: ${{ (github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') || contains(github.ref, 'hotfix-rc') }}
+    name: Trigger desktop build
+    if: ${{ (github.ref == 'refs/heads/DEVOPS-818_trigger_desktop_on_browser_build' || github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') || contains(github.ref, 'hotfix-rc') }}
     runs-on: ubuntu-20.04
     needs:
       - build
@@ -334,7 +334,7 @@ jobs:
 
       - name: Call GitHub API to trigger desktop build workflow
         env:
-          TOKEN: ${{ secrets.TOKEN }} # replace this yalue with actual token secret name
+          TOKEN: ${{ secrets.TOKEN }} # replace this value with actual token secret name
           BRANCH_NAME: ${{ steps.extract_branch.outputs.branch }}
         run: |
           curl \
