@@ -350,13 +350,8 @@ jobs:
           TOKEN: ${{ steps.retrieve-secrets.outputs.github-pat-trigger-desktop-build-bitwarden-devops-bot }}
           BRANCH_NAME: ${{ steps.extract_branch.outputs.branch }}
         run: |
-          echo $BRANCH_NAME
 
-          JSON_STRING=$( jq -n \
-                  --arg bn "$BRANCH_NAME" \
-                  '{ref: $bn}' )
-
-          echo $JSON_STRING
+          JSON_STRING=$(printf '{"ref":"%s"}' "$BRANCH_NAME")
 
           curl \
             -X POST \
