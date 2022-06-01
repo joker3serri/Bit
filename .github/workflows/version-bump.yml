@@ -33,7 +33,8 @@ jobs:
         env:
           CLIENT_NAME: ${{ github.event.inputs.client }}
         run: |
-          echo "CLIENT=${CLIENT_NAME,,}" >> ${GITHUB_ENV}
+          CLIENT=$(python -c "print('$CLIENT'.lower())")
+          echo "$CLIENT" >> ${GITHUB_ENV}
           echo "CLIENT=$CLIENT"
           echo "CLIENT_NAME=$CLIENT_NAME"
           git switch -c $CLIENT_version_bump_${{ github.event.inputs.version_number }}
