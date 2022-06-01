@@ -36,16 +36,9 @@ jobs:
         run: |
           CLIENT=$(python -c "print('$CLIENT_NAME'.lower())")
           echo "::set-output name=client::$CLIENT"
-          echo "CLIENT=$CLIENT"
-          echo "CLIENT_NAME=$CLIENT_NAME"
           
-          #git switch -c ${CLIENT}_version_bump_${{ github.event.inputs.version_number }}
-          #git push -u origin ${CLIENT}_version_bump_${{ github.event.inputs.version_number }}
-
-      - name: Test step
-        run: |
-          echo "${{ steps.branch.outputs.client }}"
-          exit 1
+          git switch -c ${CLIENT}_version_bump_${{ github.event.inputs.version_number }}
+          git push -u origin ${CLIENT}_version_bump_${{ github.event.inputs.version_number }}
 
       - name: Checkout Version Branch
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
