@@ -33,7 +33,7 @@ jobs:
         env:
           CLIENT_NAME: ${{ github.event.inputs.client }}
         run: |
-          CLIENT=$(python -c "print('$CLIENT'.lower())")
+          CLIENT=$(python -c "print('$CLIENT_NAME'.lower())")
           echo "$CLIENT" >> ${GITHUB_ENV}
           echo "CLIENT=$CLIENT"
           echo "CLIENT_NAME=$CLIENT_NAME"
