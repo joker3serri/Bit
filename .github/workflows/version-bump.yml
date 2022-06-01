@@ -30,23 +30,27 @@ jobs:
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
 
       - name: Create Version Branch
+        id: branch
         env:
           CLIENT_NAME: ${{ github.event.inputs.client }}
         run: |
           CLIENT=$(python -c "print('$CLIENT_NAME'.lower())")
-          echo "$CLIENT" >> ${GITHUB_ENV}
+          echo "::set-output name=client::$CLIENT"
           echo "CLIENT=$CLIENT"
-          echo "CLIENT=${{ env.CLIENT }}"
           echo "CLIENT_NAME=$CLIENT_NAME"
-          exit 1
           
-          git switch -c $CLIENT_version_bump_${{ github.event.inputs.version_number }}
-          git push -u origin $CLIENT_version_bump_${{ github.event.inputs.version_number }}
+          #git switch -c ${CLIENT}_version_bump_${{ github.event.inputs.version_number }}
+          #git push -u origin ${CLIENT}_version_bump_${{ github.event.inputs.version_number }}
+
+      - name: Test step
+        run: |
+          echo "${{ steps.branch.outputs.client }}"
+          exit 1
 
       - name: Checkout Version Branch
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
         with:
-          ref: ${{ env.CLIENT }}_version_bump_${{ github.event.inputs.version_number }}
+          ref: ${{ steps.branch.outputs.client }}_version_bump_${{ github.event.inputs.version_number }}
 
       ########################
       # VERSION BUMP SECTION #
@@ -117,7 +121,7 @@ jobs:
 
       - name: Create Bump Version PR
         env:
-          PR_BRANCH: "${{ env.CLIENT }}_version_bump_${{ github.event.inputs.version_number }}"
+          PR_BRANCH: "${{ steps.branch.outputs.client }}_version_bump_${{ github.event.inputs.version_number }}"
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           BASE_BRANCH: master
           TITLE: "Bump ${{ github.event.inputs.client }} version to ${{ github.event.inputs.version_number }}"
