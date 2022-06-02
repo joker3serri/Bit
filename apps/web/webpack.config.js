@@ -74,61 +74,61 @@ const plugins = [
     path.resolve(__dirname, "./src")
   ),
   new HtmlWebpackPlugin({
-    template: path.join(__dirname, "./src/index.html"),
+    template: "./src/index.html",
     filename: "index.html",
     chunks: ["theme_head", "app/polyfills", "app/vendor", "app/main"],
   }),
   new HtmlWebpackInjector(),
   new HtmlWebpackPlugin({
-    template: path.join(__dirname, "./src/connectors/duo.html"),
+    template: "./src/connectors/duo.html",
     filename: "duo-connector.html",
     chunks: ["connectors/duo"],
   }),
   new HtmlWebpackPlugin({
-    template: path.join(__dirname, "./src/connectors/webauthn.html"),
+    template: "./src/connectors/webauthn.html",
     filename: "webauthn-connector.html",
     chunks: ["connectors/webauthn"],
   }),
   new HtmlWebpackPlugin({
-    template: path.join(__dirname, "./src/connectors/webauthn-mobile.html"),
+    template: "./src/connectors/webauthn-mobile.html",
     filename: "webauthn-mobile-connector.html",
     chunks: ["connectors/webauthn"],
   }),
   new HtmlWebpackPlugin({
-    template: path.join(__dirname, "./src/connectors/webauthn-fallback.html"),
+    template: "./src/connectors/webauthn-fallback.html",
     filename: "webauthn-fallback-connector.html",
     chunks: ["connectors/webauthn-fallback"],
   }),
   new HtmlWebpackPlugin({
-    template: path.join(__dirname, "./src/connectors/sso.html"),
+    template: "./src/connectors/sso.html",
     filename: "sso-connector.html",
     chunks: ["connectors/sso"],
   }),
   new HtmlWebpackPlugin({
-    template: path.join(__dirname, "./src/connectors/captcha.html"),
+    template: "./src/connectors/captcha.html",
     filename: "captcha-connector.html",
     chunks: ["connectors/captcha"],
   }),
   new HtmlWebpackPlugin({
-    template: path.join(__dirname, "./src/connectors/captcha-mobile.html"),
+    template: "./src/connectors/captcha-mobile.html",
     filename: "captcha-mobile-connector.html",
     chunks: ["connectors/captcha"],
   }),
   new CopyWebpackPlugin({
     patterns: [
-      { from: path.join(__dirname, "./src/.nojekyll") },
-      { from: path.join(__dirname, "./src/manifest.json") },
-      { from: path.join(__dirname, "./src/favicon.ico") },
-      { from: path.join(__dirname, "./src/browserconfig.xml") },
-      { from: path.join(__dirname, "./src/app-id.json") },
-      { from: path.join(__dirname, "./src/404.html") },
-      { from: path.join(__dirname, "./src/404"), to: "404" },
-      { from: path.join(__dirname, "./src/images"), to: "images" },
-      { from: path.join(__dirname, "./src/locales"), to: "locales" },
+      { from: "./src/.nojekyll" },
+      { from: "./src/manifest.json" },
+      { from: "./src/favicon.ico" },
+      { from: "./src/browserconfig.xml" },
+      { from: "./src/app-id.json" },
+      { from: "./src/404.html" },
+      { from: "./src/404", to: "404" },
+      { from: "./src/images", to: "images" },
+      { from: "./src/locales", to: "locales" },
       { from: "../../node_modules/qrious/dist/qrious.min.js", to: "scripts" },
       { from: "../../node_modules/braintree-web-drop-in/dist/browser/dropin.js", to: "scripts" },
       {
-        from: path.join(__dirname, "./src/version.json"),
+        from: "./src/version.json",
         transform(content, path) {
           return content.toString().replace("process.env.APPLICATION_VERSION", pjson.version);
         },
@@ -160,7 +160,7 @@ const plugins = [
 ];
 
 // ref: https://webpack.js.org/configuration/dev-server/#devserver
-let certSuffix = fs.existsSync(path.join(__dirname, "dev-server.local.pem")) ? ".local" : ".shared";
+let certSuffix = fs.existsSync("dev-server.local.pem") ? ".local" : ".shared";
 const devServer =
   NODE_ENV !== "development"
     ? {}
@@ -168,8 +168,8 @@ const devServer =
         server: {
           type: "https",
           options: {
-            key: fs.readFileSync(path.join(__dirname, "dev-server" + certSuffix + ".pem")),
-            cert: fs.readFileSync(path.join(__dirname, "dev-server" + certSuffix + ".pem")),
+            key: fs.readFileSync("dev-server" + certSuffix + ".pem"),
+            cert: fs.readFileSync("dev-server" + certSuffix + ".pem"),
           },
         },
         // host: '192.168.1.9',
@@ -278,14 +278,14 @@ const webpackConfig = {
   devtool: "source-map",
   devServer: devServer,
   entry: {
-    "app/polyfills": path.join(__dirname, "src/app/polyfills.ts"),
-    "app/main": path.join(__dirname, "src/app/main.ts"),
-    "connectors/webauthn": path.join(__dirname, "src/connectors/webauthn.ts"),
-    "connectors/webauthn-fallback": path.join(__dirname, "src/connectors/webauthn-fallback.ts"),
-    "connectors/duo": path.join(__dirname, "src/connectors/duo.ts"),
-    "connectors/sso": path.join(__dirname, "src/connectors/sso.ts"),
-    "connectors/captcha": path.join(__dirname, "src/connectors/captcha.ts"),
-    theme_head: path.join(__dirname, "src/theme.js"),
+    "app/polyfills": "./src/app/polyfills.ts",
+    "app/main": "./src/app/main.ts",
+    "connectors/webauthn": "./src/connectors/webauthn.ts",
+    "connectors/webauthn-fallback": "./src/connectors/webauthn-fallback.ts",
+    "connectors/duo": "./src/connectors/duo.ts",
+    "connectors/sso": "./src/connectors/sso.ts",
+    "connectors/captcha": "./src/connectors/captcha.ts",
+    theme_head: "./src/theme.js",
   },
   optimization: {
     splitChunks: {
