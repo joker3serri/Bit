@@ -19,9 +19,9 @@
     "src/app/main.ts"
   ],
   "include": [
-    "src/connectors/*.ts",
-    "src/models/*.ts",
-    "src/services/*.ts",
-    "src/abstractions/*.ts"
+    "../../apps/web/src/connectors/*.ts",
+    "../../apps/web/src/models/*.ts",
+    "../../apps/web/src/services/*.ts",
+    "../../apps/web/src/abstractions/*.ts"
   ]
 }
