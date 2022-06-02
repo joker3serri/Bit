@@ -63,22 +63,4 @@ We provide detailed documentation and examples for using the CLI in our help cen
 
 ## Build/Run
 
-**Requirements**
-
-- [Node.js](https://nodejs.org) v16.13.1.
-  - Testing is done against Node 16, other versions may work, but are not guaranteed.
-- NPM v8
-
-**Run the app**
-
-```bash
-npm install
-npm run sub:init # initialize the git submodule for jslib
-npm run build:watch
-```
-
-You can then run commands from the `./build` folder:
-
-```bash
-node ./build/bw.js login
-```
+See the README in the base of this repository for more information about building this client and making contributions.
