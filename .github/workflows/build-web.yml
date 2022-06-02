@@ -85,7 +85,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ${{ github.workspace	}}
+        working-directory: ${{ github.workspace }}
 
       - name: Build OSS selfhost
         run: |
@@ -130,7 +130,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ${{ github.workspace	}}
+        working-directory: ${{ github.workspace }}
 
       - name: Build Cloud
         run: |
@@ -183,7 +183,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ${{ github.workspace	}}
+        working-directory: ${{ github.workspace }}
 
       - name: Build
         run: |
@@ -310,7 +310,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ${{ github.workspace	}}
+        working-directory: ${{ github.workspace }}
 
       - name: Build
         run: |
@@ -397,7 +397,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: ${{ github.workspace	}}
+        working-directory: ${{ github.workspace }}
 
       - name: NPM build
         run: npm run build:bit:cloud
