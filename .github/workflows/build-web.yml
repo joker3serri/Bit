@@ -362,46 +362,6 @@ jobs:
       - name: Log out of Docker
         run: docker logout
 
-
-  windows:
-    name: Test code on Windows
-    runs-on: windows-2019
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
-
-      - name: Set up NuGet
-        uses: nuget/setup-nuget@b2bc17b761a1d88cab755a776c7922eb26eefbfa  # v1.0.6
-        with:
-          nuget-version: "latest"
-
-      - name: Set up Node
-        uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854  # v3.1.1
-        with:
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-          node-version: "16"
-
-      - name: Print environment
-        env:
-          GITHUB_REF: ${{ github.ref }}
-          GITHUB_EVENT: ${{ github.event_name }}
-        run: |
-          nuget help | grep Version
-          node --version
-          npm --version
-          echo "GitHub ref: $GITHUB_REF"
-          echo "GitHub event: $GITHUB_EVENT"
-
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: NPM build
-        working-directory: apps/web
-        run: npm run build:bit:cloud
-
-
   crowdin-push:
     name: Crowdin Push
     if: github.ref == 'refs/heads/master'
