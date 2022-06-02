@@ -80,7 +80,7 @@ jobs:
         uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048  # v3.2.0
         with:
           cache: 'npm'
-          cache-dependency-path: 'apps/cli/**/package-lock.json'
+          cache-dependency-path: '**/package-lock.json'
           node-version: '16'
 
       - name: Get pkg-fetch
