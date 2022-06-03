@@ -115,7 +115,7 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
         }
         await this.load(this.buildFilter());
       } else if (params.folderId) {
-        this.showVaultFilter = false;
+        this.showVaultFilter = true;
         this.folderId = params.folderId === "none" ? null : params.folderId;
         this.searchPlaceholder = this.i18nService.t("searchFolder");
         if (this.folderId != null) {
@@ -234,6 +234,7 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
         folderId: this.folderId,
         type: this.type,
         collectionId: this.collectionId,
+        selectedVault: this.vaultFilter.selectedOrganizationId,
       },
     });
   }
