@@ -136,7 +136,7 @@
     "zxcvbn": "^4.4.2"
   },
   "lint-staged": {
-    "./!(**/jslib)**": "prettier --ignore-unknown --write",
+    "*": "prettier --ignore-unknown --write",
     "*.ts": "eslint --fix"
   },
   "engines": {
