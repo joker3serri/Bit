@@ -13,8 +13,6 @@
   },
   "homepage": "https://bitwarden.com",
   "scripts": {
-    "sub:init": "git submodule update --init --recursive",
-    "preinstall": "npm run sub:init",
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --write .",
