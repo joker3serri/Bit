@@ -1,4 +1,5 @@
 import { Component, NgZone } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
@@ -15,9 +16,12 @@ const BroadcasterSubscriptionId = "AccessibilityCookieComponent";
   templateUrl: "accessibility-cookie.component.html",
 })
 export class AccessibilityCookieComponent {
-  link = "";
   listenForCookie = false;
   hCaptchaWindow: Window;
+
+  accessibilityForm = new FormGroup({
+    link: new FormControl("", Validators.required),
+  });
 
   constructor(
     protected router: Router,
@@ -75,15 +79,7 @@ export class AccessibilityCookieComponent {
   }
 
   async submit() {
-    if (this.link == null || this.link === "") {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("hCaptchaUrlRequired")
-      );
-      return;
-    }
-    if (Utils.getDomain(this.link) !== "accounts.hcaptcha.com") {
+    if (Utils.getDomain(this.accessibilityForm.value.link) !== "accounts.hcaptcha.com") {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
@@ -92,7 +88,7 @@ export class AccessibilityCookieComponent {
       return;
     }
     this.listenForCookie = true;
-    this.hCaptchaWindow = window.open(this.link);
+    this.hCaptchaWindow = window.open(this.accessibilityForm.value.link);
   }
 
   ngOnDestroy() {
