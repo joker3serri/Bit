@@ -19,6 +19,6 @@
   </a>
 </p>
 
-## Build/Run
+## Documentation
 
-See the README in the base of this repository for more information about building this client and making contributions.
+Please refer to the [Web vault section](https://contributing.bitwarden.com/clients/web-vault/) of the [Contributing Documentation](https://contributing.bitwarden.com/) for build instructions, recommended tooling, code style tips, and lots of other great information to get you started.

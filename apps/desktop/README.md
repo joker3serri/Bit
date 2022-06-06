@@ -10,6 +10,6 @@ The Bitwarden desktop app is written using Electron and Angular. The application
 
 ![Desktop Vault](https://github.com/bitwarden/brand/blob/f09f2fa594c8a020c315296074f18ce0a7b3f171/screenshots/desktop-macos-vault.png "My Vault")
 
-## Build/Run
+## Documentation
 
-See the README in the base of this repository for more information about building this client and making contributions.
+Please refer to the [Desktop section](https://contributing.bitwarden.com/clients/desktop/) of the [Contributing Documentation](https://contributing.bitwarden.com/) for build instructions, recommended tooling, code style tips, and lots of other great information to get you started.

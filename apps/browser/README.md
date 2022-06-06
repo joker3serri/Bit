@@ -17,6 +17,6 @@ The Bitwarden browser extension is written using the Web Extension API and Angul
 
 ![My Vault](https://raw.githubusercontent.com/bitwarden/brand/master/screenshots/browser-chrome.png)
 
-## Build/Run
+## Documentation
 
-See the README in the base of this repository for more information about building this client and making contributions.
+Please refer to the [Browser section](https://contributing.bitwarden.com/clients/browser/) of the [Contributing Documentation](https://contributing.bitwarden.com/) for build instructions, recommended tooling, code style tips, and lots of other great information to get you started.
