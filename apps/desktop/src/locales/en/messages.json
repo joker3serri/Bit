@@ -1548,17 +1548,17 @@
   "enableBrowserIntegrationDesc": {
     "message": "Browser integration is used for biometrics in browser."
   },
-  "browserIntegrationMasOnlyTitle": {
+  "browserIntegrationUnsupportedTitle": {
     "message": "Browser integration not supported"
   },
   "browserIntegrationMasOnlyDesc": {
     "message": "Unfortunately browser integration is only supported in the Mac App Store version for now."
   },
-  "browserIntegrationWindowsStoreTitle": {
-    "message": "Browser integration not supported"
-  },
   "browserIntegrationWindowsStoreDesc": {
     "message": "Unfortunately browser integration is currently not supported in the Windows Store version."
+  },
+  "browserIntegrationLinuxDesc": {
+    "message": "Unfortunately browser integration is currently not supported in the linux version."
   },
   "enableBrowserIntegrationFingerprint": {
     "message": "Require verification for browser integration"
@@ -1835,8 +1835,8 @@
   "leftOrganization": {
     "message": "You have left the organization."
   },
-  "ssoKeyConnectorUnavailable": {
-    "message": "Unable to reach the key connector, try again later."
+  "ssoKeyConnectorError": {
+    "message": "Key Connector error: make sure Key Connector is available and working correctly."
   },
   "lockAllVaults": {
     "message": "Lock All Vaults"
