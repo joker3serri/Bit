@@ -91,7 +91,7 @@ jobs:
       - name: Get Version Channel
         id: release-channel
         run: |
-          case "${{ steps.version.outputs.version }}" in
+          case "${{ steps.retrieve-version.outputs.package_version }}" in
             *"alpha"*)
               echo "::set-output name=channel::alpha"
               echo "[!] We do not yet support 'alpha'"
