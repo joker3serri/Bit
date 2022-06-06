@@ -16,7 +16,8 @@
   },
   "license": "GPL-3.0",
   "build": {
-    "generateUpdatesFilesForAllChannels": true
+    "generateUpdatesFilesForAllChannels": true,
+    "electronVersion": "16.2.7"
   },
   "scripts": {
     "start": "cross-env ELECTRON_IS_DEV=0 ELECTRON_NO_UPDATER=1 electron ./build",
