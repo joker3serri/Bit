@@ -12,6 +12,9 @@
     "url": "https://github.com/bitwarden/clients/issues"
   },
   "homepage": "https://bitwarden.com",
+  "build": {
+    "generateUpdatesFilesForAllChannels": true
+  },
   "scripts": {
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint . --fix",
