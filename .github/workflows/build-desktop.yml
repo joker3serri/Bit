@@ -188,8 +188,17 @@ jobs:
           path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-x86_64.AppImage
           if-no-files-found: error
 
+      - name: Upload beta auto-update artifact
+        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        if: endsWith(needs.setup.outputs.package_version, 'beta')
+        with:
+          name: beta-linux.yml
+          path: apps/desktop/dist/beta-linux.yml
+          if-no-files-found: error
+
       - name: Upload latest auto-update artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        if: ${{ !endsWith(needs.setup.outputs.package_version, 'beta') }}
         with:
           name: latest-linux.yml
           path: apps/desktop/dist/latest-linux.yml
@@ -373,8 +382,17 @@ jobs:
           path: apps/desktop/dist/chocolatey/bitwarden.${{ env._PACKAGE_VERSION }}.nupkg
           if-no-files-found: error
 
+      - name: Upload beta auto-update artifact
+        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        if: endsWith(needs.setup.outputs.package_version, 'beta')
+        with:
+          name: beta.yml
+          path: apps/desktop/dist/nsis-web/beta.yml
+          if-no-files-found: error
+
       - name: Upload latest auto-update artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        if: ${{ !endsWith(needs.setup.outputs.package_version, 'beta') }}
         with:
           name: latest.yml
           path: apps/desktop/dist/nsis-web/latest.yml
@@ -704,8 +722,17 @@ jobs:
           path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg.blockmap
           if-no-files-found: error
 
+      - name: Upload beta auto-update artifact
+        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        if: endsWith(needs.setup.outputs.package_version, 'beta')
+        with:
+          name: beta-mac.yml
+          path: apps/desktop/dist/beta-mac.yml
+          if-no-files-found: error
+
       - name: Upload latest auto-update artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        if: ${{ !endsWith(needs.setup.outputs.package_version, 'beta') }}
         with:
           name: latest-mac.yml
           path: apps/desktop/dist/latest-mac.yml
