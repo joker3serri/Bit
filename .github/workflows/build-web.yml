@@ -371,8 +371,6 @@ jobs:
       - build-commercial-selfhost
       - build-qa
     runs-on: ubuntu-20.04
-    env:
-      _CROWDIN_PROJECT_ID: "308189"
     steps:
       - name: Checkout repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2  # v2.3.4
@@ -394,6 +392,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CROWDIN_API_TOKEN: ${{ steps.retrieve-secrets.outputs.crowdin-api-token }}
+          CROWDIN_PROJECT_ID: "308189"          
         with:
           config: apps/web/crowdin.yml
           crowdin_branch_name: master
