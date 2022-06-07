@@ -45,5 +45,10 @@
 			"desktop"
 		],
 		"jest.jestCommandLine": "npx jest"
-  }
+	},
+	"extensions": {
+		"recommendations": [
+			"orta.vscode-jest",
+		],
+	}
 }
