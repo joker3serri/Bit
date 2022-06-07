@@ -1,4 +1,5 @@
 ## Type of change
+
 <!-- (mark with an `X`) -->
 
 ```
@@ -25,6 +26,7 @@
 <!--Required for any UI changes. Delete if not applicable-->
 
 ## Before you submit
+
 <!-- (mark with an `X`) -->
 
 ```
