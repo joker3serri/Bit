@@ -1,4 +1,5 @@
-## Type of change (mark with an `X`)
+## Type of change
+<!-- (mark with an `X`) -->
 
 ```
 - [ ] Bug fix
@@ -23,7 +24,8 @@
 
 <!--Required for any UI changes. Delete if not applicable-->
 
-## Before you submit (mark with an `X`)
+## Before you submit
+<!-- (mark with an `X`) -->
 
 ```
 - [ ] I have checked for **linting** errors (`npm run lint`) (required)
