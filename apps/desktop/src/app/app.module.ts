@@ -156,7 +156,7 @@ registerLocaleData(localeZhTw, "zh-TW");
 
 @NgModule({
   imports: [SharedModule, AppRoutingModule, VaultFilterModule],
-  declarations: [    
+  declarations: [
     AccessibilityCookieComponent,
     AccountSwitcherComponent,
     AddEditComponent,
