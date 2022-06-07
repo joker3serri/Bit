@@ -37,6 +37,13 @@
         "webpack://?:*/*": "${workspaceFolder}/*",
         "webpack://@bitwarden/cli/*": "${workspaceFolder}/apps/cli/*"
       }
-    }
+		},
+		"jest.disabledWorkspaceFolders": [
+			"root",
+			"web vault",
+			"web vault (bit)",
+			"desktop"
+		],
+		"jest.jestCommandLine": "npx jest"
   }
 }
