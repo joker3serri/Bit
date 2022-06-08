@@ -60,6 +60,7 @@ export abstract class StateService<T extends Account = Account> {
   getCanAccessPremium: (options?: StorageOptions) => Promise<boolean>;
   setHasPremiumPersonally: (value: boolean, options?: StorageOptions) => Promise<void>;
   setHasPremiumFromOrganization: (value: boolean, options?: StorageOptions) => Promise<void>;
+  getHasPremiumFromOrganization: (options?: StorageOptions) => Promise<boolean>;
   getClearClipboard: (options?: StorageOptions) => Promise<number>;
   setClearClipboard: (value: number, options?: StorageOptions) => Promise<void>;
   getCollapsedGroupings: (options?: StorageOptions) => Promise<string[]>;

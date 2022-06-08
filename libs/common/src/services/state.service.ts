@@ -348,22 +348,6 @@ export class StateService<
       return true;
     }
 
-    // TODO
-    // hasPremiumFromOrganization is the single source of truth for inheriting premium, but requires
-    // the latest version of the server. The rest of this function is left for backwards compatibility with
-    // older servers, and can be removed after a reasonable period
-    const organizations = await this.getOrganizations(options);
-    if (organizations == null) {
-      return false;
-    }
-
-    for (const id of Object.keys(organizations)) {
-      const o = organizations[id];
-      if (o.enabled && o.usersGetPremium && !o.isProviderUser) {
-        return true;
-      }
-    }
-
     return false;
   }
 
@@ -378,11 +362,30 @@ export class StateService<
     );
   }
 
-  private async getHasPremiumFromOrganization(options?: StorageOptions): Promise<boolean> {
+  async getHasPremiumFromOrganization(options?: StorageOptions): Promise<boolean> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    return account.profile?.hasPremiumFromOrganization;
+
+    if (account.profile?.hasPremiumFromOrganization) {
+      return true;
+    }
+
+    // TODO: older server versions won't send the hasPremiumFromOrganization flag, so we're keeping the old logic
+    // for backwards compatibility. It can be removed after everyone has upgraded.
+    const organizations = await this.getOrganizations(options);
+    if (organizations == null) {
+      return false;
+    }
+
+    for (const id of Object.keys(organizations)) {
+      const o = organizations[id];
+      if (o.enabled && o.usersGetPremium && !o.isProviderUser) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   async setHasPremiumFromOrganization(value: boolean, options?: StorageOptions): Promise<void> {
