@@ -359,7 +359,7 @@ export class StateService<
     return false;
   }
 
-  async setCanAccessPremium(value: boolean, options?: StorageOptions): Promise<void> {
+  async setHasPremiumPersonally(value: boolean, options?: StorageOptions): Promise<void> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
