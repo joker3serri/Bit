@@ -46,7 +46,7 @@ We provide natively packaged versions of the CLI for each platform which have no
   sudo snap install bw
   ```
 
-### Help Commands
+### Help Command
 
 The Bitwarden CLI is self-documented with `--help` content and examples for every command. You should start exploring the CLI by using the global `--help` option:
 
