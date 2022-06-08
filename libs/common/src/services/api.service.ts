@@ -1573,7 +1573,7 @@ export class ApiService implements ApiServiceAbstraction {
   postTwoFactorEmail(request: TwoFactorEmailRequest): Promise<any> {
     return this.send("POST", "/two-factor/send-email-login", request, false, false);
   }
-  
+
   async getDeviceVerificationSettings(): Promise<DeviceVerificationResponse> {
     const r = await this.send(
       "GET",
