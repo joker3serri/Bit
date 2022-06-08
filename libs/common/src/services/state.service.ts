@@ -337,12 +337,7 @@ export class StateService<
       return false;
     }
 
-    if (await this.getHasPremiumPersonally(options) ||
-      await this.getHasPremiumFromOrganization(options)) {
-      return true;
-    }
-
-    return false;
+    return await this.getHasPremiumPersonally(options) || await this.getHasPremiumFromOrganization(options);
   }
 
   async getHasPremiumPersonally(options?: StorageOptions): Promise<boolean> {
