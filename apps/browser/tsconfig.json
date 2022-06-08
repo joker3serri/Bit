@@ -17,10 +17,5 @@
   "angularCompilerOptions": {
     "preserveWhitespaces": true
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "src/**/*.js"
-  ]
+  "include": ["src"]
 }
