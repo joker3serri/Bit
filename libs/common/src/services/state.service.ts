@@ -344,6 +344,10 @@ export class StateService<
       return true;
     }
 
+    if (await this.getHasPremiumFromInvite(options)) {
+      return true;
+    }
+
     const organizations = await this.getOrganizations(options);
     if (organizations == null) {
       return false;
@@ -364,6 +368,24 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
     account.profile.hasPremiumPersonally = value;
+    await this.saveAccount(
+      account,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+  }
+
+  private async getHasPremiumFromInvite(options?: StorageOptions): Promise<boolean> {
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+    return account.profile?.hasPremiumFromInvite;
+  }
+
+  async setHasPremiumFromInvite(value: boolean, options?: StorageOptions): Promise<void> {
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+    account.profile.hasPremiumFromInvite = value;
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())

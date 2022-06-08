@@ -59,6 +59,7 @@ export abstract class StateService<T extends Account = Account> {
   setBiometricUnlock: (value: boolean, options?: StorageOptions) => Promise<void>;
   getCanAccessPremium: (options?: StorageOptions) => Promise<boolean>;
   setHasPremiumPersonally: (value: boolean, options?: StorageOptions) => Promise<void>;
+  setHasPremiumFromInvite: (value: boolean, options?: StorageOptions) => Promise<void>;
   getClearClipboard: (options?: StorageOptions) => Promise<number>;
   setClearClipboard: (value: number, options?: StorageOptions) => Promise<void>;
   getCollapsedGroupings: (options?: StorageOptions) => Promise<string[]>;

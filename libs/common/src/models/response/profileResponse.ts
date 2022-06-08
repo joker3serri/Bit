@@ -10,6 +10,7 @@ export class ProfileResponse extends BaseResponse {
   emailVerified: boolean;
   masterPasswordHint: string;
   premiumPersonally: boolean;
+  premiumFromInvite: boolean;
   culture: string;
   twoFactorEnabled: boolean;
   key: string;
@@ -29,6 +30,7 @@ export class ProfileResponse extends BaseResponse {
     this.emailVerified = this.getResponseProperty("EmailVerified");
     this.masterPasswordHint = this.getResponseProperty("MasterPasswordHint");
     this.premiumPersonally = this.getResponseProperty("Premium");
+    this.premiumFromInvite = this.getResponseProperty("PremiumFromInvite");
     this.culture = this.getResponseProperty("Culture");
     this.twoFactorEnabled = this.getResponseProperty("TwoFactorEnabled");
     this.key = this.getResponseProperty("Key");
