@@ -1,5 +1,5 @@
 import { OrganizationConnectionType } from "jslib-common/enums/organizationConnectionType";
-import { DeviceVerificationRequest } from "jslib-common/models/request/DeviceVerificationRequest";
+import { DeviceVerificationRequest } from "jslib-common/models/request/deviceVerificationRequest";
 import { OrganizationConnectionRequest } from "jslib-common/models/request/organizationConnectionRequest";
 import { BillingHistoryResponse } from "jslib-common/models/response/billingHistoryResponse";
 import { BillingPaymentResponse } from "jslib-common/models/response/billingPaymentResponse";

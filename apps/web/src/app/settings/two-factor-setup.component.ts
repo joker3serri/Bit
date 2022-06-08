@@ -11,7 +11,7 @@ import { PolicyService } from "jslib-common/abstractions/policy.service";
 import { StateService } from "jslib-common/abstractions/state.service";
 import { PolicyType } from "jslib-common/enums/policyType";
 import { TwoFactorProviderType } from "jslib-common/enums/twoFactorProviderType";
-import { DeviceVerificationRequest } from "jslib-common/models/request/DeviceVerificationRequest";
+import { DeviceVerificationRequest } from "jslib-common/models/request/deviceVerificationRequest";
 import { TwoFactorProviders } from "jslib-common/services/twoFactor.service";
 
 import { TwoFactorAuthenticatorComponent } from "./two-factor-authenticator.component";
