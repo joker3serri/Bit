@@ -344,10 +344,14 @@ export class StateService<
       return true;
     }
 
-    if (await this.getHasPremiumFromInvite(options)) {
+    if (await this.getHasPremiumFromOrganization(options)) {
       return true;
     }
 
+    // TODO
+    // hasPremiumFromOrganization is the single source of truth for inheriting premium, but requires
+    // the latest version of the server. The rest of this function is left for backwards compatibility with
+    // older servers, and can be removed after a reasonable period
     const organizations = await this.getOrganizations(options);
     if (organizations == null) {
       return false;
@@ -374,18 +378,18 @@ export class StateService<
     );
   }
 
-  private async getHasPremiumFromInvite(options?: StorageOptions): Promise<boolean> {
+  private async getHasPremiumFromOrganization(options?: StorageOptions): Promise<boolean> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    return account.profile?.hasPremiumFromInvite;
+    return account.profile?.hasPremiumFromOrganization;
   }
 
-  async setHasPremiumFromInvite(value: boolean, options?: StorageOptions): Promise<void> {
+  async setHasPremiumFromOrganization(value: boolean, options?: StorageOptions): Promise<void> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
-    account.profile.hasPremiumFromInvite = value;
+    account.profile.hasPremiumFromOrganization = value;
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
