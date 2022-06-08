@@ -5,7 +5,7 @@ import { ApiService } from "jslib-common/abstractions/api.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { StateService } from 'jslib-common/abstractions/state.service';
+import { StateService } from "jslib-common/abstractions/state.service";
 import { SubscriptionResponse } from "jslib-common/models/response/subscriptionResponse";
 
 @Component({
