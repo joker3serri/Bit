@@ -140,7 +140,17 @@
   </tbody>
 </table>
 
-<p *ngIf="!trustedContacts || !trustedContacts.length">{{ "noTrustedContacts" | i18n }}</p>
+<ng-container *ngIf="!trustedContacts || !trustedContacts.length">
+  <p *ngIf="loaded">{{ "noTrustedContacts" | i18n }}</p>
+  <ng-container *ngIf="!loaded">
+    <i
+      class="bwi bwi-spinner bwi-spin text-muted"
+      title="{{ 'loading' | i18n }}"
+      aria-hidden="true"
+    ></i>
+    <span class="sr-only">{{ "loading" | i18n }}</span>
+  </ng-container>
+</ng-container>
 
 <div class="page-header spaced-header">
   <h2>{{ "designatedEmergencyContacts" | i18n }}</h2>
@@ -247,7 +257,17 @@
   </tbody>
 </table>
 
-<p *ngIf="!grantedContacts || !grantedContacts.length">{{ "noGrantedAccess" | i18n }}</p>
+<ng-container *ngIf="!grantedContacts || !grantedContacts.length">
+  <p *ngIf="loaded">{{ "noGrantedAccess" | i18n }}</p>
+  <ng-container *ngIf="!loaded">
+    <i
+      class="bwi bwi-spinner bwi-spin text-muted"
+      title="{{ 'loading' | i18n }}"
+      aria-hidden="true"
+    ></i>
+    <span class="sr-only">{{ "loading" | i18n }}</span>
+  </ng-container>
+</ng-container>
 
 <ng-template #addEdit></ng-template>
 <ng-template #takeoverTemplate></ng-template>
