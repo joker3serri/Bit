@@ -1,27 +1,3 @@
 {
-  "extends": "../../libs/shared/tsconfig",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "tldjs": ["../../libs/common/src/misc/tldjs.noop"],
-      "jslib-common/*": ["../../libs/common/src/*"],
-      "jslib-angular/*": ["../../libs/angular/src/*"],
-      "@bitwarden/components": ["../../libs/components/src"],
-      "src/*": ["../../apps/web/src/*"]
-    }
-  },
-  "angularCompilerOptions": {
-    "preserveWhitespaces": true
-  },
-  "files": [
-    "../../apps/web/src/app/polyfills.ts",
-    "../../apps/web/src/app/main.ts",
-    "src/app/main.ts"
-  ],
-  "include": [
-    "../../apps/web/src/connectors/*.ts",
-    "../../apps/web/src/models/*.ts",
-    "../../apps/web/src/services/*.ts",
-    "../../apps/web/src/abstractions/*.ts"
-  ]
+  "extends": "../../apps/web/tsconfig"
 }
