@@ -152,7 +152,9 @@ jobs:
           call git submodule update --init --recursive
           cd ../
           del /S/Q "clients\.git\objects\pack\*"
-          xcopy clients\* Source /E
+          copy clients\* Source
+          mkdir Source\apps\browser
+          xcopy clients\apps\browser\* Source\apps\browser /E
           call 7z a browser-source.zip "Source\*"
 
       - name: Upload Opera artifact
