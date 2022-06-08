@@ -144,13 +144,15 @@ jobs:
       - name: Build sources for reviewers
         shell: cmd
         run: |
-          mkdir dist\Source
-          call git clone %GITHUB_SERVER_URL%/%GITHUB_REPOSITORY% dist\Source
-          cd dist\Source
+          mkdir Source
+          mkdir clients
+          call git clone %GITHUB_SERVER_URL%/%GITHUB_REPOSITORY% clients
+          cd clients
           call git checkout %GITHUB_SHA%
           call git submodule update --init --recursive
           cd ../
-          del /S/Q "Source\.git\objects\pack\*"
+          del /S/Q "clients\.git\objects\pack\*"
+          xcopy clients\* Source /E
           call 7z a browser-source.zip "Source\*"
 
       - name: Upload Opera artifact
