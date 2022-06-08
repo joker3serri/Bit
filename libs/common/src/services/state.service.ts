@@ -337,18 +337,19 @@ export class StateService<
       return false;
     }
 
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
-    );
-    if (account.profile.hasPremiumPersonally) {
-      return true;
-    }
-
-    if (await this.getHasPremiumFromOrganization(options)) {
+    if (await this.getHasPremiumPersonally(options) ||
+      await this.getHasPremiumFromOrganization(options)) {
       return true;
     }
 
     return false;
+  }
+
+  async getHasPremiumPersonally(options?: StorageOptions): Promise<boolean> {
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+    return account?.profile?.hasPremiumPersonally;
   }
 
   async setHasPremiumPersonally(value: boolean, options?: StorageOptions): Promise<void> {
