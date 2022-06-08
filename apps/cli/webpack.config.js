@@ -74,6 +74,7 @@ const webpackConfig = {
   },
   module: { rules: moduleRules },
   plugins: plugins,
+  externalsPresets: { node: true },
 };
 
 module.exports = webpackConfig;
