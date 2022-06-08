@@ -1,14 +1,14 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { ModalService } from "jslib-angular/services/modal.service";
-import { CipherService } from "jslib-common/abstractions/cipher.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { MessagingService } from "jslib-common/abstractions/messaging.service";
-import { OrganizationService } from "jslib-common/abstractions/organization.service";
-import { PasswordRepromptService } from "jslib-common/abstractions/passwordReprompt.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { CipherView } from "jslib-common/models/view/cipherView";
+import { ModalService } from "@bitwarden/angular/src/services/modal.service";
+import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
+import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
+import { PasswordRepromptService } from "@bitwarden/common/src/abstractions/passwordReprompt.service";
+import { StateService } from "@bitwarden/common/src/abstractions/state.service";
+import { CipherView } from "@bitwarden/common/src/models/view/cipherView";
 
 import { InactiveTwoFactorReportComponent as BaseInactiveTwoFactorReportComponent } from "../../reports/inactive-two-factor-report.component";
 

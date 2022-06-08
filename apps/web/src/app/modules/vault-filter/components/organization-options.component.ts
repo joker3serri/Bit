@@ -1,15 +1,15 @@
 import { Component, Input } from "@angular/core";
 
-import { ModalService } from "jslib-angular/services/modal.service";
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
-import { SyncService } from "jslib-common/abstractions/sync.service";
-import { PolicyType } from "jslib-common/enums/policyType";
-import { Organization } from "jslib-common/models/domain/organization";
-import { Policy } from "jslib-common/models/domain/policy";
+import { ModalService } from "@bitwarden/angular/src/services/modal.service";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
+import { SyncService } from "@bitwarden/common/src/abstractions/sync.service";
+import { PolicyType } from "@bitwarden/common/src/enums/policyType";
+import { Organization } from "@bitwarden/common/src/models/domain/organization";
+import { Policy } from "@bitwarden/common/src/models/domain/policy";
 
 import { EnrollMasterPasswordReset } from "../../organizations/users/enroll-master-password-reset.component";
 

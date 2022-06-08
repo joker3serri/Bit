@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 
-import { OrganizationService } from "jslib-common/abstractions/organization.service";
-import { PolicyType } from "jslib-common/enums/policyType";
-import { Organization } from "jslib-common/models/domain/organization";
+import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
+import { PolicyType } from "@bitwarden/common/src/enums/policyType";
+import { Organization } from "@bitwarden/common/src/models/domain/organization";
 
 import { BasePolicy, BasePolicyComponent } from "./base-policy.component";
 

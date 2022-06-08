@@ -2,23 +2,23 @@ import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { ModalService } from "jslib-angular/services/modal.service";
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CollectionService } from "jslib-common/abstractions/collection.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { OrganizationService } from "jslib-common/abstractions/organization.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { SearchService } from "jslib-common/abstractions/search.service";
-import { CollectionData } from "jslib-common/models/data/collectionData";
-import { Collection } from "jslib-common/models/domain/collection";
-import { Organization } from "jslib-common/models/domain/organization";
+import { ModalService } from "@bitwarden/angular/src/services/modal.service";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { CollectionService } from "@bitwarden/common/src/abstractions/collection.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { SearchService } from "@bitwarden/common/src/abstractions/search.service";
+import { CollectionData } from "@bitwarden/common/src/models/data/collectionData";
+import { Collection } from "@bitwarden/common/src/models/domain/collection";
+import { Organization } from "@bitwarden/common/src/models/domain/organization";
 import {
   CollectionDetailsResponse,
   CollectionResponse,
-} from "jslib-common/models/response/collectionResponse";
-import { ListResponse } from "jslib-common/models/response/listResponse";
-import { CollectionView } from "jslib-common/models/view/collectionView";
+} from "@bitwarden/common/src/models/response/collectionResponse";
+import { ListResponse } from "@bitwarden/common/src/models/response/listResponse";
+import { CollectionView } from "@bitwarden/common/src/models/view/collectionView";
 
 import { EntityUsersComponent } from "../../modules/organizations/manage/entity-users.component";
 

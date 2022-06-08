@@ -1,13 +1,13 @@
 import { Component } from "@angular/core";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { OrganizationConnectionType } from "jslib-common/enums/organizationConnectionType";
-import { Utils } from "jslib-common/misc/utils";
-import { BillingSyncConfigApi } from "jslib-common/models/api/billingSyncConfigApi";
-import { BillingSyncConfigRequest } from "jslib-common/models/request/billingSyncConfigRequest";
-import { OrganizationConnectionRequest } from "jslib-common/models/request/organizationConnectionRequest";
-import { OrganizationConnectionResponse } from "jslib-common/models/response/organizationConnectionResponse";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { OrganizationConnectionType } from "@bitwarden/common/src/enums/organizationConnectionType";
+import { Utils } from "@bitwarden/common/src/misc/utils";
+import { BillingSyncConfigApi } from "@bitwarden/common/src/models/api/billingSyncConfigApi";
+import { BillingSyncConfigRequest } from "@bitwarden/common/src/models/request/billingSyncConfigRequest";
+import { OrganizationConnectionRequest } from "@bitwarden/common/src/models/request/organizationConnectionRequest";
+import { OrganizationConnectionResponse } from "@bitwarden/common/src/models/response/organizationConnectionResponse";
 
 @Component({
   selector: "app-billing-sync-key",

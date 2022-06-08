@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { MessagingService } from "jslib-common/abstractions/messaging.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { SyncService } from "jslib-common/abstractions/sync.service";
-import { TokenService } from "jslib-common/abstractions/token.service";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/src/abstractions/state.service";
+import { SyncService } from "@bitwarden/common/src/abstractions/sync.service";
+import { TokenService } from "@bitwarden/common/src/abstractions/token.service";
 
 import { PaymentComponent } from "./payment.component";
 import { TaxInfoComponent } from "./tax-info.component";

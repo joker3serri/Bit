@@ -7,10 +7,10 @@ import {
   Validator,
 } from "@angular/forms";
 
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
-import { PolicyType } from "jslib-common/enums/policyType";
-import { Policy } from "jslib-common/models/domain/policy";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
+import { PolicyType } from "@bitwarden/common/src/enums/policyType";
+import { Policy } from "@bitwarden/common/src/models/domain/policy";
 
 @Directive()
 export class VaultTimeoutInputComponent implements ControlValueAccessor, Validator, OnInit {

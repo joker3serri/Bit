@@ -1,8 +1,8 @@
 import { Directive } from "@angular/core";
 
-import { CryptoService } from "jslib-common/abstractions/crypto.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
+import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
 
 import { ModalRef } from "./modal/modal.ref";
 

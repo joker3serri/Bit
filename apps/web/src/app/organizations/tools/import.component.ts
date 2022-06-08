@@ -1,12 +1,12 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { ImportService } from "jslib-common/abstractions/import.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { OrganizationService } from "jslib-common/abstractions/organization.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { ImportService } from "@bitwarden/common/src/abstractions/import.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
 
 import { ImportComponent as BaseImportComponent } from "../../tools/import.component";
 

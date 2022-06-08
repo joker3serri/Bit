@@ -9,13 +9,13 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { PolicyType } from "jslib-common/enums/policyType";
-import { PolicyRequest } from "jslib-common/models/request/policyRequest";
-import { PolicyResponse } from "jslib-common/models/response/policyResponse";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { PolicyType } from "@bitwarden/common/src/enums/policyType";
+import { PolicyRequest } from "@bitwarden/common/src/models/request/policyRequest";
+import { PolicyResponse } from "@bitwarden/common/src/models/response/policyResponse";
 
 import { BasePolicy, BasePolicyComponent } from "../policies/base-policy.component";
 

@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { ProviderUserType } from "jslib-common/enums/providerUserType";
-import { PermissionsApi } from "jslib-common/models/api/permissionsApi";
-import { ProviderUserInviteRequest } from "jslib-common/models/request/provider/providerUserInviteRequest";
-import { ProviderUserUpdateRequest } from "jslib-common/models/request/provider/providerUserUpdateRequest";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { ProviderUserType } from "@bitwarden/common/src/enums/providerUserType";
+import { PermissionsApi } from "@bitwarden/common/src/models/api/permissionsApi";
+import { ProviderUserInviteRequest } from "@bitwarden/common/src/models/request/provider/providerUserInviteRequest";
+import { ProviderUserUpdateRequest } from "@bitwarden/common/src/models/request/provider/providerUserUpdateRequest";
 
 @Component({
   selector: "provider-user-add-edit",

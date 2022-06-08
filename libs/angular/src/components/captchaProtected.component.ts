@@ -1,10 +1,10 @@
 import { Directive, Input } from "@angular/core";
 
-import { EnvironmentService } from "jslib-common/abstractions/environment.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { CaptchaIFrame } from "jslib-common/misc/captcha_iframe";
-import { Utils } from "jslib-common/misc/utils";
+import { EnvironmentService } from "@bitwarden/common/src/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { CaptchaIFrame } from "@bitwarden/common/src/misc/captcha_iframe";
+import { Utils } from "@bitwarden/common/src/misc/utils";
 
 @Directive()
 export abstract class CaptchaProtectedComponent {

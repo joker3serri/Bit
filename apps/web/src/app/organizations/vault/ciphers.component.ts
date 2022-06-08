@@ -1,19 +1,19 @@
 import { Component, EventEmitter, Output } from "@angular/core";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CipherService } from "jslib-common/abstractions/cipher.service";
-import { EventService } from "jslib-common/abstractions/event.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { OrganizationService } from "jslib-common/abstractions/organization.service";
-import { PasswordRepromptService } from "jslib-common/abstractions/passwordReprompt.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { SearchService } from "jslib-common/abstractions/search.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { TokenService } from "jslib-common/abstractions/token.service";
-import { TotpService } from "jslib-common/abstractions/totp.service";
-import { Organization } from "jslib-common/models/domain/organization";
-import { CipherView } from "jslib-common/models/view/cipherView";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
+import { EventService } from "@bitwarden/common/src/abstractions/event.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
+import { PasswordRepromptService } from "@bitwarden/common/src/abstractions/passwordReprompt.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { SearchService } from "@bitwarden/common/src/abstractions/search.service";
+import { StateService } from "@bitwarden/common/src/abstractions/state.service";
+import { TokenService } from "@bitwarden/common/src/abstractions/token.service";
+import { TotpService } from "@bitwarden/common/src/abstractions/totp.service";
+import { Organization } from "@bitwarden/common/src/models/domain/organization";
+import { CipherView } from "@bitwarden/common/src/models/view/cipherView";
 
 import { CiphersComponent as BaseCiphersComponent } from "../../vault/ciphers.component";
 

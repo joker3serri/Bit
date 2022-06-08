@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@bitwarden/angular": "file:libs/angular",
-    "@bitwarden/common": "file:libs/common"
+    "@bitwarden/common": "file:libs/common",
+    "@bitwarden/components": "file:libs/components"
   }
 }

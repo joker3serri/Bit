@@ -1,9 +1,9 @@
-import { CipherData } from "jslib-common/models/data/cipherData";
-import { CollectionData } from "jslib-common/models/data/collectionData";
-import { FolderData } from "jslib-common/models/data/folderData";
-import { SendData } from "jslib-common/models/data/sendData";
-import { StorageOptions } from "jslib-common/models/domain/storageOptions";
-import { StateService as BaseStateService } from "jslib-common/services/state.service";
+import { CipherData } from "@bitwarden/common/src/models/data/cipherData";
+import { CollectionData } from "@bitwarden/common/src/models/data/collectionData";
+import { FolderData } from "@bitwarden/common/src/models/data/folderData";
+import { SendData } from "@bitwarden/common/src/models/data/sendData";
+import { StorageOptions } from "@bitwarden/common/src/models/domain/storageOptions";
+import { StateService as BaseStateService } from "@bitwarden/common/src/services/state.service";
 
 import { StateService as StateServiceAbstraction } from "../abstractions/state.service";
 import { Account } from "../models/account";

@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
 
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { PolicyType } from "jslib-common/enums/policyType";
-import { Organization } from "jslib-common/models/domain/organization";
-import { PolicyRequest } from "jslib-common/models/request/policyRequest";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { PolicyType } from "@bitwarden/common/src/enums/policyType";
+import { Organization } from "@bitwarden/common/src/models/domain/organization";
+import { PolicyRequest } from "@bitwarden/common/src/models/request/policyRequest";
 
 import { BasePolicy, BasePolicyComponent } from "./base-policy.component";
 

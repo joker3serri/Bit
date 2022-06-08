@@ -1,19 +1,19 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CollectionService } from "jslib-common/abstractions/collection.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { OrganizationUserType } from "jslib-common/enums/organizationUserType";
-import { PermissionsApi } from "jslib-common/models/api/permissionsApi";
-import { CollectionData } from "jslib-common/models/data/collectionData";
-import { Collection } from "jslib-common/models/domain/collection";
-import { OrganizationUserInviteRequest } from "jslib-common/models/request/organizationUserInviteRequest";
-import { OrganizationUserUpdateRequest } from "jslib-common/models/request/organizationUserUpdateRequest";
-import { SelectionReadOnlyRequest } from "jslib-common/models/request/selectionReadOnlyRequest";
-import { CollectionDetailsResponse } from "jslib-common/models/response/collectionResponse";
-import { CollectionView } from "jslib-common/models/view/collectionView";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { CollectionService } from "@bitwarden/common/src/abstractions/collection.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { OrganizationUserType } from "@bitwarden/common/src/enums/organizationUserType";
+import { PermissionsApi } from "@bitwarden/common/src/models/api/permissionsApi";
+import { CollectionData } from "@bitwarden/common/src/models/data/collectionData";
+import { Collection } from "@bitwarden/common/src/models/domain/collection";
+import { OrganizationUserInviteRequest } from "@bitwarden/common/src/models/request/organizationUserInviteRequest";
+import { OrganizationUserUpdateRequest } from "@bitwarden/common/src/models/request/organizationUserUpdateRequest";
+import { SelectionReadOnlyRequest } from "@bitwarden/common/src/models/request/selectionReadOnlyRequest";
+import { CollectionDetailsResponse } from "@bitwarden/common/src/models/response/collectionResponse";
+import { CollectionView } from "@bitwarden/common/src/models/view/collectionView";
 
 @Component({
   selector: "app-user-add-edit",

@@ -4,9 +4,6 @@
     "baseUrl": ".",
     "paths": {
       "tldjs": ["../../apps/web/jslib/common/src/misc/tldjs.noop"],
-      "jslib-common/*": ["../../apps/web/jslib/common/src/*"],
-      "jslib-angular/*": ["../../apps/web/jslib/angular/src/*"],
-      "@bitwarden/components": ["../../apps/web/jslib/components/src"],
       "src/*": ["../../apps/web/src/*"]
     }
   },

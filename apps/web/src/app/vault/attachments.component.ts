@@ -1,14 +1,14 @@
 import { Component } from "@angular/core";
 
-import { AttachmentsComponent as BaseAttachmentsComponent } from "jslib-angular/components/attachments.component";
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CipherService } from "jslib-common/abstractions/cipher.service";
-import { CryptoService } from "jslib-common/abstractions/crypto.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { AttachmentView } from "jslib-common/models/view/attachmentView";
+import { AttachmentsComponent as BaseAttachmentsComponent } from "@bitwarden/angular/src/components/attachments.component";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
+import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/src/abstractions/state.service";
+import { AttachmentView } from "@bitwarden/common/src/models/view/attachmentView";
 
 @Component({
   selector: "app-vault-attachments",

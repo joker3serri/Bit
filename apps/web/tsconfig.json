@@ -4,7 +4,11 @@
     "baseUrl": ".",
     "paths": {
       "tldjs": ["../../libs/common/src/misc/tldjs.noop"],
-      "src/*": ["src/*"]
+      "src/*": ["src/*"],
+      "@bitwarden/common/*": ["../../libs/common/*"],
+      "@bitwarden/angular/*": ["../../libs/angular/*"],
+      "@bitwarden/components": ["../../libs/components/src"],
+
     }
   },
   "angularCompilerOptions": {

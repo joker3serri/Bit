@@ -1,13 +1,13 @@
 import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { CipherService } from "jslib-common/abstractions/cipher.service";
-import { CollectionService } from "jslib-common/abstractions/collection.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { Cipher } from "jslib-common/models/domain/cipher";
-import { CipherView } from "jslib-common/models/view/cipherView";
-import { CollectionView } from "jslib-common/models/view/collectionView";
+import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/src/abstractions/collection.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { Cipher } from "@bitwarden/common/src/models/domain/cipher";
+import { CipherView } from "@bitwarden/common/src/models/view/cipherView";
+import { CollectionView } from "@bitwarden/common/src/models/view/collectionView";
 
 @Directive()
 export class CollectionsComponent implements OnInit {

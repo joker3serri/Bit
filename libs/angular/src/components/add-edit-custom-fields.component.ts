@@ -1,14 +1,14 @@
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import { Directive, Input, OnChanges, SimpleChanges } from "@angular/core";
 
-import { EventService } from "jslib-common/abstractions/event.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { CipherType } from "jslib-common/enums/cipherType";
-import { EventType } from "jslib-common/enums/eventType";
-import { FieldType } from "jslib-common/enums/fieldType";
-import { Utils } from "jslib-common/misc/utils";
-import { CipherView } from "jslib-common/models/view/cipherView";
-import { FieldView } from "jslib-common/models/view/fieldView";
+import { EventService } from "@bitwarden/common/src/abstractions/event.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { CipherType } from "@bitwarden/common/src/enums/cipherType";
+import { EventType } from "@bitwarden/common/src/enums/eventType";
+import { FieldType } from "@bitwarden/common/src/enums/fieldType";
+import { Utils } from "@bitwarden/common/src/misc/utils";
+import { CipherView } from "@bitwarden/common/src/models/view/cipherView";
+import { FieldView } from "@bitwarden/common/src/models/view/fieldView";
 
 @Directive()
 export class AddEditCustomFieldsComponent implements OnChanges {

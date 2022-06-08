@@ -2,9 +2,9 @@ import { Directive, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { StateService } from "jslib-common/abstractions/state.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/src/abstractions/state.service";
 
 @Directive()
 export abstract class BaseAcceptComponent implements OnInit {

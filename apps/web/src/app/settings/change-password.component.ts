@@ -1,32 +1,32 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { ChangePasswordComponent as BaseChangePasswordComponent } from "jslib-angular/components/change-password.component";
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CipherService } from "jslib-common/abstractions/cipher.service";
-import { CryptoService } from "jslib-common/abstractions/crypto.service";
-import { FolderService } from "jslib-common/abstractions/folder.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { KeyConnectorService } from "jslib-common/abstractions/keyConnector.service";
-import { MessagingService } from "jslib-common/abstractions/messaging.service";
-import { OrganizationService } from "jslib-common/abstractions/organization.service";
-import { PasswordGenerationService } from "jslib-common/abstractions/passwordGeneration.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
-import { SendService } from "jslib-common/abstractions/send.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { SyncService } from "jslib-common/abstractions/sync.service";
-import { EmergencyAccessStatusType } from "jslib-common/enums/emergencyAccessStatusType";
-import { Utils } from "jslib-common/misc/utils";
-import { EncString } from "jslib-common/models/domain/encString";
-import { SymmetricCryptoKey } from "jslib-common/models/domain/symmetricCryptoKey";
-import { CipherWithIdRequest } from "jslib-common/models/request/cipherWithIdRequest";
-import { EmergencyAccessUpdateRequest } from "jslib-common/models/request/emergencyAccessUpdateRequest";
-import { FolderWithIdRequest } from "jslib-common/models/request/folderWithIdRequest";
-import { OrganizationUserResetPasswordEnrollmentRequest } from "jslib-common/models/request/organizationUserResetPasswordEnrollmentRequest";
-import { PasswordRequest } from "jslib-common/models/request/passwordRequest";
-import { SendWithIdRequest } from "jslib-common/models/request/sendWithIdRequest";
-import { UpdateKeyRequest } from "jslib-common/models/request/updateKeyRequest";
+import { ChangePasswordComponent as BaseChangePasswordComponent } from "@bitwarden/angular/src/components/change-password.component";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
+import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
+import { FolderService } from "@bitwarden/common/src/abstractions/folder.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { KeyConnectorService } from "@bitwarden/common/src/abstractions/keyConnector.service";
+import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
+import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
+import { PasswordGenerationService } from "@bitwarden/common/src/abstractions/passwordGeneration.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
+import { SendService } from "@bitwarden/common/src/abstractions/send.service";
+import { StateService } from "@bitwarden/common/src/abstractions/state.service";
+import { SyncService } from "@bitwarden/common/src/abstractions/sync.service";
+import { EmergencyAccessStatusType } from "@bitwarden/common/src/enums/emergencyAccessStatusType";
+import { Utils } from "@bitwarden/common/src/misc/utils";
+import { EncString } from "@bitwarden/common/src/models/domain/encString";
+import { SymmetricCryptoKey } from "@bitwarden/common/src/models/domain/symmetricCryptoKey";
+import { CipherWithIdRequest } from "@bitwarden/common/src/models/request/cipherWithIdRequest";
+import { EmergencyAccessUpdateRequest } from "@bitwarden/common/src/models/request/emergencyAccessUpdateRequest";
+import { FolderWithIdRequest } from "@bitwarden/common/src/models/request/folderWithIdRequest";
+import { OrganizationUserResetPasswordEnrollmentRequest } from "@bitwarden/common/src/models/request/organizationUserResetPasswordEnrollmentRequest";
+import { PasswordRequest } from "@bitwarden/common/src/models/request/passwordRequest";
+import { SendWithIdRequest } from "@bitwarden/common/src/models/request/sendWithIdRequest";
+import { UpdateKeyRequest } from "@bitwarden/common/src/models/request/updateKeyRequest";
 
 @Component({
   selector: "app-change-password",

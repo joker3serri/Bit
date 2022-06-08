@@ -1,12 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { TokenService } from "jslib-common/abstractions/token.service";
-import { SubscriptionResponse } from "jslib-common/models/response/subscriptionResponse";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { TokenService } from "@bitwarden/common/src/abstractions/token.service";
+import { SubscriptionResponse } from "@bitwarden/common/src/models/response/subscriptionResponse";
 
 @Component({
   selector: "app-user-subscription",

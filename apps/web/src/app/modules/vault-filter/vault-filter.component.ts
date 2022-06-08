@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
-import { VaultFilterComponent as BaseVaultFilterComponent } from "jslib-angular/modules/vault-filter/vault-filter.component";
-import { VaultFilterService } from "jslib-angular/modules/vault-filter/vault-filter.service";
-import { Organization } from "jslib-common/models/domain/organization";
+import { VaultFilterComponent as BaseVaultFilterComponent } from "@bitwarden/angular/src/modules/vault-filter/vault-filter.component";
+import { VaultFilterService } from "@bitwarden/angular/src/modules/vault-filter/vault-filter.service";
+import { Organization } from "@bitwarden/common/src/models/domain/organization";
 
 @Component({
   selector: "app-vault-filter",

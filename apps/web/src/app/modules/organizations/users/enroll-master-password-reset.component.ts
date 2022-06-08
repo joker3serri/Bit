@@ -1,18 +1,18 @@
 import { Component } from "@angular/core";
 
-import { ModalRef } from "jslib-angular/components/modal/modal.ref";
-import { ModalConfig } from "jslib-angular/services/modal.service";
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CryptoService } from "jslib-common/abstractions/crypto.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { SyncService } from "jslib-common/abstractions/sync.service";
-import { UserVerificationService } from "jslib-common/abstractions/userVerification.service";
-import { Utils } from "jslib-common/misc/utils";
-import { Organization } from "jslib-common/models/domain/organization";
-import { OrganizationUserResetPasswordEnrollmentRequest } from "jslib-common/models/request/organizationUserResetPasswordEnrollmentRequest";
-import { Verification } from "jslib-common/types/verification";
+import { ModalRef } from "@bitwarden/angular/src/components/modal/modal.ref";
+import { ModalConfig } from "@bitwarden/angular/src/services/modal.service";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { SyncService } from "@bitwarden/common/src/abstractions/sync.service";
+import { UserVerificationService } from "@bitwarden/common/src/abstractions/userVerification.service";
+import { Utils } from "@bitwarden/common/src/misc/utils";
+import { Organization } from "@bitwarden/common/src/models/domain/organization";
+import { OrganizationUserResetPasswordEnrollmentRequest } from "@bitwarden/common/src/models/request/organizationUserResetPasswordEnrollmentRequest";
+import { Verification } from "@bitwarden/common/src/types/verification";
 
 @Component({
   selector: "app-enroll-master-password-reset",

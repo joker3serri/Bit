@@ -1,12 +1,12 @@
 import { Directive } from "@angular/core";
 
-import { ExportService } from "jslib-common/abstractions/export.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { EventResponse } from "jslib-common/models/response/eventResponse";
-import { ListResponse } from "jslib-common/models/response/listResponse";
-import { EventView } from "jslib-common/models/view/eventView";
+import { ExportService } from "@bitwarden/common/src/abstractions/export.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { EventResponse } from "@bitwarden/common/src/models/response/eventResponse";
+import { ListResponse } from "@bitwarden/common/src/models/response/listResponse";
+import { EventView } from "@bitwarden/common/src/models/view/eventView";
 
 import { EventService } from "src/app/services/event.service";
 

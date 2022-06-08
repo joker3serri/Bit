@@ -2,10 +2,10 @@ import { ApplicationRef, ComponentFactoryResolver, Injectable, Injector } from "
 import * as jq from "jquery";
 import { first } from "rxjs/operators";
 
-import { ModalRef } from "jslib-angular/components/modal/modal.ref";
-import { ModalService as BaseModalService } from "jslib-angular/services/modal.service";
-import { MessagingService } from "jslib-common/abstractions/messaging.service";
-import { Utils } from "jslib-common/misc/utils";
+import { ModalRef } from "@bitwarden/angular/src/components/modal/modal.ref";
+import { ModalService as BaseModalService } from "@bitwarden/angular/src/services/modal.service";
+import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
+import { Utils } from "@bitwarden/common/src/misc/utils";
 
 @Injectable()
 export class ModalService extends BaseModalService {

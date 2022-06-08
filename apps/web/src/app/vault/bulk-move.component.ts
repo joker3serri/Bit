@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { CipherService } from "jslib-common/abstractions/cipher.service";
-import { FolderService } from "jslib-common/abstractions/folder.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { FolderView } from "jslib-common/models/view/folderView";
+import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
+import { FolderService } from "@bitwarden/common/src/abstractions/folder.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { FolderView } from "@bitwarden/common/src/models/view/folderView";
 
 @Component({
   selector: "app-vault-bulk-move",

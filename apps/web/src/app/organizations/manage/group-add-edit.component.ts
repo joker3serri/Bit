@@ -1,16 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CollectionService } from "jslib-common/abstractions/collection.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { CollectionData } from "jslib-common/models/data/collectionData";
-import { Collection } from "jslib-common/models/domain/collection";
-import { GroupRequest } from "jslib-common/models/request/groupRequest";
-import { SelectionReadOnlyRequest } from "jslib-common/models/request/selectionReadOnlyRequest";
-import { CollectionDetailsResponse } from "jslib-common/models/response/collectionResponse";
-import { CollectionView } from "jslib-common/models/view/collectionView";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { CollectionService } from "@bitwarden/common/src/abstractions/collection.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { CollectionData } from "@bitwarden/common/src/models/data/collectionData";
+import { Collection } from "@bitwarden/common/src/models/domain/collection";
+import { GroupRequest } from "@bitwarden/common/src/models/request/groupRequest";
+import { SelectionReadOnlyRequest } from "@bitwarden/common/src/models/request/selectionReadOnlyRequest";
+import { CollectionDetailsResponse } from "@bitwarden/common/src/models/response/collectionResponse";
+import { CollectionView } from "@bitwarden/common/src/models/view/collectionView";
 
 @Component({
   selector: "app-group-add-edit",

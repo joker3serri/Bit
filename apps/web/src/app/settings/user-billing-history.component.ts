@@ -1,12 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { PaymentMethodType } from "jslib-common/enums/paymentMethodType";
-import { TransactionType } from "jslib-common/enums/transactionType";
-import { BillingHistoryResponse } from "jslib-common/models/response/billingHistoryResponse";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { PaymentMethodType } from "@bitwarden/common/src/enums/paymentMethodType";
+import { TransactionType } from "@bitwarden/common/src/enums/transactionType";
+import { BillingHistoryResponse } from "@bitwarden/common/src/models/response/billingHistoryResponse";
 
 @Component({
   selector: "app-user-billing",

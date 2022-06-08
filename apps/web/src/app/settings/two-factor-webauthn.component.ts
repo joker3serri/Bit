@@ -1,18 +1,18 @@
 import { Component, NgZone } from "@angular/core";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { UserVerificationService } from "jslib-common/abstractions/userVerification.service";
-import { TwoFactorProviderType } from "jslib-common/enums/twoFactorProviderType";
-import { SecretVerificationRequest } from "jslib-common/models/request/secretVerificationRequest";
-import { UpdateTwoFactorWebAuthnDeleteRequest } from "jslib-common/models/request/updateTwoFactorWebAuthnDeleteRequest";
-import { UpdateTwoFactorWebAuthnRequest } from "jslib-common/models/request/updateTwoFactorWebAuthnRequest";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { UserVerificationService } from "@bitwarden/common/src/abstractions/userVerification.service";
+import { TwoFactorProviderType } from "@bitwarden/common/src/enums/twoFactorProviderType";
+import { SecretVerificationRequest } from "@bitwarden/common/src/models/request/secretVerificationRequest";
+import { UpdateTwoFactorWebAuthnDeleteRequest } from "@bitwarden/common/src/models/request/updateTwoFactorWebAuthnDeleteRequest";
+import { UpdateTwoFactorWebAuthnRequest } from "@bitwarden/common/src/models/request/updateTwoFactorWebAuthnRequest";
 import {
   ChallengeResponse,
   TwoFactorWebAuthnResponse,
-} from "jslib-common/models/response/twoFactorWebAuthnResponse";
+} from "@bitwarden/common/src/models/response/twoFactorWebAuthnResponse";
 
 import { TwoFactorBaseComponent } from "./two-factor-base.component";
 

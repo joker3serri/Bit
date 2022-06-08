@@ -1,6 +1,6 @@
-import { TreeNode } from "jslib-common/models/domain/treeNode";
-import { CollectionView } from "jslib-common/models/view/collectionView";
-import { FolderView } from "jslib-common/models/view/folderView";
+import { TreeNode } from "@bitwarden/common/src/models/domain/treeNode";
+import { CollectionView } from "@bitwarden/common/src/models/view/collectionView";
+import { FolderView } from "@bitwarden/common/src/models/view/folderView";
 
 export class DynamicTreeNode<T extends CollectionView | FolderView> {
   fullList: T[];

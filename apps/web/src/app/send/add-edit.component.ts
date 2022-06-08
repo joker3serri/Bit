@@ -1,15 +1,15 @@
 import { DatePipe } from "@angular/common";
 import { Component } from "@angular/core";
 
-import { AddEditComponent as BaseAddEditComponent } from "jslib-angular/components/send/add-edit.component";
-import { EnvironmentService } from "jslib-common/abstractions/environment.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { MessagingService } from "jslib-common/abstractions/messaging.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
-import { SendService } from "jslib-common/abstractions/send.service";
-import { StateService } from "jslib-common/abstractions/state.service";
+import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/src/components/send/add-edit.component";
+import { EnvironmentService } from "@bitwarden/common/src/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
+import { SendService } from "@bitwarden/common/src/abstractions/send.service";
+import { StateService } from "@bitwarden/common/src/abstractions/state.service";
 
 @Component({
   selector: "app-send-add-edit",

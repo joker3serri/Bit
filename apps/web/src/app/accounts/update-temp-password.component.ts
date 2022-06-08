@@ -1,16 +1,16 @@
 import { Component } from "@angular/core";
 
-import { UpdateTempPasswordComponent as BaseUpdateTempPasswordComponent } from "jslib-angular/components/update-temp-password.component";
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CryptoService } from "jslib-common/abstractions/crypto.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { MessagingService } from "jslib-common/abstractions/messaging.service";
-import { PasswordGenerationService } from "jslib-common/abstractions/passwordGeneration.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { SyncService } from "jslib-common/abstractions/sync.service";
+import { UpdateTempPasswordComponent as BaseUpdateTempPasswordComponent } from "@bitwarden/angular/src/components/update-temp-password.component";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/src/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
+import { PasswordGenerationService } from "@bitwarden/common/src/abstractions/passwordGeneration.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
+import { StateService } from "@bitwarden/common/src/abstractions/state.service";
+import { SyncService } from "@bitwarden/common/src/abstractions/sync.service";
 
 @Component({
   selector: "app-update-temp-password",

@@ -1,12 +1,12 @@
-import { OrganizationConnectionType } from "jslib-common/enums/organizationConnectionType";
-import { OrganizationConnectionRequest } from "jslib-common/models/request/organizationConnectionRequest";
-import { BillingHistoryResponse } from "jslib-common/models/response/billingHistoryResponse";
-import { BillingPaymentResponse } from "jslib-common/models/response/billingPaymentResponse";
+import { OrganizationConnectionType } from "../enums/organizationConnectionType";
+import { OrganizationConnectionRequest } from "../models/request/organizationConnectionRequest";
+import { BillingHistoryResponse } from "../models/response/billingHistoryResponse";
+import { BillingPaymentResponse } from "../models/response/billingPaymentResponse";
 import {
   OrganizationConnectionConfigApis,
   OrganizationConnectionResponse,
-} from "jslib-common/models/response/organizationConnectionResponse";
-import { SsoPreValidateResponse } from "jslib-common/models/response/ssoPreValidateResponse";
+} from "../models/response/organizationConnectionResponse";
+import { SsoPreValidateResponse } from "../models/response/ssoPreValidateResponse";
 
 import { PolicyType } from "../enums/policyType";
 import { SetKeyConnectorKeyRequest } from "../models/request/account/setKeyConnectorKeyRequest";

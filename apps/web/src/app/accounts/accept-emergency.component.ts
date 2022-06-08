@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { EmergencyAccessAcceptRequest } from "jslib-common/models/request/emergencyAccessAcceptRequest";
+import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/src/abstractions/state.service";
+import { EmergencyAccessAcceptRequest } from "@bitwarden/common/src/models/request/emergencyAccessAcceptRequest";
 
 import { BaseAcceptComponent } from "../common/base.accept.component";
 

@@ -1,8 +1,8 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { AuthGuard } from "jslib-angular/guards/auth.guard";
-import { Permissions } from "jslib-common/enums/permissions";
+import { AuthGuard } from "@bitwarden/angular/src/guards/auth.guard";
+import { Permissions } from "@bitwarden/common/src/enums/permissions";
 
 import { PermissionsGuard } from "src/app/organizations/guards/permissions.guard";
 import { OrganizationLayoutComponent } from "src/app/organizations/layouts/organization-layout.component";

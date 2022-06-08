@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 
-import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
-import { MessagingService } from "jslib-common/abstractions/messaging.service";
+import { BroadcasterService } from "@bitwarden/common/src/abstractions/broadcaster.service";
+import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
 
 @Injectable()
 export class BroadcasterMessagingService implements MessagingService {
