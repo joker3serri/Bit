@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 
 import { ApiService } from "jslib-common/abstractions/api.service";
 import { CryptoService } from "jslib-common/abstractions/crypto.service";
@@ -37,7 +37,7 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
     super(router, platformUtilsService, i18nService, route, stateService);
   }
 
-  async authedHandler(qParams: any): Promise<void> {
+  async authedHandler(qParams: Params): Promise<void> {
     this.actionPromise = this.prepareAcceptRequest(qParams).then(async (request) => {
       await this.apiService.postOrganizationUserAccept(
         qParams.organizationId,
@@ -58,7 +58,7 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
     this.router.navigate(["/vault"]);
   }
 
-  async unauthedHandler(qParams: any): Promise<void> {
+  async unauthedHandler(qParams: Params): Promise<void> {
     this.orgName = qParams.organizationName;
     if (this.orgName != null) {
       // Fix URL encoding of space issue with Angular
@@ -67,7 +67,7 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
     await this.stateService.setOrganizationInvitation(qParams);
   }
 
-  private async prepareAcceptRequest(qParams: any): Promise<OrganizationUserAcceptRequest> {
+  private async prepareAcceptRequest(qParams: Params): Promise<OrganizationUserAcceptRequest> {
     const request = new OrganizationUserAcceptRequest();
     request.token = qParams.token;
 
