@@ -101,18 +101,17 @@
       </div>
       <div class="modal-footer">
         <button
-          #submitBtn
           type="submit"
           class="btn btn-primary"
-          [disabled]="loading || submitBtn.loading || readOnly"
+          [disabled]="loading || form.loading || readOnly"
         >
           <i
             class="bwi bwi-spinner bwi-spin"
             title="{{ 'loading' | i18n }}"
             aria-hidden="true"
-            *ngIf="loading || submitBtn.loading"
+            *ngIf="loading || form.loading"
           ></i>
-          <span *ngIf="!loading && !submitBtn.loading">{{ "save" | i18n }}</span>
+          <span *ngIf="!loading && !form.loading">{{ "save" | i18n }}</span>
         </button>
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
           {{ "cancel" | i18n }}
