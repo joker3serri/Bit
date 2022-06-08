@@ -101,8 +101,9 @@
       </div>
       <div class="modal-footer">
         <button
+          bitButton
           type="submit"
-          class="btn btn-primary"
+          buttonType="primary"
           [disabled]="loading || form.loading || readOnly"
         >
           <i
@@ -113,15 +114,16 @@
           ></i>
           <span *ngIf="!loading && !form.loading">{{ "save" | i18n }}</span>
         </button>
-        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+        <button bitButton buttonType="secondary" type="button" data-dismiss="modal">
           {{ "cancel" | i18n }}
         </button>
         <div class="ml-auto">
           <button
             #deleteBtn
+            bitButton 
+            buttonType="danger"
             type="button"
             (click)="delete()"
-            class="btn btn-outline-danger"
             appA11yTitle="{{ 'delete' | i18n }}"
             *ngIf="editMode"
             [disabled]="deleteBtn.loading"
