@@ -90,3 +90,45 @@ git merge clients/master
 
 # Push to clients or your own fork
 ```
+
+### Web
+
+```
+# Merge master
+git merge master
+
+# Merge branch mono-repo-prep
+git merge 02fe7159034b04d763a61fcf0200869e3209fa33
+
+# Verify files are placed in apps/web
+
+# Add remote
+git remote add clients git@github.com:bitwarden/clients.git
+
+# Merge against clients master
+git fetch clients
+git merge clients/master
+
+# Push to clients or your own fork
+```
+
+### Jslib
+
+```
+# Merge master
+git merge master
+
+# Merge branch mono-repo
+git merge d7492e3cf320410e74ebd0e0675ab994e64bd01a
+
+# Verify files are placed in libs
+
+# Add remote
+git remote add clients git@github.com:bitwarden/clients.git
+
+# Merge against clients master
+git fetch clients
+git merge clients/master
+
+# Push to clients or your own fork
+```
