@@ -18,6 +18,10 @@
     "prettier": "prettier --write .",
     "prepare": "husky install"
   },
+  "workspaces": [
+    "apps/*",
+    "libs/*"
+  ],
   "devDependencies": {
     "@angular-devkit/build-angular": "^12.2.13",
     "@angular/cli": "^12.2.13",
