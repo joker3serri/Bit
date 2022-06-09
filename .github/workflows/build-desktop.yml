@@ -8,14 +8,9 @@ on:
       - 'gh-pages'
     paths:
       - 'apps/desktop/**'
-      - 'libs/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.eslintignore'
-      - '.eslintrc.json'
-      - '.nvmrc'
-      - '.prettierignore'
-      - '.prettierrc.json'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-desktop.yml'
   push:
     branches:
@@ -25,13 +20,9 @@ on:
     paths:
       - 'apps/desktop/**'
       - 'libs/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.eslintignore'
-      - '.eslintrc.json'
-      - '.nvmrc'
-      - '.prettierignore'
-      - '.prettierrc.json'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-desktop.yml'
   workflow_dispatch:
     inputs: {}

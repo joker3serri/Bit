@@ -9,13 +9,9 @@ on:
     paths:
       - 'apps/cli/**'
       - 'libs/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.eslintignore'
-      - '.eslintrc.json'
-      - '.nvmrc'
-      - '.prettierignore'
-      - '.prettierrc.json'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-cli.yml'
   push:
     branches:
@@ -25,13 +21,9 @@ on:
     paths:
       - 'apps/cli/**'
       - 'libs/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.eslintignore'
-      - '.eslintrc.json'
-      - '.nvmrc'
-      - '.prettierignore'
-      - '.prettierrc.json'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-cli.yml'
   workflow_dispatch:
     inputs: {}
