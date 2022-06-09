@@ -151,11 +151,12 @@ jobs:
           call git checkout %GITHUB_SHA%
           call git submodule update --init --recursive
           cd ..\
-          del /S/Q "clients\.git\objects\pack\*"
+          rmdir /S /Q "clients\.git"
           copy clients\* dist\Source
           mkdir dist\Source\apps\browser
           xcopy clients\apps\browser\* dist\Source\apps\browser /E
-          call 7z a browser-source.zip "dist\Source\*"
+          cd dist
+          call 7z a browser-source.zip "Source\*"
 
       - name: Upload Opera artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
