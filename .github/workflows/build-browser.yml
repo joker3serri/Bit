@@ -144,18 +144,18 @@ jobs:
       - name: Build sources for reviewers
         shell: cmd
         run: |
-          mkdir Source
+          mkdir dist\Source
           mkdir clients
           call git clone %GITHUB_SERVER_URL%/%GITHUB_REPOSITORY% clients
           cd clients
           call git checkout %GITHUB_SHA%
           call git submodule update --init --recursive
-          cd ../
+          cd ..\
           del /S/Q "clients\.git\objects\pack\*"
-          copy clients\* Source
-          mkdir Source\apps\browser
-          xcopy clients\apps\browser\* Source\apps\browser /E
-          call 7z a browser-source.zip "Source\*"
+          copy clients\* dist\Source
+          mkdir dist\Source\apps\browser
+          xcopy clients\apps\browser\* dist\Source\apps\browser /E
+          call 7z a browser-source.zip "dist\Source\*"
 
       - name: Upload Opera artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
