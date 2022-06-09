@@ -10,6 +10,7 @@ import { SyncService } from "@bitwarden/common/abstractions/sync.service";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { Policy } from "@bitwarden/common/models/domain/policy";
+import { OrganizationUserResetPasswordEnrollmentRequest } from "@bitwarden/common/models/request/organizationUserResetPasswordEnrollmentRequest";
 
 import { EnrollMasterPasswordReset } from "../../organizations/users/enroll-master-password-reset.component";
 
@@ -82,7 +83,6 @@ export class OrganizationOptionsComponent {
       this.platformUtilsService.showToast("success", null, "Unlinked SSO");
       await this.load();
     } catch (e) {
-      this.platformUtilsService.showToast("error", this.i18nService.t("errorOccurred"), e.message);
       this.logService.error(e);
     }
   }
@@ -107,17 +107,38 @@ export class OrganizationOptionsComponent {
       this.platformUtilsService.showToast("success", null, this.i18nService.t("leftOrganization"));
       await this.load();
     } catch (e) {
-      this.platformUtilsService.showToast("error", this.i18nService.t("errorOccurred"), e.message);
       this.logService.error(e);
     }
   }
 
   async toggleResetPasswordEnrollment(org: Organization) {
-    this.modalService.open(EnrollMasterPasswordReset, {
-      allowMultipleModals: true,
-      data: {
-        organization: org,
-      },
-    });
+    if (!this.organization.resetPasswordEnrolled) {
+      this.modalService.open(EnrollMasterPasswordReset, {
+        allowMultipleModals: true,
+        data: {
+          organization: org,
+        },
+      });
+    } else {
+      const request = new OrganizationUserResetPasswordEnrollmentRequest();
+      request.masterPasswordHash = "ignored";
+      request.resetPasswordKey = null;
+      this.actionPromise = this.apiService.putOrganizationUserResetPasswordEnrollment(
+        this.organization.id,
+        this.organization.userId,
+        request
+      );
+      try {
+        await this.actionPromise;
+        this.platformUtilsService.showToast(
+          "success",
+          null,
+          this.i18nService.t("withdrawPasswordResetSuccess")
+        );
+        this.syncService.fullSync(true);
+      } catch (e) {
+        this.logService.error(e);
+      }
+    }
   }
 }
