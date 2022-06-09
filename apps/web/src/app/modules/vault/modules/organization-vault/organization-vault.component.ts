@@ -7,7 +7,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
 import { VaultFilter } from "jslib-angular/modules/vault-filter/models/vault-filter.model";
@@ -122,13 +122,14 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
         }
 
         this.route.queryParams.subscribe(async (params) => {
-          if (params.cipherId) {
+          const cipherId = getCipherIdFromParams(params);
+          if (cipherId) {
             if (
               // Handle users with implicit collection access since they use the admin endpoint
               this.organization.canEditAnyCollection ||
-              (await this.cipherService.get(params.cipherId)) != null
+              (await this.cipherService.get(cipherId)) != null
             ) {
-              this.editCipherId(params.cipherId);
+              this.editCipherId(cipherId);
             } else {
               this.platformUtilsService.showToast(
                 "error",
@@ -136,7 +137,7 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
                 this.i18nService.t("unknownCipher")
               );
               this.router.navigate([], {
-                queryParams: { cipherId: null },
+                queryParams: { cipherId: null, itemId: null },
                 queryParamsHandling: "merge",
               });
             }
@@ -268,7 +269,7 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
     const cipher = await this.cipherService.get(cipherId);
     if (cipher != null && cipher.reprompt != 0) {
       if (!(await this.passwordRepromptService.showPasswordPrompt())) {
-        this.go({ cipherId: null });
+        this.go({ cipherId: null, itemId: null });
         return;
       }
     }
@@ -295,7 +296,7 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
     );
 
     modal.onClosedPromise().then(() => {
-      this.go({ cipherId: null });
+      this.go({ cipherId: null, itemId: null });
     });
 
     return childComponent;
@@ -347,4 +348,12 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
       replaceUrl: true,
     });
   }
+}
+
+/**
+ * Allows backwards compatibility with 
+ * old links that used the original `cipherId` param
+ */
+ const getCipherIdFromParams = (params: Params): string => {
+  return params['itemId'] || params['cipherId'];
 }
