@@ -144,19 +144,23 @@ jobs:
       - name: Build sources for reviewers
         shell: cmd
         run: |
-          mkdir dist\Source
-          mkdir clients
-          call git clone %GITHUB_SERVER_URL%/%GITHUB_REPOSITORY% clients
-          cd clients
-          call git checkout %GITHUB_SHA%
-          call git submodule update --init --recursive
-          cd ..\
-          rmdir /S /Q "clients\.git"
-          copy clients\* dist\Source
-          mkdir dist\Source\apps\browser
-          xcopy clients\apps\browser\* dist\Source\apps\browser /E
-          cd dist
-          call 7z a browser-source.zip "Source\*"
+          REM Remove ".git" directory
+          rmdir /S /Q ".git"
+
+          REM Copy root level files to source directory
+          mkdir browser-source
+          copy * browser-source
+
+          REM Copy apps\browser to Browser source directory
+          mkdir browser-source\apps\browser
+          xcopy apps\browser\* browser-source\apps\browser /E
+          
+          REM Copy libs to Browser source directory
+          mkdir browser-source\libs
+          xcopy libs\* browser-source\libs /E
+
+          call 7z a browser-source.zip "browser-source\*"
+        working-directory: ./
 
       - name: Upload Opera artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
@@ -190,7 +194,7 @@ jobs:
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
         with:
           name: browser-source-${{ env._BUILD_NUMBER }}.zip
-          path: apps/browser/dist/browser-source.zip
+          path: browser-source.zip
           if-no-files-found: error
 
       - name: Upload coverage artifact
