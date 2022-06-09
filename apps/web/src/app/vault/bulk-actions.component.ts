@@ -1,11 +1,11 @@
 import { Component, Input, ViewChild, ViewContainerRef } from "@angular/core";
 
-import { ModalService } from "@bitwarden/angular/src/services/modal.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { PasswordRepromptService } from "@bitwarden/common/src/abstractions/passwordReprompt.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { CipherRepromptType } from "@bitwarden/common/src/enums/cipherRepromptType";
-import { Organization } from "@bitwarden/common/src/models/domain/organization";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { BulkDeleteComponent } from "./bulk-delete.component";
 import { BulkMoveComponent } from "./bulk-move.component";

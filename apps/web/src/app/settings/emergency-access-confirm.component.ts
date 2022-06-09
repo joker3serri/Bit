@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { Utils } from "@bitwarden/common/src/misc/utils";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { Utils } from "@bitwarden/common/misc/utils";
 
 @Component({
   selector: "emergency-access-confirm",

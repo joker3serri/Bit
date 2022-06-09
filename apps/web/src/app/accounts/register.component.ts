@@ -2,21 +2,21 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { RegisterComponent as BaseRegisterComponent } from "@bitwarden/angular/src/components/register.component";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { AuthService } from "@bitwarden/common/src/abstractions/auth.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { EnvironmentService } from "@bitwarden/common/src/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PasswordGenerationService } from "@bitwarden/common/src/abstractions/passwordGeneration.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { PolicyData } from "@bitwarden/common/src/models/data/policyData";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/src/models/domain/masterPasswordPolicyOptions";
-import { Policy } from "@bitwarden/common/src/models/domain/policy";
-import { ReferenceEventRequest } from "@bitwarden/common/src/models/request/referenceEventRequest";
+import { RegisterComponent as BaseRegisterComponent } from "@bitwarden/angular/components/register.component";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AuthService } from "@bitwarden/common/abstractions/auth.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { PolicyData } from "@bitwarden/common/models/data/policyData";
+import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
+import { Policy } from "@bitwarden/common/models/domain/policy";
+import { ReferenceEventRequest } from "@bitwarden/common/models/request/referenceEventRequest";
 
 import { RouterService } from "../services/router.service";
 

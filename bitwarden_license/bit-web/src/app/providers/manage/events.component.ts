@@ -1,14 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { UserNamePipe } from "@bitwarden/angular/src/pipes/user-name.pipe";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { ExportService } from "@bitwarden/common/src/abstractions/export.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { ProviderService } from "@bitwarden/common/src/abstractions/provider.service";
-import { EventResponse } from "@bitwarden/common/src/models/response/eventResponse";
+import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { ExportService } from "@bitwarden/common/abstractions/export.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { ProviderService } from "@bitwarden/common/abstractions/provider.service";
+import { EventResponse } from "@bitwarden/common/models/response/eventResponse";
 
 import { BaseEventsComponent } from "src/app/common/base.events.component";
 import { EventService } from "src/app/services/event.service";

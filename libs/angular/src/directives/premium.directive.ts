@@ -1,6 +1,6 @@
 import { Directive, OnInit, TemplateRef, ViewContainerRef } from "@angular/core";
 
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 
 /**
  * Only shows the element if the user has premium.

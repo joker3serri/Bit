@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { OrganizationUserStatusType } from "@bitwarden/common/src/enums/organizationUserStatusType";
-import { Utils } from "@bitwarden/common/src/misc/utils";
-import { OrganizationUserBulkConfirmRequest } from "@bitwarden/common/src/models/request/organizationUserBulkConfirmRequest";
-import { OrganizationUserBulkRequest } from "@bitwarden/common/src/models/request/organizationUserBulkRequest";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
+import { Utils } from "@bitwarden/common/misc/utils";
+import { OrganizationUserBulkConfirmRequest } from "@bitwarden/common/models/request/organizationUserBulkConfirmRequest";
+import { OrganizationUserBulkRequest } from "@bitwarden/common/models/request/organizationUserBulkRequest";
 
 import { BulkUserDetails } from "./bulk-status.component";
 

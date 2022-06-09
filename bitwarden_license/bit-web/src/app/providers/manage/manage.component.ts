@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { ProviderService } from "@bitwarden/common/src/abstractions/provider.service";
-import { Provider } from "@bitwarden/common/src/models/domain/provider";
+import { ProviderService } from "@bitwarden/common/abstractions/provider.service";
+import { Provider } from "@bitwarden/common/models/domain/provider";
 
 @Component({
   selector: "provider-manage",

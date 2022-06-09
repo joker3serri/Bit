@@ -2,14 +2,14 @@ import { Component } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { EventService } from "@bitwarden/common/src/abstractions/event.service";
-import { ExportService } from "@bitwarden/common/src/abstractions/export.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
-import { UserVerificationService } from "@bitwarden/common/src/abstractions/userVerification.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { EventService } from "@bitwarden/common/abstractions/event.service";
+import { ExportService } from "@bitwarden/common/abstractions/export.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
 
 import { ExportComponent as BaseExportComponent } from "../../tools/export.component";
 

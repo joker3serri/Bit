@@ -1,13 +1,13 @@
 import { Component } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { UserVerificationService } from "@bitwarden/common/src/abstractions/userVerification.service";
-import { TwoFactorProviderType } from "@bitwarden/common/src/enums/twoFactorProviderType";
-import { UpdateTwoFactorDuoRequest } from "@bitwarden/common/src/models/request/updateTwoFactorDuoRequest";
-import { TwoFactorDuoResponse } from "@bitwarden/common/src/models/response/twoFactorDuoResponse";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
+import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
+import { UpdateTwoFactorDuoRequest } from "@bitwarden/common/models/request/updateTwoFactorDuoRequest";
+import { TwoFactorDuoResponse } from "@bitwarden/common/models/response/twoFactorDuoResponse";
 
 import { TwoFactorBaseComponent } from "./two-factor-base.component";
 

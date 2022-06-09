@@ -1,17 +1,17 @@
 import { Component, NgZone } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { LockComponent as BaseLockComponent } from "@bitwarden/angular/src/components/lock.component";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { EnvironmentService } from "@bitwarden/common/src/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { KeyConnectorService } from "@bitwarden/common/src/abstractions/keyConnector.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { VaultTimeoutService } from "@bitwarden/common/src/abstractions/vaultTimeout.service";
+import { LockComponent as BaseLockComponent } from "@bitwarden/angular/components/lock.component";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
 
 import { RouterService } from "../services/router.service";
 

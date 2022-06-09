@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router } from "@angular/router";
 
-import { AuthService } from "@bitwarden/common/src/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/src/enums/authenticationStatus";
+import { AuthService } from "@bitwarden/common/abstractions/auth.service";
+import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 
 @Injectable()
 export class HomeGuard implements CanActivate {

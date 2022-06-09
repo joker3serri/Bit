@@ -1,10 +1,10 @@
 import { Component } from "@angular/core";
 
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { UserVerificationService } from "@bitwarden/common/src/abstractions/userVerification.service";
-import { SecretVerificationRequest } from "@bitwarden/common/src/models/request/secretVerificationRequest";
-import { ApiKeyResponse } from "@bitwarden/common/src/models/response/apiKeyResponse";
-import { Verification } from "@bitwarden/common/src/types/verification";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
+import { SecretVerificationRequest } from "@bitwarden/common/models/request/secretVerificationRequest";
+import { ApiKeyResponse } from "@bitwarden/common/models/response/apiKeyResponse";
+import { Verification } from "@bitwarden/common/types/verification";
 
 @Component({
   selector: "app-api-key",

@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { EmergencyAccessType } from "@bitwarden/common/src/enums/emergencyAccessType";
-import { EmergencyAccessInviteRequest } from "@bitwarden/common/src/models/request/emergencyAccessInviteRequest";
-import { EmergencyAccessUpdateRequest } from "@bitwarden/common/src/models/request/emergencyAccessUpdateRequest";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { EmergencyAccessType } from "@bitwarden/common/enums/emergencyAccessType";
+import { EmergencyAccessInviteRequest } from "@bitwarden/common/models/request/emergencyAccessInviteRequest";
+import { EmergencyAccessUpdateRequest } from "@bitwarden/common/models/request/emergencyAccessUpdateRequest";
 
 @Component({
   selector: "emergency-access-add-edit",

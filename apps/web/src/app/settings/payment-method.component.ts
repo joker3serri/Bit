@@ -1,11 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { PaymentMethodType } from "@bitwarden/common/src/enums/paymentMethodType";
-import { BillingPaymentResponse } from "@bitwarden/common/src/models/response/billingPaymentResponse";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PaymentMethodType } from "@bitwarden/common/enums/paymentMethodType";
+import { BillingPaymentResponse } from "@bitwarden/common/models/response/billingPaymentResponse";
 
 @Component({
   selector: "app-payment-method",

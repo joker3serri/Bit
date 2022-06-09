@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { Organization } from "@bitwarden/common/src/models/domain/organization";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 @Component({
   selector: "app-org-tools",

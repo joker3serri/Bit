@@ -1,16 +1,16 @@
 import { Directive, OnInit } from "@angular/core";
 
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { PasswordGenerationService } from "@bitwarden/common/src/abstractions/passwordGeneration.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { KdfType } from "@bitwarden/common/src/enums/kdfType";
-import { EncString } from "@bitwarden/common/src/models/domain/encString";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/src/models/domain/masterPasswordPolicyOptions";
-import { SymmetricCryptoKey } from "@bitwarden/common/src/models/domain/symmetricCryptoKey";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { KdfType } from "@bitwarden/common/enums/kdfType";
+import { EncString } from "@bitwarden/common/models/domain/encString";
+import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 
 @Directive()
 export class ChangePasswordComponent implements OnInit {

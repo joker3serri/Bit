@@ -2,13 +2,13 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { ValidationService } from "@bitwarden/angular/src/services/validation.service";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { SyncService } from "@bitwarden/common/src/abstractions/sync.service";
-import { ProviderSetupRequest } from "@bitwarden/common/src/models/request/provider/providerSetupRequest";
+import { ValidationService } from "@bitwarden/angular/services/validation.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { ProviderSetupRequest } from "@bitwarden/common/models/request/provider/providerSetupRequest";
 
 @Component({
   selector: "provider-setup",

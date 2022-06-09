@@ -1,18 +1,18 @@
 import { Component } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { FolderService } from "@bitwarden/common/src/abstractions/folder.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { SyncService } from "@bitwarden/common/src/abstractions/sync.service";
-import { EncString } from "@bitwarden/common/src/models/domain/encString";
-import { CipherWithIdRequest } from "@bitwarden/common/src/models/request/cipherWithIdRequest";
-import { FolderWithIdRequest } from "@bitwarden/common/src/models/request/folderWithIdRequest";
-import { UpdateKeyRequest } from "@bitwarden/common/src/models/request/updateKeyRequest";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { FolderService } from "@bitwarden/common/abstractions/folder.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { EncString } from "@bitwarden/common/models/domain/encString";
+import { CipherWithIdRequest } from "@bitwarden/common/models/request/cipherWithIdRequest";
+import { FolderWithIdRequest } from "@bitwarden/common/models/request/folderWithIdRequest";
+import { UpdateKeyRequest } from "@bitwarden/common/models/request/updateKeyRequest";
 
 @Component({
   selector: "app-update-key",

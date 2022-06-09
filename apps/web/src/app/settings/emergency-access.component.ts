@@ -1,23 +1,23 @@
 import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 
-import { UserNamePipe } from "@bitwarden/angular/src/pipes/user-name.pipe";
-import { ModalService } from "@bitwarden/angular/src/services/modal.service";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { EmergencyAccessStatusType } from "@bitwarden/common/src/enums/emergencyAccessStatusType";
-import { EmergencyAccessType } from "@bitwarden/common/src/enums/emergencyAccessType";
-import { Utils } from "@bitwarden/common/src/misc/utils";
-import { EmergencyAccessConfirmRequest } from "@bitwarden/common/src/models/request/emergencyAccessConfirmRequest";
+import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { EmergencyAccessStatusType } from "@bitwarden/common/enums/emergencyAccessStatusType";
+import { EmergencyAccessType } from "@bitwarden/common/enums/emergencyAccessType";
+import { Utils } from "@bitwarden/common/misc/utils";
+import { EmergencyAccessConfirmRequest } from "@bitwarden/common/models/request/emergencyAccessConfirmRequest";
 import {
   EmergencyAccessGranteeDetailsResponse,
   EmergencyAccessGrantorDetailsResponse,
-} from "@bitwarden/common/src/models/response/emergencyAccessResponse";
+} from "@bitwarden/common/models/response/emergencyAccessResponse";
 
 import { EmergencyAccessAddEditComponent } from "./emergency-access-add-edit.component";
 import { EmergencyAccessConfirmComponent } from "./emergency-access-confirm.component";

@@ -1,14 +1,14 @@
 import { Component, OnInit, Type, ViewChild, ViewContainerRef } from "@angular/core";
 
-import { ModalRef } from "@bitwarden/angular/src/components/modal/modal.ref";
-import { ModalService } from "@bitwarden/angular/src/services/modal.service";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { PolicyType } from "@bitwarden/common/src/enums/policyType";
-import { TwoFactorProviderType } from "@bitwarden/common/src/enums/twoFactorProviderType";
-import { TwoFactorProviders } from "@bitwarden/common/src/services/twoFactor.service";
+import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
+import { TwoFactorProviders } from "@bitwarden/common/services/twoFactor.service";
 
 import { TwoFactorAuthenticatorComponent } from "./two-factor-authenticator.component";
 import { TwoFactorDuoComponent } from "./two-factor-duo.component";

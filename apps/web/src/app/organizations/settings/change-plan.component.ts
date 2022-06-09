@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PlanType } from "@bitwarden/common/src/enums/planType";
-import { ProductType } from "@bitwarden/common/src/enums/productType";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlanType } from "@bitwarden/common/enums/planType";
+import { ProductType } from "@bitwarden/common/enums/productType";
 
 @Component({
   selector: "app-change-plan",

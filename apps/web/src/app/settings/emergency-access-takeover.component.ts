@@ -1,21 +1,21 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { ChangePasswordComponent } from "@bitwarden/angular/src/components/change-password.component";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { PasswordGenerationService } from "@bitwarden/common/src/abstractions/passwordGeneration.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { KdfType } from "@bitwarden/common/src/enums/kdfType";
-import { PolicyData } from "@bitwarden/common/src/models/data/policyData";
-import { Policy } from "@bitwarden/common/src/models/domain/policy";
-import { SymmetricCryptoKey } from "@bitwarden/common/src/models/domain/symmetricCryptoKey";
-import { EmergencyAccessPasswordRequest } from "@bitwarden/common/src/models/request/emergencyAccessPasswordRequest";
-import { PolicyResponse } from "@bitwarden/common/src/models/response/policyResponse";
+import { ChangePasswordComponent } from "@bitwarden/angular/components/change-password.component";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { KdfType } from "@bitwarden/common/enums/kdfType";
+import { PolicyData } from "@bitwarden/common/models/data/policyData";
+import { Policy } from "@bitwarden/common/models/domain/policy";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
+import { EmergencyAccessPasswordRequest } from "@bitwarden/common/models/request/emergencyAccessPasswordRequest";
+import { PolicyResponse } from "@bitwarden/common/models/response/policyResponse";
 
 @Component({
   selector: "emergency-access-takeover",

@@ -1,6 +1,6 @@
 import { Directive, ElementRef, HostListener } from "@angular/core";
 
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 
 @Directive({
   selector: "[appSelectCopy]",

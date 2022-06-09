@@ -1,12 +1,12 @@
 import { NgModule } from "@angular/core";
 
-import { VaultFilterService } from "@bitwarden/angular/src/modules/vault-filter/vault-filter.service";
-import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/src/abstractions/collection.service";
-import { FolderService } from "@bitwarden/common/src/abstractions/folder.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
+import { VaultFilterService } from "@bitwarden/angular/modules/vault-filter/vault-filter.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
+import { FolderService } from "@bitwarden/common/abstractions/folder.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 
 import { SharedModule } from "../shared.module";
 

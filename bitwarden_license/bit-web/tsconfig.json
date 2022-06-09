@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "tldjs": ["../../apps/web/jslib/common/src/misc/tldjs.noop"],
+      "tldjs": ["../../apps/web/jslib/common/misc/tldjs.noop"],
       "src/*": ["../../apps/web/src/*"]
     }
   },

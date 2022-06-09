@@ -1,15 +1,15 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { SearchPipe } from "@bitwarden/angular/src/pipes/search.pipe";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { OrganizationUserStatusType } from "@bitwarden/common/src/enums/organizationUserStatusType";
-import { OrganizationUserType } from "@bitwarden/common/src/enums/organizationUserType";
-import { Utils } from "@bitwarden/common/src/misc/utils";
-import { SelectionReadOnlyRequest } from "@bitwarden/common/src/models/request/selectionReadOnlyRequest";
-import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/src/models/response/organizationUserResponse";
+import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
+import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
+import { Utils } from "@bitwarden/common/misc/utils";
+import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selectionReadOnlyRequest";
+import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organizationUserResponse";
 
 @Component({
   selector: "app-entity-users",

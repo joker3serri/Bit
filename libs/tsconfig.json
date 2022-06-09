@@ -15,7 +15,7 @@
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
-      "jslib-common/*": ["common/src/*"],
+      "jslib-common/*": ["common/*"],
       "jslib-angular/*": ["angular/src/*"],
       "jslib-electron/*": ["electron/src/*"],
       "jslib-node/*": ["node/src/*"]

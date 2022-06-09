@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
-import { Utils } from "@bitwarden/common/src/misc/utils";
+import { Utils } from "@bitwarden/common/misc/utils";
 
 @Component({
   selector: "app-nested-checkbox",

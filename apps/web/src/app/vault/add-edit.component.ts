@@ -1,24 +1,24 @@
 import { Component } from "@angular/core";
 
-import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/src/components/add-edit.component";
-import { AuditService } from "@bitwarden/common/src/abstractions/audit.service";
-import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/src/abstractions/collection.service";
-import { EventService } from "@bitwarden/common/src/abstractions/event.service";
-import { FolderService } from "@bitwarden/common/src/abstractions/folder.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PasswordGenerationService } from "@bitwarden/common/src/abstractions/passwordGeneration.service";
-import { PasswordRepromptService } from "@bitwarden/common/src/abstractions/passwordReprompt.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { TotpService } from "@bitwarden/common/src/abstractions/totp.service";
-import { CipherType } from "@bitwarden/common/src/enums/cipherType";
-import { EventType } from "@bitwarden/common/src/enums/eventType";
-import { LoginUriView } from "@bitwarden/common/src/models/view/loginUriView";
+import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/components/add-edit.component";
+import { AuditService } from "@bitwarden/common/abstractions/audit.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
+import { EventService } from "@bitwarden/common/abstractions/event.service";
+import { FolderService } from "@bitwarden/common/abstractions/folder.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { TotpService } from "@bitwarden/common/abstractions/totp.service";
+import { CipherType } from "@bitwarden/common/enums/cipherType";
+import { EventType } from "@bitwarden/common/enums/eventType";
+import { LoginUriView } from "@bitwarden/common/models/view/loginUriView";
 
 @Component({
   selector: "app-vault-add-edit",

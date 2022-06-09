@@ -1,16 +1,16 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { UserNamePipe } from "@bitwarden/angular/src/pipes/user-name.pipe";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { ExportService } from "@bitwarden/common/src/abstractions/export.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { ProviderService } from "@bitwarden/common/src/abstractions/provider.service";
-import { Organization } from "@bitwarden/common/src/models/domain/organization";
-import { EventResponse } from "@bitwarden/common/src/models/response/eventResponse";
+import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { ExportService } from "@bitwarden/common/abstractions/export.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { ProviderService } from "@bitwarden/common/abstractions/provider.service";
+import { Organization } from "@bitwarden/common/models/domain/organization";
+import { EventResponse } from "@bitwarden/common/models/response/eventResponse";
 
 import { BaseEventsComponent } from "../../common/base.events.component";
 import { EventService } from "../../services/event.service";

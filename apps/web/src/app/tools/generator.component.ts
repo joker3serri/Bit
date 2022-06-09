@@ -1,14 +1,14 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { GeneratorComponent as BaseGeneratorComponent } from "@bitwarden/angular/src/components/generator.component";
-import { ModalService } from "@bitwarden/angular/src/services/modal.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PasswordGenerationService } from "@bitwarden/common/src/abstractions/passwordGeneration.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { UsernameGenerationService } from "@bitwarden/common/src/abstractions/usernameGeneration.service";
+import { GeneratorComponent as BaseGeneratorComponent } from "@bitwarden/angular/components/generator.component";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { UsernameGenerationService } from "@bitwarden/common/abstractions/usernameGeneration.service";
 
 import { PasswordGeneratorHistoryComponent } from "./password-generator-history.component";
 

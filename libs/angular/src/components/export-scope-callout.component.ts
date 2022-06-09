@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 
 @Component({
   selector: "app-export-scope-callout",

@@ -2,12 +2,12 @@ import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { ModalService } from "@bitwarden/angular/src/services/modal.service";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PolicyType } from "@bitwarden/common/src/enums/policyType";
-import { Organization } from "@bitwarden/common/src/models/domain/organization";
-import { PolicyResponse } from "@bitwarden/common/src/models/response/policyResponse";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { Organization } from "@bitwarden/common/models/domain/organization";
+import { PolicyResponse } from "@bitwarden/common/models/response/policyResponse";
 
 import { PolicyListService } from "../../services/policy-list.service";
 import { BasePolicy } from "../policies/base-policy.component";

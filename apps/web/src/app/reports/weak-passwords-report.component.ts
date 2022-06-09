@@ -1,13 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 
-import { ModalService } from "@bitwarden/angular/src/services/modal.service";
-import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { PasswordGenerationService } from "@bitwarden/common/src/abstractions/passwordGeneration.service";
-import { PasswordRepromptService } from "@bitwarden/common/src/abstractions/passwordReprompt.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { CipherType } from "@bitwarden/common/src/enums/cipherType";
-import { CipherView } from "@bitwarden/common/src/models/view/cipherView";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { CipherType } from "@bitwarden/common/enums/cipherType";
+import { CipherView } from "@bitwarden/common/models/view/cipherView";
 
 import { CipherReportComponent } from "./cipher-report.component";
 

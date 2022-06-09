@@ -1,14 +1,14 @@
 import { Component, OnInit } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { KeyConnectorService } from "@bitwarden/common/src/abstractions/keyConnector.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { UpdateProfileRequest } from "@bitwarden/common/src/models/request/updateProfileRequest";
-import { ProfileResponse } from "@bitwarden/common/src/models/response/profileResponse";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { UpdateProfileRequest } from "@bitwarden/common/models/request/updateProfileRequest";
+import { ProfileResponse } from "@bitwarden/common/models/response/profileResponse";
 
 @Component({
   selector: "app-profile",

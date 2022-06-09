@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 
 @Component({
   selector: "app-tools",

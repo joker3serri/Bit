@@ -1,13 +1,13 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { ModalService } from "@bitwarden/angular/src/services/modal.service";
-import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PasswordRepromptService } from "@bitwarden/common/src/abstractions/passwordReprompt.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { CipherView } from "@bitwarden/common/src/models/view/cipherView";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { CipherView } from "@bitwarden/common/models/view/cipherView";
 
 import { UnsecuredWebsitesReportComponent as BaseUnsecuredWebsitesReportComponent } from "../../reports/unsecured-websites-report.component";
 

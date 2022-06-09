@@ -10,21 +10,21 @@ import {
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { VaultFilter } from "@bitwarden/angular/src/modules/vault-filter/models/vault-filter.model";
-import { ModalService } from "@bitwarden/angular/src/services/modal.service";
-import { BroadcasterService } from "@bitwarden/common/src/abstractions/broadcaster.service";
-import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PasswordRepromptService } from "@bitwarden/common/src/abstractions/passwordReprompt.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { SyncService } from "@bitwarden/common/src/abstractions/sync.service";
-import { TokenService } from "@bitwarden/common/src/abstractions/token.service";
-import { CipherType } from "@bitwarden/common/src/enums/cipherType";
-import { CipherView } from "@bitwarden/common/src/models/view/cipherView";
+import { VaultFilter } from "@bitwarden/angular/modules/vault-filter/models/vault-filter.model";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { TokenService } from "@bitwarden/common/abstractions/token.service";
+import { CipherType } from "@bitwarden/common/enums/cipherType";
+import { CipherView } from "@bitwarden/common/models/view/cipherView";
 
 import { UpdateKeyComponent } from "../../../../settings/update-key.component";
 import { AddEditComponent } from "../../../../vault/add-edit.component";

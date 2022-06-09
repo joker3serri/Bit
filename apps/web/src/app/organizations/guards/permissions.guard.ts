@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { SyncService } from "@bitwarden/common/src/abstractions/sync.service";
-import { Permissions } from "@bitwarden/common/src/enums/permissions";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { Permissions } from "@bitwarden/common/enums/permissions";
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {

@@ -1,15 +1,15 @@
 import { Component } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/src/abstractions/collection.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { CipherData } from "@bitwarden/common/src/models/data/cipherData";
-import { Cipher } from "@bitwarden/common/src/models/domain/cipher";
-import { Organization } from "@bitwarden/common/src/models/domain/organization";
-import { CipherCollectionsRequest } from "@bitwarden/common/src/models/request/cipherCollectionsRequest";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { CipherData } from "@bitwarden/common/models/data/cipherData";
+import { Cipher } from "@bitwarden/common/models/domain/cipher";
+import { Organization } from "@bitwarden/common/models/domain/organization";
+import { CipherCollectionsRequest } from "@bitwarden/common/models/request/cipherCollectionsRequest";
 
 import { CollectionsComponent as BaseCollectionsComponent } from "../../vault/collections.component";
 

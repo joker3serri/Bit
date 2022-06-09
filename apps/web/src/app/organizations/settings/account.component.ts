@@ -1,17 +1,17 @@
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { ModalService } from "@bitwarden/angular/src/services/modal.service";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { SyncService } from "@bitwarden/common/src/abstractions/sync.service";
-import { OrganizationKeysRequest } from "@bitwarden/common/src/models/request/organizationKeysRequest";
-import { OrganizationUpdateRequest } from "@bitwarden/common/src/models/request/organizationUpdateRequest";
-import { OrganizationResponse } from "@bitwarden/common/src/models/response/organizationResponse";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organizationKeysRequest";
+import { OrganizationUpdateRequest } from "@bitwarden/common/models/request/organizationUpdateRequest";
+import { OrganizationResponse } from "@bitwarden/common/models/response/organizationResponse";
 
 import { ApiKeyComponent } from "../../settings/api-key.component";
 import { PurgeVaultComponent } from "../../settings/purge-vault.component";

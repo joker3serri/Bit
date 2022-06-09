@@ -1,15 +1,15 @@
 import { Injectable } from "@angular/core";
 
-import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/src/abstractions/collection.service";
-import { FolderService } from "@bitwarden/common/src/abstractions/folder.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { PolicyType } from "@bitwarden/common/src/enums/policyType";
-import { Organization } from "@bitwarden/common/src/models/domain/organization";
-import { CollectionView } from "@bitwarden/common/src/models/view/collectionView";
-import { FolderView } from "@bitwarden/common/src/models/view/folderView";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
+import { FolderService } from "@bitwarden/common/abstractions/folder.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { Organization } from "@bitwarden/common/models/domain/organization";
+import { CollectionView } from "@bitwarden/common/models/view/collectionView";
+import { FolderView } from "@bitwarden/common/models/view/folderView";
 
 import { DynamicTreeNode } from "./models/dynamic-tree-node.model";
 

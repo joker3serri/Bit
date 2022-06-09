@@ -2,15 +2,15 @@ import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { ModalService } from "@bitwarden/angular/src/services/modal.service";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { SearchService } from "@bitwarden/common/src/abstractions/search.service";
-import { Utils } from "@bitwarden/common/src/misc/utils";
-import { GroupResponse } from "@bitwarden/common/src/models/response/groupResponse";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { SearchService } from "@bitwarden/common/abstractions/search.service";
+import { Utils } from "@bitwarden/common/misc/utils";
+import { GroupResponse } from "@bitwarden/common/models/response/groupResponse";
 
 import { EntityUsersComponent } from "../../modules/organizations/manage/entity-users.component";
 

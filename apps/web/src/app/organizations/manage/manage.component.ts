@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { Organization } from "@bitwarden/common/src/models/domain/organization";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 @Component({
   selector: "app-org-manage",

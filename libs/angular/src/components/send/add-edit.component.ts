@@ -1,21 +1,21 @@
 import { DatePipe } from "@angular/common";
 import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { EnvironmentService } from "@bitwarden/common/src/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/src/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
-import { SendService } from "@bitwarden/common/src/abstractions/send.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { PolicyType } from "@bitwarden/common/src/enums/policyType";
-import { SendType } from "@bitwarden/common/src/enums/sendType";
-import { EncArrayBuffer } from "@bitwarden/common/src/models/domain/encArrayBuffer";
-import { Send } from "@bitwarden/common/src/models/domain/send";
-import { SendFileView } from "@bitwarden/common/src/models/view/sendFileView";
-import { SendTextView } from "@bitwarden/common/src/models/view/sendTextView";
-import { SendView } from "@bitwarden/common/src/models/view/sendView";
+import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { SendService } from "@bitwarden/common/abstractions/send.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { SendType } from "@bitwarden/common/enums/sendType";
+import { EncArrayBuffer } from "@bitwarden/common/models/domain/encArrayBuffer";
+import { Send } from "@bitwarden/common/models/domain/send";
+import { SendFileView } from "@bitwarden/common/models/view/sendFileView";
+import { SendTextView } from "@bitwarden/common/models/view/sendTextView";
+import { SendView } from "@bitwarden/common/models/view/sendView";
 
 @Directive()
 export class AddEditComponent implements OnInit {

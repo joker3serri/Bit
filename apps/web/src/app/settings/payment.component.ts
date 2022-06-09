@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { PaymentMethodType } from "@bitwarden/common/src/enums/paymentMethodType";
-import { ThemeType } from "@bitwarden/common/src/enums/themeType";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PaymentMethodType } from "@bitwarden/common/enums/paymentMethodType";
+import { ThemeType } from "@bitwarden/common/enums/themeType";
 
 import ThemeVariables from "src/scss/export.module.scss";
 

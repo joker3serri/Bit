@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { PolicyType } from "@bitwarden/common/src/enums/policyType";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
 
 import {
   BasePolicy,

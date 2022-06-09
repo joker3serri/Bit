@@ -1,5 +1,5 @@
-import { Permissions } from "@bitwarden/common/src/enums/permissions";
-import { Organization } from "@bitwarden/common/src/models/domain/organization";
+import { Permissions } from "@bitwarden/common/enums/permissions";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 const permissions = {
   manage: [

@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { Utils } from "@bitwarden/common/src/misc/utils";
-import { Organization } from "@bitwarden/common/src/models/domain/organization";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { Utils } from "@bitwarden/common/misc/utils";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { NavigationPermissionsService } from "../organizations/services/navigation-permissions.service";
 

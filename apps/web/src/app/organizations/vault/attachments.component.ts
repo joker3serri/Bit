@@ -1,16 +1,16 @@
 import { Component } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { CipherData } from "@bitwarden/common/src/models/data/cipherData";
-import { Cipher } from "@bitwarden/common/src/models/domain/cipher";
-import { Organization } from "@bitwarden/common/src/models/domain/organization";
-import { AttachmentView } from "@bitwarden/common/src/models/view/attachmentView";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { CipherData } from "@bitwarden/common/models/data/cipherData";
+import { Cipher } from "@bitwarden/common/models/domain/cipher";
+import { Organization } from "@bitwarden/common/models/domain/organization";
+import { AttachmentView } from "@bitwarden/common/models/view/attachmentView";
 
 import { AttachmentsComponent as BaseAttachmentsComponent } from "../../vault/attachments.component";
 

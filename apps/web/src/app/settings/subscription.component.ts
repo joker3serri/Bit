@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { TokenService } from "@bitwarden/common/src/abstractions/token.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { TokenService } from "@bitwarden/common/abstractions/token.service";
 
 @Component({
   selector: "app-subscription",

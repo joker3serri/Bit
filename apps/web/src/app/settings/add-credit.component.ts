@@ -8,14 +8,14 @@ import {
   ViewChild,
 } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { PayPalConfig } from "@bitwarden/common/src/abstractions/environment.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { PaymentMethodType } from "@bitwarden/common/src/enums/paymentMethodType";
-import { BitPayInvoiceRequest } from "@bitwarden/common/src/models/request/bitPayInvoiceRequest";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { PayPalConfig } from "@bitwarden/common/abstractions/environment.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { PaymentMethodType } from "@bitwarden/common/enums/paymentMethodType";
+import { BitPayInvoiceRequest } from "@bitwarden/common/models/request/bitPayInvoiceRequest";
 
 @Component({
   selector: "app-add-credit",

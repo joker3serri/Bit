@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 
-import { KeyConnectorService } from "@bitwarden/common/src/abstractions/keyConnector.service";
-import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/src/abstractions/passwordReprompt.service";
+import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
+import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/passwordReprompt.service";
 
 import { PasswordRepromptComponent } from "../components/password-reprompt.component";
 

@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from "@angular/core";
 
-import { UserNamePipe } from "@bitwarden/angular/src/pipes/user-name.pipe";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { EventResponse } from "@bitwarden/common/src/models/response/eventResponse";
-import { ListResponse } from "@bitwarden/common/src/models/response/listResponse";
+import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { EventResponse } from "@bitwarden/common/models/response/eventResponse";
+import { ListResponse } from "@bitwarden/common/models/response/listResponse";
 
 import { EventService } from "../../services/event.service";
 

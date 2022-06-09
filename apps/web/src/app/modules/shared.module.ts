@@ -57,7 +57,7 @@ import { BadgeModule, ButtonModule, CalloutModule, MenuModule } from "@bitwarden
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
 import { ToastrModule } from "ngx-toastr";
 
-import { JslibModule } from "@bitwarden/angular/src/jslib.module";
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 
 registerLocaleData(localeAf, "af");
 registerLocaleData(localeAz, "az");

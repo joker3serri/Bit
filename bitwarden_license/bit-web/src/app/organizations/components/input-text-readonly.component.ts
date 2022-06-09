@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 
 /** For use in the SSO Config Form only - will be deprecated by the Component Library */
 @Component({

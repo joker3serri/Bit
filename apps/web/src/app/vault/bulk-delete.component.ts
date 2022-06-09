@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CipherService } from "@bitwarden/common/src/abstractions/cipher.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { Organization } from "@bitwarden/common/src/models/domain/organization";
-import { CipherBulkDeleteRequest } from "@bitwarden/common/src/models/request/cipherBulkDeleteRequest";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { Organization } from "@bitwarden/common/models/domain/organization";
+import { CipherBulkDeleteRequest } from "@bitwarden/common/models/request/cipherBulkDeleteRequest";
 
 @Component({
   selector: "app-vault-bulk-delete",

@@ -1,17 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/src/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { Utils } from "@bitwarden/common/src/misc/utils";
-import { EncString } from "@bitwarden/common/src/models/domain/encString";
-import { SymmetricCryptoKey } from "@bitwarden/common/src/models/domain/symmetricCryptoKey";
-import { CollectionRequest } from "@bitwarden/common/src/models/request/collectionRequest";
-import { SelectionReadOnlyRequest } from "@bitwarden/common/src/models/request/selectionReadOnlyRequest";
-import { GroupResponse } from "@bitwarden/common/src/models/response/groupResponse";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { Utils } from "@bitwarden/common/misc/utils";
+import { EncString } from "@bitwarden/common/models/domain/encString";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
+import { CollectionRequest } from "@bitwarden/common/models/request/collectionRequest";
+import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selectionReadOnlyRequest";
+import { GroupResponse } from "@bitwarden/common/models/response/groupResponse";
 
 @Component({
   selector: "app-collection-add-edit",

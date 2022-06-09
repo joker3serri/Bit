@@ -3,13 +3,13 @@ import { Router } from "@angular/router";
 import * as JSZip from "jszip";
 import Swal, { SweetAlertIcon } from "sweetalert2";
 
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { ImportService } from "@bitwarden/common/src/abstractions/import.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/src/abstractions/policy.service";
-import { ImportOption, ImportType } from "@bitwarden/common/src/enums/importOptions";
-import { PolicyType } from "@bitwarden/common/src/enums/policyType";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { ImportService } from "@bitwarden/common/abstractions/import.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { ImportOption, ImportType } from "@bitwarden/common/enums/importOptions";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
 
 @Component({
   selector: "app-import",

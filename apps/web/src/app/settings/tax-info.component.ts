@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Output } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { OrganizationTaxInfoUpdateRequest } from "@bitwarden/common/src/models/request/organizationTaxInfoUpdateRequest";
-import { TaxInfoUpdateRequest } from "@bitwarden/common/src/models/request/taxInfoUpdateRequest";
-import { TaxRateResponse } from "@bitwarden/common/src/models/response/taxRateResponse";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationTaxInfoUpdateRequest } from "@bitwarden/common/models/request/organizationTaxInfoUpdateRequest";
+import { TaxInfoUpdateRequest } from "@bitwarden/common/models/request/taxInfoUpdateRequest";
+import { TaxRateResponse } from "@bitwarden/common/models/response/taxRateResponse";
 
 @Component({
   selector: "app-tax-info",

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/src/models/domain/masterPasswordPolicyOptions";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
 
 @Component({
   selector: "app-callout",

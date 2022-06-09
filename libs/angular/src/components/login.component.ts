@@ -2,17 +2,17 @@ import { Directive, Input, NgZone, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { take } from "rxjs/operators";
 
-import { AuthService } from "@bitwarden/common/src/abstractions/auth.service";
-import { CryptoFunctionService } from "@bitwarden/common/src/abstractions/cryptoFunction.service";
-import { EnvironmentService } from "@bitwarden/common/src/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/src/abstractions/log.service";
-import { PasswordGenerationService } from "@bitwarden/common/src/abstractions/passwordGeneration.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { Utils } from "@bitwarden/common/src/misc/utils";
-import { AuthResult } from "@bitwarden/common/src/models/domain/authResult";
-import { PasswordLogInCredentials } from "@bitwarden/common/src/models/domain/logInCredentials";
+import { AuthService } from "@bitwarden/common/abstractions/auth.service";
+import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
+import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { Utils } from "@bitwarden/common/misc/utils";
+import { AuthResult } from "@bitwarden/common/models/domain/authResult";
+import { PasswordLogInCredentials } from "@bitwarden/common/models/domain/logInCredentials";
 
 import { CaptchaProtectedComponent } from "./captchaProtected.component";
 

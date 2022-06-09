@@ -1,15 +1,15 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
-import { notAllowedValueAsync } from "@bitwarden/angular/src/validators/notAllowedValueAsync.validator";
-import { ApiService } from "@bitwarden/common/src/abstractions/api.service";
-import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
-import { OrganizationService } from "@bitwarden/common/src/abstractions/organization.service";
-import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/src/abstractions/state.service";
-import { SyncService } from "@bitwarden/common/src/abstractions/sync.service";
-import { PlanSponsorshipType } from "@bitwarden/common/src/enums/planSponsorshipType";
-import { Organization } from "@bitwarden/common/src/models/domain/organization";
+import { notAllowedValueAsync } from "@bitwarden/angular/validators/notAllowedValueAsync.validator";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { PlanSponsorshipType } from "@bitwarden/common/enums/planSponsorshipType";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 @Component({
   selector: "app-sponsored-families",
