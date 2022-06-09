@@ -52,8 +52,14 @@
   "tab": {
     "message": "Tab"
   },
+  "vault": {
+    "message": "Vault"
+  },
   "myVault": {
     "message": "My Vault"
+  },
+  "allVaults": {
+    "message": "All Vaults"
   },
   "tools": {
     "message": "Tools"
@@ -1955,5 +1961,8 @@
   },
   "apiKey": {
     "message": "API Key"
+  },
+  "ssoKeyConnectorError": {
+    "message": "Key Connector error: make sure Key Connector is available and working correctly."
   }
 }
