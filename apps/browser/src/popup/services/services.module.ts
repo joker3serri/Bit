@@ -2,7 +2,10 @@ import { APP_INITIALIZER, LOCALE_ID, NgModule } from "@angular/core";
 
 import { LockGuard as BaseLockGuardService } from "@bitwarden/angular/guards/lock.guard";
 import { UnauthGuard as BaseUnauthGuardService } from "@bitwarden/angular/guards/unauth.guard";
-import { JslibServicesModule, SECURE_STORAGE } from "@bitwarden/angular/services/jslib-services.module";
+import {
+  JslibServicesModule,
+  SECURE_STORAGE,
+} from "@bitwarden/angular/services/jslib-services.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
