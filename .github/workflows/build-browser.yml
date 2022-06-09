@@ -9,6 +9,13 @@ on:
     paths:
       - 'apps/browser/**'
       - 'libs/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.eslintignore'
+      - '.eslintrc.json'
+      - '.nvmrc'
+      - '.prettierignore'
+      - '.prettierrc.json'
       - '.github/workflows/build-browser.yml'
   push:
     branches:
@@ -18,6 +25,13 @@ on:
     paths:
       - 'apps/browser/**'
       - 'libs/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.eslintignore'
+      - '.eslintrc.json'
+      - '.nvmrc'
+      - '.prettierignore'
+      - '.prettierrc.json'
       - '.github/workflows/build-browser.yml'
   workflow_dispatch:
     inputs: {}
