@@ -351,9 +351,9 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
 }
 
 /**
- * Allows backwards compatibility with 
+ * Allows backwards compatibility with
  * old links that used the original `cipherId` param
  */
- const getCipherIdFromParams = (params: Params): string => {
-  return params['itemId'] || params['cipherId'];
-}
+const getCipherIdFromParams = (params: Params): string => {
+  return params["itemId"] || params["cipherId"];
+};
