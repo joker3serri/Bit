@@ -11,6 +11,7 @@
         <h2 class="modal-title" id="userAddEditTitle">
           {{ title }}
           <small class="text-muted" *ngIf="name">{{ name }}</small>
+          <span class="badge badge-danger" *ngIf="isDisabled">{{ "disabled" | i18n }}</span>
         </h2>
         <button
           type="button"
