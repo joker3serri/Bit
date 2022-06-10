@@ -69,6 +69,7 @@ export class VaultFilterService extends BaseVaultFilterService {
       );
       result = await this.collectionService.decryptMany(collectionDomains);
     }
+
     const nestedCollections = await this.collectionService.getAllNested(result);
     return new DynamicTreeNode<CollectionView>({
       fullList: result,
