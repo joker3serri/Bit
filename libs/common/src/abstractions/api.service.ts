@@ -443,6 +443,16 @@ export abstract class ApiService {
     organizationId: string,
     request: OrganizationUserBulkRequest
   ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
+  disableOrganizationUser: (organizationId: string, id: string) => Promise<any>;
+  disableManyOrganizationUsers: (
+    organizationId: string,
+    request: OrganizationUserBulkRequest
+  ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
+  enableOrganizationUser: (organizationId: string, id: string) => Promise<any>;
+  enableManyOrganizationUsers: (
+    organizationId: string,
+    request: OrganizationUserBulkRequest
+  ) => Promise<ListResponse<OrganizationUserBulkResponse>>
 
   getSync: () => Promise<SyncResponse>;
   postImportDirectory: (organizationId: string, request: ImportDirectoryRequest) => Promise<any>;

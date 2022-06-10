@@ -30,6 +30,8 @@ import { NavbarComponent } from "../layouts/navbar.component";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
 import { OrganizationLayoutComponent } from "../organizations/layouts/organization-layout.component";
 import { BulkConfirmComponent as OrgBulkConfirmComponent } from "../organizations/manage/bulk/bulk-confirm.component";
+import { BulkDisableComponent as OrgBulkDisableComponent } from "../organizations/manage/bulk/bulk-disable.component";
+import { BulkEnableComponent as OrgBulkEnableComponent } from "../organizations/manage/bulk/bulk-enable.component";
 import { BulkRemoveComponent as OrgBulkRemoveComponent } from "../organizations/manage/bulk/bulk-remove.component";
 import { BulkStatusComponent as OrgBulkStatusComponent } from "../organizations/manage/bulk/bulk-status.component";
 import { CollectionAddEditComponent as OrgCollectionAddEditComponent } from "../organizations/manage/collection-add-edit.component";
@@ -236,6 +238,8 @@ import { OrganizationBadgeModule } from "./vault/modules/organization-badge/orga
     OrganizationSubscriptionComponent,
     OrgAttachmentsComponent,
     OrgBulkConfirmComponent,
+    OrgBulkDisableComponent,
+    OrgBulkEnableComponent,
     OrgBulkRemoveComponent,
     OrgBulkStatusComponent,
     OrgCiphersComponent,
@@ -395,6 +399,8 @@ import { OrganizationBadgeModule } from "./vault/modules/organization-badge/orga
     OrganizationSubscriptionComponent,
     OrgAttachmentsComponent,
     OrgBulkConfirmComponent,
+    OrgBulkDisableComponent,
+    OrgBulkEnableComponent,
     OrgBulkRemoveComponent,
     OrgBulkStatusComponent,
     OrgCiphersComponent,

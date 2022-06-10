@@ -120,6 +120,14 @@ export class PeopleComponent
     return this.apiService.deleteProviderUser(this.providerId, id);
   }
 
+  disableUser(id: string): Promise<any> {
+    return new Promise((resolve) => { resolve(id); });
+  }
+
+  enableUser(id: string): Promise<any> {
+    return new Promise((resolve) => { resolve(id); });
+  }
+
   reinviteUser(id: string): Promise<any> {
     return this.apiService.postProviderUserReinvite(this.providerId, id);
   }

@@ -29,6 +29,8 @@ import { OrganizationUserUserDetailsResponse } from "jslib-common/models/respons
 import { BasePeopleComponent } from "../../common/base.people.component";
 
 import { BulkConfirmComponent } from "./bulk/bulk-confirm.component";
+import { BulkDisableComponent } from "./bulk/bulk-disable.component";
+import { BulkEnableComponent } from "./bulk/bulk-enable.component";
 import { BulkRemoveComponent } from "./bulk/bulk-remove.component";
 import { BulkStatusComponent } from "./bulk/bulk-status.component";
 import { EntityEventsComponent } from "./entity-events.component";
@@ -57,6 +59,10 @@ export class PeopleComponent
   bulkStatusModalRef: ViewContainerRef;
   @ViewChild("bulkConfirmTemplate", { read: ViewContainerRef, static: true })
   bulkConfirmModalRef: ViewContainerRef;
+  @ViewChild("bulkDisableTemplate", { read: ViewContainerRef, static: true })
+  bulkDisableModalRef: ViewContainerRef;
+  @ViewChild("bulkEnableTemplate", { read: ViewContainerRef, static: true })
+  bulkEnableModalRef: ViewContainerRef;
   @ViewChild("bulkRemoveTemplate", { read: ViewContainerRef, static: true })
   bulkRemoveModalRef: ViewContainerRef;
 
@@ -166,6 +172,14 @@ export class PeopleComponent
     return this.apiService.deleteOrganizationUser(this.organizationId, id);
   }
 
+  disableUser(id: string): Promise<any> {
+    return this.apiService.disableOrganizationUser(this.organizationId, id);
+  }
+
+  enableUser(id: string): Promise<any> {
+    return this.apiService.enableOrganizationUser(this.organizationId, id);
+  }
+
   reinviteUser(id: string): Promise<any> {
     return this.apiService.postOrganizationUserReinvite(this.organizationId, id);
   }
@@ -236,6 +250,14 @@ export class PeopleComponent
           modal.close();
           this.removeUser(user);
         });
+        comp.onDisabledUser.subscribe(() => {
+          modal.close();
+          this.load();
+        });
+        comp.onEnabledUser.subscribe(() => {
+          modal.close();
+          this.load();
+        });
       }
     );
   }
@@ -263,6 +285,42 @@ export class PeopleComponent
     const [modal] = await this.modalService.openViewRef(
       BulkRemoveComponent,
       this.bulkRemoveModalRef,
+      (comp) => {
+        comp.organizationId = this.organizationId;
+        comp.users = this.getCheckedUsers();
+      }
+    );
+
+    await modal.onClosedPromise();
+    await this.load();
+  }
+
+  async bulkDisable() {
+    if (this.actionPromise != null) {
+      return;
+    }
+
+    const [modal] = await this.modalService.openViewRef(
+      BulkDisableComponent,
+      this.bulkDisableModalRef,
+      (comp) => {
+        comp.organizationId = this.organizationId;
+        comp.users = this.getCheckedUsers();
+      }
+    );
+
+    await modal.onClosedPromise();
+    await this.load();
+  }
+
+  async bulkEnable() {
+    if (this.actionPromise != null) {
+      return;
+    }
+
+    const [modal] = await this.modalService.openViewRef(
+      BulkEnableComponent,
+      this.bulkEnableModalRef,
       (comp) => {
         comp.organizationId = this.organizationId;
         comp.users = this.getCheckedUsers();

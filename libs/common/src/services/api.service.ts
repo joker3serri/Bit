@@ -1360,6 +1360,54 @@ export class ApiService implements ApiServiceAbstraction {
     return new ListResponse(r, OrganizationUserBulkResponse);
   }
 
+  disableOrganizationUser(organizationId: string, id: string): Promise<any> {
+    return this.send(
+      "PUT",
+      "/organizations/" + organizationId + "/users/" + id + "/disable",
+      null,
+      true,
+      false
+    );
+  }
+
+  async disableManyOrganizationUsers(
+    organizationId: string,
+    request: OrganizationUserBulkRequest
+  ): Promise<ListResponse<OrganizationUserBulkResponse>> {
+    const r = await this.send(
+      "PUT",
+      "/organizations/" + organizationId + "/users/disable",
+      request,
+      true,
+      true
+    );
+    return new ListResponse(r, OrganizationUserBulkResponse);
+  }
+
+  enableOrganizationUser(organizationId: string, id: string): Promise<any> {
+    return this.send(
+      "PUT",
+      "/organizations/" + organizationId + "/users/" + id + "/enable",
+      null,
+      true,
+      false
+    );
+  }
+
+  async enableManyOrganizationUsers(
+    organizationId: string,
+    request: OrganizationUserBulkRequest
+  ): Promise<ListResponse<OrganizationUserBulkResponse>> {
+    const r = await this.send(
+      "PUT",
+      "/organizations/" + organizationId + "/users/enable",
+      request,
+      true,
+      true
+    );
+    return new ListResponse(r, OrganizationUserBulkResponse);
+  }
+
   // Plan APIs
 
   async getPlans(): Promise<ListResponse<PlanResponse>> {

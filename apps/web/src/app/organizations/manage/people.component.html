@@ -31,6 +31,17 @@
           acceptedCount
         }}</span>
       </button>
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        [ngClass]="{ active: status == userStatusType.Disabled }"
+        (click)="filter(userStatusType.Disabled)"
+      >
+        {{ "disabled" | i18n }}
+        <span class="badge badge-pill badge-warning" *ngIf="disabledCount">{{
+          disabledCount
+        }}</span>
+      </button>
     </div>
     <div class="ml-3">
       <label class="sr-only" for="search">{{ "search" | i18n }}</label>
@@ -67,6 +78,14 @@
         >
           <i class="bwi bwi-fw bwi-check" aria-hidden="true"></i>
           {{ "confirmSelected" | i18n }}
+        </button>
+        <button class="dropdown-item" appStopClick (click)="bulkEnable()">
+          <i class="bwi bwi-fw bwi-plus-circle" aria-hidden="true"></i>
+          {{ "enable" | i18n }}
+        </button>
+        <button class="dropdown-item" appStopClick (click)="bulkDisable()">
+          <i class="bwi bwi-fw bwi-minus-circle" aria-hidden="true"></i>
+          {{ "disable" | i18n }}
         </button>
         <button class="dropdown-item text-danger" appStopClick (click)="bulkRemove()">
           <i class="bwi bwi-fw bwi-close" aria-hidden="true"></i>
@@ -142,6 +161,9 @@
             }}</span>
             <span class="badge badge-warning" *ngIf="u.status === userStatusType.Accepted">{{
               "accepted" | i18n
+            }}</span>
+            <span class="badge badge-danger" *ngIf="u.status === userStatusType.Disabled">{{
+              "disabled" | i18n
             }}</span>
             <small class="text-muted d-block" *ngIf="u.name">{{ u.name }}</small>
           </td>
@@ -233,6 +255,26 @@
                   <i class="bwi bwi-fw bwi-key" aria-hidden="true"></i>
                   {{ "resetPassword" | i18n }}
                 </a>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  appStopClick
+                  (click)="enable(u)"
+                  *ngIf="u.status === userStatusType.Disabled"
+                >
+                  <i class="bwi bwi-fw bwi-plus-circle" aria-hidden="true"></i>
+                  {{ "enable" | i18n }}
+                </a>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  appStopClick
+                  (click)="disable(u)"
+                  *ngIf="u.status !== userStatusType.Disabled"
+                >
+                  <i class="bwi bwi-fw bwi-minus-circle" aria-hidden="true"></i>
+                  {{ "disable" | i18n }}
+                </a>
                 <a class="dropdown-item text-danger" href="#" appStopClick (click)="remove(u)">
                   <i class="bwi bwi-fw bwi-close" aria-hidden="true"></i>
                   {{ "remove" | i18n }}
@@ -252,4 +294,6 @@
 <ng-template #resetPasswordTemplate></ng-template>
 <ng-template #bulkStatusTemplate></ng-template>
 <ng-template #bulkConfirmTemplate></ng-template>
+<ng-template #bulkDisableTemplate></ng-template>
+<ng-template #bulkEnableTemplate></ng-template>
 <ng-template #bulkRemoveTemplate></ng-template>

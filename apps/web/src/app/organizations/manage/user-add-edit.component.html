@@ -379,6 +379,50 @@
         </button>
         <div class="ml-auto">
           <button
+            #enableBtn
+            type="button"
+            (click)="enable()"
+            class="btn btn-outline-secondary"
+            appA11yTitle="{{ 'enable' | i18n }}"
+            *ngIf="editMode && isDisabled"
+            [disabled]="enableBtn.loading"
+            [appApiAction]="enablePromise"
+          >
+            <i
+              class="bwi bwi-plus-circle bwi-lg bwi-fw"
+              [hidden]="enableBtn.loading"
+              aria-hidden="true"
+            ></i>
+            <i
+              class="bwi bwi-spinner bwi-spin bwi-lg bwi-fw"
+              [hidden]="!enableBtn.loading"
+              title="{{ 'loading' | i18n }}"
+              aria-hidden="true"
+            ></i>
+          </button>
+          <button
+            #disableBtn
+            type="button"
+            (click)="disable()"
+            class="btn btn-outline-secondary"
+            appA11yTitle="{{ 'disable' | i18n }}"
+            *ngIf="editMode && !isDisabled"
+            [disabled]="disableBtn.loading"
+            [appApiAction]="disablePromise"
+          >
+            <i
+              class="bwi bwi-minus-circle bwi-lg bwi-fw"
+              [hidden]="disableBtn.loading"
+              aria-hidden="true"
+            ></i>
+            <i
+              class="bwi bwi-spinner bwi-spin bwi-lg bwi-fw"
+              [hidden]="!disableBtn.loading"
+              title="{{ 'loading' | i18n }}"
+              aria-hidden="true"
+            ></i>
+          </button>
+          <button
             #deleteBtn
             type="button"
             (click)="delete()"

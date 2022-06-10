@@ -5,6 +5,7 @@ import { CollectionService } from "jslib-common/abstractions/collection.service"
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
+import { OrganizationUserStatusType } from "jslib-common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "jslib-common/enums/organizationUserType";
 import { PermissionsApi } from "jslib-common/models/api/permissionsApi";
 import { CollectionData } from "jslib-common/models/data/collectionData";
@@ -26,9 +27,12 @@ export class UserAddEditComponent implements OnInit {
   @Input() usesKeyConnector = false;
   @Output() onSavedUser = new EventEmitter();
   @Output() onDeletedUser = new EventEmitter();
+  @Output() onDisabledUser = new EventEmitter();
+  @Output() onEnabledUser = new EventEmitter();
 
   loading = true;
   editMode = false;
+  isDisabled = false;
   title: string;
   emails: string;
   type: OrganizationUserType = OrganizationUserType.User;
@@ -38,6 +42,8 @@ export class UserAddEditComponent implements OnInit {
   collections: CollectionView[] = [];
   formPromise: Promise<any>;
   deletePromise: Promise<any>;
+  disablePromise: Promise<any>;
+  enablePromise: Promise<any>;
   organizationUserType = OrganizationUserType;
 
   manageAllCollectionsCheckboxes = [
@@ -97,6 +103,7 @@ export class UserAddEditComponent implements OnInit {
         );
         this.access = user.accessAll ? "all" : "selected";
         this.type = user.type;
+        this.isDisabled = user.status === OrganizationUserStatusType.Disabled;
         if (user.type === OrganizationUserType.Custom) {
           this.permissions = user.permissions;
         }
@@ -235,6 +242,74 @@ export class UserAddEditComponent implements OnInit {
         this.i18nService.t("removedUserId", this.name)
       );
       this.onDeletedUser.emit();
+    } catch (e) {
+      this.logService.error(e);
+    }
+  }
+
+  async disable() {
+    if (!this.editMode) {
+      return;
+    }
+
+    const confirmed = await this.platformUtilsService.showDialog(
+      this.i18nService.t("disableUserConfirmation"),
+      this.name,
+      this.i18nService.t("yes"),
+      this.i18nService.t("no"),
+      "warning"
+    );
+    if (!confirmed) {
+      return false;
+    }
+
+    try {
+      this.disablePromise = this.apiService.disableOrganizationUser(
+        this.organizationId,
+        this.organizationUserId
+      );
+      await this.disablePromise;
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("disabledUserId", this.name)
+      );
+      this.isDisabled = true;
+      this.onDisabledUser.emit();
+    } catch (e) {
+      this.logService.error(e);
+    }
+  }
+
+  async enable() {
+    if (!this.editMode) {
+      return;
+    }
+
+    const confirmed = await this.platformUtilsService.showDialog(
+      this.i18nService.t("enableUserConfirmation"),
+      this.name,
+      this.i18nService.t("yes"),
+      this.i18nService.t("no"),
+      "warning"
+    );
+    if (!confirmed) {
+      return false;
+    }
+
+    try {
+      this.enablePromise = this.apiService.enableOrganizationUser(
+        this.organizationId,
+        this.organizationUserId
+      );
+      await this.enablePromise;
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("enabledUserId", this.name)
+      );
+      this.isDisabled = false;
+      this.onEnabledUser.emit();
     } catch (e) {
       this.logService.error(e);
     }
