@@ -121,11 +121,15 @@ export class PeopleComponent
   }
 
   disableUser(id: string): Promise<any> {
-    return new Promise((resolve) => { resolve(id); });
+    return new Promise((resolve) => {
+      resolve(id);
+    });
   }
 
   enableUser(id: string): Promise<any> {
-    return new Promise((resolve) => { resolve(id); });
+    return new Promise((resolve) => {
+      resolve(id);
+    });
   }
 
   reinviteUser(id: string): Promise<any> {

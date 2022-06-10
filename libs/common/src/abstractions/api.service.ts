@@ -452,7 +452,7 @@ export abstract class ApiService {
   enableManyOrganizationUsers: (
     organizationId: string,
     request: OrganizationUserBulkRequest
-  ) => Promise<ListResponse<OrganizationUserBulkResponse>>
+  ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
 
   getSync: () => Promise<SyncResponse>;
   postImportDirectory: (organizationId: string, request: ImportDirectoryRequest) => Promise<any>;
