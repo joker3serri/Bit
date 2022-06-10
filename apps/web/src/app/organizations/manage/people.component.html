@@ -38,7 +38,7 @@
         (click)="filter(userStatusType.Disabled)"
       >
         {{ "disabled" | i18n }}
-        <span class="badge badge-pill badge-warning" *ngIf="disabledCount">{{
+        <span class="badge badge-pill badge-info" *ngIf="disabledCount">{{
           disabledCount
         }}</span>
       </button>
@@ -162,7 +162,7 @@
             <span class="badge badge-warning" *ngIf="u.status === userStatusType.Accepted">{{
               "accepted" | i18n
             }}</span>
-            <span class="badge badge-danger" *ngIf="u.status === userStatusType.Disabled">{{
+            <span class="badge badge-secondary" *ngIf="u.status === userStatusType.Disabled">{{
               "disabled" | i18n
             }}</span>
             <small class="text-muted d-block" *ngIf="u.name">{{ u.name }}</small>
