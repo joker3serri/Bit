@@ -168,6 +168,8 @@ export abstract class StateService<T extends Account = Account> {
   setEnableStartToTray: (value: boolean, options?: StorageOptions) => Promise<void>;
   getEnableTray: (options?: StorageOptions) => Promise<boolean>;
   setEnableTray: (value: boolean, options?: StorageOptions) => Promise<void>;
+  getEnableHardwareAcceleration: (options?: StorageOptions) => Promise<boolean>;
+  setEnableHardwareAcceleration: (value: boolean, options?: StorageOptions) => Promise<void>;
   getEncryptedCiphers: (options?: StorageOptions) => Promise<{ [id: string]: CipherData }>;
   setEncryptedCiphers: (
     value: { [id: string]: CipherData },

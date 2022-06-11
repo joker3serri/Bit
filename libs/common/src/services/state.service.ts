@@ -1145,6 +1145,24 @@ export class StateService<
     );
   }
 
+  async getEnableHardwareAcceleration(options?: StorageOptions): Promise<boolean> {
+    return (
+      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.enableHardwareAcceleration ?? false
+    );
+  }
+
+  async setEnableHardwareAcceleration(value: boolean, options?: StorageOptions): Promise<void> {
+    const globals = await this.getGlobals(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+    globals.enableHardwareAcceleration = value;
+    await this.saveGlobals(
+      globals,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+  }
+
   async getEncryptedCiphers(options?: StorageOptions): Promise<{ [id: string]: CipherData }> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskMemoryOptions()))

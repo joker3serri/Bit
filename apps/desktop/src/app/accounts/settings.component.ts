@@ -25,6 +25,7 @@ export class SettingsComponent implements OnInit {
   vaultTimeoutAction: string;
   pin: boolean = null;
   disableFavicons = false;
+  enableHardwareAcceleration = true;
   enableBrowserIntegration = false;
   enableBrowserIntegrationFingerprint = false;
   enableMinToTray = false;
@@ -56,6 +57,8 @@ export class SettingsComponent implements OnInit {
   enableMinToTrayDescText: string;
   enableCloseToTrayText: string;
   enableCloseToTrayDescText: string;
+  enableHardwareAccelerationText: string;
+  enableHardwareAccelerationDescText: string;
   startToTrayText: string;
   startToTrayDescText: string;
 
@@ -96,6 +99,11 @@ export class SettingsComponent implements OnInit {
     const startToTrayKey = isMac ? "startToMenuBar" : "startToTray";
     this.startToTrayText = this.i18nService.t(startToTrayKey);
     this.startToTrayDescText = this.i18nService.t(startToTrayKey + "Desc");
+
+
+    const enableHardwareAccelerationKey = "enableHardwareAcceleration";
+    this.enableHardwareAccelerationText = this.i18nService.t(enableHardwareAccelerationKey);
+    this.enableHardwareAccelerationDescText = this.i18nService.t(enableHardwareAccelerationKey + "Desc");
 
     this.vaultTimeouts = [
       // { name: i18nService.t('immediately'), value: 0 },
@@ -155,6 +163,7 @@ export class SettingsComponent implements OnInit {
     this.enableCloseToTray = await this.stateService.getEnableCloseToTray();
     this.enableTray = await this.stateService.getEnableTray();
     this.startToTray = await this.stateService.getEnableStartToTray();
+    this.enableHardwareAcceleration = await this.stateService.getEnableHardwareAcceleration();
 
     this.alwaysShowDock = await this.stateService.getAlwaysShowDock();
     this.showAlwaysShowDock = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
@@ -414,5 +423,9 @@ export class SettingsComponent implements OnInit {
     await this.stateService.setEnableBrowserIntegrationFingerprint(
       this.enableBrowserIntegrationFingerprint
     );
+  }
+
+  async saveHardwareAcceleration() {
+    await this.stateService.setEnableHardwareAcceleration(this.enableHardwareAcceleration);
   }
 }

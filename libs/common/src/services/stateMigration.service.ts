@@ -59,6 +59,7 @@ const v1Keys: { [key: string]: string } = {
   enableMinimizeToTray: "enableMinimizeToTray",
   enableStartToTray: "enableStartToTrayKey",
   enableTray: "enableTray",
+  enableHardwareAcceleration: "enableHardwareAcceleration",
   encKey: "encKey", // Generated Symmetric Key
   encOrgKeys: "encOrgKeys",
   encPrivate: "encPrivateKey",
@@ -225,6 +226,9 @@ export class StateMigrationService<
     globals.enableBrowserIntegrationFingerprint =
       (await this.get<boolean>(v1Keys.enableBrowserIntegrationFingerprint)) ??
       globals.enableBrowserIntegrationFingerprint;
+    globals.enableHardwareAcceleration =
+      (await this.get<boolean>(v1Keys.enableHardwareAcceleration)) ??
+      globals.enableHardwareAcceleration;
 
     const userId =
       (await this.get<string>(v1Keys.userId)) ?? (await this.get<string>(v1Keys.entityId));
