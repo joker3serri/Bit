@@ -934,7 +934,7 @@
     "message": "Enable hardware acceleration."
   },
   "enableHardwareAccelerationDesc": {
-    "message": "Enable the application to make use of a discrete GPU, if available"
+    "message": "Enable the application to make use of a discrete GPU. Restart is required."
   },
   "startToTray": {
     "message": "Start To Tray Icon"
