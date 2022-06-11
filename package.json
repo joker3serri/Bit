@@ -13,10 +13,11 @@
   },
   "homepage": "https://bitwarden.com",
   "scripts": {
+    "prepare": "husky install",
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --write .",
-    "prepare": "husky install"
+    "test": "jest"
   },
   "workspaces": [
     "apps/*",
