@@ -889,6 +889,12 @@
   "enableTrayDesc": {
     "message": "Always show an icon in the system tray."
   },
+  "enableHardwareAcceleration": {
+    "message": "Enable hardware acceleration."
+  },
+  "enableHardwareAccelerationDesc": {
+    "message": "Enable the application to make use of a discrete GPU, if available"
+  },
   "startToTray": {
     "message": "Start to tray icon"
   },
