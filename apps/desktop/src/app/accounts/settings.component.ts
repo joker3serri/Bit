@@ -100,10 +100,11 @@ export class SettingsComponent implements OnInit {
     this.startToTrayText = this.i18nService.t(startToTrayKey);
     this.startToTrayDescText = this.i18nService.t(startToTrayKey + "Desc");
 
-
     const enableHardwareAccelerationKey = "enableHardwareAcceleration";
     this.enableHardwareAccelerationText = this.i18nService.t(enableHardwareAccelerationKey);
-    this.enableHardwareAccelerationDescText = this.i18nService.t(enableHardwareAccelerationKey + "Desc");
+    this.enableHardwareAccelerationDescText = this.i18nService.t(
+      enableHardwareAccelerationKey + "Desc"
+    );
 
     this.vaultTimeouts = [
       // { name: i18nService.t('immediately'), value: 0 },

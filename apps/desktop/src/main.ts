@@ -217,10 +217,10 @@ export class Main {
       });
   }
 
-  private async toggleHardwareAcceleration() : Promise<void> {
-    const enableHardwareEnableAcceleration = await this.stateService.getEnableHardwareAcceleration();
-    if (!enableHardwareEnableAcceleration)
-    {
+  private async toggleHardwareAcceleration(): Promise<void> {
+    const enableHardwareEnableAcceleration =
+      await this.stateService.getEnableHardwareAcceleration();
+    if (!enableHardwareEnableAcceleration) {
       app.disableHardwareAcceleration();
     }
   }
