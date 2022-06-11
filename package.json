@@ -17,7 +17,9 @@
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --write .",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:watch:all": "jest --watchAll"
   },
   "workspaces": [
     "apps/*",
