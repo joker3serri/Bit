@@ -1273,6 +1273,40 @@
   "fileFormat": {
     "message": "Datnes veids"
   },
+  "hCaptchaUrl": {
+    "message": "hCaptcha URL",
+    "description": "hCaptcha is the name of a website, should not be translated"
+  },
+  "loadAccessibilityCookie": {
+    "message": "Ielādēt piekļūstamības sīkdatni"
+  },
+  "registerAccessibilityUser": {
+    "message": "Reģistrēties kā piekļūstamības lietotājam",
+    "description": "ex. Register as an accessibility user at hcaptcha.com"
+  },
+  "copyPasteLink": {
+    "message": "Ievietot starpliktuvē un zemāk ielīmēt saiti, kas tika nosūtīta e-pastā"
+  },
+  "enterhCaptchaUrl": {
+    "message": "Ievadīt URL, lai ielādētu hCaptcha piekļūstamības sīkdatni",
+    "description": "hCaptcha is the name of a website, should not be translated"
+  },
+  "hCaptchaUrlRequired": {
+    "message": "Ir nepieciešams hCaptcha URL",
+    "description": "hCaptcha is the name of a website, should not be translated"
+  },
+  "invalidUrl": {
+    "message": "Nederīgs URL"
+  },
+  "done": {
+    "message": "Darīts"
+  },
+  "accessibilityCookieSaved": {
+    "message": "Piekļūstamības sīkdatne saglabāta."
+  },
+  "noAccessibilityCookieSaved": {
+    "message": "Nav saglabātas piekļūstamības sīkdadnes"
+  },
   "warning": {
     "message": "UZMANĪBU",
     "description": "WARNING (should stay in capitalized letters if the language permits)"

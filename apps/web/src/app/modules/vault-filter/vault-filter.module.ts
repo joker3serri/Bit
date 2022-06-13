@@ -1,13 +1,5 @@
 import { NgModule } from "@angular/core";
 
-import { VaultFilterService } from "@bitwarden/angular/modules/vault-filter/vault-filter.service";
-import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
-import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
-import { FolderService } from "@bitwarden/common/abstractions/folder.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
-import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
-
 import { SharedModule } from "../shared.module";
 
 import { CollectionFilterComponent } from "./components/collection-filter.component";
@@ -17,7 +9,9 @@ import { OrganizationFilterComponent } from "./components/organization-filter.co
 import { OrganizationOptionsComponent } from "./components/organization-options.component";
 import { StatusFilterComponent } from "./components/status-filter.component";
 import { TypeFilterComponent } from "./components/type-filter.component";
+import { OrganizationVaultFilterComponent } from "./organization-vault-filter.component";
 import { VaultFilterComponent } from "./vault-filter.component";
+import { VaultFilterService } from "./vault-filter.service";
 
 @NgModule({
   imports: [SharedModule],
@@ -29,22 +23,10 @@ import { VaultFilterComponent } from "./vault-filter.component";
     OrganizationOptionsComponent,
     StatusFilterComponent,
     TypeFilterComponent,
+    OrganizationVaultFilterComponent,
     LinkSsoComponent,
   ],
-  exports: [VaultFilterComponent],
-  providers: [
-    {
-      provide: VaultFilterService,
-      useClass: VaultFilterService,
-      deps: [
-        StateService,
-        OrganizationService,
-        FolderService,
-        CipherService,
-        CollectionService,
-        PolicyService,
-      ],
-    },
-  ],
+  exports: [VaultFilterComponent, OrganizationVaultFilterComponent],
+  providers: [VaultFilterService],
 })
 export class VaultFilterModule {}

@@ -23,7 +23,6 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync.service";
 import { TokenService } from "@bitwarden/common/abstractions/token.service";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 
 import { UpdateKeyComponent } from "../../../../settings/update-key.component";
@@ -34,6 +33,7 @@ import { CollectionsComponent } from "../../../../vault/collections.component";
 import { FolderAddEditComponent } from "../../../../vault/folder-add-edit.component";
 import { ShareComponent } from "../../../../vault/share.component";
 import { VaultFilterComponent } from "../../../vault-filter/vault-filter.component";
+import { VaultFilterService } from "../../../vault-filter/vault-filter.service";
 import { VaultService } from "../../vault.service";
 
 const BroadcasterSubscriptionId = "VaultComponent";
@@ -87,7 +87,8 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
     private organizationService: OrganizationService,
     private vaultService: VaultService,
     private cipherService: CipherService,
-    private passwordRepromptService: PasswordRepromptService
+    private passwordRepromptService: PasswordRepromptService,
+    private vaultFilterService: VaultFilterService
   ) {}
 
   async ngOnInit() {
@@ -186,6 +187,7 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
       this.activeFilter.myVaultOnly = true;
     } else {
       this.activeFilter.selectedOrganizationId = orgId;
+      await this.vaultFilterService.ensureVaultFiltersAreExpanded();
     }
     await this.applyVaultFilter(this.activeFilter);
   }

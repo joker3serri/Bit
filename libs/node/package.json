@@ -18,6 +18,6 @@
     "build:watch": "npm run clean && tsc -watch"
   },
   "dependencies": {
-    "@bitwarden/jslib-common": "file:../common"
+    "@bitwarden/common": "file:../common"
   }
 }
