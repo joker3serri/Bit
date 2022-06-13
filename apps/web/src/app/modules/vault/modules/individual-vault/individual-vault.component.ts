@@ -7,7 +7,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
 import { VaultFilter } from "@bitwarden/angular/modules/vault-filter/models/vault-filter.model";
@@ -110,9 +110,11 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
       this.filterComponent.reloadOrganizations();
       this.showUpdateKey = !(await this.cryptoService.hasEncKey());
 
-      if (params.cipherId) {
+      const cipherId = getCipherIdFromParams(params);
+
+      if (cipherId) {
         const cipherView = new CipherView();
-        cipherView.id = params.cipherId;
+        cipherView.id = cipherId;
         if (params.action === "clone") {
           await this.cloneCipher(cipherView);
         } else if (params.action === "edit") {
@@ -122,9 +124,10 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
       await this.ciphersComponent.reload();
 
       this.route.queryParams.subscribe(async (params) => {
-        if (params.cipherId) {
-          if ((await this.cipherService.get(params.cipherId)) != null) {
-            this.editCipherId(params.cipherId);
+        const cipherId = getCipherIdFromParams(params);
+        if (cipherId) {
+          if ((await this.cipherService.get(cipherId)) != null) {
+            this.editCipherId(cipherId);
           } else {
             this.platformUtilsService.showToast(
               "error",
@@ -132,7 +135,7 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
               this.i18nService.t("unknownCipher")
             );
             this.router.navigate([], {
-              queryParams: { cipherId: null },
+              queryParams: { itemId: null, cipherId: null },
               queryParamsHandling: "merge",
             });
           }
@@ -355,7 +358,7 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
     const cipher = await this.cipherService.get(id);
     if (cipher != null && cipher.reprompt != 0) {
       if (!(await this.passwordRepromptService.showPasswordPrompt())) {
-        this.go({ cipherId: null });
+        this.go({ cipherId: null, itemId: null });
         return;
       }
     }
@@ -381,7 +384,7 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
     );
 
     modal.onClosedPromise().then(() => {
-      this.go({ cipherId: null });
+      this.go({ cipherId: null, itemId: null });
     });
 
     return childComponent;
@@ -415,3 +418,11 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
     });
   }
 }
+
+/**
+ * Allows backwards compatibility with
+ * old links that used the original `cipherId` param
+ */
+const getCipherIdFromParams = (params: Params): string => {
+  return params["itemId"] || params["cipherId"];
+};
