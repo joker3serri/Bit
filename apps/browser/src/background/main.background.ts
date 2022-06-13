@@ -769,7 +769,10 @@ export default class MainBackground {
     }
 
     this.actionSetBadgeBackgroundColor(chrome.browserAction);
-    this.actionSetBadgeBackgroundColor(this.sidebarAction);
+    this.actionSetBadgeTextColor(chrome.browserAction);
+	
+	this.actionSetBadgeBackgroundColor(this.sidebarAction);
+    
 
     this.menuOptionsLoaded = [];
     const authStatus = await this.authService.getAuthStatus();
@@ -988,6 +991,12 @@ export default class MainBackground {
   private actionSetBadgeBackgroundColor(action: any) {
     if (action && action.setBadgeBackgroundColor) {
       action.setBadgeBackgroundColor({ color: "#294e5f" });
+    }
+  }
+  
+  private actionSetBadgeTextColor(action: any) {
+    if (action && action.setBadgeTextColor) {
+      action.setBadgeTextColor({ color: "#fff" });
     }
   }
 
