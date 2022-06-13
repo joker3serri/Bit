@@ -1273,6 +1273,40 @@
   "fileFormat": {
     "message": "Fájlformátum"
   },
+  "hCaptchaUrl": {
+    "message": "hCaptcha webcím",
+    "description": "hCaptcha is the name of a website, should not be translated"
+  },
+  "loadAccessibilityCookie": {
+    "message": "Akadálymentes süti betöltése"
+  },
+  "registerAccessibilityUser": {
+    "message": "Regisztrálás akadálymentes felhasználóként:",
+    "description": "ex. Register as an accessibility user at hcaptcha.com"
+  },
+  "copyPasteLink": {
+    "message": "Vágólapon át szúrjuk be lentebb a kapott emailben levő hivatkozást."
+  },
+  "enterhCaptchaUrl": {
+    "message": "Webcím megadása a hCaptcha akadálymentes sütijének betöltéséhez",
+    "description": "hCaptcha is the name of a website, should not be translated"
+  },
+  "hCaptchaUrlRequired": {
+    "message": "A hCaptcha webcím megadása szükséges",
+    "description": "hCaptcha is the name of a website, should not be translated"
+  },
+  "invalidUrl": {
+    "message": "A webcím érvénytelen."
+  },
+  "done": {
+    "message": "Kész"
+  },
+  "accessibilityCookieSaved": {
+    "message": "Az ajadálymentes süti mentésre került."
+  },
+  "noAccessibilityCookieSaved": {
+    "message": "Nem lett elmentve akadálymentes süti."
+  },
   "warning": {
     "message": "FIGYELEM",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
