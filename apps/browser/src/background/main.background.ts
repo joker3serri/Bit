@@ -771,7 +771,7 @@ export default class MainBackground {
     this.actionSetBadgeBackgroundColor(chrome.browserAction);
     this.actionSetBadgeTextColor(chrome.browserAction);
 	
-	this.actionSetBadgeBackgroundColor(this.sidebarAction);
+    this.actionSetBadgeBackgroundColor(this.sidebarAction);
     
 
     this.menuOptionsLoaded = [];
