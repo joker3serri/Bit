@@ -12,6 +12,7 @@ import {
 import { BroadcasterService as BroadcasterServiceAbstraction } from "jslib-common/abstractions/broadcaster.service";
 import { CryptoService as CryptoServiceAbstraction } from "jslib-common/abstractions/crypto.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "jslib-common/abstractions/cryptoFunction.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { I18nService as I18nServiceAbstraction } from "jslib-common/abstractions/i18n.service";
 import {
   LogService,
@@ -43,6 +44,7 @@ import { StateService } from "../../services/state.service";
 import { LoginGuard } from "../guards/login.guard";
 import { SearchBarService } from "../layout/search/search-bar.service";
 
+import { DesktopFileDownloadService } from "./desktopFileDownloadService";
 import { InitService } from "./init.service";
 
 const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
@@ -128,6 +130,10 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         STATE_FACTORY,
         STATE_SERVICE_USE_CACHE,
       ],
+    },
+    {
+      provide: FileDownloadService,
+      useClass: DesktopFileDownloadService,
     },
   ],
 })

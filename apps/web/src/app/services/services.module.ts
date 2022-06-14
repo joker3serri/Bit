@@ -14,6 +14,7 @@ import { ApiService as ApiServiceAbstraction } from "jslib-common/abstractions/a
 import { CipherService as CipherServiceAbstraction } from "jslib-common/abstractions/cipher.service";
 import { CollectionService as CollectionServiceAbstraction } from "jslib-common/abstractions/collection.service";
 import { CryptoService as CryptoServiceAbstraction } from "jslib-common/abstractions/crypto.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { FolderService as FolderServiceAbstraction } from "jslib-common/abstractions/folder.service";
 import { I18nService as I18nServiceAbstraction } from "jslib-common/abstractions/i18n.service";
 import { ImportService as ImportServiceAbstraction } from "jslib-common/abstractions/import.service";
@@ -43,6 +44,7 @@ import { PermissionsGuard as OrgPermissionsGuard } from "../organizations/guards
 import { NavigationPermissionsService as OrgPermissionsService } from "../organizations/services/navigation-permissions.service";
 
 import { EventService } from "./event.service";
+import { WebFileDownloadService } from "./webFileDownload.service";
 import { InitService } from "./init.service";
 import { ModalService } from "./modal.service";
 import { PolicyListService } from "./policy-list.service";
@@ -127,6 +129,10 @@ import { RouterService } from "./router.service";
     {
       provide: PasswordRepromptServiceAbstraction,
       useClass: PasswordRepromptService,
+    },
+    {
+      provide: FileDownloadService,
+      useClass: WebFileDownloadService,
     },
     HomeGuard,
   ],

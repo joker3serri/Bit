@@ -14,6 +14,7 @@ import { CryptoFunctionService } from "jslib-common/abstractions/cryptoFunction.
 import { EnvironmentService } from "jslib-common/abstractions/environment.service";
 import { EventService } from "jslib-common/abstractions/event.service";
 import { ExportService } from "jslib-common/abstractions/export.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { FileUploadService } from "jslib-common/abstractions/fileUpload.service";
 import { FolderService } from "jslib-common/abstractions/folder.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
@@ -47,6 +48,7 @@ import MainBackground from "../../background/main.background";
 import { BrowserApi } from "../../browser/browserApi";
 import { AutofillService } from "../../services/abstractions/autofill.service";
 import { StateService as StateServiceAbstraction } from "../../services/abstractions/state.service";
+import { BrowserFileDownloadService } from "../../services/browserFileDownloadService";
 import BrowserMessagingService from "../../services/browserMessaging.service";
 import BrowserMessagingPrivateModePopupService from "../../services/browserMessagingPrivateModePopup.service";
 import { VaultFilterService } from "../../services/vaultFilter.service";
@@ -263,6 +265,10 @@ function getBgService<T>(service: keyof MainBackground) {
       provide: BaseStateServiceAbstraction,
       useExisting: StateServiceAbstraction,
       deps: [],
+    },
+    {
+      provide: FileDownloadService,
+      useClass: BrowserFileDownloadService,
     },
   ],
 })
