@@ -65,7 +65,7 @@ export class CryptoService implements CryptoServiceAbstraction {
     });
 
     // Convert provider encrypted keys to user encrypted.
-    // If a user logs in with CLI using their api key, the key may not be available to complete these operations.
+    // If a user logs in with CLI using their api key, the Master Key may not be available to complete these operations.
     // However, in this case we can skip this step because provider org items are not accessible via the CLI anyway
     if (await this.hasKey()) {
       for (const providerOrg of providerOrgs) {
@@ -73,6 +73,8 @@ export class CryptoService implements CryptoServiceAbstraction {
         const decValue = await this.decryptToBytes(new EncString(providerOrg.key), providerKey);
         orgKeys[providerOrg.id] = (await this.rsaEncrypt(decValue)).encryptedString;
       }
+    } else {
+      this.logService.info("Master key not available, skipping decryption of provider items.");
     }
 
     await this.stateService.setDecryptedOrganizationKeys(null);
