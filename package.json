@@ -16,7 +16,11 @@
     "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
+    "storybook": "npm run docs:json && start-storybook -p 6006",
+    "build-storybook": "npm run docs:json && build-storybook",
+    "chromatic": "chromatic --exit-zero-on-changes"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^12.2.13",
@@ -181,7 +185,8 @@
     "zxcvbn": "^4.4.2"
   },
   "overrides": {
-    "tailwindcss": "$tailwindcss"
+    "tailwindcss": "$tailwindcss",
+    "react": "^18.0.0"
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
