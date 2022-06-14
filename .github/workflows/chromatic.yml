@@ -34,7 +34,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          workingDir: ./libs/components
           exitOnceUploaded: true
           onlyChanged: true
           externals: "[\"components/**/*.scss\", \"components/tailwind.config*.js\"]"
