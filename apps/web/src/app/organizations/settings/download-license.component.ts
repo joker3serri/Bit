@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { ApiService } from "jslib-common/abstractions/api.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
+import { FileDownloadRequest } from "jslib-common/models/domain/fileDownloadRequest";
 
 @Component({
   selector: "app-download-license",
@@ -18,7 +19,7 @@ export class DownloadLicenseComponent {
 
   constructor(
     private apiService: ApiService,
-    private platformUtilsService: PlatformUtilsService,
+    private fileDownloadService: FileDownloadService,
     private logService: LogService
   ) {}
 
@@ -34,11 +35,8 @@ export class DownloadLicenseComponent {
       );
       const license = await this.formPromise;
       const licenseString = JSON.stringify(license, null, 2);
-      this.platformUtilsService.saveFile(
-        window,
-        licenseString,
-        null,
-        "bitwarden_organization_license.json"
+      this.fileDownloadService.download(
+        new FileDownloadRequest(window, "bitwarden_organization_license.json", licenseString)
       );
       this.onDownloaded.emit();
     } catch (e) {

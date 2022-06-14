@@ -5,6 +5,7 @@ import { ExportComponent as BaseExportComponent } from "jslib-angular/components
 import { CryptoService } from "jslib-common/abstractions/crypto.service";
 import { EventService } from "jslib-common/abstractions/event.service";
 import { ExportService } from "jslib-common/abstractions/export.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
@@ -27,7 +28,8 @@ export class ExportComponent extends BaseExportComponent {
     policyService: PolicyService,
     logService: LogService,
     userVerificationService: UserVerificationService,
-    formBuilder: FormBuilder
+    formBuilder: FormBuilder,
+    fileDownloadService: FileDownloadService
   ) {
     super(
       cryptoService,
@@ -39,7 +41,8 @@ export class ExportComponent extends BaseExportComponent {
       window,
       logService,
       userVerificationService,
-      formBuilder
+      formBuilder,
+      fileDownloadService
     );
   }
 

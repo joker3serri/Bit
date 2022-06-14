@@ -4,6 +4,7 @@ import { FormBuilder } from "@angular/forms";
 import { CryptoService } from "jslib-common/abstractions/crypto.service";
 import { EventService } from "jslib-common/abstractions/event.service";
 import { ExportService } from "jslib-common/abstractions/export.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
@@ -11,6 +12,7 @@ import { PolicyService } from "jslib-common/abstractions/policy.service";
 import { UserVerificationService } from "jslib-common/abstractions/userVerification.service";
 import { EventType } from "jslib-common/enums/eventType";
 import { PolicyType } from "jslib-common/enums/policyType";
+import { FileDownloadRequest } from "jslib-common/models/domain/fileDownloadRequest";
 
 @Directive()
 export class ExportComponent implements OnInit {
@@ -40,7 +42,8 @@ export class ExportComponent implements OnInit {
     protected win: Window,
     private logService: LogService,
     private userVerificationService: UserVerificationService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    protected fileDownloadService: FileDownloadService
   ) {}
 
   async ngOnInit() {
@@ -150,6 +153,8 @@ export class ExportComponent implements OnInit {
 
   private downloadFile(csv: string): void {
     const fileName = this.getFileName();
-    this.platformUtilsService.saveFile(this.win, csv, { type: "text/plain" }, fileName);
+    this.fileDownloadService.download(
+      new FileDownloadRequest(this.win, fileName, csv, { type: "text/plain" })
+    );
   }
 }

@@ -15,6 +15,7 @@ import { BroadcasterService } from "jslib-common/abstractions/broadcaster.servic
 import { CipherService } from "jslib-common/abstractions/cipher.service";
 import { CryptoService } from "jslib-common/abstractions/crypto.service";
 import { EventService } from "jslib-common/abstractions/event.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { PasswordRepromptService } from "jslib-common/abstractions/passwordReprompt.service";
@@ -26,6 +27,7 @@ import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
 import { CipherType } from "jslib-common/enums/cipherType";
 import { EventType } from "jslib-common/enums/eventType";
 import { FieldType } from "jslib-common/enums/fieldType";
+import { FileDownloadRequest } from "jslib-common/models/domain/fileDownloadRequest";
 import { ErrorResponse } from "jslib-common/models/response/errorResponse";
 import { AttachmentView } from "jslib-common/models/view/attachmentView";
 import { CipherView } from "jslib-common/models/view/cipherView";
@@ -76,7 +78,8 @@ export class ViewComponent implements OnDestroy, OnInit {
     protected apiService: ApiService,
     protected passwordRepromptService: PasswordRepromptService,
     private logService: LogService,
-    protected stateService: StateService
+    protected stateService: StateService,
+    protected fileDownloadService: FileDownloadService
   ) {}
 
   ngOnInit() {
@@ -373,7 +376,9 @@ export class ViewComponent implements OnDestroy, OnInit {
           ? attachment.key
           : await this.cryptoService.getOrgKey(this.cipher.organizationId);
       const decBuf = await this.cryptoService.decryptFromBytes(buf, key);
-      this.platformUtilsService.saveFile(this.win, decBuf, null, attachment.fileName);
+      this.fileDownloadService.download(
+        new FileDownloadRequest(this.win, attachment.fileName, decBuf)
+      );
     } catch (e) {
       this.platformUtilsService.showToast("error", null, this.i18nService.t("errorOccurred"));
     }

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { UserNamePipe } from "jslib-angular/pipes/user-name.pipe";
 import { ApiService } from "jslib-common/abstractions/api.service";
 import { ExportService } from "jslib-common/abstractions/export.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { OrganizationService } from "jslib-common/abstractions/organization.service";
@@ -37,9 +38,17 @@ export class EventsComponent extends BaseEventsComponent implements OnInit {
     logService: LogService,
     private userNamePipe: UserNamePipe,
     private organizationService: OrganizationService,
-    private providerService: ProviderService
+    private providerService: ProviderService,
+    fileDownloadService: FileDownloadService
   ) {
-    super(eventService, i18nService, exportService, platformUtilsService, logService);
+    super(
+      eventService,
+      i18nService,
+      exportService,
+      platformUtilsService,
+      logService,
+      fileDownloadService
+    );
   }
 
   async ngOnInit() {

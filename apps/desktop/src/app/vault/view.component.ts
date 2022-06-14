@@ -14,6 +14,7 @@ import { BroadcasterService } from "jslib-common/abstractions/broadcaster.servic
 import { CipherService } from "jslib-common/abstractions/cipher.service";
 import { CryptoService } from "jslib-common/abstractions/crypto.service";
 import { EventService } from "jslib-common/abstractions/event.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { MessagingService } from "jslib-common/abstractions/messaging.service";
@@ -49,7 +50,8 @@ export class ViewComponent extends BaseViewComponent implements OnChanges {
     private messagingService: MessagingService,
     passwordRepromptService: PasswordRepromptService,
     logService: LogService,
-    stateService: StateService
+    stateService: StateService,
+    fileDownloadService: FileDownloadService
   ) {
     super(
       cipherService,
@@ -67,7 +69,8 @@ export class ViewComponent extends BaseViewComponent implements OnChanges {
       apiService,
       passwordRepromptService,
       logService,
-      stateService
+      stateService,
+      fileDownloadService
     );
   }
   ngOnInit() {

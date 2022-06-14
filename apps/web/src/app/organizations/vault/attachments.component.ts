@@ -3,6 +3,7 @@ import { Component } from "@angular/core";
 import { ApiService } from "jslib-common/abstractions/api.service";
 import { CipherService } from "jslib-common/abstractions/cipher.service";
 import { CryptoService } from "jslib-common/abstractions/crypto.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
@@ -29,7 +30,8 @@ export class AttachmentsComponent extends BaseAttachmentsComponent {
     stateService: StateService,
     platformUtilsService: PlatformUtilsService,
     apiService: ApiService,
-    logService: LogService
+    logService: LogService,
+    fileDownloadService: FileDownloadService
   ) {
     super(
       cipherService,
@@ -38,7 +40,8 @@ export class AttachmentsComponent extends BaseAttachmentsComponent {
       stateService,
       platformUtilsService,
       apiService,
-      logService
+      logService,
+      fileDownloadService
     );
   }
 

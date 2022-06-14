@@ -4,11 +4,13 @@ import { ActivatedRoute } from "@angular/router";
 import { ApiService } from "jslib-common/abstractions/api.service";
 import { CryptoService } from "jslib-common/abstractions/crypto.service";
 import { CryptoFunctionService } from "jslib-common/abstractions/cryptoFunction.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
 import { SEND_KDF_ITERATIONS } from "jslib-common/enums/kdfType";
 import { SendType } from "jslib-common/enums/sendType";
 import { Utils } from "jslib-common/misc/utils";
+import { FileDownloadRequest } from "jslib-common/models/domain/fileDownloadRequest";
 import { SendAccess } from "jslib-common/models/domain/sendAccess";
 import { SymmetricCryptoKey } from "jslib-common/models/domain/symmetricCryptoKey";
 import { SendAccessRequest } from "jslib-common/models/request/sendAccessRequest";
@@ -44,7 +46,8 @@ export class AccessComponent implements OnInit {
     private apiService: ApiService,
     private platformUtilsService: PlatformUtilsService,
     private route: ActivatedRoute,
-    private cryptoService: CryptoService
+    private cryptoService: CryptoService,
+    private fileDownloadService: FileDownloadService
   ) {}
 
   get sendText() {
@@ -109,7 +112,9 @@ export class AccessComponent implements OnInit {
     try {
       const buf = await response.arrayBuffer();
       const decBuf = await this.cryptoService.decryptFromBytes(buf, this.decKey);
-      this.platformUtilsService.saveFile(window, decBuf, null, this.send.file.fileName);
+      this.fileDownloadService.download(
+        new FileDownloadRequest(window, this.send.file.fileName, decBuf)
+      );
     } catch (e) {
       this.platformUtilsService.showToast("error", null, this.i18nService.t("errorOccurred"));
     }

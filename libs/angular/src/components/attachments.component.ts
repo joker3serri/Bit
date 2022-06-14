@@ -3,11 +3,13 @@ import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ApiService } from "jslib-common/abstractions/api.service";
 import { CipherService } from "jslib-common/abstractions/cipher.service";
 import { CryptoService } from "jslib-common/abstractions/crypto.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
 import { StateService } from "jslib-common/abstractions/state.service";
 import { Cipher } from "jslib-common/models/domain/cipher";
+import { FileDownloadRequest } from "jslib-common/models/domain/fileDownloadRequest";
 import { ErrorResponse } from "jslib-common/models/response/errorResponse";
 import { AttachmentView } from "jslib-common/models/view/attachmentView";
 import { CipherView } from "jslib-common/models/view/cipherView";
@@ -36,7 +38,8 @@ export class AttachmentsComponent implements OnInit {
     protected apiService: ApiService,
     protected win: Window,
     protected logService: LogService,
-    protected stateService: StateService
+    protected stateService: StateService,
+    protected fileDownloadService: FileDownloadService
   ) {}
 
   async ngOnInit() {
@@ -171,7 +174,9 @@ export class AttachmentsComponent implements OnInit {
           ? attachment.key
           : await this.cryptoService.getOrgKey(this.cipher.organizationId);
       const decBuf = await this.cryptoService.decryptFromBytes(buf, key);
-      this.platformUtilsService.saveFile(this.win, decBuf, null, attachment.fileName);
+      this.fileDownloadService.download(
+        new FileDownloadRequest(this.win, attachment.fileName, decBuf)
+      );
     } catch (e) {
       this.platformUtilsService.showToast("error", null, this.i18nService.t("errorOccurred"));
     }

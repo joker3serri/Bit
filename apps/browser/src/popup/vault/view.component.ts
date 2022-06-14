@@ -10,6 +10,7 @@ import { BroadcasterService } from "jslib-common/abstractions/broadcaster.servic
 import { CipherService } from "jslib-common/abstractions/cipher.service";
 import { CryptoService } from "jslib-common/abstractions/crypto.service";
 import { EventService } from "jslib-common/abstractions/event.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { MessagingService } from "jslib-common/abstractions/messaging.service";
@@ -61,7 +62,8 @@ export class ViewComponent extends BaseViewComponent {
     private popupUtilsService: PopupUtilsService,
     apiService: ApiService,
     passwordRepromptService: PasswordRepromptService,
-    logService: LogService
+    logService: LogService,
+    fileDownloadService: FileDownloadService
   ) {
     super(
       cipherService,
@@ -79,7 +81,8 @@ export class ViewComponent extends BaseViewComponent {
       apiService,
       passwordRepromptService,
       logService,
-      stateService
+      stateService,
+      fileDownloadService
     );
   }
 

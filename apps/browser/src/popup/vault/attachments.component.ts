@@ -7,6 +7,7 @@ import { AttachmentsComponent as BaseAttachmentsComponent } from "jslib-angular/
 import { ApiService } from "jslib-common/abstractions/api.service";
 import { CipherService } from "jslib-common/abstractions/cipher.service";
 import { CryptoService } from "jslib-common/abstractions/crypto.service";
+import { FileDownloadService } from "jslib-common/abstractions/fileDownload.service";
 import { I18nService } from "jslib-common/abstractions/i18n.service";
 import { LogService } from "jslib-common/abstractions/log.service";
 import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
@@ -28,7 +29,8 @@ export class AttachmentsComponent extends BaseAttachmentsComponent {
     private location: Location,
     private route: ActivatedRoute,
     stateService: StateService,
-    logService: LogService
+    logService: LogService,
+    fileDownloadService: FileDownloadService
   ) {
     super(
       cipherService,
@@ -38,7 +40,8 @@ export class AttachmentsComponent extends BaseAttachmentsComponent {
       apiService,
       window,
       logService,
-      stateService
+      stateService,
+      fileDownloadService
     );
   }
 
