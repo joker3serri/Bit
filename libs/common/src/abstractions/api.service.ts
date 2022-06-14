@@ -14,6 +14,7 @@ import { CipherRequest } from "../models/request/cipherRequest";
 import { CipherShareRequest } from "../models/request/cipherShareRequest";
 import { CollectionRequest } from "../models/request/collectionRequest";
 import { DeleteRecoverRequest } from "../models/request/deleteRecoverRequest";
+import { DeviceVerificationRequest } from "../models/request/deviceVerificationRequest";
 import { EmailRequest } from "../models/request/emailRequest";
 import { EmailTokenRequest } from "../models/request/emailTokenRequest";
 import { EmergencyAccessAcceptRequest } from "../models/request/emergencyAccessAcceptRequest";
@@ -107,6 +108,7 @@ import {
   CollectionGroupDetailsResponse,
   CollectionResponse,
 } from "../models/response/collectionResponse";
+import { DeviceVerificationResponse } from "../models/response/deviceVerificationResponse";
 import { DomainsResponse } from "../models/response/domainsResponse";
 import {
   EmergencyAccessGranteeDetailsResponse,
@@ -493,6 +495,10 @@ export abstract class ApiService {
   postTwoFactorRecover: (request: TwoFactorRecoveryRequest) => Promise<any>;
   postTwoFactorEmailSetup: (request: TwoFactorEmailRequest) => Promise<any>;
   postTwoFactorEmail: (request: TwoFactorEmailRequest) => Promise<any>;
+  getDeviceVerificationSettings: () => Promise<DeviceVerificationResponse>;
+  putDeviceVerificationSettings: (
+    request: DeviceVerificationRequest
+  ) => Promise<DeviceVerificationResponse>;
 
   getEmergencyAccessTrusted: () => Promise<ListResponse<EmergencyAccessGranteeDetailsResponse>>;
   getEmergencyAccessGranted: () => Promise<ListResponse<EmergencyAccessGrantorDetailsResponse>>;

@@ -21,6 +21,7 @@ import { CipherShareRequest } from "../models/request/cipherShareRequest";
 import { CollectionRequest } from "../models/request/collectionRequest";
 import { DeleteRecoverRequest } from "../models/request/deleteRecoverRequest";
 import { DeviceRequest } from "../models/request/deviceRequest";
+import { DeviceVerificationRequest } from "../models/request/deviceVerificationRequest";
 import { EmailRequest } from "../models/request/emailRequest";
 import { EmailTokenRequest } from "../models/request/emailTokenRequest";
 import { EmergencyAccessAcceptRequest } from "../models/request/emergencyAccessAcceptRequest";
@@ -115,6 +116,7 @@ import {
   CollectionGroupDetailsResponse,
   CollectionResponse,
 } from "../models/response/collectionResponse";
+import { DeviceVerificationResponse } from "../models/response/deviceVerificationResponse";
 import { DomainsResponse } from "../models/response/domainsResponse";
 import {
   EmergencyAccessGranteeDetailsResponse,
@@ -1569,6 +1571,30 @@ export class ApiService implements ApiServiceAbstraction {
 
   postTwoFactorEmail(request: TwoFactorEmailRequest): Promise<any> {
     return this.send("POST", "/two-factor/send-email-login", request, false, false);
+  }
+
+  async getDeviceVerificationSettings(): Promise<DeviceVerificationResponse> {
+    const r = await this.send(
+      "GET",
+      "/two-factor/get-device-verification-settings",
+      null,
+      true,
+      true
+    );
+    return new DeviceVerificationResponse(r);
+  }
+
+  async putDeviceVerificationSettings(
+    request: DeviceVerificationRequest
+  ): Promise<DeviceVerificationResponse> {
+    const r = await this.send(
+      "PUT",
+      "/two-factor/device-verification-settings",
+      request,
+      true,
+      true
+    );
+    return new DeviceVerificationResponse(r);
   }
 
   // Emergency Access APIs

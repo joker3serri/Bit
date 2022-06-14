@@ -5,7 +5,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { TokenService } from "@bitwarden/common/abstractions/token.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SubscriptionResponse } from "@bitwarden/common/models/response/subscriptionResponse";
 
 @Component({
@@ -25,7 +25,7 @@ export class UserSubscriptionComponent implements OnInit {
   reinstatePromise: Promise<any>;
 
   constructor(
-    private tokenService: TokenService,
+    private stateService: StateService,
     private apiService: ApiService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
@@ -45,7 +45,7 @@ export class UserSubscriptionComponent implements OnInit {
       return;
     }
 
-    if (this.tokenService.getPremium()) {
+    if (this.stateService.getHasPremiumPersonally()) {
       this.loading = true;
       this.sub = await this.apiService.getUserSubscription();
     } else {
