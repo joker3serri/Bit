@@ -1,6 +1,5 @@
-import { BehaviorSubject, Observable } from "rxjs";
-
 import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
 
 import { DynamicTreeNode } from "@bitwarden/angular/modules/vault-filter/models/dynamic-tree-node.model";
 import { VaultFilterService as BaseVaultFilterService } from "@bitwarden/angular/modules/vault-filter/vault-filter.service";

@@ -11,6 +11,7 @@ import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
+import { DeviceVerificationRequest } from "@bitwarden/common/models/request/deviceVerificationRequest";
 import { TwoFactorProviders } from "@bitwarden/common/services/twoFactor.service";
 
 import { TwoFactorAuthenticatorComponent } from "./two-factor-authenticator.component";

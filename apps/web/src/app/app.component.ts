@@ -1,3 +1,4 @@
+import { DOCUMENT } from "@angular/common";
 import { Component, Inject, NgZone, OnDestroy, OnInit, SecurityContext } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NavigationEnd, Router } from "@angular/router";
@@ -36,7 +37,6 @@ import { SingleOrgPolicy } from "./organizations/policies/single-org.component";
 import { TwoFactorAuthenticationPolicy } from "./organizations/policies/two-factor-authentication.component";
 import { PolicyListService } from "./services/policy-list.service";
 import { RouterService } from "./services/router.service";
-import { DOCUMENT } from "@angular/common";
 
 const BroadcasterSubscriptionId = "AppComponent";
 const IdleTimeout = 60000 * 10; // 10 minutes
