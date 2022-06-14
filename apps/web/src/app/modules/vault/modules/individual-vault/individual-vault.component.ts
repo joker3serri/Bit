@@ -7,7 +7,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
 import { VaultFilter } from "jslib-angular/modules/vault-filter/models/vault-filter.model";
@@ -23,7 +23,6 @@ import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.se
 import { StateService } from "jslib-common/abstractions/state.service";
 import { SyncService } from "jslib-common/abstractions/sync.service";
 import { TokenService } from "jslib-common/abstractions/token.service";
-import { CipherType } from "jslib-common/enums/cipherType";
 import { CipherView } from "jslib-common/models/view/cipherView";
 
 import { UpdateKeyComponent } from "../../../../settings/update-key.component";
@@ -34,6 +33,7 @@ import { CollectionsComponent } from "../../../../vault/collections.component";
 import { FolderAddEditComponent } from "../../../../vault/folder-add-edit.component";
 import { ShareComponent } from "../../../../vault/share.component";
 import { VaultFilterComponent } from "../../../vault-filter/vault-filter.component";
+import { VaultFilterService } from "../../../vault-filter/vault-filter.service";
 import { VaultService } from "../../vault.service";
 
 const BroadcasterSubscriptionId = "VaultComponent";
@@ -87,7 +87,8 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
     private organizationService: OrganizationService,
     private vaultService: VaultService,
     private cipherService: CipherService,
-    private passwordRepromptService: PasswordRepromptService
+    private passwordRepromptService: PasswordRepromptService,
+    private vaultFilterService: VaultFilterService
   ) {}
 
   async ngOnInit() {
@@ -109,9 +110,11 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
       this.filterComponent.reloadOrganizations();
       this.showUpdateKey = !(await this.cryptoService.hasEncKey());
 
-      if (params.cipherId) {
+      const cipherId = getCipherIdFromParams(params);
+
+      if (cipherId) {
         const cipherView = new CipherView();
-        cipherView.id = params.cipherId;
+        cipherView.id = cipherId;
         if (params.action === "clone") {
           await this.cloneCipher(cipherView);
         } else if (params.action === "edit") {
@@ -121,9 +124,10 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
       await this.ciphersComponent.reload();
 
       this.route.queryParams.subscribe(async (params) => {
-        if (params.cipherId) {
-          if ((await this.cipherService.get(params.cipherId)) != null) {
-            this.editCipherId(params.cipherId);
+        const cipherId = getCipherIdFromParams(params);
+        if (cipherId) {
+          if ((await this.cipherService.get(cipherId)) != null) {
+            this.editCipherId(cipherId);
           } else {
             this.platformUtilsService.showToast(
               "error",
@@ -131,7 +135,7 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
               this.i18nService.t("unknownCipher")
             );
             this.router.navigate([], {
-              queryParams: { cipherId: null },
+              queryParams: { itemId: null, cipherId: null },
               queryParamsHandling: "merge",
             });
           }
@@ -187,6 +191,7 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
     } else {
       this.activeFilter.selectedOrganizationId = orgId;
     }
+    await this.vaultFilterService.ensureVaultFiltersAreExpanded();
     await this.applyVaultFilter(this.activeFilter);
   }
 
@@ -353,7 +358,7 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
     const cipher = await this.cipherService.get(id);
     if (cipher != null && cipher.reprompt != 0) {
       if (!(await this.passwordRepromptService.showPasswordPrompt())) {
-        this.go({ cipherId: null });
+        this.go({ cipherId: null, itemId: null });
         return;
       }
     }
@@ -379,7 +384,7 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
     );
 
     modal.onClosedPromise().then(() => {
-      this.go({ cipherId: null });
+      this.go({ cipherId: null, itemId: null });
     });
 
     return childComponent;
@@ -413,3 +418,11 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
     });
   }
 }
+
+/**
+ * Allows backwards compatibility with
+ * old links that used the original `cipherId` param
+ */
+const getCipherIdFromParams = (params: Params): string => {
+  return params["itemId"] || params["cipherId"];
+};

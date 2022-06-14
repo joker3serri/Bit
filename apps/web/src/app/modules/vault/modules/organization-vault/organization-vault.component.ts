@@ -7,7 +7,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
 import { VaultFilter } from "jslib-angular/modules/vault-filter/models/vault-filter.model";
@@ -29,7 +29,7 @@ import { AddEditComponent } from "../../../../organizations/vault/add-edit.compo
 import { AttachmentsComponent } from "../../../../organizations/vault/attachments.component";
 import { CiphersComponent } from "../../../../organizations/vault/ciphers.component";
 import { CollectionsComponent } from "../../../../organizations/vault/collections.component";
-import { VaultFilterComponent } from "../../../vault-filter/vault-filter.component";
+import { OrganizationVaultFilterComponent } from "../../../vault-filter/organization-vault-filter.component";
 import { VaultService } from "../../vault.service";
 
 const BroadcasterSubscriptionId = "OrgVaultComponent";
@@ -39,7 +39,8 @@ const BroadcasterSubscriptionId = "OrgVaultComponent";
   templateUrl: "organization-vault.component.html",
 })
 export class OrganizationVaultComponent implements OnInit, OnDestroy {
-  @ViewChild("vaultFilter", { static: true }) vaultFilterComponent: VaultFilterComponent;
+  @ViewChild("vaultFilter", { static: true })
+  vaultFilterComponent: OrganizationVaultFilterComponent;
   @ViewChild(CiphersComponent, { static: true }) ciphersComponent: CiphersComponent;
   @ViewChild("attachments", { read: ViewContainerRef, static: true })
   attachmentsModalRef: ViewContainerRef;
@@ -56,6 +57,11 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
   deleted = false;
   trashCleanupWarning: string = null;
   activeFilter: VaultFilter = new VaultFilter();
+
+  // This is a hack to avoid redundant api calls that fetch OrganizationVaultFilterComponent collections
+  // When it makes sense to do so we should leverage some other communication method for change events that isn't directly tied to the query param for organizationId
+  // i.e. exposing the VaultFiltersService to the OrganizationSwitcherComponent to make relevant updates from a change event instead of just depending on the router
+  firstLoaded = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -95,11 +101,7 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
                 case "syncCompleted":
                   if (message.successfully) {
                     await Promise.all([
-                      this.vaultFilterComponent.reloadCollectionsAndFolders(
-                        new VaultFilter({
-                          selectedOrganizationId: this.organization.id,
-                        } as Partial<VaultFilter>)
-                      ),
+                      this.vaultFilterComponent.reloadCollectionsAndFolders(),
                       this.ciphersComponent.refresh(),
                     ]);
                     this.changeDetectorRef.detectChanges();
@@ -109,9 +111,12 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
             });
           });
         }
-        await this.vaultFilterComponent.reloadCollectionsAndFolders(
-          new VaultFilter({ selectedOrganizationId: this.organization.id } as Partial<VaultFilter>)
-        );
+
+        if (this.firstLoaded) {
+          await this.vaultFilterComponent.reloadCollectionsAndFolders();
+        }
+        this.firstLoaded = true;
+
         await this.ciphersComponent.reload();
 
         if (qParams.viewEvents != null) {
@@ -122,13 +127,14 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
         }
 
         this.route.queryParams.subscribe(async (params) => {
-          if (params.cipherId) {
+          const cipherId = getCipherIdFromParams(params);
+          if (cipherId) {
             if (
               // Handle users with implicit collection access since they use the admin endpoint
               this.organization.canEditAnyCollection ||
-              (await this.cipherService.get(params.cipherId)) != null
+              (await this.cipherService.get(cipherId)) != null
             ) {
-              this.editCipherId(params.cipherId);
+              this.editCipherId(cipherId);
             } else {
               this.platformUtilsService.showToast(
                 "error",
@@ -136,7 +142,7 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
                 this.i18nService.t("unknownCipher")
               );
               this.router.navigate([], {
-                queryParams: { cipherId: null },
+                queryParams: { cipherId: null, itemId: null },
                 queryParamsHandling: "merge",
               });
             }
@@ -268,7 +274,7 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
     const cipher = await this.cipherService.get(cipherId);
     if (cipher != null && cipher.reprompt != 0) {
       if (!(await this.passwordRepromptService.showPasswordPrompt())) {
-        this.go({ cipherId: null });
+        this.go({ cipherId: null, itemId: null });
         return;
       }
     }
@@ -295,7 +301,7 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
     );
 
     modal.onClosedPromise().then(() => {
-      this.go({ cipherId: null });
+      this.go({ cipherId: null, itemId: null });
     });
 
     return childComponent;
@@ -348,3 +354,11 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
     });
   }
 }
+
+/**
+ * Allows backwards compatibility with
+ * old links that used the original `cipherId` param
+ */
+const getCipherIdFromParams = (params: Params): string => {
+  return params["itemId"] || params["cipherId"];
+};

@@ -8,6 +8,10 @@ on:
       - 'gh-pages'
     paths:
       - 'apps/cli/**'
+      - 'libs/**'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-cli.yml'
   push:
     branches:
@@ -16,6 +20,10 @@ on:
       - 'hotfix-rc/**'
     paths:
       - 'apps/cli/**'
+      - 'libs/**'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-cli.yml'
   workflow_dispatch:
     inputs: {}
@@ -82,7 +90,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
           node-version: '16'
-      
+
       - name: Install node-gyp
         run: |
           npm install -g node-gyp
