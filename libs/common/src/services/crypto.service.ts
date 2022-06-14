@@ -64,11 +64,15 @@ export class CryptoService implements CryptoServiceAbstraction {
       orgKeys[org.id] = org.key;
     });
 
-    for (const providerOrg of providerOrgs) {
-      // Convert provider encrypted keys to user encrypted.
-      const providerKey = await this.getProviderKey(providerOrg.providerId);
-      const decValue = await this.decryptToBytes(new EncString(providerOrg.key), providerKey);
-      orgKeys[providerOrg.id] = (await this.rsaEncrypt(decValue)).encryptedString;
+    // Convert provider encrypted keys to user encrypted.
+    // If a user logs in with CLI using their api key, the key may not be available to complete these operations.
+    // However, in this case we can skip this step because provider org items are not accessible via the CLI anyway
+    if (await this.hasKey()) {
+      for (const providerOrg of providerOrgs) {
+        const providerKey = await this.getProviderKey(providerOrg.providerId);
+        const decValue = await this.decryptToBytes(new EncString(providerOrg.key), providerKey);
+        orgKeys[providerOrg.id] = (await this.rsaEncrypt(decValue)).encryptedString;
+      }
     }
 
     await this.stateService.setDecryptedOrganizationKeys(null);
