@@ -113,7 +113,7 @@ export class AccessComponent implements OnInit {
       const buf = await response.arrayBuffer();
       const decBuf = await this.cryptoService.decryptFromBytes(buf, this.decKey);
       this.fileDownloadService.download(
-        new FileDownloadRequest(window, this.send.file.fileName, decBuf)
+        new FileDownloadRequest(window, this.send.file.fileName, decBuf, null, true)
       );
     } catch (e) {
       this.platformUtilsService.showToast("error", null, this.i18nService.t("errorOccurred"));
