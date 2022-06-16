@@ -55,9 +55,9 @@ export abstract class BasePeopleComponent<
       : 0;
   }
 
-  get disabledCount() {
-    return this.statusMap.has(this.userStatusType.Disabled)
-      ? this.statusMap.get(this.userStatusType.Disabled).length
+  get deactivatedCount() {
+    return this.statusMap.has(this.userStatusType.Deactivated)
+      ? this.statusMap.get(this.userStatusType.Deactivated).length
       : 0;
   }
 
@@ -112,8 +112,8 @@ export abstract class BasePeopleComponent<
   abstract edit(user: UserType): void;
   abstract getUsers(): Promise<ListResponse<UserType>>;
   abstract deleteUser(id: string): Promise<any>;
-  abstract disableUser(id: string): Promise<any>;
-  abstract enableUser(id: string): Promise<any>;
+  abstract deactivateUser(id: string): Promise<any>;
+  abstract activateUser(id: string): Promise<any>;
   abstract reinviteUser(id: string): Promise<any>;
   abstract confirmUser(user: UserType, publicKey: Uint8Array): Promise<any>;
 
@@ -133,7 +133,7 @@ export abstract class BasePeopleComponent<
       } else {
         this.statusMap.get(u.status).push(u);
       }
-      if (u.status !== this.userStatusType.Disabled) {
+      if (u.status !== this.userStatusType.Deactivated) {
         this.activeUsers.push(u);
       }
     });
@@ -232,9 +232,9 @@ export abstract class BasePeopleComponent<
     this.actionPromise = null;
   }
 
-  async disable(user: UserType) {
+  async deactivate(user: UserType) {
     const confirmed = await this.platformUtilsService.showDialog(
-      this.disableWarningMessage(user),
+      this.deactivateWarningMessage(user),
       this.userNamePipe.transform(user),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
@@ -245,28 +245,24 @@ export abstract class BasePeopleComponent<
       return false;
     }
 
-    this.actionPromise = this.disableUser(user.id);
+    this.actionPromise = this.deactivateUser(user.id);
     try {
       await this.actionPromise;
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("disabledUserId", this.userNamePipe.transform(user))
+        this.i18nService.t("deactivatedUserId", this.userNamePipe.transform(user))
       );
-      user.status = this.userStatusType.Disabled;
+      const priorStatus = user.status;
+      user.status = this.userStatusType.Deactivated;
       const activeIndex = this.activeUsers.indexOf(user);
       if (activeIndex > -1) {
         this.activeUsers.splice(activeIndex, 1);
       }
-      const acceptedMapIndex = this.statusMap.get(this.userStatusType.Accepted).indexOf(user);
-      if (acceptedMapIndex > -1) {
-        this.statusMap.get(this.userStatusType.Accepted).splice(acceptedMapIndex, 1);
-        this.statusMap.get(this.userStatusType.Disabled).push(user);
-      }
-      const invitedMapIndex = this.statusMap.get(this.userStatusType.Invited).indexOf(user);
-      if (invitedMapIndex > -1) {
-        this.statusMap.get(this.userStatusType.Accepted).splice(invitedMapIndex, 1);
-        this.statusMap.get(this.userStatusType.Disabled).push(user);
+      const mapIndex = this.statusMap.get(priorStatus).indexOf(user);
+      if (mapIndex > -1) {
+        this.statusMap.get(priorStatus).splice(mapIndex, 1);
+        this.statusMap.get(this.userStatusType.Deactivated).push(user);
       }
     } catch (e) {
       this.validationService.showError(e);
@@ -274,9 +270,9 @@ export abstract class BasePeopleComponent<
     this.actionPromise = null;
   }
 
-  async enable(user: UserType) {
+  async activate(user: UserType) {
     const confirmed = await this.platformUtilsService.showDialog(
-      this.enableWarningMessage(user),
+      this.activateWarningMessage(user),
       this.userNamePipe.transform(user),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
@@ -287,13 +283,13 @@ export abstract class BasePeopleComponent<
       return false;
     }
 
-    this.actionPromise = this.enableUser(user.id);
+    this.actionPromise = this.activateUser(user.id);
     try {
       await this.actionPromise;
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("enabledUserId", this.userNamePipe.transform(user))
+        this.i18nService.t("activatedUserId", this.userNamePipe.transform(user))
       );
       this.removeUser(user);
       // necessary since we don't know the new status
@@ -410,12 +406,12 @@ export abstract class BasePeopleComponent<
     return this.i18nService.t("removeUserConfirmation");
   }
 
-  protected disableWarningMessage(user: UserType): string {
-    return this.i18nService.t("disableUserConfirmation");
+  protected deactivateWarningMessage(user: UserType): string {
+    return this.i18nService.t("deactivateUserConfirmation");
   }
 
-  protected enableWarningMessage(user: UserType): string {
-    return this.i18nService.t("enableUserConfirmation");
+  protected activateWarningMessage(user: UserType): string {
+    return this.i18nService.t("activateUserConfirmation");
   }
 
   protected getCheckedUsers() {

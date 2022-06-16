@@ -1360,23 +1360,23 @@ export class ApiService implements ApiServiceAbstraction {
     return new ListResponse(r, OrganizationUserBulkResponse);
   }
 
-  disableOrganizationUser(organizationId: string, id: string): Promise<any> {
+  deactivateOrganizationUser(organizationId: string, id: string): Promise<any> {
     return this.send(
       "PUT",
-      "/organizations/" + organizationId + "/users/" + id + "/disable",
+      "/organizations/" + organizationId + "/users/" + id + "/deactivate",
       null,
       true,
       false
     );
   }
 
-  async disableManyOrganizationUsers(
+  async deactivateManyOrganizationUsers(
     organizationId: string,
     request: OrganizationUserBulkRequest
   ): Promise<ListResponse<OrganizationUserBulkResponse>> {
     const r = await this.send(
       "PUT",
-      "/organizations/" + organizationId + "/users/disable",
+      "/organizations/" + organizationId + "/users/deactivate",
       request,
       true,
       true
@@ -1384,23 +1384,23 @@ export class ApiService implements ApiServiceAbstraction {
     return new ListResponse(r, OrganizationUserBulkResponse);
   }
 
-  enableOrganizationUser(organizationId: string, id: string): Promise<any> {
+  activateOrganizationUser(organizationId: string, id: string): Promise<any> {
     return this.send(
       "PUT",
-      "/organizations/" + organizationId + "/users/" + id + "/enable",
+      "/organizations/" + organizationId + "/users/" + id + "/activate",
       null,
       true,
       false
     );
   }
 
-  async enableManyOrganizationUsers(
+  async activateManyOrganizationUsers(
     organizationId: string,
     request: OrganizationUserBulkRequest
   ): Promise<ListResponse<OrganizationUserBulkResponse>> {
     const r = await this.send(
       "PUT",
-      "/organizations/" + organizationId + "/users/enable",
+      "/organizations/" + organizationId + "/users/activate",
       request,
       true,
       true

@@ -3,7 +3,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title" id="bulkTitle">
-          {{ "disableUsers" | i18n }}
+          {{ "deactivateUsers" | i18n }}
         </h2>
         <button
           type="button"
@@ -23,7 +23,7 @@
         </app-callout>
         <ng-container *ngIf="!done">
           <app-callout type="warning" *ngIf="users.length > 0 && !error">
-            {{ "disableUsersWarning" | i18n }}
+            {{ "deactivateUsersWarning" | i18n }}
           </app-callout>
           <table class="table table-hover table-list">
             <thead>
@@ -91,7 +91,7 @@
           (click)="submit()"
         >
           <i class="bwi bwi-spinner bwi-spin" title="{{ 'loading' | i18n }}" aria-hidden="true"></i>
-          <span>{{ "disableUsers" | i18n }}</span>
+          <span>{{ "deactivateUsers" | i18n }}</span>
         </button>
         <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
           {{ "close" | i18n }}

@@ -7,10 +7,10 @@ import { OrganizationUserBulkRequest } from "jslib-common/models/request/organiz
 import { BulkUserDetails } from "./bulk-status.component";
 
 @Component({
-  selector: "app-bulk-disable",
-  templateUrl: "bulk-disable.component.html",
+  selector: "app-bulk-deactivate",
+  templateUrl: "bulk-deactivate.component.html",
 })
-export class BulkDisableComponent {
+export class BulkDeactivateComponent {
   @Input() organizationId: string;
   @Input() users: BulkUserDetails[];
 
@@ -25,10 +25,10 @@ export class BulkDisableComponent {
   async submit() {
     this.loading = true;
     try {
-      const response = await this.disableUsers();
+      const response = await this.deactivateUsers();
 
       response.data.forEach((entry) => {
-        const error = entry.error !== "" ? entry.error : this.i18nService.t("bulkDisabledMessage");
+        const error = entry.error !== "" ? entry.error : this.i18nService.t("bulkDeactivatedMessage");
         this.statuses.set(entry.id, error);
       });
       this.done = true;
@@ -39,8 +39,8 @@ export class BulkDisableComponent {
     this.loading = false;
   }
 
-  protected async disableUsers() {
+  protected async deactivateUsers() {
     const request = new OrganizationUserBulkRequest(this.users.map((user) => user.id));
-    return await this.apiService.disableManyOrganizationUsers(this.organizationId, request);
+    return await this.apiService.deactivateManyOrganizationUsers(this.organizationId, request);
   }
 }

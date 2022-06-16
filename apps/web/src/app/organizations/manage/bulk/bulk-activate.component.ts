@@ -7,10 +7,10 @@ import { OrganizationUserBulkRequest } from "jslib-common/models/request/organiz
 import { BulkUserDetails } from "./bulk-status.component";
 
 @Component({
-  selector: "app-bulk-enable",
-  templateUrl: "bulk-enable.component.html",
+  selector: "app-bulk-activate",
+  templateUrl: "bulk-activate.component.html",
 })
-export class BulkEnableComponent {
+export class BulkActivateComponent {
   @Input() organizationId: string;
   @Input() users: BulkUserDetails[];
 
@@ -25,10 +25,10 @@ export class BulkEnableComponent {
   async submit() {
     this.loading = true;
     try {
-      const response = await this.enableUsers();
+      const response = await this.activateUsers();
 
       response.data.forEach((entry) => {
-        const error = entry.error !== "" ? entry.error : this.i18nService.t("bulkEnabledMessage");
+        const error = entry.error !== "" ? entry.error : this.i18nService.t("bulkActivatedMessage");
         this.statuses.set(entry.id, error);
       });
       this.done = true;
@@ -39,8 +39,8 @@ export class BulkEnableComponent {
     this.loading = false;
   }
 
-  protected async enableUsers() {
+  protected async activateUsers() {
     const request = new OrganizationUserBulkRequest(this.users.map((user) => user.id));
-    return await this.apiService.enableManyOrganizationUsers(this.organizationId, request);
+    return await this.apiService.activateManyOrganizationUsers(this.organizationId, request);
   }
 }

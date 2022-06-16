@@ -29,8 +29,8 @@ import { OrganizationUserUserDetailsResponse } from "jslib-common/models/respons
 import { BasePeopleComponent } from "../../common/base.people.component";
 
 import { BulkConfirmComponent } from "./bulk/bulk-confirm.component";
-import { BulkDisableComponent } from "./bulk/bulk-disable.component";
-import { BulkEnableComponent } from "./bulk/bulk-enable.component";
+import { BulkDeactivateComponent } from "./bulk/bulk-deactivate.component";
+import { BulkActivateComponent } from "./bulk/bulk-activate.component";
 import { BulkRemoveComponent } from "./bulk/bulk-remove.component";
 import { BulkStatusComponent } from "./bulk/bulk-status.component";
 import { EntityEventsComponent } from "./entity-events.component";
@@ -59,10 +59,10 @@ export class PeopleComponent
   bulkStatusModalRef: ViewContainerRef;
   @ViewChild("bulkConfirmTemplate", { read: ViewContainerRef, static: true })
   bulkConfirmModalRef: ViewContainerRef;
-  @ViewChild("bulkDisableTemplate", { read: ViewContainerRef, static: true })
-  bulkDisableModalRef: ViewContainerRef;
-  @ViewChild("bulkEnableTemplate", { read: ViewContainerRef, static: true })
-  bulkEnableModalRef: ViewContainerRef;
+  @ViewChild("bulkDeactivateTemplate", { read: ViewContainerRef, static: true })
+  bulkDeactivateModalRef: ViewContainerRef;
+  @ViewChild("bulkActivateTemplate", { read: ViewContainerRef, static: true })
+  bulkActivateModalRef: ViewContainerRef;
   @ViewChild("bulkRemoveTemplate", { read: ViewContainerRef, static: true })
   bulkRemoveModalRef: ViewContainerRef;
 
@@ -172,12 +172,12 @@ export class PeopleComponent
     return this.apiService.deleteOrganizationUser(this.organizationId, id);
   }
 
-  disableUser(id: string): Promise<any> {
-    return this.apiService.disableOrganizationUser(this.organizationId, id);
+  deactivateUser(id: string): Promise<any> {
+    return this.apiService.deactivateOrganizationUser(this.organizationId, id);
   }
 
-  enableUser(id: string): Promise<any> {
-    return this.apiService.enableOrganizationUser(this.organizationId, id);
+  activateUser(id: string): Promise<any> {
+    return this.apiService.activateOrganizationUser(this.organizationId, id);
   }
 
   reinviteUser(id: string): Promise<any> {
@@ -250,11 +250,11 @@ export class PeopleComponent
           modal.close();
           this.removeUser(user);
         });
-        comp.onDisabledUser.subscribe(() => {
+        comp.onDeactivatedUser.subscribe(() => {
           modal.close();
           this.load();
         });
-        comp.onEnabledUser.subscribe(() => {
+        comp.onActivatedUser.subscribe(() => {
           modal.close();
           this.load();
         });
@@ -295,14 +295,14 @@ export class PeopleComponent
     await this.load();
   }
 
-  async bulkDisable() {
+  async bulkDeactivate() {
     if (this.actionPromise != null) {
       return;
     }
 
     const [modal] = await this.modalService.openViewRef(
-      BulkDisableComponent,
-      this.bulkDisableModalRef,
+      BulkDeactivateComponent,
+      this.bulkDeactivateModalRef,
       (comp) => {
         comp.organizationId = this.organizationId;
         comp.users = this.getCheckedUsers();
@@ -313,14 +313,14 @@ export class PeopleComponent
     await this.load();
   }
 
-  async bulkEnable() {
+  async bulkActivate() {
     if (this.actionPromise != null) {
       return;
     }
 
     const [modal] = await this.modalService.openViewRef(
-      BulkEnableComponent,
-      this.bulkEnableModalRef,
+      BulkActivateComponent,
+      this.bulkActivateModalRef,
       (comp) => {
         comp.organizationId = this.organizationId;
         comp.users = this.getCheckedUsers();

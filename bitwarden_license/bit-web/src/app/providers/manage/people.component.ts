@@ -120,13 +120,13 @@ export class PeopleComponent
     return this.apiService.deleteProviderUser(this.providerId, id);
   }
 
-  disableUser(id: string): Promise<any> {
+  deactivateUser(id: string): Promise<any> {
     return new Promise((resolve) => {
       resolve(id);
     });
   }
 
-  enableUser(id: string): Promise<any> {
+  activateUser(id: string): Promise<any> {
     return new Promise((resolve) => {
       resolve(id);
     });

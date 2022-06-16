@@ -443,13 +443,13 @@ export abstract class ApiService {
     organizationId: string,
     request: OrganizationUserBulkRequest
   ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
-  disableOrganizationUser: (organizationId: string, id: string) => Promise<any>;
-  disableManyOrganizationUsers: (
+  deactivateOrganizationUser: (organizationId: string, id: string) => Promise<any>;
+  deactivateManyOrganizationUsers: (
     organizationId: string,
     request: OrganizationUserBulkRequest
   ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
-  enableOrganizationUser: (organizationId: string, id: string) => Promise<any>;
-  enableManyOrganizationUsers: (
+  activateOrganizationUser: (organizationId: string, id: string) => Promise<any>;
+  activateManyOrganizationUsers: (
     organizationId: string,
     request: OrganizationUserBulkRequest
   ) => Promise<ListResponse<OrganizationUserBulkResponse>>;

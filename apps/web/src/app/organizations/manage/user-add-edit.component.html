@@ -11,7 +11,7 @@
         <h2 class="modal-title" id="userAddEditTitle">
           {{ title }}
           <small class="text-muted" *ngIf="name">{{ name }}</small>
-          <span class="badge badge-dark" *ngIf="isDisabled">{{ "disabled" | i18n }}</span>
+          <span class="badge badge-dark" *ngIf="isDeactivated">{{ "deactivated" | i18n }}</span>
         </h2>
         <button
           type="button"
@@ -380,45 +380,45 @@
         </button>
         <div class="ml-auto">
           <button
-            #enableBtn
+            #activateBtn
             type="button"
-            (click)="enable()"
+            (click)="activate()"
             class="btn btn-outline-secondary"
-            appA11yTitle="{{ 'enable' | i18n }}"
-            *ngIf="editMode && isDisabled"
-            [disabled]="enableBtn.loading"
-            [appApiAction]="enablePromise"
+            appA11yTitle="{{ 'activate' | i18n }}"
+            *ngIf="editMode && isDeactivated"
+            [disabled]="activateBtn.loading"
+            [appApiAction]="activatePromise"
           >
             <i
               class="bwi bwi-plus-circle bwi-lg bwi-fw"
-              [hidden]="enableBtn.loading"
+              [hidden]="activateBtn.loading"
               aria-hidden="true"
             ></i>
             <i
               class="bwi bwi-spinner bwi-spin bwi-lg bwi-fw"
-              [hidden]="!enableBtn.loading"
+              [hidden]="!activateBtn.loading"
               title="{{ 'loading' | i18n }}"
               aria-hidden="true"
             ></i>
           </button>
           <button
-            #disableBtn
+            #deactivateBtn
             type="button"
-            (click)="disable()"
+            (click)="deactivate()"
             class="btn btn-outline-secondary"
-            appA11yTitle="{{ 'disable' | i18n }}"
-            *ngIf="editMode && !isDisabled"
-            [disabled]="disableBtn.loading"
-            [appApiAction]="disablePromise"
+            appA11yTitle="{{ 'deactivate' | i18n }}"
+            *ngIf="editMode && !isDeactivated"
+            [disabled]="deactivateBtn.loading"
+            [appApiAction]="deactivatePromise"
           >
             <i
               class="bwi bwi-minus-circle bwi-lg bwi-fw"
-              [hidden]="disableBtn.loading"
+              [hidden]="deactivateBtn.loading"
               aria-hidden="true"
             ></i>
             <i
               class="bwi bwi-spinner bwi-spin bwi-lg bwi-fw"
-              [hidden]="!disableBtn.loading"
+              [hidden]="!deactivateBtn.loading"
               title="{{ 'loading' | i18n }}"
               aria-hidden="true"
             ></i>
