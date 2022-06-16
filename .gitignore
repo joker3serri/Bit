@@ -3,3 +3,4 @@ node_modules/
 .github/workflows/act
 .DS_Store
 documentation.json
+dist
