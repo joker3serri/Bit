@@ -38,7 +38,9 @@
         (click)="filter(userStatusType.Deactivated)"
       >
         {{ "deactivated" | i18n }}
-        <span class="badge badge-pill badge-info" *ngIf="deactivatedCount">{{ deactivatedCount }}</span>
+        <span class="badge badge-pill badge-info" *ngIf="deactivatedCount">{{
+          deactivatedCount
+        }}</span>
       </button>
     </div>
     <div class="ml-3">

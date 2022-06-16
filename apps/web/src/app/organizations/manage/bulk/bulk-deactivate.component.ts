@@ -28,7 +28,8 @@ export class BulkDeactivateComponent {
       const response = await this.deactivateUsers();
 
       response.data.forEach((entry) => {
-        const error = entry.error !== "" ? entry.error : this.i18nService.t("bulkDeactivatedMessage");
+        const error =
+          entry.error !== "" ? entry.error : this.i18nService.t("bulkDeactivatedMessage");
         this.statuses.set(entry.id, error);
       });
       this.done = true;
