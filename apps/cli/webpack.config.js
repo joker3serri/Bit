@@ -74,6 +74,12 @@ const webpackConfig = {
   },
   module: { rules: moduleRules },
   plugins: plugins,
+  externals: [
+    nodeExternals({
+      modulesDir: "../../node_modules",
+      allowlist: [/@bitwarden/],
+    }),
+  ],
 };
 
 module.exports = webpackConfig;
