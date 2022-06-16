@@ -28,9 +28,9 @@ import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/re
 
 import { BasePeopleComponent } from "../../common/base.people.component";
 
+import { BulkActivateComponent } from "./bulk/bulk-activate.component";
 import { BulkConfirmComponent } from "./bulk/bulk-confirm.component";
 import { BulkDeactivateComponent } from "./bulk/bulk-deactivate.component";
-import { BulkActivateComponent } from "./bulk/bulk-activate.component";
 import { BulkRemoveComponent } from "./bulk/bulk-remove.component";
 import { BulkStatusComponent } from "./bulk/bulk-status.component";
 import { EntityEventsComponent } from "./entity-events.component";
