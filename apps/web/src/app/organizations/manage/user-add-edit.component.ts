@@ -262,11 +262,11 @@ export class UserAddEditComponent implements OnInit {
     }
 
     try {
-      this.deactivatePromise = this.apiService.deactivateOrganizationUser(
+      this.formPromise = this.apiService.deactivateOrganizationUser(
         this.organizationId,
         this.organizationUserId
       );
-      await this.deactivatePromise;
+      await this.formPromise;
       this.platformUtilsService.showToast(
         "success",
         null,
@@ -296,11 +296,11 @@ export class UserAddEditComponent implements OnInit {
     }
 
     try {
-      this.activatePromise = this.apiService.activateOrganizationUser(
+      this.formPromise = this.apiService.activateOrganizationUser(
         this.organizationId,
         this.organizationUserId
       );
-      await this.activatePromise;
+      await this.formPromise;
       this.platformUtilsService.showToast(
         "success",
         null,
