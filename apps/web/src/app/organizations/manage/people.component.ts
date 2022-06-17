@@ -291,36 +291,28 @@ export class PeopleComponent
   }
 
   async bulkDeactivate() {
-    if (this.actionPromise != null) {
-      return;
-    }
-
-    this.modalService.open(BulkDeactivateComponent, {
-      allowMultipleModals: true,
-      data: {
-        organizationId: this.organizationId,
-        users: this.getCheckedUsers(),
-        isDeactivating: true,
-      },
-    });
-
-    await this.load();
+    await this.bulkActivateOrDeactivate(true);
   }
 
   async bulkActivate() {
+    await this.bulkActivateOrDeactivate(false);
+  }
+
+  async bulkActivateOrDeactivate(isDeactivating: boolean) {
     if (this.actionPromise != null) {
       return;
     }
 
-    this.modalService.open(BulkDeactivateComponent, {
+    const ref = this.modalService.open(BulkDeactivateComponent, {
       allowMultipleModals: true,
       data: {
         organizationId: this.organizationId,
         users: this.getCheckedUsers(),
-        isDeactivating: false,
+        isDeactivating: isDeactivating,
       },
     });
 
+    await ref.onClosedPromise();
     await this.load();
   }
 

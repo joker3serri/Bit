@@ -34,6 +34,16 @@ export class BulkDeactivateComponent {
     this.users = config.data.users;
   }
 
+  get bulkTitle() {
+    const titleKey = this.isDeactivating ? "deactivateUsers" : "activateUsers";
+    return this.i18nService.t(titleKey);
+  }
+
+  get usersWarning() {
+    const warningKey = this.isDeactivating ? "deactivateUsersWarning" : "activateUsersWarning";
+    return this.i18nService.t(warningKey);
+  }
+
   async submit() {
     this.loading = true;
     try {
