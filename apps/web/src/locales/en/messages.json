@@ -2601,6 +2601,24 @@
       }
     }
   },
+  "deactivateUserId": {
+    "message": "Deactivate user $ID$?",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "activateUserId": {
+    "message": "Activate user $ID$?",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
   "createdAttachmentForItem": {
     "message": "Created attachment for item $ID$.",
     "placeholders": {
@@ -4250,10 +4268,10 @@
     "message": "This action is not applicable to any of the selected users."
   },
   "removeUsersWarning": {
-    "message": "Are you sure you want to remove the following users?"
+    "message": "Are you sure you want to remove the following users? The process may take a few seconds to complete and cannot be interrupted or canceled."
   },
   "deactivateUsersWarning": {
-    "message": "Are you sure you want to deactivate the following members? They will no longer have access to the organization, but will still have access to their individual vaults. The process may take a few seconds to complete and cannot be interrupted or canceled. The process may take a few seconds to complete and cannot be interrupted or canceled."
+    "message": "Are you sure you want to deactivate the following members? They will no longer have access to the organization, but will still have access to their individual vaults. The process may take a few seconds to complete and cannot be interrupted or canceled."
   },
   "activateUsersWarning": {
     "message": "Are you sure you want to activate the following members, granting them access to the organization? The process may take a few seconds to complete and cannot be interrupted or canceled."

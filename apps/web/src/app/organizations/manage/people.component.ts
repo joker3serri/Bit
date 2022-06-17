@@ -28,7 +28,6 @@ import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/re
 
 import { BasePeopleComponent } from "../../common/base.people.component";
 
-import { BulkActivateComponent } from "./bulk/bulk-activate.component";
 import { BulkConfirmComponent } from "./bulk/bulk-confirm.component";
 import { BulkDeactivateComponent } from "./bulk/bulk-deactivate.component";
 import { BulkRemoveComponent } from "./bulk/bulk-remove.component";
@@ -59,10 +58,6 @@ export class PeopleComponent
   bulkStatusModalRef: ViewContainerRef;
   @ViewChild("bulkConfirmTemplate", { read: ViewContainerRef, static: true })
   bulkConfirmModalRef: ViewContainerRef;
-  @ViewChild("bulkDeactivateTemplate", { read: ViewContainerRef, static: true })
-  bulkDeactivateModalRef: ViewContainerRef;
-  @ViewChild("bulkActivateTemplate", { read: ViewContainerRef, static: true })
-  bulkActivateModalRef: ViewContainerRef;
   @ViewChild("bulkRemoveTemplate", { read: ViewContainerRef, static: true })
   bulkRemoveModalRef: ViewContainerRef;
 
@@ -300,16 +295,15 @@ export class PeopleComponent
       return;
     }
 
-    const [modal] = await this.modalService.openViewRef(
-      BulkDeactivateComponent,
-      this.bulkDeactivateModalRef,
-      (comp) => {
-        comp.organizationId = this.organizationId;
-        comp.users = this.getCheckedUsers();
-      }
-    );
+    this.modalService.open(BulkDeactivateComponent, {
+      allowMultipleModals: true,
+      data: {
+        organizationId: this.organizationId,
+        users: this.getCheckedUsers(),
+        isDeactivating: true,
+      },
+    });
 
-    await modal.onClosedPromise();
     await this.load();
   }
 
@@ -318,16 +312,15 @@ export class PeopleComponent
       return;
     }
 
-    const [modal] = await this.modalService.openViewRef(
-      BulkActivateComponent,
-      this.bulkActivateModalRef,
-      (comp) => {
-        comp.organizationId = this.organizationId;
-        comp.users = this.getCheckedUsers();
-      }
-    );
+    this.modalService.open(BulkDeactivateComponent, {
+      allowMultipleModals: true,
+      data: {
+        organizationId: this.organizationId,
+        users: this.getCheckedUsers(),
+        isDeactivating: false,
+      },
+    });
 
-    await modal.onClosedPromise();
     await this.load();
   }
 

@@ -380,45 +380,41 @@
         </button>
         <div class="ml-auto">
           <button
-            #activateBtn
             type="button"
             (click)="activate()"
             class="btn btn-outline-secondary"
             appA11yTitle="{{ 'activate' | i18n }}"
             *ngIf="editMode && isDeactivated"
-            [disabled]="activateBtn.loading"
-            [appApiAction]="activatePromise"
+            [disabled]="form.loading"
           >
             <i
               class="bwi bwi-plus-circle bwi-lg bwi-fw"
-              [hidden]="activateBtn.loading"
+              [hidden]="form.loading"
               aria-hidden="true"
             ></i>
             <i
               class="bwi bwi-spinner bwi-spin bwi-lg bwi-fw"
-              [hidden]="!activateBtn.loading"
+              [hidden]="!form.loading"
               title="{{ 'loading' | i18n }}"
               aria-hidden="true"
             ></i>
           </button>
           <button
-            #deactivateBtn
             type="button"
             (click)="deactivate()"
             class="btn btn-outline-secondary"
             appA11yTitle="{{ 'deactivate' | i18n }}"
             *ngIf="editMode && !isDeactivated"
-            [disabled]="deactivateBtn.loading"
-            [appApiAction]="deactivatePromise"
+            [disabled]="form.loading"
           >
             <i
               class="bwi bwi-minus-circle bwi-lg bwi-fw"
-              [hidden]="deactivateBtn.loading"
+              [hidden]="form.loading"
               aria-hidden="true"
             ></i>
             <i
               class="bwi bwi-spinner bwi-spin bwi-lg bwi-fw"
-              [hidden]="!deactivateBtn.loading"
+              [hidden]="!form.loading"
               title="{{ 'loading' | i18n }}"
               aria-hidden="true"
             ></i>

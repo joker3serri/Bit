@@ -121,15 +121,13 @@ export class PeopleComponent
   }
 
   deactivateUser(id: string): Promise<any> {
-    return new Promise((resolve) => {
-      resolve(id);
-    });
+    // Not implemented.
+    return null;
   }
 
   activateUser(id: string): Promise<any> {
-    return new Promise((resolve) => {
-      resolve(id);
-    });
+    // Not implemented.
+    return null;
   }
 
   reinviteUser(id: string): Promise<any> {

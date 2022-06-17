@@ -42,8 +42,6 @@ export class UserAddEditComponent implements OnInit {
   collections: CollectionView[] = [];
   formPromise: Promise<any>;
   deletePromise: Promise<any>;
-  deactivatePromise: Promise<any>;
-  activatePromise: Promise<any>;
   organizationUserType = OrganizationUserType;
 
   manageAllCollectionsCheckboxes = [
@@ -254,9 +252,9 @@ export class UserAddEditComponent implements OnInit {
 
     const confirmed = await this.platformUtilsService.showDialog(
       this.i18nService.t("deactivateUserConfirmation"),
-      this.name,
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
+      this.i18nService.t("deactivateUserId", this.name),
+      this.i18nService.t("deactivate"),
+      this.i18nService.t("cancel"),
       "warning"
     );
     if (!confirmed) {
@@ -288,9 +286,9 @@ export class UserAddEditComponent implements OnInit {
 
     const confirmed = await this.platformUtilsService.showDialog(
       this.i18nService.t("activateUserConfirmation"),
-      this.name,
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
+      this.i18nService.t("activateUserId", this.name),
+      this.i18nService.t("activate"),
+      this.i18nService.t("cancel"),
       "warning"
     );
     if (!confirmed) {

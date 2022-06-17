@@ -234,10 +234,10 @@ export abstract class BasePeopleComponent<
 
   async deactivate(user: UserType) {
     const confirmed = await this.platformUtilsService.showDialog(
-      this.deactivateWarningMessage(user),
-      this.userNamePipe.transform(user),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
+      this.deactivateWarningMessage(),
+      this.i18nService.t("deactivateUserId", this.userNamePipe.transform(user)),
+      this.i18nService.t("deactivate"),
+      this.i18nService.t("cancel"),
       "warning"
     );
 
@@ -253,17 +253,7 @@ export abstract class BasePeopleComponent<
         null,
         this.i18nService.t("deactivatedUserId", this.userNamePipe.transform(user))
       );
-      const priorStatus = user.status;
-      user.status = this.userStatusType.Deactivated;
-      const activeIndex = this.activeUsers.indexOf(user);
-      if (activeIndex > -1) {
-        this.activeUsers.splice(activeIndex, 1);
-      }
-      const mapIndex = this.statusMap.get(priorStatus).indexOf(user);
-      if (mapIndex > -1) {
-        this.statusMap.get(priorStatus).splice(mapIndex, 1);
-        this.statusMap.get(this.userStatusType.Deactivated).push(user);
-      }
+      await this.load();
     } catch (e) {
       this.validationService.showError(e);
     }
@@ -272,10 +262,10 @@ export abstract class BasePeopleComponent<
 
   async activate(user: UserType) {
     const confirmed = await this.platformUtilsService.showDialog(
-      this.activateWarningMessage(user),
-      this.userNamePipe.transform(user),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
+      this.activateWarningMessage(),
+      this.i18nService.t("activateUserId", this.userNamePipe.transform(user)),
+      this.i18nService.t("activate"),
+      this.i18nService.t("cancel"),
       "warning"
     );
 
@@ -291,8 +281,6 @@ export abstract class BasePeopleComponent<
         null,
         this.i18nService.t("activatedUserId", this.userNamePipe.transform(user))
       );
-      this.removeUser(user);
-      // necessary since we don't know the new status
       await this.load();
     } catch (e) {
       this.validationService.showError(e);
@@ -406,11 +394,11 @@ export abstract class BasePeopleComponent<
     return this.i18nService.t("removeUserConfirmation");
   }
 
-  protected deactivateWarningMessage(user: UserType): string {
+  protected deactivateWarningMessage(): string {
     return this.i18nService.t("deactivateUserConfirmation");
   }
 
-  protected activateWarningMessage(user: UserType): string {
+  protected activateWarningMessage(): string {
     return this.i18nService.t("activateUserConfirmation");
   }
 
