@@ -1,30 +1,21 @@
-<div class="content org-filter-content" *ngIf="loaded && showOrganizations">
+<div class="content org-filter-content" *ngIf="loaded && show">
   <button
+    #toggleVaults
     class="org-filter"
-    (click)="toggle()"
-    cdkOverlayOrigin
-    #trigger="cdkOverlayOrigin"
+    (click)="openOverlay()"
     aria-haspopup="menu"
     aria-controls="cdk-overlay-container"
     [attr.aria-expanded]="isOpen"
+    [attr.aria-label]="vaultFilterDisplay"
   >
-    <span>{{ vaultFilterDisplay }}&nbsp;</span>
+    {{ vaultFilterDisplay | ellipsis: 45 }}&nbsp;
     <i
       class="bwi bwi-sm"
       aria-hidden="true"
       [ngClass]="{ 'bwi-angle-down': !isOpen, 'bwi-chevron-up': isOpen }"
     ></i>
   </button>
-  <ng-template
-    cdkConnectedOverlay
-    [cdkConnectedOverlayOrigin]="trigger"
-    [cdkConnectedOverlayHasBackdrop]="true"
-    [cdkConnectedOverlayBackdropClass]="'cdk-overlay-transparent-backdrop'"
-    [cdkConnectedOverlayOpen]="isOpen"
-    [cdkConnectedOverlayPositions]="overlayPostition"
-    (backdropClick)="close()"
-    (detach)="close()"
-  >
+  <ng-template class="vault-select-container" #vaultSelectorTemplate>
     <div
       class="vault-select"
       [@transformPanel]="'open'"
@@ -67,7 +58,7 @@
           class="bwi bwi-fw bwi-family"
           aria-hidden="true"
         ></i>
-        <span>&nbsp;{{ organization.name | ellipsis: 23:true }}</span>
+        <span>&nbsp;{{ organization.name | ellipsis: 21:true }}</span>
       </button>
     </div>
   </ng-template>

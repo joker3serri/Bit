@@ -174,7 +174,9 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
   }
 
   async loadCollections() {
-    const allCollections = await this.vaultFilterService.buildCollections();
+    const allCollections = await this.vaultFilterService.buildCollections(
+      this.selectedOrganization
+    );
     this.collections = allCollections.fullList;
     this.nestedCollections = allCollections.nestedList;
   }
@@ -264,7 +266,9 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
   }
 
   async addCipher() {
-    this.router.navigate(["/add-cipher"]);
+    this.router.navigate(["/add-cipher"], {
+      queryParams: { selectedVault: this.vaultFilter.selectedOrganizationId },
+    });
   }
 
   async vaultFilterChanged() {
