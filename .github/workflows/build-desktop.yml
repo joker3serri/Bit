@@ -5,9 +5,12 @@ on:
   pull_request:
     branches-ignore:
       - 'l10n_master'
-      - 'gh-pages'
+      - 'cf-pages'
     paths:
       - 'apps/desktop/**'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-desktop.yml'
   push:
     branches:
@@ -16,6 +19,10 @@ on:
       - 'hotfix-rc/**'
     paths:
       - 'apps/desktop/**'
+      - 'libs/**'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-desktop.yml'
   workflow_dispatch:
     inputs: {}
@@ -64,6 +71,7 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       package_version: ${{ steps.retrieve-version.outputs.package_version }}
+      release_channel: ${{ steps.release-channel.outputs.channel }}
       build_number: ${{ steps.increment-version.outputs.build_number }}
       rc_branch_exists: ${{ steps.branch-check.outputs.rc_branch_exists }}
       hotfix_branch_exists: ${{ steps.branch-check.outputs.hotfix_branch_exists }}
@@ -86,6 +94,23 @@ jobs:
           BUILD_NUMBER=$(expr 3000 + $GITHUB_RUN_NUMBER)
           echo "Setting build number to $BUILD_NUMBER"
           echo "::set-output name=build_number::$BUILD_NUMBER"
+
+      - name: Get Version Channel
+        id: release-channel
+        run: |
+          case "${{ steps.retrieve-version.outputs.package_version }}" in
+            *"alpha"*)
+              echo "::set-output name=channel::alpha"
+              echo "[!] We do not yet support 'alpha'"
+              exit 1
+              ;;
+            *"beta"*)
+              echo "::set-output name=channel::beta"
+              ;;
+            *)
+              echo "::set-output name=channel::latest"
+              ;;
+          esac
 
       - name: Check if special branches exist
         id: branch-check
@@ -188,11 +213,11 @@ jobs:
           path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-x86_64.AppImage
           if-no-files-found: error
 
-      - name: Upload latest auto-update artifact
+      - name: Upload auto-update artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
-          name: latest-linux.yml
-          path: apps/desktop/dist/latest-linux.yml
+          name: ${{ needs.setup.outputs.release_channel }}-linux.yml
+          path: apps/desktop/dist/${{ needs.setup.outputs.release_channel }}-linux.yml
           if-no-files-found: error
 
 
@@ -289,6 +314,15 @@ jobs:
           (Get-Content $chocoInstall).replace('__version__', "$env:_PACKAGE_VERSION").replace('__checksum__', $checksum) | Set-Content $chocoInstall
           choco pack ./dist/chocolatey/bitwarden.nuspec --version "$env:_PACKAGE_VERSION" --out ./dist/chocolatey
 
+      - name: Fix NSIS artifact names for auto-updater
+        run: |
+          Rename-Item -Path .\dist\nsis-web\Bitwarden-${{ env._PACKAGE_VERSION }}-ia32.nsis.7z `
+            -NewName bitwarden-${{ env._PACKAGE_VERSION }}-ia32.nsis.7z
+          Rename-Item -Path .\dist\nsis-web\Bitwarden-${{ env._PACKAGE_VERSION }}-x64.nsis.7z `
+            -NewName bitwarden-${{ env._PACKAGE_VERSION }}-x64.nsis.7z
+          Rename-Item -Path .\dist\nsis-web\Bitwarden-${{ env._PACKAGE_VERSION }}-arm64.nsis.7z `
+            -NewName bitwarden-${{ env._PACKAGE_VERSION }}-arm64.nsis.7z
+
       - name: Upload portable exe artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
@@ -320,8 +354,8 @@ jobs:
       - name: Upload NSIS ia32 artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
-          name: Bitwarden-${{ env._PACKAGE_VERSION }}-ia32.nsis.7z
-          path: apps/desktop/dist/nsis-web/Bitwarden-${{ env._PACKAGE_VERSION }}-ia32.nsis.7z
+          name: bitwarden-${{ env._PACKAGE_VERSION }}-ia32.nsis.7z
+          path: apps/desktop/dist/nsis-web/bitwarden-${{ env._PACKAGE_VERSION }}-ia32.nsis.7z
           if-no-files-found: error
 
       - name: Upload appx x64 artifact
@@ -341,8 +375,8 @@ jobs:
       - name: Upload NSIS x64 artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
-          name: Bitwarden-${{ env._PACKAGE_VERSION }}-x64.nsis.7z
-          path: apps/desktop/dist/nsis-web/Bitwarden-${{ env._PACKAGE_VERSION }}-x64.nsis.7z
+          name: bitwarden-${{ env._PACKAGE_VERSION }}-x64.nsis.7z
+          path: apps/desktop/dist/nsis-web/bitwarden-${{ env._PACKAGE_VERSION }}-x64.nsis.7z
           if-no-files-found: error
 
       - name: Upload appx ARM64 artifact
@@ -362,8 +396,8 @@ jobs:
       - name: Upload NSIS ARM64 artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
-          name: Bitwarden-${{ env._PACKAGE_VERSION }}-arm64.nsis.7z
-          path: apps/desktop/dist/nsis-web/Bitwarden-${{ env._PACKAGE_VERSION }}-arm64.nsis.7z
+          name: bitwarden-${{ env._PACKAGE_VERSION }}-arm64.nsis.7z
+          path: apps/desktop/dist/nsis-web/bitwarden-${{ env._PACKAGE_VERSION }}-arm64.nsis.7z
           if-no-files-found: error
 
       - name: Upload nupkg artifact
@@ -373,11 +407,11 @@ jobs:
           path: apps/desktop/dist/chocolatey/bitwarden.${{ env._PACKAGE_VERSION }}.nupkg
           if-no-files-found: error
 
-      - name: Upload latest auto-update artifact
+      - name: Upload auto-update artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
-          name: latest.yml
-          path: apps/desktop/dist/nsis-web/latest.yml
+          name: ${{ needs.setup.outputs.release_channel }}.yml
+          path: apps/desktop/dist/nsis-web/${{ needs.setup.outputs.release_channel }}.yml
           if-no-files-found: error
 
 
@@ -633,6 +667,21 @@ jobs:
         if: steps.build-cache.outputs.cache-hit != 'true'
         run: npm run build
 
+      - name: Extract branch name
+        if: contains(github.ref, 'hotfix-rc')
+        id: extract_branch
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+
+      - name: Download artifact from hotfix-rc
+        if: contains(github.ref, 'hotfix-rc')
+        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
+        with:
+          workflow: build-browser.yml
+          workflow_conclusion: success
+          branch: ${{ steps.extract_branch.outputs.branch }}
+          path: ${{ github.workspace }}/browser-build-artifacts
+
       - name: Download artifact from rc
         if: github.ref == 'refs/heads/rc'
         uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
@@ -643,7 +692,7 @@ jobs:
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Download artifact from master
-        if: github.ref != 'refs/heads/rc'
+        if: ${{ github.ref != 'refs/heads/rc' && !contains(github.ref, 'hotfix-rc') }}
         uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
         with:
           workflow: build-browser.yml
@@ -689,11 +738,11 @@ jobs:
           path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg.blockmap
           if-no-files-found: error
 
-      - name: Upload latest auto-update artifact
+      - name: Upload auto-update artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
-          name: latest-mac.yml
-          path: apps/desktop/dist/latest-mac.yml
+          name: ${{ needs.setup.outputs.release_channel }}-mac.yml
+          path: apps/desktop/dist/${{ needs.setup.outputs.release_channel }}-mac.yml
           if-no-files-found: error
 
 
@@ -824,6 +873,21 @@ jobs:
         if: steps.build-cache.outputs.cache-hit != 'true'
         run: npm run build
 
+      - name: Extract branch name
+        if: contains(github.ref, 'hotfix-rc')
+        id: extract_branch
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+
+      - name: Download artifact from hotfix-rc
+        if: contains(github.ref, 'hotfix-rc')
+        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
+        with:
+          workflow: build-browser.yml
+          workflow_conclusion: success
+          branch: ${{ steps.extract_branch.outputs.branch }}
+          path: ${{ github.workspace }}/browser-build-artifacts
+
       - name: Download artifact from rc
         if: github.ref == 'refs/heads/rc'
         uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
@@ -834,7 +898,7 @@ jobs:
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Download artifact from master
-        if: github.ref != 'refs/heads/rc'
+        if: ${{ github.ref != 'refs/heads/rc' && !contains(github.ref, 'hotfix-rc') }}
         uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
         with:
           workflow: build-browser.yml
@@ -1122,7 +1186,7 @@ jobs:
         run: |
           if [ "$CLOC_STATUS" = "failure" ]; then
               exit 1
-          if [ "$ELECTRON_VERIFY_STATUS" = "failure" ]; then
+          elif [ "$ELECTRON_VERIFY_STATUS" = "failure" ]; then
               exit 1
           elif [ "$SETUP_STATUS" = "failure" ]; then
               exit 1

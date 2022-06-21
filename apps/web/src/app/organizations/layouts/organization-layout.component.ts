@@ -1,9 +1,9 @@
 import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
-import { OrganizationService } from "jslib-common/abstractions/organization.service";
-import { Organization } from "jslib-common/models/domain/organization";
+import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { NavigationPermissionsService } from "../services/navigation-permissions.service";
 
@@ -82,6 +82,9 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
         break;
       case this.organization.canManagePolicies:
         route = "manage/policies";
+        break;
+      case this.organization.canManageSso:
+        route = "manage/sso";
         break;
       case this.organization.canAccessEventLogs:
         route = "manage/events";

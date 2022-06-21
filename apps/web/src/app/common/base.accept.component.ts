@@ -1,10 +1,10 @@
 import { Directive, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { StateService } from "jslib-common/abstractions/state.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 
 @Directive()
 export abstract class BaseAcceptComponent implements OnInit {
@@ -25,8 +25,8 @@ export abstract class BaseAcceptComponent implements OnInit {
     protected stateService: StateService
   ) {}
 
-  abstract authedHandler(qParams: any): Promise<void>;
-  abstract unauthedHandler(qParams: any): Promise<void>;
+  abstract authedHandler(qParams: Params): Promise<void>;
+  abstract unauthedHandler(qParams: Params): Promise<void>;
 
   ngOnInit() {
     this.route.queryParams.pipe(first()).subscribe(async (qParams) => {

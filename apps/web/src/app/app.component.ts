@@ -1,29 +1,30 @@
-import { Component, NgZone, OnDestroy, OnInit, SecurityContext } from "@angular/core";
+import { DOCUMENT } from "@angular/common";
+import { Component, Inject, NgZone, OnDestroy, OnInit, SecurityContext } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { NavigationEnd, Router } from "@angular/router";
 import * as jq from "jquery";
 import { IndividualConfig, ToastrService } from "ngx-toastr";
 import Swal from "sweetalert2";
 
-import { AuthService } from "jslib-common/abstractions/auth.service";
-import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
-import { CipherService } from "jslib-common/abstractions/cipher.service";
-import { CollectionService } from "jslib-common/abstractions/collection.service";
-import { CryptoService } from "jslib-common/abstractions/crypto.service";
-import { EventService } from "jslib-common/abstractions/event.service";
-import { FolderService } from "jslib-common/abstractions/folder.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { KeyConnectorService } from "jslib-common/abstractions/keyConnector.service";
-import { NotificationsService } from "jslib-common/abstractions/notifications.service";
-import { PasswordGenerationService } from "jslib-common/abstractions/passwordGeneration.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
-import { SearchService } from "jslib-common/abstractions/search.service";
-import { SettingsService } from "jslib-common/abstractions/settings.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { SyncService } from "jslib-common/abstractions/sync.service";
-import { TokenService } from "jslib-common/abstractions/token.service";
-import { VaultTimeoutService } from "jslib-common/abstractions/vaultTimeout.service";
+import { AuthService } from "@bitwarden/common/abstractions/auth.service";
+import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { EventService } from "@bitwarden/common/abstractions/event.service";
+import { FolderService } from "@bitwarden/common/abstractions/folder.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
+import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
+import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { SearchService } from "@bitwarden/common/abstractions/search.service";
+import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { TokenService } from "@bitwarden/common/abstractions/token.service";
+import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
 
 import { DisableSendPolicy } from "./organizations/policies/disable-send.component";
 import { MasterPasswordPolicy } from "./organizations/policies/master-password.component";
@@ -50,6 +51,7 @@ export class AppComponent implements OnDestroy, OnInit {
   private isIdle = false;
 
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     private broadcasterService: BroadcasterService,
     private tokenService: TokenService,
     private folderService: FolderService,
@@ -78,6 +80,8 @@ export class AppComponent implements OnDestroy, OnInit {
   ) {}
 
   ngOnInit() {
+    this.document.documentElement.lang = this.i18nService.locale;
+
     this.ngZone.runOutsideAngular(() => {
       window.onmousemove = () => this.recordActivity();
       window.onmousedown = () => this.recordActivity();
