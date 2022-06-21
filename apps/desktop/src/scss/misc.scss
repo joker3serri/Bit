@@ -112,7 +112,7 @@ p.lead {
   border: 0 !important;
 }
 
-:not(:focus)>.exists-only-on-parent-focus {
+:not(:focus) > .exists-only-on-parent-focus {
   display: none;
 }
 
