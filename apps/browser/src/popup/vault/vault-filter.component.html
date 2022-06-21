@@ -181,12 +181,7 @@
         <span class="flex-right">{{ deletedCount }}</span>
       </h2>
       <div class="box-content single-line">
-        <button
-          type="button"
-          class="box-content-row"
-          appStopClick
-          (click)="selectTrash()"
-        >
+        <button type="button" class="box-content-row" appStopClick (click)="selectTrash()">
           <div class="row-main">
             <div class="icon"><i class="bwi bwi-fw bwi-lg bwi-trash"></i></div>
             <span class="text">{{ "trash" | i18n }}</span>

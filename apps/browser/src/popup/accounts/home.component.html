@@ -8,7 +8,9 @@
     <button type="button" (click)="launchSsoBrowser()" class="btn block">
       <i class="bwi bwi-bank" aria-hidden="true"></i> {{ "enterpriseSingleSignOn" | i18n }}
     </button>
-    <button type="button" class="btn block" routerLink="/register">{{ "createAccount" | i18n }}</button>
+    <button type="button" class="btn block" routerLink="/register">
+      {{ "createAccount" | i18n }}
+    </button>
   </div>
 </div>
 <button type="button" routerLink="/environment" class="settings-icon">
