@@ -127,7 +127,7 @@ jobs:
         run: |
           if [[ "${{ github.event.inputs.release_type }}" == "Dry Run" ]]; then
             docker tag bitwarden/web:latest $REGISTRY/web:$_RELEASE_VERSION
-            docker tag bitwarden/web:latest $REGSITRY/web:latest
+            docker tag bitwarden/web:latest $REGISTRY/web:latest
 
             docker tag bitwarden/web:latest $REGISTRY/web-sh:$_RELEASE_VERSION
             docker tag bitwarden/web:latest $REGISTRY/web-sh:latest
