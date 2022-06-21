@@ -22,7 +22,8 @@
     </button>
   </div>
 </header>
-<main tabindex="-1">
+<main tabindex="-1" cdk-scrollable>
+  <app-vault-select (onVaultSelectionChanged)="vaultFilterChanged()"></app-vault-select>
   <div class="no-items" *ngIf="(!ciphers || !ciphers.length) && !showSearching()">
     <i class="bwi bwi-spinner bwi-spin bwi-3x" *ngIf="!loaded"></i>
     <ng-container *ngIf="loaded">
@@ -139,7 +140,7 @@
         </button>
       </div>
     </div>
-    <div class="box list" *ngIf="nestedCollections && nestedCollections.length">
+    <div class="box list" *ngIf="showCollections && nestedCollections && nestedCollections.length">
       <h2 class="box-header">
         {{ "collections" | i18n }}
         <span class="flex-right">{{ nestedCollections.length }}</span>

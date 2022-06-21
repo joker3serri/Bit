@@ -8,13 +8,13 @@ on:
       - 'gh-pages'
     paths:
       - 'apps/desktop/**'
+      - '.github/workflows/build-desktop.yml'
   workflow_dispatch:
     inputs: {}
 
 defaults:
   run:
     shell: bash
-    working-directory: apps/desktop
 
 jobs:
   cloc:
@@ -41,6 +41,9 @@ jobs:
       build_number: ${{ steps.increment-version.outputs.build_number }}
       rc_branch_exists: ${{ steps.branch-check.outputs.rc_branch_exists }}
       hotfix_branch_exists: ${{ steps.branch-check.outputs.hotfix_branch_exists }}
+    defaults:
+      run:
+        working-directory: apps/desktop
     steps:
       - name: Checkout repo
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
@@ -80,6 +83,9 @@ jobs:
     needs: setup
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
+    defaults:
+      run:
+        working-directory: apps/desktop
     steps:
       - name: Checkout repo
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
@@ -88,7 +94,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache-dependency-path: 'apps/desktop/**/package-lock.json'
           node-version: '16'
 
       - name: Set Node options
@@ -181,7 +187,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache-dependency-path: 'apps/desktop/**/package-lock.json'
           node-version: '16'
 
       - name: Set Node options
@@ -353,6 +359,9 @@ jobs:
     needs: setup
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
+    defaults:
+      run:
+        working-directory: apps/desktop
     steps:
       - name: Checkout repo
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
@@ -361,7 +370,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache-dependency-path: 'apps/desktop/**/package-lock.json'
           node-version: '16'
 
       - name: Set Node options
@@ -467,12 +476,6 @@ jobs:
       - name: Build application (dev)
         run: npm run build
 
-      - name: Build Safari extension
-        run: |
-          npm install
-          npm run dist:safari
-        working-directory: apps/browser
-
 
   macos-package-github:
     name: MacOS Package GitHub Release Assets
@@ -482,176 +485,9 @@ jobs:
       - macos-build
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
-
-      - name: Set up Node
-        uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
-        with:
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-          node-version: '16'
-
-      - name: Set Node options
-        run: echo "NODE_OPTIONS=--max_old_space_size=4096" >> $GITHUB_ENV
-
-      - name: Install node-gyp
-        run: |
-          npm install -g node-gyp
-          node-gyp install $(node -v)
-
-      - name: Print environment
-        run: |
-          node --version
-          npm --version
-          echo "GitHub ref: $GITHUB_REF"
-          echo "GitHub event: $GITHUB_EVENT"
-
-      - name: Get Build Cache
-        id: build-cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
-        with:
-          path: apps/desktop/build
-          key: ${{ runner.os }}-${{ github.run_id }}-build
-
-      - name: Setup Safari Cache
-        id: safari-cache
-        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
-        with:
-          path: apps/browser/dist/Safari
-          key: ${{ runner.os }}-${{ github.run_id }}-safari-extension
-
-      - name: Decrypt secrets
-        env:
-          DECRYPT_FILE_PASSWORD: ${{ secrets.DECRYPT_FILE_PASSWORD }}
-        run: |
-          mkdir -p $HOME/secrets
-          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
-            --output "$HOME/secrets/bitwarden-desktop-key.p12" \
-            "$GITHUB_WORKSPACE/.github/secrets/bitwarden-desktop-key.p12.gpg"
-          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
-            --output "$HOME/secrets/appstore-app-cert.p12" \
-            "$GITHUB_WORKSPACE/.github/secrets/appstore-app-cert.p12.gpg"
-          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
-            --output "$HOME/secrets/appstore-installer-cert.p12" \
-            "$GITHUB_WORKSPACE/.github/secrets/appstore-installer-cert.p12.gpg"
-          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
-            --output "$HOME/secrets/devid-app-cert.p12" \
-            "$GITHUB_WORKSPACE/.github/secrets/devid-app-cert.p12.gpg"
-          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
-            --output "$HOME/secrets/devid-installer-cert.p12" \
-            "$GITHUB_WORKSPACE/.github/secrets/devid-installer-cert.p12.gpg"
-          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
-            --output "$HOME/secrets/macdev-cert.p12" \
-            "$GITHUB_WORKSPACE/.github/secrets/macdev-cert.p12.gpg"
-          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
-            --output "$HOME/secrets/bitwarden_desktop_appstore.provisionprofile" \
-            "$GITHUB_WORKSPACE/.github/secrets/bitwarden_desktop_appstore.provisionprofile.gpg"
-
-      - name: Set up keychain
-        env:
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-          DESKTOP_KEY_PASSWORD: ${{ secrets.DESKTOP_KEY_PASSWORD }}
-          DEVID_CERT_PASSWORD: ${{ secrets.DEVID_CERT_PASSWORD }}
-          APPSTORE_CERT_PASSWORD: ${{ secrets.APPSTORE_CERT_PASSWORD }}
-          MACDEV_CERT_PASSWORD: ${{ secrets.MACDEV_CERT_PASSWORD }}
-          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-        run: |
-          security create-keychain -p $KEYCHAIN_PASSWORD build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p $KEYCHAIN_PASSWORD build.keychain
-          security set-keychain-settings -lut 1200 build.keychain
-          security import "$HOME/secrets/bitwarden-desktop-key.p12" -k build.keychain -P $DESKTOP_KEY_PASSWORD \
-            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
-          security import "$HOME/secrets/devid-app-cert.p12" -k build.keychain -P $DEVID_CERT_PASSWORD \
-            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
-          security import "$HOME/secrets/devid-installer-cert.p12" -k build.keychain -P $DEVID_CERT_PASSWORD \
-            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
-          security import "$HOME/secrets/appstore-app-cert.p12" -k build.keychain -P $APPSTORE_CERT_PASSWORD \
-            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
-          security import "$HOME/secrets/appstore-installer-cert.p12" -k build.keychain -P $APPSTORE_CERT_PASSWORD \
-            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
-          security import "$HOME/secrets/macdev-cert.p12" -k build.keychain -P $MACDEV_CERT_PASSWORD \
-            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $KEYCHAIN_PASSWORD build.keychain
-
-      - name: Set up provisioning profiles
-        run: |
-          cp $HOME/secrets/bitwarden_desktop_appstore.provisionprofile \
-            $GITHUB_WORKSPACE/apps/desktop/bitwarden_desktop_appstore.provisionprofile
-
-      - name: Increment version
-        shell: pwsh
-        env:
-          BUILD_NUMBER: ${{ needs.setup.outputs.build_number }}
-        run: |
-          $package = Get-Content -Raw -Path electron-builder.json | ConvertFrom-Json
-          $package | Add-Member -MemberType NoteProperty -Name buildVersion -Value "$env:BUILD_NUMBER"
-          $package | ConvertTo-Json -Depth 32 | Set-Content -Path electron-builder.json
-
-      - name: NPM install
-        run: npm ci
-
-      - name: Build
-        if: steps.build-cache.outputs.cache-hit != 'true'
-        run: npm run build
-
-      - name: Build Safari extension
-        if: steps.safari-cache.outputs.cache-hit != 'true'
-        run: |
-          npm install
-          npm run dist:safari
-        working-directory: apps/browser
-
-      - name: Load Safari extension for .dmg
-        run: |
-          mkdir PlugIns
-          cp -r $GITHUB_WORKSPACE/apps/browser/dist/Safari/dmg/build/Release/safari.appex PlugIns/safari.appex
-
-      - name: Build application (dist)
-        env:
-          APPLE_ID_USERNAME: ${{ secrets.APPLE_ID_USERNAME }}
-          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-        run: npm run pack:mac
-
-      - name: Upload .zip artifact
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
-        with:
-          name: Bitwarden-${{ env._PACKAGE_VERSION }}-universal-mac.zip
-          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal-mac.zip
-          if-no-files-found: error
-
-      - name: Upload .dmg artifact
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
-        with:
-          name: Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg
-          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg
-          if-no-files-found: error
-
-      - name: Upload .dmg blockmap artifact
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
-        with:
-          name: Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg.blockmap
-          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg.blockmap
-          if-no-files-found: error
-
-      - name: Upload latest auto-update artifact
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
-        with:
-          name: latest-mac.yml
-          path: apps/desktop/dist/latest-mac.yml
-          if-no-files-found: error
-
-
-  macos-package-mas:
-    name: MacOS Package Prod Release Asset
-    runs-on: macos-11
-    needs:
-      - setup
-      - macos-build
-    env:
-      _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
+    defaults:
+      run:
+        working-directory: apps/desktop
     steps:
       - name: Checkout repo
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
@@ -767,53 +603,81 @@ jobs:
         if: steps.build-cache.outputs.cache-hit != 'true'
         run: npm run build
 
-      - name: Build Safari extension
-        if: steps.safari-cache.outputs.cache-hit != 'true'
-        run: |
-          npm install
-          npm run dist:safari
-        working-directory: apps/browser
+      - name: Download artifact from rc
+        if: github.ref == 'refs/heads/rc'
+        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
+        with:
+          workflow: build-browser.yml
+          workflow_conclusion: success
+          branch: rc
+          path: ${{ github.workspace }}/browser-build-artifacts
 
-      - name: Load Safari extension for App Store
+      - name: Download artifact from master
+        if: github.ref != 'refs/heads/rc'
+        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
+        with:
+          workflow: build-browser.yml
+          workflow_conclusion: success
+          branch: master
+          path: ${{ github.workspace }}/browser-build-artifacts
+
+      - name: Unzip Safari artifact
+        run: |
+          SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
+          echo $SAFARI_DIR
+          unzip $SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts
+
+      - name: Load Safari extension for .dmg
         run: |
           mkdir PlugIns
-          cp -r $GITHUB_WORKSPACE/apps/browser/dist/Safari/mas/build/Release/safari.appex PlugIns/safari.appex
+          cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/dmg/build/Release/safari.appex PlugIns/safari.appex
 
-      - name: Build application for App Store
-        run: npm run pack:mac:mas
+      - name: Build application (dist)
         env:
           APPLE_ID_USERNAME: ${{ secrets.APPLE_ID_USERNAME }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+        run: npm run pack:mac
 
-      - name: Upload .pkg artifact
+      - name: Upload .zip artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
-          name: Bitwarden-${{ env._PACKAGE_VERSION }}-universal.pkg
-          path: apps/desktop/dist/mas-universal/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.pkg
+          name: Bitwarden-${{ env._PACKAGE_VERSION }}-universal-mac.zip
+          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal-mac.zip
           if-no-files-found: error
 
-      - name: Deploy to TestFlight
-        env:
-          APPLE_ID_USERNAME: ${{ secrets.APPLE_ID_USERNAME }}
-          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-        if: |
-            (github.ref == 'refs/heads/master'
-              && needs.setup.outputs.rc_branch_exists == 0
-              && needs.setup.outputs.hotfix_branch_exists == 0)
-            || (github.ref == 'refs/heads/rc' && needs.setup.outputs.hotfix_branch_exists == 0)
-            || github.ref == 'refs/heads/hotfix-rc'
-        run: npm run upload:mas
+      - name: Upload .dmg artifact
+        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        with:
+          name: Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg
+          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg
+          if-no-files-found: error
+
+      - name: Upload .dmg blockmap artifact
+        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        with:
+          name: Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg.blockmap
+          path: apps/desktop/dist/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.dmg.blockmap
+          if-no-files-found: error
+
+      - name: Upload latest auto-update artifact
+        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        with:
+          name: latest-mac.yml
+          path: apps/desktop/dist/latest-mac.yml
+          if-no-files-found: error
 
 
-  macos-package-dev:
-    name: MacOS Package Dev Release Asset
-    if: false  # We need to look into how code signing works for dev
+  macos-package-mas:
+    name: MacOS Package Prod Release Asset
     runs-on: macos-11
     needs:
       - setup
       - macos-build
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
+    defaults:
+      run:
+        working-directory: apps/desktop
     steps:
       - name: Checkout repo
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
@@ -822,7 +686,7 @@ jobs:
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
         with:
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
+          cache-dependency-path: 'apps/desktop/**/package-lock.json'
           node-version: '16'
 
       - name: Set Node options
@@ -929,17 +793,216 @@ jobs:
         if: steps.build-cache.outputs.cache-hit != 'true'
         run: npm run build
 
-      - name: Build Safari extension
-        if: steps.safari-cache.outputs.cache-hit != 'true'
+      - name: Download artifact from rc
+        if: github.ref == 'refs/heads/rc'
+        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
+        with:
+          workflow: build-browser.yml
+          workflow_conclusion: success
+          branch: rc
+          path: ${{ github.workspace }}/browser-build-artifacts
+
+      - name: Download artifact from master
+        if: github.ref != 'refs/heads/rc'
+        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
+        with:
+          workflow: build-browser.yml
+          workflow_conclusion: success
+          branch: master
+          path: ${{ github.workspace }}/browser-build-artifacts
+
+      - name: Unzip Safari artifact
         run: |
-          npm install
-          npm run dist:safari
-        working-directory: apps/browser
+          SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
+          echo $SAFARI_DIR
+          unzip $SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts
 
       - name: Load Safari extension for App Store
         run: |
           mkdir PlugIns
-          cp -r $GITHUB_WORKSPACE/apps/browser/dist/Safari/masdev/build/Release/safari.appex PlugIns/safari.appex
+          cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/mas/build/Release/safari.appex PlugIns/safari.appex
+
+      - name: Build application for App Store
+        run: npm run pack:mac:mas
+        env:
+          APPLE_ID_USERNAME: ${{ secrets.APPLE_ID_USERNAME }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+
+      - name: Upload .pkg artifact
+        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
+        with:
+          name: Bitwarden-${{ env._PACKAGE_VERSION }}-universal.pkg
+          path: apps/desktop/dist/mas-universal/Bitwarden-${{ env._PACKAGE_VERSION }}-universal.pkg
+          if-no-files-found: error
+
+      - name: Deploy to TestFlight
+        env:
+          APPLE_ID_USERNAME: ${{ secrets.APPLE_ID_USERNAME }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+        if: |
+            (github.ref == 'refs/heads/master'
+              && needs.setup.outputs.rc_branch_exists == 0
+              && needs.setup.outputs.hotfix_branch_exists == 0)
+            || (github.ref == 'refs/heads/rc' && needs.setup.outputs.hotfix_branch_exists == 0)
+            || github.ref == 'refs/heads/hotfix-rc'
+        run: npm run upload:mas
+
+
+  macos-package-dev:
+    name: MacOS Package Dev Release Asset
+    if: false  # We need to look into how code signing works for dev
+    runs-on: macos-11
+    needs:
+      - setup
+      - macos-build
+    env:
+      _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
+    defaults:
+      run:
+        working-directory: apps/desktop
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
+
+      - name: Set up Node
+        uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
+        with:
+          cache: 'npm'
+          cache-dependency-path: 'apps/desktop/**/package-lock.json'
+          node-version: '16'
+
+      - name: Set Node options
+        run: echo "NODE_OPTIONS=--max_old_space_size=4096" >> $GITHUB_ENV
+
+      - name: Install node-gyp
+        run: |
+          npm install -g node-gyp
+          node-gyp install $(node -v)
+
+      - name: Print environment
+        run: |
+          node --version
+          npm --version
+          echo "GitHub ref: $GITHUB_REF"
+          echo "GitHub event: $GITHUB_EVENT"
+
+      - name: Get Build Cache
+        id: build-cache
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        with:
+          path: apps/desktop/build
+          key: ${{ runner.os }}-${{ github.run_id }}-build
+
+      - name: Setup Safari Cache
+        id: safari-cache
+        uses: actions/cache@937d24475381cd9c75ae6db12cb4e79714b926ed
+        with:
+          path: apps/browser/dist/Safari
+          key: ${{ runner.os }}-${{ github.run_id }}-safari-extension
+
+      - name: Decrypt secrets
+        env:
+          DECRYPT_FILE_PASSWORD: ${{ secrets.DECRYPT_FILE_PASSWORD }}
+        run: |
+          mkdir -p $HOME/secrets
+          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
+            --output "$HOME/secrets/bitwarden-desktop-key.p12" \
+            "$GITHUB_WORKSPACE/.github/secrets/bitwarden-desktop-key.p12.gpg"
+          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
+            --output "$HOME/secrets/appstore-app-cert.p12" \
+            "$GITHUB_WORKSPACE/.github/secrets/appstore-app-cert.p12.gpg"
+          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
+            --output "$HOME/secrets/appstore-installer-cert.p12" \
+            "$GITHUB_WORKSPACE/.github/secrets/appstore-installer-cert.p12.gpg"
+          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
+            --output "$HOME/secrets/devid-app-cert.p12" \
+            "$GITHUB_WORKSPACE/.github/secrets/devid-app-cert.p12.gpg"
+          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
+            --output "$HOME/secrets/devid-installer-cert.p12" \
+            "$GITHUB_WORKSPACE/.github/secrets/devid-installer-cert.p12.gpg"
+          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
+            --output "$HOME/secrets/macdev-cert.p12" \
+            "$GITHUB_WORKSPACE/.github/secrets/macdev-cert.p12.gpg"
+          gpg --quiet --batch --yes --decrypt --passphrase="$DECRYPT_FILE_PASSWORD" \
+            --output "$HOME/secrets/bitwarden_desktop_appstore.provisionprofile" \
+            "$GITHUB_WORKSPACE/.github/secrets/bitwarden_desktop_appstore.provisionprofile.gpg"
+
+      - name: Set up keychain
+        env:
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+          DESKTOP_KEY_PASSWORD: ${{ secrets.DESKTOP_KEY_PASSWORD }}
+          DEVID_CERT_PASSWORD: ${{ secrets.DEVID_CERT_PASSWORD }}
+          APPSTORE_CERT_PASSWORD: ${{ secrets.APPSTORE_CERT_PASSWORD }}
+          MACDEV_CERT_PASSWORD: ${{ secrets.MACDEV_CERT_PASSWORD }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+        run: |
+          security create-keychain -p $KEYCHAIN_PASSWORD build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p $KEYCHAIN_PASSWORD build.keychain
+          security set-keychain-settings -lut 1200 build.keychain
+          security import "$HOME/secrets/bitwarden-desktop-key.p12" -k build.keychain -P $DESKTOP_KEY_PASSWORD \
+            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          security import "$HOME/secrets/devid-app-cert.p12" -k build.keychain -P $DEVID_CERT_PASSWORD \
+            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          security import "$HOME/secrets/devid-installer-cert.p12" -k build.keychain -P $DEVID_CERT_PASSWORD \
+            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          security import "$HOME/secrets/appstore-app-cert.p12" -k build.keychain -P $APPSTORE_CERT_PASSWORD \
+            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          security import "$HOME/secrets/appstore-installer-cert.p12" -k build.keychain -P $APPSTORE_CERT_PASSWORD \
+            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          security import "$HOME/secrets/macdev-cert.p12" -k build.keychain -P $MACDEV_CERT_PASSWORD \
+            -T /usr/bin/codesign -T /usr/bin/security -T /usr/bin/productbuild
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $KEYCHAIN_PASSWORD build.keychain
+
+      - name: Set up provisioning profiles
+        run: |
+          cp $HOME/secrets/bitwarden_desktop_appstore.provisionprofile \
+            $GITHUB_WORKSPACE/apps/desktop/bitwarden_desktop_appstore.provisionprofile
+
+      - name: Increment version
+        shell: pwsh
+        env:
+          BUILD_NUMBER: ${{ needs.setup.outputs.build_number }}
+        run: |
+          $package = Get-Content -Raw -Path electron-builder.json | ConvertFrom-Json
+          $package | Add-Member -MemberType NoteProperty -Name buildVersion -Value "$env:BUILD_NUMBER"
+          $package | ConvertTo-Json -Depth 32 | Set-Content -Path electron-builder.json
+
+      - name: NPM install
+        run: npm ci
+
+      - name: Build
+        if: steps.build-cache.outputs.cache-hit != 'true'
+        run: npm run build
+
+      - name: Download artifact from rc
+        if: github.ref == 'refs/heads/rc'
+        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
+        with:
+          workflow: build-browser.yml
+          workflow_conclusion: success
+          branch: rc
+          path: ${{ github.workspace }}/browser-build-artifacts
+
+      - name: Download artifact from master
+        if: github.ref != 'refs/heads/rc'
+        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
+        with:
+          workflow: build-browser.yml
+          workflow_conclusion: success
+          branch: master
+          path: ${{ github.workspace }}/browser-build-artifacts
+
+      - name: Unzip Safari artifact
+        run: |
+          SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
+          echo $SAFARI_DIR
+          unzip $SAFARI_DIR/dist-safari.zip -d $GITHUB_WORKSPACE/browser-build-artifacts
+
+      - name: Load Safari extension for App Store
+        run: |
+          mkdir PlugIns
+          cp -r $GITHUB_WORKSPACE/browser-build-artifacts/Safari/masdev/build/Release/safari.appex PlugIns/safari.appex
 
       - name: Build dev application for App Store
         run: npm run pack:mac:masdev
@@ -968,8 +1031,6 @@ jobs:
       - macos-package-github
       - macos-package-mas
     runs-on: ubuntu-20.04
-    env:
-      _CROWDIN_PROJECT_ID: "299360"
     steps:
       - name: Checkout repo
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
@@ -987,12 +1048,13 @@ jobs:
           secrets: "crowdin-api-token"
 
       - name: Upload Sources
-        uses: crowdin/github-action@9237b4cb361788dfce63feb2e2f15c09e2fe7415
+        uses: crowdin/github-action@ecd7eb0ef6f3cfa16293c79e9cbc4bc5b5fd9c49  # v1.4.9
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CROWDIN_API_TOKEN: ${{ steps.retrieve-secrets.outputs.crowdin-api-token }}
+          CROWDIN_PROJECT_ID: "299360"
         with:
-          config: crowdin.yml
+          config: apps/desktop/crowdin.yml
           crowdin_branch_name: master
           upload_sources: true
           upload_translations: false
