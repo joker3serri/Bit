@@ -21,7 +21,6 @@ jobs:
     outputs:
       release_version: ${{ steps.version.outputs.version }}
       tag_version: ${{ steps.version.outputs.tag }}
-      branch_name: ${{ steps.branch.outputs.branch_name }}
     steps:
       - name: Branch check
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
@@ -193,7 +192,10 @@ jobs:
           pwd
           ls -alh
           rm -rf ./*
-          cp -R apps/web/build/* .
+          ls -alh
+          echo "*****"
+          ls -alh ../
+          cp -R ../apps/web/build/* .
         working-directory: deployment
 
       - name: Create cf-pages-deploy branch
