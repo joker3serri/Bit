@@ -49,7 +49,7 @@ jobs:
       - name: Get branch name
         id: branch
         run: |
-          BRANCH_NAME=$(basename ${{ github.ref }})
+          BRANCH_NAME=$(basename ${{ github.ref_name }})
           echo "::set-output name=branch_name::$BRANCH_NAME"
 
 
