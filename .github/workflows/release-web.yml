@@ -190,6 +190,8 @@ jobs:
 
       - name: Deploy CloudFlare Pages
         run: |
+          pwd
+          ls -alh
           rm -rf ./*
           cp -R apps/web/build/* .
         working-directory: deployment
