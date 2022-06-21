@@ -128,8 +128,9 @@ export class VaultComponent implements OnInit, OnDestroy {
             await this.openGenerator(false);
             break;
           case "syncCompleted":
-            await this.load();
+            await this.ciphersComponent.reload(this.buildFilter());
             await this.vaultFilterComponent.reloadCollectionsAndFolders(this.activeFilter);
+            await this.vaultFilterComponent.reloadOrganizations();
             break;
           case "refreshCiphers":
             this.ciphersComponent.refresh();
@@ -396,7 +397,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.addType = type;
     this.action = "add";
     this.cipherId = null;
-    this.updateCollectionProperties();
+    this.prefillNewCipherFromFilter();
     this.go();
   }
 
@@ -539,7 +540,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.i18nService.t(this.calculateSearchBarLocalizationString(vaultFilter))
     );
     this.activeFilter = vaultFilter;
-    await this.ciphersComponent.reload(this.buildFilter());
+    await this.ciphersComponent.reload(this.buildFilter(), vaultFilter.status === "trash");
     this.go();
   }
 
@@ -746,19 +747,21 @@ export class VaultComponent implements OnInit, OnDestroy {
     });
   }
 
-  private updateCollectionProperties() {
-    if (this.collectionId != null) {
-      const collection = this.vaultFilterComponent.collections?.fullList?.filter(
-        (c) => c.id === this.collectionId
+  private prefillNewCipherFromFilter() {
+    if (this.activeFilter.selectedCollectionId != null) {
+      const collection = this.vaultFilterComponent.collections.fullList.filter(
+        (c) => c.id === this.activeFilter.selectedCollectionId
       );
-      if (collection != null && collection.length > 0) {
+      if (collection.length > 0) {
         this.addOrganizationId = collection[0].organizationId;
-        this.addCollectionIds = [this.collectionId];
-        return;
+        this.addCollectionIds = [this.activeFilter.selectedCollectionId];
       }
+    } else if (this.activeFilter.selectedOrganizationId) {
+      this.addOrganizationId = this.activeFilter.selectedOrganizationId;
     }
-    this.addOrganizationId = null;
-    this.addCollectionIds = null;
+    if (this.activeFilter.selectedFolderId && this.activeFilter.selectedFolder) {
+      this.folderId = this.activeFilter.selectedFolderId;
+    }
   }
 
   private async canNavigateAway(action: string, cipher?: CipherView) {
