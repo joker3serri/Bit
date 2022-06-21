@@ -189,14 +189,8 @@ jobs:
 
       - name: Deploy CloudFlare Pages
         run: |
-          pwd
-          ls -alh
           rm -rf ./*
-          ls -alh
-          echo "*****"
-          ls -alh ../apps/web/build
           cp -R ../apps/web/build/* .
-          ls -alh
         working-directory: deployment
 
       - name: Create cf-pages-deploy branch
