@@ -64,6 +64,7 @@ jobs:
           branch: ${{ steps.branch.outputs.branch-name }}
 
       - name: Create release
+        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         uses: ncipollo/release-action@58ae73b360456532aafd58ee170c045abbeaee37  # v1.10.0
         env:
           PKG_VERSION: ${{ steps.version.outputs.version }}
