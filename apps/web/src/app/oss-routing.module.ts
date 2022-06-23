@@ -13,7 +13,6 @@ import { LoginComponent } from "./accounts/login.component";
 import { RecoverDeleteComponent } from "./accounts/recover-delete.component";
 import { RecoverTwoFactorComponent } from "./accounts/recover-two-factor.component";
 import { RegisterComponent } from "./accounts/register.component";
-import { TrialInitiationComponent } from "./modules/trial-initiation/trial-initiation.component";
 import { RemovePasswordComponent } from "./accounts/remove-password.component";
 import { SetPasswordComponent } from "./accounts/set-password.component";
 import { SsoComponent } from "./accounts/sso.component";
@@ -25,6 +24,7 @@ import { VerifyRecoverDeleteComponent } from "./accounts/verify-recover-delete.c
 import { HomeGuard } from "./guards/home.guard";
 import { FrontendLayoutComponent } from "./layouts/frontend-layout.component";
 import { UserLayoutComponent } from "./layouts/user-layout.component";
+import { TrialInitiationComponent } from "./modules/trial-initiation/trial-initiation.component";
 import { AcceptFamilySponsorshipComponent } from "./organizations/sponsorships/accept-family-sponsorship.component";
 import { FamiliesForEnterpriseSetupComponent } from "./organizations/sponsorships/families-for-enterprise-setup.component";
 import { AccessComponent } from "./send/access.component";

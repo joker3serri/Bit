@@ -162,7 +162,6 @@ import { FolderAddEditComponent } from "../vault/folder-add-edit.component";
 import { ShareComponent } from "../vault/share.component";
 
 import { PipesModule } from "./pipes/pipes.module";
-import { TrialInitiationModule } from "./trial-initiation/trial-initiation.module";
 import { SharedModule } from "./shared.module";
 import { VaultFilterModule } from "./vault-filter/vault-filter.module";
 import { OrganizationBadgeModule } from "./vault/modules/organization-badge/organization-badge.module";

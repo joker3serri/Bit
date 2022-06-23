@@ -1,9 +1,10 @@
 import { NgModule } from "@angular/core";
+
 import { SharedModule } from "../shared.module";
 
-import { VerticalStepperComponent } from "./vertical-stepper.component";
-import { VerticalStep } from "./vertical-step.component";
 import { VerticalStepContentComponent } from "./vertical-step-content.component";
+import { VerticalStep } from "./vertical-step.component";
+import { VerticalStepperComponent } from "./vertical-stepper.component";
 
 @NgModule({
   imports: [SharedModule],

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import { CdkStepper } from "@angular/cdk/stepper";
+import { Component, Input } from "@angular/core";
 
 @Component({
   selector: "app-vertical-stepper",

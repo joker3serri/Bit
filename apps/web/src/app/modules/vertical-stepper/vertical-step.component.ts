@@ -1,5 +1,5 @@
-import { Component, Input } from "@angular/core";
 import { CdkStep } from "@angular/cdk/stepper";
+import { Component, Input } from "@angular/core";
 
 @Component({
   selector: "app-vertical-step",
