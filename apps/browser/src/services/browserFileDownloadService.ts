@@ -8,17 +8,18 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { BrowserApi } from "../browser/browserApi";
 import { SafariApp } from "../browser/safariApp";
 
-
 @Injectable()
 export class BrowserFileDownloadService implements FileDownloadService {
   download(request: FileDownloadRequest): void {
     const builder = new FileDownloadBuilder(request);
     if (BrowserApi.isSafariApi) {
-      let data: string = null;
+      let data: BlobPart = null;
       if (builder.blobOptions.type === "text/plain" && typeof request.blobData === "string") {
         data = request.blobData;
       } else {
-        data = Utils.fromBufferToB64(request.blobData);
+        builder.blob.arrayBuffer().then((buf) => {
+          data = Utils.fromBufferToB64(buf);
+        });
       }
       SafariApp.sendMessageToApp(
         "downloadFile",

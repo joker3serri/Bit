@@ -1,6 +1,6 @@
 export type FileDownloadRequest = {
   fileName: string;
-  blobData: any;
-  blobOptions?: any;
+  blobData: BlobPart;
+  blobOptions?: BlobPropertyBag;
   forceDownload?: boolean;
 };
