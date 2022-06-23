@@ -2,12 +2,12 @@ import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload.service";
+import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
+import { FileDownloadRequest } from "@bitwarden/common/abstractions/fileDownload/fileDownloadRequest";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { FileDownloadRequest } from "@bitwarden/common/models/domain/fileDownloadRequest";
 import { SubscriptionResponse } from "@bitwarden/common/models/response/subscriptionResponse";
 
 @Component({

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload.service";
+import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
+import { FileDownloadRequest } from "@bitwarden/common/abstractions/fileDownload/fileDownloadRequest";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { FileDownloadRequest } from "@bitwarden/common/models/domain/fileDownloadRequest";
 
 @Component({
   selector: "app-download-license",

@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 
-import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload.service";
+import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
+import { FileDownloadRequest } from "@bitwarden/common/abstractions/fileDownload/fileDownloadRequest";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { FileDownloadRequest } from "@bitwarden/common/models/domain/fileDownloadRequest";
 
 @Injectable()
 export class WebFileDownloadService implements FileDownloadService {

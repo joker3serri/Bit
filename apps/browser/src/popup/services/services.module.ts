@@ -17,7 +17,7 @@ import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunc
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { EventService } from "@bitwarden/common/abstractions/event.service";
 import { ExportService } from "@bitwarden/common/abstractions/export.service";
-import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload.service";
+import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { FileUploadService } from "@bitwarden/common/abstractions/fileUpload.service";
 import { FolderService } from "@bitwarden/common/abstractions/folder.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
