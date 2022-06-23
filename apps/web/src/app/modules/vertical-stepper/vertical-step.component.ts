@@ -7,6 +7,5 @@ import { CdkStep } from "@angular/cdk/stepper";
   providers: [{ provide: CdkStep, useExisting: VerticalStep }],
 })
 export class VerticalStep extends CdkStep {
-  @Input()
-  subLabel = "";
+  @Input() subLabel = "";
 }
