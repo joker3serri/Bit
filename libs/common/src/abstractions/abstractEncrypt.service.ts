@@ -3,5 +3,5 @@ import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCry
 
 export abstract class AbstractEncryptService {
   abstract encrypt(plainValue: string | ArrayBuffer, key: SymmetricCryptoKey): Promise<EncString>;
-  abstract decryptToUtf8(encString: EncString, key?: SymmetricCryptoKey): Promise<string>;
+  abstract decryptToUtf8(encString: EncString, key: SymmetricCryptoKey): Promise<string>;
 }
