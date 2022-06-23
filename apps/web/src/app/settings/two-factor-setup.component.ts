@@ -1,14 +1,18 @@
 import { Component, OnInit, Type, ViewChild, ViewContainerRef } from "@angular/core";
 
-import { ModalRef } from "jslib-angular/components/modal/modal.ref";
-import { ModalService } from "jslib-angular/services/modal.service";
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { MessagingService } from "jslib-common/abstractions/messaging.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { PolicyType } from "jslib-common/enums/policyType";
-import { TwoFactorProviderType } from "jslib-common/enums/twoFactorProviderType";
-import { TwoFactorProviders } from "jslib-common/services/twoFactor.service";
+import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
+import { DeviceVerificationRequest } from "@bitwarden/common/models/request/deviceVerificationRequest";
+import { TwoFactorProviders } from "@bitwarden/common/services/twoFactor.service";
 
 import { TwoFactorAuthenticatorComponent } from "./two-factor-authenticator.component";
 import { TwoFactorDuoComponent } from "./two-factor-duo.component";
@@ -39,18 +43,32 @@ export class TwoFactorSetupComponent implements OnInit {
   canAccessPremium: boolean;
   showPolicyWarning = false;
   loading = true;
+  enableDeviceVerification: boolean;
+  isDeviceVerificationSectionEnabled: boolean;
   modal: ModalRef;
+  formPromise: Promise<any>;
 
   constructor(
     protected apiService: ApiService,
     protected modalService: ModalService,
     protected messagingService: MessagingService,
     protected policyService: PolicyService,
-    private stateService: StateService
+    private stateService: StateService,
+    private platformUtilsService: PlatformUtilsService,
+    private i18nService: I18nService,
+    private logService: LogService
   ) {}
 
   async ngOnInit() {
     this.canAccessPremium = await this.stateService.getCanAccessPremium();
+    try {
+      const deviceVerificationSettings = await this.apiService.getDeviceVerificationSettings();
+      this.isDeviceVerificationSectionEnabled =
+        deviceVerificationSettings.isDeviceVerificationSectionEnabled;
+      this.enableDeviceVerification = deviceVerificationSettings.unknownDeviceVerificationEnabled;
+    } catch (e) {
+      this.logService.error(e);
+    }
 
     for (const key in TwoFactorProviders) {
       // eslint-disable-next-line
@@ -184,6 +202,39 @@ export class TwoFactorSetupComponent implements OnInit {
       );
     } else {
       this.showPolicyWarning = false;
+    }
+  }
+
+  async submit() {
+    try {
+      if (this.enableDeviceVerification) {
+        const email = await this.stateService.getEmail();
+        const confirmed = await this.platformUtilsService.showDialog(
+          this.i18nService.t(
+            "areYouSureYouWantToEnableDeviceVerificationTheVerificationCodeEmailsWillArriveAtX",
+            email
+          ),
+          this.i18nService.t("deviceVerification"),
+          this.i18nService.t("yes"),
+          this.i18nService.t("no"),
+          "warning"
+        );
+        if (!confirmed) {
+          return;
+        }
+      }
+
+      this.formPromise = this.apiService.putDeviceVerificationSettings(
+        new DeviceVerificationRequest(this.enableDeviceVerification)
+      );
+      await this.formPromise;
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("updatedDeviceVerification")
+      );
+    } catch (e) {
+      this.logService.error(e);
     }
   }
 }

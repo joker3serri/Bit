@@ -1273,6 +1273,40 @@
   "fileFormat": {
     "message": "Fayl formatı"
   },
+  "hCaptchaUrl": {
+    "message": "hCaptcha ünvanı",
+    "description": "hCaptcha is the name of a website, should not be translated"
+  },
+  "loadAccessibilityCookie": {
+    "message": "Əlçatımlılıq çərəzini yüklə"
+  },
+  "registerAccessibilityUser": {
+    "message": "Əlçatımlılıq istifadəçisi kimi qeydiyyatdan keçin",
+    "description": "ex. Register as an accessibility user at hcaptcha.com"
+  },
+  "copyPasteLink": {
+    "message": "E-poçtunuza göndərilən bağlantını kopyalayıb aşağıda yapışdırın"
+  },
+  "enterhCaptchaUrl": {
+    "message": "hCaptcha əlçatımlılıq çərəzini yükləmək üçün ünvanı daxil edin",
+    "description": "hCaptcha is the name of a website, should not be translated"
+  },
+  "hCaptchaUrlRequired": {
+    "message": "hCaptcha ünvanı tələb olunur",
+    "description": "hCaptcha is the name of a website, should not be translated"
+  },
+  "invalidUrl": {
+    "message": "Yararsız ünvan"
+  },
+  "done": {
+    "message": "Bitdi"
+  },
+  "accessibilityCookieSaved": {
+    "message": "Əlçatımlılıq çərəzi saxlanıldı!"
+  },
+  "noAccessibilityCookieSaved": {
+    "message": "Əlçatımlılıq çərəzi saxlanılmadı"
+  },
   "warning": {
     "message": "XƏBƏRDARLIQ",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
@@ -1519,16 +1553,16 @@
     "message": "Səyyah inteqrasiyası səyyahda biometrik təsdiqləmə üçün istifadə olunur."
   },
   "browserIntegrationUnsupportedTitle": {
-    "message": "Browser integration not supported"
+    "message": "Səyyah inteqrasiyası dəstəklənmir"
   },
   "browserIntegrationMasOnlyDesc": {
-    "message": "Təəssüf ki, səyyah inteqrasiyası yalnız Mac App Store versiyasında dəstəklənir."
+    "message": "Təəssüf ki, səyyah inteqrasiyası indilik yalnız Mac App Store versiyasında dəstəklənir."
   },
   "browserIntegrationWindowsStoreDesc": {
-    "message": "Təəssüf ki, səyyah inteqrasiyası hazır Windows Store versiyasında dəstəklənmir."
+    "message": "Təəssüf ki, səyyah inteqrasiyası hal-hazırda Windows Store versiyasında dəstəklənmir."
   },
   "browserIntegrationLinuxDesc": {
-    "message": "Unfortunately browser integration is currently not supported in the linux version."
+    "message": "Təəssüf ki, səyyah inteqrasiyası hal-hazırda Linux versiyasında dəstəklənmir."
   },
   "enableBrowserIntegrationFingerprint": {
     "message": "Səyyah inteqrasiyası üçün təsdiqləmə tələb et"
@@ -1806,7 +1840,7 @@
     "message": "Təşkilatı tərk etdiniz."
   },
   "ssoKeyConnectorError": {
-    "message": "Key Connector error: make sure Key Connector is available and working correctly."
+    "message": "Açar bağlayıcı xətası: Açar Bağlayıcının mövcud olduğuna və düzgün işlədiyinə əmin olun."
   },
   "lockAllVaults": {
     "message": "Bütün anbarları kilidlə"

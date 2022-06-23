@@ -1,11 +1,11 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { ProviderUserAcceptRequest } from "jslib-common/models/request/provider/providerUserAcceptRequest";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { ProviderUserAcceptRequest } from "@bitwarden/common/models/request/provider/providerUserAcceptRequest";
 
 import { BaseAcceptComponent } from "src/app/common/base.accept.component";
 
@@ -31,7 +31,7 @@ export class AcceptProviderComponent extends BaseAcceptComponent {
     super(router, platformUtilService, i18nService, route, stateService);
   }
 
-  async authedHandler(qParams: any) {
+  async authedHandler(qParams: Params) {
     const request = new ProviderUserAcceptRequest();
     request.token = qParams.token;
 
@@ -49,7 +49,7 @@ export class AcceptProviderComponent extends BaseAcceptComponent {
     this.router.navigate(["/vault"]);
   }
 
-  async unauthedHandler(qParams: any) {
+  async unauthedHandler(qParams: Params) {
     this.providerName = qParams.providerName;
   }
 }

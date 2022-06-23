@@ -455,7 +455,7 @@
     "message": "取消全選"
   },
   "launch": {
-    "message": "啟動"
+    "message": "前往"
   },
   "newAttachment": {
     "message": "新增附件"
@@ -4163,7 +4163,7 @@
     "message": "密碼重設成功！"
   },
   "resetPasswordEnrollmentWarning": {
-    "message": "註冊後將允許組織管理者變更您的主密碼。確定要註冊嗎？"
+    "message": "註冊後將允許組織管理者變更您的主密碼"
   },
   "resetPasswordPolicy": {
     "message": "主密碼重設"
@@ -4430,6 +4430,12 @@
   },
   "vaultTimeoutToLarge": {
     "message": "您的密碼庫逾時時間超過組織設定的限制。"
+  },
+  "vaultCustomTimeoutMinimum": {
+    "message": "自訂逾時時間最小為 1 分鐘。"
+  },
+  "vaultTimeoutRangeError": {
+    "message": "密碼庫逾時時間不在允許的範圍內。"
   },
   "disablePersonalVaultExport": {
     "message": "停用個人密碼庫匯出"
@@ -5069,5 +5075,26 @@
   },
   "apiAccessToken": {
     "message": "API 存取權杖"
+  },
+  "deviceVerification": {
+    "message": "裝置驗證"
+  },
+  "enableDeviceVerification": {
+    "message": "啟用裝置驗證"
+  },
+  "deviceVerificationDesc": {
+    "message": "啟用後，從無法辨識的裝置登入時，驗證碼將傳送至您的電子郵件地址"
+  },
+  "updatedDeviceVerification": {
+    "message": "已更新裝置驗證"
+  },
+  "areYouSureYouWantToEnableDeviceVerificationTheVerificationCodeEmailsWillArriveAtX": {
+    "message": "您確定要啟用裝置驗證嗎？驗證碼電子郵件將寄送到：$EMAIL$",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "My Email"
+      }
+    }
   }
 }

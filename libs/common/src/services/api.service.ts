@@ -1,21 +1,10 @@
-import { AppIdService } from "jslib-common/abstractions/appId.service";
-import { OrganizationConnectionType } from "jslib-common/enums/organizationConnectionType";
-import { DeviceRequest } from "jslib-common/models/request/deviceRequest";
-import { TokenRequestTwoFactor } from "jslib-common/models/request/identityToken/tokenRequestTwoFactor";
-import { OrganizationConnectionRequest } from "jslib-common/models/request/organizationConnectionRequest";
-import { BillingHistoryResponse } from "jslib-common/models/response/billingHistoryResponse";
-import { BillingPaymentResponse } from "jslib-common/models/response/billingPaymentResponse";
-import {
-  OrganizationConnectionConfigApis,
-  OrganizationConnectionResponse,
-} from "jslib-common/models/response/organizationConnectionResponse";
-import { SsoPreValidateResponse } from "jslib-common/models/response/ssoPreValidateResponse";
-
 import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service";
+import { AppIdService } from "../abstractions/appId.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { TokenService } from "../abstractions/token.service";
 import { DeviceType } from "../enums/deviceType";
+import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { PolicyType } from "../enums/policyType";
 import { Utils } from "../misc/utils";
 import { SetKeyConnectorKeyRequest } from "../models/request/account/setKeyConnectorKeyRequest";
@@ -31,6 +20,8 @@ import { CipherRequest } from "../models/request/cipherRequest";
 import { CipherShareRequest } from "../models/request/cipherShareRequest";
 import { CollectionRequest } from "../models/request/collectionRequest";
 import { DeleteRecoverRequest } from "../models/request/deleteRecoverRequest";
+import { DeviceRequest } from "../models/request/deviceRequest";
+import { DeviceVerificationRequest } from "../models/request/deviceVerificationRequest";
 import { EmailRequest } from "../models/request/emailRequest";
 import { EmailTokenRequest } from "../models/request/emailTokenRequest";
 import { EmergencyAccessAcceptRequest } from "../models/request/emergencyAccessAcceptRequest";
@@ -45,6 +36,7 @@ import { IapCheckRequest } from "../models/request/iapCheckRequest";
 import { ApiTokenRequest } from "../models/request/identityToken/apiTokenRequest";
 import { PasswordTokenRequest } from "../models/request/identityToken/passwordTokenRequest";
 import { SsoTokenRequest } from "../models/request/identityToken/ssoTokenRequest";
+import { TokenRequestTwoFactor } from "../models/request/identityToken/tokenRequestTwoFactor";
 import { ImportCiphersRequest } from "../models/request/importCiphersRequest";
 import { ImportDirectoryRequest } from "../models/request/importDirectoryRequest";
 import { ImportOrganizationCiphersRequest } from "../models/request/importOrganizationCiphersRequest";
@@ -55,6 +47,7 @@ import { OrganizationSponsorshipCreateRequest } from "../models/request/organiza
 import { OrganizationSponsorshipRedeemRequest } from "../models/request/organization/organizationSponsorshipRedeemRequest";
 import { OrganizationSsoRequest } from "../models/request/organization/organizationSsoRequest";
 import { OrganizationApiKeyRequest } from "../models/request/organizationApiKeyRequest";
+import { OrganizationConnectionRequest } from "../models/request/organizationConnectionRequest";
 import { OrganizationCreateRequest } from "../models/request/organizationCreateRequest";
 import { OrganizationImportRequest } from "../models/request/organizationImportRequest";
 import { OrganizationKeysRequest } from "../models/request/organizationKeysRequest";
@@ -114,6 +107,8 @@ import { VerifyEmailRequest } from "../models/request/verifyEmailRequest";
 import { ApiKeyResponse } from "../models/response/apiKeyResponse";
 import { AttachmentResponse } from "../models/response/attachmentResponse";
 import { AttachmentUploadDataResponse } from "../models/response/attachmentUploadDataResponse";
+import { BillingHistoryResponse } from "../models/response/billingHistoryResponse";
+import { BillingPaymentResponse } from "../models/response/billingPaymentResponse";
 import { BillingResponse } from "../models/response/billingResponse";
 import { BreachAccountResponse } from "../models/response/breachAccountResponse";
 import { CipherResponse } from "../models/response/cipherResponse";
@@ -121,6 +116,7 @@ import {
   CollectionGroupDetailsResponse,
   CollectionResponse,
 } from "../models/response/collectionResponse";
+import { DeviceVerificationResponse } from "../models/response/deviceVerificationResponse";
 import { DomainsResponse } from "../models/response/domainsResponse";
 import {
   EmergencyAccessGranteeDetailsResponse,
@@ -140,6 +136,10 @@ import { ListResponse } from "../models/response/listResponse";
 import { OrganizationSsoResponse } from "../models/response/organization/organizationSsoResponse";
 import { OrganizationApiKeyInformationResponse } from "../models/response/organizationApiKeyInformationResponse";
 import { OrganizationAutoEnrollStatusResponse } from "../models/response/organizationAutoEnrollStatusResponse";
+import {
+  OrganizationConnectionConfigApis,
+  OrganizationConnectionResponse,
+} from "../models/response/organizationConnectionResponse";
 import { OrganizationKeysResponse } from "../models/response/organizationKeysResponse";
 import { OrganizationResponse } from "../models/response/organizationResponse";
 import { OrganizationSponsorshipSyncStatusResponse } from "../models/response/organizationSponsorshipSyncStatusResponse";
@@ -172,6 +172,7 @@ import { SendAccessResponse } from "../models/response/sendAccessResponse";
 import { SendFileDownloadDataResponse } from "../models/response/sendFileDownloadDataResponse";
 import { SendFileUploadDataResponse } from "../models/response/sendFileUploadDataResponse";
 import { SendResponse } from "../models/response/sendResponse";
+import { SsoPreValidateResponse } from "../models/response/ssoPreValidateResponse";
 import { SubscriptionResponse } from "../models/response/subscriptionResponse";
 import { SyncResponse } from "../models/response/syncResponse";
 import { TaxInfoResponse } from "../models/response/taxInfoResponse";
@@ -1360,6 +1361,54 @@ export class ApiService implements ApiServiceAbstraction {
     return new ListResponse(r, OrganizationUserBulkResponse);
   }
 
+  deactivateOrganizationUser(organizationId: string, id: string): Promise<any> {
+    return this.send(
+      "PUT",
+      "/organizations/" + organizationId + "/users/" + id + "/deactivate",
+      null,
+      true,
+      false
+    );
+  }
+
+  async deactivateManyOrganizationUsers(
+    organizationId: string,
+    request: OrganizationUserBulkRequest
+  ): Promise<ListResponse<OrganizationUserBulkResponse>> {
+    const r = await this.send(
+      "PUT",
+      "/organizations/" + organizationId + "/users/deactivate",
+      request,
+      true,
+      true
+    );
+    return new ListResponse(r, OrganizationUserBulkResponse);
+  }
+
+  activateOrganizationUser(organizationId: string, id: string): Promise<any> {
+    return this.send(
+      "PUT",
+      "/organizations/" + organizationId + "/users/" + id + "/activate",
+      null,
+      true,
+      false
+    );
+  }
+
+  async activateManyOrganizationUsers(
+    organizationId: string,
+    request: OrganizationUserBulkRequest
+  ): Promise<ListResponse<OrganizationUserBulkResponse>> {
+    const r = await this.send(
+      "PUT",
+      "/organizations/" + organizationId + "/users/activate",
+      request,
+      true,
+      true
+    );
+    return new ListResponse(r, OrganizationUserBulkResponse);
+  }
+
   // Plan APIs
 
   async getPlans(): Promise<ListResponse<PlanResponse>> {
@@ -1570,6 +1619,30 @@ export class ApiService implements ApiServiceAbstraction {
 
   postTwoFactorEmail(request: TwoFactorEmailRequest): Promise<any> {
     return this.send("POST", "/two-factor/send-email-login", request, false, false);
+  }
+
+  async getDeviceVerificationSettings(): Promise<DeviceVerificationResponse> {
+    const r = await this.send(
+      "GET",
+      "/two-factor/get-device-verification-settings",
+      null,
+      true,
+      true
+    );
+    return new DeviceVerificationResponse(r);
+  }
+
+  async putDeviceVerificationSettings(
+    request: DeviceVerificationRequest
+  ): Promise<DeviceVerificationResponse> {
+    const r = await this.send(
+      "PUT",
+      "/two-factor/device-verification-settings",
+      request,
+      true,
+      true
+    );
+    return new DeviceVerificationResponse(r);
   }
 
   // Emergency Access APIs

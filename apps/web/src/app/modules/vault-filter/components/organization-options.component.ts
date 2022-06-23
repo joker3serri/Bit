@@ -1,15 +1,16 @@
 import { Component, Input } from "@angular/core";
 
-import { ModalService } from "jslib-angular/services/modal.service";
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
-import { SyncService } from "jslib-common/abstractions/sync.service";
-import { PolicyType } from "jslib-common/enums/policyType";
-import { Organization } from "jslib-common/models/domain/organization";
-import { Policy } from "jslib-common/models/domain/policy";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { Organization } from "@bitwarden/common/models/domain/organization";
+import { Policy } from "@bitwarden/common/models/domain/policy";
+import { OrganizationUserResetPasswordEnrollmentRequest } from "@bitwarden/common/models/request/organizationUserResetPasswordEnrollmentRequest";
 
 import { EnrollMasterPasswordReset } from "../../organizations/users/enroll-master-password-reset.component";
 
@@ -82,7 +83,6 @@ export class OrganizationOptionsComponent {
       this.platformUtilsService.showToast("success", null, "Unlinked SSO");
       await this.load();
     } catch (e) {
-      this.platformUtilsService.showToast("error", this.i18nService.t("errorOccurred"), e.message);
       this.logService.error(e);
     }
   }
@@ -107,17 +107,38 @@ export class OrganizationOptionsComponent {
       this.platformUtilsService.showToast("success", null, this.i18nService.t("leftOrganization"));
       await this.load();
     } catch (e) {
-      this.platformUtilsService.showToast("error", this.i18nService.t("errorOccurred"), e.message);
       this.logService.error(e);
     }
   }
 
   async toggleResetPasswordEnrollment(org: Organization) {
-    this.modalService.open(EnrollMasterPasswordReset, {
-      allowMultipleModals: true,
-      data: {
-        organization: org,
-      },
-    });
+    if (!this.organization.resetPasswordEnrolled) {
+      this.modalService.open(EnrollMasterPasswordReset, {
+        allowMultipleModals: true,
+        data: {
+          organization: org,
+        },
+      });
+    } else {
+      const request = new OrganizationUserResetPasswordEnrollmentRequest();
+      request.masterPasswordHash = "ignored";
+      request.resetPasswordKey = null;
+      this.actionPromise = this.apiService.putOrganizationUserResetPasswordEnrollment(
+        this.organization.id,
+        this.organization.userId,
+        request
+      );
+      try {
+        await this.actionPromise;
+        this.platformUtilsService.showToast(
+          "success",
+          null,
+          this.i18nService.t("withdrawPasswordResetSuccess")
+        );
+        this.syncService.fullSync(true);
+      } catch (e) {
+        this.logService.error(e);
+      }
+    }
   }
 }

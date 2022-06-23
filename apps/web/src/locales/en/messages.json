@@ -1241,6 +1241,9 @@
   "enabled": {
     "message": "Enabled"
   },
+  "activate": {
+    "message": "Activate"
+  },
   "premium": {
     "message": "Premium",
     "description": "Premium Membership"
@@ -1265,6 +1268,9 @@
   },
   "disable": {
     "message": "Disable"
+  },
+  "deactivate": {
+    "message": "Deactivate"
   },
   "twoStepLoginProviderEnabled": {
     "message": "This two-step login provider is enabled on your account."
@@ -2229,6 +2235,12 @@
   "removeUserConfirmation": {
     "message": "Are you sure you want to remove this user?"
   },
+  "deactivateUserConfirmation": {
+    "message": "The member will no longer have access to the organization, but will still have access to their individual vault."
+  },
+  "activateUserConfirmation": {
+    "message": "Are you sure you want to activate this user, granting them access to the organization?"
+  },
   "removeUserConfirmationKeyConnector": {
     "message": "Warning! This user requires Key Connector to manage their encryption. Removing this user from your organization will permanently disable their account. This action cannot be undone. Do you want to proceed?"
   },
@@ -2567,6 +2579,42 @@
   },
   "removedUserId": {
     "message": "Removed user $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "deactivatedUserId": {
+    "message": "Deactivated user $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "activatedUserId": {
+    "message": "Activated user $ID$.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "deactivateUserId": {
+    "message": "Deactivate user $ID$?",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "John Smith"
+      }
+    }
+  },
+  "activateUserId": {
+    "message": "Activate user $ID$?",
     "placeholders": {
       "id": {
         "content": "$1",
@@ -3621,6 +3669,9 @@
   "disabled": {
     "message": "Disabled"
   },
+  "deactivated": {
+    "message": "Deactivated"
+  },
   "sendLink": {
     "message": "Send link",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
@@ -4222,6 +4273,12 @@
   "removeUsersWarning": {
     "message": "Are you sure you want to remove the following users? The process may take a few seconds to complete and cannot be interrupted or canceled."
   },
+  "deactivateUsersWarning": {
+    "message": "Are you sure you want to deactivate the following members? They will no longer have access to the organization, but will still have access to their individual vaults. The process may take a few seconds to complete and cannot be interrupted or canceled."
+  },
+  "activateUsersWarning": {
+    "message": "Are you sure you want to activate the following members, granting them access to the organization? The process may take a few seconds to complete and cannot be interrupted or canceled."
+  },
   "theme": {
     "message": "Theme"
   },
@@ -4252,6 +4309,12 @@
   "bulkRemovedMessage": {
     "message": "Removed successfully"
   },
+  "bulkDeactivatedMessage": {
+    "message": "Deactivated successfully"
+  },
+  "bulkActivatedMessage": {
+    "message": "Activated successfully"
+  },
   "bulkFilteredMessage": {
     "message": "Excluded, not applicable for this action."
   },
@@ -4260,6 +4323,12 @@
   },
   "removeUsers": {
     "message": "Remove Users"
+  },
+  "deactivateUsers": {
+    "message": "Deactivate Users"
+  },
+  "activateUsers": {
+    "message": "Activate Users"
   },
   "error": {
     "message": "Error"
@@ -5078,5 +5147,26 @@
   },
   "apiAccessToken": {
     "message": "API Access Token"
+  },
+  "deviceVerification": {
+    "message": "Device Verification"
+  },
+  "enableDeviceVerification": {
+    "message": "Enable Device Verification"
+  },
+  "deviceVerificationDesc": {
+    "message": "When enabled, verification codes are sent to your email address when logging in from an unrecognized device"
+  },
+  "updatedDeviceVerification": {
+    "message": "Updated Device Verification"
+  },
+  "areYouSureYouWantToEnableDeviceVerificationTheVerificationCodeEmailsWillArriveAtX": {
+    "message": "Are you sure you want to enable Device Verification? The verification code emails will arrive at: $EMAIL$",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "My Email"
+      }
+    }
   }
 }

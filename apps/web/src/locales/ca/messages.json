@@ -4431,6 +4431,12 @@
   "vaultTimeoutToLarge": {
     "message": "El temps d'espera de la caixa forta supera les restriccions establertes per la vostra organització."
   },
+  "vaultCustomTimeoutMinimum": {
+    "message": "El temps d'espera personalitzat mínim és d'1 minut."
+  },
+  "vaultTimeoutRangeError": {
+    "message": "El temps d'espera de la caixa forta no es troba dins de l'interval permès."
+  },
   "disablePersonalVaultExport": {
     "message": "Inhabilita l'exportació de la caixa forta personal"
   },
@@ -5069,5 +5075,26 @@
   },
   "apiAccessToken": {
     "message": "Token d'accés a l'API"
+  },
+  "deviceVerification": {
+    "message": "Verificació del dispositiu"
+  },
+  "enableDeviceVerification": {
+    "message": "Activa la verificació del dispositiu"
+  },
+  "deviceVerificationDesc": {
+    "message": "Quan està activat, els codis de verificació s'envien a la vostra adreça de correu electrònic quan inicieu sessió des d'un dispositiu no reconegut"
+  },
+  "updatedDeviceVerification": {
+    "message": "Actualitza la verificació del dispositiu"
+  },
+  "areYouSureYouWantToEnableDeviceVerificationTheVerificationCodeEmailsWillArriveAtX": {
+    "message": "Esteu segur que voleu activar la verificació del dispositiu? Els correus electrònics del codi de verificació arribaran a: $EMAIL$",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "My Email"
+      }
+    }
   }
 }

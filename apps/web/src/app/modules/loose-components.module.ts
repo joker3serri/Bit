@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 
-import { UserVerificationComponent } from "jslib-angular/components/user-verification.component";
+import { UserVerificationComponent } from "@bitwarden/angular/components/user-verification.component";
 
 import { AcceptEmergencyComponent } from "../accounts/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../accounts/accept-organization.component";
@@ -30,6 +30,7 @@ import { NavbarComponent } from "../layouts/navbar.component";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
 import { OrganizationLayoutComponent } from "../organizations/layouts/organization-layout.component";
 import { BulkConfirmComponent as OrgBulkConfirmComponent } from "../organizations/manage/bulk/bulk-confirm.component";
+import { BulkDeactivateComponent as OrgBulkDeactivateomponent } from "../organizations/manage/bulk/bulk-deactivate.component";
 import { BulkRemoveComponent as OrgBulkRemoveComponent } from "../organizations/manage/bulk/bulk-remove.component";
 import { BulkStatusComponent as OrgBulkStatusComponent } from "../organizations/manage/bulk/bulk-status.component";
 import { CollectionAddEditComponent as OrgCollectionAddEditComponent } from "../organizations/manage/collection-add-edit.component";
@@ -237,6 +238,7 @@ import { OrganizationBadgeModule } from "./vault/modules/organization-badge/orga
     OrganizationSubscriptionComponent,
     OrgAttachmentsComponent,
     OrgBulkConfirmComponent,
+    OrgBulkDeactivateomponent,
     OrgBulkRemoveComponent,
     OrgBulkStatusComponent,
     OrgCiphersComponent,
@@ -396,6 +398,7 @@ import { OrganizationBadgeModule } from "./vault/modules/organization-badge/orga
     OrganizationSubscriptionComponent,
     OrgAttachmentsComponent,
     OrgBulkConfirmComponent,
+    OrgBulkDeactivateomponent,
     OrgBulkRemoveComponent,
     OrgBulkStatusComponent,
     OrgCiphersComponent,

@@ -4431,6 +4431,12 @@
   "vaultTimeoutToLarge": {
     "message": "Holvisi aikakatkaisuviive ylittää organisaatiosi asettamat rajoitukset."
   },
+  "vaultCustomTimeoutMinimum": {
+    "message": "Lyhin omavalintainen aikakatkaisuaika on 1 minuutti."
+  },
+  "vaultTimeoutRangeError": {
+    "message": "Holvin aikakatkaisuaika ei ole sallitun alueen sisällä."
+  },
   "disablePersonalVaultExport": {
     "message": "Poista henkilökohtaisen holvin vienti käytöstä"
   },
@@ -4936,7 +4942,7 @@
     }
   },
   "accessDenied": {
-    "message": "Pääsy estetty. Sinulla ei ole oikeutta näyttää tätä sivua."
+    "message": "Pääsy estetty. Sinulla ei ole oikeutta avata sivua."
   },
   "masterPassword": {
     "message": "Pääsalasana"
@@ -5069,5 +5075,26 @@
   },
   "apiAccessToken": {
     "message": "API-käyttötunniste"
+  },
+  "deviceVerification": {
+    "message": "Laitetodennus"
+  },
+  "enableDeviceVerification": {
+    "message": "Käytä laitetodennusta"
+  },
+  "deviceVerificationDesc": {
+    "message": "Kun käytössä, todennuskoodit lähetetään sähköpostitse, kun yritetään kirjautua tuntemattomasta laitteesta"
+  },
+  "updatedDeviceVerification": {
+    "message": "Laitetodennus päivitettiin"
+  },
+  "areYouSureYouWantToEnableDeviceVerificationTheVerificationCodeEmailsWillArriveAtX": {
+    "message": "Haluatko varmasti käyttää laitetodennusta? Todennuskoodit lähetetään sähköpostiosoitteeseen $EMAIL$",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "My Email"
+      }
+    }
   }
 }

@@ -4431,6 +4431,12 @@
   "vaultTimeoutToLarge": {
     "message": "Le délai d'expiration de votre coffre-fort dépasse les restrictions définies par votre organisation."
   },
+  "vaultCustomTimeoutMinimum": {
+    "message": "Le délai minimum de mise en veille personnalisée est 1 minute."
+  },
+  "vaultTimeoutRangeError": {
+    "message": "Le délai de mise en veille du coffre n'est pas dans l'intervalle de temps autorisé."
+  },
   "disablePersonalVaultExport": {
     "message": "Désactiver l'export du coffre personnel"
   },
@@ -5042,7 +5048,7 @@
     "Description": "Used as a prefix to indicate the last time a sync occured. Example \"Last sync 1968-11-16 00:00:00\""
   },
   "sponsorshipsSynced": {
-    "message": "Self-hosted sponsorships synced."
+    "message": "Des parrainages auto-hébergés ont été synchronisés."
   },
   "billingManagedByProvider": {
     "message": "Géré par $PROVIDER$",
@@ -5069,5 +5075,26 @@
   },
   "apiAccessToken": {
     "message": "Jetons d'accès API"
+  },
+  "deviceVerification": {
+    "message": "Vérification de l'Appareil"
+  },
+  "enableDeviceVerification": {
+    "message": "Activer la Vérification de l'Appareil"
+  },
+  "deviceVerificationDesc": {
+    "message": "Lorsque cette option est activée, les codes de vérification sont envoyés à votre adresse e-mail lorsque vous vous connectez à partir d'un appareil inconnu"
+  },
+  "updatedDeviceVerification": {
+    "message": "Vérification de l'Appareil mise à jour"
+  },
+  "areYouSureYouWantToEnableDeviceVerificationTheVerificationCodeEmailsWillArriveAtX": {
+    "message": "Êtes-vous sûr de vouloir activer la Vérification de l'Appareil ? Les e-mails de code de vérification arriveront à : $EMAIL$",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "My Email"
+      }
+    }
   }
 }

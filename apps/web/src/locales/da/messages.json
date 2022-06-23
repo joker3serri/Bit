@@ -4431,6 +4431,12 @@
   "vaultTimeoutToLarge": {
     "message": "Din boks-timeout overskrider den begrænsning, der er fastsat af din organisation."
   },
+  "vaultCustomTimeoutMinimum": {
+    "message": "Minimum brugerdefineret timeout er 1 minut."
+  },
+  "vaultTimeoutRangeError": {
+    "message": "Boks-timeout er ikke inden for det tilladte interval."
+  },
   "disablePersonalVaultExport": {
     "message": "Deaktivér eksport af personlig boks"
   },
@@ -5069,5 +5075,26 @@
   },
   "apiAccessToken": {
     "message": "API-adgangstoken"
+  },
+  "deviceVerification": {
+    "message": "Enhedsbekræftelse"
+  },
+  "enableDeviceVerification": {
+    "message": "Aktivér enhedsbekræftelse"
+  },
+  "deviceVerificationDesc": {
+    "message": "Når aktiveret, sendes bekræftelseskoder til din e-mailadresse ved indlogning fra en ikke genkendt enhed"
+  },
+  "updatedDeviceVerification": {
+    "message": "Opdateret enhedsbekræftelse"
+  },
+  "areYouSureYouWantToEnableDeviceVerificationTheVerificationCodeEmailsWillArriveAtX": {
+    "message": "Sikker på, at du vil aktivere enhedsbekræftelse? Bekræftelseskoder e-mailes til: $EMAIL$",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "My Email"
+      }
+    }
   }
 }
