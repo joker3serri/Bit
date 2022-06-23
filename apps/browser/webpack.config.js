@@ -126,7 +126,7 @@ const config = {
     "notification/bar": "./src/notification/bar.js",
   },
   optimization: {
-    minimize: false,
+    minimize: ENV !== "development",
     minimizer: [
       new TerserPlugin({
         exclude: [/content\/.*/, /notification\/.*/],
