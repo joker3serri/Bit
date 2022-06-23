@@ -37,8 +37,8 @@ export class EncryptService implements AbstractEncryptService {
     return new EncString(encObj.key.encType, data, iv, mac);
   }
 
-  async decryptToUtf8(encString: EncString, key?: SymmetricCryptoKey): Promise<string> {
-    if (key.macKey != null && encString.mac == null) {
+  async decryptToUtf8(encString: EncString, key: SymmetricCryptoKey): Promise<string> {
+    if (key?.macKey != null && encString?.mac == null) {
       this.logService.error("mac required.");
       return null;
     }
