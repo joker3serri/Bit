@@ -1,4 +1,3 @@
-import { CdkStep } from "@angular/cdk/stepper";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { VerticalStep } from "./vertical-step.component";
