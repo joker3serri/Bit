@@ -25,23 +25,21 @@
     >
       <i class="bwi bwi-fw bwi-check tw-p-1" aria-hidden="true"></i>
     </span>
-    <ng-container>
-      <div
-        class="tw-text-left tw-txt-main tw-leading-snug tw-h-12 tw-mt-3.5"
+    <div
+      class="tw-text-left tw-txt-main tw-leading-snug tw-h-12 tw-mt-3.5"
+      [ngClass]="{
+        'tw-font-bold': selected
+      }"
+    >
+      <p
+        class="main-label text tw-text-main tw-mb-1"
         [ngClass]="{
-          'tw-font-bold': selected
+          'tw-mt-1': !step.subLabel
         }"
       >
-        <p
-          class="main-label text tw-text-main tw-mb-1"
-          [ngClass]="{
-            'tw-mt-1': !step.subLabel
-          }"
-        >
-          {{ step.label }}
-        </p>
-        <p class="sub-label small tw-text-muted">{{ step.subLabel }}</p>
-      </div>
-    </ng-container>
+        {{ step.label }}
+      </p>
+      <p class="sub-label small tw-text-muted">{{ step.subLabel }}</p>
+    </div>
   </button>
 </div>
