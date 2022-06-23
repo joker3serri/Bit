@@ -9,7 +9,7 @@
     [attr.aria-expanded]="selected"
   >
     <span
-      class="tw-rounded-full tw-flex-row tw-font-bold tw-leading-9 tw-mr-3.5 tw-w-9"
+      class="tw-rounded-full tw-font-bold tw-leading-9 tw-mr-3.5 tw-w-9"
       *ngIf="!step.completed"
       [ngClass]="{
         'tw-text-contrast tw-bg-primary-500': selected,
@@ -20,7 +20,7 @@
       {{ stepNumber }}
     </span>
     <span
-      class="tw-text-contrast tw-bg-primary-500 tw-rounded-full tw-flex-row tw-font-bold tw-leading-9 tw-mr-3.5 tw-w-9"
+      class="tw-text-contrast tw-bg-primary-500 tw-rounded-full tw-font-bold tw-leading-9 tw-mr-3.5 tw-w-9"
       *ngIf="step.completed"
     >
       <i class="bwi bwi-fw bwi-check tw-p-1" aria-hidden="true"></i>
