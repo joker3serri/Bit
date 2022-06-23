@@ -2,25 +2,25 @@
   <button
     (click)="selectStep()"
     [disabled]="disabled"
-    class="tw-w-full tw-h-full tw-flex tw-border-none tw-cursor-pointer tw-bg-transparent tw-items-center tw-flex-row tw-max"
+    class="tw-w-full tw-flex tw-border-none tw-bg-transparent tw-items-center"
     [ngClass]="{
       'hover:tw-bg-secondary-100': !disabled && step.editable
     }"
     [attr.aria-expanded]="selected"
   >
     <span
-      class="tw-rounded-full tw-flex-row tw-font-bold tw-leading-9 tw-mr-3.5 tw-items-center tw-w-9"
+      class="tw-rounded-full tw-flex-row tw-font-bold tw-leading-9 tw-mr-3.5 tw-w-9"
       *ngIf="!step.completed"
       [ngClass]="{
-        '!tw-text-contrast !tw-bg-primary-500': selected,
-        '!tw-text-main !tw-bg-secondary-300': !selected && !disabled && step.editable,
-        '!tw-text-muted !tw-bg-transparent': disabled
+        'tw-text-contrast tw-bg-primary-500': selected,
+        'tw-text-main tw-bg-secondary-300': !selected && !disabled && step.editable,
+        'tw-text-muted tw-bg-transparent': disabled
       }"
     >
       {{ stepNumber }}
     </span>
     <span
-      class="!tw-text-contrast tw-bg-primary-500 tw-rounded-full tw-flex-row tw-font-bold tw-leading-9 tw-mr-3.5 tw-items-center tw-w-9"
+      class="tw-text-contrast tw-bg-primary-500 tw-rounded-full tw-flex-row tw-font-bold tw-leading-9 tw-mr-3.5 tw-w-9"
       *ngIf="step.completed"
     >
       <i class="bwi bwi-fw bwi-check tw-p-1" aria-hidden="true"></i>
