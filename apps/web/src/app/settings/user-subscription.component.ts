@@ -3,7 +3,6 @@ import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
-import { FileDownloadRequest } from "@bitwarden/common/abstractions/fileDownload/fileDownloadRequest";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -142,9 +141,10 @@ export class UserSubscriptionComponent implements OnInit {
     }
 
     const licenseString = JSON.stringify(this.sub.license, null, 2);
-    this.fileDownloadService.download(
-      new FileDownloadRequest("bitwarden_premium_license.json", licenseString)
-    );
+    this.fileDownloadService.download({
+      fileName: "bitwarden_premium_license.json",
+      blobData: licenseString,
+    });
   }
 
   updateLicense() {

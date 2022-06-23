@@ -16,7 +16,6 @@ import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventService } from "@bitwarden/common/abstractions/event.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
-import { FileDownloadRequest } from "@bitwarden/common/abstractions/fileDownload/fileDownloadRequest";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
@@ -376,7 +375,10 @@ export class ViewComponent implements OnDestroy, OnInit {
           ? attachment.key
           : await this.cryptoService.getOrgKey(this.cipher.organizationId);
       const decBuf = await this.cryptoService.decryptFromBytes(buf, key);
-      this.fileDownloadService.download(new FileDownloadRequest(attachment.fileName, decBuf));
+      this.fileDownloadService.download({
+        fileName: attachment.fileName,
+        blobData: decBuf,
+      });
     } catch (e) {
       this.platformUtilsService.showToast("error", null, this.i18nService.t("errorOccurred"));
     }

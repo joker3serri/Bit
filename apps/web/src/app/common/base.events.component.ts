@@ -2,7 +2,6 @@ import { Directive } from "@angular/core";
 
 import { ExportService } from "@bitwarden/common/abstractions/export.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
-import { FileDownloadRequest } from "@bitwarden/common/abstractions/fileDownload/fileDownloadRequest";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -176,8 +175,10 @@ export abstract class BaseEventsComponent {
 
     const data = await this.exportService.getEventExport(events);
     const fileName = this.exportService.getFileName(this.exportFileName, "csv");
-    this.fileDownloadService.download(
-      new FileDownloadRequest(fileName, data, { type: "text/plain" })
-    );
+    this.fileDownloadService.download({
+      fileName,
+      blobData: data,
+      blobOptions: { type: "text/plain" },
+    });
   }
 }
