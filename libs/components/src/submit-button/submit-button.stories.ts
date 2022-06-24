@@ -11,6 +11,10 @@ export default {
       imports: [SubmitButtonModule],
     }),
   ],
+  args: {
+    buttonType: "primary",
+    loading: false,
+  },
   parameters: {
     design: {
       type: "figma",
@@ -21,10 +25,13 @@ export default {
 
 const Template: Story<SubmitButtonComponent> = (args: SubmitButtonComponent) => ({
   props: args,
-  template: `<bit-submit-button>Submit</bit-submit-button>`,
+  template: `<bit-submit-button [buttonType]="buttonType" [loading]="loading">Submit</bit-submit-button>`,
 });
 
 export const Primary = Template.bind({});
-Primary.args = {
-  buttonType: "primary",
+Primary.args = {};
+
+export const Loading = Template.bind({});
+Loading.args = {
+  loading: true,
 };
