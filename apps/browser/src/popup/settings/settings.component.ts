@@ -135,8 +135,9 @@ export class SettingsComponent implements OnInit {
       }
     }
 
-    //we do not need to display an error from the browser since 0 is equivalent to immediately
-    if (!this.vaultTimeout.valid && this.vaultTimeout.value !== 0) {
+    // The minTimeoutError does not apply to browser because it supports Immediately
+    // So only check for the policyError
+    if (this.vaultTimeout.hasError("policyError")) {
       this.platformUtilsService.showToast(
         "error",
         null,
@@ -176,7 +177,7 @@ export class SettingsComponent implements OnInit {
       }
     }
 
-    if (!this.vaultTimeout.valid) {
+    if (this.vaultTimeout.hasError("policyError")) {
       this.platformUtilsService.showToast(
         "error",
         null,
