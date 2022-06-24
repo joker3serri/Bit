@@ -136,8 +136,15 @@ export class SettingsComponent implements OnInit {
     }
 
     if (!this.vaultTimeout.valid) {
-      this.platformUtilsService.showToast("error", null, this.i18nService.t("vaultTimeoutToLarge"));
-      return;
+      //we do not need to display an error fro the browser since 0 is equivalent to immediately
+      if (this.vaultTimeout.value !== 0) {
+        this.platformUtilsService.showToast(
+          "error",
+          null,
+          this.i18nService.t("vaultTimeoutToLarge")
+        );
+        return;
+      }
     }
 
     this.previousVaultTimeout = this.vaultTimeout.value;
