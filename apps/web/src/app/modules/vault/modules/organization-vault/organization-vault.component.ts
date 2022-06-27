@@ -151,6 +151,10 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
     });
   }
 
+  get deleted(): boolean {
+    return this.activeFilter.status === "trash";
+  }
+
   ngOnDestroy() {
     this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
   }
@@ -170,7 +174,7 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
       if (this.activeFilter.status === "favorites" && cipherPassesFilter) {
         cipherPassesFilter = cipher.favorite;
       }
-      if (this.activeFilter.status === "trash" && cipherPassesFilter) {
+      if (this.deleted && cipherPassesFilter) {
         cipherPassesFilter = cipher.isDeleted;
       }
       if (this.activeFilter.cipherType != null && cipherPassesFilter) {
@@ -335,7 +339,7 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
       queryParams = {
         type: this.activeFilter.cipherType,
         collectionId: this.activeFilter.selectedCollectionId,
-        deleted: this.activeFilter.status === "trash" ? true : null,
+        deleted: this.deleted ? true : null,
       };
     }
 
