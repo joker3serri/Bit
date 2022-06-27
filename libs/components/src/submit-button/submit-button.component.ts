@@ -5,7 +5,7 @@ import { ButtonTypes } from "../button";
 @Component({
   selector: "bit-submit-button",
   template: `
-    <button bitButton type="submit" [buttonType]="buttonType" [disabled]="loading">
+    <button bitButton type="submit" [buttonType]="buttonType" [disabled]="loading || disabled">
       <span class="tw-relative">
         <span [ngClass]="{ 'tw-invisible': loading }">
           <ng-content></ng-content>
@@ -19,6 +19,6 @@ import { ButtonTypes } from "../button";
 })
 export class SubmitButtonComponent {
   @Input() buttonType: ButtonTypes = "primary";
-
+  @Input() disabled = false;
   @Input() loading: boolean;
 }

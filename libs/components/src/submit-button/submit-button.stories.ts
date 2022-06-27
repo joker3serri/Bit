@@ -25,7 +25,9 @@ export default {
 
 const Template: Story<SubmitButtonComponent> = (args: SubmitButtonComponent) => ({
   props: args,
-  template: `<bit-submit-button [buttonType]="buttonType" [loading]="loading">Submit</bit-submit-button>`,
+  template: `<bit-submit-button [buttonType]="buttonType" [loading]="loading" [disabled]="disabled">
+    Submit
+  </bit-submit-button>`,
 });
 
 export const Primary = Template.bind({});
@@ -34,4 +36,9 @@ Primary.args = {};
 export const Loading = Template.bind({});
 Loading.args = {
   loading: true,
+};
+
+export const Disabled = Template.bind({});
+Disabled.args = {
+  disabled: true,
 };
