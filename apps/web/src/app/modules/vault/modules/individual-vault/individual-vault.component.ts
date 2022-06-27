@@ -57,16 +57,16 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
   @ViewChild("updateKeyTemplate", { read: ViewContainerRef, static: true })
   updateKeyModalRef: ViewContainerRef;
 
-  favorites = false;
+  favorites = false; // Unused
   folderId: string = null;
-  collectionId: string = null;
-  organizationId: string = null;
+  collectionId: string = null; // Unused
+  organizationId: string = null; // Unused
   myVaultOnly = false;
   showVerifyEmail = false;
   showBrowserOutdated = false;
   showUpdateKey = false;
   showPremiumCallout = false;
-  deleted = false;
+  deleted = false; // Unused
   trashCleanupWarning: string = null;
   activeFilter: VaultFilter = new VaultFilter();
 
@@ -402,11 +402,11 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
   private go(queryParams: any = null) {
     if (queryParams == null) {
       queryParams = {
-        favorites: this.favorites ? true : null,
+        favorites: this.activeFilter.status === "favorites" ? true : null,
         type: this.activeFilter.cipherType,
-        folderId: this.folderId,
-        collectionId: this.collectionId,
-        deleted: this.deleted ? true : null,
+        folderId: this.activeFilter.selectedFolderId,
+        collectionId: this.activeFilter.selectedCollectionId,
+        deleted: this.activeFilter.status === "trash" ? true : null,
       };
     }
 

@@ -340,9 +340,9 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
   private go(queryParams: any = null) {
     if (queryParams == null) {
       queryParams = {
-        type: this.type,
-        collectionId: this.collectionId,
-        deleted: this.deleted ? true : null,
+        type: this.activeFilter.cipherType,
+        collectionId: this.activeFilter.selectedCollectionId,
+        deleted: this.activeFilter.status === "trash" ? true : null,
       };
     }
 
