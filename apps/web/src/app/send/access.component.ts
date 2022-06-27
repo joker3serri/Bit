@@ -114,7 +114,7 @@ export class AccessComponent implements OnInit {
       this.fileDownloadService.download({
         fileName: this.send.file.fileName,
         blobData: decBuf,
-        forceDownload: true,
+        downloadMethod: "save",
       });
     } catch (e) {
       this.platformUtilsService.showToast("error", null, this.i18nService.t("errorOccurred"));

@@ -18,10 +18,16 @@ export class FileDownloadBuilder {
   }
 
   get downloadMethod(): "save" | "open" {
-    return this._request.forceDownload || this.fileType != "application/pdf" ? "save" : "open";
+    if (this._request.downloadMethod != null) {
+      return this._request.downloadMethod;
+    }
+    return this.fileType != "application/pdf" ? "save" : "open";
   }
 
   get fileType() {
+    if (this._request.fileType != null) {
+      return this._request.fileType;
+    }
     const fileNameLower = this._request.fileName.toLowerCase();
     if (fileNameLower.endsWith(".pdf")) {
       return "application/pdf";
