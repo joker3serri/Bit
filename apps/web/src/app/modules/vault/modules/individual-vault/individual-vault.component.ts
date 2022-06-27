@@ -57,16 +57,12 @@ export class IndividualVaultComponent implements OnInit, OnDestroy {
   @ViewChild("updateKeyTemplate", { read: ViewContainerRef, static: true })
   updateKeyModalRef: ViewContainerRef;
 
-  favorites = false; // Unused
   folderId: string = null;
-  collectionId: string = null; // Unused
-  organizationId: string = null; // Unused
   myVaultOnly = false;
   showVerifyEmail = false;
   showBrowserOutdated = false;
   showUpdateKey = false;
   showPremiumCallout = false;
-  deleted = false; // Unused
   trashCleanupWarning: string = null;
   activeFilter: VaultFilter = new VaultFilter();
 
