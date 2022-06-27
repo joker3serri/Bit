@@ -54,7 +54,6 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
   organization: Organization;
   collectionId: string = null;
   type: CipherType = null;
-  deleted = false;
   trashCleanupWarning: string = null;
   activeFilter: VaultFilter = new VaultFilter();
 
@@ -329,12 +328,6 @@ export class OrganizationVaultComponent implements OnInit, OnDestroy {
       comp.showUser = true;
       comp.entity = "cipher";
     });
-  }
-
-  private clearFilters() {
-    this.collectionId = null;
-    this.type = null;
-    this.deleted = false;
   }
 
   private go(queryParams: any = null) {
