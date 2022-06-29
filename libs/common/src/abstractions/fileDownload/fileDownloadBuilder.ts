@@ -25,9 +25,6 @@ export class FileDownloadBuilder {
   }
 
   get fileType() {
-    if (this._request.fileType != null) {
-      return this._request.fileType;
-    }
     const fileNameLower = this._request.fileName.toLowerCase();
     if (fileNameLower.endsWith(".pdf")) {
       return "application/pdf";

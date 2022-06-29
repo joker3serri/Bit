@@ -3,5 +3,4 @@ export type FileDownloadRequest = {
   blobData: BlobPart;
   blobOptions?: BlobPropertyBag;
   downloadMethod?: "save" | "open";
-  fileType?: string;
 };
