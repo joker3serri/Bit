@@ -118,7 +118,7 @@ jobs:
 
       - name: Create release
         uses: ncipollo/release-action@95215a3cb6e6a1908b3c44e00b4fdb15548b1e09  # v2.8.5
-        if: ${{ steps.release-channel.outputs.channel }} == "latest" && ${{ github.event.inputs.release_type != 'Dry Run' }}
+        if: ${{ steps.release-channel.outputs.channel }} == "latest" && ${{ github.event.inputs.release_type }} != 'Dry Run'
         env:
           PKG_VERSION: ${{ steps.version.outputs.version }}
           RELEASE_CHANNEL: ${{ steps.release-channel.outputs.channel }}
@@ -205,7 +205,7 @@ jobs:
 
   choco:
     name: Deploy Choco
-    runs-on: windows-2019
+    runs-on: windows-2022
     needs: setup
     env:
       _PKG_VERSION: ${{ needs.setup.outputs.release-version }}
