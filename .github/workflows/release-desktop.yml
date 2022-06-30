@@ -244,7 +244,7 @@ jobs:
         with:
           workflow: build-desktop.yml
           workflow_conclusion: success
-          branch: rc
+          branch: ${{ github.ref_name }}
           artifacts: bitwarden.${{ env._PKG_VERSION }}.nupkg
           path: apps/desktop/dist
 
