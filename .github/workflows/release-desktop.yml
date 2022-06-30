@@ -78,8 +78,7 @@ jobs:
           secrets: "aws-electron-access-id, aws-electron-access-key, aws-electron-bucket-name"
 
       - name: Download all artifacts
-        if: false
-        #if: ${{ false && github.event.inputs.release_type != 'Dry Run' }}
+        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
           workflow: build-desktop.yml
@@ -88,7 +87,7 @@ jobs:
           path: apps/desktop/artifacts
 
       - name: Download all artifacts
-        if: ${{ false && github.event.inputs.release_type == 'Dry Run' }}
+        if: ${{ github.event.inputs.release_type == 'Dry Run' }}
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
           workflow: build-desktop.yml
@@ -97,7 +96,6 @@ jobs:
           path: apps/desktop/artifacts
 
       - name: Rename .pkg to .pkg.archive
-        if: false
         env:
           PKG_VERSION: ${{ steps.version.outputs.version }}
         working-directory: apps/desktop/artifacts
@@ -119,8 +117,7 @@ jobs:
 
       - name: Create release
         uses: ncipollo/release-action@95215a3cb6e6a1908b3c44e00b4fdb15548b1e09  # v2.8.5
-        if: false
-        #if: ${{ steps.release-channel.outputs.channel }} == "latest" 
+        if: ${{ steps.release-channel.outputs.channel == "latest" && github.event.inputs.release_type != 'Dry Run' }}
         env:
           PKG_VERSION: ${{ steps.version.outputs.version }}
           RELEASE_CHANNEL: ${{ steps.release-channel.outputs.channel }}
