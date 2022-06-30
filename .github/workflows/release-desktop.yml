@@ -78,7 +78,7 @@ jobs:
           secrets: "aws-electron-access-id, aws-electron-access-key, aws-electron-bucket-name"
 
       - name: Download all artifacts
-        if: ${{ github.event.inputs.release_type != 'Dry Run' }} && false
+        if: ${{ github.event.inputs.release_type }} != 'Dry Run' && false
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
           workflow: build-desktop.yml
@@ -87,7 +87,7 @@ jobs:
           path: apps/desktop/artifacts
 
       - name: Download all artifacts
-        if: ${{ github.event.inputs.release_type == 'Dry Run' }} && false
+        if: ${{ github.event.inputs.release_type }} == 'Dry Run' && false
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
           workflow: build-desktop.yml
@@ -103,7 +103,7 @@ jobs:
         run: mv Bitwarden-${{ env.PKG_VERSION }}-universal.pkg Bitwarden-${{ env.PKG_VERSION }}-universal.pkg.archive
 
       - name: Publish artifacts to S3
-        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
+        if: ${{ github.event.inputs.release_type }} != 'Dry Run'
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.aws-electron-access-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
