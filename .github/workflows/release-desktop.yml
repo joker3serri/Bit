@@ -78,7 +78,8 @@ jobs:
           secrets: "aws-electron-access-id, aws-electron-access-key, aws-electron-bucket-name"
 
       - name: Download all artifacts
-        if: ${{ github.event.inputs.release_type }} != 'Dry Run' && false
+        if: false
+        #if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
           workflow: build-desktop.yml
@@ -87,7 +88,8 @@ jobs:
           path: apps/desktop/artifacts
 
       - name: Download all artifacts
-        if: ${{ github.event.inputs.release_type }} == 'Dry Run' && false
+        if: false
+        #if: ${{ github.event.inputs.release_type == 'Dry Run' }}
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
           workflow: build-desktop.yml
@@ -103,7 +105,7 @@ jobs:
         run: mv Bitwarden-${{ env.PKG_VERSION }}-universal.pkg Bitwarden-${{ env.PKG_VERSION }}-universal.pkg.archive
 
       - name: Publish artifacts to S3
-        if: ${{ github.event.inputs.release_type }} != 'Dry Run'
+        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.aws-electron-access-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
@@ -118,7 +120,8 @@ jobs:
 
       - name: Create release
         uses: ncipollo/release-action@95215a3cb6e6a1908b3c44e00b4fdb15548b1e09  # v2.8.5
-        if: ${{ steps.release-channel.outputs.channel }} == "latest" && ${{ github.event.inputs.release_type }} != 'Dry Run'
+        if: false
+        #if: ${{ steps.release-channel.outputs.channel }} == "latest" 
         env:
           PKG_VERSION: ${{ steps.version.outputs.version }}
           RELEASE_CHANNEL: ${{ steps.release-channel.outputs.channel }}
