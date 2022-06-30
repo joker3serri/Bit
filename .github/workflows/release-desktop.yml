@@ -78,7 +78,7 @@ jobs:
           secrets: "aws-electron-access-id, aws-electron-access-key, aws-electron-bucket-name"
 
       - name: Download all artifacts
-        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
+        if: ${{ github.event.inputs.release_type != 'Dry Run' }} && false
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
           workflow: build-desktop.yml
@@ -87,7 +87,7 @@ jobs:
           path: apps/desktop/artifacts
 
       - name: Download all artifacts
-        if: ${{ github.event.inputs.release_type == 'Dry Run' }}
+        if: ${{ github.event.inputs.release_type == 'Dry Run' }} && false
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
           workflow: build-desktop.yml
@@ -96,6 +96,7 @@ jobs:
           path: apps/desktop/artifacts
 
       - name: Rename .pkg to .pkg.archive
+        if: false
         env:
           PKG_VERSION: ${{ steps.version.outputs.version }}
         working-directory: apps/desktop/artifacts
