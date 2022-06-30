@@ -201,6 +201,11 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f  # v2.3.4
 
+      - name: Print Environment
+        run: |
+          dotnet --version
+          dotnet nuget --version
+
       - name: Login to Azure
         uses: Azure/login@24848bc889cfc0a8313c2b3e378ac0d625b9bc16
         with:
