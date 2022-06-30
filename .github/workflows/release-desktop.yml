@@ -146,6 +146,7 @@ jobs:
   snap:
     name: Deploy Snap
     runs-on: ubuntu-20.04
+    if: false
     needs: setup
     env:
       _PKG_VERSION: ${{ needs.setup.outputs.release-version }}
