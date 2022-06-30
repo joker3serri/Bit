@@ -216,10 +216,10 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f  # v2.3.4
 
-      - name: Setup Nuget
-        uses: nuget/setup-nuget@b2bc17b761a1d88cab755a776c7922eb26eefbfa  # v1.0.6
-        with:
-          nuget-version: '6.x'
+      #- name: Setup Nuget
+      #  uses: nuget/setup-nuget@b2bc17b761a1d88cab755a776c7922eb26eefbfa  # v1.0.6
+      #  with:
+      #    nuget-version: '6.x'
 
       - name: Print Environment
         run: |
@@ -239,6 +239,7 @@ jobs:
           secrets: "cli-choco-api-key"
 
       - name: Setup Chocolatey
+        shell: pwsh
         run: choco apikey --key $env:CHOCO_API_KEY --source https://push.chocolatey.org/
         env:
           CHOCO_API_KEY: ${{ steps.retrieve-secrets.outputs.cli-choco-api-key }}
@@ -253,12 +254,12 @@ jobs:
         with:
           workflow: build-desktop.yml
           workflow_conclusion: success
-          branch: ${{ github.ref_name }}
+          branch: rc
           artifacts: bitwarden.${{ env._PKG_VERSION }}.nupkg
           path: apps/desktop/dist
 
       - name: Push to Chocolatey
-        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
+        #if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         shell: pwsh
         run: choco push
         working-directory: apps/desktop/dist
