@@ -79,7 +79,7 @@ jobs:
 
       - name: Download all artifacts
         if: false
-        #if: ${{ github.event.inputs.release_type != 'Dry Run' }}
+        #if: ${{ false && github.event.inputs.release_type != 'Dry Run' }}
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
           workflow: build-desktop.yml
@@ -88,8 +88,7 @@ jobs:
           path: apps/desktop/artifacts
 
       - name: Download all artifacts
-        if: false
-        #if: ${{ github.event.inputs.release_type == 'Dry Run' }}
+        if: ${{ false && github.event.inputs.release_type == 'Dry Run' }}
         uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
         with:
           workflow: build-desktop.yml
@@ -216,11 +215,6 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f  # v2.3.4
 
-      #- name: Setup Nuget
-      #  uses: nuget/setup-nuget@b2bc17b761a1d88cab755a776c7922eb26eefbfa  # v1.0.6
-      #  with:
-      #    nuget-version: '6.x'
-
       - name: Print Environment
         run: |
           dotnet --version
@@ -259,7 +253,7 @@ jobs:
           path: apps/desktop/dist
 
       - name: Push to Chocolatey
-        #if: ${{ github.event.inputs.release_type != 'Dry Run' }}
+        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         shell: pwsh
         run: choco push
         working-directory: apps/desktop/dist
