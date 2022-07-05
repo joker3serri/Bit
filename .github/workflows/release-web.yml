@@ -22,6 +22,9 @@ jobs:
       release_version: ${{ steps.version.outputs.version }}
       tag_version: ${{ steps.version.outputs.tag }}
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+
       - name: Branch check
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         run: |
@@ -31,9 +34,6 @@ jobs:
             echo "==================================="
             exit 1
           fi
-
-      - name: Checkout repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
       - name: Check Release Version
         id: version
@@ -222,12 +222,24 @@ jobs:
       - cfpages-deploy
     steps:
       - name: Download latest build artifacts
+        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         uses: bitwarden/gh-actions/download-artifacts@c1fa8e09871a860862d6bbe36184b06d2c7e35a8
         with:
           workflow: build-web.yml
           path: apps/web/artifacts
           workflow_conclusion: success
           branch: ${{ github.ref_name }}
+          artifacts: "web-*-selfhosted-COMMERCIAL.zip,
+            web-*-selfhosted-open-source.zip"
+
+      - name: Download latest build artifacts
+        if: ${{ github.event.inputs.release_type == 'Dry Run' }}
+        uses: bitwarden/gh-actions/download-artifacts@c1fa8e09871a860862d6bbe36184b06d2c7e35a8
+        with:
+          workflow: build-web.yml
+          path: apps/web/artifacts
+          workflow_conclusion: success
+          branch: master
           artifacts: "web-*-selfhosted-COMMERCIAL.zip,
             web-*-selfhosted-open-source.zip"
 

@@ -21,6 +21,7 @@ import { OrganizationBadgeModule } from "./modules/vault/modules/organization-ba
     OrganizationUserModule,
   ],
   exports: [
+    SharedModule,
     LooseComponentsModule,
     TrialInitiationModule,
     VaultFilterModule,
