@@ -65,6 +65,7 @@ export class SettingsComponent implements OnInit {
   showSecurity = true;
   showAccountPreferences = true;
   showAppPreferences = true;
+  showVaultTimeoutNeverWarning = false;
 
   currentUserEmail: string;
 
@@ -195,6 +196,9 @@ export class SettingsComponent implements OnInit {
   }
 
   async saveVaultTimeoutOptions() {
+    // Check if the selected value is "Never" and if true then the callout warning appears
+    this.showVaultTimeoutNeverWarning = this.vaultTimeout.value == null;
+
     if (this.vaultTimeoutAction === "logOut") {
       const confirmed = await this.platformUtilsService.showDialog(
         this.i18nService.t("vaultTimeoutLogOutConfirmation"),
