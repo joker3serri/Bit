@@ -35,6 +35,13 @@
                 [formControl]="vaultTimeout"
                 ngDefaultControl
               ></app-vault-timeout-input>
+              <app-callout
+                type="warning"
+                *ngIf="showVaultTimeoutNeverWarning"
+                icon="bwi bwi-exclamation-triangle"
+              >
+                {{ "neverLockWarning" | i18n }}
+              </app-callout>
               <div class="form-group">
                 <label>{{ "vaultTimeoutAction" | i18n }}</label>
                 <div class="radio radio-mt-2">
