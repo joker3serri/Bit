@@ -8,7 +8,7 @@ import {
   ExportFormat,
   ExportService as ExportServiceAbstraction,
 } from "../abstractions/export.service";
-import { FolderStateService } from "../abstractions/folder/folder-state.service.abstraction";
+import { FolderService } from "../abstractions/folder/folder.service.abstraction";
 import { CipherType } from "../enums/cipherType";
 import { DEFAULT_KDF_ITERATIONS, KdfType } from "../enums/kdfType";
 import { Utils } from "../misc/utils";
@@ -29,7 +29,7 @@ import { FolderView } from "../models/view/folderView";
 
 export class ExportService implements ExportServiceAbstraction {
   constructor(
-    private folderStateService: FolderStateService,
+    private folderService: FolderService,
     private cipherService: CipherService,
     private apiService: ApiService,
     private cryptoService: CryptoService,
@@ -115,7 +115,7 @@ export class ExportService implements ExportServiceAbstraction {
     const promises = [];
 
     promises.push(
-      this.folderStateService.getAllDecrypted().then((folders) => {
+      this.folderService.getAllDecrypted().then((folders) => {
         decFolders = folders;
       })
     );
@@ -191,7 +191,7 @@ export class ExportService implements ExportServiceAbstraction {
     const promises = [];
 
     promises.push(
-      this.folderStateService.getAll().then((f) => {
+      this.folderService.getAll().then((f) => {
         folders = f;
       })
     );

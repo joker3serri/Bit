@@ -1,8 +1,8 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { FolderStateService } from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
-import { FolderServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
+import { FolderApiServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder-api.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { CipherExport } from "@bitwarden/common/models/export/cipherExport";
 import { CollectionExport } from "@bitwarden/common/models/export/collectionExport";
@@ -20,10 +20,10 @@ import { CliUtils } from "../utils";
 export class EditCommand {
   constructor(
     private cipherService: CipherService,
-    private folderStateService: FolderStateService,
+    private folderService: FolderService,
     private cryptoService: CryptoService,
     private apiService: ApiService,
-    private folderService: FolderServiceAbstraction
+    private folderApiService: FolderApiServiceAbstraction
   ) {}
 
   async run(
@@ -118,17 +118,17 @@ export class EditCommand {
   }
 
   private async editFolder(id: string, req: FolderExport) {
-    const folder = await this.folderStateService.get(id);
+    const folder = await this.folderService.get(id);
     if (folder == null) {
       return Response.notFound();
     }
 
     let folderView = await folder.decrypt();
     folderView = FolderExport.toView(req, folderView);
-    const encFolder = await this.folderStateService.encrypt(folderView);
+    const encFolder = await this.folderService.encrypt(folderView);
     try {
-      await this.folderService.save(encFolder);
-      const updatedFolder = await this.folderStateService.get(folder.id);
+      await this.folderApiService.save(encFolder);
+      const updatedFolder = await this.folderService.get(folder.id);
       const decFolder = await updatedFolder.decrypt();
       const res = new FolderResponse(decFolder);
       return Response.success(res);

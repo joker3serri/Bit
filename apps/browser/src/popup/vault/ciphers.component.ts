@@ -8,7 +8,7 @@ import { VaultFilter } from "@bitwarden/angular/modules/vault-filter/models/vaul
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
-import { FolderStateService } from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -64,7 +64,7 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
     private stateService: StateService,
     private popupUtils: PopupUtilsService,
     private i18nService: I18nService,
-    private folderStateService: FolderStateService,
+    private folderService: FolderService,
     private collectionService: CollectionService,
     private platformUtilsService: PlatformUtilsService,
     private cipherService: CipherService,
@@ -120,7 +120,7 @@ export class CiphersComponent extends BaseCiphersComponent implements OnInit, On
         this.searchPlaceholder = this.i18nService.t("searchFolder");
         if (this.folderId != null) {
           this.showOrganizations = false;
-          const folderNode = await this.folderStateService.getNested(this.folderId);
+          const folderNode = await this.folderService.getNested(this.folderId);
           if (folderNode != null && folderNode.node != null) {
             this.groupingTitle = folderNode.node.name;
             this.nestedFolders =

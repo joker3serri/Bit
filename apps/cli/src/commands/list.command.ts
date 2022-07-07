@@ -1,7 +1,7 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
-import { FolderStateService } from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { Utils } from "@bitwarden/common/misc/utils";
@@ -26,7 +26,7 @@ import { CliUtils } from "../utils";
 export class ListCommand {
   constructor(
     private cipherService: CipherService,
-    private folderStateService: FolderStateService,
+    private folderService: FolderService,
     private collectionService: CollectionService,
     private organizationService: OrganizationService,
     private searchService: SearchService,
@@ -126,7 +126,7 @@ export class ListCommand {
   }
 
   private async listFolders(options: Options) {
-    let folders = await this.folderStateService.getAllDecrypted();
+    let folders = await this.folderService.getAllDecrypted();
 
     if (options.search != null && options.search.trim() !== "") {
       folders = CliUtils.searchFolders(folders, options.search);

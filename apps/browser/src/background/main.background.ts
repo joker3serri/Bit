@@ -10,7 +10,8 @@ import { EnvironmentService as EnvironmentServiceAbstraction } from "@bitwarden/
 import { EventService as EventServiceAbstraction } from "@bitwarden/common/abstractions/event.service";
 import { ExportService as ExportServiceAbstraction } from "@bitwarden/common/abstractions/export.service";
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/abstractions/fileUpload.service";
-import { InternalFolderStateService as InternalFolderStateServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
+import { FolderApiServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder-api.service.abstraction";
+import { InternalFolderService as InternalFolderServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/abstractions/keyConnector.service";
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/abstractions/log.service";
@@ -52,7 +53,7 @@ import { EnvironmentService } from "@bitwarden/common/services/environment.servi
 import { EventService } from "@bitwarden/common/services/event.service";
 import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";
-import { FolderStateService } from "@bitwarden/common/services/folder/folder-state.service";
+import { FolderApiService } from "@bitwarden/common/services/folder/folder-api.service";
 import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
@@ -72,6 +73,7 @@ import { TwoFactorService } from "@bitwarden/common/services/twoFactor.service";
 import { UserVerificationService } from "@bitwarden/common/services/userVerification.service";
 import { UsernameGenerationService } from "@bitwarden/common/services/usernameGeneration.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/services/webCryptoFunction.service";
+import { FolderService } from "@bitwarden/common/src/services/folder/folder.service";
 
 import { BrowserApi } from "../browser/browserApi";
 import { SafariApp } from "../browser/safariApp";
@@ -118,7 +120,7 @@ export default class MainBackground {
   environmentService: EnvironmentServiceAbstraction;
   settingsService: SettingsServiceAbstraction;
   cipherService: CipherServiceAbstraction;
-  folderStateService: InternalFolderStateServiceAbstraction;
+  folderService: InternalFolderServiceAbstraction;
   collectionService: CollectionServiceAbstraction;
   vaultTimeoutService: VaultTimeoutServiceAbstraction;
   syncService: SyncServiceAbstraction;
@@ -147,6 +149,7 @@ export default class MainBackground {
   vaultFilterService: VaultFilterService;
   usernameGenerationService: UsernameGenerationServiceAbstraction;
   encryptService: EncryptService;
+  folderApiService: FolderApiServiceAbstraction;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -264,12 +267,13 @@ export default class MainBackground {
       this.logService,
       this.stateService
     );
-    this.folderStateService = new FolderStateService(
+    this.folderService = new FolderService(
       this.cryptoService,
       this.i18nService,
       this.cipherService,
       this.stateService
     );
+    this.folderApiService = new FolderApiService(this.folderService, this.apiService);
     this.collectionService = new CollectionService(
       this.cryptoService,
       this.i18nService,
@@ -303,7 +307,7 @@ export default class MainBackground {
     this.vaultFilterService = new VaultFilterService(
       this.stateService,
       this.organizationService,
-      this.folderStateService,
+      this.folderService,
       this.cipherService,
       this.collectionService,
       this.policyService
@@ -337,7 +341,7 @@ export default class MainBackground {
 
     this.vaultTimeoutService = new VaultTimeoutService(
       this.cipherService,
-      this.folderStateService,
+      this.folderService,
       this.collectionService,
       this.cryptoService,
       this.platformUtilsService,
@@ -355,7 +359,7 @@ export default class MainBackground {
     this.syncService = new SyncService(
       this.apiService,
       this.settingsService,
-      this.folderStateService,
+      this.folderService,
       this.cipherService,
       this.cryptoService,
       this.collectionService,
@@ -367,6 +371,7 @@ export default class MainBackground {
       this.stateService,
       this.organizationService,
       this.providerService,
+      this.folderApiService,
       logoutCallback
     );
     this.eventService = new EventService(
@@ -392,7 +397,7 @@ export default class MainBackground {
     this.containerService = new ContainerService(this.cryptoService);
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
     this.exportService = new ExportService(
-      this.folderStateService,
+      this.folderService,
       this.cipherService,
       this.apiService,
       this.cryptoService,
@@ -476,7 +481,7 @@ export default class MainBackground {
       this.cipherService,
       this.authService,
       this.policyService,
-      this.folderStateService,
+      this.folderService,
       this.stateService
     );
 
@@ -605,7 +610,7 @@ export default class MainBackground {
       this.cryptoService.clearKeys(userId),
       this.settingsService.clear(userId),
       this.cipherService.clear(userId),
-      this.folderStateService.clear(userId),
+      this.folderService.clear(userId),
       this.collectionService.clear(userId),
       this.policyService.clear(userId),
       this.passwordGenerationService.clear(userId),

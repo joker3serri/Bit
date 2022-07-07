@@ -2,7 +2,7 @@ import { ApiService } from "../abstractions/api.service";
 import { CipherService } from "../abstractions/cipher.service";
 import { CollectionService } from "../abstractions/collection.service";
 import { CryptoService } from "../abstractions/crypto.service";
-import { FolderStateService } from "../abstractions/folder/folder-state.service.abstraction";
+import { FolderService } from "../abstractions/folder/folder.service.abstraction";
 import { I18nService } from "../abstractions/i18n.service";
 import { ImportService as ImportServiceAbstraction } from "../abstractions/import.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
@@ -89,7 +89,7 @@ export class ImportService implements ImportServiceAbstraction {
 
   constructor(
     private cipherService: CipherService,
-    private folderStateService: FolderStateService,
+    private folderService: FolderService,
     private apiService: ApiService,
     private i18nService: I18nService,
     private collectionService: CollectionService,
@@ -295,7 +295,7 @@ export class ImportService implements ImportServiceAbstraction {
       }
       if (importResult.folders != null) {
         for (let i = 0; i < importResult.folders.length; i++) {
-          const f = await this.folderStateService.encrypt(importResult.folders[i]);
+          const f = await this.folderService.encrypt(importResult.folders[i]);
           request.folders.push(new FolderRequest(f));
         }
       }

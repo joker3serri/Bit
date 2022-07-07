@@ -1,6 +1,6 @@
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
-import { FolderStateService } from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
@@ -29,7 +29,7 @@ export default class NotificationBackground {
     private cipherService: CipherService,
     private authService: AuthService,
     private policyService: PolicyService,
-    private folderStateService: FolderStateService,
+    private folderService: FolderService,
     private stateService: StateService
   ) {}
 
@@ -385,7 +385,7 @@ export default class NotificationBackground {
     model.login = loginModel;
 
     if (!Utils.isNullOrWhitespace(folderId)) {
-      const folders = await this.folderStateService.getAllDecrypted();
+      const folders = await this.folderService.getAllDecrypted();
       if (folders.some((x) => x.id === folderId)) {
         model.folderId = folderId;
       }
@@ -437,7 +437,7 @@ export default class NotificationBackground {
   private async getDataForTab(tab: chrome.tabs.Tab, responseCommand: string) {
     const responseData: any = {};
     if (responseCommand === "notificationBarGetFoldersList") {
-      responseData.folders = await this.folderStateService.getAllDecrypted();
+      responseData.folders = await this.folderService.getAllDecrypted();
     }
 
     await BrowserApi.tabSendMessageData(tab, responseCommand, responseData);

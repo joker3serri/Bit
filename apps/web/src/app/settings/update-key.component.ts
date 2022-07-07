@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { FolderStateService } from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -29,7 +29,7 @@ export class UpdateKeyComponent {
     private cryptoService: CryptoService,
     private messagingService: MessagingService,
     private syncService: SyncService,
-    private folderStateService: FolderStateService,
+    private folderService: FolderService,
     private cipherService: CipherService,
     private logService: LogService
   ) {}
@@ -81,12 +81,12 @@ export class UpdateKeyComponent {
 
     await this.syncService.fullSync(true);
 
-    const folders = await this.folderStateService.getAllDecrypted();
+    const folders = await this.folderService.getAllDecrypted();
     for (let i = 0; i < folders.length; i++) {
       if (folders[i].id == null) {
         continue;
       }
-      const folder = await this.folderStateService.encrypt(folders[i], encKey[0]);
+      const folder = await this.folderService.encrypt(folders[i], encKey[0]);
       request.folders.push(new FolderWithIdRequest(folder));
     }
 

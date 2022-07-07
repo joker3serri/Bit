@@ -56,7 +56,7 @@ export class ServeCommand {
   constructor(protected main: Main) {
     this.getCommand = new GetCommand(
       this.main.cipherService,
-      this.main.folderStateService,
+      this.main.folderService,
       this.main.collectionService,
       this.main.totpService,
       this.main.auditService,
@@ -68,7 +68,7 @@ export class ServeCommand {
     );
     this.listCommand = new ListCommand(
       this.main.cipherService,
-      this.main.folderStateService,
+      this.main.folderService,
       this.main.collectionService,
       this.main.organizationService,
       this.main.searchService,
@@ -76,7 +76,7 @@ export class ServeCommand {
     );
     this.createCommand = new CreateCommand(
       this.main.cipherService,
-      this.main.folderStateService,
+      this.main.folderService,
       this.main.stateService,
       this.main.cryptoService,
       this.main.apiService,
@@ -84,7 +84,7 @@ export class ServeCommand {
     );
     this.editCommand = new EditCommand(
       this.main.cipherService,
-      this.main.folderStateService,
+      this.main.folderService,
       this.main.cryptoService,
       this.main.apiService,
       this.main.folderService
@@ -102,7 +102,7 @@ export class ServeCommand {
     );
     this.deleteCommand = new DeleteCommand(
       this.main.cipherService,
-      this.main.folderStateService,
+      this.main.folderService,
       this.main.stateService,
       this.main.apiService,
       this.main.folderService

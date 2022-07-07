@@ -112,7 +112,7 @@ export class VaultProgram extends Program {
         await this.exitIfLocked();
         const command = new ListCommand(
           this.main.cipherService,
-          this.main.folderStateService,
+          this.main.folderService,
           this.main.collectionService,
           this.main.organizationService,
           this.main.searchService,
@@ -181,7 +181,7 @@ export class VaultProgram extends Program {
         await this.exitIfLocked();
         const command = new GetCommand(
           this.main.cipherService,
-          this.main.folderStateService,
+          this.main.folderService,
           this.main.collectionService,
           this.main.totpService,
           this.main.auditService,
@@ -226,7 +226,7 @@ export class VaultProgram extends Program {
         await this.exitIfLocked();
         const command = new CreateCommand(
           this.main.cipherService,
-          this.main.folderStateService,
+          this.main.folderService,
           this.main.stateService,
           this.main.cryptoService,
           this.main.apiService,
@@ -271,7 +271,7 @@ export class VaultProgram extends Program {
         await this.exitIfLocked();
         const command = new EditCommand(
           this.main.cipherService,
-          this.main.folderStateService,
+          this.main.folderService,
           this.main.cryptoService,
           this.main.apiService,
           this.main.folderService
@@ -314,7 +314,7 @@ export class VaultProgram extends Program {
         await this.exitIfLocked();
         const command = new DeleteCommand(
           this.main.cipherService,
-          this.main.folderStateService,
+          this.main.folderService,
           this.main.stateService,
           this.main.apiService,
           this.main.folderService

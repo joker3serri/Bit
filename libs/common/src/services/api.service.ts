@@ -30,7 +30,6 @@ import { EmergencyAccessInviteRequest } from "../models/request/emergencyAccessI
 import { EmergencyAccessPasswordRequest } from "../models/request/emergencyAccessPasswordRequest";
 import { EmergencyAccessUpdateRequest } from "../models/request/emergencyAccessUpdateRequest";
 import { EventRequest } from "../models/request/eventRequest";
-import { FolderRequest } from "../models/request/folderRequest";
 import { GroupRequest } from "../models/request/groupRequest";
 import { IapCheckRequest } from "../models/request/iapCheckRequest";
 import { ApiTokenRequest } from "../models/request/identityToken/apiTokenRequest";
@@ -126,7 +125,6 @@ import {
 } from "../models/response/emergencyAccessResponse";
 import { ErrorResponse } from "../models/response/errorResponse";
 import { EventResponse } from "../models/response/eventResponse";
-import { FolderResponse } from "../models/response/folderResponse";
 import { GroupDetailsResponse, GroupResponse } from "../models/response/groupResponse";
 import { IdentityCaptchaResponse } from "../models/response/identityCaptchaResponse";
 import { IdentityTokenResponse } from "../models/response/identityTokenResponse";
@@ -485,13 +483,6 @@ export class ApiService implements ApiServiceAbstraction {
   async getUserBillingPayment(): Promise<BillingPaymentResponse> {
     const r = await this.send("GET", "/accounts/billing/payment-method", null, true, true);
     return new BillingPaymentResponse(r);
-  }
-
-  // Folder APIs
-
-  async getFolder(id: string): Promise<FolderResponse> {
-    const r = await this.send("GET", "/folders/" + id, null, true, true);
-    return new FolderResponse(r);
   }
 
   // Send APIs

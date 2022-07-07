@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
-import { FolderStateService } from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { FolderView } from "@bitwarden/common/models/view/folderView";
@@ -22,11 +22,11 @@ export class BulkMoveComponent implements OnInit {
     private cipherService: CipherService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
-    private folderStateService: FolderStateService
+    private folderService: FolderService
   ) {}
 
   async ngOnInit() {
-    this.folders = await this.folderStateService.getAllDecrypted();
+    this.folders = await this.folderService.getAllDecrypted();
     this.folderId = this.folders[0].id;
   }
 

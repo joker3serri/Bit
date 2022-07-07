@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
-import { FolderStateService } from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
@@ -18,7 +18,7 @@ export class VaultFilterService {
   constructor(
     protected stateService: StateService,
     protected organizationService: OrganizationService,
-    protected folderStateService: FolderStateService,
+    protected folderService: FolderService,
     protected cipherService: CipherService,
     protected collectionService: CollectionService,
     protected policyService: PolicyService
@@ -37,7 +37,7 @@ export class VaultFilterService {
   }
 
   async buildFolders(organizationId?: string): Promise<DynamicTreeNode<FolderView>> {
-    const storedFolders = await this.folderStateService.getAllDecrypted();
+    const storedFolders = await this.folderService.getAllDecrypted();
     let folders: FolderView[];
     if (organizationId != null) {
       const ciphers = await this.cipherService.getAllDecrypted();
@@ -50,7 +50,7 @@ export class VaultFilterService {
     } else {
       folders = storedFolders;
     }
-    const nestedFolders = await this.folderStateService.getAllNested(folders);
+    const nestedFolders = await this.folderService.getAllNested(folders);
     return new DynamicTreeNode<FolderView>({
       fullList: folders,
       nestedList: nestedFolders,

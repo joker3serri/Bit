@@ -5,7 +5,7 @@ import { ChangePasswordComponent as BaseChangePasswordComponent } from "@bitward
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { FolderStateService } from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -44,7 +44,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     passwordGenerationService: PasswordGenerationService,
     platformUtilsService: PlatformUtilsService,
     policyService: PolicyService,
-    private folderStateService: FolderStateService,
+    private folderService: FolderService,
     private cipherService: CipherService,
     private syncService: SyncService,
     private apiService: ApiService,
@@ -192,12 +192,12 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     request.key = encKey[1].encryptedString;
     request.masterPasswordHash = masterPasswordHash;
 
-    const folders = await this.folderStateService.getAllDecrypted();
+    const folders = await this.folderService.getAllDecrypted();
     for (let i = 0; i < folders.length; i++) {
       if (folders[i].id == null) {
         continue;
       }
-      const folder = await this.folderStateService.encrypt(folders[i], encKey[0]);
+      const folder = await this.folderService.encrypt(folders[i], encKey[0]);
       request.folders.push(new FolderWithIdRequest(folder));
     }
 

@@ -16,11 +16,11 @@ import { EnvironmentService as EnvironmentServiceAbstraction } from "@bitwarden/
 import { EventService as EventServiceAbstraction } from "@bitwarden/common/abstractions/event.service";
 import { ExportService as ExportServiceAbstraction } from "@bitwarden/common/abstractions/export.service";
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/abstractions/fileUpload.service";
+import { FolderApiServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder-api.service.abstraction";
 import {
-  FolderStateService as FolderStateServiceAbstraction,
-  InternalFolderStateService,
-} from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
-import { FolderServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
+  FolderService as FolderServiceAbstraction,
+  InternalFolderService,
+} from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { FormValidationErrorsService as FormValidationErrorsServiceAbstraction } from "@bitwarden/common/abstractions/formValidationErrors.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/abstractions/keyConnector.service";
@@ -62,7 +62,7 @@ import { EnvironmentService } from "@bitwarden/common/services/environment.servi
 import { EventService } from "@bitwarden/common/services/event.service";
 import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";
-import { FolderStateService } from "@bitwarden/common/services/folder/folder-state.service";
+import { FolderApiService } from "@bitwarden/common/services/folder/folder-api.service";
 import { FolderService } from "@bitwarden/common/services/folder/folder.service";
 import { FormValidationErrorsService } from "@bitwarden/common/services/formValidationErrors.service";
 import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
@@ -216,8 +216,8 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
       ],
     },
     {
-      provide: FolderStateServiceAbstraction,
-      useClass: FolderStateService,
+      provide: FolderServiceAbstraction,
+      useClass: FolderService,
       deps: [
         CryptoServiceAbstraction,
         I18nServiceAbstraction,
@@ -226,13 +226,13 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
       ],
     },
     {
-      provide: InternalFolderStateService,
-      useExisting: FolderStateServiceAbstraction,
+      provide: InternalFolderService,
+      useExisting: FolderServiceAbstraction,
     },
     {
-      provide: FolderServiceAbstraction,
-      useClass: FolderService,
-      deps: [FolderStateServiceAbstraction, ApiServiceAbstraction],
+      provide: FolderApiServiceAbstraction,
+      useClass: FolderApiService,
+      deps: [FolderServiceAbstraction, ApiServiceAbstraction],
     },
     { provide: LogService, useFactory: () => new ConsoleLogService(false) },
     {
@@ -294,7 +294,7 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
       deps: [
         ApiServiceAbstraction,
         SettingsServiceAbstraction,
-        FolderStateServiceAbstraction,
+        FolderServiceAbstraction,
         CipherServiceAbstraction,
         CryptoServiceAbstraction,
         CollectionServiceAbstraction,
@@ -306,6 +306,7 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
         StateServiceAbstraction,
         OrganizationServiceAbstraction,
         ProviderServiceAbstraction,
+        FolderApiServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },
@@ -320,7 +321,7 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
       useClass: VaultTimeoutService,
       deps: [
         CipherServiceAbstraction,
-        FolderStateServiceAbstraction,
+        FolderServiceAbstraction,
         CollectionServiceAbstraction,
         CryptoServiceAbstraction,
         PlatformUtilsServiceAbstraction,
@@ -357,7 +358,7 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
       provide: ExportServiceAbstraction,
       useClass: ExportService,
       deps: [
-        FolderStateServiceAbstraction,
+        FolderServiceAbstraction,
         CipherServiceAbstraction,
         ApiServiceAbstraction,
         CryptoServiceAbstraction,

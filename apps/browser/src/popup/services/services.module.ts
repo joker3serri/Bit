@@ -20,7 +20,8 @@ import { EventService } from "@bitwarden/common/abstractions/event.service";
 import { ExportService } from "@bitwarden/common/abstractions/export.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { FileUploadService } from "@bitwarden/common/abstractions/fileUpload.service";
-import { FolderStateService } from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
+import { FolderApiServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder-api.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/abstractions/log.service";
@@ -149,8 +150,13 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [],
     },
     {
-      provide: FolderStateService,
-      useFactory: getBgService<FolderStateService>("folderStateService"),
+      provide: FolderService,
+      useFactory: getBgService<FolderService>("folderService"),
+      deps: [],
+    },
+    {
+      provide: FolderApiServiceAbstraction,
+      useFactory: getBgService<FolderApiServiceAbstraction>("folderApiService"),
       deps: [],
     },
     {
@@ -241,7 +247,7 @@ function getBgService<T>(service: keyof MainBackground) {
         return new VaultFilterService(
           getBgService<StateServiceAbstraction>("stateService")(),
           getBgService<OrganizationService>("organizationService")(),
-          getBgService<FolderStateService>("folderStateService")(),
+          getBgService<FolderService>("folderService")(),
           getBgService<CipherService>("cipherService")(),
           getBgService<CollectionService>("collectionService")(),
           getBgService<PolicyService>("policyService")()

@@ -4,7 +4,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
-import { FolderStateService } from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { KdfType } from "@bitwarden/common/enums/kdfType";
 import { Utils } from "@bitwarden/common/misc/utils";
@@ -87,21 +87,21 @@ describe("ExportService", () => {
   let apiService: SubstituteOf<ApiService>;
   let cryptoFunctionService: SubstituteOf<CryptoFunctionService>;
   let cipherService: SubstituteOf<CipherService>;
-  let folderStateService: SubstituteOf<FolderStateService>;
+  let folderService: SubstituteOf<FolderService>;
   let cryptoService: SubstituteOf<CryptoService>;
 
   beforeEach(() => {
     apiService = Substitute.for<ApiService>();
     cryptoFunctionService = Substitute.for<CryptoFunctionService>();
     cipherService = Substitute.for<CipherService>();
-    folderStateService = Substitute.for<FolderStateService>();
+    folderService = Substitute.for<FolderService>();
     cryptoService = Substitute.for<CryptoService>();
 
-    folderStateService.getAllDecrypted().resolves([]);
-    folderStateService.getAll().resolves([]);
+    folderService.getAllDecrypted().resolves([]);
+    folderService.getAll().resolves([]);
 
     exportService = new ExportService(
-      folderStateService,
+      folderService,
       cipherService,
       apiService,
       cryptoService,

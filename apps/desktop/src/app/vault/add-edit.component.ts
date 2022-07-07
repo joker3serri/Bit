@@ -7,7 +7,7 @@ import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.s
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { EventService } from "@bitwarden/common/abstractions/event.service";
-import { FolderStateService } from "@bitwarden/common/abstractions/folder/folder-state.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -28,7 +28,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnChanges,
   private form: NgForm;
   constructor(
     cipherService: CipherService,
-    folderStateService: FolderStateService,
+    folderService: FolderService,
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
     auditService: AuditService,
@@ -45,7 +45,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnChanges,
   ) {
     super(
       cipherService,
-      folderStateService,
+      folderService,
       i18nService,
       platformUtilsService,
       auditService,
