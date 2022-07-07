@@ -80,14 +80,14 @@ export class ServeCommand {
       this.main.stateService,
       this.main.cryptoService,
       this.main.apiService,
-      this.main.folderService
+      this.main.folderApiService
     );
     this.editCommand = new EditCommand(
       this.main.cipherService,
       this.main.folderService,
       this.main.cryptoService,
       this.main.apiService,
-      this.main.folderService
+      this.main.folderApiService
     );
     this.generateCommand = new GenerateCommand(
       this.main.passwordGenerationService,
@@ -105,7 +105,7 @@ export class ServeCommand {
       this.main.folderService,
       this.main.stateService,
       this.main.apiService,
-      this.main.folderService
+      this.main.folderApiService
     );
     this.confirmCommand = new ConfirmCommand(this.main.apiService, this.main.cryptoService);
     this.restoreCommand = new RestoreCommand(this.main.cipherService);

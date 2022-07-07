@@ -297,6 +297,7 @@ export class Main {
       this.stateService,
       this.organizationService,
       this.providerService,
+      this.folderApiService,
       async (expired: boolean) => await this.logout()
     );
 
