@@ -4,6 +4,8 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 
+import { SharedModule } from "src/app/modules/shared.module";
+
 import { InputCheckboxComponent } from "./components/input-checkbox.component";
 import { InputTextReadOnlyComponent } from "./components/input-text-readonly.component";
 import { InputTextComponent } from "./components/input-text.component";
@@ -20,6 +22,7 @@ import { OrganizationsRoutingModule } from "./organizations-routing.module";
     FormsModule,
     ReactiveFormsModule,
     JslibModule,
+    SharedModule,
     OrganizationsRoutingModule,
   ],
   declarations: [

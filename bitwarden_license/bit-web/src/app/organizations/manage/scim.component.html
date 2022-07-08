@@ -36,14 +36,16 @@
     </div>
   </div>
 
-  <bit-submit-button [buttonType]="primary" [loading]="form.loading" [disabled]="form.loading">
-    {{ "save" | i18n }}
-  </bit-submit-button>
-
   <bit-form-field *ngIf="showScimSettings">
     <bit-label>{{ "scimUrl" | i18n }}</bit-label>
     <input bitInput type="text" formControlName="endpointUrl" />
-    <button bitSuffix bitButton (click)="copyScimUrl()" [appA11yTitle]="'copyScimUrl' | i18n">
+    <button
+      type="button"
+      bitSuffix
+      bitButton
+      (click)="copyScimUrl()"
+      [appA11yTitle]="'copyScimUrl' | i18n"
+    >
       <i aria-hidden="true" class="bwi bwi-lg bwi-clone"></i>
     </button>
   </bit-form-field>
@@ -51,12 +53,28 @@
   <bit-form-field *ngIf="showScimSettings">
     <bit-label>{{ "scimApiKey" | i18n }}</bit-label>
     <input bitInput type="text" formControlName="clientSecret" />
-    <button bitSuffix bitButton (click)="rotateScimKey()" [appA11yTitle]="'rotateScimKey' | i18n">
+    <button
+      type="button"
+      bitSuffix
+      bitButton
+      (click)="rotateScimKey()"
+      [appA11yTitle]="'rotateScimKey' | i18n"
+    >
       <i aria-hidden="true" class="bwi bwi-lg bwi-generate"></i>
     </button>
-    <button bitSuffix bitButton (click)="copyScimKey()" [appA11yTitle]="'copyScimKey' | i18n">
+    <button
+      type="button"
+      bitSuffix
+      bitButton
+      (click)="copyScimKey()"
+      [appA11yTitle]="'copyScimKey' | i18n"
+    >
       <i aria-hidden="true" class="bwi bwi-lg bwi-clone"></i>
     </button>
     <bit-hint>{{ "scimApiKeyHelperText" | i18n }}</bit-hint>
   </bit-form-field>
+
+  <bit-submit-button buttonType="primary" [loading]="form.loading" [disabled]="form.loading">
+    {{ "save" | i18n }}
+  </bit-submit-button>
 </form>

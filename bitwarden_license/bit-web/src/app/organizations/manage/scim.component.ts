@@ -96,6 +96,7 @@ export class ScimComponent implements OnInit {
 
   async copyScimUrl() {
     this.platformUtilsService.copyToClipboard(this.getScimEndpointUrl());
+    return false;
   }
 
   async rotateScimKey() {
@@ -113,6 +114,7 @@ export class ScimComponent implements OnInit {
     const request = new OrganizationApiKeyRequest();
     request.type = OrganizationApiKeyType.Scim;
     request.masterPasswordHash = "N/A";
+
     this.formPromise = this.apiService.postOrganizationRotateApiKey(this.organizationId, request);
 
     try {
@@ -124,6 +126,7 @@ export class ScimComponent implements OnInit {
     }
 
     this.formPromise = null;
+    return false;
   }
 
   async copyScimKey() {
@@ -131,12 +134,6 @@ export class ScimComponent implements OnInit {
   }
 
   async submit() {
-    this.formData.markAllAsTouched();
-
-    if (!this.formData.valid) {
-      return;
-    }
-
     try {
       const request = new OrganizationConnectionRequest(
         this.organizationId,
