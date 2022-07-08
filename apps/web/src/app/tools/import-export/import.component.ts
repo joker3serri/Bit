@@ -8,7 +8,12 @@ import { ImportService } from "@bitwarden/common/abstractions/import.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
-import { ImportOption, ImportType } from "@bitwarden/common/enums/importOptions";
+import {
+  byteArrayImportOptions,
+  passwordImportOptions,
+  ImportOption,
+  ImportType,
+} from "@bitwarden/common/enums/importOptions";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 
 @Component({
@@ -19,6 +24,7 @@ export class ImportComponent implements OnInit {
   featuredImportOptions: ImportOption[];
   importOptions: ImportOption[];
   format: ImportType = null;
+  password: string;
   fileContents: string;
   formPromise: Promise<Error>;
   loading = false;
@@ -56,7 +62,11 @@ export class ImportComponent implements OnInit {
 
     this.loading = true;
 
-    const importer = this.importService.getImporter(this.format, this.organizationId);
+    const importer = this.importService.getImporter(
+      this.format,
+      this.organizationId,
+      this.getShowPasswordField() ? this.password : undefined
+    );
     if (importer === null) {
       this.platformUtilsService.showToast(
         "error",
@@ -82,7 +92,7 @@ export class ImportComponent implements OnInit {
       return;
     }
 
-    let fileContents = this.fileContents;
+    let fileContents: string | ArrayBuffer = this.fileContents;
     if (files != null && files.length > 0) {
       try {
         const content = await this.getFileContents(files[0]);
@@ -105,7 +115,11 @@ export class ImportComponent implements OnInit {
     }
 
     try {
-      this.formPromise = this.importService.import(importer, fileContents, this.organizationId);
+      this.formPromise = this.importService.import(
+        importer,
+        typeof fileContents === "string" ? fileContents : new Uint8Array(fileContents),
+        this.organizationId
+      );
       const error = await this.formPromise;
       if (error != null) {
         this.error(error);
@@ -119,6 +133,10 @@ export class ImportComponent implements OnInit {
     }
 
     this.loading = false;
+  }
+
+  getShowPasswordField() {
+    return passwordImportOptions.includes(this.format);
   }
 
   getFormatInstructionTitle() {
@@ -181,14 +199,18 @@ export class ImportComponent implements OnInit {
     });
   }
 
-  private getFileContents(file: File): Promise<string> {
+  private getFileContents(file: File): Promise<string | ArrayBuffer> {
     if (this.format === "1password1pux") {
       return this.extract1PuxContent(file);
     }
 
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.readAsText(file, "utf-8");
+      if (byteArrayImportOptions.includes(this.format)) {
+        reader.readAsArrayBuffer(file);
+      } else {
+        reader.readAsText(file, "utf-8");
+      }
       reader.onload = (evt) => {
         if (this.format === "lastpasscsv" && file.type === "text/html") {
           const parser = new DOMParser();

@@ -2,6 +2,7 @@ import { ApiService } from "../abstractions/api.service";
 import { CipherService } from "../abstractions/cipher.service";
 import { CollectionService } from "../abstractions/collection.service";
 import { CryptoService } from "../abstractions/crypto.service";
+import { CryptoFunctionService } from "../abstractions/cryptoFunction.service";
 import { FolderService } from "../abstractions/folder.service";
 import { I18nService } from "../abstractions/i18n.service";
 import { ImportService as ImportServiceAbstraction } from "../abstractions/import.service";
@@ -21,6 +22,7 @@ import { BitwardenCsvImporter } from "../importers/bitwardenCsvImporter";
 import { BitwardenJsonImporter } from "../importers/bitwardenJsonImporter";
 import { BitwardenPasswordProtectedImporter } from "../importers/bitwardenPasswordProtectedImporter";
 import { BlackBerryCsvImporter } from "../importers/blackBerryCsvImporter";
+import { BluinkKeyInjImporter } from "../importers/bluinkKeyInjImporter";
 import { BlurCsvImporter } from "../importers/blurCsvImporter";
 import { ButtercupCsvImporter } from "../importers/buttercupCsvImporter";
 import { ChromeCsvImporter } from "../importers/chromeCsvImporter";
@@ -94,7 +96,8 @@ export class ImportService implements ImportServiceAbstraction {
     private i18nService: I18nService,
     private collectionService: CollectionService,
     private platformUtilsService: PlatformUtilsService,
-    private cryptoService: CryptoService
+    private cryptoService: CryptoService,
+    private cryptoFunctionService: CryptoFunctionService
   ) {}
 
   getImportOptions(): ImportOption[] {
@@ -103,10 +106,10 @@ export class ImportService implements ImportServiceAbstraction {
 
   async import(
     importer: Importer,
-    fileContents: string,
+    fileContents: string | Uint8Array,
     organizationId: string = null
   ): Promise<ImportError> {
-    const importResult = await importer.parse(fileContents);
+    const importResult = await importer.parse(fileContents as string & Uint8Array); // Trust the callers of this method to use the right type
     if (importResult.success) {
       if (importResult.folders.length === 0 && importResult.ciphers.length === 0) {
         return new ImportError(this.i18nService.t("importNothingError"));
@@ -281,6 +284,13 @@ export class ImportService implements ImportServiceAbstraction {
         return new YotiCsvImporter();
       case "nordpasscsv":
         return new NordPassCsvImporter();
+      case "bluinkkeyinj":
+        return new BluinkKeyInjImporter(
+          this.cryptoService,
+          this.i18nService,
+          this.cryptoFunctionService,
+          password
+        );
       default:
         return null;
     }

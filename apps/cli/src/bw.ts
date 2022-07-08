@@ -311,7 +311,8 @@ export class Main {
       this.i18nService,
       this.collectionService,
       this.platformUtilsService,
-      this.cryptoService
+      this.cryptoService,
+      this.cryptoFunctionService
     );
     this.exportService = new ExportService(
       this.folderService,

@@ -15,6 +15,11 @@ import { MessageResponse } from "@bitwarden/node/cli/models/response/messageResp
 
 import { FlagName, Flags } from "./flags";
 
+export enum FileDataType {
+  Binary,
+  Utf8,
+}
+
 export class CliUtils {
   static writeLn(s: string, finalLine = false, error = false) {
     const stream = error ? process.stderr : process.stdout;
@@ -25,26 +30,31 @@ export class CliUtils {
     }
   }
 
-  static readFile(input: string): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      let p: string = null;
-      if (input != null && input !== "") {
-        const osInput = path.join(input);
-        if (osInput.indexOf(path.sep) === -1) {
-          p = path.join(process.cwd(), osInput);
+  static readFile(
+    input: string,
+    type: FileDataType = FileDataType.Utf8
+  ): Promise<typeof type extends FileDataType.Binary ? Buffer : string> {
+    return new Promise<typeof type extends FileDataType.Binary ? Buffer : string>(
+      (resolve, reject) => {
+        let p: string = null;
+        if (input != null && input !== "") {
+          const osInput = path.join(input);
+          if (osInput.indexOf(path.sep) === -1) {
+            p = path.join(process.cwd(), osInput);
+          } else {
+            p = osInput;
+          }
         } else {
-          p = osInput;
+          reject("You must specify a file path.");
         }
-      } else {
-        reject("You must specify a file path.");
+        fs.readFile(p, type === FileDataType.Utf8 ? "utf8" : undefined, (err, data) => {
+          if (err != null) {
+            reject(err.message);
+          }
+          resolve(data);
+        });
       }
-      fs.readFile(p, "utf8", (err, data) => {
-        if (err != null) {
-          reject(err.message);
-        }
-        resolve(data);
-      });
-    });
+    );
   }
 
   static extract1PuxContent(input: string): Promise<string> {

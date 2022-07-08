@@ -3,12 +3,16 @@ import * as inquirer from "inquirer";
 
 import { ImportService } from "@bitwarden/common/abstractions/import.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
-import { ImportType } from "@bitwarden/common/enums/importOptions";
+import {
+  byteArrayImportOptions,
+  ImportType,
+  passwordImportOptions,
+} from "@bitwarden/common/enums/importOptions";
 import { Importer } from "@bitwarden/common/importers/importer";
 import { Response } from "@bitwarden/node/cli/models/response";
 import { MessageResponse } from "@bitwarden/node/cli/models/response/messageResponse";
 
-import { CliUtils } from "../utils";
+import { CliUtils, FileDataType } from "../utils";
 
 export class ImportCommand {
   constructor(
@@ -53,17 +57,24 @@ export class ImportCommand {
       return Response.badRequest("`filepath` was not provided.");
     }
 
-    const importer = await this.importService.getImporter(format, organizationId);
+    const importer = this.importService.getImporter(
+      format,
+      organizationId,
+      passwordImportOptions.includes(format) ? await this.promptPassword() : undefined
+    );
     if (importer === null) {
       return Response.badRequest("Proper importer type required.");
     }
 
     try {
-      let contents;
+      let contents: string | Buffer;
       if (format === "1password1pux") {
         contents = await CliUtils.extract1PuxContent(filepath);
       } else {
-        contents = await CliUtils.readFile(filepath);
+        contents = await CliUtils.readFile(
+          filepath,
+          byteArrayImportOptions.includes(format) ? FileDataType.Binary : FileDataType.Utf8
+        );
       }
 
       if (contents === null || contents === "") {
@@ -95,7 +106,7 @@ export class ImportCommand {
 
   private async doImport(
     importer: Importer,
-    contents: string,
+    contents: string | Buffer,
     organizationId?: string
   ): Promise<Response> {
     const err = await this.importService.import(importer, contents, organizationId);

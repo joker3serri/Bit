@@ -286,6 +286,13 @@
       From the Yoti browser extension, click on "Settings", then "Export Saved Logins" and save the
       CSV file.
     </ng-container>
+    <ng-container *ngIf="format === 'bluinkkeyinj'">
+      Open and unlock the Bluink Key mobile app. Then, open the menu, navigate to "Settings" &rarr;
+      "Backup", and create a password to protect the backup file. Save the file somewhere easily
+      accessible on your device and either import it from your phone's browser or by transferring it
+      to your computer. Note: Bluink Key does not support exporting TOTP codes; only credential
+      items will be saved.
+    </ng-container>
   </app-callout>
   <div class="row">
     <div class="col-6">
@@ -310,6 +317,17 @@
       [(ngModel)]="fileContents"
       [disabled]="importBlockedByPolicy"
     ></textarea>
+  </div>
+  <div class="form-group" *ngIf="getShowPasswordField()">
+    <label for="password">{{ "password" | i18n }}</label>
+    <input
+      id="password"
+      class="form-control"
+      name="Password"
+      type="password"
+      [(ngModel)]="password"
+      [disabled]="importBlockedByPolicy"
+    />
   </div>
   <button
     type="submit"

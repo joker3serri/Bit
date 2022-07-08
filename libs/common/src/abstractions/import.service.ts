@@ -8,7 +8,7 @@ export abstract class ImportService {
   getImportOptions: () => ImportOption[];
   import: (
     importer: Importer,
-    fileContents: string,
+    fileContents: string | Uint8Array,
     organizationId?: string
   ) => Promise<ImportError>;
   getImporter: (

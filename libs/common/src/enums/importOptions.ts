@@ -67,7 +67,14 @@ export const regularImportOptions = [
   { id: "encryptrcsv", name: "Encryptr (csv)" },
   { id: "yoticsv", name: "Yoti (csv)" },
   { id: "nordpasscsv", name: "Nordpass (csv)" },
+  { id: "bluinkkeyinj", name: "Bluink Key (inj)" },
 ] as const;
+
+// Import options which require a password
+export const passwordImportOptions = ["bluinkkeyinj"];
+
+// Import options which need a byte array instead of a utf8 string
+export const byteArrayImportOptions = ["bluinkkeyinj"];
 
 export type ImportType =
   | typeof featuredImportOptions[number]["id"]
