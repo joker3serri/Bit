@@ -1,4 +1,4 @@
-import { AbstractControl, ValidatorFn } from "@angular/forms";
+import { AbstractControl, FormGroup, ValidatorFn } from "@angular/forms";
 
 import { FormGroupControls } from "@bitwarden/common/abstractions/formValidationErrors.service";
 
@@ -33,5 +33,23 @@ export function validateInputsMatch(matchTo: string, errorMessage: string): Vali
     }
 
     return null;
+  };
+}
+
+//checks if two fields have the same value and validation is controlled from either field
+export function validateFormInputsMatch(field: string, fieldMatchTo: string, errorMessage: string) {
+  return (formGroup: FormGroup) => {
+    const fieldCtrl = formGroup.controls[field];
+    const fieldMatchToCtrl = formGroup.controls[fieldMatchTo];
+
+    if (fieldCtrl.value !== fieldMatchToCtrl.value) {
+      fieldMatchToCtrl.setErrors({
+        inputsDoesntMatchError: {
+          message: errorMessage,
+        },
+      });
+    } else {
+      fieldMatchToCtrl.setErrors(null);
+    }
   };
 }
