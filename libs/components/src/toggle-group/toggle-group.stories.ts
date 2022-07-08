@@ -9,7 +9,7 @@ export default {
   title: "Component Library/Toggle Group",
   component: ToggleGroupComponent,
   args: {
-    selected: "left",
+    selected: "all",
   },
   decorators: [
     moduleMetadata({
@@ -28,17 +28,21 @@ export default {
 const Template: Story<ToggleGroupComponent> = (args: ToggleGroupComponent) => ({
   props: args,
   template: `
-    <bit-toggle-group [(selected)]="selected" label="Example with 3 grouped buttons">
-      <bit-toggle-group-button value="left">
-        Left <span bitBadge badgeType="info">1</span>
+    <bit-toggle-group [(selected)]="selected" label="People list filter">
+      <bit-toggle-group-button value="all">
+        All <span bitBadge badgeType="info">3</span>
       </bit-toggle-group-button>
 
-      <bit-toggle-group-button value="center">
-        Center
+      <bit-toggle-group-button value="invited">
+        Invited
       </bit-toggle-group-button>
 
-      <bit-toggle-group-button value="right">
-        Right
+      <bit-toggle-group-button value="accepted">
+        Accepted <span bitBadge badgeType="info">2</span>
+      </bit-toggle-group-button>
+
+      <bit-toggle-group-button value="deactivated">
+        Deactivated
       </bit-toggle-group-button>
     </bit-toggle-group>
   `,
@@ -46,5 +50,5 @@ const Template: Story<ToggleGroupComponent> = (args: ToggleGroupComponent) => ({
 
 export const Default = Template.bind({});
 Default.args = {
-  selected: "left",
+  selected: "all",
 };
