@@ -3348,9 +3348,6 @@
   "masterPassPolicyDesc": {
     "message": "Set requirements for master password strength."
   },
-  "twoStepLoginPolicyTitle": {
-    "message": "Require two-step login"
-  },
   "twoStepLoginPolicyDesc": {
     "message": "Require members to set up two-step login."
   },
