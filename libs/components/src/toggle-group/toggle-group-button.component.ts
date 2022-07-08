@@ -6,8 +6,8 @@ import { ToggleGroupComponent } from "./toggle-group.component";
 let nextId = 0;
 
 @Component({
-  selector: "bit-toggle-group-element",
-  templateUrl: "./toggle-group-element.component.html",
+  selector: "bit-toggle-group-button",
+  templateUrl: "./toggle-group-button.component.html",
 })
 export class ToggleGroupElementComponent implements FocusableOption {
   @ViewChild("input") private inputElement: ElementRef<HTMLInputElement>;

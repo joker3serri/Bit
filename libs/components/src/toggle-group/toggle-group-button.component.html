@@ -1,11 +1,11 @@
 <input
   type="radio"
-  id="bit-toggle-group-element-{{ id }}"
+  id="bit-toggle-group-button-{{ id }}"
   [name]="name"
   [ngClass]="inputClasses"
   [checked]="selected"
   (change)="onInputInteraction()"
 />
-<label for="bit-toggle-group-element-{{ id }}" [ngClass]="labelClasses">
+<label for="bit-toggle-group-button-{{ id }}" [ngClass]="labelClasses">
   <ng-content></ng-content>
 </label>

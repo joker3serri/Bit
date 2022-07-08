@@ -64,7 +64,7 @@ class MockedButtonGroupComponent implements Partial<ToggleGroupComponent> {
 
 @Component({
   selector: "test-app",
-  template: ` <bit-toggle-group-element [value]="value">Element</bit-toggle-group-element>`,
+  template: ` <bit-toggle-group-button [value]="value">Element</bit-toggle-group-button>`,
 })
 class TestApp {
   value?: string;

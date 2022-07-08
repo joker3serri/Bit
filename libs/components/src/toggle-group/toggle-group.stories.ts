@@ -2,7 +2,7 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { BadgeModule } from "../badge";
 
-import { ToggleGroupElementComponent } from "./toggle-group-element.component";
+import { ToggleGroupElementComponent } from "./toggle-group-button.component";
 import { ToggleGroupComponent } from "./toggle-group.component";
 
 export default {
@@ -29,17 +29,17 @@ const Template: Story<ToggleGroupComponent> = (args: ToggleGroupComponent) => ({
   props: args,
   template: `
     <bit-toggle-group [(selected)]="selected" label="Example with 3 grouped buttons">
-      <bit-toggle-group-element value="left">
+      <bit-toggle-group-button value="left">
         Left <span bitBadge badgeType="info">1</span>
-      </bit-toggle-group-element>
+      </bit-toggle-group-button>
 
-      <bit-toggle-group-element value="center">
+      <bit-toggle-group-button value="center">
         Center
-      </bit-toggle-group-element>
+      </bit-toggle-group-button>
 
-      <bit-toggle-group-element value="right">
+      <bit-toggle-group-button value="right">
         Right
-      </bit-toggle-group-element>
+      </bit-toggle-group-button>
     </bit-toggle-group>
   `,
 });
