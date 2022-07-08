@@ -61,10 +61,6 @@ export class ScimComponent implements OnInit {
       this.showScimSettings = true;
       this.enabled.setValue(true);
       this.endpointUrl = connection.config.serviceUrl;
-      if (this.endpointUrl === null) {
-        const scimBaseUrl = this.environmentService.getScimUrl();
-        this.endpointUrl = `${scimBaseUrl}/v2/${this.organizationId}/`;
-      }
       await this.loadApiKey(null);
     } else {
       this.showScimSettings = false;
