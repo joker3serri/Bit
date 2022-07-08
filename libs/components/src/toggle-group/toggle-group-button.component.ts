@@ -8,6 +8,7 @@ let nextId = 0;
 @Component({
   selector: "bit-toggle-group-button",
   templateUrl: "./toggle-group-button.component.html",
+  preserveWhitespaces: false,
 })
 export class ToggleGroupElementComponent implements FocusableOption {
   @ViewChild("input") private inputElement: ElementRef<HTMLInputElement>;
@@ -37,11 +38,11 @@ export class ToggleGroupElementComponent implements FocusableOption {
 
   get labelClasses() {
     return [
-      "tw-font-semibold",
+      "!tw-font-semibold",
       "tw-transition",
       "tw-text-center",
       "tw-border-text-muted",
-      "tw-text-muted",
+      "!tw-text-muted",
       "tw-border-solid",
       "tw-border-y",
       "tw-border-r",
@@ -57,16 +58,16 @@ export class ToggleGroupElementComponent implements FocusableOption {
       "peer-focus:tw-z-10",
       "peer-focus:tw-bg-primary-500",
       "peer-focus:tw-border-primary-500",
-      "peer-focus:tw-text-contrast",
+      "peer-focus:!tw-text-contrast",
 
       "hover:tw-no-underline",
       "hover:tw-bg-text-muted",
       "hover:tw-border-text-muted",
-      "hover:tw-text-contrast",
+      "hover:!tw-text-contrast",
 
       "peer-checked:tw-bg-primary-500",
       "peer-checked:tw-border-primary-500",
-      "peer-checked:tw-text-contrast",
+      "peer-checked:!tw-text-contrast",
       "tw-py-1.5",
       "tw-px-3",
     ];
