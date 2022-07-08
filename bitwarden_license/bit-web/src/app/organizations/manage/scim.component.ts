@@ -1,11 +1,10 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { FormBuilder, FormControl } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { OrganizationApiKeyType } from "@bitwarden/common/enums/organizationApiKeyType";
 import { OrganizationConnectionType } from "@bitwarden/common/enums/organizationConnectionType";
@@ -28,15 +27,17 @@ export class ScimComponent implements OnInit {
   enabled = new FormControl(false);
   showScimSettings = false;
 
-  endpointUrl: string;
-  clientSecret: string;
+  formData = this.formBuilder.group({
+    endpointUrl: [""],
+    clientSecret: [""],
+  });
 
   constructor(
+    private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private apiService: ApiService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
-    private organizationService: OrganizationService,
     private environmentService: EnvironmentService
   ) {}
 
@@ -57,10 +58,13 @@ export class ScimComponent implements OnInit {
       );
     }
     this.existingConnectionId = connection?.id;
-    if (connection != null && connection.config?.enabled) {
+    if (connection !== null && connection.config?.enabled) {
       this.showScimSettings = true;
       this.enabled.setValue(true);
-      this.endpointUrl = connection.config.serviceUrl;
+      this.formData.setValue({
+        endpointUrl: this.getScimEndpointUrl(),
+        clientSecret: "",
+      });
       await this.loadApiKey(null);
     } else {
       this.showScimSettings = false;
@@ -71,7 +75,10 @@ export class ScimComponent implements OnInit {
 
   async loadApiKey(response: ApiKeyResponse) {
     if (response !== null) {
-      this.clientSecret = response.apiKey;
+      this.formData.setValue({
+        endpointUrl: this.getScimEndpointUrl(),
+        clientSecret: response.apiKey,
+      });
       return;
     }
     const apiKeyRequest = new OrganizationApiKeyRequest();
@@ -81,11 +88,14 @@ export class ScimComponent implements OnInit {
       this.organizationId,
       apiKeyRequest
     );
-    this.clientSecret = apiKeyResponse.apiKey;
+    this.formData.setValue({
+      endpointUrl: this.getScimEndpointUrl(),
+      clientSecret: apiKeyResponse.apiKey,
+    });
   }
 
   async copyScimUrl() {
-    this.platformUtilsService.copyToClipboard(this.endpointUrl);
+    this.platformUtilsService.copyToClipboard(this.getScimEndpointUrl());
   }
 
   async rotateScimKey() {
@@ -117,10 +127,16 @@ export class ScimComponent implements OnInit {
   }
 
   async copyScimKey() {
-    this.platformUtilsService.copyToClipboard(this.clientSecret);
+    this.platformUtilsService.copyToClipboard(this.formData.get("clientSecret").value);
   }
 
   async submit() {
+    this.formData.markAllAsTouched();
+
+    if (!this.formData.valid) {
+      return;
+    }
+
     try {
       const request = new OrganizationConnectionRequest(
         this.organizationId,
@@ -145,5 +161,12 @@ export class ScimComponent implements OnInit {
     }
 
     this.formPromise = null;
+  }
+
+  getScimEndpointUrl() {
+    if (this.platformUtilsService.isSelfHost) {
+      return this.environmentService.getWebVaultUrl() + `/scim/v2/${this.organizationId}`;
+    }
+    return `https://scim.bitwarden.com/v2/${this.organizationId}`;
   }
 }
