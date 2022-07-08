@@ -24,7 +24,7 @@ const ComboVersion1 = 0x78303031;
 
 const ItemsVersion1 = 0x76303031;
 const ItemsVersion2 = 0x76303032;
-const ItemsVersion3 = 0x76303033;
+// const ItemsVersion3 = 0x76303033;
 const ItemsVersion4 = 0x76303034;
 
 class ConsumableBytes {
@@ -116,28 +116,21 @@ export class BluinkKeyInjImporter extends BaseImporter implements Importer {
         cipher.name = cred.title;
         cipher.favorite = false; // Bluink doesn't have favorites
         cipher.notes = tryTakeField("Notes") ?? "";
-        // cipher.notes += `${cipher.notes !== null ? "\n\n" : ""}Bluink Key import data:\nTags: ${cred.tags !== "" ? cred.tags : "(none)"}\nImage path: ${cred.image !== "" ? cred.image : "(none)"}`;
 
         // Bluink doesn't have a concept of different types of credentials, so determine which one to enter it as based on what fields are present
-        // Login, SecureNote, Card, Identity
-        // These are the fields for each in bitwarden:
-        // Login: Name, Username, Password, URI
-        // Card: Name, Cardholder Name, Number, Brand, Expiration Month, Expiration Year, Security Code
-        // Identity: Name, Title, First Name, Middle Name, Last Name, Username, Company, Social Security Number, Passport Number, License Number,
-        //           Email, Phone, Address 1-3, City / Town, State / Province, Zip / Postal Code, Country
-        // SecureNote: Name
 
-        // We can use secure note as a fallback if we can't match the credential to a specific type
+        // The four Bitwarden types are Login, SecureNote, Card, Identity
+        // We can use secure note as a fallback if we can't match the credential to a specific type since it's just a name + custom properties
 
         // To count as a Login, a Bluink credential should have
         // - "Password" (or some variation including the phrase, like "Login Password")
-        // Optional item fields:
+        // If it is a Login, these fields can correlate to BW fields:
         // - "Username" or "Account ID" or "Email Address" or "Account Name")
         // - "URL"
 
         // To count as a Card, a Bluink credential should have
         // - "Card Number"
-        // Optional item fields:
+        // Correlated to BW:
         // - "Card Type"
         // - "Cardholder Name"
         // - "Expiry Month"
