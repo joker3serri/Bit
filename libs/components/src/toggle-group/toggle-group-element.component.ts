@@ -1,22 +1,22 @@
 import { FocusableOption } from "@angular/cdk/a11y";
 import { HostBinding, Component, Inject, ViewChild, ElementRef, Input } from "@angular/core";
 
-import { ButtonGroupComponent } from "./button-group.component";
+import { ToggleGroupComponent } from "./toggle-group.component";
 
 let nextId = 0;
 
 @Component({
-  selector: "bit-button-group-element",
-  templateUrl: "./button-group-element.component.html",
+  selector: "bit-toggle-group-element",
+  templateUrl: "./toggle-group-element.component.html",
 })
-export class ButtonGroupElementComponent implements FocusableOption {
+export class ToggleGroupElementComponent implements FocusableOption {
   @ViewChild("input") private inputElement: ElementRef<HTMLInputElement>;
 
   id = nextId++;
 
   @Input() value?: string;
 
-  constructor(@Inject(ButtonGroupComponent) private groupComponent: ButtonGroupComponent) {}
+  constructor(@Inject(ToggleGroupComponent) private groupComponent: ToggleGroupComponent) {}
 
   @HostBinding("tabIndex") tabIndex = "-1";
   @HostBinding("class") get classList() {

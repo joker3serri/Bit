@@ -2,13 +2,13 @@ import { Component } from "@angular/core";
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
-import { ButtonGroupElementComponent } from "./button-group-element.component";
-import { ButtonGroupModule } from "./button-group.module";
+import { ToggleGroupElementComponent } from "./toggle-group-element.component";
+import { ButtonGroupModule } from "./toggle-group.module";
 
 describe("Button", () => {
   let fixture: ComponentFixture<TestApp>;
   let testAppComponent: TestApp;
-  let buttonElements: ButtonGroupElementComponent[];
+  let buttonElements: ToggleGroupElementComponent[];
   let radioButtons: HTMLInputElement[];
 
   beforeEach(waitForAsync(() => {
@@ -21,7 +21,7 @@ describe("Button", () => {
     fixture = TestBed.createComponent(TestApp);
     testAppComponent = fixture.debugElement.componentInstance;
     buttonElements = fixture.debugElement
-      .queryAll(By.css("bit-button-group-element"))
+      .queryAll(By.css("bit-toggle-group-element"))
       .map((e) => e.componentInstance);
     radioButtons = fixture.debugElement
       .queryAll(By.css("input[type=radio]"))
@@ -57,11 +57,11 @@ describe("Button", () => {
 @Component({
   selector: "test-app",
   template: `
-    <bit-button-group [(selected)]="selected">
-      <bit-button-group-element value="first">First</bit-button-group-element>
-      <bit-button-group-element value="second">Second</bit-button-group-element>
-      <bit-button-group-element value="third">Third</bit-button-group-element>
-    </bit-button-group>
+    <bit-toggle-group [(selected)]="selected">
+      <bit-toggle-group-element value="first">First</bit-toggle-group-element>
+      <bit-toggle-group-element value="second">Second</bit-toggle-group-element>
+      <bit-toggle-group-element value="third">Third</bit-toggle-group-element>
+    </bit-toggle-group>
   `,
 })
 class TestApp {

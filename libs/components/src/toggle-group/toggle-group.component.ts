@@ -3,20 +3,20 @@ import { Component, EventEmitter, HostBinding, Input, Output } from "@angular/co
 let nextId = 0;
 
 @Component({
-  selector: "bit-button-group",
-  templateUrl: "./button-group.component.html",
+  selector: "bit-toggle-group",
+  templateUrl: "./toggle-group.component.html",
 })
-export class ButtonGroupComponent {
+export class ToggleGroupComponent {
   private id = nextId++;
 
   @Input() label?: string;
-  @Input() name = `bit-button-group-${this.id}`;
+  @Input() name = `bit-toggle-group-${this.id}`;
 
   @Input() selected?: unknown;
   @Output() selectedChange = new EventEmitter<unknown>();
 
   @HostBinding("attr.role") role = "radiogroup";
-  @HostBinding("attr.aria-labelledby") labelId = `bit-button-group-label-${this.id}`;
+  @HostBinding("attr.aria-labelledby") labelId = `bit-toggle-group-label-${this.id}`;
 
   onInputInteraction(value: unknown) {
     this.selected = value;

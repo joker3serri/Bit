@@ -2,8 +2,8 @@ import { Component } from "@angular/core";
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
-import { ButtonGroupComponent } from "./button-group.component";
-import { ButtonGroupModule } from "./button-group.module";
+import { ToggleGroupComponent } from "./toggle-group.component";
+import { ButtonGroupModule } from "./toggle-group.module";
 
 describe("Button", () => {
   let mockGroupComponent: MockedButtonGroupComponent;
@@ -17,7 +17,7 @@ describe("Button", () => {
     TestBed.configureTestingModule({
       imports: [ButtonGroupModule],
       declarations: [TestApp],
-      providers: [{ provide: ButtonGroupComponent, useValue: mockGroupComponent }],
+      providers: [{ provide: ToggleGroupComponent, useValue: mockGroupComponent }],
     });
 
     TestBed.compileComponents();
@@ -57,14 +57,14 @@ describe("Button", () => {
   });
 });
 
-class MockedButtonGroupComponent implements Partial<ButtonGroupComponent> {
+class MockedButtonGroupComponent implements Partial<ToggleGroupComponent> {
   onInputInteraction = jest.fn();
   selected = null;
 }
 
 @Component({
   selector: "test-app",
-  template: ` <bit-button-group-element [value]="value">Element</bit-button-group-element>`,
+  template: ` <bit-toggle-group-element [value]="value">Element</bit-toggle-group-element>`,
 })
 class TestApp {
   value?: string;
