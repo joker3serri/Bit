@@ -1,4 +1,4 @@
-<div class="page-header d-flex">
+<div class="page-header">
   <h1>{{ "scim" | i18n }}</h1>
 </div>
 
@@ -28,20 +28,14 @@
     </div>
   </div>
 
-  <button
-    type="submit"
-    bit-button
-    buttonType="primary"
-    class="btn-submit"
-    [disabled]="form.loading"
-  >
+  <button type="submit" bitButton buttonType="primary" class="btn-submit" [disabled]="form.loading">
     <i class="bwi bwi-spinner bwi-spin" title="{{ 'loading' | i18n }}" aria-hidden="true"></i>
     <span>{{ "save" | i18n }}</span>
   </button>
 
   <bit-form-field *ngIf="showScimSettings">
     <bit-label>{{ "scimUrl" | i18n }}</bit-label>
-    <input bitInput type="text" formControlName="endpointUrl" disabled />
+    <input bitInput type="text" formControlName="endpointUrl" />
     <button bitSuffix bitButton (click)="copyScimUrl()" [appA11yTitle]="'copyScimUrl' | i18n">
       <i aria-hidden="true" class="bwi bwi-lg bwi-clone"></i>
     </button>
@@ -49,7 +43,7 @@
 
   <bit-form-field *ngIf="showScimSettings">
     <bit-label>{{ "scimApiKey" | i18n }}</bit-label>
-    <input bitInput type="text" formControlName="clientSecret" disabled />
+    <input bitInput type="text" formControlName="clientSecret" />
     <button bitSuffix bitButton (click)="rotateScimKey()" [appA11yTitle]="'rotateScimKey' | i18n">
       <i aria-hidden="true" class="bwi bwi-lg bwi-generate"></i>
     </button>

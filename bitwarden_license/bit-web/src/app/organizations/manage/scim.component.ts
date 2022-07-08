@@ -28,8 +28,8 @@ export class ScimComponent implements OnInit {
   showScimSettings = false;
 
   formData = this.formBuilder.group({
-    endpointUrl: [""],
-    clientSecret: [""],
+    endpointUrl: new FormControl({ value: "", disabled: true }),
+    clientSecret: new FormControl({ value: "", disabled: true }),
   });
 
   constructor(
