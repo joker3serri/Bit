@@ -301,6 +301,12 @@ export abstract class BaseImporter {
       return "Visa";
     }
 
+    // Mir
+    re = new RegExp("^2");
+    if (cardNum.match(re) != null) {
+      return "Mir";
+    }
+
     return null;
   }
 
