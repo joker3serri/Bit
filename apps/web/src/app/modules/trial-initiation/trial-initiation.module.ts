@@ -1,4 +1,5 @@
 import { CdkStepperModule } from "@angular/cdk/stepper";
+import { TitleCasePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 
 import { FormFieldModule } from "@bitwarden/components";
@@ -29,5 +30,6 @@ import { TrialInitiationComponent } from "./trial-initiation.component";
     TeamsContentComponent,
   ],
   exports: [TrialInitiationComponent],
+  providers: [TitleCasePipe],
 })
 export class TrialInitiationModule {}
