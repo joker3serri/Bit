@@ -1223,7 +1223,7 @@
     "message": "Domains updated"
   },
   "twoStepLogin": {
-    "message": "Require two-step login"
+    "message": "Two-step login"
   },
   "twoStepLoginDesc": {
     "message": "Secure your account by requiring an additional step when logging in."
@@ -3347,6 +3347,9 @@
   },
   "masterPassPolicyDesc": {
     "message": "Set requirements for master password strength."
+  },
+  "twoStepLoginPolicyTitle": {
+    "message": "Require two-step login"
   },
   "twoStepLoginPolicyDesc": {
     "message": "Require members to set up two-step login."
