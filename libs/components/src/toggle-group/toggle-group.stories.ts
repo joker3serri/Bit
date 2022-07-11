@@ -28,7 +28,7 @@ export default {
 const Template: Story<ToggleGroupComponent> = (args: ToggleGroupComponent) => ({
   props: args,
   template: `
-    <bit-toggle-group [(selected)]="selected" label="People list filter">
+    <bit-toggle-group [(selected)]="selected" ariaLabel="People list filter">
       <bit-toggle-group-button value="all">
         All <span bitBadge badgeType="info">3</span>
       </bit-toggle-group-button>

@@ -9,9 +9,9 @@ let nextId = 0;
 })
 export class ToggleGroupComponent {
   private id = nextId++;
+  name = `bit-toggle-group-${this.id}`;
 
-  @Input() label?: string;
-  @Input() name = `bit-toggle-group-${this.id}`;
+  @Input() ariaLabel?: string;
 
   @Input() selected?: unknown;
   @Output() selectedChange = new EventEmitter<unknown>();

@@ -1,5 +1,5 @@
 import { FocusableOption } from "@angular/cdk/a11y";
-import { HostBinding, Component, Inject, ViewChild, ElementRef, Input } from "@angular/core";
+import { HostBinding, Component, ViewChild, ElementRef, Input } from "@angular/core";
 
 import { ToggleGroupComponent } from "./toggle-group.component";
 
