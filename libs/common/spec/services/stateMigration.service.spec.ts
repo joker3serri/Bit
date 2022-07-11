@@ -3,7 +3,6 @@ import { Arg, Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
 import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { StateVersion } from "@bitwarden/common/enums/stateVersion";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
-import { EncryptedOrganizationKeyData } from "@bitwarden/common/models/data/encryptedOrganizationKeyData";
 import { Account } from "@bitwarden/common/models/domain/account";
 import { GlobalState } from "@bitwarden/common/models/domain/globalState";
 import { StateMigrationService } from "@bitwarden/common/services/stateMigration.service";
@@ -104,9 +103,18 @@ describe("State Migration Service", () => {
         keys: {
           organizationKeys: {
             encrypted: {
-              orgOneId: new EncryptedOrganizationKeyData("orgOneEncKey"),
-              orgTwoId: new EncryptedOrganizationKeyData("orgTwoEncKey"),
-              orgThreeId: new EncryptedOrganizationKeyData("orgThreeEncKey"),
+              orgOneId: {
+                type: "organization",
+                key: "orgOneEncKey",
+              },
+              orgTwoId: {
+                type: "organization",
+                key: "orgTwoEncKey",
+              },
+              orgThreeId: {
+                type: "organization",
+                key: "orgThreeEncKey",
+              },
             },
           },
         },

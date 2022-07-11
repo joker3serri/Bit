@@ -6,7 +6,6 @@ import { ThemeType } from "../enums/themeType";
 import { StateFactory } from "../factories/stateFactory";
 import { CipherData } from "../models/data/cipherData";
 import { CollectionData } from "../models/data/collectionData";
-import { EncryptedOrganizationKeyData } from "../models/data/encryptedOrganizationKeyData";
 import { EventData } from "../models/data/eventData";
 import { FolderData } from "../models/data/folderData";
 import { OrganizationData } from "../models/data/organizationData";
@@ -502,7 +501,10 @@ export class StateMigrationService<
     const encryptedOrgKeys = account.keys.organizationKeys?.encrypted;
     if (encryptedOrgKeys != null) {
       for (const [orgId, encKey] of Object.entries(encryptedOrgKeys)) {
-        encryptedOrgKeys[orgId] = new EncryptedOrganizationKeyData(encKey as unknown as string);
+        encryptedOrgKeys[orgId] = {
+          type: "organization",
+          key: encKey as unknown as string, // Account v4 does not reflect the current account model so we have to cast
+        };
       }
     }
 

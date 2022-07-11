@@ -8,11 +8,16 @@ export abstract class BaseEncryptedOrganizationKey {
   decrypt: (cryptoService: CryptoService) => Promise<SymmetricCryptoKey>;
 
   static fromData(data: EncryptedOrganizationKeyData) {
-    if (data.providerId != null) {
-      return new ProviderEncryptedOrganizationKey(data.key, data.providerId);
-    }
+    switch (data.type) {
+      case "organization":
+        return new EncryptedOrganizationKey(data.key);
 
-    return new EncryptedOrganizationKey(data.key);
+      case "provider":
+        return new ProviderEncryptedOrganizationKey(data.key, data.providerId);
+
+      default:
+        return null;
+    }
   }
 }
 
@@ -24,8 +29,11 @@ export class EncryptedOrganizationKey implements BaseEncryptedOrganizationKey {
     return new SymmetricCryptoKey(decValue);
   }
 
-  toData() {
-    return new EncryptedOrganizationKeyData(this.key);
+  toData(): EncryptedOrganizationKeyData {
+    return {
+      type: "organization",
+      key: this.key,
+    };
   }
 }
 
@@ -38,7 +46,11 @@ export class ProviderEncryptedOrganizationKey implements BaseEncryptedOrganizati
     return new SymmetricCryptoKey(decValue);
   }
 
-  toData() {
-    return new EncryptedOrganizationKeyData(this.key, this.providerId);
+  toData(): EncryptedOrganizationKeyData {
+    return {
+      type: "provider",
+      key: this.key,
+      providerId: this.providerId,
+    };
   }
 }
