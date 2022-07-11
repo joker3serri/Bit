@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
+import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { first } from "rxjs";
 
@@ -13,7 +14,16 @@ export class TrialInitiationComponent implements OnInit {
   org = "teams";
   @ViewChild("stepper", { static: true }) verticalStepper: VerticalStepperComponent;
 
-  constructor(private route: ActivatedRoute) {}
+  formGroup = this.formBuilder.group({
+    name: ["", [Validators.required]],
+    additionalStorage: [0, [Validators.min(0), Validators.max(99)]],
+    additionalSeats: [0, [Validators.min(0), Validators.max(100000)]],
+    businessName: [""],
+    plan: [],
+    product: [],
+  });
+
+  constructor(private route: ActivatedRoute, private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
     this.route.queryParams.pipe(first()).subscribe((qParams) => {

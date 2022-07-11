@@ -36,10 +36,16 @@
               (createdAccount)="createdAccount($event)"
             ></app-register-form>
           </app-vertical-step>
-          <app-vertical-step label="Create Organization" subLabel="It better be a good org">
-            <!-- Replace with Org creation step -->
-            <p>This is content of "Step 2"</p>
-            <button bitButton buttonType="primary" cdkStepperNext>Complete step</button>
+          <app-vertical-step label="Create Organization" [subLabel]="formGroup.get('name').value">
+            <app-org-info [nameOnly]="true" [formGroup]="formGroup"></app-org-info>
+            <button
+              bitButton
+              buttonType="primary"
+              [disabled]="formGroup.get('name').hasError('required')"
+              cdkStepperNext
+            >
+              Next
+            </button>
           </app-vertical-step>
           <app-vertical-step label="Billing">
             <!-- Replace with Billing step -->
