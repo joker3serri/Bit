@@ -2,10 +2,7 @@ import { Directive, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
-import {
-  validateFormInputsMatch,
-  validateInputsDoesntMatch,
-} from "@bitwarden/angular/validators/fieldsInputCheck.validator";
+import { InputsFieldMatch } from "@bitwarden/angular/validators/inputsFieldMatch.validator";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -43,12 +40,17 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       confirmMasterPassword: ["", [Validators.required, Validators.minLength(8)]],
       hint: [
         null,
-        [validateInputsDoesntMatch("masterPassword", this.i18nService.t("hintEqualsPassword"))],
+        [
+          InputsFieldMatch.validateInputsDoesntMatch(
+            "masterPassword",
+            this.i18nService.t("hintEqualsPassword")
+          ),
+        ],
       ],
       acceptPolicies: [false, [Validators.requiredTrue]],
     },
     {
-      validator: validateFormInputsMatch(
+      validator: InputsFieldMatch.validateFormInputsMatch(
         "masterPassword",
         "confirmMasterPassword",
         this.i18nService.t("masterPassDoesntMatch")
