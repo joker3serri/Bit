@@ -498,7 +498,7 @@ export class StateMigrationService<
   }
 
   protected async migrateAccountFrom4To5(account: TAccount): Promise<TAccount> {
-    const encryptedOrgKeys = account.keys.organizationKeys?.encrypted;
+    const encryptedOrgKeys = account.keys?.organizationKeys?.encrypted;
     if (encryptedOrgKeys != null) {
       for (const [orgId, encKey] of Object.entries(encryptedOrgKeys)) {
         encryptedOrgKeys[orgId] = {
