@@ -1,6 +1,6 @@
 import { formatDate } from "@angular/common";
 import { Component, EventEmitter, Input, Output, OnInit } from "@angular/core";
-import { Subject, takeUntil } from "rxjs";
+import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -25,7 +25,6 @@ export class SponsoringOrgRowComponent implements OnInit {
   resendEmailPromise: Promise<any>;
 
   private locale = "";
-  private destroy$ = new Subject<void>();
 
   constructor(
     private apiService: ApiService,
@@ -33,9 +32,7 @@ export class SponsoringOrgRowComponent implements OnInit {
     private logService: LogService,
     private platformUtilsService: PlatformUtilsService
   ) {
-    this.i18nService.locale$.pipe(takeUntil(this.destroy$)).subscribe((locale) => {
-      this.locale = locale;
-    });
+    this.setLocale();
   }
 
   ngOnInit(): void {
@@ -47,9 +44,8 @@ export class SponsoringOrgRowComponent implements OnInit {
     );
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.unsubscribe();
+  async setLocale() {
+    this.locale = await firstValueFrom(this.i18nService.locale$);
   }
 
   async revokeSponsorship() {
