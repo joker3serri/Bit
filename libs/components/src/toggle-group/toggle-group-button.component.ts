@@ -17,7 +17,7 @@ export class ToggleGroupElementComponent implements FocusableOption {
 
   @Input() value?: string;
 
-  constructor(@Inject(ToggleGroupComponent) private groupComponent: ToggleGroupComponent) {}
+  constructor(private groupComponent: ToggleGroupComponent) {}
 
   @HostBinding("tabIndex") tabIndex = "-1";
   @HostBinding("class") get classList() {
