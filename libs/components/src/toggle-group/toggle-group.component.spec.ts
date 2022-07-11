@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
 import { ToggleGroupElementComponent } from "./toggle-group-button.component";
-import { ButtonGroupModule } from "./toggle-group.module";
+import { ToggleGroupModule } from "./toggle-group.module";
 
 describe("Button", () => {
   let fixture: ComponentFixture<TestApp>;
@@ -13,7 +13,7 @@ describe("Button", () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ButtonGroupModule],
+      imports: [ToggleGroupModule],
       declarations: [TestApp],
     });
 

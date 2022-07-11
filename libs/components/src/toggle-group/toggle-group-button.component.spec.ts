@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
 import { ToggleGroupComponent } from "./toggle-group.component";
-import { ButtonGroupModule } from "./toggle-group.module";
+import { ToggleGroupModule } from "./toggle-group.module";
 
 describe("Button", () => {
   let mockGroupComponent: MockedButtonGroupComponent;
@@ -15,7 +15,7 @@ describe("Button", () => {
     mockGroupComponent = new MockedButtonGroupComponent();
 
     TestBed.configureTestingModule({
-      imports: [ButtonGroupModule],
+      imports: [ToggleGroupModule],
       declarations: [TestApp],
       providers: [{ provide: ToggleGroupComponent, useValue: mockGroupComponent }],
     });
