@@ -185,7 +185,7 @@ export class AppComponent implements OnDestroy, OnInit {
       });
     });
 
-    this.router.events.subscribe((event) => {
+    this.router.events.pipe(takeUntil(this.destroy$)).subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const modals = Array.from(document.querySelectorAll(".modal"));
         for (const modal of modals) {

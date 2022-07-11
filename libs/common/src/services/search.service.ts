@@ -14,6 +14,7 @@ export class SearchService implements SearchServiceAbstraction {
   indexedEntityId?: string = null;
   private indexing = false;
   private index: lunr.Index = null;
+  private readonly immediateSearchLocales: string[] = ["zh-CN", "zh-TW", "ja", "ko", "vi"];
   private readonly defaultSearchableMinLength: number = 2;
   private searchableMinLength: number = this.defaultSearchableMinLength;
 
@@ -23,7 +24,7 @@ export class SearchService implements SearchServiceAbstraction {
     private i18nService: I18nService
   ) {
     this.i18nService.locale$.subscribe((locale) => {
-      if (["zh-CN", "zh-TW", "ja", "ko", "vi"].indexOf(locale) !== -1) {
+      if (this.immediateSearchLocales.indexOf(locale) !== -1) {
         this.searchableMinLength = 1;
       } else {
         this.searchableMinLength = this.defaultSearchableMinLength;
