@@ -70,6 +70,9 @@ export class ToggleGroupElementComponent implements FocusableOption {
       "peer-checked:!tw-text-contrast",
       "tw-py-1.5",
       "tw-px-3",
+
+      "[&>[bitBadge]]:tw-relative",
+      "[&>[bitBadge]]:-tw-top-[1px]",
     ];
   }
 
