@@ -31,21 +31,17 @@ export class SponsoringOrgRowComponent implements OnInit {
     private i18nService: I18nService,
     private logService: LogService,
     private platformUtilsService: PlatformUtilsService
-  ) {
-    this.setLocale();
-  }
+  ) {}
 
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.locale = await firstValueFrom(this.i18nService.locale$);
+
     this.setStatus(
       this.isSelfHosted,
       this.sponsoringOrg.familySponsorshipToDelete,
       this.sponsoringOrg.familySponsorshipValidUntil,
       this.sponsoringOrg.familySponsorshipLastSyncDate
     );
-  }
-
-  async setLocale() {
-    this.locale = await firstValueFrom(this.i18nService.locale$);
   }
 
   async revokeSponsorship() {
