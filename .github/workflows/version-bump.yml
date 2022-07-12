@@ -89,17 +89,18 @@ jobs:
       ### Web
       - name: Bump Web Version - package.json
         if: ${{ github.event.inputs.client == 'Web' }}
-        uses: bitwarden/gh-actions/version-bump@03ad9a873c39cdc95dd8d77dbbda67f84db43945
-        with:
+        env:
           version: ${{ github.event.inputs.version_number }}
-          file_path: "apps/web/package.json"
+        run:
+          cat <<< $(jq --arg VERSION "$version" '.version = $VERSION' package.json) > package.json
+        working-directory: "apps/web"
 
       - name: Bump Web Version - package-lock.json
         if: ${{ github.event.inputs.client == 'Web' }}
-        uses: bitwarden/gh-actions/version-bump@03ad9a873c39cdc95dd8d77dbbda67f84db43945
-        with:
+        env:
           version: ${{ github.event.inputs.version_number }}
-          file_path: "apps/web/package-lock.json"
+        run:
+          cat <<< $(jq --arg VERSION "$version" '.packages."apps/web".version = $VERSION' package-lock.json) > package-lock.json
 
       ########################
 
