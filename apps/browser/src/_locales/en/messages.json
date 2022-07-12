@@ -1964,5 +1964,11 @@
   },
   "ssoKeyConnectorError": {
     "message": "Key Connector error: make sure Key Connector is available and working correctly."
+  },
+  "organizationIsDisabled": {
+    "message": "Organization is disabled."
+  },
+  "disabledOrganizationFilterError" : {
+    "message" : "Items in disabled Organizations cannot be accessed. Contact your Organization owner for assistance."
   }
 }
