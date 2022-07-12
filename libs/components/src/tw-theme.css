@@ -26,7 +26,7 @@
 
   --color-text-main: #212529;
   --color-text-muted: #6d757e;
-  --color-text-contrast: #ffffff;
+  --color-text-contrast: 255 255 255;
   --color-text-alt2: #ffffff;
 
   --tw-ring-offset-color: #fff;

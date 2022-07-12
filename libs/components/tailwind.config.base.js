@@ -40,7 +40,7 @@ module.exports = {
       text: {
         main: "var(--color-text-main)",
         muted: "var(--color-text-muted)",
-        contrast: "var(--color-text-contrast)",
+        contrast: "rgb(var(--color-text-contrast) / <alpha-value>)",
         alt2: "var(--color-text-alt2)",
       },
       background: {
@@ -52,7 +52,7 @@ module.exports = {
     textColor: {
       main: "var(--color-text-main)",
       muted: "var(--color-text-muted)",
-      contrast: "var(--color-text-contrast)",
+      contrast: "rgb(var(--color-text-contrast) / <alpha-value>)",
       alt2: "var(--color-text-alt2)",
       success: "var(--color-success-500)",
       danger: "var(--color-danger-500)",
@@ -60,6 +60,7 @@ module.exports = {
       info: "var(--color-info-500)",
       primary: {
         300: "var(--color-primary-300)",
+        500: "var(--color-primary-500)",
       },
     },
     ringOffsetColor: ({ theme }) => ({
