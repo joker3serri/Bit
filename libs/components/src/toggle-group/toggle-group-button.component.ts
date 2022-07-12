@@ -47,6 +47,7 @@ export class ToggleGroupElementComponent implements FocusableOption {
       "tw-border-y",
       "tw-border-r",
       "tw-border-l-0",
+      "tw-cursor-pointer",
       "group-first-of-type:tw-border-l",
       "group-first-of-type:tw-rounded-l",
       "group-last-of-type:tw-rounded-r",
