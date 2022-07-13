@@ -5192,7 +5192,7 @@
     "description": "the text, 'SCIM', is an acronymn and should not be translated."
   },
   "scimApiKeyHelperText": {
-    "message": "Store this key somewhere safe"
+    "message": "This API key has access to manage users within your organization. It should be kept secret."
   },
   "copyScimKey": {
     "message": "Copy the SCIM API Key to your clipboard",
@@ -5218,8 +5218,8 @@
     "description": "the text, 'SCIM' and 'URL', are acronymns and should not be translated."
   },
   "scimUrl": {
-    "message": "URL",
-    "description": "the text, 'URL', is an acronymn and should not be translated."
+    "message": "SCIM URL",
+    "description": "the text, 'SCIM' and 'URL', are acronymns and should not be translated."
   },
   "scimApiKeyRotated": {
     "message": "The SCIM API Key has been successfully rotated",
