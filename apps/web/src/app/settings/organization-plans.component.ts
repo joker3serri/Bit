@@ -96,7 +96,7 @@ export class OrganizationPlansComponent implements OnInit {
       this.changedOwnedBusiness();
     }
 
-    if (!this.createOrganization) {
+    if (!this.createOrganization || this.acceptingSponsorship) {
       this.formGroup.controls.product.setValue(ProductType.Families);
       this.changedProduct();
     } else {
