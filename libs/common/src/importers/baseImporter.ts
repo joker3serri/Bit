@@ -302,7 +302,7 @@ export abstract class BaseImporter {
     }
 
     // Mir
-    re = new RegExp("^2");
+    re = new RegExp("^220[0-4]");
     if (cardNum.match(re) != null) {
       return "Mir";
     }
