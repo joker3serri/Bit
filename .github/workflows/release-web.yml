@@ -22,6 +22,9 @@ jobs:
       release_version: ${{ steps.version.outputs.version }}
       tag_version: ${{ steps.version.outputs.tag }}
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+
       - name: Branch check
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         run: |
@@ -31,9 +34,6 @@ jobs:
             echo "==================================="
             exit 1
           fi
-
-      - name: Checkout repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
       - name: Check Release Version
         id: version
@@ -88,7 +88,6 @@ jobs:
             docker tag bitwarden/web:latest bitwarden/web:$_RELEASE_VERSION
           else
             docker tag bitwarden/web:$_BRANCH_NAME bitwarden/web:$_RELEASE_VERSION
-            docker tag bitwarden/web:$_BRANCH_NAME bitwarden/web:latest
           fi
 
       - name: Docker Push version and latest image
@@ -98,7 +97,6 @@ jobs:
           DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ steps.setup-dct.outputs.dct-delegate-repo-passphrase }}
         run: |
           docker push bitwarden/web:$_RELEASE_VERSION
-          docker push bitwarden/web:latest
 
       - name: Log out of Docker and disable Docker Notary
         run: |
@@ -120,16 +118,12 @@ jobs:
         run: |
           if [[ "${{ github.event.inputs.release_type }}" == "Dry Run" ]]; then
             docker tag bitwarden/web:latest $REGISTRY/web:$_RELEASE_VERSION
-            docker tag bitwarden/web:latest $REGISTRY/web:latest
 
             docker tag bitwarden/web:latest $REGISTRY/web-sh:$_RELEASE_VERSION
-            docker tag bitwarden/web:latest $REGISTRY/web-sh:latest
           else
             docker tag bitwarden/web:$_BRANCH_NAME $REGISTRY/web:$_RELEASE_VERSION
-            docker tag bitwarden/web:$_BRANCH_NAME $REGISTRY/web:latest
 
             docker tag bitwarden/web:$_BRANCH_NAME $REGISTRY/web-sh:$_RELEASE_VERSION
-            docker tag bitwarden/web:$_BRANCH_NAME $REGISTRY/web-sh:latest
           fi
 
       - name: Push version and latest image
@@ -138,10 +132,8 @@ jobs:
           REGISTRY: bitwardenqa.azurecr.io
         run: |
           docker push $REGISTRY/web:$_RELEASE_VERSION
-          docker push $REGISTRY/web:latest
 
           docker push $REGISTRY/web-sh:$_RELEASE_VERSION
-          docker push $REGISTRY/web-sh:latest
 
       - name: Log out of Docker
         run: docker logout
@@ -222,12 +214,24 @@ jobs:
       - cfpages-deploy
     steps:
       - name: Download latest build artifacts
+        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         uses: bitwarden/gh-actions/download-artifacts@c1fa8e09871a860862d6bbe36184b06d2c7e35a8
         with:
           workflow: build-web.yml
           path: apps/web/artifacts
           workflow_conclusion: success
           branch: ${{ github.ref_name }}
+          artifacts: "web-*-selfhosted-COMMERCIAL.zip,
+            web-*-selfhosted-open-source.zip"
+
+      - name: Download latest build artifacts
+        if: ${{ github.event.inputs.release_type == 'Dry Run' }}
+        uses: bitwarden/gh-actions/download-artifacts@c1fa8e09871a860862d6bbe36184b06d2c7e35a8
+        with:
+          workflow: build-web.yml
+          path: apps/web/artifacts
+          workflow_conclusion: success
+          branch: master
           artifacts: "web-*-selfhosted-COMMERCIAL.zip,
             web-*-selfhosted-open-source.zip"
 

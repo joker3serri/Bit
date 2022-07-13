@@ -13,6 +13,7 @@ import { StateFactory } from "../factories/stateFactory";
 import { Utils } from "../misc/utils";
 import { CipherData } from "../models/data/cipherData";
 import { CollectionData } from "../models/data/collectionData";
+import { EncryptedOrganizationKeyData } from "../models/data/encryptedOrganizationKeyData";
 import { EventData } from "../models/data/eventData";
 import { FolderData } from "../models/data/folderData";
 import { OrganizationData } from "../models/data/organizationData";
@@ -31,7 +32,6 @@ import { SymmetricCryptoKey } from "../models/domain/symmetricCryptoKey";
 import { WindowState } from "../models/domain/windowState";
 import { CipherView } from "../models/view/cipherView";
 import { CollectionView } from "../models/view/collectionView";
-import { FolderView } from "../models/view/folderView";
 import { SendView } from "../models/view/sendView";
 
 const keys = {
@@ -652,24 +652,6 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
     account.keys.cryptoSymmetricKey.decrypted = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
-    );
-  }
-
-  @withPrototypeForArrayMembers(FolderView)
-  async getDecryptedFolders(options?: StorageOptions): Promise<FolderView[]> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.data?.folders?.decrypted;
-  }
-
-  async setDecryptedFolders(value: FolderView[], options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
-    );
-    account.data.folders.decrypted = value;
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -1363,14 +1345,16 @@ export class StateService<
     );
   }
 
-  async getEncryptedOrganizationKeys(options?: StorageOptions): Promise<any> {
+  async getEncryptedOrganizationKeys(
+    options?: StorageOptions
+  ): Promise<{ [orgId: string]: EncryptedOrganizationKeyData }> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
     )?.keys?.organizationKeys.encrypted;
   }
 
   async setEncryptedOrganizationKeys(
-    value: Map<string, SymmetricCryptoKey>,
+    value: { [orgId: string]: EncryptedOrganizationKeyData },
     options?: StorageOptions
   ): Promise<void> {
     const account = await this.getAccount(
@@ -1940,52 +1924,52 @@ export class StateService<
 
   async getPasswordGenerationOptions(options?: StorageOptions): Promise<any> {
     return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
+      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
     )?.settings?.passwordGenerationOptions;
   }
 
   async setPasswordGenerationOptions(value: any, options?: StorageOptions): Promise<void> {
     const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
     );
     account.settings.passwordGenerationOptions = value;
     await this.saveAccount(
       account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
     );
   }
 
   async getUsernameGenerationOptions(options?: StorageOptions): Promise<any> {
     return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
+      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
     )?.settings?.usernameGenerationOptions;
   }
 
   async setUsernameGenerationOptions(value: any, options?: StorageOptions): Promise<void> {
     const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
     );
     account.settings.usernameGenerationOptions = value;
     await this.saveAccount(
       account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
     );
   }
 
   async getGeneratorOptions(options?: StorageOptions): Promise<any> {
     return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
+      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
     )?.settings?.generatorOptions;
   }
 
   async setGeneratorOptions(value: any, options?: StorageOptions): Promise<void> {
     const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
     );
     account.settings.generatorOptions = value;
     await this.saveAccount(
       account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
     );
   }
 
