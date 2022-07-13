@@ -24,6 +24,7 @@ export class ScimComponent implements OnInit {
   organizationId: string;
   existingConnectionId: string;
   formPromise: Promise<any>;
+  rotatePromise: Promise<any>;
   enabled = new FormControl(false);
   showScimSettings = false;
 
@@ -44,19 +45,20 @@ export class ScimComponent implements OnInit {
   async ngOnInit() {
     this.route.parent.parent.params.subscribe(async (params) => {
       this.organizationId = params.organizationId;
-      await this.load(null);
+      await this.load();
     });
   }
 
-  async load(response: OrganizationConnectionResponse<ScimConfigApi>) {
-    let connection = response;
-    if (connection === null) {
-      connection = await this.apiService.getOrganizationConnection(
-        this.organizationId,
-        OrganizationConnectionType.Scim,
-        ScimConfigApi
-      );
-    }
+  async load() {
+    const connection = await this.apiService.getOrganizationConnection(
+      this.organizationId,
+      OrganizationConnectionType.Scim,
+      ScimConfigApi
+    );
+    await this.setFormValues(connection);
+  }
+
+  private async setFormValues(connection: OrganizationConnectionResponse<ScimConfigApi>) {
     this.existingConnectionId = connection?.id;
     if (connection !== null && connection.config?.enabled) {
       this.showScimSettings = true;
@@ -115,18 +117,17 @@ export class ScimComponent implements OnInit {
     request.type = OrganizationApiKeyType.Scim;
     request.masterPasswordHash = "N/A";
 
-    this.formPromise = this.apiService.postOrganizationRotateApiKey(this.organizationId, request);
+    this.rotatePromise = this.apiService.postOrganizationRotateApiKey(this.organizationId, request);
 
     try {
-      const response = await this.formPromise;
+      const response = await this.rotatePromise;
       await this.loadApiKey(response);
       this.platformUtilsService.showToast("success", null, this.i18nService.t("scimApiKeyRotated"));
     } catch {
       // Logged by appApiAction, do nothing
     }
 
-    this.formPromise = null;
-    return false;
+    this.rotatePromise = null;
   }
 
   async copyScimKey() {
@@ -151,7 +152,7 @@ export class ScimComponent implements OnInit {
         );
       }
       const response = (await this.formPromise) as OrganizationConnectionResponse<ScimConfigApi>;
-      this.load(response);
+      await this.setFormValues(response);
       this.platformUtilsService.showToast("success", null, this.i18nService.t("scimSettingsSaved"));
     } catch (e) {
       // Logged by appApiAction, do nothing
