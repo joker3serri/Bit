@@ -161,9 +161,9 @@ export class ScimComponent implements OnInit {
   }
 
   getScimEndpointUrl() {
-    if (this.platformUtilsService.isSelfHost) {
+    if (this.platformUtilsService.isSelfHost()) {
       return this.environmentService.getWebVaultUrl() + `/scim/v2/${this.organizationId}`;
     }
-    return `https://scim.bitwarden.com/v2/${this.organizationId}`;
+    return (process.env.URLS as any).scim + `/v2/${this.organizationId}`;
   }
 }
