@@ -10,7 +10,8 @@ import { EnvironmentService as EnvironmentServiceAbstraction } from "@bitwarden/
 import { EventService as EventServiceAbstraction } from "@bitwarden/common/abstractions/event.service";
 import { ExportService as ExportServiceAbstraction } from "@bitwarden/common/abstractions/export.service";
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/abstractions/fileUpload.service";
-import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/abstractions/folder.service";
+import { FolderApiServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder-api.service.abstraction";
+import { InternalFolderService as InternalFolderServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/abstractions/keyConnector.service";
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/abstractions/log.service";
@@ -43,6 +44,7 @@ import { ApiService } from "@bitwarden/common/services/api.service";
 import { AppIdService } from "@bitwarden/common/services/appId.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
 import { AuthService } from "@bitwarden/common/services/auth.service";
+import { BroadcasterService } from "@bitwarden/common/services/broadcaster.service";
 import { CipherService } from "@bitwarden/common/services/cipher.service";
 import { CollectionService } from "@bitwarden/common/services/collection.service";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
@@ -52,7 +54,8 @@ import { EnvironmentService } from "@bitwarden/common/services/environment.servi
 import { EventService } from "@bitwarden/common/services/event.service";
 import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";
-import { FolderService } from "@bitwarden/common/services/folder.service";
+import { FolderApiService } from "@bitwarden/common/services/folder/folder-api.service";
+import { FolderService } from "@bitwarden/common/services/folder/folder.service";
 import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
@@ -118,7 +121,7 @@ export default class MainBackground {
   environmentService: EnvironmentServiceAbstraction;
   settingsService: SettingsServiceAbstraction;
   cipherService: CipherServiceAbstraction;
-  folderService: FolderServiceAbstraction;
+  folderService: InternalFolderServiceAbstraction;
   collectionService: CollectionServiceAbstraction;
   vaultTimeoutService: VaultTimeoutServiceAbstraction;
   syncService: SyncServiceAbstraction;
@@ -147,6 +150,8 @@ export default class MainBackground {
   vaultFilterService: VaultFilterService;
   usernameGenerationService: UsernameGenerationServiceAbstraction;
   encryptService: EncryptService;
+  broadcasterService: BroadcasterService;
+  folderApiService: FolderApiServiceAbstraction;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -264,13 +269,15 @@ export default class MainBackground {
       this.logService,
       this.stateService
     );
+    this.broadcasterService = new BroadcasterService();
     this.folderService = new FolderService(
       this.cryptoService,
-      this.apiService,
       this.i18nService,
       this.cipherService,
-      this.stateService
+      this.stateService,
+      this.broadcasterService
     );
+    this.folderApiService = new FolderApiService(this.folderService, this.apiService);
     this.collectionService = new CollectionService(
       this.cryptoService,
       this.i18nService,
@@ -368,6 +375,7 @@ export default class MainBackground {
       this.stateService,
       this.organizationService,
       this.providerService,
+      this.folderApiService,
       logoutCallback
     );
     this.eventService = new EventService(
