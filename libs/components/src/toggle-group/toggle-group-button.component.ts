@@ -1,5 +1,4 @@
-import { FocusableOption } from "@angular/cdk/a11y";
-import { HostBinding, Component, ViewChild, ElementRef, Input } from "@angular/core";
+import { HostBinding, Component, Input } from "@angular/core";
 
 import { ToggleGroupComponent } from "./toggle-group.component";
 
@@ -10,9 +9,7 @@ let nextId = 0;
   templateUrl: "./toggle-group-button.component.html",
   preserveWhitespaces: false,
 })
-export class ToggleGroupElementComponent implements FocusableOption {
-  @ViewChild("input") private inputElement: ElementRef<HTMLInputElement>;
-
+export class ToggleGroupElementComponent {
   id = nextId++;
 
   @Input() value?: string;
@@ -77,10 +74,6 @@ export class ToggleGroupElementComponent implements FocusableOption {
       "[&>[bitBadge]]:tw-relative",
       "[&>[bitBadge]]:-tw-top-[1px]",
     ];
-  }
-
-  focus() {
-    this.inputElement.nativeElement.focus();
   }
 
   onInputInteraction() {
