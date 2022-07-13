@@ -72,6 +72,8 @@ export class ToggleGroupElementComponent implements FocusableOption {
       "tw-py-1.5",
       "tw-px-3",
 
+      // Fix for badge being pushed slightly lower when inside a button.
+      // Insipired by bootstrap, which does the same.
       "[&>[bitBadge]]:tw-relative",
       "[&>[bitBadge]]:-tw-top-[1px]",
     ];
