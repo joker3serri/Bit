@@ -9,6 +9,6 @@
     "proxyEvents": "https://events.qa.bitwarden.pw"
   },
   "flags": {
-    "showTrial": true
+    "showTrial": false
   }
 }
