@@ -99,7 +99,9 @@ export class OrganizationPlansComponent implements OnInit {
     if (!this.createOrganization || this.acceptingSponsorship) {
       this.formGroup.controls.product.setValue(ProductType.Families);
       this.changedProduct();
-    } else {
+    }
+
+    if (this.createOrganization) {
       this.formGroup.controls.name.addValidators(Validators.required);
       this.formGroup.controls.billingEmail.addValidators(Validators.required);
     }
