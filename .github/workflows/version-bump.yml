@@ -44,7 +44,7 @@ jobs:
       - name: Checkout Version Branch
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
         with:
-          ref: ${{ steps.branch.outputs.client }}_version_bump_${VERSION}
+          ref: ${{ steps.branch.outputs.client }}_version_bump_${{ github.event.inputs.version_number }}
 
       ########################
       # VERSION BUMP SECTION #
