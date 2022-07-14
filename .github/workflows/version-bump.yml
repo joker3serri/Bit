@@ -57,6 +57,7 @@ jobs:
         run: |
           pwd
           ls -alh
+          env
           echo $VERSION
           npm version --workspace=@bitwarden/browser ${{ env.VERSION }}
 
