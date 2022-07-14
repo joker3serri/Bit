@@ -58,7 +58,7 @@ jobs:
           pwd
           ls -alh
           echo $VERSION
-          npm version --workspace=@bitwarden/browser $VERSION
+          npm version --workspace=@bitwarden/browser ${{ env.VERSION }}
 
       - name: Bump Browser Version - Manifest
         if: ${{ github.event.inputs.client == 'Browser' }}
