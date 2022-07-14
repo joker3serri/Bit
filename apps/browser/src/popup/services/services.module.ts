@@ -11,6 +11,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/abstractions/auth.service";
+import { BroadcasterService as BroadcasterServiceAbstraction } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -20,7 +21,8 @@ import { EventService } from "@bitwarden/common/abstractions/event.service";
 import { ExportService } from "@bitwarden/common/abstractions/export.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { FileUploadService } from "@bitwarden/common/abstractions/fileUpload.service";
-import { FolderService } from "@bitwarden/common/abstractions/folder.service";
+import { FolderApiServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder-api.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/abstractions/log.service";
@@ -111,6 +113,10 @@ function getBgService<T>(service: keyof MainBackground) {
       },
     },
     {
+      provide: BroadcasterServiceAbstraction,
+      useFactory: getBgService<BroadcasterServiceAbstraction>("broadcasterService"),
+    },
+    {
       provide: TwoFactorService,
       useFactory: getBgService<TwoFactorService>("twoFactorService"),
       deps: [],
@@ -148,7 +154,16 @@ function getBgService<T>(service: keyof MainBackground) {
       useFactory: getBgService<CryptoFunctionService>("cryptoFunctionService"),
       deps: [],
     },
-    { provide: FolderService, useFactory: getBgService<FolderService>("folderService"), deps: [] },
+    {
+      provide: FolderService,
+      useFactory: getBgService<FolderService>("folderService"),
+      deps: [],
+    },
+    {
+      provide: FolderApiServiceAbstraction,
+      useFactory: getBgService<FolderApiServiceAbstraction>("folderApiService"),
+      deps: [],
+    },
     {
       provide: CollectionService,
       useFactory: getBgService<CollectionService>("collectionService"),
