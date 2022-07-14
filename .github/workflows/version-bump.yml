@@ -28,8 +28,6 @@ jobs:
     steps:
       - name: Checkout Branch
         uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579
-        with:
-          ref:  DEVOPS-872_version_bump_not_fail
 
       - name: Create Version Branch
         id: branch
@@ -132,7 +130,7 @@ jobs:
         env:
           PR_BRANCH: "${{ steps.branch.outputs.client }}_version_bump_${{ github.event.inputs.version_number }}"
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          BASE_BRANCH: DEVOPS-872_version_bump_not_fail
+          BASE_BRANCH: master
           TITLE: "Bump ${{ github.event.inputs.client }} version to ${{ github.event.inputs.version_number }}"
         run: |
           gh pr create --title "$TITLE" \
