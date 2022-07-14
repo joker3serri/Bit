@@ -14,21 +14,21 @@ on:
           - Redeploy
           - Dry Run
       snap_publish:
-        description: 'Deploy to snap store'
+        description: 'Publish to snap store'
         required: true
         default: true
         type: boolean
       choco_publish:
-        description: 'Deploy to chocolatey store'
+        description: 'Publish to chocolatey store'
         required: true
         default: true
         type: boolean
       npm_publish:
-        description: 'Deploy to npm registry'
+        description: 'Publish to npm registry'
         required: true
         default: true
         type: boolean
-      
+
 
 defaults:
   run:
