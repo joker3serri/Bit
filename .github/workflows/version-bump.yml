@@ -51,7 +51,7 @@ jobs:
       ########################
 
       ### Browser
-      - name: Bump Browser Version - Package
+      - name: Bump Browser Version
         if: ${{ github.event.inputs.client == 'Browser' }}
         env:
           VERSION: ${{ github.event.inputs.version_number }}
@@ -79,7 +79,7 @@ jobs:
           prettier --write apps/browser/src/manifest.v3.json
 
       ### CLI
-      - name: Bump CLI Version - Package
+      - name: Bump CLI Version
         if: ${{ github.event.inputs.client == 'CLI' }}
         env:
           VERSION: ${{ github.event.inputs.version_number }}
