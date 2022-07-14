@@ -73,7 +73,6 @@ export class ScimComponent implements OnInit {
 
   async copyScimUrl() {
     this.platformUtilsService.copyToClipboard(this.getScimEndpointUrl());
-    return false;
   }
 
   async rotateScimKey() {
