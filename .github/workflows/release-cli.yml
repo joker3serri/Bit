@@ -109,7 +109,7 @@ jobs:
     name: Deploy Snap
     runs-on: ubuntu-20.04
     needs: setup
-    if: inputs.snap_publish == true
+    if: inputs.snap_publish
     env:
       _PKG_VERSION: ${{ needs.setup.outputs.release-version }}
     steps:
@@ -153,7 +153,7 @@ jobs:
     name: Deploy Choco
     runs-on: windows-2019
     needs: setup
-    if: inputs.choco_publish == true
+    if: inputs.choco_publish
     env:
       _PKG_VERSION: ${{ needs.setup.outputs.release-version }}
     steps:
@@ -202,7 +202,7 @@ jobs:
     name: Publish NPM
     runs-on: ubuntu-20.04
     needs: setup
-    if: inputs.npm_publish == true
+    if: inputs.npm_publish
     env:
       _PKG_VERSION: ${{ needs.setup.outputs.release-version }}
     steps:
