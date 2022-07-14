@@ -53,7 +53,7 @@ jobs:
       - name: Bump Browser Version - Package
         if: ${{ github.event.inputs.client == 'Browser' }}
         env:
-          version: ${{ github.event.inputs.version_number }}
+          VERSION: ${{ github.event.inputs.version_number }}
         run: |
           pwd
           ls -alh
