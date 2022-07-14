@@ -1967,5 +1967,8 @@
   },
   "ssoKeyConnectorError": {
     "message": "Key Connector error: make sure Key Connector is available and working correctly."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }

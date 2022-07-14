@@ -1963,5 +1963,8 @@
   },
   "apiKey": {
     "message": "API Key"
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }

@@ -5198,5 +5198,8 @@
         "example": "4"
       }
     }
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }
