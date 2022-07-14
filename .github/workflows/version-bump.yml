@@ -54,7 +54,10 @@ jobs:
         if: ${{ github.event.inputs.client == 'Browser' }}
         env:
           version: ${{ github.event.inputs.version_number }}
-        run: npm version --workspace=@bitwarden/browser $VERSION
+        run: |
+          pwd
+          ls -alh
+          npm version --workspace=@bitwarden/browser $VERSION
 
       - name: Bump Browser Version - Manifest
         if: ${{ github.event.inputs.client == 'Browser' }}
