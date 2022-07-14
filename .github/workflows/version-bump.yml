@@ -57,6 +57,7 @@ jobs:
         run: |
           pwd
           ls -alh
+          echo $VERSION
           npm version --workspace=@bitwarden/browser $VERSION
 
       - name: Bump Browser Version - Manifest
