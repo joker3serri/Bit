@@ -50,6 +50,12 @@ jobs:
       ########################
 
       ### Browser
+      - name: Bump Browser Version - Package
+        if: ${{ github.event.inputs.client == 'Browser' }}
+        env:
+          version: ${{ github.event.inputs.version_number }}
+        run: npm version --workspace=@bitwarden/browser $VERSION
+
       - name: Bump Browser Version - Manifest
         if: ${{ github.event.inputs.client == 'Browser' }}
         uses: bitwarden/gh-actions/version-bump@03ad9a873c39cdc95dd8d77dbbda67f84db43945
@@ -66,41 +72,30 @@ jobs:
       ### CLI
       - name: Bump CLI Version - Package
         if: ${{ github.event.inputs.client == 'CLI' }}
-        uses: bitwarden/gh-actions/version-bump@03ad9a873c39cdc95dd8d77dbbda67f84db43945
-        with:
+        env:
           version: ${{ github.event.inputs.version_number }}
-          file_path: "apps/cli/package.json"
-
-      - name: Bump CLI Version - Package-lock
-        if: ${{ github.event.inputs.client == 'CLI' }}
-        uses: bitwarden/gh-actions/version-bump@03ad9a873c39cdc95dd8d77dbbda67f84db43945
-        with:
-          version: ${{ github.event.inputs.version_number }}
-          file_path: "apps/cli/package-lock.json"
+        run: npm version --workspace=@bitwarden/cli $VERSION
 
       ### Desktop
-      - name: Bump Desktop Version - Package
+      - name: Bump Desktop Version - Root
         if: ${{ github.event.inputs.client == 'Desktop' }}
-        uses: bitwarden/gh-actions/version-bump@03ad9a873c39cdc95dd8d77dbbda67f84db43945
-        with:
+        env:
           version: ${{ github.event.inputs.version_number }}
-          file_path: "apps/desktop/src/package.json"
+        run: npm version --workspace=@bitwarden/desktop $VERSION
+
+      - name: Bump Desktop Version - App
+        if: ${{ github.event.inputs.client == 'Desktop' }}
+        env:
+          version: ${{ github.event.inputs.version_number }}
+        run: npm version $VERSION
+        working-directory: "apps/desktop/src"
 
       ### Web
-      - name: Bump Web Version - package.json
+      - name: Bump Web Version
         if: ${{ github.event.inputs.client == 'Web' }}
         env:
           version: ${{ github.event.inputs.version_number }}
-        run:
-          cat <<< $(jq --arg VERSION "$version" '.version = $VERSION' package.json) > package.json
-        working-directory: "apps/web"
-
-      - name: Bump Web Version - package-lock.json
-        if: ${{ github.event.inputs.client == 'Web' }}
-        env:
-          version: ${{ github.event.inputs.version_number }}
-        run:
-          cat <<< $(jq --arg VERSION "$version" '.packages."apps/web".version = $VERSION' package-lock.json) > package-lock.json
+        run: npm version --workspace=@bitwarden/web-vault $VERSION
 
       ########################
 
