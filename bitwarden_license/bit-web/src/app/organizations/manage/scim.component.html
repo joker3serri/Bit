@@ -53,19 +53,22 @@
   <bit-form-field *ngIf="showScimSettings">
     <bit-label>{{ "scimApiKey" | i18n }}</bit-label>
     <input bitInput type="text" formControlName="clientSecret" />
-    <button
-      #rotateButton
-      [appApiAction]="rotatePromise"
-      [disabled]="rotateButton.loading"
-      [ngClass]="{ 'bwi-spin': rotateButton.loading }"
-      type="button"
-      bitSuffix
-      bitButton
-      (click)="rotateScimKey()"
-      [appA11yTitle]="'rotateScimKey' | i18n"
-    >
-      <i aria-hidden="true" class="bwi bwi-lg bwi-generate"></i>
-    </button>
+    <ng-container #rotateButton [appApiAction]="rotatePromise">
+      <button
+        [disabled]="rotateButton.loading"
+        type="button"
+        bitSuffix
+        bitButton
+        (click)="rotateScimKey()"
+        [appA11yTitle]="'rotateScimKey' | i18n"
+      >
+        <i
+          aria-hidden="true"
+          class="bwi bwi-lg bwi-generate"
+          [ngClass]="{ 'bwi-spin': rotateButton.loading }"
+        ></i>
+      </button>
+    </ng-container>
     <button
       type="button"
       bitSuffix

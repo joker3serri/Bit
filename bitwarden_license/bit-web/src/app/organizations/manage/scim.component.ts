@@ -12,7 +12,6 @@ import { ScimConfigApi } from "@bitwarden/common/models/api/scimConfigApi";
 import { OrganizationApiKeyRequest } from "@bitwarden/common/models/request/organizationApiKeyRequest";
 import { OrganizationConnectionRequest } from "@bitwarden/common/models/request/organizationConnectionRequest";
 import { ScimConfigRequest } from "@bitwarden/common/models/request/scimConfigRequest";
-import { ApiKeyResponse } from "@bitwarden/common/models/response/apiKeyResponse";
 import { OrganizationConnectionResponse } from "@bitwarden/common/models/response/organizationConnectionResponse";
 
 @Component({
@@ -55,34 +54,10 @@ export class ScimComponent implements OnInit {
       OrganizationConnectionType.Scim,
       ScimConfigApi
     );
-    await this.setFormValues(connection);
+    await this.setConnectionFormValues(connection);
   }
 
-  private async setFormValues(connection: OrganizationConnectionResponse<ScimConfigApi>) {
-    this.existingConnectionId = connection?.id;
-    if (connection !== null && connection.config?.enabled) {
-      this.showScimSettings = true;
-      this.enabled.setValue(true);
-      this.formData.setValue({
-        endpointUrl: this.getScimEndpointUrl(),
-        clientSecret: "",
-      });
-      await this.loadApiKey(null);
-    } else {
-      this.showScimSettings = false;
-      this.enabled.setValue(false);
-    }
-    this.loading = false;
-  }
-
-  async loadApiKey(response: ApiKeyResponse) {
-    if (response !== null) {
-      this.formData.setValue({
-        endpointUrl: this.getScimEndpointUrl(),
-        clientSecret: response.apiKey,
-      });
-      return;
-    }
+  async loadApiKey() {
     const apiKeyRequest = new OrganizationApiKeyRequest();
     apiKeyRequest.type = OrganizationApiKeyType.Scim;
     apiKeyRequest.masterPasswordHash = "N/A";
@@ -121,7 +96,10 @@ export class ScimComponent implements OnInit {
 
     try {
       const response = await this.rotatePromise;
-      await this.loadApiKey(response);
+      this.formData.setValue({
+        endpointUrl: this.getScimEndpointUrl(),
+        clientSecret: response.apiKey,
+      });
       this.platformUtilsService.showToast("success", null, this.i18nService.t("scimApiKeyRotated"));
     } catch {
       // Logged by appApiAction, do nothing
@@ -152,7 +130,7 @@ export class ScimComponent implements OnInit {
         );
       }
       const response = (await this.formPromise) as OrganizationConnectionResponse<ScimConfigApi>;
-      await this.setFormValues(response);
+      await this.setConnectionFormValues(response);
       this.platformUtilsService.showToast("success", null, this.i18nService.t("scimSettingsSaved"));
     } catch (e) {
       // Logged by appApiAction, do nothing
@@ -166,5 +144,22 @@ export class ScimComponent implements OnInit {
       return this.environmentService.getWebVaultUrl() + `/scim/v2/${this.organizationId}`;
     }
     return (process.env.URLS as any).scim + `/v2/${this.organizationId}`;
+  }
+
+  private async setConnectionFormValues(connection: OrganizationConnectionResponse<ScimConfigApi>) {
+    this.existingConnectionId = connection?.id;
+    if (connection !== null && connection.config?.enabled) {
+      this.showScimSettings = true;
+      this.enabled.setValue(true);
+      this.formData.setValue({
+        endpointUrl: this.getScimEndpointUrl(),
+        clientSecret: "",
+      });
+      await this.loadApiKey();
+    } else {
+      this.showScimSettings = false;
+      this.enabled.setValue(false);
+    }
+    this.loading = false;
   }
 }
