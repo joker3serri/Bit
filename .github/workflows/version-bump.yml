@@ -124,7 +124,6 @@ jobs:
         run: git push -u origin ${CLIENT}_version_bump_${VERSION}
 
       - name: Create Bump Version PR
-        if: false
         env:
           PR_BRANCH: "${{ steps.branch.outputs.client }}_version_bump_${{ github.event.inputs.version_number }}"
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
