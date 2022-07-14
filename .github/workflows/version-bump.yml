@@ -63,11 +63,19 @@ jobs:
           version: ${{ github.event.inputs.version_number }}
           file_path: "apps/browser/src/manifest.json"
 
+      - name: Bump Browser Version - Manifest v3
+        if: ${{ github.event.inputs.client == 'Browser' }}
+        uses: bitwarden/gh-actions/version-bump@03ad9a873c39cdc95dd8d77dbbda67f84db43945
+        with:
+          version: ${{ github.event.inputs.version_number }}
+          file_path: "apps/browser/src/manifest.v3.json"
+
       - name: Run Prettier after Browser Version Bump
         if: ${{ github.event.inputs.client == 'Browser' }}
         run: |
           npm install -g prettier
           prettier --write apps/browser/src/manifest.json
+          prettier --write apps/browser/src/manifest.v3.json
 
       ### CLI
       - name: Bump CLI Version - Package
