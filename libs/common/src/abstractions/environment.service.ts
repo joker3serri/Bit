@@ -29,7 +29,7 @@ export abstract class EnvironmentService {
   getIdentityUrl: () => string;
   getEventsUrl: () => string;
   getKeyConnectorUrl: () => string;
-  getScimUrl: (orgId: string) => string;
+  getScimUrl: () => string;
   setUrlsFromStorage: () => Promise<void>;
   setUrls: (urls: Urls) => Promise<Urls>;
   getUrls: () => Urls;

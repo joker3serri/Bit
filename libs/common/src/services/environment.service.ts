@@ -112,12 +112,14 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     return this.keyConnectorUrl;
   }
 
-  getScimUrl(orgId: string) {
+  getScimUrl() {
     if (this.scimUrl != null) {
-      return this.scimUrl + `/v2/${orgId}`;
+      return this.scimUrl + "/v2";
     }
 
-    return this.getWebVaultUrl() + `/scim/v2/${orgId}`;
+    return this.getWebVaultUrl() === "https://vault.bitwarden.com"
+      ? "https://scim.bitwarden.com/v2"
+      : this.getWebVaultUrl() + "/scim/v2";
   }
 
   async setUrlsFromStorage(): Promise<void> {

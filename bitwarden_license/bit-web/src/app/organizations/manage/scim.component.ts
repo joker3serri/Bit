@@ -139,7 +139,7 @@ export class ScimComponent implements OnInit {
   }
 
   getScimEndpointUrl() {
-    return this.environmentService.getScimUrl(this.organizationId);
+    return this.environmentService.getScimUrl() + "/" + this.organizationId;
   }
 
   private async setConnectionFormValues(connection: OrganizationConnectionResponse<ScimConfigApi>) {
