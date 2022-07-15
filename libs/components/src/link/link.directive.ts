@@ -4,22 +4,22 @@ export type LinkTypes = "primary" | "secondary" | "contrast";
 
 const linkStyles: Record<LinkTypes, string[]> = {
   primary: [
-    "tw-text-primary-500",
-    "hover:tw-text-primary-500",
+    "!tw-text-primary-500",
+    "!hover:tw-text-primary-500",
     "focus:tw-ring-primary-700",
-    "disabled:tw-text-muted",
+    "!disabled:tw-text-muted",
   ],
   secondary: [
-    "tw-text-main",
-    "hover:tw-text-main",
+    "!tw-text-main",
+    "!hover:tw-text-main",
     "focus:tw-ring-primary-700",
-    "disabled:tw-text-muted",
+    "!disabled:tw-text-muted",
   ],
   contrast: [
-    "tw-text-contrast",
-    "hover:tw-text-contrast",
+    "!tw-text-contrast",
+    "!hover:tw-text-contrast",
     "focus:tw-ring-text-contrast",
-    "disabled:tw-text-contrast/80",
+    "!disabled:tw-text-contrast/80",
   ],
 };
 
@@ -34,7 +34,6 @@ export class LinkDirective {
       "tw-px-3",
       "tw-bg-transparent",
       "tw-border-0",
-      "tw-border-transparent",
       "tw-border-none",
       "tw-rounded",
       "tw-transition",
