@@ -5,21 +5,21 @@ export type LinkTypes = "primary" | "secondary" | "contrast";
 const linkStyles: Record<LinkTypes, string[]> = {
   primary: [
     "!tw-text-primary-500",
-    "!hover:tw-text-primary-500",
+    "hover:!tw-text-primary-500",
     "focus:tw-ring-primary-700",
-    "!disabled:tw-text-muted",
+    "disabled:!tw-text-muted",
   ],
   secondary: [
     "!tw-text-main",
-    "!hover:tw-text-main",
+    "hover:!tw-text-main",
     "focus:tw-ring-primary-700",
-    "!disabled:tw-text-muted",
+    "disabled:!tw-text-muted",
   ],
   contrast: [
     "!tw-text-contrast",
-    "!hover:tw-text-contrast",
+    "hover:!tw-text-contrast",
     "focus:tw-ring-text-contrast",
-    "!disabled:tw-text-contrast/80",
+    "disabled:!tw-text-contrast/80",
   ],
 };
 
@@ -43,7 +43,7 @@ export class LinkDirective {
       "focus:tw-underline",
       "focus:tw-decoration-1",
       "focus:tw-ring",
-      "focus:tw-z-10", // Necessary?
+      "focus:tw-z-10",
       "disabled:tw-no-underline",
       "disabled:tw-cursor-not-allowed",
     ].concat(linkStyles[this.linkType] ?? []);

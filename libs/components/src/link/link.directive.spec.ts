@@ -2,17 +2,17 @@ import { Component, DebugElement } from "@angular/core";
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
-import { ButtonModule } from "./index";
+import { LinkModule } from "./index";
 
-describe("Button", () => {
+describe("Links", () => {
   let fixture: ComponentFixture<TestApp>;
   let testAppComponent: TestApp;
   let buttonDebugElement: DebugElement;
-  let linkDebugElement: DebugElement;
+  let anchorDebugElement: DebugElement;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ButtonModule],
+      imports: [LinkModule],
       declarations: [TestApp],
     });
 
@@ -20,56 +20,39 @@ describe("Button", () => {
     fixture = TestBed.createComponent(TestApp);
     testAppComponent = fixture.debugElement.componentInstance;
     buttonDebugElement = fixture.debugElement.query(By.css("button"));
-    linkDebugElement = fixture.debugElement.query(By.css("a"));
+    anchorDebugElement = fixture.debugElement.query(By.css("a"));
   }));
 
   it("should apply classes based on type", () => {
-    testAppComponent.buttonType = "primary";
+    testAppComponent.linkType = "primary";
     fixture.detectChanges();
-    expect(buttonDebugElement.nativeElement.classList.contains("tw-bg-primary-500")).toBe(true);
-    expect(linkDebugElement.nativeElement.classList.contains("tw-bg-primary-500")).toBe(true);
+    expect(buttonDebugElement.nativeElement.classList.contains("tw-text-primary-500")).toBe(true);
+    expect(anchorDebugElement.nativeElement.classList.contains("tw-text-primary-500")).toBe(true);
 
-    testAppComponent.buttonType = "secondary";
+    testAppComponent.linkType = "secondary";
     fixture.detectChanges();
-    expect(buttonDebugElement.nativeElement.classList.contains("tw-border-text-muted")).toBe(true);
-    expect(linkDebugElement.nativeElement.classList.contains("tw-border-text-muted")).toBe(true);
+    expect(buttonDebugElement.nativeElement.classList.contains("tw-text-main")).toBe(true);
+    expect(anchorDebugElement.nativeElement.classList.contains("tw-text-main")).toBe(true);
 
-    testAppComponent.buttonType = "danger";
+    testAppComponent.linkType = "contrast";
     fixture.detectChanges();
-    expect(buttonDebugElement.nativeElement.classList.contains("tw-border-danger-500")).toBe(true);
-    expect(linkDebugElement.nativeElement.classList.contains("tw-border-danger-500")).toBe(true);
+    expect(buttonDebugElement.nativeElement.classList.contains("tw-text-contrast")).toBe(true);
+    expect(anchorDebugElement.nativeElement.classList.contains("tw-text-contrast")).toBe(true);
 
-    testAppComponent.buttonType = null;
+    testAppComponent.linkType = null;
     fixture.detectChanges();
-    expect(buttonDebugElement.nativeElement.classList.contains("tw-border-text-muted")).toBe(true);
-    expect(linkDebugElement.nativeElement.classList.contains("tw-border-text-muted")).toBe(true);
-  });
-
-  it("should apply block when true and inline-block when false", () => {
-    testAppComponent.block = true;
-    fixture.detectChanges();
-    expect(buttonDebugElement.nativeElement.classList.contains("tw-block")).toBe(true);
-    expect(linkDebugElement.nativeElement.classList.contains("tw-block")).toBe(true);
-    expect(buttonDebugElement.nativeElement.classList.contains("tw-inline-block")).toBe(false);
-    expect(linkDebugElement.nativeElement.classList.contains("tw-inline-block")).toBe(false);
-
-    testAppComponent.block = false;
-    fixture.detectChanges();
-    expect(buttonDebugElement.nativeElement.classList.contains("tw-inline-block")).toBe(true);
-    expect(linkDebugElement.nativeElement.classList.contains("tw-inline-block")).toBe(true);
-    expect(buttonDebugElement.nativeElement.classList.contains("tw-block")).toBe(false);
-    expect(linkDebugElement.nativeElement.classList.contains("tw-block")).toBe(false);
+    expect(buttonDebugElement.nativeElement.classList.contains("tw-text-primary-500")).toBe(true);
+    expect(anchorDebugElement.nativeElement.classList.contains("tw-text-primary-500")).toBe(true);
   });
 });
 
 @Component({
   selector: "test-app",
   template: `
-    <button type="button" bitButton [buttonType]="buttonType" [block]="block">Button</button>
-    <a href="#" bitButton [buttonType]="buttonType" [block]="block"> Link </a>
+    <button bitLink [linkType]="linkType" class="tw-mb-2 tw-block">Button</button>
+    <a bitLink [linkType]="linkType" href="#" class="tw-mb-2 tw-block">Anchor</a>
   `,
 })
 class TestApp {
-  buttonType: string;
-  block: boolean;
+  linkType: string;
 }
