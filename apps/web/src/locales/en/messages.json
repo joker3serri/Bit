@@ -2190,6 +2190,9 @@
   "annually": {
     "message": "Annually"
   },
+  "annual": {
+    "message": "Annual"
+  },
   "basePrice": {
     "message": "Base Price"
   },

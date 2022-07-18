@@ -76,10 +76,6 @@ export class TrialInitiationComponent implements OnInit {
     if (event.selectedIndex === 2) {
       this.billingSubLabel = this.i18nService.t("billingTrialSubLabel");
     }
-
-    if (event.previouslySelectedIndex === 2) {
-      this.billingSubLabel = this.billingDetails?.description;
-    }
   }
 
   createdAccount(email: string) {
@@ -88,16 +84,10 @@ export class TrialInitiationComponent implements OnInit {
     this.verticalStepper.next();
   }
 
-  billingSuccess(orgId: string) {
-    this.orgId = orgId;
-    //make billing api call here
-    this.getBillingDetails();
+  billingSuccess(event: any) {
+    this.orgId = event?.orgId;
+    this.billingSubLabel = event?.subLabelText;
     this.verticalStepper.next();
-  }
-
-  async getBillingDetails() {
-    const billingDetails = await this.apiService.getUserBillingPayment();
-    this.billingDetails = billingDetails.paymentSource;
   }
 
   previousStep() {

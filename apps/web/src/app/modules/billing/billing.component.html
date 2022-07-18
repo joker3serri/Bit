@@ -14,7 +14,7 @@
             formControlName="plan"
           />
           <ng-container *ngIf="selectablePlan.isAnnual">
-            {{ "annually" | i18n }} -
+            {{ "annual" | i18n }} -
             {{
               (selectablePlan.basePrice === 0 ? selectablePlan.seatPrice : selectablePlan.basePrice)
                 | currency: "$"

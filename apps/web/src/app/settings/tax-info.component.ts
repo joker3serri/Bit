@@ -3,7 +3,6 @@ import { ActivatedRoute } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { OrganizationTaxInfoUpdateRequest } from "@bitwarden/common/models/request/organizationTaxInfoUpdateRequest";
 import { TaxInfoUpdateRequest } from "@bitwarden/common/models/request/taxInfoUpdateRequest";
 import { TaxRateResponse } from "@bitwarden/common/models/response/taxRateResponse";
@@ -44,12 +43,10 @@ export class TaxInfoComponent {
   constructor(
     private apiService: ApiService,
     private route: ActivatedRoute,
-    private logService: LogService,
-    private stateService: StateService
+    private logService: LogService
   ) {}
 
   async ngOnInit() {
-    const authenticated = await this.stateService.getIsAuthenticated();
     this.route.parent.parent.params.subscribe(async (params) => {
       this.organizationId = params.organizationId;
       if (this.organizationId) {
@@ -75,7 +72,7 @@ export class TaxInfoComponent {
         } catch (e) {
           this.logService.error(e);
         }
-      } else if (authenticated) {
+      } else {
         try {
           const taxInfo = await this.apiService.getTaxInfo();
           if (taxInfo) {
@@ -86,7 +83,6 @@ export class TaxInfoComponent {
           this.logService.error(e);
         }
       }
-
       this.pristine = Object.assign({}, this.taxInfo);
       // If not the default (US) then trigger onCountryChanged
       if (this.taxInfo.country !== "US") {
@@ -94,18 +90,15 @@ export class TaxInfoComponent {
       }
     });
 
-    //ignored for trial initiation
-    if (authenticated) {
-      try {
-        const taxRates = await this.apiService.getTaxRates();
-        if (taxRates) {
-          this.taxRates = taxRates.data;
-        }
-      } catch (e) {
-        this.logService.error(e);
-      } finally {
-        this.loading = false;
+    try {
+      const taxRates = await this.apiService.getTaxRates();
+      if (taxRates) {
+        this.taxRates = taxRates.data;
       }
+    } catch (e) {
+      this.logService.error(e);
+    } finally {
+      this.loading = false;
     }
   }
 
