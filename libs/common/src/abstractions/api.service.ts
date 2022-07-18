@@ -129,6 +129,7 @@ import {
   OrganizationConnectionConfigApis,
   OrganizationConnectionResponse,
 } from "../models/response/organizationConnectionResponse";
+import { OrganizationExportResponse } from "../models/response/organizationExportResponse";
 import { OrganizationKeysResponse } from "../models/response/organizationKeysResponse";
 import { OrganizationResponse } from "../models/response/organizationResponse";
 import { OrganizationSponsorshipSyncStatusResponse } from "../models/response/organizationSponsorshipSyncStatusResponse";
@@ -732,4 +733,5 @@ export abstract class ApiService {
     request: KeyConnectorUserKeyRequest
   ) => Promise<void>;
   getKeyConnectorAlive: (keyConnectorUrl: string) => Promise<void>;
+  getOrganizationExport: (organizationId: string) => Promise<OrganizationExportResponse>;
 }
