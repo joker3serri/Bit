@@ -39,6 +39,7 @@
   6. Rename com.agilebits.* stuff to com.bitwarden.*
   7. Remove "some useful globals" on window
   8. Add ability to autofill span[data-bwautofill] elements
+  9. Add new handler, for new command that responds with page details in response callback
   */
 
   function collect(document, undefined) {
