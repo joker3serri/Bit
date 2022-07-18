@@ -760,7 +760,7 @@ export class CipherService implements CipherServiceAbstraction {
       fd.append("key", key.encryptedString);
       fd.append("data", blob, encFileName.encryptedString);
     } catch (e) {
-      if (typeof Buffer !== undefined) {
+      if (Utils.isNode && !Utils.isBrowser) {
         fd.append("key", key.encryptedString);
         fd.append(
           "data",
@@ -1072,7 +1072,7 @@ export class CipherService implements CipherServiceAbstraction {
       fd.append("key", dataEncKey[1].encryptedString);
       fd.append("data", blob, encFileName.encryptedString);
     } catch (e) {
-      if (typeof Buffer !== "undefined") {
+      if (Utils.isNode && !Utils.isBrowser) {
         fd.append("key", dataEncKey[1].encryptedString);
         fd.append(
           "data",
