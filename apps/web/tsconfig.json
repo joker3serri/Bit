@@ -19,11 +19,5 @@
     "src/app/main.ts",
     "../../bitwarden_license/bit-web/src/app/main.ts"
   ],
-  "include": [
-    "src/connectors/*.ts",
-    "src/models/*.ts",
-    "src/services/*.ts",
-    "src/abstractions/*.ts",
-    "src/**/*.stories.ts"
-  ]
+  "include": ["src/connectors/*.ts", "src/**/*.stories.ts"]
 }
