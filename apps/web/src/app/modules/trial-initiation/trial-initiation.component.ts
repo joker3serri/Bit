@@ -9,7 +9,6 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlanType } from "@bitwarden/common/enums/planType";
 import { ProductType } from "@bitwarden/common/enums/productType";
-import { BillingSourceResponse } from "@bitwarden/common/models/response/billingResponse";
 
 import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.component";
 
