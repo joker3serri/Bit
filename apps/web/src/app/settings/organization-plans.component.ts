@@ -85,14 +85,6 @@ export class OrganizationPlansComponent implements OnInit {
   }
 
   async ngOnInit() {
-    //used when plan and product is passed as an input
-    if (this.plan !== 0 && this.product !== 0) {
-      this.formGroup.patchValue({
-        plan: this.plan,
-        product: this.product,
-      });
-    }
-
     if (!this.selfHosted) {
       const plans = await this.apiService.getPlans();
       this.plans = plans.data;
