@@ -60,7 +60,6 @@ export class BulkRestoreRevokeComponent {
     }
 
     this.loading = false;
-    this.modalRef.close();
   }
 
   protected async performBulkUserAction() {
