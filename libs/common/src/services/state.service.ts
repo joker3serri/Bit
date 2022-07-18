@@ -516,7 +516,12 @@ export class StateService<
     );
 
     if (options.userId == this.activeAccount.getValue()) {
-      this.activeAccountUnlocked.next(value != null);
+      const nextValue = value != null;
+
+      // Avoid emitting if we are already unlocked
+      if (this.activeAccountUnlocked.getValue() != nextValue) {
+        this.activeAccountUnlocked.next(nextValue);
+      }
     }
   }
 
