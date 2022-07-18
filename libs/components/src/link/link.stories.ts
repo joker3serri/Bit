@@ -41,16 +41,24 @@ const AnchorTemplate: Story<LinkDirective> = (args: LinkDirective) => ({
   props: args,
   template: `
   <div class="tw-p-2" [ngClass]="{ 'tw-bg-transparent': linkType != 'contrast', 'tw-bg-primary-500': linkType === 'contrast' }">
-    <a bitLink [linkType]="linkType" href="#" class="tw-mb-2 tw-block">Anchor</a>
-    <a bitLink [linkType]="linkType" href="#" class="tw-mb-2 tw-block">
-      <i class="bwi bwi-fw bwi-plus-circle" aria-hidden="true"></i>
-      Add Icon Anchor
-    </a>
-    <a bitLink [linkType]="linkType" href="#" class="tw-mb-2 tw-block">
-      Chevron Icon Anchor
-      <i class="bwi bwi-fw bwi-sm bwi-angle-down" aria-hidden="true"></i>
-    </a>
-    <a bitLink [linkType]="linkType" class="tw-text-sm tw-block" href="#">Small Anchor</a>
+    <div class="tw-block tw-p-2">
+      <a bitLink [linkType]="linkType" href="#">Anchor</a>
+    </div>
+    <div class="tw-block tw-p-2">
+      <a bitLink [linkType]="linkType" href="#">
+        <i class="bwi bwi-fw bwi-plus-circle" aria-hidden="true"></i>
+        Add Icon Anchor
+      </a>
+    </div>
+    <div class="tw-block tw-p-2">
+      <a bitLink [linkType]="linkType" href="#">
+        Chevron Icon Anchor
+       <i class="bwi bwi-fw bwi-sm bwi-angle-down" aria-hidden="true"></i>
+      </a>
+    </div>
+    <div class="tw-block tw-p-2">
+      <a bitLink [linkType]="linkType" class="tw-text-sm" href="#">Small Anchor</a>
+    </div>
   </div>
   `,
 });
