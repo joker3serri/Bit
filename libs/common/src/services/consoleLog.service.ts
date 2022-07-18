@@ -58,10 +58,12 @@ export class ConsoleLogService implements LogServiceAbstraction {
   }
 
   time(label = "default"): void {
+    this.write(LogLevelType.Info, `${label} start.`);
     return;
   }
 
   timeEnd(label = "default"): [number, number] {
+    this.write(LogLevelType.Info, `${label} end.`);
     return [0, 0];
   }
 }

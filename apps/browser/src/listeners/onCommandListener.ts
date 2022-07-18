@@ -23,15 +23,11 @@ import { KeyGenerationService } from "../services/keyGeneration.service";
 import { LocalBackedSessionStorageService } from "../services/localBackedSessionStorage.service";
 import { StateService } from "../services/state.service";
 
-
-
 export const onCommandListener = async (command: string, tab: chrome.tabs.Tab) => {
   switch (command) {
     case "autofill_login":
       await doAutoFillLogin(tab);
       break;
-    default:
-      console.error("Unknown command:", command);
   }
 };
 
