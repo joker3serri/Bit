@@ -90,7 +90,7 @@ export class VaultFilterService {
     return await this.policyService.policyAppliesToUser(PolicyType.PersonalOwnership);
   }
 
-  protected async getAllFoldersNested(folders?: FolderView[]): Promise<TreeNode<FolderView>[]> {
+  protected async getAllFoldersNested(folders: FolderView[]): Promise<TreeNode<FolderView>[]> {
     const nodes: TreeNode<FolderView>[] = [];
     folders.forEach((f) => {
       const folderCopy = new FolderView();

@@ -75,8 +75,9 @@ export class StateService<
     // If the account gets changed, verify the new account is unlocked
     this.activeAccount.subscribe(async (userId) => {
       if (userId == null && this.activeAccountUnlocked.getValue() == false) {
-        this.activeAccountUnlocked.next(false);
         return;
+      } else if (userId == null) {
+        this.activeAccountUnlocked.next(false);
       }
 
       // FIXME: This should be refactored into AuthService or a similar service,
