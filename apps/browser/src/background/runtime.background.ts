@@ -16,7 +16,6 @@ import LockedVaultPendingNotificationsItem from "./models/lockedVaultPendingNoti
 export default class RuntimeBackground {
   private autofillTimeout: any;
   private pageDetailsToAutoFill: any[] = [];
-  private tabToAutoFill: chrome.tabs.Tab;
   private onInstalledReason: string = null;
   private lockedVaultPendingNotifications: LockedVaultPendingNotificationsItem[] = [];
 
@@ -144,8 +143,7 @@ export default class RuntimeBackground {
               tab: msg.tab,
               details: msg.details,
             });
-            this.tabToAutoFill = msg.tab;
-            this.autofillTimeout = setTimeout(async () => await this.autofillPage(), 300);
+            this.autofillTimeout = setTimeout(async () => await this.autofillPage(msg.tab), 300);
             break;
           default:
             break;
@@ -207,9 +205,9 @@ export default class RuntimeBackground {
     }
   }
 
-  private async autofillPage() {
+  private async autofillPage(tabToAutoFill: chrome.tabs.Tab) {
     const totpCode = await this.autofillService.doAutoFill({
-      tab: this.tabToAutoFill,
+      tab: tabToAutoFill,
       cipher: this.main.loginToAutoFill,
       pageDetails: this.pageDetailsToAutoFill,
       fillNewPassword: true,
@@ -222,7 +220,6 @@ export default class RuntimeBackground {
     // reset
     this.main.loginToAutoFill = null;
     this.pageDetailsToAutoFill = [];
-    this.tabToAutoFill = null;
   }
 
   private async checkOnInstalled() {
