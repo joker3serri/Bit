@@ -551,7 +551,7 @@ export class AddEditComponent implements OnInit {
 
   protected async loadCollections() {
     const allCollections = await this.collectionService.getAllDecrypted();
-    return allCollections.filter((c) => !c.readOnly && c.id != null);
+    return allCollections.filter((c) => !c.readOnly);
   }
 
   protected loadCipher() {
