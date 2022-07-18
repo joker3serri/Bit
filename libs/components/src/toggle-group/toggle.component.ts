@@ -5,11 +5,11 @@ import { ToggleGroupComponent } from "./toggle-group.component";
 let nextId = 0;
 
 @Component({
-  selector: "bit-toggle-group-button",
-  templateUrl: "./toggle-group-button.component.html",
+  selector: "bit-toggle",
+  templateUrl: "./toggle.component.html",
   preserveWhitespaces: false,
 })
-export class ToggleGroupElementComponent {
+export class ToggleComponent {
   id = nextId++;
 
   @Input() value?: string;

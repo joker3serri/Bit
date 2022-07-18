@@ -2,8 +2,8 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { BadgeModule } from "../badge";
 
-import { ToggleGroupElementComponent } from "./toggle-group-button.component";
 import { ToggleGroupComponent } from "./toggle-group.component";
+import { ToggleComponent } from "./toggle.component";
 
 export default {
   title: "Component Library/Toggle Group",
@@ -13,7 +13,7 @@ export default {
   },
   decorators: [
     moduleMetadata({
-      declarations: [ToggleGroupComponent, ToggleGroupElementComponent],
+      declarations: [ToggleGroupComponent, ToggleComponent],
       imports: [BadgeModule],
     }),
   ],
@@ -29,21 +29,21 @@ const Template: Story<ToggleGroupComponent> = (args: ToggleGroupComponent) => ({
   props: args,
   template: `
     <bit-toggle-group [(selected)]="selected" ariaLabel="People list filter">
-      <bit-toggle-group-button value="all">
+      <bit-toggle value="all">
         All <span bitBadge badgeType="info">3</span>
-      </bit-toggle-group-button>
+      </bit-toggle>
 
-      <bit-toggle-group-button value="invited">
+      <bit-toggle value="invited">
         Invited
-      </bit-toggle-group-button>
+      </bit-toggle>
 
-      <bit-toggle-group-button value="accepted">
+      <bit-toggle value="accepted">
         Accepted <span bitBadge badgeType="info">2</span>
-      </bit-toggle-group-button>
+      </bit-toggle>
 
-      <bit-toggle-group-button value="deactivated">
+      <bit-toggle value="deactivated">
         Deactivated
-      </bit-toggle-group-button>
+      </bit-toggle>
     </bit-toggle-group>
   `,
 });

@@ -3,12 +3,12 @@ import { NgModule } from "@angular/core";
 
 import { BadgeModule } from "../badge";
 
-import { ToggleGroupElementComponent } from "./toggle-group-button.component";
 import { ToggleGroupComponent } from "./toggle-group.component";
+import { ToggleComponent } from "./toggle.component";
 
 @NgModule({
   imports: [CommonModule, BadgeModule],
-  exports: [ToggleGroupComponent, ToggleGroupElementComponent],
-  declarations: [ToggleGroupComponent, ToggleGroupElementComponent],
+  exports: [ToggleGroupComponent, ToggleComponent],
+  declarations: [ToggleGroupComponent, ToggleComponent],
 })
 export class ToggleGroupModule {}
