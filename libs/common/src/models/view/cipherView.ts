@@ -137,27 +137,34 @@ export class CipherView implements View {
       return jsonResult;
     }
 
-    const cipher = new CipherView();
-    cipher.id = jsonResult.id;
-    cipher.organizationId = jsonResult.organizationId;
-    cipher.folderId = jsonResult.folderId;
-    cipher.favorite = jsonResult.favorite;
-    cipher.organizationUseTotp = jsonResult.organizationUseTotp;
-    cipher.edit = jsonResult.edit;
-    cipher.viewPassword = jsonResult.viewPassword;
-    cipher.type = jsonResult.type;
-    cipher.localData = jsonResult.localData;
-    cipher.collectionIds = jsonResult.collectionIds;
-    cipher.revisionDate = jsonResult.revisionDate;
-    cipher.deletedDate = jsonResult.deletedDate;
-    // Old locally stored ciphers might have reprompt == null. If so set it to None.
-    cipher.reprompt = jsonResult.reprompt ?? CipherRepromptType.None;
+    jsonResult.login = CipherView.getAsPrototype(
+      LoginView,
+      jsonResult.login,
+      LoginView.initFromJson
+    );
 
-    cipher.login = LoginView.initFromJson(jsonResult.login);
-    cipher.secureNote = jsonResult.secureNote; // TODO
-    cipher.card = jsonResult.card; // TODO
-    cipher.identity = jsonResult.identity; // TODO
+    return jsonResult;
+  }
 
-    return cipher;
+  static getAsPrototype<T>(
+    memberConstructor: new (...args: any[]) => T,
+    nonPrototypedObject: T,
+    initFromJson: (obj: T) => T
+  ): T {
+    if (nonPrototypedObject == null) {
+      return null;
+    }
+
+    // Does it already have the prototype we want it to have?
+    if (Object.getPrototypeOf(nonPrototypedObject) == memberConstructor.prototype) {
+      return nonPrototypedObject;
+    }
+
+    const prototypedObject = Object.create(
+      memberConstructor.prototype,
+      Object.getOwnPropertyDescriptors(nonPrototypedObject)
+    );
+
+    return initFromJson(prototypedObject);
   }
 }
