@@ -25,7 +25,6 @@ export class TrialInitiationComponent implements OnInit {
   billingSubLabel = "";
   plan: PlanType;
   product: ProductType;
-  billingDetails: BillingSourceResponse;
   @ViewChild("stepper", { static: true }) verticalStepper: VerticalStepperComponent;
 
   orgInfoFormGroup = this.formBuilder.group({
