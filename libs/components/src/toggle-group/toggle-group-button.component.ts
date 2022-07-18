@@ -17,9 +17,7 @@ export class ToggleGroupElementComponent {
   constructor(private groupComponent: ToggleGroupComponent) {}
 
   @HostBinding("tabIndex") tabIndex = "-1";
-  @HostBinding("class") get classList() {
-    return ["tw-group"];
-  }
+  @HostBinding("class") classList = ["tw-group"];
 
   get name() {
     return this.groupComponent.name;
