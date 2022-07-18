@@ -1347,7 +1347,7 @@ export class ApiService implements ApiServiceAbstraction {
   revokeOrganizationUser(organizationId: string, id: string): Promise<any> {
     return this.send(
       "PUT",
-      "/organizations/" + organizationId + "/users/" + id + "/deactivate",
+      "/organizations/" + organizationId + "/users/" + id + "/revoke",
       null,
       true,
       false
@@ -1360,7 +1360,7 @@ export class ApiService implements ApiServiceAbstraction {
   ): Promise<ListResponse<OrganizationUserBulkResponse>> {
     const r = await this.send(
       "PUT",
-      "/organizations/" + organizationId + "/users/deactivate",
+      "/organizations/" + organizationId + "/users/revoke",
       request,
       true,
       true
@@ -1371,7 +1371,7 @@ export class ApiService implements ApiServiceAbstraction {
   restoreOrganizationUser(organizationId: string, id: string): Promise<any> {
     return this.send(
       "PUT",
-      "/organizations/" + organizationId + "/users/" + id + "/activate",
+      "/organizations/" + organizationId + "/users/" + id + "/restore",
       null,
       true,
       false
@@ -1384,7 +1384,7 @@ export class ApiService implements ApiServiceAbstraction {
   ): Promise<ListResponse<OrganizationUserBulkResponse>> {
     const r = await this.send(
       "PUT",
-      "/organizations/" + organizationId + "/users/activate",
+      "/organizations/" + organizationId + "/users/restore",
       request,
       true,
       true
