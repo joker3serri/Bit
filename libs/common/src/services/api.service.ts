@@ -1344,7 +1344,7 @@ export class ApiService implements ApiServiceAbstraction {
     return new ListResponse(r, OrganizationUserBulkResponse);
   }
 
-  deactivateOrganizationUser(organizationId: string, id: string): Promise<any> {
+  revokeOrganizationUser(organizationId: string, id: string): Promise<any> {
     return this.send(
       "PUT",
       "/organizations/" + organizationId + "/users/" + id + "/deactivate",
@@ -1354,7 +1354,7 @@ export class ApiService implements ApiServiceAbstraction {
     );
   }
 
-  async deactivateManyOrganizationUsers(
+  async revokeManyOrganizationUsers(
     organizationId: string,
     request: OrganizationUserBulkRequest
   ): Promise<ListResponse<OrganizationUserBulkResponse>> {
@@ -1368,7 +1368,7 @@ export class ApiService implements ApiServiceAbstraction {
     return new ListResponse(r, OrganizationUserBulkResponse);
   }
 
-  activateOrganizationUser(organizationId: string, id: string): Promise<any> {
+  restoreOrganizationUser(organizationId: string, id: string): Promise<any> {
     return this.send(
       "PUT",
       "/organizations/" + organizationId + "/users/" + id + "/activate",
@@ -1378,7 +1378,7 @@ export class ApiService implements ApiServiceAbstraction {
     );
   }
 
-  async activateManyOrganizationUsers(
+  async restoreManyOrganizationUsers(
     organizationId: string,
     request: OrganizationUserBulkRequest
   ): Promise<ListResponse<OrganizationUserBulkResponse>> {
