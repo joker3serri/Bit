@@ -11,13 +11,10 @@ export class ToggleGroupComponent {
   private id = nextId++;
   name = `bit-toggle-group-${this.id}`;
 
-  @Input() ariaLabel?: string;
-
   @Input() selected?: unknown;
   @Output() selectedChange = new EventEmitter<unknown>();
 
   @HostBinding("attr.role") role = "radiogroup";
-  @HostBinding("attr.aria-labelledby") labelId = `bit-toggle-group-label-${this.id}`;
   @HostBinding("class") classList = ["tw-flex"];
 
   onInputInteraction(value: unknown) {
