@@ -235,8 +235,8 @@ export abstract class BasePeopleComponent<
   async revoke(user: UserType) {
     const confirmed = await this.platformUtilsService.showDialog(
       this.revokeWarningMessage(),
-      this.i18nService.t("deactivateUserId", this.userNamePipe.transform(user)),
-      this.i18nService.t("deactivate"),
+      this.i18nService.t("revokeUserId", this.userNamePipe.transform(user)),
+      this.i18nService.t("revokeAccess"),
       this.i18nService.t("cancel"),
       "warning"
     );
@@ -251,7 +251,7 @@ export abstract class BasePeopleComponent<
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("deactivatedUserId", this.userNamePipe.transform(user))
+        this.i18nService.t("revokedUserId", this.userNamePipe.transform(user))
       );
       await this.load();
     } catch (e) {
@@ -263,8 +263,8 @@ export abstract class BasePeopleComponent<
   async restore(user: UserType) {
     const confirmed = await this.platformUtilsService.showDialog(
       this.restoreWarningMessage(),
-      this.i18nService.t("activateUserId", this.userNamePipe.transform(user)),
-      this.i18nService.t("activate"),
+      this.i18nService.t("restoreUserId", this.userNamePipe.transform(user)),
+      this.i18nService.t("restoreAccess"),
       this.i18nService.t("cancel"),
       "warning"
     );
@@ -279,7 +279,7 @@ export abstract class BasePeopleComponent<
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("activatedUserId", this.userNamePipe.transform(user))
+        this.i18nService.t("restoredUserId", this.userNamePipe.transform(user))
       );
       await this.load();
     } catch (e) {
@@ -395,11 +395,11 @@ export abstract class BasePeopleComponent<
   }
 
   protected revokeWarningMessage(): string {
-    return this.i18nService.t("deactivateUserConfirmation");
+    return this.i18nService.t("revokeUserConfirmation");
   }
 
   protected restoreWarningMessage(): string {
-    return this.i18nService.t("activateUserConfirmation");
+    return this.i18nService.t("restoreUserConfirmation");
   }
 
   protected getCheckedUsers() {

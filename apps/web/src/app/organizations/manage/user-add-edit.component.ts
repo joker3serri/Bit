@@ -251,9 +251,9 @@ export class UserAddEditComponent implements OnInit {
     }
 
     const confirmed = await this.platformUtilsService.showDialog(
-      this.i18nService.t("deactivateUserConfirmation"),
-      this.i18nService.t("deactivateUserId", this.name),
-      this.i18nService.t("deactivate"),
+      this.i18nService.t("revokeUserConfirmation"),
+      this.i18nService.t("revokeUserId", this.name),
+      this.i18nService.t("revokeAccess"),
       this.i18nService.t("cancel"),
       "warning"
     );
@@ -270,7 +270,7 @@ export class UserAddEditComponent implements OnInit {
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("deactivatedUserId", this.name)
+        this.i18nService.t("revokedUserId", this.name)
       );
       this.isRevoked = true;
       this.onRevokedUser.emit();
@@ -285,9 +285,9 @@ export class UserAddEditComponent implements OnInit {
     }
 
     const confirmed = await this.platformUtilsService.showDialog(
-      this.i18nService.t("activateUserConfirmation"),
-      this.i18nService.t("activateUserId", this.name),
-      this.i18nService.t("activate"),
+      this.i18nService.t("restoreUserConfirmation"),
+      this.i18nService.t("restoreUserId", this.name),
+      this.i18nService.t("restoreAccess"),
       this.i18nService.t("cancel"),
       "warning"
     );
@@ -304,7 +304,7 @@ export class UserAddEditComponent implements OnInit {
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("activatedUserId", this.name)
+        this.i18nService.t("restoredUserId", this.name)
       );
       this.isRevoked = false;
       this.onRestoredUser.emit();

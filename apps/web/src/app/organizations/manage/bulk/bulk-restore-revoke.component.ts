@@ -35,12 +35,12 @@ export class BulkRestoreRevokeComponent {
   }
 
   get bulkTitle() {
-    const titleKey = this.isRevoking ? "deactivateUsers" : "activateUsers";
+    const titleKey = this.isRevoking ? "revokeUsers" : "restoreUsers";
     return this.i18nService.t(titleKey);
   }
 
   get usersWarning() {
-    const warningKey = this.isRevoking ? "deactivateUsersWarning" : "activateUsersWarning";
+    const warningKey = this.isRevoking ? "revokeUsersWarning" : "restoreUsersWarning";
     return this.i18nService.t(warningKey);
   }
 
@@ -49,7 +49,7 @@ export class BulkRestoreRevokeComponent {
     try {
       const response = await this.performBulkUserAction();
 
-      const bulkMessage = this.isRevoking ? "bulkDeactivatedMessage" : "bulkActivatedMessage";
+      const bulkMessage = this.isRevoking ? "bulkRevokedMessage" : "bulkRestoredMessage";
       response.data.forEach((entry) => {
         const error = entry.error !== "" ? entry.error : this.i18nService.t(bulkMessage);
         this.statuses.set(entry.id, error);
