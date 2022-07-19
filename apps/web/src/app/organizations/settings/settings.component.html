@@ -15,6 +15,9 @@
           >
             {{ "twoStepLogin" | i18n }}
           </a>
+          <a routerLink="sso" class="list-group-item" routerLinkActive="active" *ngIf="accessSso">
+            {{ "singleSignOn" | i18n }}
+          </a>
         </div>
       </div>
     </div>

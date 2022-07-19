@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 
 @Component({
   selector: "app-org-settings",
@@ -10,18 +9,14 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 })
 export class SettingsComponent {
   access2fa = false;
-  showBilling: boolean;
+  accessSso = false;
 
-  constructor(
-    private route: ActivatedRoute,
-    private organizationService: OrganizationService,
-    private platformUtilsService: PlatformUtilsService
-  ) {}
+  constructor(private route: ActivatedRoute, private organizationService: OrganizationService) {}
 
   ngOnInit() {
     this.route.parent.params.subscribe(async (params) => {
       const organization = await this.organizationService.get(params.organizationId);
-      this.showBilling = !this.platformUtilsService.isSelfHost() && organization.canManageBilling;
+      this.accessSso = organization.canManageSso && organization.useSso;
       this.access2fa = organization.use2fa;
     });
   }
