@@ -204,15 +204,18 @@ export abstract class BasePeopleComponent<
     this.edit(null);
   }
 
-  async remove(user: UserType) {
-    const confirmed = await this.platformUtilsService.showDialog(
-      this.deleteWarningMessage(user),
+  protected async removeUserConfirmationDialog(user: UserType) {
+    return this.platformUtilsService.showDialog(
+      this.i18nService.t("removeUserConfirmation"),
       this.userNamePipe.transform(user),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
       "warning"
     );
+  }
 
+  async remove(user: UserType) {
+    const confirmed = await this.removeUserConfirmationDialog(user);
     if (!confirmed) {
       return false;
     }
@@ -376,10 +379,6 @@ export abstract class BasePeopleComponent<
       this.resetPaging();
     }
     return !searching && this.users && this.users.length > this.pageSize;
-  }
-
-  protected deleteWarningMessage(user: UserType): string {
-    return this.i18nService.t("removeUserConfirmation");
   }
 
   protected revokeWarningMessage(): string {
