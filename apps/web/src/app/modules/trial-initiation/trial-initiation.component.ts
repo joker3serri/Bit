@@ -3,7 +3,7 @@ import { TitleCasePipe } from "@angular/common";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { first } from "rxjs";
+import { first, retry } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -56,10 +56,13 @@ export class TrialInitiationComponent implements OnInit {
       if (qParams.email != null && qParams.email.indexOf("@") > -1) {
         this.email = qParams.email;
       }
-      if (qParams.org) {
-        this.org = qParams.org;
-        this.accountCreateOnly = false;
+
+      if (!qParams.org) {
+        return;
       }
+
+      this.org = qParams.org;
+      this.accountCreateOnly = false;
 
       if (qParams.org === "families") {
         this.plan = PlanType.FamiliesAnnually;

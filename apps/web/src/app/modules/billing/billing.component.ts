@@ -63,6 +63,6 @@ export class BillingComponent extends OrganizationPlansComponent {
   }
 
   stepBack() {
-    this.previousStep.emit(null);
+    this.previousStep.emit();
   }
 }
