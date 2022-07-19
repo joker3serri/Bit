@@ -261,18 +261,6 @@ export abstract class BasePeopleComponent<
   }
 
   async restore(user: UserType) {
-    const confirmed = await this.platformUtilsService.showDialog(
-      this.restoreWarningMessage(),
-      this.i18nService.t("restoreUserId", this.userNamePipe.transform(user)),
-      this.i18nService.t("restoreAccess"),
-      this.i18nService.t("cancel"),
-      "warning"
-    );
-
-    if (!confirmed) {
-      return false;
-    }
-
     this.actionPromise = this.restoreUser(user.id);
     try {
       await this.actionPromise;
@@ -396,10 +384,6 @@ export abstract class BasePeopleComponent<
 
   protected revokeWarningMessage(): string {
     return this.i18nService.t("revokeUserConfirmation");
-  }
-
-  protected restoreWarningMessage(): string {
-    return this.i18nService.t("restoreUserConfirmation");
   }
 
   protected getCheckedUsers() {

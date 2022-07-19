@@ -284,17 +284,6 @@ export class UserAddEditComponent implements OnInit {
       return;
     }
 
-    const confirmed = await this.platformUtilsService.showDialog(
-      this.i18nService.t("restoreUserConfirmation"),
-      this.i18nService.t("restoreUserId", this.name),
-      this.i18nService.t("restoreAccess"),
-      this.i18nService.t("cancel"),
-      "warning"
-    );
-    if (!confirmed) {
-      return false;
-    }
-
     try {
       this.formPromise = this.apiService.restoreOrganizationUser(
         this.organizationId,

@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 
-import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { ModalConfig } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -26,7 +25,6 @@ export class BulkRestoreRevokeComponent {
   constructor(
     protected apiService: ApiService,
     protected i18nService: I18nService,
-    private modalRef: ModalRef,
     config: ModalConfig
   ) {
     this.isRevoking = config.data.isRevoking;
@@ -37,11 +35,6 @@ export class BulkRestoreRevokeComponent {
   get bulkTitle() {
     const titleKey = this.isRevoking ? "revokeUsers" : "restoreUsers";
     return this.i18nService.t(titleKey);
-  }
-
-  get usersWarning() {
-    const warningKey = this.isRevoking ? "revokeUsersWarning" : "restoreUsersWarning";
-    return this.i18nService.t(warningKey);
   }
 
   async submit() {
