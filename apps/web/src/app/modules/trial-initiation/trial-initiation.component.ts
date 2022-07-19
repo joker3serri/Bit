@@ -7,8 +7,14 @@ import { first } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { PlanType } from "@bitwarden/common/enums/planType";
 import { ProductType } from "@bitwarden/common/enums/productType";
+import { PolicyData } from "@bitwarden/common/models/data/policyData";
+import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
+import { Policy } from "@bitwarden/common/models/domain/policy";
 
 import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.component";
 
@@ -24,6 +30,9 @@ export class TrialInitiationComponent implements OnInit {
   billingSubLabel = "";
   plan: PlanType;
   product: ProductType;
+  accountCreateOnly = true;
+  policies: Policy[];
+  enforcedPolicyOptions: MasterPasswordPolicyOptions;
   @ViewChild("stepper", { static: true }) verticalStepper: VerticalStepperComponent;
 
   orgInfoFormGroup = this.formBuilder.group({
@@ -35,17 +44,21 @@ export class TrialInitiationComponent implements OnInit {
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private titleCasePipe: TitleCasePipe,
+    private stateService: StateService,
     private apiService: ApiService,
+    private logService: LogService,
+    private policyService: PolicyService,
     private i18nService: I18nService
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.route.queryParams.pipe(first()).subscribe((qParams) => {
       if (qParams.email != null && qParams.email.indexOf("@") > -1) {
         this.email = qParams.email;
       }
       if (qParams.org) {
         this.org = qParams.org;
+        this.accountCreateOnly = false;
       }
 
       if (qParams.org === "families") {
@@ -59,6 +72,30 @@ export class TrialInitiationComponent implements OnInit {
         this.product = ProductType.Enterprise;
       }
     });
+
+    const invite = await this.stateService.getOrganizationInvitation();
+    if (invite != null) {
+      try {
+        const policies = await this.apiService.getPoliciesByToken(
+          invite.organizationId,
+          invite.token,
+          invite.email,
+          invite.organizationUserId
+        );
+        if (policies.data != null) {
+          const policiesData = policies.data.map((p) => new PolicyData(p));
+          this.policies = policiesData.map((p) => new Policy(p));
+        }
+      } catch (e) {
+        this.logService.error(e);
+      }
+    }
+
+    if (this.policies != null) {
+      this.enforcedPolicyOptions = await this.policyService.getMasterPasswordPolicyOptions(
+        this.policies
+      );
+    }
   }
 
   stepSelectionChange(event: StepperSelectionEvent) {
