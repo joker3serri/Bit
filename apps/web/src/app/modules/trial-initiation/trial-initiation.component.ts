@@ -3,7 +3,7 @@ import { TitleCasePipe } from "@angular/common";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { first, retry } from "rxjs";
+import { first } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
