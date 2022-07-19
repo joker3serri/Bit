@@ -13,8 +13,8 @@ import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organi
 import { OrganizationUpdateRequest } from "@bitwarden/common/models/request/organizationUpdateRequest";
 import { OrganizationResponse } from "@bitwarden/common/models/response/organizationResponse";
 
-import { ApiKeyComponent } from "../../settings/api-key.component";
-import { PurgeVaultComponent } from "../../settings/purge-vault.component";
+import { ApiKeyComponent } from "../../../settings/api-key.component";
+import { PurgeVaultComponent } from "../../../settings/purge-vault.component";
 
 import { DeleteOrganizationComponent } from "./delete-organization.component";
 

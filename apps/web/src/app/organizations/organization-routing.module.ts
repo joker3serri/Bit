@@ -8,9 +8,9 @@ import { OrganizationLayoutComponent } from "./layouts/organization-layout.compo
 import { GroupsComponent } from "./manage/groups.component";
 import { PeopleComponent } from "./manage/people.component";
 import { NavigationPermissionsService } from "./services/navigation-permissions.service";
-import { AccountComponent } from "./settings/account.component";
+import { AccountComponent } from "./settings/components/account.component";
+import { TwoFactorSetupComponent } from "./settings/components/two-factor-setup.component";
 import { SettingsComponent } from "./settings/settings.component";
-import { TwoFactorSetupComponent } from "./settings/two-factor-setup.component";
 import { VaultModule } from "./vault/vault.module";
 
 const routes: Routes = [

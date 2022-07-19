@@ -57,14 +57,6 @@ import { ResetPasswordPolicyComponent } from "../organizations/policies/reset-pa
 import { SendOptionsPolicyComponent } from "../organizations/policies/send-options.component";
 import { SingleOrgPolicyComponent } from "../organizations/policies/single-org.component";
 import { TwoFactorAuthenticationPolicyComponent } from "../organizations/policies/two-factor-authentication.component";
-import { AccountComponent as OrgAccountComponent } from "../organizations/settings/account.component";
-import { AdjustSubscription } from "../organizations/settings/adjust-subscription.component";
-import { ChangePlanComponent } from "../organizations/settings/change-plan.component";
-import { DeleteOrganizationComponent } from "../organizations/settings/delete-organization.component";
-import { DownloadLicenseComponent } from "../organizations/settings/download-license.component";
-import { ImageSubscriptionHiddenComponent as OrgSubscriptionHiddenComponent } from "../organizations/settings/image-subscription-hidden.component";
-import { SettingsComponent as OrgSettingComponent } from "../organizations/settings/settings.component";
-import { TwoFactorSetupComponent as OrgTwoFactorSetupComponent } from "../organizations/settings/two-factor-setup.component";
 import { AcceptFamilySponsorshipComponent } from "../organizations/sponsorships/accept-family-sponsorship.component";
 import { FamiliesForEnterpriseSetupComponent } from "../organizations/sponsorships/families-for-enterprise-setup.component";
 import { ExposedPasswordsReportComponent as OrgExposedPasswordsReportComponent } from "../organizations/tools/exposed-passwords-report.component";
@@ -172,7 +164,6 @@ import { SharedModule } from ".";
     AddEditCustomFieldsComponent,
     AdjustPaymentComponent,
     AdjustStorageComponent,
-    AdjustSubscription,
     ApiKeyComponent,
     AttachmentsComponent,
     BillingSyncKeyComponent,
@@ -184,15 +175,12 @@ import { SharedModule } from ".";
     ChangeEmailComponent,
     ChangeKdfComponent,
     ChangePasswordComponent,
-    ChangePlanComponent,
     CollectionsComponent,
     CreateOrganizationComponent,
     DeauthorizeSessionsComponent,
     DeleteAccountComponent,
-    DeleteOrganizationComponent,
     DisableSendPolicyComponent,
     DomainRulesComponent,
-    DownloadLicenseComponent,
     EmergencyAccessAddEditComponent,
     EmergencyAccessAttachmentsComponent,
     EmergencyAccessComponent,
@@ -211,7 +199,6 @@ import { SharedModule } from ".";
     NavbarComponent,
     NestedCheckboxComponent,
     OrganizationSwitcherComponent,
-    OrgAccountComponent,
     OrgAddEditComponent,
     OrganizationLayoutComponent,
     OrganizationPlansComponent,
@@ -235,10 +222,7 @@ import { SharedModule } from ".";
     OrgPolicyEditComponent,
     OrgResetPasswordComponent,
     OrgReusedPasswordsReportComponent,
-    OrgSettingComponent,
     OrgToolsComponent,
-    OrgTwoFactorSetupComponent,
-    OrgSubscriptionHiddenComponent,
     OrgUnsecuredWebsitesReportComponent,
     OrgUserAddEditComponent,
     OrgUserConfirmComponent,
@@ -316,7 +300,6 @@ import { SharedModule } from ".";
     AddEditCustomFieldsComponent,
     AdjustPaymentComponent,
     AdjustStorageComponent,
-    AdjustSubscription,
     ApiKeyComponent,
     AttachmentsComponent,
     BulkActionsComponent,
@@ -327,15 +310,12 @@ import { SharedModule } from ".";
     ChangeEmailComponent,
     ChangeKdfComponent,
     ChangePasswordComponent,
-    ChangePlanComponent,
     CollectionsComponent,
     CreateOrganizationComponent,
     DeauthorizeSessionsComponent,
     DeleteAccountComponent,
-    DeleteOrganizationComponent,
     DisableSendPolicyComponent,
     DomainRulesComponent,
-    DownloadLicenseComponent,
     EmergencyAccessAddEditComponent,
     EmergencyAccessAttachmentsComponent,
     EmergencyAccessComponent,
@@ -354,7 +334,6 @@ import { SharedModule } from ".";
     NavbarComponent,
     NestedCheckboxComponent,
     OrganizationSwitcherComponent,
-    OrgAccountComponent,
     OrgAddEditComponent,
     OrganizationLayoutComponent,
     OrganizationPlansComponent,
@@ -378,9 +357,7 @@ import { SharedModule } from ".";
     OrgPolicyEditComponent,
     OrgResetPasswordComponent,
     OrgReusedPasswordsReportComponent,
-    OrgSettingComponent,
     OrgToolsComponent,
-    OrgTwoFactorSetupComponent,
     OrgUnsecuredWebsitesReportComponent,
     OrgUserAddEditComponent,
     OrgUserConfirmComponent,
