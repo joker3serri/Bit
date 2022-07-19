@@ -57,7 +57,7 @@
                 Next
               </button>
             </app-vertical-step>
-            <app-vertical-step label="Billing">
+            <app-vertical-step label="Billing" [subLabel]="billingSubLabel">
               <app-billing
                 *ngIf="stepper.selectedIndex === 2"
                 [plan]="plan"
