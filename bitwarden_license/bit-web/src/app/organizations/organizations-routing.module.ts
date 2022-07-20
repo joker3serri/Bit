@@ -4,10 +4,10 @@ import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
 import { Permissions } from "@bitwarden/common/enums/permissions";
 
-import { SettingsComponent } from "src/app/modules/organizations/settings/settings.component";
 import { PermissionsGuard } from "src/app/organizations/guards/permissions.guard";
 import { OrganizationLayoutComponent } from "src/app/organizations/layouts/organization-layout.component";
 import { NavigationPermissionsService } from "src/app/organizations/services/navigation-permissions.service";
+import { SettingsComponent } from "src/app/organizations/settings/settings.component";
 
 import { ScimComponent } from "./manage/scim.component";
 import { SsoComponent } from "./manage/sso.component";

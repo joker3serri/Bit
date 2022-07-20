@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
+import { Permissions } from "@bitwarden/common/enums/permissions";
 
 import { PermissionsGuard } from "./guards/permissions.guard";
 import { OrganizationLayoutComponent } from "./layouts/organization-layout.component";
@@ -9,6 +10,7 @@ import { GroupsComponent } from "./manage/groups.component";
 import { PeopleComponent } from "./manage/people.component";
 import { NavigationPermissionsService } from "./services/navigation-permissions.service";
 import { AccountComponent } from "./settings/components/account.component";
+import { PoliciesComponent } from "./settings/components/policies.component";
 import { TwoFactorSetupComponent } from "./settings/components/two-factor-setup.component";
 import { SettingsComponent } from "./settings/settings.component";
 import { VaultModule } from "./vault/vault.module";
@@ -39,6 +41,15 @@ const routes: Routes = [
             path: "two-factor",
             component: TwoFactorSetupComponent,
             data: { titleId: "twoStepLogin" },
+          },
+          {
+            path: "policies",
+            component: PoliciesComponent,
+            canActivate: [PermissionsGuard],
+            data: {
+              permissions: [Permissions.ManagePolicies],
+              titleId: "policies",
+            },
           },
         ],
       },

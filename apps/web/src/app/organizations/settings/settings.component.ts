@@ -10,6 +10,7 @@ import { OrganizationService } from "@bitwarden/common/abstractions/organization
 export class SettingsComponent {
   access2fa = false;
   accessSso = false;
+  accessPolicies = false;
 
   constructor(private route: ActivatedRoute, private organizationService: OrganizationService) {}
 
@@ -18,6 +19,7 @@ export class SettingsComponent {
       const organization = await this.organizationService.get(params.organizationId);
       this.accessSso = organization.canManageSso && organization.useSso;
       this.access2fa = organization.use2fa;
+      this.accessPolicies = organization.canManagePolicies && organization.usePolicies;
     });
   }
 }

@@ -8,7 +8,7 @@ import { PolicyRequest } from "@bitwarden/common/models/request/policyRequest";
 import {
   BasePolicy,
   BasePolicyComponent,
-} from "src/app/organizations/policies/base-policy.component";
+} from "src/app/organizations/policies/components/base-policy.component";
 
 export class MaximumVaultTimeoutPolicy extends BasePolicy {
   name = "maximumVaultTimeout";

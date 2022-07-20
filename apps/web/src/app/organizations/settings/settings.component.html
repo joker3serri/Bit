@@ -8,6 +8,14 @@
             {{ "organizationInfo" | i18n }}
           </a>
           <a
+            routerLink="policies"
+            class="list-group-item"
+            routerLinkActive="active"
+            *ngIf="accessPolicies"
+          >
+            {{ "policies" | i18n }}
+          </a>
+          <a
             routerLink="two-factor"
             class="list-group-item"
             routerLinkActive="active"

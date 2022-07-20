@@ -8,6 +8,8 @@ import { ChangePlanComponent } from "./components/change-plan.component";
 import { DeleteOrganizationComponent } from "./components/delete-organization.component";
 import { DownloadLicenseComponent } from "./components/download-license.component";
 import { ImageSubscriptionHiddenComponent } from "./components/image-subscription-hidden.component";
+import { PoliciesComponent } from "./components/policies.component";
+import { PolicyEditComponent } from "./components/policy-edit.component";
 import { TwoFactorSetupComponent } from "./components/two-factor-setup.component";
 import { SettingsComponent } from "./settings.component";
 
@@ -22,6 +24,8 @@ import { SettingsComponent } from "./settings.component";
     DownloadLicenseComponent,
     ImageSubscriptionHiddenComponent,
     TwoFactorSetupComponent,
+    PoliciesComponent,
+    PolicyEditComponent,
   ],
   exports: [
     SettingsComponent,
@@ -32,6 +36,8 @@ import { SettingsComponent } from "./settings.component";
     DownloadLicenseComponent,
     ImageSubscriptionHiddenComponent,
     TwoFactorSetupComponent,
+    PoliciesComponent,
+    PolicyEditComponent,
   ],
 })
 export class OrganizationSettingsModule {}
