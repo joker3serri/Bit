@@ -644,6 +644,9 @@
   "newAccountCreated": {
     "message": "Your new account has been created! You may now log in."
   },
+  "trialAccountCreated": {
+    "message": "Account created successfully."
+  },
   "masterPassSent": {
     "message": "We've sent you an email with your master password hint."
   },
@@ -1669,6 +1672,12 @@
   "billing": {
     "message": "Billing"
   },
+  "billingPlanLabel": {
+    "message": "Billing Plan"
+  },
+  "paymentType": {
+    "message": "Payment Type"
+  },
   "accountCredit": {
     "message": "Account Credit",
     "description": "Financial term. In the case of Bitwarden, a positive balance means that you owe money, while a negative balance means that you have a credit (Bitwarden owes you money)."
@@ -1785,6 +1794,9 @@
   "year": {
     "message": "year"
   },
+  "yr": {
+    "message": "yr"
+  },
   "month": {
     "message": "month"
   },
@@ -1812,6 +1824,9 @@
   },
   "billingInformation": {
     "message": "Billing Information"
+  },
+  "billingTrialSubLabel": {
+    "message": "Your payment method will not be charged during the 7 day free trial."
   },
   "creditCard": {
     "message": "Credit Card"
@@ -2175,6 +2190,9 @@
   "annually": {
     "message": "Annually"
   },
+  "annual": {
+    "message": "Annual"
+  },
   "basePrice": {
     "message": "Base Price"
   },
@@ -2241,7 +2259,7 @@
   "removeUserConfirmation": {
     "message": "Are you sure you want to remove this user?"
   },
-  "removeUserDesc": {
+  "removeOrgUserConfirmation": {
     "message": "When a member is removed, they no longer have access to organization data and this action is irreversible. To add the member back to the organization, they must be invited and onboarded again."
   },
   "revokeUserConfirmation": {
@@ -4288,7 +4306,7 @@
   "removeUsersWarning": {
     "message": "Are you sure you want to remove the following users? The process may take a few seconds to complete and cannot be interrupted or canceled."
   },
-  "removeUsersDesc": {
+  "removeOrgUsersConfirmation": {
     "message": "When member(s) are removed, they no longer have access to organization data and this action is irreversible. To add the member back to the organization, they must be invited and onboarded again. The process may take a few seconds to complete and cannot be interrupted or canceled."
   },
   "revokeUsersWarning": {
