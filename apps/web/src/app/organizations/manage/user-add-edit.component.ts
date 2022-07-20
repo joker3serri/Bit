@@ -214,7 +214,9 @@ export class UserAddEditComponent implements OnInit {
       return;
     }
 
-    const message = this.usesKeyConnector ? "removeUserConfirmationKeyConnector" : "removeUserDesc";
+    const message = this.usesKeyConnector
+      ? "removeUserConfirmationKeyConnector"
+      : "removeOrgUserConfirmation";
     const confirmed = await this.platformUtilsService.showDialog(
       this.i18nService.t(message),
       this.i18nService.t("removeUserIdAccess", this.name),

@@ -2259,7 +2259,7 @@
   "removeUserConfirmation": {
     "message": "Are you sure you want to remove this user?"
   },
-  "removeUserDesc": {
+  "removeOrgUserConfirmation": {
     "message": "When a member is removed, they no longer have access to organization data and this action is irreversible. To add the member back to the organization, they must be invited and onboarded again."
   },
   "revokeUserConfirmation": {
@@ -4306,7 +4306,7 @@
   "removeUsersWarning": {
     "message": "Are you sure you want to remove the following users? The process may take a few seconds to complete and cannot be interrupted or canceled."
   },
-  "removeUsersDesc": {
+  "removeOrgUsersConfirmation": {
     "message": "When member(s) are removed, they no longer have access to organization data and this action is irreversible. To add the member back to the organization, they must be invited and onboarded again. The process may take a few seconds to complete and cannot be interrupted or canceled."
   },
   "revokeUsersWarning": {
