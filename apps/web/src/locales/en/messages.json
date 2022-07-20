@@ -2185,9 +2185,9 @@
     }
   },
   "trialThankYou": {
-    "message": "Thanks for signing up for Bitwarden for $VALUE$!",
+    "message": "Thanks for signing up for Bitwarden for $PLAN$!",
     "placeholders": {
-      "value": {
+      "plan": {
         "content": "$1",
         "example": "Teams"
       }
