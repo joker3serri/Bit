@@ -1,10 +1,10 @@
 import { SecureNoteType } from "../../enums/secureNoteType";
-import { ParsedObject } from "../../types/serializationTypes";
+import { ParsedObject, StoredObject } from "../../models/storable";
 import { SecureNote } from "../domain/secureNote";
 
 import { ItemView } from "./itemView";
 
-export class SecureNoteView extends ItemView {
+export class SecureNoteView extends ItemView<SecureNoteView> {
   type: SecureNoteType = null;
 
   constructor(n?: SecureNote) {
@@ -18,6 +18,10 @@ export class SecureNoteView extends ItemView {
 
   get subTitle(): string {
     return null;
+  }
+
+  toJSON(): StoredObject<SecureNoteView> {
+    return this;
   }
 
   static fromJSON(obj: ParsedObject<SecureNoteView>): SecureNoteView {

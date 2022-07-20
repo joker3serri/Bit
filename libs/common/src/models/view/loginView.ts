@@ -1,4 +1,4 @@
-import { ParsedObject } from "@bitwarden/common/types/serializationTypes";
+import { ParsedObject, StoredObject } from "@bitwarden/common/models/storable";
 
 import { LoginLinkedId as LinkedId } from "../../enums/linkedIdType";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
@@ -8,7 +8,7 @@ import { Login } from "../domain/login";
 import { ItemView } from "./itemView";
 import { LoginUriView } from "./loginUriView";
 
-export class LoginView extends ItemView {
+export class LoginView extends ItemView<LoginView> {
   @linkedFieldOption(LinkedId.Username)
   username: string = null;
   @linkedFieldOption(LinkedId.Password)
@@ -61,6 +61,10 @@ export class LoginView extends ItemView {
 
   get hasUris(): boolean {
     return this.uris != null && this.uris.length > 0;
+  }
+
+  toJSON(): StoredObject<LoginView> {
+    return this;
   }
 
   static fromJSON(obj: ParsedObject<LoginView>): LoginView {

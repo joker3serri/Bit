@@ -19,7 +19,7 @@ describe("CardView", () => {
     expect(actual).toEqual(testValues);
   });
 
-  it("fromJSON hydrates new view object", () => {
+  it("fromJSON initializes new view object", () => {
     const actual = CardView.fromJSON(testValues);
 
     const expected = new CardView();
