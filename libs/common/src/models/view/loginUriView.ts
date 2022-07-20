@@ -1,4 +1,4 @@
-import { ParsedObject, Storable, StoredObject } from "@bitwarden/common/models/storable";
+import { ParsedObject, Storable, StringifyObject } from "@bitwarden/common/models/storable";
 
 import { UriMatchType } from "../../enums/uriMatchType";
 import { Utils } from "../../misc/utils";
@@ -129,7 +129,7 @@ export class LoginUriView extends Storable<LoginUriView> implements View {
       : this.uri;
   }
 
-  toJSON(): StoredObject<LoginUriView> {
+  toJSON(): StringifyObject<LoginUriView> {
     // Needed to serialize getters which are not included by JSON.stringify
     return {
       match: this.match,

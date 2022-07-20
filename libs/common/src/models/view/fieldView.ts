@@ -1,4 +1,4 @@
-import { ParsedObject, Storable, StoredObject } from "@bitwarden/common/models/storable";
+import { ParsedObject, Storable, StringifyObject } from "@bitwarden/common/models/storable";
 
 import { FieldType } from "../../enums/fieldType";
 import { LinkedIdType } from "../../enums/linkedIdType";
@@ -30,7 +30,7 @@ export class FieldView extends Storable<FieldView> implements View {
     return this.value != null ? "••••••••" : null;
   }
 
-  toJSON(): StoredObject<FieldView> {
+  toJSON(): StringifyObject<FieldView> {
     return this;
   }
 

@@ -1,4 +1,4 @@
-import { ParsedObject, Storable, StoredObject } from "@bitwarden/common/models/storable";
+import { ParsedObject, Storable, StringifyObject } from "@bitwarden/common/models/storable";
 
 import { CardLinkedId as LinkedId } from "../../enums/linkedIdType";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
@@ -78,7 +78,7 @@ export class CardView extends ItemView<CardView> {
     return year.length === 2 ? "20" + year : year;
   }
 
-  toJSON(): StoredObject<CardView> {
+  toJSON(): StringifyObject<CardView> {
     // Needed to serialize getters which are not included by JSON.stringify
     return {
       cardholderName: this.cardholderName,

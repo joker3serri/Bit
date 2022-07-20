@@ -1,4 +1,4 @@
-import { ParsedObject, Storable, StoredObject } from "@bitwarden/common/models/storable";
+import { ParsedObject, Storable, StringifyObject } from "@bitwarden/common/models/storable";
 
 import { Attachment } from "../domain/attachment";
 import { SymmetricCryptoKey } from "../domain/symmetricCryptoKey";
@@ -37,7 +37,7 @@ export class AttachmentView extends Storable<AttachmentView> implements View {
     return 0;
   }
 
-  toJSON(): StoredObject<AttachmentView> {
+  toJSON(): StringifyObject<AttachmentView> {
     return this;
   }
 

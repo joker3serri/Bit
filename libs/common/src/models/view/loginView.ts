@@ -1,4 +1,4 @@
-import { ParsedObject, StoredObject } from "@bitwarden/common/models/storable";
+import { ParsedObject, StringifyObject } from "@bitwarden/common/models/storable";
 
 import { LoginLinkedId as LinkedId } from "../../enums/linkedIdType";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
@@ -63,7 +63,7 @@ export class LoginView extends ItemView<LoginView> {
     return this.uris != null && this.uris.length > 0;
   }
 
-  toJSON(): StoredObject<LoginView> {
+  toJSON(): StringifyObject<LoginView> {
     return this;
   }
 

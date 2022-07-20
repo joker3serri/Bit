@@ -10,7 +10,7 @@ export abstract class Storable<T extends object> {
    * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#tojson_behavior
    * If no custom logic is required, you can just return `this` to rely on the default behaviour.
    */
-  abstract toJSON(): StoredObject<T>;
+  abstract toJSON(): StringifyObject<T>;
 
   // You should also implement a static method to initialize a new object:
   // static fromJSON(obj: ParsedObject<T>): T;
@@ -19,7 +19,7 @@ export abstract class Storable<T extends object> {
 /**
  * An object that can be serialized using JSON.stringify() without data loss. Returned by toJSON()
  */
-export type StoredObject<T extends object> = {
+export type StringifyObject<T extends object> = {
   [K in keyof T]?: T[K] extends SerializablePrimitives | SerializablePrimitives[]
     ? T[K]
     : T[K] extends Array<any>
