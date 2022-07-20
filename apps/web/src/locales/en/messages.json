@@ -5264,5 +5264,8 @@
   },
   "on": {
     "message": "On"
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }
