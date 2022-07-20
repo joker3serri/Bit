@@ -44,7 +44,6 @@ import { ApiService } from "@bitwarden/common/services/api.service";
 import { AppIdService } from "@bitwarden/common/services/appId.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
 import { AuthService } from "@bitwarden/common/services/auth.service";
-import { BroadcasterService } from "@bitwarden/common/services/broadcaster.service";
 import { CipherService } from "@bitwarden/common/services/cipher.service";
 import { CollectionService } from "@bitwarden/common/services/collection.service";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
@@ -150,8 +149,10 @@ export default class MainBackground {
   vaultFilterService: VaultFilterService;
   usernameGenerationService: UsernameGenerationServiceAbstraction;
   encryptService: EncryptService;
-  broadcasterService: BroadcasterService;
   folderApiService: FolderApiServiceAbstraction;
+
+  // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
+  backgroundWindow = window;
 
   onUpdatedRan: boolean;
   onReplacedRan: boolean;
@@ -269,13 +270,11 @@ export default class MainBackground {
       this.logService,
       this.stateService
     );
-    this.broadcasterService = new BroadcasterService();
     this.folderService = new FolderService(
       this.cryptoService,
       this.i18nService,
       this.cipherService,
-      this.stateService,
-      this.broadcasterService
+      this.stateService
     );
     this.folderApiService = new FolderApiService(this.folderService, this.apiService);
     this.collectionService = new CollectionService(
