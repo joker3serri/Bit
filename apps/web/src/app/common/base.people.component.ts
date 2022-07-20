@@ -264,18 +264,6 @@ export abstract class BasePeopleComponent<
   }
 
   async activate(user: UserType) {
-    const confirmed = await this.platformUtilsService.showDialog(
-      this.activateWarningMessage(),
-      this.i18nService.t("activateUserId", this.userNamePipe.transform(user)),
-      this.i18nService.t("activate"),
-      this.i18nService.t("cancel"),
-      "warning"
-    );
-
-    if (!confirmed) {
-      return false;
-    }
-
     this.actionPromise = this.activateUser(user.id);
     try {
       await this.actionPromise;
