@@ -29,6 +29,10 @@ export class SessionSyncer {
   }
 
   init() {
+    if (chrome.runtime.getManifest().manifest_version != 3) {
+      return;
+    }
+
     this.observe(this.behaviorSubject);
     this.listenForUpdates(this.behaviorSubject);
   }
@@ -53,7 +57,6 @@ export class SessionSyncer {
   }
 
   async updateFromMessage(message: any) {
-    // TODO MDG: use message sender instead of id?
     if (message.id === this.id) {
       return;
     }

@@ -23,5 +23,6 @@ global.chrome = {
       addListener: fn,
     },
     sendMessage: fn,
+    getManifest: fn,
   },
 } as any;

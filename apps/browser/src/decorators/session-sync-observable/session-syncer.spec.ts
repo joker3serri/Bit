@@ -13,6 +13,12 @@ describe("session syncer", () => {
   let sut: SessionSyncer;
 
   beforeEach(() => {
+    jest.spyOn(chrome.runtime, "getManifest").mockReturnValue({
+      name: "bitwarden-test",
+      version: "0.0.0",
+      manifest_version: 3,
+    });
+
     stateService = Substitute.for<StateService>();
   });
 
@@ -75,12 +81,39 @@ describe("session syncer", () => {
         sut.init();
       });
 
-      it("should start observing", () => {
-        expect(observeSpy).toHaveBeenCalled();
+      describe("manifest v3", () => {
+        beforeEach(() => {
+          sut.init();
+        });
+
+        it("should start observing", () => {
+          expect(observeSpy).toHaveBeenCalled();
+        });
+
+        it("should start listening", () => {
+          expect(listenForUpdatesSpy).toHaveBeenCalled();
+        });
       });
 
-      it("should start listening", () => {
-        expect(listenForUpdatesSpy).toHaveBeenCalled();
+      describe("not manifest v2", () => {
+        beforeEach(() => {
+          jest.resetAllMocks();
+          jest.spyOn(chrome.runtime, "getManifest").mockReturnValue({
+            name: "bitwarden-test",
+            version: "0.0.0",
+            manifest_version: 2,
+          });
+
+          sut.init();
+        });
+
+        it("should not start observing", () => {
+          expect(observeSpy).not.toHaveBeenCalled();
+        });
+
+        it("should not start listening", () => {
+          expect(listenForUpdatesSpy).not.toHaveBeenCalled();
+        });
       });
     });
 
