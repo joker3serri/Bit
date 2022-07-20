@@ -2194,9 +2194,9 @@
     }
   },
   "trialPaidInfoMessage": {
-    "message": "Your $VALUE$ 7 day free trial will be converted to a paid subscription after 7 days.",
+    "message": "Your $PLAN$ 7 day free trial will be converted to a paid subscription after 7 days.",
     "placeholders": {
-      "value": {
+      "plan": {
         "content": "$1",
         "example": "Teams"
       }
