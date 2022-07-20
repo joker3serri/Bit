@@ -1,19 +1,25 @@
-import { ParsedObject } from "@bitwarden/common/types/serializationTypes";
+import { ParsedObject, Storable, StoredObject } from "@bitwarden/common/models/storable";
 
 import { Password } from "../domain/password";
 
 import { View } from "./view";
 
-export class PasswordHistoryView implements View {
+export class PasswordHistoryView extends Storable<PasswordHistoryView> implements View {
   password: string = null;
   lastUsedDate: Date = null;
 
   constructor(ph?: Password) {
+    super();
+
     if (!ph) {
       return;
     }
 
     this.lastUsedDate = ph.lastUsedDate;
+  }
+
+  toJSON(): StoredObject<PasswordHistoryView> {
+    return this;
   }
 
   static fromJSON(obj: ParsedObject<PasswordHistoryView>): PasswordHistoryView {

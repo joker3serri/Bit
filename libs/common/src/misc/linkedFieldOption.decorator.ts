@@ -17,7 +17,7 @@ export class LinkedMetadata {
  *    of the class property will be used as the i18n key.
  */
 export function linkedFieldOption(id: LinkedIdType, i18nKey?: string) {
-  return (prototype: ItemView, propertyKey: string) => {
+  return (prototype: ItemView<any>, propertyKey: string) => {
     if (prototype.linkedFieldOptions == null) {
       prototype.linkedFieldOptions = new Map<LinkedIdType, LinkedMetadata>();
     }

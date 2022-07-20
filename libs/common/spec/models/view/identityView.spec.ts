@@ -31,7 +31,7 @@ describe("IdentityView", () => {
     expect(actual).toEqual(testValues);
   });
 
-  it("fromJSON hydrates new view object", () => {
+  it("fromJSON initializes new view object", () => {
     const actual = IdentityView.fromJSON(testValues);
 
     const expected = new IdentityView();

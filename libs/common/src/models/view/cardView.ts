@@ -1,11 +1,11 @@
-import { ParsedObject, SerializableObject } from "@bitwarden/common/types/serializationTypes";
+import { ParsedObject, Storable, StoredObject } from "@bitwarden/common/models/storable";
 
 import { CardLinkedId as LinkedId } from "../../enums/linkedIdType";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 
 import { ItemView } from "./itemView";
 
-export class CardView extends ItemView {
+export class CardView extends ItemView<CardView> {
   @linkedFieldOption(LinkedId.CardholderName)
   cardholderName: string = null;
   @linkedFieldOption(LinkedId.ExpMonth, "expirationMonth")
@@ -18,10 +18,6 @@ export class CardView extends ItemView {
   private _brand: string = null;
   private _number: string = null;
   private _subTitle: string = null;
-
-  constructor() {
-    super();
-  }
 
   get maskedCode(): string {
     return this.code != null ? "•".repeat(this.code.length) : null;
@@ -82,7 +78,7 @@ export class CardView extends ItemView {
     return year.length === 2 ? "20" + year : year;
   }
 
-  toJSON(): SerializableObject<CardView> {
+  toJSON(): StoredObject<CardView> {
     // Needed to serialize getters which are not included by JSON.stringify
     return {
       cardholderName: this.cardholderName,

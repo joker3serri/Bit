@@ -1,4 +1,4 @@
-import { ParsedObject, SerializableObject } from "@bitwarden/common/types/serializationTypes";
+import { ParsedObject, Storable, StoredObject } from "@bitwarden/common/models/storable";
 
 import { UriMatchType } from "../../enums/uriMatchType";
 import { Utils } from "../../misc/utils";
@@ -22,7 +22,7 @@ const CanLaunchWhitelist = [
   "androidapp://",
 ];
 
-export class LoginUriView implements View {
+export class LoginUriView extends Storable<LoginUriView> implements View {
   match: UriMatchType = null;
 
   private _uri: string = null;
@@ -32,6 +32,8 @@ export class LoginUriView implements View {
   private _canLaunch: boolean = null;
 
   constructor(u?: LoginUri) {
+    super();
+
     if (!u) {
       return;
     }
@@ -127,7 +129,7 @@ export class LoginUriView implements View {
       : this.uri;
   }
 
-  toJSON(): SerializableObject<LoginUriView> {
+  toJSON(): StoredObject<LoginUriView> {
     // Needed to serialize getters which are not included by JSON.stringify
     return {
       match: this.match,

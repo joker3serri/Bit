@@ -1,8 +1,9 @@
 import { Utils } from "@bitwarden/common/misc/utils";
 
 import { EncryptionType } from "../../enums/encryptionType";
+import { ParsedObject, Storable, StoredObject } from "../storable";
 
-export class SymmetricCryptoKey {
+export class SymmetricCryptoKey extends Storable<SymmetricCryptoKey> {
   key: ArrayBuffer;
   encKey?: ArrayBuffer;
   macKey?: ArrayBuffer;
@@ -15,6 +16,8 @@ export class SymmetricCryptoKey {
   meta: any;
 
   constructor(key: ArrayBuffer, encType?: EncryptionType) {
+    super();
+
     if (key == null) {
       throw new Error("Must provide key");
     }
@@ -56,12 +59,12 @@ export class SymmetricCryptoKey {
     }
   }
 
-  toJSON(): any {
+  toJSON(): StoredObject<SymmetricCryptoKey> {
     // The whole object is constructed from the initial key, so just store the B64 key
     return { keyB64: this.keyB64 };
   }
 
-  static fromJSON(obj: any): SymmetricCryptoKey {
+  static fromJSON(obj: ParsedObject<SymmetricCryptoKey>): SymmetricCryptoKey {
     if (obj == null) {
       return null;
     }

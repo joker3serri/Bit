@@ -1,11 +1,11 @@
-import { ParsedObject } from "@bitwarden/common/types/serializationTypes";
+import { ParsedObject, Storable, StoredObject } from "@bitwarden/common/models/storable";
 
 import { Attachment } from "../domain/attachment";
 import { SymmetricCryptoKey } from "../domain/symmetricCryptoKey";
 
 import { View } from "./view";
 
-export class AttachmentView implements View {
+export class AttachmentView extends Storable<AttachmentView> implements View {
   id: string = null;
   url: string = null;
   size: string = null;
@@ -14,6 +14,8 @@ export class AttachmentView implements View {
   key: SymmetricCryptoKey = null;
 
   constructor(a?: Attachment) {
+    super();
+
     if (!a) {
       return;
     }
@@ -33,6 +35,10 @@ export class AttachmentView implements View {
       // Invalid file size.
     }
     return 0;
+  }
+
+  toJSON(): StoredObject<AttachmentView> {
+    return this;
   }
 
   static fromJSON(obj: ParsedObject<AttachmentView>): AttachmentView {
