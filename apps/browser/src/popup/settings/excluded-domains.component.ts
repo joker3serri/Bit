@@ -9,8 +9,6 @@ import { Utils } from "@bitwarden/common/misc/utils";
 
 import { BrowserApi } from "../../browser/browserApi";
 
-import { Item } from "./../../../../../libs/common/src/importers/onepasswordImporters/types/onepassword1PuxImporterTypes";
-
 interface ExcludedDomain {
   uri: string;
   showCurrentUris: boolean;
