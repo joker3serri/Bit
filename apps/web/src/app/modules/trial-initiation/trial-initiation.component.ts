@@ -2,7 +2,7 @@ import { StepperSelectionEvent } from "@angular/cdk/stepper";
 import { TitleCasePipe } from "@angular/common";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -10,6 +10,8 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { PlanType } from "@bitwarden/common/enums/planType";
+import { ProductType } from "@bitwarden/common/enums/productType";
 import { PolicyData } from "@bitwarden/common/models/data/policyData";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
 import { Policy } from "@bitwarden/common/models/domain/policy";
@@ -24,22 +26,24 @@ export class TrialInitiationComponent implements OnInit {
   email = "";
   org = "teams";
   orgInfoSubLabel = "";
+  orgId = "";
+  orgLabel = "";
+  billingSubLabel = "";
+  plan: PlanType;
+  product: ProductType;
   accountCreateOnly = true;
   policies: Policy[];
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
-  @ViewChild("stepper", { static: true }) verticalStepper: VerticalStepperComponent;
+  @ViewChild("stepper", { static: false }) verticalStepper: VerticalStepperComponent;
 
   orgInfoFormGroup = this.formBuilder.group({
     name: ["", [Validators.required]],
-    additionalStorage: [0, [Validators.min(0), Validators.max(99)]],
-    additionalSeats: [0, [Validators.min(0), Validators.max(100000)]],
-    businessName: [""],
-    plan: [],
-    product: [],
+    email: [""],
   });
 
   constructor(
     private route: ActivatedRoute,
+    protected router: Router,
     private formBuilder: FormBuilder,
     private titleCasePipe: TitleCasePipe,
     private stateService: StateService,
@@ -54,9 +58,24 @@ export class TrialInitiationComponent implements OnInit {
       if (qParams.email != null && qParams.email.indexOf("@") > -1) {
         this.email = qParams.email;
       }
-      if (qParams.org) {
-        this.org = qParams.org;
-        this.accountCreateOnly = false;
+
+      if (!qParams.org) {
+        return;
+      }
+
+      this.org = qParams.org;
+      this.orgLabel = this.titleCasePipe.transform(this.org);
+      this.accountCreateOnly = false;
+
+      if (qParams.org === "families") {
+        this.plan = PlanType.FamiliesAnnually;
+        this.product = ProductType.Families;
+      } else if (qParams.org === "teams") {
+        this.plan = PlanType.TeamsAnnually;
+        this.product = ProductType.Teams;
+      } else if (qParams.org === "enterprise") {
+        this.plan = PlanType.EnterpriseAnnually;
+        this.product = ProductType.Enterprise;
       }
     });
 
@@ -93,10 +112,34 @@ export class TrialInitiationComponent implements OnInit {
     } else if (event.previouslySelectedIndex === 1) {
       this.orgInfoSubLabel = this.orgInfoFormGroup.controls.name.value;
     }
+
+    //set billing sub label
+    if (event.selectedIndex === 2) {
+      this.billingSubLabel = this.i18nService.t("billingTrialSubLabel");
+    }
   }
 
   createdAccount(email: string) {
     this.email = email;
+    this.orgInfoFormGroup.get("email")?.setValue(email);
     this.verticalStepper.next();
+  }
+
+  billingSuccess(event: any) {
+    this.orgId = event?.orgId;
+    this.billingSubLabel = event?.subLabelText;
+    this.verticalStepper.next();
+  }
+
+  navigateToOrgVault() {
+    this.router.navigate(["organizations", this.orgId, "vault"]);
+  }
+
+  navigateToOrgInvite() {
+    this.router.navigate(["organizations", this.orgId, "manage", "people"]);
+  }
+
+  previousStep() {
+    this.verticalStepper.previous();
   }
 }
