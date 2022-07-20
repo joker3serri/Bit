@@ -6,5 +6,5 @@ import { Component, Input } from "@angular/core";
 })
 export class ConfirmationDetailsComponent {
   @Input() email: string;
-  @Input() orgType: string;
+  @Input() orgLabel: string;
 }

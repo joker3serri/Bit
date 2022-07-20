@@ -27,13 +27,14 @@ export class TrialInitiationComponent implements OnInit {
   org = "teams";
   orgInfoSubLabel = "";
   orgId = "";
+  orgLabel = "";
   billingSubLabel = "";
   plan: PlanType;
   product: ProductType;
   accountCreateOnly = true;
   policies: Policy[];
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
-  @ViewChild("stepper", { static: true }) verticalStepper: VerticalStepperComponent;
+  @ViewChild("stepper", { static: false }) verticalStepper: VerticalStepperComponent;
 
   orgInfoFormGroup = this.formBuilder.group({
     name: ["", [Validators.required]],
@@ -63,6 +64,7 @@ export class TrialInitiationComponent implements OnInit {
       }
 
       this.org = qParams.org;
+      this.orgLabel = this.titleCasePipe.transform(this.org);
       this.accountCreateOnly = false;
 
       if (qParams.org === "families") {

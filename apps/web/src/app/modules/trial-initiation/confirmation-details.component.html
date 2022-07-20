@@ -1,17 +1,16 @@
 <div class="tw-pl-6 tw-pb-6">
-  <p class="tw-text-xl">Thanks for signing up for Bitwarden for {{ orgType | titlecase }}!</p>
+  <p class="tw-text-xl">{{ "trialThankYou" | i18n: orgLabel }}</p>
   <ul class="tw-list-disc">
     <li>
       <p>
-        We've sent a confirmation email to your team's billing email at
+        {{ "trialConfirmationEmail" | i18n }}
         <span class="tw-font-bold">{{ email }}</span
         >.
       </p>
     </li>
     <li>
       <p>
-        Your {{ orgType | titlecase }} 7 day free trial will be converted to a paid subscription
-        after 7 days.
+        {{ "trialPaidInfoMessage" | i18n: orgLabel }}
       </p>
     </li>
   </ul>
