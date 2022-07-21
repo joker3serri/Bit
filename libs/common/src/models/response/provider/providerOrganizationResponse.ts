@@ -1,5 +1,3 @@
-import internal from "stream";
-
 import { BaseResponse } from "../baseResponse";
 
 export class ProviderOrganizationResponse extends BaseResponse {
