@@ -1,3 +1,5 @@
+import internal from "stream";
+
 import { BaseResponse } from "../baseResponse";
 
 export class ProviderOrganizationResponse extends BaseResponse {
@@ -8,6 +10,9 @@ export class ProviderOrganizationResponse extends BaseResponse {
   settings: string;
   creationDate: string;
   revisionDate: string;
+  userCount?: number;
+  seats?: number;
+  plan?: string;
 
   constructor(response: any) {
     super(response);
@@ -18,6 +23,9 @@ export class ProviderOrganizationResponse extends BaseResponse {
     this.settings = this.getResponseProperty("Settings");
     this.creationDate = this.getResponseProperty("CreationDate");
     this.revisionDate = this.getResponseProperty("RevisionDate");
+    this.userCount = this.getResponseProperty("UserCount");
+    this.seats = this.getResponseProperty("Seats");
+    this.plan = this.getResponseProperty("Plan");
   }
 }
 
