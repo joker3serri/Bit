@@ -6,15 +6,15 @@ import { SendData } from "@bitwarden/common/models/data/sendData";
 import { StorageOptions } from "@bitwarden/common/models/domain/storageOptions";
 import { StateService as BaseStateService } from "@bitwarden/common/services/state.service";
 
-import { Account } from "../../models/account";
-import { GlobalState } from "../../models/globalState";
+import { Account } from "./account";
+import { GlobalState } from "./global-state";
 
 export class StateService
   extends BaseStateService<GlobalState, Account>
   implements StateServiceAbstraction
 {
   async addAccount(account: Account) {
-    // Apply web overides to default account values
+    // Apply web overrides to default account values
     account = new Account(account);
     await super.addAccount(account);
   }

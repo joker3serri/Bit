@@ -23,8 +23,6 @@ import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.s
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 
-import { Account } from "../../models/account";
-import { GlobalState } from "../../models/globalState";
 import { HomeGuard } from "../guards/home.guard";
 import { PermissionsGuard as OrgPermissionsGuard } from "../organizations/guards/permissions.guard";
 import { NavigationPermissionsService as OrgPermissionsService } from "../organizations/services/navigation-permissions.service";
@@ -39,7 +37,9 @@ import { PasswordRepromptService } from "./password-reprompt.service";
 import { PolicyListService } from "./policy-list.service";
 import { RouterService } from "./router.service";
 import { StateMigrationService } from "./state-migration.service";
-import { StateService } from "./state.service";
+import { Account } from "./state/account";
+import { GlobalState } from "./state/global-state";
+import { StateService } from "./state/state.service";
 import { WebFileDownloadService } from "./web-file-download.service";
 import { WebPlatformUtilsService } from "./web-platform-utils.service";
 
