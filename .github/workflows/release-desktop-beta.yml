@@ -873,7 +873,7 @@ jobs:
           if-no-files-found: error
 
   release:
-    name: MacOS Package Prod Release Asset
+    name: Release beta channel to S3
     runs-on: ubuntu-20.04
     needs:
       - setup
