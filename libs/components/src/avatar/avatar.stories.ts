@@ -26,6 +26,12 @@ export default {
   args: {
     name: "Jason Doe",
   },
+  parameters: {
+    design: {
+      type: "figma",
+      url: "https://www.figma.com/file/Zt3YSeb6E6lebAffrNLa0h/Tailwind-Component-Library?node-id=1717%3A15868",
+    },
+  },
 } as Meta;
 
 const Template: Story<AvatarComponent> = (args: AvatarComponent) => ({
