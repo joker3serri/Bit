@@ -69,8 +69,8 @@ export class OrganizationExportComponent extends ExportComponent {
   async collectEvent(): Promise<any> {
     await this.eventService.collect(
       EventType.Organization_ClientExportedVault,
-      undefined,
-      undefined,
+      null,
+      null,
       this.organizationId
     );
   }
