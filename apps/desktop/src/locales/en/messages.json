@@ -1397,7 +1397,16 @@
     "message": "Delete account"
   },
   "deleteAccountDesc": {
+    "message": "Proceed below to delete your account and all vault data."
+  },
+  "deleteAccountWarning": {
     "message": "Deleting your account is permanent. It cannot be undone."
+  },
+  "accountDeleted": {
+    "message": "Account deleted"
+  },
+  "accountDeletedDesc": {
+    "message": "Your Bitwarden account and vault data were permanently deleted."
   },
   "preferences": {
     "message": "Preferences"
@@ -1981,5 +1990,5 @@
   },
   "cardBrandMir": {
     "message": "Mir"
-  }  
+  }
 }
