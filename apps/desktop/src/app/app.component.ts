@@ -40,6 +40,7 @@ import { CipherType } from "@bitwarden/common/enums/cipherType";
 
 import { MenuUpdateRequest } from "../main/menu/menu.updater";
 
+import { DeleteAccountComponent } from "./accounts/delete-account.component";
 import { PremiumComponent } from "./accounts/premium.component";
 import { SettingsComponent } from "./accounts/settings.component";
 import { ExportComponent } from "./vault/export.component";
@@ -219,6 +220,9 @@ export class AppComponent implements OnInit {
             }
             break;
           }
+          case "deleteAccount":
+            this.modalService.open(DeleteAccountComponent, { replaceTopModal: true });
+            break;
           case "openPasswordHistory":
             await this.openModal<PasswordGeneratorHistoryComponent>(
               PasswordGeneratorHistoryComponent,
