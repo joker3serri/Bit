@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: setup
     env:
-      _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
+      _PACKAGE_VERSION: ${{ needs.setup.outputs.release-version }}
     defaults:
       run:
         working-directory: apps/desktop
@@ -172,7 +172,7 @@ jobs:
         shell: pwsh
         working-directory: apps/desktop
     env:
-      _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
+      _PACKAGE_VERSION: ${{ needs.setup.outputs.release-version }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
@@ -362,7 +362,7 @@ jobs:
     runs-on: macos-11
     needs: setup
     env:
-      _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
+      _PACKAGE_VERSION: ${{ needs.setup.outputs.release-version }}
     defaults:
       run:
         working-directory: apps/desktop
@@ -489,7 +489,7 @@ jobs:
       - setup
       - macos-build
     env:
-      _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
+      _PACKAGE_VERSION: ${{ needs.setup.outputs.release-version }}
     defaults:
       run:
         working-directory: apps/desktop
@@ -695,7 +695,7 @@ jobs:
       - setup
       - macos-build
     env:
-      _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
+      _PACKAGE_VERSION: ${{ needs.setup.outputs.release-version }}
     defaults:
       run:
         working-directory: apps/desktop
