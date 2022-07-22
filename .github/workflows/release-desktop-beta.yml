@@ -24,14 +24,14 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
-      # - name: Branch check
-      #   run: |
-      #     if [[ "$GITHUB_REF" != "refs/heads/master" ]] && [[ "$GITHUB_REF" != "refs/heads/rc" ]] && [[ $GITHUB_REF != refs/heads/hotfix-rc/* ]]; then
-      #       echo "==================================="
-      #       echo "[!] Can only release from the 'master', 'rc' or 'hotfix-rc/*' branches"
-      #       echo "==================================="
-      #       exit 1
-      #     fi
+      - name: Branch check
+        run: |
+          if [[ "$GITHUB_REF" != "refs/heads/master" ]] && [[ "$GITHUB_REF" != "refs/heads/rc" ]] && [[ $GITHUB_REF != refs/heads/hotfix-rc/* ]]; then
+            echo "==================================="
+            echo "[!] Can only release from the 'master', 'rc' or 'hotfix-rc/*' branches"
+            echo "==================================="
+            exit 1
+          fi
 
       - name: Bump Desktop Version - Root
         env:
@@ -942,18 +942,18 @@ jobs:
         working-directory: apps/desktop/artifacts
         run: mv Bitwarden-${{ env.PKG_VERSION }}-universal.pkg Bitwarden-${{ env.PKG_VERSION }}-universal.pkg.archive
 
-      # - name: Publish artifacts to S3
-      #   env:
-      #     AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.aws-electron-access-id }}
-      #     AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
-      #     AWS_DEFAULT_REGION: 'us-west-2'
-      #     AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
-      #   working-directory: apps/desktop/artifacts
-      #   run: |
-      #     aws s3 cp ./ $AWS_S3_BUCKET_NAME/desktop/ \
-      #     --acl "public-read" \
-      #     --recursive \
-      #     --quiet
+      - name: Publish artifacts to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.aws-electron-access-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
+          AWS_DEFAULT_REGION: 'us-west-2'
+          AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
+        working-directory: apps/desktop/artifacts
+        run: |
+          aws s3 cp ./ $AWS_S3_BUCKET_NAME/desktop/ \
+          --acl "public-read" \
+          --recursive \
+          --quiet
 
 
   remove-branch:
