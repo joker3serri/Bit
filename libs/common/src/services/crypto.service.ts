@@ -512,11 +512,6 @@ export class CryptoService implements CryptoServiceAbstraction {
     return this.buildEncKey(key, encKey.key);
   }
 
-  // ---ENCRYPTION---
-  // These methods resolve the key and then call encryptService.
-  // This should be refactored so that callers get their own key and give it to encryptService directly,
-  // then these methods should be removed.
-
   async encrypt(plainValue: string | ArrayBuffer, key?: SymmetricCryptoKey): Promise<EncString> {
     key = await this.getKeyForEncryption(key);
     return await this.encryptService.encrypt(plainValue, key);
@@ -538,11 +533,6 @@ export class CryptoService implements CryptoServiceAbstraction {
     const encBytes = await this.cryptoFunctionService.rsaEncrypt(data, publicKey, "sha1");
     return new EncString(EncryptionType.Rsa2048_OaepSha1_B64, Utils.fromBufferToB64(encBytes));
   }
-
-  // ---DECRYPTION---
-  // These methods resolve the key and then call encryptService.
-  // This should be refactored so that callers get their own key and give it to encryptService directly,
-  // then these methods should be removed.
 
   async rsaDecrypt(encValue: string, privateKeyValue?: ArrayBuffer): Promise<ArrayBuffer> {
     const headerPieces = encValue.split(".");
