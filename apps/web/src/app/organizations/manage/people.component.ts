@@ -400,7 +400,7 @@ export class PeopleComponent
   protected async removeUserConfirmationDialog(user: OrganizationUserUserDetailsResponse) {
     const warningMessage = user.usesKeyConnector
       ? this.i18nService.t("removeUserConfirmationKeyConnector")
-      : this.i18nService.t("removeUserDesc");
+      : this.i18nService.t("removeOrgUserConfirmation");
 
     return this.platformUtilsService.showDialog(
       warningMessage,

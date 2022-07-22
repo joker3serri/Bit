@@ -45,6 +45,6 @@ export class BulkRemoveComponent {
   }
 
   protected get removeUsersWarning() {
-    return this.i18nService.t("removeUsersDesc");
+    return this.i18nService.t("removeOrgUsersConfirmation");
   }
 }
