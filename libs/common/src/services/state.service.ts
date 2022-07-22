@@ -2764,7 +2764,7 @@ export class StateService<
 
 export function withPrototype<T>(
   constructor: new (...args: any[]) => T,
-  converter: (input: T) => T = (i) => i
+  converter: (input: any) => T = (i) => i
 ): (
   target: any,
   propertyKey: string | symbol,
@@ -2800,7 +2800,7 @@ export function withPrototype<T>(
 
 function withPrototypeForArrayMembers<T>(
   memberConstructor: new (...args: any[]) => T,
-  memberConverter: (input: T) => T = (i) => i
+  memberConverter: (input: any) => T = (i) => i
 ): (
   target: any,
   propertyKey: string | symbol,
@@ -2848,7 +2848,7 @@ function withPrototypeForArrayMembers<T>(
 
 function withPrototypeForObjectValues<T>(
   valuesConstructor: new (...args: any[]) => T,
-  valuesConverter: (input: T) => T = (i) => i
+  valuesConverter: (input: any) => T = (i) => i
 ): (
   target: any,
   propertyKey: string | symbol,
@@ -2895,7 +2895,7 @@ function withPrototypeForObjectValues<T>(
 
 function withPrototypeForMap<T>(
   valuesConstructor: new (...args: any[]) => T,
-  valuesConverter: (input: T) => T = (i) => i
+  valuesConverter: (input: any) => T = (i) => i
 ): (
   target: any,
   propertyKey: string | symbol,

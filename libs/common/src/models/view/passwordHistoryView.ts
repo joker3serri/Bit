@@ -1,4 +1,4 @@
-import { ParsedObject, Storable, StringifyObject } from "@bitwarden/common/models/storable";
+import { ParsedObject, Storable, ToJsonObject } from "@bitwarden/common/models/storable";
 
 import { Password } from "../domain/password";
 
@@ -18,7 +18,7 @@ export class PasswordHistoryView extends Storable<PasswordHistoryView> implement
     this.lastUsedDate = ph.lastUsedDate;
   }
 
-  toJSON(): StringifyObject<PasswordHistoryView> {
+  toJSON(): ToJsonObject<PasswordHistoryView> {
     return this;
   }
 

@@ -1,4 +1,4 @@
-import { ParsedObject, Storable, StringifyObject } from "@bitwarden/common/models/storable";
+import { ParsedObject, Storable, ToJsonObject } from "@bitwarden/common/models/storable";
 
 import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
@@ -136,8 +136,8 @@ export class CipherView extends Storable<CipherView> implements View {
     return this.linkedFieldOptions.get(id)?.i18nKey;
   }
 
-  toJSON(): StringifyObject<CipherView> {
-    const result: StringifyObject<CipherView> = {
+  toJSON(): ToJsonObject<CipherView> {
+    const result: ToJsonObject<CipherView> = {
       id: this.id,
       organizationId: this.organizationId,
       folderId: this.folderId,

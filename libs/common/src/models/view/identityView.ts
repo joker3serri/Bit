@@ -1,4 +1,4 @@
-import { ParsedObject, StringifyObject } from "@bitwarden/common/models/storable";
+import { ParsedObject, ToJsonObject } from "@bitwarden/common/models/storable";
 
 import { IdentityLinkedId as LinkedId } from "../../enums/linkedIdType";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
@@ -142,7 +142,7 @@ export class IdentityView extends ItemView<IdentityView> {
     return addressPart2;
   }
 
-  toJSON(): StringifyObject<IdentityView> {
+  toJSON(): ToJsonObject<IdentityView> {
     // Needed to serialize getters which are not included by JSON.stringify
     return {
       title: this.title,

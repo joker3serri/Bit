@@ -1,5 +1,5 @@
 import { SecureNoteType } from "../../enums/secureNoteType";
-import { ParsedObject, StringifyObject } from "../../models/storable";
+import { ParsedObject, ToJsonObject } from "../../models/storable";
 import { SecureNote } from "../domain/secureNote";
 
 import { ItemView } from "./itemView";
@@ -20,7 +20,7 @@ export class SecureNoteView extends ItemView<SecureNoteView> {
     return null;
   }
 
-  toJSON(): StringifyObject<SecureNoteView> {
+  toJSON(): ToJsonObject<SecureNoteView> {
     return this;
   }
 
