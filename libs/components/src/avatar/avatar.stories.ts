@@ -24,7 +24,8 @@ export default {
     }),
   ],
   args: {
-    name: "Jason Doe",
+    name: "Walt Walterson",
+    size: "large",
   },
   parameters: {
     design: {
@@ -37,9 +38,24 @@ export default {
 const Template: Story<AvatarComponent> = (args: AvatarComponent) => ({
   props: args,
   template: `
-    <bit-avatar [data]="name" circle="true"></bit-avatar>
+    <bit-avatar [data]="name" [size]="size" [circle]="circle"></bit-avatar>
   `,
 });
 
 export const Default = Template.bind({});
 Default.args = {};
+
+export const Medium = Template.bind({});
+Medium.args = {
+  size: "medium",
+};
+
+export const Small = Template.bind({});
+Small.args = {
+  size: "small",
+};
+
+export const Circle = Template.bind({});
+Circle.args = {
+  circle: true,
+};

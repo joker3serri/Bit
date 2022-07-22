@@ -5,6 +5,8 @@ import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunc
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 
+type SizeTypes = "large" | "medium" | "small";
+
 @Component({
   selector: "bit-avatar",
   template: `
@@ -12,21 +14,22 @@ import { Utils } from "@bitwarden/common/misc/utils";
       *ngIf="src"
       [src]="sanitizer.bypassSecurityTrustResourceUrl(src)"
       title="{{ data }}"
-      [ngClass]="{ 'tw-rounded-full': circle }"
+      [ngClass]="avatarClass"
     />
   `,
 })
 export class AvatarComponent implements OnChanges, OnInit {
   @Input() data: string;
   @Input() email: string;
-  @Input() size = 45;
+  @Input() size: SizeTypes = "large";
   @Input() charCount = 2;
   @Input() textColor = "#ffffff";
-  @Input() fontSize = 20;
-  @Input() fontWeight = 300;
   @Input() dynamic = false;
   @Input() circle = false;
 
+  svgSize = 48;
+  fontSize = 20;
+  fontWeight = 300;
   src: string;
 
   constructor(
@@ -47,6 +50,26 @@ export class AvatarComponent implements OnChanges, OnInit {
     }
   }
 
+  get avatarClass(): string {
+    let className = "";
+
+    switch (this.size) {
+      case "large":
+        className += "tw-h-12 tw-w-12";
+        break;
+      case "medium":
+        className += "tw-h-9 tw-w-9";
+        break;
+      case "small":
+        className += "tw-h-7 tw-w-7";
+    }
+
+    if (this.circle) {
+      className = className + " " + "tw-rounded-full";
+    }
+    return className;
+  }
+
   private async generate() {
     const enableGravatars = await this.stateService.getEnableGravitars();
     if (enableGravatars && this.email != null) {
@@ -55,7 +78,7 @@ export class AvatarComponent implements OnChanges, OnInit {
         "md5"
       );
       const hash = Utils.fromBufferToHex(hashBytes).toLowerCase();
-      this.src = "https://www.gravatar.com/avatar/" + hash + "?s=" + this.size + "&r=pg&d=retro";
+      this.src = "https://www.gravatar.com/avatar/" + hash + "?s=" + this.svgSize + "&r=pg&d=retro";
     } else {
       let chars: string = null;
       const upperData = this.data.toUpperCase();
@@ -74,7 +97,7 @@ export class AvatarComponent implements OnChanges, OnInit {
 
       const charObj = this.getCharText(chars);
       const color = this.stringToColor(upperData);
-      const svg = this.getSvg(this.size, color);
+      const svg = this.getSvg(this.svgSize, color);
       svg.appendChild(charObj);
       const html = window.document.createElement("div").appendChild(svg).outerHTML;
       const svgHtml = window.btoa(unescape(encodeURIComponent(html)));
