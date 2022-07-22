@@ -169,8 +169,8 @@ jobs:
       - name: Upload auto-update artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
-          name: ${{ needs.setup.outputs.release_channel }}-linux.yml
-          path: apps/desktop/dist/${{ needs.setup.outputs.release_channel }}-linux.yml
+          name: ${{ needs.setup.outputs.release-channel }}-linux.yml
+          path: apps/desktop/dist/${{ needs.setup.outputs.release-channel }}-linux.yml
           if-no-files-found: error
 
 
@@ -374,8 +374,8 @@ jobs:
       - name: Upload auto-update artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
-          name: ${{ needs.setup.outputs.release_channel }}.yml
-          path: apps/desktop/dist/nsis-web/${{ needs.setup.outputs.release_channel }}.yml
+          name: ${{ needs.setup.outputs.release-channel }}.yml
+          path: apps/desktop/dist/nsis-web/${{ needs.setup.outputs.release-channel }}.yml
           if-no-files-found: error
 
 
@@ -727,8 +727,8 @@ jobs:
       - name: Upload auto-update artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535
         with:
-          name: ${{ needs.setup.outputs.release_channel }}-mac.yml
-          path: apps/desktop/dist/${{ needs.setup.outputs.release_channel }}-mac.yml
+          name: ${{ needs.setup.outputs.release-channel }}-mac.yml
+          path: apps/desktop/dist/${{ needs.setup.outputs.release-channel }}-mac.yml
           if-no-files-found: error
 
 
