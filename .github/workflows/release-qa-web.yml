@@ -152,4 +152,3 @@ jobs:
           environment-url: http://vault.qa.bitwarden.pw
           state: 'failure'
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
-          
