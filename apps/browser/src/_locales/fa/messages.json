@@ -429,7 +429,7 @@
   "confirmMasterPasswordRequired": {
     "message": "تایپ مجدد گذرواژه اصلی نیاز است."
   },
-  "masterPasswordMinLength": {
+  "masterPasswordMinlength": {
     "message": "طول کلمه عبور اصلی باید حداقل ۸ کاراکتر باشد."
   },
   "masterPassDoesntMatch": {
@@ -1967,5 +1967,14 @@
   },
   "ssoKeyConnectorError": {
     "message": "خطای Key Connector: مطمئن شوید که Key Connector در دسترس است و به درستی کار می کند."
+  },
+  "organizationIsDisabled": {
+    "message": "سازمان از کار افتاده است."
+  },
+  "disabledOrganizationFilterError": {
+    "message": "موارد موجود در سازمان‌های غیرفعال، قابل دسترسی نیستند. برای دریافت کمک با مالک سازمان خود تماس بگیرید."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }

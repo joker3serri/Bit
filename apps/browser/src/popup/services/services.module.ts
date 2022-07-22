@@ -7,11 +7,12 @@ import {
   MEMORY_STORAGE,
   SECURE_STORAGE,
 } from "@bitwarden/angular/services/jslib-services.module";
+import { ThemingService } from "@bitwarden/angular/services/theming/theming.service";
+import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/abstractions/auth.service";
-import { BroadcasterService as BroadcasterServiceAbstraction } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -111,10 +112,6 @@ function getBgService<T>(service: keyof MainBackground) {
           ? new BrowserMessagingPrivateModePopupService()
           : new BrowserMessagingService();
       },
-    },
-    {
-      provide: BroadcasterServiceAbstraction,
-      useFactory: getBgService<BroadcasterServiceAbstraction>("broadcasterService"),
     },
     {
       provide: TwoFactorService,
@@ -292,6 +289,20 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: FileDownloadService,
       useClass: BrowserFileDownloadService,
+    },
+    {
+      provide: AbstractThemingService,
+      useFactory: () => {
+        return new ThemingService(
+          getBgService<StateServiceAbstraction>("stateService")(),
+          // Safari doesn't properly handle the (prefers-color-scheme) media query in the popup window, it always returns light.
+          // In Safari we have to use the background page instead, which comes with limitations like not dynamically changing the extension theme when the system theme is changed.
+          getBgService<PlatformUtilsService>("platformUtilsService")().isSafari()
+            ? getBgService<Window>("backgroundWindow")()
+            : window,
+          document
+        );
+      },
     },
   ],
 })
