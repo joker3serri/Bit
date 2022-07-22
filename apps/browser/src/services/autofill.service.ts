@@ -84,15 +84,11 @@ export default class AutofillService implements AutofillServiceInterface {
   }
 
   async doAutoFill(options: AutoFillOptions) {
-    const tab = await this.getActiveTab();
+    const tab = options.tab;
     if (!tab || !options.cipher || !options.pageDetails || !options.pageDetails.length) {
       throw new Error("Nothing to auto-fill.");
     }
 
-    return await this.doAutoFillOnTabWithOptions(options, tab);
-  }
-
-  async doAutoFillOnTabWithOptions(options: AutoFillOptions, tab: chrome.tabs.Tab) {
     let totpPromise: Promise<string> = null;
 
     const canAccessPremium = await this.stateService.getCanAccessPremium();
@@ -186,18 +182,16 @@ export default class AutofillService implements AutofillServiceInterface {
       return;
     }
 
-    const totpCode = await this.doAutoFillOnTabWithOptions(
-      {
-        cipher: cipher,
-        pageDetails: pageDetails,
-        skipLastUsed: !fromCommand,
-        skipUsernameOnlyFill: !fromCommand,
-        onlyEmptyFields: !fromCommand,
-        onlyVisibleFields: !fromCommand,
-        fillNewPassword: fromCommand,
-      },
-      tab
-    );
+    const totpCode = await this.doAutoFill({
+      tab: tab,
+      cipher: cipher,
+      pageDetails: pageDetails,
+      skipLastUsed: !fromCommand,
+      skipUsernameOnlyFill: !fromCommand,
+      onlyEmptyFields: !fromCommand,
+      onlyVisibleFields: !fromCommand,
+      fillNewPassword: fromCommand,
+    });
 
     // Update last used index as autofill has succeed
     if (fromCommand) {
