@@ -173,6 +173,20 @@ jobs:
     env:
       _PKG_VERSION: ${{ needs.setup.outputs.release-version }}
     steps:
+      - name: Create GitHub deployment for Snap
+        uses: chrnorm/deployment-action@v2
+        id: deployment
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          environment: 'Desktop Snap - Production ${{ env._PKG_VERSION }} (${{ github.ref_name }})'
+      
+      - name: Update deployment status to In Progress
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          state: 'in_progress'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
       - name: Checkout Repo
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f  # v2.3.4
 
@@ -224,6 +238,22 @@ jobs:
           snapcraft logout
         working-directory: apps/desktop/dist
 
+      - name: Update deployment status to Success
+        if: success()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          state: 'success'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - name: Update deployment status to Failure
+        if: failure()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          state: 'failure'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
   choco:
     name: Deploy Choco
     runs-on: windows-2019
@@ -232,6 +262,20 @@ jobs:
     env:
       _PKG_VERSION: ${{ needs.setup.outputs.release-version }}
     steps:
+      - name: Create GitHub deployment for Choco
+        uses: chrnorm/deployment-action@v2
+        id: deployment
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          environment: 'Desktop Choco - Production ${{ env._PKG_VERSION }} (${{ github.ref_name }})'
+      
+      - name: Update deployment status to In Progress
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          state: 'in_progress'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
       - name: Checkout Repo
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f  # v2.3.4
 
@@ -288,3 +332,20 @@ jobs:
         shell: pwsh
         run: choco push
         working-directory: apps/desktop/dist
+
+      - name: Update deployment status to Success
+        if: success()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          state: 'success'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - name: Update deployment status to Failure
+        if: failure()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          state: 'failure'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+          

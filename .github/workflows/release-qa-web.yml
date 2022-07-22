@@ -72,6 +72,22 @@ jobs:
     name: Deploy Web Vault to QA CloudFlare Pages branch
     runs-on: ubuntu-20.04
     steps:
+      - name: Create GitHub deployment
+        uses: chrnorm/deployment-action@v2
+        id: deployment
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          environment-url: http://vault.bitwarden.com
+          environment: 'Web Vault - QA ${{ needs.setup.outputs.release_version }} (${{ github.ref_name }})'
+      
+      - name: Update deployment status to In Progress
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          environment-url: http://vault.bitwarden.com
+          state: 'in_progress'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
       - name: Checkout Repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
@@ -118,3 +134,22 @@ jobs:
             echo "No changes to commit!";
           fi
         working-directory: deployment
+
+      - name: Update deployment status to Success
+        if: success()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          environment-url: http://vault.bitwarden.com
+          state: 'success'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
+      - name: Update deployment status to Failure
+        if: failure()
+        uses: chrnorm/deployment-status@v2
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          environment-url: http://vault.bitwarden.com
+          state: 'failure'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+          
