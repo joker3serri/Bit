@@ -11,7 +11,7 @@ describe("encArrayBuffer", () => {
     ])("with %c%s", (encType: EncryptionType) => {
       const iv = makeStaticByteArray(16, 10);
       const mac = makeStaticByteArray(32, 20);
-      const cipherText = makeStaticByteArray(20, 30);
+      const cipherText = makeStaticByteArray(1, 30);
 
       const array = new Uint8Array(1 + iv.byteLength + mac.byteLength + cipherText.byteLength);
       array.set([encType]);
@@ -30,7 +30,7 @@ describe("encArrayBuffer", () => {
     it("with AesCbc256_B64", () => {
       const encType = EncryptionType.AesCbc256_B64;
       const iv = makeStaticByteArray(16, 10);
-      const cipherText = makeStaticByteArray(20, 30);
+      const cipherText = makeStaticByteArray(1, 30);
 
       const array = new Uint8Array(1 + iv.byteLength + cipherText.byteLength);
       array.set([encType]);
@@ -48,9 +48,9 @@ describe("encArrayBuffer", () => {
 
   describe("doesn't parse the buffer if it has an invalid length", () => {
     test.each([
-      [EncryptionType.AesCbc128_HmacSha256_B64, 49, "AesCbc128_HmacSha256_B64"],
-      [EncryptionType.AesCbc256_HmacSha256_B64, 49, "AesCbc256_HmacSha256_B64"],
-      [EncryptionType.AesCbc256_B64, 17, "AesCbc256_B64"],
+      [EncryptionType.AesCbc128_HmacSha256_B64, 50, "AesCbc128_HmacSha256_B64"],
+      [EncryptionType.AesCbc256_HmacSha256_B64, 50, "AesCbc256_HmacSha256_B64"],
+      [EncryptionType.AesCbc256_B64, 18, "AesCbc256_B64"],
     ])("with %c%c%s", (encType: EncryptionType, minLength: number) => {
       // Generate invalid byte array
       // Minus 1 to leave room for the encType, minus 1 to make it invalid

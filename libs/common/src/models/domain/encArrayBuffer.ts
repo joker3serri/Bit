@@ -1,6 +1,11 @@
 import { EncryptionType } from "@bitwarden/common/enums/encryptionType";
 import { IEncrypted } from "@bitwarden/common/interfaces/IEncrypted";
 
+const encTypeLength = 1;
+const ivLength = 16;
+const macLength = 32;
+const minDataLength = 1;
+
 export class EncArrayBuffer implements IEncrypted {
   readonly encryptionType: EncryptionType = null;
 
@@ -14,27 +19,32 @@ export class EncArrayBuffer implements IEncrypted {
 
     switch (encType) {
       case EncryptionType.AesCbc128_HmacSha256_B64:
-      case EncryptionType.AesCbc256_HmacSha256_B64:
-        if (encBytes.length <= 49) {
-          // 1 + 16 + 32 + ctLength
+      case EncryptionType.AesCbc256_HmacSha256_B64: {
+        const minimumLength = encTypeLength + ivLength + macLength + minDataLength;
+        if (encBytes.length < minimumLength) {
           return;
         }
 
         this.encryptionType = encType;
-        this.ivBytes = encBytes.slice(1, 17).buffer;
-        this.macBytes = encBytes.slice(17, 49).buffer;
-        this.dataBytes = encBytes.slice(49).buffer;
+        this.ivBytes = encBytes.slice(encTypeLength, encTypeLength + ivLength).buffer;
+        this.macBytes = encBytes.slice(
+          encTypeLength + ivLength,
+          encTypeLength + ivLength + macLength
+        ).buffer;
+        this.dataBytes = encBytes.slice(encTypeLength + ivLength + macLength).buffer;
         break;
-      case EncryptionType.AesCbc256_B64:
-        if (encBytes.length <= 17) {
-          // 1 + 16 + ctLength
+      }
+      case EncryptionType.AesCbc256_B64: {
+        const minimumLength = encTypeLength + ivLength + minDataLength;
+        if (encBytes.length < minimumLength) {
           return;
         }
 
         this.encryptionType = encType;
-        this.ivBytes = encBytes.slice(1, 17).buffer;
-        this.dataBytes = encBytes.slice(17).buffer;
+        this.ivBytes = encBytes.slice(encTypeLength, encTypeLength + ivLength).buffer;
+        this.dataBytes = encBytes.slice(encTypeLength + ivLength).buffer;
         break;
+      }
       default:
         return;
     }
