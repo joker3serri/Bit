@@ -283,7 +283,7 @@ jobs:
             apps/web/artifacts/web-${{ needs.setup.outputs.release_version }}-selfhosted-open-source.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: true
-          
+
       - name: Update deployment status to Success
         if: success()
         uses: chrnorm/deployment-status@v2
@@ -301,3 +301,4 @@ jobs:
           environment-url: http://vault.bitwarden.com
           state: 'failure'
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+          
