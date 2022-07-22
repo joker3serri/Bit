@@ -19,6 +19,7 @@ jobs:
     outputs:
       release-version: ${{ steps.version.outputs.version }}
       release-channel: ${{ steps.release-channel.outputs.channel }}
+      branch-name: ${{ steps.branch.outputs.branch-name }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
@@ -70,6 +71,30 @@ jobs:
               ;;
           esac
 
+      - name: Setup git config
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global url."https://github.com/".insteadOf ssh://git@github.com/
+          git config --global url."https://".insteadOf ssh://
+
+      - name: Create mobile-beta-release branch
+        id: branch
+        env:
+          VERSION: ${{ github.event.inputs.version_number }}
+        run: |
+          find="."
+          replace="_"
+          ver=${VERSION//$find/$replace}
+          branch_name=$ver-beta
+          git switch -c $branch_name
+          git add .
+          git commit -m "Bump mobile version to $VERSION-beta"
+
+          git push -u origin $branch_name
+
+          echo "::set-output name=branch-name::$branch_name"
+
   linux:
     name: Linux Build
     runs-on: ubuntu-20.04
@@ -82,17 +107,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
-
-      - name: Bump Desktop Version - Root
-        env:
-          VERSION: ${{ github.event.inputs.version_number }}
-        run: npm version --workspace=@bitwarden/desktop ${VERSION}-beta
-
-      - name: Bump Desktop Version - App
-        env:
-          VERSION: ${{ github.event.inputs.version_number }}
-        run: npm version ${VERSION}-beta
-        working-directory: "apps/desktop/src"
+        with:
+          ref: ${{ needs.setup.outputs.branch-name }}
 
       - name: Set up Node
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
@@ -187,17 +203,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
-
-      - name: Bump Desktop Version - Root
-        env:
-          VERSION: ${{ github.event.inputs.version_number }}
-        run: npm version --workspace=@bitwarden/desktop ${VERSION}-beta
-
-      - name: Bump Desktop Version - App
-        env:
-          VERSION: ${{ github.event.inputs.version_number }}
-        run: npm version ${VERSION}-beta
-        working-directory: "apps/desktop/src"
+        with:
+          ref: ${{ needs.setup.outputs.branch-name }}
 
       - name: Set up Node
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
@@ -391,17 +398,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
-
-      - name: Bump Desktop Version - Root
-        env:
-          VERSION: ${{ github.event.inputs.version_number }}
-        run: npm version --workspace=@bitwarden/desktop ${VERSION}-beta
-
-      - name: Bump Desktop Version - App
-        env:
-          VERSION: ${{ github.event.inputs.version_number }}
-        run: npm version ${VERSION}-beta
-        working-directory: "apps/desktop/src"
+        with:
+          ref: ${{ needs.setup.outputs.branch-name }}
 
       - name: Set up Node
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
@@ -529,17 +527,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
-
-      - name: Bump Desktop Version - Root
-        env:
-          VERSION: ${{ github.event.inputs.version_number }}
-        run: npm version --workspace=@bitwarden/desktop ${VERSION}-beta
-
-      - name: Bump Desktop Version - App
-        env:
-          VERSION: ${{ github.event.inputs.version_number }}
-        run: npm version ${VERSION}-beta
-        working-directory: "apps/desktop/src"
+        with:
+          ref: ${{ needs.setup.outputs.branch-name }}
 
       - name: Set up Node
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
@@ -746,17 +735,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
-
-      - name: Bump Desktop Version - Root
-        env:
-          VERSION: ${{ github.event.inputs.version_number }}
-        run: npm version --workspace=@bitwarden/desktop ${VERSION}-beta
-
-      - name: Bump Desktop Version - App
-        env:
-          VERSION: ${{ github.event.inputs.version_number }}
-        run: npm version ${VERSION}-beta
-        working-directory: "apps/desktop/src"
+        with:
+          ref: ${{ needs.setup.outputs.branch-name }}
 
       - name: Set up Node
         uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a  # v3.0.0
@@ -973,3 +953,29 @@ jobs:
       #     --acl "public-read" \
       #     --recursive \
       #     --quiet
+
+
+  remove-branch:
+    name: Release beta channel to S3
+    runs-on: ubuntu-20.04
+    if: always()
+    needs:
+      - setup
+      - linux
+      - windows
+      - macos-build
+      - macos-package-github
+      - macos-package-mas
+      - release
+    steps:
+      - name: Setup git config
+        run: |
+          git config --global user.name "GitHub Action Bot"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global url."https://github.com/".insteadOf ssh://git@github.com/
+          git config --global url."https://".insteadOf ssh://
+      - name: Remove branch
+        env:
+          BRANCH: ${{ needs.setup.outputs.branch-name }}
+        run: |
+          git push origin --delete $BRANCH
