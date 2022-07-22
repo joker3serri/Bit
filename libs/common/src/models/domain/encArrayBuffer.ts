@@ -25,7 +25,6 @@ export class EncArrayBuffer implements IEncrypted {
           return;
         }
 
-        this.encryptionType = encType;
         this.ivBytes = encBytes.slice(encTypeLength, encTypeLength + ivLength).buffer;
         this.macBytes = encBytes.slice(
           encTypeLength + ivLength,
@@ -40,7 +39,6 @@ export class EncArrayBuffer implements IEncrypted {
           return;
         }
 
-        this.encryptionType = encType;
         this.ivBytes = encBytes.slice(encTypeLength, encTypeLength + ivLength).buffer;
         this.dataBytes = encBytes.slice(encTypeLength + ivLength).buffer;
         break;
@@ -48,5 +46,7 @@ export class EncArrayBuffer implements IEncrypted {
       default:
         return;
     }
+
+    this.encryptionType = encType;
   }
 }
