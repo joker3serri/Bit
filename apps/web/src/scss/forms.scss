@@ -129,6 +129,7 @@ input[type="checkbox"] {
 .dropdown-menu,
 .dropdown-item {
   @include themify($themes) {
+    background-color: themed("dropdownBackground");
     color: themed("dropdownTextColor");
   }
 }
