@@ -69,7 +69,9 @@ jobs:
         id: deployment
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          environment: 'CLI - Production ${{ steps.version.outputs.version }} (${{ github.ref_name }})'
+          environment: 'CLI - Production'
+          description: 'Deployment ${{ steps.version.outputs.version }} from branch ${{ github.ref_name }}'
+          task: release
       
       - name: Update deployment status to In Progress
         uses: chrnorm/deployment-status@v2

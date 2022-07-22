@@ -78,7 +78,8 @@ jobs:
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           environment-url: http://vault.qa.bitwarden.pw
-          environment: 'Web Vault - QA (${{ github.ref_name }})'
+          environment: 'Web Vault - QA'
+          description: 'Deployment from branch ${{ github.ref_name }}'
       
       - name: Update deployment status to In Progress
         uses: chrnorm/deployment-status@v2

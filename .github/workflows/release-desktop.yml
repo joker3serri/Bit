@@ -81,8 +81,11 @@ jobs:
         id: deployment
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          environment: 'Desktop - Production ${{ steps.version.outputs.version }}:${{ steps.release-channel.outputs.channel }} (${{ github.ref_name }})'
+          environment: 'Desktop - Production'
+          description: 'Deployment ${{ steps.version.outputs.version }} to channel ${{ steps.release-channel.outputs.channel }} from branch ${{ github.ref_name }}'
+          task: release
       
+
       - name: Update deployment status to In Progress
         uses: chrnorm/deployment-status@v2
         with:
