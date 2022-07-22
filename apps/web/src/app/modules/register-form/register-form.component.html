@@ -32,7 +32,7 @@
       <bit-form-field>
         <bit-label>{{ "masterPass" | i18n }}</bit-label>
         <input
-          id="register-form_input_masterPassword"
+          id="register-form_input_master-password"
           bitInput
           (input)="updatePasswordStrength()"
           type="{{ showPassword ? 'text' : 'password' }}"
@@ -58,7 +58,7 @@
       <bit-form-field>
         <bit-label>{{ "reTypeMasterPass" | i18n }}</bit-label>
         <input
-          id="register-form_input_confirmMasterPassword"
+          id="register-form_input_confirm-master-password"
           bitInput
           type="{{ showPassword ? 'text' : 'password' }}"
           formControlName="confirmMasterPassword"
@@ -88,7 +88,7 @@
     <div class="tw-flex tw-items-start tw-mb-3" *ngIf="showTerms">
       <div class="tw-flex tw-items-center tw-h-6">
         <input
-          id="register-form_input_acceptPolicies"
+          id="register-form_input_accept-policies"
           class="tw-w-4 tw-rounded tw-border tw-border-gray-300"
           bitInput
           type="checkbox"
