@@ -233,7 +233,7 @@ jobs:
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           environment-url: http://vault.bitwarden.com
-          environment: production
+          environment: 'Web Vault - Production (${GITHUB_REF##*/})'
       
       - name: Update deployment status to In Progress
         uses: chrnorm/deployment-status@v2
@@ -301,4 +301,3 @@ jobs:
           environment-url: http://vault.bitwarden.com
           state: 'failure'
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
-          
