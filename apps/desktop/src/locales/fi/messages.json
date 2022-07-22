@@ -538,7 +538,7 @@
   "confirmMasterPasswordRequired": {
     "message": "Pääsalasanan uudelleensyöttö vaaditaan."
   },
-  "masterPasswordMinLength": {
+  "masterPasswordMinlength": {
     "message": "Pääsalasanan tulee sisältää ainakin 8 merkkiä."
   },
   "masterPassDoesntMatch": {
@@ -1553,7 +1553,7 @@
     "message": "Salli selainintegraatio"
   },
   "enableBrowserIntegrationDesc": {
-    "message": "Selainintegraatiota käytetään selaimessa biometriaa varten."
+    "message": "Käytetään selainten biometriatukeen."
   },
   "browserIntegrationUnsupportedTitle": {
     "message": "Selainintegraatiota ei tueta"
@@ -1964,7 +1964,16 @@
   "apiKey": {
     "message": "API-avain"
   },
+  "organizationIsDisabled": {
+    "message": "Organisaatio on poistettu käytöstä."
+  },
+  "disabledOrganizationFilterError": {
+    "message": "Käytöstä poistettujen organisaatioiden kohteet eivät ole käytettävissä. Ole yhteydessä organisaation omistajaan saadaksesi apua."
+  },
   "neverLockWarning": {
     "message": "Haluatko varmasti käyttää asetusta \"Ei koskaan\"? Se tallentaa holvisi salausavaimen laitteellesi. Jos käytät asetusta, varmista, että laite on suojattu hyvin."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }

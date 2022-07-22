@@ -429,8 +429,8 @@
   "confirmMasterPasswordRequired": {
     "message": "Поновно уписивање главне лозинке је неопходно."
   },
-  "masterPasswordMinLength": {
-    "message": "Главна лозинка мора да садржи барем 8 знакова."
+  "masterPasswordMinlength": {
+    "message": "Главна Лозинка треба имати бар 8 знака."
   },
   "masterPassDoesntMatch": {
     "message": "Потврђена Главна Лозинка се не подудара."
@@ -1967,5 +1967,14 @@
   },
   "ssoKeyConnectorError": {
     "message": "Key Connector грешка: будите сигурни да је Key Connector доступан и да ради."
+  },
+  "organizationIsDisabled": {
+    "message": "Организација је онемогућена."
+  },
+  "disabledOrganizationFilterError": {
+    "message": "Није могуће приступити ставкама у онемогућене организације. Обратите се власнику организације за помоћ."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }
