@@ -604,7 +604,12 @@ export class CryptoService implements CryptoServiceAbstraction {
       throw new Error("No buffer provided for decryption.");
     }
 
-    const encBuffer = new EncArrayBuffer(buffer);
+    let encBuffer = null;
+    try {
+      encBuffer = new EncArrayBuffer(buffer);
+    } catch {
+      return null;
+    }
 
     key = await this.getKeyForEncryption(key);
     key = await this.resolveLegacyKey(encBuffer.encryptionType, key);

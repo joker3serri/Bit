@@ -6,6 +6,9 @@ const ivLength = 16;
 const macLength = 32;
 const minDataLength = 1;
 
+const decryptionError =
+  "Error parsing encrypted ArrayBuffer: data is corrupted or has an invalid format.";
+
 export class EncArrayBuffer implements IEncrypted {
   readonly encryptionType: EncryptionType = null;
 
@@ -22,7 +25,7 @@ export class EncArrayBuffer implements IEncrypted {
       case EncryptionType.AesCbc256_HmacSha256_B64: {
         const minimumLength = encTypeLength + ivLength + macLength + minDataLength;
         if (encBytes.length < minimumLength) {
-          return;
+          throw new Error(decryptionError);
         }
 
         this.ivBytes = encBytes.slice(encTypeLength, encTypeLength + ivLength).buffer;
@@ -36,7 +39,7 @@ export class EncArrayBuffer implements IEncrypted {
       case EncryptionType.AesCbc256_B64: {
         const minimumLength = encTypeLength + ivLength + minDataLength;
         if (encBytes.length < minimumLength) {
-          return;
+          throw new Error(decryptionError);
         }
 
         this.ivBytes = encBytes.slice(encTypeLength, encTypeLength + ivLength).buffer;
@@ -44,7 +47,7 @@ export class EncArrayBuffer implements IEncrypted {
         break;
       }
       default:
-        return;
+        throw new Error(decryptionError);
     }
 
     this.encryptionType = encType;
