@@ -30,9 +30,8 @@ export function mockEnc(s: string): EncString {
 
 export function makeStaticByteArray(length: number, start = 0) {
   const arr = new Uint8Array(length);
-  let count = start;
   for (let i = 0; i < length; i++) {
-    arr[i] = count++;
+    arr[i] = start + i;
   }
   return arr;
 }
