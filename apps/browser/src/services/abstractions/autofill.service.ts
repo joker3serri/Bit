@@ -14,6 +14,7 @@ export interface AutoFillOptions {
   cipher: CipherView;
   pageDetails: PageDetail[];
   doc?: typeof window.document;
+  tab: chrome.tabs.Tab;
   skipUsernameOnlyFill?: boolean;
   onlyEmptyFields?: boolean;
   onlyVisibleFields?: boolean;
@@ -36,6 +37,5 @@ export abstract class AutofillService {
     tab: chrome.tabs.Tab,
     fromCommand: boolean
   ) => Promise<string>;
-  doAutoFillOnTabWithOptions: (options: AutoFillOptions, tab: chrome.tabs.Tab) => Promise<string>;
   doAutoFillActiveTab: (pageDetails: PageDetail[], fromCommand: boolean) => Promise<string>;
 }
