@@ -86,7 +86,8 @@ jobs:
           find="."
           replace="_"
           ver=${VERSION//$find/$replace}
-          branch_name=$ver-beta
+          branch_name=mobile-beta-release-$ver-beta
+
           git switch -c $branch_name
           git add .
           git commit -m "Bump mobile version to $VERSION-beta"
