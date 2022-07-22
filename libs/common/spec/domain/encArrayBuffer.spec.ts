@@ -11,37 +11,39 @@ describe("encArrayBuffer", () => {
     ])("with %c%s", (encType: EncryptionType) => {
       const iv = makeStaticByteArray(16, 10);
       const mac = makeStaticByteArray(32, 20);
-      const cipherText = makeStaticByteArray(1, 30);
+      // We use the minimum data length of 1 to test the boundary of valid lengths
+      const data = makeStaticByteArray(1, 100);
 
-      const array = new Uint8Array(1 + iv.byteLength + mac.byteLength + cipherText.byteLength);
+      const array = new Uint8Array(1 + iv.byteLength + mac.byteLength + data.byteLength);
       array.set([encType]);
       array.set(iv, 1);
       array.set(mac, 1 + iv.byteLength);
-      array.set(cipherText, 1 + iv.byteLength + mac.byteLength);
+      array.set(data, 1 + iv.byteLength + mac.byteLength);
 
       const actual = new EncArrayBuffer(array.buffer);
 
       expect(actual.encryptionType).toEqual(encType);
       expect(actual.ivBytes).toEqualBuffer(iv);
       expect(actual.macBytes).toEqualBuffer(mac);
-      expect(actual.dataBytes).toEqualBuffer(cipherText);
+      expect(actual.dataBytes).toEqualBuffer(data);
     });
 
     it("with AesCbc256_B64", () => {
       const encType = EncryptionType.AesCbc256_B64;
       const iv = makeStaticByteArray(16, 10);
-      const cipherText = makeStaticByteArray(1, 30);
+      // We use the minimum data length of 1 to test the boundary of valid lengths
+      const data = makeStaticByteArray(1, 100);
 
-      const array = new Uint8Array(1 + iv.byteLength + cipherText.byteLength);
+      const array = new Uint8Array(1 + iv.byteLength + data.byteLength);
       array.set([encType]);
       array.set(iv, 1);
-      array.set(cipherText, 1 + iv.byteLength);
+      array.set(data, 1 + iv.byteLength);
 
       const actual = new EncArrayBuffer(array.buffer);
 
       expect(actual.encryptionType).toEqual(encType);
       expect(actual.ivBytes).toEqualBuffer(iv);
-      expect(actual.dataBytes).toEqualBuffer(cipherText);
+      expect(actual.dataBytes).toEqualBuffer(data);
       expect(actual.macBytes).toBeNull();
     });
   });
