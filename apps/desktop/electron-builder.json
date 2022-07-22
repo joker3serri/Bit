@@ -19,7 +19,7 @@
     "**/node_modules/@bitwarden/desktop-native/index.js",
     "**/node_modules/@bitwarden/desktop-native/desktop_native.${platform}-${arch}*.node"
   ],
-  "electronVersion": "16.2.7",
+  "electronVersion": "19.0.8",
   "generateUpdatesFilesForAllChannels": true,
   "publish": {
     "provider": "generic",
@@ -74,7 +74,7 @@
     "sign": "./sign.js",
     "extraResources": [
       {
-        "from": "node_modules/regedit/vbs",
+        "from": "../../node_modules/regedit/vbs",
         "to": "regedit/vbs",
         "filter": ["**/*"]
       },
@@ -117,6 +117,7 @@
   "mas": {
     "entitlements": "resources/entitlements.mas.plist",
     "entitlementsInherit": "resources/entitlements.mas.inherit.plist",
+    "entitlementsLoginHelper": "resources/entitlements.mas.loginhelper.plist",
     "hardenedRuntime": false,
     "extendInfo": {
       "LSMinimumSystemVersion": "10.14.0"

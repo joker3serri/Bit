@@ -66,7 +66,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
   async doAutoFill(options: any) {
     let totpPromise: Promise<string> = null;
-    const tab = await this.getActiveTab();
+    const tab = options.tab;
     if (!tab || !options.cipher || !options.pageDetails || !options.pageDetails.length) {
       throw new Error("Nothing to auto-fill.");
     }
@@ -118,8 +118,8 @@ export default class AutofillService implements AutofillServiceInterface {
         return;
       }
 
-      totpPromise = this.totpService.isAutoCopyEnabled().then((enabled) => {
-        if (enabled) {
+      totpPromise = this.stateService.getDisableAutoTotpCopy().then((disabled) => {
+        if (!disabled) {
           return this.totpService.getCode(options.cipher.login.totp);
         }
         return null;
@@ -168,6 +168,7 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     const totpCode = await this.doAutoFill({
+      tab: tab,
       cipher: cipher,
       pageDetails: pageDetails,
       skipLastUsed: !fromCommand,
