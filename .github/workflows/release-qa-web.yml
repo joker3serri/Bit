@@ -77,14 +77,14 @@ jobs:
         id: deployment
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: http://vault.bitwarden.com
-          environment: 'Web Vault - QA ${{ needs.setup.outputs.release_version }} (${{ github.ref_name }})'
+          environment-url: http://vault.qa.bitwarden.pw
+          environment: 'Web Vault - QA (${{ github.ref_name }})'
       
       - name: Update deployment status to In Progress
         uses: chrnorm/deployment-status@v2
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: http://vault.bitwarden.com
+          environment-url: http://vault.qa.bitwarden.pw
           state: 'in_progress'
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
 
@@ -140,7 +140,7 @@ jobs:
         uses: chrnorm/deployment-status@v2
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: http://vault.bitwarden.com
+          environment-url: http://vault.qa.bitwarden.pw
           state: 'success'
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
 
@@ -149,7 +149,7 @@ jobs:
         uses: chrnorm/deployment-status@v2
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          environment-url: http://vault.bitwarden.com
+          environment-url: http://vault.qa.bitwarden.pw
           state: 'failure'
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
           
