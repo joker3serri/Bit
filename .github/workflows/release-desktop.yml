@@ -172,13 +172,14 @@ jobs:
     if: inputs.snap_publish
     env:
       _PKG_VERSION: ${{ needs.setup.outputs.release-version }}
+      _RELEASE_CHANNEL: ${{ steps.release-channel.outputs.channel }}
     steps:
       - name: Create GitHub deployment for Snap
         uses: chrnorm/deployment-action@v2
         id: deployment
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          environment: 'Desktop Snap - Production ${{ env._PKG_VERSION }} (${{ github.ref_name }})'
+          environment: 'Desktop Snap - Production ${{ env._PKG_VERSION }}:${{ env._RELEASE_CHANNEL }} (${{ github.ref_name }})'
       
       - name: Update deployment status to In Progress
         uses: chrnorm/deployment-status@v2
@@ -261,13 +262,14 @@ jobs:
     if: inputs.choco_publish
     env:
       _PKG_VERSION: ${{ needs.setup.outputs.release-version }}
+      _RELEASE_CHANNEL: ${{ steps.release-channel.outputs.channel }}
     steps:
       - name: Create GitHub deployment for Choco
         uses: chrnorm/deployment-action@v2
         id: deployment
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
-          environment: 'Desktop Choco - Production ${{ env._PKG_VERSION }} (${{ github.ref_name }})'
+          environment: 'Desktop Choco - Production ${{ env._PKG_VERSION }}:${{ env._RELEASE_CHANNEL }} (${{ github.ref_name }})'
       
       - name: Update deployment status to In Progress
         uses: chrnorm/deployment-status@v2
