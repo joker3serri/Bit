@@ -76,118 +76,117 @@ jobs:
               ;;
           esac
 
-      - name: Create GitHub deployment
-        uses: chrnorm/deployment-action@v2
-        id: deployment
-        with:
-          token: '${{ secrets.GITHUB_TOKEN }}'
-          environment: 'Desktop - Production'
-          description: 'Deployment ${{ steps.version.outputs.version }} to channel ${{ steps.release-channel.outputs.channel }} from branch ${{ github.ref_name }}'
-          task: release
+      # - name: Create GitHub deployment
+      #   uses: chrnorm/deployment-action@v2
+      #   id: deployment
+      #   with:
+      #     token: '${{ secrets.GITHUB_TOKEN }}'
+      #     environment: 'Desktop - Production'
+      #     description: 'Deployment ${{ steps.version.outputs.version }} to channel ${{ steps.release-channel.outputs.channel }} from branch ${{ github.ref_name }}'
+      #     task: release
       
-
       - name: Update deployment status to In Progress
         uses: chrnorm/deployment-status@v2
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           state: 'in_progress'
-          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+          deployment-id: 610000065
 
-      - name: Login to Azure
-        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010
-        with:
-          creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
+      # - name: Login to Azure
+      #   uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010
+      #   with:
+      #     creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
 
-      - name: Retrieve secrets
-        id: retrieve-secrets
-        uses: Azure/get-keyvault-secrets@b5c723b9ac7870c022b8c35befe620b7009b336f
-        with:
-          keyvault: "bitwarden-prod-kv"
-          secrets: "aws-electron-access-id, aws-electron-access-key, aws-electron-bucket-name"
+      # - name: Retrieve secrets
+      #   id: retrieve-secrets
+      #   uses: Azure/get-keyvault-secrets@b5c723b9ac7870c022b8c35befe620b7009b336f
+      #   with:
+      #     keyvault: "bitwarden-prod-kv"
+      #     secrets: "aws-electron-access-id, aws-electron-access-key, aws-electron-bucket-name"
 
-      - name: Download all artifacts
-        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
-        with:
-          workflow: build-desktop.yml
-          workflow_conclusion: success
-          branch: ${{ github.ref_name }}
-          path: apps/desktop/artifacts
+      # - name: Download all artifacts
+      #   if: ${{ github.event.inputs.release_type != 'Dry Run' }}
+      #   uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
+      #   with:
+      #     workflow: build-desktop.yml
+      #     workflow_conclusion: success
+      #     branch: ${{ github.ref_name }}
+      #     path: apps/desktop/artifacts
 
-      - name: Download all artifacts
-        if: ${{ github.event.inputs.release_type == 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
-        with:
-          workflow: build-desktop.yml
-          workflow_conclusion: success
-          branch: master
-          path: apps/desktop/artifacts
+      # - name: Download all artifacts
+      #   if: ${{ github.event.inputs.release_type == 'Dry Run' }}
+      #   uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
+      #   with:
+      #     workflow: build-desktop.yml
+      #     workflow_conclusion: success
+      #     branch: master
+      #     path: apps/desktop/artifacts
 
-      - name: Rename .pkg to .pkg.archive
-        env:
-          PKG_VERSION: ${{ steps.version.outputs.version }}
-        working-directory: apps/desktop/artifacts
-        run: mv Bitwarden-${{ env.PKG_VERSION }}-universal.pkg Bitwarden-${{ env.PKG_VERSION }}-universal.pkg.archive
+      # - name: Rename .pkg to .pkg.archive
+      #   env:
+      #     PKG_VERSION: ${{ steps.version.outputs.version }}
+      #   working-directory: apps/desktop/artifacts
+      #   run: mv Bitwarden-${{ env.PKG_VERSION }}-universal.pkg Bitwarden-${{ env.PKG_VERSION }}-universal.pkg.archive
 
-      - name: Publish artifacts to S3
-        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.aws-electron-access-id }}
-          AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
-          AWS_DEFAULT_REGION: 'us-west-2'
-          AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
-        working-directory: apps/desktop/artifacts
-        run: |
-          aws s3 cp ./ $AWS_S3_BUCKET_NAME/desktop/ \
-          --acl "public-read" \
-          --recursive \
-          --quiet
+      # - name: Publish artifacts to S3
+      #   if: ${{ github.event.inputs.release_type != 'Dry Run' }}
+      #   env:
+      #     AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.aws-electron-access-id }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
+      #     AWS_DEFAULT_REGION: 'us-west-2'
+      #     AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
+      #   working-directory: apps/desktop/artifacts
+      #   run: |
+      #     aws s3 cp ./ $AWS_S3_BUCKET_NAME/desktop/ \
+      #     --acl "public-read" \
+      #     --recursive \
+      #     --quiet
 
-      - name: Create release
-        uses: ncipollo/release-action@95215a3cb6e6a1908b3c44e00b4fdb15548b1e09  # v2.8.5
-        if: ${{ steps.release-channel.outputs.channel == 'latest' && github.event.inputs.release_type != 'Dry Run' }}
-        env:
-          PKG_VERSION: ${{ steps.version.outputs.version }}
-          RELEASE_CHANNEL: ${{ steps.release-channel.outputs.channel }}
-        with:
-          artifacts: "apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-amd64.deb,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-x86_64.rpm,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-x64.freebsd,
-            apps/desktop/artifacts/bitwarden_${{ env.PKG_VERSION }}_amd64.snap,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-x86_64.AppImage,
-            apps/desktop/artifacts/Bitwarden-Portable-${{ env.PKG_VERSION }}.exe,
-            apps/desktop/artifacts/Bitwarden-Installer-${{ env.PKG_VERSION }}.exe,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-ia32-store.appx,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-ia32.appx,
-            apps/desktop/artifacts/bitwarden-${{ env.PKG_VERSION }}-ia32.nsis.7z,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-x64-store.appx,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-x64.appx,
-            apps/desktop/artifacts/bitwarden-${{ env.PKG_VERSION }}-x64.nsis.7z,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-arm64-store.appx,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-arm64.appx,
-            apps/desktop/artifacts/bitwarden-${{ env.PKG_VERSION }}-arm64.nsis.7z,
-            apps/desktop/artifacts/bitwarden.${{ env.PKG_VERSION }}.nupkg,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-universal-mac.zip,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-universal.dmg,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-universal.dmg.blockmap,
-            apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-universal.pkg.archive,
-            apps/desktop/artifacts/${{ env.RELEASE_CHANNEL }}.yml,
-            apps/desktop/artifacts/${{ env.RELEASE_CHANNEL }}-linux.yml,
-            apps/desktop/artifacts/${{ env.RELEASE_CHANNEL }}-mac.yml"
-          commit: ${{ github.sha }}
-          tag: desktop-v${{ env.PKG_VERSION }}
-          name: Desktop v${{ env.PKG_VERSION }}
-          body: "<insert release notes here>"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          draft: true
+      # - name: Create release
+      #   uses: ncipollo/release-action@95215a3cb6e6a1908b3c44e00b4fdb15548b1e09  # v2.8.5
+      #   if: ${{ steps.release-channel.outputs.channel == 'latest' && github.event.inputs.release_type != 'Dry Run' }}
+      #   env:
+      #     PKG_VERSION: ${{ steps.version.outputs.version }}
+      #     RELEASE_CHANNEL: ${{ steps.release-channel.outputs.channel }}
+      #   with:
+      #     artifacts: "apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-amd64.deb,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-x86_64.rpm,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-x64.freebsd,
+      #       apps/desktop/artifacts/bitwarden_${{ env.PKG_VERSION }}_amd64.snap,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-x86_64.AppImage,
+      #       apps/desktop/artifacts/Bitwarden-Portable-${{ env.PKG_VERSION }}.exe,
+      #       apps/desktop/artifacts/Bitwarden-Installer-${{ env.PKG_VERSION }}.exe,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-ia32-store.appx,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-ia32.appx,
+      #       apps/desktop/artifacts/bitwarden-${{ env.PKG_VERSION }}-ia32.nsis.7z,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-x64-store.appx,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-x64.appx,
+      #       apps/desktop/artifacts/bitwarden-${{ env.PKG_VERSION }}-x64.nsis.7z,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-arm64-store.appx,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-arm64.appx,
+      #       apps/desktop/artifacts/bitwarden-${{ env.PKG_VERSION }}-arm64.nsis.7z,
+      #       apps/desktop/artifacts/bitwarden.${{ env.PKG_VERSION }}.nupkg,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-universal-mac.zip,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-universal.dmg,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-universal.dmg.blockmap,
+      #       apps/desktop/artifacts/Bitwarden-${{ env.PKG_VERSION }}-universal.pkg.archive,
+      #       apps/desktop/artifacts/${{ env.RELEASE_CHANNEL }}.yml,
+      #       apps/desktop/artifacts/${{ env.RELEASE_CHANNEL }}-linux.yml,
+      #       apps/desktop/artifacts/${{ env.RELEASE_CHANNEL }}-mac.yml"
+      #     commit: ${{ github.sha }}
+      #     tag: desktop-v${{ env.PKG_VERSION }}
+      #     name: Desktop v${{ env.PKG_VERSION }}
+      #     body: "<insert release notes here>"
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     draft: true
 
-      - name: Update deployment status to Success
-        if: success()
-        uses: chrnorm/deployment-status@v2
-        with:
-          token: '${{ secrets.GITHUB_TOKEN }}'
-          state: 'success'
-          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+      # - name: Update deployment status to Success
+      #   if: success()
+      #   uses: chrnorm/deployment-status@v2
+      #   with:
+      #     token: '${{ secrets.GITHUB_TOKEN }}'
+      #     state: 'success'
+      #     deployment-id: ${{ steps.deployment.outputs.deployment_id }}
 
       - name: Update deployment status to Failure
         if: failure()
@@ -195,7 +194,7 @@ jobs:
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           state: 'failure'
-          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+          deployment-id: 610000065
 
   snap:
     name: Deploy Snap
