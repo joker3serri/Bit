@@ -228,7 +228,7 @@ jobs:
       - cfpages-deploy
     steps:
       - name: Create GitHub deployment
-        uses: chrnorm/deployment-action@v2
+        uses: chrnorm/deployment-action@1b599fe41a0ef1f95191e7f2eec4743f2d7dfc48
         id: deployment
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
@@ -238,7 +238,7 @@ jobs:
           task: release
       
       - name: Update deployment status to In Progress
-        uses: chrnorm/deployment-status@v2
+        uses: chrnorm/deployment-status@07b3930847f65e71c9c6802ff5a402f6dfb46b86
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           environment-url: http://vault.bitwarden.com
@@ -288,7 +288,7 @@ jobs:
 
       - name: Update deployment status to Success
         if: success()
-        uses: chrnorm/deployment-status@v2
+        uses: chrnorm/deployment-status@07b3930847f65e71c9c6802ff5a402f6dfb46b86
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           environment-url: http://vault.bitwarden.com
@@ -297,7 +297,7 @@ jobs:
 
       - name: Update deployment status to Failure
         if: failure()
-        uses: chrnorm/deployment-status@v2
+        uses: chrnorm/deployment-status@07b3930847f65e71c9c6802ff5a402f6dfb46b86
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           environment-url: http://vault.bitwarden.com
