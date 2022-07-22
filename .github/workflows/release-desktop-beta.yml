@@ -957,7 +957,7 @@ jobs:
 
 
   remove-branch:
-    name: Release beta channel to S3
+    name: Remove branch
     runs-on: ubuntu-20.04
     if: always()
     needs:
