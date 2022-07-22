@@ -6,7 +6,7 @@ import { EncryptedObject } from "@bitwarden/common/models/domain/encryptedObject
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 
 import { AbstractEncryptService } from "../abstractions/abstractEncrypt.service";
-import { EncryptionType } from "../enums/encryptionType";
+import { IEncrypted } from "../interfaces/IEncrypted";
 import { EncArrayBuffer } from "../models/domain/encArrayBuffer";
 
 export class EncryptService implements AbstractEncryptService {
@@ -98,10 +98,7 @@ export class EncryptService implements AbstractEncryptService {
     return this.cryptoFunctionService.aesDecryptFast(fastParams);
   }
 
-  async decryptToBytes(
-    encThing: EncString | EncArrayBuffer,
-    key: SymmetricCryptoKey
-  ): Promise<ArrayBuffer> {
+  async decryptToBytes(encThing: IEncrypted, key: SymmetricCryptoKey): Promise<ArrayBuffer> {
     if (key == null) {
       throw new Error("No encryption key provided.");
     }
@@ -119,9 +116,9 @@ export class EncryptService implements AbstractEncryptService {
     }
 
     if (key.macKey != null && encThing.macBytes != null) {
-      const macData = new Uint8Array(encThing.ivBytes.byteLength + encThing.ctBytes.byteLength);
+      const macData = new Uint8Array(encThing.ivBytes.byteLength + encThing.dataBytes.byteLength);
       macData.set(new Uint8Array(encThing.ivBytes), 0);
-      macData.set(new Uint8Array(encThing.ctBytes), encThing.ivBytes.byteLength);
+      macData.set(new Uint8Array(encThing.dataBytes), encThing.ivBytes.byteLength);
       const computedMac = await this.cryptoFunctionService.hmac(
         macData.buffer,
         key.macKey,
@@ -139,7 +136,7 @@ export class EncryptService implements AbstractEncryptService {
     }
 
     const result = await this.cryptoFunctionService.aesDecrypt(
-      encThing.ctBytes,
+      encThing.dataBytes,
       encThing.ivBytes,
       key.encKey
     );

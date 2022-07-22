@@ -52,9 +52,9 @@ describe("EncryptService", () => {
         const actual = await encryptService.encryptToBytes(plainValue, key);
 
         expect(actual.encryptionType).toEqual(encType);
-        expect(actual.iv).toEqual(iv);
-        expect(actual.mac).toEqual(mac);
-        expect(actual.ct).toEqual(encryptedData);
+        expect(actual.ivBytes).toEqualBuffer(iv);
+        expect(actual.macBytes).toEqualBuffer(mac);
+        expect(actual.dataBytes).toEqualBuffer(encryptedData);
         expect(actual.buffer.byteLength).toEqual(
           1 + iv.byteLength + mac.byteLength + encryptedData.byteLength
         );
@@ -72,9 +72,9 @@ describe("EncryptService", () => {
         expect(cryptoFunctionService.hmac).not.toBeCalled();
 
         expect(actual.encryptionType).toEqual(encType);
-        expect(actual.iv).toEqual(iv);
-        expect(actual.mac).toBeNull();
-        expect(actual.ct).toEqual(encryptedData);
+        expect(actual.ivBytes).toEqualBuffer(iv);
+        expect(actual.macBytes).toBeNull();
+        expect(actual.dataBytes).toEqualBuffer(encryptedData);
         expect(actual.buffer.byteLength).toEqual(1 + iv.byteLength + encryptedData.byteLength);
       });
     });
@@ -112,7 +112,7 @@ describe("EncryptService", () => {
       const actual = await encryptService.decryptToBytes(encBuffer, key);
 
       expect(cryptoFunctionService.aesDecrypt).toBeCalledWith(
-        expect.toEqualBuffer(encBuffer.ctBytes),
+        expect.toEqualBuffer(encBuffer.dataBytes),
         expect.toEqualBuffer(encBuffer.ivBytes),
         expect.toEqualBuffer(key.encKey)
       );
@@ -122,10 +122,10 @@ describe("EncryptService", () => {
 
     it("compares macs using CryptoFunctionService", async () => {
       const expectedMacData = new Uint8Array(
-        encBuffer.ivBytes.byteLength + encBuffer.ctBytes.byteLength
+        encBuffer.ivBytes.byteLength + encBuffer.dataBytes.byteLength
       );
-      expectedMacData.set(encBuffer.iv);
-      expectedMacData.set(encBuffer.ct, encBuffer.ivBytes.byteLength);
+      expectedMacData.set(new Uint8Array(encBuffer.ivBytes));
+      expectedMacData.set(new Uint8Array(encBuffer.dataBytes), encBuffer.ivBytes.byteLength);
 
       await encryptService.decryptToBytes(encBuffer, key);
 

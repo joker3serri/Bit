@@ -1,6 +1,7 @@
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 
+import { IEncrypted } from "../interfaces/IEncrypted";
 import { EncArrayBuffer } from "../models/domain/encArrayBuffer";
 
 export abstract class AbstractEncryptService {
@@ -10,8 +11,5 @@ export abstract class AbstractEncryptService {
     key?: SymmetricCryptoKey
   ) => Promise<EncArrayBuffer>;
   abstract decryptToUtf8: (encString: EncString, key: SymmetricCryptoKey) => Promise<string>;
-  abstract decryptToBytes: (
-    encStringOrBuffer: EncString | EncArrayBuffer,
-    key: SymmetricCryptoKey
-  ) => Promise<ArrayBuffer>;
+  abstract decryptToBytes: (encThing: IEncrypted, key: SymmetricCryptoKey) => Promise<ArrayBuffer>;
 }

@@ -24,7 +24,7 @@ describe("encArrayBuffer", () => {
       expect(actual.encryptionType).toEqual(encType);
       expect(actual.ivBytes).toEqualBuffer(iv);
       expect(actual.macBytes).toEqualBuffer(mac);
-      expect(actual.ctBytes).toEqualBuffer(cipherText);
+      expect(actual.dataBytes).toEqualBuffer(cipherText);
     });
 
     it("with AesCbc256_B64", () => {
@@ -41,7 +41,7 @@ describe("encArrayBuffer", () => {
 
       expect(actual.encryptionType).toEqual(encType);
       expect(actual.ivBytes).toEqualBuffer(iv);
-      expect(actual.ctBytes).toEqualBuffer(cipherText);
+      expect(actual.dataBytes).toEqualBuffer(cipherText);
       expect(actual.macBytes).toBeNull();
     });
   });
@@ -63,7 +63,7 @@ describe("encArrayBuffer", () => {
       const actual = new EncArrayBuffer(invalidArray.buffer);
 
       expect(actual.buffer).not.toBeNull();
-      expect(actual.ctBytes).toBeNull();
+      expect(actual.dataBytes).toBeNull();
       expect(actual.encryptionType).toBeNull();
       expect(actual.ivBytes).toBeNull();
       expect(actual.macBytes).toBeNull();
@@ -76,7 +76,7 @@ describe("encArrayBuffer", () => {
     const actual = new EncArrayBuffer(bytes);
 
     expect(actual.buffer).not.toBeNull();
-    expect(actual.ctBytes).toBeNull();
+    expect(actual.dataBytes).toBeNull();
     expect(actual.encryptionType).toBeNull();
     expect(actual.ivBytes).toBeNull();
     expect(actual.macBytes).toBeNull();
