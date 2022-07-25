@@ -8,4 +8,4 @@ import { AvatarComponent } from "./avatar.component";
   exports: [AvatarComponent],
   declarations: [AvatarComponent],
 })
-export class CalloutModule {}
+export class AvatarModule {}
