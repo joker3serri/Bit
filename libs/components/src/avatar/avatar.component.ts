@@ -66,7 +66,7 @@ export class AvatarComponent implements OnChanges, OnInit {
     }
 
     if (this.border) {
-      className += className + " " + "tw-border tw-border-solid tw-border-secondary-500";
+      className = className + " " + "tw-border tw-border-solid tw-border-secondary-500";
     }
 
     return className;
