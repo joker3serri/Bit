@@ -5,7 +5,7 @@ import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunc
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 
-type SizeTypes = "large" | "medium" | "small";
+type SizeTypes = "large" | "default" | "small";
 
 @Component({
   selector: "bit-avatar",
@@ -22,14 +22,14 @@ type SizeTypes = "large" | "medium" | "small";
 export class AvatarComponent implements OnChanges, OnInit {
   @Input() data: string;
   @Input() email: string;
-  @Input() size: SizeTypes = "large";
-  @Input() charCount = 2;
+  @Input() size: SizeTypes = "default";
   @Input() textColor = "#ffffff";
   @Input() dynamic = false;
 
-  svgSize = 48;
+  charCount = 2;
   fontSize = 20;
   fontWeight = 300;
+  svgSize = 48;
   src: string;
 
   constructor(
@@ -55,13 +55,13 @@ export class AvatarComponent implements OnChanges, OnInit {
 
     switch (this.size) {
       case "large":
-        className += "tw-h-12 tw-w-12";
-        break;
-      case "medium":
-        className += "tw-h-9 tw-w-9";
+        className += "tw-h-16 tw-w-16";
         break;
       case "small":
         className += "tw-h-7 tw-w-7";
+        break;
+      default:
+        className += "tw-h-12 tw-w-12";
     }
 
     return className;

@@ -25,7 +25,6 @@ export default {
   ],
   args: {
     name: "Walt Walterson",
-    size: "large",
   },
   parameters: {
     design: {
@@ -45,9 +44,9 @@ const Template: Story<AvatarComponent> = (args: AvatarComponent) => ({
 export const Default = Template.bind({});
 Default.args = {};
 
-export const Medium = Template.bind({});
-Medium.args = {
-  size: "medium",
+export const Large = Template.bind({});
+Large.args = {
+  size: "large",
 };
 
 export const Small = Template.bind({});
