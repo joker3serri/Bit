@@ -15,7 +15,7 @@ type SizeTypes = "large" | "default" | "small";
       [src]="sanitizer.bypassSecurityTrustResourceUrl(src)"
       title="{{ data }}"
       [ngClass]="avatarClass"
-      class="tw-rounded-full tw-h-"
+      class="tw-rounded-full"
     />
   `,
 })
