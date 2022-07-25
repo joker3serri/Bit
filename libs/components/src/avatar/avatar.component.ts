@@ -15,6 +15,7 @@ type SizeTypes = "large" | "medium" | "small";
       [src]="sanitizer.bypassSecurityTrustResourceUrl(src)"
       title="{{ data }}"
       [ngClass]="avatarClass"
+      class="tw-rounded-full"
     />
   `,
 })
@@ -25,7 +26,6 @@ export class AvatarComponent implements OnChanges, OnInit {
   @Input() charCount = 2;
   @Input() textColor = "#ffffff";
   @Input() dynamic = false;
-  @Input() circle = false;
 
   svgSize = 48;
   fontSize = 20;
@@ -64,9 +64,6 @@ export class AvatarComponent implements OnChanges, OnInit {
         className += "tw-h-7 tw-w-7";
     }
 
-    if (this.circle) {
-      className = className + " " + "tw-rounded-full";
-    }
     return className;
   }
 
