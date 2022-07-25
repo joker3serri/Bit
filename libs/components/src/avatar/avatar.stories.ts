@@ -38,7 +38,7 @@ export default {
 const Template: Story<AvatarComponent> = (args: AvatarComponent) => ({
   props: args,
   template: `
-    <bit-avatar [data]="data" [size]="size" [color]="color"></bit-avatar>
+    <bit-avatar [data]="data" [size]="size" [color]="color" [border]="border"></bit-avatar>
   `,
 });
 
@@ -58,4 +58,9 @@ Small.args = {
 export const LightBackground = Template.bind({});
 LightBackground.args = {
   color: "#d2ffcf",
+};
+
+export const Border = Template.bind({});
+Border.args = {
+  border: true,
 };

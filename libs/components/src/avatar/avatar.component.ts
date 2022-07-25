@@ -20,12 +20,12 @@ type SizeTypes = "large" | "default" | "small";
   `,
 })
 export class AvatarComponent implements OnChanges, OnInit {
+  @Input() border = false;
+  @Input() color: "#175ddc";
   @Input() data: string;
+  @Input() dynamic = false;
   @Input() email: string;
   @Input() size: SizeTypes = "default";
-  @Input() color: "#175ddc";
-  // @Input() textColor = "#ffffff";
-  @Input() dynamic = false;
 
   charCount = 2;
   fontSize = 20;
@@ -63,6 +63,10 @@ export class AvatarComponent implements OnChanges, OnInit {
         break;
       default:
         className += "tw-h-12 tw-w-12";
+    }
+
+    if (this.border) {
+      className += className + " " + "tw-border tw-border-solid tw-border-secondary-500";
     }
 
     return className;
