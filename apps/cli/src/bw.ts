@@ -206,8 +206,7 @@ export class Main {
       this.cryptoService,
       this.i18nService,
       this.cipherService,
-      this.stateService,
-      this.broadcasterService
+      this.stateService
     );
 
     this.folderApiService = new FolderApiService(this.folderService, this.apiService);
@@ -378,7 +377,7 @@ export class Main {
   private async init() {
     await this.storageService.init();
     await this.stateService.init();
-    this.containerService.attachToWindow(global);
+    this.containerService.attachToGlobal(global);
     await this.environmentService.setUrlsFromStorage();
     const locale = await this.stateService.getLocale();
     await this.i18nService.init(locale);
