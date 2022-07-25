@@ -103,7 +103,7 @@ const doAutoFillLogin = async (tab: chrome.tabs.Tab): Promise<void> => {
   searchService = new SearchService(cipherService, logService, i18nService);
 
   // TODO: Remove this before we encourage anyone to start using this
-  const eventService = NoOpEventService.instance;
+  const eventService = new NoOpEventService();
 
   const autofillService = new AutofillService(
     cipherService,

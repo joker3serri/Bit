@@ -6,7 +6,11 @@ import { EventType } from "@bitwarden/common/enums/eventType";
  * If you think you should use that after the warning, don't.
  */
 export default class NoOpEventService implements EventService {
-  static instance: NoOpEventService = new NoOpEventService();
+  constructor() {
+    if (chrome.runtime.getManifest().manifest_version !== 3) {
+      throw new Error("You are not allowed to use this when not in manifest_version 3");
+    }
+  }
 
   collect(eventType: EventType, cipherId?: string, uploadImmediately?: boolean) {
     return Promise.resolve();

@@ -126,17 +126,6 @@ export class LoginUriView implements View {
   }
 
   static initFromJson(jsonResult: LoginUriView) {
-    if (jsonResult == null) {
-      return jsonResult;
-    }
-
-    const loginUriView = new LoginUriView();
-    loginUriView._uri = jsonResult._uri;
-    loginUriView._domain = jsonResult._domain;
-    loginUriView._hostname = jsonResult._hostname;
-    loginUriView._canLaunch = jsonResult._canLaunch;
-    loginUriView.match = jsonResult.match;
-
-    return loginUriView;
+    return jsonResult == null ? null : Object.assign(new LoginUriView(), jsonResult);
   }
 }

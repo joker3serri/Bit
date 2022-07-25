@@ -61,7 +61,6 @@ export class SearchService implements SearchServiceAbstraction {
       return;
     }
 
-    this.logService.time("search indexing");
     this.indexing = true;
     this.indexedEntityId = indexedEntityId;
     this.index = null;
@@ -102,7 +101,7 @@ export class SearchService implements SearchServiceAbstraction {
 
     this.indexing = false;
 
-    this.logService.timeEnd("search indexing");
+    this.logService.info("Finished search indexing");
   }
 
   async searchCiphers(

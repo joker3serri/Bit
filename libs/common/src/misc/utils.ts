@@ -8,7 +8,7 @@ import { I18nService } from "../abstractions/i18n.service";
 const nodeURL = typeof window === "undefined" ? require("url") : null;
 
 declare global {
-  /* eslint-disable */
+  /* eslint-disable-next-line no-var */
   var bitwardenContainerService: BitwardenContainerService;
 }
 
