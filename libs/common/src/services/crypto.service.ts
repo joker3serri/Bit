@@ -599,16 +599,9 @@ export class CryptoService implements CryptoServiceAbstraction {
     return await this.encryptService.decryptToUtf8(encString, key);
   }
 
-  async decryptFromBytes(buffer: ArrayBuffer, key: SymmetricCryptoKey): Promise<ArrayBuffer> {
-    if (buffer == null) {
+  async decryptFromBytes(encBuffer: EncArrayBuffer, key: SymmetricCryptoKey): Promise<ArrayBuffer> {
+    if (encBuffer == null) {
       throw new Error("No buffer provided for decryption.");
-    }
-
-    let encBuffer = null;
-    try {
-      encBuffer = new EncArrayBuffer(buffer);
-    } catch {
-      return null;
     }
 
     key = await this.getKeyForEncryption(key);

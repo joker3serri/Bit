@@ -1,5 +1,6 @@
 import { EncryptionType } from "@bitwarden/common/enums/encryptionType";
 import { IEncrypted } from "@bitwarden/common/interfaces/IEncrypted";
+import { Utils } from "@bitwarden/common/misc/utils";
 
 const ENC_TYPE_LENGTH = 1;
 const IV_LENGTH = 16;
@@ -53,5 +54,20 @@ export class EncArrayBuffer implements IEncrypted {
     throw new Error(
       "Error parsing encrypted ArrayBuffer: data is corrupted or has an invalid format."
     );
+  }
+
+  static async fromResponse(response: {
+    arrayBuffer: () => Promise<ArrayBuffer>;
+  }): Promise<EncArrayBuffer> {
+    const buffer = await response.arrayBuffer();
+    if (buffer == null) {
+      throw new Error("Cannot create EncArrayBuffer from Response - Response is empty");
+    }
+    return new EncArrayBuffer(buffer);
+  }
+
+  static fromB64(b64: string) {
+    const buffer = Utils.fromB64ToArray(b64).buffer;
+    return new EncArrayBuffer(buffer);
   }
 }
