@@ -197,6 +197,8 @@ function safariCopyBuild(source, dest) {
         gulpif(
           "manifest.json",
           jeditor((manifest) => {
+            delete manifest.sidebar_action;
+            delete manifest.commands._execute_sidebar_action;
             delete manifest.optional_permissions;
             manifest.permissions.push("nativeMessaging");
             return manifest;
