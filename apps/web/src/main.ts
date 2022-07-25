@@ -5,8 +5,8 @@ import "bootstrap";
 import "jquery";
 import "popper.js";
 
-require("../scss/styles.scss");
-require("../scss/tailwind.css");
+require("./scss/styles.scss");
+require("./scss/tailwind.css");
 
 import { AppModule } from "./app/app.module";
 
