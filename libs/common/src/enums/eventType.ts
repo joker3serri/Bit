@@ -48,6 +48,8 @@ export enum EventType {
   OrganizationUser_AdminResetPassword = 1508,
   OrganizationUser_ResetSsoLink = 1509,
   OrganizationUser_FirstSsoLogin = 1510,
+  OrganizationUser_Revoked = 1511,
+  OrganizationUser_Restored = 1512,
 
   Organization_Updated = 1600,
   Organization_PurgedVault = 1601,
