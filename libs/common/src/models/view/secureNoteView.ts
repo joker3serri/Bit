@@ -1,10 +1,10 @@
 import { SecureNoteType } from "../../enums/secureNoteType";
-import { ParsedObject, ToJsonObject } from "../../models/storable";
+import { ParsedObject, ToJsonObject, Storable } from "../../interfaces/storable";
 import { SecureNote } from "../domain/secureNote";
 
 import { ItemView } from "./itemView";
 
-export class SecureNoteView extends ItemView<SecureNoteView> {
+export class SecureNoteView extends ItemView implements Storable<SecureNoteView> {
   type: SecureNoteType = null;
 
   constructor(n?: SecureNote) {

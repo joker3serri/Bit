@@ -1,8 +1,8 @@
-import { ParsedObject, Storable, ToJsonObject } from "@bitwarden/common/models/storable";
 
 import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
 import { LinkedIdType } from "../../enums/linkedIdType";
+import { ParsedObject, Storable, ToJsonObject } from "../../interfaces/storable";
 import { Cipher } from "../domain/cipher";
 
 import { AttachmentView } from "./attachmentView";
@@ -14,7 +14,7 @@ import { PasswordHistoryView } from "./passwordHistoryView";
 import { SecureNoteView } from "./secureNoteView";
 import { View } from "./view";
 
-export class CipherView extends Storable<CipherView> implements View {
+export class CipherView implements View, Storable<CipherView> {
   id: string = null;
   organizationId: string = null;
   folderId: string = null;
@@ -39,8 +39,6 @@ export class CipherView extends Storable<CipherView> implements View {
   reprompt: CipherRepromptType = CipherRepromptType.None;
 
   constructor(c?: Cipher) {
-    super();
-
     if (!c) {
       return;
     }

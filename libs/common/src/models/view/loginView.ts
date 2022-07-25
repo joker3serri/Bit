@@ -1,6 +1,5 @@
-import { ParsedObject, ToJsonObject } from "@bitwarden/common/models/storable";
-
 import { LoginLinkedId as LinkedId } from "../../enums/linkedIdType";
+import { ParsedObject, ToJsonObject, Storable } from "../../interfaces/storable";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 import { Utils } from "../../misc/utils";
 import { Login } from "../domain/login";
@@ -8,7 +7,7 @@ import { Login } from "../domain/login";
 import { ItemView } from "./itemView";
 import { LoginUriView } from "./loginUriView";
 
-export class LoginView extends ItemView<LoginView> {
+export class LoginView extends ItemView implements Storable<LoginView> {
   @linkedFieldOption(LinkedId.Username)
   username: string = null;
   @linkedFieldOption(LinkedId.Password)

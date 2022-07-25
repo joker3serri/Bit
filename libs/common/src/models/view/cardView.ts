@@ -1,11 +1,10 @@
-import { ParsedObject, Storable, ToJsonObject } from "@bitwarden/common/models/storable";
-
 import { CardLinkedId as LinkedId } from "../../enums/linkedIdType";
+import { ParsedObject, Storable, ToJsonObject } from "../../interfaces/storable";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 
 import { ItemView } from "./itemView";
 
-export class CardView extends ItemView<CardView> {
+export class CardView extends ItemView implements Storable<CardView> {
   @linkedFieldOption(LinkedId.CardholderName)
   cardholderName: string = null;
   @linkedFieldOption(LinkedId.ExpMonth, "expirationMonth")

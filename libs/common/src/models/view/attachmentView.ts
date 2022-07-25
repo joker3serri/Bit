@@ -1,11 +1,10 @@
-import { ParsedObject, Storable, ToJsonObject } from "@bitwarden/common/models/storable";
-
+import { ParsedObject, Storable, ToJsonObject } from "../../interfaces/storable";
 import { Attachment } from "../domain/attachment";
 import { SymmetricCryptoKey } from "../domain/symmetricCryptoKey";
 
 import { View } from "./view";
 
-export class AttachmentView extends Storable<AttachmentView> implements View {
+export class AttachmentView implements View, Storable<AttachmentView> {
   id: string = null;
   url: string = null;
   size: string = null;
@@ -14,8 +13,6 @@ export class AttachmentView extends Storable<AttachmentView> implements View {
   key: SymmetricCryptoKey = null;
 
   constructor(a?: Attachment) {
-    super();
-
     if (!a) {
       return;
     }

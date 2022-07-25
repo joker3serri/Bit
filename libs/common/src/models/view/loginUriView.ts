@@ -1,6 +1,5 @@
-import { ParsedObject, Storable, ToJsonObject } from "@bitwarden/common/models/storable";
-
 import { UriMatchType } from "../../enums/uriMatchType";
+import { ParsedObject, Storable, ToJsonObject } from "../../interfaces/storable";
 import { Utils } from "../../misc/utils";
 import { LoginUri } from "../domain/loginUri";
 
@@ -22,7 +21,7 @@ const CanLaunchWhitelist = [
   "androidapp://",
 ];
 
-export class LoginUriView extends Storable<LoginUriView> implements View {
+export class LoginUriView implements View, Storable<LoginUriView> {
   match: UriMatchType = null;
 
   private _uri: string = null;
@@ -32,8 +31,6 @@ export class LoginUriView extends Storable<LoginUriView> implements View {
   private _canLaunch: boolean = null;
 
   constructor(u?: LoginUri) {
-    super();
-
     if (!u) {
       return;
     }

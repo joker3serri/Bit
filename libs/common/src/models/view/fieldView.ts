@@ -1,12 +1,12 @@
-import { ParsedObject, Storable, ToJsonObject } from "@bitwarden/common/models/storable";
 
 import { FieldType } from "../../enums/fieldType";
 import { LinkedIdType } from "../../enums/linkedIdType";
+import { ParsedObject, Storable, ToJsonObject } from "../../interfaces/storable";
 import { Field } from "../domain/field";
 
 import { View } from "./view";
 
-export class FieldView extends Storable<FieldView> implements View {
+export class FieldView implements View, Storable<FieldView> {
   name: string = null;
   value: string = null;
   type: FieldType = null;
@@ -16,8 +16,6 @@ export class FieldView extends Storable<FieldView> implements View {
   linkedId: LinkedIdType = null;
 
   constructor(f?: Field) {
-    super();
-
     if (!f) {
       return;
     }

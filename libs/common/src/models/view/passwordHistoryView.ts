@@ -1,16 +1,13 @@
-import { ParsedObject, Storable, ToJsonObject } from "@bitwarden/common/models/storable";
-
+import { ParsedObject, Storable, ToJsonObject } from "../../interfaces/storable";
 import { Password } from "../domain/password";
 
 import { View } from "./view";
 
-export class PasswordHistoryView extends Storable<PasswordHistoryView> implements View {
+export class PasswordHistoryView implements View, Storable<PasswordHistoryView> {
   password: string = null;
   lastUsedDate: Date = null;
 
   constructor(ph?: Password) {
-    super();
-
     if (!ph) {
       return;
     }

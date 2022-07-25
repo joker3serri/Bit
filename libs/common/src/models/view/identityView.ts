@@ -1,12 +1,11 @@
-import { ParsedObject, ToJsonObject } from "@bitwarden/common/models/storable";
-
 import { IdentityLinkedId as LinkedId } from "../../enums/linkedIdType";
+import { ParsedObject, ToJsonObject, Storable } from "../../interfaces/storable";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 import { Utils } from "../../misc/utils";
 
 import { ItemView } from "./itemView";
 
-export class IdentityView extends ItemView<IdentityView> {
+export class IdentityView extends ItemView implements Storable<IdentityView> {
   @linkedFieldOption(LinkedId.Title)
   title: string = null;
   @linkedFieldOption(LinkedId.MiddleName)
