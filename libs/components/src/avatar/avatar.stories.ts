@@ -24,7 +24,8 @@ export default {
     }),
   ],
   args: {
-    name: "Walt Walterson",
+    data: "Walt Walterson",
+    color: "#175ddc",
   },
   parameters: {
     design: {
@@ -37,7 +38,7 @@ export default {
 const Template: Story<AvatarComponent> = (args: AvatarComponent) => ({
   props: args,
   template: `
-    <bit-avatar [data]="name" [size]="size"></bit-avatar>
+    <bit-avatar [data]="data" [size]="size" [color]="color"></bit-avatar>
   `,
 });
 
@@ -52,4 +53,9 @@ Large.args = {
 export const Small = Template.bind({});
 Small.args = {
   size: "small",
+};
+
+export const LightBackground = Template.bind({});
+LightBackground.args = {
+  color: "#d2ffcf",
 };
