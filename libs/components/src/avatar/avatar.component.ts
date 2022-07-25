@@ -15,7 +15,7 @@ type SizeTypes = "large" | "default" | "small";
       [src]="sanitizer.bypassSecurityTrustResourceUrl(src)"
       title="{{ data }}"
       [ngClass]="avatarClass"
-      class="tw-rounded-full"
+      class="tw-rounded-full tw-h-"
     />
   `,
 })
@@ -56,7 +56,7 @@ export class AvatarComponent implements OnChanges, OnInit {
 
     switch (this.size) {
       case "large":
-        className += "tw-h-16 tw-w-16";
+        className += "tw-h-[72px] tw-w-[72px]";
         break;
       case "small":
         className += "tw-h-7 tw-w-7";
