@@ -78,7 +78,7 @@ jobs:
           git config --global url."https://github.com/".insteadOf ssh://git@github.com/
           git config --global url."https://".insteadOf ssh://
 
-      - name: Create mobile-beta-release branch
+      - name: Create desktop-beta-release branch
         id: branch
         env:
           VERSION: ${{ github.event.inputs.version_number }}
@@ -86,11 +86,11 @@ jobs:
           find="."
           replace="_"
           ver=${VERSION//$find/$replace}
-          branch_name=mobile-beta-release-$ver-beta
+          branch_name=desktop-beta-release-$ver-beta
 
           git switch -c $branch_name
           git add .
-          git commit -m "Bump mobile version to $VERSION-beta"
+          git commit -m "Bump desktop version to $VERSION-beta"
 
           git push -u origin $branch_name
 
