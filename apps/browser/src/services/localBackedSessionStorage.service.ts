@@ -25,11 +25,13 @@ export class LocalBackedSessionStorageService extends AbstractStorageService {
   }
 
   async get<T>(key: string): Promise<T> {
+    const sessionEncKey = await this.getSessionEncKey();
+
     if (this.cache.has(key)) {
       return this.cache.get(key);
     }
 
-    const session = await this.getLocalSession(await this.getSessionEncKey());
+    const session = await this.getLocalSession(sessionEncKey);
     if (session == null || !Object.keys(session).includes(key)) {
       return null;
     }
