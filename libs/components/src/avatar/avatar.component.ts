@@ -79,8 +79,8 @@ export class AvatarComponent implements OnChanges {
       chars = chars.match(Utils.regexpEmojiPresentation)[0];
     }
 
-    const charObj = this.getCharText(chars);
-    const svg = this.getSvg(this.svgSize, this.color);
+    const charObj = this.createTextElement(chars);
+    const svg = this.createSvgElement(this.svgSize, this.color);
     svg.appendChild(charObj);
     const html = window.document.createElement("div").appendChild(svg).outerHTML;
     const svgHtml = window.btoa(unescape(encodeURIComponent(html)));
@@ -112,7 +112,7 @@ export class AvatarComponent implements OnChanges {
     return null;
   }
 
-  private getSvg(size: number, color: string): HTMLElement {
+  private createSvgElement(size: number, color: string): HTMLElement {
     const svgTag = window.document.createElement("svg");
     svgTag.setAttribute("xmlns", "http://www.w3.org/2000/svg");
     svgTag.setAttribute("pointer-events", "none");
@@ -124,7 +124,7 @@ export class AvatarComponent implements OnChanges {
     return svgTag;
   }
 
-  private getCharText(character: string): HTMLElement {
+  private createTextElement(character: string): HTMLElement {
     const textTag = window.document.createElement("text");
     textTag.setAttribute("text-anchor", "middle");
     textTag.setAttribute("y", "50%");
