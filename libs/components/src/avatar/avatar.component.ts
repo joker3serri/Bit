@@ -47,7 +47,7 @@ export class AvatarComponent implements OnChanges {
 
     switch (this.size) {
       case "large":
-        className += "tw-h-[72px] tw-w-[72px]";
+        className += "tw-h-16 tw-w-16";
         break;
       case "small":
         className += "tw-h-7 tw-w-7";
