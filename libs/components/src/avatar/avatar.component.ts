@@ -14,8 +14,7 @@ type SizeTypes = "large" | "default" | "small";
       *ngIf="src"
       [src]="sanitizer.bypassSecurityTrustResourceUrl(src)"
       title="{{ data }}"
-      [ngClass]="avatarClass"
-      class="tw-rounded-full"
+      [ngClass]="classList"
     />
   `,
 })
@@ -42,25 +41,25 @@ export class AvatarComponent implements OnChanges {
     this.generate();
   }
 
-  get avatarClass(): string {
-    let className = "";
+  get classList(): string[] {
+    const classes = ["tw-rounded-full"];
 
     switch (this.size) {
       case "large":
-        className += "tw-h-16 tw-w-16";
+        classes.push("tw-h-16", "tw-w-16");
         break;
       case "small":
-        className += "tw-h-7 tw-w-7";
+        classes.push("tw-h-7", "tw-w-7");
         break;
       default:
-        className += "tw-h-12 tw-w-12";
+        classes.push("tw-h-12", "tw-w-12");
     }
 
     if (this.border) {
-      className = className + " " + "tw-border tw-border-solid tw-border-secondary-500";
+      classes.push("tw-border", "tw-border-solid", "tw-border-secondary-500");
     }
 
-    return className;
+    return classes;
   }
 
   private generate() {
