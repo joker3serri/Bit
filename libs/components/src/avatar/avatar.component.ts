@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 import { Utils } from "@bitwarden/common/misc/utils";
 
@@ -7,14 +7,7 @@ type SizeTypes = "large" | "default" | "small";
 
 @Component({
   selector: "bit-avatar",
-  template: `
-    <img
-      *ngIf="src"
-      [src]="sanitizer.bypassSecurityTrustResourceUrl(src)"
-      title="{{ data }}"
-      [ngClass]="classList"
-    />
-  `,
+  template: `<img *ngIf="src" [src]="src" title="{{ data }}" [ngClass]="classList" />`,
 })
 export class AvatarComponent implements OnChanges {
   @Input() border = false;
@@ -27,7 +20,7 @@ export class AvatarComponent implements OnChanges {
   private svgFontSize = 20;
   private svgFontWeight = 300;
   private svgSize = 48;
-  src: string;
+  src: SafeResourceUrl;
 
   constructor(public sanitizer: DomSanitizer) {}
 
@@ -76,7 +69,9 @@ export class AvatarComponent implements OnChanges {
     svg.appendChild(charObj);
     const html = window.document.createElement("div").appendChild(svg).outerHTML;
     const svgHtml = window.btoa(unescape(encodeURIComponent(html)));
-    this.src = "data:image/svg+xml;base64," + svgHtml;
+    this.src = this.sanitizer.bypassSecurityTrustResourceUrl(
+      "data:image/svg+xml;base64," + svgHtml
+    );
   }
 
   private getFirstLetters(data: string, count: number): string {
