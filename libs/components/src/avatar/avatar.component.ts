@@ -23,10 +23,10 @@ export class AvatarComponent implements OnChanges {
   @Input() email: string;
   @Input() size: SizeTypes = "default";
 
-  charCount = 2;
-  fontSize = 20;
-  fontWeight = 300;
-  svgSize = 48;
+  private svgCharCount = 2;
+  private svgFontSize = 20;
+  private svgFontWeight = 300;
+  private svgSize = 48;
   src: string;
 
   constructor(public sanitizer: DomSanitizer) {}
@@ -60,10 +60,10 @@ export class AvatarComponent implements OnChanges {
     let chars: string = null;
     const upperData = this.data.toUpperCase();
 
-    chars = this.getFirstLetters(upperData, this.charCount);
+    chars = this.getFirstLetters(upperData, this.svgCharCount);
 
     if (chars == null) {
-      chars = this.unicodeSafeSubstring(upperData, this.charCount);
+      chars = this.unicodeSafeSubstring(upperData, this.svgCharCount);
     }
 
     // If the chars contain an emoji, only show it.
@@ -117,8 +117,8 @@ export class AvatarComponent implements OnChanges {
         'sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"'
     );
     textTag.textContent = character;
-    textTag.style.fontWeight = this.fontWeight.toString();
-    textTag.style.fontSize = this.fontSize + "px";
+    textTag.style.fontWeight = this.svgFontWeight.toString();
+    textTag.style.fontSize = this.svgFontSize + "px";
     return textTag;
   }
 
