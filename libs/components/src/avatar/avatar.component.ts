@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
@@ -19,11 +19,10 @@ type SizeTypes = "large" | "default" | "small";
     />
   `,
 })
-export class AvatarComponent implements OnChanges, OnInit {
+export class AvatarComponent implements OnChanges {
   @Input() border = false;
   @Input() color: "#175ddc";
   @Input() data: string;
-  @Input() dynamic = false;
   @Input() email: string;
   @Input() size: SizeTypes = "default";
 
@@ -39,16 +38,8 @@ export class AvatarComponent implements OnChanges, OnInit {
     private stateService: StateService
   ) {}
 
-  ngOnInit() {
-    if (!this.dynamic) {
-      this.generate();
-    }
-  }
-
   ngOnChanges() {
-    if (this.dynamic) {
-      this.generate();
-    }
+    this.generate();
   }
 
   get avatarClass(): string {
