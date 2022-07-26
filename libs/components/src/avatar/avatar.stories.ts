@@ -1,28 +1,10 @@
-import { Meta, moduleMetadata, Story } from "@storybook/angular";
-
-import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { Meta, Story } from "@storybook/angular";
 
 import { AvatarComponent } from "./avatar.component";
 
 export default {
   title: "Component Library/Avatar",
   component: AvatarComponent,
-  decorators: [
-    moduleMetadata({
-      providers: [
-        CryptoFunctionService,
-        {
-          provide: StateService,
-          useValue: {
-            getEnableGravitars: () => {
-              return;
-            },
-          },
-        },
-      ],
-    }),
-  ],
   args: {
     data: "Walt Walterson",
     color: "#175ddc",

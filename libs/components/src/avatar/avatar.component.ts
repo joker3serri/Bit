@@ -1,8 +1,6 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 
-import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 
 type SizeTypes = "large" | "default" | "small";
@@ -31,11 +29,7 @@ export class AvatarComponent implements OnChanges {
   svgSize = 48;
   src: string;
 
-  constructor(
-    public sanitizer: DomSanitizer,
-    private cryptoFunctionService: CryptoFunctionService,
-    private stateService: StateService
-  ) {}
+  constructor(public sanitizer: DomSanitizer) {}
 
   ngOnChanges() {
     this.generate();
@@ -66,9 +60,8 @@ export class AvatarComponent implements OnChanges {
     let chars: string = null;
     const upperData = this.data.toUpperCase();
 
-    if (this.charCount > 1) {
-      chars = this.getFirstLetters(upperData, this.charCount);
-    }
+    chars = this.getFirstLetters(upperData, this.charCount);
+
     if (chars == null) {
       chars = this.unicodeSafeSubstring(upperData, this.charCount);
     }
@@ -84,19 +77,6 @@ export class AvatarComponent implements OnChanges {
     const html = window.document.createElement("div").appendChild(svg).outerHTML;
     const svgHtml = window.btoa(unescape(encodeURIComponent(html)));
     this.src = "data:image/svg+xml;base64," + svgHtml;
-  }
-
-  private stringToColor(str: string): string {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    let color = "#";
-    for (let i = 0; i < 3; i++) {
-      const value = (hash >> (i * 8)) & 0xff;
-      color += ("00" + value.toString(16)).substr(-2);
-    }
-    return color;
   }
 
   private getFirstLetters(data: string, count: number): string {
