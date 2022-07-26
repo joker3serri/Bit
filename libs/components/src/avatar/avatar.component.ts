@@ -63,38 +63,28 @@ export class AvatarComponent implements OnChanges {
     return className;
   }
 
-  private async generate() {
-    const enableGravatars = await this.stateService.getEnableGravitars();
-    if (enableGravatars && this.email != null) {
-      const hashBytes = await this.cryptoFunctionService.hash(
-        this.email.toLowerCase().trim(),
-        "md5"
-      );
-      const hash = Utils.fromBufferToHex(hashBytes).toLowerCase();
-      this.src = "https://www.gravatar.com/avatar/" + hash + "?s=" + this.svgSize + "&r=pg&d=retro";
-    } else {
-      let chars: string = null;
-      const upperData = this.data.toUpperCase();
+  private generate() {
+    let chars: string = null;
+    const upperData = this.data.toUpperCase();
 
-      if (this.charCount > 1) {
-        chars = this.getFirstLetters(upperData, this.charCount);
-      }
-      if (chars == null) {
-        chars = this.unicodeSafeSubstring(upperData, this.charCount);
-      }
-
-      // If the chars contain an emoji, only show it.
-      if (chars.match(Utils.regexpEmojiPresentation)) {
-        chars = chars.match(Utils.regexpEmojiPresentation)[0];
-      }
-
-      const charObj = this.getCharText(chars);
-      const svg = this.getSvg(this.svgSize, this.color);
-      svg.appendChild(charObj);
-      const html = window.document.createElement("div").appendChild(svg).outerHTML;
-      const svgHtml = window.btoa(unescape(encodeURIComponent(html)));
-      this.src = "data:image/svg+xml;base64," + svgHtml;
+    if (this.charCount > 1) {
+      chars = this.getFirstLetters(upperData, this.charCount);
     }
+    if (chars == null) {
+      chars = this.unicodeSafeSubstring(upperData, this.charCount);
+    }
+
+    // If the chars contain an emoji, only show it.
+    if (chars.match(Utils.regexpEmojiPresentation)) {
+      chars = chars.match(Utils.regexpEmojiPresentation)[0];
+    }
+
+    const charObj = this.getCharText(chars);
+    const svg = this.getSvg(this.svgSize, this.color);
+    svg.appendChild(charObj);
+    const html = window.document.createElement("div").appendChild(svg).outerHTML;
+    const svgHtml = window.btoa(unescape(encodeURIComponent(html)));
+    this.src = "data:image/svg+xml;base64," + svgHtml;
   }
 
   private stringToColor(str: string): string {
