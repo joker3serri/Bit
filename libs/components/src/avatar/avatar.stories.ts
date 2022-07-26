@@ -6,7 +6,7 @@ export default {
   title: "Component Library/Avatar",
   component: AvatarComponent,
   args: {
-    data: "Walt Walterson",
+    text: "Walt Walterson",
     color: "#175ddc",
   },
   parameters: {
@@ -20,7 +20,7 @@ export default {
 const Template: Story<AvatarComponent> = (args: AvatarComponent) => ({
   props: args,
   template: `
-    <bit-avatar [data]="data" [size]="size" [color]="color" [border]="border"></bit-avatar>
+    <bit-avatar [text]="text" [size]="size" [color]="color" [border]="border"></bit-avatar>
   `,
 });
 

@@ -7,12 +7,12 @@ type SizeTypes = "large" | "default" | "small";
 
 @Component({
   selector: "bit-avatar",
-  template: `<img *ngIf="src" [src]="src" title="{{ data }}" [ngClass]="classList" />`,
+  template: `<img *ngIf="src" [src]="src" title="{{ text }}" [ngClass]="classList" />`,
 })
 export class AvatarComponent implements OnChanges {
   @Input() border = false;
   @Input() color: "#175ddc";
-  @Input() data: string;
+  @Input() text: string;
   @Input() email: string;
   @Input() size: SizeTypes = "default";
 
@@ -51,12 +51,12 @@ export class AvatarComponent implements OnChanges {
 
   private generate() {
     let chars: string = null;
-    const upperData = this.data.toUpperCase();
+    const upperCaseText = this.text.toUpperCase();
 
-    chars = this.getFirstLetters(upperData, this.svgCharCount);
+    chars = this.getFirstLetters(upperCaseText, this.svgCharCount);
 
     if (chars == null) {
-      chars = this.unicodeSafeSubstring(upperData, this.svgCharCount);
+      chars = this.unicodeSafeSubstring(upperCaseText, this.svgCharCount);
     }
 
     // If the chars contain an emoji, only show it.
