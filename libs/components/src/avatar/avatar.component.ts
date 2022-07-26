@@ -105,7 +105,7 @@ export class AvatarComponent implements OnChanges {
     textTag.setAttribute("x", "50%");
     textTag.setAttribute("dy", "0.35em");
     textTag.setAttribute("pointer-events", "auto");
-    textTag.setAttribute("fill", this.pickTextColorBasedOnBgColor());
+    textTag.setAttribute("fill", Utils.pickTextColorBasedOnBgColor(this.color, 135, true));
     textTag.setAttribute(
       "font-family",
       '"Open Sans","Helvetica Neue",Helvetica,Arial,' +
@@ -120,15 +120,5 @@ export class AvatarComponent implements OnChanges {
   private unicodeSafeSubstring(str: string, count: number) {
     const characters = str.match(/./gu);
     return characters != null ? characters.slice(0, count).join("") : "";
-  }
-
-  // There are a few ways to calculate text color for contrast, this one seems to fit accessibility guidelines best.
-  // https://stackoverflow.com/a/3943023/6869691
-  private pickTextColorBasedOnBgColor() {
-    const color = this.color.charAt(0) === "#" ? this.color.substring(1, 7) : this.color;
-    const r = parseInt(color.substring(0, 2), 16); // hexToR
-    const g = parseInt(color.substring(2, 4), 16); // hexToG
-    const b = parseInt(color.substring(4, 6), 16); // hexToB
-    return r * 0.299 + g * 0.587 + b * 0.114 > 135 ? "black" : "white";
   }
 }

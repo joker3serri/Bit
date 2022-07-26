@@ -348,6 +348,26 @@ export class Utils {
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
+  /**
+   * There are a few ways to calculate text color for contrast, this one seems to fit accessibility guidelines best.
+   * https://stackoverflow.com/a/3943023/6869691
+   *
+   * @param {string} bgColor
+   * @param {number} [threshold] see stackoverflow link above
+   * @param {boolean} [svgTextFill]
+   * Indicates if this method is performed on an SVG <text> 'fill' attribute (e.g. <text fill="black"></text>).
+   * This check is necessary because the '!important' tag cannot be used in a 'fill' attribute.
+   */
+  static pickTextColorBasedOnBgColor(bgColor: string, threshold = 186, svgTextFill = false) {
+    const bgColorHexNums = bgColor.charAt(0) === "#" ? bgColor.substring(1, 7) : bgColor;
+    const r = parseInt(bgColorHexNums.substring(0, 2), 16); // hexToR
+    const g = parseInt(bgColorHexNums.substring(2, 4), 16); // hexToG
+    const b = parseInt(bgColorHexNums.substring(4, 6), 16); // hexToB
+    const blackColor = svgTextFill ? "black" : "black !important";
+    const whiteColor = svgTextFill ? "white" : "white !important";
+    return r * 0.299 + g * 0.587 + b * 0.114 > threshold ? blackColor : whiteColor;
+  }
+
   private static validIpAddress(ipString: string): boolean {
     const ipRegex =
       /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;

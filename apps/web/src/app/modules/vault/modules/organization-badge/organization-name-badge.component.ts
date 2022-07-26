@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { Utils } from "@bitwarden/common/misc/utils";
 
 @Component({
   selector: "app-org-badge",
@@ -25,7 +26,7 @@ export class OrganizationNameBadgeComponent implements OnInit {
     if (this.color == null) {
       this.color = this.stringToColor(this.organizationName.toUpperCase());
     }
-    this.textColor = this.pickTextColorBasedOnBgColor();
+    this.textColor = Utils.pickTextColorBasedOnBgColor(this.color);
   }
 
   // This value currently isn't stored anywhere, only calculated in the app-avatar component
@@ -41,16 +42,6 @@ export class OrganizationNameBadgeComponent implements OnInit {
       color += ("00" + value.toString(16)).substr(-2);
     }
     return color;
-  }
-
-  // There are a few ways to calculate text color for contrast, this one seems to fit accessibility guidelines best.
-  // https://stackoverflow.com/a/3943023/6869691
-  private pickTextColorBasedOnBgColor() {
-    const color = this.color.charAt(0) === "#" ? this.color.substring(1, 7) : this.color;
-    const r = parseInt(color.substring(0, 2), 16); // hexToR
-    const g = parseInt(color.substring(2, 4), 16); // hexToG
-    const b = parseInt(color.substring(4, 6), 16); // hexToB
-    return r * 0.299 + g * 0.587 + b * 0.114 > 186 ? "black !important" : "white !important";
   }
 
   emitOnOrganizationClicked() {
