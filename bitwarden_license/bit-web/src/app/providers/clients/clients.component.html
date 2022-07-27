@@ -70,7 +70,8 @@
             <a [routerLink]="['/organizations', o.organizationId]">{{ o.organizationName }}</a>
           </td>
           <td>
-            <span>{{ o.userCount }} / {{ o.seats }}</span>
+            <span>{{ o.userCount }}</span>
+            <span *ngIf="o.seats"> / {{ o.seats }}</span>
           </td>
           <td>
             <span>{{ o.plan }}</span>
