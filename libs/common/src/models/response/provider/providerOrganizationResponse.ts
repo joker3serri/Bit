@@ -8,7 +8,7 @@ export class ProviderOrganizationResponse extends BaseResponse {
   settings: string;
   creationDate: string;
   revisionDate: string;
-  userCount?: number;
+  userCount: number;
   seats?: number;
   plan?: string;
 
