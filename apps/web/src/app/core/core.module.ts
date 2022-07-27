@@ -1,5 +1,5 @@
-import { APP_INITIALIZER, NgModule } from "@angular/core";
-import { ToastrModule } from "ngx-toastr";
+import { CommonModule } from "@angular/common";
+import { APP_INITIALIZER, NgModule, Optional, SkipSelf } from "@angular/core";
 
 import {
   JslibServicesModule,
@@ -13,7 +13,6 @@ import {
 import { ModalService as ModalServiceAbstraction } from "@bitwarden/angular/services/modal.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/abstractions/messaging.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -23,33 +22,24 @@ import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.s
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 
-import { StateService as StateServiceAbstraction } from "../../abstractions/state.service";
-import { Account } from "../../models/account";
-import { GlobalState } from "../../models/globalState";
-import { BroadcasterMessagingService } from "../../services/broadcasterMessaging.service";
-import { HtmlStorageService } from "../../services/htmlStorage.service";
-import { I18nService } from "../../services/i18n.service";
-import { PasswordRepromptService } from "../../services/passwordReprompt.service";
-import { StateService } from "../../services/state.service";
-import { StateMigrationService } from "../../services/stateMigration.service";
-import { WebPlatformUtilsService } from "../../services/webPlatformUtils.service";
-import { HomeGuard } from "../guards/home.guard";
-import { PermissionsGuard as OrgPermissionsGuard } from "../organizations/guards/permissions.guard";
-import { NavigationPermissionsService as OrgPermissionsService } from "../organizations/services/navigation-permissions.service";
-
+import { BroadcasterMessagingService } from "./broadcaster-messaging.service";
 import { EventService } from "./event.service";
+import { HtmlStorageService } from "./html-storage.service";
+import { I18nService } from "./i18n.service";
 import { InitService } from "./init.service";
 import { ModalService } from "./modal.service";
+import { PasswordRepromptService } from "./password-reprompt.service";
 import { PolicyListService } from "./policy-list.service";
 import { RouterService } from "./router.service";
-import { WebFileDownloadService } from "./webFileDownload.service";
+import { Account, GlobalState, StateService } from "./state";
+import { StateMigrationService } from "./state-migration.service";
+import { WebFileDownloadService } from "./web-file-download.service";
+import { WebPlatformUtilsService } from "./web-platform-utils.service";
 
 @NgModule({
-  imports: [ToastrModule, JslibServicesModule],
   declarations: [],
+  imports: [CommonModule, JslibServicesModule],
   providers: [
-    OrgPermissionsService,
-    OrgPermissionsGuard,
     InitService,
     RouterService,
     EventService,
@@ -95,22 +85,10 @@ import { WebFileDownloadService } from "./webFileDownload.service";
       useClass: StateMigrationService,
       deps: [AbstractStorageService, SECURE_STORAGE, STATE_FACTORY],
     },
-    {
-      provide: StateServiceAbstraction,
-      useClass: StateService,
-      deps: [
-        AbstractStorageService,
-        SECURE_STORAGE,
-        MEMORY_STORAGE,
-        LogService,
-        StateMigrationServiceAbstraction,
-        STATE_FACTORY,
-        STATE_SERVICE_USE_CACHE,
-      ],
-    },
+    StateService,
     {
       provide: BaseStateServiceAbstraction,
-      useExisting: StateServiceAbstraction,
+      useExisting: StateService,
     },
     {
       provide: PasswordRepromptServiceAbstraction,
@@ -120,7 +98,12 @@ import { WebFileDownloadService } from "./webFileDownload.service";
       provide: FileDownloadService,
       useClass: WebFileDownloadService,
     },
-    HomeGuard,
   ],
 })
-export class ServicesModule {}
+export class CoreModule {
+  constructor(@Optional() @SkipSelf() parentModule?: CoreModule) {
+    if (parentModule) {
+      throw new Error("CoreModule is already loaded. Import it in the AppModule only");
+    }
+  }
+}
