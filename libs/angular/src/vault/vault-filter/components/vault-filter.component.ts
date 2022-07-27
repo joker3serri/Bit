@@ -6,9 +6,9 @@ import { ITreeNodeObject } from "@bitwarden/common/models/domain/treeNode";
 import { CollectionView } from "@bitwarden/common/models/view/collectionView";
 import { FolderView } from "@bitwarden/common/models/view/folderView";
 
-import { DynamicTreeNode } from "./models/dynamic-tree-node.model";
-import { VaultFilter } from "./models/vault-filter.model";
-import { VaultFilterService } from "./vault-filter.service";
+import { DynamicTreeNode } from "../models/dynamic-tree-node.model";
+import { VaultFilter } from "../models/vault-filter.model";
+import { VaultFilterService } from "../services/vault-filter.service";
 
 @Directive()
 export class VaultFilterComponent implements OnInit {
