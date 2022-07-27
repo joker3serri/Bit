@@ -969,6 +969,5 @@ jobs:
       - name: Remove branch
         env:
           BRANCH: ${{ needs.setup.outputs.branch-name }}
-        run: |
-          git push origin --delete $BRANCH
+        run: git push origin --delete $BRANCH
 
