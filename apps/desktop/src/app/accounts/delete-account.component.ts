@@ -8,6 +8,8 @@ import { MessagingService } from "@bitwarden/common/abstractions/messaging.servi
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
 
+import { Verification } from "../../../../../libs/common/src/types/verification";
+
 @Component({
   selector: "app-delete-account",
   templateUrl: "delete-account.component.html",
@@ -16,7 +18,7 @@ export class DeleteAccountComponent {
   formPromise: Promise<void>;
 
   deleteForm = this.formBuilder.group({
-    secret: [""],
+    secret: undefined as Verification | undefined,
   });
 
   constructor(
