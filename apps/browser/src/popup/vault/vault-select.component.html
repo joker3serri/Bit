@@ -66,8 +66,8 @@
           attr.aria-label="{{ 'vault' | i18n }}: {{ organization.name }}."
           appA11yTitle="{{ 'vault' | i18n }}: {{ organization.name }}."
         >
-          &nbsp;{{ organization.name | ellipsis: (organization.enabled ? 21 : 18):true }}</span
-        >
+          &nbsp;{{ organization.name | ellipsis: (organization.enabled ? 21 : 18):true }}
+        </span>
         <i
           *ngIf="!organization.enabled"
           class="bwi bwi-fw bwi-exclamation-triangle text-danger"
