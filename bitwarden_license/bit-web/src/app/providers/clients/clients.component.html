@@ -71,7 +71,7 @@
           </td>
           <td>
             <span>{{ o.userCount }}</span>
-            <span *ngIf="o.seats"> / {{ o.seats }}</span>
+            <span *ngIf="o.seats != null"> / {{ o.seats }}</span>
           </td>
           <td>
             <span>{{ o.plan }}</span>
