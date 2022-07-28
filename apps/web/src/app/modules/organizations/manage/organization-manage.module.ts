@@ -1,7 +1,7 @@
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { NgModule } from "@angular/core";
 
-import { SharedModule } from "../../shared.module";
+import { SharedModule } from "../../../shared/shared.module";
 
 import { EntityUsersComponent } from "./entity-users.component";
 

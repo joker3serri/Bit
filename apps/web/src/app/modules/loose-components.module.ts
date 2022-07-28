@@ -138,6 +138,7 @@ import { UserBillingHistoryComponent } from "../settings/user-billing-history.co
 import { UserSubscriptionComponent } from "../settings/user-subscription.component";
 import { VaultTimeoutInputComponent } from "../settings/vault-timeout-input.component";
 import { VerifyEmailComponent } from "../settings/verify-email.component";
+import { SharedModule } from "../shared/shared.module";
 import { GeneratorComponent } from "../tools/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/password-generator-history.component";
 import { ToolsComponent } from "../tools/tools.component";
@@ -157,7 +158,6 @@ import { ShareComponent } from "../vault/share.component";
 import { OrganizationCreateModule } from "./organizations/create/organization-create.module";
 import { PipesModule } from "./pipes/pipes.module";
 import { RegisterFormModule } from "./register-form/register-form.module";
-import { SharedModule } from "./shared.module";
 import { VaultFilterModule } from "./vault-filter/vault-filter.module";
 import { OrganizationBadgeModule } from "./vault/modules/organization-badge/organization-badge.module";
 
