@@ -27,6 +27,10 @@ import { FooterComponent } from "../layouts/footer.component";
 import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
 import { NavbarComponent } from "../layouts/navbar.component";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
+import { OrganizationCreateModule } from "../modules/organizations/create/organization-create.module";
+import { RegisterFormModule } from "../modules/register-form/register-form.module";
+import { VaultFilterModule } from "../modules/vault-filter/vault-filter.module";
+import { OrganizationBadgeModule } from "../modules/vault/modules/organization-badge/organization-badge.module";
 import { OrganizationLayoutComponent } from "../organizations/layouts/organization-layout.component";
 import { BulkConfirmComponent as OrgBulkConfirmComponent } from "../organizations/manage/bulk/bulk-confirm.component";
 import { BulkRemoveComponent as OrgBulkRemoveComponent } from "../organizations/manage/bulk/bulk-remove.component";
@@ -155,11 +159,6 @@ import { CiphersComponent } from "../vault/ciphers.component";
 import { CollectionsComponent } from "../vault/collections.component";
 import { FolderAddEditComponent } from "../vault/folder-add-edit.component";
 import { ShareComponent } from "../vault/share.component";
-
-import { OrganizationCreateModule } from "./organizations/create/organization-create.module";
-import { RegisterFormModule } from "./register-form/register-form.module";
-import { VaultFilterModule } from "./vault-filter/vault-filter.module";
-import { OrganizationBadgeModule } from "./vault/modules/organization-badge/organization-badge.module";
 
 // Please do not add to this list of declarations - we should refactor these into modules when doing so makes sense until there are none left.
 // If you are building new functionality, please create or extend a feature module instead.
