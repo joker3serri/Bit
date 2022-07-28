@@ -6,15 +6,13 @@ import { UserVerificationService } from "@bitwarden/common/abstractions/userVeri
 import { AccountService as AccountServiceAbstraction } from "../../abstractions/account/account.service.abstraction";
 import { Verification } from "../../types/verification";
 
-export class AccountService extends AccountServiceAbstraction {
+export class AccountService implements AccountServiceAbstraction {
   constructor(
     private apiService: ApiService,
     private userVerificationService: UserVerificationService,
     private messagingService: MessagingService,
     private logService: LogService
-  ) {
-    super();
-  }
+  ) {}
 
   async delete(verification: Verification): Promise<any> {
     try {
