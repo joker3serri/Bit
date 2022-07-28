@@ -25,6 +25,10 @@ export class DeleteAccountComponent {
     private accountService: AccountService
   ) {}
 
+  get secret() {
+    return this.deleteForm.get("verification")?.value?.secret;
+  }
+
   async submit() {
     try {
       const verification = this.deleteForm.get("verification").value;
