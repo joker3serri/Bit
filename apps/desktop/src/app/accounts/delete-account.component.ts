@@ -3,6 +3,7 @@ import { FormBuilder } from "@angular/forms";
 
 import { AccountService } from "@bitwarden/common/abstractions/account/account.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 
 import { Verification } from "../../../../../libs/common/src/types/verification";
@@ -22,7 +23,8 @@ export class DeleteAccountComponent {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private formBuilder: FormBuilder,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private logService: LogService
   ) {}
 
   get secret() {
@@ -39,8 +41,8 @@ export class DeleteAccountComponent {
         this.i18nService.t("accountDeleted"),
         this.i18nService.t("accountDeletedDesc")
       );
-    } catch {
-      // Error handling is done by [appApiAction]
+    } catch (e) {
+      this.logService.error(e);
     }
   }
 }
