@@ -1,11 +1,9 @@
 import { Component } from "@angular/core";
+import { FormBuilder } from "@angular/forms";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AccountService } from "@bitwarden/common/abstractions/account/account.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
 import { Verification } from "@bitwarden/common/types/verification";
 
 @Component({
@@ -13,32 +11,31 @@ import { Verification } from "@bitwarden/common/types/verification";
   templateUrl: "delete-account.component.html",
 })
 export class DeleteAccountComponent {
-  masterPassword: Verification;
-  formPromise: Promise<any>;
+  formPromise: Promise<void>;
+
+  deleteForm = this.formBuilder.group({
+    verification: undefined as Verification | undefined,
+  });
 
   constructor(
-    private apiService: ApiService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private userVerificationService: UserVerificationService,
-    private messagingService: MessagingService,
-    private logService: LogService
+    private formBuilder: FormBuilder,
+    private accountService: AccountService
   ) {}
 
   async submit() {
     try {
-      this.formPromise = this.userVerificationService
-        .buildRequest(this.masterPassword)
-        .then((request) => this.apiService.deleteAccount(request));
+      const verification = this.deleteForm.get("verification").value;
+      this.formPromise = this.accountService.delete(verification);
       await this.formPromise;
       this.platformUtilsService.showToast(
         "success",
         this.i18nService.t("accountDeleted"),
         this.i18nService.t("accountDeletedDesc")
       );
-      this.messagingService.send("logout");
-    } catch (e) {
-      this.logService.error(e);
+    } catch {
+      // Error handling is done by [appApiAction]
     }
   }
 }
