@@ -8,6 +8,7 @@ export default {
   args: {
     text: "Walt Walterson",
     color: "#175ddc",
+    size: "default",
   },
   parameters: {
     design: {

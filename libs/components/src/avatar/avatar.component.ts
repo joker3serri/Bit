@@ -5,6 +5,12 @@ import { Utils } from "@bitwarden/common/misc/utils";
 
 type SizeTypes = "large" | "default" | "small";
 
+const SizeClasses: Record<SizeTypes, string[]> = {
+  large: ["tw-h-16", "tw-w-16"],
+  default: ["tw-h-12", "tw-w-12"],
+  small: ["tw-h-7", "tw-w-7"],
+};
+
 @Component({
   selector: "bit-avatar",
   template: `<img *ngIf="src" [src]="src" title="{{ text }}" [ngClass]="classList" />`,
@@ -28,25 +34,10 @@ export class AvatarComponent implements OnChanges {
     this.generate();
   }
 
-  get classList(): string[] {
-    const classes = ["tw-rounded-full"];
-
-    switch (this.size) {
-      case "large":
-        classes.push("tw-h-16", "tw-w-16");
-        break;
-      case "small":
-        classes.push("tw-h-7", "tw-w-7");
-        break;
-      default:
-        classes.push("tw-h-12", "tw-w-12");
-    }
-
-    if (this.border) {
-      classes.push("tw-border", "tw-border-solid", "tw-border-secondary-500");
-    }
-
-    return classes;
+  get classList() {
+    return ["tw-rounded-full"]
+      .concat(SizeClasses[this.size] ?? [])
+      .concat(this.border ? ["tw-border", "tw-border-solid", "tw-border-secondary-500"] : []);
   }
 
   private generate() {
