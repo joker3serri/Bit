@@ -15,7 +15,11 @@
         <div class="box last">
           <div class="box-header">{{ "deleteAccount" | i18n }}</div>
           <div class="box-content">
-            <app-user-verification ngDefaultControl formControlName="secret" name="secret">
+            <app-user-verification
+              ngDefaultControl
+              formControlName="verification"
+              name="verification"
+            >
             </app-user-verification>
           </div>
         </div>

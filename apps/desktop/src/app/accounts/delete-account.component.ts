@@ -1,12 +1,9 @@
 import { Component } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AccountService } from "@bitwarden/common/abstractions/account/account.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
 
 import { Verification } from "../../../../../libs/common/src/types/verification";
 
@@ -18,39 +15,28 @@ export class DeleteAccountComponent {
   formPromise: Promise<void>;
 
   deleteForm = this.formBuilder.group({
-    secret: undefined as Verification | undefined,
+    verification: undefined as Verification | undefined,
   });
 
   constructor(
-    private apiService: ApiService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private userVerificationService: UserVerificationService,
-    private messagingService: MessagingService,
-    private logService: LogService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private accountService: AccountService
   ) {}
 
-  submit() {
-    this.formPromise = (async () => {
-      try {
-        const secret = this.deleteForm.get("secret").value;
-        const verificationRequest = await this.userVerificationService.buildRequest(secret);
-        await this.apiService.deleteAccount(verificationRequest);
-        this.platformUtilsService.showToast(
-          "success",
-          this.i18nService.t("accountDeleted"),
-          this.i18nService.t("accountDeletedDesc")
-        );
-        this.messagingService.send("logout");
-      } catch (e) {
-        this.platformUtilsService.showToast(
-          "error",
-          this.i18nService.t("errorOccurred"),
-          e.message
-        );
-        this.logService.error(e);
-      }
-    })();
+  async submit() {
+    try {
+      const verification = this.deleteForm.get("verification").value;
+      this.formPromise = this.accountService.delete(verification);
+      await this.formPromise;
+      this.platformUtilsService.showToast(
+        "success",
+        this.i18nService.t("accountDeleted"),
+        this.i18nService.t("accountDeletedDesc")
+      );
+    } catch {
+      // Error handling is done by [appApiAction]
+    }
   }
 }
