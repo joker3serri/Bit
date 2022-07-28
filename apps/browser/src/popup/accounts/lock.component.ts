@@ -40,7 +40,7 @@ export class LockComponent extends BaseLockComponent {
     logService: LogService,
     keyConnectorService: KeyConnectorService,
     ngZone: NgZone,
-    private authService: AuthService
+    authService: AuthService
   ) {
     super(
       router,
@@ -54,7 +54,8 @@ export class LockComponent extends BaseLockComponent {
       apiService,
       logService,
       keyConnectorService,
-      ngZone
+      ngZone,
+      authService
     );
     this.successRoute = "/tabs/current";
     this.isInitialLockScreen = (window as any).previousPopupUrl == null;
