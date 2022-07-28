@@ -19,7 +19,6 @@ export class AvatarComponent implements OnChanges {
   @Input() border = false;
   @Input() color: "#175ddc";
   @Input() text: string;
-  @Input() email: string;
   @Input() size: SizeTypes = "default";
 
   private svgCharCount = 2;
