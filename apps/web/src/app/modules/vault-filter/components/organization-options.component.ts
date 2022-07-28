@@ -12,7 +12,7 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 import { Policy } from "@bitwarden/common/models/domain/policy";
 import { OrganizationUserResetPasswordEnrollmentRequest } from "@bitwarden/common/models/request/organizationUserResetPasswordEnrollmentRequest";
 
-import { EnrollMasterPasswordReset } from "../../organizations/users/enroll-master-password-reset.component";
+import { EnrollMasterPasswordReset } from "../../../organizations/users/enroll-master-password-reset.component";
 
 @Component({
   selector: "app-organization-options",

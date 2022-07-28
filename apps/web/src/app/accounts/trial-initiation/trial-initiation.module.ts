@@ -4,7 +4,7 @@ import { NgModule } from "@angular/core";
 
 import { FormFieldModule } from "@bitwarden/components";
 
-import { OrganizationCreateModule } from "../../modules/organizations/create/organization-create.module";
+import { OrganizationCreateModule } from "../../organizations/create/organization-create.module";
 import { VerticalStepperModule } from "../../shared/components/vertical-stepper/vertical-stepper.module";
 import { SharedModule } from "../../shared/shared.module";
 import { RegisterFormModule } from "../register-form/register-form.module";
