@@ -16,7 +16,7 @@ import { PolicyData } from "@bitwarden/common/models/data/policyData";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
 import { Policy } from "@bitwarden/common/models/domain/policy";
 
-import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.component";
+import { VerticalStepperComponent } from "../../shared/components/vertical-stepper/vertical-stepper.component";
 
 @Component({
   selector: "app-trial",

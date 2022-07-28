@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 
-import { SharedModule } from "../../shared/shared.module";
+import { SharedModule } from "../../shared.module";
 
 import { VerticalStepContentComponent } from "./vertical-step-content.component";
 import { VerticalStep } from "./vertical-step.component";

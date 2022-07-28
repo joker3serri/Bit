@@ -4,10 +4,10 @@ import { NgModule } from "@angular/core";
 
 import { FormFieldModule } from "@bitwarden/components";
 
+import { VerticalStepperModule } from "../../shared/components/vertical-stepper/vertical-stepper.module";
 import { SharedModule } from "../../shared/shared.module";
 import { OrganizationCreateModule } from "../organizations/create/organization-create.module";
 import { RegisterFormModule } from "../register-form/register-form.module";
-import { VerticalStepperModule } from "../vertical-stepper/vertical-stepper.module";
 
 import { BillingComponent } from "./billing.component";
 import { ConfirmationDetailsComponent } from "./confirmation-details.component";
