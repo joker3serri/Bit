@@ -3,6 +3,7 @@ import { InjectionToken, Injector, LOCALE_ID, NgModule } from "@angular/core";
 import { ThemingService } from "@bitwarden/angular/services/theming/theming.service";
 import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
 import { AbstractEncryptService } from "@bitwarden/common/abstractions/abstractEncrypt.service";
+import { AccountApiService as AccountApiServiceAbstraction } from "@bitwarden/common/abstractions/account/account-api.service.abstraction";
 import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/abstractions/account/account.service.abstraction";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/abstractions/appId.service";
@@ -50,6 +51,7 @@ import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "@bitwarde
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { Account } from "@bitwarden/common/models/domain/account";
 import { GlobalState } from "@bitwarden/common/models/domain/globalState";
+import { AccountApiService } from "@bitwarden/common/services/account/account-api.service";
 import { AccountService } from "@bitwarden/common/services/account/account.service";
 import { ApiService } from "@bitwarden/common/services/api.service";
 import { AppIdService } from "@bitwarden/common/services/appId.service";
@@ -237,10 +239,15 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
       deps: [FolderServiceAbstraction, ApiServiceAbstraction],
     },
     {
+      provide: AccountApiServiceAbstraction,
+      useClass: AccountApiService,
+      deps: [ApiServiceAbstraction],
+    },
+    {
       provide: AccountServiceAbstraction,
       useClass: AccountService,
       deps: [
-        ApiServiceAbstraction,
+        AccountApiServiceAbstraction,
         UserVerificationServiceAbstraction,
         MessagingServiceAbstraction,
         LogService,

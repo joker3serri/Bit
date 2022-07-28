@@ -1,4 +1,4 @@
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AccountApiService } from "@bitwarden/common/abstractions/account/account-api.service.abstraction";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
@@ -8,7 +8,7 @@ import { Verification } from "../../types/verification";
 
 export class AccountService implements AccountServiceAbstraction {
   constructor(
-    private apiService: ApiService,
+    private apiService: AccountApiService,
     private userVerificationService: UserVerificationService,
     private messagingService: MessagingService,
     private logService: LogService
