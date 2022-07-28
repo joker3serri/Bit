@@ -1,0 +1,3 @@
+Please do not put any new code or functionality in this directory.
+
+Read https://adr.bitwarden.com/decisions/0011-angular-folder-structure for more details.
