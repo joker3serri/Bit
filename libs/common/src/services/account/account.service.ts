@@ -8,7 +8,7 @@ import { Verification } from "../../types/verification";
 
 export class AccountService implements AccountServiceAbstraction {
   constructor(
-    private apiService: AccountApiService,
+    private accountApiService: AccountApiService,
     private userVerificationService: UserVerificationService,
     private messagingService: MessagingService,
     private logService: LogService
@@ -17,7 +17,7 @@ export class AccountService implements AccountServiceAbstraction {
   async delete(verification: Verification): Promise<any> {
     try {
       const verificationRequest = await this.userVerificationService.buildRequest(verification);
-      await this.apiService.deleteAccount(verificationRequest);
+      await this.accountApiService.deleteAccount(verificationRequest);
       this.messagingService.send("logout");
     } catch (e) {
       this.logService.error(e);
