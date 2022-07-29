@@ -79,13 +79,6 @@ export class CipherReportComponent {
         this.messagingService.send("upgradeOrganization", { organizationId: this.organization.id });
         return false;
       }
-    } else {
-      const accessPremium = await this.stateService.getCanAccessPremium();
-      if (this.requiresPaid && !accessPremium) {
-        this.messagingService.send("premiumRequired");
-        this.loading = false;
-        return false;
-      }
     }
     return true;
   }
