@@ -297,7 +297,7 @@ export default class MainBackground {
     this.organizationService = new OrganizationService(this.stateService);
     this.policyService = new PolicyService(this.stateService, this.organizationService);
     this.policyApiService = new PolicyApiService(
-      this.folderService,
+      this.policyService,
       this.apiService,
       this.stateService,
       this.organizationService
