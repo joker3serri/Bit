@@ -64,6 +64,7 @@ import {
   FormFieldModule,
   SubmitButtonModule,
   MenuModule,
+  IconModule,
 } from "@bitwarden/components";
 
 import { PasswordStrengthComponent } from "../components/password-strength.component";
@@ -140,6 +141,7 @@ registerLocaleData(localeZhTw, "zh-TW");
     MenuModule,
     FormFieldModule,
     SubmitButtonModule,
+    IconModule,
   ],
   exports: [
     CommonModule,
@@ -161,6 +163,7 @@ registerLocaleData(localeZhTw, "zh-TW");
     PasswordStrengthComponent,
     PaymentComponent,
     TaxInfoComponent,
+    IconModule,
   ],
   providers: [DatePipe],
   bootstrap: [],
