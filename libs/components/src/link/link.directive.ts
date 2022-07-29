@@ -42,7 +42,7 @@ export class LinkDirective {
       "focus-visible:tw-outline-none",
       "focus-visible:tw-underline",
       "focus-visible:tw-decoration-1",
-      "focus-visible:tw-ring",
+      "focus-visible:tw-ring-2",
       "focus-visible:tw-z-10",
       "disabled:tw-no-underline",
       "disabled:tw-cursor-not-allowed",
