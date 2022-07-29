@@ -1,6 +1,8 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { PolicyData } from "@bitwarden/common/models/data/policyData";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
@@ -8,9 +10,6 @@ import { Policy } from "@bitwarden/common/models/domain/policy";
 import { PolicyRequest } from "@bitwarden/common/models/request/policyRequest";
 import { ListResponse } from "@bitwarden/common/models/response/listResponse";
 import { PolicyResponse } from "@bitwarden/common/models/response/policyResponse";
-
-import { OrganizationService } from "../organization.service";
-import { StateService } from "../state.service";
 
 export class PolicyApiService implements PolicyApiServiceAbstraction {
   constructor(
