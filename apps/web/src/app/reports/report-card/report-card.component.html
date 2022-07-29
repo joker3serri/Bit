@@ -1,25 +1,26 @@
 <a
   class="tw-border tw-border-solid tw-border-secondary-300 tw-rounded tw-overflow-hidden tw-h-full tw-w-72 tw-block !tw-text-main hover:tw-no-underline hover:tw-scale-105 tw-transition-all focus:tw-outline-none focus:tw-ring focus:tw-ring-offset-2 focus:tw-ring-primary-700"
   [routerLink]="route"
-  (click)="click()"
 >
   <div class="tw-relative">
     <div
       class="tw-text-center tw-h-28 tw-flex tw-bg-background-alt2 tw-text-primary-300"
-      [ngClass]="{ 'tw-grayscale': premium }"
+      [ngClass]="{ 'tw-grayscale': disabled }"
     >
-      <div class="tw-m-auto" [innerHtml]="icon"></div>
+      <div class="tw-m-auto"><bit-icon [icon]="iconName"></bit-icon></div>
     </div>
-    <div class="tw-p-5" [ngClass]="{ 'tw-grayscale': report.requiresPremium }">
-      <h3 class="tw-text-xl tw-font-bold tw-mb-4">{{ report.title | i18n }}</h3>
-      <p class="tw-mb-0">{{ report.description | i18n }}</p>
+    <div class="tw-p-5" [ngClass]="{ 'tw-grayscale': disabled }">
+      <h3 class="tw-text-xl tw-font-bold tw-mb-4">{{ title }}</h3>
+      <p class="tw-mb-0">{{ description }}</p>
     </div>
     <span
       bitBadge
       badgeType="success"
       class="tw-absolute tw-left-2 tw-top-2 tw-leading-none"
-      *ngIf="premium"
-      >{{ "premium" | i18n }}</span
+      *ngIf="disabled"
     >
+      <ng-container *ngIf="requiresPremium">{{ "premium" | i18n }}</ng-container>
+      <ng-container *ngIf="!requiresPremium">{{ "upgrade" | i18n }}</ng-container>
+    </span>
   </div>
 </a>

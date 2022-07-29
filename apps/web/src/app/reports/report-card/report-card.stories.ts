@@ -1,83 +1,53 @@
+import { SafeValue } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, Story, moduleMetadata } from "@storybook/angular";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { StorageOptions } from "@bitwarden/common/models/domain/storageOptions";
-import { BadgeModule } from "@bitwarden/components";
+import { BadgeModule, IconModule } from "@bitwarden/components";
 
 import { PremiumBadgeComponent } from "../../components/premium-badge.component";
 import { PreloadedEnglishI18nModule } from "../../tests/preloaded-english-i18n.module";
 
-import { ReportCardComponent, ReportTypes } from "./report-card.component";
+import { ReportCardComponent, ReportVariant } from "./report-card.component";
 
-class MockMessagingService implements MessagingService {
-  send(subscriber: string, arg?: any) {
-    alert("Clicked on badge");
-  }
-}
-
-class MockedStateService implements Partial<StateService> {
-  async getCanAccessPremium(options?: StorageOptions) {
-    return false;
-  }
-}
+export type SafeHtml = SafeValue;
 
 export default {
   title: "Web/Reports/Card",
   component: ReportCardComponent,
   decorators: [
     moduleMetadata({
-      imports: [JslibModule, BadgeModule, RouterTestingModule, PreloadedEnglishI18nModule],
-      declarations: [PremiumBadgeComponent],
-      providers: [
-        {
-          provide: MessagingService,
-          useFactory: () => {
-            return new MockMessagingService();
-          },
-        },
-        {
-          provide: StateService,
-          useFactory: () => {
-            return new MockedStateService();
-          },
-        },
+      imports: [
+        JslibModule,
+        BadgeModule,
+        IconModule,
+        RouterTestingModule,
+        PreloadedEnglishI18nModule,
       ],
+      declarations: [PremiumBadgeComponent],
     }),
   ],
   args: {
-    type: ReportTypes.exposedPasswords,
-  },
-  argTypes: {
-    hasPremium: { table: { disable: true } },
-    click: { table: { disable: true } },
-    ngOnInit: { table: { disable: true } },
+    title: "Exposed Passwords",
+    description:
+      "Passwords exposed in a data breach are easy targets for attackers. Change these passwords to prevent potential break-ins.",
+    iconName: "reportExposedPasswords",
+    variant: ReportVariant.Enabled,
   },
 } as Meta;
 
-function stateProvider({ hasPremium }: { hasPremium: boolean }) {
-  return {
-    provide: StateService,
-    useFactory: () => {
-      return {
-        getCanAccessPremium: () => Promise.resolve(hasPremium),
-      } as Partial<StateService>;
-    },
-  };
-}
-
-export const WithoutPremium: Story<ReportCardComponent> = (args: ReportCardComponent) => ({
-  moduleMetadata: {
-    providers: [stateProvider({ hasPremium: false })],
-  },
+const Template: Story<ReportCardComponent> = (args: ReportCardComponent) => ({
   props: args,
 });
 
-export const WithPremium: Story<ReportCardComponent> = (args: ReportCardComponent) => ({
-  moduleMetadata: {
-    providers: [stateProvider({ hasPremium: true })],
-  },
-  props: args,
-});
+export const Enabled = Template.bind({});
+
+export const RequiresPremium = Template.bind({});
+RequiresPremium.args = {
+  variant: ReportVariant.RequiresPremium,
+};
+
+export const RequiresUpgrade = Template.bind({});
+RequiresUpgrade.args = {
+  variant: ReportVariant.RequiresUpgrade,
+};

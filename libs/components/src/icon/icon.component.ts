@@ -13,7 +13,12 @@ export class BitIconComponent {
   constructor(private domSanitizer: DomSanitizer) {}
 
   @HostBinding("innerHtml")
-  protected get svg() {
+  protected get innerHtml() {
+    const svg = IconSvg[this.icon];
+    if (svg == null) {
+      return "Unknown icon";
+    }
+
     return this.domSanitizer.bypassSecurityTrustHtml(IconSvg[this.icon]);
   }
 }
