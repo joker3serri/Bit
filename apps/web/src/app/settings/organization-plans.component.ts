@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+import { UntypedFormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -43,12 +43,14 @@ export class OrganizationPlansComponent implements OnInit {
   @Input() providerId: string;
   @Output() onSuccess = new EventEmitter();
   @Output() onCanceled = new EventEmitter();
+  @Output() onTrialBillingSuccess = new EventEmitter();
 
   loading = true;
   selfHosted = false;
   productTypes = ProductType;
   formPromise: Promise<any>;
   singleOrgPolicyBlock = false;
+  isInTrialFlow = false;
   discount = 0;
 
   formGroup = this.formBuilder.group({
@@ -77,7 +79,7 @@ export class OrganizationPlansComponent implements OnInit {
     private organizationService: OrganizationService,
     private logService: LogService,
     private messagingService: MessagingService,
-    private formBuilder: FormBuilder
+    private formBuilder: UntypedFormBuilder
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
   }
@@ -149,7 +151,7 @@ export class OrganizationPlansComponent implements OnInit {
   }
 
   get selectablePlans() {
-    return this.plans.filter(
+    return this.plans?.filter(
       (plan) =>
         !plan.legacyYear && !plan.disabled && plan.product === this.formGroup.controls.product.value
     );
@@ -321,8 +323,16 @@ export class OrganizationPlansComponent implements OnInit {
 
         await this.apiService.refreshIdentityToken();
         await this.syncService.fullSync(true);
-        if (!this.acceptingSponsorship) {
+
+        if (!this.acceptingSponsorship && !this.isInTrialFlow) {
           this.router.navigate(["/organizations/" + orgId]);
+        }
+
+        if (this.isInTrialFlow) {
+          this.onTrialBillingSuccess.emit({
+            orgId: orgId,
+            subLabelText: this.billingSubLabelText(),
+          });
         }
 
         return orgId;
@@ -442,10 +452,26 @@ export class OrganizationPlansComponent implements OnInit {
     const response = await this.apiService.postOrganizationLicense(fd);
     const orgId = response.id;
 
+    await this.apiService.refreshIdentityToken();
+
     // Org Keys live outside of the OrganizationLicense - add the keys to the org here
     const request = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
     await this.apiService.postOrganizationKeys(orgId, request);
 
     return orgId;
+  }
+
+  private billingSubLabelText(): string {
+    const selectedPlan = this.selectedPlan;
+    const price = selectedPlan.basePrice === 0 ? selectedPlan.seatPrice : selectedPlan.basePrice;
+    let text = "";
+
+    if (selectedPlan.isAnnual) {
+      text += `${this.i18nService.t("annual")} ($${price}/${this.i18nService.t("yr")})`;
+    } else {
+      text += `${this.i18nService.t("monthly")} ($${price}/${this.i18nService.t("monthAbbr")})`;
+    }
+
+    return text;
   }
 }

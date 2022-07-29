@@ -1974,6 +1974,9 @@
   "disabledOrganizationFilterError": {
     "message" : "Items in disabled Organizations cannot be accessed. Contact your Organization owner for assistance."
   },
+  "cardBrandMir": {
+    "message": "Mir"
+  },
   "loggingInTo": {
     "message": "Logging in to $DOMAIN$",
     "placeholders": {

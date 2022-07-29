@@ -56,6 +56,7 @@ export class StateService<
 {
   accounts = new BehaviorSubject<{ [userId: string]: TAccount }>({});
   activeAccount = new BehaviorSubject<string>(null);
+  activeAccountUnlocked = new BehaviorSubject<boolean>(false);
 
   private hasBeenInited = false;
   private isRecoveredSession = false;
@@ -70,7 +71,21 @@ export class StateService<
     protected stateMigrationService: StateMigrationService,
     protected stateFactory: StateFactory<TGlobalState, TAccount>,
     protected useAccountCache: boolean = true
-  ) {}
+  ) {
+    // If the account gets changed, verify the new account is unlocked
+    this.activeAccount.subscribe(async (userId) => {
+      if (userId == null && this.activeAccountUnlocked.getValue() == false) {
+        return;
+      } else if (userId == null) {
+        this.activeAccountUnlocked.next(false);
+      }
+
+      // FIXME: This should be refactored into AuthService or a similar service,
+      //  as checking for the existance of the crypto key is a low level
+      //  implementation detail.
+      this.activeAccountUnlocked.next((await this.getCryptoMasterKey()) != null);
+    });
+  }
 
   async init(): Promise<void> {
     if (this.hasBeenInited) {
@@ -499,6 +514,15 @@ export class StateService<
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
+
+    if (options.userId == this.activeAccount.getValue()) {
+      const nextValue = value != null;
+
+      // Avoid emitting if we are already unlocked
+      if (this.activeAccountUnlocked.getValue() != nextValue) {
+        this.activeAccountUnlocked.next(nextValue);
+      }
+    }
   }
 
   async getCryptoMasterKeyAuto(options?: StorageOptions): Promise<string> {
@@ -2650,10 +2674,9 @@ export class StateService<
   protected async clearDecryptedDataForActiveUser(): Promise<void> {
     await this.updateState(async (state) => {
       const userId = state?.activeUserId;
-      if (userId == null || state?.accounts[userId]?.data == null) {
-        return;
+      if (userId != null && state?.accounts[userId]?.data != null) {
+        state.accounts[userId].data = new AccountData();
       }
-      state.accounts[userId].data = new AccountData();
 
       return state;
     });
@@ -2732,6 +2755,9 @@ export class StateService<
   ) {
     await this.state().then(async (state) => {
       const updatedState = await stateUpdater(state);
+      if (updatedState == null) {
+        throw new Error("Attempted to update state to null value");
+      }
 
       await this.setState(updatedState);
     });

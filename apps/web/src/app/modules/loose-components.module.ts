@@ -29,8 +29,8 @@ import { NavbarComponent } from "../layouts/navbar.component";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
 import { OrganizationLayoutComponent } from "../organizations/layouts/organization-layout.component";
 import { BulkConfirmComponent as OrgBulkConfirmComponent } from "../organizations/manage/bulk/bulk-confirm.component";
-import { BulkDeactivateComponent as OrgBulkDeactivateomponent } from "../organizations/manage/bulk/bulk-deactivate.component";
 import { BulkRemoveComponent as OrgBulkRemoveComponent } from "../organizations/manage/bulk/bulk-remove.component";
+import { BulkRestoreRevokeComponent as OrgBulkRestoreRevokeComponent } from "../organizations/manage/bulk/bulk-restore-revoke.component";
 import { BulkStatusComponent as OrgBulkStatusComponent } from "../organizations/manage/bulk/bulk-status.component";
 import { CollectionAddEditComponent as OrgCollectionAddEditComponent } from "../organizations/manage/collection-add-edit.component";
 import { CollectionsComponent as OrgManageCollectionsComponent } from "../organizations/manage/collections.component";
@@ -114,7 +114,6 @@ import { EmergencyAccessComponent } from "../settings/emergency-access.component
 import { EmergencyAddEditComponent } from "../settings/emergency-add-edit.component";
 import { OrganizationPlansComponent } from "../settings/organization-plans.component";
 import { PaymentMethodComponent } from "../settings/payment-method.component";
-import { PaymentComponent } from "../settings/payment.component";
 import { PreferencesComponent } from "../settings/preferences.component";
 import { PremiumComponent } from "../settings/premium.component";
 import { ProfileComponent } from "../settings/profile.component";
@@ -125,7 +124,6 @@ import { SettingsComponent } from "../settings/settings.component";
 import { SponsoredFamiliesComponent } from "../settings/sponsored-families.component";
 import { SponsoringOrgRowComponent } from "../settings/sponsoring-org-row.component";
 import { SubscriptionComponent } from "../settings/subscription.component";
-import { TaxInfoComponent } from "../settings/tax-info.component";
 import { TwoFactorAuthenticatorComponent } from "../settings/two-factor-authenticator.component";
 import { TwoFactorDuoComponent } from "../settings/two-factor-duo.component";
 import { TwoFactorEmailComponent } from "../settings/two-factor-email.component";
@@ -239,7 +237,7 @@ import { OrganizationBadgeModule } from "./vault/modules/organization-badge/orga
     OrganizationSubscriptionComponent,
     OrgAttachmentsComponent,
     OrgBulkConfirmComponent,
-    OrgBulkDeactivateomponent,
+    OrgBulkRestoreRevokeComponent,
     OrgBulkRemoveComponent,
     OrgBulkStatusComponent,
     OrgCiphersComponent,
@@ -271,7 +269,6 @@ import { OrganizationBadgeModule } from "./vault/modules/organization-badge/orga
     PasswordGeneratorHistoryComponent,
     PasswordGeneratorPolicyComponent,
     PasswordRepromptComponent,
-    PaymentComponent,
     PaymentMethodComponent,
     PersonalOwnershipPolicyComponent,
     PreferencesComponent,
@@ -304,7 +301,6 @@ import { OrganizationBadgeModule } from "./vault/modules/organization-badge/orga
     SponsoringOrgRowComponent,
     SsoComponent,
     SubscriptionComponent,
-    TaxInfoComponent,
     ToolsComponent,
     TwoFactorAuthenticationPolicyComponent,
     TwoFactorAuthenticatorComponent,
@@ -394,7 +390,7 @@ import { OrganizationBadgeModule } from "./vault/modules/organization-badge/orga
     OrganizationSubscriptionComponent,
     OrgAttachmentsComponent,
     OrgBulkConfirmComponent,
-    OrgBulkDeactivateomponent,
+    OrgBulkRestoreRevokeComponent,
     OrgBulkRemoveComponent,
     OrgBulkStatusComponent,
     OrgCiphersComponent,
@@ -425,7 +421,6 @@ import { OrganizationBadgeModule } from "./vault/modules/organization-badge/orga
     PasswordGeneratorHistoryComponent,
     PasswordGeneratorPolicyComponent,
     PasswordRepromptComponent,
-    PaymentComponent,
     PaymentMethodComponent,
     PersonalOwnershipPolicyComponent,
     PreferencesComponent,
@@ -458,7 +453,6 @@ import { OrganizationBadgeModule } from "./vault/modules/organization-badge/orga
     SponsoringOrgRowComponent,
     SsoComponent,
     SubscriptionComponent,
-    TaxInfoComponent,
     ToolsComponent,
     TwoFactorAuthenticationPolicyComponent,
     TwoFactorAuthenticatorComponent,
