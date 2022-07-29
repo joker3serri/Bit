@@ -3,7 +3,6 @@ import { Router } from "@angular/router";
 import { take } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -17,7 +16,6 @@ import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/encString";
-import { PasswordLogInCredentials } from "@bitwarden/common/models/domain/logInCredentials";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 import { SecretVerificationRequest } from "@bitwarden/common/models/request/secretVerificationRequest";
 
@@ -53,8 +51,7 @@ export class LockComponent implements OnInit {
     protected apiService: ApiService,
     protected logService: LogService,
     private keyConnectorService: KeyConnectorService,
-    protected ngZone: NgZone,
-    protected authService: AuthService
+    protected ngZone: NgZone
   ) {}
 
   async ngOnInit() {
@@ -81,18 +78,6 @@ export class LockComponent implements OnInit {
         this.i18nService.t("masterPassRequired")
       );
       return;
-    }
-
-    try {
-      const credentials = new PasswordLogInCredentials(this.email, this.masterPassword, null, null);
-      this.formPromise = this.authService.logIn(credentials);
-      const response = await this.formPromise;
-
-      if (response.forcePasswordReset) {
-        this.successRoute = "/update-temp-password";
-      }
-    } catch (e) {
-      this.logService.error(e);
     }
 
     const kdf = await this.stateService.getKdfType();
