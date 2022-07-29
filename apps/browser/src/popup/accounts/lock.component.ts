@@ -57,12 +57,16 @@ export class LockComponent extends BaseLockComponent {
       ngZone,
       authService
     );
-    this.successRoute = "/tabs/current";
+
     this.isInitialLockScreen = (window as any).previousPopupUrl == null;
   }
 
   async ngOnInit() {
     await super.ngOnInit();
+
+    const forcePasswordReset = await this.stateService.getForcePasswordReset();
+    this.successRoute = forcePasswordReset === true ? "/update_temp_password" : "/tabs/current";
+
     const disableAutoBiometricsPrompt =
       (await this.stateService.getDisableAutoBiometricsPrompt()) ?? true;
 
