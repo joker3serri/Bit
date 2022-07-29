@@ -12,33 +12,11 @@ export default {
 
 const Template: Story<BitIconComponent> = (args: BitIconComponent) => ({
   props: args,
-});
-
-export const Primary = Template.bind({});
-Primary.args = {
-  buttonType: "primary",
-};
-
-export const Secondary = Template.bind({});
-Secondary.args = {
-  buttonType: "secondary",
-};
-
-export const Danger = Template.bind({});
-Danger.args = {
-  buttonType: "danger",
-};
-
-const DisabledTemplate: Story = (args) => ({
-  props: args,
   template: `
-    <button bitButton disabled buttonType="primary" class="tw-mr-2">Primary</button>
-    <button bitButton disabled buttonType="secondary" class="tw-mr-2">Secondary</button>
-    <button bitButton disabled buttonType="danger" class="tw-mr-2">Danger</button>
+  <div class="tw-bg-primary-500 tw-p-5">
+    <bit-icon [icon]="icon" class="tw-text-primary-300"></bit-icon>
+  </div>
   `,
 });
 
-export const Disabled = DisabledTemplate.bind({});
-Disabled.args = {
-  size: "small",
-};
+export const ReportExposedPasswords = Template.bind({});
