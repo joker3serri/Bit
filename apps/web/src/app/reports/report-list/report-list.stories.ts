@@ -30,7 +30,7 @@ export default {
     reports: Object.values(reports).map((report) => ({
       ...report,
       variant:
-        report.route == "breach-report" ? ReportVariant.RequiresPremium : ReportVariant.Enabled,
+        report.route == "breach-report" ? ReportVariant.Enabled : ReportVariant.RequiresPremium,
     })),
   },
 } as Meta;
