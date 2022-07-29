@@ -6,7 +6,7 @@ import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
 import { BreachReportComponent } from "./breach-report.component";
 import { ExposedPasswordsReportComponent } from "./exposed-passwords-report.component";
 import { InactiveTwoFactorReportComponent } from "./inactive-two-factor-report.component";
-import { ReportListComponent } from "./report-list.component";
+import { ReportListComponent } from "./report-list/report-list.component";
 import { ReportsComponent } from "./reports.component";
 import { ReusedPasswordsReportComponent } from "./reused-passwords-report.component";
 import { UnsecuredWebsitesReportComponent } from "./unsecured-websites-report.component";

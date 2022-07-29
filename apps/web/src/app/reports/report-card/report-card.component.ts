@@ -1,14 +1,5 @@
 import { Component, Input } from "@angular/core";
 
-export enum ReportType {
-  ExposedPasswords = "ExposedPasswords",
-  ReusedPasswords = "ReusedPasswords",
-  WeakPasswords = "WeakPasswords",
-  UnsecuredWebsites = "UnsecuredWebsites",
-  Inactive2fa = "Inactive2fa",
-  DataBreach = "DataBreach",
-}
-
 export enum ReportVariant {
   Enabled = "Enabled",
   RequiresPremium = "RequiresPremium",
@@ -23,8 +14,7 @@ export class ReportCardComponent {
   @Input() title: string;
   @Input() description: string;
   @Input() route: string;
-  @Input() iconName: string;
-  @Input() type: ReportType;
+  @Input() icon: string;
   @Input() variant: ReportVariant;
 
   protected get disabled() {

@@ -31,7 +31,7 @@ export default {
     title: "Exposed Passwords",
     description:
       "Passwords exposed in a data breach are easy targets for attackers. Change these passwords to prevent potential break-ins.",
-    iconName: "reportExposedPasswords",
+    icon: "reportExposedPasswords",
     variant: ReportVariant.Enabled,
   },
 } as Meta;
