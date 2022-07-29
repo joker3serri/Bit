@@ -1,0 +1,36 @@
+import { APP_INITIALIZER, NgModule } from "@angular/core";
+
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { I18nService as BaseI18nService } from "@bitwarden/common/services/i18n.service";
+
+import * as eng from "../../locales/en/messages.json";
+
+class PreloadedEnglishI18nService extends BaseI18nService {
+  constructor() {
+    super("en", "", () => {
+      return Promise.resolve(eng);
+    });
+  }
+}
+
+function i18nInitializer(i18nService: I18nService): () => Promise<void> {
+  return async () => {
+    await (i18nService as any).init();
+  };
+}
+
+@NgModule({
+  providers: [
+    {
+      provide: I18nService,
+      useClass: PreloadedEnglishI18nService,
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: i18nInitializer,
+      deps: [I18nService],
+      multi: true,
+    },
+  ],
+})
+export class PreloadedEnglishI18nModule {}

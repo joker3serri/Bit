@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { ReportTypes } from "./report-card.component";
+import { ReportTypes } from "./report-card/report-card.component";
 
 @Component({
   selector: "app-report-list",

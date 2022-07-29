@@ -5,12 +5,12 @@ import { MessagingService } from "@bitwarden/common/abstractions/messaging.servi
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 
 export enum ReportTypes {
-  "exposedPasswords" = "exposedPasswords",
-  "reusedPasswords" = "reusedPasswords",
-  "weakPasswords" = "weakPasswords",
-  "unsecuredWebsites" = "unsecuredWebsites",
-  "inactive2fa" = "inactive2fa",
-  "dataBreach" = "dataBreach",
+  exposedPasswords = "exposedPasswords",
+  reusedPasswords = "reusedPasswords",
+  weakPasswords = "weakPasswords",
+  unsecuredWebsites = "unsecuredWebsites",
+  inactive2fa = "inactive2fa",
+  dataBreach = "dataBreach",
 }
 
 type ReportEntry = {
@@ -126,9 +126,7 @@ const reports: Record<ReportTypes, ReportEntry> = {
 export class ReportCardComponent implements OnInit {
   @Input() type: ReportTypes;
 
-  report: ReportEntry;
-
-  hasPremium: boolean;
+  private hasPremium: boolean;
 
   constructor(
     private stateService: StateService,
@@ -137,16 +135,18 @@ export class ReportCardComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.report = reports[this.type];
-
     this.hasPremium = await this.stateService.getCanAccessPremium();
   }
 
-  get premium() {
+  protected get report() {
+    return reports[this.type];
+  }
+
+  protected get premium() {
     return this.report.requiresPremium && !this.hasPremium;
   }
 
-  get route() {
+  protected get route() {
     if (this.premium) {
       return null;
     }
@@ -154,11 +154,11 @@ export class ReportCardComponent implements OnInit {
     return this.report.route;
   }
 
-  get icon() {
+  protected get icon() {
     return this.sanitizer.bypassSecurityTrustHtml(this.report.icon);
   }
 
-  click() {
+  protected click() {
     if (this.premium) {
       this.messagingService.send("premiumRequired");
     }
