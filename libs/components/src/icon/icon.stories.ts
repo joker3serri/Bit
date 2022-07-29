@@ -20,3 +20,8 @@ const Template: Story<BitIconComponent> = (args: BitIconComponent) => ({
 });
 
 export const ReportExposedPasswords = Template.bind({});
+
+export const UnknownIcon = Template.bind({});
+UnknownIcon.args = {
+  icon: "unknown",
+};
