@@ -19,6 +19,8 @@ function i18nInitializer(i18nService: I18nService): () => Promise<void> {
   };
 }
 
+// This is a helper I18nService implementation that loads the english `message.json` eliminating
+//  the need for fetching them dynamically. It should only be used within storybook.
 @NgModule({
   providers: [
     {
