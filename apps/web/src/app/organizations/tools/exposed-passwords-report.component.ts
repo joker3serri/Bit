@@ -11,11 +11,11 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 
-import { ExposedPasswordsReportComponent as BaseExposedPasswordsReportComponent } from "../../reports/exposed-passwords-report.component";
+import { ExposedPasswordsReportComponent as BaseExposedPasswordsReportComponent } from "../../reports/pages/exposed-passwords-report.component";
 
 @Component({
   selector: "app-org-exposed-passwords-report",
-  templateUrl: "../../reports/exposed-passwords-report.component.html",
+  templateUrl: "../../reports/pages/exposed-passwords-report.component.html",
 })
 export class ExposedPasswordsReportComponent extends BaseExposedPasswordsReportComponent {
   manageableCiphers: Cipher[];

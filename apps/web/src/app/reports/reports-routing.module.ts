@@ -3,19 +3,19 @@ import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
 
-import { BreachReportComponent } from "./breach-report.component";
-import { ExposedPasswordsReportComponent } from "./exposed-passwords-report.component";
-import { InactiveTwoFactorReportComponent } from "./inactive-two-factor-report.component";
-import { ReportsHomeComponent } from "./reports-home.component";
-import { ReportsComponent } from "./reports.component";
-import { ReusedPasswordsReportComponent } from "./reused-passwords-report.component";
-import { UnsecuredWebsitesReportComponent } from "./unsecured-websites-report.component";
-import { WeakPasswordsReportComponent } from "./weak-passwords-report.component";
+import { BreachReportComponent } from "./pages/breach-report.component";
+import { ExposedPasswordsReportComponent } from "./pages/exposed-passwords-report.component";
+import { InactiveTwoFactorReportComponent } from "./pages/inactive-two-factor-report.component";
+import { ReportsHomeComponent } from "./pages/reports-home.component";
+import { ReusedPasswordsReportComponent } from "./pages/reused-passwords-report.component";
+import { UnsecuredWebsitesReportComponent } from "./pages/unsecured-websites-report.component";
+import { WeakPasswordsReportComponent } from "./pages/weak-passwords-report.component";
+import { ReportsLayoutComponent } from "./reports-layout.component";
 
 const routes: Routes = [
   {
     path: "",
-    component: ReportsComponent,
+    component: ReportsLayoutComponent,
     canActivate: [AuthGuard],
     children: [
       { path: "", pathMatch: "full", component: ReportsHomeComponent, data: { homepage: true } },

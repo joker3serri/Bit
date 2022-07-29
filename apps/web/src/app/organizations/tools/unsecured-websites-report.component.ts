@@ -9,11 +9,11 @@ import { PasswordRepromptService } from "@bitwarden/common/abstractions/password
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 
-import { UnsecuredWebsitesReportComponent as BaseUnsecuredWebsitesReportComponent } from "../../reports/unsecured-websites-report.component";
+import { UnsecuredWebsitesReportComponent as BaseUnsecuredWebsitesReportComponent } from "../../reports/pages/unsecured-websites-report.component";
 
 @Component({
   selector: "app-unsecured-websites-report",
-  templateUrl: "../../reports/unsecured-websites-report.component.html",
+  templateUrl: "../../reports/pages/unsecured-websites-report.component.html",
 })
 export class UnsecuredWebsitesReportComponent extends BaseUnsecuredWebsitesReportComponent {
   constructor(

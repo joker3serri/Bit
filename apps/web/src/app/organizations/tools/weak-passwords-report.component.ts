@@ -11,11 +11,11 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 
-import { WeakPasswordsReportComponent as BaseWeakPasswordsReportComponent } from "../../reports/weak-passwords-report.component";
+import { WeakPasswordsReportComponent as BaseWeakPasswordsReportComponent } from "../../reports/pages/weak-passwords-report.component";
 
 @Component({
   selector: "app-weak-passwords-report",
-  templateUrl: "../../reports/weak-passwords-report.component.html",
+  templateUrl: "../../reports/pages/weak-passwords-report.component.html",
 })
 export class WeakPasswordsReportComponent extends BaseWeakPasswordsReportComponent {
   manageableCiphers: Cipher[];
