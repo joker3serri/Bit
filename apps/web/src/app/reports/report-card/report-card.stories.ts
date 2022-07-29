@@ -1,4 +1,3 @@
-import { SafeValue } from "@angular/platform-browser";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, Story, moduleMetadata } from "@storybook/angular";
 
@@ -9,8 +8,6 @@ import { PremiumBadgeComponent } from "../../components/premium-badge.component"
 import { PreloadedEnglishI18nModule } from "../../tests/preloaded-english-i18n.module";
 
 import { ReportCardComponent, ReportVariant } from "./report-card.component";
-
-export type SafeHtml = SafeValue;
 
 export default {
   title: "Web/Reports/Card",
