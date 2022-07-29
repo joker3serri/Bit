@@ -223,11 +223,7 @@ export class Main {
 
     this.organizationService = new OrganizationService(this.stateService);
 
-    this.policyService = new PolicyService(
-      this.stateService,
-      this.organizationService,
-      this.apiService
-    );
+    this.policyService = new PolicyService(this.stateService, this.organizationService);
 
     this.sendService = new SendService(
       this.cryptoService,
