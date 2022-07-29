@@ -28,9 +28,9 @@ jobs:
       - name: Branch check
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         run: |
-          if [[ "$GITHUB_REF" != "refs/heads/rc" ]] && [[ $GITHUB_REF != refs/heads/hotfix-rc/* ]]; then
+          if [[ "$GITHUB_REF" != "refs/heads/rc" ]] && [[ $GITHUB_REF != "refs/heads/hotfix-rc" ]]; then
             echo "==================================="
-            echo "[!] Can only release from the 'rc' or 'hotfix-rc/*' branches"
+            echo "[!] Can only release from the 'rc' or 'hotfix-rc' branches"
             echo "==================================="
             exit 1
           fi
@@ -153,12 +153,23 @@ jobs:
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
       - name: Download latest cloud asset
+        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         uses: bitwarden/gh-actions/download-artifacts@c1fa8e09871a860862d6bbe36184b06d2c7e35a8
         with:
           workflow: build-web.yml
           path: apps/web
           workflow_conclusion: success
           branch: ${{ github.ref_name }}
+          artifacts: web-*-cloud-COMMERCIAL.zip
+
+      - name: Download latest cloud asset
+        if: ${{ github.event.inputs.release_type == 'Dry Run' }}
+        uses: bitwarden/gh-actions/download-artifacts@c1fa8e09871a860862d6bbe36184b06d2c7e35a8
+        with:
+          workflow: build-web.yml
+          path: apps/web
+          workflow_conclusion: success
+          branch: master
           artifacts: web-*-cloud-COMMERCIAL.zip
 
       # This should result in a build directory in the current working directory
@@ -190,7 +201,10 @@ jobs:
           git switch -c cf-pages-deploy-$_TAG_VERSION
           git add .
           git commit -m "Staging deploy ${{ needs.setup.outputs.release_version }}"
-          git push -u origin cf-pages-deploy-$_TAG_VERSION
+
+          if [[ "${{ github.event.inputs.release_type }}" != "Dry Run" ]]; then
+            git push -u origin cf-pages-deploy-$_TAG_VERSION
+          fi
         working-directory: deployment
 
       - name: Create CloudFlare Pages Deploy PR
@@ -213,6 +227,24 @@ jobs:
       - self-host
       - cfpages-deploy
     steps:
+      - name: Create GitHub deployment
+        uses: chrnorm/deployment-action@1b599fe41a0ef1f95191e7f2eec4743f2d7dfc48
+        id: deployment
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          environment-url: http://vault.bitwarden.com
+          environment: 'Web Vault - Production'
+          description: 'Deployment ${{ needs.setup.outputs.release_version }} from branch ${{ github.ref_name }}'
+          task: release
+      
+      - name: Update deployment status to In Progress
+        uses: chrnorm/deployment-status@07b3930847f65e71c9c6802ff5a402f6dfb46b86
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          environment-url: http://vault.bitwarden.com
+          state: 'in_progress'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+
       - name: Download latest build artifacts
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         uses: bitwarden/gh-actions/download-artifacts@c1fa8e09871a860862d6bbe36184b06d2c7e35a8
@@ -254,19 +286,20 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: true
 
+      - name: Update deployment status to Success
+        if: success()
+        uses: chrnorm/deployment-status@07b3930847f65e71c9c6802ff5a402f6dfb46b86
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          environment-url: http://vault.bitwarden.com
+          state: 'success'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
 
-  dry-run:
-    name: Dry Run Cleanup
-    runs-on: ubuntu-20.04
-    if: ${{ github.event.inputs.release_type == 'Dry Run' }}
-    env:
-      _TAG_VERSION: ${{ needs.setup.outputs.tag_version }}
-    needs:
-      - setup
-      - release
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
-
-      - name: Remove cf-pages-deploy branch
-        run: git push origin --delete cf-pages-deploy-$_TAG_VERSION
+      - name: Update deployment status to Failure
+        if: failure()
+        uses: chrnorm/deployment-status@07b3930847f65e71c9c6802ff5a402f6dfb46b86
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          environment-url: http://vault.bitwarden.com
+          state: 'failure'
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
