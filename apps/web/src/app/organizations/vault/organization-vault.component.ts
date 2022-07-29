@@ -24,13 +24,14 @@ import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 
-import { EntityEventsComponent } from "../../../../organizations/manage/entity-events.component";
-import { AddEditComponent } from "../../../../organizations/vault/add-edit.component";
-import { AttachmentsComponent } from "../../../../organizations/vault/attachments.component";
-import { CiphersComponent } from "../../../../organizations/vault/ciphers.component";
-import { CollectionsComponent } from "../../../../organizations/vault/collections.component";
-import { OrganizationVaultFilterComponent } from "../../../vault-filter/organization-vault-filter.component";
-import { VaultService } from "../../vault.service";
+import { OrganizationVaultFilterComponent } from "../../modules/vault-filter/organization-vault-filter.component";
+import { VaultService } from "../../vault/shared/vault.service";
+import { EntityEventsComponent } from "../manage/entity-events.component";
+
+import { AddEditComponent } from "./add-edit.component";
+import { AttachmentsComponent } from "./attachments.component";
+import { CiphersComponent } from "./ciphers.component";
+import { CollectionsComponent } from "./collections.component";
 
 const BroadcasterSubscriptionId = "OrgVaultComponent";
 

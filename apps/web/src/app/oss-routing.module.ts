@@ -27,7 +27,6 @@ import { VerifyRecoverDeleteComponent } from "./accounts/verify-recover-delete.c
 import { HomeGuard } from "./guards/home.guard";
 import { FrontendLayoutComponent } from "./layouts/frontend-layout.component";
 import { UserLayoutComponent } from "./layouts/user-layout.component";
-import { IndividualVaultModule } from "./modules/vault/modules/individual-vault/individual-vault.module";
 import { OrganizationsRoutingModule } from "./organizations/organization-routing.module";
 import { AcceptFamilySponsorshipComponent } from "./organizations/sponsorships/accept-family-sponsorship.component";
 import { FamiliesForEnterpriseSetupComponent } from "./organizations/sponsorships/families-for-enterprise-setup.component";
@@ -46,6 +45,7 @@ import { SponsoredFamiliesComponent } from "./settings/sponsored-families.compon
 import { SubscriptionRoutingModule } from "./settings/subscription-routing.module";
 import { GeneratorComponent } from "./tools/generator.component";
 import { ToolsComponent } from "./tools/tools.component";
+import { IndividualVaultModule } from "./vault/individual-vault.module";
 
 const routes: Routes = [
   {

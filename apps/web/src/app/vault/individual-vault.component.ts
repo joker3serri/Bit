@@ -25,16 +25,17 @@ import { SyncService } from "@bitwarden/common/abstractions/sync.service";
 import { TokenService } from "@bitwarden/common/abstractions/token.service";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 
-import { UpdateKeyComponent } from "../../../../settings/update-key.component";
-import { AddEditComponent } from "../../../../vault/add-edit.component";
-import { AttachmentsComponent } from "../../../../vault/attachments.component";
-import { CiphersComponent } from "../../../../vault/ciphers.component";
-import { CollectionsComponent } from "../../../../vault/collections.component";
-import { FolderAddEditComponent } from "../../../../vault/folder-add-edit.component";
-import { ShareComponent } from "../../../../vault/share.component";
-import { VaultFilterComponent } from "../../../vault-filter/vault-filter.component";
-import { VaultFilterService } from "../../../vault-filter/vault-filter.service";
-import { VaultService } from "../../vault.service";
+import { VaultFilterComponent } from "../modules/vault-filter/vault-filter.component";
+import { VaultFilterService } from "../modules/vault-filter/vault-filter.service";
+import { UpdateKeyComponent } from "../settings/update-key.component";
+
+import { AddEditComponent } from "./add-edit.component";
+import { AttachmentsComponent } from "./attachments.component";
+import { CiphersComponent } from "./ciphers.component";
+import { CollectionsComponent } from "./collections.component";
+import { FolderAddEditComponent } from "./folder-add-edit.component";
+import { ShareComponent } from "./share.component";
+import { VaultService } from "./shared/vault.service";
 
 const BroadcasterSubscriptionId = "VaultComponent";
 

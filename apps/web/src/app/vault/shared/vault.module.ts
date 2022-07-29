@@ -1,8 +1,8 @@
 import { NgModule } from "@angular/core";
 
+import { VaultFilterModule } from "../../modules/vault-filter/vault-filter.module";
 import { LooseComponentsModule } from "../../shared/loose-components.module";
 import { SharedModule } from "../../shared/shared.module";
-import { VaultFilterModule } from "../vault-filter/vault-filter.module";
 
 import { VaultService } from "./vault.service";
 
