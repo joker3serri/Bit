@@ -1,25 +1,25 @@
 import { Input, HostBinding, Directive } from "@angular/core";
 
-export type LinkTypes = "primary" | "secondary" | "contrast";
+export type LinkType = "primary" | "secondary" | "contrast";
 
-const linkStyles: Record<LinkTypes, string[]> = {
+const linkStyles: Record<LinkType, string[]> = {
   primary: [
     "!tw-text-primary-500",
     "hover:!tw-text-primary-500",
-    "focus:tw-ring-primary-700",
-    "disabled:!tw-text-muted",
+    "focus-visible:tw-ring-primary-700",
+    "disabled:!tw-text-primary-500/60",
   ],
   secondary: [
     "!tw-text-main",
     "hover:!tw-text-main",
-    "focus:tw-ring-primary-700",
-    "disabled:!tw-text-muted",
+    "focus-visible:tw-ring-primary-700",
+    "disabled:!tw-text-muted/60",
   ],
   contrast: [
     "!tw-text-contrast",
     "hover:!tw-text-contrast",
-    "focus:tw-ring-text-contrast",
-    "disabled:!tw-text-contrast/80",
+    "focus-visible:tw-ring-text-contrast",
+    "disabled:!tw-text-contrast/60",
   ],
 };
 
@@ -30,8 +30,8 @@ export class LinkDirective {
   @HostBinding("class") get classList() {
     return [
       "tw-font-semibold",
-      "tw-py-1",
-      "tw-px-3",
+      "tw-py-0.5",
+      "tw-px-0",
       "tw-bg-transparent",
       "tw-border-0",
       "tw-border-none",
@@ -39,16 +39,16 @@ export class LinkDirective {
       "tw-transition",
       "hover:tw-underline",
       "hover:tw-decoration-1",
-      "focus:tw-outline-none",
-      "focus:tw-underline",
-      "focus:tw-decoration-1",
-      "focus:tw-ring",
-      "focus:tw-z-10",
+      "focus-visible:tw-outline-none",
+      "focus-visible:tw-underline",
+      "focus-visible:tw-decoration-1",
+      "focus-visible:tw-ring",
+      "focus-visible:tw-z-10",
       "disabled:tw-no-underline",
       "disabled:tw-cursor-not-allowed",
     ].concat(linkStyles[this.linkType] ?? []);
   }
 
   @Input()
-  linkType: LinkTypes = "primary";
+  linkType: LinkType = "primary";
 }

@@ -12,7 +12,7 @@ module.exports = {
       current: colors.current,
       primary: {
         300: "var(--color-primary-300)",
-        500: "var(--color-primary-500)",
+        500: "rgb(var(--color-primary-500) / <alpha-value>)",
         700: "var(--color-primary-700)",
       },
       secondary: {
@@ -39,7 +39,7 @@ module.exports = {
       },
       text: {
         main: "var(--color-text-main)",
-        muted: "var(--color-text-muted)",
+        muted: "rgb(var(--color-text-muted) / <alpha-value>)",
         contrast: "rgb(var(--color-text-contrast) / <alpha-value>)",
         alt2: "var(--color-text-alt2)",
       },
@@ -51,7 +51,7 @@ module.exports = {
     },
     textColor: {
       main: "var(--color-text-main)",
-      muted: "var(--color-text-muted)",
+      muted: "rgb(var(--color-text-muted) / <alpha-value>)",
       contrast: "rgb(var(--color-text-contrast) / <alpha-value>)",
       alt2: "var(--color-text-alt2)",
       success: "var(--color-success-500)",
@@ -60,7 +60,7 @@ module.exports = {
       info: "var(--color-info-500)",
       primary: {
         300: "var(--color-primary-300)",
-        500: "var(--color-primary-500)",
+        500: "rgb(var(--color-primary-500) / <alpha-value>)",
         700: "var(--color-primary-700)",
       },
     },
