@@ -1,3 +1,4 @@
+import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { EnvironmentService } from "@bitwarden/common/services/environment.service";
 
@@ -12,12 +13,17 @@ type GroupPolicyEnvironment = {
 };
 
 export class BrowserEnvironmentService extends EnvironmentService {
-  constructor(stateService: StateService) {
+  constructor(stateService: StateService, private logService: LogService) {
     super(stateService);
   }
 
   async hasManagedEnvironment(): Promise<boolean> {
-    return (await this.getManagedEnvironment()) != null;
+    try {
+      return (await this.getManagedEnvironment()) != null;
+    } catch (e) {
+      this.logService.error(e);
+      return false;
+    }
   }
 
   async settingsHaveChanged() {
