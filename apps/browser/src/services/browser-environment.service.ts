@@ -35,8 +35,12 @@ export class BrowserEnvironmentService extends EnvironmentService {
   }
 
   getManagedEnvironment(): Promise<GroupPolicyEnvironment> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       chrome.storage.managed.get("environment", (result) => {
+        if (chrome.runtime.lastError) {
+          return reject(chrome.runtime.lastError);
+        }
+
         resolve(result.environment);
       });
     });
