@@ -2,11 +2,11 @@ import { Component } from "@angular/core";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { VaultFilterComponent } from "./vault-filter.component";
+import { VaultFilterComponent } from "../../../vault/vault-filter/vault-filter.component";
 
 @Component({
   selector: "app-organization-vault-filter",
-  templateUrl: "vault-filter.component.html",
+  templateUrl: "../../../vault/vault-filter/vault-filter.component.html",
 })
 export class OrganizationVaultFilterComponent extends VaultFilterComponent {
   hideOrganizations = true;

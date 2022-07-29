@@ -28,7 +28,6 @@ import { FooterComponent } from "../layouts/footer.component";
 import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
 import { NavbarComponent } from "../layouts/navbar.component";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
-import { VaultFilterModule } from "../modules/vault-filter/vault-filter.module";
 import { OrganizationCreateModule } from "../organizations/create/organization-create.module";
 import { OrganizationLayoutComponent } from "../organizations/layouts/organization-layout.component";
 import { BulkConfirmComponent as OrgBulkConfirmComponent } from "../organizations/manage/bulk/bulk-confirm.component";
@@ -159,6 +158,7 @@ import { CollectionsComponent } from "../vault/collections.component";
 import { FolderAddEditComponent } from "../vault/folder-add-edit.component";
 import { OrganizationBadgeModule } from "../vault/organization-badge/organization-badge.module";
 import { ShareComponent } from "../vault/share.component";
+import { VaultFilterModule } from "../vault/vault-filter/vault-filter.module";
 
 // Please do not add to this list of declarations - we should refactor these into modules when doing so makes sense until there are none left.
 // If you are building new functionality, please create or extend a feature module instead.

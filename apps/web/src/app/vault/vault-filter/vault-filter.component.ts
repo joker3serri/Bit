@@ -2,10 +2,10 @@ import { Component, EventEmitter, Output } from "@angular/core";
 
 import { VaultFilterComponent as BaseVaultFilterComponent } from "@bitwarden/angular/modules/vault-filter/vault-filter.component";
 
-import { VaultFilterService } from "./vault-filter.service";
+import { VaultFilterService } from "./shared/vault-filter.service";
 
 @Component({
-  selector: "app-vault-filter",
+  selector: "./app-vault-filter",
   templateUrl: "vault-filter.component.html",
 })
 export class VaultFilterComponent extends BaseVaultFilterComponent {
