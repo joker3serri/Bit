@@ -26,6 +26,8 @@ export class LockComponent extends BaseLockComponent {
 
   biometricError: string;
   pendingBiometric = false;
+  authenicatedUrl = "/tabs/current";
+  unAuthenicatedUrl = "/update_temp_password";
 
   constructor(
     router: Router,
@@ -65,7 +67,7 @@ export class LockComponent extends BaseLockComponent {
     await super.ngOnInit();
 
     const forcePasswordReset = await this.stateService.getForcePasswordReset();
-    this.successRoute = forcePasswordReset === true ? "/update_temp_password" : "/tabs/current";
+    this.successRoute = forcePasswordReset === true ? this.unAuthenicatedUrl : this.authenicatedUrl;
 
     const disableAutoBiometricsPrompt =
       (await this.stateService.getDisableAutoBiometricsPrompt()) ?? true;
