@@ -1406,7 +1406,7 @@
     "message": "Account deleted"
   },
   "accountDeletedDesc": {
-    "message": "You account has been closed and all associated data has been deleted."
+    "message": "Your account has been closed and all associated data has been deleted."
   },
   "preferences": {
     "message": "Preferences"
