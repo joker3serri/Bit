@@ -3,6 +3,8 @@ import { InjectionToken, Injector, LOCALE_ID, NgModule } from "@angular/core";
 import { ThemingService } from "@bitwarden/angular/services/theming/theming.service";
 import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
 import { AbstractEncryptService } from "@bitwarden/common/abstractions/abstractEncrypt.service";
+import { AccountApiService as AccountApiServiceAbstraction } from "@bitwarden/common/abstractions/account/account-api.service.abstraction";
+import { AccountService as AccountServiceAbstraction } from "@bitwarden/common/abstractions/account/account.service.abstraction";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/abstractions/appId.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -16,7 +18,12 @@ import { EnvironmentService as EnvironmentServiceAbstraction } from "@bitwarden/
 import { EventService as EventServiceAbstraction } from "@bitwarden/common/abstractions/event.service";
 import { ExportService as ExportServiceAbstraction } from "@bitwarden/common/abstractions/export.service";
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/abstractions/fileUpload.service";
-import { FolderService as FolderServiceAbstraction } from "@bitwarden/common/abstractions/folder.service";
+import { FolderApiServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder-api.service.abstraction";
+import {
+  FolderService as FolderServiceAbstraction,
+  InternalFolderService,
+} from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
+import { FormValidationErrorsService as FormValidationErrorsServiceAbstraction } from "@bitwarden/common/abstractions/formValidationErrors.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/abstractions/keyConnector.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -44,6 +51,8 @@ import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "@bitwarde
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { Account } from "@bitwarden/common/models/domain/account";
 import { GlobalState } from "@bitwarden/common/models/domain/globalState";
+import { AccountApiService } from "@bitwarden/common/services/account/account-api.service";
+import { AccountService } from "@bitwarden/common/services/account/account.service";
 import { ApiService } from "@bitwarden/common/services/api.service";
 import { AppIdService } from "@bitwarden/common/services/appId.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
@@ -57,7 +66,9 @@ import { EnvironmentService } from "@bitwarden/common/services/environment.servi
 import { EventService } from "@bitwarden/common/services/event.service";
 import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";
-import { FolderService } from "@bitwarden/common/services/folder.service";
+import { FolderApiService } from "@bitwarden/common/services/folder/folder-api.service";
+import { FolderService } from "@bitwarden/common/services/folder/folder.service";
+import { FormValidationErrorsService } from "@bitwarden/common/services/formValidationErrors.service";
 import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
 import { OrganizationService } from "@bitwarden/common/services/organization.service";
@@ -213,10 +224,33 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
       useClass: FolderService,
       deps: [
         CryptoServiceAbstraction,
-        ApiServiceAbstraction,
         I18nServiceAbstraction,
         CipherServiceAbstraction,
         StateServiceAbstraction,
+      ],
+    },
+    {
+      provide: InternalFolderService,
+      useExisting: FolderServiceAbstraction,
+    },
+    {
+      provide: FolderApiServiceAbstraction,
+      useClass: FolderApiService,
+      deps: [FolderServiceAbstraction, ApiServiceAbstraction],
+    },
+    {
+      provide: AccountApiServiceAbstraction,
+      useClass: AccountApiService,
+      deps: [ApiServiceAbstraction],
+    },
+    {
+      provide: AccountServiceAbstraction,
+      useClass: AccountService,
+      deps: [
+        AccountApiServiceAbstraction,
+        UserVerificationServiceAbstraction,
+        MessagingServiceAbstraction,
+        LogService,
       ],
     },
     { provide: LogService, useFactory: () => new ConsoleLogService(false) },
@@ -291,6 +325,7 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
         StateServiceAbstraction,
         OrganizationServiceAbstraction,
         ProviderServiceAbstraction,
+        FolderApiServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },
@@ -443,6 +478,10 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
     {
       provide: AbstractThemingService,
       useClass: ThemingService,
+    },
+    {
+      provide: FormValidationErrorsServiceAbstraction,
+      useClass: FormValidationErrorsService,
     },
   ],
 })

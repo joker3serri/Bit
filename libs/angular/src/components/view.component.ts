@@ -15,6 +15,7 @@ import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.s
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventService } from "@bitwarden/common/abstractions/event.service";
+import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
@@ -26,6 +27,7 @@ import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
+import { EncArrayBuffer } from "@bitwarden/common/models/domain/encArrayBuffer";
 import { ErrorResponse } from "@bitwarden/common/models/response/errorResponse";
 import { AttachmentView } from "@bitwarden/common/models/view/attachmentView";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
@@ -76,7 +78,8 @@ export class ViewComponent implements OnDestroy, OnInit {
     protected apiService: ApiService,
     protected passwordRepromptService: PasswordRepromptService,
     private logService: LogService,
-    protected stateService: StateService
+    protected stateService: StateService,
+    protected fileDownloadService: FileDownloadService
   ) {}
 
   ngOnInit() {
@@ -367,13 +370,16 @@ export class ViewComponent implements OnDestroy, OnInit {
     }
 
     try {
-      const buf = await response.arrayBuffer();
+      const encBuf = await EncArrayBuffer.fromResponse(response);
       const key =
         attachment.key != null
           ? attachment.key
           : await this.cryptoService.getOrgKey(this.cipher.organizationId);
-      const decBuf = await this.cryptoService.decryptFromBytes(buf, key);
-      this.platformUtilsService.saveFile(this.win, decBuf, null, attachment.fileName);
+      const decBuf = await this.cryptoService.decryptFromBytes(encBuf, key);
+      this.fileDownloadService.download({
+        fileName: attachment.fileName,
+        blobData: decBuf,
+      });
     } catch (e) {
       this.platformUtilsService.showToast("error", null, this.i18nService.t("errorOccurred"));
     }

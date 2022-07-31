@@ -20,7 +20,7 @@ import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventService } from "@bitwarden/common/abstractions/event.service";
-import { FolderService } from "@bitwarden/common/abstractions/folder.service";
+import { InternalFolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -34,13 +34,13 @@ import { SettingsService } from "@bitwarden/common/abstractions/settings.service
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync.service";
 import { SystemService } from "@bitwarden/common/abstractions/system.service";
-import { TokenService } from "@bitwarden/common/abstractions/token.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 
 import { MenuUpdateRequest } from "../main/menu/menu.updater";
 
+import { DeleteAccountComponent } from "./accounts/delete-account.component";
 import { PremiumComponent } from "./accounts/premium.component";
 import { SettingsComponent } from "./accounts/settings.component";
 import { ExportComponent } from "./vault/export.component";
@@ -101,8 +101,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private broadcasterService: BroadcasterService,
-    private tokenService: TokenService,
-    private folderService: FolderService,
+    private folderService: InternalFolderService,
     private settingsService: SettingsService,
     private syncService: SyncService,
     private passwordGenerationService: PasswordGenerationService,
@@ -155,9 +154,7 @@ export class AppComponent implements OnInit {
             this.systemService.cancelProcessReload();
             break;
           case "loggedOut":
-            if (this.modal != null) {
-              this.modal.close();
-            }
+            this.modalService.closeAll();
             this.notificationsService.updateConnection();
             this.updateAppMenu();
             await this.systemService.clearPendingClipboard();
@@ -182,9 +179,7 @@ export class AppComponent implements OnInit {
             }
             break;
           case "locked":
-            if (this.modal != null) {
-              this.modal.close();
-            }
+            this.modalService.closeAll();
             if (
               message.userId == null ||
               message.userId === (await this.stateService.getUserId())
@@ -197,7 +192,7 @@ export class AppComponent implements OnInit {
             await this.reloadProcess();
             break;
           case "reloadProcess":
-            window.location.reload(true);
+            (window.location as any).reload(true);
             break;
           case "syncStarted":
             break;
@@ -225,6 +220,9 @@ export class AppComponent implements OnInit {
             }
             break;
           }
+          case "deleteAccount":
+            this.modalService.open(DeleteAccountComponent, { replaceTopModal: true });
+            break;
           case "openPasswordHistory":
             await this.openModal<PasswordGeneratorHistoryComponent>(
               PasswordGeneratorHistoryComponent,
@@ -370,9 +368,7 @@ export class AppComponent implements OnInit {
   }
 
   async openExportVault() {
-    if (this.modal != null) {
-      this.modal.close();
-    }
+    this.modalService.closeAll();
 
     const [modal, childComponent] = await this.modalService.openViewRef(
       ExportComponent,
@@ -390,9 +386,7 @@ export class AppComponent implements OnInit {
   }
 
   async addFolder() {
-    if (this.modal != null) {
-      this.modal.close();
-    }
+    this.modalService.closeAll();
 
     const [modal, childComponent] = await this.modalService.openViewRef(
       FolderAddEditComponent,
@@ -412,9 +406,7 @@ export class AppComponent implements OnInit {
   }
 
   async openGenerator() {
-    if (this.modal != null) {
-      this.modal.close();
-    }
+    this.modalService.closeAll();
 
     [this.modal] = await this.modalService.openViewRef(
       GeneratorComponent,
@@ -544,9 +536,7 @@ export class AppComponent implements OnInit {
   }
 
   private async openModal<T>(type: Type<T>, ref: ViewContainerRef) {
-    if (this.modal != null) {
-      this.modal.close();
-    }
+    this.modalService.closeAll();
 
     [this.modal] = await this.modalService.openViewRef(type, ref);
 

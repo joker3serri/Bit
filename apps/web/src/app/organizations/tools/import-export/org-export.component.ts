@@ -1,15 +1,17 @@
 import { Component } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
+import { UntypedFormBuilder } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventService } from "@bitwarden/common/abstractions/event.service";
 import { ExportService } from "@bitwarden/common/abstractions/export.service";
+import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
+import { EventType } from "@bitwarden/common/enums/eventType";
 
 import { ExportComponent } from "../../../tools/import-export/export.component";
 
@@ -28,7 +30,8 @@ export class OrganizationExportComponent extends ExportComponent {
     policyService: PolicyService,
     logService: LogService,
     userVerificationService: UserVerificationService,
-    formBuilder: FormBuilder
+    formBuilder: UntypedFormBuilder,
+    fileDownloadService: FileDownloadService
   ) {
     super(
       cryptoService,
@@ -39,7 +42,8 @@ export class OrganizationExportComponent extends ExportComponent {
       policyService,
       logService,
       userVerificationService,
-      formBuilder
+      formBuilder,
+      fileDownloadService
     );
   }
 
@@ -63,7 +67,11 @@ export class OrganizationExportComponent extends ExportComponent {
   }
 
   async collectEvent(): Promise<any> {
-    // TODO
-    // await this.eventService.collect(EventType.Organization_ClientExportedVault);
+    await this.eventService.collect(
+      EventType.Organization_ClientExportedVault,
+      null,
+      null,
+      this.organizationId
+    );
   }
 }
