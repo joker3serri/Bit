@@ -1,13 +1,13 @@
-import { CipherService } from "jslib-common/abstractions/cipher.service";
-import { EventService } from "jslib-common/abstractions/event.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { TotpService } from "jslib-common/abstractions/totp.service";
-import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
-import { CipherType } from "jslib-common/enums/cipherType";
-import { EventType } from "jslib-common/enums/eventType";
-import { FieldType } from "jslib-common/enums/fieldType";
-import { CipherView } from "jslib-common/models/view/cipherView";
-import { FieldView } from "jslib-common/models/view/fieldView";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { EventService } from "@bitwarden/common/abstractions/event.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { TotpService } from "@bitwarden/common/abstractions/totp.service";
+import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
+import { CipherType } from "@bitwarden/common/enums/cipherType";
+import { EventType } from "@bitwarden/common/enums/eventType";
+import { FieldType } from "@bitwarden/common/enums/fieldType";
+import { CipherView } from "@bitwarden/common/models/view/cipherView";
+import { FieldView } from "@bitwarden/common/models/view/fieldView";
 
 import { BrowserApi } from "../browser/browserApi";
 import AutofillField from "../models/autofillField";
@@ -66,7 +66,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
   async doAutoFill(options: any) {
     let totpPromise: Promise<string> = null;
-    const tab = await this.getActiveTab();
+    const tab = options.tab;
     if (!tab || !options.cipher || !options.pageDetails || !options.pageDetails.length) {
       throw new Error("Nothing to auto-fill.");
     }
@@ -118,8 +118,8 @@ export default class AutofillService implements AutofillServiceInterface {
         return;
       }
 
-      totpPromise = this.totpService.isAutoCopyEnabled().then((enabled) => {
-        if (enabled) {
+      totpPromise = this.stateService.getDisableAutoTotpCopy().then((disabled) => {
+        if (!disabled) {
           return this.totpService.getCode(options.cipher.login.totp);
         }
         return null;
@@ -168,6 +168,7 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     const totpCode = await this.doAutoFill({
+      tab: tab,
       cipher: cipher,
       pageDetails: pageDetails,
       skipLastUsed: !fromCommand,

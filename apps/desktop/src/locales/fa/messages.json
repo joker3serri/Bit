@@ -532,10 +532,13 @@
   "invalidEmail": {
     "message": "نشانی رایانامه نامعتبر است."
   },
-  "masterPassRequired": {
-    "message": "کلمه عبور اصلی ضروری است."
+  "masterPasswordRequired": {
+    "message": "گذرواژه اصلی ضروری است."
   },
-  "masterPassLength": {
+  "confirmMasterPasswordRequired": {
+    "message": "تایپ مجدد گذرواژه اصلی نیاز است."
+  },
+  "masterPasswordMinlength": {
     "message": "طول کلمه عبور اصلی باید حداقل ۸ کاراکتر باشد."
   },
   "masterPassDoesntMatch": {
@@ -894,11 +897,11 @@
     "message": "به صورت خودکار، مقادیر رونوشت شده را از کلیپ‌برد پاک کن.",
     "description": "Clipboard is the operating system thing where you copy/paste data to on your device."
   },
-  "disableFavicon": {
-    "message": "غیرفعال‌سازی آیکون‌های وبسایت"
+  "enableFavicon": {
+    "message": "نمایش نمادهای وب سایت"
   },
-  "disableFaviconDesc": {
-    "message": "آیکون‌های وبسایت یک تصویر قابل تشخیص در کنار هر داده ورودی ارائه می‌دهد."
+  "faviconDesc": {
+    "message": "یک تصویر قابل تشخیص در کنار هر ورود نشان دهید."
   },
   "enableMinToTray": {
     "message": "کوچک کردن به نماد Tray"
@@ -1273,6 +1276,40 @@
   "fileFormat": {
     "message": "فرمت پرونده"
   },
+  "hCaptchaUrl": {
+    "message": "آدرس اینترنتی hCaptcha",
+    "description": "hCaptcha is the name of a website, should not be translated"
+  },
+  "loadAccessibilityCookie": {
+    "message": "بارگیری کوکی دسترس‌پذیری"
+  },
+  "registerAccessibilityUser": {
+    "message": "ثبت نام به عنوان کاربر قابلیت دسترسی در",
+    "description": "ex. Register as an accessibility user at hcaptcha.com"
+  },
+  "copyPasteLink": {
+    "message": "لینک ارسال شده به ایمیل خود را در زیر کپی و پیست کنید"
+  },
+  "enterhCaptchaUrl": {
+    "message": "برای بارگیری کوکی دسترسی برای hCaptcha، URL را وارد کنید",
+    "description": "hCaptcha is the name of a website, should not be translated"
+  },
+  "hCaptchaUrlRequired": {
+    "message": "آدرس اینترنتی hCaptcha مورد نیاز است",
+    "description": "hCaptcha is the name of a website, should not be translated"
+  },
+  "invalidUrl": {
+    "message": "آدرس اینترنتی نامعتبر"
+  },
+  "done": {
+    "message": "انجام شده"
+  },
+  "accessibilityCookieSaved": {
+    "message": "کوکی دسترس‌پذیری ذخیره شد!"
+  },
+  "noAccessibilityCookieSaved": {
+    "message": "هیچ کوکی دسترسی ذخیره نشد"
+  },
   "warning": {
     "message": "اخطار",
     "description": "WARNING (should stay in capitalized letters if the language permits)"
@@ -1347,11 +1384,11 @@
   "touchIdConsentMessage": {
     "message": "تایید برای Bitwarden."
   },
-  "noAutoPromptWindowsHello": {
-    "message": "در هنگام راه اندازی ، درخواست Windows Hello نکنید."
+  "autoPromptWindowsHello": {
+    "message": "درخواست Windows Hello در هنگام راه اندازی"
   },
-  "noAutoPromptTouchId": {
-    "message": "در هنگام راه اندازی ، درخواست Touch ID نکنید."
+  "autoPromptTouchId": {
+    "message": "درخواست تاچ آیدی در هنگام راه اندازی"
   },
   "lockWithMasterPassOnRestart": {
     "message": "در زمان شروع مجدد، با کلمه عبور اصلی قفل کن"
@@ -1509,7 +1546,7 @@
   "acceptPolicies": {
     "message": "با علامت زدن این کادر با موارد زیر موافقت می کنید:"
   },
-  "acceptPoliciesError": {
+  "acceptPoliciesRequired": {
     "message": "شرایط خدمات و سیاست حفظ حریم خصوصی تأیید نشده است."
   },
   "enableBrowserIntegration": {
@@ -1519,7 +1556,7 @@
     "message": "یکپارچه سازی مرورگر برای بیومتریک در مرورگر استفاده می شود."
   },
   "browserIntegrationUnsupportedTitle": {
-    "message": "Browser integration not supported"
+    "message": "ادغام مرورگر پشتیبانی نمی شود"
   },
   "browserIntegrationMasOnlyDesc": {
     "message": "متأسفانه در حال حاضر ادغام مرورگر فقط در نسخه Mac App Store پشتیبانی می شود."
@@ -1528,7 +1565,7 @@
     "message": "متأسفانه در حال حاضر ادغام مرورگر در نسخه فروشگاه ویندوز پشتیبانی نمی شود."
   },
   "browserIntegrationLinuxDesc": {
-    "message": "Unfortunately browser integration is currently not supported in the linux version."
+    "message": "متأسفانه در حال حاضر ادغام مرورگر در نسخه لینوکس پشتیبانی نمی شود."
   },
   "enableBrowserIntegrationFingerprint": {
     "message": "برای ادغام مرورگر نیاز به تأیید است"
@@ -1926,5 +1963,17 @@
   },
   "apiKey": {
     "message": "کلید API"
+  },
+  "organizationIsDisabled": {
+    "message": "سازمان از کار افتاده است."
+  },
+  "disabledOrganizationFilterError": {
+    "message": "موارد موجود در سازمان‌های غیرفعال، قابل دسترسی نیستند. برای دریافت کمک با مالک سازمان خود تماس بگیرید."
+  },
+  "neverLockWarning": {
+    "message": "آیا جدا میخواهید از گزینه \"هرگز\" استفاده کنید؟ تنظیم کردن کردن گزینه قفل به \"هرگز\" کلیدهای رمزنگاری گاوصندوقتان را بر روی دستگاه شما ذخیره خواهد کرد. اگر از این گزینه استفاده میکنید باید اطمینان داشته باشید که دستگاه شما کاملا محافظت شده است."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }

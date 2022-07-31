@@ -10,24 +10,24 @@ import {
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { ModalRef } from "jslib-angular/components/modal/modal.ref";
-import { VaultFilter } from "jslib-angular/modules/vault-filter/models/vault-filter.model";
-import { ModalService } from "jslib-angular/services/modal.service";
-import { BroadcasterService } from "jslib-common/abstractions/broadcaster.service";
-import { EventService } from "jslib-common/abstractions/event.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { MessagingService } from "jslib-common/abstractions/messaging.service";
-import { PasswordRepromptService } from "jslib-common/abstractions/passwordReprompt.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { SyncService } from "jslib-common/abstractions/sync.service";
-import { TotpService } from "jslib-common/abstractions/totp.service";
-import { CipherRepromptType } from "jslib-common/enums/cipherRepromptType";
-import { CipherType } from "jslib-common/enums/cipherType";
-import { EventType } from "jslib-common/enums/eventType";
-import { CipherView } from "jslib-common/models/view/cipherView";
-import { FolderView } from "jslib-common/models/view/folderView";
-import { invokeMenu, RendererMenuItem } from "jslib-electron/utils";
+import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
+import { VaultFilter } from "@bitwarden/angular/modules/vault-filter/models/vault-filter.model";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
+import { EventService } from "@bitwarden/common/abstractions/event.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { TotpService } from "@bitwarden/common/abstractions/totp.service";
+import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
+import { CipherType } from "@bitwarden/common/enums/cipherType";
+import { EventType } from "@bitwarden/common/enums/eventType";
+import { CipherView } from "@bitwarden/common/models/view/cipherView";
+import { FolderView } from "@bitwarden/common/models/view/folderView";
+import { invokeMenu, RendererMenuItem } from "@bitwarden/electron/utils";
 
 import { SearchBarService } from "../layout/search/search-bar.service";
 import { VaultFilterComponent } from "../modules/vault-filter/vault-filter.component";
@@ -128,7 +128,7 @@ export class VaultComponent implements OnInit, OnDestroy {
             await this.openGenerator(false);
             break;
           case "syncCompleted":
-            await this.ciphersComponent.reload(this.buildFilter());
+            await this.ciphersComponent.reload(this.activeFilter.buildFilter());
             await this.vaultFilterComponent.reloadCollectionsAndFolders(this.activeFilter);
             await this.vaultFilterComponent.reloadOrganizations();
             break;
@@ -241,7 +241,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         selectedOrganizationId: params.selectedOrganizationId,
         myVaultOnly: params.myVaultOnly ?? false,
       });
-      await this.ciphersComponent.reload(this.buildFilter());
+      await this.ciphersComponent.reload(this.activeFilter.buildFilter());
     });
   }
 
@@ -540,7 +540,10 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.i18nService.t(this.calculateSearchBarLocalizationString(vaultFilter))
     );
     this.activeFilter = vaultFilter;
-    await this.ciphersComponent.reload(this.buildFilter(), vaultFilter.status === "trash");
+    await this.ciphersComponent.reload(
+      this.activeFilter.buildFilter(),
+      vaultFilter.status === "trash"
+    );
     this.go();
   }
 
@@ -568,40 +571,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     return "searchVault";
-  }
-
-  private buildFilter(): (cipher: CipherView) => boolean {
-    return (cipher) => {
-      let cipherPassesFilter = true;
-      if (this.activeFilter.status === "favorites" && cipherPassesFilter) {
-        cipherPassesFilter = cipher.favorite;
-      }
-      if (this.activeFilter.status === "trash" && cipherPassesFilter) {
-        cipherPassesFilter = cipher.isDeleted;
-      }
-      if (this.activeFilter.cipherType != null && cipherPassesFilter) {
-        cipherPassesFilter = cipher.type === this.activeFilter.cipherType;
-      }
-      if (
-        this.activeFilter.selectedFolderId != null &&
-        this.activeFilter.selectedFolderId != "none" &&
-        cipherPassesFilter
-      ) {
-        cipherPassesFilter = cipher.folderId === this.activeFilter.selectedFolderId;
-      }
-      if (this.activeFilter.selectedCollectionId != null && cipherPassesFilter) {
-        cipherPassesFilter =
-          cipher.collectionIds != null &&
-          cipher.collectionIds.indexOf(this.activeFilter.selectedCollectionId) > -1;
-      }
-      if (this.activeFilter.selectedOrganizationId != null && cipherPassesFilter) {
-        cipherPassesFilter = cipher.organizationId === this.activeFilter.selectedOrganizationId;
-      }
-      if (this.activeFilter.myVaultOnly && cipherPassesFilter) {
-        cipherPassesFilter = cipher.organizationId === null;
-      }
-      return cipherPassesFilter;
-    };
   }
 
   async openGenerator(comingFromAddEdit: boolean, passwordType = true) {

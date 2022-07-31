@@ -15,9 +15,12 @@ const pjson = require("./package.json");
 
 const ENV = process.env.ENV == null ? "development" : process.env.ENV;
 const NODE_ENV = process.env.NODE_ENV == null ? "development" : process.env.NODE_ENV;
+const LOGGING = process.env.LOGGING != "false";
 
 const envConfig = config.load(ENV);
-config.log(envConfig);
+if (LOGGING) {
+  config.log(envConfig);
+}
 
 const moduleRules = [
   {
@@ -61,18 +64,25 @@ const moduleRules = [
     ],
   },
   {
-    test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+    test: /\.[cm]?js$/,
+    use: [
+      {
+        loader: "babel-loader",
+        options: {
+          configFile: false,
+          plugins: ["@angular/compiler-cli/linker/babel"],
+        },
+      },
+    ],
+  },
+  {
+    test: /\.[jt]sx?$/,
     loader: "@ngtools/webpack",
   },
 ];
 
 const plugins = [
   new CleanWebpackPlugin(),
-  // ref: https://github.com/angular/angular/issues/20357
-  new webpack.ContextReplacementPlugin(
-    /\@angular(\\|\/)core(\\|\/)fesm5/,
-    path.resolve(__dirname, "./src")
-  ),
   new HtmlWebpackPlugin({
     template: "./src/index.html",
     filename: "index.html",
@@ -139,6 +149,9 @@ const plugins = [
     filename: "[name].[contenthash].css",
     chunkFilename: "[id].[contenthash].css",
   }),
+  new webpack.ProvidePlugin({
+    process: "process/browser.js",
+  }),
   new webpack.EnvironmentPlugin({
     ENV: ENV,
     NODE_ENV: NODE_ENV === "production" ? "production" : "development",
@@ -148,9 +161,7 @@ const plugins = [
     STRIPE_KEY: envConfig["stripeKey"] ?? "",
     BRAINTREE_KEY: envConfig["braintreeKey"] ?? "",
     PAYPAL_CONFIG: envConfig["paypal"] ?? {},
-  }),
-  new webpack.ProvidePlugin({
-    process: "process/browser",
+    FLAGS: envConfig["flags"] ?? {},
   }),
   new AngularWebpackPlugin({
     tsConfigPath: "tsconfig.json",
@@ -205,8 +216,8 @@ const devServer =
               {
                 key: "Content-Security-Policy",
                 value: `
-                  default-src 'self'; 
-                  script-src 
+                  default-src 'self';
+                  script-src
                     'self'
                     'sha256-ryoU+5+IUZTuUyTElqkrQGBJXr1brEv6r2CA62WUw8w='
                     https://js.stripe.com
@@ -255,7 +266,7 @@ const devServer =
                     https://*.blob.core.windows.net
                     https://app.simplelogin.io/api/alias/random/new
                     https://app.anonaddy.com/api/v1/aliases;
-                  object-src 
+                  object-src
                     'self'
                     blob:;`,
               },
@@ -278,8 +289,8 @@ const webpackConfig = {
   devtool: "source-map",
   devServer: devServer,
   entry: {
-    "app/polyfills": "./src/app/polyfills.ts",
-    "app/main": "./src/app/main.ts",
+    "app/polyfills": "./src/polyfills.ts",
+    "app/main": "./src/main.ts",
     "connectors/webauthn": "./src/connectors/webauthn.ts",
     "connectors/webauthn-fallback": "./src/connectors/webauthn-fallback.ts",
     "connectors/duo": "./src/connectors/duo.ts",

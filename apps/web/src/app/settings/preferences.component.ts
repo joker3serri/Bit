@@ -1,13 +1,14 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { MessagingService } from "jslib-common/abstractions/messaging.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { VaultTimeoutService } from "jslib-common/abstractions/vaultTimeout.service";
-import { ThemeType } from "jslib-common/enums/themeType";
-import { Utils } from "jslib-common/misc/utils";
+import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
+import { ThemeType } from "@bitwarden/common/enums/themeType";
+import { Utils } from "@bitwarden/common/misc/utils";
 
 @Component({
   selector: "app-preferences",
@@ -15,7 +16,7 @@ import { Utils } from "jslib-common/misc/utils";
 })
 export class PreferencesComponent implements OnInit {
   vaultTimeoutAction = "lock";
-  disableIcons: boolean;
+  enableFavicons: boolean;
   enableGravatars: boolean;
   enableFullWidth: boolean;
   theme: ThemeType;
@@ -24,7 +25,7 @@ export class PreferencesComponent implements OnInit {
   localeOptions: any[];
   themeOptions: any[];
 
-  vaultTimeout: FormControl = new FormControl(null);
+  vaultTimeout: UntypedFormControl = new UntypedFormControl(null);
 
   private startingLocale: string;
   private startingTheme: ThemeType;
@@ -34,7 +35,8 @@ export class PreferencesComponent implements OnInit {
     private i18nService: I18nService,
     private vaultTimeoutService: VaultTimeoutService,
     private platformUtilsService: PlatformUtilsService,
-    private messagingService: MessagingService
+    private messagingService: MessagingService,
+    private themingService: AbstractThemingService
   ) {
     this.vaultTimeouts = [
       { name: i18nService.t("oneMinute"), value: 1 },
@@ -70,7 +72,7 @@ export class PreferencesComponent implements OnInit {
   async ngOnInit() {
     this.vaultTimeout.setValue(await this.vaultTimeoutService.getVaultTimeout());
     this.vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
-    this.disableIcons = await this.stateService.getDisableFavicon();
+    this.enableFavicons = !(await this.stateService.getDisableFavicon());
     this.enableGravatars = await this.stateService.getEnableGravitars();
     this.enableFullWidth = await this.stateService.getEnableFullWidth();
 
@@ -95,17 +97,13 @@ export class PreferencesComponent implements OnInit {
       this.vaultTimeout.value,
       this.vaultTimeoutAction
     );
-    await this.stateService.setDisableFavicon(this.disableIcons);
+    await this.stateService.setDisableFavicon(!this.enableFavicons);
     await this.stateService.setEnableGravitars(this.enableGravatars);
     await this.stateService.setEnableFullWidth(this.enableFullWidth);
     this.messagingService.send("setFullWidth");
     if (this.theme !== this.startingTheme) {
-      await this.stateService.setTheme(this.theme);
+      await this.themingService.updateConfiguredTheme(this.theme);
       this.startingTheme = this.theme;
-      const effectiveTheme = await this.platformUtilsService.getEffectiveTheme();
-      const htmlEl = window.document.documentElement;
-      htmlEl.classList.remove("theme_" + ThemeType.Light, "theme_" + ThemeType.Dark);
-      htmlEl.classList.add("theme_" + effectiveTheme);
     }
     await this.stateService.setLocale(this.locale);
     if (this.locale !== this.startingLocale) {

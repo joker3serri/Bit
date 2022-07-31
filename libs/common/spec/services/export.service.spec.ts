@@ -1,20 +1,21 @@
 import { Arg, Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
+import { BehaviorSubject } from "rxjs";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CipherService } from "jslib-common/abstractions/cipher.service";
-import { CryptoService } from "jslib-common/abstractions/crypto.service";
-import { CryptoFunctionService } from "jslib-common/abstractions/cryptoFunction.service";
-import { FolderService } from "jslib-common/abstractions/folder.service";
-import { CipherType } from "jslib-common/enums/cipherType";
-import { KdfType } from "jslib-common/enums/kdfType";
-import { Utils } from "jslib-common/misc/utils";
-import { Cipher } from "jslib-common/models/domain/cipher";
-import { EncString } from "jslib-common/models/domain/encString";
-import { Login } from "jslib-common/models/domain/login";
-import { CipherWithIdExport as CipherExport } from "jslib-common/models/export/cipherWithIdsExport";
-import { CipherView } from "jslib-common/models/view/cipherView";
-import { LoginView } from "jslib-common/models/view/loginView";
-import { ExportService } from "jslib-common/services/export.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@bitwarden/common/enums/cipherType";
+import { KdfType } from "@bitwarden/common/enums/kdfType";
+import { Utils } from "@bitwarden/common/misc/utils";
+import { Cipher } from "@bitwarden/common/models/domain/cipher";
+import { EncString } from "@bitwarden/common/models/domain/encString";
+import { Login } from "@bitwarden/common/models/domain/login";
+import { CipherWithIdExport as CipherExport } from "@bitwarden/common/models/export/cipherWithIdsExport";
+import { CipherView } from "@bitwarden/common/models/view/cipherView";
+import { LoginView } from "@bitwarden/common/models/view/loginView";
+import { ExportService } from "@bitwarden/common/services/export.service";
 
 import { BuildTestObject, GetUniqueString } from "../utils";
 
@@ -97,8 +98,8 @@ describe("ExportService", () => {
     folderService = Substitute.for<FolderService>();
     cryptoService = Substitute.for<CryptoService>();
 
-    folderService.getAllDecrypted().resolves([]);
-    folderService.getAll().resolves([]);
+    folderService.folderViews$.returns(new BehaviorSubject([]));
+    folderService.folders$.returns(new BehaviorSubject([]));
 
     exportService = new ExportService(
       folderService,

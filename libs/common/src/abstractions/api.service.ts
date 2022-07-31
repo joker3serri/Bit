@@ -1,13 +1,5 @@
-import { OrganizationConnectionType } from "jslib-common/enums/organizationConnectionType";
-import { OrganizationConnectionRequest } from "jslib-common/models/request/organizationConnectionRequest";
-import { BillingHistoryResponse } from "jslib-common/models/response/billingHistoryResponse";
-import { BillingPaymentResponse } from "jslib-common/models/response/billingPaymentResponse";
-import {
-  OrganizationConnectionConfigApis,
-  OrganizationConnectionResponse,
-} from "jslib-common/models/response/organizationConnectionResponse";
-import { SsoPreValidateResponse } from "jslib-common/models/response/ssoPreValidateResponse";
-
+import { OrganizationApiKeyType } from "../enums/organizationApiKeyType";
+import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { PolicyType } from "../enums/policyType";
 import { SetKeyConnectorKeyRequest } from "../models/request/account/setKeyConnectorKeyRequest";
 import { VerifyOTPRequest } from "../models/request/account/verifyOTPRequest";
@@ -23,6 +15,7 @@ import { CipherRequest } from "../models/request/cipherRequest";
 import { CipherShareRequest } from "../models/request/cipherShareRequest";
 import { CollectionRequest } from "../models/request/collectionRequest";
 import { DeleteRecoverRequest } from "../models/request/deleteRecoverRequest";
+import { DeviceVerificationRequest } from "../models/request/deviceVerificationRequest";
 import { EmailRequest } from "../models/request/emailRequest";
 import { EmailTokenRequest } from "../models/request/emailTokenRequest";
 import { EmergencyAccessAcceptRequest } from "../models/request/emergencyAccessAcceptRequest";
@@ -31,7 +24,6 @@ import { EmergencyAccessInviteRequest } from "../models/request/emergencyAccessI
 import { EmergencyAccessPasswordRequest } from "../models/request/emergencyAccessPasswordRequest";
 import { EmergencyAccessUpdateRequest } from "../models/request/emergencyAccessUpdateRequest";
 import { EventRequest } from "../models/request/eventRequest";
-import { FolderRequest } from "../models/request/folderRequest";
 import { GroupRequest } from "../models/request/groupRequest";
 import { IapCheckRequest } from "../models/request/iapCheckRequest";
 import { ApiTokenRequest } from "../models/request/identityToken/apiTokenRequest";
@@ -47,6 +39,7 @@ import { OrganizationSponsorshipCreateRequest } from "../models/request/organiza
 import { OrganizationSponsorshipRedeemRequest } from "../models/request/organization/organizationSponsorshipRedeemRequest";
 import { OrganizationSsoRequest } from "../models/request/organization/organizationSsoRequest";
 import { OrganizationApiKeyRequest } from "../models/request/organizationApiKeyRequest";
+import { OrganizationConnectionRequest } from "../models/request/organizationConnectionRequest";
 import { OrganizationCreateRequest } from "../models/request/organizationCreateRequest";
 import { OrganizationImportRequest } from "../models/request/organizationImportRequest";
 import { OrganizationKeysRequest } from "../models/request/organizationKeysRequest";
@@ -106,6 +99,8 @@ import { VerifyEmailRequest } from "../models/request/verifyEmailRequest";
 import { ApiKeyResponse } from "../models/response/apiKeyResponse";
 import { AttachmentResponse } from "../models/response/attachmentResponse";
 import { AttachmentUploadDataResponse } from "../models/response/attachmentUploadDataResponse";
+import { BillingHistoryResponse } from "../models/response/billingHistoryResponse";
+import { BillingPaymentResponse } from "../models/response/billingPaymentResponse";
 import { BillingResponse } from "../models/response/billingResponse";
 import { BreachAccountResponse } from "../models/response/breachAccountResponse";
 import { CipherResponse } from "../models/response/cipherResponse";
@@ -113,6 +108,7 @@ import {
   CollectionGroupDetailsResponse,
   CollectionResponse,
 } from "../models/response/collectionResponse";
+import { DeviceVerificationResponse } from "../models/response/deviceVerificationResponse";
 import { DomainsResponse } from "../models/response/domainsResponse";
 import {
   EmergencyAccessGranteeDetailsResponse,
@@ -121,7 +117,6 @@ import {
   EmergencyAccessViewResponse,
 } from "../models/response/emergencyAccessResponse";
 import { EventResponse } from "../models/response/eventResponse";
-import { FolderResponse } from "../models/response/folderResponse";
 import { GroupDetailsResponse, GroupResponse } from "../models/response/groupResponse";
 import { IdentityCaptchaResponse } from "../models/response/identityCaptchaResponse";
 import { IdentityTokenResponse } from "../models/response/identityTokenResponse";
@@ -131,6 +126,11 @@ import { ListResponse } from "../models/response/listResponse";
 import { OrganizationSsoResponse } from "../models/response/organization/organizationSsoResponse";
 import { OrganizationApiKeyInformationResponse } from "../models/response/organizationApiKeyInformationResponse";
 import { OrganizationAutoEnrollStatusResponse } from "../models/response/organizationAutoEnrollStatusResponse";
+import {
+  OrganizationConnectionConfigApis,
+  OrganizationConnectionResponse,
+} from "../models/response/organizationConnectionResponse";
+import { OrganizationExportResponse } from "../models/response/organizationExportResponse";
 import { OrganizationKeysResponse } from "../models/response/organizationKeysResponse";
 import { OrganizationResponse } from "../models/response/organizationResponse";
 import { OrganizationSponsorshipSyncStatusResponse } from "../models/response/organizationSponsorshipSyncStatusResponse";
@@ -163,6 +163,7 @@ import { SendAccessResponse } from "../models/response/sendAccessResponse";
 import { SendFileDownloadDataResponse } from "../models/response/sendFileDownloadDataResponse";
 import { SendFileUploadDataResponse } from "../models/response/sendFileUploadDataResponse";
 import { SendResponse } from "../models/response/sendResponse";
+import { SsoPreValidateResponse } from "../models/response/ssoPreValidateResponse";
 import { SubscriptionResponse } from "../models/response/subscriptionResponse";
 import { SyncResponse } from "../models/response/syncResponse";
 import { TaxInfoResponse } from "../models/response/taxInfoResponse";
@@ -181,6 +182,16 @@ import { UserKeyResponse } from "../models/response/userKeyResponse";
 import { SendAccessView } from "../models/view/sendAccessView";
 
 export abstract class ApiService {
+  send: (
+    method: "GET" | "POST" | "PUT" | "DELETE",
+    path: string,
+    body: any,
+    authed: boolean,
+    hasResponse: boolean,
+    apiUrl?: string,
+    alterHeaders?: (headers: Headers) => void
+  ) => Promise<any>;
+
   postIdentityToken: (
     request: PasswordTokenRequest | SsoTokenRequest | ApiTokenRequest
   ) => Promise<IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse>;
@@ -198,7 +209,6 @@ export abstract class ApiService {
   setPassword: (request: SetPasswordRequest) => Promise<any>;
   postSetKeyConnectorKey: (request: SetKeyConnectorKeyRequest) => Promise<any>;
   postSecurityStamp: (request: SecretVerificationRequest) => Promise<any>;
-  deleteAccount: (request: SecretVerificationRequest) => Promise<any>;
   getAccountRevisionDate: () => Promise<number>;
   postPasswordHint: (request: PasswordHintRequest) => Promise<any>;
   postRegister: (request: RegisterRequest) => Promise<any>;
@@ -227,11 +237,6 @@ export abstract class ApiService {
   getUserBillingHistory: () => Promise<BillingHistoryResponse>;
   getUserBillingPayment: () => Promise<BillingPaymentResponse>;
 
-  getFolder: (id: string) => Promise<FolderResponse>;
-  postFolder: (request: FolderRequest) => Promise<FolderResponse>;
-  putFolder: (id: string, request: FolderRequest) => Promise<FolderResponse>;
-  deleteFolder: (id: string) => Promise<any>;
-
   getSend: (id: string) => Promise<SendResponse>;
   postSendAccess: (
     id: string,
@@ -258,6 +263,7 @@ export abstract class ApiService {
   renewSendFileUploadUrl: (sendId: string, fileId: string) => Promise<SendFileUploadDataResponse>;
 
   getCipher: (id: string) => Promise<CipherResponse>;
+  getFullCipherDetails: (id: string) => Promise<CipherResponse>;
   getCipherAdmin: (id: string) => Promise<CipherResponse>;
   getAttachmentData: (
     cipherId: string,
@@ -443,6 +449,16 @@ export abstract class ApiService {
     organizationId: string,
     request: OrganizationUserBulkRequest
   ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
+  revokeOrganizationUser: (organizationId: string, id: string) => Promise<any>;
+  revokeManyOrganizationUsers: (
+    organizationId: string,
+    request: OrganizationUserBulkRequest
+  ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
+  restoreOrganizationUser: (organizationId: string, id: string) => Promise<any>;
+  restoreManyOrganizationUsers: (
+    organizationId: string,
+    request: OrganizationUserBulkRequest
+  ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
 
   getSync: () => Promise<SyncResponse>;
   postImportDirectory: (organizationId: string, request: ImportDirectoryRequest) => Promise<any>;
@@ -494,6 +510,10 @@ export abstract class ApiService {
   postTwoFactorRecover: (request: TwoFactorRecoveryRequest) => Promise<any>;
   postTwoFactorEmailSetup: (request: TwoFactorEmailRequest) => Promise<any>;
   postTwoFactorEmail: (request: TwoFactorEmailRequest) => Promise<any>;
+  getDeviceVerificationSettings: () => Promise<DeviceVerificationResponse>;
+  putDeviceVerificationSettings: (
+    request: DeviceVerificationRequest
+  ) => Promise<DeviceVerificationResponse>;
 
   getEmergencyAccessTrusted: () => Promise<ListResponse<EmergencyAccessGranteeDetailsResponse>>;
   getEmergencyAccessGranted: () => Promise<ListResponse<EmergencyAccessGrantorDetailsResponse>>;
@@ -554,7 +574,8 @@ export abstract class ApiService {
     request: OrganizationApiKeyRequest
   ) => Promise<ApiKeyResponse>;
   getOrganizationApiKeyInformation: (
-    id: string
+    id: string,
+    type?: OrganizationApiKeyType
   ) => Promise<ListResponse<OrganizationApiKeyInformationResponse>>;
   postOrganizationRotateApiKey: (
     id: string,
@@ -713,4 +734,5 @@ export abstract class ApiService {
     request: KeyConnectorUserKeyRequest
   ) => Promise<void>;
   getKeyConnectorAlive: (keyConnectorUrl: string) => Promise<void>;
+  getOrganizationExport: (organizationId: string) => Promise<OrganizationExportResponse>;
 }

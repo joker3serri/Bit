@@ -1,14 +1,16 @@
-import { AuthService } from "jslib-common/abstractions/auth.service";
-import { CipherService } from "jslib-common/abstractions/cipher.service";
-import { FolderService } from "jslib-common/abstractions/folder.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
-import { AuthenticationStatus } from "jslib-common/enums/authenticationStatus";
-import { CipherType } from "jslib-common/enums/cipherType";
-import { PolicyType } from "jslib-common/enums/policyType";
-import { Utils } from "jslib-common/misc/utils";
-import { CipherView } from "jslib-common/models/view/cipherView";
-import { LoginUriView } from "jslib-common/models/view/loginUriView";
-import { LoginView } from "jslib-common/models/view/loginView";
+import { firstValueFrom } from "rxjs";
+
+import { AuthService } from "@bitwarden/common/abstractions/auth.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
+import { CipherType } from "@bitwarden/common/enums/cipherType";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { Utils } from "@bitwarden/common/misc/utils";
+import { CipherView } from "@bitwarden/common/models/view/cipherView";
+import { LoginUriView } from "@bitwarden/common/models/view/loginUriView";
+import { LoginView } from "@bitwarden/common/models/view/loginView";
 
 import { BrowserApi } from "../browser/browserApi";
 import { StateService } from "../services/abstractions/state.service";
@@ -470,7 +472,7 @@ export default class NotificationBackground {
     model.login = loginModel;
 
     if (!Utils.isNullOrWhitespace(folderId)) {
-      const folders = await this.folderService.getAllDecrypted();
+      const folders = await firstValueFrom(this.folderService.folderViews$);
       if (folders.some((x) => x.id === folderId)) {
         model.folderId = folderId;
       }
@@ -522,7 +524,7 @@ export default class NotificationBackground {
   private async getDataForTab(tab: chrome.tabs.Tab, responseCommand: string) {
     const responseData: any = {};
     if (responseCommand === "notificationBarGetFoldersList") {
-      responseData.folders = await this.folderService.getAllDecrypted();
+      responseData.folders = await firstValueFrom(this.folderService.folderViews$);
     }
 
     await BrowserApi.tabSendMessageData(tab, responseCommand, responseData);

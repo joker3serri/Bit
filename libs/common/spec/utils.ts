@@ -1,6 +1,6 @@
 import Substitute, { Arg } from "@fluffy-spoon/substitute";
 
-import { EncString } from "jslib-common/models/domain/encString";
+import { EncString } from "@bitwarden/common/models/domain/encString";
 
 function newGuid() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
@@ -28,10 +28,10 @@ export function mockEnc(s: string): EncString {
   return mock;
 }
 
-export function makeStaticByteArray(length: number) {
+export function makeStaticByteArray(length: number, start = 0) {
   const arr = new Uint8Array(length);
   for (let i = 0; i < length; i++) {
-    arr[i] = i;
+    arr[i] = start + i;
   }
   return arr;
 }

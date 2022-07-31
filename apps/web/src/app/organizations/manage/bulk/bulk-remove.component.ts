@@ -1,8 +1,8 @@
 import { Component, Input } from "@angular/core";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { OrganizationUserBulkRequest } from "jslib-common/models/request/organizationUserBulkRequest";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { OrganizationUserBulkRequest } from "@bitwarden/common/models/request/organizationUserBulkRequest";
 
 import { BulkUserDetails } from "./bulk-status.component";
 
@@ -42,5 +42,9 @@ export class BulkRemoveComponent {
   protected async deleteUsers() {
     const request = new OrganizationUserBulkRequest(this.users.map((user) => user.id));
     return await this.apiService.deleteManyOrganizationUsers(this.organizationId, request);
+  }
+
+  protected get removeUsersWarning() {
+    return this.i18nService.t("removeOrgUsersConfirmation");
   }
 }

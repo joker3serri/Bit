@@ -1,19 +1,20 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CollectionService } from "jslib-common/abstractions/collection.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { OrganizationUserType } from "jslib-common/enums/organizationUserType";
-import { PermissionsApi } from "jslib-common/models/api/permissionsApi";
-import { CollectionData } from "jslib-common/models/data/collectionData";
-import { Collection } from "jslib-common/models/domain/collection";
-import { OrganizationUserInviteRequest } from "jslib-common/models/request/organizationUserInviteRequest";
-import { OrganizationUserUpdateRequest } from "jslib-common/models/request/organizationUserUpdateRequest";
-import { SelectionReadOnlyRequest } from "jslib-common/models/request/selectionReadOnlyRequest";
-import { CollectionDetailsResponse } from "jslib-common/models/response/collectionResponse";
-import { CollectionView } from "jslib-common/models/view/collectionView";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
+import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
+import { PermissionsApi } from "@bitwarden/common/models/api/permissionsApi";
+import { CollectionData } from "@bitwarden/common/models/data/collectionData";
+import { Collection } from "@bitwarden/common/models/domain/collection";
+import { OrganizationUserInviteRequest } from "@bitwarden/common/models/request/organizationUserInviteRequest";
+import { OrganizationUserUpdateRequest } from "@bitwarden/common/models/request/organizationUserUpdateRequest";
+import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selectionReadOnlyRequest";
+import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collectionResponse";
+import { CollectionView } from "@bitwarden/common/models/view/collectionView";
 
 @Component({
   selector: "app-user-add-edit",
@@ -26,9 +27,12 @@ export class UserAddEditComponent implements OnInit {
   @Input() usesKeyConnector = false;
   @Output() onSavedUser = new EventEmitter();
   @Output() onDeletedUser = new EventEmitter();
+  @Output() onRevokedUser = new EventEmitter();
+  @Output() onRestoredUser = new EventEmitter();
 
   loading = true;
   editMode = false;
+  isRevoked = false;
   title: string;
   emails: string;
   type: OrganizationUserType = OrganizationUserType.User;
@@ -97,6 +101,7 @@ export class UserAddEditComponent implements OnInit {
         );
         this.access = user.accessAll ? "all" : "selected";
         this.type = user.type;
+        this.isRevoked = user.status === OrganizationUserStatusType.Revoked;
         if (user.type === OrganizationUserType.Custom) {
           this.permissions = user.permissions;
         }
@@ -182,7 +187,7 @@ export class UserAddEditComponent implements OnInit {
         );
       } else {
         const request = new OrganizationUserInviteRequest();
-        request.emails = this.emails.trim().split(/\s*,\s*/);
+        request.emails = [...new Set(this.emails.trim().split(/\s*,\s*/))];
         request.accessAll = this.access === "all";
         request.type = this.type;
         request.permissions = this.setRequestPermissions(
@@ -211,10 +216,10 @@ export class UserAddEditComponent implements OnInit {
 
     const message = this.usesKeyConnector
       ? "removeUserConfirmationKeyConnector"
-      : "removeUserConfirmation";
+      : "removeOrgUserConfirmation";
     const confirmed = await this.platformUtilsService.showDialog(
       this.i18nService.t(message),
-      this.name,
+      this.i18nService.t("removeUserIdAccess", this.name),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
       "warning"
@@ -235,6 +240,63 @@ export class UserAddEditComponent implements OnInit {
         this.i18nService.t("removedUserId", this.name)
       );
       this.onDeletedUser.emit();
+    } catch (e) {
+      this.logService.error(e);
+    }
+  }
+
+  async revoke() {
+    if (!this.editMode) {
+      return;
+    }
+
+    const confirmed = await this.platformUtilsService.showDialog(
+      this.i18nService.t("revokeUserConfirmation"),
+      this.i18nService.t("revokeUserId", this.name),
+      this.i18nService.t("revokeAccess"),
+      this.i18nService.t("cancel"),
+      "warning"
+    );
+    if (!confirmed) {
+      return false;
+    }
+
+    try {
+      this.formPromise = this.apiService.revokeOrganizationUser(
+        this.organizationId,
+        this.organizationUserId
+      );
+      await this.formPromise;
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("revokedUserId", this.name)
+      );
+      this.isRevoked = true;
+      this.onRevokedUser.emit();
+    } catch (e) {
+      this.logService.error(e);
+    }
+  }
+
+  async restore() {
+    if (!this.editMode) {
+      return;
+    }
+
+    try {
+      this.formPromise = this.apiService.restoreOrganizationUser(
+        this.organizationId,
+        this.organizationUserId
+      );
+      await this.formPromise;
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("restoredUserId", this.name)
+      );
+      this.isRevoked = false;
+      this.onRestoredUser.emit();
     } catch (e) {
       this.logService.error(e);
     }

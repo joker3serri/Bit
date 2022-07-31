@@ -2,34 +2,35 @@ import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { SearchPipe } from "jslib-angular/pipes/search.pipe";
-import { UserNamePipe } from "jslib-angular/pipes/user-name.pipe";
-import { ModalService } from "jslib-angular/services/modal.service";
-import { ValidationService } from "jslib-angular/services/validation.service";
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CryptoService } from "jslib-common/abstractions/crypto.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { OrganizationService } from "jslib-common/abstractions/organization.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
-import { SearchService } from "jslib-common/abstractions/search.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { SyncService } from "jslib-common/abstractions/sync.service";
-import { OrganizationUserStatusType } from "jslib-common/enums/organizationUserStatusType";
-import { OrganizationUserType } from "jslib-common/enums/organizationUserType";
-import { PolicyType } from "jslib-common/enums/policyType";
-import { OrganizationKeysRequest } from "jslib-common/models/request/organizationKeysRequest";
-import { OrganizationUserBulkRequest } from "jslib-common/models/request/organizationUserBulkRequest";
-import { OrganizationUserConfirmRequest } from "jslib-common/models/request/organizationUserConfirmRequest";
-import { ListResponse } from "jslib-common/models/response/listResponse";
-import { OrganizationUserBulkResponse } from "jslib-common/models/response/organizationUserBulkResponse";
-import { OrganizationUserUserDetailsResponse } from "jslib-common/models/response/organizationUserResponse";
+import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
+import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { ValidationService } from "@bitwarden/angular/services/validation.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { SearchService } from "@bitwarden/common/abstractions/search.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
+import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organizationKeysRequest";
+import { OrganizationUserBulkRequest } from "@bitwarden/common/models/request/organizationUserBulkRequest";
+import { OrganizationUserConfirmRequest } from "@bitwarden/common/models/request/organizationUserConfirmRequest";
+import { ListResponse } from "@bitwarden/common/models/response/listResponse";
+import { OrganizationUserBulkResponse } from "@bitwarden/common/models/response/organizationUserBulkResponse";
+import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organizationUserResponse";
 
 import { BasePeopleComponent } from "../../common/base.people.component";
 
 import { BulkConfirmComponent } from "./bulk/bulk-confirm.component";
 import { BulkRemoveComponent } from "./bulk/bulk-remove.component";
+import { BulkRestoreRevokeComponent } from "./bulk/bulk-restore-revoke.component";
 import { BulkStatusComponent } from "./bulk/bulk-status.component";
 import { EntityEventsComponent } from "./entity-events.component";
 import { ResetPasswordComponent } from "./reset-password.component";
@@ -166,6 +167,14 @@ export class PeopleComponent
     return this.apiService.deleteOrganizationUser(this.organizationId, id);
   }
 
+  revokeUser(id: string): Promise<any> {
+    return this.apiService.revokeOrganizationUser(this.organizationId, id);
+  }
+
+  restoreUser(id: string): Promise<any> {
+    return this.apiService.restoreOrganizationUser(this.organizationId, id);
+  }
+
   reinviteUser(id: string): Promise<any> {
     return this.apiService.postOrganizationUserReinvite(this.organizationId, id);
   }
@@ -236,6 +245,14 @@ export class PeopleComponent
           modal.close();
           this.removeUser(user);
         });
+        comp.onRevokedUser.subscribe(() => {
+          modal.close();
+          this.load();
+        });
+        comp.onRestoredUser.subscribe(() => {
+          modal.close();
+          this.load();
+        });
       }
     );
   }
@@ -270,6 +287,32 @@ export class PeopleComponent
     );
 
     await modal.onClosedPromise();
+    await this.load();
+  }
+
+  async bulkRevoke() {
+    await this.bulkRevokeOrRestore(true);
+  }
+
+  async bulkRestore() {
+    await this.bulkRevokeOrRestore(false);
+  }
+
+  async bulkRevokeOrRestore(isRevoking: boolean) {
+    if (this.actionPromise != null) {
+      return;
+    }
+
+    const ref = this.modalService.open(BulkRestoreRevokeComponent, {
+      allowMultipleModals: true,
+      data: {
+        organizationId: this.organizationId,
+        users: this.getCheckedUsers(),
+        isRevoking: isRevoking,
+      },
+    });
+
+    await ref.onClosedPromise();
     await this.load();
   }
 
@@ -354,12 +397,18 @@ export class PeopleComponent
     );
   }
 
-  protected deleteWarningMessage(user: OrganizationUserUserDetailsResponse): string {
-    if (user.usesKeyConnector) {
-      return this.i18nService.t("removeUserConfirmationKeyConnector");
-    }
+  protected async removeUserConfirmationDialog(user: OrganizationUserUserDetailsResponse) {
+    const warningMessage = user.usesKeyConnector
+      ? this.i18nService.t("removeUserConfirmationKeyConnector")
+      : this.i18nService.t("removeOrgUserConfirmation");
 
-    return super.deleteWarningMessage(user);
+    return this.platformUtilsService.showDialog(
+      warningMessage,
+      this.i18nService.t("removeUserIdAccess", this.userNamePipe.transform(user)),
+      this.i18nService.t("yes"),
+      this.i18nService.t("no"),
+      "warning"
+    );
   }
 
   private async showBulkStatus(

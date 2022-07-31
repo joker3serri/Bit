@@ -2,15 +2,15 @@ import { Directive, Input, OnInit } from "@angular/core";
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormBuilder,
+  UntypedFormBuilder,
   ValidationErrors,
   Validator,
 } from "@angular/forms";
 
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
-import { PolicyType } from "jslib-common/enums/policyType";
-import { Policy } from "jslib-common/models/domain/policy";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { Policy } from "@bitwarden/common/models/domain/policy";
 
 @Directive()
 export class VaultTimeoutInputComponent implements ControlValueAccessor, Validator, OnInit {
@@ -44,7 +44,7 @@ export class VaultTimeoutInputComponent implements ControlValueAccessor, Validat
   private validatorChange: () => void;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private policyService: PolicyService,
     private i18nService: I18nService
   ) {}

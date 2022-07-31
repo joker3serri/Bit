@@ -1,13 +1,15 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { OrganizationService } from "jslib-common/abstractions/organization.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { SyncService } from "jslib-common/abstractions/sync.service";
-import { Permissions } from "jslib-common/enums/permissions";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { Permissions } from "@bitwarden/common/enums/permissions";
 
-@Injectable()
+@Injectable({
+  providedIn: "root",
+})
 export class PermissionsGuard implements CanActivate {
   constructor(
     private router: Router,
@@ -41,10 +43,12 @@ export class PermissionsGuard implements CanActivate {
     if (permissions != null && !org.hasAnyPermission(permissions)) {
       // Handle linkable ciphers for organizations the user only has view access to
       // https://bitwarden.atlassian.net/browse/EC-203
-      if (state.root.queryParamMap.has("cipherId")) {
+      const cipherId =
+        state.root.queryParamMap.get("itemId") || state.root.queryParamMap.get("cipherId");
+      if (cipherId) {
         return this.router.createUrlTree(["/vault"], {
           queryParams: {
-            cipherId: state.root.queryParamMap.get("cipherId"),
+            itemId: cipherId,
           },
         });
       }

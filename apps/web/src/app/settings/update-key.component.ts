@@ -1,18 +1,19 @@
 import { Component } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CipherService } from "jslib-common/abstractions/cipher.service";
-import { CryptoService } from "jslib-common/abstractions/crypto.service";
-import { FolderService } from "jslib-common/abstractions/folder.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { MessagingService } from "jslib-common/abstractions/messaging.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { SyncService } from "jslib-common/abstractions/sync.service";
-import { EncString } from "jslib-common/models/domain/encString";
-import { CipherWithIdRequest } from "jslib-common/models/request/cipherWithIdRequest";
-import { FolderWithIdRequest } from "jslib-common/models/request/folderWithIdRequest";
-import { UpdateKeyRequest } from "jslib-common/models/request/updateKeyRequest";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { EncString } from "@bitwarden/common/models/domain/encString";
+import { CipherWithIdRequest } from "@bitwarden/common/models/request/cipherWithIdRequest";
+import { FolderWithIdRequest } from "@bitwarden/common/models/request/folderWithIdRequest";
+import { UpdateKeyRequest } from "@bitwarden/common/models/request/updateKeyRequest";
 
 @Component({
   selector: "app-update-key",
@@ -81,7 +82,7 @@ export class UpdateKeyComponent {
 
     await this.syncService.fullSync(true);
 
-    const folders = await this.folderService.getAllDecrypted();
+    const folders = await firstValueFrom(this.folderService.folderViews$);
     for (let i = 0; i < folders.length; i++) {
       if (folders[i].id == null) {
         continue;

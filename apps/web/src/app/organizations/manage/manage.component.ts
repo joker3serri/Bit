@@ -1,8 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { OrganizationService } from "jslib-common/abstractions/organization.service";
-import { Organization } from "jslib-common/models/domain/organization";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { Organization } from "@bitwarden/common/models/domain/organization";
+
+import { flagEnabled } from "../../../utils/flags";
 
 @Component({
   selector: "app-org-manage",
@@ -14,6 +16,7 @@ export class ManageComponent implements OnInit {
   accessGroups = false;
   accessEvents = false;
   accessSso = false;
+  accessScim = false;
 
   constructor(private route: ActivatedRoute, private organizationService: OrganizationService) {}
 
@@ -24,6 +27,12 @@ export class ManageComponent implements OnInit {
       this.accessSso = this.organization.useSso;
       this.accessEvents = this.organization.useEvents;
       this.accessGroups = this.organization.useGroups;
+
+      if (flagEnabled("scim")) {
+        this.accessScim = this.organization.useScim;
+      } else {
+        this.accessScim = false;
+      }
     });
   }
 }

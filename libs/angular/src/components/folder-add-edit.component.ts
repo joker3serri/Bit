@@ -1,10 +1,11 @@
 import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
-import { FolderService } from "jslib-common/abstractions/folder.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { FolderView } from "jslib-common/models/view/folderView";
+import { FolderApiServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder-api.service.abstraction";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { FolderView } from "@bitwarden/common/models/view/folderView";
 
 @Directive()
 export class FolderAddEditComponent implements OnInit {
@@ -20,6 +21,7 @@ export class FolderAddEditComponent implements OnInit {
 
   constructor(
     protected folderService: FolderService,
+    protected folderApiService: FolderApiServiceAbstraction,
     protected i18nService: I18nService,
     protected platformUtilsService: PlatformUtilsService,
     private logService: LogService
@@ -41,7 +43,7 @@ export class FolderAddEditComponent implements OnInit {
 
     try {
       const folder = await this.folderService.encrypt(this.folder);
-      this.formPromise = this.folderService.saveWithServer(folder);
+      this.formPromise = this.folderApiService.save(folder);
       await this.formPromise;
       this.platformUtilsService.showToast(
         "success",
@@ -70,7 +72,7 @@ export class FolderAddEditComponent implements OnInit {
     }
 
     try {
-      this.deletePromise = this.folderService.deleteWithServer(this.folder.id);
+      this.deletePromise = this.folderApiService.delete(this.folder.id);
       await this.deletePromise;
       this.platformUtilsService.showToast("success", null, this.i18nService.t("deletedFolder"));
       this.onDeletedFolder.emit(this.folder);

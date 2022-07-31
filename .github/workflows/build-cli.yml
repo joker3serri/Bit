@@ -5,19 +5,25 @@ on:
   pull_request:
     branches-ignore:
       - 'l10n_master'
-      - 'gh-pages'
+      - 'cf-pages'
     paths:
       - 'apps/cli/**'
       - 'libs/**'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-cli.yml'
   push:
     branches:
       - 'master'
       - 'rc'
-      - 'hotfix-rc/**'
+      - 'hotfix-rc'
     paths:
       - 'apps/cli/**'
       - 'libs/**'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-cli.yml'
   workflow_dispatch:
     inputs: {}
@@ -84,7 +90,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
           node-version: '16'
-      
+
       - name: Install node-gyp
         run: |
           npm install -g node-gyp

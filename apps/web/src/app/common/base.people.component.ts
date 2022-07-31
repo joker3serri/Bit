@@ -1,24 +1,24 @@
 import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
 
-import { SearchPipe } from "jslib-angular/pipes/search.pipe";
-import { UserNamePipe } from "jslib-angular/pipes/user-name.pipe";
-import { ModalService } from "jslib-angular/services/modal.service";
-import { ValidationService } from "jslib-angular/services/validation.service";
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { CryptoService } from "jslib-common/abstractions/crypto.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { SearchService } from "jslib-common/abstractions/search.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { OrganizationUserStatusType } from "jslib-common/enums/organizationUserStatusType";
-import { OrganizationUserType } from "jslib-common/enums/organizationUserType";
-import { ProviderUserStatusType } from "jslib-common/enums/providerUserStatusType";
-import { ProviderUserType } from "jslib-common/enums/providerUserType";
-import { Utils } from "jslib-common/misc/utils";
-import { ListResponse } from "jslib-common/models/response/listResponse";
-import { OrganizationUserUserDetailsResponse } from "jslib-common/models/response/organizationUserResponse";
-import { ProviderUserUserDetailsResponse } from "jslib-common/models/response/provider/providerUserResponse";
+import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
+import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { ValidationService } from "@bitwarden/angular/services/validation.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { SearchService } from "@bitwarden/common/abstractions/search.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
+import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
+import { ProviderUserStatusType } from "@bitwarden/common/enums/providerUserStatusType";
+import { ProviderUserType } from "@bitwarden/common/enums/providerUserType";
+import { Utils } from "@bitwarden/common/misc/utils";
+import { ListResponse } from "@bitwarden/common/models/response/listResponse";
+import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organizationUserResponse";
+import { ProviderUserUserDetailsResponse } from "@bitwarden/common/models/response/provider/providerUserResponse";
 
 import { UserConfirmComponent } from "../organizations/manage/user-confirm.component";
 
@@ -34,7 +34,7 @@ export abstract class BasePeopleComponent<
   confirmModalRef: ViewContainerRef;
 
   get allCount() {
-    return this.allUsers != null ? this.allUsers.length : 0;
+    return this.activeUsers != null ? this.activeUsers.length : 0;
   }
 
   get invitedCount() {
@@ -55,11 +55,17 @@ export abstract class BasePeopleComponent<
       : 0;
   }
 
+  get revokedCount() {
+    return this.statusMap.has(this.userStatusType.Revoked)
+      ? this.statusMap.get(this.userStatusType.Revoked).length
+      : 0;
+  }
+
   get showConfirmUsers(): boolean {
     return (
-      this.allUsers != null &&
+      this.activeUsers != null &&
       this.statusMap != null &&
-      this.allUsers.length > 1 &&
+      this.activeUsers.length > 1 &&
       this.confirmedCount > 0 &&
       this.confirmedCount < 3 &&
       this.acceptedCount > 0
@@ -82,6 +88,7 @@ export abstract class BasePeopleComponent<
   actionPromise: Promise<any>;
 
   protected allUsers: UserType[] = [];
+  protected activeUsers: UserType[] = [];
 
   protected didScroll = false;
   protected pageSize = 100;
@@ -105,12 +112,15 @@ export abstract class BasePeopleComponent<
   abstract edit(user: UserType): void;
   abstract getUsers(): Promise<ListResponse<UserType>>;
   abstract deleteUser(id: string): Promise<any>;
+  abstract revokeUser(id: string): Promise<any>;
+  abstract restoreUser(id: string): Promise<any>;
   abstract reinviteUser(id: string): Promise<any>;
   abstract confirmUser(user: UserType, publicKey: Uint8Array): Promise<any>;
 
   async load() {
     const response = await this.getUsers();
     this.statusMap.clear();
+    this.activeUsers = [];
     for (const status of Utils.iterateEnum(this.userStatusType)) {
       this.statusMap.set(status, []);
     }
@@ -123,6 +133,9 @@ export abstract class BasePeopleComponent<
       } else {
         this.statusMap.get(u.status).push(u);
       }
+      if (u.status !== this.userStatusType.Revoked) {
+        this.activeUsers.push(u);
+      }
     });
     this.filter(this.status);
     this.loading = false;
@@ -133,7 +146,7 @@ export abstract class BasePeopleComponent<
     if (this.status != null) {
       this.users = this.statusMap.get(this.status);
     } else {
-      this.users = this.allUsers;
+      this.users = this.activeUsers;
     }
     // Reset checkbox selecton
     this.selectAll(false);
@@ -191,15 +204,18 @@ export abstract class BasePeopleComponent<
     this.edit(null);
   }
 
-  async remove(user: UserType) {
-    const confirmed = await this.platformUtilsService.showDialog(
-      this.deleteWarningMessage(user),
+  protected async removeUserConfirmationDialog(user: UserType) {
+    return this.platformUtilsService.showDialog(
+      this.i18nService.t("removeUserConfirmation"),
       this.userNamePipe.transform(user),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
       "warning"
     );
+  }
 
+  async remove(user: UserType) {
+    const confirmed = await this.removeUserConfirmationDialog(user);
     if (!confirmed) {
       return false;
     }
@@ -213,6 +229,50 @@ export abstract class BasePeopleComponent<
         this.i18nService.t("removedUserId", this.userNamePipe.transform(user))
       );
       this.removeUser(user);
+    } catch (e) {
+      this.validationService.showError(e);
+    }
+    this.actionPromise = null;
+  }
+
+  async revoke(user: UserType) {
+    const confirmed = await this.platformUtilsService.showDialog(
+      this.revokeWarningMessage(),
+      this.i18nService.t("revokeUserId", this.userNamePipe.transform(user)),
+      this.i18nService.t("revokeAccess"),
+      this.i18nService.t("cancel"),
+      "warning"
+    );
+
+    if (!confirmed) {
+      return false;
+    }
+
+    this.actionPromise = this.revokeUser(user.id);
+    try {
+      await this.actionPromise;
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("revokedUserId", this.userNamePipe.transform(user))
+      );
+      await this.load();
+    } catch (e) {
+      this.validationService.showError(e);
+    }
+    this.actionPromise = null;
+  }
+
+  async restore(user: UserType) {
+    this.actionPromise = this.restoreUser(user.id);
+    try {
+      await this.actionPromise;
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("restoredUserId", this.userNamePipe.transform(user))
+      );
+      await this.load();
     } catch (e) {
       this.validationService.showError(e);
     }
@@ -321,8 +381,8 @@ export abstract class BasePeopleComponent<
     return !searching && this.users && this.users.length > this.pageSize;
   }
 
-  protected deleteWarningMessage(user: UserType): string {
-    return this.i18nService.t("removeUserConfirmation");
+  protected revokeWarningMessage(): string {
+    return this.i18nService.t("revokeUserConfirmation");
   }
 
   protected getCheckedUsers() {

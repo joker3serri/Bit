@@ -5,19 +5,24 @@ on:
   pull_request:
     branches-ignore:
       - 'l10n_master'
-      - 'gh-pages'
+      - 'cf-pages'
     paths:
       - 'apps/browser/**'
       - 'libs/**'
-      - '.github/workflows/build-browser.yml'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
   push:
     branches:
       - 'master'
       - 'rc'
-      - 'hotfix-rc/**'
+      - 'hotfix-rc'
     paths:
       - 'apps/browser/**'
       - 'libs/**'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-browser.yml'
   workflow_dispatch:
     inputs: {}
@@ -154,7 +159,7 @@ jobs:
           REM Copy apps\browser to Browser source directory
           mkdir browser-source\apps\browser
           xcopy apps\browser\* browser-source\apps\browser /E
-          
+
           REM Copy libs to Browser source directory
           mkdir browser-source\libs
           xcopy libs\* browser-source\libs /E
@@ -342,7 +347,7 @@ jobs:
 
   trigger-desktop-build:
     name: Trigger desktop build
-    if: ${{ (github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') || contains(github.ref, 'hotfix-rc') }}
+    if: ${{ (github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') || github.ref != 'refs/heads/hotfix-rc' }}
     runs-on: ubuntu-20.04
     needs:
       - build
@@ -403,7 +408,7 @@ jobs:
           BUILD_STATUS: ${{ needs.build.result }}
           SAFARI_BUILD_STATUS: ${{ needs.build-safari.result }}
           CROWDIN_PUSH_STATUS: ${{ needs.crowdin-push.result }}
-          TRIGGER_DESKTOP_BUILD_STATUS:  ${{ needs.trigger-desktop-build.result }}
+          TRIGGER_DESKTOP_BUILD_STATUS: ${{ needs.trigger-desktop-build.result }}
         run: |
           if [ "$CLOC_STATUS" = "failure" ]; then
               exit 1

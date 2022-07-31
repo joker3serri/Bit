@@ -1,4 +1,4 @@
-import { VaultFilter } from "jslib-angular/modules/vault-filter/models/vault-filter.model";
+import { VaultFilter } from "@bitwarden/angular/modules/vault-filter/models/vault-filter.model";
 
 export class VaultService {
   calculateSearchBarLocalizationString(vaultFilter: VaultFilter): string {
@@ -14,7 +14,7 @@ export class VaultService {
     if (vaultFilter.selectedFolderId != null && vaultFilter.selectedFolderId != "none") {
       return "searchFolder";
     }
-    if (vaultFilter.selectedCollectionId != null) {
+    if (vaultFilter.selectedCollection) {
       return "searchCollection";
     }
     if (vaultFilter.selectedOrganizationId != null) {

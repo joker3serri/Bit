@@ -1,30 +1,33 @@
 import { Component } from "@angular/core";
+import { UntypedFormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { RegisterComponent as BaseRegisterComponent } from "jslib-angular/components/register.component";
-import { ApiService } from "jslib-common/abstractions/api.service";
-import { AuthService } from "jslib-common/abstractions/auth.service";
-import { CryptoService } from "jslib-common/abstractions/crypto.service";
-import { EnvironmentService } from "jslib-common/abstractions/environment.service";
-import { I18nService } from "jslib-common/abstractions/i18n.service";
-import { LogService } from "jslib-common/abstractions/log.service";
-import { PasswordGenerationService } from "jslib-common/abstractions/passwordGeneration.service";
-import { PlatformUtilsService } from "jslib-common/abstractions/platformUtils.service";
-import { PolicyService } from "jslib-common/abstractions/policy.service";
-import { StateService } from "jslib-common/abstractions/state.service";
-import { PolicyData } from "jslib-common/models/data/policyData";
-import { MasterPasswordPolicyOptions } from "jslib-common/models/domain/masterPasswordPolicyOptions";
-import { Policy } from "jslib-common/models/domain/policy";
-import { ReferenceEventRequest } from "jslib-common/models/request/referenceEventRequest";
+import { RegisterComponent as BaseRegisterComponent } from "@bitwarden/angular/components/register.component";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AuthService } from "@bitwarden/common/abstractions/auth.service";
+import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
+import { FormValidationErrorsService } from "@bitwarden/common/abstractions/formValidationErrors.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { PolicyData } from "@bitwarden/common/models/data/policyData";
+import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
+import { Policy } from "@bitwarden/common/models/domain/policy";
+import { ReferenceEventRequest } from "@bitwarden/common/models/request/referenceEventRequest";
 
-import { RouterService } from "../services/router.service";
+import { RouterService } from "../core";
 
 @Component({
   selector: "app-register",
   templateUrl: "register.component.html",
 })
 export class RegisterComponent extends BaseRegisterComponent {
+  email = "";
   showCreateOrgMessage = false;
   layout = "";
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
@@ -32,6 +35,8 @@ export class RegisterComponent extends BaseRegisterComponent {
   private policies: Policy[];
 
   constructor(
+    formValidationErrorService: FormValidationErrorsService,
+    formBuilder: UntypedFormBuilder,
     authService: AuthService,
     router: Router,
     i18nService: I18nService,
@@ -47,6 +52,8 @@ export class RegisterComponent extends BaseRegisterComponent {
     private routerService: RouterService
   ) {
     super(
+      formValidationErrorService,
+      formBuilder,
       authService,
       router,
       i18nService,
@@ -125,25 +132,5 @@ export class RegisterComponent extends BaseRegisterComponent {
     }
 
     await super.ngOnInit();
-  }
-
-  async submit() {
-    if (
-      this.enforcedPolicyOptions != null &&
-      !this.policyService.evaluateMasterPassword(
-        this.masterPasswordScore,
-        this.masterPassword,
-        this.enforcedPolicyOptions
-      )
-    ) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPasswordPolicyRequirementsNotMet")
-      );
-      return;
-    }
-
-    await super.submit();
   }
 }

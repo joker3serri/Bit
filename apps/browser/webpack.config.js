@@ -11,6 +11,9 @@ if (process.env.NODE_ENV == null) {
   process.env.NODE_ENV = "development";
 }
 const ENV = (process.env.ENV = process.env.NODE_ENV);
+const manifestVersion = process.env.MANIFEST_VERSION == 3 ? 3 : 2;
+
+console.log(`Building Manifest Version ${manifestVersion} app`);
 
 const moduleRules = [
   {
@@ -43,13 +46,20 @@ const moduleRules = [
       "sass-loader",
     ],
   },
-  // Hide System.import warnings. ref: https://github.com/angular/angular/issues/21560
   {
-    test: /[\/\\]@angular[\/\\].+\.js$/,
-    parser: { system: true },
+    test: /\.[cm]?js$/,
+    use: [
+      {
+        loader: "babel-loader",
+        options: {
+          configFile: false,
+          plugins: ["@angular/compiler-cli/linker/babel"],
+        },
+      },
+    ],
   },
   {
-    test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+    test: /\.[jt]sx?$/,
     loader: "@ngtools/webpack",
   },
 ];
@@ -72,7 +82,9 @@ const plugins = [
   }),
   new CopyWebpackPlugin({
     patterns: [
-      "./src/manifest.json",
+      manifestVersion == 3
+        ? { from: "./src/manifest.v3.json", to: "manifest.json" }
+        : "./src/manifest.json",
       { from: "./src/_locales", to: "_locales" },
       { from: "./src/images", to: "images" },
       { from: "./src/popup/images", to: "popup/images" },
@@ -97,7 +109,7 @@ const plugins = [
     cleanAfterEveryBuildPatterns: ["!popup/fonts/**/*"],
   }),
   new webpack.ProvidePlugin({
-    process: "process/browser",
+    process: "process/browser.js",
   }),
   new webpack.SourceMapDevToolPlugin({
     exclude: [/content\/.*/, /notification\/.*/],
@@ -121,7 +133,7 @@ const config = {
     "notification/bar": "./src/notification/bar.js",
   },
   optimization: {
-    minimize: true,
+    minimize: ENV !== "development",
     minimizer: [
       new TerserPlugin({
         exclude: [/content\/.*/, /notification\/.*/],

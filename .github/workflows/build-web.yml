@@ -5,22 +5,31 @@ on:
   pull_request:
     branches-ignore:
       - 'l10n_master'
-      - 'gh-pages'
+      - 'cf-pages'
     paths:
       - 'apps/web/**'
       - 'libs/**'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-web.yml'
   push:
     branches:
       - 'master'
       - 'rc'
-      - 'hotfix-rc/**'
+      - 'hotfix-rc'
     paths:
       - 'apps/web/**'
       - 'libs/**'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
       - '.github/workflows/build-web.yml'
   workflow_dispatch:
-    inputs: {}
+    inputs:
+      custom_tag_extension:
+        description: "Custom image tag extension"
+        required: false
 
 jobs:
   cloc:
@@ -394,7 +403,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CROWDIN_API_TOKEN: ${{ steps.retrieve-secrets.outputs.crowdin-api-token }}
-          CROWDIN_PROJECT_ID: "308189"          
+          CROWDIN_PROJECT_ID: "308189"
         with:
           config: apps/web/crowdin.yml
           crowdin_branch_name: master

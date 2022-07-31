@@ -1,6 +1,13 @@
 {
-  "root": true,
   "env": {
     "browser": true
+  },
+  "rules": {
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": ["**/core/*"]
+      }
+    ]
   }
 }
