@@ -9,12 +9,7 @@
     <span class="title">{{ "folders" | i18n }}</span>
   </h1>
   <div class="right">
-    <button
-      type="button"
-      appBlurClick
-      (click)="addFolder()"
-      appA11yTitle="{{ 'addFolder' | i18n }}"
-    >
+    <button type="button" (click)="addFolder()" appA11yTitle="{{ 'addFolder' | i18n }}">
       <i class="bwi bwi-plus bwi-lg bwi-fw" aria-hidden="true"></i>
     </button>
   </div>
