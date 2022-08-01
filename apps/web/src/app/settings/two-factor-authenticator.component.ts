@@ -5,12 +5,26 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
+import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
 import { UpdateTwoFactorAuthenticatorRequest } from "@bitwarden/common/models/request/updateTwoFactorAuthenticatorRequest";
 import { TwoFactorAuthenticatorResponse } from "@bitwarden/common/models/response/twoFactorAuthenticatorResponse";
 
-import { TwoFactorBaseComponent } from "./two-factor-base.component";
+// NOTE: There are additional options available but these are just the ones we are current using.
+// See: https://github.com/neocotic/qrious#examples
+interface QRiousOptions {
+  element: HTMLElement;
+  value: string;
+  size: number;
+}
+
+declare global {
+  interface Window {
+    QRious: new (options: QRiousOptions) => unknown;
+  }
+}
+
+import { AuthResponse, TwoFactorBaseComponent } from "./two-factor-base.component";
 
 @Component({
   selector: "app-two-factor-authenticator",
@@ -23,7 +37,7 @@ export class TwoFactorAuthenticatorComponent
   type = TwoFactorProviderType.Authenticator;
   key: string;
   token: string;
-  formPromise: Promise<any>;
+  formPromise: Promise<TwoFactorAuthenticatorResponse>;
 
   private qrScript: HTMLScriptElement;
 
@@ -49,7 +63,7 @@ export class TwoFactorAuthenticatorComponent
     window.document.body.removeChild(this.qrScript);
   }
 
-  auth(authResponse: any) {
+  auth(authResponse: AuthResponse<TwoFactorAuthenticatorResponse>) {
     super.auth(authResponse);
     return this.processResponse(authResponse.response);
   }
@@ -80,7 +94,7 @@ export class TwoFactorAuthenticatorComponent
     this.key = response.key;
     const email = await this.stateService.getEmail();
     window.setTimeout(() => {
-      new (window as any).QRious({
+      new window.QRious({
         element: document.getElementById("qr"),
         value:
           "otpauth://totp/Bitwarden:" +

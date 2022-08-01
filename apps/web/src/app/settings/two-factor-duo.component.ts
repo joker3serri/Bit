@@ -4,12 +4,12 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
+import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
 import { UpdateTwoFactorDuoRequest } from "@bitwarden/common/models/request/updateTwoFactorDuoRequest";
 import { TwoFactorDuoResponse } from "@bitwarden/common/models/response/twoFactorDuoResponse";
 
-import { TwoFactorBaseComponent } from "./two-factor-base.component";
+import { AuthResponse, TwoFactorBaseComponent } from "./two-factor-base.component";
 
 @Component({
   selector: "app-two-factor-duo",
@@ -20,7 +20,7 @@ export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
   ikey: string;
   skey: string;
   host: string;
-  formPromise: Promise<any>;
+  formPromise: Promise<TwoFactorDuoResponse>;
 
   constructor(
     apiService: ApiService,
@@ -32,7 +32,7 @@ export class TwoFactorDuoComponent extends TwoFactorBaseComponent {
     super(apiService, i18nService, platformUtilsService, logService, userVerificationService);
   }
 
-  auth(authResponse: any) {
+  auth(authResponse: AuthResponse<TwoFactorDuoResponse>) {
     super.auth(authResponse);
     this.processResponse(authResponse.response);
   }

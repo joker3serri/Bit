@@ -1,9 +1,9 @@
 import { animate, style, transition, trigger } from "@angular/animations";
 import { Component, OnInit } from "@angular/core";
-import { ControlValueAccessor, UntypedFormControl, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from "@angular/forms";
 
 import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
-import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
+import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { VerificationType } from "@bitwarden/common/enums/verificationType";
 import { Verification } from "@bitwarden/common/types/verification";
 
@@ -34,7 +34,7 @@ export class UserVerificationComponent implements ControlValueAccessor, OnInit {
   disableRequestOTP = false;
   sentCode = false;
 
-  secret = new UntypedFormControl("");
+  secret = new FormControl("");
 
   private onChange: (value: Verification) => void;
 
@@ -44,7 +44,8 @@ export class UserVerificationComponent implements ControlValueAccessor, OnInit {
   ) {}
 
   async ngOnInit() {
-    this.usesKeyConnector = await this.keyConnectorService.getUsesKeyConnector();
+    // TEMP CHANGE -- DO NOT MERGE
+    this.usesKeyConnector = true;
     this.processChanges(this.secret.value);
 
     this.secret.valueChanges.subscribe((secret: string) => this.processChanges(secret));

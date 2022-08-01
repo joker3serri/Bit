@@ -4,11 +4,21 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
+import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
 import { VerificationType } from "@bitwarden/common/enums/verificationType";
 import { SecretVerificationRequest } from "@bitwarden/common/models/request/secretVerificationRequest";
 import { TwoFactorProviderRequest } from "@bitwarden/common/models/request/twoFactorProviderRequest";
+import { BaseResponse } from "@bitwarden/common/models/response/baseResponse";
+
+interface AuthResponseBase {
+  secret: string;
+  verificationType: VerificationType;
+}
+
+export interface AuthResponse<T extends BaseResponse> extends AuthResponseBase {
+  response: T;
+}
 
 @Directive()
 export abstract class TwoFactorBaseComponent {
@@ -31,7 +41,7 @@ export abstract class TwoFactorBaseComponent {
     protected userVerificationService: UserVerificationService
   ) {}
 
-  protected auth(authResponse: any) {
+  protected auth(authResponse: AuthResponseBase) {
     this.hashedSecret = authResponse.secret;
     this.verificationType = authResponse.verificationType;
     this.authed = true;
@@ -46,7 +56,7 @@ export abstract class TwoFactorBaseComponent {
     }
   }
 
-  protected async disable(promise: Promise<any>) {
+  protected async disable(promise: Promise<unknown>) {
     const confirmed = await this.platformUtilsService.showDialog(
       this.i18nService.t("twoStepDisableDesc"),
       this.i18nService.t("disable"),

@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
+import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
 import { VerificationType } from "@bitwarden/common/enums/verificationType";
 import { SecretVerificationRequest } from "@bitwarden/common/models/request/secretVerificationRequest";
@@ -13,6 +13,8 @@ import { TwoFactorRecoverResponse } from "@bitwarden/common/models/response/twoF
 import { TwoFactorWebAuthnResponse } from "@bitwarden/common/models/response/twoFactorWebAuthnResponse";
 import { TwoFactorYubiKeyResponse } from "@bitwarden/common/models/response/twoFactorYubiKeyResponse";
 import { Verification } from "@bitwarden/common/types/verification";
+
+import { AuthResponse } from "./two-factor-base.component";
 
 type TwoFactorResponse =
   | TwoFactorRecoverResponse
@@ -29,7 +31,7 @@ type TwoFactorResponse =
 export class TwoFactorVerifyComponent {
   @Input() type: TwoFactorProviderType;
   @Input() organizationId: string;
-  @Output() onAuthed = new EventEmitter<any>();
+  @Output() onAuthed = new EventEmitter<AuthResponse<TwoFactorResponse>>();
 
   secret: Verification;
   formPromise: Promise<TwoFactorResponse>;
