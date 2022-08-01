@@ -44,8 +44,7 @@ export class UserVerificationComponent implements ControlValueAccessor, OnInit {
   ) {}
 
   async ngOnInit() {
-    // TEMP CHANGE -- DO NOT MERGE
-    this.usesKeyConnector = true;
+    this.usesKeyConnector = await this.keyConnectorService.getUsesKeyConnector();
     this.processChanges(this.secret.value);
 
     this.secret.valueChanges.subscribe((secret: string) => this.processChanges(secret));
