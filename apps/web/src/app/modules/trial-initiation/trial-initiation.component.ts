@@ -1,8 +1,8 @@
 import { StepperSelectionEvent } from "@angular/cdk/stepper";
 import { TitleCasePipe } from "@angular/common";
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { UntypedFormBuilder, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -27,13 +27,15 @@ export class TrialInitiationComponent implements OnInit {
   org = "teams";
   orgInfoSubLabel = "";
   orgId = "";
+  orgLabel = "";
   billingSubLabel = "";
   plan: PlanType;
   product: ProductType;
   accountCreateOnly = true;
   policies: Policy[];
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
-  @ViewChild("stepper", { static: true }) verticalStepper: VerticalStepperComponent;
+  validOrgs: string[] = ["teams", "enterprise", "families"];
+  @ViewChild("stepper", { static: false }) verticalStepper: VerticalStepperComponent;
 
   orgInfoFormGroup = this.formBuilder.group({
     name: ["", [Validators.required]],
@@ -42,7 +44,8 @@ export class TrialInitiationComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder,
+    protected router: Router,
+    private formBuilder: UntypedFormBuilder,
     private titleCasePipe: TitleCasePipe,
     private stateService: StateService,
     private apiService: ApiService,
@@ -61,16 +64,22 @@ export class TrialInitiationComponent implements OnInit {
         return;
       }
 
-      this.org = qParams.org;
+      if (this.validOrgs.includes(qParams.org)) {
+        this.org = qParams.org;
+      } else {
+        this.org = "families";
+      }
+
+      this.orgLabel = this.titleCasePipe.transform(this.org);
       this.accountCreateOnly = false;
 
-      if (qParams.org === "families") {
+      if (this.org === "families") {
         this.plan = PlanType.FamiliesAnnually;
         this.product = ProductType.Families;
-      } else if (qParams.org === "teams") {
+      } else if (this.org === "teams") {
         this.plan = PlanType.TeamsAnnually;
         this.product = ProductType.Teams;
-      } else if (qParams.org === "enterprise") {
+      } else if (this.org === "enterprise") {
         this.plan = PlanType.EnterpriseAnnually;
         this.product = ProductType.Enterprise;
       }
@@ -126,6 +135,14 @@ export class TrialInitiationComponent implements OnInit {
     this.orgId = event?.orgId;
     this.billingSubLabel = event?.subLabelText;
     this.verticalStepper.next();
+  }
+
+  navigateToOrgVault() {
+    this.router.navigate(["organizations", this.orgId, "vault"]);
+  }
+
+  navigateToOrgInvite() {
+    this.router.navigate(["organizations", this.orgId, "manage", "people"]);
   }
 
   previousStep() {
