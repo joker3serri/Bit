@@ -1,8 +1,8 @@
 import { BehaviorSubject } from "rxjs";
 
-import { StateService } from "../../services/abstractions/state.service";
+import { StateService } from "../../services/state.service";
 
-import { browserSession } from "./browser-sync.decorator";
+import { browserSession } from "./browser-session.decorator";
 import { sessionSync } from "./session-sync.decorator";
 
 // browserSession initializes SessionSyncers for each sessionSync decorated property

@@ -1,6 +1,5 @@
 import { Arg, Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
-import { description } from "commander";
-import { BehaviorSubject, firstValueFrom } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { StateService } from "../../services/abstractions/state.service";
@@ -168,19 +167,26 @@ describe("session syncer", () => {
     describe("updateFromMessage", () => {
       const fromSession = "from session";
       let nextSpy: jest.SpyInstance;
+      const command = "message_command";
 
       beforeEach(() => {
+        jest.spyOn(sut as any, "updateMessageCommand", "get").mockReturnValue(command);
         stateService.getFromSessionMemory(key).resolves(fromSession);
         nextSpy = jest.spyOn(behaviorSubject, "next").mockReturnValue();
       });
 
+      it("should ignore messages with the wrong command", () => {
+        sut.updateFromMessage({ command: "some_other_command", id: "any_id" });
+        stateService.didNotReceive().getFromSessionMemory(Arg.any());
+      });
+
       it("should ignore a message from itself", () => {
-        sut.updateFromMessage({ id: sut.id });
+        sut.updateFromMessage({ command: command, id: sut.id });
         stateService.didNotReceive().getFromSessionMemory(Arg.any());
       });
 
       it("should set behavior subject next", async () => {
-        await sut.updateFromMessage({ id: "different Id" });
+        await sut.updateFromMessage({ command: command, id: "different Id" });
         stateService.received(1).getFromSessionMemory(key);
         expect(nextSpy).toHaveBeenCalledTimes(1);
         expect(nextSpy).toHaveBeenCalledWith(fromSession);

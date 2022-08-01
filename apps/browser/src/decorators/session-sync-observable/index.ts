@@ -1,2 +1,2 @@
-export { browserSession } from "./browser-sync.decorator";
+export { browserSession } from "./browser-session.decorator";
 export { sessionSync } from "./session-sync.decorator";

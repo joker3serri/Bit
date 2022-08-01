@@ -1,4 +1,4 @@
-import { StateService } from "../../services/abstractions/state.service";
+import { StateService } from "../../services/state.service";
 
 import { SessionStorable } from "./session-storable";
 import { SessionSyncer } from "./session-syncer";
@@ -17,13 +17,13 @@ export function browserSession<TCtor extends { new (...args: any[]): any }>(cons
     __sessionSyncers: SessionSyncer[];
 
     constructor(...args: any[]) {
-      super(args);
+      super(...args);
 
       // Require state service to be injected
       const stateService = args.find((arg) => arg instanceof StateService);
       if (!stateService) {
         throw new Error(
-          `Cannot decorate ${constructor.name} with browserSession, StateService must be injected`
+          `Cannot decorate ${constructor.name} with browserSession, Browser's StateService must be injected`
         );
       }
 

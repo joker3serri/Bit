@@ -37,4 +37,8 @@ export class Folder extends Domain {
       null
     );
   }
+
+  static fromJSON(obj: FolderData): Folder {
+    return Object.assign(new Folder(), obj);
+  }
 }

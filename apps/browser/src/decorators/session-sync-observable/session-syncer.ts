@@ -51,13 +51,13 @@ export class SessionSyncer {
   listenForUpdates(behaviorSubject: BehaviorSubject<any>) {
     // TODO MDG: How do we handle this async?
     BrowserApi.messageListener(
-      this.update_message,
+      this.updateMessageCommand,
       async (message) => await this.updateFromMessage(message)
     );
   }
 
   async updateFromMessage(message: any) {
-    if (message.id === this.id) {
+    if (message.command != this.updateMessageCommand || message.id === this.id) {
       return;
     }
     const key_value_pair = await this.stateService.getFromSessionMemory(this.metaData.key);
@@ -68,7 +68,7 @@ export class SessionSyncer {
 
   async updateSession(value: any) {
     await this.stateService.setInSessionMemory(this.metaData.key, value);
-    await BrowserApi.sendMessage(this.update_message, { id: this.id });
+    await BrowserApi.sendMessage(this.updateMessageCommand, { id: this.id });
   }
 
   static buildFromKeyValuePair(key_value_pair: any, metaData: SyncedItemMetadata) {
@@ -78,7 +78,7 @@ export class SessionSyncer {
     return Object.create(metaData.ctor.prototype, Object.getOwnPropertyDescriptors(key_value_pair));
   }
 
-  private get update_message() {
+  private get updateMessageCommand() {
     return `${this.metaData.key}_update`;
   }
 }
