@@ -4,11 +4,11 @@ import { BrowserModule } from "@angular/platform-browser";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { VaultFilterService } from "@bitwarden/angular/modules/vault-filter/vault-filter.service";
 
-import { CollectionFilterComponent } from "./components/collection-filter.component";
-import { FolderFilterComponent } from "./components/folder-filter.component";
-import { OrganizationFilterComponent } from "./components/organization-filter.component";
-import { StatusFilterComponent } from "./components/status-filter.component";
-import { TypeFilterComponent } from "./components/type-filter.component";
+import { CollectionFilterComponent } from "./filters/collection-filter.component";
+import { FolderFilterComponent } from "./filters/folder-filter.component";
+import { OrganizationFilterComponent } from "./filters/organization-filter.component";
+import { StatusFilterComponent } from "./filters/status-filter.component";
+import { TypeFilterComponent } from "./filters/type-filter.component";
 import { VaultFilterComponent } from "./vault-filter.component";
 
 @NgModule({

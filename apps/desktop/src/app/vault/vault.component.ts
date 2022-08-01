@@ -30,7 +30,6 @@ import { FolderView } from "@bitwarden/common/models/view/folderView";
 import { invokeMenu, RendererMenuItem } from "@bitwarden/electron/utils";
 
 import { SearchBarService } from "../layout/search/search-bar.service";
-import { VaultFilterComponent } from "../modules/vault-filter/vault-filter.component";
 
 import { AddEditComponent } from "./add-edit.component";
 import { AttachmentsComponent } from "./attachments.component";
@@ -40,6 +39,7 @@ import { FolderAddEditComponent } from "./folder-add-edit.component";
 import { GeneratorComponent } from "./generator.component";
 import { PasswordHistoryComponent } from "./password-history.component";
 import { ShareComponent } from "./share.component";
+import { VaultFilterComponent } from "./vault-filter/vault-filter.component";
 import { ViewComponent } from "./view.component";
 
 const BroadcasterSubscriptionId = "VaultComponent";
