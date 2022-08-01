@@ -161,7 +161,7 @@ export class BrowserApi {
 
   static reloadExtension(win: Window) {
     if (win != null) {
-      return win.location.reload(true);
+      return (win.location as any).reload(true);
     } else {
       return chrome.runtime.reload();
     }
