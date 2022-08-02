@@ -195,32 +195,37 @@ export class CipherView implements View, Storable<CipherView> {
     view.collectionIds = obj.collectionIds;
     view.reprompt = obj.reprompt;
 
-    // Dates
-    view.revisionDate = obj.revisionDate == null ? null : new Date(obj.revisionDate);
-    view.deletedDate = obj.deletedDate == null ? null : new Date(obj.deletedDate);
+    view.setDates(obj);
+    view.setNestedViewObjects(obj);
 
-    // Nested objects
-    view.attachments = obj.attachments?.map((a: any) => AttachmentView.fromJSON(a));
-    view.fields = obj.fields?.map((f: any) => FieldView.fromJSON(f));
-    view.passwordHistory = obj.passwordHistory?.map((ph: any) => PasswordHistoryView.fromJSON(ph));
+    return view;
+  }
 
-    switch (view.type) {
+  private setDates(obj: FromJson<CipherView>) {
+    this.revisionDate = obj.revisionDate == null ? null : new Date(obj.revisionDate);
+    this.deletedDate = obj.deletedDate == null ? null : new Date(obj.deletedDate);
+  }
+
+  private setNestedViewObjects(obj: FromJson<CipherView>) {
+    this.attachments = obj.attachments?.map((a: any) => AttachmentView.fromJSON(a));
+    this.fields = obj.fields?.map((f: any) => FieldView.fromJSON(f));
+    this.passwordHistory = obj.passwordHistory?.map((ph: any) => PasswordHistoryView.fromJSON(ph));
+
+    switch (this.type) {
       case CipherType.Card:
-        view.card = CardView.fromJSON(obj.card);
+        this.card = CardView.fromJSON(obj.card);
         break;
       case CipherType.Identity:
-        view.identity = IdentityView.fromJSON(obj.identity);
+        this.identity = IdentityView.fromJSON(obj.identity);
         break;
       case CipherType.Login:
-        view.login = LoginView.fromJSON(obj.login);
+        this.login = LoginView.fromJSON(obj.login);
         break;
       case CipherType.SecureNote:
-        view.secureNote = SecureNoteView.fromJSON(obj.secureNote);
+        this.secureNote = SecureNoteView.fromJSON(obj.secureNote);
         break;
       default:
         break;
     }
-
-    return view;
   }
 }
