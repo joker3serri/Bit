@@ -5,9 +5,9 @@ import { NgModule } from "@angular/core";
 import { FormFieldModule } from "@bitwarden/components";
 
 import { OrganizationCreateModule } from "../../organizations/create/organization-create.module";
-import { VerticalStepperModule } from "../../shared/components/vertical-stepper/vertical-stepper.module";
 import { SharedModule } from "../../shared/shared.module";
 import { RegisterFormModule } from "../register-form/register-form.module";
+
 
 import { BillingComponent } from "./billing.component";
 import { ConfirmationDetailsComponent } from "./confirmation-details.component";
@@ -15,6 +15,7 @@ import { EnterpriseContentComponent } from "./enterprise-content.component";
 import { FamiliesContentComponent } from "./families-content.component";
 import { TeamsContentComponent } from "./teams-content.component";
 import { TrialInitiationComponent } from "./trial-initiation.component";
+import { VerticalStepperModule } from "./vertical-stepper/vertical-stepper.module";
 
 @NgModule({
   imports: [
