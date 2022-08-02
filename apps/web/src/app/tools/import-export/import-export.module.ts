@@ -1,8 +1,5 @@
-import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
@@ -14,20 +11,14 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { ImportService } from "@bitwarden/common/services/import.service";
 
 import { LooseComponentsModule } from "../../modules/loose-components.module";
+import { SharedModule } from "../../shared";
 
 import { ExportComponent } from "./export.component";
 import { ImportExportRoutingModule } from "./import-export-routing.module";
 import { ImportComponent } from "./import.component";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    JslibModule,
-    LooseComponentsModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ImportExportRoutingModule,
-  ],
+  imports: [SharedModule, LooseComponentsModule, ImportExportRoutingModule],
   declarations: [ImportComponent, ExportComponent],
   providers: [
     {
