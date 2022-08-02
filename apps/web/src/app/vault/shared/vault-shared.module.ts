@@ -16,4 +16,4 @@ import { VaultService } from "./vault.service";
     },
   ],
 })
-export class VaultModule {}
+export class VaultSharedModule {}

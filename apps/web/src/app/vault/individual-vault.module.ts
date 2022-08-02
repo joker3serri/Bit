@@ -2,10 +2,10 @@ import { NgModule } from "@angular/core";
 
 import { IndividualVaultRoutingModule } from "./individual-vault-routing.module";
 import { IndividualVaultComponent } from "./individual-vault.component";
-import { VaultModule } from "./shared/vault.module";
+import { VaultSharedModule } from "./shared/vault-shared.module";
 
 @NgModule({
-  imports: [VaultModule, IndividualVaultRoutingModule],
+  imports: [VaultSharedModule, IndividualVaultRoutingModule],
   declarations: [IndividualVaultComponent],
   exports: [IndividualVaultComponent],
 })
