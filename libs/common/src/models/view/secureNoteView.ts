@@ -1,5 +1,7 @@
+import { FromJson } from "@bitwarden/common/types/json.types";
+
 import { SecureNoteType } from "../../enums/secureNoteType";
-import { ParsedObject, ToJsonObject, Storable } from "../../interfaces/storable";
+import { Storable } from "../../interfaces/storable";
 import { SecureNote } from "../domain/secureNote";
 
 import { ItemView } from "./itemView";
@@ -20,11 +22,11 @@ export class SecureNoteView extends ItemView implements Storable<SecureNoteView>
     return null;
   }
 
-  toJSON(): ToJsonObject<SecureNoteView> {
+  toJSON() {
     return this;
   }
 
-  static fromJSON(obj: ParsedObject<SecureNoteView>): SecureNoteView {
+  static fromJSON(obj: FromJson<SecureNoteView>): SecureNoteView {
     const view = new SecureNoteView();
     view.type = obj.type;
     return view;

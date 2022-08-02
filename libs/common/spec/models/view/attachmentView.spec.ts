@@ -1,5 +1,4 @@
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
-import { ParsedObject } from "@bitwarden/common/models/storable";
 import { AttachmentView } from "@bitwarden/common/models/view/attachmentView";
 
 jest.mock("@bitwarden/common/models/domain/symmetricCryptoKey");

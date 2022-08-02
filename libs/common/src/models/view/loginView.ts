@@ -1,5 +1,7 @@
+import { FromJson } from "@bitwarden/common/types/json.types";
+
 import { LoginLinkedId as LinkedId } from "../../enums/linkedIdType";
-import { ParsedObject, ToJsonObject, Storable } from "../../interfaces/storable";
+import { Storable } from "../../interfaces/storable";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 import { Utils } from "../../misc/utils";
 import { Login } from "../domain/login";
@@ -62,11 +64,11 @@ export class LoginView extends ItemView implements Storable<LoginView> {
     return this.uris != null && this.uris.length > 0;
   }
 
-  toJSON(): ToJsonObject<LoginView> {
+  toJSON() {
     return this;
   }
 
-  static fromJSON(obj: ParsedObject<LoginView>): LoginView {
+  static fromJSON(obj: FromJson<LoginView>): LoginView {
     const view = new LoginView();
 
     view.username = obj.username;

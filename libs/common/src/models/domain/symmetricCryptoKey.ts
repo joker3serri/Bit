@@ -1,7 +1,8 @@
 import { Utils } from "@bitwarden/common/misc/utils";
+import { FromJson, ToJson } from "@bitwarden/common/types/json.types";
 
 import { EncryptionType } from "../../enums/encryptionType";
-import { ParsedObject, Storable, ToJsonObject } from "../../interfaces/storable";
+import { Storable } from "../../interfaces/storable";
 
 export class SymmetricCryptoKey implements Storable<SymmetricCryptoKey> {
   key: ArrayBuffer;
@@ -57,12 +58,12 @@ export class SymmetricCryptoKey implements Storable<SymmetricCryptoKey> {
     }
   }
 
-  toJSON(): ToJsonObject<SymmetricCryptoKey> {
+  toJSON(): ToJson<SymmetricCryptoKey> {
     // The whole object is constructed from the initial key, so just store the B64 key
     return { keyB64: this.keyB64 };
   }
 
-  static fromJSON(obj: ParsedObject<SymmetricCryptoKey>): SymmetricCryptoKey {
+  static fromJSON(obj: FromJson<SymmetricCryptoKey>): SymmetricCryptoKey {
     if (obj == null) {
       return null;
     }

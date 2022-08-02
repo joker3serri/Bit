@@ -1,8 +1,9 @@
+import { FromJson, ToJson } from "@bitwarden/common/types/json.types";
 
 import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
 import { LinkedIdType } from "../../enums/linkedIdType";
-import { ParsedObject, Storable, ToJsonObject } from "../../interfaces/storable";
+import { Storable } from "../../interfaces/storable";
 import { Cipher } from "../domain/cipher";
 
 import { AttachmentView } from "./attachmentView";
@@ -134,8 +135,8 @@ export class CipherView implements View, Storable<CipherView> {
     return this.linkedFieldOptions.get(id)?.i18nKey;
   }
 
-  toJSON(): ToJsonObject<CipherView> {
-    const result: ToJsonObject<CipherView> = {
+  toJSON() {
+    const result: ToJson<CipherView> = {
       id: this.id,
       organizationId: this.organizationId,
       folderId: this.folderId,
@@ -178,7 +179,7 @@ export class CipherView implements View, Storable<CipherView> {
     return result;
   }
 
-  static fromJSON(obj: ParsedObject<CipherView>): CipherView {
+  static fromJSON(obj: FromJson<CipherView>): CipherView {
     const view = new CipherView();
     view.id = obj.id;
     view.organizationId = obj.organizationId;

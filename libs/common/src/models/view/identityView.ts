@@ -1,5 +1,7 @@
+import { FromJson } from "@bitwarden/common/types/json.types";
+
 import { IdentityLinkedId as LinkedId } from "../../enums/linkedIdType";
-import { ParsedObject, ToJsonObject, Storable } from "../../interfaces/storable";
+import { Storable } from "../../interfaces/storable";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 import { Utils } from "../../misc/utils";
 
@@ -141,7 +143,7 @@ export class IdentityView extends ItemView implements Storable<IdentityView> {
     return addressPart2;
   }
 
-  toJSON(): ToJsonObject<IdentityView> {
+  toJSON() {
     // Needed to serialize getters which are not included by JSON.stringify
     return {
       title: this.title,
@@ -165,7 +167,7 @@ export class IdentityView extends ItemView implements Storable<IdentityView> {
     };
   }
 
-  static fromJSON(obj: ParsedObject<IdentityView>): IdentityView {
+  static fromJSON(obj: FromJson<IdentityView>): IdentityView {
     const view = new IdentityView();
     view.title = obj.title;
     view.firstName = obj.firstName;

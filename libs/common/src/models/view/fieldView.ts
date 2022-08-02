@@ -1,7 +1,8 @@
+import { FromJson } from "@bitwarden/common/types/json.types";
 
 import { FieldType } from "../../enums/fieldType";
 import { LinkedIdType } from "../../enums/linkedIdType";
-import { ParsedObject, Storable, ToJsonObject } from "../../interfaces/storable";
+import { Storable } from "../../interfaces/storable";
 import { Field } from "../domain/field";
 
 import { View } from "./view";
@@ -28,11 +29,11 @@ export class FieldView implements View, Storable<FieldView> {
     return this.value != null ? "••••••••" : null;
   }
 
-  toJSON(): ToJsonObject<FieldView> {
+  toJSON() {
     return this;
   }
 
-  static fromJSON(obj: ParsedObject<FieldView>): FieldView {
+  static fromJSON(obj: FromJson<FieldView>): FieldView {
     const view = new FieldView();
     view.name = obj.name;
     view.value = obj.value;

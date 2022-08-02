@@ -1,4 +1,6 @@
-import { ParsedObject, Storable, ToJsonObject } from "../../interfaces/storable";
+import { FromJson } from "@bitwarden/common/types/json.types";
+
+import { Storable } from "../../interfaces/storable";
 import { Attachment } from "../domain/attachment";
 import { SymmetricCryptoKey } from "../domain/symmetricCryptoKey";
 
@@ -34,11 +36,11 @@ export class AttachmentView implements View, Storable<AttachmentView> {
     return 0;
   }
 
-  toJSON(): ToJsonObject<AttachmentView> {
+  toJSON() {
     return this;
   }
 
-  static fromJSON(obj: ParsedObject<AttachmentView>): AttachmentView {
+  static fromJSON(obj: FromJson<AttachmentView>): AttachmentView {
     const view = new AttachmentView();
     view.id = obj.id;
     view.url = obj.url;

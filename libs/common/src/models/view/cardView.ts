@@ -1,5 +1,7 @@
+import { FromJson } from "@bitwarden/common/types/json.types";
+
 import { CardLinkedId as LinkedId } from "../../enums/linkedIdType";
-import { ParsedObject, Storable, ToJsonObject } from "../../interfaces/storable";
+import { Storable } from "../../interfaces/storable";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 
 import { ItemView } from "./itemView";
@@ -77,7 +79,7 @@ export class CardView extends ItemView implements Storable<CardView> {
     return year.length === 2 ? "20" + year : year;
   }
 
-  toJSON(): ToJsonObject<CardView> {
+  toJSON() {
     // Needed to serialize getters which are not included by JSON.stringify
     return {
       cardholderName: this.cardholderName,
@@ -89,7 +91,7 @@ export class CardView extends ItemView implements Storable<CardView> {
     };
   }
 
-  static fromJSON(obj: ParsedObject<CardView>): CardView {
+  static fromJSON(obj: FromJson<CardView>): CardView {
     const view = new CardView();
     view.cardholderName = obj.cardholderName;
     view.brand = obj.brand;
