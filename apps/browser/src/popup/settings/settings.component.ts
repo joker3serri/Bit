@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import Swal from "sweetalert2";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { ConfigService } from "@bitwarden/common/abstractions/config.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -13,6 +14,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
 import { DeviceType } from "@bitwarden/common/enums/deviceType";
+import { Config } from "@bitwarden/common/models/domain/config";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
@@ -49,6 +51,7 @@ export class SettingsComponent implements OnInit {
   enableAutoBiometricsPrompt = true;
   previousVaultTimeout: number = null;
   showChangeMasterPass = true;
+  config: Config;
 
   vaultTimeout: UntypedFormControl = new UntypedFormControl(null);
 
@@ -63,7 +66,8 @@ export class SettingsComponent implements OnInit {
     private stateService: StateService,
     private popupUtilsService: PopupUtilsService,
     private modalService: ModalService,
-    private keyConnectorService: KeyConnectorService
+    private keyConnectorService: KeyConnectorService,
+    private configService: ConfigService
   ) {}
 
   async ngOnInit() {
@@ -116,6 +120,8 @@ export class SettingsComponent implements OnInit {
     this.biometric = await this.vaultTimeoutService.isBiometricLockSet();
     this.enableAutoBiometricsPrompt = !(await this.stateService.getDisableAutoBiometricsPrompt());
     this.showChangeMasterPass = !(await this.keyConnectorService.getUsesKeyConnector());
+
+    this.config = await this.configService.getConfig();
   }
 
   async saveVaultTimeout(newValue: number) {
@@ -374,21 +380,33 @@ export class SettingsComponent implements OnInit {
 
   about() {
     const year = new Date().getFullYear();
-    const versionText = document.createTextNode(
-      this.i18nService.t("version") + ": " + BrowserApi.getApplicationVersion()
-    );
-    const div = document.createElement("div");
-    div.innerHTML =
+    const clientVersion = this.i18nService.t("version") + ": " + BrowserApi.getApplicationVersion();
+    let apiVersion = "";
+
+    if (this.config != null && this.config.server != null) {
+      // this is a 3rd party server implementatione
+      apiVersion = `Connected to third-party server implementation, ${this.config.server.name}. Please verify bugs using the official server, or report them to the third-party server.`;
+    } else if (this.config != null) {
+      // this is either BW Cloud or BW Self Hosted
+      // todo: change message based on this
+      apiVersion = `Server Version: ${this.config.version}`;
+    }
+
+    const content = document.createElement("div");
+    content.innerHTML =
       `<p class="text-center"><i class="bwi bwi-shield bwi-3x" aria-hidden="true"></i></p>
             <p class="text-center"><b>Bitwarden</b><br>&copy; Bitwarden Inc. 2015-` +
       year +
       `</p>`;
-    div.appendChild(versionText);
+
+    const versionText = document.createElement("div");
+    versionText.innerHTML = clientVersion + `<br>` + apiVersion;
+    content.appendChild(versionText);
 
     Swal.fire({
       heightAuto: false,
       buttonsStyling: false,
-      html: div,
+      html: content,
       showConfirmButton: false,
       showCancelButton: true,
       cancelButtonText: this.i18nService.t("close"),

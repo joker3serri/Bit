@@ -21,6 +21,7 @@ import { PolicyData } from "../models/data/policyData";
 import { ProviderData } from "../models/data/providerData";
 import { SendData } from "../models/data/sendData";
 import { Account, AccountData, AccountSettings } from "../models/domain/account";
+import { Config } from "../models/domain/config";
 import { EncString } from "../models/domain/encString";
 import { EnvironmentUrls } from "../models/domain/environmentUrls";
 import { GeneratedPasswordHistory } from "../models/domain/generatedPasswordHistory";
@@ -2294,6 +2295,13 @@ export class StateService<
       globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
+  }
+
+  async getConfig(): Promise<Config> {
+    const c = new Config();
+    c.version = "1.2.3";
+
+    return c;
   }
 
   protected async getGlobals(options: StorageOptions): Promise<TGlobalState> {
