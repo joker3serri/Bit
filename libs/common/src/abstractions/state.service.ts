@@ -16,7 +16,6 @@ import { Account } from "../models/domain/account";
 import { EncString } from "../models/domain/encString";
 import { EnvironmentUrls } from "../models/domain/environmentUrls";
 import { GeneratedPasswordHistory } from "../models/domain/generatedPasswordHistory";
-import { Policy } from "../models/domain/policy";
 import { StorageOptions } from "../models/domain/storageOptions";
 import { SymmetricCryptoKey } from "../models/domain/symmetricCryptoKey";
 import { WindowState } from "../models/domain/windowState";
@@ -106,8 +105,6 @@ export abstract class StateService<T extends Account = Account> {
   ) => Promise<void>;
   getDecryptedPinProtected: (options?: StorageOptions) => Promise<EncString>;
   setDecryptedPinProtected: (value: EncString, options?: StorageOptions) => Promise<void>;
-  getDecryptedPolicies: (options?: StorageOptions) => Promise<Policy[]>;
-  setDecryptedPolicies: (value: Policy[], options?: StorageOptions) => Promise<void>;
   getDecryptedPrivateKey: (options?: StorageOptions) => Promise<ArrayBuffer>;
   setDecryptedPrivateKey: (value: ArrayBuffer, options?: StorageOptions) => Promise<void>;
   getDecryptedProviderKeys: (options?: StorageOptions) => Promise<Map<string, SymmetricCryptoKey>>;
@@ -210,7 +207,13 @@ export abstract class StateService<T extends Account = Account> {
   ) => Promise<void>;
   getEncryptedPinProtected: (options?: StorageOptions) => Promise<string>;
   setEncryptedPinProtected: (value: string, options?: StorageOptions) => Promise<void>;
+  /**
+   * @deprecated Do not call this directly, use PolicyService
+   */
   getEncryptedPolicies: (options?: StorageOptions) => Promise<{ [id: string]: PolicyData }>;
+  /**
+   * @deprecated Do not call this directly, use PolicyService
+   */
   setEncryptedPolicies: (
     value: { [id: string]: PolicyData },
     options?: StorageOptions
