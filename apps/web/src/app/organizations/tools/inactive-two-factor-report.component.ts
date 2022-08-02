@@ -10,6 +10,7 @@ import { PasswordRepromptService } from "@bitwarden/common/abstractions/password
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 
+// eslint-disable-next-line no-restricted-imports
 import { InactiveTwoFactorReportComponent as BaseInactiveTwoFactorReportComponent } from "../../reports/pages/inactive-two-factor-report.component";
 
 @Component({

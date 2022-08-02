@@ -30,6 +30,5 @@ import { ReportsRoutingModule } from "./reports-routing.module";
     WeakPasswordsReportComponent,
     WeakPasswordsReportComponent,
   ],
-  exports: [],
 })
 export class ReportsModule {}

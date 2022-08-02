@@ -9,6 +9,7 @@ import { PasswordRepromptService } from "@bitwarden/common/abstractions/password
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 
+// eslint-disable-next-line no-restricted-imports
 import { UnsecuredWebsitesReportComponent as BaseUnsecuredWebsitesReportComponent } from "../../reports/pages/unsecured-websites-report.component";
 
 @Component({

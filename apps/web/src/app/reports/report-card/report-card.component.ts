@@ -1,10 +1,6 @@
 import { Component, Input } from "@angular/core";
 
-export enum ReportVariant {
-  Enabled = "Enabled",
-  RequiresPremium = "RequiresPremium",
-  RequiresUpgrade = "RequiresUpgrade",
-}
+import { ReportVariant } from "../models/report-variant";
 
 @Component({
   selector: "app-report-card",

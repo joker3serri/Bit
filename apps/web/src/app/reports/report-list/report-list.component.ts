@@ -1,14 +1,6 @@
 import { Component, Input } from "@angular/core";
 
-import { ReportVariant } from "../report-card/report-card.component";
-
-export type ReportEntry = {
-  title: string;
-  description: string;
-  route: string;
-  icon: string;
-  variant: ReportVariant;
-};
+import { ReportEntry } from "../models/report-entry";
 
 @Component({
   selector: "app-report-list",
