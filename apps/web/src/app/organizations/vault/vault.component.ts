@@ -31,7 +31,7 @@ import { AddEditComponent } from "./add-edit.component";
 import { AttachmentsComponent } from "./attachments.component";
 import { CiphersComponent } from "./ciphers.component";
 import { CollectionsComponent } from "./collections.component";
-import { OrganizationVaultFilterComponent } from "./vault-filter/organization-vault-filter.component";
+import { VaultFilterComponent } from "./vault-filter/vault-filter.component";
 
 const BroadcasterSubscriptionId = "OrgVaultComponent";
 
@@ -41,7 +41,7 @@ const BroadcasterSubscriptionId = "OrgVaultComponent";
 })
 export class VaultComponent implements OnInit, OnDestroy {
   @ViewChild("vaultFilter", { static: true })
-  vaultFilterComponent: OrganizationVaultFilterComponent;
+  vaultFilterComponent: VaultFilterComponent;
   @ViewChild(CiphersComponent, { static: true }) ciphersComponent: CiphersComponent;
   @ViewChild("attachments", { read: ViewContainerRef, static: true })
   attachmentsModalRef: ViewContainerRef;
