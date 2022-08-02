@@ -66,7 +66,6 @@ import {
   MenuModule,
 } from "@bitwarden/components";
 
-import { PaymentComponent } from "../settings/payment.component";
 import { TaxInfoComponent } from "../settings/tax-info.component";
 
 registerLocaleData(localeAf, "af");
@@ -121,7 +120,7 @@ registerLocaleData(localeZhCn, "zh-CN");
 registerLocaleData(localeZhTw, "zh-TW");
 
 @NgModule({
-  declarations: [PaymentComponent, TaxInfoComponent],
+  declarations: [TaxInfoComponent],
   imports: [
     CommonModule,
     DragDropModule,
@@ -157,7 +156,6 @@ registerLocaleData(localeZhTw, "zh-TW");
     MenuModule,
     FormFieldModule,
     SubmitButtonModule,
-    PaymentComponent,
     TaxInfoComponent,
   ],
   providers: [DatePipe],

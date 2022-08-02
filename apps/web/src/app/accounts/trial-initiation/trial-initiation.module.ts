@@ -4,10 +4,11 @@ import { NgModule } from "@angular/core";
 
 import { FormFieldModule } from "@bitwarden/components";
 
+import { LooseComponentsModule } from "src/app/shared/loose-components.module";
+
 import { OrganizationCreateModule } from "../../organizations/create/organization-create.module";
 import { SharedModule } from "../../shared/shared.module";
 import { RegisterFormModule } from "../register-form/register-form.module";
-
 
 import { BillingComponent } from "./billing.component";
 import { ConfirmationDetailsComponent } from "./confirmation-details.component";
@@ -25,6 +26,7 @@ import { VerticalStepperModule } from "./vertical-stepper/vertical-stepper.modul
     FormFieldModule,
     RegisterFormModule,
     OrganizationCreateModule,
+    LooseComponentsModule,
   ],
   declarations: [
     TrialInitiationComponent,

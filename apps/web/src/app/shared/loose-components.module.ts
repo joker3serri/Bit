@@ -116,6 +116,7 @@ import { EmergencyAccessComponent } from "../settings/emergency-access.component
 import { EmergencyAddEditComponent } from "../settings/emergency-add-edit.component";
 import { OrganizationPlansComponent } from "../settings/organization-plans.component";
 import { PaymentMethodComponent } from "../settings/payment-method.component";
+import { PaymentComponent } from "../settings/payment.component";
 import { PreferencesComponent } from "../settings/preferences.component";
 import { PremiumComponent } from "../settings/premium.component";
 import { ProfileComponent } from "../settings/profile.component";
@@ -268,6 +269,7 @@ import { VaultFilterModule } from "../vault/vault-filter/vault-filter.module";
     PasswordGeneratorHistoryComponent,
     PasswordGeneratorPolicyComponent,
     PasswordRepromptComponent,
+    PaymentComponent,
     PaymentMethodComponent,
     PersonalOwnershipPolicyComponent,
     PreferencesComponent,
@@ -420,6 +422,7 @@ import { VaultFilterModule } from "../vault/vault-filter/vault-filter.module";
     PasswordGeneratorHistoryComponent,
     PasswordGeneratorPolicyComponent,
     PasswordRepromptComponent,
+    PaymentComponent,
     PaymentMethodComponent,
     PersonalOwnershipPolicyComponent,
     PreferencesComponent,
