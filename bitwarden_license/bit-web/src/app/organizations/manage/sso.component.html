@@ -35,6 +35,14 @@
       [helperText]="'allowSsoDesc' | i18n"
     ></app-input-checkbox>
 
+    <bit-form-field>
+      <bit-label>SSO Identifier</bit-label>
+      <input bitInput type="text" [formControl]="ssoIdentifier" />
+      <bit-hint>Provide this ID to your members to log in with SSO.</bit-hint>
+    </bit-form-field>
+
+    <hr />
+
     <div class="form-group">
       <label>{{ "memberDecryptionOption" | i18n }}</label>
       <div class="form-check form-check-block">
@@ -132,6 +140,8 @@
         </div>
       </div>
     </ng-container>
+
+    <hr />
 
     <app-select
       controlId="type"

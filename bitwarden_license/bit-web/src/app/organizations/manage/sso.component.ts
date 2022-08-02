@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { AbstractControl, UntypedFormBuilder, UntypedFormGroup } from "@angular/forms";
+import { AbstractControl, FormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 
 import { SelectOptions } from "@bitwarden/angular/interfaces/selectOptions";
@@ -89,6 +89,8 @@ export class SsoComponent implements OnInit {
 
   enabled = this.formBuilder.control(false);
 
+  ssoIdentifier = this.formBuilder.control("", { validators: [Validators.maxLength(50)] });
+
   openIdForm = this.formBuilder.group(
     {
       authority: ["", dirtyRequired],
@@ -142,7 +144,7 @@ export class SsoComponent implements OnInit {
   });
 
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private apiService: ApiService,
     private platformUtilsService: PlatformUtilsService,
@@ -204,6 +206,7 @@ export class SsoComponent implements OnInit {
 
     const request = new OrganizationSsoRequest();
     request.enabled = this.enabled.value;
+    request.identifier = this.ssoIdentifier.value;
     request.data = SsoConfigApi.fromView(this.ssoConfigForm.value as SsoConfigView);
 
     this.formPromise = this.apiService.postOrganizationSso(this.organizationId, request);
@@ -288,6 +291,7 @@ export class SsoComponent implements OnInit {
 
   private populateForm(ssoSettings: OrganizationSsoResponse) {
     this.enabled.setValue(ssoSettings.enabled);
+    this.ssoIdentifier.setValue(ssoSettings.identifier);
     if (ssoSettings.data != null) {
       const ssoConfigView = new SsoConfigView(ssoSettings.data);
       this.ssoConfigForm.patchValue(ssoConfigView);
