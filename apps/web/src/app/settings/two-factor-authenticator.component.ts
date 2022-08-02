@@ -10,6 +10,8 @@ import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProvider
 import { UpdateTwoFactorAuthenticatorRequest } from "@bitwarden/common/models/request/updateTwoFactorAuthenticatorRequest";
 import { TwoFactorAuthenticatorResponse } from "@bitwarden/common/models/response/twoFactorAuthenticatorResponse";
 
+import { AuthResponse, TwoFactorBaseComponent } from "./two-factor-base.component";
+
 // NOTE: There are additional options available but these are just the ones we are current using.
 // See: https://github.com/neocotic/qrious#examples
 interface QRiousOptions {
@@ -23,8 +25,6 @@ declare global {
     QRious: new (options: QRiousOptions) => unknown;
   }
 }
-
-import { AuthResponse, TwoFactorBaseComponent } from "./two-factor-base.component";
 
 @Component({
   selector: "app-two-factor-authenticator",
