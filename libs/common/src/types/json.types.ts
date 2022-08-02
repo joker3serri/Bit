@@ -2,9 +2,8 @@ import { PositiveInfinity, NegativeInfinity, JsonPrimitive, TypedArray } from "t
 
 /**
  * Represents a type that can be safely serialized using JSON.stringify without data loss.
- * Adapted from type-fest's jsonify type, but avoids circular references to the toJSON() return type.
- * Refer to https://github.com/sindresorhus/type-fest/blob/main/source/jsonify.d.ts
- * Also fixes eslint error 'ban-types' which prohibits use of '{}' as a type.
+ * Adapted from type-fest's jsonify type for our own needs
+ * Compare to https://github.com/sindresorhus/type-fest/blob/main/source/jsonify.d.ts
  * @example
  * myClass {
  *  toJSON(): ToJson<MyClass> { ... }
@@ -20,27 +19,33 @@ type ToJsonProperty<T> =
   // (see https://github.com/microsoft/TypeScript/issues/29368#issuecomment-453529532)
   T extends PositiveInfinity | NegativeInfinity
     ? null
-    : T extends JsonPrimitive
-    ? T // Primitive is acceptable
-    : T extends number
-    ? number
-    : T extends string
-    ? string
-    : T extends boolean
-    ? boolean
-    : T extends Date
-    ? Date // JSON.stringify automatically converts Dates to an ISO string, so this is acceptable
-    : T extends Map<any, any>
+    : // Primitives are acceptable
+    T extends JsonPrimitive
+    ? T
+    : // JSON.stringify automatically converts Dates to an ISO string, so this is acceptable
+    T extends Date
+    ? Date
+    : // Maps should be converted to objects
+    T extends Map<any, any>
     ? Record<any, any>
-    : T extends Set<any>
+    : // Sets should be converted to arrays
+    T extends Set<any>
     ? Array<any>
-    : T extends TypedArray
-    ? Record<string, number>
-    : T extends Array<infer U>
-    ? Array<ToJsonProperty<U>> // It's an array: recursive call for its children
-    : T extends object
-    ? ToJson<T> // It's a nested object
-    : never; // Otherwise any other non-object is removed
+    : // TypedArrays and ArrayBuffers should be converted to B64
+    T extends TypedArray | ArrayBuffer
+    ? string
+    : // For arrays, recursively call this type for its children
+    T extends Array<infer U>
+    ? Array<ToJsonProperty<U>>
+    : // Nested objects that implement their own toJSON method (preferably by implementing Storable<T>) will be handled
+    // automatically
+    T extends { toJSON: () => ToJson<T> }
+    ? T
+    : // Methods are ignored by JSON.stringify, but we need to allow them here so we can return `this` from toJSON()
+    T extends (...args: any) => any
+    ? (...args: any) => any
+    : // It's none of the above, we can't safely handle it so it shouldn't be used
+      never;
 
 /**
  * Represents the ToJson type after it's been serialized & deserialized again.
@@ -59,24 +64,26 @@ type FromJsonProperty<T> =
   // (see https://github.com/microsoft/TypeScript/issues/29368#issuecomment-453529532)
   T extends PositiveInfinity | NegativeInfinity
     ? null
-    : T extends JsonPrimitive
-    ? T // Primitive is acceptable
-    : T extends number
-    ? number
-    : T extends string
+    : // Primitives are acceptable
+    T extends JsonPrimitive
+    ? T
+    : // JSON.stringify automatically converts Dates to an ISO string
+    T extends Date
     ? string
-    : T extends boolean
-    ? boolean
-    : T extends Date
-    ? string // Dates should be stored as ISO strings
-    : T extends Map<any, any>
+    : // Maps should be converted to objects
+    T extends Map<any, any>
     ? Record<any, any>
-    : T extends Set<any>
+    : // Sets should be converted to arrays
+    T extends Set<any>
     ? Array<any>
-    : T extends TypedArray
-    ? Record<string, number>
-    : T extends Array<infer U>
-    ? Array<FromJsonProperty<U>> // It's an array: recursive call for its children
-    : T extends object
-    ? FromJson<T> // It's a nested object
-    : never; // Otherwise any other non-object is removed
+    : // TypedArrays and ArrayBuffers should be converted to B64
+    T extends TypedArray | ArrayBuffer
+    ? string
+    : // For arrays, recursively call this type for its children
+    T extends Array<infer U>
+    ? Array<FromJsonProperty<U>>
+    : // Nested objects that implement their own toJSON method (preferably by implementing Storable<T>)
+    T extends { toJSON: () => ToJson<T> }
+    ? FromJson<T>
+    : // It's none of the above, we can't safely handle it so it shouldn't be used
+      never;

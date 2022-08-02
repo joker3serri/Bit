@@ -4,7 +4,7 @@ import { ToJson } from "../types/json.types";
  * You must also implement a static fromJSON method - see the example interface below
  * (unfortunately we can't enforce static methods from an abstract class)
  */
-export interface Storable<T extends object> {
+export interface Storable<T> {
   /**
    * This method will be called by JSON.stringify() and should return an object that can be safely serialized.
    * You will need to consider whether the default behaviour of JSON.stringify is suitable for your class.
