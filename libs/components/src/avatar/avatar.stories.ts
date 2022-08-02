@@ -20,9 +20,6 @@ export default {
 
 const Template: Story<AvatarComponent> = (args: AvatarComponent) => ({
   props: args,
-  template: `
-    <bit-avatar [text]="text" [size]="size" [color]="color" [border]="border"></bit-avatar>
-  `,
 });
 
 export const Default = Template.bind({});
