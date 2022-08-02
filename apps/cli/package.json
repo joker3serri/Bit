@@ -35,8 +35,7 @@
     "publish:npm": "npm run build:prod && npm publish --access public",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:watch:all": "jest --watchAll",
-    "nothing": "echo 'Nothing to do'"
+    "test:watch:all": "jest --watchAll"
   },
   "bin": {
     "bw": "build/bw.js"
