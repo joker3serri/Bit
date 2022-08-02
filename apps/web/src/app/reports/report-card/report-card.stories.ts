@@ -6,8 +6,9 @@ import { BadgeModule, IconModule } from "@bitwarden/components";
 
 import { PremiumBadgeComponent } from "../../components/premium-badge.component";
 import { PreloadedEnglishI18nModule } from "../../tests/preloaded-english-i18n.module";
+import { ReportVariant } from "../models/report-variant";
 
-import { ReportCardComponent, ReportVariant } from "./report-card.component";
+import { ReportCardComponent } from "./report-card.component";
 
 export default {
   title: "Web/Reports/Card",
