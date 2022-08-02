@@ -1,8 +1,8 @@
 import { ScrollingModule } from "@angular/cdk/scrolling";
 import { NgModule } from "@angular/core";
 
+import { SharedModule } from "../../../shared";
 import { LooseComponentsModule } from "../../loose-components.module";
-import { SharedModule } from "../../shared.module";
 
 import { EnrollMasterPasswordReset } from "./enroll-master-password-reset.component";
 

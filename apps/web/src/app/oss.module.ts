@@ -5,10 +5,10 @@ import { OrganizationCreateModule } from "./modules/organizations/create/organiz
 import { OrganizationManageModule } from "./modules/organizations/manage/organization-manage.module";
 import { OrganizationUserModule } from "./modules/organizations/users/organization-user.module";
 import { PipesModule } from "./modules/pipes/pipes.module";
-import { SharedModule } from "./modules/shared.module";
 import { TrialInitiationModule } from "./modules/trial-initiation/trial-initiation.module";
 import { VaultFilterModule } from "./modules/vault-filter/vault-filter.module";
 import { OrganizationBadgeModule } from "./modules/vault/modules/organization-badge/organization-badge.module";
+import { SharedModule } from "./shared";
 
 @NgModule({
   imports: [

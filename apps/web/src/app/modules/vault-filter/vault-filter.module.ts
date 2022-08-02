@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 
-import { SharedModule } from "../shared.module";
+import { SharedModule } from "../../shared";
 
 import { CollectionFilterComponent } from "./components/collection-filter.component";
 import { FolderFilterComponent } from "./components/folder-filter.component";
