@@ -1,7 +1,6 @@
 import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { AttachmentView } from "@bitwarden/common/models/view/attachmentView";
-import { CardView } from "@bitwarden/common/models/view/cardView";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 import { FieldView } from "@bitwarden/common/models/view/fieldView";
 import { LoginView } from "@bitwarden/common/models/view/loginView";
