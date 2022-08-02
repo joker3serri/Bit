@@ -37,9 +37,9 @@ const BroadcasterSubscriptionId = "OrgVaultComponent";
 
 @Component({
   selector: "app-org-vault",
-  templateUrl: "organization-vault.component.html",
+  templateUrl: "vault.component.html",
 })
-export class OrganizationVaultComponent implements OnInit, OnDestroy {
+export class VaultComponent implements OnInit, OnDestroy {
   @ViewChild("vaultFilter", { static: true })
   vaultFilterComponent: OrganizationVaultFilterComponent;
   @ViewChild(CiphersComponent, { static: true }) ciphersComponent: CiphersComponent;

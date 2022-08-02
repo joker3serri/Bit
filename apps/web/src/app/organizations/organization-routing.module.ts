@@ -24,7 +24,7 @@ import { ReusedPasswordsReportComponent } from "./tools/reused-passwords-report.
 import { ToolsComponent } from "./tools/tools.component";
 import { UnsecuredWebsitesReportComponent } from "./tools/unsecured-websites-report.component";
 import { WeakPasswordsReportComponent } from "./tools/weak-passwords-report.component";
-import { OrganizationVaultModule } from "./vault/organization-vault.module";
+import { VaultModule } from "./vault/vault.module";
 
 const routes: Routes = [
   {
@@ -38,7 +38,7 @@ const routes: Routes = [
       { path: "", pathMatch: "full", redirectTo: "vault" },
       {
         path: "vault",
-        loadChildren: () => OrganizationVaultModule,
+        loadChildren: () => VaultModule,
       },
       {
         path: "tools",
