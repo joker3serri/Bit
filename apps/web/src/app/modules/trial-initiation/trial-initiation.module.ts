@@ -5,6 +5,7 @@ import { NgModule } from "@angular/core";
 import { FormFieldModule } from "@bitwarden/components";
 
 import { SharedModule } from "../../shared";
+import { LooseComponentsModule } from "../loose-components.module";
 import { OrganizationCreateModule } from "../organizations/create/organization-create.module";
 import { RegisterFormModule } from "../register-form/register-form.module";
 import { VerticalStepperModule } from "../vertical-stepper/vertical-stepper.module";
@@ -24,6 +25,7 @@ import { TrialInitiationComponent } from "./trial-initiation.component";
     FormFieldModule,
     RegisterFormModule,
     OrganizationCreateModule,
+    LooseComponentsModule,
   ],
   declarations: [
     TrialInitiationComponent,
