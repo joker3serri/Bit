@@ -1,3 +1,7 @@
+import { BehaviorSubject } from "rxjs";
+
+import { Utils } from "@bitwarden/common/misc/utils";
+
 import { OrganizationService } from "../../abstractions/organization.service";
 import { InternalPolicyService as InternalPolicyServiceAbstraction } from "../../abstractions/policy/policy.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
@@ -13,36 +17,41 @@ import { ListResponse } from "../../models/response/listResponse";
 import { PolicyResponse } from "../../models/response/policyResponse";
 
 export class PolicyService implements InternalPolicyServiceAbstraction {
-  policyCache: Policy[];
+  private _policies: BehaviorSubject<Policy[]> = new BehaviorSubject([]);
+
+  policies$ = this._policies.asObservable();
 
   constructor(
     private stateService: StateService,
     private organizationService: OrganizationService
-  ) {}
+  ) {
+    this.stateService.activeAccountUnlocked.subscribe(async (unlocked) => {
+      if ((Utils.global as any).bitwardenContainerService == null) {
+        return;
+      }
 
-  async clearCache(): Promise<void> {
-    await this.stateService.setDecryptedPolicies(null);
+      if (!unlocked) {
+        this._policies.next([]);
+        return;
+      }
+
+      const data = await this.stateService.getEncryptedPolicies();
+
+      await this.updateObservables(data);
+    });
   }
 
-  async getAll(type?: PolicyType, userId?: string): Promise<Policy[]> {
-    let response: Policy[] = [];
-    const decryptedPolicies = await this.stateService.getDecryptedPolicies({ userId: userId });
-    if (decryptedPolicies != null) {
-      response = decryptedPolicies;
-    } else {
-      const diskPolicies = await this.stateService.getEncryptedPolicies({ userId: userId });
-      for (const id in diskPolicies) {
-        // eslint-disable-next-line
-        if (diskPolicies.hasOwnProperty(id)) {
-          response.push(new Policy(diskPolicies[id]));
-        }
-      }
-      await this.stateService.setDecryptedPolicies(response, { userId: userId });
-    }
+  async clearCache(): Promise<void> {
+    this._policies.next([]);
+  }
+
+  async getAll(type?: PolicyType): Promise<Policy[]> {
+    const policies = this._policies.getValue();
+
     if (type != null) {
-      return response.filter((policy) => policy.type === type);
+      return policies.filter((policy) => policy.type === type);
     } else {
-      return response;
+      return policies;
     }
   }
 
@@ -177,7 +186,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     policyFilter?: (policy: Policy) => boolean,
     userId?: string
   ) {
-    const policies = await this.getAll(policyType, userId);
+    const policies = await this.getAll(policyType);
     const organizations = await this.organizationService.getAll(userId);
     let filteredPolicies;
 
@@ -199,13 +208,15 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     );
   }
 
-  async replace(policies: { [id: string]: PolicyData }): Promise<any> {
-    await this.stateService.setDecryptedPolicies(null);
+  async replace(policies: { [id: string]: PolicyData }): Promise<void> {
+    await this.updateObservables(policies);
     await this.stateService.setEncryptedPolicies(policies);
   }
 
-  async clear(userId?: string): Promise<any> {
-    await this.stateService.setDecryptedPolicies(null, { userId: userId });
+  async clear(userId?: string): Promise<void> {
+    if (userId == null || userId == (await this.stateService.getUserId())) {
+      this._policies.next([]);
+    }
     await this.stateService.setEncryptedPolicies(null, { userId: userId });
   }
 
@@ -215,5 +226,11 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     }
 
     return organization.isExemptFromPolicies;
+  }
+
+  private async updateObservables(policiesMap: { [id: string]: PolicyData }) {
+    const policies = Object.values(policiesMap || {}).map((f) => new Policy(f));
+
+    this._policies.next(policies);
   }
 }
