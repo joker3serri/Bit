@@ -45,7 +45,7 @@ import { SponsoredFamiliesComponent } from "./settings/sponsored-families.compon
 import { SubscriptionRoutingModule } from "./settings/subscription-routing.module";
 import { GeneratorComponent } from "./tools/generator.component";
 import { ToolsComponent } from "./tools/tools.component";
-import { IndividualVaultModule } from "./vault/individual-vault.module";
+import { VaultModule } from "./vault/vault.module";
 
 const routes: Routes = [
   {
@@ -162,7 +162,7 @@ const routes: Routes = [
     children: [
       {
         path: "vault",
-        loadChildren: () => IndividualVaultModule,
+        loadChildren: () => VaultModule,
       },
       { path: "sends", component: SendComponent, data: { title: "Send" } },
       {

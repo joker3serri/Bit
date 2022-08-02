@@ -1,11 +1,11 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { IndividualVaultComponent } from "./individual-vault.component";
+import { VaultComponent } from "./vault.component";
 const routes: Routes = [
   {
     path: "",
-    component: IndividualVaultComponent,
+    component: VaultComponent,
     data: { titleId: "vaults" },
   },
 ];
@@ -13,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class IndividualVaultRoutingModule {}
+export class VaultRoutingModule {}

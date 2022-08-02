@@ -41,9 +41,9 @@ const BroadcasterSubscriptionId = "VaultComponent";
 
 @Component({
   selector: "app-vault",
-  templateUrl: "individual-vault.component.html",
+  templateUrl: "vault.component.html",
 })
-export class IndividualVaultComponent implements OnInit, OnDestroy {
+export class VaultComponent implements OnInit, OnDestroy {
   @ViewChild("vaultFilter", { static: true }) filterComponent: VaultFilterComponent;
   @ViewChild(CiphersComponent, { static: true }) ciphersComponent: CiphersComponent;
   @ViewChild("attachments", { read: ViewContainerRef, static: true })
