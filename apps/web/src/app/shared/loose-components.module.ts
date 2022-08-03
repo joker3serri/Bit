@@ -80,15 +80,6 @@ import { AddEditComponent as OrgAddEditComponent } from "../organizations/vault/
 import { AttachmentsComponent as OrgAttachmentsComponent } from "../organizations/vault/attachments.component";
 import { CollectionsComponent as OrgCollectionsComponent } from "../organizations/vault/collections.component";
 import { ProvidersComponent } from "../providers/providers.component";
-import { BreachReportComponent } from "../reports/breach-report.component";
-import { ExposedPasswordsReportComponent } from "../reports/exposed-passwords-report.component";
-import { InactiveTwoFactorReportComponent } from "../reports/inactive-two-factor-report.component";
-import { ReportCardComponent } from "../reports/report-card.component";
-import { ReportListComponent } from "../reports/report-list.component";
-import { ReportsComponent } from "../reports/reports.component";
-import { ReusedPasswordsReportComponent } from "../reports/reused-passwords-report.component";
-import { UnsecuredWebsitesReportComponent } from "../reports/unsecured-websites-report.component";
-import { WeakPasswordsReportComponent } from "../reports/weak-passwords-report.component";
 import { AccessComponent } from "../send/access.component";
 import { AddEditComponent as SendAddEditComponent } from "../send/add-edit.component";
 import { EffluxDatesComponent as SendEffluxDatesComponent } from "../send/efflux-dates.component";
@@ -188,7 +179,6 @@ import { SharedModule } from ".";
     AttachmentsComponent,
     BillingSyncApiKeyComponent,
     BillingSyncKeyComponent,
-    BreachReportComponent,
     BulkActionsComponent,
     BulkDeleteComponent,
     BulkMoveComponent,
@@ -213,13 +203,11 @@ import { SharedModule } from ".";
     EmergencyAccessTakeoverComponent,
     EmergencyAccessViewComponent,
     EmergencyAddEditComponent,
-    ExposedPasswordsReportComponent,
     FamiliesForEnterpriseSetupComponent,
     FolderAddEditComponent,
     FooterComponent,
     FrontendLayoutComponent,
     HintComponent,
-    InactiveTwoFactorReportComponent,
     LockComponent,
     LoginComponent,
     MasterPasswordPolicyComponent,
@@ -278,12 +266,8 @@ import { SharedModule } from ".";
     RecoverTwoFactorComponent,
     RegisterComponent,
     RemovePasswordComponent,
-    ReportCardComponent,
-    ReportListComponent,
-    ReportsComponent,
     RequireSsoPolicyComponent,
     ResetPasswordPolicyComponent,
-    ReusedPasswordsReportComponent,
     SecurityComponent,
     SecurityKeysComponent,
     SendAddEditComponent,
@@ -311,7 +295,6 @@ import { SharedModule } from ".";
     TwoFactorVerifyComponent,
     TwoFactorWebAuthnComponent,
     TwoFactorYubiKeyComponent,
-    UnsecuredWebsitesReportComponent,
     UpdateKeyComponent,
     UpdateLicenseComponent,
     UpdatePasswordComponent,
@@ -324,7 +307,6 @@ import { SharedModule } from ".";
     VerifyEmailComponent,
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
-    WeakPasswordsReportComponent,
   ],
   exports: [
     PremiumBadgeComponent,
@@ -341,7 +323,6 @@ import { SharedModule } from ".";
     AdjustSubscription,
     ApiKeyComponent,
     AttachmentsComponent,
-    BreachReportComponent,
     BulkActionsComponent,
     BulkDeleteComponent,
     BulkMoveComponent,
@@ -366,13 +347,11 @@ import { SharedModule } from ".";
     EmergencyAccessTakeoverComponent,
     EmergencyAccessViewComponent,
     EmergencyAddEditComponent,
-    ExposedPasswordsReportComponent,
     FamiliesForEnterpriseSetupComponent,
     FolderAddEditComponent,
     FooterComponent,
     FrontendLayoutComponent,
     HintComponent,
-    InactiveTwoFactorReportComponent,
     LockComponent,
     LoginComponent,
     MasterPasswordPolicyComponent,
@@ -430,12 +409,8 @@ import { SharedModule } from ".";
     RecoverTwoFactorComponent,
     RegisterComponent,
     RemovePasswordComponent,
-    ReportCardComponent,
-    ReportListComponent,
-    ReportsComponent,
     RequireSsoPolicyComponent,
     ResetPasswordPolicyComponent,
-    ReusedPasswordsReportComponent,
     SecurityComponent,
     SecurityKeysComponent,
     SendAddEditComponent,
@@ -463,7 +438,6 @@ import { SharedModule } from ".";
     TwoFactorVerifyComponent,
     TwoFactorWebAuthnComponent,
     TwoFactorYubiKeyComponent,
-    UnsecuredWebsitesReportComponent,
     UpdateKeyComponent,
     UpdateLicenseComponent,
     UpdatePasswordComponent,
@@ -476,7 +450,6 @@ import { SharedModule } from ".";
     VerifyEmailComponent,
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
-    WeakPasswordsReportComponent,
   ],
 })
 export class LooseComponentsModule {}

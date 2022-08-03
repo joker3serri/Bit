@@ -6,7 +6,7 @@
     "no-restricted-imports": [
       "error",
       {
-        "patterns": ["**/core/*", "**/app/shared/*"]
+        "patterns": ["**/core/*", "**/reports/*", "**/app/shared/*"]
       }
     ]
   }
