@@ -3,21 +3,21 @@ import { LoginView } from "@bitwarden/common/models/view/loginView";
 
 jest.mock("@bitwarden/common/models/view/loginUriView");
 
-const testValues = {
-  username: "myUsername",
-  password: "myPassword",
-  totp: "totpSeed",
-  autofillOnPageLoad: true,
-  uris: ["uri1", "uri2", "uri3"],
-  passwordRevisionDate: new Date(),
-};
-
 describe("LoginView", () => {
   beforeEach(() => {
     (LoginUriView as any).mockClear();
   });
 
   it("fromJSON initializes new view object", () => {
+    const testValues = {
+      username: "myUsername",
+      password: "myPassword",
+      totp: "totpSeed",
+      autofillOnPageLoad: true,
+      uris: ["uri1", "uri2", "uri3"],
+      passwordRevisionDate: new Date(),
+    };
+
     const parsed = JSON.parse(JSON.stringify(testValues));
 
     jest

@@ -11,28 +11,6 @@ jest.mock("@bitwarden/common/models/view/attachmentView");
 jest.mock("@bitwarden/common/models/view/fieldView");
 jest.mock("@bitwarden/common/models/view/passwordHistoryView");
 
-const testValues = {
-  id: "myId",
-  organizationId: "myOrgId",
-  folderId: "myFolderId",
-  name: "my Cipher",
-  notes: "lorem ipsum",
-  type: CipherType.Login,
-  favorite: true,
-  organizationUseTotp: true,
-  edit: true,
-  viewPassword: false,
-  localData: { lastUsedDate: "123" },
-  login: "myLogin",
-  attachments: ["attachment1", "attachment2"],
-  fields: ["field1", "field2"],
-  passwordHistory: ["ph1", "ph2", "ph3"],
-  collectionIds: ["collection1", "collection2"],
-  revisionDate: new Date(),
-  deletedDate: new Date(),
-  reprompt: CipherRepromptType.Password,
-};
-
 describe("CipherView", () => {
   beforeEach(() => {
     (LoginView as any).mockClear();
@@ -42,6 +20,28 @@ describe("CipherView", () => {
   });
 
   it("fromJSON initializes new view object", () => {
+    const testValues = {
+      id: "myId",
+      organizationId: "myOrgId",
+      folderId: "myFolderId",
+      name: "my Cipher",
+      notes: "lorem ipsum",
+      type: CipherType.Login,
+      favorite: true,
+      organizationUseTotp: true,
+      edit: true,
+      viewPassword: false,
+      localData: { lastUsedDate: "123" },
+      login: "myLogin",
+      attachments: ["attachment1", "attachment2"],
+      fields: ["field1", "field2"],
+      passwordHistory: ["ph1", "ph2", "ph3"],
+      collectionIds: ["collection1", "collection2"],
+      revisionDate: new Date(),
+      deletedDate: new Date(),
+      reprompt: CipherRepromptType.Password,
+    };
+
     const mockFromJson = (key: any) => (key + "fromJSON") as any;
     jest.spyOn(LoginView, "fromJSON").mockImplementation(mockFromJson);
     jest.spyOn(AttachmentView, "fromJSON").mockImplementation(mockFromJson);
@@ -51,8 +51,7 @@ describe("CipherView", () => {
     const parsed = JSON.parse(JSON.stringify(testValues));
     const actual = CipherView.fromJSON(parsed);
 
-    const expected = new CipherView();
-    Object.assign(expected, testValues, {
+    const expected = Object.assign(new CipherView(), testValues, {
       login: "myLoginfromJSON",
       attachments: ["attachment1fromJSON", "attachment2fromJSON"],
       fields: ["field1fromJSON", "field2fromJSON"],
