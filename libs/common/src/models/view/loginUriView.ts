@@ -1,7 +1,6 @@
-import { FromJson } from "@bitwarden/common/types/json.types";
+import { Jsonify } from "type-fest";
 
 import { UriMatchType } from "../../enums/uriMatchType";
-import { Storable } from "../../interfaces/storable";
 import { Utils } from "../../misc/utils";
 import { LoginUri } from "../domain/loginUri";
 
@@ -23,7 +22,7 @@ const CanLaunchWhitelist = [
   "androidapp://",
 ];
 
-export class LoginUriView implements View, Storable<LoginUriView> {
+export class LoginUriView implements View {
   match: UriMatchType = null;
 
   private _uri: string = null;
@@ -136,7 +135,7 @@ export class LoginUriView implements View, Storable<LoginUriView> {
     };
   }
 
-  static fromJSON(obj: FromJson<LoginUriView>): LoginUriView {
+  static fromJSON(obj: Jsonify<LoginUriView>): LoginUriView {
     return Object.assign(new LoginUriView(), obj);
   }
 }

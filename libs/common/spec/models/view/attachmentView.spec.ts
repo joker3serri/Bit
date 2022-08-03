@@ -33,6 +33,8 @@ describe("AttachmentView", () => {
   it("toJSON creates object for serialization", () => {
     const attachment = new AttachmentView();
     Object.assign(attachment, testValues);
+    // TODO: fix this
+    attachment.key = { toJSON: () => "encKey" } as any;
 
     const actual = attachment.toJSON();
 

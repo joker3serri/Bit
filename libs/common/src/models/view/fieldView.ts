@@ -1,13 +1,12 @@
-import { FromJson } from "@bitwarden/common/types/json.types";
+import { Jsonify } from "type-fest";
 
 import { FieldType } from "../../enums/fieldType";
 import { LinkedIdType } from "../../enums/linkedIdType";
-import { Storable } from "../../interfaces/storable";
 import { Field } from "../domain/field";
 
 import { View } from "./view";
 
-export class FieldView implements View, Storable<FieldView> {
+export class FieldView implements View {
   name: string = null;
   value: string = null;
   type: FieldType = null;
@@ -30,10 +29,19 @@ export class FieldView implements View, Storable<FieldView> {
   }
 
   toJSON() {
-    return this;
+    // Need to exclude readonly properties (getter)
+    return {
+      name: this.name,
+      value: this.value,
+      type: this.type,
+      newField: this.newField,
+      showValue: this.showValue,
+      showCount: this.showCount,
+      linkedId: this.linkedId,
+    };
   }
 
-  static fromJSON(obj: FromJson<FieldView>): FieldView {
+  static fromJSON(obj: Jsonify<FieldView>): FieldView {
     return Object.assign(new FieldView(), obj);
   }
 }

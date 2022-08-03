@@ -1,9 +1,8 @@
-import { FromJson, ToJson } from "@bitwarden/common/types/json.types";
+import { Jsonify } from "type-fest";
 
 import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
 import { LinkedIdType } from "../../enums/linkedIdType";
-import { Storable } from "../../interfaces/storable";
 import { Cipher } from "../domain/cipher";
 
 import { AttachmentView } from "./attachmentView";
@@ -15,7 +14,7 @@ import { PasswordHistoryView } from "./passwordHistoryView";
 import { SecureNoteView } from "./secureNoteView";
 import { View } from "./view";
 
-export class CipherView implements View, Storable<CipherView> {
+export class CipherView implements View {
   id: string = null;
   organizationId: string = null;
   folderId: string = null;
@@ -135,51 +134,7 @@ export class CipherView implements View, Storable<CipherView> {
     return this.linkedFieldOptions.get(id)?.i18nKey;
   }
 
-  toJSON() {
-    const result: ToJson<CipherView> = {
-      id: this.id,
-      organizationId: this.organizationId,
-      folderId: this.folderId,
-      name: this.name,
-      notes: this.notes,
-      type: this.type,
-      favorite: this.favorite,
-      organizationUseTotp: this.organizationUseTotp,
-      edit: this.edit,
-      viewPassword: this.viewPassword,
-      localData: this.localData,
-      collectionIds: this.collectionIds,
-      reprompt: this.reprompt,
-
-      attachments: this.attachments,
-      fields: this.fields,
-      passwordHistory: this.passwordHistory,
-
-      revisionDate: this.revisionDate,
-      deletedDate: this.deletedDate,
-    };
-
-    switch (this.type) {
-      case CipherType.Card:
-        result.card = this.card;
-        break;
-      case CipherType.Identity:
-        result.identity = this.identity;
-        break;
-      case CipherType.Login:
-        result.login = this.login;
-        break;
-      case CipherType.SecureNote:
-        result.secureNote = this.secureNote;
-        break;
-      default:
-        break;
-    }
-
-    return result;
-  }
-
-  static fromJSON(obj: FromJson<CipherView>): CipherView {
+  static fromJSON(obj: Jsonify<CipherView>): CipherView {
     const view = new CipherView();
     const revisionDate = obj.revisionDate == null ? null : new Date(obj.revisionDate);
     const deletedDate = obj.deletedDate == null ? null : new Date(obj.deletedDate);

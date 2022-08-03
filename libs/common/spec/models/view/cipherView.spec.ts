@@ -41,15 +41,6 @@ describe("CipherView", () => {
     (PasswordHistoryView as any).mockClear();
   });
 
-  it("toJSON creates object for serialization", () => {
-    const cipher = new CipherView();
-    Object.assign(cipher, testValues);
-
-    const actual = cipher.toJSON();
-
-    expect(actual).toEqual(testValues);
-  });
-
   it("fromJSON initializes new view object", () => {
     const mockFromJson = (key: any) => (key + "fromJSON") as any;
     jest.spyOn(LoginView, "fromJSON").mockImplementation(mockFromJson);

@@ -17,15 +17,6 @@ describe("LoginView", () => {
     (LoginUriView as any).mockClear();
   });
 
-  it("toJSON creates object for serialization", () => {
-    const login = new LoginView();
-    Object.assign(login, testValues);
-
-    const actual = login.toJSON();
-
-    expect(actual).toEqual(testValues);
-  });
-
   it("fromJSON initializes new view object", () => {
     const parsed = JSON.parse(JSON.stringify(testValues));
 

@@ -1,13 +1,12 @@
-import { FromJson } from "@bitwarden/common/types/json.types";
+import { Jsonify } from "type-fest";
 
 import { IdentityLinkedId as LinkedId } from "../../enums/linkedIdType";
-import { Storable } from "../../interfaces/storable";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 import { Utils } from "../../misc/utils";
 
 import { ItemView } from "./itemView";
 
-export class IdentityView extends ItemView implements Storable<IdentityView> {
+export class IdentityView extends ItemView {
   @linkedFieldOption(LinkedId.Title)
   title: string = null;
   @linkedFieldOption(LinkedId.MiddleName)
@@ -167,7 +166,7 @@ export class IdentityView extends ItemView implements Storable<IdentityView> {
     };
   }
 
-  static fromJSON(obj: FromJson<IdentityView>): IdentityView {
+  static fromJSON(obj: Jsonify<IdentityView>): IdentityView {
     return Object.assign(new IdentityView(), obj);
   }
 }

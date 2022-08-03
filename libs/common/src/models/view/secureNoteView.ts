@@ -1,12 +1,11 @@
-import { FromJson } from "@bitwarden/common/types/json.types";
+import { Jsonify } from "type-fest";
 
 import { SecureNoteType } from "../../enums/secureNoteType";
-import { Storable } from "../../interfaces/storable";
 import { SecureNote } from "../domain/secureNote";
 
 import { ItemView } from "./itemView";
 
-export class SecureNoteView extends ItemView implements Storable<SecureNoteView> {
+export class SecureNoteView extends ItemView {
   type: SecureNoteType = null;
 
   constructor(n?: SecureNote) {
@@ -23,10 +22,13 @@ export class SecureNoteView extends ItemView implements Storable<SecureNoteView>
   }
 
   toJSON() {
-    return this;
+    // Need to exclude readonly properties (getter)
+    return {
+      type: this.type,
+    };
   }
 
-  static fromJSON(obj: FromJson<SecureNoteView>): SecureNoteView {
+  static fromJSON(obj: Jsonify<SecureNoteView>): SecureNoteView {
     return Object.assign(new SecureNoteView(), obj);
   }
 }

@@ -1,7 +1,6 @@
-import { FromJson } from "@bitwarden/common/types/json.types";
+import { Jsonify } from "type-fest";
 
 import { LoginLinkedId as LinkedId } from "../../enums/linkedIdType";
-import { Storable } from "../../interfaces/storable";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 import { Utils } from "../../misc/utils";
 import { Login } from "../domain/login";
@@ -9,7 +8,7 @@ import { Login } from "../domain/login";
 import { ItemView } from "./itemView";
 import { LoginUriView } from "./loginUriView";
 
-export class LoginView extends ItemView implements Storable<LoginView> {
+export class LoginView extends ItemView {
   @linkedFieldOption(LinkedId.Username)
   username: string = null;
   @linkedFieldOption(LinkedId.Password)
@@ -64,11 +63,7 @@ export class LoginView extends ItemView implements Storable<LoginView> {
     return this.uris != null && this.uris.length > 0;
   }
 
-  toJSON() {
-    return this;
-  }
-
-  static fromJSON(obj: FromJson<LoginView>): LoginView {
+  static fromJSON(obj: Jsonify<LoginView>): LoginView {
     const passwordRevisionDate =
       obj.passwordRevisionDate == null ? null : new Date(obj.passwordRevisionDate);
     const uris = obj.uris?.map((uri: any) => LoginUriView.fromJSON(uri));

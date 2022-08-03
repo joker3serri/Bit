@@ -1,12 +1,11 @@
-import { FromJson } from "@bitwarden/common/types/json.types";
+import { Jsonify } from "type-fest";
 
 import { CardLinkedId as LinkedId } from "../../enums/linkedIdType";
-import { Storable } from "../../interfaces/storable";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 
 import { ItemView } from "./itemView";
 
-export class CardView extends ItemView implements Storable<CardView> {
+export class CardView extends ItemView {
   @linkedFieldOption(LinkedId.CardholderName)
   cardholderName: string = null;
   @linkedFieldOption(LinkedId.ExpMonth, "expirationMonth")
@@ -91,7 +90,7 @@ export class CardView extends ItemView implements Storable<CardView> {
     };
   }
 
-  static fromJSON(obj: FromJson<CardView>): CardView {
+  static fromJSON(obj: Jsonify<CardView>): CardView {
     return Object.assign(new CardView(), obj);
   }
 }

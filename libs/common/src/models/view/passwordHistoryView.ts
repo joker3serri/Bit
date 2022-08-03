@@ -1,11 +1,10 @@
-import { FromJson } from "@bitwarden/common/types/json.types";
+import { Jsonify } from "type-fest";
 
-import { Storable } from "../../interfaces/storable";
 import { Password } from "../domain/password";
 
 import { View } from "./view";
 
-export class PasswordHistoryView implements View, Storable<PasswordHistoryView> {
+export class PasswordHistoryView implements View {
   password: string = null;
   lastUsedDate: Date = null;
 
@@ -17,11 +16,7 @@ export class PasswordHistoryView implements View, Storable<PasswordHistoryView> 
     this.lastUsedDate = ph.lastUsedDate;
   }
 
-  toJSON() {
-    return this;
-  }
-
-  static fromJSON(obj: FromJson<PasswordHistoryView>): PasswordHistoryView {
+  static fromJSON(obj: Jsonify<PasswordHistoryView>): PasswordHistoryView {
     const lastUsedDate = obj.lastUsedDate == null ? null : new Date(obj.lastUsedDate);
 
     return Object.assign(new PasswordHistoryView(), obj, {
