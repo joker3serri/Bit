@@ -10,15 +10,6 @@ const testValues = {
 };
 
 describe("CardView", () => {
-  it("toJSON creates object for serialization", () => {
-    const card = new CardView();
-    Object.assign(card, testValues);
-
-    const actual = card.toJSON();
-
-    expect(actual).toEqual(testValues);
-  });
-
   it("fromJSON initializes new view object", () => {
     const actual = CardView.fromJSON(testValues);
 

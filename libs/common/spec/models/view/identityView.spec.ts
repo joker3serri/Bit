@@ -22,15 +22,6 @@ const testValues = {
 };
 
 describe("IdentityView", () => {
-  it("toJSON creates object for serialization", () => {
-    const identity = new IdentityView();
-    Object.assign(identity, testValues);
-
-    const actual = identity.toJSON();
-
-    expect(actual).toEqual(testValues);
-  });
-
   it("fromJSON initializes new view object", () => {
     const actual = IdentityView.fromJSON(testValues);
 

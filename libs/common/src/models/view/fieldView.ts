@@ -28,20 +28,7 @@ export class FieldView implements View {
     return this.value != null ? "••••••••" : null;
   }
 
-  toJSON() {
-    // Need to exclude readonly properties (getter)
-    return {
-      name: this.name,
-      value: this.value,
-      type: this.type,
-      newField: this.newField,
-      showValue: this.showValue,
-      showCount: this.showCount,
-      linkedId: this.linkedId,
-    };
-  }
-
-  static fromJSON(obj: Jsonify<FieldView>): FieldView {
+  static fromJSON(obj: Partial<Jsonify<FieldView>>): FieldView {
     return Object.assign(new FieldView(), obj);
   }
 }

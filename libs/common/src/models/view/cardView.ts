@@ -78,19 +78,7 @@ export class CardView extends ItemView {
     return year.length === 2 ? "20" + year : year;
   }
 
-  toJSON() {
-    // Needed to serialize getters which are not included by JSON.stringify
-    return {
-      cardholderName: this.cardholderName,
-      brand: this.brand,
-      number: this.number,
-      expMonth: this.expMonth,
-      expYear: this.expYear,
-      code: this.code,
-    };
-  }
-
-  static fromJSON(obj: Jsonify<CardView>): CardView {
+  static fromJSON(obj: Partial<Jsonify<CardView>>): CardView {
     return Object.assign(new CardView(), obj);
   }
 }

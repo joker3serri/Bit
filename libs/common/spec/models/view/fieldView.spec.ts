@@ -13,15 +13,6 @@ describe("FieldView", () => {
     linkedId: LoginLinkedId.Password,
   };
 
-  it("toJSON creates object for serialization", () => {
-    const field = new FieldView();
-    Object.assign(field, testValues);
-
-    const actual = field.toJSON();
-
-    expect(actual).toEqual(testValues);
-  });
-
   it("fromJSON initializes new view object", () => {
     const actual = FieldView.fromJSON(testValues);
 

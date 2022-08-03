@@ -142,31 +142,7 @@ export class IdentityView extends ItemView {
     return addressPart2;
   }
 
-  toJSON() {
-    // Needed to serialize getters which are not included by JSON.stringify
-    return {
-      title: this.title,
-      firstName: this.firstName,
-      middleName: this.middleName,
-      lastName: this.lastName,
-      address1: this.address1,
-      address2: this.address2,
-      address3: this.address3,
-      city: this.city,
-      state: this.state,
-      postalCode: this.postalCode,
-      country: this.country,
-      company: this.company,
-      email: this.email,
-      phone: this.phone,
-      ssn: this.ssn,
-      username: this.username,
-      passportNumber: this.passportNumber,
-      licenseNumber: this.licenseNumber,
-    };
-  }
-
-  static fromJSON(obj: Jsonify<IdentityView>): IdentityView {
+  static fromJSON(obj: Partial<Jsonify<IdentityView>>): IdentityView {
     return Object.assign(new IdentityView(), obj);
   }
 }

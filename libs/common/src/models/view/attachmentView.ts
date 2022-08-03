@@ -35,19 +35,7 @@ export class AttachmentView implements View {
     return 0;
   }
 
-  toJSON() {
-    // Need to exclude readonly properties (getter)
-    return {
-      id: this.id,
-      url: this.url,
-      size: this.size,
-      sizeName: this.sizeName,
-      fileName: this.fileName,
-      key: this.key?.toJSON(),
-    };
-  }
-
-  static fromJSON(obj: Jsonify<AttachmentView>): AttachmentView {
+  static fromJSON(obj: Partial<Jsonify<AttachmentView>>): AttachmentView {
     const key = obj.key == null ? null : SymmetricCryptoKey.fromJSON(obj.key);
     return Object.assign(new AttachmentView(), obj, { key: key });
   }

@@ -21,14 +21,7 @@ export class SecureNoteView extends ItemView {
     return null;
   }
 
-  toJSON() {
-    // Need to exclude readonly properties (getter)
-    return {
-      type: this.type,
-    };
-  }
-
-  static fromJSON(obj: Jsonify<SecureNoteView>): SecureNoteView {
+  static fromJSON(obj: Partial<Jsonify<SecureNoteView>>): SecureNoteView {
     return Object.assign(new SecureNoteView(), obj);
   }
 }

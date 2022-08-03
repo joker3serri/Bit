@@ -127,15 +127,7 @@ export class LoginUriView implements View {
       : this.uri;
   }
 
-  toJSON() {
-    // Needed to serialize getters which are not included by JSON.stringify
-    return {
-      match: this.match,
-      uri: this.uri,
-    };
-  }
-
-  static fromJSON(obj: Jsonify<LoginUriView>): LoginUriView {
+  static fromJSON(obj: Partial<Jsonify<LoginUriView>>): LoginUriView {
     return Object.assign(new LoginUriView(), obj);
   }
 }
