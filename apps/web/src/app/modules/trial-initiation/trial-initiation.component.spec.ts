@@ -21,7 +21,7 @@ import { VerticalStepperComponent } from "../vertical-stepper/vertical-stepper.c
 
 import { TrialInitiationComponent } from "./trial-initiation.component";
 
-describe("MyFeatureComponent", () => {
+describe("TrialInitiationComponent", () => {
   let component: TrialInitiationComponent;
   let fixture: ComponentFixture<TrialInitiationComponent>;
   const mockQueryParams = new BehaviorSubject<any>({ org: "enterprise" });
