@@ -141,7 +141,6 @@ import { UserBillingHistoryComponent } from "../settings/user-billing-history.co
 import { UserSubscriptionComponent } from "../settings/user-subscription.component";
 import { VaultTimeoutInputComponent } from "../settings/vault-timeout-input.component";
 import { VerifyEmailComponent } from "../settings/verify-email.component";
-import { SharedModule } from "../shared/shared.module";
 import { GeneratorComponent } from "../tools/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/password-generator-history.component";
 import { ToolsComponent } from "../tools/tools.component";
@@ -158,6 +157,8 @@ import { FolderAddEditComponent } from "../vault/folder-add-edit.component";
 import { OrganizationBadgeModule } from "../vault/organization-badge/organization-badge.module";
 import { ShareComponent } from "../vault/share.component";
 import { VaultFilterModule } from "../vault/vault-filter/vault-filter.module";
+
+import { SharedModule } from ".";
 
 // Please do not add to this list of declarations - we should refactor these into modules when doing so makes sense until there are none left.
 // If you are building new functionality, please create or extend a feature module instead.

@@ -10,8 +10,7 @@ import { ImportService as ImportServiceAbstraction } from "@bitwarden/common/abs
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { ImportService } from "@bitwarden/common/services/import.service";
 
-import { LooseComponentsModule } from "../../../shared/loose-components.module";
-import { SharedModule } from "../../../shared/shared.module";
+import { LooseComponentsModule, SharedModule } from "../../../shared";
 
 import { OrganizationExportComponent } from "./org-export.component";
 import { OrganizationImportExportRoutingModule } from "./org-import-export-routing.module";

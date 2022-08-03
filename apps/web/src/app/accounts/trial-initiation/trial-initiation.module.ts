@@ -7,7 +7,7 @@ import { FormFieldModule } from "@bitwarden/components";
 import { LooseComponentsModule } from "src/app/shared/loose-components.module";
 
 import { OrganizationCreateModule } from "../../organizations/create/organization-create.module";
-import { SharedModule } from "../../shared/shared.module";
+import { SharedModule } from "../../shared";
 import { RegisterFormModule } from "../register-form/register-form.module";
 
 import { BillingComponent } from "./billing.component";
