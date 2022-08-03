@@ -9,3 +9,4 @@ export * from "./modal";
 export * from "./utils/i18n-mock.service";
 export * from "./tabs";
 export * from "./submit-button";
+export * from "./table";
