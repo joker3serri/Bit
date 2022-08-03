@@ -41,15 +41,7 @@ export class AttachmentView implements View, Storable<AttachmentView> {
   }
 
   static fromJSON(obj: FromJson<AttachmentView>): AttachmentView {
-    const view = new AttachmentView();
-    view.id = obj.id;
-    view.url = obj.url;
-    view.size = obj.size;
-    view.sizeName = obj.sizeName;
-    view.fileName = obj.fileName;
-
-    view.key = obj.key == null ? null : SymmetricCryptoKey.fromJSON(obj.key);
-
-    return view;
+    const key = obj.key == null ? null : SymmetricCryptoKey.fromJSON(obj.key);
+    return Object.assign(new AttachmentView(), obj, { key: key });
   }
 }

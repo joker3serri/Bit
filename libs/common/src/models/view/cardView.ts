@@ -92,14 +92,6 @@ export class CardView extends ItemView implements Storable<CardView> {
   }
 
   static fromJSON(obj: FromJson<CardView>): CardView {
-    const view = new CardView();
-    view.cardholderName = obj.cardholderName;
-    view.brand = obj.brand;
-    view.number = obj.number;
-    view.expMonth = obj.expMonth;
-    view.expYear = obj.expYear;
-    view.code = obj.code;
-
-    return view;
+    return Object.assign(new CardView(), obj);
   }
 }

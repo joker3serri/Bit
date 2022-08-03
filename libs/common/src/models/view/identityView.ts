@@ -168,26 +168,6 @@ export class IdentityView extends ItemView implements Storable<IdentityView> {
   }
 
   static fromJSON(obj: FromJson<IdentityView>): IdentityView {
-    const view = new IdentityView();
-    view.title = obj.title;
-    view.firstName = obj.firstName;
-    view.middleName = obj.middleName;
-    view.lastName = obj.lastName;
-    view.address1 = obj.address1;
-    view.address2 = obj.address2;
-    view.address3 = obj.address3;
-    view.city = obj.city;
-    view.state = obj.state;
-    view.postalCode = obj.postalCode;
-    view.country = obj.country;
-    view.company = obj.company;
-    view.email = obj.email;
-    view.phone = obj.phone;
-    view.ssn = obj.ssn;
-    view.username = obj.username;
-    view.passportNumber = obj.passportNumber;
-    view.licenseNumber = obj.licenseNumber;
-
-    return view;
+    return Object.assign(new IdentityView(), obj);
   }
 }

@@ -22,10 +22,10 @@ export class PasswordHistoryView implements View, Storable<PasswordHistoryView> 
   }
 
   static fromJSON(obj: FromJson<PasswordHistoryView>): PasswordHistoryView {
-    const view = new PasswordHistoryView();
-    view.password = obj.password;
-    view.lastUsedDate = obj.lastUsedDate == null ? null : new Date(obj.lastUsedDate);
+    const lastUsedDate = obj.lastUsedDate == null ? null : new Date(obj.lastUsedDate);
 
-    return view;
+    return Object.assign(new PasswordHistoryView(), obj, {
+      lastUsedDate: lastUsedDate,
+    });
   }
 }

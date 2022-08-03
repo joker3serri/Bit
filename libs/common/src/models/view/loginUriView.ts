@@ -137,9 +137,6 @@ export class LoginUriView implements View, Storable<LoginUriView> {
   }
 
   static fromJSON(obj: FromJson<LoginUriView>): LoginUriView {
-    const view = new LoginUriView();
-    view.match = obj.match;
-    view.uri = obj.uri;
-    return view;
+    return Object.assign(new LoginUriView(), obj);
   }
 }

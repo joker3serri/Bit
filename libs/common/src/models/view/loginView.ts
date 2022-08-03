@@ -69,16 +69,13 @@ export class LoginView extends ItemView implements Storable<LoginView> {
   }
 
   static fromJSON(obj: FromJson<LoginView>): LoginView {
-    const view = new LoginView();
-
-    view.username = obj.username;
-    view.password = obj.password;
-    view.totp = obj.totp;
-    view.autofillOnPageLoad = obj.autofillOnPageLoad;
-    view.passwordRevisionDate =
+    const passwordRevisionDate =
       obj.passwordRevisionDate == null ? null : new Date(obj.passwordRevisionDate);
-    view.uris = obj.uris?.map((uri: any) => LoginUriView.fromJSON(uri));
+    const uris = obj.uris?.map((uri: any) => LoginUriView.fromJSON(uri));
 
-    return view;
+    return Object.assign(new LoginView(), obj, {
+      passwordRevisionDate: passwordRevisionDate,
+      uris: uris,
+    });
   }
 }

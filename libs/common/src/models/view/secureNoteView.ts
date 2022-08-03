@@ -27,8 +27,6 @@ export class SecureNoteView extends ItemView implements Storable<SecureNoteView>
   }
 
   static fromJSON(obj: FromJson<SecureNoteView>): SecureNoteView {
-    const view = new SecureNoteView();
-    view.type = obj.type;
-    return view;
+    return Object.assign(new SecureNoteView(), obj);
   }
 }

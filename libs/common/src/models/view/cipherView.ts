@@ -181,51 +181,37 @@ export class CipherView implements View, Storable<CipherView> {
 
   static fromJSON(obj: FromJson<CipherView>): CipherView {
     const view = new CipherView();
-    view.id = obj.id;
-    view.organizationId = obj.organizationId;
-    view.folderId = obj.folderId;
-    view.name = obj.name;
-    view.notes = obj.notes;
-    view.type = obj.type;
-    view.favorite = obj.favorite;
-    view.organizationUseTotp = obj.organizationUseTotp;
-    view.edit = obj.edit;
-    view.viewPassword = obj.viewPassword;
-    view.localData = obj.localData;
-    view.collectionIds = obj.collectionIds;
-    view.reprompt = obj.reprompt;
+    const revisionDate = obj.revisionDate == null ? null : new Date(obj.revisionDate);
+    const deletedDate = obj.deletedDate == null ? null : new Date(obj.deletedDate);
+    const attachments = obj.attachments?.map((a: any) => AttachmentView.fromJSON(a));
+    const fields = obj.fields?.map((f: any) => FieldView.fromJSON(f));
+    const passwordHistory = obj.passwordHistory?.map((ph: any) => PasswordHistoryView.fromJSON(ph));
 
-    view.setDates(obj);
-    view.setNestedViewObjects(obj);
+    Object.assign(view, obj, {
+      revisionDate: revisionDate,
+      deletedDate: deletedDate,
+      attachments: attachments,
+      fields: fields,
+      passwordHistory: passwordHistory,
+    });
 
-    return view;
-  }
-
-  private setDates(obj: FromJson<CipherView>) {
-    this.revisionDate = obj.revisionDate == null ? null : new Date(obj.revisionDate);
-    this.deletedDate = obj.deletedDate == null ? null : new Date(obj.deletedDate);
-  }
-
-  private setNestedViewObjects(obj: FromJson<CipherView>) {
-    this.attachments = obj.attachments?.map((a: any) => AttachmentView.fromJSON(a));
-    this.fields = obj.fields?.map((f: any) => FieldView.fromJSON(f));
-    this.passwordHistory = obj.passwordHistory?.map((ph: any) => PasswordHistoryView.fromJSON(ph));
-
-    switch (this.type) {
+    switch (obj.type) {
       case CipherType.Card:
-        this.card = CardView.fromJSON(obj.card);
+        view.card = CardView.fromJSON(obj.card);
         break;
       case CipherType.Identity:
-        this.identity = IdentityView.fromJSON(obj.identity);
+        view.identity = IdentityView.fromJSON(obj.identity);
         break;
       case CipherType.Login:
-        this.login = LoginView.fromJSON(obj.login);
+        view.login = LoginView.fromJSON(obj.login);
         break;
       case CipherType.SecureNote:
-        this.secureNote = SecureNoteView.fromJSON(obj.secureNote);
+        view.secureNote = SecureNoteView.fromJSON(obj.secureNote);
         break;
       default:
         break;
     }
+
+    return view;
   }
 }

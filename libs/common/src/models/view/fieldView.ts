@@ -34,15 +34,6 @@ export class FieldView implements View, Storable<FieldView> {
   }
 
   static fromJSON(obj: FromJson<FieldView>): FieldView {
-    const view = new FieldView();
-    view.name = obj.name;
-    view.value = obj.value;
-    view.type = obj.type;
-    view.newField = obj.newField;
-    view.showValue = obj.showValue;
-    view.showCount = obj.showCount;
-    view.linkedId = obj.linkedId;
-
-    return view;
+    return Object.assign(new FieldView(), obj);
   }
 }
