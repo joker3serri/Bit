@@ -6,6 +6,6 @@ export class ConfigService implements ConfigServiceAbstraction {
   constructor(private stateService: StateService) {}
 
   async getConfig(): Promise<Config> {
-    return await this.stateService.getConfig();
+    return this.stateService.getConfig();
   }
 }

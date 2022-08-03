@@ -381,16 +381,6 @@ export class SettingsComponent implements OnInit {
   about() {
     const year = new Date().getFullYear();
     const clientVersion = this.i18nService.t("version") + ": " + BrowserApi.getApplicationVersion();
-    let apiVersion = "";
-
-    if (this.config != null && this.config.server != null) {
-      // this is a 3rd party server implementatione
-      apiVersion = `Connected to third-party server implementation, ${this.config.server.name}. Please verify bugs using the official server, or report them to the third-party server.`;
-    } else if (this.config != null) {
-      // this is either BW Cloud or BW Self Hosted
-      // todo: change message based on this
-      apiVersion = `Server Version: ${this.config.version}`;
-    }
 
     const content = document.createElement("div");
     content.innerHTML =
@@ -400,7 +390,21 @@ export class SettingsComponent implements OnInit {
       `</p>`;
 
     const versionText = document.createElement("div");
-    versionText.innerHTML = clientVersion + `<br>` + apiVersion;
+    versionText.innerHTML = clientVersion;
+
+    if (this.usingThirdPartyServer()) {
+      versionText.innerHTML +=
+        `<br>` +
+        `Third-Party Server Version: ${this.config.version}` +
+        `<br><br>` +
+        `<small>Connected to third-party server implementation, ${this.config.server.name}. ` +
+        `Please verify bugs using the official server, or report them to the third-party server.</small>`;
+    } else if (this.config != null && this.platformUtilsService.isSelfHost()) {
+      versionText.innerHTML += `<br>Self-Hosted Server Version: ${this.config.version}`;
+    } else if (this.config != null) {
+      versionText.innerHTML += `<br>Server Version: ${this.config.version}`;
+    }
+
     content.appendChild(versionText);
 
     Swal.fire({
@@ -443,5 +447,9 @@ export class SettingsComponent implements OnInit {
   rate() {
     const deviceType = this.platformUtilsService.getDevice();
     BrowserApi.createNewTab((RateUrls as any)[deviceType]);
+  }
+
+  usingThirdPartyServer(): boolean {
+    return this.config != null && this.config.server != null;
   }
 }

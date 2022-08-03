@@ -1,3 +1,7 @@
+/*
+  The Config class represents a Config object the server will return when executing a GET request to `/config`.
+  Please note, the `server` property should be null *unless* the server is a third-party server.
+*/
 export class Config {
   version: string;
   gitHash: string;

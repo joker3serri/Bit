@@ -2299,6 +2299,7 @@ export class StateService<
 
   async getConfig(): Promise<Config> {
     const c = new Config();
+    c.gitHash = "1ke48ne0";
     c.version = "1.2.3";
 
     return c;
