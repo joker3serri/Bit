@@ -78,7 +78,6 @@ import { UnsecuredWebsitesReportComponent as OrgUnsecuredWebsitesReportComponent
 import { WeakPasswordsReportComponent as OrgWeakPasswordsReportComponent } from "../organizations/tools/weak-passwords-report.component";
 import { AddEditComponent as OrgAddEditComponent } from "../organizations/vault/add-edit.component";
 import { AttachmentsComponent as OrgAttachmentsComponent } from "../organizations/vault/attachments.component";
-import { CiphersComponent as OrgCiphersComponent } from "../organizations/vault/ciphers.component";
 import { CollectionsComponent as OrgCollectionsComponent } from "../organizations/vault/collections.component";
 import { ProvidersComponent } from "../providers/providers.component";
 import { BreachReportComponent } from "../reports/breach-report.component";
@@ -142,7 +141,6 @@ import { UserBillingHistoryComponent } from "../settings/user-billing-history.co
 import { UserSubscriptionComponent } from "../settings/user-subscription.component";
 import { VaultTimeoutInputComponent } from "../settings/vault-timeout-input.component";
 import { VerifyEmailComponent } from "../settings/verify-email.component";
-import { PipesModule } from "../shared/pipes/pipes.module";
 import { SharedModule } from "../shared/shared.module";
 import { GeneratorComponent } from "../tools/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/password-generator-history.component";
@@ -155,7 +153,6 @@ import { BulkDeleteComponent } from "../vault/bulk-delete.component";
 import { BulkMoveComponent } from "../vault/bulk-move.component";
 import { BulkRestoreComponent } from "../vault/bulk-restore.component";
 import { BulkShareComponent } from "../vault/bulk-share.component";
-import { CiphersComponent } from "../vault/ciphers.component";
 import { CollectionsComponent } from "../vault/collections.component";
 import { FolderAddEditComponent } from "../vault/folder-add-edit.component";
 import { OrganizationBadgeModule } from "../vault/organization-badge/organization-badge.module";
@@ -169,7 +166,6 @@ import { VaultFilterModule } from "../vault/vault-filter/vault-filter.module";
     SharedModule,
     VaultFilterModule,
     OrganizationBadgeModule,
-    PipesModule,
     OrganizationCreateModule,
     RegisterFormModule,
   ],
@@ -201,7 +197,6 @@ import { VaultFilterModule } from "../vault/vault-filter/vault-filter.module";
     ChangeKdfComponent,
     ChangePasswordComponent,
     ChangePlanComponent,
-    CiphersComponent,
     CollectionsComponent,
     CreateOrganizationComponent,
     DeauthorizeSessionsComponent,
@@ -241,7 +236,6 @@ import { VaultFilterModule } from "../vault/vault-filter/vault-filter.module";
     OrgBulkRestoreRevokeComponent,
     OrgBulkRemoveComponent,
     OrgBulkStatusComponent,
-    OrgCiphersComponent,
     OrgCollectionAddEditComponent,
     OrgCollectionsComponent,
     OrgEntityEventsComponent,
@@ -356,7 +350,6 @@ import { VaultFilterModule } from "../vault/vault-filter/vault-filter.module";
     ChangeKdfComponent,
     ChangePasswordComponent,
     ChangePlanComponent,
-    CiphersComponent,
     CollectionsComponent,
     CreateOrganizationComponent,
     DeauthorizeSessionsComponent,
@@ -396,7 +389,6 @@ import { VaultFilterModule } from "../vault/vault-filter/vault-filter.module";
     OrgBulkRestoreRevokeComponent,
     OrgBulkRemoveComponent,
     OrgBulkStatusComponent,
-    OrgCiphersComponent,
     OrgCollectionAddEditComponent,
     OrgCollectionsComponent,
     OrgEntityEventsComponent,
