@@ -368,6 +368,21 @@ export class Utils {
     return r * 0.299 + g * 0.587 + b * 0.114 > threshold ? blackColor : whiteColor;
   }
 
+  // This value currently isn't stored anywhere, only calculated in the app-avatar component
+  // Once we are allowing org colors to be changed and saved, change this out
+  static stringToColor(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    let color = "#";
+    for (let i = 0; i < 3; i++) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += ("00" + value.toString(16)).substr(-2);
+    }
+    return color;
+  }
+
   private static validIpAddress(ipString: string): boolean {
     const ipRegex =
       /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;

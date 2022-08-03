@@ -17,7 +17,8 @@ const SizeClasses: Record<SizeTypes, string[]> = {
 })
 export class AvatarComponent implements OnChanges {
   @Input() border = false;
-  @Input() color: "#175ddc";
+  @Input() color: string;
+  @Input() id: number;
   @Input() text: string;
   @Input() size: SizeTypes = "default";
 
@@ -54,8 +55,19 @@ export class AvatarComponent implements OnChanges {
       chars = chars.match(Utils.regexpEmojiPresentation)[0];
     }
 
+    let svg: HTMLElement;
+
+    if (this.color) {
+      svg = this.createSvgElement(this.svgSize, this.color);
+    } else if (this.id) {
+      this.color = Utils.stringToColor(this.id.toString());
+      svg = this.createSvgElement(this.svgSize, this.color);
+    } else {
+      this.color = Utils.stringToColor(upperCaseText);
+      svg = this.createSvgElement(this.svgSize, this.color);
+    }
+
     const charObj = this.createTextElement(chars);
-    const svg = this.createSvgElement(this.svgSize, this.color);
     svg.appendChild(charObj);
     const html = window.document.createElement("div").appendChild(svg).outerHTML;
     const svgHtml = window.btoa(unescape(encodeURIComponent(html)));
