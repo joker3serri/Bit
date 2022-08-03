@@ -3,16 +3,22 @@ import { BehaviorSubject, firstValueFrom } from "rxjs";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { PermissionsApi } from "@bitwarden/common/models/api/permissionsApi";
+import { OrganizationData } from "@bitwarden/common/models/data/organizationData";
 import { PolicyData } from "@bitwarden/common/models/data/policyData";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 import { Policy } from "@bitwarden/common/models/domain/policy";
 import { ResetPasswordPolicyOptions } from "@bitwarden/common/models/domain/resetPasswordPolicyOptions";
+import { ListResponse } from "@bitwarden/common/models/response/listResponse";
+import { PolicyResponse } from "@bitwarden/common/models/response/policyResponse";
 import { ContainerService } from "@bitwarden/common/services/container.service";
 import { PolicyService } from "@bitwarden/common/services/policy/policy.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 
-describe("Policy Service", () => {
+describe("PolicyService", () => {
   let policyService: PolicyService;
 
   let cryptoService: SubstituteOf<CryptoService>;
@@ -24,6 +30,20 @@ describe("Policy Service", () => {
   beforeEach(() => {
     stateService = Substitute.for();
     organizationService = Substitute.for();
+    organizationService
+      .getAll("user")
+      .resolves([
+        new Organization(
+          organizationData(
+            "test-organization",
+            true,
+            true,
+            OrganizationUserStatusType.Accepted,
+            false
+          )
+        ),
+      ]);
+    organizationService.getAll("non-org-user").resolves([]);
     activeAccount = new BehaviorSubject("123");
     activeAccountUnlocked = new BehaviorSubject(true);
     stateService.getEncryptedPolicies().resolves({
@@ -94,16 +114,23 @@ describe("Policy Service", () => {
 
   describe("getMasterPasswordPolicyOptions", () => {
     it("returns default policy options", async () => {
-      const model = await policyService.getAll();
+      const data: any = {
+        minComplexity: 5,
+        minLength: 20,
+        requireUpper: true,
+      };
+      const model = [
+        new Policy(policyData("1", "test-organization-3", PolicyType.MasterPassword, true, data)),
+      ];
       const result = await policyService.getMasterPasswordPolicyOptions(model);
 
       expect(result).toEqual({
-        minComplexity: 0,
-        minLength: 14,
+        minComplexity: 5,
+        minLength: 20,
         requireLower: false,
         requireNumbers: false,
         requireSpecial: false,
-        requireUpper: false,
+        requireUpper: true,
       });
     });
 
@@ -184,6 +211,98 @@ describe("Policy Service", () => {
     });
   });
 
+  describe("mapPoliciesFromToken", () => {
+    it("null", async () => {
+      const result = policyService.mapPoliciesFromToken(null);
+
+      expect(result).toEqual(null);
+    });
+
+    it("null data", async () => {
+      const model = new ListResponse(null, PolicyResponse);
+      model.data = null;
+      const result = policyService.mapPoliciesFromToken(model);
+
+      expect(result).toEqual(null);
+    });
+
+    it("empty array", async () => {
+      const model = new ListResponse(null, PolicyResponse);
+      const result = policyService.mapPoliciesFromToken(model);
+
+      expect(result).toEqual([]);
+    });
+
+    it("success", async () => {
+      const policyResponse: any = {
+        Data: [
+          {
+            Id: "1",
+            OrganizationId: "organization-1",
+            Type: PolicyType.DisablePersonalVaultExport,
+            Enabled: true,
+            Data: { requireUpper: true },
+          },
+          {
+            Id: "2",
+            OrganizationId: "organization-2",
+            Type: PolicyType.DisableSend,
+            Enabled: false,
+            Data: { minComplexity: 5, minLength: 20 },
+          },
+        ],
+      };
+      const model = new ListResponse(policyResponse, PolicyResponse);
+      const result = policyService.mapPoliciesFromToken(model);
+
+      expect(result).toEqual([
+        new Policy(
+          policyData("1", "organization-1", PolicyType.DisablePersonalVaultExport, true, {
+            requireUpper: true,
+          })
+        ),
+        new Policy(
+          policyData("2", "organization-2", PolicyType.DisableSend, false, {
+            minComplexity: 5,
+            minLength: 20,
+          })
+        ),
+      ]);
+    });
+  });
+
+  describe("policyAppliesToUser", () => {
+    it("non org user", async () => {
+      const result = await policyService.policyAppliesToUser(
+        PolicyType.MasterPassword,
+        null,
+        "non-org-user"
+      );
+
+      expect(result).toEqual(false);
+    });
+
+    it("policy type applies", async () => {
+      const result = await policyService.policyAppliesToUser(
+        PolicyType.MasterPassword,
+        null,
+        "user"
+      );
+
+      expect(result).toEqual(true);
+    });
+
+    it("policy type does not apply", async () => {
+      const result = await policyService.policyAppliesToUser(
+        PolicyType.DisablePersonalVaultExport,
+        null,
+        "user"
+      );
+
+      expect(result).toEqual(false);
+    });
+  });
+
   function policyData(
     id: string,
     organizationId: string,
@@ -199,5 +318,21 @@ describe("Policy Service", () => {
     policyData.data = data;
 
     return policyData;
+  }
+
+  function organizationData(
+    id: string,
+    enabled: boolean,
+    usePolicies: boolean,
+    status: OrganizationUserStatusType,
+    managePolicies: boolean
+  ) {
+    const organizationData = new OrganizationData({} as any);
+    organizationData.id = id;
+    organizationData.enabled = enabled;
+    organizationData.usePolicies = usePolicies;
+    organizationData.status = status;
+    organizationData.permissions = new PermissionsApi({ managePolicies: managePolicies } as any);
+    return organizationData;
   }
 });
