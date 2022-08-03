@@ -127,6 +127,7 @@ import { SettingsComponent } from "../settings/settings.component";
 import { SponsoredFamiliesComponent } from "../settings/sponsored-families.component";
 import { SponsoringOrgRowComponent } from "../settings/sponsoring-org-row.component";
 import { SubscriptionComponent } from "../settings/subscription.component";
+import { TaxInfoComponent } from "../settings/tax-info.component";
 import { TwoFactorAuthenticatorComponent } from "../settings/two-factor-authenticator.component";
 import { TwoFactorDuoComponent } from "../settings/two-factor-duo.component";
 import { TwoFactorEmailComponent } from "../settings/two-factor-email.component";
@@ -302,6 +303,7 @@ import { VaultFilterModule } from "../vault/vault-filter/vault-filter.module";
     SponsoringOrgRowComponent,
     SsoComponent,
     SubscriptionComponent,
+    TaxInfoComponent,
     ToolsComponent,
     TwoFactorAuthenticationPolicyComponent,
     TwoFactorAuthenticatorComponent,
@@ -455,6 +457,7 @@ import { VaultFilterModule } from "../vault/vault-filter/vault-filter.module";
     SponsoringOrgRowComponent,
     SsoComponent,
     SubscriptionComponent,
+    TaxInfoComponent,
     ToolsComponent,
     TwoFactorAuthenticationPolicyComponent,
     TwoFactorAuthenticatorComponent,
