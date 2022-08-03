@@ -88,9 +88,9 @@ export class VaultSelectComponent implements OnInit {
     private platformUtilsService: PlatformUtilsService
   ) {}
 
-  @HostListener("document:keydown", ["$event"])
+  @HostListener("document:keydown.escape", ["$event"])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.key == "Escape" && this.isOpen) {
+    if (this.isOpen) {
       event.preventDefault();
       this.close();
     }
