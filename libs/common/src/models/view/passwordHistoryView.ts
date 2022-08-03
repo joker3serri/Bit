@@ -16,7 +16,7 @@ export class PasswordHistoryView implements View {
     this.lastUsedDate = ph.lastUsedDate;
   }
 
-  static fromJSON(obj: Jsonify<PasswordHistoryView>): PasswordHistoryView {
+  static fromJSON(obj: Partial<Jsonify<PasswordHistoryView>>): PasswordHistoryView {
     const lastUsedDate = obj.lastUsedDate == null ? null : new Date(obj.lastUsedDate);
 
     return Object.assign(new PasswordHistoryView(), obj, {

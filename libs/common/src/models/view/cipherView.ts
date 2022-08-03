@@ -134,7 +134,7 @@ export class CipherView implements View {
     return this.linkedFieldOptions.get(id)?.i18nKey;
   }
 
-  static fromJSON(obj: Jsonify<CipherView>): CipherView {
+  static fromJSON(obj: Partial<Jsonify<CipherView>>): CipherView {
     const view = new CipherView();
     const revisionDate = obj.revisionDate == null ? null : new Date(obj.revisionDate);
     const deletedDate = obj.deletedDate == null ? null : new Date(obj.deletedDate);

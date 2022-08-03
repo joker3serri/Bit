@@ -63,7 +63,7 @@ export class LoginView extends ItemView {
     return this.uris != null && this.uris.length > 0;
   }
 
-  static fromJSON(obj: Jsonify<LoginView>): LoginView {
+  static fromJSON(obj: Partial<Jsonify<LoginView>>): LoginView {
     const passwordRevisionDate =
       obj.passwordRevisionDate == null ? null : new Date(obj.passwordRevisionDate);
     const uris = obj.uris?.map((uri: any) => LoginUriView.fromJSON(uri));
