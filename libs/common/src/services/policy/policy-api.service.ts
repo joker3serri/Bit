@@ -105,11 +105,7 @@ export class PolicyApiService implements PolicyApiServiceAbstraction {
     return this.policyService.getMasterPasswordPolicyOptions(policies);
   }
 
-  async putPolicy(
-    organizationId: string,
-    type: PolicyType,
-    request: PolicyRequest
-  ): Promise<PolicyResponse> {
+  async putPolicy(organizationId: string, type: PolicyType, request: PolicyRequest): Promise<any> {
     const r = await this.apiService.send(
       "PUT",
       "/organizations/" + organizationId + "/policies/" + type,
@@ -117,6 +113,8 @@ export class PolicyApiService implements PolicyApiServiceAbstraction {
       true,
       true
     );
-    return new PolicyResponse(r);
+    const response = new PolicyResponse(r);
+    const data = new PolicyData(response);
+    await this.policyService.upsert(data);
   }
 }
