@@ -1,28 +1,27 @@
 // Add chrome storage api
-const fn = jest.fn();
 const QUOTA_BYTES = 10;
 global.chrome = {
   storage: {
     local: {
-      set: fn,
-      get: fn,
-      remove: fn,
+      set: jest.fn(),
+      get: jest.fn(),
+      remove: jest.fn(),
       QUOTA_BYTES,
-      getBytesInUse: fn,
-      clear: fn,
+      getBytesInUse: jest.fn(),
+      clear: jest.fn(),
     },
     session: {
-      set: fn,
-      get: fn,
-      has: fn,
-      remove: fn,
+      set: jest.fn(),
+      get: jest.fn(),
+      has: jest.fn(),
+      remove: jest.fn(),
     },
   },
   runtime: {
     onMessage: {
-      addListener: fn,
+      addListener: jest.fn(),
     },
-    sendMessage: fn,
-    getManifest: fn,
+    sendMessage: jest.fn(),
+    getManifest: jest.fn(),
   },
 } as any;
