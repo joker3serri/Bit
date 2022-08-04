@@ -12,7 +12,7 @@ import { DialogService } from "./modal.service";
   selector: "app-story-modal",
   template: `<button bitButton (click)="openDialog()">Open Dialog</button>`,
 })
-export class StoryModalComponent {
+class StoryModalComponent {
   constructor(public dialogService: DialogService) {}
 
   openDialog() {
@@ -38,7 +38,7 @@ export class StoryModalComponent {
     </bit-modal>
   `,
 })
-export class StoryModalContentComponent {
+class StoryModalContentComponent {
   constructor(public dialogRef: DialogRef) {}
 }
 
