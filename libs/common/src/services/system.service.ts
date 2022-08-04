@@ -17,13 +17,17 @@ export class SystemService implements SystemServiceAbstraction {
   ) {}
 
   async startProcessReload(): Promise<void> {
-    if (
-      (await this.stateService.getDecryptedPinProtected()) != null ||
-      (await this.stateService.getBiometricLocked()) ||
-      this.reloadInterval != null
-    ) {
+    // A reloadInterval has already been set and is executing
+    if (this.reloadInterval != null) {
       return;
     }
+
+    // User has set a PIN to protect their vault
+    const decryptedPinProtected = await this.stateService.getDecryptedPinProtected();
+    if (decryptedPinProtected != null) {
+      return;
+    }
+
     this.cancelProcessReload();
     this.reloadInterval = setInterval(async () => {
       let doRefresh = false;
