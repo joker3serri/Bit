@@ -79,21 +79,6 @@ export class PolicyApiService implements PolicyApiServiceAbstraction {
     return new ListResponse(r, PolicyResponse);
   }
 
-  async putPolicy(
-    organizationId: string,
-    type: PolicyType,
-    request: PolicyRequest
-  ): Promise<PolicyResponse> {
-    const r = await this.apiService.send(
-      "PUT",
-      "/organizations/" + organizationId + "/policies/" + type,
-      request,
-      true,
-      true
-    );
-    return new PolicyResponse(r);
-  }
-
   async getPolicyForOrganization(policyType: PolicyType, organizationId: string): Promise<Policy> {
     const org = await this.organizationService.get(organizationId);
     if (org?.isProviderUser) {
@@ -118,5 +103,20 @@ export class PolicyApiService implements PolicyApiServiceAbstraction {
     const response = await this.getPoliciesByInvitedUser(orgId, userId);
     const policies = await this.policyService.mapPoliciesFromToken(response);
     return this.policyService.getMasterPasswordPolicyOptions(policies);
+  }
+
+  async putPolicy(
+    organizationId: string,
+    type: PolicyType,
+    request: PolicyRequest
+  ): Promise<PolicyResponse> {
+    const r = await this.apiService.send(
+      "PUT",
+      "/organizations/" + organizationId + "/policies/" + type,
+      request,
+      true,
+      true
+    );
+    return new PolicyResponse(r);
   }
 }
