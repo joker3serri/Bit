@@ -5,7 +5,7 @@ import { Component, Input } from "@angular/core";
   templateUrl: "./modal.component.html",
 })
 export class ModalComponent {
-  @Input() modalSize: "small" | "default" | "large";
+  @Input() modalSize: "small" | "default" | "large" = "default";
 
   get width() {
     switch (this.modalSize) {
