@@ -26,10 +26,7 @@ const routes: Routes = [
       },
       {
         path: "settings",
-        loadChildren: () =>
-          import("../organizations/settings/organization-settings.module").then(
-            (m) => m.OrganizationSettingsModule
-          ),
+        loadChildren: () => import("./settings").then((m) => m.OrganizationSettingsModule),
       },
       {
         path: "members",

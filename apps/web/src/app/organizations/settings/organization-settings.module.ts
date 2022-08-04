@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 
 import { LooseComponentsModule, SharedModule} from "../../shared";
-import { PoliciesModule } from "../policies/policies.module";
+import { PoliciesModule } from "../policies";
 
 import { AccountComponent } from "./components/account.component";
 import { AdjustSubscription } from "./components/adjust-subscription.component";

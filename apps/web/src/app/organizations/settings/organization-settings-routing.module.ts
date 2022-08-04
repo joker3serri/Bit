@@ -3,8 +3,8 @@ import { RouterModule, Routes } from "@angular/router";
 
 import { Permissions } from "@bitwarden/common/enums/permissions";
 
-import { PermissionsGuard } from "../../organizations/guards/permissions.guard";
-import { NavigationPermissionsService } from "../../organizations/services/navigation-permissions.service";
+import { PermissionsGuard } from "../guards/permissions.guard";
+import { NavigationPermissionsService } from "../services/navigation-permissions.service";
 
 import { AccountComponent } from "./components/account.component";
 import { PoliciesComponent } from "./components/policies.component";

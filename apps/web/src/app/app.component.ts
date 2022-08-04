@@ -26,17 +26,18 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
 
-
 import { PolicyListService, RouterService } from "./core";
-import { DisableSendPolicy } from "./organizations/policies/components/disable-send.component";
-import { MasterPasswordPolicy } from "./organizations/policies/components/master-password.component";
-import { PasswordGeneratorPolicy } from "./organizations/policies/components/password-generator.component";
-import { PersonalOwnershipPolicy } from "./organizations/policies/components/personal-ownership.component";
-import { RequireSsoPolicy } from "./organizations/policies/components/require-sso.component";
-import { ResetPasswordPolicy } from "./organizations/policies/components/reset-password.component";
-import { SendOptionsPolicy } from "./organizations/policies/components/send-options.component";
-import { SingleOrgPolicy } from "./organizations/policies/components/single-org.component";
-import { TwoFactorAuthenticationPolicy } from "./organizations/policies/components/two-factor-authentication.component";
+import {
+  DisableSendPolicy,
+  MasterPasswordPolicy,
+  PasswordGeneratorPolicy,
+  PersonalOwnershipPolicy,
+  RequireSsoPolicy,
+  ResetPasswordPolicy,
+  SendOptionsPolicy,
+  SingleOrgPolicy,
+  TwoFactorAuthenticationPolicy,
+} from "./organizations/policies";
 
 const BroadcasterSubscriptionId = "AppComponent";
 const IdleTimeout = 60000 * 10; // 10 minutes

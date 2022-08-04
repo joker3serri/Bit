@@ -1,0 +1,11 @@
+export * from "./policies.module";
+export { BasePolicy, BasePolicyComponent } from "./components/base-policy.component";
+export { DisableSendPolicy } from "./components/disable-send.component";
+export { MasterPasswordPolicy } from "./components/master-password.component";
+export { PasswordGeneratorPolicy } from "./components/password-generator.component";
+export { PersonalOwnershipPolicy } from "./components/personal-ownership.component";
+export { RequireSsoPolicy } from "./components/require-sso.component";
+export { ResetPasswordPolicy } from "./components/reset-password.component";
+export { SendOptionsPolicy } from "./components/send-options.component";
+export { SingleOrgPolicy } from "./components/single-org.component";
+export { TwoFactorAuthenticationPolicy } from "./components/two-factor-authentication.component";
