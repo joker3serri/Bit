@@ -22,7 +22,7 @@ export class SystemService implements SystemServiceAbstraction {
       return;
     }
 
-    // User has set a PIN to protect their vault
+    // User has set a PIN, with ask for master password on restart, to protect their vault
     const decryptedPinProtected = await this.stateService.getDecryptedPinProtected();
     if (decryptedPinProtected != null) {
       return;
