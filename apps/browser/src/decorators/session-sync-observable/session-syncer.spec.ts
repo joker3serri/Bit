@@ -25,7 +25,7 @@ describe("session syncer", () => {
     describe("input errors", () => {
       it("should throw if behaviorSubject is not an instance of BehaviorSubject", () => {
         expect(() => {
-          new SessionSyncer({}, stateService, null);
+          new SessionSyncer({} as any, stateService, null);
         }).toThrowError("behaviorSubject must be an instance of BehaviorSubject");
       });
 

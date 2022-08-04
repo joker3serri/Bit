@@ -15,7 +15,7 @@ export class SessionSyncer {
   private ignore_next_update = true;
 
   constructor(
-    private behaviorSubject: any,
+    private behaviorSubject: BehaviorSubject<any>,
     private stateService: StateService,
     private metaData: SyncedItemMetadata
   ) {
@@ -33,15 +33,15 @@ export class SessionSyncer {
       return;
     }
 
-    this.observe(this.behaviorSubject);
-    this.listenForUpdates(this.behaviorSubject);
+    this.observe();
+    this.listenForUpdates();
   }
 
-  observe(behaviorSubject: BehaviorSubject<any>) {
+  observe() {
     // This may be a memory leak.
     // There is no good time to unsubscribe from this observable. Hopefully Manifest V3 clears memory from temporary
     // contexts. If so, this is handled by destruction of the context.
-    this.subscription = behaviorSubject.subscribe(async (next) => {
+    this.subscription = this.behaviorSubject.subscribe(async (next) => {
       if (this.ignore_next_update) {
         this.ignore_next_update = false;
         return;
@@ -50,7 +50,7 @@ export class SessionSyncer {
     });
   }
 
-  listenForUpdates(behaviorSubject: BehaviorSubject<any>) {
+  listenForUpdates() {
     // This is an unawaited promise, but it will be executed asynchronously in the background.
     BrowserApi.messageListener(
       this.updateMessageCommand,
