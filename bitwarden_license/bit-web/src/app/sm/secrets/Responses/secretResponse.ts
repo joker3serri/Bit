@@ -1,4 +1,4 @@
-import { BaseResponse } from "../../../../../../../libs/common/src/models/response/baseResponse";
+import { BaseResponse } from "@bitwarden/common/models/response/baseResponse";
 
 export class SecretResponse extends BaseResponse {
   id: string;

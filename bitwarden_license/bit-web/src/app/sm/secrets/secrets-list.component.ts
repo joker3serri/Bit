@@ -42,6 +42,6 @@ export class SecretsListComponent implements OnDestroy {
   toggleAll() {
     this.isAllSelected()
       ? this.selection.clear()
-      : this.secrets.forEach((s) => this.selection.select(s.id));
+      : this.selection.select(...this.secrets.map((s) => s.id));
   }
 }

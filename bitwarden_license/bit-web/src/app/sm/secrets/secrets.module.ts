@@ -1,14 +1,16 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 
-import { BadgeModule, ButtonModule, TableModule, MenuModule } from "@bitwarden/components";
+import { TableModule } from "@bitwarden/components";
+
+import { SharedModule } from "src/app/modules/shared.module";
 
 import { SecretsListComponent } from "./secrets-list.component";
 import { SecretsRoutingModule } from "./secrets-routing.module";
 import { SecretsComponent } from "./secrets.component";
 
 @NgModule({
-  imports: [CommonModule, SecretsRoutingModule, ButtonModule, TableModule, BadgeModule, MenuModule],
+  imports: [CommonModule, SharedModule, SecretsRoutingModule, TableModule],
   declarations: [SecretsComponent, SecretsListComponent],
   providers: [],
 })
