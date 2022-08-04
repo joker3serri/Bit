@@ -9,7 +9,7 @@ export class DialogService extends Dialog {
     config?: DialogConfig<D, DialogRef<R, C>>
   ): DialogRef<R, C> {
     config = {
-      backdropClass: ["tw-fixed", "tw-bg-[#000000]", "tw-bg-opacity-30", "tw-inset-0", "tw-z-40"],
+      backdropClass: ["tw-fixed", "tw-bg-black", "tw-bg-opacity-30", "tw-inset-0", "tw-z-40"],
       ...config,
     };
 
