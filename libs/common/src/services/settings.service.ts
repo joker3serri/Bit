@@ -9,10 +9,6 @@ const Keys = {
 export class SettingsService implements SettingsServiceAbstraction {
   constructor(private stateService: StateService) {}
 
-  async clearCache(): Promise<void> {
-    await this.stateService.setSettings(null);
-  }
-
   getEquivalentDomains(): Promise<any> {
     return this.getSettingsKey(Keys.equivalentDomains);
   }
