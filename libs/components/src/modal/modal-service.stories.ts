@@ -1,5 +1,5 @@
-import { DialogModule, DialogRef } from "@angular/cdk/dialog";
-import { Component } from "@angular/core";
+import { DialogModule, DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
+import { Component, Inject } from "@angular/core";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { ButtonModule } from "../button";
@@ -7,6 +7,10 @@ import { ButtonModule } from "../button";
 import { ModalCloseDirective } from "./modal-content.directives";
 import { ModalComponent } from "./modal.component";
 import { DialogService } from "./modal.service";
+
+interface Animal {
+  animal: string;
+}
 
 @Component({
   selector: "app-story-modal",
@@ -17,7 +21,6 @@ class StoryModalComponent {
 
   openDialog() {
     this.dialogService.open(StoryModalContentComponent, {
-      minWidth: "300px",
       data: {
         animal: "panda",
       },
@@ -29,8 +32,12 @@ class StoryModalComponent {
   selector: "story-modal-content",
   template: `
     <bit-modal>
-      <span bit-modal-title> Modal Title </span>
-      <span bit-modal-content> Modal body text goes here. </span>
+      <span bit-modal-title>Modal Title</span>
+      <span bit-modal-content>
+        Modal body text goes here.
+        <br />
+        Animal: {{ animal }}
+      </span>
       <div bit-modal-footer class="tw-flex tw-flex-row tw-gap-2">
         <button bitButton buttonType="primary" (click)="dialogRef.close()">Save</button>
         <button bitButton buttonType="secondary" bitModalClose>Cancel</button>
@@ -39,7 +46,11 @@ class StoryModalComponent {
   `,
 })
 class StoryModalContentComponent {
-  constructor(public dialogRef: DialogRef) {}
+  constructor(public dialogRef: DialogRef, @Inject(DIALOG_DATA) private data: Animal) {}
+
+  get animal() {
+    return this.data?.animal;
+  }
 }
 
 export default {
