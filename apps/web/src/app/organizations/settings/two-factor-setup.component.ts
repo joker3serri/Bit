@@ -11,12 +11,12 @@ import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.serv
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
 
-import { TwoFactorDuoComponent } from "../../../settings/two-factor-duo.component";
-import { TwoFactorSetupComponent as BaseTwoFactorSetupComponent } from "../../../settings/two-factor-setup.component";
+import { TwoFactorDuoComponent } from "../../settings/two-factor-duo.component";
+import { TwoFactorSetupComponent as BaseTwoFactorSetupComponent } from "../../settings/two-factor-setup.component";
 
 @Component({
   selector: "app-two-factor-setup",
-  templateUrl: "../../../settings/two-factor-setup.component.html",
+  templateUrl: "../../settings/two-factor-setup.component.html",
 })
 export class TwoFactorSetupComponent extends BaseTwoFactorSetupComponent {
   constructor(

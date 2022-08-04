@@ -6,10 +6,10 @@ import { Permissions } from "@bitwarden/common/enums/permissions";
 import { PermissionsGuard } from "../guards/permissions.guard";
 import { NavigationPermissionsService } from "../services/navigation-permissions.service";
 
-import { AccountComponent } from "./components/account.component";
-import { PoliciesComponent } from "./components/policies.component";
-import { TwoFactorSetupComponent } from "./components/two-factor-setup.component";
+import { AccountComponent } from "./account.component";
+import { PoliciesComponent } from "./policies.component";
 import { SettingsComponent } from "./settings.component";
+import { TwoFactorSetupComponent } from "./two-factor-setup.component";
 
 const routes: Routes = [
   {
