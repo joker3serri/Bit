@@ -20,10 +20,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     private organizationService: OrganizationService
   ) {}
 
-  async clearCache(): Promise<void> {
-    await this.stateService.setDecryptedPolicies(null);
-  }
-
   async getAll(type?: PolicyType, userId?: string): Promise<Policy[]> {
     let response: Policy[] = [];
     const decryptedPolicies = await this.stateService.getDecryptedPolicies({ userId: userId });

@@ -7,7 +7,6 @@ import { ListResponse } from "../../models/response/listResponse";
 import { PolicyResponse } from "../../models/response/policyResponse";
 
 export abstract class PolicyService {
-  clearCache: () => void;
   getAll: (type?: PolicyType, userId?: string) => Promise<Policy[]>;
 
   getMasterPasswordPolicyOptions: (policies?: Policy[]) => Promise<MasterPasswordPolicyOptions>;
