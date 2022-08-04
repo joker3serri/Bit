@@ -1,3 +1,4 @@
+import { AbstractCachedStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { GlobalState } from "@bitwarden/common/models/domain/globalState";
 import { StorageOptions } from "@bitwarden/common/models/domain/storageOptions";
 import {
@@ -17,13 +18,13 @@ export class StateService
   implements StateServiceAbstraction
 {
   async getFromSessionMemory<T>(key: string): Promise<T> {
-    // TODO MDG: get from session storage
-    throw Error("todo");
+    return this.memoryStorageService instanceof AbstractCachedStorageService
+      ? await this.memoryStorageService.get_bypass_cache<T>(key)
+      : await this.memoryStorageService.get<T>(key);
   }
 
   async setInSessionMemory(key: string, value: any): Promise<void> {
-    // TODO MDG: update session storage
-    throw Error("todo");
+    await this.memoryStorageService.save(key, value);
   }
 
   async addAccount(account: Account) {

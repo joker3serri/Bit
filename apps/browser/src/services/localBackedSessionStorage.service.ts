@@ -1,5 +1,5 @@
 import { AbstractEncryptService } from "@bitwarden/common/abstractions/abstractEncrypt.service";
-import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";
+import { AbstractCachedStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 
@@ -12,7 +12,9 @@ const keys = {
   sessionKey: "session",
 };
 
-export class LocalBackedSessionStorageService extends AbstractStorageService {
+export class LocalBackedSessionStorageService extends AbstractCachedStorageService {
+  // TODO MDG: move this to env flag
+  private storeDecrypted = process.env.NODE_ENV === "development";
   private cache = new Map<string, any>();
   private localStorage = new BrowserLocalStorageService();
   private sessionStorage = new BrowserMemoryStorageService();
@@ -29,6 +31,10 @@ export class LocalBackedSessionStorageService extends AbstractStorageService {
       return this.cache.get(key);
     }
 
+    return await this.get_bypass_cache(key);
+  }
+
+  async get_bypass_cache<T>(key: string): Promise<T> {
     const session = await this.getLocalSession(await this.getSessionEncKey());
     if (session == null || !Object.keys(session).includes(key)) {
       return null;
@@ -66,6 +72,10 @@ export class LocalBackedSessionStorageService extends AbstractStorageService {
       return null;
     }
 
+    if (this.storeDecrypted) {
+      return local;
+    }
+
     const sessionJson = await this.encryptService.decryptToUtf8(new EncString(local), encKey);
     if (sessionJson == null) {
       // Error with decryption -- session is lost, delete state and key and start over
@@ -77,13 +87,21 @@ export class LocalBackedSessionStorageService extends AbstractStorageService {
   }
 
   async setLocalSession(session: any, key: SymmetricCryptoKey) {
-    const jsonSession = JSON.stringify(session);
-    const encSession = await this.encryptService.encrypt(jsonSession, key);
+    if (this.storeDecrypted) {
+      if (session == null) {
+        await this.localStorage.remove(keys.sessionKey);
+      } else {
+        await this.localStorage.save(keys.sessionKey, session);
+      }
+    } else {
+      const jsonSession = JSON.stringify(session);
+      const encSession = await this.encryptService.encrypt(jsonSession, key);
 
-    if (encSession == null) {
-      return await this.localStorage.remove(keys.sessionKey);
+      if (encSession == null) {
+        return await this.localStorage.remove(keys.sessionKey);
+      }
+      await this.localStorage.save(keys.sessionKey, encSession.encryptedString);
     }
-    await this.localStorage.save(keys.sessionKey, encSession.encryptedString);
   }
 
   async getSessionEncKey(): Promise<SymmetricCryptoKey> {
