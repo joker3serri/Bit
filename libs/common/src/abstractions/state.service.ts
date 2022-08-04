@@ -291,7 +291,13 @@ export abstract class StateService<T extends Account = Account> {
   setRememberedEmail: (value: string, options?: StorageOptions) => Promise<void>;
   getSecurityStamp: (options?: StorageOptions) => Promise<string>;
   setSecurityStamp: (value: string, options?: StorageOptions) => Promise<void>;
+  /**
+   * @deprecated Do not call this directly, use SettingsService
+   */
   getSettings: (options?: StorageOptions) => Promise<any>;
+  /**
+   * @deprecated Do not call this directly, use SettingsService
+   */
   setSettings: (value: string, options?: StorageOptions) => Promise<void>;
   getSsoCodeVerifier: (options?: StorageOptions) => Promise<string>;
   setSsoCodeVerifier: (value: string, options?: StorageOptions) => Promise<void>;
