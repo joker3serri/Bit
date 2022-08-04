@@ -29,25 +29,27 @@ export class SystemService implements SystemServiceAbstraction {
     }
 
     this.cancelProcessReload();
-    this.reloadInterval = setInterval(async () => {
-      let doRefresh = false;
-      const lastActive = await this.stateService.getLastActive();
-      if (lastActive != null) {
-        const diffSeconds = new Date().getTime() - lastActive;
-        // Don't refresh if they are still active in the window
-        doRefresh = diffSeconds >= 5000;
+    this.reloadInterval = setInterval(async () => await this.executeProcessReload(), 10000);
+  }
+
+  private async executeProcessReload() {
+    let doRefresh = false;
+    const lastActive = await this.stateService.getLastActive();
+    if (lastActive != null) {
+      const diffSeconds = new Date().getTime() - lastActive;
+      // Don't refresh if they are still active in the window
+      doRefresh = diffSeconds >= 5000;
+    }
+    const biometricLockedFingerprintValidated =
+      await this.stateService.getBiometricFingerprintValidated();
+    if (doRefresh && !biometricLockedFingerprintValidated) {
+      clearInterval(this.reloadInterval);
+      this.reloadInterval = null;
+      this.messagingService.send("reloadProcess");
+      if (this.reloadCallback != null) {
+        await this.reloadCallback();
       }
-      const biometricLockedFingerprintValidated =
-        await this.stateService.getBiometricFingerprintValidated();
-      if (doRefresh && !biometricLockedFingerprintValidated) {
-        clearInterval(this.reloadInterval);
-        this.reloadInterval = null;
-        this.messagingService.send("reloadProcess");
-        if (this.reloadCallback != null) {
-          await this.reloadCallback();
-        }
-      }
-    }, 10000);
+    }
   }
 
   cancelProcessReload(): void {
