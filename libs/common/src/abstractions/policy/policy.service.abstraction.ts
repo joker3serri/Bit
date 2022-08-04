@@ -11,7 +11,6 @@ import { PolicyResponse } from "../../models/response/policyResponse";
 export abstract class PolicyService {
   policies$: Observable<Policy[]>;
 
-  clearCache: () => Promise<void>;
   getAll: (type?: PolicyType) => Promise<Policy[]>;
   getMasterPasswordPolicyOptions: (policies?: Policy[]) => Promise<MasterPasswordPolicyOptions>;
   evaluateMasterPassword: (
@@ -32,6 +31,7 @@ export abstract class PolicyService {
 }
 
 export abstract class InternalPolicyService extends PolicyService {
+  upsert: (policy: PolicyData) => Promise<any>;
   replace: (policies: { [id: string]: PolicyData }) => Promise<void>;
   clear: (userId?: string) => Promise<any>;
 }

@@ -41,10 +41,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     });
   }
 
-  async clearCache(): Promise<void> {
-    this._policies.next([]);
-  }
-
   async getAll(type?: PolicyType): Promise<Policy[]> {
     const policies = this._policies.getValue();
 
@@ -206,6 +202,18 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
         !this.isExcemptFromPolicies(o, policyType) &&
         policySet.has(o.id)
     );
+  }
+
+  async upsert(policy: PolicyData): Promise<any> {
+    let policies = await this.stateService.getEncryptedPolicies();
+    if (policies == null) {
+      policies = {};
+    }
+
+    policies[policy.id] = policy;
+
+    await this.updateObservables(policies);
+    await this.stateService.setEncryptedPolicies(policies);
   }
 
   async replace(policies: { [id: string]: PolicyData }): Promise<void> {
