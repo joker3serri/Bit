@@ -3,6 +3,8 @@ import { AbstractCachedStorageService } from "@bitwarden/common/abstractions/sto
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 
+import { devFlagEnabled } from "../flags";
+
 import { AbstractKeyGenerationService } from "./abstractions/abstractKeyGeneration.service";
 import BrowserLocalStorageService from "./browserLocalStorage.service";
 import BrowserMemoryStorageService from "./browserMemoryStorage.service";
@@ -13,8 +15,6 @@ const keys = {
 };
 
 export class LocalBackedSessionStorageService extends AbstractCachedStorageService {
-  // TODO MDG: move this to env flag
-  private storeDecrypted = process.env.NODE_ENV === "development";
   private cache = new Map<string, any>();
   private localStorage = new BrowserLocalStorageService();
   private sessionStorage = new BrowserMemoryStorageService();
@@ -72,7 +72,7 @@ export class LocalBackedSessionStorageService extends AbstractCachedStorageServi
       return null;
     }
 
-    if (this.storeDecrypted) {
+    if (devFlagEnabled("storeSessionDecrypted")) {
       return local;
     }
 
@@ -87,21 +87,29 @@ export class LocalBackedSessionStorageService extends AbstractCachedStorageServi
   }
 
   async setLocalSession(session: any, key: SymmetricCryptoKey) {
-    if (this.storeDecrypted) {
-      if (session == null) {
-        await this.localStorage.remove(keys.sessionKey);
-      } else {
-        await this.localStorage.save(keys.sessionKey, session);
-      }
+    if (devFlagEnabled("storeSessionDecrypted")) {
+      await this.setDecryptedLocalSession(session);
     } else {
-      const jsonSession = JSON.stringify(session);
-      const encSession = await this.encryptService.encrypt(jsonSession, key);
-
-      if (encSession == null) {
-        return await this.localStorage.remove(keys.sessionKey);
-      }
-      await this.localStorage.save(keys.sessionKey, encSession.encryptedString);
+      await this.setEncryptedLocalSession(session, key);
     }
+  }
+
+  async setDecryptedLocalSession(session: any): Promise<void> {
+    if (session == null) {
+      await this.localStorage.remove(keys.sessionKey);
+    } else {
+      await this.localStorage.save(keys.sessionKey, session);
+    }
+  }
+
+  async setEncryptedLocalSession(session: any, key: SymmetricCryptoKey) {
+    const jsonSession = JSON.stringify(session);
+    const encSession = await this.encryptService.encrypt(jsonSession, key);
+
+    if (encSession == null) {
+      return await this.localStorage.remove(keys.sessionKey);
+    }
+    await this.localStorage.save(keys.sessionKey, encSession.encryptedString);
   }
 
   async getSessionEncKey(): Promise<SymmetricCryptoKey> {
