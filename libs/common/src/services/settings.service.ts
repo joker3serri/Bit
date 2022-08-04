@@ -1,5 +1,9 @@
+import { BehaviorSubject } from "rxjs";
+
 import { SettingsService as SettingsServiceAbstraction } from "../abstractions/settings.service";
 import { StateService } from "../abstractions/state.service";
+import { Utils } from "../misc/utils";
+import { AccountSettings } from "../models/domain/account";
 
 const Keys = {
   settingsPrefix: "settings_",
@@ -7,7 +11,26 @@ const Keys = {
 };
 
 export class SettingsService implements SettingsServiceAbstraction {
-  constructor(private stateService: StateService) {}
+  private _settings: BehaviorSubject<AccountSettings[]> = new BehaviorSubject([]);
+
+  settings$ = this._settings.asObservable();
+
+  constructor(private stateService: StateService) {
+    this.stateService.activeAccountUnlocked.subscribe(async (unlocked) => {
+      if ((Utils.global as any).bitwardenContainerService == null) {
+        return;
+      }
+
+      if (!unlocked) {
+        this._settings.next([]);
+        return;
+      }
+
+      const data = await this.stateService.getSettings();
+
+      this._settings.next(data);
+    });
+  }
 
   getEquivalentDomains(): Promise<any> {
     return this.getSettingsKey(Keys.equivalentDomains);
@@ -18,13 +41,14 @@ export class SettingsService implements SettingsServiceAbstraction {
   }
 
   async clear(userId?: string): Promise<void> {
+    this._settings.next([]);
     await this.stateService.setSettings(null, { userId: userId });
   }
 
   // Helpers
 
   private async getSettings(): Promise<any> {
-    const settings = await this.stateService.getSettings();
+    const settings = await this._settings.getValue();
     if (settings == null) {
       // eslint-disable-next-line
       const userId = await this.stateService.getUserId();
@@ -47,6 +71,8 @@ export class SettingsService implements SettingsServiceAbstraction {
     }
 
     settings[key] = value;
+
+    this._settings.next(settings);
     await this.stateService.setSettings(settings);
   }
 }
