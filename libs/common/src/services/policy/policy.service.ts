@@ -195,6 +195,18 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     );
   }
 
+  async upsert(policy: PolicyData): Promise<any> {
+    let policies = await this.stateService.getEncryptedPolicies();
+    if (policies == null) {
+      policies = {};
+    }
+
+    policies[policy.id] = policy;
+
+    await this.stateService.setDecryptedPolicies(null);
+    await this.stateService.setEncryptedPolicies(policies);
+  }
+
   async replace(policies: { [id: string]: PolicyData }): Promise<any> {
     await this.stateService.setDecryptedPolicies(null);
     await this.stateService.setEncryptedPolicies(policies);
