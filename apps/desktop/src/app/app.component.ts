@@ -470,8 +470,6 @@ export class AppComponent implements OnInit {
       this.keyConnectorService.clear(),
     ]);
 
-    await this.stateService.setBiometricLocked(true, { userId: userBeingLoggedOut });
-
     if (userBeingLoggedOut === this.activeUserId) {
       this.searchService.clearIndex();
       this.authService.logOut(async () => {

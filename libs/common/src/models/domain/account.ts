@@ -111,7 +111,6 @@ export class AccountProfile {
 export class AccountSettings {
   autoConfirmFingerPrints?: boolean;
   autoFillOnPageLoadDefault?: boolean;
-  biometricLocked?: boolean;
   biometricUnlock?: boolean;
   clearClipboard?: number;
   collapsedGroupings?: string[];
