@@ -1,6 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -57,10 +56,9 @@ export class DeleteOrganizationComponent implements OnInit {
   @Output() onSuccess: EventEmitter<void> = new EventEmitter();
 
   masterPassword: Verification;
-  formPromise: Promise<unknown>;
+  formPromise: Promise<void>;
 
   constructor(
-    private apiService: ApiService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private userVerificationService: UserVerificationService,

@@ -16,7 +16,7 @@ import { SyncService } from "@bitwarden/common/abstractions/sync.service";
 
 const BroadcasterSubscriptionId = "SetPasswordComponent";
 
-interface BaseMessage {
+interface Message {
   command: string;
 }
 
@@ -59,7 +59,7 @@ export class SetPasswordComponent extends BaseSetPasswordComponent implements On
 
   async ngOnInit() {
     await super.ngOnInit();
-    this.broadcasterService.subscribe(BroadcasterSubscriptionId, async (message: BaseMessage) => {
+    this.broadcasterService.subscribe(BroadcasterSubscriptionId, async (message: Message) => {
       this.ngZone.run(() => {
         switch (message.command) {
           case "windowHidden":

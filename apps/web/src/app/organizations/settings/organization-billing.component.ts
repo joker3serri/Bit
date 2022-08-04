@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
@@ -27,12 +26,11 @@ export class OrganizationBillingComponent implements OnInit {
   verifyAmount1: number;
   verifyAmount2: number;
 
-  verifyBankPromise: Promise<unknown>;
+  verifyBankPromise: Promise<void>;
 
   // TODO - Make sure to properly split out the billing/invoice and payment method/account during org admin refresh
 
   constructor(
-    private apiService: ApiService,
     private i18nService: I18nService,
     private route: ActivatedRoute,
     private platformUtilsService: PlatformUtilsService,

@@ -93,7 +93,7 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
     return new OrganizationResponse(r);
   }
 
-  async updatePayment(id: string, request: PaymentRequest): Promise<unknown> {
+  async updatePayment(id: string, request: PaymentRequest): Promise<void> {
     return this.apiService.send("POST", "/organizations/" + id + "/payment", request, true, false);
   }
 
@@ -143,7 +143,7 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
     return new PaymentResponse(r);
   }
 
-  async verifyBank(id: string, request: VerifyBankRequest): Promise<unknown> {
+  async verifyBank(id: string, request: VerifyBankRequest): Promise<void> {
     return this.apiService.send(
       "POST",
       "/organizations/" + id + "/verify-bank",
@@ -153,23 +153,23 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
     );
   }
 
-  async cancel(id: string): Promise<unknown> {
+  async cancel(id: string): Promise<void> {
     return this.apiService.send("POST", "/organizations/" + id + "/cancel", null, true, false);
   }
 
-  async reinstate(id: string): Promise<unknown> {
+  async reinstate(id: string): Promise<void> {
     return this.apiService.send("POST", "/organizations/" + id + "/reinstate", null, true, false);
   }
 
-  async leave(id: string): Promise<unknown> {
+  async leave(id: string): Promise<void> {
     return this.apiService.send("POST", "/organizations/" + id + "/leave", null, true, false);
   }
 
-  async delete(id: string, request: SecretVerificationRequest): Promise<unknown> {
+  async delete(id: string, request: SecretVerificationRequest): Promise<void> {
     return this.apiService.send("DELETE", "/organizations/" + id, request, true, false);
   }
 
-  async updateLicense(id: string, data: FormData): Promise<unknown> {
+  async updateLicense(id: string, data: FormData): Promise<void> {
     return this.apiService.send("POST", "/organizations/" + id + "/license", data, true, false);
   }
 
@@ -222,7 +222,7 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
     return new TaxInfoResponse(r);
   }
 
-  async updateTaxInfo(id: string, request: OrganizationTaxInfoUpdateRequest): Promise<unknown> {
+  async updateTaxInfo(id: string, request: OrganizationTaxInfoUpdateRequest): Promise<void> {
     return this.apiService.send("PUT", "/organizations/" + id + "/tax", request, true, false);
   }
 

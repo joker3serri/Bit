@@ -34,17 +34,17 @@ export class OrganizationApiServiceAbstraction {
   create: (request: OrganizationCreateRequest) => Promise<OrganizationResponse>;
   createLicense: (data: FormData) => Promise<OrganizationResponse>;
   save: (id: string, request: OrganizationUpdateRequest) => Promise<OrganizationResponse>;
-  updatePayment: (id: string, request: PaymentRequest) => Promise<unknown>;
+  updatePayment: (id: string, request: PaymentRequest) => Promise<void>;
   upgrade: (id: string, request: OrganizationUpgradeRequest) => Promise<PaymentResponse>;
   updateSubscription: (id: string, request: OrganizationSubscriptionUpdateRequest) => Promise<void>;
   updateSeats: (id: string, request: SeatRequest) => Promise<PaymentResponse>;
   updateStorage: (id: string, request: StorageRequest) => Promise<PaymentResponse>;
-  verifyBank: (id: string, request: VerifyBankRequest) => Promise<unknown>;
-  cancel: (id: string) => Promise<unknown>;
-  reinstate: (id: string) => Promise<unknown>;
-  leave: (id: string) => Promise<unknown>;
-  delete: (id: string, request: SecretVerificationRequest) => Promise<unknown>;
-  updateLicense: (id: string, data: FormData) => Promise<unknown>;
+  verifyBank: (id: string, request: VerifyBankRequest) => Promise<void>;
+  cancel: (id: string) => Promise<void>;
+  reinstate: (id: string) => Promise<void>;
+  leave: (id: string) => Promise<void>;
+  delete: (id: string, request: SecretVerificationRequest) => Promise<void>;
+  updateLicense: (id: string, data: FormData) => Promise<void>;
   importDirectory: (organizationId: string, request: ImportDirectoryRequest) => Promise<void>;
   getOrCreateApiKey: (id: string, request: OrganizationApiKeyRequest) => Promise<ApiKeyResponse>;
   getApiKeyInformation: (
@@ -53,7 +53,7 @@ export class OrganizationApiServiceAbstraction {
   ) => Promise<ListResponse<OrganizationApiKeyInformationResponse>>;
   rotateApiKey: (id: string, request: OrganizationApiKeyRequest) => Promise<ApiKeyResponse>;
   getTaxInfo: (id: string) => Promise<TaxInfoResponse>;
-  updateTaxInfo: (id: string, request: OrganizationTaxInfoUpdateRequest) => Promise<unknown>;
+  updateTaxInfo: (id: string, request: OrganizationTaxInfoUpdateRequest) => Promise<void>;
   getKeys: (id: string) => Promise<OrganizationKeysResponse>;
   updateKeys: (id: string, request: OrganizationKeysRequest) => Promise<OrganizationKeysResponse>;
   getSso: (id: string) => Promise<OrganizationSsoResponse>;

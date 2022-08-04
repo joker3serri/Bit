@@ -25,7 +25,7 @@ export class AdjustPaymentComponent {
   @Output() onCanceled = new EventEmitter();
 
   paymentMethodType = PaymentMethodType;
-  formPromise: Promise<unknown>;
+  formPromise: Promise<void | unknown>;
 
   constructor(
     private apiService: ApiService,

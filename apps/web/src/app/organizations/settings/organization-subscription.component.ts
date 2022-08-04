@@ -50,8 +50,8 @@ export class OrganizationSubscriptionComponent implements OnInit {
   existingBillingSyncConnection: OrganizationConnectionResponse<BillingSyncConfigApi>;
 
   removeSponsorshipPromise: Promise<void>;
-  cancelPromise: Promise<unknown>;
-  reinstatePromise: Promise<unknown>;
+  cancelPromise: Promise<void>;
+  reinstatePromise: Promise<void>;
 
   @ViewChild("rotateBillingSyncKeyTemplate", { read: ViewContainerRef, static: true })
   billingSyncKeyViewContainerRef: ViewContainerRef;

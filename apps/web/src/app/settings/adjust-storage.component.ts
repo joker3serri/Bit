@@ -26,7 +26,7 @@ export class AdjustStorageComponent {
   @ViewChild(PaymentComponent, { static: true }) paymentComponent: PaymentComponent;
 
   storageAdjustment = 0;
-  formPromise: Promise<unknown>;
+  formPromise: Promise<PaymentResponse | void>;
 
   constructor(
     private apiService: ApiService,

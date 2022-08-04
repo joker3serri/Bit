@@ -41,7 +41,7 @@ export class UpdateLicenseComponent {
       const fd = new FormData();
       fd.append("license", files[0]);
 
-      let updatePromise: Promise<unknown> = null;
+      let updatePromise: Promise<void | unknown> = null;
       if (this.organizationId == null) {
         updatePromise = this.apiService.postAccountLicense(fd);
       } else {
