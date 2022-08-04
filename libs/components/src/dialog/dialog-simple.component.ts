@@ -5,7 +5,7 @@ export class IconDirective {}
 
 @Component({
   selector: "bit-simple-modal",
-  templateUrl: "./modal-simple.component.html",
+  templateUrl: "./dialog-simple.component.html",
 })
 export class ModalSimpleComponent {
   @ContentChild(IconDirective) icon!: IconDirective;

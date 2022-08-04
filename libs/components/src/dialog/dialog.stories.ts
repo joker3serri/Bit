@@ -2,10 +2,10 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { ButtonModule } from "../button";
 
-import { ModalComponent } from "./modal.component";
+import { ModalComponent } from "./dialog.component";
 
 export default {
-  title: "Component Library/Modals/Modal",
+  title: "Component Library/Dialogs/Modal",
   component: ModalComponent,
   decorators: [
     moduleMetadata({
@@ -13,7 +13,7 @@ export default {
     }),
   ],
   args: {
-    modalSize: "small",
+    dialogSize: "small",
   },
   parameters: {
     design: {
@@ -26,7 +26,7 @@ export default {
 const Template: Story<ModalComponent> = (args: ModalComponent) => ({
   props: args,
   template: `
-  <bit-modal [modalSize]="modalSize">
+  <bit-modal [dialogSize]="dialogSize">
     <span bit-modal-title>Modal Title</span>
     <span bit-modal-content>Modal body text goes here.</span>
     <div bit-modal-footer class="tw-flex tw-flex-row tw-gap-2">
@@ -39,23 +39,23 @@ const Template: Story<ModalComponent> = (args: ModalComponent) => ({
 
 export const Default = Template.bind({});
 Default.args = {
-  modalSize: "default",
+  dialogSize: "default",
 };
 
 export const Small = Template.bind({});
 Small.args = {
-  modalSize: "small",
+  dialogSize: "small",
 };
 
 export const Large = Template.bind({});
 Large.args = {
-  modalSize: "large",
+  dialogSize: "large",
 };
 
 const TemplateScrolling: Story<ModalComponent> = (args: ModalComponent) => ({
   props: args,
   template: `
-  <bit-modal [modalSize]="modalSize">
+  <bit-modal [dialogSize]="dialogSize">
   <span bit-modal-title>Modal Title</span>
   <span bit-modal-content>
     Modal body text goes here.<br>
@@ -74,5 +74,5 @@ const TemplateScrolling: Story<ModalComponent> = (args: ModalComponent) => ({
 
 export const ScrollingContent = TemplateScrolling.bind({});
 ScrollingContent.args = {
-  modalSize: "small",
+  dialogSize: "small",
 };

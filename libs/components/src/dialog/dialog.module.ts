@@ -2,10 +2,10 @@ import { DialogModule } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 
-import { ModalCloseDirective } from "./modal-content.directives";
-import { ModalSimpleComponent } from "./modal-simple.component";
-import { ModalComponent } from "./modal.component";
-import { DialogService } from "./modal.service";
+import { ModalCloseDirective } from "./dialog-content.directives";
+import { ModalSimpleComponent } from "./dialog-simple.component";
+import { ModalComponent } from "./dialog.component";
+import { DialogService } from "./dialog.service";
 
 @NgModule({
   imports: [CommonModule, DialogModule],

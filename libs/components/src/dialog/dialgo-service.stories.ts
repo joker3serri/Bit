@@ -4,9 +4,9 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { ButtonModule } from "../button";
 
-import { ModalCloseDirective } from "./modal-content.directives";
-import { ModalComponent } from "./modal.component";
-import { DialogService } from "./modal.service";
+import { ModalCloseDirective } from "./dialog-content.directives";
+import { ModalComponent } from "./dialog.component";
+import { DialogService } from "./dialog.service";
 
 interface Animal {
   animal: string;
@@ -31,7 +31,7 @@ class StoryModalComponent {
 @Component({
   selector: "story-modal-content",
   template: `
-    <bit-modal>
+    <bit-modal [modalSize]="large">
       <span bit-modal-title>Modal Title</span>
       <span bit-modal-content>
         Modal body text goes here.
@@ -54,7 +54,7 @@ class StoryModalContentComponent {
 }
 
 export default {
-  title: "Component Library/Modals/Service",
+  title: "Component Library/Dialogs/Service",
   component: StoryModalComponent,
   decorators: [
     moduleMetadata({

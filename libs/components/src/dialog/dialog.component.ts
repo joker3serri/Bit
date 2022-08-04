@@ -2,13 +2,13 @@ import { Component, Input } from "@angular/core";
 
 @Component({
   selector: "bit-modal",
-  templateUrl: "./modal.component.html",
+  templateUrl: "./dialog.component.html",
 })
 export class ModalComponent {
-  @Input() modalSize: "small" | "default" | "large" = "default";
+  @Input() dialogSize: "small" | "default" | "large" = "default";
 
   get width() {
-    switch (this.modalSize) {
+    switch (this.dialogSize) {
       case "small": {
         return "tw-max-w-xs";
       }
