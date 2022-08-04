@@ -5,6 +5,7 @@ import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification.service";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
@@ -53,10 +54,10 @@ export class DeleteOrganizationComponent implements OnInit {
   deleteOrganizationRequestType: "InvalidFamiliesForEnterprise" | "RegularDelete" = "RegularDelete";
   organizationName: string;
   organizationContentSummary: OrganizationContentSummary = new OrganizationContentSummary();
-  @Output() onSuccess: EventEmitter<any> = new EventEmitter();
+  @Output() onSuccess: EventEmitter<void> = new EventEmitter();
 
   masterPassword: Verification;
-  formPromise: Promise<any>;
+  formPromise: Promise<unknown>;
 
   constructor(
     private apiService: ApiService,
@@ -65,7 +66,8 @@ export class DeleteOrganizationComponent implements OnInit {
     private userVerificationService: UserVerificationService,
     private logService: LogService,
     private cipherService: CipherService,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    private organizationApiService: OrganizationApiServiceAbstraction
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -76,7 +78,7 @@ export class DeleteOrganizationComponent implements OnInit {
     try {
       this.formPromise = this.userVerificationService
         .buildRequest(this.masterPassword)
-        .then((request) => this.apiService.deleteOrganization(this.organizationId, request));
+        .then((request) => this.organizationApiService.delete(this.organizationId, request));
       await this.formPromise;
       this.platformUtilsService.showToast(
         "success",

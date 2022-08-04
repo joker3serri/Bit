@@ -4,6 +4,7 @@ import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync.service";
@@ -19,7 +20,7 @@ import { EnrollMasterPasswordReset } from "../../organizations/users/enroll-mast
   templateUrl: "organization-options.component.html",
 })
 export class OrganizationOptionsComponent {
-  actionPromise: Promise<any>;
+  actionPromise: Promise<unknown>;
   policies: Policy[];
   loaded = false;
 
@@ -32,7 +33,8 @@ export class OrganizationOptionsComponent {
     private syncService: SyncService,
     private policyService: PolicyService,
     private modalService: ModalService,
-    private logService: LogService
+    private logService: LogService,
+    private organizationApiService: OrganizationApiServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -100,7 +102,7 @@ export class OrganizationOptionsComponent {
     }
 
     try {
-      this.actionPromise = this.apiService.postLeaveOrganization(org.id).then(() => {
+      this.actionPromise = this.organizationApiService.leave(org.id).then(() => {
         return this.syncService.fullSync(true);
       });
       await this.actionPromise;
