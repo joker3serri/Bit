@@ -38,8 +38,7 @@ export class SystemService implements SystemServiceAbstraction {
         doRefresh = diffSeconds >= 5000;
       }
       const biometricLockedFingerprintValidated =
-        (await this.stateService.getBiometricFingerprintValidated()) &&
-        (await this.stateService.getBiometricLocked());
+        await this.stateService.getBiometricFingerprintValidated();
       if (doRefresh && !biometricLockedFingerprintValidated) {
         clearInterval(this.reloadInterval);
         this.reloadInterval = null;
