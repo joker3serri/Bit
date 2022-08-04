@@ -2,17 +2,17 @@ import { DialogRef } from "@angular/cdk/dialog";
 import { Directive, Input, Optional } from "@angular/core";
 
 @Directive({
-  selector: "[bitModalClose]",
+  selector: "[bitDialogClose]",
   host: {
     "(click)": "_onButtonClick()",
   },
 })
-export class ModalCloseDirective {
-  @Input("bit-modal-close") modalResult: any;
+export class DialogCloseDirective {
+  @Input("bit-dialog-close") dialogResult: any;
 
   constructor(@Optional() public dialogRef: DialogRef<any>) {}
 
   _onButtonClick() {
-    this.dialogRef.close(this.modalResult);
+    this.dialogRef.close(this.dialogResult);
   }
 }

@@ -1,10 +1,10 @@
 import { Component, Input } from "@angular/core";
 
 @Component({
-  selector: "bit-modal",
+  selector: "bit-dialog",
   templateUrl: "./dialog.component.html",
 })
-export class ModalComponent {
+export class DialogComponent {
   @Input() dialogSize: "small" | "default" | "large" = "default";
 
   get width() {

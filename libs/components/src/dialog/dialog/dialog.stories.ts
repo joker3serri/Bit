@@ -1,12 +1,12 @@
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
-import { ButtonModule } from "../button";
+import { ButtonModule } from "../../button";
 
-import { ModalComponent } from "./dialog.component";
+import { DialogComponent } from "./dialog.component";
 
 export default {
-  title: "Component Library/Dialogs/Modal",
-  component: ModalComponent,
+  title: "Component Library/Dialogs/Dialog",
+  component: DialogComponent,
   decorators: [
     moduleMetadata({
       imports: [ButtonModule],
@@ -23,17 +23,17 @@ export default {
   },
 } as Meta;
 
-const Template: Story<ModalComponent> = (args: ModalComponent) => ({
+const Template: Story<DialogComponent> = (args: DialogComponent) => ({
   props: args,
   template: `
-  <bit-modal [dialogSize]="dialogSize">
-    <span bit-modal-title>Modal Title</span>
-    <span bit-modal-content>Modal body text goes here.</span>
-    <div bit-modal-footer class="tw-flex tw-flex-row tw-gap-2">
+  <bit-dialog [dialogSize]="dialogSize">
+    <span bit-dialog-title>Dialog Title</span>
+    <span bit-dialog-content>Dialog body text goes here.</span>
+    <div bit-dialog-footer class="tw-flex tw-flex-row tw-gap-2">
       <button bitButton buttonType="primary">Save</button>
       <button bitButton buttonType="secondary">Cancel</button>
     </div>
-  </bit-modal>
+  </bit-dialog>
   `,
 });
 
@@ -52,23 +52,23 @@ Large.args = {
   dialogSize: "large",
 };
 
-const TemplateScrolling: Story<ModalComponent> = (args: ModalComponent) => ({
+const TemplateScrolling: Story<DialogComponent> = (args: DialogComponent) => ({
   props: args,
   template: `
-  <bit-modal [dialogSize]="dialogSize">
-  <span bit-modal-title>Modal Title</span>
-  <span bit-modal-content>
-    Modal body text goes here.<br>
+  <bit-dialog [dialogSize]="dialogSize">
+  <span bit-dialog-title>Dialog Title</span>
+  <span bit-dialog-content>
+    Dialog body text goes here.<br>
     <ng-container *ngFor="let _ of [].constructor(100)">
       repeating lines of characters <br>
     </ng-container>
     end of sequence!
   </span>
-  <div bit-modal-footer class="tw-flex tw-flex-row tw-gap-2">
+  <div bit-dialog-footer class="tw-flex tw-flex-row tw-gap-2">
     <button bitButton buttonType="primary">Save</button>
     <button bitButton buttonType="secondary">Cancel</button>
   </div>
-  </bit-modal>
+  </bit-dialog>
   `,
 });
 

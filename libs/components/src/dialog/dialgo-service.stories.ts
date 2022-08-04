@@ -4,23 +4,23 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { ButtonModule } from "../button";
 
-import { ModalCloseDirective } from "./dialog-content.directives";
-import { ModalComponent } from "./dialog.component";
+import { DialogCloseDirective } from "./dialog-close.directive";
 import { DialogService } from "./dialog.service";
+import { DialogComponent } from "./dialog/dialog.component";
 
 interface Animal {
   animal: string;
 }
 
 @Component({
-  selector: "app-story-modal",
+  selector: "app-story-dialog",
   template: `<button bitButton (click)="openDialog()">Open Dialog</button>`,
 })
-class StoryModalComponent {
+class StoryDialogComponent {
   constructor(public dialogService: DialogService) {}
 
   openDialog() {
-    this.dialogService.open(StoryModalContentComponent, {
+    this.dialogService.open(StoryDialogContentComponent, {
       data: {
         animal: "panda",
       },
@@ -29,23 +29,23 @@ class StoryModalComponent {
 }
 
 @Component({
-  selector: "story-modal-content",
+  selector: "story-dialog-content",
   template: `
-    <bit-modal [modalSize]="large">
-      <span bit-modal-title>Modal Title</span>
-      <span bit-modal-content>
-        Modal body text goes here.
+    <bit-dialog [dialogSize]="large">
+      <span bit-dialog-title>Dialog Title</span>
+      <span bit-dialog-content>
+        Dialog body text goes here.
         <br />
         Animal: {{ animal }}
       </span>
-      <div bit-modal-footer class="tw-flex tw-flex-row tw-gap-2">
+      <div bit-dialog-footer class="tw-flex tw-flex-row tw-gap-2">
         <button bitButton buttonType="primary" (click)="dialogRef.close()">Save</button>
-        <button bitButton buttonType="secondary" bitModalClose>Cancel</button>
+        <button bitButton buttonType="secondary" bitDialogClose>Cancel</button>
       </div>
-    </bit-modal>
+    </bit-dialog>
   `,
 })
-class StoryModalContentComponent {
+class StoryDialogContentComponent {
   constructor(public dialogRef: DialogRef, @Inject(DIALOG_DATA) private data: Animal) {}
 
   get animal() {
@@ -55,17 +55,14 @@ class StoryModalContentComponent {
 
 export default {
   title: "Component Library/Dialogs/Service",
-  component: StoryModalComponent,
+  component: StoryDialogComponent,
   decorators: [
     moduleMetadata({
-      declarations: [ModalComponent, StoryModalContentComponent, ModalCloseDirective],
+      declarations: [DialogComponent, StoryDialogContentComponent, DialogCloseDirective],
       imports: [ButtonModule, DialogModule],
       providers: [DialogService],
     }),
   ],
-  args: {
-    modalSize: "small",
-  },
   parameters: {
     design: {
       type: "figma",
@@ -74,11 +71,8 @@ export default {
   },
 } as Meta;
 
-const Template: Story<StoryModalComponent> = (args: StoryModalComponent) => ({
+const Template: Story<StoryDialogComponent> = (args: StoryDialogComponent) => ({
   props: args,
 });
 
 export const Default = Template.bind({});
-Default.args = {
-  modalSize: "default",
-};
