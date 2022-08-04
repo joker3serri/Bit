@@ -71,12 +71,6 @@ describe("PolicyService", () => {
     ]);
   });
 
-  it("clearCache", async () => {
-    await policyService.clearCache();
-
-    expect((await firstValueFrom(policyService.policies$)).length).toBe(0);
-  });
-
   it("locking should clear", async () => {
     activeAccountUnlocked.next(false);
     // Sleep for 100ms to avoid timing issues
