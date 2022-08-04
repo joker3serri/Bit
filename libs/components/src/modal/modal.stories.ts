@@ -27,13 +27,11 @@ const Template: Story<ModalComponent> = (args: ModalComponent) => ({
   props: args,
   template: `
   <bit-modal [modalSize]="modalSize">
-    <span bit-modal-title> Modal Title </span>
-    <span bit-modal-content>
-    Modal body text goes here.
-    </span>
+    <span bit-modal-title>Modal Title</span>
+    <span bit-modal-content>Modal body text goes here.</span>
     <div bit-modal-footer class="tw-flex tw-flex-row tw-gap-2">
-      <button bitButton buttonType="primary"> Save </button>
-      <button bitButton buttonType="secondary"> Cancel </button>
+      <button bitButton buttonType="primary">Save</button>
+      <button bitButton buttonType="secondary">Cancel</button>
     </div>
   </bit-modal>
   `,
@@ -58,7 +56,7 @@ const TemplateScrolling: Story<ModalComponent> = (args: ModalComponent) => ({
   props: args,
   template: `
   <bit-modal [modalSize]="modalSize">
-  <span bit-modal-title> Modal Title </span>
+  <span bit-modal-title>Modal Title</span>
   <span bit-modal-content>
     Modal body text goes here.<br>
     <ng-container *ngFor="let _ of [].constructor(100)">
@@ -67,8 +65,8 @@ const TemplateScrolling: Story<ModalComponent> = (args: ModalComponent) => ({
     end of sequence!
   </span>
   <div bit-modal-footer class="tw-flex tw-flex-row tw-gap-2">
-    <button bitButton buttonType="primary"> Save </button>
-    <button bitButton buttonType="secondary"> Cancel </button>
+    <button bitButton buttonType="primary">Save</button>
+    <button bitButton buttonType="secondary">Cancel</button>
   </div>
   </bit-modal>
   `,
