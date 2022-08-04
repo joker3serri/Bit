@@ -3,6 +3,7 @@ import { AbstractCachedStorageService } from "@bitwarden/common/abstractions/sto
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 
+import { devFlag } from "../decorators/dev-flag.decorator";
 import { devFlagEnabled } from "../flags";
 
 import { AbstractKeyGenerationService } from "./abstractions/abstractKeyGeneration.service";
@@ -94,6 +95,7 @@ export class LocalBackedSessionStorageService extends AbstractCachedStorageServi
     }
   }
 
+  @devFlag("storeSessionDecrypted")
   async setDecryptedLocalSession(session: any): Promise<void> {
     if (session == null) {
       await this.localStorage.remove(keys.sessionKey);
