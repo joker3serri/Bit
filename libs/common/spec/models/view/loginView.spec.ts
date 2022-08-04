@@ -8,28 +8,20 @@ describe("LoginView", () => {
     (LoginUriView as any).mockClear();
   });
 
-  it("fromJSON initializes new view object", () => {
-    const testValues = {
-      username: "myUsername",
-      password: "myPassword",
-      totp: "totpSeed",
-      autofillOnPageLoad: true,
-      uris: ["uri1", "uri2", "uri3"],
-      passwordRevisionDate: new Date(),
-    };
+  it("fromJSON initializes nested objects", () => {
+    const mockFromJson = (stub: string) => stub + "_fromJSON";
+    jest.spyOn(LoginUriView, "fromJSON").mockImplementation(mockFromJson as any);
 
-    const parsed = JSON.parse(JSON.stringify(testValues));
+    const passwordRevisionDate = new Date();
 
-    jest
-      .spyOn(LoginUriView, "fromJSON")
-      .mockImplementation((key: any) => (key + "fromJSON") as any);
-
-    const login = LoginView.fromJSON(parsed);
-
-    expect(login).toEqual({
-      ...testValues,
-      uris: ["uri1fromJSON", "uri2fromJSON", "uri3fromJSON"],
+    const actual = LoginView.fromJSON({
+      passwordRevisionDate: passwordRevisionDate.toISOString(),
+      uris: ["uri1", "uri2", "uri3"] as any,
     });
-    expect(login).toBeInstanceOf(LoginView);
+
+    expect(actual).toMatchObject({
+      passwordRevisionDate: passwordRevisionDate,
+      uris: ["uri1_fromJSON", "uri2_fromJSON", "uri3_fromJSON"],
+    });
   });
 });

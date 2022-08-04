@@ -1,10 +1,12 @@
-import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { AttachmentView } from "@bitwarden/common/models/view/attachmentView";
+import { CardView } from "@bitwarden/common/models/view/cardView";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 import { FieldView } from "@bitwarden/common/models/view/fieldView";
+import { IdentityView } from "@bitwarden/common/models/view/identityView";
 import { LoginView } from "@bitwarden/common/models/view/loginView";
 import { PasswordHistoryView } from "@bitwarden/common/models/view/passwordHistoryView";
+import { SecureNoteView } from "@bitwarden/common/models/view/secureNoteView";
 
 jest.mock("@bitwarden/common/models/view/loginView");
 jest.mock("@bitwarden/common/models/view/attachmentView");
@@ -19,46 +21,56 @@ describe("CipherView", () => {
     (PasswordHistoryView as any).mockClear();
   });
 
-  it("fromJSON initializes new view object", () => {
-    const testValues = {
-      id: "myId",
-      organizationId: "myOrgId",
-      folderId: "myFolderId",
-      name: "my Cipher",
-      notes: "lorem ipsum",
-      type: CipherType.Login,
-      favorite: true,
-      organizationUseTotp: true,
-      edit: true,
-      viewPassword: false,
-      localData: { lastUsedDate: "123" },
-      login: "myLogin",
-      attachments: ["attachment1", "attachment2"],
-      fields: ["field1", "field2"],
-      passwordHistory: ["ph1", "ph2", "ph3"],
-      collectionIds: ["collection1", "collection2"],
-      revisionDate: new Date(),
-      deletedDate: new Date(),
-      reprompt: CipherRepromptType.Password,
-    };
+  describe("fromJSON", () => {
+    const mockFromJson = (stub: any) => (stub + "_fromJSON") as any;
 
-    const mockFromJson = (key: any) => (key + "fromJSON") as any;
-    jest.spyOn(LoginView, "fromJSON").mockImplementation(mockFromJson);
-    jest.spyOn(AttachmentView, "fromJSON").mockImplementation(mockFromJson);
-    jest.spyOn(FieldView, "fromJSON").mockImplementation(mockFromJson);
-    jest.spyOn(PasswordHistoryView, "fromJSON").mockImplementation(mockFromJson);
+    it("initializes nested objects", () => {
+      jest.spyOn(AttachmentView, "fromJSON").mockImplementation(mockFromJson);
+      jest.spyOn(FieldView, "fromJSON").mockImplementation(mockFromJson);
+      jest.spyOn(PasswordHistoryView, "fromJSON").mockImplementation(mockFromJson);
 
-    const parsed = JSON.parse(JSON.stringify(testValues));
-    const actual = CipherView.fromJSON(parsed);
+      const revisionDate = new Date("2022-08-04T01:06:40.441Z");
+      const deletedDate = new Date("2022-09-04T01:06:40.441Z");
+      const actual = CipherView.fromJSON({
+        revisionDate: revisionDate.toISOString(),
+        deletedDate: deletedDate.toISOString(),
+        attachments: ["attachment1", "attachment2"] as any,
+        fields: ["field1", "field2"] as any,
+        passwordHistory: ["ph1", "ph2", "ph3"] as any,
+      });
 
-    const expected = Object.assign(new CipherView(), testValues, {
-      login: "myLoginfromJSON",
-      attachments: ["attachment1fromJSON", "attachment2fromJSON"],
-      fields: ["field1fromJSON", "field2fromJSON"],
-      passwordHistory: ["ph1fromJSON", "ph2fromJSON", "ph3fromJSON"],
+      const expected = {
+        revisionDate: revisionDate,
+        deletedDate: deletedDate,
+        attachments: ["attachment1_fromJSON", "attachment2_fromJSON"],
+        fields: ["field1_fromJSON", "field2_fromJSON"],
+        passwordHistory: ["ph1_fromJSON", "ph2_fromJSON", "ph3_fromJSON"],
+      };
+
+      expect(actual).toMatchObject(expected);
     });
 
-    expect(actual).toEqual(expected);
-    expect(actual).toBeInstanceOf(CipherView);
+    test.each([
+      // Test description, CipherType, expected output
+      ["LoginView", CipherType.Login, { login: "myLogin_fromJSON" }],
+      ["CardView", CipherType.Card, { card: "myCard_fromJSON" }],
+      ["IdentityView", CipherType.Identity, { identity: "myIdentity_fromJSON" }],
+      ["Secure Note", CipherType.SecureNote, { secureNote: "mySecureNote_fromJSON" }],
+    ])("initializes %s", (description: string, cipherType: CipherType, expected: any) => {
+      jest.spyOn(LoginView, "fromJSON").mockImplementation(mockFromJson);
+      jest.spyOn(IdentityView, "fromJSON").mockImplementation(mockFromJson);
+      jest.spyOn(CardView, "fromJSON").mockImplementation(mockFromJson);
+      jest.spyOn(SecureNoteView, "fromJSON").mockImplementation(mockFromJson);
+
+      const actual = CipherView.fromJSON({
+        login: "myLogin",
+        card: "myCard",
+        identity: "myIdentity",
+        secureNote: "mySecureNote",
+        type: cipherType,
+      } as any);
+
+      expect(actual).toMatchObject(expected);
+    });
   });
 });
