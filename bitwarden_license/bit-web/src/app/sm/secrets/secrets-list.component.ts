@@ -12,7 +12,7 @@ export class SecretsListComponent implements OnDestroy {
   @Input() secrets: SecretResponse[];
 
   @Output() editSecretEvent = new EventEmitter<string>();
-  @Output() copySecretKeyEvent = new EventEmitter<string>();
+  @Output() copySecretNameEvent = new EventEmitter<string>();
   @Output() copySecretValueEvent = new EventEmitter<string>();
   @Output() projectsEvent = new EventEmitter<string>();
   @Output() deleteSecretEvent = new EventEmitter<string>();
@@ -21,6 +21,7 @@ export class SecretsListComponent implements OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
 
   selection = new SelectionModel<string>(true, []);
+
   constructor() {
     this.selection.changed
       .pipe(takeUntil(this.destroy$))
@@ -30,5 +31,17 @@ export class SecretsListComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.secrets.length;
+    return numSelected === numRows;
+  }
+
+  toggleAll() {
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.secrets.forEach((s) => this.selection.select(s.id));
   }
 }

@@ -3,9 +3,7 @@ import { BaseResponse } from "../../../../../../../libs/common/src/models/respon
 export class SecretResponse extends BaseResponse {
   id: string;
   organizationId: string;
-  key: string;
-  value: string;
-  note: string;
+  name: string;
   creationDate: string;
   revisionDate: string;
 
@@ -13,9 +11,7 @@ export class SecretResponse extends BaseResponse {
     super(response);
     this.id = this.getResponseProperty("Id");
     this.organizationId = this.getResponseProperty("OrganizationId");
-    this.key = this.getResponseProperty("Key");
-    this.value = this.getResponseProperty("Value");
-    this.note = this.getResponseProperty("Note");
+    this.name = this.getResponseProperty("Key");
     this.creationDate = this.getResponseProperty("CreationDate");
     this.revisionDate = this.getResponseProperty("RevisionDate");
   }
