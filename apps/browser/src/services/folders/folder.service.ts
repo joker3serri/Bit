@@ -12,10 +12,10 @@ import { browserSession, sessionSync } from "../../decorators/session-sync-obser
 
 @browserSession
 export class FolderService extends BaseFolderService {
-  @sessionSync({ initializer: Folder.fromJSON }) protected _folders: BehaviorSubject<Folder[]>;
-  @sessionSync({ initializer: FolderView.fromJSON }) protected _folderViews: BehaviorSubject<
-    FolderView[]
-  >;
+  @sessionSync({ initializer: Folder.fromJSON, initializeAsArray: true })
+  protected _folders: BehaviorSubject<Folder[]>;
+  @sessionSync({ initializer: FolderView.fromJSON, initializeAsArray: true })
+  protected _folderViews: BehaviorSubject<FolderView[]>;
 
   constructor(
     cryptoService: CryptoService,

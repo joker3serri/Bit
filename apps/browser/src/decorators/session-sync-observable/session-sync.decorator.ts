@@ -3,6 +3,7 @@ import { SessionStorable } from "./session-storable";
 class BuildOptions<T> {
   ctor?: new (args: any[]) => T;
   initializer?: (key_value_pair: any) => T;
+  initializeAsArray? = false;
 }
 
 /**
@@ -13,7 +14,16 @@ class BuildOptions<T> {
  * @param buildOptions
  * Builders for the value, requires either a constructor (ctor) for your BehaviorSubject type or an
  * initializer function that takes a key value pair representation of the BehaviorSubject data
- * and returns your BehaviorSubject data type.
+ * and returns your BehaviorSubject data type. `initializeAsArray can optionally be used to indicate
+ * the provided initializer function should be used to build an array of values. For example,
+ * ```ts
+ * \@sessionSync({ arrayInitializer: Foo.fromJSON })
+ * ```
+ * is equivalent to
+ * ```
+ * \@sessionSync({ initializer: (obj: any[]) => obj.map((f) => Foo.fromJSON })
+ * ```
+ *
  * @returns decorator function
  */
 export function sessionSync<T>(buildOptions: BuildOptions<T>) {
@@ -28,6 +38,7 @@ export function sessionSync<T>(buildOptions: BuildOptions<T>) {
       key: propertyKey,
       ctor: buildOptions.ctor,
       initializer: buildOptions.initializer,
+      initializeAsArray: buildOptions.initializeAsArray,
     });
   };
 }

@@ -37,13 +37,17 @@ export function browserSession<TCtor extends { new (...args: any[]): any }>(cons
     }
 
     buildSyncer(metadata: SyncedItemMetadata, stateService: StateService) {
-      const syncer = new SessionSyncer((this as any)[metadata.key], stateService, {
-        key: `${constructor.name}_` + metadata.key,
-        ctor: metadata.ctor,
-        initializer: metadata.initializer,
-      });
+      const syncer = new SessionSyncer(
+        (this as any)[metadata.key],
+        stateService,
+        this.updateMetaData(metadata)
+      );
       syncer.init();
       return syncer;
+    }
+
+    private updateMetaData(metadata: SyncedItemMetadata) {
+      return Object.assign(metadata, { key: `${constructor.name}_` + metadata.key });
     }
   };
 }

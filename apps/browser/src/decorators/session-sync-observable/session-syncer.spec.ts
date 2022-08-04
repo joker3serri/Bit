@@ -235,5 +235,15 @@ describe("session syncer", () => {
 
       expect(actual).toEqual("used initializer");
     });
+
+    it("should honor initialize as array", () => {
+      const actual = SessionSyncer.buildFromKeyValuePair([1, 2], {
+        key: key,
+        initializer: initializer,
+        initializeAsArray: true,
+      });
+
+      expect(actual).toEqual(["used initializer", "used initializer"]);
+    });
   });
 });

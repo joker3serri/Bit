@@ -72,10 +72,19 @@ export class SessionSyncer {
   }
 
   static buildFromKeyValuePair(key_value_pair: any, metaData: SyncedItemMetadata) {
-    if (metaData.initializer != null) {
-      return metaData.initializer(key_value_pair);
+    const builder = SessionSyncer.getBuilder(metaData);
+
+    if (metaData.initializeAsArray) {
+      return key_value_pair.map((o: any) => builder(o));
+    } else {
+      return builder(key_value_pair);
     }
-    return Object.create(metaData.ctor.prototype, Object.getOwnPropertyDescriptors(key_value_pair));
+  }
+
+  private static getBuilder(metaData: SyncedItemMetadata) {
+    return metaData.initializer != null
+      ? metaData.initializer
+      : (o: any) => Object.create(metaData.ctor.prototype, Object.getOwnPropertyDescriptors(o));
   }
 
   private get updateMessageCommand() {

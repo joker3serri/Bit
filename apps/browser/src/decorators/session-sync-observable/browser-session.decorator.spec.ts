@@ -15,7 +15,9 @@ describe("browserSession decorator", () => {
     class TestClass {}
     expect(() => {
       new TestClass();
-    }).toThrowError("Cannot decorate TestClass with browserSession, StateService must be injected");
+    }).toThrowError(
+      "Cannot decorate TestClass with browserSession, Browser's StateService must be injected"
+    );
   });
 
   it("should create if StateService are constructor arguments", () => {
