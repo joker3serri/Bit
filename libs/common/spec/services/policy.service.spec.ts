@@ -56,6 +56,26 @@ describe("PolicyService", () => {
     policyService = new PolicyService(stateService, organizationService);
   });
 
+  it("upsert", async () => {
+    await policyService.upsert(policyData("99", "test-organization", PolicyType.DisableSend, true));
+
+    expect(await firstValueFrom(policyService.policies$)).toEqual([
+      {
+        id: "1",
+        organizationId: "test-organization",
+        type: PolicyType.MasterPassword,
+        enabled: true,
+        data: { minLength: 14 },
+      },
+      {
+        id: "99",
+        organizationId: "test-organization",
+        type: PolicyType.DisableSend,
+        enabled: true,
+      },
+    ]);
+  });
+
   it("replace", async () => {
     await policyService.replace({
       "2": policyData("2", "test-organization", PolicyType.DisableSend, true),
