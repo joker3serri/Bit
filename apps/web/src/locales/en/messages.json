@@ -5345,5 +5345,8 @@
   },
   "secrets":{
     "message":"Secrets"
+  },
+  "searchSecrets":{
+    "message":"Search Secrets"
   }
 }
