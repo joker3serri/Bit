@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
-import { Permissions } from "@bitwarden/common/enums/permissions";
+import { Provider } from "@bitwarden/common/models/domain/provider";
 
 import { FrontendLayoutComponent } from "src/app/layouts/frontend-layout.component";
 import { ProvidersComponent } from "src/app/providers/providers.component";
@@ -74,7 +74,7 @@ const routes: Routes = [
                 canActivate: [PermissionsGuard],
                 data: {
                   titleId: "people",
-                  permissions: [Permissions.ManageUsers],
+                  permissions: (provider: Provider) => provider.canManageUsers,
                 },
               },
               {
@@ -83,7 +83,7 @@ const routes: Routes = [
                 canActivate: [PermissionsGuard],
                 data: {
                   titleId: "eventLogs",
-                  permissions: [Permissions.AccessEventLogs],
+                  permissions: (provider: Provider) => provider.canAccessEventLogs,
                 },
               },
             ],
@@ -103,7 +103,7 @@ const routes: Routes = [
                 canActivate: [PermissionsGuard],
                 data: {
                   titleId: "myProvider",
-                  permissions: [Permissions.ManageProvider],
+                  permissions: (provider: Provider) => provider.isProviderAdmin,
                 },
               },
             ],

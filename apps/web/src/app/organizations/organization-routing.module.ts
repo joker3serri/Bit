@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
-import { Permissions } from "@bitwarden/common/enums/permissions";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { OrganizationVaultModule } from "../modules/vault/modules/organization-vault/organization-vault.module";
 
@@ -14,7 +14,12 @@ import { GroupsComponent } from "./manage/groups.component";
 import { ManageComponent } from "./manage/manage.component";
 import { PeopleComponent } from "./manage/people.component";
 import { PoliciesComponent } from "./manage/policies.component";
-import { NavigationPermissionsService } from "./services/navigation-permissions.service";
+import {
+  canAccessOrgAdmin,
+  canAccessManageTab,
+  canAccessSettingsTab,
+  canAccessToolsTab,
+} from "./services/navigation-permissions.service";
 import { AccountComponent } from "./settings/account.component";
 import { OrganizationBillingComponent } from "./settings/organization-billing.component";
 import { OrganizationSubscriptionComponent } from "./settings/organization-subscription.component";
@@ -33,7 +38,7 @@ const routes: Routes = [
     component: OrganizationLayoutComponent,
     canActivate: [AuthGuard, PermissionsGuard],
     data: {
-      permissions: NavigationPermissionsService.getPermissions("admin"),
+      permissions: canAccessOrgAdmin,
     },
     children: [
       { path: "", pathMatch: "full", redirectTo: "vault" },
@@ -45,7 +50,9 @@ const routes: Routes = [
         path: "tools",
         component: ToolsComponent,
         canActivate: [PermissionsGuard],
-        data: { permissions: NavigationPermissionsService.getPermissions("tools") },
+        data: {
+          permissions: canAccessToolsTab,
+        },
         children: [
           {
             path: "",
@@ -65,7 +72,7 @@ const routes: Routes = [
             canActivate: [PermissionsGuard],
             data: {
               titleId: "exposedPasswordsReport",
-              permissions: [Permissions.AccessReports],
+              permissions: (org: Organization) => org.canAccessReports,
             },
           },
           {
@@ -74,7 +81,7 @@ const routes: Routes = [
             canActivate: [PermissionsGuard],
             data: {
               titleId: "inactive2faReport",
-              permissions: [Permissions.AccessReports],
+              permissions: (org: Organization) => org.canAccessReports,
             },
           },
           {
@@ -83,7 +90,7 @@ const routes: Routes = [
             canActivate: [PermissionsGuard],
             data: {
               titleId: "reusedPasswordsReport",
-              permissions: [Permissions.AccessReports],
+              permissions: (org: Organization) => org.canAccessReports,
             },
           },
           {
@@ -92,7 +99,7 @@ const routes: Routes = [
             canActivate: [PermissionsGuard],
             data: {
               titleId: "unsecuredWebsitesReport",
-              permissions: [Permissions.AccessReports],
+              permissions: (org: Organization) => org.canAccessReports,
             },
           },
           {
@@ -101,7 +108,7 @@ const routes: Routes = [
             canActivate: [PermissionsGuard],
             data: {
               titleId: "weakPasswordsReport",
-              permissions: [Permissions.AccessReports],
+              permissions: (org: Organization) => org.canAccessReports,
             },
           },
         ],
@@ -111,7 +118,7 @@ const routes: Routes = [
         component: ManageComponent,
         canActivate: [PermissionsGuard],
         data: {
-          permissions: NavigationPermissionsService.getPermissions("manage"),
+          permissions: canAccessManageTab,
         },
         children: [
           {
@@ -125,13 +132,12 @@ const routes: Routes = [
             canActivate: [PermissionsGuard],
             data: {
               titleId: "collections",
-              permissions: [
-                Permissions.CreateNewCollections,
-                Permissions.EditAnyCollection,
-                Permissions.DeleteAnyCollection,
-                Permissions.EditAssignedCollections,
-                Permissions.DeleteAssignedCollections,
-              ],
+              permissions: (org: Organization) =>
+                org.canCreateNewCollections ||
+                org.canEditAnyCollection ||
+                org.canDeleteAnyCollection ||
+                org.canEditAssignedCollections ||
+                org.canDeleteAssignedCollections,
             },
           },
           {
@@ -140,7 +146,7 @@ const routes: Routes = [
             canActivate: [PermissionsGuard],
             data: {
               titleId: "eventLogs",
-              permissions: [Permissions.AccessEventLogs],
+              permissions: (org: Organization) => org.canAccessEventLogs,
             },
           },
           {
@@ -149,7 +155,7 @@ const routes: Routes = [
             canActivate: [PermissionsGuard],
             data: {
               titleId: "groups",
-              permissions: [Permissions.ManageGroups],
+              permissions: (org: Organization) => org.canManageGroups,
             },
           },
           {
@@ -158,7 +164,7 @@ const routes: Routes = [
             canActivate: [PermissionsGuard],
             data: {
               titleId: "people",
-              permissions: [Permissions.ManageUsers, Permissions.ManageUsersPassword],
+              permissions: (org: Organization) => org.canManageUsers || org.canManageUsersPassword,
             },
           },
           {
@@ -167,7 +173,7 @@ const routes: Routes = [
             canActivate: [PermissionsGuard],
             data: {
               titleId: "policies",
-              permissions: [Permissions.ManagePolicies],
+              permissions: (org: Organization) => org.canManagePolicies,
             },
           },
         ],
@@ -176,7 +182,7 @@ const routes: Routes = [
         path: "settings",
         component: SettingsComponent,
         canActivate: [PermissionsGuard],
-        data: { permissions: NavigationPermissionsService.getPermissions("settings") },
+        data: { permissions: canAccessSettingsTab },
         children: [
           { path: "", pathMatch: "full", redirectTo: "account" },
           { path: "account", component: AccountComponent, data: { titleId: "myOrganization" } },
@@ -189,7 +195,7 @@ const routes: Routes = [
             path: "billing",
             component: OrganizationBillingComponent,
             canActivate: [PermissionsGuard],
-            data: { titleId: "billing", permissions: [Permissions.ManageBilling] },
+            data: { titleId: "billing", permissions: (org: Organization) => org.canManageBilling },
           },
           {
             path: "subscription",

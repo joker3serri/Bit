@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { Permissions } from "@bitwarden/common/enums/permissions";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { PermissionsGuard } from "../../guards/permissions.guard";
 
@@ -15,7 +15,7 @@ const routes: Routes = [
     canActivate: [PermissionsGuard],
     data: {
       titleId: "importData",
-      permissions: [Permissions.AccessImportExport],
+      permissions: (org: Organization) => org.canAccessImportExport,
     },
   },
   {
@@ -24,7 +24,7 @@ const routes: Routes = [
     canActivate: [PermissionsGuard],
     data: {
       titleId: "exportVault",
-      permissions: [Permissions.AccessImportExport],
+      permissions: (org: Organization) => org.canAccessImportExport,
     },
   },
 ];

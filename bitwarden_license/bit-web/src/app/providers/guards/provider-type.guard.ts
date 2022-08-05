@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router } from "@angular/router";
 
 import { ProviderService } from "@bitwarden/common/abstractions/provider.service";
-import { Permissions } from "@bitwarden/common/enums/permissions";
+import { Provider } from "@bitwarden/common/models/domain/provider";
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
@@ -10,17 +10,17 @@ export class PermissionsGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot) {
     const provider = await this.providerService.get(route.params.providerId);
-    const permissions = route.data == null ? null : (route.data.permissions as Permissions[]);
-
-    if (
-      (permissions.indexOf(Permissions.AccessEventLogs) !== -1 && provider.canAccessEventLogs) ||
-      (permissions.indexOf(Permissions.ManageProvider) !== -1 && provider.isProviderAdmin) ||
-      (permissions.indexOf(Permissions.ManageUsers) !== -1 && provider.canManageUsers)
-    ) {
-      return true;
+    if (provider == null) {
+      return this.router.createUrlTree(["/"]);
     }
 
-    this.router.navigate(["/providers", provider.id]);
-    return false;
+    const permissionsCallback: (provider: Provider) => boolean = route.data?.permissions;
+    const hasSpecifiedPermissions = permissionsCallback == null || permissionsCallback(provider);
+
+    if (!hasSpecifiedPermissions) {
+      return this.router.createUrlTree(["/providers", provider.id]);
+    }
+
+    return true;
   }
 }
