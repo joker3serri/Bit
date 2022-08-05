@@ -343,8 +343,8 @@ jobs:
         run: |
           if [[ $(grep "pull" <<< "${GITHUB_REF}") ]]; then
             IMAGE_TAG=${GITHUB_HEAD_REF}
-            else
-              IMAGE_TAG=$(echo "${GITHUB_REF:11}" | sed "s#/#-#g")
+          else
+            IMAGE_TAG=$(echo "${GITHUB_REF:11}" | sed "s#/#-#g")
           fi
 
           TAG_EXTENSION=${{ github.event.inputs.custom_tag_extension }}
