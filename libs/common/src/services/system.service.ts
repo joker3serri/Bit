@@ -40,6 +40,12 @@ export class SystemService implements SystemServiceAbstraction {
       // Don't refresh if they are still active in the window
       doRefresh = diffSeconds >= 5000;
     }
+
+    // Will only be the case if no account is logged in anymore
+    if (lastActive == null && doRefresh === false) {
+      doRefresh = true;
+    }
+
     const biometricLockedFingerprintValidated =
       await this.stateService.getBiometricFingerprintValidated();
     if (doRefresh && !biometricLockedFingerprintValidated) {
