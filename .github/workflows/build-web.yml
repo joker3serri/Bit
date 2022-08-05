@@ -352,7 +352,8 @@ jobs:
           if [[ $TAG_EXTENSION ]]; then
             IMAGE_TAG=$IMAGE_TAG-$TAG_EXTENSION
           fi
-            echo "::set-output name=value::$IMAGE_TAG"
+          
+          echo "::set-output name=value::$IMAGE_TAG"
 
       - name: Tag image
         env:
