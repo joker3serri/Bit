@@ -167,7 +167,7 @@
             </div>
           </div>
           <div class="tw-flex tw-flex-row">
-            <div class="tw-w-1/2 tw-mb-4">
+            <div class="tw-mb-4 tw-w-1/2">
               <label for="loginTotp">{{ "authenticatorKeyTotp" | i18n }}</label>
               <input
                 id="loginTotp"
@@ -179,7 +179,7 @@
                 [disabled]="cipher.isDeleted || !cipher.viewPassword || viewOnly"
               />
             </div>
-            <div class="tw-flex tw-w-1/2 tw-mb-4 tw-items-end tw-ml-4" [ngClass]="{ low: totpLow }">
+            <div class="tw-mb-4 tw-ml-4 tw-flex tw-w-1/2 tw-items-end" [ngClass]="{ low: totpLow }">
               <div
                 class="totp tw-flex tw-flex-row tw-items-center"
                 *ngIf="!cipher.login.totp || (cipher.login.totp && !canAccessPremium)"
@@ -262,7 +262,7 @@
                 >
                 <button
                   type="button"
-                  class="tw-bg-transparent tw-border-none tw-items-center tw-text-primary-500"
+                  class="tw-items-center tw-border-none tw-bg-transparent tw-text-primary-500"
                   appA11yTitle="{{ 'copyVerificationCode' | i18n }}"
                   (click)="copy(totpCode, 'verificationCodeTotp', 'TOTP')"
                 >
