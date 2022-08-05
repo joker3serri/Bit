@@ -113,7 +113,7 @@ export class Organization {
   }
 
   get canAccessEventLogs() {
-    return this.isAdmin || this.permissions.accessEventLogs;
+    return (this.isAdmin || this.permissions.accessEventLogs) && this.useEvents;
   }
 
   get canAccessImportExport() {
@@ -167,11 +167,11 @@ export class Organization {
   }
 
   get canManageGroups() {
-    return this.isAdmin || this.permissions.manageGroups;
+    return (this.isAdmin || this.permissions.manageGroups) && this.useGroups;
   }
 
   get canManageSso() {
-    return this.isAdmin || this.permissions.manageSso;
+    return (this.isAdmin || this.permissions.manageSso) && this.useSso;
   }
 
   get canManageScim() {
@@ -179,7 +179,7 @@ export class Organization {
   }
 
   get canManagePolicies() {
-    return this.isAdmin || this.permissions.managePolicies;
+    return (this.isAdmin || this.permissions.managePolicies) && this.usePolicies;
   }
 
   get canManageUsers() {
