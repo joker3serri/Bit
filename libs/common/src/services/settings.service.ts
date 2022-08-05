@@ -41,7 +41,10 @@ export class SettingsService implements SettingsServiceAbstraction {
   }
 
   async clear(userId?: string): Promise<void> {
-    this._settings.next([]);
+    if (userId == null || userId == (await this.stateService.getUserId())) {
+      this._settings.next([]);
+    }
+
     await this.stateService.setSettings(null, { userId: userId });
   }
 
