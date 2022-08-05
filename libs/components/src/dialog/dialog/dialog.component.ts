@@ -10,13 +10,13 @@ export class DialogComponent {
   get width() {
     switch (this.dialogSize) {
       case "small": {
-        return "tw-max-w-xs";
+        return "tw-w-96";
       }
       case "large": {
-        return "tw-max-w-4xl";
+        return "tw-w-75vw";
       }
       default: {
-        return "tw-max-w-xl";
+        return "tw-w-50vw";
       }
     }
   }

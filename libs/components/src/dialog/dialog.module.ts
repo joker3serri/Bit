@@ -10,7 +10,7 @@ import { SimpleDialogComponent } from "./simple-dialog/simple-dialog.component";
 @NgModule({
   imports: [CommonModule, CdkDialogModule],
   declarations: [DialogCloseDirective, DialogComponent, SimpleDialogComponent],
-  exports: [DialogModule, DialogComponent, SimpleDialogComponent],
+  exports: [CdkDialogModule, DialogComponent, SimpleDialogComponent],
   providers: [DialogService],
 })
 export class DialogModule {}

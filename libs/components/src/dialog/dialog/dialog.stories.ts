@@ -27,7 +27,7 @@ const Template: Story<DialogComponent> = (args: DialogComponent) => ({
   props: args,
   template: `
   <bit-dialog [dialogSize]="dialogSize">
-    <span bit-dialog-title>Dialog Title</span>
+    <span bit-dialog-title>{{title}}</span>
     <span bit-dialog-content>Dialog body text goes here.</span>
     <div bit-dialog-footer class="tw-flex tw-flex-row tw-gap-2">
       <button bitButton buttonType="primary">Save</button>
@@ -40,23 +40,26 @@ const Template: Story<DialogComponent> = (args: DialogComponent) => ({
 export const Default = Template.bind({});
 Default.args = {
   dialogSize: "default",
+  title: "Default",
 };
 
 export const Small = Template.bind({});
 Small.args = {
   dialogSize: "small",
+  title: "Small",
 };
 
 export const Large = Template.bind({});
 Large.args = {
   dialogSize: "large",
+  title: "Large",
 };
 
 const TemplateScrolling: Story<DialogComponent> = (args: DialogComponent) => ({
   props: args,
   template: `
   <bit-dialog [dialogSize]="dialogSize">
-  <span bit-dialog-title>Dialog Title</span>
+  <span bit-dialog-title>Scrolling Example</span>
   <span bit-dialog-content>
     Dialog body text goes here.<br>
     <ng-container *ngFor="let _ of [].constructor(100)">
