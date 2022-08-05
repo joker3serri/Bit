@@ -34,16 +34,20 @@ export class SystemService implements SystemServiceAbstraction {
 
   private async executeProcessReload() {
     let doRefresh = false;
-    const lastActive = await this.stateService.getLastActive();
-    if (lastActive != null) {
-      const diffSeconds = new Date().getTime() - lastActive;
-      // Don't refresh if they are still active in the window
-      doRefresh = diffSeconds >= 5000;
+
+    const accounts = this.stateService.accounts.getValue();
+    if (accounts == null) {
+      // Will only be the case if no account is logged in anymore
+      doRefresh = true;
     }
 
-    // Will only be the case if no account is logged in anymore
-    if (lastActive == null && doRefresh === false) {
-      doRefresh = true;
+    if (!doRefresh) {
+      const lastActive = await this.stateService.getLastActive();
+      if (lastActive != null) {
+        const diffSeconds = new Date().getTime() - lastActive;
+        // Don't refresh if they are still active in the window
+        doRefresh = diffSeconds >= 5000;
+      }
     }
 
     const biometricLockedFingerprintValidated =
