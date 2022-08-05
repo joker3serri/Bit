@@ -5220,8 +5220,8 @@
       }
     }
   },
-  "premiumSubcription": {
-    "message": "Premium subscription"
+  "premiumSubcriptionRequired": {
+    "message": "Premium subscription required"
   },
   "scim": {
     "message": "SCIM Provisioning",
