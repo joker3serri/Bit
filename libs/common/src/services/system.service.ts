@@ -1,7 +1,9 @@
+import { AuthService } from "../abstractions/auth.service";
 import { MessagingService } from "../abstractions/messaging.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { StateService } from "../abstractions/state.service";
 import { SystemService as SystemServiceAbstraction } from "../abstractions/system.service";
+import { AuthenticationStatus } from "../enums/authenticationStatus";
 import { Utils } from "../misc/utils";
 
 export class SystemService implements SystemServiceAbstraction {
@@ -16,7 +18,19 @@ export class SystemService implements SystemServiceAbstraction {
     private stateService: StateService
   ) {}
 
-  async startProcessReload(): Promise<void> {
+  async startProcessReload(authService: AuthService): Promise<void> {
+    const accounts = this.stateService.accounts.getValue();
+    if (accounts != null) {
+      const keys = Object.keys(accounts);
+      if (keys.length > 0) {
+        for (const userId of keys) {
+          if ((await authService.getAuthStatus(userId)) === AuthenticationStatus.Unlocked) {
+            return;
+          }
+        }
+      }
+    }
+
     // A reloadInterval has already been set and is executing
     if (this.reloadInterval != null) {
       return;
