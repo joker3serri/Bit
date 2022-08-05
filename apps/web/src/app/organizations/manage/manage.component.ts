@@ -4,8 +4,6 @@ import { ActivatedRoute } from "@angular/router";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { flagEnabled } from "../../../utils/flags";
-
 @Component({
   selector: "app-org-manage",
   templateUrl: "manage.component.html",
@@ -27,12 +25,7 @@ export class ManageComponent implements OnInit {
       this.accessSso = this.organization.useSso;
       this.accessEvents = this.organization.useEvents;
       this.accessGroups = this.organization.useGroups;
-
-      if (flagEnabled("scim")) {
-        this.accessScim = this.organization.useScim;
-      } else {
-        this.accessScim = false;
-      }
+      this.accessScim = this.organization.useScim;
     });
   }
 }
