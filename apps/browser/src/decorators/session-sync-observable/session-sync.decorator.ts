@@ -1,8 +1,10 @@
+import { Jsonify } from "type-fest";
+
 import { SessionStorable } from "./session-storable";
 
 class BuildOptions<T> {
   ctor?: new (args: any[]) => T;
-  initializer?: (key_value_pair: any) => T;
+  initializer?: (key_value_pair: Jsonify<T>) => T;
   initializeAsArray? = false;
 }
 

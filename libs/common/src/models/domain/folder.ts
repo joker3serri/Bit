@@ -1,3 +1,5 @@
+import { Jsonify } from "type-fest";
+
 import { FolderData } from "../data/folderData";
 import { FolderView } from "../view/folderView";
 
@@ -38,7 +40,7 @@ export class Folder extends Domain {
     );
   }
 
-  static fromJSON(obj: FolderData): Folder {
-    return Object.assign(new Folder(), obj);
+  static fromJSON(obj: Jsonify<Folder>) {
+    return Object.assign(new Folder(), obj, { name: EncString.fromJSON(obj.name) });
   }
 }

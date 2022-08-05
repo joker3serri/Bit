@@ -1,3 +1,5 @@
+import { Jsonify } from "type-fest";
+
 import { IEncrypted } from "@bitwarden/common/interfaces/IEncrypted";
 
 import { CryptoService } from "../../abstractions/crypto.service";
@@ -132,5 +134,13 @@ export class EncString implements IEncrypted {
 
   get dataBytes(): ArrayBuffer {
     return this.data == null ? null : Utils.fromB64ToArray(this.data).buffer;
+  }
+
+  toJSON() {
+    return this.encryptedString;
+  }
+
+  static fromJSON(obj: Jsonify<EncString>): EncString {
+    return new EncString(obj);
   }
 }

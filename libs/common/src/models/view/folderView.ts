@@ -1,3 +1,5 @@
+import { Jsonify } from "type-fest";
+
 import { Folder } from "../domain/folder";
 import { ITreeNodeObject } from "../domain/treeNode";
 
@@ -17,7 +19,7 @@ export class FolderView implements View, ITreeNodeObject {
     this.revisionDate = f.revisionDate;
   }
 
-  static fromJSON(key_value_pair: FolderView): FolderView {
+  static fromJSON(key_value_pair: Jsonify<FolderView>) {
     return Object.assign(new FolderView(), key_value_pair);
   }
 }

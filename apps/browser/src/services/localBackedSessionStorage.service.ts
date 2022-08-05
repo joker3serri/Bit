@@ -115,14 +115,12 @@ export class LocalBackedSessionStorageService extends AbstractCachedStorageServi
   }
 
   async getSessionEncKey(): Promise<SymmetricCryptoKey> {
-    let storedKey = (await this.sessionStorage.get(keys.encKey)) as SymmetricCryptoKey;
+    let storedKey = await this.sessionStorage.get<SymmetricCryptoKey>(keys.encKey);
     if (storedKey == null || Object.keys(storedKey).length == 0) {
       storedKey = await this.keyGenerationService.makeEphemeralKey();
       await this.setSessionEncKey(storedKey);
     }
-    return SymmetricCryptoKey.fromJSON(
-      Object.create(SymmetricCryptoKey.prototype, Object.getOwnPropertyDescriptors(storedKey))
-    );
+    return SymmetricCryptoKey.fromJSON(storedKey);
   }
 
   async setSessionEncKey(input: SymmetricCryptoKey): Promise<void> {
