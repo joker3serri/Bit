@@ -341,7 +341,7 @@ jobs:
       - name: Get image tag
         id: image-tag
         run: |
-          if [[ $(grep "pull" <<< "${{GITHUB_REF}}") ]]; then
+          if [[ $(grep "pull" <<< "${GITHUB_REF}") ]]; then
             IMAGE_TAG=${{github.ref_name}}
             else
               IMAGE_TAG=$(echo "${GITHUB_REF:11}" | sed "s#/#-#g")
@@ -352,7 +352,7 @@ jobs:
           if [[ $TAG_EXTENSION ]]; then
             IMAGE_TAG=$IMAGE_TAG-$TAG_EXTENSION
           fi
-          
+
           echo "::set-output name=value::$IMAGE_TAG"
 
       - name: Tag image
