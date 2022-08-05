@@ -498,7 +498,7 @@ export class StateService<
     );
   }
 
-  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.initFromJson)
+  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getCryptoMasterKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
@@ -625,7 +625,7 @@ export class StateService<
     );
   }
 
-  @withPrototypeForArrayMembers(CipherView, CipherView.initFromJson)
+  @withPrototypeForArrayMembers(CipherView, CipherView.fromJSON)
   async getDecryptedCiphers(options?: StorageOptions): Promise<CipherView[]> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
@@ -661,7 +661,7 @@ export class StateService<
     );
   }
 
-  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.initFromJson)
+  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedCryptoSymmetricKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
@@ -682,7 +682,7 @@ export class StateService<
     );
   }
 
-  @withPrototypeForMap(SymmetricCryptoKey, SymmetricCryptoKey.initFromJson)
+  @withPrototypeForMap(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedOrganizationKeys(
     options?: StorageOptions
   ): Promise<Map<string, SymmetricCryptoKey>> {
@@ -789,7 +789,7 @@ export class StateService<
     );
   }
 
-  @withPrototypeForMap(SymmetricCryptoKey, SymmetricCryptoKey.initFromJson)
+  @withPrototypeForMap(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedProviderKeys(
     options?: StorageOptions
   ): Promise<Map<string, SymmetricCryptoKey>> {
@@ -1753,24 +1753,6 @@ export class StateService<
     );
   }
 
-  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.initFromJson)
-  async getLegacyEtmKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.keys?.legacyEtmKey;
-  }
-
-  async setLegacyEtmKey(value: SymmetricCryptoKey, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
-    );
-    account.keys.legacyEtmKey = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
-    );
-  }
-
   async getLocalData(options?: StorageOptions): Promise<any> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
@@ -2674,10 +2656,9 @@ export class StateService<
   protected async clearDecryptedDataForActiveUser(): Promise<void> {
     await this.updateState(async (state) => {
       const userId = state?.activeUserId;
-      if (userId == null || state?.accounts[userId]?.data == null) {
-        return;
+      if (userId != null && state?.accounts[userId]?.data != null) {
+        state.accounts[userId].data = new AccountData();
       }
-      state.accounts[userId].data = new AccountData();
 
       return state;
     });
@@ -2756,6 +2737,9 @@ export class StateService<
   ) {
     await this.state().then(async (state) => {
       const updatedState = await stateUpdater(state);
+      if (updatedState == null) {
+        throw new Error("Attempted to update state to null value");
+      }
 
       await this.setState(updatedState);
     });
@@ -2764,7 +2748,7 @@ export class StateService<
 
 export function withPrototype<T>(
   constructor: new (...args: any[]) => T,
-  converter: (input: T) => T = (i) => i
+  converter: (input: any) => T = (i) => i
 ): (
   target: any,
   propertyKey: string | symbol,
@@ -2800,7 +2784,7 @@ export function withPrototype<T>(
 
 function withPrototypeForArrayMembers<T>(
   memberConstructor: new (...args: any[]) => T,
-  memberConverter: (input: T) => T = (i) => i
+  memberConverter: (input: any) => T = (i) => i
 ): (
   target: any,
   propertyKey: string | symbol,
@@ -2848,7 +2832,7 @@ function withPrototypeForArrayMembers<T>(
 
 function withPrototypeForObjectValues<T>(
   valuesConstructor: new (...args: any[]) => T,
-  valuesConverter: (input: T) => T = (i) => i
+  valuesConverter: (input: any) => T = (i) => i
 ): (
   target: any,
   propertyKey: string | symbol,
@@ -2895,7 +2879,7 @@ function withPrototypeForObjectValues<T>(
 
 function withPrototypeForMap<T>(
   valuesConstructor: new (...args: any[]) => T,
-  valuesConverter: (input: T) => T = (i) => i
+  valuesConverter: (input: any) => T = (i) => i
 ): (
   target: any,
   propertyKey: string | symbol,
