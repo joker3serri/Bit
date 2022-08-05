@@ -12,7 +12,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { Provider } from "@bitwarden/common/models/domain/provider";
 
-import { canAccessOrgAdmin } from "../organizations/services/navigation-permissions.service";
+import { canAccessOrgAdmin } from "../organizations/navigation-permissions";
 
 @Component({
   selector: "app-navbar",

@@ -9,7 +9,7 @@ import { ProvidersComponent } from "src/app/providers/providers.component";
 
 import { ClientsComponent } from "./clients/clients.component";
 import { CreateOrganizationComponent } from "./clients/create-organization.component";
-import { PermissionsGuard } from "./guards/provider-type.guard";
+import { PermissionsGuard } from "./guards/permissions.guard";
 import { ProviderGuard } from "./guards/provider.guard";
 import { AcceptProviderComponent } from "./manage/accept-provider.component";
 import { EventsComponent } from "./manage/events.component";

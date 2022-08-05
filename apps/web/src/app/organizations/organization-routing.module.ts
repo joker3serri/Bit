@@ -17,7 +17,7 @@ import {
   canAccessManageTab,
   canAccessSettingsTab,
   canAccessToolsTab,
-} from "./services/navigation-permissions.service";
+} from "./navigation-permissions";
 import { AccountComponent } from "./settings/account.component";
 import { OrganizationBillingComponent } from "./settings/organization-billing.component";
 import { OrganizationSubscriptionComponent } from "./settings/organization-subscription.component";
