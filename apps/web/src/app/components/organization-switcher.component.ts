@@ -5,7 +5,7 @@ import { OrganizationService } from "@bitwarden/common/abstractions/organization
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { canAccessOrgAdmin } from "../organizations/services/navigation-permissions.service";
+import { canAccessOrgAdmin } from "../organizations/organization-routing.module";
 
 @Component({
   selector: "app-organization-switcher",
