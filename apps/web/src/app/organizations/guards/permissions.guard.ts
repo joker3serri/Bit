@@ -40,10 +40,9 @@ export class PermissionsGuard implements CanActivate {
     }
 
     const permissionsCallback: (organization: Organization) => boolean = route.data?.permissions;
-    const hasSpecifiedPermissions = permissionsCallback == null || permissionsCallback(org);
-    const canAccess = hasSpecifiedPermissions && (org.enabled || org.isOwner);
+    const hasPermissions = permissionsCallback == null || permissionsCallback(org);
 
-    if (!canAccess) {
+    if (!hasPermissions) {
       // Handle linkable ciphers for organizations the user only has view access to
       // https://bitwarden.atlassian.net/browse/EC-203
       const cipherId =

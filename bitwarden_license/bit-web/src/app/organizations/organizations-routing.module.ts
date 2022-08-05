@@ -7,7 +7,7 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 import { PermissionsGuard } from "src/app/organizations/guards/permissions.guard";
 import { OrganizationLayoutComponent } from "src/app/organizations/layouts/organization-layout.component";
 import { ManageComponent } from "src/app/organizations/manage/manage.component";
-import { canAccessManageTab } from "src/app/organizations/services/navigation-permissions.service";
+import { canAccessManageTab } from "src/app/organizations/navigation-permissions";
 
 import { ScimComponent } from "./manage/scim.component";
 import { SsoComponent } from "./manage/sso.component";
