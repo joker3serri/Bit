@@ -69,11 +69,12 @@ module.exports = {
       DEFAULT: theme("colors.background"),
       ...theme("colors"),
     }),
-    width: ({ theme }) => ({
-      "50vw": "50vw",
-      "75vw": "75vw",
-      ...theme("spacing"),
-    }),
+    extend: {
+      width: {
+        "50vw": "50vw",
+        "75vw": "75vw",
+      },
+    },
   },
   plugins: [],
 };
