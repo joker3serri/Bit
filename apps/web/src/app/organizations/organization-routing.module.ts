@@ -12,6 +12,12 @@ import { GroupsComponent } from "./manage/groups.component";
 import { ManageComponent } from "./manage/manage.component";
 import { PeopleComponent } from "./manage/people.component";
 import { PoliciesComponent } from "./manage/policies.component";
+import {
+  canAccessOrgAdmin,
+  canAccessManageTab,
+  canAccessSettingsTab,
+  canAccessToolsTab,
+} from "./services/navigation-permissions.service";
 import { AccountComponent } from "./settings/account.component";
 import { OrganizationBillingComponent } from "./settings/organization-billing.component";
 import { OrganizationSubscriptionComponent } from "./settings/organization-subscription.component";
@@ -24,34 +30,6 @@ import { ToolsComponent } from "./tools/tools.component";
 import { UnsecuredWebsitesReportComponent } from "./tools/unsecured-websites-report.component";
 import { WeakPasswordsReportComponent } from "./tools/weak-passwords-report.component";
 import { VaultModule } from "./vault/vault.module";
-
-export function canAccessToolsTab(org: Organization): boolean {
-  return org.canAccessImportExport || org.canAccessReports;
-}
-
-export function canAccessSettingsTab(org: Organization): boolean {
-  return org.isOwner;
-}
-
-export function canAccessManageTab(org: Organization): boolean {
-  return (
-    org.canCreateNewCollections ||
-    org.canEditAnyCollection ||
-    org.canDeleteAnyCollection ||
-    org.canEditAssignedCollections ||
-    org.canDeleteAssignedCollections ||
-    org.canAccessEventLogs ||
-    org.canManageGroups ||
-    org.canManageUsers ||
-    org.canManagePolicies ||
-    org.canManageSso ||
-    org.canManageScim
-  );
-}
-
-export function canAccessOrgAdmin(org: Organization): boolean {
-  return canAccessToolsTab(org) || canAccessSettingsTab(org) || canAccessManageTab(org);
-}
 
 const routes: Routes = [
   {

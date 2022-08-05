@@ -9,7 +9,7 @@ import {
   canAccessManageTab,
   canAccessSettingsTab,
   canAccessToolsTab,
-} from "../organization-routing.module";
+} from "../services/navigation-permissions.service";
 
 const BroadcasterSubscriptionId = "OrganizationLayoutComponent";
 
