@@ -11,6 +11,9 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "hover:tw-border-primary-700",
     "focus:tw-bg-primary-700",
     "focus:tw-border-primary-700",
+    "disabled:tw-bg-primary-500/60",
+    "disabled:tw-border-primary-500/60",
+    "disabled:!tw-text-contrast/60",
   ],
   secondary: [
     "tw-bg-transparent",
@@ -22,6 +25,8 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "focus:tw-bg-secondary-500",
     "focus:tw-border-secondary-500",
     "focus:!tw-text-contrast",
+    "disabled:tw-border-text-muted/60",
+    "disabled:!tw-text-muted/60",
   ],
   danger: [
     "tw-bg-transparent",
@@ -33,6 +38,8 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "focus:tw-bg-danger-500",
     "focus:tw-border-danger-500",
     "focus:!tw-text-contrast",
+    "disabled:tw-border-danger-500/60",
+    "disabled:!tw-text-danger/60",
   ],
 };
 
@@ -51,14 +58,12 @@ export class ButtonDirective {
       "tw-border-solid",
       "tw-text-center",
       "hover:tw-no-underline",
-      "disabled:tw-bg-secondary-100",
-      "disabled:tw-border-secondary-100",
-      "disabled:!tw-text-main",
       "focus:tw-outline-none",
       "focus:tw-ring",
       "focus:tw-ring-offset-2",
       "focus:tw-ring-primary-700",
       "focus:tw-z-10",
+      "disabled:tw-cursor-not-allowed",
     ]
       .concat(this.block ? ["tw-w-full", "tw-block"] : ["tw-inline-block"])
       .concat(buttonStyles[this.buttonType] ?? []);
