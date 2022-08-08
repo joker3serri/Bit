@@ -8,6 +8,11 @@
   min-width: 0;
 }
 
+.password-wrapper {
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
 .password-letter {
   @include themify($themes) {
     color: themed("pwLetter");
@@ -23,6 +28,43 @@
 .password-special {
   @include themify($themes) {
     color: themed("pwSpecial");
+  }
+}
+
+.password-character {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  width: 27px;
+  height: 32px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 17px;
+
+  &:nth-child(odd) {
+    @include themify($themes) {
+      background-color: themed("pwCountBackground");
+    }
+  }
+}
+
+.password-count {
+  white-space: nowrap;
+  font-size: 8px;
+
+  @include themify($themes) {
+    color: themed("pwCountTextMuted");
+  }
+}
+
+.password-hide {
+  align-self: center;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+
+  @include themify($themes) {
+    color: themed("textMuted");
   }
 }
 

@@ -126,6 +126,17 @@
                       title="{{ 'loading' | i18n }}"
                     ></i>
                   </a>
+                  <a
+                    href="#"
+                    class="d-block bwi-icon-above-input"
+                    appStopClick
+                    attr.aria-label="{{ 'toggleCharacterCount' | i18n }} {{ 'password' | i18n }}"
+                    appA11yTitle="{{ 'toggleCharacterCount' | i18n }}"
+                    (click)="togglePasswordCount()"
+                    *ngIf="showPassword"
+                  >
+                    <i class="bwi bwi-lg bwi-fw bwi-numbered-list" aria-hidden="true"></i>
+                  </a>
                 </div>
               </div>
               <div class="input-group">
@@ -163,6 +174,20 @@
                     <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" *ngIf="showPassword && showPasswordCount">
+            <div class="col-12 form-group">
+              <label>{{ "passwordCount" | i18n }}</label>
+              <div class="d-flex">
+                <div
+                  class="col-11 monospaced password-wrapper"
+                  [innerHTML]="cipher.login.password | colorPasswordCount"
+                ></div>
+                <a href="#" class="password-hide" appStopClick (click)="togglePasswordCount()">{{
+                  "hide" | i18n
+                }}</a>
               </div>
             </div>
           </div>

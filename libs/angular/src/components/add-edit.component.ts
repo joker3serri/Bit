@@ -60,6 +60,7 @@ export class AddEditComponent implements OnInit {
   restorePromise: Promise<any>;
   checkPasswordPromise: Promise<number>;
   showPassword = false;
+  showPasswordCount = false;
   showCardNumber = false;
   showCardCode = false;
   cipherType = CipherType;
@@ -465,10 +466,19 @@ export class AddEditComponent implements OnInit {
 
   togglePassword() {
     this.showPassword = !this.showPassword;
+    this.showPasswordCount = false;
     document.getElementById("loginPassword").focus();
     if (this.editMode && this.showPassword) {
       this.eventService.collect(EventType.Cipher_ClientToggledPasswordVisible, this.cipherId);
     }
+  }
+
+  async togglePasswordCount() {
+    if (!this.showPassword) {
+      return;
+    }
+
+    this.showPasswordCount = !this.showPasswordCount;
   }
 
   async toggleCardNumber() {
