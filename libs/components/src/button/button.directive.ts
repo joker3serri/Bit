@@ -12,7 +12,7 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "focus:tw-bg-primary-700",
     "focus:tw-border-primary-700",
     "disabled:tw-bg-primary-500/60",
-    "disabled:tw-border-primary-500/60",
+    "disabled:tw-border-primary-500/2", // Bg + Border needed further opacity
     "disabled:!tw-text-contrast/60",
   ],
   secondary: [
@@ -25,6 +25,7 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "focus:tw-bg-secondary-500",
     "focus:tw-border-secondary-500",
     "focus:!tw-text-contrast",
+    "disabled:tw-bg-transparent",
     "disabled:tw-border-text-muted/60",
     "disabled:!tw-text-muted/60",
   ],
@@ -38,6 +39,7 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "focus:tw-bg-danger-500",
     "focus:tw-border-danger-500",
     "focus:!tw-text-contrast",
+    "disabled:tw-bg-transparent",
     "disabled:tw-border-danger-500/60",
     "disabled:!tw-text-danger/60",
   ],
