@@ -4,7 +4,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { PermissionsGuard } from "src/app/organizations/guards/permissions.guard";
+import { OrganizationPermissionsGuard } from "src/app/organizations/guards/org-permissions.guard";
 import { OrganizationLayoutComponent } from "src/app/organizations/layouts/organization-layout.component";
 import { ManageComponent } from "src/app/organizations/manage/manage.component";
 import { canAccessManageTab } from "src/app/organizations/navigation-permissions";
@@ -16,12 +16,12 @@ const routes: Routes = [
   {
     path: "organizations/:organizationId",
     component: OrganizationLayoutComponent,
-    canActivate: [AuthGuard, PermissionsGuard],
+    canActivate: [AuthGuard, OrganizationPermissionsGuard],
     children: [
       {
         path: "manage",
         component: ManageComponent,
-        canActivate: [PermissionsGuard],
+        canActivate: [OrganizationPermissionsGuard],
         data: {
           permissions: canAccessManageTab,
         },
@@ -29,7 +29,7 @@ const routes: Routes = [
           {
             path: "sso",
             component: SsoComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
               permissions: (org: Organization) => org.canManageSso,
             },
@@ -37,7 +37,7 @@ const routes: Routes = [
           {
             path: "scim",
             component: ScimComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
               permissions: (org: Organization) => org.canManageScim,
             },

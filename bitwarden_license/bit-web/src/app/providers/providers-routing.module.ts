@@ -9,7 +9,7 @@ import { ProvidersComponent } from "src/app/providers/providers.component";
 
 import { ClientsComponent } from "./clients/clients.component";
 import { CreateOrganizationComponent } from "./clients/create-organization.component";
-import { PermissionsGuard } from "./guards/permissions.guard";
+import { ProviderPermissionsGuard } from "./guards/provider-permissions.guard";
 import { ProviderGuard } from "./guards/provider.guard";
 import { AcceptProviderComponent } from "./manage/accept-provider.component";
 import { EventsComponent } from "./manage/events.component";
@@ -71,7 +71,7 @@ const routes: Routes = [
               {
                 path: "people",
                 component: PeopleComponent,
-                canActivate: [PermissionsGuard],
+                canActivate: [ProviderPermissionsGuard],
                 data: {
                   titleId: "people",
                   permissions: (provider: Provider) => provider.canManageUsers,
@@ -80,7 +80,7 @@ const routes: Routes = [
               {
                 path: "events",
                 component: EventsComponent,
-                canActivate: [PermissionsGuard],
+                canActivate: [ProviderPermissionsGuard],
                 data: {
                   titleId: "eventLogs",
                   permissions: (provider: Provider) => provider.canAccessEventLogs,
@@ -100,7 +100,7 @@ const routes: Routes = [
               {
                 path: "account",
                 component: AccountComponent,
-                canActivate: [PermissionsGuard],
+                canActivate: [ProviderPermissionsGuard],
                 data: {
                   titleId: "myProvider",
                   permissions: (provider: Provider) => provider.isProviderAdmin,
