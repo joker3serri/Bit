@@ -15,6 +15,17 @@ import { Organization } from "../../../../../../libs/common/src/models/domain/or
 
 import { OrganizationPermissionsGuard } from "./org-permissions.guard";
 
+const orgFactory = (props: Partial<Organization> = {}) =>
+  Object.assign(
+    new Organization(),
+    {
+      id: "myOrgId",
+      enabled: true,
+      type: OrganizationUserType.Admin,
+    },
+    props
+  );
+
 describe("Organization Permissions Guard", () => {
   let router: MockProxy<Router>;
   let organizationService: MockProxy<OrganizationService>;
@@ -22,17 +33,6 @@ describe("Organization Permissions Guard", () => {
   let route: MockProxy<ActivatedRouteSnapshot>;
 
   let organizationPermissionsGuard: OrganizationPermissionsGuard;
-
-  const orgFactory = (props: Partial<Organization> = {}) =>
-    Object.assign(
-      new Organization(),
-      {
-        id: "myOrgId",
-        enabled: true,
-        type: OrganizationUserType.Admin,
-      },
-      props
-    );
 
   beforeEach(() => {
     router = mock<Router>();
@@ -65,7 +65,6 @@ describe("Organization Permissions Guard", () => {
   });
 
   it("permits navigation if no permissions are specified", async () => {
-    route.data = {};
     const org = orgFactory();
     organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
@@ -107,7 +106,6 @@ describe("Organization Permissions Guard", () => {
       const org = orgFactory();
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
-      organizationService.get.calledWith(org.id).mockResolvedValue(org);
       const actual = await organizationPermissionsGuard.canActivate(route, state);
 
       expect(permissionsCallback).toHaveBeenCalled();
