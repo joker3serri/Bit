@@ -15,7 +15,7 @@ const routes: Routes = [
     canActivate: [OrganizationPermissionsGuard],
     data: {
       titleId: "importData",
-      permissions: (org: Organization) => org.canAccessImportExport,
+      organizationPermissions: (org: Organization) => org.canAccessImportExport,
     },
   },
   {
@@ -24,7 +24,7 @@ const routes: Routes = [
     canActivate: [OrganizationPermissionsGuard],
     data: {
       titleId: "exportVault",
-      permissions: (org: Organization) => org.canAccessImportExport,
+      organizationPermissions: (org: Organization) => org.canAccessImportExport,
     },
   },
 ];

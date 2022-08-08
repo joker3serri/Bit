@@ -15,7 +15,6 @@ import { Organization } from "../../../../../../libs/common/src/models/domain/or
 
 import { OrganizationPermissionsGuard } from "./org-permissions.guard";
 
-
 describe("Organization Permissions Guard", () => {
   const organizationService = mock<OrganizationService>();
   const router = mock<Router>();
@@ -54,17 +53,16 @@ describe("Organization Permissions Guard", () => {
     );
   });
 
-  it("redirects to home if organization does not exist", async () => {
+  it("blocks navigation if organization does not exist", async () => {
     organizationService.get.mockResolvedValue(null);
 
     const actual = await organizationPermissionsGuard.canActivate(route, emptyState);
 
-    expect(router.createUrlTree).toHaveBeenCalledWith(["/"]);
     expect(actual).not.toBe(true);
   });
 
   describe("given a disabled organization", () => {
-    it("redirects to home if user is not an owner", async () => {
+    it("blocks navigation if user is not an owner", async () => {
       const org = orgFactory({
         type: OrganizationUserType.Admin,
         enabled: false,
@@ -73,7 +71,6 @@ describe("Organization Permissions Guard", () => {
 
       const actual = await organizationPermissionsGuard.canActivate(route, emptyState);
 
-      expect(router.createUrlTree).toHaveBeenCalledWith(["/"]);
       expect(actual).not.toBe(true);
     });
 
@@ -101,40 +98,48 @@ describe("Organization Permissions Guard", () => {
   });
 
   it("permits navigation if the user has permissions", async () => {
+    const permissionsCallback = jest.fn();
+    permissionsCallback.mockImplementation((org) => true);
     route.data = {
-      permissions: (org: Organization) => true,
+      organizationPermissions: permissionsCallback,
     };
+
     const org = orgFactory();
     organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
     const actual = await organizationPermissionsGuard.canActivate(route, emptyState);
 
+    expect(permissionsCallback).toHaveBeenCalled();
     expect(actual).toBe(true);
   });
 
   describe("if the user does not have permissions", () => {
-    it("and there is no Item ID, redirect to home", async () => {
+    it("and there is no Item ID, block navigation", async () => {
+      const permissionsCallback = jest.fn();
+      permissionsCallback.mockImplementation((org) => false);
       route.data = {
-        permissions: (org: Organization) => false,
+        organizationPermissions: permissionsCallback,
       };
+
       const state = mock<RouterStateSnapshot>({
         root: mock<ActivatedRouteSnapshot>({
           queryParamMap: convertToParamMap({}),
         }),
       });
+
       const org = orgFactory();
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
       const actual = await organizationPermissionsGuard.canActivate(route, state);
 
-      expect(router.createUrlTree).toHaveBeenCalled();
+      expect(permissionsCallback).toHaveBeenCalled();
       expect(actual).not.toBe(true);
     });
 
-    it("and there is an Item ID, redirect to the individual vault", async () => {
+    it("and there is an Item ID, redirect to the item in the individual vault", async () => {
       route.data = {
-        permissions: (org: Organization) => false,
+        organizationPermissions: (org: Organization) => false,
       };
       const thisState = mock<RouterStateSnapshot>({
         root: mock<ActivatedRouteSnapshot>({
