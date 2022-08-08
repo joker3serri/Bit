@@ -6,23 +6,9 @@ import { UserVerificationService } from "@bitwarden/common/abstractions/userVeri
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
 import { VerificationType } from "@bitwarden/common/enums/verificationType";
 import { SecretVerificationRequest } from "@bitwarden/common/models/request/secretVerificationRequest";
-import { TwoFactorAuthenticatorResponse } from "@bitwarden/common/models/response/twoFactorAuthenticatorResponse";
-import { TwoFactorDuoResponse } from "@bitwarden/common/models/response/twoFactorDuoResponse";
-import { TwoFactorEmailResponse } from "@bitwarden/common/models/response/twoFactorEmailResponse";
-import { TwoFactorRecoverResponse } from "@bitwarden/common/models/response/twoFactorRescoverResponse";
-import { TwoFactorWebAuthnResponse } from "@bitwarden/common/models/response/twoFactorWebAuthnResponse";
-import { TwoFactorYubiKeyResponse } from "@bitwarden/common/models/response/twoFactorYubiKeyResponse";
+import { AuthResponse } from "@bitwarden/common/types/authResponse";
+import { TwoFactorResponse } from "@bitwarden/common/types/twoFactorResponse";
 import { Verification } from "@bitwarden/common/types/verification";
-
-import { AuthResponse } from "./two-factor-base.component";
-
-type TwoFactorResponse =
-  | TwoFactorRecoverResponse
-  | TwoFactorDuoResponse
-  | TwoFactorEmailResponse
-  | TwoFactorWebAuthnResponse
-  | TwoFactorAuthenticatorResponse
-  | TwoFactorYubiKeyResponse;
 
 @Component({
   selector: "app-two-factor-verify",

@@ -10,8 +10,9 @@ import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProvider
 import { TwoFactorEmailRequest } from "@bitwarden/common/models/request/twoFactorEmailRequest";
 import { UpdateTwoFactorEmailRequest } from "@bitwarden/common/models/request/updateTwoFactorEmailRequest";
 import { TwoFactorEmailResponse } from "@bitwarden/common/models/response/twoFactorEmailResponse";
+import { AuthResponse } from "@bitwarden/common/types/authResponse";
 
-import { AuthResponse, TwoFactorBaseComponent } from "./two-factor-base.component";
+import { TwoFactorBaseComponent } from "./two-factor-base.component";
 
 @Component({
   selector: "app-two-factor-email",

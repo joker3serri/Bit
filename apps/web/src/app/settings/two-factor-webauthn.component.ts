@@ -13,8 +13,9 @@ import {
   ChallengeResponse,
   TwoFactorWebAuthnResponse,
 } from "@bitwarden/common/models/response/twoFactorWebAuthnResponse";
+import { AuthResponse } from "@bitwarden/common/types/authResponse";
 
-import { AuthResponse, TwoFactorBaseComponent } from "./two-factor-base.component";
+import { TwoFactorBaseComponent } from "./two-factor-base.component";
 
 interface Key {
   id: number;

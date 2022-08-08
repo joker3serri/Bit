@@ -8,8 +8,9 @@ import { UserVerificationService } from "@bitwarden/common/abstractions/userVeri
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
 import { UpdateTwoFactorDuoRequest } from "@bitwarden/common/models/request/updateTwoFactorDuoRequest";
 import { TwoFactorDuoResponse } from "@bitwarden/common/models/response/twoFactorDuoResponse";
+import { AuthResponse } from "@bitwarden/common/types/authResponse";
 
-import { AuthResponse, TwoFactorBaseComponent } from "./two-factor-base.component";
+import { TwoFactorBaseComponent } from "./two-factor-base.component";
 
 @Component({
   selector: "app-two-factor-duo",

@@ -8,8 +8,9 @@ import { UserVerificationService } from "@bitwarden/common/abstractions/userVeri
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
 import { UpdateTwoFactorYubioOtpRequest } from "@bitwarden/common/models/request/updateTwoFactorYubioOtpRequest";
 import { TwoFactorYubiKeyResponse } from "@bitwarden/common/models/response/twoFactorYubiKeyResponse";
+import { AuthResponse } from "@bitwarden/common/types/authResponse";
 
-import { AuthResponse, TwoFactorBaseComponent } from "./two-factor-base.component";
+import { TwoFactorBaseComponent } from "./two-factor-base.component";
 
 interface Key {
   key: string;

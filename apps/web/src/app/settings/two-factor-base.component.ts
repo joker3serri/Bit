@@ -9,16 +9,7 @@ import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProvider
 import { VerificationType } from "@bitwarden/common/enums/verificationType";
 import { SecretVerificationRequest } from "@bitwarden/common/models/request/secretVerificationRequest";
 import { TwoFactorProviderRequest } from "@bitwarden/common/models/request/twoFactorProviderRequest";
-import { BaseResponse } from "@bitwarden/common/models/response/baseResponse";
-
-interface AuthResponseBase {
-  secret: string;
-  verificationType: VerificationType;
-}
-
-export interface AuthResponse<T extends BaseResponse> extends AuthResponseBase {
-  response: T;
-}
+import { AuthResponseBase } from "@bitwarden/common/types/authResponse";
 
 @Directive()
 export abstract class TwoFactorBaseComponent {
