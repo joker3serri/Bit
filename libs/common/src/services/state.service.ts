@@ -323,24 +323,6 @@ export class StateService<
     );
   }
 
-  async getBiometricLocked(options?: StorageOptions): Promise<boolean> {
-    return (
-      (await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions())))
-        ?.settings?.biometricLocked ?? false
-    );
-  }
-
-  async setBiometricLocked(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
-    );
-    account.settings.biometricLocked = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
-    );
-  }
-
   async getBiometricText(options?: StorageOptions): Promise<string> {
     return (
       await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
@@ -497,7 +479,7 @@ export class StateService<
     );
   }
 
-  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.initFromJson)
+  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getCryptoMasterKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
@@ -660,7 +642,7 @@ export class StateService<
     );
   }
 
-  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.initFromJson)
+  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedCryptoSymmetricKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
@@ -681,7 +663,7 @@ export class StateService<
     );
   }
 
-  @withPrototypeForMap(SymmetricCryptoKey, SymmetricCryptoKey.initFromJson)
+  @withPrototypeForMap(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedOrganizationKeys(
     options?: StorageOptions
   ): Promise<Map<string, SymmetricCryptoKey>> {
@@ -770,7 +752,7 @@ export class StateService<
     );
   }
 
-  @withPrototypeForMap(SymmetricCryptoKey, SymmetricCryptoKey.initFromJson)
+  @withPrototypeForMap(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedProviderKeys(
     options?: StorageOptions
   ): Promise<Map<string, SymmetricCryptoKey>> {
@@ -1731,24 +1713,6 @@ export class StateService<
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultOnDiskMemoryOptions())
-    );
-  }
-
-  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.initFromJson)
-  async getLegacyEtmKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
-    )?.keys?.legacyEtmKey;
-  }
-
-  async setLegacyEtmKey(value: SymmetricCryptoKey, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
-    );
-    account.keys.legacyEtmKey = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
   }
 
@@ -2747,7 +2711,7 @@ export class StateService<
 
 export function withPrototype<T>(
   constructor: new (...args: any[]) => T,
-  converter: (input: T) => T = (i) => i
+  converter: (input: any) => T = (i) => i
 ): (
   target: any,
   propertyKey: string | symbol,
@@ -2783,7 +2747,7 @@ export function withPrototype<T>(
 
 function withPrototypeForArrayMembers<T>(
   memberConstructor: new (...args: any[]) => T,
-  memberConverter: (input: T) => T = (i) => i
+  memberConverter: (input: any) => T = (i) => i
 ): (
   target: any,
   propertyKey: string | symbol,
@@ -2831,7 +2795,7 @@ function withPrototypeForArrayMembers<T>(
 
 function withPrototypeForObjectValues<T>(
   valuesConstructor: new (...args: any[]) => T,
-  valuesConverter: (input: T) => T = (i) => i
+  valuesConverter: (input: any) => T = (i) => i
 ): (
   target: any,
   propertyKey: string | symbol,
@@ -2878,7 +2842,7 @@ function withPrototypeForObjectValues<T>(
 
 function withPrototypeForMap<T>(
   valuesConstructor: new (...args: any[]) => T,
-  valuesConverter: (input: T) => T = (i) => i
+  valuesConverter: (input: any) => T = (i) => i
 ): (
   target: any,
   propertyKey: string | symbol,

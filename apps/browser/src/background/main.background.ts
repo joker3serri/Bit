@@ -186,7 +186,7 @@ export default class MainBackground {
       await this.refreshBadgeAndMenu(true);
       if (this.systemService != null) {
         await this.systemService.clearPendingClipboard();
-        await this.reloadProcess();
+        await this.systemService.startProcessReload(this.authService);
       }
     };
 
@@ -639,7 +639,7 @@ export default class MainBackground {
     await this.reseedStorage();
     this.notificationsService.updateConnection(false);
     await this.systemService.clearPendingClipboard();
-    await this.reloadProcess();
+    await this.systemService.startProcessReload(this.authService);
   }
 
   async collectPageDetailsForContentScript(tab: any, sender: string, frameId: number = null) {
@@ -1045,17 +1045,5 @@ export default class MainBackground {
         tabId: tabId,
       });
     }
-  }
-
-  private async reloadProcess(): Promise<void> {
-    const accounts = this.stateService.accounts.getValue();
-    if (accounts != null) {
-      for (const userId of Object.keys(accounts)) {
-        if ((await this.authService.getAuthStatus(userId)) === AuthenticationStatus.Unlocked) {
-          return;
-        }
-      }
-    }
-    await this.systemService.startProcessReload();
   }
 }

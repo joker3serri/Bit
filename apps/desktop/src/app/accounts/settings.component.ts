@@ -18,6 +18,8 @@ import { isWindowsStore } from "@bitwarden/electron/utils";
 
 import { SetPinComponent } from "../components/set-pin.component";
 
+import { DeleteAccountComponent } from "./delete-account.component";
+
 @Component({
   selector: "app-settings",
   templateUrl: "settings.component.html",
@@ -274,7 +276,6 @@ export class SettingsComponent implements OnInit {
     if (!newValue || !this.supportsBiometric) {
       this.biometric = false;
       await this.stateService.setBiometricUnlock(null);
-      await this.stateService.setBiometricLocked(false);
       await this.cryptoService.toggleKey();
       return;
     }
@@ -288,7 +289,6 @@ export class SettingsComponent implements OnInit {
 
     this.biometric = true;
     await this.stateService.setBiometricUnlock(true);
-    await this.stateService.setBiometricLocked(false);
     await this.cryptoService.toggleKey();
   }
 
@@ -436,5 +436,9 @@ export class SettingsComponent implements OnInit {
     await this.stateService.setEnableBrowserIntegrationFingerprint(
       this.enableBrowserIntegrationFingerprint
     );
+  }
+
+  async openDeleteAccount() {
+    this.modalService.open(DeleteAccountComponent, { replaceTopModal: true });
   }
 }
