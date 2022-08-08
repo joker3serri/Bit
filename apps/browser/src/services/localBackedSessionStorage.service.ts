@@ -97,10 +97,12 @@ export class LocalBackedSessionStorageService extends AbstractCachedStorageServi
 
   @devFlag("storeSessionDecrypted")
   async setDecryptedLocalSession(session: any): Promise<void> {
+    // Make sure we're storing the jsonified version of the session
+    const jsonSession = JSON.parse(JSON.stringify(session));
     if (session == null) {
       await this.localStorage.remove(keys.sessionKey);
     } else {
-      await this.localStorage.save(keys.sessionKey, session);
+      await this.localStorage.save(keys.sessionKey, jsonSession);
     }
   }
 
