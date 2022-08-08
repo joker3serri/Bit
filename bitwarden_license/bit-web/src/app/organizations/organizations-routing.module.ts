@@ -23,7 +23,7 @@ const routes: Routes = [
         component: ManageComponent,
         canActivate: [OrganizationPermissionsGuard],
         data: {
-          permissions: canAccessManageTab,
+          organizationPermissions: canAccessManageTab,
         },
         children: [
           {
@@ -31,7 +31,7 @@ const routes: Routes = [
             component: SsoComponent,
             canActivate: [OrganizationPermissionsGuard],
             data: {
-              permissions: (org: Organization) => org.canManageSso,
+              organizationPermissions: (org: Organization) => org.canManageSso,
             },
           },
           {
@@ -39,7 +39,7 @@ const routes: Routes = [
             component: ScimComponent,
             canActivate: [OrganizationPermissionsGuard],
             data: {
-              permissions: (org: Organization) => org.canManageScim,
+              organizationPermissions: (org: Organization) => org.canManageScim,
             },
           },
         ],

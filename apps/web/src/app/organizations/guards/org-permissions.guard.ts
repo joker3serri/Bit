@@ -41,7 +41,8 @@ export class OrganizationPermissionsGuard implements CanActivate {
       return this.router.createUrlTree(["/"]);
     }
 
-    const permissionsCallback: (organization: Organization) => boolean = route.data?.permissions;
+    const permissionsCallback: (organization: Organization) => boolean =
+      route.data?.organizationPermissions;
     const hasPermissions = permissionsCallback == null || permissionsCallback(org);
 
     if (!hasPermissions) {
