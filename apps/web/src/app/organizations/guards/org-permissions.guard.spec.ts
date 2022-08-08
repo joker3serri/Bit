@@ -4,7 +4,7 @@ import {
   Router,
   RouterStateSnapshot,
 } from "@angular/router";
-import { mock, mockReset } from "jest-mock-extended";
+import { mock, MockProxy } from "jest-mock-extended";
 
 import { I18nService } from "../../../../../../libs/common/src/abstractions/i18n.service";
 import { OrganizationService } from "../../../../../../libs/common/src/abstractions/organization.service";
@@ -16,10 +16,10 @@ import { Organization } from "../../../../../../libs/common/src/models/domain/or
 import { OrganizationPermissionsGuard } from "./org-permissions.guard";
 
 describe("Organization Permissions Guard", () => {
-  const organizationService = mock<OrganizationService>();
-  const router = mock<Router>();
-  const emptyState = mock<RouterStateSnapshot>();
-  const route = mock<ActivatedRouteSnapshot>();
+  let router: MockProxy<Router>;
+  let organizationService: MockProxy<OrganizationService>;
+  let state: MockProxy<RouterStateSnapshot>;
+  let route: MockProxy<ActivatedRouteSnapshot>;
 
   let organizationPermissionsGuard: OrganizationPermissionsGuard;
 
@@ -35,14 +35,17 @@ describe("Organization Permissions Guard", () => {
     );
 
   beforeEach(() => {
-    mockReset(organizationService);
-    mockReset(router);
-    mockReset(emptyState);
-    mockReset(route);
-
-    route.params = {
-      organizationId: orgFactory().id,
-    };
+    router = mock<Router>();
+    organizationService = mock<OrganizationService>();
+    state = mock<RouterStateSnapshot>();
+    route = mock<ActivatedRouteSnapshot>({
+      params: {
+        organizationId: orgFactory().id,
+      },
+      data: {
+        organizationPermissions: null,
+      },
+    });
 
     organizationPermissionsGuard = new OrganizationPermissionsGuard(
       router,
@@ -56,35 +59,9 @@ describe("Organization Permissions Guard", () => {
   it("blocks navigation if organization does not exist", async () => {
     organizationService.get.mockResolvedValue(null);
 
-    const actual = await organizationPermissionsGuard.canActivate(route, emptyState);
+    const actual = await organizationPermissionsGuard.canActivate(route, state);
 
     expect(actual).not.toBe(true);
-  });
-
-  describe("given a disabled organization", () => {
-    it("blocks navigation if user is not an owner", async () => {
-      const org = orgFactory({
-        type: OrganizationUserType.Admin,
-        enabled: false,
-      });
-      organizationService.get.calledWith(org.id).mockResolvedValue(org);
-
-      const actual = await organizationPermissionsGuard.canActivate(route, emptyState);
-
-      expect(actual).not.toBe(true);
-    });
-
-    it("permits navigation if user is an owner", async () => {
-      const org = orgFactory({
-        type: OrganizationUserType.Owner,
-        enabled: false,
-      });
-      organizationService.get.calledWith(org.id).mockResolvedValue(org);
-
-      const actual = await organizationPermissionsGuard.canActivate(route, emptyState);
-
-      expect(actual).toBe(true);
-    });
   });
 
   it("permits navigation if no permissions are specified", async () => {
@@ -92,7 +69,7 @@ describe("Organization Permissions Guard", () => {
     const org = orgFactory();
     organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
-    const actual = await organizationPermissionsGuard.canActivate(route, emptyState);
+    const actual = await organizationPermissionsGuard.canActivate(route, state);
 
     expect(actual).toBe(true);
   });
@@ -107,7 +84,7 @@ describe("Organization Permissions Guard", () => {
     const org = orgFactory();
     organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
-    const actual = await organizationPermissionsGuard.canActivate(route, emptyState);
+    const actual = await organizationPermissionsGuard.canActivate(route, state);
 
     expect(permissionsCallback).toHaveBeenCalled();
     expect(actual).toBe(true);
@@ -121,7 +98,7 @@ describe("Organization Permissions Guard", () => {
         organizationPermissions: permissionsCallback,
       };
 
-      const state = mock<RouterStateSnapshot>({
+      state = mock<RouterStateSnapshot>({
         root: mock<ActivatedRouteSnapshot>({
           queryParamMap: convertToParamMap({}),
         }),
@@ -141,7 +118,7 @@ describe("Organization Permissions Guard", () => {
       route.data = {
         organizationPermissions: (org: Organization) => false,
       };
-      const thisState = mock<RouterStateSnapshot>({
+      state = mock<RouterStateSnapshot>({
         root: mock<ActivatedRouteSnapshot>({
           queryParamMap: convertToParamMap({
             itemId: "myItemId",
@@ -151,12 +128,38 @@ describe("Organization Permissions Guard", () => {
       const org = orgFactory();
       organizationService.get.calledWith(org.id).mockResolvedValue(org);
 
-      const actual = await organizationPermissionsGuard.canActivate(route, thisState);
+      const actual = await organizationPermissionsGuard.canActivate(route, state);
 
       expect(router.createUrlTree).toHaveBeenCalledWith(["/vault"], {
         queryParams: { itemId: "myItemId" },
       });
       expect(actual).not.toBe(true);
+    });
+  });
+
+  describe("given a disabled organization", () => {
+    it("blocks navigation if user is not an owner", async () => {
+      const org = orgFactory({
+        type: OrganizationUserType.Admin,
+        enabled: false,
+      });
+      organizationService.get.calledWith(org.id).mockResolvedValue(org);
+
+      const actual = await organizationPermissionsGuard.canActivate(route, state);
+
+      expect(actual).not.toBe(true);
+    });
+
+    it("permits navigation if user is an owner", async () => {
+      const org = orgFactory({
+        type: OrganizationUserType.Owner,
+        enabled: false,
+      });
+      organizationService.get.calledWith(org.id).mockResolvedValue(org);
+
+      const actual = await organizationPermissionsGuard.canActivate(route, state);
+
+      expect(actual).toBe(true);
     });
   });
 });
