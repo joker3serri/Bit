@@ -5,7 +5,7 @@ import { ProviderService } from "@bitwarden/common/abstractions/provider.service
 import { Provider } from "@bitwarden/common/models/domain/provider";
 
 @Injectable()
-export class PermissionsGuard implements CanActivate {
+export class ProviderPermissionsGuard implements CanActivate {
   constructor(private providerService: ProviderService, private router: Router) {}
 
   async canActivate(route: ActivatedRouteSnapshot) {

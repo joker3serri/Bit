@@ -12,7 +12,7 @@ import { canAccessOrgAdmin } from "../navigation-permissions";
 @Injectable({
   providedIn: "root",
 })
-export class PermissionsGuard implements CanActivate {
+export class OrganizationPermissionsGuard implements CanActivate {
   constructor(
     private router: Router,
     private organizationService: OrganizationService,

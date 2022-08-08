@@ -4,7 +4,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { PermissionsGuard } from "./guards/permissions.guard";
+import { OrganizationPermissionsGuard } from "./guards/org-permissions.guard";
 import { OrganizationLayoutComponent } from "./layouts/organization-layout.component";
 import { CollectionsComponent } from "./manage/collections.component";
 import { EventsComponent } from "./manage/events.component";
@@ -35,7 +35,7 @@ const routes: Routes = [
   {
     path: ":organizationId",
     component: OrganizationLayoutComponent,
-    canActivate: [AuthGuard, PermissionsGuard],
+    canActivate: [AuthGuard, OrganizationPermissionsGuard],
     data: {
       permissions: canAccessOrgAdmin,
     },
@@ -48,7 +48,7 @@ const routes: Routes = [
       {
         path: "tools",
         component: ToolsComponent,
-        canActivate: [PermissionsGuard],
+        canActivate: [OrganizationPermissionsGuard],
         data: {
           permissions: canAccessToolsTab,
         },
@@ -68,7 +68,7 @@ const routes: Routes = [
           {
             path: "exposed-passwords-report",
             component: ExposedPasswordsReportComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "exposedPasswordsReport",
               permissions: (org: Organization) => org.canAccessReports,
@@ -77,7 +77,7 @@ const routes: Routes = [
           {
             path: "inactive-two-factor-report",
             component: InactiveTwoFactorReportComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "inactive2faReport",
               permissions: (org: Organization) => org.canAccessReports,
@@ -86,7 +86,7 @@ const routes: Routes = [
           {
             path: "reused-passwords-report",
             component: ReusedPasswordsReportComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "reusedPasswordsReport",
               permissions: (org: Organization) => org.canAccessReports,
@@ -95,7 +95,7 @@ const routes: Routes = [
           {
             path: "unsecured-websites-report",
             component: UnsecuredWebsitesReportComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "unsecuredWebsitesReport",
               permissions: (org: Organization) => org.canAccessReports,
@@ -104,7 +104,7 @@ const routes: Routes = [
           {
             path: "weak-passwords-report",
             component: WeakPasswordsReportComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "weakPasswordsReport",
               permissions: (org: Organization) => org.canAccessReports,
@@ -115,7 +115,7 @@ const routes: Routes = [
       {
         path: "manage",
         component: ManageComponent,
-        canActivate: [PermissionsGuard],
+        canActivate: [OrganizationPermissionsGuard],
         data: {
           permissions: canAccessManageTab,
         },
@@ -128,7 +128,7 @@ const routes: Routes = [
           {
             path: "collections",
             component: CollectionsComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "collections",
               permissions: (org: Organization) =>
@@ -142,7 +142,7 @@ const routes: Routes = [
           {
             path: "events",
             component: EventsComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "eventLogs",
               permissions: (org: Organization) => org.canAccessEventLogs,
@@ -151,7 +151,7 @@ const routes: Routes = [
           {
             path: "groups",
             component: GroupsComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "groups",
               permissions: (org: Organization) => org.canManageGroups,
@@ -160,7 +160,7 @@ const routes: Routes = [
           {
             path: "people",
             component: PeopleComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "people",
               permissions: (org: Organization) => org.canManageUsers || org.canManageUsersPassword,
@@ -169,7 +169,7 @@ const routes: Routes = [
           {
             path: "policies",
             component: PoliciesComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "policies",
               permissions: (org: Organization) => org.canManagePolicies,
@@ -180,7 +180,7 @@ const routes: Routes = [
       {
         path: "settings",
         component: SettingsComponent,
-        canActivate: [PermissionsGuard],
+        canActivate: [OrganizationPermissionsGuard],
         data: { permissions: canAccessSettingsTab },
         children: [
           { path: "", pathMatch: "full", redirectTo: "account" },
@@ -193,7 +193,7 @@ const routes: Routes = [
           {
             path: "billing",
             component: OrganizationBillingComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: { titleId: "billing", permissions: (org: Organization) => org.canManageBilling },
           },
           {
