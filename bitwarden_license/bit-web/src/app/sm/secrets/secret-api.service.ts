@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { ListResponse } from "@bitwarden/common/models/response/listResponse";
 
-import { SecretResponse } from "./Responses/secretResponse";
+import { SecretResponse } from "./responses/secret.response";
 
 @Injectable({
   providedIn: "any",

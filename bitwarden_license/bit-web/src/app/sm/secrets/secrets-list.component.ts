@@ -2,7 +2,7 @@ import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
-import { SecretResponse } from "./Responses/secretResponse";
+import { SecretResponse } from "./responses/secret.response";
 
 @Component({
   selector: "sm-secrets-list",

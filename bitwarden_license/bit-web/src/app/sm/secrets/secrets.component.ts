@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { SecretResponse } from "./Responses/secretResponse";
+import { SecretResponse } from "./responses/secret.response";
 import { SecretApiService } from "./secret-api.service";
 
 @Component({
@@ -22,7 +22,7 @@ export class SecretsComponent implements OnInit {
     });
   }
 
-  async getSecrets() {
+  private async getSecrets() {
     this.secrets = (
       await this.secretsApiService.getSecretsByOrganizationId(this.organizationId)
     ).data;
