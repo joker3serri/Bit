@@ -12,7 +12,7 @@ import { I18nPipe } from "@bitwarden/angular/pipes/i18n.pipe";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService as BaseStateService } from "@bitwarden/common/abstractions/state.service";
 import { PlanType } from "@bitwarden/common/enums/planType";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
