@@ -19,4 +19,5 @@ module.exports = {
     "<rootDir>/libs/electron/jest.config.js",
     "<rootDir>/libs/node/jest.config.js",
   ],
+  testEnvironment: "node",
 };
