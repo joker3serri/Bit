@@ -56,8 +56,10 @@ export class StateService<
 {
   accounts = new BehaviorSubject<{ [userId: string]: TAccount }>({});
   private activeAccountSubject = new BehaviorSubject<string>(null);
-  activeAccountUnlocked = new BehaviorSubject<boolean>(false);
   activeAccount$ = this.activeAccountSubject.asObservable();
+
+  private activeAccountUnlockedSubject = new BehaviorSubject<boolean>(false);
+  activeAccountUnlocked$ = this.activeAccountUnlockedSubject.asObservable();
 
   private hasBeenInited = false;
   private isRecoveredSession = false;
@@ -75,16 +77,16 @@ export class StateService<
   ) {
     // If the account gets changed, verify the new account is unlocked
     this.activeAccountSubject.subscribe(async (userId) => {
-      if (userId == null && this.activeAccountUnlocked.getValue() == false) {
+      if (userId == null && this.activeAccountUnlockedSubject.getValue() == false) {
         return;
       } else if (userId == null) {
-        this.activeAccountUnlocked.next(false);
+        this.activeAccountUnlockedSubject.next(false);
       }
 
       // FIXME: This should be refactored into AuthService or a similar service,
       //  as checking for the existance of the crypto key is a low level
       //  implementation detail.
-      this.activeAccountUnlocked.next((await this.getCryptoMasterKey()) != null);
+      this.activeAccountUnlockedSubject.next((await this.getCryptoMasterKey()) != null);
     });
   }
 
@@ -502,8 +504,8 @@ export class StateService<
       const nextValue = value != null;
 
       // Avoid emitting if we are already unlocked
-      if (this.activeAccountUnlocked.getValue() != nextValue) {
-        this.activeAccountUnlocked.next(nextValue);
+      if (this.activeAccountUnlockedSubject.getValue() != nextValue) {
+        this.activeAccountUnlockedSubject.next(nextValue);
       }
     }
   }
