@@ -84,7 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
               });
             }
 
-            if (this.stateService.activeAccount.getValue() == null) {
+            if (this.activeUserId === null) {
               this.router.navigate(["home"]);
             }
           });
