@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "Test runner for Desktop native messaging",
   "scripts": {
-    "handshake": "npx ts-node bw-handshake.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "handshake": "npx ts-node bw-handshake.ts"
   },
   "author": "Bitwarden Inc. <hello@bitwarden.com> (https://bitwarden.com)",
   "license": "GPL-3.0",
