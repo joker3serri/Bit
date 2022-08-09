@@ -80,6 +80,12 @@ export default class TestIPC {
         console.log("\x1b[31m Handshake failure response \x1b[0m");
       }
       this.disconnect();
+    } else if (message.status === "canceled") {
+      console.log("\x1b[33m Connected to Desktop app, but operation was canceled. \x1b[0m");
+      console.log(
+        "\x1b[33m Make sure 'Allow DuckDuckGo browser integration' setting is enabled. \x1b[0m"
+      );
+      this.disconnect();
     } else {
       console.log("Received message: ", message);
     }
