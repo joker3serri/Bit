@@ -55,8 +55,9 @@ export class StateService<
 > implements StateServiceAbstraction<TAccount>
 {
   accounts = new BehaviorSubject<{ [userId: string]: TAccount }>({});
-  activeAccount = new BehaviorSubject<string>(null);
+  private activeAccountSubject = new BehaviorSubject<string>(null);
   activeAccountUnlocked = new BehaviorSubject<boolean>(false);
+  activeAccount = this.activeAccountSubject.asObservable();
 
   private hasBeenInited = false;
   private isRecoveredSession = false;
@@ -73,7 +74,7 @@ export class StateService<
     protected useAccountCache: boolean = true
   ) {
     // If the account gets changed, verify the new account is unlocked
-    this.activeAccount.subscribe(async (userId) => {
+    this.activeAccountSubject.subscribe(async (userId) => {
       if (userId == null && this.activeAccountUnlocked.getValue() == false) {
         return;
       } else if (userId == null) {
@@ -125,7 +126,7 @@ export class StateService<
         state.activeUserId = storedActiveUser;
       }
       await this.pushAccounts();
-      this.activeAccount.next(state.activeUserId);
+      this.activeAccountSubject.next(state.activeUserId);
 
       return state;
     });
@@ -154,7 +155,7 @@ export class StateService<
     await this.scaffoldNewAccountStorage(account);
     await this.setLastActive(new Date().getTime(), { userId: account.profile.userId });
     await this.setActiveUser(account.profile.userId);
-    this.activeAccount.next(account.profile.userId);
+    this.activeAccountSubject.next(account.profile.userId);
   }
 
   async setActiveUser(userId: string): Promise<void> {
@@ -162,7 +163,7 @@ export class StateService<
     await this.updateState(async (state) => {
       state.activeUserId = userId;
       await this.storageService.save(keys.activeUserId, userId);
-      this.activeAccount.next(state.activeUserId);
+      this.activeAccountSubject.next(state.activeUserId);
       return state;
     });
 
@@ -497,7 +498,7 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
 
-    if (options.userId == this.activeAccount.getValue()) {
+    if (options.userId == this.activeAccountSubject.getValue()) {
       const nextValue = value != null;
 
       // Avoid emitting if we are already unlocked
