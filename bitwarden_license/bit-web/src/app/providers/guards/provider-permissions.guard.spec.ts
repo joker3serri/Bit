@@ -9,7 +9,6 @@ import { Provider } from "../../../../../../libs/common/src/models/domain/provid
 
 import { ProviderPermissionsGuard } from "./provider-permissions.guard";
 
-
 const providerFactory = (props: Partial<Provider> = {}) =>
   Object.assign(
     new Provider(),
@@ -36,7 +35,7 @@ describe("Provider Permissions Guard", () => {
         providerId: providerFactory().id,
       },
       data: {
-        permissions: null,
+        providerPermissions: null,
       },
     });
 
@@ -69,7 +68,7 @@ describe("Provider Permissions Guard", () => {
     const permissionsCallback = jest.fn();
     permissionsCallback.mockImplementation((provider) => true);
     route.data = {
-      permissions: permissionsCallback,
+      providerPermissions: permissionsCallback,
     };
 
     const provider = providerFactory();
@@ -85,7 +84,7 @@ describe("Provider Permissions Guard", () => {
     const permissionsCallback = jest.fn();
     permissionsCallback.mockImplementation((org) => false);
     route.data = {
-      permissions: permissionsCallback,
+      providerPermissions: permissionsCallback,
     };
 
     const provider = providerFactory();

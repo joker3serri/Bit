@@ -10,7 +10,6 @@ import { ProvidersComponent } from "src/app/providers/providers.component";
 import { ClientsComponent } from "./clients/clients.component";
 import { CreateOrganizationComponent } from "./clients/create-organization.component";
 import { ProviderPermissionsGuard } from "./guards/provider-permissions.guard";
-import { ProviderGuard } from "./guards/provider.guard";
 import { AcceptProviderComponent } from "./manage/accept-provider.component";
 import { EventsComponent } from "./manage/events.component";
 import { ManageComponent } from "./manage/manage.component";
@@ -54,7 +53,7 @@ const routes: Routes = [
       {
         path: ":providerId",
         component: ProvidersLayoutComponent,
-        canActivate: [ProviderGuard],
+        canActivate: [ProviderPermissionsGuard],
         children: [
           { path: "", pathMatch: "full", redirectTo: "clients" },
           { path: "clients/create", component: CreateOrganizationComponent },
@@ -74,7 +73,7 @@ const routes: Routes = [
                 canActivate: [ProviderPermissionsGuard],
                 data: {
                   titleId: "people",
-                  permissions: (provider: Provider) => provider.canManageUsers,
+                  providerPermissions: (provider: Provider) => provider.canManageUsers,
                 },
               },
               {
@@ -83,7 +82,7 @@ const routes: Routes = [
                 canActivate: [ProviderPermissionsGuard],
                 data: {
                   titleId: "eventLogs",
-                  permissions: (provider: Provider) => provider.canAccessEventLogs,
+                  providerPermissions: (provider: Provider) => provider.canAccessEventLogs,
                 },
               },
             ],
@@ -103,7 +102,7 @@ const routes: Routes = [
                 canActivate: [ProviderPermissionsGuard],
                 data: {
                   titleId: "myProvider",
-                  permissions: (provider: Provider) => provider.isProviderAdmin,
+                  providerPermissions: (provider: Provider) => provider.isProviderAdmin,
                 },
               },
             ],

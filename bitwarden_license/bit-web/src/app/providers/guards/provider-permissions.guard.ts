@@ -26,7 +26,7 @@ export class ProviderPermissionsGuard implements CanActivate {
       return this.router.createUrlTree(["/"]);
     }
 
-    const permissionsCallback: (provider: Provider) => boolean = route.data?.permissions;
+    const permissionsCallback: (provider: Provider) => boolean = route.data?.providerPermissions;
     const hasSpecifiedPermissions = permissionsCallback == null || permissionsCallback(provider);
 
     if (!hasSpecifiedPermissions) {
