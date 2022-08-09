@@ -1,6 +1,6 @@
 {
   "devFlags": {
-    "storeSessionDecrypted": true
+    "storeSessionDecrypted": false
   },
   "flags": {}
 }
