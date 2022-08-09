@@ -16,7 +16,6 @@ export class SearchBarService {
     placeholderText: "",
   };
 
-  // tslint:disable-next-line:member-ordering
   private stateSubject = new BehaviorSubject<SearchBarState>(this._state);
   state$ = this.stateSubject.asObservable();
 
