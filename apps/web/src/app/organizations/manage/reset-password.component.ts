@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import zxcvbn from "zxcvbn";
 
 import { PasswordStrengthComponent } from "@bitwarden/angular/shared/components/password-strength/password-strength.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -28,7 +29,7 @@ export class ResetPasswordComponent implements OnInit {
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
   newPassword: string = null;
   showPassword = false;
-  passwordStrengthResult: any;
+  passwordStrengthResult: zxcvbn.ZXCVBNResult;
   formPromise: Promise<any>;
 
   constructor(
@@ -185,7 +186,7 @@ export class ResetPasswordComponent implements OnInit {
     }
   }
 
-  getStrengthResult(result: any) {
+  getStrengthResult(result: zxcvbn.ZXCVBNResult) {
     this.passwordStrengthResult = result;
   }
 }
