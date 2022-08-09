@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 
-import { LooseComponentsModule, SharedModule} from "../../shared";
+import { LooseComponentsModule, SharedModule } from "../../shared";
 import { PoliciesModule } from "../policies";
 
 import { AccountComponent } from "./account.component";
