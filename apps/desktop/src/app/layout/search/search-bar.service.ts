@@ -9,7 +9,7 @@ export type SearchBarState = {
 @Injectable()
 export class SearchBarService {
   private searchTextSubject = new BehaviorSubject<string>(null);
-  searchText = this.searchTextSubject.asObservable();
+  searchText$ = this.searchTextSubject.asObservable();
 
   private _state = {
     enabled: false,
@@ -18,7 +18,7 @@ export class SearchBarService {
 
   // tslint:disable-next-line:member-ordering
   private stateSubject = new BehaviorSubject<SearchBarState>(this._state);
-  state = this.stateSubject.asObservable();
+  state$ = this.stateSubject.asObservable();
 
   setEnabled(enabled: boolean) {
     this._state.enabled = enabled;

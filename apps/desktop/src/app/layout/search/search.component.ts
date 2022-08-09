@@ -17,7 +17,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   private activeAccountSubscription: Subscription;
 
   constructor(private searchBarService: SearchBarService, private stateService: StateService) {
-    this.searchBarService.state.subscribe((state) => {
+    this.searchBarService.state$.subscribe((state) => {
       this.state = state;
     });
 
@@ -27,7 +27,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.activeAccountSubscription = this.stateService.activeAccount.subscribe((value) => {
+    this.activeAccountSubscription = this.stateService.activeAccount$.subscribe((value) => {
       this.searchBarService.setSearchText("");
       this.searchText.patchValue("");
     });

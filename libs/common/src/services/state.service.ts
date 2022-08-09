@@ -57,7 +57,7 @@ export class StateService<
   accounts = new BehaviorSubject<{ [userId: string]: TAccount }>({});
   private activeAccountSubject = new BehaviorSubject<string>(null);
   activeAccountUnlocked = new BehaviorSubject<boolean>(false);
-  activeAccount = this.activeAccountSubject.asObservable();
+  activeAccount$ = this.activeAccountSubject.asObservable();
 
   private hasBeenInited = false;
   private isRecoveredSession = false;
