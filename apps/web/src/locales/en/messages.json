@@ -3631,6 +3631,12 @@
   "ssoIdentifierRequired": {
     "message": "Organization Identifier is required."
   },
+  "ssoIdentifer": {
+    "message": "SSO Identifier"
+  },
+  "ssoIdentifierHint": {
+    "message": "Provide this ID to your members to login with SSO."
+  },
   "unlinkSso": {
     "message": "Unlink SSO"
   },

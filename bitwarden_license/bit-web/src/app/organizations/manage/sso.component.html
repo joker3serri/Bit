@@ -36,9 +36,9 @@
     ></app-input-checkbox>
 
     <bit-form-field>
-      <bit-label>SSO Identifier</bit-label>
+      <bit-label>{{ "ssoIdentifier" | i18n }}</bit-label>
       <input bitInput type="text" [formControl]="ssoIdentifier" />
-      <bit-hint>Provide this ID to your members to log in with SSO.</bit-hint>
+      <bit-hint>{{ "ssoIdentifierHint" | i18n }}</bit-hint>
     </bit-form-field>
 
     <hr />
