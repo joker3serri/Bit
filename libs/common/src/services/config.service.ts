@@ -10,24 +10,31 @@ export class ConfigService implements ConfigServiceAbstraction {
   serverConfig$: Observable<ServerConfig> = this._serverConfig.asObservable();
 
   constructor(private stateService: StateService, private apiService: ApiService) {
-    this.buildServerConfig();
+    this.stateService.activeAccountUnlocked$.subscribe(async (unlocked) => {
+      if (!unlocked) {
+        this._serverConfig.next(null);
+        return;
+      }
+
+      this._serverConfig.next(await this.buildServerConfig());
+    });
   }
 
-  private async buildServerConfig(): Promise<void> {
+  private async buildServerConfig(): Promise<ServerConfig> {
     const storedServerConfig = await this.stateService.getServerConfig();
     if (storedServerConfig == null || !storedServerConfig.isValid()) {
-      await this.pollServerConfig();
+      return await this.pollServerConfig();
     } else {
-      this._serverConfig.next(storedServerConfig);
+      return storedServerConfig;
     }
   }
 
-  private async pollServerConfig(): Promise<void> {
+  private async pollServerConfig(): Promise<ServerConfig> {
     const apiServerConfig = await this.apiService.getServerConfig();
     if (apiServerConfig == null) {
       // begin retry / polling mechanism
     } else {
-      this._serverConfig.next(apiServerConfig);
+      return apiServerConfig;
     }
   }
 }
