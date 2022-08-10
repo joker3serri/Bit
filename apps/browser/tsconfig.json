@@ -17,5 +17,6 @@
   "angularCompilerOptions": {
     "preserveWhitespaces": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "files": ["./test.setup.ts"]
 }

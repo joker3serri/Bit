@@ -6,11 +6,7 @@ module.exports = {
   displayName: "libs/common tests",
   preset: "ts-jest",
   testEnvironment: "jsdom",
-  testMatch: ["**/+(*.)+(spec).+(ts)"],
-  setupFilesAfterEnv: ["<rootDir>/spec/test.setup.ts"],
-  collectCoverage: true,
-  coverageReporters: ["html", "lcov"],
-  coverageDirectory: "coverage",
+  setupFilesAfterEnv: ["<rootDir>/test.setup.ts"],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions?.paths || {}, {
     prefix: "<rootDir>/",
   }),
