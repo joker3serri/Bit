@@ -11,6 +11,7 @@ export function onInstallListener(details: chrome.runtime.InstalledDetails) {
     win: self,
     isDev: false,
     stateFactory: new StateFactory(GlobalState, Account),
+    instances: {},
   };
   const environmentService = environmentServiceFactory(opts);
 

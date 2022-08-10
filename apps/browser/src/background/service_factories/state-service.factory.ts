@@ -4,6 +4,7 @@ import { GlobalState } from "@bitwarden/common/models/domain/globalState";
 import { Account } from "../../models/account";
 import { StateService } from "../../services/state.service";
 
+import { factory, FactoryOptions } from "./factory-options";
 import { logServiceFactory, LogServiceInitOptions } from "./log-service.factory";
 import {
   stateMigrationServiceFactory,
@@ -18,10 +19,12 @@ import {
   MemoryStorageServiceInitOptions,
 } from "./storage-service.factory";
 
-type StateServiceFactoryOptions = {
-  stateService?: StateService;
+type StateServiceFactoryOptions = FactoryOptions & {
   useAccountCache?: boolean;
   stateFactory: StateFactory<GlobalState, Account>;
+  instances: {
+    stateService?: StateService;
+  };
 };
 
 export type StateServiceInitOptions = StateServiceFactoryOptions &
@@ -32,16 +35,18 @@ export type StateServiceInitOptions = StateServiceFactoryOptions &
   StateMigrationServiceInitOptions;
 
 export function stateServiceFactory(opts: StateServiceInitOptions): StateService {
-  if (!opts.stateService) {
-    opts.stateService = new StateService(
-      diskStorageServiceFactory(opts),
-      secureStorageServiceFactory(opts),
-      memoryStorageServiceFactory(opts),
-      logServiceFactory(opts),
-      stateMigrationServiceFactory(opts),
-      opts.stateFactory,
-      opts.useAccountCache
-    );
-  }
-  return opts.stateService;
+  return factory(
+    opts,
+    "stateService",
+    () =>
+      new StateService(
+        diskStorageServiceFactory(opts),
+        secureStorageServiceFactory(opts),
+        memoryStorageServiceFactory(opts),
+        logServiceFactory(opts),
+        stateMigrationServiceFactory(opts),
+        opts.stateFactory,
+        opts.useAccountCache
+      )
+  );
 }

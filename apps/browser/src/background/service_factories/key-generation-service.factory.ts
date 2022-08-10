@@ -4,9 +4,12 @@ import {
   cryptoFunctionServiceFactory,
   CryptoFunctionServiceInitOptions,
 } from "./crypto-function-service.factory";
+import { factory, FactoryOptions } from "./factory-options";
 
-type KeyGenerationServiceFactoryOptions = {
-  keyGenerationService?: KeyGenerationService;
+type KeyGenerationServiceFactoryOptions = FactoryOptions & {
+  instances: {
+    keyGenerationService?: KeyGenerationService;
+  };
 };
 
 export type KeyGenerationServiceInitOptions = KeyGenerationServiceFactoryOptions &
@@ -15,8 +18,9 @@ export type KeyGenerationServiceInitOptions = KeyGenerationServiceFactoryOptions
 export function keyGenerationServiceFactory(
   opts: KeyGenerationServiceInitOptions
 ): KeyGenerationService {
-  if (!opts.keyGenerationService) {
-    opts.keyGenerationService = new KeyGenerationService(cryptoFunctionServiceFactory(opts));
-  }
-  return opts.keyGenerationService;
+  return factory(
+    opts,
+    "keyGenerationService",
+    () => new KeyGenerationService(cryptoFunctionServiceFactory(opts))
+  );
 }

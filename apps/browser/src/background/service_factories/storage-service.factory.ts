@@ -5,15 +5,18 @@ import BrowserLocalStorageService from "../../services/browserLocalStorage.servi
 import { LocalBackedSessionStorageService } from "../../services/localBackedSessionStorage.service";
 
 import { encryptServiceFactory, EncryptServiceInitOptions } from "./encrypt-service.factory";
+import { factory, FactoryOptions } from "./factory-options";
 import {
   keyGenerationServiceFactory,
   KeyGenerationServiceInitOptions,
 } from "./key-generation-service.factory";
 
-type StorageServiceFactoryOptions = {
-  diskStorageService?: AbstractStorageService;
-  secureStorageService?: AbstractStorageService;
-  memoryStorageService?: AbstractStorageService;
+type StorageServiceFactoryOptions = FactoryOptions & {
+  instances: {
+    diskStorageService?: AbstractStorageService;
+    secureStorageService?: AbstractStorageService;
+    memoryStorageService?: AbstractStorageService;
+  };
 };
 
 export type DiskStorageServiceInitOptions = StorageServiceFactoryOptions;
@@ -25,32 +28,25 @@ export type MemoryStorageServiceInitOptions = StorageServiceFactoryOptions &
 export function diskStorageServiceFactory(
   opts: DiskStorageServiceInitOptions
 ): AbstractStorageService {
-  if (!opts.diskStorageService) {
-    opts.diskStorageService = new BrowserLocalStorageService();
-  }
-  return opts.diskStorageService;
+  return factory(opts, "diskStorageService", () => new BrowserLocalStorageService());
 }
 
 export function secureStorageServiceFactory(
   opts: SecureStorageServiceInitOptions
 ): AbstractStorageService {
-  if (!opts.secureStorageService) {
-    opts.secureStorageService = new BrowserLocalStorageService();
-  }
-  return opts.secureStorageService;
+  return factory(opts, "secureStorageService", () => new BrowserLocalStorageService());
 }
 
 export function memoryStorageServiceFactory(
   opts: MemoryStorageServiceInitOptions
 ): AbstractStorageService {
-  if (!opts.memoryStorageService) {
-    opts.memoryStorageService =
-      chrome.runtime.getManifest().manifest_version == 3
-        ? new LocalBackedSessionStorageService(
-            encryptServiceFactory(opts),
-            keyGenerationServiceFactory(opts)
-          )
-        : new MemoryStorageService();
-  }
-  return opts.memoryStorageService;
+  return factory(opts, "memoryStorageService", () => {
+    if (chrome.runtime.getManifest().manifest_version == 3) {
+      return new LocalBackedSessionStorageService(
+        encryptServiceFactory(opts),
+        keyGenerationServiceFactory(opts)
+      );
+    }
+    return new MemoryStorageService();
+  });
 }
