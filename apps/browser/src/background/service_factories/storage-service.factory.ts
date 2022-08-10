@@ -23,7 +23,7 @@ export type MemoryStorageServiceInitOptions = StorageServiceFactoryOptions &
   KeyGenerationServiceInitOptions;
 
 export function diskStorageServiceFactory(
-  opts: StorageServiceFactoryOptions
+  opts: DiskStorageServiceInitOptions
 ): AbstractStorageService {
   if (!opts.diskStorageService) {
     opts.diskStorageService = new BrowserLocalStorageService();
@@ -32,7 +32,7 @@ export function diskStorageServiceFactory(
 }
 
 export function secureStorageServiceFactory(
-  opts: StorageServiceFactoryOptions
+  opts: SecureStorageServiceInitOptions
 ): AbstractStorageService {
   if (!opts.secureStorageService) {
     opts.secureStorageService = new BrowserLocalStorageService();
