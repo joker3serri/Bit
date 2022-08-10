@@ -56,18 +56,19 @@ export class AvatarComponent implements OnChanges {
     }
 
     let svg: HTMLElement;
+    let hexColor = this.color;
 
     if (this.color) {
-      svg = this.createSvgElement(this.svgSize, this.color);
+      svg = this.createSvgElement(this.svgSize, hexColor);
     } else if (this.id) {
-      this.color = Utils.stringToColor(this.id.toString());
-      svg = this.createSvgElement(this.svgSize, this.color);
+      hexColor = Utils.stringToColor(this.id.toString());
+      svg = this.createSvgElement(this.svgSize, hexColor);
     } else {
-      this.color = Utils.stringToColor(upperCaseText);
-      svg = this.createSvgElement(this.svgSize, this.color);
+      hexColor = Utils.stringToColor(upperCaseText);
+      svg = this.createSvgElement(this.svgSize, hexColor);
     }
 
-    const charObj = this.createTextElement(chars);
+    const charObj = this.createTextElement(chars, hexColor);
     svg.appendChild(charObj);
     const html = window.document.createElement("div").appendChild(svg).outerHTML;
     const svgHtml = window.btoa(unescape(encodeURIComponent(html)));
@@ -100,14 +101,14 @@ export class AvatarComponent implements OnChanges {
     return svgTag;
   }
 
-  private createTextElement(character: string): HTMLElement {
+  private createTextElement(character: string, color: string): HTMLElement {
     const textTag = window.document.createElement("text");
     textTag.setAttribute("text-anchor", "middle");
     textTag.setAttribute("y", "50%");
     textTag.setAttribute("x", "50%");
     textTag.setAttribute("dy", "0.35em");
     textTag.setAttribute("pointer-events", "auto");
-    textTag.setAttribute("fill", Utils.pickTextColorBasedOnBgColor(this.color, 135, true));
+    textTag.setAttribute("fill", Utils.pickTextColorBasedOnBgColor(color, 135, true));
     textTag.setAttribute(
       "font-family",
       '"Open Sans","Helvetica Neue",Helvetica,Arial,' +
