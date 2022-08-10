@@ -183,13 +183,6 @@ const config = {
             return chunk.name === "popup/main";
           },
         },
-        commons2: {
-          test: /[\\/]node_modules[\\/]/,
-          name: "vendor",
-          chunks: (chunk) => {
-            return chunk.name === "background";
-          },
-        },
       },
     },
   },
@@ -215,5 +208,17 @@ const config = {
   module: { rules: moduleRules },
   plugins: plugins,
 };
+
+if (manifestVersion == 2) {
+  // We can't use this in manifest v3
+  // Ideally we understand why this breaks it and we don't have to do this
+  config.optimization.splitChunks.cacheGroups.commons2 = {
+    test: /[\\/]node_modules[\\/]/,
+    name: "vendor",
+    chunks: (chunk) => {
+      return chunk.name === "background";
+    },
+  };
+}
 
 module.exports = config;
