@@ -10,10 +10,10 @@ export class ConfigService implements ConfigServiceAbstraction {
   serverConfig$: Observable<ServerConfig> = this._serverConfig.asObservable();
 
   constructor(private stateService: StateService, private apiService: ApiService) {
-    this.getStateServiceServerConfig();
+    this.buildServerConfig();
   }
 
-  private async getStateServiceServerConfig(): Promise<void> {
+  private async buildServerConfig(): Promise<void> {
     const storedServerConfig = await this.stateService.getServerConfig();
     if (storedServerConfig == null || !storedServerConfig.isValid()) {
       await this.getApiServiceServerConfig();
