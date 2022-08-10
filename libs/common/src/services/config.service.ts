@@ -19,37 +19,28 @@ export class ConfigService implements ConfigServiceAbstraction {
   private async getStateServiceServerConfig(): Promise<void> {
     const currentUtcDate = new Date(new Date().toISOString());
 
-    this.stateService
-      .getServerConfig()
-      .then((stateServerConfig) => {
-        if (this.isNullOrUndefined(stateServerConfig)) {
-          this.getApiServiceServerConfig();
-        } else {
-          // check if serverConfig is out of date
-          if (
-            this.getDateDiffInHours(currentUtcDate, stateServerConfig.utcDate) >=
-            this.TwentyFourHours
-          ) {
-            this.getApiServiceServerConfig();
-          } else {
-            this._serverConfig.next(stateServerConfig);
-          }
-        }
-      })
-      .catch((_) => this._serverConfig.next(null));
+    const stateServerConfig = await this.stateService.getServerConfig();
+    if (this.isNullOrUndefined(stateServerConfig)) {
+      await this.getApiServiceServerConfig();
+    } else {
+      // check if serverConfig is out of date
+      if (
+        this.getDateDiffInHours(currentUtcDate, stateServerConfig.utcDate) >= this.TwentyFourHours
+      ) {
+        this.getApiServiceServerConfig();
+      } else {
+        this._serverConfig.next(stateServerConfig);
+      }
+    }
   }
 
   private async getApiServiceServerConfig(): Promise<void> {
-    this.apiService
-      .getServerConfig()
-      .then((apiServerConfig) => {
-        if (this.isNullOrUndefined(apiServerConfig)) {
-          // begin retry / polling mechanism
-        } else {
-          this._serverConfig.next(apiServerConfig);
-        }
-      })
-      .catch((_) => this._serverConfig.next(null));
+    const apiServerConfig = await this.apiService.getServerConfig();
+    if (this.isNullOrUndefined(apiServerConfig)) {
+      // begin retry / polling mechanism
+    } else {
+      this._serverConfig.next(apiServerConfig);
+    }
   }
 
   private getDateDiffInHours(dateA: Date, dateB: Date) {
