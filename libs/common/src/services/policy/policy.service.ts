@@ -25,7 +25,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     private stateService: StateService,
     private organizationService: OrganizationService
   ) {
-    this.stateService.activeAccountUnlocked.subscribe(async (unlocked) => {
+    this.stateService.activeAccountUnlocked$.subscribe(async (unlocked) => {
       if ((Utils.global as any).bitwardenContainerService == null) {
         return;
       }

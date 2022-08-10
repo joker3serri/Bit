@@ -49,8 +49,8 @@ describe("PolicyService", () => {
     stateService.getEncryptedPolicies().resolves({
       "1": policyData("1", "test-organization", PolicyType.MasterPassword, true, { minLength: 14 }),
     });
-    stateService.activeAccount.returns(activeAccount);
-    stateService.activeAccountUnlocked.returns(activeAccountUnlocked);
+    stateService.activeAccount$.returns(activeAccount);
+    stateService.activeAccountUnlocked$.returns(activeAccountUnlocked);
     (window as any).bitwardenContainerService = new ContainerService(cryptoService);
 
     policyService = new PolicyService(stateService, organizationService);
