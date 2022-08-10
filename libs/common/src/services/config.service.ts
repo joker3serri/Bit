@@ -16,13 +16,13 @@ export class ConfigService implements ConfigServiceAbstraction {
   private async buildServerConfig(): Promise<void> {
     const storedServerConfig = await this.stateService.getServerConfig();
     if (storedServerConfig == null || !storedServerConfig.isValid()) {
-      await this.getApiServiceServerConfig();
+      await this.pollServerConfig();
     } else {
       this._serverConfig.next(storedServerConfig);
     }
   }
 
-  private async getApiServiceServerConfig(): Promise<void> {
+  private async pollServerConfig(): Promise<void> {
     const apiServerConfig = await this.apiService.getServerConfig();
     if (apiServerConfig == null) {
       // begin retry / polling mechanism
