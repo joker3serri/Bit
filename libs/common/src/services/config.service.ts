@@ -40,13 +40,16 @@ export class ConfigService implements ConfigServiceAbstraction {
   }
 
   private async getApiServiceServerConfig(): Promise<void> {
-    this.apiService.getServerConfig().then((apiServerConfig) => {
-      if (this.isNullOrUndefined(apiServerConfig)) {
-        // begin retry / polling mechanism
-      } else {
-        this._serverConfig.next(apiServerConfig);
-      }
-    });
+    this.apiService
+      .getServerConfig()
+      .then((apiServerConfig) => {
+        if (this.isNullOrUndefined(apiServerConfig)) {
+          // begin retry / polling mechanism
+        } else {
+          this._serverConfig.next(apiServerConfig);
+        }
+      })
+      .catch((_) => this._serverConfig.next(null));
   }
 
   private getDateDiffInHours(dateA: Date, dateB: Date) {

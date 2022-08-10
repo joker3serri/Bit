@@ -518,7 +518,7 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
     {
       provide: ConfigServiceAbstraction,
       useClass: ConfigService,
-      deps: [StateServiceAbstraction],
+      deps: [StateServiceAbstraction, ApiServiceAbstraction],
     },
   ],
 })
