@@ -1,13 +1,17 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "dist",
     "target": "es6",
     "module": "CommonJS",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "moduleResolution": "Node"
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "declaration": false,
+    "paths": {
+      "@src/*": ["src/*"],
+      "@bitwarden/node/*": ["../../../libs/node/src/*"],
+      "@bitwarden/common/*": ["../../../libs/common/src/*"]
+    }
   },
-  "ts-node": {
-    "esm": true
-  }
+  "exclude": ["node_modules"]
 }
