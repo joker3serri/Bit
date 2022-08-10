@@ -16,7 +16,7 @@ export class SettingsService implements SettingsServiceAbstraction {
   settings$ = this._settings.asObservable();
 
   constructor(private stateService: StateService) {
-    this.stateService.activeAccountUnlocked.subscribe(async (unlocked) => {
+    this.stateService.activeAccountUnlocked$.subscribe(async (unlocked) => {
       if ((Utils.global as any).bitwardenContainerService == null) {
         return;
       }

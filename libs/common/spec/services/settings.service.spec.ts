@@ -21,8 +21,8 @@ describe("SettingsService", () => {
     activeAccountUnlocked = new BehaviorSubject(true);
 
     stateService.getSettings().resolves({ equivalentDomains: "test" });
-    stateService.activeAccount.returns(activeAccount);
-    stateService.activeAccountUnlocked.returns(activeAccountUnlocked);
+    stateService.activeAccount$.returns(activeAccount);
+    stateService.activeAccountUnlocked$.returns(activeAccountUnlocked);
     (window as any).bitwardenContainerService = new ContainerService(cryptoService);
 
     settingsService = new SettingsService(stateService);
