@@ -256,7 +256,6 @@ export class StateMigrationService<
       autoFillOnPageLoadDefault:
         (await this.get<boolean>(v1Keys.autoFillOnPageLoadDefault)) ??
         defaultAccount.settings.autoFillOnPageLoadDefault,
-      biometricLocked: null,
       biometricUnlock:
         (await this.get<boolean>(v1Keys.biometricUnlock)) ??
         defaultAccount.settings.biometricUnlock,
