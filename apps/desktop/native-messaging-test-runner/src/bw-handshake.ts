@@ -8,7 +8,7 @@ const handshake = () => {
     appId: "native-messaging-test-running",
     command: "bw-handshake",
     payload: {
-      publicKey: config.RsaPublicKey,
+      publicKey: config.testRsaPublicKey,
     },
     messageId: "handshake-message-id",
     version: 1.0,

@@ -94,7 +94,7 @@ export default class TestIPC {
       console.log("\x1b[32m Handshake has shared key \x1b[0m");
 
       const nodeCryptoFunctionService = new NodeCryptoFunctionService();
-      const privKey = Utils.fromB64ToArray(config.RsaPrivateKey).buffer;
+      const privKey = Utils.fromB64ToArray(config.testRsaPrivateKey).buffer;
       const dataBuffer = Utils.fromB64ToArray(message.payload.sharedKey).buffer;
       try {
         await nodeCryptoFunctionService.rsaDecrypt(dataBuffer, privKey, "sha1");
