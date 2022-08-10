@@ -19,17 +19,17 @@ export class ConfigService implements ConfigServiceAbstraction {
   private async getStateServiceServerConfig(): Promise<void> {
     const currentUtcDate = new Date(new Date().toISOString());
 
-    const stateServerConfig = await this.stateService.getServerConfig();
-    if (this.isNullOrUndefined(stateServerConfig)) {
+    const storedServerConfig = await this.stateService.getServerConfig();
+    if (this.isNullOrUndefined(storedServerConfig)) {
       await this.getApiServiceServerConfig();
     } else {
       // check if serverConfig is out of date
       if (
-        this.getDateDiffInHours(currentUtcDate, stateServerConfig.utcDate) >= this.TwentyFourHours
+        this.getDateDiffInHours(currentUtcDate, storedServerConfig.utcDate) >= this.TwentyFourHours
       ) {
         this.getApiServiceServerConfig();
       } else {
-        this._serverConfig.next(stateServerConfig);
+        this._serverConfig.next(storedServerConfig);
       }
     }
   }
