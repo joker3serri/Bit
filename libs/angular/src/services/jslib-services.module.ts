@@ -12,7 +12,7 @@ import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/abstrac
 import { BroadcasterService as BroadcasterServiceAbstraction } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService as CollectionServiceAbstraction } from "@bitwarden/common/abstractions/collection.service";
-import { ConfigService as ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config.service";
+import { ConfigService as ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service";
 import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { EnvironmentService as EnvironmentServiceAbstraction } from "@bitwarden/common/abstractions/environment.service";

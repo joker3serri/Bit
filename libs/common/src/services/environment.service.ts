@@ -203,4 +203,10 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
 
     return url.trim();
   }
+
+  isCloud(): boolean {
+    return ["https://api.bitwarden.com", "https://vault.bitwarden.com/api"].includes(
+      this.getApiUrl()
+    );
+  }
 }

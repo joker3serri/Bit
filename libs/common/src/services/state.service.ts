@@ -1,5 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 
+import { ServerConfig } from "../abstractions/config/ServerConfig";
 import { LogService } from "../abstractions/log.service";
 import { StateService as StateServiceAbstraction } from "../abstractions/state.service";
 import { StateMigrationService } from "../abstractions/stateMigration.service";
@@ -21,7 +22,6 @@ import { PolicyData } from "../models/data/policyData";
 import { ProviderData } from "../models/data/providerData";
 import { SendData } from "../models/data/sendData";
 import { Account, AccountData, AccountSettings } from "../models/domain/account";
-import { Config } from "../models/domain/config";
 import { EncString } from "../models/domain/encString";
 import { EnvironmentUrls } from "../models/domain/environmentUrls";
 import { GeneratedPasswordHistory } from "../models/domain/generatedPasswordHistory";
@@ -2279,12 +2279,20 @@ export class StateService<
     );
   }
 
-  async getConfig(): Promise<Config> {
-    const c = new Config();
-    c.gitHash = "1ke48ne0";
-    c.version = "1.2.3";
+  async setServerConfig(value: ServerConfig, options?: StorageOptions): Promise<void> {
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
+    );
+    account.settings.serverConfig = value;
+    return await this.saveAccount(
+      account,
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
+    );
+  }
 
-    return c;
+  async getServerConfig(): Promise<ServerConfig> {
+    const globals = await this.getAccount(await this.defaultOnDiskLocalOptions());
+    return globals?.settings?.serverConfig != null ? globals.settings.serverConfig : null;
   }
 
   protected async getGlobals(options: StorageOptions): Promise<TGlobalState> {

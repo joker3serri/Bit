@@ -1,10 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 import { Router } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
 import Swal from "sweetalert2";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { ConfigService } from "@bitwarden/common/abstractions/config.service";
+import { ConfigService } from "@bitwarden/common/abstractions/config/config.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -14,7 +15,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
 import { DeviceType } from "@bitwarden/common/enums/deviceType";
-import { Config } from "@bitwarden/common/models/domain/config";
+import { ServerConfig } from "@bitwarden/common/src/abstractions/config/ServerConfig";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
@@ -51,9 +52,11 @@ export class SettingsComponent implements OnInit {
   enableAutoBiometricsPrompt = true;
   previousVaultTimeout: number = null;
   showChangeMasterPass = true;
-  config: Config;
 
   vaultTimeout: UntypedFormControl = new UntypedFormControl(null);
+
+  private destroy$ = new Subject<void>();
+  private serverConfig: ServerConfig;
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
@@ -121,7 +124,16 @@ export class SettingsComponent implements OnInit {
     this.enableAutoBiometricsPrompt = !(await this.stateService.getDisableAutoBiometricsPrompt());
     this.showChangeMasterPass = !(await this.keyConnectorService.getUsesKeyConnector());
 
-    this.config = await this.configService.getConfig();
+    this.configService.serverConfig$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((serverConfig: ServerConfig) => {
+        this.serverConfig = serverConfig;
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   async saveVaultTimeout(newValue: number) {
@@ -395,14 +407,18 @@ export class SettingsComponent implements OnInit {
     if (this.usingThirdPartyServer()) {
       versionText.innerHTML +=
         `<br>` +
-        `Third-Party Server Version: ${this.config.version}` +
+        `Third-Party Server Version: ${this.serverConfig.version}` +
         `<br><br>` +
-        `<small>Connected to third-party server implementation, ${this.config.server.name}. ` +
+        `<small>Connected to third-party server implementation, ${this.serverConfig.server.name}. ` +
         `Please verify bugs using the official server, or report them to the third-party server.</small>`;
-    } else if (this.config != null && this.platformUtilsService.isSelfHost()) {
-      versionText.innerHTML += `<br>Self-Hosted Server Version: ${this.config.version}`;
-    } else if (this.config != null) {
-      versionText.innerHTML += `<br>Server Version: ${this.config.version}`;
+    } else if (
+      this.serverConfig != null &&
+      this.serverConfig != undefined &&
+      this.environmentService.isCloud()
+    ) {
+      versionText.innerHTML += `<br>Server Version: ${this.serverConfig.version}`;
+    } else if (this.serverConfig != null && this.serverConfig != undefined) {
+      versionText.innerHTML += `<br>Self-Hosted Server Version: ${this.serverConfig.version}`;
     }
 
     content.appendChild(versionText);
@@ -450,6 +466,6 @@ export class SettingsComponent implements OnInit {
   }
 
   usingThirdPartyServer(): boolean {
-    return this.config != null && this.config.server != null;
+    return this.serverConfig != null && this.serverConfig.server != null;
   }
 }

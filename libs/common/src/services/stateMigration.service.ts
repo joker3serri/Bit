@@ -1,3 +1,4 @@
+import { ServerConfig } from "../abstractions/config/ServerConfig";
 import { AbstractStorageService } from "../abstractions/storage.service";
 import { HtmlStorageLocation } from "../enums/htmlStorageLocation";
 import { KdfType } from "../enums/kdfType";
@@ -326,6 +327,8 @@ export class StateMigrationService<
       vaultTimeoutAction:
         (await this.get<string>(v1Keys.vaultTimeoutAction)) ??
         defaultAccount.settings.vaultTimeoutAction,
+      serverConfig:
+        (await this.get<ServerConfig>(v1Keys.serverConfig)) ?? defaultAccount.settings.serverConfig,
     };
 
     // (userId == null) = no logged in user (so no known userId) and we need to temporarily store account specific settings in state to migrate on first auth
