@@ -15,7 +15,7 @@ export class ConfigService implements ConfigServiceAbstraction {
 
   private async getStateServiceServerConfig(): Promise<void> {
     const storedServerConfig = await this.stateService.getServerConfig();
-    if (this.isNullOrUndefined(storedServerConfig) || !storedServerConfig.isValid()) {
+    if (storedServerConfig == null || !storedServerConfig.isValid()) {
       await this.getApiServiceServerConfig();
     } else {
       this._serverConfig.next(storedServerConfig);
@@ -24,14 +24,10 @@ export class ConfigService implements ConfigServiceAbstraction {
 
   private async getApiServiceServerConfig(): Promise<void> {
     const apiServerConfig = await this.apiService.getServerConfig();
-    if (this.isNullOrUndefined(apiServerConfig)) {
+    if (apiServerConfig == null) {
       // begin retry / polling mechanism
     } else {
       this._serverConfig.next(apiServerConfig);
     }
-  }
-
-  private isNullOrUndefined(value: any) {
-    return value == null || value == undefined;
   }
 }
