@@ -11,4 +11,15 @@ export class ServerConfig {
   constructor() {
     this.environment = new EnvironmentServerConfig();
   }
+
+  isValid() {
+    const twentyFourHours = 24;
+    const currentUtcDate = new Date(new Date().toISOString());
+    return this.getDateDiffInHours(currentUtcDate, this.utcDate) >= twentyFourHours;
+  }
+
+  private getDateDiffInHours(dateA: Date, dateB: Date) {
+    const oneHourInMs = 3600000;
+    return Math.abs(dateA.getTime() - dateB.getTime()) / oneHourInMs;
+  }
 }

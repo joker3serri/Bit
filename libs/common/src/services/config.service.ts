@@ -9,28 +9,16 @@ export class ConfigService implements ConfigServiceAbstraction {
   private _serverConfig = new Subject<ServerConfig>();
   serverConfig$: Observable<ServerConfig> = this._serverConfig.asObservable();
 
-  private readonly OneHourInMilliseconds: number = 3600000;
-  private readonly TwentyFourHours: number = 24;
-
   constructor(private stateService: StateService, private apiService: ApiService) {
     this.getStateServiceServerConfig();
   }
 
   private async getStateServiceServerConfig(): Promise<void> {
-    const currentUtcDate = new Date(new Date().toISOString());
-
     const storedServerConfig = await this.stateService.getServerConfig();
-    if (this.isNullOrUndefined(storedServerConfig)) {
+    if (this.isNullOrUndefined(storedServerConfig) || !storedServerConfig.isValid()) {
       await this.getApiServiceServerConfig();
     } else {
-      // check if serverConfig is out of date
-      if (
-        this.getDateDiffInHours(currentUtcDate, storedServerConfig.utcDate) >= this.TwentyFourHours
-      ) {
-        this.getApiServiceServerConfig();
-      } else {
-        this._serverConfig.next(storedServerConfig);
-      }
+      this._serverConfig.next(storedServerConfig);
     }
   }
 
@@ -41,10 +29,6 @@ export class ConfigService implements ConfigServiceAbstraction {
     } else {
       this._serverConfig.next(apiServerConfig);
     }
-  }
-
-  private getDateDiffInHours(dateA: Date, dateB: Date) {
-    return Math.abs(dateA.getTime() - dateB.getTime()) / this.OneHourInMilliseconds;
   }
 
   private isNullOrUndefined(value: any) {
