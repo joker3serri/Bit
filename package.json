@@ -18,7 +18,7 @@
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --write .",
     "test": "jest",
-    "test:watch": "jest --watch",
+    "test:watch": "jest --clearCache && jest --watch",
     "test:watch:all": "jest --watchAll",
     "docs:json": "compodoc -p ./tsconfig.json -e json -d .",
     "storybook": "npm run docs:json && start-storybook -p 6006",
