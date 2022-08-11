@@ -6,7 +6,7 @@ import {
   ValidationErrors,
   Validator,
 } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { concatMap, Subject, takeUntil } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
@@ -46,7 +46,6 @@ export class VaultTimeoutInputComponent
   private onChange: (vaultTimeout: number) => void;
   private validatorChange: () => void;
   private destroy$ = new Subject<void>();
-  private policies: Policy[];
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -56,33 +55,31 @@ export class VaultTimeoutInputComponent
 
   async ngOnInit() {
     this.policyService.policies$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async (policies: Policy[]) => {
-        this.policies = policies;
+      .pipe(
+        takeUntil(this.destroy$),
+        concatMap(async (policies) => {
+          if (
+            await this.policyService.policyAppliesToUser(policies, PolicyType.MaximumVaultTimeout)
+          ) {
+            const vaultTimeoutPolicy = policies.filter(
+              (policy) => policy.enabled && policy.type === PolicyType.MaximumVaultTimeout
+            );
 
-        if (
-          await this.policyService.policyAppliesToUser(
-            this.policies,
-            PolicyType.MaximumVaultTimeout
-          )
-        ) {
-          const vaultTimeoutPolicy = policies.filter(
-            (policy) => policy.enabled && policy.type === PolicyType.MaximumVaultTimeout
-          );
+            this.vaultTimeoutPolicy = vaultTimeoutPolicy[0];
+            this.vaultTimeoutPolicyHours = Math.floor(this.vaultTimeoutPolicy.data.minutes / 60);
+            this.vaultTimeoutPolicyMinutes = this.vaultTimeoutPolicy.data.minutes % 60;
 
-          this.vaultTimeoutPolicy = vaultTimeoutPolicy[0];
-          this.vaultTimeoutPolicyHours = Math.floor(this.vaultTimeoutPolicy.data.minutes / 60);
-          this.vaultTimeoutPolicyMinutes = this.vaultTimeoutPolicy.data.minutes % 60;
-
-          this.vaultTimeouts = this.vaultTimeouts.filter(
-            (t) =>
-              t.value <= this.vaultTimeoutPolicy.data.minutes &&
-              (t.value > 0 || t.value === VaultTimeoutInputComponent.CUSTOM_VALUE) &&
-              t.value != null
-          );
-          this.validatorChange();
-        }
-      });
+            this.vaultTimeouts = this.vaultTimeouts.filter(
+              (t) =>
+                t.value <= this.vaultTimeoutPolicy.data.minutes &&
+                (t.value > 0 || t.value === VaultTimeoutInputComponent.CUSTOM_VALUE) &&
+                t.value != null
+            );
+            this.validatorChange();
+          }
+        })
+      )
+      .subscribe();
 
     this.form.valueChanges.subscribe(async (value) => {
       this.onChange(this.getVaultTimeout(value));

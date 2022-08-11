@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy, OnInit } from "@angular/core";
-import { Subject, takeUntil } from "rxjs";
+import { concatMap, Subject, takeUntil } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
@@ -17,9 +17,14 @@ export class EventService implements OnInit, OnDestroy {
   constructor(private i18nService: I18nService, private policyService: PolicyService) {}
 
   ngOnInit(): void {
-    this.policyService.policies$.pipe(takeUntil(this.destroy$)).subscribe((policies: Policy[]) => {
-      this.policies = policies;
-    });
+    this.policyService.policies$
+      .pipe(
+        takeUntil(this.destroy$),
+        concatMap(async (policies) => {
+          this.policies = policies;
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy() {

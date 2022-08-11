@@ -1,6 +1,6 @@
 import { DatePipe } from "@angular/common";
 import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { Subject, takeUntil } from "rxjs";
+import { concatMap, Subject, takeUntil } from "rxjs";
 
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -85,11 +85,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.policyService.policies$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async (policies: Policy[]) => {
-        this.policies = policies;
-        await this.load();
-      });
+      .pipe(
+        takeUntil(this.destroy$),
+        concatMap(async (policies) => {
+          this.policies = policies;
+          await this.load();
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy() {

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from "@angular/core";
-import { Subject, takeUntil } from "rxjs";
+import { concatMap, Subject, takeUntil } from "rxjs";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -99,9 +99,14 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
     this.providers.sort((a: any, b: any) => a.sort - b.sort);
     await this.load();
 
-    this.policyService.policies$.pipe(takeUntil(this.destroy$)).subscribe((policies: Policy[]) => {
-      this.policies = policies;
-    });
+    this.policyService.policies$
+      .pipe(
+        takeUntil(this.destroy$),
+        concatMap(async (policies) => {
+          this.policies = policies;
+        })
+      )
+      .subscribe();
   }
 
   async load() {

@@ -1,5 +1,5 @@
 import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { Observable, Subject, takeUntil } from "rxjs";
+import { Observable, Subject, takeUntil, concatMap } from "rxjs";
 
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
@@ -156,11 +156,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.policyService.policies$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async (policies: Policy[]) => {
-        this.policies = policies;
-        await this.init();
-      });
+      .pipe(
+        takeUntil(this.destroy$),
+        concatMap(async (policies) => {
+          this.policies = policies;
+          await this.init();
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy() {

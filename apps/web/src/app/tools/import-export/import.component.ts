@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import * as JSZip from "jszip";
-import { Subject, takeUntil } from "rxjs";
+import { concatMap, Subject, takeUntil } from "rxjs";
 import Swal, { SweetAlertIcon } from "sweetalert2";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -11,7 +11,6 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { ImportOption, ImportType } from "@bitwarden/common/enums/importOptions";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
-import { Policy } from "@bitwarden/common/models/domain/policy";
 
 @Component({
   selector: "app-import",
@@ -30,7 +29,6 @@ export class ImportComponent implements OnInit, OnDestroy {
   protected successNavigate: any[] = ["vault"];
 
   private destroy$ = new Subject<void>();
-  private policies: Policy[];
 
   constructor(
     protected i18nService: I18nService,
@@ -44,15 +42,16 @@ export class ImportComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.setImportOptions();
     this.policyService.policies$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async (policies: Policy[]) => {
-        this.policies = policies;
-
-        this.importBlockedByPolicy = await this.policyService.policyAppliesToUser(
-          this.policies,
-          PolicyType.PersonalOwnership
-        );
-      });
+      .pipe(
+        takeUntil(this.destroy$),
+        concatMap(async (policies) => {
+          this.importBlockedByPolicy = await this.policyService.policyAppliesToUser(
+            policies,
+            PolicyType.PersonalOwnership
+          );
+        })
+      )
+      .subscribe();
   }
 
   ngOnDestroy() {

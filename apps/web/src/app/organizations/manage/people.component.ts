@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
-import { first } from "rxjs/operators";
+import { first, concatMap } from "rxjs/operators";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
@@ -144,11 +144,14 @@ export class PeopleComponent
       }
 
       this.policyService.policies$
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(async (policies: Policy[]) => {
-          this.policies = policies;
-          await this.load();
-        });
+        .pipe(
+          takeUntil(this.destroy$),
+          concatMap(async (policies) => {
+            this.policies = policies;
+            await this.load();
+          })
+        )
+        .subscribe();
 
       this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
         this.searchText = qParams.search;

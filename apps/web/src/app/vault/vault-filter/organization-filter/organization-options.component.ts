@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { map, Subject, takeUntil } from "rxjs";
+import { concatMap, Subject, takeUntil } from "rxjs";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -41,13 +41,13 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.policyService.policies$
       .pipe(
-        map((policies) => policies.filter((policy) => policy.type === PolicyType.ResetPassword)),
-        takeUntil(this.destroy$)
+        takeUntil(this.destroy$),
+        concatMap(async (policies) => {
+          this.policies = policies.filter((policy) => policy.type === PolicyType.ResetPassword);
+          this.loaded = true;
+        })
       )
-      .subscribe((policies: Policy[]) => {
-        this.policies = policies;
-        this.loaded = true;
-      });
+      .subscribe();
   }
 
   ngOnDestroy() {

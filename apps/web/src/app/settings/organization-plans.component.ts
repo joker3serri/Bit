@@ -9,7 +9,7 @@ import {
 } from "@angular/core";
 import { UntypedFormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import { concatMap, Subject, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -121,9 +121,14 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       this.formGroup.controls.billingEmail.addValidators(Validators.required);
     }
 
-    this.policyService.policies$.pipe(takeUntil(this.destroy$)).subscribe((policies: Policy[]) => {
-      this.policies = policies;
-    });
+    this.policyService.policies$
+      .pipe(
+        takeUntil(this.destroy$),
+        concatMap(async (policies) => {
+          this.policies = policies;
+        })
+      )
+      .subscribe();
 
     this.loading = false;
   }
