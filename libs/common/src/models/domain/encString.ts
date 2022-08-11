@@ -99,39 +99,7 @@ export class EncString implements IEncrypted {
 
     const { encType, encPieces } = this.parseEncryptedString(this.encryptedString);
     this.encryptionType = encType;
-    this.hydrateByEncType(encType, encPieces);
-  }
 
-  private parseEncryptedString(encryptedString: string): {
-    encType: EncryptionType;
-    encPieces: string[];
-  } {
-    const headerPieces = encryptedString.split(".");
-    let encType: EncryptionType;
-    let encPieces: string[] = null;
-
-    if (headerPieces.length === 2) {
-      try {
-        encType = parseInt(headerPieces[0], null);
-        encPieces = headerPieces[1].split("|");
-      } catch (e) {
-        return;
-      }
-    } else {
-      encPieces = encryptedString.split("|");
-      encType =
-        encPieces.length === 3
-          ? EncryptionType.AesCbc128_HmacSha256_B64
-          : EncryptionType.AesCbc256_B64;
-    }
-
-    return {
-      encType,
-      encPieces,
-    };
-  }
-
-  private hydrateByEncType(encType: EncryptionType, encPieces: string[]) {
     switch (encType) {
       case EncryptionType.AesCbc128_HmacSha256_B64:
       case EncryptionType.AesCbc256_HmacSha256_B64:
@@ -162,5 +130,34 @@ export class EncString implements IEncrypted {
       default:
         return;
     }
+  }
+
+  private parseEncryptedString(encryptedString: string): {
+    encType: EncryptionType;
+    encPieces: string[];
+  } {
+    const headerPieces = encryptedString.split(".");
+    let encType: EncryptionType;
+    let encPieces: string[] = null;
+
+    if (headerPieces.length === 2) {
+      try {
+        encType = parseInt(headerPieces[0], null);
+        encPieces = headerPieces[1].split("|");
+      } catch (e) {
+        return;
+      }
+    } else {
+      encPieces = encryptedString.split("|");
+      encType =
+        encPieces.length === 3
+          ? EncryptionType.AesCbc128_HmacSha256_B64
+          : EncryptionType.AesCbc256_B64;
+    }
+
+    return {
+      encType,
+      encPieces,
+    };
   }
 }
