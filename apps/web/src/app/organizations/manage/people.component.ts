@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
 import { first } from "rxjs/operators";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
@@ -20,6 +21,7 @@ import { SyncService } from "@bitwarden/common/abstractions/sync.service";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { Policy } from "@bitwarden/common/models/domain/policy";
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organizationKeysRequest";
 import { OrganizationUserBulkRequest } from "@bitwarden/common/models/request/organizationUserBulkRequest";
 import { OrganizationUserConfirmRequest } from "@bitwarden/common/models/request/organizationUserConfirmRequest";
@@ -44,7 +46,7 @@ import { UserGroupsComponent } from "./user-groups.component";
 })
 export class PeopleComponent
   extends BasePeopleComponent<OrganizationUserUserDetailsResponse>
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   @ViewChild("addEdit", { read: ViewContainerRef, static: true }) addEditModalRef: ViewContainerRef;
   @ViewChild("groupsTemplate", { read: ViewContainerRef, static: true })
@@ -74,6 +76,9 @@ export class PeopleComponent
   orgHasKeys = false; // Org public/private keys
   orgResetPasswordPolicyEnabled = false;
   callingUserType: OrganizationUserType = null;
+
+  private destroy$ = new Subject<void>();
+  private policies: Policy[];
 
   constructor(
     apiService: ApiService,
@@ -138,7 +143,12 @@ export class PeopleComponent
         }
       }
 
-      await this.load();
+      this.policyService.policies$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(async (policies: Policy[]) => {
+          this.policies = policies;
+          await this.load();
+        });
 
       this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
         this.searchText = qParams.search;
@@ -152,8 +162,14 @@ export class PeopleComponent
     });
   }
 
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
+  }
+
   async load() {
     const resetPasswordPolicy = await this.policyApiService.getPolicyForOrganization(
+      this.policies,
       PolicyType.ResetPassword,
       this.organizationId
     );

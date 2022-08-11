@@ -1,5 +1,6 @@
 import { DatePipe } from "@angular/common";
-import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { Subject, takeUntil } from "rxjs";
 
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -12,13 +13,14 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { SendType } from "@bitwarden/common/enums/sendType";
 import { EncArrayBuffer } from "@bitwarden/common/models/domain/encArrayBuffer";
+import { Policy } from "@bitwarden/common/models/domain/policy";
 import { Send } from "@bitwarden/common/models/domain/send";
 import { SendFileView } from "@bitwarden/common/models/view/sendFileView";
 import { SendTextView } from "@bitwarden/common/models/view/sendTextView";
 import { SendView } from "@bitwarden/common/models/view/sendView";
 
 @Directive()
-export class AddEditComponent implements OnInit {
+export class AddEditComponent implements OnInit, OnDestroy {
   @Input() sendId: string;
   @Input() type: SendType;
 
@@ -45,6 +47,8 @@ export class AddEditComponent implements OnInit {
   showOptions = false;
 
   private sendLinkBaseUrl: string;
+  private destroy$ = new Subject<void>();
+  private policies: Policy[];
 
   constructor(
     protected i18nService: I18nService,
@@ -80,7 +84,17 @@ export class AddEditComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.load();
+    this.policyService.policies$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (policies: Policy[]) => {
+        this.policies = policies;
+        await this.load();
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   get editMode(): boolean {
@@ -97,8 +111,12 @@ export class AddEditComponent implements OnInit {
   }
 
   async load() {
-    this.disableSend = await this.policyService.policyAppliesToUser(PolicyType.DisableSend);
+    this.disableSend = await this.policyService.policyAppliesToUser(
+      this.policies,
+      PolicyType.DisableSend
+    );
     this.disableHideEmail = await this.policyService.policyAppliesToUser(
+      this.policies,
       PolicyType.SendOptions,
       (p) => p.data.disableHideEmail
     );

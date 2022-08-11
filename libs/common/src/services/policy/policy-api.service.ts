@@ -79,7 +79,11 @@ export class PolicyApiService implements PolicyApiServiceAbstraction {
     return new ListResponse(r, PolicyResponse);
   }
 
-  async getPolicyForOrganization(policyType: PolicyType, organizationId: string): Promise<Policy> {
+  async getPolicyForOrganization(
+    policies: Policy[],
+    policyType: PolicyType,
+    organizationId: string
+  ): Promise<Policy> {
     const org = await this.organizationService.get(organizationId);
     if (org?.isProviderUser) {
       const orgPolicies = await this.getPolicies(organizationId);
@@ -92,8 +96,9 @@ export class PolicyApiService implements PolicyApiServiceAbstraction {
       return new Policy(new PolicyData(policy));
     }
 
-    const policies = await this.policyService.getAll(policyType);
-    return policies.find((p) => p.organizationId === organizationId);
+    return policies
+      .filter((policy) => policyType == null || policy.type === policyType)
+      .find((p) => p.organizationId === organizationId);
   }
 
   async getMasterPasswordPoliciesForInvitedUsers(

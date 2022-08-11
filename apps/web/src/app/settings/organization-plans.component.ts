@@ -1,6 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from "@angular/core";
 import { UntypedFormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -16,6 +25,7 @@ import { PlanType } from "@bitwarden/common/enums/planType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { ProductType } from "@bitwarden/common/enums/productType";
 import { EncString } from "@bitwarden/common/models/domain/encString";
+import { Policy } from "@bitwarden/common/models/domain/policy";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 import { OrganizationCreateRequest } from "@bitwarden/common/models/request/organizationCreateRequest";
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organizationKeysRequest";
@@ -30,7 +40,7 @@ import { TaxInfoComponent } from "./tax-info.component";
   selector: "app-organization-plans",
   templateUrl: "organization-plans.component.html",
 })
-export class OrganizationPlansComponent implements OnInit {
+export class OrganizationPlansComponent implements OnInit, OnDestroy {
   @ViewChild(PaymentComponent) paymentComponent: PaymentComponent;
   @ViewChild(TaxInfoComponent) taxComponent: TaxInfoComponent;
 
@@ -67,6 +77,9 @@ export class OrganizationPlansComponent implements OnInit {
   });
 
   plans: PlanResponse[];
+
+  private destroy$ = new Subject<void>();
+  private policies: Policy[];
 
   constructor(
     private apiService: ApiService,
@@ -108,7 +121,16 @@ export class OrganizationPlansComponent implements OnInit {
       this.formGroup.controls.billingEmail.addValidators(Validators.required);
     }
 
+    this.policyService.policies$.pipe(takeUntil(this.destroy$)).subscribe((policies: Policy[]) => {
+      this.policies = policies;
+    });
+
     this.loading = false;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   get createOrganization() {
@@ -348,7 +370,7 @@ export class OrganizationPlansComponent implements OnInit {
   }
 
   private async userHasBlockingSingleOrgPolicy() {
-    return this.policyService.policyAppliesToUser(PolicyType.SingleOrg);
+    return this.policyService.policyAppliesToUser(this.policies, PolicyType.SingleOrg);
   }
 
   private async updateOrganization(orgId: string) {

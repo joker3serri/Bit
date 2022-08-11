@@ -41,24 +41,10 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     });
   }
 
-  async getAll(type?: PolicyType): Promise<Policy[]> {
-    const policies = this._policies.getValue();
-
-    if (type != null) {
-      return policies.filter((policy) => policy.type === type);
-    } else {
-      return policies;
-    }
-  }
-
-  async getMasterPasswordPolicyOptions(policies?: Policy[]): Promise<MasterPasswordPolicyOptions> {
+  async getMasterPasswordPolicyOptions(policies: Policy[]): Promise<MasterPasswordPolicyOptions> {
     let enforcedOptions: MasterPasswordPolicyOptions = null;
 
-    if (policies == null) {
-      policies = await this.getAll(PolicyType.MasterPassword);
-    } else {
-      policies = policies.filter((p) => p.type === PolicyType.MasterPassword);
-    }
+    policies = policies.filter((p) => p.type === PolicyType.MasterPassword);
 
     if (policies == null || policies.length === 0) {
       return enforcedOptions;
@@ -178,18 +164,16 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
   }
 
   async policyAppliesToUser(
+    policies: Policy[],
     policyType: PolicyType,
     policyFilter?: (policy: Policy) => boolean,
     userId?: string
   ) {
-    const policies = await this.getAll(policyType);
     const organizations = await this.organizationService.getAll(userId);
-    let filteredPolicies;
+    let filteredPolicies = policies.filter((p) => p.type === policyType && p.enabled);
 
     if (policyFilter != null) {
-      filteredPolicies = policies.filter((p) => p.enabled && policyFilter(p));
-    } else {
-      filteredPolicies = policies.filter((p) => p.enabled);
+      filteredPolicies = filteredPolicies.filter((p) => policyFilter(p));
     }
 
     const policySet = new Set(filteredPolicies.map((p) => p.organizationId));

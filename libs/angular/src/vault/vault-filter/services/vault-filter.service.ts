@@ -83,11 +83,13 @@ export class VaultFilterService {
   }
 
   async checkForSingleOrganizationPolicy(): Promise<boolean> {
-    return await this.policyService.policyAppliesToUser(PolicyType.SingleOrg);
+    const policies = await firstValueFrom(this.policyService.policies$);
+    return await this.policyService.policyAppliesToUser(policies, PolicyType.SingleOrg);
   }
 
   async checkForPersonalOwnershipPolicy(): Promise<boolean> {
-    return await this.policyService.policyAppliesToUser(PolicyType.PersonalOwnership);
+    const policies = await firstValueFrom(this.policyService.policies$);
+    return await this.policyService.policyAppliesToUser(policies, PolicyType.PersonalOwnership);
   }
 
   protected async getAllFoldersNested(folders: FolderView[]): Promise<TreeNode<FolderView>[]> {

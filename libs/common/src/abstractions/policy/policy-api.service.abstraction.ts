@@ -18,7 +18,11 @@ export class PolicyApiServiceAbstraction {
     organizationId: string,
     userId: string
   ) => Promise<ListResponse<PolicyResponse>>;
-  getPolicyForOrganization: (policyType: PolicyType, organizationId: string) => Promise<Policy>;
+  getPolicyForOrganization: (
+    policies: Policy[],
+    policyType: PolicyType,
+    organizationId: string
+  ) => Promise<Policy>;
   getMasterPasswordPoliciesForInvitedUsers: (orgId: string) => Promise<MasterPasswordPolicyOptions>;
   putPolicy: (organizationId: string, type: PolicyType, request: PolicyRequest) => Promise<any>;
 }

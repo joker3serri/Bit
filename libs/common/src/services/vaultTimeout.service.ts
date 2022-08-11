@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { AuthService } from "../abstractions/auth.service";
 import { CipherService } from "../abstractions/cipher.service";
 import { CollectionService } from "../abstractions/collection.service";
@@ -145,16 +147,24 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
 
   async getVaultTimeout(userId?: string): Promise<number> {
     const vaultTimeout = await this.stateService.getVaultTimeout({ userId: userId });
+    const policies = await firstValueFrom(this.policyService.policies$);
 
     if (
-      await this.policyService.policyAppliesToUser(PolicyType.MaximumVaultTimeout, null, userId)
+      await this.policyService.policyAppliesToUser(
+        policies,
+        PolicyType.MaximumVaultTimeout,
+        null,
+        userId
+      )
     ) {
-      const policy = await this.policyService.getAll(PolicyType.MaximumVaultTimeout);
+      const policy = policies.find(
+        (policy) => policy.enabled && policy.type === PolicyType.MaximumVaultTimeout
+      );
       // Remove negative values, and ensure it's smaller than maximum allowed value according to policy
-      let timeout = Math.min(vaultTimeout, policy[0].data.minutes);
+      let timeout = Math.min(vaultTimeout, policy.data.minutes);
 
       if (vaultTimeout == null || timeout < 0) {
-        timeout = policy[0].data.minutes;
+        timeout = policy.data.minutes;
       }
 
       // We really shouldn't need to set the value here, but multiple services relies on this value being correct.

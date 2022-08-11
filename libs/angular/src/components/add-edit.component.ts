@@ -1,5 +1,5 @@
-import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { Observable } from "rxjs";
+import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { Observable, Subject, takeUntil } from "rxjs";
 
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
@@ -23,6 +23,7 @@ import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
+import { Policy } from "@bitwarden/common/models/domain/policy";
 import { CardView } from "@bitwarden/common/models/view/cardView";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 import { CollectionView } from "@bitwarden/common/models/view/collectionView";
@@ -33,7 +34,7 @@ import { LoginView } from "@bitwarden/common/models/view/loginView";
 import { SecureNoteView } from "@bitwarden/common/models/view/secureNoteView";
 
 @Directive()
-export class AddEditComponent implements OnInit {
+export class AddEditComponent implements OnInit, OnDestroy {
   @Input() cloneMode = false;
   @Input() folderId: string = null;
   @Input() cipherId: string;
@@ -77,6 +78,8 @@ export class AddEditComponent implements OnInit {
 
   protected writeableCollections: CollectionView[];
   private previousCipherId: string;
+  private destroy$ = new Subject<void>();
+  private policies: Policy[];
 
   constructor(
     protected cipherService: CipherService,
@@ -152,14 +155,24 @@ export class AddEditComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.init();
+    this.policyService.policies$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (policies: Policy[]) => {
+        this.policies = policies;
+        await this.init();
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   async init() {
     if (this.ownershipOptions.length) {
       this.ownershipOptions = [];
     }
-    if (await this.policyService.policyAppliesToUser(PolicyType.PersonalOwnership)) {
+    if (await this.policyService.policyAppliesToUser(this.policies, PolicyType.PersonalOwnership)) {
       this.allowPersonal = false;
     } else {
       const myEmail = await this.stateService.getEmail();

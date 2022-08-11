@@ -1,4 +1,4 @@
-import { Directive, Input, OnInit } from "@angular/core";
+import { Directive, Input, OnDestroy, OnInit } from "@angular/core";
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -6,6 +6,7 @@ import {
   ValidationErrors,
   Validator,
 } from "@angular/forms";
+import { Subject, takeUntil } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
@@ -13,7 +14,9 @@ import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { Policy } from "@bitwarden/common/models/domain/policy";
 
 @Directive()
-export class VaultTimeoutInputComponent implements ControlValueAccessor, Validator, OnInit {
+export class VaultTimeoutInputComponent
+  implements ControlValueAccessor, Validator, OnInit, OnDestroy
+{
   get showCustom() {
     return this.form.get("vaultTimeout").value === VaultTimeoutInputComponent.CUSTOM_VALUE;
   }
@@ -42,6 +45,8 @@ export class VaultTimeoutInputComponent implements ControlValueAccessor, Validat
 
   private onChange: (vaultTimeout: number) => void;
   private validatorChange: () => void;
+  private destroy$ = new Subject<void>();
+  private policies: Policy[];
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -50,21 +55,34 @@ export class VaultTimeoutInputComponent implements ControlValueAccessor, Validat
   ) {}
 
   async ngOnInit() {
-    if (await this.policyService.policyAppliesToUser(PolicyType.MaximumVaultTimeout)) {
-      const vaultTimeoutPolicy = await this.policyService.getAll(PolicyType.MaximumVaultTimeout);
+    this.policyService.policies$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (policies: Policy[]) => {
+        this.policies = policies;
 
-      this.vaultTimeoutPolicy = vaultTimeoutPolicy[0];
-      this.vaultTimeoutPolicyHours = Math.floor(this.vaultTimeoutPolicy.data.minutes / 60);
-      this.vaultTimeoutPolicyMinutes = this.vaultTimeoutPolicy.data.minutes % 60;
+        if (
+          await this.policyService.policyAppliesToUser(
+            this.policies,
+            PolicyType.MaximumVaultTimeout
+          )
+        ) {
+          const vaultTimeoutPolicy = policies.filter(
+            (policy) => policy.enabled && policy.type === PolicyType.MaximumVaultTimeout
+          );
 
-      this.vaultTimeouts = this.vaultTimeouts.filter(
-        (t) =>
-          t.value <= this.vaultTimeoutPolicy.data.minutes &&
-          (t.value > 0 || t.value === VaultTimeoutInputComponent.CUSTOM_VALUE) &&
-          t.value != null
-      );
-      this.validatorChange();
-    }
+          this.vaultTimeoutPolicy = vaultTimeoutPolicy[0];
+          this.vaultTimeoutPolicyHours = Math.floor(this.vaultTimeoutPolicy.data.minutes / 60);
+          this.vaultTimeoutPolicyMinutes = this.vaultTimeoutPolicy.data.minutes % 60;
+
+          this.vaultTimeouts = this.vaultTimeouts.filter(
+            (t) =>
+              t.value <= this.vaultTimeoutPolicy.data.minutes &&
+              (t.value > 0 || t.value === VaultTimeoutInputComponent.CUSTOM_VALUE) &&
+              t.value != null
+          );
+          this.validatorChange();
+        }
+      });
 
     this.form.valueChanges.subscribe(async (value) => {
       this.onChange(this.getVaultTimeout(value));
@@ -84,6 +102,11 @@ export class VaultTimeoutInputComponent implements ControlValueAccessor, Validat
         },
       });
     });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   ngOnChanges() {

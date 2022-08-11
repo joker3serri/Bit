@@ -288,6 +288,7 @@ describe("PolicyService", () => {
   describe("policyAppliesToUser", () => {
     it("non org user", async () => {
       const result = await policyService.policyAppliesToUser(
+        await firstValueFrom(policyService.policies$),
         PolicyType.MasterPassword,
         null,
         "non-org-user"
@@ -298,6 +299,7 @@ describe("PolicyService", () => {
 
     it("policy type applies", async () => {
       const result = await policyService.policyAppliesToUser(
+        await firstValueFrom(policyService.policies$),
         PolicyType.MasterPassword,
         null,
         "user"
@@ -308,6 +310,7 @@ describe("PolicyService", () => {
 
     it("policy type does not apply", async () => {
       const result = await policyService.policyAppliesToUser(
+        await firstValueFrom(policyService.policies$),
         PolicyType.DisablePersonalVaultExport,
         null,
         "user"

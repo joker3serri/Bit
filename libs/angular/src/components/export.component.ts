@@ -1,5 +1,6 @@
-import { Directive, EventEmitter, OnInit, Output } from "@angular/core";
+import { Directive, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
 import { UntypedFormBuilder } from "@angular/forms";
+import { Subject, takeUntil } from "rxjs";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventService } from "@bitwarden/common/abstractions/event.service";
@@ -12,9 +13,10 @@ import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.serv
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { Policy } from "@bitwarden/common/models/domain/policy";
 
 @Directive()
-export class ExportComponent implements OnInit {
+export class ExportComponent implements OnInit, OnDestroy {
   @Output() onSaved = new EventEmitter();
 
   formPromise: Promise<string>;
@@ -31,6 +33,9 @@ export class ExportComponent implements OnInit {
     { name: ".json (Encrypted)", value: "encrypted_json" },
   ];
 
+  private destroy$ = new Subject<void>();
+  private policies: Policy[];
+
   constructor(
     protected cryptoService: CryptoService,
     protected i18nService: I18nService,
@@ -46,11 +51,22 @@ export class ExportComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    await this.checkExportDisabled();
+    this.policyService.policies$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (policies: Policy[]) => {
+        this.policies = policies;
+        await this.checkExportDisabled();
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   async checkExportDisabled() {
     this.disabledByPolicy = await this.policyService.policyAppliesToUser(
+      this.policies,
       PolicyType.DisablePersonalVaultExport
     );
     if (this.disabledByPolicy) {

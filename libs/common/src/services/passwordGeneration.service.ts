@@ -1,3 +1,4 @@
+import { firstValueFrom } from "rxjs";
 import * as zxcvbn from "zxcvbn";
 
 import { CryptoService } from "../abstractions/crypto.service";
@@ -258,7 +259,9 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
     const policies: Policy[] =
       this.policyService == null
         ? null
-        : await this.policyService.getAll(PolicyType.PasswordGenerator);
+        : (await firstValueFrom(this.policyService.policies$)).filter(
+            (policy) => policy.enabled && policy.type === PolicyType.PasswordGenerator
+          );
     let enforcedOptions: PasswordGeneratorPolicyOptions = null;
 
     if (policies == null || policies.length === 0) {

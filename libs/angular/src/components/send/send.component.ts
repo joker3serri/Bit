@@ -1,4 +1,5 @@
-import { Directive, NgZone, OnInit } from "@angular/core";
+import { Directive, NgZone, OnDestroy, OnInit } from "@angular/core";
+import { Subject, takeUntil } from "rxjs";
 
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -9,10 +10,11 @@ import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { SendService } from "@bitwarden/common/abstractions/send.service";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { SendType } from "@bitwarden/common/enums/sendType";
+import { Policy } from "@bitwarden/common/models/domain/policy";
 import { SendView } from "@bitwarden/common/models/view/sendView";
 
 @Directive()
-export class SendComponent implements OnInit {
+export class SendComponent implements OnInit, OnDestroy {
   disableSend = false;
   sendType = SendType;
   loaded = false;
@@ -36,6 +38,8 @@ export class SendComponent implements OnInit {
   onSuccessfulLoad: () => Promise<any>;
 
   private searchTimeout: any;
+  private destroy$ = new Subject<void>();
+  private policies: Policy[];
 
   constructor(
     protected sendService: SendService,
@@ -49,7 +53,20 @@ export class SendComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.disableSend = await this.policyService.policyAppliesToUser(PolicyType.DisableSend);
+    this.policyService.policies$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (policies: Policy[]) => {
+        this.policies = policies;
+        this.disableSend = await this.policyService.policyAppliesToUser(
+          this.policies,
+          PolicyType.DisableSend
+        );
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   async load(filter: (send: SendView) => boolean = null) {
