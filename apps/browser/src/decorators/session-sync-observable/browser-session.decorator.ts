@@ -1,3 +1,5 @@
+import { Constructor } from "type-fest";
+
 import { StateService } from "../../services/state.service";
 
 import { SessionStorable } from "./session-storable";
@@ -11,7 +13,7 @@ import { SyncedItemMetadata } from "./sync-item-metadata";
  * @param constructor
  * @returns A new constructor that extends the original one to add session syncing.
  */
-export function browserSession<TCtor extends { new (...args: any[]): any }>(constructor: TCtor) {
+export function browserSession<TCtor extends Constructor<any>>(constructor: TCtor) {
   return class extends constructor implements SessionStorable {
     __syncedItemMetadata: SyncedItemMetadata[];
     __sessionSyncers: SessionSyncer[];

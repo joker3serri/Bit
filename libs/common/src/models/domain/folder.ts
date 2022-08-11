@@ -41,6 +41,7 @@ export class Folder extends Domain {
   }
 
   static fromJSON(obj: Jsonify<Folder>) {
-    return Object.assign(new Folder(), obj, { name: EncString.fromJSON(obj.name) });
+    const revisionDate = obj.revisionDate == null ? null : new Date(obj.revisionDate);
+    return Object.assign(new Folder(), obj, { name: EncString.fromJSON(obj.name), revisionDate });
   }
 }

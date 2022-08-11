@@ -52,6 +52,7 @@ describe("Browser State Service", () => {
     let memoryStorageService: AbstractCachedStorageService;
 
     beforeEach(() => {
+      // We need `AbstractCachedStorageService` in the prototype chain to correctly test cache bypass.
       memoryStorageService = Object.create(LocalBackedSessionStorageService.prototype);
 
       sut = new StateService(
@@ -66,9 +67,13 @@ describe("Browser State Service", () => {
     });
 
     it("should bypass cache if possible", async () => {
-      const spy = jest.spyOn(memoryStorageService, "get_bypass_cache").mockResolvedValue("value");
+      const spyBypass = jest
+        .spyOn(memoryStorageService, "getBypassCache")
+        .mockResolvedValue("value");
+      const spyGet = jest.spyOn(memoryStorageService, "get");
       const result = await sut.getFromSessionMemory("key");
-      expect(spy).toHaveBeenCalled();
+      expect(spyBypass).toHaveBeenCalled();
+      expect(spyGet).not.toHaveBeenCalled();
       expect(result).toBe("value");
     });
   });

@@ -19,7 +19,7 @@ export class StateService
 {
   async getFromSessionMemory<T>(key: string): Promise<T> {
     return this.memoryStorageService instanceof AbstractCachedStorageService
-      ? await this.memoryStorageService.get_bypass_cache<T>(key)
+      ? await this.memoryStorageService.getBypassCache<T>(key)
       : await this.memoryStorageService.get<T>(key);
   }
 

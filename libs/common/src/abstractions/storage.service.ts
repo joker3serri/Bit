@@ -8,5 +8,5 @@ export abstract class AbstractStorageService {
 }
 
 export abstract class AbstractCachedStorageService extends AbstractStorageService {
-  abstract get_bypass_cache<T>(key: string, options?: StorageOptions): Promise<T>;
+  abstract getBypassCache<T>(key: string, options?: StorageOptions): Promise<T>;
 }

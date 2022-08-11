@@ -1,9 +1,9 @@
-import { Jsonify } from "type-fest";
+import { Constructor, Jsonify } from "type-fest";
 
 import { SessionStorable } from "./session-storable";
 
 class BuildOptions<T> {
-  ctor?: new (args: any[]) => T;
+  ctor?: Constructor<T>;
   initializer?: (key_value_pair: Jsonify<T>) => T;
   initializeAsArray? = false;
 }
@@ -16,10 +16,10 @@ class BuildOptions<T> {
  * @param buildOptions
  * Builders for the value, requires either a constructor (ctor) for your BehaviorSubject type or an
  * initializer function that takes a key value pair representation of the BehaviorSubject data
- * and returns your BehaviorSubject data type. `initializeAsArray can optionally be used to indicate
+ * and returns your instantiated BehaviorSubject value. `initializeAsArray can optionally be used to indicate
  * the provided initializer function should be used to build an array of values. For example,
  * ```ts
- * \@sessionSync({ arrayInitializer: Foo.fromJSON })
+ * \@sessionSync({ initializer: Foo.fromJSON, initializeAsArray: true })
  * ```
  * is equivalent to
  * ```
@@ -30,6 +30,7 @@ class BuildOptions<T> {
  */
 export function sessionSync<T>(buildOptions: BuildOptions<T>) {
   return (prototype: unknown, propertyKey: string) => {
+    // Force prototype into SessionStorable and implement it.
     const p = prototype as SessionStorable;
 
     if (p.__syncedItemMetadata == null) {

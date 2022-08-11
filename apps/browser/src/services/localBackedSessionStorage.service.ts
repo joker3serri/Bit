@@ -16,7 +16,7 @@ const keys = {
 };
 
 export class LocalBackedSessionStorageService extends AbstractCachedStorageService {
-  private cache = new Map<string, any>();
+  private cache = new Map<string, unknown>();
   private localStorage = new BrowserLocalStorageService();
   private sessionStorage = new BrowserMemoryStorageService();
 
@@ -29,27 +29,27 @@ export class LocalBackedSessionStorageService extends AbstractCachedStorageServi
 
   async get<T>(key: string): Promise<T> {
     if (this.cache.has(key)) {
-      return this.cache.get(key);
+      return this.cache.get(key) as T;
     }
 
-    return await this.get_bypass_cache(key);
+    return await this.getBypassCache(key);
   }
 
-  async get_bypass_cache<T>(key: string): Promise<T> {
+  async getBypassCache<T>(key: string): Promise<T> {
     const session = await this.getLocalSession(await this.getSessionEncKey());
     if (session == null || !Object.keys(session).includes(key)) {
       return null;
     }
 
     this.cache.set(key, session[key]);
-    return this.cache.get(key);
+    return this.cache.get(key) as T;
   }
 
   async has(key: string): Promise<boolean> {
     return (await this.get(key)) != null;
   }
 
-  async save(key: string, obj: any): Promise<void> {
+  async save<T>(key: string, obj: T): Promise<void> {
     if (obj == null) {
       this.cache.delete(key);
     } else {
@@ -66,7 +66,7 @@ export class LocalBackedSessionStorageService extends AbstractCachedStorageServi
     await this.save(key, null);
   }
 
-  async getLocalSession(encKey: SymmetricCryptoKey): Promise<any> {
+  async getLocalSession(encKey: SymmetricCryptoKey): Promise<Record<string, unknown>> {
     const local = await this.localStorage.get<string>(keys.sessionKey);
 
     if (local == null) {
@@ -74,7 +74,7 @@ export class LocalBackedSessionStorageService extends AbstractCachedStorageServi
     }
 
     if (devFlagEnabled("storeSessionDecrypted")) {
-      return local;
+      return local as any as Record<string, unknown>;
     }
 
     const sessionJson = await this.encryptService.decryptToUtf8(new EncString(local), encKey);
@@ -87,7 +87,7 @@ export class LocalBackedSessionStorageService extends AbstractCachedStorageServi
     return JSON.parse(sessionJson);
   }
 
-  async setLocalSession(session: any, key: SymmetricCryptoKey) {
+  async setLocalSession(session: Record<string, unknown>, key: SymmetricCryptoKey) {
     if (devFlagEnabled("storeSessionDecrypted")) {
       await this.setDecryptedLocalSession(session);
     } else {
@@ -96,7 +96,7 @@ export class LocalBackedSessionStorageService extends AbstractCachedStorageServi
   }
 
   @devFlag("storeSessionDecrypted")
-  async setDecryptedLocalSession(session: any): Promise<void> {
+  async setDecryptedLocalSession(session: Record<string, unknown>): Promise<void> {
     // Make sure we're storing the jsonified version of the session
     const jsonSession = JSON.parse(JSON.stringify(session));
     if (session == null) {
@@ -106,7 +106,7 @@ export class LocalBackedSessionStorageService extends AbstractCachedStorageServi
     }
   }
 
-  async setEncryptedLocalSession(session: any, key: SymmetricCryptoKey) {
+  async setEncryptedLocalSession(session: Record<string, unknown>, key: SymmetricCryptoKey) {
     const jsonSession = JSON.stringify(session);
     const encSession = await this.encryptService.encrypt(jsonSession, key);
 
