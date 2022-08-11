@@ -1574,7 +1574,7 @@
     "message": "Allow DuckDuckGo browser integration"
   },
   "enableDuckDuckGoBrowserIntegrationDesc": {
-    "message": "For using your bitwarden vault in DuckDuckGo."
+    "message": "For using your Bitwarden vault in DuckDuckGo."
   },
   "browserIntegrationUnsupportedTitle": {
     "message": "Browser integration not supported"
