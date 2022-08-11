@@ -15,11 +15,6 @@
   "angularCompilerOptions": {
     "preserveWhitespaces": true
   },
-  "files": [
-    "src/polyfills.ts",
-    "src/main.ts",
-    "../../bitwarden_license/bit-web/src/main.ts",
-    "./test.setup.ts"
-  ],
+  "files": ["src/polyfills.ts", "src/main.ts", "../../bitwarden_license/bit-web/src/main.ts"],
   "include": ["src/connectors/*.ts", "src/**/*.stories.ts", "src/**/*.spec.ts"]
 }

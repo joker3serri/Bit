@@ -16,6 +16,5 @@
       "@bitwarden/node/*": ["../../libs/node/src/*"]
     }
   },
-  "include": ["src"],
-  "files": ["./test.setup.ts"]
+  "include": ["src"]
 }

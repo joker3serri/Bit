@@ -1,6 +1,5 @@
 {
   "extends": "../shared/tsconfig.libs",
   "include": ["src", "spec"],
-  "exclude": ["node_modules", "dist"],
-  "files": ["./test.setup.ts"]
+  "exclude": ["node_modules", "dist"]
 }
