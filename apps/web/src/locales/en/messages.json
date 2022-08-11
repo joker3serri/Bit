@@ -3631,7 +3631,7 @@
   "ssoIdentifierRequired": {
     "message": "Organization Identifier is required."
   },
-  "ssoIdentifer": {
+  "ssoIdentifier": {
     "message": "SSO Identifier"
   },
   "ssoIdentifierHint": {
