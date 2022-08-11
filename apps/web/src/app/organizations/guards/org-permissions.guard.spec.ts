@@ -6,12 +6,12 @@ import {
 } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { I18nService } from "../../../../../../libs/common/src/abstractions/i18n.service";
-import { OrganizationService } from "../../../../../../libs/common/src/abstractions/organization.service";
-import { PlatformUtilsService } from "../../../../../../libs/common/src/abstractions/platformUtils.service";
-import { SyncService } from "../../../../../../libs/common/src/abstractions/sync.service";
-import { OrganizationUserType } from "../../../../../../libs/common/src/enums/organizationUserType";
-import { Organization } from "../../../../../../libs/common/src/models/domain/organization";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { OrganizationPermissionsGuard } from "./org-permissions.guard";
 
