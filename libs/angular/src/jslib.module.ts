@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -21,6 +22,8 @@ import { SelectCopyDirective } from "./directives/select-copy.directive";
 import { StopClickDirective } from "./directives/stop-click.directive";
 import { StopPropDirective } from "./directives/stop-prop.directive";
 import { TrueFalseValueDirective } from "./directives/true-false-value.directive";
+import { CopyClickDirective } from "./directives/copy-click.directive";
+import { LaunchClickDirective } from "./directives/launch-click.directive";
 import { ColorPasswordCountPipe } from "./pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "./pipes/color-password.pipe";
 import { CreditCardNumberPipe } from "./pipes/credit-card-number.pipe";
@@ -68,6 +71,8 @@ import { PasswordStrengthComponent } from "./shared/components/password-strength
     StopClickDirective,
     StopPropDirective,
     TrueFalseValueDirective,
+    CopyClickDirective,
+    LaunchClickDirective,
     UserNamePipe,
     PasswordStrengthComponent,
   ],
@@ -98,6 +103,8 @@ import { PasswordStrengthComponent } from "./shared/components/password-strength
     StopClickDirective,
     StopPropDirective,
     TrueFalseValueDirective,
+    CopyClickDirective,
+    LaunchClickDirective,
     UserNamePipe,
     PasswordStrengthComponent,
   ],

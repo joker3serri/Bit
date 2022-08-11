@@ -196,6 +196,7 @@ export class SsoComponent implements OnInit {
     this.validateForm(this.ssoConfigForm);
 
     if (this.ssoConfigForm.get("keyConnectorEnabled").value) {
+      this.haveTestedKeyConnector = false;
       await this.validateKeyConnectorUrl();
     }
 
@@ -234,7 +235,7 @@ export class SsoComponent implements OnInit {
       this.keyConnectorUrl.updateValueAndValidity();
     } catch {
       this.keyConnectorUrl.setErrors({
-        invalidUrl: true,
+        invalidUrl: { message: this.i18nService.t("keyConnectorTestFail") },
       });
     }
 
