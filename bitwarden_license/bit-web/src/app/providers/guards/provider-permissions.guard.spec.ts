@@ -1,11 +1,11 @@
 import { ActivatedRouteSnapshot, Router } from "@angular/router";
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { I18nService } from "../../../../../../libs/common/src/abstractions/i18n.service";
-import { PlatformUtilsService } from "../../../../../../libs/common/src/abstractions/platformUtils.service";
-import { ProviderService } from "../../../../../../libs/common/src/abstractions/provider.service";
-import { ProviderUserType } from "../../../../../../libs/common/src/enums/providerUserType";
-import { Provider } from "../../../../../../libs/common/src/models/domain/provider";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { ProviderService } from "@bitwarden/common/abstractions/provider.service";
+import { ProviderUserType } from "@bitwarden/common/enums/providerUserType";
+import { Provider } from "@bitwarden/common/models/domain/provider";
 
 import { ProviderPermissionsGuard } from "./provider-permissions.guard";
 
