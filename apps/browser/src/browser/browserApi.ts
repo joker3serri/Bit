@@ -117,7 +117,7 @@ export class BrowserApi {
 
   static sendMessage(subscriber: string, arg: any = {}) {
     const message = Object.assign({}, { command: subscriber }, arg);
-    chrome.runtime.sendMessage(message);
+    return chrome.runtime.sendMessage(message);
   }
 
   static async closeLoginTab() {

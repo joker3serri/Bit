@@ -1,10 +1,10 @@
-import { Constructor, Jsonify } from "type-fest";
+import { Jsonify } from "type-fest";
 
 import { SessionStorable } from "./session-storable";
 
 class BuildOptions<T> {
-  ctor?: Constructor<T>;
-  initializer?: (key_value_pair: Jsonify<T>) => T;
+  ctor?: new () => T;
+  initializer?: (keyValuePair: Jsonify<T>) => T;
   initializeAsArray? = false;
 }
 
@@ -12,6 +12,10 @@ class BuildOptions<T> {
  * A decorator used to indicate the BehaviorSubject should be synced for this browser session across all contexts.
  *
  * >**Note** This decorator does nothing if the enclosing class is not decorated with @browserSession.
+ *
+ * >**Note** The Behavior subject must be initialized with a default or in the constructor of the class. If it is not, an error will be thrown.
+ *
+ * >**!!Warning!!** If the property is overwritten at any time, the new value will not be synced across the browser session.
  *
  * @param buildOptions
  * Builders for the value, requires either a constructor (ctor) for your BehaviorSubject type or an
@@ -38,7 +42,7 @@ export function sessionSync<T>(buildOptions: BuildOptions<T>) {
     }
 
     p.__syncedItemMetadata.push({
-      key: propertyKey,
+      key: `${prototype.constructor.name}_${propertyKey}`,
       ctor: buildOptions.ctor,
       initializer: buildOptions.initializer,
       initializeAsArray: buildOptions.initializeAsArray,

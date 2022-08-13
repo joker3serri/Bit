@@ -3,6 +3,7 @@ import { BehaviorSubject } from "rxjs";
 import { StateService } from "../../services/state.service";
 
 import { browserSession } from "./browser-session.decorator";
+import { SessionStorable } from "./session-storable";
 import { sessionSync } from "./session-sync.decorator";
 
 // browserSession initializes SessionSyncers for each sessionSync decorated property
@@ -20,7 +21,7 @@ describe("browserSession decorator", () => {
     );
   });
 
-  it("should create if StateService are constructor arguments", () => {
+  it("should create if StateService is a constructor argument", () => {
     const stateService = Object.create(StateService.prototype, {});
 
     @browserSession
@@ -28,7 +29,7 @@ describe("browserSession decorator", () => {
       constructor(private stateService: StateService) {}
     }
 
-    new TestClass(stateService);
+    expect(new TestClass(stateService)).toBeDefined();
   });
 
   describe("interaction with @sessionSync decorator", () => {
@@ -51,8 +52,13 @@ describe("browserSession decorator", () => {
     });
 
     it("should create a session syncer", () => {
-      const testClass = new TestClass(stateService) as any;
+      const testClass = new TestClass(stateService) as any as SessionStorable;
       expect(testClass.__sessionSyncers.length).toEqual(1);
+    });
+
+    it("should initialize the session syncer", () => {
+      const testClass = new TestClass(stateService) as any as SessionStorable;
+      expect(testClass.__sessionSyncers[0].init).toHaveBeenCalled();
     });
   });
 });

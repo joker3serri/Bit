@@ -199,19 +199,5 @@ describe("EncString", () => {
 
       expect(encString.toJSON()).toBe(encString.encryptedString);
     });
-
-    it("should serialize in an object exactly like a string", () => {
-      const encString = new EncString(EncryptionType.AesCbc256_B64, "data", "iv");
-
-      const expected = JSON.stringify({
-        encData: encString.encryptedString,
-      });
-
-      const actual = JSON.stringify({
-        encData: encString,
-      });
-
-      expect(actual).toBe(expected);
-    });
   });
 });

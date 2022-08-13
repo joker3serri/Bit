@@ -12,7 +12,7 @@ export class SessionSyncer {
   id = Utils.newGuid();
 
   // everyone gets the same initial values
-  private ignore_next_update = true;
+  private ignoreNextUpdate = true;
 
   constructor(
     private behaviorSubject: BehaviorSubject<any>,
@@ -37,20 +37,20 @@ export class SessionSyncer {
     this.listenForUpdates();
   }
 
-  observe() {
+  private observe() {
     // This may be a memory leak.
     // There is no good time to unsubscribe from this observable. Hopefully Manifest V3 clears memory from temporary
     // contexts. If so, this is handled by destruction of the context.
     this.subscription = this.behaviorSubject.subscribe(async (next) => {
-      if (this.ignore_next_update) {
-        this.ignore_next_update = false;
+      if (this.ignoreNextUpdate) {
+        this.ignoreNextUpdate = false;
         return;
       }
       await this.updateSession(next);
     });
   }
 
-  listenForUpdates() {
+  private listenForUpdates() {
     // This is an unawaited promise, but it will be executed asynchronously in the background.
     BrowserApi.messageListener(
       this.updateMessageCommand,
@@ -62,31 +62,15 @@ export class SessionSyncer {
     if (message.command != this.updateMessageCommand || message.id === this.id) {
       return;
     }
-    const key_value_pair = await this.stateService.getFromSessionMemory(this.metaData.key);
-    const value = SessionSyncer.buildFromKeyValuePair(key_value_pair, this.metaData);
-    this.ignore_next_update = true;
+    const keyValuePair = await this.stateService.getFromSessionMemory(this.metaData.key);
+    const value = SyncedItemMetadata.buildFromKeyValuePair(keyValuePair, this.metaData);
+    this.ignoreNextUpdate = true;
     this.behaviorSubject.next(value);
   }
 
-  async updateSession(value: any) {
+  private async updateSession(value: any) {
     await this.stateService.setInSessionMemory(this.metaData.key, value);
     await BrowserApi.sendMessage(this.updateMessageCommand, { id: this.id });
-  }
-
-  static buildFromKeyValuePair(key_value_pair: any, metaData: SyncedItemMetadata) {
-    const builder = SessionSyncer.getBuilder(metaData);
-
-    if (metaData.initializeAsArray) {
-      return key_value_pair.map((o: any) => builder(o));
-    } else {
-      return builder(key_value_pair);
-    }
-  }
-
-  private static getBuilder(metaData: SyncedItemMetadata) {
-    return metaData.initializer != null
-      ? metaData.initializer
-      : (o: any) => Object.create(metaData.ctor.prototype, Object.getOwnPropertyDescriptors(o));
   }
 
   private get updateMessageCommand() {
