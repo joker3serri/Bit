@@ -6,11 +6,13 @@
     <!-- Current custom fields -->
     <div cdkDropList (cdkDropListDropped)="drop($event)" *ngIf="cipher.hasFields">
       <div
+        role="group"
         class="box-content-row box-content-row-multi box-draggable-row"
         appBoxRow
         cdkDrag
         *ngFor="let f of cipher.fields; let i = index; trackBy: trackByFunction"
         [ngClass]="{ 'box-content-row-checkbox': f.type === fieldType.Boolean }"
+        appA11yTitle="{{ f.name }}"
       >
         <button
           type="button"
