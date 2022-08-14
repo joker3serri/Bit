@@ -19,5 +19,5 @@ const handshake = () => {
 
 (async () => {
   await ipc.connect();
-  handshake();
+  await handshake();
 })();

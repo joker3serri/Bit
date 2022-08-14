@@ -24,18 +24,17 @@ export type LegacyOuterMessage = {
 
 type DecryptedCommand = "bw-handshake";
 
-// TODO
-// type EncryptedCommand =
-//   | "bw-status"
-//   | "bw-credential-retrieval"
-//   | "bw-credential-create"
-//   | "bw-credential-update"
-//   | "bw-generate-password";
+type EncryptedCommand =
+  | "bw-status"
+  | "bw-credential-retrieval"
+  | "bw-credential-create"
+  | "bw-credential-update"
+  | "bw-generate-password";
 
-// type EncryptedCommandData = {
-//   command: EncryptedCommand;
-//   payload: string;
-// };
+type EncryptedCommandData = {
+  command: EncryptedCommand;
+  payload: string;
+};
 
 export type OuterMessageCommon = {
   version: number;
@@ -50,7 +49,7 @@ export type DecryptedOuterMessage = OuterMessageCommon & {
 };
 
 export type EncryptedOuterMessage = OuterMessageCommon & {
-  encryptedCommand: string;
+  encryptedCommand: any;
 };
 
 export type OuterMessage = DecryptedOuterMessage | EncryptedOuterMessage;
@@ -115,16 +114,28 @@ export class NativeMessageHandler {
     }
   }
 
-  //TODO's for future messages
   private async handleEncryptedMessage(message: EncryptedOuterMessage) {
-    //await this.decryptPayload(message.encryptedCommand);
+    await this.decryptPayload(message);
   }
 
   private async encyptPayload(payload: any, key: SymmetricCryptoKey): Promise<EncString> {
     return await this.cryptoService.encrypt(JSON.stringify(payload), key);
   }
 
-  private async decryptPayload(payload: EncString) {
-    return await this.cryptoService.decryptToUtf8(payload, this.ddgSharedSecret);
+  private async decryptPayload(message: EncryptedOuterMessage) {
+    if (this.ddgSharedSecret == null) {
+      ipcRenderer.send("nativeMessagingReply", {
+        command: "invalidateEncryption",
+        messageId: message.messageId,
+      });
+      return;
+    }
+
+    const result = JSON.parse(
+      await this.cryptoService.decryptToUtf8(
+        message.encryptedCommand as EncString,
+        this.ddgSharedSecret
+      )
+    );
   }
 }

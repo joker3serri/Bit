@@ -4,8 +4,12 @@ import { NodeCryptoFunctionService } from "@bitwarden/node/services/nodeCryptoFu
 import { Utils } from "@bitwarden/common/misc/utils";
 import { homedir } from "os";
 import * as config from "./variables";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
+import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
+import { EncryptService } from "@bitwarden/common/services/encrypt.service";
 
 const ipc = require("node-ipc").default;
+const fs = require("fs");
 
 ipc.config.id = "native-messaging-test-runner";
 ipc.config.retry = 1500;
@@ -14,6 +18,8 @@ ipc.config.logger = () => {}; // Passes empty function as logger. It is fairly v
 
 export default class TestIPC {
   private desktopAppPath = homedir + "/tmp/app.bitwarden";
+  public sharedKey: SymmetricCryptoKey;
+  public completedHandshake = false;
 
   async connect() {
     return new Promise((resolve) => {
@@ -64,28 +70,38 @@ export default class TestIPC {
   }
 
   sendEncryptedCommandV1 = (message: any) => {
-    console.log(`sending command: ${message.encryptedCommand}`);
+    console.log("sending command encrypted command");
     this.emitEvent("message", message);
   };
 
   async handleResponse(message: any) {
-    if (message.messageId === "handshake-message-id") {
-      await this.handleHandshakeResponse(message);
-      if (message.version == 1) {
-        console.log("\x1b[32m Handshake has correct version of 1 \x1b[0m");
-      } else {
-        console.log("\x1b[31m Handshake returned with missing or incorrect version \x1b[0m");
-      }
-      this.disconnect();
-    } else if (message.status === "canceled") {
+    let knownMessage = false;
+    switch (message.messageId) {
+      case "handshake-message-id":
+        knownMessage = true;
+        await this.handleHandshakeResponse(message);
+        this.disconnect();
+        break;
+      case "handshake-continue-message-id":
+        knownMessage = true;
+        await this.handleHandshakeResponse(message);
+        break;
+      case "status-message-id":
+        knownMessage = true;
+        await this.handleStatusRespone(message);
+        break;
+    }
+
+    if (message.status === "canceled") {
       console.log("\x1b[33m Connected to Desktop app, but operation was canceled. \x1b[0m");
       console.log(
         "\x1b[33m Make sure 'Allow DuckDuckGo browser integration' setting is enabled. \x1b[0m"
       );
       this.disconnect();
-    } else {
+    } else if (!knownMessage) {
       console.log("Received some other message: ", message);
     }
+    //this.disconnect();
   }
 
   async handleHandshakeResponse(message: any) {
@@ -97,7 +113,28 @@ export default class TestIPC {
       const privKey = Utils.fromB64ToArray(config.testRsaPrivateKey).buffer;
       const dataBuffer = Utils.fromB64ToArray(message.payload.sharedKey).buffer;
       try {
-        await nodeCryptoFunctionService.rsaDecrypt(dataBuffer, privKey, "sha1");
+        var sharedKey = await nodeCryptoFunctionService.rsaDecrypt(dataBuffer, privKey, "sha1");
+        this.sharedKey = new SymmetricCryptoKey(sharedKey);
+
+        // const logService = new ConsoleLogService(false);
+        // const encryptService = new EncryptService(nodeCryptoFunctionService, logService, false);
+
+        // const pubKey = Utils.fromB64ToArray(config.testRsaPublicKey);
+        // const value = JSON.stringify({ command: "bw-status" });
+        // const data = Utils.fromUtf8ToArray(value);
+        // const encBytes = await nodeCryptoFunctionService.rsaEncrypt(
+        //   data.buffer,
+        //   pubKey.buffer,
+        //   "sha1"
+        // );
+        // console.log(this.sharedKey);
+
+        // var t = await encryptService.encrypt(value, this.sharedKey);
+
+        // const encBytes = await this.cryptoFunctionService.rsaEncrypt(data, publicKey, "sha1");
+        // let encryptedCommand = t;
+        // console.log(t);
+        this.completedHandshake = true;
         console.log("\x1b[32m Shared key is decryptable \x1b[0m");
       } catch (Exception) {
         console.log("\x1b[31m Error decrypting shared key \x1b[0m");
@@ -108,5 +145,10 @@ export default class TestIPC {
     } else if (message.status === "failure") {
       console.log("\x1b[31m Handshake failure response \x1b[0m");
     }
+  }
+
+  async handleStatusRespone(message: any) {
+    console.log("\x1b[32m Received response to status request \x1b[0m");
+    this.disconnect();
   }
 }

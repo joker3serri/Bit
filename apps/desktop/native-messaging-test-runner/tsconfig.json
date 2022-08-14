@@ -7,6 +7,7 @@
     "moduleResolution": "node",
     "sourceMap": false,
     "declaration": false,
+    "experimentalDecorators": true,
     "paths": {
       "@src/*": ["src/*"],
       "@bitwarden/node/*": ["../../../libs/node/src/*"],
