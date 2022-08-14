@@ -46,6 +46,8 @@
           </button>
           <button
             class="filter-button"
+            data-bs-toggle="tooltip"
+            title="{{c.node.name}}"
             (click)="applyFilter(c.node)"
             [attr.aria-pressed]="c.node.id === activeFilter.selectedCollectionId"
           >
