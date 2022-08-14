@@ -17,8 +17,8 @@ import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCry
 import {
   NativeMessageHandler,
   LegacyMessage,
-  OuterMessage,
-  LegacyOuterMessage,
+  Message,
+  LegacyMessageWrapper,
 } from "./nativeMessageHandler.service";
 
 const MessageValidTimeout = 10 * 1000;
@@ -45,14 +45,14 @@ export class NativeMessagingService {
     });
   }
 
-  private async messageHandler(msg: LegacyOuterMessage | OuterMessage) {
-    const outerMessage = msg as OuterMessage;
+  private async messageHandler(msg: LegacyMessageWrapper | Message) {
+    const outerMessage = msg as Message;
     if (outerMessage.version) {
       this.nativeMessageHandler.handleMessage(outerMessage);
       return;
     }
 
-    const { appId, message: rawMessage } = msg as LegacyOuterMessage;
+    const { appId, message: rawMessage } = msg as LegacyMessageWrapper;
 
     // Request to setup secure encryption
     if ("command" in rawMessage && rawMessage.command === "setupEncryption") {

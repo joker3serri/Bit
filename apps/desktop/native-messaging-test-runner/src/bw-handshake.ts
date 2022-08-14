@@ -1,23 +1,14 @@
-import TestIPC from "./test-ipc";
+import NativeMessageService from "./nativeMessageService";
 import * as config from "./variables";
 
-const ipc = new TestIPC();
-
-const handshake = () => {
-  const message = {
-    appId: "native-messaging-test-running",
-    command: "bw-handshake",
-    payload: {
-      publicKey: config.testRsaPublicKey,
-    },
-    messageId: "handshake-message-id",
-    version: 1.0,
-  };
-
-  ipc.sendUnencryptedCommandV1(message);
-};
-
 (async () => {
-  await ipc.connect();
-  await handshake();
+  const nativeMessageService = new NativeMessageService(1.0);
+
+  const response = await nativeMessageService.sendHandshake(config.testRsaPublicKey);
+
+  if (response.status === "success") {
+    console.log(`Handshake success. Received shared key: ${response.sharedKey}`);
+  } else {
+    console.log(`Handshake was cancelled`);
+  }
 })();

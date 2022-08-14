@@ -7,6 +7,11 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 import { StateService } from "@bitwarden/common/services/state.service";
+import { AuthService } from "@bitwarden/common/services/auth.service";
+import {
+  AuthenticationStatus,
+  lockedUnlockedStatusString,
+} from "@bitwarden/common/enums/authenticationStatus";
 
 export type LegacyMessage = {
   command: string;
@@ -17,12 +22,12 @@ export type LegacyMessage = {
   publicKey?: string;
 };
 
-export type LegacyOuterMessage = {
+export type LegacyMessageWrapper = {
   message: LegacyMessage | EncString;
   appId: string;
 };
 
-type DecryptedCommand = "bw-handshake";
+type UnencryptedCommand = "bw-handshake";
 
 type EncryptedCommand =
   | "bw-status"
@@ -31,28 +36,53 @@ type EncryptedCommand =
   | "bw-credential-update"
   | "bw-generate-password";
 
-type EncryptedCommandData = {
-  command: EncryptedCommand;
-  payload: string;
-};
-
-export type OuterMessageCommon = {
+export type MessageCommon = {
   version: number;
   messageId: string;
 };
 
-export type DecryptedOuterMessage = OuterMessageCommon & {
-  command: DecryptedCommand;
+export type UnencryptedMessage = MessageCommon & {
+  command: UnencryptedCommand;
   payload: {
     publicKey: string;
   };
 };
 
-export type EncryptedOuterMessage = OuterMessageCommon & {
-  encryptedCommand: any;
+export type DecryptedCommandData = {
+  command: EncryptedCommand;
+  payload?: Object;
 };
 
-export type OuterMessage = DecryptedOuterMessage | EncryptedOuterMessage;
+export type EncryptedMessage = MessageCommon & {
+  // Will decrypt to a DecryptedCommandData object
+  encryptedCommand: EncString;
+};
+
+export type UnencryptedMessageResponse = MessageCommon &
+  (
+    | {
+        payload: {
+          status: "cancelled";
+        };
+      }
+    | {
+        payload: {
+          status: "success";
+          sharedKey: string;
+        };
+      }
+    | {
+        payload: {
+          error: "locked" | "cannot-decrypt";
+        };
+      }
+  );
+
+export type EncryptedMessageResponse = MessageCommon & {
+  encryptedPayload: EncString;
+};
+
+export type Message = UnencryptedMessage | EncryptedMessage;
 
 const EncryptionAlgorithm = "sha1";
 
@@ -62,80 +92,158 @@ export class NativeMessageHandler {
 
   constructor(
     private stateService: StateService,
+    private authService: AuthService,
     private cryptoService: CryptoService,
     private cryptoFunctionService: CryptoFunctionService
   ) {}
 
-  async handleMessage(message: OuterMessage) {
-    const decryptedCommand = message as DecryptedOuterMessage;
+  async handleMessage(message: Message) {
+    const decryptedCommand = message as UnencryptedMessage;
     if (decryptedCommand.command === "bw-handshake") {
       await this.handleDecryptedMessage(decryptedCommand);
     } else {
-      await this.handleEncryptedMessage(message as EncryptedOuterMessage);
+      await this.handleEncryptedMessage(message as EncryptedMessage);
     }
   }
 
-  private async handleDecryptedMessage(message: DecryptedOuterMessage) {
+  private async handleDecryptedMessage(message: UnencryptedMessage) {
     const { messageId, payload } = message;
     const { publicKey } = payload;
     if (!publicKey) {
-      ipcRenderer.send("nativeMessagingReply", {
-        status: "canceled",
+      this.sendResponse({
+        messageId: messageId,
+        version: 1,
+        payload: {
+          status: "cancelled",
+        },
       });
       return;
     }
 
     const remotePublicKey = Utils.fromB64ToArray(publicKey).buffer;
+    const ddgEnabled = await this.stateService.getEnableDuckDuckGoBrowserIntegration();
 
-    if (await this.stateService.getEnableDuckDuckGoBrowserIntegration()) {
-      const secret = await this.cryptoFunctionService.randomBytes(64);
-      this.ddgSharedSecret = new SymmetricCryptoKey(secret);
-      const encryptedSecret = await this.cryptoFunctionService.rsaEncrypt(
-        secret,
-        remotePublicKey,
-        EncryptionAlgorithm
-      );
-      await this.stateService.setDuckDuckGoSharedKey(Utils.fromBufferToB64(encryptedSecret));
-
-      ipcRenderer.send("nativeMessagingReply", {
+    if (!ddgEnabled) {
+      this.sendResponse({
         messageId: messageId,
         version: 1,
         payload: {
-          status: "success",
-          sharedKey: Utils.fromBufferToB64(encryptedSecret),
+          status: "cancelled",
         },
       });
 
       return;
-    } else {
-      ipcRenderer.send("nativeMessagingReply", {
-        status: "canceled",
-      });
+    }
+
+    const secret = await this.cryptoFunctionService.randomBytes(64);
+    this.ddgSharedSecret = new SymmetricCryptoKey(secret);
+    const encryptedSecret = await this.cryptoFunctionService.rsaEncrypt(
+      secret,
+      remotePublicKey,
+      EncryptionAlgorithm
+    );
+    await this.stateService.setDuckDuckGoSharedKey(Utils.fromBufferToB64(encryptedSecret));
+
+    this.sendResponse({
+      messageId: messageId,
+      version: 1,
+      payload: {
+        status: "success",
+        sharedKey: Utils.fromBufferToB64(encryptedSecret),
+      },
+    });
+  }
+
+  private async handleEncryptedMessage(message: EncryptedMessage) {
+    const decryptedCommandData = await this.decryptPayload(message);
+    const { command } = decryptedCommandData;
+
+    try {
+      const responseData = await this.responseDataForCommand(decryptedCommandData);
+
+      await this.sendEncryptedResponse(message, { command, payload: responseData });
+    } catch (error) {
+      this.sendEncryptedResponse(message, { command, payload: {} });
     }
   }
 
-  private async handleEncryptedMessage(message: EncryptedOuterMessage) {
-    await this.decryptPayload(message);
+  private async responseDataForCommand(commandData: DecryptedCommandData): Promise<any> {
+    const { command, payload } = commandData;
+
+    switch (command) {
+      case "bw-status":
+        const accounts = this.stateService.accounts.getValue();
+        if (!accounts || !Object.keys(accounts)) {
+          return [];
+        }
+
+        return Promise.all(
+          Object.keys(accounts).map(async (userId) => {
+            const authStatus = await this.authService.getAuthStatus(userId);
+            const email = await this.stateService.getEmail({ userId });
+
+            return {
+              id: userId,
+              email,
+              status: lockedUnlockedStatusString(authStatus),
+            };
+          })
+        );
+      default:
+        throw new Error(`Unknown command: ${command}`);
+    }
   }
 
   private async encyptPayload(payload: any, key: SymmetricCryptoKey): Promise<EncString> {
     return await this.cryptoService.encrypt(JSON.stringify(payload), key);
   }
 
-  private async decryptPayload(message: EncryptedOuterMessage) {
-    if (this.ddgSharedSecret == null) {
-      ipcRenderer.send("nativeMessagingReply", {
-        command: "invalidateEncryption",
+  private async decryptPayload(message: EncryptedMessage): Promise<DecryptedCommandData> {
+    if (!this.ddgSharedSecret) {
+      this.sendResponse({
         messageId: message.messageId,
+        version: 1.0,
+        payload: {
+          error: "cannot-decrypt",
+        },
       });
       return;
     }
 
-    const result = JSON.parse(
+    return JSON.parse(
       await this.cryptoService.decryptToUtf8(
         message.encryptedCommand as EncString,
         this.ddgSharedSecret
       )
     );
+  }
+
+  private async sendEncryptedResponse(
+    originalMessage: EncryptedMessage,
+    response: DecryptedCommandData
+  ) {
+    if (!this.ddgSharedSecret) {
+      this.sendResponse({
+        messageId: originalMessage.messageId,
+        version: 1.0,
+        payload: {
+          error: "cannot-decrypt",
+        },
+      });
+
+      return;
+    }
+
+    const encryptedPayload = await this.encyptPayload(response, this.ddgSharedSecret);
+
+    this.sendResponse({
+      messageId: originalMessage.messageId,
+      version: 1.0,
+      encryptedPayload,
+    });
+  }
+
+  private sendResponse(response: EncryptedMessageResponse | UnencryptedMessageResponse) {
+    ipcRenderer.send("nativeMessagingReply", response);
   }
 }
