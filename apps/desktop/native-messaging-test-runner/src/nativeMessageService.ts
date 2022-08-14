@@ -1,20 +1,25 @@
-import IPCService from "./ipcService";
-import * as config from "./variables";
+/* eslint-disable no-console */
+
 import { v4 as uuidv4 } from "uuid";
-import { NodeCryptoFunctionService } from "@bitwarden/node/services/nodeCryptoFunction.service";
+
+import { Utils } from "@bitwarden/common/misc/utils";
+import { EncString } from "@bitwarden/common/models/domain/encString";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
 import { EncryptService } from "@bitwarden/common/services/encrypt.service";
-import { Utils } from "@bitwarden/common/misc/utils";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
-import { DecryptedCommandData } from "../../src/services/nativeMessageHandler.service";
+import { NodeCryptoFunctionService } from "@bitwarden/node/services/nodeCryptoFunction.service";
+
 import {
+  DecryptedCommandData,
   UnencryptedMessage,
   EncryptedMessage,
   MessageCommon,
   EncryptedMessageResponse,
   UnencryptedMessageResponse,
 } from "../../src/services/nativeMessageHandler.service";
-import { EncString } from "@bitwarden/common/models/domain/encString";
+
+import IPCService from "./ipcService";
+import * as config from "./variables";
 
 type HandshakePayload = {
   status: "success" | "cancelled";
@@ -42,7 +47,7 @@ export default class NativeMessageService {
 
   // Commands
 
-  public async sendHandshake(publicKey: string): Promise<HandshakePayload> {
+  async sendHandshake(publicKey: string): Promise<HandshakePayload> {
     const rawResponse = await this.sendUnencryptedMessage({
       command: "bw-handshake",
       payload: {
@@ -53,7 +58,7 @@ export default class NativeMessageService {
     return rawResponse.payload as HandshakePayload;
   }
 
-  public async checkStatus(key: string): Promise<DecryptedCommandData> {
+  async checkStatus(key: string): Promise<DecryptedCommandData> {
     const encryptedCommand = await this.encryptCommandData(
       {
         command: "bw-status",
@@ -111,7 +116,7 @@ export default class NativeMessageService {
     return response;
   }
 
-  public disconnect() {
+  disconnect() {
     this.ipcService.disconnect();
   }
 

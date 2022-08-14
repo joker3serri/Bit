@@ -1,4 +1,5 @@
-/* eslint-disable*/
+/* eslint-disable no-console */
+
 import "module-alias/register";
 import NativeMessageService from "./nativeMessageService";
 import * as config from "./variables";

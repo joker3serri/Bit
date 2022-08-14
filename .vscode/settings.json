@@ -1,0 +1,3 @@
+{
+  "eslint.workingDirectories": [".", "apps/cli", "apps/web", "apps/desktop"]
+}

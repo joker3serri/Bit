@@ -9,7 +9,7 @@ export const race = <T>({
 }) => {
   let timer = null;
 
-  return Promise<T>.race([
+  return Promise.race([
     new Promise<T>((_, reject) => {
       timer = setTimeout(reject, timeout, error);
       return timer;

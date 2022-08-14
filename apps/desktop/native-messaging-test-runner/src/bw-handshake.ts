@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import NativeMessageService from "./nativeMessageService";
 import * as config from "./variables";
 

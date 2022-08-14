@@ -10,15 +10,15 @@ export default class Deferred<T> {
     });
   }
 
-  public resolve(value?: T) {
+  resolve(value?: T) {
     this.resolver(value);
   }
 
-  public reject(error?: Error) {
+  reject(error?: Error) {
     this.rejecter(error);
   }
 
-  public getPromise(): Promise<T> {
+  getPromise(): Promise<T> {
     return this.promise;
   }
 }

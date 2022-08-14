@@ -1,12 +1,16 @@
+/* eslint-disable no-console */
+
 import { homedir } from "os";
+
+import * as NodeIPC from "node-ipc";
+
 import {
   MessageCommon,
   UnencryptedMessageResponse,
 } from "../../src/services/nativeMessageHandler.service";
+
 import Deferred from "./deferred";
 import { race } from "./race";
-
-const NodeIPC = require("node-ipc");
 
 NodeIPC.config.id = "native-messaging-test-runner";
 NodeIPC.config.maxRetries = 0;
@@ -35,7 +39,7 @@ export default class IPCService {
 
   constructor(private socketName: string, private messageHandler: MessageHandler) {}
 
-  public async connect(): Promise<void> {
+  async connect(): Promise<void> {
     console.log("[IPCService] connect");
     if (this.connectionState === IPCConnectionState.Connected) {
       // Socket is already connected. Don't throw, just all the callsite to proceed
@@ -94,14 +98,14 @@ export default class IPCService {
     });
   }
 
-  public disconnect() {
+  disconnect() {
     console.log("[IPCService] disconnect");
     if (this.connectionState !== IPCConnectionState.Disconnected) {
       NodeIPC.disconnect(this.socketName);
     }
   }
 
-  public async sendMessage(message: MessageCommon): Promise<UnencryptedMessageResponse> {
+  async sendMessage(message: MessageCommon): Promise<UnencryptedMessageResponse> {
     console.log("[IPCService] sendMessage");
     if (this.pendingMessages.has(message.messageId)) {
       throw new Error(`A message with the id: ${message.messageId} has already been sent.`);
