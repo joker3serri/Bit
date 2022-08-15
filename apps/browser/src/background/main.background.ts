@@ -199,27 +199,40 @@ export default class MainBackground {
     const logoutCallback = async (expired: boolean, userId?: string) =>
       await this.logout(expired, userId);
 
-    const factoryInstances: Record<string, unknown> = {};
+    const services: Record<string, unknown> = {};
     const factoryOptions = {
-      isDev: false,
-      win: window,
-      stateFactory: new StateFactory(GlobalState, Account),
-      instances: factoryInstances,
+      logServiceOptions: {
+        isDev: false,
+      },
+      cryptoFunctionServiceOptions: {
+        win: window,
+      },
+      stateMigrationServiceOptions: {
+        stateFactory: new StateFactory(GlobalState, Account),
+      },
+      stateServiceOptions: {
+        stateFactory: new StateFactory(GlobalState, Account),
+      },
     };
 
     this.messagingService = isPrivateMode
       ? new BrowserMessagingPrivateModeBackgroundService()
       : new BrowserMessagingService();
-    this.logService = logServiceFactory(factoryOptions);
-    this.cryptoFunctionService = cryptoFunctionServiceFactory(factoryOptions);
-    this.storageService = diskStorageServiceFactory(factoryOptions);
-    this.secureStorageService = secureStorageServiceFactory(factoryOptions);
-    this.memoryStorageService = memoryStorageServiceFactory({
+    this.logService = logServiceFactory(services, factoryOptions);
+    this.cryptoFunctionService = cryptoFunctionServiceFactory(services, factoryOptions);
+    this.storageService = diskStorageServiceFactory(services, factoryOptions);
+    this.secureStorageService = secureStorageServiceFactory(services, factoryOptions);
+    this.memoryStorageService = memoryStorageServiceFactory(services, {
       ...factoryOptions,
-      logMacFailures: false,
+      encryptServiceOptions: {
+        logMacFailures: false,
+      },
     });
-    this.stateMigrationService = stateMigrationServiceFactory(factoryOptions);
-    this.stateService = stateServiceFactory({ ...factoryOptions, logMacFailures: false });
+    this.stateMigrationService = stateMigrationServiceFactory(services, factoryOptions);
+    this.stateService = stateServiceFactory(services, {
+      ...factoryOptions,
+      encryptServiceOptions: { logMacFailures: false },
+    });
     this.platformUtilsService = new BrowserPlatformUtilsService(
       this.messagingService,
       this.stateService,
@@ -243,9 +256,11 @@ export default class MainBackground {
       }
     );
     this.i18nService = new I18nService(BrowserApi.getUILanguage(window));
-    this.encryptService = encryptServiceFactory({
+    this.encryptService = encryptServiceFactory(services, {
       ...factoryOptions,
-      logMacFailures: true,
+      encryptServiceOptions: {
+        logMacFailures: true,
+      },
       alwaysInitializeNewService: true,
     }); // Update encrypt service with new instances
     this.cryptoService = new BrowserCryptoService(
@@ -257,9 +272,11 @@ export default class MainBackground {
     );
     this.tokenService = new TokenService(this.stateService);
     this.appIdService = new AppIdService(this.storageService);
-    this.environmentService = environmentServiceFactory({
+    this.environmentService = environmentServiceFactory(services, {
       ...factoryOptions,
-      logMacFailures: false,
+      encryptServiceOptions: {
+        logMacFailures: false,
+      },
     });
     this.apiService = new ApiService(
       this.tokenService,

@@ -4,7 +4,7 @@ import { GlobalState } from "@bitwarden/common/models/domain/globalState";
 import { Account } from "../../models/account";
 import { StateService } from "../../services/state.service";
 
-import { factory, FactoryOptions } from "./factory-options";
+import { CachedServices, factory, FactoryOptions } from "./factory-options";
 import { logServiceFactory, LogServiceInitOptions } from "./log-service.factory";
 import {
   stateMigrationServiceFactory,
@@ -20,10 +20,9 @@ import {
 } from "./storage-service.factory";
 
 type StateServiceFactoryOptions = FactoryOptions & {
-  useAccountCache?: boolean;
-  stateFactory: StateFactory<GlobalState, Account>;
-  instances: {
-    stateService?: StateService;
+  stateServiceOptions: {
+    useAccountCache?: boolean;
+    stateFactory: StateFactory<GlobalState, Account>;
   };
 };
 
@@ -34,19 +33,23 @@ export type StateServiceInitOptions = StateServiceFactoryOptions &
   LogServiceInitOptions &
   StateMigrationServiceInitOptions;
 
-export function stateServiceFactory(opts: StateServiceInitOptions): StateService {
+export function stateServiceFactory(
+  cache: { stateService?: StateService } & CachedServices,
+  opts: StateServiceInitOptions
+): StateService {
   return factory(
-    opts,
+    cache,
     "stateService",
+    opts,
     () =>
       new StateService(
-        diskStorageServiceFactory(opts),
-        secureStorageServiceFactory(opts),
-        memoryStorageServiceFactory(opts),
-        logServiceFactory(opts),
-        stateMigrationServiceFactory(opts),
-        opts.stateFactory,
-        opts.useAccountCache
+        diskStorageServiceFactory(cache, opts),
+        secureStorageServiceFactory(cache, opts),
+        memoryStorageServiceFactory(cache, opts),
+        logServiceFactory(cache, opts),
+        stateMigrationServiceFactory(cache, opts),
+        opts.stateServiceOptions.stateFactory,
+        opts.stateServiceOptions.useAccountCache
       )
   );
 }

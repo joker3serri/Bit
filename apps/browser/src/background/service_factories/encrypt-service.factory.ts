@@ -4,13 +4,12 @@ import {
   cryptoFunctionServiceFactory,
   CryptoFunctionServiceInitOptions,
 } from "./crypto-function-service.factory";
-import { factory, FactoryOptions } from "./factory-options";
+import { CachedServices, factory, FactoryOptions } from "./factory-options";
 import { LogServiceInitOptions, logServiceFactory } from "./log-service.factory";
 
 type EncryptServiceFactoryOptions = FactoryOptions & {
-  logMacFailures: boolean;
-  instances: {
-    encryptService?: EncryptService;
+  encryptServiceOptions: {
+    logMacFailures: boolean;
   };
 };
 
@@ -18,15 +17,19 @@ export type EncryptServiceInitOptions = EncryptServiceFactoryOptions &
   CryptoFunctionServiceInitOptions &
   LogServiceInitOptions;
 
-export function encryptServiceFactory(opts: EncryptServiceInitOptions): EncryptService {
+export function encryptServiceFactory(
+  cache: { encryptService?: EncryptService } & CachedServices,
+  opts: EncryptServiceInitOptions
+): EncryptService {
   return factory(
-    opts,
+    cache,
     "encryptService",
+    opts,
     () =>
       new EncryptService(
-        cryptoFunctionServiceFactory(opts),
-        logServiceFactory(opts),
-        opts.logMacFailures
+        cryptoFunctionServiceFactory(cache, opts),
+        logServiceFactory(cache, opts),
+        opts.encryptServiceOptions.logMacFailures
       )
   );
 }

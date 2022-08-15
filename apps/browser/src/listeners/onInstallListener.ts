@@ -6,14 +6,25 @@ import { BrowserApi } from "../browser/browserApi";
 import { Account } from "../models/account";
 
 export function onInstallListener(details: chrome.runtime.InstalledDetails) {
+  const cache = {};
   const opts = {
-    logMacFailures: false,
-    win: self,
-    isDev: false,
-    stateFactory: new StateFactory(GlobalState, Account),
-    instances: {},
+    encryptServiceOptions: {
+      logMacFailures: false,
+    },
+    cryptoFunctionServiceOptions: {
+      win: self,
+    },
+    logServiceOptions: {
+      isDev: false,
+    },
+    stateServiceOptions: {
+      stateFactory: new StateFactory(GlobalState, Account),
+    },
+    stateMigrationServiceOptions: {
+      stateFactory: new StateFactory(GlobalState, Account),
+    },
   };
-  const environmentService = environmentServiceFactory(opts);
+  const environmentService = environmentServiceFactory(cache, opts);
 
   setTimeout(async () => {
     if (details.reason != null && details.reason === "install") {

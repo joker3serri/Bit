@@ -5,19 +5,13 @@ import BrowserLocalStorageService from "../../services/browserLocalStorage.servi
 import { LocalBackedSessionStorageService } from "../../services/localBackedSessionStorage.service";
 
 import { encryptServiceFactory, EncryptServiceInitOptions } from "./encrypt-service.factory";
-import { factory, FactoryOptions } from "./factory-options";
+import { CachedServices, factory, FactoryOptions } from "./factory-options";
 import {
   keyGenerationServiceFactory,
   KeyGenerationServiceInitOptions,
 } from "./key-generation-service.factory";
 
-type StorageServiceFactoryOptions = FactoryOptions & {
-  instances: {
-    diskStorageService?: AbstractStorageService;
-    secureStorageService?: AbstractStorageService;
-    memoryStorageService?: AbstractStorageService;
-  };
-};
+type StorageServiceFactoryOptions = FactoryOptions;
 
 export type DiskStorageServiceInitOptions = StorageServiceFactoryOptions;
 export type SecureStorageServiceInitOptions = StorageServiceFactoryOptions;
@@ -26,25 +20,28 @@ export type MemoryStorageServiceInitOptions = StorageServiceFactoryOptions &
   KeyGenerationServiceInitOptions;
 
 export function diskStorageServiceFactory(
+  cache: { diskStorageService?: AbstractStorageService } & CachedServices,
   opts: DiskStorageServiceInitOptions
 ): AbstractStorageService {
-  return factory(opts, "diskStorageService", () => new BrowserLocalStorageService());
+  return factory(cache, "diskStorageService", opts, () => new BrowserLocalStorageService());
 }
 
 export function secureStorageServiceFactory(
+  cache: { secureStorageService?: AbstractStorageService } & CachedServices,
   opts: SecureStorageServiceInitOptions
 ): AbstractStorageService {
-  return factory(opts, "secureStorageService", () => new BrowserLocalStorageService());
+  return factory(cache, "secureStorageService", opts, () => new BrowserLocalStorageService());
 }
 
 export function memoryStorageServiceFactory(
+  cache: { memoryStorageService?: AbstractStorageService } & CachedServices,
   opts: MemoryStorageServiceInitOptions
 ): AbstractStorageService {
-  return factory(opts, "memoryStorageService", () => {
+  return factory(cache, "memoryStorageService", opts, () => {
     if (chrome.runtime.getManifest().manifest_version == 3) {
       return new LocalBackedSessionStorageService(
-        encryptServiceFactory(opts),
-        keyGenerationServiceFactory(opts)
+        encryptServiceFactory(cache, opts),
+        keyGenerationServiceFactory(cache, opts)
       );
     }
     return new MemoryStorageService();

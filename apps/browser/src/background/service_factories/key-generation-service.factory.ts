@@ -4,23 +4,21 @@ import {
   cryptoFunctionServiceFactory,
   CryptoFunctionServiceInitOptions,
 } from "./crypto-function-service.factory";
-import { factory, FactoryOptions } from "./factory-options";
+import { CachedServices, factory, FactoryOptions } from "./factory-options";
 
-type KeyGenerationServiceFactoryOptions = FactoryOptions & {
-  instances: {
-    keyGenerationService?: KeyGenerationService;
-  };
-};
+type KeyGenerationServiceFactoryOptions = FactoryOptions;
 
 export type KeyGenerationServiceInitOptions = KeyGenerationServiceFactoryOptions &
   CryptoFunctionServiceInitOptions;
 
 export function keyGenerationServiceFactory(
+  cache: { keyGenerationService?: KeyGenerationService } & CachedServices,
   opts: KeyGenerationServiceInitOptions
 ): KeyGenerationService {
   return factory(
-    opts,
+    cache,
     "keyGenerationService",
-    () => new KeyGenerationService(cryptoFunctionServiceFactory(opts))
+    opts,
+    () => new KeyGenerationService(cryptoFunctionServiceFactory(cache, opts))
   );
 }

@@ -4,7 +4,7 @@ import { StateMigrationService } from "@bitwarden/common/services/stateMigration
 
 import { Account } from "../../models/account";
 
-import { factory, FactoryOptions } from "./factory-options";
+import { CachedServices, factory, FactoryOptions } from "./factory-options";
 import {
   diskStorageServiceFactory,
   DiskStorageServiceInitOptions,
@@ -13,9 +13,8 @@ import {
 } from "./storage-service.factory";
 
 type StateMigrationServiceFactoryOptions = FactoryOptions & {
-  stateFactory: StateFactory<GlobalState, Account>;
-  instances: {
-    stateMigrationService?: StateMigrationService;
+  stateMigrationServiceOptions: {
+    stateFactory: StateFactory<GlobalState, Account>;
   };
 };
 
@@ -24,16 +23,18 @@ export type StateMigrationServiceInitOptions = StateMigrationServiceFactoryOptio
   SecureStorageServiceInitOptions;
 
 export function stateMigrationServiceFactory(
+  cache: { stateMigrationService?: StateMigrationService } & CachedServices,
   opts: StateMigrationServiceInitOptions
 ): StateMigrationService {
   return factory(
-    opts,
+    cache,
     "stateMigrationService",
+    opts,
     () =>
       new StateMigrationService(
-        diskStorageServiceFactory(opts),
-        secureStorageServiceFactory(opts),
-        opts.stateFactory
+        diskStorageServiceFactory(cache, opts),
+        secureStorageServiceFactory(cache, opts),
+        opts.stateMigrationServiceOptions.stateFactory
       )
   );
 }

@@ -1,19 +1,24 @@
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/services/webCryptoFunction.service";
 
-import { factory, FactoryOptions } from "./factory-options";
+import { CachedServices, factory, FactoryOptions } from "./factory-options";
 
 type CryptoFunctionServiceFactoryOptions = FactoryOptions & {
-  win: Window | typeof global;
-  instances: {
-    cryptoFunctionService?: CryptoFunctionService;
+  cryptoFunctionServiceOptions: {
+    win: Window | typeof global;
   };
 };
 
 export type CryptoFunctionServiceInitOptions = CryptoFunctionServiceFactoryOptions;
 
 export function cryptoFunctionServiceFactory(
+  cache: { cryptoFunctionService?: CryptoFunctionService } & CachedServices,
   opts: CryptoFunctionServiceFactoryOptions
 ): CryptoFunctionService {
-  return factory(opts, "cryptoFunctionService", () => new WebCryptoFunctionService(opts.win));
+  return factory(
+    cache,
+    "cryptoFunctionService",
+    opts,
+    () => new WebCryptoFunctionService(opts.cryptoFunctionServiceOptions.win)
+  );
 }
