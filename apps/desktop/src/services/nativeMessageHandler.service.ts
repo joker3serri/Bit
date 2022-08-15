@@ -3,86 +3,21 @@ import { ipcRenderer } from "electron";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
+import { lockedUnlockedStatusString } from "@bitwarden/common/enums/authenticationStatus";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
-import { StateService } from "@bitwarden/common/services/state.service";
 import { AuthService } from "@bitwarden/common/services/auth.service";
+import { StateService } from "@bitwarden/common/services/state.service";
+
 import {
-  AuthenticationStatus,
-  lockedUnlockedStatusString,
-} from "@bitwarden/common/enums/authenticationStatus";
-
-export type LegacyMessage = {
-  command: string;
-
-  userId?: string;
-  timestamp?: number;
-
-  publicKey?: string;
-};
-
-export type LegacyMessageWrapper = {
-  message: LegacyMessage | EncString;
-  appId: string;
-};
-
-type UnencryptedCommand = "bw-handshake";
-
-type EncryptedCommand =
-  | "bw-status"
-  | "bw-credential-retrieval"
-  | "bw-credential-create"
-  | "bw-credential-update"
-  | "bw-generate-password";
-
-export type MessageCommon = {
-  version: number;
-  messageId: string;
-};
-
-export type UnencryptedMessage = MessageCommon & {
-  command: UnencryptedCommand;
-  payload: {
-    publicKey: string;
-  };
-};
-
-export type DecryptedCommandData = {
-  command: EncryptedCommand;
-  payload?: Object;
-};
-
-export type EncryptedMessage = MessageCommon & {
-  // Will decrypt to a DecryptedCommandData object
-  encryptedCommand: EncString;
-};
-
-export type UnencryptedMessageResponse = MessageCommon &
-  (
-    | {
-        payload: {
-          status: "cancelled";
-        };
-      }
-    | {
-        payload: {
-          status: "success";
-          sharedKey: string;
-        };
-      }
-    | {
-        payload: {
-          error: "locked" | "cannot-decrypt";
-        };
-      }
-  );
-
-export type EncryptedMessageResponse = MessageCommon & {
-  encryptedPayload: EncString;
-};
-
-export type Message = UnencryptedMessage | EncryptedMessage;
+  Message,
+  UnencryptedMessage,
+  UnencryptedMessageResponse,
+  EncryptedMessage,
+  EncryptedMessageResponse,
+  DecryptedCommandData,
+} from "../models/native-messages";
 
 const EncryptionAlgorithm = "sha1";
 
@@ -168,10 +103,10 @@ export class NativeMessageHandler {
   }
 
   private async responseDataForCommand(commandData: DecryptedCommandData): Promise<any> {
-    const { command, payload } = commandData;
+    const { command } = commandData;
 
     switch (command) {
-      case "bw-status":
+      case "bw-status": {
         const accounts = this.stateService.accounts.getValue();
         if (!accounts || !Object.keys(accounts)) {
           return [];
@@ -189,6 +124,7 @@ export class NativeMessageHandler {
             };
           })
         );
+      }
       default:
         throw new Error(`Unknown command: ${command}`);
     }

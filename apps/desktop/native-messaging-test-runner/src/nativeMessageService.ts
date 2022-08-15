@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import "module-alias/register";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -16,7 +17,7 @@ import {
   MessageCommon,
   EncryptedMessageResponse,
   UnencryptedMessageResponse,
-} from "../../src/services/nativeMessageHandler.service";
+} from "../../src/models/native-messages";
 
 import IPCService from "./ipcService";
 import * as config from "./variables";

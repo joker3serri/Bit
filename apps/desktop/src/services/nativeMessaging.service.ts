@@ -14,12 +14,9 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 
-import {
-  NativeMessageHandler,
-  LegacyMessage,
-  Message,
-  LegacyMessageWrapper,
-} from "./nativeMessageHandler.service";
+import { LegacyMessage, LegacyMessageWrapper, Message } from "../models/native-messages";
+
+import { NativeMessageHandler } from "./nativeMessageHandler.service";
 
 const MessageValidTimeout = 10 * 1000;
 const EncryptionAlgorithm = "sha1";
