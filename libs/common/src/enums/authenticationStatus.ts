@@ -6,7 +6,6 @@ export enum AuthenticationStatus {
 
 export const lockedUnlockedStatusString = (status: AuthenticationStatus): string => {
   switch (status) {
-    case AuthenticationStatus.LoggedOut:
     case AuthenticationStatus.Locked:
       return "locked";
     case AuthenticationStatus.Unlocked:
