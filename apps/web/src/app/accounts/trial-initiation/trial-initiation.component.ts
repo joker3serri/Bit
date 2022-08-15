@@ -15,7 +15,9 @@ import { ProductType } from "@bitwarden/common/enums/productType";
 import { PolicyData } from "@bitwarden/common/models/data/policyData";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
 import { Policy } from "@bitwarden/common/models/domain/policy";
+import { ReferenceEventRequest } from "@bitwarden/common/models/request/referenceEventRequest";
 
+import { RouterService } from "./../../core/router.service";
 import { VerticalStepperComponent } from "./vertical-stepper/vertical-stepper.component";
 
 @Component({
@@ -35,6 +37,7 @@ export class TrialInitiationComponent implements OnInit {
   policies: Policy[];
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
   validOrgs: string[] = ["teams", "enterprise", "families"];
+  referenceData: ReferenceEventRequest;
   @ViewChild("stepper", { static: false }) verticalStepper: VerticalStepperComponent;
 
   orgInfoFormGroup = this.formBuilder.group({
@@ -51,13 +54,29 @@ export class TrialInitiationComponent implements OnInit {
     private logService: LogService,
     private policyApiService: PolicyApiServiceAbstraction,
     private policyService: PolicyService,
-    private i18nService: I18nService
+    private i18nService: I18nService,
+    private routerService: RouterService
   ) {}
 
   async ngOnInit(): Promise<void> {
     this.route.queryParams.pipe(first()).subscribe((qParams) => {
+      this.referenceData = new ReferenceEventRequest();
       if (qParams.email != null && qParams.email.indexOf("@") > -1) {
         this.email = qParams.email;
+      }
+
+      if (qParams.reference != null) {
+        this.referenceData.id = qParams.reference;
+      } else {
+        this.referenceData.id = ("; " + document.cookie)
+          .split("; reference=")
+          .pop()
+          .split(";")
+          .shift();
+      }
+
+      if (this.referenceData.id === "") {
+        this.referenceData.id = null;
       }
 
       if (!qParams.org) {
@@ -68,6 +87,17 @@ export class TrialInitiationComponent implements OnInit {
         this.org = qParams.org;
       } else {
         this.org = "families";
+      }
+
+      this.referenceData.flow = qParams.org;
+
+      // Are they coming from an email for sponsoring a families organization
+      if (qParams.sponsorshipToken != null) {
+        // After logging in redirect them to setup the families sponsorship
+        const route = this.router.createUrlTree(["setup/families-for-enterprise"], {
+          queryParams: { plan: qParams.sponsorshipToken },
+        });
+        this.routerService.setPreviousUrl(route.toString());
       }
 
       this.orgLabel = this.titleCasePipe.transform(this.org);
