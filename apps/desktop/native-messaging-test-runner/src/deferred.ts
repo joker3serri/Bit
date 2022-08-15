@@ -1,3 +1,5 @@
+// Wrapper for a promise that we can await the promise in one case
+// while allowing an unrelated event to fulfill it elsewhere.
 export default class Deferred<T> {
   private promise: Promise<T>;
   private resolver: (T?) => void;

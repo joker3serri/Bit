@@ -37,15 +37,15 @@ export default class IPCService {
   constructor(private socketName: string, private messageHandler: MessageHandler) {}
 
   async connect(): Promise<void> {
-    console.log("[IPCService] connect");
+    console.log("[IPCService] connecting...");
     if (this.connectionState === IPCConnectionState.Connected) {
-      // Socket is already connected. Don't throw, just all the callsite to proceed
+      // Socket is already connected. Don't throw, just allow the callsite to proceed
       return;
     }
 
-    const deferred = new Deferred<void>();
+    const deferredConnections = new Deferred<void>();
 
-    this.awaitingConnection.add(deferred);
+    this.awaitingConnection.add(deferredConnections);
 
     // If the current connection state is disconnected, we should start trying to connect.
     // The only other possible connection state at this point is "connecting" and if this
@@ -55,7 +55,7 @@ export default class IPCService {
       this._connect();
     }
 
-    return deferred.getPromise();
+    return deferredConnections.getPromise();
   }
 
   private _connect() {
@@ -71,6 +71,9 @@ export default class IPCService {
         // Only makes sense as long as config.maxRetries stays set to 0. Otherwise this will be
         // invoked multiple times each time a connection error happens
         console.log("[IPCService] errored");
+        console.log(
+          "\x1b[33m Please make sure the desktop app is running locally and 'Allow DuckDuckGo browser integration' setting is enabled \x1b[0m"
+        );
         this.awaitingConnection.forEach((deferred) => {
           console.log(`rejecting: ${deferred}`);
           deferred.reject(error);
@@ -96,7 +99,7 @@ export default class IPCService {
   }
 
   disconnect() {
-    console.log("[IPCService] disconnect");
+    console.log("[IPCService] disconnecting...");
     if (this.connectionState !== IPCConnectionState.Disconnected) {
       NodeIPC.disconnect(this.socketName);
     }
@@ -108,6 +111,10 @@ export default class IPCService {
       throw new Error(`A message with the id: ${message.messageId} has already been sent.`);
     }
 
+    // Creates a new deferred promise that allows us to convert a message received over the IPC socket
+    // into a response for a message that we previously sent. This mechanism relies on the fact that we
+    // create a unique message id and attach it with each message. Response messages are expected to
+    // include the message id of the message they are responding to.
     const deferred = new Deferred<UnencryptedMessageResponse>();
 
     this.pendingMessages.set(message.messageId, deferred);
@@ -115,6 +122,8 @@ export default class IPCService {
     this.getSocket().emit("message", message);
 
     try {
+      // Since we can not guarentee that a response message will ever be sent, we put a timeout
+      // on messages
       return race({
         promise: deferred.getPromise(),
         timeout: DEFAULT_MESSAGE_TIMEOUT,
@@ -139,6 +148,8 @@ export default class IPCService {
     if (message.messageId && this.pendingMessages.has(message.messageId)) {
       const deferred = this.pendingMessages.get(message.messageId);
 
+      // In the future, this could be improved to add ability to reject, but most messages coming in are
+      // encrypted at this point so we're unable to determine if they contain error info.
       deferred.resolve(message);
 
       this.pendingMessages.delete(message.messageId);

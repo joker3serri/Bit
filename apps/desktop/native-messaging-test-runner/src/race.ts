@@ -9,6 +9,8 @@ export const race = <T>({
 }) => {
   let timer = null;
 
+  // Similar to Promise.all, but instead of waiting for all, it resolves once one promise finishes.
+  // Using this so we can reject if the timeout threshold is hit
   return Promise.race([
     new Promise<T>((_, reject) => {
       timer = setTimeout(reject, timeout, error);

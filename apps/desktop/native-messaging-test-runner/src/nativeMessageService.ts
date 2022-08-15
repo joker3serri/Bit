@@ -55,7 +55,6 @@ export default class NativeMessageService {
         publicKey,
       },
     });
-
     return rawResponse.payload as HandshakePayload;
   }
 
@@ -100,6 +99,7 @@ export default class NativeMessageService {
     await this.ipcService.connect();
 
     const commonFields: MessageCommon = {
+      // Create a messageId that can be used as a lookup when we get a response
       messageId: uuidv4(),
       version: this.apiVersion,
     };
@@ -122,7 +122,6 @@ export default class NativeMessageService {
   }
 
   // Data Encryption
-
   private async encryptCommandData(
     commandData: DecryptedCommandData,
     key: string
