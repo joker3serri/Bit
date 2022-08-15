@@ -9,54 +9,32 @@ export class ConfigService implements ConfigServiceAbstraction {
   private _serverConfig = new Subject<ServerConfig>();
   serverConfig$: Observable<ServerConfig> = this._serverConfig.asObservable();
 
-  private readonly OneHourInMilliseconds: number = 3600000;
-  private readonly TwentyFourHours: number = 24;
-
   constructor(private stateService: StateService, private apiService: ApiService) {
-    this.getStateServiceServerConfig();
+    this.stateService.activeAccountUnlocked$.subscribe(async (unlocked) => {
+      if (!unlocked) {
+        this._serverConfig.next(null);
+        return;
+      }
+
+      this._serverConfig.next(await this.buildServerConfig());
+    });
   }
 
-  private async getStateServiceServerConfig(): Promise<void> {
-    const currentUtcDate = new Date(new Date().toISOString());
-
-    this.stateService
-      .getServerConfig()
-      .then((stateServerConfig) => {
-        if (this.isNullOrUndefined(stateServerConfig)) {
-          this.getApiServiceServerConfig();
-        } else {
-          // check if serverConfig is out of date
-          if (
-            this.getDateDiffInHours(currentUtcDate, stateServerConfig.utcDate) >=
-            this.TwentyFourHours
-          ) {
-            this.getApiServiceServerConfig();
-          } else {
-            this._serverConfig.next(stateServerConfig);
-          }
-        }
-      })
-      .catch((_) => this._serverConfig.next(null));
+  private async buildServerConfig(): Promise<ServerConfig> {
+    const storedServerConfig = await this.stateService.getServerConfig();
+    if (storedServerConfig == null || !storedServerConfig.isValid()) {
+      return await this.pollServerConfig();
+    } else {
+      return storedServerConfig;
+    }
   }
 
-  private async getApiServiceServerConfig(): Promise<void> {
-    this.apiService
-      .getServerConfig()
-      .then((apiServerConfig) => {
-        if (this.isNullOrUndefined(apiServerConfig)) {
-          // begin retry / polling mechanism
-        } else {
-          this._serverConfig.next(apiServerConfig);
-        }
-      })
-      .catch((_) => this._serverConfig.next(null));
-  }
-
-  private getDateDiffInHours(dateA: Date, dateB: Date) {
-    return Math.abs(dateA.getTime() - dateB.getTime()) / this.OneHourInMilliseconds;
-  }
-
-  private isNullOrUndefined(value: any) {
-    return value == null || value == undefined;
+  private async pollServerConfig(): Promise<ServerConfig> {
+    const apiServerConfig = await this.apiService.getServerConfig();
+    if (apiServerConfig == null) {
+      // begin retry / polling mechanism
+    } else {
+      return apiServerConfig;
+    }
   }
 }
