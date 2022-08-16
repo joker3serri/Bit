@@ -25,19 +25,15 @@ const routes: Routes = [
       {
         path: "payment-method",
         component: PaymentMethodComponent,
-        canActivate: [OrganizationPermissionsGuard],
         data: {
           titleId: "paymentMethod",
-          organizationPermissions: (org: Organization) => org.canManageBilling,
         },
       },
       {
         path: "history",
         component: OrgBillingHistoryViewComponent,
-        canActivate: [OrganizationPermissionsGuard],
         data: {
           titleId: "billingHistory",
-          organizationPermissions: (org: Organization) => org.canManageBilling,
         },
       },
     ],

@@ -1,6 +1,8 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
+import { Organization } from "@bitwarden/common/models/domain/organization";
+
 import { OrganizationPermissionsGuard } from "../guards/org-permissions.guard";
 import { EventsComponent } from "../manage/events.component";
 import { canAccessReportingTab } from "../navigation-permissions";
@@ -27,52 +29,41 @@ const routes: Routes = [
         canActivate: [OrganizationPermissionsGuard],
         data: {
           titleId: "reports",
-          organizationPermissions: (org: Organization) => org.canAccessReports,
         },
         children: [
           {
             path: "exposed-passwords-report",
             component: ExposedPasswordsReportComponent,
-            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "exposedPasswordsReport",
-              organizationPermissions: (org: Organization) => org.canAccessReports,
             },
           },
           {
             path: "inactive-two-factor-report",
             component: InactiveTwoFactorReportComponent,
-            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "inactive2faReport",
-              organizationPermissions: (org: Organization) => org.canAccessReports,
             },
           },
           {
             path: "reused-passwords-report",
             component: ReusedPasswordsReportComponent,
-            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "reusedPasswordsReport",
-              organizationPermissions: (org: Organization) => org.canAccessReports,
             },
           },
           {
             path: "unsecured-websites-report",
             component: UnsecuredWebsitesReportComponent,
-            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "unsecuredWebsitesReport",
-              organizationPermissions: (org: Organization) => org.canAccessReports,
             },
           },
           {
             path: "weak-passwords-report",
             component: WeakPasswordsReportComponent,
-            canActivate: [OrganizationPermissionsGuard],
             data: {
               titleId: "weakPasswordsReport",
-              organizationPermissions: (org: Organization) => org.canAccessReports,
             },
           },
         ],
