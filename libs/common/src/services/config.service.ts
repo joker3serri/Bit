@@ -22,6 +22,7 @@ export class ConfigService implements ConfigServiceAbstraction {
 
   private async buildServerConfig(): Promise<ServerConfig> {
     const storedServerConfig = await this.stateService.getServerConfig();
+
     if (storedServerConfig == null || !storedServerConfig.isValid()) {
       return await this.pollServerConfig();
     } else {
@@ -31,6 +32,7 @@ export class ConfigService implements ConfigServiceAbstraction {
 
   private async pollServerConfig(): Promise<ServerConfig> {
     const apiServerConfig = await this.apiService.getServerConfig();
+
     if (apiServerConfig == null) {
       // begin retry / polling mechanism
     } else {

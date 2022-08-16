@@ -15,7 +15,7 @@ export class ServerConfig {
   isValid() {
     const twentyFourHours = 24;
     const currentUtcDate = new Date(new Date().toISOString());
-    return this.getDateDiffInHours(currentUtcDate, this.utcDate) >= twentyFourHours;
+    return this.getDateDiffInHours(currentUtcDate, this.utcDate) < twentyFourHours;
   }
 
   private getDateDiffInHours(dateA: Date, dateB: Date) {

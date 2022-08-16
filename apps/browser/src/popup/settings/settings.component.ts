@@ -57,6 +57,7 @@ export class SettingsComponent implements OnInit {
 
   private destroy$ = new Subject<void>();
   private serverConfig: ServerConfig;
+  private serverConfigLastSeen: boolean;
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
@@ -124,10 +125,18 @@ export class SettingsComponent implements OnInit {
     this.enableAutoBiometricsPrompt = !(await this.stateService.getDisableAutoBiometricsPrompt());
     this.showChangeMasterPass = !(await this.keyConnectorService.getUsesKeyConnector());
 
+    this.serverConfigLastSeen = false;
     this.configService.serverConfig$
       .pipe(takeUntil(this.destroy$))
       .subscribe((serverConfig: ServerConfig) => {
-        this.serverConfig = serverConfig;
+        if (this.serverConfig != null && serverConfig == null) {
+          // We had the serverConfig value & now the new one is null,
+          // so we will keep the old and mark it as 'last seen'
+          this.serverConfigLastSeen = true;
+        } else {
+          this.serverConfig = serverConfig;
+          this.serverConfigLastSeen = false;
+        }
       });
   }
 
@@ -393,6 +402,9 @@ export class SettingsComponent implements OnInit {
   about() {
     const year = new Date().getFullYear();
     const clientVersion = this.i18nService.t("version") + ": " + BrowserApi.getApplicationVersion();
+    const serverConfigVersionText = this.serverConfigLastSeen
+      ? this.serverConfig.version + " (last seen)"
+      : this.serverConfig.version;
 
     const content = document.createElement("div");
     content.innerHTML =
@@ -407,18 +419,14 @@ export class SettingsComponent implements OnInit {
     if (this.usingThirdPartyServer()) {
       versionText.innerHTML +=
         `<br>` +
-        `Third-Party Server Version: ${this.serverConfig.version}` +
+        `Third-Party Server Version: ${serverConfigVersionText}` +
         `<br><br>` +
         `<small>Connected to third-party server implementation, ${this.serverConfig.server.name}. ` +
         `Please verify bugs using the official server, or report them to the third-party server.</small>`;
-    } else if (
-      this.serverConfig != null &&
-      this.serverConfig != undefined &&
-      this.environmentService.isCloud()
-    ) {
-      versionText.innerHTML += `<br>Server Version: ${this.serverConfig.version}`;
+    } else if (this.serverConfig != null && this.environmentService.isCloud()) {
+      versionText.innerHTML += `<br>Server Version: ${serverConfigVersionText}`;
     } else if (this.serverConfig != null && this.serverConfig != undefined) {
-      versionText.innerHTML += `<br>Self-Hosted Server Version: ${this.serverConfig.version}`;
+      versionText.innerHTML += `<br>Self-Hosted Server Version: ${serverConfigVersionText}`;
     }
 
     content.appendChild(versionText);
