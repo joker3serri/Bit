@@ -7,7 +7,7 @@ import { InternalFolderService } from "../abstractions/folder/folder.service.abs
 import { KeyConnectorService } from "../abstractions/keyConnector.service";
 import { LogService } from "../abstractions/log.service";
 import { MessagingService } from "../abstractions/messaging.service";
-import { OrganizationService } from "../abstractions/organization.service";
+import { OrganizationService } from "../abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService } from "../abstractions/policy/policy.service.abstraction";
 import { ProviderService } from "../abstractions/provider.service";
 import { SendService } from "../abstractions/send.service";

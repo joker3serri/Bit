@@ -39,13 +39,18 @@ export class VaultFilterComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.collapsedFilterNodes = await this.vaultFilterService.buildCollapsedFilterNodes();
-    this.organizations = await this.vaultFilterService.buildOrganizations();
-    if (this.organizations != null && this.organizations.length > 0) {
-      this.activePersonalOwnershipPolicy =
-        await this.vaultFilterService.checkForPersonalOwnershipPolicy();
-      this.activeSingleOrganizationPolicy =
-        await this.vaultFilterService.checkForSingleOrganizationPolicy();
-    }
+
+    this.vaultFilterService.buildOrganizations().subscribe(async (orgs) => {
+      this.organizations = orgs;
+
+      if (orgs != null && orgs.length > 0) {
+        this.activePersonalOwnershipPolicy =
+          await this.vaultFilterService.checkForPersonalOwnershipPolicy();
+        this.activeSingleOrganizationPolicy =
+          await this.vaultFilterService.checkForSingleOrganizationPolicy();
+      }
+    });
+
     this.folders$ = await this.vaultFilterService.buildNestedFolders();
     this.collections = await this.initCollections();
     this.isLoaded = true;
@@ -81,11 +86,11 @@ export class VaultFilterComponent implements OnInit {
   }
 
   async reloadOrganizations() {
-    this.organizations = await this.vaultFilterService.buildOrganizations();
-    this.activePersonalOwnershipPolicy =
-      await this.vaultFilterService.checkForPersonalOwnershipPolicy();
-    this.activeSingleOrganizationPolicy =
-      await this.vaultFilterService.checkForSingleOrganizationPolicy();
+    // this.organizations$ = await this.vaultFilterService.buildOrganizations();
+    // this.activePersonalOwnershipPolicy =
+    //   await this.vaultFilterService.checkForPersonalOwnershipPolicy();
+    // this.activeSingleOrganizationPolicy =
+    //   await this.vaultFilterService.checkForSingleOrganizationPolicy();
   }
 
   addFolder() {

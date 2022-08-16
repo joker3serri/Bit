@@ -6,7 +6,7 @@ import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ValidationService } from "@bitwarden/angular/services/validation.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync.service";
 import { PlanSponsorshipType } from "@bitwarden/common/enums/planSponsorshipType";

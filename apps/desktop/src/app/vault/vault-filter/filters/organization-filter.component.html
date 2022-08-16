@@ -91,7 +91,7 @@
         </li>
         <li
           class="filter-option"
-          *ngFor="let organization of organizations"
+          *ngFor="let organization of organizations$"
           [ngClass]="{ active: organization.id === activeFilter.selectedOrganizationId }"
         >
           <span class="filter-buttons">

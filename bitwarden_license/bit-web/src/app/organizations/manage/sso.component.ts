@@ -6,7 +6,7 @@ import { SelectOptions } from "@bitwarden/angular/interfaces/selectOptions";
 import { dirtyRequired } from "@bitwarden/angular/validators/dirty.validator";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import {
   OpenIdConnectRedirectBehavior,
