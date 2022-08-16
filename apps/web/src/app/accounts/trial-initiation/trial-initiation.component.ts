@@ -96,6 +96,7 @@ export class TrialInitiationComponent implements OnInit {
       this.referenceData.flow = qParams.org;
 
       // Are they coming from an email for sponsoring a families organization
+      // After logging in redirect them to setup the families sponsorship
       this.setupFamilySponsorship(qParams.sponsorshipToken);
 
       this.orgLabel = this.titleCasePipe.transform(this.org);
@@ -179,7 +180,6 @@ export class TrialInitiationComponent implements OnInit {
 
   private setupFamilySponsorship(sponsorshipToken: string) {
     if (sponsorshipToken != null) {
-      // After logging in redirect them to setup the families sponsorship
       const route = this.router.createUrlTree(["setup/families-for-enterprise"], {
         queryParams: { plan: sponsorshipToken },
       });
