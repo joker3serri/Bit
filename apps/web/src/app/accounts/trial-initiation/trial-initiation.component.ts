@@ -45,6 +45,22 @@ export class TrialInitiationComponent implements OnInit {
     email: [""],
   });
 
+  private set referenceDataId(referenceId: string) {
+    if (referenceId != null) {
+      this.referenceData.id = referenceId;
+    } else {
+      this.referenceData.id = ("; " + document.cookie)
+        .split("; reference=")
+        .pop()
+        .split(";")
+        .shift();
+    }
+
+    if (this.referenceData.id === "") {
+      this.referenceData.id = null;
+    }
+  }
+
   constructor(
     private route: ActivatedRoute,
     protected router: Router,
@@ -65,19 +81,7 @@ export class TrialInitiationComponent implements OnInit {
         this.email = qParams.email;
       }
 
-      if (qParams.reference != null) {
-        this.referenceData.id = qParams.reference;
-      } else {
-        this.referenceData.id = ("; " + document.cookie)
-          .split("; reference=")
-          .pop()
-          .split(";")
-          .shift();
-      }
-
-      if (this.referenceData.id === "") {
-        this.referenceData.id = null;
-      }
+      this.referenceDataId = qParams.reference;
 
       if (!qParams.org) {
         return;
@@ -92,13 +96,7 @@ export class TrialInitiationComponent implements OnInit {
       this.referenceData.flow = qParams.org;
 
       // Are they coming from an email for sponsoring a families organization
-      if (qParams.sponsorshipToken != null) {
-        // After logging in redirect them to setup the families sponsorship
-        const route = this.router.createUrlTree(["setup/families-for-enterprise"], {
-          queryParams: { plan: qParams.sponsorshipToken },
-        });
-        this.routerService.setPreviousUrl(route.toString());
-      }
+      this.setupFamilySponsorship(qParams.sponsorshipToken);
 
       this.orgLabel = this.titleCasePipe.transform(this.org);
       this.accountCreateOnly = false;
@@ -177,5 +175,15 @@ export class TrialInitiationComponent implements OnInit {
 
   previousStep() {
     this.verticalStepper.previous();
+  }
+
+  private setupFamilySponsorship(sponsorshipToken: string) {
+    if (sponsorshipToken != null) {
+      // After logging in redirect them to setup the families sponsorship
+      const route = this.router.createUrlTree(["setup/families-for-enterprise"], {
+        queryParams: { plan: sponsorshipToken },
+      });
+      this.routerService.setPreviousUrl(route.toString());
+    }
   }
 }
