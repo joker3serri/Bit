@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ipcRenderer } from "electron";
 
+import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { lockedUnlockedStatusString } from "@bitwarden/common/enums/authenticationStatus";
@@ -17,6 +18,7 @@ import {
   EncryptedMessage,
   EncryptedMessageResponse,
   DecryptedCommandData,
+  CiphersResponse,
 } from "../models/native-messages";
 
 const EncryptionAlgorithm = "sha1";
@@ -29,7 +31,8 @@ export class NativeMessageHandler {
     private stateService: StateService,
     private authService: AuthService,
     private cryptoService: CryptoService,
-    private cryptoFunctionService: CryptoFunctionService
+    private cryptoFunctionService: CryptoFunctionService,
+    private cipherService: CipherService
   ) {}
 
   async handleMessage(message: Message) {
@@ -103,7 +106,7 @@ export class NativeMessageHandler {
   }
 
   private async responseDataForCommand(commandData: DecryptedCommandData): Promise<any> {
-    const { command } = commandData;
+    const { command, payload } = commandData;
 
     switch (command) {
       case "bw-status": {
@@ -125,8 +128,38 @@ export class NativeMessageHandler {
           })
         );
       }
+      case "bw-credential-retrieval": {
+        if (payload.uri == null) {
+          return;
+        }
+
+        const ciphersResponse: CiphersResponse[] = [];
+        const activeUserId = await this.stateService.getUserId();
+        const authStatus = await this.authService.getAuthStatus(activeUserId);
+
+        if (lockedUnlockedStatusString(authStatus) !== "unlocked") {
+          return { error: "locked" };
+        }
+
+        const ciphers = await this.cipherService.getAllDecryptedForUrl(payload.uri);
+        ciphers.sort((a, b) => this.cipherService.sortCiphersByLastUsedThenName(a, b));
+
+        ciphers.forEach((c) => {
+          ciphersResponse.push({
+            userId: activeUserId,
+            credentialId: c.id,
+            userName: c.login.username,
+            password: c.login.password,
+            name: c.name,
+          } as CiphersResponse);
+        });
+
+        return ciphersResponse;
+      }
       default:
-        throw new Error(`Unknown command: ${command}`);
+        return {
+          error: "cannot-decrypt",
+        };
     }
   }
 

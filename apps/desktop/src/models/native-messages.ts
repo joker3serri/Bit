@@ -70,3 +70,11 @@ export type EncryptedMessageResponse = MessageCommon & {
 };
 
 export type Message = UnencryptedMessage | EncryptedMessage;
+
+export type CiphersResponse = {
+  userId: string;
+  credentialId: string;
+  userName: string;
+  password: string;
+  name: string;
+};
