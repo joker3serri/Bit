@@ -12,13 +12,13 @@ export class ServerConfig {
     this.environment = new EnvironmentServerConfig();
   }
 
-  isValid() {
+  isValid(): boolean {
     const twentyFourHours = 24;
     const currentUtcDate = new Date(new Date().toISOString());
     return this.getDateDiffInHours(currentUtcDate, this.utcDate) < twentyFourHours;
   }
 
-  private getDateDiffInHours(dateA: Date, dateB: Date) {
+  private getDateDiffInHours(dateA: Date, dateB: Date): number {
     const oneHourInMs = 3600000;
     return Math.abs(dateA.getTime() - dateB.getTime()) / oneHourInMs;
   }

@@ -402,9 +402,13 @@ export class SettingsComponent implements OnInit {
   about() {
     const year = new Date().getFullYear();
     const clientVersion = this.i18nService.t("version") + ": " + BrowserApi.getApplicationVersion();
-    const serverConfigVersionText = this.serverConfigLastSeen
-      ? this.serverConfig.version + " (last seen)"
-      : this.serverConfig.version;
+    let serverConfigVersionText = "";
+
+    if (this.serverConfig != null) {
+      serverConfigVersionText = this.serverConfigLastSeen
+        ? this.serverConfig.version + " (last seen)"
+        : this.serverConfig.version;
+    }
 
     const content = document.createElement("div");
     content.innerHTML =
