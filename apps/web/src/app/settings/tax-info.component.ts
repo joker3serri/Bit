@@ -6,19 +6,13 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationTaxInfoUpdateRequest } from "@bitwarden/common/models/request/organizationTaxInfoUpdateRequest";
 import { TaxInfoUpdateRequest } from "@bitwarden/common/models/request/taxInfoUpdateRequest";
+import { TaxInfoResponse } from "@bitwarden/common/models/response/taxInfoResponse";
 import { TaxRateResponse } from "@bitwarden/common/models/response/taxRateResponse";
 
-interface TaxInfo {
-  taxId: string | null;
-  line1: string | null;
-  line2: string | null;
-  city: string | null;
-  state: string | null;
-  postalCode: string | null;
-  country: string;
+type TaxInfoView = Omit<TaxInfoResponse, "taxIdType"> & {
   includeTaxId: boolean;
   [key: string]: unknown;
-}
+};
 
 @Component({
   selector: "app-tax-info",
@@ -30,7 +24,7 @@ export class TaxInfoComponent {
 
   loading = true;
   organizationId: string;
-  taxInfo: TaxInfo = {
+  taxInfo: TaxInfoView = {
     taxId: null,
     line1: null,
     line2: null,
@@ -43,7 +37,7 @@ export class TaxInfoComponent {
 
   taxRates: TaxRateResponse[];
 
-  private pristine: TaxInfo = {
+  private pristine: TaxInfoView = {
     taxId: null,
     line1: null,
     line2: null,

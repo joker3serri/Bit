@@ -195,7 +195,7 @@ export abstract class ApiService {
   postReinstatePremium: () => Promise<any>;
   postCancelPremium: () => Promise<any>;
   postAccountStorage: (request: StorageRequest) => Promise<PaymentResponse>;
-  postAccountPayment: (request: PaymentRequest) => Promise<any>;
+  postAccountPayment: (request: PaymentRequest) => Promise<void>;
   postAccountLicense: (data: FormData) => Promise<any>;
   postAccountKey: (request: UpdateKeyRequest) => Promise<any>;
   postAccountKeys: (request: KeysRequest) => Promise<any>;
@@ -396,7 +396,7 @@ export abstract class ApiService {
     organizationId: string,
     userId: string,
     request: OrganizationUserResetPasswordEnrollmentRequest
-  ) => Promise<any>;
+  ) => Promise<void>;
   putOrganizationUserResetPassword: (
     organizationId: string,
     id: string,
@@ -598,7 +598,7 @@ export abstract class ApiService {
   ) => Promise<ListResponse<EventResponse>>;
   postEventsCollect: (request: EventRequest[]) => Promise<any>;
 
-  deleteSsoUser: (organizationId: string) => Promise<any>;
+  deleteSsoUser: (organizationId: string) => Promise<void>;
   getSsoUserIdentifier: () => Promise<string>;
 
   getUserPublicKey: (id: string) => Promise<UserKeyResponse>;

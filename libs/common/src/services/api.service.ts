@@ -372,7 +372,7 @@ export class ApiService implements ApiServiceAbstraction {
     return new PaymentResponse(r);
   }
 
-  postAccountPayment(request: PaymentRequest): Promise<any> {
+  postAccountPayment(request: PaymentRequest): Promise<void> {
     return this.send("POST", "/accounts/payment", request, true, false);
   }
 
@@ -412,7 +412,7 @@ export class ApiService implements ApiServiceAbstraction {
     return this.send("POST", "/accounts/kdf", request, true, false);
   }
 
-  async deleteSsoUser(organizationId: string): Promise<any> {
+  async deleteSsoUser(organizationId: string): Promise<void> {
     return this.send("DELETE", "/accounts/sso/" + organizationId, null, true, false);
   }
 
@@ -1173,7 +1173,7 @@ export class ApiService implements ApiServiceAbstraction {
     organizationId: string,
     userId: string,
     request: OrganizationUserResetPasswordEnrollmentRequest
-  ): Promise<any> {
+  ): Promise<void> {
     return this.send(
       "PUT",
       "/organizations/" + organizationId + "/users/" + userId + "/reset-password-enrollment",

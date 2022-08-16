@@ -20,7 +20,7 @@ import { EnrollMasterPasswordReset } from "../../../organizations/users/enroll-m
   templateUrl: "organization-options.component.html",
 })
 export class OrganizationOptionsComponent {
-  actionPromise: Promise<boolean | unknown>;
+  actionPromise: Promise<void | boolean>;
   policies: Policy[];
   loaded = false;
 

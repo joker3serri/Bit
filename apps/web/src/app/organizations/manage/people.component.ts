@@ -167,19 +167,19 @@ export class PeopleComponent
     return this.apiService.getOrganizationUsers(this.organizationId);
   }
 
-  deleteUser(id: string): Promise<unknown> {
+  deleteUser(id: string): Promise<void> {
     return this.apiService.deleteOrganizationUser(this.organizationId, id);
   }
 
-  revokeUser(id: string): Promise<unknown> {
+  revokeUser(id: string): Promise<void> {
     return this.apiService.revokeOrganizationUser(this.organizationId, id);
   }
 
-  restoreUser(id: string): Promise<unknown> {
+  restoreUser(id: string): Promise<void> {
     return this.apiService.restoreOrganizationUser(this.organizationId, id);
   }
 
-  reinviteUser(id: string): Promise<unknown> {
+  reinviteUser(id: string): Promise<void> {
     return this.apiService.postOrganizationUserReinvite(this.organizationId, id);
   }
 
