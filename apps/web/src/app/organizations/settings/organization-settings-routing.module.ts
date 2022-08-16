@@ -1,10 +1,10 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { Permissions } from "@bitwarden/common/enums/permissions";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { PermissionsGuard } from "../guards/permissions.guard";
-import { NavigationPermissionsService } from "../services/navigation-permissions.service";
+import { OrganizationPermissionsGuard } from "../guards/org-permissions.guard";
+import { canAccessSettingsTab } from "../navigation-permissions";
 
 import { AccountComponent } from "./account.component";
 import { PoliciesComponent } from "./policies.component";
@@ -15,8 +15,8 @@ const routes: Routes = [
   {
     path: "",
     component: SettingsComponent,
-    canActivate: [PermissionsGuard],
-    data: { permissions: NavigationPermissionsService.getPermissions("settings") },
+    canActivate: [OrganizationPermissionsGuard],
+    data: { organizationPermissions: canAccessSettingsTab },
     children: [
       { path: "", pathMatch: "full", redirectTo: "account" },
       { path: "account", component: AccountComponent, data: { titleId: "organizationInfo" } },
@@ -28,9 +28,9 @@ const routes: Routes = [
       {
         path: "policies",
         component: PoliciesComponent,
-        canActivate: [PermissionsGuard],
+        canActivate: [OrganizationPermissionsGuard],
         data: {
-          permissions: [Permissions.ManagePolicies],
+          organizationPermissions: (org: Organization) => org.canManagePolicies,
           titleId: "policies",
         },
       },

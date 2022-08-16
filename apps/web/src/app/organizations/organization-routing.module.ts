@@ -2,21 +2,22 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { PermissionsGuard } from "./guards/permissions.guard";
+import { OrganizationPermissionsGuard } from "./guards/org-permissions.guard";
 import { OrganizationLayoutComponent } from "./layouts/organization-layout.component";
 import { GroupsComponent } from "./manage/groups.component";
 import { PeopleComponent } from "./manage/people.component";
-import { NavigationPermissionsService } from "./services/navigation-permissions.service";
+import { canAccessOrgAdmin } from "./navigation-permissions";
 import { VaultModule } from "./vault/vault.module";
 
 const routes: Routes = [
   {
     path: ":organizationId",
     component: OrganizationLayoutComponent,
-    canActivate: [AuthGuard, PermissionsGuard],
+    canActivate: [AuthGuard, OrganizationPermissionsGuard],
     data: {
-      permissions: NavigationPermissionsService.getPermissions("admin"),
+      organizationPermissions: canAccessOrgAdmin,
     },
     children: [
       { path: "", pathMatch: "full", redirectTo: "vault" },
@@ -31,19 +32,19 @@ const routes: Routes = [
       {
         path: "members",
         component: PeopleComponent,
-        canActivate: [PermissionsGuard],
+        canActivate: [OrganizationPermissionsGuard],
         data: {
           titleId: "members",
-          permissions: NavigationPermissionsService.getPermissions("members"),
+          organizationPermissions: (org: Organization) => org.canManageUsers,
         },
       },
       {
         path: "groups",
         component: GroupsComponent,
-        canActivate: [PermissionsGuard],
+        canActivate: [OrganizationPermissionsGuard],
         data: {
           titleId: "groups",
-          permissions: NavigationPermissionsService.getPermissions("groups"),
+          organizationPermissions: (org: Organization) => org.canManageGroups,
         },
       },
       {
