@@ -1,15 +1,10 @@
-<div
-  class="modal fade"
-  role="dialog"
-  aria-modal="true"
-  attr.aria-label="{{ 'generatePassword' | i18n }}"
->
+<div class="modal fade" role="dialog" aria-modal="true" aria-labelledby="generatorTitle">
   <div class="modal-dialog modal-md" role="document">
     <div class="modal-content">
       <div class="modal-body">
-        <div class="modal-title">
+        <h1 class="modal-title" id="generatorTitle">
           {{ "generator" | i18n }}
-        </div>
+        </h1>
         <app-callout
           type="info"
           *ngIf="enforcedPasswordPolicyOptions?.inEffect() && type === 'password'"
