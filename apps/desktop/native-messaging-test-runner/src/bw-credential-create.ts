@@ -33,8 +33,10 @@ const { name } = argv;
 
   if (response.payload.status === "failure") {
     LogUtils.logError("Failure response returned ");
+  } else if (response.payload.status === "success") {
+    LogUtils.logSuccess("Success response returned ");
   } else {
-    LogUtils.logSuccess("Credentials returned ", response);
+    LogUtils.logWarning("Other response: ", response);
   }
 
   nativeMessageService.disconnect();
