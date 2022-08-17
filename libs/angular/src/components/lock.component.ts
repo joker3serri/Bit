@@ -178,24 +178,25 @@ export class LockComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (passwordValid) {
-      if (this.pinSet[0]) {
-        const protectedPin = await this.stateService.getProtectedPin();
-        const encKey = await this.cryptoService.getEncKey(key);
-        const decPin = await this.cryptoService.decryptToUtf8(new EncString(protectedPin), encKey);
-        const pinKey = await this.cryptoService.makePinKey(decPin, this.email, kdf, kdfIterations);
-        await this.stateService.setDecryptedPinProtected(
-          await this.cryptoService.encrypt(key.key, pinKey)
-        );
-      }
-      await this.setKeyAndContinue(key);
-    } else {
+    if (!passwordValid) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
         this.i18nService.t("invalidMasterPassword")
       );
+      return;
     }
+
+    if (this.pinSet[0]) {
+      const protectedPin = await this.stateService.getProtectedPin();
+      const encKey = await this.cryptoService.getEncKey(key);
+      const decPin = await this.cryptoService.decryptToUtf8(new EncString(protectedPin), encKey);
+      const pinKey = await this.cryptoService.makePinKey(decPin, this.email, kdf, kdfIterations);
+      await this.stateService.setDecryptedPinProtected(
+        await this.cryptoService.encrypt(key.key, pinKey)
+      );
+    }
+    await this.setKeyAndContinue(key);
   }
 
   async logOut() {
