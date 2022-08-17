@@ -96,7 +96,43 @@ export class LockComponent implements OnInit, OnDestroy {
     await this.unlockWithMasterPassword(kdf, kdfIterations);
   }
 
-  async unlockWithPin(kdf: KdfType, kdfIterations: number) {
+  async logOut() {
+    const confirmed = await this.platformUtilsService.showDialog(
+      this.i18nService.t("logOutConfirmation"),
+      this.i18nService.t("logOut"),
+      this.i18nService.t("logOut"),
+      this.i18nService.t("cancel")
+    );
+    if (confirmed) {
+      this.messagingService.send("logout");
+    }
+  }
+
+  async unlockBiometric(): Promise<boolean> {
+    if (!this.biometricLock) {
+      return;
+    }
+
+    const success = (await this.cryptoService.getKey(KeySuffixOptions.Biometric)) != null;
+
+    if (success) {
+      await this.doContinue();
+    }
+
+    return success;
+  }
+
+  togglePassword() {
+    this.showPassword = !this.showPassword;
+    const input = document.getElementById(this.pinLock ? "pin" : "masterPassword");
+    if (this.ngZone.isStable) {
+      input.focus();
+    } else {
+      this.ngZone.onStable.pipe(take(1)).subscribe(() => input.focus());
+    }
+  }
+
+  private async unlockWithPin(kdf: KdfType, kdfIterations: number) {
     let failed = true;
     try {
       if (this.pinSet[0]) {
@@ -142,7 +178,7 @@ export class LockComponent implements OnInit, OnDestroy {
     }
   }
 
-  async unlockWithMasterPassword(kdf: KdfType, kdfIterations: number) {
+  private async unlockWithMasterPassword(kdf: KdfType, kdfIterations: number) {
     const key = await this.cryptoService.makeKey(
       this.masterPassword,
       this.email,
@@ -198,43 +234,6 @@ export class LockComponent implements OnInit, OnDestroy {
     }
     await this.setKeyAndContinue(key);
   }
-
-  async logOut() {
-    const confirmed = await this.platformUtilsService.showDialog(
-      this.i18nService.t("logOutConfirmation"),
-      this.i18nService.t("logOut"),
-      this.i18nService.t("logOut"),
-      this.i18nService.t("cancel")
-    );
-    if (confirmed) {
-      this.messagingService.send("logout");
-    }
-  }
-
-  async unlockBiometric(): Promise<boolean> {
-    if (!this.biometricLock) {
-      return;
-    }
-
-    const success = (await this.cryptoService.getKey(KeySuffixOptions.Biometric)) != null;
-
-    if (success) {
-      await this.doContinue();
-    }
-
-    return success;
-  }
-
-  togglePassword() {
-    this.showPassword = !this.showPassword;
-    const input = document.getElementById(this.pinLock ? "pin" : "masterPassword");
-    if (this.ngZone.isStable) {
-      input.focus();
-    } else {
-      this.ngZone.onStable.pipe(take(1)).subscribe(() => input.focus());
-    }
-  }
-
   private async setKeyAndContinue(key: SymmetricCryptoKey) {
     await this.cryptoService.setKey(key);
     await this.doContinue();
