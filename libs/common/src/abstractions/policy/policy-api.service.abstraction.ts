@@ -1,6 +1,5 @@
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
-import { Policy } from "@bitwarden/common/models/domain/policy";
 import { PolicyRequest } from "@bitwarden/common/models/request/policyRequest";
 import { ListResponse } from "@bitwarden/common/models/response/listResponse";
 import { PolicyResponse } from "@bitwarden/common/models/response/policyResponse";
@@ -18,11 +17,6 @@ export class PolicyApiServiceAbstraction {
     organizationId: string,
     userId: string
   ) => Promise<ListResponse<PolicyResponse>>;
-  getPolicyForOrganization: (
-    policies: Policy[],
-    policyType: PolicyType,
-    organizationId: string
-  ) => Promise<Policy>;
   getMasterPasswordPoliciesForInvitedUsers: (orgId: string) => Promise<MasterPasswordPolicyOptions>;
   putPolicy: (organizationId: string, type: PolicyType, request: PolicyRequest) => Promise<any>;
 }

@@ -21,6 +21,7 @@ import { SyncService } from "@bitwarden/common/abstractions/sync.service";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { PolicyData } from "@bitwarden/common/models/data/policyData";
 import { Policy } from "@bitwarden/common/models/domain/policy";
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organizationKeysRequest";
 import { OrganizationUserBulkRequest } from "@bitwarden/common/models/request/organizationUserBulkRequest";
@@ -171,11 +172,21 @@ export class PeopleComponent
   }
 
   async load() {
-    const resetPasswordPolicy = await this.policyApiService.getPolicyForOrganization(
-      this.policies,
-      PolicyType.ResetPassword,
-      this.organizationId
-    );
+    let resetPasswordPolicy = this.policies
+      .filter((policy) => policy.type === PolicyType.ResetPassword)
+      .find((p) => p.organizationId === this.organizationId);
+    const org = await this.organizationService.get(this.organizationId);
+    if (org?.isProviderUser) {
+      const orgPolicies = await this.policyApiService.getPolicies(this.organizationId);
+      const policy = orgPolicies.data.find((p) => p.organizationId === this.organizationId);
+
+      if (policy == null) {
+        resetPasswordPolicy = null;
+      }
+
+      resetPasswordPolicy = new Policy(new PolicyData(policy));
+    }
+
     this.orgResetPasswordPolicyEnabled = resetPasswordPolicy?.enabled;
     super.load();
   }

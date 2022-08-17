@@ -6,7 +6,6 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { PolicyData } from "@bitwarden/common/models/data/policyData";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
-import { Policy } from "@bitwarden/common/models/domain/policy";
 import { PolicyRequest } from "@bitwarden/common/models/request/policyRequest";
 import { ListResponse } from "@bitwarden/common/models/response/listResponse";
 import { PolicyResponse } from "@bitwarden/common/models/response/policyResponse";
@@ -77,28 +76,6 @@ export class PolicyApiService implements PolicyApiServiceAbstraction {
       true
     );
     return new ListResponse(r, PolicyResponse);
-  }
-
-  async getPolicyForOrganization(
-    policies: Policy[],
-    policyType: PolicyType,
-    organizationId: string
-  ): Promise<Policy> {
-    const org = await this.organizationService.get(organizationId);
-    if (org?.isProviderUser) {
-      const orgPolicies = await this.getPolicies(organizationId);
-      const policy = orgPolicies.data.find((p) => p.organizationId === organizationId);
-
-      if (policy == null) {
-        return null;
-      }
-
-      return new Policy(new PolicyData(policy));
-    }
-
-    return policies
-      .filter((policy) => policyType == null || policy.type === policyType)
-      .find((p) => p.organizationId === organizationId);
   }
 
   async getMasterPasswordPoliciesForInvitedUsers(
