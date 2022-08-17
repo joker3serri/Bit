@@ -69,15 +69,23 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   async submit() {
-    if (this.pinLock && (this.pin == null || this.pin === "")) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("pinRequired")
-      );
-      return;
+    const kdf = await this.stateService.getKdfType();
+    const kdfIterations = await this.stateService.getKdfIterations();
+
+    if (this.pinLock) {
+      if (this.pin == null || this.pin === "") {
+        this.platformUtilsService.showToast(
+          "error",
+          this.i18nService.t("errorOccurred"),
+          this.i18nService.t("pinRequired")
+        );
+        return;
+      }
+
+      return await this.unlockWithPin(kdf, kdfIterations);
     }
-    if (!this.pinLock && (this.masterPassword == null || this.masterPassword === "")) {
+
+    if (this.masterPassword == null || this.masterPassword === "") {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
@@ -85,15 +93,7 @@ export class LockComponent implements OnInit, OnDestroy {
       );
       return;
     }
-
-    const kdf = await this.stateService.getKdfType();
-    const kdfIterations = await this.stateService.getKdfIterations();
-
-    if (this.pinLock) {
-      await this.unlockWithPin(kdf, kdfIterations);
-    } else {
-      await this.unlockWithMasterPassword(kdf, kdfIterations);
-    }
+    await this.unlockWithMasterPassword(kdf, kdfIterations);
   }
 
   async unlockWithPin(kdf: KdfType, kdfIterations: number) {
