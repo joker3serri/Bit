@@ -71,7 +71,15 @@ export type EncryptedMessageResponse = MessageCommon & {
 
 export type Message = UnencryptedMessage | EncryptedMessage;
 
-export type CiphersResponse = {
+export type CipherCreatePayload = {
+  userId: string;
+  userName: string;
+  password: string;
+  name: string;
+  uri: string;
+};
+
+export type CipherResponse = {
   userId: string;
   credentialId: string;
   userName: string;

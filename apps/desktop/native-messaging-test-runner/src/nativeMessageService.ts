@@ -17,6 +17,7 @@ import {
   MessageCommon,
   EncryptedMessageResponse,
   UnencryptedMessageResponse,
+  CipherCreatePayload,
 } from "../../src/models/native-messages";
 
 import IPCService from "./ipcService";
@@ -80,6 +81,26 @@ export default class NativeMessageService {
         payload: {
           uri: uri,
         },
+      },
+      key
+    );
+    const response = await this.sendEncryptedMessage({
+      encryptedCommand,
+    });
+
+    return this.decryptResponsePayload(response.encryptedPayload, key);
+  }
+
+  async credentialCreation(key: string, name: string): Promise<DecryptedCommandData> {
+    const encryptedCommand = await this.encryptCommandData(
+      {
+        command: "bw-credential-create",
+        payload: {
+          name: name,
+          userName: "SuperAwesomeUser",
+          password: "dolhpin",
+          uri: "google.com",
+        } as CipherCreatePayload,
       },
       key
     );

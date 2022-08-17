@@ -4,10 +4,16 @@ import { ipcRenderer } from "electron";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { lockedUnlockedStatusString } from "@bitwarden/common/enums/authenticationStatus";
+import { CipherType } from "@bitwarden/common/enums/cipherType";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
+import { CipherView } from "@bitwarden/common/models/view/cipherView";
+import { LoginUriView } from "@bitwarden/common/models/view/loginUriView";
+import { LoginView } from "@bitwarden/common/models/view/loginView";
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 
@@ -18,7 +24,8 @@ import {
   EncryptedMessage,
   EncryptedMessageResponse,
   DecryptedCommandData,
-  CiphersResponse,
+  CipherResponse,
+  CipherCreatePayload,
 } from "../models/native-messages";
 
 const EncryptionAlgorithm = "sha1";
@@ -32,7 +39,8 @@ export class NativeMessageHandler {
     private authService: AuthService,
     private cryptoService: CryptoService,
     private cryptoFunctionService: CryptoFunctionService,
-    private cipherService: CipherService
+    private cipherService: CipherService,
+    private policyService: PolicyService
   ) {}
 
   async handleMessage(message: Message) {
@@ -136,7 +144,7 @@ export class NativeMessageHandler {
           return;
         }
 
-        const ciphersResponse: CiphersResponse[] = [];
+        const ciphersResponse: CipherResponse[] = [];
         const activeUserId = await this.stateService.getUserId();
         const authStatus = await this.authService.getAuthStatus(activeUserId);
 
@@ -154,10 +162,45 @@ export class NativeMessageHandler {
             userName: c.login.username,
             password: c.login.password,
             name: c.name,
-          } as CiphersResponse);
+          } as CipherResponse);
         });
 
         return ciphersResponse;
+      }
+      case "bw-credential-create": {
+        const activeUserId = await this.stateService.getUserId();
+        const authStatus = await this.authService.getAuthStatus(activeUserId);
+
+        if (lockedUnlockedStatusString(authStatus) !== "unlocked") {
+          return { error: "locked" };
+        }
+
+        const cipherCreatePayload = payload as CipherCreatePayload;
+
+        if (
+          cipherCreatePayload.name == null ||
+          (await this.policyService.policyAppliesToUser(PolicyType.PersonalOwnership))
+        ) {
+          return { status: "failure" };
+        }
+
+        const cipherView = new CipherView();
+        cipherView.type = CipherType.Login;
+        cipherView.name = payload.name;
+        cipherView.login = new LoginView();
+        cipherView.login.password = cipherCreatePayload.password;
+        cipherView.login.username = cipherCreatePayload.userName;
+        cipherView.login.uris = [new LoginUriView()];
+        cipherView.login.uris[0].uri = cipherCreatePayload.uri;
+
+        try {
+          const encrypted = await this.cipherService.encrypt(cipherView);
+          await this.cipherService.saveWithServer(encrypted);
+
+          return { status: "success" };
+        } catch (error) {
+          return { status: "failure" };
+        }
       }
       default:
         return {
