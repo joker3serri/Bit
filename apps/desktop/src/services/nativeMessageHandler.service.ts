@@ -108,6 +108,8 @@ export class NativeMessageHandler {
     switch (command) {
       case "bw-status": {
         const accounts = this.stateService.accounts.getValue();
+        const activeUserId = await this.stateService.getUserId();
+
         if (!accounts || !Object.keys(accounts)) {
           return [];
         }
@@ -121,6 +123,7 @@ export class NativeMessageHandler {
               id: userId,
               email,
               status: lockedUnlockedStatusString(authStatus),
+              active: userId === activeUserId,
             };
           })
         );
