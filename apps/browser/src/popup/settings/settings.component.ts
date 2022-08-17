@@ -125,18 +125,10 @@ export class SettingsComponent implements OnInit {
     this.enableAutoBiometricsPrompt = !(await this.stateService.getDisableAutoBiometricsPrompt());
     this.showChangeMasterPass = !(await this.keyConnectorService.getUsesKeyConnector());
 
-    this.serverConfigLastSeen = false;
     this.configService.serverConfig$
       .pipe(takeUntil(this.destroy$))
       .subscribe((serverConfig: ServerConfig) => {
-        if (this.serverConfig != null && serverConfig == null) {
-          // We had the serverConfig value & now the new one is null,
-          // so we will keep the old and mark it as 'last seen'
-          this.serverConfigLastSeen = true;
-        } else {
-          this.serverConfig = serverConfig;
-          this.serverConfigLastSeen = false;
-        }
+        this.serverConfig = serverConfig;
       });
   }
 
@@ -405,9 +397,9 @@ export class SettingsComponent implements OnInit {
     let serverConfigVersionText = "";
 
     if (this.serverConfig != null) {
-      serverConfigVersionText = this.serverConfigLastSeen
-        ? this.serverConfig.version + " (last seen)"
-        : this.serverConfig.version;
+      serverConfigVersionText = this.serverConfig.isValid()
+        ? this.serverConfig.version
+        : this.serverConfig.version + " (last seen)";
     }
 
     const content = document.createElement("div");

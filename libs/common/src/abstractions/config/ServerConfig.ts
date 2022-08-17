@@ -22,4 +22,9 @@ export class ServerConfig {
     const oneHourInMs = 3600000;
     return Math.abs(dateA.getTime() - dateB.getTime()) / oneHourInMs;
   }
+
+  static fromJSON(json: any): ServerConfig {
+    const utcDate = json.utcDate == null ? null : new Date(json.utcDate);
+    return Object.assign(new ServerConfig(), json, { utcDate });
+  }
 }

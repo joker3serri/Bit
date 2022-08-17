@@ -1,4 +1,4 @@
-import { Observable, Subject } from "rxjs";
+import { concatMap, Observable, Subject } from "rxjs";
 
 import { ApiService } from "../../abstractions/api.service";
 import { ServerConfig } from "../../abstractions/config/ServerConfig";
@@ -10,14 +10,21 @@ export class ConfigService implements ConfigServiceAbstraction {
   serverConfig$: Observable<ServerConfig> = this._serverConfig.asObservable();
 
   constructor(private stateService: StateService, private apiService: ApiService) {
-    this.stateService.activeAccountUnlocked$.subscribe(async (unlocked) => {
-      if (!unlocked) {
-        this._serverConfig.next(null);
-        return;
-      }
+    this.stateService.activeAccountUnlocked$
+      .pipe(
+        concatMap(async (unlocked) => {
+          if (!unlocked) {
+            this._serverConfig.next(null);
+            return;
+          }
 
-      this._serverConfig.next(await this.buildServerConfig());
-    });
+          const serverConfig = await this.buildServerConfig();
+          return serverConfig;
+        })
+      )
+      .subscribe((serverConfig) => {
+        this._serverConfig.next(serverConfig);
+      });
   }
 
   private async buildServerConfig(): Promise<ServerConfig> {

@@ -2275,6 +2275,7 @@ export class StateService<
     );
   }
 
+  @withPrototype(ServerConfig, ServerConfig.fromJSON)
   async getServerConfig(): Promise<ServerConfig> {
     const globals = await this.getAccount(await this.defaultOnDiskLocalOptions());
     return globals?.settings?.serverConfig != null ? globals.settings.serverConfig : null;
