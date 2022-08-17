@@ -1,3 +1,3 @@
 export * from "./tabs.module";
 export * from "./tab-group.component";
-export * from "./tab-item.component";
+export * from "./tab.component";

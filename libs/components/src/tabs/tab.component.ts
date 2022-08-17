@@ -1,10 +1,10 @@
 import { Component, Input } from "@angular/core";
 
 @Component({
-  selector: "bit-tab-item",
-  templateUrl: "./tab-item.component.html",
+  selector: "bit-tab",
+  templateUrl: "./tab.component.html",
 })
-export class TabItemComponent {
+export class TabComponent {
   @Input() route: string; // ['/route']
   @Input() disabled = false;
 

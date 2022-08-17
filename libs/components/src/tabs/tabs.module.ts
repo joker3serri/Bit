@@ -3,11 +3,11 @@ import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
 import { TabGroupComponent } from "./tab-group.component";
-import { TabItemComponent } from "./tab-item.component";
+import { TabComponent } from "./tab.component";
 
 @NgModule({
   imports: [CommonModule, RouterModule],
-  exports: [TabGroupComponent, TabItemComponent],
-  declarations: [TabGroupComponent, TabItemComponent],
+  exports: [TabGroupComponent, TabComponent],
+  declarations: [TabGroupComponent, TabComponent],
 })
 export class TabsModule {}
