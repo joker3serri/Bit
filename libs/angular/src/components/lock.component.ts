@@ -14,7 +14,6 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
 import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
-import { KdfType } from "@bitwarden/common/enums/kdfType";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/encString";
@@ -69,22 +68,11 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   async submit() {
-    const kdf = await this.stateService.getKdfType();
-    const kdfIterations = await this.stateService.getKdfIterations();
-
     if (this.pinLock) {
       return await this.handlePinRequiredUnlock();
     }
 
-    if (this.masterPassword == null || this.masterPassword === "") {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPassRequired")
-      );
-      return;
-    }
-    await this.unlockWithMasterPassword(kdf, kdfIterations);
+    await this.handleMasterPasswordRequiredUnlock();
   }
 
   async logOut() {
@@ -184,7 +172,22 @@ export class LockComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async unlockWithMasterPassword(kdf: KdfType, kdfIterations: number) {
+  private async handleMasterPasswordRequiredUnlock() {
+    if (this.masterPassword == null || this.masterPassword === "") {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("masterPassRequired")
+      );
+      return;
+    }
+    await this.doUnlockWithMasterPassword();
+  }
+
+  private async doUnlockWithMasterPassword() {
+    const kdf = await this.stateService.getKdfType();
+    const kdfIterations = await this.stateService.getKdfIterations();
+
     const key = await this.cryptoService.makeKey(
       this.masterPassword,
       this.email,
