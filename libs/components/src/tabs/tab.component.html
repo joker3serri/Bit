@@ -22,5 +22,9 @@
   </button>
 </ng-container>
 <ng-template #content>
-  <ng-content></ng-content>
+  <ng-template [ngIf]="templateLabel" [ngIfElse]="tabTextLabel">
+    <ng-container [ngTemplateOutlet]="templateLabel.templateRef"></ng-container>
+  </ng-template>
+
+  <ng-template #tabTextLabel>{{ textLabel }}</ng-template>
 </ng-template>

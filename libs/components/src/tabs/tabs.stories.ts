@@ -4,7 +4,7 @@ import { RouterModule } from "@angular/router";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { TabGroupComponent } from "./tab-group.component";
-import { TabComponent } from "./tab.component";
+import { TabsModule } from "./tabs.module";
 
 @Component({
   selector: "bit-tab-active-dummy",
@@ -36,8 +36,6 @@ export default {
   decorators: [
     moduleMetadata({
       declarations: [
-        TabGroupComponent,
-        TabComponent,
         ActiveDummyComponent,
         ItemTwoDummyComponent,
         ItemThreeDummyComponent,
@@ -45,6 +43,7 @@ export default {
       ],
       imports: [
         CommonModule,
+        TabsModule,
         RouterModule.forRoot(
           [
             { path: "", redirectTo: "active", pathMatch: "full" },
@@ -70,10 +69,10 @@ const TabGroupTemplate: Story<TabGroupComponent> = (args: TabGroupComponent) => 
   props: args,
   template: `
     <bit-tab-group>
-      <bit-tab [route]="['active']">Active</bit-tab>
-      <bit-tab [route]="['item-2']">Item 2</bit-tab>
-      <bit-tab [route]="['item-3']">Item 3</bit-tab>
-      <bit-tab [route]="['disabled']" [disabled]="true">Disabled</bit-tab>
+      <bit-tab [route]="['active']" label="Active"></bit-tab>
+      <bit-tab [route]="['item-2']" label="Item 2"></bit-tab>
+      <bit-tab [route]="['item-3']" label="Item 3"></bit-tab>
+      <bit-tab [route]="['disabled']" [disabled]="true" label="Disabled"></bit-tab>
     </bit-tab-group>
     <div class="tw-bg-transparent tw-text-semibold tw-text-center !tw-text-main tw-py-10">
       <router-outlet></router-outlet>
@@ -81,4 +80,4 @@ const TabGroupTemplate: Story<TabGroupComponent> = (args: TabGroupComponent) => 
   `,
 });
 
-export const TabGroup = TabGroupTemplate.bind({});
+export const Default = TabGroupTemplate.bind({});

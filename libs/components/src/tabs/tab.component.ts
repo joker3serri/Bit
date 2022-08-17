@@ -1,12 +1,41 @@
-import { Component, Input } from "@angular/core";
+import { Component, ContentChild, Inject, InjectionToken, Input, Optional } from "@angular/core";
+
+import { BIT_TAB, TabLabelDirective } from "./tab-label.directive";
+
+export const BIT_TAB_GROUP = new InjectionToken<any>("BIT_TAB_GROUP");
 
 @Component({
   selector: "bit-tab",
   templateUrl: "./tab.component.html",
+  providers: [{ provide: BIT_TAB, useExisting: TabComponent }],
 })
 export class TabComponent {
-  @Input() route: string; // ['/route']
+  protected _templateLabel: TabLabelDirective;
+
+  @Input() route: string;
   @Input() disabled = false;
+
+  @Input("label") textLabel = "";
+
+  @ContentChild(TabLabelDirective)
+  get templateLabel(): TabLabelDirective {
+    return this._templateLabel;
+  }
+  set templateLabel(value: TabLabelDirective) {
+    this._setTemplateLabelInput(value);
+  }
+
+  constructor(@Inject(BIT_TAB_GROUP) @Optional() public tabGroup: any) {}
+
+  protected _setTemplateLabelInput(value: TabLabelDirective | undefined) {
+    // Only update the label if the query managed to find one. This works around an issue where a
+    // user may have manually set `templateLabel` during creation mode, which would then get
+    // clobbered by `undefined` when the query resolves. Also note that we check that the closest
+    // tab matches the current one so that we don't pick up labels from nested tabs.
+    if (value && value.closestTab === this) {
+      this._templateLabel = value;
+    }
+  }
 
   get baseClassList(): string[] {
     return [
