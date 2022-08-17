@@ -14,6 +14,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
 import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
+import { KdfType } from "@bitwarden/common/enums/kdfType";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/encString";
@@ -89,52 +90,7 @@ export class LockComponent implements OnInit, OnDestroy {
     const kdfIterations = await this.stateService.getKdfIterations();
 
     if (this.pinLock) {
-      let failed = true;
-      try {
-        if (this.pinSet[0]) {
-          const key = await this.cryptoService.makeKeyFromPin(
-            this.pin,
-            this.email,
-            kdf,
-            kdfIterations,
-            await this.stateService.getDecryptedPinProtected()
-          );
-          const encKey = await this.cryptoService.getEncKey(key);
-          const protectedPin = await this.stateService.getProtectedPin();
-          const decPin = await this.cryptoService.decryptToUtf8(
-            new EncString(protectedPin),
-            encKey
-          );
-          failed = decPin !== this.pin;
-          if (!failed) {
-            await this.setKeyAndContinue(key);
-          }
-        } else {
-          const key = await this.cryptoService.makeKeyFromPin(
-            this.pin,
-            this.email,
-            kdf,
-            kdfIterations
-          );
-          failed = false;
-          await this.setKeyAndContinue(key);
-        }
-      } catch {
-        failed = true;
-      }
-
-      if (failed) {
-        this.invalidPinAttempts++;
-        if (this.invalidPinAttempts >= 5) {
-          this.messagingService.send("logout");
-          return;
-        }
-        this.platformUtilsService.showToast(
-          "error",
-          this.i18nService.t("errorOccurred"),
-          this.i18nService.t("invalidPin")
-        );
-      }
+      await this.unlockWithPin(kdf, kdfIterations);
     } else {
       const key = await this.cryptoService.makeKey(
         this.masterPassword,
@@ -197,6 +153,52 @@ export class LockComponent implements OnInit, OnDestroy {
           this.i18nService.t("invalidMasterPassword")
         );
       }
+    }
+  }
+
+  async unlockWithPin(kdf: KdfType, kdfIterations: number) {
+    let failed = true;
+    try {
+      if (this.pinSet[0]) {
+        const key = await this.cryptoService.makeKeyFromPin(
+          this.pin,
+          this.email,
+          kdf,
+          kdfIterations,
+          await this.stateService.getDecryptedPinProtected()
+        );
+        const encKey = await this.cryptoService.getEncKey(key);
+        const protectedPin = await this.stateService.getProtectedPin();
+        const decPin = await this.cryptoService.decryptToUtf8(new EncString(protectedPin), encKey);
+        failed = decPin !== this.pin;
+        if (!failed) {
+          await this.setKeyAndContinue(key);
+        }
+      } else {
+        const key = await this.cryptoService.makeKeyFromPin(
+          this.pin,
+          this.email,
+          kdf,
+          kdfIterations
+        );
+        failed = false;
+        await this.setKeyAndContinue(key);
+      }
+    } catch {
+      failed = true;
+    }
+
+    if (failed) {
+      this.invalidPinAttempts++;
+      if (this.invalidPinAttempts >= 5) {
+        this.messagingService.send("logout");
+        return;
+      }
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("invalidPin")
+      );
     }
   }
 
