@@ -301,9 +301,7 @@ export class UsernameGenerationService implements BaseUsernameGenerationService 
       if (json.address) {
         return `${json.address}@duck.com`;
       }
-      throw "Unknown DuckDuckGo error occurred.";
-    }
-    if (response.status === 401) {
+    } else if (response.status === 401) {
       throw "Invalid DuckDuckGo API token.";
     }
     throw "Unknown DuckDuckGo error occurred.";
