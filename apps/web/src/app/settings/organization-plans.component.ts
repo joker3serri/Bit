@@ -9,7 +9,7 @@ import {
 } from "@angular/core";
 import { UntypedFormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { concatMap, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -25,7 +25,6 @@ import { PlanType } from "@bitwarden/common/enums/planType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { ProductType } from "@bitwarden/common/enums/productType";
 import { EncString } from "@bitwarden/common/models/domain/encString";
-import { Policy } from "@bitwarden/common/models/domain/policy";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 import { OrganizationCreateRequest } from "@bitwarden/common/models/request/organizationCreateRequest";
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organizationKeysRequest";
@@ -79,7 +78,6 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   plans: PlanResponse[];
 
   private destroy$ = new Subject<void>();
-  private policies: Policy[];
 
   constructor(
     private apiService: ApiService,
@@ -121,14 +119,12 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       this.formGroup.controls.billingEmail.addValidators(Validators.required);
     }
 
-    this.policyService.policies$
-      .pipe(
-        takeUntil(this.destroy$),
-        concatMap(async (policies) => {
-          this.policies = policies;
-        })
-      )
-      .subscribe();
+    this.policyService
+      .policyAppliesToUser$(PolicyType.SingleOrg)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((policyAppliesToUser) => {
+        this.singleOrgPolicyBlock = policyAppliesToUser;
+      });
 
     this.loading = false;
   }
@@ -309,8 +305,6 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   }
 
   async submit() {
-    this.singleOrgPolicyBlock = await this.userHasBlockingSingleOrgPolicy();
-
     if (this.singleOrgPolicyBlock) {
       return;
     }
@@ -372,10 +366,6 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     } catch (e) {
       this.logService.error(e);
     }
-  }
-
-  private async userHasBlockingSingleOrgPolicy() {
-    return this.policyService.policyAppliesToUser(this.policies, PolicyType.SingleOrg);
   }
 
   private async updateOrganization(orgId: string) {

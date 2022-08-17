@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs";
+import { concatMap, BehaviorSubject, Observable } from "rxjs";
 
 import { Utils } from "@bitwarden/common/misc/utils";
 
@@ -163,29 +163,31 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     return policiesData.map((p) => new Policy(p));
   }
 
-  async policyAppliesToUser(
-    policies: Policy[],
+  policyAppliesToUser$(
     policyType: PolicyType,
-    policyFilter?: (policy: Policy) => boolean,
+    policyFilter: (policy: Policy) => boolean = (p) => true,
     userId?: string
   ) {
-    const organizations = await this.organizationService.getAll(userId);
-    let filteredPolicies = policies.filter((p) => p.type === policyType && p.enabled);
+    const result: Observable<boolean> = this.policies$.pipe(
+      concatMap(async (policies) => {
+        const organizations = await this.organizationService.getAll(userId);
+        const filteredPolicies = policies.filter(
+          (p) => p.type === policyType && p.enabled && policyFilter(p)
+        );
+        const policySet = new Set(filteredPolicies.map((p) => p.organizationId));
 
-    if (policyFilter != null) {
-      filteredPolicies = filteredPolicies.filter((p) => policyFilter(p));
-    }
-
-    const policySet = new Set(filteredPolicies.map((p) => p.organizationId));
-
-    return organizations.some(
-      (o) =>
-        o.enabled &&
-        o.status >= OrganizationUserStatusType.Accepted &&
-        o.usePolicies &&
-        !this.isExcemptFromPolicies(o, policyType) &&
-        policySet.has(o.id)
+        return organizations.some(
+          (o) =>
+            o.enabled &&
+            o.status >= OrganizationUserStatusType.Accepted &&
+            o.usePolicies &&
+            policySet.has(o.id) &&
+            !this.isExcemptFromPolicies(o, policyType)
+        );
+      })
     );
+
+    return result;
   }
 
   async upsert(policy: PolicyData): Promise<any> {

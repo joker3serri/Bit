@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef } from "@angular/core";
-import { concatMap, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -12,7 +12,6 @@ import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.serv
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
-import { Policy } from "@bitwarden/common/models/domain/policy";
 import { DeviceVerificationRequest } from "@bitwarden/common/models/request/deviceVerificationRequest";
 import { TwoFactorProviders } from "@bitwarden/common/services/twoFactor.service";
 
@@ -51,7 +50,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
   formPromise: Promise<any>;
 
   private destroy$ = new Subject<void>();
-  private policies: Policy[];
+  private twoFactorAuthPolicyAppliesToUser: boolean;
 
   constructor(
     protected apiService: ApiService,
@@ -99,14 +98,17 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
     this.providers.sort((a: any, b: any) => a.sort - b.sort);
     await this.load();
 
-    this.policyService.policies$
-      .pipe(
-        takeUntil(this.destroy$),
-        concatMap(async (policies) => {
-          this.policies = policies;
-        })
-      )
-      .subscribe();
+    this.policyService
+      .policyAppliesToUser$(PolicyType.TwoFactorAuthentication)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((policyAppliesToUser) => {
+        this.twoFactorAuthPolicyAppliesToUser = policyAppliesToUser;
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   async load() {
@@ -121,11 +123,6 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
     });
     this.evaluatePolicies();
     this.loading = false;
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.unsubscribe();
   }
 
   async manage(type: TwoFactorProviderType) {
@@ -216,10 +213,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
 
   private async evaluatePolicies() {
     if (this.organizationId == null && this.providers.filter((p) => p.enabled).length === 1) {
-      this.showPolicyWarning = await this.policyService.policyAppliesToUser(
-        this.policies,
-        PolicyType.TwoFactorAuthentication
-      );
+      this.showPolicyWarning = this.twoFactorAuthPolicyAppliesToUser;
     } else {
       this.showPolicyWarning = false;
     }

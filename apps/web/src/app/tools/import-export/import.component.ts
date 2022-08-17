@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import * as JSZip from "jszip";
-import { concatMap, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import Swal, { SweetAlertIcon } from "sweetalert2";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -41,17 +41,12 @@ export class ImportComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.setImportOptions();
-    this.policyService.policies$
-      .pipe(
-        takeUntil(this.destroy$),
-        concatMap(async (policies) => {
-          this.importBlockedByPolicy = await this.policyService.policyAppliesToUser(
-            policies,
-            PolicyType.PersonalOwnership
-          );
-        })
-      )
-      .subscribe();
+    this.policyService
+      .policyAppliesToUser$(PolicyType.PersonalOwnership)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((policyAppliesToUser) => {
+        this.importBlockedByPolicy = policyAppliesToUser;
+      });
   }
 
   ngOnDestroy() {

@@ -1,6 +1,6 @@
 import { DatePipe } from "@angular/common";
 import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { concatMap, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -13,7 +13,6 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { SendType } from "@bitwarden/common/enums/sendType";
 import { EncArrayBuffer } from "@bitwarden/common/models/domain/encArrayBuffer";
-import { Policy } from "@bitwarden/common/models/domain/policy";
 import { Send } from "@bitwarden/common/models/domain/send";
 import { SendFileView } from "@bitwarden/common/models/view/sendFileView";
 import { SendTextView } from "@bitwarden/common/models/view/sendTextView";
@@ -48,7 +47,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   private sendLinkBaseUrl: string;
   private destroy$ = new Subject<void>();
-  private policies: Policy[];
 
   constructor(
     protected i18nService: I18nService,
@@ -84,15 +82,21 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.policyService.policies$
-      .pipe(
-        takeUntil(this.destroy$),
-        concatMap(async (policies) => {
-          this.policies = policies;
-          await this.load();
-        })
-      )
-      .subscribe();
+    this.policyService
+      .policyAppliesToUser$(PolicyType.DisableSend)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((policyAppliesToUser) => {
+        this.disableSend = policyAppliesToUser;
+      });
+
+    this.policyService
+      .policyAppliesToUser$(PolicyType.SendOptions, (p) => p.data.disableHideEmail)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((policyAppliesToUser) => {
+        this.disableHideEmail = policyAppliesToUser;
+      });
+
+    await this.load();
   }
 
   ngOnDestroy() {
@@ -114,16 +118,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   async load() {
-    this.disableSend = await this.policyService.policyAppliesToUser(
-      this.policies,
-      PolicyType.DisableSend
-    );
-    this.disableHideEmail = await this.policyService.policyAppliesToUser(
-      this.policies,
-      PolicyType.SendOptions,
-      (p) => p.data.disableHideEmail
-    );
-
     this.canAccessPremium = await this.stateService.getCanAccessPremium();
     this.emailVerified = await this.stateService.getEmailVerified();
     if (!this.canAccessPremium || !this.emailVerified) {
