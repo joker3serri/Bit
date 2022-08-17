@@ -73,16 +73,7 @@ export class LockComponent implements OnInit, OnDestroy {
     const kdfIterations = await this.stateService.getKdfIterations();
 
     if (this.pinLock) {
-      if (this.pin == null || this.pin === "") {
-        this.platformUtilsService.showToast(
-          "error",
-          this.i18nService.t("errorOccurred"),
-          this.i18nService.t("pinRequired")
-        );
-        return;
-      }
-
-      return await this.unlockWithPin(kdf, kdfIterations);
+      return await this.handlePinRequiredUnlock();
     }
 
     if (this.masterPassword == null || this.masterPassword === "") {
@@ -132,9 +123,24 @@ export class LockComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async unlockWithPin(kdf: KdfType, kdfIterations: number) {
+  private async handlePinRequiredUnlock() {
+    if (this.pin == null || this.pin === "") {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("pinRequired")
+      );
+      return;
+    }
+
+    return await this.doUnlockWithPin();
+  }
+
+  private async doUnlockWithPin() {
     let failed = true;
     try {
+      const kdf = await this.stateService.getKdfType();
+      const kdfIterations = await this.stateService.getKdfIterations();
       if (this.pinSet[0]) {
         const key = await this.cryptoService.makeKeyFromPin(
           this.pin,
