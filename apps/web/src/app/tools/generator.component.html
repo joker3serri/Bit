@@ -296,6 +296,28 @@
         />
       </div>
     </div>
+    <div class="row" *ngIf="usernameOptions.forwardedService === 'pacedemail'">
+      <div class="form-group col-4">
+        <label for="pacedemail-apikey">{{ "apiAccessToken" | i18n }}</label>
+        <input
+          id="pacedemail-apikey"
+          class="form-control"
+          type="password"
+          [(ngModel)]="usernameOptions.forwardedPacedEmailApiToken"
+          (blur)="saveUsernameOptions()"
+        />
+      </div>
+      <div class="form-group col-4">
+        <label for="pacedemail-account">{{ "accountIdentifier" | i18n }}</label>
+        <input
+          id="pacedemail-account"
+          class="form-control"
+          type="number"
+          [(ngModel)]="usernameOptions.forwardedPacedEmailAccount"
+          (blur)="saveUsernameOptions()"
+        />
+      </div>
+    </div>
     <div class="row" *ngIf="usernameOptions.forwardedService === 'anonaddy'">
       <div class="form-group col-4">
         <label for="anonaddy-apikey">{{ "apiAccessToken" | i18n }}</label>

@@ -265,6 +265,7 @@ const devServer =
                     https://*.braintree-api.com
                     https://*.blob.core.windows.net
                     https://app.simplelogin.io/api/alias/random/new
+                    https://www.paced.email/api/bitwarden/inboxes
                     https://app.anonaddy.com/api/v1/aliases;
                   object-src
                     'self'

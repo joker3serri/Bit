@@ -387,6 +387,28 @@
                   />
                 </div>
               </ng-container>
+              <ng-container *ngIf="usernameOptions.forwardedService === 'pacedemail'">
+                <div class="box-content-row" appBoxRow>
+                  <label for="pacedemail-apikey">{{ "apiAccessToken" | i18n }}</label>
+                  <input
+                    id="pacedemail-apikey"
+                    type="password"
+                    name="PacedEmailApiKey"
+                    [(ngModel)]="usernameOptions.forwardedPacedEmailApiToken"
+                    (blur)="saveUsernameOptions()"
+                  />
+                </div>
+                <div class="box-content-row" appBoxRow>
+                  <label for="pacedemail-account">{{ "accountIdentifier" | i18n }}</label>
+                  <input
+                    id="pacedemail-account"
+                    type="number"
+                    name="PacedEmailAccount"
+                    [(ngModel)]="usernameOptions.forwardedPacedEmailAccount"
+                    (blur)="saveUsernameOptions()"
+                  />
+                </div>
+              </ng-container>
               <ng-container *ngIf="usernameOptions.forwardedService === 'anonaddy'">
                 <div class="box-content-row" appBoxRow>
                   <label for="anonaddy-accessToken">{{ "apiAccessToken" | i18n }}</label>

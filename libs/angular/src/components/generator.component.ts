@@ -72,6 +72,7 @@ export class GeneratorComponent implements OnInit {
     this.catchallOptions = [{ name: i18nService.t("random"), value: "random" }];
     this.forwardOptions = [
       { name: "SimpleLogin", value: "simplelogin" },
+      { name: "Paced Email", value: "pacedemail" },
       { name: "AnonAddy", value: "anonaddy" },
       { name: "Firefox Relay", value: "firefoxrelay" },
       // { name: "FastMail", value: "fastmail" },
