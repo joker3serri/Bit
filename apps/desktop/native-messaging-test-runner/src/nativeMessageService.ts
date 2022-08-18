@@ -10,6 +10,7 @@ import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service
 import { EncryptService } from "@bitwarden/common/services/encrypt.service";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/nodeCryptoFunction.service";
 
+import { CipherCreatePayload } from "../../src/models/cipherCreatePayload";
 import {
   DecryptedCommandData,
   UnencryptedMessage,
@@ -17,7 +18,6 @@ import {
   MessageCommon,
   EncryptedMessageResponse,
   UnencryptedMessageResponse,
-  CipherCreatePayload,
 } from "../../src/models/native-messages";
 
 import IPCService from "./ipcService";

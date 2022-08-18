@@ -17,6 +17,8 @@ import { LoginView } from "@bitwarden/common/models/view/loginView";
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 
+import { CipherCreatePayload } from "src/models/cipherCreatePayload";
+
 import {
   Message,
   UnencryptedMessage,
@@ -25,7 +27,6 @@ import {
   EncryptedMessageResponse,
   DecryptedCommandData,
   CipherResponse,
-  CipherCreatePayload,
 } from "../models/native-messages";
 
 const EncryptionAlgorithm = "sha1";
