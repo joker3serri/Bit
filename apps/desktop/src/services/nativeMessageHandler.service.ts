@@ -10,12 +10,12 @@ import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCry
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 
-import { DecryptedCommandData } from "src/models/DecryptedCommandData";
-import { EncryptedMessage } from "src/models/EncryptedMessage";
-import { UnencryptedMessageResponse } from "src/models/UnencryptedMessageResponse";
+import { DecryptedCommandData } from "src/models/decryptedCommandData";
+import { EncryptedMessage } from "src/models/encryptedMessage";
 import { EncryptedMessageResponse } from "src/models/encryptedMessageResponse";
 import { Message } from "src/models/message";
 import { UnencryptedMessage } from "src/models/unencryptedMessage";
+import { UnencryptedMessageResponse } from "src/models/unencryptedMessageResponse";
 
 const EncryptionAlgorithm = "sha1";
 
