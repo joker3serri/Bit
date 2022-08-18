@@ -1393,6 +1393,21 @@
   "lockWithMasterPassOnRestart": {
     "message": "Lukitse pääsalasanalla uudelleenkäynnistyksen yhteydessä"
   },
+  "deleteAccount": {
+    "message": "Poista tili"
+  },
+  "deleteAccountDesc": {
+    "message": "Jatka alla poistaaksesi tilisi ja kaikki holvin tiedot."
+  },
+  "deleteAccountWarning": {
+    "message": "Tilin poisto on pysyvä toimenpide, eikä sen peruminen ole mahdollista."
+  },
+  "accountDeleted": {
+    "message": "Tili poistettiin"
+  },
+  "accountDeletedDesc": {
+    "message": "Tilisi on suljettu ja kaikki siihen liittyvät tiedot on poistettu."
+  },
   "preferences": {
     "message": "Asetukset"
   },
@@ -1963,6 +1978,9 @@
   },
   "apiKey": {
     "message": "API-avain"
+  },
+  "premiumSubcriptionRequired": {
+    "message": "Premium-tilaus vaaditaan"
   },
   "organizationIsDisabled": {
     "message": "Organisaatio on poistettu käytöstä."

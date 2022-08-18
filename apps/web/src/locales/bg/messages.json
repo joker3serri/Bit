@@ -5220,6 +5220,9 @@
       }
     }
   },
+  "premiumSubcriptionRequired": {
+    "message": "Изисква се платен абонамент"
+  },
   "scim": {
     "message": "Удостоверяване чрез SCIM",
     "description": "The text, 'SCIM', is an acronymn and should not be translated."
@@ -5306,5 +5309,8 @@
   },
   "cardBrandMir": {
     "message": "Мир"
+  },
+  "numberOfUsers": {
+    "message": "Брой потребители"
   }
 }

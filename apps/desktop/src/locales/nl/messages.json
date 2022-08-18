@@ -1393,6 +1393,21 @@
   "lockWithMasterPassOnRestart": {
     "message": "Bij herstart vergrendelen met hoofdwachtwoord"
   },
+  "deleteAccount": {
+    "message": "Account verwijderen"
+  },
+  "deleteAccountDesc": {
+    "message": "Ga hieronder verder om je account en alle bijbehorende gegevens te verwijderen."
+  },
+  "deleteAccountWarning": {
+    "message": "Het verwijderen van je account is definitief. Je kunt dit niet ongedaan maken."
+  },
+  "accountDeleted": {
+    "message": "Account verwijderd"
+  },
+  "accountDeletedDesc": {
+    "message": "Je account is afgesloten en alle bijbehorende gegevens zijn verwijderd."
+  },
   "preferences": {
     "message": "Voorkeuren"
   },
@@ -1963,6 +1978,9 @@
   },
   "apiKey": {
     "message": "API Key"
+  },
+  "premiumSubcriptionRequired": {
+    "message": "Premium-abonnement vereist"
   },
   "organizationIsDisabled": {
     "message": "Organisatie is uitgeschakeld."

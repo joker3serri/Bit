@@ -1088,7 +1088,7 @@
     "message": "Konto slettet"
   },
   "accountDeletedDesc": {
-    "message": "Din Bitwarden-konto og boks-data er blevet slettet permanent."
+    "message": "Din konto er blevet lukket, og alle tilknyttede data er blevet slettet."
   },
   "myAccount": {
     "message": "Min konto"
@@ -5220,6 +5220,9 @@
       }
     }
   },
+  "premiumSubcriptionRequired": {
+    "message": "Premium-abonnement kræves"
+  },
   "scim": {
     "message": "SCIM-provisionering",
     "description": "The text, 'SCIM', is an acronymn and should not be translated."
@@ -5306,5 +5309,8 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "numberOfUsers": {
+    "message": "Antal brugere"
   }
 }

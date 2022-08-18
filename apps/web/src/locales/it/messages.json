@@ -5220,6 +5220,9 @@
       }
     }
   },
+  "premiumSubcriptionRequired": {
+    "message": "È richiesto un abbonamento Premium"
+  },
   "scim": {
     "message": "Provisioning SCIM",
     "description": "The text, 'SCIM', is an acronymn and should not be translated."
@@ -5306,5 +5309,8 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "numberOfUsers": {
+    "message": "Numero di utenti"
   }
 }

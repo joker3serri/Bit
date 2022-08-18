@@ -13,14 +13,15 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
+import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { PolicyData } from "@bitwarden/common/models/data/policyData";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
 import { Policy } from "@bitwarden/common/models/domain/policy";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/referenceEventRequest";
 
-import { RouterService } from "../services/router.service";
+import { RouterService } from "../core";
 
 @Component({
   selector: "app-register",
@@ -46,6 +47,7 @@ export class RegisterComponent extends BaseRegisterComponent {
     stateService: StateService,
     platformUtilsService: PlatformUtilsService,
     passwordGenerationService: PasswordGenerationService,
+    private policyApiService: PolicyApiServiceAbstraction,
     private policyService: PolicyService,
     environmentService: EnvironmentService,
     logService: LogService,
@@ -110,7 +112,7 @@ export class RegisterComponent extends BaseRegisterComponent {
     const invite = await this.stateService.getOrganizationInvitation();
     if (invite != null) {
       try {
-        const policies = await this.apiService.getPoliciesByToken(
+        const policies = await this.policyApiService.getPoliciesByToken(
           invite.organizationId,
           invite.token,
           invite.email,

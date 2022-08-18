@@ -1088,7 +1088,7 @@
     "message": "Обліковий запис видалено"
   },
   "accountDeletedDesc": {
-    "message": "Ваш обліковий запис і дані сховища було остаточно видалено."
+    "message": "Ваш обліковий запис було закрито і всі пов'язані дані було видалено."
   },
   "myAccount": {
     "message": "Мій обліковий запис"
@@ -5220,6 +5220,9 @@
       }
     }
   },
+  "premiumSubcriptionRequired": {
+    "message": "Необхідна передплата преміум"
+  },
   "scim": {
     "message": "Забезпечення SCIM",
     "description": "The text, 'SCIM', is an acronymn and should not be translated."
@@ -5306,5 +5309,8 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "numberOfUsers": {
+    "message": "Кількість користувачів"
   }
 }
