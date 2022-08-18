@@ -1,5 +1,5 @@
-import { MessageCommon } from "./MessageCommon";
-import { UnencryptedCommand } from "./UnencryptedCommand";
+import { MessageCommon } from "./messageCommon";
+import { UnencryptedCommand } from "./unencryptedCommand";
 
 export type UnencryptedMessage = MessageCommon & {
   command: UnencryptedCommand;
