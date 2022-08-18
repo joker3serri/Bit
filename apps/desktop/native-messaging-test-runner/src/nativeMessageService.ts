@@ -9,12 +9,12 @@ import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service
 import { EncryptService } from "@bitwarden/common/services/encrypt.service";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/nodeCryptoFunction.service";
 
-import { DecryptedCommandData } from "../../src/models/DecryptedCommandData";
-import { EncryptedMessage } from "../../src/models/EncryptedMessage";
-import { UnencryptedMessageResponse } from "../../src/models/UnencryptedMessageResponse";
-import { EncryptedMessageResponse } from "../../src/models/encryptedMessageResponse";
-import { MessageCommon } from "../../src/models/messageCommon";
-import { UnencryptedMessage } from "../../src/models/unencryptedMessage";
+import { DecryptedCommandData } from "../../src/models/nativeMessaging/DecryptedCommandData";
+import { EncryptedMessage } from "../../src/models/nativeMessaging/EncryptedMessage";
+import { UnencryptedMessageResponse } from "../../src/models/nativeMessaging/UnencryptedMessageResponse";
+import { EncryptedMessageResponse } from "../../src/models/nativeMessaging/encryptedMessageResponse";
+import { MessageCommon } from "../../src/models/nativeMessaging/messageCommon";
+import { UnencryptedMessage } from "../../src/models/nativeMessaging/unencryptedMessage";
 
 import IPCService from "./ipcService";
 import * as config from "./variables";

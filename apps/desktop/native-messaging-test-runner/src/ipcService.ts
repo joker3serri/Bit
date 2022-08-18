@@ -2,8 +2,8 @@ import { homedir } from "os";
 
 import * as NodeIPC from "node-ipc";
 
-import { UnencryptedMessageResponse } from "../../src/models/UnencryptedMessageResponse";
-import { MessageCommon } from "../../src/models/messageCommon";
+import { UnencryptedMessageResponse } from "../../src/models/nativeMessaging/UnencryptedMessageResponse";
+import { MessageCommon } from "../../src/models/nativeMessaging/messageCommon";
 
 import Deferred from "./deferred";
 import { race } from "./race";
