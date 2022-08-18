@@ -41,9 +41,20 @@ export function devFlagEnabled<DevFlags extends SharedDevFlags>(flag: keyof DevF
   return devFlags[flag] == null || !!devFlags[flag];
 }
 
-export function getDevFlagValue<DevFlags extends SharedFlags, TKey extends keyof DevFlags>(
-  flag: TKey
-): DevFlags[TKey] {
+/**
+ * Gets the value of a dev flag from environment.
+ * Will always return false unless in development.
+ * @param flag The name of the dev flag to check
+ * @returns The value of the flag
+ * @throws Error if the flag is not enabled
+ */
+export function devFlagValue<DevFlags extends SharedDevFlags>(
+  flag: keyof DevFlags
+): DevFlags[keyof DevFlags] {
+  if (!devFlagEnabled(flag)) {
+    throw new Error(`This method should not be called, it is protected by a disabled dev flag.`);
+  }
+
   const devFlags = getFlags<DevFlags>(process.env.DEV_FLAGS);
-  return devFlags[flag] as DevFlags[TKey];
+  return devFlags[flag];
 }
