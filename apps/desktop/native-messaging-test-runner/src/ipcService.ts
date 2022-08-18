@@ -1,10 +1,9 @@
-/* eslint-disable no-console */
-
 import { homedir } from "os";
 
 import * as NodeIPC from "node-ipc";
 
-import { MessageCommon, UnencryptedMessageResponse } from "../../src/models/native-messages";
+import { UnencryptedMessageResponse } from "../../src/models/UnencryptedMessageResponse";
+import { MessageCommon } from "../../src/models/messageCommon";
 
 import Deferred from "./deferred";
 import { race } from "./race";

@@ -4,22 +4,20 @@ import { ipcRenderer } from "electron";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
-import { lockedUnlockedStatusString } from "@bitwarden/common/enums/authenticationStatus";
+import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 
-import {
-  Message,
-  UnencryptedMessage,
-  UnencryptedMessageResponse,
-  EncryptedMessage,
-  EncryptedMessageResponse,
-  DecryptedCommandData,
-  CiphersResponse,
-} from "../models/native-messages";
+import { CiphersResponse } from "src/models/ciphersResponse";
+import { DecryptedCommandData } from "src/models/decryptedCommandData";
+import { EncryptedMessage } from "src/models/encryptedMessage";
+import { EncryptedMessageResponse } from "src/models/encryptedMessageResponse";
+import { Message } from "src/models/message";
+import { UnencryptedMessage } from "src/models/unencryptedMessage";
+import { UnencryptedMessageResponse } from "src/models/unencryptedMessageResponse";
 
 const EncryptionAlgorithm = "sha1";
 
@@ -125,7 +123,7 @@ export class NativeMessageHandler {
             return {
               id: userId,
               email,
-              status: lockedUnlockedStatusString(authStatus),
+              status: authStatus === AuthenticationStatus.Unlocked ? "unlocked" : "locked",
               active: userId === activeUserId,
             };
           })
@@ -140,7 +138,7 @@ export class NativeMessageHandler {
         const activeUserId = await this.stateService.getUserId();
         const authStatus = await this.authService.getAuthStatus(activeUserId);
 
-        if (lockedUnlockedStatusString(authStatus) !== "unlocked") {
+        if (authStatus !== AuthenticationStatus.Unlocked) {
           return { error: "locked" };
         }
 
