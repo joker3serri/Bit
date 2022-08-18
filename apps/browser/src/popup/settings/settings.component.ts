@@ -1,6 +1,7 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 import { Router } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
 import Swal from "sweetalert2";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -37,7 +38,7 @@ const RateUrls = {
   selector: "app-settings",
   templateUrl: "settings.component.html",
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
   @ViewChild("vaultTimeoutActionSelect", { read: ElementRef, static: true })
   vaultTimeoutActionSelectRef: ElementRef;
   vaultTimeouts: any[];
@@ -51,6 +52,8 @@ export class SettingsComponent implements OnInit {
   showChangeMasterPass = true;
 
   vaultTimeout: UntypedFormControl = new UntypedFormControl(null);
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
@@ -94,14 +97,23 @@ export class SettingsComponent implements OnInit {
       { name: this.i18nService.t("logOut"), value: "logOut" },
     ];
 
-    let timeout = await this.vaultTimeoutService.getVaultTimeout();
-    if (timeout != null) {
-      if (timeout === -2 && !showOnLocked) {
-        timeout = -1;
-      }
-      this.vaultTimeout.setValue(timeout);
-    }
-    this.previousVaultTimeout = this.vaultTimeout.value;
+    this.vaultTimeoutService
+      .getVaultTimeout$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((timeout) => {
+        if (timeout != null) {
+          if (timeout === -2 && !showOnLocked) {
+            timeout = -1;
+          }
+
+          this.vaultTimeout.setValue(timeout);
+
+          if (this.previousVaultTimeout == null) {
+            this.previousVaultTimeout = this.vaultTimeout.value;
+          }
+        }
+      });
+
     this.vaultTimeout.valueChanges.subscribe(async (value) => {
       await this.saveVaultTimeout(value);
     });
@@ -116,6 +128,11 @@ export class SettingsComponent implements OnInit {
     this.biometric = await this.vaultTimeoutService.isBiometricLockSet();
     this.enableAutoBiometricsPrompt = !(await this.stateService.getDisableAutoBiometricsPrompt());
     this.showChangeMasterPass = !(await this.keyConnectorService.getUsesKeyConnector());
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   async saveVaultTimeout(newValue: number) {

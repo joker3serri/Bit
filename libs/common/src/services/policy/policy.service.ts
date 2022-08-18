@@ -1,4 +1,4 @@
-import { concatMap, BehaviorSubject, Observable } from "rxjs";
+import { concatMap, BehaviorSubject } from "rxjs";
 
 import { Utils } from "@bitwarden/common/misc/utils";
 
@@ -168,7 +168,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     policyFilter: (policy: Policy) => boolean = (p) => true,
     userId?: string
   ) {
-    const result: Observable<boolean> = this.policies$.pipe(
+    return this.policies$.pipe(
       concatMap(async (policies) => {
         const organizations = await this.organizationService.getAll(userId);
         const filteredPolicies = policies.filter(
@@ -186,8 +186,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
         );
       })
     );
-
-    return result;
   }
 
   async upsert(policy: PolicyData): Promise<any> {

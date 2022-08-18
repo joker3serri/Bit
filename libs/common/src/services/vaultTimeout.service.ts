@@ -146,7 +146,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
   }
 
   getVaultTimeout$(userId?: string): Observable<number> {
-    const result: Observable<number> = this.policyService
+    return this.policyService
       .policyAppliesToUser$(PolicyType.MaximumVaultTimeout, undefined, userId)
       .pipe(
         combineLatestWith(this.policyService.policies$),
@@ -174,7 +174,6 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
           return vaultTimeout;
         })
       );
-    return result;
   }
 
   async clear(userId?: string): Promise<void> {
