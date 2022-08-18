@@ -7,6 +7,7 @@ import {
   SharedFlags,
   SharedDevFlags,
 } from "@bitwarden/common/misc/flags";
+
 import { GroupPolicyEnvironment } from "./types/group-policy-environment";
 
 export type Flags = {} & SharedFlags;
