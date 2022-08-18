@@ -10,14 +10,12 @@ import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service
 import { EncryptService } from "@bitwarden/common/services/encrypt.service";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/nodeCryptoFunction.service";
 
-import {
-  DecryptedCommandData,
-  UnencryptedMessage,
-  EncryptedMessage,
-  MessageCommon,
-  EncryptedMessageResponse,
-  UnencryptedMessageResponse,
-} from "../../src/models/native-messages";
+import { DecryptedCommandData } from "../../src/models/DecryptedCommandData";
+import { EncryptedMessage } from "../../src/models/EncryptedMessage";
+import { UnencryptedMessageResponse } from "../../src/models/UnencryptedMessageResponse";
+import { EncryptedMessageResponse } from "../../src/models/encryptedMessageResponse";
+import { MessageCommon } from "../../src/models/messageCommon";
+import { UnencryptedMessage } from "../../src/models/unencryptedMessage";
 
 import IPCService from "./ipcService";
 import * as config from "./variables";
