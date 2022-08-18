@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import "module-alias/register";
 
 import { v4 as uuidv4 } from "uuid";
@@ -10,15 +9,13 @@ import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service
 import { EncryptService } from "@bitwarden/common/services/encrypt.service";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/nodeCryptoFunction.service";
 
-import { CipherCreatePayload } from "../../src/models/cipherCreatePayload";
-import {
-  DecryptedCommandData,
-  UnencryptedMessage,
-  EncryptedMessage,
-  MessageCommon,
-  EncryptedMessageResponse,
-  UnencryptedMessageResponse,
-} from "../../src/models/native-messages";
+import { CipherCreatePayload } from "../../src/models/nativeMessaging/cipherCreatePayload";
+import { DecryptedCommandData } from "../../src/models/nativeMessaging/decryptedCommandData";
+import { EncryptedMessage } from "../../src/models/nativeMessaging/encryptedMessage";
+import { EncryptedMessageResponse } from "../../src/models/nativeMessaging/encryptedMessageResponse";
+import { MessageCommon } from "../../src/models/nativeMessaging/messageCommon";
+import { UnencryptedMessage } from "../../src/models/nativeMessaging/unencryptedMessage";
+import { UnencryptedMessageResponse } from "../../src/models/nativeMessaging/unencryptedMessageResponse";
 
 import IPCService from "./ipcService";
 import * as config from "./variables";

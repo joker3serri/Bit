@@ -5,7 +5,7 @@ import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
-import { lockedUnlockedStatusString } from "@bitwarden/common/enums/authenticationStatus";
+import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { Utils } from "@bitwarden/common/misc/utils";
@@ -17,17 +17,14 @@ import { LoginView } from "@bitwarden/common/models/view/loginView";
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 
-import { CipherCreatePayload } from "src/models/cipherCreatePayload";
-
-import {
-  Message,
-  UnencryptedMessage,
-  UnencryptedMessageResponse,
-  EncryptedMessage,
-  EncryptedMessageResponse,
-  DecryptedCommandData,
-  CipherResponse,
-} from "../models/native-messages";
+import { CipherCreatePayload } from "src/models/nativeMessaging/cipherCreatePayload";
+import { CiphersResponse } from "src/models/nativeMessaging/ciphersResponse";
+import { DecryptedCommandData } from "src/models/nativeMessaging/decryptedCommandData";
+import { EncryptedMessage } from "src/models/nativeMessaging/encryptedMessage";
+import { EncryptedMessageResponse } from "src/models/nativeMessaging/encryptedMessageResponse";
+import { Message } from "src/models/nativeMessaging/message";
+import { UnencryptedMessage } from "src/models/nativeMessaging/unencryptedMessage";
+import { UnencryptedMessageResponse } from "src/models/nativeMessaging/unencryptedMessageResponse";
 
 const EncryptionAlgorithm = "sha1";
 
@@ -134,7 +131,7 @@ export class NativeMessageHandler {
             return {
               id: userId,
               email,
-              status: lockedUnlockedStatusString(authStatus),
+              status: authStatus === AuthenticationStatus.Unlocked ? "unlocked" : "locked",
               active: userId === activeUserId,
             };
           })
@@ -145,11 +142,11 @@ export class NativeMessageHandler {
           return;
         }
 
-        const ciphersResponse: CipherResponse[] = [];
+        const ciphersResponse: CiphersResponse[] = [];
         const activeUserId = await this.stateService.getUserId();
         const authStatus = await this.authService.getAuthStatus(activeUserId);
 
-        if (lockedUnlockedStatusString(authStatus) !== "unlocked") {
+        if (authStatus !== AuthenticationStatus.Unlocked) {
           return { error: "locked" };
         }
 
@@ -163,7 +160,7 @@ export class NativeMessageHandler {
             userName: c.login.username,
             password: c.login.password,
             name: c.name,
-          } as CipherResponse);
+          } as CiphersResponse);
         });
 
         return ciphersResponse;
@@ -172,7 +169,7 @@ export class NativeMessageHandler {
         const activeUserId = await this.stateService.getUserId();
         const authStatus = await this.authService.getAuthStatus(activeUserId);
 
-        if (lockedUnlockedStatusString(authStatus) !== "unlocked") {
+        if (authStatus !== AuthenticationStatus.Unlocked) {
           return { error: "locked" };
         }
 
