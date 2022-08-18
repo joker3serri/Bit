@@ -11,13 +11,13 @@ import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCry
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 
-import { CiphersResponse } from "src/models/ciphersResponse";
-import { DecryptedCommandData } from "src/models/decryptedCommandData";
-import { EncryptedMessage } from "src/models/encryptedMessage";
-import { EncryptedMessageResponse } from "src/models/encryptedMessageResponse";
-import { Message } from "src/models/message";
-import { UnencryptedMessage } from "src/models/unencryptedMessage";
-import { UnencryptedMessageResponse } from "src/models/unencryptedMessageResponse";
+import { CiphersResponse } from "src/models/nativeMessaging/ciphersResponse";
+import { DecryptedCommandData } from "src/models/nativeMessaging/decryptedCommandData";
+import { EncryptedMessage } from "src/models/nativeMessaging/encryptedMessage";
+import { EncryptedMessageResponse } from "src/models/nativeMessaging/encryptedMessageResponse";
+import { Message } from "src/models/nativeMessaging/message";
+import { UnencryptedMessage } from "src/models/nativeMessaging/unencryptedMessage";
+import { UnencryptedMessageResponse } from "src/models/nativeMessaging/unencryptedMessageResponse";
 
 const EncryptionAlgorithm = "sha1";
 
