@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import { homedir } from "os";
 
 import * as NodeIPC from "node-ipc";
