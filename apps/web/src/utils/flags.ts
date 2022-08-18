@@ -4,22 +4,20 @@
 import {
   flagEnabled as baseFlagEnabled,
   devFlagEnabled as baseDevFlagEnabled,
+  SharedFlags,
+  SharedDevFlags,
 } from "@bitwarden/common/misc/flags";
 
 export type Flags = {
   showTrial?: boolean;
-};
+} & SharedFlags;
 
-export type FlagName = keyof Flags;
-
-export function flagEnabled(flag: FlagName): boolean {
+export function flagEnabled(flag: keyof Flags): boolean {
   return baseFlagEnabled<Flags>(flag);
 }
 
-export type DevFlags = {};
+export type DevFlags = {} & SharedDevFlags;
 
-export type DevFlagName = keyof DevFlags;
-
-export function devFlagEnabled(flag: DevFlagName) {
+export function devFlagEnabled(flag: keyof DevFlags) {
   return baseDevFlagEnabled<DevFlags>(flag);
 }
