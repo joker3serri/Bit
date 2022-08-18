@@ -14,12 +14,10 @@ export class ExportCommand {
   constructor(private exportService: ExportService, private policyService: PolicyService) {}
 
   async run(options: program.OptionValues): Promise<Response> {
-    const policies = await firstValueFrom(this.policyService.policies$);
     if (
       options.organizationid == null &&
-      (await this.policyService.policyAppliesToUser(
-        policies,
-        PolicyType.DisablePersonalVaultExport
+      (await firstValueFrom(
+        this.policyService.policyAppliesToUser$(PolicyType.DisablePersonalVaultExport)
       ))
     ) {
       return Response.badRequest(

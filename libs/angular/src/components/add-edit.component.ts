@@ -23,7 +23,6 @@ import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
-import { Policy } from "@bitwarden/common/models/domain/policy";
 import { CardView } from "@bitwarden/common/models/view/cardView";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 import { CollectionView } from "@bitwarden/common/models/view/collectionView";
@@ -79,7 +78,6 @@ export class AddEditComponent implements OnInit, OnDestroy {
   protected writeableCollections: CollectionView[];
   private previousCipherId: string;
   private destroy$ = new Subject<void>();
-  private policies: Policy[];
 
   constructor(
     protected cipherService: CipherService,
@@ -155,12 +153,12 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.policyService.policies$
+    this.policyService
+      .policyAppliesToUser$(PolicyType.PersonalOwnership)
       .pipe(
         takeUntil(this.destroy$),
-        concatMap(async (policies) => {
-          this.policies = policies;
-          await this.init();
+        concatMap(async (policyAppliesToUser) => {
+          await this.init(policyAppliesToUser);
         })
       )
       .subscribe();
@@ -171,11 +169,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  async init() {
+  async init(policyAppliesToUser: boolean) {
     if (this.ownershipOptions.length) {
       this.ownershipOptions = [];
     }
-    if (await this.policyService.policyAppliesToUser(this.policies, PolicyType.PersonalOwnership)) {
+    if (policyAppliesToUser) {
       this.allowPersonal = false;
     } else {
       const myEmail = await this.stateService.getEmail();

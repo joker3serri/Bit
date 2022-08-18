@@ -1,6 +1,6 @@
 import { Directive, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
 import { UntypedFormBuilder } from "@angular/forms";
-import { concatMap, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventService } from "@bitwarden/common/abstractions/event.service";
@@ -13,7 +13,6 @@ import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.serv
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
-import { Policy } from "@bitwarden/common/models/domain/policy";
 
 @Directive()
 export class ExportComponent implements OnInit, OnDestroy {
@@ -50,14 +49,12 @@ export class ExportComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.policyService.policies$
-      .pipe(
-        takeUntil(this.destroy$),
-        concatMap(async (policies) => {
-          await this.checkExportDisabled(policies);
-        })
-      )
-      .subscribe();
+    this.policyService
+      .policyAppliesToUser$(PolicyType.DisablePersonalVaultExport)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (policyAppliesToUser) => {
+        this.disabledByPolicy = policyAppliesToUser;
+      });
   }
 
   ngOnDestroy() {
@@ -65,11 +62,7 @@ export class ExportComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  async checkExportDisabled(policies: Policy[]) {
-    this.disabledByPolicy = await this.policyService.policyAppliesToUser(
-      policies,
-      PolicyType.DisablePersonalVaultExport
-    );
+  async checkExportDisabled() {
     if (this.disabledByPolicy) {
       this.exportForm.disable();
     }

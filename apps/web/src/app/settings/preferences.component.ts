@@ -1,5 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
+import { Subject, takeUntil } from "rxjs";
 
 import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -14,7 +15,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
   selector: "app-preferences",
   templateUrl: "preferences.component.html",
 })
-export class PreferencesComponent implements OnInit {
+export class PreferencesComponent implements OnInit, OnDestroy {
   vaultTimeoutAction = "lock";
   enableFavicons: boolean;
   enableGravatars: boolean;
@@ -29,6 +30,7 @@ export class PreferencesComponent implements OnInit {
 
   private startingLocale: string;
   private startingTheme: ThemeType;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private stateService: StateService,
@@ -70,7 +72,11 @@ export class PreferencesComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.vaultTimeout.setValue(await this.vaultTimeoutService.getVaultTimeout());
+    this.vaultTimeoutService
+      .getVaultTimeout$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((vaultTimeout) => this.vaultTimeout.setValue(vaultTimeout));
+
     this.vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
     this.enableFavicons = !(await this.stateService.getDisableFavicon());
     this.enableGravatars = await this.stateService.getEnableGravitars();
@@ -81,6 +87,11 @@ export class PreferencesComponent implements OnInit {
 
     this.theme = await this.stateService.getTheme();
     this.startingTheme = this.theme;
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   async submit() {

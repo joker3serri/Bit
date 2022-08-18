@@ -287,33 +287,24 @@ describe("PolicyService", () => {
 
   describe("policyAppliesToUser", () => {
     it("non org user", async () => {
-      const result = await policyService.policyAppliesToUser(
-        await firstValueFrom(policyService.policies$),
-        PolicyType.MasterPassword,
-        null,
-        "non-org-user"
+      const result = await firstValueFrom(
+        policyService.policyAppliesToUser$(PolicyType.MasterPassword, undefined, "non-org-user")
       );
 
       expect(result).toEqual(false);
     });
 
     it("policy type applies", async () => {
-      const result = await policyService.policyAppliesToUser(
-        await firstValueFrom(policyService.policies$),
-        PolicyType.MasterPassword,
-        null,
-        "user"
+      const result = await firstValueFrom(
+        policyService.policyAppliesToUser$(PolicyType.MasterPassword, undefined, "user")
       );
 
       expect(result).toEqual(true);
     });
 
     it("policy type does not apply", async () => {
-      const result = await policyService.policyAppliesToUser(
-        await firstValueFrom(policyService.policies$),
-        PolicyType.DisablePersonalVaultExport,
-        null,
-        "user"
+      const result = await firstValueFrom(
+        policyService.policyAppliesToUser$(PolicyType.DisablePersonalVaultExport, undefined, "user")
       );
 
       expect(result).toEqual(false);
