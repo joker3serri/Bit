@@ -3,41 +3,27 @@
 import {
   flagEnabled as baseFlagEnabled,
   devFlagEnabled as baseDevFlagEnabled,
+  devFlagValue as baseDevFlagValue,
+  SharedFlags,
+  SharedDevFlags,
 } from "@bitwarden/common/misc/flags";
-
 import { GroupPolicyEnvironment } from "./types/group-policy-environment";
 
-export type Flags = {};
-
-export type FlagName = keyof Flags;
-
-export function flagEnabled(flag: FlagName) {
-  return baseFlagEnabled<Flags>(flag);
-}
+export type Flags = {} & SharedFlags;
 
 export type DevFlags = {
   storeSessionDecrypted?: boolean;
   managedEnvironment?: GroupPolicyEnvironment;
-};
+} & SharedDevFlags;
 
-export type DevFlagName = keyof DevFlags;
+export function flagEnabled(flag: keyof Flags): boolean {
+  return baseFlagEnabled<Flags>(flag);
+}
 
-export function devFlagEnabled(flag: DevFlagName) {
+export function devFlagEnabled(flag: keyof DevFlags) {
   return baseDevFlagEnabled<DevFlags>(flag);
 }
 
-/**
- * Gets the value of a dev flag from environment.
- * Will always return false unless in development.
- * @param flag The name of the dev flag to check
- * @returns The value of the flag
- * @throws Error if the flag is not enabled
- */
-export function devFlagValue<K extends DevFlagName>(flag: K): DevFlags[K] {
-  if (!devFlagEnabled(flag)) {
-    throw new Error(`This method should not be called, it is protected by a disabled dev flag.`);
-  }
-
-  const devFlags = getFlags<DevFlags>(process.env.DEV_FLAGS);
-  return devFlags[flag];
+export function devFlagValue(flag: keyof DevFlags) {
+  return baseDevFlagValue(flag);
 }
