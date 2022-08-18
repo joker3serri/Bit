@@ -35,6 +35,8 @@ const { name } = argv;
     LogUtils.logError("Failure response returned ");
   } else if (response.payload.status === "success") {
     LogUtils.logSuccess("Success response returned ");
+  } else if (response.payload.error === "locked") {
+    LogUtils.logError("Error: vault is locked");
   } else {
     LogUtils.logWarning("Other response: ", response);
   }
