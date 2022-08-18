@@ -9,7 +9,7 @@ import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service
 import { EncryptService } from "@bitwarden/common/services/encrypt.service";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/nodeCryptoFunction.service";
 
-import { DecryptedCommandData } from "../../src/models/nativeMessaging/DecryptedCommandData";
+import { DecryptedCommandData } from "../../src/models/nativeMessaging/decryptedCommandData";
 import { EncryptedMessage } from "../../src/models/nativeMessaging/encryptedMessage";
 import { EncryptedMessageResponse } from "../../src/models/nativeMessaging/encryptedMessageResponse";
 import { MessageCommon } from "../../src/models/nativeMessaging/messageCommon";
