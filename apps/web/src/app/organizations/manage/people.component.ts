@@ -79,7 +79,7 @@ export class PeopleComponent
   callingUserType: OrganizationUserType = null;
 
   private destroy$ = new Subject<void>();
-  private policies: Policy[];
+  private resetPasswordPolicy: Policy;
 
   constructor(
     apiService: ApiService,
@@ -148,7 +148,9 @@ export class PeopleComponent
         .pipe(
           takeUntil(this.destroy$),
           concatMap(async (policies) => {
-            this.policies = policies;
+            this.resetPasswordPolicy = policies
+              .filter((policy) => policy.type === PolicyType.ResetPassword)
+              .find((p) => p.organizationId === this.organizationId);
             await this.load();
           })
         )
@@ -172,22 +174,19 @@ export class PeopleComponent
   }
 
   async load() {
-    let resetPasswordPolicy = this.policies
-      .filter((policy) => policy.type === PolicyType.ResetPassword)
-      .find((p) => p.organizationId === this.organizationId);
     const org = await this.organizationService.get(this.organizationId);
     if (org?.isProviderUser) {
       const orgPolicies = await this.policyApiService.getPolicies(this.organizationId);
       const policy = orgPolicies.data.find((p) => p.organizationId === this.organizationId);
 
       if (policy == null) {
-        resetPasswordPolicy = null;
+        this.resetPasswordPolicy = null;
       }
 
-      resetPasswordPolicy = new Policy(new PolicyData(policy));
+      this.resetPasswordPolicy = new Policy(new PolicyData(policy));
     }
 
-    this.orgResetPasswordPolicyEnabled = resetPasswordPolicy?.enabled;
+    this.orgResetPasswordPolicyEnabled = this.resetPasswordPolicy?.enabled;
     super.load();
   }
 
