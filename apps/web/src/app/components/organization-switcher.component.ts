@@ -24,10 +24,11 @@ export class OrganizationSwitcherComponent implements OnInit {
   }
 
   async load() {
-    const orgs = await this.organizationService.getAll();
-    this.organizations = orgs
-      .filter((org) => NavigationPermissionsService.canAccessAdmin(org))
-      .sort(Utils.getSortFunction(this.i18nService, "name"));
+    this.organizationService.organizations$.subscribe((orgs) => {
+      this.organizations = orgs
+        .filter((org) => NavigationPermissionsService.canAccessAdmin(org))
+        .sort(Utils.getSortFunction(this.i18nService, "name"));
+    });
 
     this.loaded = true;
   }

@@ -38,7 +38,7 @@ export class VaultFilterService {
   }
 
   buildOrganizations(): Observable<Organization[]> {
-    return this.organizationService.organizations$;
+    return this.organizationService.organizations$.pipe();
   }
 
   buildNestedFolders(organizationId?: string): Observable<DynamicTreeNode<FolderView>> {

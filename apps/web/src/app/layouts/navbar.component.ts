@@ -52,14 +52,15 @@ export class NavbarComponent implements OnInit {
     }
     this.providers = await this.providerService.getAll();
 
-    this.organizations = await this.buildOrganizations();
+    this.buildOrganizations();
 
+    // TODO: We should be able to get rid of this when we can add the org service to org api service
     this.broadcasterService.subscribe(this.constructor.name, async (message: any) => {
       this.ngZone.run(async () => {
         switch (message.command) {
           case "organizationCreated":
             if (this.organizations.length < 1) {
-              this.organizations = await this.buildOrganizations();
+              await this.buildOrganizations();
             }
             break;
         }
@@ -68,10 +69,11 @@ export class NavbarComponent implements OnInit {
   }
 
   async buildOrganizations() {
-    const allOrgs = await this.organizationService.getAll();
-    return allOrgs
-      .filter((org) => OrgNavigationPermissionsService.canAccessAdmin(org))
-      .sort(Utils.getSortFunction(this.i18nService, "name"));
+    this.organizationService.organizations$.subscribe((orgs) => {
+      this.organizations = orgs
+        .filter((org) => OrgNavigationPermissionsService.canAccessAdmin(org))
+        .sort(Utils.getSortFunction(this.i18nService, "name"));
+    });
   }
 
   lock() {

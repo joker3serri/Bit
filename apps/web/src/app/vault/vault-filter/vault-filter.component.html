@@ -30,7 +30,7 @@
         [hide]="hideOrganizations"
         [activeFilter]="activeFilter"
         [collapsedFilterNodes]="collapsedFilterNodes"
-        [organizations]="organizations"
+        [organizations]="organizations$ | async"
         [activePersonalOwnershipPolicy]="activePersonalOwnershipPolicy"
         [activeSingleOrganizationPolicy]="activeSingleOrganizationPolicy"
         (onNodeCollapseStateChange)="toggleFilterNodeCollapseState($event)"

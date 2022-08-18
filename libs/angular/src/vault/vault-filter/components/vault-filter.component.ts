@@ -25,7 +25,7 @@ export class VaultFilterComponent implements OnInit {
 
   isLoaded = false;
   collapsedFilterNodes: Set<string>;
-  organizations: Organization[];
+  organizations$: Observable<Organization[]>;
   activePersonalOwnershipPolicy: boolean;
   activeSingleOrganizationPolicy: boolean;
   collections: DynamicTreeNode<CollectionView>;
@@ -40,9 +40,9 @@ export class VaultFilterComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.collapsedFilterNodes = await this.vaultFilterService.buildCollapsedFilterNodes();
 
-    this.vaultFilterService.buildOrganizations().subscribe(async (orgs) => {
-      this.organizations = orgs;
+    this.organizations$ = this.vaultFilterService.buildOrganizations();
 
+    this.organizations$.subscribe(async (orgs) => {
       if (orgs != null && orgs.length > 0) {
         this.activePersonalOwnershipPolicy =
           await this.vaultFilterService.checkForPersonalOwnershipPolicy();

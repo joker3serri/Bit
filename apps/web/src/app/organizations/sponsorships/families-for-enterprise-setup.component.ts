@@ -82,13 +82,15 @@ export class FamiliesForEnterpriseSetupComponent implements OnInit {
       this.badToken = !(await this.apiService.postPreValidateSponsorshipToken(this.token));
       this.loading = false;
 
-      this.existingFamilyOrganizations = (await this.organizationService.getAll()).filter(
-        (o) => o.planProductType === ProductType.Families
-      );
+      this.organizationService.organizations$.subscribe((orgs) => {
+        this.existingFamilyOrganizations = orgs.filter(
+          (o) => o.planProductType === ProductType.Families
+        );
 
-      if (this.existingFamilyOrganizations.length === 0) {
-        this.selectedFamilyOrganizationId = "createNew";
-      }
+        if (this.existingFamilyOrganizations.length === 0) {
+          this.selectedFamilyOrganizationId = "createNew";
+        }
+      });
     });
   }
 

@@ -41,16 +41,20 @@ export class ShareComponent implements OnInit {
   async load() {
     const allCollections = await this.collectionService.getAllDecrypted();
     this.writeableCollections = allCollections.map((c) => c).filter((c) => !c.readOnly);
-    const orgs = await this.organizationService.getAll();
-    this.organizations = orgs
-      .sort(Utils.getSortFunction(this.i18nService, "name"))
-      .filter((o) => o.enabled && o.status === OrganizationUserStatusType.Confirmed);
+
+    this.organizationService.organizations$.subscribe((orgs) => {
+      this.organizations = orgs
+        .sort(Utils.getSortFunction(this.i18nService, "name"))
+        .filter((o) => o.enabled && o.status === OrganizationUserStatusType.Confirmed);
+
+      if (this.organizationId == null && this.organizations.length > 0) {
+        this.organizationId = this.organizations[0].id;
+      }
+    });
 
     const cipherDomain = await this.cipherService.get(this.cipherId);
     this.cipher = await cipherDomain.decrypt();
-    if (this.organizationId == null && this.organizations.length > 0) {
-      this.organizationId = this.organizations[0].id;
-    }
+
     this.filterCollections();
   }
 
