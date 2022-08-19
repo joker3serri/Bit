@@ -1,9 +1,7 @@
 // required to avoid linting errors when there are no feature flags
 /* eslint-disable @typescript-eslint/ban-types */
 
-export type SharedFlags = {
-  useWebWorkers: boolean;
-};
+export type SharedFlags = {};
 
 export type SharedDevFlags = {};
 
