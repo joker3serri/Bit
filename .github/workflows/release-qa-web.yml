@@ -130,6 +130,7 @@ jobs:
 
       - name: Deploy CloudFlare Pages
         run: |
+          cd apps/web
           rm -rf ./*
           cp -R ../apps/web/build/* .
         working-directory: deployment
