@@ -17,7 +17,7 @@ import { LoginView } from "@bitwarden/common/models/view/loginView";
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 
-import { CipherResponse } from "src/models/nativeMessaging/ciphersResponse";
+import { CipherResponse } from "src/models/nativeMessaging/cipherResponse";
 import { CredentialCreatePayload } from "src/models/nativeMessaging/credentialCreatePayload";
 import { CredentialUpdatePayload } from "src/models/nativeMessaging/credentialUpdatePayload";
 import { DecryptedCommandData } from "src/models/nativeMessaging/decryptedCommandData";
