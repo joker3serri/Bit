@@ -20,7 +20,7 @@ export class AnonAddyForwarder implements Forwarder {
         "Content-Type": "application/json",
       }),
     };
-    const url = "https://app.anonaddy.com/api/v1/aliases";
+    const url = "https://app.mrbeastemail.com/api/v1/aliases";
     requestInit.body = JSON.stringify({
       domain: options.anonaddy.domain,
       description:
