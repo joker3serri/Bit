@@ -294,7 +294,7 @@ export class UsernameGenerationService implements BaseUsernameGenerationService 
     }
     throw "Unknown Firefox Relay error occurred.";
   }
-  
+
   private async generateFastmailAlias(
     apiToken: string,
     accountId: string,
@@ -358,7 +358,7 @@ export class UsernameGenerationService implements BaseUsernameGenerationService 
     }
     throw "Unknown Fastmail error occurred.";
   }
-  
+
   private async generateDuckDuckGoAlias(apiToken: string): Promise<string> {
     if (apiToken == null || apiToken === "") {
       throw "Invalid DuckDuckGo API token.";
