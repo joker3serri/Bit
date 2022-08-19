@@ -1,9 +1,8 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, map, Observable } from "rxjs";
 
 import { SettingsService as SettingsServiceAbstraction } from "../abstractions/settings.service";
 import { StateService } from "../abstractions/state.service";
 import { Utils } from "../misc/utils";
-import { AccountSettings } from "../models/domain/account";
 
 const Keys = {
   settingsPrefix: "settings_",
@@ -11,7 +10,7 @@ const Keys = {
 };
 
 export class SettingsService implements SettingsServiceAbstraction {
-  private _settings: BehaviorSubject<AccountSettings[]> = new BehaviorSubject([]);
+  private _settings: BehaviorSubject<any> = new BehaviorSubject([]);
 
   settings$ = this._settings.asObservable();
 
@@ -32,8 +31,8 @@ export class SettingsService implements SettingsServiceAbstraction {
     });
   }
 
-  getEquivalentDomains(): Promise<any> {
-    return this.getSettingsKey(Keys.equivalentDomains);
+  getEquivalentDomains$(): Observable<any> {
+    return this.getSettingsKey$(Keys.equivalentDomains);
   }
 
   async setEquivalentDomains(equivalentDomains: string[][]): Promise<void> {
@@ -50,25 +49,21 @@ export class SettingsService implements SettingsServiceAbstraction {
 
   // Helpers
 
-  private async getSettings(): Promise<any> {
-    const settings = this._settings.getValue();
-    if (settings == null) {
-      // eslint-disable-next-line
-      const userId = await this.stateService.getUserId();
-    }
-    return settings;
-  }
+  private getSettingsKey$(key: string): Observable<any> {
+    const result: Observable<any> = this._settings.pipe(
+      map((settings) => {
+        if (settings != null && settings[key]) {
+          return settings[key];
+        }
+        return null;
+      })
+    );
 
-  private async getSettingsKey(key: string): Promise<any> {
-    const settings = await this.getSettings();
-    if (settings != null && settings[key]) {
-      return settings[key];
-    }
-    return null;
+    return result;
   }
 
   private async setSettingsKey(key: string, value: any): Promise<void> {
-    let settings = await this.getSettings();
+    let settings = this._settings.getValue();
     if (!settings) {
       settings = {};
     }

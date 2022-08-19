@@ -28,11 +28,15 @@ describe("SettingsService", () => {
     settingsService = new SettingsService(stateService);
   });
 
-  it("getEquivalentDomains", async () => {
-    const result = await settingsService.getEquivalentDomains();
+  describe("getEquivalentDomains", () => {
+    it("returns value", async () => {
+      const result = await firstValueFrom(settingsService.getEquivalentDomains$());
 
-    expect(result).toEqual("test");
-    expect(await firstValueFrom(settingsService.settings$)).toEqual({ equivalentDomains: "test" });
+      expect(result).toEqual("test");
+      expect(await firstValueFrom(settingsService.settings$)).toEqual({
+        equivalentDomains: "test",
+      });
+    });
   });
 
   it("setEquivalentDomains", async () => {
