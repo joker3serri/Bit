@@ -276,7 +276,7 @@
               role="group"
               class="row"
               *ngFor="let u of cipher.login.uris; let i = index; trackBy: trackByFunction"
-              appA11yTitle="{{ 'uriPosition' | i18n: i + 1 }}"
+              attr.aria-label="{{ 'uriPosition' | i18n: i + 1 }}"
             >
               <div class="col-7 form-group">
                 <label for="loginUri{{ i }}">{{ "uriPosition" | i18n: i + 1 }}</label>

@@ -406,7 +406,7 @@
             class="box-content-row box-content-row-multi"
             appBoxRow
             *ngFor="let u of cipher.login.uris; let i = index; trackBy: trackByFunction"
-            appA11yTitle="{{ 'uriPosition' | i18n: i + 1 }}"
+            attr.aria-label="{{ 'uriPosition' | i18n: i + 1 }}"
           >
             <button
               type="button"

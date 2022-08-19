@@ -10,7 +10,7 @@
         cdkDrag
         *ngFor="let f of cipher.fields; let i = index; trackBy: trackByFunction"
         [ngClass]="{ 'box-content-row-checkbox': f.type === fieldType.Boolean }"
-        appA11yTitle="{{ f.name }}"
+        attr.aria-label="{{ f.name }}"
       >
         <button
           type="button"

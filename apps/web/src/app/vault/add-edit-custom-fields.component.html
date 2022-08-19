@@ -6,7 +6,7 @@
       class="row"
       cdkDrag
       *ngFor="let f of cipher.fields; let i = index; trackBy: trackByFunction"
-      appA11yTitle="{{ f.name }}"
+      attr.aria-label="{{ f.name }}"
     >
       <div class="col-5 form-group">
         <div class="d-flex">
