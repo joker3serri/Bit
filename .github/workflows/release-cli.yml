@@ -47,9 +47,9 @@ jobs:
       - name: Branch check
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         run: |
-          if [[ "$GITHUB_REF" != "refs/heads/rc" ]] && [[ $GITHUB_REF != refs/heads/hotfix-rc ]]; then
+          if [[ "$GITHUB_REF" != "refs/heads/rc" ]] && [[ $GITHUB_REF != refs/heads/hotfix-rc-cli ]]; then
             echo "==================================="
-            echo "[!] Can only release from the 'rc' or 'hotfix-rc' branches"
+            echo "[!] Can only release from the 'rc' or 'hotfix-rc-cli' branches"
             echo "==================================="
             exit 1
           fi
@@ -287,7 +287,9 @@ jobs:
           artifacts: bitwarden-cli-${{ env._PKG_VERSION }}-npm-build.zip
 
       - name: Setup NPM
-        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+        run: |
+          echo 'registry="https://registry.npmjs.org/"' > ./.npmrc
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ./.npmrc
         env:
           NPM_TOKEN: ${{ steps.retrieve-secrets.outputs.cli-npm-api-key }}
 
@@ -296,5 +298,5 @@ jobs:
 
       - name: Publish NPM
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        run: npm publish --access public
+        run: npm publish --access public --regsitry=https://registry.npmjs.org/  --userconfig=./.npmrc
 
