@@ -1393,6 +1393,21 @@
   "lockWithMasterPassOnRestart": {
     "message": "Lezárás mesterjelszóval újraindításkor"
   },
+  "deleteAccount": {
+    "message": "Fiók törlése"
+  },
+  "deleteAccountDesc": {
+    "message": "Folytassuk az alábbiakban a felhasználói fiók és valamennyi széf adat törléséhez."
+  },
+  "deleteAccountWarning": {
+    "message": "A fiók véglegesen törlésre kerül. A művelet nem vonható vissza."
+  },
+  "accountDeleted": {
+    "message": "A fiók törlésre került."
+  },
+  "accountDeletedDesc": {
+    "message": "A fiók bezárásra került és minden társított adat törölve lett."
+  },
   "preferences": {
     "message": "Beállítások"
   },
@@ -1964,6 +1979,9 @@
   "apiKey": {
     "message": "API kulcs"
   },
+  "premiumSubcriptionRequired": {
+    "message": "Prémium előfizetés szükséges"
+  },
   "organizationIsDisabled": {
     "message": "A szervezet letiltásra került."
   },
@@ -1972,5 +1990,8 @@
   },
   "neverLockWarning": {
     "message": "Biztosan szeretnénk használni a \"Soha\" opciót? A zárolási opciók \"Soha\" értékre állítása a széf titkosítási kulcsát az eszközön tárolja. Ennek az opciónak a használatakor célszerű az eszköz megfelelő védettségét biztosítani."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }

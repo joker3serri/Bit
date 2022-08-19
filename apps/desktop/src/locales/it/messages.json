@@ -1393,6 +1393,21 @@
   "lockWithMasterPassOnRestart": {
     "message": "Blocca con la password principale al riavvio"
   },
+  "deleteAccount": {
+    "message": "Elimina account"
+  },
+  "deleteAccountDesc": {
+    "message": "Procedi sotto per eliminare il tuo account e tutti i dati della tua cassaforte."
+  },
+  "deleteAccountWarning": {
+    "message": "L'eliminazione dell'account è permanente. Questa azione non è reversibile."
+  },
+  "accountDeleted": {
+    "message": "Account eliminato"
+  },
+  "accountDeletedDesc": {
+    "message": "Il tuo account è stato eliminato e tutti i dati associati sono stati rimossi."
+  },
   "preferences": {
     "message": "Preferenze"
   },
@@ -1964,6 +1979,9 @@
   "apiKey": {
     "message": "Chiave API"
   },
+  "premiumSubcriptionRequired": {
+    "message": "È richiesto un abbonamento Premium"
+  },
   "organizationIsDisabled": {
     "message": "L'organizzazione è disabilitata."
   },
@@ -1972,5 +1990,8 @@
   },
   "neverLockWarning": {
     "message": "Sei sicuro di voler usare l'opzione \"Mai\"? Impostando le opzioni di blocco su \"Mai\", la chiave di cifratura della cassaforte sarà salvata sul tuo dispositivo. Se utilizzi questa opzione, assicurati di mantenere il dispositivo adeguatamente protetto."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }

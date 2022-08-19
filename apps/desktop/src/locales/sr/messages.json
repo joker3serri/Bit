@@ -1393,6 +1393,21 @@
   "lockWithMasterPassOnRestart": {
     "message": "Закључајте са главном лозинком при поновном покретању"
   },
+  "deleteAccount": {
+    "message": "Брисање налога"
+  },
+  "deleteAccountDesc": {
+    "message": "Наставите доле да бисте избрисали свој налог и све податке сефа."
+  },
+  "deleteAccountWarning": {
+    "message": "Брисање налога је трајно. Не може се поништити."
+  },
+  "accountDeleted": {
+    "message": "Налог обрисан"
+  },
+  "accountDeletedDesc": {
+    "message": "Ваш налог је затворен и сви повезани подаци су избрисани."
+  },
   "preferences": {
     "message": "Подешавања"
   },
@@ -1964,13 +1979,19 @@
   "apiKey": {
     "message": "АПИ Кључ"
   },
+  "premiumSubcriptionRequired": {
+    "message": "Premium претплата је потребна"
+  },
   "organizationIsDisabled": {
-    "message": "Organization is disabled."
+    "message": "Организација је онемогућена."
   },
   "disabledOrganizationFilterError": {
-    "message": "Items in disabled Organizations cannot be accessed. Contact your Organization owner for assistance."
+    "message": "Није могуће приступити ставкама у онемогућене организације. Обратите се власнику организације за помоћ."
   },
   "neverLockWarning": {
     "message": "Да ли сте сигурни да желите да користите опцију „Никад“? Ако поставите опције закључавања на „Никада“, на вашем уређају се чува кључ за шифровање сефа. Ако користите ову опцију, осигурајте да је уређај правилно заштићен."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }

@@ -1,5 +1,6 @@
 **/build
 **/dist
+.angular
 
 **/node_modules
 
@@ -7,6 +8,7 @@
 **/jest.config.js
 **/gulpfile.js
 
+apps/browser/config/config.js
 apps/browser/src/content/autofill.js
 apps/browser/src/scripts/duo.js
 
@@ -17,3 +19,5 @@ apps/web/config.js
 apps/web/scripts/*.js
 apps/web/src/theme.js
 apps/web/tailwind.config.js
+
+apps/cli/config/config.js

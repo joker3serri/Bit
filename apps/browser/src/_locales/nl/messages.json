@@ -1968,10 +1968,34 @@
   "ssoKeyConnectorError": {
     "message": "Key-connector fout: zorg ervoor dat Key-connector beschikbaar is en werkt."
   },
+  "premiumSubcriptionRequired": {
+    "message": "Premium-abonnement vereist"
+  },
   "organizationIsDisabled": {
     "message": "Organisatie is uitgeschakeld."
   },
   "disabledOrganizationFilterError": {
     "message": "Je kunt uitgeschakelde items in een organisatie niet benaderen. Neem contact op met de eigenaar van je organisatie voor hulp."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
+  },
+  "loggingInTo": {
+    "message": "Inloggen op $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "settingsEdited": {
+    "message": "Instellingen zijn bijgewerkt"
+  },
+  "environmentEditedClick": {
+    "message": "Klik hier"
+  },
+  "environmentEditedReset": {
+    "message": "om terug te gaan naar vooraf geconfigureerde instellingen"
   }
 }

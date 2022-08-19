@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { debounceTime } from "rxjs/operators";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -17,6 +17,8 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { isWindowsStore } from "@bitwarden/electron/utils";
 
 import { SetPinComponent } from "../components/set-pin.component";
+
+import { DeleteAccountComponent } from "./delete-account.component";
 
 @Component({
   selector: "app-settings",
@@ -60,7 +62,7 @@ export class SettingsComponent implements OnInit {
   startToTrayText: string;
   startToTrayDescText: string;
 
-  vaultTimeout: FormControl = new FormControl(null);
+  vaultTimeout: UntypedFormControl = new UntypedFormControl(null);
 
   showSecurity = true;
   showAccountPreferences = true;
@@ -274,7 +276,6 @@ export class SettingsComponent implements OnInit {
     if (!newValue || !this.supportsBiometric) {
       this.biometric = false;
       await this.stateService.setBiometricUnlock(null);
-      await this.stateService.setBiometricLocked(false);
       await this.cryptoService.toggleKey();
       return;
     }
@@ -288,7 +289,6 @@ export class SettingsComponent implements OnInit {
 
     this.biometric = true;
     await this.stateService.setBiometricUnlock(true);
-    await this.stateService.setBiometricLocked(false);
     await this.cryptoService.toggleKey();
   }
 
@@ -436,5 +436,9 @@ export class SettingsComponent implements OnInit {
     await this.stateService.setEnableBrowserIntegrationFingerprint(
       this.enableBrowserIntegrationFingerprint
     );
+  }
+
+  async openDeleteAccount() {
+    this.modalService.open(DeleteAccountComponent, { replaceTopModal: true });
   }
 }

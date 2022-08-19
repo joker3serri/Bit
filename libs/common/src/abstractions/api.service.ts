@@ -1,8 +1,6 @@
 import { OrganizationApiKeyType } from "../enums/organizationApiKeyType";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
-import { PolicyType } from "../enums/policyType";
 import { SetKeyConnectorKeyRequest } from "../models/request/account/setKeyConnectorKeyRequest";
-import { VerifyOTPRequest } from "../models/request/account/verifyOTPRequest";
 import { AttachmentRequest } from "../models/request/attachmentRequest";
 import { BitPayInvoiceRequest } from "../models/request/bitPayInvoiceRequest";
 import { CipherBulkDeleteRequest } from "../models/request/cipherBulkDeleteRequest";
@@ -59,7 +57,6 @@ import { OrganizationUserUpdateRequest } from "../models/request/organizationUse
 import { PasswordHintRequest } from "../models/request/passwordHintRequest";
 import { PasswordRequest } from "../models/request/passwordRequest";
 import { PaymentRequest } from "../models/request/paymentRequest";
-import { PolicyRequest } from "../models/request/policyRequest";
 import { PreloginRequest } from "../models/request/preloginRequest";
 import { ProviderAddOrganizationRequest } from "../models/request/provider/providerAddOrganizationRequest";
 import { ProviderOrganizationCreateRequest } from "../models/request/provider/providerOrganizationCreateRequest";
@@ -130,6 +127,7 @@ import {
   OrganizationConnectionConfigApis,
   OrganizationConnectionResponse,
 } from "../models/response/organizationConnectionResponse";
+import { OrganizationExportResponse } from "../models/response/organizationExportResponse";
 import { OrganizationKeysResponse } from "../models/response/organizationKeysResponse";
 import { OrganizationResponse } from "../models/response/organizationResponse";
 import { OrganizationSponsorshipSyncStatusResponse } from "../models/response/organizationSponsorshipSyncStatusResponse";
@@ -208,7 +206,6 @@ export abstract class ApiService {
   setPassword: (request: SetPasswordRequest) => Promise<any>;
   postSetKeyConnectorKey: (request: SetKeyConnectorKeyRequest) => Promise<any>;
   postSecurityStamp: (request: SecretVerificationRequest) => Promise<any>;
-  deleteAccount: (request: SecretVerificationRequest) => Promise<any>;
   getAccountRevisionDate: () => Promise<number>;
   postPasswordHint: (request: PasswordHintRequest) => Promise<any>;
   postRegister: (request: RegisterRequest) => Promise<any>;
@@ -230,8 +227,6 @@ export abstract class ApiService {
   postUserApiKey: (id: string, request: SecretVerificationRequest) => Promise<ApiKeyResponse>;
   postUserRotateApiKey: (id: string, request: SecretVerificationRequest) => Promise<ApiKeyResponse>;
   putUpdateTempPassword: (request: UpdateTempPasswordRequest) => Promise<any>;
-  postAccountRequestOTP: () => Promise<void>;
-  postAccountVerifyOTP: (request: VerifyOTPRequest) => Promise<void>;
   postConvertToKeyConnector: () => Promise<void>;
 
   getUserBillingHistory: () => Promise<BillingHistoryResponse>;
@@ -366,24 +361,6 @@ export abstract class ApiService {
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 
-  getPolicy: (organizationId: string, type: PolicyType) => Promise<PolicyResponse>;
-  getPolicies: (organizationId: string) => Promise<ListResponse<PolicyResponse>>;
-  getPoliciesByToken: (
-    organizationId: string,
-    token: string,
-    email: string,
-    organizationUserId: string
-  ) => Promise<ListResponse<PolicyResponse>>;
-  getPoliciesByInvitedUser: (
-    organizationId: string,
-    userId: string
-  ) => Promise<ListResponse<PolicyResponse>>;
-  putPolicy: (
-    organizationId: string,
-    type: PolicyType,
-    request: PolicyRequest
-  ) => Promise<PolicyResponse>;
-
   getOrganizationUser: (
     organizationId: string,
     id: string
@@ -449,13 +426,13 @@ export abstract class ApiService {
     organizationId: string,
     request: OrganizationUserBulkRequest
   ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
-  deactivateOrganizationUser: (organizationId: string, id: string) => Promise<any>;
-  deactivateManyOrganizationUsers: (
+  revokeOrganizationUser: (organizationId: string, id: string) => Promise<any>;
+  revokeManyOrganizationUsers: (
     organizationId: string,
     request: OrganizationUserBulkRequest
   ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
-  activateOrganizationUser: (organizationId: string, id: string) => Promise<any>;
-  activateManyOrganizationUsers: (
+  restoreOrganizationUser: (organizationId: string, id: string) => Promise<any>;
+  restoreManyOrganizationUsers: (
     organizationId: string,
     request: OrganizationUserBulkRequest
   ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
@@ -734,4 +711,5 @@ export abstract class ApiService {
     request: KeyConnectorUserKeyRequest
   ) => Promise<void>;
   getKeyConnectorAlive: (keyConnectorUrl: string) => Promise<void>;
+  getOrganizationExport: (organizationId: string) => Promise<OrganizationExportResponse>;
 }

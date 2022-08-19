@@ -1393,6 +1393,21 @@
   "lockWithMasterPassOnRestart": {
     "message": "قفل مع كلمة المرور الرئيسية عند إعادة تشغيل"
   },
+  "deleteAccount": {
+    "message": "Delete account"
+  },
+  "deleteAccountDesc": {
+    "message": "Proceed below to delete your account and all vault data."
+  },
+  "deleteAccountWarning": {
+    "message": "Deleting your account is permanent. It cannot be undone."
+  },
+  "accountDeleted": {
+    "message": "Account deleted"
+  },
+  "accountDeletedDesc": {
+    "message": "Your account has been closed and all associated data has been deleted."
+  },
   "preferences": {
     "message": "التفضيلات"
   },
@@ -1964,6 +1979,9 @@
   "apiKey": {
     "message": "مفتاح API"
   },
+  "premiumSubcriptionRequired": {
+    "message": "Premium subscription required"
+  },
   "organizationIsDisabled": {
     "message": "تم تعطيل المؤسسة."
   },
@@ -1972,5 +1990,8 @@
   },
   "neverLockWarning": {
     "message": "هل أنت متأكد من أنك تريد استخدام خيار \"مطلقا\"؟ إعداد خيارات القفل إلى \"مطلقا\" يخزن مفتاح تشفير المستودع الخاص بك على جهازك. إذا كنت تستخدم هذا الخيار، يجب أن تتأكد من الحفاظ على حماية جهازك بشكل صحيح."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }

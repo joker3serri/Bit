@@ -1393,6 +1393,21 @@
   "lockWithMasterPassOnRestart": {
     "message": "Yenidən başladılanda ana parol ilə kilidlə"
   },
+  "deleteAccount": {
+    "message": "Hesabı sil"
+  },
+  "deleteAccountDesc": {
+    "message": "Hesabınızı və bütün anbar verilənlərini silmək üçün aşağıda davam edin."
+  },
+  "deleteAccountWarning": {
+    "message": "Hesabınızı silmək birdəfəlik prosesdir. Bu əməliyyatın geri dönüşü yoxdur."
+  },
+  "accountDeleted": {
+    "message": "Hesab silindi"
+  },
+  "accountDeletedDesc": {
+    "message": "Hesabınız bağlandı və bütün əlaqəli verilənlər silindi."
+  },
   "preferences": {
     "message": "Tercihlər"
   },
@@ -1964,6 +1979,9 @@
   "apiKey": {
     "message": "API açar"
   },
+  "premiumSubcriptionRequired": {
+    "message": "Premium abunəlik tələb olunur"
+  },
   "organizationIsDisabled": {
     "message": "Təşkilat sıradan çıxarıldı."
   },
@@ -1972,5 +1990,8 @@
   },
   "neverLockWarning": {
     "message": "\"Heç vaxt\" seçimini istifadə etmək istədiyinizə əminsiniz? Kilid seçimini \"Heç vaxt\" olaraq tənzimləsəniz, anbarınızın şifrələmə açarı cihazınızda saxlanılacaq. Bu seçimi istifadə etsəniz, cihazınızı daha yaxşı mühafizə etməlisiniz."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }

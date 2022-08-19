@@ -1968,10 +1968,34 @@
   "ssoKeyConnectorError": {
     "message": "Chyba Key Connector: uistite sa, že je Key Connector k dispozícii a funguje správne."
   },
+  "premiumSubcriptionRequired": {
+    "message": "Vyžaduje sa Premiové predplatné"
+  },
   "organizationIsDisabled": {
     "message": "Organizácia je vypnutá."
   },
   "disabledOrganizationFilterError": {
     "message": "K položkám vo vypnutej organizácii nie je možné pristupovať. Požiadajte o pomoc vlastníka organizácie."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
+  },
+  "loggingInTo": {
+    "message": "Prihlásenie do $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "settingsEdited": {
+    "message": "Nastavenia boli upravené"
+  },
+  "environmentEditedClick": {
+    "message": "Kliknite sem"
+  },
+  "environmentEditedReset": {
+    "message": "na obnovenie predvolených nastavení"
   }
 }

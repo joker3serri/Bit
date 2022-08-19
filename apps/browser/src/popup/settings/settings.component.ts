@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import Swal from "sweetalert2";
 
@@ -50,7 +50,7 @@ export class SettingsComponent implements OnInit {
   previousVaultTimeout: number = null;
   showChangeMasterPass = true;
 
-  vaultTimeout: FormControl = new FormControl(null);
+  vaultTimeout: UntypedFormControl = new UntypedFormControl(null);
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
@@ -293,7 +293,7 @@ export class SettingsComponent implements OnInit {
       ]);
     } else {
       await this.stateService.setBiometricUnlock(null);
-      await this.stateService.setBiometricLocked(false);
+      await this.stateService.setBiometricFingerprintValidated(false);
     }
   }
 

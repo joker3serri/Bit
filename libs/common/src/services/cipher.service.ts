@@ -341,7 +341,7 @@ export class CipherService implements CipherServiceAbstraction {
       throw new Error("No key.");
     }
 
-    const promises: any[] = [];
+    const promises: Promise<number>[] = [];
     const ciphers = await this.getAll();
     ciphers.forEach(async (cipher) => {
       promises.push(cipher.decrypt().then((c) => decCiphers.push(c)));
@@ -1058,8 +1058,8 @@ export class CipherService implements CipherServiceAbstraction {
       throw Error("Failed to download attachment: " + attachmentResponse.status.toString());
     }
 
-    const buf = await attachmentResponse.arrayBuffer();
-    const decBuf = await this.cryptoService.decryptFromBytes(buf, null);
+    const encBuf = await EncArrayBuffer.fromResponse(attachmentResponse);
+    const decBuf = await this.cryptoService.decryptFromBytes(encBuf, null);
     const key = await this.cryptoService.getOrgKey(organizationId);
     const encFileName = await this.cryptoService.encrypt(attachmentView.fileName, key);
 

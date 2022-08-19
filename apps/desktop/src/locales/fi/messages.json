@@ -560,7 +560,7 @@
     "message": "Ei näytettäviä kohteita."
   },
   "sendVerificationCode": {
-    "message": "Lähetä vahvistuskoodi sähköpostiisi"
+    "message": "Lähetä todennuskoodi sähköpostiisi"
   },
   "sendCode": {
     "message": "Lähetä koodi"
@@ -578,7 +578,7 @@
     "message": "Todennuskoodi vaaditaan."
   },
   "invalidVerificationCode": {
-    "message": "Virheellinen vahvistuskoodi"
+    "message": "Virheellinen todennuskoodi"
   },
   "continue": {
     "message": "Jatka"
@@ -1393,6 +1393,21 @@
   "lockWithMasterPassOnRestart": {
     "message": "Lukitse pääsalasanalla uudelleenkäynnistyksen yhteydessä"
   },
+  "deleteAccount": {
+    "message": "Poista tili"
+  },
+  "deleteAccountDesc": {
+    "message": "Jatka alla poistaaksesi tilisi ja kaikki holvin tiedot."
+  },
+  "deleteAccountWarning": {
+    "message": "Tilin poisto on pysyvä toimenpide, eikä sen peruminen ole mahdollista."
+  },
+  "accountDeleted": {
+    "message": "Tili poistettiin"
+  },
+  "accountDeletedDesc": {
+    "message": "Tilisi on suljettu ja kaikki siihen liittyvät tiedot on poistettu."
+  },
   "preferences": {
     "message": "Asetukset"
   },
@@ -1553,7 +1568,7 @@
     "message": "Salli selainintegraatio"
   },
   "enableBrowserIntegrationDesc": {
-    "message": "Selainintegraatiota käytetään selaimessa biometriaa varten."
+    "message": "Käytetään selainten biometriatukeen."
   },
   "browserIntegrationUnsupportedTitle": {
     "message": "Selainintegraatiota ei tueta"
@@ -1964,6 +1979,9 @@
   "apiKey": {
     "message": "API-avain"
   },
+  "premiumSubcriptionRequired": {
+    "message": "Premium-tilaus vaaditaan"
+  },
   "organizationIsDisabled": {
     "message": "Organisaatio on poistettu käytöstä."
   },
@@ -1972,5 +1990,8 @@
   },
   "neverLockWarning": {
     "message": "Haluatko varmasti käyttää asetusta \"Ei koskaan\"? Se tallentaa holvisi salausavaimen laitteellesi. Jos käytät asetusta, varmista, että laite on suojattu hyvin."
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }

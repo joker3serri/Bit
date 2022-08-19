@@ -12,7 +12,8 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
+import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync.service";
@@ -29,8 +30,8 @@ import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/re
 import { BasePeopleComponent } from "../../common/base.people.component";
 
 import { BulkConfirmComponent } from "./bulk/bulk-confirm.component";
-import { BulkDeactivateComponent } from "./bulk/bulk-deactivate.component";
 import { BulkRemoveComponent } from "./bulk/bulk-remove.component";
+import { BulkRestoreRevokeComponent } from "./bulk/bulk-restore-revoke.component";
 import { BulkStatusComponent } from "./bulk/bulk-status.component";
 import { EntityEventsComponent } from "./entity-events.component";
 import { ResetPasswordComponent } from "./reset-password.component";
@@ -84,6 +85,7 @@ export class PeopleComponent
     private router: Router,
     searchService: SearchService,
     validationService: ValidationService,
+    private policyApiService: PolicyApiServiceAbstraction,
     private policyService: PolicyService,
     logService: LogService,
     searchPipe: SearchPipe,
@@ -111,10 +113,6 @@ export class PeopleComponent
     this.route.parent.parent.params.subscribe(async (params) => {
       this.organizationId = params.organizationId;
       const organization = await this.organizationService.get(this.organizationId);
-      if (!organization.canManageUsers) {
-        this.router.navigate(["../collections"], { relativeTo: this.route });
-        return;
-      }
       this.accessEvents = organization.useEvents;
       this.accessGroups = organization.useGroups;
       this.canResetPassword = organization.canManageUsersPassword;
@@ -151,7 +149,7 @@ export class PeopleComponent
   }
 
   async load() {
-    const resetPasswordPolicy = await this.policyService.getPolicyForOrganization(
+    const resetPasswordPolicy = await this.policyApiService.getPolicyForOrganization(
       PolicyType.ResetPassword,
       this.organizationId
     );
@@ -167,12 +165,12 @@ export class PeopleComponent
     return this.apiService.deleteOrganizationUser(this.organizationId, id);
   }
 
-  deactivateUser(id: string): Promise<any> {
-    return this.apiService.deactivateOrganizationUser(this.organizationId, id);
+  revokeUser(id: string): Promise<any> {
+    return this.apiService.revokeOrganizationUser(this.organizationId, id);
   }
 
-  activateUser(id: string): Promise<any> {
-    return this.apiService.activateOrganizationUser(this.organizationId, id);
+  restoreUser(id: string): Promise<any> {
+    return this.apiService.restoreOrganizationUser(this.organizationId, id);
   }
 
   reinviteUser(id: string): Promise<any> {
@@ -245,11 +243,11 @@ export class PeopleComponent
           modal.close();
           this.removeUser(user);
         });
-        comp.onDeactivatedUser.subscribe(() => {
+        comp.onRevokedUser.subscribe(() => {
           modal.close();
           this.load();
         });
-        comp.onActivatedUser.subscribe(() => {
+        comp.onRestoredUser.subscribe(() => {
           modal.close();
           this.load();
         });
@@ -290,25 +288,25 @@ export class PeopleComponent
     await this.load();
   }
 
-  async bulkDeactivate() {
-    await this.bulkActivateOrDeactivate(true);
+  async bulkRevoke() {
+    await this.bulkRevokeOrRestore(true);
   }
 
-  async bulkActivate() {
-    await this.bulkActivateOrDeactivate(false);
+  async bulkRestore() {
+    await this.bulkRevokeOrRestore(false);
   }
 
-  async bulkActivateOrDeactivate(isDeactivating: boolean) {
+  async bulkRevokeOrRestore(isRevoking: boolean) {
     if (this.actionPromise != null) {
       return;
     }
 
-    const ref = this.modalService.open(BulkDeactivateComponent, {
+    const ref = this.modalService.open(BulkRestoreRevokeComponent, {
       allowMultipleModals: true,
       data: {
         organizationId: this.organizationId,
         users: this.getCheckedUsers(),
-        isDeactivating: isDeactivating,
+        isRevoking: isRevoking,
       },
     });
 
@@ -397,12 +395,18 @@ export class PeopleComponent
     );
   }
 
-  protected deleteWarningMessage(user: OrganizationUserUserDetailsResponse): string {
-    if (user.usesKeyConnector) {
-      return this.i18nService.t("removeUserConfirmationKeyConnector");
-    }
+  protected async removeUserConfirmationDialog(user: OrganizationUserUserDetailsResponse) {
+    const warningMessage = user.usesKeyConnector
+      ? this.i18nService.t("removeUserConfirmationKeyConnector")
+      : this.i18nService.t("removeOrgUserConfirmation");
 
-    return super.deleteWarningMessage(user);
+    return this.platformUtilsService.showDialog(
+      warningMessage,
+      this.i18nService.t("removeUserIdAccess", this.userNamePipe.transform(user)),
+      this.i18nService.t("yes"),
+      this.i18nService.t("no"),
+      "warning"
+    );
   }
 
   private async showBulkStatus(

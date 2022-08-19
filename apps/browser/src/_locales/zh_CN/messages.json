@@ -618,7 +618,7 @@
     "message": "显示上下文菜单选项"
   },
   "contextMenuItemDesc": {
-    "message": "使用辅助点击来访问网站的密码生成和匹配的登录项目。 "
+    "message": "使用辅助点击来访问密码生成和匹配的网站登录项目。 "
   },
   "defaultUriMatchDetection": {
     "message": "默认 URI 匹配检测",
@@ -1968,10 +1968,34 @@
   "ssoKeyConnectorError": {
     "message": "Key Connector 错误：请确保 Key Connector 可用且工作正常。"
   },
+  "premiumSubcriptionRequired": {
+    "message": "需要高级版订阅"
+  },
   "organizationIsDisabled": {
     "message": "组织已被禁用。"
   },
   "disabledOrganizationFilterError": {
     "message": "无法访问已禁用组织中的项目。请联系您的组织所有者获取协助。"
+  },
+  "cardBrandMir": {
+    "message": "Mir"
+  },
+  "loggingInTo": {
+    "message": "正在登录到 $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "settingsEdited": {
+    "message": "设置已编辑"
+  },
+  "environmentEditedClick": {
+    "message": "点击此处"
+  },
+  "environmentEditedReset": {
+    "message": "重置为预设设置"
   }
 }

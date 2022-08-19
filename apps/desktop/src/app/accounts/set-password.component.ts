@@ -9,7 +9,8 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/abstractions/policy.service";
+import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
+import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync.service";
 
@@ -27,6 +28,7 @@ export class SetPasswordComponent extends BaseSetPasswordComponent implements On
     messagingService: MessagingService,
     passwordGenerationService: PasswordGenerationService,
     platformUtilsService: PlatformUtilsService,
+    policyApiService: PolicyApiServiceAbstraction,
     policyService: PolicyService,
     router: Router,
     syncService: SyncService,
@@ -41,6 +43,7 @@ export class SetPasswordComponent extends BaseSetPasswordComponent implements On
       messagingService,
       passwordGenerationService,
       platformUtilsService,
+      policyApiService,
       policyService,
       router,
       apiService,
@@ -48,36 +51,6 @@ export class SetPasswordComponent extends BaseSetPasswordComponent implements On
       route,
       stateService
     );
-  }
-
-  get masterPasswordScoreWidth() {
-    return this.masterPasswordScore == null ? 0 : (this.masterPasswordScore + 1) * 20;
-  }
-
-  get masterPasswordScoreColor() {
-    switch (this.masterPasswordScore) {
-      case 4:
-        return "success";
-      case 3:
-        return "primary";
-      case 2:
-        return "warning";
-      default:
-        return "danger";
-    }
-  }
-
-  get masterPasswordScoreText() {
-    switch (this.masterPasswordScore) {
-      case 4:
-        return this.i18nService.t("strong");
-      case 3:
-        return this.i18nService.t("good");
-      case 2:
-        return this.i18nService.t("weak");
-      default:
-        return this.masterPasswordScore != null ? this.i18nService.t("weak") : null;
-    }
   }
 
   async ngOnInit() {

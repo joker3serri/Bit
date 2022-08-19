@@ -1393,6 +1393,21 @@
   "lockWithMasterPassOnRestart": {
     "message": "重启后使用主密码锁定"
   },
+  "deleteAccount": {
+    "message": "删除账户"
+  },
+  "deleteAccountDesc": {
+    "message": "接下来的操作会删除您的账户和所有密码库数据。"
+  },
+  "deleteAccountWarning": {
+    "message": "删除账户是永久性的。不能被撤消。"
+  },
+  "accountDeleted": {
+    "message": "账户已删除"
+  },
+  "accountDeletedDesc": {
+    "message": "您的账户已关闭，所有相关数据也已被删除。"
+  },
   "preferences": {
     "message": "偏好设置"
   },
@@ -1553,7 +1568,7 @@
     "message": "允许浏览器集成"
   },
   "enableBrowserIntegrationDesc": {
-    "message": "浏览器集成用于在浏览器中提供生物识别。"
+    "message": "用于在浏览器中提供生物识别。"
   },
   "browserIntegrationUnsupportedTitle": {
     "message": "不支持浏览器集成"
@@ -1964,6 +1979,9 @@
   "apiKey": {
     "message": "API 密钥"
   },
+  "premiumSubcriptionRequired": {
+    "message": "需要高级版订阅"
+  },
   "organizationIsDisabled": {
     "message": "组织已被禁用。"
   },
@@ -1972,5 +1990,8 @@
   },
   "neverLockWarning": {
     "message": "确定要使用「从不」选项吗？将锁定选项设置为「从不」会将密码库的加密密钥存储在您的设备上。如果使用此选项，应确保您的设备得到妥善的保护。"
+  },
+  "cardBrandMir": {
+    "message": "Mir"
   }
 }
