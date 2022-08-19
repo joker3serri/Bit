@@ -109,13 +109,12 @@ jobs:
           workflow: build-web.yml
           workflow_conclusion: success
           branch: hotfix-rc
-          path: apps/web
-          skip_unpack: true
+          skip_unpack: false
 
       # This should result in a build directory in the current working directory
       - name: Unzip build asset
         working-directory: apps/web
-        run: unzip web-*-cloud-COMMERCIAL.zip
+        run: unzip web-*-cloud-COMMERCIAL.zip apps/web
 
       - name: Checkout Repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
