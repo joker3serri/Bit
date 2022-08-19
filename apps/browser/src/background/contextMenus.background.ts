@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { EventService } from "@bitwarden/common/abstractions/event.service";
@@ -66,7 +68,7 @@ export default class ContextMenusBackground {
   }
 
   private async generatePasswordToClipboard() {
-    const options = (await this.passwordGenerationService.getOptions())[0];
+    const options = (await firstValueFrom(this.passwordGenerationService.getOptions$()))[0];
     const password = await this.passwordGenerationService.generatePassword(options);
     this.platformUtilsService.copyToClipboard(password, { window: window });
     this.passwordGenerationService.addHistory(password);

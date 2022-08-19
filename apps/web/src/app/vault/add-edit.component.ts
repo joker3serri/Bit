@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { takeUntil } from "rxjs";
 
 import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/components/add-edit.component";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
@@ -37,6 +38,7 @@ export class AddEditComponent extends BaseAddEditComponent {
   viewOnly = false;
 
   protected totpInterval: number;
+  private options: any = null;
 
   constructor(
     cipherService: CipherService,
@@ -93,6 +95,11 @@ export class AddEditComponent extends BaseAddEditComponent {
         await this.totpTick(interval);
       }, 1000);
     }
+
+    this.passwordGenerationService
+      .getOptions$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((options) => (this.options = options[0]));
   }
 
   toggleFavorite() {
@@ -133,8 +140,9 @@ export class AddEditComponent extends BaseAddEditComponent {
   async generatePassword(): Promise<boolean> {
     const confirmed = await super.generatePassword();
     if (confirmed) {
-      const options = (await this.passwordGenerationService.getOptions())[0];
-      this.cipher.login.password = await this.passwordGenerationService.generatePassword(options);
+      this.cipher.login.password = await this.passwordGenerationService.generatePassword(
+        this.options
+      );
     }
     return confirmed;
   }

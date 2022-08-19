@@ -1,4 +1,4 @@
-import { firstValueFrom } from "rxjs";
+import { from, map, Observable, concatMap, withLatestFrom } from "rxjs";
 import * as zxcvbn from "zxcvbn";
 
 import { CryptoService } from "../abstractions/crypto.service";
@@ -10,7 +10,6 @@ import { EEFLongWordList } from "../misc/wordlist";
 import { EncString } from "../models/domain/encString";
 import { GeneratedPasswordHistory } from "../models/domain/generatedPasswordHistory";
 import { PasswordGeneratorPolicyOptions } from "../models/domain/passwordGeneratorPolicyOptions";
-import { Policy } from "../models/domain/policy";
 
 const DefaultOptions = {
   length: 14,
@@ -178,164 +177,179 @@ export class PasswordGenerationService implements PasswordGenerationServiceAbstr
     return wordList.join(o.wordSeparator);
   }
 
-  async getOptions(): Promise<[any, PasswordGeneratorPolicyOptions]> {
-    let options = await this.stateService.getPasswordGenerationOptions();
-    if (options == null) {
-      options = Object.assign({}, DefaultOptions);
-    } else {
-      options = Object.assign({}, DefaultOptions, options);
-    }
-    await this.stateService.setPasswordGenerationOptions(options);
-    const enforcedOptions = await this.enforcePasswordGeneratorPoliciesOnOptions(options);
-    options = enforcedOptions[0];
-    return [options, enforcedOptions[1]];
+  getOptions$(): Observable<[any, PasswordGeneratorPolicyOptions]> {
+    const options$ = from(this.stateService.getPasswordGenerationOptions());
+    const result: Observable<[any, PasswordGeneratorPolicyOptions]> = options$.pipe(
+      concatMap((options) => {
+        let opt = options;
+        if (opt == null) {
+          opt = Object.assign({}, DefaultOptions);
+        } else {
+          opt = Object.assign({}, DefaultOptions, options);
+        }
+        return this.enforcePasswordGeneratorPoliciesOnOptions$(opt);
+      }),
+      withLatestFrom(options$),
+      map(([enforcedOptions, options]) => {
+        return [enforcedOptions[0], enforcedOptions[1]];
+      })
+    );
+
+    return result;
   }
 
-  async enforcePasswordGeneratorPoliciesOnOptions(
+  enforcePasswordGeneratorPoliciesOnOptions$(
     options: any
-  ): Promise<[any, PasswordGeneratorPolicyOptions]> {
-    let enforcedPolicyOptions = await this.getPasswordGeneratorPolicyOptions();
-    if (enforcedPolicyOptions != null) {
-      if (options.length < enforcedPolicyOptions.minLength) {
-        options.length = enforcedPolicyOptions.minLength;
-      }
+  ): Observable<[any, PasswordGeneratorPolicyOptions]> {
+    return this.getPasswordGeneratorPolicyOptions$().pipe(
+      map((enforcedPolicyOptions) => {
+        if (enforcedPolicyOptions != null) {
+          if (options.length < enforcedPolicyOptions.minLength) {
+            options.length = enforcedPolicyOptions.minLength;
+          }
 
-      if (enforcedPolicyOptions.useUppercase) {
-        options.uppercase = true;
-      }
+          if (enforcedPolicyOptions.useUppercase) {
+            options.uppercase = true;
+          }
 
-      if (enforcedPolicyOptions.useLowercase) {
-        options.lowercase = true;
-      }
+          if (enforcedPolicyOptions.useLowercase) {
+            options.lowercase = true;
+          }
 
-      if (enforcedPolicyOptions.useNumbers) {
-        options.number = true;
-      }
+          if (enforcedPolicyOptions.useNumbers) {
+            options.number = true;
+          }
 
-      if (options.minNumber < enforcedPolicyOptions.numberCount) {
-        options.minNumber = enforcedPolicyOptions.numberCount;
-      }
+          if (options.minNumber < enforcedPolicyOptions.numberCount) {
+            options.minNumber = enforcedPolicyOptions.numberCount;
+          }
 
-      if (enforcedPolicyOptions.useSpecial) {
-        options.special = true;
-      }
+          if (enforcedPolicyOptions.useSpecial) {
+            options.special = true;
+          }
 
-      if (options.minSpecial < enforcedPolicyOptions.specialCount) {
-        options.minSpecial = enforcedPolicyOptions.specialCount;
-      }
+          if (options.minSpecial < enforcedPolicyOptions.specialCount) {
+            options.minSpecial = enforcedPolicyOptions.specialCount;
+          }
 
-      // Must normalize these fields because the receiving call expects all options to pass the current rules
-      if (options.minSpecial + options.minNumber > options.length) {
-        options.minSpecial = options.length - options.minNumber;
-      }
+          // Must normalize these fields because the receiving call expects all options to pass the current rules
+          if (options.minSpecial + options.minNumber > options.length) {
+            options.minSpecial = options.length - options.minNumber;
+          }
 
-      if (options.numWords < enforcedPolicyOptions.minNumberWords) {
-        options.numWords = enforcedPolicyOptions.minNumberWords;
-      }
+          if (options.numWords < enforcedPolicyOptions.minNumberWords) {
+            options.numWords = enforcedPolicyOptions.minNumberWords;
+          }
 
-      if (enforcedPolicyOptions.capitalize) {
-        options.capitalize = true;
-      }
+          if (enforcedPolicyOptions.capitalize) {
+            options.capitalize = true;
+          }
 
-      if (enforcedPolicyOptions.includeNumber) {
-        options.includeNumber = true;
-      }
+          if (enforcedPolicyOptions.includeNumber) {
+            options.includeNumber = true;
+          }
 
-      // Force default type if password/passphrase selected via policy
-      if (
-        enforcedPolicyOptions.defaultType === "password" ||
-        enforcedPolicyOptions.defaultType === "passphrase"
-      ) {
-        options.type = enforcedPolicyOptions.defaultType;
-      }
-    } else {
-      // UI layer expects an instantiated object to prevent more explicit null checks
-      enforcedPolicyOptions = new PasswordGeneratorPolicyOptions();
-    }
-    return [options, enforcedPolicyOptions];
+          // Force default type if password/passphrase selected via policy
+          if (
+            enforcedPolicyOptions.defaultType === "password" ||
+            enforcedPolicyOptions.defaultType === "passphrase"
+          ) {
+            options.type = enforcedPolicyOptions.defaultType;
+          }
+        } else {
+          // UI layer expects an instantiated object to prevent more explicit null checks
+          enforcedPolicyOptions = new PasswordGeneratorPolicyOptions();
+        }
+        return [options, enforcedPolicyOptions];
+      })
+    );
   }
 
-  async getPasswordGeneratorPolicyOptions(): Promise<PasswordGeneratorPolicyOptions> {
-    const policies: Policy[] =
-      this.policyService == null
-        ? null
-        : (await firstValueFrom(this.policyService.policies$)).filter(
-            (policy) => policy.enabled && policy.type === PolicyType.PasswordGenerator
-          );
-    let enforcedOptions: PasswordGeneratorPolicyOptions = null;
+  getPasswordGeneratorPolicyOptions$(): Observable<PasswordGeneratorPolicyOptions> {
+    return this.policyService.policies$.pipe(
+      map((policies) =>
+        policies.filter((policy) => policy.enabled && policy.type === PolicyType.PasswordGenerator)
+      ),
+      map((policies) => {
+        let enforcedOptions: PasswordGeneratorPolicyOptions = null;
 
-    if (policies == null || policies.length === 0) {
-      return enforcedOptions;
-    }
+        if (policies == null || policies.length === 0) {
+          return enforcedOptions;
+        }
 
-    policies.forEach((currentPolicy) => {
-      if (!currentPolicy.enabled || currentPolicy.data == null) {
-        return;
-      }
+        policies.forEach((currentPolicy) => {
+          if (!currentPolicy.enabled || currentPolicy.data == null) {
+            return;
+          }
 
-      if (enforcedOptions == null) {
-        enforcedOptions = new PasswordGeneratorPolicyOptions();
-      }
+          if (enforcedOptions == null) {
+            enforcedOptions = new PasswordGeneratorPolicyOptions();
+          }
 
-      // Password wins in multi-org collisions
-      if (currentPolicy.data.defaultType != null && enforcedOptions.defaultType !== "password") {
-        enforcedOptions.defaultType = currentPolicy.data.defaultType;
-      }
+          // Password wins in multi-org collisions
+          if (
+            currentPolicy.data.defaultType != null &&
+            enforcedOptions.defaultType !== "password"
+          ) {
+            enforcedOptions.defaultType = currentPolicy.data.defaultType;
+          }
 
-      if (
-        currentPolicy.data.minLength != null &&
-        currentPolicy.data.minLength > enforcedOptions.minLength
-      ) {
-        enforcedOptions.minLength = currentPolicy.data.minLength;
-      }
+          if (
+            currentPolicy.data.minLength != null &&
+            currentPolicy.data.minLength > enforcedOptions.minLength
+          ) {
+            enforcedOptions.minLength = currentPolicy.data.minLength;
+          }
 
-      if (currentPolicy.data.useUpper) {
-        enforcedOptions.useUppercase = true;
-      }
+          if (currentPolicy.data.useUpper) {
+            enforcedOptions.useUppercase = true;
+          }
 
-      if (currentPolicy.data.useLower) {
-        enforcedOptions.useLowercase = true;
-      }
+          if (currentPolicy.data.useLower) {
+            enforcedOptions.useLowercase = true;
+          }
 
-      if (currentPolicy.data.useNumbers) {
-        enforcedOptions.useNumbers = true;
-      }
+          if (currentPolicy.data.useNumbers) {
+            enforcedOptions.useNumbers = true;
+          }
 
-      if (
-        currentPolicy.data.minNumbers != null &&
-        currentPolicy.data.minNumbers > enforcedOptions.numberCount
-      ) {
-        enforcedOptions.numberCount = currentPolicy.data.minNumbers;
-      }
+          if (
+            currentPolicy.data.minNumbers != null &&
+            currentPolicy.data.minNumbers > enforcedOptions.numberCount
+          ) {
+            enforcedOptions.numberCount = currentPolicy.data.minNumbers;
+          }
 
-      if (currentPolicy.data.useSpecial) {
-        enforcedOptions.useSpecial = true;
-      }
+          if (currentPolicy.data.useSpecial) {
+            enforcedOptions.useSpecial = true;
+          }
 
-      if (
-        currentPolicy.data.minSpecial != null &&
-        currentPolicy.data.minSpecial > enforcedOptions.specialCount
-      ) {
-        enforcedOptions.specialCount = currentPolicy.data.minSpecial;
-      }
+          if (
+            currentPolicy.data.minSpecial != null &&
+            currentPolicy.data.minSpecial > enforcedOptions.specialCount
+          ) {
+            enforcedOptions.specialCount = currentPolicy.data.minSpecial;
+          }
 
-      if (
-        currentPolicy.data.minNumberWords != null &&
-        currentPolicy.data.minNumberWords > enforcedOptions.minNumberWords
-      ) {
-        enforcedOptions.minNumberWords = currentPolicy.data.minNumberWords;
-      }
+          if (
+            currentPolicy.data.minNumberWords != null &&
+            currentPolicy.data.minNumberWords > enforcedOptions.minNumberWords
+          ) {
+            enforcedOptions.minNumberWords = currentPolicy.data.minNumberWords;
+          }
 
-      if (currentPolicy.data.capitalize) {
-        enforcedOptions.capitalize = true;
-      }
+          if (currentPolicy.data.capitalize) {
+            enforcedOptions.capitalize = true;
+          }
 
-      if (currentPolicy.data.includeNumber) {
-        enforcedOptions.includeNumber = true;
-      }
-    });
+          if (currentPolicy.data.includeNumber) {
+            enforcedOptions.includeNumber = true;
+          }
+        });
 
-    return enforcedOptions;
+        return enforcedOptions;
+      })
+    );
   }
 
   async saveOptions(options: any) {

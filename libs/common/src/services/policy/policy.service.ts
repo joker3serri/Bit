@@ -1,4 +1,4 @@
-import { concatMap, BehaviorSubject } from "rxjs";
+import { concatMap, BehaviorSubject, firstValueFrom } from "rxjs";
 
 import { Utils } from "@bitwarden/common/misc/utils";
 
@@ -41,10 +41,16 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     });
   }
 
-  async getMasterPasswordPolicyOptions(policies: Policy[]): Promise<MasterPasswordPolicyOptions> {
+  async getMasterPasswordPolicyOptions(policies?: Policy[]): Promise<MasterPasswordPolicyOptions> {
     let enforcedOptions: MasterPasswordPolicyOptions = null;
 
-    policies = policies.filter((p) => p.type === PolicyType.MasterPassword);
+    if (policies == null) {
+      policies = (await firstValueFrom(this.policies$)).filter(
+        (p) => p.type === PolicyType.MasterPassword
+      );
+    } else {
+      policies = policies.filter((p) => p.type === PolicyType.MasterPassword);
+    }
 
     if (policies == null || policies.length === 0) {
       return enforcedOptions;

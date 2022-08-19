@@ -75,9 +75,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
   reprompt = false;
   canUseReprompt = true;
 
+  protected destroy$ = new Subject<void>();
   protected writeableCollections: CollectionView[];
+  private policyAppliesToUser: boolean;
   private previousCipherId: string;
-  private destroy$ = new Subject<void>();
 
   constructor(
     protected cipherService: CipherService,
@@ -158,7 +159,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.destroy$),
         concatMap(async (policyAppliesToUser) => {
-          await this.init(policyAppliesToUser);
+          this.policyAppliesToUser = policyAppliesToUser;
+          await this.init();
         })
       )
       .subscribe();
@@ -169,11 +171,11 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  async init(policyAppliesToUser: boolean) {
+  async init() {
     if (this.ownershipOptions.length) {
       this.ownershipOptions = [];
     }
-    if (policyAppliesToUser) {
+    if (this.policyAppliesToUser) {
       this.allowPersonal = false;
     } else {
       const myEmail = await this.stateService.getEmail();

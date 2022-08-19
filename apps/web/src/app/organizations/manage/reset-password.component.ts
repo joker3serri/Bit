@@ -1,4 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from "@angular/core";
+import { concatMap, Subject, takeUntil } from "rxjs";
 import zxcvbn from "zxcvbn";
 
 import { PasswordStrengthComponent } from "@bitwarden/angular/shared/components/password-strength/password-strength.component";
@@ -18,7 +27,7 @@ import { OrganizationUserResetPasswordRequest } from "@bitwarden/common/models/r
   selector: "app-reset-password",
   templateUrl: "reset-password.component.html",
 })
-export class ResetPasswordComponent implements OnInit {
+export class ResetPasswordComponent implements OnInit, OnDestroy {
   @Input() name: string;
   @Input() email: string;
   @Input() id: string;
@@ -32,6 +41,9 @@ export class ResetPasswordComponent implements OnInit {
   passwordStrengthResult: zxcvbn.ZXCVBNResult;
   formPromise: Promise<any>;
 
+  private destroy$ = new Subject<void>();
+  private options: any = null;
+
   constructor(
     private apiService: ApiService,
     private i18nService: I18nService,
@@ -43,8 +55,27 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    // Get Enforced Policy Options
-    this.enforcedPolicyOptions = await this.policyService.getMasterPasswordPolicyOptions();
+    this.policyService.policies$
+      .pipe(
+        takeUntil(this.destroy$),
+        concatMap(async (policies) => {
+          // Get Enforced Policy Options
+          this.enforcedPolicyOptions = await this.policyService.getMasterPasswordPolicyOptions(
+            policies
+          );
+        })
+      )
+      .subscribe();
+
+    this.passwordGenerationService
+      .getOptions$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((options) => (this.options = options[0]));
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   get loggedOutWarningName() {
@@ -52,8 +83,7 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   async generatePassword() {
-    const options = (await this.passwordGenerationService.getOptions())[0];
-    this.newPassword = await this.passwordGenerationService.generatePassword(options);
+    this.newPassword = await this.passwordGenerationService.generatePassword(this.options);
     this.passwordStrengthComponent.updatePasswordStrength(this.newPassword);
   }
 

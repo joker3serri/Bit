@@ -1,5 +1,6 @@
-import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { combineLatestWith, Subject, takeUntil } from "rxjs";
 import { first } from "rxjs/operators";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -11,7 +12,7 @@ import { UsernameGenerationService } from "@bitwarden/common/abstractions/userna
 import { PasswordGeneratorPolicyOptions } from "@bitwarden/common/models/domain/passwordGeneratorPolicyOptions";
 
 @Directive()
-export class GeneratorComponent implements OnInit {
+export class GeneratorComponent implements OnInit, OnDestroy {
   @Input() comingFromAddEdit = false;
   @Input() type: string;
   @Output() onSelected = new EventEmitter<string>();
@@ -31,6 +32,8 @@ export class GeneratorComponent implements OnInit {
   avoidAmbiguous = false;
   enforcedPasswordPolicyOptions: PasswordGeneratorPolicyOptions;
   usernameWebsite: string = null;
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     protected passwordGenerationService: PasswordGenerationService,
@@ -79,45 +82,56 @@ export class GeneratorComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
-      const passwordOptionsResponse = await this.passwordGenerationService.getOptions();
-      this.passwordOptions = passwordOptionsResponse[0];
-      this.enforcedPasswordPolicyOptions = passwordOptionsResponse[1];
-      this.avoidAmbiguous = !this.passwordOptions.ambiguous;
-      this.passwordOptions.type =
-        this.passwordOptions.type === "passphrase" ? "passphrase" : "password";
+    this.route.queryParams
+      .pipe(
+        first(),
+        combineLatestWith(
+          this.passwordGenerationService.getOptions$().pipe(takeUntil(this.destroy$))
+        )
+      )
+      .subscribe(async ([qParams, passwordOptionsResponse]) => {
+        this.passwordOptions = passwordOptionsResponse[0];
+        this.enforcedPasswordPolicyOptions = passwordOptionsResponse[1];
+        this.avoidAmbiguous = !this.passwordOptions.ambiguous;
+        this.passwordOptions.type =
+          this.passwordOptions.type === "passphrase" ? "passphrase" : "password";
 
-      this.usernameOptions = await this.usernameGenerationService.getOptions();
-      if (this.usernameOptions.type == null) {
-        this.usernameOptions.type = "word";
-      }
-      if (
-        this.usernameOptions.subaddressEmail == null ||
-        this.usernameOptions.subaddressEmail === ""
-      ) {
-        this.usernameOptions.subaddressEmail = await this.stateService.getEmail();
-      }
-      if (this.usernameWebsite == null) {
-        this.usernameOptions.subaddressType = this.usernameOptions.catchallType = "random";
-      } else {
-        this.usernameOptions.website = this.usernameWebsite;
-        const websiteOption = { name: this.i18nService.t("websiteName"), value: "website-name" };
-        this.subaddressOptions.push(websiteOption);
-        this.catchallOptions.push(websiteOption);
-      }
-
-      if (this.type !== "username" && this.type !== "password") {
-        if (qParams.type === "username" || qParams.type === "password") {
-          this.type = qParams.type;
-        } else {
-          const generatorOptions = await this.stateService.getGeneratorOptions();
-          this.type = generatorOptions?.type ?? "password";
+        this.usernameOptions = await this.usernameGenerationService.getOptions();
+        if (this.usernameOptions.type == null) {
+          this.usernameOptions.type = "word";
         }
-      }
-      if (this.regenerateWithoutButtonPress()) {
-        await this.regenerate();
-      }
-    });
+        if (
+          this.usernameOptions.subaddressEmail == null ||
+          this.usernameOptions.subaddressEmail === ""
+        ) {
+          this.usernameOptions.subaddressEmail = await this.stateService.getEmail();
+        }
+        if (this.usernameWebsite == null) {
+          this.usernameOptions.subaddressType = this.usernameOptions.catchallType = "random";
+        } else {
+          this.usernameOptions.website = this.usernameWebsite;
+          const websiteOption = { name: this.i18nService.t("websiteName"), value: "website-name" };
+          this.subaddressOptions.push(websiteOption);
+          this.catchallOptions.push(websiteOption);
+        }
+
+        if (this.type !== "username" && this.type !== "password") {
+          if (qParams.type === "username" || qParams.type === "password") {
+            this.type = qParams.type;
+          } else {
+            const generatorOptions = await this.stateService.getGeneratorOptions();
+            this.type = generatorOptions?.type ?? "password";
+          }
+        }
+        if (this.regenerateWithoutButtonPress()) {
+          await this.regenerate();
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.unsubscribe();
   }
 
   async typeChanged() {
