@@ -9,7 +9,7 @@ import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service
 import { EncryptService } from "@bitwarden/common/services/encrypt.service";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/nodeCryptoFunction.service";
 
-import { CipherCreatePayload } from "../../src/models/nativeMessaging/cipherCreatePayload";
+import { CredentialCreatePayload } from "../../src/models/nativeMessaging/credentialCreatePayload";
 import { CredentialUpdatePayload } from "../../src/models/nativeMessaging/credentialUpdatePayload";
 import { DecryptedCommandData } from "../../src/models/nativeMessaging/decryptedCommandData";
 import { EncryptedMessage } from "../../src/models/nativeMessaging/encryptedMessage";
@@ -98,7 +98,7 @@ export default class NativeMessageService {
           userName: "SuperAwesomeUser",
           password: "dolhpin",
           uri: "google.com",
-        } as CipherCreatePayload,
+        } as CredentialCreatePayload,
       },
       key
     );

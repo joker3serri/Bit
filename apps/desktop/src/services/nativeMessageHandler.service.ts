@@ -17,8 +17,8 @@ import { LoginView } from "@bitwarden/common/models/view/loginView";
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 
-import { CipherCreatePayload } from "src/models/nativeMessaging/cipherCreatePayload";
-import { CiphersResponse } from "src/models/nativeMessaging/ciphersResponse";
+import { CipherResponse } from "src/models/nativeMessaging/ciphersResponse";
+import { CredentialCreatePayload } from "src/models/nativeMessaging/credentialCreatePayload";
 import { CredentialUpdatePayload } from "src/models/nativeMessaging/credentialUpdatePayload";
 import { DecryptedCommandData } from "src/models/nativeMessaging/decryptedCommandData";
 import { EncryptedMessage } from "src/models/nativeMessaging/encryptedMessage";
@@ -143,7 +143,7 @@ export class NativeMessageHandler {
           return;
         }
 
-        const ciphersResponse: CiphersResponse[] = [];
+        const ciphersResponse: CipherResponse[] = [];
         const activeUserId = await this.stateService.getUserId();
         const authStatus = await this.authService.getAuthStatus(activeUserId);
 
@@ -161,7 +161,7 @@ export class NativeMessageHandler {
             userName: c.login.username,
             password: c.login.password,
             name: c.name,
-          } as CiphersResponse);
+          } as CipherResponse);
         });
 
         return ciphersResponse;
@@ -174,10 +174,10 @@ export class NativeMessageHandler {
           return { error: "locked" };
         }
 
-        const cipherCreatePayload = payload as CipherCreatePayload;
+        const credentialCreatePayload = payload as CredentialCreatePayload;
 
         if (
-          cipherCreatePayload.name == null ||
+          credentialCreatePayload.name == null ||
           (await this.policyService.policyAppliesToUser(PolicyType.PersonalOwnership))
         ) {
           return { status: "failure" };
@@ -187,10 +187,10 @@ export class NativeMessageHandler {
         cipherView.type = CipherType.Login;
         cipherView.name = payload.name;
         cipherView.login = new LoginView();
-        cipherView.login.password = cipherCreatePayload.password;
-        cipherView.login.username = cipherCreatePayload.userName;
+        cipherView.login.password = credentialCreatePayload.password;
+        cipherView.login.username = credentialCreatePayload.userName;
         cipherView.login.uris = [new LoginUriView()];
-        cipherView.login.uris[0].uri = cipherCreatePayload.uri;
+        cipherView.login.uris[0].uri = credentialCreatePayload.uri;
 
         try {
           const encrypted = await this.cipherService.encrypt(cipherView);
@@ -209,22 +209,22 @@ export class NativeMessageHandler {
           return { error: "locked" };
         }
 
-        const cipherUpdatePayload = payload as CredentialUpdatePayload;
+        const credentialUpdatePayload = payload as CredentialUpdatePayload;
 
-        if (cipherUpdatePayload.name == null) {
+        if (credentialUpdatePayload.name == null) {
           return { status: "failure" };
         }
 
         try {
-          const cipher = await this.cipherService.get(cipherUpdatePayload.credentialId);
+          const cipher = await this.cipherService.get(credentialUpdatePayload.credentialId);
           if (cipher === null) {
             return { status: "failure" };
           }
           const cipherView = await cipher.decrypt();
-          cipherView.name = cipherUpdatePayload.name;
-          cipherView.login.password = cipherUpdatePayload.password;
-          cipherView.login.username = cipherUpdatePayload.userName;
-          cipherView.login.uris[0].uri = cipherUpdatePayload.uri;
+          cipherView.name = credentialUpdatePayload.name;
+          cipherView.login.password = credentialUpdatePayload.password;
+          cipherView.login.username = credentialUpdatePayload.userName;
+          cipherView.login.uris[0].uri = credentialUpdatePayload.uri;
           const encrypted = await this.cipherService.encrypt(cipherView);
 
           await this.cipherService.saveWithServer(encrypted);
