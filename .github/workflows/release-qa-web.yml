@@ -129,8 +129,8 @@ jobs:
           git config --global url."https://".insteadOf ssh://
 
       - name: Deploy CloudFlare Pages
+        working-directory: apps/web
         run: |
-          cd apps/web
           rm -rf ./*
           cp -R ../apps/web/build/* .
         working-directory: deployment
