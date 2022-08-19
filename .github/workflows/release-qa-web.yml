@@ -93,27 +93,28 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
-      # - name: Download latest cloud asset
-      #   uses: bitwarden/gh-actions/download-artifacts@c1fa8e09871a860862d6bbe36184b06d2c7e35a8
-      #   with:
-      #     workflow: build-web.yml
-      #     path: apps/web
-      #     workflow_conclusion: success
-      #     # branch: ${{ github.ref_name }}
-      #     branch: hotfix-rc
-      #     artifacts: web-*-cloud-COMMERCIAL.zip
-
-      - name: Download artifact from build
-        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
+      - name: Download latest cloud asset
+        uses: bitwarden/gh-actions/download-artifacts@c1fa8e09871a860862d6bbe36184b06d2c7e35a8
         with:
           workflow: build-web.yml
+          path: apps/web
           workflow_conclusion: success
-          branch: hotfix-rc
-          skip_unpack: true
+          # branch: ${{ github.ref_name }}
+          branch: rc
+          artifacts: web-*-cloud-COMMERCIAL.zip
+
+      # - name: Download artifact from build
+      #   uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39  # v2.19.0
+      #   with:
+      #     workflow: build-web.yml
+      #     workflow_conclusion: success
+      #     branch: hotfix-rc
+      #     skip_unpack: true
 
       # This should result in a build directory in the current working directory
       - name: Unzip build asset
-        run: unzip web-*-cloud-COMMERCIAL.zip.zip -d apps/web
+        working-directory: apps/web
+        run: unzip web-*-cloud-COMMERCIAL.zip
 
       - name: Checkout Repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
