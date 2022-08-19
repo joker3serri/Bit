@@ -19,6 +19,7 @@ import { StateService } from "@bitwarden/common/services/state.service";
 
 import { CipherCreatePayload } from "src/models/nativeMessaging/cipherCreatePayload";
 import { CiphersResponse } from "src/models/nativeMessaging/ciphersResponse";
+import { CredentialUpdatePayload } from "src/models/nativeMessaging/credentialUpdatePayload";
 import { DecryptedCommandData } from "src/models/nativeMessaging/decryptedCommandData";
 import { EncryptedMessage } from "src/models/nativeMessaging/encryptedMessage";
 import { EncryptedMessageResponse } from "src/models/nativeMessaging/encryptedMessageResponse";
@@ -193,6 +194,39 @@ export class NativeMessageHandler {
 
         try {
           const encrypted = await this.cipherService.encrypt(cipherView);
+          await this.cipherService.saveWithServer(encrypted);
+
+          return { status: "success" };
+        } catch (error) {
+          return { status: "failure" };
+        }
+      }
+      case "bw-credential-update": {
+        const activeUserId = await this.stateService.getUserId();
+        const authStatus = await this.authService.getAuthStatus(activeUserId);
+
+        if (authStatus !== AuthenticationStatus.Unlocked) {
+          return { error: "locked" };
+        }
+
+        const cipherUpdatePayload = payload as CredentialUpdatePayload;
+
+        if (cipherUpdatePayload.name == null) {
+          return { status: "failure" };
+        }
+
+        try {
+          const cipher = await this.cipherService.get(cipherUpdatePayload.credentialId);
+          if (cipher === null) {
+            return { status: "failure" };
+          }
+          const cipherView = await cipher.decrypt();
+          cipherView.name = cipherUpdatePayload.name;
+          cipherView.login.password = cipherUpdatePayload.password;
+          cipherView.login.username = cipherUpdatePayload.userName;
+          cipherView.login.uris[0].uri = cipherUpdatePayload.uri;
+          const encrypted = await this.cipherService.encrypt(cipherView);
+
           await this.cipherService.saveWithServer(encrypted);
 
           return { status: "success" };
