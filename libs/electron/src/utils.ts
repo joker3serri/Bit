@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { ipcRenderer } from "electron";
 
 export type RendererMenuItem = {

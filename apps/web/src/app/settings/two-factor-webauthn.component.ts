@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, NgZone } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";

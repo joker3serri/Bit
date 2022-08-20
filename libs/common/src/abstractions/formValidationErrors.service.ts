@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { AbstractControl } from "@angular/forms";
 export interface AllValidationErrors {
   controlName: string;

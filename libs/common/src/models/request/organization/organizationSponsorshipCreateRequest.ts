@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { PlanSponsorshipType } from "../../../enums/planSponsorshipType";
 
 export class OrganizationSponsorshipCreateRequest {

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { ITreeNodeObject, TreeNode } from "../models/domain/treeNode";
 
 export class ServiceUtils {

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SendFileView } from "@bitwarden/common/models/view/sendFileView";
 
 export class SendFileResponse {

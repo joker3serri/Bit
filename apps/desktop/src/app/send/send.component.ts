@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 
 import { SendComponent as BaseSendComponent } from "@bitwarden/angular/components/send/send.component";

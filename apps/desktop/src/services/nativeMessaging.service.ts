@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Injectable } from "@angular/core";
 import { ipcRenderer } from "electron";
 import Swal from "sweetalert2";

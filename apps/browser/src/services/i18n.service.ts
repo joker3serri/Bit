@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { I18nService as BaseI18nService } from "@bitwarden/common/services/i18n.service";
 
 export default class I18nService extends BaseI18nService {

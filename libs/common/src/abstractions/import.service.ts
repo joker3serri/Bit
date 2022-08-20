@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { ImportOption, ImportType } from "../enums/importOptions";
 import { ImportError } from "../importers/importError";
 import { Importer } from "../importers/importer";

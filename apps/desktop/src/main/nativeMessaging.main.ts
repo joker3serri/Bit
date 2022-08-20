@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { existsSync, promises as fs } from "fs";
 import { Socket } from "net";
 import { homedir, userInfo } from "os";

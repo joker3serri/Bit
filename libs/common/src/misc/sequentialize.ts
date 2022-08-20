@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 /**
  * Use as a Decorator on async functions, it will prevent multiple 'active' calls as the same time
  *

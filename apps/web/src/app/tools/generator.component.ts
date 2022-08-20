@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 

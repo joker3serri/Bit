@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { StateMigrationService as BaseStateMigrationService } from "@bitwarden/common/services/stateMigration.service";
 
 import { Account } from "./state/account";

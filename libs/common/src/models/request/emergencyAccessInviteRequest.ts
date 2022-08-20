@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { EmergencyAccessType } from "../../enums/emergencyAccessType";
 
 export class EmergencyAccessInviteRequest {

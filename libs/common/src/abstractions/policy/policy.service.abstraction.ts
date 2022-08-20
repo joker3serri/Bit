@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { PolicyType } from "../../enums/policyType";
 import { PolicyData } from "../../models/data/policyData";
 import { MasterPasswordPolicyOptions } from "../../models/domain/masterPasswordPolicyOptions";

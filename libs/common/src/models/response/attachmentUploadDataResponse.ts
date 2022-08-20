@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { FileUploadType } from "../../enums/fileUploadType";
 
 import { BaseResponse } from "./baseResponse";

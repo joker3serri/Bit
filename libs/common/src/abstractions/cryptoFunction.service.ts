@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { DecryptParameters } from "../models/domain/decryptParameters";
 import { SymmetricCryptoKey } from "../models/domain/symmetricCryptoKey";
 

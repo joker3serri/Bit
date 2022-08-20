@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 export class ForwarderOptions {
   apiKey: string;
   website: string;

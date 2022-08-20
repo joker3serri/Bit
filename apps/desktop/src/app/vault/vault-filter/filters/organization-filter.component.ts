@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component } from "@angular/core";
 
 import { OrganizationFilterComponent as BaseOrganizationFilterComponent } from "@bitwarden/angular/vault/vault-filter/components/organization-filter.component";

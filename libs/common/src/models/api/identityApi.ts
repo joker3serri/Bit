@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { BaseResponse } from "../response/baseResponse";
 
 export class IdentityApi extends BaseResponse {

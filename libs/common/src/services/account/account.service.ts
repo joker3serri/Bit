@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { AccountApiService } from "@bitwarden/common/abstractions/account/account-api.service.abstraction";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";

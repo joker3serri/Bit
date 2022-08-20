@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { AfterContentInit, Component, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CipherType } from "../enums/cipherType";
 import { ImportResult } from "../models/domain/importResult";
 import { CardView } from "../models/view/cardView";

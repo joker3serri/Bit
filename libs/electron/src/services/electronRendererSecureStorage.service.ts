@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { ipcRenderer } from "electron";
 
 import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";

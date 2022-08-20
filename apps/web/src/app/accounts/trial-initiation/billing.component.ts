@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { UntypedFormBuilder, FormGroup } from "@angular/forms";
 import { Router } from "@angular/router";

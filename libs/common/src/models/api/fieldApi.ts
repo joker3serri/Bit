@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { FieldType } from "../../enums/fieldType";
 import { LinkedIdType } from "../../enums/linkedIdType";
 import { BaseResponse } from "../response/baseResponse";

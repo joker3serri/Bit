@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 export abstract class UsernameGenerationService {
   generateUsername: (options: any) => Promise<string>;
   generateWord: (options: any) => Promise<string>;

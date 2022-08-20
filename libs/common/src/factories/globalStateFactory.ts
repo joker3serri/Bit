@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { GlobalState } from "../models/domain/globalState";
 
 export class GlobalStateFactory<T extends GlobalState = GlobalState> {

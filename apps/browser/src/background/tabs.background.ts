@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import MainBackground from "./main.background";
 import NotificationBackground from "./notification.background";
 

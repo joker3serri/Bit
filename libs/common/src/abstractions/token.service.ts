@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { IdentityTokenResponse } from "../models/response/identityTokenResponse";
 
 export abstract class TokenService {

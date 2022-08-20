@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
 
 import { Folder } from "@bitwarden/common/models/domain/folder";

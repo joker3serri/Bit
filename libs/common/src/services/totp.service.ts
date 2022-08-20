@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CryptoFunctionService } from "../abstractions/cryptoFunction.service";
 import { LogService } from "../abstractions/log.service";
 import { TotpService as TotpServiceAbstraction } from "../abstractions/totp.service";

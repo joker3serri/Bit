@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { ipcMain } from "electron";
 
 import { passwords } from "@bitwarden/desktop-native";

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 /* eslint-disable no-useless-escape */
 import * as tldjs from "tldjs";
 

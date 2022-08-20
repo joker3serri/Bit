@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as crypto from "crypto";
 
 import * as forge from "node-forge";

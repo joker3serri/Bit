@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 
 import AutofillField from "../../models/autofillField";

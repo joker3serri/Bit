@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Folder } from "@bitwarden/common/models/domain/folder";
 import { FolderResponse } from "@bitwarden/common/models/response/folderResponse";
 

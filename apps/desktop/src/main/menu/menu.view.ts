@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { MenuItemConstructorOptions } from "electron";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";

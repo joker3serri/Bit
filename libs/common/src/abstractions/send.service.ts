@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SendData } from "../models/data/sendData";
 import { EncArrayBuffer } from "../models/domain/encArrayBuffer";
 import { Send } from "../models/domain/send";

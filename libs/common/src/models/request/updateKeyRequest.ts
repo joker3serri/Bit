@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CipherWithIdRequest } from "./cipherWithIdRequest";
 import { FolderWithIdRequest } from "./folderWithIdRequest";
 import { SendWithIdRequest } from "./sendWithIdRequest";

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, NgZone, OnChanges, OnDestroy, ViewChild } from "@angular/core";
 import { NgForm } from "@angular/forms";
 

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CardData } from "../data/cardData";
 import { CardView } from "../view/cardView";
 

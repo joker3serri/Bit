@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { dialog, shell } from "electron";
 import log from "electron-log";
 import { autoUpdater } from "electron-updater";

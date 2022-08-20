@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { EncArrayBuffer } from "../models/domain/encArrayBuffer";
 import { EncString } from "../models/domain/encString";
 import { AttachmentUploadDataResponse } from "../models/response/attachmentUploadDataResponse";

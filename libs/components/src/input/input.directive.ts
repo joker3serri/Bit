@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Directive, HostBinding, Input, Optional, Self } from "@angular/core";
 import { NgControl, Validators } from "@angular/forms";
 

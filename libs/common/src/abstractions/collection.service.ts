@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CollectionData } from "../models/data/collectionData";
 import { Collection } from "../models/domain/collection";
 import { TreeNode } from "../models/domain/treeNode";

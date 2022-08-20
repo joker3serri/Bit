@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { BroadcasterService as BroadcasterServiceAbstraction } from "../abstractions/broadcaster.service";
 
 export class BroadcasterService implements BroadcasterServiceAbstraction {

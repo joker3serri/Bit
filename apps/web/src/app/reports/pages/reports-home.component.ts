@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, OnInit } from "@angular/core";
 
 import { StateService } from "@bitwarden/common/abstractions/state.service";

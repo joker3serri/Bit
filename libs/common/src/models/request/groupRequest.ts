@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SelectionReadOnlyRequest } from "./selectionReadOnlyRequest";
 
 export class GroupRequest {

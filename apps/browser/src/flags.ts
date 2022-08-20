@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { GroupPolicyEnvironment } from "./types/group-policy-environment";
 
 function getFlags<T>(envFlags: string | T): T {

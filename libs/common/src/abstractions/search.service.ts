@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CipherView } from "../models/view/cipherView";
 import { SendView } from "../models/view/sendView";
 

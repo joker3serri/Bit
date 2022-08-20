@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { OrganizationKeysRequest } from "./organizationKeysRequest";
 
 export class OrganizationUpdateRequest {

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { AuthService } from "./auth.service";
 
 export abstract class SystemService {

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { ButtonModule } from "../../button";

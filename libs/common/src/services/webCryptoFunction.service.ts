@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as forge from "node-forge";
 
 import { CryptoFunctionService } from "../abstractions/cryptoFunction.service";

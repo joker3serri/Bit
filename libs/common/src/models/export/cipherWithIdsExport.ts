@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Cipher as CipherDomain } from "../domain/cipher";
 import { CipherView } from "../view/cipherView";
 

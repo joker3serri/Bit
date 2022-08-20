@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import NotificationQueueMessage from "./notificationQueueMessage";
 
 export default class AddLoginQueueMessage extends NotificationQueueMessage {

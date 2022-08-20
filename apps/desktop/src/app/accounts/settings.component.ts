@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, OnInit } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 import { debounceTime } from "rxjs/operators";

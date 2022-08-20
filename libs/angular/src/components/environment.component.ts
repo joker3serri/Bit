@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Directive, EventEmitter, Output } from "@angular/core";
 
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";

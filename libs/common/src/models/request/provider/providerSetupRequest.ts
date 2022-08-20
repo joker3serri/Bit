@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 export class ProviderSetupRequest {
   name: string;
   businessName: string;

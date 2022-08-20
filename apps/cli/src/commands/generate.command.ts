@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { Response } from "@bitwarden/node/cli/models/response";

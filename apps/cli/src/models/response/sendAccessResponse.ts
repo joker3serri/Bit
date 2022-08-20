@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SendType } from "@bitwarden/common/enums/sendType";
 import { SendAccessView } from "@bitwarden/common/models/view/sendAccessView";
 import { BaseResponse } from "@bitwarden/node/cli/models/response/baseResponse";

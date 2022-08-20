@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as inquirer from "inquirer";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";

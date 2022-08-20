@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, OnInit } from "@angular/core";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";

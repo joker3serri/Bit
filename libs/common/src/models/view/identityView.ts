@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Jsonify } from "type-fest";
 
 import { IdentityLinkedId as LinkedId } from "../../enums/linkedIdType";

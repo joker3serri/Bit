@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { BaseResponse } from "@bitwarden/node/cli/models/response/baseResponse";

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { BaseResponse } from "./baseResponse";
 import { ProfileResponse } from "./profileResponse";
 

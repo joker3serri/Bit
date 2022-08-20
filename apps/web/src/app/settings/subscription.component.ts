@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component } from "@angular/core";
 
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { AbstractCachedStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { GlobalState } from "@bitwarden/common/models/domain/globalState";
 import { StorageOptions } from "@bitwarden/common/models/domain/storageOptions";

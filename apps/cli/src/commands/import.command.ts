@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as program from "commander";
 import * as inquirer from "inquirer";
 

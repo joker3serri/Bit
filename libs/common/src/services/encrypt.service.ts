@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { Utils } from "@bitwarden/common/misc/utils";

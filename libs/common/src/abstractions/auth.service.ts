@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { AuthenticationStatus } from "../enums/authenticationStatus";
 import { AuthResult } from "../models/domain/authResult";
 import {

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as papa from "papaparse";
 
 import { LogService } from "../abstractions/log.service";

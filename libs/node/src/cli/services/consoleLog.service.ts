@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { LogLevelType } from "@bitwarden/common/enums/logLevelType";
 import { ConsoleLogService as BaseConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
 

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { PlanType } from "../../enums/planType";
 
 import { OrganizationKeysRequest } from "./organizationKeysRequest";

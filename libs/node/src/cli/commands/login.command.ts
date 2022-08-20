@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as http from "http";
 
 import * as program from "commander";

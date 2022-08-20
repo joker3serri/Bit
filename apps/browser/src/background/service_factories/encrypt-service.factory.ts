@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { EncryptService } from "@bitwarden/common/services/encrypt.service";
 
 import {

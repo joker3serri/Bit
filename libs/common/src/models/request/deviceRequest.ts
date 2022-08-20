@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { DeviceType } from "../../enums/deviceType";
 

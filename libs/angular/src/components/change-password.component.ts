@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Directive, OnInit } from "@angular/core";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";

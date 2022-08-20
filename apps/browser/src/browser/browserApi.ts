@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 export class BrowserApi {
   static isWebExtensionsApi: boolean = typeof browser !== "undefined";
   static isSafariApi: boolean =

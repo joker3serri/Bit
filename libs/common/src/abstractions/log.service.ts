@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { LogLevelType } from "../enums/logLevelType";
 
 export abstract class LogService {

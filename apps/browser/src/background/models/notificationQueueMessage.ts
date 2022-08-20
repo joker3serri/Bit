@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { NotificationQueueMessageType } from "./notificationQueueMessageType";
 
 export default class NotificationQueueMessage {

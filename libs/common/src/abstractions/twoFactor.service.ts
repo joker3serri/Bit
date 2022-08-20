@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { TwoFactorProviderType } from "../enums/twoFactorProviderType";
 import { IdentityTwoFactorResponse } from "../models/response/identityTwoFactorResponse";
 

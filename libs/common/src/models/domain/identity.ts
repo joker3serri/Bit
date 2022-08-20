@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { IdentityData } from "../data/identityData";
 import { IdentityView } from "../view/identityView";
 

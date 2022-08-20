@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { VerifyOTPRequest } from "@bitwarden/common/models/request/account/verifyOTPRequest";
 
 export abstract class UserVerificationApiServiceAbstraction {

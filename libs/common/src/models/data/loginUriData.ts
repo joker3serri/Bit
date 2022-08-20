@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { UriMatchType } from "../../enums/uriMatchType";
 import { LoginUriApi } from "../api/loginUriApi";
 

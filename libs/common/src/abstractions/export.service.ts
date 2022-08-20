@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { EventView } from "../models/view/eventView";
 
 export type ExportFormat = "csv" | "json" | "encrypted_json";

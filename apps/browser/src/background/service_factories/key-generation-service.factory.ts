@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { KeyGenerationService } from "../../services/keyGeneration.service";
 
 import {

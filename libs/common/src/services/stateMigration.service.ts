@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { AbstractStorageService } from "../abstractions/storage.service";
 import { HtmlStorageLocation } from "../enums/htmlStorageLocation";
 import { KdfType } from "../enums/kdfType";

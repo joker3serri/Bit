@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 export default class AutofillForm {
   opid: string;
   htmlName: string;

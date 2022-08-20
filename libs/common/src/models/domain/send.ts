@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CryptoService } from "../../abstractions/crypto.service";
 import { SendType } from "../../enums/sendType";
 import { Utils } from "../../misc/utils";

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { EncryptionType } from "@bitwarden/common/enums/encryptionType";
 import { IEncrypted } from "@bitwarden/common/interfaces/IEncrypted";
 import { Utils } from "@bitwarden/common/misc/utils";

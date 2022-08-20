@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";

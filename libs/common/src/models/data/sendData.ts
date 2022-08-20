@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SendType } from "../../enums/sendType";
 import { SendResponse } from "../response/sendResponse";
 

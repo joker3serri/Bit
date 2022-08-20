@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Meta, Story } from "@storybook/angular";
 
 import { BitIconComponent } from "./icon.component";

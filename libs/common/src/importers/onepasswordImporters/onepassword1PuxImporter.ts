@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
 import { FieldType } from "../../enums/fieldType";

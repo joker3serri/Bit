@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SendText } from "../domain/sendText";
 
 import { View } from "./view";

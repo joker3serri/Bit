@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { TaxInfoUpdateRequest } from "./taxInfoUpdateRequest";
 
 export class OrganizationTaxInfoUpdateRequest extends TaxInfoUpdateRequest {

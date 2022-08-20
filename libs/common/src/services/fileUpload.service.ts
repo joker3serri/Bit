@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { ApiService } from "../abstractions/api.service";
 import { FileUploadService as FileUploadServiceAbstraction } from "../abstractions/fileUpload.service";
 import { LogService } from "../abstractions/log.service";

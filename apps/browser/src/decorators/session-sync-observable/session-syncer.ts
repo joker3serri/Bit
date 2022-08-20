@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { BehaviorSubject, Subscription } from "rxjs";
 
 import { Utils } from "@bitwarden/common/misc/utils";

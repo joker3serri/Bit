@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";

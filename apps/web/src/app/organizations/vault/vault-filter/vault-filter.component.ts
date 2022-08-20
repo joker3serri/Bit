@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component } from "@angular/core";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";

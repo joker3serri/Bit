@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SendTextApi } from "../api/sendTextApi";
 
 export class SendTextData {

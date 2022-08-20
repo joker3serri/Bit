@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CryptoService } from "../../abstractions/crypto.service";
 import { EncryptedOrganizationKeyData } from "../../models/data/encryptedOrganizationKeyData";
 

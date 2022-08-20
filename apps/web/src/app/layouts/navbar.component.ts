@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, NgZone, OnInit } from "@angular/core";
 
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";

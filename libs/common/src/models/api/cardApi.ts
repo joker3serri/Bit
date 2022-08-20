@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { BaseResponse } from "../response/baseResponse";
 
 export class CardApi extends BaseResponse {

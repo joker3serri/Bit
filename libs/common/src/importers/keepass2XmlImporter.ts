@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { FieldType } from "../enums/fieldType";
 import { ImportResult } from "../models/domain/importResult";
 import { FolderView } from "../models/view/folderView";

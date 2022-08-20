@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
 import { ChangePasswordComponent } from "@bitwarden/angular/components/change-password.component";

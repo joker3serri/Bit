@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { ClientType } from "@bitwarden/common/enums/clientType";

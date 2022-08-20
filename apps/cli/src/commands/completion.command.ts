@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as program from "commander";
 
 import { Response } from "@bitwarden/node/cli/models/response";

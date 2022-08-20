@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CardApi } from "../api/cardApi";
 
 export class CardData {

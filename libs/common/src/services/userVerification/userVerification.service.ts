@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CryptoService } from "../../abstractions/crypto.service";
 import { I18nService } from "../../abstractions/i18n.service";
 import { UserVerificationApiServiceAbstraction } from "../../abstractions/userVerification/userVerification-api.service.abstraction";

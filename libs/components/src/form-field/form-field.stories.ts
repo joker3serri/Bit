@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import {
   AbstractControl,
   UntypedFormBuilder,

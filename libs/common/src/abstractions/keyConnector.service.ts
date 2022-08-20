@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Organization } from "../models/domain/organization";
 import { IdentityTokenResponse } from "../models/response/identityTokenResponse";
 

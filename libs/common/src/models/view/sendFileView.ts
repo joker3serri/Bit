@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SendFile } from "../domain/sendFile";
 
 import { View } from "./view";

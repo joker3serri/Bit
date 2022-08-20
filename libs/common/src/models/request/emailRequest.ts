@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { EmailTokenRequest } from "./emailTokenRequest";
 
 export class EmailRequest extends EmailTokenRequest {

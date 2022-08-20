@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 export class SyncedItemMetadata {
   propertyKey: string;
   sessionKey: string;

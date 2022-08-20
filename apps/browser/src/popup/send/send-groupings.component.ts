@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { ChangeDetectorRef, Component, NgZone } from "@angular/core";
 import { Router } from "@angular/router";
 

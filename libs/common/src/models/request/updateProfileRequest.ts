@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 export class UpdateProfileRequest {
   name: string;
   masterPasswordHint: string;

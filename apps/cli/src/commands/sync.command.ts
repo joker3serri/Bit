@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SyncService } from "@bitwarden/common/abstractions/sync.service";
 import { Response } from "@bitwarden/node/cli/models/response";
 import { MessageResponse } from "@bitwarden/node/cli/models/response/messageResponse";

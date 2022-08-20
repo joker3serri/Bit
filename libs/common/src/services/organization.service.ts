@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { OrganizationService as OrganizationServiceAbstraction } from "../abstractions/organization.service";
 import { StateService } from "../abstractions/state.service";
 import { OrganizationData } from "../models/data/organizationData";

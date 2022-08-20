@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as fetch from "node-fetch";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";

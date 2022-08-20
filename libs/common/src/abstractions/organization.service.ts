@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { OrganizationData } from "../models/data/organizationData";
 import { Organization } from "../models/domain/organization";
 

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CipherType } from "../enums/cipherType";
 import { UriMatchType } from "../enums/uriMatchType";
 import { CipherData } from "../models/data/cipherData";

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 export abstract class BiometricMain {
   init: () => Promise<void>;
   supportsBiometric: () => Promise<boolean>;

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 /* eslint-disable no-console */
 import { homedir } from "os";
 

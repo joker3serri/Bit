@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Collection as CollectionDomain } from "../domain/collection";
 import { EncString } from "../domain/encString";
 import { CollectionView } from "../view/collectionView";

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 export class MenuUpdateRequest {
   hideChangeMasterPassword: boolean;
   activeUserId: string;

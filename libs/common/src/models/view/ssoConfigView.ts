@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import {
   OpenIdConnectRedirectBehavior,
   Saml2BindingType,

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { AbstractEncryptService } from "@bitwarden/common/abstractions/abstractEncrypt.service";
 import { AbstractCachedStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { EncString } from "@bitwarden/common/models/domain/encString";

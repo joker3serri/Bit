@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SecretVerificationRequest } from "../../models/request/secretVerificationRequest";
 import { Verification } from "../../types/verification";
 

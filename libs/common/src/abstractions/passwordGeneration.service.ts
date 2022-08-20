@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as zxcvbn from "zxcvbn";
 
 import { GeneratedPasswordHistory } from "../models/domain/generatedPasswordHistory";

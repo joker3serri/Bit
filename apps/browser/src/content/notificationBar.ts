@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import AddLoginRuntimeMessage from "src/background/models/addLoginRuntimeMessage";
 import ChangePasswordRuntimeMessage from "src/background/models/changePasswordRuntimeMessage";
 

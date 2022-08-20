@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { GlobalState } from "@bitwarden/common/models/domain/globalState";
 import { StateMigrationService } from "@bitwarden/common/services/stateMigration.service";

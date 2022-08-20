@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CryptoService } from "../../abstractions/crypto.service";
 import { Utils } from "../../misc/utils";
 import { AttachmentData } from "../data/attachmentData";

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SsoConfigApi } from "../../api/ssoConfigApi";
 import { BaseResponse } from "../baseResponse";
 

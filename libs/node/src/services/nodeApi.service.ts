@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as FormData from "form-data";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import * as fe from "node-fetch";

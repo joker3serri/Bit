@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";

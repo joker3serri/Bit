@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as program from "commander";
 
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";

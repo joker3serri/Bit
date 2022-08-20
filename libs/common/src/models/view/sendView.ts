@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SendType } from "../../enums/sendType";
 import { Utils } from "../../misc/utils";
 import { Send } from "../domain/send";

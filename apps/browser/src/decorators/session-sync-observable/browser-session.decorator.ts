@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Constructor } from "type-fest";
 
 import { StateService } from "../../services/state.service";

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Directive, EventEmitter, OnInit, Output } from "@angular/core";
 import { UntypedFormBuilder } from "@angular/forms";
 

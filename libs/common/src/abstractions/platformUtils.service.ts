@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { ClientType } from "../enums/clientType";
 import { DeviceType } from "../enums/deviceType";
 

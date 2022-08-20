@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, OnInit, Type, ViewChild, ViewContainerRef } from "@angular/core";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";

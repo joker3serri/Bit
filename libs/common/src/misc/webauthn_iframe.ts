@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { I18nService } from "../abstractions/i18n.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Observable } from "rxjs";
 
 import { ThemeType } from "@bitwarden/common/enums/themeType";

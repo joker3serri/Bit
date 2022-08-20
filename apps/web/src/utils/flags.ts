@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 export type Flags = {
   showTrial?: boolean;
 };

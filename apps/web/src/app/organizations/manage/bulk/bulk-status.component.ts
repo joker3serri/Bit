@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component } from "@angular/core";
 
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Injectable } from "@angular/core";
 
 import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";

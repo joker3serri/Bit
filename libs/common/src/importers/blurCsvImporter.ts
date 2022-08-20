@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { ImportResult } from "../models/domain/importResult";
 
 import { BaseImporter } from "./baseImporter";

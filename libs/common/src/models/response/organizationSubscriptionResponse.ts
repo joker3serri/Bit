@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { OrganizationResponse } from "./organizationResponse";
 import {
   BillingSubscriptionResponse,

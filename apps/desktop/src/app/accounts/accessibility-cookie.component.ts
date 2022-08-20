@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component, NgZone } from "@angular/core";
 import { UntypedFormControl, UntypedFormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";

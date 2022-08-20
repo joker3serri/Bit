@@ -1,4 +1,5 @@
-﻿import * as DuoWebSDK from "duo_web_sdk";
+// @ts-strict-ignore
+import * as DuoWebSDK from "duo_web_sdk";
 
 import { getQsParam } from "./common";
 

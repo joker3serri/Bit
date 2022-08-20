@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { KdfType } from "../../enums/kdfType";
 
 import { CaptchaProtectedRequest } from "./captchaProtectedRequest";

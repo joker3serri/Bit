@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Directive, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import * as DuoWebSDK from "duo_web_sdk";

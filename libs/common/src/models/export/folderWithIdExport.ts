@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Folder as FolderDomain } from "../domain/folder";
 import { FolderView } from "../view/folderView";
 

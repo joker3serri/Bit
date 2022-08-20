@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as child_process from "child_process";
 
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";

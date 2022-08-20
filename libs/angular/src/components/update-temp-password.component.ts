@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Directive } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";

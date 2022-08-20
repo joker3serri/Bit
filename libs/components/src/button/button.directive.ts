@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Input, HostBinding, Directive } from "@angular/core";
 
 export type ButtonTypes = "primary" | "secondary" | "danger";

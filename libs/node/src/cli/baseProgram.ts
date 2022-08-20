@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as chalk from "chalk";
 
 import { StateService } from "@bitwarden/common/abstractions/state.service";

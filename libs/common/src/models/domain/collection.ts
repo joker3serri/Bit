@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CollectionData } from "../data/collectionData";
 import { CollectionView } from "../view/collectionView";
 

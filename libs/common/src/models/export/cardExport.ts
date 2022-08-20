@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Card as CardDomain } from "../domain/card";
 import { EncString } from "../domain/encString";
 import { CardView } from "../view/cardView";

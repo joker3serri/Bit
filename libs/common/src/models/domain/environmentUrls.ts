@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 export class EnvironmentUrls {
   base: string = null;
   api: string = null;

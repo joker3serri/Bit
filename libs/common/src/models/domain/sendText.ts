@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SendTextData } from "../data/sendTextData";
 import { SendTextView } from "../view/sendTextView";
 

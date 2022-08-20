@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SecureNoteType } from "../../enums/secureNoteType";
 import { SecureNote as SecureNoteDomain } from "../domain/secureNote";
 import { SecureNoteView } from "../view/secureNoteView";

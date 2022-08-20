@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { LoginExport } from "@bitwarden/common/models/export/loginExport";
 import { LoginView } from "@bitwarden/common/models/view/loginView";
 

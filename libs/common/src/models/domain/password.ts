@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { PasswordHistoryData } from "../data/passwordHistoryData";
 import { PasswordHistoryView } from "../view/passwordHistoryView";
 

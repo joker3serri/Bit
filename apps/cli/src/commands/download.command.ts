@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as fet from "node-fetch";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";

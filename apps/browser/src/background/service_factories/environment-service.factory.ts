@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { BrowserEnvironmentService } from "../../services/browser-environment.service";
 
 import { CachedServices, factory, FactoryOptions } from "./factory-options";

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { EncString } from "../domain/encString";
 import { Folder as FolderDomain } from "../domain/folder";
 import { FolderView } from "../view/folderView";

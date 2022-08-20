@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
 import { Policy } from "@bitwarden/common/models/domain/policy";

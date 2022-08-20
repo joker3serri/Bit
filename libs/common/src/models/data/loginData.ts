@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { LoginApi } from "../api/loginApi";
 
 import { LoginUriData } from "./loginUriData";

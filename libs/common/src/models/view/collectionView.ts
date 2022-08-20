@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Collection } from "../domain/collection";
 import { ITreeNodeObject } from "../domain/treeNode";
 import { CollectionGroupDetailsResponse } from "../response/collectionResponse";

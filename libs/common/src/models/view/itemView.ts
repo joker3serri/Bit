@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { LinkedMetadata } from "../../misc/linkedFieldOption.decorator";
 
 import { View } from "./view";

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CipherView } from "../view/cipherView";
 import { CollectionView } from "../view/collectionView";
 import { FolderView } from "../view/folderView";

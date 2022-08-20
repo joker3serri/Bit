@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { CollectionExport } from "@bitwarden/common/models/export/collectionExport";
 
 import { SelectionReadOnly } from "../selectionReadOnly";

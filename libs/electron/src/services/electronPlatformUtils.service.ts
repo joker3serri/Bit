@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { clipboard, ipcRenderer, shell } from "electron";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";

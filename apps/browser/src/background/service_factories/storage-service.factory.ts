@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 

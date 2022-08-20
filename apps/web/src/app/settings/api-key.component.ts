@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { Component } from "@angular/core";
 
 import { LogService } from "@bitwarden/common/abstractions/log.service";

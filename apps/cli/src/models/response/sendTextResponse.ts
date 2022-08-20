@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { SendTextView } from "@bitwarden/common/models/view/sendTextView";
 
 export class SendTextResponse {

@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import { PaymentMethodType } from "../../enums/paymentMethodType";
 import { TransactionType } from "../../enums/transactionType";
 

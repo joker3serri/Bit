@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import {
   Account as BaseAccount,
   AccountSettings as BaseAccountSettings,

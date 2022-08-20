@@ -1,3 +1,4 @@
+// @ts-strict-ignore
 import * as koaMulter from "@koa/multer";
 import * as koaRouter from "@koa/router";
 import * as program from "commander";
