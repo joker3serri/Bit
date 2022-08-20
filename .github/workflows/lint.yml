@@ -30,7 +30,11 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
           node-version: '16'
 
+      - name: Npm install
+        run: npm ci
+
       - name: Run linter
-        run: |
-          npm ci
-          npm run lint
+        run: npm run lint
+      
+      - name: Run typecheck
+        run: npm run typecheck

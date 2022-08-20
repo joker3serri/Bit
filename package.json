@@ -24,7 +24,7 @@
     "storybook": "npm run docs:json && start-storybook -p 6006",
     "build-storybook": "npm run docs:json && build-storybook",
     "chromatic": "chromatic --exit-zero-on-changes",
-    "typecheck": "tsc-strict"
+    "typecheck": "tsc-strict --project tsconfig.strict.json"
   },
   "workspaces": [
     "apps/*",
