@@ -24,6 +24,9 @@
     "plugins": [
       {
         "transform": "typescript-transform-paths"
+      },
+      {
+        "name": "typescript-strict-plugin"
       }
     ]
   },

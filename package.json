@@ -130,6 +130,7 @@
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "type-fest": "^2.18.0",
     "typescript": "4.6.4",
+    "typescript-strict-plugin": "^2.0.1",
     "url": "^0.11.0",
     "util": "^0.12.4",
     "webcrypto-shim": "^0.1.7",
