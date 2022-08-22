@@ -100,7 +100,7 @@ jobs:
           path: apps/web
           workflow_conclusion: success
           # branch: ${{ github.ref_name }}
-          branch: SG-576
+          branch: PS55-6-22
           artifacts: web-*-cloud-COMMERCIAL.zip
 
       # - name: Download artifact from build
