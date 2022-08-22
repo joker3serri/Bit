@@ -100,7 +100,7 @@ jobs:
           path: apps/web
           workflow_conclusion: success
           # branch: ${{ github.ref_name }}
-          branch: PS55-6-22
+          branch: EC-377-transition-policy-service-into-providing-observables
           artifacts: web-*-cloud-COMMERCIAL.zip
 
       # - name: Download artifact from build
