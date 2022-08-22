@@ -1,6 +1,5 @@
 import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service";
 import { AppIdService } from "../abstractions/appId.service";
-import { ServerConfig } from "../abstractions/config/ServerConfig";
 import { EnvironmentService } from "../abstractions/environment.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { TokenService } from "../abstractions/token.service";
@@ -2164,15 +2163,6 @@ export class ApiService implements ApiServiceAbstraction {
   async postSetupPayment(): Promise<string> {
     const r = await this.send("POST", "/setup-payment", null, true, true);
     return r as string;
-  }
-
-  async getServerConfig(): Promise<ServerConfig> {
-    const r = await this.send("GET", "/config", null, true, true);
-
-    const serverConfig: ServerConfig = r as ServerConfig;
-    serverConfig.utcDate = new Date(new Date().toISOString());
-
-    return serverConfig;
   }
 
   // Key Connector

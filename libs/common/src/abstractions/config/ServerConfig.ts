@@ -1,5 +1,7 @@
-import { EnvironmentServerConfig } from "./EnvironmentServerConfig";
-import { ThirdPartyServerConfig } from "./ThirdPartyServerConfig";
+import { ServerConfigResponse } from "../../models/response/serverConfigResponse";
+
+import { EnvironmentServerConfig } from "./environmentServerConfig";
+import { ThirdPartyServerConfig } from "./thirdPartyServerConfig";
 
 export class ServerConfig {
   version: string;
@@ -8,8 +10,12 @@ export class ServerConfig {
   environment: EnvironmentServerConfig;
   utcDate: Date;
 
-  constructor() {
-    this.environment = new EnvironmentServerConfig();
+  constructor(serverConfigReponse?: ServerConfigResponse) {
+    this.version = serverConfigReponse?.version;
+    this.gitHash = serverConfigReponse?.gitHash;
+    this.server = serverConfigReponse.server ?? null;
+    this.environment = serverConfigReponse?.environment ?? new EnvironmentServerConfig();
+    this.utcDate = serverConfigReponse?.utcDate;
   }
 
   isValid(): boolean {

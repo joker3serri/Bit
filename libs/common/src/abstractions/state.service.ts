@@ -24,7 +24,7 @@ import { CipherView } from "../models/view/cipherView";
 import { CollectionView } from "../models/view/collectionView";
 import { SendView } from "../models/view/sendView";
 
-import { ServerConfig } from "./config/ServerConfig";
+import { ServerConfig } from "./config/serverConfig";
 
 export abstract class StateService<T extends Account = Account> {
   accounts: BehaviorSubject<{ [userId: string]: T }>;

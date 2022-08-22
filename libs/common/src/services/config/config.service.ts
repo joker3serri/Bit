@@ -1,15 +1,16 @@
 import { concatMap, Observable, Subject } from "rxjs";
 
-import { ApiService } from "../../abstractions/api.service";
-import { ServerConfig } from "../../abstractions/config/ServerConfig";
+import { ConfigApiServiceAbstraction as ConfigApiService } from "../../abstractions/config/config-api.service.abstraction";
 import { ConfigService as ConfigServiceAbstraction } from "../../abstractions/config/config.service";
+import { ServerConfig } from "../../abstractions/config/serverConfig";
 import { StateService } from "../../abstractions/state.service";
+
 
 export class ConfigService implements ConfigServiceAbstraction {
   private _serverConfig = new Subject<ServerConfig>();
   serverConfig$: Observable<ServerConfig> = this._serverConfig.asObservable();
 
-  constructor(private stateService: StateService, private apiService: ApiService) {
+  constructor(private stateService: StateService, private configApiService: ConfigApiService) {
     this.stateService.activeAccountUnlocked$
       .pipe(
         concatMap(async (unlocked) => {
@@ -19,6 +20,7 @@ export class ConfigService implements ConfigServiceAbstraction {
           }
 
           const serverConfig = await this.buildServerConfig();
+
           return serverConfig;
         })
       )
@@ -38,13 +40,14 @@ export class ConfigService implements ConfigServiceAbstraction {
   }
 
   private async pollServerConfig(): Promise<ServerConfig> {
-    const apiServerConfig = await this.apiService.getServerConfig();
+    const apiServerConfig = await this.configApiService.get();
+    const serverConfig = new ServerConfig(apiServerConfig);
 
-    if (apiServerConfig == null) {
+    if (serverConfig == null) {
       // begin retry / polling mechanism
     } else {
-      this.stateService.setServerConfig(apiServerConfig);
-      return apiServerConfig;
+      await this.stateService.setServerConfig(serverConfig);
+      return serverConfig;
     }
   }
 }

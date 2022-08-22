@@ -1,5 +1,4 @@
-import { ServerConfig } from "@bitwarden/common/abstractions/config/ServerConfig";
-
+import { ServerConfig } from "../../abstractions/config/serverConfig";
 import { AuthenticationStatus } from "../../enums/authenticationStatus";
 import { KdfType } from "../../enums/kdfType";
 import { UriMatchType } from "../../enums/uriMatchType";

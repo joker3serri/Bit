@@ -1,4 +1,4 @@
-import { ServerConfig } from "../abstractions/config/ServerConfig";
+import { ServerConfig } from "../abstractions/config/serverConfig";
 import { AbstractStorageService } from "../abstractions/storage.service";
 import { HtmlStorageLocation } from "../enums/htmlStorageLocation";
 import { KdfType } from "../enums/kdfType";

@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ConfigService } from "@bitwarden/common/abstractions/config/config.service";
+import { ServerConfig } from "@bitwarden/common/abstractions/config/serverConfig";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -15,7 +16,6 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
 import { DeviceType } from "@bitwarden/common/enums/deviceType";
-import { ServerConfig } from "@bitwarden/common/src/abstractions/config/ServerConfig";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";

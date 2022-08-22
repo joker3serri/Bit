@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { ServerConfig } from "./ServerConfig";
+import { ServerConfig } from "./serverConfig";
 
 export abstract class ConfigService {
   serverConfig$: Observable<ServerConfig>;

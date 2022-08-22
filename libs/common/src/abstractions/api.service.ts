@@ -178,8 +178,6 @@ import { TwoFactorYubiKeyResponse } from "../models/response/twoFactorYubiKeyRes
 import { UserKeyResponse } from "../models/response/userKeyResponse";
 import { SendAccessView } from "../models/view/sendAccessView";
 
-import { ServerConfig } from "./config/ServerConfig";
-
 export abstract class ApiService {
   send: (
     method: "GET" | "POST" | "PUT" | "DELETE",
@@ -714,5 +712,4 @@ export abstract class ApiService {
   ) => Promise<void>;
   getKeyConnectorAlive: (keyConnectorUrl: string) => Promise<void>;
   getOrganizationExport: (organizationId: string) => Promise<OrganizationExportResponse>;
-  getServerConfig: () => Promise<ServerConfig>;
 }
