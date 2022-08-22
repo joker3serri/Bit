@@ -77,7 +77,8 @@ export class GeneratorComponent implements OnInit, OnDestroy {
       { name: "SimpleLogin", value: "simplelogin" },
       { name: "AnonAddy", value: "anonaddy" },
       { name: "Firefox Relay", value: "firefoxrelay" },
-      // { name: "FastMail", value: "fastmail" },
+      { name: "FastMail", value: "fastmail" },
+      { name: "DuckDuckGo", value: "duckduckgo" },
     ];
   }
 
