@@ -100,7 +100,7 @@ jobs:
           path: apps/web
           workflow_conclusion: success
           # branch: ${{ github.ref_name }}
-          branch: hotfix-rc-test
+          branch: hotfix-rc
           artifacts: web-*-cloud-COMMERCIAL.zip
 
       # This should result in a build directory in the current working directory
