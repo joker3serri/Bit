@@ -9,8 +9,6 @@ import { ChangePlanComponent } from "./change-plan.component";
 import { DeleteOrganizationComponent } from "./delete-organization.component";
 import { DownloadLicenseComponent } from "./download-license.component";
 import { OrganizationSettingsRoutingModule } from "./organization-settings-routing.module";
-import { PoliciesComponent } from "./policies.component";
-import { PolicyEditComponent } from "./policy-edit.component";
 import { SettingsComponent } from "./settings.component";
 import { TwoFactorSetupComponent } from "./two-factor-setup.component";
 
@@ -24,8 +22,6 @@ import { TwoFactorSetupComponent } from "./two-factor-setup.component";
     DeleteOrganizationComponent,
     DownloadLicenseComponent,
     TwoFactorSetupComponent,
-    PoliciesComponent,
-    PolicyEditComponent,
   ],
 })
 export class OrganizationSettingsModule {}

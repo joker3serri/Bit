@@ -6,6 +6,8 @@ import { DisableSendPolicyComponent } from "./disable-send.component";
 import { MasterPasswordPolicyComponent } from "./master-password.component";
 import { PasswordGeneratorPolicyComponent } from "./password-generator.component";
 import { PersonalOwnershipPolicyComponent } from "./personal-ownership.component";
+import { PoliciesComponent } from "./policies.component";
+import { PolicyEditComponent } from "./policy-edit.component";
 import { RequireSsoPolicyComponent } from "./require-sso.component";
 import { ResetPasswordPolicyComponent } from "./reset-password.component";
 import { SendOptionsPolicyComponent } from "./send-options.component";
@@ -24,6 +26,8 @@ import { TwoFactorAuthenticationPolicyComponent } from "./two-factor-authenticat
     SendOptionsPolicyComponent,
     SingleOrgPolicyComponent,
     TwoFactorAuthenticationPolicyComponent,
+    PoliciesComponent,
+    PolicyEditComponent,
   ],
   exports: [
     DisableSendPolicyComponent,
@@ -35,6 +39,8 @@ import { TwoFactorAuthenticationPolicyComponent } from "./two-factor-authenticat
     SendOptionsPolicyComponent,
     SingleOrgPolicyComponent,
     TwoFactorAuthenticationPolicyComponent,
+    PoliciesComponent,
+    PolicyEditComponent,
   ],
 })
 export class PoliciesModule {}

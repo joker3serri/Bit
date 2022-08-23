@@ -5,9 +5,9 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { OrganizationPermissionsGuard } from "../guards/org-permissions.guard";
 import { canAccessSettingsTab } from "../navigation-permissions";
+import { PoliciesComponent } from "../policies";
 
 import { AccountComponent } from "./account.component";
-import { PoliciesComponent } from "./policies.component";
 import { SettingsComponent } from "./settings.component";
 import { TwoFactorSetupComponent } from "./two-factor-setup.component";
 
