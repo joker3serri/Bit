@@ -2277,8 +2277,9 @@ export class StateService<
 
   @withPrototype(ServerConfig, ServerConfig.fromJSON)
   async getServerConfig(): Promise<ServerConfig> {
-    const globals = await this.getAccount(await this.defaultOnDiskLocalOptions());
-    return globals?.settings?.serverConfig != null ? globals.settings.serverConfig : null;
+  return (
+      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
+    )?.settings?.serverConfig;
   }
 
   protected async getGlobals(options: StorageOptions): Promise<TGlobalState> {
