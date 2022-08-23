@@ -311,6 +311,6 @@ export abstract class StateService<T extends Account = Account> {
   setStateVersion: (value: number) => Promise<void>;
   getWindow: () => Promise<WindowState>;
   setWindow: (value: WindowState) => Promise<void>;
-  getServerConfig: () => Promise<ServerConfig>;
+  getServerConfig: (options?: StorageOptions) => Promise<ServerConfig>;
   setServerConfig: (value: ServerConfig) => Promise<void>;
 }

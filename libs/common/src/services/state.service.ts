@@ -2276,8 +2276,8 @@ export class StateService<
   }
 
   @withPrototype(ServerConfig, ServerConfig.fromJSON)
-  async getServerConfig(): Promise<ServerConfig> {
-  return (
+  async getServerConfig(options: StorageOptions): Promise<ServerConfig> {
+    return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
     )?.settings?.serverConfig;
   }
