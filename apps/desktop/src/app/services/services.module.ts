@@ -24,6 +24,7 @@ import {
   LogService as LogServiceAbstraction,
 } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/abstractions/messaging.service";
+import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService as StateServiceAbstraction } from "@bitwarden/common/abstractions/state.service";
@@ -158,6 +159,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         CryptoServiceAbstraction,
         CryptoFunctionServiceAbstraction,
         CipherService,
+        PasswordGenerationService,
       ],
     },
   ],

@@ -4,6 +4,7 @@ import { ipcRenderer } from "electron";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
+import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/encString";
@@ -30,7 +31,8 @@ export class NativeMessageHandler {
     private authService: AuthService,
     private cryptoService: CryptoService,
     private cryptoFunctionService: CryptoFunctionService,
-    private cipherService: CipherService
+    private cipherService: CipherService,
+    private passwordGenerationService: PasswordGenerationService
   ) {}
 
   async handleMessage(message: Message) {
@@ -51,7 +53,7 @@ export class NativeMessageHandler {
         messageId: messageId,
         version: 1,
         payload: {
-          status: "cancelled",
+          error: "cannot-decrypt",
         },
       });
       return;
@@ -66,7 +68,7 @@ export class NativeMessageHandler {
           messageId: messageId,
           version: 1,
           payload: {
-            status: "cancelled",
+            status: "canceled",
           },
         });
 
@@ -168,6 +170,18 @@ export class NativeMessageHandler {
         });
 
         return ciphersResponse;
+      }
+      case "bw-generate-password": {
+        const activeUserId = await this.stateService.getUserId();
+
+        if (payload.userId !== activeUserId) {
+          return { error: "not-active-user" };
+        }
+
+        const options = (await this.passwordGenerationService.getOptions())[0];
+        const generatedValue = await this.passwordGenerationService.generatePassword(options);
+
+        return { password: generatedValue };
       }
       default:
         return {

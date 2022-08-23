@@ -4,7 +4,7 @@ export type UnencryptedMessageResponse = MessageCommon &
   (
     | {
         payload: {
-          status: "cancelled";
+          status: "canceled";
         };
       }
     | {
