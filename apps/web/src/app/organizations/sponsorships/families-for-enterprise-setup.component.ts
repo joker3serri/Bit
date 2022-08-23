@@ -15,7 +15,7 @@ import { ProductType } from "@bitwarden/common/enums/productType";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { OrganizationSponsorshipRedeemRequest } from "@bitwarden/common/models/request/organization/organizationSponsorshipRedeemRequest";
 
-import { DeleteOrganizationComponent } from "../../organizations/settings/delete-organization.component";
+import { DeleteOrganizationComponent } from "../../organizations/settings";
 import { OrganizationPlansComponent } from "../../settings/organization-plans.component";
 
 @Component({
