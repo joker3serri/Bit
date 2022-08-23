@@ -1,5 +1,5 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { ConfigApiService as ConfigApiServiceAbstraction } from "@bitwarden/common/abstractions/config/config-api.service.abstraction";
+import { ConfigApiServiceAbstraction as ConfigApiServiceAbstraction } from "@bitwarden/common/abstractions/config/config-api.service.abstraction";
 import { ServerConfigResponse } from "@bitwarden/common/models/response/server-config-response";
 
 export class ConfigApiService implements ConfigApiServiceAbstraction {

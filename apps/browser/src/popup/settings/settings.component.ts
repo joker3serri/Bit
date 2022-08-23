@@ -5,7 +5,7 @@ import { Subject, takeUntil } from "rxjs";
 import Swal from "sweetalert2";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { ConfigService } from "@bitwarden/common/abstractions/config/config.service";
+import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
 import { ServerConfig } from "@bitwarden/common/abstractions/config/server-config";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
@@ -71,7 +71,7 @@ export class SettingsComponent implements OnInit {
     private popupUtilsService: PopupUtilsService,
     private modalService: ModalService,
     private keyConnectorService: KeyConnectorService,
-    private configService: ConfigService
+    private configService: ConfigServiceAbstraction
   ) {}
 
   async ngOnInit() {
