@@ -1,8 +1,5 @@
 import { ServerConfigResponse } from "../../models/response/server-config-response";
 
-import { EnvironmentServerConfig } from "./environment-server-config";
-import { ThirdPartyServerConfig } from "./third-party-server-config";
-
 export class ServerConfig {
   version: string;
   gitHash: string;
@@ -33,4 +30,18 @@ export class ServerConfig {
     const utcDate = json?.utcDate == null ? null : new Date(json.utcDate);
     return Object.assign(new ServerConfig(), json, { utcDate });
   }
+}
+
+export class ThirdPartyServerConfig {
+  name: string;
+  url: string;
+}
+
+export class EnvironmentServerConfig {
+  vault: string;
+  api: string;
+  identity: string;
+  admin: string;
+  notifications: string;
+  sso: string;
 }
