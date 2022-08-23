@@ -13,7 +13,7 @@ export class ServerConfig {
   constructor(serverConfigReponse?: ServerConfigResponse) {
     this.version = serverConfigReponse?.version;
     this.gitHash = serverConfigReponse?.gitHash;
-    this.server = serverConfigReponse.server ?? null;
+    this.server = serverConfigReponse?.server;
     this.environment = serverConfigReponse?.environment ?? new EnvironmentServerConfig();
     this.utcDate = serverConfigReponse?.utcDate;
   }
@@ -30,7 +30,7 @@ export class ServerConfig {
   }
 
   static fromJSON(json: any): ServerConfig {
-    const utcDate = json.utcDate == null ? null : new Date(json.utcDate);
+    const utcDate = json?.utcDate == null ? null : new Date(json.utcDate);
     return Object.assign(new ServerConfig(), json, { utcDate });
   }
 }
