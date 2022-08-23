@@ -388,8 +388,6 @@ export class Utils {
     return r * 0.299 + g * 0.587 + b * 0.114 > threshold ? blackColor : whiteColor;
   }
 
-  // This value currently isn't stored anywhere, only calculated in the app-avatar component
-  // Once we are allowing org colors to be changed and saved, change this out
   static stringToColor(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
