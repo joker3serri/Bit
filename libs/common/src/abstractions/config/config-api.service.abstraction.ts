@@ -1,5 +1,5 @@
-import { ServerConfigResponse } from "@bitwarden/common/models/response/serverConfigResponse";
+import { ServerConfigResponse } from "@bitwarden/common/models/response/server-config-response";
 
-export class ConfigApiServiceAbstraction {
+export abstract class ConfigApiService {
   get: () => Promise<ServerConfigResponse>;
 }

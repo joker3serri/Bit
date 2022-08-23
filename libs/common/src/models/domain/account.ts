@@ -1,4 +1,4 @@
-import { ServerConfig } from "../../abstractions/config/serverConfig";
+import { ServerConfig } from "../../abstractions/config/server-config";
 import { AuthenticationStatus } from "../../enums/authenticationStatus";
 import { KdfType } from "../../enums/kdfType";
 import { UriMatchType } from "../../enums/uriMatchType";
@@ -141,7 +141,7 @@ export class AccountSettings {
   settings?: any; // TODO: Merge whatever is going on here into the AccountSettings model properly
   vaultTimeout?: number;
   vaultTimeoutAction?: string = "lock";
-  serverConfig: ServerConfig;
+  serverConfig?: ServerConfig;
 }
 
 export class AccountTokens {

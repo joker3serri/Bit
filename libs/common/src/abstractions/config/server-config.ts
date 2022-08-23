@@ -1,7 +1,7 @@
-import { ServerConfigResponse } from "../../models/response/serverConfigResponse";
+import { ServerConfigResponse } from "../../models/response/server-config-response";
 
-import { EnvironmentServerConfig } from "./environmentServerConfig";
-import { ThirdPartyServerConfig } from "./thirdPartyServerConfig";
+import { EnvironmentServerConfig } from "./environment-server-config";
+import { ThirdPartyServerConfig } from "./third-party-server-config";
 
 export class ServerConfig {
   version: string;

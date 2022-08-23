@@ -1,6 +1,6 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { ConfigApiServiceAbstraction } from "@bitwarden/common/abstractions/config/config-api.service.abstraction";
-import { ServerConfigResponse } from "@bitwarden/common/models/response/serverConfigResponse";
+import { ConfigApiService as ConfigApiServiceAbstraction } from "@bitwarden/common/abstractions/config/config-api.service.abstraction";
+import { ServerConfigResponse } from "@bitwarden/common/models/response/server-config-response";
 
 export class ConfigApiService implements ConfigApiServiceAbstraction {
   constructor(private apiService: ApiService) {}

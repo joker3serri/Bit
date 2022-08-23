@@ -1,10 +1,9 @@
 import { concatMap, Observable, Subject } from "rxjs";
 
-import { ConfigApiServiceAbstraction as ConfigApiService } from "../../abstractions/config/config-api.service.abstraction";
+import { ConfigApiService } from "../../abstractions/config/config-api.service.abstraction";
 import { ConfigService as ConfigServiceAbstraction } from "../../abstractions/config/config.service";
-import { ServerConfig } from "../../abstractions/config/serverConfig";
+import { ServerConfig } from "../../abstractions/config/server-config";
 import { StateService } from "../../abstractions/state.service";
-
 
 export class ConfigService implements ConfigServiceAbstraction {
   private _serverConfig = new Subject<ServerConfig>();
