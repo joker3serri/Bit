@@ -2,7 +2,8 @@ import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
+import { CipherApiServiceAbstraction } from "@bitwarden/common/abstractions/cipher/cipher-api.service.abstraction";
+import { CipherService } from "@bitwarden/common/abstractions/cipher/cipher.service.abstraction";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
@@ -26,7 +27,8 @@ export class InactiveTwoFactorReportComponent extends BaseInactiveTwoFactorRepor
     private route: ActivatedRoute,
     logService: LogService,
     passwordRepromptService: PasswordRepromptService,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    private cipherApiService: CipherApiServiceAbstraction
   ) {
     super(
       cipherService,
@@ -46,6 +48,6 @@ export class InactiveTwoFactorReportComponent extends BaseInactiveTwoFactorRepor
   }
 
   getAllCiphers(): Promise<CipherView[]> {
-    return this.cipherService.getAllFromApiForOrganization(this.organization.id);
+    return this.cipherApiService.getAllFromApiForOrganization(this.organization.id);
   }
 }

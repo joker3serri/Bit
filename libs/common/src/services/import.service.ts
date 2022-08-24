@@ -1,11 +1,11 @@
-import { ApiService } from "../abstractions/api.service";
-import { CipherService } from "../abstractions/cipher.service";
+import { CipherApiServiceAbstraction } from "@bitwarden/common/abstractions/cipher/cipher-api.service.abstraction";
+
+import { CipherService } from "../abstractions/cipher/cipher.service.abstraction";
 import { CollectionService } from "../abstractions/collection.service";
 import { CryptoService } from "../abstractions/crypto.service";
 import { FolderService } from "../abstractions/folder/folder.service.abstraction";
 import { I18nService } from "../abstractions/i18n.service";
 import { ImportService as ImportServiceAbstraction } from "../abstractions/import.service";
-import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { CipherType } from "../enums/cipherType";
 import {
   featuredImportOptions,
@@ -90,10 +90,9 @@ export class ImportService implements ImportServiceAbstraction {
   constructor(
     private cipherService: CipherService,
     private folderService: FolderService,
-    private apiService: ApiService,
+    private ciphherApiService: CipherApiServiceAbstraction,
     private i18nService: I18nService,
     private collectionService: CollectionService,
-    private platformUtilsService: PlatformUtilsService,
     private cryptoService: CryptoService
   ) {}
 
@@ -304,7 +303,7 @@ export class ImportService implements ImportServiceAbstraction {
           request.folderRelationships.push(new KvpRequest(r[0], r[1]))
         );
       }
-      return await this.apiService.postImportCiphers(request);
+      return await this.ciphherApiService.postImportCiphers(request);
     } else {
       const request = new ImportOrganizationCiphersRequest();
       for (let i = 0; i < importResult.ciphers.length; i++) {
@@ -324,7 +323,7 @@ export class ImportService implements ImportServiceAbstraction {
           request.collectionRelationships.push(new KvpRequest(r[0], r[1]))
         );
       }
-      return await this.apiService.postImportOrganizationCiphers(organizationId, request);
+      return await this.ciphherApiService.postImportOrganizationCiphers(organizationId, request);
     }
   }
 

@@ -2,7 +2,10 @@ import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstracti
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/abstractions/appId.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/abstractions/auth.service";
-import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/abstractions/cipher.service";
+import { CipherApiAdminServiceAbstraction } from "@bitwarden/common/abstractions/cipher/cipher-api-admin.service.abstraction";
+import { CipherApiAttachmentServiceAbstraction } from "@bitwarden/common/abstractions/cipher/cipher-api-attachment.service.abstraction";
+import { CipherApiServiceAbstraction } from "@bitwarden/common/abstractions/cipher/cipher-api.service.abstraction";
+import { InternalCipherService as InternalCiherServiceAbstractio } from "@bitwarden/common/abstractions/cipher/cipher.service.abstraction";
 import { CollectionService as CollectionServiceAbstraction } from "@bitwarden/common/abstractions/collection.service";
 import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/abstractions/cryptoFunction.service";
@@ -45,7 +48,7 @@ import { ApiService } from "@bitwarden/common/services/api.service";
 import { AppIdService } from "@bitwarden/common/services/appId.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
 import { AuthService } from "@bitwarden/common/services/auth.service";
-import { CipherService } from "@bitwarden/common/services/cipher.service";
+import { CipherService } from "@bitwarden/common/services/cipher/cipher.service";
 import { CollectionService } from "@bitwarden/common/services/collection.service";
 import { ContainerService } from "@bitwarden/common/services/container.service";
 import { EncryptService } from "@bitwarden/common/services/encrypt.service";
@@ -126,7 +129,7 @@ export default class MainBackground {
   apiService: ApiServiceAbstraction;
   environmentService: BrowserEnvironmentService;
   settingsService: SettingsServiceAbstraction;
-  cipherService: CipherServiceAbstraction;
+  cipherService: InternalCiherServiceAbstractio;
   folderService: InternalFolderServiceAbstraction;
   collectionService: CollectionServiceAbstraction;
   vaultTimeoutService: VaultTimeoutServiceAbstraction;
@@ -159,6 +162,9 @@ export default class MainBackground {
   folderApiService: FolderApiServiceAbstraction;
   policyApiService: PolicyApiServiceAbstraction;
   userVerificationApiService: UserVerificationApiServiceAbstraction;
+  cipherApiAttachmentService: CipherApiAttachmentServiceAbstraction;
+  cipherApiService: CipherApiServiceAbstraction;
+  cipherApiAdminService: CipherApiAdminServiceAbstraction;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
@@ -285,12 +291,14 @@ export default class MainBackground {
       (expired: boolean) => this.logout(expired)
     );
     this.settingsService = new SettingsService(this.stateService);
-    this.fileUploadService = new FileUploadService(this.logService, this.apiService);
+    this.fileUploadService = new FileUploadService(
+      this.logService,
+      this.apiService,
+      this.cipherApiAttachmentService
+    );
     this.cipherService = new CipherService(
       this.cryptoService,
       this.settingsService,
-      this.apiService,
-      this.fileUploadService,
       this.i18nService,
       () => this.searchService,
       this.logService,
@@ -403,6 +411,7 @@ export default class MainBackground {
       this.organizationService,
       this.providerService,
       this.folderApiService,
+      this.cipherApiService,
       logoutCallback
     );
     this.eventService = new EventService(
@@ -432,7 +441,8 @@ export default class MainBackground {
       this.cipherService,
       this.apiService,
       this.cryptoService,
-      this.cryptoFunctionService
+      this.cryptoFunctionService,
+      this.cipherApiService
     );
     this.notificationsService = new NotificationsService(
       this.syncService,
@@ -515,7 +525,8 @@ export default class MainBackground {
       this.authService,
       this.policyService,
       this.folderService,
-      this.stateService
+      this.stateService,
+      this.cipherApiService
     );
 
     this.tabsBackground = new TabsBackground(this, this.notificationBackground);

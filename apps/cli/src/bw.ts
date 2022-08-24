@@ -4,6 +4,9 @@ import * as path from "path";
 import * as program from "commander";
 import * as jsdom from "jsdom";
 
+import { CipherApiAttachmentServiceAbstraction } from "@bitwarden/common/abstractions/cipher/cipher-api-attachment.service.abstraction";
+import { CipherApiServiceAbstraction } from "@bitwarden/common/abstractions/cipher/cipher-api.service.abstraction";
+import { InternalCipherService } from "@bitwarden/common/abstractions/cipher/cipher.service.abstraction";
 import { InternalFolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { ClientType } from "@bitwarden/common/enums/clientType";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
@@ -15,7 +18,7 @@ import { AppIdService } from "@bitwarden/common/services/appId.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { BroadcasterService } from "@bitwarden/common/services/broadcaster.service";
-import { CipherService } from "@bitwarden/common/services/cipher.service";
+import { CipherService } from "@bitwarden/common/services/cipher/cipher.service";
 import { CollectionService } from "@bitwarden/common/services/collection.service";
 import { ContainerService } from "@bitwarden/common/services/container.service";
 import { CryptoService } from "@bitwarden/common/services/crypto.service";
@@ -76,7 +79,7 @@ export class Main {
   apiService: NodeApiService;
   environmentService: EnvironmentService;
   settingsService: SettingsService;
-  cipherService: CipherService;
+  cipherService: InternalCipherService;
   folderService: InternalFolderService;
   collectionService: CollectionService;
   vaultTimeoutService: VaultTimeoutService;
@@ -108,6 +111,8 @@ export class Main {
   broadcasterService: BroadcasterService;
   folderApiService: FolderApiService;
   userVerificationApiService: UserVerificationApiService;
+  cipherApiAttachmentService: CipherApiAttachmentServiceAbstraction;
+  cipherApiService: CipherApiServiceAbstraction;
 
   constructor() {
     let p = null;
@@ -158,13 +163,7 @@ export class Main {
       new StateFactory(GlobalState, Account)
     );
 
-    this.cryptoService = new CryptoService(
-      this.cryptoFunctionService,
-      this.encryptService,
-      this.platformUtilsService,
-      this.logService,
-      this.stateService
-    );
+    this.instantiateStateService();
 
     this.appIdService = new AppIdService(this.storageService);
     this.tokenService = new TokenService(this.stateService);
@@ -189,13 +188,15 @@ export class Main {
 
     this.settingsService = new SettingsService(this.stateService);
 
-    this.fileUploadService = new FileUploadService(this.logService, this.apiService);
+    this.fileUploadService = new FileUploadService(
+      this.logService,
+      this.apiService,
+      this.cipherApiAttachmentService
+    );
 
     this.cipherService = new CipherService(
       this.cryptoService,
       this.settingsService,
-      this.apiService,
-      this.fileUploadService,
       this.i18nService,
       null,
       this.logService,
@@ -249,41 +250,65 @@ export class Main {
 
     this.twoFactorService = new TwoFactorService(this.i18nService, this.platformUtilsService);
 
-    this.authService = new AuthService(
-      this.cryptoService,
-      this.apiService,
-      this.tokenService,
-      this.appIdService,
-      this.platformUtilsService,
-      this.messagingService,
-      this.logService,
-      this.keyConnectorService,
-      this.environmentService,
-      this.stateService,
-      this.twoFactorService,
-      this.i18nService
-    );
+    this.instantiateAuthService();
 
     const lockedCallback = async () =>
       await this.cryptoService.clearStoredKey(KeySuffixOptions.Auto);
 
-    this.vaultTimeoutService = new VaultTimeoutService(
-      this.cipherService,
-      this.folderService,
-      this.collectionService,
+    this.instantiateVaultTimeOutService(lockedCallback);
+
+    this.instantiateSyncService();
+
+    this.passwordGenerationService = new PasswordGenerationService(
       this.cryptoService,
-      this.platformUtilsService,
-      this.messagingService,
-      this.searchService,
-      this.tokenService,
       this.policyService,
-      this.keyConnectorService,
-      this.stateService,
-      this.authService,
-      lockedCallback,
-      null
+      this.stateService
     );
 
+    this.totpService = new TotpService(this.cryptoFunctionService, this.logService);
+
+    this.importService = new ImportService(
+      this.cipherService,
+      this.folderService,
+      this.cipherApiService,
+      this.i18nService,
+      this.collectionService,
+      this.cryptoService
+    );
+    this.exportService = new ExportService(
+      this.folderService,
+      this.cipherService,
+      this.apiService,
+      this.cryptoService,
+      this.cryptoFunctionService,
+      this.cipherApiService
+    );
+
+    this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
+    this.program = new Program(this);
+    this.vaultProgram = new VaultProgram(this);
+    this.sendProgram = new SendProgram(this);
+
+    this.userVerificationApiService = new UserVerificationApiService(this.apiService);
+
+    this.userVerificationService = new UserVerificationService(
+      this.cryptoService,
+      this.i18nService,
+      this.userVerificationApiService
+    );
+  }
+
+  private instantiateStateService() {
+    this.cryptoService = new CryptoService(
+      this.cryptoFunctionService,
+      this.encryptService,
+      this.platformUtilsService,
+      this.logService,
+      this.stateService
+    );
+  }
+
+  private instantiateSyncService() {
     this.syncService = new SyncService(
       this.apiService,
       this.settingsService,
@@ -300,45 +325,44 @@ export class Main {
       this.organizationService,
       this.providerService,
       this.folderApiService,
+      this.cipherApiService,
       async (expired: boolean) => await this.logout()
     );
+  }
 
-    this.passwordGenerationService = new PasswordGenerationService(
-      this.cryptoService,
-      this.policyService,
-      this.stateService
-    );
-
-    this.totpService = new TotpService(this.cryptoFunctionService, this.logService);
-
-    this.importService = new ImportService(
+  private instantiateVaultTimeOutService(lockedCallback: () => Promise<void>) {
+    this.vaultTimeoutService = new VaultTimeoutService(
       this.cipherService,
       this.folderService,
-      this.apiService,
-      this.i18nService,
       this.collectionService,
+      this.cryptoService,
       this.platformUtilsService,
-      this.cryptoService
+      this.messagingService,
+      this.searchService,
+      this.tokenService,
+      this.policyService,
+      this.keyConnectorService,
+      this.stateService,
+      this.authService,
+      lockedCallback,
+      null
     );
-    this.exportService = new ExportService(
-      this.folderService,
-      this.cipherService,
+  }
+
+  private instantiateAuthService() {
+    this.authService = new AuthService(
+      this.cryptoService,
       this.apiService,
-      this.cryptoService,
-      this.cryptoFunctionService
-    );
-
-    this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
-    this.program = new Program(this);
-    this.vaultProgram = new VaultProgram(this);
-    this.sendProgram = new SendProgram(this);
-
-    this.userVerificationApiService = new UserVerificationApiService(this.apiService);
-
-    this.userVerificationService = new UserVerificationService(
-      this.cryptoService,
-      this.i18nService,
-      this.userVerificationApiService
+      this.tokenService,
+      this.appIdService,
+      this.platformUtilsService,
+      this.messagingService,
+      this.logService,
+      this.keyConnectorService,
+      this.environmentService,
+      this.stateService,
+      this.twoFactorService,
+      this.i18nService
     );
   }
 
