@@ -8,15 +8,13 @@
     ":rebaseStalePrs",
     ":disableDependencyDashboard"
   ],
-  "enabledManagers": [
-    "npm"
-  ],
+  "enabledManagers": ["npm"],
   "separateMajorMinor": false,
   "packageRules": [
     {
-        "matchManagers": ["npm"],
-        "matchUpdateTypes": ["major", "minor", "patch"],
-        "groupName": "npm"
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "groupName": "npm"
     }
   ]
 }
