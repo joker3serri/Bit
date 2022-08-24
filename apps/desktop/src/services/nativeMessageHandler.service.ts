@@ -4,14 +4,22 @@ import { ipcRenderer } from "electron";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
+import { CipherType } from "@bitwarden/common/enums/cipherType";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
+import { CipherView } from "@bitwarden/common/models/view/cipherView";
+import { LoginUriView } from "@bitwarden/common/models/view/loginUriView";
+import { LoginView } from "@bitwarden/common/models/view/loginView";
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 
-import { CiphersResponse } from "src/models/nativeMessaging/ciphersResponse";
+import { CipherResponse } from "src/models/nativeMessaging/cipherResponse";
+import { CredentialCreatePayload } from "src/models/nativeMessaging/credentialCreatePayload";
+import { CredentialUpdatePayload } from "src/models/nativeMessaging/credentialUpdatePayload";
 import { DecryptedCommandData } from "src/models/nativeMessaging/decryptedCommandData";
 import { EncryptedMessage } from "src/models/nativeMessaging/encryptedMessage";
 import { EncryptedMessageResponse } from "src/models/nativeMessaging/encryptedMessageResponse";
@@ -30,7 +38,8 @@ export class NativeMessageHandler {
     private authService: AuthService,
     private cryptoService: CryptoService,
     private cryptoFunctionService: CryptoFunctionService,
-    private cipherService: CipherService
+    private cipherService: CipherService,
+    private policyService: PolicyService
   ) {}
 
   async handleMessage(message: Message) {
@@ -146,7 +155,7 @@ export class NativeMessageHandler {
           return;
         }
 
-        const ciphersResponse: CiphersResponse[] = [];
+        const ciphersResponse: CipherResponse[] = [];
         const activeUserId = await this.stateService.getUserId();
         const authStatus = await this.authService.getAuthStatus(activeUserId);
 
@@ -164,10 +173,78 @@ export class NativeMessageHandler {
             userName: c.login.username,
             password: c.login.password,
             name: c.name,
-          } as CiphersResponse);
+          } as CipherResponse);
         });
 
         return ciphersResponse;
+      }
+      case "bw-credential-create": {
+        const activeUserId = await this.stateService.getUserId();
+        const authStatus = await this.authService.getAuthStatus(activeUserId);
+
+        if (authStatus !== AuthenticationStatus.Unlocked) {
+          return { error: "locked" };
+        }
+
+        const credentialCreatePayload = payload as CredentialCreatePayload;
+
+        if (
+          credentialCreatePayload.name == null ||
+          (await this.policyService.policyAppliesToUser(PolicyType.PersonalOwnership))
+        ) {
+          return { status: "failure" };
+        }
+
+        const cipherView = new CipherView();
+        cipherView.type = CipherType.Login;
+        cipherView.name = payload.name;
+        cipherView.login = new LoginView();
+        cipherView.login.password = credentialCreatePayload.password;
+        cipherView.login.username = credentialCreatePayload.userName;
+        cipherView.login.uris = [new LoginUriView()];
+        cipherView.login.uris[0].uri = credentialCreatePayload.uri;
+
+        try {
+          const encrypted = await this.cipherService.encrypt(cipherView);
+          await this.cipherService.saveWithServer(encrypted);
+
+          return { status: "success" };
+        } catch (error) {
+          return { status: "failure" };
+        }
+      }
+      case "bw-credential-update": {
+        const activeUserId = await this.stateService.getUserId();
+        const authStatus = await this.authService.getAuthStatus(activeUserId);
+
+        if (authStatus !== AuthenticationStatus.Unlocked) {
+          return { error: "locked" };
+        }
+
+        const credentialUpdatePayload = payload as CredentialUpdatePayload;
+
+        if (credentialUpdatePayload.name == null) {
+          return { status: "failure" };
+        }
+
+        try {
+          const cipher = await this.cipherService.get(credentialUpdatePayload.credentialId);
+          if (cipher === null) {
+            return { status: "failure" };
+          }
+          const cipherView = await cipher.decrypt();
+          cipherView.name = credentialUpdatePayload.name;
+          cipherView.login.password = credentialUpdatePayload.password;
+          cipherView.login.username = credentialUpdatePayload.userName;
+          cipherView.login.uris[0].uri = credentialUpdatePayload.uri;
+          const encrypted = await this.cipherService.encrypt(cipherView);
+
+          await this.cipherService.saveWithServer(encrypted);
+
+          return { status: "success" };
+        } catch (error) {
+          return { status: "failure" };
+        }
       }
       default:
         return {

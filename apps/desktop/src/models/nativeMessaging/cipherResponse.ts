@@ -1,4 +1,4 @@
-export type CiphersResponse = {
+export type CipherResponse = {
   userId: string;
   credentialId: string;
   userName: string;
