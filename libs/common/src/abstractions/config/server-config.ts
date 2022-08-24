@@ -11,11 +11,25 @@ export class ServerConfig {
     this.version = serverConfigReponse?.version;
     this.gitHash = serverConfigReponse?.gitHash;
     this.server = serverConfigReponse?.server;
-    this.environment = serverConfigReponse?.environment ?? new EnvironmentServerConfig();
     this.utcDate = serverConfigReponse?.utcDate;
+    this.environment = serverConfigReponse?.environment ?? new EnvironmentServerConfig();
+
+    if (serverConfigReponse?.server?.name == null || serverConfigReponse?.server?.url == null) {
+      this.server = null;
+    }
   }
 
   isValid(): boolean {
+    if (
+      this.utcDate == null ||
+      (this.version == null &&
+        this.gitHash == null &&
+        this.server == null &&
+        this.environment == null)
+    ) {
+      return false;
+    }
+
     const twentyFourHours = 24;
     const currentUtcDate = new Date(new Date().toISOString());
     return this.getDateDiffInHours(currentUtcDate, this.utcDate) < twentyFourHours;

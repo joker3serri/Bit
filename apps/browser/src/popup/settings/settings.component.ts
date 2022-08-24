@@ -128,7 +128,12 @@ export class SettingsComponent implements OnInit {
     this.configService.serverConfig$
       .pipe(takeUntil(this.destroy$))
       .subscribe((serverConfig: ServerConfig) => {
-        this.serverConfig = serverConfig;
+        if (this.serverConfig != null && serverConfig == null) {
+          // do not update
+          return;
+        } else {
+          this.serverConfig = serverConfig;
+        }
       });
   }
 
