@@ -1988,6 +1988,10 @@
   "premiumSubcriptionRequired": {
     "message": "Premium subscription required"
   },
+  "accountId": {
+    "message": "Account ID",
+    "description": "ID is short for 'Identifier'"
+  },
   "organizationIsDisabled": {
     "message": "Organization is disabled."
   },

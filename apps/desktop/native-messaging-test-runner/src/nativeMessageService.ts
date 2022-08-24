@@ -9,6 +9,8 @@ import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service
 import { EncryptService } from "@bitwarden/common/services/encrypt.service";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/nodeCryptoFunction.service";
 
+import { CredentialCreatePayload } from "../../src/models/nativeMessaging/credentialCreatePayload";
+import { CredentialUpdatePayload } from "../../src/models/nativeMessaging/credentialUpdatePayload";
 import { DecryptedCommandData } from "../../src/models/nativeMessaging/decryptedCommandData";
 import { EncryptedMessage } from "../../src/models/nativeMessaging/encryptedMessage";
 import { EncryptedMessageResponse } from "../../src/models/nativeMessaging/encryptedMessageResponse";
@@ -77,6 +79,56 @@ export default class NativeMessageService {
         payload: {
           uri: uri,
         },
+      },
+      key
+    );
+    const response = await this.sendEncryptedMessage({
+      encryptedCommand,
+    });
+
+    return this.decryptResponsePayload(response.encryptedPayload, key);
+  }
+
+  async credentialCreation(key: string, name: string): Promise<DecryptedCommandData> {
+    const encryptedCommand = await this.encryptCommandData(
+      {
+        command: "bw-credential-create",
+        payload: {
+          name: name,
+          userName: "SuperAwesomeUser",
+          password: "dolhpin",
+          uri: "google.com",
+        } as CredentialCreatePayload,
+      },
+      key
+    );
+    const response = await this.sendEncryptedMessage({
+      encryptedCommand,
+    });
+
+    return this.decryptResponsePayload(response.encryptedPayload, key);
+  }
+
+  async credentialUpdate(
+    key: string,
+    name: string,
+    password: string,
+    username: string,
+    uri: string,
+    userId: string,
+    credentialId: string
+  ): Promise<DecryptedCommandData> {
+    const encryptedCommand = await this.encryptCommandData(
+      {
+        command: "bw-credential-update",
+        payload: {
+          userId: userId,
+          credentialId: credentialId,
+          userName: username,
+          uri: uri,
+          password: password,
+          name: name,
+        } as CredentialUpdatePayload,
       },
       key
     );

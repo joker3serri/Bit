@@ -1,4 +1,6 @@
-export * from "./ciphersResponse";
+export * from "./cipherResponse";
+export * from "./credentialCreatePayload";
+export * from "./credentialUpdatePayload";
 export * from "./decryptedCommandData";
 export * from "./encryptedCommand";
 export * from "./encryptedMessage";

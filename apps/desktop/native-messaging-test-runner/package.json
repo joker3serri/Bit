@@ -7,6 +7,8 @@
     "handshake": "tsc && node dist/apps/desktop/native-messaging-test-runner/src/bw-handshake.js",
     "status": "tsc && node dist/apps/desktop/native-messaging-test-runner/src/bw-status.js",
     "retrieve": "tsc && node dist/apps/desktop/native-messaging-test-runner/src/bw-credential-retrieval.js",
+    "create": "tsc && node dist/apps/desktop/native-messaging-test-runner/src/bw-credential-create.js",
+    "update": "tsc && node dist/apps/desktop/native-messaging-test-runner/src/bw-credential-update.js",
     "generate": "tsc && node dist/apps/desktop/native-messaging-test-runner/src/bw-generate-password.js"
   },
   "author": "Bitwarden Inc. <hello@bitwarden.com> (https://bitwarden.com)",
