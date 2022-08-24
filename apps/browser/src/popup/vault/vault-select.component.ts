@@ -113,9 +113,11 @@ export class VaultSelectComponent implements OnInit {
 
   async load() {
     this.vaultFilter = this.vaultFilterService.getVaultFilter();
-    this.organizations = (await this.vaultFilterService.buildOrganizations()).sort((a, b) =>
-      a.name.localeCompare(b.name)
-    );
+
+    this.vaultFilterService.buildOrganizations().subscribe((orgs) => {
+      this.organizations = orgs.sort((a, b) => a.name.localeCompare(b.name));
+    });
+
     this.enforcePersonalOwnwership =
       await this.vaultFilterService.checkForPersonalOwnershipPolicy();
 

@@ -6,6 +6,7 @@ import { SelectOptions } from "@bitwarden/angular/interfaces/selectOptions";
 import { dirtyRequired } from "@bitwarden/angular/validators/dirty.validator";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import {
@@ -79,7 +80,7 @@ export class SsoComponent implements OnInit {
   haveTestedKeyConnector = false;
   organizationId: string;
   organization: Organization;
-  formPromise: Promise<any>;
+  formPromise: Promise<OrganizationSsoResponse>;
 
   callbackPath: string;
   signedOutCallbackPath: string;
@@ -147,7 +148,8 @@ export class SsoComponent implements OnInit {
     private apiService: ApiService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    private organizationApiService: OrganizationApiServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -178,7 +180,7 @@ export class SsoComponent implements OnInit {
 
   async load() {
     this.organization = await this.organizationService.get(this.organizationId);
-    const ssoSettings = await this.apiService.getOrganizationSso(this.organizationId);
+    const ssoSettings = await this.organizationApiService.getSso(this.organizationId);
     this.populateForm(ssoSettings);
 
     this.callbackPath = ssoSettings.urls.callbackPath;
@@ -206,7 +208,7 @@ export class SsoComponent implements OnInit {
     request.enabled = this.enabled.value;
     request.data = SsoConfigApi.fromView(this.ssoConfigForm.value as SsoConfigView);
 
-    this.formPromise = this.apiService.postOrganizationSso(this.organizationId, request);
+    this.formPromise = this.organizationApiService.updateSso(this.organizationId, request);
 
     try {
       const response = await this.formPromise;

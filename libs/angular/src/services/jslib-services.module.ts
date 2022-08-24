@@ -29,6 +29,7 @@ import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarde
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/abstractions/messaging.service";
 import { NotificationsService as NotificationsServiceAbstraction } from "@bitwarden/common/abstractions/notifications.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService as OrganizationServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PasswordGenerationService as PasswordGenerationServiceAbstraction } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/passwordReprompt.service";
@@ -76,6 +77,7 @@ import { FolderService } from "@bitwarden/common/services/folder/folder.service"
 import { FormValidationErrorsService } from "@bitwarden/common/services/formValidationErrors.service";
 import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
+import { OrganizationApiService } from "@bitwarden/common/services/organization/organization-api.service";
 import { OrganizationService } from "@bitwarden/common/services/organization/organization.service";
 import { PasswordGenerationService } from "@bitwarden/common/services/passwordGeneration.service";
 import { PolicyApiService } from "@bitwarden/common/services/policy/policy-api.service";
@@ -511,6 +513,11 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
     {
       provide: UserVerificationApiServiceAbstraction,
       useClass: UserVerificationApiService,
+      deps: [ApiServiceAbstraction],
+    },
+    {
+      provide: OrganizationApiServiceAbstraction,
+      useClass: OrganizationApiService,
       deps: [ApiServiceAbstraction],
     },
   ],

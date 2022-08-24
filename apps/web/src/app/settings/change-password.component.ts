@@ -10,6 +10,7 @@ import { FolderService } from "@bitwarden/common/abstractions/folder/folder.serv
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -53,7 +54,8 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     private sendService: SendService,
     private organizationService: OrganizationService,
     private keyConnectorService: KeyConnectorService,
-    private router: Router
+    private router: Router,
+    private organizationApiService: OrganizationApiServiceAbstraction
   ) {
     super(
       i18nService,
@@ -267,7 +269,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
       }
 
       // Retrieve public key
-      const response = await this.apiService.getOrganizationKeys(org.id);
+      const response = await this.organizationApiService.getKeys(org.id);
       const publicKey = Utils.fromB64ToArray(response?.publicKey);
 
       // Re-enroll - encrpyt user's encKey.key with organization public key
