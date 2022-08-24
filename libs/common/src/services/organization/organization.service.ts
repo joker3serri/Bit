@@ -4,7 +4,6 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { InternalOrganizationService } from "../../abstractions/organization/organization.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
-import { Utils } from "../../misc/utils";
 import { OrganizationData } from "../../models/data/organizationData";
 
 export class OrganizationService implements InternalOrganizationService {
@@ -14,10 +13,6 @@ export class OrganizationService implements InternalOrganizationService {
 
   constructor(private stateService: StateService) {
     this.stateService.activeAccountUnlocked$.subscribe(async (unlocked) => {
-      if ((Utils.global as any).bitwardenContainerService == null) {
-        return;
-      }
-
       if (!unlocked) {
         this._organizations.next([]);
         return;
@@ -57,7 +52,7 @@ export class OrganizationService implements InternalOrganizationService {
 
     organizations[organization.id] = organization;
 
-    await this.updateObservables(organizations);
+    this.updateObservables(organizations);
     await this.stateService.setOrganizations(organizations);
   }
 
@@ -73,7 +68,7 @@ export class OrganizationService implements InternalOrganizationService {
 
     delete organizations[id];
 
-    await this.updateObservables(organizations);
+    this.updateObservables(organizations);
     await this.stateService.setOrganizations(organizations);
   }
 
@@ -89,7 +84,7 @@ export class OrganizationService implements InternalOrganizationService {
     return organizations.find((organization) => organization.identifier === identifier);
   }
 
-  private async updateObservables(organizationsMap: { [id: string]: OrganizationData }) {
+  private updateObservables(organizationsMap: { [id: string]: OrganizationData }) {
     const organizations = Object.values(organizationsMap || {}).map((o) => new Organization(o));
     this._organizations.next(organizations);
   }
