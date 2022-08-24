@@ -112,6 +112,7 @@ export class NativeMessageHandler {
   }
 
   private async handleEncryptedMessage(message: EncryptedMessage) {
+    message.encryptedCommand = EncString.fromJSON(message.encryptedCommand.toString());
     const decryptedCommandData = await this.decryptPayload(message);
     const { command } = decryptedCommandData;
 
