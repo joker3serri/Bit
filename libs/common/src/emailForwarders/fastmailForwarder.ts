@@ -68,7 +68,6 @@ export class FastmailForwarder implements Forwarder {
 
   private async getAccountId(apiService: ApiService, options: ForwarderOptions): Promise<string> {
     const requestInit: RequestInit = {
-      // redirect: "manual",
       cache: "no-store",
       method: "GET",
       headers: new Headers({
