@@ -183,8 +183,11 @@ export class NativeMessageHandler {
       }
       case "bw-credential-create": {
         const activeUserId = await this.stateService.getUserId();
-        const authStatus = await this.authService.getAuthStatus(activeUserId);
+        if (payload.userId !== activeUserId) {
+          return { error: "not-active-user" };
+        }
 
+        const authStatus = await this.authService.getAuthStatus(activeUserId);
         if (authStatus !== AuthenticationStatus.Unlocked) {
           return { error: "locked" };
         }
@@ -223,8 +226,11 @@ export class NativeMessageHandler {
       }
       case "bw-credential-update": {
         const activeUserId = await this.stateService.getUserId();
-        const authStatus = await this.authService.getAuthStatus(activeUserId);
+        if (payload.userId !== activeUserId) {
+          return { error: "not-active-user" };
+        }
 
+        const authStatus = await this.authService.getAuthStatus(activeUserId);
         if (authStatus !== AuthenticationStatus.Unlocked) {
           return { error: "locked" };
         }

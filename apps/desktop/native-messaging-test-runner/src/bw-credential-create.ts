@@ -3,6 +3,8 @@ import "module-alias/register";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
+import { CredentialCreatePayload } from "../../src/models/nativeMessaging/credentialCreatePayload";
+
 import { LogUtils } from "./logUtils";
 import NativeMessageService from "./nativeMessageService";
 import * as config from "./variables";
@@ -28,8 +30,23 @@ const { name } = argv;
     return;
   }
 
+  // Get active account userId
+  const status = await nativeMessageService.checkStatus(handshakeResponse.sharedKey);
+
+  const activeUser = status.payload.filter((a) => a.active === true && a.status === "unlocked")[0];
+  if (activeUser === undefined) {
+    LogUtils.logError("No active or unlocked user");
+  }
+  LogUtils.logWarning("Active userId: " + activeUser.id);
+
   LogUtils.logSuccess("Handshake success response");
-  const response = await nativeMessageService.credentialCreation(handshakeResponse.sharedKey, name);
+  const response = await nativeMessageService.credentialCreation(handshakeResponse.sharedKey, {
+    name: name,
+    userName: "SuperAwesomeUser",
+    password: "dolhpin",
+    uri: "google.com",
+    userId: activeUser.id,
+  } as CredentialCreatePayload);
 
   if (response.payload.status === "failure") {
     LogUtils.logError("Failure response returned ");

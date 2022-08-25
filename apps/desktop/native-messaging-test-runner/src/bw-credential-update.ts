@@ -3,6 +3,8 @@ import "module-alias/register";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
+import { CredentialUpdatePayload } from "../../src/models/nativeMessaging/credentialUpdatePayload";
+
 import { LogUtils } from "./logUtils";
 import NativeMessageService from "./nativeMessageService";
 import * as config from "./variables";
@@ -57,16 +59,15 @@ const { name, username, password, uri } = argv;
   }
   LogUtils.logWarning("Active userId: " + activeUser.id);
 
-  const response = await nativeMessageService.credentialUpdate(
-    handshakeResponse.sharedKey,
-    name,
-    password,
-    username,
-    uri,
-    activeUser.id,
+  const response = await nativeMessageService.credentialUpdate(handshakeResponse.sharedKey, {
+    name: name,
+    password: password,
+    userName: username,
+    uri: uri,
+    userId: activeUser.id,
     // Replace with credentialId you want to update
-    "2a08b546-fa9d-48cc-ae8e-ae7601207da9"
-  );
+    credentialId: "2a08b546-fa9d-48cc-ae8e-ae7601207da9",
+  } as CredentialUpdatePayload);
 
   if (response.payload.status === "failure") {
     LogUtils.logError("Failure response returned ");
