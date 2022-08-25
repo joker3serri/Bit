@@ -1,0 +1,39 @@
+<ng-select
+  [items]="baseItems"
+  [(ngModel)]="selectedItems"
+  [bindLabel]="bindLabel"
+  [groupBy]="groupBy"
+  name="Select Items"
+  [placeholder]="placeholder"
+  [multiple]="multipleItemSelection"
+  [clearable]="clearSelection"
+  [selectOnTab]="selectOnTab"
+  [closeOnSelect]="closeOnSelect"
+  [keyDownFn]="overrideEnter.bind(this)"
+  (close)="onDropdownClosed()"
+>
+  <ng-template ng-label-tmp let-item="item" let-clear="clear">
+    <span bitBadge badgeType="primary" class="tw-mr-1">
+      <i
+        *ngIf="item.icon != null"
+        class="tw-mr-1 bwi bwi-fw {{ item.icon }}"
+        aria-hidden="true"
+      ></i>
+      {{ item.labelName }}
+      <i class="bwi bwi-fw bwi-close bwi-sm tw-ml-1" aria-hidden="true" (click)="clear(item)"></i>
+    </span>
+  </ng-template>
+  <ng-template ng-option-tmp let-item="item">
+    <div class="tw-flex">
+      <div class="tw-w-7 tw-flex-none">
+        <i *ngIf="isSelected(item)" class="bwi bwi-fw bwi-check" aria-hidden="true"></i>
+      </div>
+      <div class="tw-mr-2 tw-flex-initial">
+        <i *ngIf="item.icon != null" class="bwi bwi-fw {{ item.icon }}" aria-hidden="true"></i>
+      </div>
+      <div class="tw-flex-1">
+        {{ item.listName }}
+      </div>
+    </div>
+  </ng-template>
+</ng-select>
