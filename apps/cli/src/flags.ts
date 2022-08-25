@@ -1,5 +1,3 @@
-// required to avoid linting errors when there are no feature flags
-/* eslint-disable @typescript-eslint/ban-types */
 import {
   flagEnabled as baseFlagEnabled,
   devFlagEnabled as baseDevFlagEnabled,
@@ -8,8 +6,12 @@ import {
   SharedDevFlags,
 } from "@bitwarden/common/misc/flags";
 
+// required to avoid linting errors when there are no flags
+/* eslint-disable-next-line @typescript-eslint/ban-types */
 export type Flags = {} & SharedFlags;
 
+// required to avoid linting errors when there are no flags
+/* eslint-disable-next-line @typescript-eslint/ban-types */
 export type DevFlags = {} & SharedDevFlags;
 
 export function flagEnabled(flag: keyof Flags): boolean {
