@@ -3,8 +3,8 @@
   "compilerOptions": {
     "paths": {
       "@bitwarden/common/*": ["../../libs/common/src/*"],
-      "@bitwarden/angular/*": ["./libs/angular/src/*"],
-      "@bitwarden/components": ["./libs/components/src"]
+      "@bitwarden/angular/*": ["../../libs/angular/src/*"],
+      "@bitwarden/components": ["../../libs/components/src"]
     }
   }
 }
