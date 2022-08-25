@@ -1,0 +1,10 @@
+<a
+  [class]="classList"
+  [routerLink]="disabled ? null : route"
+  [routerLinkActive]="activeClassList"
+  ariaCurrentWhenActive="page"
+  [attr.aria-disabled]="disabled"
+  role="link"
+>
+  <ng-content></ng-content>
+</a>

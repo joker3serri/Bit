@@ -1,4 +1,13 @@
-import { Component, ContentChild, Inject, InjectionToken, Input, Optional } from "@angular/core";
+import {
+  Component,
+  ContentChild,
+  Inject,
+  InjectionToken,
+  Input,
+  Optional,
+  TemplateRef,
+  ViewChild,
+} from "@angular/core";
 
 import { BIT_TAB, TabLabelDirective } from "./tab-label.directive";
 
@@ -8,6 +17,9 @@ export const BIT_TAB_GROUP = new InjectionToken<any>("BIT_TAB_GROUP");
   selector: "bit-tab",
   templateUrl: "./tab.component.html",
   providers: [{ provide: BIT_TAB, useExisting: TabComponent }],
+  host: {
+    role: "tabpanel",
+  },
 })
 export class TabComponent {
   protected _templateLabel: TabLabelDirective;
@@ -17,6 +29,8 @@ export class TabComponent {
 
   @Input("label") textLabel = "";
 
+  @ViewChild(TemplateRef, { static: true }) implicitContent: TemplateRef<any>;
+
   @ContentChild(TabLabelDirective)
   get templateLabel(): TabLabelDirective {
     return this._templateLabel;
@@ -24,6 +38,8 @@ export class TabComponent {
   set templateLabel(value: TabLabelDirective) {
     this._setTemplateLabelInput(value);
   }
+
+  isActive: boolean;
 
   constructor(@Inject(BIT_TAB_GROUP) @Optional() public tabGroup: any) {}
 
@@ -51,6 +67,7 @@ export class TabComponent {
       "tw-border-t-4",
       "tw-border-transparent",
       "tw-border-solid",
+      "tw-bg-background",
       "!tw-text-main",
       "hover:tw-underline",
       "hover:!tw-text-main",
@@ -58,10 +75,21 @@ export class TabComponent {
       "focus-visible:tw-outline-none",
       "focus-visible:tw-ring-2",
       "focus-visible:tw-ring-primary-700",
-      "disabled:tw-bg-transparent",
+      "disabled:tw-bg-secondary-100",
       "disabled:!tw-text-muted/60",
+      "disabled:hover:!tw-text-muted/60",
       "disabled:tw-no-underline",
       "disabled:tw-cursor-not-allowed",
+    ];
+  }
+
+  get disabledClassList(): string[] {
+    return [
+      "!tw-bg-secondary-100",
+      "!tw-text-muted/60",
+      "hover:!tw-text-muted/60",
+      "!tw-no-underline",
+      "tw-cursor-not-allowed",
     ];
   }
 

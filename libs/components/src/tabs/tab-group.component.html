@@ -1,6 +1,23 @@
-<div
-  role="tablist"
-  class="tw-inline-flex tw-flex-wrap tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300 tw-leading-5"
->
-  <ng-content></ng-content>
+<div bit-tab-list-container role="tablist" [attr.aria-label]="label">
+  <button
+    *ngFor="let tab of tabs; let i = index"
+    type="button"
+    role="tab"
+    [class]="tabClasses(tab)"
+    [disabled]="tab.disabled"
+    (click)="selectTab(i)"
+  >
+    <ng-container [ngTemplateOutlet]="content"></ng-container>
+
+    <ng-template #content>
+      <ng-template [ngIf]="tab.templateLabel" [ngIfElse]="tabTextLabel">
+        <ng-container [ngTemplateOutlet]="tab.templateLabel.templateRef"></ng-container>
+      </ng-template>
+
+      <ng-template #tabTextLabel>{{ tab.textLabel }}</ng-template>
+    </ng-template>
+  </button>
+</div>
+<div class="tw-py-5">
+  <ng-container [ngTemplateOutlet]="activeTab?.implicitContent"></ng-container>
 </div>
