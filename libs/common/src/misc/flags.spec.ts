@@ -48,6 +48,14 @@ describe("devFlagEnabled", () => {
       expect(devFlagEnabled<any>("devHack")).toBe(true);
     });
 
+    it("returns true if truthy", () => {
+      process.env.DEV_FLAGS = JSON.stringify({
+        devHack: { key: 3 },
+      });
+
+      expect(devFlagEnabled<any>("devHack")).toBe(true);
+    });
+
     it("returns false if disabled", () => {
       process.env.DEV_FLAGS = JSON.stringify({
         devHack: false,
