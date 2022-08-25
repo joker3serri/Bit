@@ -29,7 +29,8 @@ describe("session syncer", () => {
   afterEach(() => {
     jest.resetAllMocks();
 
-    behaviorSubject.complete();
+    // eslint-disable-next-line rxjs/no-subject-unsubscribe
+    behaviorSubject.unsubscribe();
   });
 
   describe("constructor", () => {
