@@ -326,7 +326,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async lock() {
-    await this.vaultTimeoutService.lock(true);
+    await this.vaultTimeoutService.lock();
   }
 
   async logOut() {
