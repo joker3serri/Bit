@@ -1,8 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { SecretResponse } from "./responses/secret.response";
+import { SecretIdentifierResponse } from "./responses/secret-identifier.response";
 import { SecretApiService } from "./secret-api.service";
+import { SecretService } from "./secret.service";
 
 @Component({
   selector: "sm-secrets",
@@ -11,9 +12,13 @@ import { SecretApiService } from "./secret-api.service";
 export class SecretsComponent implements OnInit {
   private organizationId: string;
 
-  secrets: SecretResponse[];
+  secrets: SecretIdentifierResponse[];
 
-  constructor(private route: ActivatedRoute, private secretsApiService: SecretApiService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private secretsApiService: SecretApiService,
+    private secretService: SecretService
+  ) {}
 
   ngOnInit() {
     this.route.params.subscribe(async (params: any) => {
@@ -23,8 +28,12 @@ export class SecretsComponent implements OnInit {
   }
 
   private async getSecrets() {
-    this.secrets = (
+    const secretIdentifiers: SecretIdentifierResponse[] = (
       await this.secretsApiService.getSecretsByOrganizationId(this.organizationId)
     ).data;
+    this.secrets = await this.secretService.decryptSecretIdentifiers(
+      this.organizationId,
+      secretIdentifiers
+    );
   }
 }
