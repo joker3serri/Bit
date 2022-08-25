@@ -16,7 +16,8 @@ function getFlags<T>(envFlags: string | T): T {
 
 /**
  * Gets the value of a feature flag from environment.
- * All flags default to "on" (true)
+ * All flags default to "on" (true).
+ * Only use for shared code in `libs`, otherwise use the client-specific function.
  * @param flag The name of the feature flag to check
  * @returns The value of the flag
  */
@@ -28,6 +29,7 @@ export function flagEnabled<Flags extends SharedFlags>(flag: keyof Flags): boole
 /**
  * Gets the value of a dev flag from environment.
  * Will always return false unless in development.
+ * Only use for shared code in `libs`, otherwise use the client-specific function.
  * @param flag The name of the dev flag to check
  * @returns The value of the flag
  */
