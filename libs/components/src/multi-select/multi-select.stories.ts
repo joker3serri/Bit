@@ -3,8 +3,6 @@ import { NgSelectModule } from "@ng-select/ng-select";
 import { action } from "@storybook/addon-actions";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
-
-
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
 import { BadgeModule } from "../badge";

@@ -7,7 +7,6 @@ import { BadgeModule } from "../badge";
 
 import { MultiSelectComponent } from "./multi-select.component";
 
-
 @NgModule({
   imports: [CommonModule, FormsModule, NgSelectModule, BadgeModule],
   exports: [MultiSelectComponent],
