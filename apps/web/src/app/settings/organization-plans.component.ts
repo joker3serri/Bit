@@ -17,6 +17,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { SyncService } from "@bitwarden/common/abstractions/sync.service";
@@ -35,6 +36,10 @@ import { PlanResponse } from "@bitwarden/common/models/response/planResponse";
 import { PaymentComponent } from "./payment.component";
 import { TaxInfoComponent } from "./tax-info.component";
 
+interface OnSuccessArgs {
+  organizationId: string;
+}
+
 @Component({
   selector: "app-organization-plans",
   templateUrl: "organization-plans.component.html",
@@ -50,14 +55,14 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   @Input() product: ProductType = ProductType.Free;
   @Input() plan: PlanType = PlanType.Free;
   @Input() providerId: string;
-  @Output() onSuccess = new EventEmitter();
-  @Output() onCanceled = new EventEmitter();
+  @Output() onSuccess = new EventEmitter<OnSuccessArgs>();
+  @Output() onCanceled = new EventEmitter<void>();
   @Output() onTrialBillingSuccess = new EventEmitter();
 
   loading = true;
   selfHosted = false;
   productTypes = ProductType;
-  formPromise: Promise<any>;
+  formPromise: Promise<string>;
   singleOrgPolicyBlock = false;
   isInTrialFlow = false;
   discount = 0;
@@ -90,7 +95,8 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     private organizationService: OrganizationService,
     private logService: LogService,
     private messagingService: MessagingService,
-    private formBuilder: UntypedFormBuilder
+    private formBuilder: UntypedFormBuilder,
+    private organizationApiService: OrganizationApiServiceAbstraction
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
   }
@@ -389,7 +395,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
       request.keys = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
     }
 
-    const result = await this.apiService.postOrganizationUpgrade(this.organizationId, request);
+    const result = await this.organizationApiService.upgrade(this.organizationId, request);
     if (!result.success && result.paymentIntentClientSecret != null) {
       await this.paymentComponent.handleStripeCardPayment(result.paymentIntentClientSecret, null);
     }
@@ -451,7 +457,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
 
       return orgId;
     } else {
-      return (await this.apiService.postOrganization(request)).id;
+      return (await this.organizationApiService.create(request)).id;
     }
   }
 
@@ -466,14 +472,14 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     fd.append("license", files[0]);
     fd.append("key", key);
     fd.append("collectionName", collectionCt);
-    const response = await this.apiService.postOrganizationLicense(fd);
+    const response = await this.organizationApiService.createLicense(fd);
     const orgId = response.id;
 
     await this.apiService.refreshIdentityToken();
 
     // Org Keys live outside of the OrganizationLicense - add the keys to the org here
     const request = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
-    await this.apiService.postOrganizationKeys(orgId, request);
+    await this.organizationApiService.updateKeys(orgId, request);
 
     return orgId;
   }
