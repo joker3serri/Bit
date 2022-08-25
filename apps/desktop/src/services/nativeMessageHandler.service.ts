@@ -4,6 +4,7 @@ import { ipcRenderer } from "electron";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
@@ -39,7 +40,8 @@ export class NativeMessageHandler {
     private cryptoService: CryptoService,
     private cryptoFunctionService: CryptoFunctionService,
     private cipherService: CipherService,
-    private policyService: PolicyService
+    private policyService: PolicyService,
+    private messagingService: MessagingService
   ) {}
 
   async handleMessage(message: Message) {
@@ -209,6 +211,11 @@ export class NativeMessageHandler {
           const encrypted = await this.cipherService.encrypt(cipherView);
           await this.cipherService.saveWithServer(encrypted);
 
+          // Notify other clients of new login
+          await this.messagingService.send("addedCipher");
+          // Refresh Desktop ciphers list
+          await this.messagingService.send("refreshCiphers");
+
           return { status: "success" };
         } catch (error) {
           return { status: "failure" };
@@ -241,6 +248,11 @@ export class NativeMessageHandler {
           const encrypted = await this.cipherService.encrypt(cipherView);
 
           await this.cipherService.saveWithServer(encrypted);
+
+          // Notify other clients of update
+          await this.messagingService.send("editedCipher");
+          // Refresh Desktop ciphers list
+          await this.messagingService.send("refreshCiphers");
 
           return { status: "success" };
         } catch (error) {
