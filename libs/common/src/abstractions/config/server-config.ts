@@ -8,6 +8,10 @@ export class ServerConfig {
   utcDate: Date;
 
   constructor(serverConfigReponse?: ServerConfigResponse) {
+    if (serverConfigReponse == null) {
+      return;
+    }
+
     this.version = serverConfigReponse?.version;
     this.gitHash = serverConfigReponse?.gitHash;
     this.server = serverConfigReponse?.server;

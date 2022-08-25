@@ -8,13 +8,17 @@ export class ServerConfigResponse extends BaseResponse {
   utcDate: Date;
 
   constructor(response: any) {
+    if (response == null) {
+      return;
+    }
+
     super(response);
 
     this.version = this.getResponseProperty("Version");
     this.gitHash = this.getResponseProperty("GitHash");
     this.server = new ThirdPartyServerConfigApi(this.getResponseProperty("Server"));
     this.environment = new EnvironmentServerConfigApi(this.getResponseProperty("Environment"));
-    this.utcDate = new Date(this.getResponseProperty("UtcDate"));
+    this.utcDate = new Date(new Date().toISOString());
   }
 }
 

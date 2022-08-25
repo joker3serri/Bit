@@ -35,7 +35,7 @@ export class ConfigService implements ConfigServiceAbstraction {
     const storedServerConfig = await this.stateService.getServerConfig();
 
     if (storedServerConfig == null || !storedServerConfig.isValid()) {
-      const value = this.fetchServerConfig();
+      const value = await this.fetchServerConfig();
 
       if (value != null) {
         return value ?? storedServerConfig;
