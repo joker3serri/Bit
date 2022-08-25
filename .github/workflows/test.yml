@@ -39,11 +39,8 @@ jobs:
           node --version
           npm --version
 
-      - name: Set node max heap size
-        run: export NODE_OPTIONS=--max_old_space_size=4096
-
       - name: Install Node dependencies
         run: npm ci
 
       - name: Run tests
-        run: npm run test
+        run: npm run test --max_old_space_size=4096
