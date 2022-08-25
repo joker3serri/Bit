@@ -32,7 +32,7 @@ jobs:
         with:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
-          node-version: '16.10'
+          node-version: '16'
 
       - name: Print environment
         run: |
@@ -40,11 +40,9 @@ jobs:
           npm --version
 
       - name: Install Node dependencies
-        run: |
-          npm i -g npm@8
-          npm ci
+        run: npm ci
 
       - name: Run tests
         run: |
           export NODE_OPTIONS=--max_old_space_size=6144
-          npx jest --runInBand --logHeapUsage
+          npm run test
