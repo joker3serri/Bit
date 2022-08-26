@@ -7,8 +7,11 @@ function load(envName) {
 
 function log(configObj) {
   const repeatNum = 50;
+  // eslint-disable-next-line
   console.log(`${"=".repeat(repeatNum)}\nenvConfig`);
+  // eslint-disable-next-line
   console.log(JSON.stringify(configObj, null, 2));
+  // eslint-disable-next-line
   console.log(`${"=".repeat(repeatNum)}`);
 }
 
