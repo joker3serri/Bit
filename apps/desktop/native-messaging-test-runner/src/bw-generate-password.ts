@@ -36,7 +36,7 @@ const { userId } = argv;
   if (response.payload.error != null) {
     LogUtils.logError("Error response returned: ", response.payload.error);
   } else {
-    LogUtils.logSuccess("Credentials returned ", response);
+    LogUtils.logSuccess("Response: ", response);
   }
 
   nativeMessageService.disconnect();

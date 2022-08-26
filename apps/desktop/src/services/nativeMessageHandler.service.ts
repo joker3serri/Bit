@@ -42,8 +42,9 @@ export class NativeMessageHandler {
     private cryptoFunctionService: CryptoFunctionService,
     private cipherService: CipherService,
     private policyService: PolicyService,
+    private messagingService: MessagingService,
+
     private passwordGenerationService: PasswordGenerationService
-    private messagingService: MessagingService
   ) {}
 
   async handleMessage(message: Message) {
