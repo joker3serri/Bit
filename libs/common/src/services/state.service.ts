@@ -1,6 +1,5 @@
 import { BehaviorSubject } from "rxjs";
 
-import { ServerConfig } from "../abstractions/config/server-config";
 import { LogService } from "../abstractions/log.service";
 import { StateService as StateServiceAbstraction } from "../abstractions/state.service";
 import { StateMigrationService } from "../abstractions/stateMigration.service";
@@ -21,6 +20,7 @@ import { OrganizationData } from "../models/data/organizationData";
 import { PolicyData } from "../models/data/policyData";
 import { ProviderData } from "../models/data/providerData";
 import { SendData } from "../models/data/sendData";
+import { ServerConfigData } from "../models/data/server-config.data";
 import { Account, AccountData, AccountSettings } from "../models/domain/account";
 import { EncString } from "../models/domain/encString";
 import { EnvironmentUrls } from "../models/domain/environmentUrls";
@@ -2264,7 +2264,7 @@ export class StateService<
     );
   }
 
-  async setServerConfig(value: ServerConfig, options?: StorageOptions): Promise<void> {
+  async setServerConfig(value: ServerConfigData, options?: StorageOptions): Promise<void> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
     );
@@ -2275,8 +2275,7 @@ export class StateService<
     );
   }
 
-  @withPrototype(ServerConfig, ServerConfig.fromJSON)
-  async getServerConfig(options: StorageOptions): Promise<ServerConfig> {
+  async getServerConfig(options: StorageOptions): Promise<ServerConfigData> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
     )?.settings?.serverConfig;

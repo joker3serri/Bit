@@ -3,9 +3,8 @@ import { BaseResponse } from "./baseResponse";
 export class ServerConfigResponse extends BaseResponse {
   version: string;
   gitHash: string;
-  server: ThirdPartyServerConfigApi; // should be null unless the client is pointing to a 3rd party server
-  environment: EnvironmentServerConfigApi;
-  utcDate: Date;
+  server: ThirdPartyServerConfigResponse;
+  environment: EnvironmentServerConfigResponse;
 
   constructor(response: any) {
     if (response == null) {
@@ -16,13 +15,12 @@ export class ServerConfigResponse extends BaseResponse {
 
     this.version = this.getResponseProperty("Version");
     this.gitHash = this.getResponseProperty("GitHash");
-    this.server = new ThirdPartyServerConfigApi(this.getResponseProperty("Server"));
-    this.environment = new EnvironmentServerConfigApi(this.getResponseProperty("Environment"));
-    this.utcDate = new Date(new Date().toISOString());
+    this.server = new ThirdPartyServerConfigResponse(this.getResponseProperty("Server"));
+    this.environment = new EnvironmentServerConfigResponse(this.getResponseProperty("Environment"));
   }
 }
 
-export class EnvironmentServerConfigApi extends BaseResponse {
+export class EnvironmentServerConfigResponse extends BaseResponse {
   vault: string;
   api: string;
   identity: string;
@@ -46,7 +44,7 @@ export class EnvironmentServerConfigApi extends BaseResponse {
   }
 }
 
-export class ThirdPartyServerConfigApi extends BaseResponse {
+export class ThirdPartyServerConfigResponse extends BaseResponse {
   name: string;
   url: string;
 

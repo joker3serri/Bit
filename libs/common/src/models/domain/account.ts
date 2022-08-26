@@ -1,4 +1,3 @@
-import { ServerConfig } from "../../abstractions/config/server-config";
 import { AuthenticationStatus } from "../../enums/authenticationStatus";
 import { KdfType } from "../../enums/kdfType";
 import { UriMatchType } from "../../enums/uriMatchType";
@@ -11,6 +10,7 @@ import { OrganizationData } from "../data/organizationData";
 import { PolicyData } from "../data/policyData";
 import { ProviderData } from "../data/providerData";
 import { SendData } from "../data/sendData";
+import { ServerConfigData } from "../data/server-config.data";
 import { CipherView } from "../view/cipherView";
 import { CollectionView } from "../view/collectionView";
 import { SendView } from "../view/sendView";
@@ -141,7 +141,7 @@ export class AccountSettings {
   settings?: any; // TODO: Merge whatever is going on here into the AccountSettings model properly
   vaultTimeout?: number;
   vaultTimeoutAction?: string = "lock";
-  serverConfig?: ServerConfig;
+  serverConfig?: ServerConfigData;
 }
 
 export class AccountTokens {

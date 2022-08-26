@@ -1,4 +1,6 @@
-import { concatMap, Observable, Subject } from "rxjs";
+import { BehaviorSubject, concatMap, Observable, filter } from "rxjs";
+
+import { ServerConfigData } from "@bitwarden/common/models/data/server-config.data";
 
 import { ConfigApiServiceAbstraction } from "../../abstractions/config/config-api.service.abstraction";
 import { ConfigServiceAbstraction } from "../../abstractions/config/config.service.abstraction";
@@ -6,8 +8,10 @@ import { ServerConfig } from "../../abstractions/config/server-config";
 import { StateService } from "../../abstractions/state.service";
 
 export class ConfigService implements ConfigServiceAbstraction {
-  private _serverConfig = new Subject<ServerConfig>();
-  serverConfig$: Observable<ServerConfig> = this._serverConfig.asObservable();
+  private _serverConfig = new BehaviorSubject<ServerConfig | null>(null);
+  serverConfig$: Observable<ServerConfig> = this._serverConfig
+    .asObservable()
+    .pipe(filter((v) => v != null));
 
   constructor(
     private stateService: StateService,
@@ -32,23 +36,22 @@ export class ConfigService implements ConfigServiceAbstraction {
   }
 
   private async buildServerConfig(): Promise<ServerConfig> {
-    const storedServerConfig = await this.stateService.getServerConfig();
+    const data = await this.stateService.getServerConfig();
+    const domain = data ? new ServerConfig(data) : null;
 
-    if (storedServerConfig == null || !storedServerConfig.isValid()) {
-      const value = await this.fetchServerConfig();
-      return value ?? storedServerConfig;
-    } else {
-      return storedServerConfig;
-    }
+    const value = await this.fetchServerConfig();
+    return value ?? domain;
+
+    return domain;
   }
 
   private async fetchServerConfig(): Promise<ServerConfig> {
-    const apiServerConfig = await this.configApiService.get();
-    const serverConfig = new ServerConfig(apiServerConfig);
+    const response = await this.configApiService.get();
+    const data = new ServerConfigData(response);
 
-    if (serverConfig != null) {
-      await this.stateService.setServerConfig(serverConfig);
-      return serverConfig;
+    if (data != null) {
+      await this.stateService.setServerConfig(data);
+      return new ServerConfig(data);
     }
 
     return null;
