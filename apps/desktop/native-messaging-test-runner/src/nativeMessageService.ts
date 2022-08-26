@@ -89,16 +89,14 @@ export default class NativeMessageService {
     return this.decryptResponsePayload(response.encryptedPayload, key);
   }
 
-  async credentialCreation(key: string, name: string): Promise<DecryptedCommandData> {
+  async credentialCreation(
+    key: string,
+    credentialData: CredentialCreatePayload
+  ): Promise<DecryptedCommandData> {
     const encryptedCommand = await this.encryptCommandData(
       {
         command: "bw-credential-create",
-        payload: {
-          name: name,
-          userName: "SuperAwesomeUser",
-          password: "dolhpin",
-          uri: "google.com",
-        } as CredentialCreatePayload,
+        payload: credentialData,
       },
       key
     );
@@ -111,24 +109,12 @@ export default class NativeMessageService {
 
   async credentialUpdate(
     key: string,
-    name: string,
-    password: string,
-    username: string,
-    uri: string,
-    userId: string,
-    credentialId: string
+    credentialData: CredentialUpdatePayload
   ): Promise<DecryptedCommandData> {
     const encryptedCommand = await this.encryptCommandData(
       {
         command: "bw-credential-update",
-        payload: {
-          userId: userId,
-          credentialId: credentialId,
-          userName: username,
-          uri: uri,
-          password: password,
-          name: name,
-        } as CredentialUpdatePayload,
+        payload: credentialData,
       },
       key
     );

@@ -4,6 +4,7 @@ import { ipcRenderer } from "electron";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
@@ -42,6 +43,7 @@ export class NativeMessageHandler {
     private cipherService: CipherService,
     private policyService: PolicyService,
     private passwordGenerationService: PasswordGenerationService
+    private messagingService: MessagingService
   ) {}
 
   async handleMessage(message: Message) {
@@ -183,8 +185,11 @@ export class NativeMessageHandler {
       }
       case "bw-credential-create": {
         const activeUserId = await this.stateService.getUserId();
-        const authStatus = await this.authService.getAuthStatus(activeUserId);
+        if (payload.userId !== activeUserId) {
+          return { error: "not-active-user" };
+        }
 
+        const authStatus = await this.authService.getAuthStatus(activeUserId);
         if (authStatus !== AuthenticationStatus.Unlocked) {
           return { error: "locked" };
         }
@@ -211,6 +216,11 @@ export class NativeMessageHandler {
           const encrypted = await this.cipherService.encrypt(cipherView);
           await this.cipherService.saveWithServer(encrypted);
 
+          // Notify other clients of new login
+          await this.messagingService.send("addedCipher");
+          // Refresh Desktop ciphers list
+          await this.messagingService.send("refreshCiphers");
+
           return { status: "success" };
         } catch (error) {
           return { status: "failure" };
@@ -218,8 +228,11 @@ export class NativeMessageHandler {
       }
       case "bw-credential-update": {
         const activeUserId = await this.stateService.getUserId();
-        const authStatus = await this.authService.getAuthStatus(activeUserId);
+        if (payload.userId !== activeUserId) {
+          return { error: "not-active-user" };
+        }
 
+        const authStatus = await this.authService.getAuthStatus(activeUserId);
         if (authStatus !== AuthenticationStatus.Unlocked) {
           return { error: "locked" };
         }
@@ -243,6 +256,11 @@ export class NativeMessageHandler {
           const encrypted = await this.cipherService.encrypt(cipherView);
 
           await this.cipherService.saveWithServer(encrypted);
+
+          // Notify other clients of update
+          await this.messagingService.send("editedCipher");
+          // Refresh Desktop ciphers list
+          await this.messagingService.send("refreshCiphers");
 
           return { status: "success" };
         } catch (error) {
