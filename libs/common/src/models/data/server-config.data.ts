@@ -17,7 +17,7 @@ export class ServerConfigData {
     this.server = serverConfigReponse?.server
       ? new ThirdPartyServerConfigData(serverConfigReponse.server)
       : null;
-    this.utcDate = new Date("2022-08-23T15:42:21.558Z").toISOString();
+    this.utcDate = new Date().toISOString();
     this.environment = serverConfigReponse?.environment
       ? new EnvironmentServerConfigData(serverConfigReponse.environment)
       : null;
