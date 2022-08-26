@@ -14,8 +14,9 @@
   "homepage": "https://bitwarden.com",
   "scripts": {
     "prepare": "husky install",
-    "lint": "eslint . --cache && prettier --check .",
-    "lint:fix": "eslint . --cache --fix",
+    "lint": "eslint . --cache --cache-strategy content && prettier --check .",
+    "lint:fix": "eslint . --cache --cache-strategy content --fix",
+    "lint:clear": "rimraf .eslintcache",
     "prettier": "prettier --write .",
     "test": "jest",
     "test:watch": "jest --clearCache && jest --watch",
@@ -200,7 +201,7 @@
   },
   "lint-staged": {
     "*": "prettier --ignore-unknown --write",
-    "*.ts": "eslint --cache --fix"
+    "*.ts": "eslint --cache --cache-strategy content --fix"
   },
   "engines": {
     "node": "~16",
