@@ -53,12 +53,12 @@ export class SettingsComponent implements OnInit {
   enableAutoBiometricsPrompt = true;
   previousVaultTimeout: number = null;
   showChangeMasterPass = true;
+  locale = "en-US";
 
   vaultTimeout: UntypedFormControl = new UntypedFormControl(null);
 
   private destroy$ = new Subject<void>();
   private serverConfig: ServerConfig;
-  private serverConfigLastSeen: boolean;
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
@@ -132,6 +132,10 @@ export class SettingsComponent implements OnInit {
       .subscribe((serverConfig: ServerConfig) => {
         this.serverConfig = serverConfig;
       });
+
+    this.i18nService.locale$.pipe(takeUntil(this.destroy$)).subscribe((locale) => {
+      this.locale = locale;
+    });
   }
 
   ngOnDestroy() {
@@ -395,39 +399,69 @@ export class SettingsComponent implements OnInit {
 
   about() {
     const year = new Date().getFullYear();
-    const clientVersion = this.i18nService.t("version") + ": " + BrowserApi.getApplicationVersion();
-    let serverConfigVersionText = "";
-
-    if (this.serverConfig != null) {
-      serverConfigVersionText = this.serverConfig.isValid()
-        ? this.serverConfig.version
-        : this.serverConfig.version + " (last seen)";
-    }
+    const optionalLastSeen =
+      this.serverConfig != null && !this.serverConfig.isValid()
+        ? " (" +
+          this.i18nService.t(
+            "lastSeenIn",
+            this.serverConfig?.utcDate.toLocaleString(this.locale, { month: "long" })
+          ) +
+          ")"
+        : "";
+    const clientVersion = document.createTextNode(
+      this.i18nService.t("version") + ": " + BrowserApi.getApplicationVersion()
+    );
+    const serverVersion = document.createTextNode(
+      this.i18nService.t("serverVersion") + ": " + this.serverConfig?.version + optionalLastSeen
+    );
+    const selfHostedServerVersion = document.createTextNode(
+      this.i18nService.t("selfHostedServerVersion") +
+        ": " +
+        this.serverConfig?.version +
+        optionalLastSeen
+    );
+    const thirdPartyServerVersion = document.createTextNode(
+      this.i18nService.t("thirdPartyServerVersion") +
+        ": " +
+        this.serverConfig?.version +
+        optionalLastSeen
+    );
+    const thirdPartyServerMessage = document.createTextNode(
+      this.i18nService.t("thirdPartyServerMessage", this.serverConfig?.server?.name ?? "")
+    );
 
     const content = document.createElement("div");
+    const lineBreak = document.createElement("br");
     content.innerHTML =
-      `<p class="text-center"><i class="bwi bwi-shield bwi-3x" aria-hidden="true"></i></p>
-            <p class="text-center"><b>Bitwarden</b><br>&copy; Bitwarden Inc. 2015-` +
+      `<p class="text-center">
+       <i class="bwi bwi-shield bwi-3x" aria-hidden="true"></i>
+     </p>
+     <p class="text-center">
+       <b>Bitwarden</b>
+       <br>
+       <span>&copy; Bitwarden Inc. 2015-` +
       year +
-      `</p>`;
+      `</span>
+     </p>`;
 
-    const versionText = document.createElement("div");
-    versionText.innerHTML = clientVersion;
+    content.appendChild(clientVersion);
+    content.appendChild(lineBreak);
 
     if (this.usingThirdPartyServer()) {
-      versionText.innerHTML +=
-        `<br>` +
-        `Third-Party Server Version: ${serverConfigVersionText}` +
-        `<br><br>` +
-        `<small>Connected to third-party server implementation, ${this.serverConfig.server.name}. ` +
-        `Please verify bugs using the official server, or report them to the third-party server.</small>`;
-    } else if (this.serverConfig != null && this.environmentService.isCloud()) {
-      versionText.innerHTML += `<br>Server Version: ${serverConfigVersionText}`;
-    } else if (this.serverConfig != null && this.serverConfig != undefined) {
-      versionText.innerHTML += `<br>Self-Hosted Server Version: ${serverConfigVersionText}`;
-    }
+      const lineBreak = document.createElement("br");
+      const lineBreak2 = document.createElement("br");
+      const smallText = document.createElement("small");
 
-    content.appendChild(versionText);
+      content.appendChild(thirdPartyServerVersion);
+      content.appendChild(lineBreak);
+      smallText.appendChild(thirdPartyServerMessage);
+      content.appendChild(lineBreak2);
+      content.appendChild(smallText);
+    } else if (this.serverConfig != null && this.environmentService.isCloud()) {
+      content.appendChild(serverVersion);
+    } else if (this.serverConfig != null && this.serverConfig != undefined) {
+      content.appendChild(selfHostedServerVersion);
+    }
 
     Swal.fire({
       heightAuto: false,

@@ -1997,5 +1997,33 @@
   },
   "environmentEditedReset": {
     "message": "to reset to pre-configured settings"
+  },
+  "serverVersion": {
+    "message": "Server Version"
+  },
+  "selfHostedServerVersion": {
+    "message": "Self-Hosted Server Version"
+  },
+  "thirdPartyServerVersion": {
+    "message": "Third-Party Server Version"
+  },
+  "thirdPartyServerMessage": {
+    "message": "Connected to third-party server implementation, $SERVERNAME$. Please verify bugs using the official server, or report them to the third-party server.",
+    "placeholders": {
+      "servername": {
+        "content": "$1",
+        "example": "Vaultwarden"
+      }
+    }
+  },
+  "lastSeenIn": {
+    "message": "last seen in $MONTH$",
+    "description": "Show the last seen text. The month variable will already be translated by locale.",
+    "placeholders": {
+      "month": {
+        "content": "$1",
+        "example": "January"
+      }
+    }
   }
 }
