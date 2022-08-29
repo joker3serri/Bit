@@ -140,7 +140,7 @@ export class SettingsComponent implements OnInit {
 
   ngOnDestroy() {
     this.destroy$.next();
-    this.destroy$.unsubscribe();
+    this.destroy$.complete();
   }
 
   async saveVaultTimeout(newValue: number) {
