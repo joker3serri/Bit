@@ -50,10 +50,20 @@ export class NativeMessageHandler {
 
   async handleMessage(message: Message) {
     const decryptedCommand = message as UnencryptedMessage;
-    if (decryptedCommand.command === "bw-handshake") {
-      await this.handleDecryptedMessage(decryptedCommand);
+    if (message.version != NativeMessagingVersion.Latest) {
+      this.sendResponse({
+        messageId: message.messageId,
+        version: NativeMessagingVersion.Latest,
+        payload: {
+          error: "version-discrepancy",
+        },
+      });
     } else {
-      await this.handleEncryptedMessage(message as EncryptedMessage);
+      if (decryptedCommand.command === "bw-handshake") {
+        await this.handleDecryptedMessage(decryptedCommand);
+      } else {
+        await this.handleEncryptedMessage(message as EncryptedMessage);
+      }
     }
   }
 

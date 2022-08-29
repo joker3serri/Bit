@@ -15,7 +15,7 @@ export type UnencryptedMessageResponse = MessageCommon &
       }
     | {
         payload: {
-          error: "locked" | "cannot-decrypt";
+          error: "locked" | "cannot-decrypt" | "version-discrepancy";
         };
       }
   );
