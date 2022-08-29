@@ -5,7 +5,6 @@ import { StateService } from "../abstractions/state.service";
 import { Utils } from "../misc/utils";
 
 const Keys = {
-  settingsPrefix: "settings_",
   equivalentDomains: "equivalentDomains",
 };
 
