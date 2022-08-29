@@ -5,9 +5,11 @@ import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
+import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
+import { NativeMessagingVersion } from "@bitwarden/common/enums/nativeMessagingVersion";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/encString";
@@ -41,15 +43,27 @@ export class NativeMessageHandler {
     private cryptoFunctionService: CryptoFunctionService,
     private cipherService: CipherService,
     private policyService: PolicyService,
-    private messagingService: MessagingService
+    private messagingService: MessagingService,
+
+    private passwordGenerationService: PasswordGenerationService
   ) {}
 
   async handleMessage(message: Message) {
     const decryptedCommand = message as UnencryptedMessage;
-    if (decryptedCommand.command === "bw-handshake") {
-      await this.handleDecryptedMessage(decryptedCommand);
+    if (message.version != NativeMessagingVersion.Latest) {
+      this.sendResponse({
+        messageId: message.messageId,
+        version: NativeMessagingVersion.Latest,
+        payload: {
+          error: "version-discrepancy",
+        },
+      });
     } else {
-      await this.handleEncryptedMessage(message as EncryptedMessage);
+      if (decryptedCommand.command === "bw-handshake") {
+        await this.handleDecryptedMessage(decryptedCommand);
+      } else {
+        await this.handleEncryptedMessage(message as EncryptedMessage);
+      }
     }
   }
 
@@ -60,9 +74,9 @@ export class NativeMessageHandler {
     if (!publicKey) {
       this.sendResponse({
         messageId: messageId,
-        version: 1,
+        version: NativeMessagingVersion.Latest,
         payload: {
-          status: "cancelled",
+          error: "cannot-decrypt",
         },
       });
       return;
@@ -75,9 +89,9 @@ export class NativeMessageHandler {
       if (!ddgEnabled) {
         this.sendResponse({
           messageId: messageId,
-          version: 1,
+          version: NativeMessagingVersion.Latest,
           payload: {
-            status: "cancelled",
+            status: "canceled",
           },
         });
 
@@ -94,7 +108,7 @@ export class NativeMessageHandler {
     } catch (error) {
       this.sendResponse({
         messageId: messageId,
-        version: 1,
+        version: NativeMessagingVersion.Latest,
         payload: {
           error: "cannot-decrypt",
         },
@@ -105,7 +119,7 @@ export class NativeMessageHandler {
 
     this.sendResponse({
       messageId: messageId,
-      version: 1,
+      version: NativeMessagingVersion.Latest,
       payload: {
         status: "success",
         sharedKey: Utils.fromBufferToB64(encryptedSecret),
@@ -265,6 +279,18 @@ export class NativeMessageHandler {
           return { status: "failure" };
         }
       }
+      case "bw-generate-password": {
+        const activeUserId = await this.stateService.getUserId();
+
+        if (payload.userId !== activeUserId) {
+          return { error: "not-active-user" };
+        }
+
+        const options = (await this.passwordGenerationService.getOptions())[0];
+        const generatedValue = await this.passwordGenerationService.generatePassword(options);
+
+        return { password: generatedValue };
+      }
       default:
         return {
           error: "cannot-decrypt",
@@ -280,7 +306,7 @@ export class NativeMessageHandler {
     if (!this.ddgSharedSecret) {
       this.sendResponse({
         messageId: message.messageId,
-        version: 1.0,
+        version: NativeMessagingVersion.Latest,
         payload: {
           error: "cannot-decrypt",
         },
@@ -303,7 +329,7 @@ export class NativeMessageHandler {
     if (!this.ddgSharedSecret) {
       this.sendResponse({
         messageId: originalMessage.messageId,
-        version: 1.0,
+        version: NativeMessagingVersion.Latest,
         payload: {
           error: "cannot-decrypt",
         },
@@ -316,7 +342,7 @@ export class NativeMessageHandler {
 
     this.sendResponse({
       messageId: originalMessage.messageId,
-      version: 1.0,
+      version: NativeMessagingVersion.Latest,
       encryptedPayload,
     });
   }

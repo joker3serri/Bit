@@ -3,6 +3,8 @@ import "module-alias/register";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
+import { NativeMessagingVersion } from "@bitwarden/common/enums/nativeMessagingVersion";
+
 import { CredentialUpdatePayload } from "../../src/models/nativeMessaging/credentialUpdatePayload";
 
 import { LogUtils } from "./logUtils";
@@ -38,9 +40,9 @@ const argv: any = yargs(hideBin(process.argv))
 const { name, username, password, uri } = argv;
 
 (async () => {
-  const nativeMessageService = new NativeMessageService(1.0);
+  const nativeMessageService = new NativeMessageService(NativeMessagingVersion.One);
   // Handshake
-  LogUtils.logWarning("Sending Handshake");
+  LogUtils.logInfo("Sending Handshake");
   const handshakeResponse = await nativeMessageService.sendHandshake(config.testRsaPublicKey);
 
   if (handshakeResponse.status !== "success") {
@@ -57,7 +59,7 @@ const { name, username, password, uri } = argv;
   if (activeUser === undefined) {
     LogUtils.logError("No active or unlocked user");
   }
-  LogUtils.logWarning("Active userId: " + activeUser.id);
+  LogUtils.logInfo("Active userId: " + activeUser.id);
 
   const response = await nativeMessageService.credentialUpdate(handshakeResponse.sharedKey, {
     name: name,

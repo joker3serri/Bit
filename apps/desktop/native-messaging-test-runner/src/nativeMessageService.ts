@@ -22,7 +22,7 @@ import IPCService from "./ipcService";
 import * as config from "./variables";
 
 type HandshakePayload = {
-  status: "success" | "cancelled";
+  status: "success" | "canceled";
   sharedKey?: string;
 };
 
@@ -115,6 +115,23 @@ export default class NativeMessageService {
       {
         command: "bw-credential-update",
         payload: credentialData,
+      },
+      key
+    );
+    const response = await this.sendEncryptedMessage({
+      encryptedCommand,
+    });
+
+    return this.decryptResponsePayload(response.encryptedPayload, key);
+  }
+
+  async generatePassword(key: string, userId: string): Promise<DecryptedCommandData> {
+    const encryptedCommand = await this.encryptCommandData(
+      {
+        command: "bw-generate-password",
+        payload: {
+          userId: userId,
+        },
       },
       key
     );
