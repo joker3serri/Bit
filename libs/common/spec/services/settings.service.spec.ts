@@ -30,7 +30,7 @@ describe("SettingsService", () => {
 
   describe("getEquivalentDomains", () => {
     it("returns value", async () => {
-      const result = await firstValueFrom(settingsService.getEquivalentDomains$());
+      const result = await firstValueFrom(settingsService.equivalentDomains$());
 
       expect(result).toEqual("test");
       expect(await firstValueFrom(settingsService.settings$)).toEqual({

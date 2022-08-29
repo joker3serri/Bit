@@ -35,7 +35,7 @@ export class SettingsService implements SettingsServiceAbstraction {
       .subscribe();
   }
 
-  getEquivalentDomains$(): Observable<any> {
+  equivalentDomains$(): Observable<any> {
     return this.getSettingsKey$(Keys.equivalentDomains);
   }
 

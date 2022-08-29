@@ -389,22 +389,20 @@ export class CipherService implements CipherServiceAbstraction {
     const eqDomainsPromise =
       domain == null
         ? Promise.resolve([])
-        : firstValueFrom(this.settingsService.getEquivalentDomains$()).then(
-            (eqDomains: any[][]) => {
-              let matches: any[] = [];
-              eqDomains.forEach((eqDomain) => {
-                if (eqDomain.length && eqDomain.indexOf(domain) >= 0) {
-                  matches = matches.concat(eqDomain);
-                }
-              });
-
-              if (!matches.length) {
-                matches.push(domain);
+        : firstValueFrom(this.settingsService.equivalentDomains$()).then((eqDomains: any[][]) => {
+            let matches: any[] = [];
+            eqDomains.forEach((eqDomain) => {
+              if (eqDomain.length && eqDomain.indexOf(domain) >= 0) {
+                matches = matches.concat(eqDomain);
               }
+            });
 
-              return matches;
+            if (!matches.length) {
+              matches.push(domain);
             }
-          );
+
+            return matches;
+          });
 
     const result = await Promise.all([eqDomainsPromise, this.getAllDecrypted()]);
     const matchingDomains = result[0];
