@@ -77,12 +77,13 @@ export class GeneratorComponent implements OnInit, OnDestroy {
       { name: "SimpleLogin", value: "simplelogin" },
       { name: "AnonAddy", value: "anonaddy" },
       { name: "Firefox Relay", value: "firefoxrelay" },
-      { name: "FastMail", value: "fastmail" },
+      { name: "Fastmail", value: "fastmail" },
       { name: "DuckDuckGo", value: "duckduckgo" },
     ];
   }
 
   async ngOnInit() {
+    // eslint-disable-next-line rxjs/no-async-subscribe
     this.route.queryParams
       .pipe(
         first(),
@@ -91,24 +92,34 @@ export class GeneratorComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe(async ([qParams, passwordOptionsResponse]) => {
-        this.passwordOptions = passwordOptionsResponse[0];
-        this.enforcedPasswordPolicyOptions = passwordOptionsResponse[1];
-        this.avoidAmbiguous = !this.passwordOptions.ambiguous;
-        this.passwordOptions.type =
-          this.passwordOptions.type === "passphrase" ? "passphrase" : "password";
+      this.passwordOptions = passwordOptionsResponse[0];
+      this.enforcedPasswordPolicyOptions = passwordOptionsResponse[1];
+      this.avoidAmbiguous = !this.passwordOptions.ambiguous;
+      this.passwordOptions.type =
+        this.passwordOptions.type === "passphrase" ? "passphrase" : "password";
 
-        this.usernameOptions = await this.usernameGenerationService.getOptions();
-        if (this.usernameOptions.type == null) {
-          this.usernameOptions.type = "word";
-        }
-        if (
-          this.usernameOptions.subaddressEmail == null ||
-          this.usernameOptions.subaddressEmail === ""
-        ) {
-          this.usernameOptions.subaddressEmail = await this.stateService.getEmail();
-        }
-        if (this.usernameWebsite == null) {
-          this.usernameOptions.subaddressType = this.usernameOptions.catchallType = "random";
+      this.usernameOptions = await this.usernameGenerationService.getOptions();
+      if (this.usernameOptions.type == null) {
+        this.usernameOptions.type = "word";
+      }
+      if (
+        this.usernameOptions.subaddressEmail == null ||
+        this.usernameOptions.subaddressEmail === ""
+      ) {
+        this.usernameOptions.subaddressEmail = await this.stateService.getEmail();
+      }
+      if (this.usernameWebsite == null) {
+        this.usernameOptions.subaddressType = this.usernameOptions.catchallType = "random";
+      } else {
+        this.usernameOptions.website = this.usernameWebsite;
+        const websiteOption = { name: this.i18nService.t("websiteName"), value: "website-name" };
+        this.subaddressOptions.push(websiteOption);
+        this.catchallOptions.push(websiteOption);
+      }
+
+      if (this.type !== "username" && this.type !== "password") {
+        if (qParams.type === "username" || qParams.type === "password") {
+          this.type = qParams.type;
         } else {
           this.usernameOptions.website = this.usernameWebsite;
           const websiteOption = { name: this.i18nService.t("websiteName"), value: "website-name" };

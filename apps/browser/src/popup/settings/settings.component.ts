@@ -38,6 +38,7 @@ const RateUrls = {
   selector: "app-settings",
   templateUrl: "settings.component.html",
 })
+// eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class SettingsComponent implements OnInit, OnDestroy {
   @ViewChild("vaultTimeoutActionSelect", { read: ElementRef, static: true })
   vaultTimeoutActionSelectRef: ElementRef;
@@ -114,6 +115,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         }
       });
 
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.vaultTimeout.valueChanges.subscribe(async (value) => {
       await this.saveVaultTimeout(value);
     });
@@ -319,7 +321,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   async lock() {
-    await this.vaultTimeoutService.lock(true);
+    await this.vaultTimeoutService.lock();
   }
 
   async logOut() {

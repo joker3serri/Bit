@@ -46,6 +46,7 @@ import { UserGroupsComponent } from "./user-groups.component";
   selector: "app-org-people",
   templateUrl: "people.component.html",
 })
+// eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class PeopleComponent
   extends BasePeopleComponent<OrganizationUserUserDetailsResponse>
   implements OnInit, OnDestroy
@@ -118,6 +119,7 @@ export class PeopleComponent
   }
 
   async ngOnInit() {
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.route.parent.parent.params.subscribe(async (params) => {
       this.organizationId = params.organizationId;
       const organization = await this.organizationService.get(this.organizationId);
@@ -154,6 +156,7 @@ export class PeopleComponent
         )
         .subscribe();
 
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe, rxjs/no-nested-subscribe
       this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
         this.searchText = qParams.search;
         if (qParams.viewEvents != null) {
@@ -266,18 +269,22 @@ export class PeopleComponent
         comp.organizationId = this.organizationId;
         comp.organizationUserId = user != null ? user.id : null;
         comp.usesKeyConnector = user?.usesKeyConnector;
+        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
         comp.onSavedUser.subscribe(() => {
           modal.close();
           this.load();
         });
+        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
         comp.onDeletedUser.subscribe(() => {
           modal.close();
           this.removeUser(user);
         });
+        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
         comp.onRevokedUser.subscribe(() => {
           modal.close();
           this.load();
         });
+        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
         comp.onRestoredUser.subscribe(() => {
           modal.close();
           this.load();
@@ -294,6 +301,7 @@ export class PeopleComponent
         comp.name = this.userNamePipe.transform(user);
         comp.organizationId = this.organizationId;
         comp.organizationUserId = user != null ? user.id : null;
+        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
         comp.onSavedUser.subscribe(() => {
           modal.close();
         });
@@ -418,6 +426,7 @@ export class PeopleComponent
         comp.organizationId = this.organizationId;
         comp.id = user != null ? user.id : null;
 
+        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
         comp.onPasswordReset.subscribe(() => {
           modal.close();
           this.load();
@@ -456,6 +465,7 @@ export class PeopleComponent
 
     // Workaround to handle closing the modal shortly after it has been opened
     let close = false;
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     modal.onShown.subscribe(() => {
       if (close) {
         modal.close();
