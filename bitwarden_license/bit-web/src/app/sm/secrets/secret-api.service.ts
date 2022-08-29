@@ -4,6 +4,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { ListResponse } from "@bitwarden/common/models/response/listResponse";
 
 import { CreateSecretRequest } from "./requests/create-secret.request";
+import { UpdateSecretRequest } from "./requests/update-secret.request";
 import { SecretIdentifierResponse } from "./responses/secret-identifier.response";
 import { SecretResponse } from "./responses/secret.response";
 
@@ -37,6 +38,16 @@ export class SecretApiService {
       true,
       true
     );
+    return new SecretResponse(r);
+  }
+
+  async updateSecret(secretId: string, request: UpdateSecretRequest) {
+    const r = await this.apiService.send("PUT", "/secrets/" + secretId, request, true, true);
+    return new SecretResponse(r);
+  }
+
+  async getSecret(secretId: string): Promise<SecretResponse> {
+    const r = await this.apiService.send("GET", "/secrets/" + secretId, null, true, true);
     return new SecretResponse(r);
   }
 }

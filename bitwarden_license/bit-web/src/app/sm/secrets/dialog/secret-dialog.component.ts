@@ -1,22 +1,24 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
-import { Component, Inject } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 
 import { CreateSecretRequest } from "../requests/create-secret.request";
+import { UpdateSecretRequest } from "../requests/update-secret.request";
+import { SecretResponse } from "../responses/secret.response";
 import { SecretApiService } from "../secret-api.service";
 import { SecretService } from "../secret.service";
 
 interface SecretOperation {
-  operation: "add" | "edit";
-  data: string;
   organizationId: string;
+  operation: "add" | "edit";
+  secretId?: string;
 }
 
 @Component({
   selector: "sm-secret-dialog",
   templateUrl: "./secret-dialog.component.html",
 })
-export class SecretDialogComponent {
+export class SecretDialogComponent implements OnInit {
   form = new FormGroup({
     name: new FormControl(""),
     value: new FormControl(""),
@@ -30,6 +32,14 @@ export class SecretDialogComponent {
     private secretService: SecretService
   ) {}
 
+  async ngOnInit() {
+    if (this.data?.operation === "edit" && this.data?.secretId) {
+      await this.loadData();
+    } else if (this.data?.operation !== "add") {
+      throw new Error(`The secret dialog was not called with the appropriate operation values.`);
+    }
+  }
+
   get title() {
     if (this.data?.operation === "add") {
       return "Add Secret";
@@ -37,21 +47,47 @@ export class SecretDialogComponent {
     return "Edit Secret";
   }
 
+  async loadData() {
+    let secret: SecretResponse = await this.secretsApiService.getSecret(this.data?.secretId);
+    secret = await this.secretService.decryptSecretResponse(secret);
+    this.form.setValue({ name: secret.name, value: secret.value, notes: secret.note });
+  }
+
   async onSave() {
     if (this.data?.operation === "add") {
       this.createSecret();
+    } else if (this.data?.operation === "edit" && this.data?.secretId) {
+      this.updateSecret();
     }
     this.dialogRef.close();
     window.location.reload();
   }
 
   private async createSecret() {
-    let creationRequest: CreateSecretRequest = new CreateSecretRequest();
-    creationRequest.organizationId = this.data?.organizationId;
-    creationRequest.key = this.form.value.name.toString();
-    creationRequest.value = this.form.value.value.toString();
-    creationRequest.note = this.form.value.notes.toString();
-    creationRequest = await this.secretService.encryptCreationRequest(creationRequest);
-    await this.secretsApiService.createSecret(this.data?.organizationId, creationRequest);
+    let request: CreateSecretRequest = new CreateSecretRequest();
+    request.organizationId = this.data?.organizationId;
+    request = this.getFormValues(request) as CreateSecretRequest;
+    request = (await this.secretService.encryptRequest(
+      request.organizationId,
+      request
+    )) as CreateSecretRequest;
+    await this.secretsApiService.createSecret(this.data?.organizationId, request);
+  }
+
+  private async updateSecret() {
+    let request: UpdateSecretRequest = new UpdateSecretRequest();
+    request = this.getFormValues(request) as UpdateSecretRequest;
+    request = (await this.secretService.encryptRequest(
+      this.data?.organizationId,
+      request
+    )) as UpdateSecretRequest;
+    await this.secretsApiService.updateSecret(this.data?.secretId, request);
+  }
+
+  private getFormValues(request: CreateSecretRequest | UpdateSecretRequest) {
+    request.key = this.form.value.name.toString();
+    request.value = this.form.value.value.toString();
+    request.note = this.form.value.notes.toString();
+    return request;
   }
 }

@@ -12,7 +12,7 @@ import { SecretDialogComponent } from "../secrets/dialog/secret-dialog.component
 export class NewMenuComponent implements OnInit {
   private organizationId: string;
 
-  constructor(private route: ActivatedRoute, public dialogService: DialogService) {}
+  constructor(private route: ActivatedRoute, private dialogService: DialogService) {}
 
   ngOnInit() {
     this.route.params.subscribe(async (params: any) => {
@@ -23,9 +23,8 @@ export class NewMenuComponent implements OnInit {
   openSecretDialog() {
     this.dialogService.open(SecretDialogComponent, {
       data: {
-        operation: "add",
-        data: "gecko",
         organizationId: this.organizationId,
+        operation: "add",
       },
     });
   }
