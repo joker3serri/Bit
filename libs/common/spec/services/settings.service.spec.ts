@@ -28,6 +28,11 @@ describe("SettingsService", () => {
     settingsService = new SettingsService(stateService);
   });
 
+  afterEach(() => {
+    activeAccount.complete();
+    activeAccountUnlocked.complete();
+  });
+
   describe("getEquivalentDomains", () => {
     it("returns value", async () => {
       const result = await firstValueFrom(settingsService.equivalentDomains$());
