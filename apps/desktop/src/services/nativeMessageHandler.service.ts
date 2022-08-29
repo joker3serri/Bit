@@ -9,6 +9,7 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
+import { NativeMessagingVersion } from "@bitwarden/common/enums/nativeMessagingVersion";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/encString";
@@ -63,7 +64,7 @@ export class NativeMessageHandler {
     if (!publicKey) {
       this.sendResponse({
         messageId: messageId,
-        version: 1,
+        version: NativeMessagingVersion.Latest,
         payload: {
           error: "cannot-decrypt",
         },
@@ -78,7 +79,7 @@ export class NativeMessageHandler {
       if (!ddgEnabled) {
         this.sendResponse({
           messageId: messageId,
-          version: 1,
+          version: NativeMessagingVersion.Latest,
           payload: {
             status: "canceled",
           },
@@ -97,7 +98,7 @@ export class NativeMessageHandler {
     } catch (error) {
       this.sendResponse({
         messageId: messageId,
-        version: 1,
+        version: NativeMessagingVersion.Latest,
         payload: {
           error: "cannot-decrypt",
         },
@@ -108,7 +109,7 @@ export class NativeMessageHandler {
 
     this.sendResponse({
       messageId: messageId,
-      version: 1,
+      version: NativeMessagingVersion.Latest,
       payload: {
         status: "success",
         sharedKey: Utils.fromBufferToB64(encryptedSecret),
@@ -295,7 +296,7 @@ export class NativeMessageHandler {
     if (!this.ddgSharedSecret) {
       this.sendResponse({
         messageId: message.messageId,
-        version: 1.0,
+        version: NativeMessagingVersion.Latest,
         payload: {
           error: "cannot-decrypt",
         },
@@ -318,7 +319,7 @@ export class NativeMessageHandler {
     if (!this.ddgSharedSecret) {
       this.sendResponse({
         messageId: originalMessage.messageId,
-        version: 1.0,
+        version: NativeMessagingVersion.Latest,
         payload: {
           error: "cannot-decrypt",
         },
@@ -331,7 +332,7 @@ export class NativeMessageHandler {
 
     this.sendResponse({
       messageId: originalMessage.messageId,
-      version: 1.0,
+      version: NativeMessagingVersion.Latest,
       encryptedPayload,
     });
   }

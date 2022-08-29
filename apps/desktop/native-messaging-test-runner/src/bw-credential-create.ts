@@ -3,6 +3,8 @@ import "module-alias/register";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
+import { NativeMessagingVersion } from "@bitwarden/common/enums/nativeMessagingVersion";
+
 import { CredentialCreatePayload } from "../../src/models/nativeMessaging/credentialCreatePayload";
 
 import { LogUtils } from "./logUtils";
@@ -19,7 +21,7 @@ const argv: any = yargs(hideBin(process.argv)).option("name", {
 const { name } = argv;
 
 (async () => {
-  const nativeMessageService = new NativeMessageService(1.0);
+  const nativeMessageService = new NativeMessageService(NativeMessagingVersion.One);
   // Handshake
   LogUtils.logInfo("Sending Handshake");
   const handshakeResponse = await nativeMessageService.sendHandshake(config.testRsaPublicKey);

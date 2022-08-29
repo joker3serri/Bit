@@ -1,10 +1,13 @@
 import "module-alias/register";
+
+import { NativeMessagingVersion } from "@bitwarden/common/enums/nativeMessagingVersion";
+
 import { LogUtils } from "./logUtils";
 import NativeMessageService from "./nativeMessageService";
 import * as config from "./variables";
 
 (async () => {
-  const nativeMessageService = new NativeMessageService(1.0);
+  const nativeMessageService = new NativeMessageService(NativeMessagingVersion.One);
 
   LogUtils.logInfo("Sending Handshake");
   const handshakeResponse = await nativeMessageService.sendHandshake(config.testRsaPublicKey);

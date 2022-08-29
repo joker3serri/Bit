@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-// Class for logging messages with colors for ease of readin important info
+// Class for logging messages with colors for ease of reading important info
 // Reference: https://stackoverflow.com/a/41407246
 export class LogUtils {
   static logSuccess(message: string, payload?: any): void {
