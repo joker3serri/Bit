@@ -2016,13 +2016,12 @@
       }
     }
   },
-  "lastSeenIn": {
-    "message": "last seen in $MONTH$",
-    "description": "Show the last seen text. The month variable will already be translated by locale.",
+  "lastSeenOn": {
+    "message": "last seen on $DATE$",
     "placeholders": {
-      "month": {
+      "date": {
         "content": "$1",
-        "example": "January"
+        "example": "Jun 15, 2015"
       }
     }
   }

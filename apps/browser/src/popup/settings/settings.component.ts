@@ -1,3 +1,4 @@
+import { formatDate } from "@angular/common";
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -400,11 +401,11 @@ export class SettingsComponent implements OnInit {
   about() {
     const year = new Date().getFullYear();
     const optionalLastSeen =
-      this.serverConfig != null && !this.serverConfig.isValid()
+      this.serverConfig != null && this.serverConfig.utcDate != null && !this.serverConfig.isValid()
         ? " (" +
           this.i18nService.t(
-            "lastSeenIn",
-            this.serverConfig?.utcDate.toLocaleString(this.locale, { month: "long" })
+            "lastSeenOn",
+            formatDate(this.serverConfig?.utcDate, "mediumDate", this.locale)
           ) +
           ")"
         : "";
