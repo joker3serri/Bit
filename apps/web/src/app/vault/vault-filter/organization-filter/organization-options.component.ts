@@ -43,8 +43,8 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.policyService.policies$
       .pipe(
-        takeUntil(this.destroy$),
-        map((policies) => policies.filter((policy) => policy.type === PolicyType.ResetPassword))
+        map((policies) => policies.filter((policy) => policy.type === PolicyType.ResetPassword)),
+        takeUntil(this.destroy$)
       )
       .subscribe((policies) => {
         this.policies = policies;
@@ -54,7 +54,7 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.next();
-    this.destroy$.unsubscribe();
+    this.destroy$.complete();
   }
 
   allowEnrollmentChanges(org: Organization): boolean {

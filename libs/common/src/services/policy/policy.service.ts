@@ -25,20 +25,24 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     private stateService: StateService,
     private organizationService: OrganizationService
   ) {
-    this.stateService.activeAccountUnlocked$.subscribe(async (unlocked) => {
-      if ((Utils.global as any).bitwardenContainerService == null) {
-        return;
-      }
+    this.stateService.activeAccountUnlocked$
+      .pipe(
+        concatMap(async (unlocked) => {
+          if (Utils.global.bitwardenContainerService == null) {
+            return;
+          }
 
-      if (!unlocked) {
-        this._policies.next([]);
-        return;
-      }
+          if (!unlocked) {
+            this._policies.next([]);
+            return;
+          }
 
-      const data = await this.stateService.getEncryptedPolicies();
+          const data = await this.stateService.getEncryptedPolicies();
 
-      await this.updateObservables(data);
-    });
+          await this.updateObservables(data);
+        })
+      )
+      .subscribe();
   }
 
   async getMasterPasswordPolicyOptions(policies?: Policy[]): Promise<MasterPasswordPolicyOptions> {

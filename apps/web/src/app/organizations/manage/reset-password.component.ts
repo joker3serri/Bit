@@ -57,13 +57,13 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.policyService.policies$
       .pipe(
-        takeUntil(this.destroy$),
         concatMap(async (policies) => {
           // Get Enforced Policy Options
           this.enforcedPolicyOptions = await this.policyService.getMasterPasswordPolicyOptions(
             policies
           );
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe();
 
@@ -75,7 +75,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.next();
-    this.destroy$.unsubscribe();
+    this.destroy$.complete();
   }
 
   get loggedOutWarningName() {

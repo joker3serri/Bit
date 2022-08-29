@@ -83,7 +83,6 @@ export class GeneratorComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    // eslint-disable-next-line rxjs/no-async-subscribe
     this.route.queryParams
       .pipe(
         first(),
@@ -91,35 +90,25 @@ export class GeneratorComponent implements OnInit, OnDestroy {
           this.passwordGenerationService.getOptions$().pipe(takeUntil(this.destroy$))
         )
       )
+      // eslint-disable-next-line rxjs/no-async-subscribe
       .subscribe(async ([qParams, passwordOptionsResponse]) => {
-      this.passwordOptions = passwordOptionsResponse[0];
-      this.enforcedPasswordPolicyOptions = passwordOptionsResponse[1];
-      this.avoidAmbiguous = !this.passwordOptions.ambiguous;
-      this.passwordOptions.type =
+        this.passwordOptions = passwordOptionsResponse[0];
+        this.enforcedPasswordPolicyOptions = passwordOptionsResponse[1];
+        this.avoidAmbiguous = !this.passwordOptions.ambiguous;
         this.passwordOptions.type === "passphrase" ? "passphrase" : "password";
 
-      this.usernameOptions = await this.usernameGenerationService.getOptions();
-      if (this.usernameOptions.type == null) {
-        this.usernameOptions.type = "word";
-      }
-      if (
-        this.usernameOptions.subaddressEmail == null ||
-        this.usernameOptions.subaddressEmail === ""
-      ) {
-        this.usernameOptions.subaddressEmail = await this.stateService.getEmail();
-      }
-      if (this.usernameWebsite == null) {
-        this.usernameOptions.subaddressType = this.usernameOptions.catchallType = "random";
-      } else {
-        this.usernameOptions.website = this.usernameWebsite;
-        const websiteOption = { name: this.i18nService.t("websiteName"), value: "website-name" };
-        this.subaddressOptions.push(websiteOption);
-        this.catchallOptions.push(websiteOption);
-      }
-
-      if (this.type !== "username" && this.type !== "password") {
-        if (qParams.type === "username" || qParams.type === "password") {
-          this.type = qParams.type;
+        this.usernameOptions = await this.usernameGenerationService.getOptions();
+        if (this.usernameOptions.type == null) {
+          this.usernameOptions.type = "word";
+        }
+        if (
+          this.usernameOptions.subaddressEmail == null ||
+          this.usernameOptions.subaddressEmail === ""
+        ) {
+          this.usernameOptions.subaddressEmail = await this.stateService.getEmail();
+        }
+        if (this.usernameWebsite == null) {
+          this.usernameOptions.subaddressType = this.usernameOptions.catchallType = "random";
         } else {
           this.usernameOptions.website = this.usernameWebsite;
           const websiteOption = { name: this.i18nService.t("websiteName"), value: "website-name" };
@@ -131,19 +120,33 @@ export class GeneratorComponent implements OnInit, OnDestroy {
           if (qParams.type === "username" || qParams.type === "password") {
             this.type = qParams.type;
           } else {
-            const generatorOptions = await this.stateService.getGeneratorOptions();
-            this.type = generatorOptions?.type ?? "password";
+            this.usernameOptions.website = this.usernameWebsite;
+            const websiteOption = {
+              name: this.i18nService.t("websiteName"),
+              value: "website-name",
+            };
+            this.subaddressOptions.push(websiteOption);
+            this.catchallOptions.push(websiteOption);
           }
-        }
-        if (this.regenerateWithoutButtonPress()) {
-          await this.regenerate();
+
+          if (this.type !== "username" && this.type !== "password") {
+            if (qParams.type === "username" || qParams.type === "password") {
+              this.type = qParams.type;
+            } else {
+              const generatorOptions = await this.stateService.getGeneratorOptions();
+              this.type = generatorOptions?.type ?? "password";
+            }
+          }
+          if (this.regenerateWithoutButtonPress()) {
+            await this.regenerate();
+          }
         }
       });
   }
 
   ngOnDestroy() {
     this.destroy$.next();
-    this.destroy$.unsubscribe();
+    this.destroy$.complete();
   }
 
   async typeChanged() {

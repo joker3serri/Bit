@@ -101,7 +101,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.next();
-    this.destroy$.unsubscribe();
+    this.destroy$.complete();
   }
 
   get editMode(): boolean {

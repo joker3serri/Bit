@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { takeUntil } from "rxjs";
 
 import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/components/add-edit.component";
@@ -25,7 +25,8 @@ import { LoginUriView } from "@bitwarden/common/models/view/loginUriView";
   selector: "app-vault-add-edit",
   templateUrl: "add-edit.component.html",
 })
-export class AddEditComponent extends BaseAddEditComponent {
+// eslint-disable-next-line rxjs-angular/prefer-takeuntil
+export class AddEditComponent extends BaseAddEditComponent implements OnInit, OnDestroy {
   canAccessPremium: boolean;
   totpCode: string;
   totpCodeFormatted: string;
@@ -100,6 +101,11 @@ export class AddEditComponent extends BaseAddEditComponent {
       .getOptions$()
       .pipe(takeUntil(this.destroy$))
       .subscribe((options) => (this.options = options[0]));
+  }
+
+  // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+  ngOnDestroy() {
+    super.ngOnDestroy();
   }
 
   toggleFavorite() {

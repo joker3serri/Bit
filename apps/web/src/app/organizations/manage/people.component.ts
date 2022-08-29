@@ -146,14 +146,15 @@ export class PeopleComponent
 
       this.policyService.policies$
         .pipe(
-          takeUntil(this.destroy$),
           concatMap(async (policies) => {
             this.resetPasswordPolicy = policies
               .filter((policy) => policy.type === PolicyType.ResetPassword)
               .find((p) => p.organizationId === this.organizationId);
             await this.load();
-          })
+          }),
+          takeUntil(this.destroy$)
         )
+        // eslint-disable-next-line rxjs/no-nested-subscribe
         .subscribe();
 
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe, rxjs/no-nested-subscribe
@@ -171,7 +172,7 @@ export class PeopleComponent
 
   ngOnDestroy() {
     this.destroy$.next();
-    this.destroy$.unsubscribe();
+    this.destroy$.complete();
   }
 
   async load() {

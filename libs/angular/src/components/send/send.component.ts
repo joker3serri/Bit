@@ -61,7 +61,7 @@ export class SendComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.next();
-    this.destroy$.unsubscribe();
+    this.destroy$.complete();
   }
 
   async load(filter: (send: SendView) => boolean = null) {

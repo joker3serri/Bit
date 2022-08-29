@@ -157,18 +157,18 @@ export class AddEditComponent implements OnInit, OnDestroy {
     this.policyService
       .policyAppliesToUser$(PolicyType.PersonalOwnership)
       .pipe(
-        takeUntil(this.destroy$),
         concatMap(async (policyAppliesToUser) => {
           this.policyAppliesToUser = policyAppliesToUser;
           await this.init();
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
 
   ngOnDestroy() {
     this.destroy$.next();
-    this.destroy$.unsubscribe();
+    this.destroy$.complete();
   }
 
   async init() {

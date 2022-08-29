@@ -52,14 +52,14 @@ export class ExportComponent implements OnInit, OnDestroy {
     this.policyService
       .policyAppliesToUser$(PolicyType.DisablePersonalVaultExport)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(async (policyAppliesToUser) => {
+      .subscribe((policyAppliesToUser) => {
         this.disabledByPolicy = policyAppliesToUser;
       });
   }
 
   ngOnDestroy() {
     this.destroy$.next();
-    this.destroy$.unsubscribe();
+    this.destroy$.complete();
   }
 
   async checkExportDisabled() {

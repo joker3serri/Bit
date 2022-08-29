@@ -56,7 +56,7 @@ export class VaultTimeoutInputComponent
   async ngOnInit() {
     this.policyService
       .policyAppliesToUser$(PolicyType.MaximumVaultTimeout)
-      .pipe(takeUntil(this.destroy$), combineLatestWith(this.policyService.policies$))
+      .pipe(combineLatestWith(this.policyService.policies$), takeUntil(this.destroy$))
       .subscribe(([policyAppliesToUser, policies]) => {
         if (policyAppliesToUser) {
           const vaultTimeoutPolicy = policies.find(
@@ -91,7 +91,7 @@ export class VaultTimeoutInputComponent
 
   ngOnDestroy() {
     this.destroy$.next();
-    this.destroy$.unsubscribe();
+    this.destroy$.complete();
   }
 
   ngOnChanges() {
