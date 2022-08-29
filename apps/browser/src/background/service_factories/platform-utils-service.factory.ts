@@ -4,7 +4,6 @@ import BrowserPlatformUtilsService from "../../services/browserPlatformUtils.ser
 
 import { CachedServices, factory, FactoryOptions } from "./factory-options";
 import { MessagingServiceInitOptions, messagingServiceFactory } from "./messaging-service.factory";
-import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
 
 type PlatformUtilsServiceFactoryOptions = FactoryOptions & {
   platformUtilsServiceOptions: {
@@ -15,8 +14,7 @@ type PlatformUtilsServiceFactoryOptions = FactoryOptions & {
 };
 
 export type PlatformUtilsServiceInitOptions = PlatformUtilsServiceFactoryOptions &
-  MessagingServiceInitOptions &
-  StateServiceInitOptions;
+  MessagingServiceInitOptions;
 
 export function platformUtilsServiceFactory(
   cache: { platformUtilsService?: PlatformUtilsService } & CachedServices,
@@ -29,10 +27,8 @@ export function platformUtilsServiceFactory(
     async () =>
       new BrowserPlatformUtilsService(
         await messagingServiceFactory(cache, opts),
-        await stateServiceFactory(cache, opts),
         opts.platformUtilsServiceOptions.clipboardWriteCallback,
-        opts.platformUtilsServiceOptions.biometricCallback,
-        opts.platformUtilsServiceOptions.win
+        opts.platformUtilsServiceOptions.biometricCallback
       )
   );
 }
