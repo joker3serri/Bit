@@ -1,4 +1,4 @@
-import { BehaviorSubject, map, Observable } from "rxjs";
+import { BehaviorSubject, concatMap, map, Observable } from "rxjs";
 
 import { SettingsService as SettingsServiceAbstraction } from "../abstractions/settings.service";
 import { StateService } from "../abstractions/state.service";
@@ -15,20 +15,24 @@ export class SettingsService implements SettingsServiceAbstraction {
   settings$ = this._settings.asObservable();
 
   constructor(private stateService: StateService) {
-    this.stateService.activeAccountUnlocked$.subscribe(async (unlocked) => {
-      if ((Utils.global as any).bitwardenContainerService == null) {
-        return;
-      }
+    this.stateService.activeAccountUnlocked$
+      .pipe(
+        concatMap(async (unlocked) => {
+          if (Utils.global.bitwardenContainerService == null) {
+            return;
+          }
 
-      if (!unlocked) {
-        this._settings.next([]);
-        return;
-      }
+          if (!unlocked) {
+            this._settings.next([]);
+            return;
+          }
 
-      const data = await this.stateService.getSettings();
+          const data = await this.stateService.getSettings();
 
-      this._settings.next(data);
-    });
+          this._settings.next(data);
+        })
+      )
+      .subscribe();
   }
 
   getEquivalentDomains$(): Observable<any> {
