@@ -1,13 +1,15 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
+import { buildFlaggedRoute } from "src/app/oss-routing.module";
+
 import { LayoutComponent } from "./layout/layout.component";
 import { NavigationComponent } from "./layout/navigation.component";
 import { SecretsModule } from "./secrets/secrets.module";
 import { SMGuard } from "./sm.guard";
 
 const routes: Routes = [
-  {
+  buildFlaggedRoute("secretsManager", {
     path: ":organizationId",
     component: LayoutComponent,
     canActivate: [SMGuard],
@@ -27,7 +29,7 @@ const routes: Routes = [
         pathMatch: "full",
       },
     ],
-  },
+  }),
 ];
 
 @NgModule({
