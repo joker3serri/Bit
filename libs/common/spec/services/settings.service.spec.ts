@@ -20,7 +20,7 @@ describe("SettingsService", () => {
     activeAccount = new BehaviorSubject("123");
     activeAccountUnlocked = new BehaviorSubject(true);
 
-    stateService.getSettings().resolves({ equivalentDomains: "test" });
+    stateService.getSettings().resolves({ equivalentDomains: [["test"], ["domains"]] });
     stateService.activeAccount$.returns(activeAccount);
     stateService.activeAccountUnlocked$.returns(activeAccountUnlocked);
     (window as any).bitwardenContainerService = new ContainerService(cryptoService);
@@ -35,23 +35,23 @@ describe("SettingsService", () => {
 
   describe("getEquivalentDomains", () => {
     it("returns value", async () => {
-      const result = await firstValueFrom(settingsService.equivalentDomains$());
+      const result = await firstValueFrom(settingsService.settings$);
 
-      expect(result).toEqual("test");
-      expect(await firstValueFrom(settingsService.settings$)).toEqual({
-        equivalentDomains: "test",
+      expect(result).toEqual({
+        equivalentDomains: [["test"], ["domains"]],
       });
     });
   });
 
   it("setEquivalentDomains", async () => {
-    await settingsService.setEquivalentDomains([["test2"]]);
+    await settingsService.setEquivalentDomains([["test2"], ["domains2"]]);
 
     stateService.received(1).setSettings(Arg.any());
 
-    expect(await firstValueFrom(settingsService.settings$)).toEqual({
-      equivalentDomains: [["test2"]],
-    });
+    expect((await firstValueFrom(settingsService.settings$)).equivalentDomains).toEqual([
+      ["test2"],
+      ["domains2"],
+    ]);
   });
 
   it("clear", async () => {
@@ -59,6 +59,6 @@ describe("SettingsService", () => {
 
     stateService.received(1).setSettings(Arg.any(), Arg.any());
 
-    expect((await firstValueFrom(settingsService.settings$)).length).toBe(0);
+    expect(await firstValueFrom(settingsService.settings$)).toEqual({});
   });
 });

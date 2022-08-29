@@ -1,11 +1,10 @@
 import { Observable } from "rxjs";
 
-import { AccountSettings } from "../models/domain/account";
+import { AccountSettingsSettings } from "../models/domain/account";
 
 export abstract class SettingsService {
-  settings$: Observable<AccountSettings[]>;
+  settings$: Observable<AccountSettingsSettings | null>;
 
-  equivalentDomains$: () => Observable<any>;
   setEquivalentDomains: (equivalentDomains: string[][]) => Promise<any>;
   clear: (userId?: string) => Promise<void>;
 }
