@@ -1,20 +1,13 @@
-import { Meta, moduleMetadata, Story } from "@storybook/angular";
-
-import { DialogModule } from "../dialog";
+import { Meta, Story } from "@storybook/angular";
 
 import { BitIconButtonComponent } from "./icon-button.component";
 
 export default {
   title: "Component Library/Icon Button",
   component: BitIconButtonComponent,
-  decorators: [
-    moduleMetadata({
-      imports: [DialogModule],
-    }),
-  ],
   args: {
     bitIconButton: "bwi-plus",
-    style: "primary",
+    buttonType: "primary",
     size: "default",
     disabled: false,
   },
@@ -23,38 +16,38 @@ export default {
 const Template: Story<BitIconButtonComponent> = (args: BitIconButtonComponent) => ({
   props: args,
   template: `
-  <div class="tw-p-5" [class.tw-bg-primary-500]="style === 'contrast'">
-    <button [bitIconButton]="bitIconButton" [style]="style" [size]="size" [disabled]="disabled"></button>
+  <div class="tw-p-5" [class.tw-bg-primary-500]="buttonType === 'contrast'">
+    <button [bitIconButton]="bitIconButton" [buttonType]="buttonType" [size]="size" [disabled]="disabled"></button>
   </div>
   `,
 });
 
 export const Contrast = Template.bind({});
 Contrast.args = {
-  style: "contrast",
+  buttonType: "contrast",
 };
 
 export const Main = Template.bind({});
 Main.args = {
-  style: "main",
+  buttonType: "main",
 };
 
 export const Muted = Template.bind({});
 Muted.args = {
-  style: "muted",
+  buttonType: "muted",
 };
 
 export const Primary = Template.bind({});
 Primary.args = {
-  style: "primary",
+  buttonType: "primary",
 };
 
 export const Secondary = Template.bind({});
 Secondary.args = {
-  style: "secondary",
+  buttonType: "secondary",
 };
 
 export const Danger = Template.bind({});
 Danger.args = {
-  style: "danger",
+  buttonType: "danger",
 };

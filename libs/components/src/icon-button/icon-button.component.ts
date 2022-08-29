@@ -96,7 +96,7 @@ const sizes: Record<IconButtonSize, string[]> = {
 export class BitIconButtonComponent {
   @Input("bitIconButton") icon: string;
 
-  @Input() style: IconButtonStyle = "main";
+  @Input() buttonType: IconButtonStyle = "main";
 
   @Input() size: IconButtonSize = "default";
 
@@ -127,7 +127,7 @@ export class BitIconButtonComponent {
       "focus:tw-outline-none",
       "focus:before:tw-ring-text-contrast",
     ]
-      .concat(styles[this.style])
+      .concat(styles[this.buttonType])
       .concat(sizes[this.size]);
   }
 }
