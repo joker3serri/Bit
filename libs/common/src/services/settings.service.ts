@@ -6,7 +6,7 @@ import { Utils } from "../misc/utils";
 import { AccountSettingsSettings } from "../models/domain/account";
 
 export class SettingsService implements SettingsServiceAbstraction {
-  private _settings: BehaviorSubject<AccountSettingsSettings | null> = new BehaviorSubject(null);
+  private _settings: BehaviorSubject<AccountSettingsSettings> = new BehaviorSubject(null);
 
   settings$ = this._settings.asObservable();
 
