@@ -6,9 +6,7 @@ const styles: Record<IconButtonStyle, string[]> = {
   contrast: [
     "tw-bg-transparent",
     "!tw-text-contrast",
-    "tw-border",
     "tw-border-transparent",
-    "tw-border-solid",
     "hover:tw-bg-transparent-hover",
     "hover:tw-border-text-contrast",
     "focus:before:tw-ring-text-contrast",
@@ -18,9 +16,7 @@ const styles: Record<IconButtonStyle, string[]> = {
   main: [
     "tw-bg-transparent",
     "!tw-text-main",
-    "tw-border",
     "tw-border-transparent",
-    "tw-border-solid",
     "hover:tw-bg-transparent-hover",
     "hover:tw-border-text-main",
     "focus:before:tw-ring-text-main",
@@ -30,9 +26,7 @@ const styles: Record<IconButtonStyle, string[]> = {
   muted: [
     "tw-bg-transparent",
     "!tw-text-muted",
-    "tw-border",
     "tw-border-transparent",
-    "tw-border-solid",
     "hover:tw-bg-transparent-hover",
     "hover:tw-border-primary-700",
     "focus:before:tw-ring-primary-700",
@@ -42,9 +36,7 @@ const styles: Record<IconButtonStyle, string[]> = {
   primary: [
     "tw-bg-primary-500",
     "!tw-text-contrast",
-    "tw-border",
     "tw-border-primary-500",
-    "tw-border-solid",
     "hover:tw-bg-primary-700",
     "focus:before:tw-ring-primary-700",
     "disabled:hover:tw-bg-primary-500",
@@ -53,9 +45,7 @@ const styles: Record<IconButtonStyle, string[]> = {
   secondary: [
     "tw-bg-transparent",
     "!tw-text-muted",
-    "tw-border",
     "tw-border-text-muted",
-    "tw-border-solid",
     "hover:!tw-text-contrast",
     "hover:tw-bg-text-muted",
     "focus:before:tw-ring-primary-700",
@@ -67,9 +57,7 @@ const styles: Record<IconButtonStyle, string[]> = {
   danger: [
     "tw-bg-transparent",
     "!tw-text-danger",
-    "tw-border",
     "tw-border-danger-500",
-    "tw-border-solid",
     "hover:!tw-text-contrast",
     "hover:tw-bg-danger-500",
     "focus:before:tw-ring-primary-700",
@@ -103,9 +91,10 @@ export class BitIconButtonComponent {
   @HostBinding("class") get classList() {
     return [
       "tw-font-semibold",
+      "tw-border",
+      "tw-border-solid",
       "tw-rounded",
       "tw-transition",
-      "tw-text-center",
       "tw-leading-none",
       "hover:tw-no-underline",
       "disabled:tw-opacity-60",
