@@ -40,7 +40,7 @@ const { name, username, password, uri } = argv;
 (async () => {
   const nativeMessageService = new NativeMessageService(1.0);
   // Handshake
-  LogUtils.logWarning("Sending Handshake");
+  LogUtils.logInfo("Sending Handshake");
   const handshakeResponse = await nativeMessageService.sendHandshake(config.testRsaPublicKey);
 
   if (handshakeResponse.status !== "success") {
@@ -57,7 +57,7 @@ const { name, username, password, uri } = argv;
   if (activeUser === undefined) {
     LogUtils.logError("No active or unlocked user");
   }
-  LogUtils.logWarning("Active userId: " + activeUser.id);
+  LogUtils.logInfo("Active userId: " + activeUser.id);
 
   const response = await nativeMessageService.credentialUpdate(handshakeResponse.sharedKey, {
     name: name,

@@ -6,7 +6,7 @@ import * as config from "./variables";
 (async () => {
   const nativeMessageService = new NativeMessageService(1.0);
 
-  LogUtils.logWarning("Sending Handshake");
+  LogUtils.logInfo("Sending Handshake");
   const handshakeResponse = await nativeMessageService.sendHandshake(config.testRsaPublicKey);
   LogUtils.logSuccess("Received response to handshake request");
 

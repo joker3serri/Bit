@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import "module-alias/register";
 
 import yargs from "yargs";
@@ -21,7 +19,7 @@ const { uri } = argv;
 (async () => {
   const nativeMessageService = new NativeMessageService(1.0);
   // Handshake
-  LogUtils.logWarning("Sending Handshake");
+  LogUtils.logInfo("Sending Handshake");
   const handshakeResponse = await nativeMessageService.sendHandshake(config.testRsaPublicKey);
 
   if (handshakeResponse.status !== "success") {
