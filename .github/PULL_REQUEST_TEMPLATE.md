@@ -27,8 +27,6 @@
 
 ## Before you submit
 
-<!-- (mark with an `X`) -->
-
 - Please add **unit tests** where it makes sense to do so (encouraged but not required)
 - If this change requires a **documentation update** - notify the documentation team
 - If this change has particular **deployment requirements** - notify the DevOps team
