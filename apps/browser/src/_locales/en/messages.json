@@ -2012,7 +2012,7 @@
     "placeholders": {
       "servername": {
         "content": "$1",
-        "example": "Vaultwarden"
+        "example": "ThirdPartyServerName"
       }
     }
   },
