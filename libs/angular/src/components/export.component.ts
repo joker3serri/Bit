@@ -67,7 +67,7 @@ export class ExportComponent implements OnInit, OnDestroy {
     merge(
       this.exportForm.get("format").valueChanges,
       this.exportForm.get("fileEncryptionType").valueChanges
-      )
+    )
       .pipe(takeUntil(this.destroy$))
       .pipe(startWith(0))
       .subscribe(() => this.adjustValidators());

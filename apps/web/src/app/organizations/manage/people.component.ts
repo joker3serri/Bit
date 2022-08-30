@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
-import { first, concatMap } from "rxjs/operators";
+import { ActivatedRoute } from "@angular/router";
+import { combineLatest, concatMap, Subject, takeUntil } from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
@@ -14,7 +13,6 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
@@ -22,8 +20,6 @@ import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.ab
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
-import { PolicyData } from "@bitwarden/common/models/data/policyData";
-import { Policy } from "@bitwarden/common/models/domain/policy";
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organizationKeysRequest";
 import { OrganizationUserBulkRequest } from "@bitwarden/common/models/request/organizationUserBulkRequest";
 import { OrganizationUserConfirmRequest } from "@bitwarden/common/models/request/organizationUserConfirmRequest";
@@ -46,7 +42,6 @@ import { UserGroupsComponent } from "./user-groups.component";
   selector: "app-org-people",
   templateUrl: "people.component.html",
 })
-// eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class PeopleComponent
   extends BasePeopleComponent<OrganizationUserUserDetailsResponse>
   implements OnInit, OnDestroy
@@ -81,7 +76,6 @@ export class PeopleComponent
   callingUserType: OrganizationUserType = null;
 
   private destroy$ = new Subject<void>();
-  private resetPasswordPolicy: Policy;
 
   constructor(
     apiService: ApiService,
@@ -90,10 +84,8 @@ export class PeopleComponent
     modalService: ModalService,
     platformUtilsService: PlatformUtilsService,
     cryptoService: CryptoService,
-    private router: Router,
     searchService: SearchService,
     validationService: ValidationService,
-    private policyApiService: PolicyApiServiceAbstraction,
     private policyService: PolicyService,
     logService: LogService,
     searchPipe: SearchPipe,
@@ -119,77 +111,63 @@ export class PeopleComponent
   }
 
   async ngOnInit() {
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
-    this.route.parent.parent.params.subscribe(async (params) => {
-      this.organizationId = params.organizationId;
-      const organization = await this.organizationService.get(this.organizationId);
-      this.accessEvents = organization.useEvents;
-      this.accessGroups = organization.useGroups;
-      this.canResetPassword = organization.canManageUsersPassword;
-      this.orgUseResetPassword = organization.useResetPassword;
-      this.callingUserType = organization.type;
-      this.orgHasKeys = organization.hasPublicAndPrivateKeys;
+    combineLatest([this.route.params, this.route.queryParams, this.policyService.policies$])
+      .pipe(
+        concatMap(async ([params, qParams, policies]) => {
+          this.organizationId = params.organizationId;
+          const organization = await this.organizationService.get(this.organizationId);
+          this.accessEvents = organization.useEvents;
+          this.accessGroups = organization.useGroups;
+          this.canResetPassword = organization.canManageUsersPassword;
+          this.orgUseResetPassword = organization.useResetPassword;
+          this.callingUserType = organization.type;
+          this.orgHasKeys = organization.hasPublicAndPrivateKeys;
 
-      // Backfill pub/priv key if necessary
-      if (this.canResetPassword && !this.orgHasKeys) {
-        const orgShareKey = await this.cryptoService.getOrgKey(this.organizationId);
-        const orgKeys = await this.cryptoService.makeKeyPair(orgShareKey);
-        const request = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
-        const response = await this.organizationApiService.updateKeys(this.organizationId, request);
-        if (response != null) {
-          this.orgHasKeys = response.publicKey != null && response.privateKey != null;
-          await this.syncService.fullSync(true); // Replace oganizations with new data
-        } else {
-          throw new Error(this.i18nService.t("resetPasswordOrgKeysError"));
-        }
-      }
-
-      this.policyService.policies$
-        .pipe(
-          concatMap(async (policies) => {
-            this.resetPasswordPolicy = policies
-              .filter((policy) => policy.type === PolicyType.ResetPassword)
-              .find((p) => p.organizationId === this.organizationId);
-            await this.load();
-          }),
-          takeUntil(this.destroy$)
-        )
-        // eslint-disable-next-line rxjs/no-nested-subscribe
-        .subscribe();
-
-      // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe, rxjs/no-nested-subscribe
-      this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
-        this.searchText = qParams.search;
-        if (qParams.viewEvents != null) {
-          const user = this.users.filter((u) => u.id === qParams.viewEvents);
-          if (user.length > 0 && user[0].status === OrganizationUserStatusType.Confirmed) {
-            this.events(user[0]);
+          // Backfill pub/priv key if necessary
+          if (this.canResetPassword && !this.orgHasKeys) {
+            const orgShareKey = await this.cryptoService.getOrgKey(this.organizationId);
+            const orgKeys = await this.cryptoService.makeKeyPair(orgShareKey);
+            const request = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
+            const response = await this.organizationApiService.updateKeys(
+              this.organizationId,
+              request
+            );
+            if (response != null) {
+              this.orgHasKeys = response.publicKey != null && response.privateKey != null;
+              await this.syncService.fullSync(true); // Replace oganizations with new data
+            } else {
+              throw new Error(this.i18nService.t("resetPasswordOrgKeysError"));
+            }
           }
-        }
-      });
-    });
+
+          const resetPasswordPolicy = policies
+            .filter((policy) => policy.type === PolicyType.ResetPassword)
+            .find((p) => p.organizationId === this.organizationId);
+          this.orgResetPasswordPolicyEnabled = resetPasswordPolicy?.enabled;
+
+          await this.load();
+
+          this.searchText = qParams.search;
+          if (qParams.viewEvents != null) {
+            const user = this.users.filter((u) => u.id === qParams.viewEvents);
+            if (user.length > 0 && user[0].status === OrganizationUserStatusType.Confirmed) {
+              this.events(user[0]);
+            }
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
   async load() {
-    const org = await this.organizationService.get(this.organizationId);
-    if (org?.isProviderUser) {
-      const orgPolicies = await this.policyApiService.getPolicies(this.organizationId);
-      const policy = orgPolicies.data.find((p) => p.organizationId === this.organizationId);
-
-      if (policy == null) {
-        this.resetPasswordPolicy = null;
-      }
-
-      this.resetPasswordPolicy = new Policy(new PolicyData(policy));
-    }
-
-    this.orgResetPasswordPolicyEnabled = this.resetPasswordPolicy?.enabled;
     super.load();
+    await super.load();
   }
 
   getUsers(): Promise<ListResponse<OrganizationUserUserDetailsResponse>> {

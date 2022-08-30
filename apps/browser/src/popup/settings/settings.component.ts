@@ -1,7 +1,6 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
 import Swal from "sweetalert2";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -39,7 +38,7 @@ const RateUrls = {
   templateUrl: "settings.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class SettingsComponent implements OnInit, OnDestroy {
+export class SettingsComponent implements OnInit {
   @ViewChild("vaultTimeoutActionSelect", { read: ElementRef, static: true })
   vaultTimeoutActionSelectRef: ElementRef;
   vaultTimeouts: any[];
@@ -53,8 +52,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   showChangeMasterPass = true;
 
   vaultTimeout: UntypedFormControl = new UntypedFormControl(null);
-
-  private destroy$ = new Subject<void>();
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
@@ -98,23 +95,14 @@ export class SettingsComponent implements OnInit, OnDestroy {
       { name: this.i18nService.t("logOut"), value: "logOut" },
     ];
 
-    this.vaultTimeoutService
-      .getVaultTimeout$()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((timeout) => {
-        if (timeout != null) {
-          if (timeout === -2 && !showOnLocked) {
-            timeout = -1;
-          }
-
-          this.vaultTimeout.setValue(timeout);
-
-          if (this.previousVaultTimeout == null) {
-            this.previousVaultTimeout = this.vaultTimeout.value;
-          }
-        }
-      });
-
+    let timeout = await this.vaultTimeoutService.getVaultTimeout();
+    if (timeout != null) {
+      if (timeout === -2 && !showOnLocked) {
+        timeout = -1;
+      }
+      this.vaultTimeout.setValue(timeout);
+    }
+    this.previousVaultTimeout = this.vaultTimeout.value;
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.vaultTimeout.valueChanges.subscribe(async (value) => {
       await this.saveVaultTimeout(value);
@@ -130,11 +118,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.biometric = await this.vaultTimeoutService.isBiometricLockSet();
     this.enableAutoBiometricsPrompt = !(await this.stateService.getDisableAutoBiometricsPrompt());
     this.showChangeMasterPass = !(await this.keyConnectorService.getUsesKeyConnector());
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   async saveVaultTimeout(newValue: number) {

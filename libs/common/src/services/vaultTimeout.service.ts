@@ -1,4 +1,4 @@
-import { combineLatestWith, concatMap, firstValueFrom, Observable } from "rxjs";
+import { firstValueFrom, map } from "rxjs";
 
 import { AuthService } from "../abstractions/auth.service";
 import { CipherService } from "../abstractions/cipher.service";
@@ -145,35 +145,35 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     return await this.stateService.getBiometricUnlock();
   }
 
-  getVaultTimeout$(userId?: string): Observable<number> {
-    return this.policyService
-      .policyAppliesToUser$(PolicyType.MaximumVaultTimeout, undefined, userId)
-      .pipe(
-        combineLatestWith(this.policyService.policies$),
-        concatMap(async ([policyAppliesToUser, policies]) => {
-          const vaultTimeout = await this.stateService.getVaultTimeout({ userId: userId });
-          if (policyAppliesToUser) {
-            const policy = policies.find(
-              (p) => p.enabled && p.type === PolicyType.MaximumVaultTimeout
-            );
-            // Remove negative values, and ensure it's smaller than maximum allowed value according to policy
-            let timeout = Math.min(vaultTimeout, policy.data.minutes);
+  async getVaultTimeout(userId?: string): Promise<number> {
+    const vaultTimeout = await this.stateService.getVaultTimeout({ userId: userId });
 
-            if (vaultTimeout == null || timeout < 0) {
-              timeout = policy.data.minutes;
-            }
-
-            // We really shouldn't need to set the value here, but multiple services relies on this value being correct.
-            if (vaultTimeout !== timeout) {
-              await this.stateService.setVaultTimeout(timeout, { userId: userId });
-            }
-
-            return timeout;
-          }
-
-          return vaultTimeout;
-        })
+    if (
+      await firstValueFrom(
+        this.policyService.policyAppliesToUser$(PolicyType.MaximumVaultTimeout, null, userId)
+      )
+    ) {
+      const policy = await firstValueFrom(
+        this.policyService.policies$.pipe(
+          map((p) => p.filter((policy) => policy.type === PolicyType.MaximumVaultTimeout))
+        )
       );
+      // Remove negative values, and ensure it's smaller than maximum allowed value according to policy
+      let timeout = Math.min(vaultTimeout, policy[0].data.minutes);
+
+      if (vaultTimeout == null || timeout < 0) {
+        timeout = policy[0].data.minutes;
+      }
+
+      // We really shouldn't need to set the value here, but multiple services relies on this value being correct.
+      if (vaultTimeout !== timeout) {
+        await this.stateService.setVaultTimeout(timeout, { userId: userId });
+      }
+
+      return timeout;
+    }
+
+    return vaultTimeout;
   }
 
   async clear(userId?: string): Promise<void> {
@@ -191,7 +191,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
       return false;
     }
 
-    const vaultTimeout = await firstValueFrom(this.getVaultTimeout$(userId));
+    const vaultTimeout = await this.getVaultTimeout(userId);
     if (vaultTimeout == null || vaultTimeout < 0) {
       return false;
     }

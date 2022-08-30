@@ -26,7 +26,6 @@ import { TwoFactorYubiKeyComponent } from "./two-factor-yubikey.component";
   selector: "app-two-factor-setup",
   templateUrl: "two-factor-setup.component.html",
 })
-// eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class TwoFactorSetupComponent implements OnInit, OnDestroy {
   @ViewChild("recoveryTemplate", { read: ViewContainerRef, static: true })
   recoveryModalRef: ViewContainerRef;
@@ -97,7 +96,6 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
     }
 
     this.providers.sort((a: any, b: any) => a.sort - b.sort);
-    await this.load();
 
     this.policyService
       .policyAppliesToUser$(PolicyType.TwoFactorAuthentication)
@@ -105,9 +103,11 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
       .subscribe((policyAppliesToUser) => {
         this.twoFactorAuthPolicyAppliesToUser = policyAppliesToUser;
       });
+
+    await this.load();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }

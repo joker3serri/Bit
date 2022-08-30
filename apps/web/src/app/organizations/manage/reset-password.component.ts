@@ -58,7 +58,6 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     this.policyService.policies$
       .pipe(
         concatMap(async (policies) => {
-          // Get Enforced Policy Options
           this.enforcedPolicyOptions = await this.policyService.getMasterPasswordPolicyOptions(
             policies
           );
@@ -66,11 +65,6 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe();
-
-    this.passwordGenerationService
-      .getOptions$()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((options) => (this.options = options[0]));
   }
 
   ngOnDestroy() {
@@ -83,7 +77,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   }
 
   async generatePassword() {
-    this.newPassword = await this.passwordGenerationService.generatePassword(this.options);
+    const options = (await this.passwordGenerationService.getOptions())?.[0] ?? {};
+    this.newPassword = await this.passwordGenerationService.generatePassword(options);
     this.passwordStrengthComponent.updatePasswordStrength(this.newPassword);
   }
 
