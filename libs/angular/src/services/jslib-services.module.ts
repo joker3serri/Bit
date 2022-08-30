@@ -54,6 +54,7 @@ import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/abstrac
 import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { UsernameGenerationService as UsernameGenerationServiceAbstraction } from "@bitwarden/common/abstractions/usernameGeneration.service";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutActionService as VaultTimeoutActionServiceAbstraction } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutAction.service";
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { Account } from "@bitwarden/common/models/domain/account";
@@ -97,6 +98,7 @@ import { UserVerificationApiService } from "@bitwarden/common/services/userVerif
 import { UserVerificationService } from "@bitwarden/common/services/userVerification/userVerification.service";
 import { UsernameGenerationService } from "@bitwarden/common/services/usernameGeneration.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutActionService } from "@bitwarden/common/services/vaultTimeout/vaultTimeoutAction.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vaultTimeout/vaultTimeoutSettings.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/services/webCryptoFunction.service";
 
@@ -370,6 +372,24 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
         KeyConnectorServiceAbstraction,
         StateServiceAbstraction,
         AuthServiceAbstraction,
+        VaultTimeoutSettingsServiceAbstraction,
+        LOCKED_CALLBACK,
+        LOGOUT_CALLBACK,
+      ],
+    },
+    {
+      provide: VaultTimeoutActionServiceAbstraction,
+      useClass: VaultTimeoutActionService,
+      deps: [
+        CipherServiceAbstraction,
+        FolderServiceAbstraction,
+        CollectionServiceAbstraction,
+        CryptoServiceAbstraction,
+        PlatformUtilsServiceAbstraction,
+        MessagingServiceAbstraction,
+        SearchServiceAbstraction,
+        KeyConnectorServiceAbstraction,
+        StateServiceAbstraction,
         VaultTimeoutSettingsServiceAbstraction,
         LOCKED_CALLBACK,
         LOGOUT_CALLBACK,

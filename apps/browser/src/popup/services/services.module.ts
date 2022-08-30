@@ -48,6 +48,7 @@ import { TwoFactorService } from "@bitwarden/common/abstractions/twoFactor.servi
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { UsernameGenerationService } from "@bitwarden/common/abstractions/usernameGeneration.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutActionService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutAction.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
@@ -236,6 +237,11 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: UserVerificationService,
       useFactory: getBgService<UserVerificationService>("userVerificationService"),
+      deps: [],
+    },
+    {
+      provide: VaultTimeoutActionService,
+      useFactory: getBgService<VaultTimeoutActionService>("vaultTimeoutActionService"),
       deps: [],
     },
     {
