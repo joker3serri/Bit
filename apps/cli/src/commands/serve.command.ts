@@ -111,7 +111,7 @@ export class ServeCommand {
     this.confirmCommand = new ConfirmCommand(this.main.apiService, this.main.cryptoService);
     this.restoreCommand = new RestoreCommand(this.main.cipherService);
     this.shareCommand = new ShareCommand(this.main.cipherService);
-    this.lockCommand = new LockCommand(this.main.vaultTimeoutService);
+    this.lockCommand = new LockCommand(this.main.vaultTimeoutActionService);
     this.unlockCommand = new UnlockCommand(
       this.main.cryptoService,
       this.main.stateService,

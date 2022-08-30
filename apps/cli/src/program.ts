@@ -210,7 +210,7 @@ export class Program extends BaseProgram {
           return;
         }
 
-        const command = new LockCommand(this.main.vaultTimeoutService);
+        const command = new LockCommand(this.main.vaultTimeoutActionService);
         const response = await command.run();
         this.processResponse(response);
       });

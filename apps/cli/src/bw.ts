@@ -46,7 +46,7 @@ import { TotpService } from "@bitwarden/common/services/totp.service";
 import { TwoFactorService } from "@bitwarden/common/services/twoFactor.service";
 import { UserVerificationApiService } from "@bitwarden/common/services/userVerification/userVerification-api.service";
 import { UserVerificationService } from "@bitwarden/common/services/userVerification/userVerification.service";
-import { VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutActionService } from "@bitwarden/common/services/vaultTimeout/vaultTimeoutAction.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vaultTimeout/vaultTimeoutSettings.service";
 import { CliPlatformUtilsService } from "@bitwarden/node/cli/services/cliPlatformUtils.service";
 import { ConsoleLogService } from "@bitwarden/node/cli/services/consoleLog.service";
@@ -82,7 +82,7 @@ export class Main {
   cipherService: CipherService;
   folderService: InternalFolderService;
   collectionService: CollectionService;
-  vaultTimeoutService: VaultTimeoutService;
+  vaultTimeoutActionService: VaultTimeoutActionService;
   vaultTimeoutSettingsService: VaultTimeoutSettingsService;
   syncService: SyncService;
   passwordGenerationService: PasswordGenerationService;
@@ -282,17 +282,15 @@ export class Main {
       this.stateService
     );
 
-    this.vaultTimeoutService = new VaultTimeoutService(
+    this.vaultTimeoutActionService = new VaultTimeoutActionService(
       this.cipherService,
       this.folderService,
       this.collectionService,
       this.cryptoService,
-      this.platformUtilsService,
       this.messagingService,
       this.searchService,
       this.keyConnectorService,
       this.stateService,
-      this.authService,
       this.vaultTimeoutSettingsService,
       lockedCallback,
       null
