@@ -79,7 +79,7 @@ const sizes: Record<IconButtonSize, string[]> = {
 
 @Component({
   selector: "button[bitIconButton]",
-  template: `<i class="bwi" [ngClass]="icon"></i>`,
+  template: `<i class="bwi" [ngClass]="icon" aria-hidden="true"></i>`,
 })
 export class BitIconButtonComponent {
   @Input("bitIconButton") icon: string;
