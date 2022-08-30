@@ -93,6 +93,7 @@ import { SendAddEditComponent } from "./send/send-add-edit.component";
 import { SendGroupingsComponent } from "./send/send-groupings.component";
 import { SendTypeComponent } from "./send/send-type.component";
 import { ServicesModule } from "./services/services.module";
+import { AboutComponent } from "./settings/about.component";
 import { ExcludedDomainsComponent } from "./settings/excluded-domains.component";
 import { ExportComponent } from "./settings/export.component";
 import { FolderAddEditComponent } from "./settings/folder-add-edit.component";
@@ -240,6 +241,7 @@ registerLocaleData(localeZhTw, "zh-TW");
     ViewCustomFieldsComponent,
     RemovePasswordComponent,
     VaultSelectComponent,
+    AboutComponent,
   ],
   providers: [CurrencyPipe, DatePipe],
   bootstrap: [AppComponent],
