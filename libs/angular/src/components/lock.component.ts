@@ -12,7 +12,7 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutActionService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutAction.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
@@ -49,7 +49,7 @@ export class LockComponent implements OnInit, OnDestroy {
     protected platformUtilsService: PlatformUtilsService,
     protected messagingService: MessagingService,
     protected cryptoService: CryptoService,
-    protected vaultTimeoutService: VaultTimeoutService,
+    protected vaultTimeoutActionService: VaultTimeoutActionService,
     protected vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     protected environmentService: EnvironmentService,
     protected stateService: StateService,
@@ -280,7 +280,7 @@ export class LockComponent implements OnInit, OnDestroy {
 
     // Users with key connector and without biometric or pin has no MP to unlock using
     if (usesKeyConnector && !(this.biometricLock || this.pinLock)) {
-      await this.vaultTimeoutService.logOut();
+      await this.vaultTimeoutActionService.logOut();
     }
 
     const webVaultUrl = this.environmentService.getWebVaultUrl();

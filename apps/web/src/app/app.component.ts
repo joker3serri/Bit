@@ -24,7 +24,7 @@ import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
-import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutActionService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutAction.service";
 
 import { PolicyListService, RouterService } from "./core";
 import { DisableSendPolicy } from "./organizations/policies/disable-send.component";
@@ -64,7 +64,7 @@ export class AppComponent implements OnDestroy, OnInit {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private ngZone: NgZone,
-    private vaultTimeoutService: VaultTimeoutService,
+    private vaultTimeoutActionService: VaultTimeoutActionService,
     private cryptoService: CryptoService,
     private collectionService: CollectionService,
     private sanitizer: DomSanitizer,
@@ -113,7 +113,7 @@ export class AppComponent implements OnDestroy, OnInit {
             this.logOut(!!message.expired);
             break;
           case "lockVault":
-            await this.vaultTimeoutService.lock();
+            await this.vaultTimeoutActionService.lock();
             break;
           case "locked":
             this.notificationsService.updateConnection(false);

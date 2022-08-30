@@ -511,7 +511,7 @@ export default class MainBackground {
       this,
       this.passwordGenerationService,
       this.platformUtilsService,
-      this.vaultTimeoutService,
+      this.vaultTimeoutActionService,
       this.authService
     );
     this.notificationBackground = new NotificationBackground(
@@ -534,7 +534,7 @@ export default class MainBackground {
       this.totpService
     );
     this.idleBackground = new IdleBackground(
-      this.vaultTimeoutService,
+      this.vaultTimeoutActionService,
       this.stateService,
       this.notificationsService
     );

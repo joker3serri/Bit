@@ -1,5 +1,5 @@
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
-import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutActionService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutAction.service";
 
 import { StateService } from "../services/abstractions/state.service";
 
@@ -11,7 +11,7 @@ export default class IdleBackground {
   private idleState = "active";
 
   constructor(
-    private vaultTimeoutService: VaultTimeoutService,
+    private vaultTimeoutActionService: VaultTimeoutActionService,
     private stateService: StateService,
     private notificationsService: NotificationsService
   ) {
@@ -46,9 +46,9 @@ export default class IdleBackground {
             // On System Lock vault timeout option
             const action = await this.stateService.getVaultTimeoutAction();
             if (action === "logOut") {
-              await this.vaultTimeoutService.logOut();
+              await this.vaultTimeoutActionService.logOut();
             } else {
-              await this.vaultTimeoutService.lock();
+              await this.vaultTimeoutActionService.lock();
             }
           }
         }

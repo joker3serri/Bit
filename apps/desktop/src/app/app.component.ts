@@ -35,7 +35,7 @@ import { SettingsService } from "@bitwarden/common/abstractions/settings.service
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { SystemService } from "@bitwarden/common/abstractions/system.service";
-import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutActionService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutAction.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
@@ -114,7 +114,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private sanitizer: DomSanitizer,
     private ngZone: NgZone,
-    private vaultTimeoutService: VaultTimeoutService,
+    private vaultTimeoutActionService: VaultTimeoutActionService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private cryptoService: CryptoService,
     private logService: LogService,
@@ -172,12 +172,12 @@ export class AppComponent implements OnInit, OnDestroy {
             this.loading = false;
             break;
           case "lockVault":
-            await this.vaultTimeoutService.lock(message.userId);
+            await this.vaultTimeoutActionService.lock(message.userId);
             break;
           case "lockAllVaults":
             for (const userId in this.stateService.accounts.getValue()) {
               if (userId != null) {
-                await this.vaultTimeoutService.lock(userId);
+                await this.vaultTimeoutActionService.lock(userId);
               }
             }
             break;
@@ -601,7 +601,7 @@ export class AppComponent implements OnInit, OnDestroy {
       if (options[0] === timeout) {
         options[1] === "logOut"
           ? this.logOut(false, userId)
-          : await this.vaultTimeoutService.lock(userId);
+          : await this.vaultTimeoutActionService.lock(userId);
       }
     }
   }

@@ -11,7 +11,7 @@ import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutActionService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutAction.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { DeviceType } from "@bitwarden/common/enums/deviceType";
 
@@ -57,7 +57,7 @@ export class SettingsComponent implements OnInit {
   constructor(
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
-    private vaultTimeoutService: VaultTimeoutService,
+    private vaultTimeoutActionService: VaultTimeoutActionService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     public messagingService: MessagingService,
     private router: Router,
@@ -306,7 +306,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async lock() {
-    await this.vaultTimeoutService.lock();
+    await this.vaultTimeoutActionService.lock();
   }
 
   async logOut() {
