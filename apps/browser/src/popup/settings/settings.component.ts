@@ -1,13 +1,11 @@
-import { formatDate } from "@angular/common";
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import { Subject } from "rxjs";
 import Swal from "sweetalert2";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
-import { ServerConfig } from "@bitwarden/common/abstractions/config/server-config";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -22,6 +20,8 @@ import { BrowserApi } from "../../browser/browserApi";
 import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
 import { SetPinComponent } from "../components/set-pin.component";
 import { PopupUtilsService } from "../services/popup-utils.service";
+
+import { AboutComponent } from "./about.component";
 
 const RateUrls = {
   [DeviceType.ChromeExtension]:
@@ -54,12 +54,10 @@ export class SettingsComponent implements OnInit {
   enableAutoBiometricsPrompt = true;
   previousVaultTimeout: number = null;
   showChangeMasterPass = true;
-  locale = "en-US";
 
   vaultTimeout: UntypedFormControl = new UntypedFormControl(null);
 
   private destroy$ = new Subject<void>();
-  private serverConfig: ServerConfig;
 
   constructor(
     private platformUtilsService: PlatformUtilsService,
@@ -127,16 +125,6 @@ export class SettingsComponent implements OnInit {
     this.biometric = await this.vaultTimeoutService.isBiometricLockSet();
     this.enableAutoBiometricsPrompt = !(await this.stateService.getDisableAutoBiometricsPrompt());
     this.showChangeMasterPass = !(await this.keyConnectorService.getUsesKeyConnector());
-
-    this.configService.serverConfig$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((serverConfig: ServerConfig) => {
-        this.serverConfig = serverConfig;
-      });
-
-    this.i18nService.locale$.pipe(takeUntil(this.destroy$)).subscribe((locale) => {
-      this.locale = locale;
-    });
   }
 
   ngOnDestroy() {
@@ -399,79 +387,7 @@ export class SettingsComponent implements OnInit {
   }
 
   about() {
-    const year = new Date().getFullYear();
-    const optionalLastSeen =
-      this.serverConfig != null && this.serverConfig.utcDate != null && !this.serverConfig.isValid()
-        ? " (" +
-          this.i18nService.t(
-            "lastSeenOn",
-            formatDate(this.serverConfig?.utcDate, "mediumDate", this.locale)
-          ) +
-          ")"
-        : "";
-    const clientVersion = document.createTextNode(
-      this.i18nService.t("version") + ": " + BrowserApi.getApplicationVersion()
-    );
-    const serverVersion = document.createTextNode(
-      this.i18nService.t("serverVersion") + ": " + this.serverConfig?.version + optionalLastSeen
-    );
-    const selfHostedServerVersion = document.createTextNode(
-      this.i18nService.t("selfHostedServerVersion") +
-        ": " +
-        this.serverConfig?.version +
-        optionalLastSeen
-    );
-    const thirdPartyServerVersion = document.createTextNode(
-      this.i18nService.t("thirdPartyServerVersion") +
-        ": " +
-        this.serverConfig?.version +
-        optionalLastSeen
-    );
-    const thirdPartyServerMessage = document.createTextNode(
-      this.i18nService.t("thirdPartyServerMessage", this.serverConfig?.server?.name ?? "")
-    );
-
-    const content = document.createElement("div");
-    const lineBreak = document.createElement("br");
-    content.innerHTML =
-      `<p class="text-center">
-       <i class="bwi bwi-shield bwi-3x" aria-hidden="true"></i>
-     </p>
-     <p class="text-center">
-       <b>Bitwarden</b>
-       <br>
-       <span>&copy; Bitwarden Inc. 2015-` +
-      year +
-      `</span>
-     </p>`;
-
-    content.appendChild(clientVersion);
-    content.appendChild(lineBreak);
-
-    if (this.usingThirdPartyServer()) {
-      const lineBreak = document.createElement("br");
-      const lineBreak2 = document.createElement("br");
-      const smallText = document.createElement("small");
-
-      content.appendChild(thirdPartyServerVersion);
-      content.appendChild(lineBreak);
-      smallText.appendChild(thirdPartyServerMessage);
-      content.appendChild(lineBreak2);
-      content.appendChild(smallText);
-    } else if (this.serverConfig != null && this.environmentService.isCloud()) {
-      content.appendChild(serverVersion);
-    } else if (this.serverConfig != null && this.serverConfig != undefined) {
-      content.appendChild(selfHostedServerVersion);
-    }
-
-    Swal.fire({
-      heightAuto: false,
-      buttonsStyling: false,
-      html: content,
-      showConfirmButton: false,
-      showCancelButton: true,
-      cancelButtonText: this.i18nService.t("close"),
-    });
+    this.modalService.open(AboutComponent);
   }
 
   async fingerprint() {
@@ -504,9 +420,5 @@ export class SettingsComponent implements OnInit {
   rate() {
     const deviceType = this.platformUtilsService.getDevice();
     BrowserApi.createNewTab((RateUrls as any)[deviceType]);
-  }
-
-  usingThirdPartyServer(): boolean {
-    return this.serverConfig != null && this.serverConfig.server != null;
   }
 }
