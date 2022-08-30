@@ -9,6 +9,7 @@ import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { SearchService } from "../../abstractions/search.service";
 import { StateService } from "../../abstractions/state.service";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "../../abstractions/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutSettingsService } from "../../abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { AuthenticationStatus } from "../../enums/authenticationStatus";
 
 export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
@@ -25,6 +26,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     private keyConnectorService: KeyConnectorService,
     private stateService: StateService,
     private authService: AuthService,
+    private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private lockedCallback: (userId?: string) => Promise<void> = null,
     private loggedOutCallback: (expired: boolean, userId?: string) => Promise<void> = null
   ) {}
@@ -64,11 +66,11 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     }
 
     if (await this.keyConnectorService.getUsesKeyConnector()) {
-      const pinSet = await this.isPinLockSet();
+      const pinSet = await this.vaultTimeoutSettingsService.isPinLockSet();
       const pinLock =
         (pinSet[0] && (await this.stateService.getDecryptedPinProtected()) != null) || pinSet[1];
 
-      if (!pinLock && !(await this.isBiometricLockSet())) {
+      if (!pinLock && !(await this.vaultTimeoutSettingsService.isBiometricLockSet())) {
         await this.logOut(userId);
       }
     }
@@ -111,7 +113,7 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
       return false;
     }
 
-    const vaultTimeout = await this.getVaultTimeout(userId);
+    const vaultTimeout = await this.vaultTimeoutSettingsService.getVaultTimeout(userId);
     if (vaultTimeout == null || vaultTimeout < 0) {
       return false;
     }
