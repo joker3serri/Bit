@@ -29,11 +29,11 @@ export class EnvironmentServerConfigResponse extends BaseResponse {
   sso: string;
 
   constructor(data: any = null) {
-    super(data);
-
     if (data == null) {
       return;
     }
+
+    super(data);
 
     this.vault = this.getResponseProperty("Vault");
     this.api = this.getResponseProperty("Api");
@@ -49,11 +49,11 @@ export class ThirdPartyServerConfigResponse extends BaseResponse {
   url: string;
 
   constructor(data: any = null) {
-    super(data);
-
     if (data == null) {
       return;
     }
+
+    super(data);
 
     this.name = this.getResponseProperty("Name");
     this.url = this.getResponseProperty("Url");
