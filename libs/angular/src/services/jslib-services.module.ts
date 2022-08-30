@@ -359,25 +359,6 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
       ],
     },
     {
-      provide: VaultTimeoutServiceAbstraction,
-      useClass: VaultTimeoutService,
-      deps: [
-        CipherServiceAbstraction,
-        FolderServiceAbstraction,
-        CollectionServiceAbstraction,
-        CryptoServiceAbstraction,
-        PlatformUtilsServiceAbstraction,
-        MessagingServiceAbstraction,
-        SearchServiceAbstraction,
-        KeyConnectorServiceAbstraction,
-        StateServiceAbstraction,
-        AuthServiceAbstraction,
-        VaultTimeoutSettingsServiceAbstraction,
-        LOCKED_CALLBACK,
-        LOGOUT_CALLBACK,
-      ],
-    },
-    {
       provide: VaultTimeoutActionServiceAbstraction,
       useClass: VaultTimeoutActionService,
       deps: [
@@ -385,7 +366,6 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
         FolderServiceAbstraction,
         CollectionServiceAbstraction,
         CryptoServiceAbstraction,
-        PlatformUtilsServiceAbstraction,
         MessagingServiceAbstraction,
         SearchServiceAbstraction,
         KeyConnectorServiceAbstraction,
@@ -393,6 +373,17 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
         VaultTimeoutSettingsServiceAbstraction,
         LOCKED_CALLBACK,
         LOGOUT_CALLBACK,
+      ],
+    },
+    {
+      provide: VaultTimeoutServiceAbstraction,
+      useClass: VaultTimeoutService,
+      deps: [
+        PlatformUtilsServiceAbstraction,
+        StateServiceAbstraction,
+        AuthServiceAbstraction,
+        VaultTimeoutSettingsServiceAbstraction,
+        VaultTimeoutActionServiceAbstraction,
       ],
     },
     {

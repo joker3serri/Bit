@@ -1,14 +1,8 @@
 import { AuthService } from "../../abstractions/auth.service";
-import { CipherService } from "../../abstractions/cipher.service";
-import { CollectionService } from "../../abstractions/collection.service";
-import { CryptoService } from "../../abstractions/crypto.service";
-import { FolderService } from "../../abstractions/folder/folder.service.abstraction";
-import { KeyConnectorService } from "../../abstractions/keyConnector.service";
-import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
-import { SearchService } from "../../abstractions/search.service";
 import { StateService } from "../../abstractions/state.service";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "../../abstractions/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutActionService as VaultTimeoutActionServiceAbstraction } from "../../abstractions/vaultTimeout/vaultTimeoutAction.service";
 import { VaultTimeoutSettingsService } from "../../abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { AuthenticationStatus } from "../../enums/authenticationStatus";
 
@@ -16,19 +10,11 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
   private inited = false;
 
   constructor(
-    private cipherService: CipherService,
-    private folderService: FolderService,
-    private collectionService: CollectionService,
-    private cryptoService: CryptoService,
     protected platformUtilsService: PlatformUtilsService,
-    private messagingService: MessagingService,
-    private searchService: SearchService,
-    private keyConnectorService: KeyConnectorService,
     private stateService: StateService,
     private authService: AuthService,
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
-    private lockedCallback: (userId?: string) => Promise<void> = null,
-    private loggedOutCallback: (expired: boolean, userId?: string) => Promise<void> = null
+    private vaultTimeoutActionService: VaultTimeoutActionServiceAbstraction
   ) {}
 
   init(checkOnInterval: boolean) {
@@ -85,6 +71,8 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
 
   private async executeTimeoutAction(userId: string): Promise<void> {
     const timeoutAction = await this.stateService.getVaultTimeoutAction({ userId: userId });
-    timeoutAction === "logOut" ? await this.logOut(userId) : await this.lock(userId);
+    timeoutAction === "logOut"
+      ? await this.vaultTimeoutActionService.logOut(userId)
+      : await this.vaultTimeoutActionService.lock(userId);
   }
 }

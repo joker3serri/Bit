@@ -361,22 +361,6 @@ export default class MainBackground {
       this.stateService
     );
 
-    this.vaultTimeoutService = new VaultTimeoutService(
-      this.cipherService,
-      this.folderService,
-      this.collectionService,
-      this.cryptoService,
-      this.platformUtilsService,
-      this.messagingService,
-      this.searchService,
-      this.keyConnectorService,
-      this.stateService,
-      this.authService,
-      this.vaultTimeoutSettingsService,
-      lockedCallback,
-      logoutCallback
-    );
-
     this.vaultTimeoutActionService = new VaultTimeoutActionService(
       this.cipherService,
       this.folderService,
@@ -389,6 +373,14 @@ export default class MainBackground {
       this.vaultTimeoutSettingsService,
       lockedCallback,
       logoutCallback
+    );
+
+    this.vaultTimeoutService = new VaultTimeoutService(
+      this.platformUtilsService,
+      this.stateService,
+      this.authService,
+      this.vaultTimeoutSettingsService,
+      this.vaultTimeoutActionService
     );
 
     this.providerService = new ProviderService(this.stateService);
