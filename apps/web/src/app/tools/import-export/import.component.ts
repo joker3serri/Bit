@@ -54,7 +54,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   }
 
   async submit() {
-    if (await firstValueFrom(this.importBlockedByPolicy)) {
+    if (await firstValueFrom(this.importBlockedByPolicy$)) {
       this.platformUtilsService.showToast(
         "error",
         null,
