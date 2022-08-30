@@ -6,7 +6,11 @@
 
 $ng-select-highlight: rgb(18, 82, 163) !default; // primary-700
 $ng-select-primary-text: rgb(33, 37, 41) !default; // text-main
-$ng-select-disabled-text: rgba(109, 117, 126, 0.6) !default; // text-muted/60
+$ng-select-disabled-text: rgb(
+  240,
+  240,
+  240
+) !default; // secondary-100 - name suggests its for text, however only applied to backgrounds
 $ng-select-border: rgb(137, 146, 159) !default; // secondary-500
 $ng-select-border-radius: 4px !default;
 $ng-select-bg: rgb(251, 251, 251) !default; // background-alt

@@ -17,12 +17,18 @@ export class MultiSelectComponent implements OnInit {
 
   // Parent component should only pass selectable items (complete list - selected items = baseItems)
   @Input() baseItems: SelectItemView[];
+  // Defaults to native ng-select behavior - set to "true" to clear selected items on dropdown close
+  @Input() removeSelectedItems = false;
   @Input() placeholder: string;
+  @Input() loading = false;
+  @Input() disabled = false;
 
   // Internal tracking of selected items
   selectedItems: SelectItemView[];
 
   // Default values for our implementation
+  loadingText: string;
+  notFoundText: string;
   bindLabel = "listName";
   groupBy = "parentGrouping";
   multipleItemSelection = true;
@@ -35,7 +41,9 @@ export class MultiSelectComponent implements OnInit {
   constructor(private i18nService: I18nService) {}
 
   ngOnInit(): void {
-    this.placeholder = this.placeholder ?? this.i18nService.t("defaultSelectPlaceholder");
+    this.placeholder = this.placeholder ?? this.i18nService.t("multiSelectPlaceholder");
+    this.loadingText = this.i18nService.t("multiSelectLoadingText");
+    this.notFoundText = this.i18nService.t("multiSelectNotFoundText");
   }
 
   getSelectItemMoreText(moreCount: string): string {
@@ -76,14 +84,16 @@ export class MultiSelectComponent implements OnInit {
     // Emit results to parent component
     this.onItemsConfirmed.emit(this.selectedItems);
 
-    // Remove selected items from base list
-    let updatedBaseItems = this.baseItems;
-    this.selectedItems.forEach((selectedItem) => {
-      updatedBaseItems = updatedBaseItems.filter((item) => selectedItem.id !== item.id);
-    });
+    // Remove selected items from base list based on input parameter
+    if (this.removeSelectedItems) {
+      let updatedBaseItems = this.baseItems;
+      this.selectedItems.forEach((selectedItem) => {
+        updatedBaseItems = updatedBaseItems.filter((item) => selectedItem.id !== item.id);
+      });
 
-    // Reset Lists
-    this.selectedItems = null;
-    this.baseItems = updatedBaseItems;
+      // Reset Lists
+      this.selectedItems = null;
+      this.baseItems = updatedBaseItems;
+    }
   }
 }

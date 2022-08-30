@@ -5,13 +5,20 @@
   [groupBy]="groupBy"
   name="Select Items"
   [placeholder]="placeholder"
+  [loading]="loading"
+  [loadingText]="loadingText"
+  [notFoundText]="notFoundText"
   [multiple]="multipleItemSelection"
   [clearable]="clearSelection"
   [selectOnTab]="selectOnTab"
   [closeOnSelect]="closeOnSelect"
   [keyDownFn]="overrideEnter.bind(this)"
   (close)="onDropdownClosed()"
+  [disabled]="disabled"
 >
+  <ng-template ng-loadingspinner-tmp>
+    <i class="bwi bwi-spinner bwi-spin tw-mr-1" [title]="loadingText" aria-hidden="true"></i>
+  </ng-template>
   <ng-template ng-label-tmp let-item="item" let-clear="clear">
     <span bitBadge badgeType="primary" class="tw-mr-1">
       <i

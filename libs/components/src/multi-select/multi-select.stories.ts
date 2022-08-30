@@ -23,7 +23,9 @@ export default {
           provide: I18nService,
           useFactory: () => {
             return new I18nMockService({
-              defaultSelectPlaceholder: "-- Type to Filter --",
+              multiSelectPlaceholder: "-- Type to Filter --",
+              multiSelectLoadingText: "Retrieving options",
+              multiSelectNotFoundText: "No items found",
             });
           },
         },
@@ -50,10 +52,24 @@ const MultiSelectTemplate: Story<MultiSelectComponent> = (args: MultiSelectCompo
   template: `
     <bit-multi-select
       [baseItems]="baseItems"
+      [removeSelectedItems]="removeSelectedItems"
+      [loading]="loading"
+      [disabled]="disabled"
       (onItemsConfirmed)="onItemsConfirmed($event)">
     </bit-multi-select>
   `,
 });
+
+export const Loading = MultiSelectTemplate.bind({});
+Loading.args = {
+  baseItems: [],
+  loading: "true",
+};
+
+export const Disabled = MultiSelectTemplate.bind({});
+Disabled.args = {
+  disabled: "true",
+};
 
 export const Groups = MultiSelectTemplate.bind({});
 Groups.args = {
@@ -163,4 +179,18 @@ MembersAndGroups.args = {
       icon: "bwi-user",
     },
   ],
+};
+
+export const RemoveSelected = MultiSelectTemplate.bind({});
+RemoveSelected.args = {
+  baseItems: [
+    { id: "1", listName: "Group 1", labelName: "Group 1", icon: "bwi-family" },
+    { id: "2", listName: "Group 2", labelName: "Group 2", icon: "bwi-family" },
+    { id: "3", listName: "Group 3", labelName: "Group 3", icon: "bwi-family" },
+    { id: "4", listName: "Group 4", labelName: "Group 4", icon: "bwi-family" },
+    { id: "5", listName: "Group 5", labelName: "Group 5", icon: "bwi-family" },
+    { id: "6", listName: "Group 6", labelName: "Group 6", icon: "bwi-family" },
+    { id: "7", listName: "Group 7", labelName: "Group 7", icon: "bwi-family" },
+  ],
+  removeSelectedItems: "true",
 };
