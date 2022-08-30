@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import * as JSZip from "jszip";
-import { Subject, takeUntil } from "rxjs";
+import { firstValueFrom, Subject } from "rxjs";
 import Swal, { SweetAlertIcon } from "sweetalert2";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -27,7 +27,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   fileContents: string;
   formPromise: Promise<ImportError>;
   loading = false;
-  importBlockedByPolicy = false;
+  importBlockedByPolicy = this.policyService.policyAppliesToUser$(PolicyType.PersonalOwnership);
 
   protected organizationId: string = null;
   protected successNavigate: any[] = ["vault"];
@@ -46,12 +46,6 @@ export class ImportComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.setImportOptions();
-    this.policyService
-      .policyAppliesToUser$(PolicyType.PersonalOwnership)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((policyAppliesToUser) => {
-        this.importBlockedByPolicy = policyAppliesToUser;
-      });
   }
 
   ngOnDestroy() {
@@ -60,7 +54,7 @@ export class ImportComponent implements OnInit, OnDestroy {
   }
 
   async submit() {
-    if (this.importBlockedByPolicy) {
+    if (await firstValueFrom(this.importBlockedByPolicy)) {
       this.platformUtilsService.showToast(
         "error",
         null,
