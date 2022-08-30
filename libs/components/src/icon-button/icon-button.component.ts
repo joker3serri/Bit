@@ -38,6 +38,7 @@ const styles: Record<IconButtonStyle, string[]> = {
     "!tw-text-contrast",
     "tw-border-primary-500",
     "hover:tw-bg-primary-700",
+    "hover:tw-border-primary-700",
     "focus:before:tw-ring-primary-700",
     "disabled:hover:tw-bg-primary-500",
     "disabled:hover:tw-border-transparent",
