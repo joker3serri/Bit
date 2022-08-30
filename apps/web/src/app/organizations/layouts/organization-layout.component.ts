@@ -5,7 +5,13 @@ import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.s
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { canAccessSettingsTab } from "../navigation-permissions";
+import {
+  canAccessBillingTab,
+  canAccessGroupsTab,
+  canAccessMembersTab,
+  canAccessReportingTab,
+  canAccessSettingsTab,
+} from "../navigation-permissions";
 
 const BroadcasterSubscriptionId = "OrganizationLayoutComponent";
 
@@ -27,6 +33,7 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     document.body.classList.remove("layout_frontend");
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.route.params.subscribe(async (params: any) => {
       this.organizationId = params.organizationId;
       await this.load();
@@ -55,19 +62,19 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
   }
 
   get showMembersTab(): boolean {
-    return this.organization.canManageUsers;
+    return canAccessMembersTab(this.organization);
   }
 
   get showGroupsTab(): boolean {
-    return this.organization.canManageGroups;
+    return canAccessGroupsTab(this.organization);
   }
 
   get showReportsTab(): boolean {
-    return this.organization.canAccessReports;
+    return canAccessReportingTab(this.organization);
   }
 
   get showBillingTab(): boolean {
-    return this.organization.canManageBilling;
+    return canAccessBillingTab(this.organization);
   }
 
   get reportTabLabel(): string {

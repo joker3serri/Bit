@@ -2,13 +2,16 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
-import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { OrganizationPermissionsGuard } from "./guards/org-permissions.guard";
 import { OrganizationLayoutComponent } from "./layouts/organization-layout.component";
 import { GroupsComponent } from "./manage/groups.component";
 import { PeopleComponent } from "./manage/people.component";
-import { canAccessOrgAdmin } from "./navigation-permissions";
+import {
+  canAccessGroupsTab,
+  canAccessMembersTab,
+  canAccessOrgAdmin,
+} from "./navigation-permissions";
 import { VaultModule } from "./vault/vault.module";
 
 const routes: Routes = [
@@ -35,7 +38,7 @@ const routes: Routes = [
         canActivate: [OrganizationPermissionsGuard],
         data: {
           titleId: "members",
-          organizationPermissions: (org: Organization) => org.canManageUsers,
+          organizationPermissions: canAccessMembersTab,
         },
       },
       {
@@ -44,7 +47,7 @@ const routes: Routes = [
         canActivate: [OrganizationPermissionsGuard],
         data: {
           titleId: "groups",
-          organizationPermissions: (org: Organization) => org.canManageGroups,
+          organizationPermissions: canAccessGroupsTab,
         },
       },
       {
