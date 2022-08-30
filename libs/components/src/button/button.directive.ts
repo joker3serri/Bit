@@ -9,8 +9,6 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "!tw-text-contrast",
     "hover:tw-bg-primary-700",
     "hover:tw-border-primary-700",
-    "focus:tw-bg-primary-700",
-    "focus:tw-border-primary-700",
   ],
   secondary: [
     "tw-bg-transparent",
@@ -19,9 +17,6 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "hover:tw-bg-secondary-500",
     "hover:tw-border-secondary-500",
     "hover:!tw-text-contrast",
-    "focus:tw-bg-secondary-500",
-    "focus:tw-border-secondary-500",
-    "focus:!tw-text-contrast",
   ],
   danger: [
     "tw-bg-transparent",
@@ -30,9 +25,6 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "hover:tw-bg-danger-500",
     "hover:tw-border-danger-500",
     "hover:!tw-text-contrast",
-    "focus:tw-bg-danger-500",
-    "focus:tw-border-danger-500",
-    "focus:!tw-text-contrast",
   ],
 };
 

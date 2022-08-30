@@ -3,6 +3,7 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
 import { IconButtonModule } from "../icon-button";
+import { SharedModule } from "../shared/shared.module";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { BannerComponent } from "./banner.component";
@@ -12,7 +13,7 @@ export default {
   component: BannerComponent,
   decorators: [
     moduleMetadata({
-      imports: [IconButtonModule],
+      imports: [SharedModule, IconButtonModule],
       providers: [
         {
           provide: I18nService,
