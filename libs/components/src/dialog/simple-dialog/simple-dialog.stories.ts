@@ -1,6 +1,7 @@
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { ButtonModule } from "../../button";
+import { SharedModule } from "../../shared";
 import { DialogTitleContainerDirective } from "../directives/dialog-title-container.directive";
 
 import { IconDirective, SimpleDialogComponent } from "./simple-dialog.component";
@@ -10,7 +11,7 @@ export default {
   component: SimpleDialogComponent,
   decorators: [
     moduleMetadata({
-      imports: [ButtonModule],
+      imports: [ButtonModule, SharedModule],
       declarations: [IconDirective, DialogTitleContainerDirective],
     }),
   ],
