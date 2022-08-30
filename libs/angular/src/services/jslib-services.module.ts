@@ -95,7 +95,7 @@ import { TwoFactorService } from "@bitwarden/common/services/twoFactor.service";
 import { UserVerificationApiService } from "@bitwarden/common/services/userVerification/userVerification-api.service";
 import { UserVerificationService } from "@bitwarden/common/services/userVerification/userVerification.service";
 import { UsernameGenerationService } from "@bitwarden/common/services/usernameGeneration.service";
-import { VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout.service";
+import { VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout/vaultTimeout.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/services/webCryptoFunction.service";
 
 import { AuthGuard } from "../guards/auth.guard";

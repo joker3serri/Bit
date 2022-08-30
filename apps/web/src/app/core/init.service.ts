@@ -15,7 +15,7 @@ import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/comm
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { ContainerService } from "@bitwarden/common/services/container.service";
 import { EventService as EventLoggingService } from "@bitwarden/common/services/event.service";
-import { VaultTimeoutService as VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout.service";
+import { VaultTimeoutService as VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout/vaultTimeout.service";
 
 import { I18nService } from "./i18n.service";
 

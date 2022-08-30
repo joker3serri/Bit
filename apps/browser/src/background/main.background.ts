@@ -95,7 +95,7 @@ import { KeyGenerationService } from "../services/keyGeneration.service";
 import { LocalBackedSessionStorageService } from "../services/localBackedSessionStorage.service";
 import { StateService } from "../services/state.service";
 import { VaultFilterService } from "../services/vaultFilter.service";
-import VaultTimeoutService from "../services/vaultTimeout.service";
+import VaultTimeoutService from "../services/vaultTimeout/vaultTimeout.service";
 
 import CommandsBackground from "./commands.background";
 import ContextMenusBackground from "./contextMenus.background";
