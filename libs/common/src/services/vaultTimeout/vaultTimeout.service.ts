@@ -59,51 +59,6 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
     }
   }
 
-  async lock(userId?: string): Promise<void> {
-    const authed = await this.stateService.getIsAuthenticated({ userId: userId });
-    if (!authed) {
-      return;
-    }
-
-    if (await this.keyConnectorService.getUsesKeyConnector()) {
-      const pinSet = await this.vaultTimeoutSettingsService.isPinLockSet();
-      const pinLock =
-        (pinSet[0] && (await this.stateService.getDecryptedPinProtected()) != null) || pinSet[1];
-
-      if (!pinLock && !(await this.vaultTimeoutSettingsService.isBiometricLockSet())) {
-        await this.logOut(userId);
-      }
-    }
-
-    if (userId == null || userId === (await this.stateService.getUserId())) {
-      this.searchService.clearIndex();
-      await this.folderService.clearCache();
-    }
-
-    await this.stateService.setEverBeenUnlocked(true, { userId: userId });
-    await this.stateService.setCryptoMasterKeyAuto(null, { userId: userId });
-
-    await this.cryptoService.clearKey(false, userId);
-    await this.cryptoService.clearOrgKeys(true, userId);
-    await this.cryptoService.clearKeyPair(true, userId);
-    await this.cryptoService.clearEncKey(true, userId);
-
-    await this.cipherService.clearCache(userId);
-    await this.collectionService.clearCache(userId);
-
-    this.messagingService.send("locked", { userId: userId });
-
-    if (this.lockedCallback != null) {
-      await this.lockedCallback(userId);
-    }
-  }
-
-  async logOut(userId?: string): Promise<void> {
-    if (this.loggedOutCallback != null) {
-      await this.loggedOutCallback(false, userId);
-    }
-  }
-
   private async shouldLock(userId: string): Promise<boolean> {
     const authStatus = await this.authService.getAuthStatus(userId);
     if (
