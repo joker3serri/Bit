@@ -24,7 +24,6 @@ import { LoginUriView } from "@bitwarden/common/models/view/loginUriView";
   selector: "app-vault-add-edit",
   templateUrl: "add-edit.component.html",
 })
-// eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class AddEditComponent extends BaseAddEditComponent implements OnInit, OnDestroy {
   canAccessPremium: boolean;
   totpCode: string;
