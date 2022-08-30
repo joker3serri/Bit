@@ -56,6 +56,11 @@ describe("PolicyService", () => {
     policyService = new PolicyService(stateService, organizationService);
   });
 
+  afterEach(() => {
+    activeAccount.complete();
+    activeAccountUnlocked.complete();
+  });
+
   it("upsert", async () => {
     await policyService.upsert(policyData("99", "test-organization", PolicyType.DisableSend, true));
 
@@ -126,7 +131,7 @@ describe("PolicyService", () => {
     });
   });
 
-  describe("getMasterPasswordPolicyOptions", () => {
+  describe("masterPasswordPolicyOptions", () => {
     it("returns default policy options", async () => {
       const data: any = {
         minComplexity: 5,
@@ -136,7 +141,7 @@ describe("PolicyService", () => {
       const model = [
         new Policy(policyData("1", "test-organization-3", PolicyType.MasterPassword, true, data)),
       ];
-      const result = await policyService.getMasterPasswordPolicyOptions(model);
+      const result = await firstValueFrom(policyService.masterPasswordPolicyOptions$(model));
 
       expect(result).toEqual({
         minComplexity: 5,
@@ -159,7 +164,7 @@ describe("PolicyService", () => {
         ),
       ];
 
-      const result = await policyService.getMasterPasswordPolicyOptions(model);
+      const result = await firstValueFrom(policyService.masterPasswordPolicyOptions$(model));
 
       expect(result).toEqual(null);
     });
@@ -175,7 +180,7 @@ describe("PolicyService", () => {
         new Policy(policyData("4", "test-organization-3", PolicyType.MasterPassword, true, data)),
       ];
 
-      const result = await policyService.getMasterPasswordPolicyOptions(model);
+      const result = await firstValueFrom(policyService.masterPasswordPolicyOptions$(model));
 
       expect(result).toEqual({
         minComplexity: 0,

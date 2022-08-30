@@ -10,8 +10,8 @@ import { PolicyResponse } from "../../models/response/policyResponse";
 
 export abstract class PolicyService {
   policies$: Observable<Policy[]>;
+  masterPasswordPolicyOptions$: (policies?: Policy[]) => Observable<MasterPasswordPolicyOptions>;
 
-  getMasterPasswordPolicyOptions: (policies?: Policy[]) => Promise<MasterPasswordPolicyOptions>;
   evaluateMasterPassword: (
     passwordStrength: number,
     newPassword: string,

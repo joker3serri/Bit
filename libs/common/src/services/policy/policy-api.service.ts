@@ -1,3 +1,5 @@
+import { firstValueFrom } from "rxjs";
+
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
@@ -84,7 +86,7 @@ export class PolicyApiService implements PolicyApiServiceAbstraction {
     const userId = await this.stateService.getUserId();
     const response = await this.getPoliciesByInvitedUser(orgId, userId);
     const policies = await this.policyService.mapPoliciesFromToken(response);
-    return this.policyService.getMasterPasswordPolicyOptions(policies);
+    return await firstValueFrom(this.policyService.masterPasswordPolicyOptions$(policies));
   }
 
   async putPolicy(organizationId: string, type: PolicyType, request: PolicyRequest): Promise<any> {

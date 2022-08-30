@@ -54,13 +54,16 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
     super.ngOnInit();
   }
 
+  ngOnDestroy() {
+    super.ngOnDestroy();
+  }
+
   togglePassword(confirmField: boolean) {
     this.showPassword = !this.showPassword;
     document.getElementById(confirmField ? "masterPasswordRetype" : "masterPassword").focus();
   }
 
   async setupSubmitActions(): Promise<boolean> {
-    this.enforcedPolicyOptions = await this.policyService.getMasterPasswordPolicyOptions();
     this.email = await this.stateService.getEmail();
     this.kdf = await this.stateService.getKdfType();
     this.kdfIterations = await this.stateService.getKdfIterations();

@@ -6,7 +6,7 @@ import { FormBuilder, UntypedFormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Substitute } from "@fluffy-spoon/substitute";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
 
 import { I18nPipe } from "@bitwarden/angular/pipes/i18n.pipe";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -46,7 +46,7 @@ describe("TrialInitiationComponent", () => {
     };
 
     policyServiceMock = {
-      getMasterPasswordPolicyOptions: jest.fn(),
+      masterPasswordPolicyOptions$: jest.fn(),
     };
 
     TestBed.configureTestingModule({
@@ -144,14 +144,16 @@ describe("TrialInitiationComponent", () => {
           },
         ],
       });
-      policyServiceMock.getMasterPasswordPolicyOptions.mockReturnValueOnce({
-        minComplexity: 4,
-        minLength: 10,
-        requireLower: null,
-        requireNumbers: null,
-        requireSpecial: null,
-        requireUpper: null,
-      } as MasterPasswordPolicyOptions);
+      policyServiceMock.masterPasswordPolicyOptions$.mockReturnValue(
+        of({
+          minComplexity: 4,
+          minLength: 10,
+          requireLower: null,
+          requireNumbers: null,
+          requireSpecial: null,
+          requireUpper: null,
+        } as MasterPasswordPolicyOptions)
+      );
 
       // Need to recreate component with new service mocks
       fixture = TestBed.createComponent(TrialInitiationComponent);

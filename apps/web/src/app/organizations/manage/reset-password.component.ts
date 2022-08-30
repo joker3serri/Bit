@@ -7,7 +7,7 @@ import {
   Output,
   ViewChild,
 } from "@angular/core";
-import { concatMap, Subject, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 import zxcvbn from "zxcvbn";
 
 import { PasswordStrengthComponent } from "@bitwarden/angular/shared/components/password-strength/password-strength.component";
@@ -42,7 +42,6 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   formPromise: Promise<any>;
 
   private destroy$ = new Subject<void>();
-  private options: any = null;
 
   constructor(
     private apiService: ApiService,
@@ -55,16 +54,13 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.policyService.policies$
-      .pipe(
-        concatMap(async (policies) => {
-          this.enforcedPolicyOptions = await this.policyService.getMasterPasswordPolicyOptions(
-            policies
-          );
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
+    this.policyService
+      .masterPasswordPolicyOptions$()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (enforcedPasswordPolicyOptions) =>
+          (this.enforcedPolicyOptions = enforcedPasswordPolicyOptions)
+      );
   }
 
   ngOnDestroy() {

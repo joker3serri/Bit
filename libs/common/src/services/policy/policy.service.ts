@@ -1,4 +1,4 @@
-import { concatMap, BehaviorSubject, firstValueFrom } from "rxjs";
+import { of, concatMap, BehaviorSubject, Observable, map } from "rxjs";
 
 import { Utils } from "@bitwarden/common/misc/utils";
 
@@ -45,62 +45,60 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
       .subscribe();
   }
 
-  async getMasterPasswordPolicyOptions(policies?: Policy[]): Promise<MasterPasswordPolicyOptions> {
-    let enforcedOptions: MasterPasswordPolicyOptions = null;
+  masterPasswordPolicyOptions$(policies?: Policy[]): Observable<MasterPasswordPolicyOptions> {
+    const observable = policies ? of(policies) : this.policies$;
+    return observable.pipe(
+      map((obsPolicies) => {
+        let enforcedOptions: MasterPasswordPolicyOptions = null;
+        const filteredPolicies = obsPolicies.filter((p) => p.type === PolicyType.MasterPassword);
 
-    if (policies == null) {
-      policies = (await firstValueFrom(this.policies$)).filter(
-        (p) => p.type === PolicyType.MasterPassword
-      );
-    } else {
-      policies = policies.filter((p) => p.type === PolicyType.MasterPassword);
-    }
+        if (filteredPolicies == null || filteredPolicies.length === 0) {
+          return enforcedOptions;
+        }
 
-    if (policies == null || policies.length === 0) {
-      return enforcedOptions;
-    }
+        filteredPolicies.forEach((currentPolicy) => {
+          if (!currentPolicy.enabled || currentPolicy.data == null) {
+            return;
+          }
 
-    policies.forEach((currentPolicy) => {
-      if (!currentPolicy.enabled || currentPolicy.data == null) {
-        return;
-      }
+          if (enforcedOptions == null) {
+            enforcedOptions = new MasterPasswordPolicyOptions();
+          }
 
-      if (enforcedOptions == null) {
-        enforcedOptions = new MasterPasswordPolicyOptions();
-      }
+          if (
+            currentPolicy.data.minComplexity != null &&
+            currentPolicy.data.minComplexity > enforcedOptions.minComplexity
+          ) {
+            enforcedOptions.minComplexity = currentPolicy.data.minComplexity;
+          }
 
-      if (
-        currentPolicy.data.minComplexity != null &&
-        currentPolicy.data.minComplexity > enforcedOptions.minComplexity
-      ) {
-        enforcedOptions.minComplexity = currentPolicy.data.minComplexity;
-      }
+          if (
+            currentPolicy.data.minLength != null &&
+            currentPolicy.data.minLength > enforcedOptions.minLength
+          ) {
+            enforcedOptions.minLength = currentPolicy.data.minLength;
+          }
 
-      if (
-        currentPolicy.data.minLength != null &&
-        currentPolicy.data.minLength > enforcedOptions.minLength
-      ) {
-        enforcedOptions.minLength = currentPolicy.data.minLength;
-      }
+          if (currentPolicy.data.requireUpper) {
+            enforcedOptions.requireUpper = true;
+          }
 
-      if (currentPolicy.data.requireUpper) {
-        enforcedOptions.requireUpper = true;
-      }
+          if (currentPolicy.data.requireLower) {
+            enforcedOptions.requireLower = true;
+          }
 
-      if (currentPolicy.data.requireLower) {
-        enforcedOptions.requireLower = true;
-      }
+          if (currentPolicy.data.requireNumbers) {
+            enforcedOptions.requireNumbers = true;
+          }
 
-      if (currentPolicy.data.requireNumbers) {
-        enforcedOptions.requireNumbers = true;
-      }
+          if (currentPolicy.data.requireSpecial) {
+            enforcedOptions.requireSpecial = true;
+          }
+        });
 
-      if (currentPolicy.data.requireSpecial) {
-        enforcedOptions.requireSpecial = true;
-      }
-    });
-
-    return enforcedOptions;
+        return enforcedOptions;
+      })
+    );
   }
 
   evaluateMasterPassword(

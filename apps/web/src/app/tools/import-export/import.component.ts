@@ -48,7 +48,7 @@ export class ImportComponent implements OnInit, OnDestroy {
     this.setImportOptions();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
