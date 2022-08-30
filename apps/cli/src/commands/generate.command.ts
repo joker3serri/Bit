@@ -1,5 +1,3 @@
-import { firstValueFrom } from "rxjs";
-
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { Response } from "@bitwarden/node/cli/models/response";
@@ -29,11 +27,7 @@ export class GenerateCommand {
     };
 
     const enforcedOptions = (await this.stateService.getIsAuthenticated())
-      ? (
-          await firstValueFrom(
-            this.passwordGenerationService.enforcePasswordGeneratorPoliciesOnOptions$(options)
-          )
-        )[0]
+      ? (await this.passwordGenerationService.enforcePasswordGeneratorPoliciesOnOptions(options))[0]
       : options;
 
     const password = await this.passwordGenerationService.generatePassword(enforcedOptions);
