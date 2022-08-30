@@ -1,6 +1,6 @@
 import { Directive, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
-import { UntypedFormBuilder } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { UntypedFormBuilder, Validators } from "@angular/forms";
+import { merge, takeUntil, Subject, startWith } from "rxjs";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventService } from "@bitwarden/common/abstractions/event.service";
@@ -11,6 +11,7 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
+import { EncryptedExportType } from "@bitwarden/common/enums/encryptedExportType";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 
@@ -20,10 +21,15 @@ export class ExportComponent implements OnInit, OnDestroy {
 
   formPromise: Promise<string>;
   disabledByPolicy = false;
+  showFilePassword: boolean;
+  showConfirmFilePassword: boolean;
 
   exportForm = this.formBuilder.group({
     format: ["json"],
     secret: [""],
+    filePassword: ["", Validators.required],
+    confirmFilePassword: ["", Validators.required],
+    fileEncryptionType: [EncryptedExportType.AccountEncrypted],
   });
 
   formatOptions = [
@@ -55,11 +61,20 @@ export class ExportComponent implements OnInit, OnDestroy {
       .subscribe((policyAppliesToUser) => {
         this.disabledByPolicy = policyAppliesToUser;
       });
+
+    await this.checkExportDisabled();
+
+    merge(
+      this.exportForm.get("format").valueChanges,
+      this.exportForm.get("fileEncryptionType").valueChanges
+      )
+      .pipe(takeUntil(this.destroy$))
+      .pipe(startWith(0))
+      .subscribe(() => this.adjustValidators());
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
-    this.destroy$.complete();
   }
 
   async checkExportDisabled() {
@@ -70,6 +85,20 @@ export class ExportComponent implements OnInit, OnDestroy {
 
   get encryptedFormat() {
     return this.format === "encrypted_json";
+  }
+
+  protected async doExport() {
+    try {
+      this.formPromise = this.getExportData();
+      const data = await this.formPromise;
+      this.downloadFile(data);
+      this.saved();
+      await this.collectEvent();
+      this.exportForm.get("secret").setValue("");
+      this.exportForm.clearValidators();
+    } catch (e) {
+      this.logService.error(e);
+    }
   }
 
   async submit() {
@@ -86,25 +115,15 @@ export class ExportComponent implements OnInit, OnDestroy {
     if (!acceptedWarning) {
       return;
     }
-
     const secret = this.exportForm.get("secret").value;
+
     try {
       await this.userVerificationService.verifyUser(secret);
     } catch (e) {
       this.platformUtilsService.showToast("error", this.i18nService.t("errorOccurred"), e.message);
-      return;
     }
 
-    try {
-      this.formPromise = this.getExportData();
-      const data = await this.formPromise;
-      this.downloadFile(data);
-      this.saved();
-      await this.collectEvent();
-      this.exportForm.get("secret").setValue("");
-    } catch (e) {
-      this.logService.error(e);
-    }
+    this.doExport();
   }
 
   async warningDialog() {
@@ -136,7 +155,14 @@ export class ExportComponent implements OnInit, OnDestroy {
   }
 
   protected getExportData() {
-    return this.exportService.getExport(this.format);
+    if (
+      this.format === "encrypted_json" &&
+      this.fileEncryptionType === EncryptedExportType.FileEncrypted
+    ) {
+      return this.exportService.getPasswordProtectedExport(this.filePassword);
+    } else {
+      return this.exportService.getExport(this.format, null);
+    }
   }
 
   protected getFileName(prefix?: string) {
@@ -158,6 +184,41 @@ export class ExportComponent implements OnInit, OnDestroy {
 
   get format() {
     return this.exportForm.get("format").value;
+  }
+
+  get filePassword() {
+    return this.exportForm.get("filePassword").value;
+  }
+
+  get confirmFilePassword() {
+    return this.exportForm.get("confirmFilePassword").value;
+  }
+
+  get fileEncryptionType() {
+    return this.exportForm.get("fileEncryptionType").value;
+  }
+
+  toggleFilePassword() {
+    this.showFilePassword = !this.showFilePassword;
+    document.getElementById("filePassword").focus();
+  }
+
+  toggleConfirmFilePassword() {
+    this.showConfirmFilePassword = !this.showConfirmFilePassword;
+    document.getElementById("confirmFilePassword").focus();
+  }
+
+  adjustValidators() {
+    this.exportForm.get("confirmFilePassword").reset();
+    this.exportForm.get("filePassword").reset();
+
+    if (this.encryptedFormat && this.fileEncryptionType == EncryptedExportType.FileEncrypted) {
+      this.exportForm.controls.filePassword.enable();
+      this.exportForm.controls.confirmFilePassword.enable();
+    } else {
+      this.exportForm.controls.filePassword.disable();
+      this.exportForm.controls.confirmFilePassword.disable();
+    }
   }
 
   private downloadFile(csv: string): void {
