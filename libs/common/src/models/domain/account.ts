@@ -1,3 +1,7 @@
+import { Jsonify } from "type-fest";
+
+import { Utils } from "@bitwarden/common/misc/utils";
+
 import { AuthenticationStatus } from "../../enums/authenticationStatus";
 import { KdfType } from "../../enums/kdfType";
 import { UriMatchType } from "../../enums/uriMatchType";
@@ -23,7 +27,39 @@ import { SymmetricCryptoKey } from "./symmetricCryptoKey";
 export class EncryptionPair<TEncrypted, TDecrypted> {
   encrypted?: TEncrypted;
   decrypted?: TDecrypted;
-  decryptedSerialized?: string;
+  private decryptedSerialized?: string;
+
+  toJSON() {
+    return {
+      encrypted: this.encrypted,
+      decrypted: this.decrypted,
+      decryptedSerialized:
+        this.decrypted instanceof ArrayBuffer ? Utils.fromBufferToByteString(this.decrypted) : null,
+    };
+  }
+
+  static fromJSON<TEncrypted, TDecrypted>(
+    obj: Jsonify<EncryptionPair<Jsonify<TEncrypted>, Jsonify<TDecrypted>>>,
+    decryptedFromJson?: (obj: Jsonify<TDecrypted>) => TDecrypted,
+    encryptedFromJson?: (obj: Jsonify<TEncrypted>) => TEncrypted
+  ) {
+    const pair = new EncryptionPair<TEncrypted, TDecrypted>();
+    if (obj?.encrypted) {
+      pair.encrypted = encryptedFromJson
+        ? encryptedFromJson(obj.encrypted as any)
+        : (obj.encrypted as TEncrypted);
+    }
+    if (obj?.decryptedSerialized) {
+      pair.decryptedSerialized = obj.decryptedSerialized;
+      // We only populate the decryptedSerialized if the decrypted is an arraybuffer.
+      pair.decrypted = Utils.fromByteStringToArray(obj.decryptedSerialized)?.buffer as any;
+    } else if (obj?.decrypted) {
+      pair.decrypted = decryptedFromJson
+        ? decryptedFromJson(obj.decrypted as any)
+        : (obj.decrypted as TDecrypted);
+    }
+    return pair;
+  }
 }
 
 export class DataEncryptionPair<TEncrypted, TDecrypted> {
@@ -83,8 +119,50 @@ export class AccountKeys {
   >();
   privateKey?: EncryptionPair<string, ArrayBuffer> = new EncryptionPair<string, ArrayBuffer>();
   publicKey?: ArrayBuffer;
-  publicKeySerialized?: string;
+  private publicKeySerialized?: string;
   apiKeyClientSecret?: string;
+
+  toJSON() {
+    this.publicKeySerialized = Utils.fromBufferToByteString(this.publicKey);
+    return this;
+  }
+
+  static fromJSON(obj: any): AccountKeys {
+    return Object.assign(
+      new AccountKeys(),
+      { cryptoMasterKey: SymmetricCryptoKey.fromJSON(obj?.cryptoMasterKey) },
+      {
+        cryptoSymmetricKey: EncryptionPair.fromJSON(
+          obj?.cryptoSymmetricKey,
+          SymmetricCryptoKey.fromJSON
+        ),
+      },
+      {
+        organizationKeys: EncryptionPair.fromJSON(obj?.organizationKeys, (obj: any) => {
+          const map = new Map<string, SymmetricCryptoKey>();
+          for (const orgId in obj) {
+            map.set(orgId, SymmetricCryptoKey.fromJSON(obj[orgId]));
+          }
+          return map;
+        }),
+      },
+      {
+        providerKeys: EncryptionPair.fromJSON(obj?.providerKeys, (obj: any) => {
+          const map = new Map<string, SymmetricCryptoKey>();
+          for (const providerId in obj) {
+            map.set(providerId, SymmetricCryptoKey.fromJSON(obj[providerId]));
+          }
+          return map;
+        }),
+      },
+      {
+        privateKey: EncryptionPair.fromJSON(obj?.privateKey),
+      },
+      {
+        publicKey: Utils.fromByteStringToArray(obj?.publicKeySerialized)?.buffer,
+      }
+    );
+  }
 }
 
 export class AccountProfile {
@@ -105,6 +183,10 @@ export class AccountProfile {
   keyHash?: string;
   kdfIterations?: number;
   kdfType?: KdfType;
+
+  static fromJSON(obj: Jsonify<AccountProfile>): AccountProfile {
+    return Object.assign(new AccountProfile(), obj);
+  }
 }
 
 export class AccountSettings {
@@ -140,6 +222,15 @@ export class AccountSettings {
   settings?: AccountSettingsSettings; // TODO: Merge whatever is going on here into the AccountSettings model properly
   vaultTimeout?: number;
   vaultTimeoutAction?: string = "lock";
+
+  static fromJSON(obj: Jsonify<AccountSettings>): AccountSettings {
+    return Object.assign(new AccountSettings(), obj, {
+      pinProtected: EncryptionPair.fromJSON<string, EncString>(
+        obj?.pinProtected,
+        EncString.fromJSON
+      ),
+    });
+  }
 }
 
 export type AccountSettingsSettings = {
@@ -151,6 +242,10 @@ export class AccountTokens {
   decodedToken?: any;
   refreshToken?: string;
   securityStamp?: string;
+
+  static fromJSON(obj: Jsonify<AccountTokens>): AccountTokens {
+    return Object.assign(new AccountTokens(), obj);
+  }
 }
 
 export class Account {
@@ -182,6 +277,15 @@ export class Account {
         ...new AccountTokens(),
         ...init?.tokens,
       },
+    });
+  }
+
+  static fromJSON(json: any): Account {
+    return Object.assign(new Account({}), json, {
+      keys: AccountKeys.fromJSON(json?.keys as any),
+      profile: AccountProfile.fromJSON(json?.profile),
+      settings: AccountSettings.fromJSON(json?.settings as any),
+      tokens: AccountTokens.fromJSON(json?.tokens as any),
     });
   }
 }

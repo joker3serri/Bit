@@ -10,7 +10,6 @@ import { StorageLocation } from "../enums/storageLocation";
 import { ThemeType } from "../enums/themeType";
 import { UriMatchType } from "../enums/uriMatchType";
 import { StateFactory } from "../factories/stateFactory";
-import { Utils } from "../misc/utils";
 import { CipherData } from "../models/data/cipherData";
 import { CollectionData } from "../models/data/collectionData";
 import { EncryptedOrganizationKeyData } from "../models/data/encryptedOrganizationKeyData";
@@ -148,6 +147,9 @@ export class StateService<
       return;
     }
     await this.updateState(async (state) => {
+      if (state.accounts == null) {
+        state.accounts = {};
+      }
       state.accounts[userId] = this.createAccount();
       const diskAccount = await this.getAccountFromDisk({ userId: userId });
       state.accounts[userId].profile = diskAccount.profile;
@@ -494,9 +496,10 @@ export class StateService<
 
   @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getCryptoMasterKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.keys?.cryptoMasterKey;
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+    );
+    return account?.keys?.cryptoMasterKey;
   }
 
   async setCryptoMasterKey(value: SymmetricCryptoKey, options?: StorageOptions): Promise<void> {
@@ -657,9 +660,10 @@ export class StateService<
 
   @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedCryptoSymmetricKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.keys?.cryptoSymmetricKey?.decrypted;
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+    );
+    return account?.keys?.cryptoSymmetricKey?.decrypted;
   }
 
   async setDecryptedCryptoSymmetricKey(
@@ -760,14 +764,9 @@ export class StateService<
   }
 
   async getDecryptedPrivateKey(options?: StorageOptions): Promise<ArrayBuffer> {
-    const privateKey = (
+    return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.keys?.privateKey;
-    let result = privateKey?.decrypted;
-    if (result == null && privateKey?.decryptedSerialized != null) {
-      result = Utils.fromByteStringToArray(privateKey.decryptedSerialized);
-    }
-    return result;
+    )?.keys?.privateKey.decrypted;
   }
 
   async setDecryptedPrivateKey(value: ArrayBuffer, options?: StorageOptions): Promise<void> {
@@ -775,8 +774,6 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
     account.keys.privateKey.decrypted = value;
-    account.keys.privateKey.decryptedSerialized =
-      value == null ? null : Utils.fromBufferToByteString(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -2015,11 +2012,7 @@ export class StateService<
     const keys = (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
     )?.keys;
-    let result = keys?.publicKey;
-    if (result == null && keys?.publicKeySerialized != null) {
-      result = Utils.fromByteStringToArray(keys.publicKeySerialized);
-    }
-    return result;
+    return keys?.publicKey;
   }
 
   async setPublicKey(value: ArrayBuffer, options?: StorageOptions): Promise<void> {
@@ -2027,7 +2020,6 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
     account.keys.publicKey = value;
-    account.keys.publicKeySerialized = value == null ? null : Utils.fromBufferToByteString(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -2718,8 +2710,11 @@ export class StateService<
       : await this.secureStorageService.save(`${options.userId}${key}`, value, options);
   }
 
-  protected state(): Promise<State<TGlobalState, TAccount>> {
-    return this.memoryStorageService.get<State<TGlobalState, TAccount>>(keys.state);
+  protected async state(): Promise<State<TGlobalState, TAccount>> {
+    const stateJson = await this.memoryStorageService.get<State<TGlobalState, TAccount>>(
+      keys.state
+    );
+    return State.fromJSON(stateJson);
   }
 
   private async setState(state: State<TGlobalState, TAccount>): Promise<void> {
