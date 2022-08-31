@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
 
 import { DialogService } from "@bitwarden/components";
 
@@ -13,9 +14,10 @@ import { SecretService } from "./secret.service";
   templateUrl: "./secrets.component.html",
 })
 export class SecretsComponent implements OnInit {
-  private organizationId: string;
-
   secrets: SecretIdentifierResponse[];
+
+  private organizationId: string;
+  private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -31,14 +33,36 @@ export class SecretsComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   openEditSecret(secretId: string) {
-    this.dialogService.open(SecretDialogComponent, {
+    const dialogRef = this.dialogService.open(SecretDialogComponent, {
       data: {
         organizationId: this.organizationId,
         operation: "edit",
         secretId: secretId,
       },
     });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(async (result) => {
+      if (result === "edit-success") {
+        // TODO add toast notification for edit secret success
+        await this.getSecrets();
+      } else {
+        // TODO add toast notification for edit secret failure
+      }
+    });
+  }
+
+  async onCreateSecret(event: string) {
+    if (event === "create-success") {
+      // TODO add toast notification for create secret success
+      await this.getSecrets();
+    } else {
+      // TODO add toast notification for create secret failure
+    }
   }
 
   private async getSecrets() {

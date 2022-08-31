@@ -1,6 +1,6 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 
 import { CreateSecretRequest } from "../requests/create-secret.request";
 import { UpdateSecretRequest } from "../requests/update-secret.request";
@@ -20,8 +20,8 @@ interface SecretOperation {
 })
 export class SecretDialogComponent implements OnInit {
   form = new FormGroup({
-    name: new FormControl(""),
-    value: new FormControl(""),
+    name: new FormControl("", [Validators.required]),
+    value: new FormControl("", [Validators.required]),
     notes: new FormControl(""),
   });
 
@@ -55,12 +55,20 @@ export class SecretDialogComponent implements OnInit {
 
   async onSave() {
     if (this.data?.operation === "add") {
-      this.createSecret();
+      try {
+        await this.createSecret();
+      } catch (e) {
+        this.dialogRef.close("create-failure");
+      }
+      this.dialogRef.close("create-success");
     } else if (this.data?.operation === "edit" && this.data?.secretId) {
-      this.updateSecret();
+      try {
+        await this.updateSecret();
+      } catch (e) {
+        this.dialogRef.close("edit-failure");
+      }
+      this.dialogRef.close("edit-success");
     }
-    this.dialogRef.close();
-    window.location.reload();
   }
 
   private async createSecret() {
