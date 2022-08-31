@@ -55,41 +55,41 @@ export class SecretDialogComponent implements OnInit {
 
   async onSave() {
     if (this.data?.operation === "add") {
-      try {
-        await this.createSecret();
-      } catch (e) {
-        this.dialogRef.close("create-failure");
-      }
-      this.dialogRef.close("create-success");
+      await this.createSecret();
     } else if (this.data?.operation === "edit" && this.data?.secretId) {
-      try {
-        await this.updateSecret();
-      } catch (e) {
-        this.dialogRef.close("edit-failure");
-      }
-      this.dialogRef.close("edit-success");
+      await this.updateSecret();
     }
   }
 
   private async createSecret() {
-    let request: CreateSecretRequest = new CreateSecretRequest();
-    request.organizationId = this.data?.organizationId;
-    request = this.getFormValues(request) as CreateSecretRequest;
-    request = (await this.secretService.encryptRequest(
-      request.organizationId,
-      request
-    )) as CreateSecretRequest;
-    await this.secretsApiService.createSecret(this.data?.organizationId, request);
+    try {
+      let request: CreateSecretRequest = new CreateSecretRequest();
+      request.organizationId = this.data?.organizationId;
+      request = this.getFormValues(request) as CreateSecretRequest;
+      request = (await this.secretService.encryptRequest(
+        request.organizationId,
+        request
+      )) as CreateSecretRequest;
+      await this.secretsApiService.createSecret(this.data?.organizationId, request);
+    } catch (e) {
+      this.dialogRef.close("create-failure");
+    }
+    this.dialogRef.close("create-success");
   }
 
   private async updateSecret() {
-    let request: UpdateSecretRequest = new UpdateSecretRequest();
-    request = this.getFormValues(request) as UpdateSecretRequest;
-    request = (await this.secretService.encryptRequest(
-      this.data?.organizationId,
-      request
-    )) as UpdateSecretRequest;
-    await this.secretsApiService.updateSecret(this.data?.secretId, request);
+    try {
+      let request: UpdateSecretRequest = new UpdateSecretRequest();
+      request = this.getFormValues(request) as UpdateSecretRequest;
+      request = (await this.secretService.encryptRequest(
+        this.data?.organizationId,
+        request
+      )) as UpdateSecretRequest;
+      await this.secretsApiService.updateSecret(this.data?.secretId, request);
+    } catch (e) {
+      this.dialogRef.close("edit-failure");
+    }
+    this.dialogRef.close("edit-success");
   }
 
   private getFormValues(request: CreateSecretRequest | UpdateSecretRequest) {
