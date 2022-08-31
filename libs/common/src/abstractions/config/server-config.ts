@@ -19,10 +19,6 @@ export class ServerConfig {
     this.server = serverConfigData.server;
     this.utcDate = new Date(serverConfigData.utcDate);
     this.environment = serverConfigData.environment;
-
-    if (serverConfigData.server?.name == null || serverConfigData.server?.url == null) {
-      this.server = null;
-    }
   }
 
   isValid(): boolean {
