@@ -21,10 +21,6 @@ export class ServerConfigData {
     this.environment = serverConfigReponse?.environment
       ? new EnvironmentServerConfigData(serverConfigReponse.environment)
       : null;
-
-    if (serverConfigReponse?.server?.name == null || serverConfigReponse?.server?.url == null) {
-      this.server = null;
-    }
   }
 }
 
