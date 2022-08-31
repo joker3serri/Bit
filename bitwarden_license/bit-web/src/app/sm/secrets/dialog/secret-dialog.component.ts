@@ -42,9 +42,9 @@ export class SecretDialogComponent implements OnInit {
 
   get title() {
     if (this.data?.operation === "add") {
-      return "Add Secret";
+      return "addSecret";
     }
-    return "Edit Secret";
+    return "editSecret";
   }
 
   async loadData() {

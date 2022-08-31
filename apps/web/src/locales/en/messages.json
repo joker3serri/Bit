@@ -5322,6 +5322,9 @@
   "editSecret":{
     "message": "Edit Secret"
   },
+  "addSecret":{
+    "message": "Add Secret"
+  },
   "copySecretName":{
     "message": "Copy Secret Name"
   },
@@ -5343,11 +5346,17 @@
   "serviceAccount":{
     "message": "Service Account"
   },
+  "serviceAccounts":{
+    "message": "Service Accounts"
+  },
   "new":{
     "message": "New"
   },
   "secrets":{
     "message":"Secrets"
+  },
+  "nameValuePair":{
+    "message":"Name/Value Pair"
   },
   "searchSecrets":{
     "message":"Search Secrets"
