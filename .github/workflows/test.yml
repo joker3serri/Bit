@@ -42,6 +42,17 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
+      # We use isolatedModules: true which disables typechecking in tests
+      # Tests in apps/ are typechecked when their app is built, so we just do it here for libs/
+      # See https://bitwarden.atlassian.net/browse/EC-497
+      - name: Run typechecking
+        run: |
+          npx tsc --noEmit --project ./libs/angular/tsconfig.spec.json &
+          npx tsc --noEmit --project ./libs/components/tsconfig.spec.json &
+          npx tsc --noEmit --project ./libs/common/tsconfig.spec.json &
+          npx tsc --noEmit --project ./libs/node/tsconfig.spec.json &
+          npx tsc --noEmit --project ./libs/electron/tsconfig.spec.json
+
       - name: Run tests
         run: |
           export NODE_OPTIONS=--max_old_space_size=6144
