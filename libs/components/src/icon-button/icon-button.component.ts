@@ -11,7 +11,6 @@ const styles: Record<IconButtonStyle, string[]> = {
     "hover:tw-border-text-contrast",
     "focus:before:tw-ring-text-contrast",
     "disabled:hover:tw-bg-transparent",
-    "disabled:hover:tw-border-transparent",
   ],
   main: [
     "tw-bg-transparent",
@@ -21,7 +20,6 @@ const styles: Record<IconButtonStyle, string[]> = {
     "hover:tw-border-text-main",
     "focus:before:tw-ring-text-main",
     "disabled:hover:tw-bg-transparent",
-    "disabled:hover:tw-border-transparent",
   ],
   muted: [
     "tw-bg-transparent",
@@ -31,7 +29,6 @@ const styles: Record<IconButtonStyle, string[]> = {
     "hover:tw-border-primary-700",
     "focus:before:tw-ring-primary-700",
     "disabled:hover:tw-bg-transparent",
-    "disabled:hover:tw-border-transparent",
   ],
   primary: [
     "tw-bg-primary-500",
@@ -41,7 +38,6 @@ const styles: Record<IconButtonStyle, string[]> = {
     "hover:tw-border-primary-700",
     "focus:before:tw-ring-primary-700",
     "disabled:hover:tw-bg-primary-500",
-    "disabled:hover:tw-border-transparent",
   ],
   secondary: [
     "tw-bg-transparent",
@@ -53,7 +49,6 @@ const styles: Record<IconButtonStyle, string[]> = {
     "disabled:hover:tw-bg-transparent",
     "disabled:hover:!tw-text-muted",
     "disabled:hover:tw-border-text-muted",
-    "disabled:hover:tw-border-transparent",
   ],
   danger: [
     "tw-bg-transparent",
@@ -65,7 +60,6 @@ const styles: Record<IconButtonStyle, string[]> = {
     "disabled:hover:tw-bg-transparent",
     "disabled:hover:!tw-text-danger",
     "disabled:hover:tw-border-danger-500",
-    "disabled:hover:tw-border-transparent",
   ],
 };
 
@@ -98,9 +92,10 @@ export class BitIconButtonComponent {
       "tw-transition",
       "tw-leading-none",
       "hover:tw-no-underline",
-      "disabled:tw-opacity-60",
       "focus:tw-outline-none",
       "focus:tw-z-10",
+      "disabled:tw-opacity-60",
+      "disabled:hover:tw-border-transparent",
 
       // Workaround for box-shadow with transparent offset issue:
       // https://github.com/tailwindlabs/tailwindcss/issues/3595
