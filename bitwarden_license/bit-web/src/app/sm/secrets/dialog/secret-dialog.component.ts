@@ -40,17 +40,17 @@ export class SecretDialogComponent implements OnInit {
     }
   }
 
+  async loadData() {
+    let secret: SecretResponse = await this.secretsApiService.getSecret(this.data?.secretId);
+    secret = await this.secretService.decryptSecretResponse(secret);
+    this.form.setValue({ name: secret.name, value: secret.value, notes: secret.note });
+  }
+
   get title() {
     if (this.data?.operation === "add") {
       return "addSecret";
     }
     return "editSecret";
-  }
-
-  async loadData() {
-    let secret: SecretResponse = await this.secretsApiService.getSecret(this.data?.secretId);
-    secret = await this.secretService.decryptSecretResponse(secret);
-    this.form.setValue({ name: secret.name, value: secret.value, notes: secret.note });
   }
 
   async onSave() {
