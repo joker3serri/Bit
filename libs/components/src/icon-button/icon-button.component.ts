@@ -9,7 +9,7 @@ const styles: Record<IconButtonStyle, string[]> = {
     "tw-border-transparent",
     "hover:tw-bg-transparent-hover",
     "hover:tw-border-text-contrast",
-    "focus:before:tw-ring-text-contrast",
+    "focus-visible:before:tw-ring-text-contrast",
     "disabled:hover:tw-bg-transparent",
   ],
   main: [
@@ -18,7 +18,7 @@ const styles: Record<IconButtonStyle, string[]> = {
     "tw-border-transparent",
     "hover:tw-bg-transparent-hover",
     "hover:tw-border-text-main",
-    "focus:before:tw-ring-text-main",
+    "focus-visible:before:tw-ring-text-main",
     "disabled:hover:tw-bg-transparent",
   ],
   muted: [
@@ -27,7 +27,7 @@ const styles: Record<IconButtonStyle, string[]> = {
     "tw-border-transparent",
     "hover:tw-bg-transparent-hover",
     "hover:tw-border-primary-700",
-    "focus:before:tw-ring-primary-700",
+    "focus-visible:before:tw-ring-primary-700",
     "disabled:hover:tw-bg-transparent",
   ],
   primary: [
@@ -36,7 +36,7 @@ const styles: Record<IconButtonStyle, string[]> = {
     "tw-border-primary-500",
     "hover:tw-bg-primary-700",
     "hover:tw-border-primary-700",
-    "focus:before:tw-ring-primary-700",
+    "focus-visible:before:tw-ring-primary-700",
     "disabled:hover:tw-bg-primary-500",
   ],
   secondary: [
@@ -45,7 +45,7 @@ const styles: Record<IconButtonStyle, string[]> = {
     "tw-border-text-muted",
     "hover:!tw-text-contrast",
     "hover:tw-bg-text-muted",
-    "focus:before:tw-ring-primary-700",
+    "focus-visible:before:tw-ring-primary-700",
     "disabled:hover:tw-bg-transparent",
     "disabled:hover:!tw-text-muted",
     "disabled:hover:tw-border-text-muted",
@@ -56,7 +56,7 @@ const styles: Record<IconButtonStyle, string[]> = {
     "tw-border-danger-500",
     "hover:!tw-text-contrast",
     "hover:tw-bg-danger-500",
-    "focus:before:tw-ring-primary-700",
+    "focus-visible:before:tw-ring-primary-700",
     "disabled:hover:tw-bg-transparent",
     "disabled:hover:!tw-text-danger",
     "disabled:hover:tw-border-danger-500",
@@ -92,10 +92,9 @@ export class BitIconButtonComponent {
       "tw-transition",
       "tw-leading-none",
       "hover:tw-no-underline",
-      "focus:tw-outline-none",
-      "focus:tw-z-10",
       "disabled:tw-opacity-60",
       "disabled:hover:tw-border-transparent",
+      "focus:tw-outline-none",
 
       // Workaround for box-shadow with transparent offset issue:
       // https://github.com/tailwindlabs/tailwindcss/issues/3595
@@ -108,8 +107,8 @@ export class BitIconButtonComponent {
       "before:tw-rounded-md",
       "before:tw-transition",
       "before:tw-ring",
-      "focus:tw-outline-none",
-      "focus:before:tw-ring-text-contrast",
+      "focus-visible:before:tw-ring-text-contrast",
+      "focus-visible:tw-z-10",
     ]
       .concat(styles[this.buttonType])
       .concat(sizes[this.size]);

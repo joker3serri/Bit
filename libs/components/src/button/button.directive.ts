@@ -47,10 +47,10 @@ export class ButtonDirective {
       "disabled:tw-border-secondary-100",
       "disabled:!tw-text-main",
       "focus:tw-outline-none",
-      "focus:tw-ring",
-      "focus:tw-ring-offset-2",
-      "focus:tw-ring-primary-700",
-      "focus:tw-z-10",
+      "focus-visible:tw-ring",
+      "focus-visible:tw-ring-offset-2",
+      "focus-visible:tw-ring-primary-700",
+      "focus-visible:tw-z-10",
     ]
       .concat(this.block ? ["tw-w-full", "tw-block"] : ["tw-inline-block"])
       .concat(buttonStyles[this.buttonType ?? "secondary"]);
