@@ -98,7 +98,9 @@ export class BitIconButtonComponent {
 
       // Workaround for box-shadow with transparent offset issue:
       // https://github.com/tailwindlabs/tailwindcss/issues/3595
-      // Switch to outline with outline-offset when Safari supports border radius on outline.
+      // Remove `before:` and use regular `tw-ring` when browser no longer has bug, or better:
+      // switch to `outline` with `outline-offset` when Safari supports border radius on outline.
+      // Using `box-shadow` to create outlines is a hack and as such `outline` should be preferred.
       "tw-relative",
       "before:tw-content-['']",
       "before:tw-block",
