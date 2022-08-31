@@ -17,7 +17,13 @@ const Template: Story<BitIconButtonComponent> = (args: BitIconButtonComponent) =
   props: args,
   template: `
   <div class="tw-p-5" [class.tw-bg-primary-500]="buttonType === 'contrast'">
-    <button [bitIconButton]="bitIconButton" [buttonType]="buttonType" [size]="size" [disabled]="disabled"></button>
+    <button
+      [bitIconButton]="bitIconButton"
+      [buttonType]="buttonType"
+      [size]="size"
+      [disabled]="disabled"
+      title="Example icon button"
+      aria-label="Example icon button"></button>
   </div>
   `,
 });
