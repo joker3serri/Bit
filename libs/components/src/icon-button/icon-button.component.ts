@@ -66,10 +66,10 @@ const styles: Record<IconButtonStyle, string[]> = {
 export type IconButtonSize = "base" | "xl" | "2xl" | "default";
 
 const sizes: Record<IconButtonSize, string[]> = {
-  base: ["tw-text-base", "tw-p-0.5"],
-  xl: ["tw-text-xl", "tw-p-0.5"],
-  "2xl": ["tw-text-2xl", "tw-p-0.5"],
-  default: ["tw-p-3"],
+  base: ["tw-leading-none", "tw-text-base", "tw-p-0.5"],
+  xl: ["tw-leading-none", "tw-text-xl", "tw-p-0.5"],
+  "2xl": ["tw-leading-none", "tw-text-2xl", "tw-p-0.5"],
+  default: ["tw-px-2.5", "tw-py-1.5"],
 };
 
 @Component({
@@ -90,7 +90,6 @@ export class BitIconButtonComponent {
       "tw-border-solid",
       "tw-rounded",
       "tw-transition",
-      "tw-leading-none",
       "hover:tw-no-underline",
       "disabled:tw-opacity-60",
       "disabled:hover:tw-border-transparent",
