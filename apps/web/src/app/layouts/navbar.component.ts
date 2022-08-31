@@ -1,12 +1,12 @@
-import { Component, NgZone, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { map, Observable } from "rxjs";
 
-import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { ProviderService } from "@bitwarden/common/abstractions/provider.service";
-import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { TokenService } from "@bitwarden/common/abstractions/token.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
@@ -24,7 +24,7 @@ export class NavbarComponent implements OnInit {
   name: string;
   email: string;
   providers: Provider[] = [];
-  organizations: Organization[] = [];
+  organizations$: Observable<Organization[]>;
 
   constructor(
     private messagingService: MessagingService,
@@ -33,9 +33,7 @@ export class NavbarComponent implements OnInit {
     private providerService: ProviderService,
     private syncService: SyncService,
     private organizationService: OrganizationService,
-    private i18nService: I18nService,
-    private broadcasterService: BroadcasterService,
-    private ngZone: NgZone
+    private i18nService: I18nService
   ) {
     this.selfHosted = this.platformUtilsService.isSelfHost();
   }
@@ -53,28 +51,11 @@ export class NavbarComponent implements OnInit {
     }
     this.providers = await this.providerService.getAll();
 
-    this.buildOrganizations();
-
-    // TODO: We should be able to get rid of this when we can add the org service to org api service
-    this.broadcasterService.subscribe(this.constructor.name, async (message: any) => {
-      this.ngZone.run(async () => {
-        switch (message.command) {
-          case "organizationCreated":
-            if (this.organizations.length < 1) {
-              await this.buildOrganizations();
-            }
-            break;
-        }
-      });
-    });
-  }
-
-  async buildOrganizations() {
-    this.organizationService.organizations$.subscribe((orgs) => {
-      this.organizations = orgs
-        .filter(canAccessOrgAdmin)
-        .sort(Utils.getSortFunction(this.i18nService, "name"));
-    });
+    this.organizations$ = this.organizationService.organizations$.pipe(
+      map((orgs) => {
+        return orgs.filter(canAccessOrgAdmin).sort(Utils.getSortFunction(this.i18nService, "name"));
+      })
+    );
   }
 
   lock() {

@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { first } from "rxjs/operators";
+import { Observable, Subject } from "rxjs";
+import { first, map, takeUntil } from "rxjs/operators";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ValidationService } from "@bitwarden/angular/services/validation.service";
@@ -8,7 +9,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { PlanSponsorshipType } from "@bitwarden/common/enums/planSponsorshipType";
 import { PlanType } from "@bitwarden/common/enums/planType";
 import { ProductType } from "@bitwarden/common/enums/productType";
@@ -46,10 +47,13 @@ export class FamiliesForEnterpriseSetupComponent implements OnInit {
 
   token: string;
   existingFamilyOrganizations: Organization[];
+  existingFamilyOrganizations$: Observable<Organization[]>;
 
   showNewOrganization = false;
   _organizationPlansComponent: OrganizationPlansComponent;
   _selectedFamilyOrganizationId = "";
+
+  private destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -84,16 +88,16 @@ export class FamiliesForEnterpriseSetupComponent implements OnInit {
       await this.syncService.fullSync(true);
       this.badToken = !(await this.apiService.postPreValidateSponsorshipToken(this.token));
       this.loading = false;
+    });
 
-      this.organizationService.organizations$.subscribe((orgs) => {
-        this.existingFamilyOrganizations = orgs.filter(
-          (o) => o.planProductType === ProductType.Families
-        );
+    this.existingFamilyOrganizations$ = this.organizationService.organizations$.pipe(
+      map((orgs) => orgs.filter((o) => o.planProductType === ProductType.Families))
+    );
 
-        if (this.existingFamilyOrganizations.length === 0) {
-          this.selectedFamilyOrganizationId = "createNew";
-        }
-      });
+    this.existingFamilyOrganizations$.pipe(takeUntil(this.destroy$)).subscribe((orgs) => {
+      if (orgs.length === 0) {
+        this.selectedFamilyOrganizationId = "createNew";
+      }
     });
   }
 

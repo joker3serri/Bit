@@ -12,8 +12,9 @@ import {
   ViewChild,
   ViewContainerRef,
   HostListener,
+  OnDestroy,
 } from "@angular/core";
-import { merge } from "rxjs";
+import { merge, Subject, takeUntil } from "rxjs";
 
 import { VaultFilter } from "@bitwarden/angular/vault/vault-filter/models/vault-filter.model";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
@@ -48,7 +49,7 @@ import { VaultFilterService } from "../../services/vaultFilter.service";
   ],
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class VaultSelectComponent implements OnInit {
+export class VaultSelectComponent implements OnInit, OnDestroy {
   @Output() onVaultSelectionChanged = new EventEmitter();
 
   @ViewChild("toggleVaults", { read: ElementRef })
@@ -71,6 +72,7 @@ export class VaultSelectComponent implements OnInit {
   ];
 
   private overlayRef: OverlayRef;
+  private destroy$ = new Subject<void>();
 
   get show() {
     return (
@@ -112,12 +114,20 @@ export class VaultSelectComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   async load() {
     this.vaultFilter = this.vaultFilterService.getVaultFilter();
 
-    this.vaultFilterService.buildOrganizations().subscribe((orgs) => {
-      this.organizations = orgs.sort((a, b) => a.name.localeCompare(b.name));
-    });
+    this.vaultFilterService
+      .buildOrganizations()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((orgs) => {
+        this.organizations = orgs.sort((a, b) => a.name.localeCompare(b.name));
+      });
 
     this.enforcePersonalOwnwership =
       await this.vaultFilterService.checkForPersonalOwnershipPolicy();

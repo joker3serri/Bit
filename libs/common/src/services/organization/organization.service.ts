@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, concatMap } from "rxjs";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
@@ -12,15 +12,19 @@ export class OrganizationService implements InternalOrganizationService {
   organizations$ = this._organizations.asObservable();
 
   constructor(private stateService: StateService) {
-    this.stateService.activeAccountUnlocked$.subscribe(async (unlocked) => {
-      if (!unlocked) {
-        this._organizations.next([]);
-        return;
-      }
+    this.stateService.activeAccountUnlocked$
+      .pipe(
+        concatMap(async (unlocked) => {
+          if (!unlocked) {
+            this._organizations.next([]);
+            return;
+          }
 
-      const data = await this.stateService.getOrganizations();
-      this.updateObservables(data);
-    });
+          const data = await this.stateService.getOrganizations();
+          this.updateObservables(data);
+        })
+      )
+      .subscribe();
   }
 
   async getAll(userId?: string): Promise<Organization[]> {

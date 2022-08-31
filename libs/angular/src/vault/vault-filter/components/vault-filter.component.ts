@@ -1,5 +1,5 @@
 import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { firstValueFrom, Observable } from "rxjs";
+import { concatMap, firstValueFrom, Observable } from "rxjs";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { ITreeNodeObject } from "@bitwarden/common/models/domain/treeNode";
@@ -42,14 +42,16 @@ export class VaultFilterComponent implements OnInit {
 
     this.organizations$ = this.vaultFilterService.buildOrganizations();
 
-    this.organizations$.subscribe(async (orgs) => {
-      if (orgs != null && orgs.length > 0) {
-        this.activePersonalOwnershipPolicy =
-          await this.vaultFilterService.checkForPersonalOwnershipPolicy();
-        this.activeSingleOrganizationPolicy =
-          await this.vaultFilterService.checkForSingleOrganizationPolicy();
-      }
-    });
+    this.organizations$.pipe(
+      concatMap(async (orgs) => {
+        if (orgs != null && orgs.length > 0) {
+          this.activePersonalOwnershipPolicy =
+            await this.vaultFilterService.checkForPersonalOwnershipPolicy();
+          this.activeSingleOrganizationPolicy =
+            await this.vaultFilterService.checkForSingleOrganizationPolicy();
+        }
+      })
+    );
 
     this.folders$ = await this.vaultFilterService.buildNestedFolders();
     this.collections = await this.initCollections();
