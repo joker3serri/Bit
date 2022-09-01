@@ -2,7 +2,6 @@ import { Icons } from "@bitwarden/components";
 
 import { ReportEntry } from "./models/report-entry";
 
-
 export enum ReportType {
   ExposedPasswords = "exposedPasswords",
   ReusedPasswords = "reusedPasswords",
