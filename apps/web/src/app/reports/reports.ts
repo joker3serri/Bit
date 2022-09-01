@@ -1,4 +1,7 @@
+import { Icons } from "@bitwarden/components";
+
 import { ReportEntry } from "./models/report-entry";
+
 
 export enum ReportType {
   ExposedPasswords = "exposedPasswords",
@@ -16,36 +19,36 @@ export const reports: Record<ReportType, ReportWithoutVariant> = {
     title: "exposedPasswordsReport",
     description: "exposedPasswordsReportDesc",
     route: "exposed-passwords-report",
-    icon: "reportExposedPasswords",
+    icon: Icons.ReportExposedPasswords,
   },
   [ReportType.ReusedPasswords]: {
     title: "reusedPasswordsReport",
     description: "reusedPasswordsReportDesc",
     route: "reused-passwords-report",
-    icon: "reportReusedPasswords",
+    icon: Icons.ReportReusedPasswords,
   },
   [ReportType.WeakPasswords]: {
     title: "weakPasswordsReport",
     description: "weakPasswordsReportDesc",
     route: "weak-passwords-report",
-    icon: "reportWeakPasswords",
+    icon: Icons.ReportWeakPasswords,
   },
   [ReportType.UnsecuredWebsites]: {
     title: "unsecuredWebsitesReport",
     description: "unsecuredWebsitesReportDesc",
     route: "unsecured-websites-report",
-    icon: "reportUnsecuredWebsites",
+    icon: Icons.ReportUnsecuredWebsites,
   },
   [ReportType.Inactive2fa]: {
     title: "inactive2faReport",
     description: "inactive2faReportDesc",
     route: "inactive-two-factor-report",
-    icon: "reportInactiveTwoFactor",
+    icon: Icons.ReportInactiveTwoFactor,
   },
   [ReportType.DataBreach]: {
     title: "dataBreachReport",
     description: "breachDesc",
     route: "breach-report",
-    icon: "reportBreach",
+    icon: Icons.ReportBreach,
   },
 };

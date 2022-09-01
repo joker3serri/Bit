@@ -14,7 +14,7 @@ export class DynamicContentNotAllowedError extends Error {
   }
 }
 
-export function svgIcon(strings: TemplateStringsArray, ...values): Icon {
+export function svgIcon(strings: TemplateStringsArray, ...values: unknown[]): Icon {
   if (values.length > 0) {
     throw new DynamicContentNotAllowedError();
   }
