@@ -24,8 +24,9 @@ export default {
           useFactory: () => {
             return new I18nMockService({
               multiSelectPlaceholder: "-- Type to Filter --",
-              multiSelectLoadingText: "Retrieving options",
-              multiSelectNotFoundText: "No items found",
+              multiSelectLoading: "Retrieving options...",
+              multiSelectNotFound: "No items found",
+              multiSelectClearAll: "Clear all",
             });
           },
         },

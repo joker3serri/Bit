@@ -29,12 +29,13 @@ export class MultiSelectComponent implements OnInit {
   // Default values for our implementation
   loadingText: string;
   notFoundText: string;
+  clearAllText: string;
   bindLabel = "listName";
   groupBy = "parentGrouping";
   multipleItemSelection = true;
-  clearSelection = false;
   selectOnTab = true;
   closeOnSelect = false;
+  clearSearchOnAdd = true;
 
   @Output() onItemsConfirmed = new EventEmitter<any[]>();
 
@@ -42,8 +43,9 @@ export class MultiSelectComponent implements OnInit {
 
   ngOnInit(): void {
     this.placeholder = this.placeholder ?? this.i18nService.t("multiSelectPlaceholder");
-    this.loadingText = this.i18nService.t("multiSelectLoadingText");
-    this.notFoundText = this.i18nService.t("multiSelectNotFoundText");
+    this.loadingText = this.i18nService.t("multiSelectLoading");
+    this.notFoundText = this.i18nService.t("multiSelectNotFound");
+    this.clearAllText = this.i18nService.t("multiSelectClearAll");
   }
 
   getSelectItemMoreText(moreCount: string): string {
@@ -52,23 +54,6 @@ export class MultiSelectComponent implements OnInit {
 
   isSelected(item: any): boolean {
     return this.selectedItems?.find((selected) => selected.id === item.id) != undefined;
-  }
-
-  /**
-   * This method will be run inside the NgSelectComponent context. It needs to be bound to `this`
-   * in order to be able to access the NgSelectComponent instance.
-   */
-  overrideEnter(event: any): boolean {
-    // Enter keycode should close the dropdown
-    if (event?.keyCode == 13) {
-      if (this.select.isOpen) {
-        this.select.close();
-      } else if (this.select.openOnEnter) {
-        this.select.open();
-      }
-      return false;
-    }
-    return true;
   }
 
   /**
@@ -84,7 +69,7 @@ export class MultiSelectComponent implements OnInit {
     // Emit results to parent component
     this.onItemsConfirmed.emit(this.selectedItems);
 
-    // Remove selected items from base list based on input parameter
+    // Remove selected items from base list based on input property
     if (this.removeSelectedItems) {
       let updatedBaseItems = this.baseItems;
       this.selectedItems.forEach((selectedItem) => {

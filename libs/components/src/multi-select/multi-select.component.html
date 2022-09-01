@@ -8,27 +8,27 @@
   [loading]="loading"
   [loadingText]="loadingText"
   [notFoundText]="notFoundText"
+  [clearAllText]="clearAllText"
   [multiple]="multipleItemSelection"
-  [clearable]="clearSelection"
   [selectOnTab]="selectOnTab"
   [closeOnSelect]="closeOnSelect"
-  [keyDownFn]="overrideEnter.bind(this)"
   (close)="onDropdownClosed()"
   [disabled]="disabled"
+  [clearSearchOnAdd]="clearSearchOnAdd"
 >
   <ng-template ng-loadingspinner-tmp>
     <i class="bwi bwi-spinner bwi-spin tw-mr-1" [title]="loadingText" aria-hidden="true"></i>
   </ng-template>
   <ng-template ng-label-tmp let-item="item" let-clear="clear">
-    <span bitBadge badgeType="primary" class="tw-mr-1">
+    <button type="button" bitBadge badgeType="primary" class="tw-mr-1" (click)="clear(item)">
       <i
         *ngIf="item.icon != null"
         class="tw-mr-1 bwi bwi-fw {{ item.icon }}"
         aria-hidden="true"
       ></i>
       {{ item.labelName }}
-      <i class="bwi bwi-fw bwi-close bwi-sm tw-ml-1" aria-hidden="true" (click)="clear(item)"></i>
-    </span>
+      <i class="bwi bwi-fw bwi-close bwi-sm tw-ml-1" aria-hidden="true"></i>
+    </button>
   </ng-template>
   <ng-template ng-option-tmp let-item="item">
     <div class="tw-flex">
