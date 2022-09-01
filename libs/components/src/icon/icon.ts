@@ -4,6 +4,10 @@ class Icon {
 
 export type { Icon };
 
+export function isIcon(icon: unknown): icon is Icon {
+  return icon instanceof Icon;
+}
+
 export class DynamicContentNotAllowedError extends Error {
   constructor() {
     super("Dynamic content in icons is not allowed due to risk of user-injected XSS.");
