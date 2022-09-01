@@ -1,8 +1,15 @@
 import { Component, OnInit } from "@angular/core";
-import { AbstractControl, FormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  UntypedFormGroup,
+  Validators,
+} from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 
 import { SelectOptions } from "@bitwarden/angular/interfaces/selectOptions";
+import { ControlsOf } from "@bitwarden/angular/types/controls-of";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
@@ -90,7 +97,9 @@ export class SsoComponent implements OnInit {
 
   private enabled = this.formBuilder.control(false);
 
-  private ssoIdentifier = this.formBuilder.control("", { validators: [Validators.maxLength(50)] });
+  private ssoIdentifier = this.formBuilder.control("", {
+    validators: [Validators.maxLength(50), Validators.required],
+  });
 
   private openIdForm = this.formBuilder.group(
     {
@@ -136,10 +145,10 @@ export class SsoComponent implements OnInit {
     }
   );
 
-  private ssoConfigForm = this.formBuilder.group({
-    configType: [SsoType.None],
-    keyConnectorEnabled: [false],
-    keyConnectorUrl: [""],
+  private ssoConfigForm = this.formBuilder.group<ControlsOf<SsoConfigView>>({
+    configType: new FormControl(SsoType.None),
+    keyConnectorEnabled: new FormControl(false),
+    keyConnectorUrl: new FormControl(""),
     openId: this.openIdForm,
     saml: this.samlForm,
   });
@@ -213,7 +222,7 @@ export class SsoComponent implements OnInit {
     const request = new OrganizationSsoRequest();
     request.enabled = this.enabled.value;
     request.identifier = this.ssoIdentifier.value;
-    request.data = SsoConfigApi.fromView(this.ssoConfigForm.value as SsoConfigView);
+    request.data = SsoConfigApi.fromView(this.ssoConfigForm.getRawValue());
 
     this.formPromise = this.organizationApiService.updateSso(this.organizationId, request);
 
