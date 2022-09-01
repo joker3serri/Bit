@@ -2,10 +2,8 @@ import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 
-import { CreateSecretRequest } from "../requests/create-secret.request";
-import { UpdateSecretRequest } from "../requests/update-secret.request";
-import { SecretResponse } from "../responses/secret.response";
-import { SecretApiService } from "../secret-api.service";
+import { SecretView } from "@bitwarden/common/models/view/secretView";
+
 import { SecretService } from "../secret.service";
 
 interface SecretOperation {
@@ -28,7 +26,6 @@ export class SecretDialogComponent implements OnInit {
   constructor(
     public dialogRef: DialogRef,
     @Inject(DIALOG_DATA) private data: SecretOperation,
-    private secretsApiService: SecretApiService,
     private secretService: SecretService
   ) {}
 
@@ -41,8 +38,7 @@ export class SecretDialogComponent implements OnInit {
   }
 
   async loadData() {
-    let secret: SecretResponse = await this.secretsApiService.getSecret(this.data?.secretId);
-    secret = await this.secretService.decryptSecretResponse(secret);
+    const secret: SecretView = await this.secretService.getBySecretId(this.data?.secretId);
     this.form.setValue({ name: secret.name, value: secret.value, notes: secret.note });
   }
 
@@ -63,14 +59,12 @@ export class SecretDialogComponent implements OnInit {
 
   private async createSecret() {
     try {
-      let request: CreateSecretRequest = new CreateSecretRequest();
-      request.organizationId = this.data?.organizationId;
-      request = this.getFormValues(request) as CreateSecretRequest;
-      request = (await this.secretService.encryptRequest(
-        request.organizationId,
-        request
-      )) as CreateSecretRequest;
-      await this.secretsApiService.createSecret(this.data?.organizationId, request);
+      const secretView = new SecretView();
+      secretView.organizationId = this.data?.organizationId;
+      secretView.name = this.form.value.name.toString();
+      secretView.value = this.form.value.value.toString();
+      secretView.note = this.form.value.notes.toString();
+      await this.secretService.create(this.data?.organizationId, secretView);
     } catch (e) {
       this.dialogRef.close("create-failure");
     }
@@ -79,23 +73,16 @@ export class SecretDialogComponent implements OnInit {
 
   private async updateSecret() {
     try {
-      let request: UpdateSecretRequest = new UpdateSecretRequest();
-      request = this.getFormValues(request) as UpdateSecretRequest;
-      request = (await this.secretService.encryptRequest(
-        this.data?.organizationId,
-        request
-      )) as UpdateSecretRequest;
-      await this.secretsApiService.updateSecret(this.data?.secretId, request);
+      const secretView = new SecretView();
+      secretView.id = this.data?.secretId;
+      secretView.organizationId = this.data?.organizationId;
+      secretView.name = this.form.value.name.toString();
+      secretView.value = this.form.value.value.toString();
+      secretView.note = this.form.value.notes.toString();
+      await this.secretService.update(this.data?.organizationId, secretView);
     } catch (e) {
       this.dialogRef.close("edit-failure");
     }
     this.dialogRef.close("edit-success");
-  }
-
-  private getFormValues(request: CreateSecretRequest | UpdateSecretRequest) {
-    request.key = this.form.value.name.toString();
-    request.value = this.form.value.value.toString();
-    request.note = this.form.value.notes.toString();
-    return request;
   }
 }
