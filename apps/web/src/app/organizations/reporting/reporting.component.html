@@ -8,7 +8,7 @@
             routerLink="events"
             class="list-group-item"
             routerLinkActive="active"
-            *ngIf="organization.canAccessEventLogs && accessEvents"
+            *ngIf="organization.canAccessEventLogs"
           >
             {{ "eventLogs" | i18n }}
           </a>
