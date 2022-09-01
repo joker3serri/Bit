@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import {
   AbstractControl,
   FormBuilder,
@@ -7,6 +7,7 @@ import {
   Validators,
 } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { concatMap, Subject, takeUntil } from "rxjs";
 
 import { SelectOptions } from "@bitwarden/angular/interfaces/selectOptions";
 import { ControlsOf } from "@bitwarden/angular/types/controls-of";
@@ -35,8 +36,7 @@ const defaultSigningAlgorithm = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha2
   selector: "app-org-manage-sso",
   templateUrl: "sso.component.html",
 })
-// eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class SsoComponent implements OnInit {
+export class SsoComponent implements OnInit, OnDestroy {
   readonly ssoType = SsoType;
 
   readonly ssoTypeOptions: SelectOptions[] = [
@@ -80,6 +80,8 @@ export class SsoComponent implements OnInit {
     { name: "Redirect GET", value: OpenIdConnectRedirectBehavior.RedirectGet },
     { name: "Form POST", value: OpenIdConnectRedirectBehavior.FormPost },
   ];
+
+  private destory$ = new Subject<void>();
 
   showOpenIdCustomizations = false;
 
@@ -164,32 +166,41 @@ export class SsoComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-    this.ssoConfigForm.get("configType").valueChanges.subscribe((newType: SsoType) => {
-      if (newType === SsoType.OpenIdConnect) {
-        this.openIdForm.enable();
-        this.samlForm.disable();
-      } else if (newType === SsoType.Saml2) {
-        this.openIdForm.disable();
-        this.samlForm.enable();
-      } else {
-        this.openIdForm.disable();
-        this.samlForm.disable();
-      }
-    });
+    this.ssoConfigForm
+      .get("configType")
+      .valueChanges.pipe(takeUntil(this.destory$))
+      .subscribe((newType: SsoType) => {
+        if (newType === SsoType.OpenIdConnect) {
+          this.openIdForm.enable();
+          this.samlForm.disable();
+        } else if (newType === SsoType.Saml2) {
+          this.openIdForm.disable();
+          this.samlForm.enable();
+        } else {
+          this.openIdForm.disable();
+          this.samlForm.disable();
+        }
+      });
 
     this.samlForm
       .get("spSigningBehavior")
-      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-      .valueChanges.subscribe(() =>
-        this.samlForm.get("idpX509PublicCert").updateValueAndValidity()
-      );
+      .valueChanges.pipe(takeUntil(this.destory$))
+      .subscribe(() => this.samlForm.get("idpX509PublicCert").updateValueAndValidity());
 
-    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
-    this.route.parent.parent.params.subscribe(async (params) => {
-      this.organizationId = params.organizationId;
-      await this.load();
-    });
+    this.route.params
+      .pipe(
+        concatMap(async (params) => {
+          this.organizationId = params.organizationId;
+          await this.load();
+        }),
+        takeUntil(this.destory$)
+      )
+      .subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.destory$.next();
+    this.destory$.complete();
   }
 
   async load() {
