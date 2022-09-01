@@ -1,11 +1,9 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 import { Router } from "@angular/router";
-import { Subject } from "rxjs";
 import Swal from "sweetalert2";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
-import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -58,8 +56,6 @@ export class SettingsComponent implements OnInit {
 
   vaultTimeout: UntypedFormControl = new UntypedFormControl(null);
 
-  private destroy$ = new Subject<void>();
-
   constructor(
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
@@ -72,8 +68,7 @@ export class SettingsComponent implements OnInit {
     private stateService: StateService,
     private popupUtilsService: PopupUtilsService,
     private modalService: ModalService,
-    private keyConnectorService: KeyConnectorService,
-    private configService: ConfigServiceAbstraction
+    private keyConnectorService: KeyConnectorService
   ) {}
 
   async ngOnInit() {
@@ -127,11 +122,6 @@ export class SettingsComponent implements OnInit {
     this.biometric = await this.vaultTimeoutSettingsService.isBiometricLockSet();
     this.enableAutoBiometricsPrompt = !(await this.stateService.getDisableAutoBiometricsPrompt());
     this.showChangeMasterPass = !(await this.keyConnectorService.getUsesKeyConnector());
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   async saveVaultTimeout(newValue: number) {

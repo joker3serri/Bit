@@ -4,7 +4,7 @@ import {
   EnvironmentServerConfigData,
 } from "@bitwarden/common/models/data/server-config.data";
 
-const MillisecondPerDay = 24 * 3600 * 1000;
+const dayInMilliseconds = 24 * 3600 * 1000;
 
 export class ServerConfig {
   version: string;
@@ -19,11 +19,15 @@ export class ServerConfig {
     this.server = serverConfigData.server;
     this.utcDate = new Date(serverConfigData.utcDate);
     this.environment = serverConfigData.environment;
+
+    if (this.server?.name == null && this.server?.url == null) {
+      this.server = null;
+    }
   }
 
   isValid(): boolean {
     const diff = new Date().getTime() - this.utcDate?.getTime();
 
-    return diff <= MillisecondPerDay;
+    return diff <= dayInMilliseconds;
   }
 }

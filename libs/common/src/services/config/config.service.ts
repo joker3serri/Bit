@@ -1,4 +1,4 @@
-import { BehaviorSubject, concatMap, Observable, filter } from "rxjs";
+import { BehaviorSubject, concatMap, Observable } from "rxjs";
 
 import { ServerConfigData } from "@bitwarden/common/models/data/server-config.data";
 
@@ -9,9 +9,7 @@ import { StateService } from "../../abstractions/state.service";
 
 export class ConfigService implements ConfigServiceAbstraction {
   private _serverConfig = new BehaviorSubject<ServerConfig | null>(null);
-  serverConfig$: Observable<ServerConfig> = this._serverConfig
-    .asObservable()
-    .pipe(filter((v) => v != null));
+  serverConfig$: Observable<ServerConfig> = this._serverConfig.asObservable();
 
   constructor(
     private stateService: StateService,
