@@ -35,6 +35,7 @@ export class TwoFactorWebAuthnComponent extends TwoFactorBaseComponent {
   keys: Key[];
   keyIdAvailable: number = null;
   keysConfiguredCount = 0;
+  keysMax = 5;
   webAuthnError: boolean;
   webAuthnListening: boolean;
   webAuthnResponse: PublicKeyCredential;
@@ -155,8 +156,9 @@ export class TwoFactorWebAuthnComponent extends TwoFactorBaseComponent {
     this.keyIdAvailable = null;
     this.name = null;
     this.keysConfiguredCount = 0;
-    for (let i = 1; i <= 5; i++) {
-      if (response.keys != null) {
+    this.keysMax = 5;
+    if (response.keys != null) {
+      for (let i = 1; i <= this.keysMax; i++) {
         const key = response.keys.filter((k) => k.id === i);
         if (key.length > 0) {
           this.keysConfiguredCount++;
@@ -169,11 +171,12 @@ export class TwoFactorWebAuthnComponent extends TwoFactorBaseComponent {
           });
           continue;
         }
+        if (this.keyIdAvailable == null) {
+          this.keyIdAvailable = i;
+        }
       }
-      this.keys.push({ id: i, name: null, configured: false, removePromise: null });
-      if (this.keyIdAvailable == null) {
-        this.keyIdAvailable = i;
-      }
+    } else {
+      this.keyIdAvailable = 1;
     }
     this.enabled = response.enabled;
   }

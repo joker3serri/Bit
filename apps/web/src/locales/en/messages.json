@@ -1422,6 +1422,19 @@
       }
     }
   },
+  "configuredXOfYAllowedKeys": {
+    "message": "Configured $KEY_COUNT$ / $MAX_KEYS$ allowed keys.",
+    "placeholders": {
+      "key_count": {
+        "content": "$1",
+        "example": "2"
+      },
+      "max_keys": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
   "nfcSupport": {
     "message": "NFC Support"
   },
