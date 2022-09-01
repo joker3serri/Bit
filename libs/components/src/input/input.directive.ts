@@ -1,8 +1,6 @@
 import { Directive, HostBinding, Input, Optional, Self } from "@angular/core";
 import { NgControl, Validators } from "@angular/forms";
 
-import { dirtyRequired } from "@bitwarden/angular/validators/dirty.validator";
-
 // Increments for each instance of this component
 let nextId = 0;
 
@@ -47,20 +45,12 @@ export class BitInputDirective {
   @HostBinding()
   @Input()
   get required() {
-    return this._required ?? this.hasRequiredValidator;
+    return this._required ?? this.ngControl?.control?.hasValidator(Validators.required) ?? false;
   }
   set required(value: any) {
     this._required = value != null && value !== false;
   }
   private _required: boolean;
-
-  get hasRequiredValidator() {
-    return (
-      (this.ngControl?.control?.hasValidator(Validators.required) ||
-        this.ngControl?.control?.hasValidator(dirtyRequired)) ??
-      false
-    );
-  }
 
   @Input() hasPrefix = false;
   @Input() hasSuffix = false;

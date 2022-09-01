@@ -3,7 +3,6 @@ import { AbstractControl, FormBuilder, UntypedFormGroup, Validators } from "@ang
 import { ActivatedRoute } from "@angular/router";
 
 import { SelectOptions } from "@bitwarden/angular/interfaces/selectOptions";
-import { dirtyRequired } from "@bitwarden/angular/validators/dirty.validator";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
@@ -89,17 +88,17 @@ export class SsoComponent implements OnInit {
   spMetadataUrl: string;
   spAcsUrl: string;
 
-  enabled = this.formBuilder.control(false);
+  private enabled = this.formBuilder.control(false);
 
-  ssoIdentifier = this.formBuilder.control("", { validators: [Validators.maxLength(50)] });
+  private ssoIdentifier = this.formBuilder.control("", { validators: [Validators.maxLength(50)] });
 
-  openIdForm = this.formBuilder.group(
+  private openIdForm = this.formBuilder.group(
     {
-      authority: ["", dirtyRequired],
-      clientId: ["", dirtyRequired],
-      clientSecret: ["", dirtyRequired],
+      authority: ["", Validators.required],
+      clientId: ["", Validators.required],
+      clientSecret: ["", Validators.required],
       metadataAddress: [],
-      redirectBehavior: [OpenIdConnectRedirectBehavior.RedirectGet, dirtyRequired],
+      redirectBehavior: [OpenIdConnectRedirectBehavior.RedirectGet, Validators.required],
       getClaimsFromUserInfoEndpoint: [],
       additionalScopes: [],
       additionalUserIdClaimTypes: [],
@@ -113,7 +112,7 @@ export class SsoComponent implements OnInit {
     }
   );
 
-  samlForm = this.formBuilder.group(
+  private samlForm = this.formBuilder.group(
     {
       spNameIdFormat: [Saml2NameIdFormat.NotConfigured],
       spOutboundSigningAlgorithm: [defaultSigningAlgorithm],
@@ -122,11 +121,11 @@ export class SsoComponent implements OnInit {
       spWantAssertionsSigned: [],
       spValidateCertificates: [],
 
-      idpEntityId: ["", dirtyRequired],
+      idpEntityId: ["", Validators.required],
       idpBindingType: [Saml2BindingType.HttpRedirect],
       idpSingleSignOnServiceUrl: [],
       idpSingleLogoutServiceUrl: [],
-      idpX509PublicCert: ["", dirtyRequired],
+      idpX509PublicCert: ["", Validators.required],
       idpOutboundSigningAlgorithm: [defaultSigningAlgorithm],
       idpAllowUnsolicitedAuthnResponse: [],
       idpAllowOutboundLogoutRequests: [true],
@@ -137,7 +136,7 @@ export class SsoComponent implements OnInit {
     }
   );
 
-  ssoConfigForm = this.formBuilder.group({
+  private ssoConfigForm = this.formBuilder.group({
     configType: [SsoType.None],
     keyConnectorEnabled: [false],
     keyConnectorUrl: [""],
