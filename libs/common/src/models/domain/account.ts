@@ -40,8 +40,8 @@ export class EncryptionPair<TEncrypted, TDecrypted> {
 
   static fromJSON<TEncrypted, TDecrypted>(
     obj: Jsonify<EncryptionPair<Jsonify<TEncrypted>, Jsonify<TDecrypted>>>,
-    decryptedFromJson?: (obj: Jsonify<TDecrypted>) => TDecrypted,
-    encryptedFromJson?: (obj: Jsonify<TEncrypted>) => TEncrypted
+    decryptedFromJson?: (decObj: Jsonify<TDecrypted>) => TDecrypted,
+    encryptedFromJson?: (encObj: Jsonify<TEncrypted>) => TEncrypted
   ) {
     const pair = new EncryptionPair<TEncrypted, TDecrypted>();
     if (obj?.encrypted) {
@@ -137,31 +137,25 @@ export class AccountKeys {
           SymmetricCryptoKey.fromJSON
         ),
       },
-      {
-        organizationKeys: EncryptionPair.fromJSON(obj?.organizationKeys, (obj: any) => {
-          const map = new Map<string, SymmetricCryptoKey>();
-          for (const orgId in obj) {
-            map.set(orgId, SymmetricCryptoKey.fromJSON(obj[orgId]));
-          }
-          return map;
-        }),
-      },
-      {
-        providerKeys: EncryptionPair.fromJSON(obj?.providerKeys, (obj: any) => {
-          const map = new Map<string, SymmetricCryptoKey>();
-          for (const providerId in obj) {
-            map.set(providerId, SymmetricCryptoKey.fromJSON(obj[providerId]));
-          }
-          return map;
-        }),
-      },
-      {
-        privateKey: EncryptionPair.fromJSON(obj?.privateKey),
-      },
+      { organizationKeys: AccountKeys.initMapEncryptionPairsFromJSON(obj?.organizationKeys) },
+      { providerKeys: AccountKeys.initMapEncryptionPairsFromJSON(obj?.providerKeys) },
+      { privateKey: EncryptionPair.fromJSON(obj?.privateKey) },
       {
         publicKey: Utils.fromByteStringToArray(obj?.publicKeySerialized)?.buffer,
       }
     );
+  }
+
+  // These `any` types are a result of Jsonify<Map<>> === {}
+  // Issue raised https://github.com/sindresorhus/type-fest/issues/457
+  static initMapEncryptionPairsFromJSON(obj: any) {
+    return EncryptionPair.fromJSON(obj, (decObj: any) => {
+      const map = new Map<string, SymmetricCryptoKey>();
+      for (const id in decObj) {
+        map.set(id, SymmetricCryptoKey.fromJSON(decObj[id]));
+      }
+      return map;
+    });
   }
 }
 
