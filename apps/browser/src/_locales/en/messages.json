@@ -2001,8 +2001,8 @@
   "serverVersion": {
     "message": "Server Version"
   },
-  "selfHostedServerVersion": {
-    "message": "Self-Hosted Server Version"
+  "selfHosted": {
+    "message": "Self-Hosted"
   },
   "thirdPartyServerVersion": {
     "message": "Third-Party Server Version"
