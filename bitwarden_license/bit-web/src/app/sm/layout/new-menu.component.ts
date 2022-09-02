@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { DialogService } from "@bitwarden/components";
 
@@ -17,7 +17,7 @@ export class NewMenuComponent implements OnInit {
   constructor(private route: ActivatedRoute, private dialogService: DialogService) {}
 
   ngOnInit() {
-    this.route.params.subscribe(async (params: any) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(async (params: any) => {
       this.organizationId = params.organizationId;
     });
   }

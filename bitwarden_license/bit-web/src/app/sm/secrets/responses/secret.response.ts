@@ -1,4 +1,5 @@
 import { BaseResponse } from "@bitwarden/common/models/response/baseResponse";
+import { SecretView } from "@bitwarden/common/models/view/secretView";
 
 export class SecretResponse extends BaseResponse {
   id: string;
@@ -18,5 +19,17 @@ export class SecretResponse extends BaseResponse {
     this.note = this.getResponseProperty("Note");
     this.creationDate = this.getResponseProperty("CreationDate");
     this.revisionDate = this.getResponseProperty("RevisionDate");
+  }
+
+  toSecretView(): SecretView {
+    const secretView = new SecretView();
+    secretView.id = this.id;
+    secretView.organizationId = this.organizationId;
+    secretView.name = this.name;
+    secretView.value = this.value;
+    secretView.note = this.note;
+    secretView.creationDate = this.creationDate;
+    secretView.revisionDate = this.revisionDate;
+    return secretView;
   }
 }

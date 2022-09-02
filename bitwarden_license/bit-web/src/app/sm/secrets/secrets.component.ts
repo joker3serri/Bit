@@ -1,11 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Subject } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
+import { SecretListView } from "@bitwarden/common/models/view/secretListView";
 import { DialogService } from "@bitwarden/components";
 
 import { SecretDialogComponent } from "./dialog/secret-dialog.component";
-import { SecretIdentifierResponse } from "./responses/secret-identifier.response";
 import { SecretService } from "./secret.service";
 
 @Component({
@@ -13,7 +13,7 @@ import { SecretService } from "./secret.service";
   templateUrl: "./secrets.component.html",
 })
 export class SecretsComponent implements OnInit {
-  secrets: SecretIdentifierResponse[];
+  secrets: SecretListView[];
 
   private organizationId: string;
   private destroy$: Subject<void> = new Subject<void>();
@@ -25,15 +25,22 @@ export class SecretsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.params.subscribe(async (params: any) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(async (params: any) => {
       this.organizationId = params.organizationId;
-      await this.secretService.init(this.organizationId);
+    });
+
+    this.secretService.secret$.pipe(takeUntil(this.destroy$)).subscribe(async (_) => {
+      await this.getSecrets();
     });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private async getSecrets() {
+    this.secrets = await this.secretService.getSecrets(this.organizationId);
   }
 
   openEditSecret(secretId: string) {

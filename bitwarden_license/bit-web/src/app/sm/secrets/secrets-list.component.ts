@@ -1,5 +1,5 @@
 import { SelectionModel } from "@angular/cdk/collections";
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
 import { SecretListView } from "@bitwarden/common/models/view/secretListView";
@@ -10,8 +10,8 @@ import { SecretService } from "./secret.service";
   selector: "sm-secrets-list",
   templateUrl: "./secrets-list.component.html",
 })
-export class SecretsListComponent implements OnDestroy, OnInit {
-  secrets: SecretListView[];
+export class SecretsListComponent implements OnDestroy {
+  @Input() secrets: SecretListView[];
 
   @Output() editSecretEvent = new EventEmitter<string>();
   @Output() copySecretNameEvent = new EventEmitter<string>();
@@ -28,14 +28,6 @@ export class SecretsListComponent implements OnDestroy, OnInit {
     this.selection.changed
       .pipe(takeUntil(this.destroy$))
       .subscribe((_) => this.onSecretCheckedEvent.emit(this.selection.selected));
-  }
-
-  ngOnInit() {
-    this.secretService.secrets$.pipe(takeUntil(this.destroy$)).subscribe((v) => {
-      //console.log("update broadcasted to this listener");
-      //console.log(v);
-      this.secrets = v;
-    });
   }
 
   ngOnDestroy(): void {
