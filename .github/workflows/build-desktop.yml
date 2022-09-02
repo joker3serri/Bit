@@ -297,13 +297,14 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
+        shell: bash
         env:
           KEYVAULT: bitwarden-prod-kv
           SECRETS: |
-            code-signing-vault-url
-            code-signing-client-id
-            code-signing-tenant-id
-            code-signing-client-secret
+            code-signing-vault-url,
+            code-signing-client-id,
+            code-signing-tenant-id,
+            code-signing-client-secret,
             code-signing-cert-name
         run: |
           for i in ${SECRETS//,/ }
