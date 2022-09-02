@@ -6,7 +6,7 @@
     <ng-template #elseBlock>
       <i class="bwi bwi-exclamation-triangle tw-text-3xl tw-text-warning" aria-hidden="true"></i>
     </ng-template>
-    <h2 class="tw-mb-0 tw-text-base tw-font-semibold">
+    <h2 [id]="dialogTitleId" class="tw-mb-0 tw-text-base tw-font-semibold">
       <ng-content select="[bit-dialog-title]"></ng-content>
     </h2>
   </div>
