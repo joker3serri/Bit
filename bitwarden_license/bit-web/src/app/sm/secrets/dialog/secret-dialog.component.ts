@@ -2,6 +2,8 @@ import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SecretView } from "@bitwarden/common/models/view/secretView";
 
 import { SecretService } from "../secret.service";
@@ -26,7 +28,9 @@ export class SecretDialogComponent implements OnInit {
   constructor(
     public dialogRef: DialogRef,
     @Inject(DIALOG_DATA) private data: SecretOperation,
-    private secretService: SecretService
+    private secretService: SecretService,
+    private i18nService: I18nService,
+    private platformUtilsService: PlatformUtilsService
   ) {}
 
   async ngOnInit() {
@@ -66,9 +70,12 @@ export class SecretDialogComponent implements OnInit {
       secretView.note = this.form.value.notes.toString();
       await this.secretService.create(this.data?.organizationId, secretView);
     } catch (e) {
-      this.dialogRef.close("create-failure");
+      this.dialogRef.close();
+      this.showErrorToast();
     }
-    this.dialogRef.close("create-success");
+    this.dialogRef.close();
+    const title = this.i18nService.t("secretCreated");
+    this.platformUtilsService.showToast("success", title, "");
   }
 
   private async updateSecret() {
@@ -81,8 +88,17 @@ export class SecretDialogComponent implements OnInit {
       secretView.note = this.form.value.notes.toString();
       await this.secretService.update(this.data?.organizationId, secretView);
     } catch (e) {
-      this.dialogRef.close("edit-failure");
+      this.dialogRef.close();
+      this.showErrorToast();
     }
-    this.dialogRef.close("edit-success");
+    this.dialogRef.close();
+    const title = this.i18nService.t("secretEdited");
+    this.platformUtilsService.showToast("success", title, "");
+  }
+
+  private showErrorToast() {
+    const title = this.i18nService.t("errorOccurred");
+    const text = this.i18nService.t("unexpectedError");
+    this.platformUtilsService.showToast("error", title, text);
   }
 }

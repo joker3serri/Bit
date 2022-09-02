@@ -5358,6 +5358,12 @@
   "nameValuePair":{
     "message":"Name/Value Pair"
   },
+  "secretEdited":{
+    "message":"Secret edited"
+  },
+  "secretCreated":{
+    "message":"Secret created"
+  },
   "searchSecrets":{
     "message":"Search Secrets"
   }
