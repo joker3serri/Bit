@@ -69,13 +69,13 @@ export class SecretDialogComponent implements OnInit {
       secretView.value = this.form.value.value.toString();
       secretView.note = this.form.value.notes.toString();
       await this.secretService.create(this.data?.organizationId, secretView);
+      this.dialogRef.close();
+      const title = this.i18nService.t("secretCreated");
+      this.platformUtilsService.showToast("success", title, "");
     } catch (e) {
       this.dialogRef.close();
       this.showErrorToast();
     }
-    this.dialogRef.close();
-    const title = this.i18nService.t("secretCreated");
-    this.platformUtilsService.showToast("success", title, "");
   }
 
   private async updateSecret() {
@@ -87,13 +87,13 @@ export class SecretDialogComponent implements OnInit {
       secretView.value = this.form.value.value.toString();
       secretView.note = this.form.value.notes.toString();
       await this.secretService.update(this.data?.organizationId, secretView);
+      this.dialogRef.close();
+      const title = this.i18nService.t("secretEdited");
+      this.platformUtilsService.showToast("success", title, "");
     } catch (e) {
       this.dialogRef.close();
       this.showErrorToast();
     }
-    this.dialogRef.close();
-    const title = this.i18nService.t("secretEdited");
-    this.platformUtilsService.showToast("success", title, "");
   }
 
   private showErrorToast() {
