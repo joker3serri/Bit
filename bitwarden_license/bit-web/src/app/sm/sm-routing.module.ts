@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
+import { OrganizationPermissionsGuard } from "src/app/organizations/guards/org-permissions.guard";
 import { buildFlaggedRoute } from "src/app/oss-routing.module";
 
 import { LayoutComponent } from "./layout/layout.component";
@@ -12,7 +13,7 @@ const routes: Routes = [
   buildFlaggedRoute("secretsManager", {
     path: ":organizationId",
     component: LayoutComponent,
-    canActivate: [SMGuard],
+    canActivate: [OrganizationPermissionsGuard, SMGuard],
     children: [
       {
         path: "",
