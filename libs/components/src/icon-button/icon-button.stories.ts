@@ -8,7 +8,7 @@ export default {
   args: {
     bitIconButton: "bwi-plus",
     buttonType: "primary",
-    size: "default",
+    size: "button",
     disabled: false,
   },
 } as Meta;
