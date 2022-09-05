@@ -26,7 +26,6 @@
     >
       <button
         appStopClick
-        appBlurClick
         (click)="selectAllVaults()"
         [ngClass]="{ active: !myVaultOnly && !selectOrganizationId }"
         appA11yTitle="{{ 'vault' | i18n }}: {{ 'allVaults' | i18n }}"
@@ -37,7 +36,6 @@
       <button
         *ngIf="!enforcePersonalOwnwership"
         appStopClick
-        appBlurClick
         (click)="selectMyVault()"
         appA11yTitle="{{ 'vault' | i18n }}: {{ 'myVault' | i18n }}"
       >
@@ -47,7 +45,6 @@
       <button
         *ngFor="let organization of organizations"
         appStopClick
-        appBlurClick
         (click)="selectOrganization(organization)"
       >
         <i
