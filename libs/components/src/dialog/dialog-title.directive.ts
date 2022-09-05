@@ -11,7 +11,7 @@ export class DialogTitleDirective implements OnInit {
   @HostBinding("class") get classList() {
     return ["tw-mb-0", "tw-grow", "tw-text-lg", "tw-uppercase"];
   }
-  @HostBinding("id") id = `bitDialogTitle-${nextId++}`;
+  @HostBinding("id") id = `bit-dialog-title-${nextId++}`;
 
   @Input("bitDialogClose") dialogResult: any;
 
