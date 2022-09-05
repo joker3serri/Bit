@@ -64,18 +64,25 @@ const moduleRules = [
     ],
   },
   {
-    test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+    test: /\.[cm]?js$/,
+    use: [
+      {
+        loader: "babel-loader",
+        options: {
+          configFile: false,
+          plugins: ["@angular/compiler-cli/linker/babel"],
+        },
+      },
+    ],
+  },
+  {
+    test: /\.[jt]sx?$/,
     loader: "@ngtools/webpack",
   },
 ];
 
 const plugins = [
   new CleanWebpackPlugin(),
-  // ref: https://github.com/angular/angular/issues/20357
-  new webpack.ContextReplacementPlugin(
-    /\@angular(\\|\/)core(\\|\/)fesm5/,
-    path.resolve(__dirname, "./src")
-  ),
   new HtmlWebpackPlugin({
     template: "./src/index.html",
     filename: "index.html",
@@ -142,6 +149,9 @@ const plugins = [
     filename: "[name].[contenthash].css",
     chunkFilename: "[id].[contenthash].css",
   }),
+  new webpack.ProvidePlugin({
+    process: "process/browser.js",
+  }),
   new webpack.EnvironmentPlugin({
     ENV: ENV,
     NODE_ENV: NODE_ENV === "production" ? "production" : "development",
@@ -152,9 +162,6 @@ const plugins = [
     BRAINTREE_KEY: envConfig["braintreeKey"] ?? "",
     PAYPAL_CONFIG: envConfig["paypal"] ?? {},
     FLAGS: envConfig["flags"] ?? {},
-  }),
-  new webpack.ProvidePlugin({
-    process: "process/browser",
   }),
   new AngularWebpackPlugin({
     tsConfigPath: "tsconfig.json",
@@ -258,7 +265,9 @@ const devServer =
                     https://*.braintree-api.com
                     https://*.blob.core.windows.net
                     https://app.simplelogin.io/api/alias/random/new
-                    https://app.anonaddy.com/api/v1/aliases;
+                    https://quack.duckduckgo.com/api/email/addresses
+                    https://app.anonaddy.com/api/v1/aliases
+                    https://api.fastmail.com/jmap/api;
                   object-src
                     'self'
                     blob:;`,

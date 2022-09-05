@@ -82,7 +82,6 @@ export class AccountKeys {
     Map<string, SymmetricCryptoKey>
   >();
   privateKey?: EncryptionPair<string, ArrayBuffer> = new EncryptionPair<string, ArrayBuffer>();
-  legacyEtmKey?: SymmetricCryptoKey;
   publicKey?: ArrayBuffer;
   publicKeySerialized?: string;
   apiKeyClientSecret?: string;
@@ -111,7 +110,6 @@ export class AccountProfile {
 export class AccountSettings {
   autoConfirmFingerPrints?: boolean;
   autoFillOnPageLoadDefault?: boolean;
-  biometricLocked?: boolean;
   biometricUnlock?: boolean;
   clearClipboard?: number;
   collapsedGroupings?: string[];
@@ -139,10 +137,14 @@ export class AccountSettings {
   generatorOptions?: any;
   pinProtected?: EncryptionPair<string, EncString> = new EncryptionPair<string, EncString>();
   protectedPin?: string;
-  settings?: any; // TODO: Merge whatever is going on here into the AccountSettings model properly
+  settings?: AccountSettingsSettings; // TODO: Merge whatever is going on here into the AccountSettings model properly
   vaultTimeout?: number;
   vaultTimeoutAction?: string = "lock";
 }
+
+export type AccountSettingsSettings = {
+  equivalentDomains?: { [id: string]: any };
+};
 
 export class AccountTokens {
   accessToken?: string;

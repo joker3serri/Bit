@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { UntypedFormControl } from "@angular/forms";
 import { debounceTime } from "rxjs/operators";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -9,7 +9,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
+import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { DeviceType } from "@bitwarden/common/enums/deviceType";
 import { StorageLocation } from "@bitwarden/common/enums/storageLocation";
 import { ThemeType } from "@bitwarden/common/enums/themeType";
@@ -18,10 +18,13 @@ import { isWindowsStore } from "@bitwarden/electron/utils";
 
 import { SetPinComponent } from "../components/set-pin.component";
 
+import { DeleteAccountComponent } from "./delete-account.component";
+
 @Component({
   selector: "app-settings",
   templateUrl: "settings.component.html",
 })
+// eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class SettingsComponent implements OnInit {
   vaultTimeoutAction: string;
   pin: boolean = null;
@@ -60,7 +63,7 @@ export class SettingsComponent implements OnInit {
   startToTrayText: string;
   startToTrayDescText: string;
 
-  vaultTimeout: FormControl = new FormControl(null);
+  vaultTimeout: UntypedFormControl = new UntypedFormControl(null);
 
   showSecurity = true;
   showAccountPreferences = true;
@@ -73,7 +76,7 @@ export class SettingsComponent implements OnInit {
   constructor(
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private vaultTimeoutService: VaultTimeoutService,
+    private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private stateService: StateService,
     private messagingService: MessagingService,
     private cryptoService: CryptoService,
@@ -176,11 +179,12 @@ export class SettingsComponent implements OnInit {
     this.vaultTimeout.setValue(await this.stateService.getVaultTimeout());
     this.vaultTimeoutAction = await this.stateService.getVaultTimeoutAction();
     this.previousVaultTimeout = this.vaultTimeout.value;
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.vaultTimeout.valueChanges.pipe(debounceTime(500)).subscribe(() => {
       this.saveVaultTimeoutOptions();
     });
 
-    const pinSet = await this.vaultTimeoutService.isPinLockSet();
+    const pinSet = await this.vaultTimeoutSettingsService.isPinLockSet();
     this.pin = pinSet[0] || pinSet[1];
 
     // Account preferences
@@ -191,7 +195,7 @@ export class SettingsComponent implements OnInit {
     this.clearClipboard = await this.stateService.getClearClipboard();
     this.minimizeOnCopyToClipboard = await this.stateService.getMinimizeOnCopyToClipboard();
     this.supportsBiometric = await this.platformUtilsService.supportsBiometric();
-    this.biometric = await this.vaultTimeoutService.isBiometricLockSet();
+    this.biometric = await this.vaultTimeoutSettingsService.isBiometricLockSet();
     this.biometricText = await this.stateService.getBiometricText();
     this.autoPromptBiometrics = !(await this.stateService.getNoAutoPromptBiometrics());
     this.autoPromptBiometricsText = await this.stateService.getNoAutoPromptBiometricsText();
@@ -242,7 +246,7 @@ export class SettingsComponent implements OnInit {
 
     this.previousVaultTimeout = this.vaultTimeout.value;
 
-    await this.vaultTimeoutService.setVaultTimeoutOptions(
+    await this.vaultTimeoutSettingsService.setVaultTimeoutOptions(
       this.vaultTimeout.value,
       this.vaultTimeoutAction
     );
@@ -261,7 +265,7 @@ export class SettingsComponent implements OnInit {
     }
     if (!this.pin) {
       await this.cryptoService.clearPinProtectedKey();
-      await this.vaultTimeoutService.clear();
+      await this.vaultTimeoutSettingsService.clear();
     }
   }
 
@@ -274,7 +278,6 @@ export class SettingsComponent implements OnInit {
     if (!newValue || !this.supportsBiometric) {
       this.biometric = false;
       await this.stateService.setBiometricUnlock(null);
-      await this.stateService.setBiometricLocked(false);
       await this.cryptoService.toggleKey();
       return;
     }
@@ -288,7 +291,6 @@ export class SettingsComponent implements OnInit {
 
     this.biometric = true;
     await this.stateService.setBiometricUnlock(true);
-    await this.stateService.setBiometricLocked(false);
     await this.cryptoService.toggleKey();
   }
 
@@ -436,5 +438,9 @@ export class SettingsComponent implements OnInit {
     await this.stateService.setEnableBrowserIntegrationFingerprint(
       this.enableBrowserIntegrationFingerprint
     );
+  }
+
+  async openDeleteAccount() {
+    this.modalService.open(DeleteAccountComponent, { replaceTopModal: true });
   }
 }
