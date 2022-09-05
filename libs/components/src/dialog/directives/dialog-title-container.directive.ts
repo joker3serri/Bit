@@ -5,15 +5,12 @@ import { Directive, HostBinding, Input, OnInit, Optional } from "@angular/core";
 let nextId = 0;
 
 @Directive({
-  selector: "[bitDialogTitle]",
+  selector: "[bitDialogTitleContainer]",
 })
-export class DialogTitleDirective implements OnInit {
-  @HostBinding("class") get classList() {
-    return ["tw-mb-0", "tw-grow", "tw-text-lg", "tw-uppercase"];
-  }
+export class DialogTitleContainerDirective implements OnInit {
   @HostBinding("id") id = `bit-dialog-title-${nextId++}`;
 
-  @Input("bitDialogClose") dialogResult: any;
+  @Input() simple = false;
 
   constructor(@Optional() private dialogRef: DialogRef<any>) {}
 

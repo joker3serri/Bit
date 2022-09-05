@@ -2,10 +2,10 @@ import { DialogModule as CdkDialogModule } from "@angular/cdk/dialog";
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 
-import { DialogCloseDirective } from "./dialog-close.directive";
-import { DialogTitleDirective } from "./dialog-title.directive";
 import { DialogService } from "./dialog.service";
 import { DialogComponent } from "./dialog/dialog.component";
+import { DialogCloseDirective } from "./directives/dialog-close.directive";
+import { DialogTitleContainerDirective } from "./directives/dialog-title-container.directive";
 import { SimpleDialogComponent } from "./simple-dialog/simple-dialog.component";
 
 @NgModule({
@@ -13,10 +13,10 @@ import { SimpleDialogComponent } from "./simple-dialog/simple-dialog.component";
   declarations: [
     DialogCloseDirective,
     DialogComponent,
-    DialogTitleDirective,
+    DialogTitleContainerDirective,
     SimpleDialogComponent,
   ],
-  exports: [CdkDialogModule, DialogComponent, DialogTitleDirective, SimpleDialogComponent],
+  exports: [CdkDialogModule, DialogComponent, SimpleDialogComponent],
   providers: [DialogService],
 })
 export class DialogModule {}

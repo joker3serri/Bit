@@ -4,10 +4,10 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { ButtonModule } from "../button";
 
-import { DialogCloseDirective } from "./dialog-close.directive";
-import { DialogTitleDirective } from "./dialog-title.directive";
 import { DialogService } from "./dialog.service";
 import { DialogComponent } from "./dialog/dialog.component";
+import { DialogCloseDirective } from "./directives/dialog-close.directive";
+import { DialogTitleContainerDirective } from "./directives/dialog-title-container.directive";
 
 interface Animal {
   animal: string;
@@ -62,7 +62,7 @@ export default {
       declarations: [
         DialogCloseDirective,
         DialogComponent,
-        DialogTitleDirective,
+        DialogTitleContainerDirective,
         StoryDialogContentComponent,
       ],
       imports: [ButtonModule, DialogModule],

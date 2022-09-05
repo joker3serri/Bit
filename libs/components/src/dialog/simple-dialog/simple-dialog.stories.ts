@@ -1,6 +1,7 @@
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { ButtonModule } from "../../button";
+import { DialogTitleContainerDirective } from "../directives/dialog-title-container.directive";
 
 import { IconDirective, SimpleDialogComponent } from "./simple-dialog.component";
 
@@ -10,7 +11,7 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [ButtonModule],
-      declarations: [IconDirective],
+      declarations: [IconDirective, DialogTitleContainerDirective],
     }),
   ],
   parameters: {
@@ -25,7 +26,7 @@ const Template: Story<SimpleDialogComponent> = (args: SimpleDialogComponent) => 
   props: args,
   template: `
   <bit-simple-dialog>
-      <h2 bitDialogTitle>Alert Dialog</h2>
+      <span bitDialogTitle>Alert Dialog</span>
       <span bitDialogContent>Message Content</span>
       <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
         <button bitButton buttonType="primary">Yes</button>
@@ -42,7 +43,7 @@ const TemplateWithIcon: Story<SimpleDialogComponent> = (args: SimpleDialogCompon
   template: `
   <bit-simple-dialog>
       <i bit-dialog-icon class="bwi bwi-star tw-text-3xl tw-text-success" aria-hidden="true"></i>
-      <h2 bitDialogTitle>Premium Subscription Available</h2>
+      <span bitDialogTitle>Premium Subscription Available</span>
       <span bitDialogContent> Message Content</span>
       <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
         <button bitButton buttonType="primary">Yes</button>
@@ -58,7 +59,7 @@ const TemplateScroll: Story<SimpleDialogComponent> = (args: SimpleDialogComponen
   props: args,
   template: `
   <bit-simple-dialog>
-      <h2 bitDialogTitle>Alert Dialog</h2>
+      <span bitDialogTitle>Alert Dialog</span>
       <span bitDialogContent>
         Message Content
         Message text goes here.<br>

@@ -1,7 +1,8 @@
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { ButtonModule } from "../../button";
-import { DialogTitleDirective } from "../dialog-title.directive";
+import { DialogCloseDirective } from "../directives/dialog-close.directive";
+import { DialogTitleContainerDirective } from "../directives/dialog-title-container.directive";
 
 import { DialogComponent } from "./dialog.component";
 
@@ -11,7 +12,7 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [ButtonModule],
-      declarations: [DialogTitleDirective],
+      declarations: [DialogTitleContainerDirective, DialogCloseDirective],
     }),
   ],
   args: {
@@ -29,7 +30,7 @@ const Template: Story<DialogComponent> = (args: DialogComponent) => ({
   props: args,
   template: `
   <bit-dialog [dialogSize]="dialogSize">
-    <h2 bitDialogTitle>{{title}}</h2>
+    <span bitDialogTitle>{{title}}</span>
     <span bitDialogContent>Dialog body text goes here.</span>
     <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
       <button bitButton buttonType="primary">Save</button>
@@ -61,7 +62,7 @@ const TemplateScrolling: Story<DialogComponent> = (args: DialogComponent) => ({
   props: args,
   template: `
   <bit-dialog [dialogSize]="dialogSize">
-  <h2 bitDialogTitle>Scrolling Example</h2>
+  <span bitDialogTitle>Scrolling Example</span>
   <span bitDialogContent>
     Dialog body text goes here.<br>
     <ng-container *ngFor="let _ of [].constructor(100)">
