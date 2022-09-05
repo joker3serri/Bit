@@ -2,6 +2,8 @@ class Icon {
   constructor(readonly svg: string) {}
 }
 
+// We only export the type to prohibit the creation of Icons without using
+// the `svgIcon` template literal tag.
 export type { Icon };
 
 export function isIcon(icon: unknown): icon is Icon {
