@@ -1,6 +1,7 @@
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { ButtonModule } from "../../button";
+import { DialogTitleDirective } from "../dialog-title.directive";
 
 import { DialogComponent } from "./dialog.component";
 
@@ -10,6 +11,7 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [ButtonModule],
+      declarations: [DialogTitleDirective],
     }),
   ],
   args: {
@@ -27,9 +29,9 @@ const Template: Story<DialogComponent> = (args: DialogComponent) => ({
   props: args,
   template: `
   <bit-dialog [dialogSize]="dialogSize">
-    <span bit-dialog-title>{{title}}</span>
-    <span bit-dialog-content>Dialog body text goes here.</span>
-    <div bit-dialog-footer class="tw-flex tw-flex-row tw-gap-2">
+    <h2 bitDialogTitle>{{title}}</h2>
+    <span bitDialogContent>Dialog body text goes here.</span>
+    <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
       <button bitButton buttonType="primary">Save</button>
       <button bitButton buttonType="secondary">Cancel</button>
     </div>
@@ -59,15 +61,15 @@ const TemplateScrolling: Story<DialogComponent> = (args: DialogComponent) => ({
   props: args,
   template: `
   <bit-dialog [dialogSize]="dialogSize">
-  <span bit-dialog-title>Scrolling Example</span>
-  <span bit-dialog-content>
+  <span bitDialogTitle>Scrolling Example</span>
+  <span bitDialogContent>
     Dialog body text goes here.<br>
     <ng-container *ngFor="let _ of [].constructor(100)">
       repeating lines of characters <br>
     </ng-container>
     end of sequence!
   </span>
-  <div bit-dialog-footer class="tw-flex tw-flex-row tw-gap-2">
+  <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
     <button bitButton buttonType="primary">Save</button>
     <button bitButton buttonType="secondary">Cancel</button>
   </div>

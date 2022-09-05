@@ -5,6 +5,7 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 import { ButtonModule } from "../button";
 
 import { DialogCloseDirective } from "./dialog-close.directive";
+import { DialogTitleDirective } from "./dialog-title.directive";
 import { DialogService } from "./dialog.service";
 import { DialogComponent } from "./dialog/dialog.component";
 
@@ -32,13 +33,13 @@ class StoryDialogComponent {
   selector: "story-dialog-content",
   template: `
     <bit-dialog [dialogSize]="large">
-      <span bit-dialog-title>Dialog Title</span>
-      <span bit-dialog-content>
+      <h2 bitDialogTitle>Dialog Title</h2>
+      <span bitDialogContent>
         Dialog body text goes here.
         <br />
         Animal: {{ animal }}
       </span>
-      <div bit-dialog-footer class="tw-flex tw-flex-row tw-gap-2">
+      <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
         <button bitButton buttonType="primary" (click)="dialogRef.close()">Save</button>
         <button bitButton buttonType="secondary" bitDialogClose>Cancel</button>
       </div>
@@ -58,7 +59,12 @@ export default {
   component: StoryDialogComponent,
   decorators: [
     moduleMetadata({
-      declarations: [DialogComponent, StoryDialogContentComponent, DialogCloseDirective],
+      declarations: [
+        DialogCloseDirective,
+        DialogComponent,
+        DialogTitleDirective,
+        StoryDialogContentComponent,
+      ],
       imports: [ButtonModule, DialogModule],
       providers: [DialogService],
     }),

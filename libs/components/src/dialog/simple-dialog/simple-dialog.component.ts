@@ -1,7 +1,4 @@
-import { Component, ContentChild, Directive, HostBinding } from "@angular/core";
-
-// Increments for each instance of this component
-let nextId = 0;
+import { Component, ContentChild, Directive } from "@angular/core";
 
 @Directive({ selector: "[bit-dialog-icon]" })
 export class IconDirective {}
@@ -11,9 +8,6 @@ export class IconDirective {}
   templateUrl: "./simple-dialog.component.html",
 })
 export class SimpleDialogComponent {
-  @HostBinding() role = "dialog";
-  @HostBinding("attr.aria-labelledby") dialogTitleId = `bit-simple-dialog-title-${nextId++}`;
-
   @ContentChild(IconDirective) icon!: IconDirective;
 
   get hasIcon() {
