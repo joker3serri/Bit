@@ -33,7 +33,7 @@ class StoryDialogComponent {
   selector: "story-dialog-content",
   template: `
     <bit-simple-dialog>
-      <h2 bitDialogTitle>Dialog Title</h2>
+      <span bitDialogTitle>Dialog Title</span>
       <span bitDialogContent>
         Dialog body text goes here.
         <br />
