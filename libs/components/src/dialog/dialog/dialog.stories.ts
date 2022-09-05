@@ -61,7 +61,7 @@ const TemplateScrolling: Story<DialogComponent> = (args: DialogComponent) => ({
   props: args,
   template: `
   <bit-dialog [dialogSize]="dialogSize">
-  <span bitDialogTitle>Scrolling Example</span>
+  <h2 bitDialogTitle>Scrolling Example</h2>
   <span bitDialogContent>
     Dialog body text goes here.<br>
     <ng-container *ngFor="let _ of [].constructor(100)">

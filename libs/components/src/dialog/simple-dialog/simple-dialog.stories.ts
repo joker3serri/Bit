@@ -25,7 +25,7 @@ const Template: Story<SimpleDialogComponent> = (args: SimpleDialogComponent) => 
   props: args,
   template: `
   <bit-simple-dialog>
-      <span bitDialogTitle>Alert Dialog</span>
+      <h2 bitDialogTitle>Alert Dialog</h2>
       <span bitDialogContent>Message Content</span>
       <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
         <button bitButton buttonType="primary">Yes</button>
@@ -42,7 +42,7 @@ const TemplateWithIcon: Story<SimpleDialogComponent> = (args: SimpleDialogCompon
   template: `
   <bit-simple-dialog>
       <i bit-dialog-icon class="bwi bwi-star tw-text-3xl tw-text-success" aria-hidden="true"></i>
-      <span bitDialogTitle>Premium Subscription Available</span>
+      <h2 bitDialogTitle>Premium Subscription Available</h2>
       <span bitDialogContent> Message Content</span>
       <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
         <button bitButton buttonType="primary">Yes</button>
@@ -58,7 +58,7 @@ const TemplateScroll: Story<SimpleDialogComponent> = (args: SimpleDialogComponen
   props: args,
   template: `
   <bit-simple-dialog>
-      <span bitDialogTitle>Alert Dialog</span>
+      <h2 bitDialogTitle>Alert Dialog</h2>
       <span bitDialogContent>
         Message Content
         Message text goes here.<br>
