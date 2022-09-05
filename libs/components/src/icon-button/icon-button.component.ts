@@ -72,9 +72,9 @@ const sizes: Record<IconButtonSize, string[]> = {
    * Use this instead of placing an icon inside of a bitButton.
    */
   button: ["tw-px-2.5", "tw-py-1.5"],
-  base: ["tw-leading-none", "tw-text-base", "tw-p-0.5"],
-  xl: ["tw-leading-none", "tw-text-xl", "tw-p-0.5"],
-  "2xl": ["tw-leading-none", "tw-text-2xl", "tw-p-0.5"],
+  base: ["tw-leading-none", "tw-text-base", "tw-p-1"],
+  xl: ["tw-leading-none", "tw-text-xl", "tw-p-1"],
+  "2xl": ["tw-leading-none", "tw-text-2xl", "tw-p-1"],
 };
 
 @Component({
