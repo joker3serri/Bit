@@ -18,6 +18,8 @@ export class DialogTitleDirective implements OnInit {
   constructor(@Optional() private dialogRef: DialogRef<any>) {}
 
   ngOnInit(): void {
+    // Based on angular/components, licensed under MIT
+    // https://github.com/angular/components/blob/14.2.0/src/material/dialog/dialog-content-directives.ts#L121-L128
     if (this.dialogRef) {
       Promise.resolve().then(() => {
         const container = this.dialogRef.containerInstance as CdkDialogContainer;
