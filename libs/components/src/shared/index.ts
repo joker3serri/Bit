@@ -1,1 +1,1 @@
-export * from "./i18n.pipe";
+export * from "./shared.module";

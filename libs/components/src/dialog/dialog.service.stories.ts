@@ -5,7 +5,6 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
 import { ButtonModule } from "../button";
-import { I18nPipe } from "../shared";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { DialogService } from "./dialog.service";
@@ -68,7 +67,6 @@ export default {
         DialogComponent,
         DialogTitleContainerDirective,
         StoryDialogContentComponent,
-        I18nPipe,
       ],
       imports: [ButtonModule, DialogModule],
       providers: [

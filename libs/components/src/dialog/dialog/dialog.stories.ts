@@ -3,7 +3,7 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
 import { ButtonModule } from "../../button";
-import { I18nPipe } from "../../shared";
+import { SharedModule } from "../../shared";
 import { I18nMockService } from "../../utils/i18n-mock.service";
 import { DialogCloseDirective } from "../directives/dialog-close.directive";
 import { DialogTitleContainerDirective } from "../directives/dialog-title-container.directive";
@@ -15,8 +15,8 @@ export default {
   component: DialogComponent,
   decorators: [
     moduleMetadata({
-      imports: [ButtonModule],
-      declarations: [DialogTitleContainerDirective, DialogCloseDirective, I18nPipe],
+      imports: [SharedModule, ButtonModule],
+      declarations: [DialogTitleContainerDirective, DialogCloseDirective],
       providers: [
         {
           provide: I18nService,

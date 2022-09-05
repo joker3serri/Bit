@@ -1,10 +1,8 @@
-import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-
 
 import { BitInputDirective } from "../input/input.directive";
 import { InputModule } from "../input/input.module";
-import { I18nPipe } from "../shared";
+import { SharedModule } from "../shared";
 
 import { BitErrorSummary } from "./error-summary.component";
 import { BitErrorComponent } from "./error.component";
@@ -15,7 +13,7 @@ import { BitPrefixDirective } from "./prefix.directive";
 import { BitSuffixDirective } from "./suffix.directive";
 
 @NgModule({
-  imports: [CommonModule, InputModule],
+  imports: [SharedModule, InputModule],
   exports: [
     BitErrorComponent,
     BitErrorSummary,
@@ -34,7 +32,6 @@ import { BitSuffixDirective } from "./suffix.directive";
     BitLabel,
     BitPrefixDirective,
     BitSuffixDirective,
-    I18nPipe,
   ],
 })
 export class FormFieldModule {}
