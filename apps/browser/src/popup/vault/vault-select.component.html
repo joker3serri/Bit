@@ -57,10 +57,7 @@
           class="bwi bwi-fw bwi-family"
           aria-hidden="true"
         ></i>
-        <span
-          attr.aria-label="{{ 'vault' | i18n }}: {{ organization.name }}."
-          appA11yTitle="{{ 'vault' | i18n }}: {{ organization.name }}."
-        >
+        <span appA11yTitle="{{ 'vault' | i18n }}: {{ organization.name }}.">
           &nbsp;{{ organization.name | ellipsis: (organization.enabled ? 21 : 18):true }}
         </span>
         <i
