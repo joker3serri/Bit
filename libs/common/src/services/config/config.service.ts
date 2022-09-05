@@ -1,4 +1,4 @@
-import { BehaviorSubject, concatMap } from "rxjs";
+import { BehaviorSubject, concatMap, map, switchMap, timer, EMPTY } from "rxjs";
 
 import { ServerConfigData } from "@bitwarden/common/models/data/server-config.data";
 
@@ -17,15 +17,17 @@ export class ConfigService implements ConfigServiceAbstraction {
   ) {
     this.stateService.activeAccountUnlocked$
       .pipe(
-        concatMap(async (unlocked) => {
+        switchMap((unlocked) => {
           if (!unlocked) {
             this._serverConfig.next(null);
-            return;
+            return EMPTY;
           }
 
-          const serverConfig = await this.buildServerConfig();
-
-          return serverConfig;
+          // Re-fetch the server config every hour
+          return timer(0, 3600 * 1000).pipe(map(() => unlocked));
+        }),
+        concatMap(async (unlocked) => {
+          return unlocked ? await this.buildServerConfig() : null;
         })
       )
       .subscribe((serverConfig) => {
