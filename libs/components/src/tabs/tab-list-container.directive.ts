@@ -1,5 +1,8 @@
 import { Directive } from "@angular/core";
 
+/**
+ * Directive used for styling the container for bit tab labels
+ */
 @Directive({
   selector: "[bit-tab-list-container]",
   host: {

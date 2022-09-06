@@ -1,9 +1,12 @@
 <a
-  [class]="classList"
+  bit-tab-list-item
   [routerLink]="disabled ? null : route"
-  [routerLinkActive]="activeClassList"
-  ariaCurrentWhenActive="page"
+  routerLinkActive
+  #rla="routerLinkActive"
+  [active]="rla.isActive"
+  [disabled]="disabled"
   [attr.aria-disabled]="disabled"
+  ariaCurrentWhenActive="page"
   role="link"
 >
   <ng-content></ng-content>

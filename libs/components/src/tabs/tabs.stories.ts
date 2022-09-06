@@ -30,26 +30,6 @@ class ItemThreeDummyComponent {}
 })
 class DisabledDummyComponent {}
 
-@Component({
-  selector: "add-tab-example",
-  template: ` <bit-tab-group label="thing">
-      <bit-tab *ngFor="let t of tabs" [label]="'Tab ' + t">Tab Content {{ t }}</bit-tab>
-    </bit-tab-group>
-    <button (click)="addTab()">Add Tab</button>
-    <button (click)="removeTab()">Remove Tab</button>`,
-})
-class AddTabComponent {
-  tabs = [1, 2, 3];
-
-  addTab() {
-    this.tabs.push(this.tabs.length + 1);
-  }
-
-  removeTab() {
-    this.tabs.pop();
-  }
-}
-
 export default {
   title: "Component Library/Tabs",
   component: TabGroupComponent,
@@ -60,7 +40,6 @@ export default {
         ItemTwoDummyComponent,
         ItemThreeDummyComponent,
         DisabledDummyComponent,
-        AddTabComponent,
       ],
       imports: [
         CommonModule,
@@ -86,20 +65,26 @@ export default {
   },
 } as Meta;
 
-// const NavTabGroupTemplate: Story<TabGroupComponent> = (args: TabGroupComponent) => ({
-//   props: args,
-//   template: `
-//     <bit-tab-group>
-//       <bit-tab [route]="['active']" label="Active"></bit-tab>
-//       <bit-tab [route]="['item-2']" label="Item 2"></bit-tab>
-//       <bit-tab [route]="['item-3']" label="Item 3"></bit-tab>
-//       <bit-tab [route]="['disabled']" [disabled]="true" label="Disabled"></bit-tab>
-//     </bit-tab-group>
-//     <div class="tw-bg-transparent tw-text-semibold tw-text-center tw-text-main tw-py-10">
-//       <router-outlet></router-outlet>
-//     </div>
-//   `,
-// });
+const ContentTabGroupTemplate: Story<TabGroupComponent> = (args: any) => ({
+  props: args,
+  template: `
+    <bit-tab-group label="Main Content Tabs">
+        <bit-tab label="First Tab">First Tab Content</bit-tab>
+        <bit-tab label="Second Tab">Second Tab Content</bit-tab>
+        <bit-tab>
+          <ng-template bit-tab-label>
+            <i class="bwi bwi-search tw-pr-1"></i> Template Label
+          </ng-template>
+          Template Label Content
+        </bit-tab>
+        <bit-tab [disabled]="true" label="Disabled">
+          Disabled Content
+        </bit-tab>
+    </bit-tab-group>
+  `,
+});
+
+export const ContentTabs = ContentTabGroupTemplate.bind({});
 
 const NavTabGroupTemplate: Story<TabGroupComponent> = (args: TabGroupComponent) => ({
   props: args,
@@ -118,20 +103,25 @@ const NavTabGroupTemplate: Story<TabGroupComponent> = (args: TabGroupComponent) 
 
 export const NavigationTabs = NavTabGroupTemplate.bind({});
 
-const ContentTabGroupTemplate: Story<TabGroupComponent> = (args: any) => ({
+const PreserveContentTabGroupTemplate: Story<TabGroupComponent> = (args: any) => ({
   props: args,
-  template: `<add-tab-example></add-tab-example>`,
-  // template: `
-  //   <bit-tab-group>
-  //     <bit-tab *ngFor="let t of [${args.tabs}]" [label]="'Tab ' + t">Tab Content {{t}}</bit-tab>
-  //   </bit-tab-group>
-  //   <button (click)="() => args.tabs.push">Add Tab</button>
-  // `,
+  template: `
+    <bit-tab-group label="Preserve Content Tabs" [preserveContent]="true">
+        <bit-tab label="Text Tab">
+          <p>
+            Play the video in the other tab and switch back to hear the video is still playing.
+          </p>
+        </bit-tab>
+        <bit-tab label="Video Tab">
+          <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/H0-yWbe5XG4"
+             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+             allowfullscreen></iframe>
+        </bit-tab>
+    </bit-tab-group>
+  `,
 });
 
-export const ContentTabs = ContentTabGroupTemplate.bind({});
-
-ContentTabs.args = {
-  tabs: [1, 2, 3],
-  index: 0,
-};
+export const PreserveContentTabs = PreserveContentTabGroupTemplate.bind({});
