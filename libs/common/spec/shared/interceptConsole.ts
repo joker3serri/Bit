@@ -1,5 +1,6 @@
-declare let console: any;
 const originalConsole = console;
+
+declare let console: any;
 
 export function interceptConsole(interceptions: any): object {
   console = {
