@@ -22,7 +22,8 @@ import IPCService from "./ipcService";
 import * as config from "./variables";
 
 type HandshakePayload = {
-  status: "success" | "canceled";
+  status?: "success";
+  error?: "canceled";
   sharedKey?: string;
 };
 

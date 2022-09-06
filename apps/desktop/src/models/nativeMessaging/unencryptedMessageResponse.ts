@@ -4,18 +4,13 @@ export type UnencryptedMessageResponse = MessageCommon &
   (
     | {
         payload: {
-          status: "canceled";
-        };
-      }
-    | {
-        payload: {
           status: "success";
           sharedKey: string;
         };
       }
     | {
         payload: {
-          error: "locked" | "cannot-decrypt" | "version-discrepancy";
+          error: "canceled" | "locked" | "cannot-decrypt" | "version-discrepancy";
         };
       }
   );

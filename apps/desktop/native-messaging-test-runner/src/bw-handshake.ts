@@ -13,6 +13,8 @@ import * as config from "./variables";
   LogUtils.logSuccess("Received response to handshake request");
   if (response.status === "success") {
     LogUtils.logSuccess("Handshake success response");
+  } else if (response.error === "canceled") {
+    LogUtils.logWarning("Handshake canceled by user");
   } else {
     LogUtils.logError("Handshake failure response");
   }

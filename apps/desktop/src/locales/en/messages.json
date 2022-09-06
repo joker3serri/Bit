@@ -1603,6 +1603,12 @@
   "verifyBrowserDesc": {
     "message": "Please ensure the shown fingerprint is identical to the fingerprint showed in the browser extension."
   },
+  "verifyDDGBrowserTitle": {
+    "message": "Confirm DuckDuckGo browser connection"
+  },
+  "verifyDDGBrowserDesc": {
+    "message": "Connect with DuckDuckGo browser?"
+  },
   "biometricsNotEnabledTitle": {
     "message": "Biometrics not enabled"
   },

@@ -163,6 +163,7 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
         PolicyServiceAbstraction,
         MessagingServiceAbstraction,
         PasswordGenerationService,
+        I18nServiceAbstraction,
       ],
     },
   ],

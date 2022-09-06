@@ -445,6 +445,11 @@ export class SettingsComponent implements OnInit {
     await this.stateService.setEnableDuckDuckGoBrowserIntegration(
       this.enableDuckDuckGoBrowserIntegration
     );
+
+    if (!this.enableBrowserIntegration) {
+      await this.stateService.setDuckDuckGoSharedKey(null);
+    }
+
     this.messagingService.send(
       this.enableDuckDuckGoBrowserIntegration
         ? "enableDuckDuckGoBrowserIntegration"
