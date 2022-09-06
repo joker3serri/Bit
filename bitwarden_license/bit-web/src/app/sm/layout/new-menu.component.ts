@@ -4,7 +4,7 @@ import { Subject, takeUntil } from "rxjs";
 
 import { DialogService } from "@bitwarden/components";
 
-import { SecretDialogComponent } from "../secrets/dialog/secret-dialog.component";
+import { OperationType, SecretDialogComponent } from "../secrets/dialog/secret-dialog.component";
 
 @Component({
   selector: "sm-new-menu",
@@ -31,7 +31,7 @@ export class NewMenuComponent implements OnInit {
     this.dialogService.open(SecretDialogComponent, {
       data: {
         organizationId: this.organizationId,
-        operation: "add",
+        operation: OperationType.Add,
       },
     });
   }

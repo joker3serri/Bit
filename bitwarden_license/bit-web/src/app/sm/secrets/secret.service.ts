@@ -10,8 +10,7 @@ import { ListResponse } from "@bitwarden/common/models/response/listResponse";
 import { SecretListView } from "@bitwarden/common/models/view/secretListView";
 import { SecretView } from "@bitwarden/common/models/view/secretView";
 
-import { CreateSecretRequest } from "./requests/create-secret.request";
-import { UpdateSecretRequest } from "./requests/update-secret.request";
+import { SecretRequest } from "./requests/secret.request";
 import { SecretIdentifierResponse } from "./responses/secret-identifier.response";
 import { SecretResponse } from "./responses/secret.response";
 
@@ -32,7 +31,7 @@ export class SecretService {
   async getBySecretId(secretId: string): Promise<SecretView> {
     const r = await this.apiService.send("GET", "/secrets/" + secretId, null, true, true);
     const secretResponse = new SecretResponse(r);
-    return await this.decryptSecretView(secretResponse.toSecretView());
+    return await this.toSecretView(secretResponse);
   }
 
   async getSecrets(organizationId: string): Promise<SecretListView[]> {
@@ -51,14 +50,7 @@ export class SecretService {
   }
 
   async create(organizationId: string, secretView: SecretView) {
-    const encryptedSecretView = await this.encryptSecretView(organizationId, secretView);
-
-    const request = new CreateSecretRequest();
-    request.organizationId = organizationId;
-    request.key = encryptedSecretView.name;
-    request.value = encryptedSecretView.value;
-    request.note = encryptedSecretView.note;
-
+    const request = await this.getSecretRequest(organizationId, secretView);
     const r = await this.apiService.send(
       "POST",
       "/organizations/" + organizationId + "/secrets",
@@ -66,19 +58,25 @@ export class SecretService {
       true,
       true
     );
-    this._secret.next(new SecretResponse(r).toSecretView());
+    this._secret.next(await this.toSecretView(new SecretResponse(r)));
   }
 
   async update(organizationId: string, secretView: SecretView) {
-    const encryptedSecretView = await this.encryptSecretView(organizationId, secretView);
+    const request = await this.getSecretRequest(organizationId, secretView);
+    const r = await this.apiService.send("PUT", "/secrets/" + secretView.id, request, true, true);
+    this._secret.next(await this.toSecretView(new SecretResponse(r)));
+  }
 
-    const request = new UpdateSecretRequest();
+  private async getSecretRequest(
+    organizationId: string,
+    secretView: SecretView
+  ): Promise<SecretRequest> {
+    const encryptedSecretView = await this.encryptSecretView(organizationId, secretView);
+    const request = new SecretRequest();
     request.key = encryptedSecretView.name;
     request.value = encryptedSecretView.value;
     request.note = encryptedSecretView.note;
-
-    const r = await this.apiService.send("PUT", "/secrets/" + secretView.id, request, true, true);
-    this._secret.next(new SecretResponse(r).toSecretView());
+    return request;
   }
 
   private async getOrganizationKey(organizationId: string) {
@@ -103,20 +101,25 @@ export class SecretService {
     return secretView;
   }
 
-  private async decryptSecretView(secretView: SecretView) {
-    const orgKey: SymmetricCryptoKey = await this.getOrganizationKey(secretView.organizationId);
+  private async toSecretView(secretResponse: SecretResponse): Promise<SecretView> {
+    const orgKey: SymmetricCryptoKey = await this.getOrganizationKey(secretResponse.organizationId);
+    const secretView = new SecretView();
+    secretView.id = secretResponse.id;
+    secretView.organizationId = secretResponse.organizationId;
     secretView.name = await this.encryptService.decryptToUtf8(
-      new EncString(secretView.name),
+      new EncString(secretResponse.name),
       orgKey
     );
     secretView.value = await this.encryptService.decryptToUtf8(
-      new EncString(secretView.value),
+      new EncString(secretResponse.value),
       orgKey
     );
     secretView.note = await this.encryptService.decryptToUtf8(
-      new EncString(secretView.note),
+      new EncString(secretResponse.note),
       orgKey
     );
+    secretView.creationDate = secretResponse.creationDate;
+    secretView.revisionDate = secretResponse.revisionDate;
     return secretView;
   }
 }

@@ -1,4 +1,4 @@
-export class UpdateSecretRequest {
+export class SecretRequest {
   key: string;
   value: string;
   note: string;

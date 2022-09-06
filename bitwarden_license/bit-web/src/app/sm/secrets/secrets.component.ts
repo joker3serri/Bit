@@ -5,7 +5,7 @@ import { Subject, takeUntil } from "rxjs";
 import { SecretListView } from "@bitwarden/common/models/view/secretListView";
 import { DialogService } from "@bitwarden/components";
 
-import { SecretDialogComponent } from "./dialog/secret-dialog.component";
+import { OperationType, SecretDialogComponent } from "./dialog/secret-dialog.component";
 import { SecretService } from "./secret.service";
 
 @Component({
@@ -47,7 +47,7 @@ export class SecretsComponent implements OnInit {
     this.dialogService.open(SecretDialogComponent, {
       data: {
         organizationId: this.organizationId,
-        operation: "edit",
+        operation: OperationType.Edit,
         secretId: secretId,
       },
     });
