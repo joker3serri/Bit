@@ -2004,8 +2004,8 @@
   "selfHosted": {
     "message": "Self-Hosted"
   },
-  "thirdPartyServerVersion": {
-    "message": "Third-Party Server Version"
+  "thirdParty": {
+    "message": "Third-Party"
   },
   "thirdPartyServerMessage": {
     "message": "Connected to third-party server implementation, $SERVERNAME$. Please verify bugs using the official server, or report them to the third-party server.",

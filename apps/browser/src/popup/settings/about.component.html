@@ -21,7 +21,8 @@
           <ng-container *ngIf="!isCloud">
             <ng-container *ngIf="serverConfig.server">
               <p class="text-center">
-                {{ "thirdPartyServerVersion" | i18n }}: {{ this.serverConfig?.version }}
+                {{ "serverVersion" | i18n }} <small>({{ "thirdParty" | i18n }})</small>:
+                {{ this.serverConfig?.version }}
                 <span *ngIf="!serverConfig.isValid()">
                   ({{ "lastSeenOn" | i18n }}: {{ serverConfig.utcDate | date: "mediumDate" }})
                 </span>
