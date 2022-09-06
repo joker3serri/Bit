@@ -5,6 +5,7 @@ import {
 } from "@bitwarden/common/models/data/server-config.data";
 
 const dayInMilliseconds = 24 * 3600 * 1000;
+const eighteenHoursInMilliseconds = 18 * 3600 * 1000;
 
 export class ServerConfig {
   version: string;
@@ -25,9 +26,15 @@ export class ServerConfig {
     }
   }
 
-  isValid(): boolean {
-    const diff = new Date().getTime() - this.utcDate?.getTime();
+  private getAgeInMilliseconds(): number {
+    return new Date().getTime() - this.utcDate?.getTime();
+  }
 
-    return diff <= dayInMilliseconds;
+  isValid(): boolean {
+    return this.getAgeInMilliseconds() <= dayInMilliseconds;
+  }
+
+  expiresSoon(): boolean {
+    return this.getAgeInMilliseconds() >= eighteenHoursInMilliseconds;
   }
 }

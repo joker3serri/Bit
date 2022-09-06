@@ -39,7 +39,7 @@ export class ConfigService implements ConfigServiceAbstraction {
     const data = await this.stateService.getServerConfig();
     const domain = data ? new ServerConfig(data) : null;
 
-    if (domain == null || !domain.isValid()) {
+    if (domain == null || !domain.isValid() || domain.expiresSoon()) {
       const value = await this.fetchServerConfig();
       return value ?? domain;
     }
