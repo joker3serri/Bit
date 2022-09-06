@@ -5,24 +5,20 @@
   }
 }
 
-$ng-select-highlight: rgb(18, 82, 163) !default; // primary-700
-$ng-select-primary-text: rgb(33, 37, 41) !default; // text-main
-$ng-select-disabled-text: rgb(
-  240,
-  240,
-  240
-) !default; // secondary-100 - name suggests its for text, however only applied to backgrounds
-$ng-select-border: rgb(137, 146, 159) !default; // secondary-500
+$ng-select-highlight: rgb(var(--color-primary-700)) !default;
+$ng-select-primary-text: rgb(var(--color-text-main)) !default;
+$ng-select-disabled-text: rgb(var(--color-secondary-100)) !default;
+$ng-select-border: rgb(var(--color-secondary-500)) !default;
 $ng-select-border-radius: 4px !default;
-$ng-select-bg: rgb(251, 251, 251) !default; // background-alt
-$ng-select-selected: transparent !default; // Transparent selected bg - handled via checkmark icon
+$ng-select-bg: rgb(var(--color-background-alt)) !default;
+$ng-select-selected: transparent !default;
 $ng-select-selected-text: $ng-select-primary-text !default;
 
-$ng-select-marked: rgba(0, 0, 0, 0.05) !default; // Item highlight Matching figma #000000 5% opacity
+$ng-select-marked: rgb(var(--color-text-main) / 0.12) !default;
 $ng-select-marked-text: $ng-select-primary-text !default;
 
-$ng-select-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(18, 82, 163, 0.1) !default; // primary-700/10
-$ng-select-placeholder: rgb(109, 117, 126) !default; // text-muted
+$ng-select-box-shadow: none !default;
+$ng-select-placeholder: rgb(var(--color-text-muted)) !default;
 $ng-select-height: 36px !default;
 $ng-select-value-padding-left: 10px !default;
 $ng-select-value-font-size: 0.9em !default;
@@ -30,28 +26,33 @@ $ng-select-value-text: $ng-select-primary-text !default;
 
 $ng-select-dropdown-bg: $ng-select-bg !default;
 $ng-select-dropdown-border: $ng-select-border !default;
-$ng-select-dropdown-optgroup-text: rgb(109, 117, 126) !default;
+$ng-select-dropdown-optgroup-text: rgb(var(--color-text-muted)) !default;
 $ng-select-dropdown-optgroup-marked: $ng-select-dropdown-optgroup-text !default;
 $ng-select-dropdown-option-bg: $ng-select-dropdown-bg !default;
 $ng-select-dropdown-option-text: $ng-select-primary-text !default;
-$ng-select-dropdown-option-disabled: rgba(109, 117, 126, 0.6) !default;
+$ng-select-dropdown-option-disabled: rgb(var(--color-text-muted) / 0.6) !default;
 
-$ng-select-input-text: $ng-select-primary-text !default; // Matched input text color to primary text color
+$ng-select-input-text: $ng-select-primary-text !default;
+
+// Custom color variables
+$ng-select-arrow-hover: rgb(var(--color-secondary-700)) !default;
+$ng-clear-icon-hover: rgb(var(--color-danger-500)) !default;
+$ng-dropdown-shadow: rgb(var(--color-secondary-100)) !default;
 
 .ng-select {
   &.ng-select-opened {
     > .ng-select-container {
       background: $ng-select-bg;
-      border-color: darken($ng-select-border, 10) $ng-select-border lighten($ng-select-border, 5);
+      border-color: $ng-select-border;
       &:hover {
         box-shadow: none;
       }
       .ng-arrow {
         top: -2px;
-        border-color: transparent transparent darken($ng-select-border, 20);
+        border-color: transparent transparent $ng-select-arrow-hover;
         border-width: 0 5px 5px;
         &:hover {
-          border-color: transparent transparent darken($ng-select-border, 60);
+          border-color: transparent transparent $ng-select-arrow-hover;
         }
       }
     }
@@ -102,7 +103,7 @@ $ng-select-input-text: $ng-select-primary-text !default; // Matched input text c
     min-height: $ng-select-height;
     align-items: center;
     &:hover {
-      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+      box-shadow: 0 1px 0 $ng-dropdown-shadow;
     }
     .ng-value-container {
       align-items: center;
@@ -137,7 +138,7 @@ $ng-select-input-text: $ng-select-primary-text !default; // Matched input text c
     &.ng-select-disabled {
       > .ng-select-container .ng-value-container .ng-value {
         background-color: $ng-select-disabled-text;
-        border: 1px solid lighten($ng-select-border, 10);
+        border: 1px solid $ng-select-border;
         .ng-value-label {
           padding: 0 5px;
         }
@@ -180,20 +181,20 @@ $ng-select-input-text: $ng-select-primary-text !default; // Matched input text c
             display: inline-block;
             padding: 1px 5px;
             &:hover {
-              background-color: darken($ng-select-selected, 5);
+              background-color: $ng-select-arrow-hover;
             }
             &.left {
-              border-right: 1px solid darken($ng-select-selected, 10);
+              border-right: 1px solid $ng-select-selected;
               @include rtl {
-                border-left: 1px solid darken($ng-select-selected, 10);
+                border-left: 1px solid $ng-select-selected;
                 border-right: none;
               }
             }
             &.right {
-              border-left: 1px solid darken($ng-select-selected, 10);
+              border-left: 1px solid $ng-select-selected;
               @include rtl {
                 border-left: 0;
-                border-right: 1px solid darken($ng-select-selected, 10);
+                border-right: 1px solid $ng-select-selected;
               }
             }
           }
@@ -220,9 +221,9 @@ $ng-select-input-text: $ng-select-primary-text !default; // Matched input text c
     }
   }
   .ng-clear-wrapper {
-    color: darken($ng-select-border, 20);
+    color: $ng-select-placeholder;
     &:hover .ng-clear {
-      color: #d0021b;
+      color: $ng-clear-icon-hover;
     }
   }
   .ng-spinner-zone {
@@ -241,11 +242,11 @@ $ng-select-input-text: $ng-select-primary-text !default; // Matched input text c
     }
     &:hover {
       .ng-arrow {
-        border-top-color: darken($ng-select-border, 40);
+        border-top-color: $ng-select-arrow-hover;
       }
     }
     .ng-arrow {
-      border-color: darken($ng-select-border, 20) transparent transparent;
+      border-color: $ng-select-placeholder transparent transparent;
       border-style: solid;
       border-width: 5px 5px 2.5px;
     }
@@ -255,13 +256,13 @@ $ng-select-input-text: $ng-select-primary-text !default; // Matched input text c
 .ng-dropdown-panel {
   background-color: $ng-select-dropdown-bg;
   border: 1px solid $ng-select-dropdown-border;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 0 $ng-dropdown-shadow;
   left: 0;
   &.ng-select-top {
     bottom: 100%;
     border-top-right-radius: $ng-select-border-radius;
     border-top-left-radius: $ng-select-border-radius;
-    border-bottom-color: lighten($ng-select-border, 10);
+    border-bottom-color: $ng-select-border;
     margin-bottom: -1px;
     .ng-dropdown-panel-items {
       .ng-option {
@@ -278,7 +279,7 @@ $ng-select-input-text: $ng-select-primary-text !default; // Matched input text c
     border-top-right-radius: $ng-select-border-radius;
     border-bottom-right-radius: $ng-select-border-radius;
     border-bottom-left-radius: $ng-select-border-radius;
-    border-bottom-color: lighten($ng-select-border, 10);
+    border-bottom-color: $ng-select-border;
     margin-bottom: -1px;
     .ng-dropdown-panel-items {
       .ng-option {
@@ -292,7 +293,7 @@ $ng-select-input-text: $ng-select-primary-text !default; // Matched input text c
     top: 100%;
     border-bottom-right-radius: $ng-select-border-radius;
     border-bottom-left-radius: $ng-select-border-radius;
-    border-top-color: lighten($ng-select-border, 10);
+    border-top-color: $ng-select-border;
     margin-top: -1px;
     .ng-dropdown-panel-items {
       .ng-option {
@@ -309,7 +310,7 @@ $ng-select-input-text: $ng-select-primary-text !default; // Matched input text c
     border-top-left-radius: $ng-select-border-radius;
     border-bottom-right-radius: $ng-select-border-radius;
     border-bottom-left-radius: $ng-select-border-radius;
-    border-bottom-color: lighten($ng-select-border, 10);
+    border-bottom-color: $ng-select-border;
     margin-bottom: -1px;
     .ng-dropdown-panel-items {
       .ng-option {
