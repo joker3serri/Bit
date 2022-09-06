@@ -2,7 +2,6 @@ import { ConsoleLogService } from "@bitwarden/node/cli/services/consoleLog.servi
 
 import { interceptConsole, restoreConsole } from "../../../common/spec/shared/interceptConsole";
 
-
 let caughtMessage: any = {};
 
 describe("CLI Console log service", () => {
