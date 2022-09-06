@@ -27,9 +27,9 @@
                   ({{ "lastSeenOn" | i18n }}: {{ serverConfig.utcDate | date: "mediumDate" }})
                 </span>
               </p>
-              <small class="text-center">
-                {{ "thirdPartyServerMessage" | i18n: serverConfig.server?.name }}
-              </small>
+              <div class="text-center">
+                <small>{{ "thirdPartyServerMessage" | i18n: serverConfig.server?.name }}</small>
+              </div>
             </ng-container>
 
             <p class="text-center" *ngIf="!serverConfig.server">
