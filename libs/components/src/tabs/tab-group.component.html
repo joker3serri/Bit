@@ -1,11 +1,11 @@
 <div
-  bit-tab-list-container
+  bitTabListContainer
   role="tablist"
   [attr.aria-label]="label"
   (keydown)="keyManager.onKeydown($event)"
 >
   <button
-    bit-tab-list-item
+    bitTabListItem
     *ngFor="let tab of tabs; let i = index"
     type="button"
     role="tab"

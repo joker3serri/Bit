@@ -72,7 +72,7 @@ const ContentTabGroupTemplate: Story<TabGroupComponent> = (args: any) => ({
         <bit-tab label="First Tab">First Tab Content</bit-tab>
         <bit-tab label="Second Tab">Second Tab Content</bit-tab>
         <bit-tab>
-          <ng-template bit-tab-label>
+          <ng-template bitTabLabel>
             <i class="bwi bwi-search tw-pr-1"></i> Template Label
           </ng-template>
           Template Label Content

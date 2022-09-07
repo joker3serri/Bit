@@ -5,7 +5,7 @@ import { Directive, ElementRef, HostBinding, Input } from "@angular/core";
  * Directive used for styling tab header items for both nav links (anchor tags)
  * and content tabs (button tags)
  */
-@Directive({ selector: "[bit-tab-list-item]" })
+@Directive({ selector: "[bitTabListItem]" })
 export class TabListItemDirective implements FocusableOption {
   @Input() active: boolean;
   @Input() disabled: boolean;
