@@ -17,7 +17,7 @@ import {
 import { Subject, takeUntil } from "rxjs";
 
 import { TabListItemDirective } from "./tab-list-item.directive";
-import { BIT_TAB_GROUP, TabComponent } from "./tab.component";
+import { TabComponent } from "./tab.component";
 
 /** Used to generate unique ID's for each tab component */
 let nextId = 0;
@@ -25,7 +25,6 @@ let nextId = 0;
 @Component({
   selector: "bit-tab-group",
   templateUrl: "./tab-group.component.html",
-  providers: [{ provide: BIT_TAB_GROUP, useExisting: TabGroupComponent }],
 })
 export class TabGroupComponent
   implements AfterContentChecked, AfterContentInit, AfterViewInit, OnDestroy

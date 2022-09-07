@@ -15,8 +15,7 @@ export class TabLinkComponent implements FocusableOption, AfterViewInit, OnDestr
   @ViewChild(TabListItemDirective) tabItem: TabListItemDirective;
   @ViewChild("rla") routerLinkActive: RouterLinkActive;
 
-  @Input()
-  route: string;
+  @Input() route: string;
   @Input() disabled = false;
 
   @HostListener("keydown", ["$event"]) onKeyDown(event: KeyboardEvent) {
