@@ -1604,10 +1604,10 @@
     "message": "Please ensure the shown fingerprint is identical to the fingerprint showed in the browser extension."
   },
   "verifyDDGBrowserTitle": {
-    "message": "Confirm DuckDuckGo browser connection"
+    "message": "DuckDuckGo browser wants to connect to Bitwarden"
   },
   "verifyDDGBrowserDesc": {
-    "message": "Connect with DuckDuckGo browser?"
+    "message": "Would you like to approve this request?"
   },
   "biometricsNotEnabledTitle": {
     "message": "Biometrics not enabled"

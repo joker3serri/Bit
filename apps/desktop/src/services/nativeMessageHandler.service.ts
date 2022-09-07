@@ -105,9 +105,9 @@ export class NativeMessageHandler {
         titleText: this.i18nService.t("verifyDDGBrowserTitle"),
         html: this.i18nService.t("verifyDDGBrowserDesc"),
         showCancelButton: true,
-        cancelButtonText: this.i18nService.t("cancel"),
+        cancelButtonText: this.i18nService.t("no"),
         showConfirmButton: true,
-        confirmButtonText: this.i18nService.t("approve"),
+        confirmButtonText: this.i18nService.t("yes"),
         allowOutsideClick: false,
       });
 
