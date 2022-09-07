@@ -1,6 +1,4 @@
-import { Directive, Inject, InjectionToken, Optional, TemplateRef } from "@angular/core";
-
-export const BIT_TAB = new InjectionToken<unknown>("BIT_TAB");
+import { Directive, TemplateRef } from "@angular/core";
 
 /**
  * Used to identify template based tab labels (allows complex labels instead of just plaintext)
@@ -20,8 +18,5 @@ export const BIT_TAB = new InjectionToken<unknown>("BIT_TAB");
   selector: "[bitTabLabel]",
 })
 export class TabLabelDirective {
-  constructor(
-    public templateRef: TemplateRef<unknown>,
-    @Inject(BIT_TAB) @Optional() public closestTab: any
-  ) {}
+  constructor(public templateRef: TemplateRef<unknown>) {}
 }
