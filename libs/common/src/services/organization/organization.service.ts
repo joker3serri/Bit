@@ -1,17 +1,26 @@
-import { BehaviorSubject, concatMap } from "rxjs";
+import { BehaviorSubject, concatMap, filter, map } from "rxjs";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { InternalOrganizationService } from "../../abstractions/organization/organization.service.abstraction";
+import { OrganizationService as OrganizationServiceAbstraction } from "../../abstractions/organization/organization.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
+import { SyncNotifierService } from "../../abstractions/sync/syncNotifier.service.abstraction";
 import { OrganizationData } from "../../models/data/organizationData";
+import { isSuccessfullyCompleted } from "../../types/syncEventArgs";
 
-export class OrganizationService implements InternalOrganizationService {
+export function getOrganizationById(id: string) {
+  return map<Organization[], Organization>((orgs) => orgs.find((o) => o.id === id));
+}
+
+export class OrganizationService implements OrganizationServiceAbstraction {
   private _organizations = new BehaviorSubject<Organization[]>([]);
 
   organizations$ = this._organizations.asObservable();
 
-  constructor(private stateService: StateService) {
+  constructor(
+    private stateService: StateService,
+    private syncNotifierService: SyncNotifierService
+  ) {
     this.stateService.activeAccountUnlocked$
       .pipe(
         concatMap(async (unlocked) => {
@@ -22,6 +31,28 @@ export class OrganizationService implements InternalOrganizationService {
 
           const data = await this.stateService.getOrganizations();
           this.updateObservables(data);
+        })
+      )
+      .subscribe();
+
+    this.syncNotifierService.sync$
+      .pipe(filter(isSuccessfullyCompleted))
+      .pipe(
+        concatMap(async ({ data }) => {
+          const { profile } = data;
+          const organizations: { [id: string]: OrganizationData } = {};
+          profile.organizations.forEach((o) => {
+            organizations[o.id] = new OrganizationData(o);
+          });
+
+          profile.providerOrganizations.forEach((o) => {
+            if (organizations[o.id] == null) {
+              organizations[o.id] = new OrganizationData(o);
+              organizations[o.id].isProviderUser = true;
+            }
+          });
+
+          await this.updateStateAndObservables(organizations);
         })
       )
       .subscribe();
@@ -76,16 +107,21 @@ export class OrganizationService implements InternalOrganizationService {
     await this.stateService.setOrganizations(organizations);
   }
 
-  async get(id: string): Promise<Organization> {
+  get(id: string): Organization {
     const organizations = this._organizations.getValue();
 
     return organizations.find((organization) => organization.id === id);
   }
 
-  async getByIdentifier(identifier: string): Promise<Organization> {
+  getByIdentifier(identifier: string): Organization {
     const organizations = this._organizations.getValue();
 
     return organizations.find((organization) => organization.identifier === identifier);
+  }
+
+  private async updateStateAndObservables(organizationsMap: { [id: string]: OrganizationData }) {
+    await this.stateService.setOrganizations(organizationsMap);
+    this.updateObservables(organizationsMap);
   }
 
   private updateObservables(organizationsMap: { [id: string]: OrganizationData }) {

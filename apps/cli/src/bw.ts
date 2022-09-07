@@ -41,6 +41,7 @@ import { SettingsService } from "@bitwarden/common/services/settings.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 import { StateMigrationService } from "@bitwarden/common/services/stateMigration.service";
 import { SyncService } from "@bitwarden/common/services/sync/sync.service";
+import { SyncNotifierService } from "@bitwarden/common/services/sync/syncNotifier.service";
 import { TokenService } from "@bitwarden/common/services/token.service";
 import { TotpService } from "@bitwarden/common/services/totp.service";
 import { TwoFactorService } from "@bitwarden/common/services/twoFactor.service";
@@ -111,6 +112,7 @@ export class Main {
   folderApiService: FolderApiService;
   userVerificationApiService: UserVerificationApiService;
   organizationApiService: OrganizationApiServiceAbstraction;
+  syncNotifierService: SyncNotifierService;
 
   constructor() {
     let p = null;
@@ -189,7 +191,9 @@ export class Main {
       customUserAgent
     );
 
-    this.organizationApiService = new OrganizationApiService(this.apiService);
+    this.syncNotifierService = new SyncNotifierService();
+
+    this.organizationApiService = new OrganizationApiService(this.apiService, this.syncService);
 
     this.containerService = new ContainerService(this.cryptoService);
 
@@ -229,7 +233,7 @@ export class Main {
 
     this.providerService = new ProviderService(this.stateService);
 
-    this.organizationService = new OrganizationService(this.stateService);
+    this.organizationService = new OrganizationService(this.stateService, this.syncNotifierService);
 
     this.policyService = new PolicyService(this.stateService, this.organizationService);
 
@@ -303,9 +307,9 @@ export class Main {
       this.logService,
       this.keyConnectorService,
       this.stateService,
-      this.organizationService,
       this.providerService,
       this.folderApiService,
+      this.syncNotifierService,
       async (expired: boolean) => await this.logout()
     );
 

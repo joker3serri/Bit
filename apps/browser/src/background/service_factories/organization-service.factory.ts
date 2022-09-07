@@ -3,6 +3,7 @@ import { OrganizationService } from "@bitwarden/common/services/organization/org
 
 import { FactoryOptions, CachedServices, factory } from "./factory-options";
 import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
+import { syncNotifierServiceFactory } from "./sync-notifier-service.factory";
 
 type OrganizationServiceFactoryOptions = FactoryOptions;
 
@@ -17,6 +18,10 @@ export function organizationServiceFactory(
     cache,
     "organizationService",
     opts,
-    async () => new OrganizationService(await stateServiceFactory(cache, opts))
+    async () =>
+      new OrganizationService(
+        await stateServiceFactory(cache, opts),
+        await syncNotifierServiceFactory(cache, opts)
+      )
   );
 }

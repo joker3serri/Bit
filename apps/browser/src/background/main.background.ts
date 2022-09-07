@@ -27,6 +27,7 @@ import { SendService as SendServiceAbstraction } from "@bitwarden/common/abstrac
 import { SettingsService as SettingsServiceAbstraction } from "@bitwarden/common/abstractions/settings.service";
 import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { SyncService as SyncServiceAbstraction } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
+import { SyncNotifierService as SyncNotifierServiceAbstraction } from "@bitwarden/common/abstractions/sync/syncNotifier.service.abstraction";
 import { SystemService as SystemServiceAbstraction } from "@bitwarden/common/abstractions/system.service";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/abstractions/token.service";
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/abstractions/totp.service";
@@ -67,6 +68,7 @@ import { SendService } from "@bitwarden/common/services/send.service";
 import { SettingsService } from "@bitwarden/common/services/settings.service";
 import { StateMigrationService } from "@bitwarden/common/services/stateMigration.service";
 import { SyncService } from "@bitwarden/common/services/sync/sync.service";
+import { SyncNotifierService } from "@bitwarden/common/services/sync/syncNotifier.service";
 import { SystemService } from "@bitwarden/common/services/system.service";
 import { TokenService } from "@bitwarden/common/services/token.service";
 import { TotpService } from "@bitwarden/common/services/totp.service";
@@ -155,6 +157,7 @@ export default class MainBackground {
   folderApiService: FolderApiServiceAbstraction;
   policyApiService: PolicyApiServiceAbstraction;
   userVerificationApiService: UserVerificationApiServiceAbstraction;
+  syncNotifierService: SyncNotifierServiceAbstraction;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
@@ -295,7 +298,8 @@ export default class MainBackground {
       this.cryptoFunctionService,
       this.stateService
     );
-    this.organizationService = new OrganizationService(this.stateService);
+    this.syncNotifierService = new SyncNotifierService();
+    this.organizationService = new OrganizationService(this.stateService, this.syncNotifierService);
     this.policyService = new PolicyService(this.stateService, this.organizationService);
     this.policyApiService = new PolicyApiService(
       this.policyService,
@@ -378,9 +382,9 @@ export default class MainBackground {
       this.logService,
       this.keyConnectorService,
       this.stateService,
-      this.organizationService,
       this.providerService,
       this.folderApiService,
+      this.syncNotifierService,
       logoutCallback
     );
     this.eventService = new EventService(

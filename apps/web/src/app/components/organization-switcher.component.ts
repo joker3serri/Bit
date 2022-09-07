@@ -15,7 +15,7 @@ import { canAccessOrgAdmin } from "../organizations/navigation-permissions";
 export class OrganizationSwitcherComponent implements OnInit {
   constructor(private organizationService: OrganizationService, private i18nService: I18nService) {}
 
-  @Input() activeOrganization: Organization = null;
+  @Input() activeOrganization: Observable<Organization> = null;
   organizations$: Observable<Organization[]>;
 
   loaded = false;
@@ -26,6 +26,7 @@ export class OrganizationSwitcherComponent implements OnInit {
         return orgs.filter(canAccessOrgAdmin).sort(Utils.getSortFunction(this.i18nService, "name"));
       })
     );
+
     this.loaded = true;
   }
 }

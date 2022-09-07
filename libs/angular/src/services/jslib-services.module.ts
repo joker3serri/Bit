@@ -47,6 +47,7 @@ import { StateService as StateServiceAbstraction } from "@bitwarden/common/abstr
 import { StateMigrationService as StateMigrationServiceAbstraction } from "@bitwarden/common/abstractions/stateMigration.service";
 import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { SyncService as SyncServiceAbstraction } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
+import { SyncNotifierService as SyncNotifierServiceAbstraction } from "@bitwarden/common/abstractions/sync/syncNotifier.service.abstraction";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/abstractions/token.service";
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/abstractions/totp.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/abstractions/twoFactor.service";
@@ -89,6 +90,7 @@ import { SettingsService } from "@bitwarden/common/services/settings.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 import { StateMigrationService } from "@bitwarden/common/services/stateMigration.service";
 import { SyncService } from "@bitwarden/common/services/sync/sync.service";
+import { SyncNotifierService } from "@bitwarden/common/services/sync/syncNotifier.service";
 import { TokenService } from "@bitwarden/common/services/token.service";
 import { TotpService } from "@bitwarden/common/services/totp.service";
 import { TwoFactorService } from "@bitwarden/common/services/twoFactor.service";
@@ -332,9 +334,9 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
         LogService,
         KeyConnectorServiceAbstraction,
         StateServiceAbstraction,
-        OrganizationServiceAbstraction,
         ProviderServiceAbstraction,
         FolderApiServiceAbstraction,
+        SyncNotifierServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },
@@ -491,7 +493,7 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
     {
       provide: OrganizationServiceAbstraction,
       useClass: OrganizationService,
-      deps: [StateServiceAbstraction],
+      deps: [StateServiceAbstraction, SyncNotifierServiceAbstraction],
     },
     {
       provide: ProviderServiceAbstraction,
@@ -519,7 +521,11 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
     {
       provide: OrganizationApiServiceAbstraction,
       useClass: OrganizationApiService,
-      deps: [ApiServiceAbstraction],
+      deps: [ApiServiceAbstraction, OrganizationServiceAbstraction, SyncServiceAbstraction],
+    },
+    {
+      provide: SyncNotifierServiceAbstraction,
+      useClass: SyncNotifierService,
     },
   ],
 })

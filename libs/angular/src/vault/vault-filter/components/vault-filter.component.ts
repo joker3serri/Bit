@@ -1,5 +1,5 @@
-import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { concatMap, firstValueFrom, Observable } from "rxjs";
+import { Directive, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { concatMap, firstValueFrom, Observable, Subject, takeUntil } from "rxjs";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { ITreeNodeObject } from "@bitwarden/common/models/domain/treeNode";
@@ -11,7 +11,7 @@ import { VaultFilter } from "../models/vault-filter.model";
 import { VaultFilterService } from "../services/vault-filter.service";
 
 @Directive()
-export class VaultFilterComponent implements OnInit {
+export class VaultFilterComponent implements OnInit, OnDestroy {
   @Input() activeFilter: VaultFilter = new VaultFilter();
   @Input() hideFolders = false;
   @Input() hideCollections = false;
@@ -31,6 +31,8 @@ export class VaultFilterComponent implements OnInit {
   collections: DynamicTreeNode<CollectionView>;
   folders$: Observable<DynamicTreeNode<FolderView>>;
 
+  private _destroy = new Subject<void>();
+
   constructor(protected vaultFilterService: VaultFilterService) {}
 
   get displayCollections() {
@@ -42,20 +44,28 @@ export class VaultFilterComponent implements OnInit {
 
     this.organizations$ = this.vaultFilterService.buildOrganizations();
 
-    this.organizations$.pipe(
-      concatMap(async (orgs) => {
-        if (orgs != null && orgs.length > 0) {
-          this.activePersonalOwnershipPolicy =
-            await this.vaultFilterService.checkForPersonalOwnershipPolicy();
-          this.activeSingleOrganizationPolicy =
-            await this.vaultFilterService.checkForSingleOrganizationPolicy();
-        }
-      })
-    );
+    this.organizations$
+      .pipe(takeUntil(this._destroy))
+      .pipe(
+        concatMap(async (orgs) => {
+          if (orgs != null && orgs.length > 0) {
+            this.activePersonalOwnershipPolicy =
+              await this.vaultFilterService.checkForPersonalOwnershipPolicy();
+            this.activeSingleOrganizationPolicy =
+              await this.vaultFilterService.checkForSingleOrganizationPolicy();
+          }
+        })
+      )
+      .subscribe();
 
     this.folders$ = await this.vaultFilterService.buildNestedFolders();
     this.collections = await this.initCollections();
     this.isLoaded = true;
+  }
+
+  ngOnDestroy(): void {
+    this._destroy.next();
+    this._destroy.complete();
   }
 
   // overwritten in web for organization vaults

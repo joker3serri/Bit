@@ -74,6 +74,8 @@ export class ConvertToKeyConnectorCommand {
     } else if (answer.convert === "leave") {
       await this.organizationApiService.leave(organization.id);
       await this.keyConnectorService.removeConvertAccountRequired();
+      // `leave` now does a `fullSync(true)` for itself. So do we
+      // need to do this here?
       await this.syncService.fullSync(true);
       return Response.success();
     } else {
