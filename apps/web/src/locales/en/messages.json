@@ -2396,10 +2396,13 @@
     "message": "Warning! This user requires Key Connector to manage their encryption. Removing this user from your organization will permanently deactivate their account. This action cannot be undone. Do you want to proceed?"
   },
   "externalId": {
-    "message": "External id"
+    "message": "External ID"
   },
   "externalIdDesc": {
-    "message": "External ID is an unencrypted reference used by the Bitwarden Directory Connector or API."
+    "message": "External ID is an unencrypted reference used by the Bitwarden Directory Connector and API."
+  },
+  "nestCollectionUnder": {
+    "message": "Nest collection under"
   },
   "accessControl": {
     "message": "Access control"
