@@ -7,7 +7,7 @@
     "module": "es6",
     "target": "ES2016",
     "sourceMap": true,
-    "types": [],
+    "types": ["jest"],
     "baseUrl": ".",
     "paths": {
       "tldjs": ["../../libs/common/src/misc/tldjs.noop"],
