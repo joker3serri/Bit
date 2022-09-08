@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { Subject } from "rxjs";
 
 import { AbstractEncryptService } from "@bitwarden/common/abstractions/abstractEncrypt.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -18,7 +18,7 @@ import { SecretResponse } from "./responses/secret.response";
   providedIn: "root",
 })
 export class SecretService {
-  protected _secret: BehaviorSubject<SecretView> = new BehaviorSubject(null);
+  protected _secret: Subject<SecretView> = new Subject();
 
   secret$ = this._secret.asObservable();
 

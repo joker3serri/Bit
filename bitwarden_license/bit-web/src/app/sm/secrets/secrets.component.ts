@@ -27,6 +27,7 @@ export class SecretsComponent implements OnInit {
   ngOnInit() {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe(async (params: any) => {
       this.organizationId = params.organizationId;
+      await this.getSecrets();
     });
 
     this.secretService.secret$.pipe(takeUntil(this.destroy$)).subscribe(async (_) => {
