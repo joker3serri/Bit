@@ -34,8 +34,12 @@ export class TabBodyComponent {
    * then the content persists after the first time content is rendered.
    */
   get tabContent() {
-    if (this.active) return this.content;
-    if (this.preserveContent && this._firstRender) return this.content;
+    if (this.active) {
+      return this.content;
+    }
+    if (this.preserveContent && this._firstRender) {
+      return this.content;
+    }
     return null;
   }
 }

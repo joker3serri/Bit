@@ -4,7 +4,6 @@ import {
   AfterContentChecked,
   AfterContentInit,
   AfterViewInit,
-  ChangeDetectorRef,
   Component,
   ContentChildren,
   EventEmitter,
@@ -72,15 +71,15 @@ export class TabGroupComponent
    */
   keyManager: FocusKeyManager<TabListItemDirective>;
 
-  constructor(private _changeDetectorRef: ChangeDetectorRef) {
+  constructor() {
     this._groupId = nextId++;
   }
 
-  _getTabContentId(id: number): string {
+  protected _getTabContentId(id: number): string {
     return `bit-tab-content-${this._groupId}-${id}`;
   }
 
-  _getTabLabelId(id: number): string {
+  protected _getTabLabelId(id: number): string {
     return `bit-tab-label-${this._groupId}-${id}`;
   }
 

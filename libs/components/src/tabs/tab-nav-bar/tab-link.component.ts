@@ -13,6 +13,7 @@ import { TabNavBarComponent } from "./tab-nav-bar.component";
 })
 export class TabLinkComponent implements FocusableOption, AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
+
   @ViewChild(TabListItemDirective) tabItem: TabListItemDirective;
   @ViewChild("rla") routerLinkActive: RouterLinkActive;
 
