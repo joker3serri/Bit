@@ -28,15 +28,22 @@ export class SecretsComponent implements OnInit {
       .pipe(
         switchMap(async (params: any) => {
           this.organizationId = params.organizationId;
-          await this.getSecrets();
+          return await this.getSecrets();
         })
       )
-      .subscribe();
-    this.secretService.secret$.pipe(switchMap(async (_) => await this.getSecrets())).subscribe();
+      .subscribe((secrets: SecretListView[]) => (this.secrets = secrets));
+
+    this.secretService.secret$
+      .pipe(
+        switchMap(async (_) => {
+          return await this.getSecrets();
+        })
+      )
+      .subscribe((secrets: SecretListView[]) => (this.secrets = secrets));
   }
 
-  private async getSecrets() {
-    this.secrets = await this.secretService.getSecrets(this.organizationId);
+  private async getSecrets(): Promise<SecretListView[]> {
+    return await this.secretService.getSecrets(this.organizationId);
   }
 
   openEditSecret(secretId: string) {
