@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
-import { TabGroupComponent } from "./tab-group.component";
+import { TabGroupComponent } from "./tab-group/tab-group.component";
 import { TabsModule } from "./tabs.module";
 
 @Component({
@@ -75,7 +75,13 @@ const ContentTabGroupTemplate: Story<TabGroupComponent> = (args: any) => ({
           <ng-template bitTabLabel>
             <i class="bwi bwi-search tw-pr-1"></i> Template Label
           </ng-template>
-          Template Label Content
+          <bit-tab-group label="Nested Tabs">
+          <bit-tab label="First Nested">First Nested Content</bit-tab>
+          <bit-tab>
+          <ng-template bitTabLabel>Nested Template <i class="bwi bwi-search tw-pr-1"></i></ng-template>
+          Nested Template Content
+</bit-tab>
+</bit-tab-group>
         </bit-tab>
         <bit-tab [disabled]="true" label="Disabled">
           Disabled Content

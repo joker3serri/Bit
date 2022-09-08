@@ -16,7 +16,8 @@ import {
 } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
-import { TabListItemDirective } from "./tab-list-item.directive";
+import { TabListItemDirective } from "../shared/tab-list-item.directive";
+
 import { TabComponent } from "./tab.component";
 
 /** Used to generate unique ID's for each tab component */

@@ -3,7 +3,8 @@ import { AfterViewInit, Component, HostListener, Input, OnDestroy, ViewChild } f
 import { RouterLinkActive } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
-import { TabListItemDirective } from "./tab-list-item.directive";
+import { TabListItemDirective } from "../shared/tab-list-item.directive";
+
 import { TabNavBarComponent } from "./tab-nav-bar.component";
 
 @Component({
