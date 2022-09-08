@@ -75,11 +75,11 @@ export class TabGroupComponent
     this._groupId = nextId++;
   }
 
-  protected _getTabContentId(id: number): string {
+  protected getTabContentId(id: number): string {
     return `bit-tab-content-${this._groupId}-${id}`;
   }
 
-  protected _getTabLabelId(id: number): string {
+  protected getTabLabelId(id: number): string {
     return `bit-tab-label-${this._groupId}-${id}`;
   }
 
