@@ -23,7 +23,7 @@ export class TabComponent implements OnInit {
 
   @Input("label") textLabel = "";
 
-  @ViewChild(TemplateRef, { static: true }) implicitContent: TemplateRef<any>;
+  @ViewChild(TemplateRef, { static: true }) implicitContent: TemplateRef<unknown>;
   @ContentChild(TabLabelDirective) templateLabel: TabLabelDirective;
 
   private _contentPortal: TemplatePortal | null = null;
