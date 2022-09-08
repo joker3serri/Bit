@@ -1,33 +1,35 @@
-<div
-  bitTabListContainer
-  role="tablist"
-  [attr.aria-label]="label"
-  (keydown)="keyManager.onKeydown($event)"
->
-  <button
-    bitTabListItem
-    *ngFor="let tab of tabs; let i = index"
-    type="button"
-    role="tab"
-    [id]="_getTabLabelId(i)"
-    [active]="tab.isActive"
-    [disabled]="tab.disabled"
-    [attr.aria-selected]="selectedIndex === i"
-    [attr.tabindex]="selectedIndex === i ? 0 : -1"
-    (click)="selectTab(i)"
+<bit-tab-header>
+  <div
+    bitTabListContainer
+    role="tablist"
+    [attr.aria-label]="label"
+    (keydown)="keyManager.onKeydown($event)"
   >
-    <ng-container [ngTemplateOutlet]="content"></ng-container>
+    <button
+      bitTabListItem
+      *ngFor="let tab of tabs; let i = index"
+      type="button"
+      role="tab"
+      [id]="_getTabLabelId(i)"
+      [active]="tab.isActive"
+      [disabled]="tab.disabled"
+      [attr.aria-selected]="selectedIndex === i"
+      [attr.tabindex]="selectedIndex === i ? 0 : -1"
+      (click)="selectTab(i)"
+    >
+      <ng-container [ngTemplateOutlet]="content"></ng-container>
 
-    <ng-template #content>
-      <ng-template [ngIf]="tab.templateLabel" [ngIfElse]="tabTextLabel">
-        <ng-container [ngTemplateOutlet]="tab.templateLabel.templateRef"></ng-container>
+      <ng-template #content>
+        <ng-template [ngIf]="tab.templateLabel" [ngIfElse]="tabTextLabel">
+          <ng-container [ngTemplateOutlet]="tab.templateLabel.templateRef"></ng-container>
+        </ng-template>
+
+        <ng-template #tabTextLabel>{{ tab.textLabel }}</ng-template>
       </ng-template>
-
-      <ng-template #tabTextLabel>{{ tab.textLabel }}</ng-template>
-    </ng-template>
-  </button>
-</div>
-<div class="tw-py-5">
+    </button>
+  </div>
+</bit-tab-header>
+<div class="tw-pt-5">
   <bit-tab-body
     role="tabpanel"
     *ngFor="let tab of tabs; let i = index"

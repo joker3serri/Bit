@@ -170,10 +170,7 @@ export class TabGroupComponent
     this.destroy$.complete();
   }
 
-  private _clampTabIndex(index: number | null): number {
-    // Note the `|| 0`, which ensures that values like NaN can't get through
-    // and which would otherwise throw the component into an infinite loop
-    // (since Math.max(NaN, 0) === NaN).
+  private _clampTabIndex(index: number): number {
     return Math.min(this.tabs.length - 1, Math.max(index || 0, 0));
   }
 }

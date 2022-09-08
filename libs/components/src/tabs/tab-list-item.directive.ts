@@ -46,10 +46,10 @@ export class TabListItemDirective implements FocusableOption {
       "tw-border-t-4",
       "tw-border-transparent",
       "tw-border-solid",
-      "tw-bg-background",
-      "!tw-text-main",
+      "tw-bg-transparent",
+      "tw-text-main",
       "hover:tw-underline",
-      "hover:!tw-text-main",
+      "hover:tw-text-main",
       "focus-visible:tw-z-10",
       "focus-visible:tw-outline-none",
       "focus-visible:tw-ring-2",
@@ -60,8 +60,8 @@ export class TabListItemDirective implements FocusableOption {
   get disabledClassList(): string[] {
     return [
       "!tw-bg-secondary-100",
-      "!tw-text-muted/60",
-      "hover:!tw-text-muted/60",
+      "!tw-text-muted",
+      "hover:!tw-text-muted",
       "!tw-no-underline",
       "tw-cursor-not-allowed",
     ];

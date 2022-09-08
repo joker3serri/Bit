@@ -5,6 +5,7 @@ import { RouterModule } from "@angular/router";
 
 import { TabBodyComponent } from "./tab-body.component";
 import { TabGroupComponent } from "./tab-group.component";
+import { TabHeaderComponent } from "./tab-header.component";
 import { TabLabelDirective } from "./tab-label.directive";
 import { TabLinkComponent } from "./tab-link.component";
 import { TabListContainerDirective } from "./tab-list-container.directive";
@@ -27,6 +28,7 @@ import { TabComponent } from "./tab.component";
     TabLabelDirective,
     TabListContainerDirective,
     TabListItemDirective,
+    TabHeaderComponent,
     TabNavBarComponent,
     TabLinkComponent,
     TabBodyComponent,
