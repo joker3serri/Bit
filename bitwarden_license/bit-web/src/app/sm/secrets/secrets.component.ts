@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Subject, takeUntil } from "rxjs";
+import { switchMap } from "rxjs";
 
 import { SecretListView } from "@bitwarden/common/models/view/secretListView";
 import { DialogService } from "@bitwarden/components";
@@ -16,7 +16,6 @@ export class SecretsComponent implements OnInit {
   secrets: SecretListView[];
 
   private organizationId: string;
-  private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -25,19 +24,15 @@ export class SecretsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(async (params: any) => {
-      this.organizationId = params.organizationId;
-      await this.getSecrets();
-    });
-
-    this.secretService.secret$.pipe(takeUntil(this.destroy$)).subscribe(async (_) => {
-      await this.getSecrets();
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.route.params
+      .pipe(
+        switchMap(async (params: any) => {
+          this.organizationId = params.organizationId;
+          await this.getSecrets();
+        })
+      )
+      .subscribe();
+    this.secretService.secret$.pipe(switchMap(async (_) => await this.getSecrets())).subscribe();
   }
 
   private async getSecrets() {

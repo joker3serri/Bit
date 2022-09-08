@@ -17,7 +17,7 @@ export class NewMenuComponent implements OnInit {
   constructor(private route: ActivatedRoute, private dialogService: DialogService) {}
 
   ngOnInit() {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe(async (params: any) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params: any) => {
       this.organizationId = params.organizationId;
     });
   }
