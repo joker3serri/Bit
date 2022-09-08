@@ -72,7 +72,7 @@ export class VaultSelectComponent implements OnInit, OnDestroy {
   ];
 
   private overlayRef: OverlayRef;
-  private destroy$ = new Subject<void>();
+  private _destroy = new Subject<void>();
 
   get show() {
     return (
@@ -115,8 +115,8 @@ export class VaultSelectComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this._destroy.next();
+    this._destroy.complete();
   }
 
   async load() {
@@ -124,7 +124,7 @@ export class VaultSelectComponent implements OnInit, OnDestroy {
 
     this.vaultFilterService
       .buildOrganizations()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this._destroy))
       .subscribe((orgs) => {
         this.organizations = orgs.sort((a, b) => a.name.localeCompare(b.name));
       });

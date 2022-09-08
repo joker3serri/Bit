@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Observable, Subject } from "rxjs";
 import { first, map, takeUntil } from "rxjs/operators";
@@ -24,7 +24,7 @@ import { DeleteOrganizationComponent } from "../settings/delete-organization.com
   templateUrl: "families-for-enterprise-setup.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-export class FamiliesForEnterpriseSetupComponent implements OnInit {
+export class FamiliesForEnterpriseSetupComponent implements OnInit, OnDestroy {
   @ViewChild(OrganizationPlansComponent, { static: false })
   set organizationPlansComponent(value: OrganizationPlansComponent) {
     if (!value) {
@@ -53,7 +53,7 @@ export class FamiliesForEnterpriseSetupComponent implements OnInit {
   _organizationPlansComponent: OrganizationPlansComponent;
   _selectedFamilyOrganizationId = "";
 
-  private destroy$ = new Subject<void>();
+  private _destroy = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -90,15 +90,20 @@ export class FamiliesForEnterpriseSetupComponent implements OnInit {
       this.loading = false;
     });
 
-    this.existingFamilyOrganizations$ = this.organizationService.organizations$.pipe(
-      map((orgs) => orgs.filter((o) => o.planProductType === ProductType.Families))
-    );
+    this.existingFamilyOrganizations$ = this.organizationService.organizations$
+      .pipe(takeUntil(this._destroy))
+      .pipe(map((orgs) => orgs.filter((o) => o.planProductType === ProductType.Families)));
 
-    this.existingFamilyOrganizations$.pipe(takeUntil(this.destroy$)).subscribe((orgs) => {
+    this.existingFamilyOrganizations$.pipe(takeUntil(this._destroy)).subscribe((orgs) => {
       if (orgs.length === 0) {
         this.selectedFamilyOrganizationId = "createNew";
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this._destroy.next();
+    this._destroy.complete();
   }
 
   async submit() {
