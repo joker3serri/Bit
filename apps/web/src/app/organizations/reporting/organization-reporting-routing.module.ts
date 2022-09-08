@@ -22,7 +22,7 @@ const routes: Routes = [
     canActivate: [OrganizationPermissionsGuard],
     data: { organizationPermissions: canAccessReportingTab },
     children: [
-      { path: "", pathMatch: "full", redirectTo: "reports" },
+      { path: "", pathMatch: "full", redirectTo: "events" },
       {
         path: "reports",
         component: ReportsHomeComponent,
