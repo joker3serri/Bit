@@ -96,42 +96,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     const masterPassword = this.formGroup.get("masterPassword")?.value;
     const hint = this.formGroup.get("hint")?.value;
 
-    this.formGroup.markAllAsTouched();
-    this.showErrorSummary = true;
-
-    if (this.formGroup.get("acceptPolicies").hasError("required")) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("acceptPoliciesRequired")
-      );
-      return;
-    }
-
-    //web
-    if (this.formGroup.invalid && !showToast) {
-      return;
-    }
-
-    //desktop, browser
-    if (this.formGroup.invalid && showToast) {
-      const errorText = this.getErrorToastMessage();
-      this.platformUtilsService.showToast("error", this.i18nService.t("errorOccurred"), errorText);
-      return;
-    }
-
-    if (this.passwordStrengthResult != null && this.passwordStrengthResult.score < 3) {
-      const result = await this.platformUtilsService.showDialog(
-        this.i18nService.t("weakMasterPasswordDesc"),
-        this.i18nService.t("weakMasterPassword"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("no"),
-        "warning"
-      );
-      if (!result) {
-        return;
-      }
-    }
+    await this.validateForm(showToast);
 
     name = name === "" ? null : name;
     email = email.trim().toLowerCase();
@@ -246,5 +211,44 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
 
       return !ctrlValue && this.showTerms ? { required: true } : null;
     };
+  }
+
+  private async validateForm(showToast: boolean) {
+    this.formGroup.markAllAsTouched();
+    this.showErrorSummary = true;
+
+    if (this.formGroup.get("acceptPolicies").hasError("required")) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("acceptPoliciesRequired")
+      );
+      return;
+    }
+
+    //web
+    if (this.formGroup.invalid && !showToast) {
+      return;
+    }
+
+    //desktop, browser
+    if (this.formGroup.invalid && showToast) {
+      const errorText = this.getErrorToastMessage();
+      this.platformUtilsService.showToast("error", this.i18nService.t("errorOccurred"), errorText);
+      return;
+    }
+
+    if (this.passwordStrengthResult != null && this.passwordStrengthResult.score < 3) {
+      const result = await this.platformUtilsService.showDialog(
+        this.i18nService.t("weakMasterPasswordDesc"),
+        this.i18nService.t("weakMasterPassword"),
+        this.i18nService.t("yes"),
+        this.i18nService.t("no"),
+        "warning"
+      );
+      if (!result) {
+        return;
+      }
+    }
   }
 }
