@@ -222,14 +222,9 @@ export class NativeMessageHandler {
         return ciphersResponse;
       }
       case "bw-credential-create": {
-        const activeUserId = await this.stateService.getUserId();
-        if (payload.userId !== activeUserId) {
-          return { error: "not-active-user" };
-        }
-
-        const authStatus = await this.authService.getAuthStatus(activeUserId);
-        if (authStatus !== AuthenticationStatus.Unlocked) {
-          return { error: "locked" };
+        const userStatus = await this.checkUserStatus(payload.userId);
+        if (userStatus !== "valid") {
+          return { error: userStatus };
         }
 
         const credentialCreatePayload = payload as CredentialCreatePayload;
@@ -265,14 +260,9 @@ export class NativeMessageHandler {
         }
       }
       case "bw-credential-update": {
-        const activeUserId = await this.stateService.getUserId();
-        if (payload.userId !== activeUserId) {
-          return { error: "not-active-user" };
-        }
-
-        const authStatus = await this.authService.getAuthStatus(activeUserId);
-        if (authStatus !== AuthenticationStatus.Unlocked) {
-          return { error: "locked" };
+        const userStatus = await this.checkUserStatus(payload.userId);
+        if (userStatus !== "valid") {
+          return { error: userStatus };
         }
 
         const credentialUpdatePayload = payload as CredentialUpdatePayload;
@@ -306,10 +296,9 @@ export class NativeMessageHandler {
         }
       }
       case "bw-generate-password": {
-        const activeUserId = await this.stateService.getUserId();
-
-        if (payload.userId !== activeUserId) {
-          return { error: "not-active-user" };
+        const userStatus = await this.checkUserStatus(payload.userId);
+        if (userStatus !== "valid") {
+          return { error: userStatus };
         }
 
         const options = (await this.passwordGenerationService.getOptions())[0];
@@ -322,6 +311,21 @@ export class NativeMessageHandler {
           error: "cannot-decrypt",
         };
     }
+  }
+
+  private async checkUserStatus(userId: string): Promise<string> {
+    const activeUserId = await this.stateService.getUserId();
+
+    if (userId !== activeUserId) {
+      return "not-active-user";
+    }
+
+    const authStatus = await this.authService.getAuthStatus(activeUserId);
+    if (authStatus !== AuthenticationStatus.Unlocked) {
+      return "locked";
+    }
+
+    return "valid";
   }
 
   private async encyptPayload(payload: any, key: SymmetricCryptoKey): Promise<EncString> {
