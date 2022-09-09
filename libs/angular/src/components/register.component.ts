@@ -106,14 +106,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
           this.i18nService.t("trialAccountCreated")
         );
         //login user here
-        const credentials = new PasswordLogInCredentials(
-          email,
-          masterPassword,
-          this.captchaToken,
-          null
-        );
-        await this.authService.logIn(credentials);
-
+        await this.logIn(email, masterPassword, this.captchaToken);
         this.createdAccount.emit(this.formGroup.get("email")?.value);
       } else {
         this.platformUtilsService.showToast(
@@ -258,5 +251,15 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
         throw e;
       }
     }
+  }
+
+  private async logIn(email: string, masterPassword: string, captchaBypassToken: string) {
+    const credentials = new PasswordLogInCredentials(
+      email,
+      masterPassword,
+      captchaBypassToken,
+      null
+    );
+    await this.authService.logIn(credentials);
   }
 }
