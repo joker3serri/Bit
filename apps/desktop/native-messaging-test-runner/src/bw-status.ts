@@ -13,8 +13,8 @@ import * as config from "./variables";
   const handshakeResponse = await nativeMessageService.sendHandshake(config.testRsaPublicKey);
   LogUtils.logSuccess("Received response to handshake request");
 
-  if (handshakeResponse.status !== "success") {
-    LogUtils.logError(" Handshake failed. Status was:", handshakeResponse.status);
+  if (!handshakeResponse.status) {
+    LogUtils.logError(" Handshake failed. Error was: " + handshakeResponse.error);
     nativeMessageService.disconnect();
     return;
   }

@@ -21,10 +21,10 @@ import { UnencryptedMessageResponse } from "../../src/models/nativeMessaging/une
 import IPCService from "./ipcService";
 import * as config from "./variables";
 
-type HandshakePayload = {
-  status?: "success";
-  error?: "canceled";
-  sharedKey?: string;
+type HandshakeResponse = {
+  status: boolean;
+  sharedKey: string;
+  error?: "canceled" | "cannot-decrypt";
 };
 
 export default class NativeMessageService {
@@ -48,14 +48,14 @@ export default class NativeMessageService {
 
   // Commands
 
-  async sendHandshake(publicKey: string): Promise<HandshakePayload> {
+  async sendHandshake(publicKey: string): Promise<HandshakeResponse> {
     const rawResponse = await this.sendUnencryptedMessage({
       command: "bw-handshake",
       payload: {
         publicKey,
       },
     });
-    return rawResponse.payload as HandshakePayload;
+    return rawResponse.payload as HandshakeResponse;
   }
 
   async checkStatus(key: string): Promise<DecryptedCommandData> {
