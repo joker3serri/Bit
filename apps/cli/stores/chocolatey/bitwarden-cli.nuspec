@@ -9,7 +9,7 @@
     <title>Bitwarden CLI</title>
     <authors>Bitwarden Inc.</authors>
     <projectUrl>https://bitwarden.com/</projectUrl>
-    <iconUrl>https://cdn.rawgit.com/bitwarden/desktop/51dd1341/resources/icon.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/bitwarden/brand/master/icons/256x256.png</iconUrl>
     <copyright>Copyright © 2015-2022 Bitwarden Inc.</copyright>
     <projectSourceUrl>https://github.com/bitwarden/clients/</projectSourceUrl>
     <docsUrl>https://help.bitwarden.com/article/cli/</docsUrl>
