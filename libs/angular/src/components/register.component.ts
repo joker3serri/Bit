@@ -110,11 +110,13 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
         this.accountCreated = true;
       }
       if (this.isInTrialFlow) {
-        this.platformUtilsService.showToast(
-          "success",
-          null,
-          this.i18nService.t("trialAccountCreated")
-        );
+        if (!this.accountCreated) {
+          this.platformUtilsService.showToast(
+            "success",
+            null,
+            this.i18nService.t("trialAccountCreated")
+          );
+        }
         const loginResponse = await this.logIn(email, masterPassword, this.captchaToken);
         if (loginResponse.captchaRequired) {
           return;
