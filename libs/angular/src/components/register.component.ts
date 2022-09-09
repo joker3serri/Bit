@@ -68,6 +68,8 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
 
   protected successRoute = "login";
 
+  protected accountCreated = false;
+
   constructor(
     protected formValidationErrorService: FormValidationErrorsService,
     protected formBuilder: UntypedFormBuilder,
@@ -96,17 +98,27 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     let name = this.formGroup.get("name")?.value;
     name = name === "" ? null : name; // Why do we do this?
     const masterPassword = this.formGroup.get("masterPassword")?.value;
-    await this.validateForm(showToast);
     try {
-      await this.registerAccount(await this.buildRegisterRequest(email, masterPassword, name));
+      if (!this.accountCreated) {
+        const registerResponse = await this.registerAccount(
+          await this.buildRegisterRequest(email, masterPassword, name),
+          showToast
+        );
+        if (registerResponse.captchaRequired) {
+          return;
+        }
+        this.accountCreated = true;
+      }
       if (this.isInTrialFlow) {
         this.platformUtilsService.showToast(
           "success",
           null,
           this.i18nService.t("trialAccountCreated")
         );
-        //login user here
-        await this.logIn(email, masterPassword, this.captchaToken);
+        const loginResponse = await this.logIn(email, masterPassword, this.captchaToken);
+        if (loginResponse.captchaRequired) {
+          return;
+        }
         this.createdAccount.emit(this.formGroup.get("email")?.value);
       } else {
         this.platformUtilsService.showToast(
@@ -169,7 +181,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     };
   }
 
-  private async validateForm(showToast: boolean) {
+  private async validateRegistration(showToast: boolean) {
     this.formGroup.markAllAsTouched();
     this.showErrorSummary = true;
 
@@ -240,26 +252,39 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     return request;
   }
 
-  private async registerAccount(request: RegisterRequest): Promise<void> {
+  private async registerAccount(
+    request: RegisterRequest,
+    showToast: boolean
+  ): Promise<{ captchaRequired: boolean }> {
+    await this.validateRegistration(showToast);
     this.formPromise = this.apiService.postRegister(request);
     try {
       await this.formPromise;
+      return { captchaRequired: false };
     } catch (e) {
       if (this.handleCaptchaRequired(e)) {
-        return;
+        return { captchaRequired: true };
       } else {
         throw e;
       }
     }
   }
 
-  private async logIn(email: string, masterPassword: string, captchaBypassToken: string) {
+  private async logIn(
+    email: string,
+    masterPassword: string,
+    captchaBypassToken: string
+  ): Promise<{ captchaRequired: boolean }> {
     const credentials = new PasswordLogInCredentials(
       email,
       masterPassword,
       captchaBypassToken,
       null
     );
-    await this.authService.logIn(credentials);
+    const loginResponse = await this.authService.logIn(credentials);
+    if (this.handleCaptchaRequired(loginResponse)) {
+      return { captchaRequired: true };
+    }
+    return { captchaRequired: false };
   }
 }
