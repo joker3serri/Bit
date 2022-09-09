@@ -96,36 +96,11 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     let name = this.formGroup.get("name")?.value;
     name = name === "" ? null : name; // Why do we do this?
     const masterPassword = this.formGroup.get("masterPassword")?.value;
-    const hint = this.formGroup.get("hint")?.value;
 
     await this.validateForm(showToast);
-
-    const kdf = DEFAULT_KDF_TYPE;
-    const kdfIterations = DEFAULT_KDF_ITERATIONS;
-    const key = await this.cryptoService.makeKey(masterPassword, email, kdf, kdfIterations);
-    const encKey = await this.cryptoService.makeEncKey(key);
-    const hashedPassword = await this.cryptoService.hashPassword(masterPassword, key);
-    const keys = await this.cryptoService.makeKeyPair(encKey[0]);
-    const request = new RegisterRequest(
-      email,
-      name,
-      hashedPassword,
-      hint,
-      encKey[1].encryptedString,
-      kdf,
-      kdfIterations,
-      this.referenceData,
-      this.captchaToken
-    );
-    request.keys = new KeysRequest(keys[0], keys[1].encryptedString);
-    const orgInvite = await this.stateService.getOrganizationInvitation();
-    if (orgInvite != null && orgInvite.token != null && orgInvite.organizationUserId != null) {
-      request.token = orgInvite.token;
-      request.organizationUserId = orgInvite.organizationUserId;
-    }
-
+    const registerRequest = await this.buildRegisterRequest(email, masterPassword, name);
     try {
-      this.formPromise = this.apiService.postRegister(request);
+      this.formPromise = this.apiService.postRegister(registerRequest);
       try {
         await this.formPromise;
       } catch (e) {
@@ -250,5 +225,37 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
         return;
       }
     }
+  }
+
+  private async buildRegisterRequest(
+    email: string,
+    masterPassword: string,
+    name: string
+  ): Promise<RegisterRequest> {
+    const hint = this.formGroup.get("hint")?.value;
+    const kdf = DEFAULT_KDF_TYPE;
+    const kdfIterations = DEFAULT_KDF_ITERATIONS;
+    const key = await this.cryptoService.makeKey(masterPassword, email, kdf, kdfIterations);
+    const encKey = await this.cryptoService.makeEncKey(key);
+    const hashedPassword = await this.cryptoService.hashPassword(masterPassword, key);
+    const keys = await this.cryptoService.makeKeyPair(encKey[0]);
+    const request = new RegisterRequest(
+      email,
+      name,
+      hashedPassword,
+      hint,
+      encKey[1].encryptedString,
+      kdf,
+      kdfIterations,
+      this.referenceData,
+      this.captchaToken
+    );
+    request.keys = new KeysRequest(keys[0], keys[1].encryptedString);
+    const orgInvite = await this.stateService.getOrganizationInvitation();
+    if (orgInvite != null && orgInvite.token != null && orgInvite.organizationUserId != null) {
+      request.token = orgInvite.token;
+      request.organizationUserId = orgInvite.organizationUserId;
+    }
+    return request;
   }
 }
