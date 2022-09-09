@@ -96,21 +96,9 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     let name = this.formGroup.get("name")?.value;
     name = name === "" ? null : name; // Why do we do this?
     const masterPassword = this.formGroup.get("masterPassword")?.value;
-
     await this.validateForm(showToast);
-    const registerRequest = await this.buildRegisterRequest(email, masterPassword, name);
     try {
-      this.formPromise = this.apiService.postRegister(registerRequest);
-      try {
-        await this.formPromise;
-      } catch (e) {
-        if (this.handleCaptchaRequired(e)) {
-          return;
-        } else {
-          throw e;
-        }
-      }
-
+      await this.registerAccount(await this.buildRegisterRequest(email, masterPassword, name));
       if (this.isInTrialFlow) {
         this.platformUtilsService.showToast(
           "success",
@@ -257,5 +245,18 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       request.organizationUserId = orgInvite.organizationUserId;
     }
     return request;
+  }
+
+  private async registerAccount(request: RegisterRequest): Promise<void> {
+    this.formPromise = this.apiService.postRegister(request);
+    try {
+      await this.formPromise;
+    } catch (e) {
+      if (this.handleCaptchaRequired(e)) {
+        return;
+      } else {
+        throw e;
+      }
+    }
   }
 }
