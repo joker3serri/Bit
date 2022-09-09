@@ -92,14 +92,14 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
 
   async submit(showToast = true) {
     let email = this.formGroup.get("email")?.value;
+    email = email.trim().toLowerCase();
     let name = this.formGroup.get("name")?.value;
+    name = name === "" ? null : name; // Why do we do this?
     const masterPassword = this.formGroup.get("masterPassword")?.value;
     const hint = this.formGroup.get("hint")?.value;
 
     await this.validateForm(showToast);
 
-    name = name === "" ? null : name;
-    email = email.trim().toLowerCase();
     const kdf = DEFAULT_KDF_TYPE;
     const kdfIterations = DEFAULT_KDF_ITERATIONS;
     const key = await this.cryptoService.makeKey(masterPassword, email, kdf, kdfIterations);
