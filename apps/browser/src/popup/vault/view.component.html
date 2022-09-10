@@ -19,7 +19,7 @@
     <div class="box-content">
       <div class="box-content-row">
         <label for="name">{{ "name" | i18n }}</label>
-        <input id="name" type="text" [value]="cipher.name" readonly aria-readonly="true" />
+        <input id="name" type="text" [value]="cipher.name" readonly />
       </div>
       <!-- Login -->
       <div *ngIf="cipher.login">
@@ -32,13 +32,7 @@
               (dragstart)="setTextDataOnDrag($event, cipher.login.username)"
               >{{ "username" | i18n }}
             </label>
-            <input
-              id="loginUsername"
-              type="text"
-              [value]="cipher.login.username"
-              readonly
-              aria-readonly="true"
-            />
+            <input id="loginUsername" type="text" [value]="cipher.login.username" readonly />
           </div>
           <div class="action-buttons">
             <button
@@ -339,13 +333,7 @@
             "website" | i18n
           }}</label>
           <span title="{{ u.uri }}">
-            <input
-              id="hostOrUri{{ i }}"
-              type="text"
-              [value]="u.hostOrUri"
-              readonly
-              aria-readonly="true"
-            />
+            <input id="hostOrUri{{ i }}" type="text" [value]="u.hostOrUri" readonly />
           </span>
         </div>
         <div class="action-buttons">
@@ -380,13 +368,7 @@
     </h2>
     <div class="box-content">
       <div class="box-content-row">
-        <textarea
-          id="notes"
-          [value]="cipher.notes"
-          rows="6"
-          readonly
-          aria-readonly="true"
-        ></textarea>
+        <textarea id="notes" [value]="cipher.notes" rows="6" readonly></textarea>
       </div>
     </div>
   </div>
