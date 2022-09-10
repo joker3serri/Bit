@@ -3,39 +3,72 @@
     {{ "customFields" | i18n }}
   </h2>
   <div class="box-content">
-    <div class="box-content-row box-content-row-flex" *ngFor="let field of cipher.fields">
+    <div
+      class="box-content-row box-content-row-flex"
+      *ngFor="let f of cipher.fields; let i = index"
+    >
       <div class="row-main">
-        <span class="row-label">{{ field.name }}</span>
-        <div *ngIf="field.type === fieldType.Text">
-          {{ field.value || "&nbsp;" }}
-        </div>
-        <div *ngIf="field.type === fieldType.Hidden">
-          <span *ngIf="!field.showValue" class="monospaced">{{ field.maskedValue }}</span>
+        <label for="fieldName{{ i }}">{{ f.name }}</label>
+
+        <input
+          *ngIf="f.type === fieldType.Text"
+          id="fieldName{{ i }}"
+          type="text"
+          [value]="f.value"
+          readonly
+        />
+
+        <input
+          *ngIf="f.type === fieldType.Hidden"
+          id="fieldName{{ i }}"
+          type="{{ f.showValue ? 'text' : 'password' }}"
+          class="sr-only"
+          [value]="f.value"
+          readonly
+        />
+        <div *ngIf="f.type === fieldType.Hidden" aria-hidden="true">
+          <span *ngIf="!f.showValue" class="monospaced">{{ f.maskedValue }}</span>
           <span
-            *ngIf="field.showValue && !field.showCount"
+            *ngIf="f.showValue && !f.showCount"
             class="monospaced show-whitespace"
-            [innerHTML]="field.value | colorPassword"
+            [innerHTML]="f.value | colorPassword"
           ></span>
           <span
-            *ngIf="field.showValue && field.showCount"
-            [innerHTML]="field.value | colorPasswordCount"
+            *ngIf="f.showValue && f.showCount"
+            [innerHTML]="f.value | colorPasswordCount"
           ></span>
         </div>
-        <div *ngIf="field.type === fieldType.Boolean">
-          <i class="bwi bwi-check-square" *ngIf="field.value === 'true'" aria-hidden="true"></i>
-          <i class="bwi bwi-square" *ngIf="field.value !== 'true'" aria-hidden="true"></i>
-          <span class="sr-only">{{ field.value }}</span>
+
+        <input
+          *ngIf="f.type === fieldType.Boolean"
+          id="fieldName{{ i }}"
+          type="checkbox"
+          class="sr-only"
+          [attr.checked]="f.value == 'true' ? '' : null"
+          disabled
+        />
+        <div *ngIf="f.type === fieldType.Boolean" aria-hidden="true">
+          <i class="bwi bwi-check-square" *ngIf="f.value === 'true'" aria-hidden="true"></i>
+          <i class="bwi bwi-square" *ngIf="f.value !== 'true'" aria-hidden="true"></i>
         </div>
-        <div *ngIf="field.type === fieldType.Linked" class="box-content-row-flex">
+
+        <input
+          *ngIf="f.type === fieldType.Linked"
+          id="fieldName{{ i }}"
+          type="text"
+          class="sr-only"
+          [value]="('linkedValue' | i18n) + ': ' + cipher.linkedFieldI18nKey(f.linkedId)"
+          readonly
+        />
+        <div *ngIf="f.type === fieldType.Linked" class="box-content-row-flex" aria-hidden="true">
           <div class="icon icon-small">
             <i
               class="bwi bwi-link"
               aria-hidden="true"
               appA11yTitle="{{ 'linkedValue' | i18n }}"
             ></i>
-            <span class="sr-only">{{ "linkedValue" | i18n }}</span>
           </div>
-          <span>{{ cipher.linkedFieldI18nKey(field.linkedId) | i18n }}</span>
+          <span>{{ cipher.linkedFieldI18nKey(f.linkedId) | i18n }}</span>
         </div>
       </div>
       <div class="action-buttons action-buttons-fixed">
@@ -43,11 +76,11 @@
           type="button"
           class="row-btn"
           appStopClick
-          attr.aria-label="{{ 'toggleCharacterCount' | i18n }} {{ field.name }}"
+          attr.aria-label="{{ 'toggleCharacterCount' | i18n }} {{ f.name }}"
           appA11yTitle="{{ 'toggleCharacterCount' | i18n }}"
-          *ngIf="field.type === fieldType.Hidden && cipher.viewPassword && field.showValue"
-          (click)="toggleFieldCount(field)"
-          [attr.aria-pressed]="field.showCount"
+          *ngIf="f.type === fieldType.Hidden && cipher.viewPassword && f.showValue"
+          (click)="toggleFieldCount(f)"
+          [attr.aria-pressed]="f.showCount"
         >
           <i class="bwi bwi-lg bwi-numbered-list" aria-hidden="true"></i>
         </button>
@@ -55,33 +88,31 @@
           type="button"
           class="row-btn"
           appStopClick
-          attr.aria-label="{{ 'toggleVisibility' | i18n }} {{ field.name }}"
+          attr.aria-label="{{ 'toggleVisibility' | i18n }} {{ f.name }}"
           appA11yTitle="{{ 'toggleVisibility' | i18n }}"
-          *ngIf="field.type === fieldType.Hidden && cipher.viewPassword"
-          (click)="toggleFieldValue(field)"
-          [attr.aria-pressed]="field.showValue"
+          *ngIf="f.type === fieldType.Hidden && cipher.viewPassword"
+          (click)="toggleFieldValue(f)"
+          [attr.aria-pressed]="f.showValue"
         >
           <i
             class="bwi bwi-lg"
             aria-hidden="true"
-            [ngClass]="{ 'bwi-eye': !field.showValue, 'bwi-eye-slash': field.showValue }"
+            [ngClass]="{ 'bwi-eye': !f.showValue, 'bwi-eye-slash': f.showValue }"
           ></i>
         </button>
         <button
           type="button"
           class="row-btn"
           appStopClick
-          attr.aria-label="{{ 'copyValue' | i18n }} {{ field.name }}"
+          attr.aria-label="{{ 'copyValue' | i18n }} {{ f.name }}"
           appA11yTitle="{{ 'copyValue' | i18n }}"
           *ngIf="
-            field.value &&
-            field.type !== fieldType.Boolean &&
-            field.type !== fieldType.Linked &&
-            !(field.type === fieldType.Hidden && !cipher.viewPassword)
+            f.value &&
+            f.type !== fieldType.Boolean &&
+            f.type !== fieldType.Linked &&
+            !(f.type === fieldType.Hidden && !cipher.viewPassword)
           "
-          (click)="
-            copy(field.value, 'value', field.type === fieldType.Hidden ? 'H_Field' : 'Field')
-          "
+          (click)="copy(f.value, 'value', f.type === fieldType.Hidden ? 'H_Field' : 'Field')"
         >
           <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
         </button>

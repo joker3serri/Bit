@@ -423,3 +423,14 @@ app-vault-view .box-footer {
 html.force_redraw {
   animation: redraw 1s linear infinite;
 }
+
+/* cipher view */
+input[readonly]:focus-visible,
+textarea[readonly]:focus-visible,
+input.sr-only:focus-visible + div {
+  border-bottom: 1px solid currentColor !important;
+  @include themify($themes) {
+    border-bottom-color: themed("mutedColor") !important;
+  }
+  margin-bottom: -1px;
+}
