@@ -4,8 +4,6 @@ import { Subject, takeUntil } from "rxjs";
 
 import { SecretListView } from "@bitwarden/common/models/view/secretListView";
 
-import { SecretService } from "./secret.service";
-
 @Component({
   selector: "sm-secrets-list",
   templateUrl: "./secrets-list.component.html",
@@ -24,7 +22,7 @@ export class SecretsListComponent implements OnDestroy {
 
   selection = new SelectionModel<string>(true, []);
 
-  constructor(public secretService: SecretService) {
+  constructor() {
     this.selection.changed
       .pipe(takeUntil(this.destroy$))
       .subscribe((_) => this.onSecretCheckedEvent.emit(this.selection.selected));

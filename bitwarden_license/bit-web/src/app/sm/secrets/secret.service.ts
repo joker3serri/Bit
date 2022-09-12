@@ -31,7 +31,7 @@ export class SecretService {
   async getBySecretId(secretId: string): Promise<SecretView> {
     const r = await this.apiService.send("GET", "/secrets/" + secretId, null, true, true);
     const secretResponse = new SecretResponse(r);
-    return await this.toSecretView(secretResponse);
+    return await this.getSecretView(secretResponse);
   }
 
   async getSecrets(organizationId: string): Promise<SecretListView[]> {
@@ -43,10 +43,7 @@ export class SecretService {
       true
     );
     const results = new ListResponse(r, SecretIdentifierResponse);
-    const secrets: SecretListView[] = results.data.map(function (result) {
-      return result.toSecretListView();
-    });
-    return await this.decryptSecretsListView(organizationId, secrets);
+    return await this.getSecretsListView(organizationId, results.data);
   }
 
   async create(organizationId: string, secretView: SecretView) {
@@ -58,68 +55,81 @@ export class SecretService {
       true,
       true
     );
-    this._secret.next(await this.toSecretView(new SecretResponse(r)));
+    this._secret.next(await this.getSecretView(new SecretResponse(r)));
   }
 
   async update(organizationId: string, secretView: SecretView) {
     const request = await this.getSecretRequest(organizationId, secretView);
     const r = await this.apiService.send("PUT", "/secrets/" + secretView.id, request, true, true);
-    this._secret.next(await this.toSecretView(new SecretResponse(r)));
+    this._secret.next(await this.getSecretView(new SecretResponse(r)));
+  }
+
+  private async getOrganizationKey(organizationId: string): Promise<SymmetricCryptoKey> {
+    return await this.cryptoService.getOrgKey(organizationId);
   }
 
   private async getSecretRequest(
     organizationId: string,
     secretView: SecretView
   ): Promise<SecretRequest> {
-    const encryptedSecretView = await this.encryptSecretView(organizationId, secretView);
+    const orgKey = await this.getOrganizationKey(organizationId);
     const request = new SecretRequest();
-    request.key = encryptedSecretView.name;
-    request.value = encryptedSecretView.value;
-    request.note = encryptedSecretView.note;
+    const keyPromise = this.encryptService.encrypt(secretView.name, orgKey);
+    const valuePromise = this.encryptService.encrypt(secretView.value, orgKey);
+    const notePromise = this.encryptService.encrypt(secretView.note, orgKey);
+    await Promise.all([keyPromise, valuePromise, notePromise]).then(([key, value, note]) => {
+      request.key = key.encryptedString;
+      request.value = value.encryptedString;
+      request.note = note.encryptedString;
+    });
     return request;
   }
 
-  private async getOrganizationKey(organizationId: string) {
-    return await this.cryptoService.getOrgKey(organizationId);
-  }
-
-  private async decryptSecretsListView(organizationId: string, secrets: SecretListView[]) {
-    const orgKey: SymmetricCryptoKey = await this.getOrganizationKey(organizationId);
-    secrets.forEach(async (secrets) => {
-      secrets.name = await this.encryptService.decryptToUtf8(new EncString(secrets.name), orgKey);
-    });
-    return secrets;
-  }
-
-  private async encryptSecretView(organizationId: string, secretView: SecretView) {
-    const orgKey: SymmetricCryptoKey = await this.getOrganizationKey(organizationId);
-    secretView.name = (await this.encryptService.encrypt(secretView.name, orgKey)).encryptedString;
-    secretView.value = (
-      await this.encryptService.encrypt(secretView.value, orgKey)
-    ).encryptedString;
-    secretView.note = (await this.encryptService.encrypt(secretView.note, orgKey)).encryptedString;
-    return secretView;
-  }
-
-  private async toSecretView(secretResponse: SecretResponse): Promise<SecretView> {
-    const orgKey: SymmetricCryptoKey = await this.getOrganizationKey(secretResponse.organizationId);
+  private async getSecretView(secretResponse: SecretResponse): Promise<SecretView> {
+    const orgKey = await this.getOrganizationKey(secretResponse.organizationId);
     const secretView = new SecretView();
     secretView.id = secretResponse.id;
     secretView.organizationId = secretResponse.organizationId;
-    secretView.name = await this.encryptService.decryptToUtf8(
+    secretView.creationDate = secretResponse.creationDate;
+    secretView.revisionDate = secretResponse.revisionDate;
+    const namePromise = this.encryptService.decryptToUtf8(
       new EncString(secretResponse.name),
       orgKey
     );
-    secretView.value = await this.encryptService.decryptToUtf8(
+    const valuePromise = this.encryptService.decryptToUtf8(
       new EncString(secretResponse.value),
       orgKey
     );
-    secretView.note = await this.encryptService.decryptToUtf8(
+    const notePromise = this.encryptService.decryptToUtf8(
       new EncString(secretResponse.note),
       orgKey
     );
-    secretView.creationDate = secretResponse.creationDate;
-    secretView.revisionDate = secretResponse.revisionDate;
+    await Promise.all([namePromise, valuePromise, notePromise]).then(([name, value, note]) => {
+      secretView.name = name;
+      secretView.value = value;
+      secretView.note = note;
+    });
     return secretView;
+  }
+
+  private async getSecretsListView(
+    organizationId: string,
+    secrets: SecretIdentifierResponse[]
+  ): Promise<SecretListView[]> {
+    const orgKey = await this.getOrganizationKey(organizationId);
+    return await Promise.all(
+      secrets.map(async (s: SecretIdentifierResponse) => {
+        const secretListView = new SecretListView();
+        secretListView.id = s.id;
+        secretListView.organizationId = s.organizationId;
+        secretListView.name = await this.encryptService.decryptToUtf8(
+          new EncString(s.name),
+          orgKey
+        );
+        secretListView.creationDate = s.creationDate;
+        secretListView.revisionDate = s.revisionDate;
+        return secretListView;
+      })
+    );
   }
 }
