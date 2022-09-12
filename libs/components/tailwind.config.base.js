@@ -81,6 +81,9 @@ module.exports = {
       opacity: {
         2: ".02",
       },
+      maxWidth: {
+        "90vw": "90vw",
+      },
     },
   },
   plugins: [],
