@@ -68,7 +68,7 @@ export default {
 const ContentTabGroupTemplate: Story<TabGroupComponent> = (args: any) => ({
   props: args,
   template: `
-    <bit-tab-group label="Main Content Tabs">
+    <bit-tab-group label="Main Content Tabs" class="tw-text-main">
         <bit-tab label="First Tab">First Tab Content</bit-tab>
         <bit-tab label="Second Tab">Second Tab Content</bit-tab>
         <bit-tab>
@@ -106,7 +106,7 @@ export const NavigationTabs = NavTabGroupTemplate.bind({});
 const PreserveContentTabGroupTemplate: Story<TabGroupComponent> = (args: any) => ({
   props: args,
   template: `
-    <bit-tab-group label="Preserve Content Tabs" [preserveContent]="true">
+    <bit-tab-group label="Preserve Content Tabs" [preserveContent]="true" class="tw-text-main">
         <bit-tab label="Text Tab">
           <p>
             Play the video in the other tab and switch back to hear the video is still playing.
