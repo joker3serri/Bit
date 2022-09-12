@@ -18,7 +18,7 @@ import { MessageCommon } from "../../src/models/nativeMessaging/messageCommon";
 import { UnencryptedMessage } from "../../src/models/nativeMessaging/unencryptedMessage";
 import { UnencryptedMessageResponse } from "../../src/models/nativeMessaging/unencryptedMessageResponse";
 
-import IPCService from "./ipcService";
+import IPCService, { IPCOptions } from "./ipcService";
 import * as config from "./variables";
 
 type HandshakeResponse = {
@@ -26,6 +26,8 @@ type HandshakeResponse = {
   sharedKey: string;
   error?: "canceled" | "cannot-decrypt";
 };
+
+const CONFIRMATION_MESSAGE_TIMEOUT = 100 * 1000; // 100 seconds
 
 export default class NativeMessageService {
   private ipcService: IPCService;
@@ -49,12 +51,17 @@ export default class NativeMessageService {
   // Commands
 
   async sendHandshake(publicKey: string): Promise<HandshakeResponse> {
-    const rawResponse = await this.sendUnencryptedMessage({
-      command: "bw-handshake",
-      payload: {
-        publicKey,
+    const rawResponse = await this.sendUnencryptedMessage(
+      {
+        command: "bw-handshake",
+        payload: {
+          publicKey,
+        },
       },
-    });
+      {
+        overrideTimeout: CONFIRMATION_MESSAGE_TIMEOUT,
+      }
+    );
     return rawResponse.payload as HandshakeResponse;
   }
 
@@ -146,23 +153,26 @@ export default class NativeMessageService {
   // Private message sending
 
   private async sendEncryptedMessage(
-    message: Omit<EncryptedMessage, keyof MessageCommon>
+    message: Omit<EncryptedMessage, keyof MessageCommon>,
+    options: IPCOptions = {}
   ): Promise<EncryptedMessageResponse> {
-    const result = await this.sendMessage(message);
+    const result = await this.sendMessage(message, options);
     return result as EncryptedMessageResponse;
   }
 
   private async sendUnencryptedMessage(
-    message: Omit<UnencryptedMessage, keyof MessageCommon>
+    message: Omit<UnencryptedMessage, keyof MessageCommon>,
+    options: IPCOptions = {}
   ): Promise<UnencryptedMessageResponse> {
-    const result = await this.sendMessage(message);
+    const result = await this.sendMessage(message, options);
     return result as UnencryptedMessageResponse;
   }
 
   private async sendMessage(
     message:
       | Omit<UnencryptedMessage, keyof MessageCommon>
-      | Omit<EncryptedMessage, keyof MessageCommon>
+      | Omit<EncryptedMessage, keyof MessageCommon>,
+    options: IPCOptions
   ): Promise<EncryptedMessageResponse | UnencryptedMessageResponse> {
     // Attempt to connect before sending any messages. If the connection has already
     // been made, this is a NOOP within the IPCService.
@@ -180,7 +190,7 @@ export default class NativeMessageService {
 
     console.log(`[NativeMessageService] sendMessage with id: ${fullMessage.messageId}`);
 
-    const response = await this.ipcService.sendMessage(fullMessage);
+    const response = await this.ipcService.sendMessage(fullMessage, options);
 
     console.log(`[NativeMessageService] received response for message: ${fullMessage.messageId}`);
 

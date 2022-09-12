@@ -13,7 +13,7 @@ NodeIPC.config.maxRetries = 0;
 NodeIPC.config.silent = true;
 
 const DESKTOP_APP_PATH = `${homedir}/tmp/app.bitwarden`;
-const DEFAULT_MESSAGE_TIMEOUT = 10 * 1500; // 15 seconds
+const DEFAULT_MESSAGE_TIMEOUT = 10 * 1000; // 10 seconds
 
 export type MessageHandler = (MessageCommon) => void;
 
@@ -22,6 +22,10 @@ export enum IPCConnectionState {
   Connecting = "connecting",
   Connected = "connected",
 }
+
+export type IPCOptions = {
+  overrideTimeout?: number;
+};
 
 export default class IPCService {
   // The current connection state of the socket.
@@ -104,7 +108,10 @@ export default class IPCService {
     }
   }
 
-  async sendMessage(message: MessageCommon): Promise<UnencryptedMessageResponse> {
+  async sendMessage(
+    message: MessageCommon,
+    options: IPCOptions = {}
+  ): Promise<UnencryptedMessageResponse> {
     console.log("[IPCService] sendMessage");
     if (this.pendingMessages.has(message.messageId)) {
       throw new Error(`A message with the id: ${message.messageId} has already been sent.`);
@@ -125,7 +132,7 @@ export default class IPCService {
       // on messages
       return race({
         promise: deferred.getPromise(),
-        timeout: DEFAULT_MESSAGE_TIMEOUT,
+        timeout: options?.overrideTimeout ?? DEFAULT_MESSAGE_TIMEOUT,
         error: new Error(`Message: ${message.messageId} timed out`),
       });
     } catch (error) {
