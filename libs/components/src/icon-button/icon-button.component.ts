@@ -63,18 +63,11 @@ const styles: Record<IconButtonStyle, string[]> = {
   ],
 };
 
-export type IconButtonSize = "button" | "base" | "xl" | "2xl";
+export type IconButtonSize = "default" | "small";
 
 const sizes: Record<IconButtonSize, string[]> = {
-  /**
-   * `button` has similar sizing/padding to a bitButton, but should be used
-   * where the button only contains an icon.
-   * Use this instead of placing an icon inside of a bitButton.
-   */
-  button: ["tw-px-2.5", "tw-py-1.5"],
-  base: ["tw-leading-none", "tw-text-base", "tw-p-1"],
-  xl: ["tw-leading-none", "tw-text-xl", "tw-p-1"],
-  "2xl": ["tw-leading-none", "tw-text-2xl", "tw-p-1"],
+  default: ["tw-px-2.5", "tw-py-1.5"],
+  small: ["tw-leading-none", "tw-text-base", "tw-p-1"],
 };
 
 @Component({
@@ -86,7 +79,7 @@ export class BitIconButtonComponent {
 
   @Input() buttonType: IconButtonStyle = "main";
 
-  @Input() size: IconButtonSize = "button";
+  @Input() size: IconButtonSize = "default";
 
   @HostBinding("class") get classList() {
     return [

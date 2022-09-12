@@ -1,5 +1,5 @@
 <div
-  class="tw-flex tw-items-center tw-gap-2 tw-py-2.5 tw-px-4 tw-text-contrast"
+  class="tw-flex tw-items-center tw-gap-2 tw-py-2.5 tw-px-4 tw-pr-2.5 tw-text-contrast"
   [ngClass]="bannerClass"
   [attr.role]="useAlertRole ? 'status' : null"
   [attr.aria-live]="useAlertRole ? 'polite' : null"
@@ -11,7 +11,7 @@
   <button
     bitIconButton="bwi-close"
     buttonType="contrast"
-    size="base"
+    size="default"
     (click)="onClose.emit()"
     [attr.title]="'close' | i18n"
     [attr.aria-label]="'close' | i18n"
