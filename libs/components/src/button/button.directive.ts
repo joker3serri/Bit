@@ -12,8 +12,9 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "focus:tw-bg-primary-700",
     "focus:tw-border-primary-700",
     "disabled:tw-bg-primary-500/60",
-    "disabled:tw-border-primary-500/2", // Bg + Border needed further opacity
+    "disabled:tw-border-primary-500/60",
     "disabled:!tw-text-contrast/60",
+    "disabled:tw-bg-clip-padding",
   ],
   secondary: [
     "tw-bg-transparent",
