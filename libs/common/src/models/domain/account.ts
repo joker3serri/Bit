@@ -298,7 +298,7 @@ export class Account {
     });
   }
 
-  static fromJSON(json: any): Account {
+  static fromJSON(json: Jsonify<Account>): Account {
     return Object.assign(new Account({}), json, {
       keys: AccountKeys.fromJSON(json?.keys as any),
       profile: AccountProfile.fromJSON(json?.profile),
