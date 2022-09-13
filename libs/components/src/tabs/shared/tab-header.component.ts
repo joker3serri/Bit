@@ -6,7 +6,7 @@ import { Component } from "@angular/core";
 @Component({
   selector: "bit-tab-header",
   host: {
-    class: "tw-h-16 tw-bg-background-alt tw-flex tw-items-end",
+    class: "tw-h-16 tw-pl-4 tw-bg-background-alt tw-flex tw-items-end",
   },
   template: `<ng-content></ng-content>`,
 })
