@@ -14,7 +14,7 @@ export enum OperationType {
   Edit,
 }
 
-interface SecretOperation {
+export interface SecretOperation {
   organizationId: string;
   operation: OperationType;
   secretId?: string;
@@ -54,45 +54,34 @@ export class SecretDialogComponent implements OnInit {
   }
 
   get title() {
-    if (this.data.operation === OperationType.Add) {
-      return "addSecret";
-    }
-    return "editSecret";
+    return this.data.operation === OperationType.Add ? "addSecret" : "editSecret";
   }
 
   async onSave() {
-    if (this.data.operation === OperationType.Add) {
-      await this.createSecret();
-    } else if (this.data.operation === OperationType.Edit && this.data.secretId) {
-      await this.updateSecret();
-    }
-  }
-
-  private async createSecret() {
     try {
       const secretView = this.getSecretView();
-      await this.secretService.create(this.data.organizationId, secretView);
+      if (this.data.operation === OperationType.Add) {
+        await this.createSecret(secretView);
+      } else if (this.data.operation === OperationType.Edit && this.data.secretId) {
+        secretView.id = this.data.secretId;
+        await this.updateSecret(secretView);
+      }
       this.dialogRef.close();
-      this.platformUtilsService.showToast("success", null, this.i18nService.t("secretCreated"));
     } catch (e) {
       this.logService.error(e);
       this.dialogRef.close();
-      this.showErrorToast();
+      this.showErrorToast(e.message);
     }
   }
 
-  private async updateSecret() {
-    try {
-      const secretView = this.getSecretView();
-      secretView.id = this.data.secretId;
-      await this.secretService.update(this.data.organizationId, secretView);
-      this.dialogRef.close();
-      this.platformUtilsService.showToast("success", null, this.i18nService.t("secretEdited"));
-    } catch (e) {
-      this.logService.error(e);
-      this.dialogRef.close();
-      this.showErrorToast();
-    }
+  private async createSecret(secretView: SecretView) {
+    await this.secretService.create(this.data.organizationId, secretView);
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("secretCreated"));
+  }
+
+  private async updateSecret(secretView: SecretView) {
+    await this.secretService.update(this.data.organizationId, secretView);
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("secretEdited"));
   }
 
   private getSecretView() {
@@ -104,9 +93,14 @@ export class SecretDialogComponent implements OnInit {
     return secretView;
   }
 
-  private showErrorToast() {
+  private showErrorToast(error: string) {
     const title = this.i18nService.t("errorOccurred");
-    const text = this.i18nService.t("unexpectedError");
+    let text: string;
+    if (!error) {
+      text = this.i18nService.t("unexpectedError");
+    } else {
+      text = error;
+    }
     this.platformUtilsService.showToast("error", title, text);
   }
 }

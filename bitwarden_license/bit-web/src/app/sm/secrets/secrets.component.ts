@@ -5,7 +5,11 @@ import { combineLatestWith, startWith, switchMap } from "rxjs";
 import { SecretListView } from "@bitwarden/common/models/view/secretListView";
 import { DialogService } from "@bitwarden/components";
 
-import { OperationType, SecretDialogComponent } from "./dialog/secret-dialog.component";
+import {
+  OperationType,
+  SecretDialogComponent,
+  SecretOperation,
+} from "./dialog/secret-dialog.component";
 import { SecretService } from "./secret.service";
 
 @Component({
@@ -41,7 +45,7 @@ export class SecretsComponent implements OnInit {
   }
 
   openEditSecret(secretId: string) {
-    this.dialogService.open(SecretDialogComponent, {
+    this.dialogService.open<unknown, SecretOperation>(SecretDialogComponent, {
       data: {
         organizationId: this.organizationId,
         operation: OperationType.Edit,

@@ -11,7 +11,7 @@ import { SecretListView } from "@bitwarden/common/models/view/secretListView";
 import { SecretView } from "@bitwarden/common/models/view/secretView";
 
 import { SecretRequest } from "./requests/secret.request";
-import { SecretIdentifierResponse } from "./responses/secret-identifier.response";
+import { SecretListItemResponse } from "./responses/secret-list-item.response";
 import { SecretResponse } from "./responses/secret.response";
 
 @Injectable({
@@ -31,7 +31,7 @@ export class SecretService {
   async getBySecretId(secretId: string): Promise<SecretView> {
     const r = await this.apiService.send("GET", "/secrets/" + secretId, null, true, true);
     const secretResponse = new SecretResponse(r);
-    return await this.getSecretView(secretResponse);
+    return await this.createSecretView(secretResponse);
   }
 
   async getSecrets(organizationId: string): Promise<SecretListView[]> {
@@ -42,8 +42,8 @@ export class SecretService {
       true,
       true
     );
-    const results = new ListResponse(r, SecretIdentifierResponse);
-    return await this.getSecretsListView(organizationId, results.data);
+    const results = new ListResponse(r, SecretListItemResponse);
+    return await this.createSecretsListView(organizationId, results.data);
   }
 
   async create(organizationId: string, secretView: SecretView) {
@@ -55,13 +55,13 @@ export class SecretService {
       true,
       true
     );
-    this._secret.next(await this.getSecretView(new SecretResponse(r)));
+    this._secret.next(await this.createSecretView(new SecretResponse(r)));
   }
 
   async update(organizationId: string, secretView: SecretView) {
     const request = await this.getSecretRequest(organizationId, secretView);
     const r = await this.apiService.send("PUT", "/secrets/" + secretView.id, request, true, true);
-    this._secret.next(await this.getSecretView(new SecretResponse(r)));
+    this._secret.next(await this.createSecretView(new SecretResponse(r)));
   }
 
   private async getOrganizationKey(organizationId: string): Promise<SymmetricCryptoKey> {
@@ -85,7 +85,7 @@ export class SecretService {
     return request;
   }
 
-  private async getSecretView(secretResponse: SecretResponse): Promise<SecretView> {
+  private async createSecretView(secretResponse: SecretResponse): Promise<SecretView> {
     const orgKey = await this.getOrganizationKey(secretResponse.organizationId);
     const secretView = new SecretView();
     secretView.id = secretResponse.id;
@@ -112,13 +112,13 @@ export class SecretService {
     return secretView;
   }
 
-  private async getSecretsListView(
+  private async createSecretsListView(
     organizationId: string,
-    secrets: SecretIdentifierResponse[]
+    secrets: SecretListItemResponse[]
   ): Promise<SecretListView[]> {
     const orgKey = await this.getOrganizationKey(organizationId);
     return await Promise.all(
-      secrets.map(async (s: SecretIdentifierResponse) => {
+      secrets.map(async (s: SecretListItemResponse) => {
         const secretListView = new SecretListView();
         secretListView.id = s.id;
         secretListView.organizationId = s.organizationId;
