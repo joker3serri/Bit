@@ -140,16 +140,7 @@
           </div>
           <div
             class="box-content-row box-content-row-flex totp"
-            *ngIf="
-              cipher.login.totp &&
-              !canAccessPremium &&
-              ((!organization && !cipher.organizationId) ||
-                (organization && !organization.useTotp) ||
-                (!organization &&
-                  !canAccessPremium &&
-                  cipher.organizationId &&
-                  !cipher.organizationUseTotp))
-            "
+            *ngIf="showPremiumRequiredTotp"
           >
             <div class="row-main">
               <span class="row-label">{{ "verificationCodeTotp" | i18n }}</span>
