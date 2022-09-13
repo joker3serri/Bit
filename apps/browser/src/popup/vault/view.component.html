@@ -18,7 +18,13 @@
     </h2>
     <div class="box-content">
       <div class="box-content-row">
-        <label for="name">{{ "name" | i18n }}</label>
+        <label
+          for="name"
+          class="draggable"
+          draggable="true"
+          (dragstart)="setTextDataOnDrag($event, cipher.name)"
+          >{{ "name" | i18n }}</label
+        >
         <input id="name" type="text" [value]="cipher.name" readonly />
       </div>
       <!-- Login -->
@@ -144,7 +150,7 @@
         <div
           class="box-content-row box-content-row-flex totp"
           [ngClass]="{ low: totpLow }"
-          *ngIf="cipher.login.totp && totpCode && canAccessPremium"
+          *ngIf="cipher.login.totp && totpCode"
         >
           <div class="row-main">
             <label
@@ -184,10 +190,7 @@
           </div>
         </div>
 
-        <div
-          class="box-content-row box-content-row-flex totp"
-          *ngIf="cipher.login.totp && !canAccessPremium"
-        >
+        <div class="box-content-row box-content-row-flex totp" *ngIf="showPremiumRequiredTotp">
           <div class="row-main">
             <span class="row-label">{{ "verificationCodeTotp" | i18n }}</span>
             <span class="row-label">
@@ -201,7 +204,13 @@
       <!-- Card -->
       <div *ngIf="cipher.card">
         <div class="box-content-row" *ngIf="cipher.card.cardholderName">
-          <label for="cardCardholderName">{{ "cardholderName" | i18n }}</label>
+          <label
+            for="cardCardholderName"
+            class="draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, cipher.card.cardholderName)"
+            >{{ "cardholderName" | i18n }}</label
+          >
           <input
             id="cardCardholderName"
             type="text"
@@ -212,7 +221,13 @@
         </div>
         <div class="box-content-row box-content-row-flex" *ngIf="cipher.card.number">
           <div class="row-main">
-            <label for="cardNumber">{{ "number" | i18n }}</label>
+            <label
+              for="cardNumber"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.card.number)"
+              >{{ "number" | i18n }}</label
+            >
             <input
               id="cardNumber"
               class="monospaced"
@@ -250,7 +265,13 @@
           </div>
         </div>
         <div class="box-content-row" *ngIf="cipher.card.brand">
-          <label for="cardBrand">{{ "brand" | i18n }}</label>
+          <label
+            for="cardBrand"
+            class="draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, cipher.card.brand)"
+            >{{ "brand" | i18n }}</label
+          >
           <input
             id="cardBrand"
             type="text"
@@ -260,7 +281,13 @@
           />
         </div>
         <div class="box-content-row" *ngIf="cipher.card.expiration">
-          <label for="cardExp">{{ "expiration" | i18n }}</label>
+          <label
+            for="cardExp"
+            class="draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, cipher.card.expiration)"
+            >{{ "expiration" | i18n }}</label
+          >
           <input
             id="cardExp"
             type="text"
@@ -271,7 +298,13 @@
         </div>
         <div class="box-content-row box-content-row-flex" *ngIf="cipher.card.code">
           <div class="row-main">
-            <label for="cardCode">{{ "securityCode" | i18n }}</label>
+            <label
+              for="cardCode"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.card.code)"
+              >{{ "securityCode" | i18n }}</label
+            >
             <input
               id="cardCode"
               class="monospaced"
@@ -312,7 +345,13 @@
       <!-- Identity -->
       <div *ngIf="cipher.identity">
         <div class="box-content-row" *ngIf="cipher.identity.fullName">
-          <label for="idFullName">{{ "identityName" | i18n }}</label>
+          <label
+            for="idFullName"
+            class="draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, cipher.identity.fullName)"
+            >{{ "identityName" | i18n }}</label
+          >
           <input
             id="idFullName"
             type="text"
@@ -322,7 +361,13 @@
           />
         </div>
         <div class="box-content-row" *ngIf="cipher.identity.username">
-          <label for="idUsername">{{ "username" | i18n }}</label>
+          <label
+            for="idUsername"
+            class="draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, cipher.identity.username)"
+            >{{ "username" | i18n }}</label
+          >
           <input
             id="idUsername"
             type="text"
@@ -332,7 +377,13 @@
           />
         </div>
         <div class="box-content-row" *ngIf="cipher.identity.company">
-          <label for="idCompany">{{ "company" | i18n }}</label>
+          <label
+            for="idCompany"
+            class="draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, cipher.identity.company)"
+            >{{ "company" | i18n }}</label
+          >
           <input
             id="idCompany"
             type="text"
@@ -342,7 +393,13 @@
           />
         </div>
         <div class="box-content-row" *ngIf="cipher.identity.ssn">
-          <label for="idSsn">{{ "ssn" | i18n }}</label>
+          <label
+            for="idSsn"
+            class="draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, cipher.identity.ssn)"
+            >{{ "ssn" | i18n }}</label
+          >
           <input
             id="idSsn"
             type="text"
@@ -352,7 +409,13 @@
           />
         </div>
         <div class="box-content-row" *ngIf="cipher.identity.passportNumber">
-          <label for="idPassportNumber">{{ "passportNumber" | i18n }}</label>
+          <label
+            for="idPassportNumber"
+            class="draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, cipher.identity.passportNumber)"
+            >{{ "passportNumber" | i18n }}</label
+          >
           <input
             id="idPassportNumber"
             type="text"
@@ -362,7 +425,13 @@
           />
         </div>
         <div class="box-content-row" *ngIf="cipher.identity.licenseNumber">
-          <label for="idLicenseNumber">{{ "licenseNumber" | i18n }}</label>
+          <label
+            for="idLicenseNumber"
+            class="draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, cipher.identity.licenseNumber)"
+            >{{ "licenseNumber" | i18n }}</label
+          >
           <input
             id="idLicenseNumber"
             type="text"
@@ -372,7 +441,13 @@
           />
         </div>
         <div class="box-content-row" *ngIf="cipher.identity.email">
-          <label for="idEmail">{{ "email" | i18n }}</label>
+          <label
+            for="idEmail"
+            class="draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, cipher.identity.email)"
+            >{{ "email" | i18n }}</label
+          >
           <input
             id="idEmail"
             type="text"
@@ -382,7 +457,13 @@
           />
         </div>
         <div class="box-content-row" *ngIf="cipher.identity.phone">
-          <label for="idPhone">{{ "phone" | i18n }}</label>
+          <label
+            for="idPhone"
+            class="draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, cipher.identity.phone)"
+            >{{ "phone" | i18n }}</label
+          >
           <input
             id="idPhone"
             type="text"
@@ -403,7 +484,24 @@
             cipher.identity.country
           "
         >
-          <label for="idAddress">{{ "address" | i18n }}</label>
+          <label
+            for="idAddress"
+            class="draggable"
+            draggable="true"
+            (dragstart)="
+              setTextDataOnDrag(
+                $event,
+                (cipher.identity.address1 ? cipher.identity.address1 + '\n' : '') +
+                  (cipher.identity.address2 ? cipher.identity.address2 + '\n' : '') +
+                  (cipher.identity.address3 ? cipher.identity.address3 + '\n' : '') +
+                  (cipher.identity.city ? cipher.identity.city + '\n' : '') +
+                  (cipher.identity.state ? cipher.identity.state + '\n' : '') +
+                  (cipher.identity.postalCode ? cipher.identity.postalCode + '\n' : '') +
+                  (cipher.identity.country ? cipher.identity.country : '')
+              )
+            "
+            >{{ "address" | i18n }}</label
+          >
           <textarea
             id="idAddress"
             name="Identity.Address"
@@ -430,12 +528,22 @@
         *ngFor="let u of cipher.login.uris; let i = index"
       >
         <div class="row-main">
-          <label for="hostOrUri{{ i }}" class="row-label" *ngIf="!u.isWebsite">{{
-            "uri" | i18n
-          }}</label>
-          <label for="hostOrUri{{ i }}" class="row-label" *ngIf="u.isWebsite">{{
-            "website" | i18n
-          }}</label>
+          <label
+            for="hostOrUri{{ i }}"
+            class="row-label draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, u.uri)"
+            *ngIf="!u.isWebsite"
+            >{{ "uri" | i18n }}</label
+          >
+          <label
+            for="hostOrUri{{ i }}"
+            class="row-label draggable"
+            draggable="true"
+            (dragstart)="setTextDataOnDrag($event, u.uri)"
+            *ngIf="u.isWebsite"
+            >{{ "website" | i18n }}</label
+          >
           <span title="{{ u.uri }}">
             <input id="hostOrUri{{ i }}" type="text" [value]="u.hostOrUri" readonly />
           </span>
@@ -468,7 +576,13 @@
   </div>
   <div class="box" *ngIf="cipher.notes">
     <h2 class="box-header">
-      <label for="notes">{{ "notes" | i18n }}</label>
+      <label
+        for="notes"
+        class="draggable"
+        draggable="true"
+        (dragstart)="setTextDataOnDrag($event, cipher.notes)"
+        >{{ "notes" | i18n }}</label
+      >
     </h2>
     <div class="box-content">
       <div class="box-content-row">

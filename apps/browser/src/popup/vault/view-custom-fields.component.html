@@ -8,7 +8,15 @@
       *ngFor="let f of cipher.fields; let i = index"
     >
       <div class="row-main">
-        <label for="fieldName{{ i }}">{{ f.name }}</label>
+        <label
+          *ngIf="f.type != fieldType.Linked"
+          for="fieldName{{ i }}"
+          class="draggable"
+          draggable="true"
+          (dragstart)="setTextDataOnDrag($event, f.value)"
+          >{{ f.name }}</label
+        >
+        <label *ngIf="f.type === fieldType.Linked" for="fieldName{{ i }}">{{ f.name }}</label>
 
         <input
           *ngIf="f.type === fieldType.Text"
