@@ -687,7 +687,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    return account?.keys?.organizationKeys?.decrypted;
+    return new Map(Object.entries(account?.keys?.organizationKeys?.decrypted));
   }
 
   async setDecryptedOrganizationKeys(
@@ -697,7 +697,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    account.keys.organizationKeys.decrypted = value;
+    account.keys.organizationKeys.decrypted = Object.fromEntries(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -784,9 +784,10 @@ export class StateService<
   async getDecryptedProviderKeys(
     options?: StorageOptions
   ): Promise<Map<string, SymmetricCryptoKey>> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.keys?.providerKeys?.decrypted;
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+    );
+    return new Map(Object.entries(account?.keys?.providerKeys?.decrypted));
   }
 
   async setDecryptedProviderKeys(
@@ -796,7 +797,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    account.keys.providerKeys.decrypted = value;
+    account.keys.providerKeys.decrypted = Object.fromEntries(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -1461,13 +1462,16 @@ export class StateService<
     );
   }
 
-  async getEncryptedProviderKeys(options?: StorageOptions): Promise<any> {
+  async getEncryptedProviderKeys(options?: StorageOptions): Promise<Record<string, string>> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
     )?.keys?.providerKeys?.encrypted;
   }
 
-  async setEncryptedProviderKeys(value: any, options?: StorageOptions): Promise<void> {
+  async setEncryptedProviderKeys(
+    value: Record<string, string>,
+    options?: StorageOptions
+  ): Promise<void> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );

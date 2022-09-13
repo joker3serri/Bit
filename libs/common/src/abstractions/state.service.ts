@@ -214,8 +214,11 @@ export abstract class StateService<T extends Account = Account> {
   ) => Promise<void>;
   getEncryptedPrivateKey: (options?: StorageOptions) => Promise<string>;
   setEncryptedPrivateKey: (value: string, options?: StorageOptions) => Promise<void>;
-  getEncryptedProviderKeys: (options?: StorageOptions) => Promise<any>;
-  setEncryptedProviderKeys: (value: any, options?: StorageOptions) => Promise<void>;
+  getEncryptedProviderKeys: (options?: StorageOptions) => Promise<Record<string, string>>;
+  setEncryptedProviderKeys: (
+    value: Record<string, string>,
+    options?: StorageOptions
+  ) => Promise<void>;
   getEncryptedSends: (options?: StorageOptions) => Promise<{ [id: string]: SendData }>;
   setEncryptedSends: (value: { [id: string]: SendData }, options?: StorageOptions) => Promise<void>;
   getEntityId: (options?: StorageOptions) => Promise<string>;

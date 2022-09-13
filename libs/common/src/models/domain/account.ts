@@ -108,15 +108,13 @@ export class AccountKeys {
   >();
   organizationKeys?: EncryptionPair<
     { [orgId: string]: EncryptedOrganizationKeyData },
-    Map<string, SymmetricCryptoKey>
+    Record<string, SymmetricCryptoKey>
   > = new EncryptionPair<
     { [orgId: string]: EncryptedOrganizationKeyData },
-    Map<string, SymmetricCryptoKey>
+    Record<string, SymmetricCryptoKey>
   >();
-  providerKeys?: EncryptionPair<any, Map<string, SymmetricCryptoKey>> = new EncryptionPair<
-    any,
-    Map<string, SymmetricCryptoKey>
-  >();
+  providerKeys?: EncryptionPair<Record<string, string>, Record<string, SymmetricCryptoKey>> =
+    new EncryptionPair<Record<string, string>, Record<string, SymmetricCryptoKey>>();
   privateKey?: EncryptionPair<string, ArrayBuffer> = new EncryptionPair<string, ArrayBuffer>();
   publicKey?: ArrayBuffer;
   private publicKeySerialized?: string;
@@ -124,10 +122,36 @@ export class AccountKeys {
 
   toJSON() {
     this.publicKeySerialized = Utils.fromBufferToByteString(this.publicKey);
-    return this;
+    return {
+      cryptoMasterKey: this.cryptoMasterKey?.toJSON(),
+      cryptoMasterKeyAuto: this.cryptoMasterKeyAuto,
+      cryptoMasterKeyB64: this.cryptoMasterKeyB64,
+      cryptoMasterKeyBiometric: this.cryptoMasterKeyBiometric,
+      cryptoSymmetricKey: this.cryptoSymmetricKey?.toJSON() as {
+        encrypted: string;
+        decrypted: Jsonify<SymmetricCryptoKey>;
+        decryptedSerialized: string;
+      },
+      organizationKeys: this.organizationKeys?.toJSON() as {
+        encrypted: { [orgId: string]: EncryptedOrganizationKeyData };
+        decrypted: Record<string, Jsonify<SymmetricCryptoKey>>;
+        decryptedSerialized: string;
+      },
+      providerKeys: this.providerKeys?.toJSON() as {
+        encrypted: any;
+        decrypted: Record<string, Jsonify<SymmetricCryptoKey>>;
+        decryptedSerialized: string;
+      },
+      privateKey: this.privateKey?.toJSON() as {
+        encrypted: string;
+        decrypted: Jsonify<ArrayBuffer>;
+        decryptedSerialized: string;
+      },
+      publicKeySerialized: this.publicKeySerialized,
+    };
   }
 
-  static fromJSON(obj: any): AccountKeys {
+  static fromJSON(obj: Partial<Jsonify<AccountKeys>>): AccountKeys {
     return Object.assign(
       new AccountKeys(),
       { cryptoMasterKey: SymmetricCryptoKey.fromJSON(obj?.cryptoMasterKey) },
@@ -137,8 +161,8 @@ export class AccountKeys {
           SymmetricCryptoKey.fromJSON
         ),
       },
-      { organizationKeys: AccountKeys.initMapEncryptionPairsFromJSON(obj?.organizationKeys) },
-      { providerKeys: AccountKeys.initMapEncryptionPairsFromJSON(obj?.providerKeys) },
+      { organizationKeys: AccountKeys.initRecordEncryptionPairsFromJSON(obj?.organizationKeys) },
+      { providerKeys: AccountKeys.initRecordEncryptionPairsFromJSON(obj?.providerKeys) },
       { privateKey: EncryptionPair.fromJSON(obj?.privateKey) },
       {
         publicKey: Utils.fromByteStringToArray(obj?.publicKeySerialized)?.buffer,
@@ -148,13 +172,13 @@ export class AccountKeys {
 
   // These `any` types are a result of Jsonify<Map<>> === {}
   // Issue raised https://github.com/sindresorhus/type-fest/issues/457
-  static initMapEncryptionPairsFromJSON(obj: any) {
+  static initRecordEncryptionPairsFromJSON(obj: any) {
     return EncryptionPair.fromJSON(obj, (decObj: any) => {
-      const map = new Map<string, SymmetricCryptoKey>();
-      for (const id in decObj) {
-        map.set(id, SymmetricCryptoKey.fromJSON(decObj[id]));
+      const record: Record<string, SymmetricCryptoKey> = {};
+      for (const key in decObj) {
+        record[key] = SymmetricCryptoKey.fromJSON(decObj[key]);
       }
-      return map;
+      return record;
     });
   }
 }

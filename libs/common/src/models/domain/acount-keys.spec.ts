@@ -6,15 +6,22 @@ import { AccountKeys, EncryptionPair } from "./account";
 import { SymmetricCryptoKey } from "./symmetricCryptoKey";
 
 describe("AccountKeys", () => {
+  const buffer = makeStaticByteArray(64).buffer;
+  const symmetricKey = new SymmetricCryptoKey(buffer);
+
   describe("toJSON", () => {
     it("should serialize itself", () => {
       const keys = new AccountKeys();
-      const buffer = makeStaticByteArray(64).buffer;
-      const symmetricKey = new SymmetricCryptoKey(buffer);
       keys.cryptoMasterKey = symmetricKey;
       keys.publicKey = buffer;
       keys.cryptoSymmetricKey = new EncryptionPair<string, SymmetricCryptoKey>();
       keys.cryptoSymmetricKey.decrypted = symmetricKey;
+      keys.providerKeys = new EncryptionPair<
+        Record<string, string>,
+        Record<string, SymmetricCryptoKey>
+      >();
+      keys.providerKeys.encrypted = { test: "test" };
+      keys.providerKeys.decrypted = { providerId: symmetricKey };
 
       const symmetricKeySpy = jest.spyOn(symmetricKey, "toJSON");
       const actual = JSON.stringify(keys.toJSON());
@@ -23,6 +30,8 @@ describe("AccountKeys", () => {
       expect(actual).toContain(
         `"publicKeySerialized":${JSON.stringify(Utils.fromBufferToByteString(buffer))}`
       );
+      expect(actual).toContain(`"providerKeys":${JSON.stringify(keys.providerKeys.toJSON())}`);
+      expect(actual).toContain(`"providerId":${JSON.stringify(symmetricKey.toJSON())}`);
     });
 
     it("should serialize public key as a string", () => {
@@ -49,19 +58,41 @@ describe("AccountKeys", () => {
 
     it("should deserialize organizationKeys", () => {
       const spy = jest.spyOn(SymmetricCryptoKey, "fromJSON");
-      AccountKeys.fromJSON({ organizationKeys: [{ orgId: "keyJSON" }] });
+      AccountKeys.fromJSON({
+        organizationKeys: {
+          encrypted: {},
+          decrypted: {
+            "00000000-0000-0000-0000-000000000000": {
+              keyB64: symmetricKey.keyB64,
+            },
+          },
+          decryptedSerialized: null,
+        },
+      });
       expect(spy).toHaveBeenCalled();
     });
 
     it("should deserialize providerKeys", () => {
       const spy = jest.spyOn(SymmetricCryptoKey, "fromJSON");
-      AccountKeys.fromJSON({ providerKeys: [{ providerId: "keyJSON" }] });
+      AccountKeys.fromJSON({
+        providerKeys: {
+          encrypted: {},
+          decrypted: {
+            "00000000-0000-0000-0000-000000000000": {
+              keyB64: symmetricKey.keyB64,
+            },
+          },
+          decryptedSerialized: null,
+        },
+      });
       expect(spy).toHaveBeenCalled();
     });
 
     it("should deserialize privateKey", () => {
       const spy = jest.spyOn(EncryptionPair, "fromJSON");
-      AccountKeys.fromJSON({ privateKey: { encrypted: "encrypted", decrypted: "decrypted" } });
+      AccountKeys.fromJSON({
+        privateKey: { encrypted: "encrypted", decrypted: null, decryptedSerialized: "test" },
+      });
       expect(spy).toHaveBeenCalled();
     });
   });
