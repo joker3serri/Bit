@@ -423,6 +423,12 @@
   "invalidEmail": {
     "message": "Invalid email address."
   },
+  "masterPassRequired": {
+    "message": "Master password is required."
+  },
+  "masterPassLength": {
+    "message": "Master password must be at least 8 characters long."
+  },
   "masterPasswordRequired": {
     "message": "Master password is required."
   },
@@ -1482,6 +1488,9 @@
   },
   "acceptPolicies": {
     "message": "By checking this box you agree to the following:"
+  },
+  "acceptPoliciesError": {
+    "message": "Terms of Service and Privacy Policy have not been acknowledged."
   },
   "acceptPoliciesRequired": {
     "message": "Terms of Service and Privacy Policy have not been acknowledged."
