@@ -1,6 +1,6 @@
 import { Component, ContentChild, Directive } from "@angular/core";
 
-@Directive({ selector: "[bitDialogIcon]" })
+@Directive({ selector: "[bit-dialog-icon]" })
 export class IconDirective {}
 
 @Component({
