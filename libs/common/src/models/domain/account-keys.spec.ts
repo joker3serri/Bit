@@ -24,14 +24,10 @@ describe("AccountKeys", () => {
       keys.providerKeys.decrypted = { providerId: symmetricKey };
 
       const symmetricKeySpy = jest.spyOn(symmetricKey, "toJSON");
-      const actual = JSON.stringify(keys.toJSON());
+      const actual = keys.toJSON();
       expect(symmetricKeySpy).toHaveBeenCalled();
-      expect(actual).toContain(`"cryptoMasterKey":${JSON.stringify(symmetricKey.toJSON())}`);
-      expect(actual).toContain(
-        `"publicKeySerialized":${JSON.stringify(Utils.fromBufferToByteString(buffer))}`
-      );
-      expect(actual).toContain(`"providerKeys":${JSON.stringify(keys.providerKeys.toJSON())}`);
-      expect(actual).toContain(`"providerId":${JSON.stringify(symmetricKey.toJSON())}`);
+      expect(actual.publicKeySerialized).toEqual(Utils.fromBufferToByteString(buffer));
+      expect(actual.providerKeys.decrypted).toEqual({ providerId: symmetricKey });
     });
 
     it("should serialize public key as a string", () => {
