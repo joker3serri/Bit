@@ -122,6 +122,8 @@ export class AccountKeys {
 
   toJSON() {
     this.publicKeySerialized = Utils.fromBufferToByteString(this.publicKey);
+    // This return is a bit of a hack to force Jsonify to recognize the type of the object.
+    // Jsonify refuses to execute recursively on `toJSON` methods, instead expecting the return to extend JsonValue.
     return {
       cryptoMasterKey: this.cryptoMasterKey?.toJSON(),
       cryptoMasterKeyAuto: this.cryptoMasterKeyAuto,
