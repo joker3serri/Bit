@@ -44,16 +44,16 @@ export class EncryptionPair<TEncrypted, TDecrypted> {
     encryptedFromJson?: (encObj: Jsonify<TEncrypted>) => TEncrypted
   ) {
     const pair = new EncryptionPair<TEncrypted, TDecrypted>();
-    if (obj?.encrypted) {
+    if (obj?.encrypted != null) {
       pair.encrypted = encryptedFromJson
         ? encryptedFromJson(obj.encrypted as any)
         : (obj.encrypted as TEncrypted);
     }
-    if (obj?.decryptedSerialized) {
+    if (obj?.decryptedSerialized != null) {
       pair.decryptedSerialized = obj.decryptedSerialized;
       // We only populate the decryptedSerialized if the decrypted is an arraybuffer.
       pair.decrypted = Utils.fromByteStringToArray(obj.decryptedSerialized)?.buffer as any;
-    } else if (obj?.decrypted) {
+    } else if (obj?.decrypted != null) {
       pair.decrypted = decryptedFromJson
         ? decryptedFromJson(obj.decrypted as any)
         : (obj.decrypted as TDecrypted);
@@ -243,6 +243,7 @@ export class AccountSettings {
 
   static fromJSON(obj: Jsonify<AccountSettings>): AccountSettings {
     return Object.assign(new AccountSettings(), obj, {
+      environmentUrls: Object.assign(new EnvironmentUrls(), obj?.environmentUrls),
       pinProtected: EncryptionPair.fromJSON<string, EncString>(
         obj?.pinProtected,
         EncString.fromJSON
@@ -257,7 +258,6 @@ export type AccountSettingsSettings = {
 
 export class AccountTokens {
   accessToken?: string;
-  decodedToken?: any;
   refreshToken?: string;
   securityStamp?: string;
 
