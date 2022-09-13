@@ -110,11 +110,8 @@ export class ViewComponent implements OnDestroy, OnInit {
     this.cipher = await cipher.decrypt();
     this.canAccessPremium = await this.stateService.getCanAccessPremium();
     this.showPremiumRequiredTotp =
-      this.cipher.login.totp &&
-      !this.canAccessPremium &&
-      (!this.cipher.organizationId ||
-        (this.cipher.organizationId && !this.cipher.organizationUseTotp) ||
-        (!this.cipher.organizationId && !this.cipher.organizationUseTotp));
+      this.cipher.login.totp && !this.canAccessPremium && !this.cipher.organizationUseTotp;
+
     if (
       this.cipher.type === CipherType.Login &&
       this.cipher.login.totp &&
