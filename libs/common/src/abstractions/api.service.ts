@@ -136,6 +136,7 @@ import {
   ProviderUserResponse,
   ProviderUserUserDetailsResponse,
 } from "../models/response/provider/providerUserResponse";
+import { RegisterResponse } from "../models/response/registerResponse";
 import { SelectionReadOnlyResponse } from "../models/response/selectionReadOnlyResponse";
 import { SendAccessResponse } from "../models/response/sendAccessResponse";
 import { SendFileDownloadDataResponse } from "../models/response/sendFileDownloadDataResponse";
@@ -189,7 +190,7 @@ export abstract class ApiService {
   postSecurityStamp: (request: SecretVerificationRequest) => Promise<any>;
   getAccountRevisionDate: () => Promise<number>;
   postPasswordHint: (request: PasswordHintRequest) => Promise<any>;
-  postRegister: (request: RegisterRequest) => Promise<any>;
+  postRegister: (request: RegisterRequest) => Promise<RegisterResponse>;
   postPremium: (data: FormData) => Promise<PaymentResponse>;
   postIapCheck: (request: IapCheckRequest) => Promise<any>;
   postReinstatePremium: () => Promise<any>;

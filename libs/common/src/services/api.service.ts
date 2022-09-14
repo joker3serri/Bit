@@ -145,6 +145,7 @@ import {
   ProviderUserResponse,
   ProviderUserUserDetailsResponse,
 } from "../models/response/provider/providerUserResponse";
+import { RegisterResponse } from "../models/response/registerResponse";
 import { SelectionReadOnlyResponse } from "../models/response/selectionReadOnlyResponse";
 import { SendAccessResponse } from "../models/response/sendAccessResponse";
 import { SendFileDownloadDataResponse } from "../models/response/sendFileDownloadDataResponse";
@@ -337,17 +338,18 @@ export class ApiService implements ApiServiceAbstraction {
     return this.send("POST", "/accounts/password-hint", request, false, false);
   }
 
-  postRegister(request: RegisterRequest): Promise<any> {
-    return this.send(
+  async postRegister(request: RegisterRequest): Promise<RegisterResponse> {
+    const r = await this.send(
       "POST",
       "/accounts/register",
       request,
       false,
-      false,
+      true,
       this.platformUtilsService.isDev()
         ? this.environmentService.getIdentityUrl()
         : this.environmentService.getApiUrl()
     );
+    return new RegisterResponse(r);
   }
 
   async postPremium(data: FormData): Promise<PaymentResponse> {
