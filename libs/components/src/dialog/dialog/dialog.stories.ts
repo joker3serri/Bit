@@ -39,9 +39,6 @@ export default {
       url: "https://www.figma.com/file/Zt3YSeb6E6lebAffrNLa0h/Tailwind-Component-Library",
     },
   },
-  argTypes: {
-    onClose: { action: "onClose" },
-  },
 } as Meta;
 
 const Template: Story<DialogComponent> = (args: DialogComponent) => ({
