@@ -532,14 +532,8 @@
   "invalidEmail": {
     "message": "Invalid email address."
   },
-  "masterPassRequired": {
-    "message": "Master password is required."
-  },
   "masterPasswordRequired": {
     "message": "Master password is required."
-  },
-  "masterPassLength": {
-    "message": "Master password must be at least 8 characters long."
   },
   "confirmMasterPasswordRequired": {
     "message": "Master password retype is required."
@@ -1542,9 +1536,6 @@
         "example": "14"
       }
     }
-  },
-  "acceptPoliciesError": {
-    "message": "Terms of Service and Privacy Policy have not been acknowledged."
   },
   "policyInEffectUppercase": {
     "message": "Contain one or more uppercase characters"
