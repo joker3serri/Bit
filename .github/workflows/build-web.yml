@@ -140,7 +140,7 @@ jobs:
           azure-keyvault-name: "bitwarden-prod-kv"
 
       - name: Download selfhosted-COMMERCIAL artifact
-        uses: actions/download-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
+        uses: actions/download-artifact@v3
         with:
           name: web-${{ env._VERSION }}-selfhosted-COMMERCIAL.zip
           path: apps/web
