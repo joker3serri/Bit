@@ -2,9 +2,7 @@ import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 
-import { ValidationService } from "@bitwarden/angular/services/validation.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SecretView } from "@bitwarden/common/models/view/secretView";
 
@@ -39,9 +37,7 @@ export class SecretDialogComponent implements OnInit {
     @Inject(DIALOG_DATA) private data: SecretOperation,
     private secretService: SecretService,
     private i18nService: I18nService,
-    private platformUtilsService: PlatformUtilsService,
-    private validationService: ValidationService,
-    private logService: LogService
+    private platformUtilsService: PlatformUtilsService
   ) {}
 
   async ngOnInit() {
