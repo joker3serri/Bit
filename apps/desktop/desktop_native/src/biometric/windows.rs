@@ -7,8 +7,11 @@ use windows::{
         Foundation::HWND,
         System::WinRT::IUserConsentVerifierInterop,
         UI::{
-            Input::KeyboardAndMouse::{self, KEYEVENTF_EXTENDEDKEY, KEYEVENTF_KEYUP, VK_MENU},
-            WindowsAndMessaging,
+            Input::KeyboardAndMouse::{
+                self, keybd_event, GetAsyncKeyState, SetFocus, KEYEVENTF_EXTENDEDKEY,
+                KEYEVENTF_KEYUP, VK_MENU,
+            },
+            WindowsAndMessaging::{self, SetForegroundWindow},
         },
     },
 };
@@ -44,18 +47,22 @@ pub fn available() -> Result<bool> {
 
 fn set_focus(window: HWND) {
     let mut pressed = false;
-    let bvk = VK_MENU.0 as u8;
 
     unsafe {
         // Simulate holding down Alt key to bypass windows limitations
-        if KeyboardAndMouse::GetAsyncKeyState(VK_MENU.0 as i32) == 0 {
+        if GetAsyncKeyState(VK_MENU.0 as i32) as u32 & 0x8000 == 0 {
             pressed = true;
-            KeyboardAndMouse::keybd_event(bvk, 0, KEYEVENTF_EXTENDEDKEY, 0);
+            keybd_event(VK_MENU.0 as u8, 0, KEYEVENTF_EXTENDEDKEY, 0);
         }
-        WindowsAndMessaging::SetForegroundWindow(window);
-        KeyboardAndMouse::SetFocus(window);
+        SetForegroundWindow(window);
+        SetFocus(window);
         if pressed {
-            KeyboardAndMouse::keybd_event(bvk, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+            keybd_event(
+                VK_MENU.0 as u8,
+                0,
+                KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP,
+                0,
+            );
         }
     }
 }
