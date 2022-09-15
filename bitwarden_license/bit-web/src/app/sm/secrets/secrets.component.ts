@@ -12,7 +12,7 @@ import { SecretApiService } from "./secret-api.service";
 })
 export class SecretsComponent implements OnInit, OnDestroy {
   private organizationId: string;
-  private destroy$: Subject<void> = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
   secrets: SecretResponse[];
 
