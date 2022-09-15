@@ -1,4 +1,4 @@
-import { Directive, OnDestroy } from "@angular/core";
+import { Directive, OnDestroy, Optional } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
 import { ButtonComponent } from "../button";
@@ -11,7 +11,10 @@ import { BitSubmitDirective } from "./async-submit.directive";
 export class BitFormButtonDirective implements OnDestroy {
   private destroy$ = new Subject<void>();
 
-  constructor(submitDirective?: BitSubmitDirective, buttonComponent?: ButtonComponent) {
+  constructor(
+    @Optional() submitDirective?: BitSubmitDirective,
+    @Optional() buttonComponent?: ButtonComponent
+  ) {
     if (submitDirective && buttonComponent) {
       submitDirective.loading$
         .pipe(takeUntil(this.destroy$))

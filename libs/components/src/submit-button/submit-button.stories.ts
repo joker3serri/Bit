@@ -1,5 +1,7 @@
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
+import { FormButtonModule } from "../form-button";
+
 import { SubmitButtonComponent } from "./submit-button.component";
 import { SubmitButtonModule } from "./submit-button.module";
 
@@ -8,7 +10,7 @@ export default {
   component: SubmitButtonComponent,
   decorators: [
     moduleMetadata({
-      imports: [SubmitButtonModule],
+      imports: [SubmitButtonModule, FormButtonModule],
     }),
   ],
   args: {
