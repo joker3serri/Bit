@@ -62,10 +62,7 @@ export class SecretDialogComponent implements OnInit {
     return this.data.operation === OperationType.Add ? "addSecret" : "editSecret";
   }
 
-  async onSave() {
-    if (!this.formGroup.valid) {
-      return;
-    }
+  async submit() {
     const secretView = this.getSecretView();
     if (this.data.operation === OperationType.Add) {
       await this.createSecret(secretView);
