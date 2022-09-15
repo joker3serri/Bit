@@ -74,41 +74,35 @@ export class SecretService {
   ): Promise<SecretRequest> {
     const orgKey = await this.getOrganizationKey(organizationId);
     const request = new SecretRequest();
-    const keyPromise = this.encryptService.encrypt(secretView.name, orgKey);
-    const valuePromise = this.encryptService.encrypt(secretView.value, orgKey);
-    const notePromise = this.encryptService.encrypt(secretView.note, orgKey);
-    await Promise.all([keyPromise, valuePromise, notePromise]).then(([key, value, note]) => {
-      request.key = key.encryptedString;
-      request.value = value.encryptedString;
-      request.note = note.encryptedString;
-    });
+    const [key, value, note] = await Promise.all([
+      this.encryptService.encrypt(secretView.name, orgKey),
+      this.encryptService.encrypt(secretView.value, orgKey),
+      this.encryptService.encrypt(secretView.note, orgKey),
+    ]);
+    request.key = key.encryptedString;
+    request.value = value.encryptedString;
+    request.note = note.encryptedString;
     return request;
   }
 
   private async createSecretView(secretResponse: SecretResponse): Promise<SecretView> {
     const orgKey = await this.getOrganizationKey(secretResponse.organizationId);
+
     const secretView = new SecretView();
     secretView.id = secretResponse.id;
     secretView.organizationId = secretResponse.organizationId;
     secretView.creationDate = secretResponse.creationDate;
     secretView.revisionDate = secretResponse.revisionDate;
-    const namePromise = this.encryptService.decryptToUtf8(
-      new EncString(secretResponse.name),
-      orgKey
-    );
-    const valuePromise = this.encryptService.decryptToUtf8(
-      new EncString(secretResponse.value),
-      orgKey
-    );
-    const notePromise = this.encryptService.decryptToUtf8(
-      new EncString(secretResponse.note),
-      orgKey
-    );
-    await Promise.all([namePromise, valuePromise, notePromise]).then(([name, value, note]) => {
-      secretView.name = name;
-      secretView.value = value;
-      secretView.note = note;
-    });
+
+    const [name, value, note] = await Promise.all([
+      this.encryptService.decryptToUtf8(new EncString(secretResponse.name), orgKey),
+      this.encryptService.decryptToUtf8(new EncString(secretResponse.value), orgKey),
+      this.encryptService.decryptToUtf8(new EncString(secretResponse.note), orgKey),
+    ]);
+    secretView.name = name;
+    secretView.value = value;
+    secretView.note = note;
+
     return secretView;
   }
 

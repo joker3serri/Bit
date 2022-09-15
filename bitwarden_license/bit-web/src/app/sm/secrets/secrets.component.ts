@@ -20,7 +20,7 @@ export class SecretsComponent implements OnInit, OnDestroy {
   secrets: SecretListView[];
 
   private organizationId: string;
-  private destroy$: Subject<void> = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,

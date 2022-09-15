@@ -2,6 +2,7 @@ import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 
+import { ValidationService } from "@bitwarden/angular/services/validation.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -37,6 +38,7 @@ export class SecretDialogComponent implements OnInit {
     private secretService: SecretService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
+    private validationService: ValidationService,
     private logService: LogService
   ) {}
 
@@ -44,6 +46,7 @@ export class SecretDialogComponent implements OnInit {
     if (this.data.operation === OperationType.Edit && this.data.secretId) {
       await this.loadData();
     } else if (this.data.operation !== OperationType.Add) {
+      this.dialogRef.close();
       throw new Error(`The secret dialog was not called with the appropriate operation values.`);
     }
   }
@@ -62,7 +65,7 @@ export class SecretDialogComponent implements OnInit {
       const secretView = this.getSecretView();
       if (this.data.operation === OperationType.Add) {
         await this.createSecret(secretView);
-      } else if (this.data.operation === OperationType.Edit && this.data.secretId) {
+      } else {
         secretView.id = this.data.secretId;
         await this.updateSecret(secretView);
       }
@@ -70,7 +73,7 @@ export class SecretDialogComponent implements OnInit {
     } catch (e) {
       this.logService.error(e);
       this.dialogRef.close();
-      this.showErrorToast(e.message);
+      this.validationService.showError(e);
     }
   }
 
@@ -91,16 +94,5 @@ export class SecretDialogComponent implements OnInit {
     secretView.value = this.form.value.value;
     secretView.note = this.form.value.notes;
     return secretView;
-  }
-
-  private showErrorToast(error: string) {
-    const title = this.i18nService.t("errorOccurred");
-    let text: string;
-    if (!error) {
-      text = this.i18nService.t("unexpectedError");
-    } else {
-      text = error;
-    }
-    this.platformUtilsService.showToast("error", title, text);
   }
 }
