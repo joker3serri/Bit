@@ -11,8 +11,10 @@ import * as config from "./variables";
 
   const response = await nativeMessageService.sendHandshake(config.testRsaPublicKey);
   LogUtils.logSuccess("Received response to handshake request");
-  if (response.status === "success") {
+  if (response.status) {
     LogUtils.logSuccess("Handshake success response");
+  } else if (response.error === "canceled") {
+    LogUtils.logWarning("Handshake canceled by user");
   } else {
     LogUtils.logError("Handshake failure response");
   }

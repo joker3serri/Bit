@@ -26,8 +26,8 @@ const { name } = argv;
   LogUtils.logInfo("Sending Handshake");
   const handshakeResponse = await nativeMessageService.sendHandshake(config.testRsaPublicKey);
 
-  if (handshakeResponse.status !== "success") {
-    LogUtils.logError(" Handshake failed. Status was:", handshakeResponse.status);
+  if (!handshakeResponse.status) {
+    LogUtils.logError(" Handshake failed. Error was: " + handshakeResponse.error);
     nativeMessageService.disconnect();
     return;
   }

@@ -1,9 +1,11 @@
 import { Injectable } from "@angular/core";
 import { ipcRenderer } from "electron";
+import Swal from "sweetalert2";
 
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
@@ -44,8 +46,8 @@ export class NativeMessageHandler {
     private cipherService: CipherService,
     private policyService: PolicyService,
     private messagingService: MessagingService,
-
-    private passwordGenerationService: PasswordGenerationService
+    private passwordGenerationService: PasswordGenerationService,
+    private i18nService: I18nService
   ) {}
 
   async handleMessage(message: Message) {
@@ -68,7 +70,6 @@ export class NativeMessageHandler {
   }
 
   private async handleDecryptedMessage(message: UnencryptedMessage) {
-    let encryptedSecret: ArrayBuffer;
     const { messageId, payload } = message;
     const { publicKey } = payload;
     if (!publicKey) {
@@ -91,20 +92,56 @@ export class NativeMessageHandler {
           messageId: messageId,
           version: NativeMessagingVersion.Latest,
           payload: {
-            status: "canceled",
+            error: "canceled",
           },
         });
 
         return;
       }
 
+      // Ask for confirmation from user
+      this.messagingService.send("setFocus");
+      const submitted = await Swal.fire({
+        titleText: this.i18nService.t("verifyDDGBrowserTitle"),
+        html: this.i18nService.t("verifyDDGBrowserDesc"),
+        showCancelButton: true,
+        cancelButtonText: this.i18nService.t("no"),
+        showConfirmButton: true,
+        confirmButtonText: this.i18nService.t("yes"),
+        allowOutsideClick: false,
+      });
+
+      if (submitted.value !== true) {
+        this.sendResponse({
+          messageId: messageId,
+          version: NativeMessagingVersion.Latest,
+          payload: {
+            error: "canceled",
+          },
+        });
+        return;
+      }
+
       const secret = await this.cryptoFunctionService.randomBytes(64);
       this.ddgSharedSecret = new SymmetricCryptoKey(secret);
-      encryptedSecret = await this.cryptoFunctionService.rsaEncrypt(
+      const sharedKeyB64 = new SymmetricCryptoKey(secret).toJSON().keyB64;
+
+      await this.stateService.setDuckDuckGoSharedKey(sharedKeyB64);
+
+      const encryptedSecret = await this.cryptoFunctionService.rsaEncrypt(
         secret,
         remotePublicKey,
         EncryptionAlgorithm
       );
+
+      this.sendResponse({
+        messageId: messageId,
+        version: NativeMessagingVersion.Latest,
+        payload: {
+          status: "success",
+          sharedKey: Utils.fromBufferToB64(encryptedSecret),
+        },
+      });
     } catch (error) {
       this.sendResponse({
         messageId: messageId,
@@ -114,17 +151,6 @@ export class NativeMessageHandler {
         },
       });
     }
-
-    await this.stateService.setDuckDuckGoSharedKey(Utils.fromBufferToB64(encryptedSecret));
-
-    this.sendResponse({
-      messageId: messageId,
-      version: NativeMessagingVersion.Latest,
-      payload: {
-        status: "success",
-        sharedKey: Utils.fromBufferToB64(encryptedSecret),
-      },
-    });
   }
 
   private async handleEncryptedMessage(message: EncryptedMessage) {
@@ -308,14 +334,18 @@ export class NativeMessageHandler {
 
   private async decryptPayload(message: EncryptedMessage): Promise<DecryptedCommandData> {
     if (!this.ddgSharedSecret) {
-      this.sendResponse({
-        messageId: message.messageId,
-        version: NativeMessagingVersion.Latest,
-        payload: {
-          error: "cannot-decrypt",
-        },
-      });
-      return;
+      const storedKey = await this.stateService.getDuckDuckGoSharedKey();
+      if (storedKey == null) {
+        this.sendResponse({
+          messageId: message.messageId,
+          version: NativeMessagingVersion.Latest,
+          payload: {
+            error: "cannot-decrypt",
+          },
+        });
+        return;
+      }
+      this.ddgSharedSecret = SymmetricCryptoKey.fromJSON({ keyB64: storedKey });
     }
 
     return JSON.parse(
