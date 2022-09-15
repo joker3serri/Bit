@@ -2005,5 +2005,8 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  }, 
+  "vault": {
+    "message": "Vault"
   }
 }
