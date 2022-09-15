@@ -26,7 +26,9 @@ export interface SecretOperation {
   templateUrl: "./secret-dialog.component.html",
 })
 export class SecretDialogComponent implements OnInit {
-  form = new FormGroup({
+  formPromise: Promise<any>;
+
+  formGroup = new FormGroup({
     name: new FormControl("", [Validators.required]),
     value: new FormControl("", [Validators.required]),
     notes: new FormControl(""),
@@ -53,7 +55,7 @@ export class SecretDialogComponent implements OnInit {
 
   async loadData() {
     const secret: SecretView = await this.secretService.getBySecretId(this.data.secretId);
-    this.form.setValue({ name: secret.name, value: secret.value, notes: secret.note });
+    this.formGroup.setValue({ name: secret.name, value: secret.value, notes: secret.note });
   }
 
   get title() {
@@ -61,38 +63,37 @@ export class SecretDialogComponent implements OnInit {
   }
 
   async onSave() {
-    try {
-      const secretView = this.getSecretView();
-      if (this.data.operation === OperationType.Add) {
-        await this.createSecret(secretView);
-      } else {
-        secretView.id = this.data.secretId;
-        await this.updateSecret(secretView);
-      }
-      this.dialogRef.close();
-    } catch (e) {
-      this.logService.error(e);
-      this.dialogRef.close();
-      this.validationService.showError(e);
+    if (!this.formGroup.valid) {
+      return;
     }
+    const secretView = this.getSecretView();
+    if (this.data.operation === OperationType.Add) {
+      await this.createSecret(secretView);
+    } else {
+      secretView.id = this.data.secretId;
+      await this.updateSecret(secretView);
+    }
+    this.dialogRef.close();
   }
 
   private async createSecret(secretView: SecretView) {
-    await this.secretService.create(this.data.organizationId, secretView);
+    this.formPromise = this.secretService.create(this.data.organizationId, secretView);
+    await this.formPromise;
     this.platformUtilsService.showToast("success", null, this.i18nService.t("secretCreated"));
   }
 
   private async updateSecret(secretView: SecretView) {
-    await this.secretService.update(this.data.organizationId, secretView);
+    this.formPromise = this.secretService.update(this.data.organizationId, secretView);
+    await this.formPromise;
     this.platformUtilsService.showToast("success", null, this.i18nService.t("secretEdited"));
   }
 
   private getSecretView() {
     const secretView = new SecretView();
     secretView.organizationId = this.data.organizationId;
-    secretView.name = this.form.value.name;
-    secretView.value = this.form.value.value;
-    secretView.note = this.form.value.notes;
+    secretView.name = this.formGroup.value.name;
+    secretView.value = this.formGroup.value.value;
+    secretView.note = this.formGroup.value.notes;
     return secretView;
   }
 }
