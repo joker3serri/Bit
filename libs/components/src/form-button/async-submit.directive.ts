@@ -11,7 +11,7 @@ import {
   tap,
 } from "rxjs";
 
-import { Utils } from "@bitwarden/common/src/misc/utils";
+import { Utils } from "@bitwarden/common/misc/utils";
 
 export type BitSubmitHandler =
   | (() => unknown)
