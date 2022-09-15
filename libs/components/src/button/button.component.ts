@@ -40,7 +40,7 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
 
 @Component({
   selector: "button[bitButton], a[bitButton]",
-  template: "<ng-content></ng-content>",
+  templateUrl: "button.component.html",
 })
 export class ButtonComponent {
   @HostBinding("class") get classList() {
@@ -64,9 +64,12 @@ export class ButtonComponent {
       .concat(buttonStyles[this.buttonType ?? "secondary"]);
   }
 
-  @Input()
-  buttonType: ButtonTypes = null;
+  @HostBinding("attr.disabled") get disabledAttr() {
+    return this.disabled || this.loading ? true : null;
+  }
 
-  @Input()
-  block = false;
+  @Input() buttonType: ButtonTypes = null;
+  @Input() block = false;
+  @Input() loading = false;
+  @Input() disabled = false;
 }

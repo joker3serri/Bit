@@ -60,16 +60,61 @@ describe("Button", () => {
     expect(buttonDebugElement.nativeElement.classList.contains("tw-block")).toBe(false);
     expect(linkDebugElement.nativeElement.classList.contains("tw-block")).toBe(false);
   });
+
+  it("should not be disabled when loading and disabled are false", () => {
+    testAppComponent.loading = false;
+    testAppComponent.disabled = false;
+    fixture.detectChanges();
+
+    expect(buttonDebugElement.attributes["loading"]).toBeFalsy();
+    expect(linkDebugElement.attributes["loading"]).toBeFalsy();
+    expect(buttonDebugElement.nativeElement.disabled).toBeFalsy();
+  });
+
+  it("should be disabled when disabled is true", () => {
+    testAppComponent.disabled = true;
+    fixture.detectChanges();
+
+    expect(buttonDebugElement.nativeElement.disabled).toBeTruthy();
+    // Anchor tags cannot be disabled.
+  });
+
+  it("should be disabled when loading is true", () => {
+    testAppComponent.loading = true;
+    fixture.detectChanges();
+
+    expect(buttonDebugElement.nativeElement.disabled).toBeTruthy();
+  });
 });
 
 @Component({
   selector: "test-app",
   template: `
-    <button type="button" bitButton [buttonType]="buttonType" [block]="block">Button</button>
-    <a href="#" bitButton [buttonType]="buttonType" [block]="block"> Link </a>
+    <button
+      type="button"
+      bitButton
+      [buttonType]="buttonType"
+      [block]="block"
+      [disabled]="disabled"
+      [loading]="loading"
+    >
+      Button
+    </button>
+    <a
+      href="#"
+      bitButton
+      [buttonType]="buttonType"
+      [block]="block"
+      [disabled]="disabled"
+      [loading]="loading"
+    >
+      Link
+    </a>
   `,
 })
 class TestApp {
   buttonType: string;
   block: boolean;
+  disabled: boolean;
+  loading: boolean;
 }
