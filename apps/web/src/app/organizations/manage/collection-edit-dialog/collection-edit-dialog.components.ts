@@ -1,10 +1,10 @@
-import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
+import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnDestroy } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { of, switchMap, takeUntil, Subject } from "rxjs";
+import { of, Subject, switchMap, takeUntil } from "rxjs";
 
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
-import { CollectionView } from "@bitwarden/common/models/view/collectionView";
+import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { BitValidators } from "@bitwarden/components";
 
 export interface CollectionEditDialogParams {
@@ -35,7 +35,7 @@ export class CollectionEditDialogComponent implements OnDestroy {
   ) {
     of(0)
       .pipe(
-        switchMap(() => collectionService.getAllDecrypted()),
+        switchMap(() => collectionService.getAllAdminDecrypted(params.organizationId)),
         takeUntil(this.destroy$)
       )
       .subscribe((collections) => {
