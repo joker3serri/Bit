@@ -1,10 +1,10 @@
 import { Meta, Story } from "@storybook/angular";
 
-import { ButtonDirective } from "./button.directive";
+import { ButtonComponent } from "./button.component";
 
 export default {
   title: "Component Library/Button",
-  component: ButtonDirective,
+  component: ButtonComponent,
   args: {
     buttonType: "primary",
   },
@@ -16,7 +16,7 @@ export default {
   },
 } as Meta;
 
-const Template: Story<ButtonDirective> = (args: ButtonDirective) => ({
+const Template: Story<ButtonComponent> = (args: ButtonComponent) => ({
   props: args,
   template: `
     <button bitButton [buttonType]="buttonType" [block]="block">Button</button>

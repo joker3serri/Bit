@@ -1,4 +1,4 @@
-import { Input, HostBinding, Directive } from "@angular/core";
+import { Input, HostBinding, Component } from "@angular/core";
 
 export type ButtonTypes = "primary" | "secondary" | "danger";
 
@@ -38,10 +38,11 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
   ],
 };
 
-@Directive({
+@Component({
   selector: "button[bitButton], a[bitButton]",
+  template: "<ng-content></ng-content>",
 })
-export class ButtonDirective {
+export class ButtonComponent {
   @HostBinding("class") get classList() {
     return [
       "tw-font-semibold",
