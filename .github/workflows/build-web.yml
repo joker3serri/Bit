@@ -71,8 +71,13 @@ jobs:
       _VERSION: ${{ needs.setup.outputs.version }}
     strategy:
       matrix:
-        name: ["selfhosted-open-source", "cloud-COMMERCIAL", "selfhosted-COMMERCIAL"]
-        npm_command: ["dist:oss:selfhost", "dist:bit:cloud", "dist:bit:selfhost"]
+        include:
+          - name: "selfhosted-open-source"
+            npm_command: "dist:oss:selfhost"
+          - name: "cloud-COMMERCIAL"
+            npm_command: "dist:bit:cloud"
+          - name: "selfhosted-COMMERCIAL"
+            npm_command: "dist:bit:selfhost"
 
     steps:
       - name: Checkout repo
