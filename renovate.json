@@ -6,15 +6,40 @@
     ":maintainLockFilesMonthly",
     ":preserveSemverRanges",
     ":rebaseStalePrs",
-    ":disableDependencyDashboard"
+    ":disableDependencyDashboard",
+    ":disableMajorUpdates"
   ],
-  "enabledManagers": ["npm"],
-  "separateMajorMinor": false,
+  "enabledManagers": [
+    "npm"
+  ],
   "packageRules": [
     {
-      "matchManagers": ["npm"],
-      "matchUpdateTypes": ["major", "minor", "patch"],
+      "matchPackagePatterns": [
+        "typescript"
+      ],
+      "enabled": false
+    },
+    {
+      "matchManagers": [
+        "npm"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "groupName": "npm"
+    },
+    {
+      "packageNames": [
+        "typescript"
+      ],
+      "updateTypes": "patch"
     }
+  ],
+  "ignoreDeps": [
+    "bootstrap",
+    "electron-builder",
+    "node-ipc",
+    "regedit"
   ]
 }
