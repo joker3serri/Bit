@@ -62,14 +62,18 @@ jobs:
         id: version
         run: echo "::set-output name=value::${GITHUB_SHA:0:7}"
 
-
-  build-oss-selfhost:
-    name: Build OSS zip
-    runs-on: ubuntu-20.04
+  build-artifacts:
+    name: Build artifacts
+    runs-on: ubuntu-22.04
     needs:
       - setup
     env:
       _VERSION: ${{ needs.setup.outputs.version }}
+    strategy:
+      matrix:
+        name: ["selfhosted-open-source", "cloud-COMMERCIAL", "selfhosted-COMMERCIAL"]
+        npm_command: ["dist:oss:selfhost", "dist:bit:cloud", "dist:bit:selfhost"]
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
@@ -94,200 +98,245 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build OSS selfhost
+      - name: Build ${{ matrix.name }}
         working-directory: apps/web
         run: |
-          npm run dist:oss:selfhost
-          zip -r web-$_VERSION-selfhosted-open-source.zip build
+          npm run ${{ matrix.npm_command }}
+          zip -r web-$_VERSION-${{ matrix.name }}.zip build
 
-      - name: Upload build artifact
+      - name: Upload ${{ matrix.name }} artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
         with:
-          name: web-${{ env._VERSION }}-selfhosted-open-source.zip
-          path: apps/web/web-${{ env._VERSION }}-selfhosted-open-source.zip
+          name: web-${{ env._VERSION }}-${{ matrix.name }}.zip
+          path: apps/web/web-${{ env._VERSION }}-${{ matrix.name }}.zip
           if-no-files-found: error
 
 
-  build-cloud:
-    name: Build Cloud zip
-    runs-on: ubuntu-20.04
-    needs:
-      - setup
-    env:
-      _VERSION: ${{ needs.setup.outputs.version }}
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+  # build-oss-selfhost:
+  #   name: Build OSS zip
+  #   runs-on: ubuntu-20.04
+  #   needs:
+  #     - setup
+  #   env:
+  #     _VERSION: ${{ needs.setup.outputs.version }}
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
-      - name: Set up Node
-        uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854  # v3.1.1
-        with:
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-          node-version: "16"
+  #     - name: Set up Node
+  #       uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854  # v3.1.1
+  #       with:
+  #         cache: 'npm'
+  #         cache-dependency-path: '**/package-lock.json'
+  #         node-version: "16"
 
-      - name: Print environment
-        run: |
-          whoami
-          node --version
-          npm --version
-          gulp --version
-          docker --version
-          echo "GitHub ref: $GITHUB_REF"
-          echo "GitHub event: $GITHUB_EVENT"
+  #     - name: Print environment
+  #       run: |
+  #         whoami
+  #         node --version
+  #         npm --version
+  #         gulp --version
+  #         docker --version
+  #         echo "GitHub ref: $GITHUB_REF"
+  #         echo "GitHub event: $GITHUB_EVENT"
 
-      - name: Install dependencies
-        run: npm ci
+  #     - name: Install dependencies
+  #       run: npm ci
 
-      - name: Build Cloud
-        working-directory: apps/web
-        run: |
-          npm run dist:bit:cloud
-          zip -r web-$_VERSION-cloud-COMMERCIAL.zip build
+  #     - name: Build OSS selfhost
+  #       working-directory: apps/web
+  #       run: |
+  #         npm run dist:oss:selfhost
+  #         zip -r web-$_VERSION-selfhosted-open-source.zip build
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
-        with:
-          name: web-${{ env._VERSION }}-cloud-COMMERCIAL.zip
-          path: apps/web/web-${{ env._VERSION }}-cloud-COMMERCIAL.zip
-          if-no-files-found: error
+  #     - name: Upload build artifact
+  #       uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
+  #       with:
+  #         name: web-${{ env._VERSION }}-selfhosted-open-source.zip
+  #         path: apps/web/web-${{ env._VERSION }}-selfhosted-open-source.zip
+  #         if-no-files-found: error
 
 
-  build-commercial-selfhost:
-    name: Build SelfHost Docker image
-    runs-on: ubuntu-20.04
-    needs:
-      - setup
-    env:
-      _VERSION: ${{ needs.setup.outputs.version }}
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+  # build-cloud:
+  #   name: Build Cloud zip
+  #   runs-on: ubuntu-20.04
+  #   needs:
+  #     - setup
+  #   env:
+  #     _VERSION: ${{ needs.setup.outputs.version }}
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
-      - name: Set up Node
-        uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854  # v3.1.1
-        with:
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-          node-version: "16"
+  #     - name: Set up Node
+  #       uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854  # v3.1.1
+  #       with:
+  #         cache: 'npm'
+  #         cache-dependency-path: '**/package-lock.json'
+  #         node-version: "16"
 
-      - name: Print environment
-        run: |
-          whoami
-          node --version
-          npm --version
-          gulp --version
-          docker --version
-          echo "GitHub ref: $GITHUB_REF"
-          echo "GitHub event: $GITHUB_EVENT"
+  #     - name: Print environment
+  #       run: |
+  #         whoami
+  #         node --version
+  #         npm --version
+  #         gulp --version
+  #         docker --version
+  #         echo "GitHub ref: $GITHUB_REF"
+  #         echo "GitHub event: $GITHUB_EVENT"
 
-      - name: Setup DCT
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/rc' || github.ref == 'refs/heads/hotfix-rc-web'
-        id: setup-dct
-        uses: bitwarden/gh-actions/setup-docker-trust@a8c384a05a974c05c48374c818b004be221d43ff
-        with:
-          azure-creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
-          azure-keyvault-name: "bitwarden-prod-kv"
+  #     - name: Install dependencies
+  #       run: npm ci
 
-      - name: Install dependencies
-        run: npm ci
+  #     - name: Build Cloud
+  #       working-directory: apps/web
+  #       run: |
+  #         npm run dist:bit:cloud
+  #         zip -r web-$_VERSION-cloud-COMMERCIAL.zip build
 
-      - name: Build
-        working-directory: apps/web
-        run: |
-          echo -e "# Building Web\n"
-          echo "Building app"
-          echo "npm version $(npm --version)"
+  #     - name: Upload build artifact
+  #       uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
+  #       with:
+  #         name: web-${{ env._VERSION }}-cloud-COMMERCIAL.zip
+  #         path: apps/web/web-${{ env._VERSION }}-cloud-COMMERCIAL.zip
+  #         if-no-files-found: error
 
-          npm run dist:bit:selfhost
-          zip -r web-$_VERSION-selfhosted-COMMERCIAL.zip build
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
-        with:
-          name: web-${{ env._VERSION }}-selfhosted-COMMERCIAL.zip
-          path: apps/web/web-${{ env._VERSION }}-selfhosted-COMMERCIAL.zip
-          if-no-files-found: error
+  # build-commercial-selfhost:
+  #   name: Build SelfHost Docker image
+  #   runs-on: ubuntu-20.04
+  #   needs:
+  #     - setup
+  #   env:
+  #     _VERSION: ${{ needs.setup.outputs.version }}
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
-      - name: Build Docker image
-        working-directory: apps/web
-        run: |
-          echo -e "\nBuilding Docker image"
-          docker --version
-          docker build -t bitwarden/web .
+  #     - name: Set up Node
+  #       uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854  # v3.1.1
+  #       with:
+  #         cache: 'npm'
+  #         cache-dependency-path: '**/package-lock.json'
+  #         node-version: "16"
 
-      - name: Tag rc branch
-        if: github.ref == 'refs/heads/rc'
-        run: docker tag bitwarden/web bitwarden/web:rc
+  #     - name: Print environment
+  #       run: |
+  #         whoami
+  #         node --version
+  #         npm --version
+  #         gulp --version
+  #         docker --version
+  #         echo "GitHub ref: $GITHUB_REF"
+  #         echo "GitHub event: $GITHUB_EVENT"
 
-      - name: Tag dev
-        if: github.ref == 'refs/heads/master'
-        run: docker tag bitwarden/web bitwarden/web:dev
+  #     - name: Setup DCT
+  #       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/rc' || github.ref == 'refs/heads/hotfix-rc-web'
+  #       id: setup-dct
+  #       uses: bitwarden/gh-actions/setup-docker-trust@a8c384a05a974c05c48374c818b004be221d43ff
+  #       with:
+  #         azure-creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
+  #         azure-keyvault-name: "bitwarden-prod-kv"
 
-      - name: Tag hotfix branch
-        if: github.ref == 'refs/heads/hotfix-rc-web'
-        run: docker tag bitwarden/web bitwarden/web:hotfix-rc-web
+  #     - name: Install dependencies
+  #       run: npm ci
 
-      - name: List Docker images
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/rc' || github.ref == 'refs/heads/hotfix-rc-web'
-        run: docker images
+  #     - name: Build
+  #       working-directory: apps/web
+  #       run: |
+  #         echo -e "# Building Web\n"
+  #         echo "Building app"
+  #         echo "npm version $(npm --version)"
 
-      - name: Push rc image
-        if: github.ref == 'refs/heads/rc'
-        run: docker push bitwarden/web:rc
-        env:
-          DOCKER_CONTENT_TRUST: 1
-          DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ steps.setup-dct.outputs.dct-delegate-repo-passphrase }}
+  #         npm run dist:bit:selfhost
+  #         zip -r web-$_VERSION-selfhosted-COMMERCIAL.zip build
 
-      - name: Push dev image
-        if: github.ref == 'refs/heads/master'
-        run: docker push bitwarden/web:dev
-        env:
-          DOCKER_CONTENT_TRUST: 1
-          DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ steps.setup-dct.outputs.dct-delegate-repo-passphrase }}
+  #     - name: Upload build artifact
+  #       uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
+  #       with:
+  #         name: web-${{ env._VERSION }}-selfhosted-COMMERCIAL.zip
+  #         path: apps/web/web-${{ env._VERSION }}-selfhosted-COMMERCIAL.zip
+  #         if-no-files-found: error
 
-      - name: Push hotfix image
-        if: github.ref == 'refs/heads/hotfix-rc-web'
-        run: docker push bitwarden/web:hotfix-rc-web
-        env:
-          DOCKER_CONTENT_TRUST: 1
-          DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ steps.setup-dct.outputs.dct-delegate-repo-passphrase }}
+  #     - name: Build Docker image
+  #       working-directory: apps/web
+  #       run: |
+  #         echo -e "\nBuilding Docker image"
+  #         docker --version
+  #         docker build -t bitwarden/web .
 
-      - name: Log out of Docker
-        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/rc' || github.ref == 'refs/heads/hotfix-rc-web'
-        run: |
-          docker logout
-          echo "DOCKER_CONTENT_TRUST=0" >> $GITHUB_ENV
+  #     - name: Tag rc branch
+  #       if: github.ref == 'refs/heads/rc'
+  #       run: docker tag bitwarden/web bitwarden/web:rc
 
-      - name: Login to Azure - QA Subscription
-        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
-        with:
-          creds: ${{ secrets.AZURE_QA_KV_CREDENTIALS }}
+  #     - name: Tag dev
+  #       if: github.ref == 'refs/heads/master'
+  #       run: docker tag bitwarden/web bitwarden/web:dev
 
-      - name: Login to Azure ACR
-        run: az acr login -n bitwardenqa
+  #     - name: Tag hotfix branch
+  #       if: github.ref == 'refs/heads/hotfix-rc-web'
+  #       run: docker tag bitwarden/web bitwarden/web:hotfix-rc-web
 
-      - name: Tag and Push to Azure QA ACR
-        env:
-          REGISTRY: bitwardenqa.azurecr.io
-        run: |
-          if [[ $(grep "pull" <<< "${GITHUB_REF}") ]]; then
-            IMAGE_TAG=$(echo "${GITHUB_HEAD_REF}" | sed "s#/#-#g")
-          else
-            IMAGE_TAG=$(echo "${GITHUB_REF:11}" | sed "s#/#-#g")
-          fi
+  #     - name: List Docker images
+  #       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/rc' || github.ref == 'refs/heads/hotfix-rc-web'
+  #       run: docker images
 
-          if [[ "$IMAGE_TAG" == "master" ]]; then
-            IMAGE_TAG=dev
-          fi
+  #     - name: Push rc image
+  #       if: github.ref == 'refs/heads/rc'
+  #       run: docker push bitwarden/web:rc
+  #       env:
+  #         DOCKER_CONTENT_TRUST: 1
+  #         DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ steps.setup-dct.outputs.dct-delegate-repo-passphrase }}
 
-          docker tag bitwarden/web \
-            $REGISTRY/web-sh:$IMAGE_TAG
+  #     - name: Push dev image
+  #       if: github.ref == 'refs/heads/master'
+  #       run: docker push bitwarden/web:dev
+  #       env:
+  #         DOCKER_CONTENT_TRUST: 1
+  #         DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ steps.setup-dct.outputs.dct-delegate-repo-passphrase }}
 
-          docker push $REGISTRY/web-sh:$IMAGE_TAG
+  #     - name: Push hotfix image
+  #       if: github.ref == 'refs/heads/hotfix-rc-web'
+  #       run: docker push bitwarden/web:hotfix-rc-web
+  #       env:
+  #         DOCKER_CONTENT_TRUST: 1
+  #         DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ steps.setup-dct.outputs.dct-delegate-repo-passphrase }}
 
-      - name: Log out of Docker
-        run: docker logout
+  #     - name: Log out of Docker
+  #       if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/rc' || github.ref == 'refs/heads/hotfix-rc-web'
+  #       run: |
+  #         docker logout
+  #         echo "DOCKER_CONTENT_TRUST=0" >> $GITHUB_ENV
+
+  #     - name: Login to Azure - QA Subscription
+  #       uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
+  #       with:
+  #         creds: ${{ secrets.AZURE_QA_KV_CREDENTIALS }}
+
+  #     - name: Login to Azure ACR
+  #       run: az acr login -n bitwardenqa
+
+  #     - name: Tag and Push to Azure QA ACR
+  #       env:
+  #         REGISTRY: bitwardenqa.azurecr.io
+  #       run: |
+  #         if [[ $(grep "pull" <<< "${GITHUB_REF}") ]]; then
+  #           IMAGE_TAG=$(echo "${GITHUB_HEAD_REF}" | sed "s#/#-#g")
+  #         else
+  #           IMAGE_TAG=$(echo "${GITHUB_REF:11}" | sed "s#/#-#g")
+  #         fi
+
+  #         if [[ "$IMAGE_TAG" == "master" ]]; then
+  #           IMAGE_TAG=dev
+  #         fi
+
+  #         docker tag bitwarden/web \
+  #           $REGISTRY/web-sh:$IMAGE_TAG
+
+  #         docker push $REGISTRY/web-sh:$IMAGE_TAG
+
+  #     - name: Log out of Docker
+  #       run: docker logout
 
 
   build-qa:
@@ -391,9 +440,7 @@ jobs:
     name: Crowdin Push
     if: github.ref == 'refs/heads/master'
     needs:
-      - build-oss-selfhost
-      - build-cloud
-      - build-commercial-selfhost
+      - build-artifacts
       - build-qa
     runs-on: ubuntu-20.04
     steps:
@@ -439,9 +486,7 @@ jobs:
     needs:
       - cloc
       - setup
-      - build-oss-selfhost
-      - build-cloud
-      - build-commercial-selfhost
+      - build-artifacts
       - build-qa
       - crowdin-push
     steps:
