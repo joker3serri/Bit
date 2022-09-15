@@ -21,7 +21,7 @@ import { PasswordLogInCredentials } from "@bitwarden/common/models/domain/logInC
 import { KeysRequest } from "@bitwarden/common/models/request/keysRequest";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/referenceEventRequest";
 import { RegisterRequest } from "@bitwarden/common/models/request/registerRequest";
-import { RegisterResponse } from "@bitwarden/common/models/response/registerResponse";
+import { RegisterResponse } from "@bitwarden/common/models/response/authentication/registerResponse";
 
 import { PasswordColorText } from "../shared/components/password-strength/password-strength.component";
 

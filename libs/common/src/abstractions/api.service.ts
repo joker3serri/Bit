@@ -84,6 +84,7 @@ import { VerifyEmailRequest } from "../models/request/verifyEmailRequest";
 import { ApiKeyResponse } from "../models/response/apiKeyResponse";
 import { AttachmentResponse } from "../models/response/attachmentResponse";
 import { AttachmentUploadDataResponse } from "../models/response/attachmentUploadDataResponse";
+import { RegisterResponse } from "../models/response/authentication/registerResponse";
 import { BillingHistoryResponse } from "../models/response/billingHistoryResponse";
 import { BillingPaymentResponse } from "../models/response/billingPaymentResponse";
 import { BreachAccountResponse } from "../models/response/breachAccountResponse";
@@ -136,7 +137,6 @@ import {
   ProviderUserResponse,
   ProviderUserUserDetailsResponse,
 } from "../models/response/provider/providerUserResponse";
-import { RegisterResponse } from "../models/response/registerResponse";
 import { SelectionReadOnlyResponse } from "../models/response/selectionReadOnlyResponse";
 import { SendAccessResponse } from "../models/response/sendAccessResponse";
 import { SendFileDownloadDataResponse } from "../models/response/sendFileDownloadDataResponse";
