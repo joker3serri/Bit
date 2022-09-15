@@ -222,210 +222,210 @@ jobs:
       - name: Log out of Docker
         run: docker logout
 
-  build-qa:
-    name: Build Docker images for QA environment
-    runs-on: ubuntu-20.04
-    needs:
-      - setup
-      - build-artifacts
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+  # build-qa:
+  #   name: Build Docker images for QA environment
+  #   runs-on: ubuntu-20.04
+  #   needs:
+  #     - setup
+  #     - build-artifacts
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
-      - name: Set up Node
-        uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854  # v3.1.1
-        with:
-          cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
-          node-version: "16"
+  #     - name: Set up Node
+  #       uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854  # v3.1.1
+  #       with:
+  #         cache: 'npm'
+  #         cache-dependency-path: '**/package-lock.json'
+  #         node-version: "16"
 
-      - name: Print environment
-        run: |
-          whoami
-          node --version
-          npm --version
-          gulp --version
-          docker --version
-          echo "GitHub ref: $GITHUB_REF"
-          echo "GitHub event: $GITHUB_EVENT"
+  #     - name: Print environment
+  #       run: |
+  #         whoami
+  #         node --version
+  #         npm --version
+  #         gulp --version
+  #         docker --version
+  #         echo "GitHub ref: $GITHUB_REF"
+  #         echo "GitHub event: $GITHUB_EVENT"
 
-      - name: Login to Azure
-        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
-        with:
-          creds: ${{ secrets.AZURE_QA_KV_CREDENTIALS }}
+  #     - name: Login to Azure
+  #       uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
+  #       with:
+  #         creds: ${{ secrets.AZURE_QA_KV_CREDENTIALS }}
 
-      - name: Log into container registry
-        run: az acr login -n bitwardenqa
+  #     - name: Log into container registry
+  #       run: az acr login -n bitwardenqa
 
-      - name: Install dependencies
-        run: npm ci
+  #     - name: Install dependencies
+  #       run: npm ci
 
-      - name: Build
-        working-directory: apps/web
-        run: |
-          echo -e "# Building Web\n"
-          echo "Building app"
-          echo "npm version $(npm --version)"
-          VERSION=$( jq -r ".version" package.json)
-          jq --arg version "$VERSION - ${GITHUB_SHA:0:7}" '.version = $version' package.json > package.json.tmp
-          mv package.json.tmp package.json
+  #     - name: Build
+  #       working-directory: apps/web
+  #       run: |
+  #         echo -e "# Building Web\n"
+  #         echo "Building app"
+  #         echo "npm version $(npm --version)"
+  #         VERSION=$( jq -r ".version" package.json)
+  #         jq --arg version "$VERSION - ${GITHUB_SHA:0:7}" '.version = $version' package.json > package.json.tmp
+  #         mv package.json.tmp package.json
 
-          npm run build:bit:qa
+  #         npm run build:bit:qa
 
-          echo "{\"commit_hash\": \"$GITHUB_SHA\", \"ref\": \"$GITHUB_REF\"}" | jq . > build/info.json
+  #         echo "{\"commit_hash\": \"$GITHUB_SHA\", \"ref\": \"$GITHUB_REF\"}" | jq . > build/info.json
 
-          echo -e "\nBuilding Docker image"
-          docker --version
-          docker build -t bitwardenqa.azurecr.io/web .
+  #         echo -e "\nBuilding Docker image"
+  #         docker --version
+  #         docker build -t bitwardenqa.azurecr.io/web .
 
-      - name: Get image tag
-        id: image-tag
-        run: |
-          if [[ $(grep "pull" <<< "${GITHUB_REF}") ]]; then
-            IMAGE_TAG=$(echo "${GITHUB_HEAD_REF}" | sed "s#/#-#g")
-          else
-            IMAGE_TAG=$(echo "${GITHUB_REF:11}" | sed "s#/#-#g")
-          fi
+  #     - name: Get image tag
+  #       id: image-tag
+  #       run: |
+  #         if [[ $(grep "pull" <<< "${GITHUB_REF}") ]]; then
+  #           IMAGE_TAG=$(echo "${GITHUB_HEAD_REF}" | sed "s#/#-#g")
+  #         else
+  #           IMAGE_TAG=$(echo "${GITHUB_REF:11}" | sed "s#/#-#g")
+  #         fi
 
-          TAG_EXTENSION=${{ github.event.inputs.custom_tag_extension }}
+  #         TAG_EXTENSION=${{ github.event.inputs.custom_tag_extension }}
 
-          if [[ $TAG_EXTENSION ]]; then
-            IMAGE_TAG=$IMAGE_TAG-$TAG_EXTENSION
-          fi
+  #         if [[ $TAG_EXTENSION ]]; then
+  #           IMAGE_TAG=$IMAGE_TAG-$TAG_EXTENSION
+  #         fi
 
-          echo "::set-output name=value::$IMAGE_TAG"
+  #         echo "::set-output name=value::$IMAGE_TAG"
 
-      - name: Tag image
-        env:
-          IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
-        run: docker tag bitwardenqa.azurecr.io/web "bitwardenqa.azurecr.io/web:$IMAGE_TAG"
+  #     - name: Tag image
+  #       env:
+  #         IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
+  #       run: docker tag bitwardenqa.azurecr.io/web "bitwardenqa.azurecr.io/web:$IMAGE_TAG"
 
-      - name: Tag dev
-        if: github.ref == 'refs/heads/master'
-        run: docker tag bitwardenqa.azurecr.io/web bitwardenqa.azurecr.io/web:dev
+  #     - name: Tag dev
+  #       if: github.ref == 'refs/heads/master'
+  #       run: docker tag bitwardenqa.azurecr.io/web bitwardenqa.azurecr.io/web:dev
 
-      - name: List Docker images
-        run: docker images
+  #     - name: List Docker images
+  #       run: docker images
 
-      - name: Push image
-        env:
-          IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
-        run: docker push "bitwardenqa.azurecr.io/web:$IMAGE_TAG"
+  #     - name: Push image
+  #       env:
+  #         IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
+  #       run: docker push "bitwardenqa.azurecr.io/web:$IMAGE_TAG"
 
-      - name: Push dev images
-        if: github.ref == 'refs/heads/master'
-        run: docker push bitwardenqa.azurecr.io/web:dev
+  #     - name: Push dev images
+  #       if: github.ref == 'refs/heads/master'
+  #       run: docker push bitwardenqa.azurecr.io/web:dev
 
-      - name: Log out of Docker
-        run: docker logout
-
-
-  crowdin-push:
-    name: Crowdin Push
-    if: github.ref == 'refs/heads/master'
-    needs:
-      - build-artifacts
-      - build-qa
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2  # v2.3.4
-
-      - name: Login to Azure
-        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
-        with:
-          creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
-
-      - name: Retrieve secrets
-        id: retrieve-secrets
-        env:
-          KEYVAULT: bitwarden-prod-kv
-          SECRETS: |
-            crowdin-api-token
-        run: |
-          for i in ${SECRETS//,/ }
-          do
-            VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
-            echo "::add-mask::$VALUE"
-            echo "::set-output name=$i::$VALUE"
-          done
-
-      - name: Upload Sources
-        uses: crowdin/github-action@ecd7eb0ef6f3cfa16293c79e9cbc4bc5b5fd9c49  # v1.4.9
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CROWDIN_API_TOKEN: ${{ steps.retrieve-secrets.outputs.crowdin-api-token }}
-          CROWDIN_PROJECT_ID: "308189"
-        with:
-          config: apps/web/crowdin.yml
-          crowdin_branch_name: master
-          upload_sources: true
-          upload_translations: false
+  #     - name: Log out of Docker
+  #       run: docker logout
 
 
-  check-failures:
-    name: Check for failures
-    if: always()
-    runs-on: ubuntu-20.04
-    needs:
-      - cloc
-      - setup
-      - build-artifacts
-      - build-qa
-      - crowdin-push
-    steps:
-      - name: Check if any job failed
-        if: ${{ (github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') }}
-        env:
-          CLOC_STATUS: ${{ needs.cloc.result }}
-          SETUP_STATUS: ${{ needs.setup.result }}
-          BUILD_OSS_SELFHOST_STATUS: ${{ needs.build-oss-selfhost.result }}
-          BUILD_CLOUD_STATUS: ${{ needs.build-cloud.result }}
-          BUILD_COMMERCIAL_SELFHOST_STATUS: ${{ needs.build-commercial-selfhost.result }}
-          BUILD_QA_STATUS: ${{ needs.build-qa.result }}
-          CROWDIN_PUSH_STATUS: ${{ needs.crowdin-push.result }}
-        run: |
-          if [ "$CLOC_STATUS" = "failure" ]; then
-              exit 1
-          elif [ "$SETUP_STATUS" = "failure" ]; then
-              exit 1
-          elif [ "$BUILD_OSS_SELFHOST_STATUS" = "failure" ]; then
-              exit 1
-          elif [ "$BUILD_CLOUD_STATUS" = "failure" ]; then
-              exit 1
-          elif [ "$BUILD_COMMERCIAL_SELFHOST_STATUS" = "failure" ]; then
-              exit 1
-          elif [ "$BUILD_QA_STATUS" = "failure" ]; then
-              exit 1
-          elif [ "$CROWDIN_PUSH_STATUS" = "failure" ]; then
-              exit 1
-          fi
+  # crowdin-push:
+  #   name: Crowdin Push
+  #   if: github.ref == 'refs/heads/master'
+  #   needs:
+  #     - build-artifacts
+  #     - build-qa
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2  # v2.3.4
 
-      - name: Login to Azure - Prod Subscription
-        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
-        if: failure()
-        with:
-          creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
+  #     - name: Login to Azure
+  #       uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
+  #       with:
+  #         creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
 
-      - name: Retrieve secrets
-        id: retrieve-secrets
-        if: failure()
-        env:
-          KEYVAULT: bitwarden-prod-kv
-          SECRETS: |
-            devops-alerts-slack-webhook-url
-        run: |
-          for i in ${SECRETS//,/ }
-          do
-            VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
-            echo "::add-mask::$VALUE"
-            echo "::set-output name=$i::$VALUE"
-          done
+  #     - name: Retrieve secrets
+  #       id: retrieve-secrets
+  #       env:
+  #         KEYVAULT: bitwarden-prod-kv
+  #         SECRETS: |
+  #           crowdin-api-token
+  #       run: |
+  #         for i in ${SECRETS//,/ }
+  #         do
+  #           VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
+  #           echo "::add-mask::$VALUE"
+  #           echo "::set-output name=$i::$VALUE"
+  #         done
 
-      - name: Notify Slack on failure
-        uses: act10ns/slack@da3191ebe2e67f49b46880b4633f5591a96d1d33  # v1.5.1
-        if: failure()
-        env:
-          SLACK_WEBHOOK_URL: ${{ steps.retrieve-secrets.outputs.devops-alerts-slack-webhook-url }}
-        with:
-          status: ${{ job.status }}
+  #     - name: Upload Sources
+  #       uses: crowdin/github-action@ecd7eb0ef6f3cfa16293c79e9cbc4bc5b5fd9c49  # v1.4.9
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         CROWDIN_API_TOKEN: ${{ steps.retrieve-secrets.outputs.crowdin-api-token }}
+  #         CROWDIN_PROJECT_ID: "308189"
+  #       with:
+  #         config: apps/web/crowdin.yml
+  #         crowdin_branch_name: master
+  #         upload_sources: true
+  #         upload_translations: false
+
+
+  # check-failures:
+  #   name: Check for failures
+  #   if: always()
+  #   runs-on: ubuntu-20.04
+  #   needs:
+  #     - cloc
+  #     - setup
+  #     - build-artifacts
+  #     - build-qa
+  #     - crowdin-push
+  #   steps:
+  #     - name: Check if any job failed
+  #       if: ${{ (github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') }}
+  #       env:
+  #         CLOC_STATUS: ${{ needs.cloc.result }}
+  #         SETUP_STATUS: ${{ needs.setup.result }}
+  #         BUILD_OSS_SELFHOST_STATUS: ${{ needs.build-oss-selfhost.result }}
+  #         BUILD_CLOUD_STATUS: ${{ needs.build-cloud.result }}
+  #         BUILD_COMMERCIAL_SELFHOST_STATUS: ${{ needs.build-commercial-selfhost.result }}
+  #         BUILD_QA_STATUS: ${{ needs.build-qa.result }}
+  #         CROWDIN_PUSH_STATUS: ${{ needs.crowdin-push.result }}
+  #       run: |
+  #         if [ "$CLOC_STATUS" = "failure" ]; then
+  #             exit 1
+  #         elif [ "$SETUP_STATUS" = "failure" ]; then
+  #             exit 1
+  #         elif [ "$BUILD_OSS_SELFHOST_STATUS" = "failure" ]; then
+  #             exit 1
+  #         elif [ "$BUILD_CLOUD_STATUS" = "failure" ]; then
+  #             exit 1
+  #         elif [ "$BUILD_COMMERCIAL_SELFHOST_STATUS" = "failure" ]; then
+  #             exit 1
+  #         elif [ "$BUILD_QA_STATUS" = "failure" ]; then
+  #             exit 1
+  #         elif [ "$CROWDIN_PUSH_STATUS" = "failure" ]; then
+  #             exit 1
+  #         fi
+
+  #     - name: Login to Azure - Prod Subscription
+  #       uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
+  #       if: failure()
+  #       with:
+  #         creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
+
+  #     - name: Retrieve secrets
+  #       id: retrieve-secrets
+  #       if: failure()
+  #       env:
+  #         KEYVAULT: bitwarden-prod-kv
+  #         SECRETS: |
+  #           devops-alerts-slack-webhook-url
+  #       run: |
+  #         for i in ${SECRETS//,/ }
+  #         do
+  #           VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
+  #           echo "::add-mask::$VALUE"
+  #           echo "::set-output name=$i::$VALUE"
+  #         done
+
+  #     - name: Notify Slack on failure
+  #       uses: act10ns/slack@da3191ebe2e67f49b46880b4633f5591a96d1d33  # v1.5.1
+  #       if: failure()
+  #       env:
+  #         SLACK_WEBHOOK_URL: ${{ steps.retrieve-secrets.outputs.devops-alerts-slack-webhook-url }}
+  #       with:
+  #         status: ${{ job.status }}
