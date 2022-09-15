@@ -1,19 +1,30 @@
 use anyhow::Result;
 use windows::{
-    core::factory, Foundation::IAsyncOperation, Security::Credentials::UI::*,
-    Win32::Foundation::HWND, Win32::System::WinRT::IUserConsentVerifierInterop,
+    core::{factory, HSTRING},
+    Foundation::IAsyncOperation,
+    Security::Credentials::UI::*,
+    Win32::{
+        Foundation::HWND,
+        System::WinRT::IUserConsentVerifierInterop,
+        UI::{
+            Input::KeyboardAndMouse::{self, KEYEVENTF_EXTENDEDKEY, KEYEVENTF_KEYUP, VK_MENU},
+            WindowsAndMessaging,
+        },
+    },
 };
 
 pub fn prompt(hwnd: Vec<u8>, message: String) -> Result<bool> {
-    let interop = factory::<UserConsentVerifier, IUserConsentVerifierInterop>()?;
-
-    let h = isize::from_le_bytes(hwnd.try_into().unwrap());
+    let h = isize::from_le_bytes(hwnd.clone().try_into().unwrap());
     let window = HWND(h);
 
-    let operation: IAsyncOperation<UserConsentVerificationResult> =
-        unsafe { interop.RequestVerificationForWindowAsync(window, message)? };
+    // The Windows Hello prompt is displayed inside the application window. For best result we
+    //  should set the window to the foreground and focus it.
+    set_focus(window);
 
-    let result: UserConsentVerificationResult = operation.get()?;
+    let interop = factory::<UserConsentVerifier, IUserConsentVerifierInterop>()?;
+    let operation: IAsyncOperation<UserConsentVerificationResult> =
+        unsafe { interop.RequestVerificationForWindowAsync(window, &HSTRING::from(message))? };
+    let result = operation.get()?;
 
     match result {
         UserConsentVerificationResult::Verified => Ok(true),
@@ -28,6 +39,24 @@ pub fn available() -> Result<bool> {
         UserConsentVerifierAvailability::Available => Ok(true),
         UserConsentVerifierAvailability::DeviceBusy => Ok(true), // TODO: Look into removing this and making the check more ad-hoc
         _ => Ok(false),
+    }
+}
+
+fn set_focus(window: HWND) {
+    let mut pressed = false;
+    let bvk = VK_MENU.0 as u8;
+
+    unsafe {
+        // Simulate holding down Alt key to bypass windows limitations
+        if KeyboardAndMouse::GetAsyncKeyState(VK_MENU.0 as i32) == 0 {
+            pressed = true;
+            KeyboardAndMouse::keybd_event(bvk, 0, KEYEVENTF_EXTENDEDKEY, 0);
+        }
+        WindowsAndMessaging::SetForegroundWindow(window);
+        KeyboardAndMouse::SetFocus(window);
+        if pressed {
+            KeyboardAndMouse::keybd_event(bvk, 0, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, 0);
+        }
     }
 }
 
