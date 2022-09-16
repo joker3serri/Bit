@@ -233,7 +233,11 @@ export class Main {
 
     this.organizationService = new OrganizationService(this.stateService);
 
-    this.policyService = new PolicyService(this.stateService, this.organizationService);
+    this.policyService = new PolicyService(
+      this.stateService,
+      this.organizationService,
+      this.vaultTimeoutSettingsService
+    );
 
     this.sendService = new SendService(
       this.cryptoService,
@@ -278,7 +282,6 @@ export class Main {
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(
       this.cryptoService,
       this.tokenService,
-      this.policyService,
       this.stateService
     );
 
