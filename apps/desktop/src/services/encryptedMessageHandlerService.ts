@@ -104,7 +104,7 @@ export class EncryptedMessageHandlerService {
     payload: CredentialRetrievePayload
   ): Promise<CipherResponse[] | UserStatusErrorResponse> {
     if (payload.uri == null) {
-      return;
+      return [];
     }
 
     const ciphersResponse: CipherResponse[] = [];
