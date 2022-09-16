@@ -123,7 +123,6 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
         this.policyService
           .masterPasswordPolicyOptions$(policyList)
           .pipe(takeUntil(this.destroy$))
-          .subscribe(
           .subscribe((enforcedPasswordPolicyOptions) => {
             this.enforcedPasswordPolicyOptions = enforcedPasswordPolicyOptions;
           });

@@ -134,7 +134,6 @@ export class RegisterComponent extends BaseRegisterComponent implements OnInit, 
       this.policyService
         .masterPasswordPolicyOptions$(this.policies)
         .pipe(takeUntil(this.destroy$))
-        .subscribe(
         .subscribe((enforcedPasswordPolicyOptions) => {
           this.enforcedPolicyOptions = enforcedPasswordPolicyOptions;
         });
