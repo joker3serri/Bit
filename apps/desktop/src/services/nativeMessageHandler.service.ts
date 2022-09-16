@@ -88,6 +88,7 @@ export class NativeMessageHandlerService {
       // Ask for confirmation from user
       this.messagingService.send("setFocus");
       const submitted = await Swal.fire({
+        heightAuto: false,
         titleText: this.i18nService.t("verifyDDGBrowserTitle"),
         html: this.i18nService.t("verifyDDGBrowserDesc"),
         showCancelButton: true,
