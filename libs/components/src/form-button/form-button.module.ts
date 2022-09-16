@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { ButtonModule } from "../button";
 import { SharedModule } from "../shared";
 
-import { BitSubmitDirective } from "./async-submit.directive";
+import { BitSubmitDirective } from "./bit-submit.directive";
 import { BitFormButtonDirective } from "./form-button.directive";
 
 @NgModule({

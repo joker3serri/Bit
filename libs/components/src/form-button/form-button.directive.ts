@@ -3,7 +3,7 @@ import { Subject, takeUntil } from "rxjs";
 
 import { ButtonComponent } from "../button";
 
-import { BitSubmitDirective } from "./async-submit.directive";
+import { BitSubmitDirective } from "./bit-submit.directive";
 
 @Directive({
   selector: "button[bitFormButton]",
