@@ -60,7 +60,9 @@ export class ButtonComponent {
       "focus-visible:tw-ring-primary-700",
       "focus-visible:tw-z-10",
     ]
-      .concat(this.block ? ["tw-w-full", "tw-block"] : ["tw-inline-block"])
+      .concat(
+        this.block == null || this.block === false ? ["tw-inline-block"] : ["tw-w-full", "tw-block"]
+      )
       .concat(buttonStyles[this.buttonType ?? "secondary"]);
   }
 
@@ -69,7 +71,7 @@ export class ButtonComponent {
   }
 
   @Input() buttonType: ButtonTypes = null;
-  @Input() block = false;
+  @Input() block?: boolean;
   @Input() loading = false;
   @Input() disabled = false;
 }
