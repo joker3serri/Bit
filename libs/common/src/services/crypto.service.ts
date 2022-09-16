@@ -84,7 +84,7 @@ export class CryptoService implements CryptoServiceAbstraction {
   }
 
   async setProviderKeys(providers: ProfileProviderResponse[]): Promise<void> {
-    const providerKeys: Record<string, string> = {};
+    const providerKeys: any = {};
     providers.forEach((provider) => {
       providerKeys[provider.id] = provider.key;
     });

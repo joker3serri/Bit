@@ -104,46 +104,24 @@ export class AccountKeys {
   >();
   organizationKeys?: EncryptionPair<
     { [orgId: string]: EncryptedOrganizationKeyData },
-    Record<string, SymmetricCryptoKey>
+    Map<string, SymmetricCryptoKey>
   > = new EncryptionPair<
     { [orgId: string]: EncryptedOrganizationKeyData },
-    Record<string, SymmetricCryptoKey>
+    Map<string, SymmetricCryptoKey>
   >();
-  providerKeys?: EncryptionPair<Record<string, string>, Record<string, SymmetricCryptoKey>> =
-    new EncryptionPair<Record<string, string>, Record<string, SymmetricCryptoKey>>();
+  providerKeys?: EncryptionPair<any, Map<string, SymmetricCryptoKey>> = new EncryptionPair<
+    any,
+    Map<string, SymmetricCryptoKey>
+  >();
   privateKey?: EncryptionPair<string, ArrayBuffer> = new EncryptionPair<string, ArrayBuffer>();
   publicKey?: ArrayBuffer;
   apiKeyClientSecret?: string;
 
   toJSON() {
-    // This return is a bit of a hack to force Jsonify to recognize the type of the object.
-    // Jsonify refuses to execute recursively on `toJSON` methods, instead expecting the return to extend JsonValue.
-    return {
-      cryptoMasterKey: this.cryptoMasterKey?.toJSON(),
-      cryptoMasterKeyAuto: this.cryptoMasterKeyAuto,
-      cryptoMasterKeyB64: this.cryptoMasterKeyB64,
-      cryptoMasterKeyBiometric: this.cryptoMasterKeyBiometric,
-      cryptoSymmetricKey: this.cryptoSymmetricKey?.toJSON() as {
-        encrypted: string;
-        decrypted: Jsonify<SymmetricCryptoKey>;
-      },
-      organizationKeys: this.organizationKeys?.toJSON() as {
-        encrypted: { [orgId: string]: EncryptedOrganizationKeyData };
-        decrypted: Record<string, Jsonify<SymmetricCryptoKey>>;
-      },
-      providerKeys: this.providerKeys?.toJSON() as {
-        encrypted: Record<string, string>;
-        decrypted: Record<string, Jsonify<SymmetricCryptoKey>>;
-      },
-      privateKey: this.privateKey?.toJSON() as {
-        encrypted: string;
-        decrypted: string;
-      },
-      publicKey: Utils.fromBufferToByteString(this.publicKey),
-    };
+    return Object.assign(this, { publicKey: Utils.fromBufferToByteString(this.publicKey) });
   }
 
-  static fromJSON(obj: Partial<Jsonify<AccountKeys>>): AccountKeys {
+  static fromJSON(obj: any): AccountKeys {
     return Object.assign(
       new AccountKeys(),
       { cryptoMasterKey: SymmetricCryptoKey.fromJSON(obj?.cryptoMasterKey) },
@@ -153,8 +131,8 @@ export class AccountKeys {
           SymmetricCryptoKey.fromJSON
         ),
       },
-      { organizationKeys: AccountKeys.initRecordEncryptionPairsFromJSON(obj?.organizationKeys) },
-      { providerKeys: AccountKeys.initRecordEncryptionPairsFromJSON(obj?.providerKeys) },
+      { organizationKeys: AccountKeys.initMapEncryptionPairsFromJSON(obj?.organizationKeys) },
+      { providerKeys: AccountKeys.initMapEncryptionPairsFromJSON(obj?.providerKeys) },
       {
         privateKey: EncryptionPair.fromJSON<string, ArrayBuffer>(
           obj?.privateKey,
@@ -167,14 +145,15 @@ export class AccountKeys {
     );
   }
 
-  // These `any` types are a result of Jsonify<T> not being recursive on toJSON methods.
-  static initRecordEncryptionPairsFromJSON(obj: any) {
+  // These `any` types are a result of Jsonify<Map<>> === {}
+  // Issue raised https://github.com/sindresorhus/type-fest/issues/457
+  static initMapEncryptionPairsFromJSON(obj: any) {
     return EncryptionPair.fromJSON(obj, (decObj: any) => {
-      const record: Record<string, SymmetricCryptoKey> = {};
-      for (const key in decObj) {
-        record[key] = SymmetricCryptoKey.fromJSON(decObj[key]);
+      const map = new Map<string, SymmetricCryptoKey>();
+      for (const id in decObj) {
+        map.set(id, SymmetricCryptoKey.fromJSON(decObj[id]));
       }
-      return record;
+      return map;
     });
   }
 }
