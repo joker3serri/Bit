@@ -46,7 +46,7 @@ export class EncryptionPair<TEncrypted, TDecrypted> {
     const pair = new EncryptionPair<TEncrypted, TDecrypted>();
     if (obj?.encrypted != null) {
       pair.encrypted = encryptedFromJson
-        ? encryptedFromJson(obj.encrypted as any)
+        ? encryptedFromJson(obj.encrypted)
         : (obj.encrypted as TEncrypted);
     }
     if (obj?.decryptedSerialized != null) {
@@ -55,7 +55,7 @@ export class EncryptionPair<TEncrypted, TDecrypted> {
       pair.decrypted = Utils.fromByteStringToArray(obj.decryptedSerialized)?.buffer as any;
     } else if (obj?.decrypted != null) {
       pair.decrypted = decryptedFromJson
-        ? decryptedFromJson(obj.decrypted as any)
+        ? decryptedFromJson(obj.decrypted)
         : (obj.decrypted as TDecrypted);
     }
     return pair;
@@ -140,7 +140,7 @@ export class AccountKeys {
         decryptedSerialized: string;
       },
       providerKeys: this.providerKeys?.toJSON() as {
-        encrypted: any;
+        encrypted: Record<string, string>;
         decrypted: Record<string, Jsonify<SymmetricCryptoKey>>;
         decryptedSerialized: string;
       },
@@ -172,8 +172,7 @@ export class AccountKeys {
     );
   }
 
-  // These `any` types are a result of Jsonify<Map<>> === {}
-  // Issue raised https://github.com/sindresorhus/type-fest/issues/457
+  // These `any` types are a result of Jsonify<T> not being recursive on toJSON methods.
   static initRecordEncryptionPairsFromJSON(obj: any) {
     return EncryptionPair.fromJSON(obj, (decObj: any) => {
       const record: Record<string, SymmetricCryptoKey> = {};
@@ -302,10 +301,10 @@ export class Account {
 
   static fromJSON(json: Jsonify<Account>): Account {
     return Object.assign(new Account({}), json, {
-      keys: AccountKeys.fromJSON(json?.keys as any),
+      keys: AccountKeys.fromJSON(json?.keys),
       profile: AccountProfile.fromJSON(json?.profile),
-      settings: AccountSettings.fromJSON(json?.settings as any),
-      tokens: AccountTokens.fromJSON(json?.tokens as any),
+      settings: AccountSettings.fromJSON(json?.settings),
+      tokens: AccountTokens.fromJSON(json?.tokens),
     });
   }
 }
