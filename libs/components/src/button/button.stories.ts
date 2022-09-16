@@ -62,7 +62,7 @@ Loading.args = {
   loading: true,
 };
 
-const BlockTemplate: Story<ButtonDirective> = (args: ButtonDirective) => ({
+const BlockTemplate: Story<ButtonComponent> = (args: ButtonComponent) => ({
   props: args,
   template: `
     <span class="tw-flex">
