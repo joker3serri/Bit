@@ -102,7 +102,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPassRequired")
+        this.i18nService.t("masterPasswordRequired")
       );
       return false;
     }
@@ -111,7 +111,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPassLength")
+        this.i18nService.t("masterPasswordMinlength")
       );
       return false;
     }
