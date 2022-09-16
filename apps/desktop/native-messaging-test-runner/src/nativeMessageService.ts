@@ -9,10 +9,10 @@ import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service
 import { EncryptService } from "@bitwarden/common/services/encrypt.service";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/nodeCryptoFunction.service";
 
-import { CredentialCreatePayload } from "../../src/models/nativeMessaging/credentialCreatePayload";
-import { CredentialUpdatePayload } from "../../src/models/nativeMessaging/credentialUpdatePayload";
 import { DecryptedCommandData } from "../../src/models/nativeMessaging/decryptedCommandData";
 import { EncryptedMessage } from "../../src/models/nativeMessaging/encryptedMessage";
+import { CredentialCreatePayload } from "../../src/models/nativeMessaging/encryptedMessagePayloads/credentialCreatePayload";
+import { CredentialUpdatePayload } from "../../src/models/nativeMessaging/encryptedMessagePayloads/credentialUpdatePayload";
 import { EncryptedMessageResponse } from "../../src/models/nativeMessaging/encryptedMessageResponse";
 import { MessageCommon } from "../../src/models/nativeMessaging/messageCommon";
 import { UnencryptedMessage } from "../../src/models/nativeMessaging/unencryptedMessage";

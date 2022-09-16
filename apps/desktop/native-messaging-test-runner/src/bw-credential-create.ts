@@ -5,7 +5,7 @@ import { hideBin } from "yargs/helpers";
 
 import { NativeMessagingVersion } from "@bitwarden/common/enums/nativeMessagingVersion";
 
-import { CredentialCreatePayload } from "../../src/models/nativeMessaging/credentialCreatePayload";
+import { CredentialCreatePayload } from "../../src/models/nativeMessaging/encryptedMessagePayloads/credentialCreatePayload";
 
 import { LogUtils } from "./logUtils";
 import NativeMessageService from "./nativeMessageService";

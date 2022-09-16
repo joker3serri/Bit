@@ -24,7 +24,7 @@ import {
   LogService as LogServiceAbstraction,
 } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/abstractions/messaging.service";
-import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
+import { PasswordGenerationService as PasswordGenerationServiceAbstraction } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService as PolicyServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
@@ -45,8 +45,9 @@ import { ElectronRendererSecureStorageService } from "@bitwarden/electron/servic
 import { ElectronRendererStorageService } from "@bitwarden/electron/services/electronRendererStorage.service";
 
 import { Account } from "../../models/account";
+import { EncryptedMessageHandlerService } from "../../services/encryptedMessageHandlerService";
 import { I18nService } from "../../services/i18n.service";
-import { NativeMessageHandler } from "../../services/nativeMessageHandler.service";
+import { NativeMessageHandlerService } from "../../services/nativeMessageHandler.service";
 import { NativeMessagingService } from "../../services/nativeMessaging.service";
 import { PasswordRepromptService } from "../../services/passwordReprompt.service";
 import { StateService } from "../../services/state.service";
@@ -153,17 +154,25 @@ const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
       useClass: DesktopThemingService,
     },
     {
-      provide: NativeMessageHandler,
+      provide: EncryptedMessageHandlerService,
       deps: [
         StateServiceAbstraction,
         AuthServiceAbstraction,
-        CryptoServiceAbstraction,
-        CryptoFunctionServiceAbstraction,
         CipherServiceAbstraction,
         PolicyServiceAbstraction,
         MessagingServiceAbstraction,
-        PasswordGenerationService,
+        PasswordGenerationServiceAbstraction,
+      ],
+    },
+    {
+      provide: NativeMessageHandlerService,
+      deps: [
+        StateServiceAbstraction,
+        CryptoServiceAbstraction,
+        CryptoFunctionServiceAbstraction,
+        MessagingServiceAbstraction,
         I18nServiceAbstraction,
+        EncryptedMessageHandlerService,
       ],
     },
   ],
