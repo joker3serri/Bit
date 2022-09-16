@@ -12,7 +12,6 @@ describe("AccountSettings", () => {
       accountSettings.pinProtected = EncryptionPair.fromJSON<string, EncString>({
         encrypted: "encrypted",
         decrypted: "3.data",
-        decryptedSerialized: null,
       });
       const jsonObj = JSON.parse(JSON.stringify(accountSettings));
       const actual = AccountSettings.fromJSON(jsonObj);

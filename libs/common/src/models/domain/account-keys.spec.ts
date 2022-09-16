@@ -26,7 +26,7 @@ describe("AccountKeys", () => {
       const symmetricKeySpy = jest.spyOn(symmetricKey, "toJSON");
       const actual = keys.toJSON();
       expect(symmetricKeySpy).toHaveBeenCalled();
-      expect(actual.publicKeySerialized).toEqual(Utils.fromBufferToByteString(buffer));
+      expect(actual.publicKey).toEqual(Utils.fromBufferToByteString(buffer));
       expect(actual.providerKeys.decrypted).toEqual({ providerId: symmetricKey });
     });
 
@@ -34,14 +34,14 @@ describe("AccountKeys", () => {
       const keys = new AccountKeys();
       keys.publicKey = Utils.fromByteStringToArray("hello").buffer;
       const json = JSON.stringify(keys);
-      expect(json).toContain('"publicKeySerialized":"hello"');
+      expect(json).toContain('"publicKey":"hello"');
     });
   });
 
   describe("fromJSON", () => {
     it("should deserialize public key to a buffer", () => {
       const keys = AccountKeys.fromJSON({
-        publicKeySerialized: "hello",
+        publicKey: "hello",
       });
       expect(keys.publicKey).toEqual(Utils.fromByteStringToArray("hello").buffer);
     });
@@ -62,7 +62,6 @@ describe("AccountKeys", () => {
               keyB64: symmetricKey.keyB64,
             },
           },
-          decryptedSerialized: null,
         },
       });
       expect(spy).toHaveBeenCalled();
@@ -78,7 +77,6 @@ describe("AccountKeys", () => {
               keyB64: symmetricKey.keyB64,
             },
           },
-          decryptedSerialized: null,
         },
       });
       expect(spy).toHaveBeenCalled();
@@ -87,7 +85,7 @@ describe("AccountKeys", () => {
     it("should deserialize privateKey", () => {
       const spy = jest.spyOn(EncryptionPair, "fromJSON");
       AccountKeys.fromJSON({
-        privateKey: { encrypted: "encrypted", decrypted: null, decryptedSerialized: "test" },
+        privateKey: { encrypted: "encrypted", decrypted: "test" },
       });
       expect(spy).toHaveBeenCalled();
     });

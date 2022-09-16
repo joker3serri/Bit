@@ -27,20 +27,20 @@ import { SymmetricCryptoKey } from "./symmetricCryptoKey";
 export class EncryptionPair<TEncrypted, TDecrypted> {
   encrypted?: TEncrypted;
   decrypted?: TDecrypted;
-  private decryptedSerialized?: string;
 
   toJSON() {
     return {
       encrypted: this.encrypted,
-      decrypted: this.decrypted,
-      decryptedSerialized:
-        this.decrypted instanceof ArrayBuffer ? Utils.fromBufferToByteString(this.decrypted) : null,
+      decrypted:
+        this.decrypted instanceof ArrayBuffer
+          ? Utils.fromBufferToByteString(this.decrypted)
+          : this.decrypted,
     };
   }
 
   static fromJSON<TEncrypted, TDecrypted>(
     obj: Jsonify<EncryptionPair<Jsonify<TEncrypted>, Jsonify<TDecrypted>>>,
-    decryptedFromJson?: (decObj: Jsonify<TDecrypted>) => TDecrypted,
+    decryptedFromJson?: (decObj: Jsonify<TDecrypted> | string) => TDecrypted,
     encryptedFromJson?: (encObj: Jsonify<TEncrypted>) => TEncrypted
   ) {
     const pair = new EncryptionPair<TEncrypted, TDecrypted>();
@@ -49,11 +49,7 @@ export class EncryptionPair<TEncrypted, TDecrypted> {
         ? encryptedFromJson(obj.encrypted)
         : (obj.encrypted as TEncrypted);
     }
-    if (obj?.decryptedSerialized != null) {
-      pair.decryptedSerialized = obj.decryptedSerialized;
-      // We only populate the decryptedSerialized if the decrypted is an arraybuffer.
-      pair.decrypted = Utils.fromByteStringToArray(obj.decryptedSerialized)?.buffer as any;
-    } else if (obj?.decrypted != null) {
+    if (obj?.decrypted != null) {
       pair.decrypted = decryptedFromJson
         ? decryptedFromJson(obj.decrypted)
         : (obj.decrypted as TDecrypted);
@@ -117,11 +113,9 @@ export class AccountKeys {
     new EncryptionPair<Record<string, string>, Record<string, SymmetricCryptoKey>>();
   privateKey?: EncryptionPair<string, ArrayBuffer> = new EncryptionPair<string, ArrayBuffer>();
   publicKey?: ArrayBuffer;
-  private publicKeySerialized?: string;
   apiKeyClientSecret?: string;
 
   toJSON() {
-    this.publicKeySerialized = Utils.fromBufferToByteString(this.publicKey);
     // This return is a bit of a hack to force Jsonify to recognize the type of the object.
     // Jsonify refuses to execute recursively on `toJSON` methods, instead expecting the return to extend JsonValue.
     return {
@@ -132,24 +126,20 @@ export class AccountKeys {
       cryptoSymmetricKey: this.cryptoSymmetricKey?.toJSON() as {
         encrypted: string;
         decrypted: Jsonify<SymmetricCryptoKey>;
-        decryptedSerialized: string;
       },
       organizationKeys: this.organizationKeys?.toJSON() as {
         encrypted: { [orgId: string]: EncryptedOrganizationKeyData };
         decrypted: Record<string, Jsonify<SymmetricCryptoKey>>;
-        decryptedSerialized: string;
       },
       providerKeys: this.providerKeys?.toJSON() as {
         encrypted: Record<string, string>;
         decrypted: Record<string, Jsonify<SymmetricCryptoKey>>;
-        decryptedSerialized: string;
       },
       privateKey: this.privateKey?.toJSON() as {
         encrypted: string;
-        decrypted: Jsonify<ArrayBuffer>;
-        decryptedSerialized: string;
+        decrypted: string;
       },
-      publicKeySerialized: this.publicKeySerialized,
+      publicKey: Utils.fromBufferToByteString(this.publicKey),
     };
   }
 
@@ -165,9 +155,14 @@ export class AccountKeys {
       },
       { organizationKeys: AccountKeys.initRecordEncryptionPairsFromJSON(obj?.organizationKeys) },
       { providerKeys: AccountKeys.initRecordEncryptionPairsFromJSON(obj?.providerKeys) },
-      { privateKey: EncryptionPair.fromJSON(obj?.privateKey) },
       {
-        publicKey: Utils.fromByteStringToArray(obj?.publicKeySerialized)?.buffer,
+        privateKey: EncryptionPair.fromJSON<string, ArrayBuffer>(
+          obj?.privateKey,
+          (decObj: string) => Utils.fromByteStringToArray(decObj).buffer
+        ),
+      },
+      {
+        publicKey: Utils.fromByteStringToArray(obj?.publicKey)?.buffer,
       }
     );
   }
