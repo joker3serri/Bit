@@ -36,7 +36,7 @@ describe("Browser State Service backed by chrome.storage api", () => {
 
     state = new State(new GlobalState());
     const stateGetter = (key: string) => Promise.resolve(JSON.parse(JSON.stringify(state)));
-    memoryStorageService.get("state").mimicks(stateGetter);
+    memoryStorageService.get("state", Arg.any()).mimicks(stateGetter);
     memoryStorageService
       .save("state", Arg.any(), Arg.any())
       .mimicks((key: string, obj: any, options: StorageOptions) => {

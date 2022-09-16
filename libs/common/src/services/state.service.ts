@@ -3,7 +3,10 @@ import { BehaviorSubject, concatMap } from "rxjs";
 import { LogService } from "../abstractions/log.service";
 import { StateService as StateServiceAbstraction } from "../abstractions/state.service";
 import { StateMigrationService } from "../abstractions/stateMigration.service";
-import { AbstractStorageService } from "../abstractions/storage.service";
+import {
+  MemoryStorageServiceInterface,
+  AbstractStorageService,
+} from "../abstractions/storage.service";
 import { HtmlStorageLocation } from "../enums/htmlStorageLocation";
 import { KdfType } from "../enums/kdfType";
 import { StorageLocation } from "../enums/storageLocation";
@@ -73,7 +76,7 @@ export class StateService<
   constructor(
     protected storageService: AbstractStorageService,
     protected secureStorageService: AbstractStorageService,
-    protected memoryStorageService: AbstractStorageService,
+    protected memoryStorageService: AbstractStorageService & MemoryStorageServiceInterface,
     protected logService: LogService,
     protected stateMigrationService: StateMigrationService,
     protected stateFactory: StateFactory<TGlobalState, TAccount>,
@@ -2698,10 +2701,10 @@ export class StateService<
   }
 
   protected async state(): Promise<State<TGlobalState, TAccount>> {
-    const stateJson = await this.memoryStorageService.get<State<TGlobalState, TAccount>>(
-      keys.state
-    );
-    return State.fromJSON(stateJson);
+    const state = await this.memoryStorageService.get<State<TGlobalState, TAccount>>(keys.state, {
+      deserializer: (s) => State.fromJSON(s),
+    });
+    return state;
   }
 
   private async setState(state: State<TGlobalState, TAccount>): Promise<void> {
