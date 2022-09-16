@@ -143,7 +143,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: web-${{ env._VERSION }}-selfhosted-COMMERCIAL.zip
-          path: apps/web
+          path: apps/web/build
 
       - name: Build Docker image
         working-directory: apps/web
