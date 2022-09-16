@@ -54,10 +54,6 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
     super.ngOnInit();
   }
 
-  ngOnDestroy() {
-    super.ngOnDestroy();
-  }
-
   togglePassword(confirmField: boolean) {
     this.showPassword = !this.showPassword;
     document.getElementById(confirmField ? "masterPasswordRetype" : "masterPassword").focus();
