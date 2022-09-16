@@ -35,22 +35,15 @@ export class SecretService {
   }
 
   async getSecrets(organizationId: string): Promise<SecretListView[]> {
-    try {
-      const r = await this.apiService.send(
-        "GET",
-        "/organizations/" + organizationId + "/secrets",
-        null,
-        true,
-        true
-      );
-      const results = new ListResponse(r, SecretListItemResponse);
-      return await this.createSecretsListView(organizationId, results.data);
-    } catch (e) {
-      if (e.statusCode == 404) {
-        return null;
-      }
-      throw e;
-    }
+    const r = await this.apiService.send(
+      "GET",
+      "/organizations/" + organizationId + "/secrets",
+      null,
+      true,
+      true
+    );
+    const results = new ListResponse(r, SecretListItemResponse);
+    return await this.createSecretsListView(organizationId, results.data);
   }
 
   async create(organizationId: string, secretView: SecretView) {

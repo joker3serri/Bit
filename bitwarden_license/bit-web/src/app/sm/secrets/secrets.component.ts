@@ -48,7 +48,13 @@ export class SecretsComponent implements OnInit, OnDestroy {
   }
 
   private async getSecrets(): Promise<SecretListView[]> {
-    return await this.secretService.getSecrets(this.organizationId);
+    try {
+      return await this.secretService.getSecrets(this.organizationId);
+    } catch (e) {
+      if (e.statusCode == 404) {
+        return null;
+      }
+    }
   }
 
   openEditSecret(secretId: string) {
