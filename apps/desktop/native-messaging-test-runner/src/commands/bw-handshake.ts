@@ -2,9 +2,9 @@ import "module-alias/register";
 
 import { NativeMessagingVersion } from "@bitwarden/common/enums/nativeMessagingVersion";
 
-import { LogUtils } from "./logUtils";
-import NativeMessageService from "./nativeMessageService";
-import * as config from "./variables";
+import { LogUtils } from "../logUtils";
+import NativeMessageService from "../nativeMessageService";
+import * as config from "../variables";
 
 (async () => {
   const nativeMessageService = new NativeMessageService(NativeMessagingVersion.One);

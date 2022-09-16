@@ -5,11 +5,10 @@ import { hideBin } from "yargs/helpers";
 
 import { NativeMessagingVersion } from "@bitwarden/common/enums/nativeMessagingVersion";
 
-import { CredentialCreatePayload } from "../../src/models/nativeMessaging/encryptedMessagePayloads/credentialCreatePayload";
-
-import { LogUtils } from "./logUtils";
-import NativeMessageService from "./nativeMessageService";
-import * as config from "./variables";
+import { CredentialCreatePayload } from "../../../src/models/nativeMessaging/encryptedMessagePayloads/credentialCreatePayload";
+import { LogUtils } from "../logUtils";
+import NativeMessageService from "../nativeMessageService";
+import * as config from "../variables";
 
 const argv: any = yargs(hideBin(process.argv)).option("name", {
   alias: "n",
