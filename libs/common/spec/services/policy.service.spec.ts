@@ -3,6 +3,7 @@ import { BehaviorSubject, firstValueFrom } from "rxjs";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { PermissionsApi } from "@bitwarden/common/models/api/permissionsApi";
@@ -15,6 +16,7 @@ import { ResetPasswordPolicyOptions } from "@bitwarden/common/models/domain/rese
 import { ListResponse } from "@bitwarden/common/models/response/listResponse";
 import { PolicyResponse } from "@bitwarden/common/models/response/policyResponse";
 import { ContainerService } from "@bitwarden/common/services/container.service";
+import { EncryptService } from "@bitwarden/common/services/encrypt.service";
 import { PolicyService } from "@bitwarden/common/services/policy/policy.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 
@@ -24,6 +26,8 @@ describe("PolicyService", () => {
   let cryptoService: SubstituteOf<CryptoService>;
   let stateService: SubstituteOf<StateService>;
   let organizationService: SubstituteOf<OrganizationService>;
+  let encryptService: SubstituteOf<EncryptService>;
+  let vaultTimeoutSettingsService: SubstituteOf<VaultTimeoutSettingsService>;
   let activeAccount: BehaviorSubject<string>;
   let activeAccountUnlocked: BehaviorSubject<boolean>;
 
@@ -47,13 +51,22 @@ describe("PolicyService", () => {
     activeAccount = new BehaviorSubject("123");
     activeAccountUnlocked = new BehaviorSubject(true);
     stateService.getEncryptedPolicies().resolves({
-      "1": policyData("1", "test-organization", PolicyType.MasterPassword, true, { minLength: 14 }),
+      "1": policyData("1", "test-organization", PolicyType.MaximumVaultTimeout, true, {
+        minutes: 14,
+      }),
     });
     stateService.activeAccount$.returns(activeAccount);
     stateService.activeAccountUnlocked$.returns(activeAccountUnlocked);
-    (window as any).bitwardenContainerService = new ContainerService(cryptoService);
+    stateService.getUserId().resolves("user");
+    vaultTimeoutSettingsService = Substitute.for();
+    vaultTimeoutSettingsService.getVaultTimeout("user").resolves(99);
+    (window as any).bitwardenContainerService = new ContainerService(cryptoService, encryptService);
 
-    policyService = new PolicyService(stateService, organizationService);
+    policyService = new PolicyService(
+      stateService,
+      organizationService,
+      vaultTimeoutSettingsService
+    );
   });
 
   afterEach(() => {
@@ -68,9 +81,9 @@ describe("PolicyService", () => {
       {
         id: "1",
         organizationId: "test-organization",
-        type: PolicyType.MasterPassword,
+        type: PolicyType.MaximumVaultTimeout,
         enabled: true,
-        data: { minLength: 14 },
+        data: { minutes: 14 },
       },
       {
         id: "99",
@@ -104,6 +117,10 @@ describe("PolicyService", () => {
     expect((await firstValueFrom(policyService.policies$)).length).toBe(0);
   });
 
+  it("unlocking updates vault timeout", async () => {
+    vaultTimeoutSettingsService.received(1).setVaultTimeout(Arg.any(), Arg.any());
+  });
+
   describe("clear", () => {
     it("null userId", async () => {
       await policyService.clear();
@@ -114,15 +131,14 @@ describe("PolicyService", () => {
     });
 
     it("matching userId", async () => {
-      stateService.getUserId().resolves("1");
-      await policyService.clear("1");
+      await policyService.clear("user");
 
       stateService.received(1).setEncryptedPolicies(Arg.any(), Arg.any());
 
       expect((await firstValueFrom(policyService.policies$)).length).toBe(0);
     });
 
-    it("missmatching userId", async () => {
+    it("mismatching userId", async () => {
       await policyService.clear("12");
 
       stateService.received(1).setEncryptedPolicies(Arg.any(), Arg.any());
@@ -301,7 +317,7 @@ describe("PolicyService", () => {
 
     it("policy type applies", async () => {
       const result = await firstValueFrom(
-        policyService.policyAppliesToUser$(PolicyType.MasterPassword, undefined, "user")
+        policyService.policyAppliesToUser$(PolicyType.MaximumVaultTimeout, undefined, "user")
       );
 
       expect(result).toEqual(true);

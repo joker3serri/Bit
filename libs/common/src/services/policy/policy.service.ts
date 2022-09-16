@@ -5,6 +5,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { OrganizationService } from "../../abstractions/organization.service";
 import { InternalPolicyService as InternalPolicyServiceAbstraction } from "../../abstractions/policy/policy.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
+import { VaultTimeoutSettingsService } from "../../abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { OrganizationUserStatusType } from "../../enums/organizationUserStatusType";
 import { OrganizationUserType } from "../../enums/organizationUserType";
 import { PolicyType } from "../../enums/policyType";
@@ -23,7 +24,8 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
 
   constructor(
     private stateService: StateService,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    private vaultTimeoutSettingsService: VaultTimeoutSettingsService
   ) {
     this.stateService.activeAccountUnlocked$
       .pipe(
@@ -40,6 +42,8 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
           const data = await this.stateService.getEncryptedPolicies();
 
           await this.updateObservables(data);
+
+          await this.updateVaultTimeoutValue();
         })
       )
       .subscribe();
@@ -178,20 +182,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
   ) {
     return this.policies$.pipe(
       concatMap(async (policies) => {
-        const organizations = await this.organizationService.getAll(userId);
-        const filteredPolicies = policies.filter(
-          (p) => p.type === policyType && p.enabled && policyFilter(p)
-        );
-        const policySet = new Set(filteredPolicies.map((p) => p.organizationId));
-
-        return organizations.some(
-          (o) =>
-            o.enabled &&
-            o.status >= OrganizationUserStatusType.Accepted &&
-            o.usePolicies &&
-            policySet.has(o.id) &&
-            !this.isExcemptFromPolicies(o, policyType)
-        );
+        return await this.policyAppliesToUser(policies, policyType, policyFilter, userId);
       })
     );
   }
@@ -232,5 +223,57 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     const policies = Object.values(policiesMap || {}).map((f) => new Policy(f));
 
     this._policies.next(policies);
+  }
+
+  private async updateVaultTimeoutValue() {
+    const userId = await this.stateService.getUserId();
+    if (
+      await this.policyAppliesToUser(
+        this._policies.value,
+        PolicyType.MaximumVaultTimeout,
+        undefined,
+        userId
+      )
+    ) {
+      const vaultTimeout = await this.vaultTimeoutSettingsService.getVaultTimeout(userId);
+
+      const policy = this._policies.value.find(
+        (policy) => policy.type === PolicyType.MaximumVaultTimeout
+      );
+
+      // Remove negative values, and ensure it's smaller than maximum allowed value according to policy
+      let timeout = Math.min(vaultTimeout, policy.data.minutes);
+
+      if (vaultTimeout == null || timeout < 0) {
+        timeout = policy.data.minutes;
+      }
+
+      // We really shouldn't need to set the value here, but multiple services relies on this value being correct.
+      if (vaultTimeout !== timeout) {
+        await this.vaultTimeoutSettingsService.setVaultTimeout(timeout, userId);
+      }
+    }
+  }
+
+  private async policyAppliesToUser(
+    policies: Policy[],
+    policyType: PolicyType,
+    policyFilter: (policy: Policy) => boolean = (p) => true,
+    userId?: string
+  ) {
+    const organizations = await this.organizationService.getAll(userId);
+    const filteredPolicies = policies.filter(
+      (p) => p.type === policyType && p.enabled && policyFilter(p)
+    );
+    const policySet = new Set(filteredPolicies.map((p) => p.organizationId));
+
+    return organizations.some(
+      (o) =>
+        o.enabled &&
+        o.status >= OrganizationUserStatusType.Accepted &&
+        o.usePolicies &&
+        policySet.has(o.id) &&
+        !this.isExcemptFromPolicies(o, policyType)
+    );
   }
 }
