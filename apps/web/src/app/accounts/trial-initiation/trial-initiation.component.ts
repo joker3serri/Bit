@@ -144,10 +144,9 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
       this.policyService
         .masterPasswordPolicyOptions$(this.policies)
         .pipe(takeUntil(this.destroy$))
-        .subscribe(
-          (enforcedPasswordPolicyOptions) =>
-            (this.enforcedPolicyOptions = enforcedPasswordPolicyOptions)
-        );
+        .subscribe((enforcedPasswordPolicyOptions) => {
+          this.enforcedPolicyOptions = enforcedPasswordPolicyOptions;
+        });
     }
   }
 
