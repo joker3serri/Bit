@@ -222,102 +222,81 @@ jobs:
       - name: Log out of Docker
         run: docker logout
 
-  # build-qa:
-  #   name: Build Docker images for QA environment
-  #   runs-on: ubuntu-20.04
-  #   needs:
-  #     - setup
-  #     - build-artifacts
-  #   steps:
-  #     - name: Checkout repo
-  #       uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+  build-qa:
+    name: Build Docker images for QA environment
+    runs-on: ubuntu-20.04
+    needs:
+      - setup
+      - build-artifacts
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
-  #     - name: Set up Node
-  #       uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854  # v3.1.1
-  #       with:
-  #         cache: 'npm'
-  #         cache-dependency-path: '**/package-lock.json'
-  #         node-version: "16"
+      - name: Login to Azure
+        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
+        with:
+          creds: ${{ secrets.AZURE_QA_KV_CREDENTIALS }}
 
-  #     - name: Print environment
-  #       run: |
-  #         whoami
-  #         node --version
-  #         npm --version
-  #         gulp --version
-  #         docker --version
-  #         echo "GitHub ref: $GITHUB_REF"
-  #         echo "GitHub event: $GITHUB_EVENT"
+      - name: Log into container registry
+        run: az acr login -n bitwardenqa
 
-  #     - name: Login to Azure
-  #       uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
-  #       with:
-  #         creds: ${{ secrets.AZURE_QA_KV_CREDENTIALS }}
+      - name: Download cloud-QA artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: web-${{ env._VERSION }}-cloud-QA.zip
+          path: apps/web/build
 
-  #     - name: Log into container registry
-  #       run: az acr login -n bitwardenqa
+      - name: Setup QA metadata
+        working-directory: apps/web
+        run: |
+          VERSION=$( jq -r ".version" package.json)
+          jq --arg version "$VERSION - ${GITHUB_SHA:0:7}" '.version = $version' package.json > package.json.tmp
+          mv package.json.tmp package.json
+          echo "{\"commit_hash\": \"$GITHUB_SHA\", \"ref\": \"$GITHUB_REF\"}" | jq . > build/info.json
 
-  #     - name: Install dependencies
-  #       run: npm ci
+      - name: Build Docker image
+        working-directory: apps/web
+        run: |
+          docker --version
+          docker build -t bitwardenqa.azurecr.io/web .
 
-  #     - name: Build
-  #       working-directory: apps/web
-  #       run: |
-  #         echo -e "# Building Web\n"
-  #         echo "Building app"
-  #         echo "npm version $(npm --version)"
-  #         VERSION=$( jq -r ".version" package.json)
-  #         jq --arg version "$VERSION - ${GITHUB_SHA:0:7}" '.version = $version' package.json > package.json.tmp
-  #         mv package.json.tmp package.json
+      - name: Get image tag
+        id: image-tag
+        run: |
+          if [[ $(grep "pull" <<< "${GITHUB_REF}") ]]; then
+            IMAGE_TAG=$(echo "${GITHUB_HEAD_REF}" | sed "s#/#-#g")
+          else
+            IMAGE_TAG=$(echo "${GITHUB_REF:11}" | sed "s#/#-#g")
+          fi
 
-  #         npm run build:bit:qa
+          TAG_EXTENSION=${{ github.event.inputs.custom_tag_extension }}
 
-  #         echo "{\"commit_hash\": \"$GITHUB_SHA\", \"ref\": \"$GITHUB_REF\"}" | jq . > build/info.json
+          if [[ $TAG_EXTENSION ]]; then
+            IMAGE_TAG=$IMAGE_TAG-$TAG_EXTENSION
+          fi
 
-  #         echo -e "\nBuilding Docker image"
-  #         docker --version
-  #         docker build -t bitwardenqa.azurecr.io/web .
+          echo "::set-output name=value::$IMAGE_TAG"
 
-  #     - name: Get image tag
-  #       id: image-tag
-  #       run: |
-  #         if [[ $(grep "pull" <<< "${GITHUB_REF}") ]]; then
-  #           IMAGE_TAG=$(echo "${GITHUB_HEAD_REF}" | sed "s#/#-#g")
-  #         else
-  #           IMAGE_TAG=$(echo "${GITHUB_REF:11}" | sed "s#/#-#g")
-  #         fi
+      - name: Tag image
+        env:
+          IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
+        run: docker tag bitwardenqa.azurecr.io/web "bitwardenqa.azurecr.io/web:$IMAGE_TAG"
 
-  #         TAG_EXTENSION=${{ github.event.inputs.custom_tag_extension }}
+      - name: Tag dev
+        if: github.ref == 'refs/heads/master'
+        run: docker tag bitwardenqa.azurecr.io/web bitwardenqa.azurecr.io/web:dev
 
-  #         if [[ $TAG_EXTENSION ]]; then
-  #           IMAGE_TAG=$IMAGE_TAG-$TAG_EXTENSION
-  #         fi
+      - name: Push image
+        env:
+          IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
+        run: docker push "bitwardenqa.azurecr.io/web:$IMAGE_TAG"
 
-  #         echo "::set-output name=value::$IMAGE_TAG"
+      - name: Push dev images
+        if: github.ref == 'refs/heads/master'
+        run: docker push bitwardenqa.azurecr.io/web:dev
 
-  #     - name: Tag image
-  #       env:
-  #         IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
-  #       run: docker tag bitwardenqa.azurecr.io/web "bitwardenqa.azurecr.io/web:$IMAGE_TAG"
-
-  #     - name: Tag dev
-  #       if: github.ref == 'refs/heads/master'
-  #       run: docker tag bitwardenqa.azurecr.io/web bitwardenqa.azurecr.io/web:dev
-
-  #     - name: List Docker images
-  #       run: docker images
-
-  #     - name: Push image
-  #       env:
-  #         IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
-  #       run: docker push "bitwardenqa.azurecr.io/web:$IMAGE_TAG"
-
-  #     - name: Push dev images
-  #       if: github.ref == 'refs/heads/master'
-  #       run: docker push bitwardenqa.azurecr.io/web:dev
-
-  #     - name: Log out of Docker
-  #       run: docker logout
+      - name: Log out of Docker
+        run: docker logout
 
 
   # crowdin-push:
