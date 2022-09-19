@@ -770,9 +770,10 @@ export class StateService<
   async getDecryptedProviderKeys(
     options?: StorageOptions
   ): Promise<Map<string, SymmetricCryptoKey>> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.keys?.providerKeys?.decrypted;
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+    );
+    return account?.keys?.providerKeys?.decrypted;
   }
 
   async setDecryptedProviderKeys(

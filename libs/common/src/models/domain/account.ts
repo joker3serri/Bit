@@ -1,6 +1,7 @@
-import { Jsonify } from "type-fest";
+import { Except, Jsonify } from "type-fest";
 
 import { Utils } from "@bitwarden/common/misc/utils";
+import { DeepJsonify } from "@bitwarden/common/types/DeepJsonify";
 
 import { AuthenticationStatus } from "../../enums/authenticationStatus";
 import { KdfType } from "../../enums/kdfType";
@@ -118,10 +119,12 @@ export class AccountKeys {
   apiKeyClientSecret?: string;
 
   toJSON() {
-    return Object.assign(this, { publicKey: Utils.fromBufferToByteString(this.publicKey) });
+    return Object.assign(this as Except<AccountKeys, "publicKey">, {
+      publicKey: Utils.fromBufferToByteString(this.publicKey),
+    });
   }
 
-  static fromJSON(obj: any): AccountKeys {
+  static fromJSON(obj: DeepJsonify<AccountKeys>): AccountKeys {
     return Object.assign(
       new AccountKeys(),
       { cryptoMasterKey: SymmetricCryptoKey.fromJSON(obj?.cryptoMasterKey) },
@@ -218,7 +221,7 @@ export class AccountSettings {
 
   static fromJSON(obj: Jsonify<AccountSettings>): AccountSettings {
     return Object.assign(new AccountSettings(), obj, {
-      environmentUrls: Object.assign(new EnvironmentUrls(), obj?.environmentUrls),
+      environmentUrls: EnvironmentUrls.fromJSON(obj?.environmentUrls),
       pinProtected: EncryptionPair.fromJSON<string, EncString>(
         obj?.pinProtected,
         EncString.fromJSON
