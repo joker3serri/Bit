@@ -5,6 +5,7 @@ import { delay, of } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
 
+import { AsyncModule } from "../async";
 import { ButtonModule } from "../button";
 import { FormFieldModule } from "../form-field";
 import { InputModule } from "../input/input.module";
@@ -25,9 +26,9 @@ const template = `
       <input bitInput formControlName="email" />
     </bit-form-field>
 
-    <button class="tw-mr-2" type="submit" bitFormButton buttonType="primary">Submit</button>
-    <button class="tw-mr-2" type="button" bitFormButton buttonType="secondary">Cancel</button>
-    <button class="tw-mr-2" type="button" bitFormButton buttonType="danger">Delete</button>
+    <button class="tw-mr-2" type="submit" buttonType="primary" bitFormButton>Submit</button>
+    <button class="tw-mr-2" type="button" buttonType="secondary" bitFormButton>Cancel</button>
+    <button class="tw-mr-2" type="button" buttonType="danger" bitFormButton [bitAction]="delete">Delete</button>
   </form>`;
 
 @Component({
@@ -49,6 +50,12 @@ class PromiseExampleComponent {
       return;
     }
 
+    await new Promise<void>((resolve, reject) => {
+      setTimeout(resolve, 2000);
+    });
+  };
+
+  delete = async () => {
     await new Promise<void>((resolve, reject) => {
       setTimeout(resolve, 2000);
     });
@@ -76,6 +83,10 @@ class ObservableExampleComponent {
 
     return of("fake observable").pipe(delay(2000));
   };
+
+  delete = () => {
+    return of("fake observable").pipe(delay(2000));
+  };
 }
 
 export default {
@@ -88,7 +99,14 @@ export default {
         PromiseExampleComponent,
         ObservableExampleComponent,
       ],
-      imports: [FormsModule, ReactiveFormsModule, FormFieldModule, InputModule, ButtonModule],
+      imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        FormFieldModule,
+        InputModule,
+        ButtonModule,
+        AsyncModule,
+      ],
       providers: [
         {
           provide: I18nService,

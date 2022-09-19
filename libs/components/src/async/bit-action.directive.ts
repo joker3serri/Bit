@@ -1,5 +1,5 @@
 import { Directive, HostListener, Input, OnDestroy, Optional } from "@angular/core";
-import { finalize, Observable, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, finalize, Observable, Subject, takeUntil } from "rxjs";
 
 import { ButtonComponent } from "../button";
 import { functionToObservable } from "../utils/function-to-observable";
@@ -14,16 +14,20 @@ export type BitActionHandler =
 })
 export class BitActionDirective implements OnDestroy {
   private destroy$ = new Subject<void>();
+  private _loading$ = new BehaviorSubject<boolean>(false);
 
   @Input("bitAction") protected handler: BitActionHandler;
+
+  readonly loading$ = this._loading$.asObservable();
 
   constructor(@Optional() private buttonComponent?: ButtonComponent) {}
 
   get loading() {
-    return this.buttonComponent?.loading;
+    return this._loading$.value;
   }
 
   set loading(value: boolean) {
+    this._loading$.next(value);
     if (this.buttonComponent) {
       this.buttonComponent.loading = value;
     }
@@ -36,7 +40,6 @@ export class BitActionDirective implements OnDestroy {
     }
 
     this.loading = true;
-
     functionToObservable(this.handler)
       .pipe(
         finalize(() => (this.loading = false)),

@@ -24,15 +24,17 @@ export type BitSubmitHandler =
 export class BitSubmitDirective implements OnDestroy {
   private destroy$ = new Subject<void>();
   private _loading$ = new BehaviorSubject<boolean>(false);
+  private _disabled$ = new BehaviorSubject<boolean>(false);
 
   @Input("bitSubmit") protected handler: BitSubmitHandler;
 
-  loading$ = this._loading$.asObservable();
+  readonly loading$ = this._loading$.asObservable();
+  readonly disabled$ = this._disabled$.asObservable();
 
   constructor(formGroupDirective: FormGroupDirective) {
     formGroupDirective.ngSubmit
       .pipe(
-        tap(() => this._loading$.next(true)),
+        tap(() => (this.loading = true)),
         switchMap(() => {
           return functionToObservable(this.handler).pipe(
             catchError((err: unknown) => {
@@ -45,9 +47,25 @@ export class BitSubmitDirective implements OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe({
-        next: () => this._loading$.next(false),
-        complete: () => this._loading$.next(false),
+        next: () => (this.loading = false),
+        complete: () => (this.loading = false),
       });
+  }
+
+  get disabled() {
+    return this._disabled$.value;
+  }
+
+  set disabled(value: boolean) {
+    this._disabled$.next(value);
+  }
+
+  get loading() {
+    return this._loading$.value;
+  }
+
+  set loading(value: boolean) {
+    this._loading$.next(value);
   }
 
   ngOnDestroy(): void {
