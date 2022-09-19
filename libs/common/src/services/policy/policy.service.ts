@@ -5,7 +5,6 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { OrganizationService } from "../../abstractions/organization.service";
 import { InternalPolicyService as InternalPolicyServiceAbstraction } from "../../abstractions/policy/policy.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
-import { VaultTimeoutSettingsService } from "../../abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { OrganizationUserStatusType } from "../../enums/organizationUserStatusType";
 import { OrganizationUserType } from "../../enums/organizationUserType";
 import { PolicyType } from "../../enums/policyType";
@@ -24,8 +23,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
 
   constructor(
     private stateService: StateService,
-    private organizationService: OrganizationService,
-    private vaultTimeoutSettingsService: VaultTimeoutSettingsService
+    private organizationService: OrganizationService
   ) {
     this.stateService.activeAccountUnlocked$
       .pipe(
@@ -34,14 +32,39 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
             return;
           }
 
+          if (!unlocked) {
+            this._policies.next([]);
+            return;
+          }
+
           const data = await this.stateService.getEncryptedPolicies();
 
           await this.updateObservables(data);
-
-          await this.updateActiveUserVaultTimeoutValue();
         })
       )
       .subscribe();
+  }
+
+  async getAll(type?: PolicyType, userId?: string): Promise<Policy[]> {
+    let response: Policy[] = [];
+    const decryptedPolicies = await this.stateService.getDecryptedPolicies({ userId: userId });
+    if (decryptedPolicies != null) {
+      response = decryptedPolicies;
+    } else {
+      const diskPolicies = await this.stateService.getEncryptedPolicies({ userId: userId });
+      for (const id in diskPolicies) {
+        // eslint-disable-next-line
+        if (diskPolicies.hasOwnProperty(id)) {
+          response.push(new Policy(diskPolicies[id]));
+        }
+      }
+      await this.stateService.setDecryptedPolicies(response, { userId: userId });
+    }
+    if (type != null) {
+      return response.filter((policy) => policy.type === type);
+    } else {
+      return response;
+    }
   }
 
   masterPasswordPolicyOptions$(policies?: Policy[]): Observable<MasterPasswordPolicyOptions> {
@@ -96,6 +119,18 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
         });
 
         return enforcedOptions;
+      })
+    );
+  }
+
+  policyAppliesToActiveUser$(
+    policyType: PolicyType,
+    policyFilter: (policy: Policy) => boolean = (p) => true
+  ) {
+    return this.policies$.pipe(
+      concatMap(async (policies) => {
+        const userId = await this.stateService.getUserId();
+        return await this.checkPoliciesThatApplyToUser(policies, policyType, policyFilter, userId);
       })
     );
   }
@@ -170,16 +205,14 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     return policiesData.map((p) => new Policy(p));
   }
 
-  policyAppliesToActiveUser$(
+  async policyAppliesToUser(
     policyType: PolicyType,
-    policyFilter: (policy: Policy) => boolean = (p) => true
+    policyFilter?: (policy: Policy) => boolean,
+    userId?: string
   ) {
-    return this.policies$.pipe(
-      concatMap(async (policies) => {
-        const userId = await this.stateService.getUserId();
-        return await this.policyAppliesToUser(policies, policyType, policyFilter, userId);
-      })
-    );
+    const policies = await this.getAll(policyType, userId);
+
+    return this.checkPoliciesThatApplyToUser(policies, policyType, policyFilter, userId);
   }
 
   async upsert(policy: PolicyData): Promise<any> {
@@ -220,37 +253,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     this._policies.next(policies);
   }
 
-  private async updateActiveUserVaultTimeoutValue() {
-    const userId = await this.stateService.getUserId();
-    if (
-      await this.policyAppliesToUser(
-        this._policies.value,
-        PolicyType.MaximumVaultTimeout,
-        undefined,
-        userId
-      )
-    ) {
-      const vaultTimeout = await this.vaultTimeoutSettingsService.getVaultTimeout(userId);
-
-      const policy = this._policies.value.find(
-        (policy) => policy.type === PolicyType.MaximumVaultTimeout
-      );
-
-      // Remove negative values, and ensure it's smaller than maximum allowed value according to policy
-      let timeout = Math.min(vaultTimeout, policy.data.minutes);
-
-      if (vaultTimeout == null || timeout < 0) {
-        timeout = policy.data.minutes;
-      }
-
-      // We really shouldn't need to set the value here, but multiple services relies on this value being correct.
-      if (vaultTimeout !== timeout) {
-        await this.vaultTimeoutSettingsService.setVaultTimeout(timeout, userId);
-      }
-    }
-  }
-
-  private async policyAppliesToUser(
+  private async checkPoliciesThatApplyToUser(
     policies: Policy[],
     policyType: PolicyType,
     policyFilter: (policy: Policy) => boolean = (p) => true,

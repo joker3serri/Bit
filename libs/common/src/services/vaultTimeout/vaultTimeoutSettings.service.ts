@@ -1,12 +1,15 @@
 import { CryptoService } from "../../abstractions/crypto.service";
+import { PolicyService } from "../../abstractions/policy/policy.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
 import { TokenService } from "../../abstractions/token.service";
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "../../abstractions/vaultTimeout/vaultTimeoutSettings.service";
+import { PolicyType } from "../../enums/policyType";
 
 export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceAbstraction {
   constructor(
     private cryptoService: CryptoService,
     private tokenService: TokenService,
+    private policyService: PolicyService,
     private stateService: StateService
   ) {}
 
@@ -47,11 +50,26 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
   }
 
   async getVaultTimeout(userId?: string): Promise<number> {
-    return await this.stateService.getVaultTimeout({ userId: userId });
-  }
+    const vaultTimeout = await this.stateService.getVaultTimeout({ userId: userId });
 
-  async setVaultTimeout(timeout: number, userId?: string): Promise<void> {
-    await this.stateService.setVaultTimeout(timeout, { userId: userId });
+    if (
+      await this.policyService.policyAppliesToUser(PolicyType.MaximumVaultTimeout, null, userId)
+    ) {
+      const policy = await this.policyService.getAll(PolicyType.MaximumVaultTimeout, userId);
+      // Remove negative values, and ensure it's smaller than maximum allowed value according to policy
+      let timeout = Math.min(vaultTimeout, policy[0].data.minutes);
+
+      if (vaultTimeout == null || timeout < 0) {
+        timeout = policy[0].data.minutes;
+      }
+
+      // We really shouldn't need to set the value here, but multiple services relies on this value being correct.
+      if (vaultTimeout !== timeout) {
+        await this.stateService.setVaultTimeout(timeout, { userId: userId });
+      }
+
+      return timeout;
+    }
   }
 
   async clear(userId?: string): Promise<void> {

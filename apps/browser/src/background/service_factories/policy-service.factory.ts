@@ -10,17 +10,12 @@ import {
   stateServiceFactory as stateServiceFactory,
   StateServiceInitOptions,
 } from "./state-service.factory";
-import {
-  vaultTimeoutSettingsServiceFactory,
-  VaultTimeoutSettingsServiceInitOptions,
-} from "./vault-timeout-settings-service.factory";
 
 type PolicyServiceFactoryOptions = FactoryOptions;
 
 export type PolicyServiceInitOptions = PolicyServiceFactoryOptions &
   StateServiceInitOptions &
-  OrganizationServiceInitOptions &
-  VaultTimeoutSettingsServiceInitOptions;
+  OrganizationServiceInitOptions;
 
 export function policyServiceFactory(
   cache: { policyService?: AbstractPolicyService } & CachedServices,
@@ -33,8 +28,7 @@ export function policyServiceFactory(
     async () =>
       new PolicyService(
         await stateServiceFactory(cache, opts),
-        await organizationServiceFactory(cache, opts),
-        await vaultTimeoutSettingsServiceFactory(cache, opts)
+        await organizationServiceFactory(cache, opts)
       )
   );
 }

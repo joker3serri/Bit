@@ -18,6 +18,7 @@ import { SendView } from "../view/sendView";
 import { EncString } from "./encString";
 import { EnvironmentUrls } from "./environmentUrls";
 import { GeneratedPasswordHistory } from "./generatedPasswordHistory";
+import { Policy } from "./policy";
 import { SymmetricCryptoKey } from "./symmetricCryptoKey";
 
 export class EncryptionPair<TEncrypted, TDecrypted> {
@@ -50,7 +51,7 @@ export class AccountData {
     CollectionData,
     CollectionView
   >();
-  policies? = new TemporaryDataEncryption<PolicyData>();
+  policies?: DataEncryptionPair<PolicyData, Policy> = new DataEncryptionPair<PolicyData, Policy>();
   passwordGenerationHistory?: EncryptionPair<
     GeneratedPasswordHistory[],
     GeneratedPasswordHistory[]

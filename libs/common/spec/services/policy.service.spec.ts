@@ -110,8 +110,12 @@ describe("PolicyService", () => {
     ]);
   });
 
-  it("unlocking updates vault timeout", async () => {
-    vaultTimeoutSettingsService.received(1).setVaultTimeout(Arg.any(), Arg.any());
+  it("locking should clear", async () => {
+    activeAccountUnlocked.next(false);
+    // Sleep for 100ms to avoid timing issues
+    await new Promise((r) => setTimeout(r, 100));
+
+    expect((await firstValueFrom(policyService.policies$)).length).toBe(0);
   });
 
   describe("clear", () => {
