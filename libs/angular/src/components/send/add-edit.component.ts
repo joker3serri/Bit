@@ -83,17 +83,17 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.policyService
-      .policyAppliesToUser$(PolicyType.DisableSend)
+      .policyAppliesToActiveUser$(PolicyType.DisableSend)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((policyAppliesToUser) => {
-        this.disableSend = policyAppliesToUser;
+      .subscribe((policyAppliesToActiveUser) => {
+        this.disableSend = policyAppliesToActiveUser;
       });
 
     this.policyService
-      .policyAppliesToUser$(PolicyType.SendOptions, (p) => p.data.disableHideEmail)
+      .policyAppliesToActiveUser$(PolicyType.SendOptions, (p) => p.data.disableHideEmail)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((policyAppliesToUser) => {
-        this.disableHideEmail = policyAppliesToUser;
+      .subscribe((policyAppliesToActiveUser) => {
+        this.disableHideEmail = policyAppliesToActiveUser;
       });
 
     await this.load();

@@ -47,7 +47,8 @@ describe("PolicyService", () => {
           )
         ),
       ]);
-    organizationService.getAll("non-org-user").resolves([]);
+    organizationService.getAll(undefined).resolves([]);
+    organizationService.getAll(null).resolves([]);
     activeAccount = new BehaviorSubject("123");
     activeAccountUnlocked = new BehaviorSubject(true);
     stateService.getEncryptedPolicies().resolves({
@@ -107,14 +108,6 @@ describe("PolicyService", () => {
         enabled: true,
       },
     ]);
-  });
-
-  it("locking should clear", async () => {
-    activeAccountUnlocked.next(false);
-    // Sleep for 100ms to avoid timing issues
-    await new Promise((r) => setTimeout(r, 100));
-
-    expect((await firstValueFrom(policyService.policies$)).length).toBe(0);
   });
 
   it("unlocking updates vault timeout", async () => {
@@ -306,26 +299,26 @@ describe("PolicyService", () => {
     });
   });
 
-  describe("policyAppliesToUser", () => {
-    it("non org user", async () => {
+  describe("policyAppliesToActiveUser", () => {
+    it("MasterPassword does not apply", async () => {
       const result = await firstValueFrom(
-        policyService.policyAppliesToUser$(PolicyType.MasterPassword, undefined, "non-org-user")
+        policyService.policyAppliesToActiveUser$(PolicyType.MasterPassword)
       );
 
       expect(result).toEqual(false);
     });
 
-    it("policy type applies", async () => {
+    it("MaximumVaultTimeout applies", async () => {
       const result = await firstValueFrom(
-        policyService.policyAppliesToUser$(PolicyType.MaximumVaultTimeout, undefined, "user")
+        policyService.policyAppliesToActiveUser$(PolicyType.MaximumVaultTimeout)
       );
 
       expect(result).toEqual(true);
     });
 
-    it("policy type does not apply", async () => {
+    it("DisablePersonalVaultExport does not apply", async () => {
       const result = await firstValueFrom(
-        policyService.policyAppliesToUser$(PolicyType.DisablePersonalVaultExport, undefined, "user")
+        policyService.policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport)
       );
 
       expect(result).toEqual(false);

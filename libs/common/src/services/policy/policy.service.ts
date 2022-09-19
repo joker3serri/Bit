@@ -34,16 +34,11 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
             return;
           }
 
-          if (!unlocked) {
-            this._policies.next([]);
-            return;
-          }
-
           const data = await this.stateService.getEncryptedPolicies();
 
           await this.updateObservables(data);
 
-          await this.updateVaultTimeoutValue();
+          await this.updateActiveUserVaultTimeoutValue();
         })
       )
       .subscribe();
@@ -175,13 +170,13 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     return policiesData.map((p) => new Policy(p));
   }
 
-  policyAppliesToUser$(
+  policyAppliesToActiveUser$(
     policyType: PolicyType,
-    policyFilter: (policy: Policy) => boolean = (p) => true,
-    userId?: string
+    policyFilter: (policy: Policy) => boolean = (p) => true
   ) {
     return this.policies$.pipe(
       concatMap(async (policies) => {
+        const userId = await this.stateService.getUserId();
         return await this.policyAppliesToUser(policies, policyType, policyFilter, userId);
       })
     );
@@ -225,7 +220,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     this._policies.next(policies);
   }
 
-  private async updateVaultTimeoutValue() {
+  private async updateActiveUserVaultTimeoutValue() {
     const userId = await this.stateService.getUserId();
     if (
       await this.policyAppliesToUser(

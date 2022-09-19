@@ -447,7 +447,7 @@ export default class NotificationBackground {
 
   private async allowPersonalOwnership(): Promise<boolean> {
     return !(await firstValueFrom(
-      this.policyService.policyAppliesToUser$(PolicyType.PersonalOwnership)
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
     ));
   }
 }

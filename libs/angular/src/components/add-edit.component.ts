@@ -77,7 +77,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   protected destroy$ = new Subject<void>();
   protected writeableCollections: CollectionView[];
-  private policyAppliesToUser: boolean;
+  private personalOwnershipPolicyAppliesToActiveUser: boolean;
   private previousCipherId: string;
 
   constructor(
@@ -155,10 +155,10 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.policyService
-      .policyAppliesToUser$(PolicyType.PersonalOwnership)
+      .policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
       .pipe(
-        concatMap(async (policyAppliesToUser) => {
-          this.policyAppliesToUser = policyAppliesToUser;
+        concatMap(async (policyAppliesToActiveUser) => {
+          this.personalOwnershipPolicyAppliesToActiveUser = policyAppliesToActiveUser;
           await this.init();
         }),
         takeUntil(this.destroy$)
@@ -175,7 +175,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
     if (this.ownershipOptions.length) {
       this.ownershipOptions = [];
     }
-    if (this.policyAppliesToUser) {
+    if (this.personalOwnershipPolicyAppliesToActiveUser) {
       this.allowPersonal = false;
     } else {
       const myEmail = await this.stateService.getEmail();

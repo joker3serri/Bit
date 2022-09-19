@@ -50,7 +50,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
   formPromise: Promise<any>;
 
   private destroy$ = new Subject<void>();
-  private twoFactorAuthPolicyAppliesToUser: boolean;
+  private twoFactorAuthPolicyAppliesToActiveUser: boolean;
 
   constructor(
     protected apiService: ApiService,
@@ -98,10 +98,10 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
     this.providers.sort((a: any, b: any) => a.sort - b.sort);
 
     this.policyService
-      .policyAppliesToUser$(PolicyType.TwoFactorAuthentication)
+      .policyAppliesToActiveUser$(PolicyType.TwoFactorAuthentication)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((policyAppliesToUser) => {
-        this.twoFactorAuthPolicyAppliesToUser = policyAppliesToUser;
+      .subscribe((policyAppliesToActiveUser) => {
+        this.twoFactorAuthPolicyAppliesToActiveUser = policyAppliesToActiveUser;
       });
 
     await this.load();
@@ -219,7 +219,7 @@ export class TwoFactorSetupComponent implements OnInit, OnDestroy {
 
   private async evaluatePolicies() {
     if (this.organizationId == null && this.providers.filter((p) => p.enabled).length === 1) {
-      this.showPolicyWarning = this.twoFactorAuthPolicyAppliesToUser;
+      this.showPolicyWarning = this.twoFactorAuthPolicyAppliesToActiveUser;
     } else {
       this.showPolicyWarning = false;
     }

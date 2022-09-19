@@ -27,7 +27,9 @@ export class ImportComponent implements OnInit, OnDestroy {
   fileContents: string;
   formPromise: Promise<ImportError>;
   loading = false;
-  importBlockedByPolicy$ = this.policyService.policyAppliesToUser$(PolicyType.PersonalOwnership);
+  importBlockedByPolicy$ = this.policyService.policyAppliesToActiveUser$(
+    PolicyType.PersonalOwnership
+  );
 
   protected organizationId: string = null;
   protected successNavigate: any[] = ["vault"];

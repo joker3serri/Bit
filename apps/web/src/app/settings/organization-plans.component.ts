@@ -126,10 +126,10 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     }
 
     this.policyService
-      .policyAppliesToUser$(PolicyType.SingleOrg)
+      .policyAppliesToActiveUser$(PolicyType.SingleOrg)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((policyAppliesToUser) => {
-        this.singleOrgPolicyBlock = policyAppliesToUser;
+      .subscribe((policyAppliesToActiveUser) => {
+        this.singleOrgPolicyBlock = policyAppliesToActiveUser;
       });
 
     this.loading = false;

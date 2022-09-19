@@ -55,10 +55,10 @@ export class VaultTimeoutInputComponent
 
   async ngOnInit() {
     this.policyService
-      .policyAppliesToUser$(PolicyType.MaximumVaultTimeout)
+      .policyAppliesToActiveUser$(PolicyType.MaximumVaultTimeout)
       .pipe(combineLatestWith(this.policyService.policies$), takeUntil(this.destroy$))
-      .subscribe(([policyAppliesToUser, policies]) => {
-        if (policyAppliesToUser) {
+      .subscribe(([policyAppliesToActiveUser, policies]) => {
+        if (policyAppliesToActiveUser) {
           const vaultTimeoutPolicy = policies.find(
             (policy) => policy.type === PolicyType.MaximumVaultTimeout && policy.enabled
           );

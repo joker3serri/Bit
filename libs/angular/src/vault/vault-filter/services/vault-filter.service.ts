@@ -83,12 +83,14 @@ export class VaultFilterService {
   }
 
   async checkForSingleOrganizationPolicy(): Promise<boolean> {
-    return await firstValueFrom(this.policyService.policyAppliesToUser$(PolicyType.SingleOrg));
+    return await firstValueFrom(
+      this.policyService.policyAppliesToActiveUser$(PolicyType.SingleOrg)
+    );
   }
 
   async checkForPersonalOwnershipPolicy(): Promise<boolean> {
     return await firstValueFrom(
-      this.policyService.policyAppliesToUser$(PolicyType.PersonalOwnership)
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
     );
   }
 

@@ -17,7 +17,7 @@ export class ExportCommand {
     if (
       options.organizationid == null &&
       (await firstValueFrom(
-        this.policyService.policyAppliesToUser$(PolicyType.DisablePersonalVaultExport)
+        this.policyService.policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport)
       ))
     ) {
       return Response.badRequest(
