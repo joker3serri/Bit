@@ -8,6 +8,7 @@ describe("Button", () => {
   let fixture: ComponentFixture<TestApp>;
   let testAppComponent: TestApp;
   let buttonDebugElement: DebugElement;
+  let disabledButtonDebugElement: DebugElement;
   let linkDebugElement: DebugElement;
 
   beforeEach(waitForAsync(() => {
@@ -20,6 +21,7 @@ describe("Button", () => {
     fixture = TestBed.createComponent(TestApp);
     testAppComponent = fixture.debugElement.componentInstance;
     buttonDebugElement = fixture.debugElement.query(By.css("button"));
+    disabledButtonDebugElement = fixture.debugElement.query(By.css("button#disabled"));
     linkDebugElement = fixture.debugElement.query(By.css("a"));
   }));
 
@@ -79,6 +81,10 @@ describe("Button", () => {
     // Anchor tags cannot be disabled.
   });
 
+  it("should be disabled when attribute disabled is true", () => {
+    expect(disabledButtonDebugElement.nativeElement.disabled).toBeTruthy();
+  });
+
   it("should be disabled when loading is true", () => {
     testAppComponent.loading = true;
     fixture.detectChanges();
@@ -110,6 +116,8 @@ describe("Button", () => {
     >
       Link
     </a>
+
+    <button id="disabled" type="button" bitButton disabled>Button</button>
   `,
 })
 class TestApp {

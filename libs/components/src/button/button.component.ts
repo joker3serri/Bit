@@ -66,8 +66,10 @@ export class ButtonComponent {
       .concat(buttonStyles[this.buttonType ?? "secondary"]);
   }
 
-  @HostBinding("attr.disabled") get disabledAttr() {
-    return this.disabled || this.loading ? true : null;
+  @HostBinding("attr.disabled")
+  get disabledAttr() {
+    const disabled = this.disabled != null && this.disabled !== false;
+    return disabled || this.loading ? true : null;
   }
 
   @Input() buttonType: ButtonTypes = null;

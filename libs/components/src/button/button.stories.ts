@@ -50,16 +50,38 @@ const AllStylesTemplate: Story = (args) => ({
   `,
 });
 
+export const Loading = AllStylesTemplate.bind({});
+Loading.args = {
+  disabled: false,
+  loading: true,
+};
+
 export const Disabled = AllStylesTemplate.bind({});
 Disabled.args = {
   disabled: true,
   loading: false,
 };
 
-export const Loading = AllStylesTemplate.bind({});
-Loading.args = {
-  disabled: false,
-  loading: true,
+const DisabledWithAttributeTemplate: Story = (args) => ({
+  props: args,
+  template: `
+    <ng-container *ngIf="disabled">
+      <button bitButton disabled [loading]="loading" [block]="block" buttonType="primary" class="tw-mr-2">Primary</button>
+      <button bitButton disabled [loading]="loading" [block]="block" buttonType="secondary" class="tw-mr-2">Secondary</button>
+      <button bitButton disabled [loading]="loading" [block]="block" buttonType="danger" class="tw-mr-2">Danger</button>
+    </ng-container>
+    <ng-container *ngIf="!disabled">
+      <button bitButton [loading]="loading" [block]="block" buttonType="primary" class="tw-mr-2">Primary</button>
+      <button bitButton [loading]="loading" [block]="block" buttonType="secondary" class="tw-mr-2">Secondary</button>
+      <button bitButton [loading]="loading" [block]="block" buttonType="danger" class="tw-mr-2">Danger</button>
+    </ng-container>
+  `,
+});
+
+export const DisabledWithAttribute = DisabledWithAttributeTemplate.bind({});
+DisabledWithAttribute.args = {
+  disabled: true,
+  loading: false,
 };
 
 const BlockTemplate: Story<ButtonComponent> = (args: ButtonComponent) => ({
