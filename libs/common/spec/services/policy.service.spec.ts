@@ -3,7 +3,6 @@ import { BehaviorSubject, firstValueFrom } from "rxjs";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
-import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { PermissionsApi } from "@bitwarden/common/models/api/permissionsApi";
@@ -27,7 +26,6 @@ describe("PolicyService", () => {
   let stateService: SubstituteOf<StateService>;
   let organizationService: SubstituteOf<OrganizationService>;
   let encryptService: SubstituteOf<EncryptService>;
-  let vaultTimeoutSettingsService: SubstituteOf<VaultTimeoutSettingsService>;
   let activeAccount: BehaviorSubject<string>;
   let activeAccountUnlocked: BehaviorSubject<boolean>;
 
@@ -59,15 +57,9 @@ describe("PolicyService", () => {
     stateService.activeAccount$.returns(activeAccount);
     stateService.activeAccountUnlocked$.returns(activeAccountUnlocked);
     stateService.getUserId().resolves("user");
-    vaultTimeoutSettingsService = Substitute.for();
-    vaultTimeoutSettingsService.getVaultTimeout("user").resolves(99);
     (window as any).bitwardenContainerService = new ContainerService(cryptoService, encryptService);
 
-    policyService = new PolicyService(
-      stateService,
-      organizationService,
-      vaultTimeoutSettingsService
-    );
+    policyService = new PolicyService(stateService, organizationService);
   });
 
   afterEach(() => {
