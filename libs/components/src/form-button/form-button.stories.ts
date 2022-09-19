@@ -25,7 +25,9 @@ const template = `
       <input bitInput formControlName="email" />
     </bit-form-field>
 
-    <button type="submit" bitButton bitFormButton buttonType="primary">Submit</button>
+    <button class="tw-mr-2" type="submit" bitFormButton buttonType="primary">Submit</button>
+    <button class="tw-mr-2" type="button" bitFormButton buttonType="secondary">Cancel</button>
+    <button class="tw-mr-2" type="button" bitFormButton buttonType="danger">Delete</button>
   </form>`;
 
 @Component({
