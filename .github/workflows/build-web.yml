@@ -112,8 +112,6 @@ jobs:
           VERSION=$( jq -r ".version" package.json)
           jq --arg version "$VERSION - ${GITHUB_SHA:0:7}" '.version = $version' package.json > package.json.tmp
           mv package.json.tmp package.json
-          mkdir build
-          echo "{\"commit_hash\": \"$GITHUB_SHA\", \"ref\": \"$GITHUB_REF\"}" | jq . > build/info.json
 
       - name: Build ${{ matrix.name }}
         working-directory: apps/web
