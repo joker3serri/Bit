@@ -18,7 +18,7 @@ import { LegacyMessage } from "src/models/nativeMessaging/legacyMessage";
 import { LegacyMessageWrapper } from "src/models/nativeMessaging/legacyMessageWrapper";
 import { Message } from "src/models/nativeMessaging/message";
 
-import { NativeMessageHandler } from "./nativeMessageHandler.service";
+import { NativeMessageHandlerService } from "./nativeMessageHandler.service";
 
 const MessageValidTimeout = 10 * 1000;
 const EncryptionAlgorithm = "sha1";
@@ -35,7 +35,7 @@ export class NativeMessagingService {
     private i18nService: I18nService,
     private messagingService: MessagingService,
     private stateService: StateService,
-    private nativeMessageHandler: NativeMessageHandler
+    private nativeMessageHandler: NativeMessageHandlerService
   ) {}
 
   init() {

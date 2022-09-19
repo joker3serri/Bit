@@ -5,39 +5,19 @@ import { hideBin } from "yargs/helpers";
 
 import { NativeMessagingVersion } from "@bitwarden/common/enums/nativeMessagingVersion";
 
-import { CredentialUpdatePayload } from "../../src/models/nativeMessaging/credentialUpdatePayload";
+import { CredentialCreatePayload } from "../../../src/models/nativeMessaging/encryptedMessagePayloads/credentialCreatePayload";
+import { LogUtils } from "../logUtils";
+import NativeMessageService from "../nativeMessageService";
+import * as config from "../variables";
 
-import { LogUtils } from "./logUtils";
-import NativeMessageService from "./nativeMessageService";
-import * as config from "./variables";
+const argv: any = yargs(hideBin(process.argv)).option("name", {
+  alias: "n",
+  demand: true,
+  describe: "Name that the created login will be given",
+  type: "string",
+}).argv;
 
-// Command line arguments
-const argv: any = yargs(hideBin(process.argv))
-  .option("name", {
-    alias: "n",
-    demand: true,
-    describe: "Name that the updated login will be given",
-    type: "string",
-  })
-  .option("username", {
-    alias: "u",
-    demand: true,
-    describe: "Username that the login will be given",
-    type: "string",
-  })
-  .option("password", {
-    alias: "p",
-    demand: true,
-    describe: "Password that the login will be given",
-    type: "string",
-  })
-  .option("uri", {
-    demand: true,
-    describe: "Uri that the login will be given",
-    type: "string",
-  }).argv;
-
-const { name, username, password, uri } = argv;
+const { name } = argv;
 
 (async () => {
   const nativeMessageService = new NativeMessageService(NativeMessagingVersion.One);
@@ -50,7 +30,6 @@ const { name, username, password, uri } = argv;
     nativeMessageService.disconnect();
     return;
   }
-  LogUtils.logSuccess("Handshake success response");
 
   // Get active account userId
   const status = await nativeMessageService.checkStatus(handshakeResponse.sharedKey);
@@ -61,20 +40,21 @@ const { name, username, password, uri } = argv;
   }
   LogUtils.logInfo("Active userId: " + activeUser.id);
 
-  const response = await nativeMessageService.credentialUpdate(handshakeResponse.sharedKey, {
+  LogUtils.logSuccess("Handshake success response");
+  const response = await nativeMessageService.credentialCreation(handshakeResponse.sharedKey, {
     name: name,
-    password: password,
-    userName: username,
-    uri: uri,
+    userName: "SuperAwesomeUser",
+    password: "dolhpin",
+    uri: "google.com",
     userId: activeUser.id,
-    // Replace with credentialId you want to update
-    credentialId: "2a08b546-fa9d-48cc-ae8e-ae7601207da9",
-  } as CredentialUpdatePayload);
+  } as CredentialCreatePayload);
 
   if (response.payload.status === "failure") {
     LogUtils.logError("Failure response returned ");
   } else if (response.payload.status === "success") {
     LogUtils.logSuccess("Success response returned ");
+  } else if (response.payload.error === "locked") {
+    LogUtils.logError("Error: vault is locked");
   } else {
     LogUtils.logWarning("Other response: ", response);
   }

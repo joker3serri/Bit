@@ -5,9 +5,9 @@ import { hideBin } from "yargs/helpers";
 
 import { NativeMessagingVersion } from "@bitwarden/common/enums/nativeMessagingVersion";
 
-import { LogUtils } from "./logUtils";
-import NativeMessageService from "./nativeMessageService";
-import * as config from "./variables";
+import { LogUtils } from "../logUtils";
+import NativeMessageService from "../nativeMessageService";
+import * as config from "../variables";
 
 const argv: any = yargs(hideBin(process.argv)).option("uri", {
   alias: "u",
