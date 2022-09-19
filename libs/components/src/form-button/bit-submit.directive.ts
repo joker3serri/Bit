@@ -11,7 +11,7 @@ import {
   tap,
 } from "rxjs";
 
-import { Utils } from "@bitwarden/common/misc/utils";
+import { functionToObservable } from "../utils/function-to-observable";
 
 export type BitSubmitHandler =
   | (() => unknown)
@@ -34,23 +34,13 @@ export class BitSubmitDirective implements OnDestroy {
       .pipe(
         tap(() => this._loading$.next(true)),
         switchMap(() => {
-          const awaitable = this.handler();
-
-          if (Utils.isPromise(awaitable)) {
-            return awaitable;
-          }
-
-          if (awaitable instanceof Observable) {
-            return awaitable.pipe(
-              catchError((err: unknown) => {
-                // eslint-disable-next-line no-console
-                console.error("Uncaught submit error", err);
-                return of(undefined);
-              })
-            );
-          }
-
-          return of();
+          return functionToObservable(this.handler).pipe(
+            catchError((err: unknown) => {
+              // eslint-disable-next-line no-console
+              console.error("Uncaught submit error", err);
+              return of(undefined);
+            })
+          );
         }),
         takeUntil(this.destroy$)
       )
