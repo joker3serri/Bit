@@ -21,8 +21,8 @@ export default {
 const Template: Story<ButtonComponent> = (args: ButtonComponent) => ({
   props: args,
   template: `
-    <button bitButton [disabled]="disabled" [buttonType]="buttonType" [block]="block">Button</button>
-    <a bitButton [disabled]="disabled" [buttonType]="buttonType" [block]="block" href="#" class="tw-ml-2">Link</a>
+    <button bitButton [disabled]="disabled" [loading]="loading" [buttonType]="buttonType" [block]="block">Button</button>
+    <a bitButton [disabled]="disabled" [loading]="loading" [buttonType]="buttonType" [block]="block" href="#" class="tw-ml-2">Link</a>
   `,
 });
 
