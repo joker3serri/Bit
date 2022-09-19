@@ -27,7 +27,7 @@ env:
 jobs:
   deploy:
     name: Deploy QA Web
-    if: github.event.inputs.azure_publish
+    if: inputs.azure_publish
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout Repo
@@ -89,7 +89,7 @@ jobs:
   cfpages-deploy:
     name: Deploy Web Vault to QA CloudFlare Pages branch
     runs-on: ubuntu-20.04
-    if: github.event.inputs.cloudflare_publish
+    if: inputs.cloudflare_publish
     steps:
       - name: Create GitHub deployment
         uses: chrnorm/deployment-action@1b599fe41a0ef1f95191e7f2eec4743f2d7dfc48
