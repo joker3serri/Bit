@@ -1,19 +1,15 @@
-import { Component, NgZone, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { map, mergeMap, Observable, Subject, takeUntil } from "rxjs";
 
-import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/models/domain/organization";
-import { getOrganizationById } from "@bitwarden/common/services/organization/organization.service";
-
 import {
+  OrganizationService,
+  getOrganizationById,
   canAccessManageTab,
   canAccessSettingsTab,
   canAccessToolsTab,
-} from "../navigation-permissions";
-
-const BroadcasterSubscriptionId = "OrganizationLayoutComponent";
+} from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 @Component({
   selector: "app-organization-layout",
@@ -25,12 +21,7 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
 
   private _destroy = new Subject<void>();
 
-  constructor(
-    private route: ActivatedRoute,
-    private organizationService: OrganizationService,
-    private broadcasterService: BroadcasterService,
-    private ngZone: NgZone
-  ) {}
+  constructor(private route: ActivatedRoute, private organizationService: OrganizationService) {}
 
   ngOnInit() {
     document.body.classList.remove("layout_frontend");
@@ -48,7 +39,6 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
     this._destroy.next();
     this._destroy.complete();
   }

@@ -188,7 +188,6 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
       true,
       false
     );
-    // TODO: Do I broadcast anything?
   }
 
   async getOrCreateApiKey(id: string, request: OrganizationApiKeyRequest): Promise<ApiKeyResponse> {
@@ -231,7 +230,7 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
   }
 
   async updateTaxInfo(id: string, request: OrganizationTaxInfoUpdateRequest): Promise<void> {
-    // TODO: Do I broadcast anything?
+    // Can't broadcast anything because the response doesn't have content
     return this.apiService.send("PUT", "/organizations/" + id + "/tax", request, true, false);
   }
 
@@ -251,7 +250,7 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
       true,
       true
     );
-    // TODO: Do I broadcast anything?
+    // Not broadcasting anything because data on this response doesn't correspond to `Organization`
     return new OrganizationKeysResponse(r);
   }
 
@@ -268,7 +267,7 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
       true,
       true
     );
-    // TODO: Do I broadcast anything
+    // Not broadcasting anything because data on this response doesn't correspond to `Organization`
     return new OrganizationSsoResponse(r);
   }
 }

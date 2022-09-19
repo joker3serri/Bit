@@ -72,6 +72,8 @@ export class SponsoredFamiliesComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.anyOrgsAvailable$ = this.availableSponsorshipOrgs$.pipe(map((orgs) => orgs.length > 0));
+
     this.activeSponsorshipOrgs$ = this.organizationService.organizations$.pipe(
       map((orgs) => orgs.filter((o) => o.familySponsorshipFriendlyName !== null))
     );

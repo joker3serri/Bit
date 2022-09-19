@@ -26,7 +26,7 @@ describe("Organization Service", () => {
     stateService.activeAccountUnlocked$ = activeAccountUnlocked;
     customizeStateService(stateService);
     organizationService = new OrganizationService(stateService, syncNotifierService);
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 50));
   };
 
   beforeEach(() => {
@@ -47,6 +47,11 @@ describe("Organization Service", () => {
     syncNotifierService.sync$ = sync;
 
     organizationService = new OrganizationService(stateService, syncNotifierService);
+  });
+
+  afterEach(() => {
+    activeAccount.complete();
+    activeAccountUnlocked.complete();
   });
 
   it("getAll", async () => {
@@ -130,22 +135,6 @@ describe("Organization Service", () => {
     ]);
   });
 
-  it("save", async () => {
-    await organizationService.save({
-      "1": organizationData("1", "Saved Test Org"),
-    });
-
-    expect(stateService.setOrganizations).toHaveBeenCalledTimes(1);
-    // expect(stateService.setOrganizations)
-    //   .toHaveBeenCalledWith("", "");
-
-    // stateService
-    //   .received(1)
-    //   .setOrganizations(
-    //     Arg.is<{ [id: string]: OrganizationData }>((orgs) => orgs["1"].name === "Saved Test Org")
-    //   );
-  });
-
   describe("getByIdentifier", () => {
     it("exists", async () => {
       const result = organizationService.getByIdentifier("test");
@@ -158,7 +147,7 @@ describe("Organization Service", () => {
     });
 
     it("does not exist", async () => {
-      const result = await organizationService.getByIdentifier("blah");
+      const result = organizationService.getByIdentifier("blah");
 
       expect(result).toBeUndefined();
     });

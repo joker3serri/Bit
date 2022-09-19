@@ -105,7 +105,6 @@ export class VaultComponent implements OnInit, OnDestroy {
         !this.showVerifyEmail && !canAccessPremium && !this.platformUtilsService.isSelfHost();
 
       this.filterComponent.reloadCollectionsAndFolders(this.activeFilter);
-      this.filterComponent.reloadOrganizations();
       this.showUpdateKey = !(await this.cryptoService.hasEncKey());
 
       const cipherId = getCipherIdFromParams(params);
@@ -148,7 +147,6 @@ export class VaultComponent implements OnInit, OnDestroy {
               if (message.successfully) {
                 await Promise.all([
                   this.filterComponent.reloadCollectionsAndFolders(this.activeFilter),
-                  this.filterComponent.reloadOrganizations(),
                   this.ciphersComponent.load(this.ciphersComponent.filter),
                 ]);
                 this.changeDetectorRef.detectChanges();

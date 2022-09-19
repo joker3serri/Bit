@@ -97,14 +97,6 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
       : await this.vaultFilterService.buildCollections(filter.selectedOrganizationId);
   }
 
-  async reloadOrganizations() {
-    // this.organizations$ = await this.vaultFilterService.buildOrganizations();
-    // this.activePersonalOwnershipPolicy =
-    //   await this.vaultFilterService.checkForPersonalOwnershipPolicy();
-    // this.activeSingleOrganizationPolicy =
-    //   await this.vaultFilterService.checkForSingleOrganizationPolicy();
-  }
-
   addFolder() {
     this.onAddFolder.emit();
   }

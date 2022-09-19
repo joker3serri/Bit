@@ -1,16 +1,11 @@
-import { BehaviorSubject, concatMap, filter, map } from "rxjs";
-
-import { Organization } from "@bitwarden/common/models/domain/organization";
+import { BehaviorSubject, concatMap, filter } from "rxjs";
 
 import { OrganizationService as OrganizationServiceAbstraction } from "../../abstractions/organization/organization.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
 import { SyncNotifierService } from "../../abstractions/sync/syncNotifier.service.abstraction";
 import { OrganizationData } from "../../models/data/organizationData";
+import { Organization } from "../../models/domain/organization";
 import { isSuccessfullyCompleted } from "../../types/syncEventArgs";
-
-export function getOrganizationById(id: string) {
-  return map<Organization[], Organization>((orgs) => orgs.find((o) => o.id === id));
-}
 
 export class OrganizationService implements OrganizationServiceAbstraction {
   private _organizations = new BehaviorSubject<Organization[]>([]);
@@ -36,8 +31,8 @@ export class OrganizationService implements OrganizationServiceAbstraction {
       .subscribe();
 
     this.syncNotifierService.sync$
-      .pipe(filter(isSuccessfullyCompleted))
       .pipe(
+        filter(isSuccessfullyCompleted),
         concatMap(async ({ data }) => {
           const { profile } = data;
           const organizations: { [id: string]: OrganizationData } = {};
@@ -70,13 +65,9 @@ export class OrganizationService implements OrganizationServiceAbstraction {
     );
   }
 
-  async hasOrganizations(userId?: string): Promise<boolean> {
-    const organizations = await this.getAll(userId);
+  hasOrganizations(): boolean {
+    const organizations = this._organizations.getValue();
     return organizations.length > 0;
-  }
-
-  async save(organizations: { [id: string]: OrganizationData }) {
-    return await this.stateService.setOrganizations(organizations);
   }
 
   async upsert(organization: OrganizationData): Promise<void> {
@@ -87,8 +78,7 @@ export class OrganizationService implements OrganizationServiceAbstraction {
 
     organizations[organization.id] = organization;
 
-    this.updateObservables(organizations);
-    await this.stateService.setOrganizations(organizations);
+    await this.updateStateAndObservables(organizations);
   }
 
   async delete(id: string): Promise<void> {
@@ -102,9 +92,7 @@ export class OrganizationService implements OrganizationServiceAbstraction {
     }
 
     delete organizations[id];
-
-    this.updateObservables(organizations);
-    await this.stateService.setOrganizations(organizations);
+    await this.updateStateAndObservables(organizations);
   }
 
   get(id: string): Organization {

@@ -12,7 +12,7 @@ export class SyncNotifierService implements SyncNotifierServiceAbstraction {
 
   sync$ = this._sync.asObservable();
 
-  send(event: SyncEventArgs): void {
+  next(event: SyncEventArgs): void {
     this._sync.next(event);
   }
 }

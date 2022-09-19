@@ -1908,7 +1908,7 @@ export class StateService<
   }
 
   /**
-   * @depracated Do not call this directly, use OrganizationService
+   * @deprecated Do not call this directly, use OrganizationService
    */
   async getOrganizations(options?: StorageOptions): Promise<{ [id: string]: OrganizationData }> {
     return (
@@ -1917,7 +1917,7 @@ export class StateService<
   }
 
   /**
-   * @depracated Do not call this directly, use OrganizationService
+   * @deprecated Do not call this directly, use OrganizationService
    */
   async setOrganizations(
     value: { [id: string]: OrganizationData },

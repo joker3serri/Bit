@@ -219,7 +219,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     const otherTypes: CipherType[] = [];
     const dontShowCards = await this.stateService.getDontShowCardsCurrentTab();
     const dontShowIdentities = await this.stateService.getDontShowIdentitiesCurrentTab();
-    this.showOrganizations = await this.organizationService.hasOrganizations();
+    this.showOrganizations = this.organizationService.hasOrganizations();
     if (!dontShowCards) {
       otherTypes.push(CipherType.Card);
     }

@@ -1,18 +1,18 @@
 import { Component, OnInit } from "@angular/core";
-import { map, Observable } from "rxjs";
+import { Observable } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import {
+  canAccessAdmin,
+  OrganizationService,
+} from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { ProviderService } from "@bitwarden/common/abstractions/provider.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { TokenService } from "@bitwarden/common/abstractions/token.service";
-import { Utils } from "@bitwarden/common/misc/utils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { Provider } from "@bitwarden/common/models/domain/provider";
-
-import { canAccessOrgAdmin } from "../organizations/navigation-permissions";
 
 @Component({
   selector: "app-navbar",
@@ -52,9 +52,7 @@ export class NavbarComponent implements OnInit {
     this.providers = await this.providerService.getAll();
 
     this.organizations$ = this.organizationService.organizations$.pipe(
-      map((orgs) => {
-        return orgs.filter(canAccessOrgAdmin).sort(Utils.getSortFunction(this.i18nService, "name"));
-      })
+      canAccessAdmin(this.i18nService)
     );
   }
 

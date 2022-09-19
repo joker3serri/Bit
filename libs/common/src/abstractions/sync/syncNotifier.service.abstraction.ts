@@ -4,5 +4,5 @@ import { SyncEventArgs } from "../../types/syncEventArgs";
 
 export abstract class SyncNotifierService {
   sync$: Observable<SyncEventArgs>;
-  send: (event: SyncEventArgs) => void;
+  next: (event: SyncEventArgs) => void;
 }

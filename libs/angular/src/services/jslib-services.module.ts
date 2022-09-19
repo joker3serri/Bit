@@ -532,7 +532,7 @@ export const LOG_MAC_FAILURES = new InjectionToken<string>("LOG_MAC_FAILURES");
     {
       provide: OrganizationApiServiceAbstraction,
       useClass: OrganizationApiService,
-      deps: [ApiServiceAbstraction, OrganizationServiceAbstraction, SyncServiceAbstraction],
+      deps: [ApiServiceAbstraction, SyncServiceAbstraction],
     },
     {
       provide: SyncNotifierServiceAbstraction,
