@@ -15,6 +15,7 @@ import { OrganizationData } from "../data/organizationData";
 import { PolicyData } from "../data/policyData";
 import { ProviderData } from "../data/providerData";
 import { SendData } from "../data/sendData";
+import { ServerConfigData } from "../data/server-config.data";
 import { CipherView } from "../view/cipherView";
 import { CollectionView } from "../view/collectionView";
 import { SendView } from "../view/sendView";
@@ -222,6 +223,7 @@ export class AccountSettings {
   settings?: AccountSettingsSettings; // TODO: Merge whatever is going on here into the AccountSettings model properly
   vaultTimeout?: number;
   vaultTimeoutAction?: string = "lock";
+  serverConfig?: ServerConfigData;
 
   static fromJSON(obj: Jsonify<AccountSettings>): AccountSettings {
     return Object.assign(new AccountSettings(), obj, {
