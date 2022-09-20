@@ -1,7 +1,5 @@
 import { NgModule } from "@angular/core";
 
-import { BitInputDirective } from "../input/input.directive";
-import { InputModule } from "../input/input.module";
 import { SharedModule } from "../shared";
 
 import { BitErrorSummary } from "./error-summary.component";
@@ -13,13 +11,12 @@ import { BitPrefixDirective } from "./prefix.directive";
 import { BitSuffixDirective } from "./suffix.directive";
 
 @NgModule({
-  imports: [SharedModule, InputModule],
+  imports: [SharedModule],
   exports: [
     BitErrorComponent,
     BitErrorSummary,
     BitFormFieldComponent,
     BitHintComponent,
-    BitInputDirective,
     BitLabel,
     BitPrefixDirective,
     BitSuffixDirective,

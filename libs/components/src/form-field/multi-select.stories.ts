@@ -1,23 +1,23 @@
-import { FormsModule } from "@angular/forms";
+import { FormsModule, UntypedFormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { action } from "@storybook/addon-actions";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
-import { BadgeModule } from "../badge";
+import { InputModule } from "../input/input.module";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
-import { MultiSelectComponent } from "./multi-select.component";
-import { MultiSelectModule } from "./multi-select.module";
+import { BitFormFieldComponent } from "./form-field.component";
+import { FormFieldModule } from "./form-field.module";
 
 export default {
-  title: "Component Library/Multi Select",
+  title: "Component Library/Form/Multi Select",
   excludeStories: /.*Data$/,
-  component: MultiSelectComponent,
+  component: BitFormFieldComponent,
   decorators: [
     moduleMetadata({
-      imports: [FormsModule, NgSelectModule, MultiSelectModule, BadgeModule],
+      imports: [FormsModule, NgSelectModule, FormFieldModule, InputModule, ReactiveFormsModule],
       providers: [
         {
           provide: I18nService,
@@ -45,19 +45,37 @@ export const actionsData = {
   onItemsConfirmed: action("onItemsConfirmed"),
 };
 
-const MultiSelectTemplate: Story<MultiSelectComponent> = (args: MultiSelectComponent) => ({
+const fb = new UntypedFormBuilder();
+const formObj = fb.group({
+  select: ["", ""],
+});
+
+function submit() {
+  formObj.markAllAsTouched();
+}
+
+const MultiSelectTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldComponent) => ({
   props: {
+    formObj: formObj,
+    submit: submit,
     ...args,
     onItemsConfirmed: actionsData.onItemsConfirmed,
   },
   template: `
-    <bit-multi-select
-      [baseItems]="baseItems"
-      [removeSelectedItems]="removeSelectedItems"
-      [loading]="loading"
-      [disabled]="disabled"
-      (onItemsConfirmed)="onItemsConfirmed($event)">
-    </bit-multi-select>
+    <form [formGroup]="formGroup" (ngSubmit)="submit()">
+      <bit-form-field>
+        <bit-label>Name</bit-label>
+        <bit-multi-select
+          formControlName="select"
+          [baseItems]="baseItems"
+          [removeSelectedItems]="removeSelectedItems"
+          [loading]="loading"
+          [disabled]="disabled"
+          (onItemsConfirmed)="onItemsConfirmed($event)">
+        </bit-multi-select>
+      </bit-form-field>
+      <button type="submit" bitButton buttonType="primary">Submit</button>
+    </form>
   `,
 });
 

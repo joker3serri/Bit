@@ -1,18 +1,47 @@
-import { Component, Input, OnInit, Output, ViewChild, EventEmitter } from "@angular/core";
+import {
+  Component,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  EventEmitter,
+  HostBinding,
+  forwardRef,
+} from "@angular/core";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { NgSelectComponent } from "@ng-select/ng-select";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
-import { SelectItemView } from "./models/selectItemView";
+import { BitFormFieldControl } from "../form-field/form-field-control";
+
+import { SelectItemView } from "./models/select-item-view";
+
+
+// Increments for each instance of this component
+let nextId = 0;
 
 @Component({
   selector: "bit-multi-select",
   templateUrl: "./multi-select.component.html",
+  providers: [
+    { provide: BitFormFieldControl, useExisting: MultiSelectComponent },
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => MultiSelectComponent),
+      multi: true,
+    },
+  ],
 })
 /**
  * This component has been implemented to only support Multi-select list events
  */
-export class MultiSelectComponent implements OnInit {
+export class MultiSelectComponent
+  implements OnInit, BitFormFieldControl<any>, ControlValueAccessor
+{
+  @HostBinding("attr.aria-describedby") ariaDescribedBy: string;
+  @HostBinding() @Input() id = `bit-input-${nextId++}`;
+
   @ViewChild(NgSelectComponent) select: NgSelectComponent;
 
   // Parent component should only pass selectable items (complete list - selected items = baseItems)
@@ -37,9 +66,31 @@ export class MultiSelectComponent implements OnInit {
   closeOnSelect = false;
   clearSearchOnAdd = true;
 
+  onChange: (value: unknown) => void;
+
   @Output() onItemsConfirmed = new EventEmitter<any[]>();
 
   constructor(private i18nService: I18nService) {}
+
+  writeValue(obj: any): void {
+    /* Equivalent to:
+    @Input() set value(obj: any) {
+      this.selectedValues = obj.map(x => ...);
+    }
+    */
+  }
+
+  registerOnChange(fn: (value: unknown) => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    // throw new Error("Method not implemented.");
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    // throw new Error("Method not implemented.");
+  }
 
   ngOnInit(): void {
     this.placeholder = this.placeholder ?? this.i18nService.t("multiSelectPlaceholder");
@@ -48,12 +99,24 @@ export class MultiSelectComponent implements OnInit {
     this.clearAllText = this.i18nService.t("multiSelectClearAll");
   }
 
-  getSelectItemMoreText(moreCount: string): string {
-    return this.i18nService.t("selectItemMore", moreCount);
-  }
-
   isSelected(item: any): boolean {
     return this.selectedItems?.find((selected) => selected.id === item.id) != undefined;
+  }
+
+  /**
+   * Defaulting the following implemented variables as false/null until there is a need to implement error states
+   */
+  get required(): boolean {
+    return false;
+  }
+  get hasError(): boolean {
+    return false;
+  }
+  get error(): [string, any] {
+    return null;
+  }
+  get value() {
+    return this;
   }
 
   /**

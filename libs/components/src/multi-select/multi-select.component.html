@@ -1,6 +1,7 @@
 <ng-select
   [items]="baseItems"
   [(ngModel)]="selectedItems"
+  (ngModelChange)="onChange($event)"
   [bindLabel]="bindLabel"
   [groupBy]="groupBy"
   name="Select Items"
