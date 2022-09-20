@@ -221,6 +221,7 @@ export class EncryptedMessageHandlerService {
 
     const options = (await this.passwordGenerationService.getOptions())[0];
     const generatedValue = await this.passwordGenerationService.generatePassword(options);
+    await this.passwordGenerationService.addHistory(generatedValue);
 
     return { password: generatedValue };
   }
