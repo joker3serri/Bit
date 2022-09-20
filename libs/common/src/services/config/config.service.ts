@@ -49,9 +49,9 @@ export class ConfigService implements ConfigServiceAbstraction {
 
   private async fetchServerConfig(): Promise<ServerConfig> {
     const response = await this.configApiService.get();
-    const data = new ServerConfigData(response);
 
-    if (data != null) {
+    if (response != null) {
+      const data = new ServerConfigData(response);
       await this.stateService.setServerConfig(data);
       return new ServerConfig(data);
     }

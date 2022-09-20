@@ -6,7 +6,11 @@ export class ConfigApiService implements ConfigApiServiceAbstraction {
   constructor(private apiService: ApiService) {}
 
   async get(): Promise<ServerConfigResponse> {
-    const r = await this.apiService.send("GET", "/config", null, true, true);
-    return new ServerConfigResponse(r);
+    try {
+      const r = await this.apiService.send("GET", "/config", null, true, true);
+      return new ServerConfigResponse(r);
+    } catch {
+      return null;
+    }
   }
 }
