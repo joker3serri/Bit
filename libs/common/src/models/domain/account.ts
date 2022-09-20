@@ -232,6 +232,7 @@ export class AccountSettings {
         obj?.pinProtected,
         EncString.fromJSON
       ),
+      serverConfig: ServerConfigData.fromJSON(obj?.serverConfig),
     });
   }
 }
