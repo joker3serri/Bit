@@ -105,14 +105,14 @@ export class AccountKeys {
   >();
   organizationKeys?: EncryptionPair<
     { [orgId: string]: EncryptedOrganizationKeyData },
-    Map<string, SymmetricCryptoKey>
+    Record<string, SymmetricCryptoKey>
   > = new EncryptionPair<
     { [orgId: string]: EncryptedOrganizationKeyData },
-    Map<string, SymmetricCryptoKey>
+    Record<string, SymmetricCryptoKey>
   >();
-  providerKeys?: EncryptionPair<any, Map<string, SymmetricCryptoKey>> = new EncryptionPair<
+  providerKeys?: EncryptionPair<any, Record<string, SymmetricCryptoKey>> = new EncryptionPair<
     any,
-    Map<string, SymmetricCryptoKey>
+    Record<string, SymmetricCryptoKey>
   >();
   privateKey?: EncryptionPair<string, ArrayBuffer> = new EncryptionPair<string, ArrayBuffer>();
   publicKey?: ArrayBuffer;
@@ -134,8 +134,8 @@ export class AccountKeys {
           SymmetricCryptoKey.fromJSON
         ),
       },
-      { organizationKeys: AccountKeys.initMapEncryptionPairsFromJSON(obj?.organizationKeys) },
-      { providerKeys: AccountKeys.initMapEncryptionPairsFromJSON(obj?.providerKeys) },
+      { organizationKeys: AccountKeys.initRecordEncryptionPairsFromJSON(obj?.organizationKeys) },
+      { providerKeys: AccountKeys.initRecordEncryptionPairsFromJSON(obj?.providerKeys) },
       {
         privateKey: EncryptionPair.fromJSON<string, ArrayBuffer>(
           obj?.privateKey,
@@ -150,13 +150,17 @@ export class AccountKeys {
 
   // These `any` types are a result of Jsonify<Map<>> === {}
   // Issue raised https://github.com/sindresorhus/type-fest/issues/457
-  static initMapEncryptionPairsFromJSON(obj: any) {
+  static initRecordEncryptionPairsFromJSON(obj: any) {
     return EncryptionPair.fromJSON(obj, (decObj: any) => {
-      const map = new Map<string, SymmetricCryptoKey>();
-      for (const id in decObj) {
-        map.set(id, SymmetricCryptoKey.fromJSON(decObj[id]));
+      if (obj == null) {
+        return null;
       }
-      return map;
+
+      const record: Record<string, SymmetricCryptoKey> = {};
+      for (const id in decObj) {
+        record[id] = SymmetricCryptoKey.fromJSON(decObj[id]);
+      }
+      return record;
     });
   }
 }

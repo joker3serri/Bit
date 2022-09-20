@@ -673,7 +673,9 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    return account?.keys?.organizationKeys?.decrypted;
+    return account?.keys?.organizationKeys?.decrypted == null
+      ? null
+      : new Map(Object.entries(account?.keys?.organizationKeys?.decrypted));
   }
 
   async setDecryptedOrganizationKeys(
@@ -683,7 +685,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    account.keys.organizationKeys.decrypted = value;
+    account.keys.organizationKeys.decrypted = value == null ? null : Object.fromEntries(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -773,7 +775,9 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    return account?.keys?.providerKeys?.decrypted;
+    return account?.keys?.providerKeys?.decrypted == null
+      ? null
+      : new Map(Object.entries(account?.keys?.providerKeys?.decrypted));
   }
 
   async setDecryptedProviderKeys(
@@ -783,7 +787,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    account.keys.providerKeys.decrypted = value;
+    account.keys.providerKeys.decrypted = value == null ? null : Object.fromEntries(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
