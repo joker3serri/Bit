@@ -45,6 +45,9 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
       .subscribe();
   }
 
+  /**
+   * @deprecated Do not call this, use the policies$ observable collection
+   */
   async getAll(type?: PolicyType, userId?: string): Promise<Policy[]> {
     let response: Policy[] = [];
     const decryptedPolicies = await this.stateService.getDecryptedPolicies({ userId: userId });
@@ -53,8 +56,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     } else {
       const diskPolicies = await this.stateService.getEncryptedPolicies({ userId: userId });
       for (const id in diskPolicies) {
-        // eslint-disable-next-line
-        if (diskPolicies.hasOwnProperty(id)) {
+        if (Object.prototype.hasOwnProperty.call(diskPolicies, id)) {
           response.push(new Policy(diskPolicies[id]));
         }
       }
