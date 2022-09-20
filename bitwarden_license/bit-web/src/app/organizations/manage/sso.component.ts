@@ -103,44 +103,47 @@ export class SsoComponent implements OnInit, OnDestroy {
     validators: [Validators.maxLength(50), Validators.required],
   });
 
-  private openIdForm = this.formBuilder.group(
+  private openIdForm = this.formBuilder.group<ControlsOf<SsoConfigView["openId"]>>(
     {
-      authority: ["", Validators.required],
-      clientId: ["", Validators.required],
-      clientSecret: ["", Validators.required],
-      metadataAddress: [],
-      redirectBehavior: [OpenIdConnectRedirectBehavior.RedirectGet, Validators.required],
-      getClaimsFromUserInfoEndpoint: [],
-      additionalScopes: [],
-      additionalUserIdClaimTypes: [],
-      additionalEmailClaimTypes: [],
-      additionalNameClaimTypes: [],
-      acrValues: [],
-      expectedReturnAcrValue: [],
+      authority: new FormControl("", Validators.required),
+      clientId: new FormControl("", Validators.required),
+      clientSecret: new FormControl("", Validators.required),
+      metadataAddress: new FormControl(),
+      redirectBehavior: new FormControl(
+        OpenIdConnectRedirectBehavior.RedirectGet,
+        Validators.required
+      ),
+      getClaimsFromUserInfoEndpoint: new FormControl(),
+      additionalScopes: new FormControl(),
+      additionalUserIdClaimTypes: new FormControl(),
+      additionalEmailClaimTypes: new FormControl(),
+      additionalNameClaimTypes: new FormControl(),
+      acrValues: new FormControl(),
+      expectedReturnAcrValue: new FormControl(),
     },
     {
       updateOn: "blur",
     }
   );
 
-  private samlForm = this.formBuilder.group(
+  private samlForm = this.formBuilder.group<ControlsOf<SsoConfigView["saml"]>>(
     {
-      spNameIdFormat: [Saml2NameIdFormat.NotConfigured],
-      spOutboundSigningAlgorithm: [defaultSigningAlgorithm],
-      spSigningBehavior: [Saml2SigningBehavior.IfIdpWantAuthnRequestsSigned],
-      spMinIncomingSigningAlgorithm: [defaultSigningAlgorithm],
-      spWantAssertionsSigned: [],
-      spValidateCertificates: [],
+      spNameIdFormat: new FormControl(Saml2NameIdFormat.NotConfigured),
+      spOutboundSigningAlgorithm: new FormControl(defaultSigningAlgorithm),
+      spSigningBehavior: new FormControl(Saml2SigningBehavior.IfIdpWantAuthnRequestsSigned),
+      spMinIncomingSigningAlgorithm: new FormControl(defaultSigningAlgorithm),
+      spWantAssertionsSigned: new FormControl(),
+      spValidateCertificates: new FormControl(),
 
-      idpEntityId: ["", Validators.required],
-      idpBindingType: [Saml2BindingType.HttpRedirect],
-      idpSingleSignOnServiceUrl: [],
-      idpSingleLogoutServiceUrl: [],
-      idpX509PublicCert: ["", Validators.required],
-      idpOutboundSigningAlgorithm: [defaultSigningAlgorithm],
-      idpAllowUnsolicitedAuthnResponse: [],
-      idpAllowOutboundLogoutRequests: [true],
-      idpWantAuthnRequestsSigned: [],
+      idpEntityId: new FormControl("", Validators.required),
+      idpBindingType: new FormControl(Saml2BindingType.HttpRedirect),
+      idpSingleSignOnServiceUrl: new FormControl(),
+      idpSingleLogoutServiceUrl: new FormControl(),
+      idpX509PublicCert: new FormControl("", Validators.required),
+      idpOutboundSigningAlgorithm: new FormControl(defaultSigningAlgorithm),
+      idpAllowUnsolicitedAuthnResponse: new FormControl(),
+      idpAllowOutboundLogoutRequests: new FormControl(true),
+      idpWantAuthnRequestsSigned: new FormControl(),
     },
     {
       updateOn: "blur",
@@ -220,7 +223,7 @@ export class SsoComponent implements OnInit, OnDestroy {
   async submit() {
     this.validateForm(this.ssoConfigForm);
 
-    if (this.ssoConfigForm.get("keyConnectorEnabled").value) {
+    if (this.ssoConfigForm.value.keyConnectorEnabled) {
       this.haveTestedKeyConnector = false;
       await this.validateKeyConnectorUrl();
     }
