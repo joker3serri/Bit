@@ -34,6 +34,13 @@ const routes: Routes = [
           titleId: "policies",
         },
       },
+      {
+        path: "tools",
+        loadChildren: () =>
+          import("../tools/import-export/org-import-export.module").then(
+            (m) => m.OrganizationImportExportModule
+          ),
+      },
     ],
   },
 ];

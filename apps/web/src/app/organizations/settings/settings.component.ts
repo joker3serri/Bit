@@ -3,15 +3,14 @@ import { ActivatedRoute } from "@angular/router";
 import { Subject, switchMap, takeUntil } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 @Component({
   selector: "app-org-settings",
   templateUrl: "settings.component.html",
 })
 export class SettingsComponent implements OnInit, OnDestroy {
-  access2fa = false;
-  accessSso = false;
-  accessPolicies = false;
+  organization: Organization;
 
   private destroy$ = new Subject<void>();
 
@@ -24,9 +23,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe((organization) => {
-        this.accessSso = organization.canManageSso && organization.useSso;
-        this.access2fa = organization.use2fa;
-        this.accessPolicies = organization.canManagePolicies && organization.usePolicies;
+        this.organization = organization;
       });
   }
 
