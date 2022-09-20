@@ -2,11 +2,10 @@
   <h1>{{ "eventLogs" | i18n }}</h1>
   <div class="tw-mt-4 tw-flex tw-items-center">
     <bit-form-field>
-      <bit-label>From</bit-label>
+      <bit-label>{{ "from" | i18n }}</bit-label>
       <input
         bitInput
         type="datetime-local"
-        class=""
         placeholder="{{ 'startDate' | i18n }}"
         [(ngModel)]="start"
         (change)="dirtyDates = true"
@@ -14,11 +13,10 @@
     </bit-form-field>
     <span class="tw-mx-2">-</span>
     <bit-form-field>
-      <bit-label>To</bit-label>
+      <bit-label>{{ "to" | i18n }}</bit-label>
       <input
         bitInput
         type="datetime-local"
-        class=""
         placeholder="{{ 'endDate' | i18n }}"
         [(ngModel)]="end"
         (change)="dirtyDates = true"
@@ -33,7 +31,7 @@
         (click)="loadEvents(true)"
         [disabled]="loaded && refreshForm.loading"
       >
-        Update
+        {{ "update" | i18n }}
       </button>
     </form>
     <form #exportForm [appApiAction]="exportPromise">
@@ -72,10 +70,8 @@
     <ng-container header>
       <tr>
         <th bitCell style="width: 210px">{{ "timestamp" | i18n }}</th>
-        <th bitCell style="width: 40px">
-          <span class="sr-only">{{ "device" | i18n }}</span>
-        </th>
-        <th bitCell style="width: 150px">{{ "user" | i18n }}</th>
+        <th bitCell style="width: 100px">{{ "client" | i18n }}</th>
+        <th bitCell style="width: 150px">{{ "member" | i18n }}</th>
         <th bitCell>{{ "event" | i18n }}</th>
       </tr>
     </ng-container>
@@ -83,12 +79,7 @@
       <tr bitRow *ngFor="let e of events">
         <td bitCell>{{ e.date | date: "medium" }}</td>
         <td bitCell>
-          <i
-            class="text-muted bwi bwi-lg {{ e.appIcon }}"
-            title="{{ e.appName }}, {{ e.ip }}"
-            aria-hidden="true"
-          ></i>
-          <span class="sr-only">{{ e.appName }}, {{ e.ip }}</span>
+          <span title="{{ e.appName }}, {{ e.ip }}">{{ e.appName }}</span>
         </td>
         <td bitCell>
           <span title="{{ e.userEmail }}">{{ e.userName }}</span>
