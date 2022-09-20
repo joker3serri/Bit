@@ -8,7 +8,7 @@ describe("EncryptionPair", () => {
       const pair = new EncryptionPair<string, ArrayBuffer>();
       pair.decrypted = Utils.fromByteStringToArray("hello").buffer;
       const json = pair.toJSON();
-      expect(json.decryptedSerialized).toEqual("hello");
+      expect(json.decrypted).toEqual("hello");
     });
 
     it("should serialize encrypted and decrypted", () => {
@@ -26,19 +26,9 @@ describe("EncryptionPair", () => {
       const pair = EncryptionPair.fromJSON({
         encrypted: "hello",
         decrypted: "world",
-        decryptedSerialized: null,
       });
       expect(pair.encrypted).toEqual("hello");
       expect(pair.decrypted).toEqual("world");
-    });
-
-    it("should deserialize decryptedSerialized for buffer arrays", () => {
-      const pair = EncryptionPair.fromJSON<string, ArrayBuffer>({
-        encrypted: "encrypted",
-        decrypted: null,
-        decryptedSerialized: "hello",
-      });
-      expect(pair.decrypted).toEqual(Utils.fromByteStringToArray("hello").buffer);
     });
   });
 });

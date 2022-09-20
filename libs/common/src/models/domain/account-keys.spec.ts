@@ -10,19 +10,11 @@ describe("AccountKeys", () => {
     it("should serialize itself", () => {
       const keys = new AccountKeys();
       const buffer = makeStaticByteArray(64).buffer;
-      const symmetricKey = new SymmetricCryptoKey(buffer);
-      keys.cryptoMasterKey = symmetricKey;
       keys.publicKey = buffer;
-      keys.cryptoSymmetricKey = new EncryptionPair<string, SymmetricCryptoKey>();
-      keys.cryptoSymmetricKey.decrypted = symmetricKey;
 
-      const symmetricKeySpy = jest.spyOn(symmetricKey, "toJSON");
-      const actual = keys.toJSON();
-      expect(symmetricKeySpy).toHaveBeenCalled();
-      expect(actual).toContain(`"cryptoMasterKey":${JSON.stringify(symmetricKey.toJSON())}`);
-      expect(actual).toContain(
-        `"publicKeySerialized":${JSON.stringify(Utils.fromBufferToByteString(buffer))}`
-      );
+      const bufferSpy = jest.spyOn(Utils, "fromBufferToByteString");
+      keys.toJSON();
+      expect(bufferSpy).toHaveBeenCalledWith(buffer);
     });
 
     it("should serialize public key as a string", () => {
@@ -43,25 +35,27 @@ describe("AccountKeys", () => {
 
     it("should deserialize cryptoMasterKey", () => {
       const spy = jest.spyOn(SymmetricCryptoKey, "fromJSON");
-      AccountKeys.fromJSON({});
+      AccountKeys.fromJSON({} as any);
       expect(spy).toHaveBeenCalled();
     });
 
     it("should deserialize organizationKeys", () => {
       const spy = jest.spyOn(SymmetricCryptoKey, "fromJSON");
-      AccountKeys.fromJSON({ organizationKeys: [{ orgId: "keyJSON" }] });
+      AccountKeys.fromJSON({ organizationKeys: [{ orgId: "keyJSON" }] } as any);
       expect(spy).toHaveBeenCalled();
     });
 
     it("should deserialize providerKeys", () => {
       const spy = jest.spyOn(SymmetricCryptoKey, "fromJSON");
-      AccountKeys.fromJSON({ providerKeys: [{ providerId: "keyJSON" }] });
+      AccountKeys.fromJSON({ providerKeys: [{ providerId: "keyJSON" }] } as any);
       expect(spy).toHaveBeenCalled();
     });
 
     it("should deserialize privateKey", () => {
       const spy = jest.spyOn(EncryptionPair, "fromJSON");
-      AccountKeys.fromJSON({ privateKey: { encrypted: "encrypted", decrypted: "decrypted" } });
+      AccountKeys.fromJSON({
+        privateKey: { encrypted: "encrypted", decrypted: "decrypted" },
+      } as any);
       expect(spy).toHaveBeenCalled();
     });
   });
