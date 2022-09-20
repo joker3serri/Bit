@@ -105,7 +105,13 @@ export abstract class StateService<T extends Account = Account> {
   ) => Promise<void>;
   getDecryptedPinProtected: (options?: StorageOptions) => Promise<EncString>;
   setDecryptedPinProtected: (value: EncString, options?: StorageOptions) => Promise<void>;
+  /**
+   * @deprecated Do not call this, use PolicyService
+   */
   getDecryptedPolicies: (options?: StorageOptions) => Promise<Policy[]>;
+  /**
+   * @deprecated Do not call this, use PolicyService
+   */
   setDecryptedPolicies: (value: Policy[], options?: StorageOptions) => Promise<void>;
   getDecryptedPrivateKey: (options?: StorageOptions) => Promise<ArrayBuffer>;
   setDecryptedPrivateKey: (value: ArrayBuffer, options?: StorageOptions) => Promise<void>;
