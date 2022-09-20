@@ -8,13 +8,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 
 import { SecretService } from "../secret.service";
 
-export enum DeleteOperationType {
-  Single,
-  Bulk,
-}
-
 export interface SecretDeleteOperation {
-  operation: DeleteOperationType;
   secretIds: string[];
 }
 
@@ -23,8 +17,6 @@ export interface SecretDeleteOperation {
   templateUrl: "./secret-delete.component.html",
 })
 export class SecretDeleteDialogComponent {
-  DeleteOperationType = DeleteOperationType;
-
   constructor(
     public dialogRef: DialogRef,
     private secretService: SecretService,
@@ -36,14 +28,14 @@ export class SecretDeleteDialogComponent {
   ) {}
 
   get title() {
-    return this.data.operation === DeleteOperationType.Single ? "deleteSecret" : "deleteSecrets";
+    return this.data.secretIds.length === 1 ? "deleteSecret" : "deleteSecrets";
   }
 
   async delete() {
     try {
       await this.secretService.delete(this.data.secretIds);
       this.dialogRef.close();
-      if (this.data.operation === DeleteOperationType.Single) {
+      if (this.data.secretIds.length === 1) {
         this.platformUtilsService.showToast(
           "success",
           null,
@@ -59,7 +51,6 @@ export class SecretDeleteDialogComponent {
     } catch (e) {
       this.logService.error(e);
       this.validationService.showError(e);
-      this.dialogRef.close();
     }
   }
 }
