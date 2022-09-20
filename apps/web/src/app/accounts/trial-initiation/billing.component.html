@@ -40,7 +40,7 @@
     </div>
 
     <div class="tw-flex tw-space-x-2">
-      <bit-submit-button [loading]="form.loading">{{ "startTrial" | i18n }}</bit-submit-button>
+      <button type="submit" bitButton [loading]="form.loading">{{ "startTrial" | i18n }}</button>
 
       <button bitButton type="button" buttonType="secondary" (click)="stepBack()">Back</button>
     </div>

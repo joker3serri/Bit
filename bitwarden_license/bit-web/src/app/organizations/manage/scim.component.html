@@ -81,7 +81,13 @@
     <bit-hint>{{ "scimApiKeyHelperText" | i18n }}</bit-hint>
   </bit-form-field>
 
-  <bit-submit-button buttonType="primary" [loading]="form.loading" [disabled]="form.loading">
+  <button
+    type="submit"
+    bitButton
+    buttonType="primary"
+    [loading]="form.loading"
+    [disabled]="form.loading"
+  >
     {{ "save" | i18n }}
-  </bit-submit-button>
+  </button>
 </form>
