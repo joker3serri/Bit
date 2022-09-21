@@ -675,9 +675,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    return account?.keys?.organizationKeys?.decrypted == null
-      ? null
-      : new Map(Object.entries(account?.keys?.organizationKeys?.decrypted));
+    return this.recordToMap(account?.keys?.organizationKeys?.decrypted);
   }
 
   async setDecryptedOrganizationKeys(
@@ -687,7 +685,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    account.keys.organizationKeys.decrypted = value == null ? null : Object.fromEntries(value);
+    account.keys.organizationKeys.decrypted = this.mapToRecord(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -777,9 +775,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    return account?.keys?.providerKeys?.decrypted == null
-      ? null
-      : new Map(Object.entries(account?.keys?.providerKeys?.decrypted));
+    return this.recordToMap(account?.keys?.providerKeys?.decrypted);
   }
 
   async setDecryptedProviderKeys(
@@ -789,7 +785,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    account.keys.providerKeys.decrypted = value == null ? null : Object.fromEntries(value);
+    account.keys.providerKeys.decrypted = this.mapToRecord(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -2746,6 +2742,14 @@ export class StateService<
 
       await this.setState(updatedState);
     });
+  }
+
+  private mapToRecord<V>(map: Map<string, V>): Record<string, V> {
+    return map == null ? null : Object.fromEntries(map);
+  }
+
+  private recordToMap<V>(record: Record<string, V>): Map<string, V> {
+    return record == null ? null : new Map(Object.entries(record));
   }
 }
 
