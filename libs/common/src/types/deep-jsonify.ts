@@ -41,7 +41,7 @@ export type DeepJsonify<T> =
                 : T[P] extends NotJsonable
                 ? never
                 : P]: DeepJsonify<Required<T>[P]>;
-            } // Not Jsonable because its toJSON() method does not return JsonValue
+            } // toJSON() returns an object that is not a JsonValue but might still be Jsonable: recursive call for its children
         : {
             [P in keyof T as P extends symbol
               ? never
