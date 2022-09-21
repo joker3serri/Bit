@@ -8,7 +8,7 @@ import {
 import { NotJsonable } from "type-fest/source/jsonify";
 
 /**
- * Extracted from type-fest and extended with Jsonification of objects returned from `toJSON` methods.
+ * Extracted from type-fest `Jsonify` and extended with Jsonification of objects returned from `toJSON` methods.
  */
 export type DeepJsonify<T> =
   // Check if there are any non-JSONable types represented in the union.
@@ -26,7 +26,7 @@ export type DeepJsonify<T> =
       : T extends boolean
       ? boolean
       : T extends Map<any, any> | Set<any>
-      ? Record<string, unknown> // {}
+      ? Record<string, never>
       : T extends TypedArray
       ? Record<string, number>
       : T extends Array<infer U>
@@ -36,11 +36,11 @@ export type DeepJsonify<T> =
         ? (() => J) extends () => JsonValue // Is J assignable to JsonValue?
           ? J // Then T is Jsonable and its Jsonable value is J
           : {
-              [P in keyof J as P extends symbol
+              [P in keyof T as P extends symbol
                 ? never
-                : J[P] extends NotJsonable
+                : T[P] extends NotJsonable
                 ? never
-                : P]: DeepJsonify<Required<J>[P]>;
+                : P]: DeepJsonify<Required<T>[P]>;
             } // Not Jsonable because its toJSON() method does not return JsonValue
         : {
             [P in keyof T as P extends symbol
