@@ -668,7 +668,6 @@ export class StateService<
     );
   }
 
-  @withPrototypeForMap(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedOrganizationKeys(
     options?: StorageOptions
   ): Promise<Map<string, SymmetricCryptoKey>> {
@@ -768,7 +767,6 @@ export class StateService<
     );
   }
 
-  @withPrototypeForMap(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedProviderKeys(
     options?: StorageOptions
   ): Promise<Map<string, SymmetricCryptoKey>> {
@@ -2877,55 +2875,6 @@ function withPrototypeForObjectValues<T>(
             }
 
             return result as { [key: string]: T };
-          }
-        });
-      },
-    };
-  };
-}
-
-function withPrototypeForMap<T>(
-  valuesConstructor: new (...args: any[]) => T,
-  valuesConverter: (input: any) => T = (i) => i
-): (
-  target: any,
-  propertyKey: string | symbol,
-  descriptor: PropertyDescriptor
-) => { value: (...args: any[]) => Promise<Map<string, T>> } {
-  return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-    const originalMethod = descriptor.value;
-
-    return {
-      value: function (...args: any[]) {
-        const originalResult: Promise<any> = originalMethod.apply(this, args);
-
-        if (!(originalResult instanceof Promise)) {
-          throw new Error(
-            `Error applying prototype to stored value -- result is not a promise for method ${String(
-              propertyKey
-            )}`
-          );
-        }
-
-        return originalResult.then((result) => {
-          if (result == null) {
-            return null;
-          } else if (result instanceof Map) {
-            return result;
-          } else {
-            for (const key in Object.keys(result)) {
-              result[key] =
-                result[key] == null ||
-                result[key].constructor.name === valuesConstructor.prototype.constructor.name
-                  ? valuesConverter(result[key])
-                  : valuesConverter(
-                      Object.create(
-                        valuesConstructor.prototype,
-                        Object.getOwnPropertyDescriptors(result[key])
-                      )
-                    );
-            }
-            return new Map<string, T>(Object.entries(result));
           }
         });
       },
