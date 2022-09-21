@@ -9,13 +9,20 @@ import { SecretListView } from "@bitwarden/common/models/view/secretListView";
   templateUrl: "./secrets-list.component.html",
 })
 export class SecretsListComponent implements OnDestroy {
-  @Input() secrets: SecretListView[];
+  @Input()
+  get secrets(): SecretListView[] {
+    return this._secrets;
+  }
+  set secrets(secrets: SecretListView[]) {
+    this.selection.clear();
+    this._secrets = secrets;
+  }
+  private _secrets: SecretListView[];
 
   @Output() editSecretEvent = new EventEmitter<string>();
   @Output() copySecretNameEvent = new EventEmitter<string>();
   @Output() copySecretValueEvent = new EventEmitter<string>();
   @Output() projectsEvent = new EventEmitter<string>();
-  @Output() deleteSecretEvent = new EventEmitter<string>();
   @Output() onSecretCheckedEvent = new EventEmitter<string[]>();
   @Output() deleteSecretsEvent = new EventEmitter<string[]>();
 
