@@ -499,7 +499,6 @@ export class StateService<
     );
   }
 
-  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getCryptoMasterKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -646,7 +645,6 @@ export class StateService<
     );
   }
 
-  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedCryptoSymmetricKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -714,7 +712,6 @@ export class StateService<
     );
   }
 
-  @withPrototype(EncString)
   async getDecryptedPinProtected(options?: StorageOptions): Promise<EncString> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
@@ -1520,7 +1517,6 @@ export class StateService<
     );
   }
 
-  @withPrototype(EnvironmentUrls)
   async getEnvironmentUrls(options?: StorageOptions): Promise<EnvironmentUrls> {
     if ((await this.state())?.activeUserId == null) {
       return await this.getGlobalEnvironmentUrls(options);
