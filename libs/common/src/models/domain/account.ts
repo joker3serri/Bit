@@ -1,7 +1,7 @@
 import { Except, Jsonify } from "type-fest";
 
 import { Utils } from "@bitwarden/common/misc/utils";
-import { DeepJsonify } from "@bitwarden/common/types/DeepJsonify";
+import { DeepJsonify } from "@bitwarden/common/types/deep-jsonify";
 
 import { AuthenticationStatus } from "../../enums/authenticationStatus";
 import { KdfType } from "../../enums/kdfType";
@@ -157,8 +157,6 @@ export class AccountKeys {
     );
   }
 
-  // These `any` types are a result of Jsonify<Map<>> === {}
-  // Issue raised https://github.com/sindresorhus/type-fest/issues/457
   static initRecordEncryptionPairsFromJSON(obj: any) {
     return EncryptionPair.fromJSON(obj, (decObj: any) => {
       if (obj == null) {
