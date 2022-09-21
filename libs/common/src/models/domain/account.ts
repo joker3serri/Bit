@@ -45,6 +45,10 @@ export class EncryptionPair<TEncrypted, TDecrypted> {
     decryptedFromJson?: (decObj: Jsonify<TDecrypted> | string) => TDecrypted,
     encryptedFromJson?: (encObj: Jsonify<TEncrypted>) => TEncrypted
   ) {
+    if (obj == null) {
+      return null;
+    }
+
     const pair = new EncryptionPair<TEncrypted, TDecrypted>();
     if (obj?.encrypted != null) {
       pair.encrypted = encryptedFromJson
@@ -126,6 +130,10 @@ export class AccountKeys {
   }
 
   static fromJSON(obj: DeepJsonify<AccountKeys>): AccountKeys {
+    if (obj == null) {
+      return null;
+    }
+
     return Object.assign(
       new AccountKeys(),
       { cryptoMasterKey: SymmetricCryptoKey.fromJSON(obj?.cryptoMasterKey) },
@@ -186,6 +194,10 @@ export class AccountProfile {
   kdfType?: KdfType;
 
   static fromJSON(obj: Jsonify<AccountProfile>): AccountProfile {
+    if (obj == null) {
+      return null;
+    }
+
     return Object.assign(new AccountProfile(), obj);
   }
 }
@@ -226,6 +238,10 @@ export class AccountSettings {
   serverConfig?: ServerConfigData;
 
   static fromJSON(obj: Jsonify<AccountSettings>): AccountSettings {
+    if (obj == null) {
+      return null;
+    }
+
     return Object.assign(new AccountSettings(), obj, {
       environmentUrls: EnvironmentUrls.fromJSON(obj?.environmentUrls),
       pinProtected: EncryptionPair.fromJSON<string, EncString>(
@@ -247,6 +263,10 @@ export class AccountTokens {
   securityStamp?: string;
 
   static fromJSON(obj: Jsonify<AccountTokens>): AccountTokens {
+    if (obj == null) {
+      return null;
+    }
+
     return Object.assign(new AccountTokens(), obj);
   }
 }
@@ -284,6 +304,10 @@ export class Account {
   }
 
   static fromJSON(json: Jsonify<Account>): Account {
+    if (json == null) {
+      return null;
+    }
+
     return Object.assign(new Account({}), json, {
       keys: AccountKeys.fromJSON(json?.keys),
       profile: AccountProfile.fromJSON(json?.profile),

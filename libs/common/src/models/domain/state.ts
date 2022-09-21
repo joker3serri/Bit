@@ -21,6 +21,10 @@ export class State<
   static fromJSON<TGlobalState extends GlobalState, TAccount extends Account>(
     obj: any
   ): State<TGlobalState, TAccount> {
+    if (obj == null) {
+      return null;
+    }
+
     return Object.assign(new State(null), obj, {
       accounts: State.buildAccountMapFromJSON(obj?.accounts),
     });
