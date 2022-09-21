@@ -6,6 +6,7 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
 import { InputModule } from "../input/input.module";
+import { MultiSelectComponent } from "../multi-select/multi-select.component";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { BitFormFieldComponent } from "./form-field.component";
@@ -14,7 +15,7 @@ import { FormFieldModule } from "./form-field.module";
 export default {
   title: "Component Library/Form/Multi Select",
   excludeStories: /.*Data$/,
-  component: BitFormFieldComponent,
+  component: MultiSelectComponent,
   decorators: [
     moduleMetadata({
       imports: [FormsModule, NgSelectModule, FormFieldModule, InputModule, ReactiveFormsModule],
@@ -62,8 +63,8 @@ const MultiSelectTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldCom
     onItemsConfirmed: actionsData.onItemsConfirmed,
   },
   template: `
-    <form [formGroup]="formGroup" (ngSubmit)="submit()">
-      <bit-form-field>
+    <form [formGroup]="formObj" (ngSubmit)="submit()">
+      <!--<bit-form-field>-->
         <bit-label>Name</bit-label>
         <bit-multi-select
           formControlName="select"
@@ -73,7 +74,7 @@ const MultiSelectTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldCom
           [disabled]="disabled"
           (onItemsConfirmed)="onItemsConfirmed($event)">
         </bit-multi-select>
-      </bit-form-field>
+      <!--</bit-form-field>-->
       <button type="submit" bitButton buttonType="primary">Submit</button>
     </form>
   `,

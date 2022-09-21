@@ -6,6 +6,7 @@ import {
   QueryList,
   ViewChild,
 } from "@angular/core";
+import { BitInputDirective } from "../input/input.directive";
 
 import { BitErrorComponent } from "./error.component";
 import { BitFormFieldControl } from "./form-field-control";
@@ -21,7 +22,8 @@ import { BitSuffixDirective } from "./suffix.directive";
   },
 })
 export class BitFormFieldComponent implements AfterContentChecked {
-  @ContentChild(BitFormFieldControl) input: BitFormFieldControl<any>;
+  //TODO FIX: @ContentChild(BitFormFieldControl) input: BitFormFieldControl<any>;
+  @ContentChild(BitInputDirective) input: BitInputDirective;
   @ContentChild(BitHintComponent) hint: BitHintComponent;
 
   @ViewChild(BitErrorComponent) error: BitErrorComponent;
