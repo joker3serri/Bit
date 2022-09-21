@@ -196,6 +196,16 @@ jobs:
           checksum -f="./dist/bw-linux-${env:_PACKAGE_VERSION}.zip" `
             -t sha256 | Out-File -Encoding ASCII ./dist/bw-linux-sha256-${env:_PACKAGE_VERSION}.txt
 
+      - name: Create new asset
+        run: echo "test" >> asset.txt
+        
+      - name: Upload new asset
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
+        with:
+          name: asset.txt
+          path: apps/cli/asset.txt
+          if-no-files-found: error
+
       - name: Upload windows zip asset
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
