@@ -17,7 +17,6 @@ import { BitFormFieldControl } from "../form-field/form-field-control";
 
 import { SelectItemView } from "./models/select-item-view";
 
-
 // Increments for each instance of this component
 let nextId = 0;
 
@@ -53,7 +52,7 @@ export class MultiSelectComponent
   @Input() disabled = false;
 
   // Internal tracking of selected items
-  selectedItems: SelectItemView[];
+  @Input() selectedItems: SelectItemView[];
 
   // Default values for our implementation
   loadingText: string;
@@ -66,30 +65,27 @@ export class MultiSelectComponent
   closeOnSelect = false;
   clearSearchOnAdd = true;
 
-  onChange: (value: unknown) => void;
-
   @Output() onItemsConfirmed = new EventEmitter<any[]>();
+
+  protected notifyOnChange?: (value: SelectItemView[]) => void;
+  protected notifyOnTouched?: () => void;
 
   constructor(private i18nService: I18nService) {}
 
-  writeValue(obj: any): void {
-    /* Equivalent to:
-    @Input() set value(obj: any) {
-      this.selectedValues = obj.map(x => ...);
-    }
-    */
+  writeValue(obj: SelectItemView[]): void {
+    this.selectedItems = obj;
   }
 
-  registerOnChange(fn: (value: unknown) => void): void {
-    this.onChange = fn;
+  registerOnChange(fn: (value: SelectItemView[]) => void): void {
+    this.notifyOnChange = fn;
   }
 
   registerOnTouched(fn: any): void {
-    // throw new Error("Method not implemented.");
+    this.notifyOnTouched = fn;
   }
 
-  setDisabledState?(isDisabled: boolean): void {
-    // throw new Error("Method not implemented.");
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 
   ngOnInit(): void {
@@ -143,5 +139,21 @@ export class MultiSelectComponent
       this.selectedItems = null;
       this.baseItems = updatedBaseItems;
     }
+  }
+
+  protected onChange(items: SelectItemView[]) {
+    if (!this.notifyOnChange) {
+      return;
+    }
+
+    this.notifyOnChange(items);
+  }
+
+  protected onBlur() {
+    if (!this.notifyOnTouched) {
+      return;
+    }
+
+    this.notifyOnTouched();
   }
 }

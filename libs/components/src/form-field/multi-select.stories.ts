@@ -1,16 +1,18 @@
-import { FormsModule, UntypedFormBuilder, ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule, FormBuilder } from "@angular/forms";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { action } from "@storybook/addon-actions";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
+import { BadgeModule } from "../badge";
+import { ButtonModule } from "../button";
 import { InputModule } from "../input/input.module";
 import { MultiSelectComponent } from "../multi-select/multi-select.component";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
-import { BitFormFieldComponent } from "./form-field.component";
 import { FormFieldModule } from "./form-field.module";
+
 
 export default {
   title: "Component Library/Form/Multi Select",
@@ -18,7 +20,15 @@ export default {
   component: MultiSelectComponent,
   decorators: [
     moduleMetadata({
-      imports: [FormsModule, NgSelectModule, FormFieldModule, InputModule, ReactiveFormsModule],
+      imports: [
+        ButtonModule,
+        FormsModule,
+        NgSelectModule,
+        FormFieldModule,
+        InputModule,
+        ReactiveFormsModule,
+        BadgeModule,
+      ],
       providers: [
         {
           provide: I18nService,
@@ -46,16 +56,22 @@ export const actionsData = {
   onItemsConfirmed: action("onItemsConfirmed"),
 };
 
-const fb = new UntypedFormBuilder();
+const fb = new FormBuilder();
 const formObj = fb.group({
-  select: ["", ""],
+  select: [
+    [
+      { id: "1", listName: "Group 1", labelName: "Group 1", icon: "bwi-family" },
+      { id: "2", listName: "Group 2", labelName: "Group 2", icon: "bwi-family" },
+    ],
+    [],
+  ],
 });
 
 function submit() {
   formObj.markAllAsTouched();
 }
 
-const MultiSelectTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldComponent) => ({
+const MultiSelectTemplate: Story<MultiSelectComponent> = (args: MultiSelectComponent) => ({
   props: {
     formObj: formObj,
     submit: submit,

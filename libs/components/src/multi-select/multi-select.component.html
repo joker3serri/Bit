@@ -2,6 +2,7 @@
   [items]="baseItems"
   [(ngModel)]="selectedItems"
   (ngModelChange)="onChange($event)"
+  (blur)="onBlur()"
   [bindLabel]="bindLabel"
   [groupBy]="groupBy"
   name="Select Items"
@@ -21,7 +22,14 @@
     <i class="bwi bwi-spinner bwi-spin tw-mr-1" [title]="loadingText" aria-hidden="true"></i>
   </ng-template>
   <ng-template ng-label-tmp let-item="item" let-clear="clear">
-    <button type="button" bitBadge badgeType="primary" class="tw-mr-1" (click)="clear(item)">
+    <button
+      type="button"
+      bitBadge
+      badgeType="primary"
+      class="tw-mr-1"
+      [disabled]="disabled"
+      (click)="clear(item)"
+    >
       <i
         *ngIf="item.icon != null"
         class="tw-mr-1 bwi bwi-fw {{ item.icon }}"
