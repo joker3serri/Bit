@@ -35,19 +35,9 @@ export class SecretDeleteDialogComponent {
     try {
       await this.secretService.delete(this.data.secretIds);
       this.dialogRef.close();
-      if (this.data.secretIds.length === 1) {
-        this.platformUtilsService.showToast(
-          "success",
-          null,
-          this.i18nService.t("softDeleteSuccessToast")
-        );
-      } else {
-        this.platformUtilsService.showToast(
-          "success",
-          null,
-          this.i18nService.t("softDeletesSuccessToast")
-        );
-      }
+      const message =
+        this.data.secretIds.length === 1 ? "softDeleteSuccessToast" : "softDeletesSuccessToast";
+      this.platformUtilsService.showToast("success", null, this.i18nService.t(message));
     } catch (e) {
       this.logService.error(e);
       this.validationService.showError(e);
