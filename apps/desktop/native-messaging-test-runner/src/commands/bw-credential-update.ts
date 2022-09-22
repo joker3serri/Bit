@@ -34,9 +34,14 @@ const argv: any = yargs(hideBin(process.argv))
     demand: true,
     describe: "Uri that the login will be given",
     type: "string",
+  })
+  .option("credentialId", {
+    demand: true,
+    describe: "GUID of the credential to update",
+    type: "string",
   }).argv;
 
-const { name, username, password, uri } = argv;
+const { name, username, password, uri, credentialId } = argv;
 
 (async () => {
   const nativeMessageService = new NativeMessageService(NativeMessagingVersion.One);
@@ -66,8 +71,7 @@ const { name, username, password, uri } = argv;
     userName: username,
     uri: uri,
     userId: activeUser.id,
-    // Replace with credentialId you want to update
-    credentialId: "2a08b546-fa9d-48cc-ae8e-ae7601207da9",
+    credentialId: credentialId,
   } as CredentialUpdatePayload);
 
   if (response.payload.status === "failure") {
