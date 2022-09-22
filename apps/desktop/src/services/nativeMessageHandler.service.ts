@@ -90,12 +90,15 @@ export class NativeMessageHandlerService {
       const submitted = await Swal.fire({
         heightAuto: false,
         titleText: this.i18nService.t("verifyNativeMessagingConnectionTitle", applicationName),
-        html: this.i18nService.t("verifyNativeMessagingConnectionDesc"),
+        html: `${this.i18nService.t("verifyNativeMessagingConnectionDesc")}<br>${this.i18nService.t(
+          "verifyNativeMessagingConnectionWarning"
+        )}`,
         showCancelButton: true,
         cancelButtonText: this.i18nService.t("no"),
         showConfirmButton: true,
         confirmButtonText: this.i18nService.t("yes"),
         allowOutsideClick: false,
+        focusCancel: true,
       });
 
       if (submitted.value !== true) {
