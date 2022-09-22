@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
-import { Subject } from "rxjs";
 
 import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -30,7 +29,6 @@ export class PreferencesComponent implements OnInit {
 
   private startingLocale: string;
   private startingTheme: ThemeType;
-  private destroy$ = new Subject<void>();
 
   constructor(
     private stateService: StateService,
