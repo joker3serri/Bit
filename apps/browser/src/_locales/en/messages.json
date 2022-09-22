@@ -1430,7 +1430,7 @@
     "message": "Auto-fill and save"
   },
   "autoFillSuccessAndSavedUri": {
-    "message": "Auto-filled item and saved URI"
+    "message": "Item auto-filled and URI saved"
   },
   "autoFillSuccess": {
     "message": "Item auto-filled "
