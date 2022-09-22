@@ -37,8 +37,8 @@ export class VaultFilterService {
     return new Set(await this.stateService.getCollapsedGroupings());
   }
 
-  buildOrganizations(): Observable<Organization[]> {
-    return this.organizationService.organizations$;
+  buildOrganizations(): Promise<Organization[]> {
+    return this.organizationService.getAll();
   }
 
   buildNestedFolders(organizationId?: string): Observable<DynamicTreeNode<FolderView>> {
