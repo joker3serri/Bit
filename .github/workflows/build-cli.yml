@@ -195,13 +195,17 @@ jobs:
             -t sha256 | Out-File -Encoding ASCII ./dist/bw-macos-sha256-${env:_PACKAGE_VERSION}.txt
           checksum -f="./dist/bw-linux-${env:_PACKAGE_VERSION}.zip" `
             -t sha256 | Out-File -Encoding ASCII ./dist/bw-linux-sha256-${env:_PACKAGE_VERSION}.txt
+            
+      - name: Create test asset
+        run: echo "test" >> test.txt
 
       - name: Upload windows zip asset
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-windows-${{ env._PACKAGE_VERSION }}.zip
-          path: apps/cli/dist/bw-windows-${{ env._PACKAGE_VERSION }}.zip
+          path: apps/cli/test.txt
           if-no-files-found: error
+
 
       - name: Upload windows checksum asset
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
