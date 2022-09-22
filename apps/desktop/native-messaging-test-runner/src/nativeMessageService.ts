@@ -50,12 +50,13 @@ export default class NativeMessageService {
 
   // Commands
 
-  async sendHandshake(publicKey: string): Promise<HandshakeResponse> {
+  async sendHandshake(publicKey: string, applicationName: string): Promise<HandshakeResponse> {
     const rawResponse = await this.sendUnencryptedMessage(
       {
         command: "bw-handshake",
         payload: {
           publicKey,
+          applicationName: applicationName,
         },
       },
       {

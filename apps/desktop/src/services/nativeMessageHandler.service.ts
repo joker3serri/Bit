@@ -57,7 +57,7 @@ export class NativeMessageHandlerService {
 
   private async handleDecryptedMessage(message: UnencryptedMessage) {
     const { messageId, payload } = message;
-    const { publicKey } = payload;
+    const { publicKey, applicationName } = payload;
     if (!publicKey) {
       this.sendResponse({
         messageId: messageId,
@@ -89,8 +89,8 @@ export class NativeMessageHandlerService {
       this.messagingService.send("setFocus");
       const submitted = await Swal.fire({
         heightAuto: false,
-        titleText: this.i18nService.t("verifyDDGBrowserTitle"),
-        html: this.i18nService.t("verifyDDGBrowserDesc"),
+        titleText: this.i18nService.t("verifyNativeMessagingConnectionTitle", applicationName),
+        html: this.i18nService.t("verifyNativeMessagingConnectionDesc"),
         showCancelButton: true,
         cancelButtonText: this.i18nService.t("no"),
         showConfirmButton: true,

@@ -22,7 +22,10 @@ const { userId } = argv;
   const nativeMessageService = new NativeMessageService(NativeMessagingVersion.One);
   // Handshake
   LogUtils.logInfo("Sending Handshake");
-  const handshakeResponse = await nativeMessageService.sendHandshake(config.testRsaPublicKey);
+  const handshakeResponse = await nativeMessageService.sendHandshake(
+    config.testRsaPublicKey,
+    config.applicationName
+  );
 
   if (!handshakeResponse.status) {
     LogUtils.logError(" Handshake failed. Error was: " + handshakeResponse.error);

@@ -1,4 +1,4 @@
-export const userId = ""; // Replace with userId from {homeDirectory}/Library/Application Support/Bitwarden/data.json
+export const applicationName = "Native Messaging Test Runner";
 export const encryptionAlogrithm = "sha1";
 export const testRsaPublicKey =
   "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl0Vawl/toXzkEvB82FEtqHP" +

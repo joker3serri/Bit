@@ -10,7 +10,10 @@ import * as config from "../variables";
   const nativeMessageService = new NativeMessageService(NativeMessagingVersion.One);
 
   LogUtils.logInfo("Sending Handshake");
-  const handshakeResponse = await nativeMessageService.sendHandshake(config.testRsaPublicKey);
+  const handshakeResponse = await nativeMessageService.sendHandshake(
+    config.testRsaPublicKey,
+    config.applicationName
+  );
   LogUtils.logSuccess("Received response to handshake request");
 
   if (!handshakeResponse.status) {

@@ -1603,10 +1603,16 @@
   "verifyBrowserDesc": {
     "message": "Please ensure the shown fingerprint is identical to the fingerprint showed in the browser extension."
   },
-  "verifyDDGBrowserTitle": {
-    "message": "DuckDuckGo browser wants to connect to Bitwarden"
+  "verifyNativeMessagingConnectionTitle": {
+    "message": "$APPID$ wants to connect to Bitwarden",
+    "placeholders": {
+      "appid": {
+        "content": "$1",
+        "example": "My App"
+      }
+    }
   },
-  "verifyDDGBrowserDesc": {
+  "verifyNativeMessagingConnectionDesc": {
     "message": "Would you like to approve this request?"
   },
   "biometricsNotEnabledTitle": {
@@ -2005,7 +2011,7 @@
   },
   "cardBrandMir": {
     "message": "Mir"
-  }, 
+  },
   "vault": {
     "message": "Vault"
   }
