@@ -45,8 +45,7 @@ jobs:
         id: retrieve-secrets
         env:
           KEYVAULT: bitwarden-qa-kv
-          SECRETS: |
-            qa-aks-kubectl-credentials
+          SECRETS: "qa-aks-kubectl-credentials"
         run: |
           for i in ${SECRETS//,/ }
           do
