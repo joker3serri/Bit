@@ -70,6 +70,8 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
 
       return timeout;
     }
+
+    return vaultTimeout;
   }
 
   async clear(userId?: string): Promise<void> {
