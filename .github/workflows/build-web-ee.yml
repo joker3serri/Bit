@@ -1,0 +1,226 @@
+---
+name: Build Web for EE
+
+on:
+  pull_request:
+    branches-ignore:
+      - 'l10n_master'
+      - 'cf-pages'
+    paths:
+      - 'apps/web/**'
+      - 'libs/**'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
+      - '.github/workflows/build-web.yml'
+  push:
+    branches:
+      - 'master'
+      - 'rc'
+      - 'hotfix-rc-web'
+    paths:
+      - 'apps/web/**'
+      - 'libs/**'
+      - '*'
+      - '!*.md'
+      - '!*.txt'
+      - '.github/workflows/build-web.yml'
+  workflow_dispatch:
+    inputs:
+      custom_tag_extension:
+        description: "Custom image tag extension"
+        required: false
+
+jobs:
+  cloc:
+    name: CLOC
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+
+      - name: Set up cloc
+        run: |
+          sudo apt update
+          sudo apt -y install cloc
+
+      - name: Print lines of code
+        working-directory: apps/web
+        run: cloc --include-lang TypeScript,JavaScript,HTML,Sass,CSS --vcs git
+
+
+  setup:
+    name: Setup
+    runs-on: ubuntu-20.04
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+
+      - name: Get GitHub sha as version
+        id: version
+        run: echo "::set-output name=value::${GITHUB_SHA:0:7}"
+
+
+  build-ee:
+    name: Build Docker images for EE environment
+    runs-on: ubuntu-20.04
+    needs:
+      - setup
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+
+      - name: Set up Node
+        uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854  # v3.1.1
+        with:
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+          node-version: "16"
+
+      - name: Print environment
+        run: |
+          whoami
+          node --version
+          npm --version
+          gulp --version
+          docker --version
+          echo "GitHub ref: $GITHUB_REF"
+          echo "GitHub event: $GITHUB_EVENT"
+
+      - name: Login to Azure
+        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
+        with:
+          creds: ${{ secrets.AZURE_QA_KV_CREDENTIALS }}
+
+      - name: Log into container registry
+        run: az acr login -n bitwardenee
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        working-directory: apps/web
+        run: |
+          echo -e "# Building Web\n"
+          echo "Building app"
+          echo "npm version $(npm --version)"
+          VERSION=$( jq -r ".version" package.json)
+          jq --arg version "$VERSION - ${GITHUB_SHA:0:7}" '.version = $version' package.json > package.json.tmp
+          mv package.json.tmp package.json
+
+          npm run build:bit:ee
+
+          echo "{\"commit_hash\": \"$GITHUB_SHA\", \"ref\": \"$GITHUB_REF\"}" | jq . > build/info.json
+
+          echo -e "\nBuilding Docker image"
+          docker --version
+          docker build -t bitwardenee.azurecr.io/web .
+
+      - name: Get image tag
+        id: image-tag
+        run: |
+          if [[ $(grep "pull" <<< "${GITHUB_REF}") ]]; then
+            IMAGE_TAG=$(echo "${GITHUB_HEAD_REF}" | sed "s#/#-#g")
+          else
+            IMAGE_TAG=$(echo "${GITHUB_REF:11}" | sed "s#/#-#g")
+          fi
+
+          TAG_EXTENSION=${{ github.event.inputs.custom_tag_extension }}
+
+          if [[ $TAG_EXTENSION ]]; then
+            IMAGE_TAG=$IMAGE_TAG-$TAG_EXTENSION
+          fi
+
+          echo "::set-output name=value::$IMAGE_TAG"
+
+      - name: Tag image
+        env:
+          IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
+        run: docker tag bitwardenee.azurecr.io/web "bitwardenee.azurecr.io/web:$IMAGE_TAG"
+
+      - name: Tag dev
+        if: github.ref == 'refs/heads/master'
+        run: docker tag bitwardenee.azurecr.io/web bitwardenee.azurecr.io/web:dev
+
+      - name: List Docker images
+        run: docker images
+
+      - name: Push image
+        env:
+          IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
+        run: docker push "bitwardenee.azurecr.io/web:$IMAGE_TAG"
+
+      - name: Push dev images
+        if: github.ref == 'refs/heads/master'
+        run: docker push bitwardenee.azurecr.io/web:dev
+
+      - name: Log out of Docker
+        run: docker logout
+
+
+  check-failures:
+    name: Check for failures
+    if: always()
+    runs-on: ubuntu-20.04
+    needs:
+      - cloc
+      - setup
+      - build-ee
+    steps:
+      - name: Check if any job failed
+        if: ${{ (github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') }}
+        env:
+          CLOC_STATUS: ${{ needs.cloc.result }}
+          SETUP_STATUS: ${{ needs.setup.result }}
+          BUILD_OSS_SELFHOST_STATUS: ${{ needs.build-oss-selfhost.result }}
+          BUILD_CLOUD_STATUS: ${{ needs.build-cloud.result }}
+          BUILD_COMMERCIAL_SELFHOST_STATUS: ${{ needs.build-commercial-selfhost.result }}
+          BUILD_QA_STATUS: ${{ needs.build-qa.result }}
+          CROWDIN_PUSH_STATUS: ${{ needs.crowdin-push.result }}
+        run: |
+          if [ "$CLOC_STATUS" = "failure" ]; then
+              exit 1
+          elif [ "$SETUP_STATUS" = "failure" ]; then
+              exit 1
+          elif [ "$BUILD_OSS_SELFHOST_STATUS" = "failure" ]; then
+              exit 1
+          elif [ "$BUILD_CLOUD_STATUS" = "failure" ]; then
+              exit 1
+          elif [ "$BUILD_COMMERCIAL_SELFHOST_STATUS" = "failure" ]; then
+              exit 1
+          elif [ "$BUILD_QA_STATUS" = "failure" ]; then
+              exit 1
+          elif [ "$CROWDIN_PUSH_STATUS" = "failure" ]; then
+              exit 1
+          fi
+
+      - name: Login to Azure - Prod Subscription
+        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
+        if: failure()
+        with:
+          creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
+
+      - name: Retrieve secrets
+        id: retrieve-secrets
+        if: failure()
+        env:
+          KEYVAULT: bitwarden-prod-kv
+          SECRETS: |
+            devops-alerts-slack-webhook-url
+        run: |
+          for i in ${SECRETS//,/ }
+          do
+            VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
+            echo "::add-mask::$VALUE"
+            echo "::set-output name=$i::$VALUE"
+          done
+
+      - name: Notify Slack on failure
+        uses: act10ns/slack@da3191ebe2e67f49b46880b4633f5591a96d1d33  # v1.5.1
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ steps.retrieve-secrets.outputs.devops-alerts-slack-webhook-url }}
+        with:
+          status: ${{ job.status }}
