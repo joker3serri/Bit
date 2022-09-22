@@ -491,7 +491,7 @@
     "message": "You can change your master password on the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "twoStepLoginConfirmation": {
-    "message": "Two-step login makes your account more secure by requiring you to verify your login with another device such as a security key, authenticator app, SMS, phone call, or email. Two-step login can be enabled on the bitwarden.com web vault. Do you want to visit the website now?"
+    "message": "Two-step login makes your account more secure by requiring you to verify your login with another device such as a security key, authenticator app, SMS, phone call, or email. Two-step login can be set up on the bitwarden.com web vault. Do you want to visit the website now?"
   },
   "editedFolder": {
     "message": "Folder saved"
@@ -873,7 +873,7 @@
     "message": "Login unavailable"
   },
   "noTwoStepProviders": {
-    "message": "This account has two-step login enabled, however, none of the configured two-step providers are supported by this web browser."
+    "message": "This account has two-step login set up, however, none of the configured two-step providers are supported by this web browser."
   },
   "noTwoStepProviders2": {
     "message": "Please use a supported web browser (such as Chrome) and/or add additional providers that are better supported across web browsers (such as an authenticator app)."
@@ -882,7 +882,7 @@
     "message": "Two-step login options"
   },
   "recoveryCodeDesc": {
-    "message": "Lost access to all of your two-factor providers? Use your recovery code to disable all two-factor providers from your account."
+    "message": "Lost access to all of your two-factor providers? Use your recovery code to turn off all two-factor providers from your account."
   },
   "recoveryCodeTitle": {
     "message": "Recovery code"
@@ -912,7 +912,7 @@
     "message": "FIDO2 WebAuthn"
   },
   "webAuthnDesc": {
-    "message": "Use any WebAuthn enabled security key to access your account."
+    "message": "Use any WebAuthn compatible security key to access your account."
   },
   "emailTitle": {
     "message": "Email"
@@ -1371,7 +1371,7 @@
     "message": "Awaiting confirmation from desktop"
   },
   "awaitDesktopDesc": {
-    "message": "Please confirm using biometrics in the Bitwarden desktop application to enable biometrics for browser."
+    "message": "Please confirm using biometrics in the Bitwarden desktop application to set up biometrics for browser."
   },
   "lockWithMasterPassOnRestart": {
     "message": "Lock with master password on browser restart"
@@ -1505,10 +1505,10 @@
     "message": "Please verify that the desktop application shows this fingerprint: "
   },
   "desktopIntegrationDisabledTitle": {
-    "message": "Browser integration is not enabled"
+    "message": "Browser integration is not set up"
   },
   "desktopIntegrationDisabledDesc": {
-    "message": "Browser integration is not enabled in the Bitwarden desktop application. Please enable it in the settings within the desktop application."
+    "message": "Browser integration is not set up in the Bitwarden desktop application. Please set it up in the settings within the desktop application."
   },
   "startDesktopTitle": {
     "message": "Start the Bitwarden desktop application"
@@ -1517,7 +1517,7 @@
     "message": "The Bitwarden desktop application needs to be started before unlock with biometrics can be used."
   },
   "errorEnableBiometricTitle": {
-    "message": "Unable to enable biometrics"
+    "message": "Unable to set up biometrics"
   },
   "errorEnableBiometricDesc": {
     "message": "Action was canceled by the desktop application"
@@ -1535,10 +1535,10 @@
     "message": "Account missmatch"
   },
   "biometricsNotEnabledTitle": {
-    "message": "Biometrics not enabled"
+    "message": "Biometrics not set up"
   },
   "biometricsNotEnabledDesc": {
-    "message": "Browser biometrics requires desktop biometric to be enabled in the settings first."
+    "message": "Browser biometrics requires desktop biometric to be set up in the settings first."
   },
   "biometricsNotSupportedTitle": {
     "message": "Biometrics not supported"
@@ -1709,7 +1709,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendDisableDesc": {
-    "message": "Disable this Send so that no one can access it.",
+    "message": "Deactivate this Send so that no one can access it.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendShareDesc": {
@@ -1734,7 +1734,7 @@
     "message": "New password"
   },
   "sendDisabled": {
-    "message": "Send disabled",
+    "message": "Send removed",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendDisabledWarning": {
@@ -1972,10 +1972,10 @@
     "message": "Premium subscription required"
   },
   "organizationIsDisabled": {
-    "message": "Organization is disabled."
+    "message": "Organization suspended."
   },
   "disabledOrganizationFilterError": {
-    "message" : "Items in disabled Organizations cannot be accessed. Contact your Organization owner for assistance."
+    "message" : "Items in suspended Organizations cannot be accessed. Contact your Organization owner for assistance."
   },
   "cardBrandMir": {
     "message": "Mir"
