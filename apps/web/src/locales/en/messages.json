@@ -5415,10 +5415,10 @@
   "importSecrets":{
     "message":"Import Secrets"
   },
-  "emptyListTitle":{
+  "secretsEmptyListTitle":{
     "message":"Nothing to show yet"
   },
-  "emptyListMessage":{
+  "secretsEmptyListMessage":{
     "message": "Add a new secret or import secrets to get started"
   },
   "searchSecrets":{
