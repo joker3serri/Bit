@@ -52,4 +52,10 @@ export class SecretsListComponent implements OnDestroy {
       ? this.selection.clear()
       : this.selection.select(...this.secrets.map((s) => s.id));
   }
+
+  bulkDeleteSecrets() {
+    if (this.selection.selected.length >= 1) {
+      this.deleteSecretsEvent.emit(this.selection.selected);
+    }
+  }
 }
