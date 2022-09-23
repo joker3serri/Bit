@@ -26,10 +26,6 @@ on:
       - '!*.txt'
       - '.github/workflows/build-web.yml'
   workflow_dispatch:
-    inputs:
-      custom_tag_extension:
-        description: "Custom image tag extension"
-        required: false
 
 jobs:
   cloc:
@@ -95,7 +91,7 @@ jobs:
           creds: ${{ secrets.AZURE_QA_KV_CREDENTIALS }}
 
       - name: Log into container registry
-        run: az acr login -n bitwardenee
+        run: az acr login -n bitwardenqa
 
       - name: Install dependencies
         run: npm ci
@@ -116,7 +112,7 @@ jobs:
 
           echo -e "\nBuilding Docker image"
           docker --version
-          docker build -t bitwardenee.azurecr.io/web .
+          docker build -t bitwardenqa.azurecr.io/web-ee .
 
       - name: Get image tag
         id: image-tag
@@ -138,11 +134,11 @@ jobs:
       - name: Tag image
         env:
           IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
-        run: docker tag bitwardenee.azurecr.io/web "bitwardenee.azurecr.io/web:$IMAGE_TAG"
+        run: docker tag bitwardenqa.azurecr.io/web-ee "bitwardenqa.azurecr.io/web-ee:$IMAGE_TAG"
 
       - name: Tag dev
         if: github.ref == 'refs/heads/master'
-        run: docker tag bitwardenee.azurecr.io/web bitwardenee.azurecr.io/web:dev
+        run: docker tag bitwardenqa.azurecr.io/web-ee bitwardenqa.azurecr.io/web-ee:dev
 
       - name: List Docker images
         run: docker images
@@ -150,11 +146,11 @@ jobs:
       - name: Push image
         env:
           IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
-        run: docker push "bitwardenee.azurecr.io/web:$IMAGE_TAG"
+        run: docker push "bitwardenqa.azurecr.io/web-ee:$IMAGE_TAG"
 
       - name: Push dev images
         if: github.ref == 'refs/heads/master'
-        run: docker push bitwardenee.azurecr.io/web:dev
+        run: docker push bitwardenqa.azurecr.io/web-ee:dev
 
       - name: Log out of Docker
         run: docker logout
