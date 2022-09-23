@@ -23,7 +23,6 @@ import { DeleteOrganizationComponent } from "../settings/delete-organization.com
   selector: "families-for-enterprise-setup",
   templateUrl: "families-for-enterprise-setup.component.html",
 })
-// eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class FamiliesForEnterpriseSetupComponent implements OnInit, OnDestroy {
   @ViewChild(OrganizationPlansComponent, { static: false })
   set organizationPlansComponent(value: OrganizationPlansComponent) {

@@ -47,7 +47,6 @@ import { VaultFilterService } from "../../services/vaultFilter.service";
     ]),
   ],
 })
-// eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class VaultSelectComponent implements OnInit, OnDestroy {
   @Output() onVaultSelectionChanged = new EventEmitter();
 
@@ -106,7 +105,6 @@ export class VaultSelectComponent implements OnInit, OnDestroy {
       .pipe(map((orgs) => orgs.sort((a, b) => a.name.localeCompare(b.name))));
 
     this.organizations$
-      .pipe(takeUntil(this._destroy))
       .pipe(
         concatMap(async (organizations) => {
           this.enforcePersonalOwnership =
@@ -131,8 +129,7 @@ export class VaultSelectComponent implements OnInit, OnDestroy {
           }
         })
       )
-      // I am???
-      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      .pipe(takeUntil(this._destroy))
       .subscribe();
 
     this.loaded = true;
