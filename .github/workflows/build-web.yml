@@ -117,15 +117,11 @@ jobs:
         working-directory: apps/web
         run: npm run ${{ matrix.npm_command }}
 
-      - name: Package ${{ matrix.name }} artifact
-        working-directory: apps/web
-        run: zip -r web-$_VERSION-${{ matrix.name }}.zip build
-
       - name: Upload ${{ matrix.name }} artifact
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535  # v3.0.0
         with:
           name: web-${{ env._VERSION }}-${{ matrix.name }}.zip
-          path: apps/web/web-${{ env._VERSION }}-${{ matrix.name }}.zip
+          path: apps/web/build
           if-no-files-found: error
 
   build-commercial-selfhost-image:
