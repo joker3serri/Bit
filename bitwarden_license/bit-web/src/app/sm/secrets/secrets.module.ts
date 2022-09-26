@@ -5,6 +5,7 @@ import { SharedModule } from "src/app/shared";
 import { FilterComponent } from "../layout/filter.component";
 import { HeaderComponent } from "../layout/header.component";
 import { NewMenuComponent } from "../layout/new-menu.component";
+import { ProjectDialogComponent } from "../projects/dialog/project-dialog.component";
 
 import { SecretDialogComponent } from "./dialog/secret-dialog.component";
 import { SecretsListComponent } from "./secrets-list.component";
@@ -20,6 +21,7 @@ import { SecretsComponent } from "./secrets.component";
     HeaderComponent,
     FilterComponent,
     NewMenuComponent,
+    ProjectDialogComponent, // todo: switch to new loc
   ],
   providers: [],
 })

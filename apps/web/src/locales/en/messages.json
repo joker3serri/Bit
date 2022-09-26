@@ -5411,5 +5411,20 @@
   },
   "searchSecrets":{
     "message":"Search Secrets"
+  },
+  "editProject":{
+    "message": "Edit Project"
+  },
+  "addProject":{
+    "message": "Add Project"
+  },
+  "projectEdited":{
+    "message":"Project edited"
+  },
+  "projectCreated":{
+    "message":"Project created"
+  },
+  "projectName":{
+    "message":"Project Name"
   }
 }
