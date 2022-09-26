@@ -4057,6 +4057,12 @@
   "permissions": {
     "message": "Permissions"
   },
+  "managerPermissions": {
+    "message": "Manager Permissions"
+  },
+  "adminPermissions": {
+    "message": "Admin Permissions"
+  },
   "accessEventLogs": {
     "message": "Access Event Logs"
   },
@@ -5409,6 +5415,18 @@
   "secretCreated":{
     "message":"Secret created"
   },
+  "newSecret":{
+    "message":"New Secret"
+  },
+  "importSecrets":{
+    "message":"Import Secrets"
+  },
+  "secretsEmptyListTitle":{
+    "message":"Nothing to show yet"
+  },
+  "secretsEmptyListMessage":{
+    "message": "Add a new secret or import secrets to get started"
+  },
   "searchSecrets":{
     "message":"Search Secrets"
   },
@@ -5426,5 +5444,14 @@
   },
   "projectName":{
     "message":"Project Name"
+  },
+  "softDeleteSecretWarning":{
+    "message":"Deleting secrets can affect existing integrations."
+  },
+  "softDeletesSuccessToast":{
+    "message":"Secrets sent to trash"
+  },
+  "softDeleteSuccessToast":{
+    "message":"Secret sent to trash"
   }
 }
