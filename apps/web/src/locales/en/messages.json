@@ -4027,7 +4027,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "disableSendExemption": {
-    "message": "Organization users that can manage the organization's policies are exempt from this policy's enforcement."
+    "message": "Organization members that can manage the organization's policies are exempt from this policy's enforcement."
   },
   "sendDisabled": {
     "message": "Send disabled",
@@ -4046,7 +4046,7 @@
     "description": "'Sends' is a plural noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendOptionsExemption": {
-    "message": "Organization users that can manage the organization's policies are exempt from this policy's enforcement."
+    "message": "Organization members that can manage the organization's policies are exempt from this policy's enforcement."
   },
   "disableHideEmail": {
     "message": "Always show member’s email address with recipients when creating or editing a send.",
@@ -4351,19 +4351,19 @@
     "message": "Allow admins to reset master passwords for members."
   },
   "resetPasswordPolicyWarning": {
-    "message": "Users in the organization will need to self-enroll or be auto-enrolled before administrators can reset their master password."
+    "message": "Members in the organization will need to self-enroll or be auto-enrolled before administrators can reset their master password."
   },
   "resetPasswordPolicyAutoEnroll": {
     "message": "Automatic Enrollment"
   },
   "resetPasswordPolicyAutoEnrollDescription": {
-    "message": "All users will be automatically enrolled in password reset once their invite is accepted and will not be allowed to withdraw."
+    "message": "All members will be automatically enrolled in password reset once their invite is accepted and will not be allowed to withdraw."
   },
   "resetPasswordPolicyAutoEnrollWarning": {
-    "message": "Users already in the organization will not be retroactively enrolled in password reset. They will need to self-enroll before administrators can reset their master password."
+    "message": "Members already in the organization will not be retroactively enrolled in password reset. They will need to self-enroll before administrators can reset their master password."
   },
   "resetPasswordPolicyAutoEnrollCheckbox": {
-    "message": "Require new users to be enrolled automatically"
+    "message": "Require new members to be enrolled automatically"
   },
   "resetPasswordAutoEnrollInviteWarning": {
     "message": "This organization has an enterprise policy that will automatically enroll you in password reset. Enrollment will allow organization administrators to change your master password."
