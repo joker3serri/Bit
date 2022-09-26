@@ -21,7 +21,7 @@ import { SecretsComponent } from "./secrets.component";
     HeaderComponent,
     FilterComponent,
     NewMenuComponent,
-    ProjectDialogComponent, // todo: switch to new loc
+    ProjectDialogComponent, // TODO: move to Project module upon merge with https://github.com/bitwarden/clients/pull/3508
   ],
   providers: [],
 })
