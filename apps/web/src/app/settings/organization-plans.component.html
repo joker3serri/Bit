@@ -318,7 +318,13 @@
     <app-callout [type]="'error'">{{ "singleOrgBlockCreateMessage" | i18n }}</app-callout>
   </div>
   <div class="mt-4">
-    <button type="submit" bitButton [loading]="form.loading" [disabled]="!formGroup.valid">
+    <button
+      type="submit"
+      buttonType="primary"
+      bitButton
+      [loading]="form.loading"
+      [disabled]="!formGroup.valid"
+    >
       {{ "submit" | i18n }}
     </button>
     <button type="button" class="btn btn-outline-secondary" (click)="cancel()" *ngIf="showCancel">
