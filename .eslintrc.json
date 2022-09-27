@@ -97,5 +97,31 @@
         ]
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["libs/common/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", { "patterns": ["@bitwarden/common/*"] }]
+      }
+    },
+    {
+      "files": ["libs/angular/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", { "patterns": ["@bitwarden/angular/*"] }]
+      }
+    },
+    {
+      "files": ["libs/node/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", { "patterns": ["@bitwarden/node/*"] }]
+      }
+    },
+    {
+      "files": ["libs/electron/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", { "patterns": ["@bitwarden/electron/*"] }]
+      }
+    }
+  ]
 }
