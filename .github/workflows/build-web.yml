@@ -347,6 +347,7 @@ jobs:
       - name: Extract web-ee artifact
         working-directory: apps/web
         run: |
+          pwd
           ls -la
           unzip web-${{ env._VERSION }}-ee.zip
 
