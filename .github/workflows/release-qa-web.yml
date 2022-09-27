@@ -42,7 +42,7 @@ jobs:
       - name: Look into apps web dir
         run: |
           pwd
-          ls ../apps/web -la
+          ls ./apps/web -la
 
       # This should result in a build directory in the current working directory
       - name: Unzip build asset
