@@ -33,8 +33,8 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
     ) {
       this.deviceCache = DeviceType.FirefoxExtension;
     } else if (
-      (!!(window as any).opr && !!opr.addons) ||
-      !!(window as any).opera ||
+      (typeof opr !== "undefined" && typeof opr.addons !== "undefined") ||
+      typeof opera !== "undefined" ||
       navigator.userAgent.indexOf(" OPR/") >= 0
     ) {
       this.deviceCache = DeviceType.OperaExtension;
@@ -335,7 +335,7 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
   }
 
   sidebarViewName(): string {
-    if ((window as any).chrome.sidebarAction && this.isFirefox()) {
+    if (window.chrome.sidebarAction && this.isFirefox()) {
       return "sidebar";
     } else if (this.isOpera() && typeof opr !== "undefined" && opr.sidebarAction) {
       return "sidebar_panel";
