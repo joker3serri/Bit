@@ -3,14 +3,16 @@ import { BehaviorSubject, concatMap } from "rxjs";
 import { LogService } from "../abstractions/log.service";
 import { StateService as StateServiceAbstraction } from "../abstractions/state.service";
 import { StateMigrationService } from "../abstractions/stateMigration.service";
-import { AbstractStorageService } from "../abstractions/storage.service";
+import {
+  MemoryStorageServiceInterface,
+  AbstractStorageService,
+} from "../abstractions/storage.service";
 import { HtmlStorageLocation } from "../enums/htmlStorageLocation";
 import { KdfType } from "../enums/kdfType";
 import { StorageLocation } from "../enums/storageLocation";
 import { ThemeType } from "../enums/themeType";
 import { UriMatchType } from "../enums/uriMatchType";
 import { StateFactory } from "../factories/stateFactory";
-import { Utils } from "../misc/utils";
 import { CipherData } from "../models/data/cipherData";
 import { CollectionData } from "../models/data/collectionData";
 import { EncryptedOrganizationKeyData } from "../models/data/encryptedOrganizationKeyData";
@@ -21,6 +23,7 @@ import { OrganizationData } from "../models/data/organizationData";
 import { PolicyData } from "../models/data/policyData";
 import { ProviderData } from "../models/data/providerData";
 import { SendData } from "../models/data/sendData";
+import { ServerConfigData } from "../models/data/server-config.data";
 import {
   Account,
   AccountData,
@@ -55,6 +58,8 @@ const partialKeys = {
   masterKey: "_masterkey",
 };
 
+const DDG_SHARED_KEY = "DuckDuckGoSharedKey";
+
 export class StateService<
   TGlobalState extends GlobalState = GlobalState,
   TAccount extends Account = Account
@@ -75,7 +80,7 @@ export class StateService<
   constructor(
     protected storageService: AbstractStorageService,
     protected secureStorageService: AbstractStorageService,
-    protected memoryStorageService: AbstractStorageService,
+    protected memoryStorageService: AbstractStorageService & MemoryStorageServiceInterface,
     protected logService: LogService,
     protected stateMigrationService: StateMigrationService,
     protected stateFactory: StateFactory<TGlobalState, TAccount>,
@@ -149,6 +154,9 @@ export class StateService<
       return;
     }
     await this.updateState(async (state) => {
+      if (state.accounts == null) {
+        state.accounts = {};
+      }
       state.accounts[userId] = this.createAccount();
       const diskAccount = await this.getAccountFromDisk({ userId: userId });
       state.accounts[userId].profile = diskAccount.profile;
@@ -493,11 +501,11 @@ export class StateService<
     );
   }
 
-  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getCryptoMasterKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.keys?.cryptoMasterKey;
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+    );
+    return account?.keys?.cryptoMasterKey;
   }
 
   async setCryptoMasterKey(value: SymmetricCryptoKey, options?: StorageOptions): Promise<void> {
@@ -603,23 +611,6 @@ export class StateService<
     await this.saveSecureStorageKey(partialKeys.biometricKey, value, options);
   }
 
-  async getDecodedToken(options?: StorageOptions): Promise<any> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.tokens?.decodedToken;
-  }
-
-  async setDecodedToken(value: any, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
-    );
-    account.tokens.decodedToken = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultInMemoryOptions())
-    );
-  }
-
   @withPrototypeForArrayMembers(CipherView, CipherView.fromJSON)
   async getDecryptedCiphers(options?: StorageOptions): Promise<CipherView[]> {
     return (
@@ -656,11 +647,11 @@ export class StateService<
     );
   }
 
-  @withPrototype(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedCryptoSymmetricKey(options?: StorageOptions): Promise<SymmetricCryptoKey> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.keys?.cryptoSymmetricKey?.decrypted;
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+    );
+    return account?.keys?.cryptoSymmetricKey?.decrypted;
   }
 
   async setDecryptedCryptoSymmetricKey(
@@ -677,14 +668,13 @@ export class StateService<
     );
   }
 
-  @withPrototypeForMap(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedOrganizationKeys(
     options?: StorageOptions
   ): Promise<Map<string, SymmetricCryptoKey>> {
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    return account?.keys?.organizationKeys?.decrypted;
+    return this.recordToMap(account?.keys?.organizationKeys?.decrypted);
   }
 
   async setDecryptedOrganizationKeys(
@@ -694,7 +684,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    account.keys.organizationKeys.decrypted = value;
+    account.keys.organizationKeys.decrypted = this.mapToRecord(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -724,7 +714,6 @@ export class StateService<
     );
   }
 
-  @withPrototype(EncString)
   async getDecryptedPinProtected(options?: StorageOptions): Promise<EncString> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
@@ -761,14 +750,9 @@ export class StateService<
   }
 
   async getDecryptedPrivateKey(options?: StorageOptions): Promise<ArrayBuffer> {
-    const privateKey = (
+    return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.keys?.privateKey;
-    let result = privateKey?.decrypted;
-    if (result == null && privateKey?.decryptedSerialized != null) {
-      result = Utils.fromByteStringToArray(privateKey.decryptedSerialized);
-    }
-    return result;
+    )?.keys?.privateKey.decrypted;
   }
 
   async setDecryptedPrivateKey(value: ArrayBuffer, options?: StorageOptions): Promise<void> {
@@ -776,21 +760,19 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
     account.keys.privateKey.decrypted = value;
-    account.keys.privateKey.decryptedSerialized =
-      value == null ? null : Utils.fromBufferToByteString(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
   }
 
-  @withPrototypeForMap(SymmetricCryptoKey, SymmetricCryptoKey.fromJSON)
   async getDecryptedProviderKeys(
     options?: StorageOptions
   ): Promise<Map<string, SymmetricCryptoKey>> {
-    return (
-      await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
-    )?.keys?.providerKeys?.decrypted;
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultInMemoryOptions())
+    );
+    return this.recordToMap(account?.keys?.providerKeys?.decrypted);
   }
 
   async setDecryptedProviderKeys(
@@ -800,7 +782,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    account.keys.providerKeys.decrypted = value;
+    account.keys.providerKeys.decrypted = this.mapToRecord(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -1028,6 +1010,24 @@ export class StateService<
     );
   }
 
+  async getDuckDuckGoSharedKey(options?: StorageOptions): Promise<string> {
+    options = this.reconcileOptions(options, await this.defaultSecureStorageOptions());
+    if (options?.userId == null) {
+      return null;
+    }
+    return await this.secureStorageService.get<string>(DDG_SHARED_KEY, options);
+  }
+
+  async setDuckDuckGoSharedKey(value: string, options?: StorageOptions): Promise<void> {
+    options = this.reconcileOptions(options, await this.defaultSecureStorageOptions());
+    if (options?.userId == null) {
+      return;
+    }
+    value == null
+      ? await this.secureStorageService.remove(DDG_SHARED_KEY, options)
+      : await this.secureStorageService.save(DDG_SHARED_KEY, value, options);
+  }
+
   async getEmail(options?: StorageOptions): Promise<string> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
@@ -1180,6 +1180,27 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
     globals.enableCloseToTray = value;
+    await this.saveGlobals(
+      globals,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+  }
+
+  async getEnableDuckDuckGoBrowserIntegration(options?: StorageOptions): Promise<boolean> {
+    return (
+      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.enableDuckDuckGoBrowserIntegration ?? false
+    );
+  }
+
+  async setEnableDuckDuckGoBrowserIntegration(
+    value: boolean,
+    options?: StorageOptions
+  ): Promise<void> {
+    const globals = await this.getGlobals(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+    globals.enableDuckDuckGoBrowserIntegration = value;
     await this.saveGlobals(
       globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
@@ -1537,7 +1558,6 @@ export class StateService<
     );
   }
 
-  @withPrototype(EnvironmentUrls)
   async getEnvironmentUrls(options?: StorageOptions): Promise<EnvironmentUrls> {
     if ((await this.state())?.activeUserId == null) {
       return await this.getGlobalEnvironmentUrls(options);
@@ -2020,11 +2040,7 @@ export class StateService<
     const keys = (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
     )?.keys;
-    let result = keys?.publicKey;
-    if (result == null && keys?.publicKeySerialized != null) {
-      result = Utils.fromByteStringToArray(keys.publicKeySerialized);
-    }
-    return result;
+    return keys?.publicKey;
   }
 
   async setPublicKey(value: ArrayBuffer, options?: StorageOptions): Promise<void> {
@@ -2032,7 +2048,6 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
     account.keys.publicKey = value;
-    account.keys.publicKeySerialized = value == null ? null : Utils.fromBufferToByteString(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -2275,6 +2290,23 @@ export class StateService<
       globals,
       this.reconcileOptions(options, await this.defaultOnDiskOptions())
     );
+  }
+
+  async setServerConfig(value: ServerConfigData, options?: StorageOptions): Promise<void> {
+    const account = await this.getAccount(
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
+    );
+    account.settings.serverConfig = value;
+    return await this.saveAccount(
+      account,
+      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
+    );
+  }
+
+  async getServerConfig(options: StorageOptions): Promise<ServerConfigData> {
+    return (
+      await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskLocalOptions()))
+    )?.settings?.serverConfig;
   }
 
   protected async getGlobals(options: StorageOptions): Promise<TGlobalState> {
@@ -2723,8 +2755,11 @@ export class StateService<
       : await this.secureStorageService.save(`${options.userId}${key}`, value, options);
   }
 
-  protected state(): Promise<State<TGlobalState, TAccount>> {
-    return this.memoryStorageService.get<State<TGlobalState, TAccount>>(keys.state);
+  protected async state(): Promise<State<TGlobalState, TAccount>> {
+    const state = await this.memoryStorageService.get<State<TGlobalState, TAccount>>(keys.state, {
+      deserializer: (s) => State.fromJSON(s),
+    });
+    return state;
   }
 
   private async setState(state: State<TGlobalState, TAccount>): Promise<void> {
@@ -2742,6 +2777,14 @@ export class StateService<
 
       await this.setState(updatedState);
     });
+  }
+
+  private mapToRecord<V>(map: Map<string, V>): Record<string, V> {
+    return map == null ? null : Object.fromEntries(map);
+  }
+
+  private recordToMap<V>(record: Record<string, V>): Map<string, V> {
+    return record == null ? null : new Map(Object.entries(record));
   }
 }
 
@@ -2869,55 +2912,6 @@ function withPrototypeForObjectValues<T>(
             }
 
             return result as { [key: string]: T };
-          }
-        });
-      },
-    };
-  };
-}
-
-function withPrototypeForMap<T>(
-  valuesConstructor: new (...args: any[]) => T,
-  valuesConverter: (input: any) => T = (i) => i
-): (
-  target: any,
-  propertyKey: string | symbol,
-  descriptor: PropertyDescriptor
-) => { value: (...args: any[]) => Promise<Map<string, T>> } {
-  return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-    const originalMethod = descriptor.value;
-
-    return {
-      value: function (...args: any[]) {
-        const originalResult: Promise<any> = originalMethod.apply(this, args);
-
-        if (!(originalResult instanceof Promise)) {
-          throw new Error(
-            `Error applying prototype to stored value -- result is not a promise for method ${String(
-              propertyKey
-            )}`
-          );
-        }
-
-        return originalResult.then((result) => {
-          if (result == null) {
-            return null;
-          } else if (result instanceof Map) {
-            return result;
-          } else {
-            for (const key in Object.keys(result)) {
-              result[key] =
-                result[key] == null ||
-                result[key].constructor.name === valuesConstructor.prototype.constructor.name
-                  ? valuesConverter(result[key])
-                  : valuesConverter(
-                      Object.create(
-                        valuesConstructor.prototype,
-                        Object.getOwnPropertyDescriptors(result[key])
-                      )
-                    );
-            }
-            return new Map<string, T>(Object.entries(result));
           }
         });
       },
