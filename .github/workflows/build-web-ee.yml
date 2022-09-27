@@ -12,7 +12,7 @@ on:
       - '*'
       - '!*.md'
       - '!*.txt'
-      - '.github/workflows/build-web.yml'
+      - '.github/workflows/build-web-ee.yml'
   push:
     branches:
       - 'master'
@@ -24,7 +24,7 @@ on:
       - '*'
       - '!*.md'
       - '!*.txt'
-      - '.github/workflows/build-web.yml'
+      - '.github/workflows/build-web-ee.yml'
   workflow_dispatch:
 
 jobs:
