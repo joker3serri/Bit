@@ -80,6 +80,8 @@ jobs:
             npm_command: "dist:bit:selfhost"
           - name: "cloud-QA"
             npm_command: "build:bit:qa"
+          - name: "web-ee"
+            npm_command: "build:bit:ee"
 
     steps:
       - name: Checkout repo
@@ -316,6 +318,79 @@ jobs:
       - name: Log out of Docker
         run: docker logout
 
+  build-ee:
+    name: Build Docker images for EE environment
+    runs-on: ubuntu-22.04
+    needs:
+      - setup
+      - build-artifacts
+    env:
+      _VERSION: ${{ needs.setup.outputs.version }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+
+      - name: Login to Azure
+        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
+        with:
+          creds: ${{ secrets.AZURE_QA_KV_CREDENTIALS }}
+
+      - name: Log into container registry
+        run: az acr login -n bitwardenqa
+
+      - name: Download web-ee artifact
+        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741
+        with:
+          name: web-${{ env._VERSION }}-web-ee.zip
+          path: apps/web
+
+      - name: Extract web-ee artifact
+        working-directory: apps/web
+        run: unzip web-${{ env._VERSION }}-ee.zip
+
+      - name: Build Docker image
+        working-directory: apps/web
+        run: |
+          docker --version
+          docker build -t bitwardenqa.azurecr.io/web-ee .
+
+      - name: Get image tag
+        id: image-tag
+        run: |
+          if [[ $(grep "pull" <<< "${GITHUB_REF}") ]]; then
+            IMAGE_TAG=$(echo "${GITHUB_HEAD_REF}" | sed "s#/#-#g")
+          else
+            IMAGE_TAG=$(echo "${GITHUB_REF:11}" | sed "s#/#-#g")
+          fi
+
+          TAG_EXTENSION=${{ github.event.inputs.custom_tag_extension }}
+
+          if [[ $TAG_EXTENSION ]]; then
+            IMAGE_TAG=$IMAGE_TAG-$TAG_EXTENSION
+          fi
+
+          echo "::set-output name=value::$IMAGE_TAG"
+
+      - name: Tag image
+        env:
+          IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
+        run: docker tag bitwardenqa.azurecr.io/web-ee "bitwardenqa.azurecr.io/web-ee:$IMAGE_TAG"
+
+      - name: Tag dev
+        if: github.ref == 'refs/heads/master'
+        run: docker tag bitwardenqa.azurecr.io/web-ee bitwardenqa.azurecr.io/web-ee:dev
+
+      - name: Push image
+        env:
+          IMAGE_TAG: ${{ steps.image-tag.outputs.value }}
+        run: docker push "bitwardenqa.azurecr.io/web-ee:$IMAGE_TAG"
+
+      - name: Push dev images
+        if: github.ref == 'refs/heads/master'
+        run: docker push bitwardenqa.azurecr.io/web-ee:dev
+
+      - name: Log out of Docker
+        run: docker logout
 
   crowdin-push:
     name: Crowdin Push
@@ -368,6 +443,7 @@ jobs:
       - setup
       - build-artifacts
       - build-qa
+      - build-ee
       - crowdin-push
     steps:
       - name: Check if any job failed
