@@ -7,9 +7,11 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
 import { ListResponse } from "@bitwarden/common/models/response/listResponse";
+import { ProjectListView } from "@bitwarden/common/models/view/projectListView";
 import { ProjectView } from "@bitwarden/common/models/view/projectView";
 
 import { ProjectRequest } from "./requests/project.request";
+import { ProjectListItemResponse } from "./responses/project-list-item.response";
 import { ProjectResponse } from "./responses/project.response";
 
 @Injectable({
@@ -31,7 +33,7 @@ export class ProjectService {
     return await this.createProjectView(projectResponse);
   }
 
-  async getProjects(organizationId: string): Promise<ProjectView[]> {
+  async getProjects(organizationId: string): Promise<ProjectListView[]> {
     const r = await this.apiService.send(
       "GET",
       "/organizations/" + organizationId + "/projects",
@@ -39,9 +41,8 @@ export class ProjectService {
       true,
       true
     );
-    const results = new ListResponse(r, ProjectView);
-
-    return await this.createProjectViewList(organizationId, results);
+    const results = new ListResponse(r, ProjectListItemResponse);
+    return await this.createProjectsListView(organizationId, results.data);
   }
 
   async create(organizationId: string, projectView: ProjectView) {
@@ -53,13 +54,12 @@ export class ProjectService {
       true,
       true
     );
-
     this._project.next(await this.createProjectView(new ProjectResponse(r)));
   }
 
   async update(organizationId: string, projectView: ProjectView) {
     const request = await this.getProjectRequest(organizationId, projectView);
-    const r = await this.apiService.send("PUT", "/project/" + projectView.id, request, true, true);
+    const r = await this.apiService.send("PUT", "/projects/" + projectView.id, request, true, true);
     this._project.next(await this.createProjectView(new ProjectResponse(r)));
   }
 
@@ -73,7 +73,8 @@ export class ProjectService {
   ): Promise<ProjectRequest> {
     const orgKey = await this.getOrganizationKey(organizationId);
     const request = new ProjectRequest();
-    request.name = (await this.encryptService.encrypt(projectView.name, orgKey)).encryptedString;
+    request.name = [await this.encryptService.encrypt(projectView.name, orgKey)];
+
     return request;
   }
 
@@ -93,21 +94,23 @@ export class ProjectService {
     return projectView;
   }
 
-  private async createProjectViewList(
+  private async createProjectsListView(
     organizationId: string,
-    projectViewListResponse: ListResponse<ProjectView>
-  ): Promise<ProjectView[]> {
+    projects: ProjectListItemResponse[]
+  ): Promise<ProjectListView[]> {
     const orgKey = await this.getOrganizationKey(organizationId);
-
     return await Promise.all(
-      projectViewListResponse.data.map(async (p: ProjectView) => {
-        const projectView = new ProjectView();
-        projectView.id = p.id;
-        projectView.organizationId = p.organizationId;
-        projectView.name = await this.encryptService.decryptToUtf8(new EncString(p.name), orgKey);
-        projectView.creationDate = p.creationDate;
-        projectView.revisionDate = p.revisionDate;
-        return projectView;
+      projects.map(async (s: ProjectListItemResponse) => {
+        const projectListView = new ProjectListView();
+        projectListView.id = s.id;
+        projectListView.organizationId = s.organizationId;
+        projectListView.name = await this.encryptService.decryptToUtf8(
+          new EncString(s.name),
+          orgKey
+        );
+        projectListView.creationDate = s.creationDate;
+        projectListView.revisionDate = s.revisionDate;
+        return projectListView;
       })
     );
   }
