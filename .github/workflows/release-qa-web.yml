@@ -39,11 +39,6 @@ jobs:
           branch: master
           artifacts: web-*-cloud-QA.zip
 
-      - name: Look into apps web dir
-        run: |
-          pwd
-          ls ./apps/web -la
-          ls ./apps/web/build -la
 
       - name: Checkout Repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
