@@ -17,7 +17,7 @@ jobs:
           initial-status: 'in_progress'
           environment-url: http://vault.qa.bitwarden.pw
           environment: 'Web Vault - QA'
-          description: 'Deployment from branch master'
+          description: 'Deployment from branch ${{ github.ref_name }}'
 
       - name: Update deployment status to In Progress
         uses: chrnorm/deployment-status@07b3930847f65e71c9c6802ff5a402f6dfb46b86
@@ -36,7 +36,7 @@ jobs:
           workflow: build-web.yml
           path: apps/web/build
           workflow_conclusion: success
-          branch: master
+          branch: ${{ github.ref_name }}
           artifacts: web-*-cloud-QA.zip
 
 
@@ -63,7 +63,7 @@ jobs:
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             git add .
-            git commit -m "Deploy master to QA Cloudflare pages"
+            git commit -m "Deploy ${{ github.ref_name }} to QA Cloudflare pages"
             git push -u origin cf-pages-qa
           else
             echo "No changes to commit!";
