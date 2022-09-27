@@ -40,9 +40,9 @@ jobs:
           artifacts: web-*-cloud-QA.zip
 
       # This should result in a build directory in the current working directory
-      - name: Unzip build asset
-        working-directory: apps/web
-        run: unzip web-*-cloud-QA.zip
+      # - name: Unzip build asset
+      #   working-directory: apps/web
+      #   run: unzip web-*-cloud-QA.zip
 
       - name: Checkout Repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
