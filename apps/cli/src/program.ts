@@ -187,6 +187,7 @@ export class Program extends BaseProgram {
       .on("--help", () => {
         writeLn("\n  Examples:");
         writeLn("");
+        writeLn("");
         writeLn("    bw lock");
         writeLn("", true);
       })
