@@ -1,10 +1,10 @@
-import { CollectionGroupDetailsResponse } from "../response/collection.response";
+import { CollectionGroupDetailsResponse } from "../../models/response/collection.response";
 
 import { CollectionGroupSelectionView } from "./collection-group-selection-view";
 import { CollectionView } from "./collection.view";
 
 export class CollectionAdminView extends CollectionView {
-  readonly groups: CollectionGroupSelectionView[] = [];
+  groups: CollectionGroupSelectionView[] = [];
 
   constructor(response?: CollectionGroupDetailsResponse) {
     super(response);

@@ -3,19 +3,41 @@ import { CollectionAdminService as CollectionAdminServiceAbstraction } from "../
 import { CryptoService } from "../../abstractions/crypto.service";
 import { EncString } from "../../models/domain/enc-string";
 import { CollectionRequest } from "../../models/request/collection.request";
-import { CollectionResponse } from "../../models/response/collection.response";
+import {
+  CollectionGroupDetailsResponse,
+  CollectionResponse,
+} from "../../models/response/collection.response";
 import { CollectionAdminView } from "../../models/view/collection-admin-view";
+import { CollectionView } from "../../models/view/collection.view";
 
 export class CollectionAdminService implements CollectionAdminServiceAbstraction {
   constructor(private apiService: ApiService, private cryptoService: CryptoService) {}
 
-  async getAll(organizationId: string): Promise<CollectionAdminView[]> {
+  async getAll(organizationId: string): Promise<CollectionView[]> {
     const collectionResponse = await this.apiService.getCollections(organizationId);
     if (collectionResponse?.data == null || collectionResponse.data.length === 0) {
       return [];
     }
 
     return await this.decryptMany(organizationId, collectionResponse.data);
+  }
+
+  async get(
+    organizationId: string,
+    collectionId: string
+  ): Promise<CollectionAdminView | undefined> {
+    const collectionResponse = await this.apiService.getCollectionDetails(
+      organizationId,
+      collectionId
+    );
+
+    if (collectionResponse == null) {
+      return undefined;
+    }
+
+    const [view] = await this.decryptMany(organizationId, [collectionResponse]);
+
+    return view;
   }
 
   async save(collection: CollectionAdminView): Promise<unknown> {
@@ -44,7 +66,7 @@ export class CollectionAdminService implements CollectionAdminServiceAbstraction
 
   private async decryptMany(
     organizationId: string,
-    collections: CollectionResponse[]
+    collections: CollectionResponse[] | CollectionGroupDetailsResponse[]
   ): Promise<CollectionAdminView[]> {
     const orgKey = await this.cryptoService.getOrgKey(organizationId);
 
@@ -54,6 +76,11 @@ export class CollectionAdminService implements CollectionAdminServiceAbstraction
       view.name = await this.cryptoService.decryptToUtf8(new EncString(c.name), orgKey);
       view.externalId = c.externalId;
       view.organizationId = c.organizationId;
+
+      if (isCollectionGroupDetailsResponse(c)) {
+        view.groups = c.groups;
+      }
+
       return view;
     });
 
@@ -78,4 +105,12 @@ export class CollectionAdminService implements CollectionAdminServiceAbstraction
     }));
     return collection;
   }
+}
+
+function isCollectionGroupDetailsResponse(
+  response: CollectionResponse | CollectionGroupDetailsResponse
+): response is CollectionGroupDetailsResponse {
+  const anyResponse = response as any;
+
+  return anyResponse?.groups instanceof Array;
 }
