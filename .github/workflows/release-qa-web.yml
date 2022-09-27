@@ -63,7 +63,7 @@ jobs:
           ls -la
           rm -rf ./*
           ls ../ -la
-          cp -R ../apps/web/build/* .
+          cp -R ./apps/web/build/* .
         working-directory: deployment
 
       - name: Push new ver to cf-pages-qa
