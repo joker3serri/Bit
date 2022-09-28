@@ -21,7 +21,7 @@
 
 ---
 
-# Bitwarden Client Applications
+# Bitwarden Client Applications 
 
 This repository houses all Bitwarden client applications except the [Mobile application](https://github.com/bitwarden/mobile).
 
