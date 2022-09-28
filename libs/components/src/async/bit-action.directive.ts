@@ -1,13 +1,8 @@
 import { Directive, HostListener, Input, OnDestroy, Optional } from "@angular/core";
-import { BehaviorSubject, finalize, Observable, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, finalize, Subject, takeUntil } from "rxjs";
 
 import { ButtonComponent } from "../button";
-import { functionToObservable } from "../utils/function-to-observable";
-
-export type BitActionHandler =
-  | (() => unknown)
-  | (() => Promise<unknown>)
-  | (() => Observable<unknown>);
+import { FunctionReturningAwaitable, functionToObservable } from "../utils/function-to-observable";
 
 @Directive({
   selector: "[bitAction]",
@@ -16,7 +11,7 @@ export class BitActionDirective implements OnDestroy {
   private destroy$ = new Subject<void>();
   private _loading$ = new BehaviorSubject<boolean>(false);
 
-  @Input("bitAction") protected handler: BitActionHandler;
+  @Input("bitAction") protected handler: FunctionReturningAwaitable;
 
   readonly loading$ = this._loading$.asObservable();
 
