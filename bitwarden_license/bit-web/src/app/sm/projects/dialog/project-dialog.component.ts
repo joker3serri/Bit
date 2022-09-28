@@ -70,13 +70,17 @@ export class ProjectDialogComponent implements OnInit {
   private async createProject(projectView: ProjectView) {
     this.formPromise = this.projectService.create(this.data.organizationId, projectView);
     await this.formPromise;
-    this.platformUtilsService.showToast("success", null, this.i18nService.t("projectCreated"));
+    this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t("projectCreatedExclamation")
+    );
   }
 
   private async updateProject(projectView: ProjectView) {
     this.formPromise = this.projectService.update(this.data.organizationId, projectView);
     await this.formPromise;
-    this.platformUtilsService.showToast("success", null, this.i18nService.t("projectEdited"));
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("projectSaved"));
   }
 
   private getProjectView() {

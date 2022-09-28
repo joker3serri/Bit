@@ -5448,8 +5448,14 @@
   "projectEdited":{
     "message":"Project edited"
   },
+  "projectSaved":{
+    "message":"Project saved"
+  },
   "projectCreated":{
     "message":"Project created"
+  },
+  "projectCreatedExclamation":{
+    "message":"Project created!"
   },
   "projectName":{
     "message":"Project Name"
