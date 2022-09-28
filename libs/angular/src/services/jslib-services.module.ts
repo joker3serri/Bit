@@ -292,13 +292,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: CollectionServiceAbstraction,
       useClass: CollectionService,
-      deps: [
-        ApiServiceAbstraction,
-        OrganizationServiceAbstraction,
-        CryptoServiceAbstraction,
-        I18nServiceAbstraction,
-        StateServiceAbstraction,
-      ],
+      deps: [CryptoServiceAbstraction, I18nServiceAbstraction, StateServiceAbstraction],
     },
     {
       provide: CollectionApiServiceAbstraction,
