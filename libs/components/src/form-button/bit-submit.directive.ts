@@ -1,42 +1,33 @@
-import { Directive, Input, OnDestroy } from "@angular/core";
+import { Directive, Input, OnDestroy, OnInit } from "@angular/core";
 import { FormGroupDirective } from "@angular/forms";
-import {
-  BehaviorSubject,
-  catchError,
-  Observable,
-  of,
-  Subject,
-  switchMap,
-  takeUntil,
-  tap,
-} from "rxjs";
+import { BehaviorSubject, catchError, of, Subject, switchMap, takeUntil } from "rxjs";
 
-import { functionToObservable } from "../utils/function-to-observable";
-
-export type BitSubmitHandler =
-  | (() => unknown)
-  | (() => Promise<unknown>)
-  | (() => Observable<unknown>);
+import { FunctionReturningAwaitable, functionToObservable } from "../utils/function-to-observable";
 
 @Directive({
   selector: "[formGroup][bitSubmit]",
 })
-export class BitSubmitDirective implements OnDestroy {
+export class BitSubmitDirective implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private _loading$ = new BehaviorSubject<boolean>(false);
   private _disabled$ = new BehaviorSubject<boolean>(false);
 
-  @Input("bitSubmit") protected handler: BitSubmitHandler;
+  @Input("bitSubmit") protected handler: FunctionReturningAwaitable;
 
   readonly loading$ = this._loading$.asObservable();
   readonly disabled$ = this._disabled$.asObservable();
 
-  constructor(formGroupDirective: FormGroupDirective) {
+  constructor(private formGroupDirective: FormGroupDirective) {
     formGroupDirective.ngSubmit
       .pipe(
-        tap(() => (this.loading = true)),
         switchMap(() => {
-          return functionToObservable(this.handler).pipe(
+          // Calling functionToObservable exectues the sync part of the handler
+          // allowing the function to check form validity before it gets disabled.
+          const awaitable = functionToObservable(this.handler);
+
+          // Disable form
+          this.loading = true;
+          return awaitable.pipe(
             catchError((err: unknown) => {
               // eslint-disable-next-line no-console
               console.error("Uncaught submit error", err);
@@ -52,12 +43,22 @@ export class BitSubmitDirective implements OnDestroy {
       });
   }
 
+  ngOnInit(): void {
+    this.formGroupDirective.statusChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((c) => this._disabled$.next(c === "DISABLED"));
+  }
+
   get disabled() {
     return this._disabled$.value;
   }
 
   set disabled(value: boolean) {
-    this._disabled$.next(value);
+    if (value) {
+      this.formGroupDirective?.form?.disable();
+    } else {
+      this.formGroupDirective?.form?.enable();
+    }
   }
 
   get loading() {
@@ -65,6 +66,7 @@ export class BitSubmitDirective implements OnDestroy {
   }
 
   set loading(value: boolean) {
+    this.disabled = value;
     this._loading$.next(value);
   }
 
