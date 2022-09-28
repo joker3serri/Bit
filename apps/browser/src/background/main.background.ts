@@ -996,7 +996,7 @@ export default class MainBackground {
     });
   }
 
-  private async actionSetIcon(theAction: any, suffix: string, windowId?: number): Promise<void> {
+  private async actionSetIcon(theAction: any, suffix: string, windowId?: number): Promise<any> {
     if (!theAction || !theAction.setIcon) {
       return;
     }
