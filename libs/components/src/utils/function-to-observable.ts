@@ -1,26 +1,32 @@
-import { from, Observable, of, switchMap } from "rxjs";
+import { from, Observable, of, throwError } from "rxjs";
 
 import { Utils } from "@bitwarden/common/misc/utils";
 
-export type AwaitableFunction =
+export type FunctionReturningAwaitable =
   | (() => unknown)
   | (() => Promise<unknown>)
   | (() => Observable<unknown>);
 
-export function functionToObservable(func: AwaitableFunction): Observable<unknown> {
-  return of(null).pipe(
-    switchMap(() => {
-      const awaitable = func();
+export function functionToObservable(func: FunctionReturningAwaitable): Observable<unknown> {
+  let awaitable: unknown;
+  let error: unknown;
+  try {
+    awaitable = func();
+  } catch (e) {
+    error = e;
+  }
 
-      if (Utils.isPromise(awaitable)) {
-        return from(awaitable);
-      }
+  if (error) {
+    return throwError(() => error);
+  }
 
-      if (awaitable instanceof Observable) {
-        return awaitable;
-      }
+  if (Utils.isPromise(awaitable)) {
+    return from(awaitable);
+  }
 
-      return of(awaitable);
-    })
-  );
+  if (awaitable instanceof Observable) {
+    return awaitable;
+  }
+
+  return of(awaitable);
 }

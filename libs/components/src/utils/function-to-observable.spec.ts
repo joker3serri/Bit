@@ -1,23 +1,39 @@
-import { lastValueFrom, of, throwError } from "rxjs";
+import { lastValueFrom, Observable, of, throwError } from "rxjs";
 
 import { functionToObservable } from "./function-to-observable";
 
 describe("functionToObservable", () => {
-  it("should not execute function when calling", () => {
+  it("should execute function when calling", () => {
     const func = jest.fn();
 
     functionToObservable(func);
 
-    expect(func).not.toHaveBeenCalled();
+    expect(func).toHaveBeenCalled();
   });
 
-  it("should execute function when subscribing", () => {
-    const func = jest.fn();
-    const observable = functionToObservable(func);
+  it("should not subscribe when calling", () => {
+    let hasSubscribed = false;
+    const underlyingObservable = new Observable(() => {
+      hasSubscribed = true;
+    });
+    const funcReturningObservable = () => underlyingObservable;
 
-    observable.subscribe();
+    functionToObservable(funcReturningObservable);
 
-    expect(func).toHaveBeenCalled();
+    expect(hasSubscribed).toBe(false);
+  });
+
+  it("should subscribe to underlying when subscribing to outer", () => {
+    let hasSubscribed = false;
+    const underlyingObservable = new Observable(() => {
+      hasSubscribed = true;
+    });
+    const funcReturningObservable = () => underlyingObservable;
+    const outerObservable = functionToObservable(funcReturningObservable);
+
+    outerObservable.subscribe();
+
+    expect(hasSubscribed).toBe(true);
   });
 
   it("should return value when using sync function", async () => {
