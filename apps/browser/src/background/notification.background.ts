@@ -13,7 +13,6 @@ import { LoginUriView } from "@bitwarden/common/models/view/loginUriView";
 import { LoginView } from "@bitwarden/common/models/view/loginView";
 
 import { BrowserApi } from "../browser/browserApi";
-import { AutofillService } from "../services/abstractions/autofill.service";
 import { StateService } from "../services/abstractions/state.service";
 
 import AddChangePasswordQueueMessage from "./models/addChangePasswordQueueMessage";
@@ -25,9 +24,9 @@ import { NotificationQueueMessageType } from "./models/notificationQueueMessageT
 
 export default class NotificationBackground {
   private notificationQueue: (AddLoginQueueMessage | AddChangePasswordQueueMessage)[] = [];
+  private usernameCache: any[] = [];
 
   constructor(
-    private autofillService: AutofillService,
     private cipherService: CipherService,
     private authService: AuthService,
     private policyService: PolicyService,
@@ -100,19 +99,8 @@ export default class NotificationBackground {
       case "bgNeverSave":
         await this.saveNever(sender.tab);
         break;
-      case "collectPageDetailsResponse":
-        switch (msg.sender) {
-          case "notificationBar": {
-            const forms = this.autofillService.getFormsWithPasswordFields(msg.details);
-            await BrowserApi.tabSendMessageData(msg.tab, "notificationBarPageDetails", {
-              details: msg.details,
-              forms: forms,
-            });
-            break;
-          }
-          default:
-            break;
-        }
+      case "formSubmission":
+        this.handleFormSubmission(sender.tab, msg.data);
         break;
       default:
         break;
@@ -187,6 +175,96 @@ export default class NotificationBackground {
         this.notificationQueue.splice(i, 1);
       }
     }
+  }
+
+  private async handleFormSubmission(
+    tab: any,
+    formData: {
+      url: string;
+      fields: any[];
+      username?: string;
+      password?: string;
+      originalPassword?: string;
+      isPasswordChange?: boolean;
+    }
+  ) {
+    const ciphers = await this.cipherService.getAllDecryptedForUrl(formData.url);
+    const passwordFields = formData.fields.filter((field) => field.type === "password");
+    const usernameFields = formData.fields.filter(
+      (field) => field.type === "email" || field.type === "text"
+    );
+    const mainUsernameField =
+      formData.fields.filter((field) => field.attributes.includes("email"))[0] || usernameFields[0];
+
+    if (passwordFields.length === 0) {
+      if (!mainUsernameField) return;
+
+      return this.usernameCache.push({
+        url: Utils.getDomain(formData.url),
+        username: mainUsernameField.value,
+        time: Date.now(),
+      });
+    }
+
+    if (mainUsernameField && mainUsernameField.value) formData.username = mainUsernameField.value;
+    else {
+      const cachedUsernames = this.usernameCache.filter(
+        (cachedUsername) =>
+          cachedUsername.time > Date.now() - 60000 &&
+          cachedUsername.url === Utils.getDomain(formData.url)
+      );
+      formData.username = cachedUsernames.sort((a, b) => a.time - b.time)[0]?.username;
+    }
+
+    const passwordValues = Array.from(new Set(passwordFields.map((field) => field.value)));
+    if (passwordValues.length === 1) {
+      if (passwordFields.length === 2 && formData.fields.length === 2)
+        formData.isPasswordChange = true;
+      formData.password = passwordValues[0];
+    } else {
+      passwordValues.forEach((password) => {
+        const passwordMatches = ciphers.filter(
+          (c) =>
+            (!formData.username || c.login.username === formData.username.toLowerCase()) &&
+            c.login.password === password
+        );
+        if (passwordMatches) {
+          formData.originalPassword = password;
+          formData.password = passwordValues.find((value) => value !== password);
+        } else if (
+          passwordValues.length === 2 &&
+          passwordFields.filter((field) => field.value === password).length > 1
+        ) {
+          formData.originalPassword = passwordValues.find((value) => value !== password);
+          formData.password = password;
+        }
+      });
+    }
+    if (!formData.password) formData.password = passwordValues[0];
+
+    if (formData.isPasswordChange || formData.originalPassword) {
+      this.changedPassword(
+        {
+          username: formData.username,
+          newPassword: formData.password,
+          currentPassword: formData.originalPassword,
+          url: formData.url,
+        },
+        tab
+      );
+    } else {
+      this.addLogin(
+        {
+          username: formData.username,
+          password: formData.password,
+          url: formData.url,
+        },
+        tab
+      );
+    }
+    this.usernameCache = this.usernameCache.filter(
+      (cachedUsername) => cachedUsername.time > Date.now() - 60000
+    );
   }
 
   private async addLogin(loginInfo: AddLoginRuntimeMessage, tab: chrome.tabs.Tab) {
@@ -287,6 +365,13 @@ export default class NotificationBackground {
       );
       if (passwordMatches.length === 1) {
         id = passwordMatches[0].id;
+      } else if (changeData.username) {
+        const usernameMatches = passwordMatches.filter(
+          (c) => c.login.username === changeData.username
+        );
+        if (usernameMatches.length === 1) {
+          id = usernameMatches[0].id;
+        }
       }
     } else if (ciphers.length === 1) {
       id = ciphers[0].id;

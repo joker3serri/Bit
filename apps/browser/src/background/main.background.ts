@@ -502,7 +502,6 @@ export default class MainBackground {
       this.authService
     );
     this.notificationBackground = new NotificationBackground(
-      this.autofillService,
       this.cipherService,
       this.authService,
       this.policyService,

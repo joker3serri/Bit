@@ -1,50 +1,13 @@
-import AddLoginRuntimeMessage from "src/background/models/addLoginRuntimeMessage";
-import ChangePasswordRuntimeMessage from "src/background/models/changePasswordRuntimeMessage";
-
-document.addEventListener("DOMContentLoaded", (event) => {
+document.addEventListener("DOMContentLoaded", (_) => {
   if (window.location.hostname.endsWith("vault.bitwarden.com")) {
     return;
   }
 
-  const pageDetails: any[] = [];
-  const formData: any[] = [];
-  let barType: string = null;
-  let pageHref: string = null;
-  let observer: MutationObserver = null;
-  const observeIgnoredElements = new Set([
-    "a",
-    "i",
-    "b",
-    "strong",
-    "span",
-    "code",
-    "br",
-    "img",
-    "small",
-    "em",
-    "hr",
-  ]);
-  let domObservationCollectTimeout: number = null;
-  let collectIfNeededTimeout: number = null;
-  let observeDomTimeout: number = null;
   const inIframe = isInIframe();
-  const cancelButtonNames = new Set(["cancel", "close", "back"]);
-  const logInButtonNames = new Set([
-    "log in",
-    "sign in",
-    "login",
-    "go",
-    "submit",
-    "continue",
-    "next",
-  ]);
-  const changePasswordButtonNames = new Set([
-    "save password",
-    "update password",
-    "change password",
-    "change",
-  ]);
-  const changePasswordButtonContainsNames = new Set(["pass", "change", "contras", "senha"]);
+  const inputSelector =
+    'input:not([type]),input[type="email"],input[type="password"],input[type="text"]';
+
+  let barType: string = null;
   let disabledAddLoginNotification = false;
   let disabledChangedPasswordNotification = false;
 
@@ -73,7 +36,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       obj[activeUserId].settings.disableChangedPasswordNotification;
 
     if (!disabledAddLoginNotification || !disabledChangedPasswordNotification) {
-      collectIfNeededWithTimeout();
+      startTrackingFormSubmissions();
     }
   });
 
@@ -103,12 +66,220 @@ document.addEventListener("DOMContentLoaded", (event) => {
       adjustBar(msg.data);
       sendResponse();
       return true;
-    } else if (msg.command === "notificationBarPageDetails") {
-      pageDetails.push(msg.data.details);
-      watchForms(msg.data.forms);
-      sendResponse();
-      return true;
     }
+  }
+
+  function startTrackingFormSubmissions() {
+    document.addEventListener("submit", (e: UIEvent) => {
+      startRequestListener(e.target as HTMLElement);
+      sendPlatformMessage({
+        command: "formSubmission",
+        data: createFormData({ formChild: e.target as HTMLElement }),
+      });
+    });
+
+    window.addEventListener("bw-submit", (e: CustomEvent) => {
+      startRequestListener(e.detail?.form as HTMLElement);
+      sendPlatformMessage({
+        command: "formSubmission",
+        data: createFormData({ formChild: e.detail?.form as HTMLElement }),
+      });
+    });
+
+    document.addEventListener("mouseup", (e: MouseEvent) => {
+      const targetNode = e.target as HTMLElement;
+      if (canBeSubmitElement(targetNode)) startRequestListener(targetNode);
+    });
+
+    document.addEventListener("keydown", (e: KeyboardEvent) => {
+      const key = e.key || e.keyCode;
+      if (key === "Enter" || key === 13) {
+        startRequestListener(e.target as HTMLElement);
+      }
+    });
+
+    function hook() {
+      let requestCounter = 0;
+
+      const proxyFormSubmit = (func: any) => {
+        return new Proxy(func, {
+          apply: (target, receiver, args) => {
+            window.dispatchEvent(
+              new CustomEvent("bw-submit", {
+                detail: {
+                  form: receiver,
+                },
+              })
+            );
+            return target.apply(receiver, args);
+          },
+        });
+      };
+      Array.from(document.forms).forEach(
+        (form) => ((form.submit as any) = proxyFormSubmit(form.submit))
+      );
+      Document.prototype.createElement = new Proxy(Document.prototype.createElement, {
+        apply: (target, receiver, args) => {
+          const result = target.apply(receiver, args);
+          if (result?.nodeName === "FORM" && result?.submit)
+            result.submit = proxyFormSubmit(result.submit);
+          return result;
+        },
+      });
+
+      const xmlSendOriginalMethod = XMLHttpRequest.prototype.send;
+      const xmlSendProxy = new Proxy(xmlSendOriginalMethod, {
+        apply: (target, receiver, args) => {
+          if (args[0] && (typeof args[0] === "string" || typeof args[0] === "object")) {
+            const data = typeof args[0] === "object" ? JSON.stringify(args[0]) : args[0];
+            const reqId = ++requestCounter;
+            window.dispatchEvent(
+              new CustomEvent("bw-request-start", {
+                detail: {
+                  data: data,
+                  reqId: reqId,
+                },
+              })
+            );
+            receiver.addEventListener("loadend", () => {
+              window.dispatchEvent(
+                new CustomEvent("bw-request-end", {
+                  detail: {
+                    status: receiver.status,
+                    reqId: reqId,
+                  },
+                })
+              );
+            });
+          }
+          return target.apply(receiver, args);
+        },
+      });
+      XMLHttpRequest.prototype.send = xmlSendProxy;
+
+      const fetchOriginalMethod = fetch;
+      const fetchProxy = new Proxy(fetchOriginalMethod, {
+        apply: (target, receiver, args) => {
+          const response = target.apply(receiver, args);
+          if (args[0] && (typeof args[0] === "string" || typeof args[0] === "object")) {
+            const data = typeof args[0] === "object" ? JSON.stringify(args[0]) : args[0];
+            const reqId = ++requestCounter;
+            window.dispatchEvent(
+              new CustomEvent("bw-request-start", {
+                detail: {
+                  data: data,
+                  reqId: reqId,
+                },
+              })
+            );
+            const callback = (res: any) => {
+              window.dispatchEvent(
+                new CustomEvent("bw-request-end", {
+                  detail: {
+                    status: res && res.status,
+                    reqId: reqId,
+                  },
+                })
+              );
+            };
+            response.then(callback).catch(callback);
+          }
+          return response;
+        },
+      });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      // eslint-disable-next-line no-global-assign
+      fetch = fetchProxy;
+    }
+    const hookScript = hook.toString() + "hook();";
+    const scriptElement = document.createElement("script");
+    scriptElement.appendChild(document.createTextNode(hookScript));
+    document.documentElement.appendChild(scriptElement);
+    document.documentElement.removeChild(scriptElement);
+  }
+
+  function canBeSubmitElement(el: HTMLElement) {
+    if (el.nodeName === "TEXTAREA" || el.nodeName === "SELECT") return false;
+    if (el.nodeName === "INPUT")
+      return (
+        (el as HTMLInputElement).type === "button" || (el as HTMLInputElement).type === "submit"
+      );
+    return true;
+  }
+
+  function createFormData(data: { formChild: HTMLElement; formElement?: HTMLElement }) {
+    data.formElement = findFormElement(data.formChild);
+    if (!data.formElement) {
+      // Fallback to trying to find form in entire page
+      const passwordField = document.querySelector("input[type=password]") as HTMLElement;
+      if (passwordField) data.formElement = findFormElement(passwordField);
+    }
+
+    const formFields = Array.from(
+      (data.formElement || document.body).querySelectorAll(
+        inputSelector
+      ) as NodeListOf<HTMLInputElement>
+    )
+      .filter((input) => input.value && input.value.length > 0 && isVisible(input))
+      .map((input) => {
+        return {
+          type: input.type,
+          value: input.value,
+          attributes: Array.from(input.attributes)
+            .map((attr) => attr.name + "-" + attr.value)
+            .join(","),
+        };
+      });
+
+    return {
+      url: document.URL,
+      fields: formFields,
+    };
+  }
+
+  function findFormElement(element: HTMLElement) {
+    while (element) {
+      if (element.nodeName === "FORM") return element;
+      element = element.parentElement;
+    }
+    return null;
+  }
+
+  function isVisible(element: HTMLElement) {
+    return element.offsetHeight || element.offsetWidth || element.getClientRects().length;
+  }
+
+  const requestListeners: any[] = [];
+  function startRequestListener(formChild: HTMLElement) {
+    const formData = createFormData({ formChild: formChild });
+    requestListeners.forEach((listener) =>
+      window.removeEventListener("bw-request-start", listener)
+    );
+
+    const eventListener = (event: any) => {
+      if (!event.detail || !event.detail.data) return;
+      const requestData = decodeURIComponent(event.detail.data);
+      const isDataPresent = formData.fields.some(
+        (field) => requestData.includes(field.value) || field.value.includes(requestData)
+      );
+      if (!isDataPresent) return;
+
+      window.removeEventListener("bw-request-start", eventListener);
+      const endEventListener = (endEvent: any) => {
+        if (endEvent.detail.reqId !== event.detail.reqId) return;
+        window.removeEventListener("bw-request-end", endEventListener);
+        if (endEvent.detail.status >= 200 && endEvent.detail.status < 300) {
+          sendPlatformMessage({
+            command: "formSubmission",
+            data: formData,
+          });
+        }
+      };
+      window.addEventListener("bw-request-end", endEventListener);
+    };
+    window.addEventListener("bw-request-start", eventListener);
+    requestListeners.push(eventListener);
   }
 
   function isInIframe() {
@@ -117,384 +288,6 @@ document.addEventListener("DOMContentLoaded", (event) => {
     } catch {
       return true;
     }
-  }
-
-  function observeDom() {
-    const bodies = document.querySelectorAll("body");
-    if (bodies && bodies.length > 0) {
-      observer = new MutationObserver((mutations) => {
-        if (mutations == null || mutations.length === 0 || pageHref !== window.location.href) {
-          return;
-        }
-
-        let doCollect = false;
-        for (let i = 0; i < mutations.length; i++) {
-          const mutation = mutations[i];
-          if (mutation.addedNodes == null || mutation.addedNodes.length === 0) {
-            continue;
-          }
-
-          for (let j = 0; j < mutation.addedNodes.length; j++) {
-            const addedNode: any = mutation.addedNodes[j];
-            if (addedNode == null) {
-              continue;
-            }
-
-            const tagName = addedNode.tagName != null ? addedNode.tagName.toLowerCase() : null;
-            if (
-              tagName != null &&
-              tagName === "form" &&
-              (addedNode.dataset == null || !addedNode.dataset.bitwardenWatching)
-            ) {
-              doCollect = true;
-              break;
-            }
-
-            if (
-              (tagName != null && observeIgnoredElements.has(tagName)) ||
-              addedNode.querySelectorAll == null
-            ) {
-              continue;
-            }
-
-            const forms = addedNode.querySelectorAll("form:not([data-bitwarden-watching])");
-            if (forms != null && forms.length > 0) {
-              doCollect = true;
-              break;
-            }
-          }
-
-          if (doCollect) {
-            break;
-          }
-        }
-
-        if (doCollect) {
-          if (domObservationCollectTimeout != null) {
-            window.clearTimeout(domObservationCollectTimeout);
-          }
-
-          domObservationCollectTimeout = window.setTimeout(collect, 1000);
-        }
-      });
-
-      observer.observe(bodies[0], { childList: true, subtree: true });
-    }
-  }
-
-  function collectIfNeededWithTimeout() {
-    if (collectIfNeededTimeout != null) {
-      window.clearTimeout(collectIfNeededTimeout);
-    }
-    collectIfNeededTimeout = window.setTimeout(collectIfNeeded, 1000);
-  }
-
-  function collectIfNeeded() {
-    if (pageHref !== window.location.href) {
-      pageHref = window.location.href;
-      if (observer) {
-        observer.disconnect();
-        observer = null;
-      }
-
-      collect();
-
-      if (observeDomTimeout != null) {
-        window.clearTimeout(observeDomTimeout);
-      }
-      observeDomTimeout = window.setTimeout(observeDom, 1000);
-    }
-
-    if (collectIfNeededTimeout != null) {
-      window.clearTimeout(collectIfNeededTimeout);
-    }
-    collectIfNeededTimeout = window.setTimeout(collectIfNeeded, 1000);
-  }
-
-  function collect() {
-    sendPlatformMessage({
-      command: "bgCollectPageDetails",
-      sender: "notificationBar",
-    });
-  }
-
-  function watchForms(forms: any[]) {
-    if (forms == null || forms.length === 0) {
-      return;
-    }
-
-    forms.forEach((f: any) => {
-      const formId: string = f.form != null ? f.form.htmlID : null;
-      let formEl: HTMLFormElement = null;
-      if (formId != null && formId !== "") {
-        formEl = document.getElementById(formId) as HTMLFormElement;
-      }
-
-      if (formEl == null) {
-        const index = parseInt(f.form.opid.split("__")[2], null);
-        formEl = document.getElementsByTagName("form")[index];
-      }
-
-      if (formEl != null && formEl.dataset.bitwardenWatching !== "1") {
-        const formDataObj: any = {
-          data: f,
-          formEl: formEl,
-          usernameEl: null,
-          passwordEl: null,
-          passwordEls: null,
-        };
-        locateFields(formDataObj);
-        formData.push(formDataObj);
-        listen(formEl);
-        formEl.dataset.bitwardenWatching = "1";
-      }
-    });
-  }
-
-  function listen(form: HTMLFormElement) {
-    form.removeEventListener("submit", formSubmitted, false);
-    form.addEventListener("submit", formSubmitted, false);
-    const submitButton = getSubmitButton(form, logInButtonNames);
-    if (submitButton != null) {
-      submitButton.removeEventListener("click", formSubmitted, false);
-      submitButton.addEventListener("click", formSubmitted, false);
-    }
-  }
-
-  function locateFields(formDataObj: any) {
-    const inputs = Array.from(document.getElementsByTagName("input"));
-    formDataObj.usernameEl = locateField(formDataObj.formEl, formDataObj.data.username, inputs);
-    if (formDataObj.usernameEl != null && formDataObj.data.password != null) {
-      formDataObj.passwordEl = locatePassword(
-        formDataObj.formEl,
-        formDataObj.data.password,
-        inputs,
-        true
-      );
-    } else if (formDataObj.data.passwords != null) {
-      formDataObj.passwordEls = [];
-      formDataObj.data.passwords.forEach((pData: any) => {
-        const el = locatePassword(formDataObj.formEl, pData, inputs, false);
-        if (el != null) {
-          formDataObj.passwordEls.push(el);
-        }
-      });
-      if (formDataObj.passwordEls.length === 0) {
-        formDataObj.passwordEls = null;
-      }
-    }
-  }
-
-  function locatePassword(
-    form: HTMLFormElement,
-    passwordData: any,
-    inputs: HTMLInputElement[],
-    doLastFallback: boolean
-  ) {
-    let el = locateField(form, passwordData, inputs);
-    if (el != null && el.type !== "password") {
-      el = null;
-    }
-    if (doLastFallback && el == null) {
-      el = form.querySelector('input[type="password"]');
-    }
-    return el;
-  }
-
-  function locateField(form: HTMLFormElement, fieldData: any, inputs: HTMLInputElement[]) {
-    if (fieldData == null) {
-      return;
-    }
-    let el: HTMLInputElement = null;
-    if (fieldData.htmlID != null && fieldData.htmlID !== "") {
-      try {
-        el = form.querySelector("#" + fieldData.htmlID);
-      } catch {
-        // Ignore error, we perform fallbacks below.
-      }
-    }
-    if (el == null && fieldData.htmlName != null && fieldData.htmlName !== "") {
-      el = form.querySelector('input[name="' + fieldData.htmlName + '"]');
-    }
-    if (el == null && fieldData.elementNumber != null) {
-      el = inputs[fieldData.elementNumber];
-    }
-    return el;
-  }
-
-  function formSubmitted(e: Event) {
-    let form: HTMLFormElement = null;
-    if (e.type === "click") {
-      form = (e.target as HTMLElement).closest("form");
-      if (form == null) {
-        const parentModal = (e.target as HTMLElement).closest("div.modal");
-        if (parentModal != null) {
-          const modalForms = parentModal.querySelectorAll("form");
-          if (modalForms.length === 1) {
-            form = modalForms[0];
-          }
-        }
-      }
-    } else {
-      form = e.target as HTMLFormElement;
-    }
-
-    if (form == null || form.dataset.bitwardenProcessed === "1") {
-      return;
-    }
-
-    for (let i = 0; i < formData.length; i++) {
-      if (formData[i].formEl !== form) {
-        continue;
-      }
-      const disabledBoth = disabledChangedPasswordNotification && disabledAddLoginNotification;
-      if (!disabledBoth && formData[i].usernameEl != null && formData[i].passwordEl != null) {
-        const login: AddLoginRuntimeMessage = {
-          username: formData[i].usernameEl.value,
-          password: formData[i].passwordEl.value,
-          url: document.URL,
-        };
-
-        if (
-          login.username != null &&
-          login.username !== "" &&
-          login.password != null &&
-          login.password !== ""
-        ) {
-          processedForm(form);
-          sendPlatformMessage({
-            command: "bgAddLogin",
-            login: login,
-          });
-          break;
-        }
-      }
-      if (!disabledChangedPasswordNotification && formData[i].passwordEls != null) {
-        const passwords: string[] = formData[i].passwordEls
-          .filter((el: HTMLInputElement) => el.value != null && el.value !== "")
-          .map((el: HTMLInputElement) => el.value);
-
-        let curPass: string = null;
-        let newPass: string = null;
-        let newPassOnly = false;
-        if (formData[i].passwordEls.length === 3 && passwords.length === 3) {
-          newPass = passwords[1];
-          if (passwords[0] !== newPass && newPass === passwords[2]) {
-            curPass = passwords[0];
-          } else if (newPass !== passwords[2] && passwords[0] === newPass) {
-            curPass = passwords[2];
-          }
-        } else if (formData[i].passwordEls.length === 2 && passwords.length === 2) {
-          if (passwords[0] === passwords[1]) {
-            newPassOnly = true;
-            newPass = passwords[0];
-            curPass = null;
-          } else {
-            const buttonText = getButtonText(getSubmitButton(form, changePasswordButtonNames));
-            const matches = Array.from(changePasswordButtonContainsNames).filter(
-              (n) => buttonText.indexOf(n) > -1
-            );
-            if (matches.length > 0) {
-              curPass = passwords[0];
-              newPass = passwords[1];
-            }
-          }
-        }
-
-        if ((newPass != null && curPass != null) || (newPassOnly && newPass != null)) {
-          processedForm(form);
-
-          const changePasswordRuntimeMessage: ChangePasswordRuntimeMessage = {
-            newPassword: newPass,
-            currentPassword: curPass,
-            url: document.URL,
-          };
-          sendPlatformMessage({
-            command: "bgChangedPassword",
-            data: changePasswordRuntimeMessage,
-          });
-          break;
-        }
-      }
-    }
-  }
-
-  function getSubmitButton(wrappingEl: HTMLElement, buttonNames: Set<string>) {
-    if (wrappingEl == null) {
-      return null;
-    }
-
-    const wrappingElIsForm = wrappingEl.tagName.toLowerCase() === "form";
-
-    let submitButton = wrappingEl.querySelector(
-      'input[type="submit"], input[type="image"], ' + 'button[type="submit"]'
-    ) as HTMLElement;
-    if (submitButton == null && wrappingElIsForm) {
-      submitButton = wrappingEl.querySelector("button:not([type])");
-      if (submitButton != null) {
-        const buttonText = getButtonText(submitButton);
-        if (buttonText != null && cancelButtonNames.has(buttonText.trim().toLowerCase())) {
-          submitButton = null;
-        }
-      }
-    }
-    if (submitButton == null) {
-      const possibleSubmitButtons = Array.from(
-        wrappingEl.querySelectorAll(
-          'a, span, button[type="button"], ' + 'input[type="button"], button:not([type])'
-        )
-      ) as HTMLElement[];
-      let typelessButton: HTMLElement = null;
-      possibleSubmitButtons.forEach((button) => {
-        if (submitButton != null || button == null || button.tagName == null) {
-          return;
-        }
-        const buttonText = getButtonText(button);
-        if (buttonText != null) {
-          if (
-            typelessButton != null &&
-            button.tagName.toLowerCase() === "button" &&
-            button.getAttribute("type") == null &&
-            !cancelButtonNames.has(buttonText.trim().toLowerCase())
-          ) {
-            typelessButton = button;
-          } else if (buttonNames.has(buttonText.trim().toLowerCase())) {
-            submitButton = button;
-          }
-        }
-      });
-      if (submitButton == null && typelessButton != null) {
-        submitButton = typelessButton;
-      }
-    }
-    if (submitButton == null && wrappingElIsForm) {
-      // Maybe it's in a modal?
-      const parentModal = wrappingEl.closest("div.modal") as HTMLElement;
-      if (parentModal != null) {
-        const modalForms = parentModal.querySelectorAll("form");
-        if (modalForms.length === 1) {
-          submitButton = getSubmitButton(parentModal, buttonNames);
-        }
-      }
-    }
-    return submitButton;
-  }
-
-  function getButtonText(button: HTMLElement) {
-    let buttonText: string = null;
-    if (button.tagName.toLowerCase() === "input") {
-      buttonText = (button as HTMLInputElement).value;
-    } else {
-      buttonText = button.innerText;
-    }
-    return buttonText;
-  }
-
-  function processedForm(form: HTMLFormElement) {
-    form.dataset.bitwardenProcessed = "1";
-    window.setTimeout(() => {
-      form.dataset.bitwardenProcessed = "0";
-    }, 500);
   }
 
   function closeExistingAndOpenBar(type: string, typeData: any) {
