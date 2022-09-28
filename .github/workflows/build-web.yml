@@ -344,12 +344,12 @@ jobs:
           name: web-${{ env._VERSION }}-ee.zip
           path: apps/web
 
-      - name: Extract web-ee artifact
-        working-directory: apps/web
-        run: |
-          pwd
-          ls -la
-          unzip web-${{ env._VERSION }}-ee.zip
+      # - name: Extract web-ee artifact
+      #   working-directory: apps/web
+      #   run: |
+      #     pwd
+      #     ls -la
+      #     unzip web-${{ env._VERSION }}-ee.zip
 
       - name: Build Docker image
         working-directory: apps/web
