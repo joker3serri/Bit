@@ -5442,9 +5442,6 @@
   "searchSecrets":{
     "message":"Search Secrets"
   },
-  "editProject":{
-    "message": "Edit Project"
-  },
   "addProject":{
     "message": "Add Project"
   },

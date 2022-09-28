@@ -1,2 +1,6 @@
 <sm-header title="projects" searchTitle="searchProjects"></sm-header>
-<sm-projects-list [projects]="projects"></sm-projects-list>
+<sm-projects-list
+  (newProjectEvent)="openNewProjectDialog()"
+  (editProjectEvent)="openEditProject($event)"
+  [projects]="projects"
+></sm-projects-list>

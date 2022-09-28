@@ -3,7 +3,13 @@ import { ActivatedRoute } from "@angular/router";
 import { combineLatestWith, startWith, Subject, switchMap, takeUntil } from "rxjs";
 
 import { ProjectListView } from "@bitwarden/common/models/view/projectListView";
+import { DialogService } from "@bitwarden/components";
 
+import {
+  OperationType,
+  ProjectDialogComponent,
+  ProjectOperation,
+} from "./dialog/project-dialog.component";
 import { ProjectService } from "./project.service";
 
 @Component({
@@ -16,7 +22,11 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   private organizationId: string;
   private destroy$ = new Subject<void>();
 
-  constructor(private route: ActivatedRoute, private projectService: ProjectService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private projectService: ProjectService,
+    private dialogService: DialogService
+  ) {}
 
   ngOnInit() {
     this.projectService.project$
@@ -39,5 +49,24 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   private async getProjects(): Promise<ProjectListView[]> {
     return await this.projectService.getProjects(this.organizationId);
+  }
+
+  openEditProject(projectId: string) {
+    this.dialogService.open<unknown, ProjectOperation>(ProjectDialogComponent, {
+      data: {
+        organizationId: this.organizationId,
+        operation: OperationType.Edit,
+        projectId: projectId,
+      },
+    });
+  }
+
+  openNewProjectDialog() {
+    this.dialogService.open<unknown, ProjectOperation>(ProjectDialogComponent, {
+      data: {
+        organizationId: this.organizationId,
+        operation: OperationType.Add,
+      },
+    });
   }
 }
