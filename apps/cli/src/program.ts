@@ -188,6 +188,7 @@ export class Program extends BaseProgram {
         writeLn("\n  Examples:");
         writeLn("");
         writeLn("");
+        writeLn("");
         writeLn("    bw lock");
         writeLn("", true);
       })
