@@ -1,11 +1,9 @@
-import { Injectable } from "@angular/core";
-
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { ValidationService as ValidationServiceAbstraction } from "@bitwarden/common/abstractions/validation.service";
 import { ErrorResponse } from "@bitwarden/common/models/response/errorResponse";
 
-@Injectable()
-export class ValidationService {
+export class ValidationService implements ValidationServiceAbstraction {
   constructor(
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService
@@ -19,7 +17,7 @@ export class ValidationService {
       errors.push(data);
     } else if (data == null || typeof data !== "object") {
       errors.push(defaultErrorMessage);
-    } else if (data.validationErrors != null) {
+    } else if (data && data.validationErrors != null) {
       errors = errors.concat((data as ErrorResponse).getAllMessages());
     } else {
       errors.push(data.message ? data.message : defaultErrorMessage);
