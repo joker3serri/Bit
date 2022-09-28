@@ -1,5 +1,3 @@
-export {};
-
 declare function escape(s: string): string;
 declare function unescape(s: string): string;
 /**
@@ -126,13 +124,11 @@ declare namespace chrome {
     | undefined;
 }
 
+interface Window {
+  opr: Opera | undefined;
+  opera: unknown;
+}
+
 declare let opr: Opera | undefined;
 declare let opera: unknown | undefined;
 declare let safari: any;
-
-declare global {
-  interface Window {
-    opr: Opera | undefined;
-    opera: unknown;
-  }
-}

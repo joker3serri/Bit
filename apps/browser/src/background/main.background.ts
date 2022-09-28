@@ -109,9 +109,6 @@ import RuntimeBackground from "./runtime.background";
 import TabsBackground from "./tabs.background";
 import WebRequestBackground from "./webRequest.background";
 
-type CommonSidebarAction = typeof chrome.sidebarAction | OperaSidebarAction;
-type BrowserOrSidebarAction = typeof chrome.browserAction | CommonSidebarAction;
-
 export default class MainBackground {
   messagingService: MessagingServiceAbstraction;
   storageService: AbstractStorageService;
@@ -177,7 +174,7 @@ export default class MainBackground {
   private tabsBackground: TabsBackground;
   private webRequestBackground: WebRequestBackground;
 
-  private sidebarAction: CommonSidebarAction;
+  private sidebarAction: any;
   private buildingContextMenu: boolean;
   private menuOptionsLoaded: any[] = [];
   private syncTimeout: any;
@@ -467,7 +464,7 @@ export default class MainBackground {
       ? null
       : typeof opr !== "undefined" && opr.sidebarAction
       ? opr.sidebarAction
-      : window.chrome.sidebarAction;
+      : (window as any).chrome.sidebarAction;
 
     // Background
     this.runtimeBackground = new RuntimeBackground(
@@ -999,11 +996,7 @@ export default class MainBackground {
     });
   }
 
-  private async actionSetIcon(
-    theAction: BrowserOrSidebarAction,
-    suffix: string,
-    windowId?: number
-  ): Promise<void> {
+  private async actionSetIcon(theAction: any, suffix: string, windowId?: number): Promise<void> {
     if (!theAction || !theAction.setIcon) {
       return;
     }
@@ -1029,8 +1022,8 @@ export default class MainBackground {
     }
   }
 
-  private actionSetBadgeBackgroundColor(action: BrowserOrSidebarAction) {
-    if (action && "setBadgeBackgroundColor" in action) {
+  private actionSetBadgeBackgroundColor(action: any) {
+    if (action && action.setBadgeBackgroundColor) {
       action.setBadgeBackgroundColor({ color: "#294e5f" });
     }
   }
@@ -1049,7 +1042,7 @@ export default class MainBackground {
       return;
     }
 
-    if ("setBadgeText" in this.sidebarAction) {
+    if (this.sidebarAction.setBadgeText) {
       this.sidebarAction.setBadgeText({
         text: text,
         tabId: tabId,
