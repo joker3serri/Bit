@@ -245,7 +245,7 @@ jobs:
         run: docker logout
 
   build-containers:
-    name: Build Docker images for QA environment
+    name: Build Docker images for bitwardenqa
     runs-on: ubuntu-22.04
     needs:
       - setup
