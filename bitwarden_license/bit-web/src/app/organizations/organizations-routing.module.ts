@@ -2,11 +2,11 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
+import { canAccessManageTab } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { OrganizationPermissionsGuard } from "@bitwarden/web-vault/app/organizations/guards/org-permissions.guard";
 import { OrganizationLayoutComponent } from "@bitwarden/web-vault/app/organizations/layouts/organization-layout.component";
 import { ManageComponent } from "@bitwarden/web-vault/app/organizations/manage/manage.component";
-import { canAccessManageTab } from "@bitwarden/web-vault/app/organizations/navigation-permissions";
 
 import { ScimComponent } from "./manage/scim.component";
 import { SsoComponent } from "./manage/sso.component";
