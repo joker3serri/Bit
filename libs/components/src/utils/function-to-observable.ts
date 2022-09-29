@@ -9,14 +9,9 @@ export type FunctionReturningAwaitable =
 
 export function functionToObservable(func: FunctionReturningAwaitable): Observable<unknown> {
   let awaitable: unknown;
-  let error: unknown;
   try {
     awaitable = func();
-  } catch (e) {
-    error = e;
-  }
-
-  if (error) {
+  } catch (error) {
     return throwError(() => error);
   }
 
