@@ -1,5 +1,4 @@
 import { ApiService } from "../../abstractions/api.service";
-import { OrganizationService } from "../../abstractions/organization.service";
 import { PolicyApiServiceAbstraction } from "../../abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "../../abstractions/policy/policy.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
@@ -10,6 +9,7 @@ import { Policy } from "../../models/domain/policy";
 import { PolicyRequest } from "../../models/request/policyRequest";
 import { ListResponse } from "../../models/response/listResponse";
 import { PolicyResponse } from "../../models/response/policyResponse";
+import { OrganizationService } from "../organization/organization.service";
 
 export class PolicyApiService implements PolicyApiServiceAbstraction {
   constructor(
