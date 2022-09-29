@@ -96,7 +96,8 @@
           }
         ]
       }
-    ]
+    ],
+    "no-restricted-imports": ["error", { "patterns": ["src/**/*"] }]
   },
   "overrides": [
     {
