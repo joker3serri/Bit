@@ -2,9 +2,9 @@ import { Component, HostBinding, Input } from "@angular/core";
 
 import { ButtonLikeComponent } from "../shared/button-like.abstraction";
 
-export type IconButtonStyle = "contrast" | "main" | "muted" | "primary" | "secondary" | "danger";
+export type IconButtonType = "contrast" | "main" | "muted" | "primary" | "secondary" | "danger";
 
-const styles: Record<IconButtonStyle, string[]> = {
+const styles: Record<IconButtonType, string[]> = {
   contrast: [
     "tw-bg-transparent",
     "!tw-text-contrast",
@@ -86,7 +86,7 @@ const sizes: Record<IconButtonSize, string[]> = {
 export class BitIconButtonComponent implements ButtonLikeComponent {
   icon: string;
 
-  @Input() buttonType: IconButtonStyle = "main";
+  @Input() buttonType: IconButtonType = "main";
 
   @Input() size: IconButtonSize = "default";
 
