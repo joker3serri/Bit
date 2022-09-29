@@ -107,6 +107,12 @@
       }
     },
     {
+      "files": ["libs/components/src/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", { "patterns": ["@bitwarden/components/*", "src/**/*"] }]
+      }
+    },
+    {
       "files": ["libs/angular/src/**/*.ts"],
       "rules": {
         "no-restricted-imports": ["error", { "patterns": ["@bitwarden/angular/*", "src/**/*"] }]
