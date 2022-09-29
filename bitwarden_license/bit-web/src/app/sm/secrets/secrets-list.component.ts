@@ -4,11 +4,15 @@ import { Subject, takeUntil } from "rxjs";
 
 import { SecretListView } from "@bitwarden/common/models/view/secretListView";
 
+import { SecretManagerType } from "../layout/empty-list.component";
+
 @Component({
   selector: "sm-secrets-list",
   templateUrl: "./secrets-list.component.html",
 })
 export class SecretsListComponent implements OnDestroy {
+  readonly SecretManagerType = SecretManagerType;
+
   @Input()
   get secrets(): SecretListView[] {
     return this._secrets;
