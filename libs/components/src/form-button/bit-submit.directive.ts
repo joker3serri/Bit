@@ -1,6 +1,8 @@
-import { Directive, Input, OnDestroy, OnInit } from "@angular/core";
+import { Directive, Input, OnDestroy, OnInit, Optional } from "@angular/core";
 import { FormGroupDirective } from "@angular/forms";
 import { BehaviorSubject, catchError, of, Subject, switchMap, takeUntil } from "rxjs";
+
+import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 
 import { FunctionReturningAwaitable, functionToObservable } from "../utils/function-to-observable";
 
@@ -17,7 +19,10 @@ export class BitSubmitDirective implements OnInit, OnDestroy {
   readonly loading$ = this._loading$.asObservable();
   readonly disabled$ = this._disabled$.asObservable();
 
-  constructor(private formGroupDirective: FormGroupDirective) {
+  constructor(
+    private formGroupDirective: FormGroupDirective,
+    @Optional() validationService?: ValidationService
+  ) {
     formGroupDirective.ngSubmit
       .pipe(
         switchMap(() => {
@@ -27,10 +32,10 @@ export class BitSubmitDirective implements OnInit, OnDestroy {
 
           // Disable form
           this.loading = true;
+
           return awaitable.pipe(
             catchError((err: unknown) => {
-              // eslint-disable-next-line no-console
-              console.error("Uncaught submit error", err);
+              validationService?.showError(err);
               return of(undefined);
             })
           );

@@ -1,8 +1,10 @@
 import { Component } from "@angular/core";
 import { FormsModule, ReactiveFormsModule, Validators, FormBuilder } from "@angular/forms";
+import { action } from "@storybook/addon-actions";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 import { delay, of } from "rxjs";
 
+import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
 
 import { AsyncModule } from "../async";
@@ -117,6 +119,12 @@ export default {
               inputEmail: "Input is not an email-address.",
             });
           },
+        },
+        {
+          provide: ValidationService,
+          useValue: {
+            showError: action("ValidationService.showError"),
+          } as Partial<ValidationService>,
         },
       ],
     }),

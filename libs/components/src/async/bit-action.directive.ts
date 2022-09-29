@@ -1,5 +1,7 @@
 import { Directive, HostListener, Input, OnDestroy, Optional } from "@angular/core";
-import { BehaviorSubject, finalize, Subject, takeUntil } from "rxjs";
+import { BehaviorSubject, finalize, Subject, takeUntil, tap } from "rxjs";
+
+import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 
 import { ButtonComponent } from "../button";
 import { FunctionReturningAwaitable, functionToObservable } from "../utils/function-to-observable";
@@ -15,7 +17,10 @@ export class BitActionDirective implements OnDestroy {
 
   readonly loading$ = this._loading$.asObservable();
 
-  constructor(@Optional() private buttonComponent?: ButtonComponent) {}
+  constructor(
+    @Optional() private buttonComponent?: ButtonComponent,
+    @Optional() private validationService?: ValidationService
+  ) {}
 
   get loading() {
     return this._loading$.value;
@@ -37,6 +42,7 @@ export class BitActionDirective implements OnDestroy {
     this.loading = true;
     functionToObservable(this.handler)
       .pipe(
+        tap({ error: (err: unknown) => this.validationService?.showError(err) }),
         finalize(() => (this.loading = false)),
         takeUntil(this.destroy$)
       )

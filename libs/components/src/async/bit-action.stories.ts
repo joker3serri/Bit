@@ -1,6 +1,9 @@
 import { Component } from "@angular/core";
+import { action } from "@storybook/addon-actions";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 import { delay, of } from "rxjs";
+
+import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 
 import { ButtonModule } from "../button";
 
@@ -28,13 +31,37 @@ class ObservableExampleComponent {
   };
 }
 
+@Component({
+  template: `<button bitButton buttonType="primary" [bitAction]="action">Perform action</button>`,
+  selector: "app-rejected-promise-example",
+})
+class RejectedPromiseExampleComponent {
+  action = async () => {
+    await new Promise<void>((resolve, reject) => {
+      setTimeout(() => reject(new Error("Simulated error")), 2000);
+    });
+  };
+}
+
 export default {
   title: "Component Library/Async/Action",
   decorators: [
     moduleMetadata({
-      declarations: [BitActionDirective, PromiseExampleComponent, ObservableExampleComponent],
+      declarations: [
+        BitActionDirective,
+        PromiseExampleComponent,
+        ObservableExampleComponent,
+        RejectedPromiseExampleComponent,
+      ],
       imports: [ButtonModule],
-      providers: [],
+      providers: [
+        {
+          provide: ValidationService,
+          useValue: {
+            showError: action("ValidationService.showError"),
+          } as Partial<ValidationService>,
+        },
+      ],
     }),
   ],
 } as Meta;
@@ -53,3 +80,11 @@ const ObservableTemplate: Story<ObservableExampleComponent> = (
 });
 
 export const UsingObservable = ObservableTemplate.bind({});
+
+const RejectedPromiseTemplate: Story<ObservableExampleComponent> = (
+  args: ObservableExampleComponent
+) => ({
+  template: `<app-rejected-promise-example></app-rejected-promise-example>`,
+});
+
+export const RejectedPromise = RejectedPromiseTemplate.bind({});
