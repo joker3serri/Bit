@@ -10,6 +10,7 @@ import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
 import { AsyncModule } from "../async";
 import { ButtonModule } from "../button";
 import { FormFieldModule } from "../form-field";
+import { IconButtonModule } from "../icon-button";
 import { InputModule } from "../input/input.module";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
@@ -31,6 +32,7 @@ const template = `
     <button class="tw-mr-2" type="submit" buttonType="primary" bitFormButton>Submit</button>
     <button class="tw-mr-2" type="button" buttonType="secondary" bitFormButton>Cancel</button>
     <button class="tw-mr-2" type="button" buttonType="danger" bitFormButton [bitAction]="delete">Delete</button>
+    <button class="tw-mr-2" type="button" buttonType="secondary" bitFormIconButton="bwi-star" [bitAction]="delete">Delete</button>
   </form>`;
 
 @Component({
@@ -107,6 +109,7 @@ export default {
         FormFieldModule,
         InputModule,
         ButtonModule,
+        IconButtonModule,
         AsyncModule,
       ],
       providers: [

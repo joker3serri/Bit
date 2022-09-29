@@ -1,5 +1,7 @@
 import { Component, HostBinding, Input } from "@angular/core";
 
+import { ButtonLikeComponent } from "../shared/button-like.abstraction";
+
 export type IconButtonStyle = "contrast" | "main" | "muted" | "primary" | "secondary" | "danger";
 
 const styles: Record<IconButtonStyle, string[]> = {
@@ -71,15 +73,26 @@ const sizes: Record<IconButtonSize, string[]> = {
 };
 
 @Component({
-  selector: "button[bitIconButton]",
-  template: `<i class="bwi" [ngClass]="iconClass" aria-hidden="true"></i>`,
+  selector: "button[bitIconButton], button[bitFormIconButton]",
+  templateUrl: "icon-button.component.html",
+  providers: [{ provide: ButtonLikeComponent, useExisting: BitIconButtonComponent }],
 })
-export class BitIconButtonComponent {
-  @Input("bitIconButton") icon: string;
+export class BitIconButtonComponent implements ButtonLikeComponent {
+  icon: string;
 
   @Input() buttonType: IconButtonStyle = "main";
 
   @Input() size: IconButtonSize = "default";
+
+  @Input("bitIconButton")
+  set bitIconButton(value: string) {
+    this.icon = value;
+  }
+
+  @Input("bitFormIconButton")
+  set bitFormIconButton(value: string) {
+    this.icon = value;
+  }
 
   @HostBinding("class") get classList() {
     return [
@@ -117,4 +130,13 @@ export class BitIconButtonComponent {
   get iconClass() {
     return [this.icon, "!tw-m-0"];
   }
+
+  @HostBinding("attr.disabled")
+  get disabledAttr() {
+    const disabled = this.disabled != null && this.disabled !== false;
+    return disabled || this.loading ? true : null;
+  }
+
+  @Input() loading = false;
+  @Input() disabled = false;
 }

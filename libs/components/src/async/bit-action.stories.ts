@@ -6,11 +6,18 @@ import { delay, of } from "rxjs";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 
 import { ButtonModule } from "../button";
+import { IconButtonModule } from "../icon-button";
 
 import { BitActionDirective } from "./bit-action.directive";
 
+const template = `
+  <button bitButton buttonType="primary" [bitAction]="action" class="tw-mr-2">
+    Perform action
+  </button>
+  <button bitIconButton="bwi-trash" buttonType="danger" [bitAction]="action"></button>`;
+
 @Component({
-  template: `<button bitButton buttonType="primary" [bitAction]="action">Perform action</button>`,
+  template,
   selector: "app-promise-example",
 })
 class PromiseExampleComponent {
@@ -22,7 +29,7 @@ class PromiseExampleComponent {
 }
 
 @Component({
-  template: `<button bitButton buttonType="primary" [bitAction]="action">Perform action</button>`,
+  template,
   selector: "app-observable-example",
 })
 class ObservableExampleComponent {
@@ -32,7 +39,7 @@ class ObservableExampleComponent {
 }
 
 @Component({
-  template: `<button bitButton buttonType="primary" [bitAction]="action">Perform action</button>`,
+  template,
   selector: "app-rejected-promise-example",
 })
 class RejectedPromiseExampleComponent {
@@ -53,7 +60,7 @@ export default {
         ObservableExampleComponent,
         RejectedPromiseExampleComponent,
       ],
-      imports: [ButtonModule],
+      imports: [ButtonModule, IconButtonModule],
       providers: [
         {
           provide: ValidationService,

@@ -3,7 +3,7 @@ import { BehaviorSubject, finalize, Subject, takeUntil, tap } from "rxjs";
 
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 
-import { ButtonComponent } from "../button";
+import { ButtonLikeComponent } from "../shared/button-like.abstraction";
 import { FunctionReturningAwaitable, functionToObservable } from "../utils/function-to-observable";
 
 @Directive({
@@ -18,7 +18,7 @@ export class BitActionDirective implements OnDestroy {
   readonly loading$ = this._loading$.asObservable();
 
   constructor(
-    @Optional() private buttonComponent?: ButtonComponent,
+    private buttonComponent: ButtonLikeComponent,
     @Optional() private validationService?: ValidationService
   ) {}
 
