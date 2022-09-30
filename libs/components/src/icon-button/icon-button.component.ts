@@ -1,6 +1,6 @@
 import { Component, HostBinding, Input } from "@angular/core";
 
-import { ButtonLikeComponent } from "../shared/button-like.abstraction";
+import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 
 export type IconButtonType = "contrast" | "main" | "muted" | "primary" | "secondary" | "danger";
 
@@ -81,9 +81,9 @@ const sizes: Record<IconButtonSize, string[]> = {
 @Component({
   selector: "button[bitIconButton]",
   templateUrl: "icon-button.component.html",
-  providers: [{ provide: ButtonLikeComponent, useExisting: BitIconButtonComponent }],
+  providers: [{ provide: ButtonLikeAbstraction, useExisting: BitIconButtonComponent }],
 })
-export class BitIconButtonComponent implements ButtonLikeComponent {
+export class BitIconButtonComponent implements ButtonLikeAbstraction {
   @Input("bitIconButton") icon: string;
 
   @Input() buttonType: IconButtonType = "main";

@@ -1,6 +1,6 @@
 import { Input, HostBinding, Component } from "@angular/core";
 
-import { ButtonLikeComponent } from "../shared/button-like.abstraction";
+import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 
 export type ButtonTypes = "primary" | "secondary" | "danger";
 
@@ -43,9 +43,9 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
 @Component({
   selector: "button[bitButton], a[bitButton]",
   templateUrl: "button.component.html",
-  providers: [{ provide: ButtonLikeComponent, useExisting: ButtonComponent }],
+  providers: [{ provide: ButtonLikeAbstraction, useExisting: ButtonComponent }],
 })
-export class ButtonComponent implements ButtonLikeComponent {
+export class ButtonComponent implements ButtonLikeAbstraction {
   @HostBinding("class") get classList() {
     return [
       "tw-font-semibold",

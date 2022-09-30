@@ -1,4 +1,4 @@
-export abstract class ButtonLikeComponent {
+export abstract class ButtonLikeAbstraction {
   loading: boolean;
   disabled: boolean;
 }

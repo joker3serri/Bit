@@ -1,7 +1,7 @@
 import { Directive, Input, OnDestroy, Optional } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
-import { ButtonLikeComponent } from "../shared/button-like.abstraction";
+import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 
 import { BitSubmitDirective } from "./bit-submit.directive";
 
@@ -16,7 +16,7 @@ export class BitFormButtonDirective implements OnDestroy {
   @Input() type: string;
 
   constructor(
-    private buttonComponent: ButtonLikeComponent,
+    private buttonComponent: ButtonLikeAbstraction,
     @Optional() submitDirective?: BitSubmitDirective,
     @Optional() actionDirective?: BitActionDirective
   ) {
