@@ -28,9 +28,7 @@ export class BitActionDirective implements OnDestroy {
 
   set loading(value: boolean) {
     this._loading$.next(value);
-    if (this.buttonComponent) {
-      this.buttonComponent.loading = value;
-    }
+    this.buttonComponent.loading = value;
   }
 
   @HostListener("click")
