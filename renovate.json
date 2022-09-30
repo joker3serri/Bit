@@ -8,37 +8,21 @@
     ":rebaseStalePrs",
     ":disableMajorUpdates"
   ],
-  "enabledManagers": [
-    "npm"
-  ],
+  "enabledManagers": ["npm"],
   "packageRules": [
     {
-      "matchPackagePatterns": [
-        "typescript"
-      ],
+      "matchPackagePatterns": ["typescript"],
       "enabled": false
     },
     {
-      "matchManagers": [
-        "npm"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["minor", "patch"],
       "groupName": "npm"
     },
     {
-      "packageNames": [
-        "typescript"
-      ],
+      "packageNames": ["typescript"],
       "updateTypes": "patch"
     }
   ],
-  "ignoreDeps": [
-    "bootstrap",
-    "electron-builder",
-    "node-ipc",
-    "regedit"
-  ]
+  "ignoreDeps": ["bootstrap", "electron-builder", "node-ipc", "regedit"]
 }
