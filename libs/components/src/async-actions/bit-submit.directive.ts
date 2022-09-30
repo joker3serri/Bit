@@ -6,6 +6,9 @@ import { ValidationService } from "@bitwarden/common/abstractions/validation.ser
 
 import { FunctionReturningAwaitable, functionToObservable } from "../utils/function-to-observable";
 
+/**
+ * Allow a form to perform async actions on submit, disabling the form while the action is processing.
+ */
 @Directive({
   selector: "[formGroup][bitSubmit]",
 })

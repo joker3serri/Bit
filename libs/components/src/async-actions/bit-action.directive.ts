@@ -6,6 +6,10 @@ import { ValidationService } from "@bitwarden/common/abstractions/validation.ser
 import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 import { FunctionReturningAwaitable, functionToObservable } from "../utils/function-to-observable";
 
+/**
+ * Allow a single button to perform async actions on click and reflect the progress in the UI by automatically
+ * activating the loading effect while the action is processed.
+ */
 @Directive({
   selector: "[bitAction]",
 })
