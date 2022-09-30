@@ -7,7 +7,6 @@ import { delay, of } from "rxjs";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
 
-import { BitSubmitDirective } from "../async-actions/bit-submit.directive";
 import { ButtonModule } from "../button";
 import { FormFieldModule } from "../form-field";
 import { IconButtonModule } from "../icon-button";
@@ -15,6 +14,7 @@ import { InputModule } from "../input/input.module";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { BitActionDirective } from "./bit-action.directive";
+import { BitSubmitDirective } from "./bit-submit.directive";
 import { BitFormButtonDirective } from "./form-button.directive";
 
 const template = `
