@@ -5409,6 +5409,9 @@
   "serviceAccount":{
     "message": "Service Account"
   },
+  "newServiceAccount": {
+    "message": "New Service Account"
+  },
   "serviceAccounts":{
     "message": "Service Accounts"
   },
@@ -5454,11 +5457,11 @@
   "projectCreated":{
     "message":"Project created"
   },
-  "projectCreatedExclamation":{
-    "message":"Project created!"
-  },
   "projectName":{
     "message":"Project Name"
+  },
+  "newProject":{
+    "message":"New Project"
   },
   "softDeleteSecretWarning":{
     "message":"Deleting secrets can affect existing integrations."
