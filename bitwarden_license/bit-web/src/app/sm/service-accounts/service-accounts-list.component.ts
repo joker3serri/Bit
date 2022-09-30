@@ -4,15 +4,11 @@ import { Subject, takeUntil } from "rxjs";
 
 import { ServiceAccountView } from "@bitwarden/common/models/view/service-account-view";
 
-import { SecretManagerType } from "../layout/empty-list.component";
-
 @Component({
   selector: "sm-service-accounts-list",
   templateUrl: "./service-accounts-list.component.html",
 })
 export class ServiceAccountsListComponent implements OnDestroy {
-  readonly SecretManagerType = SecretManagerType;
-
   @Input()
   get serviceAccounts(): ServiceAccountView[] {
     return this._serviceAccounts;
@@ -23,6 +19,7 @@ export class ServiceAccountsListComponent implements OnDestroy {
   }
   private _serviceAccounts: ServiceAccountView[];
 
+  @Output() newServiceAccountEvent = new EventEmitter();
   @Output() viewServiceAccountEvent = new EventEmitter<string>();
   @Output() deleteServiceAccountsEvent = new EventEmitter<string[]>();
   @Output() onServiceAccountCheckedEvent = new EventEmitter<string[]>();
