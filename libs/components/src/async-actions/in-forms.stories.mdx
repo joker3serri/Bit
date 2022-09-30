@@ -21,9 +21,9 @@ useful for aborting an action.
 **NOTE:**
 
 - Defining the handlers as arrow-functions assigned to variables is mandatory if the handler needs access to the parent
-component using the variable `this`.
+  component using the variable `this`.
 - `formGroup.invalid` will always return `true` after the first `await` operation, event if the form is not actually
-invalid. This is due to the form getting disabled by the `bitSubmit` directive while waiting for the async action to complete.
+  invalid. This is due to the form getting disabled by the `bitSubmit` directive while waiting for the async action to complete.
 
 ```ts
 @Component({...})
