@@ -17,7 +17,7 @@ export class ValidationService implements ValidationServiceAbstraction {
       errors.push(data);
     } else if (data == null || typeof data !== "object") {
       errors.push(defaultErrorMessage);
-    } else if (data && data.validationErrors != null) {
+    } else if (data.validationErrors != null) {
       errors = errors.concat((data as ErrorResponse).getAllMessages());
     } else {
       errors.push(data.message ? data.message : defaultErrorMessage);
