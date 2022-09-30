@@ -29,10 +29,10 @@ const template = `
       <input bitInput formControlName="email" />
     </bit-form-field>
 
-    <button class="tw-mr-2" type="submit" buttonType="primary" bitFormButton>Submit</button>
-    <button class="tw-mr-2" type="button" buttonType="secondary" bitFormButton>Cancel</button>
-    <button class="tw-mr-2" type="button" buttonType="danger" bitFormButton [bitAction]="delete">Delete</button>
-    <button class="tw-mr-2" type="button" buttonType="secondary" bitFormIconButton="bwi-star" [bitAction]="delete">Delete</button>
+    <button class="tw-mr-2" type="submit" buttonType="primary" bitButton bitFormButton>Submit</button>
+    <button class="tw-mr-2" type="button" buttonType="secondary" bitButton bitFormButton>Cancel</button>
+    <button class="tw-mr-2" type="button" buttonType="danger" bitButton bitFormButton [bitAction]="delete">Delete</button>
+    <button class="tw-mr-2" type="button" buttonType="secondary" bitIconButton="bwi-star" bitFormButton [bitAction]="delete">Delete</button>
   </form>`;
 
 @Component({

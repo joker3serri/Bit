@@ -8,7 +8,7 @@ import { BitSubmitDirective } from "./bit-submit.directive";
 import { BitActionDirective } from ".";
 
 @Directive({
-  selector: "button[bitFormButton], button[bitFormIconButton]",
+  selector: "button[bitFormButton]",
 })
 export class BitFormButtonDirective implements OnDestroy {
   private destroy$ = new Subject<void>();

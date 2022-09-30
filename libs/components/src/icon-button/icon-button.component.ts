@@ -79,26 +79,16 @@ const sizes: Record<IconButtonSize, string[]> = {
 };
 
 @Component({
-  selector: "button[bitIconButton], button[bitFormIconButton]",
+  selector: "button[bitIconButton]",
   templateUrl: "icon-button.component.html",
   providers: [{ provide: ButtonLikeComponent, useExisting: BitIconButtonComponent }],
 })
 export class BitIconButtonComponent implements ButtonLikeComponent {
-  icon: string;
+  @Input("bitIconButton") icon: string;
 
   @Input() buttonType: IconButtonType = "main";
 
   @Input() size: IconButtonSize = "default";
-
-  @Input("bitIconButton")
-  set bitIconButton(value: string) {
-    this.icon = value;
-  }
-
-  @Input("bitFormIconButton")
-  set bitFormIconButton(value: string) {
-    this.icon = value;
-  }
 
   @HostBinding("class") get classList() {
     return [

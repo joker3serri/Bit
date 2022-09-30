@@ -41,7 +41,7 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
 };
 
 @Component({
-  selector: "button[bitButton], a[bitButton], button[bitFormButton]",
+  selector: "button[bitButton], a[bitButton]",
   templateUrl: "button.component.html",
   providers: [{ provide: ButtonLikeComponent, useExisting: ButtonComponent }],
 })
