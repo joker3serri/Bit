@@ -18,10 +18,11 @@ Adding async actions to submit buttons requires the following 3 steps
 A handler is a function that returns a promise or an observable. Functions that return `void` are also supported which is
 useful for aborting an action.
 
-**NOTE:** Defining the handlers as arrow-functions assigned to variables is mandatory if the handler needs access to the parent
-component using the variable `this`.
+**NOTE:**
 
-**NOTE:** `formGroup.invalid` will always return `true` after the first `await` operation, event if the form is not actually
+- Defining the handlers as arrow-functions assigned to variables is mandatory if the handler needs access to the parent
+component using the variable `this`.
+- `formGroup.invalid` will always return `true` after the first `await` operation, event if the form is not actually
 invalid. This is due to the form getting disabled by the `bitSubmit` directive while waiting for the async action to complete.
 
 ```ts
@@ -29,7 +30,7 @@ invalid. This is due to the form getting disabled by the `bitSubmit` directive w
 class Component {
   formGroup = this.formBuilder.group({...});
 
-  //note: submit can also return Observable instead of Promise
+  // submit can also return Observable instead of Promise
   submit = async () => {
     if (this.formGroup.invalid) {
       return;
@@ -84,7 +85,7 @@ class Component {
     // not relevant for this example
   }
 
-  //note: action can also return Observable instead of Promise
+  // action can also return Observable instead of Promise
   handler = async () => {
     if (/* perform guard check */) {
       return;
