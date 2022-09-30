@@ -118,7 +118,7 @@ export class TrayMain {
       return;
     }
 
-    this.tray = new Tray(this.icon);
+    this.tray = new Tray(this.icon, "26d4bea4-8d2d-41c7-a5d3-cc4c7d92d70e");
     this.tray.setToolTip(this.appName);
     this.tray.on("click", () => this.toggleWindow());
     this.tray.on("right-click", () => this.tray.popUpContextMenu(this.contextMenu));
