@@ -51,7 +51,7 @@ class RejectedPromiseExampleComponent {
 }
 
 export default {
-  title: "Component Library/Async/Action",
+  title: "Component Library/Async Actions/Standalone",
   decorators: [
     moduleMetadata({
       declarations: [

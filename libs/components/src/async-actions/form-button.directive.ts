@@ -1,10 +1,11 @@
 import { Directive, Input, OnDestroy, Optional } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
-import { BitActionDirective } from "../async";
 import { ButtonLikeComponent } from "../shared/button-like.abstraction";
 
 import { BitSubmitDirective } from "./bit-submit.directive";
+
+import { BitActionDirective } from ".";
 
 @Directive({
   selector: "button[bitFormButton], button[bitFormIconButton]",

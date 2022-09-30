@@ -7,14 +7,14 @@ import { delay, of } from "rxjs";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
 
-import { AsyncModule } from "../async";
+import { BitSubmitDirective } from "../async-actions/bit-submit.directive";
 import { ButtonModule } from "../button";
 import { FormFieldModule } from "../form-field";
 import { IconButtonModule } from "../icon-button";
 import { InputModule } from "../input/input.module";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
-import { BitSubmitDirective } from "./bit-submit.directive";
+import { BitActionDirective } from "./bit-action.directive";
 import { BitFormButtonDirective } from "./form-button.directive";
 
 const template = `
@@ -94,7 +94,7 @@ class ObservableExampleComponent {
 }
 
 export default {
-  title: "Component Library/Form/Button",
+  title: "Component Library/Async Actions/In Forms",
   decorators: [
     moduleMetadata({
       declarations: [
@@ -102,6 +102,7 @@ export default {
         BitFormButtonDirective,
         PromiseExampleComponent,
         ObservableExampleComponent,
+        BitActionDirective,
       ],
       imports: [
         FormsModule,
@@ -110,7 +111,6 @@ export default {
         InputModule,
         ButtonModule,
         IconButtonModule,
-        AsyncModule,
       ],
       providers: [
         {
