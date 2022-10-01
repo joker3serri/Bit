@@ -109,10 +109,6 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
       }, 5000);
     }
 
-    window.setTimeout(() => {
-      document.getElementById("search").focus();
-    }, 100);
-
     this.search$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => this.searchVault());
