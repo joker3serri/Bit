@@ -24,6 +24,7 @@
           type="text"
           [value]="f.value"
           readonly
+          tabindex="-1"
         />
 
         <input
@@ -33,6 +34,7 @@
           class="sr-only"
           [value]="f.value"
           readonly
+          tabindex="-1"
         />
         <div *ngIf="f.type === fieldType.Hidden" aria-hidden="true">
           <span *ngIf="!f.showValue" class="monospaced">{{ f.maskedValue }}</span>
@@ -63,6 +65,7 @@
           class="sr-only"
           [value]="('linkedValue' | i18n) + ': ' + cipher.linkedFieldI18nKey(f.linkedId)"
           readonly
+          tabindex="-1"
         />
         <div *ngIf="f.type === fieldType.Linked" class="box-content-row-flex" aria-hidden="true">
           <div class="icon icon-small">
@@ -80,9 +83,11 @@
           type="button"
           class="row-btn"
           appStopClick
+          attr.aria-label="{{ 'toggleVisibility' | i18n }} {{ f.name }}"
           appA11yTitle="{{ 'toggleVisibility' | i18n }}"
           *ngIf="f.type === fieldType.Hidden && cipher.viewPassword"
           (click)="toggleFieldValue(f)"
+          [attr.aria-pressed]="f.showValue"
         >
           <i
             class="bwi bwi-lg"
@@ -94,7 +99,11 @@
           type="button"
           class="row-btn"
           appStopClick
+          attr.aria-label="{{ 'copyValue' | i18n }} {{ f.name }}"
           appA11yTitle="{{ 'copyValue' | i18n }}"
+          [attr.aria-describedby]="
+            !(f.type === fieldType.Hidden && !f.showValue) ? 'fieldName' + i : null
+          "
           *ngIf="
             f.value &&
             f.type !== fieldType.Boolean &&
