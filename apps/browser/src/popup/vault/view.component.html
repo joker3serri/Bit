@@ -750,9 +750,14 @@
             *ngIf="u.isWebsite"
             >{{ "website" | i18n }}</label
           >
-          <span title="{{ u.uri }}">
-            <input id="hostOrUri{{ i }}" type="text" [value]="u.hostOrUri" readonly tabindex="-1" />
-          </span>
+          <input
+            id="hostOrUri{{ i }}"
+            type="text"
+            title="{{ u.uri }}"
+            [value]="u.hostOrUri"
+            readonly
+            tabindex="-1"
+          />
         </div>
         <div class="action-buttons">
           <button
