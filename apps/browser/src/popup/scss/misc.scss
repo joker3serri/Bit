@@ -388,6 +388,18 @@ input[type="password"]::-ms-reveal {
   }
 }
 
+// Text selection styles
+// Set explicit selection styles (assumes primary accent color has sufficient
+// contrast against the background, so its inversion is also still readable)
+// and suppress user selection for most elements (to make it more app-like)
+
+::selection {
+  @include themify($themes) {
+    color: themed("backgroundColor");
+    background-color: themed("primaryAccentColor");
+  }
+}
+
 h1,
 h2,
 h3,
@@ -422,15 +434,4 @@ app-vault-view .box-footer {
 }
 html.force_redraw {
   animation: redraw 1s linear infinite;
-}
-
-/* cipher view */
-input[readonly]:focus-visible,
-textarea[readonly]:focus-visible,
-input.sr-only:focus-visible + div {
-  border-bottom: 1px solid currentColor !important;
-  @include themify($themes) {
-    border-bottom-color: themed("mutedColor") !important;
-  }
-  margin-bottom: -1px;
 }
