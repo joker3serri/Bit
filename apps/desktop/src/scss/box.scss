@@ -226,10 +226,15 @@
   &.box-content-row-checkbox,
   &.box-content-row-input,
   &.box-content-row-slider,
-  &.box-content-row-multi {
+  &.box-content-row-multi,
+  &.box-content-row-textarea {
     display: flex;
     align-items: center;
     word-break: break-word;
+  }
+
+  &.box-content-row-textarea {
+    align-items: flex-start;
   }
 
   &.box-content-row-multi {
@@ -365,6 +370,11 @@
   .action-buttons {
     display: flex;
     margin-left: 5px;
+
+    &.action-buttons-absolute {
+      position: absolute;
+      right: 15px;
+    }
 
     .row-btn {
       @extend .icon-btn;
