@@ -112,6 +112,9 @@
   "notes": {
     "message": "Notes"
   },
+  "copyNotes": {
+    "message": "Copy Notes"
+  },
   "customFields": {
     "message": "Custom Fields"
   },
@@ -138,14 +141,23 @@
   "cardholderName": {
     "message": "Cardholder Name"
   },
+  "copyCardholderName": {
+    "message": "Copy Cardholder Name"
+  },
   "number": {
     "message": "Number"
   },
   "brand": {
     "message": "Brand"
   },
+  "copyBrand": {
+    "message": "Copy Brand"
+  },
   "expiration": {
     "message": "Expiration"
+  },
+  "copyExpiration": {
+    "message": "Copy Expiration"
   },
   "securityCode": {
     "message": "Security Code"
@@ -153,26 +165,50 @@
   "identityName": {
     "message": "Identity Name"
   },
+  "copyIdentityName": {
+    "message": "Copy Identity Name"
+  },
   "company": {
     "message": "Company"
+  },
+  "copyCompany": {
+    "message": "Copy Company"
   },
   "ssn": {
     "message": "Social Security Number"
   },
+  "copySsn": {
+    "message": "Copy Social Security Number"
+  },
   "passportNumber": {
     "message": "Passport Number"
+  },
+  "copyPassportNumber": {
+    "message": "Copy Passport Number"
   },
   "licenseNumber": {
     "message": "License Number"
   },
+  "copyLicenseNumber": {
+    "message": "Copy License Number"
+  },
   "email": {
     "message": "Email"
+  },
+  "copyEmail": {
+    "message": "Copy Email"
   },
   "phone": {
     "message": "Phone"
   },
+  "copyPhone": {
+    "message": "Copy Phone"
+  },
   "address": {
     "message": "Address"
+  },
+  "copyAddress": {
+    "message": "Copy Address"
   },
   "premiumRequired": {
     "message": "Premium Required"
@@ -394,7 +430,10 @@
   "copyUri": {
     "message": "Copy URI"
   },
-  "copyVerificationCodeTotp": {
+  "copyWebsite": {
+    "message": "Copy Website"
+  },
+  "copyVerificationCode": {
     "message": "Copy Verification Code (TOTP)"
   },
   "length": {
@@ -1042,6 +1081,12 @@
   "copySecurityCode": {
     "message": "Copy Security Code",
     "description": "Copy credit card security code (CVV)"
+  },
+  "copyNotes": {
+    "message": "Copy Notes"
+  },
+  "copyNote": {
+    "message": "Copy Note"
   },
   "premiumMembership": {
     "message": "Premium Membership"
