@@ -315,7 +315,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         }
         if (cipher.login.hasTotp && (cipher.organizationUseTotp || this.userHasPremiumAccess)) {
           menu.push({
-            label: this.i18nService.t("copyVerificationCodeTotp"),
+            label: this.i18nService.t("copyVerificationCode"),
             click: async () => {
               const value = await this.totpService.getCode(cipher.login.totp);
               this.copyValue(cipher, value, "verificationCodeTotp", "TOTP");
