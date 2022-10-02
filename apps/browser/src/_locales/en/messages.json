@@ -70,14 +70,18 @@
   "currentTab": {
     "message": "Current Tab"
   },
+  "copy": {
+    "message": "Copy",
+    "description": "Copy to clipboard"
+  },
   "copyPassword": {
     "message": "Copy Password"
   },
-  "copyNote": {
-    "message": "Copy Note"
-  },
   "copyUri": {
     "message": "Copy URI"
+  },
+  "copyWebsite": {
+    "message": "Copy Website"
   },
   "copyUsername": {
     "message": "Copy Username"
@@ -87,6 +91,15 @@
   },
   "copySecurityCode": {
     "message": "Copy Security Code"
+  },
+  "copyNotes": {
+    "message": "Copy Notes"
+  },
+  "copyAddress": {
+    "message": "Copy Address"
+  },
+  "copyNote": {
+    "message": "Copy Note"
   },
   "autoFill": {
     "message": "Auto-fill"
@@ -1051,11 +1064,17 @@
   "cardholderName": {
     "message": "Cardholder Name"
   },
+  "copyCardholderName": {
+    "message": "Copy Cardholder Name"
+  },
   "number": {
     "message": "Number"
   },
   "brand": {
     "message": "Brand"
+  },
+  "copyBrand": {
+    "message": "Copy Brand"
   },
   "expirationMonth": {
     "message": "Expiration Month"
@@ -1065,6 +1084,9 @@
   },
   "expiration": {
     "message": "Expiration"
+  },
+  "copyExpiration": {
+    "message": "Copy Expiration"
   },
   "january": {
     "message": "January"
@@ -1138,23 +1160,44 @@
   "identityName": {
     "message": "Identity Name"
   },
+  "copyIdentityName": {
+    "message": "Copy Identity Name"
+  },
   "company": {
     "message": "Company"
+  },
+  "copyCompany": {
+    "message": "Copy Company"
   },
   "ssn": {
     "message": "Social Security Number"
   },
+  "copySsn": {
+    "message": "Copy Social Security Number"
+  },
   "passportNumber": {
     "message": "Passport Number"
+  },
+  "copyPassportNumber": {
+    "message": "Copy Passport Number"
   },
   "licenseNumber": {
     "message": "License Number"
   },
+  "copyLicenseNumber": {
+    "message": "Copy License Number"
+  },
   "email": {
     "message": "Email"
   },
+  "copyEmail": {
+    "message": "Copy Email"
+  },
   "phone": {
     "message": "Phone"
+  },
+  "copyPhone": {
+    "message": "Copy Phone"
   },
   "address": {
     "message": "Address"

@@ -25,7 +25,7 @@
           (dragstart)="setTextDataOnDrag($event, cipher.name)"
           >{{ "name" | i18n }}</label
         >
-        <input id="name" type="text" [value]="cipher.name" readonly />
+        <input id="name" type="text" [value]="cipher.name" readonly tabindex="-1" />
       </div>
       <!-- Login -->
       <div *ngIf="cipher.login">
@@ -38,7 +38,13 @@
               (dragstart)="setTextDataOnDrag($event, cipher.login.username)"
               >{{ "username" | i18n }}
             </label>
-            <input id="loginUsername" type="text" [value]="cipher.login.username" readonly />
+            <input
+              id="loginUsername"
+              type="text"
+              [value]="cipher.login.username"
+              readonly
+              tabindex="-1"
+            />
           </div>
           <div class="action-buttons">
             <button
@@ -46,6 +52,7 @@
               class="row-btn"
               appStopClick
               appA11yTitle="{{ 'copyUsername' | i18n }}"
+              aria-describedby="loginUsername"
               (click)="copy(cipher.login.username, 'username', 'Username')"
             >
               <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
@@ -68,6 +75,7 @@
               name="Login.Password"
               [(ngModel)]="cipher.login.password"
               readonly
+              tabindex="-1"
             />
             <div *ngIf="!showPassword" class="monospaced" aria-hidden="true">
               {{ cipher.login.maskedPassword }}
@@ -140,6 +148,7 @@
               class="row-btn"
               appStopClick
               appA11yTitle="{{ 'copyPassword' | i18n }}"
+              [attr.aria-describedby]="showPassword ? 'loginPassword' : null"
               (click)="copy(cipher.login.password, 'password', 'Password')"
               *ngIf="cipher.viewPassword"
             >
@@ -160,7 +169,7 @@
               (dragstart)="setTextDataOnDrag($event, totpCode)"
               >{{ "verificationCodeTotp" | i18n }}
             </label>
-            <input id="loginTotp" type="text" [value]="totpCodeFormatted" readonly />
+            <input id="loginTotp" type="text" [value]="totpCodeFormatted" readonly tabindex="-1" />
           </div>
           <span class="totp-countdown">
             <span class="totp-sec">{{ totpSec }}</span>
@@ -183,6 +192,7 @@
               class="row-btn"
               appStopClick
               appA11yTitle="{{ 'copyVerificationCode' | i18n }}"
+              aria-describedby="loginTotp"
               (click)="copy(totpCode, 'verificationCodeTotp', 'TOTP')"
             >
               <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
@@ -203,21 +213,36 @@
       </div>
       <!-- Card -->
       <div *ngIf="cipher.card">
-        <div class="box-content-row" *ngIf="cipher.card.cardholderName">
-          <label
-            for="cardCardholderName"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, cipher.card.cardholderName)"
-            >{{ "cardholderName" | i18n }}</label
-          >
-          <input
-            id="cardCardholderName"
-            type="text"
-            name="Card.CardCardholderName"
-            [(ngModel)]="cipher.card.cardholderName"
-            readonly
-          />
+        <div class="box-content-row box-content-row-flex" *ngIf="cipher.card.cardholderName">
+          <div class="row-main">
+            <label
+              for="cardCardholderName"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.card.cardholderName)"
+              >{{ "cardholderName" | i18n }}</label
+            >
+            <input
+              id="cardCardholderName"
+              type="text"
+              name="Card.CardCardholderName"
+              [(ngModel)]="cipher.card.cardholderName"
+              readonly
+              tabindex="-1"
+            />
+          </div>
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'copyCardholderName' | i18n }}"
+              aria-describedby="cardCardholderName"
+              (click)="copy(cipher.card.cardholderName, 'cardholderName', 'Cardholder name')"
+            >
+              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
         <div class="box-content-row box-content-row-flex" *ngIf="cipher.card.number">
           <div class="row-main">
@@ -235,6 +260,7 @@
               name="Card.Number"
               [(ngModel)]="cipher.card.number"
               readonly
+              tabindex="-1"
             />
           </div>
           <div class="action-buttons">
@@ -258,43 +284,74 @@
               class="row-btn"
               appStopClick
               appA11yTitle="{{ 'copyNumber' | i18n }}"
+              [attr.aria-describedby]="showCardNumber ? 'cardNumber' : null"
               (click)="copy(cipher.card.number, 'number', 'Card Number')"
             >
               <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
             </button>
           </div>
         </div>
-        <div class="box-content-row" *ngIf="cipher.card.brand">
-          <label
-            for="cardBrand"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, cipher.card.brand)"
-            >{{ "brand" | i18n }}</label
-          >
-          <input
-            id="cardBrand"
-            type="text"
-            name="Card.Brand"
-            [(ngModel)]="cipher.card.brand"
-            readonly
-          />
+        <div class="box-content-row box-content-row-flex" *ngIf="cipher.card.brand">
+          <div class="row-main">
+            <label
+              for="cardBrand"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.card.brand)"
+              >{{ "brand" | i18n }}</label
+            >
+            <input
+              id="cardBrand"
+              type="text"
+              name="Card.Brand"
+              [(ngModel)]="cipher.card.brand"
+              readonly
+              tabindex="-1"
+            />
+          </div>
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'copyBrand' | i18n }}"
+              aria-describedby="cardBrand"
+              (click)="copy(cipher.card.brand, 'brand', 'Brand')"
+            >
+              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
-        <div class="box-content-row" *ngIf="cipher.card.expiration">
-          <label
-            for="cardExp"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, cipher.card.expiration)"
-            >{{ "expiration" | i18n }}</label
-          >
-          <input
-            id="cardExp"
-            type="text"
-            name="Card.Exp"
-            [(ngModel)]="cipher.card.expiration"
-            readonly
-          />
+        <div class="box-content-row box-content-row-flex" *ngIf="cipher.card.expiration">
+          <div class="row-main">
+            <label
+              for="cardExp"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.card.expiration)"
+              >{{ "expiration" | i18n }}</label
+            >
+            <input
+              id="cardExp"
+              type="text"
+              name="Card.Exp"
+              [(ngModel)]="cipher.card.expiration"
+              readonly
+              tabindex="-1"
+            />
+          </div>
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'copyExpiration' | i18n }}"
+              aria-describedby="cardExp"
+              (click)="copy(cipher.card.expiration, 'expiration', 'Expiration')"
+            >
+              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
         <div class="box-content-row box-content-row-flex" *ngIf="cipher.card.code">
           <div class="row-main">
@@ -312,6 +369,7 @@
               name="Card.Code"
               [(ngModel)]="cipher.card.code"
               readonly
+              tabindex="-1"
             />
           </div>
           <div class="action-buttons">
@@ -335,6 +393,7 @@
               class="row-btn"
               appStopClick
               appA11yTitle="{{ 'copySecurityCode' | i18n }}"
+              [attr.aria-describedby]="showCardCode ? 'cardCode' : null"
               (click)="copy(cipher.card.code, 'securityCode', 'Security Code')"
             >
               <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
@@ -344,136 +403,256 @@
       </div>
       <!-- Identity -->
       <div *ngIf="cipher.identity">
-        <div class="box-content-row" *ngIf="cipher.identity.fullName">
-          <label
-            for="idFullName"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, cipher.identity.fullName)"
-            >{{ "identityName" | i18n }}</label
-          >
-          <input
-            id="idFullName"
-            type="text"
-            name="Identity.FullName"
-            [(ngModel)]="cipher.identity.fullName"
-            readonly
-          />
+        <div class="box-content-row box-content-row-flex" *ngIf="cipher.identity.fullName">
+          <div class="row-main">
+            <label
+              for="idFullName"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.identity.fullName)"
+              >{{ "identityName" | i18n }}</label
+            >
+            <input
+              id="idFullName"
+              type="text"
+              name="Identity.FullName"
+              [(ngModel)]="cipher.identity.fullName"
+              readonly
+              tabindex="-1"
+            />
+          </div>
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'copyIdentityName' | i18n }}"
+              aria-describedby="idFullName"
+              (click)="copy(cipher.identity.fullName, 'identityName', 'IdentityName')"
+            >
+              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
-        <div class="box-content-row" *ngIf="cipher.identity.username">
-          <label
-            for="idUsername"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, cipher.identity.username)"
-            >{{ "username" | i18n }}</label
-          >
-          <input
-            id="idUsername"
-            type="text"
-            name="Identity.Username"
-            [(ngModel)]="cipher.identity.username"
-            readonly
-          />
+        <div class="box-content-row box-content-row-flex" *ngIf="cipher.identity.username">
+          <div class="row-main">
+            <label
+              for="idUsername"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.identity.username)"
+              >{{ "username" | i18n }}</label
+            >
+            <input
+              id="idUsername"
+              type="text"
+              name="Identity.Username"
+              [(ngModel)]="cipher.identity.username"
+              readonly
+              tabindex="-1"
+            />
+          </div>
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'copyUsername' | i18n }}"
+              aria-describedby="idUsername"
+              (click)="copy(cipher.identity.username, 'username', 'Username')"
+            >
+              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
-        <div class="box-content-row" *ngIf="cipher.identity.company">
-          <label
-            for="idCompany"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, cipher.identity.company)"
-            >{{ "company" | i18n }}</label
-          >
-          <input
-            id="idCompany"
-            type="text"
-            name="Identity.Company"
-            [(ngModel)]="cipher.identity.company"
-            readonly
-          />
+        <div class="box-content-row box-content-row-flex" *ngIf="cipher.identity.company">
+          <div class="row-main">
+            <label
+              for="idCompany"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.identity.company)"
+              >{{ "company" | i18n }}</label
+            >
+            <input
+              id="idCompany"
+              type="text"
+              name="Identity.Company"
+              [(ngModel)]="cipher.identity.company"
+              readonly
+              tabindex="-1"
+            />
+          </div>
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'copyCompany' | i18n }}"
+              aria-describedby="idCompany"
+              (click)="copy(cipher.identity.company, 'company', 'Company')"
+            >
+              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
-        <div class="box-content-row" *ngIf="cipher.identity.ssn">
-          <label
-            for="idSsn"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, cipher.identity.ssn)"
-            >{{ "ssn" | i18n }}</label
-          >
-          <input
-            id="idSsn"
-            type="text"
-            name="Identity.SSN"
-            [(ngModel)]="cipher.identity.ssn"
-            readonly
-          />
+        <div class="box-content-row box-content-row-flex" *ngIf="cipher.identity.ssn">
+          <div class="row-main">
+            <label
+              for="idSsn"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.identity.ssn)"
+              >{{ "ssn" | i18n }}</label
+            >
+            <input
+              id="idSsn"
+              type="text"
+              name="Identity.SSN"
+              [(ngModel)]="cipher.identity.ssn"
+              readonly
+              tabindex="-1"
+            />
+          </div>
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'copySsn' | i18n }}"
+              aria-describedby="idSsn"
+              (click)="copy(cipher.identity.ssn, 'ssn', 'Ssn')"
+            >
+              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
-        <div class="box-content-row" *ngIf="cipher.identity.passportNumber">
-          <label
-            for="idPassportNumber"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, cipher.identity.passportNumber)"
-            >{{ "passportNumber" | i18n }}</label
-          >
-          <input
-            id="idPassportNumber"
-            type="text"
-            name="Identity.PassportNumber"
-            [(ngModel)]="cipher.identity.passportNumber"
-            readonly
-          />
+        <div class="box-content-row box-content-row-flex" *ngIf="cipher.identity.passportNumber">
+          <div class="row-main">
+            <label
+              for="idPassportNumber"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.identity.passportNumber)"
+              >{{ "passportNumber" | i18n }}</label
+            >
+            <input
+              id="idPassportNumber"
+              type="text"
+              name="Identity.PassportNumber"
+              [(ngModel)]="cipher.identity.passportNumber"
+              readonly
+              tabindex="-1"
+            />
+          </div>
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'copyPassportNumber' | i18n }}"
+              aria-describedby="idPassportNumber"
+              (click)="copy(cipher.identity.passportNumber, 'passportNumber', 'PassportNumber')"
+            >
+              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
-        <div class="box-content-row" *ngIf="cipher.identity.licenseNumber">
-          <label
-            for="idLicenseNumber"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, cipher.identity.licenseNumber)"
-            >{{ "licenseNumber" | i18n }}</label
-          >
-          <input
-            id="idLicenseNumber"
-            type="text"
-            name="Identity.licenseNumber"
-            [(ngModel)]="cipher.identity.licenseNumber"
-            readonly
-          />
+        <div class="box-content-row box-content-row-flex" *ngIf="cipher.identity.licenseNumber">
+          <div class="row-main">
+            <label
+              for="idLicenseNumber"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.identity.licenseNumber)"
+              >{{ "licenseNumber" | i18n }}</label
+            >
+            <input
+              id="idLicenseNumber"
+              type="text"
+              name="Identity.licenseNumber"
+              [(ngModel)]="cipher.identity.licenseNumber"
+              readonly
+              tabindex="-1"
+            />
+          </div>
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'copyLicenseNumber' | i18n }}"
+              aria-describedby="idLicenseNumber"
+              (click)="copy(cipher.identity.licenseNumber, 'licenseNumber', 'LicenseNumber')"
+            >
+              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
-        <div class="box-content-row" *ngIf="cipher.identity.email">
-          <label
-            for="idEmail"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, cipher.identity.email)"
-            >{{ "email" | i18n }}</label
-          >
-          <input
-            id="idEmail"
-            type="text"
-            name="Identity.Email"
-            [(ngModel)]="cipher.identity.email"
-            readonly
-          />
+        <div class="box-content-row box-content-row-flex" *ngIf="cipher.identity.email">
+          <div class="row-main">
+            <label
+              for="idEmail"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.identity.email)"
+              >{{ "email" | i18n }}</label
+            >
+            <input
+              id="idEmail"
+              type="text"
+              name="Identity.Email"
+              [(ngModel)]="cipher.identity.email"
+              readonly
+              tabindex="-1"
+            />
+          </div>
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'copyEmail' | i18n }}"
+              aria-describedby="idEmail"
+              (click)="copy(cipher.identity.email, 'email', 'Email')"
+            >
+              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
-        <div class="box-content-row" *ngIf="cipher.identity.phone">
-          <label
-            for="idPhone"
-            class="draggable"
-            draggable="true"
-            (dragstart)="setTextDataOnDrag($event, cipher.identity.phone)"
-            >{{ "phone" | i18n }}</label
-          >
-          <input
-            id="idPhone"
-            type="text"
-            name="Identity.Phone"
-            [(ngModel)]="cipher.identity.phone"
-            readonly
-          />
+        <div class="box-content-row box-content-row-flex" *ngIf="cipher.identity.phone">
+          <div class="row-main">
+            <label
+              for="idPhone"
+              class="draggable"
+              draggable="true"
+              (dragstart)="setTextDataOnDrag($event, cipher.identity.phone)"
+              >{{ "phone" | i18n }}</label
+            >
+            <input
+              id="idPhone"
+              type="text"
+              name="Identity.Phone"
+              [(ngModel)]="cipher.identity.phone"
+              readonly
+              tabindex="-1"
+            />
+          </div>
+          <div class="action-buttons">
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'copyPhone' | i18n }}"
+              aria-describedby="idPhone"
+              (click)="copy(cipher.identity.phone, 'phone', 'Phone')"
+            >
+              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
         <div
-          class="box-content-row"
+          class="box-content-row box-content-row-textarea"
           *ngIf="
             cipher.identity.address1 ||
             cipher.identity.address2 ||
@@ -484,39 +663,66 @@
             cipher.identity.country
           "
         >
-          <label
-            for="idAddress"
-            class="draggable"
-            draggable="true"
-            (dragstart)="
-              setTextDataOnDrag(
-                $event,
+          <div class="row-main">
+            <label
+              for="idAddress"
+              class="draggable"
+              draggable="true"
+              (dragstart)="
+                setTextDataOnDrag(
+                  $event,
+                  (cipher.identity.address1 ? cipher.identity.address1 + '\n' : '') +
+                    (cipher.identity.address2 ? cipher.identity.address2 + '\n' : '') +
+                    (cipher.identity.address3 ? cipher.identity.address3 + '\n' : '') +
+                    (cipher.identity.city ? cipher.identity.city + '\n' : '') +
+                    (cipher.identity.state ? cipher.identity.state + '\n' : '') +
+                    (cipher.identity.postalCode ? cipher.identity.postalCode + '\n' : '') +
+                    (cipher.identity.country ? cipher.identity.country : '')
+                )
+              "
+              >{{ "address" | i18n }}</label
+            >
+            <textarea
+              id="idAddress"
+              name="Identity.Address"
+              [value]="
                 (cipher.identity.address1 ? cipher.identity.address1 + '\n' : '') +
-                  (cipher.identity.address2 ? cipher.identity.address2 + '\n' : '') +
-                  (cipher.identity.address3 ? cipher.identity.address3 + '\n' : '') +
-                  (cipher.identity.city ? cipher.identity.city + '\n' : '') +
-                  (cipher.identity.state ? cipher.identity.state + '\n' : '') +
-                  (cipher.identity.postalCode ? cipher.identity.postalCode + '\n' : '') +
-                  (cipher.identity.country ? cipher.identity.country : '')
-              )
-            "
-            >{{ "address" | i18n }}</label
-          >
-          <textarea
-            id="idAddress"
-            name="Identity.Address"
-            [value]="
-              (cipher.identity.address1 ? cipher.identity.address1 + '\n' : '') +
-              (cipher.identity.address2 ? cipher.identity.address2 + '\n' : '') +
-              (cipher.identity.address3 ? cipher.identity.address3 + '\n' : '') +
-              (cipher.identity.city ? cipher.identity.city + '\n' : '') +
-              (cipher.identity.state ? cipher.identity.state + '\n' : '') +
-              (cipher.identity.postalCode ? cipher.identity.postalCode + '\n' : '') +
-              (cipher.identity.country ? cipher.identity.country : '')
-            "
-            rows="6"
-            readonly
-          ></textarea>
+                (cipher.identity.address2 ? cipher.identity.address2 + '\n' : '') +
+                (cipher.identity.address3 ? cipher.identity.address3 + '\n' : '') +
+                (cipher.identity.city ? cipher.identity.city + '\n' : '') +
+                (cipher.identity.state ? cipher.identity.state + '\n' : '') +
+                (cipher.identity.postalCode ? cipher.identity.postalCode + '\n' : '') +
+                (cipher.identity.country ? cipher.identity.country : '')
+              "
+              rows="6"
+              readonly
+              tabindex="-1"
+            ></textarea>
+          </div>
+          <div class="action-buttons action-buttons-absolute">
+            <button
+              type="button"
+              class="row-btn"
+              appStopClick
+              appA11yTitle="{{ 'copyAddress' | i18n }}"
+              aria-describedby="idAddress"
+              (click)="
+                copy(
+                  (cipher.identity.address1 ? cipher.identity.address1 + '\n' : '') +
+                    (cipher.identity.address2 ? cipher.identity.address2 + '\n' : '') +
+                    (cipher.identity.address3 ? cipher.identity.address3 + '\n' : '') +
+                    (cipher.identity.city ? cipher.identity.city + '\n' : '') +
+                    (cipher.identity.state ? cipher.identity.state + '\n' : '') +
+                    (cipher.identity.postalCode ? cipher.identity.postalCode + '\n' : '') +
+                    (cipher.identity.country ? cipher.identity.country : ''),
+                  'address',
+                  'Address'
+                )
+              "
+            >
+              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -545,7 +751,7 @@
             >{{ "website" | i18n }}</label
           >
           <span title="{{ u.uri }}">
-            <input id="hostOrUri{{ i }}" type="text" [value]="u.hostOrUri" readonly />
+            <input id="hostOrUri{{ i }}" type="text" [value]="u.hostOrUri" readonly tabindex="-1" />
           </span>
         </div>
         <div class="action-buttons">
@@ -553,8 +759,9 @@
             type="button"
             class="row-btn"
             appStopClick
-            attr.aria-label="{{ 'launch' | i18n }} {{ u.uri }}"
+            attr.aria-label="{{ 'launch' | i18n }}"
             appA11yTitle="{{ 'launch' | i18n }}"
+            attr.aria-describedby="hostOrUri{{ i }}"
             *ngIf="u.canLaunch"
             (click)="launch(u)"
           >
@@ -564,8 +771,9 @@
             type="button"
             class="row-btn"
             appStopClick
-            attr.aria-label="{{ 'copyUri' | i18n }} {{ u.uri }}"
-            appA11yTitle="{{ 'copyUri' | i18n }}"
+            attr.aria-label="{{ (u.isWebsite ? 'copyWebsite' : 'copyUri') | i18n }}"
+            appA11yTitle="{{ (u.isWebsite ? 'copyWebsite' : 'copyUri') | i18n }}"
+            attr.aria-describedby="hostOrUri{{ i }}"
             (click)="copy(u.uri, u.isWebsite ? 'website' : 'uri', 'URI')"
           >
             <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
@@ -585,8 +793,22 @@
       >
     </h2>
     <div class="box-content">
-      <div class="box-content-row">
-        <textarea id="notes" [value]="cipher.notes" rows="6" readonly></textarea>
+      <div class="box-content-row box-content-row-textarea">
+        <div class="row-main">
+          <textarea id="notes" [value]="cipher.notes" rows="6" readonly tabindex="-1"></textarea>
+        </div>
+        <div class="action-buttons action-buttons-absolute">
+          <button
+            type="button"
+            class="row-btn"
+            appStopClick
+            appA11yTitle="{{ 'copyNotes' | i18n }}"
+            aria-describedby="notes"
+            (click)="copy(cipher.notes, 'notes', 'Notes')"
+          >
+            <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>
