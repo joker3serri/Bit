@@ -14,7 +14,6 @@ import { BitHintComponent } from "./hint.component";
 import { BitPrefixDirective } from "./prefix.directive";
 import { BitSuffixDirective } from "./suffix.directive";
 
-
 @Component({
   selector: "bit-form-field",
   templateUrl: "./form-field.component.html",
