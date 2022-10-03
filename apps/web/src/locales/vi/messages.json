@@ -167,7 +167,7 @@
     "message": "Boolean"
   },
   "cfTypeLinked": {
-    "message": "Linked",
+    "message": "Đã liên kết",
     "description": "This describes a field that is 'linked' (related) to another field."
   },
   "remove": {
@@ -191,7 +191,7 @@
     "description": "Domain name. Ex. website.com"
   },
   "domainName": {
-    "message": "Domain Name",
+    "message": "Tên miền",
     "description": "Domain name. Ex. website.com"
   },
   "host": {
@@ -306,16 +306,16 @@
     "message": "Ghi chú bảo mật"
   },
   "typeLoginPlural": {
-    "message": "Logins"
+    "message": "Đăng nhập"
   },
   "typeCardPlural": {
-    "message": "Cards"
+    "message": "Thẻ"
   },
   "typeIdentityPlural": {
-    "message": "Identities"
+    "message": "Danh tính"
   },
   "typeSecureNotePlural": {
-    "message": "Secure Notes"
+    "message": "Ghi chú bảo mật"
   },
   "folders": {
     "message": "Thư mục"
@@ -422,7 +422,7 @@
     "description": "Copy URI to clipboard"
   },
   "me": {
-    "message": "Me"
+    "message": "Tôi"
   },
   "myVault": {
     "message": "Kho của tôi"
@@ -569,14 +569,26 @@
   "loginOrCreateNewAccount": {
     "message": "Đăng nhập hoặc tạo tài khoản mới để truy cập kho mật khẩu của bạn."
   },
+  "loginWithDevice": {
+    "message": "Log in with device"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Log in with device must be enabled in the settings of the Bitwarden mobile app. Need another option?"
+  },
   "createAccount": {
     "message": "Tạo tài khoản"
+  },
+  "newAroundHere": {
+    "message": "New around here?"
   },
   "startTrial": {
     "message": "Start Trial"
   },
   "logIn": {
     "message": "Đăng nhập"
+  },
+  "logInInitiated": {
+    "message": "Log in initiated"
   },
   "submit": {
     "message": "Gửi"
@@ -635,7 +647,7 @@
   "confirmMasterPasswordRequired": {
     "message": "Master password retype is required."
   },
-  "masterPasswordMinLength": {
+  "masterPasswordMinlength": {
     "message": "Master password must be at least 8 characters long."
   },
   "masterPassDoesntMatch": {
@@ -678,6 +690,9 @@
   "invalidMasterPassword": {
     "message": "Mật khẩu chính không hợp lệ"
   },
+  "invalidFilePassword": {
+    "message": "Invalid file password, please use the password you entered when you created the export file."
+  },
   "lockNow": {
     "message": "Khóa ngay"
   },
@@ -701,6 +716,9 @@
   },
   "noOrganizationsList": {
     "message": "Bạn không thuộc tổ chức nào. Tổ chức sẽ cho phép bạn chia sẻ với người dùng khác một cách bảo mật."
+  },
+  "notificationSentDevice": {
+    "message": "A notification has been sent to your device."
   },
   "versionNumber": {
     "message": "Phiên bản $VERSION_NUMBER$",
@@ -889,6 +907,48 @@
   },
   "fileFormat": {
     "message": "Định dạng tập tin"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "This file export will be password protected and require the file password to decrypt."
+  },
+  "exportPasswordDescription": {
+    "message": "This password will be used to export and import this file"
+  },
+  "confirmMasterPassword": {
+    "message": "Confirm Master Password"
+  },
+  "confirmFormat": {
+    "message": "Confirm Format"
+  },
+  "filePassword": {
+    "message": "File Password"
+  },
+  "confirmFilePassword": {
+    "message": "Confirm File Password"
+  },
+  "accountBackupOptionDescription": {
+    "message": "Use your account encryption key to encrypt the export and restrict import to only the current Bitwarden account."
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "Set a password to encrypt the export and import it to any Bitwarden account using the password for decryption."
+  },
+  "fileTypeHeading": {
+    "message": "File Type"
+  },
+  "accountBackup": {
+    "message": "Account Backup"
+  },
+  "passwordProtected": {
+    "message": "Password Protected"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "“File password”  and “Confirm File Password“ do not match."
+  },
+  "confirmVaultImport": {
+    "message": "Confirm Vault Import"
+  },
+  "confirmVaultImportDesc": {
+    "message": "This file is password-protected. Please enter the file password to import data."
   },
   "exportSuccess": {
     "message": "Dữ liệu kho cảu bạn đã được trích xuất."
@@ -1704,7 +1764,7 @@
     "message": "Your account's credit can be used to make purchases. Any available credit will be automatically applied towards invoices generated for this account."
   },
   "goPremium": {
-    "message": "Go Premium",
+    "message": "Nâng cấp tài khoản",
     "description": "Another way of saying \"Get a premium membership\""
   },
   "premiumUpdated": {
@@ -2239,13 +2299,13 @@
     "message": "Default Collection"
   },
   "getHelp": {
-    "message": "Get Help"
+    "message": "Nhận trợ giúp"
   },
   "getApps": {
-    "message": "Get the Apps"
+    "message": "Tải ứng dụng"
   },
   "loggedInAs": {
-    "message": "Logged in as"
+    "message": "Đã đăng nhập là"
   },
   "eventLogs": {
     "message": "Event Logs"
@@ -2486,6 +2546,9 @@
         "example": "'Google'"
       }
     }
+  },
+  "viewAllLoginOptions": {
+    "message": "View all log in options"
   },
   "viewedItemId": {
     "message": "Viewed item $ID$.",
@@ -3327,6 +3390,12 @@
     "message": "To ensure the integrity of your encryption keys, please verify the user's fingerprint phrase before continuing.",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
   },
+  "fingerprintMatchInfo": {
+    "message": "Please make sure your vault is unlocked and Fingerprint phrase matches the other device."
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Fingerprint phrase"
+  },
   "dontAskFingerprintAgain": {
     "message": "Never prompt to verify fingerprint phrases for invited users (Not recommended)",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
@@ -4012,6 +4081,12 @@
   "permissions": {
     "message": "Permissions"
   },
+  "managerPermissions": {
+    "message": "Manager Permissions"
+  },
+  "adminPermissions": {
+    "message": "Admin Permissions"
+  },
   "accessEventLogs": {
     "message": "Access Event Logs"
   },
@@ -4320,6 +4395,9 @@
   },
   "reinviteSelected": {
     "message": "Resend Invitations"
+  },
+  "resendNotification": {
+    "message": "Resend notification"
   },
   "noSelectedUsersApplicable": {
     "message": "This action is not applicable to any of the selected users."
@@ -5090,7 +5168,7 @@
     "description": "This is used by screen readers to indicate the organization that is currently being shown to the user."
   },
   "accountSettings": {
-    "message": "Account Settings"
+    "message": "Cài đặt tài khoản"
   },
   "generator": {
     "message": "Generator"
@@ -5220,6 +5298,9 @@
       }
     }
   },
+  "premiumSubcriptionRequired": {
+    "message": "Premium subscription required"
+  },
   "scim": {
     "message": "SCIM Provisioning",
     "description": "The text, 'SCIM', is an acronymn and should not be translated."
@@ -5306,5 +5387,8 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "numberOfUsers": {
+    "message": "Số lượng người dùng"
   }
 }

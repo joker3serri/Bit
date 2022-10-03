@@ -569,14 +569,26 @@
   "loginOrCreateNewAccount": {
     "message": "Pieraksties vai izveido jaunu kontu, lai piekļūtu drošajai glabātavai!"
   },
+  "loginWithDevice": {
+    "message": "Pierakstīties ar ierīci"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Log in with device must be enabled in the settings of the Bitwarden mobile app. Need another option?"
+  },
   "createAccount": {
     "message": "Izveidot kontu"
   },
+  "newAroundHere": {
+    "message": "Jauns šeit?"
+  },
   "startTrial": {
-    "message": "Start Trial"
+    "message": "Uzsākt izmēģinājumu"
   },
   "logIn": {
     "message": "Pierakstīties"
+  },
+  "logInInitiated": {
+    "message": "Uzsākta pierakstīšanās"
   },
   "submit": {
     "message": "Iesniegt"
@@ -597,7 +609,7 @@
     "message": "Galvenā parole ir parole, kas tiek izmantota, lai piekļūtu glabātavai. Ir ļoti svarīgi, ka tā netiek aizmirsta, jo tādā gadījumā to nav iespējams atgūt."
   },
   "masterPassImportant": {
-    "message": "Master passwords cannot be recovered if you forget it!"
+    "message": "Galvenā parole nevar tikt atkopta, ja tā tiek aizmirsta."
   },
   "masterPassHintDesc": {
     "message": "Galvenās paroles norāde var palīdzēt atcerēties paroli, ja tā ir aizmirsta."
@@ -630,13 +642,13 @@
     "message": "Nederīga e-pasta adrese."
   },
   "masterPasswordRequired": {
-    "message": "Master password is required."
+    "message": "Ir jānorāda galvenā parole."
   },
   "confirmMasterPasswordRequired": {
-    "message": "Master password retype is required."
+    "message": "Ir nepieciešama galvenās paroles atkārtota ievadīšana."
   },
-  "masterPasswordMinLength": {
-    "message": "Master password must be at least 8 characters long."
+  "masterPasswordMinlength": {
+    "message": "Galvenajai parolei ir jābūt vismaz 8 rakstzīmes garai."
   },
   "masterPassDoesntMatch": {
     "message": "Galvenās paroles apstiprinājums nesakrīt."
@@ -678,6 +690,9 @@
   "invalidMasterPassword": {
     "message": "Nederīga galvenā parole"
   },
+  "invalidFilePassword": {
+    "message": "Nederīga datnes parole, lūgums izmantot to paroli, kas tika ievadīta izdošanas datnes izveidošanas brīdī."
+  },
   "lockNow": {
     "message": "Aizslēgt"
   },
@@ -701,6 +716,9 @@
   },
   "noOrganizationsList": {
     "message": "Tu neesi iekļauts nevienā apvienībā. Apvienības sniedz iespēju droši kopīgot vienumus ar citiem lietotājiem."
+  },
+  "notificationSentDevice": {
+    "message": "Uz ierīci ir nosūtīts paziņojums."
   },
   "versionNumber": {
     "message": "Laidiens $VERSION_NUMBER$",
@@ -889,6 +907,48 @@
   },
   "fileFormat": {
     "message": "Datnes veids"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "Šī datņu izdošana būs aizsargāta ar paroli, un būs nepieciešama datnes parole, lai to atšifrētu."
+  },
+  "exportPasswordDescription": {
+    "message": "Šī parole tiks izmantota, lai izdotu un ievietotu šo datni"
+  },
+  "confirmMasterPassword": {
+    "message": "Apstiprināt galveno paroli"
+  },
+  "confirmFormat": {
+    "message": "Apstiprināt veidolu"
+  },
+  "filePassword": {
+    "message": "Datnes parole"
+  },
+  "confirmFilePassword": {
+    "message": "Apstiprināt datnes paroli"
+  },
+  "accountBackupOptionDescription": {
+    "message": "Jāizmanto konta šifrēšanas atslēga, lai šifrētu izdošanu un ierobežotu ievietošanu tikai pašreizējā Bitwarden kontā."
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "Uzstādīt paroli, lai šifrētu izdošanu un tad to ievietotu jebkurā Bitwarden kontā, izmantojot atšifrēšanas paroli."
+  },
+  "fileTypeHeading": {
+    "message": "Datnes veids"
+  },
+  "accountBackup": {
+    "message": "Konta rezerves kopija"
+  },
+  "passwordProtected": {
+    "message": "Aizsargāts ar paroli"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "\"Datnes parole\" un \"Apstiprināt datnes paroli\" vērtības nesakrīt."
+  },
+  "confirmVaultImport": {
+    "message": "Apstiprināt glabātavas satura ievietošanu"
+  },
+  "confirmVaultImportDesc": {
+    "message": "Šī datne ir aizsargāta ar paroli. Lūgums ievadīt datnes paroli, lai ievietotu datus."
   },
   "exportSuccess": {
     "message": "Glabātavas saturs ir izgūts."
@@ -2487,6 +2547,9 @@
       }
     }
   },
+  "viewAllLoginOptions": {
+    "message": "Apskatīt visas pierakstīšanās iespējas"
+  },
   "viewedItemId": {
     "message": "Skatīts vienums $ID$.",
     "placeholders": {
@@ -3208,7 +3271,7 @@
     "message": "Atzīmējot šo rūtiņu, Tu piekrīti sekojošajam:"
   },
   "acceptPoliciesRequired": {
-    "message": "Terms of Service and Privacy Policy have not been acknowledged."
+    "message": "Nav apstiprināti izmantošanas nosacījumi un privātuma politika."
   },
   "termsOfService": {
     "message": "Izmantošanas nosacījumi"
@@ -3326,6 +3389,12 @@
   "fingerprintEnsureIntegrityVerify": {
     "message": "Lai pārliecinātos par šifrēšanas atslēgu neskartību, lūgums pirms turpināšanas pārbaudīt lietotāja atpazīšanas vārdkopu.",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
+  },
+  "fingerprintMatchInfo": {
+    "message": "Jāpārliecinās, ka glabātava ir atslēgta un atpazīšanas vārdkopa ir tāda pati arī citā ierīcē."
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Atpazīšanas vārdkopa"
   },
   "dontAskFingerprintAgain": {
     "message": "Vairs nevaicāt pārbaudīt atpazīšanas vārdkopu",
@@ -4012,6 +4081,12 @@
   "permissions": {
     "message": "Atļaujas"
   },
+  "managerPermissions": {
+    "message": "Pārvaldnieka atļaujas"
+  },
+  "adminPermissions": {
+    "message": "Administratora atļaujas"
+  },
   "accessEventLogs": {
     "message": "Piekļūt notikumu žurnāla ierakstiem"
   },
@@ -4321,6 +4396,9 @@
   "reinviteSelected": {
     "message": "Atkārtoti nosūtīt uzaicinājumus"
   },
+  "resendNotification": {
+    "message": "Atkārtoti nosūtīt paziņojumu"
+  },
   "noSelectedUsersApplicable": {
     "message": "Šī darbība nav attiecināma uz nevienu no atlasītajiem lietotājiem."
   },
@@ -4515,10 +4593,10 @@
     "message": "Atjaunināt galveno paroli"
   },
   "updateMasterPasswordWarning": {
-    "message": "Apvienības pārvaldnieks nesen nomainīja galveno paroli. Lai piekļūtu glabātavai, tā ir jāatjaunina. Turpinot tiks izbeigta pašreizējā sesija un tiks pieprasīta atkārtota pierakstīšanās. Esošās sesijas citās iekārtās var turpināt darboties līdz vienai stundai."
+    "message": "Apvienības pārvaldnieks nesen nomainīja galveno paroli. Lai piekļūtu glabātavai, tā ir jāatjaunina. Turpinot tiks izbeigta pašreizējā sesija un tiks pieprasīta atkārtota pierakstīšanās. Esošās sesijas citās ierīcēs var turpināt darboties līdz vienai stundai."
   },
   "masterPasswordInvalidWarning": {
-    "message": "Galvenā parole neatbilst apvienības nosacījumu prasībām. Lai pievienotos apvienībai, ir nepieciešams atjaunināt galveno paroli. Turpinot notiks izrakstīšanās no pašreizējās sesijas, pieprasot atkal pierakstīties. Esošās sesijas citās iekārtās var turpināt darboties līdz vienai stundai."
+    "message": "Galvenā parole neatbilst apvienības nosacījumu prasībām. Lai pievienotos apvienībai, ir nepieciešams atjaunināt galveno paroli. Turpinot notiks izrakstīšanās no pašreizējās sesijas, pieprasot atkal pierakstīties. Esošās sesijas citās ierīcēs var turpināt darboties līdz vienai stundai."
   },
   "maximumVaultTimeout": {
     "message": "Glabātavas noildze"
@@ -5220,6 +5298,9 @@
       }
     }
   },
+  "premiumSubcriptionRequired": {
+    "message": "Nepieciešams Premium abonements"
+  },
   "scim": {
     "message": "SCIM Provisioning",
     "description": "The text, 'SCIM', is an acronymn and should not be translated."
@@ -5275,13 +5356,13 @@
     "description": "the text, 'SCIM', is an acronymn and should not be translated."
   },
   "inputRequired": {
-    "message": "Input is required."
+    "message": "Ievade ir nepieciešama."
   },
   "inputEmail": {
-    "message": "Input is not an email-address."
+    "message": "Ievadītā vērtība nav e-pasta adrese."
   },
   "inputMinLength": {
-    "message": "Input must be at least $COUNT$ characters long.",
+    "message": "Ievadītajai vērtībai ir jābūt vismaz $COUNT$ rakstzīmes garai.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -5290,7 +5371,7 @@
     }
   },
   "fieldsNeedAttention": {
-    "message": "$COUNT$ field(s) above need your attention.",
+    "message": "$COUNT$ augstāk esošajiem laukam(iem) ir jāpievērš uzmanība.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -5306,5 +5387,8 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "numberOfUsers": {
+    "message": "Lietotāju skaits"
   }
 }

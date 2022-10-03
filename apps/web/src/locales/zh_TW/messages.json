@@ -569,14 +569,26 @@
   "loginOrCreateNewAccount": {
     "message": "登入或建立帳戶以存取您的安全密碼庫。"
   },
+  "loginWithDevice": {
+    "message": "使用裝置登入"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "裝置登入必須在 Bitwarden 行動應用程式的設定中啟用。需要其他選項嗎？"
+  },
   "createAccount": {
     "message": "建立帳戶"
+  },
+  "newAroundHere": {
+    "message": "第一次使用？"
   },
   "startTrial": {
     "message": "立即試用"
   },
   "logIn": {
     "message": "登入"
+  },
+  "logInInitiated": {
+    "message": "登入已發起"
   },
   "submit": {
     "message": "送出"
@@ -635,7 +647,7 @@
   "confirmMasterPasswordRequired": {
     "message": "必須再次輸入主密碼。"
   },
-  "masterPasswordMinLength": {
+  "masterPasswordMinlength": {
     "message": "主密碼需要至少 8 個字元。"
   },
   "masterPassDoesntMatch": {
@@ -678,6 +690,9 @@
   "invalidMasterPassword": {
     "message": "無效的主密碼"
   },
+  "invalidFilePassword": {
+    "message": "檔案密碼無效，請使用您當初匯出檔案時輸入的密碼。"
+  },
   "lockNow": {
     "message": "立即鎖定"
   },
@@ -701,6 +716,9 @@
   },
   "noOrganizationsList": {
     "message": "您沒有加入任何組織。組織允許您與其他使用者安全地共用項目。"
+  },
+  "notificationSentDevice": {
+    "message": "通知已傳送至您的裝置。"
   },
   "versionNumber": {
     "message": "版本 $VERSION_NUMBER$",
@@ -889,6 +907,48 @@
   },
   "fileFormat": {
     "message": "檔案格式"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "此檔案匯出將受密碼保護，需要檔案密碼才能解密。"
+  },
+  "exportPasswordDescription": {
+    "message": "此密碼將用於匯出和匯入此檔案"
+  },
+  "confirmMasterPassword": {
+    "message": "確認主密碼"
+  },
+  "confirmFormat": {
+    "message": "確認格式"
+  },
+  "filePassword": {
+    "message": "檔案密碼"
+  },
+  "confirmFilePassword": {
+    "message": "確認檔案密碼"
+  },
+  "accountBackupOptionDescription": {
+    "message": "使用您的帳戶加密金鑰來加密匯出的資料，並限制它只能匯入至目前的 Bitwarden 帳戶。"
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "設定一組密碼來加密匯出的資料，並使用此密碼解密以匯入至任意 Bitwarden 帳戶。"
+  },
+  "fileTypeHeading": {
+    "message": "檔案類型"
+  },
+  "accountBackup": {
+    "message": "帳戶備份"
+  },
+  "passwordProtected": {
+    "message": "密碼保護"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "「檔案密碼」與「確認檔案密碼」不一致。"
+  },
+  "confirmVaultImport": {
+    "message": "確認密碼庫匯入"
+  },
+  "confirmVaultImportDesc": {
+    "message": "此檔案受密碼保護，請輸入檔案密碼以匯入資料。"
   },
   "exportSuccess": {
     "message": "已匯出您的密碼庫資料。"
@@ -1088,7 +1148,7 @@
     "message": "已刪除帳戶"
   },
   "accountDeletedDesc": {
-    "message": "您的 Bitwarden 帳戶和密碼庫資料已被永久刪除。"
+    "message": "您的帳戶已經關閉，所有關聯的資料也已經被刪除。"
   },
   "myAccount": {
     "message": "我的帳戶"
@@ -2257,7 +2317,7 @@
     "message": "原則"
   },
   "singleSignOn": {
-    "message": "單一登入 (SSO)"
+    "message": "單一登入"
   },
   "editPolicy": {
     "message": "編輯原則"
@@ -2437,7 +2497,7 @@
     "message": "已透過兩步驟登入復原帳戶。"
   },
   "failedLogin": {
-    "message": "登入失敗，密碼錯誤。"
+    "message": "嘗試登入失敗，密碼錯誤。"
   },
   "failedLogin2fa": {
     "message": "嘗試登入失敗，兩步驟登入錯誤。"
@@ -2486,6 +2546,9 @@
         "example": "'Google'"
       }
     }
+  },
+  "viewAllLoginOptions": {
+    "message": "檢視所有登入選項"
   },
   "viewedItemId": {
     "message": "檢視了項目 $ID$。",
@@ -2641,7 +2704,7 @@
     }
   },
   "revokedUserId": {
-    "message": "已撤銷 $ID$ 對組織的存取權限。",
+    "message": "已撤銷 $ID$ 的組織存取權限。",
     "placeholders": {
       "id": {
         "content": "$1",
@@ -2650,7 +2713,7 @@
     }
   },
   "restoredUserId": {
-    "message": "已還原 $ID$ 對組織的存取權限。",
+    "message": "已還原 $ID$ 的組織存取權限。",
     "placeholders": {
       "id": {
         "content": "$1",
@@ -3326,6 +3389,12 @@
   "fingerprintEnsureIntegrityVerify": {
     "message": "為確保加密金鑰的完整性，繼續之前請先驗證使用者指紋短語。",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
+  },
+  "fingerprintMatchInfo": {
+    "message": "請確保您的密碼庫已解鎖，並且指紋短語與其他裝置的一致。"
+  },
+  "fingerprintPhraseHeader": {
+    "message": "指紋短語"
   },
   "dontAskFingerprintAgain": {
     "message": "不再提示驗證已邀請使用者的指紋短語（不推薦）",
@@ -4012,6 +4081,12 @@
   "permissions": {
     "message": "權限"
   },
+  "managerPermissions": {
+    "message": "權限管理"
+  },
+  "adminPermissions": {
+    "message": "管理員權限"
+  },
   "accessEventLogs": {
     "message": "存取事件紀錄"
   },
@@ -4320,6 +4395,9 @@
   },
   "reinviteSelected": {
     "message": "重新傳送邀請"
+  },
+  "resendNotification": {
+    "message": "重新傳送通知"
   },
   "noSelectedUsersApplicable": {
     "message": "此動作不適用於任何已選取的使用者。"
@@ -5220,6 +5298,9 @@
       }
     }
   },
+  "premiumSubcriptionRequired": {
+    "message": "需要進階版訂閲"
+  },
   "scim": {
     "message": "SCIM 佈建",
     "description": "The text, 'SCIM', is an acronymn and should not be translated."
@@ -5299,12 +5380,15 @@
     }
   },
   "turnOn": {
-    "message": "打開"
+    "message": "開啟"
   },
   "on": {
     "message": "開啟"
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "numberOfUsers": {
+    "message": "使用者數量"
   }
 }

@@ -2,12 +2,11 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
-import { Permissions } from "@bitwarden/common/enums/permissions";
-
-import { PermissionsGuard } from "src/app/organizations/guards/permissions.guard";
-import { OrganizationLayoutComponent } from "src/app/organizations/layouts/organization-layout.component";
-import { ManageComponent } from "src/app/organizations/manage/manage.component";
-import { NavigationPermissionsService } from "src/app/organizations/services/navigation-permissions.service";
+import { canAccessManageTab } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@bitwarden/common/models/domain/organization";
+import { OrganizationPermissionsGuard } from "@bitwarden/web-vault/app/organizations/guards/org-permissions.guard";
+import { OrganizationLayoutComponent } from "@bitwarden/web-vault/app/organizations/layouts/organization-layout.component";
+import { ManageComponent } from "@bitwarden/web-vault/app/organizations/manage/manage.component";
 
 import { ScimComponent } from "./manage/scim.component";
 import { SsoComponent } from "./manage/sso.component";
@@ -16,30 +15,30 @@ const routes: Routes = [
   {
     path: "organizations/:organizationId",
     component: OrganizationLayoutComponent,
-    canActivate: [AuthGuard, PermissionsGuard],
+    canActivate: [AuthGuard, OrganizationPermissionsGuard],
     children: [
       {
         path: "manage",
         component: ManageComponent,
-        canActivate: [PermissionsGuard],
+        canActivate: [OrganizationPermissionsGuard],
         data: {
-          permissions: NavigationPermissionsService.getPermissions("manage"),
+          organizationPermissions: canAccessManageTab,
         },
         children: [
           {
             path: "sso",
             component: SsoComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
-              permissions: [Permissions.ManageSso],
+              organizationPermissions: (org: Organization) => org.canManageSso,
             },
           },
           {
             path: "scim",
             component: ScimComponent,
-            canActivate: [PermissionsGuard],
+            canActivate: [OrganizationPermissionsGuard],
             data: {
-              permissions: [Permissions.ManageScim],
+              organizationPermissions: (org: Organization) => org.canManageScim,
             },
           },
         ],

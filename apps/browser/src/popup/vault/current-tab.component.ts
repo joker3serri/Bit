@@ -4,12 +4,12 @@ import { Router } from "@angular/router";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { SyncService } from "@bitwarden/common/abstractions/sync.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { Utils } from "@bitwarden/common/misc/utils";
@@ -38,6 +38,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
   inSidebar = false;
   searchTypeSearch = false;
   loaded = false;
+  isLoading = false;
   showOrganizations = false;
 
   private totpCode: string;
@@ -71,7 +72,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
       this.ngZone.run(async () => {
         switch (message.command) {
           case "syncCompleted":
-            if (this.loaded) {
+            if (this.isLoading) {
               window.setTimeout(() => {
                 this.load();
               }, 500);
@@ -98,7 +99,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
       await this.load();
     } else {
       this.loadedTimeout = window.setTimeout(async () => {
-        if (!this.loaded) {
+        if (!this.isLoading) {
           await this.load();
         }
       }, 5000);
@@ -197,13 +198,13 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
   }
 
   private async load() {
-    this.loaded = false;
+    this.isLoading = false;
     this.tab = await BrowserApi.getTabFromCurrentWindow();
     if (this.tab != null) {
       this.url = this.tab.url;
     } else {
       this.loginCiphers = [];
-      this.loaded = true;
+      this.isLoading = this.loaded = true;
       return;
     }
 
@@ -218,7 +219,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     const otherTypes: CipherType[] = [];
     const dontShowCards = await this.stateService.getDontShowCardsCurrentTab();
     const dontShowIdentities = await this.stateService.getDontShowIdentitiesCurrentTab();
-    this.showOrganizations = await this.organizationService.hasOrganizations();
+    this.showOrganizations = this.organizationService.hasOrganizations();
     if (!dontShowCards) {
       otherTypes.push(CipherType.Card);
     }
@@ -256,6 +257,6 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     this.loginCiphers = this.loginCiphers.sort((a, b) =>
       this.cipherService.sortCiphersByLastUsedThenName(a, b)
     );
-    this.loaded = true;
+    this.isLoading = this.loaded = true;
   }
 }

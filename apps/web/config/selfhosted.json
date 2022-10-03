@@ -8,6 +8,6 @@
   },
   "flags": {
     "showTrial": false,
-    "scim": false
+    "showPasswordless": false
   }
 }

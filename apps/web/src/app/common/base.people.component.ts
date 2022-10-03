@@ -85,7 +85,7 @@ export abstract class BasePeopleComponent<
   users: UserType[] = [];
   pagedUsers: UserType[] = [];
   searchText: string;
-  actionPromise: Promise<any>;
+  actionPromise: Promise<void>;
 
   protected allUsers: UserType[] = [];
   protected activeUsers: UserType[] = [];
@@ -111,11 +111,11 @@ export abstract class BasePeopleComponent<
 
   abstract edit(user: UserType): void;
   abstract getUsers(): Promise<ListResponse<UserType>>;
-  abstract deleteUser(id: string): Promise<any>;
-  abstract revokeUser(id: string): Promise<any>;
-  abstract restoreUser(id: string): Promise<any>;
-  abstract reinviteUser(id: string): Promise<any>;
-  abstract confirmUser(user: UserType, publicKey: Uint8Array): Promise<any>;
+  abstract deleteUser(id: string): Promise<void>;
+  abstract revokeUser(id: string): Promise<void>;
+  abstract restoreUser(id: string): Promise<void>;
+  abstract reinviteUser(id: string): Promise<void>;
+  abstract confirmUser(user: UserType, publicKey: Uint8Array): Promise<void>;
 
   async load() {
     const response = await this.getUsers();
@@ -126,7 +126,12 @@ export abstract class BasePeopleComponent<
     }
 
     this.allUsers = response.data != null && response.data.length > 0 ? response.data : [];
-    this.allUsers.sort(Utils.getSortFunction(this.i18nService, "email"));
+    this.allUsers.sort(
+      Utils.getSortFunction<ProviderUserUserDetailsResponse | OrganizationUserUserDetailsResponse>(
+        this.i18nService,
+        "email"
+      )
+    );
     this.allUsers.forEach((u) => {
       if (!this.statusMap.has(u.status)) {
         this.statusMap.set(u.status, [u]);
@@ -343,6 +348,7 @@ export abstract class BasePeopleComponent<
             comp.name = this.userNamePipe.transform(user);
             comp.userId = user != null ? user.userId : null;
             comp.publicKey = publicKey;
+            // eslint-disable-next-line rxjs/no-async-subscribe
             comp.onConfirmedUser.subscribe(async () => {
               try {
                 comp.formPromise = confirmUser(publicKey);

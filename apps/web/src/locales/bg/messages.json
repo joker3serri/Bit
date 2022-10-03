@@ -422,7 +422,7 @@
     "description": "Copy URI to clipboard"
   },
   "me": {
-    "message": "Me"
+    "message": "Аз"
   },
   "myVault": {
     "message": "Моят трезор"
@@ -569,14 +569,26 @@
   "loginOrCreateNewAccount": {
     "message": "Впишете се или създайте нов абонамент, за да достъпите защитен трезор."
   },
+  "loginWithDevice": {
+    "message": "Вписване с устройство"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Вписването с устройство трябва да е включено в настройките на мобилното приложение на Битуорден. Друга настройка ли търсите?"
+  },
   "createAccount": {
     "message": "Създаване на абонамент"
+  },
+  "newAroundHere": {
+    "message": "New around here?"
   },
   "startTrial": {
     "message": "Стартиране на пробния период"
   },
   "logIn": {
     "message": "Вписване"
+  },
+  "logInInitiated": {
+    "message": "Вписването е стартирано"
   },
   "submit": {
     "message": "Подаване"
@@ -635,8 +647,8 @@
   "confirmMasterPasswordRequired": {
     "message": "Повторното въвеждане на главната парола е задължително."
   },
-  "masterPasswordMinLength": {
-    "message": "Главната парола трябва да е с дължина поне 8 знака."
+  "masterPasswordMinlength": {
+    "message": "Главната парола трябва да е дълга поне 8 знака."
   },
   "masterPassDoesntMatch": {
     "message": "Главната парола и потвърждението ѝ не съвпадат."
@@ -678,6 +690,9 @@
   "invalidMasterPassword": {
     "message": "Грешна главна парола"
   },
+  "invalidFilePassword": {
+    "message": "Неправилна парола за файла. Използвайте паролата, която сте въвели при създаването на изнесения файл."
+  },
   "lockNow": {
     "message": "Заключване сега"
   },
@@ -701,6 +716,9 @@
   },
   "noOrganizationsList": {
     "message": "Не сте член на никоя организация. Организациите позволяват да споделяте записи с други потребители по защитен начин."
+  },
+  "notificationSentDevice": {
+    "message": "Към устройството Ви е изпратено известие."
   },
   "versionNumber": {
     "message": "Версия $VERSION_NUMBER$",
@@ -889,6 +907,48 @@
   },
   "fileFormat": {
     "message": "Формат на файла"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "Изнесеният файл ще бъде защитен с парола, която ще бъде необходима за дешифриране на файла."
+  },
+  "exportPasswordDescription": {
+    "message": "Парола ще се използва при изнасянето и при внасянето на този файл"
+  },
+  "confirmMasterPassword": {
+    "message": "Потвърждаване на главната парола"
+  },
+  "confirmFormat": {
+    "message": "Потвърждаване на формата"
+  },
+  "filePassword": {
+    "message": "Парола на файла"
+  },
+  "confirmFilePassword": {
+    "message": "Потвърждаване на паролата на файла"
+  },
+  "accountBackupOptionDescription": {
+    "message": "Използва шифроването на Вашата регистрация в Битуорден, а не главната Ви парола, като защита на изнесения файл. Той може да бъде внесен само в текущата регистрация. Използвайте тази възможност, за да направите резервно копие, което не може да се ползва другаде."
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "Създайте потребителска парола за защита на изнесения файл. Използвайте тази възможност, за да изнесете информацията във файл, който да може да се ползва и в други регистрации."
+  },
+  "fileTypeHeading": {
+    "message": "Тип на файла"
+  },
+  "accountBackup": {
+    "message": "Резервно копие на регистрацията"
+  },
+  "passwordProtected": {
+    "message": "Защитен с парола"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "Дънните в полетата „Парола на файла“ и „Потвърждаване на паролата на файла“ не съвпадат."
+  },
+  "confirmVaultImport": {
+    "message": "Потвърждаване на внасянето на трезора"
+  },
+  "confirmVaultImportDesc": {
+    "message": "Този файл е защитен с парола. Трябва да въведете паролата, за да могат данните да бъдат внесени."
   },
   "exportSuccess": {
     "message": "Данните от трезора ви са изнесени."
@@ -2212,7 +2272,7 @@
     "message": "Годишно"
   },
   "annual": {
-    "message": "Annual"
+    "message": "Годишно"
   },
   "basePrice": {
     "message": "Базова цена"
@@ -2486,6 +2546,9 @@
         "example": "'Google'"
       }
     }
+  },
+  "viewAllLoginOptions": {
+    "message": "Вижте всички възможности за вписване"
   },
   "viewedItemId": {
     "message": "Запис № $ID$ е разгледан.",
@@ -3327,6 +3390,12 @@
     "message": "За да опазите ключовете за шифриране, въведете уникалната фраза, идентифицираща абонамента ви.",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
   },
+  "fingerprintMatchInfo": {
+    "message": "Уверете се, че трезорът Ви е отключен и че Уникалната фраза съвпада с другото устройство."
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Уникална фраза"
+  },
   "dontAskFingerprintAgain": {
     "message": "Без повторно питане за уникалната фраза",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
@@ -4012,6 +4081,12 @@
   "permissions": {
     "message": "Права"
   },
+  "managerPermissions": {
+    "message": "Права на управителя"
+  },
+  "adminPermissions": {
+    "message": "Права на администратора"
+  },
   "accessEventLogs": {
     "message": "Достъп до журналите"
   },
@@ -4320,6 +4395,9 @@
   },
   "reinviteSelected": {
     "message": "Изпращане на поканите наново"
+  },
+  "resendNotification": {
+    "message": "Повторно изпращане на известието"
   },
   "noSelectedUsersApplicable": {
     "message": "Това действие не може да се изпълни за никого от избраните потребители."
@@ -5220,6 +5298,9 @@
       }
     }
   },
+  "premiumSubcriptionRequired": {
+    "message": "Изисква се платен абонамент"
+  },
   "scim": {
     "message": "Удостоверяване чрез SCIM",
     "description": "The text, 'SCIM', is an acronymn and should not be translated."
@@ -5306,5 +5387,8 @@
   },
   "cardBrandMir": {
     "message": "Мир"
+  },
+  "numberOfUsers": {
+    "message": "Брой потребители"
   }
 }

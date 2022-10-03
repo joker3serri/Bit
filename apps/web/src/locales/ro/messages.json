@@ -569,14 +569,26 @@
   "loginOrCreateNewAccount": {
     "message": "Autentificați-vă sau creați un cont nou pentru a accesa seiful dvs. securizat."
   },
+  "loginWithDevice": {
+    "message": "Autentificați-vă cu dispozitivul"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Autentificarea cu dispozitivul trebuie să fie activată în setările aplicației mobile Bitwarden. Aveți nevoie de o altă opțiune?"
+  },
   "createAccount": {
     "message": "Creare cont"
+  },
+  "newAroundHere": {
+    "message": "Sunteți nou pe aici?"
   },
   "startTrial": {
     "message": "Începeți o încercare"
   },
   "logIn": {
     "message": "Conectare"
+  },
+  "logInInitiated": {
+    "message": "Autentificare inițiată"
   },
   "submit": {
     "message": "Trimitere"
@@ -635,7 +647,7 @@
   "confirmMasterPasswordRequired": {
     "message": "Este necesară rescrierea parolei principale."
   },
-  "masterPasswordMinLength": {
+  "masterPasswordMinlength": {
     "message": "Parola principală trebuie să aibă cel puțin 8 caractere."
   },
   "masterPassDoesntMatch": {
@@ -678,6 +690,9 @@
   "invalidMasterPassword": {
     "message": "Parolă principală incorectă"
   },
+  "invalidFilePassword": {
+    "message": "Parola fișierului nu este validă, utilizați parola introdusă atunci când ați creat fișierul de export."
+  },
   "lockNow": {
     "message": "Blocare acum"
   },
@@ -701,6 +716,9 @@
   },
   "noOrganizationsList": {
     "message": "Nu aparțineți niciunei organizații. Organizațiile vă permit să partajați în siguranță articole cu alți utilizatori."
+  },
+  "notificationSentDevice": {
+    "message": "O notificare a fost trimisă pe dispozitivul dvs."
   },
   "versionNumber": {
     "message": "Versiunea $VERSION_NUMBER$",
@@ -889,6 +907,48 @@
   },
   "fileFormat": {
     "message": "Format fișier"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "Exportul acestui fișier va fi protejat prin parolă și necesită parola fișierului pentru decriptare."
+  },
+  "exportPasswordDescription": {
+    "message": "Această parolă se va folosi pentru exportul și importul acestui fișier"
+  },
+  "confirmMasterPassword": {
+    "message": "Confirmați parola principală"
+  },
+  "confirmFormat": {
+    "message": "Confirmați formatul"
+  },
+  "filePassword": {
+    "message": "Parola fișierului"
+  },
+  "confirmFilePassword": {
+    "message": "Confirmați parola fișierului"
+  },
+  "accountBackupOptionDescription": {
+    "message": "Utilizați cheia de criptare a contului pentru a cripta exportul și a restricționa importul numai la contul curent Bitwarden."
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "Setați o parolă pentru criptarea exportului și importați-l în orice cont Bitwarden folosind parola pentru decriptare."
+  },
+  "fileTypeHeading": {
+    "message": "Tip de fișier"
+  },
+  "accountBackup": {
+    "message": "Backup de cont"
+  },
+  "passwordProtected": {
+    "message": "Protejat cu parolă"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "„Parola fișierului” și „Confirmați parolă fișierului” nu se potrivesc."
+  },
+  "confirmVaultImport": {
+    "message": "Confirmați importul seifului"
+  },
+  "confirmVaultImportDesc": {
+    "message": "Acest fișier este protejat prin parolă. Introduceți parola fișierului pentru a importa datele."
   },
   "exportSuccess": {
     "message": "Datele seifului dvs. au fost exportate."
@@ -1082,13 +1142,13 @@
     "message": "Procedați mai jos pentru a vă șterge contul și toate datele din seif."
   },
   "deleteAccountWarning": {
-    "message": "Ștergerea contului dvs. este definitivă. Nu poate fi anulată."
+    "message": "Ștergerea contului dvs. este permanentă. Nu poate fi anulată."
   },
   "accountDeleted": {
     "message": "Contul a fost șters"
   },
   "accountDeletedDesc": {
-    "message": "Contul dvs. Bitwarden și datele din seif au fost șterse definitiv."
+    "message": "Contul dvs. a fost închis și toate datele asociate au fost șterse."
   },
   "myAccount": {
     "message": "Contul meu"
@@ -2487,6 +2547,9 @@
       }
     }
   },
+  "viewAllLoginOptions": {
+    "message": "Vedeți toate opțiunile de autentificare"
+  },
   "viewedItemId": {
     "message": "Element $ID$ vizualizat.",
     "placeholders": {
@@ -3324,8 +3387,14 @@
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
   },
   "fingerprintEnsureIntegrityVerify": {
-    "message": "Pentru a asigura integritatea cheilor dvs. de criptare, vă rugăm să verificați fraza amprentă a utilizatorului înainte de a continua.",
+    "message": "Pentru a asigura integritatea cheilor de criptare, verificați fraza amprentă a utilizatorului înainte de a continua.",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
+  },
+  "fingerprintMatchInfo": {
+    "message": "Asigurați-vă că seiful dvs. este deblocat și că fraza amprentă corespunde cu cea a celuilalt dispozitiv."
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Fraza amprentă"
   },
   "dontAskFingerprintAgain": {
     "message": "Nu-mi cereți niciodată să verific frazele amprentă pentru utilizatorii invitați (Nerecomandat)",
@@ -4012,6 +4081,12 @@
   "permissions": {
     "message": "Permisiuni"
   },
+  "managerPermissions": {
+    "message": "Permisiuni manager"
+  },
+  "adminPermissions": {
+    "message": "Permisiuni Admin"
+  },
   "accessEventLogs": {
     "message": "Acces la jurnalele de evenimente"
   },
@@ -4320,6 +4395,9 @@
   },
   "reinviteSelected": {
     "message": "Retrimitere invitații"
+  },
+  "resendNotification": {
+    "message": "Retrimitere notificare"
   },
   "noSelectedUsersApplicable": {
     "message": "Această acțiune nu se aplică niciunui utilizator selectat."
@@ -5220,6 +5298,9 @@
       }
     }
   },
+  "premiumSubcriptionRequired": {
+    "message": "Este necesar un abonament Premium"
+  },
   "scim": {
     "message": "Aprovizionarea SCIM",
     "description": "The text, 'SCIM', is an acronymn and should not be translated."
@@ -5306,5 +5387,8 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "numberOfUsers": {
+    "message": "Număr de utilizatori"
   }
 }

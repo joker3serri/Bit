@@ -569,14 +569,26 @@
   "loginOrCreateNewAccount": {
     "message": "Logi sisse või loo uus konto."
   },
+  "loginWithDevice": {
+    "message": "Log in with device"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Log in with device must be enabled in the settings of the Bitwarden mobile app. Need another option?"
+  },
   "createAccount": {
     "message": "Konto loomine"
+  },
+  "newAroundHere": {
+    "message": "New around here?"
   },
   "startTrial": {
     "message": "Alusta prooviperioodi"
   },
   "logIn": {
     "message": "Logi sisse"
+  },
+  "logInInitiated": {
+    "message": "Log in initiated"
   },
   "submit": {
     "message": "Kinnita"
@@ -635,8 +647,8 @@
   "confirmMasterPasswordRequired": {
     "message": "Vajalik on ülemparooli uuesti sisestamine."
   },
-  "masterPasswordMinLength": {
-    "message": "Ülemparool peab olema vähemalt 8 tähemärgi pikkune."
+  "masterPasswordMinlength": {
+    "message": "Master password must be at least 8 characters long."
   },
   "masterPassDoesntMatch": {
     "message": "Ülemparoolid ei ühti."
@@ -678,6 +690,9 @@
   "invalidMasterPassword": {
     "message": "Vale ülemparool"
   },
+  "invalidFilePassword": {
+    "message": "Invalid file password, please use the password you entered when you created the export file."
+  },
   "lockNow": {
     "message": "Lukusta paroolihoidla"
   },
@@ -701,6 +716,9 @@
   },
   "noOrganizationsList": {
     "message": "Sa ei kuulu ühessegi organisatsiooni. Organisatsioonid võimaldavad sul kirjeid turvaliselt teiste kasutajatega jagada."
+  },
+  "notificationSentDevice": {
+    "message": "A notification has been sent to your device."
   },
   "versionNumber": {
     "message": "Versioon $VERSION_NUMBER$",
@@ -889,6 +907,48 @@
   },
   "fileFormat": {
     "message": "Failivorming"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "This file export will be password protected and require the file password to decrypt."
+  },
+  "exportPasswordDescription": {
+    "message": "This password will be used to export and import this file"
+  },
+  "confirmMasterPassword": {
+    "message": "Confirm Master Password"
+  },
+  "confirmFormat": {
+    "message": "Confirm Format"
+  },
+  "filePassword": {
+    "message": "File Password"
+  },
+  "confirmFilePassword": {
+    "message": "Confirm File Password"
+  },
+  "accountBackupOptionDescription": {
+    "message": "Use your account encryption key to encrypt the export and restrict import to only the current Bitwarden account."
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "Set a password to encrypt the export and import it to any Bitwarden account using the password for decryption."
+  },
+  "fileTypeHeading": {
+    "message": "File Type"
+  },
+  "accountBackup": {
+    "message": "Account Backup"
+  },
+  "passwordProtected": {
+    "message": "Password Protected"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "“File password”  and “Confirm File Password“ do not match."
+  },
+  "confirmVaultImport": {
+    "message": "Confirm Vault Import"
+  },
+  "confirmVaultImportDesc": {
+    "message": "This file is password-protected. Please enter the file password to import data."
   },
   "exportSuccess": {
     "message": "Hoidla on eksporditud."
@@ -2487,6 +2547,9 @@
       }
     }
   },
+  "viewAllLoginOptions": {
+    "message": "View all log in options"
+  },
   "viewedItemId": {
     "message": "Vaatas kirjet $ID$.",
     "placeholders": {
@@ -3327,6 +3390,12 @@
     "message": "Selleks, et sinu krüpteeringu terviklikkus säiliks, pead jätkamiseks kinnitama kasutaja sõrmejälje fraasi.",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
   },
+  "fingerprintMatchInfo": {
+    "message": "Please make sure your vault is unlocked and Fingerprint phrase matches the other device."
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Fingerprint phrase"
+  },
   "dontAskFingerprintAgain": {
     "message": "Ära enam sõrmejälje fraasi kinnitamist küsi",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
@@ -4012,6 +4081,12 @@
   "permissions": {
     "message": "Õigused"
   },
+  "managerPermissions": {
+    "message": "Manager Permissions"
+  },
+  "adminPermissions": {
+    "message": "Admin Permissions"
+  },
   "accessEventLogs": {
     "message": "Ligipääs sündmuste logile"
   },
@@ -4320,6 +4395,9 @@
   },
   "reinviteSelected": {
     "message": "Saada kutsed uuesti"
+  },
+  "resendNotification": {
+    "message": "Resend notification"
   },
   "noSelectedUsersApplicable": {
     "message": "See valik rakendub mistahes valitud kasutajatele."
@@ -5093,19 +5171,19 @@
     "message": "Konto seaded"
   },
   "generator": {
-    "message": "Generator"
+    "message": "Genereerija"
   },
   "whatWouldYouLikeToGenerate": {
-    "message": "What would you like to generate?"
+    "message": "Mida sa soovid genereerida?"
   },
   "passwordType": {
-    "message": "Password Type"
+    "message": "Parooli tüüp"
   },
   "regenerateUsername": {
     "message": "Genereeri kasutajanimi uuesti"
   },
   "generateUsername": {
-    "message": "Generate Username"
+    "message": "Genereeri kasutajanimi"
   },
   "usernameType": {
     "message": "Kasutajanime tüüp"
@@ -5124,14 +5202,14 @@
     "message": "Kasuta domeenipõhist kogumisaadressi."
   },
   "random": {
-    "message": "Random",
+    "message": "Juhuslik",
     "description": "Generates domain-based username using random letters"
   },
   "randomWord": {
     "message": "Juhuslik sõna"
   },
   "service": {
-    "message": "Service"
+    "message": "Teenus"
   },
   "unknownCipher": {
     "message": "Unknown Item, you may need to request permission to access this item."
@@ -5220,6 +5298,9 @@
       }
     }
   },
+  "premiumSubcriptionRequired": {
+    "message": "Premium subscription required"
+  },
   "scim": {
     "message": "SCIM Provisioning",
     "description": "The text, 'SCIM', is an acronymn and should not be translated."
@@ -5306,5 +5387,8 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "numberOfUsers": {
+    "message": "Kasutajate arv"
   }
 }

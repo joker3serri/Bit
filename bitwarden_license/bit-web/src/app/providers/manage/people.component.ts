@@ -21,10 +21,9 @@ import { ProviderUserConfirmRequest } from "@bitwarden/common/models/request/pro
 import { ListResponse } from "@bitwarden/common/models/response/listResponse";
 import { ProviderUserBulkResponse } from "@bitwarden/common/models/response/provider/providerUserBulkResponse";
 import { ProviderUserUserDetailsResponse } from "@bitwarden/common/models/response/provider/providerUserResponse";
-
-import { BasePeopleComponent } from "src/app/common/base.people.component";
-import { BulkStatusComponent } from "src/app/organizations/manage/bulk/bulk-status.component";
-import { EntityEventsComponent } from "src/app/organizations/manage/entity-events.component";
+import { BasePeopleComponent } from "@bitwarden/web-vault/app/common/base.people.component";
+import { BulkStatusComponent } from "@bitwarden/web-vault/app/organizations/manage/bulk/bulk-status.component";
+import { EntityEventsComponent } from "@bitwarden/web-vault/app/organizations/manage/entity-events.component";
 
 import { BulkConfirmComponent } from "./bulk/bulk-confirm.component";
 import { BulkRemoveComponent } from "./bulk/bulk-remove.component";
@@ -34,6 +33,7 @@ import { UserAddEditComponent } from "./user-add-edit.component";
   selector: "provider-people",
   templateUrl: "people.component.html",
 })
+// eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class PeopleComponent
   extends BasePeopleComponent<ProviderUserUserDetailsResponse>
   implements OnInit
@@ -87,6 +87,7 @@ export class PeopleComponent
   }
 
   ngOnInit() {
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.route.parent.params.subscribe(async (params) => {
       this.providerId = params.providerId;
       const provider = await this.providerService.get(this.providerId);
@@ -100,6 +101,7 @@ export class PeopleComponent
 
       await this.load();
 
+      /* eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe, rxjs/no-nested-subscribe */
       this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
         this.searchText = qParams.search;
         if (qParams.viewEvents != null) {

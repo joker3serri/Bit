@@ -569,14 +569,26 @@
   "loginOrCreateNewAccount": {
     "message": "Пријавите се или креирајте нови налог за приступ Сефу."
   },
+  "loginWithDevice": {
+    "message": "Log in with device"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Log in with device must be enabled in the settings of the Bitwarden mobile app. Need another option?"
+  },
   "createAccount": {
     "message": "Креирај налог"
+  },
+  "newAroundHere": {
+    "message": "New around here?"
   },
   "startTrial": {
     "message": "Почетак пробе"
   },
   "logIn": {
     "message": "Пријавите се"
+  },
+  "logInInitiated": {
+    "message": "Log in initiated"
   },
   "submit": {
     "message": "Пошаљи"
@@ -635,8 +647,8 @@
   "confirmMasterPasswordRequired": {
     "message": "Поновно уписивање главне лозинке је неопходно."
   },
-  "masterPasswordMinLength": {
-    "message": "Главна лозинка мора да садржи барем 8 знакова."
+  "masterPasswordMinlength": {
+    "message": "Master password must be at least 8 characters long."
   },
   "masterPassDoesntMatch": {
     "message": "Потврђена Главна Лозинка се не подудара."
@@ -645,7 +657,7 @@
     "message": "Ваш налог је креиран! Сада се можте пријавити."
   },
   "trialAccountCreated": {
-    "message": "Account created successfully."
+    "message": "Налог је успешно направљен."
   },
   "masterPassSent": {
     "message": "Послали смо Вам поруку са саветом главне лозинке."
@@ -678,6 +690,9 @@
   "invalidMasterPassword": {
     "message": "Погрешна главна лозинка"
   },
+  "invalidFilePassword": {
+    "message": "Invalid file password, please use the password you entered when you created the export file."
+  },
   "lockNow": {
     "message": "Закључај одмах"
   },
@@ -701,6 +716,9 @@
   },
   "noOrganizationsList": {
     "message": "Не припадате ниједној организацији. Организације вам омогућавају да безбедно делите ставке са другим корисницима."
+  },
+  "notificationSentDevice": {
+    "message": "A notification has been sent to your device."
   },
   "versionNumber": {
     "message": "Верзија $VERSION_NUMBER$",
@@ -889,6 +907,48 @@
   },
   "fileFormat": {
     "message": "Формат датотеке"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "This file export will be password protected and require the file password to decrypt."
+  },
+  "exportPasswordDescription": {
+    "message": "This password will be used to export and import this file"
+  },
+  "confirmMasterPassword": {
+    "message": "Confirm Master Password"
+  },
+  "confirmFormat": {
+    "message": "Confirm Format"
+  },
+  "filePassword": {
+    "message": "File Password"
+  },
+  "confirmFilePassword": {
+    "message": "Confirm File Password"
+  },
+  "accountBackupOptionDescription": {
+    "message": "Use your account encryption key to encrypt the export and restrict import to only the current Bitwarden account."
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "Set a password to encrypt the export and import it to any Bitwarden account using the password for decryption."
+  },
+  "fileTypeHeading": {
+    "message": "File Type"
+  },
+  "accountBackup": {
+    "message": "Account Backup"
+  },
+  "passwordProtected": {
+    "message": "Password Protected"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "“File password”  and “Confirm File Password“ do not match."
+  },
+  "confirmVaultImport": {
+    "message": "Confirm Vault Import"
+  },
+  "confirmVaultImportDesc": {
+    "message": "This file is password-protected. Please enter the file password to import data."
   },
   "exportSuccess": {
     "message": "Податци сефа су извежени."
@@ -1091,7 +1151,7 @@
     "message": "Ваш налог је затворен и сви повезани подаци су избрисани."
   },
   "myAccount": {
-    "message": "Мој Налог"
+    "message": "Мој налог"
   },
   "tools": {
     "message": "Алатке"
@@ -1251,7 +1311,7 @@
     "message": "Омогућено"
   },
   "restoreAccess": {
-    "message": "Restore Access"
+    "message": "Врати притуп"
   },
   "premium": {
     "message": "Премијум",
@@ -1279,7 +1339,7 @@
     "message": "Онемогући"
   },
   "revokeAccess": {
-    "message": "Revoke Access"
+    "message": "Опозови Приступ"
   },
   "twoStepLoginProviderEnabled": {
     "message": "Овај добављач услуге пријављивања у два корака је омогућен на вашем налогу."
@@ -1673,10 +1733,10 @@
     "message": "Наплате"
   },
   "billingPlanLabel": {
-    "message": "Billing Plan"
+    "message": "План претплате"
   },
   "paymentType": {
-    "message": "Payment Type"
+    "message": "Врста Уплате"
   },
   "accountCredit": {
     "message": "Салдо налога",
@@ -1795,7 +1855,7 @@
     "message": "година"
   },
   "yr": {
-    "message": "yr"
+    "message": "год"
   },
   "month": {
     "message": "месец"
@@ -1826,7 +1886,7 @@
     "message": "Информације за обрачун"
   },
   "billingTrialSubLabel": {
-    "message": "Your payment method will not be charged during the 7 day free trial."
+    "message": "Ваш начин плаћања неће бити наплаћен током бесплатног пробног периода од 7 дана."
   },
   "creditCard": {
     "message": "Кредитна Картица"
@@ -2185,7 +2245,7 @@
     }
   },
   "trialThankYou": {
-    "message": "Thanks for signing up for Bitwarden for $PLAN$!",
+    "message": "Хвала што сте се пријавили за Bitwarden за $PLAN$!",
     "placeholders": {
       "plan": {
         "content": "$1",
@@ -2194,7 +2254,7 @@
     }
   },
   "trialPaidInfoMessage": {
-    "message": "Your $PLAN$ 7 day free trial will be converted to a paid subscription after 7 days.",
+    "message": "Када се заврши бесплатни период плана $PLAN$ (7 дана), биће претворен у плаћеном плану.",
     "placeholders": {
       "plan": {
         "content": "$1",
@@ -2203,7 +2263,7 @@
     }
   },
   "trialConfirmationEmail": {
-    "message": "We've sent a confirmation email to your team's billing email at "
+    "message": "Послали смо имејл са потврдом на адресу за обрачун вашег тима на "
   },
   "monthly": {
     "message": "Месечно"
@@ -2212,7 +2272,7 @@
     "message": "Годишње"
   },
   "annual": {
-    "message": "Annual"
+    "message": "Годишње"
   },
   "basePrice": {
     "message": "Основна цена"
@@ -2487,6 +2547,9 @@
       }
     }
   },
+  "viewAllLoginOptions": {
+    "message": "View all log in options"
+  },
   "viewedItemId": {
     "message": "Прогледана ставка $ID$.",
     "placeholders": {
@@ -2632,7 +2695,7 @@
     }
   },
   "removeUserIdAccess": {
-    "message": "Remove $ID$ access",
+    "message": "Опозови приступ „$ID$“",
     "placeholders": {
       "id": {
         "content": "$1",
@@ -3327,6 +3390,12 @@
     "message": "Да бисте осигурали интегритет кључева за шифровање, молимо да проверите Вашу Сигурносну Фразу Сефа пре наставка.",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
   },
+  "fingerprintMatchInfo": {
+    "message": "Please make sure your vault is unlocked and Fingerprint phrase matches the other device."
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Fingerprint phrase"
+  },
   "dontAskFingerprintAgain": {
     "message": "Не питај више за проверу Сигурносне Фразе Сефа",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
@@ -3724,7 +3793,7 @@
     "message": "Онемогућено"
   },
   "revoked": {
-    "message": "Revoked"
+    "message": "Опозвано"
   },
   "sendLink": {
     "message": "УРЛ „Send“",
@@ -4011,6 +4080,12 @@
   },
   "permissions": {
     "message": "Дозволе"
+  },
+  "managerPermissions": {
+    "message": "Manager Permissions"
+  },
+  "adminPermissions": {
+    "message": "Admin Permissions"
   },
   "accessEventLogs": {
     "message": "Приступе извештаја догађаја"
@@ -4321,6 +4396,9 @@
   "reinviteSelected": {
     "message": "Поновно послати позивнице"
   },
+  "resendNotification": {
+    "message": "Resend notification"
+  },
   "noSelectedUsersApplicable": {
     "message": "Ова акција није применљива на било који од одабраних корисника."
   },
@@ -4379,10 +4457,10 @@
     "message": "Уклони кориснике"
   },
   "revokeUsers": {
-    "message": "Revoke Users"
+    "message": "Опозови кориснике"
   },
   "restoreUsers": {
-    "message": "Restore Users"
+    "message": "Врати кориснике"
   },
   "error": {
     "message": "Грешка"
@@ -5220,6 +5298,9 @@
       }
     }
   },
+  "premiumSubcriptionRequired": {
+    "message": "Premium претплата је потребна"
+  },
   "scim": {
     "message": "SCIM Provisioning",
     "description": "The text, 'SCIM', is an acronymn and should not be translated."
@@ -5306,5 +5387,8 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "numberOfUsers": {
+    "message": "Број корисника"
   }
 }

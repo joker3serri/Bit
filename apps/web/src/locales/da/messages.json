@@ -569,14 +569,26 @@
   "loginOrCreateNewAccount": {
     "message": "Log ind eller opret en ny konto for at få adgang til din sikre boks."
   },
+  "loginWithDevice": {
+    "message": "Log ind med enhed"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Log ind med enhed skal være aktiveret i Bitwarden mobil-appindstillingerne. Brug for en anden mulighed?"
+  },
   "createAccount": {
     "message": "Opret konto"
+  },
+  "newAroundHere": {
+    "message": "Ny her?"
   },
   "startTrial": {
     "message": "Start prøveperiode"
   },
   "logIn": {
     "message": "Log ind"
+  },
+  "logInInitiated": {
+    "message": "Indlogning initieret"
   },
   "submit": {
     "message": "Indsend"
@@ -635,8 +647,8 @@
   "confirmMasterPasswordRequired": {
     "message": "Hovedadgangskode kræves angivet igen."
   },
-  "masterPasswordMinLength": {
-    "message": "Hovedadgangskode skal være på mindst 8 tegn."
+  "masterPasswordMinlength": {
+    "message": "Hovedadgangskode skal udgøre minimum 8 tegn."
   },
   "masterPassDoesntMatch": {
     "message": "De to hovedadgangskoder matcher ikke."
@@ -678,6 +690,9 @@
   "invalidMasterPassword": {
     "message": "Ugyldig hovedadgangskode"
   },
+  "invalidFilePassword": {
+    "message": "Ugyldig filadgangskode. Brug venligst den adgangskode, du indtastede, da du oprettede eksportfilen."
+  },
   "lockNow": {
     "message": "Lås nu"
   },
@@ -701,6 +716,9 @@
   },
   "noOrganizationsList": {
     "message": "Du tilhører ikke nogen organisationer. Organisationer giver dig mulighed for at dele elementer med andre brugere på en sikker måde."
+  },
+  "notificationSentDevice": {
+    "message": "En notifikation er sendt til din enhed."
   },
   "versionNumber": {
     "message": "Version $VERSION_NUMBER$",
@@ -889,6 +907,48 @@
   },
   "fileFormat": {
     "message": "Filformat"
+  },
+  "fileEncryptedExportWarningDesc": {
+    "message": "Denne fileksport vil være adgangskodebeskyttet og kræve filadgangskoden ved dekryptering."
+  },
+  "exportPasswordDescription": {
+    "message": "Denne adgangskode vil blive brugt til at eksportere og importere denne fil"
+  },
+  "confirmMasterPassword": {
+    "message": "Bekræft hovedadgangskode"
+  },
+  "confirmFormat": {
+    "message": "Bekræft format"
+  },
+  "filePassword": {
+    "message": "Filadgangskode"
+  },
+  "confirmFilePassword": {
+    "message": "Bekræft filadgangskode"
+  },
+  "accountBackupOptionDescription": {
+    "message": "Brug din kontos krypteringsnøgle til at kryptere eksporten og begrænse importen til udelukkende den aktuelle Bitwarden-konto."
+  },
+  "passwordProtectedOptionDescription": {
+    "message": "Opret en adgangskode til at kryptere eksporten og importér den til enhver Bitwarden-konto ved hjælp af adgangskoden til dekryptering."
+  },
+  "fileTypeHeading": {
+    "message": "Filtype"
+  },
+  "accountBackup": {
+    "message": "Kontosikkerhedskopi"
+  },
+  "passwordProtected": {
+    "message": "Kodeordsbeskyttet"
+  },
+  "filePasswordAndConfirmFilePasswordDoNotMatch": {
+    "message": "“Filadgangskode” og “Bekræft filadgangskode“ matcher ikke."
+  },
+  "confirmVaultImport": {
+    "message": "Bekræft boks-import"
+  },
+  "confirmVaultImportDesc": {
+    "message": "Denne fil er adgangskodebeskyttet. Angiv filadgangskoden for at importere data."
   },
   "exportSuccess": {
     "message": "Dine boksdata er blevet eksporteret."
@@ -1088,7 +1148,7 @@
     "message": "Konto slettet"
   },
   "accountDeletedDesc": {
-    "message": "Din Bitwarden-konto og boks-data er blevet slettet permanent."
+    "message": "Din konto er blevet lukket, og alle tilknyttede data er blevet slettet."
   },
   "myAccount": {
     "message": "Min konto"
@@ -2487,6 +2547,9 @@
       }
     }
   },
+  "viewAllLoginOptions": {
+    "message": "Vis alle indlogningsmuligheder"
+  },
   "viewedItemId": {
     "message": "Viste element $ID$.",
     "placeholders": {
@@ -3327,6 +3390,12 @@
     "message": "For at sikre integriteten af dine krypteringsnøgler, bedes du bekræfte brugerens fingeraftrykssætning, inden du fortsætter.",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
   },
+  "fingerprintMatchInfo": {
+    "message": "Sørg for, at din Boks er oplåst, og at Fingeraftrykssætningen matcher den anden enhed."
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Fingeraftrykssætning"
+  },
   "dontAskFingerprintAgain": {
     "message": "Bed aldrig om at bekræfte fingeraftrykssætninger for inviterede brugere (anbefales ikke)",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
@@ -4012,6 +4081,12 @@
   "permissions": {
     "message": "Tilladelser"
   },
+  "managerPermissions": {
+    "message": "Håndtér rettigheder"
+  },
+  "adminPermissions": {
+    "message": "Admin-tilladelser"
+  },
   "accessEventLogs": {
     "message": "Tilgå begivenhedslogger"
   },
@@ -4320,6 +4395,9 @@
   },
   "reinviteSelected": {
     "message": "Gensend invitationer"
+  },
+  "resendNotification": {
+    "message": "Gensend notifikation"
   },
   "noSelectedUsersApplicable": {
     "message": "Denne handling er ikke anvendelig for nogen af de valgte brugere."
@@ -5220,6 +5298,9 @@
       }
     }
   },
+  "premiumSubcriptionRequired": {
+    "message": "Premium-abonnement kræves"
+  },
   "scim": {
     "message": "SCIM-provisionering",
     "description": "The text, 'SCIM', is an acronymn and should not be translated."
@@ -5306,5 +5387,8 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "numberOfUsers": {
+    "message": "Antal brugere"
   }
 }

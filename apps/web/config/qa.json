@@ -11,6 +11,6 @@
   },
   "flags": {
     "showTrial": true,
-    "scim": true
+    "showPasswordless": true
   }
 }

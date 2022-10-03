@@ -64,18 +64,25 @@ const moduleRules = [
     ],
   },
   {
-    test: /(?:\.ngfactory\.js|\.ngstyle\.js|\.ts)$/,
+    test: /\.[cm]?js$/,
+    use: [
+      {
+        loader: "babel-loader",
+        options: {
+          configFile: false,
+          plugins: ["@angular/compiler-cli/linker/babel"],
+        },
+      },
+    ],
+  },
+  {
+    test: /\.[jt]sx?$/,
     loader: "@ngtools/webpack",
   },
 ];
 
 const plugins = [
   new CleanWebpackPlugin(),
-  // ref: https://github.com/angular/angular/issues/20357
-  new webpack.ContextReplacementPlugin(
-    /\@angular(\\|\/)core(\\|\/)fesm5/,
-    path.resolve(__dirname, "./src")
-  ),
   new HtmlWebpackPlugin({
     template: "./src/index.html",
     filename: "index.html",
@@ -142,6 +149,9 @@ const plugins = [
     filename: "[name].[contenthash].css",
     chunkFilename: "[id].[contenthash].css",
   }),
+  new webpack.ProvidePlugin({
+    process: "process/browser.js",
+  }),
   new webpack.EnvironmentPlugin({
     ENV: ENV,
     NODE_ENV: NODE_ENV === "production" ? "production" : "development",
@@ -152,9 +162,6 @@ const plugins = [
     BRAINTREE_KEY: envConfig["braintreeKey"] ?? "",
     PAYPAL_CONFIG: envConfig["paypal"] ?? {},
     FLAGS: envConfig["flags"] ?? {},
-  }),
-  new webpack.ProvidePlugin({
-    process: "process/browser",
   }),
   new AngularWebpackPlugin({
     tsConfigPath: "tsconfig.json",
@@ -202,68 +209,76 @@ const devServer =
             secure: false,
             changeOrigin: true,
           },
+          "/icons": {
+            target: envConfig.dev?.proxyIcons,
+            pathRewrite: { "^/icons": "" },
+            secure: false,
+            changeOrigin: true,
+          },
         },
         headers: (req) => {
           if (!req.originalUrl.includes("connector.html")) {
-            return [
-              {
-                key: "Content-Security-Policy",
-                value: `
-                  default-src 'self';
-                  script-src
-                    'self'
-                    'sha256-ryoU+5+IUZTuUyTElqkrQGBJXr1brEv6r2CA62WUw8w='
-                    https://js.stripe.com
-                    https://js.braintreegateway.com
-                    https://www.paypalobjects.com;
-                  style-src
-                    'self'
-                    https://assets.braintreegateway.com
-                    https://*.paypal.com
-                    'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='
-                    'sha256-JVRXyYPueLWdwGwY9m/7u4QlZ1xeQdqUj2t8OVIzZE4=';
-                    'sha256-0xHKHIT3+e2Gknxsm/cpErSprhL+o254L/y5bljg74U='
-                  img-src
-                    'self'
-                    data:
-                      https://icons.bitwarden.net
-                      https://*.paypal.com
-                      https://www.paypalobjects.com
-                      https://q.stripe.com
-                      https://haveibeenpwned.com
-                      https://www.gravatar.com;
-                  child-src
-                    'self'
-                    https://js.stripe.com
-                    https://assets.braintreegateway.com
-                    https://*.paypal.com
-                    https://*.duosecurity.com;
-                  frame-src
-                    'self'
-                    https://js.stripe.com
-                    https://assets.braintreegateway.com
-                    https://*.paypal.com
-                    https://*.duosecurity.com;
-                  connect-src
-                    'self'
-                    wss://notifications.bitwarden.com
-                    https://notifications.bitwarden.com
-                    https://cdn.bitwarden.net
-                    https://api.pwnedpasswords.com
-                    https://2fa.directory/api/v3/totp.json
-                    https://api.stripe.com
-                    https://www.paypal.com
-                    https://api.braintreegateway.com
-                    https://client-analytics.braintreegateway.com
-                    https://*.braintree-api.com
-                    https://*.blob.core.windows.net
-                    https://app.simplelogin.io/api/alias/random/new
-                    https://app.anonaddy.com/api/v1/aliases;
-                  object-src
-                    'self'
-                    blob:;`,
-              },
-            ];
+            return {
+              "Content-Security-Policy": `
+                default-src 'self'
+                ;script-src
+                  'self'
+                  'sha256-ryoU+5+IUZTuUyTElqkrQGBJXr1brEv6r2CA62WUw8w='
+                  https://js.stripe.com
+                  https://js.braintreegateway.com
+                  https://www.paypalobjects.com
+                ;style-src
+                  'self'
+                  https://assets.braintreegateway.com
+                  https://*.paypal.com
+                  'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU='
+                  'sha256-JVRXyYPueLWdwGwY9m/7u4QlZ1xeQdqUj2t8OVIzZE4='
+                  'sha256-or0p3LaHetJ4FRq+flVORVFFNsOjQGWrDvX8Jf7ACWg='
+                ;img-src
+                  'self'
+                  data:
+                  https://icons.bitwarden.net
+                  https://*.paypal.com
+                  https://www.paypalobjects.com
+                  https://q.stripe.com
+                  https://haveibeenpwned.com
+                  https://www.gravatar.com
+                ;child-src
+                  'self'
+                  https://js.stripe.com
+                  https://assets.braintreegateway.com
+                  https://*.paypal.com
+                  https://*.duosecurity.com
+                ;frame-src
+                  'self'
+                  https://js.stripe.com
+                  https://assets.braintreegateway.com
+                  https://*.paypal.com
+                  https://*.duosecurity.com
+                ;connect-src
+                  'self'
+                  wss://notifications.bitwarden.com
+                  https://notifications.bitwarden.com
+                  https://cdn.bitwarden.net
+                  https://api.pwnedpasswords.com
+                  https://2fa.directory/api/v3/totp.json
+                  https://api.stripe.com
+                  https://www.paypal.com
+                  https://api.braintreegateway.com
+                  https://client-analytics.braintreegateway.com
+                  https://*.braintree-api.com
+                  https://*.blob.core.windows.net
+                  https://app.simplelogin.io/api/alias/random/new
+                  https://quack.duckduckgo.com/api/email/addresses
+                  https://app.anonaddy.com/api/v1/aliases
+                  https://api.fastmail.com
+                ;object-src
+                  'self'
+                  blob:
+                ;`
+                .replace(/\n/g, " ")
+                .replace(/ +(?= )/g, ""),
+            };
           }
         },
         hot: false,
