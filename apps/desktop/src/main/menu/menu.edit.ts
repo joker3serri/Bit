@@ -113,7 +113,7 @@ export class EditMenu implements IMenubarMenu {
 
   private get copyVerificationCodeTotp(): MenuItemConstructorOptions {
     return {
-      label: this.localize("copyVerificationCode"),
+      label: this.localize("copyVerificationCodeTotp"),
       id: "copyTotp",
       click: () => this.sendMessage("copyTotp"),
       accelerator: "CmdOrCtrl+T",

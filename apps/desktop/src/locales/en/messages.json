@@ -430,7 +430,7 @@
   "copyWebsite": {
     "message": "Copy Website"
   },
-  "copyVerificationCode": {
+  "copyVerificationCodeTotp": {
     "message": "Copy Verification Code (TOTP)"
   },
   "length": {
