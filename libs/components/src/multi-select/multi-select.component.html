@@ -5,7 +5,6 @@
   (blur)="onBlur()"
   [bindLabel]="bindLabel"
   [groupBy]="groupBy"
-  name="Select Items"
   [placeholder]="placeholder"
   [loading]="loading"
   [loadingText]="loadingText"
@@ -26,7 +25,7 @@
       type="button"
       bitBadge
       badgeType="primary"
-      class="tw-mr-1"
+      class="tw-mr-1 disabled:tw-border-0"
       [disabled]="disabled"
       (click)="clear(item)"
     >

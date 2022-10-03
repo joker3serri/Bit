@@ -7,8 +7,9 @@ import {
   EventEmitter,
   HostBinding,
   forwardRef,
+  Injector,
 } from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR, Validators } from "@angular/forms";
 import { NgSelectComponent } from "@ng-select/ng-select";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -35,12 +36,7 @@ let nextId = 0;
 /**
  * This component has been implemented to only support Multi-select list events
  */
-export class MultiSelectComponent
-  implements OnInit, BitFormFieldControl<any>, ControlValueAccessor
-{
-  @HostBinding("attr.aria-describedby") ariaDescribedBy: string;
-  @HostBinding() @Input() id = `bit-input-${nextId++}`;
-
+export class MultiSelectComponent implements OnInit, BitFormFieldControl, ControlValueAccessor {
   @ViewChild(NgSelectComponent) select: NgSelectComponent;
 
   // Parent component should only pass selectable items (complete list - selected items = baseItems)
@@ -65,54 +61,32 @@ export class MultiSelectComponent
   closeOnSelect = false;
   clearSearchOnAdd = true;
 
-  @Output() onItemsConfirmed = new EventEmitter<any[]>();
-
+  /**Implemented as part of NG_VALUE_ACCESSOR */
   protected notifyOnChange?: (value: SelectItemView[]) => void;
+  /**Implemented as part of NG_VALUE_ACCESSOR */
   protected notifyOnTouched?: () => void;
 
-  constructor(private i18nService: I18nService) {}
+  /**Implemented as part of BitFormFieldControl */
+  private ngControl?: NgControl;
 
-  writeValue(obj: SelectItemView[]): void {
-    this.selectedItems = obj;
-  }
+  @Output() onItemsConfirmed = new EventEmitter<any[]>();
 
-  registerOnChange(fn: (value: SelectItemView[]) => void): void {
-    this.notifyOnChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.notifyOnTouched = fn;
-  }
-
-  setDisabledState(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
+  constructor(private i18nService: I18nService, private injector: Injector) {}
 
   ngOnInit(): void {
+    // Default Text Values
     this.placeholder = this.placeholder ?? this.i18nService.t("multiSelectPlaceholder");
     this.loadingText = this.i18nService.t("multiSelectLoading");
     this.notFoundText = this.i18nService.t("multiSelectNotFound");
     this.clearAllText = this.i18nService.t("multiSelectClearAll");
+
+    // Retrieve ngControl bound to this component
+    this.ngControl = this.injector.get(NgControl);
   }
 
+  /** Helper method for showing selected state in custom template */
   isSelected(item: any): boolean {
     return this.selectedItems?.find((selected) => selected.id === item.id) != undefined;
-  }
-
-  /**
-   * Defaulting the following implemented variables as false/null until there is a need to implement error states
-   */
-  get required(): boolean {
-    return false;
-  }
-  get hasError(): boolean {
-    return false;
-  }
-  get error(): [string, any] {
-    return null;
-  }
-  get value() {
-    return this;
   }
 
   /**
@@ -141,6 +115,27 @@ export class MultiSelectComponent
     }
   }
 
+  /**Implemented as part of NG_VALUE_ACCESSOR */
+  writeValue(obj: SelectItemView[]): void {
+    this.selectedItems = obj;
+  }
+
+  /**Implemented as part of NG_VALUE_ACCESSOR */
+  registerOnChange(fn: (value: SelectItemView[]) => void): void {
+    this.notifyOnChange = fn;
+  }
+
+  /**Implemented as part of NG_VALUE_ACCESSOR */
+  registerOnTouched(fn: any): void {
+    this.notifyOnTouched = fn;
+  }
+
+  /**Implemented as part of NG_VALUE_ACCESSOR */
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  /**Implemented as part of NG_VALUE_ACCESSOR */
   protected onChange(items: SelectItemView[]) {
     if (!this.notifyOnChange) {
       return;
@@ -149,11 +144,40 @@ export class MultiSelectComponent
     this.notifyOnChange(items);
   }
 
+  /**Implemented as part of NG_VALUE_ACCESSOR */
   protected onBlur() {
     if (!this.notifyOnTouched) {
       return;
     }
 
     this.notifyOnTouched();
+  }
+
+  /**Implemented as part of BitFormFieldControl */
+  @HostBinding("attr.aria-describedby") ariaDescribedBy: string;
+
+  /**Implemented as part of BitFormFieldControl */
+  @HostBinding() @Input() id = `bit-input-${nextId++}`;
+
+  /**Implemented as part of BitFormFieldControl */
+  @HostBinding("attr.required")
+  @Input()
+  get required() {
+    return this._required ?? this.ngControl?.control?.hasValidator(Validators.required) ?? false;
+  }
+  set required(value: any) {
+    this._required = value != null && value !== false;
+  }
+  private _required: boolean;
+
+  /**Implemented as part of BitFormFieldControl */
+  get hasError() {
+    return this.ngControl?.status === "INVALID" && this.ngControl?.touched;
+  }
+
+  /**Implemented as part of BitFormFieldControl */
+  get error(): [string, any] {
+    const key = Object.keys(this.ngControl.errors)[0];
+    return [key, this.ngControl.errors[key]];
   }
 }

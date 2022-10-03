@@ -1,5 +1,4 @@
-export abstract class BitFormFieldControl<T> {
-  value: T;
+export abstract class BitFormFieldControl {
   ariaDescribedBy: string;
   id: string;
   required: boolean;

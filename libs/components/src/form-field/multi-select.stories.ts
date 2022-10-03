@@ -1,4 +1,4 @@
-import { FormsModule, ReactiveFormsModule, FormBuilder } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { action } from "@storybook/addon-actions";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
@@ -12,7 +12,6 @@ import { MultiSelectComponent } from "../multi-select/multi-select.component";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { FormFieldModule } from "./form-field.module";
-
 
 export default {
   title: "Component Library/Form/Multi Select",
@@ -38,6 +37,8 @@ export default {
               multiSelectLoading: "Retrieving options...",
               multiSelectNotFound: "No items found",
               multiSelectClearAll: "Clear all",
+              required: "required",
+              inputRequired: "Input is required.",
             });
           },
         },
@@ -58,13 +59,7 @@ export const actionsData = {
 
 const fb = new FormBuilder();
 const formObj = fb.group({
-  select: [
-    [
-      { id: "1", listName: "Group 1", labelName: "Group 1", icon: "bwi-family" },
-      { id: "2", listName: "Group 2", labelName: "Group 2", icon: "bwi-family" },
-    ],
-    [],
-  ],
+  select: [[], [Validators.required]],
 });
 
 function submit() {
@@ -80,9 +75,10 @@ const MultiSelectTemplate: Story<MultiSelectComponent> = (args: MultiSelectCompo
   },
   template: `
     <form [formGroup]="formObj" (ngSubmit)="submit()">
-      <!--<bit-form-field>-->
-        <bit-label>Name</bit-label>
+      <bit-form-field>
+        <bit-label>{{ name }}</bit-label>
         <bit-multi-select
+          class="tw-w-full"
           formControlName="select"
           [baseItems]="baseItems"
           [removeSelectedItems]="removeSelectedItems"
@@ -90,7 +86,7 @@ const MultiSelectTemplate: Story<MultiSelectComponent> = (args: MultiSelectCompo
           [disabled]="disabled"
           (onItemsConfirmed)="onItemsConfirmed($event)">
         </bit-multi-select>
-      <!--</bit-form-field>-->
+      </bit-form-field>
       <button type="submit" bitButton buttonType="primary">Submit</button>
     </form>
   `,
@@ -99,16 +95,19 @@ const MultiSelectTemplate: Story<MultiSelectComponent> = (args: MultiSelectCompo
 export const Loading = MultiSelectTemplate.bind({});
 Loading.args = {
   baseItems: [],
+  name: "Loading",
   loading: "true",
 };
 
 export const Disabled = MultiSelectTemplate.bind({});
 Disabled.args = {
+  name: "Disabled",
   disabled: "true",
 };
 
 export const Groups = MultiSelectTemplate.bind({});
 Groups.args = {
+  name: "Select groups",
   baseItems: [
     { id: "1", listName: "Group 1", labelName: "Group 1", icon: "bwi-family" },
     { id: "2", listName: "Group 2", labelName: "Group 2", icon: "bwi-family" },
@@ -122,6 +121,7 @@ Groups.args = {
 
 export const Members = MultiSelectTemplate.bind({});
 Members.args = {
+  name: "Select members",
   baseItems: [
     { id: "1", listName: "Joe Smith (jsmith@mail.me)", labelName: "Joe Smith", icon: "bwi-user" },
     {
@@ -160,6 +160,7 @@ Members.args = {
 
 export const Collections = MultiSelectTemplate.bind({});
 Collections.args = {
+  name: "Select collections",
   baseItems: [
     { id: "1", listName: "Collection 1", labelName: "Collection 1", icon: "bwi-collection" },
     { id: "2", listName: "Collection 2", labelName: "Collection 2", icon: "bwi-collection" },
@@ -201,6 +202,7 @@ Collections.args = {
 
 export const MembersAndGroups = MultiSelectTemplate.bind({});
 MembersAndGroups.args = {
+  name: "Select groups and members",
   baseItems: [
     { id: "1", listName: "Group 1", labelName: "Group 1", icon: "bwi-family" },
     { id: "2", listName: "Group 2", labelName: "Group 2", icon: "bwi-family" },
@@ -219,6 +221,7 @@ MembersAndGroups.args = {
 
 export const RemoveSelected = MultiSelectTemplate.bind({});
 RemoveSelected.args = {
+  name: "Select groups",
   baseItems: [
     { id: "1", listName: "Group 1", labelName: "Group 1", icon: "bwi-family" },
     { id: "2", listName: "Group 2", labelName: "Group 2", icon: "bwi-family" },

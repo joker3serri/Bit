@@ -6,13 +6,14 @@ import {
   QueryList,
   ViewChild,
 } from "@angular/core";
-
-import { BitInputDirective } from "../input/input.directive";
+import { NgControl } from "@angular/forms";
 
 import { BitErrorComponent } from "./error.component";
+import { BitFormFieldControl } from "./form-field-control";
 import { BitHintComponent } from "./hint.component";
 import { BitPrefixDirective } from "./prefix.directive";
 import { BitSuffixDirective } from "./suffix.directive";
+
 
 @Component({
   selector: "bit-form-field",
@@ -22,8 +23,8 @@ import { BitSuffixDirective } from "./suffix.directive";
   },
 })
 export class BitFormFieldComponent implements AfterContentChecked {
-  //TODO FIX: @ContentChild(BitFormFieldControl) input: BitFormFieldControl<any>;
-  @ContentChild(BitInputDirective) input: BitInputDirective;
+  @ContentChild(BitFormFieldControl) input: BitFormFieldControl;
+  @ContentChild(NgControl) ngControl: NgControl;
   @ContentChild(BitHintComponent) hint: BitHintComponent;
 
   @ViewChild(BitErrorComponent) error: BitErrorComponent;
