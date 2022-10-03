@@ -8,7 +8,7 @@
       </bit-form-field>
     </span>
     <div bitDialogFooter class="tw-flex tw-gap-2">
-      <button bitButton [loading]="form.loading" [disabled]="!formGroup.valid">
+      <button bitButton [loading]="form.loading">
         {{ "save" | i18n }}
       </button>
       <button bitButton buttonType="secondary" bitDialogClose (click)="dialogRef.close()">

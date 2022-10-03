@@ -57,6 +57,8 @@ export class ProjectDialogComponent implements OnInit {
   }
 
   async submit() {
+    if (this.formGroup.invalid) {return;}
+
     const projectView = this.getProjectView();
     if (this.data.operation === OperationType.Add) {
       await this.createProject(projectView);
