@@ -21,7 +21,7 @@ import { SecretService } from "./secret.service";
   templateUrl: "./secrets.component.html",
 })
 export class SecretsComponent implements OnInit {
-  secrets: Observable<SecretListView[]>;
+  secrets$: Observable<SecretListView[]>;
 
   private organizationId: string;
 
@@ -32,7 +32,7 @@ export class SecretsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.secrets = this.secretService.secret$.pipe(
+    this.secrets$ = this.secretService.secret$.pipe(
       startWith(null),
       combineLatestWith(this.route.params),
       switchMap(async ([_, params]) => {
