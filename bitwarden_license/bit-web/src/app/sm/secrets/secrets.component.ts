@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { combineLatestWith, Observable, startWith, Subject, switchMap } from "rxjs";
+import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
 import { SecretListView } from "@bitwarden/common/models/view/secretListView";
 import { DialogService } from "@bitwarden/components";
@@ -24,7 +24,6 @@ export class SecretsComponent implements OnInit {
   secrets: Observable<SecretListView[]>;
 
   private organizationId: string;
-  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
