@@ -11,7 +11,7 @@ import { ServiceAccountService } from "./service-account.service";
   templateUrl: "./service-accounts.component.html",
 })
 export class ServiceAccountsComponent implements OnInit {
-  serviceAccounts: Observable<ServiceAccountView[]>;
+  serviceAccounts$: Observable<ServiceAccountView[]>;
 
   private organizationId: string;
 
@@ -21,7 +21,7 @@ export class ServiceAccountsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.serviceAccounts = this.serviceAccountService.serviceAccount$.pipe(
+    this.serviceAccounts$ = this.serviceAccountService.serviceAccount$.pipe(
       startWith(null),
       combineLatestWith(this.route.params),
       switchMap(async ([_, params]) => {
