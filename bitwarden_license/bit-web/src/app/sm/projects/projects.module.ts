@@ -7,7 +7,7 @@ import { ProjectsRoutingModule } from "./projects-routing.module";
 import { ProjectsComponent } from "./projects.component";
 
 @NgModule({
-  imports: [ProjectsRoutingModule, SecretsSharedModule],
+  imports: [SecretsSharedModule, ProjectsRoutingModule],
   declarations: [ProjectsComponent, ProjectsListComponent],
   providers: [],
 })

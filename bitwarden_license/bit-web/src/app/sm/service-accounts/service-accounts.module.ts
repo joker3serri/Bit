@@ -7,7 +7,7 @@ import { ServiceAccountsRoutingModule } from "./service-accounts-routing.module"
 import { ServiceAccountsComponent } from "./service-accounts.component";
 
 @NgModule({
-  imports: [ServiceAccountsRoutingModule, SecretsSharedModule],
+  imports: [SecretsSharedModule, ServiceAccountsRoutingModule],
   declarations: [ServiceAccountsComponent, ServiceAccountsListComponent],
   providers: [],
 })

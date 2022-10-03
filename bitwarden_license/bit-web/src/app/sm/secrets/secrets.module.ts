@@ -9,7 +9,7 @@ import { SecretsRoutingModule } from "./secrets-routing.module";
 import { SecretsComponent } from "./secrets.component";
 
 @NgModule({
-  imports: [SecretsRoutingModule, SecretsSharedModule],
+  imports: [SecretsSharedModule, SecretsRoutingModule],
   declarations: [
     SecretsComponent,
     SecretsListComponent,
