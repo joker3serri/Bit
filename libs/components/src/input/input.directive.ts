@@ -67,8 +67,4 @@ export class BitInputDirective implements BitFormFieldControl {
     return [key, this.ngControl.errors[key]];
   }
   constructor(@Optional() @Self() private ngControl: NgControl) {}
-
-  get value() {
-    return this;
-  }
 }
