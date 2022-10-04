@@ -42,8 +42,8 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
   loaded = false;
   isLoading = false;
   showOrganizations = false;
-  search$ = new Subject<void>();
-  destroy$ = new Subject<void>();
+  protected search$ = new Subject<void>();
+  private destroy$ = new Subject<void>();
 
   private totpCode: string;
   private totpTimeout: number;
