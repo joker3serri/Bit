@@ -5436,6 +5436,9 @@
   "serviceAccount":{
     "message": "Service Account"
   },
+  "newServiceAccount": {
+    "message": "New Service Account"
+  },
   "serviceAccounts":{
     "message": "Service Accounts"
   },
@@ -5489,6 +5492,24 @@
   },
   "searchServiceAccounts":{
     "message":"Search Service Accounts"
+  },
+  "addProject":{
+    "message": "Add Project"
+  },
+  "projectEdited":{
+    "message":"Project edited"
+  },
+  "projectSaved":{
+    "message":"Project saved"
+  },
+  "projectCreated":{
+    "message":"Project created"
+  },
+  "projectName":{
+    "message":"Project Name"
+  },
+  "newProject":{
+    "message":"New Project"
   },
   "softDeleteSecretWarning":{
     "message":"Deleting secrets can affect existing integrations."
