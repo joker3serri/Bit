@@ -54,12 +54,6 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   loadingText: string;
   notFoundText: string;
   clearAllText: string;
-  bindLabel = "listName";
-  groupBy = "parentGrouping";
-  multipleItemSelection = true;
-  selectOnTab = true;
-  closeOnSelect = false;
-  clearSearchOnAdd = true;
 
   /**Implemented as part of NG_VALUE_ACCESSOR */
   private notifyOnChange?: (value: SelectItemView[]) => void;
