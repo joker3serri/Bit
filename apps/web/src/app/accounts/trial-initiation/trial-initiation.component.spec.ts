@@ -5,7 +5,6 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testin
 import { FormBuilder, UntypedFormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
-import { Substitute } from "@fluffy-spoon/substitute";
 import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
@@ -38,11 +37,9 @@ describe("TrialInitiationComponent", () => {
   let policyServiceMock: MockProxy<PolicyService>;
 
   beforeEach(() => {
-    // only mock functions we use in this component
+    // only define services directly that we want to mock return values in this component
     stateServiceMock = mock<StateService>();
-
     policyApiServiceMock = mock<PolicyApiServiceAbstraction>();
-
     policyServiceMock = mock<PolicyService>();
 
     TestBed.configureTestingModule({
@@ -71,20 +68,16 @@ describe("TrialInitiationComponent", () => {
         { provide: StateService, useValue: stateServiceMock },
         { provide: PolicyService, useValue: policyServiceMock },
         { provide: PolicyApiServiceAbstraction, useValue: policyApiServiceMock },
-        { provide: LogService, useClass: Substitute.for<LogService>() },
-        { provide: I18nService, useClass: Substitute.for<I18nService>() },
-        { provide: TitleCasePipe, useClass: Substitute.for<TitleCasePipe>() },
-        {
-          provide: PolicyApiServiceAbstraction,
-          useClass: Substitute.for<PolicyApiServiceAbstraction>(),
-        },
+        { provide: LogService, useValue: mock<LogService>() },
+        { provide: I18nService, useValue: mock<I18nService>() },
+        { provide: TitleCasePipe, useValue: mock<TitleCasePipe>() },
         {
           provide: VerticalStepperComponent,
           useClass: VerticalStepperStubComponent,
         },
         {
           provide: RouterService,
-          useClass: Substitute.for<RouterService>(),
+          useValue: mock<RouterService>(),
         },
       ],
       schemas: [NO_ERRORS_SCHEMA], // Allows child components to be ignored (such as register component)
