@@ -62,9 +62,9 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   clearSearchOnAdd = true;
 
   /**Implemented as part of NG_VALUE_ACCESSOR */
-  protected notifyOnChange?: (value: SelectItemView[]) => void;
+  private notifyOnChange?: (value: SelectItemView[]) => void;
   /**Implemented as part of NG_VALUE_ACCESSOR */
-  protected notifyOnTouched?: () => void;
+  private notifyOnTouched?: () => void;
 
   /**Implemented as part of BitFormFieldControl */
   private ngControl?: NgControl;
