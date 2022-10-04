@@ -6,17 +6,19 @@ import { FormBuilder, UntypedFormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Substitute } from "@fluffy-spoon/substitute";
+import { mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject } from "rxjs";
 
 import { I18nPipe } from "@bitwarden/angular/pipes/i18n.pipe";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
-import { StateService as BaseStateService } from "@bitwarden/common/abstractions/state.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { PlanType } from "@bitwarden/common/enums/planType";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
+import { ListResponse } from "@bitwarden/common/models/response/listResponse";
+import { PolicyResponse } from "@bitwarden/common/models/response/policyResponse";
 
 import { RouterService } from "../../core";
 
@@ -31,23 +33,17 @@ describe("TrialInitiationComponent", () => {
   const formBuilder: FormBuilder = new FormBuilder();
   let routerSpy: jest.SpyInstance;
 
-  let stateServiceMock: any;
-  let apiServiceMock: any;
-  let policyServiceMock: any;
+  let stateServiceMock: MockProxy<StateService>;
+  let policyApiServiceMock: MockProxy<PolicyApiServiceAbstraction>;
+  let policyServiceMock: MockProxy<PolicyService>;
 
   beforeEach(() => {
     // only mock functions we use in this component
-    stateServiceMock = {
-      getOrganizationInvitation: jest.fn(),
-    };
+    stateServiceMock = mock<StateService>();
 
-    apiServiceMock = {
-      getPoliciesByToken: jest.fn(),
-    };
+    policyApiServiceMock = mock<PolicyApiServiceAbstraction>();
 
-    policyServiceMock = {
-      getMasterPasswordPolicyOptions: jest.fn(),
-    };
+    policyServiceMock = mock<PolicyService>();
 
     TestBed.configureTestingModule({
       imports: [
@@ -72,9 +68,9 @@ describe("TrialInitiationComponent", () => {
             queryParams: mockQueryParams.asObservable(),
           },
         },
-        { provide: BaseStateService, useValue: stateServiceMock },
+        { provide: StateService, useValue: stateServiceMock },
         { provide: PolicyService, useValue: policyServiceMock },
-        { provide: ApiService, useValue: apiServiceMock },
+        { provide: PolicyApiServiceAbstraction, useValue: policyApiServiceMock },
         { provide: LogService, useClass: Substitute.for<LogService>() },
         { provide: I18nService, useClass: Substitute.for<I18nService>() },
         { provide: TitleCasePipe, useClass: Substitute.for<TitleCasePipe>() },
@@ -118,40 +114,46 @@ describe("TrialInitiationComponent", () => {
     });
     it("should set enforcedPolicyOptions if state service returns an invite", async () => {
       // Set up service method mocks
-      stateServiceMock.getOrganizationInvitation.mockReturnValueOnce({
-        organizationId: testOrgId,
-        token: "token",
-        email: "testEmail",
-        organizationUserId: "123",
-      });
-      apiServiceMock.getPoliciesByToken.mockReturnValueOnce({
-        data: [
-          {
-            id: "345",
-            organizationId: testOrgId,
-            type: 1,
-            data: [
-              {
-                minComplexity: 4,
-                minLength: 10,
-                requireLower: null,
-                requireNumbers: null,
-                requireSpecial: null,
-                requireUpper: null,
-              },
-            ],
-            enabled: true,
-          },
-        ],
-      });
-      policyServiceMock.getMasterPasswordPolicyOptions.mockReturnValueOnce({
-        minComplexity: 4,
-        minLength: 10,
-        requireLower: null,
-        requireNumbers: null,
-        requireSpecial: null,
-        requireUpper: null,
-      } as MasterPasswordPolicyOptions);
+      stateServiceMock.getOrganizationInvitation.mockReturnValueOnce(
+        Promise.resolve({
+          organizationId: testOrgId,
+          token: "token",
+          email: "testEmail",
+          organizationUserId: "123",
+        })
+      );
+      policyApiServiceMock.getPoliciesByToken.mockReturnValueOnce(
+        Promise.resolve({
+          data: [
+            {
+              id: "345",
+              organizationId: testOrgId,
+              type: 1,
+              data: [
+                {
+                  minComplexity: 4,
+                  minLength: 10,
+                  requireLower: null,
+                  requireNumbers: null,
+                  requireSpecial: null,
+                  requireUpper: null,
+                },
+              ],
+              enabled: true,
+            },
+          ],
+        } as ListResponse<PolicyResponse>)
+      );
+      policyServiceMock.getMasterPasswordPolicyOptions.mockReturnValueOnce(
+        Promise.resolve({
+          minComplexity: 4,
+          minLength: 10,
+          requireLower: null,
+          requireNumbers: null,
+          requireSpecial: null,
+          requireUpper: null,
+        } as MasterPasswordPolicyOptions)
+      );
 
       // Need to recreate component with new service mocks
       fixture = TestBed.createComponent(TrialInitiationComponent);
