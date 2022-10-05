@@ -168,6 +168,6 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   /**Implemented as part of BitFormFieldControl */
   get error(): [string, any] {
     const key = Object.keys(this.ngControl.errors)[0];
-    return [key, this.ngControl.errors[key]];
+    return [key, this.ngControl?.errors[key]];
   }
 }
