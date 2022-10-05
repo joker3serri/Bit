@@ -52,8 +52,6 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
 
   // Default values for our implementation
   loadingText: string;
-  notFoundText: string;
-  clearAllText: string;
 
   /**Implemented as part of NG_VALUE_ACCESSOR */
   private notifyOnChange?: (value: SelectItemView[]) => void;
@@ -71,8 +69,6 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
     // Default Text Values
     this.placeholder = this.placeholder ?? this.i18nService.t("multiSelectPlaceholder");
     this.loadingText = this.i18nService.t("multiSelectLoading");
-    this.notFoundText = this.i18nService.t("multiSelectNotFound");
-    this.clearAllText = this.i18nService.t("multiSelectClearAll");
 
     // Retrieve ngControl bound to this component
     this.ngControl = this.injector.get(NgControl);
