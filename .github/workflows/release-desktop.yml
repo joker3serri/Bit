@@ -149,14 +149,6 @@ jobs:
           echo "stagingPercentage: ${ROLLOUT_PCT}" >> apps/desktop/artifacts/${RELEASE_CHANNEL}-linux.yml
           echo "stagingPercentage: ${ROLLOUT_PCT}" >> apps/desktop/artifacts/${RELEASE_CHANNEL}-mac.yml
 
-          cat apps/desktop/artifacts/${RELEASE_CHANNEL}.yml
-          echo "****************************************************************************"
-          echo "****************************************************************************"
-          cat apps/desktop/artifacts/${RELEASE_CHANNEL}-linux.yml
-          echo "****************************************************************************"
-          echo "****************************************************************************"
-          cat apps/desktop/artifacts/${RELEASE_CHANNEL}-mac.yml
-
       - name: Publish artifacts to S3
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
         env:
