@@ -9,6 +9,7 @@ import { BadgeModule } from "../badge";
 import { ButtonModule } from "../button";
 import { InputModule } from "../input/input.module";
 import { MultiSelectComponent } from "../multi-select/multi-select.component";
+import { SharedModule } from "../shared";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { FormFieldModule } from "./form-field.module";
@@ -27,6 +28,7 @@ export default {
         InputModule,
         ReactiveFormsModule,
         BadgeModule,
+        SharedModule,
       ],
       providers: [
         {
@@ -86,6 +88,7 @@ const MultiSelectTemplate: Story<MultiSelectComponent> = (args: MultiSelectCompo
           [disabled]="disabled"
           (onItemsConfirmed)="onItemsConfirmed($event)">
         </bit-multi-select>
+        <bit-hint>{{ hint }}</bit-hint>
       </bit-form-field>
       <button type="submit" bitButton buttonType="primary">Submit</button>
     </form>
@@ -96,6 +99,7 @@ export const Loading = MultiSelectTemplate.bind({});
 Loading.args = {
   baseItems: [],
   name: "Loading",
+  hint: "This is what a loading multi-select looks like",
   loading: "true",
 };
 
@@ -103,11 +107,13 @@ export const Disabled = MultiSelectTemplate.bind({});
 Disabled.args = {
   name: "Disabled",
   disabled: "true",
+  hint: "This is what a disabled multi-select looks like",
 };
 
 export const Groups = MultiSelectTemplate.bind({});
 Groups.args = {
   name: "Select groups",
+  hint: "Groups will be assigned to the associated member",
   baseItems: [
     { id: "1", listName: "Group 1", labelName: "Group 1", icon: "bwi-family" },
     { id: "2", listName: "Group 2", labelName: "Group 2", icon: "bwi-family" },
@@ -122,6 +128,7 @@ Groups.args = {
 export const Members = MultiSelectTemplate.bind({});
 Members.args = {
   name: "Select members",
+  hint: "Members will be assigned to the associated group/collection",
   baseItems: [
     { id: "1", listName: "Joe Smith (jsmith@mail.me)", labelName: "Joe Smith", icon: "bwi-user" },
     {
@@ -161,6 +168,7 @@ Members.args = {
 export const Collections = MultiSelectTemplate.bind({});
 Collections.args = {
   name: "Select collections",
+  hint: "Collections will be assigned to the associated member",
   baseItems: [
     { id: "1", listName: "Collection 1", labelName: "Collection 1", icon: "bwi-collection" },
     { id: "2", listName: "Collection 2", labelName: "Collection 2", icon: "bwi-collection" },
@@ -203,6 +211,7 @@ Collections.args = {
 export const MembersAndGroups = MultiSelectTemplate.bind({});
 MembersAndGroups.args = {
   name: "Select groups and members",
+  hint: "Members/Groups will be assigned to the associated collection",
   baseItems: [
     { id: "1", listName: "Group 1", labelName: "Group 1", icon: "bwi-family" },
     { id: "2", listName: "Group 2", labelName: "Group 2", icon: "bwi-family" },
@@ -222,6 +231,7 @@ MembersAndGroups.args = {
 export const RemoveSelected = MultiSelectTemplate.bind({});
 RemoveSelected.args = {
   name: "Select groups",
+  hint: "Groups will be removed from the list once the dropdown is closed",
   baseItems: [
     { id: "1", listName: "Group 1", labelName: "Group 1", icon: "bwi-family" },
     { id: "2", listName: "Group 2", labelName: "Group 2", icon: "bwi-family" },

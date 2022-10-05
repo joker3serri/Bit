@@ -36,7 +36,7 @@ $ng-select-input-text: $ng-select-primary-text !default;
 
 // Custom color variables
 $ng-select-arrow-hover: rgb(var(--color-secondary-700)) !default;
-$ng-clear-icon-hover: rgb(var(--color-danger-500)) !default;
+$ng-clear-icon-hover: rgb(var(--color-text-main)) !default;
 $ng-dropdown-shadow: rgb(var(--color-secondary-100)) !default;
 
 .ng-select {
@@ -222,6 +222,7 @@ $ng-dropdown-shadow: rgb(var(--color-secondary-100)) !default;
   }
   .ng-clear-wrapper {
     color: $ng-select-placeholder;
+    padding-top: 2.5px;
     &:hover .ng-clear {
       color: $ng-clear-icon-hover;
     }
