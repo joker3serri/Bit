@@ -70,9 +70,6 @@ const formObjFactory = () =>
   fb.group({
     select: [[], [Validators.required]],
   });
-// const formObj = fb.group({
-//   select: [[], [Validators.required]],
-// });
 
 function submit(formObj: FormGroup) {
   formObj.markAllAsTouched();
