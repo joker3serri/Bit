@@ -1,0 +1,152 @@
+---
+name: Staged Rollout Desktop
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release Options'
+        required: true
+        default: 'Initial Release'
+        type: choice
+        options:
+          - Initial Release
+          - Redeploy
+          - Dry Run
+      rollout_percentage:
+        description: 'Staged Rollout Percentage'
+        required: true
+        default: '10'
+        type: string
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-22.04
+    outputs:
+      release-version: ${{ steps.version.outputs.version }}
+      release-channel: ${{ steps.release-channel.outputs.channel }}
+    steps:
+      - name: Check Release Version
+        id: version
+        uses: bitwarden/gh-actions/release-version-check@ea9fab01d76940267b4147cc1c4542431246b9f6
+        with:
+          release-type: ${{ github.event.inputs.release_type }}
+          project-type: ts
+          file: apps/desktop/src/package.json
+          monorepo: true
+          monorepo-project: desktop
+
+      - name: Get Version Channel
+        id: release-channel
+        run: |
+          case "${{ steps.version.outputs.version }}" in
+            *"alpha"*)
+              echo "::set-output name=channel::alpha"
+              echo "[!] We do not yet support 'alpha'"
+              exit 1
+              ;;
+            *"beta"*)
+              echo "::set-output name=channel::beta"
+              ;;
+            *)
+              echo "::set-output name=channel::latest"
+              ;;
+          esac
+
+      - name: Login to Azure
+        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010
+        with:
+          creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
+
+      - name: Retrieve secrets
+        id: retrieve-secrets
+        uses: bitwarden/gh-actions/get-keyvault-secrets@c3b3285993151c5af47cefcb3b9134c28ab479af
+        with:
+          keyvault: "bitwarden-prod-kv"
+          secrets: "aws-electron-access-id,
+            aws-electron-access-key,
+            aws-electron-bucket-name,
+            r2-electron-access-id,
+            r2-electron-access-key,
+            r2-electron-bucket-name,
+            cf-prod-account"
+
+      - name: Download channel update info files from S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.aws-electron-access-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
+          AWS_DEFAULT_REGION: 'us-west-2'
+          AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
+        run: |
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/ ./ \
+          --include "latest*.yml" \
+          --quiet
+
+      - name: Download channel update info files from R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.r2-electron-access-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.r2-electron-access-key }}
+          AWS_DEFAULT_REGION: 'us-east-1'
+          AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.r2-electron-bucket-name }}
+          CF_ACCOUNT: ${{ steps.retrieve-secrets.outputs.cf-prod-account }}
+        run: |
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/ ./ \
+          --include "latest*.yml" \
+          --quiet \
+          --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
+
+      - name: Show downloaded files
+        run: |
+          ls -alh .
+          echo "**********************************************************************"
+          echo "**********************************************************************"
+          cat ${RELEASE_CHANNEL}.yml
+          echo "**********************************************************************"
+          echo "**********************************************************************"
+          cat ${RELEASE_CHANNEL}-linux.yml
+          echo "**********************************************************************"
+          echo "**********************************************************************"
+          cat ${RELEASE_CHANNEL}-mac.yml
+
+      - name: Set staged rollout percentage
+        env:
+          RELEASE_CHANNEL: ${{ steps.release-channel.outputs.channel }}
+          ROLLOUT_PCT: ${{ github.event.inputs.rollout_percentage }}
+        run: |
+          echo "stagingPercentage: ${ROLLOUT_PCT}" >> ${RELEASE_CHANNEL}.yml
+          echo "stagingPercentage: ${ROLLOUT_PCT}" >> ${RELEASE_CHANNEL}-linux.yml
+          echo "stagingPercentage: ${ROLLOUT_PCT}" >> ${RELEASE_CHANNEL}-mac.yml
+
+      - name: Publish channel update info files to S3
+        if: false
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.aws-electron-access-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
+          AWS_DEFAULT_REGION: 'us-west-2'
+          AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
+        working-directory: apps/desktop/artifacts
+        run: |
+          aws s3 cp ./ $AWS_S3_BUCKET_NAME/desktop/ \
+          --include "latest*.yml" \
+          --acl "public-read" \
+          --quiet
+
+      - name: Publish channel update info files to R2
+        if: false
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.r2-electron-access-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.r2-electron-access-key }}
+          AWS_DEFAULT_REGION: 'us-east-1'
+          AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.r2-electron-bucket-name }}
+          CF_ACCOUNT: ${{ steps.retrieve-secrets.outputs.cf-prod-account }}
+        working-directory: apps/desktop/artifacts
+        run: |
+          aws s3 cp ./ $AWS_S3_BUCKET_NAME/desktop/ \
+          --include "latest*.yml" \
+          --quiet \
+          --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com

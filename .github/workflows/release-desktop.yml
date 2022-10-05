@@ -98,23 +98,16 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        env:
-          KEYVAULT: bitwarden-prod-kv
-          SECRETS: |
-            aws-electron-access-id,
+        uses: bitwarden/gh-actions/get-keyvault-secrets@c3b3285993151c5af47cefcb3b9134c28ab479af
+        with:
+          keyvault: "bitwarden-prod-kv"
+          secrets: "aws-electron-access-id,
             aws-electron-access-key,
             aws-electron-bucket-name,
             r2-electron-access-id,
             r2-electron-access-key,
             r2-electron-bucket-name,
-            cf-prod-account
-        run: |
-          for i in ${SECRETS//,/ }
-          do
-            VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
-            echo "::add-mask::$VALUE"
-            echo "::set-output name=$i::$VALUE"
-          done
+            cf-prod-account"
 
       - name: Download all artifacts
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
@@ -250,17 +243,10 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        env:
-          KEYVAULT: bitwarden-prod-kv
-          SECRETS: |
-            snapcraft-store-token
-        run: |
-          for i in ${SECRETS//,/ }
-          do
-            VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
-            echo "::add-mask::$VALUE"
-            echo "::set-output name=$i::$VALUE"
-          done
+        uses: bitwarden/gh-actions/get-keyvault-secrets@c3b3285993151c5af47cefcb3b9134c28ab479af
+        with:
+          keyvault: "bitwarden-prod-kv"
+          secrets: "snapcraft-store-token"
 
       - name: Install Snap
         uses: samuelmeuli/action-snapcraft@10d7d0a84d9d86098b19f872257df314b0bd8e2d  # v1.2.0
@@ -321,17 +307,10 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        env:
-          KEYVAULT: bitwarden-prod-kv
-          SECRETS: |
-            cli-choco-api-key
-        run: |
-          for i in ${SECRETS//,/ }
-          do
-            VALUE=$(az keyvault secret show --vault-name $KEYVAULT --name $i --query value --output tsv)
-            echo "::add-mask::$VALUE"
-            echo "::set-output name=$i::$VALUE"
-          done
+        uses: bitwarden/gh-actions/get-keyvault-secrets@c3b3285993151c5af47cefcb3b9134c28ab479af
+        with:
+          keyvault: "bitwarden-prod-kv"
+          secrets: "cli-choco-api-key"
 
       - name: Setup Chocolatey
         shell: pwsh
