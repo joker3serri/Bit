@@ -49,6 +49,11 @@ export class ModalService {
     return this.modalList[this.modalCount - 1];
   }
 
+  /**
+   * @deprecated Use modalService.open instead.
+   * If replacing an existing call to this method, also remove any `@ViewChild` and `<ng-template>` associated with the
+   * existing usage.
+   */
   async openViewRef<T>(
     componentType: Type<T>,
     viewContainerRef: ViewContainerRef,
