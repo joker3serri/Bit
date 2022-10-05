@@ -1,4 +1,10 @@
-import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  FormGroup,
+} from "@angular/forms";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { action } from "@storybook/addon-actions";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
@@ -60,23 +66,27 @@ export const actionsData = {
 };
 
 const fb = new FormBuilder();
-const formObj = fb.group({
-  select: [[], [Validators.required]],
-});
+const formObjFactory = () =>
+  fb.group({
+    select: [[], [Validators.required]],
+  });
+// const formObj = fb.group({
+//   select: [[], [Validators.required]],
+// });
 
-function submit() {
+function submit(formObj: FormGroup) {
   formObj.markAllAsTouched();
 }
 
 const MultiSelectTemplate: Story<MultiSelectComponent> = (args: MultiSelectComponent) => ({
   props: {
-    formObj: formObj,
+    formObj: formObjFactory(),
     submit: submit,
     ...args,
     onItemsConfirmed: actionsData.onItemsConfirmed,
   },
   template: `
-    <form [formGroup]="formObj" (ngSubmit)="submit()">
+    <form [formGroup]="formObj" (ngSubmit)="submit(formObj)">
       <bit-form-field>
         <bit-label>{{ name }}</bit-label>
         <bit-multi-select
