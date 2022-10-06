@@ -125,11 +125,12 @@ describe("vault filter service", () => {
   });
 
   describe("folders", () => {
-    describe("filtered folders", () => {
-      it("returns folders filtered by current organization", async () => {
+    describe("filtered folders with organization", () => {
+      beforeEach(() => {
         // Org must be updated before folderService else the subscription uses the null org default value
         vaultFilterService.setOrganizationFilter(createOrganization("org test id", "Test Org"));
-
+      });
+      it("returns folders filtered by current organization", async () => {
         const storedCiphers = [
           createCipherView("1", "org test id", "folder test id"),
           createCipherView("2", "non matching org id", "non matching folder id"),
