@@ -250,3 +250,36 @@ RemoveSelected.args = {
   ],
   removeSelectedItems: "true",
 };
+
+const StandaloneTemplate: Story<MultiSelectComponent> = (args: MultiSelectComponent) => ({
+  props: {
+    ...args,
+    onItemsConfirmed: actionsData.onItemsConfirmed,
+  },
+  template: `
+    <bit-multi-select
+      class="tw-w-full"
+      [baseItems]="baseItems"
+      [removeSelectedItems]="removeSelectedItems"
+      [loading]="loading"
+      [disabled]="disabled"
+      [standalone]="standalone"
+      (onItemsConfirmed)="onItemsConfirmed($event)">
+    </bit-multi-select>
+  `,
+});
+
+export const Standalone = StandaloneTemplate.bind({});
+Standalone.args = {
+  baseItems: [
+    { id: "1", listName: "Group 1", labelName: "Group 1", icon: "bwi-family" },
+    { id: "2", listName: "Group 2", labelName: "Group 2", icon: "bwi-family" },
+    { id: "3", listName: "Group 3", labelName: "Group 3", icon: "bwi-family" },
+    { id: "4", listName: "Group 4", labelName: "Group 4", icon: "bwi-family" },
+    { id: "5", listName: "Group 5", labelName: "Group 5", icon: "bwi-family" },
+    { id: "6", listName: "Group 6", labelName: "Group 6", icon: "bwi-family" },
+    { id: "7", listName: "Group 7", labelName: "Group 7", icon: "bwi-family" },
+  ],
+  removeSelectedItems: "true",
+  standalone: "true",
+};

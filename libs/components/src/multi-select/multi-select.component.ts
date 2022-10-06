@@ -46,6 +46,7 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   @Input() placeholder: string;
   @Input() loading = false;
   @Input() disabled = false;
+  @Input() standalone = false;
 
   // Internal tracking of selected items
   @Input() selectedItems: SelectItemView[];
@@ -71,7 +72,7 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
     this.loadingText = this.i18nService.t("multiSelectLoading");
 
     // Retrieve ngControl bound to this component
-    this.ngControl = this.injector.get(NgControl);
+    this.ngControl = !this.standalone ? this.injector.get(NgControl) : null ?? null;
   }
 
   /** Helper method for showing selected state in custom template */
