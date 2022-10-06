@@ -104,17 +104,16 @@ jobs:
           echo "**********************************************************************"
           cat latest-mac.yml
 
-      - name: Higher percentage check
+      - name: Check new rollout percentage
         env:
           NEW_PCT: ${{ github.event.inputs.rollout_percentage }}
         run: |
           CURRENT_PCT=$(sed -r -n "s/stagingPercentage:\s([0-9]+)/\1/p" latest.yml)
           echo "Current percentage: ${CURRENT_PCT}"
           echo "New percentage: ${NEW_PCT}"
-          if [ "$NEW_PCT" -gt "$CURRENT_PCT" ]; then
-            echo "New percentage is higher than old!"
-          else
-            echo "New percentage is the same or lower than old!"
+          echo
+          if [ "$NEW_PCT" -le "$CURRENT_PCT" ]; then
+            echo "New rollout percentage must be greater than current percentage of ${CURRENT_PCT}!"
             exit 1
           fi
 
