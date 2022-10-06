@@ -27,6 +27,8 @@ import {
   ToggleGroupModule,
 } from "@bitwarden/components";
 
+import { BreadcrumbsModule } from "./components/breadcrumbs/breadcrumbs.module";
+
 // Register the locales for the application
 import "./locales";
 
@@ -99,6 +101,7 @@ import "./locales";
     ToggleGroupModule,
 
     // Web specific
+    BreadcrumbsModule,
   ],
   providers: [DatePipe],
   bootstrap: [],
