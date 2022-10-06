@@ -15,8 +15,8 @@ defaults:
     shell: bash
 
 jobs:
-  setup:
-    name: Setup
+  rollout:
+    name: Update Rollout Percentage
     runs-on: ubuntu-22.04
     outputs:
       release-version: ${{ steps.version.outputs.version }}
