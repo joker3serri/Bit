@@ -89,7 +89,6 @@ jobs:
           cat latest-mac-2.yml
 
       - name: Set staged rollout percentage
-        env:
         run: |
           echo "stagingPercentage: 10" >> latest.yml
           echo "stagingPercentage: 10" >> latest-linux.yml
