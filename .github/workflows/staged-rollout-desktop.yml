@@ -85,6 +85,16 @@ jobs:
           echo "stagingPercentage: ${ROLLOUT_PCT}" >> latest.yml
           echo "stagingPercentage: ${ROLLOUT_PCT}" >> latest-linux.yml
           echo "stagingPercentage: ${ROLLOUT_PCT}" >> latest-mac.yml
+      
+      - name: Show updated files
+        run: |
+          cat latest.yml
+          echo "**********************************************************************"
+          echo "**********************************************************************"
+          cat latest-linux.yml
+          echo "**********************************************************************"
+          echo "**********************************************************************"
+          cat latest-mac.yml
 
       - name: Publish channel update info files to S3
         if: false
