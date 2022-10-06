@@ -92,7 +92,7 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.buildAllFilters();
+    this.filters = await this.buildAllFilters();
     await this.applyTypeFilter(
       (await firstValueFrom(this.filters?.typeFilter.data$)) as TreeNode<CipherTypeFilter>
     );
@@ -209,15 +209,14 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
     }
   }
 
-  async buildAllFilters() {
+  async buildAllFilters(): Promise<VaultFilterList> {
     const builderFilter = {} as VaultFilterList;
     builderFilter.organizationFilter = await this.addOrganizationFilter();
     builderFilter.typeFilter = await this.addTypeFilter();
     builderFilter.folderFilter = await this.addFolderFilter();
     builderFilter.collectionFilter = await this.addCollectionFilter();
     builderFilter.trashFilter = await this.addTrashFilter();
-
-    this.filters = builderFilter;
+    return builderFilter;
   }
 
   protected async addOrganizationFilter(): Promise<VaultFilterSection> {

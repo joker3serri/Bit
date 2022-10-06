@@ -27,7 +27,7 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
   destroy$: Subject<void>;
 
   async ngOnInit() {
-    await this.buildAllFilters();
+    this.filters = await this.buildAllFilters();
     if (!this.activeFilter.selectedCipherTypeNode) {
       this.applyCollectionFilter((await this.getDefaultFilter()) as TreeNode<CollectionFilter>);
     }
@@ -61,13 +61,12 @@ export class VaultFilterComponent extends BaseVaultFilterComponent implements On
     }
   }
 
-  async buildAllFilters() {
+  async buildAllFilters(): Promise<VaultFilterList> {
     const builderFilter = {} as VaultFilterList;
     builderFilter.typeFilter = await this.addTypeFilter();
     builderFilter.collectionFilter = await this.addCollectionFilter();
     builderFilter.trashFilter = await this.addTrashFilter();
-
-    this.filters = builderFilter;
+    return builderFilter;
   }
 
   async getDefaultFilter(): Promise<TreeNode<VaultFilterType>> {
