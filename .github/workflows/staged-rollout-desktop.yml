@@ -47,9 +47,9 @@ jobs:
           AWS_DEFAULT_REGION: 'us-west-2'
           AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
         run: |
-          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/ ./ \
-          --recursive \
-          --include "latest*.yml"
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest.yml .
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-linux.yml .
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-mac.yml .
 
       - name: Download channel update info files from R2
         env:
@@ -59,9 +59,11 @@ jobs:
           AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.r2-electron-bucket-name }}
           CF_ACCOUNT: ${{ steps.retrieve-secrets.outputs.cf-prod-account }}
         run: |
-          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/ ./ \
-          --recursive \
-          --include "latest*.yml" \
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest.yml latest-2.yml \
+          --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-linux.yml latest-linux-2.yml \
+          --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-mac.yml latest-mac-2.yml \
           --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
 
       - name: Show downloaded files
@@ -76,16 +78,41 @@ jobs:
           echo "**********************************************************************"
           echo "**********************************************************************"
           cat latest-mac.yml
+          echo "**********************************************************************"
+          echo "**********************************************************************"
+          cat latest-2.yml
+          echo "**********************************************************************"
+          echo "**********************************************************************"
+          cat latest-linux-2.yml
+          echo "**********************************************************************"
+          echo "**********************************************************************"
+          cat latest-mac-2.yml
 
       - name: Set staged rollout percentage
         env:
-          RELEASE_CHANNEL: ${{ steps.release-channel.outputs.channel }}
+        run: |
+          echo "stagingPercentage: 10" >> latest.yml
+          echo "stagingPercentage: 10" >> latest-linux.yml
+          echo "stagingPercentage: 10" >> latest-mac.yml
+      
+      - name: Show updated files
+        run: |
+          cat latest.yml
+          echo "**********************************************************************"
+          echo "**********************************************************************"
+          cat latest-linux.yml
+          echo "**********************************************************************"
+          echo "**********************************************************************"
+          cat latest-mac.yml
+
+      - name: Set staged rollout percentage
+        env:
           ROLLOUT_PCT: ${{ github.event.inputs.rollout_percentage }}
         run: |
-          echo "stagingPercentage: ${ROLLOUT_PCT}" >> latest.yml
-          echo "stagingPercentage: ${ROLLOUT_PCT}" >> latest-linux.yml
-          echo "stagingPercentage: ${ROLLOUT_PCT}" >> latest-mac.yml
-      
+          sed -i -r "/stagingPercentage/s/[0-9]+/${ROLLOUT_PCT}/" latest.yml
+          sed -i -r "/stagingPercentage/s/[0-9]+/${ROLLOUT_PCT}/" latest-linux.yml
+          sed -i -r "/stagingPercentage/s/[0-9]+/${ROLLOUT_PCT}/" latest-mac.yml
+
       - name: Show updated files
         run: |
           cat latest.yml
