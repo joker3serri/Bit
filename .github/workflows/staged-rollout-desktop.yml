@@ -104,6 +104,14 @@ jobs:
           echo "**********************************************************************"
           cat latest-mac.yml
 
+      - name: Higher percentage check
+        env:
+          NEW_PCT: ${{ github.event.inputs.rollout_percentage }}
+        run: |
+          CURRENT_PCT=$(sed -r -n "s/stagingPercentage:\s([0-9]+)/\1/p" latest.yml)
+          echo "Current percentage: ${CURRENT_PCT}"
+          echo "New percentage: ${NEW_PCT}"
+
       - name: Set staged rollout percentage
         env:
           ROLLOUT_PCT: ${{ github.event.inputs.rollout_percentage }}
@@ -129,7 +137,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
           AWS_DEFAULT_REGION: 'us-west-2'
           AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
-        working-directory: apps/desktop/artifacts
         run: |
           aws s3 cp ./ $AWS_S3_BUCKET_NAME/desktop/ \
           --include "latest*.yml" \
@@ -144,7 +151,6 @@ jobs:
           AWS_DEFAULT_REGION: 'us-east-1'
           AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.r2-electron-bucket-name }}
           CF_ACCOUNT: ${{ steps.retrieve-secrets.outputs.cf-prod-account }}
-        working-directory: apps/desktop/artifacts
         run: |
           aws s3 cp ./ $AWS_S3_BUCKET_NAME/desktop/ \
           --include "latest*.yml" \
