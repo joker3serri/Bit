@@ -944,7 +944,7 @@ jobs:
             cf-prod-account"
 
       - name: Download all artifacts
-        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # v3.0.0
+        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741
         with:
           path: apps/desktop/artifacts
 
@@ -1023,4 +1023,3 @@ jobs:
         env:
           BRANCH: ${{ needs.setup.outputs.branch-name }}
         run: git push origin --delete $BRANCH
-
