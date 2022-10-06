@@ -263,7 +263,6 @@ const StandaloneTemplate: Story<MultiSelectComponent> = (args: MultiSelectCompon
       [removeSelectedItems]="removeSelectedItems"
       [loading]="loading"
       [disabled]="disabled"
-      [standalone]="standalone"
       (onItemsConfirmed)="onItemsConfirmed($event)">
     </bit-multi-select>
   `,
@@ -281,5 +280,4 @@ Standalone.args = {
     { id: "7", listName: "Group 7", labelName: "Group 7", icon: "bwi-family" },
   ],
   removeSelectedItems: "true",
-  standalone: "true",
 };

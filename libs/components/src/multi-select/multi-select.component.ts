@@ -6,10 +6,10 @@ import {
   ViewChild,
   EventEmitter,
   HostBinding,
-  forwardRef,
-  Injector,
+  Optional,
+  Self,
 } from "@angular/core";
-import { ControlValueAccessor, NgControl, NG_VALUE_ACCESSOR, Validators } from "@angular/forms";
+import { ControlValueAccessor, NgControl, Validators } from "@angular/forms";
 import { NgSelectComponent } from "@ng-select/ng-select";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -24,14 +24,7 @@ let nextId = 0;
 @Component({
   selector: "bit-multi-select",
   templateUrl: "./multi-select.component.html",
-  providers: [
-    { provide: BitFormFieldControl, useExisting: MultiSelectComponent },
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => MultiSelectComponent),
-      multi: true,
-    },
-  ],
+  providers: [{ provide: BitFormFieldControl, useExisting: MultiSelectComponent }],
 })
 /**
  * This component has been implemented to only support Multi-select list events
@@ -46,7 +39,6 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   @Input() placeholder: string;
   @Input() loading = false;
   @Input() disabled = false;
-  @Input() standalone = false;
 
   // Internal tracking of selected items
   @Input() selectedItems: SelectItemView[];
@@ -59,20 +51,18 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   /**Implemented as part of NG_VALUE_ACCESSOR */
   private notifyOnTouched?: () => void;
 
-  /**Implemented as part of BitFormFieldControl */
-  private ngControl?: NgControl;
-
   @Output() onItemsConfirmed = new EventEmitter<any[]>();
 
-  constructor(private i18nService: I18nService, private injector: Injector) {}
+  constructor(private i18nService: I18nService, @Optional() @Self() private ngControl?: NgControl) {
+    if (ngControl != null) {
+      ngControl.valueAccessor = this;
+    }
+  }
 
   ngOnInit(): void {
     // Default Text Values
     this.placeholder = this.placeholder ?? this.i18nService.t("multiSelectPlaceholder");
     this.loadingText = this.i18nService.t("multiSelectLoading");
-
-    // Retrieve ngControl bound to this component
-    this.ngControl = !this.standalone ? this.injector.get(NgControl) : null ?? null;
   }
 
   /** Helper method for showing selected state in custom template */
