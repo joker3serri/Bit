@@ -48,8 +48,7 @@ jobs:
           AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
         run: |
           aws s3 cp $AWS_S3_BUCKET_NAME/desktop/ ./ \
-          --include "latest*.yml" \
-          --quiet
+          --include "latest*.yml"
 
       - name: Download channel update info files from R2
         env:
@@ -61,7 +60,6 @@ jobs:
         run: |
           aws s3 cp $AWS_S3_BUCKET_NAME/desktop/ ./ \
           --include "latest*.yml" \
-          --quiet \
           --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
 
       - name: Show downloaded files
