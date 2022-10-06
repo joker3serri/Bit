@@ -5529,6 +5529,9 @@
   "newSaSelectAccess":{
     "message": "Type or Select Projects or Secrets"
   },
+  "newSaTypeToFilter":{
+    "message": "Type to Filter"
+  },
   "softDeleteSuccessToast":{
     "message":"Secret sent to trash"
   }
