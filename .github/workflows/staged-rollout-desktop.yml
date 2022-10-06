@@ -72,22 +72,6 @@ jobs:
           --quiet \
           --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
 
-      - name: Set staged rollout percentage
-        run: |
-          echo "stagingPercentage: 10" >> latest.yml
-          echo "stagingPercentage: 10" >> latest-linux.yml
-          echo "stagingPercentage: 10" >> latest-mac.yml
-      
-      - name: Show updated files
-        run: |
-          cat latest.yml
-          echo "**********************************************************************"
-          echo "**********************************************************************"
-          cat latest-linux.yml
-          echo "**********************************************************************"
-          echo "**********************************************************************"
-          cat latest-mac.yml
-
       - name: Check new rollout percentage
         env:
           NEW_PCT: ${{ github.event.inputs.rollout_percentage }}
@@ -109,18 +93,7 @@ jobs:
           sed -i -r "/stagingPercentage/s/[0-9]+/${ROLLOUT_PCT}/" latest-linux.yml
           sed -i -r "/stagingPercentage/s/[0-9]+/${ROLLOUT_PCT}/" latest-mac.yml
 
-      - name: Show updated files
-        run: |
-          cat latest.yml
-          echo "**********************************************************************"
-          echo "**********************************************************************"
-          cat latest-linux.yml
-          echo "**********************************************************************"
-          echo "**********************************************************************"
-          cat latest-mac.yml
-
       - name: Publish channel update info files to S3
-        if: false
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.aws-electron-access-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
@@ -133,7 +106,6 @@ jobs:
           --quiet
 
       - name: Publish channel update info files to R2
-        if: false
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.r2-electron-access-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.r2-electron-access-key }}
