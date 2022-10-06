@@ -47,9 +47,12 @@ jobs:
           AWS_DEFAULT_REGION: 'us-west-2'
           AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
         run: |
-          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest.yml .
-          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-linux.yml .
-          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-mac.yml .
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest.yml . \
+          --quiet
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-linux.yml . \
+          --quiet
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-mac.yml . \
+          --quiet
 
       - name: Download channel update info files from R2
         env:
@@ -59,34 +62,15 @@ jobs:
           AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.r2-electron-bucket-name }}
           CF_ACCOUNT: ${{ steps.retrieve-secrets.outputs.cf-prod-account }}
         run: |
-          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest.yml latest-2.yml \
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest.yml . \
+          --quiet \
           --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
-          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-linux.yml latest-linux-2.yml \
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-linux.yml . \
+          --quiet \
           --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
-          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-mac.yml latest-mac-2.yml \
+          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-mac.yml . \
+          --quiet \
           --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
-
-      - name: Show downloaded files
-        run: |
-          ls -alh .
-          echo "**********************************************************************"
-          echo "**********************************************************************"
-          cat latest.yml
-          echo "**********************************************************************"
-          echo "**********************************************************************"
-          cat latest-linux.yml
-          echo "**********************************************************************"
-          echo "**********************************************************************"
-          cat latest-mac.yml
-          echo "**********************************************************************"
-          echo "**********************************************************************"
-          cat latest-2.yml
-          echo "**********************************************************************"
-          echo "**********************************************************************"
-          cat latest-linux-2.yml
-          echo "**********************************************************************"
-          echo "**********************************************************************"
-          cat latest-mac-2.yml
 
       - name: Set staged rollout percentage
         run: |
