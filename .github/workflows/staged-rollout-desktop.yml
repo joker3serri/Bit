@@ -111,6 +111,12 @@ jobs:
           CURRENT_PCT=$(sed -r -n "s/stagingPercentage:\s([0-9]+)/\1/p" latest.yml)
           echo "Current percentage: ${CURRENT_PCT}"
           echo "New percentage: ${NEW_PCT}"
+          if [ "$NEW_PCT" -gt "$CURRENT_PCT" ]; then
+            echo "New percentage is higher than old!"
+          else
+            echo "New percentage is the same or lower than old!"
+            exit 1
+          fi
 
       - name: Set staged rollout percentage
         env:
