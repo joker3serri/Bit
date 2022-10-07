@@ -53,13 +53,13 @@
     "message": "ടാബ് "
   },
   "vault": {
-    "message": "Vault"
+    "message": "വാൾട്"
   },
   "myVault": {
-    "message": "എൻ്റെ വാൾട് "
+    "message": "എൻ്റെ വാൾട്"
   },
   "allVaults": {
-    "message": "All Vaults"
+    "message": "എല്ലാ വാൾട്ടുകളും"
   },
   "tools": {
     "message": "ഉപകരണങ്ങള്‍"
@@ -101,10 +101,10 @@
     "message": "പൊരുത്തപ്പെടുന്ന ലോഗിനുകളൊന്നുമില്ല."
   },
   "unlockVaultMenu": {
-    "message": "Unlock your vault"
+    "message": "നിങ്ങളുടെ വാൾട് അൺലോക്ക് ചെയ്യുക"
   },
   "loginToVaultMenu": {
-    "message": "Log in to your vault"
+    "message": "നിങ്ങളുടെ വാൾട്ടിലേക്ക് ലോഗിൻ ചെയ്യുക"
   },
   "autoFillInfo": {
     "message": "നിലവിലെ ബ്രൌസർ  ടാബിന് ഓട്ടോഫിൽ ചെയ്യാൻ പ്രവേശനങ്ങൾ ലഭ്യമല്ല."
@@ -140,7 +140,7 @@
     "message": "പരിശോധിച്ചുറപ്പിക്കൽ കോഡ്"
   },
   "confirmIdentity": {
-    "message": "Confirm your identity to continue."
+    "message": "തുടരുന്നതിന് നിങ്ങളുടെ ഐഡന്റിറ്റി സ്ഥിരീകരിക്കുക."
   },
   "account": {
     "message": "അക്കൗണ്ട്"
@@ -236,13 +236,13 @@
     "message": "നീളം"
   },
   "uppercase": {
-    "message": "Uppercase (A-Z)"
+    "message": "വലിയക്ഷരം (A-Z)"
   },
   "lowercase": {
-    "message": "Lowercase (a-z)"
+    "message": "ചെറിയക്ഷരം(a-z)"
   },
   "numbers": {
-    "message": "Numbers (0-9)"
+    "message": "അക്കങ്ങൾ (0-9)"
   },
   "specialCharacters": {
     "message": "Special Characters (!@#$%^&*)"
