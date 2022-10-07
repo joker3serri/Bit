@@ -65,5 +65,5 @@ jobs:
           pull_request_body: "Autosync the updated translations"
           working_directory: apps/${{ matrix.app_name }}
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          gpg_passphrase: ${{ secrets.PASSPHRASE }}
 
