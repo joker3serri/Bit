@@ -56,11 +56,14 @@ jobs:
           upload_sources: false
           upload_translations: false
           download_translations: true
-          github_user_name: "github-actions"
-          github_user_email: "<>"
+          github_user_name: "bitwarden-devops-bot"
+          github_user_email: "106330231+bitwarden-devops-bot@users.noreply.github.com"
           commit_message: "Autosync the updated translations"
           localization_branch_name: crowdin-auto-sync-${{ matrix.app_name }}
           create_pull_request: true
           pull_request_title: "Autosync Crowdin Translations for ${{ matrix.app_name }}"
           pull_request_body: "Autosync the updated translations"
           working_directory: apps/${{ matrix.app_name }}
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
