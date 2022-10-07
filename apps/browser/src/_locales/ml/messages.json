@@ -3,7 +3,7 @@
     "message": "Bitwarden"
   },
   "extName": {
-    "message": "Bitwarden - സൗജന്യ  പാസ്സ്‌വേഡ് മാനേജർ ",
+    "message": "Bitwarden - സൗജന്യ പാസ്സ്‌വേഡ് മാനേജർ ",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
@@ -32,7 +32,7 @@
     "message": "സമർപ്പിക്കുക"
   },
   "emailAddress": {
-    "message": "ഈ - മെയില് വിലാസം"
+    "message": "ഇമെയിൽ വിലാസം"
   },
   "masterPass": {
     "message": "പ്രാഥമിക പാസ്‌വേഡ്"
@@ -107,13 +107,13 @@
     "message": "നിങ്ങളുടെ വാൾട്ടിലേക്ക് ലോഗിൻ ചെയ്യുക"
   },
   "autoFillInfo": {
-    "message": "നിലവിലെ ബ്രൌസർ  ടാബിന് ഓട്ടോഫിൽ ചെയ്യാൻ പ്രവേശനങ്ങൾ ലഭ്യമല്ല."
+    "message": "നിലവിലെ ബ്രൌസർ ടാബിന് ഓട്ടോഫിൽ ചെയ്യാൻ പ്രവേശനങ്ങൾ ലഭ്യമല്ല."
   },
   "addLogin": {
-    "message": "പ്രവേശനം ചേർക്കുക"
+    "message": "ഒരു ലോഗിൻ ചേർക്കുക"
   },
   "addItem": {
-    "message": " ഇനം ചേർക്കുക"
+    "message": "ഒരു ഇനം ചേർക്കുക"
   },
   "passwordHint": {
     "message": "പാസ്സ്‌വേഡ് സൂചനാ"
