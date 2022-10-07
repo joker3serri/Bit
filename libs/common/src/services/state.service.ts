@@ -1148,7 +1148,7 @@ export class StateService<
   async getEnableHardwareAcceleration(options?: StorageOptions): Promise<boolean> {
     return (
       (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
-        ?.enableHardwareAcceleration ?? false
+        ?.enableHardwareAcceleration ?? true
     );
   }
 

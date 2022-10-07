@@ -25,7 +25,7 @@ export class SettingsComponent implements OnInit {
   vaultTimeoutAction: string;
   pin: boolean = null;
   disableFavicons = false;
-  enableHardwareAcceleration = true;
+  enableHardwareAcceleration = false;
   enableBrowserIntegration = false;
   enableBrowserIntegrationFingerprint = false;
   enableMinToTray = false;
