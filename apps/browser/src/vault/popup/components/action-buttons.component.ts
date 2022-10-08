@@ -83,6 +83,10 @@ export class ActionButtonsComponent {
     );
   }
 
+  async setTextDataOnDrag(event: DragEvent, data: string, type: string = null) {
+    event.dataTransfer.setData("text", data);
+  }
+
   view() {
     this.onView.emit(this.cipher);
   }
