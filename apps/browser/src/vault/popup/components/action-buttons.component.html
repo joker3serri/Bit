@@ -53,11 +53,14 @@
   </button>
   <button
     type="button"
-    class="row-btn"
+    class="row-btn draggable"
     appStopClick
     appStopProp
     appA11yTitle="{{ 'copyVerificationCode' | i18n }}"
     (click)="copy(cipher, cipher.login.totp, 'verificationCodeTotp', 'TOTP')"
+    (mouseover)="generateTotp(cipher.login.totp)"
+    draggable="true"
+    (dragstart)="setTextDataOnDrag($event, cipher.login.totp, 'TOTP')"
     [ngClass]="{ disabled: !displayTotpCopyButton(cipher) }"
     [attr.disabled]="!displayTotpCopyButton(cipher) ? '' : null"
   >

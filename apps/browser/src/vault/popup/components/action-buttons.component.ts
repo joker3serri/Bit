@@ -23,6 +23,7 @@ export class ActionButtonsComponent {
 
   cipherType = CipherType;
   userHasPremiumAccess = false;
+  totpCode: [number, string] = [0, null];
 
   constructor(
     private i18nService: I18nService,
@@ -83,7 +84,21 @@ export class ActionButtonsComponent {
     );
   }
 
+  async generateTotp(totpToken: string) {
+    const period = this.totpService.getTimeInterval(totpToken);
+    const epoch = Math.round(new Date().getTime() / 1000.0);
+    const timeblock = Math.floor(epoch / period);
+
+    if (this.totpCode[0] !== timeblock) {
+      const totp = await this.totpService.getCode(totpToken);
+      this.totpCode = [timeblock, totp];
+    }
+  }
+
   async setTextDataOnDrag(event: DragEvent, data: string, type: string = null) {
+    if (type === "TOTP") {
+      data = this.totpCode[1];
+    }
     event.dataTransfer.setData("text", data);
   }
 
