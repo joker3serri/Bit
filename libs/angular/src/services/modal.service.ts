@@ -50,7 +50,7 @@ export class ModalService {
   }
 
   /**
-   * @deprecated Use `modalService.open` instead.
+   * @deprecated Use `dialogService.open` (in web) or `modalService.open` (in desktop/browser) instead.
    * If replacing an existing call to this method, also remove any `@ViewChild` and `<ng-template>` associated with the
    * existing usage.
    */
