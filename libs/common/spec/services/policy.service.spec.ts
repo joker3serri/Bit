@@ -2,7 +2,7 @@ import { Arg, Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { PermissionsApi } from "@bitwarden/common/models/api/permissionsApi";
