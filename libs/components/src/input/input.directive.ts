@@ -41,6 +41,10 @@ export class BitInputDirective implements BitFormFieldControl {
 
   @HostBinding("attr.aria-describedby") ariaDescribedBy: string;
 
+  get labelForId(): string {
+    return this.id;
+  }
+
   @HostBinding("attr.aria-invalid") get ariaInvalid() {
     return this.hasError ? true : undefined;
   }

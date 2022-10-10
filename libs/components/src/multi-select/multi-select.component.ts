@@ -46,6 +46,8 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   // Default values for our implementation
   loadingText: string;
 
+  protected searchInputId = `search-input-${nextId++}`;
+
   /**Implemented as part of NG_VALUE_ACCESSOR */
   private notifyOnChange?: (value: SelectItemView[]) => void;
   /**Implemented as part of NG_VALUE_ACCESSOR */
@@ -135,10 +137,23 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   }
 
   /**Implemented as part of BitFormFieldControl */
-  @HostBinding("attr.aria-describedby") ariaDescribedBy: string;
+  @HostBinding("attr.aria-describedby")
+  get ariaDescribedBy() {
+    return this._ariaDescribedBy;
+  }
+  set ariaDescribedBy(value: string) {
+    this._ariaDescribedBy = value;
+    this.select?.searchInput.nativeElement.setAttribute("aria-describedby", value);
+  }
+  private _ariaDescribedBy: string;
 
   /**Implemented as part of BitFormFieldControl */
-  @HostBinding() @Input() id = `bit-input-${nextId++}`;
+  get labelForId() {
+    return this.searchInputId;
+  }
+ 
+  /**Implemented as part of BitFormFieldControl */
+  @HostBinding() @Input() id = `bit-multi-select-${nextId++}`;
 
   /**Implemented as part of BitFormFieldControl */
   @HostBinding("attr.required")
