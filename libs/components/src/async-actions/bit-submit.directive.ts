@@ -1,6 +1,6 @@
 import { Directive, Input, OnDestroy, OnInit, Optional } from "@angular/core";
 import { FormGroupDirective } from "@angular/forms";
-import { BehaviorSubject, catchError, of, Subject, switchMap, takeUntil } from "rxjs";
+import { BehaviorSubject, catchError, filter, of, Subject, switchMap, takeUntil } from "rxjs";
 
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 
@@ -29,6 +29,7 @@ export class BitSubmitDirective implements OnInit, OnDestroy {
   ) {
     formGroupDirective.ngSubmit
       .pipe(
+        filter(() => !this.disabled),
         switchMap(() => {
           // Calling functionToObservable exectues the sync part of the handler
           // allowing the function to check form validity before it gets disabled.
