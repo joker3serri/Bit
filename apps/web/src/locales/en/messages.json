@@ -569,14 +569,26 @@
   "loginOrCreateNewAccount": {
     "message": "Log in or create a new account to access your secure vault."
   },
+  "loginWithDevice" : {
+    "message": "Log in with device"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Log in with device must be enabled in the settings of the Bitwarden mobile app. Need another option?"
+  },
   "createAccount": {
     "message": "Create Account"
+  },
+  "newAroundHere": {
+    "message": "New around here?"
   },
   "startTrial": {
     "message": "Start Trial"
   },
   "logIn": {
     "message": "Log In"
+  },
+  "logInInitiated": {
+    "message": "Log in initiated"
   },
   "submit": {
     "message": "Submit"
@@ -635,7 +647,7 @@
   "confirmMasterPasswordRequired": {
     "message": "Master password retype is required."
   },
-  "masterPasswordMinLength": {
+  "masterPasswordMinlength": {
     "message": "Master password must be at least 8 characters long."
   },
   "masterPassDoesntMatch": {
@@ -704,6 +716,9 @@
   },
   "noOrganizationsList": {
     "message": "You do not belong to any organizations. Organizations allow you to securely share items with other users."
+  },
+  "notificationSentDevice":{
+    "message": "A notification has been sent to your device."
   },
   "versionNumber": {
     "message": "Version $VERSION_NUMBER$",
@@ -2532,6 +2547,9 @@
       }
     }
   },
+  "viewAllLoginOptions": {
+    "message": "View all log in options"
+  },
   "viewedItemId": {
     "message": "Viewed item $ID$.",
     "placeholders": {
@@ -3371,6 +3389,12 @@
   "fingerprintEnsureIntegrityVerify": {
     "message": "To ensure the integrity of your encryption keys, please verify the user's fingerprint phrase before continuing.",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
+  },
+  "fingerprintMatchInfo": {
+    "message": "Please make sure your vault is unlocked and Fingerprint phrase matches the other device."
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Fingerprint phrase"
   },
   "dontAskFingerprintAgain": {
     "message": "Never prompt to verify fingerprint phrases for invited users (Not recommended)",
@@ -4371,6 +4395,9 @@
   },
   "reinviteSelected": {
     "message": "Resend Invitations"
+  },
+  "resendNotification": {
+    "message": "Resend notification"
   },
   "noSelectedUsersApplicable": {
     "message": "This action is not applicable to any of the selected users."
@@ -5409,6 +5436,9 @@
   "serviceAccount":{
     "message": "Service Account"
   },
+  "newServiceAccount": {
+    "message": "New Service Account"
+  },
   "serviceAccounts":{
     "message": "Service Accounts"
   },
@@ -5430,17 +5460,56 @@
   "newSecret":{
     "message":"New Secret"
   },
+  "newServiceAccount":{
+    "message":"New Service Account"
+  },
   "importSecrets":{
     "message":"Import Secrets"
   },
   "secretsEmptyListTitle":{
-    "message":"Nothing to show yet"
+    "message":"No secrets to show"
   },
   "secretsEmptyListMessage":{
-    "message": "Add a new secret or import secrets to get started"
+    "message": "To get started, add a new secret or import secrets."
+  },
+  "serviceAccountsEmptyListTitle":{
+    "message":"Nothing to show yet"
+  },
+  "serviceAccountsEmptyListMessage":{
+    "message": "Create a new Service Account to get started automating secret access."
   },
   "searchSecrets":{
     "message":"Search Secrets"
+  },
+  "deleteServiceAccounts":{
+    "message":"Delete Service Accounts"
+  },
+  "deleteServiceAccount":{
+    "message":"Delete Service Account"
+  },
+  "viewServiceAccount":{
+    "message":"View Service Account"
+  },
+  "searchServiceAccounts":{
+    "message":"Search Service Accounts"
+  },
+  "addProject":{
+    "message": "Add Project"
+  },
+  "projectEdited":{
+    "message":"Project edited"
+  },
+  "projectSaved":{
+    "message":"Project saved"
+  },
+  "projectCreated":{
+    "message":"Project created"
+  },
+  "projectName":{
+    "message":"Project Name"
+  },
+  "newProject":{
+    "message":"New Project"
   },
   "softDeleteSecretWarning":{
     "message":"Deleting secrets can affect existing integrations."
