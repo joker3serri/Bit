@@ -9,6 +9,13 @@ eg. Submit or Delete buttons. For buttons that are not associated with a form se
 
 There are two separately supported use-cases: Submit buttons and standalone form buttons (eg. Delete buttons).
 
+## Inputs
+
+### `disableFormOnLoading`
+
+The `bitSubmit` directive has the ability to disable the entire form (instead of just the buttons) whenever there
+is an async action being processed. This is turned off by default and should be used conservatively and purposefully.
+
 ## Usage: Submit buttons
 
 Adding async actions to submit buttons requires the following 3 steps

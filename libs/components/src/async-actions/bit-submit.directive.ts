@@ -18,6 +18,7 @@ export class BitSubmitDirective implements OnInit, OnDestroy {
   private _disabled$ = new BehaviorSubject<boolean>(false);
 
   @Input("bitSubmit") protected handler: FunctionReturningAwaitable;
+  @Input("disableFormOnLoading") protected disableFormOnLoading = false;
 
   readonly loading$ = this._loading$.asObservable();
   readonly disabled$ = this._disabled$.asObservable();
@@ -62,10 +63,12 @@ export class BitSubmitDirective implements OnInit, OnDestroy {
   }
 
   set disabled(value: boolean) {
-    if (value) {
+    if (this.disableFormOnLoading && value) {
       this.formGroupDirective?.form?.disable();
-    } else {
+    } else if (this.disableFormOnLoading && !value) {
       this.formGroupDirective?.form?.enable();
+    } else {
+      this._disabled$.next(value);
     }
   }
 
