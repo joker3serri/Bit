@@ -232,15 +232,19 @@ export class NativeMessageHandlerService {
     ipcRenderer.send("nativeMessagingReply", response);
   }
 
+  // Trim all null bytes padded at the end of messages. This happens with C encryption libraries.
   private trimNullCharsFromMessage(message: string): string {
-    // Trim all null bytes padded at the end of messages. This happens with C encryption libraries.
+    const charNull = 0;
+    const charRightCurlyBrace = 125;
+    const charRightBracket = 93;
+
     for (let i = message.length - 1; i >= 0; i--) {
-      // char code 0 is null
-      if (message.charCodeAt(i) === 0) {
+      if (message.charCodeAt(i) === charNull) {
         message = message.substring(0, message.length - 1);
-      }
-      // char code 125 is } and 93 is ] which are valid json ending characters, stop checking
-      else if (message.charCodeAt(i) === 125 || message.charCodeAt(i) === 93) {
+      } else if (
+        message.charCodeAt(i) === charRightCurlyBrace ||
+        message.charCodeAt(i) === charRightBracket
+      ) {
         break;
       }
     }
