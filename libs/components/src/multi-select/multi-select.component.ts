@@ -151,7 +151,7 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   get labelForId() {
     return this.searchInputId;
   }
- 
+
   /**Implemented as part of BitFormFieldControl */
   @HostBinding() @Input() id = `bit-multi-select-${nextId++}`;
 
