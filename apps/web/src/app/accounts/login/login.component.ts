@@ -23,8 +23,7 @@ import { Policy } from "@bitwarden/common/models/domain/policy";
 import { ListResponse } from "@bitwarden/common/models/response/listResponse";
 import { PolicyResponse } from "@bitwarden/common/models/response/policyResponse";
 
-import { flagEnabled } from "src/utils/flags";
-
+import { flagEnabled } from "../../../utils/flags";
 import { RouterService, StateService } from "../../core";
 
 @Component({
@@ -147,7 +146,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
   }
 
   async goAfterLogIn() {
-    const masterPassword = this.formGroup.get("masterPassword")?.value;
+    const masterPassword = this.formGroup.value.masterPassword;
 
     // Check master password against policy
     if (this.enforcedPasswordPolicyOptions != null) {
@@ -182,7 +181,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
   }
 
   async submit() {
-    const rememberEmail = this.formGroup.get("rememberEmail")?.value;
+    const rememberEmail = this.formGroup.value.rememberEmail;
 
     await this.stateService.setRememberEmail(rememberEmail);
     if (!rememberEmail) {
@@ -204,7 +203,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
   }
 
   private getPasswordStrengthUserInput() {
-    const email = this.formGroup.get("email")?.value;
+    const email = this.formGroup.value.email;
     let userInput: string[] = [];
     const atPosition = email.indexOf("@");
     if (atPosition > -1) {

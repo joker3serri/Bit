@@ -112,9 +112,7 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
     }
 
     try {
-      this.actionPromise = this.organizationApiService.leave(org.id).then(() => {
-        return this.syncService.fullSync(true);
-      });
+      this.actionPromise = this.organizationApiService.leave(org.id);
       await this.actionPromise;
       this.platformUtilsService.showToast("success", null, this.i18nService.t("leftOrganization"));
     } catch (e) {

@@ -1,13 +1,12 @@
 import { of, concatMap, BehaviorSubject, Observable, map } from "rxjs";
 
-import { Utils } from "@bitwarden/common/misc/utils";
-
-import { OrganizationService } from "../../abstractions/organization.service";
+import { OrganizationService } from "../../abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService as InternalPolicyServiceAbstraction } from "../../abstractions/policy/policy.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
 import { OrganizationUserStatusType } from "../../enums/organizationUserStatusType";
 import { OrganizationUserType } from "../../enums/organizationUserType";
 import { PolicyType } from "../../enums/policyType";
+import { Utils } from "../../misc/utils";
 import { PolicyData } from "../../models/data/policyData";
 import { MasterPasswordPolicyOptions } from "../../models/domain/masterPasswordPolicyOptions";
 import { Organization } from "../../models/domain/organization";

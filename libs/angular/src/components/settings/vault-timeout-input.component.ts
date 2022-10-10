@@ -2,7 +2,7 @@ import { Directive, Input, OnDestroy, OnInit } from "@angular/core";
 import {
   AbstractControl,
   ControlValueAccessor,
-  UntypedFormBuilder,
+  FormBuilder,
   ValidationErrors,
   Validator,
 } from "@angular/forms";
@@ -48,7 +48,7 @@ export class VaultTimeoutInputComponent
   private destroy$ = new Subject<void>();
 
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private policyService: PolicyService,
     private i18nService: I18nService
   ) {}
@@ -159,7 +159,7 @@ export class VaultTimeoutInputComponent
   }
 
   private customTimeInMinutes() {
-    return this.form.get("custom.hours")?.value * 60 + this.form.get("custom.minutes")?.value;
+    return this.form.value.custom.hours * 60 + this.form.value.custom.minutes;
   }
 
   private applyVaultTimeoutPolicy() {
