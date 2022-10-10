@@ -64,13 +64,7 @@ export class BitSubmitDirective implements OnInit, OnDestroy {
   }
 
   set disabled(value: boolean) {
-    if (this.disableFormOnLoading && value) {
-      this.formGroupDirective?.form?.disable();
-    } else if (this.disableFormOnLoading && !value) {
-      this.formGroupDirective?.form?.enable();
-    } else {
-      this._disabled$.next(value);
-    }
+    this._disabled$.next(value);
   }
 
   get loading() {
