@@ -374,7 +374,7 @@ jobs:
           SETUP_STATUS: ${{ needs.setup.result }}
           ARTIFACT_STATUS: ${{ needs.build-artifacts.result }}
           BUILD_SELFHOST_STATUS: ${{ needs.build-commercial-selfhost-image.result }}
-          BUILD_QA_STATUS: ${{ needs.build-containers.result }}
+          BUILD_CONTAINERS_STATUS: ${{ needs.build-containers.result }}
           CROWDIN_PUSH_STATUS: ${{ needs.crowdin-push.result }}
         run: |
           if [ "$CLOC_STATUS" = "failure" ]; then
