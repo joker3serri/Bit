@@ -12,7 +12,7 @@ defaults:
 jobs:
   setup:
     name: "Setup"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       version_number: ${{ steps.version.outputs.new-version }}
     if: contains(github.event.release.tag, 'desktop')
@@ -36,7 +36,7 @@ jobs:
 
   trigger_version_bump:
     name: "Trigger desktop version bump workflow"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - setup
     steps:
