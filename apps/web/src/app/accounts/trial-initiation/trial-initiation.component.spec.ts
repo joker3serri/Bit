@@ -6,7 +6,8 @@ import { FormBuilder, UntypedFormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { RouterTestingModule } from "@angular/router/testing";
 import { mock, MockProxy } from "jest-mock-extended";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, of } from "rxjs";
+
 
 import { I18nPipe } from "@bitwarden/angular/pipes/i18n.pipe";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -107,38 +108,34 @@ describe("TrialInitiationComponent", () => {
     });
     it("should set enforcedPolicyOptions if state service returns an invite", async () => {
       // Set up service method mocks
-      stateServiceMock.getOrganizationInvitation.mockReturnValueOnce(
-        Promise.resolve({
-          organizationId: testOrgId,
-          token: "token",
-          email: "testEmail",
-          organizationUserId: "123",
-        })
-      );
-      policyApiServiceMock.getPoliciesByToken.mockReturnValueOnce(
-        Promise.resolve({
-          data: [
-            {
-              id: "345",
-              organizationId: testOrgId,
-              type: 1,
-              data: [
-                {
-                  minComplexity: 4,
-                  minLength: 10,
-                  requireLower: null,
-                  requireNumbers: null,
-                  requireSpecial: null,
-                  requireUpper: null,
-                },
-              ],
-              enabled: true,
-            },
-          ],
-        } as ListResponse<PolicyResponse>)
-      );
-      policyServiceMock.getMasterPasswordPolicyOptions.mockReturnValueOnce(
-        Promise.resolve({
+      stateServiceMock.getOrganizationInvitation.mockReturnValueOnce({
+        organizationId: testOrgId,
+        token: "token",
+        email: "testEmail",
+        organizationUserId: "123",
+      });
+      apiServiceMock.getPoliciesByToken.mockReturnValueOnce({
+        data: [
+          {
+            id: "345",
+            organizationId: testOrgId,
+            type: 1,
+            data: [
+              {
+                minComplexity: 4,
+                minLength: 10,
+                requireLower: null,
+                requireNumbers: null,
+                requireSpecial: null,
+                requireUpper: null,
+              },
+            ],
+            enabled: true,
+          },
+        ],
+      });
+      policyServiceMock.masterPasswordPolicyOptions$.mockReturnValue(
+        of({
           minComplexity: 4,
           minLength: 10,
           requireLower: null,
