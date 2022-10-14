@@ -1,6 +1,6 @@
 import { BaseResponse } from "../response/baseResponse";
 
-import { LoginUriApi } from "./loginUriApi";
+import { LoginUriApi } from "./login-uri.api";
 
 export class LoginApi extends BaseResponse {
   uris: LoginUriApi[];

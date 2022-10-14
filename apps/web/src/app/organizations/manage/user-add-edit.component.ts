@@ -7,7 +7,7 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
-import { PermissionsApi } from "@bitwarden/common/models/api/permissionsApi";
+import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
 import { CollectionData } from "@bitwarden/common/models/data/collectionData";
 import { Collection } from "@bitwarden/common/models/domain/collection";
 import { OrganizationUserInviteRequest } from "@bitwarden/common/models/request/organizationUserInviteRequest";

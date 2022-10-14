@@ -5,7 +5,7 @@ import {
   Saml2SigningBehavior,
   SsoType,
 } from "../../enums/ssoEnums";
-import { SsoConfigApi } from "../api/ssoConfigApi";
+import { SsoConfigApi } from "../api/sso-config.api";
 
 import { View } from "./view";
 

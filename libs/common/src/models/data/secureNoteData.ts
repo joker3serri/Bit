@@ -1,5 +1,5 @@
 import { SecureNoteType } from "../../enums/secureNoteType";
-import { SecureNoteApi } from "../api/secureNoteApi";
+import { SecureNoteApi } from "../api/secure-note.api";
 
 export class SecureNoteData {
   type: SecureNoteType;

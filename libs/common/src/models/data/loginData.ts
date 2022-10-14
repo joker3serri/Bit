@@ -1,4 +1,4 @@
-import { LoginApi } from "../api/loginApi";
+import { LoginApi } from "../api/login.api";
 
 import { LoginUriData } from "./loginUriData";
 
