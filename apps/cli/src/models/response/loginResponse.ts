@@ -1,4 +1,4 @@
-import { LoginExport } from "@bitwarden/common/models/export/loginExport";
+import { LoginExport } from "@bitwarden/common/models/export/login.export";
 import { LoginView } from "@bitwarden/common/models/view/loginView";
 
 export class LoginResponse extends LoginExport {

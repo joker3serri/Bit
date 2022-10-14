@@ -1,7 +1,7 @@
 import { Folder as FolderDomain } from "../domain/folder";
 import { FolderView } from "../view/folderView";
 
-import { FolderExport } from "./folderExport";
+import { FolderExport } from "./folder.export";
 
 export class FolderWithIdExport extends FolderExport {
   id: string;

@@ -13,7 +13,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { Login } from "@bitwarden/common/models/domain/login";
-import { CipherWithIdExport as CipherExport } from "@bitwarden/common/models/export/cipherWithIdsExport";
+import { CipherWithIdExport as CipherExport } from "@bitwarden/common/models/export/cipher-with-ids.export";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";
 import { LoginView } from "@bitwarden/common/models/view/loginView";
 import { ExportService } from "@bitwarden/common/services/export.service";

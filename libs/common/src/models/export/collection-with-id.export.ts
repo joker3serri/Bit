@@ -1,7 +1,7 @@
 import { Collection as CollectionDomain } from "../domain/collection";
 import { CollectionView } from "../view/collectionView";
 
-import { CollectionExport } from "./collectionExport";
+import { CollectionExport } from "./collection.export";
 
 export class CollectionWithIdExport extends CollectionExport {
   id: string;

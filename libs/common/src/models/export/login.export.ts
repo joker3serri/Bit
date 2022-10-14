@@ -2,7 +2,7 @@ import { EncString } from "../domain/enc-string";
 import { Login as LoginDomain } from "../domain/login";
 import { LoginView } from "../view/loginView";
 
-import { LoginUriExport } from "./loginUriExport";
+import { LoginUriExport } from "./login-uri.export";
 
 export class LoginExport {
   static template(): LoginExport {

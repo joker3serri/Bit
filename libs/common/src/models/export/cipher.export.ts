@@ -4,11 +4,11 @@ import { Cipher as CipherDomain } from "../domain/cipher";
 import { EncString } from "../domain/enc-string";
 import { CipherView } from "../view/cipherView";
 
-import { CardExport } from "./cardExport";
-import { FieldExport } from "./fieldExport";
-import { IdentityExport } from "./identityExport";
-import { LoginExport } from "./loginExport";
-import { SecureNoteExport } from "./secureNoteExport";
+import { CardExport } from "./card.export";
+import { FieldExport } from "./field.export";
+import { IdentityExport } from "./identity.export";
+import { LoginExport } from "./login.export";
+import { SecureNoteExport } from "./secure-note.export";
 
 export class CipherExport {
   static template(): CipherExport {

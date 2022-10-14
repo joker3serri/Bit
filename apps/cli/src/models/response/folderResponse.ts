@@ -1,4 +1,4 @@
-import { FolderWithIdExport } from "@bitwarden/common/models/export/folderWithIdExport";
+import { FolderWithIdExport } from "@bitwarden/common/models/export/folder-with-id.export";
 import { FolderView } from "@bitwarden/common/models/view/folderView";
 import { BaseResponse } from "@bitwarden/node/cli/models/response/baseResponse";
 
