@@ -7,7 +7,7 @@ import { Utils } from "../misc/utils";
 import { CollectionData } from "../models/data/collection.data";
 import { Collection } from "../models/domain/collection";
 import { TreeNode } from "../models/domain/tree-node";
-import { CollectionView } from "../models/view/collectionView";
+import { CollectionView } from "../models/view/collection.view";
 
 const NestingDelimiter = "/";
 

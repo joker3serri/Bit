@@ -17,9 +17,9 @@ import { Identity } from "@bitwarden/common/models/domain/identity";
 import { Login } from "@bitwarden/common/models/domain/login";
 import { Password } from "@bitwarden/common/models/domain/password";
 import { SecureNote } from "@bitwarden/common/models/domain/secure-note";
-import { CardView } from "@bitwarden/common/models/view/cardView";
-import { IdentityView } from "@bitwarden/common/models/view/identityView";
-import { LoginView } from "@bitwarden/common/models/view/loginView";
+import { CardView } from "@bitwarden/common/models/view/card.view";
+import { IdentityView } from "@bitwarden/common/models/view/identity.view";
+import { LoginView } from "@bitwarden/common/models/view/login.view";
 
 import { mockEnc, mockFromJson } from "../../utils";
 

@@ -12,9 +12,9 @@ import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
-import { CipherView } from "@bitwarden/common/models/view/cipherView";
-import { CollectionView } from "@bitwarden/common/models/view/collectionView";
-import { FolderView } from "@bitwarden/common/models/view/folderView";
+import { CipherView } from "@bitwarden/common/models/view/cipher.view";
+import { CollectionView } from "@bitwarden/common/models/view/collection.view";
+import { FolderView } from "@bitwarden/common/models/view/folder.view";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { BrowserGroupingsComponentState } from "../../models/browserGroupingsComponentState";

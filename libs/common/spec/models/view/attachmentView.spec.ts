@@ -1,5 +1,5 @@
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
-import { AttachmentView } from "@bitwarden/common/models/view/attachmentView";
+import { AttachmentView } from "@bitwarden/common/models/view/attachment.view";
 
 import { mockFromJson } from "../../utils";
 

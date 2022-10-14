@@ -23,10 +23,10 @@ import { CollectionWithIdExport as CollectionExport } from "../models/export/col
 import { EventExport } from "../models/export/event.export";
 import { FolderWithIdExport as FolderExport } from "../models/export/folder-with-id.export";
 import { CollectionDetailsResponse } from "../models/response/collectionResponse";
-import { CipherView } from "../models/view/cipherView";
-import { CollectionView } from "../models/view/collectionView";
-import { EventView } from "../models/view/eventView";
-import { FolderView } from "../models/view/folderView";
+import { CipherView } from "../models/view/cipher.view";
+import { CollectionView } from "../models/view/collection.view";
+import { EventView } from "../models/view/event.view";
+import { FolderView } from "../models/view/folder.view";
 
 export class ExportService implements ExportServiceAbstraction {
   constructor(

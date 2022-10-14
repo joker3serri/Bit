@@ -1,6 +1,6 @@
 import { EncString } from "../domain/enc-string";
 import { Folder as FolderDomain } from "../domain/folder";
-import { FolderView } from "../view/folderView";
+import { FolderView } from "../view/folder.view";
 
 export class FolderExport {
   static template(): FolderExport {

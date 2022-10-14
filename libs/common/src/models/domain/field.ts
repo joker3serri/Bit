@@ -3,7 +3,7 @@ import { Jsonify } from "type-fest";
 import { FieldType } from "../../enums/fieldType";
 import { LinkedIdType } from "../../enums/linkedIdType";
 import { FieldData } from "../data/field.data";
-import { FieldView } from "../view/fieldView";
+import { FieldView } from "../view/field.view";
 
 import Domain from "./domain-base";
 import { EncString } from "./enc-string";

@@ -79,7 +79,7 @@ import { ImportCiphersRequest } from "../models/request/importCiphersRequest";
 import { ImportOrganizationCiphersRequest } from "../models/request/importOrganizationCiphersRequest";
 import { KvpRequest } from "../models/request/kvpRequest";
 import { ErrorResponse } from "../models/response/errorResponse";
-import { CipherView } from "../models/view/cipherView";
+import { CipherView } from "../models/view/cipher.view";
 
 export class ImportService implements ImportServiceAbstraction {
   featuredImportOptions = featuredImportOptions as readonly ImportOption[];

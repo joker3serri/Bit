@@ -41,10 +41,10 @@ import { CipherRequest } from "../models/request/cipherRequest";
 import { CipherShareRequest } from "../models/request/cipherShareRequest";
 import { CipherResponse } from "../models/response/cipherResponse";
 import { ErrorResponse } from "../models/response/errorResponse";
-import { AttachmentView } from "../models/view/attachmentView";
-import { CipherView } from "../models/view/cipherView";
-import { FieldView } from "../models/view/fieldView";
-import { PasswordHistoryView } from "../models/view/passwordHistoryView";
+import { AttachmentView } from "../models/view/attachment.view";
+import { CipherView } from "../models/view/cipher.view";
+import { FieldView } from "../models/view/field.view";
+import { PasswordHistoryView } from "../models/view/password-history.view";
 import { View } from "../models/view/view";
 
 const DomainMatchBlacklist = new Map<string, Set<string>>([

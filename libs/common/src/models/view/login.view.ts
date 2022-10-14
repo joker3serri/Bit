@@ -5,8 +5,8 @@ import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 import { Utils } from "../../misc/utils";
 import { Login } from "../domain/login";
 
-import { ItemView } from "./itemView";
-import { LoginUriView } from "./loginUriView";
+import { ItemView } from "./item.view";
+import { LoginUriView } from "./login-uri.view";
 
 export class LoginView extends ItemView {
   @linkedFieldOption(LinkedId.Username)

@@ -2,7 +2,7 @@ import { SendData } from "../models/data/send.data";
 import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { Send } from "../models/domain/send";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
-import { SendView } from "../models/view/sendView";
+import { SendView } from "../models/view/send.view";
 
 export abstract class SendService {
   clearCache: () => Promise<void>;

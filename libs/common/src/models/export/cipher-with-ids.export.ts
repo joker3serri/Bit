@@ -1,5 +1,5 @@
 import { Cipher as CipherDomain } from "../domain/cipher";
-import { CipherView } from "../view/cipherView";
+import { CipherView } from "../view/cipher.view";
 
 import { CipherExport } from "./cipher.export";
 

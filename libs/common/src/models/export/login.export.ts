@@ -1,6 +1,6 @@
 import { EncString } from "../domain/enc-string";
 import { Login as LoginDomain } from "../domain/login";
-import { LoginView } from "../view/loginView";
+import { LoginView } from "../view/login.view";
 
 import { LoginUriExport } from "./login-uri.export";
 

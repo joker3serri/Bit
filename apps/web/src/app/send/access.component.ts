@@ -16,7 +16,7 @@ import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-cr
 import { SendAccessRequest } from "@bitwarden/common/models/request/sendAccessRequest";
 import { ErrorResponse } from "@bitwarden/common/models/response/errorResponse";
 import { SendAccessResponse } from "@bitwarden/common/models/response/sendAccessResponse";
-import { SendAccessView } from "@bitwarden/common/models/view/sendAccessView";
+import { SendAccessView } from "@bitwarden/common/models/view/send-access.view";
 
 @Component({
   selector: "app-send-access",

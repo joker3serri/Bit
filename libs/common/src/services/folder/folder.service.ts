@@ -10,7 +10,7 @@ import { CipherData } from "../../models/data/cipher.data";
 import { FolderData } from "../../models/data/folder.data";
 import { Folder } from "../../models/domain/folder";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
-import { FolderView } from "../../models/view/folderView";
+import { FolderView } from "../../models/view/folder.view";
 
 export class FolderService implements InternalFolderServiceAbstraction {
   protected _folders: BehaviorSubject<Folder[]> = new BehaviorSubject([]);

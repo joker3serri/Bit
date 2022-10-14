@@ -21,7 +21,7 @@ import { SsoConfigApi } from "@bitwarden/common/models/api/sso-config.api";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { OrganizationSsoRequest } from "@bitwarden/common/models/request/organization/organizationSsoRequest";
 import { OrganizationSsoResponse } from "@bitwarden/common/models/response/organization/organizationSsoResponse";
-import { SsoConfigView } from "@bitwarden/common/models/view/ssoConfigView";
+import { SsoConfigView } from "@bitwarden/common/models/view/sso-config.view";
 
 const defaultSigningAlgorithm = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256";
 

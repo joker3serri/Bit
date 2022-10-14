@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
 import { LoginData } from "../data/login.data";
-import { LoginView } from "../view/loginView";
+import { LoginView } from "../view/login.view";
 
 import Domain from "./domain-base";
 import { EncString } from "./enc-string";

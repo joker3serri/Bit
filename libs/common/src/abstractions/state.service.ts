@@ -22,9 +22,9 @@ import { Policy } from "../models/domain/policy";
 import { StorageOptions } from "../models/domain/storage-options";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { WindowState } from "../models/domain/window-state";
-import { CipherView } from "../models/view/cipherView";
-import { CollectionView } from "../models/view/collectionView";
-import { SendView } from "../models/view/sendView";
+import { CipherView } from "../models/view/cipher.view";
+import { CollectionView } from "../models/view/collection.view";
+import { SendView } from "../models/view/send.view";
 
 export abstract class StateService<T extends Account = Account> {
   accounts: BehaviorSubject<{ [userId: string]: T }>;

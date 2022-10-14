@@ -12,7 +12,7 @@ import {
   CollectionResponse as ApiCollectionResponse,
 } from "@bitwarden/common/models/response/collectionResponse";
 import { ListResponse as ApiListResponse } from "@bitwarden/common/models/response/listResponse";
-import { CipherView } from "@bitwarden/common/models/view/cipherView";
+import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { Response } from "@bitwarden/node/cli/models/response";
 import { ListResponse } from "@bitwarden/node/cli/models/response/listResponse";
 

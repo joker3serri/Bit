@@ -6,7 +6,7 @@ import {
   SsoType,
 } from "../../enums/ssoEnums";
 import { BaseResponse } from "../response/baseResponse";
-import { SsoConfigView } from "../view/ssoConfigView";
+import { SsoConfigView } from "../view/sso-config.view";
 
 export class SsoConfigApi extends BaseResponse {
   static fromView(view: SsoConfigView, api = new SsoConfigApi()) {

@@ -1,5 +1,5 @@
 import { SendFileData } from "../data/send-file.data";
-import { SendFileView } from "../view/sendFileView";
+import { SendFileView } from "../view/send-file.view";
 
 import Domain from "./domain-base";
 import { EncString } from "./enc-string";

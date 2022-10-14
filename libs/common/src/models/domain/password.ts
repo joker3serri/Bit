@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
 import { PasswordHistoryData } from "../data/password-history.data";
-import { PasswordHistoryView } from "../view/passwordHistoryView";
+import { PasswordHistoryView } from "../view/password-history.view";
 
 import Domain from "./domain-base";
 import { EncString } from "./enc-string";

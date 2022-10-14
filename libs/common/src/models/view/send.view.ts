@@ -3,8 +3,8 @@ import { Utils } from "../../misc/utils";
 import { Send } from "../domain/send";
 import { SymmetricCryptoKey } from "../domain/symmetric-crypto-key";
 
-import { SendFileView } from "./sendFileView";
-import { SendTextView } from "./sendTextView";
+import { SendFileView } from "./send-file.view";
+import { SendTextView } from "./send-text.view";
 import { View } from "./view";
 
 export class SendView implements View {

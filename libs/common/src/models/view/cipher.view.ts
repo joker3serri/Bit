@@ -6,13 +6,13 @@ import { LinkedIdType } from "../../enums/linkedIdType";
 import { LocalData } from "../data/local.data";
 import { Cipher } from "../domain/cipher";
 
-import { AttachmentView } from "./attachmentView";
-import { CardView } from "./cardView";
-import { FieldView } from "./fieldView";
-import { IdentityView } from "./identityView";
-import { LoginView } from "./loginView";
-import { PasswordHistoryView } from "./passwordHistoryView";
-import { SecureNoteView } from "./secureNoteView";
+import { AttachmentView } from "./attachment.view";
+import { CardView } from "./card.view";
+import { FieldView } from "./field.view";
+import { IdentityView } from "./identity.view";
+import { LoginView } from "./login.view";
+import { PasswordHistoryView } from "./password-history.view";
+import { SecureNoteView } from "./secure-note.view";
 import { View } from "./view";
 
 export class CipherView implements View {

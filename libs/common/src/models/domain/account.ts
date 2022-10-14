@@ -15,9 +15,9 @@ import { PolicyData } from "../data/policy.data";
 import { ProviderData } from "../data/provider.data";
 import { SendData } from "../data/send.data";
 import { ServerConfigData } from "../data/server-config.data";
-import { CipherView } from "../view/cipherView";
-import { CollectionView } from "../view/collectionView";
-import { SendView } from "../view/sendView";
+import { CipherView } from "../view/cipher.view";
+import { CollectionView } from "../view/collection.view";
+import { SendView } from "../view/send.view";
 
 import { EncString } from "./enc-string";
 import { EnvironmentUrls } from "./environment-urls";

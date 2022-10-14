@@ -1,5 +1,5 @@
 import { EventType } from "../../enums/eventType";
-import { EventView } from "../view/eventView";
+import { EventView } from "../view/event.view";
 
 export class EventExport {
   message: string;

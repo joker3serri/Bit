@@ -4,7 +4,7 @@ import { IdentityLinkedId as LinkedId } from "../../enums/linkedIdType";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 import { Utils } from "../../misc/utils";
 
-import { ItemView } from "./itemView";
+import { ItemView } from "./item.view";
 
 export class IdentityView extends ItemView {
   @linkedFieldOption(LinkedId.Title)

@@ -1,5 +1,5 @@
 import { Folder as FolderDomain } from "../domain/folder";
-import { FolderView } from "../view/folderView";
+import { FolderView } from "../view/folder.view";
 
 import { FolderExport } from "./folder.export";
 

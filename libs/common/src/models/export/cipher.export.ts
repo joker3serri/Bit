@@ -2,7 +2,7 @@ import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
 import { Cipher as CipherDomain } from "../domain/cipher";
 import { EncString } from "../domain/enc-string";
-import { CipherView } from "../view/cipherView";
+import { CipherView } from "../view/cipher.view";
 
 import { CardExport } from "./card.export";
 import { FieldExport } from "./field.export";

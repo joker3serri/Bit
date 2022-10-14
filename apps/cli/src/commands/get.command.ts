@@ -23,9 +23,9 @@ import { LoginUriExport } from "@bitwarden/common/models/export/login-uri.export
 import { LoginExport } from "@bitwarden/common/models/export/login.export";
 import { SecureNoteExport } from "@bitwarden/common/models/export/secure-note.export";
 import { ErrorResponse } from "@bitwarden/common/models/response/errorResponse";
-import { CipherView } from "@bitwarden/common/models/view/cipherView";
-import { CollectionView } from "@bitwarden/common/models/view/collectionView";
-import { FolderView } from "@bitwarden/common/models/view/folderView";
+import { CipherView } from "@bitwarden/common/models/view/cipher.view";
+import { CollectionView } from "@bitwarden/common/models/view/collection.view";
+import { FolderView } from "@bitwarden/common/models/view/folder.view";
 import { Response } from "@bitwarden/node/cli/models/response";
 import { StringResponse } from "@bitwarden/node/cli/models/response/stringResponse";
 

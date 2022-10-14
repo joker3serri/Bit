@@ -1,5 +1,5 @@
 import { Collection as CollectionDomain } from "../domain/collection";
-import { CollectionView } from "../view/collectionView";
+import { CollectionView } from "../view/collection.view";
 
 import { CollectionExport } from "./collection.export";
 

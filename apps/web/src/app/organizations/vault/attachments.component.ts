@@ -11,7 +11,7 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { CipherData } from "@bitwarden/common/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
 import { Organization } from "@bitwarden/common/models/domain/organization";
-import { AttachmentView } from "@bitwarden/common/models/view/attachmentView";
+import { AttachmentView } from "@bitwarden/common/models/view/attachment.view";
 
 import { AttachmentsComponent as BaseAttachmentsComponent } from "../../vault/attachments.component";
 

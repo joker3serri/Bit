@@ -2,7 +2,7 @@ import { Jsonify } from "type-fest";
 
 import { Utils } from "../../misc/utils";
 import { AttachmentData } from "../data/attachment.data";
-import { AttachmentView } from "../view/attachmentView";
+import { AttachmentView } from "../view/attachment.view";
 
 import Domain from "./domain-base";
 import { EncString } from "./enc-string";

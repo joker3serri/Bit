@@ -1,6 +1,6 @@
-import { CipherView } from "../view/cipherView";
-import { CollectionView } from "../view/collectionView";
-import { FolderView } from "../view/folderView";
+import { CipherView } from "../view/cipher.view";
+import { CollectionView } from "../view/collection.view";
+import { FolderView } from "../view/folder.view";
 
 export class ImportResult {
   success = false;

@@ -18,7 +18,7 @@ import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { SendRequest } from "../models/request/sendRequest";
 import { ErrorResponse } from "../models/response/errorResponse";
 import { SendResponse } from "../models/response/sendResponse";
-import { SendView } from "../models/view/sendView";
+import { SendView } from "../models/view/send.view";
 
 export class SendService implements SendServiceAbstraction {
   constructor(

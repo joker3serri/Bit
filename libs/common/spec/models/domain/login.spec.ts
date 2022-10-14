@@ -6,7 +6,7 @@ import { LoginData } from "@bitwarden/common/models/data/login.data";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { Login } from "@bitwarden/common/models/domain/login";
 import { LoginUri } from "@bitwarden/common/models/domain/login-uri";
-import { LoginUriView } from "@bitwarden/common/models/view/loginUriView";
+import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
 
 import { mockEnc, mockFromJson } from "../../utils";
 

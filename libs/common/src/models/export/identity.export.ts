@@ -1,6 +1,6 @@
 import { EncString } from "../domain/enc-string";
 import { Identity as IdentityDomain } from "../domain/identity";
-import { IdentityView } from "../view/identityView";
+import { IdentityView } from "../view/identity.view";
 
 export class IdentityExport {
   static template(): IdentityExport {

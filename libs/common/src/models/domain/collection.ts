@@ -1,5 +1,5 @@
 import { CollectionData } from "../data/collection.data";
-import { CollectionView } from "../view/collectionView";
+import { CollectionView } from "../view/collection.view";
 
 import Domain from "./domain-base";
 import { EncString } from "./enc-string";

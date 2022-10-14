@@ -1,6 +1,6 @@
 import { Collection as CollectionDomain } from "../domain/collection";
 import { EncString } from "../domain/enc-string";
-import { CollectionView } from "../view/collectionView";
+import { CollectionView } from "../view/collection.view";
 
 export class CollectionExport {
   static template(): CollectionExport {

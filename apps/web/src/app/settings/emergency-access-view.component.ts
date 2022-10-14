@@ -9,7 +9,7 @@ import { CipherData } from "@bitwarden/common/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { EmergencyAccessViewResponse } from "@bitwarden/common/models/response/emergencyAccessResponse";
-import { CipherView } from "@bitwarden/common/models/view/cipherView";
+import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 
 import { EmergencyAccessAttachmentsComponent } from "./emergency-access-attachments.component";
 import { EmergencyAddEditComponent } from "./emergency-add-edit.component";

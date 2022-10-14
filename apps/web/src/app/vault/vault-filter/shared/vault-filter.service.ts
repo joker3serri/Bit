@@ -14,7 +14,7 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { CollectionData } from "@bitwarden/common/models/data/collection.data";
 import { Collection } from "@bitwarden/common/models/domain/collection";
 import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collectionResponse";
-import { CollectionView } from "@bitwarden/common/models/view/collectionView";
+import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 
 @Injectable()
 export class VaultFilterService extends BaseVaultFilterService {

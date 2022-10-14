@@ -2,7 +2,7 @@ import { FieldType } from "../../enums/fieldType";
 import { LinkedIdType } from "../../enums/linkedIdType";
 import { EncString } from "../domain/enc-string";
 import { Field as FieldDomain } from "../domain/field";
-import { FieldView } from "../view/fieldView";
+import { FieldView } from "../view/field.view";
 
 export class FieldExport {
   static template(): FieldExport {

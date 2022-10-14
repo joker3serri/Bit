@@ -1,7 +1,7 @@
 import { SendType } from "../../enums/sendType";
 import { Utils } from "../../misc/utils";
 import { SendData } from "../data/send.data";
-import { SendView } from "../view/sendView";
+import { SendView } from "../view/send.view";
 
 import Domain from "./domain-base";
 import { EncString } from "./enc-string";

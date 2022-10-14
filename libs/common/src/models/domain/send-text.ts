@@ -1,5 +1,5 @@
 import { SendTextData } from "../data/send-text.data";
-import { SendTextView } from "../view/sendTextView";
+import { SendTextView } from "../view/send-text.view";
 
 import Domain from "./domain-base";
 import { EncString } from "./enc-string";

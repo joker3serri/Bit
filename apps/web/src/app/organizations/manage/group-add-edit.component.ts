@@ -10,7 +10,7 @@ import { Collection } from "@bitwarden/common/models/domain/collection";
 import { GroupRequest } from "@bitwarden/common/models/request/groupRequest";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selectionReadOnlyRequest";
 import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collectionResponse";
-import { CollectionView } from "@bitwarden/common/models/view/collectionView";
+import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 
 @Component({
   selector: "app-group-add-edit",
