@@ -3,7 +3,7 @@ import { LoginView } from "@bitwarden/common/models/view/login.view";
 
 import { mockFromJson } from "../../utils";
 
-jest.mock("@bitwarden/common/models/view/loginUriView");
+jest.mock("@bitwarden/common/models/view/login-uri.view");
 
 describe("LoginView", () => {
   beforeEach(() => {

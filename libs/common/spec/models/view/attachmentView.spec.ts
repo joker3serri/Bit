@@ -3,7 +3,7 @@ import { AttachmentView } from "@bitwarden/common/models/view/attachment.view";
 
 import { mockFromJson } from "../../utils";
 
-jest.mock("@bitwarden/common/models/domain/symmetricCryptoKey");
+jest.mock("@bitwarden/common/models/domain/symmetric-crypto-key");
 
 describe("AttachmentView", () => {
   it("fromJSON initializes nested objects", () => {
