@@ -18,11 +18,11 @@ import {
   AccountSettingsSettings,
   EncryptionPair,
 } from "../models/domain/account";
-import { EncString } from "../models/domain/encString";
-import { EnvironmentUrls } from "../models/domain/environmentUrls";
-import { GeneratedPasswordHistory } from "../models/domain/generatedPasswordHistory";
-import { GlobalState } from "../models/domain/globalState";
-import { StorageOptions } from "../models/domain/storageOptions";
+import { EncString } from "../models/domain/enc-string";
+import { EnvironmentUrls } from "../models/domain/environment-urls";
+import { GeneratedPasswordHistory } from "../models/domain/generated-password-history";
+import { GlobalState } from "../models/domain/global-state";
+import { StorageOptions } from "../models/domain/storage-options";
 
 import { TokenService } from "./token.service";
 

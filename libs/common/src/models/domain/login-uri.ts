@@ -4,9 +4,9 @@ import { UriMatchType } from "../../enums/uriMatchType";
 import { LoginUriData } from "../data/login-uri.data";
 import { LoginUriView } from "../view/loginUriView";
 
-import Domain from "./domainBase";
-import { EncString } from "./encString";
-import { SymmetricCryptoKey } from "./symmetricCryptoKey";
+import Domain from "./domain-base";
+import { EncString } from "./enc-string";
+import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class LoginUri extends Domain {
   uri: EncString;

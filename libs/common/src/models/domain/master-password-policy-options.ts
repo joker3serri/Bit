@@ -1,4 +1,4 @@
-import Domain from "./domainBase";
+import Domain from "./domain-base";
 
 export class MasterPasswordPolicyOptions extends Domain {
   minComplexity = 0;

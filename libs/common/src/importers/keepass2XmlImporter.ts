@@ -1,5 +1,5 @@
 import { FieldType } from "../enums/fieldType";
-import { ImportResult } from "../models/domain/importResult";
+import { ImportResult } from "../models/domain/import-result";
 import { FolderView } from "../models/view/folderView";
 
 import { BaseImporter } from "./baseImporter";

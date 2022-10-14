@@ -3,7 +3,7 @@ import { UriMatchType } from "../enums/uriMatchType";
 import { CipherData } from "../models/data/cipher.data";
 import { Cipher } from "../models/domain/cipher";
 import { Field } from "../models/domain/field";
-import { SymmetricCryptoKey } from "../models/domain/symmetricCryptoKey";
+import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { CipherView } from "../models/view/cipherView";
 import { FieldView } from "../models/view/fieldView";
 

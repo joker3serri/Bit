@@ -1,6 +1,6 @@
 import { CipherType } from "../enums/cipherType";
 import { SecureNoteType } from "../enums/secureNoteType";
-import { ImportResult } from "../models/domain/importResult";
+import { ImportResult } from "../models/domain/import-result";
 import { CardView } from "../models/view/cardView";
 import { SecureNoteView } from "../models/view/secureNoteView";
 

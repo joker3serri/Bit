@@ -1,4 +1,4 @@
-import { EncString } from "../domain/encString";
+import { EncString } from "../domain/enc-string";
 import { Login as LoginDomain } from "../domain/login";
 import { LoginView } from "../view/loginView";
 

@@ -1,5 +1,5 @@
 import { CipherType } from "../enums/cipherType";
-import { ImportResult } from "../models/domain/importResult";
+import { ImportResult } from "../models/domain/import-result";
 import { CardView } from "../models/view/cardView";
 import { FolderView } from "../models/view/folderView";
 

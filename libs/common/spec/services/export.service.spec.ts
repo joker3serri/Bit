@@ -11,7 +11,7 @@ import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { KdfType } from "@bitwarden/common/enums/kdfType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
-import { EncString } from "@bitwarden/common/models/domain/encString";
+import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { Login } from "@bitwarden/common/models/domain/login";
 import { CipherWithIdExport as CipherExport } from "@bitwarden/common/models/export/cipherWithIdsExport";
 import { CipherView } from "@bitwarden/common/models/view/cipherView";

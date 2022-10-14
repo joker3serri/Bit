@@ -1,7 +1,7 @@
 import { CryptoService } from "../abstractions/crypto.service";
 import { I18nService } from "../abstractions/i18n.service";
-import { EncString } from "../models/domain/encString";
-import { ImportResult } from "../models/domain/importResult";
+import { EncString } from "../models/domain/enc-string";
+import { ImportResult } from "../models/domain/import-result";
 import { CipherWithIdExport } from "../models/export/cipherWithIdsExport";
 import { CollectionWithIdExport } from "../models/export/collectionWithIdExport";
 import { FolderWithIdExport } from "../models/export/folderWithIdExport";

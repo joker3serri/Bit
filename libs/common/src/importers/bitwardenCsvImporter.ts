@@ -2,7 +2,7 @@ import { CipherRepromptType } from "../enums/cipherRepromptType";
 import { CipherType } from "../enums/cipherType";
 import { FieldType } from "../enums/fieldType";
 import { SecureNoteType } from "../enums/secureNoteType";
-import { ImportResult } from "../models/domain/importResult";
+import { ImportResult } from "../models/domain/import-result";
 import { CipherView } from "../models/view/cipherView";
 import { CollectionView } from "../models/view/collectionView";
 import { FieldView } from "../models/view/fieldView";

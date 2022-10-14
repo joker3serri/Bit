@@ -30,15 +30,15 @@ import {
   AccountSettings,
   AccountSettingsSettings,
 } from "../models/domain/account";
-import { EncString } from "../models/domain/encString";
-import { EnvironmentUrls } from "../models/domain/environmentUrls";
-import { GeneratedPasswordHistory } from "../models/domain/generatedPasswordHistory";
-import { GlobalState } from "../models/domain/globalState";
+import { EncString } from "../models/domain/enc-string";
+import { EnvironmentUrls } from "../models/domain/environment-urls";
+import { GeneratedPasswordHistory } from "../models/domain/generated-password-history";
+import { GlobalState } from "../models/domain/global-state";
 import { Policy } from "../models/domain/policy";
 import { State } from "../models/domain/state";
-import { StorageOptions } from "../models/domain/storageOptions";
-import { SymmetricCryptoKey } from "../models/domain/symmetricCryptoKey";
-import { WindowState } from "../models/domain/windowState";
+import { StorageOptions } from "../models/domain/storage-options";
+import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
+import { WindowState } from "../models/domain/window-state";
 import { CipherView } from "../models/view/cipherView";
 import { CollectionView } from "../models/view/collectionView";
 import { SendView } from "../models/view/sendView";

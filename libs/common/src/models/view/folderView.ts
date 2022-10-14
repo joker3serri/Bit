@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
 import { Folder } from "../domain/folder";
-import { ITreeNodeObject } from "../domain/treeNode";
+import { ITreeNodeObject } from "../domain/tree-node";
 
 import { View } from "./view";
 

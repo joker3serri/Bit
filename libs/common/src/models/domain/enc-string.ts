@@ -4,7 +4,7 @@ import { EncryptionType } from "../../enums/encryptionType";
 import { IEncrypted } from "../../interfaces/IEncrypted";
 import { Utils } from "../../misc/utils";
 
-import { SymmetricCryptoKey } from "./symmetricCryptoKey";
+import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class EncString implements IEncrypted {
   encryptedString?: string;

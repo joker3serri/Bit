@@ -2,7 +2,7 @@ import { Jsonify } from "type-fest";
 
 import { UriMatchType } from "../../enums/uriMatchType";
 import { Utils } from "../../misc/utils";
-import { LoginUri } from "../domain/loginUri";
+import { LoginUri } from "../domain/login-uri";
 
 import { View } from "./view";
 

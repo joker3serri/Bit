@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
 import { Attachment } from "../domain/attachment";
-import { SymmetricCryptoKey } from "../domain/symmetricCryptoKey";
+import { SymmetricCryptoKey } from "../domain/symmetric-crypto-key";
 
 import { View } from "./view";
 

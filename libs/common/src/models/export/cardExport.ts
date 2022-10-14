@@ -1,5 +1,5 @@
 import { Card as CardDomain } from "../domain/card";
-import { EncString } from "../domain/encString";
+import { EncString } from "../domain/enc-string";
 import { CardView } from "../view/cardView";
 
 export class CardExport {

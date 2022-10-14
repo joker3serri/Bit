@@ -1,8 +1,8 @@
 import { CryptoService } from "../../abstractions/crypto.service";
 import { EncryptedOrganizationKeyData } from "../data/encrypted-organization-key.data";
 
-import { EncString } from "./encString";
-import { SymmetricCryptoKey } from "./symmetricCryptoKey";
+import { EncString } from "./enc-string";
+import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export abstract class BaseEncryptedOrganizationKey {
   decrypt: (cryptoService: CryptoService) => Promise<SymmetricCryptoKey>;

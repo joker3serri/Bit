@@ -1,4 +1,4 @@
-import { SendText } from "../domain/sendText";
+import { SendText } from "../domain/send-text";
 
 import { View } from "./view";
 

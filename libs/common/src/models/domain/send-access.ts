@@ -2,11 +2,11 @@ import { SendType } from "../../enums/sendType";
 import { SendAccessResponse } from "../response/sendAccessResponse";
 import { SendAccessView } from "../view/sendAccessView";
 
-import Domain from "./domainBase";
-import { EncString } from "./encString";
-import { SendFile } from "./sendFile";
-import { SendText } from "./sendText";
-import { SymmetricCryptoKey } from "./symmetricCryptoKey";
+import Domain from "./domain-base";
+import { EncString } from "./enc-string";
+import { SendFile } from "./send-file";
+import { SendText } from "./send-text";
+import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class SendAccess extends Domain {
   id: string;

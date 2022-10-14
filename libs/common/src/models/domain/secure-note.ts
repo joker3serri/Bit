@@ -4,8 +4,8 @@ import { SecureNoteType } from "../../enums/secureNoteType";
 import { SecureNoteData } from "../data/secure-note.data";
 import { SecureNoteView } from "../view/secureNoteView";
 
-import Domain from "./domainBase";
-import { SymmetricCryptoKey } from "./symmetricCryptoKey";
+import Domain from "./domain-base";
+import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class SecureNote extends Domain {
   type: SecureNoteType;

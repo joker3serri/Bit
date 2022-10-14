@@ -11,7 +11,7 @@ import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { SendType } from "@bitwarden/common/enums/sendType";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { EncString } from "@bitwarden/common/models/domain/encString";
+import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CardExport } from "@bitwarden/common/models/export/cardExport";
 import { CipherExport } from "@bitwarden/common/models/export/cipherExport";

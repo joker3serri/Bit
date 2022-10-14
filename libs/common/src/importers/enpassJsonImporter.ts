@@ -1,6 +1,6 @@
 import { CipherType } from "../enums/cipherType";
 import { FieldType } from "../enums/fieldType";
-import { ImportResult } from "../models/domain/importResult";
+import { ImportResult } from "../models/domain/import-result";
 import { CardView } from "../models/view/cardView";
 import { CipherView } from "../models/view/cipherView";
 import { FolderView } from "../models/view/folderView";

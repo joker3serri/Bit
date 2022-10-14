@@ -7,7 +7,7 @@ import { InternalPolicyService } from "../../abstractions/policy/policy.service.
 import { StateService } from "../../abstractions/state.service";
 import { PolicyType } from "../../enums/policyType";
 import { PolicyData } from "../../models/data/policy.data";
-import { MasterPasswordPolicyOptions } from "../../models/domain/masterPasswordPolicyOptions";
+import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
 import { PolicyRequest } from "../../models/request/policyRequest";
 import { ListResponse } from "../../models/response/listResponse";
 import { PolicyResponse } from "../../models/response/policyResponse";

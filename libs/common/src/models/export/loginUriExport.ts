@@ -1,6 +1,6 @@
 import { UriMatchType } from "../../enums/uriMatchType";
-import { EncString } from "../domain/encString";
-import { LoginUri as LoginUriDomain } from "../domain/loginUri";
+import { EncString } from "../domain/enc-string";
+import { LoginUri as LoginUriDomain } from "../domain/login-uri";
 import { LoginUriView } from "../view/loginUriView";
 
 export class LoginUriExport {

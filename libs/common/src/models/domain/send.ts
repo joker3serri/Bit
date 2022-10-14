@@ -3,10 +3,10 @@ import { Utils } from "../../misc/utils";
 import { SendData } from "../data/send.data";
 import { SendView } from "../view/sendView";
 
-import Domain from "./domainBase";
-import { EncString } from "./encString";
-import { SendFile } from "./sendFile";
-import { SendText } from "./sendText";
+import Domain from "./domain-base";
+import { EncString } from "./enc-string";
+import { SendFile } from "./send-file";
+import { SendText } from "./send-text";
 
 export class Send extends Domain {
   id: string;

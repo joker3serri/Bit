@@ -8,14 +8,14 @@ import { CipherView } from "../view/cipherView";
 
 import { Attachment } from "./attachment";
 import { Card } from "./card";
-import Domain from "./domainBase";
-import { EncString } from "./encString";
+import Domain from "./domain-base";
+import { EncString } from "./enc-string";
 import { Field } from "./field";
 import { Identity } from "./identity";
 import { Login } from "./login";
 import { Password } from "./password";
-import { SecureNote } from "./secureNote";
-import { SymmetricCryptoKey } from "./symmetricCryptoKey";
+import { SecureNote } from "./secure-note";
+import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class Cipher extends Domain {
   id: string;

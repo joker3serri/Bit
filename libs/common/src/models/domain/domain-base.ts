@@ -1,7 +1,7 @@
 import { View } from "../view/view";
 
-import { EncString } from "./encString";
-import { SymmetricCryptoKey } from "./symmetricCryptoKey";
+import { EncString } from "./enc-string";
+import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export default class Domain {
   protected buildDomainModel<D extends Domain>(

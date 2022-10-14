@@ -19,11 +19,11 @@ import { CipherView } from "../view/cipherView";
 import { CollectionView } from "../view/collectionView";
 import { SendView } from "../view/sendView";
 
-import { EncString } from "./encString";
-import { EnvironmentUrls } from "./environmentUrls";
-import { GeneratedPasswordHistory } from "./generatedPasswordHistory";
+import { EncString } from "./enc-string";
+import { EnvironmentUrls } from "./environment-urls";
+import { GeneratedPasswordHistory } from "./generated-password-history";
 import { Policy } from "./policy";
-import { SymmetricCryptoKey } from "./symmetricCryptoKey";
+import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class EncryptionPair<TEncrypted, TDecrypted> {
   encrypted?: TEncrypted;

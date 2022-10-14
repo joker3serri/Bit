@@ -4,9 +4,9 @@ import { Utils } from "../../misc/utils";
 import { AttachmentData } from "../data/attachment.data";
 import { AttachmentView } from "../view/attachmentView";
 
-import Domain from "./domainBase";
-import { EncString } from "./encString";
-import { SymmetricCryptoKey } from "./symmetricCryptoKey";
+import Domain from "./domain-base";
+import { EncString } from "./enc-string";
+import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class Attachment extends Domain {
   id: string;

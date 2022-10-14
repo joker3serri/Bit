@@ -8,7 +8,7 @@ import {
 } from "@bitwarden/common/abstractions/storage.service";
 import { SendType } from "@bitwarden/common/enums/sendType";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
-import { GlobalState } from "@bitwarden/common/models/domain/globalState";
+import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { State } from "@bitwarden/common/models/domain/state";
 import { SendView } from "@bitwarden/common/models/view/sendView";
 import { StateMigrationService } from "@bitwarden/common/services/stateMigration.service";

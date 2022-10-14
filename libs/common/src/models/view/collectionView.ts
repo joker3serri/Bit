@@ -1,5 +1,5 @@
 import { Collection } from "../domain/collection";
-import { ITreeNodeObject } from "../domain/treeNode";
+import { ITreeNodeObject } from "../domain/tree-node";
 import { CollectionGroupDetailsResponse } from "../response/collectionResponse";
 
 import { View } from "./view";

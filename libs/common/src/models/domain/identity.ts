@@ -3,9 +3,9 @@ import { Jsonify } from "type-fest";
 import { IdentityData } from "../data/identity.data";
 import { IdentityView } from "../view/identityView";
 
-import Domain from "./domainBase";
-import { EncString } from "./encString";
-import { SymmetricCryptoKey } from "./symmetricCryptoKey";
+import Domain from "./domain-base";
+import { EncString } from "./enc-string";
+import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class Identity extends Domain {
   title: EncString;

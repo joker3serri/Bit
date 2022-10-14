@@ -1,4 +1,4 @@
-import { EncString } from "../domain/encString";
+import { EncString } from "../domain/enc-string";
 import { Identity as IdentityDomain } from "../domain/identity";
 import { IdentityView } from "../view/identityView";
 

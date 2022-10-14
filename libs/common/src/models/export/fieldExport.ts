@@ -1,6 +1,6 @@
 import { FieldType } from "../../enums/fieldType";
 import { LinkedIdType } from "../../enums/linkedIdType";
-import { EncString } from "../domain/encString";
+import { EncString } from "../domain/enc-string";
 import { Field as FieldDomain } from "../domain/field";
 import { FieldView } from "../view/fieldView";
 

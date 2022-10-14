@@ -12,7 +12,7 @@ import { SendService } from "@bitwarden/common/abstractions/send.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { SendType } from "@bitwarden/common/enums/sendType";
-import { EncArrayBuffer } from "@bitwarden/common/models/domain/encArrayBuffer";
+import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
 import { Send } from "@bitwarden/common/models/domain/send";
 import { SendFileView } from "@bitwarden/common/models/view/sendFileView";
 import { SendTextView } from "@bitwarden/common/models/view/sendTextView";
