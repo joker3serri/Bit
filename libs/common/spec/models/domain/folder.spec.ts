@@ -1,4 +1,4 @@
-import { FolderData } from "@bitwarden/common/models/data/folderData";
+import { FolderData } from "@bitwarden/common/models/data/folder.data";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { Folder } from "@bitwarden/common/models/domain/folder";
 

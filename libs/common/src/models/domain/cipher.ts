@@ -2,8 +2,8 @@ import { Jsonify } from "type-fest";
 
 import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
-import { CipherData } from "../data/cipherData";
-import { LocalData } from "../data/localData";
+import { CipherData } from "../data/cipher.data";
+import { LocalData } from "../data/local.data";
 import { CipherView } from "../view/cipherView";
 
 import { Attachment } from "./attachment";

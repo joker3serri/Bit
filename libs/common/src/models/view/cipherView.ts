@@ -3,7 +3,7 @@ import { Jsonify } from "type-fest";
 import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
 import { LinkedIdType } from "../../enums/linkedIdType";
-import { LocalData } from "../data/localData";
+import { LocalData } from "../data/local.data";
 import { Cipher } from "../domain/cipher";
 
 import { AttachmentView } from "./attachmentView";

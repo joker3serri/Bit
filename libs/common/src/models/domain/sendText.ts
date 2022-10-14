@@ -1,4 +1,4 @@
-import { SendTextData } from "../data/sendTextData";
+import { SendTextData } from "../data/send-text.data";
 import { SendTextView } from "../view/sendTextView";
 
 import Domain from "./domainBase";

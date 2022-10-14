@@ -1,5 +1,5 @@
 import { CryptoService } from "../../abstractions/crypto.service";
-import { EncryptedOrganizationKeyData } from "../../models/data/encryptedOrganizationKeyData";
+import { EncryptedOrganizationKeyData } from "../data/encrypted-organization-key.data";
 
 import { EncString } from "./encString";
 import { SymmetricCryptoKey } from "./symmetricCryptoKey";

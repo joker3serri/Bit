@@ -13,16 +13,16 @@ import { StorageLocation } from "../enums/storageLocation";
 import { ThemeType } from "../enums/themeType";
 import { UriMatchType } from "../enums/uriMatchType";
 import { StateFactory } from "../factories/stateFactory";
-import { CipherData } from "../models/data/cipherData";
-import { CollectionData } from "../models/data/collectionData";
-import { EncryptedOrganizationKeyData } from "../models/data/encryptedOrganizationKeyData";
-import { EventData } from "../models/data/eventData";
-import { FolderData } from "../models/data/folderData";
-import { LocalData } from "../models/data/localData";
-import { OrganizationData } from "../models/data/organizationData";
-import { PolicyData } from "../models/data/policyData";
-import { ProviderData } from "../models/data/providerData";
-import { SendData } from "../models/data/sendData";
+import { CipherData } from "../models/data/cipher.data";
+import { CollectionData } from "../models/data/collection.data";
+import { EncryptedOrganizationKeyData } from "../models/data/encrypted-organization-key.data";
+import { EventData } from "../models/data/event.data";
+import { FolderData } from "../models/data/folder.data";
+import { LocalData } from "../models/data/local.data";
+import { OrganizationData } from "../models/data/organization.data";
+import { PolicyData } from "../models/data/policy.data";
+import { ProviderData } from "../models/data/provider.data";
+import { SendData } from "../models/data/send.data";
 import { ServerConfigData } from "../models/data/server-config.data";
 import {
   Account,

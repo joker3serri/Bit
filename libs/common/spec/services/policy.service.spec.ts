@@ -7,8 +7,8 @@ import { OrganizationService } from "@bitwarden/common/abstractions/organization
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
-import { OrganizationData } from "@bitwarden/common/models/data/organizationData";
-import { PolicyData } from "@bitwarden/common/models/data/policyData";
+import { OrganizationData } from "@bitwarden/common/models/data/organization.data";
+import { PolicyData } from "@bitwarden/common/models/data/policy.data";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/masterPasswordPolicyOptions";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { Policy } from "@bitwarden/common/models/domain/policy";

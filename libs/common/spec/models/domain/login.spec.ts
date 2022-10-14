@@ -2,7 +2,7 @@
 import { Substitute, Arg } from "@fluffy-spoon/substitute";
 
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
-import { LoginData } from "@bitwarden/common/models/data/loginData";
+import { LoginData } from "@bitwarden/common/models/data/login.data";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { Login } from "@bitwarden/common/models/domain/login";
 import { LoginUri } from "@bitwarden/common/models/domain/loginUri";

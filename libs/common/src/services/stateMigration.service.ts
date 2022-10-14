@@ -4,14 +4,14 @@ import { KdfType } from "../enums/kdfType";
 import { StateVersion } from "../enums/stateVersion";
 import { ThemeType } from "../enums/themeType";
 import { StateFactory } from "../factories/stateFactory";
-import { CipherData } from "../models/data/cipherData";
-import { CollectionData } from "../models/data/collectionData";
-import { EventData } from "../models/data/eventData";
-import { FolderData } from "../models/data/folderData";
-import { OrganizationData } from "../models/data/organizationData";
-import { PolicyData } from "../models/data/policyData";
-import { ProviderData } from "../models/data/providerData";
-import { SendData } from "../models/data/sendData";
+import { CipherData } from "../models/data/cipher.data";
+import { CollectionData } from "../models/data/collection.data";
+import { EventData } from "../models/data/event.data";
+import { FolderData } from "../models/data/folder.data";
+import { OrganizationData } from "../models/data/organization.data";
+import { PolicyData } from "../models/data/policy.data";
+import { ProviderData } from "../models/data/provider.data";
+import { SendData } from "../models/data/send.data";
 import {
   Account,
   AccountSettings,

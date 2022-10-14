@@ -14,7 +14,7 @@ import { FieldType } from "../enums/fieldType";
 import { UriMatchType } from "../enums/uriMatchType";
 import { sequentialize } from "../misc/sequentialize";
 import { Utils } from "../misc/utils";
-import { CipherData } from "../models/data/cipherData";
+import { CipherData } from "../models/data/cipher.data";
 import { AccountSettingsSettings } from "../models/domain/account";
 import { Attachment } from "../models/domain/attachment";
 import { Card } from "../models/domain/card";

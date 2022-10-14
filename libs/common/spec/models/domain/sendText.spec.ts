@@ -1,4 +1,4 @@
-import { SendTextData } from "@bitwarden/common/models/data/sendTextData";
+import { SendTextData } from "@bitwarden/common/models/data/send-text.data";
 import { SendText } from "@bitwarden/common/models/domain/sendText";
 
 import { mockEnc } from "../../utils";

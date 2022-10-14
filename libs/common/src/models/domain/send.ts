@@ -1,6 +1,6 @@
 import { SendType } from "../../enums/sendType";
 import { Utils } from "../../misc/utils";
-import { SendData } from "../data/sendData";
+import { SendData } from "../data/send.data";
 import { SendView } from "../view/sendView";
 
 import Domain from "./domainBase";

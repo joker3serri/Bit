@@ -1,4 +1,4 @@
-import { SendData } from "../models/data/sendData";
+import { SendData } from "../models/data/send.data";
 import { EncArrayBuffer } from "../models/domain/encArrayBuffer";
 import { Send } from "../models/domain/send";
 import { SymmetricCryptoKey } from "../models/domain/symmetricCryptoKey";

@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { PasswordHistoryData } from "../data/passwordHistoryData";
+import { PasswordHistoryData } from "../data/password-history.data";
 import { PasswordHistoryView } from "../view/passwordHistoryView";
 
 import Domain from "./domainBase";

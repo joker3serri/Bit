@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
 import { UriMatchType } from "../../enums/uriMatchType";
-import { LoginUriData } from "../data/loginUriData";
+import { LoginUriData } from "../data/login-uri.data";
 import { LoginUriView } from "../view/loginUriView";
 
 import Domain from "./domainBase";

@@ -1,4 +1,4 @@
-import { SendFileData } from "../data/sendFileData";
+import { SendFileData } from "../data/send-file.data";
 import { SendFileView } from "../view/sendFileView";
 
 import Domain from "./domainBase";

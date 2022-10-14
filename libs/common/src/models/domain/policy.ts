@@ -1,5 +1,5 @@
 import { PolicyType } from "../../enums/policyType";
-import { PolicyData } from "../data/policyData";
+import { PolicyData } from "../data/policy.data";
 
 import Domain from "./domainBase";
 

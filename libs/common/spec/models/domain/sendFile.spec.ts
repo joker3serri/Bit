@@ -1,4 +1,4 @@
-import { SendFileData } from "@bitwarden/common/models/data/sendFileData";
+import { SendFileData } from "@bitwarden/common/models/data/send-file.data";
 import { SendFile } from "@bitwarden/common/models/domain/sendFile";
 
 import { mockEnc } from "../../utils";

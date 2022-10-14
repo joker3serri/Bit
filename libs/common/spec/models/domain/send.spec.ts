@@ -4,7 +4,7 @@ import { Substitute, Arg, SubstituteOf } from "@fluffy-spoon/substitute";
 import { AbstractEncryptService } from "@bitwarden/common/abstractions/abstractEncrypt.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { SendType } from "@bitwarden/common/enums/sendType";
-import { SendData } from "@bitwarden/common/models/data/sendData";
+import { SendData } from "@bitwarden/common/models/data/send.data";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { Send } from "@bitwarden/common/models/domain/send";
 import { SendText } from "@bitwarden/common/models/domain/sendText";

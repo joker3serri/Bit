@@ -13,8 +13,8 @@ import { FolderService } from "../abstractions/folder/folder.service.abstraction
 import { CipherType } from "../enums/cipherType";
 import { DEFAULT_KDF_ITERATIONS, KdfType } from "../enums/kdfType";
 import { Utils } from "../misc/utils";
-import { CipherData } from "../models/data/cipherData";
-import { CollectionData } from "../models/data/collectionData";
+import { CipherData } from "../models/data/cipher.data";
+import { CollectionData } from "../models/data/collection.data";
 import { Cipher } from "../models/domain/cipher";
 import { Collection } from "../models/domain/collection";
 import { Folder } from "../models/domain/folder";

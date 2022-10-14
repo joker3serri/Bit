@@ -5,7 +5,7 @@ import { FolderService } from "@bitwarden/common/abstractions/folder/folder.serv
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { CollectionData } from "@bitwarden/common/models/data/collectionData";
+import { CollectionData } from "@bitwarden/common/models/data/collection.data";
 import { Collection } from "@bitwarden/common/models/domain/collection";
 import {
   CollectionDetailsResponse as ApiCollectionDetailsResponse,

@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { IdentityData } from "../data/identityData";
+import { IdentityData } from "../data/identity.data";
 import { IdentityView } from "../view/identityView";
 
 import Domain from "./domainBase";

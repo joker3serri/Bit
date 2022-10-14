@@ -1,8 +1,8 @@
 import { SendType } from "../../enums/sendType";
 import { SendResponse } from "../response/sendResponse";
 
-import { SendFileData } from "./sendFileData";
-import { SendTextData } from "./sendTextData";
+import { SendFileData } from "./send-file.data";
+import { SendTextData } from "./send-text.data";
 
 export class SendData {
   id: string;

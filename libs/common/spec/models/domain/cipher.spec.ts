@@ -7,7 +7,7 @@ import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
-import { CipherData } from "@bitwarden/common/models/data/cipherData";
+import { CipherData } from "@bitwarden/common/models/data/cipher.data";
 import { Attachment } from "@bitwarden/common/models/domain/attachment";
 import { Card } from "@bitwarden/common/models/domain/card";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";

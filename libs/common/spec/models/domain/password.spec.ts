@@ -1,4 +1,4 @@
-import { PasswordHistoryData } from "@bitwarden/common/models/data/passwordHistoryData";
+import { PasswordHistoryData } from "@bitwarden/common/models/data/password-history.data";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { Password } from "@bitwarden/common/models/domain/password";
 

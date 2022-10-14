@@ -8,7 +8,7 @@ import { StateService } from "../abstractions/state.service";
 import { SEND_KDF_ITERATIONS } from "../enums/kdfType";
 import { SendType } from "../enums/sendType";
 import { Utils } from "../misc/utils";
-import { SendData } from "../models/data/sendData";
+import { SendData } from "../models/data/send.data";
 import { EncArrayBuffer } from "../models/domain/encArrayBuffer";
 import { EncString } from "../models/domain/encString";
 import { Send } from "../models/domain/send";

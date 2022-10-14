@@ -1,5 +1,5 @@
 import { FieldType } from "@bitwarden/common/enums/fieldType";
-import { FieldData } from "@bitwarden/common/models/data/fieldData";
+import { FieldData } from "@bitwarden/common/models/data/field.data";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { Field } from "@bitwarden/common/models/domain/field";
 

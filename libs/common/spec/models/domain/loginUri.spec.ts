@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
-import { LoginUriData } from "@bitwarden/common/models/data/loginUriData";
+import { LoginUriData } from "@bitwarden/common/models/data/login-uri.data";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { LoginUri } from "@bitwarden/common/models/domain/loginUri";
 

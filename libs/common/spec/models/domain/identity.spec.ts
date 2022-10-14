@@ -1,4 +1,4 @@
-import { IdentityData } from "@bitwarden/common/models/data/identityData";
+import { IdentityData } from "@bitwarden/common/models/data/identity.data";
 import { EncString } from "@bitwarden/common/models/domain/encString";
 import { Identity } from "@bitwarden/common/models/domain/identity";
 

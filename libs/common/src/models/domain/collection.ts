@@ -1,4 +1,4 @@
-import { CollectionData } from "../data/collectionData";
+import { CollectionData } from "../data/collection.data";
 import { CollectionView } from "../view/collectionView";
 
 import Domain from "./domainBase";

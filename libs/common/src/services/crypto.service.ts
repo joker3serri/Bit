@@ -13,7 +13,7 @@ import { KeySuffixOptions } from "../enums/keySuffixOptions";
 import { sequentialize } from "../misc/sequentialize";
 import { Utils } from "../misc/utils";
 import { EFFLongWordList } from "../misc/wordlist";
-import { EncryptedOrganizationKeyData } from "../models/data/encryptedOrganizationKeyData";
+import { EncryptedOrganizationKeyData } from "../models/data/encrypted-organization-key.data";
 import { EncArrayBuffer } from "../models/domain/encArrayBuffer";
 import { EncString } from "../models/domain/encString";
 import { BaseEncryptedOrganizationKey } from "../models/domain/encryptedOrganizationKey";

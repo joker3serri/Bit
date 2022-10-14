@@ -2,13 +2,13 @@ import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
 import { CipherResponse } from "../response/cipherResponse";
 
-import { AttachmentData } from "./attachmentData";
-import { CardData } from "./cardData";
-import { FieldData } from "./fieldData";
-import { IdentityData } from "./identityData";
-import { LoginData } from "./loginData";
-import { PasswordHistoryData } from "./passwordHistoryData";
-import { SecureNoteData } from "./secureNoteData";
+import { AttachmentData } from "./attachment.data";
+import { CardData } from "./card.data";
+import { FieldData } from "./field.data";
+import { IdentityData } from "./identity.data";
+import { LoginData } from "./login.data";
+import { PasswordHistoryData } from "./password-history.data";
+import { SecureNoteData } from "./secure-note.data";
 
 export class CipherData {
   id: string;

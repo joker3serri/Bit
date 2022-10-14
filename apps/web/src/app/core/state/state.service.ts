@@ -10,10 +10,10 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { StateMigrationService } from "@bitwarden/common/abstractions/stateMigration.service";
 import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
-import { CipherData } from "@bitwarden/common/models/data/cipherData";
-import { CollectionData } from "@bitwarden/common/models/data/collectionData";
-import { FolderData } from "@bitwarden/common/models/data/folderData";
-import { SendData } from "@bitwarden/common/models/data/sendData";
+import { CipherData } from "@bitwarden/common/models/data/cipher.data";
+import { CollectionData } from "@bitwarden/common/models/data/collection.data";
+import { FolderData } from "@bitwarden/common/models/data/folder.data";
+import { SendData } from "@bitwarden/common/models/data/send.data";
 import { StorageOptions } from "@bitwarden/common/models/domain/storageOptions";
 import { StateService as BaseStateService } from "@bitwarden/common/services/state.service";
 
