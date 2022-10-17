@@ -13,8 +13,8 @@ import {
 } from "../background/service_factories/password-generation-service.factory";
 import { stateServiceFactory } from "../background/service_factories/state-service.factory";
 import { BrowserApi } from "../browser/browserApi";
+import { GeneratePasswordToClipboardCommand } from "../clipboard";
 import { AutoFillActiveTabCommand } from "../commands/autoFillActiveTabCommand";
-import { GeneratePasswordToClipboardCommand } from "../commands/generate-password-to-clipboard-command";
 import { Account } from "../models/account";
 
 export const onCommandListener = async (command: string, tab: chrome.tabs.Tab) => {

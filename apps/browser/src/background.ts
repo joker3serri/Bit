@@ -1,5 +1,5 @@
 import MainBackground from "./background/main.background";
-import { ClearClipboard } from "./listeners/clearClipboard";
+import { ClearClipboard } from "./clipboard";
 import { onCommandListener } from "./listeners/onCommandListener";
 import { onInstallListener } from "./listeners/onInstallListener";
 
