@@ -70,6 +70,7 @@ import "./locales";
     ToggleGroupModule,
 
     // Web specific
+    BreadcrumbsModule,
   ],
   exports: [
     CommonModule,

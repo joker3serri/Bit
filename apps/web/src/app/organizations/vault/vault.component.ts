@@ -22,6 +22,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
+import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
 import { VaultFilterService } from "../../vault/vault-filter/services/abstractions/vault-filter.service";
@@ -304,6 +305,22 @@ export class VaultComponent implements OnInit, OnDestroy {
       comp.showUser = true;
       comp.entity = "cipher";
     });
+  }
+
+  get breadcrumbs(): CollectionView[] {
+    if (!this.activeFilter.selectedCollectionNode) {
+      return [];
+    }
+
+    const collections = [this.activeFilter.selectedCollectionNode];
+    while (collections[collections.length - 1].parent != undefined) {
+      collections.push(collections[collections.length - 1].parent);
+    }
+
+    return collections
+      .map((c) => c.node)
+      .slice(1, -1) // 1 for self, -1 for "top collections node"
+      .reverse();
   }
 
   private go(queryParams: any = null) {
