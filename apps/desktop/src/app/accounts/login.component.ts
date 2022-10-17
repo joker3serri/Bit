@@ -161,6 +161,10 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
   }
 
   async submit() {
+    if (!this.validatedEmail) {
+      return;
+    }
+
     await super.submit();
     if (this.captchaSiteKey) {
       const content = document.getElementById("content") as HTMLDivElement;
