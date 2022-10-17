@@ -156,6 +156,7 @@
 .truncate-box {
   display: flex;
   align-items: center;
+  gap: 5px;
 }
 
 .truncate {
@@ -163,5 +164,4 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-right: 5px;
 }
