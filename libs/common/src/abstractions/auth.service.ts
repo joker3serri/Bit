@@ -15,6 +15,9 @@ import { AuthRequestPushNotification } from "../models/response/notificationResp
 export abstract class AuthService {
   masterPasswordHash: string;
   email: string;
+  accessCode: string;
+  authRequestId: string;
+
   logIn: (
     credentials:
       | ApiLogInCredentials

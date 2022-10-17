@@ -49,14 +49,21 @@ export class AuthService implements AuthServiceAbstraction {
   }
 
   get masterPasswordHash(): string {
-    if (
-      this.logInStrategy instanceof PasswordLogInStrategy ||
-      this.logInStrategy instanceof PasswordlessLogInStrategy
-    ) {
-      return this.logInStrategy.masterPasswordHash;
-    }
+    return this.logInStrategy instanceof PasswordLogInStrategy
+      ? this.logInStrategy.masterPasswordHash
+      : null;
+  }
 
-    return null;
+  get accessCode(): string {
+    return this.logInStrategy instanceof PasswordlessLogInStrategy
+      ? this.logInStrategy.accessCode
+      : null;
+  }
+
+  get authRequestId(): string {
+    return this.logInStrategy instanceof PasswordlessLogInStrategy
+      ? this.logInStrategy.authRequestId
+      : null;
   }
 
   private logInStrategy:
