@@ -23,6 +23,7 @@ export class BulkStatusDialogComponent implements OnInit {
   constructor(public dialogRef: DialogRef, @Inject(DIALOG_DATA) public data: BulkStatusDetails) {}
 
   ngOnInit(): void {
+    // TODO remove null checks once strictNullChecks in TypeScript is turned on.
     if (
       !this.data.title ||
       !this.data.subTitle ||
