@@ -2,7 +2,10 @@
   <bit-dialog dialogSize="small">
     <span bitDialogTitle>{{ title | i18n }}</span>
     <span bitDialogContent>
-      <bit-form-field>
+      <div *ngIf="isLoading()" class="no-items">
+        <i class="bwi bwi-spinner bwi-spin bwi-3x"></i>
+      </div>
+      <bit-form-field *ngIf="!isLoading()">
         <bit-label>{{ "projectName" | i18n }}</bit-label>
         <input formControlName="name" bitInput />
       </bit-form-field>

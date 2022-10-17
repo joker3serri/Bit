@@ -71,6 +71,10 @@ export class ProjectDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  isLoading(): boolean {
+    return this.data.operation === OperationType.Edit && !this.formGroup.value;
+  }
+
   private async createProject(projectView: ProjectView) {
     this.formPromise = this.projectService.create(this.data.organizationId, projectView);
     await this.formPromise;

@@ -73,6 +73,10 @@ export class SecretDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  isLoading(): boolean {
+    return this.data.operation === OperationType.Edit && !this.formGroup.value;
+  }
+
   private async createSecret(secretView: SecretView) {
     this.formPromise = this.secretService.create(this.data.organizationId, secretView);
     await this.formPromise;
