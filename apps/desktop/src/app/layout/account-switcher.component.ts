@@ -1,6 +1,7 @@
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { ConnectedPosition } from "@angular/cdk/overlay";
 import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -81,7 +82,8 @@ export class AccountSwitcherComponent implements OnInit {
   constructor(
     private stateService: StateService,
     private authService: AuthService,
-    private messagingService: MessagingService
+    private messagingService: MessagingService,
+    private router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -115,6 +117,8 @@ export class AccountSwitcherComponent implements OnInit {
   async addAccount() {
     this.close();
     await this.stateService.setActiveUser(null);
+    await this.stateService.setRememberedEmail(null);
+    this.router.navigate(["/login"]);
   }
 
   private async createSwitcherAccounts(baseAccounts: {
