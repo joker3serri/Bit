@@ -128,6 +128,15 @@ jobs:
           fi
 
 
+  browser-build:
+    name: Browser Build
+    needs: setup
+    if: |
+      needs.setup.outputs.rc_branch_exists == 1 ||
+      needs.setup.outputs.hotfix_branch_exists == 1
+    uses: ./.github/workflows/build-browser.yml
+
+
   linux:
     name: Linux Build
     runs-on: ubuntu-20.04
