@@ -501,7 +501,6 @@
 ./apps/desktop/native-messaging-test-runner/src/logUtils.ts
 ./apps/desktop/README.md
 ./apps/desktop/desktop_native/Cargo.toml
-./apps/desktop/desktop_native/target/CACHEDIR.TAG
 ./apps/desktop/desktop_native/Cargo.lock
 ./apps/desktop/SECURITY.md
 ./apps/desktop/src/app/services/desktopFileDownloadService.ts
