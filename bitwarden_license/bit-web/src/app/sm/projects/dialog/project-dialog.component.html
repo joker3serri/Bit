@@ -7,7 +7,7 @@
       </div>
       <bit-form-field *ngIf="!isLoading()">
         <bit-label>{{ "projectName" | i18n }}</bit-label>
-        <input formControlName="name" bitInput />
+        <input formControlName="name" maxlength="1000" bitInput />
       </bit-form-field>
     </span>
     <div bitDialogFooter class="tw-flex tw-gap-2">
