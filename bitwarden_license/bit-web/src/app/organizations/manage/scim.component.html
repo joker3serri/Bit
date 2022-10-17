@@ -52,7 +52,12 @@
 
   <bit-form-field *ngIf="showScimSettings">
     <bit-label>{{ "scimApiKey" | i18n }}</bit-label>
-    <input bitInput type="{{ showScimKey ? 'text' : 'password' }}" formControlName="clientSecret" />
+    <input
+      bitInput
+      type="{{ showScimKey ? 'text' : 'password' }}"
+      formControlName="clientSecret"
+      id="clientSecret"
+    />
     <ng-container>
       <button type="button" bitSuffix bitButton (click)="toggleScimKey()">
         <i
