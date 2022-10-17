@@ -11,6 +11,7 @@ import { ContainerService } from "@bitwarden/common/services/container.service";
 import IconDetails from "../background/models/iconDetails";
 import { authServiceFactory } from "../background/service_factories/auth-service.factory";
 import { cipherServiceFactory } from "../background/service_factories/cipher-service.factory";
+import { searchServiceFactory } from "../background/service_factories/search-service.factory";
 import { stateServiceFactory } from "../background/service_factories/state-service.factory";
 import { BrowserApi } from "../browser/browserApi";
 import { Account } from "../models/account";
@@ -247,7 +248,12 @@ export class UpdateBadge {
     };
     this.stateService = await stateServiceFactory(serviceCache, opts);
     this.authService = await authServiceFactory(serviceCache, opts);
-    this.cipherService = await cipherServiceFactory(serviceCache, opts);
+    const searchService = await searchServiceFactory(serviceCache, opts);
+
+    this.cipherService = await cipherServiceFactory(serviceCache, {
+      ...opts,
+      cipherServiceOptions: { searchServiceFactory: () => searchService },
+    });
 
     // Needed for cipher decryption
     if (!self.bitwardenContainerService) {
