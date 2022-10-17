@@ -34,3 +34,15 @@ jobs:
         run: |
           npm ci
           npm run lint
+
+      - name: Lint filenames
+        run: |
+          find . -type f -name "*[[:upper:]]*" \
+            ! -path "./node_modules/*" \
+            ! -path "./coverage/*" \
+            ! -path "*/dist/*" \
+            ! -path "*/build/*" \
+            ! -path "./.git/*" \
+            ! -path "*/.DS_Store" \
+            > tmp.txt
+          diff <(sort .github/whitelist-capital-letters.txt) <(sort tmp.txt)
