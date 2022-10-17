@@ -215,6 +215,11 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
     }
   }
 
+  toggleValidateEmail(value: boolean) {
+    this.validatedEmail = value;
+    this.formGroup.controls.masterPassword.reset();
+  }
+
   private getErrorToastMessage() {
     const error: AllValidationErrors = this.formValidationErrorService
       .getFormValidationErrors(this.formGroup.controls)
@@ -245,11 +250,6 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
     } catch (e) {
       this.showLoginWithDevice = false;
     }
-  }
-
-  private toggleValidateEmail(value: boolean) {
-    this.validatedEmail = value;
-    this.formGroup.controls.masterPassword.reset();
   }
 
   protected focusInput() {
