@@ -25,10 +25,10 @@ import {
   PasswordLogInCredentials,
   SsoLogInCredentials,
 } from "@bitwarden/common/models/domain/log-in-credentials";
-import { TokenRequestTwoFactor } from "@bitwarden/common/models/request/identityToken/tokenRequestTwoFactor";
-import { TwoFactorEmailRequest } from "@bitwarden/common/models/request/twoFactorEmailRequest";
-import { UpdateTempPasswordRequest } from "@bitwarden/common/models/request/updateTempPasswordRequest";
-import { ErrorResponse } from "@bitwarden/common/models/response/errorResponse";
+import { TokenRequestTwoFactor } from "@bitwarden/common/models/request/identity-token/tokenRequestTwoFactor";
+import { TwoFactorEmailRequest } from "@bitwarden/common/models/request/two-factor-email.request";
+import { UpdateTempPasswordRequest } from "@bitwarden/common/models/request/update-temp-password.request";
+import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
 import { Response } from "../models/response";
 import { MessageResponse } from "../models/response/messageResponse";
