@@ -140,7 +140,7 @@ jobs:
   linux:
     name: Linux Build
     runs-on: ubuntu-20.04
-    needs: setup
+    needs: browser-build
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
     defaults:
@@ -254,7 +254,7 @@ jobs:
   windows:
     name: Windows Build
     runs-on: windows-2019
-    needs: setup
+    needs: browser-build
     defaults:
       run:
         shell: pwsh
@@ -468,7 +468,7 @@ jobs:
   macos-build:
     name: MacOS Build
     runs-on: macos-11
-    needs: setup
+    needs: browser-build
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
     defaults:
@@ -612,7 +612,7 @@ jobs:
     name: MacOS Package GitHub Release Assets
     runs-on: macos-11
     needs:
-      - setup
+      - browser-build
       - macos-build
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
@@ -830,7 +830,7 @@ jobs:
     name: MacOS Package Prod Release Asset
     runs-on: macos-11
     needs:
-      - setup
+      - browser-build
       - macos-build
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
@@ -1040,7 +1040,7 @@ jobs:
     if: false  # We need to look into how code signing works for dev
     runs-on: macos-11
     needs:
-      - setup
+      - browser-build
       - macos-build
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
@@ -1268,6 +1268,7 @@ jobs:
     needs:
       - cloc
       - electron-verify
+      - browser-build
       - setup
       - linux
       - windows
@@ -1281,6 +1282,7 @@ jobs:
         env:
           CLOC_STATUS: ${{ needs.cloc.result }}
           ELECTRON_VERIFY_STATUS: ${{ needs.electron-verify.result }}
+          BROWSER_BUILD_STATUS: ${{ needs.browser-build.result }}
           SETUP_STATUS: ${{ needs.setup.result }}
           LINUX_STATUS: ${{ needs.linux.result }}
           WINDOWS_STATUS: ${{ needs.windows.result }}
@@ -1292,6 +1294,8 @@ jobs:
           if [ "$CLOC_STATUS" = "failure" ]; then
               exit 1
           elif [ "$ELECTRON_VERIFY_STATUS" = "failure" ]; then
+              exit 1
+          elif [ "$BROWSER_BUILD_STATUS" = "failure" ]; then
               exit 1
           elif [ "$SETUP_STATUS" = "failure" ]; then
               exit 1
