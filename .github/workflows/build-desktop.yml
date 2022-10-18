@@ -131,9 +131,6 @@ jobs:
   browser-build:
     name: Browser Build
     needs: setup
-    # if: |
-    #   needs.setup.outputs.rc_branch_exists == 1 ||
-    #   needs.setup.outputs.hotfix_branch_exists == 1
     uses: ./.github/workflows/build-browser.yml
     secrets: inherit
 
