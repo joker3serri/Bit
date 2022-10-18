@@ -757,9 +757,6 @@ jobs:
         with:
           path: ${{ github.workspace }}/browser-build-artifacts
 
-      - name: Test Step
-        run: ls -alh ${{ github.workspace }}/browser-build-artifacts
-
       - name: Unzip Safari artifact
         run: |
           SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
@@ -956,9 +953,6 @@ jobs:
         with:
           path: ${{ github.workspace }}/browser-build-artifacts
 
-      - name: Test Step
-        run: ls -alh ${{ github.workspace }}/browser-build-artifacts
-
       - name: Unzip Safari artifact
         run: |
           SAFARI_DIR=$(find $GITHUB_WORKSPACE/browser-build-artifacts -name 'dist-safari-*.zip')
@@ -1141,9 +1135,6 @@ jobs:
         uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741
         with:
           path: ${{ github.workspace }}/browser-build-artifacts
-
-      - name: Test Step
-        run: ls -alh ${{ github.workspace }}/browser-build-artifacts
 
       - name: Unzip Safari artifact
         run: |
