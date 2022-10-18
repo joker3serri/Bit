@@ -188,7 +188,7 @@ jobs:
         working-directory: ./
 
       - name: Cache Native Module
-        uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         id: cache
         with:
           path: |
@@ -325,7 +325,7 @@ jobs:
         working-directory: ./
 
       - name: Cache Native Module
-        uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         id: cache
         with:
           path: apps/desktop/desktop_native/*.node
@@ -598,7 +598,7 @@ jobs:
         working-directory: ./
 
       - name: Cache Native Module
-        uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         id: cache
         with:
           path: apps/desktop/desktop_native/*.node
@@ -743,7 +743,7 @@ jobs:
         working-directory: ./
 
       - name: Cache Native Module
-        uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         id: cache
         with:
           path: apps/desktop/desktop_native/*.node
@@ -961,7 +961,7 @@ jobs:
         working-directory: ./
 
       - name: Cache Native Module
-        uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         id: cache
         with:
           path: apps/desktop/desktop_native/*.node
@@ -1166,7 +1166,7 @@ jobs:
         working-directory: ./
 
       - name: Cache Native Module
-        uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+        uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         id: cache
         with:
           path: apps/desktop/desktop_native/*.node
