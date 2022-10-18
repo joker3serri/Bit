@@ -153,7 +153,7 @@ import { TwoFactorAuthenticatorResponse } from "../models/response/two-factor-au
 import { TwoFactorDuoResponse } from "../models/response/two-factor-duo.response";
 import { TwoFactorEmailResponse } from "../models/response/two-factor-email.response";
 import { TwoFactorProviderResponse } from "../models/response/two-factor-provider.response";
-import { TwoFactorRecoverResponse } from "../models/response/two-factor-rescover.response";
+import { TwoFactorRecoverResponse } from "../models/response/two-factor-recover.response";
 import {
   TwoFactorWebAuthnResponse,
   ChallengeResponse,
