@@ -140,7 +140,9 @@ jobs:
   linux:
     name: Linux Build
     runs-on: ubuntu-20.04
-    needs: browser-build
+    needs:
+      - browser-build
+      - setup
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
     defaults:
@@ -254,7 +256,9 @@ jobs:
   windows:
     name: Windows Build
     runs-on: windows-2019
-    needs: browser-build
+    needs:
+      - browser-build
+      - setup
     defaults:
       run:
         shell: pwsh
@@ -329,8 +333,7 @@ jobs:
       - name: Build Native Module
         if: steps.cache.outputs.cache-hit != 'true'
         working-directory: apps/desktop/desktop_native
-        run: |
-          npm run build:cross-platform
+        run: npm run build:cross-platform
 
       - name: Build & Sign (dev)
         env:
@@ -468,7 +471,9 @@ jobs:
   macos-build:
     name: MacOS Build
     runs-on: macos-11
-    needs: browser-build
+    needs:
+      - browser-build
+      - setup
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
     defaults:
@@ -601,8 +606,7 @@ jobs:
       - name: Build Native Module
         if: steps.cache.outputs.cache-hit != 'true'
         working-directory: apps/desktop/desktop_native
-        run: |
-          npm run build:cross-platform
+        run: npm run build:cross-platform
 
       - name: Build application (dev)
         run: npm run build
@@ -614,6 +618,7 @@ jobs:
     needs:
       - browser-build
       - macos-build
+      - setup
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
     defaults:
@@ -746,8 +751,7 @@ jobs:
       - name: Build Native Module
         if: steps.cache.outputs.cache-hit != 'true'
         working-directory: apps/desktop/desktop_native
-        run: |
-          npm run build:cross-platform
+        run: npm run build:cross-platform
 
       - name: Build
         if: steps.build-cache.outputs.cache-hit != 'true'
@@ -832,6 +836,7 @@ jobs:
     needs:
       - browser-build
       - macos-build
+      - setup
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
     defaults:
@@ -964,8 +969,7 @@ jobs:
       - name: Build Native Module
         if: steps.cache.outputs.cache-hit != 'true'
         working-directory: apps/desktop/desktop_native
-        run: |
-          npm run build:cross-platform
+        run: npm run build:cross-platform
 
       - name: Build
         if: steps.build-cache.outputs.cache-hit != 'true'
@@ -1042,6 +1046,7 @@ jobs:
     needs:
       - browser-build
       - macos-build
+      - setup
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
     defaults:
@@ -1169,8 +1174,7 @@ jobs:
       - name: Build Native Module
         if: steps.cache.outputs.cache-hit != 'true'
         working-directory: apps/desktop/desktop_native
-        run: |
-          npm run build:cross-platform
+        run: npm run build:cross-platform
 
       - name: Build
         if: steps.build-cache.outputs.cache-hit != 'true'
