@@ -19,10 +19,6 @@ export class HomeComponent {
     rememberEmail: [false],
   });
 
-  get email() {
-    return this.formGroup.get("email");
-  }
-
   constructor(
     protected platformUtilsService: PlatformUtilsService,
     private stateService: StateService,
@@ -33,7 +29,7 @@ export class HomeComponent {
   ) {}
 
   async initiateLogin(): Promise<void> {
-    this.email.setValue(await this.stateService.getRememberedEmail());
+    this.formGroup.patchValue({ email: await this.stateService.getRememberedEmail() });
     this.loginInitiated = true;
   }
 
@@ -48,9 +44,9 @@ export class HomeComponent {
       return;
     }
     if (this.formGroup.value.rememberEmail) {
-      this.stateService.setRememberedEmail(this.email.value);
+      this.stateService.setRememberedEmail(this.formGroup.value.email);
     }
-    this.router.navigate(["login"], { queryParams: { email: this.email.value } });
+    this.router.navigate(["login"], { queryParams: { email: this.formGroup.value.email } });
   }
 
   get selfHostedDomain() {
