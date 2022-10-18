@@ -753,12 +753,12 @@ jobs:
         run: npm run build
 
       - name: Download Browser artifact
-        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39
+        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741
         with:
-          workflow: build-browser.yml
-          workflow_conclusion: success
-          branch: ${{ github.base_ref }}
           path: ${{ github.workspace }}/browser-build-artifacts
+
+      - name: Test Step
+        run: ls -alh ${{ github.workspace }}/browser-build-artifacts
 
       - name: Unzip Safari artifact
         run: |
@@ -952,12 +952,12 @@ jobs:
         run: npm run build
 
       - name: Download Browser artifact
-        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39
+        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741
         with:
-          workflow: build-browser.yml
-          workflow_conclusion: success
-          branch: ${{ github.base_ref }}
           path: ${{ github.workspace }}/browser-build-artifacts
+
+      - name: Test Step
+        run: ls -alh ${{ github.workspace }}/browser-build-artifacts
 
       - name: Unzip Safari artifact
         run: |
@@ -1138,12 +1138,12 @@ jobs:
         run: npm run build
 
       - name: Download Browser artifact
-        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39
+        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741
         with:
-          workflow: build-browser.yml
-          workflow_conclusion: success
-          branch: ${{ github.base_ref }}
           path: ${{ github.workspace }}/browser-build-artifacts
+
+      - name: Test Step
+        run: ls -alh ${{ github.workspace }}/browser-build-artifacts
 
       - name: Unzip Safari artifact
         run: |
