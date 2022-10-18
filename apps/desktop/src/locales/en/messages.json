@@ -2041,5 +2041,8 @@
         "example": "example.com"
       }
     }
+  },
+  "logInWithAnotherDevice": {
+    "message": "Log in with another device"
   }
 }
