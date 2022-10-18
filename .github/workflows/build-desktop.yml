@@ -128,18 +128,10 @@ jobs:
           fi
 
 
-  browser-build:
-    name: Browser Build
-    needs: setup
-    uses: ./.github/workflows/build-browser.yml
-    secrets: inherit
-
-
   linux:
     name: Linux Build
     runs-on: ubuntu-20.04
     needs:
-      - browser-build
       - setup
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
@@ -255,7 +247,6 @@ jobs:
     name: Windows Build
     runs-on: windows-2019
     needs:
-      - browser-build
       - setup
     defaults:
       run:
@@ -470,7 +461,6 @@ jobs:
     name: MacOS Build
     runs-on: macos-11
     needs:
-      - browser-build
       - setup
     env:
       _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
@@ -608,6 +598,13 @@ jobs:
 
       - name: Build application (dev)
         run: npm run build
+
+
+  browser-build:
+    name: Browser Build
+    needs: setup
+    uses: ./.github/workflows/build-browser.yml
+    secrets: inherit
 
 
   macos-package-github:
@@ -755,31 +752,12 @@ jobs:
         if: steps.build-cache.outputs.cache-hit != 'true'
         run: npm run build
 
-      - name: Download artifact from hotfix-rc-desktop
-        if: github.ref == 'refs/heads/hotfix-rc-desktop'
+      - name: Download Browser artifact
         uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
-          branch: hotfix-rc-desktop
-          path: ${{ github.workspace }}/browser-build-artifacts
-
-      - name: Download artifact from rc
-        if: github.ref == 'refs/heads/rc'
-        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39
-        with:
-          workflow: build-browser.yml
-          workflow_conclusion: success
-          branch: rc
-          path: ${{ github.workspace }}/browser-build-artifacts
-
-      - name: Download artifact from master
-        if: ${{ github.ref != 'refs/heads/rc' && github.ref != 'refs/heads/hotfix-rc-desktop' }}
-        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39
-        with:
-          workflow: build-browser.yml
-          workflow_conclusion: success
-          branch: master
+          branch: ${{ github.base_ref }}
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Unzip Safari artifact
@@ -973,31 +951,12 @@ jobs:
         if: steps.build-cache.outputs.cache-hit != 'true'
         run: npm run build
 
-      - name: Download artifact from hotfix-rc-desktop
-        if: github.ref == 'refs/heads/hotfix-rc-desktop'
+      - name: Download Browser artifact
         uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
-          branch: hotfix-rc-desktop
-          path: ${{ github.workspace }}/browser-build-artifacts
-
-      - name: Download artifact from rc
-        if: github.ref == 'refs/heads/rc'
-        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39
-        with:
-          workflow: build-browser.yml
-          workflow_conclusion: success
-          branch: rc
-          path: ${{ github.workspace }}/browser-build-artifacts
-
-      - name: Download artifact from master
-        if: ${{ github.ref != 'refs/heads/rc' && github.ref != 'refs/heads/hotfix-rc-desktop' }}
-        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39
-        with:
-          workflow: build-browser.yml
-          workflow_conclusion: success
-          branch: master
+          branch: ${{ github.base_ref }}
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Unzip Safari artifact
@@ -1178,22 +1137,12 @@ jobs:
         if: steps.build-cache.outputs.cache-hit != 'true'
         run: npm run build
 
-      - name: Download artifact from rc
-        if: github.ref == 'refs/heads/rc'
+      - name: Download Browser artifact
         uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
-          branch: rc
-          path: ${{ github.workspace }}/browser-build-artifacts
-
-      - name: Download artifact from master
-        if: github.ref != 'refs/heads/rc'
-        uses: dawidd6/action-download-artifact@b2abf1705491048a2d7074f7d90513044fd25d39
-        with:
-          workflow: build-browser.yml
-          workflow_conclusion: success
-          branch: master
+          branch: ${{ github.base_ref }}
           path: ${{ github.workspace }}/browser-build-artifacts
 
       - name: Unzip Safari artifact
