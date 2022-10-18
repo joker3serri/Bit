@@ -26,9 +26,10 @@ export interface ProjectOperation {
 export class ProjectDialogComponent implements OnInit {
   formPromise: Promise<any>;
 
-  formGroup = new FormGroup({
+  protected formGroup = new FormGroup({
     name: new FormControl("", [Validators.required]),
   });
+  protected loading = false;
 
   constructor(
     public dialogRef: DialogRef,
@@ -48,7 +49,9 @@ export class ProjectDialogComponent implements OnInit {
   }
 
   async loadData() {
+    this.loading = true;
     const project: ProjectView = await this.projectService.getByProjectId(this.data.projectId);
+    this.loading = false;
     this.formGroup.setValue({ name: project.name });
   }
 
@@ -69,10 +72,6 @@ export class ProjectDialogComponent implements OnInit {
       await this.updateProject(projectView);
     }
     this.dialogRef.close();
-  }
-
-  isLoading(): boolean {
-    return this.data.operation === OperationType.Edit && !this.formGroup.value;
   }
 
   private async createProject(projectView: ProjectView) {
