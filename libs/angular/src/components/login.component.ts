@@ -51,10 +51,6 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
     return this.formGroup.value.email;
   }
 
-  get loggedEmail() {
-    return this.formGroup.value.email;
-  }
-
   constructor(
     protected apiService: ApiService,
     protected appIdService: AppIdService,
