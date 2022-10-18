@@ -1,6 +1,6 @@
 import { Directive, NgZone, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { take } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -45,6 +45,11 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
   protected successRoute = "vault";
   protected forcePasswordResetRoute = "update-temp-password";
   protected alwaysRememberEmail = false;
+  protected skipRememberEmail = false;
+
+  get loggedEmail() {
+    return this.formGroup.value.email;
+  }
 
   get loggedEmail() {
     return this.formGroup.value.email;
@@ -64,7 +69,8 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
     protected logService: LogService,
     protected ngZone: NgZone,
     protected formBuilder: FormBuilder,
-    protected formValidationErrorService: FormValidationErrorsService
+    protected formValidationErrorService: FormValidationErrorsService,
+    protected route: ActivatedRoute
   ) {
     super(environmentService, i18nService, platformUtilsService);
     this.selfHosted = platformUtilsService.isSelfHost();
@@ -75,6 +81,14 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
   }
 
   async ngOnInit() {
+    this.route?.queryParams.subscribe((params) => {
+      if (params != null) {
+        const queryParamsEmail = params["email"];
+        if (queryParamsEmail != null && queryParamsEmail.indexOf("@") > -1) {
+          this.formGroup.get("email").setValue(queryParamsEmail);
+        }
+      }
+    });
     let email = this.loggedEmail;
     if (email == null || email === "") {
       email = await this.stateService.getRememberedEmail();
@@ -126,7 +140,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
       const response = await this.formPromise;
       if (rememberEmail || this.alwaysRememberEmail) {
         await this.stateService.setRememberedEmail(email);
-      } else {
+      } else if (!this.skipRememberEmail) {
         await this.stateService.setRememberedEmail(null);
       }
       if (this.handleCaptchaRequired(response)) {

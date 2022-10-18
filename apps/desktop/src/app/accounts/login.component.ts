@@ -1,6 +1,6 @@
 import { Component, NgZone, OnDestroy, ViewChild, ViewContainerRef } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/components/login.component";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -63,7 +63,8 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
     private messagingService: MessagingService,
     logService: LogService,
     formBuilder: FormBuilder,
-    formValidationErrorService: FormValidationErrorsService
+    formValidationErrorService: FormValidationErrorsService,
+    route: ActivatedRoute
   ) {
     super(
       apiService,
@@ -79,7 +80,8 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
       logService,
       ngZone,
       formBuilder,
-      formValidationErrorService
+      formValidationErrorService,
+      route
     );
     super.onSuccessfulLogin = () => {
       return syncService.fullSync(true);
