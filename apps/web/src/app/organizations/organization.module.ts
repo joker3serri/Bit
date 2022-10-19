@@ -9,12 +9,13 @@ import { CollectionAddEditComponent } from "./manage/collection-add-edit.compone
 import { GroupAddEditComponent } from "./manage/group-add-edit.component";
 import { GroupsComponent } from "./manage/groups.component";
 import { UserGroupsComponent } from "./manage/user-groups.component";
+import { CollectionDialogModule } from "./components/collection-dialog";
 import { OrganizationsRoutingModule } from "./organization-routing.module";
 import { GroupServiceAbstraction } from "./services/abstractions/group";
 import { GroupService } from "./services/group/group.service";
 
 @NgModule({
-  imports: [SharedModule, AccessSelectorModule, OrganizationsRoutingModule],
+  imports: [SharedModule, AccessSelectorModule, CollectionDialogModule, OrganizationsRoutingModule],
   declarations: [
     GroupsComponent,
     GroupAddEditComponent,
