@@ -17,17 +17,17 @@ export enum PermissionMode {
   /**
    * No permission controls or column present. No permission values are emitted.
    */
-  Hidden = "Hidden",
+  Hidden = "hidden",
 
   /**
    * No permission controls. Column rendered an if available on an item. No permission values are emitted
    */
-  Readonly = "Readonly",
+  Readonly = "readonly",
 
   /**
    * Permission Controls and column present. Permission values are emitted.
    */
-  Edit = "Edit",
+  Edit = "edit",
 }
 
 @Component({

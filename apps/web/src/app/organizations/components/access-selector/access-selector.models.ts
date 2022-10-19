@@ -8,10 +8,10 @@ import { SelectItemView } from "@bitwarden/components/src/multi-select/models/se
  * Permission options that replace/correspond with readOnly and hidePassword server fields.
  */
 export enum CollectionPermission {
-  View = "View",
-  ViewExceptPass = "ViewExceptPass",
-  Edit = "Edit",
-  EditExceptPass = "EditExceptPass",
+  View = "view",
+  ViewExceptPass = "viewExceptPass",
+  Edit = "edit",
+  EditExceptPass = "editExceptPass",
 }
 
 export enum AccessItemType {
