@@ -24,8 +24,6 @@ export interface ProjectOperation {
   templateUrl: "./project-dialog.component.html",
 })
 export class ProjectDialogComponent implements OnInit {
-  formPromise: Promise<any>;
-
   formGroup = new FormGroup({
     name: new FormControl("", [Validators.required]),
   });
@@ -56,7 +54,7 @@ export class ProjectDialogComponent implements OnInit {
     return this.data.operation === OperationType.Add ? "addProject" : "editProject";
   }
 
-  async submit() {
+  submit = async () => {
     if (this.formGroup.invalid) {
       return;
     }
@@ -69,17 +67,15 @@ export class ProjectDialogComponent implements OnInit {
       await this.updateProject(projectView);
     }
     this.dialogRef.close();
-  }
+  };
 
   private async createProject(projectView: ProjectView) {
-    this.formPromise = this.projectService.create(this.data.organizationId, projectView);
-    await this.formPromise;
+    await this.projectService.create(this.data.organizationId, projectView);
     this.platformUtilsService.showToast("success", null, this.i18nService.t("projectCreated"));
   }
 
   private async updateProject(projectView: ProjectView) {
-    this.formPromise = this.projectService.update(this.data.organizationId, projectView);
-    await this.formPromise;
+    await this.projectService.update(this.data.organizationId, projectView);
     this.platformUtilsService.showToast("success", null, this.i18nService.t("projectSaved"));
   }
 

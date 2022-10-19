@@ -32,7 +32,7 @@ export class SecretDeleteDialogComponent {
     return this.data.secretIds.length === 1 ? "deleteSecret" : "deleteSecrets";
   }
 
-  async delete() {
+  delete = async () => {
     try {
       await this.secretService.delete(this.data.secretIds);
       this.dialogRef.close();
@@ -43,5 +43,5 @@ export class SecretDeleteDialogComponent {
       this.logService.error(e);
       this.validationService.showError(e);
     }
-  }
+  };
 }
