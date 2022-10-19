@@ -1128,19 +1128,19 @@
     "description": "Paste from clipboard"
   },
   "selectAll": {
-    "message": "Select All"
+    "message": "Select all"
   },
   "zoomIn": {
-    "message": "Zoom In"
+    "message": "Zoom in"
   },
   "zoomOut": {
-    "message": "Zoom Out"
+    "message": "Zoom out"
   },
   "resetZoom": {
-    "message": "Reset Zoom"
+    "message": "Reset zoom"
   },
   "toggleFullScreen": {
-    "message": "Toggle Full Screen"
+    "message": "Toggle full screen"
   },
   "reload": {
     "message": "Reload"
@@ -1172,7 +1172,7 @@
     "message": "Hide others"
   },
   "showAll": {
-    "message": "Show All"
+    "message": "Show all"
   },
   "quitBitwarden": {
     "message": "Quit Bitwarden"
@@ -1256,10 +1256,10 @@
     "description": "Text for a button that toggles the visibility of the window. Shows the window when it is hidden or hides the window if it is currently open."
   },
   "hideToTray": {
-    "message": "Hide to Tray"
+    "message": "Hide to tray"
   },
   "alwaysOnTop": {
-    "message": "Always on Top",
+    "message": "Always on top",
     "description": "Application window should always stay on top of other windows"
   },
   "dateUpdated": {
