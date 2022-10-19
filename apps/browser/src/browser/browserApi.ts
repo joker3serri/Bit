@@ -1,4 +1,5 @@
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
+import { TabMessage } from "../types/tab-messages";
 
 export class BrowserApi {
   static isWebExtensionsApi: boolean = typeof browser !== "undefined";
@@ -91,6 +92,14 @@ export class BrowserApi {
         resolve();
       });
     });
+  }
+
+  static sendTabsMessage<T = never>(
+    tabId: number,
+    message: TabMessage,
+    responseCallback?: (response: T) => void
+  ) {
+    chrome.tabs.sendMessage<TabMessage, T>(tabId, message, responseCallback);
   }
 
   static async getPrivateModeWindows(): Promise<browser.windows.Window[]> {
