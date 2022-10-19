@@ -1,5 +1,5 @@
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
-import { LoginUriView } from "@bitwarden/common/models/view/loginUriView";
+import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
 
 const testData = [
   {
