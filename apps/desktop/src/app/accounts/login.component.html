@@ -131,7 +131,7 @@
           </button>
           <div>
             <p class="no-margin">{{ "loggingInAs" | i18n }} {{ loggedEmail }}</p>
-            <a [routerLink]="[]" (click)="resetForm()">{{ "notYou" | i18n }}</a>
+            <a [routerLink]="[]" (click)="toggleValidateEmail(false)">{{ "notYou" | i18n }}</a>
           </div>
         </div>
       </ng-template>

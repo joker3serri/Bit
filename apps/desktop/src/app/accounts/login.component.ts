@@ -155,13 +155,6 @@ export class LoginComponent extends BaseLoginComponent implements OnDestroy {
     }
   }
 
-  async resetForm() {
-    this.formGroup.controls.email.reset();
-    this.formGroup.controls.rememberEmail.reset();
-    await this.stateService.setRememberedEmail(null);
-    await super.toggleValidateEmail(false);
-  }
-
   async submit() {
     if (!this.validatedEmail) {
       return;
