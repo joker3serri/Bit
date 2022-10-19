@@ -230,7 +230,7 @@ describe("AccessSelectorComponent", () => {
 
     const permissionColumnCases = [
       [PermissionMode.HIDDEN, false],
-      [PermissionMode.EDIT, false],
+      [PermissionMode.EDIT, true],
       [PermissionMode.READONLY, true],
     ];
 
