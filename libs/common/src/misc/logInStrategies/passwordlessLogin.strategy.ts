@@ -10,8 +10,8 @@ import { TokenService } from "../../abstractions/token.service";
 import { TwoFactorService } from "../../abstractions/twoFactor.service";
 import { AuthResult } from "../../models/domain/auth-result";
 import { PasswordlessLogInCredentials } from "../../models/domain/log-in-credentials";
-import { PasswordTokenRequest } from "../../models/request/identityToken/passwordTokenRequest";
-import { TokenRequestTwoFactor } from "../../models/request/identityToken/tokenRequestTwoFactor";
+import { PasswordTokenRequest } from "../../models/request/identity-token/password-token.request";
+import { TokenTwoFactorRequest } from "../../models/request/identity-token/token-two-factor.request";
 
 import { LogInStrategy } from "./logIn.strategy";
 
@@ -62,7 +62,7 @@ export class PasswordlessLogInStrategy extends LogInStrategy {
   }
 
   async logInTwoFactor(
-    twoFactor: TokenRequestTwoFactor,
+    twoFactor: TokenTwoFactorRequest,
     captchaResponse: string
   ): Promise<AuthResult> {
     this.tokenRequest.captchaResponse = captchaResponse ?? this.captchaBypassToken;
