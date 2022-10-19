@@ -1,20 +1,17 @@
 <form #form [formGroup]="formGroup" (ngSubmit)="submit()" [appApiAction]="formPromise">
   <bit-dialog dialogSize="small">
-    <ng-container bitDialogTitle>{{ title | i18n }}</ng-container>
-    <span
-      bitDialogTitle
-      class="tw-text-sm tw-normal-case tw-text-muted"
-      *ngIf="data.projects.length == 1"
-    >
-      {{ " " + data.projects[0].name }}
-    </span>
-    <span
-      bitDialogTitle
-      class="tw-text-sm tw-normal-case tw-text-muted"
-      *ngIf="data.projects.length > 1"
-    >
-      {{ " " + data.projects.length + " " }} {{ "projects" | i18n }}
-    </span>
+    <div bitDialogTitle class="tw-gap-4">
+      <span>{{ title | i18n }}</span>
+      <span class="tw-text-sm tw-normal-case tw-text-muted" *ngIf="data.projects.length == 1">
+        {{ data.projects[0].name }}
+      </span>
+      <span class="tw-text-sm tw-normal-case tw-text-muted" *ngIf="data.projects.length > 1">
+        {{ data.projects.length }}
+      </span>
+      <span class="tw-text-sm tw-normal-case tw-text-muted" *ngIf="data.projects.length > 1">
+        {{ "projects" | i18n }}
+      </span>
+    </div>
 
     <div bitDialogContent>
       <bit-callout type="warning" [title]="'warning' | i18n">
