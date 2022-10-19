@@ -27,13 +27,7 @@
       <button bitButton buttonType="danger" [loading]="form.loading">
         {{ title | i18n }}
       </button>
-      <button
-        bitButton
-        buttonType="secondary"
-        bitDialogClose
-        (click)="dialogRef.close()"
-        type="button"
-      >
+      <button bitButton buttonType="secondary" bitDialogClose type="button">
         {{ "cancel" | i18n }}
       </button>
     </div>
