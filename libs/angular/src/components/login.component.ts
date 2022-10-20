@@ -218,6 +218,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
   }
 
   async validateEmail() {
+    this.formGroup.controls.email.markAsTouched();
     const emailInvalid = this.formGroup.get("email").invalid;
     if (!emailInvalid) {
       this.toggleValidateEmail(true);
