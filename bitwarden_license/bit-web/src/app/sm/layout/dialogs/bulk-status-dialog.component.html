@@ -1,13 +1,11 @@
 <bit-dialog dialogSize="default">
-  <div bitDialogTitle class="tw-gap-4">
+  <ng-container bitDialogTitle>
     <span>{{ data.title | i18n }}</span>
     <span class="tw-text-sm tw-normal-case tw-text-muted">
       {{ data.details.length }}
-    </span>
-    <span class="tw-text-sm tw-normal-case tw-text-muted">
       {{ data.subTitle | i18n }}
     </span>
-  </div>
+  </ng-container>
 
   <div bitDialogContent>
     {{ data.message | i18n }}
