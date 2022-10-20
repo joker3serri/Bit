@@ -11,7 +11,7 @@ import {
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { ProjectListView } from "@bitwarden/common/models/view/projectListView";
+import { ProjectListView } from "@bitwarden/common/models/view/project-list.view";
 import { DialogService } from "@bitwarden/components";
 
 import {
