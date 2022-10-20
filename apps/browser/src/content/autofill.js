@@ -641,6 +641,11 @@
                   0 == confirmResult)) ? true : false;
       }
 
+      // Check if sandboxed
+      function isSandboxed() {
+          return self.origin == null || self.origin === 'null';
+      }
+
       function doFill(fillScript) {
           var fillScriptOps,
               theOpIds = [],
@@ -653,7 +658,7 @@
               fillScriptProperties.delay_between_operations &&
               (operationDelayMs = fillScriptProperties.delay_between_operations);
 
-          if (urlNotSecure(fillScript.savedURL)) {
+          if (isSandboxed() || urlNotSecure(fillScript.savedURL)) {
               return;
           }
 
