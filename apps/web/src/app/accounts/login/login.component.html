@@ -20,7 +20,13 @@
           <div class="tw-mb-3">
             <bit-form-field>
               <bit-label>{{ "emailAddress" | i18n }}</bit-label>
-              <input id="login_input_email" bitInput type="email" formControlName="email" />
+              <input
+                id="login_input_email"
+                bitInput
+                type="email"
+                formControlName="email"
+                (keyup.enter)="validateEmail()"
+              />
             </bit-form-field>
           </div>
 
