@@ -28,7 +28,13 @@
           <div class="box-content">
             <div class="box-content-row" appBoxRow>
               <label for="email">{{ "emailAddress" | i18n }}</label>
-              <input id="email" type="email" formControlName="email" appInputVerbatim="false" />
+              <input
+                id="email"
+                type="email"
+                formControlName="email"
+                appInputVerbatim="false"
+                (keyup.enter)="validateEmail()"
+              />
             </div>
           </div>
           <div class="box-footer" *ngIf="selfHostedDomain">
