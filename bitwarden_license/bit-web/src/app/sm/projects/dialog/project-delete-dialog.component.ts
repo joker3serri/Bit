@@ -71,15 +71,14 @@ export class ProjectDeleteDialogComponent implements OnInit {
     return this.i18nService.t("deleteProjectInputLabel", this.dialogConfirmationMessage);
   }
 
-  async submit() {
+  submit = async () => {
     if (this.formGroup.invalid) {
       return;
     }
 
-    this.formPromise = this.delete();
-    await this.formPromise;
+    await this.delete();
     this.dialogRef.close();
-  }
+  };
 
   async delete() {
     const bulkResponses = await this.projectService.delete(this.data.projects);

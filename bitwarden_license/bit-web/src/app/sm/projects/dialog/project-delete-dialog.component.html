@@ -1,4 +1,4 @@
-<form #form [formGroup]="formGroup" (ngSubmit)="submit()" [appApiAction]="formPromise">
+<form [formGroup]="formGroup" [bitSubmit]="submit">
   <bit-dialog dialogSize="small">
     <ng-container bitDialogTitle>
       <span>{{ title | i18n }}</span>
@@ -24,10 +24,10 @@
     </div>
 
     <div bitDialogFooter class="tw-flex tw-gap-2">
-      <button bitButton buttonType="danger" [loading]="form.loading">
+      <button type="submit" bitButton buttonType="danger" bitFormButton>
         {{ title | i18n }}
       </button>
-      <button bitButton buttonType="secondary" bitDialogClose type="button">
+      <button type="button" bitButton buttonType="secondary" bitFormButton bitDialogClose>
         {{ "cancel" | i18n }}
       </button>
     </div>
