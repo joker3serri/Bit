@@ -68,17 +68,14 @@ export class ProjectService {
   async delete(projects: ProjectListView[]): Promise<BulkOperationStatus[]> {
     const projectIds = projects.map((project) => project.id);
     const r = await this.apiService.send("POST", "/projects/delete", projectIds, true, true);
-
-    const bulkResponse: BulkOperationStatus[] = [];
-    r.data.forEach((element: { id: string; error: string }) => {
+    this._project.next(null);
+    return r.data.map((element: { id: string; error: string }) => {
       const bulkOperationStatus = new BulkOperationStatus();
       bulkOperationStatus.id = element.id;
       bulkOperationStatus.name = projects.find((project) => project.id == element.id).name;
       bulkOperationStatus.errorMessage = element.error;
-      bulkResponse.push(bulkOperationStatus);
+      return bulkOperationStatus;
     });
-    this._project.next(null);
-    return bulkResponse;
   }
 
   private async getOrganizationKey(organizationId: string): Promise<SymmetricCryptoKey> {
