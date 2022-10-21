@@ -641,8 +641,9 @@
                   0 == confirmResult)) ? true : false;
       }
 
-      // Check if sandboxed
+      // Detect if within an iframe, and the iframe is sandboxed
       function isSandboxed() {
+          // self.origin is 'null' if inside a frame with sandboxed csp or iframe tag
           return self.origin == null || self.origin === 'null';
       }
 
