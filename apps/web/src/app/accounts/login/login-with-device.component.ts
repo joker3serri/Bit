@@ -21,6 +21,7 @@ import { PasswordlessLogInCredentials } from "@bitwarden/common/models/domain/lo
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { PasswordlessCreateAuthRequest } from "@bitwarden/common/models/request/passwordless-create-auth.request";
 import { AuthRequestResponse } from "@bitwarden/common/models/response/auth-request.response";
+import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
 @Component({
   selector: "app-login-with-device",
@@ -146,8 +147,13 @@ export class LoginWithDeviceComponent
         }
       }
     } catch (error) {
-      this.router.navigate(["/login"]);
-      this.validationService.showError(error);
+      if (error instanceof ErrorResponse) {
+        this.router.navigate(["/login"]);
+        this.validationService.showError(error);
+        return;
+      }
+
+      this.logService.error(error);
     }
   }
 

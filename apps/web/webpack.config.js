@@ -258,7 +258,6 @@ const devServer =
                   https://*.duosecurity.com
                 ;connect-src
                   'self'
-                  ws://localhost:*
                   wss://notifications.bitwarden.com
                   https://notifications.bitwarden.com
                   https://cdn.bitwarden.net
