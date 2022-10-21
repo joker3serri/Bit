@@ -78,6 +78,10 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
       const rememberEmail = (await this.stateService.getRememberedEmail()) != null;
       this.formGroup.get("rememberEmail")?.setValue(rememberEmail);
     }
+
+    if (Utils.isBrowser && !Utils.isNode) {
+      this.focusInput();
+    }
   }
 
   async submit(showToast = true) {
