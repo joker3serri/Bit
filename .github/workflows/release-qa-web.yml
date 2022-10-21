@@ -38,9 +38,8 @@ jobs:
           workflow_conclusion: success
           branch: ${{ github.ref_name }}
           artifacts: web-*-cloud-QA.zip
-
-      # This should result in a build directory in the current working directory
-      - name: Unzip build asset
+          
+      - name: Unzip cloud asset
         working-directory: apps/web
         run: unzip web-*-cloud-QA.zip
 
