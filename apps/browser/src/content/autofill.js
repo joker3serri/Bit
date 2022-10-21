@@ -40,6 +40,7 @@
   7. Remove "some useful globals" on window
   8. Add ability to autofill span[data-bwautofill] elements
   9. Add new handler, for new command that responds with page details in response callback
+  10. Handle sandbox iframe and sandbox rule in CSP
   */
 
   function collect(document, undefined) {
