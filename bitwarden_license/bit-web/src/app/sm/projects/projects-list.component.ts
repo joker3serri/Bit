@@ -2,7 +2,7 @@ import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
-import { ProjectListView } from "@bitwarden/common/models/view/projectListView";
+import { ProjectListView } from "@bitwarden/common/models/view/project-list.view";
 
 @Component({
   selector: "sm-projects-list",
@@ -21,8 +21,10 @@ export class ProjectsListComponent implements OnDestroy {
 
   @Output() editProjectEvent = new EventEmitter<string>();
   @Output() viewProjectEvent = new EventEmitter<string>();
-  @Output() deleteProjectEvent = new EventEmitter<string>();
+  @Output() deleteProjectEvent = new EventEmitter<ProjectListView[]>();
   @Output() onProjectCheckedEvent = new EventEmitter<string[]>();
+  @Output() newProjectEvent = new EventEmitter();
+  @Output() importSecretsEvent = new EventEmitter();
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -49,5 +51,15 @@ export class ProjectsListComponent implements OnDestroy {
     this.isAllSelected()
       ? this.selection.clear()
       : this.selection.select(...this.projects.map((s) => s.id));
+  }
+
+  deleteProject(projectId: string) {
+    this.deleteProjectEvent.emit(this.projects.filter((p) => p.id == projectId));
+  }
+
+  bulkDeleteProjects() {
+    this.deleteProjectEvent.emit(
+      this.projects.filter((project) => this.selection.isSelected(project.id))
+    );
   }
 }

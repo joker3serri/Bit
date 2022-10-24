@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { ProjectView } from "@bitwarden/common/models/view/projectView";
+import { ProjectView } from "@bitwarden/common/models/view/project.view";
 
 import { ProjectService } from "../../projects/project.service";
 
@@ -24,9 +24,10 @@ export interface ProjectOperation {
   templateUrl: "./project-dialog.component.html",
 })
 export class ProjectDialogComponent implements OnInit {
-  formGroup = new FormGroup({
+  protected formGroup = new FormGroup({
     name: new FormControl("", [Validators.required]),
   });
+  protected loading = false;
 
   constructor(
     public dialogRef: DialogRef,
@@ -46,12 +47,14 @@ export class ProjectDialogComponent implements OnInit {
   }
 
   async loadData() {
+    this.loading = true;
     const project: ProjectView = await this.projectService.getByProjectId(this.data.projectId);
+    this.loading = false;
     this.formGroup.setValue({ name: project.name });
   }
 
   get title() {
-    return this.data.operation === OperationType.Add ? "addProject" : "editProject";
+    return this.data.operation === OperationType.Add ? "newProject" : "editProject";
   }
 
   submit = async () => {

@@ -4,11 +4,13 @@ import { Subject } from "rxjs";
 import { AbstractEncryptService } from "@bitwarden/common/abstractions/abstractEncrypt.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { EncString } from "@bitwarden/common/models/domain/encString";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
-import { ListResponse } from "@bitwarden/common/models/response/listResponse";
-import { ProjectListView } from "@bitwarden/common/models/view/projectListView";
-import { ProjectView } from "@bitwarden/common/models/view/projectView";
+import { EncString } from "@bitwarden/common/models/domain/enc-string";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
+import { ListResponse } from "@bitwarden/common/models/response/list.response";
+import { ProjectListView } from "@bitwarden/common/models/view/project-list.view";
+import { ProjectView } from "@bitwarden/common/models/view/project.view";
+
+import { BulkOperationStatus } from "../layout/dialogs/bulk-status-dialog.component";
 
 import { ProjectRequest } from "./requests/project.request";
 import { ProjectListItemResponse } from "./responses/project-list-item.response";
@@ -61,6 +63,19 @@ export class ProjectService {
     const request = await this.getProjectRequest(organizationId, projectView);
     const r = await this.apiService.send("PUT", "/projects/" + projectView.id, request, true, true);
     this._project.next(await this.createProjectView(new ProjectResponse(r)));
+  }
+
+  async delete(projects: ProjectListView[]): Promise<BulkOperationStatus[]> {
+    const projectIds = projects.map((project) => project.id);
+    const r = await this.apiService.send("POST", "/projects/delete", projectIds, true, true);
+    this._project.next(null);
+    return r.data.map((element: { id: string; error: string }) => {
+      const bulkOperationStatus = new BulkOperationStatus();
+      bulkOperationStatus.id = element.id;
+      bulkOperationStatus.name = projects.find((project) => project.id == element.id).name;
+      bulkOperationStatus.errorMessage = element.error;
+      return bulkOperationStatus;
+    });
   }
 
   private async getOrganizationKey(organizationId: string): Promise<SymmetricCryptoKey> {

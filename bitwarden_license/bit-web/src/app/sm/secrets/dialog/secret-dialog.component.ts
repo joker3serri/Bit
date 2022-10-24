@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { SecretView } from "@bitwarden/common/models/view/secretView";
+import { SecretView } from "@bitwarden/common/models/view/secret.view";
 
 import { SecretService } from "../secret.service";
 
@@ -24,11 +24,12 @@ export interface SecretOperation {
   templateUrl: "./secret-dialog.component.html",
 })
 export class SecretDialogComponent implements OnInit {
-  formGroup = new FormGroup({
+  protected formGroup = new FormGroup({
     name: new FormControl("", [Validators.required]),
     value: new FormControl("", [Validators.required]),
     notes: new FormControl(""),
   });
+  protected loading = false;
 
   constructor(
     public dialogRef: DialogRef,
@@ -48,12 +49,14 @@ export class SecretDialogComponent implements OnInit {
   }
 
   async loadData() {
+    this.loading = true;
     const secret: SecretView = await this.secretService.getBySecretId(this.data.secretId);
+    this.loading = false;
     this.formGroup.setValue({ name: secret.name, value: secret.value, notes: secret.note });
   }
 
   get title() {
-    return this.data.operation === OperationType.Add ? "addSecret" : "editSecret";
+    return this.data.operation === OperationType.Add ? "newSecret" : "editSecret";
   }
 
   submit = async () => {

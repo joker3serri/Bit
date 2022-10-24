@@ -2,9 +2,13 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
-import { ProjectListView } from "@bitwarden/common/models/view/projectListView";
+import { ProjectListView } from "@bitwarden/common/models/view/project-list.view";
 import { DialogService } from "@bitwarden/components";
 
+import {
+  ProjectDeleteDialogComponent,
+  ProjectDeleteOperation,
+} from "./dialog/project-delete-dialog.component";
 import {
   OperationType,
   ProjectDialogComponent,
@@ -57,6 +61,14 @@ export class ProjectsComponent implements OnInit {
       data: {
         organizationId: this.organizationId,
         operation: OperationType.Add,
+      },
+    });
+  }
+
+  openDeleteProjectDialog(event: ProjectListView[]) {
+    this.dialogService.open<unknown, ProjectDeleteOperation>(ProjectDeleteDialogComponent, {
+      data: {
+        projects: event,
       },
     });
   }
