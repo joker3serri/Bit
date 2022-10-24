@@ -20,6 +20,10 @@ describe("Utils Service", () => {
       expect(Utils.getDomain("about:blank")).toBeNull();
     });
 
+    it("should fail for file url", () => {
+      expect(Utils.getDomain("file:///C://somefolder/form.pdf")).toBeNull();
+    });
+
     it("should handle urls without protocol", () => {
       expect(Utils.getDomain("bitwarden.com")).toBe("bitwarden.com");
       expect(Utils.getDomain("wrong://bitwarden.com")).toBe("bitwarden.com");
