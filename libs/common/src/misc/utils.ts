@@ -219,6 +219,18 @@ export class Utils {
 
     uriString = uriString.trim();
 
+    if (uriString.startsWith("data:")) {
+      return null;
+    }
+
+    if (uriString.startsWith("about:")) {
+      return null;
+    }
+
+    if (uriString.startsWith("file:")) {
+      return null;
+    }
+
     // Does uriString contain invalid characters
     // TODO Needs to possibly be extended, although '!' is a reserved character
     if (uriString.indexOf("!") > 0) {

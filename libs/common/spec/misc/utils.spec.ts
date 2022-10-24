@@ -127,6 +127,20 @@ describe("Utils Service", () => {
       expect(Utils.getHostname('https://bit!:"_&ward.com')).toBeNull();
     });
 
+    it("should fail for data urls", () => {
+      expect(Utils.getHostname("data:image/jpeg;base64,AAA")).toBeNull();
+    });
+
+    it("should fail for about urls", () => {
+      expect(Utils.getHostname("about")).toBe("about");
+      expect(Utils.getHostname("about:")).toBeNull();
+      expect(Utils.getHostname("about:blank")).toBeNull();
+    });
+
+    it("should fail for file url", () => {
+      expect(Utils.getHostname("file:///C:/somefolder/form.pdf")).toBeNull();
+    });
+
     it("should handle valid urls", () => {
       expect(Utils.getHostname("bitwarden")).toBe("bitwarden");
       expect(Utils.getHostname("http://bitwarden")).toBe("bitwarden");
