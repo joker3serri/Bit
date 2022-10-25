@@ -31,7 +31,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
   onSuccessfulLoginNavigate: () => Promise<any>;
   onSuccessfulLoginTwoFactorNavigate: () => Promise<any>;
   onSuccessfulLoginForceResetNavigate: () => Promise<any>;
-  selfHosted = false;
+  private selfHosted = false;
   showLoginWithDevice: boolean;
   validatedEmail = false;
 
@@ -255,7 +255,8 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
     try {
       const deviceIdentifier = await this.appIdService.getAppId();
       const res = await this.apiService.getKnownDevice(email, deviceIdentifier);
-      this.showLoginWithDevice = res;
+      //ensure the application is not self-hosted
+      this.showLoginWithDevice = res && !this.selfHosted;
     } catch (e) {
       this.showLoginWithDevice = false;
     }
