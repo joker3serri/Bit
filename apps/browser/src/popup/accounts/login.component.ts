@@ -110,9 +110,13 @@ export class LoginComponent extends BaseLoginComponent {
     );
   }
 
-  async clearRememberedEmail(e: Event) {
-    e.stopPropagation();
+  async goBackToHome() {
     await this.stateService.setRememberedEmail(null);
-    this.router.navigate(["home"]);
+    this.router.navigate(["home"], {
+      queryParams: {
+        email: this.formGroup.value.email,
+        rememberEmail: this.formGroup.value.rememberEmail,
+      },
+    });
   }
 }

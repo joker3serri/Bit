@@ -1,6 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
 
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -11,8 +12,9 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
   selector: "app-home",
   templateUrl: "home.component.html",
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   loginInitiated = false;
+  private destroy$ = new Subject<void>();
 
   formGroup = this.formBuilder.group({
     email: ["", [Validators.required, Validators.email]],
@@ -25,8 +27,30 @@ export class HomeComponent {
     private formBuilder: FormBuilder,
     private router: Router,
     private i18nService: I18nService,
-    private environmentService: EnvironmentService
+    private environmentService: EnvironmentService,
+    private route: ActivatedRoute
   ) {}
+
+  ngOnInit() {
+    this.route?.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      if (params) {
+        const queryParamsEmail = params["email"];
+        const queryParamsRememberEmail = params["rememberEmail"];
+        if (
+          queryParamsEmail != null &&
+          queryParamsEmail.indexOf("@") > -1 &&
+          queryParamsRememberEmail != null
+        ) {
+          this.setFormGroupValues(queryParamsEmail, JSON.parse(queryParamsRememberEmail));
+        }
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   async initiateLogin(): Promise<void> {
     this.formGroup.patchValue({ email: await this.stateService.getRememberedEmail() });
@@ -51,5 +75,10 @@ export class HomeComponent {
 
   get selfHostedDomain() {
     return this.environmentService.hasBaseUrl() ? this.environmentService.getWebVaultUrl() : null;
+  }
+
+  async setFormGroupValues(email: string, rememberEmail: boolean) {
+    this.formGroup.patchValue({ email: email, rememberEmail: rememberEmail });
+    this.loginInitiated = true;
   }
 }
