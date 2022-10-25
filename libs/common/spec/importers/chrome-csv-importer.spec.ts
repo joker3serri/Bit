@@ -1,4 +1,4 @@
-import { ChromeCsvImporter as Importer } from "@bitwarden/common/importers/chrome-csv.importer";
+import { ChromeCsvImporter as Importer } from "@bitwarden/common/importers/chrome-csv-importer";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/models/view/login.view";
