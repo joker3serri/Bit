@@ -1,7 +1,7 @@
 <form #form (ngSubmit)="submit()" [appApiAction]="formPromise">
   <header>
     <div class="left">
-      <button type="button" routerLink="/login" [state]="{ email: emailSent }">
+      <button type="button" routerLink="/login" [queryParams]="{ email: emailSent }">
         {{ "cancel" | i18n }}
       </button>
     </div>

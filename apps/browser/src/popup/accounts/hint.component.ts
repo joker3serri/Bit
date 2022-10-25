@@ -1,5 +1,6 @@
-import { Component } from "@angular/core";
-import { Router } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Subject, takeUntil } from "rxjs";
 
 import { HintComponent as BaseHintComponent } from "@bitwarden/angular/components/hint.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -11,22 +12,37 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
   selector: "app-hint",
   templateUrl: "hint.component.html",
 })
-export class HintComponent extends BaseHintComponent {
+export class HintComponent extends BaseHintComponent implements OnInit {
   emailSent: string;
+  private destroy$ = new Subject<void>();
 
   constructor(
     router: Router,
     platformUtilsService: PlatformUtilsService,
     i18nService: I18nService,
     apiService: ApiService,
-    logService: LogService
+    logService: LogService,
+    private route: ActivatedRoute
   ) {
     super(router, i18nService, apiService, platformUtilsService, logService);
 
-    this.emailSent = this.router.getCurrentNavigation().extras.state.email;
-    this.email = this.emailSent;
     super.onSuccessfulSubmit = async () => {
-      this.router.navigateByUrl(this.successRoute, { state: { email: this.emailSent } });
+      this.router.navigate([this.successRoute], { queryParams: { email: this.emailSent } });
     };
+  }
+  ngOnInit() {
+    this.route?.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      if (params) {
+        const queryParamsEmail = params["email"];
+        if (queryParamsEmail != null && queryParamsEmail.indexOf("@") > -1) {
+          this.emailSent = this.email = queryParamsEmail;
+        }
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

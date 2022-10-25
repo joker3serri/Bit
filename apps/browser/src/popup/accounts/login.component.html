@@ -54,7 +54,12 @@
         </div>
       </div>
       <div class="box-footer">
-        <button type="button" class="btn link" routerLink="/hint" [state]="{ email: loggedEmail }">
+        <button
+          type="button"
+          class="btn link"
+          routerLink="/hint"
+          [queryParams]="{ email: loggedEmail }"
+        >
           <b>{{ "getMasterPasswordHint" | i18n }}</b>
         </button>
       </div>
