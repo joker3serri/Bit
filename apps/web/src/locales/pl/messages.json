@@ -71,7 +71,7 @@
     "message": "Firma"
   },
   "ssn": {
-    "message": "Numer PESEL"
+    "message": "PESEL"
   },
   "passportNumber": {
     "message": "Numer paszportu"
@@ -188,11 +188,11 @@
   },
   "baseDomain": {
     "message": "Domena podstawowa",
-    "description": "Domain name. Ex. website.com"
+    "description": "Domain name. Example: website.com"
   },
   "domainName": {
     "message": "Nazwa domeny",
-    "description": "Domain name. Ex. website.com"
+    "description": "Domain name. Example: website.com"
   },
   "host": {
     "message": "Host",
@@ -410,7 +410,7 @@
     "description": "Copy username to clipboard"
   },
   "copyNumber": {
-    "message": "Kopiuj numer karty",
+    "message": "Kopiuj numer",
     "description": "Copy credit card number"
   },
   "copySecurityCode": {
@@ -458,7 +458,7 @@
     "message": "Uruchom"
   },
   "newAttachment": {
-    "message": "Dodaj załącznik"
+    "message": "Dodaj nowy załącznik"
   },
   "deletedAttachment": {
     "message": "Załącznik został usunięty"
@@ -569,14 +569,26 @@
   "loginOrCreateNewAccount": {
     "message": "Zaloguj się lub utwórz nowe konto, aby uzyskać dostęp do Twojego bezpiecznego sejfu."
   },
+  "loginWithDevice": {
+    "message": "Zaloguj się za pomocą urządzenia"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Logowanie za pomocą urządzenia musi być włączone w ustawieniach aplikacji mobilnej Bitwarden. Potrzebujesz innej opcji?"
+  },
   "createAccount": {
     "message": "Utwórz konto"
+  },
+  "newAroundHere": {
+    "message": "Jesteś tu nowy(a)?"
   },
   "startTrial": {
     "message": "Rozpocznij okres próbny"
   },
   "logIn": {
     "message": "Zaloguj się"
+  },
+  "logInInitiated": {
+    "message": "Logowanie rozpoczęte"
   },
   "submit": {
     "message": "Wyślij"
@@ -635,7 +647,7 @@
   "confirmMasterPasswordRequired": {
     "message": "Wymagane jest ponowne wpisanie hasła głównego."
   },
-  "masterPasswordMinLength": {
+  "masterPasswordMinlength": {
     "message": "Hasło główne musi zawierać co najmniej 8 znaków."
   },
   "masterPassDoesntMatch": {
@@ -645,7 +657,7 @@
     "message": "Konto zostało utworzone! Teraz możesz się zalogować."
   },
   "trialAccountCreated": {
-    "message": "Konto zostało pomyślnie utworzone."
+    "message": "Konto zostało utworzone."
   },
   "masterPassSent": {
     "message": "Wysłaliśmy Tobie wiadomość e-mail z podpowiedzią do hasła głównego."
@@ -704,6 +716,9 @@
   },
   "noOrganizationsList": {
     "message": "Nie należysz do żadnej organizacji. Organizacje pozwalają na bezpieczne udostępnianie elementów innym użytkownikom."
+  },
+  "notificationSentDevice": {
+    "message": "Powiadomienie zostało wysłane na twoje urządzenie."
   },
   "versionNumber": {
     "message": "Wersja $VERSION_NUMBER$",
@@ -949,7 +964,7 @@
   },
   "minSpecial": {
     "message": "Minimalna liczba znaków specjalnych",
-    "description": "Minimum Special Characters"
+    "description": "Minimum special characters"
   },
   "ambiguous": {
     "message": "Unikaj niejednoznacznych znaków"
@@ -982,7 +997,7 @@
   },
   "capitalize": {
     "message": "Wielkie litery",
-    "description": "Make the first letter of a work uppercase."
+    "description": "Make the first letter of a word uppercase."
   },
   "includeNumber": {
     "message": "Uwzględnij cyfry"
@@ -995,7 +1010,7 @@
   },
   "clear": {
     "message": "Wyczyść",
-    "description": "To clear something out. example: To clear browser history."
+    "description": "To clear something out. Example: To clear browser history."
   },
   "accountUpdated": {
     "message": "Konto zostało zaktualizowane"
@@ -1177,6 +1192,12 @@
   "selectImportFile": {
     "message": "Wybierz plik do zaimportowania"
   },
+  "chooseFile": {
+    "message": "Wybierz plik"
+  },
+  "noFileChosen": {
+    "message": "Nie wybrano pliku"
+  },
   "orCopyPasteFileContents": {
     "message": "lub skopiuj/wklej treść pliku"
   },
@@ -1300,7 +1321,7 @@
   },
   "premium": {
     "message": "Premium",
-    "description": "Premium Membership"
+    "description": "Premium membership"
   },
   "premiumMembership": {
     "message": "Konto Premium"
@@ -1459,7 +1480,7 @@
     "message": "Wpisz 6-cyfrowy kod weryfikacyjny z wiadomości e-mail"
   },
   "sendEmail": {
-    "message": "Wyślij wiadomość"
+    "message": "Wyślij e-mail"
   },
   "twoFactorU2fAdd": {
     "message": "Dodaj klucz bezpieczeństwa FIDO U2F do swojego konta"
@@ -1524,7 +1545,7 @@
   },
   "reportsDesc": {
     "message": "Zidentyfikuj i napraw luki bezpieczeństwa na swoich kontach online, klikając raporty poniżej.",
-    "description": "Vault Health Reports can be used to evaluate the security of your Bitwarden Personal or Organization Vault."
+    "description": "Vault health reports can be used to evaluate the security of your Bitwarden individual or organization vault."
   },
   "unsecuredWebsitesReport": {
     "message": "Niezabezpieczone witryny"
@@ -1557,7 +1578,7 @@
     "message": "Znaleźliśmy elementy bez włączonej opcji logowania dwustopniowego"
   },
   "inactive2faFoundDesc": {
-    "message": "Znaleźliśmy witryny w sejfie, które mogą nie korzystać z opcji logowania dwustopniowego (według 2fa.directory). Włącz logowanie dwustopniowe, aby dodatkowo zabezpieczyć te konta.",
+    "message": "Znaleźliśmy $COUNT$ witryn(y) w sejfie, które mogą nie być skonfigurowane z wykorzystaniem logowania dwustopniowego (wg 2fa.directory). Aby dodatkowo zabezpieczyć te konta, należy skonfigurować logowanie dwustopniowe.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -1709,7 +1730,7 @@
     "message": "Data wystąpienia naruszenia"
   },
   "breachReported": {
-    "message": "Data zgłoszenia naruszenia"
+    "message": "Naruszenie zostało zgłoszone"
   },
   "reportError": {
     "message": "Wystąpił błąd podczas próby załadowania raportu. Spróbuj ponownie"
@@ -1750,7 +1771,7 @@
   },
   "goPremium": {
     "message": "Przejdź na konto Premium",
-    "description": "Another way of saying \"Get a premium membership\""
+    "description": "Another way of saying \"Get a Premium membership\""
   },
   "premiumUpdated": {
     "message": "Konto Premium zostało zaktualizowane."
@@ -1840,7 +1861,7 @@
     "message": "rok"
   },
   "yr": {
-    "message": "r."
+    "message": "rok"
   },
   "month": {
     "message": "miesiąc"
@@ -2066,7 +2087,7 @@
     "message": "To konto jest własnością firmy."
   },
   "billingEmail": {
-    "message": "Adres rozliczeniowy"
+    "message": "E-mail rozliczeniowy"
   },
   "businessName": {
     "message": "Nazwa firmy"
@@ -2257,7 +2278,7 @@
     "message": "Rocznie"
   },
   "annual": {
-    "message": "Raz w roku"
+    "message": "Rocznie"
   },
   "basePrice": {
     "message": "Cena netto"
@@ -2329,7 +2350,7 @@
     "message": "Gdy członek zostanie usunięty, nie ma już dostępu do danych organizacji, a ta czynność jest nieodwracalna. Aby ponownie dodać członka do organizacji, należy go zaprosić i ponownie wprowadzić."
   },
   "revokeUserConfirmation": {
-    "message": "Gdy członek zostanie odwołany, nie ma już dostępu do danych organizacji. Aby szybko przywrócić dostęp członków, przejdź do karty Odwołani."
+    "message": "Jeśli użytkownik zostanie unieważniony, nie będzie miał dostępu do danych organizacji. Aby przywrócić dostęp użytkownika, przejdź do karty Unieważnieni."
   },
   "removeUserConfirmationKeyConnector": {
     "message": "Ostrzeżenie! Ten użytkownik wymaga serwera Key Connector do zarządzania szyfrowaniem. Usunięcie tego użytkownika z organizacji spowoduje trwałe wyłączenie jego konta. Nie możesz cofnąć tej akcji. Czy chcesz kontynuować?"
@@ -2532,6 +2553,9 @@
       }
     }
   },
+  "viewAllLoginOptions": {
+    "message": "Zobacz wszystkie sposoby logowania"
+  },
   "viewedItemId": {
     "message": "Wyświetlono element $ID$.",
     "placeholders": {
@@ -2686,7 +2710,7 @@
     }
   },
   "revokedUserId": {
-    "message": "Odwołano dostęp organizacji dla $ID$.",
+    "message": "Dostęp do organizacji dla użytkownika $ID$ został unieważniony.",
     "placeholders": {
       "id": {
         "content": "$1",
@@ -2704,7 +2728,7 @@
     }
   },
   "revokeUserId": {
-    "message": "Odwołano dostęp $ID$",
+    "message": "Unieważnij dostęp dla użytkownika $ID$",
     "placeholders": {
       "id": {
         "content": "$1",
@@ -2939,7 +2963,7 @@
     "placeholders": {
       "description": {
         "content": "$1",
-        "example": "You must enable 2FA on your user account before you can join this organization."
+        "example": "You must set up 2FA on your user account before you can join this organization."
       }
     }
   },
@@ -3011,15 +3035,15 @@
   },
   "billingPlan": {
     "message": "Plan",
-    "description": "A billing plan/package. For example: families, teams, enterprise, etc."
+    "description": "A billing plan/package. For example: Families, Teams, Enterprise, etc."
   },
   "changeBillingPlan": {
     "message": "Ulepsz plan",
-    "description": "A billing plan/package. For example: families, teams, enterprise, etc."
+    "description": "A billing plan/package. For example: Families, Teams, Enterprise, etc."
   },
   "changeBillingPlanUpgrade": {
     "message": "Zaktualizuj swoje konto do innego planu, podając poniższe informacje. Upewnij się, że do konta została dodana aktywna metoda płatności.",
-    "description": "A billing plan/package. For example: families, teams, enterprise, etc."
+    "description": "A billing plan/package. For example: Families, Teams, Enterprise, etc."
   },
   "invoiceNumber": {
     "message": "Faktura nr $NUMBER$",
@@ -3295,6 +3319,10 @@
     "message": "Zaktualizowano",
     "description": "ex. Date this item was updated"
   },
+  "dateCreated": {
+    "message": "Utworzono",
+    "description": "ex. Date this item was created"
+  },
   "datePasswordUpdated": {
     "message": "Aktualizacja hasła",
     "description": "ex. Date this password was updated"
@@ -3371,6 +3399,12 @@
   "fingerprintEnsureIntegrityVerify": {
     "message": "Aby zapewnić integralność kluczy szyfrowania, zweryfikuj unikalny identyfikator użytkownika, zanim przejdziesz dalej.",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
+  },
+  "fingerprintMatchInfo": {
+    "message": "Upewnij się, że twój sejf jest odblokowany i unikalny identyfikator konta pasuje do drugiego urządzenia."
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Unikalny identyfikator konta"
   },
   "dontAskFingerprintAgain": {
     "message": "Nie pytaj ponownie o weryfikację unikalnego identyfikatora konta dla zaproszonych użytkowników (niezalecane)",
@@ -3769,7 +3803,7 @@
     "message": "Wyłączone"
   },
   "revoked": {
-    "message": "Odwołani"
+    "message": "Unieważnieni"
   },
   "sendLink": {
     "message": "Link wysyłki",
@@ -3919,7 +3953,7 @@
     "placeholders": {
       "description": {
         "content": "$1",
-        "example": "You must enable 2FA on your user account before you can join this organization."
+        "example": "You must set up 2FA on your user account before you can join this organization."
       }
     }
   },
@@ -4056,6 +4090,12 @@
   },
   "permissions": {
     "message": "Uprawnienia"
+  },
+  "managerPermissions": {
+    "message": "Menedżer uprawnień"
+  },
+  "adminPermissions": {
+    "message": "Administrator uprawnień"
   },
   "accessEventLogs": {
     "message": "Dostęp do dziennika zdarzeń"
@@ -4366,6 +4406,9 @@
   "reinviteSelected": {
     "message": "Wyślij ponownie zaproszenia"
   },
+  "resendNotification": {
+    "message": "Wyślij ponownie powiadomienie"
+  },
   "noSelectedUsersApplicable": {
     "message": "Ta akcja nie dotyczy żadnych zaznaczonych użytkowników."
   },
@@ -4376,7 +4419,7 @@
     "message": "Kiedy członek (członkowie) zostaje usunięty, nie ma już dostępu do danych organizacji i działanie to jest nieodwracalne. Aby dodać członka z powrotem do organizacji, musi on zostać ponownie zaproszony i włączony do organizacji. Proces ten może trwać kilka sekund i nie może być przerwany ani anulowany."
   },
   "revokeUsersWarning": {
-    "message": "Gdy członek (członkowie) zostanie odwołany, nie ma już dostępu do danych organizacji. Aby szybko przywrócić dostęp do danych członka, przejdź do zakładki Odwołano. Proces ten może potrwać kilka sekund i nie można go przerwać ani anulować."
+    "message": "Jeśli użytkownicy zostaną unieważnieni, nie będą mieli dostępu do danych organizacji. Aby przywrócić dostęp użytkownika, przejdź do karty Unieważnieni. Proces może potrwać kilka sekund i nie można go przerwać lub anulować."
   },
   "theme": {
     "message": "Motyw"
@@ -4409,7 +4452,7 @@
     "message": "Usunięto"
   },
   "bulkRevokedMessage": {
-    "message": "Odwołano dostęp do organizacji"
+    "message": "Dostęp do organizacji został unieważniony"
   },
   "bulkRestoredMessage": {
     "message": "Przywrócono dostęp do organizacji"
@@ -4424,7 +4467,7 @@
     "message": "Usuń użytkowników"
   },
   "revokeUsers": {
-    "message": "Odwołaj użytkowników"
+    "message": "Unieważnij użytkowników"
   },
   "restoreUsers": {
     "message": "Przywróć użytkowników"
@@ -4787,7 +4830,7 @@
     "placeholders": {
       "description": {
         "content": "$1",
-        "example": "You must have at least one existing Families Organization."
+        "example": "You must have at least one existing Families organization."
       }
     }
   },
@@ -4984,7 +5027,7 @@
     "message": "Wygeneruj token synchronizacji płatności"
   },
   "copyPasteBillingSync": {
-    "message": "Kopiuj i wklej ten token do ustawień synchronizacji płatności swojej organizacji."
+    "message": "Skopiuj i wklej ten token do ustawień synchronizacji rozliczeniowej swojej organizacji."
   },
   "billingSyncCanAccess": {
     "message": "Twój token synchronizacji płatności może edytować ustawienia subskrypcji tej organizacji."
@@ -5357,5 +5400,17 @@
   },
   "numberOfUsers": {
     "message": "Liczba użytkowników"
+  },
+  "multiSelectPlaceholder": {
+    "message": "-- Pisz, aby filtrować --"
+  },
+  "multiSelectLoading": {
+    "message": "Pobieranie opcji..."
+  },
+  "multiSelectNotFound": {
+    "message": "Nie znaleziono żadnych pozycji"
+  },
+  "multiSelectClearAll": {
+    "message": "Wyczyść wszystko"
   }
 }

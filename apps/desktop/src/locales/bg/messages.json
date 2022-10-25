@@ -420,7 +420,7 @@
   },
   "capitalize": {
     "message": "Главни букви",
-    "description": "Make the first letter of a work uppercase."
+    "description": "Make the first letter of a word uppercase."
   },
   "includeNumber": {
     "message": "И цифри"
@@ -1266,6 +1266,10 @@
     "message": "Обновено",
     "description": "ex. Date this item was updated"
   },
+  "dateCreated": {
+    "message": "Създадено",
+    "description": "ex. Date this item was created"
+  },
   "datePasswordUpdated": {
     "message": "Обновена парола",
     "description": "ex. Date this password was updated"
@@ -1281,7 +1285,7 @@
     "description": "hCaptcha is the name of a website, should not be translated"
   },
   "loadAccessibilityCookie": {
-    "message": "Load Accessibility Cookie"
+    "message": "Load accessibility cookie"
   },
   "registerAccessibilityUser": {
     "message": "Register as an accessibility user at",
@@ -1570,6 +1574,12 @@
   "enableBrowserIntegrationDesc": {
     "message": "За потвърждаване с биометрични данни е необходима интеграция с браузъра."
   },
+  "enableDuckDuckGoBrowserIntegration": {
+    "message": "Разрешаване на интеграцията на DuckDuckGo в браузъра"
+  },
+  "enableDuckDuckGoBrowserIntegrationDesc": {
+    "message": "Използвайте трезора си в Битуорден, когато навигирате в мрежата с DuckDuckGo."
+  },
   "browserIntegrationUnsupportedTitle": {
     "message": "Интеграцията с браузър не се поддържа"
   },
@@ -1596,6 +1606,21 @@
   },
   "verifyBrowserDesc": {
     "message": "Уверете се, че идентификаторът в разширението съвпада с показания."
+  },
+  "verifyNativeMessagingConnectionTitle": {
+    "message": "$APPID$ иска де се свърже с Битуорден",
+    "placeholders": {
+      "appid": {
+        "content": "$1",
+        "example": "My App"
+      }
+    }
+  },
+  "verifyNativeMessagingConnectionDesc": {
+    "message": "Одобрявате ли тази заявка?"
+  },
+  "verifyNativeMessagingConnectionWarning": {
+    "message": "Ако не Вие сте предизвикали тази заявка, не я одобрявайте."
   },
   "biometricsNotEnabledTitle": {
     "message": "Потвърждаването с биометрични данни не е включено"
@@ -1930,14 +1955,14 @@
     "message": "Тип потребителско име"
   },
   "plusAddressedEmail": {
-    "message": "Plus Addressed Email",
+    "message": "Plus addressed email",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },
   "plusAddressedEmailDesc": {
     "message": "Използвайте възможностите за под-адресиране на е-поща на своя доставчик."
   },
   "catchallEmail": {
-    "message": "Catch-all Email"
+    "message": "Catch-all email"
   },
   "catchallEmailDesc": {
     "message": "Use your domain's configured catch-all inbox."
@@ -1964,7 +1989,7 @@
     "message": "Търсене в моя трезор"
   },
   "forwardedEmail": {
-    "message": "Forwarded Email Alias"
+    "message": "Forwarded email alias"
   },
   "forwardedEmailDesc": {
     "message": "Generate an email alias with an external forwarding service."
@@ -1993,5 +2018,8 @@
   },
   "cardBrandMir": {
     "message": "Мир"
+  },
+  "vault": {
+    "message": "Трезор"
   }
 }

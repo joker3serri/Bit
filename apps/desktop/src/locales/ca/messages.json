@@ -420,7 +420,7 @@
   },
   "capitalize": {
     "message": "Majúscules inicials",
-    "description": "Make the first letter of a work uppercase."
+    "description": "Make the first letter of a word uppercase."
   },
   "includeNumber": {
     "message": "Inclou número"
@@ -429,10 +429,10 @@
     "message": "Tanca"
   },
   "minNumbers": {
-    "message": "Mínim de caràcters númerics"
+    "message": "Números mínims"
   },
   "minSpecial": {
-    "message": "Mínim de caràcters especials",
+    "message": "Especial mínim",
     "description": "Minimum Special Characters"
   },
   "ambiguous": {
@@ -620,7 +620,7 @@
     "message": "Introduïu la vostra clau de seguretat al port USB de l'ordinador. Si té un botó, premeu-lo."
   },
   "recoveryCodeDesc": {
-    "message": "Heu perdut l'accés a tots els vostres proveïdors de dos factors? Utilitzeu el codi de recuperació per inhabilitar tots els proveïdors de dos factors del vostre compte."
+    "message": "Heu perdut l'accés a tots els vostres proveïdors de dos factors? Utilitzeu el vostre codi de recuperació per desactivar tots els proveïdors de dos factors del vostre compte."
   },
   "recoveryCodeTitle": {
     "message": "Codi de recuperació"
@@ -1266,6 +1266,10 @@
     "message": "Actualitzat",
     "description": "ex. Date this item was updated"
   },
+  "dateCreated": {
+    "message": "Creat",
+    "description": "ex. Date this item was created"
+  },
   "datePasswordUpdated": {
     "message": "Contrasenya actualitzada",
     "description": "ex. Date this password was updated"
@@ -1570,6 +1574,12 @@
   "enableBrowserIntegrationDesc": {
     "message": "S'utilitza per a la biometria al navegador."
   },
+  "enableDuckDuckGoBrowserIntegration": {
+    "message": "Permet la integració del navegador DuckDuckGo"
+  },
+  "enableDuckDuckGoBrowserIntegrationDesc": {
+    "message": "Utilitzeu la vostra caixa forta de Bitwarden quan navegueu amb DuckDuckGo."
+  },
   "browserIntegrationUnsupportedTitle": {
     "message": "La integració en el navegador no és compatible"
   },
@@ -1596,6 +1606,21 @@
   },
   "verifyBrowserDesc": {
     "message": "Assegureu-vos que l’empremta digital que es mostra és idèntica a la que es mostra a l’extensió del navegador."
+  },
+  "verifyNativeMessagingConnectionTitle": {
+    "message": "$APPID$ vol connectar-se a Bitwarden",
+    "placeholders": {
+      "appid": {
+        "content": "$1",
+        "example": "My App"
+      }
+    }
+  },
+  "verifyNativeMessagingConnectionDesc": {
+    "message": "Voleu aprovar aquesta sol·licitud?"
+  },
+  "verifyNativeMessagingConnectionWarning": {
+    "message": "Si no heu iniciar aquesta sol·licitud, no l'aproveu."
   },
   "biometricsNotEnabledTitle": {
     "message": "La biomètrica no està habilitada"
@@ -1631,7 +1656,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "myVault": {
-    "message": "La meua caixa forta"
+    "message": "Caixa forta"
   },
   "text": {
     "message": "Text"
@@ -1961,7 +1986,7 @@
     "message": "Cerca organització"
   },
   "searchMyVault": {
-    "message": "Cerca la meua caixa forta"
+    "message": "Cerca en la caixa forta"
   },
   "forwardedEmail": {
     "message": "Àlies de correu electrònic reenviat"
@@ -1993,5 +2018,8 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "vault": {
+    "message": "Caixa forta"
   }
 }
