@@ -289,6 +289,10 @@ header {
   }
 }
 
+.no-bg {
+  background-color: transparent;
+}
+
 .content {
   padding: 15px;
 }
@@ -482,11 +486,14 @@ main {
   padding-left: 7px;
   .org-filter {
     @include themify($themes) {
-      background-color: themed("backgroundColor");
+      background-color: themed("buttonBackgroundColor");
     }
-    border: 1px solid;
-    padding: 7px;
     border-radius: $border-radius;
+    padding: 6px 10px;
+    width: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 }
 .vault-select {

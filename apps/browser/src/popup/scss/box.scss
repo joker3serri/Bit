@@ -53,7 +53,6 @@
   }
 
   .box-content {
-
     @include themify($themes) {
       background-color: themed("backgroundColor");
       border-color: themed("borderColor");
@@ -464,7 +463,7 @@
     padding: 7px 4px;
 
     @include themify($themes) {
-      background-color: themed("boxBorderColor");
+      background-color: themed("selectBoxBackgroundColor");
       border-color: themed("inputBorderColor");
     }
   }
@@ -726,7 +725,7 @@ form {
         &.no-hover {
           &:hover {
             @include themify($themes) {
-              background-color: rgba(0, 0, 0, 0) !important;
+              background-color: themed("transparentColor") !important;
             }
           }
         }

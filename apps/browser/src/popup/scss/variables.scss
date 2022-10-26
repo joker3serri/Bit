@@ -32,6 +32,8 @@ $brand-primary-accent: #1252a3;
 
 $background-color: #f0f0f0;
 
+$border-color-alt: #c3c5c7;
+
 $box-background-color: white;
 $box-background-hover-color: $list-item-hover;
 $box-border-color: $border-color;
@@ -62,14 +64,17 @@ $solarizedDarkGreen: #859900;
 $themes: (
   light: (
     textColor: $text-color,
+    hoverColorTransparent: rgba($text-color, 0.15),
     borderColor: $border-color-dark,
     backgroundColor: $background-color,
+    genBorderColor: $border-color-alt,
     backgroundColorAlt: #ffffff,
     scrollbarColor: rgba(100, 100, 100, 0.2),
     scrollbarHoverColor: rgba(100, 100, 100, 0.4),
     boxBackgroundColor: $box-background-color,
     boxBackgroundHoverColor: $box-background-hover-color,
     boxBorderColor: $box-border-color,
+    selectBoxBackgroundColor: $box-border-color,
     tabBackgroundColor: #ffffff,
     tabBackgroundHoverColor: $list-item-hover,
     headerColor: #ffffff,
@@ -110,17 +115,21 @@ $themes: (
     calloutBackgroundColor: $box-background-color,
     toastTextColor: #ffffff,
     svgSuffix: "-light.svg",
+    transparentColor: rgba(0, 0, 0, 0),
   ),
   dark: (
     textColor: #ffffff,
+    hoverColorTransparent: rgba($text-color, 0.15),
     borderColor: #161c26,
     backgroundColor: #161c26,
+    genBorderColor: #4c525f,
     backgroundColorAlt: #2f343d,
     scrollbarColor: #6e788a,
     scrollbarHoverColor: #8d94a5,
     boxBackgroundColor: #2f343d,
     boxBackgroundHoverColor: #3c424e,
     boxBorderColor: #4c525f,
+    selectBoxBackgroundColor: #4c525f,
     tabBackgroundColor: #2f343d,
     tabBackgroundHoverColor: #3c424e,
     headerColor: #ffffff,
@@ -161,17 +170,21 @@ $themes: (
     calloutBackgroundColor: #3c424e,
     toastTextColor: #1f242e,
     svgSuffix: "-dark.svg",
+    transparentColor: rgba(0, 0, 0, 0),
   ),
   nord: (
     textColor: $nord5,
+    hoverColorTransparent: rgba($text-color, 0.15),
     borderColor: $nord0,
     backgroundColor: $nord1,
+    genBorderColor: $nord3,
     backgroundColorAlt: $nord2,
     scrollbarColor: $nord4,
     scrollbarHoverColor: $nord6,
     boxBackgroundColor: $nord2,
     boxBackgroundHoverColor: $nord3,
     boxBorderColor: $nord1,
+    selectBoxBackgroundColor: $nord1,
     tabBackgroundColor: $nord1,
     tabBackgroundHoverColor: $nord2,
     headerColor: $nord5,
@@ -212,17 +225,21 @@ $themes: (
     calloutBackgroundColor: $nord2,
     toastTextColor: #ffffff,
     svgSuffix: "-dark.svg",
+    transparentColor: rgba(0, 0, 0, 0),
   ),
   solarizedDark: (
     textColor: $solarizedDarkBase2,
+    hoverColorTransparent: rgba($text-color, 0.15),
     borderColor: $solarizedDarkBase03,
     backgroundColor: $solarizedDarkBase03,
+    genBorderColor: $solarizedDarkBase01,
     backgroundColorAlt: $solarizedDarkBase02,
     scrollbarColor: $solarizedDarkBase0,
     scrollbarHoverColor: $solarizedDarkBase2,
     boxBackgroundColor: $solarizedDarkBase02,
     boxBackgroundHoverColor: lighten($solarizedDarkBase02, 5%),
     boxBorderColor: $solarizedDarkBase02,
+    selectBoxBackgroundColor: $solarizedDarkBase02,
     tabBackgroundColor: $solarizedDarkBase02,
     tabBackgroundHoverColor: $solarizedDarkBase01,
     headerColor: $solarizedDarkBase1,
@@ -263,6 +280,7 @@ $themes: (
     calloutBackgroundColor: $solarizedDarkBase01,
     toastTextColor: #ffffff,
     svgSuffix: "-solarized.svg",
+    transparentColor: rgba(0, 0, 0, 0),
   ),
 );
 
