@@ -1,22 +1,8 @@
 <form #form (ngSubmit)="submit()" [appApiAction]="formPromise" [formGroup]="formGroup">
   <header>
-    <div class="left">
-      <button type="button" routerLink="/home">{{ "close" | i18n }}</button>
-    </div>
-    <h1 class="center">
+    <h1 class="login-center">
       <span class="title">{{ "logIn" | i18n }}</span>
     </h1>
-    <div class="right">
-      <app-avatar
-        [data]="loggedEmail"
-        [email]="loggedEmail"
-        [circle]="true"
-        dynamic="true"
-        fontSize="16"
-        size="30"
-      >
-      </app-avatar>
-    </div>
   </header>
   <main tabindex="-1">
     <div class="box">
