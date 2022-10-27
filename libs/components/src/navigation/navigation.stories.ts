@@ -25,7 +25,7 @@ const Template: Story<NavigationDirective> = (args: NavigationDirective) => ({
   template: `
     <a [routerLink]="['']" bitNavigation>
       <i class="bwi bwi-fw bwi-filter"></i>
-      <span>Anchor link</span>
+      <span>Active link</span>
     </a>
     <a [routerLink]="['abc']" href="#" bitNavigation>
       <i class="bwi bwi-fw bwi-key"></i>
