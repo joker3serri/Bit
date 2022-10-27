@@ -11,7 +11,9 @@ import { SecretListView } from "../models/view/secret-list.view";
 import { SecretView } from "../models/view/secret.view";
 
 import { SecretRequest } from "./requests/secret.request";
+import { ProjectsMappedToSecretResponse } from "./responses/projects-mapped-to-secret-response";
 import { SecretListItemResponse } from "./responses/secret-list-item.response";
+import { SecretWithProjectsListResponse } from "./responses/secret-with-projects-list-response";
 import { SecretResponse } from "./responses/secret.response";
 
 @Injectable({
@@ -43,7 +45,7 @@ export class SecretService {
       true
     );
 
-    const results = new SecretWithProjectsListResponse(r, SecretListItemResponse);
+    const results = new SecretWithProjectsListResponse(r);
     //results have all projects and secrets list
     return await this.createSecretsListView(organizationId, results.secrets, results.projects);
   }
@@ -130,7 +132,7 @@ export class SecretService {
   private async createSecretsListView(
     organizationId: string,
     secrets: SecretListItemResponse[],
-    projects: ProjectsMappedToSecret[]
+    projects: ProjectsMappedToSecretResponse[]
   ): Promise<SecretListView[]> {
     const orgKey = await this.getOrganizationKey(organizationId);
     return await Promise.all(
