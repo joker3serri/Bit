@@ -4,7 +4,7 @@ import { InitializerMetadata } from "../../interfaces/initializer-metadata.inter
 import { Cipher } from "../../models/domain/cipher";
 import { CipherView } from "../../models/view/cipher.view";
 
-import { InitializerKey } from "./initializerKey";
+import { InitializerKey } from "./initializer-key";
 
 /**
  * Internal reference of classes so we can reconstruct objects properly.

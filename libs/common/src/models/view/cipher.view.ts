@@ -4,7 +4,7 @@ import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
 import { LinkedIdType } from "../../enums/linkedIdType";
 import { InitializerMetadata } from "../../interfaces/initializer-metadata.interface";
-import { InitializerKey } from "../../services/cryptography/initializerKey";
+import { InitializerKey } from "../../services/cryptography/initializer-key";
 import { LocalData } from "../data/local.data";
 import { Cipher } from "../domain/cipher";
 

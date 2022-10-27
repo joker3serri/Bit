@@ -1,4 +1,4 @@
-import { InitializerKey } from "../services/cryptography/initializerKey";
+import { InitializerKey } from "../services/cryptography/initializer-key";
 
 /**
  * This interface enables deserialization of arbitrary objects by recording their class name as an enum, which
