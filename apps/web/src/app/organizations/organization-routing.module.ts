@@ -3,14 +3,18 @@ import { RouterModule, Routes } from "@angular/router";
 
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
 import {
-  canAccessOrgAdmin,
   canAccessGroupsTab,
+  canAccessManageTab,
   canAccessMembersTab,
+  canAccessOrgAdmin,
+  canManageCollections,
 } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 
 import { OrganizationPermissionsGuard } from "./guards/org-permissions.guard";
 import { OrganizationLayoutComponent } from "./layouts/organization-layout.component";
+import { CollectionsComponent } from "./manage/collections.component";
 import { GroupsComponent } from "./manage/groups.component";
+import { ManageComponent } from "./manage/manage.component";
 import { PeopleComponent } from "./manage/people.component";
 import { VaultModule } from "./vault/vault.module";
 
@@ -33,22 +37,46 @@ const routes: Routes = [
         loadChildren: () => import("./settings").then((m) => m.OrganizationSettingsModule),
       },
       {
-        path: "members",
-        component: PeopleComponent,
+        path: "manage",
+        component: ManageComponent,
         canActivate: [OrganizationPermissionsGuard],
         data: {
-          titleId: "members",
-          organizationPermissions: canAccessMembersTab,
+          organizationPermissions: canAccessManageTab,
         },
-      },
-      {
-        path: "groups",
-        component: GroupsComponent,
-        canActivate: [OrganizationPermissionsGuard],
-        data: {
-          titleId: "groups",
-          organizationPermissions: canAccessGroupsTab,
-        },
+        children: [
+          {
+            path: "",
+            pathMatch: "full",
+            redirectTo: "people",
+          },
+          {
+            path: "collections",
+            component: CollectionsComponent,
+            canActivate: [OrganizationPermissionsGuard],
+            data: {
+              titleId: "collections",
+              organizationPermissions: canManageCollections,
+            },
+          },
+          {
+            path: "groups",
+            component: GroupsComponent,
+            canActivate: [OrganizationPermissionsGuard],
+            data: {
+              titleId: "groups",
+              organizationPermissions: canAccessGroupsTab,
+            },
+          },
+          {
+            path: "people",
+            component: PeopleComponent,
+            canActivate: [OrganizationPermissionsGuard],
+            data: {
+              titleId: "people",
+              organizationPermissions: canAccessMembersTab,
+            },
+          },
+        ],
       },
       {
         path: "reporting",
