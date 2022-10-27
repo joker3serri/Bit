@@ -109,14 +109,4 @@ export class LoginComponent extends BaseLoginComponent {
         codeChallenge
     );
   }
-
-  async goBackToHome() {
-    await this.stateService.setRememberedEmail(null);
-    this.router.navigate(["home"], {
-      queryParams: {
-        email: this.formGroup.value.email,
-        rememberEmail: this.formGroup.value.rememberEmail,
-      },
-    });
-  }
 }

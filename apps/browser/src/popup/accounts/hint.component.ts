@@ -13,7 +13,6 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
   templateUrl: "hint.component.html",
 })
 export class HintComponent extends BaseHintComponent implements OnInit {
-  emailSent: string;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -27,7 +26,7 @@ export class HintComponent extends BaseHintComponent implements OnInit {
     super(router, i18nService, apiService, platformUtilsService, logService);
 
     super.onSuccessfulSubmit = async () => {
-      this.router.navigate([this.successRoute], { queryParams: { email: this.emailSent } });
+      this.router.navigate([this.successRoute]);
     };
   }
   ngOnInit() {
@@ -35,7 +34,7 @@ export class HintComponent extends BaseHintComponent implements OnInit {
       if (params) {
         const queryParamsEmail = params["email"];
         if (queryParamsEmail != null && queryParamsEmail.indexOf("@") > -1) {
-          this.emailSent = this.email = queryParamsEmail;
+          this.email = queryParamsEmail;
         }
       }
     });
