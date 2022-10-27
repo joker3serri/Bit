@@ -53,7 +53,7 @@ import { CollectionService } from "@bitwarden/common/services/collection.service
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
 import { ContainerService } from "@bitwarden/common/services/container.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/services/cryptography/encrypt.service.implementation";
-import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/services/cryptography/multithreadEncrypt.service.implementation";
+import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/services/cryptography/multithread-encrypt.service.implementation";
 import { EventService } from "@bitwarden/common/services/event.service";
 import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";

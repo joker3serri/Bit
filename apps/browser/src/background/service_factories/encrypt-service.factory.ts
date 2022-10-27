@@ -1,5 +1,5 @@
 import { EncryptServiceImplementation } from "@bitwarden/common/services/cryptography/encrypt.service.implementation";
-import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/services/cryptography/multithreadEncrypt.service.implementation";
+import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/services/cryptography/multithread-encrypt.service.implementation";
 
 import { flagEnabled } from "../../flags";
 

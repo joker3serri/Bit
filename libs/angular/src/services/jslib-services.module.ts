@@ -79,7 +79,7 @@ import { ConfigService } from "@bitwarden/common/services/config/config.service"
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
 import { CryptoService } from "@bitwarden/common/services/crypto.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/services/cryptography/encrypt.service.implementation";
-import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/services/cryptography/multithreadEncrypt.service.implementation";
+import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/services/cryptography/multithread-encrypt.service.implementation";
 import { EnvironmentService } from "@bitwarden/common/services/environment.service";
 import { EventService } from "@bitwarden/common/services/event.service";
 import { ExportService } from "@bitwarden/common/services/export.service";
