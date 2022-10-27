@@ -1,0 +1,8 @@
+<sm-header title="projects" searchTitle="searchProjects"></sm-header>
+<sm-projects-list
+  (newProjectEvent)="openNewProjectDialog()"
+  (editProjectEvent)="openEditProject($event)"
+  (deleteProjectEvent)="openDeleteProjectDialog($event)"
+  [projects]="projects$ | async"
+>
+</sm-projects-list>
