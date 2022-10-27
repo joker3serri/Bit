@@ -91,10 +91,10 @@ button.box-content-row {
   display: block;
   width: calc(100% - 20px);
   text-align: left;
+  border-color: none;
 
   @include themify($themes) {
     background-color: themed("boxBackgroundColor");
-    border-color: none;
   }
 }
 
