@@ -85,7 +85,11 @@ module.exports = {
         "50vw": "50vw",
         "75vw": "75vw",
       },
+      minWidth: {
+        52: "13rem",
+      },
       maxWidth: {
+        72: "18rem",
         "90vw": "90vw",
       },
     },
