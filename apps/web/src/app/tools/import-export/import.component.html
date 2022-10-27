@@ -293,21 +293,17 @@
         <label for="file">2. {{ "selectImportFile" | i18n }}</label>
         <br />
         <div class="file-selector">
-          <button
-            type="button"
-            class="btn btn-outline-primary"
-            onclick="document.getElementById('file').click()"
-          >
+          <button type="button" class="btn btn-outline-primary" (click)="fileInput.click()">
             {{ "chooseFile" | i18n }}
           </button>
           {{ this.fileSelected ? this.fileSelected.name : ("noFileChosen" | i18n) }}
         </div>
         <input
+          #fileInput
           type="file"
           id="file"
-          class="form-control-file"
+          class="tw-hidden"
           name="file"
-          style="display: none"
           [disabled]="importBlockedByPolicy$ | async"
           (change)="setSelectedFile($event)"
         />
@@ -327,7 +323,7 @@
   <button
     type="submit"
     class="btn btn-primary btn-submit"
-    [disabled]="loading || importBlockedByPolicy$ | async"
+    [disabled]="loading || (importBlockedByPolicy$ | async)"
     [ngClass]="{ manual: importBlockedByPolicy$ | async }"
   >
     <i class="bwi bwi-spinner bwi-spin" title="{{ 'loading' | i18n }}" aria-hidden="true"></i>
