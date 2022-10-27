@@ -47,7 +47,7 @@ const routes: Routes = [
           {
             path: "",
             pathMatch: "full",
-            redirectTo: "people",
+            redirectTo: "members",
           },
           {
             path: "collections",
@@ -68,11 +68,11 @@ const routes: Routes = [
             },
           },
           {
-            path: "people",
+            path: "members",
             component: PeopleComponent,
             canActivate: [OrganizationPermissionsGuard],
             data: {
-              titleId: "people",
+              titleId: "members",
               organizationPermissions: canAccessMembersTab,
             },
           },
