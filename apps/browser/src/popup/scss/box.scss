@@ -3,7 +3,6 @@
 .box {
   position: relative;
   width: 100%;
-  margin: 10px 0 20px 0;
 
   &.first {
     margin-top: 0;
@@ -21,7 +20,7 @@
 
   .box-header-expandable {
     padding: 10px;
-    margin: 10px;
+    margin: 0 10px;
     text-transform: uppercase;
     display: flex;
     width: calc(100% - 20px);
@@ -80,7 +79,8 @@
   }
 
   .box-footer {
-    margin: 5px 10px;
+    margin: 0 10px 10px 10px;
+    padding: 0 15px;
     font-size: $font-size-small;
 
     @include themify($themes) {
@@ -89,6 +89,7 @@
   }
 
   &.list {
+    margin: 10px 0 20px 0;
     .box-content {
       .box-content-row {
         padding: 10px;
@@ -193,7 +194,6 @@
 
 .box-section-divider {
   border-top: 1px solid #000000;
-  padding-top: 10px;
 
   @include themify($themes) {
     border-color: themed("borderColor");
