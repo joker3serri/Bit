@@ -88,7 +88,7 @@
         ></i>
       </button>
       <bit-hint>
-        <a routerLink="/hint">{{ "getMasterPasswordHint" | i18n }}</a>
+        <a routerLink="/hint" (click)="setFormValues()">{{ "getMasterPasswordHint" | i18n }}</a>
       </bit-hint>
     </bit-form-field>
   </div>
@@ -116,7 +116,13 @@
   </div>
 
   <div class="tw-mb-3">
-    <a routerLink="/sso" bitButton buttonType="secondary" class="tw-w-full">
+    <a
+      routerLink="/sso"
+      (click)="setFormValues()"
+      bitButton
+      buttonType="secondary"
+      class="tw-w-full"
+    >
       <i class="bwi bwi-provider tw-mr-2"></i>
       {{ "enterpriseSingleSignOn" | i18n }}
     </a>
