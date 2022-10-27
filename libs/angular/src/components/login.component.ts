@@ -99,7 +99,10 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
       this.formGroup.get("email")?.setValue(email ?? "");
     }
     if (!this.alwaysRememberEmail) {
-      const rememberEmail = this.loginService.getRememberEmail();
+      let rememberEmail = this.loginService.getRememberEmail();
+      if (rememberEmail == null) {
+        rememberEmail = (await this.stateService.getRememberedEmail()) != null;
+      }
       this.formGroup.get("rememberEmail")?.setValue(rememberEmail);
     }
 
@@ -159,6 +162,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
       } else {
         const disableFavicon = await this.stateService.getDisableFavicon();
         await this.stateService.setDisableFavicon(!!disableFavicon);
+        this.loginService.clearValues();
         if (this.onSuccessfulLogin != null) {
           this.onSuccessfulLogin();
         }

@@ -19,4 +19,9 @@ export class LoginService implements LoginServiceAbstraction {
   setRememberEmail(value: boolean) {
     this._rememberEmail = value;
   }
+
+  clearValues() {
+    this._email = null;
+    this._rememberEmail = null;
+  }
 }
