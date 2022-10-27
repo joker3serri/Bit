@@ -24,6 +24,20 @@ export function canAccessBillingTab(org: Organization): boolean {
   return org.canManageBilling;
 }
 
+export function canManageCollections(org: Organization): boolean {
+  return (
+    org.canCreateNewCollections ||
+    org.canEditAnyCollection ||
+    org.canDeleteAnyCollection ||
+    org.canEditAssignedCollections ||
+    org.canDeleteAssignedCollections
+  );
+}
+
+export function canAccessManageTab(org: Organization): boolean {
+  return canAccessMembersTab(org) || canAccessGroupsTab(org) || canManageCollections(org);
+}
+
 export function canAccessOrgAdmin(org: Organization): boolean {
   return (
     canAccessMembersTab(org) ||
