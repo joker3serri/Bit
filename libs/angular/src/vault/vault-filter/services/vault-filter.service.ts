@@ -14,13 +14,12 @@ import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/models/view/folder.view";
 
-import { DeprecatedVaultFilterService as DeprecatedVaultFilterServiceAbstraction } from "../../../abstractions/deprecated-vault-filter.service";
 import { DynamicTreeNode } from "../models/dynamic-tree-node.model";
 
 const NestingDelimiter = "/";
 
 @Injectable()
-export class VaultFilterService implements DeprecatedVaultFilterServiceAbstraction {
+export class VaultFilterService {
   constructor(
     protected stateService: StateService,
     protected organizationService: OrganizationService,
@@ -111,6 +110,6 @@ export class VaultFilterService implements DeprecatedVaultFilterServiceAbstracti
     const folders = await this.getAllFoldersNested(
       await firstValueFrom(this.folderService.folderViews$)
     );
-    return ServiceUtils.getTreeNodeObjectFromList(folders, id) as TreeNode<FolderView>;
+    return ServiceUtils.getTreeNodeObject(folders, id) as TreeNode<FolderView>;
   }
 }

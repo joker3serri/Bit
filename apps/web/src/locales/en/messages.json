@@ -277,30 +277,12 @@
   "searchFavorites": {
     "message": "Search favorites"
   },
-  "searchLogin": {
-    "message": "Search logins",
-    "description": "Search Login type"
-  },
-  "searchCard": {
-    "message": "Search cards",
-    "description": "Search Card type"
-  },
-  "searchIdentity": {
-    "message": "Search identities",
-    "description": "Search Identity type"
-  },
-  "searchSecureNote": {
-    "message": "Search secure notes",
-    "description": "Search Secure Note type"
+  "searchType": {
+    "message": "Search Type",
+    "description": "Search item type"
   },
   "searchVault": {
     "message": "Search vault"
-  },
-  "searchMyVault": {
-    "message": "Search my vault"
-  },
-  "searchOrganization": {
-    "message": "Search organization"
   },
   "allItems": {
     "message": "All items"

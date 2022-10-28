@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { map, Subject, takeUntil } from "rxjs";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -15,8 +15,6 @@ import { Policy } from "@bitwarden/common/models/domain/policy";
 import { OrganizationUserResetPasswordEnrollmentRequest } from "@bitwarden/common/models/request/organization-user-reset-password-enrollment.request";
 
 import { EnrollMasterPasswordReset } from "../../../organizations/users/enroll-master-password-reset.component";
-import { OptionsInput } from "../shared/components/vault-filter-section.component";
-import { OrganizationFilter } from "../shared/models/vault-filter.type";
 
 @Component({
   selector: "app-organization-options",
@@ -27,10 +25,11 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
   policies: Policy[];
   loaded = false;
 
+  @Input() organization: Organization;
+
   private destroy$ = new Subject<void>();
 
   constructor(
-    @Inject(OptionsInput) private organization: OrganizationFilter,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private apiService: ApiService,
