@@ -7,7 +7,7 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 
-import { ProjectsMappedToSecretView } from "../models/view/projects-mapped-to-secret-view";
+import { ProjectsMappedToSecretListView } from "../models/view/projects-mapped-to-secret-list.view";
 import { SecretListView } from "../models/view/secret-list.view";
 import { SecretView } from "../models/view/secret.view";
 
@@ -163,12 +163,12 @@ export class SecretService {
   private async decryptProjectsMappedToSecrets(
     organizationId: string,
     projects: ProjectsMappedToSecretResponse[]
-  ): Promise<ProjectsMappedToSecretView[]> {
+  ): Promise<ProjectsMappedToSecretListView[]> {
     const orgKey = await this.getOrganizationKey(organizationId);
 
     return await Promise.all(
       projects.map(async (s: ProjectsMappedToSecretResponse) => {
-        const projectsMappedToSecretView = new ProjectsMappedToSecretView();
+        const projectsMappedToSecretView = new ProjectsMappedToSecretListView();
         projectsMappedToSecretView.id = s.id;
         projectsMappedToSecretView.name = await this.encryptService.decryptToUtf8(
           new EncString(s.name),
