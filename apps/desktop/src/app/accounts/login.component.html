@@ -104,7 +104,12 @@
           <div class="box-content">
             <iframe id="hcaptcha_iframe" style="margin-top: 20px"></iframe>
             <div class="box-content-row">
-              <button class="btn block" type="button" routerLink="/accessibility-cookie">
+              <button
+                class="btn block"
+                type="button"
+                routerLink="/accessibility-cookie"
+                (click)="setFormValues()"
+              >
                 <i class="bwi bwi-universal-access" aria-hidden="true"></i>
                 {{ "loadAccessibilityCookie" | i18n }}
               </button>
@@ -132,7 +137,12 @@
           </div>
         </div>
         <div class="sub-options">
-          <button type="button" class="text text-primary password-hint-btn" routerLink="/hint">
+          <button
+            type="button"
+            class="text text-primary password-hint-btn"
+            routerLink="/hint"
+            (click)="setFormValues()"
+          >
             {{ "getMasterPasswordHint" | i18n }}
           </button>
           <div>

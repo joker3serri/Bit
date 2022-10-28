@@ -11,6 +11,7 @@ import { EnvironmentService } from "@bitwarden/common/abstractions/environment.s
 import { FormValidationErrorsService } from "@bitwarden/common/abstractions/formValidationErrors.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { LoginService } from "@bitwarden/common/abstractions/login.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
@@ -40,7 +41,8 @@ export class LoginComponent extends BaseLoginComponent {
     ngZone: NgZone,
     formBuilder: FormBuilder,
     formValidationErrorService: FormValidationErrorsService,
-    route: ActivatedRoute
+    route: ActivatedRoute,
+    loginService: LoginService
   ) {
     super(
       apiService,
@@ -57,7 +59,8 @@ export class LoginComponent extends BaseLoginComponent {
       ngZone,
       formBuilder,
       formValidationErrorService,
-      route
+      route,
+      loginService
     );
     super.onSuccessfulLogin = async () => {
       await syncService.fullSync(true);

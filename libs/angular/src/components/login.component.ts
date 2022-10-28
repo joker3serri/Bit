@@ -14,6 +14,7 @@ import {
 } from "@bitwarden/common/abstractions/formValidationErrors.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { LoginService } from "@bitwarden/common/abstractions/login.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
@@ -34,6 +35,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
   private selfHosted = false;
   showLoginWithDevice: boolean;
   validatedEmail = false;
+  paramEmailSet = false;
 
   formGroup = this.formBuilder.group({
     email: ["", [Validators.required, Validators.email]],
@@ -66,7 +68,8 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
     protected ngZone: NgZone,
     protected formBuilder: FormBuilder,
     protected formValidationErrorService: FormValidationErrorsService,
-    protected route: ActivatedRoute
+    protected route: ActivatedRoute,
+    protected loginService: LoginService
   ) {
     super(environmentService, i18nService, platformUtilsService);
     this.selfHosted = platformUtilsService.isSelfHost();
@@ -82,20 +85,24 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
         const queryParamsEmail = params["email"];
         if (queryParamsEmail != null && queryParamsEmail.indexOf("@") > -1) {
           this.formGroup.get("email").setValue(queryParamsEmail);
+          this.paramEmailSet = true;
         }
       }
     });
-    let email = this.loggedEmail;
+    let email = this.loginService.getEmail();
+
     if (email == null || email === "") {
       email = await this.stateService.getRememberedEmail();
-      this.formGroup.get("email")?.setValue(email);
+    }
 
-      if (email == null) {
-        this.formGroup.get("email")?.setValue("");
-      }
+    if (!this.paramEmailSet) {
+      this.formGroup.get("email")?.setValue(email ?? "");
     }
     if (!this.alwaysRememberEmail) {
-      const rememberEmail = (await this.stateService.getRememberedEmail()) != null;
+      let rememberEmail = this.loginService.getRememberEmail();
+      if (rememberEmail == null) {
+        rememberEmail = (await this.stateService.getRememberedEmail()) != null;
+      }
       this.formGroup.get("rememberEmail")?.setValue(rememberEmail);
     }
 
@@ -132,6 +139,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
       );
       this.formPromise = this.authService.logIn(credentials);
       const response = await this.formPromise;
+      this.setFormValues();
       if (data.rememberEmail || this.alwaysRememberEmail) {
         await this.stateService.setRememberedEmail(data.email);
       } else {
@@ -154,6 +162,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
       } else {
         const disableFavicon = await this.stateService.getDisableFavicon();
         await this.stateService.setDisableFavicon(!!disableFavicon);
+        this.loginService.clearValues();
         if (this.onSuccessfulLogin != null) {
           this.onSuccessfulLogin();
         }
@@ -227,6 +236,11 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
   toggleValidateEmail(value: boolean) {
     this.validatedEmail = value;
     this.formGroup.controls.masterPassword.reset();
+  }
+
+  setFormValues() {
+    this.loginService.setEmail(this.formGroup.value.email);
+    this.loginService.setRememberEmail(this.formGroup.value.rememberEmail);
   }
 
   private getErrorToastMessage() {

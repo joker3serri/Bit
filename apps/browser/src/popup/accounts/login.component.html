@@ -40,12 +40,7 @@
         </div>
       </div>
       <div class="box-footer">
-        <button
-          type="button"
-          class="btn link"
-          routerLink="/hint"
-          [queryParams]="{ email: loggedEmail }"
-        >
+        <button type="button" class="btn link" routerLink="/hint" (click)="setFormValues()">
           <b>{{ "getMasterPasswordHint" | i18n }}</b>
         </button>
       </div>

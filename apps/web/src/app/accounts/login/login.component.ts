@@ -13,6 +13,7 @@ import { EnvironmentService } from "@bitwarden/common/abstractions/environment.s
 import { FormValidationErrorsService } from "@bitwarden/common/abstractions/formValidationErrors.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { LoginService } from "@bitwarden/common/abstractions/login.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -58,7 +59,8 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
     private messagingService: MessagingService,
     private routerService: RouterService,
     formBuilder: FormBuilder,
-    formValidationErrorService: FormValidationErrorsService
+    formValidationErrorService: FormValidationErrorsService,
+    loginService: LoginService
   ) {
     super(
       apiService,
@@ -75,7 +77,8 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
       ngZone,
       formBuilder,
       formValidationErrorService,
-      route
+      route,
+      loginService
     );
     this.onSuccessfulLogin = async () => {
       this.messagingService.send("setFullWidth");
@@ -176,6 +179,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
     if (previousUrl) {
       this.router.navigateByUrl(previousUrl);
     } else {
+      this.loginService.clearValues();
       this.router.navigate([this.successRoute]);
     }
   }
