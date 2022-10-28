@@ -18,6 +18,7 @@ module.exports = {
   framework: "@storybook/angular",
   core: {
     builder: "webpack5",
+    disableTelemetry: true,
   },
   webpackFinal: async (config, { configType }) => {
     config.resolve.plugins = [new TsconfigPathsPlugin()];
