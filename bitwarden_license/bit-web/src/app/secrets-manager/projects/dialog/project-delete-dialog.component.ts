@@ -70,6 +70,8 @@ export class ProjectDeleteDialogComponent implements OnInit {
   }
 
   submit = async () => {
+    this.formGroup.markAllAsTouched();
+
     if (this.formGroup.invalid) {
       return;
     }
