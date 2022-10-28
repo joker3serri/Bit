@@ -7,7 +7,16 @@ export class RowDirective {
   @Input() alignContent: "top" | "middle" | "bottom" | "baseline" = "baseline";
 
   get alignmentClass(): string {
-    return `tw-align-${this.alignContent}`;
+    switch (this.alignContent) {
+      case "top":
+        return "tw-align-top";
+      case "middle":
+        return "tw-align-middle";
+      case "bottom":
+        return "tw-align-bottom";
+      default:
+        return "tw-align-baseline";
+    }
   }
 
   @HostBinding("class") get classList() {
