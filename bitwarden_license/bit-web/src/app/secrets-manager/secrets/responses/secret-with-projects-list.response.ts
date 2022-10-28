@@ -1,6 +1,6 @@
-import { BaseResponse } from "../../../../../../../libs/common/src/models/response/base.response";
+import { BaseResponse } from "@bitwarden/common/models/response/base.response";
 
-import { ProjectsMappedToSecretResponse } from "./projects-mapped-to-secret-response";
+import { ProjectsMappedToSecretResponse } from "./projects-mapped-to-secret.response";
 import { SecretListItemResponse } from "./secret-list-item.response";
 
 export class SecretWithProjectsListResponse extends BaseResponse {
@@ -12,7 +12,7 @@ export class SecretWithProjectsListResponse extends BaseResponse {
     const secrets = this.getResponseProperty("secrets");
     const projects = this.getResponseProperty("projects");
     this.projects =
-      projects == null ? null : projects.map((k: any) => new ProjectsMappedToSecretResponse(k));
+      projects == null ? null : projects.map((k: any) => new ProjectsMappedToSecretResponse(k)); //decrypt the project names here?
     this.secrets = secrets == null ? [] : secrets.map((dr: any) => new SecretListItemResponse(dr));
   }
 }

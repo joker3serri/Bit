@@ -1,6 +1,6 @@
 import { View } from "@bitwarden/common/models/view/view";
 
-import { ProjectsMappedToSecretResponse } from "../../secrets/responses/projects-mapped-to-secret-response";
+import { ProjectsMappedToSecretView } from "./projects-mapped-to-secret-view";
 
 export class SecretListView implements View {
   id: string;
@@ -8,5 +8,5 @@ export class SecretListView implements View {
   name: string;
   creationDate: string;
   revisionDate: string;
-  projects: ProjectsMappedToSecretResponse[];
+  projects: ProjectsMappedToSecretView[];
 }
