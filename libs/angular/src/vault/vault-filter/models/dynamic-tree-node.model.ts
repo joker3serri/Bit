@@ -1,6 +1,8 @@
-import { ITreeNodeObject, TreeNode } from "@bitwarden/common/models/domain/tree-node";
+import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
+import { CollectionView } from "@bitwarden/common/models/view/collection.view";
+import { FolderView } from "@bitwarden/common/models/view/folder.view";
 
-export class DynamicTreeNode<T extends ITreeNodeObject> {
+export class DynamicTreeNode<T extends CollectionView | FolderView> {
   fullList: T[];
   nestedList: TreeNode<T>[];
 

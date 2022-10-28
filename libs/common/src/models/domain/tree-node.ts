@@ -3,15 +3,10 @@ export class TreeNode<T extends ITreeNodeObject> {
   node: T;
   children: TreeNode<T>[] = [];
 
-  constructor(node: T, parent: T, name?: string, id?: string) {
+  constructor(node: T, name: string, parent: T) {
     this.parent = parent;
     this.node = node;
-    if (name) {
-      this.node.name = name;
-    }
-    if (id) {
-      this.node.id = id;
-    }
+    this.node.name = name;
   }
 }
 

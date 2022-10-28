@@ -1,21 +1,19 @@
 import { NgModule } from "@angular/core";
 
-import { LinkSsoComponent } from "./components/link-sso.component";
-import { OrganizationOptionsComponent } from "./components/organization-options.component";
-import { VaultFilterComponent } from "./components/vault-filter.component";
-import { VaultFilterService as VaultFilterServiceAbstraction } from "./services/abstractions/vault-filter.service";
-import { VaultFilterService } from "./services/vault-filter.service";
+import { LinkSsoComponent } from "./organization-filter/link-sso.component";
+import { OrganizationFilterComponent } from "./organization-filter/organization-filter.component";
+import { OrganizationOptionsComponent } from "./organization-filter/organization-options.component";
 import { VaultFilterSharedModule } from "./shared/vault-filter-shared.module";
+import { VaultFilterComponent } from "./vault-filter.component";
 
 @NgModule({
   imports: [VaultFilterSharedModule],
-  declarations: [VaultFilterComponent, OrganizationOptionsComponent, LinkSsoComponent],
-  exports: [VaultFilterComponent],
-  providers: [
-    {
-      provide: VaultFilterServiceAbstraction,
-      useClass: VaultFilterService,
-    },
+  declarations: [
+    VaultFilterComponent,
+    OrganizationFilterComponent,
+    OrganizationOptionsComponent,
+    LinkSsoComponent,
   ],
+  exports: [VaultFilterComponent],
 })
 export class VaultFilterModule {}
