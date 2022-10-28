@@ -1,8 +1,8 @@
 import { LoginService as LoginServiceAbstraction } from "../abstractions/login.service";
 
 export class LoginService implements LoginServiceAbstraction {
-  _email: string;
-  _rememberEmail: boolean;
+  private _email: string;
+  private _rememberEmail: boolean;
 
   getEmail() {
     return this._email;
