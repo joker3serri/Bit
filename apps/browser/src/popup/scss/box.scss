@@ -463,8 +463,8 @@
     padding: 7px 4px;
 
     @include themify($themes) {
-      background-color: themed("selectBoxBackgroundColor");
-      border-color: themed("inputBorderColor");
+      background-color: themed("transparentColor");
+      border-color: themed("borderColorAlt");
     }
   }
 

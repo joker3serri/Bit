@@ -15,9 +15,11 @@ app-generator .generated-block {
   padding: 10px 10px 10px 0;
   display: flex;
   border-radius: $border-radius;
+  border: 1px solid;
 
   @include themify($themes) {
     background-color: transparent;
+    border-color: themed("borderColorAlt");
   }
 
   .generated-wrapper {
@@ -28,11 +30,9 @@ app-generator .generated-block {
     word-break: break-all;
     padding: 15px;
     border-radius: $border-radius;
-    border: 1px solid;
 
     @include themify($themes) {
       background-color: themed("backgroundColor");
-      border-color: themed("borderColorAlt");
     }
   }
 
