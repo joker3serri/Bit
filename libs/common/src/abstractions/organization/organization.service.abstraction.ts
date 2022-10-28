@@ -4,6 +4,10 @@ import { Utils } from "../../misc/utils";
 import { Organization } from "../../models/domain/organization";
 import { I18nService } from "../i18n.service";
 
+export function canAccessVaultTab(org: Organization): boolean {
+  return org.isManager;
+}
+
 export function canAccessSettingsTab(org: Organization): boolean {
   return org.isOwner;
 }
@@ -29,8 +33,7 @@ export function canManageCollections(org: Organization): boolean {
     org.canCreateNewCollections ||
     org.canEditAnyCollection ||
     org.canDeleteAnyCollection ||
-    org.canEditAssignedCollections ||
-    org.canDeleteAssignedCollections
+    org.canViewAssignedCollections
   );
 }
 
@@ -44,7 +47,8 @@ export function canAccessOrgAdmin(org: Organization): boolean {
     canAccessGroupsTab(org) ||
     canAccessReportingTab(org) ||
     canAccessBillingTab(org) ||
-    canAccessSettingsTab(org)
+    canAccessSettingsTab(org) ||
+    canAccessVaultTab(org)
   );
 }
 
