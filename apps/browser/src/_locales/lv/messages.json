@@ -642,7 +642,7 @@
     "description": "Light color"
   },
   "solarizedDark": {
-    "message": "Tumšs Solarized",
+    "message": "Solarized Dark",
     "description": "'Solarized' is a noun and the name of a color scheme. It should not be translated."
   },
   "exportVault": {
@@ -1310,6 +1310,10 @@
   "dateUpdated": {
     "message": "Atjaunināts",
     "description": "ex. Date this item was updated"
+  },
+  "dateCreated": {
+    "message": "Izveidots",
+    "description": "ex. Date this item was created"
   },
   "datePasswordUpdated": {
     "message": "Parole atjaunināta",
@@ -1997,5 +2001,32 @@
   },
   "environmentEditedReset": {
     "message": "lai atiestatītu pirmsuzstādītos iestatījumus"
+  },
+  "serverVersion": {
+    "message": "Servera versija"
+  },
+  "selfHosted": {
+    "message": "Pašizvietots"
+  },
+  "thirdParty": {
+    "message": "Trešās puses"
+  },
+  "thirdPartyServerMessage": {
+    "message": "Savienots ar trešās puses izvietotu serveri $SERVERNAME$. Lūgums pārbaudīt nepilnību esamību oficiālajā serverī vai ziņot par tām trešās puses servera uzturētājiem.",
+    "placeholders": {
+      "servername": {
+        "content": "$1",
+        "example": "ThirdPartyServerName"
+      }
+    }
+  },
+  "lastSeenOn": {
+    "message": "pēdējoreiz manīts $DATE$",
+    "placeholders": {
+      "date": {
+        "content": "$1",
+        "example": "Jun 15, 2015"
+      }
+    }
   }
 }

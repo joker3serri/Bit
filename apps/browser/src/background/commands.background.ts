@@ -34,14 +34,10 @@ export default class CommandsBackground {
             msg.data.commandToRetry.sender
           );
         }
-
-        if (this.isVivaldi && msg.command === "keyboardShortcutTriggered" && msg.shortcut) {
-          await this.processCommand(msg.shortcut, sender);
-        }
       }
     );
 
-    if (!this.isVivaldi && chrome && chrome.commands) {
+    if (chrome && chrome.commands) {
       chrome.commands.onCommand.addListener(async (command: string) => {
         await this.processCommand(command);
       });
@@ -68,7 +64,7 @@ export default class CommandsBackground {
   }
 
   private async generatePasswordToClipboard() {
-    const options = (await this.passwordGenerationService.getOptions())[0];
+    const options = (await this.passwordGenerationService.getOptions())?.[0] ?? {};
     const password = await this.passwordGenerationService.generatePassword(options);
     this.platformUtilsService.copyToClipboard(password, { window: window });
     this.passwordGenerationService.addHistory(password);

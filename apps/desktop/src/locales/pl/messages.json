@@ -254,7 +254,7 @@
     "message": "Inne"
   },
   "generatePassword": {
-    "message": "Generuj hasło"
+    "message": "Wygeneruj hasło"
   },
   "type": {
     "message": "Rodzaj"
@@ -349,7 +349,7 @@
     "message": "Element został dodany"
   },
   "editedItem": {
-    "message": "Element został zaktualizowany"
+    "message": "Element został zapisany"
   },
   "deleteItem": {
     "message": "Usuń element"
@@ -386,7 +386,7 @@
     "message": "Edytuj folder"
   },
   "regeneratePassword": {
-    "message": "Wygeneruj hasło ponownie"
+    "message": "Wygeneruj ponownie hasło"
   },
   "copyPassword": {
     "message": "Kopiuj hasło"
@@ -420,7 +420,7 @@
   },
   "capitalize": {
     "message": "Wielkie litery",
-    "description": "Make the first letter of a work uppercase."
+    "description": "Make the first letter of a word uppercase."
   },
   "includeNumber": {
     "message": "Uwzględnij cyfry"
@@ -461,13 +461,13 @@
     "message": "Czy na pewno chcesz usunąć ten załącznik?"
   },
   "attachmentSaved": {
-    "message": "Załącznik został zapisany."
+    "message": "Załącznik został zapisany"
   },
   "file": {
     "message": "Plik"
   },
   "selectFile": {
-    "message": "Wybierz plik."
+    "message": "Wybierz plik"
   },
   "maxFileSize": {
     "message": "Maksymalny rozmiar pliku to 500 MB."
@@ -476,7 +476,7 @@
     "message": "Nie możesz używać tej funkcji, dopóki nie zaktualizujesz klucza szyfrowania."
   },
   "editedFolder": {
-    "message": "Folder został zaktualizowany"
+    "message": "Folder został zapisany"
   },
   "addedFolder": {
     "message": "Folder został dodany"
@@ -686,7 +686,7 @@
     "message": "Adres URL serwera"
   },
   "apiUrl": {
-    "message": "Adres URL serwera interfejsu API"
+    "message": "Adres URL serwera API"
   },
   "webVaultUrl": {
     "message": "Adres URL serwera sejfu internetowego"
@@ -701,7 +701,7 @@
     "message": "Adres URL serwera ikon"
   },
   "environmentSaved": {
-    "message": "Adresy URL środowiska zostały zapisane."
+    "message": "Adresy URL środowiska zostały zapisane"
   },
   "ok": {
     "message": "Ok"
@@ -737,10 +737,10 @@
     "message": "Dodaj dane logowania"
   },
   "addNewItem": {
-    "message": "Dodaj element"
+    "message": "Nowy element"
   },
   "addNewFolder": {
-    "message": "Dodaj folder"
+    "message": "Nowy folder"
   },
   "view": {
     "message": "Widok"
@@ -872,7 +872,7 @@
     "message": "4 godziny"
   },
   "onIdle": {
-    "message": "Po bezczynności przez 5 minut"
+    "message": "Podczas bezczynności systemu"
   },
   "onSleep": {
     "message": "Po uśpieniu komputera"
@@ -881,7 +881,7 @@
     "message": "Po zablokowaniu komputera"
   },
   "onRestart": {
-    "message": "Po uruchomieniu ponownym"
+    "message": "Po restarcie aplikacji"
   },
   "never": {
     "message": "Nigdy"
@@ -901,7 +901,7 @@
     "message": "Pokaż ikony witryn"
   },
   "faviconDesc": {
-    "message": "Pokaż rozpoznawalny obraz obok każdych danych logowania."
+    "message": "Pokaż rozpoznawalny obraz obok danych logowania."
   },
   "enableMinToTray": {
     "message": "Minimalizuj do zasobnika systemowego"
@@ -1036,7 +1036,7 @@
     "message": "Kopiuj nazwę użytkownika"
   },
   "copyNumber": {
-    "message": "Kopiuj numer karty",
+    "message": "Kopiuj numer",
     "description": "Copy credit card number"
   },
   "copySecurityCode": {
@@ -1104,7 +1104,7 @@
     "message": "Odświeżanie zostało zakończone"
   },
   "passwordHistory": {
-    "message": "Historia haseł"
+    "message": "Historia hasła"
   },
   "clear": {
     "message": "Wyczyść",
@@ -1266,8 +1266,12 @@
     "message": "Zaktualizowano",
     "description": "ex. Date this item was updated"
   },
+  "dateCreated": {
+    "message": "Utworzono",
+    "description": "ex. Date this item was created"
+  },
   "datePasswordUpdated": {
-    "message": "Aktualizacja hasła",
+    "message": "Hasło zostało zaktualizowane",
     "description": "ex. Date this password was updated"
   },
   "exportVault": {
@@ -1281,7 +1285,7 @@
     "description": "hCaptcha is the name of a website, should not be translated"
   },
   "loadAccessibilityCookie": {
-    "message": "Załaduj ciasteczko ułatwień dostępu"
+    "message": "Załaduj pliki cookies ułatwień dostępu"
   },
   "registerAccessibilityUser": {
     "message": "Zarejestruj się jako użytkownik ułatwień dostępu na",
@@ -1291,7 +1295,7 @@
     "message": "Skopiuj i wklej link wysłany na poniższy adres e-mail"
   },
   "enterhCaptchaUrl": {
-    "message": "Wpisz adres URL, aby załadować ciasteczko ułatwień dostępu dla hCaptcha",
+    "message": "Wpisz adres URL, aby załadować pliki cookies ułatwień dostępu dla hCaptcha",
     "description": "hCaptcha is the name of a website, should not be translated"
   },
   "hCaptchaUrlRequired": {
@@ -1299,16 +1303,16 @@
     "description": "hCaptcha is the name of a website, should not be translated"
   },
   "invalidUrl": {
-    "message": "Nieprawidłowy adres URL"
+    "message": "Adres URL jest nieprawidłowy"
   },
   "done": {
     "message": "Gotowe"
   },
   "accessibilityCookieSaved": {
-    "message": "Zapisano ciasteczko ułatwień dostępu!"
+    "message": "Pliki cookies ułatwień dostępu zostały zapisane!"
   },
   "noAccessibilityCookieSaved": {
-    "message": "Brak zapisanych ciasteczek ułatwień dostępu"
+    "message": "Brak zapisanych plików cookies ułatwień dostępu"
   },
   "warning": {
     "message": "UWAGA",
@@ -1570,6 +1574,12 @@
   "enableBrowserIntegrationDesc": {
     "message": "Połączenie z przeglądarką jest używane do odblokowania danymi biometrycznymi."
   },
+  "enableDuckDuckGoBrowserIntegration": {
+    "message": "Włącz połączenie z przeglądarką DuckDuckGo"
+  },
+  "enableDuckDuckGoBrowserIntegrationDesc": {
+    "message": "Korzystaj z sejfu Bitwarden podczas przeglądania za pomocą DuckDuckGo."
+  },
   "browserIntegrationUnsupportedTitle": {
     "message": "Połączenie z przeglądarką nie jest obsługiwane"
   },
@@ -1596,6 +1606,21 @@
   },
   "verifyBrowserDesc": {
     "message": "Upewnij się, że wyświetlony identyfikator jest identyczny z pokazanym w rozszerzeniu przeglądarki."
+  },
+  "verifyNativeMessagingConnectionTitle": {
+    "message": "$APPID$ chce połączyć się z Bitwarden",
+    "placeholders": {
+      "appid": {
+        "content": "$1",
+        "example": "My App"
+      }
+    }
+  },
+  "verifyNativeMessagingConnectionDesc": {
+    "message": "Czy chcesz zatwierdzić to żądanie?"
+  },
+  "verifyNativeMessagingConnectionWarning": {
+    "message": "Jeśli to żądanie nie zostało zainicjowane przez Ciebie, nie zatwierdzaj go."
   },
   "biometricsNotEnabledTitle": {
     "message": "Dane biometryczne są wyłączone"
@@ -1686,11 +1711,11 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "createdSend": {
-    "message": "Wysyłka została utworzona",
+    "message": "Wysyłka została dodana",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "editedSend": {
-    "message": "Wysyłka została zaktualizowana",
+    "message": "Wysyłka została zapisana",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "deletedSend": {
@@ -1705,7 +1730,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "createSend": {
-    "message": "Utwórz wysyłkę",
+    "message": "Nowa wysyłka",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendTextDesc": {
@@ -1741,7 +1766,7 @@
     "message": "Po zapisaniu wysyłki, skopiuj link do schowka."
   },
   "sendDisabled": {
-    "message": "Wysyłka została wyłączona",
+    "message": "Wysyłka została usunięta",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "sendDisabledWarning": {
@@ -1773,7 +1798,7 @@
     "message": "Co najmniej jedna zasada organizacji wpływa na ustawienia wysyłek."
   },
   "emailVerificationRequired": {
-    "message": "Weryfikacja adresu e-mail jest wymagana"
+    "message": "Wymagana weryfikacja adresu e-mail"
   },
   "emailVerificationRequiredDesc": {
     "message": "Musisz zweryfikować adres e-mail, aby używać tej funkcji."
@@ -1837,7 +1862,7 @@
     "message": "Usuń hasło główne"
   },
   "removedMasterPassword": {
-    "message": "Hasło główne zostało usunięte."
+    "message": "Hasło główne zostało usunięte"
   },
   "convertOrganizationEncryptionDesc": {
     "message": "Organizacja $ORGANIZATION$ używa jednokrotnego logowania SSO z własnym serwerem kluczy. Użytkownicy nie muszą logować się za pomocą hasła głównego.",
@@ -1993,5 +2018,8 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "vault": {
+    "message": "Sejf"
   }
 }

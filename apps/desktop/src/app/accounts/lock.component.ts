@@ -13,7 +13,6 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 
@@ -25,8 +24,6 @@ const BroadcasterSubscriptionId = "LockComponent";
 })
 export class LockComponent extends BaseLockComponent {
   private deferFocus: boolean = null;
-  authenicatedUrl = "vault";
-  unAuthenicatedUrl = "update-temp-password";
 
   constructor(
     router: Router,
@@ -43,8 +40,7 @@ export class LockComponent extends BaseLockComponent {
     private broadcasterService: BroadcasterService,
     ngZone: NgZone,
     logService: LogService,
-    keyConnectorService: KeyConnectorService,
-    private syncService: SyncService
+    keyConnectorService: KeyConnectorService
   ) {
     super(
       router,
@@ -67,20 +63,17 @@ export class LockComponent extends BaseLockComponent {
     await super.ngOnInit();
     const autoPromptBiometric = !(await this.stateService.getNoAutoPromptBiometrics());
 
-    await this.syncService.fullSync(true);
-
-    const forcePasswordReset = await this.stateService.getForcePasswordReset();
-    this.successRoute = forcePasswordReset === true ? this.unAuthenicatedUrl : this.authenicatedUrl;
-
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.route.queryParams.subscribe((params) => {
-      if (this.supportsBiometric && params.promptBiometric && autoPromptBiometric) {
-        setTimeout(async () => {
-          if (await ipcRenderer.invoke("windowVisible")) {
-            this.unlockBiometric();
-          }
-        }, 1000);
-      }
+      setTimeout(async () => {
+        if (!params.promptBiometric || !this.supportsBiometric || !autoPromptBiometric) {
+          return;
+        }
+
+        if (await ipcRenderer.invoke("windowVisible")) {
+          this.unlockBiometric();
+        }
+      }, 1000);
     });
     this.broadcasterService.subscribe(BroadcasterSubscriptionId, async (message: any) => {
       this.ngZone.run(() => {

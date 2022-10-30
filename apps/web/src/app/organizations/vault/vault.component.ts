@@ -16,13 +16,13 @@ import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.s
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { Organization } from "@bitwarden/common/models/domain/organization";
-import { CipherView } from "@bitwarden/common/models/view/cipherView";
+import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 
 import { VaultService } from "../../vault/shared/vault.service";
 import { EntityEventsComponent } from "../manage/entity-events.component";
@@ -166,10 +166,16 @@ export class VaultComponent implements OnInit, OnDestroy {
   async applyVaultFilter(vaultFilter: VaultFilter) {
     this.ciphersComponent.showAddNew = vaultFilter.status !== "trash";
     this.activeFilter = vaultFilter;
-    await this.ciphersComponent.reload(
-      this.activeFilter.buildFilter(),
-      vaultFilter.status === "trash"
-    );
+
+    // Hack to avoid calling cipherService.getAllFromApiForOrganization every time the vault filter changes.
+    // Call CiphersComponent.applyFilter directly instead of going through CiphersComponent.reload, which
+    // reloads all the ciphers unnecessarily. Will be fixed properly by EC-14.
+    this.ciphersComponent.loaded = false;
+    this.ciphersComponent.deleted = vaultFilter.status === "trash" || false;
+    await this.ciphersComponent.applyFilter(this.activeFilter.buildFilter());
+    this.ciphersComponent.loaded = true;
+    // End hack
+
     this.vaultFilterComponent.searchPlaceholder =
       this.vaultService.calculateSearchBarLocalizationString(this.activeFilter);
     this.go();

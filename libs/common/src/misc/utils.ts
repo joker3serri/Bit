@@ -1,9 +1,8 @@
 /* eslint-disable no-useless-escape */
-import * as tldjs from "tldjs";
+import { getHostname, parse } from "tldts";
 
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-
-import { AbstractEncryptService } from "../abstractions/abstractEncrypt.service";
+import { CryptoService } from "../abstractions/crypto.service";
+import { EncryptService } from "../abstractions/encrypt.service";
 import { I18nService } from "../abstractions/i18n.service";
 
 const nodeURL = typeof window === "undefined" ? require("url") : null;
@@ -15,7 +14,7 @@ declare global {
 
 interface BitwardenContainerService {
   getCryptoService: () => CryptoService;
-  getEncryptService: () => AbstractEncryptService;
+  getEncryptService: () => EncryptService;
 }
 
 export class Utils {
@@ -25,11 +24,10 @@ export class Utils {
   static isMobileBrowser = false;
   static isAppleMobileBrowser = false;
   static global: typeof global = null;
-  static tldEndingRegex =
-    /.*\.(com|net|org|edu|uk|gov|ca|de|jp|fr|au|ru|ch|io|es|us|co|xyz|info|ly|mil)$/;
   // Transpiled version of /\p{Emoji_Presentation}/gu using https://mothereff.in/regexpu. Used for compatability in older browsers.
   static regexpEmojiPresentation =
     /(?:[\u231A\u231B\u23E9-\u23EC\u23F0\u23F3\u25FD\u25FE\u2614\u2615\u2648-\u2653\u267F\u2693\u26A1\u26AA\u26AB\u26BD\u26BE\u26C4\u26C5\u26CE\u26D4\u26EA\u26F2\u26F3\u26F5\u26FA\u26FD\u2705\u270A\u270B\u2728\u274C\u274E\u2753-\u2755\u2757\u2795-\u2797\u27B0\u27BF\u2B1B\u2B1C\u2B50\u2B55]|\uD83C[\uDC04\uDCCF\uDD8E\uDD91-\uDD9A\uDDE6-\uDDFF\uDE01\uDE1A\uDE2F\uDE32-\uDE36\uDE38-\uDE3A\uDE50\uDE51\uDF00-\uDF20\uDF2D-\uDF35\uDF37-\uDF7C\uDF7E-\uDF93\uDFA0-\uDFCA\uDFCF-\uDFD3\uDFE0-\uDFF0\uDFF4\uDFF8-\uDFFF]|\uD83D[\uDC00-\uDC3E\uDC40\uDC42-\uDCFC\uDCFF-\uDD3D\uDD4B-\uDD4E\uDD50-\uDD67\uDD7A\uDD95\uDD96\uDDA4\uDDFB-\uDE4F\uDE80-\uDEC5\uDECC\uDED0-\uDED2\uDED5-\uDED7\uDEEB\uDEEC\uDEF4-\uDEFC\uDFE0-\uDFEB]|\uD83E[\uDD0C-\uDD3A\uDD3C-\uDD45\uDD47-\uDD78\uDD7A-\uDDCB\uDDCD-\uDDFF\uDE70-\uDE74\uDE78-\uDE7A\uDE80-\uDE86\uDE90-\uDEA8\uDEB0-\uDEB6\uDEC0-\uDEC2\uDED0-\uDED6])/g;
+  static readonly validHosts: string[] = ["localhost"];
 
   static init() {
     if (Utils.inited) {
@@ -99,6 +97,9 @@ export class Utils {
   }
 
   static fromByteStringToArray(str: string): Uint8Array {
+    if (str == null) {
+      return null;
+    }
     const arr = new Uint8Array(str.length);
     for (let i = 0; i < str.length; i++) {
       arr[i] = str.charCodeAt(i);
@@ -212,12 +213,39 @@ export class Utils {
   }
 
   static getHostname(uriString: string): string {
-    const url = Utils.getUrl(uriString);
+    if (Utils.isNullOrWhitespace(uriString)) {
+      return null;
+    }
+
+    uriString = uriString.trim();
+
+    if (uriString.startsWith("data:")) {
+      return null;
+    }
+
+    if (uriString.startsWith("about:")) {
+      return null;
+    }
+
+    if (uriString.startsWith("file:")) {
+      return null;
+    }
+
+    // Does uriString contain invalid characters
+    // TODO Needs to possibly be extended, although '!' is a reserved character
+    if (uriString.indexOf("!") > 0) {
+      return null;
+    }
+
     try {
-      return url != null && url.hostname !== "" ? url.hostname : null;
+      const hostname = getHostname(uriString, { validHosts: this.validHosts });
+      if (hostname != null) {
+        return hostname;
+      }
     } catch {
       return null;
     }
+    return null;
   }
 
   static getHost(uriString: string): string {
@@ -230,60 +258,35 @@ export class Utils {
   }
 
   static getDomain(uriString: string): string {
-    if (uriString == null) {
+    if (Utils.isNullOrWhitespace(uriString)) {
       return null;
     }
 
     uriString = uriString.trim();
-    if (uriString === "") {
-      return null;
-    }
 
     if (uriString.startsWith("data:")) {
       return null;
     }
 
-    let httpUrl = uriString.startsWith("http://") || uriString.startsWith("https://");
-    if (
-      !httpUrl &&
-      uriString.indexOf("://") < 0 &&
-      Utils.tldEndingRegex.test(uriString) &&
-      uriString.indexOf("@") < 0
-    ) {
-      uriString = "http://" + uriString;
-      httpUrl = true;
-    }
-
-    if (httpUrl) {
-      try {
-        const url = Utils.getUrlObject(uriString);
-        const validHostname = tldjs?.isValid != null ? tldjs.isValid(url.hostname) : true;
-        if (!validHostname) {
-          return null;
-        }
-
-        if (url.hostname === "localhost" || Utils.validIpAddress(url.hostname)) {
-          return url.hostname;
-        }
-
-        const urlDomain =
-          tldjs != null && tldjs.getDomain != null ? tldjs.getDomain(url.hostname) : null;
-        return urlDomain != null ? urlDomain : url.hostname;
-      } catch (e) {
-        // Invalid domain, try another approach below.
-      }
+    if (uriString.startsWith("about:")) {
+      return null;
     }
 
     try {
-      const domain = tldjs != null && tldjs.getDomain != null ? tldjs.getDomain(uriString) : null;
+      const parseResult = parse(uriString, { validHosts: this.validHosts });
+      if (parseResult != null && parseResult.hostname != null) {
+        if (parseResult.hostname === "localhost" || parseResult.isIp) {
+          return parseResult.hostname;
+        }
 
-      if (domain != null) {
-        return domain;
+        if (parseResult.domain != null) {
+          return parseResult.domain;
+        }
+        return null;
       }
     } catch {
       return null;
     }
-
     return null;
   }
 
@@ -307,8 +310,11 @@ export class Utils {
     return map;
   }
 
-  static getSortFunction(i18nService: I18nService, prop: string) {
-    return (a: any, b: any) => {
+  static getSortFunction<T>(
+    i18nService: I18nService,
+    prop: { [K in keyof T]: T[K] extends string ? K : never }[keyof T]
+  ): (a: T, b: T) => number {
+    return (a, b) => {
       if (a[prop] == null && b[prop] != null) {
         return -1;
       }
@@ -319,9 +325,10 @@ export class Utils {
         return 0;
       }
 
+      // The `as unknown as string` here is unfortunate because typescript doesn't property understand that the return of T[prop] will be a string
       return i18nService.collator
-        ? i18nService.collator.compare(a[prop], b[prop])
-        : a[prop].localeCompare(b[prop]);
+        ? i18nService.collator.compare(a[prop] as unknown as string, b[prop] as unknown as string)
+        : (a[prop] as unknown as string).localeCompare(b[prop] as unknown as string);
     };
   }
 
@@ -331,6 +338,12 @@ export class Utils {
 
   static isNullOrEmpty(str: string): boolean {
     return str == null || typeof str !== "string" || str == "";
+  }
+
+  static isPromise(obj: any): obj is Promise<unknown> {
+    return (
+      obj != undefined && typeof obj["then"] === "function" && typeof obj["catch"] === "function"
+    );
   }
 
   static nameOf<T>(name: string & keyof T) {
@@ -346,14 +359,11 @@ export class Utils {
   }
 
   static getUrl(uriString: string): URL {
-    if (uriString == null) {
+    if (this.isNullOrWhitespace(uriString)) {
       return null;
     }
 
     uriString = uriString.trim();
-    if (uriString === "") {
-      return null;
-    }
 
     let url = Utils.getUrlObject(uriString);
     if (url == null) {
@@ -371,6 +381,39 @@ export class Utils {
   }
 
   /**
+   * There are a few ways to calculate text color for contrast, this one seems to fit accessibility guidelines best.
+   * https://stackoverflow.com/a/3943023/6869691
+   *
+   * @param {string} bgColor
+   * @param {number} [threshold] see stackoverflow link above
+   * @param {boolean} [svgTextFill]
+   * Indicates if this method is performed on an SVG <text> 'fill' attribute (e.g. <text fill="black"></text>).
+   * This check is necessary because the '!important' tag cannot be used in a 'fill' attribute.
+   */
+  static pickTextColorBasedOnBgColor(bgColor: string, threshold = 186, svgTextFill = false) {
+    const bgColorHexNums = bgColor.charAt(0) === "#" ? bgColor.substring(1, 7) : bgColor;
+    const r = parseInt(bgColorHexNums.substring(0, 2), 16); // hexToR
+    const g = parseInt(bgColorHexNums.substring(2, 4), 16); // hexToG
+    const b = parseInt(bgColorHexNums.substring(4, 6), 16); // hexToB
+    const blackColor = svgTextFill ? "black" : "black !important";
+    const whiteColor = svgTextFill ? "white" : "white !important";
+    return r * 0.299 + g * 0.587 + b * 0.114 > threshold ? blackColor : whiteColor;
+  }
+
+  static stringToColor(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    let color = "#";
+    for (let i = 0; i < 3; i++) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += ("00" + value.toString(16)).substr(-2);
+    }
+    return color;
+  }
+
+  /**
    * @throws Will throw an error if the ContainerService has not been attached to the window object
    */
   static getContainerService(): BitwardenContainerService {
@@ -378,12 +421,6 @@ export class Utils {
       throw new Error("global bitwardenContainerService not initialized.");
     }
     return this.global.bitwardenContainerService;
-  }
-
-  private static validIpAddress(ipString: string): boolean {
-    const ipRegex =
-      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-    return ipRegex.test(ipString);
   }
 
   private static isMobile(win: Window) {
