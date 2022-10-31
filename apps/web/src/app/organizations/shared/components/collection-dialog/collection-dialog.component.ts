@@ -1,11 +1,10 @@
 import { DIALOG_DATA, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { takeUntil, Subject, of, combineLatest, shareReplay, switchMap } from "rxjs";
+import { combineLatest, of, shareReplay, Subject, switchMap, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CollectionAdminService } from "@bitwarden/common/abstractions/collection/collection-admin.service.abstraction";
-import { GroupServiceAbstraction } from "../../services/abstractions/group";
+import { GroupServiceAbstraction } from "../../../services/abstractions/group";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -14,6 +13,7 @@ import { CollectionAdminView } from "@bitwarden/common/models/view/collection-ad
 import { CollectionView } from "@bitwarden/common/src/models/view/collection.view";
 import { BitValidators } from "@bitwarden/components";
 
+import { CollectionAdminService } from "../../../core";
 import {
   AccessItemType,
   AccessItemValue,
