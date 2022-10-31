@@ -8,12 +8,13 @@ import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 
 import { SecretListView } from "../models/view/secret-list.view";
-import { SecretProjectView } from "../models/view/secret-project-view";
+import { SecretProjectView } from "../models/view/secret-project.view";
 import { SecretView } from "../models/view/secret.view";
 
 import { SecretRequest } from "./requests/secret.request";
 import { SecretListItemResponse } from "./responses/secret-list-item.response";
 import { SecretProjectResponse } from "./responses/secret-project.response";
+import { SecretWithProjectsListResponse } from "./responses/secret-with-projects-list.response";
 import { SecretResponse } from "./responses/secret.response";
 
 @Injectable({
@@ -45,7 +46,8 @@ export class SecretService {
       true
     );
 
-    return await this.createSecretsListView(organizationId, r.secrets, r.projects);
+    const results = new SecretWithProjectsListResponse(r);
+    return await this.createSecretsListView(organizationId, results);
   }
 
   async create(organizationId: string, secretView: SecretView) {
@@ -129,15 +131,17 @@ export class SecretService {
 
   private async createSecretsListView(
     organizationId: string,
-    secrets: SecretListItemResponse[],
-    projects: SecretProjectResponse[]
+    secrets: SecretWithProjectsListResponse
   ): Promise<SecretListView[]> {
     const orgKey = await this.getOrganizationKey(organizationId);
 
-    const projectsMappedToSecretsView = this.decryptProjectsMappedToSecrets(orgKey, projects);
+    const projectsMappedToSecretsView = this.decryptProjectsMappedToSecrets(
+      orgKey,
+      secrets.projects
+    );
 
     return await Promise.all(
-      secrets.map(async (s: SecretListItemResponse) => {
+      secrets.secrets.map(async (s: SecretListItemResponse) => {
         const secretListView = new SecretListView();
         secretListView.id = s.id;
         secretListView.organizationId = s.organizationId;
