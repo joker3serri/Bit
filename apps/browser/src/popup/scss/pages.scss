@@ -146,3 +146,25 @@ body.body-full {
 .login-buttons > button {
   margin: 15px 0 15px 0;
 }
+
+app-options {
+  .box {
+    margin: 10px 0;
+
+    & + .box {
+      margin-top: 10px;
+    }
+  }
+}
+
+app-vault-view,
+app-vault-add-edit,
+app-generator {
+  .box {
+    margin: 15px 0 25px 0;
+
+    & + .box {
+      margin-top: 25px;
+    }
+  }
+}

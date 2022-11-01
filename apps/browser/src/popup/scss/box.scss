@@ -468,8 +468,7 @@
     padding: 7px 4px;
 
     @include themify($themes) {
-      background-color: themed("transparentColor");
-      border-color: themed("borderColorAlt");
+      border-color: themed("inputBorderColor");
     }
   }
 
