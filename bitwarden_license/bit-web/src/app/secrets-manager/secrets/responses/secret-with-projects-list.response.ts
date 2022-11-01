@@ -12,7 +12,7 @@ export class SecretWithProjectsListResponse extends BaseResponse {
     const secrets = this.getResponseProperty("secrets");
     const projects = this.getResponseProperty("projects");
     this.projects =
-      projects == null ? null : projects.map((k: any) => new SecretProjectResponse(k)); //decrypt the project names here?
+      projects == null ? null : projects.map((k: any) => new SecretProjectResponse(k));
     this.secrets = secrets == null ? [] : secrets.map((dr: any) => new SecretListItemResponse(dr));
   }
 }
