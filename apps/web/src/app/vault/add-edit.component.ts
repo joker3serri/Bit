@@ -104,6 +104,15 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     this.cipher.favorite = !this.cipher.favorite;
   }
 
+  togglePassword() {
+    super.togglePassword();
+
+    // Hide password count when password is hidden to be safe
+    if (!this.showPassword && this.showPasswordCount) {
+      this.togglePasswordCount();
+    }
+  }
+
   togglePasswordCount() {
     this.showPasswordCount = !this.showPasswordCount;
   }
