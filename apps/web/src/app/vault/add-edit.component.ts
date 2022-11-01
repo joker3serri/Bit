@@ -35,6 +35,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
   hasPasswordHistory = false;
   viewingPasswordHistory = false;
   viewOnly = false;
+  showPasswordCount = false;
 
   protected totpInterval: number;
 
@@ -101,6 +102,10 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
 
   toggleFavorite() {
     this.cipher.favorite = !this.cipher.favorite;
+  }
+
+  togglePasswordCount() {
+    this.showPasswordCount = !this.showPasswordCount;
   }
 
   launch(uri: LoginUriView) {

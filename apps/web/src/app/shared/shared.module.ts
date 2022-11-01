@@ -16,6 +16,7 @@ import {
   FormFieldModule,
   IconModule,
   MenuModule,
+  LinkModule,
 } from "@bitwarden/components";
 
 // Register the locales for the application
@@ -47,6 +48,7 @@ import "./locales";
     FormFieldModule,
     IconModule,
     AvatarModule,
+    LinkModule,
   ],
   exports: [
     CommonModule,
@@ -67,6 +69,7 @@ import "./locales";
     FormFieldModule,
     IconModule,
     AvatarModule,
+    LinkModule,
   ],
   providers: [DatePipe],
   bootstrap: [],
