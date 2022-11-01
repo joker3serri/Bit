@@ -1,7 +1,7 @@
 import { Directive, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
-import { take } from "rxjs/operators";
+import { Subject } from "rxjs";
+import { concatMap, take, takeUntil } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -12,13 +12,14 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
+import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { EncString } from "@bitwarden/common/models/domain/encString";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
-import { SecretVerificationRequest } from "@bitwarden/common/models/request/secretVerificationRequest";
+import { EncString } from "@bitwarden/common/models/domain/enc-string";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
+import { SecretVerificationRequest } from "@bitwarden/common/models/request/secret-verification.request";
 
 @Directive()
 export class LockComponent implements OnInit, OnDestroy {
@@ -40,7 +41,7 @@ export class LockComponent implements OnInit, OnDestroy {
   private invalidPinAttempts = 0;
   private pinSet: [boolean, boolean];
 
-  private activeAccountSubscription: Subscription;
+  private destroy$ = new Subject<void>();
 
   constructor(
     protected router: Router,
@@ -49,6 +50,7 @@ export class LockComponent implements OnInit, OnDestroy {
     protected messagingService: MessagingService,
     protected cryptoService: CryptoService,
     protected vaultTimeoutService: VaultTimeoutService,
+    protected vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     protected environmentService: EnvironmentService,
     protected stateService: StateService,
     protected apiService: ApiService,
@@ -58,14 +60,19 @@ export class LockComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    // eslint-disable-next-line rxjs/no-async-subscribe
-    this.activeAccountSubscription = this.stateService.activeAccount$.subscribe(async () => {
-      await this.load();
-    });
+    this.stateService.activeAccount$
+      .pipe(
+        concatMap(async () => {
+          await this.load();
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
   ngOnDestroy() {
-    this.activeAccountSubscription.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   async submit() {
@@ -178,7 +185,7 @@ export class LockComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPassRequired")
+        this.i18nService.t("masterPasswordRequired")
       );
       return;
     }
@@ -262,13 +269,13 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   private async load() {
-    this.pinSet = await this.vaultTimeoutService.isPinLockSet();
+    this.pinSet = await this.vaultTimeoutSettingsService.isPinLockSet();
     this.pinLock =
       (this.pinSet[0] && (await this.stateService.getDecryptedPinProtected()) != null) ||
       this.pinSet[1];
     this.supportsBiometric = await this.platformUtilsService.supportsBiometric();
     this.biometricLock =
-      (await this.vaultTimeoutService.isBiometricLockSet()) &&
+      (await this.vaultTimeoutSettingsService.isBiometricLockSet()) &&
       ((await this.cryptoService.hasKeyStored(KeySuffixOptions.Biometric)) ||
         !this.platformUtilsService.supportsSecureStorage());
     this.biometricText = await this.stateService.getBiometricText();

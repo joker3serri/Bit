@@ -1,12 +1,14 @@
-import Substitute, { Arg } from "@fluffy-spoon/substitute";
+import { mock, MockProxy } from "jest-mock-extended";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { AttachmentData } from "@bitwarden/common/models/data/attachmentData";
+import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
+import { AttachmentData } from "@bitwarden/common/models/data/attachment.data";
 import { Attachment } from "@bitwarden/common/models/domain/attachment";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
+import { EncString } from "@bitwarden/common/models/domain/enc-string";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { ContainerService } from "@bitwarden/common/services/container.service";
 
-import { makeStaticByteArray, mockEnc } from "../../utils";
+import { makeStaticByteArray, mockEnc, mockFromJson } from "../../utils";
 
 describe("Attachment", () => {
   let data: AttachmentData;
@@ -54,30 +56,100 @@ describe("Attachment", () => {
     expect(attachment.toAttachmentData()).toEqual(data);
   });
 
-  it("Decrypt", async () => {
-    const attachment = new Attachment();
-    attachment.id = "id";
-    attachment.url = "url";
-    attachment.size = "1100";
-    attachment.sizeName = "1.1 KB";
-    attachment.key = mockEnc("key");
-    attachment.fileName = mockEnc("fileName");
+  describe("decrypt", () => {
+    let cryptoService: MockProxy<CryptoService>;
+    let encryptService: MockProxy<EncryptService>;
 
-    const cryptoService = Substitute.for<CryptoService>();
-    cryptoService.getOrgKey(null).resolves(null);
-    cryptoService.decryptToBytes(Arg.any(), Arg.any()).resolves(makeStaticByteArray(32));
+    beforeEach(() => {
+      cryptoService = mock<CryptoService>();
+      encryptService = mock<EncryptService>();
 
-    (window as any).bitwardenContainerService = new ContainerService(cryptoService);
+      (window as any).bitwardenContainerService = new ContainerService(
+        cryptoService,
+        encryptService
+      );
+    });
 
-    const view = await attachment.decrypt(null);
+    it("expected output", async () => {
+      const attachment = new Attachment();
+      attachment.id = "id";
+      attachment.url = "url";
+      attachment.size = "1100";
+      attachment.sizeName = "1.1 KB";
+      attachment.key = mockEnc("key");
+      attachment.fileName = mockEnc("fileName");
 
-    expect(view).toEqual({
-      id: "id",
-      url: "url",
-      size: "1100",
-      sizeName: "1.1 KB",
-      fileName: "fileName",
-      key: expect.any(SymmetricCryptoKey),
+      encryptService.decryptToBytes.mockResolvedValue(makeStaticByteArray(32));
+
+      const view = await attachment.decrypt(null);
+
+      expect(view).toEqual({
+        id: "id",
+        url: "url",
+        size: "1100",
+        sizeName: "1.1 KB",
+        fileName: "fileName",
+        key: expect.any(SymmetricCryptoKey),
+      });
+    });
+
+    describe("decrypts attachment.key", () => {
+      let attachment: Attachment;
+
+      beforeEach(() => {
+        attachment = new Attachment();
+        attachment.key = mock<EncString>();
+      });
+
+      it("uses the provided key without depending on CryptoService", async () => {
+        const providedKey = mock<SymmetricCryptoKey>();
+
+        await attachment.decrypt(null, providedKey);
+
+        expect(cryptoService.getKeyForUserEncryption).not.toHaveBeenCalled();
+        expect(encryptService.decryptToBytes).toHaveBeenCalledWith(attachment.key, providedKey);
+      });
+
+      it("gets an organization key if required", async () => {
+        const orgKey = mock<SymmetricCryptoKey>();
+        cryptoService.getOrgKey.calledWith("orgId").mockResolvedValue(orgKey);
+
+        await attachment.decrypt("orgId", null);
+
+        expect(cryptoService.getOrgKey).toHaveBeenCalledWith("orgId");
+        expect(encryptService.decryptToBytes).toHaveBeenCalledWith(attachment.key, orgKey);
+      });
+
+      it("gets the user's decryption key if required", async () => {
+        const userKey = mock<SymmetricCryptoKey>();
+        cryptoService.getKeyForUserEncryption.mockResolvedValue(userKey);
+
+        await attachment.decrypt(null, null);
+
+        expect(cryptoService.getKeyForUserEncryption).toHaveBeenCalled();
+        expect(encryptService.decryptToBytes).toHaveBeenCalledWith(attachment.key, userKey);
+      });
+    });
+  });
+
+  describe("fromJSON", () => {
+    it("initializes nested objects", () => {
+      jest.spyOn(EncString, "fromJSON").mockImplementation(mockFromJson);
+
+      const actual = Attachment.fromJSON({
+        key: "myKey",
+        fileName: "myFileName",
+      });
+
+      expect(actual).toEqual({
+        key: "myKey_fromJSON",
+        fileName: "myFileName_fromJSON",
+      });
+      expect(actual).toBeInstanceOf(Attachment);
+    });
+
+    it("returns null if object is null", () => {
+      expect(Attachment.fromJSON(null)).toBeNull();
     });
   });
 });

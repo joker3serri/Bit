@@ -2,11 +2,8 @@ import { APP_INITIALIZER, LOCALE_ID, NgModule } from "@angular/core";
 
 import { LockGuard as BaseLockGuardService } from "@bitwarden/angular/guards/lock.guard";
 import { UnauthGuard as BaseUnauthGuardService } from "@bitwarden/angular/guards/unauth.guard";
-import {
-  JslibServicesModule,
-  MEMORY_STORAGE,
-  SECURE_STORAGE,
-} from "@bitwarden/angular/services/jslib-services.module";
+import { MEMORY_STORAGE, SECURE_STORAGE } from "@bitwarden/angular/services/injection-tokens";
+import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { ThemingService } from "@bitwarden/angular/services/theming/theming.service";
 import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -27,9 +24,10 @@ import { FolderService } from "@bitwarden/common/abstractions/folder/folder.serv
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/abstractions/log.service";
+import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/abstractions/login.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -47,9 +45,11 @@ import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { TwoFactorService } from "@bitwarden/common/abstractions/twoFactor.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { UsernameGenerationService } from "@bitwarden/common/abstractions/usernameGeneration.service";
-import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout.service";
+import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
+import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
+import { LoginService } from "@bitwarden/common/services/login.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
 
 import MainBackground from "../../background/main.background";
@@ -70,13 +70,14 @@ import { PopupSearchService } from "./popup-search.service";
 import { PopupUtilsService } from "./popup-utils.service";
 import { UnauthGuardService } from "./unauth-guard.service";
 
-const isPrivateMode = BrowserApi.getBackgroundPage() == null;
-const mainBackground: MainBackground = isPrivateMode
+const needsBackgroundInit = BrowserApi.getBackgroundPage() == null;
+const isPrivateMode = needsBackgroundInit && BrowserApi.manifestVersion !== 3;
+const mainBackground: MainBackground = needsBackgroundInit
   ? createLocalBgService()
   : BrowserApi.getBackgroundPage().bitwardenMain;
 
 function createLocalBgService() {
-  const localBgService = new MainBackground(true);
+  const localBgService = new MainBackground(isPrivateMode);
   localBgService.bootstrap();
   return localBgService;
 }
@@ -110,7 +111,7 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: MessagingService,
       useFactory: () => {
-        return isPrivateMode
+        return needsBackgroundInit
           ? new BrowserMessagingPrivateModePopupService()
           : new BrowserMessagingService();
       },
@@ -238,6 +239,11 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [],
     },
     {
+      provide: VaultTimeoutSettingsService,
+      useFactory: getBgService<VaultTimeoutSettingsService>("vaultTimeoutSettingsService"),
+      deps: [],
+    },
+    {
       provide: VaultTimeoutService,
       useFactory: getBgService<VaultTimeoutService>("vaultTimeoutService"),
       deps: [],
@@ -304,6 +310,10 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: FileDownloadService,
       useClass: BrowserFileDownloadService,
+    },
+    {
+      provide: LoginServiceAbstraction,
+      useClass: LoginService,
     },
     {
       provide: AbstractThemingService,

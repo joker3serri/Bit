@@ -1,21 +1,28 @@
-import Substitute, { Arg } from "@fluffy-spoon/substitute";
+// eslint-disable-next-line no-restricted-imports
+import { Substitute, Arg } from "@fluffy-spoon/substitute";
+import { Jsonify } from "type-fest";
 
 import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
-import { CipherData } from "@bitwarden/common/models/data/cipherData";
+import { CipherData } from "@bitwarden/common/models/data/cipher.data";
+import { Attachment } from "@bitwarden/common/models/domain/attachment";
 import { Card } from "@bitwarden/common/models/domain/card";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
+import { EncString } from "@bitwarden/common/models/domain/enc-string";
+import { Field } from "@bitwarden/common/models/domain/field";
 import { Identity } from "@bitwarden/common/models/domain/identity";
 import { Login } from "@bitwarden/common/models/domain/login";
-import { SecureNote } from "@bitwarden/common/models/domain/secureNote";
-import { CardView } from "@bitwarden/common/models/view/cardView";
-import { IdentityView } from "@bitwarden/common/models/view/identityView";
-import { LoginView } from "@bitwarden/common/models/view/loginView";
+import { Password } from "@bitwarden/common/models/domain/password";
+import { SecureNote } from "@bitwarden/common/models/domain/secure-note";
+import { CardView } from "@bitwarden/common/models/view/card.view";
+import { IdentityView } from "@bitwarden/common/models/view/identity.view";
+import { LoginView } from "@bitwarden/common/models/view/login.view";
+import { InitializerKey } from "@bitwarden/common/services/cryptography/initializer-key";
 
-import { mockEnc } from "../../utils";
+import { mockEnc, mockFromJson } from "../../utils";
 
 describe("Cipher DTO", () => {
   it("Convert from empty CipherData", () => {
@@ -23,6 +30,7 @@ describe("Cipher DTO", () => {
     const cipher = new Cipher(data);
 
     expect(cipher).toEqual({
+      initializerKey: InitializerKey.Cipher,
       id: null,
       organizationId: null,
       folderId: null,
@@ -36,6 +44,7 @@ describe("Cipher DTO", () => {
       revisionDate: null,
       collectionIds: undefined,
       localData: null,
+      creationDate: null,
       deletedDate: null,
       reprompt: undefined,
       attachments: null,
@@ -60,6 +69,7 @@ describe("Cipher DTO", () => {
         type: CipherType.Login,
         name: "EncryptedString",
         notes: "EncryptedString",
+        creationDate: "2022-01-01T12:00:00.000Z",
         deletedDate: null,
         reprompt: CipherRepromptType.None,
         login: {
@@ -112,6 +122,7 @@ describe("Cipher DTO", () => {
       const cipher = new Cipher(cipherData);
 
       expect(cipher).toEqual({
+        initializerKey: InitializerKey.Cipher,
         id: "id",
         organizationId: "orgId",
         folderId: "folderId",
@@ -125,6 +136,7 @@ describe("Cipher DTO", () => {
         revisionDate: new Date("2022-01-31T12:00:00.000Z"),
         collectionIds: undefined,
         localData: null,
+        creationDate: new Date("2022-01-01T12:00:00.000Z"),
         deletedDate: null,
         reprompt: 0,
         login: {
@@ -194,6 +206,7 @@ describe("Cipher DTO", () => {
       cipher.type = CipherType.Login;
       cipher.name = mockEnc("EncryptedString");
       cipher.notes = mockEnc("EncryptedString");
+      cipher.creationDate = new Date("2022-01-01T12:00:00.000Z");
       cipher.deletedDate = null;
       cipher.reprompt = CipherRepromptType.None;
 
@@ -224,6 +237,7 @@ describe("Cipher DTO", () => {
         passwordHistory: null,
         collectionIds: undefined,
         revisionDate: new Date("2022-01-31T12:00:00.000Z"),
+        creationDate: new Date("2022-01-01T12:00:00.000Z"),
         deletedDate: null,
         reprompt: 0,
         localData: undefined,
@@ -247,6 +261,7 @@ describe("Cipher DTO", () => {
         type: CipherType.SecureNote,
         name: "EncryptedString",
         notes: "EncryptedString",
+        creationDate: "2022-01-01T12:00:00.000Z",
         deletedDate: null,
         reprompt: CipherRepromptType.None,
         secureNote: {
@@ -259,6 +274,7 @@ describe("Cipher DTO", () => {
       const cipher = new Cipher(cipherData);
 
       expect(cipher).toEqual({
+        initializerKey: InitializerKey.Cipher,
         id: "id",
         organizationId: "orgId",
         folderId: "folderId",
@@ -272,6 +288,7 @@ describe("Cipher DTO", () => {
         revisionDate: new Date("2022-01-31T12:00:00.000Z"),
         collectionIds: undefined,
         localData: null,
+        creationDate: new Date("2022-01-01T12:00:00.000Z"),
         deletedDate: null,
         reprompt: 0,
         secureNote: { type: SecureNoteType.Generic },
@@ -299,6 +316,7 @@ describe("Cipher DTO", () => {
       cipher.type = CipherType.SecureNote;
       cipher.name = mockEnc("EncryptedString");
       cipher.notes = mockEnc("EncryptedString");
+      cipher.creationDate = new Date("2022-01-01T12:00:00.000Z");
       cipher.deletedDate = null;
       cipher.reprompt = CipherRepromptType.None;
       cipher.secureNote = new SecureNote();
@@ -323,6 +341,7 @@ describe("Cipher DTO", () => {
         passwordHistory: null,
         collectionIds: undefined,
         revisionDate: new Date("2022-01-31T12:00:00.000Z"),
+        creationDate: new Date("2022-01-01T12:00:00.000Z"),
         deletedDate: null,
         reprompt: 0,
         localData: undefined,
@@ -346,6 +365,7 @@ describe("Cipher DTO", () => {
         type: CipherType.Card,
         name: "EncryptedString",
         notes: "EncryptedString",
+        creationDate: "2022-01-01T12:00:00.000Z",
         deletedDate: null,
         reprompt: CipherRepromptType.None,
         card: {
@@ -363,6 +383,7 @@ describe("Cipher DTO", () => {
       const cipher = new Cipher(cipherData);
 
       expect(cipher).toEqual({
+        initializerKey: InitializerKey.Cipher,
         id: "id",
         organizationId: "orgId",
         folderId: "folderId",
@@ -376,6 +397,7 @@ describe("Cipher DTO", () => {
         revisionDate: new Date("2022-01-31T12:00:00.000Z"),
         collectionIds: undefined,
         localData: null,
+        creationDate: new Date("2022-01-01T12:00:00.000Z"),
         deletedDate: null,
         reprompt: 0,
         card: {
@@ -410,6 +432,7 @@ describe("Cipher DTO", () => {
       cipher.type = CipherType.Card;
       cipher.name = mockEnc("EncryptedString");
       cipher.notes = mockEnc("EncryptedString");
+      cipher.creationDate = new Date("2022-01-01T12:00:00.000Z");
       cipher.deletedDate = null;
       cipher.reprompt = CipherRepromptType.None;
 
@@ -440,6 +463,7 @@ describe("Cipher DTO", () => {
         passwordHistory: null,
         collectionIds: undefined,
         revisionDate: new Date("2022-01-31T12:00:00.000Z"),
+        creationDate: new Date("2022-01-01T12:00:00.000Z"),
         deletedDate: null,
         reprompt: 0,
         localData: undefined,
@@ -463,6 +487,7 @@ describe("Cipher DTO", () => {
         type: CipherType.Identity,
         name: "EncryptedString",
         notes: "EncryptedString",
+        creationDate: "2022-01-01T12:00:00.000Z",
         deletedDate: null,
         reprompt: CipherRepromptType.None,
         identity: {
@@ -492,6 +517,7 @@ describe("Cipher DTO", () => {
       const cipher = new Cipher(cipherData);
 
       expect(cipher).toEqual({
+        initializerKey: InitializerKey.Cipher,
         id: "id",
         organizationId: "orgId",
         folderId: "folderId",
@@ -505,6 +531,7 @@ describe("Cipher DTO", () => {
         revisionDate: new Date("2022-01-31T12:00:00.000Z"),
         collectionIds: undefined,
         localData: null,
+        creationDate: new Date("2022-01-01T12:00:00.000Z"),
         deletedDate: null,
         reprompt: 0,
         identity: {
@@ -551,6 +578,7 @@ describe("Cipher DTO", () => {
       cipher.type = CipherType.Identity;
       cipher.name = mockEnc("EncryptedString");
       cipher.notes = mockEnc("EncryptedString");
+      cipher.creationDate = new Date("2022-01-01T12:00:00.000Z");
       cipher.deletedDate = null;
       cipher.reprompt = CipherRepromptType.None;
 
@@ -581,10 +609,70 @@ describe("Cipher DTO", () => {
         passwordHistory: null,
         collectionIds: undefined,
         revisionDate: new Date("2022-01-31T12:00:00.000Z"),
+        creationDate: new Date("2022-01-01T12:00:00.000Z"),
         deletedDate: null,
         reprompt: 0,
         localData: undefined,
       });
+    });
+  });
+
+  describe("fromJSON", () => {
+    it("initializes nested objects", () => {
+      jest.spyOn(Attachment, "fromJSON").mockImplementation(mockFromJson);
+      jest.spyOn(Field, "fromJSON").mockImplementation(mockFromJson);
+      jest.spyOn(Password, "fromJSON").mockImplementation(mockFromJson);
+      jest.spyOn(EncString, "fromJSON").mockImplementation(mockFromJson);
+
+      const revisionDate = new Date("2022-08-04T01:06:40.441Z");
+      const deletedDate = new Date("2022-09-04T01:06:40.441Z");
+      const actual = Cipher.fromJSON({
+        name: "myName",
+        notes: "myNotes",
+        revisionDate: revisionDate.toISOString(),
+        attachments: ["attachment1", "attachment2"] as any,
+        fields: ["field1", "field2"] as any,
+        passwordHistory: ["ph1", "ph2"] as any,
+        deletedDate: deletedDate.toISOString(),
+      } as Jsonify<Cipher>);
+
+      expect(actual).toMatchObject({
+        name: "myName_fromJSON",
+        notes: "myNotes_fromJSON",
+        revisionDate: revisionDate,
+        attachments: ["attachment1_fromJSON", "attachment2_fromJSON"],
+        fields: ["field1_fromJSON", "field2_fromJSON"],
+        passwordHistory: ["ph1_fromJSON", "ph2_fromJSON"],
+        deletedDate: deletedDate,
+      });
+      expect(actual).toBeInstanceOf(Cipher);
+    });
+
+    test.each([
+      // Test description, CipherType, expected output
+      ["LoginView", CipherType.Login, { login: "myLogin_fromJSON" }],
+      ["CardView", CipherType.Card, { card: "myCard_fromJSON" }],
+      ["IdentityView", CipherType.Identity, { identity: "myIdentity_fromJSON" }],
+      ["Secure Note", CipherType.SecureNote, { secureNote: "mySecureNote_fromJSON" }],
+    ])("initializes %s", (description: string, cipherType: CipherType, expected: any) => {
+      jest.spyOn(Login, "fromJSON").mockImplementation(mockFromJson);
+      jest.spyOn(Identity, "fromJSON").mockImplementation(mockFromJson);
+      jest.spyOn(Card, "fromJSON").mockImplementation(mockFromJson);
+      jest.spyOn(SecureNote, "fromJSON").mockImplementation(mockFromJson);
+
+      const actual = Cipher.fromJSON({
+        login: "myLogin",
+        card: "myCard",
+        identity: "myIdentity",
+        secureNote: "mySecureNote",
+        type: cipherType,
+      } as any);
+
+      expect(actual).toMatchObject(expected);
+    });
+
+    it("returns null if object is null", () => {
+      expect(Cipher.fromJSON(null)).toBeNull();
     });
   });
 });

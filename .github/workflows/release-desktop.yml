@@ -13,13 +13,18 @@ on:
           - Initial Release
           - Redeploy
           - Dry Run
+      rollout_percentage:
+        description: 'Staged Rollout Percentage'
+        required: true
+        default: '10'
+        type: string
       snap_publish:
-        description: 'Publish to snap store'
+        description: 'Publish to Snap store'
         required: true
         default: true
         type: boolean
       choco_publish:
-        description: 'Publish to chocolatey store'
+        description: 'Publish to Chocolatey store'
         required: true
         default: true
         type: boolean
@@ -93,14 +98,20 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        uses: Azure/get-keyvault-secrets@b5c723b9ac7870c022b8c35befe620b7009b336f
+        uses: bitwarden/gh-actions/get-keyvault-secrets@c3b3285993151c5af47cefcb3b9134c28ab479af
         with:
           keyvault: "bitwarden-prod-kv"
-          secrets: "aws-electron-access-id, aws-electron-access-key, aws-electron-bucket-name"
+          secrets: "aws-electron-access-id,
+            aws-electron-access-key,
+            aws-electron-bucket-name,
+            r2-electron-access-id,
+            r2-electron-access-key,
+            r2-electron-bucket-name,
+            cf-prod-account"
 
       - name: Download all artifacts
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
+        uses: bitwarden/gh-actions/download-artifacts@850faad0cf6c02a8c0dc46eddde2363fbd6c373a
         with:
           workflow: build-desktop.yml
           workflow_conclusion: success
@@ -109,7 +120,7 @@ jobs:
 
       - name: Download all artifacts
         if: ${{ github.event.inputs.release_type == 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
+        uses: bitwarden/gh-actions/download-artifacts@850faad0cf6c02a8c0dc46eddde2363fbd6c373a
         with:
           workflow: build-desktop.yml
           workflow_conclusion: success
@@ -121,6 +132,15 @@ jobs:
           PKG_VERSION: ${{ steps.version.outputs.version }}
         working-directory: apps/desktop/artifacts
         run: mv Bitwarden-${{ env.PKG_VERSION }}-universal.pkg Bitwarden-${{ env.PKG_VERSION }}-universal.pkg.archive
+
+      - name: Set staged rollout percentage
+        env:
+          RELEASE_CHANNEL: ${{ steps.release-channel.outputs.channel }}
+          ROLLOUT_PCT: ${{ github.event.inputs.rollout_percentage }}
+        run: |
+          echo "stagingPercentage: ${ROLLOUT_PCT}" >> apps/desktop/artifacts/${RELEASE_CHANNEL}.yml
+          echo "stagingPercentage: ${ROLLOUT_PCT}" >> apps/desktop/artifacts/${RELEASE_CHANNEL}-linux.yml
+          echo "stagingPercentage: ${ROLLOUT_PCT}" >> apps/desktop/artifacts/${RELEASE_CHANNEL}-mac.yml
 
       - name: Publish artifacts to S3
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
@@ -136,8 +156,23 @@ jobs:
           --recursive \
           --quiet
 
-      - name: Create release
-        uses: ncipollo/release-action@95215a3cb6e6a1908b3c44e00b4fdb15548b1e09  # v2.8.5
+      - name: Publish artifacts to R2
+        if: ${{ github.event.inputs.release_type != 'Dry Run' }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.r2-electron-access-id }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.r2-electron-access-key }}
+          AWS_DEFAULT_REGION: 'us-east-1'
+          AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.r2-electron-bucket-name }}
+          CF_ACCOUNT: ${{ steps.retrieve-secrets.outputs.cf-prod-account }}
+        working-directory: apps/desktop/artifacts
+        run: |
+          aws s3 cp ./ $AWS_S3_BUCKET_NAME/desktop/ \
+          --recursive \
+          --quiet \
+          --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
+
+      - name: Create Release
+        uses: ncipollo/release-action@95215a3cb6e6a1908b3c44e00b4fdb15548b1e09
         if: ${{ steps.release-channel.outputs.channel == 'latest' && github.event.inputs.release_type != 'Dry Run' }}
         env:
           PKG_VERSION: ${{ steps.version.outputs.version }}
@@ -208,7 +243,7 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        uses: Azure/get-keyvault-secrets@80ccd3fafe5662407cc2e55f202ee34bfff8c403
+        uses: bitwarden/gh-actions/get-keyvault-secrets@c3b3285993151c5af47cefcb3b9134c28ab479af
         with:
           keyvault: "bitwarden-prod-kv"
           secrets: "snapcraft-store-token"
@@ -224,7 +259,7 @@ jobs:
 
       - name: Download Snap artifact
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
+        uses: bitwarden/gh-actions/download-artifacts@850faad0cf6c02a8c0dc46eddde2363fbd6c373a
         with:
           workflow: build-desktop.yml
           workflow_conclusion: success
@@ -234,7 +269,7 @@ jobs:
 
       - name: Download Snap artifact
         if: ${{ github.event.inputs.release_type == 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
+        uses: bitwarden/gh-actions/download-artifacts@850faad0cf6c02a8c0dc46eddde2363fbd6c373a
         with:
           workflow: build-desktop.yml
           workflow_conclusion: success
@@ -258,7 +293,7 @@ jobs:
       _PKG_VERSION: ${{ needs.setup.outputs.release-version }}
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f  # v2.3.4
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
 
       - name: Print Environment
         run: |
@@ -272,7 +307,7 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        uses: Azure/get-keyvault-secrets@b5c723b9ac7870c022b8c35befe620b7009b336f
+        uses: bitwarden/gh-actions/get-keyvault-secrets@c3b3285993151c5af47cefcb3b9134c28ab479af
         with:
           keyvault: "bitwarden-prod-kv"
           secrets: "cli-choco-api-key"
@@ -290,7 +325,7 @@ jobs:
 
       - name: Download choco artifact
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
+        uses: bitwarden/gh-actions/download-artifacts@850faad0cf6c02a8c0dc46eddde2363fbd6c373a
         with:
           workflow: build-desktop.yml
           workflow_conclusion: success
@@ -300,7 +335,7 @@ jobs:
 
       - name: Download choco artifact
         if: ${{ github.event.inputs.release_type == 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@23433be15ed6fd046ce12b6889c5184a8d9c8783
+        uses: bitwarden/gh-actions/download-artifacts@850faad0cf6c02a8c0dc46eddde2363fbd6c373a
         with:
           workflow: build-desktop.yml
           workflow_conclusion: success

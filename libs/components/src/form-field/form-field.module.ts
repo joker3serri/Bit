@@ -1,10 +1,10 @@
-import { CommonModule } from "@angular/common";
-import { NgModule, Pipe, PipeTransform } from "@angular/core";
-
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { NgModule } from "@angular/core";
 
 import { BitInputDirective } from "../input/input.directive";
 import { InputModule } from "../input/input.module";
+import { MultiSelectComponent } from "../multi-select/multi-select.component";
+import { MultiSelectModule } from "../multi-select/multi-select.module";
+import { SharedModule } from "../shared";
 
 import { BitErrorSummary } from "./error-summary.component";
 import { BitErrorComponent } from "./error.component";
@@ -14,31 +14,18 @@ import { BitLabel } from "./label.directive";
 import { BitPrefixDirective } from "./prefix.directive";
 import { BitSuffixDirective } from "./suffix.directive";
 
-/**
- * Temporarily duplicate this pipe
- */
-@Pipe({
-  name: "i18n",
-})
-export class I18nPipe implements PipeTransform {
-  constructor(private i18nService: I18nService) {}
-
-  transform(id: string, p1?: string, p2?: string, p3?: string): string {
-    return this.i18nService.t(id, p1, p2, p3);
-  }
-}
-
 @NgModule({
-  imports: [CommonModule, InputModule],
+  imports: [SharedModule, InputModule, MultiSelectModule],
   exports: [
     BitErrorComponent,
     BitErrorSummary,
     BitFormFieldComponent,
     BitHintComponent,
-    BitInputDirective,
     BitLabel,
     BitPrefixDirective,
     BitSuffixDirective,
+    BitInputDirective,
+    MultiSelectComponent,
   ],
   declarations: [
     BitErrorComponent,
@@ -48,7 +35,6 @@ export class I18nPipe implements PipeTransform {
     BitLabel,
     BitPrefixDirective,
     BitSuffixDirective,
-    I18nPipe,
   ],
 })
 export class FormFieldModule {}

@@ -5,7 +5,7 @@ import {
   Urls,
 } from "../abstractions/environment.service";
 import { StateService } from "../abstractions/state.service";
-import { EnvironmentUrls } from "../models/domain/environmentUrls";
+import { EnvironmentUrls } from "../models/domain/environment-urls";
 
 export class EnvironmentService implements EnvironmentServiceAbstraction {
   private readonly urlsSubject = new Subject<Urls>();
@@ -206,5 +206,11 @@ export class EnvironmentService implements EnvironmentServiceAbstraction {
     }
 
     return url.trim();
+  }
+
+  isCloud(): boolean {
+    return ["https://api.bitwarden.com", "https://vault.bitwarden.com/api"].includes(
+      this.getApiUrl()
+    );
   }
 }
