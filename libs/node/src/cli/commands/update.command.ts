@@ -9,10 +9,14 @@ import { MessageResponse } from "../models/response/messageResponse";
 export class UpdateCommand {
   inPkg = false;
 
+  clientsReleaseListEndpoint = "https://api.github.com/repos/bitwarden/clients/releases";
+  defaultDownloadUrl = "https://github.com/bitwarden/clients/releases";
+  npmUpdateCommand = "npm install -g @bitwarden/cli";
+
   constructor(
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
-    private repoName: string,
+    private appName: string,
     private executableName: string,
     private showExtendedMessage: boolean
   ) {
@@ -22,23 +26,26 @@ export class UpdateCommand {
   async run(): Promise<Response> {
     const currentVersion = await this.platformUtilsService.getApplicationVersion();
 
-    const response = await fetch.default(
-      "https://api.github.com/repos/bitwarden/" + this.repoName + "/releases/latest"
-    );
+    const response = await fetch.default(this.clientsReleaseListEndpoint);
     if (response.status === 200) {
       const responseJson = await response.json();
+      const cliTag = responseJson.find((r: any) => r.tag_name.includes(this.appName));
+      if (cliTag === undefined || cliTag === null) {
+        return Response.error("Could not find latest CLI version.");
+      }
+
       const res = new MessageResponse(null, null);
 
-      const tagName: string = responseJson.tag_name;
-      if (tagName === "v" + currentVersion) {
+      const tagName: string = cliTag.tag_name;
+      if (tagName === "cli-v" + currentVersion) {
         res.title = "No update available.";
         res.noColor = true;
         return Response.success(res);
       }
 
       let downloadUrl: string = null;
-      if (responseJson.assets != null) {
-        for (const a of responseJson.assets) {
+      if (cliTag.assets != null) {
+        for (const a of cliTag.assets) {
           const download: string = a.browser_download_url;
           if (download == null) {
             continue;
@@ -72,7 +79,7 @@ export class UpdateCommand {
 
       res.title = "A new version is available: " + tagName;
       if (downloadUrl == null) {
-        downloadUrl = "https://github.com/bitwarden/" + this.repoName + "/releases";
+        downloadUrl = this.defaultDownloadUrl;
       } else {
         res.raw = downloadUrl;
       }
@@ -91,8 +98,8 @@ export class UpdateCommand {
         } else {
           res.message +=
             "\n\nIf you installed this CLI through NPM " +
-            "you should update using `npm install -g @bitwarden/" +
-            this.repoName +
+            "you should update using `" +
+            this.npmUpdateCommand +
             "`";
         }
       }
