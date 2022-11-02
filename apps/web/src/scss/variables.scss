@@ -201,11 +201,16 @@ $themes: (
     navBackgroundAlt: $secondary-alt,
     navOrgBackgroundColor: #fbfbfb,
     navWeight: 600,
-    pwCountTextMuted: #777777,
-    pwCountBackground: #ededed,
-    pwLetter: $body-color,
-    pwNumber: #007fde,
-    pwSpecial: #c40800,
+    pwCountText: #212529,
+    // --color-text-main
+    pwCountBackground: #f0f0f0,
+    // --color-secondary-100
+    pwLetter: #212529,
+    // --color-text-main
+    pwNumber: #175ddc,
+    // --color-primary-500
+    pwSpecial: #c83522,
+    // --color-danger-500
     pwStrengthBackground: #e9ecef,
     separator: $secondary,
     separatorHr: rgb(0, 0, 0, 0.1),
@@ -315,11 +320,16 @@ $themes: (
     navBackgroundAlt: $darkDarkBlue1,
     navOrgBackgroundColor: #161c26,
     navWeight: 400,
-    pwCountTextMuted: #777777,
-    pwCountBackground: #ededed,
-    pwLetter: $white,
-    pwNumber: #52bdfb,
-    pwSpecial: #ff7c70,
+    pwCountText: #ffffff,
+    // --color-text-main
+    pwCountBackground: #2f343d,
+    // --color-secondary-100
+    pwLetter: #ffffff,
+    // --color-text-main
+    pwNumber: #6a99f0,
+    // --color-primary-500
+    pwSpecial: #ff8d85,
+    // --color-danger-500
     pwStrengthBackground: $darkBlue2,
     separator: $darkBlue1,
     separatorHr: $darkBlue1,

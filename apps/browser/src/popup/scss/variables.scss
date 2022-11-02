@@ -101,12 +101,22 @@ $themes: (
     infoColor: $brand-info,
     warningColor: $brand-warning,
     logoSuffix: "dark",
-    passwordNumberColor: #007fde,
-    passwordSpecialColor: #c40800,
     calloutBorderColor: $border-color-dark,
     calloutBackgroundColor: $box-background-color,
     toastTextColor: #ffffff,
     svgSuffix: "-light.svg",
+
+    // Color password display
+    pwCountText: #212529,
+    // --color-text-main
+    pwCountBackground: #f0f0f0,
+    // --color-secondary-100
+    pwLetter: #212529,
+    // --color-text-main
+    pwNumber: #175ddc,
+    // --color-primary-500
+    pwSpecial: #c83522,
+    // --color-danger-500
   ),
   dark: (
     textColor: #ffffff,
@@ -152,12 +162,22 @@ $themes: (
     infoColor: #a4b0c6,
     warningColor: #ffeb66,
     logoSuffix: "white",
-    passwordNumberColor: #6f9df1,
-    passwordSpecialColor: #ff8d85,
     calloutBorderColor: #4c525f,
     calloutBackgroundColor: #3c424e,
     toastTextColor: #1f242e,
     svgSuffix: "-dark.svg",
+
+    // Color password display
+    pwCountText: #ffffff,
+    // --color-text-main
+    pwCountBackground: #2f343d,
+    // --color-secondary-100
+    pwLetter: #ffffff,
+    // --color-text-main
+    pwNumber: #6a99f0,
+    // --color-primary-500
+    pwSpecial: #ff8d85,
+    // --color-danger-500
   ),
   nord: (
     textColor: $nord5,
@@ -203,12 +223,17 @@ $themes: (
     infoColor: $nord9,
     warningColor: $nord12,
     logoSuffix: "white",
-    passwordNumberColor: $nord8,
-    passwordSpecialColor: $nord12,
     calloutBorderColor: $nord0,
     calloutBackgroundColor: $nord2,
     toastTextColor: #ffffff,
     svgSuffix: "-dark.svg",
+
+    // Color password display
+    pwCountText: $nord5,
+    pwCountBackground: $nord2,
+    pwLetter: $nord5,
+    pwNumber: $nord8,
+    pwSpecial: $nord12,
   ),
   solarizedDark: (
     textColor: $solarizedDarkBase2,
@@ -254,12 +279,17 @@ $themes: (
     infoColor: $solarizedDarkGreen,
     warningColor: $solarizedDarkYellow,
     logoSuffix: "white",
-    passwordNumberColor: $solarizedDarkCyan,
-    passwordSpecialColor: $solarizedDarkYellow,
     calloutBorderColor: $solarizedDarkBase03,
     calloutBackgroundColor: $solarizedDarkBase01,
     toastTextColor: #ffffff,
     svgSuffix: "-solarized.svg",
+
+    // Color password display
+    pwCountText: $solarizedDarkBase2,
+    pwCountBackground: $solarizedDarkBase02,
+    pwLetter: $solarizedDarkBase2,
+    pwNumber: $solarizedDarkCyan,
+    pwSpecial: $solarizedDarkYellow,
   ),
 );
 

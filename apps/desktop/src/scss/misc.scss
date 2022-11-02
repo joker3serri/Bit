@@ -221,15 +221,21 @@ p.lead {
   min-width: 0;
 }
 
+.password-letter {
+  @include themify($themes) {
+    color: themed("pwLetter");
+  }
+}
+
 .password-number {
   @include themify($themes) {
-    color: themed("passwordNumberColor");
+    color: themed("pwNumber");
   }
 }
 
 .password-special {
   @include themify($themes) {
-    color: themed("passwordSpecialColor");
+    color: themed("pwSpecial");
   }
 }
 
@@ -243,7 +249,7 @@ p.lead {
 
   &:nth-child(odd) {
     @include themify($themes) {
-      background-color: themed("backgroundColor");
+      background-color: themed("pwCountBackground");
     }
   }
 }
@@ -253,7 +259,7 @@ p.lead {
   font-size: 8px;
 
   @include themify($themes) {
-    color: themed("mutedColor") !important;
+    color: themed("pwCountText") !important;
   }
 }
 
