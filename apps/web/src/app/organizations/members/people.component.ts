@@ -28,15 +28,15 @@ import { OrganizationUserBulkResponse } from "@bitwarden/common/models/response/
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
 
 import { BasePeopleComponent } from "../../common/base.people.component";
+import { EntityEventsComponent } from "../manage/entity-events.component";
 
-import { BulkConfirmComponent } from "./bulk/bulk-confirm.component";
-import { BulkRemoveComponent } from "./bulk/bulk-remove.component";
-import { BulkRestoreRevokeComponent } from "./bulk/bulk-restore-revoke.component";
-import { BulkStatusComponent } from "./bulk/bulk-status.component";
-import { EntityEventsComponent } from "./entity-events.component";
-import { ResetPasswordComponent } from "./reset-password.component";
-import { UserAddEditComponent } from "./user-add-edit.component";
-import { UserGroupsComponent } from "./user-groups.component";
+import { BulkConfirmComponent } from "./components/bulk/bulk-confirm.component";
+import { BulkRemoveComponent } from "./components/bulk/bulk-remove.component";
+import { BulkRestoreRevokeComponent } from "./components/bulk/bulk-restore-revoke.component";
+import { BulkStatusComponent } from "./components/bulk/bulk-status.component";
+import { ResetPasswordComponent } from "./components/reset-password.component";
+import { UserAddEditComponent } from "./components/user-add-edit.component";
+import { UserGroupsComponent } from "./components/user-groups.component";
 
 @Component({
   selector: "app-org-people",
@@ -166,7 +166,7 @@ export class PeopleComponent
   }
 
   async load() {
-    super.load();
+    // super.load();
     await super.load();
   }
 
