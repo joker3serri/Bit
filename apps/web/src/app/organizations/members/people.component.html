@@ -1,109 +1,42 @@
 <div class="container page-content">
-  <div
-    class="-tw-mt-2 tw-mb-2 tw-flex tw-flex-wrap tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300 tw-pb-2.5"
-  >
-    <h1 class="tw-mt-2 tw-mb-0 tw-grow tw-pr-3">{{ "members" | i18n }}</h1>
-    <div class="tw-mt-2 tw-flex tw-justify-start tw-space-x-3">
-      <div class="btn-group btn-group-sm" role="group">
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          [ngClass]="{ active: status == null }"
-          (click)="filter(null)"
-        >
-          {{ "all" | i18n }}
-          <span bitBadge badgeType="info" *ngIf="allCount">{{ allCount }}</span>
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          [ngClass]="{ active: status == userStatusType.Invited }"
-          (click)="filter(userStatusType.Invited)"
-        >
+  <div class="tw-mb-4 tw-flex tw-flex-col">
+    <h1>{{ "members" | i18n }}</h1>
+    <div class="tw-flex tw-items-center tw-justify-end tw-space-x-3">
+      <bit-toggle-group
+        [selected]="status"
+        (selectedChange)="filter($event)"
+        [attr.aria-label]="'memberStatusFilter' | i18n"
+      >
+        <bit-toggle [value]="null">
+          {{ "all" | i18n }} <span bitBadge badgeType="info" *ngIf="allCount">{{ allCount }}</span>
+        </bit-toggle>
+
+        <bit-toggle [value]="userStatusType.Invited">
           {{ "invited" | i18n }}
           <span bitBadge badgeType="info" *ngIf="invitedCount">{{ invitedCount }}</span>
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          [ngClass]="{ active: status == userStatusType.Accepted }"
-          (click)="filter(userStatusType.Accepted)"
-        >
-          {{ "accepted" | i18n }}
-          <span bitBadge badgeType="warning" *ngIf="acceptedCount">{{ acceptedCount }}</span>
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          [ngClass]="{ active: status == userStatusType.Revoked }"
-          (click)="filter(userStatusType.Revoked)"
-        >
+        </bit-toggle>
+
+        <bit-toggle [value]="userStatusType.Accepted">
+          {{ "needsConfirmation" | i18n }}
+          <span bitBadge badgeType="info" *ngIf="acceptedCount">{{ acceptedCount }}</span>
+        </bit-toggle>
+
+        <bit-toggle [value]="userStatusType.Revoked">
           {{ "revoked" | i18n }}
           <span bitBadge badgeType="info" *ngIf="revokedCount">{{ revokedCount }}</span>
-        </button>
-      </div>
-      <div class="tw-w-44">
-        <label class="sr-only" for="search">{{ "search" | i18n }}</label>
-        <input
-          type="search"
-          class="form-control form-control-sm"
-          id="search"
-          placeholder="{{ 'search' | i18n }}"
-          [(ngModel)]="searchText"
-        />
-      </div>
-      <div class="dropdown" appListDropdown>
-        <button
-          class="btn btn-sm btn-outline-secondary dropdown-toggle"
-          type="button"
-          id="bulkActionsButton"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          appA11yTitle="{{ 'options' | i18n }}"
-        >
-          <i class="bwi bwi-cog" aria-hidden="true"></i>
-        </button>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bulkActionsButton">
-          <button class="dropdown-item" appStopClick (click)="bulkReinvite()">
-            <i class="bwi bwi-fw bwi-envelope" aria-hidden="true"></i>
-            {{ "reinviteSelected" | i18n }}
-          </button>
-          <button
-            class="dropdown-item text-success"
-            appStopClick
-            (click)="bulkConfirm()"
-            *ngIf="showBulkConfirmUsers"
-          >
-            <i class="bwi bwi-fw bwi-check" aria-hidden="true"></i>
-            {{ "confirmSelected" | i18n }}
-          </button>
-          <button class="dropdown-item" appStopClick (click)="bulkRestore()">
-            <i class="bwi bwi-fw bwi-plus-circle" aria-hidden="true"></i>
-            {{ "restoreAccess" | i18n }}
-          </button>
-          <button class="dropdown-item" appStopClick (click)="bulkRevoke()">
-            <i class="bwi bwi-fw bwi-minus-circle" aria-hidden="true"></i>
-            {{ "revokeAccess" | i18n }}
-          </button>
-          <button class="dropdown-item text-danger" appStopClick (click)="bulkRemove()">
-            <i class="bwi bwi-fw bwi-close" aria-hidden="true"></i>
-            {{ "remove" | i18n }}
-          </button>
-          <div class="dropdown-divider"></div>
-          <button class="dropdown-item" appStopClick (click)="selectAll(true)">
-            <i class="bwi bwi-fw bwi-check-square" aria-hidden="true"></i>
-            {{ "selectAll" | i18n }}
-          </button>
-          <button class="dropdown-item" appStopClick (click)="selectAll(false)">
-            <i class="bwi bwi-fw bwi-minus-square" aria-hidden="true"></i>
-            {{ "unselectAll" | i18n }}
-          </button>
-        </div>
-      </div>
-      <button type="button" class="btn btn-sm btn-outline-primary" (click)="invite()">
+        </bit-toggle>
+      </bit-toggle-group>
+
+      <bit-search-input
+        class="tw-grow"
+        [(ngModel)]="searchText"
+        [placeholder]="'searchMembers' | i18n"
+      >
+      </bit-search-input>
+
+      <button type="button" bitButton buttonType="primary" (click)="invite()">
         <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
-        {{ "inviteUser" | i18n }}
+        {{ "inviteMember" | i18n }}
       </button>
     </div>
   </div>
@@ -279,12 +212,12 @@
       </table>
     </ng-container>
   </ng-container>
+  <ng-template #addEdit></ng-template>
+  <ng-template #groupsTemplate></ng-template>
+  <ng-template #eventsTemplate></ng-template>
+  <ng-template #confirmTemplate></ng-template>
+  <ng-template #resetPasswordTemplate></ng-template>
+  <ng-template #bulkStatusTemplate></ng-template>
+  <ng-template #bulkConfirmTemplate></ng-template>
+  <ng-template #bulkRemoveTemplate></ng-template>
 </div>
-<ng-template #addEdit></ng-template>
-<ng-template #groupsTemplate></ng-template>
-<ng-template #eventsTemplate></ng-template>
-<ng-template #confirmTemplate></ng-template>
-<ng-template #resetPasswordTemplate></ng-template>
-<ng-template #bulkStatusTemplate></ng-template>
-<ng-template #bulkConfirmTemplate></ng-template>
-<ng-template #bulkRemoveTemplate></ng-template>

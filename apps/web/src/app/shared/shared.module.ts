@@ -23,6 +23,7 @@ import {
   MultiSelectModule,
   TableModule,
   TabsModule,
+  ToggleGroupModule,
 } from "@bitwarden/components";
 
 // Register the locales for the application
@@ -57,6 +58,7 @@ import "./locales";
     IconModule,
     TabsModule,
     TableModule,
+    ToggleGroupModule,
     AvatarModule,
     IconButtonModule,
     LinkModule,
@@ -82,6 +84,7 @@ import "./locales";
     IconModule,
     TabsModule,
     TableModule,
+    ToggleGroupModule,
     AvatarModule,
     IconButtonModule,
     LinkModule,

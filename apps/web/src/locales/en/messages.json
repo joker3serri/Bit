@@ -302,6 +302,9 @@
   "searchOrganization": {
     "message": "Search organization"
   },
+  "searchMembers": {
+    "message": "Search members"
+  },
   "allItems": {
     "message": "All items"
   },
@@ -5588,5 +5591,14 @@
   },
   "memberAccessAll": {
     "message": "This member can access and modify all items."
+  },
+  "memberStatusFilter": {
+    "message": "Member status filter"
+  },
+  "inviteMember": {
+    "message": "Invite member"
+  },
+  "needsConfirmation": {
+    "message": "Needs confirmation"
   }
 }
