@@ -29,7 +29,7 @@ const ButtonTemplate: Story<LinkDirective> = (args: LinkDirective) => ({
       Add Icon Button
     </button>
     <button bitLink [linkType]="linkType" class="tw-mb-2 tw-block">
-      <i class="bwi bwi-fw bwi-sm bwi-angle-down" aria-hidden="true"></i>
+      <i class="bwi bwi-fw bwi-sm bwi-angle-right" aria-hidden="true"></i>
       Chevron Icon Button
     </button>
     <button bitLink [linkType]="linkType" class="tw-text-sm tw-block">Small Button</button>
@@ -52,7 +52,7 @@ const AnchorTemplate: Story<LinkDirective> = (args: LinkDirective) => ({
     </div>
     <div class="tw-block tw-p-2">
       <a bitLink [linkType]="linkType" href="#">
-        <i class="bwi bwi-fw bwi-sm bwi-angle-down" aria-hidden="true"></i>
+        <i class="bwi bwi-fw bwi-sm bwi-angle-right" aria-hidden="true"></i>
         Chevron Icon Anchor
       </a>
     </div>
