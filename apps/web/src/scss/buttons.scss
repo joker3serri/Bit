@@ -201,3 +201,12 @@ button.no-btn {
     color: inherit;
   }
 }
+
+button.header-expandable {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}

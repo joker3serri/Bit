@@ -154,9 +154,9 @@
           (click)="showOptions = !showOptions"
           [attr.aria-expanded]="showOptions"
         >
-          {{ "options" | i18n }}
           <i *ngIf="!showOptions" class="bwi bwi-angle-down bwi-sm icon" aria-hidden="true"></i>
           <i *ngIf="showOptions" class="bwi bwi-chevron-up bwi-sm icon" aria-hidden="true"></i>
+          {{ "options" | i18n }}
         </button>
       </h2>
     </div>
