@@ -1,4 +1,4 @@
-import { HostBinding, Component, Input } from "@angular/core";
+import { Component, HostBinding, Input } from "@angular/core";
 
 import { ToggleGroupComponent } from "./toggle-group.component";
 
@@ -9,12 +9,12 @@ let nextId = 0;
   templateUrl: "./toggle.component.html",
   preserveWhitespaces: false,
 })
-export class ToggleComponent {
+export class ToggleComponent<TValue> {
   id = nextId++;
 
-  @Input() value?: string;
+  @Input() value?: TValue;
 
-  constructor(private groupComponent: ToggleGroupComponent) {}
+  constructor(private groupComponent: ToggleGroupComponent<TValue>) {}
 
   @HostBinding("tabIndex") tabIndex = "-1";
   @HostBinding("class") classList = ["tw-group"];
