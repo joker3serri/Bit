@@ -67,6 +67,9 @@ export class ToggleComponent<TValue> {
       "tw-py-1.5",
       "tw-px-3",
 
+      // Fix for bootstrap styles that add bottom margin
+      "!tw-mb-0",
+
       // Fix for badge being pushed slightly lower when inside a button.
       // Insipired by bootstrap, which does the same.
       "[&>[bitBadge]]:tw-relative",
