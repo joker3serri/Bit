@@ -57,17 +57,6 @@
   }
 }
 
-.password-hide {
-  align-self: center;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 21px;
-
-  @include themify($themes) {
-    color: themed("textMuted");
-  }
-}
-
 app-generator {
   #lengthRange {
     width: 100%;
