@@ -16,9 +16,12 @@ export class OrganizationRedirectGuard implements CanActivate {
     const org = this.organizationService.get(route.params.organizationId);
 
     const customRedirect = route.data?.autoRedirectCallback;
-    const redirectPath = customRedirect(org);
     if (customRedirect) {
-      return this.router.createUrlTree([state.url, redirectPath]);
+      let redirectPath = customRedirect(org);
+      if (typeof redirectPath === "string") {
+        redirectPath = [redirectPath];
+      }
+      return this.router.createUrlTree([state.url, ...redirectPath]);
     }
     return canAccessOrgAdmin(org)
       ? this.router.createUrlTree(["/organizations", org.id])
