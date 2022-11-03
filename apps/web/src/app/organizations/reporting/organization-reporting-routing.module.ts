@@ -5,6 +5,7 @@ import { canAccessReportingTab } from "@bitwarden/common/abstractions/organizati
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { OrganizationPermissionsGuard } from "../guards/org-permissions.guard";
+import { OrganizationRedirectGuard } from "../guards/org-redirect.guard";
 import { EventsComponent } from "../manage/events.component";
 import { ExposedPasswordsReportComponent } from "../tools/exposed-passwords-report.component";
 import { InactiveTwoFactorReportComponent } from "../tools/inactive-two-factor-report.component";
@@ -22,7 +23,15 @@ const routes: Routes = [
     canActivate: [OrganizationPermissionsGuard],
     data: { organizationPermissions: canAccessReportingTab },
     children: [
-      { path: "", pathMatch: "full", redirectTo: "reports" },
+      {
+        path: "",
+        pathMatch: "full",
+        canActivate: [OrganizationRedirectGuard],
+        data: {
+          autoRedirectCallback: getReportRoute,
+        },
+        children: [], // This is required to make the auto redirect work,
+      },
       {
         path: "reports",
         component: ReportsHomeComponent,
@@ -80,6 +89,20 @@ const routes: Routes = [
     ],
   },
 ];
+
+function getReportRoute(organization: Organization): string {
+  let route: string;
+  switch (true) {
+    case organization.canAccessEventLogs:
+      route = "events";
+      break;
+    case organization.canAccessReports:
+      route = "reports";
+      break;
+  }
+  return route;
+}
+
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
