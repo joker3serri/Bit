@@ -1,4 +1,5 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
+import { Overlay } from "@angular/cdk/overlay";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { combineLatest, of, shareReplay, Subject, switchMap, takeUntil } from "rxjs";
@@ -9,12 +10,12 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
-import { GroupView } from "@bitwarden/common/models/view/group-view";
+import { GroupView } from "../../../views/group.view";
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/src/models/response/organization-user.response";
 import { CollectionView } from "@bitwarden/common/src/models/view/collection.view";
 import { BitValidators, DialogService } from "@bitwarden/components";
 
-import { CollectionAdminView, CollectionAdminService } from "../../../core";
+import { CollectionAdminService, CollectionAdminView } from "../../../core";
 import {
   AccessItemType,
   AccessItemValue,
@@ -252,10 +253,14 @@ function mapToAccessSelections(collectionDetails: CollectionAdminView): AccessIt
  */
 export function openCollectionDialog(
   dialogService: DialogService,
+  overlay: Overlay,
   config: DialogConfig<CollectionDialogParams>
 ) {
   return dialogService.open<CollectionDialogResult, CollectionDialogParams>(
     CollectionDialogComponent,
-    config
+    {
+      positionStrategy: overlay.position().global().centerHorizontally().top(),
+      ...config,
+    }
   );
 }
