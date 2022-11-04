@@ -278,7 +278,7 @@
     "message": "Search favorites"
   },
   "searchType": {
-    "message": "Search Type",
+    "message": "Search type",
     "description": "Search item type"
   },
   "searchVault": {
