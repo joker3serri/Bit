@@ -1,3 +1,4 @@
+import { OrganizationIdentityTokenResponse } from "./../../models/response/organization-identity-token.response";
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../abstractions/appId.service";
 import { CryptoService } from "../../abstractions/crypto.service";
@@ -76,12 +77,16 @@ export abstract class LogInStrategy {
       return this.processCaptchaResponse(response);
     } else if (response instanceof IdentityTokenResponse) {
       return this.processTokenResponse(response);
+    } else if (response instanceof OrganizationIdentityTokenResponse) {
+      return this.processOrganizationTokenResponse(response);
     }
 
     throw new Error("Invalid response object.");
   }
 
-  protected onSuccessfulLogin(response: IdentityTokenResponse): Promise<void> {
+  protected onSuccessfulLogin(
+    response: IdentityTokenResponse | OrganizationIdentityTokenResponse
+  ): Promise<void> {
     // Implemented in subclass if required
     return null;
   }
@@ -148,6 +153,18 @@ export abstract class LogInStrategy {
         response.privateKey ?? (await this.createKeyPairForOldAccount())
       );
     }
+
+    await this.onSuccessfulLogin(response);
+
+    this.messagingService.send("loggedIn");
+
+    return result;
+  }
+
+  protected async processOrganizationTokenResponse(
+    response: OrganizationIdentityTokenResponse
+  ): Promise<AuthResult> {
+    const result = new AuthResult();
 
     await this.onSuccessfulLogin(response);
 

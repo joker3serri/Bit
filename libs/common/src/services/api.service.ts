@@ -126,6 +126,7 @@ import {
   OrganizationConnectionResponse,
 } from "../models/response/organization-connection.response";
 import { OrganizationExportResponse } from "../models/response/organization-export.response";
+import { OrganizationIdentityTokenResponse } from "../models/response/organization-identity-token.response";
 import { OrganizationSponsorshipSyncStatusResponse } from "../models/response/organization-sponsorship-sync-status.response";
 import { OrganizationUserBulkPublicKeyResponse } from "../models/response/organization-user-bulk-public-key.response";
 import { OrganizationUserBulkResponse } from "../models/response/organization-user-bulk.response";
@@ -212,7 +213,12 @@ export class ApiService implements ApiServiceAbstraction {
       | OrganizationApiTokenRequest
       | PasswordTokenRequest
       | SsoTokenRequest
-  ): Promise<IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse> {
+  ): Promise<
+    | IdentityTokenResponse
+    | IdentityTwoFactorResponse
+    | IdentityCaptchaResponse
+    | OrganizationIdentityTokenResponse
+  > {
     const headers = new Headers({
       "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
       Accept: "application/json",
@@ -245,6 +251,10 @@ export class ApiService implements ApiServiceAbstraction {
 
     if (responseJson != null) {
       if (response.status === 200) {
+        if (request instanceof OrganizationApiTokenRequest) {
+          return new OrganizationIdentityTokenResponse(responseJson);
+        }
+
         return new IdentityTokenResponse(responseJson);
       } else if (
         response.status === 400 &&

@@ -178,9 +178,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.messagingService,
           this.logService,
           this.stateService,
-          this.twoFactorService,
-          this.environmentService,
-          this.keyConnectorService
+          this.twoFactorService
         );
         break;
     }

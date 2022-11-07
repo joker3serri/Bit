@@ -1,3 +1,4 @@
+import { OrganizationIdentityTokenResponse } from "../../models/response/organization-identity-token.response";
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../abstractions/appId.service";
 import { CryptoService } from "../../abstractions/crypto.service";
@@ -11,7 +12,6 @@ import { TokenService } from "../../abstractions/token.service";
 import { TwoFactorService } from "../../abstractions/twoFactor.service";
 import { OrganizationApiLogInCredentials } from "../../models/domain/log-in-credentials";
 import { OrganizationApiTokenRequest } from "../../models/request/identity-token/organization-api-token.request";
-import { IdentityTokenResponse } from "../../models/response/identity-token.response";
 
 import { LogInStrategy } from "./logIn.strategy";
 
@@ -27,9 +27,7 @@ export class OrganizationApiLogInStrategy extends LogInStrategy {
     messagingService: MessagingService,
     logService: LogService,
     stateService: StateService,
-    twoFactorService: TwoFactorService,
-    private environmentService: EnvironmentService,
-    private keyConnectorService: KeyConnectorService
+    twoFactorService: TwoFactorService
   ) {
     super(
       cryptoService,
@@ -44,12 +42,7 @@ export class OrganizationApiLogInStrategy extends LogInStrategy {
     );
   }
 
-  async onSuccessfulLogin(tokenResponse: IdentityTokenResponse) {
-    if (tokenResponse.apiUseKeyConnector) {
-      const keyConnectorUrl = this.environmentService.getKeyConnectorUrl();
-      await this.keyConnectorService.getAndSetKey(keyConnectorUrl);
-    }
-  }
+  async onSuccessfulLogin(tokenResponse: OrganizationIdentityTokenResponse) {}
 
   async logIn(credentials: OrganizationApiLogInCredentials) {
     this.tokenRequest = new OrganizationApiTokenRequest(
