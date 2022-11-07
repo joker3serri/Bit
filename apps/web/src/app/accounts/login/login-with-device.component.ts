@@ -15,7 +15,6 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 
-
 @Component({
   selector: "app-login-with-device",
   templateUrl: "login-with-device.component.html",
