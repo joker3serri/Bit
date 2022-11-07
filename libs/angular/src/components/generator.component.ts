@@ -71,11 +71,11 @@ export class GeneratorComponent implements OnInit {
     this.subaddressOptions = [{ name: i18nService.t("random"), value: "random" }];
     this.catchallOptions = [{ name: i18nService.t("random"), value: "random" }];
     this.forwardOptions = [
-      { name: "SimpleLogin", value: "simplelogin" },
       { name: "AnonAddy", value: "anonaddy" },
-      { name: "Firefox Relay", value: "firefoxrelay" },
-      { name: "Fastmail", value: "fastmail" },
       { name: "DuckDuckGo", value: "duckduckgo" },
+      { name: "Fastmail", value: "fastmail" },
+      { name: "Firefox Relay", value: "firefoxrelay" },
+      { name: "SimpleLogin", value: "simplelogin" },
     ];
   }
 
