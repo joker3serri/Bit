@@ -1,6 +1,6 @@
 ---
 name: Release Web
-
+run-name: Release Web ${{ inputs.release_type }}
 on:
   workflow_dispatch:
     inputs:
