@@ -2279,12 +2279,7 @@ export class ApiService implements ApiServiceAbstraction {
     let tokenRequest: UserApiTokenRequest | OrganizationApiTokenRequest;
 
     if (!clientId.startsWith("user")) {
-      tokenRequest = new OrganizationApiTokenRequest(
-        clientId,
-        clientSecret,
-        new TokenTwoFactorRequest(),
-        deviceRequest
-      );
+      tokenRequest = new OrganizationApiTokenRequest(clientId, clientSecret);
     } else {
       tokenRequest = new UserApiTokenRequest(
         clientId,

@@ -19,7 +19,7 @@
       },
       "smartStep": true,
       "console": "integratedTerminal",
-      "args": ["login", "sdfsd@sdfdf.com", "ddddddd"]
+      "args": ["login", "--apikey"]
     }
   ]
 }

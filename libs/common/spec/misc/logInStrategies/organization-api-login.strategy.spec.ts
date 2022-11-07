@@ -81,11 +81,7 @@ describe("OrganizationApiLogInStrategy", () => {
         const apiTokenRequest = actual as any;
         return (
           apiTokenRequest.clientId === apiClientId &&
-          apiTokenRequest.clientSecret === apiClientSecret &&
-          apiTokenRequest.device.identifier === deviceId &&
-          apiTokenRequest.twoFactor.provider == null &&
-          apiTokenRequest.twoFactor.token == null &&
-          apiTokenRequest.captchaResponse == null
+          apiTokenRequest.clientSecret === apiClientSecret
         );
       })
     );
