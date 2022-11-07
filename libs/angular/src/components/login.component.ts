@@ -188,6 +188,18 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
     }
   }
 
+  async startPasswordlessLogin() {
+    this.formGroup.get("masterPassword")?.clearValidators();
+    this.formGroup.get("masterPassword")?.updateValueAndValidity();
+
+    if (!this.formGroup.valid) {
+      return;
+    }
+
+    const email = this.formGroup.get("email").value;
+    this.router.navigate(["/login-with-device"], { state: { email: email } });
+  }
+
   async launchSsoBrowser(clientId: string, ssoRedirectUri: string) {
     // Generate necessary sso params
     const passwordOptions: any = {
