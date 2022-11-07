@@ -63,7 +63,7 @@ import { DeleteAccountComponent } from "./accounts/delete-account.component";
 import { EnvironmentComponent } from "./accounts/environment.component";
 import { HintComponent } from "./accounts/hint.component";
 import { LockComponent } from "./accounts/lock.component";
-import { LoginComponent } from "./accounts/login.component";
+import { LoginModule } from "./accounts/login/login.module";
 import { PremiumComponent } from "./accounts/premium.component";
 import { RegisterComponent } from "./accounts/register.component";
 import { RemovePasswordComponent } from "./accounts/remove-password.component";
@@ -160,7 +160,7 @@ registerLocaleData(localeZhCn, "zh-CN");
 registerLocaleData(localeZhTw, "zh-TW");
 
 @NgModule({
-  imports: [SharedModule, AppRoutingModule, VaultFilterModule],
+  imports: [SharedModule, AppRoutingModule, VaultFilterModule, LoginModule],
   declarations: [
     AccessibilityCookieComponent,
     AccountSwitcherComponent,
@@ -177,7 +177,6 @@ registerLocaleData(localeZhTw, "zh-TW");
     HeaderComponent,
     HintComponent,
     LockComponent,
-    LoginComponent,
     NavComponent,
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,
