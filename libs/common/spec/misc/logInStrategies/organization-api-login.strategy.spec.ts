@@ -4,8 +4,6 @@ import { Arg, Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
-import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -26,8 +24,6 @@ describe("OrganizationApiLogInStrategy", () => {
   let platformUtilsService: SubstituteOf<PlatformUtilsService>;
   let messagingService: SubstituteOf<MessagingService>;
   let logService: SubstituteOf<LogService>;
-  let environmentService: SubstituteOf<EnvironmentService>;
-  let keyConnectorService: SubstituteOf<KeyConnectorService>;
   let stateService: SubstituteOf<StateService>;
   let twoFactorService: SubstituteOf<TwoFactorService>;
 
@@ -35,7 +31,6 @@ describe("OrganizationApiLogInStrategy", () => {
   let credentials: OrganizationApiLogInCredentials;
 
   const deviceId = Utils.newGuid();
-  const keyConnectorUrl = "KEY_CONNECTOR_URL";
   const apiClientId = "API_CLIENT_ID";
   const apiClientSecret = "API_CLIENT_SECRET";
 
@@ -47,9 +42,7 @@ describe("OrganizationApiLogInStrategy", () => {
     platformUtilsService = Substitute.for<PlatformUtilsService>();
     messagingService = Substitute.for<MessagingService>();
     logService = Substitute.for<LogService>();
-    environmentService = Substitute.for<EnvironmentService>();
     stateService = Substitute.for<StateService>();
-    keyConnectorService = Substitute.for<KeyConnectorService>();
     twoFactorService = Substitute.for<TwoFactorService>();
 
     appIdService.getAppId().resolves(deviceId);
@@ -64,9 +57,7 @@ describe("OrganizationApiLogInStrategy", () => {
       messagingService,
       logService,
       stateService,
-      twoFactorService,
-      environmentService,
-      keyConnectorService
+      twoFactorService
     );
 
     credentials = new OrganizationApiLogInCredentials(apiClientId, apiClientSecret);
@@ -92,10 +83,7 @@ describe("OrganizationApiLogInStrategy", () => {
     tokenResponse.apiUseKeyConnector = true;
 
     apiService.postIdentityToken(Arg.any()).resolves(tokenResponse);
-    environmentService.getKeyConnectorUrl().returns(keyConnectorUrl);
 
     await apiLogInStrategy.logIn(credentials);
-
-    keyConnectorService.received(1).getAndSetKey(keyConnectorUrl);
   });
 });
