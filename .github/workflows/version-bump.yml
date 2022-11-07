@@ -131,6 +131,11 @@ jobs:
           CLIENT: ${{ steps.branch.outputs.client }}
           VERSION: ${{ github.event.inputs.version_number }}
         run: git push -u origin ${CLIENT}_version_bump_${VERSION}
+
+      - name: Login to Azure
+        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010
+        with:
+          creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
         
       - name: Retrieve secrets
         id: retrieve-secrets
