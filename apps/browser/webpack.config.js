@@ -6,6 +6,7 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { AngularWebpackPlugin } = require("@ngtools/webpack");
 const TerserPlugin = require("terser-webpack-plugin");
+const { TsconfigPathsPlugin } = require("tsconfig-paths-webpack-plugin");
 const configurator = require("./config/config");
 
 if (process.env.NODE_ENV == null) {
@@ -74,11 +75,6 @@ const plugins = [
     chunks: ["popup/polyfills", "popup/vendor-angular", "popup/vendor", "popup/main"],
   }),
   new HtmlWebpackPlugin({
-    template: "./src/background.html",
-    filename: "background.html",
-    chunks: ["vendor", "background"],
-  }),
-  new HtmlWebpackPlugin({
     template: "./src/notification/bar.html",
     filename: "notification/bar.html",
     chunks: ["notification/bar"],
@@ -125,13 +121,17 @@ const plugins = [
   }),
 ];
 
-const config = {
+/**
+ * @type {import("webpack").Configuration}
+ * This config compiles everything but the background
+ */
+const mainConfig = {
+  name: "main",
   mode: ENV,
   devtool: false,
   entry: {
     "popup/polyfills": "./src/popup/polyfills.ts",
     "popup/main": "./src/popup/main.ts",
-    background: "./src/background.ts",
     "content/autofill": "./src/content/autofill.js",
     "content/autofiller": "./src/content/autofiller.ts",
     "content/notificationBar": "./src/content/notificationBar.ts",
@@ -208,18 +208,82 @@ const config = {
   plugins: plugins,
 };
 
+/**
+ * @type {import("webpack").Configuration[]}
+ */
+const configs = [];
+configs.push(mainConfig);
+
 if (manifestVersion == 2) {
-  // We can't use this in manifest v3
-  // Ideally we understand why this breaks it and we don't have to do this
-  config.optimization.splitChunks.cacheGroups.commons2 = {
+  // We can have another cacheGroup in MV2 but this breaks MV3
+  mainConfig.optimization.splitChunks.cacheGroups.commons2 = {
     test: /[\\/]node_modules[\\/]/,
     name: "vendor",
     chunks: (chunk) => {
       return chunk.name === "background";
     },
   };
+
+  // An Html page for background is only used in MV2
+  mainConfig.plugins.push(
+    new HtmlWebpackPlugin({
+      template: "./src/background.html",
+      filename: "background.html",
+      chunks: ["vendor", "background"],
+    })
+  );
+
+  // We'll let the main config deal with background in MV2
+  // because MV2 extensions ran this as a full page therefore the default
+  // target on mainConfig is valid, the default should be 'web'
+  mainConfig.entry.background = "./src/background.ts";
 } else {
-  config.entry["content/misc-utils"] = "./src/content/misc-utils.ts";
+  // Manifest v3 needs an extra helper for utilities in the content script.
+  // The javascript output of this should be added to manifest.v3.json
+  mainConfig.entry["content/misc-utils"] = "./src/content/misc-utils.ts";
+
+  /**
+   * @type {import("webpack").Configuration}
+   */
+  const backgroundConfig = {
+    name: "background",
+    mode: ENV,
+    devtool: false,
+    entry: "./src/background.ts",
+    target: "webworker",
+    output: {
+      filename: "background.js",
+      path: path.resolve(__dirname, "build"),
+    },
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          loader: "ts-loader",
+        },
+      ],
+    },
+    resolve: {
+      extensions: [".ts", ".js"],
+      symlinks: false,
+      modules: [path.resolve("../../node_modules")],
+      plugins: [new TsconfigPathsPlugin()],
+    },
+    dependencies: ["main"],
+    plugins: [
+      new webpack.DefinePlugin({
+        "process.env": {
+          ENV: JSON.stringify(ENV),
+        },
+      }),
+      new webpack.EnvironmentPlugin({
+        FLAGS: envConfig.flags,
+        DEV_FLAGS: ENV === "development" ? envConfig.devFlags : {},
+      }),
+    ],
+  };
+
+  configs.push(backgroundConfig);
 }
 
-module.exports = config;
+module.exports = configs;
