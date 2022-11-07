@@ -1,16 +1,8 @@
-import { DeviceRequest } from "../device.request";
-
-import { TokenTwoFactorRequest } from "./token-two-factor.request";
 import { TokenRequest } from "./token.request";
 
 export class OrganizationApiTokenRequest extends TokenRequest {
-  constructor(
-    public clientId: string,
-    public clientSecret: string,
-    protected twoFactor: TokenTwoFactorRequest,
-    device?: DeviceRequest
-  ) {
-    super(twoFactor, device);
+  constructor(public clientId: string, public clientSecret: string) {
+    super(null);
   }
 
   toIdentityToken() {

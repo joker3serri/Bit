@@ -54,15 +54,13 @@ export class OrganizationApiLogInStrategy extends LogInStrategy {
   async logIn(credentials: OrganizationApiLogInCredentials) {
     this.tokenRequest = new OrganizationApiTokenRequest(
       credentials.clientId,
-      credentials.clientSecret,
-      await this.buildTwoFactor(),
-      await this.buildDeviceRequest()
+      credentials.clientSecret
     );
 
     return this.startLogIn();
   }
 
-  protected async setApiKeyInformation(tokenResponse: IdentityTokenResponse) {
+  protected async setApiKeyInformation() {
     await this.stateService.setApiKeyClientId(this.tokenRequest.clientId);
     await this.stateService.setApiKeyClientSecret(this.tokenRequest.clientSecret);
   }
