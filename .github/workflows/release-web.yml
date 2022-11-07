@@ -95,8 +95,7 @@ jobs:
         env:
           DOCKER_CONTENT_TRUST: 1
           DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ steps.setup-dct.outputs.dct-delegate-repo-passphrase }}
-        run: |
-          docker push bitwarden/web:$_RELEASE_VERSION
+        run: docker push bitwarden/web:$_RELEASE_VERSION
 
       - name: Log out of Docker and disable Docker Notary
         run: |
