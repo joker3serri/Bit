@@ -1,9 +1,6 @@
-import { OrganizationIdentityTokenResponse } from "../../models/response/organization-identity-token.response";
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../abstractions/appId.service";
 import { CryptoService } from "../../abstractions/crypto.service";
-import { EnvironmentService } from "../../abstractions/environment.service";
-import { KeyConnectorService } from "../../abstractions/keyConnector.service";
 import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
@@ -41,8 +38,6 @@ export class OrganizationApiLogInStrategy extends LogInStrategy {
       twoFactorService
     );
   }
-
-  async onSuccessfulLogin(tokenResponse: OrganizationIdentityTokenResponse) {}
 
   async logIn(credentials: OrganizationApiLogInCredentials) {
     this.tokenRequest = new OrganizationApiTokenRequest(

@@ -1,4 +1,3 @@
-import { OrganizationIdentityTokenResponse } from "./../../models/response/organization-identity-token.response";
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../abstractions/appId.service";
 import { CryptoService } from "../../abstractions/crypto.service";
@@ -28,6 +27,8 @@ import { KeysRequest } from "../../models/request/keys.request";
 import { IdentityCaptchaResponse } from "../../models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "../../models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../../models/response/identity-two-factor.response";
+
+import { OrganizationIdentityTokenResponse } from "./../../models/response/organization-identity-token.response";
 
 export abstract class LogInStrategy {
   protected abstract tokenRequest:
