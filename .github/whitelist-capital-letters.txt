@@ -295,7 +295,6 @@
 ./README.md
 ./LICENSE_BITWARDEN.txt
 ./CONTRIBUTING.md
-./.github/PULL_REQUEST_TEMPLATE.md
 ./LICENSE_GPL.txt
 ./LICENSE.txt
 ./apps/web/Dockerfile
