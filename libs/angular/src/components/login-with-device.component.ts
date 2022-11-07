@@ -44,7 +44,7 @@ export class LoginWithDeviceComponent
   private authRequestKeyPair: [publicKey: ArrayBuffer, privateKey: ArrayBuffer];
 
   constructor(
-    private router: Router,
+    protected router: Router,
     private cryptoService: CryptoService,
     private cryptoFunctionService: CryptoFunctionService,
     private appIdService: AppIdService,
