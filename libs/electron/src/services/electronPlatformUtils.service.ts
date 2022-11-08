@@ -87,10 +87,8 @@ export class ElectronPlatformUtilsService implements PlatformUtilsService {
     return ipcRenderer.invoke("appVersion");
   }
 
-  getApplicationVersionNumber(): Promise<string> {
-    return ipcRenderer
-      .invoke("appVersion")
-      .then((version) => version.split(RegExp("[+|-]"))[0].trim());
+  async getApplicationVersionNumber(): Promise<string> {
+    return (await this.getApplicationVersion()).split(/[+|-]/)[0].trim());
   }
 
   // Temporarily restricted to only Windows until https://github.com/electron/electron/pull/28349
