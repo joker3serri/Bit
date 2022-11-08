@@ -155,28 +155,8 @@ jobs:
 
               ## Objective
               Automated ${{ github.event.inputs.client }} version bump to ${{ github.event.inputs.version_number }}"
-
-      - name: Login to Azure
-        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010
-        with:
-          creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
-        
-      - name: Retrieve secrets
-        id: retrieve-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@c3b3285993151c5af47cefcb3b9134c28ab479af
-        with:
-          keyvault: "bitwarden-prod-kv"
-          secrets: "github-pat-bitwarden-devops-bot-repo-scope"
-
-      - name: Call GitHub API to trigger enforce label workflow
-        env:
-          PR_BRANCH: "${{ steps.branch.outputs.client }}_version_bump_${{ github.event.inputs.version_number }}"
-          TOKEN: ${{ steps.retrieve-secrets.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
-        run: |
-          JSON_STRING=$(printf '{"ref":"$s"}' "$PR_BRANCH")
-          curl \
-            -X POST \
-            -i -u bitwarden-devops-bot:$TOKEN \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/bitwarden/clients/actions/workflows/enforce-labels.yml/dispatches \
-            -d $JSON_STRING
+  enforce-labels:
+    name: Enforce Labels
+    needs: bump_version
+    uses: ./.github/workflows/enforce-labels.yml
+    secrets: inherit
