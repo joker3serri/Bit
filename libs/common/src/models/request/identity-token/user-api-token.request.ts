@@ -16,7 +16,7 @@ export class UserApiTokenRequest extends TokenRequest {
   toIdentityToken() {
     const obj = super.toIdentityToken(this.clientId);
 
-    obj.scope = "api";
+    obj.scope = this.clientId.startsWith("organization") ? "api.organization" : "api";
     obj.grant_type = "client_credentials";
     obj.client_secret = this.clientSecret;
 

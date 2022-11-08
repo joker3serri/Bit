@@ -125,7 +125,6 @@ import {
   OrganizationConnectionResponse,
 } from "../models/response/organization-connection.response";
 import { OrganizationExportResponse } from "../models/response/organization-export.response";
-import { OrganizationIdentityTokenResponse } from "../models/response/organization-identity-token.response";
 import { OrganizationSponsorshipSyncStatusResponse } from "../models/response/organization-sponsorship-sync-status.response";
 import { OrganizationUserBulkPublicKeyResponse } from "../models/response/organization-user-bulk-public-key.response";
 import { OrganizationUserBulkResponse } from "../models/response/organization-user-bulk.response";
@@ -208,12 +207,7 @@ export class ApiService implements ApiServiceAbstraction {
 
   async postIdentityToken(
     request: UserApiTokenRequest | PasswordTokenRequest | SsoTokenRequest
-  ): Promise<
-    | IdentityTokenResponse
-    | IdentityTwoFactorResponse
-    | IdentityCaptchaResponse
-    | OrganizationIdentityTokenResponse
-  > {
+  ): Promise<IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse> {
     const headers = new Headers({
       "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
       Accept: "application/json",
