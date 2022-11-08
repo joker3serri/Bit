@@ -14,7 +14,7 @@ export default {
   parameters: {
     design: {
       type: "figma",
-      url: "TODO",
+      url: "https://www.figma.com/file/6fvTDa3zfvgWdizLQ7nSTP/Numbered-Password",
     },
   },
 } as Meta;
