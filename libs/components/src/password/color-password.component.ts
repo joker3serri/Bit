@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, HostBinding, Input } from "@angular/core";
 
 import { Utils } from "@bitwarden/common/misc/utils";
 
@@ -9,7 +9,9 @@ type CharacterTypes = "letter" | "emoji" | "special" | "number";
   template: `
     <span *ngFor="let character of passwordArray; index as i" [class]="characterClass(character)">
       {{ character }}
-      <span *ngIf="showCount" class="">{{ i + 1 }}</span>
+      <span *ngIf="showCount" class="tw-whitespace-nowrap tw-text-xs tw-leading-5 tw-text-main">{{
+        i + 1
+      }}</span>
     </span>
   `,
 })
@@ -17,13 +19,16 @@ export class ColorPasswordComponent {
   @Input() private password: string = null;
   @Input() showCount = false;
 
-  // TODO: fix styling, this is just a quick job
-  characterStyles: Record<CharacterTypes, string[]> = {
+  characterStyles: Partial<Record<CharacterTypes, string[]>> = {
     letter: ["tw-text-main"],
-    emoji: [""], // ??
     special: ["tw-text-danger"],
     number: ["tw-text-primary-500"],
   };
+
+  @HostBinding("class")
+  get classList() {
+    return ["tw-min-w-0", "tw-whitespace-pre-wrap", "tw-break-all"];
+  }
 
   get passwordArray() {
     // Convert to an array to handle cases that stings have special characters, ie: emoji.
@@ -53,7 +58,20 @@ export class ColorPasswordComponent {
 
   characterClass(character: string) {
     const charType = this.characterType(character);
-    return this.characterStyles[charType];
+    const charClass = this.characterStyles[charType] ?? [];
+
+    if (this.showCount) {
+      return charClass.concat([
+        "tw-inline-flex",
+        "tw-flex-col",
+        "tw-items-center",
+        "tw-py-1",
+        "tw-px-2",
+        "odd:tw-bg-secondary-100",
+      ]);
+    }
+
+    return charClass;
   }
 
   private characterType(character: string): CharacterTypes {

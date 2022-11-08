@@ -2,7 +2,7 @@ import { Meta, Story } from "@storybook/angular";
 
 import { ColorPasswordComponent } from "./color-password.component";
 
-const examplePassword = "Wq$Jk7JDX#rS";
+const examplePassword = "Wq$Jk😀7jDX#rS5Sdi!z";
 
 export default {
   title: "Component Library/Color Password",
@@ -22,7 +22,9 @@ export default {
 const Template: Story<ColorPasswordComponent> = (args: ColorPasswordComponent) => ({
   props: args,
   template: `
-    <color-password [password]="password" [showCount]="showCount"></color-password>
+  <div class="tw-max-w-72">
+    <color-password class="tw-text-base" [password]="password" [showCount]="showCount"></color-password>
+  </div>
   `,
 });
 
