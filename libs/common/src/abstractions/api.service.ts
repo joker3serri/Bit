@@ -116,7 +116,6 @@ import {
   OrganizationConnectionResponse,
 } from "../models/response/organization-connection.response";
 import { OrganizationExportResponse } from "../models/response/organization-export.response";
-import { OrganizationIdentityTokenResponse } from "../models/response/organization-identity-token.response";
 import { OrganizationSponsorshipSyncStatusResponse } from "../models/response/organization-sponsorship-sync-status.response";
 import { OrganizationUserBulkPublicKeyResponse } from "../models/response/organization-user-bulk-public-key.response";
 import { OrganizationUserBulkResponse } from "../models/response/organization-user-bulk.response";
@@ -177,12 +176,7 @@ export abstract class ApiService {
 
   postIdentityToken: (
     request: PasswordTokenRequest | SsoTokenRequest | UserApiTokenRequest
-  ) => Promise<
-    | IdentityTokenResponse
-    | IdentityTwoFactorResponse
-    | IdentityCaptchaResponse
-    | OrganizationIdentityTokenResponse
-  >;
+  ) => Promise<IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse>;
   refreshIdentityToken: () => Promise<any>;
 
   getProfile: () => Promise<ProfileResponse>;
