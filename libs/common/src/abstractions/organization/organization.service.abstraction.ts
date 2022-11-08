@@ -75,6 +75,7 @@ export abstract class OrganizationService {
   get: (id: string) => Organization;
   getByIdentifier: (identifier: string) => Organization;
   getAll: (userId?: string) => Promise<Organization[]>;
+  getFromState: (id: string) => Promise<Organization>;
   canManageSponsorships: () => Promise<boolean>;
   hasOrganizations: () => boolean;
 }
