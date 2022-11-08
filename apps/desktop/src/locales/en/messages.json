@@ -2062,7 +2062,7 @@
     "message": "Fingerprint phrase"
   },
   "needAnotherOption": {
-    "message": "Log in with device must be set up in the settings of the device receiving the notification. Need another option?"
+    "message": "Log in with device must be set up in the settings of the Bitwarden app. Need another option?"
   },
   "viewAllLoginOptions": {
     "message": "View all login options"
