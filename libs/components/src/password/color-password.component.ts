@@ -7,7 +7,10 @@ type CharacterTypes = "letter" | "emoji" | "special" | "number";
 @Component({
   selector: "color-password",
   template: `
-    <span *ngFor="let character of passwordArray; index as i" [class]="getCharacterClass(character)">
+    <span
+      *ngFor="let character of passwordArray; index as i"
+      [class]="getCharacterClass(character)"
+    >
       {{ character }}
       <span *ngIf="showCount" class="tw-whitespace-nowrap tw-text-xs tw-leading-5 tw-text-main">{{
         i + 1
@@ -19,7 +22,8 @@ export class ColorPasswordComponent {
   @Input() private password: string = null;
   @Input() showCount = false;
 
-  characterStyles: Partial<Record<CharacterTypes, string[]>> = {
+  characterStyles: Record<CharacterTypes, string[]> = {
+    emoji: [],
     letter: ["tw-text-main"],
     special: ["tw-text-danger"],
     number: ["tw-text-primary-500"],
@@ -58,23 +62,20 @@ export class ColorPasswordComponent {
 
   getCharacterClass(character: string) {
     const charType = this.getCharacterType(character);
-
-    const charClass = this.characterStyles[charType] ?? [];
-    const commonClass = ["tw-inline-flex"];
-    const countClass = [
-      "tw-inline-flex",
-      "tw-flex-col",
-      "tw-items-center",
-      "tw-w-7",
-      "tw-py-1",
-      "odd:tw-bg-secondary-100",
-    ];
+    const charClass = this.characterStyles[charType].concat("tw-inline-flex");
 
     if (this.showCount) {
-      return charClass.concat(...commonClass, ...countClass);
+      return charClass.concat([
+        "tw-inline-flex",
+        "tw-flex-col",
+        "tw-items-center",
+        "tw-w-7",
+        "tw-py-1",
+        "odd:tw-bg-secondary-100",
+      ]);
     }
 
-    return charClass.concat(commonClass);
+    return charClass;
   }
 
   private getCharacterType(character: string): CharacterTypes {
