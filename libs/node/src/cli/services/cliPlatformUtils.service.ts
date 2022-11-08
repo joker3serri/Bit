@@ -88,6 +88,10 @@ export class CliPlatformUtilsService implements PlatformUtilsService {
     return Promise.resolve(this.packageJson.version);
   }
 
+  getApplicationVersionNumber(): Promise<string> {
+    return Promise.resolve(this.packageJson.version.split(RegExp("[+|-]"))[0].trim());
+  }
+
   getApplicationVersionSync(): string {
     return this.packageJson.version;
   }

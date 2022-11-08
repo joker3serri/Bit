@@ -2081,7 +2081,7 @@ export class ApiService implements ApiServiceAbstraction {
     request.headers.set("Bitwarden-Client-Name", this.platformUtilsService.getClientType());
     request.headers.set(
       "Bitwarden-Client-Version",
-      this.getOnlyClientVersion(await this.platformUtilsService.getApplicationVersion())
+      await this.platformUtilsService.getApplicationVersionNumber()
     );
     return this.nativeFetch(request);
   }
@@ -2422,10 +2422,5 @@ export class ApiService implements ApiServiceAbstraction {
   private isTextResponse(response: Response): boolean {
     const typeHeader = response.headers.get("content-type");
     return typeHeader != null && typeHeader.indexOf("text") > -1;
-  }
-
-  private getOnlyClientVersion(fullApplicationVersion: string): string {
-    const clientVersion = fullApplicationVersion.split(RegExp("[+|-]"))[0].trim();
-    return clientVersion;
   }
 }
