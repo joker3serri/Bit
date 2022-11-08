@@ -7,7 +7,7 @@ type CharacterTypes = "letter" | "emoji" | "special" | "number";
 @Component({
   selector: "color-password",
   template: `
-    <span *ngFor="let character of passwordArray; index as i" [class]="characterClass(character)">
+    <span *ngFor="let character of passwordArray; index as i" [class]="getCharacterClass(character)">
       {{ character }}
       <span *ngIf="showCount" class="tw-whitespace-nowrap tw-text-xs tw-leading-5 tw-text-main">{{
         i + 1
@@ -56,25 +56,28 @@ export class ColorPasswordComponent {
     return character;
   }
 
-  characterClass(character: string) {
-    const charType = this.characterType(character);
+  getCharacterClass(character: string) {
+    const charType = this.getCharacterType(character);
+
     const charClass = this.characterStyles[charType] ?? [];
+    const commonClass = ["tw-inline-flex"];
+    const countClass = [
+      "tw-inline-flex",
+      "tw-flex-col",
+      "tw-items-center",
+      "tw-w-7",
+      "tw-py-1",
+      "odd:tw-bg-secondary-100",
+    ];
 
     if (this.showCount) {
-      return charClass.concat([
-        "tw-inline-flex",
-        "tw-flex-col",
-        "tw-items-center",
-        "tw-w-7",
-        "tw-py-1",
-        "odd:tw-bg-secondary-100",
-      ]);
+      return charClass.concat(...commonClass, ...countClass);
     }
 
-    return charClass;
+    return charClass.concat(commonClass);
   }
 
-  private characterType(character: string): CharacterTypes {
+  private getCharacterType(character: string): CharacterTypes {
     if (character.match(Utils.regexpEmojiPresentation)) {
       return "emoji";
     }
