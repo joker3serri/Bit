@@ -108,12 +108,8 @@ export class WebPlatformUtilsService implements PlatformUtilsService {
     return Promise.resolve(process.env.APPLICATION_VERSION || "-");
   }
 
-  getApplicationVersionNumber(): Promise<string> {
-    return Promise.resolve(
-      process.env.APPLICATION_VERSION
-        ? process.env.APPLICATION_VERSION.split(RegExp("[+|-]"))[0].trim()
-        : "-"
-    );
+  async getApplicationVersionNumber(): Promise<string> {
+    return (await this.getApplicationVersion()).split(RegExp("[+|-]"))[0].trim();
   }
 
   supportsWebAuthn(win: Window): boolean {

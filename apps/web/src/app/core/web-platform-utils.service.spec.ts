@@ -12,6 +12,20 @@ describe("Web Platform Utils Service", () => {
   });
 
   describe("getApplicationVersion", () => {
+    test("null", async () => {
+      delete process.env.APPLICATION_VERSION;
+
+      const result = await webPlatformUtilsService.getApplicationVersion();
+      expect(result).toBe("-");
+    });
+
+    test("<empty>", async () => {
+      process.env.APPLICATION_VERSION = "";
+
+      const result = await webPlatformUtilsService.getApplicationVersion();
+      expect(result).toBe("-");
+    });
+
     test("{version number}", async () => {
       process.env.APPLICATION_VERSION = "2022.10.2";
 
@@ -49,6 +63,20 @@ describe("Web Platform Utils Service", () => {
   });
 
   describe("getApplicationVersionNumber", () => {
+    test("null", async () => {
+      delete process.env.APPLICATION_VERSION;
+
+      const result = await webPlatformUtilsService.getApplicationVersionNumber();
+      expect(result).toBe("");
+    });
+
+    test("<empty>", async () => {
+      process.env.APPLICATION_VERSION = "";
+
+      const result = await webPlatformUtilsService.getApplicationVersionNumber();
+      expect(result).toBe("");
+    });
+
     test("{version number}", async () => {
       process.env.APPLICATION_VERSION = "2022.10.2";
 
