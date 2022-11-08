@@ -214,8 +214,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     group: GroupDetailsRow,
     startingTabIndex: GroupAddEditTabType = GroupAddEditTabType.Info
   ) {
-    const dialogRef = openGroupAddEditDialog(this.dialogService, {
-      positionStrategy: this.overlay.position().global().centerHorizontally(),
+    const dialogRef = openGroupAddEditDialog(this.dialogService, this.overlay, {
       data: {
         initialTab: startingTabIndex,
         organizationId: this.organizationId,
