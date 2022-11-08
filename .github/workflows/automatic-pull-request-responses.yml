@@ -9,7 +9,7 @@ jobs:
     name: 'Close pull request with automatic response'
     runs-on: ubuntu-20.04
     permissions:
-      issues: write
+      pull-requests: write
     steps:
       # Translation PR / Crowdin
       - if: github.event.label.name == 'translation-pr'
