@@ -65,8 +65,8 @@ export class ColorPasswordComponent {
         "tw-inline-flex",
         "tw-flex-col",
         "tw-items-center",
+        "tw-w-7",
         "tw-py-1",
-        "tw-px-2",
         "odd:tw-bg-secondary-100",
       ]);
     }
