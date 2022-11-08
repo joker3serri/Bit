@@ -1,4 +1,4 @@
-<form #form [formGroup]="groupForm" (ngSubmit)="submit()" [appApiAction]="formPromise">
+<form [formGroup]="groupForm" [bitSubmit]="submit">
   <bit-dialog dialogSize="large" [disablePadding]="!loading">
     <span bitDialogTitle>
       {{ title }}
@@ -65,7 +65,7 @@
       </bit-tab-group>
     </div>
     <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
-      <button bitButton buttonType="primary" type="submit" [loading]="form.loading">
+      <button bitButton buttonType="primary" bitFormButton type="submit">
         {{ "save" | i18n }}
       </button>
       <button
@@ -78,29 +78,14 @@
         {{ "cancel" | i18n }}
       </button>
       <button
-        #deleteBtn
-        bitButton
-        buttonType="danger"
+        class="tw-ml-auto"
         type="button"
-        (click)="delete()"
-        class="tw-ml-auto tw-px-0"
-        appA11yTitle="{{ 'delete' | i18n }}"
-        *ngIf="editMode"
-        [disabled]="deleteBtn.loading"
-        [appApiAction]="deletePromise"
-      >
-        <i
-          class="bwi bwi-trash bwi-lg bwi-fw tw-mx-1"
-          [hidden]="deleteBtn.loading"
-          aria-hidden="true"
-        ></i>
-        <i
-          class="bwi bwi-spinner bwi-spin bwi-lg bwi-fw"
-          [hidden]="!deleteBtn.loading"
-          aria-hidden="true"
-          title="{{ 'loading' | i18n }}"
-        ></i>
-      </button>
+        buttonType="danger"
+        bitIconButton="bwi-trash"
+        bitFormButton
+        [bitAction]="delete"
+        [appA11yTitle]="'delete' | i18n"
+      ></button>
     </div>
   </bit-dialog>
 </form>

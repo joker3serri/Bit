@@ -89,8 +89,6 @@ export class GroupAddEditComponent implements OnInit {
   loading = true;
   editMode = false;
   title: string;
-  formPromise: Promise<any>;
-  deletePromise: Promise<any>;
   collections: AccessItemView[] = [];
   members: AccessItemView[] = [];
   group: GroupView;
@@ -189,7 +187,11 @@ export class GroupAddEditComponent implements OnInit {
     }));
   }
 
-  async submit() {
+  submit = async () => {
+    if (this.groupForm.invalid) {
+      return;
+    }
+
     const request = new GroupRequest();
     const formValue = this.groupForm.value;
     request.name = formValue.name;
@@ -203,11 +205,11 @@ export class GroupAddEditComponent implements OnInit {
 
     try {
       if (this.editMode) {
-        this.formPromise = this.groupService.putGroup(this.organizationId, this.groupId, request);
+        await this.groupService.putGroup(this.organizationId, this.groupId, request);
       } else {
-        this.formPromise = this.groupService.postGroup(this.organizationId, request);
+        await this.groupService.postGroup(this.organizationId, request);
       }
-      await this.formPromise;
+
       this.platformUtilsService.showToast(
         "success",
         null,
@@ -217,9 +219,9 @@ export class GroupAddEditComponent implements OnInit {
     } catch (e) {
       this.logService.error(e);
     }
-  }
+  };
 
-  async delete() {
+  delete = async () => {
     if (!this.editMode) {
       return;
     }
@@ -236,8 +238,8 @@ export class GroupAddEditComponent implements OnInit {
     }
 
     try {
-      this.deletePromise = this.groupService.delete(this.organizationId, this.groupId);
-      await this.deletePromise;
+      await this.groupService.delete(this.organizationId, this.groupId);
+
       this.platformUtilsService.showToast(
         "success",
         null,
@@ -247,5 +249,5 @@ export class GroupAddEditComponent implements OnInit {
     } catch (e) {
       this.logService.error(e);
     }
-  }
+  };
 }
