@@ -22,7 +22,14 @@ export default {
 const Template: Story<ColorPasswordComponent> = (args: ColorPasswordComponent) => ({
   props: args,
   template: `
-  <div class="tw-max-w-72">
+  <color-password class="tw-text-base" [password]="password" [showCount]="showCount"></color-password>
+  `,
+});
+
+const WrappedTemplate: Story<ColorPasswordComponent> = (args: ColorPasswordComponent) => ({
+  props: args,
+  template: `
+  <div class="tw-max-w-64">
     <color-password class="tw-text-base" [password]="password" [showCount]="showCount"></color-password>
   </div>
   `,
@@ -30,8 +37,16 @@ const Template: Story<ColorPasswordComponent> = (args: ColorPasswordComponent) =
 
 export const ColorPassword = Template.bind({});
 
+export const WrappedColorPassword = WrappedTemplate.bind({});
+
 export const ColorPasswordCount = Template.bind({});
 ColorPasswordCount.args = {
+  password: examplePassword,
+  showCount: true,
+};
+
+export const WrappedColorPasswordCount = WrappedTemplate.bind({});
+WrappedColorPasswordCount.args = {
   password: examplePassword,
   showCount: true,
 };
