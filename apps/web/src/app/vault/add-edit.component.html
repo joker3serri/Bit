@@ -181,7 +181,7 @@
           <div *ngIf="showPasswordCount" class="tw-mb-4">
             <label>{{ "passwordCharacterCount" | i18n }}</label>
             <div class="tw-flex tw-justify-between">
-              <div [innerHTML]="cipher.login.password | colorPasswordCount"></div>
+              <color-password [password]="cipher.login.password" [showCount]="true"></color-password>
               <button type="button" bitLink (click)="togglePasswordCount()">
                 {{ "hide" | i18n }}
               </button>

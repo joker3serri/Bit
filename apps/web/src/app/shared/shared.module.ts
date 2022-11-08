@@ -20,6 +20,7 @@ import {
   LinkModule,
   TableModule,
   TabsModule,
+  ColorPasswordModule,
 } from "@bitwarden/components";
 
 // Register the locales for the application
@@ -55,6 +56,7 @@ import "./locales";
     AvatarModule,
     LinkModule,
     IconButtonModule,
+    ColorPasswordModule,
   ],
   exports: [
     CommonModule,
@@ -79,6 +81,7 @@ import "./locales";
     AvatarModule,
     LinkModule,
     IconButtonModule,
+    ColorPasswordModule,
   ],
   providers: [DatePipe],
   bootstrap: [],
