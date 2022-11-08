@@ -150,8 +150,8 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
     return Promise.resolve(BrowserApi.getApplicationVersion());
   }
 
-  getApplicationVersionNumber(): Promise<string> {
-    return Promise.resolve(BrowserApi.getApplicationVersion().split(RegExp("[+|-]"))[0].trim());
+  async getApplicationVersionNumber(): Promise<string> {
+    return (await this.getApplicationVersion()).split(RegExp("[+|-]"))[0].trim();
   }
 
   supportsWebAuthn(win: Window): boolean {
