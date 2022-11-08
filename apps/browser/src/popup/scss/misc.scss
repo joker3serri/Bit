@@ -135,6 +135,11 @@ p.lead {
   border-radius: $border-radius;
 }
 
+.z10 {
+  position: relative;
+  z-index: 10;
+}
+
 .sr-only {
   position: absolute !important;
   width: 1px !important;
