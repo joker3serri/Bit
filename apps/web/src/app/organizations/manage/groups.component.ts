@@ -6,6 +6,7 @@ import {
   combineLatest,
   concatMap,
   from,
+  lastValueFrom,
   map,
   Subject,
   switchMap,
@@ -209,7 +210,10 @@ export class GroupsComponent implements OnInit, OnDestroy {
     this.didScroll = this.pagedGroups.length > this.pageSize;
   }
 
-  edit(group: GroupDetailsRow, startingTabIndex: GroupAddEditTabType = GroupAddEditTabType.Info) {
+  async edit(
+    group: GroupDetailsRow,
+    startingTabIndex: GroupAddEditTabType = GroupAddEditTabType.Info
+  ) {
     const dialogRef = openGroupAddEditDialog(this.dialogService, {
       positionStrategy: this.overlay.position().global().centerHorizontally(),
       data: {
@@ -219,13 +223,13 @@ export class GroupsComponent implements OnInit, OnDestroy {
       },
     });
 
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((result) => {
-      if (result == GroupAddEditDialogResultType.Saved) {
-        this.refreshGroups$.next();
-      } else if (result == GroupAddEditDialogResultType.Deleted) {
-        this.removeGroup(group.details.id);
-      }
-    });
+    const result = await lastValueFrom(dialogRef.closed);
+
+    if (result == GroupAddEditDialogResultType.Saved) {
+      this.refreshGroups$.next();
+    } else if (result == GroupAddEditDialogResultType.Deleted) {
+      this.removeGroup(group.details.id);
+    }
   }
 
   add() {
