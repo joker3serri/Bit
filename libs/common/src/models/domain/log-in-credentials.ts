@@ -32,12 +32,6 @@ export class UserApiLogInCredentials {
   constructor(public clientId: string, public clientSecret: string) {}
 }
 
-export class OrganizationApiLogInCredentials {
-  readonly type = AuthenticationType.OrganizationApi;
-
-  constructor(public clientId: string, public clientSecret: string) {}
-}
-
 export class PasswordlessLogInCredentials {
   readonly type = AuthenticationType.Passwordless;
 

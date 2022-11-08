@@ -282,16 +282,11 @@ export class TwoFactorComponent extends CaptchaProtectedComponent implements OnI
       this.authService.authingWithPassword() ||
       this.authService.authingWithSso() ||
       this.authService.authingWithUserApiKey() ||
-      this.authService.authingWithOrganizationApiKey() ||
       this.authService.authingWithPasswordless()
     );
   }
 
   get needsLock(): boolean {
-    return (
-      this.authService.authingWithSso() ||
-      this.authService.authingWithUserApiKey() ||
-      this.authService.authingWithOrganizationApiKey()
-    );
+    return this.authService.authingWithSso() || this.authService.authingWithUserApiKey();
   }
 }

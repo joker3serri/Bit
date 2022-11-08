@@ -17,7 +17,6 @@ import { AuthenticationStatus } from "../enums/authenticationStatus";
 import { AuthenticationType } from "../enums/authenticationType";
 import { KdfType } from "../enums/kdfType";
 import { KeySuffixOptions } from "../enums/keySuffixOptions";
-import { OrganizationApiLogInStrategy } from "../misc/logInStrategies/organization-api-login.strategy";
 import { PasswordLogInStrategy } from "../misc/logInStrategies/passwordLogin.strategy";
 import { PasswordlessLogInStrategy } from "../misc/logInStrategies/passwordlessLogin.strategy";
 import { SsoLogInStrategy } from "../misc/logInStrategies/ssoLogin.strategy";
@@ -25,7 +24,6 @@ import { UserApiLogInStrategy } from "../misc/logInStrategies/user-api-login.str
 import { AuthResult } from "../models/domain/auth-result";
 import {
   UserApiLogInCredentials,
-  OrganizationApiLogInCredentials,
   PasswordLogInCredentials,
   SsoLogInCredentials,
   PasswordlessLogInCredentials,
@@ -70,7 +68,6 @@ export class AuthService implements AuthServiceAbstraction {
 
   private logInStrategy:
     | UserApiLogInStrategy
-    | OrganizationApiLogInStrategy
     | PasswordLogInStrategy
     | SsoLogInStrategy
     | PasswordlessLogInStrategy;
@@ -96,7 +93,6 @@ export class AuthService implements AuthServiceAbstraction {
   async logIn(
     credentials:
       | UserApiLogInCredentials
-      | OrganizationApiLogInCredentials
       | PasswordLogInCredentials
       | SsoLogInCredentials
       | PasswordlessLogInCredentials
@@ -105,7 +101,6 @@ export class AuthService implements AuthServiceAbstraction {
 
     let strategy:
       | UserApiLogInStrategy
-      | OrganizationApiLogInStrategy
       | PasswordLogInStrategy
       | SsoLogInStrategy
       | PasswordlessLogInStrategy;
@@ -168,19 +163,6 @@ export class AuthService implements AuthServiceAbstraction {
           this
         );
         break;
-      case AuthenticationType.OrganizationApi:
-        strategy = new OrganizationApiLogInStrategy(
-          this.cryptoService,
-          this.apiService,
-          this.tokenService,
-          this.appIdService,
-          this.platformUtilsService,
-          this.messagingService,
-          this.logService,
-          this.stateService,
-          this.twoFactorService
-        );
-        break;
     }
 
     const result = await strategy.logIn(credentials as any);
@@ -223,10 +205,6 @@ export class AuthService implements AuthServiceAbstraction {
 
   authingWithUserApiKey(): boolean {
     return this.logInStrategy instanceof UserApiLogInStrategy;
-  }
-
-  authingWithOrganizationApiKey(): boolean {
-    return this.logInStrategy instanceof OrganizationApiLogInStrategy;
   }
 
   authingWithSso(): boolean {
@@ -295,7 +273,6 @@ export class AuthService implements AuthServiceAbstraction {
   private saveState(
     strategy:
       | UserApiLogInStrategy
-      | OrganizationApiLogInStrategy
       | PasswordLogInStrategy
       | SsoLogInStrategy
       | PasswordlessLogInStrategy

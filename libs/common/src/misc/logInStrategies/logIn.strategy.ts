@@ -12,13 +12,11 @@ import { Account, AccountProfile, AccountTokens } from "../../models/domain/acco
 import { AuthResult } from "../../models/domain/auth-result";
 import {
   UserApiLogInCredentials,
-  OrganizationApiLogInCredentials,
   PasswordLogInCredentials,
   SsoLogInCredentials,
   PasswordlessLogInCredentials,
 } from "../../models/domain/log-in-credentials";
 import { DeviceRequest } from "../../models/request/device.request";
-import { OrganizationApiTokenRequest } from "../../models/request/identity-token/organization-api-token.request";
 import { PasswordTokenRequest } from "../../models/request/identity-token/password-token.request";
 import { SsoTokenRequest } from "../../models/request/identity-token/sso-token.request";
 import { TokenTwoFactorRequest } from "../../models/request/identity-token/token-two-factor.request";
@@ -31,11 +29,7 @@ import { IdentityTwoFactorResponse } from "../../models/response/identity-two-fa
 import { OrganizationIdentityTokenResponse } from "./../../models/response/organization-identity-token.response";
 
 export abstract class LogInStrategy {
-  protected abstract tokenRequest:
-    | UserApiTokenRequest
-    | OrganizationApiTokenRequest
-    | PasswordTokenRequest
-    | SsoTokenRequest;
+  protected abstract tokenRequest: UserApiTokenRequest | PasswordTokenRequest | SsoTokenRequest;
   protected captchaBypassToken: string = null;
 
   constructor(
@@ -53,7 +47,6 @@ export abstract class LogInStrategy {
   abstract logIn(
     credentials:
       | UserApiLogInCredentials
-      | OrganizationApiLogInCredentials
       | PasswordLogInCredentials
       | SsoLogInCredentials
       | PasswordlessLogInCredentials

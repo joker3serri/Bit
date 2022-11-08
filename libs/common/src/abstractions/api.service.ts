@@ -24,7 +24,6 @@ import { EmergencyAccessUpdateRequest } from "../models/request/emergency-access
 import { EventRequest } from "../models/request/event.request";
 import { GroupRequest } from "../models/request/group.request";
 import { IapCheckRequest } from "../models/request/iap-check.request";
-import { OrganizationApiTokenRequest } from "../models/request/identity-token/organization-api-token.request";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
 import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
 import { UserApiTokenRequest } from "../models/request/identity-token/user-api-token.request";
@@ -177,11 +176,7 @@ export abstract class ApiService {
   ) => Promise<any>;
 
   postIdentityToken: (
-    request:
-      | PasswordTokenRequest
-      | SsoTokenRequest
-      | UserApiTokenRequest
-      | OrganizationApiTokenRequest
+    request: PasswordTokenRequest | SsoTokenRequest | UserApiTokenRequest
   ) => Promise<
     | IdentityTokenResponse
     | IdentityTwoFactorResponse

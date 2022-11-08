@@ -4,7 +4,6 @@ import { AuthenticationStatus } from "../enums/authenticationStatus";
 import { AuthResult } from "../models/domain/auth-result";
 import {
   UserApiLogInCredentials,
-  OrganizationApiLogInCredentials,
   PasswordLogInCredentials,
   SsoLogInCredentials,
   PasswordlessLogInCredentials,
@@ -22,7 +21,6 @@ export abstract class AuthService {
   logIn: (
     credentials:
       | UserApiLogInCredentials
-      | OrganizationApiLogInCredentials
       | PasswordLogInCredentials
       | SsoLogInCredentials
       | PasswordlessLogInCredentials
@@ -34,7 +32,6 @@ export abstract class AuthService {
   logOut: (callback: () => void) => void;
   makePreloginKey: (masterPassword: string, email: string) => Promise<SymmetricCryptoKey>;
   authingWithUserApiKey: () => boolean;
-  authingWithOrganizationApiKey: () => boolean;
   authingWithSso: () => boolean;
   authingWithPassword: () => boolean;
   authingWithPasswordless: () => boolean;

@@ -31,7 +31,6 @@ import { EmergencyAccessUpdateRequest } from "../models/request/emergency-access
 import { EventRequest } from "../models/request/event.request";
 import { GroupRequest } from "../models/request/group.request";
 import { IapCheckRequest } from "../models/request/iap-check.request";
-import { OrganizationApiTokenRequest } from "../models/request/identity-token/organization-api-token.request";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
 import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
@@ -208,11 +207,7 @@ export class ApiService implements ApiServiceAbstraction {
   // Auth APIs
 
   async postIdentityToken(
-    request:
-      | UserApiTokenRequest
-      | OrganizationApiTokenRequest
-      | PasswordTokenRequest
-      | SsoTokenRequest
+    request: UserApiTokenRequest | PasswordTokenRequest | SsoTokenRequest
   ): Promise<
     | IdentityTokenResponse
     | IdentityTwoFactorResponse
@@ -230,7 +225,7 @@ export class ApiService implements ApiServiceAbstraction {
     request.alterIdentityTokenHeaders(headers);
 
     const identityToken =
-      request instanceof UserApiTokenRequest || request instanceof OrganizationApiTokenRequest
+      request instanceof UserApiTokenRequest
         ? request.toIdentityToken()
         : request.toIdentityToken(this.platformUtilsService.getClientType());
 
@@ -251,10 +246,6 @@ export class ApiService implements ApiServiceAbstraction {
 
     if (responseJson != null) {
       if (response.status === 200) {
-        if (request instanceof OrganizationApiTokenRequest) {
-          return new OrganizationIdentityTokenResponse(responseJson);
-        }
-
         return new IdentityTokenResponse(responseJson);
       } else if (
         response.status === 400 &&
@@ -2286,18 +2277,12 @@ export class ApiService implements ApiServiceAbstraction {
 
     const appId = await this.appIdService.getAppId();
     const deviceRequest = new DeviceRequest(appId, this.platformUtilsService);
-    let tokenRequest: UserApiTokenRequest | OrganizationApiTokenRequest;
-
-    if (!clientId.startsWith("user")) {
-      tokenRequest = new OrganizationApiTokenRequest(clientId, clientSecret);
-    } else {
-      tokenRequest = new UserApiTokenRequest(
-        clientId,
-        clientSecret,
-        new TokenTwoFactorRequest(),
-        deviceRequest
-      );
-    }
+    const tokenRequest = new UserApiTokenRequest(
+      clientId,
+      clientSecret,
+      new TokenTwoFactorRequest(),
+      deviceRequest
+    );
 
     const response = await this.postIdentityToken(tokenRequest);
     if (!(response instanceof IdentityTokenResponse)) {
