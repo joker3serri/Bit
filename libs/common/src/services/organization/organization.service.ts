@@ -102,7 +102,7 @@ export class OrganizationService implements OrganizationServiceAbstraction {
   }
 
   /**
-   * For the CLI only
+   * @deprecated For the CLI only
    * @param id id of the organization
    */
   async getFromState(id: string): Promise<Organization> {
