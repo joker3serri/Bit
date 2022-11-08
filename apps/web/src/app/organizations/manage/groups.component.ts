@@ -88,6 +88,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
 
   protected didScroll = false;
   protected pageSize = 100;
+  protected ModalTabType = GroupAddEditTabType;
 
   private pagedGroupsCount = 0;
   private pagedGroups: GroupDetailsRow[];
