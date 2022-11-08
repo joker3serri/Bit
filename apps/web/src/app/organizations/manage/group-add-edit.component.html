@@ -35,7 +35,7 @@
             formControlName="members"
             [items]="members"
             [showMemberRoles]="true"
-            [permissionMode]="permissionMode.Hidden"
+            [permissionMode]="PermissionMode.Hidden"
             [columnHeader]="'member' | i18n"
             [selectorLabelText]="'selectMembers' | i18n"
             [emptySelectionText]="'noMembersAdded' | i18n"
@@ -55,7 +55,7 @@
             <bit-access-selector
               formControlName="collections"
               [items]="collections"
-              [permissionMode]="permissionMode.Edit"
+              [permissionMode]="PermissionMode.Edit"
               [columnHeader]="'collection' | i18n"
               [selectorLabelText]="'selectCollections' | i18n"
               [emptySelectionText]="'noCollectionsAdded' | i18n"
@@ -73,7 +73,7 @@
         buttonType="secondary"
         type="button"
         bitDialogClose
-        [bit-dialog-close]="resultType.Canceled"
+        [bit-dialog-close]="ResultType.Canceled"
       >
         {{ "cancel" | i18n }}
       </button>

@@ -76,8 +76,8 @@ export const openGroupAddEditDialog = (
   templateUrl: "group-add-edit.component.html",
 })
 export class GroupAddEditComponent implements OnInit {
-  protected permissionMode = PermissionMode;
-  protected resultType = GroupAddEditDialogResultType;
+  protected PermissionMode = PermissionMode;
+  protected ResultType = GroupAddEditDialogResultType;
 
   tabIndex: GroupAddEditTabType;
   loading = true;
