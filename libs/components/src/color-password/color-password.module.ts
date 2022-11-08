@@ -8,4 +8,4 @@ import { ColorPasswordComponent } from "./color-password.component";
   exports: [ColorPasswordComponent],
   declarations: [ColorPasswordComponent],
 })
-export class PasswordModule {}
+export class ColorPasswordModule {}
