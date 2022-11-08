@@ -5,6 +5,7 @@ import { BadgeDirective } from "./badge.directive";
 
 export default {
   title: "Component Library/Badge",
+  component: BadgeDirective,
   decorators: [
     moduleMetadata({
       imports: [CommonModule],

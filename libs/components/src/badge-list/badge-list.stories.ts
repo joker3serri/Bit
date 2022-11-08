@@ -10,6 +10,7 @@ import { BadgeListComponent } from "./badge-list.component";
 
 export default {
   title: "Component Library/Badge/List",
+  component: BadgeListComponent,
   decorators: [
     moduleMetadata({
       imports: [SharedModule, BadgeModule],
