@@ -5,7 +5,6 @@ import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
@@ -19,6 +18,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
 import { ProviderUserUserDetailsResponse } from "@bitwarden/common/models/response/provider/provider-user.response";
+import { WebI18nService } from '../core/i18n.service';
 
 import { UserConfirmComponent } from "../organizations/manage/user-confirm.component";
 
@@ -98,7 +98,7 @@ export abstract class BasePeopleComponent<
   constructor(
     protected apiService: ApiService,
     private searchService: SearchService,
-    protected i18nService: I18nService,
+    protected i18nService: WebI18nService,
     protected platformUtilsService: PlatformUtilsService,
     protected cryptoService: CryptoService,
     protected validationService: ValidationService,

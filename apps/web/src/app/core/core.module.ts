@@ -27,7 +27,7 @@ import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.s
 import { BroadcasterMessagingService } from "./broadcaster-messaging.service";
 import { EventService } from "./event.service";
 import { HtmlStorageService } from "./html-storage.service";
-import { I18nService } from "./i18n.service";
+import { I18nService, WebI18nService } from "./i18n.service";
 import { InitService } from "./init.service";
 import { ModalService } from "./modal.service";
 import { PasswordRepromptService } from "./password-reprompt.service";
@@ -64,6 +64,10 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
       provide: I18nServiceAbstraction,
       useClass: I18nService,
       deps: [SYSTEM_LANGUAGE, LOCALES_DIRECTORY],
+    },
+    {
+      provide: WebI18nService,
+      useExisting: I18nServiceAbstraction
     },
     { provide: AbstractStorageService, useClass: HtmlStorageService },
     {

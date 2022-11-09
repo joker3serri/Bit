@@ -7,7 +7,6 @@ import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
@@ -37,6 +36,7 @@ import { EntityEventsComponent } from "./entity-events.component";
 import { ResetPasswordComponent } from "./reset-password.component";
 import { UserAddEditComponent } from "./user-add-edit.component";
 import { UserGroupsComponent } from "./user-groups.component";
+import { WebI18nService } from '../../core/i18n.service';
 
 @Component({
   selector: "app-org-people",
@@ -80,7 +80,7 @@ export class PeopleComponent
   constructor(
     apiService: ApiService,
     private route: ActivatedRoute,
-    i18nService: I18nService,
+    i18nService: WebI18nService,
     modalService: ModalService,
     platformUtilsService: PlatformUtilsService,
     cryptoService: CryptoService,
