@@ -475,6 +475,20 @@
       </div>
     </div>
   </div>
+  <div class="box" *ngIf="cipher.folderId">
+    <div class="box-content">
+      <div class="box-content-row">
+        <label
+          for="folderName"
+          class="draggable"
+          draggable="true"
+          (dragstart)="setTextDataOnDrag($event, folder.name)"
+          >{{ "folder" | i18n }}</label
+        >
+        <input id="folderName" type="text" name="folderName" [value]="folder.name" readonly />
+      </div>
+    </div>
+  </div>
   <div class="box" *ngIf="cipher.notes">
     <h2 class="box-header">
       <label
@@ -606,7 +620,13 @@
           <span>{{ "restoreItem" | i18n }}</span>
         </div>
       </button>
-      <button type="button" class="box-content-row" appStopClick (click)="delete()">
+      <button
+        type="button"
+        class="box-content-row"
+        appStopClick
+        (click)="delete()"
+        *ngIf="cipher.edit"
+      >
         <div class="row-main text-danger">
           <div class="icon text-danger" aria-hidden="true">
             <i class="bwi bwi-trash bwi-lg bwi-fw"></i>
