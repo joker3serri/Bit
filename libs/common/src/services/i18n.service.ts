@@ -118,11 +118,11 @@ export class I18nService<TKey = string> implements I18nServiceAbstraction<TKey> 
     }
   }
 
-  t(id: string, p1?: string, p2?: string, p3?: string): string {
+  t(id: TKey, p1?: string, p2?: string, p3?: string): string {
     return this.translate(id, p1, p2, p3);
   }
 
-  translate(id: string, p1?: string, p2?: string, p3?: string): string {
+  translate(id: TKey, p1?: string, p2?: string, p3?: string): string {
     let result: string;
     // eslint-disable-next-line
     if (this.localeMessages.hasOwnProperty(id) && this.localeMessages[id]) {
