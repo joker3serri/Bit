@@ -18,10 +18,10 @@ import {
   AccessItemValue,
   AccessItemView,
   convertToPermission,
-  convertToSelectionReadOnly,
+  convertToSelectionView,
   PermissionMode,
 } from "../components/access-selector";
-import { GroupRequest, GroupServiceAbstraction } from "../services/abstractions/group";
+import { GroupServiceAbstraction } from "../services/abstractions/group";
 import { GroupView } from "../views/group.view";
 
 /**
@@ -192,23 +192,22 @@ export class GroupAddEditComponent implements OnInit {
       return;
     }
 
-    const request = new GroupRequest();
-    const formValue = this.groupForm.value;
-    request.name = formValue.name;
-    request.externalId = formValue.externalId;
-    request.accessAll = formValue.accessAll;
-    request.users = formValue.members?.map((m) => m.id) ?? [];
+    const groupView = new GroupView();
+    groupView.id = this.groupId;
+    groupView.organizationId = this.organizationId;
 
-    if (!request.accessAll) {
-      request.collections = formValue.collections.map((c) => convertToSelectionReadOnly(c));
+    const formValue = this.groupForm.value;
+    groupView.name = formValue.name;
+    groupView.externalId = formValue.externalId;
+    groupView.accessAll = formValue.accessAll;
+    groupView.members = formValue.members?.map((m) => m.id) ?? [];
+
+    if (!groupView.accessAll) {
+      groupView.collections = formValue.collections.map((c) => convertToSelectionView(c));
     }
 
     try {
-      if (this.editMode) {
-        await this.groupService.putGroup(this.organizationId, this.groupId, request);
-      } else {
-        await this.groupService.postGroup(this.organizationId, request);
-      }
+      await this.groupService.save(groupView);
 
       this.platformUtilsService.showToast(
         "success",
