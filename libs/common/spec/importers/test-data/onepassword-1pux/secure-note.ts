@@ -1,4 +1,4 @@
-import { ExportData } from "@bitwarden/common/importers/onepasswordImporters/types/onepassword-1pux-importer-types";
+import { ExportData } from "@bitwarden/common/importers/onepassword/types/onepassword-1pux-importer-types";
 
 export const SecureNoteData: ExportData = {
   accounts: [
