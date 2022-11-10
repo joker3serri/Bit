@@ -5621,5 +5621,14 @@
   },
   "canRead": {
     "message": "Can read"
+  },
+  "accessTokensNoItemsTitle": {
+    "message": "No access tokens to show"
+  },
+  "accessTokensNoItemsDesc": {
+    "message": "To get started, create an access token"
+  },
+  "revokeAccessToken": {
+    "message": "Revoke Access Token"
   }
 }
