@@ -41,6 +41,7 @@ export class LoginWithDeviceComponent
   protected twoFactorRoute = "2fa";
   protected successRoute = "vault";
   protected forcePasswordResetRoute = "update-temp-password";
+  private resendTimeout = 12000;
   private authRequestKeyPair: [publicKey: ArrayBuffer, privateKey: ArrayBuffer];
 
   constructor(
@@ -99,7 +100,7 @@ export class LoginWithDeviceComponent
 
     setTimeout(() => {
       this.showResendNotification = true;
-    }, 12000);
+    }, this.resendTimeout);
   }
 
   ngOnDestroy(): void {
