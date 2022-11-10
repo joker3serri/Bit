@@ -6,17 +6,15 @@ type CharacterTypes = "letter" | "emoji" | "special" | "number";
 
 @Component({
   selector: "color-password",
-  template: `
-    <span
-      *ngFor="let character of passwordArray; index as i"
-      [class]="getCharacterClass(character)"
-    >
-      {{ character }}
-      <span *ngIf="showCount" class="tw-whitespace-nowrap tw-text-xs tw-leading-5 tw-text-main">{{
-        i + 1
-      }}</span>
-    </span>
-  `,
+  template: `<div
+    *ngFor="let character of passwordArray; index as i"
+    [class]="getCharacterClass(character)"
+  >
+    <span>{{ character }}</span>
+    <span *ngIf="showCount" class="tw-whitespace-nowrap tw-text-xs tw-leading-5 tw-text-main">{{
+      i + 1
+    }}</span>
+  </div>`,
 })
 export class ColorPasswordComponent {
   @Input() private password: string = null;
