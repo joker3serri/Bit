@@ -138,6 +138,7 @@ const config = {
     "content/contextMenuHandler": "./src/content/contextMenuHandler.ts",
     "content/message_handler": "./src/content/message_handler.ts",
     "notification/bar": "./src/notification/bar.js",
+    "encrypt-worker": "../../libs/common/src/services/cryptography/encrypt.worker.ts",
   },
   optimization: {
     minimize: ENV !== "development",
@@ -218,6 +219,8 @@ if (manifestVersion == 2) {
       return chunk.name === "background";
     },
   };
+} else {
+  config.entry["content/misc-utils"] = "./src/content/misc-utils.ts";
 }
 
 module.exports = config;

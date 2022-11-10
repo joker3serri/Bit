@@ -13,20 +13,20 @@ import { FolderService } from "../abstractions/folder/folder.service.abstraction
 import { CipherType } from "../enums/cipherType";
 import { DEFAULT_KDF_ITERATIONS, KdfType } from "../enums/kdfType";
 import { Utils } from "../misc/utils";
-import { CipherData } from "../models/data/cipherData";
-import { CollectionData } from "../models/data/collectionData";
+import { CipherData } from "../models/data/cipher.data";
+import { CollectionData } from "../models/data/collection.data";
 import { Cipher } from "../models/domain/cipher";
 import { Collection } from "../models/domain/collection";
 import { Folder } from "../models/domain/folder";
-import { CipherWithIdExport as CipherExport } from "../models/export/cipherWithIdsExport";
-import { CollectionWithIdExport as CollectionExport } from "../models/export/collectionWithIdExport";
-import { EventExport } from "../models/export/eventExport";
-import { FolderWithIdExport as FolderExport } from "../models/export/folderWithIdExport";
-import { CollectionDetailsResponse } from "../models/response/collectionResponse";
-import { CipherView } from "../models/view/cipherView";
-import { CollectionView } from "../models/view/collectionView";
-import { EventView } from "../models/view/eventView";
-import { FolderView } from "../models/view/folderView";
+import { CipherWithIdExport as CipherExport } from "../models/export/cipher-with-ids.export";
+import { CollectionWithIdExport as CollectionExport } from "../models/export/collection-with-id.export";
+import { EventExport } from "../models/export/event.export";
+import { FolderWithIdExport as FolderExport } from "../models/export/folder-with-id.export";
+import { CollectionDetailsResponse } from "../models/response/collection.response";
+import { CipherView } from "../models/view/cipher.view";
+import { CollectionView } from "../models/view/collection.view";
+import { EventView } from "../models/view/event.view";
+import { FolderView } from "../models/view/folder.view";
 
 export class ExportService implements ExportServiceAbstraction {
   constructor(
@@ -248,12 +248,8 @@ export class ExportService implements ExportServiceAbstraction {
       this.apiService.getOrganizationExport(organizationId).then((exportData) => {
         const exportPromises: any = [];
         if (exportData != null) {
-          if (
-            exportData.collections != null &&
-            exportData.collections.data != null &&
-            exportData.collections.data.length > 0
-          ) {
-            exportData.collections.data.forEach((c) => {
+          if (exportData.collections != null && exportData.collections.length > 0) {
+            exportData.collections.forEach((c) => {
               const collection = new Collection(new CollectionData(c as CollectionDetailsResponse));
               exportPromises.push(
                 collection.decrypt().then((decCol) => {
@@ -262,12 +258,8 @@ export class ExportService implements ExportServiceAbstraction {
               );
             });
           }
-          if (
-            exportData.ciphers != null &&
-            exportData.ciphers.data != null &&
-            exportData.ciphers.data.length > 0
-          ) {
-            exportData.ciphers.data
+          if (exportData.ciphers != null && exportData.ciphers.length > 0) {
+            exportData.ciphers
               .filter((c) => c.deletedDate === null)
               .forEach((c) => {
                 const cipher = new Cipher(new CipherData(c));

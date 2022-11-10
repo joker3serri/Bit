@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ipcRenderer } from "electron";
+import { firstValueFrom } from "rxjs";
 import Swal from "sweetalert2";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -11,8 +12,8 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { EncString } from "@bitwarden/common/models/domain/encString";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
+import { EncString } from "@bitwarden/common/models/domain/enc-string";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 
 import { LegacyMessage } from "../models/nativeMessaging/legacyMessage";
 import { LegacyMessageWrapper } from "../models/nativeMessaging/legacyMessageWrapper";
@@ -58,7 +59,8 @@ export class NativeMessagingService {
       const remotePublicKey = Utils.fromB64ToArray(rawMessage.publicKey).buffer;
 
       // Validate the UserId to ensure we are logged into the same account.
-      const userIds = Object.keys(this.stateService.accounts.getValue());
+      const accounts = await firstValueFrom(this.stateService.accounts$);
+      const userIds = Object.keys(accounts);
       if (!userIds.includes(rawMessage.userId)) {
         ipcRenderer.send("nativeMessagingReply", { command: "wrongUserId", appId: appId });
         return;

@@ -8,13 +8,12 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organizationKeysRequest";
-import { OrganizationUpdateRequest } from "@bitwarden/common/models/request/organizationUpdateRequest";
-import { OrganizationResponse } from "@bitwarden/common/models/response/organizationResponse";
+import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organization-keys.request";
+import { OrganizationUpdateRequest } from "@bitwarden/common/models/request/organization-update.request";
+import { OrganizationResponse } from "@bitwarden/common/models/response/organization.response";
 
 import { ApiKeyComponent } from "../../settings/api-key.component";
 import { PurgeVaultComponent } from "../../settings/purge-vault.component";
-import { TaxInfoComponent } from "../../settings/tax-info.component";
 
 import { DeleteOrganizationComponent } from "./delete-organization.component";
 
@@ -32,7 +31,6 @@ export class AccountComponent {
   apiKeyModalRef: ViewContainerRef;
   @ViewChild("rotateApiKeyTemplate", { read: ViewContainerRef, static: true })
   rotateApiKeyModalRef: ViewContainerRef;
-  @ViewChild(TaxInfoComponent) taxInfo: TaxInfoComponent;
 
   selfHosted = false;
   canManageBilling = true;
@@ -98,12 +96,6 @@ export class AccountComponent {
     } catch (e) {
       this.logService.error(e);
     }
-  }
-
-  async submitTaxInfo() {
-    this.taxFormPromise = this.taxInfo.submitTaxInfo();
-    await this.taxFormPromise;
-    this.platformUtilsService.showToast("success", null, this.i18nService.t("taxInfoUpdated"));
   }
 
   async deleteOrganization() {

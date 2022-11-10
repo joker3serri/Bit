@@ -33,7 +33,7 @@
     "message": "Збірки"
   },
   "searchVault": {
-    "message": "Пошук"
+    "message": "Шукати у сховищі"
   },
   "addItem": {
     "message": "Додати запис"
@@ -67,7 +67,7 @@
     "message": "Вкладення"
   },
   "viewItem": {
-    "message": "Переглянути запис"
+    "message": "Перегляд запису"
   },
   "name": {
     "message": "Назва"
@@ -98,7 +98,7 @@
     "message": "Парольна фраза"
   },
   "editItem": {
-    "message": "Змінити запис"
+    "message": "Редагування"
   },
   "emailAddress": {
     "message": "Адреса е-пошти"
@@ -151,7 +151,7 @@
     "message": "Код безпеки"
   },
   "identityName": {
-    "message": "Ім'я"
+    "message": "Назва"
   },
   "company": {
     "message": "Компанія"
@@ -175,10 +175,10 @@
     "message": "Адреса"
   },
   "premiumRequired": {
-    "message": "Необхідний преміум статус"
+    "message": "Необхідна передплата преміум"
   },
   "premiumRequiredDesc": {
-    "message": "Для використання цієї функції необхідний преміум статус."
+    "message": "Для використання цієї функції необхідна передплата преміум."
   },
   "errorOccurred": {
     "message": "Сталася помилка."
@@ -349,7 +349,7 @@
     "message": "Запис додано"
   },
   "editedItem": {
-    "message": "Запис змінено"
+    "message": "Запис збережено"
   },
   "deleteItem": {
     "message": "Видалити запис"
@@ -358,13 +358,13 @@
     "message": "Видалити теку"
   },
   "deleteAttachment": {
-    "message": "Видалити файл"
+    "message": "Видалити вкладення"
   },
   "deleteItemConfirmation": {
     "message": "Ви дійсно хочете перенести до смітника?"
   },
   "deletedItem": {
-    "message": "Запис перенесено до смітника"
+    "message": "Запис переміщено до смітника"
   },
   "overwritePasswordConfirmation": {
     "message": "Ви дійсно хочете перезаписати поточний пароль?"
@@ -383,7 +383,7 @@
     "message": "Додати теку"
   },
   "editFolder": {
-    "message": "Редагувати теку"
+    "message": "Редагування"
   },
   "regeneratePassword": {
     "message": "Генерувати новий"
@@ -420,7 +420,7 @@
   },
   "capitalize": {
     "message": "Великі літери",
-    "description": "Make the first letter of a work uppercase."
+    "description": "Make the first letter of a word uppercase."
   },
   "includeNumber": {
     "message": "Включити число"
@@ -476,10 +476,10 @@
     "message": "Ви не можете використовувати цю функцію доки не оновите свій ключ шифрування."
   },
   "editedFolder": {
-    "message": "Тека відредагована"
+    "message": "Теку змінено"
   },
   "addedFolder": {
-    "message": "Додано теку"
+    "message": "Теку додано"
   },
   "deleteFolderConfirmation": {
     "message": "Ви дійсно хочете видалити цю теку?"
@@ -686,7 +686,7 @@
     "message": "URL-адреса сервера"
   },
   "apiUrl": {
-    "message": "URL-адреса API"
+    "message": "URL-адреса сервера API"
   },
   "webVaultUrl": {
     "message": "URL-адреса сервера веб сховища"
@@ -695,7 +695,7 @@
     "message": "URL-адреса сервера ідентифікації"
   },
   "notificationsUrl": {
-    "message": "URL сервера сповіщень"
+    "message": "URL-адреса сервера сповіщень"
   },
   "iconsUrl": {
     "message": "URL-адреса сервера піктограм"
@@ -782,11 +782,11 @@
     "message": "Ви можете змінити головний пароль в сховищі на bitwarden.com. Хочете перейти на вебсайт зараз?"
   },
   "fingerprintPhrase": {
-    "message": "Фраза відбитку",
+    "message": "Фраза відбитка",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
   },
   "yourAccountsFingerprint": {
-    "message": "Фраза відбитку вашого облікового запису",
+    "message": "Фраза відбитка вашого облікового запису",
     "description": "A 'fingerprint phrase' is a unique word phrase (similar to a passphrase) that a user can use to authenticate their public key with another user, for the purposes of sharing."
   },
   "goToWebVault": {
@@ -802,7 +802,7 @@
     "message": "Синхронізацію завершено"
   },
   "syncingFailed": {
-    "message": "Не вдалося синхронізувати"
+    "message": "Збій синхронізації"
   },
   "yourVaultIsLocked": {
     "message": "Сховище заблоковано. Пройдіть ідентифікацію для продовження."
@@ -1047,19 +1047,19 @@
     "message": "Преміум статус"
   },
   "premiumManage": {
-    "message": "Керувати статусом"
+    "message": "Керувати передплатою"
   },
   "premiumManageAlert": {
     "message": "Ви можете керувати своїм статусом у сховищі на bitwarden.com. Хочете перейти на вебсайт зараз?"
   },
   "premiumRefresh": {
-    "message": "Оновити статус"
+    "message": "Оновити стан передплати"
   },
   "premiumNotCurrentMember": {
-    "message": "Зараз у вас немає преміум-статусу."
+    "message": "Зараз у вас немає передплати преміум."
   },
   "premiumSignUpAndGet": {
-    "message": "Підпишіться на преміум-статус і отримайте:"
+    "message": "Передплатіть преміум і отримайте:"
   },
   "premiumSignUpStorage": {
     "message": "1 ГБ зашифрованого сховища для файлів."
@@ -1077,16 +1077,16 @@
     "message": "Пріоритетну технічну підтримку."
   },
   "premiumSignUpFuture": {
-    "message": "Всі майбутні функції преміум статусу. Їх буде більше!"
+    "message": "Усі майбутні преміумфункції. Їх буде більше!"
   },
   "premiumPurchase": {
     "message": "Придбати преміум"
   },
   "premiumPurchaseAlert": {
-    "message": "Ви можете придбати преміум статус у сховищі на bitwarden.com. Хочете перейти на вебсайт зараз?"
+    "message": "Ви можете передплатити преміум у сховищі на bitwarden.com. Хочете перейти на вебсайт зараз?"
   },
   "premiumCurrentMember": {
-    "message": "У вас преміум статус!"
+    "message": "Ви користуєтеся передплатою преміум!"
   },
   "premiumCurrentMemberThanks": {
     "message": "Дякуємо за підтримку Bitwarden."
@@ -1259,12 +1259,16 @@
     "message": "Згорнути в лоток"
   },
   "alwaysOnTop": {
-    "message": "Завжди вгорі",
+    "message": "Завжди поверх всіх вікон",
     "description": "Application window should always stay on top of other windows"
   },
   "dateUpdated": {
     "message": "Оновлено",
     "description": "ex. Date this item was updated"
+  },
+  "dateCreated": {
+    "message": "Створено",
+    "description": "ex. Date this item was created"
   },
   "datePasswordUpdated": {
     "message": "Пароль оновлено",
@@ -1424,7 +1428,7 @@
     "message": "Необхідно вибрати принаймні одну збірку."
   },
   "premiumUpdated": {
-    "message": "Ви оновилися до версії premium."
+    "message": "Ви оновилися до версії Premium."
   },
   "restore": {
     "message": "Відновити"
@@ -1589,7 +1593,7 @@
     "message": "На жаль, зараз інтеграція з браузером не підтримується у версії для Linux."
   },
   "enableBrowserIntegrationFingerprint": {
-    "message": "Вимагати підтвердження для інтеграції з браузером"
+    "message": "Вимагати перевірку для інтеграції з браузером"
   },
   "enableBrowserIntegrationFingerprintDesc": {
     "message": "Додайте ще один рівень безпеки, вимагаючи підтвердження фрази відбитка під час встановлення зв'язку між програмою на комп'ютері та браузером. Вимагатиметься дія користувача і перевірка щоразу під час встановлення зв'язку."
@@ -1601,7 +1605,7 @@
     "message": "Перевірка з'єднання з браузером"
   },
   "verifyBrowserDesc": {
-    "message": "Переконайтеся, що показаний відбиток ідентичний відбитку в розширенні браузера."
+    "message": "Переконайтеся, що ця фраза відбитка ідентична показаній у розширенні браузера."
   },
   "verifyNativeMessagingConnectionTitle": {
     "message": "$APPID$ хоче з'єднатися з Bitwarden",
@@ -1648,7 +1652,7 @@
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "editSend": {
-    "message": "Змінити відправлення",
+    "message": "Редагування",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "myVault": {
@@ -2017,5 +2021,32 @@
   },
   "vault": {
     "message": "Сховище"
+  },
+  "loginWithMasterPassword": {
+    "message": "Увійти з головним паролем"
+  },
+  "loggingInAs": {
+    "message": "Вхід у систему як"
+  },
+  "rememberEmail": {
+    "message": "Запам'ятати е-пошту"
+  },
+  "notYou": {
+    "message": "Не ви?"
+  },
+  "newAroundHere": {
+    "message": "Виконуєте вхід вперше?"
+  },
+  "loggingInTo": {
+    "message": "Вхід до $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "logInWithAnotherDevice": {
+    "message": "Увійти з іншого пристрою"
   }
 }

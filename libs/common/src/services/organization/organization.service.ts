@@ -3,7 +3,7 @@ import { BehaviorSubject, concatMap, filter } from "rxjs";
 import { OrganizationService as OrganizationServiceAbstraction } from "../../abstractions/organization/organization.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
 import { SyncNotifierService } from "../../abstractions/sync/syncNotifier.service.abstraction";
-import { OrganizationData } from "../../models/data/organizationData";
+import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
 import { isSuccessfullyCompleted } from "../../types/syncEventArgs";
 
@@ -99,6 +99,20 @@ export class OrganizationService implements OrganizationServiceAbstraction {
     const organizations = this._organizations.getValue();
 
     return organizations.find((organization) => organization.id === id);
+  }
+
+  /**
+   * @deprecated For the CLI only
+   * @param id id of the organization
+   */
+  async getFromState(id: string): Promise<Organization> {
+    const organizationsMap = await this.stateService.getOrganizations();
+    const organization = organizationsMap[id];
+    if (organization == null) {
+      return null;
+    }
+
+    return new Organization(organization);
   }
 
   getByIdentifier(identifier: string): Organization {
