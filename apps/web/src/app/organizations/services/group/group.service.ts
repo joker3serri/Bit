@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selection-read-only.request";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 
 import { GroupView } from "../../views/group.view";
@@ -64,7 +65,24 @@ export class GroupService implements GroupServiceAbstraction {
     return listResponse.data?.map((gr) => GroupView.fromResponse(gr)) ?? [];
   }
 
-  async postGroup(organizationId: string, request: GroupRequest): Promise<GroupView> {
+  async save(group: GroupView): Promise<GroupView> {
+    const request = new GroupRequest();
+    request.name = group.name;
+    request.externalId = group.externalId;
+    request.accessAll = group.accessAll;
+    request.users = group.members;
+    request.collections = group.collections.map(
+      (c) => new SelectionReadOnlyRequest(c.id, c.readOnly, c.hidePasswords)
+    );
+
+    if (group.id == undefined) {
+      return await this.postGroup(group.organizationId, request);
+    } else {
+      return await this.putGroup(group.organizationId, group.id, request);
+    }
+  }
+
+  private async postGroup(organizationId: string, request: GroupRequest): Promise<GroupView> {
     const r = await this.apiService.send(
       "POST",
       "/organizations/" + organizationId + "/groups",
@@ -75,7 +93,11 @@ export class GroupService implements GroupServiceAbstraction {
     return GroupView.fromResponse(new GroupResponse(r));
   }
 
-  async putGroup(organizationId: string, id: string, request: GroupRequest): Promise<GroupView> {
+  private async putGroup(
+    organizationId: string,
+    id: string,
+    request: GroupRequest
+  ): Promise<GroupView> {
     const r = await this.apiService.send(
       "PUT",
       "/organizations/" + organizationId + "/groups/" + id,
