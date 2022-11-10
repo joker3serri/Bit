@@ -1,5 +1,5 @@
 import { CipherType } from "@bitwarden/common/enums/cipherType";
-import { DashlaneCsvImporter as Importer } from "@bitwarden/common/importers/dashlaneImporters/dashlane-csv-importer";
+import { DashlaneCsvImporter as Importer } from "@bitwarden/common/importers/dashlane/dashlane-csv-importer";
 
 import { credentialsData } from "./test-data/dashlane-csv/credentials.csv";
 import { identityData } from "./test-data/dashlane-csv/id.csv";

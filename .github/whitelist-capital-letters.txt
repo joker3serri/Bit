@@ -12,7 +12,6 @@
 ./libs/common/src/abstractions/userVerification
 ./libs/common/src/abstractions/vaultTimeout
 ./libs/common/src/emailForwarders
-./libs/common/src/importers/dashlaneImporters
 ./libs/common/src/importers/keeperImporters
 ./libs/common/src/importers/onepasswordImporters
 ./libs/common/src/misc/logInStrategies
