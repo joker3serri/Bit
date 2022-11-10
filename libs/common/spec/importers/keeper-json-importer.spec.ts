@@ -1,4 +1,4 @@
-import { KeeperJsonImporter as Importer } from "@bitwarden/common/importers/keeperImporters/keeper-json-importer";
+import { KeeperJsonImporter as Importer } from "@bitwarden/common/importers/keeper/keeper-json-importer";
 import { Utils } from "@bitwarden/common/misc/utils";
 
 import { testData as TestData } from "./test-data/keeper-json/testdata.json";

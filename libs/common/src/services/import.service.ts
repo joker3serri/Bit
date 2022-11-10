@@ -38,7 +38,7 @@ import { Importer } from "../importers/importer";
 import { KasperskyTxtImporter } from "../importers/kaspersky-txt-importer";
 import { KeePass2XmlImporter } from "../importers/keepass2-xml-importer";
 import { KeePassXCsvImporter } from "../importers/keepassx-csv-importer";
-import { KeeperCsvImporter } from "../importers/keeperImporters/keeper-csv-importer";
+import { KeeperCsvImporter } from "../importers/keeper/keeper-csv-importer";
 import { LastPassCsvImporter } from "../importers/lastpass-csv-importer";
 import { LogMeOnceCsvImporter } from "../importers/logmeonce-csv-importer";
 import { MeldiumCsvImporter } from "../importers/meldium-csv-importer";
