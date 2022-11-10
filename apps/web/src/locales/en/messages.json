@@ -5620,7 +5620,7 @@
     "message": "Expires"
   },
   "canRead": {
-    "message": "Can read"
+    "message": "Can Read"
   },
   "accessTokensNoItemsTitle": {
     "message": "No access tokens to show"

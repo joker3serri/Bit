@@ -5,7 +5,7 @@
 <sm-no-items *ngIf="tokens?.length == 0">
   <ng-container title>{{ "accessTokensNoItemsTitle" | i18n }}</ng-container>
   <ng-container description>{{ "accessTokensNoItemsDesc" | i18n }}</ng-container>
-  <button bitButton buttonType="secondary" (click)="newSecretEvent.emit()">
+  <button bitButton buttonType="secondary" (click)="newAccessTokenEvent.emit()">
     <i class="bwi bwi-plus" aria-hidden="true"></i>
     {{ "createAccessToken" | i18n }}
   </button>

@@ -26,4 +26,8 @@ export class AccessTokenComponent implements OnInit {
       })
     );
   }
+
+  openNewAccessTokenDialog() {
+    // TODO
+  }
 }
