@@ -68,6 +68,18 @@ const moduleRules = [
   },
 ];
 
+const requiredPlugins = [
+  new webpack.DefinePlugin({
+    "process.env": {
+      ENV: JSON.stringify(ENV),
+    },
+  }),
+  new webpack.EnvironmentPlugin({
+    FLAGS: envConfig.flags,
+    DEV_FLAGS: ENV === "development" ? envConfig.devFlags : {},
+  }),
+];
+
 const plugins = [
   new HtmlWebpackPlugin({
     template: "./src/popup/index.html",
@@ -95,11 +107,6 @@ const plugins = [
     filename: "[name].css",
     chunkFilename: "chunk-[id].css",
   }),
-  new webpack.DefinePlugin({
-    "process.env": {
-      ENV: JSON.stringify(ENV),
-    },
-  }),
   new AngularWebpackPlugin({
     tsConfigPath: "tsconfig.json",
     entryModule: "src/popup/app.module#AppModule",
@@ -115,10 +122,7 @@ const plugins = [
     exclude: [/content\/.*/, /notification\/.*/],
     filename: "[file].map",
   }),
-  new webpack.EnvironmentPlugin({
-    FLAGS: envConfig.flags,
-    DEV_FLAGS: ENV === "development" ? envConfig.devFlags : {},
-  }),
+  ...requiredPlugins,
 ];
 
 /**
@@ -212,7 +216,6 @@ const mainConfig = {
  * @type {import("webpack").Configuration[]}
  */
 const configs = [];
-configs.push(mainConfig);
 
 if (manifestVersion == 2) {
   // We can have another cacheGroup in MV2 but this breaks MV3
@@ -224,7 +227,7 @@ if (manifestVersion == 2) {
     },
   };
 
-  // An Html page for background is only used in MV2
+  // Manifest V2 uses Background Pages which requires a html page.
   mainConfig.plugins.push(
     new HtmlWebpackPlugin({
       template: "./src/background.html",
@@ -233,10 +236,11 @@ if (manifestVersion == 2) {
     })
   );
 
-  // We'll let the main config deal with background in MV2
-  // because MV2 extensions ran this as a full page therefore the default
-  // target on mainConfig is valid, the default should be 'web'
+  // Manifest V2 background pages can be run through the regular build pipeline.
+  // Since it's a standard webpage.
   mainConfig.entry.background = "./src/background.ts";
+
+  configs.push(mainConfig);
 } else {
   // Manifest v3 needs an extra helper for utilities in the content script.
   // The javascript output of this should be added to manifest.v3.json
@@ -270,19 +274,10 @@ if (manifestVersion == 2) {
       plugins: [new TsconfigPathsPlugin()],
     },
     dependencies: ["main"],
-    plugins: [
-      new webpack.DefinePlugin({
-        "process.env": {
-          ENV: JSON.stringify(ENV),
-        },
-      }),
-      new webpack.EnvironmentPlugin({
-        FLAGS: envConfig.flags,
-        DEV_FLAGS: ENV === "development" ? envConfig.devFlags : {},
-      }),
-    ],
+    plugins: [...requiredPlugins],
   };
 
+  configs.push(mainConfig);
   configs.push(backgroundConfig);
 }
 
