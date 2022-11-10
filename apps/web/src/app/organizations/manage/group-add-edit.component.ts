@@ -1,7 +1,8 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Overlay } from "@angular/cdk/overlay";
-import { Component, Inject, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { catchError, combineLatest, from, map, of, Subject, switchMap, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
@@ -11,6 +12,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { CollectionData } from "@bitwarden/common/models/data/collection.data";
 import { Collection } from "@bitwarden/common/models/domain/collection";
 import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collection.response";
+import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { DialogService } from "@bitwarden/components";
 
 import {
@@ -81,7 +83,7 @@ export const openGroupAddEditDialog = (
   selector: "app-group-add-edit",
   templateUrl: "group-add-edit.component.html",
 })
-export class GroupAddEditComponent implements OnInit {
+export class GroupAddEditComponent implements OnInit, OnDestroy {
   protected PermissionMode = PermissionMode;
   protected ResultType = GroupAddEditDialogResultType;
 
@@ -109,6 +111,70 @@ export class GroupAddEditComponent implements OnInit {
     return this.params.organizationId;
   }
 
+  private destroy$ = new Subject<void>();
+
+  private get orgCollections$() {
+    return from(this.apiService.getCollections(this.organizationId)).pipe(
+      switchMap((response) => {
+        return from(
+          this.collectionService.decryptMany(
+            response.data.map(
+              (r) => new Collection(new CollectionData(r as CollectionDetailsResponse))
+            )
+          )
+        );
+      }),
+      map((collections) =>
+        collections.map<AccessItemView>((c) => ({
+          id: c.id,
+          type: AccessItemType.Collection,
+          labelName: c.name,
+          listName: c.name,
+        }))
+      )
+    );
+  }
+
+  private get orgMembers$() {
+    return from(this.apiService.getOrganizationUsers(this.organizationId)).pipe(
+      map((response) =>
+        response.data.map((m) => ({
+          id: m.id,
+          type: AccessItemType.Member,
+          email: m.email,
+          role: m.type,
+          listName: m.name?.length > 0 ? `${m.name} (${m.email})` : m.email,
+          labelName: m.name || m.email,
+          status: m.status,
+        }))
+      )
+    );
+  }
+
+  private get groupDetails$() {
+    if (!this.editMode) {
+      return of(undefined);
+    }
+
+    return combineLatest([
+      this.groupService.get(this.organizationId, this.groupId),
+      this.apiService.getGroupUsers(this.organizationId, this.groupId),
+    ]).pipe(
+      map(([groupView, users]) => {
+        groupView.members = users;
+        return groupView;
+      }),
+      catchError((e: unknown) => {
+        if (e instanceof ErrorResponse) {
+          this.logService.error(e.message);
+        } else {
+          this.logService.error(e.toString());
+        }
+        return of(undefined);
+      })
+    );
+  }
+
   constructor(
     @Inject(DIALOG_DATA) private params: GroupAddEditDialogParams,
     private dialogRef: DialogRef<GroupAddEditDialogResultType>,
@@ -118,73 +184,51 @@ export class GroupAddEditComponent implements OnInit {
     private collectionService: CollectionService,
     private platformUtilsService: PlatformUtilsService,
     private logService: LogService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     this.tabIndex = params.initialTab ?? GroupAddEditTabType.Info;
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.editMode = this.loading = this.groupId != null;
-    const collectionsPromise = this.loadCollections();
-    const membersPromise = this.loadMembers();
+    this.title = this.i18nService.t(this.editMode ? "editGroup" : "addGroup");
 
-    await Promise.all([collectionsPromise, membersPromise]);
+    combineLatest([this.orgCollections$, this.orgMembers$, this.groupDetails$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(([collections, members, group]) => {
+        this.collections = collections;
+        this.members = members;
+        this.group = group;
 
-    if (this.editMode) {
-      this.editMode = true;
-      this.title = this.i18nService.t("editGroup");
-      try {
-        this.group = await this.groupService.get(this.organizationId, this.groupId);
-        const users = await this.apiService.getGroupUsers(this.organizationId, this.groupId);
+        if (this.group != undefined) {
+          // Must detect changes so that AccessSelector @Inputs() are aware of the latest
+          // collections/members set above, otherwise no selected values will be patched below
+          this.changeDetectorRef.detectChanges();
 
-        this.groupForm.patchValue({
-          name: this.group.name,
-          externalId: this.group.externalId,
-          accessAll: this.group.accessAll,
-          members: users.map((u) => ({
-            id: u,
-            type: AccessItemType.Member,
-          })),
-          collections: this.group.collections.map((gc) => ({
-            id: gc.id,
-            type: AccessItemType.Collection,
-            permission: convertToPermission(gc),
-          })),
-        });
-      } catch (e) {
-        this.logService.error(e);
-      }
-    } else {
-      this.title = this.i18nService.t("addGroup");
-    }
+          this.groupForm.patchValue({
+            name: this.group.name,
+            externalId: this.group.externalId,
+            accessAll: this.group.accessAll,
+            members: this.group.members.map((m) => ({
+              id: m,
+              type: AccessItemType.Member,
+            })),
+            collections: this.group.collections.map((gc) => ({
+              id: gc.id,
+              type: AccessItemType.Collection,
+              permission: convertToPermission(gc),
+            })),
+          });
+        }
 
-    this.loading = false;
+        this.loading = false;
+      });
   }
 
-  async loadCollections() {
-    const response = await this.apiService.getCollections(this.organizationId);
-    const collections = response.data.map(
-      (r) => new Collection(new CollectionData(r as CollectionDetailsResponse))
-    );
-    this.collections = (await this.collectionService.decryptMany(collections)).map((c) => ({
-      id: c.id,
-      type: AccessItemType.Collection,
-      labelName: c.name,
-      listName: c.name,
-    }));
-  }
-
-  async loadMembers() {
-    const response = await this.apiService.getOrganizationUsers(this.organizationId);
-    this.members = response.data.map((m) => ({
-      id: m.id,
-      type: AccessItemType.Member,
-      email: m.email,
-      role: m.type,
-      listName: m.name?.length > 0 ? `${m.name} (${m.email})` : m.email,
-      labelName: m.name || m.email,
-      status: m.status,
-    }));
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   submit = async () => {
