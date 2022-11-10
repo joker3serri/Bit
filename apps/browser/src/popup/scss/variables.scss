@@ -114,6 +114,7 @@ $themes: (
     toastTextColor: #ffffff,
     svgSuffix: "-light.svg",
     transparentColor: rgba(0, 0, 0, 0),
+    dateInputColorScheme: light,
   ),
   dark: (
     textColor: #ffffff,
@@ -168,6 +169,7 @@ $themes: (
     toastTextColor: #1f242e,
     svgSuffix: "-dark.svg",
     transparentColor: rgba(0, 0, 0, 0),
+    dateInputColorScheme: dark,
   ),
   nord: (
     textColor: $nord5,
@@ -222,6 +224,7 @@ $themes: (
     toastTextColor: #ffffff,
     svgSuffix: "-dark.svg",
     transparentColor: rgba(0, 0, 0, 0),
+    dateInputColorScheme: dark,
   ),
   solarizedDark: (
     textColor: $solarizedDarkBase2,
@@ -276,6 +279,7 @@ $themes: (
     toastTextColor: #ffffff,
     svgSuffix: "-solarized.svg",
     transparentColor: rgba(0, 0, 0, 0),
+    dateInputColorScheme: dark,
   ),
 );
 
