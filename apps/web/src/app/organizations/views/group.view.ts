@@ -1,7 +1,7 @@
-import { SelectionReadOnlyResponse } from "@bitwarden/common/models/response/selection-read-only.response";
 import { View } from "@bitwarden/common/models/view/view";
 
-import { GroupResponse } from "../services/group/responses/group.response";
+import { GroupDetailsResponse, GroupResponse } from "../services/group/responses/group.response";
+import { CollectionAccessSelectionView } from "../views/collection-access-selection.view";
 
 export class GroupView implements View {
   id: string;
@@ -9,9 +9,16 @@ export class GroupView implements View {
   name: string;
   accessAll: boolean;
   externalId: string;
-  collections: SelectionReadOnlyResponse[] = [];
+  collections: CollectionAccessSelectionView[] = [];
+  members: string[] = [];
 
-  static fromResponse(response: GroupResponse) {
-    return Object.assign(new GroupView(), response);
+  static fromResponse(response: GroupResponse): GroupView {
+    const view: GroupView = Object.assign(new GroupView(), response) as GroupView;
+
+    if (response instanceof GroupDetailsResponse && response.collections != undefined) {
+      view.collections = response.collections.map((c) => new CollectionAccessSelectionView(c));
+    }
+
+    return view;
   }
 }
