@@ -8,7 +8,15 @@ import { AccessTokenView } from "../models/view/access-token.view";
   templateUrl: "./access-list.component.html",
 })
 export class AccessListComponent {
-  @Input() tokens: AccessTokenView[] = [];
+  @Input()
+  get tokens(): AccessTokenView[] {
+    return this._tokens;
+  }
+  set tokens(secrets: AccessTokenView[]) {
+    this.selection.clear();
+    this._tokens = secrets;
+  }
+  private _tokens: AccessTokenView[];
 
   @Output() newAccessTokenEvent = new EventEmitter();
 
