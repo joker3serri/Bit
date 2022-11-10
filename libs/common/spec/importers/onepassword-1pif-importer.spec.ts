@@ -1,5 +1,5 @@
 import { FieldType } from "@bitwarden/common/enums/fieldType";
-import { OnePassword1PifImporter as Importer } from "@bitwarden/common/importers/onepasswordImporters/onepassword-1pif-importer";
+import { OnePassword1PifImporter as Importer } from "@bitwarden/common/importers/onepassword/onepassword-1pif-importer";
 
 const TestData: string =
   "***aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee***\n" +
