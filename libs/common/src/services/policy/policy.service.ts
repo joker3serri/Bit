@@ -257,12 +257,12 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
   private async checkPoliciesThatApplyToUser(
     policies: Policy[],
     policyType: PolicyType,
-    policyFilter: (policy: Policy) => boolean = (p) => true,
+    policyFilter?: (policy: Policy) => boolean,
     userId?: string
   ) {
     const organizations = await this.organizationService.getAll(userId);
     const filteredPolicies = policies.filter(
-      (p) => p.type === policyType && p.enabled && policyFilter(p)
+      (p) => p.type === policyType && p.enabled && (policyFilter == null || policyFilter(p))
     );
     const policySet = new Set(filteredPolicies.map((p) => p.organizationId));
 
