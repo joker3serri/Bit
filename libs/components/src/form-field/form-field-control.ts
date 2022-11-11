@@ -6,5 +6,6 @@ export abstract class BitFormFieldControl {
   hasError: boolean;
   error: [string, any];
   type?: "text" | "password";
+  spellcheck?: boolean;
   focus?: () => void;
 }

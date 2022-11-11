@@ -47,6 +47,8 @@ export class BitInputDirective implements BitFormFieldControl {
 
   @HostBinding() @Input() type: "text" | "password";
 
+  @HostBinding("attr.spellcheck") @Input() spellcheck?: boolean;
+
   @HostBinding()
   @Input()
   get required() {
@@ -81,11 +83,17 @@ export class BitInputDirective implements BitFormFieldControl {
 
   focus() {
     this.ngZone.runOutsideAngular(() => {
+      const end = this.elementRef.nativeElement.value.length;
+      this.elementRef.nativeElement.setSelectionRange(end, end);
       this.elementRef.nativeElement.focus();
     });
   }
 
   setType(type: "text" | "password") {
     this.type = type;
+  }
+
+  setSpellcheck(val?: boolean) {
+    this.spellcheck = val;
   }
 }

@@ -1,5 +1,5 @@
 import {
-  AfterViewInit,
+  AfterContentInit,
   Directive,
   EventEmitter,
   Host,
@@ -16,7 +16,7 @@ import { BitFormFieldComponent } from "./form-field.component";
 @Directive({
   selector: "[bitPasswordInputToggle]",
 })
-export class BitPasswordInputToggleDirective implements AfterViewInit, OnChanges {
+export class BitPasswordInputToggleDirective implements AfterContentInit, OnChanges {
   @Input() toggled = false;
   @Output() toggledChanged = new EventEmitter<boolean>();
 
@@ -39,7 +39,7 @@ export class BitPasswordInputToggleDirective implements AfterViewInit, OnChanges
     this.update();
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     this.toggled = this.formField.input.type !== "password";
     this.button.icon = this.icon;
   }
@@ -48,6 +48,7 @@ export class BitPasswordInputToggleDirective implements AfterViewInit, OnChanges
     this.button.icon = this.icon;
     if (this.formField.input?.type != null) {
       this.formField.input.type = this.toggled ? "text" : "password";
+      this.formField.input.spellcheck = this.toggled ? false : undefined;
     }
   }
 }
