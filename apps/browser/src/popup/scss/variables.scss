@@ -118,8 +118,9 @@ $themes: (
     // https://stackoverflow.com/a/53336754
     webkitCalendarPickerFilter: invert(46%) sepia(69%) saturate(6397%) hue-rotate(211deg)
       brightness(85%) contrast(103%),
+    // light has no hover so use same color
     webkitCalendarPickerHoverFilter: invert(46%) sepia(69%) saturate(6397%) hue-rotate(211deg)
-      brightness(85%) contrast(103%) // light has no hover so use same color,
+      brightness(85%) contrast(103%),
   ),
   dark: (
     textColor: #ffffff,
@@ -237,9 +238,9 @@ $themes: (
     dateInputColorScheme: dark,
     webkitCalendarPickerFilter: brightness(0) saturate(100%) invert(94%) sepia(5%) saturate(454%)
       hue-rotate(185deg) brightness(93%) contrast(96%),
+    // has no hover so use same color
     webkitCalendarPickerHoverFilter: brightness(0) saturate(100%) invert(94%) sepia(5%)
       saturate(454%) hue-rotate(185deg) brightness(93%) contrast(96%),
-    // has no hover so use same color
   ),
   solarizedDark: (
     textColor: $solarizedDarkBase2,
