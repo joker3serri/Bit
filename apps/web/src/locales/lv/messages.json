@@ -188,11 +188,11 @@
   },
   "baseDomain": {
     "message": "Pamata domēns",
-    "description": "Domain name. Ex. website.com"
+    "description": "Domain name. Example: website.com"
   },
   "domainName": {
     "message": "Domēna vārds",
-    "description": "Domain name. Ex. website.com"
+    "description": "Domain name. Example: website.com"
   },
   "host": {
     "message": "Saimniekdators",
@@ -574,6 +574,9 @@
   },
   "loginWithDeviceEnabledInfo": {
     "message": "Pierakstīšanās ar ierīci ir jābūt iespējotai Bitwarden lietotnes iestatījumos. Nepieciešama cita iespēja?"
+  },
+  "loginWithMasterPassword": {
+    "message": "Pierakstīties ar galveno paroli"
   },
   "createAccount": {
     "message": "Izveidot kontu"
@@ -964,7 +967,7 @@
   },
   "minSpecial": {
     "message": "Mazākais pieļaujamais īpašo rakstzīmju skaits",
-    "description": "Minimum Special Characters"
+    "description": "Minimum special characters"
   },
   "ambiguous": {
     "message": "Izvairīties no viegli sajaucamām rakstzīmēm"
@@ -997,7 +1000,7 @@
   },
   "capitalize": {
     "message": "Izmantot lielos sākumburtus",
-    "description": "Make the first letter of a work uppercase."
+    "description": "Make the first letter of a word uppercase."
   },
   "includeNumber": {
     "message": "Iekļaut ciparu"
@@ -1010,7 +1013,7 @@
   },
   "clear": {
     "message": "Notīrīt",
-    "description": "To clear something out. example: To clear browser history."
+    "description": "To clear something out. Example: To clear browser history."
   },
   "accountUpdated": {
     "message": "Konts atjaunināts"
@@ -1192,6 +1195,12 @@
   "selectImportFile": {
     "message": "Atlasīt ievietošanas datni"
   },
+  "chooseFile": {
+    "message": "Izvēlēties datni"
+  },
+  "noFileChosen": {
+    "message": "Nav izvēlēta neviena datne"
+  },
   "orCopyPasteFileContents": {
     "message": "vai ievietot starpliktuvē un ielīmēt ievietošanas datnes saturu"
   },
@@ -1228,13 +1237,6 @@
   },
   "faviconDesc": {
     "message": "Attēlot atpazīstamu attēlu pie katra pierakstīšanās vienuma."
-  },
-  "enableGravatars": {
-    "message": "Iespējot Gravatārus",
-    "description": "Use avatar images loaded from gravatar.com."
-  },
-  "enableGravatarsDesc": {
-    "message": "Izmantot no gravatar.com ielādētus avatāra attēlus."
   },
   "enableFullWidth": {
     "message": "Iespējot pilna platuma izkārtojumu",
@@ -1288,11 +1290,24 @@
   "twoStepLogin": {
     "message": "Divpakāpju pierakstīšanās"
   },
+  "twoStepLoginEnforcement": {
+    "message": "Two-step Login Enforcement"
+  },
   "twoStepLoginDesc": {
     "message": "Nodrošināt kontu, pieprasot papildus darbību pierakstoties."
   },
-  "twoStepLoginOrganizationDesc": {
-    "message": "Pieprasīt divpakāpju pierakstīšanos apvienības lietotājiem, uzstādot nodrošinātājus apvienības līmenī."
+  "twoStepLoginOrganizationDescStart": {
+    "message": "Enforce Bitwarden Two-step Login options for members by using the ",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Enforce Bitwarden Two-step Login options for members by using the Two-step Login Policy.'"
+  },
+  "twoStepLoginPolicy": {
+    "message": "Two-step Login Policy"
+  },
+  "twoStepLoginOrganizationDuoDesc": {
+    "message": "To enforce Two-step Login through Duo, use the options below."
+  },
+  "twoStepLoginOrganizationSsoDesc": {
+    "message": "If you have setup SSO or plan to, Two-step Login may already be enforced through your Identity Provider."
   },
   "twoStepLoginRecoveryWarning": {
     "message": "Divpakāpju pierakstīšanās var pastāvīgi liegt piekļuvi Bitwarden kontam. Atkopšanas kods ļauj piekļūt tam gadījumā, kad vairs nav iespējams izmantot ierasto divpakāpju pierakstīšanās nodrošinātāju (piemēram, ir pazaudēta ierīce). Bitwarden atbalsts nevarēs palīdzēt, ja tiks pazaudēta piekļuve kontam. Ir ieteicams, ka atkopšanas kods tiek pierakstīts vai izdrukāts un turēts drošā vietā."
@@ -1315,7 +1330,7 @@
   },
   "premium": {
     "message": "Premium",
-    "description": "Premium Membership"
+    "description": "Premium membership"
   },
   "premiumMembership": {
     "message": "Premium dalība"
@@ -1539,7 +1554,11 @@
   },
   "reportsDesc": {
     "message": "Noteikt un novērst drošības nepilnības tiešsaistes kontos klikšķinot uz zemāk esošajām atskaitēm.",
-    "description": "Vault Health Reports can be used to evaluate the security of your Bitwarden Personal or Organization Vault."
+    "description": "Vault health reports can be used to evaluate the security of your Bitwarden individual or organization vault."
+  },
+  "orgsReportsDesc": {
+    "message": "Identify and close security gaps in your organization's accounts by clicking the reports below.",
+    "description": "Vault health reports can be used to evaluate the security of your Bitwarden individual or organization Vault."
   },
   "unsecuredWebsitesReport": {
     "message": "Nedrošu tīmekļa vietņu pārskats"
@@ -1572,7 +1591,7 @@
     "message": "Atrastie pierakstīšanās vienumi bez 2FA"
   },
   "inactive2faFoundDesc": {
-    "message": "Glabātavā tika atrasta(s) $COUNT$ tīmekļa vietne(s), kurās nav uzstādīta divfaktoru autentificēšanās (vadoties pēc twofactorauth.org). Lai labāk aizsargātu šos kontus, ir ieteicams iespējot divfaktoru autentificēšanos.",
+    "message": "We found $COUNT$ website(s) in your vault that may not be configured with two-step login (according to 2fa.directory). To further protect these accounts, you should set up two-step login.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -1765,7 +1784,7 @@
   },
   "goPremium": {
     "message": "Iegūt Premium",
-    "description": "Another way of saying \"Get a premium membership\""
+    "description": "Another way of saying \"Get a Premium membership\""
   },
   "premiumUpdated": {
     "message": "Tu esi pārgājis uz Premium."
@@ -2577,6 +2596,15 @@
       }
     }
   },
+  "viewedCardNumberItemId": {
+    "message": "Skatīts ienuma $ID$ kartes numurs.",
+    "placeholders": {
+      "id": {
+        "content": "$1",
+        "example": "Unique ID"
+      }
+    }
+  },
   "viewedSecurityCodeItemId": {
     "message": "Skatīts vienuma $ID$ drošības kods.",
     "placeholders": {
@@ -2957,7 +2985,7 @@
     "placeholders": {
       "description": {
         "content": "$1",
-        "example": "You must enable 2FA on your user account before you can join this organization."
+        "example": "You must set up 2FA on your user account before you can join this organization."
       }
     }
   },
@@ -2987,6 +3015,9 @@
   },
   "myOrganization": {
     "message": "Mana apvienība"
+  },
+  "organizationInfo": {
+    "message": "Organization info"
   },
   "deleteOrganization": {
     "message": "Izdzēst apvienību"
@@ -3029,15 +3060,15 @@
   },
   "billingPlan": {
     "message": "Plāns",
-    "description": "A billing plan/package. For example: families, teams, enterprise, etc."
+    "description": "A billing plan/package. For example: Families, Teams, Enterprise, etc."
   },
   "changeBillingPlan": {
     "message": "Mainīt plānu",
-    "description": "A billing plan/package. For example: families, teams, enterprise, etc."
+    "description": "A billing plan/package. For example: Families, Teams, Enterprise, etc."
   },
   "changeBillingPlanUpgrade": {
     "message": "Uzlabot kontu uz citu plānu var norādot informāciju zemāk. Lūgums pārliecinieties, ka kontam ir pievienots derīgs apmaksas veids.",
-    "description": "A billing plan/package. For example: families, teams, enterprise, etc."
+    "description": "A billing plan/package. For example: Families, Teams, Enterprise, etc."
   },
   "invoiceNumber": {
     "message": "Rēķins #$NUMBER$",
@@ -3684,6 +3715,12 @@
   "ssoIdentifierRequired": {
     "message": "Ir nepieciešams apvienības identifikators."
   },
+  "ssoIdentifier": {
+    "message": "SSO identifier"
+  },
+  "ssoIdentifierHint": {
+    "message": "Provide this ID to your members to login with SSO."
+  },
   "unlinkSso": {
     "message": "Atsaistīt SSO"
   },
@@ -3947,7 +3984,7 @@
     "placeholders": {
       "description": {
         "content": "$1",
-        "example": "You must enable 2FA on your user account before you can join this organization."
+        "example": "You must set up 2FA on your user account before you can join this organization."
       }
     }
   },
@@ -4084,6 +4121,9 @@
   },
   "permissions": {
     "message": "Atļaujas"
+  },
+  "permission": {
+    "message": "Permission"
   },
   "managerPermissions": {
     "message": "Pārvaldnieka atļaujas"
@@ -4490,6 +4530,10 @@
   "clients": {
     "message": "Pasūtītāji"
   },
+  "client": {
+    "message": "Client",
+    "description": "This is used as a table header to describe which client application created an event log."
+  },
   "providerAdmin": {
     "message": "Sniedzēja pārvaldnieks"
   },
@@ -4824,7 +4868,7 @@
     "placeholders": {
       "description": {
         "content": "$1",
-        "example": "You must have at least one existing Families Organization."
+        "example": "You must have at least one existing Families organization."
       }
     }
   },
@@ -5374,6 +5418,15 @@
       }
     }
   },
+  "inputMaxLength": {
+    "message": "Input must not exceed $COUNT$ characters in length.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
   "fieldsNeedAttention": {
     "message": "$COUNT$ augstāk esošajiem laukam(iem) ir jāpievērš uzmanība.",
     "placeholders": {
@@ -5389,11 +5442,23 @@
   "on": {
     "message": "Ieslēgts"
   },
+  "members": {
+    "message": "Members"
+  },
+  "reporting": {
+    "message": "Reporting"
+  },
   "cardBrandMir": {
     "message": "Mir"
   },
   "numberOfUsers": {
     "message": "Lietotāju skaits"
+  },
+  "loggingInAs": {
+    "message": "Pierakstās kā"
+  },
+  "notYou": {
+    "message": "Tas neesi Tu?"
   },
   "multiSelectPlaceholder": {
     "message": "-- Rakstīt, lai atlasītu --"
@@ -5406,5 +5471,41 @@
   },
   "multiSelectClearAll": {
     "message": "Notīrīt visu"
+  },
+  "from": {
+    "message": "From"
+  },
+  "to": {
+    "message": "To"
+  },
+  "member": {
+    "message": "Member"
+  },
+  "update": {
+    "message": "Update"
+  },
+  "role": {
+    "message": "Role"
+  },
+  "canView": {
+    "message": "Can view"
+  },
+  "canViewExceptPass": {
+    "message": "Can view, except passwords"
+  },
+  "canEdit": {
+    "message": "Can edit"
+  },
+  "canEditExceptPass": {
+    "message": "Can edit, except passwords"
+  },
+  "group": {
+    "message": "Group"
+  },
+  "groupAccessAll": {
+    "message": "This group can access and modify all items."
+  },
+  "memberAccessAll": {
+    "message": "This member can access and modify all items."
   }
 }
