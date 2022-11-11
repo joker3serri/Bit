@@ -18,11 +18,11 @@ import { BitFormFieldComponent } from "./form-field.component";
 })
 export class BitPasswordInputToggleDirective implements AfterContentInit, OnChanges {
   @Input() toggled = false;
-  @Output() toggledChanged = new EventEmitter<boolean>();
+  @Output() toggledChange = new EventEmitter<boolean>();
 
   @HostListener("click") onClick() {
     this.toggled = !this.toggled;
-    this.toggledChanged.emit(this.toggled);
+    this.toggledChange.emit(this.toggled);
 
     this.update();
 

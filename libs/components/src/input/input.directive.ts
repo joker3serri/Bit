@@ -45,7 +45,7 @@ export class BitInputDirective implements BitFormFieldControl {
     return this.hasError ? true : undefined;
   }
 
-  @HostBinding() @Input() type: "text" | "password";
+  @HostBinding("attr.type") @Input() type?: "text" | "password";
 
   @HostBinding("attr.spellcheck") @Input() spellcheck?: boolean;
 

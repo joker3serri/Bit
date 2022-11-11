@@ -72,5 +72,9 @@ describe("BannerComponent", () => {
     toggle.triggerEventHandler("click");
 
     expect(input.spellcheck).toBe(false);
+
+    toggle.triggerEventHandler("click");
+
+    expect(input.spellcheck).toBe(undefined);
   });
 });
