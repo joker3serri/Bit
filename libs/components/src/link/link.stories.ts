@@ -1,10 +1,15 @@
-import { Meta, Story } from "@storybook/angular";
+import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
-import { LinkDirective } from "./link.directive";
+import { AnchorLinkDirective, ButtonLinkDirective } from "./link.directive";
+import { LinkModule } from "./link.module";
 
 export default {
   title: "Component Library/Link",
-  component: LinkDirective,
+  decorators: [
+    moduleMetadata({
+      imports: [LinkModule],
+    }),
+  ],
   argTypes: {
     linkType: {
       options: ["primary", "secondary", "contrast"],
@@ -19,7 +24,7 @@ export default {
   },
 } as Meta;
 
-const ButtonTemplate: Story<LinkDirective> = (args: LinkDirective) => ({
+const ButtonTemplate: Story<ButtonLinkDirective> = (args: ButtonLinkDirective) => ({
   props: args,
   template: `
   <div class="tw-p-2" [ngClass]="{ 'tw-bg-transparent': linkType != 'contrast', 'tw-bg-primary-500': linkType === 'contrast' }">
@@ -37,7 +42,7 @@ const ButtonTemplate: Story<LinkDirective> = (args: LinkDirective) => ({
   `,
 });
 
-const AnchorTemplate: Story<LinkDirective> = (args: LinkDirective) => ({
+const AnchorTemplate: Story<AnchorLinkDirective> = (args: AnchorLinkDirective) => ({
   props: args,
   template: `
   <div class="tw-p-2" [ngClass]="{ 'tw-bg-transparent': linkType != 'contrast', 'tw-bg-primary-500': linkType === 'contrast' }">
