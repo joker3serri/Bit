@@ -2,7 +2,7 @@ import { CipherType } from "../../enums/cipherType";
 import { ImportResult } from "../../models/domain/import-result";
 import { CardView } from "../../models/view/card.view";
 import { CipherView } from "../../models/view/cipher.view";
-import { BaseImporter } from "../baseImporter";
+import { BaseImporter } from "../base-importer";
 import { Importer } from "../importer";
 
 import { FskEntry, FskEntryTypesEnum, FskFile } from "./fsecure-fsk-types";
