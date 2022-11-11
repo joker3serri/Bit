@@ -28,16 +28,24 @@ const ButtonTemplate: Story<ButtonLinkDirective> = (args: ButtonLinkDirective) =
   props: args,
   template: `
   <div class="tw-p-2" [ngClass]="{ 'tw-bg-transparent': linkType != 'contrast', 'tw-bg-primary-500': linkType === 'contrast' }">
-    <button bitLink [linkType]="linkType" class="tw-mb-2 tw-block">Button</button>
-    <button bitLink [linkType]="linkType" class="tw-mb-2 tw-block">
-      <i class="bwi bwi-fw bwi-plus-circle" aria-hidden="true"></i>
-      Add Icon Button
-    </button>
-    <button bitLink [linkType]="linkType" class="tw-mb-2 tw-block">
-      Chevron Icon Button
-      <i class="bwi bwi-fw bwi-sm bwi-angle-down" aria-hidden="true"></i>
-    </button>
-    <button bitLink [linkType]="linkType" class="tw-text-sm tw-block">Small Button</button>
+    <div class="tw-block tw-p-2">
+      <button bitLink [linkType]="linkType">Button</button>
+    </div>
+    <div class="tw-block tw-p-2">
+      <button bitLink [linkType]="linkType">
+        <i class="bwi bwi-fw bwi-plus-circle" aria-hidden="true"></i>
+        Add Icon Button
+      </button>
+    </div>
+    <div class="tw-block tw-p-2">
+      <button bitLink [linkType]="linkType">
+        Chevron Icon Button
+        <i class="bwi bwi-fw bwi-sm bwi-angle-down" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="tw-block tw-p-2">
+      <button bitLink [linkType]="linkType" class="tw-text-sm">Small Button</button>
+    </div>
   </div>
   `,
 });
