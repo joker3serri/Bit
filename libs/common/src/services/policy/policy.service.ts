@@ -124,10 +124,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
     );
   }
 
-  policyAppliesToActiveUser$(
-    policyType: PolicyType,
-    policyFilter: (policy: Policy) => boolean = (p) => true
-  ) {
+  policyAppliesToActiveUser$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean) {
     return this.policies$.pipe(
       concatMap(async (policies) => {
         const userId = await this.stateService.getUserId();
