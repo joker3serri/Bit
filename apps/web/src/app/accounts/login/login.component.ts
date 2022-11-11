@@ -189,6 +189,11 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
     this.router.navigateByUrl("/hint");
   }
 
+  toggleRememberEmail(): void {
+    const rememberEmailControl = this.formGroup.get("rememberEmail");
+    rememberEmailControl.setValue(!rememberEmailControl.value);
+  }
+
   async submit() {
     const rememberEmail = this.formGroup.value.rememberEmail;
 
