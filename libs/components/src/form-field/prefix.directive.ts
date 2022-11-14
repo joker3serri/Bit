@@ -3,17 +3,18 @@ import { Directive, HostBinding, Input, OnInit } from "@angular/core";
 import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 
 export const PrefixClasses = [
-  "tw-block",
-  "tw-px-3",
-  "tw-py-1.5",
   "tw-bg-background-alt",
   "tw-border",
   "tw-border-solid",
   "tw-border-secondary-500",
   "tw-text-muted",
   "tw-rounded-none",
-  "disabled:!tw-text-muted",
-  "disabled:tw-border-secondary-500",
+  "hover:tw-bg-secondary-500",
+  "hover:tw-text-contrast",
+  "disabled:tw-opacity-100",
+  "disabled:tw-bg-secondary-100",
+  "disabled:hover:tw-bg-secondary-100",
+  "disabled:hover:tw-text-muted",
 ];
 
 @Directive({
@@ -27,6 +28,6 @@ export class BitPrefixDirective implements OnInit {
   }
 
   ngOnInit(): void {
-    this.buttonComponent.setButtonType("secondary");
+    this.buttonComponent.setButtonType(undefined);
   }
 }

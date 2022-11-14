@@ -15,6 +15,6 @@ export class BitSuffixDirective {
   }
 
   ngOnInit(): void {
-    this.buttonComponent.setButtonType("secondary");
+    this.buttonComponent.setButtonType(undefined);
   }
 }
