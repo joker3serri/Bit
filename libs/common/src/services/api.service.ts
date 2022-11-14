@@ -28,7 +28,6 @@ import { EmergencyAccessInviteRequest } from "../models/request/emergency-access
 import { EmergencyAccessPasswordRequest } from "../models/request/emergency-access-password.request";
 import { EmergencyAccessUpdateRequest } from "../models/request/emergency-access-update.request";
 import { EventRequest } from "../models/request/event.request";
-import { GroupRequest } from "../models/request/group.request";
 import { IapCheckRequest } from "../models/request/iap-check.request";
 import { ApiTokenRequest } from "../models/request/identity-token/api-token.request";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
@@ -113,7 +112,6 @@ import {
 } from "../models/response/emergency-access.response";
 import { ErrorResponse } from "../models/response/error.response";
 import { EventResponse } from "../models/response/event.response";
-import { GroupResponse } from "../models/response/group.response";
 import { IdentityCaptchaResponse } from "../models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
@@ -925,32 +923,6 @@ export class ApiService implements ApiServiceAbstraction {
       true
     );
     return r;
-  }
-
-  async postGroup(organizationId: string, request: GroupRequest): Promise<GroupResponse> {
-    const r = await this.send(
-      "POST",
-      "/organizations/" + organizationId + "/groups",
-      request,
-      true,
-      true
-    );
-    return new GroupResponse(r);
-  }
-
-  async putGroup(
-    organizationId: string,
-    id: string,
-    request: GroupRequest
-  ): Promise<GroupResponse> {
-    const r = await this.send(
-      "PUT",
-      "/organizations/" + organizationId + "/groups/" + id,
-      request,
-      true,
-      true
-    );
-    return new GroupResponse(r);
   }
 
   async putGroupUsers(organizationId: string, id: string, request: string[]): Promise<any> {

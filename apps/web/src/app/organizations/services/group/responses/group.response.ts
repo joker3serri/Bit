@@ -1,7 +1,5 @@
-import { BaseResponse } from "./base.response";
-import { SelectionReadOnlyResponse } from "./selection-read-only.response";
-
-// TODO: Move this into Web's organization module once no longer required by ApiService
+import { BaseResponse } from "@bitwarden/common/models/response/base.response";
+import { SelectionReadOnlyResponse } from "@bitwarden/common/models/response/selection-read-only.response";
 
 export class GroupResponse extends BaseResponse {
   id: string;

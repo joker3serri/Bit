@@ -1,3 +1,4 @@
+import { Overlay } from "@angular/cdk/overlay";
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import {
@@ -5,6 +6,7 @@ import {
   combineLatest,
   concatMap,
   from,
+  lastValueFrom,
   map,
   Subject,
   switchMap,
@@ -30,11 +32,16 @@ import {
 } from "@bitwarden/common/models/response/collection.response";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
+import { DialogService } from "@bitwarden/components";
 
 import { GroupServiceAbstraction } from "../services/abstractions/group";
 import { GroupView } from "../views/group.view";
 
-import { GroupAddEditComponent } from "./group-add-edit.component";
+import {
+  GroupAddEditDialogResultType,
+  GroupAddEditTabType,
+  openGroupAddEditDialog,
+} from "./group-add-edit.component";
 
 type CollectionViewMap = {
   [id: string]: CollectionView;
@@ -82,6 +89,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
 
   protected didScroll = false;
   protected pageSize = 100;
+  protected ModalTabType = GroupAddEditTabType;
 
   private pagedGroupsCount = 0;
   private pagedGroups: GroupDetailsRow[];
@@ -121,11 +129,13 @@ export class GroupsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private i18nService: I18nService,
     private modalService: ModalService,
+    private dialogService: DialogService,
     private platformUtilsService: PlatformUtilsService,
     private searchService: SearchService,
     private logService: LogService,
     private collectionService: CollectionService,
-    private searchPipe: SearchPipe
+    private searchPipe: SearchPipe,
+    private overlay: Overlay
   ) {}
 
   async ngOnInit() {
@@ -200,23 +210,25 @@ export class GroupsComponent implements OnInit, OnDestroy {
     this.didScroll = this.pagedGroups.length > this.pageSize;
   }
 
-  async edit(groupRow: GroupDetailsRow) {
-    const [modal] = await this.modalService.openViewRef(
-      GroupAddEditComponent,
-      this.addEditModalRef,
-      (comp) => {
-        comp.organizationId = this.organizationId;
-        comp.groupId = groupRow != null ? groupRow.details.id : null;
-        comp.onSavedGroup.pipe(takeUntil(this.destroy$)).subscribe(() => {
-          modal.close();
-          this.refreshGroups$.next();
-        });
-        comp.onDeletedGroup.pipe(takeUntil(this.destroy$)).subscribe(() => {
-          modal.close();
-          this.removeGroup(groupRow.details.id);
-        });
-      }
-    );
+  async edit(
+    group: GroupDetailsRow,
+    startingTabIndex: GroupAddEditTabType = GroupAddEditTabType.Info
+  ) {
+    const dialogRef = openGroupAddEditDialog(this.dialogService, this.overlay, {
+      data: {
+        initialTab: startingTabIndex,
+        organizationId: this.organizationId,
+        groupId: group != null ? group.details.id : null,
+      },
+    });
+
+    const result = await lastValueFrom(dialogRef.closed);
+
+    if (result == GroupAddEditDialogResultType.Saved) {
+      this.refreshGroups$.next();
+    } else if (result == GroupAddEditDialogResultType.Deleted) {
+      this.removeGroup(group.details.id);
+    }
   }
 
   add() {

@@ -21,7 +21,6 @@ import { EmergencyAccessInviteRequest } from "../models/request/emergency-access
 import { EmergencyAccessPasswordRequest } from "../models/request/emergency-access-password.request";
 import { EmergencyAccessUpdateRequest } from "../models/request/emergency-access-update.request";
 import { EventRequest } from "../models/request/event.request";
-import { GroupRequest } from "../models/request/group.request";
 import { IapCheckRequest } from "../models/request/iap-check.request";
 import { ApiTokenRequest } from "../models/request/identity-token/api-token.request";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
@@ -104,7 +103,6 @@ import {
   EmergencyAccessViewResponse,
 } from "../models/response/emergency-access.response";
 import { EventResponse } from "../models/response/event.response";
-import { GroupResponse } from "../models/response/group.response";
 import { IdentityCaptchaResponse } from "../models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
@@ -340,8 +338,6 @@ export abstract class ApiService {
   ) => Promise<any>;
 
   getGroupUsers: (organizationId: string, id: string) => Promise<string[]>;
-  postGroup: (organizationId: string, request: GroupRequest) => Promise<GroupResponse>;
-  putGroup: (organizationId: string, id: string, request: GroupRequest) => Promise<GroupResponse>;
   putGroupUsers: (organizationId: string, id: string, request: string[]) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 

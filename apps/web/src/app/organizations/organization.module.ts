@@ -1,6 +1,5 @@
-import { ComponentFactoryResolver, NgModule } from "@angular/core";
+import { NgModule } from "@angular/core";
 
-import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 
 import { SharedModule } from "../shared";
@@ -30,9 +29,4 @@ import { GroupService } from "./services/group/group.service";
     },
   ],
 })
-export class OrganizationModule {
-  constructor(modalService: ModalService, componentFactoryResolver: ComponentFactoryResolver) {
-    // TODO: Remove this if possible when switching to DialogService
-    modalService.registerComponentFactoryResolver(GroupAddEditComponent, componentFactoryResolver);
-  }
-}
+export class OrganizationModule {}

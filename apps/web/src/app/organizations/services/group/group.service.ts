@@ -1,16 +1,14 @@
 import { Injectable } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import {
-  GroupDetailsResponse,
-  GroupResponse,
-} from "@bitwarden/common/models/response/group.response";
+import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selection-read-only.request";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 
 import { GroupView } from "../../views/group.view";
-import { GroupServiceAbstraction } from "../abstractions/group";
+import { GroupRequest, GroupServiceAbstraction } from "../abstractions/group";
 
 import { OrganizationGroupBulkRequest } from "./requests/organization-group-bulk.request";
+import { GroupDetailsResponse, GroupResponse } from "./responses/group.response";
 
 @Injectable()
 export class GroupService implements GroupServiceAbstraction {
@@ -65,5 +63,48 @@ export class GroupService implements GroupServiceAbstraction {
     const listResponse = new ListResponse(r, GroupDetailsResponse);
 
     return listResponse.data?.map((gr) => GroupView.fromResponse(gr)) ?? [];
+  }
+
+  async save(group: GroupView): Promise<GroupView> {
+    const request = new GroupRequest();
+    request.name = group.name;
+    request.externalId = group.externalId;
+    request.accessAll = group.accessAll;
+    request.users = group.members;
+    request.collections = group.collections.map(
+      (c) => new SelectionReadOnlyRequest(c.id, c.readOnly, c.hidePasswords)
+    );
+
+    if (group.id == undefined) {
+      return await this.postGroup(group.organizationId, request);
+    } else {
+      return await this.putGroup(group.organizationId, group.id, request);
+    }
+  }
+
+  private async postGroup(organizationId: string, request: GroupRequest): Promise<GroupView> {
+    const r = await this.apiService.send(
+      "POST",
+      "/organizations/" + organizationId + "/groups",
+      request,
+      true,
+      true
+    );
+    return GroupView.fromResponse(new GroupResponse(r));
+  }
+
+  private async putGroup(
+    organizationId: string,
+    id: string,
+    request: GroupRequest
+  ): Promise<GroupView> {
+    const r = await this.apiService.send(
+      "PUT",
+      "/organizations/" + organizationId + "/groups/" + id,
+      request,
+      true,
+      true
+    );
+    return GroupView.fromResponse(new GroupResponse(r));
   }
 }

@@ -6,4 +6,6 @@ export class GroupServiceAbstraction {
 
   get: (orgId: string, groupId: string) => Promise<GroupView>;
   getAll: (orgId: string) => Promise<GroupView[]>;
+
+  save: (group: GroupView) => Promise<GroupView>;
 }
