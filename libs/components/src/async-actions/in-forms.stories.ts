@@ -27,7 +27,7 @@ const template = `
     <bit-form-field>
       <bit-label>Email</bit-label>
       <input bitInput formControlName="email" />
-      <button type="button" bitSuffix bitIconButton="bwi-refresh" [bitAction]="refresh"></button>
+      <button type="button" bitSuffix bitIconButton="bwi-refresh" bitFormButton [bitAction]="refresh"></button>
     </bit-form-field>
 
     <button class="tw-mr-2" type="submit" buttonType="primary" bitButton bitFormButton>Submit</button>
