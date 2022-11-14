@@ -218,7 +218,6 @@ const mainConfig = {
 const configs = [];
 
 if (manifestVersion == 2) {
-  // We can have another cacheGroup in MV2 but this breaks MV3
   mainConfig.optimization.splitChunks.cacheGroups.commons2 = {
     test: /[\\/]node_modules[\\/]/,
     name: "vendor",
