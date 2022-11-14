@@ -118,7 +118,7 @@ export class BitIconButtonComponent implements ButtonLikeAbstraction {
       "focus-visible:before:tw-ring-text-contrast",
       "focus-visible:tw-z-10",
     ]
-      .concat(styles[this.buttonType])
+      .concat(this.buttonType != undefined ? styles[this.buttonType] : [])
       .concat(sizes[this.size]);
   }
 
@@ -135,7 +135,7 @@ export class BitIconButtonComponent implements ButtonLikeAbstraction {
   @Input() loading = false;
   @Input() disabled = false;
 
-  setButtonType(value: "primary" | "secondary" | "danger") {
+  setButtonType(value: "primary" | "secondary" | "danger" | undefined) {
     this.buttonType = value;
   }
 }

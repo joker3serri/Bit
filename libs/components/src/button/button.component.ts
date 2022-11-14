@@ -66,7 +66,7 @@ export class ButtonComponent implements ButtonLikeAbstraction {
       .concat(
         this.block == null || this.block === false ? ["tw-inline-block"] : ["tw-w-full", "tw-block"]
       )
-      .concat(buttonStyles[this.buttonType ?? "secondary"]);
+      .concat(this.buttonType != undefined ? buttonStyles[this.buttonType] : []);
   }
 
   @HostBinding("attr.disabled")
@@ -75,12 +75,12 @@ export class ButtonComponent implements ButtonLikeAbstraction {
     return disabled || this.loading ? true : null;
   }
 
-  @Input() buttonType: ButtonTypes = null;
+  @Input() buttonType: ButtonTypes = "secondary";
   @Input() block?: boolean;
   @Input() loading = false;
   @Input() disabled = false;
 
-  setButtonType(value: "primary" | "secondary" | "danger") {
+  setButtonType(value: "primary" | "secondary" | "danger" | undefined) {
     this.buttonType = value;
   }
 }
