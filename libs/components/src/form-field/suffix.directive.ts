@@ -1,20 +1,22 @@
-import { Directive, HostBinding, Input } from "@angular/core";
+import { Directive, HostBinding, Input, Optional } from "@angular/core";
 
 import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 
-import { PrefixClasses } from "./prefix.directive";
+import { PrefixButtonClasses, PrefixClasses, PrefixStaticContentClasses } from "./prefix.directive";
 
 @Directive({
   selector: "[bitSuffix]",
 })
 export class BitSuffixDirective {
-  constructor(private buttonComponent: ButtonLikeAbstraction) {}
+  constructor(@Optional() private buttonComponent: ButtonLikeAbstraction) {}
 
   @HostBinding("class") @Input() get classList() {
-    return PrefixClasses.concat(["tw-border-l-0", "last:tw-rounded-r"]);
+    return PrefixClasses.concat(["tw-border-l-0", "last:tw-rounded-r"]).concat(
+      this.buttonComponent != undefined ? PrefixButtonClasses : PrefixStaticContentClasses
+    );
   }
 
   ngOnInit(): void {
-    this.buttonComponent.setButtonType(undefined);
+    this.buttonComponent?.setButtonType(undefined);
   }
 }

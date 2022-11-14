@@ -1,4 +1,4 @@
-import { Directive, HostBinding, Input, OnInit } from "@angular/core";
+import { Directive, HostBinding, Input, OnInit, Optional } from "@angular/core";
 
 import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 
@@ -9,6 +9,9 @@ export const PrefixClasses = [
   "tw-border-secondary-500",
   "tw-text-muted",
   "tw-rounded-none",
+];
+
+export const PrefixButtonClasses = [
   "hover:tw-bg-secondary-500",
   "hover:tw-text-contrast",
   "disabled:tw-opacity-100",
@@ -17,17 +20,21 @@ export const PrefixClasses = [
   "disabled:hover:tw-text-muted",
 ];
 
+export const PrefixStaticContentClasses = ["tw-block", "tw-px-3", "tw-py-1.5"];
+
 @Directive({
   selector: "[bitPrefix]",
 })
 export class BitPrefixDirective implements OnInit {
-  constructor(private buttonComponent: ButtonLikeAbstraction) {}
+  constructor(@Optional() private buttonComponent: ButtonLikeAbstraction) {}
 
   @HostBinding("class") @Input() get classList() {
-    return PrefixClasses.concat(["tw-border-r-0", "first:tw-rounded-l"]);
+    return PrefixClasses.concat(["tw-border-r-0", "first:tw-rounded-l"]).concat(
+      this.buttonComponent != undefined ? PrefixButtonClasses : PrefixStaticContentClasses
+    );
   }
 
   ngOnInit(): void {
-    this.buttonComponent.setButtonType(undefined);
+    this.buttonComponent?.setButtonType(undefined);
   }
 }
