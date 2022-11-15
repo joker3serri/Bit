@@ -42,27 +42,6 @@ export class ColorPasswordComponent {
     return Array.from(this.password);
   }
 
-  sanitizeCharacter(character: string): string {
-    switch (character) {
-      case "&":
-        character = "&amp;";
-        break;
-      case "<":
-        character = "&lt;";
-        break;
-      case ">":
-        character = "&gt;";
-        break;
-      case " ":
-        character = "&nbsp;";
-        break;
-      default:
-        break;
-    }
-
-    return character;
-  }
-
   getCharacterClass(character: string) {
     const charType = this.getCharacterType(character);
     const charClass = this.characterStyles[charType].concat("tw-inline-flex");
