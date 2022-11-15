@@ -12,7 +12,7 @@ export const PrefixClasses = [
 ];
 
 export const PrefixButtonClasses = [
-  "hover:tw-bg-secondary-500",
+  "hover:tw-bg-text-muted",
   "hover:tw-text-contrast",
   "disabled:tw-opacity-100",
   "disabled:tw-bg-secondary-100",
