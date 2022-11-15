@@ -33,7 +33,7 @@ export class ColorPasswordComponent {
   }
 
   get passwordArray() {
-    // Convert to an array to handle cases that stings have special characters, ie: emoji.
+    // Convert to an array to handle cases that strings have special characters, i.e.: emoji.
     return Array.from(this.password);
   }
 
