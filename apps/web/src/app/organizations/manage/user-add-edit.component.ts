@@ -8,7 +8,6 @@ import { OrganizationService } from "@bitwarden/common/abstractions/organization
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
-import { ProductType } from "@bitwarden/common/enums/productType";
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
 import { CollectionData } from "@bitwarden/common/models/data/collection.data";
 import { Collection } from "@bitwarden/common/models/domain/collection";
@@ -94,8 +93,7 @@ export class UserAddEditComponent implements OnInit {
   async ngOnInit() {
     this.editMode = this.loading = this.organizationUserId != null;
     const organization = this.organizationService.get(this.organizationId);
-    this.canUseCustomPermissions =
-      organization.useCustomPermissions && organization.planProductType === ProductType.Enterprise;
+    this.canUseCustomPermissions = organization.useCustomPermissions;
     await this.loadCollections();
 
     if (this.editMode) {
@@ -188,30 +186,9 @@ export class UserAddEditComponent implements OnInit {
 
     try {
       if (this.editMode) {
-        const request = new OrganizationUserUpdateRequest();
-        request.accessAll = this.access === "all";
-        request.type = this.type;
-        request.collections = collections;
-        request.permissions = this.setRequestPermissions(
-          request.permissions ?? new PermissionsApi(),
-          request.type !== OrganizationUserType.Custom
-        );
-        this.formPromise = this.apiService.putOrganizationUser(
-          this.organizationId,
-          this.organizationUserId,
-          request
-        );
+        this.updateUser(collections);
       } else {
-        const request = new OrganizationUserInviteRequest();
-        request.emails = [...new Set(this.emails.trim().split(/\s*,\s*/))];
-        request.accessAll = this.access === "all";
-        request.type = this.type;
-        request.permissions = this.setRequestPermissions(
-          request.permissions ?? new PermissionsApi(),
-          request.type !== OrganizationUserType.Custom
-        );
-        request.collections = collections;
-        this.formPromise = this.apiService.postOrganizationUserInvite(this.organizationId, request);
+        this.inviteUser(collections);
       }
       await this.formPromise;
       this.platformUtilsService.showToast(
@@ -316,5 +293,34 @@ export class UserAddEditComponent implements OnInit {
     } catch (e) {
       this.logService.error(e);
     }
+  }
+
+  updateUser(collections: SelectionReadOnlyRequest[]) {
+    const request = new OrganizationUserUpdateRequest();
+    request.accessAll = this.access === "all";
+    request.type = this.type;
+    request.collections = collections;
+    request.permissions = this.setRequestPermissions(
+      request.permissions ?? new PermissionsApi(),
+      request.type !== OrganizationUserType.Custom
+    );
+    this.formPromise = this.apiService.putOrganizationUser(
+      this.organizationId,
+      this.organizationUserId,
+      request
+    );
+  }
+
+  inviteUser(collections: SelectionReadOnlyRequest[]) {
+    const request = new OrganizationUserInviteRequest();
+    request.emails = [...new Set(this.emails.trim().split(/\s*,\s*/))];
+    request.accessAll = this.access === "all";
+    request.type = this.type;
+    request.permissions = this.setRequestPermissions(
+      request.permissions ?? new PermissionsApi(),
+      request.type !== OrganizationUserType.Custom
+    );
+    request.collections = collections;
+    this.formPromise = this.apiService.postOrganizationUserInvite(this.organizationId, request);
   }
 }
