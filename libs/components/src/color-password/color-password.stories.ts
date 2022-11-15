@@ -22,7 +22,7 @@ export default {
 const Template: Story<ColorPasswordComponent> = (args: ColorPasswordComponent) => ({
   props: args,
   template: `
-  <color-password class="tw-text-base" [password]="password" [showCount]="showCount"></color-password>
+  <bit-color-password class="tw-text-base" [password]="password" [showCount]="showCount"></bit-color-password>
   `,
 });
 
@@ -30,7 +30,7 @@ const WrappedTemplate: Story<ColorPasswordComponent> = (args: ColorPasswordCompo
   props: args,
   template: `
   <div class="tw-max-w-64">
-    <color-password class="tw-text-base" [password]="password" [showCount]="showCount"></color-password>
+    <bit-color-password class="tw-text-base" [password]="password" [showCount]="showCount"></bit-color-password>
   </div>
   `,
 });
