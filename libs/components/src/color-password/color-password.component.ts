@@ -5,7 +5,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 type CharacterTypes = "letter" | "emoji" | "special" | "number";
 
 @Component({
-  selector: "color-password",
+  selector: "bit-color-password",
   template: `<div
     *ngFor="let character of passwordArray; index as i"
     [class]="getCharacterClass(character)"
