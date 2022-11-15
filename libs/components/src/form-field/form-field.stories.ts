@@ -12,6 +12,7 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
 import { ButtonModule } from "../button";
+import { CheckboxModule } from "../checkbox";
 import { InputModule } from "../input/input.module";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
@@ -23,7 +24,14 @@ export default {
   component: BitFormFieldComponent,
   decorators: [
     moduleMetadata({
-      imports: [FormsModule, ReactiveFormsModule, FormFieldModule, InputModule, ButtonModule],
+      imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        FormFieldModule,
+        InputModule,
+        ButtonModule,
+        CheckboxModule,
+      ],
       providers: [
         {
           provide: I18nService,
@@ -229,3 +237,23 @@ const TextareaTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldCompon
 
 export const Textarea = TextareaTemplate.bind({});
 Textarea.args = {};
+
+const checkboxFormObj = fb.group({
+  checkbox: [false, Validators.requiredTrue],
+});
+
+const CheckboxTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldComponent) => ({
+  props: {
+    formObj: checkboxFormObj,
+    ...args,
+  },
+  template: `
+    <bit-form-field [formGroup]="formObj">
+      <bit-label>Terms and conditions</bit-label>
+      <bit-checkbox formControlName="checkbox">I accept</bit-checkbox>
+    </bit-form-field>
+  `,
+});
+
+export const Checkbox = CheckboxTemplate.bind({});
+Checkbox.args = {};

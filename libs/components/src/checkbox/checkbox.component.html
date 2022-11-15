@@ -4,6 +4,7 @@
   [disabled]="this.disabled"
   [checked]="checked"
   (change)="onInputChange($event)"
+  (blur)="onBlur()"
   [ngClass]="inputClasses"
 />
 <label for="bit-checkbox-{{ id }}" [ngClass]="labelClasses">
