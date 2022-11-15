@@ -2,7 +2,12 @@ import { Component, HostBinding, Input } from "@angular/core";
 
 import { Utils } from "@bitwarden/common/misc/utils";
 
-type CharacterTypes = "letter" | "emoji" | "special" | "number";
+enum CharacterType {
+  Letter,
+  Emoji,
+  Special,
+  Number,
+}
 
 @Component({
   selector: "bit-color-password",
@@ -20,11 +25,11 @@ export class ColorPasswordComponent {
   @Input() private password: string = null;
   @Input() showCount = false;
 
-  characterStyles: Record<CharacterTypes, string[]> = {
-    emoji: [],
-    letter: ["tw-text-main"],
-    special: ["tw-text-danger"],
-    number: ["tw-text-primary-500"],
+  characterStyles: Record<CharacterType, string[]> = {
+    [CharacterType.Emoji]: [],
+    [CharacterType.Letter]: ["tw-text-main"],
+    [CharacterType.Special]: ["tw-text-danger"],
+    [CharacterType.Number]: ["tw-text-primary-500"],
   };
 
   @HostBinding("class")
@@ -76,20 +81,20 @@ export class ColorPasswordComponent {
     return charClass;
   }
 
-  private getCharacterType(character: string): CharacterTypes {
+  private getCharacterType(character: string): CharacterType {
     if (character.match(Utils.regexpEmojiPresentation)) {
-      return "emoji";
+      return CharacterType.Emoji;
     }
 
     if (character.match(/\d/)) {
-      return "number";
+      return CharacterType.Number;
     }
 
     const specials = ["&", "<", ">", " "];
     if (specials.includes(character) || character.match(/[^\w ]/)) {
-      return "special";
+      return CharacterType.Special;
     }
 
-    return "letter";
+    return CharacterType.Letter;
   }
 }
