@@ -35,9 +35,24 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
   plan: PlanType;
   product: ProductType;
   accountCreateOnly = true;
+  useTrialStepper = false;
   policies: Policy[];
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
   validOrgs: string[] = ["teams", "enterprise", "families"];
+  validLayouts: string[] = [
+    "default",
+    "teams",
+    "teams1",
+    "teams2",
+    "enterprise",
+    "enterprise1",
+    "enterprise2",
+    "cnetcmpgnent",
+    "cnetcmpgnind",
+    "cnetcmpgnteams",
+    "abmenterprise",
+    "abmteams",
+  ];
   referenceData: ReferenceEventRequest;
   @ViewChild("stepper", { static: false }) verticalStepper: VerticalStepperComponent;
 
@@ -87,39 +102,32 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
 
       this.referenceDataId = qParams.reference;
 
-      if (!qParams.org) {
-        return;
-      }
-
-      if (qParams.layout) {
+      if (this.validLayouts.includes(qParams.layout)) {
         this.layout = qParams.layout;
+        this.accountCreateOnly = false;
       }
 
       if (this.validOrgs.includes(qParams.org)) {
         this.org = qParams.org;
-      } else {
-        this.org = "families";
-      }
+        this.orgLabel = this.titleCasePipe.transform(this.org);
+        this.useTrialStepper = true;
+        this.referenceData.flow = qParams.org;
 
-      this.referenceData.flow = qParams.org;
+        if (this.org === "families") {
+          this.plan = PlanType.FamiliesAnnually;
+          this.product = ProductType.Families;
+        } else if (this.org === "teams") {
+          this.plan = PlanType.TeamsAnnually;
+          this.product = ProductType.Teams;
+        } else if (this.org === "enterprise") {
+          this.plan = PlanType.EnterpriseAnnually;
+          this.product = ProductType.Enterprise;
+        }
+      }
 
       // Are they coming from an email for sponsoring a families organization
       // After logging in redirect them to setup the families sponsorship
       this.setupFamilySponsorship(qParams.sponsorshipToken);
-
-      this.orgLabel = this.titleCasePipe.transform(this.org);
-      this.accountCreateOnly = false;
-
-      if (this.org === "families") {
-        this.plan = PlanType.FamiliesAnnually;
-        this.product = ProductType.Families;
-      } else if (this.org === "teams") {
-        this.plan = PlanType.TeamsAnnually;
-        this.product = ProductType.Teams;
-      } else if (this.org === "enterprise") {
-        this.plan = PlanType.EnterpriseAnnually;
-        this.product = ProductType.Enterprise;
-      }
     });
 
     const invite = await this.stateService.getOrganizationInvitation();

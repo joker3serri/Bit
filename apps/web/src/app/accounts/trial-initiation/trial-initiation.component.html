@@ -42,7 +42,18 @@
       </div>
     </div>
     <div class="tw-w-1/2">
-      <div class="tw-pt-56">
+      <div *ngIf="!useTrialStepper">
+        <div
+          class="tw-min-w-xl tw-m-auto tw-mt-24 tw-max-w-xl tw-rounded tw-border tw-border-solid tw-border-secondary-300 tw-bg-background tw-p-8"
+        >
+          <app-register-form
+            [queryParamEmail]="email"
+            [enforcedPolicyOptions]="enforcedPolicyOptions"
+            [referenceDataValue]="referenceData"
+          ></app-register-form>
+        </div>
+      </div>
+      <div class="tw-pt-44" *ngIf="useTrialStepper">
         <div class="tw-rounded tw-border tw-border-solid tw-border-secondary-300 tw-bg-background">
           <div class="tw-flex tw-h-12 tw-w-full tw-items-center tw-rounded-t tw-bg-secondary-100">
             <h2 class="tw-mb-0 tw-pl-4 tw-text-base tw-font-bold tw-uppercase">
