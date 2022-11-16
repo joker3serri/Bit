@@ -1,4 +1,5 @@
 /* eslint-disable */
+const plugin = require("tailwindcss/plugin");
 const colors = require("tailwindcss/colors");
 
 function rgba(color) {
@@ -89,5 +90,19 @@ module.exports = {
       }),
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function groupPeer({ addVariant }) {
+      // see: https://github.com/tailwindlabs/tailwindcss/discussions/8777
+      let pseudoVariants = ["checked", "disabled", "focus-visible"].map((variant) =>
+        Array.isArray(variant) ? variant : [variant, `&:${variant}`]
+      );
+
+      for (let [variantName, state] of pseudoVariants) {
+        addVariant(`group-peer-${variantName}`, (ctx) => {
+          let result = typeof state === "function" ? state(ctx) : state;
+          return result.replace(/&(\S+)/, ":merge(.peer)$1 ~ .group &");
+        });
+      }
+    }),
+  ],
 };

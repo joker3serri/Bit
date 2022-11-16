@@ -1,12 +1,13 @@
 <input
   type="checkbox"
-  id="bit-checkbox-{{ id }}"
+  [id]="id"
   [disabled]="this.disabled"
   [checked]="checked"
   (change)="onInputChange($event)"
   (blur)="onBlur()"
-  [ngClass]="inputClasses"
+  [class]="inputClasses"
 />
-<label for="bit-checkbox-{{ id }}" [ngClass]="labelClasses">
-  <ng-content></ng-content>
+<label [for]="id" [class]="labelClasses">
+  <span [class]="customCheckboxClasses"></span>
+  <span [class]="labelContentClasses"><ng-content></ng-content></span>
 </label>

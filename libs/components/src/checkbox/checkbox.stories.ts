@@ -2,7 +2,6 @@ import { Component, Input } from "@angular/core";
 import { FormsModule, ReactiveFormsModule, FormBuilder } from "@angular/forms";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
-import { CheckboxComponent } from "./checkbox.component";
 import { CheckboxModule } from "./checkbox.module";
 
 const template = `
@@ -36,7 +35,7 @@ class ExampleComponent {
 
 export default {
   title: "Component Library/Form/Checkbox",
-  component: CheckboxComponent,
+  component: ExampleComponent,
   decorators: [
     moduleMetadata({
       declarations: [ExampleComponent],

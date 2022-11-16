@@ -13,9 +13,50 @@ let nextId = 0;
 export class CheckboxComponent implements BitFormFieldControl {
   id = `bit-checkbox-${nextId++}`;
 
-  // protected inputClasses = ["tw-peer", "tw-appearance-none", "tw-outline-none"];
-  protected inputClasses = [];
-  protected labelClasses = [];
+  protected inputClasses = ["tw-peer", "tw-appearance-none", "tw-outline-none"];
+
+  protected labelClasses = [
+    "tw-group",
+    "tw-transition",
+    "tw-cursor-pointer",
+
+    "peer-disabled:tw-cursor-auto",
+  ];
+
+  protected labelContentClasses = [
+    "tw-font-semibold",
+    "tw-select-none",
+    "tw-text-main",
+
+    "group-peer-disabled:tw-text-muted",
+  ];
+
+  protected customCheckboxClasses = [
+    "tw-inline-block",
+    "tw-border",
+    "tw-border-solid",
+    "tw-rounded",
+    "tw-border-secondary-500",
+    "tw-bg-text-alt2",
+    "tw-h-3.5",
+    "tw-w-3.5",
+    "tw-mr-1.5",
+
+    // Fix checkbox looking off-center
+    "tw-relative",
+    "tw-bottom-[-1px]",
+
+    "group-hover:tw-border-2",
+
+    "group-peer-focus-visible:tw-ring-2",
+    "group-peer-focus-visible:tw-ring-offset-2",
+    "group-peer-focus-visible:tw-ring-primary-500",
+
+    "group-peer-disabled:tw-border",
+    "group-peer-disabled:tw-bg-secondary-100",
+  ];
+
+  protected labelTextClasses = ["tw-transition", "group-peer-checked:tw-bg-text-main"];
 
   protected checked: boolean;
   protected disabled = false;
