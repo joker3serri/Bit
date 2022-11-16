@@ -36,4 +36,16 @@ describe("builder", () => {
     expect(builder([{}])).toBeInstanceOf(Array);
     expect(builder([{}])[0]).toBe("used initializer");
   });
+
+  it("should honor initialize as record", () => {
+    const metadata = {
+      propertyKey,
+      sessionKey: key,
+      initializer: initializer,
+      initializeAsRecord: true,
+    };
+    const builder = SyncedItemMetadata.builder(metadata);
+    expect(builder({ key: "" })).toBeInstanceOf(Object);
+    expect(builder({ key: "" })).toStrictEqual({ key: "used initializer" });
+  });
 });

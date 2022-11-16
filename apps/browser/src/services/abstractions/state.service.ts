@@ -9,6 +9,7 @@ import { BrowserGroupingsComponentState } from "../../models/browserGroupingsCom
 import { BrowserSendComponentState } from "../../models/browserSendComponentState";
 
 export abstract class StateService extends BaseStateServiceAbstraction<Account> {
+  abstract hasInSessionMemory(key: string): Promise<boolean>;
   abstract getFromSessionMemory<T>(key: string, deserializer?: (obj: Jsonify<T>) => T): Promise<T>;
   abstract setInSessionMemory(key: string, value: any): Promise<void>;
   getBrowserGroupingComponentState: (

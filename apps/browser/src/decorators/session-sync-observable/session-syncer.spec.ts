@@ -1,5 +1,6 @@
+import { awaitAsync as flushAsyncObservables } from "@bitwarden/angular/../test-utils";
 import { mock, MockProxy } from "jest-mock-extended";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, ReplaySubject } from "rxjs";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { StateService } from "../../services/abstractions/state.service";
@@ -34,10 +35,10 @@ describe("session syncer", () => {
   });
 
   describe("constructor", () => {
-    it("should throw if behaviorSubject is not an instance of BehaviorSubject", () => {
+    it("should throw if subject is not an instance of Subject", () => {
       expect(() => {
         new SessionSyncer({} as any, stateService, null);
-      }).toThrowError("behaviorSubject must be an instance of BehaviorSubject");
+      }).toThrowError("subject must inherit from Subject");
     });
 
     it("should create if either ctor or initializer is provided", () => {
@@ -59,28 +60,50 @@ describe("session syncer", () => {
     });
   });
 
-  describe("manifest v2 init", () => {
-    let observeSpy: jest.SpyInstance;
-    let listenForUpdatesSpy: jest.SpyInstance;
-
-    beforeEach(() => {
-      observeSpy = jest.spyOn(behaviorSubject, "subscribe").mockReturnThis();
-      listenForUpdatesSpy = jest.spyOn(BrowserApi, "messageListener").mockReturnValue();
-      jest.spyOn(chrome.runtime, "getManifest").mockReturnValue({
-        name: "bitwarden-test",
-        version: "0.0.0",
-        manifest_version: 2,
-      });
+  describe("init", () => {
+    it("should ignore all updates currently in a ReplaySubject's buffer", () => {
+      const replaySubject = new ReplaySubject<string>(Infinity);
+      replaySubject.next("1");
+      replaySubject.next("2");
+      replaySubject.next("3");
+      sut = new SessionSyncer(replaySubject, stateService, metaData);
+      // block observing the subject
+      jest.spyOn(sut as any, "observe").mockImplementation();
 
       sut.init();
+
+      expect(sut["ignoreNUpdates"]).toBe(3);
     });
 
-    it("should not start observing", () => {
-      expect(observeSpy).not.toHaveBeenCalled();
+    it("should ignore BehaviorSubject's initial value", () => {
+      const behaviorSubject = new BehaviorSubject<string>("initial");
+      sut = new SessionSyncer(behaviorSubject, stateService, metaData);
+      // block observing the subject
+      jest.spyOn(sut as any, "observe").mockImplementation();
+
+      sut.init();
+
+      expect(sut["ignoreNUpdates"]).toBe(1);
     });
 
-    it("should not start listening", () => {
-      expect(listenForUpdatesSpy).not.toHaveBeenCalled();
+    it("should grab an initial value from storage if it exists", () => {
+      stateService.hasInSessionMemory.mockResolvedValue(true);
+      //Block a call to update
+      const updateSpy = jest.spyOn(sut as any, "update").mockImplementation();
+
+      sut.init();
+
+      expect(updateSpy).toHaveBeenCalledWith();
+    });
+
+    it("should not grab an initial value from storage if it does not exist", () => {
+      stateService.hasInSessionMemory.mockResolvedValue(false);
+      //Block a call to update
+      const updateSpy = jest.spyOn(sut as any, "update").mockImplementation();
+
+      sut.init();
+
+      expect(updateSpy).toHaveBeenCalledWith();
     });
   });
 
@@ -146,6 +169,7 @@ describe("session syncer", () => {
       stateService.getFromSessionMemory.mockResolvedValue("test");
 
       await sut.updateFromMessage({ command: `${sessionKey}_update`, id: "different_id" });
+      await flushAsyncObservables();
 
       expect(stateService.getFromSessionMemory).toHaveBeenCalledTimes(1);
       expect(stateService.getFromSessionMemory).toHaveBeenCalledWith(sessionKey, builder);
