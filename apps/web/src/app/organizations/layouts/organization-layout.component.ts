@@ -5,6 +5,7 @@ import { map, mergeMap, Observable, Subject, takeUntil } from "rxjs";
 import {
   canAccessBillingTab,
   canAccessGroupsTab,
+  canAccessManageTab,
   canAccessMembersTab,
   canAccessReportingTab,
   canAccessSettingsTab,
@@ -48,6 +49,10 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
     return canAccessSettingsTab(organization);
   }
 
+  canShowManageTab(organization: Organization): boolean {
+    return canAccessManageTab(organization);
+  }
+
   canShowMembersTab(organization: Organization): boolean {
     return canAccessMembersTab(organization);
   }
@@ -66,9 +71,5 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
 
   getReportTabLabel(organization: Organization): string {
     return organization.useEvents ? "reporting" : "reports";
-  }
-
-  getReportRoute(organization: Organization): string {
-    return organization.useEvents ? "reporting/events" : "reporting/reports";
   }
 }
