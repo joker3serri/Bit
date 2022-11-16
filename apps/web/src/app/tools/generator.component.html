@@ -273,6 +273,7 @@
         name="ForwardType"
         [(ngModel)]="usernameOptions.forwardedService"
         (change)="saveUsernameOptions()"
+        class="form-control w-auto"
       >
         <option *ngFor="let o of forwardOptions" [ngValue]="o.value" role="option">
           {{ o.name }}
