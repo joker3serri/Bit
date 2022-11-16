@@ -182,13 +182,13 @@ describe("TrialInitiationComponent", () => {
       expect(component.org).toBe("");
       expect(component.accountCreateOnly).toBe(true);
     }));
-    it("should set the org to be families and plan to FamiliesAnnually if org param is invalid ", fakeAsync(async () => {
+    it("should not set the org if org param is invalid ", fakeAsync(async () => {
       mockQueryParams.next({ org: "hahahaha" });
       tick(); // wait for resolution
       fixture.detectChanges();
       component.ngOnInit();
-      expect(component.org).toBe("families");
-      expect(component.plan).toBe(PlanType.FamiliesAnnually);
+      expect(component.org).toBe("");
+      expect(component.accountCreateOnly).toBe(true);
     }));
   });
 
