@@ -1,4 +1,5 @@
 import { BehaviorSubject, concatMap } from "rxjs";
+import { Jsonify } from "type-fest";
 
 import { LogService } from "../abstractions/log.service";
 import { StateService as StateServiceAbstraction } from "../abstractions/state.service";
@@ -79,6 +80,9 @@ export class StateService<
   private isRecoveredSession = false;
 
   private accountDiskCache = new Map<string, TAccount>();
+
+  // default account serializer, must be overridden by child class
+  protected accountDeserializer = Account.fromJSON as (json: Jsonify<TAccount>) => TAccount;
 
   constructor(
     protected storageService: AbstractStorageService,
@@ -2745,7 +2749,7 @@ export class StateService<
 
   protected async state(): Promise<State<TGlobalState, TAccount>> {
     const state = await this.memoryStorageService.get<State<TGlobalState, TAccount>>(keys.state, {
-      deserializer: (s) => State.fromJSON(s),
+      deserializer: (s) => State.fromJSON(s, this.accountDeserializer),
     });
     return state;
   }
