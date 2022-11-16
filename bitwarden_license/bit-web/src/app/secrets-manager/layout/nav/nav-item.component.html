@@ -1,0 +1,18 @@
+<div
+  class="group tw-flex tw-relative tw-gap-1 tw-items-center tw-py-2 tw-px-4 {{
+    rla.isActive ? 'tw-bg-background-alt4' : 'tw-bg-background-alt3'
+  }}"
+>
+  <ng-content select="[slot-start]"></ng-content>
+  <a
+    class="tw-w-full tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap !tw-text-alt2 hover:tw-text-alt2 hover:tw-no-underline focus-visible:tw-z-10 focus-visible:tw-rounded focus-visible:tw-outline-none focus-visible:tw-ring focus-visible:tw-ring-text-alt2 [&>:not(.bwi)]:hover:tw-underline"
+    [routerLink]="to"
+    routerLinkActive
+    #rla="routerLinkActive"
+    [routerLinkActiveOptions]="routerLinkActiveOptions"
+  >
+    <i class="bwi bwi-fw !tw-m-0 tw-text-white {{ icon }}"></i>
+    <span [ngClass]="rla.isActive ? 'tw-font-bold' : 'tw-font-normal'">{{ title }}</span>
+  </a>
+  <ng-content select="[slot-end]"></ng-content>
+</div>

@@ -1,0 +1,28 @@
+<nav-group [title]="'Org Name (todo)'" icon="bwi-business" [to]="['#']">
+  <ng-container *ngIf="organizations$ | async as organizations">
+    <nav-item
+      *ngFor="let org of organizations"
+      icon="bwi-business"
+      title="{{ org.name }}"
+      [to]="['/organizations', org.id]"
+    >
+      <button
+        slot-end
+        class="tw-text-white tw-ml-auto"
+        bitIconButton="bwi-ellipsis-v"
+        [bitMenuTriggerFor]="orgSwitchMenu"
+        size="small"
+        [title]="'options' | i18n"
+        [attr.aria-label]="'options' | i18n"
+      ></button>
+    </nav-item>
+  </ng-container>
+  <nav-item icon="bwi-plus" title="New Organization" to="/create-organization"></nav-item>
+</nav-group>
+
+<bit-menu #orgSwitchMenu>
+  <button type="button" bitMenuItem>
+    <i class="bwi bwi-fw bwi-trash tw-text-xl tw-text-danger" aria-hidden="true"></i>
+    <span class="tw-text-danger">{{ "deleteProjects" | i18n }}</span>
+  </button>
+</bit-menu>

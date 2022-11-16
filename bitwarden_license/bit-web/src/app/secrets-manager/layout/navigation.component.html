@@ -2,23 +2,9 @@
   <bit-icon [icon]="logo" class="tw-w-full tw-text-alt2"></bit-icon>
 </a>
 
-<a bitNavigation routerLink="projects">
-  <i class="bwi bwi-fw bwi-collection !tw-m-0"></i>
-  <span>Projects</span>
-</a>
-<a bitNavigation routerLink="secrets">
-  <i class="bwi bwi-fw bwi-key !tw-m-0"></i>
-  <span>Secrets</span>
-</a>
-<a bitNavigation routerLink="service-accounts">
-  <i class="bwi bwi-fw bwi-wrench !tw-m-0"></i>
-  <span>Service Accounts</span>
-</a>
-<a bitNavigation routerLink="trash">
-  <i class="bwi bwi-fw bwi-trash !tw-m-0"></i>
-  <span>Trash</span>
-</a>
-<a bitNavigation routerLink="settings">
-  <i class="bwi bwi-fw bwi-cog !tw-m-0"></i>
-  <span>Settings</span>
-</a>
+<org-switcher></org-switcher>
+<nav-item icon="bwi-collection" title="Projects" to="projects"></nav-item>
+<nav-item icon="bwi-key" title="Secrets" to="secrets"></nav-item>
+<nav-item icon="bwi-wrench" title="Service Accounts" to="service-accounts"></nav-item>
+<nav-item icon="bwi-trash" title="Trash" to="trash"></nav-item>
+<nav-item icon="bwi-cog" title="Settings" to="settings"></nav-item>
