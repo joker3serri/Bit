@@ -3,12 +3,8 @@ import * as program from "commander";
 
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
-import { BaseProgram } from "@bitwarden/node/cli/baseProgram";
-import { LogoutCommand } from "@bitwarden/node/cli/commands/logout.command";
-import { UpdateCommand } from "@bitwarden/node/cli/commands/update.command";
-import { Response } from "@bitwarden/node/cli/models/response";
-import { MessageResponse } from "@bitwarden/node/cli/models/response/messageResponse";
 
+import { BaseProgram } from "./base.program";
 import { Main } from "./bw";
 import { CompletionCommand } from "./commands/completion.command";
 import { ConfigCommand } from "./commands/config.command";
@@ -16,11 +12,15 @@ import { EncodeCommand } from "./commands/encode.command";
 import { GenerateCommand } from "./commands/generate.command";
 import { LockCommand } from "./commands/lock.command";
 import { LoginCommand } from "./commands/login.command";
+import { LogoutCommand } from "./commands/logout.command";
 import { ServeCommand } from "./commands/serve.command";
 import { StatusCommand } from "./commands/status.command";
 import { SyncCommand } from "./commands/sync.command";
 import { UnlockCommand } from "./commands/unlock.command";
-import { TemplateResponse } from "./models/response/templateResponse";
+import { UpdateCommand } from "./commands/update.command";
+import { Response } from "./models/response";
+import { MessageResponse } from "./models/response/message.response";
+import { TemplateResponse } from "./models/response/template.response";
 import { CliUtils } from "./utils";
 
 const writeLn = CliUtils.writeLn;

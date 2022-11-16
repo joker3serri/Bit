@@ -31,7 +31,7 @@ import { UpdateTempPasswordRequest } from "@bitwarden/common/models/request/upda
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
 import { Response } from "../models/response";
-import { MessageResponse } from "../models/response/messageResponse";
+import { MessageResponse } from "../models/response/message.response";
 
 export class LoginCommand {
   protected validatedParams: () => Promise<any>;
