@@ -5,7 +5,6 @@ import { map, mergeMap, Observable, Subject, takeUntil } from "rxjs";
 import {
   canAccessBillingTab,
   canAccessGroupsTab,
-  canAccessManageTab,
   canAccessMembersTab,
   canAccessReportingTab,
   canAccessSettingsTab,
@@ -47,10 +46,6 @@ export class OrganizationLayoutComponent implements OnInit, OnDestroy {
 
   canShowSettingsTab(organization: Organization): boolean {
     return canAccessSettingsTab(organization);
-  }
-
-  canShowManageTab(organization: Organization): boolean {
-    return canAccessManageTab(organization);
   }
 
   canShowMembersTab(organization: Organization): boolean {
