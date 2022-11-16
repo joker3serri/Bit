@@ -19,6 +19,7 @@ export class CheckboxComponent implements BitFormFieldControl {
     "tw-group",
     "tw-transition",
     "tw-cursor-pointer",
+    "tw-mb-0",
 
     "peer-disabled:tw-cursor-auto",
   ];
@@ -31,29 +32,65 @@ export class CheckboxComponent implements BitFormFieldControl {
     "group-peer-disabled:tw-text-muted",
   ];
 
-  protected customCheckboxClasses = [
-    "tw-inline-block",
-    "tw-border",
-    "tw-border-solid",
-    "tw-rounded",
-    "tw-border-secondary-500",
-    "tw-bg-text-alt2",
-    "tw-h-3.5",
-    "tw-w-3.5",
-    "tw-mr-1.5",
+  protected get customCheckboxClasses() {
+    return [
+      "tw-transition",
+      "tw-inline-block",
+      "tw-rounded",
+      "tw-border",
+      "tw-border-solid",
+      "tw-h-3.5",
+      "tw-w-3.5",
+      "tw-mr-1.5",
 
-    // Fix checkbox looking off-center
-    "tw-relative",
-    "tw-bottom-[-1px]",
+      // Fix checkbox looking off-center
+      "tw-relative",
+      "tw-bottom-[-1px]",
 
-    "group-hover:tw-border-2",
+      "group-hover:tw-border-2",
 
-    "group-peer-focus-visible:tw-ring-2",
-    "group-peer-focus-visible:tw-ring-offset-2",
-    "group-peer-focus-visible:tw-ring-primary-500",
+      "group-peer-focus-visible:tw-ring-2",
+      "group-peer-focus-visible:tw-ring-offset-2",
+      "group-peer-focus-visible:tw-ring-primary-500",
+    ].concat(
+      !this.checked
+        ? [
+            "tw-bg-text-alt2",
+            "tw-border-secondary-500",
 
-    "group-peer-disabled:tw-border",
-    "group-peer-disabled:tw-bg-secondary-100",
+            "group-peer-focus-visible:tw-ring-2",
+            "group-peer-focus-visible:tw-ring-offset-2",
+            "group-peer-focus-visible:tw-ring-primary-500",
+
+            "group-peer-disabled:tw-border",
+            "group-peer-disabled:tw-bg-secondary-100",
+          ]
+        : [
+            "tw-bg-primary-500",
+            "tw-border-primary-500",
+
+            "group-hover:tw-bg-primary-700",
+
+            "group-peer-disabled:tw-border-secondary-100",
+            "group-peer-disabled:tw-bg-secondary-100",
+          ]
+    );
+  }
+
+  protected iconClasses = [
+    "bwi",
+    "bwi-check",
+
+    "tw-absolute",
+    "tw-inset-0",
+    "tw-flex",
+    "tw-justify-center",
+    "tw-items-center",
+    "tw-text-[8px]",
+    "tw-text-contrast",
+    "tw-font-black",
+
+    "group-peer-disabled:tw-text-muted",
   ];
 
   protected labelTextClasses = ["tw-transition", "group-peer-checked:tw-bg-text-main"];

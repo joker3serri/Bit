@@ -8,6 +8,8 @@
   [class]="inputClasses"
 />
 <label [for]="id" [class]="labelClasses">
-  <span [class]="customCheckboxClasses"></span>
+  <span [class]="customCheckboxClasses" aria-hidden="true">
+    <i [class]="iconClasses" *ngIf="checked"></i>
+  </span>
   <span [class]="labelContentClasses"><ng-content></ng-content></span>
 </label>
