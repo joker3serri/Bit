@@ -19,6 +19,7 @@ export class CheckboxComponent implements BitFormFieldControl {
     "tw-group",
     "tw-transition",
     "tw-cursor-pointer",
+    "tw-select-none",
     "tw-mb-0",
 
     "peer-disabled:tw-cursor-auto",
@@ -26,7 +27,6 @@ export class CheckboxComponent implements BitFormFieldControl {
 
   protected labelContentClasses = [
     "tw-font-semibold",
-    "tw-select-none",
     "tw-text-main",
 
     "group-peer-disabled:tw-text-muted",

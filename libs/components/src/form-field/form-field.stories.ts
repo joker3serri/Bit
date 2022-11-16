@@ -63,6 +63,7 @@ const formObj = fb.group({
 const defaultFormObj = fb.group({
   name: ["", [Validators.required]],
   email: ["", [Validators.required, Validators.email, forbiddenNameValidator(/bit/i)]],
+  terms: [false, [Validators.requiredTrue]],
 });
 
 // Custom error message, `message` is shown as the error message
@@ -93,6 +94,10 @@ const Template: Story<BitFormFieldComponent> = (args: BitFormFieldComponent) => 
       <bit-form-field>
         <bit-label>Email</bit-label>
         <input bitInput formControlName="email" />
+      </bit-form-field>
+
+      <bit-form-field>
+        <bit-checkbox formControlName="terms">Agree to terms</bit-checkbox>
       </bit-form-field>
 
       <button type="submit" bitButton buttonType="primary">Submit</button>
