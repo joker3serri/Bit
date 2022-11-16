@@ -9,7 +9,8 @@
 />
 <label [for]="id" [class]="labelClasses">
   <span [class]="customCheckboxClasses" aria-hidden="true">
-    <i [class]="iconClasses" *ngIf="checked"></i>
+    <bit-icon [class]="iconClasses" [icon]="checkmark" *ngIf="checked"></bit-icon>
+    <!--<i [class]="iconClasses" *ngIf="checked"></i>-->
   </span>
   <span [class]="labelContentClasses"><ng-content></ng-content></span>
   <span *ngIf="required" class="tw-text-xs tw-font-normal"> ({{ "required" | i18n }})</span>

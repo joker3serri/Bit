@@ -3,6 +3,8 @@ import { NgControl, Validators } from "@angular/forms";
 
 import { BitFormFieldControl } from "../form-field/form-field-control";
 
+import { Checkmark } from "./checkmark.icon";
+
 let nextId = 0;
 
 @Component({
@@ -12,6 +14,8 @@ let nextId = 0;
 })
 export class CheckboxComponent implements BitFormFieldControl {
   id = `bit-checkbox-${nextId++}`;
+
+  protected checkmark = Checkmark;
 
   protected inputClasses = ["tw-peer", "tw-appearance-none", "tw-outline-none"];
 
@@ -79,19 +83,14 @@ export class CheckboxComponent implements BitFormFieldControl {
   }
 
   protected iconClasses = [
-    "bwi",
-    "bwi-check",
-
     "tw-absolute",
     "tw-inset-0",
     "tw-flex",
     "tw-justify-center",
     "tw-items-center",
-    "tw-text-[8px]",
-    "tw-text-contrast",
-    "tw-font-black",
+    "tw-stroke-text-contrast",
 
-    "group-peer-disabled:tw-text-muted",
+    "group-peer-disabled:tw-stroke-text-muted",
   ];
 
   protected labelTextClasses = ["tw-transition", "group-peer-checked:tw-bg-text-main"];
