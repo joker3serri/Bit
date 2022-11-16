@@ -70,6 +70,7 @@ export class CheckboxComponent implements BitFormFieldControl {
             "tw-border-primary-500",
 
             "group-hover:tw-bg-primary-700",
+            "group-hover:tw-border-primary-700",
 
             "group-peer-disabled:tw-border-secondary-100",
             "group-peer-disabled:tw-bg-secondary-100",
