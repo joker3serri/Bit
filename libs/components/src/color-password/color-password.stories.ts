@@ -29,7 +29,7 @@ const Template: Story<ColorPasswordComponent> = (args: ColorPasswordComponent) =
 const WrappedTemplate: Story<ColorPasswordComponent> = (args: ColorPasswordComponent) => ({
   props: args,
   template: `
-  <div class="tw-max-w-64">
+  <div class="tw-max-w-32">
     <bit-color-password class="tw-text-base" [password]="password" [showCount]="showCount"></bit-color-password>
   </div>
   `,
