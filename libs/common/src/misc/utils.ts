@@ -423,6 +423,40 @@ export class Utils {
     return this.global.bitwardenContainerService;
   }
 
+  /**
+   * Converts map to a Record<string, V> with the same data. Inverse of recordToMap
+   * Useful in toJSON methods, since Maps are not serializable
+   * @param map
+   * @returns
+   */
+  static mapToRecord<K extends string | number | symbol, V>(map: Map<K, V>): Record<string, V> {
+    return map == null ? null : Object.fromEntries(map);
+  }
+
+  /**
+   * Converts record to a Map<string, V> with the same data. Inverse of mapToRecord
+   * Useful in fromJSON methods, since Maps are not serializable
+   *
+   * Warning: If the record has string keys that are numbers, they will be converted to numbers in the map
+   * @param record
+   * @returns
+   */
+  static recordToMap<K extends string | number, V>(record: Record<K, V>): Map<K, V> {
+    if (record == null) {
+      return null;
+    }
+    const entries = Object.entries(record);
+    if (entries.length === 0) {
+      return new Map();
+    }
+
+    if (isNaN(Number(entries[0][0]))) {
+      return new Map(entries) as Map<K, V>;
+    } else {
+      return new Map(entries.map((e) => [Number(e[0]), e[1]])) as Map<K, V>;
+    }
+  }
+
   private static isMobile(win: Window) {
     let mobile = false;
     ((a) => {

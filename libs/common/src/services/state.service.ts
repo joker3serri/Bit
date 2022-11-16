@@ -13,6 +13,7 @@ import { StorageLocation } from "../enums/storageLocation";
 import { ThemeType } from "../enums/themeType";
 import { UriMatchType } from "../enums/uriMatchType";
 import { StateFactory } from "../factories/stateFactory";
+import { Utils } from "../misc/utils";
 import { CipherData } from "../models/data/cipher.data";
 import { CollectionData } from "../models/data/collection.data";
 import { EncryptedOrganizationKeyData } from "../models/data/encrypted-organization-key.data";
@@ -65,13 +66,13 @@ export class StateService<
   TAccount extends Account = Account
 > implements StateServiceAbstraction<TAccount>
 {
-  private accountsSubject = new BehaviorSubject<{ [userId: string]: TAccount }>({});
+  protected accountsSubject = new BehaviorSubject<{ [userId: string]: TAccount }>({});
   accounts$ = this.accountsSubject.asObservable();
 
-  private activeAccountSubject = new BehaviorSubject<string | null>(null);
+  protected activeAccountSubject = new BehaviorSubject<string | null>(null);
   activeAccount$ = this.activeAccountSubject.asObservable();
 
-  private activeAccountUnlockedSubject = new BehaviorSubject<boolean>(false);
+  protected activeAccountUnlockedSubject = new BehaviorSubject<boolean>(false);
   activeAccountUnlocked$ = this.activeAccountUnlockedSubject.asObservable();
 
   private hasBeenInited = false;
@@ -676,7 +677,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    return this.recordToMap(account?.keys?.organizationKeys?.decrypted);
+    return Utils.recordToMap(account?.keys?.organizationKeys?.decrypted);
   }
 
   async setDecryptedOrganizationKeys(
@@ -686,7 +687,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    account.keys.organizationKeys.decrypted = this.mapToRecord(value);
+    account.keys.organizationKeys.decrypted = Utils.mapToRecord(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -774,7 +775,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    return this.recordToMap(account?.keys?.providerKeys?.decrypted);
+    return Utils.recordToMap(account?.keys?.providerKeys?.decrypted);
   }
 
   async setDecryptedProviderKeys(
@@ -784,7 +785,7 @@ export class StateService<
     const account = await this.getAccount(
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
     );
-    account.keys.providerKeys.decrypted = this.mapToRecord(value);
+    account.keys.providerKeys.decrypted = Utils.mapToRecord(value);
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultInMemoryOptions())
@@ -2764,14 +2765,6 @@ export class StateService<
 
       await this.setState(updatedState);
     });
-  }
-
-  private mapToRecord<V>(map: Map<string, V>): Record<string, V> {
-    return map == null ? null : Object.fromEntries(map);
-  }
-
-  private recordToMap<V>(record: Record<string, V>): Map<string, V> {
-    return record == null ? null : new Map(Object.entries(record));
   }
 }
 
