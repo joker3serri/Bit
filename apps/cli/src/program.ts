@@ -4,7 +4,6 @@ import * as program from "commander";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
 
-import { BaseProgram } from "./base.program";
 import { Main } from "./bw";
 import { CompletionCommand } from "./commands/completion.command";
 import { ConfigCommand } from "./commands/config.command";
@@ -19,16 +18,16 @@ import { SyncCommand } from "./commands/sync.command";
 import { UnlockCommand } from "./commands/unlock.command";
 import { UpdateCommand } from "./commands/update.command";
 import { Response } from "./models/response";
+import { ListResponse } from "./models/response/list.response";
 import { MessageResponse } from "./models/response/message.response";
+import { StringResponse } from "./models/response/string.response";
 import { TemplateResponse } from "./models/response/template.response";
 import { CliUtils } from "./utils";
 
 const writeLn = CliUtils.writeLn;
 
-export class Program extends BaseProgram {
-  constructor(protected main: Main) {
-    super(main.stateService, writeLn);
-  }
+export class Program {
+  constructor(protected main: Main) {}
 
   async register() {
     program
@@ -501,12 +500,102 @@ export class Program extends BaseProgram {
   }
 
   protected processResponse(response: Response, exitImmediately = false) {
-    super.processResponse(response, exitImmediately, () => {
-      if (response.data.object === "template") {
-        return this.getJson((response.data as TemplateResponse).template);
+    if (!response.success) {
+      if (process.env.BW_QUIET !== "true") {
+        if (process.env.BW_RESPONSE === "true") {
+          writeLn(this.getJson(response), true, false);
+        } else {
+          writeLn(chalk.redBright(response.message), true, true);
+        }
       }
-      return null;
-    });
+      const exitCode = process.env.BW_CLEANEXIT ? 0 : 1;
+      if (exitImmediately) {
+        process.exit(exitCode);
+      } else {
+        process.exitCode = exitCode;
+      }
+      return;
+    }
+
+    if (process.env.BW_RESPONSE === "true") {
+      writeLn(this.getJson(response), true, false);
+    } else if (response.data != null) {
+      let out: string = null;
+
+      if (response.data.object === "template") {
+        out = this.getJson((response.data as TemplateResponse).template);
+      }
+
+      if (out == null) {
+        if (response.data.object === "string") {
+          const data = (response.data as StringResponse).data;
+          if (data != null) {
+            out = data;
+          }
+        } else if (response.data.object === "list") {
+          out = this.getJson((response.data as ListResponse).data);
+        } else if (response.data.object === "message") {
+          out = this.getMessage(response);
+        } else {
+          out = this.getJson(response.data);
+        }
+      }
+
+      if (out != null && process.env.BW_QUIET !== "true") {
+        writeLn(out, true, false);
+      }
+    }
+    if (exitImmediately) {
+      process.exit(0);
+    } else {
+      process.exitCode = 0;
+    }
+  }
+
+  private getJson(obj: any): string {
+    if (process.env.BW_PRETTY === "true") {
+      return JSON.stringify(obj, null, "  ");
+    } else {
+      return JSON.stringify(obj);
+    }
+  }
+
+  private getMessage(response: Response): string {
+    const message = response.data as MessageResponse;
+    if (process.env.BW_RAW === "true") {
+      return message.raw;
+    }
+
+    let out = "";
+    if (message.title != null) {
+      if (message.noColor) {
+        out = message.title;
+      } else {
+        out = chalk.greenBright(message.title);
+      }
+    }
+    if (message.message != null) {
+      if (message.title != null) {
+        out += "\n";
+      }
+      out += message.message;
+    }
+    return out.trim() === "" ? null : out;
+  }
+
+  private async exitIfAuthed() {
+    const authed = await this.main.stateService.getIsAuthenticated();
+    if (authed) {
+      const email = await this.main.stateService.getEmail();
+      this.processResponse(Response.error("You are already logged in as " + email + "."), true);
+    }
+  }
+
+  private async exitIfNotAuthed() {
+    const authed = await this.main.stateService.getIsAuthenticated();
+    if (!authed) {
+      this.processResponse(Response.error("You are not logged in."), true);
+    }
   }
 
   protected async exitIfLocked() {
