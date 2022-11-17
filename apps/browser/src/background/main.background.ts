@@ -88,7 +88,7 @@ import { UpdateBadge } from "../listeners/update-badge";
 import { Account } from "../models/account";
 import { PopupUtilsService } from "../popup/services/popup-utils.service";
 import { AutofillService as AutofillServiceAbstraction } from "../services/abstractions/autofill.service";
-import { StateService as StateServiceAbstraction } from "../services/abstractions/state.service";
+import { BrowserStateService as StateServiceAbstraction } from "../services/abstractions/browser-state.service";
 import AutofillService from "../services/autofill.service";
 import { BrowserEnvironmentService } from "../services/browser-environment.service";
 import { BrowserFolderService } from "../services/browser-folder.service";

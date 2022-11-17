@@ -15,7 +15,7 @@ import { SendType } from "@bitwarden/common/enums/sendType";
 import { SendView } from "@bitwarden/common/models/view/send.view";
 
 import { BrowserSendComponentState } from "../../models/browserSendComponentState";
-import { StateService } from "../../services/abstractions/state.service";
+import { BrowserStateService } from "../../services/abstractions/browser-state.service";
 import { PopupUtilsService } from "../services/popup-utils.service";
 
 const ComponentId = "SendComponent";
@@ -42,7 +42,7 @@ export class SendGroupingsComponent extends BaseSendComponent {
     policyService: PolicyService,
     searchService: SearchService,
     private popupUtils: PopupUtilsService,
-    private stateService: StateService,
+    private stateService: BrowserStateService,
     private router: Router,
     private syncService: SyncService,
     private changeDetectorRef: ChangeDetectorRef,

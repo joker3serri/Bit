@@ -59,7 +59,7 @@ import MainBackground from "../../background/main.background";
 import { BrowserApi } from "../../browser/browserApi";
 import { Account } from "../../models/account";
 import { AutofillService } from "../../services/abstractions/autofill.service";
-import { StateService as StateServiceAbstraction } from "../../services/abstractions/state.service";
+import { BrowserStateService as StateServiceAbstraction } from "../../services/abstractions/browser-state.service";
 import { BrowserEnvironmentService } from "../../services/browser-environment.service";
 import { BrowserPolicyService } from "../../services/browser-policy.service";
 import { BrowserStateService } from "../../services/browser-state.service";

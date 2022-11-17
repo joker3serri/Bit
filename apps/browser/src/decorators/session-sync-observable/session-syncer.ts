@@ -3,7 +3,7 @@ import { BehaviorSubject, concatMap, ReplaySubject, Subject, Subscription } from
 import { Utils } from "@bitwarden/common/misc/utils";
 
 import { BrowserApi } from "../../browser/browserApi";
-import { StateService } from "../../services/abstractions/state.service";
+import { BrowserStateService } from "../../services/abstractions/browser-state.service";
 
 import { SyncedItemMetadata } from "./sync-item-metadata";
 
@@ -16,7 +16,7 @@ export class SessionSyncer {
 
   constructor(
     private subject: Subject<any>,
-    private stateService: StateService,
+    private stateService: BrowserStateService,
     private metaData: SyncedItemMetadata
   ) {
     if (!(subject instanceof Subject)) {

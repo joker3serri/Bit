@@ -12,7 +12,7 @@ import { BrowserComponentState } from "../models/browserComponentState";
 import { BrowserGroupingsComponentState } from "../models/browserGroupingsComponentState";
 import { BrowserSendComponentState } from "../models/browserSendComponentState";
 
-import { StateService as StateServiceAbstraction } from "./abstractions/state.service";
+import { BrowserStateService as StateServiceAbstraction } from "./abstractions/browser-state.service";
 
 @browserSession
 export class BrowserStateService

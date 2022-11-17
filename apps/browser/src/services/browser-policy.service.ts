@@ -6,14 +6,14 @@ import { PolicyService } from "@bitwarden/common/services/policy/policy.service"
 
 import { browserSession, sessionSync } from "../decorators/session-sync-observable";
 
-import { StateService } from "./abstractions/state.service";
+import { BrowserStateService } from "./abstractions/browser-state.service";
 
 @browserSession
 export class BrowserPolicyService extends PolicyService {
   @sessionSync({ ctor: Policy, initializeAsArray: true })
   protected _policies: BehaviorSubject<Policy[]>;
 
-  constructor(stateService: StateService, organizationService: OrganizationService) {
+  constructor(stateService: BrowserStateService, organizationService: OrganizationService) {
     super(stateService, organizationService);
   }
 }
