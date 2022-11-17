@@ -64,7 +64,6 @@ import { NotificationsService } from "@bitwarden/common/services/notifications.s
 import { OrganizationService } from "@bitwarden/common/services/organization/organization.service";
 import { PasswordGenerationService } from "@bitwarden/common/services/passwordGeneration.service";
 import { PolicyApiService } from "@bitwarden/common/services/policy/policy-api.service";
-import { PolicyService } from "@bitwarden/common/services/policy/policy.service";
 import { ProviderService } from "@bitwarden/common/services/provider.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { SendService } from "@bitwarden/common/services/send.service";
@@ -92,6 +91,7 @@ import { AutofillService as AutofillServiceAbstraction } from "../services/abstr
 import { StateService as StateServiceAbstraction } from "../services/abstractions/state.service";
 import AutofillService from "../services/autofill.service";
 import { BrowserEnvironmentService } from "../services/browser-environment.service";
+import { BrowserPolicyService } from "../services/browser-policy.service";
 import { BrowserCryptoService } from "../services/browserCrypto.service";
 import BrowserLocalStorageService from "../services/browserLocalStorage.service";
 import BrowserMessagingService from "../services/browserMessaging.service";
@@ -318,7 +318,7 @@ export default class MainBackground {
     );
     this.syncNotifierService = new SyncNotifierService();
     this.organizationService = new OrganizationService(this.stateService, this.syncNotifierService);
-    this.policyService = new PolicyService(this.stateService, this.organizationService);
+    this.policyService = new BrowserPolicyService(this.stateService, this.organizationService);
     this.policyApiService = new PolicyApiService(
       this.policyService,
       this.apiService,

@@ -57,6 +57,7 @@ import { BrowserApi } from "../../browser/browserApi";
 import { AutofillService } from "../../services/abstractions/autofill.service";
 import { StateService as StateServiceAbstraction } from "../../services/abstractions/state.service";
 import { BrowserEnvironmentService } from "../../services/browser-environment.service";
+import { BrowserPolicyService } from "../../services/browser-policy.service";
 import { BrowserFileDownloadService } from "../../services/browserFileDownloadService";
 import BrowserMessagingService from "../../services/browserMessaging.service";
 import BrowserMessagingPrivateModePopupService from "../../services/browserMessagingPrivateModePopup.service";
@@ -190,8 +191,13 @@ function getBgService<T>(service: keyof MainBackground) {
     { provide: EventService, useFactory: getBgService<EventService>("eventService"), deps: [] },
     {
       provide: PolicyService,
-      useFactory: getBgService<PolicyService>("policyService"),
-      deps: [],
+      useFactory: (
+        stateService: StateServiceAbstraction,
+        organizationService: OrganizationService
+      ) => {
+        return new BrowserPolicyService(stateService, organizationService);
+      },
+      deps: [StateServiceAbstraction, OrganizationService],
     },
     {
       provide: PolicyApiServiceAbstraction,
