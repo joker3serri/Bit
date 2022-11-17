@@ -1,5 +1,5 @@
 import { Component, HostBinding, Input, Optional, Self } from "@angular/core";
-import { NgControl, Validators } from "@angular/forms";
+import { ControlValueAccessor, NgControl, Validators } from "@angular/forms";
 
 import { BitFormFieldControl } from "../form-field/form-field-control";
 
@@ -12,7 +12,7 @@ let nextId = 0;
   templateUrl: "checkbox.component.html",
   providers: [{ provide: BitFormFieldControl, useExisting: CheckboxComponent }],
 })
-export class CheckboxComponent implements BitFormFieldControl {
+export class CheckboxComponent implements ControlValueAccessor, BitFormFieldControl {
   id = `bit-checkbox-${nextId++}`;
 
   private _name?: string;

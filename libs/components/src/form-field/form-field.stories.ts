@@ -14,6 +14,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { ButtonModule } from "../button";
 import { CheckboxModule } from "../checkbox";
 import { InputModule } from "../input/input.module";
+import { RadioButtonModule } from "../radio-button";
 import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { BitFormFieldComponent } from "./form-field.component";
@@ -31,6 +32,7 @@ export default {
         InputModule,
         ButtonModule,
         CheckboxModule,
+        RadioButtonModule,
       ],
       providers: [
         {
@@ -64,6 +66,7 @@ const defaultFormObj = fb.group({
   name: ["", [Validators.required]],
   email: ["", [Validators.required, Validators.email, forbiddenNameValidator(/bit/i)]],
   terms: [false, [Validators.requiredTrue]],
+  updates: ["yes"],
 });
 
 // Custom error message, `message` is shown as the error message
@@ -98,6 +101,15 @@ const Template: Story<BitFormFieldComponent> = (args: BitFormFieldComponent) => 
 
       <bit-form-field>
         <bit-checkbox formControlName="terms">Agree to terms</bit-checkbox>
+      </bit-form-field>
+
+      <bit-form-field>
+        <bit-label>Subscribe to updates?</bit-label>
+        <bit-radio-group formControlName="updates">
+          <bit-radio-button value="yes">Yes</bit-radio-button>
+          <bit-radio-button value="no">No</bit-radio-button>
+          <bit-radio-button value="later">Decide later</bit-radio-button>
+        </bit-radio-group>
       </bit-form-field>
 
       <button type="submit" bitButton buttonType="primary">Submit</button>
