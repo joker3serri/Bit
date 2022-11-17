@@ -21,6 +21,7 @@ export class Organization {
   useKeyConnector: boolean;
   useScim: boolean;
   useResetPassword: boolean;
+  useSecretsManager: boolean;
   selfHost: boolean;
   usersGetPremium: boolean;
   seats: number;
@@ -65,6 +66,7 @@ export class Organization {
     this.useKeyConnector = obj.useKeyConnector;
     this.useScim = obj.useScim;
     this.useResetPassword = obj.useResetPassword;
+    this.useSecretsManager = obj.useSecretsManager;
     this.selfHost = obj.selfHost;
     this.usersGetPremium = obj.usersGetPremium;
     this.seats = obj.seats;
@@ -200,5 +202,9 @@ export class Organization {
 
   get hasProvider() {
     return this.providerId != null || this.providerName != null;
+  }
+
+  get canAccessSecretsManager() {
+    return this.useSecretsManager;
   }
 }
