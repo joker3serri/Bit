@@ -373,7 +373,7 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
   }
 
   private async saveState() {
-    this.state = {
+    this.state = Object.assign(new BrowserGroupingsComponentState(), {
       scrollY: this.popupUtils.getContentScrollY(window),
       searchText: this.searchText,
       favoriteCiphers: this.favoriteCiphers,
@@ -385,7 +385,7 @@ export class VaultFilterComponent implements OnInit, OnDestroy {
       folders: this.folders,
       collections: this.collections,
       deletedCount: this.deletedCount,
-    };
+    });
     await this.browserStateService.setBrowserGroupingComponentState(this.state);
   }
 

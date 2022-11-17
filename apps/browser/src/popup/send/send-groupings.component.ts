@@ -165,12 +165,12 @@ export class SendGroupingsComponent extends BaseSendComponent {
   }
 
   private async saveState() {
-    this.state = {
+    this.state = Object.assign(new BrowserSendComponentState(), {
       scrollY: this.popupUtils.getContentScrollY(window),
       searchText: this.searchText,
       sends: this.sends,
       typeCounts: this.typeCounts,
-    };
+    });
     await this.stateService.setBrowserSendComponentState(this.state);
   }
 
