@@ -93,6 +93,7 @@ import AutofillService from "../services/autofill.service";
 import { BrowserEnvironmentService } from "../services/browser-environment.service";
 import { BrowserFolderService } from "../services/browser-folder.service";
 import { BrowserPolicyService } from "../services/browser-policy.service";
+import { BrowserStateService } from "../services/browser-state.service";
 import { BrowserCryptoService } from "../services/browserCrypto.service";
 import BrowserLocalStorageService from "../services/browserLocalStorage.service";
 import BrowserMessagingService from "../services/browserMessaging.service";
@@ -101,7 +102,6 @@ import BrowserPlatformUtilsService from "../services/browserPlatformUtils.servic
 import I18nService from "../services/i18n.service";
 import { KeyGenerationService } from "../services/keyGeneration.service";
 import { LocalBackedSessionStorageService } from "../services/localBackedSessionStorage.service";
-import { StateService } from "../services/state.service";
 import { VaultFilterService } from "../services/vaultFilter.service";
 import VaultTimeoutService from "../services/vaultTimeout/vaultTimeout.service";
 
@@ -227,7 +227,7 @@ export default class MainBackground {
       this.secureStorageService,
       new StateFactory(GlobalState, Account)
     );
-    this.stateService = new StateService(
+    this.stateService = new BrowserStateService(
       this.storageService,
       this.secureStorageService,
       this.memoryStorageService,

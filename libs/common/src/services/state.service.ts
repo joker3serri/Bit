@@ -2772,42 +2772,6 @@ export class StateService<
   }
 }
 
-export function withPrototype<T>(
-  constructor: new (...args: any[]) => T,
-  converter: (input: any) => T = (i) => i
-): (
-  target: any,
-  propertyKey: string | symbol,
-  descriptor: PropertyDescriptor
-) => { value: (...args: any[]) => Promise<T> } {
-  return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-    const originalMethod = descriptor.value;
-
-    return {
-      value: function (...args: any[]) {
-        const originalResult: Promise<T> = originalMethod.apply(this, args);
-
-        if (!(originalResult instanceof Promise)) {
-          throw new Error(
-            `Error applying prototype to stored value -- result is not a promise for method ${String(
-              propertyKey
-            )}`
-          );
-        }
-
-        return originalResult.then((result) => {
-          return result == null ||
-            result.constructor.name === constructor.prototype.constructor.name
-            ? converter(result as T)
-            : converter(
-                Object.create(constructor.prototype, Object.getOwnPropertyDescriptors(result)) as T
-              );
-        });
-      },
-    };
-  };
-}
-
 function withPrototypeForArrayMembers<T>(
   memberConstructor: new (...args: any[]) => T,
   memberConverter: (input: any) => T = (i) => i
@@ -2844,7 +2808,7 @@ function withPrototypeForArrayMembers<T>(
             return result.map((r) => {
               return r == null ||
                 r.constructor.name === memberConstructor.prototype.constructor.name
-                ? memberConverter(r)
+                ? r
                 : memberConverter(
                     Object.create(memberConstructor.prototype, Object.getOwnPropertyDescriptors(r))
                   );
