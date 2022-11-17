@@ -1,10 +1,11 @@
-import { Component } from "@angular/core";
+import { Component, DebugElement } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
 import { ButtonComponent, ButtonModule } from "../button";
 import { InputModule } from "../input/input.module";
 
+import { BitFormFieldControl } from "./form-field-control";
 import { BitFormFieldComponent } from "./form-field.component";
 import { FormFieldModule } from "./form-field.module";
 import { BitPasswordInputToggleDirective } from "./password-input-toggle.directive";
@@ -23,8 +24,11 @@ import { BitPasswordInputToggleDirective } from "./password-input-toggle.directi
 })
 class TestFormFieldComponent {}
 
-describe("BannerComponent", () => {
+describe("PasswordInputToggle", () => {
   let fixture: ComponentFixture<TestFormFieldComponent>;
+  let button: ButtonComponent;
+  let input: BitFormFieldControl;
+  let toggle: DebugElement;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -34,47 +38,63 @@ describe("BannerComponent", () => {
 
     fixture = TestBed.createComponent(TestFormFieldComponent);
     fixture.detectChanges();
-  });
 
-  it("changes icon on click", () => {
-    const toggle = fixture.debugElement.query(By.directive(BitPasswordInputToggleDirective));
+    toggle = fixture.debugElement.query(By.directive(BitPasswordInputToggleDirective));
     const buttonEl = fixture.debugElement.query(By.directive(ButtonComponent));
-    const button: ButtonComponent = buttonEl.componentInstance;
-
-    expect(button.icon).toBe("bwi-eye");
-
-    toggle.triggerEventHandler("click");
-
-    expect(button.icon).toBe("bwi-eye-slash");
-  });
-
-  it("input changes type on click", () => {
-    const toggle = fixture.debugElement.query(By.directive(BitPasswordInputToggleDirective));
+    button = buttonEl.componentInstance;
     const formFieldEl = fixture.debugElement.query(By.directive(BitFormFieldComponent));
     const formField: BitFormFieldComponent = formFieldEl.componentInstance;
-    const input = formField.input;
-
-    expect(input.type).toBe("password");
-
-    toggle.triggerEventHandler("click");
-
-    expect(input.type).toBe("text");
+    input = formField.input;
   });
 
-  it("input has spellCheck false when toggled", () => {
-    const toggle = fixture.debugElement.query(By.directive(BitPasswordInputToggleDirective));
-    const formFieldEl = fixture.debugElement.query(By.directive(BitFormFieldComponent));
-    const formField: BitFormFieldComponent = formFieldEl.componentInstance;
-    const input = formField.input;
+  describe("initial state", () => {
+    it("has correct icon", () => {
+      expect(button.icon).toBe("bwi-eye");
+    });
 
-    expect(input.spellcheck).toBe(undefined);
+    it("input is type password", () => {
+      expect(input.type).toBe("password");
+    });
 
-    toggle.triggerEventHandler("click");
+    it("spellcheck is disabled", () => {
+      expect(input.spellcheck).toBe(undefined);
+    });
+  });
 
-    expect(input.spellcheck).toBe(false);
+  describe("when toggled", () => {
+    beforeEach(() => {
+      toggle.triggerEventHandler("click");
+    });
 
-    toggle.triggerEventHandler("click");
+    it("has correct icon", () => {
+      expect(button.icon).toBe("bwi-eye-slash");
+    });
 
-    expect(input.spellcheck).toBe(undefined);
+    it("input is type text", () => {
+      expect(input.type).toBe("text");
+    });
+
+    it("spellcheck is disabled", () => {
+      expect(input.spellcheck).toBe(false);
+    });
+  });
+
+  describe("when toggled twice", () => {
+    beforeEach(() => {
+      toggle.triggerEventHandler("click");
+      toggle.triggerEventHandler("click");
+    });
+
+    it("has correct icon", () => {
+      expect(button.icon).toBe("bwi-eye");
+    });
+
+    it("input is type password", () => {
+      expect(input.type).toBe("password");
+    });
+
+    it("spellcheck is disabled", () => {
+      expect(input.spellcheck).toBe(undefined);
+    });
   });
 });

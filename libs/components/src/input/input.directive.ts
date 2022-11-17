@@ -88,12 +88,4 @@ export class BitInputDirective implements BitFormFieldControl {
       this.elementRef.nativeElement.focus();
     });
   }
-
-  setType(type: "text" | "password") {
-    this.type = type;
-  }
-
-  setSpellcheck(val?: boolean) {
-    this.spellcheck = val;
-  }
 }
