@@ -162,8 +162,6 @@
 ./libs/common/src/services/bitwardenFileUpload.service.ts
 ./libs/common/src/services/webCryptoFunction.service.ts
 ./libs/common/src/interfaces/IEncrypted.ts
-./libs/node/spec/services/nodeCryptoFunction.service.spec.ts
-./libs/node/src/services/nodeCryptoFunction.service.ts
 ./libs/electron/spec/services/electronLog.service.spec.ts
 ./libs/electron/src/baseMenu.ts
 ./libs/electron/src/services/electronLog.service.ts

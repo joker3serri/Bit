@@ -49,7 +49,7 @@ import { UserVerificationApiService } from "@bitwarden/common/services/userVerif
 import { UserVerificationService } from "@bitwarden/common/services/userVerification/userVerification.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vaultTimeout/vaultTimeoutSettings.service";
-import { NodeCryptoFunctionService } from "@bitwarden/node/services/nodeCryptoFunction.service";
+import { NodeCryptoFunctionService } from "@bitwarden/node/services/node-crypto-function.service";
 
 import { Program } from "./program";
 import { SendProgram } from "./send.program";
