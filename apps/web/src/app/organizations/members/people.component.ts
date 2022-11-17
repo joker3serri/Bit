@@ -166,7 +166,6 @@ export class PeopleComponent
   }
 
   async load() {
-    // super.load();
     await super.load();
   }
 

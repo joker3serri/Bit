@@ -732,6 +732,9 @@
   "noUsersInList": {
     "message": "There are no users to list."
   },
+  "noMembersInList": {
+    "message": "There are no members to list."
+  },
   "noEventsInList": {
     "message": "There are no events to list."
   },
@@ -5600,5 +5603,8 @@
   },
   "needsConfirmation": {
     "message": "Needs confirmation"
+  },
+  "memberRole": {
+    "message": "Member role"
   }
 }
