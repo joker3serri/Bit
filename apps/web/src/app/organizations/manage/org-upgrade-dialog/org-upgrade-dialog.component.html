@@ -1,0 +1,25 @@
+<bit-simple-dialog>
+  <i
+    bit-dialog-icon
+    class="bwi bwi-business tw-text-5xl tw-text-primary-500"
+    aria-hidden="true"
+  ></i>
+  <span bitDialogTitle class="font-bold">{{ "upgradeOrganization" | i18n }}</span>
+  <span bitDialogContent>
+    {{ "freeOrgInvitationLimitReached" | i18n: data.org.seats }}
+  </span>
+  <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
+    <button
+      bitButton
+      buttonType="primary"
+      [routerLink]="['/organizations', data.org.id, 'billing', 'subscription']"
+      [queryParams]="{ upgrade: true }"
+      (click)="dialogRef.close()"
+    >
+      {{ "upgrade" | i18n }}
+    </button>
+    <button bitButton buttonType="secondary" (click)="dialogRef.close()">
+      {{ "cancel" | i18n }}
+    </button>
+  </div>
+</bit-simple-dialog>

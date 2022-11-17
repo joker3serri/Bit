@@ -20,6 +20,7 @@ import { ValidationService } from "@bitwarden/common/abstractions/validation.ser
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { ProductType } from "@bitwarden/common/enums/productType";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organization-keys.request";
 import { OrganizationUserBulkRequest } from "@bitwarden/common/models/request/organization-user-bulk.request";
@@ -27,6 +28,7 @@ import { OrganizationUserConfirmRequest } from "@bitwarden/common/models/request
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { OrganizationUserBulkResponse } from "@bitwarden/common/models/response/organization-user-bulk.response";
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
+import { DialogService } from "@bitwarden/components";
 
 import { BasePeopleComponent } from "../../common/base.people.component";
 
@@ -35,6 +37,7 @@ import { BulkRemoveComponent } from "./bulk/bulk-remove.component";
 import { BulkRestoreRevokeComponent } from "./bulk/bulk-restore-revoke.component";
 import { BulkStatusComponent } from "./bulk/bulk-status.component";
 import { EntityEventsComponent } from "./entity-events.component";
+import { OrgUpgradeDialogComponent } from "./org-upgrade-dialog/org-upgrade-dialog.component";
 import { ResetPasswordComponent } from "./reset-password.component";
 import { UserAddEditComponent } from "./user-add-edit.component";
 import { UserGroupsComponent } from "./user-groups.component";
@@ -88,7 +91,8 @@ export class PeopleComponent
     private syncService: SyncService,
     stateService: StateService,
     private organizationService: OrganizationService,
-    private organizationApiService: OrganizationApiServiceAbstraction
+    private organizationApiService: OrganizationApiServiceAbstraction,
+    private dialogService: DialogService
   ) {
     super(
       apiService,
@@ -232,6 +236,24 @@ export class PeopleComponent
   }
 
   async edit(user: OrganizationUserUserDetailsResponse) {
+    // Invite User: Add Flow
+    // Click on user email: Edit Flow
+
+    // User attempting to invite new users in a free org with max users
+    if (
+      !user &&
+      this.organization.planProductType == ProductType.Free &&
+      this.users.length == this.organization.seats
+    ) {
+      // Show org upgrade modal
+      this.dialogService.open(OrgUpgradeDialogComponent, {
+        data: {
+          org: this.organization,
+        },
+      });
+      return;
+    }
+
     const [modal] = await this.modalService.openViewRef(
       UserAddEditComponent,
       this.addEditModalRef,

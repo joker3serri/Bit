@@ -5507,5 +5507,14 @@
   },
   "memberAccessAll": {
     "message": "This member can access and modify all items."
+  },
+  "freeOrgInvitationLimitReached": {
+    "message": "Free organizations may have up to $SEATCOUNT$ members. Upgrade to a paid plan to invite more members.",
+    "placeholders": {
+      "seatcount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   }
 }

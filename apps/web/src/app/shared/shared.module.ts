@@ -13,6 +13,7 @@ import {
   BadgeModule,
   ButtonModule,
   CalloutModule,
+  DialogModule,
   FormFieldModule,
   IconButtonModule,
   IconModule,
@@ -53,6 +54,7 @@ import "./locales";
     TableModule,
     AvatarModule,
     IconButtonModule,
+    DialogModule,
   ],
   exports: [
     CommonModule,
@@ -76,6 +78,7 @@ import "./locales";
     TableModule,
     AvatarModule,
     IconButtonModule,
+    DialogModule,
   ],
   providers: [DatePipe],
   bootstrap: [],
