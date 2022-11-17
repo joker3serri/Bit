@@ -22,7 +22,7 @@ import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { AuthResult } from "@bitwarden/common/models/domain/auth-result";
 import {
-  ApiLogInCredentials,
+  UserApiLogInCredentials,
   PasswordLogInCredentials,
   SsoLogInCredentials,
 } from "@bitwarden/common/models/domain/log-in-credentials";
@@ -158,7 +158,12 @@ export class LoginCommand {
 
       let response: AuthResult = null;
       if (clientId != null && clientSecret != null) {
-        response = await this.authService.logIn(new ApiLogInCredentials(clientId, clientSecret));
+        if (!clientId.startsWith("user")) {
+          return Response.error("Invalid API Key; Organization API Key currently not supported");
+        }
+        response = await this.authService.logIn(
+          new UserApiLogInCredentials(clientId, clientSecret)
+        );
       } else if (ssoCode != null && ssoCodeVerifier != null) {
         response = await this.authService.logIn(
           new SsoLogInCredentials(
