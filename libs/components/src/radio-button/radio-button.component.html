@@ -1,1 +1,9 @@
-Radio button
+<input
+  type="radio"
+  [name]="name"
+  [disabled]="disabled"
+  [value]="value"
+  [checked]="selected"
+  (change)="onInputChange()"
+/>
+<label><ng-content></ng-content></label>

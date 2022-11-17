@@ -6,8 +6,10 @@ import { RadioButtonModule } from "./radio-button.module";
 
 const template = `
   <form [formGroup]="formObj">
-    <bit-radio-group>
-      <bit-radio-button></bit-radio-button>
+    <bit-radio-group formControlName="radio">
+      <bit-radio-button [value]="TestValue.First">First</bit-radio-button>
+      <bit-radio-button [value]="TestValue.Second">Second</bit-radio-button>
+      <bit-radio-button [value]="TestValue.Third">Third</bit-radio-button>
     </bit-radio-group>
   </form>`;
 
@@ -25,11 +27,11 @@ class ExampleComponent {
   protected TestValue = TestValue;
 
   protected formObj = this.formBuilder.group({
-    value: TestValue.First,
+    radio: TestValue.First,
   });
 
   @Input() set selected(value: TestValue) {
-    this.formObj.patchValue({ value });
+    this.formObj.patchValue({ radio: value });
   }
 
   @Input() set disabled(disable: boolean) {
@@ -56,6 +58,19 @@ export default {
   args: {
     selected: TestValue.First,
     disabled: false,
+  },
+  argTypes: {
+    selected: {
+      options: [TestValue.First, TestValue.Second, TestValue.Third],
+      control: {
+        type: "inline-radio",
+        labels: {
+          [TestValue.First]: "First",
+          [TestValue.Second]: "Second",
+          [TestValue.Third]: "Third",
+        },
+      },
+    },
   },
 } as Meta;
 
