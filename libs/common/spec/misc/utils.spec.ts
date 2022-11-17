@@ -268,6 +268,11 @@ describe("Utils Service", () => {
       expect(result).toEqual({ 1: "value1", 2: "value2" });
       expect(Utils.recordToMap(result)).toEqual(map);
     });
+
+    it("should not convert an object if it's not a map", () => {
+      const obj = { key1: "value1", key2: "value2" };
+      expect(Utils.mapToRecord(obj as any)).toEqual(obj);
+    });
   });
 
   describe("recordToMap", () => {
@@ -294,6 +299,14 @@ describe("Utils Service", () => {
         ])
       );
       expect(Utils.mapToRecord(result)).toEqual(record);
+    });
+
+    it("should not convert an object if already a map", () => {
+      const map = new Map([
+        ["key1", "value1"],
+        ["key2", "value2"],
+      ]);
+      expect(Utils.recordToMap(map as any)).toEqual(map);
     });
   });
 });

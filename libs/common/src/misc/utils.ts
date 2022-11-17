@@ -438,7 +438,13 @@ export class Utils {
    * @returns
    */
   static mapToRecord<K extends string | number, V>(map: Map<K, V>): Record<string, V> {
-    return map == null ? null : Object.fromEntries(map);
+    if (map == null) {
+      return null;
+    }
+    if (!(map instanceof Map)) {
+      return map;
+    }
+    return Object.fromEntries(map);
   }
 
   /**
@@ -452,7 +458,10 @@ export class Utils {
   static recordToMap<K extends string | number, V>(record: Record<K, V>): Map<K, V> {
     if (record == null) {
       return null;
+    } else if (record instanceof Map) {
+      return record;
     }
+
     const entries = Object.entries(record);
     if (entries.length === 0) {
       return new Map();
