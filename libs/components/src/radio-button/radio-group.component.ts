@@ -11,7 +11,7 @@ export class RadioGroupComponent implements ControlValueAccessor {
 
   private _name?: string;
   @Input() get name() {
-    return this._name ?? this.ngControl?.name.toString();
+    return this._name ?? this.ngControl?.name?.toString();
   }
   set name(value: string) {
     this._name = value;
