@@ -248,7 +248,11 @@ export class PeopleComponent
       // Show org upgrade modal
       this.dialogService.open(OrgUpgradeDialogComponent, {
         data: {
-          org: this.organization,
+          orgId: this.organization.id,
+          dialogBodyText: this.i18nService.t(
+            "freeOrgInvitationLimitReached",
+            this.organization.seats.toString()
+          ),
         },
       });
       return;

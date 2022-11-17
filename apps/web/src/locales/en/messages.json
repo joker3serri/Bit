@@ -5516,5 +5516,14 @@
         "example": "2"
       }
     }
+  },
+  "freeOrgMaxCollectionReached": {
+    "message": "Free organizations may have up to $COLLECTIONCOUNT$ collections. Upgrade to a paid plan to add more collections.",
+    "placeholders": {
+      "COLLECTIONCOUNT": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
   }
 }

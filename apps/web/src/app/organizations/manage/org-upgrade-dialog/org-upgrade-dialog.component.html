@@ -6,13 +6,13 @@
   ></i>
   <span bitDialogTitle class="font-bold">{{ "upgradeOrganization" | i18n }}</span>
   <span bitDialogContent>
-    {{ "freeOrgInvitationLimitReached" | i18n: data.org.seats }}
+    {{ data.dialogBodyText }}
   </span>
   <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
     <button
       bitButton
       buttonType="primary"
-      [routerLink]="['/organizations', data.org.id, 'billing', 'subscription']"
+      [routerLink]="['/organizations', data.orgId, 'billing', 'subscription']"
       [queryParams]="{ upgrade: true }"
       (click)="dialogRef.close()"
     >
