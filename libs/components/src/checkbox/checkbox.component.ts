@@ -10,10 +10,18 @@ let nextId = 0;
 @Component({
   selector: "bit-checkbox",
   templateUrl: "checkbox.component.html",
-  providers: [[{ provide: BitFormFieldControl, useExisting: CheckboxComponent }]],
+  providers: [{ provide: BitFormFieldControl, useExisting: CheckboxComponent }],
 })
 export class CheckboxComponent implements BitFormFieldControl {
   id = `bit-checkbox-${nextId++}`;
+
+  private _name?: string;
+  @Input() get name() {
+    return this._name ?? this.ngControl?.name?.toString();
+  }
+  set name(value: string) {
+    this._name = value;
+  }
 
   protected checkmark = Checkmark;
 

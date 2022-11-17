@@ -6,7 +6,7 @@ import { RadioButtonModule } from "./radio-button.module";
 
 const template = `
   <form [formGroup]="formObj">
-    <bit-radio-group formControlName="radio">
+    <bit-radio-group formControlName="radio" aria-label="Example radio group">
       <bit-radio-button [value]="TestValue.First">First</bit-radio-button>
       <bit-radio-button [value]="TestValue.Second">Second</bit-radio-button>
       <bit-radio-button [value]="TestValue.Third">Third</bit-radio-button>

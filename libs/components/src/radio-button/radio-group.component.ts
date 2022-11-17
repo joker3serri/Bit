@@ -1,4 +1,4 @@
-import { Component, Input, Optional, Self } from "@angular/core";
+import { Component, HostBinding, Input, Optional, Self } from "@angular/core";
 import { ControlValueAccessor, NgControl } from "@angular/forms";
 
 @Component({
@@ -16,6 +16,8 @@ export class RadioGroupComponent implements ControlValueAccessor {
   set name(value: string) {
     this._name = value;
   }
+
+  @HostBinding("attr.role") role = "radiogroup";
 
   constructor(@Optional() @Self() private ngControl?: NgControl) {
     if (ngControl != null) {
