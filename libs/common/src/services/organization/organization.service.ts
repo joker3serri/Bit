@@ -25,7 +25,7 @@ export class OrganizationService implements OrganizationServiceAbstraction {
       )
       .subscribe();
 
-    // Tech Debt tracking issue for possibly turning this back on:
+    // Tech Debt tracking issue for possibly turning this back on: https://bitwarden.atlassian.net/browse/TDL-208
     // this.syncNotifierService.sync$
     //   .pipe(
     //     filter(isSuccessfullyCompleted),
