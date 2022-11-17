@@ -76,21 +76,29 @@ export class RadioButtonComponent {
     );
   }
 
-  protected iconClasses = [
-    "tw-absolute",
-    "tw-inset-0",
-    "tw-flex",
-    "tw-justify-center",
-    "tw-items-center",
-    "tw-stroke-primary-500",
-    "tw-fill-primary-500",
+  protected get iconClasses() {
+    return [
+      "tw-transition",
+      "tw-absolute",
+      "tw-inset-0",
+      "tw-flex",
+      "tw-justify-center",
+      "tw-items-center",
+    ].concat(
+      !this.selected
+        ? ["tw-stroke-background", "tw-fill-background"]
+        : [
+            "tw-stroke-primary-500",
+            "tw-fill-primary-500",
 
-    "group-hover:tw-stroke-primary-700",
-    "group-hover:tw-fill-primary-700",
+            "group-hover:tw-stroke-primary-700",
+            "group-hover:tw-fill-primary-700",
 
-    "group-peer-disabled:tw-stroke-text-muted",
-    "group-peer-disabled:tw-fill-text-muted",
-  ];
+            "group-peer-disabled:tw-stroke-text-muted",
+            "group-peer-disabled:tw-fill-text-muted",
+          ]
+    );
+  }
 
   protected labelTextClasses = ["tw-transition", "group-peer-checked:tw-bg-text-main"];
 
