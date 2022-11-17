@@ -6,12 +6,12 @@ import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
 
 import { BaseProgram } from "./base.program";
 import { Main } from "./bw";
-import { LoginCommand } from "./commands/base-login.command";
 import { CompletionCommand } from "./commands/completion.command";
 import { ConfigCommand } from "./commands/config.command";
 import { EncodeCommand } from "./commands/encode.command";
 import { GenerateCommand } from "./commands/generate.command";
 import { LockCommand } from "./commands/lock.command";
+import { LoginCommand } from "./commands/login.command";
 import { LogoutCommand } from "./commands/logout.command";
 import { ServeCommand } from "./commands/serve.command";
 import { StatusCommand } from "./commands/status.command";
