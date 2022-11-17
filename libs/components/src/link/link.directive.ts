@@ -53,7 +53,7 @@ const commonStyles = [
   "before:tw-content-['']",
   "before:tw-block",
   "before:tw-absolute",
-  "before:-tw-inset-x-[0px]",
+  "before:-tw-inset-x-[0.1em]",
   "before:tw-rounded-md",
   "before:tw-transition",
   "before:tw-ring-2",
