@@ -55,16 +55,12 @@ export class CheckboxComponent implements BitFormFieldControl {
 
       "group-peer-focus-visible:tw-ring-2",
       "group-peer-focus-visible:tw-ring-offset-2",
-      "group-peer-focus-visible:tw-ring-primary-500",
+      "group-peer-focus-visible:tw-ring-primary-700",
     ].concat(
       !this.checked
         ? [
-            "tw-bg-text-alt2",
+            "tw-bg-background",
             "tw-border-secondary-500",
-
-            "group-peer-focus-visible:tw-ring-2",
-            "group-peer-focus-visible:tw-ring-offset-2",
-            "group-peer-focus-visible:tw-ring-primary-500",
 
             "group-peer-disabled:tw-border",
             "group-peer-disabled:tw-bg-secondary-100",
