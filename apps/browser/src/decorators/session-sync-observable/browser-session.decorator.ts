@@ -24,7 +24,11 @@ export function browserSession<TCtor extends Constructor<any>>(constructor: TCto
       // Require state service to be injected
       const stateService: BrowserStateService = [this as any]
         .concat(args)
-        .find((arg) => typeof arg.setInSessionMemory === "function");
+        .find(
+          (arg) =>
+            typeof arg.setInSessionMemory === "function" &&
+            typeof arg.getFromSessionMemory === "function"
+        );
       if (!stateService) {
         throw new Error(
           `Cannot decorate ${constructor.name} with browserSession, Browser's StateService must be injected`
