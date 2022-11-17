@@ -91,13 +91,13 @@ import { AutofillService as AutofillServiceAbstraction } from "../services/abstr
 import { StateService as StateServiceAbstraction } from "../services/abstractions/state.service";
 import AutofillService from "../services/autofill.service";
 import { BrowserEnvironmentService } from "../services/browser-environment.service";
+import { BrowserFolderService } from "../services/browser-folder.service";
 import { BrowserPolicyService } from "../services/browser-policy.service";
 import { BrowserCryptoService } from "../services/browserCrypto.service";
 import BrowserLocalStorageService from "../services/browserLocalStorage.service";
 import BrowserMessagingService from "../services/browserMessaging.service";
 import BrowserMessagingPrivateModeBackgroundService from "../services/browserMessagingPrivateModeBackground.service";
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
-import { FolderService } from "../services/folders/folder.service";
 import I18nService from "../services/i18n.service";
 import { KeyGenerationService } from "../services/keyGeneration.service";
 import { LocalBackedSessionStorageService } from "../services/localBackedSessionStorage.service";
@@ -295,7 +295,7 @@ export default class MainBackground {
       this.stateService,
       this.encryptService
     );
-    this.folderService = new FolderService(
+    this.folderService = new BrowserFolderService(
       this.cryptoService,
       this.i18nService,
       this.cipherService,
