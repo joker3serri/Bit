@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-escape */
 import { getHostname, parse } from "tldts";
+import { Merge } from "type-fest";
 
 import { CryptoService } from "../abstractions/crypto.service";
 import { EncryptService } from "../abstractions/encrypt.service";
@@ -55,6 +56,10 @@ export class Utils {
   }
 
   static fromB64ToArray(str: string): Uint8Array {
+    if (str == null) {
+      return null;
+    }
+
     if (Utils.isNode) {
       return new Uint8Array(Buffer.from(str, "base64"));
     } else {
@@ -108,6 +113,9 @@ export class Utils {
   }
 
   static fromBufferToB64(buffer: ArrayBuffer): string {
+    if (buffer == null) {
+      return null;
+    }
     if (Utils.isNode) {
       return Buffer.from(buffer).toString("base64");
     } else {
@@ -429,7 +437,7 @@ export class Utils {
    * @param map
    * @returns
    */
-  static mapToRecord<K extends string | number | symbol, V>(map: Map<K, V>): Record<string, V> {
+  static mapToRecord<K extends string | number, V>(map: Map<K, V>): Record<string, V> {
     return map == null ? null : Object.fromEntries(map);
   }
 
@@ -455,6 +463,14 @@ export class Utils {
     } else {
       return new Map(entries.map((e) => [Number(e[0]), e[1]])) as Map<K, V>;
     }
+  }
+
+  /** Applies Object.assign, but converts the type nicely using Type-Fest Merge<Destination, Source> */
+  static merge<Destination, Source>(
+    destination: Destination,
+    source: Source
+  ): Merge<Destination, Source> {
+    return Object.assign(destination, source) as unknown as Merge<Destination, Source>;
   }
 
   private static isMobile(win: Window) {
