@@ -77,10 +77,8 @@ export class SyncService implements SyncServiceAbstraction {
   @sequentialize(() => "fullSync")
   async fullSync(forceSync: boolean, allowThrowOnError = false): Promise<boolean> {
     this.syncStarted();
-    // this.syncNotifierService.next({ status: "Started" });
     const isAuthenticated = await this.stateService.getIsAuthenticated();
     if (!isAuthenticated) {
-      // this.syncNotifierService.next({ status: "Completed", successfully: false });
       return this.syncCompleted(false);
     }
 
@@ -96,7 +94,6 @@ export class SyncService implements SyncServiceAbstraction {
 
     if (!needsSync) {
       await this.setLastSync(now);
-      // this.syncNotifierService.next({ status: "Completed", successfully: false });
       return this.syncCompleted(false);
     }
 
@@ -113,13 +110,11 @@ export class SyncService implements SyncServiceAbstraction {
       await this.syncPolicies(response.policies);
 
       await this.setLastSync(now);
-      // this.syncNotifierService.next({ status: "Completed", successfully: true, data: response });
       return this.syncCompleted(true);
     } catch (e) {
       if (allowThrowOnError) {
         throw e;
       } else {
-        // this.syncNotifierService.next({ status: "Completed", successfully: false });
         return this.syncCompleted(false);
       }
     }

@@ -24,29 +24,6 @@ export class OrganizationService implements OrganizationServiceAbstraction {
         })
       )
       .subscribe();
-
-    // Tech Debt tracking issue for possibly turning this back on: https://bitwarden.atlassian.net/browse/TDL-208
-    // this.syncNotifierService.sync$
-    //   .pipe(
-    //     filter(isSuccessfullyCompleted),
-    //     concatMap(async ({ data }) => {
-    //       const { profile } = data;
-    //       const organizations: { [id: string]: OrganizationData } = {};
-    //       profile.organizations.forEach((o) => {
-    //         organizations[o.id] = new OrganizationData(o);
-    //       });
-
-    //       profile.providerOrganizations.forEach((o) => {
-    //         if (organizations[o.id] == null) {
-    //           organizations[o.id] = new OrganizationData(o);
-    //           organizations[o.id].isProviderUser = true;
-    //         }
-    //       });
-
-    //       await this.replace(organizations);
-    //     })
-    //   )
-    //   .subscribe();
   }
 
   async getAll(userId?: string): Promise<Organization[]> {
