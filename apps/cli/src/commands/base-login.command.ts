@@ -10,11 +10,12 @@ import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { TwoFactorService } from "@bitwarden/common/abstractions/twoFactor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
 import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
@@ -34,34 +35,33 @@ import { Response } from "../models/response";
 import { MessageResponse } from "../models/response/message.response";
 
 export class LoginCommand {
-  protected validatedParams: () => Promise<any>;
-  protected success: () => Promise<MessageResponse>;
-  protected logout: () => Promise<void>;
   protected canInteract: boolean;
-  protected clientId: string;
   protected clientSecret: string;
   protected email: string;
 
   private ssoRedirectUri: string = null;
+  private options: program.OptionValues;
 
   constructor(
     protected authService: AuthService,
     protected apiService: ApiService,
-    protected i18nService: I18nService,
+    protected cryptoFunctionService: CryptoFunctionService,
     protected environmentService: EnvironmentService,
     protected passwordGenerationService: PasswordGenerationService,
-    protected cryptoFunctionService: CryptoFunctionService,
     protected platformUtilsService: PlatformUtilsService,
     protected stateService: StateService,
     protected cryptoService: CryptoService,
     protected policyService: PolicyService,
     protected twoFactorService: TwoFactorService,
-    clientId: string
-  ) {
-    this.clientId = clientId;
-  }
+    protected syncService: SyncService,
+    protected keyConnectorService: KeyConnectorService,
+    protected logoutCallback: () => Promise<void>
+  ) {}
 
   async run(email: string, password: string, options: program.OptionValues) {
+    this.options = options;
+    this.email = email;
+
     this.canInteract = process.env.BW_NOINTERACTION !== "true";
 
     let ssoCodeVerifier: string = null;
@@ -154,9 +154,7 @@ export class LoginCommand {
         : new TokenTwoFactorRequest(twoFactorMethod, twoFactorToken, false);
 
     try {
-      if (this.validatedParams != null) {
-        await this.validatedParams();
-      }
+      await this.validatedParams();
 
       let response: AuthResult = null;
       if (clientId != null && clientSecret != null) {
@@ -294,20 +292,50 @@ export class LoginCommand {
     }
   }
 
+  private async validatedParams() {
+    const key = await this.cryptoFunctionService.randomBytes(64);
+    process.env.BW_SESSION = Utils.fromBufferToB64(key);
+  }
+
   private async handleSuccessResponse(): Promise<Response> {
-    if (this.success != null) {
-      const res = await this.success();
-      return Response.success(res);
-    } else {
-      const res = new MessageResponse("You are logged in!", null);
+    await this.syncService.fullSync(true);
+
+    const usesKeyConnector = await this.keyConnectorService.getUsesKeyConnector();
+
+    if (
+      (this.options.sso != null || this.options.apikey != null) &&
+      this.canInteract &&
+      !usesKeyConnector
+    ) {
+      const res = new MessageResponse(
+        "You are logged in!",
+        "\n" + "To unlock your vault, use the `unlock` command. ex:\n" + "$ bw unlock"
+      );
       return Response.success(res);
     }
+
+    const res = new MessageResponse(
+      "You are logged in!",
+      "\n" +
+        "To unlock your vault, set your session key to the `BW_SESSION` environment variable. ex:\n" +
+        '$ export BW_SESSION="' +
+        process.env.BW_SESSION +
+        '"\n' +
+        '> $env:BW_SESSION="' +
+        process.env.BW_SESSION +
+        '"\n\n' +
+        "You can also pass the session key to any command with the `--session` option. ex:\n" +
+        "$ bw list items --session " +
+        process.env.BW_SESSION
+    );
+    res.raw = process.env.BW_SESSION;
+    return Response.success(res);
   }
 
   private async updateTempPassword(error?: string): Promise<Response> {
     // If no interaction available, alert user to use web vault
     if (!this.canInteract) {
-      await this.logout();
+      await this.logoutCallback();
       this.authService.logOut(() => {
         /* Do nothing */
       });
@@ -418,7 +446,7 @@ export class LoginCommand {
       await this.apiService.putUpdateTempPassword(request);
       return this.handleSuccessResponse();
     } catch (e) {
-      await this.logout();
+      await this.logoutCallback();
       this.authService.logOut(() => {
         /* Do nothing */
       });
@@ -582,7 +610,7 @@ export class LoginCommand {
             this.platformUtilsService.launchUri(
               webUrl +
                 "/#/sso?clientId=" +
-                this.clientId +
+                "cli" +
                 "&redirectUri=" +
                 encodeURIComponent(this.ssoRedirectUri) +
                 "&state=" +
