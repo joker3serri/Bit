@@ -8,29 +8,40 @@ describe("builder", () => {
   const ctor = TestClass;
 
   it("should use initializer if provided", () => {
-    const metadata = { propertyKey, sessionKey: key, initializer };
+    const metadata: SyncedItemMetadata = {
+      propertyKey,
+      sessionKey: key,
+      initializer,
+      initializeAs: "object",
+    };
     const builder = SyncedItemMetadata.builder(metadata);
     expect(builder({})).toBe("used initializer");
   });
 
   it("should use ctor if initializer is not provided", () => {
-    const metadata = { propertyKey, sessionKey: key, ctor };
+    const metadata: SyncedItemMetadata = { propertyKey, sessionKey: key, ctor };
     const builder = SyncedItemMetadata.builder(metadata);
     expect(builder({})).toBeInstanceOf(TestClass);
   });
 
   it("should prefer initializer over ctor", () => {
-    const metadata = { propertyKey, sessionKey: key, ctor, initializer };
+    const metadata: SyncedItemMetadata = {
+      propertyKey,
+      sessionKey: key,
+      ctor,
+      initializer,
+      initializeAs: "object",
+    };
     const builder = SyncedItemMetadata.builder(metadata);
     expect(builder({})).toBe("used initializer");
   });
 
   it("should honor initialize as array", () => {
-    const metadata = {
+    const metadata: SyncedItemMetadata = {
       propertyKey,
       sessionKey: key,
       initializer: initializer,
-      initializeAsArray: true,
+      initializeAs: "array",
     };
     const builder = SyncedItemMetadata.builder(metadata);
     expect(builder([{}])).toBeInstanceOf(Array);
@@ -38,11 +49,11 @@ describe("builder", () => {
   });
 
   it("should honor initialize as record", () => {
-    const metadata = {
+    const metadata: SyncedItemMetadata = {
       propertyKey,
       sessionKey: key,
       initializer: initializer,
-      initializeAsRecord: true,
+      initializeAs: "record",
     };
     const builder = SyncedItemMetadata.builder(metadata);
     expect(builder({ key: "" })).toBeInstanceOf(Object);

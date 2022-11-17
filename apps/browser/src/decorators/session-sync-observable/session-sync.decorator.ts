@@ -1,12 +1,12 @@
 import { Jsonify } from "type-fest";
 
 import { SessionStorable } from "./session-storable";
+import { InitializeOptions } from "./sync-item-metadata";
 
 class BuildOptions<T, TJson = Jsonify<T>> {
   ctor?: new () => T;
   initializer?: (keyValuePair: TJson) => T;
-  initializeAsArray? = false;
-  initializeAsRecord? = false;
+  initializeAs?: InitializeOptions;
 }
 
 /**
@@ -47,8 +47,7 @@ export function sessionSync<T>(buildOptions: BuildOptions<T>) {
       sessionKey: `${prototype.constructor.name}_${propertyKey}`,
       ctor: buildOptions.ctor,
       initializer: buildOptions.initializer,
-      initializeAsArray: buildOptions.initializeAsArray,
-      initializeAsRecord: buildOptions.initializeAsRecord,
+      initializeAs: buildOptions.initializeAs ?? "object",
     });
   };
 }

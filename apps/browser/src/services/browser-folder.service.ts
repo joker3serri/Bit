@@ -8,8 +8,8 @@ import { browserSession, sessionSync } from "../decorators/session-sync-observab
 
 @browserSession
 export class BrowserFolderService extends BaseFolderService {
-  @sessionSync({ initializer: Folder.fromJSON, initializeAsArray: true })
+  @sessionSync({ initializer: Folder.fromJSON, initializeAs: "array" })
   protected _folders: BehaviorSubject<Folder[]>;
-  @sessionSync({ initializer: FolderView.fromJSON, initializeAsArray: true })
+  @sessionSync({ initializer: FolderView.fromJSON, initializeAs: "array" })
   protected _folderViews: BehaviorSubject<FolderView[]>;
 }
