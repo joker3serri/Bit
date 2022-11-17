@@ -1,21 +1,16 @@
-import { BehaviorSubject, concatMap, filter } from "rxjs";
+import { BehaviorSubject, concatMap } from "rxjs";
 
 import { OrganizationService as OrganizationServiceAbstraction } from "../../abstractions/organization/organization.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
-import { SyncNotifierService } from "../../abstractions/sync/syncNotifier.service.abstraction";
 import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
-import { isSuccessfullyCompleted } from "../../types/syncEventArgs";
 
 export class OrganizationService implements OrganizationServiceAbstraction {
   private _organizations = new BehaviorSubject<Organization[]>([]);
 
   organizations$ = this._organizations.asObservable();
 
-  constructor(
-    private stateService: StateService,
-    private syncNotifierService: SyncNotifierService
-  ) {
+  constructor(private stateService: StateService) {
     this.stateService.activeAccountUnlocked$
       .pipe(
         concatMap(async (unlocked) => {
@@ -30,27 +25,28 @@ export class OrganizationService implements OrganizationServiceAbstraction {
       )
       .subscribe();
 
-    this.syncNotifierService.sync$
-      .pipe(
-        filter(isSuccessfullyCompleted),
-        concatMap(async ({ data }) => {
-          const { profile } = data;
-          const organizations: { [id: string]: OrganizationData } = {};
-          profile.organizations.forEach((o) => {
-            organizations[o.id] = new OrganizationData(o);
-          });
+    // Tech Debt tracking issue for possibly turning this back on:
+    // this.syncNotifierService.sync$
+    //   .pipe(
+    //     filter(isSuccessfullyCompleted),
+    //     concatMap(async ({ data }) => {
+    //       const { profile } = data;
+    //       const organizations: { [id: string]: OrganizationData } = {};
+    //       profile.organizations.forEach((o) => {
+    //         organizations[o.id] = new OrganizationData(o);
+    //       });
 
-          profile.providerOrganizations.forEach((o) => {
-            if (organizations[o.id] == null) {
-              organizations[o.id] = new OrganizationData(o);
-              organizations[o.id].isProviderUser = true;
-            }
-          });
+    //       profile.providerOrganizations.forEach((o) => {
+    //         if (organizations[o.id] == null) {
+    //           organizations[o.id] = new OrganizationData(o);
+    //           organizations[o.id].isProviderUser = true;
+    //         }
+    //       });
 
-          await this.updateStateAndObservables(organizations);
-        })
-      )
-      .subscribe();
+    //       await this.replace(organizations);
+    //     })
+    //   )
+    //   .subscribe();
   }
 
   async getAll(userId?: string): Promise<Organization[]> {
@@ -78,7 +74,7 @@ export class OrganizationService implements OrganizationServiceAbstraction {
 
     organizations[organization.id] = organization;
 
-    await this.updateStateAndObservables(organizations);
+    await this.replace(organizations);
   }
 
   async delete(id: string): Promise<void> {
@@ -92,7 +88,7 @@ export class OrganizationService implements OrganizationServiceAbstraction {
     }
 
     delete organizations[id];
-    await this.updateStateAndObservables(organizations);
+    await this.replace(organizations);
   }
 
   get(id: string): Organization {
@@ -121,9 +117,9 @@ export class OrganizationService implements OrganizationServiceAbstraction {
     return organizations.find((organization) => organization.identifier === identifier);
   }
 
-  private async updateStateAndObservables(organizationsMap: { [id: string]: OrganizationData }) {
-    await this.stateService.setOrganizations(organizationsMap);
-    this.updateObservables(organizationsMap);
+  async replace(organizations: { [id: string]: OrganizationData }) {
+    await this.stateService.setOrganizations(organizations);
+    this.updateObservables(organizations);
   }
 
   private updateObservables(organizationsMap: { [id: string]: OrganizationData }) {
