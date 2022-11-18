@@ -85,7 +85,7 @@
     "electron-notarize": "^1.2.1",
     "electron-rebuild": "^3.2.7",
     "electron-reload": "^2.0.0-alpha.1",
-    "electron-store": "^8.0.2",
+    "electron-store": "^8.1.0",
     "electron-updater": "^5.0.5",
     "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.5.0",
