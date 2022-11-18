@@ -243,7 +243,7 @@ p.lead {
 
   &:nth-child(odd) {
     @include themify($themes) {
-      background-color: themed("backgroundColor");
+      background-color: themed("backgroundColorAlt2");
     }
   }
 }
