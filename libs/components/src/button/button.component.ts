@@ -1,33 +1,51 @@
-import { Input, HostBinding, Component } from "@angular/core";
+import { Input, HostBinding, Component, Directive } from "@angular/core";
 
 import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 
-export type ButtonTypes = "primary" | "secondary" | "danger";
+@Directive({
+  selector: "[bitButton][bitButtonPrimary]",
+})
+export class ButtonPrimaryDirective {
+  @HostBinding("class") get classList() {
+    return [
+      "tw-border-primary-500",
+      "tw-bg-primary-500",
+      "!tw-text-contrast",
+      "hover:tw-bg-primary-700",
+      "hover:tw-border-primary-700",
+      "disabled:tw-bg-primary-500/60",
+      "disabled:tw-border-primary-500/60",
+      "disabled:!tw-text-contrast/60",
+      "disabled:tw-bg-clip-padding",
+    ];
+  }
+}
 
-const buttonStyles: Record<ButtonTypes, string[]> = {
-  primary: [
-    "tw-border-primary-500",
-    "tw-bg-primary-500",
-    "!tw-text-contrast",
-    "hover:tw-bg-primary-700",
-    "hover:tw-border-primary-700",
-    "disabled:tw-bg-primary-500/60",
-    "disabled:tw-border-primary-500/60",
-    "disabled:!tw-text-contrast/60",
-    "disabled:tw-bg-clip-padding",
-  ],
-  secondary: [
-    "tw-bg-transparent",
-    "tw-border-text-muted",
-    "!tw-text-muted",
-    "hover:tw-bg-secondary-500",
-    "hover:tw-border-secondary-500",
-    "hover:!tw-text-contrast",
-    "disabled:tw-bg-transparent",
-    "disabled:tw-border-text-muted/60",
-    "disabled:!tw-text-muted/60",
-  ],
-  danger: [
+@Directive({
+  selector: "[bitButton][bitButtonSecondary]",
+})
+export class ButtonSecondaryDirective {
+  @HostBinding("class") get classList() {
+    return [
+      "tw-border-primary-500",
+      "tw-bg-primary-500",
+      "!tw-text-contrast",
+      "hover:tw-bg-primary-700",
+      "hover:tw-border-primary-700",
+      "disabled:tw-bg-primary-500/60",
+      "disabled:tw-border-primary-500/60",
+      "disabled:!tw-text-contrast/60",
+      "disabled:tw-bg-clip-padding",
+    ];
+  }
+}
+
+@Directive({
+  selector: "[bitButton][bitButtonDanger]",
+})
+export class ButtonDangerDirective {
+  @HostBinding("class") get classList() {
+    return [
     "tw-bg-transparent",
     "tw-border-danger-500",
     "!tw-text-danger",
@@ -37,8 +55,9 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "disabled:tw-bg-transparent",
     "disabled:tw-border-danger-500/60",
     "disabled:!tw-text-danger/60",
-  ],
-};
+    ];
+  }
+}
 
 @Component({
   selector: "button[bitButton], a[bitButton]",
@@ -65,8 +84,7 @@ export class ButtonComponent implements ButtonLikeAbstraction {
     ]
       .concat(
         this.block == null || this.block === false ? ["tw-inline-block"] : ["tw-w-full", "tw-block"]
-      )
-      .concat(buttonStyles[this.buttonType ?? "secondary"]);
+      );
   }
 
   @HostBinding("attr.disabled")
@@ -75,7 +93,6 @@ export class ButtonComponent implements ButtonLikeAbstraction {
     return disabled || this.loading ? true : null;
   }
 
-  @Input() buttonType: ButtonTypes = null;
   @Input() block?: boolean;
   @Input() loading = false;
   @Input() disabled = false;
