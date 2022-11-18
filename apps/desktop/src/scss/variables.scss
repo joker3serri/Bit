@@ -86,24 +86,15 @@ $themes: (
     infoColor: $brand-info,
     warningColor: $brand-warning,
     logoSuffix: "dark",
+    passwordNumberColor: #007fde,
+    passwordSpecialColor: #c40800,
+    passwordCountText: #212529,
     calloutBorderColor: $border-color-dark,
     calloutBackgroundColor: $background-color,
     accountSwitcherBackgroundColor: $background-color,
     accountSwitcherTextColor: #ffffff,
     svgSuffix: "-light.svg",
     hrColor: #eeeeee,
-
-    // Color password display
-    pwCountText: #212529,
-    // --color-text-main
-    pwCountBackground: #f0f0f0,
-    // --color-secondary-100
-    pwLetter: #212529,
-    // --color-text-main
-    pwNumber: #175ddc,
-    // --color-primary-500
-    pwSpecial: #c83522,
-    // --color-danger-500
   ),
   dark: (
     textColor: #ffffff,
@@ -150,24 +141,15 @@ $themes: (
     infoColor: $brand-info,
     warningColor: $brand-warning,
     logoSuffix: "white",
+    passwordNumberColor: #52bdfb,
+    passwordSpecialColor: #ff7c70,
+    passwordCountText: #ffffff,
     calloutBorderColor: #2f2f2f,
     calloutBackgroundColor: #363636,
     accountSwitcherBackgroundColor: #2f2f2f,
     accountSwitcherTextColor: #ffffff,
     svgSuffix: "-dark.svg",
     hrColor: #a3a3a3,
-
-    // Color password display
-    pwCountText: #ffffff,
-    // --color-text-main
-    pwCountBackground: #2f343d,
-    // --color-secondary-100
-    pwLetter: #ffffff,
-    // --color-text-main
-    pwNumber: #6a99f0,
-    // --color-primary-500
-    pwSpecial: #ff8d85,
-    // --color-danger-500
   ),
   nord: (
     textColor: $nord5,
@@ -214,19 +196,15 @@ $themes: (
     infoColor: $nord9,
     warningColor: $nord12,
     logoSuffix: "white",
+    passwordNumberColor: $nord8,
+    passwordSpecialColor: $nord12,
+    passwordCountText: $nord5,
     calloutBorderColor: $nord1,
     calloutBackgroundColor: $nord2,
     accountSwitcherBackgroundColor: $nord0,
     accountSwitcherTextColor: $nord5,
     svgSuffix: "-dark.svg",
     hrColor: $nord4,
-
-    // Color password display
-    pwCountText: $nord5,
-    pwCountBackground: $nord2,
-    pwLetter: $nord5,
-    pwNumber: $nord8,
-    pwSpecial: $nord12,
   ),
 );
 
