@@ -1,11 +1,11 @@
 import { BehaviorSubject, concatMap } from "rxjs";
 
-import { OrganizationService as OrganizationServiceAbstraction } from "../../abstractions/organization/organization.service.abstraction";
+import { InternalOrganizationService as InternalOrganizationServiceAbstraction } from "../../abstractions/organization/organization.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
 import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
 
-export class OrganizationService implements OrganizationServiceAbstraction {
+export class OrganizationService implements InternalOrganizationServiceAbstraction {
   private _organizations = new BehaviorSubject<Organization[]>([]);
 
   organizations$ = this._organizations.asObservable();
