@@ -75,6 +75,21 @@
                 <app-organization-options [organization]="organization"></app-organization-options>
               </bit-menu>
             </ng-container>
+
+            <ng-container
+              *ngIf="
+                organization.id !== activeFilter.selectedOrganizationId && !organization.enabled
+              "
+            >
+              <span class="ml-auto">
+                <i
+                  *ngIf="!organization.enabled"
+                  class="org-options bwi bwi-fw bwi-exclamation-triangle text-danger"
+                  aria-label="{{ 'organizationIsDisabled' | i18n }}"
+                  appA11yTitle="{{ 'organizationIsDisabled' | i18n }}"
+                ></i>
+              </span>
+            </ng-container>
           </span>
         </li>
         <li class="filter-option">
