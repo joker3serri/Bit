@@ -46,7 +46,6 @@ export class WindowMain {
                   this.win.show();
                 }
                 this.win.focus();
-                this.win.webContents.zoomFactor = this.windowStates[mainWindowSizeKey].zoomFactor;
               }
               if (process.platform === "win32" || process.platform === "linux") {
                 if (this.argvCallback != null) {
@@ -131,7 +130,7 @@ export class WindowMain {
     });
 
     this.win.webContents.on("dom-ready", () => {
-      this.win.webContents.zoomFactor = this.windowStates[mainWindowSizeKey].zoomFactor ?? "1.0";
+      this.win.webContents.zoomFactor = this.windowStates[mainWindowSizeKey].zoomFactor ?? 1.0;
     });
 
     if (this.windowStates[mainWindowSizeKey].isMaximized) {

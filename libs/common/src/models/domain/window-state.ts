@@ -7,5 +7,5 @@ export class WindowState {
   displayBounds: any;
   x?: number;
   y?: number;
-  zoomFactor?: string;
+  zoomFactor?: number;
 }
