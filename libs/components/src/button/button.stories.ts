@@ -24,45 +24,36 @@ export default {
 const PrimaryTemplate: Story<ButtonComponent> = (args: ButtonComponent) => ({
   props: args,
   template: `
-    <button bitButton bitButtonPrimary [disabled]="disabled" [loading]="loading" [block]="block">Button</button>
-    <a bitButton [disabled]="disabled" [loading]="loading" [block]="block" href="#" class="tw-ml-2">Link</a>
+    <button bitButton bitPrimary [disabled]="disabled" [loading]="loading" [block]="block">Button</button>
+    <a bitButton bitPrimary [disabled]="disabled" [loading]="loading" [block]="block" href="#" class="tw-ml-2">Link</a>
   `,
 });
-
 export const Primary = PrimaryTemplate.bind({});
-Primary.args = {
-};
 
 const SecondaryTemplate: Story<ButtonComponent> = (args: ButtonComponent) => ({
   props: args,
   template: `
-    <button bitButton bitButtonSecondary [disabled]="disabled" [loading]="loading" [block]="block">Button</button>
-    <a bitButton [disabled]="disabled" [loading]="loading" [block]="block" href="#" class="tw-ml-2">Link</a>
+    <button bitButton bitSecondary [disabled]="disabled" [loading]="loading" [block]="block">Button</button>
+    <a bitButton bitSecondary [disabled]="disabled" [loading]="loading" [block]="block" href="#" class="tw-ml-2">Link</a>
   `,
 });
-
 export const Secondary = SecondaryTemplate.bind({});
-Secondary.args = {
-};
 
 const DangerTemplate: Story<ButtonComponent> = (args: ButtonComponent) => ({
   props: args,
   template: `
-    <button bitButton bitButtonDanger [disabled]="disabled" [loading]="loading" [block]="block">Button</button>
-    <a bitButton [disabled]="disabled" [loading]="loading" [block]="block" href="#" class="tw-ml-2">Link</a>
+    <button bitButton bitDanger [disabled]="disabled" [loading]="loading" [block]="block">Button</button>
+    <a bitButton bitDanger [disabled]="disabled" [loading]="loading" [block]="block" href="#" class="tw-ml-2">Link</a>
   `,
 });
-
 export const Danger = DangerTemplate.bind({});
-Danger.args = {
-};
 
 const AllStylesTemplate: Story = (args) => ({
   props: args,
   template: `
-    <button bitButton [disabled]="disabled" [loading]="loading" [block]="block" class="tw-mr-2">Primary</button>
-    <button bitButton [disabled]="disabled" [loading]="loading" [block]="block" class="tw-mr-2">Secondary</button>
-    <button bitButton [disabled]="disabled" [loading]="loading" [block]="block" class="tw-mr-2">Danger</button>
+    <button bitButton bitPrimary [disabled]="disabled" [loading]="loading" [block]="block" class="tw-mr-2">Primary</button>
+    <button bitButton bitSecondary [disabled]="disabled" [loading]="loading" [block]="block" class="tw-mr-2">Secondary</button>
+    <button bitButton bitDanger [disabled]="disabled" [loading]="loading" [block]="block" class="tw-mr-2">Danger</button>
   `,
 });
 
@@ -82,14 +73,14 @@ const DisabledWithAttributeTemplate: Story = (args) => ({
   props: args,
   template: `
     <ng-container *ngIf="disabled">
-      <button bitButton disabled [loading]="loading" [block]="block" class="tw-mr-2">Primary</button>
-      <button bitButton disabled [loading]="loading" [block]="block" class="tw-mr-2">Secondary</button>
-      <button bitButton disabled [loading]="loading" [block]="block" class="tw-mr-2">Danger</button>
+      <button bitButton bitPrimary disabled [loading]="loading" [block]="block" class="tw-mr-2">Primary</button>
+      <button bitButton bitSecondary disabled [loading]="loading" [block]="block" class="tw-mr-2">Secondary</button>
+      <button bitButton bitDanger disabled [loading]="loading" [block]="block" class="tw-mr-2">Danger</button>
     </ng-container>
     <ng-container *ngIf="!disabled">
-      <button bitButton [loading]="loading" [block]="block" class="tw-mr-2">Primary</button>
-      <button bitButton [loading]="loading" [block]="block" class="tw-mr-2">Secondary</button>
-      <button bitButton [loading]="loading" [block]="block" class="tw-mr-2">Danger</button>
+      <button bitButton bitPrimary [loading]="loading" [block]="block" class="tw-mr-2">Primary</button>
+      <button bitButton bitSecondary [loading]="loading" [block]="block" class="tw-mr-2">Secondary</button>
+      <button bitButton bitDanger [loading]="loading" [block]="block" class="tw-mr-2">Danger</button>
     </ng-container>
   `,
 });
@@ -104,11 +95,11 @@ const BlockTemplate: Story<ButtonComponent> = (args: ButtonComponent) => ({
   props: args,
   template: `
     <span class="tw-flex">
-      <button bitButton [block]="block">[block]="true" Button</button>
-      <a bitButton [block]="block" href="#" class="tw-ml-2">[block]="true" Link</a>
+      <button bitButton bitPrimary [block]="block">[block]="true" Button</button>
+      <a bitButton bitPrimary [block]="block" href="#" class="tw-ml-2">[block]="true" Link</a>
 
-      <button bitButton block class="tw-ml-2">block Button</button>
-      <a bitButton block href="#" class="tw-ml-2">block Link</a>
+      <button bitButton bitPrimary block class="tw-ml-2">block Button</button>
+      <a bitButton bitPrimary block href="#" class="tw-ml-2">block Link</a>
     </span>
   `,
 });

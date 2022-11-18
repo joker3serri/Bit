@@ -3,7 +3,7 @@ import { Input, HostBinding, Component, Directive } from "@angular/core";
 import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 
 @Directive({
-  selector: "[bitButton][bitButtonPrimary]",
+  selector: "[bitButton][bitPrimary]",
 })
 export class ButtonPrimaryDirective {
   @HostBinding("class") get classList() {
@@ -22,26 +22,26 @@ export class ButtonPrimaryDirective {
 }
 
 @Directive({
-  selector: "[bitButton][bitButtonSecondary]",
+  selector: "[bitButton][bitSecondary]",
 })
 export class ButtonSecondaryDirective {
   @HostBinding("class") get classList() {
     return [
-      "tw-border-primary-500",
-      "tw-bg-primary-500",
-      "!tw-text-contrast",
-      "hover:tw-bg-primary-700",
-      "hover:tw-border-primary-700",
-      "disabled:tw-bg-primary-500/60",
-      "disabled:tw-border-primary-500/60",
-      "disabled:!tw-text-contrast/60",
-      "disabled:tw-bg-clip-padding",
+      "tw-bg-transparent",
+      "tw-border-text-muted",
+      "!tw-text-muted",
+      "hover:tw-bg-secondary-500",
+      "hover:tw-border-secondary-500",
+      "hover:!tw-text-contrast",
+      "disabled:tw-bg-transparent",
+      "disabled:tw-border-text-muted/60",
+      "disabled:!tw-text-muted/60",
     ];
   }
 }
 
 @Directive({
-  selector: "[bitButton][bitButtonDanger]",
+  selector: "[bitButton][bitDanger]",
 })
 export class ButtonDangerDirective {
   @HostBinding("class") get classList() {
