@@ -5,106 +5,102 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { Response } from "../models/response";
 import { MessageResponse } from "../models/response/message.response";
 
+const CLIENTS_RELEASE_LIST_ENDPOINT = "https://api.github.com/repos/bitwarden/clients/releases";
+const DEFAULT_DOWNLOAD_URL = "https://github.com/bitwarden/clients/releases";
+const UPDATE_COMMAND = "npm install -g @bitwarden/cli";
+
 export class UpdateCommand {
   inPkg = false;
-
-  readonly appName = "cli";
-  readonly executableName = "bw";
-
-  readonly clientsReleaseListEndpoint = "https://api.github.com/repos/bitwarden/clients/releases";
-  readonly defaultDownloadUrl = "https://github.com/bitwarden/clients/releases";
-  readonly npmUpdateCommand = "npm install -g @bitwarden/cli";
 
   constructor(private platformUtilsService: PlatformUtilsService) {
     this.inPkg = !!(process as any).pkg;
   }
 
   async run(): Promise<Response> {
-    const response = await fetch.default(this.clientsReleaseListEndpoint);
+    const response = await fetch.default(CLIENTS_RELEASE_LIST_ENDPOINT);
     if (response.status !== 200) {
       return Response.error("Error contacting update API: " + response.status);
     }
 
     const responseJson = await response.json();
-    const cliTag = responseJson.find((r: any) => r.tag_name.includes(this.appName));
-    if (cliTag === undefined || cliTag === null) {
+    const cliRelease = responseJson.find((r: any) => r.tag_name.includes("cli"));
+    if (cliRelease === undefined || cliRelease === null) {
       return Response.error("Could not find latest CLI version.");
     }
 
-    const res = new MessageResponse(null, null);
-
     const currentVersion = await this.platformUtilsService.getApplicationVersion();
-    const tagName: string = cliTag.tag_name;
-    if (tagName === "cli-v" + currentVersion) {
-      res.title = "No update available.";
-      res.noColor = true;
-      return Response.success(res);
+    if (cliRelease.tag_name === "cli-v" + currentVersion) {
+      const response = new MessageResponse(null, null);
+      (response.title = "No update available."), (response.noColor = true);
+      return Response.success(response);
     }
 
-    let downloadUrl = this.getDownloadUrl(cliTag.assets);
-    if (downloadUrl == null) {
-      downloadUrl = this.defaultDownloadUrl;
-    } else {
-      res.raw = downloadUrl;
-    }
-
-    res.title = "A new version is available: " + tagName;
-    res.message = "";
-    if (responseJson.body != null && responseJson.body !== "") {
-      res.message = responseJson.body + "\n\n";
-    }
-
-    res.message += "You can download this update at " + downloadUrl;
-
-    if (this.inPkg) {
-      res.message +=
-        "\n\nIf you installed this CLI through a package manager " +
-        "you should probably update using its update command instead.";
-    } else {
-      res.message +=
-        "\n\nIf you installed this CLI through NPM " +
-        "you should update using `" +
-        this.npmUpdateCommand +
-        "`";
-    }
-
+    const res = this.getFoundUpdateResponse(cliRelease);
     return Response.success(res);
   }
 
+  private getFoundUpdateResponse(release: any) {
+    const downloadUrl = this.getDownloadUrl(release.assets);
+
+    const response = new MessageResponse(null, null);
+    response.title = "A new version is available: " + release.tag_name;
+    response.raw = downloadUrl;
+    response.message = this.getMessage(release, downloadUrl);
+
+    return response;
+  }
+
+  private getMessage(release: any, downloadUrl: string) {
+    let message = "";
+
+    if (release.body != null && release.body !== "") {
+      message = release.body + "\n\n";
+    }
+
+    message += "You can download this update at " + downloadUrl;
+
+    if (this.inPkg) {
+      message +=
+        "\n\nIf you installed this CLI through a package manager " +
+        "you should probably update using its update command instead.";
+    } else {
+      message +=
+        "\n\nIf you installed this CLI through NPM " +
+        "you should update using `" +
+        UPDATE_COMMAND +
+        "`";
+    }
+
+    return message;
+  }
+
   private getDownloadUrl(assets: any) {
+    if (assets == null) {return DEFAULT_DOWNLOAD_URL;}
+
     let downloadUrl: string = null;
-    if (assets != null) {
-      for (const a of assets) {
-        const download: string = a.browser_download_url;
-        if (download == null) {
-          continue;
-        }
 
-        if (download.indexOf(".zip") === -1) {
-          continue;
-        }
+    for (const a of assets) {
+      const download: string = a.browser_download_url;
+      if (download == null) {
+        continue;
+      }
 
-        if (
-          process.platform === "win32" &&
-          download.indexOf(this.executableName + "-windows") > -1
-        ) {
-          downloadUrl = download;
-          break;
-        } else if (
-          process.platform === "darwin" &&
-          download.indexOf(this.executableName + "-macos") > -1
-        ) {
-          downloadUrl = download;
-          break;
-        } else if (
-          process.platform === "linux" &&
-          download.indexOf(this.executableName + "-linux") > -1
-        ) {
-          downloadUrl = download;
-          break;
-        }
+      if (download.indexOf(".zip") === -1) {
+        continue;
+      }
+
+      if (process.platform === "win32" && download.indexOf("bw-windows") > -1) {
+        downloadUrl = download;
+        break;
+      } else if (process.platform === "darwin" && download.indexOf("bw-macos") > -1) {
+        downloadUrl = download;
+        break;
+      } else if (process.platform === "linux" && download.indexOf("bw-linux") > -1) {
+        downloadUrl = download;
+        break;
       }
     }
+
     return downloadUrl;
   }
 }
