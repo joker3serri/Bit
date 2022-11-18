@@ -48,7 +48,6 @@ export class ColorPasswordComponent {
 
     if (this.showCount) {
       return charClass.concat([
-        "tw-inline-flex",
         "tw-flex-col",
         "tw-items-center",
         "tw-w-7",
