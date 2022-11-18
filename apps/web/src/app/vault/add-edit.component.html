@@ -181,7 +181,10 @@
           <div *ngIf="showPasswordCount" class="tw-mb-4">
             <label>{{ "passwordCharacterCount" | i18n }}</label>
             <div class="tw-flex tw-justify-between">
-              <color-password [password]="cipher.login.password" [showCount]="true"></color-password>
+              <color-password
+                [password]="cipher.login.password"
+                [showCount]="true"
+              ></color-password>
               <button type="button" bitLink (click)="togglePasswordCount()">
                 {{ "hide" | i18n }}
               </button>
@@ -888,7 +891,9 @@
             <div class="ml-3" *ngIf="viewingPasswordHistory">
               <div *ngFor="let ph of cipher.passwordHistory">
                 {{ ph.lastUsedDate | date: "short" }} -
-                <span class="tw-min-w-0 tw-whitespace-pre-wrap tw-break-all tw-font-mono tw-ml-2">{{ ph.password }}</span>
+                <span class="tw-ml-2 tw-min-w-0 tw-whitespace-pre-wrap tw-break-all tw-font-mono">{{
+                  ph.password
+                }}</span>
               </div>
             </div>
           </div>

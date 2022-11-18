@@ -103,8 +103,8 @@ import { VaultComponent } from "./vault/vault.component";
 import { ViewCustomFieldsComponent } from "./vault/view-custom-fields.component";
 import { ViewComponent } from "./vault/view.component";
 
-import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe"
-import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe"
+import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
+import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 
 registerLocaleData(localeAf, "af");
 registerLocaleData(localeAr, "ar");
