@@ -46,19 +46,35 @@ export class ButtonSecondaryDirective {
 export class ButtonDangerDirective {
   @HostBinding("class") get classList() {
     return [
-    "tw-bg-transparent",
-    "tw-border-danger-500",
-    "!tw-text-danger",
-    "hover:tw-bg-danger-500",
-    "hover:tw-border-danger-500",
-    "hover:!tw-text-contrast",
-    "disabled:tw-bg-transparent",
-    "disabled:tw-border-danger-500/60",
-    "disabled:!tw-text-danger/60",
+      "tw-bg-transparent",
+      "tw-border-danger-500",
+      "!tw-text-danger",
+      "hover:tw-bg-danger-500",
+      "hover:tw-border-danger-500",
+      "hover:!tw-text-contrast",
+      "disabled:tw-bg-transparent",
+      "disabled:tw-border-danger-500/60",
+      "disabled:!tw-text-danger/60",
     ];
   }
 }
 
+@Directive({
+  selector:
+    "[bitButton][bitPrefix],[bitButton][bitSuffix],[bitIconButton][bitPrefix],[bitIconButton][bitSuffix]",
+})
+export class ButtonPrefixDirective {
+  @HostBinding("class") get classList() {
+    return [
+      "hover:tw-bg-text-muted",
+      "hover:tw-text-contrast",
+      "disabled:tw-opacity-100",
+      "disabled:tw-bg-secondary-100",
+      "disabled:hover:tw-bg-secondary-100",
+      "disabled:hover:tw-text-muted",
+    ];
+  }
+}
 @Component({
   selector: "button[bitButton], a[bitButton]",
   templateUrl: "button.component.html",
@@ -81,10 +97,9 @@ export class ButtonComponent implements ButtonLikeAbstraction {
       "focus-visible:tw-ring-offset-2",
       "focus-visible:tw-ring-primary-700",
       "focus-visible:tw-z-10",
-    ]
-      .concat(
-        this.block == null || this.block === false ? ["tw-inline-block"] : ["tw-w-full", "tw-block"]
-      );
+    ].concat(
+      this.block == null || this.block === false ? ["tw-inline-block"] : ["tw-w-full", "tw-block"]
+    );
   }
 
   @HostBinding("attr.disabled")
