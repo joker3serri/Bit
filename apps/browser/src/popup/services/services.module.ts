@@ -37,10 +37,14 @@ import { ProviderService } from "@bitwarden/common/abstractions/provider.service
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/abstractions/search.service";
 import { SendService } from "@bitwarden/common/abstractions/send.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
-import { StateService as BaseStateServiceAbstraction } from "@bitwarden/common/abstractions/state.service";
+import {
+  StateService as BaseStateServiceAbstraction,
+  StateService,
+} from "@bitwarden/common/abstractions/state.service";
 import { StateMigrationService } from "@bitwarden/common/abstractions/stateMigration.service";
 import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
+import { SyncNotifierService } from "@bitwarden/common/abstractions/sync/syncNotifier.service.abstraction";
 import { TokenService } from "@bitwarden/common/abstractions/token.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { TwoFactorService } from "@bitwarden/common/abstractions/twoFactor.service";
@@ -61,6 +65,7 @@ import { Account } from "../../models/account";
 import { AutofillService } from "../../services/abstractions/autofill.service";
 import { BrowserStateService as StateServiceAbstraction } from "../../services/abstractions/browser-state.service";
 import { BrowserEnvironmentService } from "../../services/browser-environment.service";
+import { BrowserOrganizationService } from "../../services/browser-organization.service";
 import { BrowserPolicyService } from "../../services/browser-policy.service";
 import { BrowserStateService } from "../../services/browser-state.service";
 import { BrowserFileDownloadService } from "../../services/browserFileDownloadService";
@@ -272,8 +277,10 @@ function getBgService<T>(service: keyof MainBackground) {
     { provide: PasswordRepromptServiceAbstraction, useClass: PasswordRepromptService },
     {
       provide: OrganizationService,
-      useFactory: getBgService<OrganizationService>("organizationService"),
-      deps: [],
+      useFactory: (stateService: StateService, syncNotifierService: SyncNotifierService) => {
+        return new BrowserOrganizationService(stateService, syncNotifierService);
+      },
+      deps: [StateService, SyncNotifierService],
     },
     {
       provide: VaultFilterService,

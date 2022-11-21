@@ -8,7 +8,7 @@ import { Organization } from "../../models/domain/organization";
 import { isSuccessfullyCompleted } from "../../types/syncEventArgs";
 
 export class OrganizationService implements OrganizationServiceAbstraction {
-  private _organizations = new BehaviorSubject<Organization[]>([]);
+  protected _organizations = new BehaviorSubject<Organization[]>([]);
 
   organizations$ = this._organizations.asObservable();
 
