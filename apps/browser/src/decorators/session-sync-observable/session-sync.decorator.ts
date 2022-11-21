@@ -21,10 +21,10 @@ class BuildOptions<T, TJson = Jsonify<T>> {
  * @param buildOptions
  * Builders for the value, requires either a constructor (ctor) for your BehaviorSubject type or an
  * initializer function that takes a key value pair representation of the BehaviorSubject data
- * and returns your instantiated BehaviorSubject value. `initializeAsArray can optionally be used to indicate
+ * and returns your instantiated BehaviorSubject value. `initializeAs can optionally be used to indicate
  * the provided initializer function should be used to build an array of values. For example,
  * ```ts
- * \@sessionSync({ initializer: Foo.fromJSON, initializeAsArray: true })
+ * \@sessionSync({ initializer: Foo.fromJSON, initializeAs: 'array' })
  * ```
  * is equivalent to
  * ```

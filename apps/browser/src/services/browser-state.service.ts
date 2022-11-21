@@ -21,7 +21,7 @@ export class BrowserStateService
 {
   @sessionSync({
     initializer: Account.fromJSON as any, // TODO: Remove this any when all any types are removed from Account
-    initializeAsRecord: true,
+    initializeAs: "record",
   })
   protected accountsSubject: BehaviorSubject<{ [userId: string]: Account }>;
   @sessionSync({ ctor: String })

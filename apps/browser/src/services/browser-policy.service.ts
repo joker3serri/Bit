@@ -10,7 +10,7 @@ import { BrowserStateService } from "./abstractions/browser-state.service";
 
 @browserSession
 export class BrowserPolicyService extends PolicyService {
-  @sessionSync({ ctor: Policy, initializeAsArray: true })
+  @sessionSync({ ctor: Policy, initializeAs: "array" })
   protected _policies: BehaviorSubject<Policy[]>;
 
   constructor(stateService: BrowserStateService, organizationService: OrganizationService) {
