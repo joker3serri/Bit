@@ -80,7 +80,7 @@ export class UpdateCommand {
       return DEFAULT_DOWNLOAD_URL;
     }
 
-    let downloadUrl: string = null;
+    let downloadUrl: string = DEFAULT_DOWNLOAD_URL;
 
     for (const a of assets) {
       const download: string = a.browser_download_url;
