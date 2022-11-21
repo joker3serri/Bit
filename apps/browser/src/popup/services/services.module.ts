@@ -67,6 +67,7 @@ import { BrowserStateService as StateServiceAbstraction } from "../../services/a
 import { BrowserEnvironmentService } from "../../services/browser-environment.service";
 import { BrowserOrganizationService } from "../../services/browser-organization.service";
 import { BrowserPolicyService } from "../../services/browser-policy.service";
+import { BrowserSettingsService } from "../../services/browser-settings.service";
 import { BrowserStateService } from "../../services/browser-state.service";
 import { BrowserFileDownloadService } from "../../services/browserFileDownloadService";
 import BrowserMessagingService from "../../services/browserMessaging.service";
@@ -228,8 +229,10 @@ function getBgService<T>(service: keyof MainBackground) {
     { provide: SyncService, useFactory: getBgService<SyncService>("syncService"), deps: [] },
     {
       provide: SettingsService,
-      useFactory: getBgService<SettingsService>("settingsService"),
-      deps: [],
+      useFactory: (stateService: StateService) => {
+        return new BrowserSettingsService(stateService);
+      },
+      deps: [StateService],
     },
     {
       provide: AbstractStorageService,

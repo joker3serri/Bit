@@ -251,7 +251,7 @@ export class AccountSettings {
 }
 
 export type AccountSettingsSettings = {
-  equivalentDomains?: { [id: string]: any };
+  equivalentDomains?: string[][];
 };
 
 export class AccountTokens {

@@ -66,7 +66,6 @@ import { PolicyApiService } from "@bitwarden/common/services/policy/policy-api.s
 import { ProviderService } from "@bitwarden/common/services/provider.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { SendService } from "@bitwarden/common/services/send.service";
-import { SettingsService } from "@bitwarden/common/services/settings.service";
 import { StateMigrationService } from "@bitwarden/common/services/stateMigration.service";
 import { SyncService } from "@bitwarden/common/services/sync/sync.service";
 import { SyncNotifierService } from "@bitwarden/common/services/sync/syncNotifier.service";
@@ -93,6 +92,7 @@ import { BrowserEnvironmentService } from "../services/browser-environment.servi
 import { BrowserFolderService } from "../services/browser-folder.service";
 import { BrowserOrganizationService } from "../services/browser-organization.service";
 import { BrowserPolicyService } from "../services/browser-policy.service";
+import { BrowserSettingsService } from "../services/browser-settings.service";
 import { BrowserStateService } from "../services/browser-state.service";
 import { BrowserCryptoService } from "../services/browserCrypto.service";
 import BrowserLocalStorageService from "../services/browserLocalStorage.service";
@@ -282,7 +282,7 @@ export default class MainBackground {
       this.appIdService,
       (expired: boolean) => this.logout(expired)
     );
-    this.settingsService = new SettingsService(this.stateService);
+    this.settingsService = new BrowserSettingsService(this.stateService);
     this.fileUploadService = new FileUploadService(this.logService, this.apiService);
     this.cipherService = new CipherService(
       this.cryptoService,
