@@ -1,7 +1,7 @@
 import { HostBinding, Directive } from "@angular/core";
 
 @Directive({
-  selector: "[bitButton][bitPrimary]",
+  selector: "[bitButton][bitPrimary], [bitButton][buttonType=primary]",
 })
 export class ButtonPrimaryDirective {
   @HostBinding("class") get classList() {

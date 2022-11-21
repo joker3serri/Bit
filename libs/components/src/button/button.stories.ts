@@ -36,6 +36,15 @@ const PrimaryTemplate: Story<ButtonComponent> = (args: ButtonComponent) => ({
 });
 export const Primary = PrimaryTemplate.bind({});
 
+const PrimaryBackwardsCompatibilityTemplate: Story<ButtonComponent> = (args: ButtonComponent) => ({
+  props: args,
+  template: `
+    <button bitButton buttonType="primary" [disabled]="disabled" [loading]="loading" [block]="block">Button</button>
+    <a bitButton buttonType="primary" [disabled]="disabled" [loading]="loading" [block]="block" href="#" class="tw-ml-2">Link</a>
+  `,
+});
+export const PrimaryBackwardsCompatibility = PrimaryTemplate.bind({});
+
 const SecondaryTemplate: Story<ButtonComponent> = (args: ButtonComponent) => ({
   props: args,
   template: `
