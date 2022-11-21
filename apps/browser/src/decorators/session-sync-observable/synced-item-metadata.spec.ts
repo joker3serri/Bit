@@ -19,7 +19,12 @@ describe("builder", () => {
   });
 
   it("should use ctor if initializer is not provided", () => {
-    const metadata: SyncedItemMetadata = { propertyKey, sessionKey: key, ctor };
+    const metadata: SyncedItemMetadata = {
+      propertyKey,
+      sessionKey: key,
+      ctor,
+      initializeAs: "object",
+    };
     const builder = SyncedItemMetadata.builder(metadata);
     expect(builder({})).toBeInstanceOf(TestClass);
   });
