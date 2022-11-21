@@ -20,7 +20,8 @@ export class ButtonPrimaryDirective {
 }
 
 @Directive({
-  selector: "[bitButton][bitSecondary]",
+  selector:
+    "[bitButton][bitSecondary],[bitButton]:not([bitPrimary]):not([bitDanger]):not([buttonType])",
 })
 export class ButtonSecondaryDirective {
   @HostBinding("class") get classList() {
