@@ -175,6 +175,7 @@ const ButtonGroupTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldCom
     <bit-form-field>
       <bit-label>Label</bit-label>
       <input bitInput placeholder="Placeholder" />
+      <span bitPrefix>Static</span>
       <button bitPrefix bitButton>
         Reload
       </button>

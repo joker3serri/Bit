@@ -17,6 +17,7 @@ import {
   BitPrefixSuffixButtonDirective,
   BitPrefixSuffixIconButtonDirective,
 } from "./prefix-suffix-button.directive";
+import { BitPrefixSuffixSpanDirective } from "./prefix-static-styles.directive";
 
 @NgModule({
   imports: [SharedModule, InputModule, MultiSelectModule],
@@ -32,6 +33,7 @@ import {
     MultiSelectComponent,
     BitPrefixSuffixButtonDirective,
     BitPrefixSuffixIconButtonDirective,
+    BitPrefixSuffixSpanDirective,
   ],
   declarations: [
     BitErrorComponent,
@@ -43,6 +45,7 @@ import {
     BitSuffixDirective,
     BitPrefixSuffixButtonDirective,
     BitPrefixSuffixIconButtonDirective,
+    BitPrefixSuffixSpanDirective,
   ],
 })
 export class FormFieldModule {}
