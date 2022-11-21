@@ -11,7 +11,12 @@ import { SyncedItemMetadata } from "./sync-item-metadata";
 describe("session syncer", () => {
   const propertyKey = "behaviorSubject";
   const sessionKey = "Test__" + propertyKey;
-  const metaData = { propertyKey, sessionKey, initializer: (s: string) => s };
+  const metaData: SyncedItemMetadata = {
+    propertyKey,
+    sessionKey,
+    initializer: (s: string) => s,
+    initializeAs: "object",
+  };
   let stateService: MockProxy<BrowserStateService>;
   let sut: SessionSyncer;
   let behaviorSubject: BehaviorSubject<string>;
@@ -43,19 +48,29 @@ describe("session syncer", () => {
 
     it("should create if either ctor or initializer is provided", () => {
       expect(
-        new SessionSyncer(behaviorSubject, stateService, { propertyKey, sessionKey, ctor: String })
+        new SessionSyncer(behaviorSubject, stateService, {
+          propertyKey,
+          sessionKey,
+          ctor: String,
+          initializeAs: "object",
+        })
       ).toBeDefined();
       expect(
         new SessionSyncer(behaviorSubject, stateService, {
           propertyKey,
           sessionKey,
           initializer: (s: any) => s,
+          initializeAs: "object",
         })
       ).toBeDefined();
     });
     it("should throw if neither ctor or initializer is provided", () => {
       expect(() => {
-        new SessionSyncer(behaviorSubject, stateService, { propertyKey, sessionKey });
+        new SessionSyncer(behaviorSubject, stateService, {
+          propertyKey,
+          sessionKey,
+          initializeAs: "object",
+        });
       }).toThrowError("ctor or initializer must be provided");
     });
   });
