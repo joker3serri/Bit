@@ -31,7 +31,8 @@ export class UpdateCommand {
     const currentVersion = await this.platformUtilsService.getApplicationVersion();
     if (cliRelease.tag_name === "cli-v" + currentVersion) {
       const response = new MessageResponse(null, null);
-      (response.title = "No update available."), (response.noColor = true);
+      response.title = "No update available.";
+      response.noColor = true;
       return Response.success(response);
     }
 
@@ -75,7 +76,9 @@ export class UpdateCommand {
   }
 
   private getDownloadUrl(assets: any) {
-    if (assets == null) {return DEFAULT_DOWNLOAD_URL;}
+    if (assets == null) {
+      return DEFAULT_DOWNLOAD_URL;
+    }
 
     let downloadUrl: string = null;
 
