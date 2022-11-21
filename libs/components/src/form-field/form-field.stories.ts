@@ -178,8 +178,8 @@ const ButtonGroupTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldCom
       <button bitPrefix bitButton>
         Reload
       </button>
-      <button bitSuffix bitIconButton="bwi-eye">
-      </button>
+      <button bitSuffix bitIconButton="bwi-eye"></button>
+      <button bitSuffix bitIconButton="bwi-clone"></button>
     </bit-form-field>
   `,
 });

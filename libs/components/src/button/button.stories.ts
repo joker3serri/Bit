@@ -1,6 +1,11 @@
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
-import { ButtonComponent, ButtonDangerDirective, ButtonPrimaryDirective, ButtonSecondaryDirective } from "./button.component";
+import { ButtonComponent } from "./button.component";
+import {
+  ButtonDangerDirective,
+  ButtonPrimaryDirective,
+  ButtonSecondaryDirective,
+} from "./button-style.directive";
 
 export default {
   title: "Component Library/Button",
@@ -8,7 +13,8 @@ export default {
   decorators: [
     moduleMetadata({
       declarations: [ButtonPrimaryDirective, ButtonSecondaryDirective, ButtonDangerDirective],
-    })],
+    }),
+  ],
   args: {
     disabled: false,
     loading: false,

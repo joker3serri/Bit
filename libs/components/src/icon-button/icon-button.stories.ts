@@ -1,15 +1,8 @@
 import { Meta, Story } from "@storybook/angular";
 
-import { BitIconButtonComponent, IconButtonType } from "./icon-button.component";
+import { BitIconButtonComponent } from "./icon-button.component";
 
-const buttonTypes: IconButtonType[] = [
-  "contrast",
-  "main",
-  "muted",
-  "primary",
-  "secondary",
-  "danger",
-];
+const buttonTypes: string[] = ["contrast", "main", "muted", "primary", "secondary", "danger"];
 
 export default {
   title: "Component Library/Icon Button",

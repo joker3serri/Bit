@@ -13,6 +13,10 @@ import { BitHintComponent } from "./hint.component";
 import { BitLabel } from "./label.directive";
 import { BitPrefixDirective } from "./prefix.directive";
 import { BitSuffixDirective } from "./suffix.directive";
+import {
+  BitPrefixSuffixButtonDirective,
+  BitPrefixSuffixIconButtonDirective,
+} from "./prefix-suffix-button.directive";
 
 @NgModule({
   imports: [SharedModule, InputModule, MultiSelectModule],
@@ -26,6 +30,8 @@ import { BitSuffixDirective } from "./suffix.directive";
     BitSuffixDirective,
     BitInputDirective,
     MultiSelectComponent,
+    BitPrefixSuffixButtonDirective,
+    BitPrefixSuffixIconButtonDirective,
   ],
   declarations: [
     BitErrorComponent,
@@ -35,6 +41,8 @@ import { BitSuffixDirective } from "./suffix.directive";
     BitLabel,
     BitPrefixDirective,
     BitSuffixDirective,
+    BitPrefixSuffixButtonDirective,
+    BitPrefixSuffixIconButtonDirective,
   ],
 })
 export class FormFieldModule {}
