@@ -2,7 +2,14 @@ import { Component, HostBinding, Input } from "@angular/core";
 
 import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 
-export type IconButtonType = "contrast" | "main" | "muted" | "primary" | "secondary" | "danger";
+export type IconButtonType =
+  | "contrast"
+  | "main"
+  | "muted"
+  | "primary"
+  | "secondary"
+  | "danger"
+  | "unstyled";
 
 const styles: Record<IconButtonType, string[]> = {
   contrast: [
@@ -75,6 +82,7 @@ const styles: Record<IconButtonType, string[]> = {
     "disabled:hover:!tw-text-danger",
     "disabled:hover:tw-border-danger-500",
   ],
+  unstyled: [],
 };
 
 export type IconButtonSize = "default" | "small";
@@ -92,7 +100,7 @@ const sizes: Record<IconButtonSize, string[]> = {
 export class BitIconButtonComponent implements ButtonLikeAbstraction {
   @Input("bitIconButton") icon: string;
 
-  @Input() buttonType: IconButtonType = "main";
+  @Input() buttonType: IconButtonType;
 
   @Input() size: IconButtonSize = "default";
 
@@ -123,7 +131,7 @@ export class BitIconButtonComponent implements ButtonLikeAbstraction {
       "focus-visible:before:tw-ring-text-contrast",
       "focus-visible:tw-z-10",
     ]
-      .concat(this.buttonType != undefined ? styles[this.buttonType] : [])
+      .concat(styles[this.buttonType ?? "main"])
       .concat(sizes[this.size]);
   }
 
@@ -140,7 +148,7 @@ export class BitIconButtonComponent implements ButtonLikeAbstraction {
   @Input() loading = false;
   @Input() disabled = false;
 
-  setButtonType(value: "primary" | "secondary" | "danger" | undefined) {
+  setButtonType(value: "primary" | "secondary" | "danger" | "unstyled") {
     this.buttonType = value;
   }
 }

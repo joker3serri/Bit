@@ -35,6 +35,6 @@ export class BitPrefixDirective implements OnInit {
   }
 
   ngOnInit(): void {
-    this.buttonComponent?.setButtonType(undefined);
+    this.buttonComponent?.setButtonType("unstyled");
   }
 }

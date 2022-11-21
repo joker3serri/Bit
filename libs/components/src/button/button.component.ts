@@ -2,7 +2,7 @@ import { Input, HostBinding, Component } from "@angular/core";
 
 import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 
-export type ButtonTypes = "primary" | "secondary" | "danger";
+export type ButtonTypes = "primary" | "secondary" | "danger" | "unstyled";
 
 const buttonStyles: Record<ButtonTypes, string[]> = {
   primary: [
@@ -38,6 +38,7 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "disabled:tw-border-danger-500/60",
     "disabled:!tw-text-danger/60",
   ],
+  unstyled: [],
 };
 
 @Component({
@@ -66,7 +67,7 @@ export class ButtonComponent implements ButtonLikeAbstraction {
       .concat(
         this.block == null || this.block === false ? ["tw-inline-block"] : ["tw-w-full", "tw-block"]
       )
-      .concat(this.buttonType != undefined ? buttonStyles[this.buttonType] : []);
+      .concat(buttonStyles[this.buttonType ?? "secondary"]);
   }
 
   @HostBinding("attr.disabled")
@@ -75,12 +76,12 @@ export class ButtonComponent implements ButtonLikeAbstraction {
     return disabled || this.loading ? true : null;
   }
 
-  @Input() buttonType: ButtonTypes = "secondary";
+  @Input() buttonType: ButtonTypes;
   @Input() block?: boolean;
   @Input() loading = false;
   @Input() disabled = false;
 
-  setButtonType(value: "primary" | "secondary" | "danger" | undefined) {
+  setButtonType(value: "primary" | "secondary" | "danger" | "unstyled") {
     this.buttonType = value;
   }
 }

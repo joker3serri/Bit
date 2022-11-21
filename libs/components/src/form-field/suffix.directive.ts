@@ -17,6 +17,6 @@ export class BitSuffixDirective {
   }
 
   ngOnInit(): void {
-    this.buttonComponent?.setButtonType(undefined);
+    this.buttonComponent?.setButtonType("unstyled");
   }
 }
