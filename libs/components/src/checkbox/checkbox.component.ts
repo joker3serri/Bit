@@ -23,9 +23,54 @@ export class CheckboxComponent implements ControlValueAccessor, BitFormFieldCont
     this._name = value;
   }
 
-  protected checkmark = Checkmark;
+  protected checkmark = `url('data:image/svg+xml;utf8,${encodeURI(Checkmark.svg)}')`;
 
-  protected inputClasses = ["tw-peer", "tw-appearance-none", "tw-outline-none"];
+  protected inputClasses = [
+    "tw-appearance-none",
+    "tw-outline-none",
+
+    "tw-transition",
+    "tw-inline-block",
+    "tw-rounded",
+    "tw-border",
+    "tw-border-solid",
+    "tw-h-3.5",
+    "tw-w-3.5",
+    "tw-mr-1.5",
+    "tw-bg-center",
+    "tw-bg-no-repeat",
+    "tw-bg-background",
+    "tw-border-secondary-500",
+
+    // Fix checkbox looking off-center
+    "tw-relative",
+    "tw-bottom-[-1px]",
+
+    "group-hover:tw-border-2",
+
+    "focus-visible:tw-ring-2",
+    "focus-visible:tw-ring-offset-2",
+    "focus-visible:tw-ring-primary-700",
+
+    "disabled:tw-border",
+    "disabled:tw-bg-secondary-100",
+
+    "checked:tw-bg-primary-500",
+    "checked:tw-border-primary-500",
+
+    "checked:group-hover:tw-bg-primary-700",
+    "checked:group-hover:tw-border-primary-700",
+
+    "checked:disabled:tw-border-secondary-100",
+    "checked:disabled:tw-bg-secondary-100",
+
+    "tw-relative",
+    "before:tw-content-['']",
+    "before:tw-block",
+    "before:tw-absolute",
+    "before:tw-inset-0",
+    `before:tw-bg-[${this.checkmark}]`,
+  ];
 
   protected labelClasses = [
     "tw-group",
@@ -42,59 +87,6 @@ export class CheckboxComponent implements ControlValueAccessor, BitFormFieldCont
     "tw-text-main",
 
     "group-peer-disabled:tw-text-muted",
-  ];
-
-  protected get customCheckboxClasses() {
-    return [
-      "tw-transition",
-      "tw-inline-block",
-      "tw-rounded",
-      "tw-border",
-      "tw-border-solid",
-      "tw-h-3.5",
-      "tw-w-3.5",
-      "tw-mr-1.5",
-
-      // Fix checkbox looking off-center
-      "tw-relative",
-      "tw-bottom-[-1px]",
-
-      "group-hover:tw-border-2",
-
-      "group-peer-focus-visible:tw-ring-2",
-      "group-peer-focus-visible:tw-ring-offset-2",
-      "group-peer-focus-visible:tw-ring-primary-700",
-    ].concat(
-      !this.checked
-        ? [
-            "tw-bg-background",
-            "tw-border-secondary-500",
-
-            "group-peer-disabled:tw-border",
-            "group-peer-disabled:tw-bg-secondary-100",
-          ]
-        : [
-            "tw-bg-primary-500",
-            "tw-border-primary-500",
-
-            "group-hover:tw-bg-primary-700",
-            "group-hover:tw-border-primary-700",
-
-            "group-peer-disabled:tw-border-secondary-100",
-            "group-peer-disabled:tw-bg-secondary-100",
-          ]
-    );
-  }
-
-  protected iconClasses = [
-    "tw-absolute",
-    "tw-inset-0",
-    "tw-flex",
-    "tw-justify-center",
-    "tw-items-center",
-    "tw-stroke-text-contrast",
-
-    "group-peer-disabled:tw-stroke-text-muted",
   ];
 
   protected labelTextClasses = ["tw-transition", "group-peer-checked:tw-bg-text-main"];

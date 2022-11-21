@@ -1,16 +1,13 @@
-<input
-  type="checkbox"
-  [id]="id"
-  [disabled]="disabled"
-  [checked]="checked"
-  (change)="onInputChange($event)"
-  (blur)="onBlur()"
-  [class]="inputClasses"
-/>
 <label [for]="id" [class]="labelClasses">
-  <span [class]="customCheckboxClasses" aria-hidden="true">
-    <bit-icon [class]="iconClasses" [icon]="checkmark" *ngIf="checked"></bit-icon>
-  </span>
+  <input
+    type="checkbox"
+    [id]="id"
+    [disabled]="disabled"
+    [checked]="checked"
+    (change)="onInputChange($event)"
+    (blur)="onBlur()"
+    [class]="inputClasses"
+  />
   <span [class]="labelContentClasses"><ng-content></ng-content></span>
   <span *ngIf="required" class="tw-text-xs tw-font-normal tw-text-main">
     ({{ "required" | i18n }})</span
