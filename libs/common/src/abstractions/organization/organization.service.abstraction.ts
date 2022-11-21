@@ -1,6 +1,7 @@
 import { map, Observable } from "rxjs";
 
 import { Utils } from "../../misc/utils";
+import { OrganizationData } from "../../models/data/organization.data";
 import { Organization } from "../../models/domain/organization";
 import { I18nService } from "../i18n.service";
 
@@ -9,7 +10,13 @@ export function canAccessVaultTab(org: Organization): boolean {
 }
 
 export function canAccessSettingsTab(org: Organization): boolean {
-  return org.isOwner;
+  return (
+    org.isOwner ||
+    org.canManagePolicies ||
+    org.canManageSso ||
+    org.canManageScim ||
+    org.canAccessImportExport
+  );
 }
 
 export function canAccessMembersTab(org: Organization): boolean {
@@ -69,6 +76,15 @@ export abstract class OrganizationService {
   get: (id: string) => Organization;
   getByIdentifier: (identifier: string) => Organization;
   getAll: (userId?: string) => Promise<Organization[]>;
+  /**
+   * @deprecated For the CLI only
+   * @param id id of the organization
+   */
+  getFromState: (id: string) => Promise<Organization>;
   canManageSponsorships: () => Promise<boolean>;
   hasOrganizations: () => boolean;
+}
+
+export abstract class InternalOrganizationService extends OrganizationService {
+  replace: (organizations: { [id: string]: OrganizationData }) => Promise<void>;
 }
