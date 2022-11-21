@@ -6,13 +6,13 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 
 import { BrowserApi } from "../browser/browserApi";
-import { BrowserStateService } from "../services/abstractions/browser-state.service";
 
 import RuntimeBackground from "./runtime.background";
 
@@ -74,7 +74,7 @@ export class NativeMessagingBackground {
     private messagingService: MessagingService,
     private appIdService: AppIdService,
     private platformUtilsService: PlatformUtilsService,
-    private stateService: BrowserStateService,
+    private stateService: StateService,
     private logService: LogService,
     private authService: AuthService
   ) {
