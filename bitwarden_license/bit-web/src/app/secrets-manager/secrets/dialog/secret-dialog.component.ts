@@ -16,6 +16,7 @@ export enum OperationType {
 export interface SecretOperation {
   organizationId: string;
   operation: OperationType;
+  projectId?: string;
   secretId?: string;
 }
 
@@ -68,7 +69,7 @@ export class SecretDialogComponent implements OnInit {
 
     const secretView = this.getSecretView();
     if (this.data.operation === OperationType.Add) {
-      await this.createSecret(secretView);
+      await this.createSecret(secretView, this.data.projectId);
     } else {
       secretView.id = this.data.secretId;
       await this.updateSecret(secretView);
@@ -76,8 +77,12 @@ export class SecretDialogComponent implements OnInit {
     this.dialogRef.close();
   };
 
-  private async createSecret(secretView: SecretView) {
-    await this.secretService.create(this.data.organizationId, secretView);
+  private async createSecret(secretView: SecretView, projectId?: string) {
+    if (projectId) {
+      await this.secretService.create(this.data.organizationId, secretView, projectId);
+    } else {
+      await this.secretService.create(this.data.organizationId, secretView);
+    }
     this.platformUtilsService.showToast("success", null, this.i18nService.t("secretCreated"));
   }
 

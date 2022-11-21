@@ -47,7 +47,7 @@ export class ProjectService {
     return await this.createProjectsListView(organizationId, results.data);
   }
 
-  async create(organizationId: string, projectView: ProjectView) {
+  async create(organizationId: string, projectView: ProjectView): Promise<ProjectView> {
     const request = await this.getProjectRequest(organizationId, projectView);
     const r = await this.apiService.send(
       "POST",
@@ -56,7 +56,10 @@ export class ProjectService {
       true,
       true
     );
-    this._project.next(await this.createProjectView(new ProjectResponse(r)));
+
+    const project = await this.createProjectView(new ProjectResponse(r));
+    this._project.next(project);
+    return project;
   }
 
   async update(organizationId: string, projectView: ProjectView) {
