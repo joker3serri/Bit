@@ -1,33 +1,57 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Observable, switchMap } from "rxjs";
+import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
-import { ServiceAccountService } from "../service-account.service";
+import { DialogService } from "@bitwarden/components";
+
+import { AccessTokenView } from "../models/view/access-token.view";
+
+import { AccessService } from "./access.service";
+import {
+  AccessTokenOperation,
+  AccessTokenCreateDialogComponent,
+} from "./dialogs/access-token-create-dialog.component";
 
 @Component({
   selector: "sm-access-tokens",
   templateUrl: "./access-tokens.component.html",
 })
 export class AccessTokenComponent implements OnInit {
-  accessTokens$: Observable<any[]>;
+  accessTokens$: Observable<AccessTokenView[]>;
+
+  private serviceAccountId: string;
+  private organizationId: string;
 
   constructor(
     private route: ActivatedRoute,
-    private serviceAccountService: ServiceAccountService
+    private accessService: AccessService,
+    private dialogService: DialogService
   ) {}
 
   ngOnInit() {
-    this.accessTokens$ = this.route.params.pipe(
-      switchMap(async (params) => {
-        return await this.serviceAccountService.getAccessTokens(
-          params.organizationId,
-          params.serviceAccountId
-        );
+    this.accessTokens$ = this.accessService.accessToken$.pipe(
+      startWith(null),
+      combineLatestWith(this.route.params),
+      switchMap(async ([_, params]) => {
+        this.organizationId = params.organizationId;
+        this.serviceAccountId = params.serviceAccountId;
+        return await this.getAccessTokens();
       })
     );
   }
 
+  private async getAccessTokens(): Promise<AccessTokenView[]> {
+    return await this.accessService.getAccessTokens(this.organizationId, this.serviceAccountId);
+  }
+
   openNewAccessTokenDialog() {
-    // TODO
+    this.dialogService.open<unknown, AccessTokenOperation>(AccessTokenCreateDialogComponent, {
+      data: {
+        organizationId: this.organizationId,
+        serviceAccountId: this.serviceAccountId,
+        // TODO pass service account name
+        serviceAccountName: "test",
+      },
+    });
   }
 }

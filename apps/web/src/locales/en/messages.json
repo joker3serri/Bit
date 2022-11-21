@@ -5628,6 +5628,24 @@
   "accessTokensNoItemsDesc": {
     "message": "To get started, create an access token"
   },
+  "downloadAccessToken": {
+    "message": "Download or copy before closing."
+  },
+  "expiresOnAccessToken": {
+    "message": "Expires on:"
+  },
+  "accessTokenCallOutTitle": {
+    "message": "Access tokens are not stored and cannot be retrieved"
+  },
+  "copyToken": {
+    "message": "Copy token"
+  },
+  "accessToken": {
+    "message": "Access token"
+  },
+  "accessTokenExpirationRequired": {
+    "message": "Expiration date required"
+  },
   "revokeAccessToken": {
     "message": "Revoke Access Token"
   }
