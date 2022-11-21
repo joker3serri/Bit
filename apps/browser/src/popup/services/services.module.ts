@@ -44,7 +44,6 @@ import {
 import { StateMigrationService } from "@bitwarden/common/abstractions/stateMigration.service";
 import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
-import { SyncNotifierService } from "@bitwarden/common/abstractions/sync/syncNotifier.service.abstraction";
 import { TokenService } from "@bitwarden/common/abstractions/token.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { TwoFactorService } from "@bitwarden/common/abstractions/twoFactor.service";
@@ -280,10 +279,10 @@ function getBgService<T>(service: keyof MainBackground) {
     { provide: PasswordRepromptServiceAbstraction, useClass: PasswordRepromptService },
     {
       provide: OrganizationService,
-      useFactory: (stateService: StateService, syncNotifierService: SyncNotifierService) => {
-        return new BrowserOrganizationService(stateService, syncNotifierService);
+      useFactory: (stateService: StateService) => {
+        return new BrowserOrganizationService(stateService);
       },
-      deps: [StateService, SyncNotifierService],
+      deps: [StateService],
     },
     {
       provide: VaultFilterService,
