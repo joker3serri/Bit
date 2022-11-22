@@ -44,7 +44,7 @@ export class FormControlComponent {
   get displayError() {
     switch (this.error[0]) {
       case "required":
-        return this.i18nService.t("required");
+        return this.i18nService.t("inputRequired");
       default:
         // Attempt to show a custom error message.
         if (this.error[1]?.message) {
