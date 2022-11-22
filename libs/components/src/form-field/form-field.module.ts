@@ -10,7 +10,6 @@ import { SharedModule } from "../shared";
 import { BitErrorSummary } from "./error-summary.component";
 import { BitErrorComponent } from "./error.component";
 import { BitFormFieldComponent } from "./form-field.component";
-import { BitHintComponent } from "./hint.component";
 import { BitPrefixDirective } from "./prefix.directive";
 import { BitSuffixDirective } from "./suffix.directive";
 
@@ -21,7 +20,6 @@ import { BitSuffixDirective } from "./suffix.directive";
     BitErrorComponent,
     BitErrorSummary,
     BitFormFieldComponent,
-    BitHintComponent,
     BitPrefixDirective,
     BitSuffixDirective,
     BitInputDirective,
@@ -31,7 +29,6 @@ import { BitSuffixDirective } from "./suffix.directive";
     BitErrorComponent,
     BitErrorSummary,
     BitFormFieldComponent,
-    BitHintComponent,
     BitPrefixDirective,
     BitSuffixDirective,
   ],

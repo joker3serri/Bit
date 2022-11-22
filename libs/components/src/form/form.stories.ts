@@ -39,6 +39,7 @@ export default {
           useFactory: () => {
             return new I18nMockService({
               required: "required",
+              checkboxRequired: "Option is required",
               inputRequired: "Input is required.",
               inputEmail: "Input is not an email-address.",
             });
@@ -92,6 +93,7 @@ const FullExample1Template: Story = (args) => ({
       <bit-form-control>
         <bit-label>Agree to terms</bit-label>
         <input type="checkbox" bitCheckbox formControlName="terms">
+        <bit-hint>Required for the service to work properly</bit-hint>
       </bit-form-control>
 
       <bit-radio-group formControlName="updates">
