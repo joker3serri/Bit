@@ -18,6 +18,13 @@ export const PrefixButtonClasses = [
   "disabled:tw-bg-secondary-100",
   "disabled:hover:tw-bg-secondary-100",
   "disabled:hover:tw-text-muted",
+  "focus-visible:tw-ring-primary-700",
+
+  "focus-visible:tw-border-primary-700",
+  "focus-visible:tw-ring-1",
+  "focus-visible:tw-ring-inset",
+  "focus-visible:tw-ring-primary-700",
+  "focus-visible:tw-z-10",
 ];
 
 export const PrefixStaticContentClasses = ["tw-block", "tw-px-3", "tw-py-1.5"];
@@ -29,9 +36,13 @@ export class BitPrefixDirective implements OnInit {
   constructor(@Optional() private buttonComponent: ButtonLikeAbstraction) {}
 
   @HostBinding("class") @Input() get classList() {
-    return PrefixClasses.concat(["tw-border-r-0", "first:tw-rounded-l"]).concat(
-      this.buttonComponent != undefined ? PrefixButtonClasses : PrefixStaticContentClasses
-    );
+    return PrefixClasses.concat([
+      "tw-border-r-0",
+      "first:tw-rounded-l",
+
+      "focus-visible:tw-border-r",
+      "focus-visible:tw-mr-[-1px]",
+    ]).concat(this.buttonComponent != undefined ? PrefixButtonClasses : PrefixStaticContentClasses);
   }
 
   ngOnInit(): void {

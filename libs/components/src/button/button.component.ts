@@ -4,6 +4,13 @@ import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
 
 export type ButtonTypes = "primary" | "secondary" | "danger" | "unstyled";
 
+const focusRing = [
+  "focus-visible:tw-ring",
+  "focus-visible:tw-ring-offset-2",
+  "focus-visible:tw-ring-primary-700",
+  "focus-visible:tw-z-10",
+];
+
 const buttonStyles: Record<ButtonTypes, string[]> = {
   primary: [
     "tw-border-primary-500",
@@ -15,6 +22,7 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "disabled:tw-border-primary-500/60",
     "disabled:!tw-text-contrast/60",
     "disabled:tw-bg-clip-padding",
+    ...focusRing,
   ],
   secondary: [
     "tw-bg-transparent",
@@ -26,6 +34,7 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "disabled:tw-bg-transparent",
     "disabled:tw-border-text-muted/60",
     "disabled:!tw-text-muted/60",
+    ...focusRing,
   ],
   danger: [
     "tw-bg-transparent",
@@ -37,6 +46,7 @@ const buttonStyles: Record<ButtonTypes, string[]> = {
     "disabled:tw-bg-transparent",
     "disabled:tw-border-danger-500/60",
     "disabled:!tw-text-danger/60",
+    ...focusRing,
   ],
   unstyled: [],
 };
@@ -59,10 +69,6 @@ export class ButtonComponent implements ButtonLikeAbstraction {
       "tw-text-center",
       "hover:tw-no-underline",
       "focus:tw-outline-none",
-      "focus-visible:tw-ring",
-      "focus-visible:tw-ring-offset-2",
-      "focus-visible:tw-ring-primary-700",
-      "focus-visible:tw-z-10",
     ]
       .concat(
         this.block == null || this.block === false ? ["tw-inline-block"] : ["tw-w-full", "tw-block"]

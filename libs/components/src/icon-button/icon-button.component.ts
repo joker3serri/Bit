@@ -11,6 +11,24 @@ export type IconButtonType =
   | "danger"
   | "unstyled";
 
+const focusRing = [
+  // Workaround for box-shadow with transparent offset issue:
+  // https://github.com/tailwindlabs/tailwindcss/issues/3595
+  // Remove `before:` and use regular `tw-ring` when browser no longer has bug, or better:
+  // switch to `outline` with `outline-offset` when Safari supports border radius on outline.
+  // Using `box-shadow` to create outlines is a hack and as such `outline` should be preferred.
+  "tw-relative",
+  "before:tw-content-['']",
+  "before:tw-block",
+  "before:tw-absolute",
+  "before:-tw-inset-[3px]",
+  "before:tw-rounded-md",
+  "before:tw-transition",
+  "before:tw-ring",
+  "before:tw-ring-transparent",
+  "focus-visible:tw-z-10",
+];
+
 const styles: Record<IconButtonType, string[]> = {
   contrast: [
     "tw-bg-transparent",
@@ -22,6 +40,7 @@ const styles: Record<IconButtonType, string[]> = {
     "disabled:tw-opacity-60",
     "disabled:hover:tw-border-transparent",
     "disabled:hover:tw-bg-transparent",
+    ...focusRing,
   ],
   main: [
     "tw-bg-transparent",
@@ -33,6 +52,7 @@ const styles: Record<IconButtonType, string[]> = {
     "disabled:tw-opacity-60",
     "disabled:hover:tw-border-transparent",
     "disabled:hover:tw-bg-transparent",
+    ...focusRing,
   ],
   muted: [
     "tw-bg-transparent",
@@ -44,6 +64,7 @@ const styles: Record<IconButtonType, string[]> = {
     "disabled:tw-opacity-60",
     "disabled:hover:tw-border-transparent",
     "disabled:hover:tw-bg-transparent",
+    ...focusRing,
   ],
   primary: [
     "tw-bg-primary-500",
@@ -55,6 +76,7 @@ const styles: Record<IconButtonType, string[]> = {
     "disabled:tw-opacity-60",
     "disabled:hover:tw-border-primary-500",
     "disabled:hover:tw-bg-primary-500",
+    ...focusRing,
   ],
   secondary: [
     "tw-bg-transparent",
@@ -68,6 +90,7 @@ const styles: Record<IconButtonType, string[]> = {
     "disabled:hover:tw-bg-transparent",
     "disabled:hover:!tw-text-muted",
     "disabled:hover:tw-border-text-muted",
+    ...focusRing,
   ],
   danger: [
     "tw-bg-transparent",
@@ -81,6 +104,7 @@ const styles: Record<IconButtonType, string[]> = {
     "disabled:hover:tw-bg-transparent",
     "disabled:hover:!tw-text-danger",
     "disabled:hover:tw-border-danger-500",
+    ...focusRing,
   ],
   unstyled: [],
 };
@@ -113,23 +137,6 @@ export class BitIconButtonComponent implements ButtonLikeAbstraction {
       "tw-transition",
       "hover:tw-no-underline",
       "focus:tw-outline-none",
-
-      // Workaround for box-shadow with transparent offset issue:
-      // https://github.com/tailwindlabs/tailwindcss/issues/3595
-      // Remove `before:` and use regular `tw-ring` when browser no longer has bug, or better:
-      // switch to `outline` with `outline-offset` when Safari supports border radius on outline.
-      // Using `box-shadow` to create outlines is a hack and as such `outline` should be preferred.
-      "tw-relative",
-      "before:tw-content-['']",
-      "before:tw-block",
-      "before:tw-absolute",
-      "before:-tw-inset-[3px]",
-      "before:tw-rounded-md",
-      "before:tw-transition",
-      "before:tw-ring",
-      "before:tw-ring-transparent",
-      "focus-visible:before:tw-ring-text-contrast",
-      "focus-visible:tw-z-10",
     ]
       .concat(styles[this.buttonType ?? "main"])
       .concat(sizes[this.size]);

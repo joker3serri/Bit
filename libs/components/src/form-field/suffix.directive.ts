@@ -11,9 +11,13 @@ export class BitSuffixDirective {
   constructor(@Optional() private buttonComponent: ButtonLikeAbstraction) {}
 
   @HostBinding("class") @Input() get classList() {
-    return PrefixClasses.concat(["tw-border-l-0", "last:tw-rounded-r"]).concat(
-      this.buttonComponent != undefined ? PrefixButtonClasses : PrefixStaticContentClasses
-    );
+    return PrefixClasses.concat([
+      "tw-border-l-0",
+      "last:tw-rounded-r",
+
+      "focus-visible:tw-border-l",
+      "focus-visible:tw-ml-[-1px]",
+    ]).concat(this.buttonComponent != undefined ? PrefixButtonClasses : PrefixStaticContentClasses);
   }
 
   ngOnInit(): void {
