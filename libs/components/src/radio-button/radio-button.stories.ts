@@ -7,6 +7,7 @@ import { RadioButtonModule } from "./radio-button.module";
 const template = `
   <form [formGroup]="formObj">
     <bit-radio-group formControlName="radio" aria-label="Example radio group">
+      <bit-label *ngIf="label">Group of radio buttons</bit-label>
       <bit-radio-button [value]="TestValue.First">First</bit-radio-button>
       <bit-radio-button [value]="TestValue.Second">Second</bit-radio-button>
       <bit-radio-button [value]="TestValue.Third">Third</bit-radio-button>
@@ -29,6 +30,8 @@ class ExampleComponent {
   protected formObj = this.formBuilder.group({
     radio: TestValue.First,
   });
+
+  @Input() label: boolean;
 
   @Input() set selected(value: TestValue) {
     this.formObj.patchValue({ radio: value });
@@ -58,6 +61,7 @@ export default {
   args: {
     selected: TestValue.First,
     disabled: false,
+    label: true,
   },
   argTypes: {
     selected: {
@@ -76,7 +80,7 @@ export default {
 
 const DefaultTemplate: Story<ExampleComponent> = (args: ExampleComponent) => ({
   props: args,
-  template: `<app-example [selected]="selected" [disabled]="disabled"></app-example>`,
+  template: `<app-example [selected]="selected" [disabled]="disabled" [label]="label"></app-example>`,
 });
 
 export const Default = DefaultTemplate.bind({});

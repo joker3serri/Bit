@@ -1,1 +1,14 @@
-<ng-content></ng-content>
+<ng-container *ngIf="label">
+  <fieldset>
+    <legend class="tw-mb-1 tw-block tw-text-base tw-text-sm tw-font-semibold">
+      <ng-content select="bit-label"></ng-content>
+    </legend>
+    <ng-container *ngTemplateOutlet="content"></ng-container>
+  </fieldset>
+</ng-container>
+
+<ng-container *ngIf="!label">
+  <ng-container *ngTemplateOutlet="content"></ng-container>
+</ng-container>
+
+<ng-template #content><ng-content></ng-content></ng-template>

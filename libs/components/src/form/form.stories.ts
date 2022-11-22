@@ -94,14 +94,12 @@ const FullExample1Template: Story = (args) => ({
         <input type="checkbox" bitCheckbox formControlName="terms">
       </bit-form-control>
 
-      <bit-form-field>
+      <bit-radio-group formControlName="updates">
         <bit-label>Subscribe to updates?</bit-label>
-        <bit-radio-group formControlName="updates">
-          <bit-radio-button value="yes">Yes</bit-radio-button>
-          <bit-radio-button value="no">No</bit-radio-button>
-          <bit-radio-button value="later">Decide later</bit-radio-button>
-        </bit-radio-group>
-      </bit-form-field>
+        <bit-radio-button value="yes">Yes</bit-radio-button>
+        <bit-radio-button value="no">No</bit-radio-button>
+        <bit-radio-button value="later">Decide later</bit-radio-button>
+      </bit-radio-group>
 
       <button type="submit" bitButton buttonType="primary">Submit</button>
     </form>
