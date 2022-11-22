@@ -2,7 +2,9 @@
   <bit-dialog dialogSize="default">
     <ng-container bitDialogTitle>
       <span>{{ "createAccessToken" | i18n }}</span>
-      <span class="tw-text-sm tw-normal-case tw-text-muted">{{ data.serviceAccountName }}</span>
+      <span class="tw-text-sm tw-normal-case tw-text-muted">{{
+        data.serviceAccountView.name
+      }}</span>
     </ng-container>
 
     <div bitDialogContent>

@@ -12,6 +12,7 @@ import {
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { DialogService } from "@bitwarden/components";
 
+import { ServiceAccountView } from "../../../models/view/service-account.view";
 import { AccessTokenView } from "../../models/view/access-token.view";
 import { AccessService } from "../access.service";
 
@@ -19,8 +20,7 @@ import { AccessTokenDetails, AccessTokenDialogComponent } from "./access-token-d
 
 export interface AccessTokenOperation {
   organizationId: string;
-  serviceAccountId: string;
-  serviceAccountName: string;
+  serviceAccountView: ServiceAccountView;
 }
 
 @Component({
@@ -44,7 +44,11 @@ export class AccessTokenCreateDialogComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    if (!this.data.organizationId || !this.data.serviceAccountId || !this.data.serviceAccountName) {
+    if (
+      !this.data.organizationId ||
+      !this.data.serviceAccountView?.id ||
+      !this.data.serviceAccountView?.name
+    ) {
       this.dialogRef.close();
       throw new Error(
         `The access token create dialog was not called with the appropriate operation values.`
@@ -63,7 +67,7 @@ export class AccessTokenCreateDialogComponent implements OnInit {
     accessTokenView.expireAt = this.getExpiresDate();
     const accessToken = await this.accessService.createAccessToken(
       this.data.organizationId,
-      this.data.serviceAccountId,
+      this.data.serviceAccountView.id,
       accessTokenView
     );
     this.openAccessTokenDialog("prod pipeline", accessToken, accessTokenView.expireAt);
