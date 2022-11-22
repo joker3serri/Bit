@@ -99,19 +99,6 @@ const Template: Story<BitFormFieldComponent> = (args: BitFormFieldComponent) => 
         <input bitInput formControlName="email" />
       </bit-form-field>
 
-      <bit-form-field>
-        <bit-checkbox-control formControlName="terms">Agree to terms</bit-checkbox-control>
-      </bit-form-field>
-
-      <bit-form-field>
-        <bit-label>Subscribe to updates?</bit-label>
-        <bit-radio-group formControlName="updates">
-          <bit-radio-button value="yes">Yes</bit-radio-button>
-          <bit-radio-button value="no">No</bit-radio-button>
-          <bit-radio-button value="later">Decide later</bit-radio-button>
-        </bit-radio-group>
-      </bit-form-field>
-
       <button type="submit" bitButton buttonType="primary">Submit</button>
     </form>
   `,
@@ -254,23 +241,3 @@ const TextareaTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldCompon
 
 export const Textarea = TextareaTemplate.bind({});
 Textarea.args = {};
-
-const checkboxFormObj = fb.group({
-  checkbox: [false, Validators.requiredTrue],
-});
-
-const CheckboxTemplate: Story<BitFormFieldComponent> = (args: BitFormFieldComponent) => ({
-  props: {
-    formObj: checkboxFormObj,
-    ...args,
-  },
-  template: `
-    <bit-form-field [formGroup]="formObj">
-      <bit-label>Terms and conditions</bit-label>
-      <bit-checkbox formControlName="checkbox">I accept</bit-checkbox>
-    </bit-form-field>
-  `,
-});
-
-export const Checkbox = CheckboxTemplate.bind({});
-Checkbox.args = {};
