@@ -6,7 +6,7 @@ import { CheckboxModule } from "./checkbox.module";
 
 const template = `
   <form [formGroup]="formObj">
-    <bit-checkbox formControlName="checkbox">Click me</bit-checkbox>
+    <bit-checkbox-control formControlName="checkbox">Click me</bit-checkbox-control>
   </form>`;
 
 @Component({
@@ -51,7 +51,14 @@ export default {
 
 const DefaultTemplate: Story<ExampleComponent> = (args: ExampleComponent) => ({
   props: args,
-  template: `<app-example [checked]="checked" [disabled]="disabled"></app-example>`,
+  template: `<input type="checkbox" bitCheckbox>`,
 });
 
 export const Default = DefaultTemplate.bind({});
+
+const ControlTemplate: Story<ExampleComponent> = (args: ExampleComponent) => ({
+  props: args,
+  template: `<app-example [checked]="checked" [disabled]="disabled"></app-example>`,
+});
+
+export const Control = ControlTemplate.bind({});

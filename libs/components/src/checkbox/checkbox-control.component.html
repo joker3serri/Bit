@@ -1,12 +1,13 @@
 <label [for]="id" [class]="labelClasses">
   <input
     type="checkbox"
+    bitCheckbox
     [id]="id"
     [disabled]="disabled"
     [checked]="checked"
     (change)="onInputChange($event)"
     (blur)="onBlur()"
-    [class]="inputClasses"
+    class="tw-peer"
   />
   <span [class]="labelContentClasses"><ng-content></ng-content></span>
   <span *ngIf="required" class="tw-text-xs tw-font-normal tw-text-main">

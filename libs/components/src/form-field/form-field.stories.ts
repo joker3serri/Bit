@@ -100,7 +100,7 @@ const Template: Story<BitFormFieldComponent> = (args: BitFormFieldComponent) => 
       </bit-form-field>
 
       <bit-form-field>
-        <bit-checkbox formControlName="terms">Agree to terms</bit-checkbox>
+        <bit-checkbox-control formControlName="terms">Agree to terms</bit-checkbox-control>
       </bit-form-field>
 
       <bit-form-field>
