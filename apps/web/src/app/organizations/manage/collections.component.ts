@@ -132,8 +132,8 @@ export class CollectionsComponent implements OnInit {
 
     if (
       !collection &&
-      this.organization.planProductType == ProductType.Free &&
-      this.collections.length == this.organization.maxCollections
+      this.organization.planProductType === ProductType.Free &&
+      this.collections.length === this.organization.maxCollections
     ) {
       // Show org upgrade modal
       this.dialogService.open(OrgUpgradeDialogComponent, {

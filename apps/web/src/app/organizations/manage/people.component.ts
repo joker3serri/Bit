@@ -242,8 +242,8 @@ export class PeopleComponent
     // User attempting to invite new users in a free org with max users
     if (
       !user &&
-      this.organization.planProductType == ProductType.Free &&
-      this.users.length == this.organization.seats
+      this.organization.planProductType === ProductType.Free &&
+      this.users.length === this.organization.seats
     ) {
       // Show org upgrade modal
       this.dialogService.open(OrgUpgradeDialogComponent, {
