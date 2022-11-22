@@ -3,8 +3,7 @@ import { ClearClipboard, clearClipboardAlarmName } from "../clipboard";
 import { alarmKeys, clearAlarmTime, getAlarmTime } from "./alarm-state";
 
 export const onAlarmListener = async (alarm: chrome.alarms.Alarm) => {
-
-  alarmKeys.forEach(async (key) => {    
+  alarmKeys.forEach(async (key) => {
     const executionTime = await getAlarmTime(key);
     if (!executionTime) {
       return;

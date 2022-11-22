@@ -2,12 +2,12 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 
+import { setAlarmTime } from "../alarms/alarm-state";
 import { BrowserApi } from "../browser/browserApi";
 import { StateService } from "../services/abstractions/state.service";
 
-import { setAlarmTime } from "../alarms/alarm-state";
-import { GeneratePasswordToClipboardCommand } from "./generate-password-to-clipboard-command";
 import { clearClipboardAlarmName } from "./clear-clipboard";
+import { GeneratePasswordToClipboardCommand } from "./generate-password-to-clipboard-command";
 
 jest.mock("../alarms/alarm-state", () => {
   return {
