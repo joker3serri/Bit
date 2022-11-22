@@ -1,4 +1,4 @@
-<label [for]="id" [class]="labelClasses">
+<bit-form-control>
   <input
     type="checkbox"
     bitCheckbox
@@ -9,8 +9,5 @@
     (blur)="onBlur()"
     class="tw-peer"
   />
-  <span [class]="labelContentClasses"><ng-content></ng-content></span>
-  <span *ngIf="required" class="tw-text-xs tw-font-normal tw-text-main">
-    ({{ "required" | i18n }})</span
-  >
-</label>
+  <bit-form-control-label><ng-content></ng-content></bit-form-control-label>
+</bit-form-control>

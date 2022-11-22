@@ -1,8 +1,12 @@
-import { Component, HostBinding } from "@angular/core";
+import { Component, HostBinding, Input, Optional, Self } from "@angular/core";
+import { NgControl, Validators } from "@angular/forms";
+
+import { BitFormControlAbstraction } from "../form-control";
 
 @Component({
   selector: "input[type=checkbox][bitCheckbox]",
   template: "",
+  providers: [{ provide: BitFormControlAbstraction, useExisting: CheckboxComponent }],
   styles: [
     `
       :host:checked:before {
@@ -16,7 +20,7 @@ import { Component, HostBinding } from "@angular/core";
     `,
   ],
 })
-export class CheckboxComponent {
+export class CheckboxComponent implements BitFormControlAbstraction {
   @HostBinding("class")
   protected inputClasses = [
     "tw-appearance-none",
@@ -65,4 +69,36 @@ export class CheckboxComponent {
 
     "checked:disabled:before:tw-bg-text-muted",
   ];
+
+  constructor(@Optional() @Self() private ngControl?: NgControl) {}
+
+  @HostBinding()
+  @Input()
+  get disabled() {
+    return this._disabled ?? this.ngControl?.disabled ?? false;
+  }
+  set disabled(value: any) {
+    this._disabled = value != null && value !== false;
+  }
+  private _disabled: boolean;
+
+  @Input()
+  get required() {
+    return (
+      this._required ?? this.ngControl?.control?.hasValidator(Validators.requiredTrue) ?? false
+    );
+  }
+  set required(value: any) {
+    this._required = value != null && value !== false;
+  }
+  private _required: boolean;
+
+  get hasError() {
+    return this.ngControl?.status === "INVALID" && this.ngControl?.touched;
+  }
+
+  get error(): [string, any] {
+    const key = Object.keys(this.ngControl.errors)[0];
+    return [key, this.ngControl.errors[key]];
+  }
 }
