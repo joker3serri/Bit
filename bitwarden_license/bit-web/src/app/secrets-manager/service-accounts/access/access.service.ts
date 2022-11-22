@@ -18,7 +18,7 @@ import { AccessTokenView } from "../models/view/access-token.view";
   providedIn: "root",
 })
 export class AccessService {
-  private _accessTokenVersion = "0";
+  private readonly _accessTokenVersion = "0";
   protected _accessToken: Subject<AccessTokenView> = new Subject();
 
   accessToken$ = this._accessToken.asObservable();
@@ -94,7 +94,7 @@ export class AccessService {
     const keyMaterial = await this.cryptoFunctionService.randomBytes(numberOfBytes);
     const key = await this.cryptoFunctionService.hkdf(
       keyMaterial,
-      "bitwarden-sm-access-token",
+      "bitwarden-accesstoken",
       "sm-access-token",
       64,
       "sha256"
