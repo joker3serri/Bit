@@ -133,6 +133,14 @@ export class SendComponent extends BaseSendComponent implements OnInit, OnDestro
       click: () => this.copy(send),
     });
     menu.push({
+      label: this.i18nService.t("removePassword"),
+      click: async () => {
+        await this.removePassword(send);
+        this.sendId = null;
+        this.selectSend(send.id);
+      },
+    });
+    menu.push({
       label: this.i18nService.t("delete"),
       click: async () => {
         await this.delete(send);
