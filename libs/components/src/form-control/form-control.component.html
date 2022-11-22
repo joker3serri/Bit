@@ -1,7 +1,7 @@
 <label [class]="labelClasses">
   <ng-content></ng-content>
   <span [class]="labelContentClasses"
-    ><ng-content select="bit-form-control-label"></ng-content>
+    ><ng-content select="bit-label"></ng-content>
     <span *ngIf="required" class="tw-text-xs tw-font-normal"> ({{ "required" | i18n }})</span>
   </span>
 </label>

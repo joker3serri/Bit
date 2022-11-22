@@ -13,7 +13,7 @@ const template = `
   <form [formGroup]="formObj">
     <bit-form-control>
       <input type="checkbox" bitCheckbox formControlName="checkbox">
-      <bit-form-control-label>Click me</bit-form-control-label>
+      <bit-label>Click me</bit-label>
     </bit-form-control>
   </form>`;
 

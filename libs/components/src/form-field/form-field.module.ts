@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 
+import { FormControlModule } from "../form-control";
 import { BitInputDirective } from "../input/input.directive";
 import { InputModule } from "../input/input.module";
 import { MultiSelectComponent } from "../multi-select/multi-select.component";
@@ -10,18 +11,17 @@ import { BitErrorSummary } from "./error-summary.component";
 import { BitErrorComponent } from "./error.component";
 import { BitFormFieldComponent } from "./form-field.component";
 import { BitHintComponent } from "./hint.component";
-import { BitLabel } from "./label.directive";
 import { BitPrefixDirective } from "./prefix.directive";
 import { BitSuffixDirective } from "./suffix.directive";
 
 @NgModule({
-  imports: [SharedModule, InputModule, MultiSelectModule],
+  imports: [SharedModule, FormControlModule, InputModule, MultiSelectModule],
   exports: [
+    FormControlModule,
     BitErrorComponent,
     BitErrorSummary,
     BitFormFieldComponent,
     BitHintComponent,
-    BitLabel,
     BitPrefixDirective,
     BitSuffixDirective,
     BitInputDirective,
@@ -32,7 +32,6 @@ import { BitSuffixDirective } from "./suffix.directive";
     BitErrorSummary,
     BitFormFieldComponent,
     BitHintComponent,
-    BitLabel,
     BitPrefixDirective,
     BitSuffixDirective,
   ],

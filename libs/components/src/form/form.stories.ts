@@ -90,8 +90,8 @@ const FullExample1Template: Story = (args) => ({
       </bit-form-field>
 
       <bit-form-control>
+        <bit-label>Agree to terms</bit-label>
         <input type="checkbox" bitCheckbox formControlName="terms">
-        <bit-form-control-label>Agree to terms</bit-form-control-label>
       </bit-form-control>
 
       <bit-form-field>

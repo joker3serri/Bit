@@ -2,12 +2,12 @@ import { NgModule } from "@angular/core";
 
 import { SharedModule } from "../shared";
 
-import { FormControlLabel } from "./form-control-label.directive";
 import { FormControlComponent } from "./form-control.component";
+import { BitLabel } from "./label.directive";
 
 @NgModule({
   imports: [SharedModule],
-  declarations: [FormControlComponent, FormControlLabel],
-  exports: [FormControlComponent, FormControlLabel],
+  declarations: [FormControlComponent, BitLabel],
+  exports: [FormControlComponent, BitLabel],
 })
 export class FormControlModule {}
