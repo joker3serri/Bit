@@ -20,6 +20,15 @@ import { ReferenceEventRequest } from "@bitwarden/common/models/request/referenc
 import { RouterService } from "./../../core/router.service";
 import { VerticalStepperComponent } from "./vertical-stepper/vertical-stepper.component";
 
+enum ValidOrgParams {
+  families = "families",
+  enterprise = "enterprise",
+  teams = "teams",
+  individual = "individual",
+  premium = "premium",
+  free = "free",
+}
+
 @Component({
   selector: "app-trial",
   templateUrl: "trial-initiation.component.html",
@@ -38,7 +47,16 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
   useTrialStepper = false;
   policies: Policy[];
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
-  validOrgs: string[] = ["teams", "enterprise", "families"];
+  trialFlowOrgs: string[] = [
+    ValidOrgParams.teams,
+    ValidOrgParams.enterprise,
+    ValidOrgParams.families,
+  ];
+  routeFlowOrgs: string[] = [
+    ValidOrgParams.free,
+    ValidOrgParams.premium,
+    ValidOrgParams.individual,
+  ];
   validLayouts: string[] = [
     "default",
     "teams",
@@ -107,22 +125,28 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
         this.accountCreateOnly = false;
       }
 
-      if (this.validOrgs.includes(qParams.org)) {
+      if (this.trialFlowOrgs.includes(qParams.org)) {
         this.org = qParams.org;
         this.orgLabel = this.titleCasePipe.transform(this.org);
         this.useTrialStepper = true;
         this.referenceData.flow = qParams.org;
 
-        if (this.org === "families") {
+        if (this.org === ValidOrgParams.families) {
           this.plan = PlanType.FamiliesAnnually;
           this.product = ProductType.Families;
-        } else if (this.org === "teams") {
+        } else if (this.org === ValidOrgParams.teams) {
           this.plan = PlanType.TeamsAnnually;
           this.product = ProductType.Teams;
-        } else if (this.org === "enterprise") {
+        } else if (this.org === ValidOrgParams.enterprise) {
           this.plan = PlanType.EnterpriseAnnually;
           this.product = ProductType.Enterprise;
         }
+      } else if (this.routeFlowOrgs.includes(qParams.org)) {
+        this.referenceData.flow = qParams.org;
+        const route = this.router.createUrlTree(["create-organization"], {
+          queryParams: { plan: qParams.org },
+        });
+        this.routerService.setPreviousUrl(route.toString());
       }
 
       // Are they coming from an email for sponsoring a families organization
