@@ -1,12 +1,20 @@
 import { Component, Input } from "@angular/core";
-import { FormsModule, ReactiveFormsModule, FormBuilder } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from "@angular/forms";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
+
+import { I18nService } from "@bitwarden/common/src/abstractions/i18n.service";
+
+import { FormControlModule } from "../form-control";
+import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { CheckboxModule } from "./checkbox.module";
 
 const template = `
   <form [formGroup]="formObj">
-    <bit-checkbox-control formControlName="checkbox">Click me</bit-checkbox-control>
+    <bit-form-control>
+      <input type="checkbox" bitCheckbox formControlName="checkbox">
+      <bit-form-control-label>Click me</bit-form-control-label>
+    </bit-form-control>
   </form>`;
 
 @Component({
@@ -15,7 +23,7 @@ const template = `
 })
 class ExampleComponent {
   protected formObj = this.formBuilder.group({
-    checkbox: false,
+    checkbox: [false, Validators.requiredTrue],
   });
 
   @Input() set checked(value: boolean) {
@@ -39,8 +47,19 @@ export default {
   decorators: [
     moduleMetadata({
       declarations: [ExampleComponent],
-      imports: [FormsModule, ReactiveFormsModule, CheckboxModule],
-      providers: [],
+      imports: [FormsModule, ReactiveFormsModule, FormControlModule, CheckboxModule],
+      providers: [
+        {
+          provide: I18nService,
+          useFactory: () => {
+            return new I18nMockService({
+              required: "required",
+              inputRequired: "Input is required.",
+              inputEmail: "Input is not an email-address.",
+            });
+          },
+        },
+      ],
     }),
   ],
   args: {
@@ -51,7 +70,7 @@ export default {
 
 const DefaultTemplate: Story<ExampleComponent> = (args: ExampleComponent) => ({
   props: args,
-  template: `<input type="checkbox" bitCheckbox>`,
+  template: `<input type="checkbox" bitCheckbox [checked]="checked" [disabled]="disabled">`,
 });
 
 export const Default = DefaultTemplate.bind({});

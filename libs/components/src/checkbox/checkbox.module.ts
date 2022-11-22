@@ -4,12 +4,11 @@ import { NgModule } from "@angular/core";
 import { FormControlModule } from "../form-control";
 import { SharedModule } from "../shared";
 
-import { CheckboxControlComponent } from "./checkbox-control.component";
 import { CheckboxComponent } from "./checkbox.component";
 
 @NgModule({
   imports: [SharedModule, CommonModule, FormControlModule],
-  declarations: [CheckboxComponent, CheckboxControlComponent],
-  exports: [CheckboxComponent, CheckboxControlComponent],
+  declarations: [CheckboxComponent],
+  exports: [CheckboxComponent],
 })
 export class CheckboxModule {}
