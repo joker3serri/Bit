@@ -1,15 +1,8 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
-import {
-  AbstractControl,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Subject, takeUntil } from "rxjs";
 
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { DialogService } from "@bitwarden/components";
 
 import { ServiceAccountView } from "../../../models/view/service-account.view";
@@ -28,17 +21,19 @@ export interface AccessTokenOperation {
   templateUrl: "./access-token-create-dialog.component.html",
 })
 export class AccessTokenCreateDialogComponent implements OnInit {
+  private destroy$ = new Subject<void>();
   protected formGroup = new FormGroup({
     name: new FormControl("", [Validators.required]),
     expires: new FormControl("", [Validators.required]),
-    expireDateTime: new FormControl("", [this.customRequireDateTimeValidator()]),
+    expireDateTime: new FormControl(""),
   });
   protected loading = false;
+
+  expirationDayOptions = [7, 30, 60];
 
   constructor(
     public dialogRef: DialogRef,
     @Inject(DIALOG_DATA) public data: AccessTokenOperation,
-    private i18nService: I18nService,
     private dialogService: DialogService,
     private accessService: AccessService
   ) {}
@@ -54,6 +49,23 @@ export class AccessTokenCreateDialogComponent implements OnInit {
         `The access token create dialog was not called with the appropriate operation values.`
       );
     }
+
+    this.formGroup
+      .get("expires")
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value == "custom") {
+          this.formGroup.get("expireDateTime").setValidators(Validators.required);
+        } else {
+          this.formGroup.get("expireDateTime").clearValidators();
+          this.formGroup.get("expireDateTime").updateValueAndValidity();
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   submit = async () => {
@@ -70,25 +82,21 @@ export class AccessTokenCreateDialogComponent implements OnInit {
       this.data.serviceAccountView.id,
       accessTokenView
     );
-    this.openAccessTokenDialog("prod pipeline", accessToken, accessTokenView.expireAt);
+    this.openAccessTokenDialog(
+      this.data.serviceAccountView.name,
+      accessToken,
+      accessTokenView.expireAt
+    );
     this.dialogRef.close();
   };
 
   private getExpiresDate(): Date {
-    const currentDate = new Date();
-    switch (this.formGroup.value.expires) {
-      case "sevenDays":
-        currentDate.setDate(currentDate.getDate() + 7);
-        return currentDate;
-      case "thirtyDays":
-        currentDate.setDate(currentDate.getDate() + 30);
-        return currentDate;
-      case "sixtyDays":
-        currentDate.setDate(currentDate.getDate() + 30);
-        return currentDate;
-      case "custom":
-        return new Date(this.formGroup.value.expireDateTime);
+    if (this.formGroup.value.expires == "custom") {
+      return new Date(this.formGroup.value.expireDateTime);
     }
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + Number(this.formGroup.value.expires));
+    return currentDate;
   }
 
   private openAccessTokenDialog(
@@ -103,22 +111,5 @@ export class AccessTokenCreateDialogComponent implements OnInit {
         accessToken: accessToken,
       },
     });
-  }
-
-  private customRequireDateTimeValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (
-        this.formGroup?.value?.expires !== "custom" ||
-        (this.formGroup.value.expires === "custom" && control.value)
-      ) {
-        return null;
-      } else {
-        return {
-          confirmationDoesntMatchError: {
-            message: this.i18nService.t("accessTokenExpirationRequired"),
-          },
-        };
-      }
-    };
   }
 }
