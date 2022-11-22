@@ -82,13 +82,13 @@ export class BrowserStateService
     );
   }
 
-  async getBrowserCipherComponentState(options?: StorageOptions): Promise<BrowserComponentState> {
+  async getBrowserVaultItemsComponentState(options?: StorageOptions): Promise<BrowserComponentState> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
     )?.ciphers;
   }
 
-  async setBrowserCipherComponentState(
+  async setBrowserVaultItemsComponentState(
     value: BrowserComponentState,
     options?: StorageOptions
   ): Promise<void> {

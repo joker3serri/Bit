@@ -19,8 +19,8 @@ export abstract class BrowserStateService extends BaseStateServiceAbstraction<Ac
     value: BrowserGroupingsComponentState,
     options?: StorageOptions
   ) => Promise<void>;
-  getBrowserCipherComponentState: (options?: StorageOptions) => Promise<BrowserComponentState>;
-  setBrowserCipherComponentState: (
+  getBrowserVaultItemsComponentState: (options?: StorageOptions) => Promise<BrowserComponentState>;
+  setBrowserVaultItemsComponentState: (
     value: BrowserComponentState,
     options?: StorageOptions
   ) => Promise<void>;
