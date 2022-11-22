@@ -23,22 +23,24 @@
 
       <div class="tw-pt-12">
         <!-- Layout params are used by marketing to determine left-hand content -->
-        <app-default-content *ngIf="layout === 'default'"></app-default-content>
-        <app-teams-content *ngIf="layout === 'teams'"></app-teams-content>
-        <app-teams1-content *ngIf="layout === 'teams1'"></app-teams1-content>
-        <app-teams2-content *ngIf="layout === 'teams2'"></app-teams2-content>
-        <app-enterprise-content *ngIf="layout === 'enterprise'"></app-enterprise-content>
-        <app-enterprise1-content *ngIf="layout === 'enterprise1'"></app-enterprise1-content>
-        <app-enterprise2-content *ngIf="layout === 'enterprise2'"></app-enterprise2-content>
+        <app-default-content *ngIf="layout === layouts.default"></app-default-content>
+        <app-teams-content *ngIf="layout === layouts.teams"></app-teams-content>
+        <app-teams1-content *ngIf="layout === layouts.teams1"></app-teams1-content>
+        <app-teams2-content *ngIf="layout === layouts.teams2"></app-teams2-content>
+        <app-enterprise-content *ngIf="layout === layouts.enterprise"></app-enterprise-content>
+        <app-enterprise1-content *ngIf="layout === layouts.enterprise1"></app-enterprise1-content>
+        <app-enterprise2-content *ngIf="layout === layouts.enterprise2"></app-enterprise2-content>
         <app-cnet-enterprise-content
-          *ngIf="layout === 'cnetcmpgnent'"
+          *ngIf="layout === layouts.cnetcmpgnent"
         ></app-cnet-enterprise-content>
         <app-cnet-individual-content
-          *ngIf="layout === 'cnetcmpgnind'"
+          *ngIf="layout === layouts.cnetcmpgnind"
         ></app-cnet-individual-content>
-        <app-cnet-teams-content *ngIf="layout === 'cnetcmpgnteams'"></app-cnet-teams-content>
-        <app-abm-enterprise-content *ngIf="layout === 'abmenterprise'"></app-abm-enterprise-content>
-        <app-abm-teams-content *ngIf="layout === 'abmteams'"></app-abm-teams-content>
+        <app-cnet-teams-content *ngIf="layout === layouts.cnetcmpgnteams"></app-cnet-teams-content>
+        <app-abm-enterprise-content
+          *ngIf="layout === layouts.abmenterprise"
+        ></app-abm-enterprise-content>
+        <app-abm-teams-content *ngIf="layout === layouts.abmteams"></app-abm-teams-content>
       </div>
     </div>
     <div class="tw-w-1/2">

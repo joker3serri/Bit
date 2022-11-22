@@ -29,6 +29,21 @@ enum ValidOrgParams {
   free = "free",
 }
 
+enum ValidLayoutParams {
+  default = "default",
+  teams = "teams",
+  teams1 = "teams1",
+  teams2 = "teams2",
+  enterprise = "enterprise",
+  enterprise1 = "enterprise1",
+  enterprise2 = "enterprise2",
+  cnetcmpgnent = "cnetcmpgnent",
+  cnetcmpgnind = "cnetcmpgnind",
+  cnetcmpgnteams = "cnetcmpgnteams",
+  abmenterprise = "abmenterprise",
+  abmteams = "abmteams",
+}
+
 @Component({
   selector: "app-trial",
   templateUrl: "trial-initiation.component.html",
@@ -57,20 +72,7 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
     ValidOrgParams.premium,
     ValidOrgParams.individual,
   ];
-  validLayouts: string[] = [
-    "default",
-    "teams",
-    "teams1",
-    "teams2",
-    "enterprise",
-    "enterprise1",
-    "enterprise2",
-    "cnetcmpgnent",
-    "cnetcmpgnind",
-    "cnetcmpgnteams",
-    "abmenterprise",
-    "abmteams",
-  ];
+  layouts = ValidLayoutParams;
   referenceData: ReferenceEventRequest;
   @ViewChild("stepper", { static: false }) verticalStepper: VerticalStepperComponent;
 
@@ -120,7 +122,7 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
 
       this.referenceDataId = qParams.reference;
 
-      if (this.validLayouts.includes(qParams.layout)) {
+      if (Object.values(ValidLayoutParams).includes(qParams.layout)) {
         this.layout = qParams.layout;
         this.accountCreateOnly = false;
       }
