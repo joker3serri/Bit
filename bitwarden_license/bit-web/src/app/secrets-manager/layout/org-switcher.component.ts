@@ -6,7 +6,7 @@ import type { Organization } from "@bitwarden/common/models/domain/organization"
 
 @Component({
   selector: "org-switcher",
-  templateUrl: "org-switch.component.html",
+  templateUrl: "org-switcher.component.html",
 })
 export class OrgSwitcherComponent implements OnInit {
   constructor(private organizationService: OrganizationService) {}

@@ -1,11 +1,11 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
-import { NavigationDirective } from "./navigation.direction";
+import { NavItemComponent } from "./nav-item.component";
 
 export default {
-  title: "Component Library/Navigation",
-  component: NavigationDirective,
+  title: "Component Library/Nav/Nav Item",
+  component: NavItemComponent,
   decorators: [
     moduleMetadata({
       declarations: [],
@@ -20,18 +20,16 @@ export default {
   },
 } as Meta;
 
-const Template: Story<NavigationDirective> = (args: NavigationDirective) => ({
+const Template: Story<NavItemComponent> = (args: NavItemComponent) => ({
   props: args,
   template: `
-    <a [routerLink]="['']" bitNavigation>
-      <i class="bwi bwi-fw bwi-filter"></i>
-      <span>Active link</span>
-    </a>
-    <a [routerLink]="['abc']" href="#" bitNavigation>
-      <i class="bwi bwi-fw bwi-key"></i>
-      <span>Anchor link</span>
-    </a>
+      <nav-item title="${args.title}" to="${args.to}" icon="${args.icon}"></nav-item>
     `,
 });
 
 export const Default = Template.bind({});
+Default.args = {
+  title: "Hello World",
+  to: "",
+  icon: "bwi-filter",
+};

@@ -1,0 +1,24 @@
+<div
+  class="tw-relative {{ rla.isActive ? 'tw-bg-background-alt4' : 'tw-bg-background-alt3' }} {{
+    fvwStyles$ | async
+  }}"
+>
+  <div
+    class="tw-pl-[calc(var(--base-left-padding,1rem)+var(--nested-left-padding,0rem))] tw-flex tw-relative tw-gap-1 tw-items-center tw-pr-4 {{
+      variant === 'tree' ? 'tw-py-1' : 'tw-py-2'
+    }}"
+  >
+    <div #slotStart><ng-content select="[slot-start]"></ng-content></div>
+    <div *ngIf="!slotStart.hasChildNodes() && variant === 'tree'" class="tw-p-[.69rem]"></div>
+    <a
+      class="fvw tw-w-full tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap !tw-text-alt2 hover:tw-text-alt2 hover:tw-no-underline focus:tw-outline-none [&>:not(.bwi)]:hover:tw-underline"
+      [routerLink]="to"
+      routerLinkActive
+      #rla="routerLinkActive"
+    >
+      <i class="bwi bwi-fw tw-text-white tw-mr-1 {{ icon }}"></i
+      ><span [ngClass]="rla.isActive ? 'tw-font-bold' : 'tw-font-semibold'">{{ title }}</span>
+    </a>
+    <ng-content select="[slot-end]"></ng-content>
+  </div>
+</div>

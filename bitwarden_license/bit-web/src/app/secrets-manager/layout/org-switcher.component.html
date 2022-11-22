@@ -2,7 +2,7 @@
   <ng-container *ngIf="organizations$ | async as organizations">
     <nav-item
       *ngFor="let org of organizations"
-      icon="bwi-business"
+      icon=""
       title="{{ org.name }}"
       [to]="['/organizations', org.id]"
     >

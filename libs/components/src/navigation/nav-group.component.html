@@ -1,0 +1,35 @@
+<nav-item [title]="title" [icon]="icon" [to]="to" [variant]="variant">
+  <button
+    *ngIf="variant === 'tree'"
+    slot-start
+    class="tw-ml-auto"
+    [bitIconButton]="open ? 'bwi-chevron-up' : 'bwi-angle-right'"
+    [buttonType]="'contrast'"
+    (click)="toggle($event)"
+    size="small"
+    [title]="'options' | i18n"
+    aria-haspopup="true"
+    [attr.aria-expanded]="open"
+    [attr.aria-controls]="contentId"
+    [attr.aria-label]="'options' | i18n"
+  ></button>
+  <button
+    *ngIf="variant === 'default'"
+    slot-end
+    class="tw-ml-auto"
+    [bitIconButton]="open ? 'bwi-chevron-up' : 'bwi-angle-down'"
+    [buttonType]="'contrast'"
+    (click)="toggle($event)"
+    size="small"
+    [title]="'options' | i18n"
+    aria-haspopup="true"
+    [attr.aria-expanded]="open"
+    [attr.aria-controls]="contentId"
+    [attr.aria-label]="'options' | i18n"
+  ></button>
+</nav-item>
+<div #contentContainer>
+  <div *ngIf="open" [attr.id]="contentId">
+    <ng-content></ng-content>
+  </div>
+</div>
