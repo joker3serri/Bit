@@ -12,7 +12,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
 import { PlatformUtilsService } from "@bitwarden/common/src/abstractions/platformUtils.service";
 
-import { SharedModule } from "../../../../shared";
+import { SharedModule } from "../../../../shared/shared.module";
 import { PreloadedEnglishI18nModule } from "../../../../tests/preloaded-english-i18n.module";
 import {
   CollectionAccessSelectionView,
