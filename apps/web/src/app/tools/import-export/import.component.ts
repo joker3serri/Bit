@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import * as JSZip from "jszip";
+import { firstValueFrom } from "rxjs";
 import Swal, { SweetAlertIcon } from "sweetalert2";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -11,7 +12,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { ImportOption, ImportType } from "@bitwarden/common/enums/importOptions";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
-import { ImportError } from "@bitwarden/common/importers/importError";
+import { ImportError } from "@bitwarden/common/importers/import-error";
 
 import { FilePasswordPromptComponent } from "./file-password-prompt.component";
 
@@ -24,6 +25,7 @@ export class ImportComponent implements OnInit {
   importOptions: ImportOption[];
   format: ImportType = null;
   fileContents: string;
+  fileSelected: File;
   formPromise: Promise<ImportError>;
   loading = false;
   importBlockedByPolicy = false;
@@ -44,8 +46,8 @@ export class ImportComponent implements OnInit {
   async ngOnInit() {
     this.setImportOptions();
 
-    this.importBlockedByPolicy = await this.policyService.policyAppliesToUser(
-      PolicyType.PersonalOwnership
+    this.importBlockedByPolicy = await firstValueFrom(
+      this.policyService.policyAppliesToActiveUser$(PolicyType.PersonalOwnership)
     );
   }
 
@@ -176,6 +178,11 @@ export class ImportComponent implements OnInit {
         ? this.i18nService.collator.compare(a.name, b.name)
         : a.name.localeCompare(b.name);
     });
+  }
+
+  setSelectedFile(event: Event) {
+    const fileInputEl = <HTMLInputElement>event.target;
+    this.fileSelected = fileInputEl.files.length > 0 ? fileInputEl.files[0] : null;
   }
 
   private async error(error: Error) {

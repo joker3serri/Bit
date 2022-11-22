@@ -1,14 +1,14 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { AbstractEncryptService } from "@bitwarden/common/abstractions/abstractEncrypt.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { AttachmentData } from "@bitwarden/common/models/data/attachmentData";
+import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
+import { AttachmentData } from "@bitwarden/common/models/data/attachment.data";
 import { Attachment } from "@bitwarden/common/models/domain/attachment";
-import { EncString } from "@bitwarden/common/models/domain/encString";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetricCryptoKey";
+import { EncString } from "@bitwarden/common/models/domain/enc-string";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { ContainerService } from "@bitwarden/common/services/container.service";
 
-import { makeStaticByteArray, mockEnc } from "../../utils";
+import { makeStaticByteArray, mockEnc, mockFromJson } from "../../utils";
 
 describe("Attachment", () => {
   let data: AttachmentData;
@@ -58,11 +58,11 @@ describe("Attachment", () => {
 
   describe("decrypt", () => {
     let cryptoService: MockProxy<CryptoService>;
-    let encryptService: MockProxy<AbstractEncryptService>;
+    let encryptService: MockProxy<EncryptService>;
 
     beforeEach(() => {
       cryptoService = mock<CryptoService>();
-      encryptService = mock<AbstractEncryptService>();
+      encryptService = mock<EncryptService>();
 
       (window as any).bitwardenContainerService = new ContainerService(
         cryptoService,
@@ -129,6 +129,27 @@ describe("Attachment", () => {
         expect(cryptoService.getKeyForUserEncryption).toHaveBeenCalled();
         expect(encryptService.decryptToBytes).toHaveBeenCalledWith(attachment.key, userKey);
       });
+    });
+  });
+
+  describe("fromJSON", () => {
+    it("initializes nested objects", () => {
+      jest.spyOn(EncString, "fromJSON").mockImplementation(mockFromJson);
+
+      const actual = Attachment.fromJSON({
+        key: "myKey",
+        fileName: "myFileName",
+      });
+
+      expect(actual).toEqual({
+        key: "myKey_fromJSON",
+        fileName: "myFileName_fromJSON",
+      });
+      expect(actual).toBeInstanceOf(Attachment);
+    });
+
+    it("returns null if object is null", () => {
+      expect(Attachment.fromJSON(null)).toBeNull();
     });
   });
 });

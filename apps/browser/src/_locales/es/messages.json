@@ -603,10 +603,10 @@
     "message": "Sí, guardar ahora"
   },
   "enableChangedPasswordNotification": {
-    "message": "Solicitar la actualización de los datos de iniciode sesión existentes"
+    "message": "Solicitar la actualización de los datos de inicio de sesión existentes"
   },
   "changedPasswordNotificationDesc": {
-    "message": "Solicitar la actualización de los datos de iniciode sesión existentes cuuando se detecte un cambio en un sitio web."
+    "message": "Solicitar la actualización de los datos de inicio de sesión existentes cuando se detecte un cambio en un sitio web."
   },
   "notificationChangeDesc": {
     "message": "¿Desea actualizar esta contraseña en Bitwarden?"
@@ -822,7 +822,7 @@
     "message": "Premium requerido"
   },
   "premiumRequiredDesc": {
-    "message": "Una membresía Premium es requerida para utilizar esta característica."
+    "message": "Una membrasía Premium es requerida para utilizar esta característica."
   },
   "enterVerificationCodeApp": {
     "message": "Introduce el código de verificación de 6 dígitos de tu aplicación autenticadora."
@@ -1310,6 +1310,10 @@
   "dateUpdated": {
     "message": "Actualizado",
     "description": "ex. Date this item was updated"
+  },
+  "dateCreated": {
+    "message": "Creado",
+    "description": "ex. Date this item was created"
   },
   "datePasswordUpdated": {
     "message": "Contraseña actualizada",
@@ -2024,5 +2028,20 @@
         "example": "Jun 15, 2015"
       }
     }
+  },
+  "loginWithMasterPassword": {
+    "message": "Iniciar sesión con contraseña maestra"
+  },
+  "loggingInAs": {
+    "message": "Iniciando sesión como"
+  },
+  "notYou": {
+    "message": "¿No eres tú?"
+  },
+  "newAroundHere": {
+    "message": "¿Nuevo por aquí?"
+  },
+  "rememberEmail": {
+    "message": "Recordar email"
   }
 }

@@ -1,5 +1,5 @@
 import { DragDropModule } from "@angular/cdk/drag-drop";
-import { DatePipe, CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
@@ -8,13 +8,17 @@ import { ToastrModule } from "ngx-toastr";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
+  AsyncActionsModule,
+  AvatarModule,
   BadgeModule,
   ButtonModule,
   CalloutModule,
   FormFieldModule,
-  SubmitButtonModule,
-  MenuModule,
+  IconButtonModule,
   IconModule,
+  MenuModule,
+  TableModule,
+  TabsModule,
 } from "@bitwarden/components";
 
 // Register the locales for the application
@@ -44,11 +48,15 @@ import "./locales";
     ButtonModule,
     MenuModule,
     FormFieldModule,
-    SubmitButtonModule,
     IconModule,
+    TabsModule,
+    TableModule,
+    AvatarModule,
+    IconButtonModule,
   ],
   exports: [
     CommonModule,
+    AsyncActionsModule,
     DragDropModule,
     FormsModule,
     InfiniteScrollModule,
@@ -63,8 +71,11 @@ import "./locales";
     ButtonModule,
     MenuModule,
     FormFieldModule,
-    SubmitButtonModule,
     IconModule,
+    TabsModule,
+    TableModule,
+    AvatarModule,
+    IconButtonModule,
   ],
   providers: [DatePipe],
   bootstrap: [],

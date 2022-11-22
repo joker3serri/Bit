@@ -9,17 +9,17 @@ import { FolderService } from "@bitwarden/common/abstractions/folder/folder.serv
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
-import { CipherData } from "@bitwarden/common/models/data/cipherData";
+import { CipherData } from "@bitwarden/common/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
-import { CipherCreateRequest } from "@bitwarden/common/models/request/cipherCreateRequest";
-import { CipherRequest } from "@bitwarden/common/models/request/cipherRequest";
+import { CipherCreateRequest } from "@bitwarden/common/models/request/cipher-create.request";
+import { CipherRequest } from "@bitwarden/common/models/request/cipher.request";
 
 import { AddEditComponent as BaseAddEditComponent } from "../../vault/add-edit.component";
 
@@ -94,8 +94,11 @@ export class AddEditComponent extends BaseAddEditComponent {
     }
     const response = await this.apiService.getCipherAdmin(this.cipherId);
     const data = new CipherData(response);
-    this.originalCipher = new Cipher(data);
-    return new Cipher(data);
+
+    data.edit = true;
+    const cipher = new Cipher(data);
+    this.originalCipher = cipher;
+    return cipher;
   }
 
   protected encryptCipher() {

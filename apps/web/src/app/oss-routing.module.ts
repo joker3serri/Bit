@@ -11,7 +11,8 @@ import { AcceptEmergencyComponent } from "./accounts/accept-emergency.component"
 import { AcceptOrganizationComponent } from "./accounts/accept-organization.component";
 import { HintComponent } from "./accounts/hint.component";
 import { LockComponent } from "./accounts/lock.component";
-import { LoginComponent } from "./accounts/login.component";
+import { LoginWithDeviceComponent } from "./accounts/login/login-with-device.component";
+import { LoginComponent } from "./accounts/login/login.component";
 import { RecoverDeleteComponent } from "./accounts/recover-delete.component";
 import { RecoverTwoFactorComponent } from "./accounts/recover-two-factor.component";
 import { RegisterComponent } from "./accounts/register.component";
@@ -27,7 +28,7 @@ import { VerifyRecoverDeleteComponent } from "./accounts/verify-recover-delete.c
 import { HomeGuard } from "./guards/home.guard";
 import { FrontendLayoutComponent } from "./layouts/frontend-layout.component";
 import { UserLayoutComponent } from "./layouts/user-layout.component";
-import { OrganizationsRoutingModule } from "./organizations/organization-routing.module";
+import { OrganizationModule } from "./organizations/organization.module";
 import { AcceptFamilySponsorshipComponent } from "./organizations/sponsorships/accept-family-sponsorship.component";
 import { FamiliesForEnterpriseSetupComponent } from "./organizations/sponsorships/families-for-enterprise-setup.component";
 import { ReportsModule } from "./reports";
@@ -60,6 +61,11 @@ const routes: Routes = [
         canActivate: [HomeGuard], // Redirects either to vault, login or lock page.
       },
       { path: "login", component: LoginComponent, canActivate: [UnauthGuard] },
+      {
+        path: "login-with-device",
+        component: LoginWithDeviceComponent,
+        data: { titleId: "loginWithDevice" },
+      },
       { path: "2fa", component: TwoFactorComponent, canActivate: [UnauthGuard] },
       {
         path: "register",
@@ -245,7 +251,7 @@ const routes: Routes = [
   },
   {
     path: "organizations",
-    loadChildren: () => OrganizationsRoutingModule,
+    loadChildren: () => OrganizationModule,
   },
 ];
 

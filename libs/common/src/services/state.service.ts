@@ -13,16 +13,16 @@ import { StorageLocation } from "../enums/storageLocation";
 import { ThemeType } from "../enums/themeType";
 import { UriMatchType } from "../enums/uriMatchType";
 import { StateFactory } from "../factories/stateFactory";
-import { CipherData } from "../models/data/cipherData";
-import { CollectionData } from "../models/data/collectionData";
-import { EncryptedOrganizationKeyData } from "../models/data/encryptedOrganizationKeyData";
-import { EventData } from "../models/data/eventData";
-import { FolderData } from "../models/data/folderData";
-import { LocalData } from "../models/data/localData";
-import { OrganizationData } from "../models/data/organizationData";
-import { PolicyData } from "../models/data/policyData";
-import { ProviderData } from "../models/data/providerData";
-import { SendData } from "../models/data/sendData";
+import { CipherData } from "../models/data/cipher.data";
+import { CollectionData } from "../models/data/collection.data";
+import { EncryptedOrganizationKeyData } from "../models/data/encrypted-organization-key.data";
+import { EventData } from "../models/data/event.data";
+import { FolderData } from "../models/data/folder.data";
+import { LocalData } from "../models/data/local.data";
+import { OrganizationData } from "../models/data/organization.data";
+import { PolicyData } from "../models/data/policy.data";
+import { ProviderData } from "../models/data/provider.data";
+import { SendData } from "../models/data/send.data";
 import { ServerConfigData } from "../models/data/server-config.data";
 import {
   Account,
@@ -30,18 +30,18 @@ import {
   AccountSettings,
   AccountSettingsSettings,
 } from "../models/domain/account";
-import { EncString } from "../models/domain/encString";
-import { EnvironmentUrls } from "../models/domain/environmentUrls";
-import { GeneratedPasswordHistory } from "../models/domain/generatedPasswordHistory";
-import { GlobalState } from "../models/domain/globalState";
+import { EncString } from "../models/domain/enc-string";
+import { EnvironmentUrls } from "../models/domain/environment-urls";
+import { GeneratedPasswordHistory } from "../models/domain/generated-password-history";
+import { GlobalState } from "../models/domain/global-state";
 import { Policy } from "../models/domain/policy";
 import { State } from "../models/domain/state";
-import { StorageOptions } from "../models/domain/storageOptions";
-import { SymmetricCryptoKey } from "../models/domain/symmetricCryptoKey";
-import { WindowState } from "../models/domain/windowState";
-import { CipherView } from "../models/view/cipherView";
-import { CollectionView } from "../models/view/collectionView";
-import { SendView } from "../models/view/sendView";
+import { StorageOptions } from "../models/domain/storage-options";
+import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
+import { WindowState } from "../models/domain/window-state";
+import { CipherView } from "../models/view/cipher.view";
+import { CollectionView } from "../models/view/collection.view";
+import { SendView } from "../models/view/send.view";
 
 const keys = {
   state: "state",
@@ -58,13 +58,17 @@ const partialKeys = {
   masterKey: "_masterkey",
 };
 
+const DDG_SHARED_KEY = "DuckDuckGoSharedKey";
+
 export class StateService<
   TGlobalState extends GlobalState = GlobalState,
   TAccount extends Account = Account
 > implements StateServiceAbstraction<TAccount>
 {
-  accounts = new BehaviorSubject<{ [userId: string]: TAccount }>({});
-  private activeAccountSubject = new BehaviorSubject<string>(null);
+  private accountsSubject = new BehaviorSubject<{ [userId: string]: TAccount }>({});
+  accounts$ = this.accountsSubject.asObservable();
+
+  private activeAccountSubject = new BehaviorSubject<string | null>(null);
   activeAccount$ = this.activeAccountSubject.asObservable();
 
   private activeAccountUnlockedSubject = new BehaviorSubject<boolean>(false);
@@ -1008,6 +1012,24 @@ export class StateService<
     );
   }
 
+  async getDuckDuckGoSharedKey(options?: StorageOptions): Promise<string> {
+    options = this.reconcileOptions(options, await this.defaultSecureStorageOptions());
+    if (options?.userId == null) {
+      return null;
+    }
+    return await this.secureStorageService.get<string>(DDG_SHARED_KEY, options);
+  }
+
+  async setDuckDuckGoSharedKey(value: string, options?: StorageOptions): Promise<void> {
+    options = this.reconcileOptions(options, await this.defaultSecureStorageOptions());
+    if (options?.userId == null) {
+      return;
+    }
+    value == null
+      ? await this.secureStorageService.remove(DDG_SHARED_KEY, options)
+      : await this.secureStorageService.save(DDG_SHARED_KEY, value, options);
+  }
+
   async getEmail(options?: StorageOptions): Promise<string> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultInMemoryOptions()))
@@ -1166,6 +1188,27 @@ export class StateService<
     );
   }
 
+  async getEnableDuckDuckGoBrowserIntegration(options?: StorageOptions): Promise<boolean> {
+    return (
+      (await this.getGlobals(this.reconcileOptions(options, await this.defaultOnDiskOptions())))
+        ?.enableDuckDuckGoBrowserIntegration ?? false
+    );
+  }
+
+  async setEnableDuckDuckGoBrowserIntegration(
+    value: boolean,
+    options?: StorageOptions
+  ): Promise<void> {
+    const globals = await this.getGlobals(
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+    globals.enableDuckDuckGoBrowserIntegration = value;
+    await this.saveGlobals(
+      globals,
+      this.reconcileOptions(options, await this.defaultOnDiskOptions())
+    );
+  }
+
   async getEnableFullWidth(options?: StorageOptions): Promise<boolean> {
     return (
       (
@@ -1181,27 +1224,6 @@ export class StateService<
       this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
     );
     account.settings.enableFullWidth = value;
-    await this.saveAccount(
-      account,
-      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
-    );
-  }
-
-  async getEnableGravitars(options?: StorageOptions): Promise<boolean> {
-    return (
-      (
-        await this.getAccount(
-          this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
-        )
-      )?.settings?.enableGravitars ?? false
-    );
-  }
-
-  async setEnableGravitars(value: boolean, options?: StorageOptions): Promise<void> {
-    const account = await this.getAccount(
-      this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
-    );
-    account.settings.enableGravitars = value;
     await this.saveAccount(
       account,
       this.reconcileOptions(options, await this.defaultOnDiskLocalOptions())
@@ -1886,12 +1908,18 @@ export class StateService<
     );
   }
 
+  /**
+   * @deprecated Do not call this directly, use OrganizationService
+   */
   async getOrganizations(options?: StorageOptions): Promise<{ [id: string]: OrganizationData }> {
     return (
       await this.getAccount(this.reconcileOptions(options, await this.defaultOnDiskOptions()))
     )?.data?.organizations;
   }
 
+  /**
+   * @deprecated Do not call this directly, use OrganizationService
+   */
   async setOrganizations(
     value: { [id: string]: OrganizationData },
     options?: StorageOptions
@@ -2504,11 +2532,11 @@ export class StateService<
     await this.pruneInMemoryAccounts();
     await this.state().then((state) => {
       if (state.accounts == null || Object.keys(state.accounts).length < 1) {
-        this.accounts.next(null);
+        this.accountsSubject.next({});
         return;
       }
 
-      this.accounts.next(state.accounts);
+      this.accountsSubject.next(state.accounts);
     });
   }
 

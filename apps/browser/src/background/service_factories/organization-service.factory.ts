@@ -1,5 +1,5 @@
-import { OrganizationService as AbstractOrganizationService } from "@bitwarden/common/abstractions/organization.service";
-import { OrganizationService } from "@bitwarden/common/services/organization.service";
+import { OrganizationService as AbstractOrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { OrganizationService } from "@bitwarden/common/services/organization/organization.service";
 
 import { FactoryOptions, CachedServices, factory } from "./factory-options";
 import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
