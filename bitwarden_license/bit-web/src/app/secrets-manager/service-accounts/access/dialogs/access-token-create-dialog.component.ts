@@ -1,13 +1,13 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, ViewChild } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
 
 import { DialogService } from "@bitwarden/components";
 
 import { ServiceAccountView } from "../../../models/view/service-account.view";
 import { AccessTokenView } from "../../models/view/access-token.view";
 import { AccessService } from "../access.service";
+import { ExpirationOptionsComponent } from "../expiration-options.component";
 
 import { AccessTokenDetails, AccessTokenDialogComponent } from "./access-token-dialog.component";
 
@@ -21,11 +21,9 @@ export interface AccessTokenOperation {
   templateUrl: "./access-token-create-dialog.component.html",
 })
 export class AccessTokenCreateDialogComponent implements OnInit {
-  private destroy$ = new Subject<void>();
+  @ViewChild(ExpirationOptionsComponent) expirationOptionsComponent: ExpirationOptionsComponent;
   protected formGroup = new FormGroup({
     name: new FormControl("", [Validators.required]),
-    expires: new FormControl("", [Validators.required]),
-    expireDateTime: new FormControl(""),
   });
   protected loading = false;
 
@@ -49,23 +47,6 @@ export class AccessTokenCreateDialogComponent implements OnInit {
         `The access token create dialog was not called with the appropriate operation values.`
       );
     }
-
-    this.formGroup
-      .get("expires")
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value == "custom") {
-          this.formGroup.get("expireDateTime").setValidators(Validators.required);
-        } else {
-          this.formGroup.get("expireDateTime").clearValidators();
-          this.formGroup.get("expireDateTime").updateValueAndValidity();
-        }
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   submit = async () => {
@@ -76,7 +57,7 @@ export class AccessTokenCreateDialogComponent implements OnInit {
     }
     const accessTokenView = new AccessTokenView();
     accessTokenView.name = this.formGroup.value.name;
-    accessTokenView.expireAt = this.getExpiresDate();
+    accessTokenView.expireAt = this.expirationOptionsComponent.getExpiresDate();
     const accessToken = await this.accessService.createAccessToken(
       this.data.organizationId,
       this.data.serviceAccountView.id,
@@ -89,15 +70,6 @@ export class AccessTokenCreateDialogComponent implements OnInit {
     );
     this.dialogRef.close();
   };
-
-  private getExpiresDate(): Date {
-    if (this.formGroup.value.expires == "custom") {
-      return new Date(this.formGroup.value.expireDateTime);
-    }
-    const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() + Number(this.formGroup.value.expires));
-    return currentDate;
-  }
 
   private openAccessTokenDialog(
     serviceAccountName: string,

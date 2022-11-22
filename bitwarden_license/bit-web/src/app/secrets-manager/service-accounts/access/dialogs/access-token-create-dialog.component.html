@@ -18,19 +18,10 @@
           <option selected value="canRead">{{ "canRead" | i18n }}</option>
         </select>
       </bit-form-field>
-      <bit-form-field>
-        <bit-label>{{ "expires" | i18n }}</bit-label>
-        <select bitInput formControlName="expires">
-          <option *ngFor="let day of expirationDayOptions" value="{{ day }}">
-            {{ "days" | i18n: day }}
-          </option>
-          <option value="custom">{{ "custom" | i18n }}</option>
-        </select>
-      </bit-form-field>
-      <bit-form-field *ngIf="formGroup.value.expires === 'custom'">
-        <bit-label>{{ "expirationDate" | i18n }}</bit-label>
-        <input bitInput type="datetime-local" formControlName="expireDateTime" />
-      </bit-form-field>
+      <sm-expiration-options
+        [formGroup]="formGroup"
+        [expirationDayOptions]="expirationDayOptions"
+      ></sm-expiration-options>
     </div>
 
     <div bitDialogFooter class="tw-flex tw-gap-2">
