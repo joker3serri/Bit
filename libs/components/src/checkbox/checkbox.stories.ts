@@ -70,14 +70,29 @@ export default {
 
 const DefaultTemplate: Story<ExampleComponent> = (args: ExampleComponent) => ({
   props: args,
-  template: `<input type="checkbox" bitCheckbox [checked]="checked" [disabled]="disabled">`,
+  template: `<app-example [checked]="checked" [disabled]="disabled"></app-example>`,
 });
 
 export const Default = DefaultTemplate.bind({});
 
-const ControlTemplate: Story<ExampleComponent> = (args: ExampleComponent) => ({
+const CustomTemplate: Story = (args) => ({
   props: args,
-  template: `<app-example [checked]="checked" [disabled]="disabled"></app-example>`,
+  template: `
+    <div class="tw-flex tw-flex-col tw-w-32">
+      <label class="tw-text-main tw-flex tw-bg-secondary-300 tw-p-2 tw-items-baseline">
+        A-Z
+        <input class="tw-ml-auto" type="checkbox" bitCheckbox>
+      </label>
+      <label class="tw-text-main tw-flex tw-bg-secondary-300 tw-p-2 tw-items-baseline">
+        a-z
+        <input class="tw-ml-auto" type="checkbox" bitCheckbox>
+      </label>
+      <label class="tw-text-main tw-flex tw-bg-secondary-300 tw-p-2 tw-items-baseline">
+        0-9
+        <input class="tw-ml-auto" type="checkbox" bitCheckbox>
+      </label>
+    </div>
+  `,
 });
 
-export const Control = ControlTemplate.bind({});
+export const Custom = CustomTemplate.bind({});
