@@ -149,9 +149,11 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
         });
     }
 
-    this.orgInfoFormGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.orgInfoFormGroup.controls.name.markAsTouched();
-    });
+    this.orgInfoFormGroup.controls.name.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.orgInfoFormGroup.controls.name.markAsTouched();
+      });
   }
 
   ngOnDestroy(): void {
