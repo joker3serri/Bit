@@ -1,3 +1,4 @@
+import { DatePipe } from "@angular/common";
 import { Component, Input, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
@@ -13,9 +14,11 @@ export class ExpirationOptionsComponent implements OnInit {
   @Input() expirationDayOptions: number[];
 
   protected form = new FormGroup({
-    expires: new FormControl("", [Validators.required]),
+    expires: new FormControl("never", [Validators.required]),
     expireDateTime: new FormControl(""),
   });
+
+  constructor(private datePipe: DatePipe) {}
 
   async ngOnInit() {
     this.formGroup.addControl("expires", this.form.controls.expires);
@@ -34,6 +37,11 @@ export class ExpirationOptionsComponent implements OnInit {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  get minDateTime() {
+    const now = new Date();
+    return this.datePipe.transform(now, "YYYY-MM-ddThh:mm");
   }
 
   getExpiresDate(): Date {

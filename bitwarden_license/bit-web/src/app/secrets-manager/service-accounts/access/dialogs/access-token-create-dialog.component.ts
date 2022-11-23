@@ -4,10 +4,10 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 
 import { DialogService } from "@bitwarden/components";
 
+import { ExpirationOptionsComponent } from "../../../layout/expiration-options.component";
 import { ServiceAccountView } from "../../../models/view/service-account.view";
 import { AccessTokenView } from "../../models/view/access-token.view";
 import { AccessService } from "../access.service";
-import { ExpirationOptionsComponent } from "../expiration-options.component";
 
 import { AccessTokenDetails, AccessTokenDialogComponent } from "./access-token-dialog.component";
 

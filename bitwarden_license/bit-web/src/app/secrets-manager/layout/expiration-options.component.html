@@ -2,7 +2,8 @@
   <bit-form-field>
     <bit-label>{{ "expires" | i18n }}</bit-label>
     <select bitInput formControlName="expires">
-      <option *ngFor="let day of expirationDayOptions" value="{{ day }}">
+      <option selected value="never">{{ "never" | i18n }}</option>
+      <option *ngFor="let day of expirationDayOptions" [value]="day">
         {{ "days" | i18n: day }}
       </option>
       <option value="custom">{{ "custom" | i18n }}</option>
@@ -10,6 +11,6 @@
   </bit-form-field>
   <bit-form-field *ngIf="formGroup.value.expires === 'custom'">
     <bit-label>{{ "expirationDate" | i18n }}</bit-label>
-    <input bitInput type="datetime-local" formControlName="expireDateTime" />
+    <input bitInput type="datetime-local" [min]="minDateTime" formControlName="expireDateTime" />
   </bit-form-field>
 </form>

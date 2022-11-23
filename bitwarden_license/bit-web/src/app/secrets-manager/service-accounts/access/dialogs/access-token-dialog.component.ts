@@ -1,6 +1,9 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+
 export interface AccessTokenDetails {
   subTitle: string;
   expirationDate: Date;
@@ -12,7 +15,12 @@ export interface AccessTokenDetails {
   templateUrl: "./access-token-dialog.component.html",
 })
 export class AccessTokenDialogComponent implements OnInit {
-  constructor(public dialogRef: DialogRef, @Inject(DIALOG_DATA) public data: AccessTokenDetails) {}
+  constructor(
+    public dialogRef: DialogRef,
+    @Inject(DIALOG_DATA) public data: AccessTokenDetails,
+    private platformUtilsService: PlatformUtilsService,
+    private i18nService: I18nService
+  ) {}
 
   ngOnInit(): void {
     // TODO remove null checks once strictNullChecks in TypeScript is turned on.
@@ -23,7 +31,12 @@ export class AccessTokenDialogComponent implements OnInit {
   }
 
   copyAccessToken(): void {
-    // TODO copy accessToken to clipboard
+    this.platformUtilsService.copyToClipboard(this.data.accessToken);
+    this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t("accessTokenCreatedAndCopied")
+    );
     this.dialogRef.close();
   }
 }
