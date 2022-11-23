@@ -41,15 +41,15 @@ export default {
 export const Default: Story<NavGroupComponent> = (args) => ({
   props: args,
   template: `
-      <nav-group title="Hello World" to="#" icon="bwi-filter">
+      <nav-group title="Hello World (Anchor)" to="#" icon="bwi-filter">
         <nav-item title="Child A" to="#" icon="bwi-filter"></nav-item>
         <nav-item title="Child B" to="#"></nav-item>
         <nav-item title="Child C" to="#" icon="bwi-filter"></nav-item>
       </nav-group>
-      <nav-group title="Hello World" to="#">
-        <nav-item title="Child A" to="#" icon="bwi-filter"></nav-item>
-        <nav-item title="Child B" to="#"></nav-item>
-        <nav-item title="Child C" to="#" icon="bwi-filter"></nav-item>
+      <nav-group title="Lorem Ipsum (Button)" icon="bwi-filter">
+        <nav-item title="Child A" icon="bwi-filter"></nav-item>
+        <nav-item title="Child B"></nav-item>
+        <nav-item title="Child C" icon="bwi-filter"></nav-item>
       </nav-group>
     `,
 });
@@ -57,7 +57,7 @@ export const Default: Story<NavGroupComponent> = (args) => ({
 export const Tree: Story<NavGroupComponent> = (args) => ({
   props: args,
   template: `
-    <nav-group title="Tree example" open>
+    <nav-group title="Tree example" icon="bwi-collection" open>
       <nav-group title="Level 1 - with children (empty)" to="#" icon="bwi-collection" variant="tree"></nav-group>
       <nav-item title="Level 1 - no childen" to="#" icon="bwi-collection" variant="tree"></nav-item>
       <nav-group title="Level 1 - with children" to="#" icon="bwi-collection" variant="tree">

@@ -1,6 +1,8 @@
 import { RouterTestingModule } from "@angular/router/testing";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
+import { IconButtonModule } from "../icon-button";
+
 import { NavItemComponent } from "./nav-item.component";
 
 export default {
@@ -9,7 +11,7 @@ export default {
   decorators: [
     moduleMetadata({
       declarations: [],
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, IconButtonModule],
     }),
   ],
   parameters: {
@@ -27,9 +29,55 @@ const Template: Story<NavItemComponent> = (args: NavItemComponent) => ({
     `,
 });
 
-export const Default = Template.bind({});
-Default.args = {
+export const WithoutRoute = Template.bind({});
+WithoutRoute.args = {
   title: "Hello World",
   to: "",
   icon: "bwi-filter",
 };
+
+export const WithRoute = Template.bind({});
+WithRoute.args = {
+  title: "Hello World",
+  to: "#",
+  icon: "bwi-filter",
+};
+
+export const WithoutIcon = Template.bind({});
+WithoutIcon.args = {
+  title: "Hello World",
+  to: "",
+  icon: "",
+};
+
+export const WithSlots: Story<NavItemComponent> = (args: NavItemComponent) => ({
+  props: args,
+  template: `
+      <nav-item title="Hello World" icon="bwi-collection">
+        <button
+          slot-start
+          class="tw-ml-auto"
+          [bitIconButton]="'bwi-clone'"
+          [buttonType]="'contrast'"
+          size="small"
+          title="test"
+        ></button>
+        <button
+          slot-end
+          class="tw-ml-auto"
+          [bitIconButton]="'bwi-pencil-square'"
+          [buttonType]="'contrast'"
+          size="small"
+          title="test"
+        ></button>
+        <button
+          slot-end
+          class="tw-ml-auto"
+          [bitIconButton]="'bwi-check'"
+          [buttonType]="'contrast'"
+          size="small"
+          title="test"
+        ></button>
+      </nav-item>
+    `,
+});
