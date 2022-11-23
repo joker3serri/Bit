@@ -57,7 +57,7 @@ export default {
 } as Meta;
 
 const fb = new FormBuilder();
-const example1FormObj = fb.group({
+const exampleFormObj = fb.group({
   name: ["", [Validators.required]],
   email: ["", [Validators.required, Validators.email, forbiddenNameValidator(/bit/i)]],
   terms: [false, [Validators.requiredTrue]],
@@ -74,8 +74,8 @@ function forbiddenNameValidator(nameRe: RegExp): ValidatorFn {
 
 const FullExampleTemplate: Story = (args) => ({
   props: {
-    formObj: example1FormObj,
-    submit: () => example1FormObj.markAllAsTouched(),
+    formObj: exampleFormObj,
+    submit: () => exampleFormObj.markAllAsTouched(),
     ...args,
   },
   template: `
