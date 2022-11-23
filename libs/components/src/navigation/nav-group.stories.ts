@@ -39,7 +39,7 @@ export default {
 export const Default: Story<NavGroupComponent> = (args) => ({
   props: args,
   template: `
-      <nav-group text="Hello World (Anchor)" route="#" icon="bwi-filter">
+      <nav-group text="Hello World (Anchor)" [route]="['']" icon="bwi-filter">
         <nav-item text="Child A" route="#" icon="bwi-filter"></nav-item>
         <nav-item text="Child B" route="#"></nav-item>
         <nav-item text="Child C" route="#" icon="bwi-filter"></nav-item>

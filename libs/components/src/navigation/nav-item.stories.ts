@@ -25,35 +25,33 @@ export default {
 const Template: Story<NavItemComponent> = (args: NavItemComponent) => ({
   props: args,
   template: `
-      <nav-item text="${args.text}" route="${args.route}" icon="${args.icon}"></nav-item>
+      <nav-item text="${args.text}"  [route]="['']" icon="${args.icon}"></nav-item>
     `,
 });
 
-export const WithoutRoute = Template.bind({});
-WithoutRoute.args = {
+export const Default = Template.bind({});
+Default.args = {
   text: "Hello World",
-  route: "",
-  icon: "bwi-filter",
-};
-
-export const WithRoute = Template.bind({});
-WithRoute.args = {
-  text: "Hello World",
-  route: "#",
   icon: "bwi-filter",
 };
 
 export const WithoutIcon = Template.bind({});
 WithoutIcon.args = {
   text: "Hello World",
-  route: "",
   icon: "",
 };
+
+export const WithoutRoute: Story<NavItemComponent> = (args: NavItemComponent) => ({
+  props: args,
+  template: `
+      <nav-item text="Hello World" icon="bwi-collection"></nav-item>
+    `,
+});
 
 export const WithSlots: Story<NavItemComponent> = (args: NavItemComponent) => ({
   props: args,
   template: `
-      <nav-item text="Hello World" icon="bwi-collection">
+      <nav-item text="Hello World" [route]="['']" icon="bwi-collection">
         <button
           slot-start
           class="tw-ml-auto"

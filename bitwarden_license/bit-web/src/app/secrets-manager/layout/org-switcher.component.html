@@ -1,4 +1,4 @@
-<nav-group [title]="'Org Name (todo)'" icon="bwi-business" [route]="['#']">
+<nav-group [text]="'Org Name (todo)'" icon="bwi-business" [route]="['#']">
   <ng-container *ngIf="organizations$ | async as organizations">
     <nav-item
       *ngFor="let org of organizations"
