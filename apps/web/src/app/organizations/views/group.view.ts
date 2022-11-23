@@ -1,6 +1,9 @@
 import { View } from "@bitwarden/common/models/view/view";
 
-import { GroupDetailsResponse, GroupResponse } from "../services/group/responses/group.response";
+import {
+  GroupDetailsResponse,
+  GroupResponse,
+} from "../core/services/group/responses/group.response";
 import { CollectionAccessSelectionView } from "../views/collection-access-selection.view";
 
 export class GroupView implements View {

@@ -34,7 +34,7 @@ import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
-import { GroupServiceAbstraction } from "../services/abstractions/group";
+import { GroupService } from "../core";
 import { GroupView } from "../views/group.view";
 
 import {
@@ -125,7 +125,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
 
   constructor(
     private apiService: ApiService,
-    private groupApiService: GroupServiceAbstraction,
+    private groupService: GroupService,
     private route: ActivatedRoute,
     private i18nService: I18nService,
     private modalService: ModalService,
@@ -150,7 +150,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
             ),
             // groups
             this.refreshGroups$.pipe(
-              switchMap(() => this.groupApiService.getAll(this.organizationId))
+              switchMap(() => this.groupService.getAll(this.organizationId))
             ),
           ])
         ),
@@ -248,7 +248,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     }
 
     try {
-      await this.groupApiService.delete(this.organizationId, groupRow.details.id);
+      await this.groupService.delete(this.organizationId, groupRow.details.id);
       this.platformUtilsService.showToast(
         "success",
         null,
@@ -280,7 +280,7 @@ export class GroupsComponent implements OnInit, OnDestroy {
     }
 
     try {
-      const result = await this.groupApiService.deleteMany(
+      const result = await this.groupService.deleteMany(
         this.organizationId,
         groupsToDelete.map((g) => g.details.id)
       );
