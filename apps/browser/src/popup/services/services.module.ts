@@ -37,10 +37,7 @@ import { ProviderService } from "@bitwarden/common/abstractions/provider.service
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/abstractions/search.service";
 import { SendService } from "@bitwarden/common/abstractions/send.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
-import {
-  StateService as BaseStateServiceAbstraction,
-  StateService,
-} from "@bitwarden/common/abstractions/state.service";
+import { StateService as BaseStateServiceAbstraction } from "@bitwarden/common/abstractions/state.service";
 import { StateMigrationService } from "@bitwarden/common/abstractions/stateMigration.service";
 import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
@@ -228,10 +225,10 @@ function getBgService<T>(service: keyof MainBackground) {
     { provide: SyncService, useFactory: getBgService<SyncService>("syncService"), deps: [] },
     {
       provide: SettingsService,
-      useFactory: (stateService: StateService) => {
+      useFactory: (stateService: StateServiceAbstraction) => {
         return new BrowserSettingsService(stateService);
       },
-      deps: [StateService],
+      deps: [StateServiceAbstraction],
     },
     {
       provide: AbstractStorageService,
