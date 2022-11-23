@@ -4,8 +4,8 @@ import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
 import { DialogService } from "@bitwarden/components";
 
-import { ServiceAccountView } from "../../models/view/service-account.view";
 import { AccessTokenView } from "../models/view/access-token.view";
+import { ServiceAccountService } from "../service-account.service";
 
 import { AccessService } from "./access.service";
 import {
@@ -26,6 +26,7 @@ export class AccessTokenComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private accessService: AccessService,
+    private serviceAccountService: ServiceAccountService,
     private dialogService: DialogService
   ) {}
 
@@ -45,16 +46,13 @@ export class AccessTokenComponent implements OnInit {
     return await this.accessService.getAccessTokens(this.organizationId, this.serviceAccountId);
   }
 
-  openNewAccessTokenDialog() {
-    // FIXME add a single fetch for Api to grab the service account by id and pass in here.
-    const serviceAccountView = new ServiceAccountView();
-    serviceAccountView.id = this.serviceAccountId;
-    serviceAccountView.name = "test";
-
+  async openNewAccessTokenDialog() {
     this.dialogService.open<unknown, AccessTokenOperation>(AccessTokenCreateDialogComponent, {
       data: {
         organizationId: this.organizationId,
-        serviceAccountView: serviceAccountView,
+        serviceAccountView: await this.serviceAccountService.getByServiceAccountId(
+          this.serviceAccountId
+        ),
       },
     });
   }
