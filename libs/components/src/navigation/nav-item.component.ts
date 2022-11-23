@@ -6,9 +6,8 @@ import {
   HostListener,
   Input,
   Output,
-  ViewChild,
 } from "@angular/core";
-import { RouterLinkActive } from "@angular/router";
+import { IsActiveMatchOptions } from "@angular/router";
 import { BehaviorSubject, map } from "rxjs";
 
 @Component({
@@ -35,7 +34,7 @@ export class NavItemComponent implements AfterViewInit {
 
   /**
    * Route to be passed to internal `routerLink`
-   **/
+   */
   @Input() to: string;
 
   /**
@@ -47,11 +46,15 @@ export class NavItemComponent implements AfterViewInit {
    * Is `true` if `to` matches the current route
    */
   protected active = false;
-
-  @ViewChild("rla")
-  private set setActive(rla: RouterLinkActive) {
-    this.active = rla?.isActive == true;
+  protected setActive(isActive: boolean) {
+    this.active = isActive;
   }
+  protected readonly rlaOptions: IsActiveMatchOptions = {
+    paths: "subset",
+    queryParams: "exact",
+    fragment: "ignored",
+    matrixParams: "ignored",
+  };
 
   /**
    * - is `true` if the host component has a descendant that matches `.fvw:focus-visible`
@@ -61,12 +64,10 @@ export class NavItemComponent implements AfterViewInit {
   protected fvwStyles$ = this.focusVisibleWithin$.pipe(
     map((value) => (value ? "tw-z-10 tw-rounded tw-outline-none tw-ring tw-ring-text-alt2" : ""))
   );
-
   @HostListener("focusin", ["$event.target"])
   onFocusIn(target: HTMLElement) {
     this.focusVisibleWithin$.next(target.matches(".fvw:focus-visible"));
   }
-
   @HostListener("focusout")
   onFocusOut() {
     this.focusVisibleWithin$.next(false);

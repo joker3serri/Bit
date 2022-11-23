@@ -3,42 +3,56 @@
     fvwStyles$ | async
   }}"
 >
+  <!-- `--nested-left-padding` is increased when nested inside of a `NavGroupComponent` -->
   <div
     class="tw-pl-[calc(var(--base-left-padding,1rem)+var(--nested-left-padding,0rem))] tw-flex tw-relative tw-gap-1 tw-items-center tw-pr-4 {{
       variant === 'tree' ? 'tw-py-1' : 'tw-py-2'
     }}"
   >
-    <div #slotStart><ng-content select="[slot-start]"></ng-content></div>
-    <div *ngIf="!slotStart.hasChildNodes() && variant === 'tree'" class="tw-p-[.69rem]"></div>
+    <div #slotStart class="[&>*]:!tw-text-sm"><ng-content select="[slot-start]"></ng-content></div>
+    <!-- Default content for #slotStart (for consistent sizing) -->
+    <div
+      *ngIf="slotStart.childElementCount === 0"
+      class="{{ variant === 'tree' ? 'tw-px-[.69rem]' : '' }} tw-h-[1.875rem]"
+    ></div>
 
     <ng-container *ngIf="to; then isAnchor; else isButton"></ng-container>
 
+    <!-- Main content of `NavItem` -->
     <ng-template #anchorAndButtonContent>
       <i class="bwi bwi-fw tw-text-white tw-mr-1 {{ icon }}"></i
       ><span [ngClass]="active ? 'tw-font-bold' : 'tw-font-semibold'">{{ title }}</span>
     </ng-template>
 
+    <!-- Show if a value was passed to `this.to` -->
     <ng-template #isAnchor>
+      <!-- The `fvw` class passes focus to `this.focusVisibleWithin$` -->
+      <!-- Class field should match `#isButton` class field below -->
       <a
-        class="fvw tw-w-full tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-border-none tw-bg-transparent tw-text-start !tw-text-alt2 hover:tw-text-alt2 hover:tw-no-underline focus:tw-outline-none [&>:not(.bwi)]:hover:tw-underline"
+        class="fvw tw-w-full tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-border-none tw-bg-transparent tw-p-0 tw-text-start !tw-text-alt2 hover:tw-text-alt2 hover:tw-no-underline focus:tw-outline-none [&>:not(.bwi)]:hover:tw-underline"
         [routerLink]="to"
         routerLinkActive
-        #rla="routerLinkActive"
+        [routerLinkActiveOptions]="rlaOptions"
+        (isActiveChange)="setActive($event)"
         (click)="mainContentClicked.emit()"
       >
         <ng-container *ngTemplateOutlet="anchorAndButtonContent"></ng-container>
       </a>
     </ng-template>
 
+    <!-- Show if `this.to` is falsy -->
     <ng-template #isButton>
+      <!-- Class field should match `#isAnchor` class field above -->
       <button
-        class="fvw tw-w-full tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-border-none tw-bg-transparent tw-text-start !tw-text-alt2 hover:tw-text-alt2 hover:tw-no-underline focus:tw-outline-none [&>:not(.bwi)]:hover:tw-underline"
+        class="fvw tw-w-full tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-border-none tw-bg-transparent tw-p-0 tw-text-start !tw-text-alt2 hover:tw-text-alt2 hover:tw-no-underline focus:tw-outline-none [&>:not(.bwi)]:hover:tw-underline"
         (click)="mainContentClicked.emit()"
       >
         <ng-container *ngTemplateOutlet="anchorAndButtonContent"></ng-container>
       </button>
     </ng-template>
 
-    <ng-content select="[slot-end]"></ng-content>
+    <div class="tw-flex tw-gap-1 [&>*]:!tw-text-sm">
+      <ng-content select="[slot-end]"></ng-content>
+    </div>
   </div>
 </div>
