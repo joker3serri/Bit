@@ -13,8 +13,12 @@ import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/src/model
 import { CollectionView } from "@bitwarden/common/src/models/view/collection.view";
 import { BitValidators, DialogService } from "@bitwarden/components";
 
-import { CollectionAdminService, CollectionAdminView, GroupService } from "../../../core";
-import { GroupView } from "../../../views/group.view";
+import {
+  CollectionAdminService,
+  CollectionAdminView,
+  GroupService,
+  GroupView,
+} from "../../../core";
 import {
   AccessItemType,
   AccessItemValue,

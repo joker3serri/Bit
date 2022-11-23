@@ -3,3 +3,4 @@ export * from "./services/collection-admin.service";
 export * from "./services/group/group.service";
 export * from "./views/collection-access-selection-view";
 export * from "./views/collection-admin-view";
+export * from "./views/group.view";

@@ -34,8 +34,7 @@ import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
-import { GroupService } from "../core";
-import { GroupView } from "../views/group.view";
+import { GroupService, GroupView } from "../core";
 
 import {
   GroupAddEditDialogResultType,

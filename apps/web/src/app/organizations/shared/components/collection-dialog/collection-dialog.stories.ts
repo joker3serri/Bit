@@ -19,8 +19,8 @@ import {
   CollectionAdminService,
   CollectionAdminView,
   GroupService,
+  GroupView,
 } from "../../../core";
-import { GroupView } from "../../../views/group.view";
 import { AccessSelectorModule } from "../access-selector";
 
 import { CollectionDialogComponent, CollectionDialogParams } from "./collection-dialog.component";

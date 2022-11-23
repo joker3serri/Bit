@@ -15,7 +15,7 @@ import { CollectionDetailsResponse } from "@bitwarden/common/models/response/col
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { DialogService } from "@bitwarden/components";
 
-import { GroupService } from "../core";
+import { GroupService, GroupView } from "../core";
 import {
   AccessItemType,
   AccessItemValue,
@@ -24,7 +24,6 @@ import {
   convertToSelectionView,
   PermissionMode,
 } from "../shared/components/access-selector";
-import { GroupView } from "../views/group.view";
 
 /**
  * Indices for the available tabs in the dialog

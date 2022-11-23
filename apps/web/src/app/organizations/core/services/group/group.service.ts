@@ -4,8 +4,8 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selection-read-only.request";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 
-import { GroupView } from "../../../views/group.view";
 import { CoreOrganizationModule } from "../../core-organization.module";
+import { GroupView } from "../../views/group.view";
 
 import { GroupRequest } from "./requests/group.request";
 import { OrganizationGroupBulkRequest } from "./requests/organization-group-bulk.request";
