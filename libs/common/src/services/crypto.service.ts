@@ -478,6 +478,16 @@ export class CryptoService implements CryptoServiceAbstraction {
     return new SymmetricCryptoKey(sendKey);
   }
 
+  async makeKeyFromRandomBytes(
+    salt: string,
+    info: string,
+    numberOfBytes = 16
+  ): Promise<SymmetricCryptoKey> {
+    const keyMaterial = await this.cryptoFunctionService.randomBytes(numberOfBytes);
+    const key = await this.cryptoFunctionService.hkdf(keyMaterial, salt, info, 64, "sha256");
+    return new SymmetricCryptoKey(key);
+  }
+
   async hashPassword(
     password: string,
     key: SymmetricCryptoKey,

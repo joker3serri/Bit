@@ -51,7 +51,10 @@ export class AccessService {
     serviceAccountId: string,
     accessTokenView: AccessTokenView
   ): Promise<string> {
-    const encryptionKey = await this.makeAccessTokenEncryptionKey();
+    const encryptionKey = await this.cryptoService.makeKeyFromRandomBytes(
+      "bitwarden-accesstoken",
+      "sm-access-token"
+    );
     const request = await this.createAccessTokenRequest(
       organizationId,
       encryptionKey,
@@ -88,18 +91,6 @@ export class AccessService {
     accessTokenRequest.key = key;
     accessTokenRequest.expireAt = accessTokenView.expireAt;
     return accessTokenRequest;
-  }
-
-  private async makeAccessTokenEncryptionKey(numberOfBytes = 16): Promise<SymmetricCryptoKey> {
-    const keyMaterial = await this.cryptoFunctionService.randomBytes(numberOfBytes);
-    const key = await this.cryptoFunctionService.hkdf(
-      keyMaterial,
-      "bitwarden-accesstoken",
-      "sm-access-token",
-      64,
-      "sha256"
-    );
-    return new SymmetricCryptoKey(key);
   }
 
   private async getOrganizationKey(organizationId: string): Promise<SymmetricCryptoKey> {
