@@ -115,11 +115,7 @@ export class ExportService implements ExportServiceAbstraction {
     let decCiphers: CipherView[] = [];
     const promises = [];
 
-    promises.push(
-      this.folderService.getAllDecryptedFromState().then((folders) => {
-        decFolders = folders;
-      })
-    );
+    promises.push((decFolders = await this.folderService.getAllDecryptedFromState()));
 
     promises.push(
       this.cipherService.getAllDecrypted().then((ciphers) => {
