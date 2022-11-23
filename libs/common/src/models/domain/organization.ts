@@ -205,6 +205,10 @@ export class Organization {
   }
 
   static fromJSON(json: Jsonify<Organization>) {
+    if (json == null) {
+      return null;
+    }
+
     return Object.assign(new Organization(), json, {
       familySponsorshipLastSyncDate: new Date(json.familySponsorshipLastSyncDate),
       familySponsorshipValidUntil: new Date(json.familySponsorshipValidUntil),
