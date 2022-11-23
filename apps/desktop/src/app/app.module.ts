@@ -58,6 +58,9 @@ import localeZhCn from "@angular/common/locales/zh-Hans";
 import localeZhTw from "@angular/common/locales/zh-Hant";
 import { NgModule } from "@angular/core";
 
+import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
+import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
+
 import { AccessibilityCookieComponent } from "./accounts/accessibility-cookie.component";
 import { DeleteAccountComponent } from "./accounts/delete-account.component";
 import { EnvironmentComponent } from "./accounts/environment.component";
@@ -102,9 +105,6 @@ import { VaultFilterModule } from "./vault/vault-filter/vault-filter.module";
 import { VaultComponent } from "./vault/vault.component";
 import { ViewCustomFieldsComponent } from "./vault/view-custom-fields.component";
 import { ViewComponent } from "./vault/view.component";
-
-import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
-import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 
 registerLocaleData(localeAf, "af");
 registerLocaleData(localeAr, "ar");
