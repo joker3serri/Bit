@@ -12,6 +12,7 @@ export abstract class FolderService {
   clearCache: () => Promise<void>;
   encrypt: (model: FolderView, key?: SymmetricCryptoKey) => Promise<Folder>;
   get: (id: string) => Promise<Folder>;
+  getAll: () => Promise<Folder[]>;
   /**
    * @deprecated Only use in CLI!
    */
