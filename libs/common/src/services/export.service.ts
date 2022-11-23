@@ -116,7 +116,7 @@ export class ExportService implements ExportServiceAbstraction {
     const promises = [];
 
     promises.push(
-      firstValueFrom(this.folderService.folderViews$).then((folders) => {
+      this.folderService.getAllDecryptedFromState().then((folders) => {
         decFolders = folders;
       })
     );
