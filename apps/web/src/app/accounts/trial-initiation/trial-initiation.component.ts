@@ -42,7 +42,7 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
   @ViewChild("stepper", { static: false }) verticalStepper: VerticalStepperComponent;
 
   orgInfoFormGroup = this.formBuilder.group({
-    name: ["", [Validators.required]],
+    name: ["", { validators: [Validators.required, Validators.maxLength(50)], updateOn: "change" }],
     email: [""],
   });
 
@@ -148,6 +148,10 @@ export class TrialInitiationComponent implements OnInit, OnDestroy {
           this.enforcedPolicyOptions = enforcedPasswordPolicyOptions;
         });
     }
+
+    this.orgInfoFormGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.orgInfoFormGroup.controls.name.markAsTouched();
+    });
   }
 
   ngOnDestroy(): void {
