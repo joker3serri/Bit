@@ -2,6 +2,10 @@ import { Component, Input } from "@angular/core";
 import { FormsModule, ReactiveFormsModule, FormBuilder } from "@angular/forms";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+
+import { I18nMockService } from "../utils/i18n-mock.service";
+
 import { RadioButtonModule } from "./radio-button.module";
 
 const template = `
@@ -55,7 +59,18 @@ export default {
     moduleMetadata({
       declarations: [ExampleComponent],
       imports: [FormsModule, ReactiveFormsModule, RadioButtonModule],
-      providers: [],
+      providers: [
+        {
+          provide: I18nService,
+          useFactory: () => {
+            return new I18nMockService({
+              required: "required",
+              inputRequired: "Input is required.",
+              inputEmail: "Input is not an email-address.",
+            });
+          },
+        },
+      ],
     }),
   ],
   args: {

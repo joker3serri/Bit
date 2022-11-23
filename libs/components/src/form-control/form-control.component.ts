@@ -1,3 +1,4 @@
+import { coerceBooleanProperty } from "@angular/cdk/coercion";
 import { Component, ContentChild, HostBinding, Input } from "@angular/core";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -11,9 +12,19 @@ import { BitFormControlAbstraction } from "./form-control.abstraction";
 export class FormControlComponent {
   @Input() label: string;
 
+  private _inline: boolean;
+  @Input() get inline() {
+    return this._inline;
+  }
+  set inline(value: boolean | string | null) {
+    this._inline = coerceBooleanProperty(value);
+  }
+
   @ContentChild(BitFormControlAbstraction) protected formControl: BitFormControlAbstraction;
 
-  @HostBinding("class") classes = ["tw-block", "tw-mb-6"];
+  @HostBinding("class") get classes() {
+    return ["tw-mb-6"].concat(this.inline ? ["tw-inline-block", "tw-mr-4"] : ["tw-block"]);
+  }
 
   constructor(private i18nService: I18nService) {}
 

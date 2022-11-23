@@ -2,6 +2,10 @@ import { Component } from "@angular/core";
 import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+
+import { I18nMockService } from "../utils/i18n-mock.service";
+
 import { RadioButtonModule } from "./radio-button.module";
 import { RadioGroupComponent } from "./radio-group.component";
 
@@ -17,11 +21,15 @@ describe("RadioButton", () => {
     TestBed.configureTestingModule({
       imports: [RadioButtonModule],
       declarations: [TestApp],
-      providers: [{ provide: RadioGroupComponent, useValue: mockGroupComponent }],
+      providers: [
+        { provide: RadioGroupComponent, useValue: mockGroupComponent },
+        { provide: I18nService, useValue: new I18nMockService({}) },
+      ],
     });
 
     TestBed.compileComponents();
     fixture = TestBed.createComponent(TestApp);
+    fixture.detectChanges();
     testAppComponent = fixture.debugElement.componentInstance;
     radioButton = fixture.debugElement.query(By.css("input[type=radio]")).nativeElement;
   }));

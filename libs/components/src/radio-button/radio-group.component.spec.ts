@@ -3,6 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { FormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+
+import { I18nMockService } from "../utils/i18n-mock.service";
+
 import { RadioButtonComponent } from "./radio-button.component";
 import { RadioButtonModule } from "./radio-button.module";
 
@@ -16,10 +20,12 @@ describe("RadioGroupComponent", () => {
     TestBed.configureTestingModule({
       imports: [FormsModule, RadioButtonModule],
       declarations: [TestApp],
+      providers: [{ provide: I18nService, useValue: new I18nMockService({}) }],
     });
 
     TestBed.compileComponents();
     fixture = TestBed.createComponent(TestApp);
+    fixture.detectChanges();
     testAppComponent = fixture.debugElement.componentInstance;
     buttonElements = fixture.debugElement
       .queryAll(By.css("bit-radio-button"))
