@@ -279,10 +279,10 @@ function getBgService<T>(service: keyof MainBackground) {
     { provide: PasswordRepromptServiceAbstraction, useClass: PasswordRepromptService },
     {
       provide: OrganizationService,
-      useFactory: (stateService: StateService) => {
+      useFactory: (stateService: StateServiceAbstraction) => {
         return new BrowserOrganizationService(stateService);
       },
-      deps: [StateService],
+      deps: [StateServiceAbstraction],
     },
     {
       provide: VaultFilterService,
