@@ -72,7 +72,7 @@ function forbiddenNameValidator(nameRe: RegExp): ValidatorFn {
   };
 }
 
-const FullExample1Template: Story = (args) => ({
+const FullExampleTemplate: Story = (args) => ({
   props: {
     formObj: example1FormObj,
     submit: () => example1FormObj.markAllAsTouched(),
@@ -108,4 +108,4 @@ const FullExample1Template: Story = (args) => ({
   `,
 });
 
-export const FullExample1 = FullExample1Template.bind({});
+export const FullExample = FullExampleTemplate.bind({});
