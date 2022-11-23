@@ -7,7 +7,7 @@ let nextId = 0;
   templateUrl: "./toggle-group.component.html",
   preserveWhitespaces: false,
 })
-export class ToggleGroupComponent<TValue> {
+export class ToggleGroupComponent<TValue = unknown> {
   private id = nextId++;
   name = `bit-toggle-group-${this.id}`;
 
