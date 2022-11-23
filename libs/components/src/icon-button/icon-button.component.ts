@@ -1,15 +1,8 @@
 import { Component, HostBinding, Input } from "@angular/core";
 
-import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
+import { ButtonLikeAbstraction, ButtonType } from "../shared/button-like.abstraction";
 
-export type IconButtonType =
-  | "contrast"
-  | "main"
-  | "muted"
-  | "primary"
-  | "secondary"
-  | "danger"
-  | "unstyled";
+export type IconButtonType = ButtonType | "contrast" | "main" | "muted";
 
 const focusRing = [
   // Workaround for box-shadow with transparent offset issue:

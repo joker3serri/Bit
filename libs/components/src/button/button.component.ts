@@ -1,8 +1,6 @@
 import { Input, HostBinding, Component } from "@angular/core";
 
-import { ButtonLikeAbstraction } from "../shared/button-like.abstraction";
-
-export type ButtonTypes = "primary" | "secondary" | "danger" | "unstyled";
+import { ButtonLikeAbstraction, ButtonType } from "../shared/button-like.abstraction";
 
 const focusRing = [
   "focus-visible:tw-ring",
@@ -11,7 +9,7 @@ const focusRing = [
   "focus-visible:tw-z-10",
 ];
 
-const buttonStyles: Record<ButtonTypes, string[]> = {
+const buttonStyles: Record<ButtonType, string[]> = {
   primary: [
     "tw-border-primary-500",
     "tw-bg-primary-500",
@@ -82,7 +80,7 @@ export class ButtonComponent implements ButtonLikeAbstraction {
     return disabled || this.loading ? true : null;
   }
 
-  @Input() buttonType: ButtonTypes;
+  @Input() buttonType: ButtonType;
   @Input() block?: boolean;
   @Input() loading = false;
   @Input() disabled = false;
