@@ -1,5 +1,5 @@
 <div
-  class="tw-relative {{ rla.isActive ? 'tw-bg-background-alt4' : 'tw-bg-background-alt3' }} {{
+  class="tw-relative {{ active ? 'tw-bg-background-alt4' : 'tw-bg-background-alt3' }} {{
     fvwStyles$ | async
   }}"
 >
@@ -10,15 +10,35 @@
   >
     <div #slotStart><ng-content select="[slot-start]"></ng-content></div>
     <div *ngIf="!slotStart.hasChildNodes() && variant === 'tree'" class="tw-p-[.69rem]"></div>
-    <a
-      class="fvw tw-w-full tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap !tw-text-alt2 hover:tw-text-alt2 hover:tw-no-underline focus:tw-outline-none [&>:not(.bwi)]:hover:tw-underline"
-      [routerLink]="to"
-      routerLinkActive
-      #rla="routerLinkActive"
-    >
+
+    <ng-container *ngIf="to; then isAnchor; else isButton"></ng-container>
+
+    <ng-template #anchorAndButtonContent>
       <i class="bwi bwi-fw tw-text-white tw-mr-1 {{ icon }}"></i
-      ><span [ngClass]="rla.isActive ? 'tw-font-bold' : 'tw-font-semibold'">{{ title }}</span>
-    </a>
+      ><span [ngClass]="active ? 'tw-font-bold' : 'tw-font-semibold'">{{ title }}</span>
+    </ng-template>
+
+    <ng-template #isAnchor>
+      <a
+        class="fvw tw-w-full tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-border-none tw-bg-transparent tw-text-start !tw-text-alt2 hover:tw-text-alt2 hover:tw-no-underline focus:tw-outline-none [&>:not(.bwi)]:hover:tw-underline"
+        [routerLink]="to"
+        routerLinkActive
+        #rla="routerLinkActive"
+        (click)="mainContentClicked.emit()"
+      >
+        <ng-container *ngTemplateOutlet="anchorAndButtonContent"></ng-container>
+      </a>
+    </ng-template>
+
+    <ng-template #isButton>
+      <button
+        class="fvw tw-w-full tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-border-none tw-bg-transparent tw-text-start !tw-text-alt2 hover:tw-text-alt2 hover:tw-no-underline focus:tw-outline-none [&>:not(.bwi)]:hover:tw-underline"
+        (click)="mainContentClicked.emit()"
+      >
+        <ng-container *ngTemplateOutlet="anchorAndButtonContent"></ng-container>
+      </button>
+    </ng-template>
+
     <ng-content select="[slot-end]"></ng-content>
   </div>
 </div>

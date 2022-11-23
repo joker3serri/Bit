@@ -1,4 +1,10 @@
-<nav-item [title]="title" [icon]="icon" [to]="to" [variant]="variant">
+<nav-item
+  [title]="title"
+  [icon]="icon"
+  [to]="to"
+  [variant]="variant"
+  (mainContentClicked)="toggle()"
+>
   <button
     *ngIf="variant === 'tree'"
     slot-start

@@ -16,7 +16,7 @@ import { BehaviorSubject, Subject, takeUntil } from "rxjs";
 })
 export class NavGroupComponent implements AfterViewInit, OnDestroy {
   /**
-   * Title text to display
+   * Text to display in main content
    */
   @Input() title: string;
 
@@ -26,7 +26,7 @@ export class NavGroupComponent implements AfterViewInit, OnDestroy {
   @Input() icon: string;
 
   /**
-   * Passed to internal `routerLink`
+   * Route to be passed to internal `routerLink`
    **/
   @Input() to: string;
 
@@ -59,8 +59,8 @@ export class NavGroupComponent implements AfterViewInit, OnDestroy {
    */
   protected contentId = Math.random().toString(36).substring(2);
 
-  toggle(event: MouseEvent) {
-    event.stopPropagation();
+  toggle(event?: MouseEvent) {
+    event?.stopPropagation();
     this.open = !this.open;
   }
 

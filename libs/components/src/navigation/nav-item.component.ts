@@ -1,4 +1,14 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+  ViewChild,
+} from "@angular/core";
+import { RouterLinkActive } from "@angular/router";
 import { BehaviorSubject, map } from "rxjs";
 
 @Component({
@@ -9,7 +19,12 @@ export class NavItemComponent implements AfterViewInit {
   constructor(public elRef: ElementRef<HTMLElement>) {}
 
   /**
-   * Title text to display
+   * Fires when main content is clicked
+   */
+  @Output() mainContentClicked: EventEmitter<MouseEvent> = new EventEmitter();
+
+  /**
+   * Text to display in main content
    */
   @Input() title: string;
 
@@ -19,7 +34,7 @@ export class NavItemComponent implements AfterViewInit {
   @Input() icon: string;
 
   /**
-   * Passed to internal `routerLink`
+   * Route to be passed to internal `routerLink`
    **/
   @Input() to: string;
 
@@ -27,6 +42,16 @@ export class NavItemComponent implements AfterViewInit {
    * If this item is used within a tree, set `variant` to `"tree"`
    */
   @Input() variant: "default" | "tree" = "default";
+
+  /**
+   * Is `true` if `to` matches the current route
+   */
+  protected active = false;
+
+  @ViewChild("rla")
+  private set setActive(rla: RouterLinkActive) {
+    this.active = rla?.isActive == true;
+  }
 
   /**
    * - is `true` if the host component has a descendant that matches `.fvw:focus-visible`
