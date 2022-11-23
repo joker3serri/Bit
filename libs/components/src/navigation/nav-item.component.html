@@ -21,7 +21,7 @@
     <!-- Main content of `NavItem` -->
     <ng-template #anchorAndButtonContent>
       <i class="bwi bwi-fw tw-text-white tw-mr-1 {{ icon }}"></i
-      ><span [ngClass]="active ? 'tw-font-bold' : 'tw-font-semibold'">{{ title }}</span>
+      ><span [ngClass]="active ? 'tw-font-bold' : 'tw-font-semibold'">{{ text }}</span>
     </ng-template>
 
     <!-- Show if a value was passed to `this.to` -->
@@ -33,6 +33,7 @@
         [routerLink]="route"
         routerLinkActive
         [routerLinkActiveOptions]="rlaOptions"
+        [ariaCurrentWhenActive]="'page'"
         (isActiveChange)="setActive($event)"
         (click)="mainContentClicked.emit()"
       >

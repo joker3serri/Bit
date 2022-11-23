@@ -25,7 +25,7 @@ export class NavItemComponent implements AfterViewInit {
   /**
    * Text to display in main content
    */
-  @Input() title: string;
+  @Input() text: string;
 
   /**
    * Optional icon, e.g. `"bwi-collection"`

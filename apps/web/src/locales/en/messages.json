@@ -5630,5 +5630,8 @@
   },
   "revokeAccessToken": {
     "message": "Revoke Access Token"
+  },
+  "submenu": {
+    "message": "Submenu"
   }
 }

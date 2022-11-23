@@ -25,42 +25,42 @@ export default {
 const Template: Story<NavItemComponent> = (args: NavItemComponent) => ({
   props: args,
   template: `
-      <nav-item title="${args.title}" route="${args.route}" icon="${args.icon}"></nav-item>
+      <nav-item text="${args.text}" route="${args.route}" icon="${args.icon}"></nav-item>
     `,
 });
 
 export const WithoutRoute = Template.bind({});
 WithoutRoute.args = {
-  title: "Hello World",
-  to: "",
+  text: "Hello World",
+  route: "",
   icon: "bwi-filter",
 };
 
 export const WithRoute = Template.bind({});
 WithRoute.args = {
-  title: "Hello World",
-  to: "#",
+  text: "Hello World",
+  route: "#",
   icon: "bwi-filter",
 };
 
 export const WithoutIcon = Template.bind({});
 WithoutIcon.args = {
-  title: "Hello World",
-  to: "",
+  text: "Hello World",
+  route: "",
   icon: "",
 };
 
 export const WithSlots: Story<NavItemComponent> = (args: NavItemComponent) => ({
   props: args,
   template: `
-      <nav-item title="Hello World" icon="bwi-collection">
+      <nav-item text="Hello World" icon="bwi-collection">
         <button
           slot-start
           class="tw-ml-auto"
           [bitIconButton]="'bwi-clone'"
           [buttonType]="'contrast'"
           size="small"
-          title="test"
+          text="test"
         ></button>
         <button
           slot-end
@@ -68,7 +68,7 @@ export const WithSlots: Story<NavItemComponent> = (args: NavItemComponent) => ({
           [bitIconButton]="'bwi-pencil-square'"
           [buttonType]="'contrast'"
           size="small"
-          title="test"
+          text="test"
         ></button>
         <button
           slot-end
@@ -76,7 +76,7 @@ export const WithSlots: Story<NavItemComponent> = (args: NavItemComponent) => ({
           [bitIconButton]="'bwi-check'"
           [buttonType]="'contrast'"
           size="small"
-          title="test"
+          text="test"
         ></button>
       </nav-item>
     `,

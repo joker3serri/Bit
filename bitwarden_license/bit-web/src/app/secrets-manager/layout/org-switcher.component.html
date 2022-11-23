@@ -3,7 +3,7 @@
     <nav-item
       *ngFor="let org of organizations"
       icon=""
-      title="{{ org.name }}"
+      [text]="org.name"
       [route]="['/organizations', org.id]"
     >
       <button
@@ -17,7 +17,7 @@
       ></button>
     </nav-item>
   </ng-container>
-  <nav-item icon="bwi-plus" title="New Organization" route="/create-organization"></nav-item>
+  <nav-item icon="bwi-plus" text="New Organization" route="/create-organization"></nav-item>
 </nav-group>
 
 <bit-menu #orgSwitchMenu>

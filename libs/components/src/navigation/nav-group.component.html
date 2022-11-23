@@ -1,6 +1,6 @@
 <!-- This a higher order component that composes `NavItemComponent`  -->
 <nav-item
-  [title]="title"
+  [text]="text"
   [icon]="icon"
   [route]="route"
   [variant]="variant"
@@ -11,36 +11,39 @@
   <button
     *ngIf="variant === 'tree'"
     slot-start
-    class="tw-ml-auto"
+    class="tw-text-white tw-ml-auto"
     [bitIconButton]="open ? 'bwi-chevron-up' : 'bwi-angle-right'"
-    [buttonType]="'contrast'"
     (click)="toggle($event)"
     size="small"
-    [title]="'options' | i18n"
+    [title]="'toggleCollapse' | i18n"
     aria-haspopup="true"
     [attr.aria-expanded]="open.toString()"
     [attr.aria-controls]="contentId"
-    [attr.aria-label]="'options' | i18n"
+    [attr.aria-label]="'toggleCollapse' | i18n"
   ></button>
   <!-- If `default` variant, use `slot-end` -->
   <button
     *ngIf="variant === 'default'"
     slot-end
-    class="tw-ml-auto"
+    class="tw-text-white tw-ml-auto"
     [bitIconButton]="open ? 'bwi-chevron-up' : 'bwi-angle-down'"
-    [buttonType]="'contrast'"
     (click)="toggle($event)"
     size="small"
-    [title]="'options' | i18n"
+    [title]="'toggleCollapse' | i18n"
     aria-haspopup="true"
     [attr.aria-expanded]="open.toString()"
     [attr.aria-controls]="contentId"
-    [attr.aria-label]="'options' | i18n"
+    [attr.aria-label]="'toggleCollapse' | i18n"
   ></button>
 </nav-item>
 <!-- [attr.id] needs to be a unique ID for this element -->
 <div #contentContainer>
-  <div *ngIf="open" [attr.id]="contentId">
+  <div
+    *ngIf="open"
+    [attr.id]="contentId"
+    [attr.aria-label]="text + ' ' + ('submenu' | i18n)"
+    role="group"
+  >
     <ng-content></ng-content>
   </div>
 </div>

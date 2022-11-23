@@ -20,10 +20,8 @@ export default {
           provide: I18nService,
           useFactory: () => {
             return new I18nMockService({
-              required: "required",
-              inputRequired: "Input is required.",
-              inputEmail: "Input is not an email-address.",
-              fieldsNeedAttention: "$COUNT$ field(s) above need your attention.",
+              submenu: "submenu",
+              toggleCollapse: "toggle collapse",
             });
           },
         },
@@ -41,15 +39,15 @@ export default {
 export const Default: Story<NavGroupComponent> = (args) => ({
   props: args,
   template: `
-      <nav-group title="Hello World (Anchor)" route="#" icon="bwi-filter">
-        <nav-item title="Child A" route="#" icon="bwi-filter"></nav-item>
-        <nav-item title="Child B" route="#"></nav-item>
-        <nav-item title="Child C" route="#" icon="bwi-filter"></nav-item>
+      <nav-group text="Hello World (Anchor)" route="#" icon="bwi-filter">
+        <nav-item text="Child A" route="#" icon="bwi-filter"></nav-item>
+        <nav-item text="Child B" route="#"></nav-item>
+        <nav-item text="Child C" route="#" icon="bwi-filter"></nav-item>
       </nav-group>
-      <nav-group title="Lorem Ipsum (Button)" icon="bwi-filter">
-        <nav-item title="Child A" icon="bwi-filter"></nav-item>
-        <nav-item title="Child B"></nav-item>
-        <nav-item title="Child C" icon="bwi-filter"></nav-item>
+      <nav-group text="Lorem Ipsum (Button)" icon="bwi-filter">
+        <nav-item text="Child A" icon="bwi-filter"></nav-item>
+        <nav-item text="Child B"></nav-item>
+        <nav-item text="Child C" icon="bwi-filter"></nav-item>
       </nav-group>
     `,
 });
@@ -57,20 +55,20 @@ export const Default: Story<NavGroupComponent> = (args) => ({
 export const Tree: Story<NavGroupComponent> = (args) => ({
   props: args,
   template: `
-    <nav-group title="Tree example" icon="bwi-collection" open>
-      <nav-group title="Level 1 - with children (empty)" route="#" icon="bwi-collection" variant="tree"></nav-group>
-      <nav-item title="Level 1 - no childen" route="#" icon="bwi-collection" variant="tree"></nav-item>
-      <nav-group title="Level 1 - with children" route="#" icon="bwi-collection" variant="tree">
-        <nav-group title="Level 2 - with children" route="#" icon="bwi-collection" variant="tree">
-          <nav-item title="Level 3 - no childen, no icon" route="#" variant="tree"></nav-item>
-          <nav-group title="Level 3 - with children" route="#" icon="bwi-collection" variant="tree">
-            <nav-item title="Level 4 - no childen, no icon" route="#" variant="tree"></nav-item>
+    <nav-group text="Tree example" icon="bwi-collection" open>
+      <nav-group text="Level 1 - with children (empty)" route="#" icon="bwi-collection" variant="tree"></nav-group>
+      <nav-item text="Level 1 - no childen" route="#" icon="bwi-collection" variant="tree"></nav-item>
+      <nav-group text="Level 1 - with children" route="#" icon="bwi-collection" variant="tree">
+        <nav-group text="Level 2 - with children" route="#" icon="bwi-collection" variant="tree">
+          <nav-item text="Level 3 - no childen, no icon" route="#" variant="tree"></nav-item>
+          <nav-group text="Level 3 - with children" route="#" icon="bwi-collection" variant="tree">
+            <nav-item text="Level 4 - no childen, no icon" route="#" variant="tree"></nav-item>
           </nav-group>
         </nav-group>
-        <nav-group title="Level 2 - with children (empty)" route="#" icon="bwi-collection" variant="tree"></nav-group>
-        <nav-item title="Level 2 - no childen" route="#" icon="bwi-collection" variant="tree"></nav-item>
+        <nav-group text="Level 2 - with children (empty)" route="#" icon="bwi-collection" variant="tree"></nav-group>
+        <nav-item text="Level 2 - no childen" route="#" icon="bwi-collection" variant="tree"></nav-item>
       </nav-group>
-      <nav-item title="Level 1 - no childen" route="#" icon="bwi-collection" variant="tree"></nav-item>
+      <nav-item text="Level 1 - no childen" route="#" icon="bwi-collection" variant="tree"></nav-item>
     </nav-group>
   `,
 });

@@ -18,7 +18,7 @@ export class NavGroupComponent implements AfterViewInit, OnDestroy {
   /**
    * Text to display in main content
    */
-  @Input() title: string;
+  @Input() text: string;
 
   /**
    * Optional icon, e.g. `"bwi-collection"`
