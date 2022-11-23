@@ -41,10 +41,10 @@ export default {
 export const Default: Story<NavGroupComponent> = (args) => ({
   props: args,
   template: `
-      <nav-group title="Hello World (Anchor)" to="#" icon="bwi-filter">
-        <nav-item title="Child A" to="#" icon="bwi-filter"></nav-item>
-        <nav-item title="Child B" to="#"></nav-item>
-        <nav-item title="Child C" to="#" icon="bwi-filter"></nav-item>
+      <nav-group title="Hello World (Anchor)" route="#" icon="bwi-filter">
+        <nav-item title="Child A" route="#" icon="bwi-filter"></nav-item>
+        <nav-item title="Child B" route="#"></nav-item>
+        <nav-item title="Child C" route="#" icon="bwi-filter"></nav-item>
       </nav-group>
       <nav-group title="Lorem Ipsum (Button)" icon="bwi-filter">
         <nav-item title="Child A" icon="bwi-filter"></nav-item>
@@ -58,19 +58,19 @@ export const Tree: Story<NavGroupComponent> = (args) => ({
   props: args,
   template: `
     <nav-group title="Tree example" icon="bwi-collection" open>
-      <nav-group title="Level 1 - with children (empty)" to="#" icon="bwi-collection" variant="tree"></nav-group>
-      <nav-item title="Level 1 - no childen" to="#" icon="bwi-collection" variant="tree"></nav-item>
-      <nav-group title="Level 1 - with children" to="#" icon="bwi-collection" variant="tree">
-        <nav-group title="Level 2 - with children" to="#" icon="bwi-collection" variant="tree">
-          <nav-item title="Level 3 - no childen, no icon" to="#" variant="tree"></nav-item>
-          <nav-group title="Level 3 - with children" to="#" icon="bwi-collection" variant="tree">
-            <nav-item title="Level 4 - no childen, no icon" to="#" variant="tree"></nav-item>
+      <nav-group title="Level 1 - with children (empty)" route="#" icon="bwi-collection" variant="tree"></nav-group>
+      <nav-item title="Level 1 - no childen" route="#" icon="bwi-collection" variant="tree"></nav-item>
+      <nav-group title="Level 1 - with children" route="#" icon="bwi-collection" variant="tree">
+        <nav-group title="Level 2 - with children" route="#" icon="bwi-collection" variant="tree">
+          <nav-item title="Level 3 - no childen, no icon" route="#" variant="tree"></nav-item>
+          <nav-group title="Level 3 - with children" route="#" icon="bwi-collection" variant="tree">
+            <nav-item title="Level 4 - no childen, no icon" route="#" variant="tree"></nav-item>
           </nav-group>
         </nav-group>
-        <nav-group title="Level 2 - with children (empty)" to="#" icon="bwi-collection" variant="tree"></nav-group>
-        <nav-item title="Level 2 - no childen" to="#" icon="bwi-collection" variant="tree"></nav-item>
+        <nav-group title="Level 2 - with children (empty)" route="#" icon="bwi-collection" variant="tree"></nav-group>
+        <nav-item title="Level 2 - no childen" route="#" icon="bwi-collection" variant="tree"></nav-item>
       </nav-group>
-      <nav-item title="Level 1 - no childen" to="#" icon="bwi-collection" variant="tree"></nav-item>
+      <nav-item title="Level 1 - no childen" route="#" icon="bwi-collection" variant="tree"></nav-item>
     </nav-group>
   `,
 });

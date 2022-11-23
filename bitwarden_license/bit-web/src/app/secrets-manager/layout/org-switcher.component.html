@@ -1,10 +1,10 @@
-<nav-group [title]="'Org Name (todo)'" icon="bwi-business" [to]="['#']">
+<nav-group [title]="'Org Name (todo)'" icon="bwi-business" [route]="['#']">
   <ng-container *ngIf="organizations$ | async as organizations">
     <nav-item
       *ngFor="let org of organizations"
       icon=""
       title="{{ org.name }}"
-      [to]="['/organizations', org.id]"
+      [route]="['/organizations', org.id]"
     >
       <button
         slot-end
@@ -17,7 +17,7 @@
       ></button>
     </nav-item>
   </ng-container>
-  <nav-item icon="bwi-plus" title="New Organization" to="/create-organization"></nav-item>
+  <nav-item icon="bwi-plus" title="New Organization" route="/create-organization"></nav-item>
 </nav-group>
 
 <bit-menu #orgSwitchMenu>

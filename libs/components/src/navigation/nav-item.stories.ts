@@ -25,7 +25,7 @@ export default {
 const Template: Story<NavItemComponent> = (args: NavItemComponent) => ({
   props: args,
   template: `
-      <nav-item title="${args.title}" to="${args.to}" icon="${args.icon}"></nav-item>
+      <nav-item title="${args.title}" route="${args.route}" icon="${args.icon}"></nav-item>
     `,
 });
 

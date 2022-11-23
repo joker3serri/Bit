@@ -28,7 +28,7 @@ export class NavGroupComponent implements AfterViewInit, OnDestroy {
   /**
    * Route to be passed to internal `routerLink`
    */
-  @Input() to: string;
+  @Input() route: string;
 
   /**
    * If this item is used within a tree, set `variant` to `"tree"`

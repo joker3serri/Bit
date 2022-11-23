@@ -16,7 +16,7 @@
       class="{{ variant === 'tree' ? 'tw-px-[.69rem]' : '' }} tw-h-[1.875rem]"
     ></div>
 
-    <ng-container *ngIf="to; then isAnchor; else isButton"></ng-container>
+    <ng-container *ngIf="route; then isAnchor; else isButton"></ng-container>
 
     <!-- Main content of `NavItem` -->
     <ng-template #anchorAndButtonContent>
@@ -30,7 +30,7 @@
       <!-- Class field should match `#isButton` class field below -->
       <a
         class="fvw tw-w-full tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-border-none tw-bg-transparent tw-p-0 tw-text-start !tw-text-alt2 hover:tw-text-alt2 hover:tw-no-underline focus:tw-outline-none [&>:not(.bwi)]:hover:tw-underline"
-        [routerLink]="to"
+        [routerLink]="route"
         routerLinkActive
         [routerLinkActiveOptions]="rlaOptions"
         (isActiveChange)="setActive($event)"
