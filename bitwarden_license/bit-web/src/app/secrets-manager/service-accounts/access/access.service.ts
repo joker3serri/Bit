@@ -5,6 +5,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
+import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
@@ -51,10 +52,16 @@ export class AccessService {
     serviceAccountId: string,
     accessTokenView: AccessTokenView
   ): Promise<string> {
-    const encryptionKey = await this.cryptoService.makeKeyFromRandomBytes(
+    const keyMaterial = await this.cryptoFunctionService.randomBytes(16);
+    const key = await this.cryptoFunctionService.hkdf(
+      keyMaterial,
       "bitwarden-accesstoken",
-      "sm-access-token"
+      "sm-access-token",
+      64,
+      "sha256"
     );
+    const encryptionKey = new SymmetricCryptoKey(key);
+
     const request = await this.createAccessTokenRequest(
       organizationId,
       encryptionKey,
@@ -70,7 +77,9 @@ export class AccessService {
     const result = new AccessTokenCreationResponse(r);
     this._accessToken.next(null);
     // return access-token schema: [version].[service-account-id].[client-secret]:[encryption-key]
-    return `${this._accessTokenVersion}.${serviceAccountId}.${result.clientSecret}:${encryptionKey.keyB64}`;
+    return `${this._accessTokenVersion}.${serviceAccountId}.${
+      result.clientSecret
+    }:${Utils.fromBufferToB64(keyMaterial)}`;
   }
 
   private async createAccessTokenRequest(
@@ -82,7 +91,10 @@ export class AccessService {
     const accessTokenRequest = new AccessTokenRequest();
     const [name, encryptedPayload, key] = await Promise.all([
       await this.encryptService.encrypt(accessTokenView.name, organizationKey),
-      await this.encryptService.encrypt(organizationKey.toJSON.toString(), encryptionKey),
+      await this.encryptService.encrypt(
+        JSON.stringify({ encryption_key: organizationKey.keyB64 }),
+        encryptionKey
+      ),
       await this.encryptService.encrypt(encryptionKey.keyB64, organizationKey),
     ]);
 
