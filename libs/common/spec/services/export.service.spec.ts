@@ -111,11 +111,11 @@ function expectEqualCiphers(ciphers: CipherView[] | Cipher[], jsonResult: string
 
 function expectEqualFolderViews(folderviews: FolderView[] | Folder[], jsonResult: string) {
   const actual = JSON.stringify(JSON.parse(jsonResult).folders);
-  const folders: Folders[] = [];
+  const folders: FolderResponse[] = [];
   folderviews.forEach((c) => {
-    const folder = new Folders();
+    const folder = new FolderResponse();
     folder.id = c.id;
-    folder.name = c.name;
+    folder.name = c.name.toString();
     folders.push(folder);
   });
 
@@ -279,7 +279,7 @@ describe("ExportService", () => {
   });
 });
 
-export class Folders {
+export class FolderResponse {
   id: string = null;
   name: string = null;
 }
