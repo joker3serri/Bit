@@ -8,7 +8,8 @@ import { BrowserComponentState } from "../../models/browserComponentState";
 import { BrowserGroupingsComponentState } from "../../models/browserGroupingsComponentState";
 import { BrowserSendComponentState } from "../../models/browserSendComponentState";
 
-export abstract class StateService extends BaseStateServiceAbstraction<Account> {
+export abstract class BrowserStateService extends BaseStateServiceAbstraction<Account> {
+  abstract hasInSessionMemory(key: string): Promise<boolean>;
   abstract getFromSessionMemory<T>(key: string, deserializer?: (obj: Jsonify<T>) => T): Promise<T>;
   abstract setInSessionMemory(key: string, value: any): Promise<void>;
   getBrowserGroupingComponentState: (
@@ -18,8 +19,8 @@ export abstract class StateService extends BaseStateServiceAbstraction<Account> 
     value: BrowserGroupingsComponentState,
     options?: StorageOptions
   ) => Promise<void>;
-  getBrowserCipherComponentState: (options?: StorageOptions) => Promise<BrowserComponentState>;
-  setBrowserCipherComponentState: (
+  getBrowserVaultItemsComponentState: (options?: StorageOptions) => Promise<BrowserComponentState>;
+  setBrowserVaultItemsComponentState: (
     value: BrowserComponentState,
     options?: StorageOptions
   ) => Promise<void>;

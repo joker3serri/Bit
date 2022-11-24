@@ -5,7 +5,7 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 
 @Directive()
-export class CiphersComponent {
+export class VaultItemsComponent {
   @Input() activeCipherId: string = null;
   @Output() onCipherClicked = new EventEmitter<CipherView>();
   @Output() onCipherRightClicked = new EventEmitter<CipherView>();
