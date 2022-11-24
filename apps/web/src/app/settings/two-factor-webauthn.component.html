@@ -138,7 +138,6 @@
             #disableBtn
             type="button"
             class="btn btn-outline-secondary btn-submit"
-            [appApiAction]="disablePromise"
             [disabled]="$any(disableBtn).loading"
             (click)="disable()"
             *ngIf="enabled"

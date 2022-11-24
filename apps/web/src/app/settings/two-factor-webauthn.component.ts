@@ -40,7 +40,6 @@ export class TwoFactorWebAuthnComponent extends TwoFactorBaseComponent {
   webAuthnResponse: PublicKeyCredential;
   challengePromise: Promise<ChallengeResponse>;
   formPromise: Promise<TwoFactorWebAuthnResponse>;
-  disablePromise: undefined;
 
   constructor(
     apiService: ApiService,
