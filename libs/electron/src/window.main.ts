@@ -5,6 +5,7 @@ import { app, BrowserWindow, screen } from "electron";
 
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { WindowState } from "@bitwarden/common/models/domain/window-state";
 
 import { cleanUserAgent, isDev, isMacAppStore, isSnapStore } from "./utils";
 
@@ -16,7 +17,7 @@ export class WindowMain {
   isClosing = false;
 
   private windowStateChangeTimer: NodeJS.Timer;
-  private windowStates: { [key: string]: any } = {};
+  private windowStates: { [key: string]: WindowState } = {};
   private enableAlwaysOnTop = false;
 
   constructor(
@@ -224,7 +225,7 @@ export class WindowMain {
       if (this.windowStates[configKey] == null) {
         this.windowStates[configKey] = await this.stateService.getWindow();
         if (this.windowStates[configKey] == null) {
-          this.windowStates[configKey] = {};
+          this.windowStates[configKey] = <WindowState>{};
         }
       }
 
