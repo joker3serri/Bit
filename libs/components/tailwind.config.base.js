@@ -1,5 +1,4 @@
 /* eslint-disable */
-const plugin = require("tailwindcss/plugin");
 const colors = require("tailwindcss/colors");
 
 function rgba(color) {
