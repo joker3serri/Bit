@@ -1,10 +1,9 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
-import { Component, Inject, OnInit, ViewChild } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 
 import { DialogService } from "@bitwarden/components";
 
-import { ExpirationOptionsComponent } from "../../../layout/expiration-options.component";
 import { ServiceAccountView } from "../../../models/view/service-account.view";
 import { AccessTokenView } from "../../models/view/access-token.view";
 import { AccessService } from "../access.service";
@@ -21,9 +20,9 @@ export interface AccessTokenOperation {
   templateUrl: "./access-token-create-dialog.component.html",
 })
 export class AccessTokenCreateDialogComponent implements OnInit {
-  @ViewChild(ExpirationOptionsComponent) expirationOptionsComponent: ExpirationOptionsComponent;
   protected formGroup = new FormGroup({
     name: new FormControl("", [Validators.required]),
+    expirationDateControl: new FormControl(null),
   });
   protected loading = false;
 
@@ -51,13 +50,13 @@ export class AccessTokenCreateDialogComponent implements OnInit {
 
   submit = async () => {
     this.formGroup.markAllAsTouched();
-
-    if (this.formGroup.invalid) {
+    // TODO remove null check once never expires is implemented
+    if (this.formGroup.invalid || !this.formGroup.value.expirationDateControl) {
       return;
     }
     const accessTokenView = new AccessTokenView();
     accessTokenView.name = this.formGroup.value.name;
-    accessTokenView.expireAt = this.expirationOptionsComponent.getExpiresDate();
+    accessTokenView.expireAt = this.formGroup.value.expirationDateControl;
     const accessToken = await this.accessService.createAccessToken(
       this.data.organizationId,
       this.data.serviceAccountView.id,

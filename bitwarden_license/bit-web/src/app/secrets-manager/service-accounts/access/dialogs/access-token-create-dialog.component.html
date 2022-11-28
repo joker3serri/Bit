@@ -26,7 +26,7 @@
         </span>
       </div>
       <sm-expiration-options
-        [formGroup]="formGroup"
+        [formControl]="this.formGroup.controls.expirationDateControl"
         [expirationDayOptions]="expirationDayOptions"
       ></sm-expiration-options>
     </div>

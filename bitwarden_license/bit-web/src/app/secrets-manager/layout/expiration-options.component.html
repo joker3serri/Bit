@@ -9,8 +9,11 @@
       <option value="custom">{{ "custom" | i18n }}</option>
     </select>
   </bit-form-field>
-  <bit-form-field *ngIf="formGroup.value.expires === 'custom'">
+  <bit-form-field *ngIf="form.value.expires === 'custom'" class="tw-mb-0">
     <bit-label>{{ "expirationDate" | i18n }}</bit-label>
     <input bitInput type="datetime-local" [min]="minDateTime" formControlName="expireDateTime" />
   </bit-form-field>
+  <small *ngIf="requireCustom" class="tw-text-danger">
+    <i class="bwi bwi-error" aria-hidden="true"></i> {{ "inputRequired" | i18n }}
+  </small>
 </form>

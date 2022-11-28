@@ -1,16 +1,40 @@
 import { DatePipe } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormControl,
+  FormGroup,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+  Validators,
+} from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: "sm-expiration-options",
   templateUrl: "./expiration-options.component.html",
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      multi: true,
+      useExisting: ExpirationOptionsComponent,
+    },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: ExpirationOptionsComponent,
+    },
+  ],
 })
-export class ExpirationOptionsComponent implements OnInit {
+export class ExpirationOptionsComponent
+  implements ControlValueAccessor, Validator, OnInit, OnDestroy
+{
   private destroy$ = new Subject<void>();
 
-  @Input() formGroup: FormGroup;
+  requireCustom = false;
   @Input() expirationDayOptions: number[];
 
   protected form = new FormGroup({
@@ -21,16 +45,8 @@ export class ExpirationOptionsComponent implements OnInit {
   constructor(private datePipe: DatePipe) {}
 
   async ngOnInit() {
-    this.formGroup.addControl("expires", this.form.controls.expires);
-    this.formGroup.addControl("expireDateTime", this.form.controls.expireDateTime);
-
-    this.form.controls.expires.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value == "custom") {
-        this.form.controls.expireDateTime.setValidators(Validators.required);
-      } else {
-        this.form.controls.expireDateTime.clearValidators();
-        this.form.controls.expireDateTime.updateValueAndValidity();
-      }
+    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this._onChange(this.getExpiresDate());
     });
   }
 
@@ -39,17 +55,57 @@ export class ExpirationOptionsComponent implements OnInit {
     this.destroy$.complete();
   }
 
+  private _onChange = (_value: Date | null): void => undefined;
+  registerOnChange(fn: (value: Date | null) => void): void {
+    this._onChange = fn;
+  }
+
+  onTouched = (): void => undefined;
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  validate(control: AbstractControl<any, any>): ValidationErrors {
+    if (
+      (this.form.value.expires == "custom" && this.form.value.expireDateTime) ||
+      this.form.value.expires !== "custom"
+    ) {
+      this.requireCustom = false;
+      return null;
+    }
+    this.requireCustom = true;
+    return {
+      required: true,
+    };
+  }
+
+  writeValue(value: Date): void {
+    if (value) {
+      this.form.setValue({
+        expires: "custom",
+        expireDateTime: this.datePipe.transform(value, "YYYY-MM-ddThh:mm"),
+      });
+    }
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    throw new Error("Method not implemented.");
+  }
+
   get minDateTime() {
     const now = new Date();
     return this.datePipe.transform(now, "YYYY-MM-ddThh:mm");
   }
 
-  getExpiresDate(): Date {
-    if (this.formGroup.value.expires == "custom") {
-      return new Date(this.formGroup.value.expireDateTime);
+  private getExpiresDate(): Date | null {
+    if (this.form.value.expires == "never") {
+      return null;
+    }
+    if (this.form.value.expires == "custom") {
+      return new Date(this.form.value.expireDateTime);
     }
     const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() + Number(this.formGroup.value.expires));
+    currentDate.setDate(currentDate.getDate() + Number(this.form.value.expires));
     return currentDate;
   }
 }
