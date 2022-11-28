@@ -53,6 +53,7 @@ export class ColorPasswordComponent {
         "tw-w-7",
         "tw-py-1",
         "odd:tw-bg-secondary-100",
+        "even:tw-bg-background",
       ]);
     }
 
