@@ -10,27 +10,30 @@ import { SharedModule } from "../shared";
 import { BitErrorSummary } from "./error-summary.component";
 import { BitErrorComponent } from "./error.component";
 import { BitFormFieldComponent } from "./form-field.component";
+import { BitPasswordInputToggleDirective } from "./password-input-toggle.directive";
 import { BitPrefixDirective } from "./prefix.directive";
 import { BitSuffixDirective } from "./suffix.directive";
 
 @NgModule({
   imports: [SharedModule, FormControlModule, InputModule, MultiSelectModule],
-  exports: [
-    FormControlModule,
-    BitErrorComponent,
-    BitErrorSummary,
-    BitFormFieldComponent,
-    BitPrefixDirective,
-    BitSuffixDirective,
-    BitInputDirective,
-    MultiSelectComponent,
-  ],
   declarations: [
     BitErrorComponent,
     BitErrorSummary,
     BitFormFieldComponent,
+    BitPasswordInputToggleDirective,
     BitPrefixDirective,
     BitSuffixDirective,
+  ],
+  exports: [
+    BitErrorComponent,
+    BitErrorSummary,
+    BitFormFieldComponent,
+    BitInputDirective,
+    BitPasswordInputToggleDirective,
+    BitPrefixDirective,
+    BitSuffixDirective,
+    MultiSelectComponent,
+    FormControlModule,
   ],
 })
 export class FormFieldModule {}
