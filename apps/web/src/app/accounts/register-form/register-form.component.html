@@ -37,13 +37,13 @@
           type="{{ showPassword ? 'text' : 'password' }}"
           formControlName="masterPassword"
         />
-        <button type="button" bitSuffix bitButton (click)="togglePassword()">
-          <i
-            aria-hidden="true"
-            class="bwi bwi-lg bwi-eye"
-            [ngClass]="{ 'bwi-eye': !showPassword, 'bwi-eye-slash': showPassword }"
-          ></i>
-        </button>
+        <button
+          type="button"
+          bitSuffix
+          bitButton
+          bitPasswordInputToggle
+          [(toggled)]="showPassword"
+        ></button>
         <bit-hint>
           <span class="tw-font-semibold">Important:</span>
           {{ "masterPassImportant" | i18n }}
@@ -68,13 +68,13 @@
           type="{{ showPassword ? 'text' : 'password' }}"
           formControlName="confirmMasterPassword"
         />
-        <button type="button" bitSuffix bitButton (click)="togglePassword()">
-          <i
-            aria-hidden="true"
-            class="bwi bwi-lg bwi-eye"
-            [ngClass]="{ 'bwi-eye': !showPassword, 'bwi-eye-slash': showPassword }"
-          ></i>
-        </button>
+        <button
+          type="button"
+          bitSuffix
+          bitButton
+          bitPasswordInputToggle
+          [(toggled)]="showPassword"
+        ></button>
       </bit-form-field>
     </div>
 

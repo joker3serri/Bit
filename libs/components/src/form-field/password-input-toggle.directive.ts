@@ -3,6 +3,7 @@ import {
   Directive,
   EventEmitter,
   Host,
+  HostBinding,
   HostListener,
   Input,
   OnChanges,
@@ -17,9 +18,15 @@ import { BitFormFieldComponent } from "./form-field.component";
   selector: "[bitPasswordInputToggle]",
 })
 export class BitPasswordInputToggleDirective implements AfterContentInit, OnChanges {
-  @Input() toggled = false;
+  /**
+   * Whether the input is toggled to show the password.
+   */
+  @HostBinding("attr.aria-pressed") @Input() toggled = false;
   @Output() toggledChange = new EventEmitter<boolean>();
 
+  /**
+   * Click handler to toggle the state of the input type.
+   */
   @HostListener("click") onClick() {
     this.toggled = !this.toggled;
     this.toggledChange.emit(this.toggled);
