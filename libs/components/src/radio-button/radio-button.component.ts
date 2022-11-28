@@ -9,7 +9,7 @@ let nextId = 0;
   templateUrl: "radio-button.component.html",
 })
 export class RadioButtonComponent {
-  id = `bit-radio-button-${nextId++}`;
+  @Input() id = `bit-radio-button-${nextId++}`;
 
   @Input() value: unknown;
 
