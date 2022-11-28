@@ -65,11 +65,6 @@ export abstract class CryptoService {
     kdfIterations: number
   ) => Promise<SymmetricCryptoKey>;
   makeSendKey: (keyMaterial: ArrayBuffer) => Promise<SymmetricCryptoKey>;
-  makeKeyFromRandomBytes: (
-    salt: string,
-    info: string,
-    numberOfBytes?: number
-  ) => Promise<SymmetricCryptoKey>;
   hashPassword: (
     password: string,
     key: SymmetricCryptoKey,
