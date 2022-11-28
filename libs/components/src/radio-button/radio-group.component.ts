@@ -22,7 +22,7 @@ export class RadioGroupComponent implements ControlValueAccessor {
   }
 
   @HostBinding("attr.role") role = "radiogroup";
-  @HostBinding("attr.id") id = `bit-radio-group-${nextId++}`;
+  @HostBinding("attr.id") @Input() id = `bit-radio-group-${nextId++}`;
 
   @ContentChild(BitLabel) protected label: BitLabel;
 

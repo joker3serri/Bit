@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, HostBinding, Input } from "@angular/core";
 
 import { RadioGroupComponent } from "./radio-group.component";
 
@@ -9,11 +9,14 @@ let nextId = 0;
   templateUrl: "radio-button.component.html",
 })
 export class RadioButtonComponent {
-  @Input() id = `bit-radio-button-${nextId++}`;
-
+  @HostBinding("attr.id") @Input() id = `bit-radio-button-${nextId++}`;
   @Input() value: unknown;
 
   constructor(private groupComponent: RadioGroupComponent) {}
+
+  get inputId() {
+    return `${this.id}-input`;
+  }
 
   get name() {
     return this.groupComponent.name;

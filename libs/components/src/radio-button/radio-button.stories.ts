@@ -12,9 +12,9 @@ const template = `
   <form [formGroup]="formObj">
     <bit-radio-group formControlName="radio" aria-label="Example radio group">
       <bit-label *ngIf="label">Group of radio buttons</bit-label>
-      <bit-radio-button [value]="TestValue.First">First</bit-radio-button>
-      <bit-radio-button [value]="TestValue.Second">Second</bit-radio-button>
-      <bit-radio-button [value]="TestValue.Third">Third</bit-radio-button>
+      <bit-radio-button [value]="TestValue.First" id="radio-first">First</bit-radio-button>
+      <bit-radio-button [value]="TestValue.Second" id="radio-second">Second</bit-radio-button>
+      <bit-radio-button [value]="TestValue.Third" id="radio-third">Third</bit-radio-button>
     </bit-radio-group>
   </form>`;
 

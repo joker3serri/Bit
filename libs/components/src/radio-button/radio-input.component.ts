@@ -3,12 +3,16 @@ import { NgControl, Validators } from "@angular/forms";
 
 import { BitFormControlAbstraction } from "../form-control";
 
+let nextId = 0;
+
 @Component({
   selector: "input[type=radio][bitRadio]",
   template: "",
   providers: [{ provide: BitFormControlAbstraction, useExisting: RadioInputComponent }],
 })
 export class RadioInputComponent implements BitFormControlAbstraction {
+  @HostBinding("attr.id") @Input() id = `bit-radio-input-${nextId++}`;
+
   @HostBinding("class")
   protected inputClasses = [
     "tw-appearance-none",
