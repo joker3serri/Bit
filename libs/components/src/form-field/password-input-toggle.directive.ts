@@ -9,7 +9,7 @@ import {
   Output,
 } from "@angular/core";
 
-import { ButtonComponent } from "../button";
+import { BitIconButtonComponent } from "../icon-button/icon-button.component";
 
 import { BitFormFieldComponent } from "./form-field.component";
 
@@ -29,7 +29,10 @@ export class BitPasswordInputToggleDirective implements AfterContentInit, OnChan
     this.formField.input?.focus();
   }
 
-  constructor(@Host() private button: ButtonComponent, private formField: BitFormFieldComponent) {}
+  constructor(
+    @Host() private button: BitIconButtonComponent,
+    private formField: BitFormFieldComponent
+  ) {}
 
   get icon() {
     return this.toggled ? "bwi-eye-slash" : "bwi-eye";

@@ -1,7 +1,7 @@
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
-import { ButtonModule } from "../button";
+import { IconButtonModule } from "../icon-button";
 import { InputModule } from "../input/input.module";
 
 import { FormFieldModule } from "./form-field.module";
@@ -12,7 +12,7 @@ export default {
   component: BitPasswordInputToggleDirective,
   decorators: [
     moduleMetadata({
-      imports: [FormsModule, ReactiveFormsModule, FormFieldModule, InputModule, ButtonModule],
+      imports: [FormsModule, ReactiveFormsModule, FormFieldModule, InputModule, IconButtonModule],
     }),
   ],
   parameters: {
@@ -40,7 +40,7 @@ const Template: Story<BitPasswordInputToggleDirective> = (
       <bit-form-field>
         <bit-label>Password</bit-label>
         <input bitInput type="password" />
-        <button type="button" bitButton bitSuffix bitPasswordInputToggle></button>
+        <button type="button" bitIconButton bitSuffix bitPasswordInputToggle></button>
       </bit-form-field>
     </form>
   `,
@@ -60,7 +60,7 @@ const TemplateBinding: Story<BitPasswordInputToggleDirective> = (
       <bit-form-field>
         <bit-label>Password</bit-label>
         <input bitInput type="password" />
-        <button type="button" bitButton bitSuffix bitPasswordInputToggle [(toggled)]="toggled"></button>
+        <button type="button" bitIconButton bitSuffix bitPasswordInputToggle [(toggled)]="toggled"></button>
       </bit-form-field>
 
       <label class="tw-text-main">
