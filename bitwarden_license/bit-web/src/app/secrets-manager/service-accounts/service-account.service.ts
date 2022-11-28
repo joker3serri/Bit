@@ -39,13 +39,6 @@ export class ServiceAccountService {
     return await this.createServiceAccountViews(organizationId, results.data);
   }
 
-  async getByServiceAccountId(id: string): Promise<ServiceAccountView> {
-    const r = await this.apiService.send("GET", "/service-accounts/" + id, null, true, true);
-    const result = new ServiceAccountResponse(r);
-    const orgKey = await this.getOrganizationKey(result.organizationId);
-    return await this.createServiceAccountView(orgKey, result);
-  }
-
   async create(organizationId: string, serviceAccountView: ServiceAccountView) {
     const orgKey = await this.getOrganizationKey(organizationId);
     const request = await this.getServiceAccountRequest(orgKey, serviceAccountView);
