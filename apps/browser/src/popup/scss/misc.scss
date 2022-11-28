@@ -135,6 +135,11 @@ p.lead {
   border-radius: $border-radius;
 }
 
+.select-index-top {
+  position: relative;
+  z-index: 100;
+}
+
 .sr-only {
   position: absolute !important;
   width: 1px !important;
@@ -425,6 +430,12 @@ img,
 app-about .modal-body > *,
 app-vault-view .box-footer {
   user-select: auto;
+}
+
+/* tweak for inconsistent line heights in cipher view */
+.box-footer button,
+.box-footer a {
+  line-height: 1;
 }
 
 // Workaround for slow performance on external monitors on Chrome + MacOS
