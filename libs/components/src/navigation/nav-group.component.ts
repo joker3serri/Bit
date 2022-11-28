@@ -1,13 +1,13 @@
 import { AfterContentInit, Component, ContentChildren, QueryList } from "@angular/core";
 
-import { BaseNavComponent } from "./base-nav.component";
+import { NavBaseComponent } from "./nav-base.component";
 import { NavItemComponent } from "./nav-item.component";
 
 @Component({
   selector: "nav-group",
   templateUrl: "./nav-group.component.html",
 })
-export class NavGroupComponent extends BaseNavComponent implements AfterContentInit {
+export class NavGroupComponent extends NavBaseComponent implements AfterContentInit {
   @ContentChildren(NavGroupComponent, {
     descendants: true,
   })

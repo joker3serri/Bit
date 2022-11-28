@@ -2,13 +2,13 @@ import { Component, EventEmitter, HostListener, Output } from "@angular/core";
 import { IsActiveMatchOptions } from "@angular/router";
 import { BehaviorSubject, map } from "rxjs";
 
-import { BaseNavComponent } from "./base-nav.component";
+import { NavBaseComponent } from "./nav-base.component";
 
 @Component({
   selector: "nav-item",
   templateUrl: "./nav-item.component.html",
 })
-export class NavItemComponent extends BaseNavComponent {
+export class NavItemComponent extends NavBaseComponent {
   /**
    * Fires when main content is clicked
    */

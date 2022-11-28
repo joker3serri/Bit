@@ -4,7 +4,7 @@ import { Directive, Input } from "@angular/core";
  * Base class used in `NavGroupComponent` and `NavItemComponent`
  */
 @Directive()
-export abstract class BaseNavComponent {
+export abstract class NavBaseComponent {
   /**
    * Text to display in main content
    */
