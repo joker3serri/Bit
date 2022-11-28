@@ -1,53 +1,22 @@
-import {
-  AfterViewInit,
-  Component,
-  ContentChildren,
-  ElementRef,
-  Input,
-  OnDestroy,
-  QueryList,
-  ViewChild,
-} from "@angular/core";
-import { BehaviorSubject, Subject, takeUntil } from "rxjs";
+import { AfterContentInit, Component, ContentChildren, QueryList } from "@angular/core";
+
+import { BaseNavComponent } from "./base-nav.component";
+import { NavItemComponent } from "./nav-item.component";
 
 @Component({
   selector: "nav-group",
   templateUrl: "./nav-group.component.html",
 })
-export class NavGroupComponent implements AfterViewInit, OnDestroy {
-  /**
-   * Text to display in main content
-   */
-  @Input() text: string;
-
-  /**
-   * Optional icon, e.g. `"bwi-collection"`
-   */
-  @Input() icon: string;
-
-  /**
-   * Route to be passed to internal `routerLink`
-   */
-  @Input() route: string;
-
-  /**
-   * If this item is used within a tree, set `variant` to `"tree"`
-   */
-  @Input() variant: "default" | "tree" = "default";
-
+export class NavGroupComponent extends BaseNavComponent implements AfterContentInit {
   @ContentChildren(NavGroupComponent, {
-    descendants: false,
+    descendants: true,
   })
-  nestedNavGroups!: QueryList<NavGroupComponent>;
+  nestedGroups!: QueryList<NavGroupComponent>;
 
-  @ViewChild("contentContainer") contentContainer: ElementRef;
-
-  private destroy$ = new Subject<void>();
-
-  /**
-   * Depth level for nested `nav-group`
-   */
-  protected nestDepth$ = new BehaviorSubject(1);
+  @ContentChildren(NavItemComponent, {
+    descendants: true,
+  })
+  nestedItems!: QueryList<NavItemComponent>;
 
   /**
    * Is `true` if the expanded content is visible
@@ -65,32 +34,18 @@ export class NavGroupComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
-   * - For any nested NavGroupComponents, increment the `nestDepth$` by 1.
-   * - We can't use a simple margin for this because we want the element to fill the entire width of its container.
+   * - For any nested NavGroupComponents or NavItemComponents, increment the `treeDepth` by 1.
    */
   private initNestedStyles() {
     if (this.variant !== "tree") {
       return;
     }
-
-    const nestedLeftPadding = 1.5; // rem
-    this.nestDepth$.pipe(takeUntil(this.destroy$)).subscribe((v) => {
-      this.nestedNavGroups.forEach((navGroup) => {
-        navGroup.nestDepth$.next(v + 1);
-      });
-      this.contentContainer.nativeElement.style.setProperty(
-        "--nested-left-padding",
-        `${v * nestedLeftPadding}rem`
-      );
+    [...this.nestedGroups, ...this.nestedItems].forEach((navGroupOrItem) => {
+      navGroupOrItem.treeDepth += 1;
     });
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     this.initNestedStyles();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

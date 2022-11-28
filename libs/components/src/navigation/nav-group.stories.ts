@@ -55,7 +55,7 @@ export const Default: Story<NavGroupComponent> = (args) => ({
 export const Tree: Story<NavGroupComponent> = (args) => ({
   props: args,
   template: `
-    <nav-group text="Tree example" icon="bwi-collection" open>
+    <nav-group text="Tree example" icon="bwi-collection">
       <nav-group text="Level 1 - with children (empty)" route="#" icon="bwi-collection" variant="tree"></nav-group>
       <nav-item text="Level 1 - no childen" route="#" icon="bwi-collection" variant="tree"></nav-item>
       <nav-group text="Level 1 - with children" route="#" icon="bwi-collection" variant="tree">

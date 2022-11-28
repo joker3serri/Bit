@@ -5,6 +5,7 @@
   [route]="route"
   [variant]="variant"
   (mainContentClicked)="toggle()"
+  [treeDepth]="treeDepth"
 >
   <!-- If `tree` variant, use `slot-slart` -->
   <!-- All other properties are shared between the two buttons, except for `bitIconButton` -->
@@ -37,13 +38,11 @@
   ></button>
 </nav-item>
 <!-- [attr.id] needs to be a unique ID for this element -->
-<div #contentContainer>
-  <div
-    *ngIf="open"
-    [attr.id]="contentId"
-    [attr.aria-label]="text + ' ' + ('submenu' | i18n)"
-    role="group"
-  >
-    <ng-content></ng-content>
-  </div>
+<div
+  *ngIf="open"
+  [attr.id]="contentId"
+  [attr.aria-label]="text + ' ' + ('submenu' | i18n)"
+  role="group"
+>
+  <ng-content></ng-content>
 </div>

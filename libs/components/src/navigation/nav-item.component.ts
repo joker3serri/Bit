@@ -1,46 +1,18 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  EventEmitter,
-  HostListener,
-  Input,
-  Output,
-} from "@angular/core";
+import { Component, EventEmitter, HostListener, Output } from "@angular/core";
 import { IsActiveMatchOptions } from "@angular/router";
 import { BehaviorSubject, map } from "rxjs";
+
+import { BaseNavComponent } from "./base-nav.component";
 
 @Component({
   selector: "nav-item",
   templateUrl: "./nav-item.component.html",
 })
-export class NavItemComponent implements AfterViewInit {
-  constructor(public elRef: ElementRef<HTMLElement>) {}
-
+export class NavItemComponent extends BaseNavComponent {
   /**
    * Fires when main content is clicked
    */
   @Output() mainContentClicked: EventEmitter<MouseEvent> = new EventEmitter();
-
-  /**
-   * Text to display in main content
-   */
-  @Input() text: string;
-
-  /**
-   * Optional icon, e.g. `"bwi-collection"`
-   */
-  @Input() icon: string;
-
-  /**
-   * Route to be passed to internal `routerLink`
-   */
-  @Input() route: string;
-
-  /**
-   * If this item is used within a tree, set `variant` to `"tree"`
-   */
-  @Input() variant: "default" | "tree" = "default";
 
   /**
    * Is `true` if `to` matches the current route
@@ -71,11 +43,5 @@ export class NavItemComponent implements AfterViewInit {
   @HostListener("focusout")
   onFocusOut() {
     this.focusVisibleWithin$.next(false);
-  }
-
-  ngAfterViewInit() {
-    if (this.variant === "tree") {
-      this.elRef.nativeElement.style.setProperty("--base-left-padding", "2.5rem");
-    }
   }
 }
