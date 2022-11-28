@@ -1,11 +1,11 @@
-import { I18nService as BaseI18nService } from "@bitwarden/common/services/i18n.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
+import { I18nService as BaseI18nService } from "@bitwarden/common/services/i18n.service";
 
-import eng from "../../locales/en/messages.json";
+import type eng from "../../locales/en/messages.json";
 
 export type WebTranslationKeys = keyof typeof eng;
 
-export abstract class WebI18nService extends I18nServiceAbstraction<WebTranslationKeys> { };
+export abstract class WebI18nService extends I18nServiceAbstraction<WebTranslationKeys> {}
 
 export class I18nService extends BaseI18nService<WebTranslationKeys> implements WebI18nService {
   constructor(systemLanguage: string, localesDirectory: string) {
