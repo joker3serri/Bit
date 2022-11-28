@@ -76,7 +76,6 @@ export class AccessService {
     );
     const result = new AccessTokenCreationResponse(r);
     this._accessToken.next(null);
-    // return access-token schema: [version].[service-account-id].[client-secret]:[encryption-key]
     const b64Key = Utils.fromBufferToB64(keyMaterial);
     return `${this._accessTokenVersion}.${result.id}.${result.clientSecret}:${b64Key}`;
   }
