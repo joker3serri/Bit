@@ -14,6 +14,13 @@ const alarmState: AlarmState = {
   clearClipboard: null,
 };
 
+/**
+ * Retrieves the set alarm time (planned execution) for a give an commandName {@link AlarmState}
+ * @param commandName A command that has been previously registered with {@link AlarmState}
+ * @returns {Promise<number>} null or Unix epoch timestamp when the alarm action is supposed to execute
+ * @example
+ * // getAlarmTime(clearClipboard)
+ */
 export async function getAlarmTime(commandName: keyof AlarmState): Promise<number> {
   let alarmTime: number;
   if (BrowserApi.manifestVersion == 3) {
@@ -43,6 +50,10 @@ export async function setAlarmTime(commandName: keyof AlarmState, delay_ms: numb
   await setAlarmTimeInternal(commandName, time);
 }
 
+/**
+ * Clears the time currently set for a given command
+ * @param commandName A command that has been previously registered with {@link AlarmState}
+ */
 export async function clearAlarmTime(commandName: keyof AlarmState): Promise<void> {
   await setAlarmTimeInternal(commandName, null);
 }
