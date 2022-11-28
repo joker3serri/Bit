@@ -12,7 +12,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { ImportOption, ImportType } from "@bitwarden/common/enums/importOptions";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
-import { ImportError } from "@bitwarden/common/importers/importError";
+import { ImportError } from "@bitwarden/common/importers/import-error";
 
 import { FilePasswordPromptComponent } from "./file-password-prompt.component";
 
@@ -25,6 +25,7 @@ export class ImportComponent implements OnInit {
   importOptions: ImportOption[];
   format: ImportType = null;
   fileContents: string;
+  fileSelected: File;
   formPromise: Promise<ImportError>;
   loading = false;
   importBlockedByPolicy = false;
@@ -177,6 +178,11 @@ export class ImportComponent implements OnInit {
         ? this.i18nService.collator.compare(a.name, b.name)
         : a.name.localeCompare(b.name);
     });
+  }
+
+  setSelectedFile(event: Event) {
+    const fileInputEl = <HTMLInputElement>event.target;
+    this.fileSelected = fileInputEl.files.length > 0 ? fileInputEl.files[0] : null;
   }
 
   private async error(error: Error) {
