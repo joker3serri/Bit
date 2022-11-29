@@ -12,7 +12,7 @@
   >
     <div
       #slotStart
-      class="[&>*:focus-visible::before]:tw-ring-white [&>*]:!tw-text-alt2 [&>*:hover]:!tw-border-text-alt2"
+      class="[&>*:focus-visible::before]:!tw-ring-[white] [&>*]:!tw-text-alt2 [&>*:hover]:!tw-border-text-alt2"
     >
       <ng-content select="[slot-start]"></ng-content>
     </div>
@@ -70,7 +70,7 @@
     </ng-template>
 
     <div
-      class="[&>*:focus-visible::before]:tw-ring-white tw-flex tw-gap-1 [&>*]:!tw-text-alt2 [&>*:hover]:!tw-border-text-alt2"
+      class="tw-flex tw-gap-1 [&>*:focus-visible::before]:!tw-ring-[white] [&>*]:!tw-text-alt2 [&>*:hover]:!tw-border-text-alt2"
     >
       <ng-content select="[slot-end]"></ng-content>
     </div>
