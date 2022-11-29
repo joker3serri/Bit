@@ -26,7 +26,7 @@ export default {
 const Template: Story<NavItemComponent> = (args: NavItemComponent) => ({
   props: args,
   template: `
-      <nav-item text="${args.text}"  [route]="['']" icon="${args.icon}"></nav-item>
+      <bit-nav-item text="${args.text}"  [route]="['']" icon="${args.icon}"></bit-nav-item>
     `,
 });
 
@@ -45,14 +45,14 @@ WithoutIcon.args = {
 export const WithoutRoute: Story<NavItemComponent> = (args: NavItemComponent) => ({
   props: args,
   template: `
-      <nav-item text="Hello World" icon="bwi-collection"></nav-item>
+      <bit-nav-item text="Hello World" icon="bwi-collection"></bit-nav-item>
     `,
 });
 
 export const WithSlots: Story<NavItemComponent> = (args: NavItemComponent) => ({
   props: args,
   template: `
-      <nav-item text="Hello World" [route]="['']" icon="bwi-collection">
+      <bit-nav-item text="Hello World" [route]="['']" icon="bwi-collection">
         <button
           slot-start
           class="tw-ml-auto"
@@ -77,17 +77,17 @@ export const WithSlots: Story<NavItemComponent> = (args: NavItemComponent) => ({
           size="small"
           text="test"
         ></button>
-      </nav-item>
+      </bit-nav-item>
     `,
 });
 
 export const MultipleItemsWithDivider: Story<NavItemComponent> = (args: NavItemComponent) => ({
   props: args,
   template: `
-    <nav-item text="Hello World" icon="bwi-collection"></nav-item>
-    <nav-item text="Hello World" icon="bwi-collection"></nav-item>
-    <nav-divider></nav-divider>
-    <nav-item text="Hello World" icon="bwi-collection"></nav-item>
-    <nav-item text="Hello World" icon="bwi-collection"></nav-item>
+    <bit-nav-item text="Hello World" icon="bwi-collection"></bit-nav-item>
+    <bit-nav-item text="Hello World" icon="bwi-collection"></bit-nav-item>
+    <bit-nav-divider></bit-nav-divider>
+    <bit-nav-item text="Hello World" icon="bwi-collection"></bit-nav-item>
+    <bit-nav-item text="Hello World" icon="bwi-collection"></bit-nav-item>
   `,
 });

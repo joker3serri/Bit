@@ -1,5 +1,5 @@
 <!-- This a higher order component that composes `NavItemComponent`  -->
-<nav-item
+<bit-nav-item
   [text]="text"
   [icon]="icon"
   [route]="route"
@@ -33,7 +33,7 @@
   <ng-container slot-end *ngIf="variant !== 'tree'">
     <ng-container *ngTemplateOutlet="button"></ng-container>
   </ng-container>
-</nav-item>
+</bit-nav-item>
 
 <!-- [attr.id] needs to be a unique ID for this element -->
 <div

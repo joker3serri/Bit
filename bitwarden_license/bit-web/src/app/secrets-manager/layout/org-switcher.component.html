@@ -1,4 +1,4 @@
-<nav-group
+<bit-nav-group
   *ngIf="activeOrganization$ | async as activeOrganization"
   [text]="activeOrganization.name"
   icon="bwi-business"
@@ -6,7 +6,7 @@
   #parentGroup
 >
   <ng-container *ngIf="organizations$ | async as organizations">
-    <nav-item
+    <bit-nav-item
       *ngFor="let org of organizations"
       [text]="org.name"
       [route]="['../', org.id]"
@@ -22,11 +22,11 @@
         [title]="'options' | i18n"
         [attr.aria-label]="'options' | i18n"
       ></button>
-    </nav-item>
+    </bit-nav-item>
   </ng-container>
-  <nav-item icon="bwi-plus" text="New Organization" route="/create-organization"></nav-item>
-  <nav-divider></nav-divider>
-</nav-group>
+  <bit-nav-item icon="bwi-plus" text="New Organization" route="/create-organization"></bit-nav-item>
+  <bit-nav-divider></bit-nav-divider>
+</bit-nav-group>
 
 <bit-menu #orgSwitchMenu>
   <button type="button" bitMenuItem>

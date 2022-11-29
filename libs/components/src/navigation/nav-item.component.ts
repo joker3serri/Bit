@@ -5,7 +5,7 @@ import { BehaviorSubject, map } from "rxjs";
 import { NavBaseComponent } from "./nav-base.component";
 
 @Component({
-  selector: "nav-item",
+  selector: "bit-nav-item",
   templateUrl: "./nav-item.component.html",
 })
 export class NavItemComponent extends NavBaseComponent {

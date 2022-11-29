@@ -4,7 +4,7 @@ import { NavBaseComponent } from "./nav-base.component";
 import { NavItemComponent } from "./nav-item.component";
 
 @Component({
-  selector: "nav-group",
+  selector: "bit-nav-group",
   templateUrl: "./nav-group.component.html",
 })
 export class NavGroupComponent extends NavBaseComponent implements AfterContentInit {
