@@ -8,36 +8,33 @@
   [treeDepth]="treeDepth"
   (mainContentClicked)="mainContentClicked.emit()"
 >
+  <ng-template #button>
+    <button
+      class="tw-ml-auto"
+      [bitIconButton]="
+        open ? 'bwi-chevron-up' : variant === 'tree' ? 'bwi-angle-right' : 'bwi-angle-down'
+      "
+      [buttonType]="'main'"
+      (click)="toggle($event)"
+      size="small"
+      [title]="'toggleCollapse' | i18n"
+      aria-haspopup="true"
+      [attr.aria-expanded]="open.toString()"
+      [attr.aria-controls]="contentId"
+      [attr.aria-label]="'toggleCollapse' | i18n"
+    ></button>
+  </ng-template>
+
   <!-- If `tree` variant, use `slot-slart` -->
-  <!-- All other properties are shared between the two buttons, except for `bitIconButton` -->
-  <button
-    *ngIf="variant === 'tree'"
-    slot-start
-    class="tw-text-white tw-ml-auto"
-    [bitIconButton]="open ? 'bwi-chevron-up' : 'bwi-angle-right'"
-    (click)="toggle($event)"
-    size="small"
-    [title]="'toggleCollapse' | i18n"
-    aria-haspopup="true"
-    [attr.aria-expanded]="open.toString()"
-    [attr.aria-controls]="contentId"
-    [attr.aria-label]="'toggleCollapse' | i18n"
-  ></button>
-  <!-- If `default` variant, use `slot-end` -->
-  <button
-    *ngIf="variant === 'default'"
-    slot-end
-    class="tw-text-white tw-ml-auto"
-    [bitIconButton]="open ? 'bwi-chevron-up' : 'bwi-angle-down'"
-    (click)="toggle($event)"
-    size="small"
-    [title]="'toggleCollapse' | i18n"
-    aria-haspopup="true"
-    [attr.aria-expanded]="open.toString()"
-    [attr.aria-controls]="contentId"
-    [attr.aria-label]="'toggleCollapse' | i18n"
-  ></button>
+  <ng-container slot-start *ngIf="variant === 'tree'">
+    <ng-container *ngTemplateOutlet="button"></ng-container>
+  </ng-container>
+  <!-- Otherwise, use `slot-end` -->
+  <ng-container slot-end *ngIf="variant !== 'tree'">
+    <ng-container *ngTemplateOutlet="button"></ng-container>
+  </ng-container>
 </nav-item>
+
 <!-- [attr.id] needs to be a unique ID for this element -->
 <div
   *ngIf="open"
