@@ -52,7 +52,7 @@
     <bit-label>{{ "scimApiKey" | i18n }}</bit-label>
     <input
       bitInput
-      type="{{ showScimKey ? 'text' : 'password' }}"
+      [type]="showScimKey ? 'text' : 'password'"
       formControlName="clientSecret"
       id="clientSecret"
     />
@@ -60,6 +60,7 @@
       <button
         type="button"
         bitSuffix
+        [disabled]="$any(rotateButton).loading"
         [bitIconButton]="showScimKey ? 'bwi-eye-slash' : 'bwi-eye'"
         (click)="toggleScimKey()"
         [appA11yTitle]="'toggleVisibility' | i18n"
@@ -68,7 +69,7 @@
     <ng-container #rotateButton [appApiAction]="rotatePromise">
       <!-- TODO: Convert to async actions -->
       <button
-        [loading]="rotateButton.loading"
+        [loading]="$any(rotateButton).loading"
         type="button"
         bitSuffix
         bitIconButton="bwi-generate"
