@@ -78,7 +78,7 @@ export class ExpirationOptionsComponent
       return null;
     }
     return {
-      required: "required",
+      required: true,
     };
   }
 
