@@ -19,7 +19,7 @@ describe("sessionSync decorator", () => {
     expect((testClass as any).__syncedItemMetadata).toEqual([
       expect.objectContaining({
         propertyKey: "testProperty",
-        sessionKey: "TestClass_testProperty",
+        sessionKey: "testProperty_0",
         ctor: ctor,
         initializer: initializer,
       }),
