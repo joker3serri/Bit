@@ -34,12 +34,17 @@ export class ExpirationOptionsComponent
 {
   private destroy$ = new Subject<void>();
 
-  requireCustom = false;
   @Input() expirationDayOptions: number[];
+
+  @Input() set touched(val: number) {
+    if (val) {
+      this.form.markAllAsTouched();
+    }
+  }
 
   protected form = new FormGroup({
     expires: new FormControl("never", [Validators.required]),
-    expireDateTime: new FormControl(""),
+    expireDateTime: new FormControl("", [Validators.required]),
   });
 
   constructor(private datePipe: DatePipe) {}
@@ -70,16 +75,17 @@ export class ExpirationOptionsComponent
       (this.form.value.expires == "custom" && this.form.value.expireDateTime) ||
       this.form.value.expires !== "custom"
     ) {
-      this.requireCustom = false;
       return null;
     }
-    this.requireCustom = true;
     return {
-      required: true,
+      required: "required",
     };
   }
 
-  writeValue(value: Date): void {
+  writeValue(value: Date | null): void {
+    if (value == null) {
+      this.form.setValue({ expires: "never", expireDateTime: null });
+    }
     if (value) {
       this.form.setValue({
         expires: "custom",
@@ -89,7 +95,7 @@ export class ExpirationOptionsComponent
   }
 
   setDisabledState?(isDisabled: boolean): void {
-    throw new Error("Method not implemented.");
+    isDisabled ? this.form.disable() : this.form.enable();
   }
 
   get minDateTime() {
