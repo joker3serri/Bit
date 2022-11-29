@@ -5,7 +5,7 @@ import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import {
-  notProvider,
+  isNotProviderUser,
   OrganizationService,
 } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
@@ -44,7 +44,7 @@ export class VaultFilterService {
     let organizations = await this.organizationService.getAll();
     if (organizations != null) {
       organizations = organizations
-        .filter(notProvider)
+        .filter(isNotProviderUser)
         .sort((a, b) => a.name.localeCompare(b.name));
     }
 

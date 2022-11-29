@@ -5,7 +5,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import {
   canAccessAdmin,
-  notProvider,
+  isNotProviderUser,
   OrganizationService,
 } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -55,7 +55,7 @@ export class NavbarComponent implements OnInit {
     this.providers = await this.providerService.getAll();
 
     this.organizations$ = this.organizationService.organizations$.pipe(
-      map((orgs) => orgs.filter(notProvider)),
+      map((orgs) => orgs.filter(isNotProviderUser)),
       canAccessAdmin(this.i18nService)
     );
   }

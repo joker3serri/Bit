@@ -70,7 +70,7 @@ export function canAccessAdmin(i18nService: I18nService) {
   );
 }
 
-export function notProvider(org: Organization): boolean {
+export function isNotProviderUser(org: Organization): boolean {
   return !org.isProviderUser;
 }
 
