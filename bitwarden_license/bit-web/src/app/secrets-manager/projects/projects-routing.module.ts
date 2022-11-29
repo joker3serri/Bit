@@ -16,6 +16,11 @@ const routes: Routes = [
     children: [
       {
         path: "",
+        pathMatch: "full",
+        redirectTo: "secrets",
+      },
+      {
+        path: "secrets",
         component: ProjectSecretsComponent,
       },
     ],
