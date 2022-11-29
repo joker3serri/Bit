@@ -1,17 +1,16 @@
 import { BrowserApi } from "../browser/browserApi";
+import { clearClipboardAlarmName } from "../clipboard";
 
-type AlarmState = {
-  clearClipboard: number | undefined;
-  //TODO once implemented vaultTimeout: number | undefined;
-  //TODO once implemented checkNotifications: number | undefined;
-  //TODO once implemented (if necessary) processReload: number | undefined;
-};
+export const alarmKeys = [clearClipboardAlarmName] as const;
+export type AlarmKeys = typeof alarmKeys[number];
 
-// MUST match the keys of AlarmState
-export const alarmKeys = ["clearClipboard"] as const;
+type AlarmState = { [T in AlarmKeys]: number | undefined };
 
 const alarmState: AlarmState = {
   clearClipboard: null,
+  //TODO once implemented vaultTimeout: null;
+  //TODO once implemented checkNotifications: null;
+  //TODO once implemented (if necessary) processReload: null;
 };
 
 /**
@@ -21,7 +20,7 @@ const alarmState: AlarmState = {
  * @example
  * // getAlarmTime(clearClipboard)
  */
-export async function getAlarmTime(commandName: keyof AlarmState): Promise<number> {
+export async function getAlarmTime(commandName: AlarmKeys): Promise<number> {
   let alarmTime: number;
   if (BrowserApi.manifestVersion == 3) {
     const fromSessionStore = await chrome.storage.session.get(commandName);
@@ -40,7 +39,7 @@ export async function getAlarmTime(commandName: keyof AlarmState): Promise<numbe
  * @example
  * // setAlarmTime(clearClipboard, 5000) register the clearClipboard action which will execute when at least 5 seconds from now have passed
  */
-export async function setAlarmTime(commandName: keyof AlarmState, delay_ms: number): Promise<void> {
+export async function setAlarmTime(commandName: AlarmKeys, delay_ms: number): Promise<void> {
   if (!delay_ms || delay_ms === 0) {
     await this.clearAlarmTime(commandName);
     return;
@@ -54,11 +53,11 @@ export async function setAlarmTime(commandName: keyof AlarmState, delay_ms: numb
  * Clears the time currently set for a given command
  * @param commandName A command that has been previously registered with {@link AlarmState}
  */
-export async function clearAlarmTime(commandName: keyof AlarmState): Promise<void> {
+export async function clearAlarmTime(commandName: AlarmKeys): Promise<void> {
   await setAlarmTimeInternal(commandName, null);
 }
 
-async function setAlarmTimeInternal(commandName: keyof AlarmState, time: number): Promise<void> {
+async function setAlarmTimeInternal(commandName: AlarmKeys, time: number): Promise<void> {
   if (BrowserApi.manifestVersion == 3) {
     await chrome.storage.session.set({ [commandName]: time });
   } else {
