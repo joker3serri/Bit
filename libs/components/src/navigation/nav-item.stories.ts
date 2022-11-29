@@ -4,6 +4,7 @@ import { Meta, moduleMetadata, Story } from "@storybook/angular";
 import { IconButtonModule } from "../icon-button";
 
 import { NavItemComponent } from "./nav-item.component";
+import { NavigationModule } from "./navigation.module";
 
 export default {
   title: "Component Library/Nav/Nav Item",
@@ -11,7 +12,7 @@ export default {
   decorators: [
     moduleMetadata({
       declarations: [],
-      imports: [RouterTestingModule, IconButtonModule],
+      imports: [RouterTestingModule, IconButtonModule, NavigationModule],
     }),
   ],
   parameters: {
@@ -78,4 +79,15 @@ export const WithSlots: Story<NavItemComponent> = (args: NavItemComponent) => ({
         ></button>
       </nav-item>
     `,
+});
+
+export const MultipleItemsWithDivider: Story<NavItemComponent> = (args: NavItemComponent) => ({
+  props: args,
+  template: `
+    <nav-item text="Hello World" icon="bwi-collection"></nav-item>
+    <nav-item text="Hello World" icon="bwi-collection"></nav-item>
+    <nav-divider></nav-divider>
+    <nav-item text="Hello World" icon="bwi-collection"></nav-item>
+    <nav-item text="Hello World" icon="bwi-collection"></nav-item>
+  `,
 });
