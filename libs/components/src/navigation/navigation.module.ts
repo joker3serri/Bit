@@ -6,12 +6,13 @@ import { RouterModule } from "@angular/router";
 import { IconButtonModule } from "../icon-button/icon-button.module";
 import { SharedModule } from "../shared/shared.module";
 
+import { NavDividerComponent } from "./nav-divider.component";
 import { NavGroupComponent } from "./nav-group.component";
 import { NavItemComponent } from "./nav-item.component";
 
 @NgModule({
   imports: [CommonModule, SharedModule, IconButtonModule, OverlayModule, RouterModule],
-  declarations: [NavGroupComponent, NavItemComponent],
-  exports: [NavGroupComponent, NavItemComponent],
+  declarations: [NavDividerComponent, NavGroupComponent, NavItemComponent],
+  exports: [NavDividerComponent, NavGroupComponent, NavItemComponent],
 })
 export class NavigationModule {}

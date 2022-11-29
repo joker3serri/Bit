@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Output } from "@angular/core";
+import { Component, HostListener } from "@angular/core";
 import { IsActiveMatchOptions } from "@angular/router";
 import { BehaviorSubject, map } from "rxjs";
 
@@ -10,11 +10,6 @@ import { NavBaseComponent } from "./nav-base.component";
 })
 export class NavItemComponent extends NavBaseComponent {
   /**
-   * Fires when main content is clicked
-   */
-  @Output() mainContentClicked: EventEmitter<MouseEvent> = new EventEmitter();
-
-  /**
    * Is `true` if `to` matches the current route
    */
   protected active = false;
@@ -22,7 +17,7 @@ export class NavItemComponent extends NavBaseComponent {
     this.active = isActive;
   }
   protected readonly rlaOptions: IsActiveMatchOptions = {
-    paths: "subset",
+    paths: "exact",
     queryParams: "exact",
     fragment: "ignored",
     matrixParams: "ignored",

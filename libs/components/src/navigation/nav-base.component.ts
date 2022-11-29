@@ -1,4 +1,4 @@
-import { Directive, Input } from "@angular/core";
+import { Directive, EventEmitter, Input, Output } from "@angular/core";
 
 /**
  * Base class used in `NavGroupComponent` and `NavItemComponent`
@@ -29,4 +29,14 @@ export abstract class NavBaseComponent {
    * Depth level when nested inside of a `'tree'` variant
    */
   @Input() treeDepth = 0;
+
+  /**
+   * If `true`, do not change styles when nav item is active.
+   */
+  @Input() hideActiveStyles = false;
+
+  /**
+   * Fires when main content is clicked
+   */
+  @Output() mainContentClicked: EventEmitter<MouseEvent> = new EventEmitter();
 }

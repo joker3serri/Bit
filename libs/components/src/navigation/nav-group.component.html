@@ -6,6 +6,7 @@
   [variant]="variant"
   (mainContentClicked)="toggle()"
   [treeDepth]="treeDepth"
+  (mainContentClicked)="mainContentClicked.emit()"
 >
   <!-- If `tree` variant, use `slot-slart` -->
   <!-- All other properties are shared between the two buttons, except for `bitIconButton` -->

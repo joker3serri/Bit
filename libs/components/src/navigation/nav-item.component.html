@@ -1,7 +1,7 @@
 <div
-  class="tw-relative {{ active ? 'tw-bg-background-alt4' : 'tw-bg-background-alt3' }} {{
-    fvwStyles$ | async
-  }}"
+  class="tw-relative {{
+    active && !hideActiveStyles ? 'tw-bg-background-alt4' : 'tw-bg-background-alt3'
+  }} {{ fvwStyles$ | async }}"
 >
   <div
     [style.--nested-left-padding]="this.treeDepth * 1.5 + 'rem'"
@@ -14,7 +14,7 @@
     <!-- Default content for #slotStart (for consistent sizing) -->
     <div
       *ngIf="slotStart.childElementCount === 0"
-      class="{{ variant === 'tree' ? 'tw-px-[.69rem]' : '' }} tw-h-[1.875rem]"
+      class="{{ variant === 'tree' ? 'tw-px-[.77rem]' : '' }} tw-h-[1.875rem]"
     ></div>
 
     <ng-container *ngIf="route; then isAnchor; else isButton"></ng-container>
@@ -22,7 +22,9 @@
     <!-- Main content of `NavItem` -->
     <ng-template #anchorAndButtonContent>
       <i class="bwi bwi-fw tw-text-white tw-mr-1 {{ icon }}"></i
-      ><span [ngClass]="active ? 'tw-font-bold' : 'tw-font-semibold'">{{ text }}</span>
+      ><span [ngClass]="active && !hideActiveStyles ? 'tw-font-bold' : 'tw-font-semibold'">{{
+        text
+      }}</span>
     </ng-template>
 
     <!-- Show if a value was passed to `this.to` -->
