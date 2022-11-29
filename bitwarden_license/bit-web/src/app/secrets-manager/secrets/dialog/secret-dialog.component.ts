@@ -78,11 +78,7 @@ export class SecretDialogComponent implements OnInit {
   };
 
   private async createSecret(secretView: SecretView, projectId?: string) {
-    if (projectId) {
-      await this.secretService.create(this.data.organizationId, secretView, projectId);
-    } else {
-      await this.secretService.create(this.data.organizationId, secretView);
-    }
+    await this.secretService.create(this.data.organizationId, secretView, projectId);
     this.platformUtilsService.showToast("success", null, this.i18nService.t("secretCreated"));
   }
 
