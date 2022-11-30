@@ -117,13 +117,6 @@ import {
 } from "../models/response/organization-connection.response";
 import { OrganizationExportResponse } from "../models/response/organization-export.response";
 import { OrganizationSponsorshipSyncStatusResponse } from "../models/response/organization-sponsorship-sync-status.response";
-import { OrganizationUserBulkPublicKeyResponse } from "../models/response/organization-user-bulk-public-key.response";
-import { OrganizationUserBulkResponse } from "../models/response/organization-user-bulk.response";
-import {
-  OrganizationUserDetailsResponse,
-  OrganizationUserUserDetailsResponse,
-  OrganizationUserResetPasswordDetailsReponse,
-} from "../models/response/organization-user.response";
 import { PaymentResponse } from "../models/response/payment.response";
 import { PlanResponse } from "../models/response/plan.response";
 import { PolicyResponse } from "../models/response/policy.response";
@@ -136,8 +129,8 @@ import {
 import { ProviderUserBulkPublicKeyResponse } from "../models/response/provider/provider-user-bulk-public-key.response";
 import { ProviderUserBulkResponse } from "../models/response/provider/provider-user-bulk.response";
 import {
-  ProviderUserUserDetailsResponse,
   ProviderUserResponse,
+  ProviderUserUserDetailsResponse,
 } from "../models/response/provider/provider-user.response";
 import { ProviderResponse } from "../models/response/provider/provider.response";
 import { SelectionReadOnlyResponse } from "../models/response/selection-read-only.response";
@@ -156,12 +149,20 @@ import { TwoFactorEmailResponse } from "../models/response/two-factor-email.resp
 import { TwoFactorProviderResponse } from "../models/response/two-factor-provider.response";
 import { TwoFactorRecoverResponse } from "../models/response/two-factor-recover.response";
 import {
-  TwoFactorWebAuthnResponse,
   ChallengeResponse,
+  TwoFactorWebAuthnResponse,
 } from "../models/response/two-factor-web-authn.response";
 import { TwoFactorYubiKeyResponse } from "../models/response/two-factor-yubi-key.response";
 import { UserKeyResponse } from "../models/response/user-key.response";
 import { SendAccessView } from "../models/view/send-access.view";
+
+import {
+  OrganizationUserBulkPublicKeyResponse,
+  OrganizationUserBulkResponse,
+  OrganizationUserDetailsResponse,
+  OrganizationUserResetPasswordDetailsReponse,
+  OrganizationUserUserDetailsResponse,
+} from "./organizationUser/responses";
 
 /**
  * @deprecated The `ApiService` class is deprecated and calls should be extracted into individual

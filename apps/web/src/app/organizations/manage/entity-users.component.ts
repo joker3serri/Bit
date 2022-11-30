@@ -4,12 +4,12 @@ import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/abstractions/organizationUser/responses";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selection-read-only.request";
-import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
 
 @Component({
   selector: "app-entity-users",
