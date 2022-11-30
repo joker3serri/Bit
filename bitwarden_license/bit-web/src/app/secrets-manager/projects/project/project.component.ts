@@ -6,10 +6,10 @@ import { ProjectView } from "../../models/view/project.view";
 import { ProjectService } from "../project.service";
 
 @Component({
-  selector: "sm-project-contents",
-  templateUrl: "./project-contents.component.html",
+  selector: "sm-project",
+  templateUrl: "./project.component.html",
 })
-export class ProjectContentsComponent implements OnInit {
+export class ProjectComponent implements OnInit {
   project: Observable<ProjectView>;
 
   constructor(private route: ActivatedRoute, private projectService: ProjectService) {}

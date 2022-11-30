@@ -1,8 +1,8 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { ProjectContentsComponent } from "./project-contents/project-contents.component";
-import { ProjectSecretsComponent } from "./project-contents/project-secrets.component";
+import { ProjectSecretsComponent } from "./project/project-secrets.component";
+import { ProjectComponent } from "./project/project.component";
 import { ProjectsComponent } from "./projects/projects.component";
 
 const routes: Routes = [
@@ -12,7 +12,7 @@ const routes: Routes = [
   },
   {
     path: ":projectId",
-    component: ProjectContentsComponent,
+    component: ProjectComponent,
     children: [
       {
         path: "",
