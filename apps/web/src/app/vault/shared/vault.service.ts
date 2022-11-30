@@ -1,6 +1,6 @@
 import { VaultFilter } from "@bitwarden/angular/vault/vault-filter/models/vault-filter.model";
 
-import { WebI18nKey } from "../../core/i18n.service";
+import { WebI18nKey } from "../../core/web-i18n.service";
 
 export class VaultService {
   calculateSearchBarLocalizationString(vaultFilter: VaultFilter): WebI18nKey {

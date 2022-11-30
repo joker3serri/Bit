@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { Utils } from "@bitwarden/common/misc/utils";
 
-import { WebI18nKey } from "../core/i18n.service";
+import { WebI18nKey } from "../core/web-i18n.service";
 
 @Component({
   selector: "app-nested-checkbox",

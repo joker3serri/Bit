@@ -1,8 +1,8 @@
 import { Observable, ReplaySubject } from "rxjs";
 
-import { I18nService as I18nServiceAbstraction } from "../abstractions/i18n.service";
+import { I18nService } from "../abstractions/i18n.service";
 
-export class I18nService<TKey = string> implements I18nServiceAbstraction<TKey> {
+export class I18nServiceImplementation<TKey = string> implements I18nService<TKey> {
   private _locale = new ReplaySubject<string>(1);
   locale$: Observable<string> = this._locale.asObservable();
   // First locale is the default (English)

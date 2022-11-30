@@ -18,8 +18,8 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
 import { ProviderUserUserDetailsResponse } from "@bitwarden/common/models/response/provider/provider-user.response";
-import { WebI18nService } from '../core/i18n.service';
 
+import { WebI18nService } from "../core/web-i18n.service";
 import { UserConfirmComponent } from "../organizations/manage/user-confirm.component";
 
 type StatusType = OrganizationUserStatusType | ProviderUserStatusType;

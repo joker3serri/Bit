@@ -27,6 +27,7 @@ import { OrganizationUserBulkResponse } from "@bitwarden/common/models/response/
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
 
 import { BasePeopleComponent } from "../../common/base.people.component";
+import { WebI18nService } from "../../core/web-i18n.service";
 
 import { BulkConfirmComponent } from "./bulk/bulk-confirm.component";
 import { BulkRemoveComponent } from "./bulk/bulk-remove.component";
@@ -36,7 +37,6 @@ import { EntityEventsComponent } from "./entity-events.component";
 import { ResetPasswordComponent } from "./reset-password.component";
 import { UserAddEditComponent } from "./user-add-edit.component";
 import { UserGroupsComponent } from "./user-groups.component";
-import { WebI18nService } from '../../core/i18n.service';
 
 @Component({
   selector: "app-org-people",

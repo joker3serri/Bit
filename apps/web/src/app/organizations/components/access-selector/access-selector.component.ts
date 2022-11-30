@@ -6,7 +6,7 @@ import { FormSelectionList } from "@bitwarden/angular/utils/form-selection-list"
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
-import { WebI18nKey } from "../../../core/i18n.service";
+import { WebI18nKey } from "../../../core/web-i18n.service";
 
 import {
   AccessItemType,

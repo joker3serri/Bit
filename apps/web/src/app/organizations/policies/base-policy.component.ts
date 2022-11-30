@@ -6,7 +6,7 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 import { PolicyRequest } from "@bitwarden/common/models/request/policy.request";
 import { PolicyResponse } from "@bitwarden/common/models/response/policy.response";
 
-import { WebI18nKey } from "../../core/i18n.service";
+import { WebI18nKey } from "../../core/web-i18n.service";
 
 export abstract class BasePolicy {
   abstract name: WebI18nKey;

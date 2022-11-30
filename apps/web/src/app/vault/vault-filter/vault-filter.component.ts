@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from "@angular/core";
 
 import { VaultFilterComponent as BaseVaultFilterComponent } from "@bitwarden/angular/vault/vault-filter/components/vault-filter.component";
 
-import { WebI18nKey } from "../../core/i18n.service";
+import { WebI18nKey } from "../../core/web-i18n.service";
 
 import { VaultFilterService } from "./shared/vault-filter.service";
 

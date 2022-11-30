@@ -16,7 +16,7 @@ import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selec
 import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 
-import { WebI18nKey } from "../../core/i18n.service";
+import { WebI18nKey } from "../../core/web-i18n.service";
 
 type NestedCheckboxes = { id: WebI18nKey; get: () => boolean; set: (v: boolean) => boolean }[];
 

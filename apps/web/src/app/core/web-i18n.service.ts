@@ -1,13 +1,16 @@
-import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
-import { I18nService as BaseI18nService } from "@bitwarden/common/services/i18n.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { I18nServiceImplementation } from "@bitwarden/common/services/i18n.service";
 
 import type eng from "../../locales/en/messages.json";
 
 export type WebI18nKey = keyof typeof eng;
 
-export abstract class WebI18nService extends I18nServiceAbstraction<WebI18nKey> {}
+export abstract class WebI18nService extends I18nService<WebI18nKey> {}
 
-export class I18nService extends BaseI18nService<WebI18nKey> implements WebI18nService {
+export class WebI18nServiceImplementation
+  extends I18nServiceImplementation<WebI18nKey>
+  implements WebI18nService
+{
   constructor(systemLanguage: string, localesDirectory: string) {
     super(systemLanguage || "en-US", localesDirectory, async (formattedLocale: string) => {
       const filePath =

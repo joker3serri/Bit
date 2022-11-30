@@ -1,6 +1,6 @@
 import { Icon } from "@bitwarden/components";
 
-import { WebI18nKey } from "../../../core/i18n.service";
+import { WebI18nKey } from "../../../core/web-i18n.service";
 
 import { ReportVariant } from "./report-variant";
 
