@@ -54,20 +54,6 @@ jobs:
             r2-electron-bucket-name,
             cf-prod-account"
 
-      - name: Download channel update info files from S3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.aws-electron-access-id }}
-          AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
-          AWS_DEFAULT_REGION: 'us-west-2'
-          AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
-        run: |
-          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest.yml . \
-          --quiet
-          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-linux.yml . \
-          --quiet
-          aws s3 cp $AWS_S3_BUCKET_NAME/desktop/latest-mac.yml . \
-          --quiet
-
       - name: Download channel update info files from R2
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.r2-electron-access-id }}
@@ -111,7 +97,13 @@ jobs:
           sed -i -r "/stagingPercentage/s/[0-9]+/${ROLLOUT_PCT}/" latest-linux.yml
           sed -i -r "/stagingPercentage/s/[0-9]+/${ROLLOUT_PCT}/" latest-mac.yml
 
+      - name: TEST STEP
+        run: |
+          pwd
+          ls -alh
+
       - name: Publish channel update info files to S3
+        if: false
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.aws-electron-access-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
@@ -124,6 +116,7 @@ jobs:
           --quiet
 
       - name: Publish channel update info files to R2
+        if: false
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.r2-electron-access-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.r2-electron-access-key }}
