@@ -1,8 +1,5 @@
 import { SelectionModel } from "@angular/cdk/collections";
-import { DatePipe } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
-
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
 import { AccessTokenView } from "../models/view/access-token.view";
 
@@ -25,8 +22,6 @@ export class AccessListComponent {
 
   protected selection = new SelectionModel<string>(true, []);
 
-  constructor(private i18nService: I18nService, private datePipe: DatePipe) {}
-
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.tokens.length;
@@ -41,12 +36,5 @@ export class AccessListComponent {
 
   protected permission(token: AccessTokenView) {
     return "canRead";
-  }
-
-  getExpiration(token: AccessTokenView) {
-    if (token.expireAt == null) {
-      return this.i18nService.t("never");
-    }
-    return this.datePipe.transform(token.expireAt, "medium");
   }
 }
