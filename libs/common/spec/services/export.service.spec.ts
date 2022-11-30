@@ -153,7 +153,7 @@ describe("ExportService", () => {
     cryptoService = Substitute.for<CryptoService>();
 
     folderService.getAllDecryptedFromState().resolves(UserFolderViews);
-    folderService.getAll().resolves(UserFolders);
+    folderService.getAllFromState().resolves(UserFolders);
 
     exportService = new ExportService(
       folderService,
@@ -272,7 +272,7 @@ describe("ExportService", () => {
 
   it("exported encrypted json contains folders", async () => {
     cipherService.getAll().resolves(UserCipherDomains.slice(0, 1));
-    await folderService.getAll();
+    await folderService.getAllFromState();
     const actual = await exportService.getExport("encrypted_json");
 
     expectEqualFolders(UserFolders, actual);

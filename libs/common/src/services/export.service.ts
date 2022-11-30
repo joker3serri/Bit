@@ -191,7 +191,7 @@ export class ExportService implements ExportServiceAbstraction {
     const promises = [];
 
     promises.push(
-      this.folderService.getAll().then((f) => {
+      this.folderService.getAllFromState().then((f) => {
         folders = f;
       })
     );
