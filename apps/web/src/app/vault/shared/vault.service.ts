@@ -1,7 +1,9 @@
 import { VaultFilter } from "@bitwarden/angular/vault/vault-filter/models/vault-filter.model";
 
+import { WebI18nKey } from "../../core/i18n.service";
+
 export class VaultService {
-  calculateSearchBarLocalizationString(vaultFilter: VaultFilter): string {
+  calculateSearchBarLocalizationString(vaultFilter: VaultFilter): WebI18nKey {
     if (vaultFilter.status === "favorites") {
       return "searchFavorites";
     }

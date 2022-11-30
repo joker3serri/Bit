@@ -25,6 +25,7 @@ import { ColorPasswordCountPipe } from "./pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "./pipes/color-password.pipe";
 import { CreditCardNumberPipe } from "./pipes/credit-card-number.pipe";
 import { EllipsisPipe } from "./pipes/ellipsis.pipe";
+import { I18nPipe } from "./pipes/i18n.pipe";
 import { SearchCiphersPipe } from "./pipes/search-ciphers.pipe";
 import { SearchPipe } from "./pipes/search.pipe";
 import { UserNamePipe } from "./pipes/user-name.pipe";
@@ -54,6 +55,7 @@ import { PasswordStrengthComponent } from "./shared/components/password-strength
     EllipsisPipe,
     ExportScopeCalloutComponent,
     FallbackSrcDirective,
+    I18nPipe,
     IconComponent,
     InputStripSpacesDirective,
     InputVerbatimDirective,
@@ -83,6 +85,7 @@ import { PasswordStrengthComponent } from "./shared/components/password-strength
     EllipsisPipe,
     ExportScopeCalloutComponent,
     FallbackSrcDirective,
+    I18nPipe,
     IconComponent,
     InputStripSpacesDirective,
     InputVerbatimDirective,
@@ -98,6 +101,6 @@ import { PasswordStrengthComponent } from "./shared/components/password-strength
     UserNamePipe,
     PasswordStrengthComponent,
   ],
-  providers: [CreditCardNumberPipe, DatePipe, SearchPipe, UserNamePipe],
+  providers: [CreditCardNumberPipe, DatePipe, I18nPipe, SearchPipe, UserNamePipe],
 })
 export class JslibModule {}

@@ -1,10 +1,12 @@
 import { Icon } from "@bitwarden/components";
 
+import { WebI18nKey } from "../../../core/i18n.service";
+
 import { ReportVariant } from "./report-variant";
 
 export type ReportEntry = {
-  title: string;
-  description: string;
+  title: WebI18nKey;
+  description: WebI18nKey;
   route: string;
   icon: Icon;
   variant: ReportVariant;
