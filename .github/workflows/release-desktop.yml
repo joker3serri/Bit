@@ -170,7 +170,7 @@ jobs:
           --quiet
 
       - name: Publish artifacts to R2
-        if: ${{ github.event.inputs.release_type != 'Dry Run' && inputs.electron_publish }}
+        if: ${{ github.event.inputs.release_type != 'Dry Run' && github.event.inputs.electron_publish }}
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.r2-electron-access-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.r2-electron-access-key }}
