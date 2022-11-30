@@ -179,7 +179,7 @@ export class WebPlatformUtilsService implements PlatformUtilsService {
       cancelButtonText: cancelText,
       showConfirmButton: true,
       confirmButtonText: confirmText == null ? this.i18nService.t("ok") : confirmText,
-      target: target != undefined ? target + " .modal-content" : "body",
+      target: target != null ? target : "body",
     });
 
     if (bootstrapModal != null) {

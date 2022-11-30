@@ -107,7 +107,7 @@ export class AttachmentsComponent implements OnInit {
       this.i18nService.t("no"),
       "warning",
       false,
-      this.componentName != "" ? this.componentName : null
+      this.componentName != "" ? this.componentName + " .modal-content" : null
     );
     if (!confirmed) {
       return;

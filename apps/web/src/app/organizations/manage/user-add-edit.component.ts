@@ -224,7 +224,7 @@ export class UserAddEditComponent implements OnInit {
       this.i18nService.t("no"),
       "warning",
       false,
-      "app-user-add-edit"
+      "app-user-add-edit .modal-content"
     );
     if (!confirmed) {
       return false;
@@ -259,7 +259,7 @@ export class UserAddEditComponent implements OnInit {
       this.i18nService.t("cancel"),
       "warning",
       false,
-      "app-user-add-edit"
+      "app-user-add-edit .modal-content"
     );
     if (!confirmed) {
       return false;

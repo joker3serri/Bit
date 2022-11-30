@@ -160,7 +160,7 @@ export class CollectionAddEditComponent implements OnInit {
       this.i18nService.t("no"),
       "warning",
       false,
-      "app-collection-add-edit"
+      "app-collection-add-edit .modal-content"
     );
     if (!confirmed) {
       return false;
