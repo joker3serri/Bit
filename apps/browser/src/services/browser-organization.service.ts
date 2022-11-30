@@ -8,5 +8,5 @@ import { browserSession, sessionSync } from "../decorators/session-sync-observab
 @browserSession
 export class BrowserOrganizationService extends OrganizationService {
   @sessionSync({ initializer: Organization.fromJSON, initializeAs: "array" })
-  protected _organizations: BehaviorSubject<Organization[]>;
+  protected _organizations = new BehaviorSubject<Organization[]>([]);
 }
