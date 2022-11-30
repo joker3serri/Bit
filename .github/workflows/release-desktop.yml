@@ -146,7 +146,7 @@ jobs:
         run: mv Bitwarden-${{ env.PKG_VERSION }}-universal.pkg Bitwarden-${{ env.PKG_VERSION }}-universal.pkg.archive
 
       - name: Set staged rollout percentage
-        if: ${{ inputs.electron_publish }}
+        if: ${{ github.event.inputs.electron_publish }}
         env:
           RELEASE_CHANNEL: ${{ steps.release-channel.outputs.channel }}
           ROLLOUT_PCT: ${{ github.event.inputs.rollout_percentage }}
