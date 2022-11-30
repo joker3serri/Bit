@@ -18,7 +18,7 @@ import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 
 import { WebI18nKey } from "../../core/web-i18n.service";
 
-type NestedCheckboxes = { id: WebI18nKey; get: () => boolean; set: (v: boolean) => boolean }[];
+type NestedCheckbox = { id: WebI18nKey; get: () => boolean; set: (v: boolean) => boolean };
 
 @Component({
   selector: "app-user-add-edit",
@@ -48,7 +48,7 @@ export class UserAddEditComponent implements OnInit {
   deletePromise: Promise<any>;
   organizationUserType = OrganizationUserType;
 
-  manageAllCollectionsCheckboxes: NestedCheckboxes = [
+  manageAllCollectionsCheckboxes: NestedCheckbox[] = [
     {
       id: "createNewCollections",
       get: () => this.permissions.createNewCollections,
@@ -66,7 +66,7 @@ export class UserAddEditComponent implements OnInit {
     },
   ];
 
-  manageAssignedCollectionsCheckboxes: NestedCheckboxes = [
+  manageAssignedCollectionsCheckboxes: NestedCheckbox[] = [
     {
       id: "editAssignedCollections",
       get: () => this.permissions.editAssignedCollections,
