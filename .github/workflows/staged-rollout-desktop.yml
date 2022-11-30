@@ -110,7 +110,6 @@ jobs:
           cat latest-mac.yml
 
       - name: Publish channel update info files to S3
-        if: false
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.aws-electron-access-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.aws-electron-access-key }}
@@ -118,11 +117,9 @@ jobs:
           AWS_S3_BUCKET_NAME: ${{ steps.retrieve-secrets.outputs.aws-electron-bucket-name }}
         run: |
           aws s3 cp ./ $AWS_S3_BUCKET_NAME/desktop/ \
-          --acl "public-read" \
-          --quiet
+          --acl "public-read"
 
       - name: Publish channel update info files to R2
-        if: false
         env:
           AWS_ACCESS_KEY_ID: ${{ steps.retrieve-secrets.outputs.r2-electron-access-id }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.retrieve-secrets.outputs.r2-electron-access-key }}
@@ -131,5 +128,4 @@ jobs:
           CF_ACCOUNT: ${{ steps.retrieve-secrets.outputs.cf-prod-account }}
         run: |
           aws s3 cp ./ $AWS_S3_BUCKET_NAME/desktop/ \
-          --quiet \
           --endpoint-url https://${CF_ACCOUNT}.r2.cloudflarestorage.com
