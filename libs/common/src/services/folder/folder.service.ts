@@ -64,7 +64,7 @@ export class FolderService implements InternalFolderServiceAbstraction {
     return folders.find((folder) => folder.id === id);
   }
 
-  async getAll(): Promise<Folder[]> {
+  async getAllFromState(): Promise<Folder[]> {
     const folders = await this.stateService.getEncryptedFolders();
     const response: Folder[] = [];
     for (const id in folders) {
