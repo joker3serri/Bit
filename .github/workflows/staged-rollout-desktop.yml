@@ -23,7 +23,6 @@ jobs:
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
 
       - name: Branch check
-        if: false
         run: |
           if [[ "$GITHUB_REF" != "refs/heads/rc" ]] && [[ "$GITHUB_REF" != "refs/heads/hotfix-rc-desktop" ]]; then
             echo "==================================="
@@ -97,17 +96,6 @@ jobs:
           sed -i -r "/stagingPercentage/s/[0-9]+/${ROLLOUT_PCT}/" latest.yml
           sed -i -r "/stagingPercentage/s/[0-9]+/${ROLLOUT_PCT}/" latest-linux.yml
           sed -i -r "/stagingPercentage/s/[0-9]+/${ROLLOUT_PCT}/" latest-mac.yml
-
-      - name: TEST STEP
-        run: |
-          pwd
-          ls -alh
-          echo "************************************************************"
-          cat latest.yml
-          echo "************************************************************"
-          cat latest-linux.yml
-          echo "************************************************************"
-          cat latest-mac.yml
 
       - name: Publish channel update info files to S3
         env:
