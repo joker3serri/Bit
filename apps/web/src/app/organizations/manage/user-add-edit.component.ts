@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { DialogConfig, DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
+import { Component, Inject, OnInit } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
@@ -15,21 +16,28 @@ import { OrganizationUserUpdateRequest } from "@bitwarden/common/models/request/
 import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selection-read-only.request";
 import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
+import { DialogService } from "@bitwarden/components";
+
+export interface UserAddEditDialogParams {
+  name: string;
+  organizationId: string;
+  organizationUserId: string;
+  usesKeyConnector: boolean;
+}
+
+export enum UserAddEditDialogResult {
+  Saved = "saved",
+  Canceled = "canceled",
+  Deleted = "deleted",
+  Revoked = "revoked",
+  Restored = "restored",
+}
 
 @Component({
   selector: "app-user-add-edit",
   templateUrl: "user-add-edit.component.html",
 })
 export class UserAddEditComponent implements OnInit {
-  @Input() name: string;
-  @Input() organizationUserId: string;
-  @Input() organizationId: string;
-  @Input() usesKeyConnector = false;
-  @Output() onSavedUser = new EventEmitter();
-  @Output() onDeletedUser = new EventEmitter();
-  @Output() onRevokedUser = new EventEmitter();
-  @Output() onRestoredUser = new EventEmitter();
-
   loading = true;
   editMode = false;
   isRevoked = false;
@@ -80,6 +88,8 @@ export class UserAddEditComponent implements OnInit {
   }
 
   constructor(
+    @Inject(DIALOG_DATA) protected params: UserAddEditDialogParams,
+    private dialogRef: DialogRef<UserAddEditDialogResult>,
     private apiService: ApiService,
     private i18nService: I18nService,
     private collectionService: CollectionService,
@@ -88,7 +98,7 @@ export class UserAddEditComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.editMode = this.loading = this.organizationUserId != null;
+    this.editMode = this.loading = this.params.organizationUserId != null;
     await this.loadCollections();
 
     if (this.editMode) {
@@ -96,8 +106,8 @@ export class UserAddEditComponent implements OnInit {
       this.title = this.i18nService.t("editUser");
       try {
         const user = await this.apiService.getOrganizationUser(
-          this.organizationId,
-          this.organizationUserId
+          this.params.organizationId,
+          this.params.organizationUserId
         );
         this.access = user.accessAll ? "all" : "selected";
         this.type = user.type;
@@ -126,7 +136,7 @@ export class UserAddEditComponent implements OnInit {
   }
 
   async loadCollections() {
-    const response = await this.apiService.getCollections(this.organizationId);
+    const response = await this.apiService.getCollections(this.params.organizationId);
     const collections = response.data.map(
       (r) => new Collection(new CollectionData(r as CollectionDetailsResponse))
     );
@@ -181,8 +191,8 @@ export class UserAddEditComponent implements OnInit {
           request.type !== OrganizationUserType.Custom
         );
         this.formPromise = this.apiService.putOrganizationUser(
-          this.organizationId,
-          this.organizationUserId,
+          this.params.organizationId,
+          this.params.organizationUserId,
           request
         );
       } else {
@@ -195,15 +205,18 @@ export class UserAddEditComponent implements OnInit {
           request.type !== OrganizationUserType.Custom
         );
         request.collections = collections;
-        this.formPromise = this.apiService.postOrganizationUserInvite(this.organizationId, request);
+        this.formPromise = this.apiService.postOrganizationUserInvite(
+          this.params.organizationId,
+          request
+        );
       }
       await this.formPromise;
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t(this.editMode ? "editedUserId" : "invitedUsers", this.name)
+        this.i18nService.t(this.editMode ? "editedUserId" : "invitedUsers", this.params.name)
       );
-      this.onSavedUser.emit();
+      this.close(UserAddEditDialogResult.Saved);
     } catch (e) {
       this.logService.error(e);
     }
@@ -214,12 +227,12 @@ export class UserAddEditComponent implements OnInit {
       return;
     }
 
-    const message = this.usesKeyConnector
+    const message = this.params.usesKeyConnector
       ? "removeUserConfirmationKeyConnector"
       : "removeOrgUserConfirmation";
     const confirmed = await this.platformUtilsService.showDialog(
       this.i18nService.t(message),
-      this.i18nService.t("removeUserIdAccess", this.name),
+      this.i18nService.t("removeUserIdAccess", this.params.name),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
       "warning"
@@ -230,16 +243,16 @@ export class UserAddEditComponent implements OnInit {
 
     try {
       this.deletePromise = this.apiService.deleteOrganizationUser(
-        this.organizationId,
-        this.organizationUserId
+        this.params.organizationId,
+        this.params.organizationUserId
       );
       await this.deletePromise;
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("removedUserId", this.name)
+        this.i18nService.t("removedUserId", this.params.name)
       );
-      this.onDeletedUser.emit();
+      this.close(UserAddEditDialogResult.Deleted);
     } catch (e) {
       this.logService.error(e);
     }
@@ -252,7 +265,7 @@ export class UserAddEditComponent implements OnInit {
 
     const confirmed = await this.platformUtilsService.showDialog(
       this.i18nService.t("revokeUserConfirmation"),
-      this.i18nService.t("revokeUserId", this.name),
+      this.i18nService.t("revokeUserId", this.params.name),
       this.i18nService.t("revokeAccess"),
       this.i18nService.t("cancel"),
       "warning"
@@ -263,17 +276,17 @@ export class UserAddEditComponent implements OnInit {
 
     try {
       this.formPromise = this.apiService.revokeOrganizationUser(
-        this.organizationId,
-        this.organizationUserId
+        this.params.organizationId,
+        this.params.organizationUserId
       );
       await this.formPromise;
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("revokedUserId", this.name)
+        this.i18nService.t("revokedUserId", this.params.name)
       );
       this.isRevoked = true;
-      this.onRevokedUser.emit();
+      this.close(UserAddEditDialogResult.Revoked);
     } catch (e) {
       this.logService.error(e);
     }
@@ -286,19 +299,38 @@ export class UserAddEditComponent implements OnInit {
 
     try {
       this.formPromise = this.apiService.restoreOrganizationUser(
-        this.organizationId,
-        this.organizationUserId
+        this.params.organizationId,
+        this.params.organizationUserId
       );
       await this.formPromise;
       this.platformUtilsService.showToast(
         "success",
         null,
-        this.i18nService.t("restoredUserId", this.name)
+        this.i18nService.t("restoredUserId", this.params.name)
       );
       this.isRevoked = false;
-      this.onRestoredUser.emit();
+      this.close(UserAddEditDialogResult.Restored);
     } catch (e) {
       this.logService.error(e);
     }
   }
+
+  private close(result: UserAddEditDialogResult) {
+    this.dialogRef.close(result);
+  }
+}
+
+/**
+ * Strongly typed helper to open a CollectionDialog
+ * @param dialogService Instance of the dialog service that will be used to open the dialog
+ * @param config Configuration for the dialog
+ */
+export function openUserAddEditDialog(
+  dialogService: DialogService,
+  config: DialogConfig<UserAddEditDialogParams>
+) {
+  return dialogService.open<UserAddEditDialogResult, UserAddEditDialogParams>(
+    UserAddEditComponent,
+    config
+  );
 }
