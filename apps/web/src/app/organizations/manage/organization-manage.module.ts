@@ -4,10 +4,10 @@ import { NgModule } from "@angular/core";
 import { SharedModule } from "../../shared";
 
 import { EntityUsersComponent } from "./entity-users.component";
-import { UserAddEditDialogModule } from "./user-add-edit-dialog";
+import { UserDialogModule } from "./user-dialog";
 
 @NgModule({
-  imports: [SharedModule, ScrollingModule, UserAddEditDialogModule],
+  imports: [SharedModule, ScrollingModule, UserDialogModule],
   declarations: [EntityUsersComponent],
   exports: [EntityUsersComponent],
 })

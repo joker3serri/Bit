@@ -36,10 +36,7 @@ import { BulkRestoreRevokeComponent } from "./bulk/bulk-restore-revoke.component
 import { BulkStatusComponent } from "./bulk/bulk-status.component";
 import { EntityEventsComponent } from "./entity-events.component";
 import { ResetPasswordComponent } from "./reset-password.component";
-import {
-  openUserAddEditDialog,
-  UserAddEditDialogResult,
-} from "./user-add-edit-dialog/user-add-edit.component";
+import { openUserAddEditDialog, UserDialogResult } from "./user-dialog/user-dialog.component";
 import { UserGroupsComponent } from "./user-groups.component";
 
 @Component({
@@ -255,16 +252,16 @@ export class PeopleComponent
 
     const result = await lastValueFrom(dialog.closed);
     switch (result) {
-      case UserAddEditDialogResult.Saved:
+      case UserDialogResult.Saved:
         this.load();
         break;
-      case UserAddEditDialogResult.Deleted:
+      case UserDialogResult.Deleted:
         this.removeUser(user);
         break;
-      case UserAddEditDialogResult.Revoked:
+      case UserDialogResult.Revoked:
         this.load();
         break;
-      case UserAddEditDialogResult.Restored:
+      case UserDialogResult.Restored:
         this.load();
     }
   }

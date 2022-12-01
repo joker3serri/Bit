@@ -18,14 +18,14 @@ import { CollectionDetailsResponse } from "@bitwarden/common/models/response/col
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
-export interface UserAddEditDialogParams {
+export interface UserDialogParams {
   name: string;
   organizationId: string;
   organizationUserId: string;
   usesKeyConnector: boolean;
 }
 
-export enum UserAddEditDialogResult {
+export enum UserDialogResult {
   Saved = "saved",
   Canceled = "canceled",
   Deleted = "deleted",
@@ -34,10 +34,10 @@ export enum UserAddEditDialogResult {
 }
 
 @Component({
-  selector: "app-user-add-edit",
-  templateUrl: "user-add-edit.component.html",
+  selector: "app-user-dialog",
+  templateUrl: "user-dialog.component.html",
 })
-export class UserAddEditComponent implements OnInit {
+export class UserDialogComponent implements OnInit {
   loading = true;
   editMode = false;
   isRevoked = false;
@@ -88,8 +88,8 @@ export class UserAddEditComponent implements OnInit {
   }
 
   constructor(
-    @Inject(DIALOG_DATA) protected params: UserAddEditDialogParams,
-    private dialogRef: DialogRef<UserAddEditDialogResult>,
+    @Inject(DIALOG_DATA) protected params: UserDialogParams,
+    private dialogRef: DialogRef<UserDialogResult>,
     private apiService: ApiService,
     private i18nService: I18nService,
     private collectionService: CollectionService,
@@ -216,7 +216,7 @@ export class UserAddEditComponent implements OnInit {
         null,
         this.i18nService.t(this.editMode ? "editedUserId" : "invitedUsers", this.params.name)
       );
-      this.close(UserAddEditDialogResult.Saved);
+      this.close(UserDialogResult.Saved);
     } catch (e) {
       this.logService.error(e);
     }
@@ -252,7 +252,7 @@ export class UserAddEditComponent implements OnInit {
         null,
         this.i18nService.t("removedUserId", this.params.name)
       );
-      this.close(UserAddEditDialogResult.Deleted);
+      this.close(UserDialogResult.Deleted);
     } catch (e) {
       this.logService.error(e);
     }
@@ -286,7 +286,7 @@ export class UserAddEditComponent implements OnInit {
         this.i18nService.t("revokedUserId", this.params.name)
       );
       this.isRevoked = true;
-      this.close(UserAddEditDialogResult.Revoked);
+      this.close(UserDialogResult.Revoked);
     } catch (e) {
       this.logService.error(e);
     }
@@ -309,13 +309,13 @@ export class UserAddEditComponent implements OnInit {
         this.i18nService.t("restoredUserId", this.params.name)
       );
       this.isRevoked = false;
-      this.close(UserAddEditDialogResult.Restored);
+      this.close(UserDialogResult.Restored);
     } catch (e) {
       this.logService.error(e);
     }
   }
 
-  private close(result: UserAddEditDialogResult) {
+  private close(result: UserDialogResult) {
     this.dialogRef.close(result);
   }
 }
@@ -327,10 +327,7 @@ export class UserAddEditComponent implements OnInit {
  */
 export function openUserAddEditDialog(
   dialogService: DialogService,
-  config: DialogConfig<UserAddEditDialogParams>
+  config: DialogConfig<UserDialogParams>
 ) {
-  return dialogService.open<UserAddEditDialogResult, UserAddEditDialogParams>(
-    UserAddEditComponent,
-    config
-  );
+  return dialogService.open<UserDialogResult, UserDialogParams>(UserDialogComponent, config);
 }
