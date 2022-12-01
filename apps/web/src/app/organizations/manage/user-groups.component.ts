@@ -73,7 +73,7 @@ export class UserGroupsComponent implements OnInit {
     request.groupIds = this.groups.filter((g) => (g as any).checked).map((g) => g.id);
 
     try {
-      this.formPromise = this.apiService.putOrganizationUserGroups(
+      this.formPromise = this.organizationUserService.putOrganizationUserGroups(
         this.organizationId,
         this.organizationUserId,
         request

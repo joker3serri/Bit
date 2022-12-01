@@ -5,7 +5,6 @@ import {
   OrganizationUserBulkRequest,
   OrganizationUserResetPasswordEnrollmentRequest,
   OrganizationUserResetPasswordRequest,
-  OrganizationUserUpdateGroupsRequest,
 } from "../abstractions/organizationUser/requests";
 import { OrganizationUserBulkResponse } from "../abstractions/organizationUser/responses";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
@@ -1008,20 +1007,6 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // Organization User APIs
-
-  putOrganizationUserGroups(
-    organizationId: string,
-    id: string,
-    request: OrganizationUserUpdateGroupsRequest
-  ): Promise<any> {
-    return this.send(
-      "PUT",
-      "/organizations/" + organizationId + "/users/" + id + "/groups",
-      request,
-      true,
-      false
-    );
-  }
 
   putOrganizationUserResetPasswordEnrollment(
     organizationId: string,
