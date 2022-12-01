@@ -2,7 +2,6 @@ import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service
 import { AppIdService } from "../abstractions/appId.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import {
-  OrganizationUserBulkConfirmRequest,
   OrganizationUserBulkRequest,
   OrganizationUserResetPasswordEnrollmentRequest,
   OrganizationUserResetPasswordRequest,
@@ -1010,20 +1009,6 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // Organization User APIs
-
-  async postOrganizationUserBulkConfirm(
-    organizationId: string,
-    request: OrganizationUserBulkConfirmRequest
-  ): Promise<ListResponse<OrganizationUserBulkResponse>> {
-    const r = await this.send(
-      "POST",
-      "/organizations/" + organizationId + "/users/confirm",
-      request,
-      true,
-      true
-    );
-    return new ListResponse(r, OrganizationUserBulkResponse);
-  }
 
   putOrganizationUser(
     organizationId: string,

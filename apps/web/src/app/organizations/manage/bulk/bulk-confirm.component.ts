@@ -104,6 +104,9 @@ export class BulkConfirmComponent implements OnInit {
 
   protected async postConfirmRequest(userIdsWithKeys: any[]) {
     const request = new OrganizationUserBulkConfirmRequest(userIdsWithKeys);
-    return await this.apiService.postOrganizationUserBulkConfirm(this.organizationId, request);
+    return await this.organizationUserService.postOrganizationUserBulkConfirm(
+      this.organizationId,
+      request
+    );
   }
 }

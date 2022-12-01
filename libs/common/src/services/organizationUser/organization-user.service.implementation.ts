@@ -2,6 +2,7 @@ import { ApiService } from "../../abstractions/api.service";
 import { OrganizationUserService } from "../../abstractions/organizationUser/organization-user.service";
 import {
   OrganizationUserAcceptRequest,
+  OrganizationUserBulkConfirmRequest,
   OrganizationUserBulkRequest,
   OrganizationUserConfirmRequest,
   OrganizationUserInviteRequest,
@@ -147,5 +148,19 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       true
     );
     return new ListResponse(r, OrganizationUserBulkPublicKeyResponse);
+  }
+
+  async postOrganizationUserBulkConfirm(
+    organizationId: string,
+    request: OrganizationUserBulkConfirmRequest
+  ): Promise<ListResponse<OrganizationUserBulkResponse>> {
+    const r = await this.apiService.send(
+      "POST",
+      "/organizations/" + organizationId + "/users/confirm",
+      request,
+      true,
+      true
+    );
+    return new ListResponse(r, OrganizationUserBulkResponse);
   }
 }

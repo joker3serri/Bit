@@ -2,6 +2,7 @@ import { ListResponse } from "../../models/response/list.response";
 
 import {
   OrganizationUserAcceptRequest,
+  OrganizationUserBulkConfirmRequest,
   OrganizationUserConfirmRequest,
   OrganizationUserInviteRequest,
 } from "./requests";
@@ -113,4 +114,14 @@ export abstract class OrganizationUserService {
     organizationId: string,
     ids: string[]
   ) => Promise<ListResponse<OrganizationUserBulkPublicKeyResponse>>;
+
+  /**
+   * Confirm many organization users that have accepted their invitations
+   * @param organizationId - Identifier for the organization to confirm users
+   * @param request - Bulk request details for confirming the user
+   */
+  postOrganizationUserBulkConfirm: (
+    organizationId: string,
+    request: OrganizationUserBulkConfirmRequest
+  ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
 }
