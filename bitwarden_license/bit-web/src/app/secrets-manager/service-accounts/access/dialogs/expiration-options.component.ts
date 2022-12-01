@@ -42,7 +42,7 @@ export class ExpirationOptionsComponent
     }
   }
 
-  currentDate: Date = new Date();
+  currentDate = new Date();
 
   protected form = new FormGroup({
     expires: new FormControl("never", [Validators.required]),
