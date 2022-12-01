@@ -8,15 +8,22 @@ import { OrgDomainService } from "./org-domain.service";
 export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
   constructor(private orgDomainService: OrgDomainService, private apiService: ApiService) {}
 
-  async getByOrgId(orgId: string): Promise<OrganizationDomainResponse> {
-    const result = await this.apiService.send(
+  async getAllByOrgId(orgId: string): Promise<Array<OrganizationDomainResponse>> {
+    const result: Array<any> = await this.apiService.send(
       "GET",
       `/organizations/${orgId}/domain`,
       null,
       true,
       true
     );
-    return new OrganizationDomainResponse(result);
+
+    const orgDomains = result.map(
+      (resultOrgDomain: any) => new OrganizationDomainResponse(resultOrgDomain)
+    );
+
+    this.orgDomainService.replace(orgDomains);
+
+    return orgDomains;
   }
   async getByOrgIdAndOrgDomainId(
     orgId: string,
@@ -29,7 +36,12 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
       true,
       true
     );
-    return new OrganizationDomainResponse(result);
+
+    const response = new OrganizationDomainResponse(result);
+
+    this.orgDomainService.upsert([response]);
+
+    return response;
   }
 
   async post(orgId: string, orgDomain: OrganizationDomainResponse): Promise<any> {
@@ -45,7 +57,7 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
 
     const response = new OrganizationDomainResponse(result);
 
-    await this.orgDomainService.upsert([response]);
+    this.orgDomainService.upsert([response]);
 
     return response;
   }
@@ -64,6 +76,9 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
 
   async delete(orgId: string, orgDomainId: string): Promise<any> {
     this.apiService.send("DELETE", `/organizations/${orgId}/${orgDomainId}`, null, true, false);
-    await this.orgDomainService.delete([orgDomainId]);
+    this.orgDomainService.delete([orgDomainId]);
   }
+
+  // TODO: add Get Domain SSO method: Retrieves SSO provider information given a domain name
+  // when added on back end
 }
