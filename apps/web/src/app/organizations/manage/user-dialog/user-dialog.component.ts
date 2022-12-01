@@ -106,7 +106,7 @@ export class UserDialogComponent implements OnInit {
 
     if (this.editMode) {
       this.editMode = true;
-      this.title = this.i18nService.t("editUser");
+      this.title = this.i18nService.t("editMember");
       try {
         const user = await this.apiService.getOrganizationUser(
           this.params.organizationId,
@@ -132,7 +132,7 @@ export class UserDialogComponent implements OnInit {
         this.logService.error(e);
       }
     } else {
-      this.title = this.i18nService.t("inviteUser");
+      this.title = this.i18nService.t("inviteMember");
     }
 
     this.loading = false;
