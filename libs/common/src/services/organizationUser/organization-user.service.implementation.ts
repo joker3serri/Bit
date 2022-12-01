@@ -247,4 +247,14 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
     );
     return new ListResponse(r, OrganizationUserBulkResponse);
   }
+
+  revokeOrganizationUser(organizationId: string, id: string): Promise<void> {
+    return this.apiService.send(
+      "PUT",
+      "/organizations/" + organizationId + "/users/" + id + "/revoke",
+      null,
+      true,
+      false
+    );
+  }
 }

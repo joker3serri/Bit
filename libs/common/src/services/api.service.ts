@@ -1004,16 +1004,6 @@ export class ApiService implements ApiServiceAbstraction {
 
   // Organization User APIs
 
-  revokeOrganizationUser(organizationId: string, id: string): Promise<any> {
-    return this.send(
-      "PUT",
-      "/organizations/" + organizationId + "/users/" + id + "/revoke",
-      null,
-      true,
-      false
-    );
-  }
-
   async revokeManyOrganizationUsers(
     organizationId: string,
     request: OrganizationUserBulkRequest

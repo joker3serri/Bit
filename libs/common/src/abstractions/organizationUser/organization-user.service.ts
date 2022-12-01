@@ -194,4 +194,11 @@ export abstract class OrganizationUserService {
     organizationId: string,
     ids: string[]
   ): Promise<ListResponse<OrganizationUserBulkResponse>>;
+
+  /**
+   * Revoke an organization user's access to the organization
+   * @param organizationId - Identifier for the organization the user belongs to
+   * @param id - Organization user identifier
+   */
+  abstract revokeOrganizationUser(organizationId: string, id: string): Promise<void>;
 }

@@ -182,7 +182,7 @@ export class PeopleComponent
   }
 
   revokeUser(id: string): Promise<void> {
-    return this.apiService.revokeOrganizationUser(this.organizationId, id);
+    return this.organizationUserService.revokeOrganizationUser(this.organizationId, id);
   }
 
   restoreUser(id: string): Promise<void> {

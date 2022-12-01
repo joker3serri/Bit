@@ -269,7 +269,7 @@ export class UserAddEditComponent implements OnInit {
     }
 
     try {
-      this.formPromise = this.apiService.revokeOrganizationUser(
+      this.formPromise = this.organizationUserService.revokeOrganizationUser(
         this.organizationId,
         this.organizationUserId
       );
