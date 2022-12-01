@@ -34,11 +34,12 @@
         <div class="ml-auto d-flex">
           <button
             type="button"
-            class="btn btn-outline-primary btn-sm"
+            bitButton
+            buttonType="primary"
             (click)="addCipher()"
             *ngIf="!activeFilter.isDeleted"
           >
-            <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>{{ "addItem" | i18n }}
+            <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>{{ "newItem" | i18n }}
           </button>
         </div>
       </div>
