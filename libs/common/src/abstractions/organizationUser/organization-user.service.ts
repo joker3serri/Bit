@@ -1,6 +1,10 @@
 import { ListResponse } from "../../models/response/list.response";
 
-import { OrganizationUserDetailsResponse, OrganizationUserUserDetailsResponse } from "./responses";
+import {
+  OrganizationUserDetailsResponse,
+  OrganizationUserResetPasswordDetailsReponse,
+  OrganizationUserUserDetailsResponse,
+} from "./responses";
 
 /**
  * Service for interacting with Organization Users via the API
@@ -30,4 +34,14 @@ export abstract class OrganizationUserService {
   getAllUsers: (
     organizationId: string
   ) => Promise<ListResponse<OrganizationUserUserDetailsResponse>>;
+
+  /**
+   * Retrieve reset password details for the specified organization user
+   * @param organizationId - Identifier for the user's organization
+   * @param id - Organization user identifier
+   */
+  getOrganizationUserResetPasswordDetails: (
+    organizationId: string,
+    id: string
+  ) => Promise<OrganizationUserResetPasswordDetailsReponse>;
 }

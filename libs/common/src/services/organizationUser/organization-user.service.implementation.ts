@@ -2,6 +2,7 @@ import { ApiService } from "../../abstractions/api.service";
 import { OrganizationUserService } from "../../abstractions/organizationUser/organization-user.service";
 import {
   OrganizationUserDetailsResponse,
+  OrganizationUserResetPasswordDetailsReponse,
   OrganizationUserUserDetailsResponse,
 } from "../../abstractions/organizationUser/responses";
 import { ListResponse } from "../../models/response/list.response";
@@ -45,5 +46,19 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       true
     );
     return new ListResponse(r, OrganizationUserUserDetailsResponse);
+  }
+
+  async getOrganizationUserResetPasswordDetails(
+    organizationId: string,
+    id: string
+  ): Promise<OrganizationUserResetPasswordDetailsReponse> {
+    const r = await this.apiService.send(
+      "GET",
+      "/organizations/" + organizationId + "/users/" + id + "/reset-password-details",
+      null,
+      true,
+      true
+    );
+    return new OrganizationUserResetPasswordDetailsReponse(r);
   }
 }

@@ -15,6 +15,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
@@ -50,7 +51,8 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     private passwordGenerationService: PasswordGenerationService,
     private policyService: PolicyService,
     private cryptoService: CryptoService,
-    private logService: LogService
+    private logService: LogService,
+    private organizationUserService: OrganizationUserService
   ) {}
 
   async ngOnInit() {
@@ -147,7 +149,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
 
     // Get user Information (kdf type, kdf iterations, resetPasswordKey, private key) and change password
     try {
-      this.formPromise = this.apiService
+      this.formPromise = this.organizationUserService
         .getOrganizationUserResetPasswordDetails(this.organizationId, this.id)
         .then(async (response) => {
           if (response == null) {

@@ -4,7 +4,6 @@ import { EnvironmentService } from "../abstractions/environment.service";
 import {
   OrganizationUserBulkPublicKeyResponse,
   OrganizationUserBulkResponse,
-  OrganizationUserResetPasswordDetailsReponse,
 } from "../abstractions/organizationUser/responses";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { TokenService } from "../abstractions/token.service";
@@ -1015,20 +1014,6 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // Organization User APIs
-
-  async getOrganizationUserResetPasswordDetails(
-    organizationId: string,
-    id: string
-  ): Promise<OrganizationUserResetPasswordDetailsReponse> {
-    const r = await this.send(
-      "GET",
-      "/organizations/" + organizationId + "/users/" + id + "/reset-password-details",
-      null,
-      true,
-      true
-    );
-    return new OrganizationUserResetPasswordDetailsReponse(r);
-  }
 
   postOrganizationUserInvite(
     organizationId: string,
