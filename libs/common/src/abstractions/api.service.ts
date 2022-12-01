@@ -147,9 +147,6 @@ import { TwoFactorYubiKeyResponse } from "../models/response/two-factor-yubi-key
 import { UserKeyResponse } from "../models/response/user-key.response";
 import { SendAccessView } from "../models/view/send-access.view";
 
-import { OrganizationUserBulkRequest } from "./organizationUser/requests";
-import { OrganizationUserBulkResponse } from "./organizationUser/responses";
-
 /**
  * @deprecated The `ApiService` class is deprecated and calls should be extracted into individual
  * api services. The `send` method is still allowed to be used within api services. For background
@@ -341,11 +338,6 @@ export abstract class ApiService {
   putGroupUsers: (organizationId: string, id: string, request: string[]) => Promise<any>;
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
-
-  restoreManyOrganizationUsers: (
-    organizationId: string,
-    request: OrganizationUserBulkRequest
-  ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
 
   getSync: () => Promise<SyncResponse>;
   postPublicImportDirectory: (request: OrganizationImportRequest) => Promise<any>;

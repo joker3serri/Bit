@@ -281,4 +281,18 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       false
     );
   }
+
+  async restoreManyOrganizationUsers(
+    organizationId: string,
+    ids: string[]
+  ): Promise<ListResponse<OrganizationUserBulkResponse>> {
+    const r = await this.apiService.send(
+      "PUT",
+      "/organizations/" + organizationId + "/users/restore",
+      new OrganizationUserBulkRequest(ids),
+      true,
+      true
+    );
+    return new ListResponse(r, OrganizationUserBulkResponse);
+  }
 }

@@ -219,4 +219,15 @@ export abstract class OrganizationUserService {
    * @param id - Organization user identifier
    */
   abstract restoreOrganizationUser(organizationId: string, id: string): Promise<void>;
+
+  /**
+   * Restore many organization users' access to the organization
+   * @param organizationId - Identifier for the organization the users belongs to
+   * @param ids - List of organization user identifiers to restore
+   * @return List of user ids, including both those that were successfully restored and those that had an error
+   */
+  abstract restoreManyOrganizationUsers(
+    organizationId: string,
+    ids: string[]
+  ): Promise<ListResponse<OrganizationUserBulkResponse>>;
 }

@@ -1,10 +1,8 @@
 import { Component } from "@angular/core";
 
 import { ModalConfig } from "@bitwarden/angular/services/modal.service";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
-import { OrganizationUserBulkRequest } from "@bitwarden/common/abstractions/organizationUser/requests";
 
 import { BulkUserDetails } from "./bulk-status.component";
 
@@ -24,7 +22,6 @@ export class BulkRestoreRevokeComponent {
   error: string;
 
   constructor(
-    protected apiService: ApiService,
     protected i18nService: I18nService,
     private organizationUserService: OrganizationUserService,
     config: ModalConfig
@@ -58,14 +55,17 @@ export class BulkRestoreRevokeComponent {
   }
 
   protected async performBulkUserAction() {
-    const request = new OrganizationUserBulkRequest(this.users.map((user) => user.id));
+    const userIds = this.users.map((user) => user.id);
     if (this.isRevoking) {
       return await this.organizationUserService.revokeManyOrganizationUsers(
         this.organizationId,
-        request.ids
+        userIds
       );
     } else {
-      return await this.apiService.restoreManyOrganizationUsers(this.organizationId, request);
+      return await this.organizationUserService.restoreManyOrganizationUsers(
+        this.organizationId,
+        userIds
+      );
     }
   }
 }

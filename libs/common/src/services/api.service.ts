@@ -1,8 +1,6 @@
 import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service";
 import { AppIdService } from "../abstractions/appId.service";
 import { EnvironmentService } from "../abstractions/environment.service";
-import { OrganizationUserBulkRequest } from "../abstractions/organizationUser/requests";
-import { OrganizationUserBulkResponse } from "../abstractions/organizationUser/responses";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { TokenService } from "../abstractions/token.service";
 import { DeviceType } from "../enums/deviceType";
@@ -1000,22 +998,6 @@ export class ApiService implements ApiServiceAbstraction {
       true,
       false
     );
-  }
-
-  // Organization User APIs
-
-  async restoreManyOrganizationUsers(
-    organizationId: string,
-    request: OrganizationUserBulkRequest
-  ): Promise<ListResponse<OrganizationUserBulkResponse>> {
-    const r = await this.send(
-      "PUT",
-      "/organizations/" + organizationId + "/users/restore",
-      request,
-      true,
-      true
-    );
-    return new ListResponse(r, OrganizationUserBulkResponse);
   }
 
   // Plan APIs
