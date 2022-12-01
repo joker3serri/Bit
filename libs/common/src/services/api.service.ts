@@ -9,10 +9,7 @@ import {
   OrganizationUserUpdateGroupsRequest,
   OrganizationUserUpdateRequest,
 } from "../abstractions/organizationUser/requests";
-import {
-  OrganizationUserBulkPublicKeyResponse,
-  OrganizationUserBulkResponse,
-} from "../abstractions/organizationUser/responses";
+import { OrganizationUserBulkResponse } from "../abstractions/organizationUser/responses";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { TokenService } from "../abstractions/token.service";
 import { DeviceType } from "../enums/deviceType";
@@ -1013,20 +1010,6 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // Organization User APIs
-
-  async postOrganizationUsersPublicKey(
-    organizationId: string,
-    request: OrganizationUserBulkRequest
-  ): Promise<ListResponse<OrganizationUserBulkPublicKeyResponse>> {
-    const r = await this.send(
-      "POST",
-      "/organizations/" + organizationId + "/users/public-keys",
-      request,
-      true,
-      true
-    );
-    return new ListResponse(r, OrganizationUserBulkPublicKeyResponse);
-  }
 
   async postOrganizationUserBulkConfirm(
     organizationId: string,

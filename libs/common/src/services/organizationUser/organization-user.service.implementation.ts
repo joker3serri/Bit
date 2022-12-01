@@ -7,6 +7,7 @@ import {
   OrganizationUserInviteRequest,
 } from "../../abstractions/organizationUser/requests";
 import {
+  OrganizationUserBulkPublicKeyResponse,
   OrganizationUserBulkResponse,
   OrganizationUserDetailsResponse,
   OrganizationUserResetPasswordDetailsReponse,
@@ -132,5 +133,19 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       true,
       false
     );
+  }
+
+  async postOrganizationUsersPublicKey(
+    organizationId: string,
+    ids: string[]
+  ): Promise<ListResponse<OrganizationUserBulkPublicKeyResponse>> {
+    const r = await this.apiService.send(
+      "POST",
+      "/organizations/" + organizationId + "/users/public-keys",
+      new OrganizationUserBulkRequest(ids),
+      true,
+      true
+    );
+    return new ListResponse(r, OrganizationUserBulkPublicKeyResponse);
   }
 }

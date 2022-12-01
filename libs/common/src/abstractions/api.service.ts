@@ -155,10 +155,7 @@ import {
   OrganizationUserUpdateGroupsRequest,
   OrganizationUserUpdateRequest,
 } from "./organizationUser/requests";
-import {
-  OrganizationUserBulkPublicKeyResponse,
-  OrganizationUserBulkResponse,
-} from "./organizationUser/responses";
+import { OrganizationUserBulkResponse } from "./organizationUser/responses";
 
 /**
  * @deprecated The `ApiService` class is deprecated and calls should be extracted into individual
@@ -352,10 +349,6 @@ export abstract class ApiService {
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 
-  postOrganizationUsersPublicKey: (
-    organizationId: string,
-    request: OrganizationUserBulkRequest
-  ) => Promise<ListResponse<OrganizationUserBulkPublicKeyResponse>>;
   postOrganizationUserBulkConfirm: (
     organizationId: string,
     request: OrganizationUserBulkConfirmRequest

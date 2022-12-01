@@ -6,6 +6,7 @@ import {
   OrganizationUserInviteRequest,
 } from "./requests";
 import {
+  OrganizationUserBulkPublicKeyResponse,
   OrganizationUserBulkResponse,
   OrganizationUserDetailsResponse,
   OrganizationUserResetPasswordDetailsReponse,
@@ -102,4 +103,14 @@ export abstract class OrganizationUserService {
     id: string,
     request: OrganizationUserConfirmRequest
   ) => Promise<void>;
+
+  /**
+   * Retrieve a list of the specified users' public keys
+   * @param organizationId - Identifier for the organization to accept
+   * @param ids - A list of organization user identifiers to retrieve public keys for
+   */
+  postOrganizationUsersPublicKey: (
+    organizationId: string,
+    ids: string[]
+  ) => Promise<ListResponse<OrganizationUserBulkPublicKeyResponse>>;
 }
