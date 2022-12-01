@@ -292,7 +292,7 @@ export class UserAddEditComponent implements OnInit {
     }
 
     try {
-      this.formPromise = this.apiService.restoreOrganizationUser(
+      this.formPromise = this.organizationUserService.restoreOrganizationUser(
         this.organizationId,
         this.organizationUserId
       );

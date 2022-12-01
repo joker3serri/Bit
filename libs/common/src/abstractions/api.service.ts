@@ -342,7 +342,6 @@ export abstract class ApiService {
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 
-  restoreOrganizationUser: (organizationId: string, id: string) => Promise<any>;
   restoreManyOrganizationUsers: (
     organizationId: string,
     request: OrganizationUserBulkRequest

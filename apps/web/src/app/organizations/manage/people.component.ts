@@ -186,7 +186,7 @@ export class PeopleComponent
   }
 
   restoreUser(id: string): Promise<void> {
-    return this.apiService.restoreOrganizationUser(this.organizationId, id);
+    return this.organizationUserService.restoreOrganizationUser(this.organizationId, id);
   }
 
   reinviteUser(id: string): Promise<void> {
