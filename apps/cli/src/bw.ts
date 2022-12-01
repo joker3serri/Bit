@@ -6,6 +6,7 @@ import * as jsdom from "jsdom";
 
 import { InternalFolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
 import { ClientType } from "@bitwarden/common/enums/clientType";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
 import { LogLevelType } from "@bitwarden/common/enums/logLevelType";
@@ -32,6 +33,7 @@ import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.s
 import { NoopMessagingService } from "@bitwarden/common/services/noopMessaging.service";
 import { OrganizationApiService } from "@bitwarden/common/services/organization/organization-api.service";
 import { OrganizationService } from "@bitwarden/common/services/organization/organization.service";
+import { OrganizationUserServiceImplementation } from "@bitwarden/common/services/organizationUser/organization-user.service.implementation";
 import { PasswordGenerationService } from "@bitwarden/common/services/passwordGeneration.service";
 import { PolicyService } from "@bitwarden/common/services/policy/policy.service";
 import { ProviderService } from "@bitwarden/common/services/provider.service";
@@ -82,6 +84,7 @@ export class Main {
   settingsService: SettingsService;
   cipherService: CipherService;
   folderService: InternalFolderService;
+  organizationUserService: OrganizationUserService;
   collectionService: CollectionService;
   vaultTimeoutService: VaultTimeoutService;
   vaultTimeoutSettingsService: VaultTimeoutSettingsService;
@@ -241,6 +244,8 @@ export class Main {
     this.providerService = new ProviderService(this.stateService);
 
     this.organizationService = new OrganizationService(this.stateService);
+
+    this.organizationUserService = new OrganizationUserServiceImplementation(this.apiService);
 
     this.policyService = new PolicyService(this.stateService, this.organizationService);
 
