@@ -1,5 +1,4 @@
 export * from "./organization-user-accept.request";
-export * from "./organization-user-bulk.request";
 export * from "./organization-user-bulk-confirm.request";
 export * from "./organization-user-confirm.request";
 export * from "./organization-user-invite.request";

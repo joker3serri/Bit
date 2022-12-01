@@ -3,7 +3,6 @@ import { OrganizationUserService } from "../../abstractions/organizationUser/org
 import {
   OrganizationUserAcceptRequest,
   OrganizationUserBulkConfirmRequest,
-  OrganizationUserBulkRequest,
   OrganizationUserConfirmRequest,
   OrganizationUserInviteRequest,
   OrganizationUserResetPasswordEnrollmentRequest,
@@ -19,6 +18,8 @@ import {
   OrganizationUserUserDetailsResponse,
 } from "../../abstractions/organizationUser/responses";
 import { ListResponse } from "../../models/response/list.response";
+
+import { OrganizationUserBulkRequest } from "./requests";
 
 export class OrganizationUserServiceImplementation implements OrganizationUserService {
   constructor(private apiService: ApiService) {}
