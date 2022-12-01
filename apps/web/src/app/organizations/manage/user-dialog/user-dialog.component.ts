@@ -19,11 +19,18 @@ import { CollectionDetailsResponse } from "@bitwarden/common/models/response/col
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
+export enum UserDialogTab {
+  Role = 0,
+  Groups = 1,
+  Collections = 2,
+}
+
 export interface UserDialogParams {
   name: string;
   organizationId: string;
   organizationUserId: string;
   usesKeyConnector: boolean;
+  initialTab?: UserDialogTab;
 }
 
 export enum UserDialogResult {
@@ -51,6 +58,7 @@ export class UserDialogComponent implements OnInit {
   collections: CollectionView[] = [];
   organizationUserType = OrganizationUserType;
 
+  protected tabIndex: UserDialogTab;
   // Stub, to be filled out in upcoming PRs
   protected formGroup = this.formBuilder.group({});
 
@@ -102,6 +110,7 @@ export class UserDialogComponent implements OnInit {
 
   async ngOnInit() {
     this.editMode = this.loading = this.params.organizationUserId != null;
+    this.tabIndex = this.params.initialTab ?? UserDialogTab.Role;
     await this.loadCollections();
 
     if (this.editMode) {
