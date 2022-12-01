@@ -2,8 +2,8 @@ import { Injector, LOCALE_ID, NgModule } from "@angular/core";
 
 import { AccountApiService as AccountApiServiceAbstraction } from "@bitwarden/common/abstractions/account/account-api.service";
 import {
-  InternalAccountService,
   AccountService as AccountServiceAbstraction,
+  InternalAccountService,
 } from "@bitwarden/common/abstractions/account/account.service";
 import { AnonymousHubService as AnonymousHubServiceAbstraction } from "@bitwarden/common/abstractions/anonymousHub.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
@@ -39,13 +39,14 @@ import {
   InternalOrganizationService,
   OrganizationService as OrganizationServiceAbstraction,
 } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
 import { PasswordGenerationService as PasswordGenerationServiceAbstraction } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import {
-  PolicyService as PolicyServiceAbstraction,
   InternalPolicyService,
+  PolicyService as PolicyServiceAbstraction,
 } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { ProviderService as ProviderServiceAbstraction } from "@bitwarden/common/abstractions/provider.service";
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/abstractions/search.service";
@@ -96,6 +97,7 @@ import { LoginService } from "@bitwarden/common/services/login.service";
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
 import { OrganizationApiService } from "@bitwarden/common/services/organization/organization-api.service";
 import { OrganizationService } from "@bitwarden/common/services/organization/organization.service";
+import { OrganizationUserServiceImplementation } from "@bitwarden/common/services/organizationUser/organization-user.service.implementation";
 import { PasswordGenerationService } from "@bitwarden/common/services/passwordGeneration.service";
 import { PolicyApiService } from "@bitwarden/common/services/policy/policy-api.service";
 import { PolicyService } from "@bitwarden/common/services/policy/policy.service";
@@ -124,16 +126,16 @@ import { UnauthGuard } from "../guards/unauth.guard";
 
 import { BroadcasterService } from "./broadcaster.service";
 import {
-  WINDOW,
+  LOCALES_DIRECTORY,
+  LOCKED_CALLBACK,
+  LOG_MAC_FAILURES,
+  LOGOUT_CALLBACK,
   MEMORY_STORAGE,
   SECURE_STORAGE,
   STATE_FACTORY,
   STATE_SERVICE_USE_CACHE,
-  LOGOUT_CALLBACK,
-  LOCKED_CALLBACK,
-  LOCALES_DIRECTORY,
   SYSTEM_LANGUAGE,
-  LOG_MAC_FAILURES,
+  WINDOW,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
 import { PasswordRepromptService } from "./passwordReprompt.service";
@@ -532,6 +534,11 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: InternalOrganizationService,
       useExisting: OrganizationServiceAbstraction,
+    },
+    {
+      provide: OrganizationUserService,
+      useClass: OrganizationUserServiceImplementation,
+      deps: [ApiServiceAbstraction],
     },
     {
       provide: ProviderServiceAbstraction,
