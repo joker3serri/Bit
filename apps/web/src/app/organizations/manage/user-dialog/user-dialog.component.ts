@@ -1,5 +1,6 @@
 import { DialogConfig, DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
+import { FormBuilder } from "@angular/forms";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
@@ -48,9 +49,10 @@ export class UserDialogComponent implements OnInit {
   showCustom = false;
   access: "all" | "selected" = "selected";
   collections: CollectionView[] = [];
-  formPromise: Promise<any>;
-  deletePromise: Promise<any>;
   organizationUserType = OrganizationUserType;
+
+  // Stub, to be filled out in upcoming PRs
+  protected formGroup = this.formBuilder.group({});
 
   manageAllCollectionsCheckboxes = [
     {
@@ -94,7 +96,8 @@ export class UserDialogComponent implements OnInit {
     private i18nService: I18nService,
     private collectionService: CollectionService,
     private platformUtilsService: PlatformUtilsService,
-    private logService: LogService
+    private logService: LogService,
+    private formBuilder: FormBuilder
   ) {}
 
   async ngOnInit() {
@@ -172,7 +175,7 @@ export class UserDialogComponent implements OnInit {
     }
   }
 
-  async submit() {
+  submit = async () => {
     let collections: SelectionReadOnlyRequest[] = null;
     if (this.access !== "all") {
       collections = this.collections
@@ -190,7 +193,7 @@ export class UserDialogComponent implements OnInit {
           request.permissions ?? new PermissionsApi(),
           request.type !== OrganizationUserType.Custom
         );
-        this.formPromise = this.apiService.putOrganizationUser(
+        await this.apiService.putOrganizationUser(
           this.params.organizationId,
           this.params.organizationUserId,
           request
@@ -205,12 +208,9 @@ export class UserDialogComponent implements OnInit {
           request.type !== OrganizationUserType.Custom
         );
         request.collections = collections;
-        this.formPromise = this.apiService.postOrganizationUserInvite(
-          this.params.organizationId,
-          request
-        );
+        await this.apiService.postOrganizationUserInvite(this.params.organizationId, request);
       }
-      await this.formPromise;
+
       this.platformUtilsService.showToast(
         "success",
         null,
@@ -220,9 +220,9 @@ export class UserDialogComponent implements OnInit {
     } catch (e) {
       this.logService.error(e);
     }
-  }
+  };
 
-  async delete() {
+  delete = async () => {
     if (!this.editMode) {
       return;
     }
@@ -242,11 +242,11 @@ export class UserDialogComponent implements OnInit {
     }
 
     try {
-      this.deletePromise = this.apiService.deleteOrganizationUser(
+      await this.apiService.deleteOrganizationUser(
         this.params.organizationId,
         this.params.organizationUserId
       );
-      await this.deletePromise;
+
       this.platformUtilsService.showToast(
         "success",
         null,
@@ -256,9 +256,9 @@ export class UserDialogComponent implements OnInit {
     } catch (e) {
       this.logService.error(e);
     }
-  }
+  };
 
-  async revoke() {
+  revoke = async () => {
     if (!this.editMode) {
       return;
     }
@@ -275,11 +275,11 @@ export class UserDialogComponent implements OnInit {
     }
 
     try {
-      this.formPromise = this.apiService.revokeOrganizationUser(
+      await this.apiService.revokeOrganizationUser(
         this.params.organizationId,
         this.params.organizationUserId
       );
-      await this.formPromise;
+
       this.platformUtilsService.showToast(
         "success",
         null,
@@ -290,19 +290,19 @@ export class UserDialogComponent implements OnInit {
     } catch (e) {
       this.logService.error(e);
     }
-  }
+  };
 
-  async restore() {
+  restore = async () => {
     if (!this.editMode) {
       return;
     }
 
     try {
-      this.formPromise = this.apiService.restoreOrganizationUser(
+      await this.apiService.restoreOrganizationUser(
         this.params.organizationId,
         this.params.organizationUserId
       );
-      await this.formPromise;
+
       this.platformUtilsService.showToast(
         "success",
         null,
@@ -313,7 +313,7 @@ export class UserDialogComponent implements OnInit {
     } catch (e) {
       this.logService.error(e);
     }
-  }
+  };
 
   protected async cancel() {
     this.close(UserDialogResult.Canceled);
