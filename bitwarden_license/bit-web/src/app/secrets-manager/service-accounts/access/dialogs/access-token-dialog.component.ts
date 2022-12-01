@@ -20,7 +20,9 @@ export class AccessTokenDialogComponent implements OnInit {
     @Inject(DIALOG_DATA) public data: AccessTokenDetails,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService
-  ) {}
+  ) {
+    this.dialogRef.disableClose = true;
+  }
 
   ngOnInit(): void {
     // TODO remove null checks once strictNullChecks in TypeScript is turned on.
