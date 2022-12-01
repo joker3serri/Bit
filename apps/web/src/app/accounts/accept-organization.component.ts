@@ -6,13 +6,13 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationUserAcceptRequest } from "@bitwarden/common/abstractions/organizationUser/requests";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Policy } from "@bitwarden/common/models/domain/policy";
-import { OrganizationUserAcceptRequest } from "@bitwarden/common/models/request/organization-user-accept.request";
 
 import { BaseAcceptComponent } from "../common/base.accept.component";
 

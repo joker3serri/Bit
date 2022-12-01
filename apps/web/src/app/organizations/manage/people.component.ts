@@ -13,6 +13,10 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstraction
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
 import {
+  OrganizationUserBulkRequest,
+  OrganizationUserConfirmRequest,
+} from "@bitwarden/common/abstractions/organizationUser/requests";
+import {
   OrganizationUserBulkResponse,
   OrganizationUserUserDetailsResponse,
 } from "@bitwarden/common/abstractions/organizationUser/responses";
@@ -26,8 +30,6 @@ import { OrganizationUserStatusType } from "@bitwarden/common/enums/organization
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organization-keys.request";
-import { OrganizationUserBulkRequest } from "@bitwarden/common/models/request/organization-user-bulk.request";
-import { OrganizationUserConfirmRequest } from "@bitwarden/common/models/request/organization-user-confirm.request";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 
 import { BasePeopleComponent } from "../../common/base.people.component";

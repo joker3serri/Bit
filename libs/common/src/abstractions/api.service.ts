@@ -34,15 +34,6 @@ import { KeyConnectorUserKeyRequest } from "../models/request/key-connector-user
 import { KeysRequest } from "../models/request/keys.request";
 import { OrganizationConnectionRequest } from "../models/request/organization-connection.request";
 import { OrganizationImportRequest } from "../models/request/organization-import.request";
-import { OrganizationUserAcceptRequest } from "../models/request/organization-user-accept.request";
-import { OrganizationUserBulkConfirmRequest } from "../models/request/organization-user-bulk-confirm.request";
-import { OrganizationUserBulkRequest } from "../models/request/organization-user-bulk.request";
-import { OrganizationUserConfirmRequest } from "../models/request/organization-user-confirm.request";
-import { OrganizationUserInviteRequest } from "../models/request/organization-user-invite.request";
-import { OrganizationUserResetPasswordEnrollmentRequest } from "../models/request/organization-user-reset-password-enrollment.request";
-import { OrganizationUserResetPasswordRequest } from "../models/request/organization-user-reset-password.request";
-import { OrganizationUserUpdateGroupsRequest } from "../models/request/organization-user-update-groups.request";
-import { OrganizationUserUpdateRequest } from "../models/request/organization-user-update.request";
 import { OrganizationSponsorshipCreateRequest } from "../models/request/organization/organization-sponsorship-create.request";
 import { OrganizationSponsorshipRedeemRequest } from "../models/request/organization/organization-sponsorship-redeem.request";
 import { PasswordHintRequest } from "../models/request/password-hint.request";
@@ -156,6 +147,17 @@ import { TwoFactorYubiKeyResponse } from "../models/response/two-factor-yubi-key
 import { UserKeyResponse } from "../models/response/user-key.response";
 import { SendAccessView } from "../models/view/send-access.view";
 
+import {
+  OrganizationUserAcceptRequest,
+  OrganizationUserBulkConfirmRequest,
+  OrganizationUserBulkRequest,
+  OrganizationUserConfirmRequest,
+  OrganizationUserInviteRequest,
+  OrganizationUserResetPasswordEnrollmentRequest,
+  OrganizationUserResetPasswordRequest,
+  OrganizationUserUpdateGroupsRequest,
+  OrganizationUserUpdateRequest,
+} from "./organizationUser/requests";
 import {
   OrganizationUserBulkPublicKeyResponse,
   OrganizationUserBulkResponse,

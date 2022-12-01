@@ -5,14 +5,16 @@ import { CollectionService } from "@bitwarden/common/abstractions/collection.ser
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
+import {
+  OrganizationUserInviteRequest,
+  OrganizationUserUpdateRequest,
+} from "@bitwarden/common/abstractions/organizationUser/requests";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
 import { CollectionData } from "@bitwarden/common/models/data/collection.data";
 import { Collection } from "@bitwarden/common/models/domain/collection";
-import { OrganizationUserInviteRequest } from "@bitwarden/common/models/request/organization-user-invite.request";
-import { OrganizationUserUpdateRequest } from "@bitwarden/common/models/request/organization-user-update.request";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selection-read-only.request";
 import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";

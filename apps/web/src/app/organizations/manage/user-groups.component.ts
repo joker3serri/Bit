@@ -4,9 +4,9 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
+import { OrganizationUserUpdateGroupsRequest } from "@bitwarden/common/abstractions/organizationUser/requests";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { OrganizationUserUpdateGroupsRequest } from "@bitwarden/common/models/request/organization-user-update-groups.request";
 import { GroupResponse } from "@bitwarden/common/models/response/group.response";
 
 @Component({

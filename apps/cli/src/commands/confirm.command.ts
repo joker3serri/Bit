@@ -1,8 +1,8 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
+import { OrganizationUserConfirmRequest } from "@bitwarden/common/abstractions/organizationUser/requests";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { OrganizationUserConfirmRequest } from "@bitwarden/common/models/request/organization-user-confirm.request";
 
 import { Response } from "../models/response";
 

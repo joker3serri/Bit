@@ -3,10 +3,12 @@ import { Component, Input, OnInit } from "@angular/core";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import {
+  OrganizationUserBulkConfirmRequest,
+  OrganizationUserBulkRequest,
+} from "@bitwarden/common/abstractions/organizationUser/requests";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { OrganizationUserBulkConfirmRequest } from "@bitwarden/common/models/request/organization-user-bulk-confirm.request";
-import { OrganizationUserBulkRequest } from "@bitwarden/common/models/request/organization-user-bulk.request";
 
 import { BulkUserDetails } from "./bulk-status.component";
 
