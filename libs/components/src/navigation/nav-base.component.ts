@@ -18,7 +18,7 @@ export abstract class NavBaseComponent {
   /**
    * Route to be passed to internal `routerLink`
    */
-  @Input() route: string;
+  @Input() route: string | any[];
 
   /**
    * If this item is used within a tree, set `variant` to `"tree"`
