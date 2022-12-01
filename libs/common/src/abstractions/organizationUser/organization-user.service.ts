@@ -5,6 +5,7 @@ import {
   OrganizationUserBulkConfirmRequest,
   OrganizationUserConfirmRequest,
   OrganizationUserInviteRequest,
+  OrganizationUserUpdateRequest,
 } from "./requests";
 import {
   OrganizationUserBulkPublicKeyResponse,
@@ -124,4 +125,16 @@ export abstract class OrganizationUserService {
     organizationId: string,
     request: OrganizationUserBulkConfirmRequest
   ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
+
+  /**
+   * Update an organization users
+   * @param organizationId - Identifier for the organization the user belongs to
+   * @param id - Organization user identifier
+   * @param request - Request details for updating the user
+   */
+  putOrganizationUser: (
+    organizationId: string,
+    id: string,
+    request: OrganizationUserUpdateRequest
+  ) => Promise<void>;
 }

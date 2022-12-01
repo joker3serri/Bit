@@ -6,6 +6,7 @@ import {
   OrganizationUserBulkRequest,
   OrganizationUserConfirmRequest,
   OrganizationUserInviteRequest,
+  OrganizationUserUpdateRequest,
 } from "../../abstractions/organizationUser/requests";
 import {
   OrganizationUserBulkPublicKeyResponse,
@@ -162,5 +163,19 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       true
     );
     return new ListResponse(r, OrganizationUserBulkResponse);
+  }
+
+  putOrganizationUser(
+    organizationId: string,
+    id: string,
+    request: OrganizationUserUpdateRequest
+  ): Promise<void> {
+    return this.apiService.send(
+      "PUT",
+      "/organizations/" + organizationId + "/users/" + id,
+      request,
+      true,
+      false
+    );
   }
 }

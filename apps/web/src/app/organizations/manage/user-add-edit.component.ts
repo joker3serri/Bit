@@ -184,7 +184,7 @@ export class UserAddEditComponent implements OnInit {
           request.permissions ?? new PermissionsApi(),
           request.type !== OrganizationUserType.Custom
         );
-        this.formPromise = this.apiService.putOrganizationUser(
+        this.formPromise = this.organizationUserService.putOrganizationUser(
           this.organizationId,
           this.organizationUserId,
           request

@@ -152,7 +152,6 @@ import {
   OrganizationUserResetPasswordEnrollmentRequest,
   OrganizationUserResetPasswordRequest,
   OrganizationUserUpdateGroupsRequest,
-  OrganizationUserUpdateRequest,
 } from "./organizationUser/requests";
 import { OrganizationUserBulkResponse } from "./organizationUser/responses";
 
@@ -348,11 +347,6 @@ export abstract class ApiService {
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 
-  putOrganizationUser: (
-    organizationId: string,
-    id: string,
-    request: OrganizationUserUpdateRequest
-  ) => Promise<any>;
   putOrganizationUserGroups: (
     organizationId: string,
     id: string,
