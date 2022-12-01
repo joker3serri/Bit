@@ -4,7 +4,6 @@ import { EnvironmentService } from "../abstractions/environment.service";
 import {
   OrganizationUserBulkPublicKeyResponse,
   OrganizationUserBulkResponse,
-  OrganizationUserDetailsResponse,
   OrganizationUserResetPasswordDetailsReponse,
   OrganizationUserUserDetailsResponse,
 } from "../abstractions/organizationUser/responses";
@@ -1017,20 +1016,6 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // Organization User APIs
-
-  async getOrganizationUser(
-    organizationId: string,
-    id: string
-  ): Promise<OrganizationUserDetailsResponse> {
-    const r = await this.send(
-      "GET",
-      "/organizations/" + organizationId + "/users/" + id,
-      null,
-      true,
-      true
-    );
-    return new OrganizationUserDetailsResponse(r);
-  }
 
   async getOrganizationUserGroups(organizationId: string, id: string): Promise<string[]> {
     const r = await this.send(

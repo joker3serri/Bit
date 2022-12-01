@@ -4,6 +4,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
@@ -84,7 +85,8 @@ export class UserAddEditComponent implements OnInit {
     private i18nService: I18nService,
     private collectionService: CollectionService,
     private platformUtilsService: PlatformUtilsService,
-    private logService: LogService
+    private logService: LogService,
+    private organizationUserService: OrganizationUserService
   ) {}
 
   async ngOnInit() {
@@ -95,7 +97,7 @@ export class UserAddEditComponent implements OnInit {
       this.editMode = true;
       this.title = this.i18nService.t("editUser");
       try {
-        const user = await this.apiService.getOrganizationUser(
+        const user = await this.organizationUserService.getOrganizationUser(
           this.organizationId,
           this.organizationUserId
         );

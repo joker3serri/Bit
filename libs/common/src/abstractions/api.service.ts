@@ -159,7 +159,6 @@ import { SendAccessView } from "../models/view/send-access.view";
 import {
   OrganizationUserBulkPublicKeyResponse,
   OrganizationUserBulkResponse,
-  OrganizationUserDetailsResponse,
   OrganizationUserResetPasswordDetailsReponse,
   OrganizationUserUserDetailsResponse,
 } from "./organizationUser/responses";
@@ -356,10 +355,6 @@ export abstract class ApiService {
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 
-  getOrganizationUser: (
-    organizationId: string,
-    id: string
-  ) => Promise<OrganizationUserDetailsResponse>;
   getOrganizationUserGroups: (organizationId: string, id: string) => Promise<string[]>;
   getOrganizationUsers: (
     organizationId: string
