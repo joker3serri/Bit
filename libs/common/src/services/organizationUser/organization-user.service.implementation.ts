@@ -7,6 +7,7 @@ import {
   OrganizationUserConfirmRequest,
   OrganizationUserInviteRequest,
   OrganizationUserResetPasswordEnrollmentRequest,
+  OrganizationUserResetPasswordRequest,
   OrganizationUserUpdateGroupsRequest,
   OrganizationUserUpdateRequest,
 } from "../../abstractions/organizationUser/requests";
@@ -203,6 +204,20 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
     return this.apiService.send(
       "PUT",
       "/organizations/" + organizationId + "/users/" + userId + "/reset-password-enrollment",
+      request,
+      true,
+      false
+    );
+  }
+
+  putOrganizationUserResetPassword(
+    organizationId: string,
+    id: string,
+    request: OrganizationUserResetPasswordRequest
+  ): Promise<void> {
+    return this.apiService.send(
+      "PUT",
+      "/organizations/" + organizationId + "/users/" + id + "/reset-password",
       request,
       true,
       false

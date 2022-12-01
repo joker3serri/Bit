@@ -147,10 +147,7 @@ import { TwoFactorYubiKeyResponse } from "../models/response/two-factor-yubi-key
 import { UserKeyResponse } from "../models/response/user-key.response";
 import { SendAccessView } from "../models/view/send-access.view";
 
-import {
-  OrganizationUserBulkRequest,
-  OrganizationUserResetPasswordRequest,
-} from "./organizationUser/requests";
+import { OrganizationUserBulkRequest } from "./organizationUser/requests";
 import { OrganizationUserBulkResponse } from "./organizationUser/responses";
 
 /**
@@ -345,11 +342,6 @@ export abstract class ApiService {
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 
-  putOrganizationUserResetPassword: (
-    organizationId: string,
-    id: string,
-    request: OrganizationUserResetPasswordRequest
-  ) => Promise<any>;
   deleteOrganizationUser: (organizationId: string, id: string) => Promise<any>;
   deleteManyOrganizationUsers: (
     organizationId: string,

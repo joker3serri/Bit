@@ -11,7 +11,6 @@ import { Subject, takeUntil } from "rxjs";
 import zxcvbn from "zxcvbn";
 
 import { PasswordStrengthComponent } from "@bitwarden/angular/shared/components/password-strength/password-strength.component";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -45,7 +44,6 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private apiService: ApiService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private passwordGenerationService: PasswordGenerationService,
@@ -190,7 +188,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
           request.newMasterPasswordHash = newPasswordHash;
 
           // Change user's password
-          return this.apiService.putOrganizationUserResetPassword(
+          return this.organizationUserService.putOrganizationUserResetPassword(
             this.organizationId,
             this.id,
             request

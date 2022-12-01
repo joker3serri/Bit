@@ -1,10 +1,7 @@
 import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service";
 import { AppIdService } from "../abstractions/appId.service";
 import { EnvironmentService } from "../abstractions/environment.service";
-import {
-  OrganizationUserBulkRequest,
-  OrganizationUserResetPasswordRequest,
-} from "../abstractions/organizationUser/requests";
+import { OrganizationUserBulkRequest } from "../abstractions/organizationUser/requests";
 import { OrganizationUserBulkResponse } from "../abstractions/organizationUser/responses";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { TokenService } from "../abstractions/token.service";
@@ -1006,20 +1003,6 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // Organization User APIs
-
-  putOrganizationUserResetPassword(
-    organizationId: string,
-    id: string,
-    request: OrganizationUserResetPasswordRequest
-  ): Promise<any> {
-    return this.send(
-      "PUT",
-      "/organizations/" + organizationId + "/users/" + id + "/reset-password",
-      request,
-      true,
-      false
-    );
-  }
 
   deleteOrganizationUser(organizationId: string, id: string): Promise<any> {
     return this.send(
