@@ -1,5 +1,6 @@
 import { ListResponse } from "../../models/response/list.response";
 
+import { OrganizationUserInviteRequest } from "./requests";
 import {
   OrganizationUserDetailsResponse,
   OrganizationUserResetPasswordDetailsReponse,
@@ -44,4 +45,14 @@ export abstract class OrganizationUserService {
     organizationId: string,
     id: string
   ) => Promise<OrganizationUserResetPasswordDetailsReponse>;
+
+  /**
+   * Create new organization user invite(s) for the specified organization
+   * @param organizationId - Identifier for the organization
+   * @param request - New user invitation request details
+   */
+  postOrganizationUserInvite: (
+    organizationId: string,
+    request: OrganizationUserInviteRequest
+  ) => Promise<void>;
 }

@@ -152,7 +152,6 @@ import {
   OrganizationUserBulkConfirmRequest,
   OrganizationUserBulkRequest,
   OrganizationUserConfirmRequest,
-  OrganizationUserInviteRequest,
   OrganizationUserResetPasswordEnrollmentRequest,
   OrganizationUserResetPasswordRequest,
   OrganizationUserUpdateGroupsRequest,
@@ -355,10 +354,6 @@ export abstract class ApiService {
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 
-  postOrganizationUserInvite: (
-    organizationId: string,
-    request: OrganizationUserInviteRequest
-  ) => Promise<any>;
   postOrganizationUserReinvite: (organizationId: string, id: string) => Promise<any>;
   postManyOrganizationUserReinvite: (
     organizationId: string,

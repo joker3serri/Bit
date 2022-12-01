@@ -6,7 +6,6 @@ import {
   OrganizationUserBulkConfirmRequest,
   OrganizationUserBulkRequest,
   OrganizationUserConfirmRequest,
-  OrganizationUserInviteRequest,
   OrganizationUserResetPasswordEnrollmentRequest,
   OrganizationUserResetPasswordRequest,
   OrganizationUserUpdateGroupsRequest,
@@ -1016,19 +1015,6 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // Organization User APIs
-
-  postOrganizationUserInvite(
-    organizationId: string,
-    request: OrganizationUserInviteRequest
-  ): Promise<any> {
-    return this.send(
-      "POST",
-      "/organizations/" + organizationId + "/users/invite",
-      request,
-      true,
-      false
-    );
-  }
 
   postOrganizationUserReinvite(organizationId: string, id: string): Promise<any> {
     return this.send(

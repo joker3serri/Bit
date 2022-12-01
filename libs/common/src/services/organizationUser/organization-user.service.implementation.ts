@@ -1,5 +1,6 @@
 import { ApiService } from "../../abstractions/api.service";
 import { OrganizationUserService } from "../../abstractions/organizationUser/organization-user.service";
+import { OrganizationUserInviteRequest } from "../../abstractions/organizationUser/requests";
 import {
   OrganizationUserDetailsResponse,
   OrganizationUserResetPasswordDetailsReponse,
@@ -60,5 +61,18 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       true
     );
     return new OrganizationUserResetPasswordDetailsReponse(r);
+  }
+
+  postOrganizationUserInvite(
+    organizationId: string,
+    request: OrganizationUserInviteRequest
+  ): Promise<void> {
+    return this.apiService.send(
+      "POST",
+      "/organizations/" + organizationId + "/users/invite",
+      request,
+      true,
+      false
+    );
   }
 }

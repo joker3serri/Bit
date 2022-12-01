@@ -199,7 +199,10 @@ export class UserAddEditComponent implements OnInit {
           request.type !== OrganizationUserType.Custom
         );
         request.collections = collections;
-        this.formPromise = this.apiService.postOrganizationUserInvite(this.organizationId, request);
+        this.formPromise = this.organizationUserService.postOrganizationUserInvite(
+          this.organizationId,
+          request
+        );
       }
       await this.formPromise;
       this.platformUtilsService.showToast(
