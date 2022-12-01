@@ -334,7 +334,7 @@ export class UserDialogComponent implements OnInit {
 }
 
 /**
- * Strongly typed helper to open a CollectionDialog
+ * Strongly typed helper to open a UserDialog
  * @param dialogService Instance of the dialog service that will be used to open the dialog
  * @param config Configuration for the dialog
  */
