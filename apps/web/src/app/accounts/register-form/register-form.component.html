@@ -34,14 +34,15 @@
         <input
           id="register-form_input_master-password"
           bitInput
-          [type]="showPassword ? 'text' : 'password'"
+          type="password"
           formControlName="masterPassword"
         />
         <button
           type="button"
           bitSuffix
-          [bitIconButton]="showPassword ? 'bwi-eye-slash' : 'bwi-eye'"
-          (click)="togglePassword()"
+          bitIconButton
+          bitPasswordInputToggle
+          [(toggled)]="showPassword"
         ></button>
         <bit-hint>
           <span class="tw-font-semibold">Important:</span>
@@ -64,14 +65,15 @@
         <input
           id="register-form_input_confirm-master-password"
           bitInput
-          [type]="showPassword ? 'text' : 'password'"
+          type="password"
           formControlName="confirmMasterPassword"
         />
         <button
           type="button"
           bitSuffix
-          [bitIconButton]="showPassword ? 'bwi-eye-slash' : 'bwi-eye'"
-          (click)="togglePassword()"
+          bitIconButton
+          bitPasswordInputToggle
+          [(toggled)]="showPassword"
         ></button>
       </bit-form-field>
     </div>

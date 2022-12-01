@@ -88,43 +88,35 @@
             <bit-label>{{ "filePassword" | i18n }}</bit-label>
             <input
               bitInput
-              [type]="showFilePassword ? 'text' : 'password'"
+              type="password"
               id="filePassword"
               formControlName="filePassword"
               name="password"
             />
-            <bit-hint>
-              {{ "exportPasswordDescription" | i18n }}
-            </bit-hint>
             <button
-              bitSuffix
-              [bitIconButton]="showFilePassword ? 'bwi-eye-slash' : 'bwi-eye'"
-              buttonType="secondary"
-              appStopClick
-              appA11yTitle="{{ 'toggleVisibility' | i18n }}"
-              [attr.aria-pressed]="showFilePassword"
-              (click)="toggleFilePassword()"
               type="button"
+              bitSuffix
+              bitIconButton
+              bitPasswordInputToggle
+              [(toggled)]="showFilePassword"
             ></button>
+            <bit-hint>{{ "exportPasswordDescription" | i18n }}</bit-hint>
           </bit-form-field>
           <bit-form-field>
             <bit-label>{{ "confirmFilePassword" | i18n }}</bit-label>
             <input
               bitInput
-              [type]="showConfirmFilePassword ? 'text' : 'password'"
+              type="password"
               id="confirmFilePassword"
               formControlName="confirmFilePassword"
               name="confirmFilePassword"
             />
             <button
-              bitSuffix
-              [bitIconButton]="showConfirmFilePassword ? 'bwi-eye-slash' : 'bwi-eye'"
-              buttonType="secondary"
-              appStopClick
-              appA11yTitle="{{ 'toggleVisibility' | i18n }}"
-              [attr.aria-pressed]="showConfirmFilePassword"
-              (click)="toggleConfirmFilePassword()"
               type="button"
+              bitSuffix
+              buttonType
+              bitPasswordInputToggle
+              [(toggled)]="showFilePassword"
             ></button>
           </bit-form-field>
         </ng-container>
