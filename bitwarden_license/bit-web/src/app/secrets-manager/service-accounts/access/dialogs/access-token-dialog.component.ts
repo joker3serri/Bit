@@ -6,7 +6,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 
 export interface AccessTokenDetails {
   subTitle: string;
-  expirationDate: Date;
+  expirationDate?: Date;
   accessToken: string;
 }
 
@@ -24,7 +24,7 @@ export class AccessTokenDialogComponent implements OnInit {
 
   ngOnInit(): void {
     // TODO remove null checks once strictNullChecks in TypeScript is turned on.
-    if (!this.data.subTitle || !this.data.expirationDate || !this.data.accessToken) {
+    if (!this.data.subTitle || !this.data.accessToken) {
       this.dialogRef.close();
       throw new Error("The access token dialog was not called with the appropriate values.");
     }
