@@ -356,66 +356,49 @@
       </ng-container>
     </div>
     <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
-      <button type="submit" class="btn btn-primary btn-submit" [disabled]="form.loading">
-        <i class="bwi bwi-spinner bwi-spin" title="{{ 'loading' | i18n }}" aria-hidden="true"></i>
-        <span>{{ "save" | i18n }}</span>
+      <button type="submit" bitButton buttonType="primary" [disabled]="loading">
+        {{ "save" | i18n }}
       </button>
-      <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+      <button
+        type="button"
+        bitButton
+        buttonType="secondary"
+        (click)="cancel()"
+        [disabled]="loading"
+      >
         {{ "cancel" | i18n }}
       </button>
-      <div class="ml-auto">
+      <div class="tw-ml-auto">
         <button
-          type="button"
-          (click)="restore()"
-          class="btn btn-outline-secondary"
           *ngIf="editMode && isRevoked"
-          [disabled]="form.loading"
+          type="button"
+          bitButton
+          buttonType="secondary"
+          (click)="restore()"
+          [disabled]="loading"
         >
-          <i
-            class="bwi bwi-spinner bwi-spin bwi-lg bwi-fw"
-            [hidden]="!form.loading"
-            title="{{ 'loading' | i18n }}"
-            aria-hidden="true"
-          ></i>
-          <span>{{ "restoreAccess" | i18n }}</span>
+          {{ "restoreAccess" | i18n }}
         </button>
         <button
-          type="button"
-          (click)="revoke()"
-          class="btn btn-outline-secondary"
           *ngIf="editMode && !isRevoked"
-          [disabled]="form.loading"
+          type="button"
+          bitButton
+          buttonType="secondary"
+          (click)="revoke()"
+          [disabled]="loading"
         >
-          <i
-            class="bwi bwi-spinner bwi-spin bwi-lg bwi-fw"
-            [hidden]="!form.loading"
-            title="{{ 'loading' | i18n }}"
-            aria-hidden="true"
-          ></i>
-          <span>{{ "revokeAccess" | i18n }}</span>
+          {{ "revokeAccess" | i18n }}
         </button>
         <button
-          #deleteBtn
-          type="button"
-          (click)="delete()"
-          class="btn btn-outline-danger"
-          appA11yTitle="{{ 'delete' | i18n }}"
           *ngIf="editMode"
-          [disabled]="deleteBtn.loading"
-          [appApiAction]="deletePromise"
-        >
-          <i
-            class="bwi bwi-trash bwi-lg bwi-fw"
-            [hidden]="deleteBtn.loading"
-            aria-hidden="true"
-          ></i>
-          <i
-            class="bwi bwi-spinner bwi-spin bwi-lg bwi-fw"
-            [hidden]="!deleteBtn.loading"
-            title="{{ 'loading' | i18n }}"
-            aria-hidden="true"
-          ></i>
-        </button>
+          type="button"
+          bitIconButton="bwi-trash"
+          buttonType="danger"
+          bitFormButton
+          [appA11yTitle]="'delete' | i18n"
+          (click)="delete()"
+          [disabled]="loading"
+        ></button>
       </div>
     </div>
   </bit-dialog>

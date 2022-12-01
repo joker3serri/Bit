@@ -315,6 +315,10 @@ export class UserDialogComponent implements OnInit {
     }
   }
 
+  protected async cancel() {
+    this.close(UserDialogResult.Canceled);
+  }
+
   private close(result: UserDialogResult) {
     this.dialogRef.close(result);
   }
