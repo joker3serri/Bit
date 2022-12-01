@@ -2,7 +2,9 @@
   <bit-dialog dialogSize="large" [disablePadding]="!loading">
     <span bitDialogTitle>
       {{ title }}
-      <small class="text-muted" *ngIf="params.name">{{ name }}</small>
+      <span class="tw-text-sm tw-normal-case tw-text-muted" *ngIf="!loading && params.name">{{
+        params.name
+      }}</span>
       <span bitBadge badgeType="secondary" *ngIf="isRevoked">{{ "revoked" | i18n }}</span>
     </span>
     <div bitDialogContent>
