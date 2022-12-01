@@ -17,7 +17,7 @@
       </div>
     </div>
     <div [ngClass]="{ 'col-6': isShowingCards, 'col-9': !isShowingCards }">
-      <div class="page-header d-flex">
+      <div class="tw-mb-4 tw-flex">
         <h1>
           {{ "vaultItems" | i18n }}
           <small #actionSpinner [appApiAction]="ciphersComponent.actionPromise">
@@ -32,11 +32,6 @@
           </small>
         </h1>
         <div class="ml-auto d-flex">
-          <app-vault-bulk-actions
-            [ciphersComponent]="ciphersComponent"
-            [deleted]="activeFilter.isDeleted"
-          >
-          </app-vault-bulk-actions>
           <button
             type="button"
             class="btn btn-outline-primary btn-sm"

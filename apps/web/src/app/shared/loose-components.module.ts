@@ -113,7 +113,6 @@ import { ToolsComponent } from "../tools/tools.component";
 import { AddEditCustomFieldsComponent } from "../vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/attachments.component";
-import { BulkActionsComponent } from "../vault/bulk-actions.component";
 import { CollectionsComponent } from "../vault/collections.component";
 import { FolderAddEditComponent } from "../vault/folder-add-edit.component";
 import { OrganizationBadgeModule } from "../vault/organization-badge/organization-badge.module";
@@ -141,7 +140,6 @@ import { SharedModule } from "./shared.module";
     ApiKeyComponent,
     AttachmentsComponent,
     BillingSyncKeyComponent,
-    BulkActionsComponent,
     ChangeEmailComponent,
     ChangeKdfComponent,
     ChangePasswordComponent,
@@ -257,7 +255,6 @@ import { SharedModule } from "./shared.module";
     AdjustStorageComponent,
     ApiKeyComponent,
     AttachmentsComponent,
-    BulkActionsComponent,
     ChangeEmailComponent,
     ChangeKdfComponent,
     ChangePasswordComponent,
