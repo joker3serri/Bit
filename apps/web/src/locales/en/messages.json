@@ -386,6 +386,9 @@
   "select": {
     "message": "Select"
   },
+  "newItem": {
+    "message": "New item"
+  },
   "addItem": {
     "message": "Add item"
   },
