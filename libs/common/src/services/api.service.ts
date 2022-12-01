@@ -1016,20 +1016,6 @@ export class ApiService implements ApiServiceAbstraction {
 
   // Organization User APIs
 
-  async postManyOrganizationUserReinvite(
-    organizationId: string,
-    request: OrganizationUserBulkRequest
-  ): Promise<ListResponse<OrganizationUserBulkResponse>> {
-    const r = await this.send(
-      "POST",
-      "/organizations/" + organizationId + "/users/reinvite",
-      request,
-      true,
-      true
-    );
-    return new ListResponse(r, OrganizationUserBulkResponse);
-  }
-
   postOrganizationUserAccept(
     organizationId: string,
     id: string,

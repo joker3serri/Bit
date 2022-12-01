@@ -1,7 +1,11 @@
 import { ApiService } from "../../abstractions/api.service";
 import { OrganizationUserService } from "../../abstractions/organizationUser/organization-user.service";
-import { OrganizationUserInviteRequest } from "../../abstractions/organizationUser/requests";
 import {
+  OrganizationUserBulkRequest,
+  OrganizationUserInviteRequest,
+} from "../../abstractions/organizationUser/requests";
+import {
+  OrganizationUserBulkResponse,
   OrganizationUserDetailsResponse,
   OrganizationUserResetPasswordDetailsReponse,
   OrganizationUserUserDetailsResponse,
@@ -84,5 +88,19 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       true,
       false
     );
+  }
+
+  async postManyOrganizationUserReinvite(
+    organizationId: string,
+    ids: string[]
+  ): Promise<ListResponse<OrganizationUserBulkResponse>> {
+    const r = await this.apiService.send(
+      "POST",
+      "/organizations/" + organizationId + "/users/reinvite",
+      new OrganizationUserBulkRequest(ids),
+      true,
+      true
+    );
+    return new ListResponse(r, OrganizationUserBulkResponse);
   }
 }

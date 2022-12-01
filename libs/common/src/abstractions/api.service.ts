@@ -354,10 +354,6 @@ export abstract class ApiService {
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 
-  postManyOrganizationUserReinvite: (
-    organizationId: string,
-    request: OrganizationUserBulkRequest
-  ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
   postOrganizationUserAccept: (
     organizationId: string,
     id: string,

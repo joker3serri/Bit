@@ -2,6 +2,7 @@ import { ListResponse } from "../../models/response/list.response";
 
 import { OrganizationUserInviteRequest } from "./requests";
 import {
+  OrganizationUserBulkResponse,
   OrganizationUserDetailsResponse,
   OrganizationUserResetPasswordDetailsReponse,
   OrganizationUserUserDetailsResponse,
@@ -62,4 +63,15 @@ export abstract class OrganizationUserService {
    * @param id - Organization user identifier
    */
   postOrganizationUserReinvite: (organizationId: string, id: string) => Promise<any>;
+
+  /**
+   * Re-invite many organization users for the specified organization
+   * @param organizationId - Identifier for the organization
+   * @param ids - A list of organization user identifiers
+   * @return List of user ids, including both those that were successfully re-invited and those that had an error
+   */
+  postManyOrganizationUserReinvite: (
+    organizationId: string,
+    ids: string[]
+  ) => Promise<ListResponse<OrganizationUserBulkResponse>>;
 }

@@ -12,10 +12,7 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
-import {
-  OrganizationUserBulkRequest,
-  OrganizationUserConfirmRequest,
-} from "@bitwarden/common/abstractions/organizationUser/requests";
+import { OrganizationUserConfirmRequest } from "@bitwarden/common/abstractions/organizationUser/requests";
 import {
   OrganizationUserBulkResponse,
   OrganizationUserUserDetailsResponse,
@@ -356,10 +353,9 @@ export class PeopleComponent
     }
 
     try {
-      const request = new OrganizationUserBulkRequest(filteredUsers.map((user) => user.id));
-      const response = this.apiService.postManyOrganizationUserReinvite(
+      const response = this.organizationUserService.postManyOrganizationUserReinvite(
         this.organizationId,
-        request
+        filteredUsers.map((user) => user.id)
       );
       this.showBulkStatus(
         users,
