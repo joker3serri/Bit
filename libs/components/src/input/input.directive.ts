@@ -1,7 +1,7 @@
 import { Directive, ElementRef, HostBinding, Input, NgZone, Optional, Self } from "@angular/core";
 import { NgControl, Validators } from "@angular/forms";
 
-import { BitFormFieldControl } from "../form-field/form-field-control";
+import { BitFormFieldControl, InputTypes } from "../form-field/form-field-control";
 
 // Increments for each instance of this component
 let nextId = 0;
@@ -31,6 +31,7 @@ export class BitInputDirective implements BitFormFieldControl {
       "focus:tw-outline-none",
       "focus:tw-border-primary-700",
       "focus:tw-ring-1",
+      "focus:tw-ring-inset",
       "focus:tw-ring-primary-700",
       "focus:tw-z-10",
       "disabled:tw-bg-secondary-100",
@@ -45,7 +46,7 @@ export class BitInputDirective implements BitFormFieldControl {
     return this.hasError ? true : undefined;
   }
 
-  @HostBinding("attr.type") @Input() type?: "text" | "password";
+  @HostBinding("attr.type") @Input() type?: InputTypes;
 
   @HostBinding("attr.spellcheck") @Input() spellcheck?: boolean;
 

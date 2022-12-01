@@ -12,7 +12,7 @@ import {
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
-import { ButtonComponent } from "../button";
+import { BitIconButtonComponent } from "../icon-button/icon-button.component";
 
 import { BitFormFieldComponent } from "./form-field.component";
 
@@ -42,7 +42,7 @@ export class BitPasswordInputToggleDirective implements AfterContentInit, OnChan
   }
 
   constructor(
-    @Host() private button: ButtonComponent,
+    @Host() private button: BitIconButtonComponent,
     private formField: BitFormFieldComponent,
     private i18nService: I18nService
   ) {}
