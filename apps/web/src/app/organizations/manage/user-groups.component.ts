@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { OrganizationUserUpdateGroupsRequest } from "@bitwarden/common/models/request/organization-user-update-groups.request";
@@ -26,7 +27,8 @@ export class UserGroupsComponent implements OnInit {
     private apiService: ApiService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private logService: LogService
+    private logService: LogService,
+    private organizationUserService: OrganizationUserService
   ) {}
 
   async ngOnInit() {
@@ -36,7 +38,7 @@ export class UserGroupsComponent implements OnInit {
     this.groups = groups;
 
     try {
-      const userGroups = await this.apiService.getOrganizationUserGroups(
+      const userGroups = await this.organizationUserService.getOrganizationUserGroups(
         this.organizationId,
         this.organizationUserId
       );

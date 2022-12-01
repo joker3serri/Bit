@@ -1017,17 +1017,6 @@ export class ApiService implements ApiServiceAbstraction {
 
   // Organization User APIs
 
-  async getOrganizationUserGroups(organizationId: string, id: string): Promise<string[]> {
-    const r = await this.send(
-      "GET",
-      "/organizations/" + organizationId + "/users/" + id + "/groups",
-      null,
-      true,
-      true
-    );
-    return r;
-  }
-
   async getOrganizationUsers(
     organizationId: string
   ): Promise<ListResponse<OrganizationUserUserDetailsResponse>> {

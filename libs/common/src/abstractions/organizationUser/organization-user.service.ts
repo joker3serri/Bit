@@ -13,4 +13,11 @@ export abstract class OrganizationUserService {
     organizationId: string,
     id: string
   ) => Promise<OrganizationUserDetailsResponse>;
+
+  /**
+   * Retrieve a list of groups Ids the specified organization user belongs to
+   * @param organizationId - Identifier for the user's organization
+   * @param id - Organization user identifier
+   */
+  getOrganizationUserGroups: (organizationId: string, id: string) => Promise<string[]>;
 }

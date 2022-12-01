@@ -18,4 +18,15 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
     );
     return new OrganizationUserDetailsResponse(r);
   }
+
+  async getOrganizationUserGroups(organizationId: string, id: string): Promise<string[]> {
+    const r = await this.apiService.send(
+      "GET",
+      "/organizations/" + organizationId + "/users/" + id + "/groups",
+      null,
+      true,
+      true
+    );
+    return r;
+  }
 }

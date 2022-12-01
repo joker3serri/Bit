@@ -355,7 +355,6 @@ export abstract class ApiService {
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 
-  getOrganizationUserGroups: (organizationId: string, id: string) => Promise<string[]>;
   getOrganizationUsers: (
     organizationId: string
   ) => Promise<ListResponse<OrganizationUserUserDetailsResponse>>;
