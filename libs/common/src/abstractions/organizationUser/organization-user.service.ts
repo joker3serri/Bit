@@ -90,4 +90,16 @@ export abstract class OrganizationUserService {
     id: string,
     request: OrganizationUserAcceptRequest
   ) => Promise<void>;
+
+  /**
+   * Confirm an organization user that has accepted their invitation
+   * @param organizationId - Identifier for the organization to confirm
+   * @param id - Organization user identifier
+   * @param request - Request details for confirming the user
+   */
+  postOrganizationUserConfirm: (
+    organizationId: string,
+    id: string,
+    request: OrganizationUserConfirmRequest
+  ) => Promise<void>;
 }

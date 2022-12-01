@@ -3,6 +3,7 @@ import { OrganizationUserService } from "../../abstractions/organizationUser/org
 import {
   OrganizationUserAcceptRequest,
   OrganizationUserBulkRequest,
+  OrganizationUserConfirmRequest,
   OrganizationUserInviteRequest,
 } from "../../abstractions/organizationUser/requests";
 import {
@@ -113,6 +114,20 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
     return this.apiService.send(
       "POST",
       "/organizations/" + organizationId + "/users/" + id + "/accept",
+      request,
+      true,
+      false
+    );
+  }
+
+  postOrganizationUserConfirm(
+    organizationId: string,
+    id: string,
+    request: OrganizationUserConfirmRequest
+  ): Promise<void> {
+    return this.apiService.send(
+      "POST",
+      "/organizations/" + organizationId + "/users/" + id + "/confirm",
       request,
       true,
       false

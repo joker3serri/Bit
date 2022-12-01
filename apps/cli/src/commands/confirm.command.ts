@@ -54,7 +54,11 @@ export class ConfirmCommand {
       const key = await this.cryptoService.rsaEncrypt(orgKey.key, publicKey.buffer);
       const req = new OrganizationUserConfirmRequest();
       req.key = key.encryptedString;
-      await this.apiService.postOrganizationUserConfirm(options.organizationId, id, req);
+      await this.organizationUserService.postOrganizationUserConfirm(
+        options.organizationId,
+        id,
+        req
+      );
       return Response.success();
     } catch (e) {
       return Response.error(e);

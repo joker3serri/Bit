@@ -201,7 +201,11 @@ export class PeopleComponent
     const key = await this.cryptoService.rsaEncrypt(orgKey.key, publicKey.buffer);
     const request = new OrganizationUserConfirmRequest();
     request.key = key.encryptedString;
-    await this.apiService.postOrganizationUserConfirm(this.organizationId, user.id, request);
+    await this.organizationUserService.postOrganizationUserConfirm(
+      this.organizationId,
+      user.id,
+      request
+    );
   }
 
   allowResetPassword(orgUser: OrganizationUserUserDetailsResponse): boolean {
