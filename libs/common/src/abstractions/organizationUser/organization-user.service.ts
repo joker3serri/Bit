@@ -55,4 +55,11 @@ export abstract class OrganizationUserService {
     organizationId: string,
     request: OrganizationUserInviteRequest
   ) => Promise<void>;
+
+  /**
+   * Re-invite the specified organization user
+   * @param organizationId - Identifier for the user's organization
+   * @param id - Organization user identifier
+   */
+  postOrganizationUserReinvite: (organizationId: string, id: string) => Promise<any>;
 }

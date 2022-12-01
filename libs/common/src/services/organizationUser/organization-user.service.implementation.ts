@@ -75,4 +75,14 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       false
     );
   }
+
+  postOrganizationUserReinvite(organizationId: string, id: string): Promise<any> {
+    return this.apiService.send(
+      "POST",
+      "/organizations/" + organizationId + "/users/" + id + "/reinvite",
+      null,
+      true,
+      false
+    );
+  }
 }

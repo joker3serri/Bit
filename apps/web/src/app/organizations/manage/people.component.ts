@@ -193,7 +193,7 @@ export class PeopleComponent
   }
 
   reinviteUser(id: string): Promise<void> {
-    return this.apiService.postOrganizationUserReinvite(this.organizationId, id);
+    return this.organizationUserService.postOrganizationUserReinvite(this.organizationId, id);
   }
 
   async confirmUser(
