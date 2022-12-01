@@ -1,5 +1,5 @@
 import { ApiService } from "../../abstractions/api.service";
-import { OrganizationUserService } from "../../abstractions/organizationUser/organization-user.service";
+import { OrganizationUserService } from "../../abstractions/organization-user/organization-user.service";
 import {
   OrganizationUserAcceptRequest,
   OrganizationUserBulkConfirmRequest,
@@ -9,14 +9,14 @@ import {
   OrganizationUserResetPasswordRequest,
   OrganizationUserUpdateGroupsRequest,
   OrganizationUserUpdateRequest,
-} from "../../abstractions/organizationUser/requests";
+} from "../../abstractions/organization-user/requests";
 import {
   OrganizationUserBulkPublicKeyResponse,
   OrganizationUserBulkResponse,
   OrganizationUserDetailsResponse,
   OrganizationUserResetPasswordDetailsReponse,
   OrganizationUserUserDetailsResponse,
-} from "../../abstractions/organizationUser/responses";
+} from "../../abstractions/organization-user/responses";
 import { ListResponse } from "../../models/response/list.response";
 
 import { OrganizationUserBulkRequest } from "./requests";

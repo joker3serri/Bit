@@ -1,4 +1,4 @@
-import { OrganizationUserResetPasswordRequest } from "../../abstractions/organizationUser/requests";
+import { OrganizationUserResetPasswordRequest } from "../../abstractions/organization-user/requests";
 
 export class UpdateTempPasswordRequest extends OrganizationUserResetPasswordRequest {
   masterPasswordHint: string;

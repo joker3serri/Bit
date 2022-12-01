@@ -3,8 +3,8 @@ import { Component, Input, OnInit } from "@angular/core";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
-import { OrganizationUserBulkConfirmRequest } from "@bitwarden/common/abstractions/organizationUser/requests";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
+import { OrganizationUserBulkConfirmRequest } from "@bitwarden/common/abstractions/organization-user/requests";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { Utils } from "@bitwarden/common/misc/utils";
 
