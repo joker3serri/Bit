@@ -149,7 +149,6 @@ import { SendAccessView } from "../models/view/send-access.view";
 
 import {
   OrganizationUserBulkRequest,
-  OrganizationUserResetPasswordEnrollmentRequest,
   OrganizationUserResetPasswordRequest,
 } from "./organizationUser/requests";
 import { OrganizationUserBulkResponse } from "./organizationUser/responses";
@@ -346,11 +345,6 @@ export abstract class ApiService {
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 
-  putOrganizationUserResetPasswordEnrollment: (
-    organizationId: string,
-    userId: string,
-    request: OrganizationUserResetPasswordEnrollmentRequest
-  ) => Promise<void>;
   putOrganizationUserResetPassword: (
     organizationId: string,
     id: string,

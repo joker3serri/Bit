@@ -5,6 +5,7 @@ import {
   OrganizationUserBulkConfirmRequest,
   OrganizationUserConfirmRequest,
   OrganizationUserInviteRequest,
+  OrganizationUserResetPasswordEnrollmentRequest,
   OrganizationUserUpdateGroupsRequest,
   OrganizationUserUpdateRequest,
 } from "./requests";
@@ -149,5 +150,17 @@ export abstract class OrganizationUserService {
     organizationId: string,
     id: string,
     groupIds: OrganizationUserUpdateGroupsRequest
+  ): Promise<void>;
+
+  /**
+   * Update an organization user's reset password enrollment
+   * @param organizationId - Identifier for the organization the user belongs to
+   * @param userId - Organization user identifier
+   * @param request - Reset password enrollment details
+   */
+  abstract putOrganizationUserResetPasswordEnrollment(
+    organizationId: string,
+    userId: string,
+    request: OrganizationUserResetPasswordEnrollmentRequest
   ): Promise<void>;
 }

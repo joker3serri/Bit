@@ -3,7 +3,6 @@ import { AppIdService } from "../abstractions/appId.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import {
   OrganizationUserBulkRequest,
-  OrganizationUserResetPasswordEnrollmentRequest,
   OrganizationUserResetPasswordRequest,
 } from "../abstractions/organizationUser/requests";
 import { OrganizationUserBulkResponse } from "../abstractions/organizationUser/responses";
@@ -1007,20 +1006,6 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // Organization User APIs
-
-  putOrganizationUserResetPasswordEnrollment(
-    organizationId: string,
-    userId: string,
-    request: OrganizationUserResetPasswordEnrollmentRequest
-  ): Promise<void> {
-    return this.send(
-      "PUT",
-      "/organizations/" + organizationId + "/users/" + userId + "/reset-password-enrollment",
-      request,
-      true,
-      false
-    );
-  }
 
   putOrganizationUserResetPassword(
     organizationId: string,

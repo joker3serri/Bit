@@ -7,6 +7,7 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
 import { OrganizationUserResetPasswordEnrollmentRequest } from "@bitwarden/common/abstractions/organizationUser/requests";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
@@ -49,7 +50,8 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     private syncService: SyncService,
     private route: ActivatedRoute,
     stateService: StateService,
-    private organizationApiService: OrganizationApiServiceAbstraction
+    private organizationApiService: OrganizationApiServiceAbstraction,
+    private organizationUserService: OrganizationUserService
   ) {
     super(
       i18nService,
@@ -136,7 +138,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
             resetRequest.masterPasswordHash = masterPasswordHash;
             resetRequest.resetPasswordKey = encryptedKey.encryptedString;
 
-            return this.apiService.putOrganizationUserResetPasswordEnrollment(
+            return this.organizationUserService.putOrganizationUserResetPasswordEnrollment(
               this.orgId,
               userId,
               resetRequest
