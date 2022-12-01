@@ -7,6 +7,7 @@ import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
@@ -27,7 +28,6 @@ import { OrganizationUserBulkResponse } from "@bitwarden/common/models/response/
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
 
 import { BasePeopleComponent } from "../../common/base.people.component";
-import { WebI18nService } from "../../core/web-i18n.service";
 
 import { BulkConfirmComponent } from "./bulk/bulk-confirm.component";
 import { BulkRemoveComponent } from "./bulk/bulk-remove.component";
@@ -80,7 +80,7 @@ export class PeopleComponent
   constructor(
     apiService: ApiService,
     private route: ActivatedRoute,
-    i18nService: WebI18nService,
+    i18nService: I18nService,
     modalService: ModalService,
     platformUtilsService: PlatformUtilsService,
     cryptoService: CryptoService,
