@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest, map, Observable } from "rxjs";
 
@@ -9,15 +9,12 @@ import type { Organization } from "@bitwarden/common/models/domain/organization"
   selector: "org-switcher",
   templateUrl: "org-switcher.component.html",
 })
-export class OrgSwitcherComponent implements OnInit {
-  constructor(private route: ActivatedRoute, private organizationService: OrganizationService) {}
+export class OrgSwitcherComponent {
   protected organizations$: Observable<Organization[]> = this.organizationService.organizations$;
   protected activeOrganization$: Observable<Organization> = combineLatest([
     this.route.paramMap,
     this.organizationService.organizations$,
   ]).pipe(map(([params, orgs]) => orgs.find((org) => org.id === params.get("organizationId"))));
 
-  async ngOnInit() {
-    this.organizations$ = this.organizationService.organizations$;
-  }
+  constructor(private route: ActivatedRoute, private organizationService: OrganizationService) {}
 }

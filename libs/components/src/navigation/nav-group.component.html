@@ -25,17 +25,16 @@
     ></button>
   </ng-template>
 
-  <!-- If `tree` variant, use `slot-slart` -->
+  <!-- Show toggle to the left for trees otherwise to the right -->
   <ng-container slot-start *ngIf="variant === 'tree'">
     <ng-container *ngTemplateOutlet="button"></ng-container>
   </ng-container>
-  <!-- Otherwise, use `slot-end` -->
   <ng-container slot-end *ngIf="variant !== 'tree'">
     <ng-container *ngTemplateOutlet="button"></ng-container>
   </ng-container>
 </bit-nav-item>
 
-<!-- [attr.id] needs to be a unique ID for this element -->
+<!-- [attr.aria-controls] of the above button expects a unique ID on the controlled element -->
 <div
   *ngIf="open"
   [attr.id]="contentId"

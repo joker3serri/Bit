@@ -15,7 +15,6 @@
     >
       <button
         slot-end
-        class="tw-text-white tw-ml-auto"
         bitIconButton="bwi-ellipsis-v"
         [bitMenuTriggerFor]="orgSwitchMenu"
         size="small"
@@ -24,7 +23,11 @@
       ></button>
     </bit-nav-item>
   </ng-container>
-  <bit-nav-item icon="bwi-plus" text="New Organization" route="/create-organization"></bit-nav-item>
+  <bit-nav-item
+    icon="bwi-plus"
+    [text]="'newOrganization' | i18n"
+    route="/create-organization"
+  ></bit-nav-item>
   <bit-nav-divider></bit-nav-divider>
 </bit-nav-group>
 

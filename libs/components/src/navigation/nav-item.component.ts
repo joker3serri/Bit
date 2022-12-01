@@ -12,9 +12,12 @@ export class NavItemComponent extends NavBaseComponent {
   /**
    * Is `true` if `to` matches the current route
    */
-  protected active = false;
+  private _active = false;
   protected setActive(isActive: boolean) {
-    this.active = isActive;
+    this._active = isActive;
+  }
+  protected get showActiveStyles() {
+    return this._active && !this.hideActiveStyles;
   }
   protected readonly rlaOptions: IsActiveMatchOptions = {
     paths: "exact",
