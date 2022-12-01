@@ -2,7 +2,7 @@ import { Observable } from "rxjs";
 
 import { OrganizationDomainResponse } from "../../models/response/organization-domain.response";
 
-export abstract class OrgDomainReadServiceAbstraction {
+export abstract class OrgDomainServiceAbstraction {
   orgDomains$: Observable<OrganizationDomainResponse[]>;
 
   get: (orgDomainId: string) => Promise<OrganizationDomainResponse>;
@@ -10,7 +10,7 @@ export abstract class OrgDomainReadServiceAbstraction {
 
 // Note: this separate class is designed to hold methods that are not
 // meant to be used in components (e.g., data write methods)
-export abstract class OrgDomainFullServiceAbstraction extends OrgDomainReadServiceAbstraction {
+export abstract class OrgDomainInternalServiceAbstraction extends OrgDomainServiceAbstraction {
   upsert: (orgDomains: OrganizationDomainResponse[]) => void;
   replace: (orgDomains: OrganizationDomainResponse[]) => void;
   clearCache: () => Promise<void>;
