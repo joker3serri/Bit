@@ -178,7 +178,7 @@ export class PeopleComponent
   }
 
   deleteUser(id: string): Promise<void> {
-    return this.apiService.deleteOrganizationUser(this.organizationId, id);
+    return this.organizationUserService.deleteOrganizationUser(this.organizationId, id);
   }
 
   revokeUser(id: string): Promise<void> {

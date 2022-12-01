@@ -223,4 +223,14 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       false
     );
   }
+
+  deleteOrganizationUser(organizationId: string, id: string): Promise<any> {
+    return this.apiService.send(
+      "DELETE",
+      "/organizations/" + organizationId + "/users/" + id,
+      null,
+      true,
+      false
+    );
+  }
 }

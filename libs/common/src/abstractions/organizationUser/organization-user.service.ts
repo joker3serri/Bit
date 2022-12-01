@@ -176,4 +176,11 @@ export abstract class OrganizationUserService {
     id: string,
     request: OrganizationUserResetPasswordRequest
   ): Promise<void>;
+
+  /**
+   * Delete an organization user
+   * @param organizationId - Identifier for the organization the user belongs to
+   * @param id - Organization user identifier
+   */
+  abstract deleteOrganizationUser(organizationId: string, id: string): Promise<void>;
 }

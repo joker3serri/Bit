@@ -236,7 +236,7 @@ export class UserAddEditComponent implements OnInit {
     }
 
     try {
-      this.deletePromise = this.apiService.deleteOrganizationUser(
+      this.deletePromise = this.organizationUserService.deleteOrganizationUser(
         this.organizationId,
         this.organizationUserId
       );

@@ -1004,16 +1004,6 @@ export class ApiService implements ApiServiceAbstraction {
 
   // Organization User APIs
 
-  deleteOrganizationUser(organizationId: string, id: string): Promise<any> {
-    return this.send(
-      "DELETE",
-      "/organizations/" + organizationId + "/users/" + id,
-      null,
-      true,
-      false
-    );
-  }
-
   async deleteManyOrganizationUsers(
     organizationId: string,
     request: OrganizationUserBulkRequest
