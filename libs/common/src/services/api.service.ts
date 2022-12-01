@@ -2,7 +2,6 @@ import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service
 import { AppIdService } from "../abstractions/appId.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import {
-  OrganizationUserAcceptRequest,
   OrganizationUserBulkConfirmRequest,
   OrganizationUserBulkRequest,
   OrganizationUserConfirmRequest,
@@ -1015,20 +1014,6 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // Organization User APIs
-
-  postOrganizationUserAccept(
-    organizationId: string,
-    id: string,
-    request: OrganizationUserAcceptRequest
-  ): Promise<any> {
-    return this.send(
-      "POST",
-      "/organizations/" + organizationId + "/users/" + id + "/accept",
-      request,
-      true,
-      false
-    );
-  }
 
   postOrganizationUserConfirm(
     organizationId: string,

@@ -1,6 +1,7 @@
 import { ApiService } from "../../abstractions/api.service";
 import { OrganizationUserService } from "../../abstractions/organizationUser/organization-user.service";
 import {
+  OrganizationUserAcceptRequest,
   OrganizationUserBulkRequest,
   OrganizationUserInviteRequest,
 } from "../../abstractions/organizationUser/requests";
@@ -102,5 +103,19 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       true
     );
     return new ListResponse(r, OrganizationUserBulkResponse);
+  }
+
+  postOrganizationUserAccept(
+    organizationId: string,
+    id: string,
+    request: OrganizationUserAcceptRequest
+  ): Promise<void> {
+    return this.apiService.send(
+      "POST",
+      "/organizations/" + organizationId + "/users/" + id + "/accept",
+      request,
+      true,
+      false
+    );
   }
 }

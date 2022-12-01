@@ -148,7 +148,6 @@ import { UserKeyResponse } from "../models/response/user-key.response";
 import { SendAccessView } from "../models/view/send-access.view";
 
 import {
-  OrganizationUserAcceptRequest,
   OrganizationUserBulkConfirmRequest,
   OrganizationUserBulkRequest,
   OrganizationUserConfirmRequest,
@@ -354,11 +353,6 @@ export abstract class ApiService {
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 
-  postOrganizationUserAccept: (
-    organizationId: string,
-    id: string,
-    request: OrganizationUserAcceptRequest
-  ) => Promise<any>;
   postOrganizationUserConfirm: (
     organizationId: string,
     id: string,
