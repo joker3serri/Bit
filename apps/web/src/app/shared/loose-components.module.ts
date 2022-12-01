@@ -40,7 +40,6 @@ import { EventsComponent as OrgEventsComponent } from "../organizations/manage/e
 import { ManageComponent as OrgManageComponent } from "../organizations/manage/manage.component";
 import { PeopleComponent as OrgPeopleComponent } from "../organizations/manage/people.component";
 import { ResetPasswordComponent as OrgResetPasswordComponent } from "../organizations/manage/reset-password.component";
-import { UserAddEditComponent as OrgUserAddEditComponent } from "../organizations/manage/user-add-edit.component";
 import { UserConfirmComponent as OrgUserConfirmComponent } from "../organizations/manage/user-confirm.component";
 import { AcceptFamilySponsorshipComponent } from "../organizations/sponsorships/accept-family-sponsorship.component";
 import { FamiliesForEnterpriseSetupComponent } from "../organizations/sponsorships/families-for-enterprise-setup.component";
@@ -194,7 +193,6 @@ import { SharedModule } from "./shared.module";
     OrgReusedPasswordsReportComponent,
     OrgToolsComponent,
     OrgUnsecuredWebsitesReportComponent,
-    OrgUserAddEditComponent,
     OrgUserConfirmComponent,
     OrgWeakPasswordsReportComponent,
     GeneratorComponent,
@@ -314,7 +312,6 @@ import { SharedModule } from "./shared.module";
     OrgReusedPasswordsReportComponent,
     OrgToolsComponent,
     OrgUnsecuredWebsitesReportComponent,
-    OrgUserAddEditComponent,
     OrgUserConfirmComponent,
     OrgWeakPasswordsReportComponent,
     GeneratorComponent,

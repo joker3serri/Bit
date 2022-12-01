@@ -36,7 +36,10 @@ import { BulkRestoreRevokeComponent } from "./bulk/bulk-restore-revoke.component
 import { BulkStatusComponent } from "./bulk/bulk-status.component";
 import { EntityEventsComponent } from "./entity-events.component";
 import { ResetPasswordComponent } from "./reset-password.component";
-import { openUserAddEditDialog, UserAddEditDialogResult } from "./user-add-edit.component";
+import {
+  openUserAddEditDialog,
+  UserAddEditDialogResult,
+} from "./user-add-edit-dialog/user-add-edit.component";
 import { UserGroupsComponent } from "./user-groups.component";
 
 @Component({
