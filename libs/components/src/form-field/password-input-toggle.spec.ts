@@ -2,9 +2,12 @@ import { Component, DebugElement } from "@angular/core";
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+
 import { IconButtonModule } from "../icon-button";
 import { BitIconButtonComponent } from "../icon-button/icon-button.component";
 import { InputModule } from "../input/input.module";
+import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { BitFormFieldControl } from "./form-field-control";
 import { BitFormFieldComponent } from "./form-field.component";
@@ -35,6 +38,7 @@ describe("PasswordInputToggle", () => {
     await TestBed.configureTestingModule({
       imports: [FormFieldModule, IconButtonModule, InputModule],
       declarations: [TestFormFieldComponent],
+      providers: [{ provide: I18nService, useValue: new I18nMockService({}) }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestFormFieldComponent);
