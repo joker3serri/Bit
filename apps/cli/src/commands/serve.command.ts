@@ -73,6 +73,7 @@ export class ServeCommand {
       this.main.collectionService,
       this.main.organizationService,
       this.main.searchService,
+      this.main.organizationUserService,
       this.main.apiService
     );
     this.createCommand = new CreateCommand(

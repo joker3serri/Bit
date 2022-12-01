@@ -11,6 +11,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
 import {
   OrganizationUserBulkResponse,
   OrganizationUserUserDetailsResponse,
@@ -95,7 +96,8 @@ export class PeopleComponent
     private syncService: SyncService,
     stateService: StateService,
     private organizationService: OrganizationService,
-    private organizationApiService: OrganizationApiServiceAbstraction
+    private organizationApiService: OrganizationApiServiceAbstraction,
+    private organizationUserService: OrganizationUserService
   ) {
     super(
       apiService,
@@ -173,7 +175,7 @@ export class PeopleComponent
   }
 
   getUsers(): Promise<ListResponse<OrganizationUserUserDetailsResponse>> {
-    return this.apiService.getOrganizationUsers(this.organizationId);
+    return this.organizationUserService.getAllUsers(this.organizationId);
   }
 
   deleteUser(id: string): Promise<void> {

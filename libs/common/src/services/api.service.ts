@@ -5,7 +5,6 @@ import {
   OrganizationUserBulkPublicKeyResponse,
   OrganizationUserBulkResponse,
   OrganizationUserResetPasswordDetailsReponse,
-  OrganizationUserUserDetailsResponse,
 } from "../abstractions/organizationUser/responses";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { TokenService } from "../abstractions/token.service";
@@ -1016,19 +1015,6 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // Organization User APIs
-
-  async getOrganizationUsers(
-    organizationId: string
-  ): Promise<ListResponse<OrganizationUserUserDetailsResponse>> {
-    const r = await this.send(
-      "GET",
-      "/organizations/" + organizationId + "/users",
-      null,
-      true,
-      true
-    );
-    return new ListResponse(r, OrganizationUserUserDetailsResponse);
-  }
 
   async getOrganizationUserResetPasswordDetails(
     organizationId: string,

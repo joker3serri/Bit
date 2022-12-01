@@ -3,6 +3,7 @@ import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organizationUser/organization-user.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { CollectionData } from "@bitwarden/common/models/data/collection.data";
@@ -30,6 +31,7 @@ export class ListCommand {
     private collectionService: CollectionService,
     private organizationService: OrganizationService,
     private searchService: SearchService,
+    private organizationUserService: OrganizationUserService,
     private apiService: ApiService
   ) {}
 
@@ -202,7 +204,7 @@ export class ListCommand {
     }
 
     try {
-      const response = await this.apiService.getOrganizationUsers(options.organizationId);
+      const response = await this.organizationUserService.getAllUsers(options.organizationId);
       const res = new ListResponse(
         response.data.map((r) => {
           const u = new OrganizationUserResponse();

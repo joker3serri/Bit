@@ -115,6 +115,7 @@ export class VaultProgram extends Program {
           this.main.collectionService,
           this.main.organizationService,
           this.main.searchService,
+          this.main.organizationUserService,
           this.main.apiService
         );
         const response = await command.run(object, cmd);

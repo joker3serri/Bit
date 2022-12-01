@@ -160,7 +160,6 @@ import {
   OrganizationUserBulkPublicKeyResponse,
   OrganizationUserBulkResponse,
   OrganizationUserResetPasswordDetailsReponse,
-  OrganizationUserUserDetailsResponse,
 } from "./organizationUser/responses";
 
 /**
@@ -355,9 +354,6 @@ export abstract class ApiService {
   deleteGroup: (organizationId: string, id: string) => Promise<any>;
   deleteGroupUser: (organizationId: string, id: string, organizationUserId: string) => Promise<any>;
 
-  getOrganizationUsers: (
-    organizationId: string
-  ) => Promise<ListResponse<OrganizationUserUserDetailsResponse>>;
   getOrganizationUserResetPasswordDetails: (
     organizationId: string,
     id: string

@@ -1,4 +1,6 @@
-import { OrganizationUserDetailsResponse } from "./responses";
+import { ListResponse } from "../../models/response/list.response";
+
+import { OrganizationUserDetailsResponse, OrganizationUserUserDetailsResponse } from "./responses";
 
 /**
  * Service for interacting with Organization Users via the API
@@ -20,4 +22,12 @@ export abstract class OrganizationUserService {
    * @param id - Organization user identifier
    */
   getOrganizationUserGroups: (organizationId: string, id: string) => Promise<string[]>;
+
+  /**
+   * Retrieve a list of all users that belong to the specified organization
+   * @param organizationId - Identifier for the organization
+   */
+  getAllUsers: (
+    organizationId: string
+  ) => Promise<ListResponse<OrganizationUserUserDetailsResponse>>;
 }

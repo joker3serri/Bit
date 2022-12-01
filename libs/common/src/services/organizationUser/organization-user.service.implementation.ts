@@ -1,6 +1,10 @@
 import { ApiService } from "../../abstractions/api.service";
 import { OrganizationUserService } from "../../abstractions/organizationUser/organization-user.service";
-import { OrganizationUserDetailsResponse } from "../../abstractions/organizationUser/responses";
+import {
+  OrganizationUserDetailsResponse,
+  OrganizationUserUserDetailsResponse,
+} from "../../abstractions/organizationUser/responses";
+import { ListResponse } from "../../models/response/list.response";
 
 export class OrganizationUserServiceImplementation implements OrganizationUserService {
   constructor(private apiService: ApiService) {}
@@ -28,5 +32,18 @@ export class OrganizationUserServiceImplementation implements OrganizationUserSe
       true
     );
     return r;
+  }
+
+  async getAllUsers(
+    organizationId: string
+  ): Promise<ListResponse<OrganizationUserUserDetailsResponse>> {
+    const r = await this.apiService.send(
+      "GET",
+      "/organizations/" + organizationId + "/users",
+      null,
+      true,
+      true
+    );
+    return new ListResponse(r, OrganizationUserUserDetailsResponse);
   }
 }
