@@ -8,11 +8,11 @@ import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.s
 import { StateService } from "@bitwarden/common/services/state.service";
 
 import { BiometricMain } from "./main/biometric/biometric.main";
-import { DesktopCredentialStorageListener } from "./main/desktopCredentialStorageListener";
+import { DesktopCredentialStorageListener } from "./main/desktop-credential-storage-listener";
 import { MenuMain } from "./main/menu/menu.main";
 import { MessagingMain } from "./main/messaging.main";
-import { NativeMessagingMain } from "./main/nativeMessaging.main";
-import { PowerMonitorMain } from "./main/powerMonitor.main";
+import { NativeMessagingMain } from "./main/native-messaging.main";
+import { PowerMonitorMain } from "./main/power-monitor.main";
 import { TrayMain } from "./main/tray.main";
 import { UpdaterMain } from "./main/updater.main";
 import { WindowMain } from "./main/window.main";

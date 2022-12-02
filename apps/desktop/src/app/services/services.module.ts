@@ -47,17 +47,17 @@ import { ElectronPlatformUtilsService } from "../../services/electron-platform-u
 import { ElectronRendererMessagingService } from "../../services/electron-renderer-messaging.service";
 import { ElectronRendererSecureStorageService } from "../../services/electron-renderer-secure-storage.service";
 import { ElectronRendererStorageService } from "../../services/electron-renderer-storage.service";
-import { EncryptedMessageHandlerService } from "../../services/encryptedMessageHandlerService";
+import { EncryptedMessageHandlerService } from "../../services/encrypted-message-handler.service";
 import { I18nService } from "../../services/i18n.service";
-import { NativeMessageHandlerService } from "../../services/nativeMessageHandler.service";
-import { NativeMessagingService } from "../../services/nativeMessaging.service";
-import { PasswordRepromptService } from "../../services/passwordReprompt.service";
+import { NativeMessageHandlerService } from "../../services/native-message-handler.service";
+import { NativeMessagingService } from "../../services/native-messaging.service";
+import { PasswordRepromptService } from "../../services/password-reprompt.service";
 import { StateService } from "../../services/state.service";
 import { LoginGuard } from "../guards/login.guard";
 import { SearchBarService } from "../layout/search/search-bar.service";
 
+import { DesktopFileDownloadService } from "./desktop-file-download.service";
 import { DesktopThemingService } from "./desktop-theming.service";
-import { DesktopFileDownloadService } from "./desktopFileDownloadService";
 import { InitService } from "./init.service";
 
 const RELOAD_CALLBACK = new InjectionToken<() => any>("RELOAD_CALLBACK");
