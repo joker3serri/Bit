@@ -142,8 +142,7 @@ jobs:
         env:
           CLIENT: ${{ steps.branch.outputs.client }}
           VERSION: ${{ github.event.inputs.version_number }}
-        run: |
-          git commit -m "Bumped ${CLIENT} version to ${VERSION}" -a
+        run: git commit -m "Bumped ${CLIENT} version to ${VERSION}" -a
 
       - name: Push changes
         if: ${{ steps.version-changed.outputs.changes_to_commit == 'TRUE' }}
