@@ -174,6 +174,10 @@ export class Organization {
     return (this.isAdmin || this.permissions.manageSso) && this.useSso;
   }
 
+  get canManageDomainVerification() {
+    return (this.isAdmin || this.permissions.manageSso) && this.useSso;
+  }
+
   get canManageScim() {
     return (this.isAdmin || this.permissions.manageScim) && this.useScim;
   }
