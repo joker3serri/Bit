@@ -5507,5 +5507,17 @@
   },
   "memberAccessAll": {
     "message": "This member can access and modify all items."
+  },
+  "domainVerification": {
+    "message": "Domain Verification"
+  },
+  "newDomain": {
+    "message": "New Domain"
+  },
+  "noDomains": {
+    "message": "No domains"
+  },
+  "noDomainsSubText": {
+    "message": "Connecting a domain allows members to skip the SSO identifier field during Login with SSO."
   }
 }
