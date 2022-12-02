@@ -80,11 +80,13 @@
       right) and select "Settings". Go to "Export" and find the "Export to .csv File" option. Click
       "Export" to save the CSV file.
     </ng-container>
+    <!--
     <ng-container *ngIf="format === 'keeperjson'">
       Log into the Keeper web vault (keepersecurity.com/vault). Click on your "account email" (top
       right) and select "Settings". Go to "Export" and find the "Export to .json File" option. Click
       "Export" to save the JSON file.
     </ng-container>
+    -->
     <ng-container
       *ngIf="format === 'chromecsv' || format === 'operacsv' || format === 'vivaldicsv'"
     >
@@ -291,11 +293,26 @@
     <div class="col-6">
       <div class="form-group">
         <label for="file">2. {{ "selectImportFile" | i18n }}</label>
+        <br />
+        <div class="file-selector">
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            (click)="fileSelector.click()"
+            [disabled]="importBlockedByPolicy"
+          >
+            {{ "chooseFile" | i18n }}
+          </button>
+          {{ this.fileSelected ? this.fileSelected.name : ("noFileChosen" | i18n) }}
+        </div>
         <input
+          #fileSelector
           type="file"
           id="file"
           class="form-control-file"
           name="file"
+          (change)="setSelectedFile($event)"
+          hidden
           [disabled]="importBlockedByPolicy"
         />
       </div>
