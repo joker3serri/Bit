@@ -1,7 +1,7 @@
 import { BehaviorSubject } from "rxjs";
 
 import { OrgDomainInternalServiceAbstraction } from "../../abstractions/organization-domain/org-domain.service.abstraction";
-import { OrganizationDomainResponse } from "../../models/response/organization-domain.response";
+import { OrganizationDomainResponse } from "../../abstractions/organization-domain/responses/organization-domain.response";
 
 export class OrgDomainService implements OrgDomainInternalServiceAbstraction {
   protected _orgDomains$: BehaviorSubject<OrganizationDomainResponse[]> = new BehaviorSubject([]);

@@ -1,4 +1,4 @@
-import { BaseResponse } from "./base.response";
+import { BaseResponse } from "../../../models/response/base.response";
 
 export class OrganizationDomainResponse extends BaseResponse {
   id: string;
@@ -21,6 +21,7 @@ export class OrganizationDomainResponse extends BaseResponse {
     this.jobRunCount = this.getResponseProperty("JobRunCount");
     this.verifiedDate = this.getResponseProperty("VerifiedDate");
 
+    // TODO: come back and eval if this is necessary or not
     // Might be worth converting string dates to actual dates for ease of use
     // this.creationDate = obj.creationDate != null ? new Date(obj.creationDate) : null;
     // this.nextRunDate = obj.nextRunDate != null ? new Date(obj.nextRunDate) : null;

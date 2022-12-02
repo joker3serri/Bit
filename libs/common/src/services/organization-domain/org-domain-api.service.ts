@@ -1,9 +1,9 @@
 import { OrgDomainApiServiceAbstraction } from "../../abstractions/organization-domain/org-domain-api.service.abstraction";
-import { OrganizationDomainRequest } from "../../models/request/organization-domain.request";
-import { OrganizationDomainResponse } from "../../models/response/organization-domain.response";
+import { OrganizationDomainResponse } from "../../abstractions/organization-domain/responses/organization-domain.response";
 import { ApiService } from "../api.service";
 
 import { OrgDomainService } from "./org-domain.service";
+import { OrganizationDomainRequest } from "./requests/organization-domain.request";
 
 export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
   constructor(private orgDomainService: OrgDomainService, private apiService: ApiService) {}

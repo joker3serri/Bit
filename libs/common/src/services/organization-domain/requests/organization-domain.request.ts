@@ -1,4 +1,4 @@
-import { OrganizationDomainResponse } from "../response/organization-domain.response";
+import { OrganizationDomainResponse } from "../../../abstractions/organization-domain/responses/organization-domain.response";
 
 export class OrganizationDomainRequest {
   txt: string;

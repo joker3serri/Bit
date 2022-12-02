@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 
-import { OrganizationDomainResponse } from "../../models/response/organization-domain.response";
+import { OrganizationDomainResponse } from "./responses/organization-domain.response";
 
 export abstract class OrgDomainServiceAbstraction {
   orgDomains$: Observable<OrganizationDomainResponse[]>;

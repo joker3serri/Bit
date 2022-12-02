@@ -1,4 +1,4 @@
-import { OrganizationDomainResponse } from "../../models/response/organization-domain.response";
+import { OrganizationDomainResponse } from "./responses/organization-domain.response";
 
 export class OrgDomainApiServiceAbstraction {
   getAllByOrgId: (orgId: string) => Promise<Array<OrganizationDomainResponse>>;
