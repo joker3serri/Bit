@@ -32,6 +32,7 @@ export interface CollectionDialogParams {
   collectionId?: string;
   organizationId: string;
   initialTab?: CollectionDialogTabType;
+  parentCollectionId?: string;
 }
 
 export enum CollectionDialogResult {
@@ -128,6 +129,8 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
           });
         } else {
           this.nestOptions = collections;
+          const parent = collections.find((c) => c.id === this.params.parentCollectionId);
+          this.formGroup.patchValue({ parent: parent?.name ?? null });
         }
 
         this.loading = false;
