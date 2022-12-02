@@ -20,11 +20,11 @@ import { MessagingMain } from "./main/messaging.main";
 import { NativeMessagingMain } from "./main/native-messaging.main";
 import { PowerMonitorMain } from "./main/power-monitor.main";
 import { Account } from "./models/account";
-import { I18nService } from "./services/i18n.service";
+import { DesktopI18nServiceImplementation } from "./services/i18n.service";
 
 export class Main {
   logService: ElectronLogService;
-  i18nService: I18nService;
+  i18nService: DesktopI18nServiceImplementation;
   storageService: ElectronStorageService;
   memoryStorageService: MemoryStorageService;
   messagingService: ElectronMainMessagingService;
@@ -73,7 +73,7 @@ export class Main {
     }
 
     this.logService = new ElectronLogService(null, app.getPath("userData"));
-    this.i18nService = new I18nService("en", "./locales/");
+    this.i18nService = new DesktopI18nServiceImplementation("en", "./locales/");
 
     const storageDefaults: any = {};
     // Default vault timeout to "on restart", and action to "lock"

@@ -99,7 +99,7 @@ import BrowserLocalStorageService from "../services/browserLocalStorage.service"
 import BrowserMessagingService from "../services/browserMessaging.service";
 import BrowserMessagingPrivateModeBackgroundService from "../services/browserMessagingPrivateModeBackground.service";
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
-import I18nService from "../services/i18n.service";
+import BrowserI18nServiceImplementation from "../services/i18n.service";
 import { KeyGenerationService } from "../services/keyGeneration.service";
 import { LocalBackedSessionStorageService } from "../services/localBackedSessionStorage.service";
 import { VaultFilterService } from "../services/vaultFilter.service";
@@ -257,7 +257,7 @@ export default class MainBackground {
       },
       window
     );
-    this.i18nService = new I18nService(BrowserApi.getUILanguage(window));
+    this.i18nService = new BrowserI18nServiceImplementation(BrowserApi.getUILanguage(window));
     this.encryptService = flagEnabled("multithreadDecryption")
       ? new MultithreadEncryptServiceImplementation(
           this.cryptoFunctionService,
@@ -559,7 +559,7 @@ export default class MainBackground {
     await this.stateService.init();
 
     await (this.vaultTimeoutService as VaultTimeoutService).init(true);
-    await (this.i18nService as I18nService).init();
+    await (this.i18nService as BrowserI18nServiceImplementation).init();
     await (this.eventService as EventService).init(true);
     await this.runtimeBackground.init();
     await this.notificationBackground.init();
