@@ -1,3 +1,5 @@
+import { Jsonify } from "type-fest";
+
 import { OrganizationUserStatusType } from "../../enums/organizationUserStatusType";
 import { OrganizationUserType } from "../../enums/organizationUserType";
 import { ProductType } from "../../enums/productType";
@@ -206,5 +208,16 @@ export class Organization {
 
   get canAccessSecretsManager() {
     return this.useSecretsManager;
+  }
+
+  static fromJSON(json: Jsonify<Organization>) {
+    if (json == null) {
+      return null;
+    }
+
+    return Object.assign(new Organization(), json, {
+      familySponsorshipLastSyncDate: new Date(json.familySponsorshipLastSyncDate),
+      familySponsorshipValidUntil: new Date(json.familySponsorshipValidUntil),
+    });
   }
 }
