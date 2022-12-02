@@ -11,6 +11,11 @@ export abstract class NavBaseComponent {
   @Input() text: string;
 
   /**
+   * `aria-label` for main content
+   */
+  @Input() ariaLabel: string;
+
+  /**
    * Optional icon, e.g. `"bwi-collection"`
    */
   @Input() icon: string;

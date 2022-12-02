@@ -1,6 +1,7 @@
 <bit-nav-group
   *ngIf="activeOrganization$ | async as activeOrganization"
   [text]="activeOrganization.name"
+  [ariaLabel]="['organization' | i18n, activeOrganization.name].join(' ')"
   icon="bwi-business"
   [route]="['../', activeOrganization.id]"
   #parentGroup
@@ -9,6 +10,7 @@
     <bit-nav-item
       *ngFor="let org of organizations"
       [text]="org.name"
+      [ariaLabel]="['organization' | i18n, org.name].join(' ')"
       [route]="['../', org.id]"
       (mainContentClicked)="parentGroup.toggle()"
       [hideActiveStyles]="true"
@@ -19,7 +21,7 @@
         [bitMenuTriggerFor]="orgSwitchMenu"
         size="small"
         [title]="'options' | i18n"
-        [attr.aria-label]="'options' | i18n"
+        [attr.aria-label]="['organization' | i18n, org.name, 'options' | i18n].join(' ')"
       ></button>
     </bit-nav-item>
   </ng-container>

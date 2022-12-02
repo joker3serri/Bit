@@ -49,7 +49,7 @@ export const WithoutRoute: Story<NavItemComponent> = (args: NavItemComponent) =>
     `,
 });
 
-export const WithSlots: Story<NavItemComponent> = (args: NavItemComponent) => ({
+export const WithChildButtons: Story<NavItemComponent> = (args: NavItemComponent) => ({
   props: args,
   template: `
       <bit-nav-item text="Hello World" [route]="['']" icon="bwi-collection">
@@ -59,7 +59,7 @@ export const WithSlots: Story<NavItemComponent> = (args: NavItemComponent) => ({
           [bitIconButton]="'bwi-clone'"
           [buttonType]="'contrast'"
           size="small"
-          text="test"
+          aria-label="option 1"
         ></button>
         <button
           slot-end
@@ -67,7 +67,7 @@ export const WithSlots: Story<NavItemComponent> = (args: NavItemComponent) => ({
           [bitIconButton]="'bwi-pencil-square'"
           [buttonType]="'contrast'"
           size="small"
-          text="test"
+          aria-label="option 2"
         ></button>
         <button
           slot-end
@@ -75,7 +75,7 @@ export const WithSlots: Story<NavItemComponent> = (args: NavItemComponent) => ({
           [bitIconButton]="'bwi-check'"
           [buttonType]="'contrast'"
           size="small"
-          text="test"
+          aria-label="option 3"
         ></button>
       </bit-nav-item>
     `,

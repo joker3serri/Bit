@@ -7,6 +7,7 @@
   (mainContentClicked)="toggle()"
   [treeDepth]="treeDepth"
   (mainContentClicked)="mainContentClicked.emit()"
+  [ariaLabel]="ariaLabel"
 >
   <ng-template #button>
     <button
@@ -21,7 +22,7 @@
       aria-haspopup="true"
       [attr.aria-expanded]="open.toString()"
       [attr.aria-controls]="contentId"
-      [attr.aria-label]="'toggleCollapse' | i18n"
+      [attr.aria-label]="['toggleCollapse' | i18n, text].join(' ')"
     ></button>
   </ng-template>
 
@@ -38,7 +39,7 @@
 <div
   *ngIf="open"
   [attr.id]="contentId"
-  [attr.aria-label]="text + ' ' + ('submenu' | i18n)"
+  [attr.aria-label]="[text, 'submenu' | i18n].join(' ')"
   role="group"
 >
   <ng-content></ng-content>
