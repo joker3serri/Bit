@@ -1,4 +1,12 @@
-import { AfterContentInit, Component, ContentChildren, QueryList } from "@angular/core";
+import {
+  AfterContentInit,
+  Component,
+  ContentChildren,
+  EventEmitter,
+  Input,
+  Output,
+  QueryList,
+} from "@angular/core";
 
 import { NavBaseComponent } from "./nav-base.component";
 import { NavItemComponent } from "./nav-item.component";
@@ -19,16 +27,19 @@ export class NavGroupComponent extends NavBaseComponent implements AfterContentI
   nestedItems!: QueryList<NavItemComponent>;
 
   /**
-   * Is `true` if the expanded content is visible
-   */
-  protected open = false;
-
-  /**
    * UID for `[attr.aria-controls]`
    */
   protected contentId = Math.random().toString(36).substring(2);
 
-  toggle(event?: MouseEvent) {
+  /**
+   * Is `true` if the expanded content is visible
+   */
+  @Input()
+  open = false;
+  @Output()
+  openChange = new EventEmitter<boolean>();
+
+  protected toggle(event?: MouseEvent) {
     event?.stopPropagation();
     this.open = !this.open;
   }
