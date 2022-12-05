@@ -1,5 +1,6 @@
 import { OrgDomainApiServiceAbstraction } from "../../abstractions/organization-domain/org-domain-api.service.abstraction";
 import { OrganizationDomainResponse } from "../../abstractions/organization-domain/responses/organization-domain.response";
+import { ListResponse } from "../../models/response/list.response";
 import { ApiService } from "../api.service";
 
 import { OrgDomainService } from "./org-domain.service";
@@ -9,7 +10,7 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
   constructor(private orgDomainService: OrgDomainService, private apiService: ApiService) {}
 
   async getAllByOrgId(orgId: string): Promise<Array<OrganizationDomainResponse>> {
-    const result: Array<any> = await this.apiService.send(
+    const listResponse: ListResponse<any> = await this.apiService.send(
       "GET",
       `/organizations/${orgId}/domain`,
       null,
@@ -17,7 +18,7 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
       true
     );
 
-    const orgDomains = result.map(
+    const orgDomains = listResponse.data.map(
       (resultOrgDomain: any) => new OrganizationDomainResponse(resultOrgDomain)
     );
 
