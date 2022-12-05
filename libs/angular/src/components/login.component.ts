@@ -46,8 +46,6 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
   protected twoFactorRoute = "2fa";
   protected successRoute = "vault";
   protected forcePasswordResetRoute = "update-temp-password";
-  protected alwaysRememberEmail = false;
-  protected skipRememberEmail = false;
 
   get loggedEmail() {
     return this.formGroup.value.email;
@@ -98,13 +96,11 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
     if (!this.paramEmailSet) {
       this.formGroup.get("email")?.setValue(email ?? "");
     }
-    if (!this.alwaysRememberEmail) {
-      let rememberEmail = this.loginService.getRememberEmail();
-      if (rememberEmail == null) {
-        rememberEmail = (await this.stateService.getRememberedEmail()) != null;
-      }
-      this.formGroup.get("rememberEmail")?.setValue(rememberEmail);
+    let rememberEmail = this.loginService.getRememberEmail();
+    if (rememberEmail == null) {
+      rememberEmail = (await this.stateService.getRememberedEmail()) != null;
     }
+    this.formGroup.get("rememberEmail")?.setValue(rememberEmail);
   }
 
   async submit(showToast = true) {
