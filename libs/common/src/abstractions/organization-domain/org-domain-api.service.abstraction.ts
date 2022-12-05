@@ -1,6 +1,6 @@
 import { OrganizationDomainResponse } from "./responses/organization-domain.response";
 
-export class OrgDomainApiServiceAbstraction {
+export abstract class OrgDomainApiServiceAbstraction {
   getAllByOrgId: (orgId: string) => Promise<Array<OrganizationDomainResponse>>;
   getByOrgIdAndOrgDomainId: (
     orgId: string,
