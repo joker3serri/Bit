@@ -105,10 +105,6 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
       }
       this.formGroup.get("rememberEmail")?.setValue(rememberEmail);
     }
-
-    if (email) {
-      this.validateEmail();
-    }
   }
 
   async submit(showToast = true) {
@@ -140,7 +136,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
       this.formPromise = this.authService.logIn(credentials);
       const response = await this.formPromise;
       this.setFormValues();
-      if (data.rememberEmail || this.alwaysRememberEmail) {
+      if (data.rememberEmail) {
         await this.stateService.setRememberedEmail(data.email);
       } else {
         await this.stateService.setRememberedEmail(null);
