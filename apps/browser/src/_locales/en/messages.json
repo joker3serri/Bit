@@ -84,7 +84,7 @@
     "message": "Copy URI"
   },
   "copyWebsite": {
-    "message": "Copy Website"
+    "message": "Copy website"
   },
   "copyUsername": {
     "message": "Copy username"
@@ -96,13 +96,13 @@
     "message": "Copy security code"
   },
   "copyNotes": {
-    "message": "Copy Notes"
+    "message": "Copy notes"
   },
   "copyAddress": {
-    "message": "Copy Address"
+    "message": "Copy address"
   },
   "copyNote": {
-    "message": "Copy Note"
+    "message": "Copy note"
   },
   "autoFill": {
     "message": "Auto-fill"
@@ -1068,7 +1068,7 @@
     "message": "Cardholder name"
   },
   "copyCardholderName": {
-    "message": "Copy Cardholder Name"
+    "message": "Copy cardholder name"
   },
   "number": {
     "message": "Number"
@@ -1077,7 +1077,7 @@
     "message": "Brand"
   },
   "copyBrand": {
-    "message": "Copy Brand"
+    "message": "Copy brand"
   },
   "expirationMonth": {
     "message": "Expiration month"
@@ -1089,7 +1089,7 @@
     "message": "Expiration"
   },
   "copyExpiration": {
-    "message": "Copy Expiration"
+    "message": "Copy expiration"
   },
   "january": {
     "message": "January"
@@ -1164,13 +1164,13 @@
     "message": "Identity name"
   },
   "copyIdentityName": {
-    "message": "Copy Identity Name"
+    "message": "Copy identity name"
   },
   "company": {
     "message": "Company"
   },
   "copyCompany": {
-    "message": "Copy Company"
+    "message": "Copy company"
   },
   "ssn": {
     "message": "Social Security number"
@@ -1182,25 +1182,25 @@
     "message": "Passport number"
   },
   "copyPassportNumber": {
-    "message": "Copy Passport Number"
+    "message": "Copy passport number"
   },
   "licenseNumber": {
     "message": "License number"
   },
   "copyLicenseNumber": {
-    "message": "Copy License Number"
+    "message": "Copy license number"
   },
   "email": {
     "message": "Email"
   },
   "copyEmail": {
-    "message": "Copy Email"
+    "message": "Copy email"
   },
   "phone": {
     "message": "Phone"
   },
   "copyPhone": {
-    "message": "Copy Phone"
+    "message": "Copy phone"
   },
   "address": {
     "message": "Address"
