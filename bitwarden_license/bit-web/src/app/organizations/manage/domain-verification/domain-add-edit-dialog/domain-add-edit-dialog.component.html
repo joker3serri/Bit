@@ -1,0 +1,35 @@
+<bit-dialog [dialogSize]="dialogSize" [disablePadding]="disablePadding">
+  <span bitDialogTitle>{{ "newDomain" | i18n }}</span>
+  <div bitDialogContent>
+    <form [formGroup]="domainForm">
+      <bit-form-field>
+        <bit-label>Domain name</bit-label>
+        <input bitInput formControlName="domainName" />
+        <bit-hint
+          >Example: mydomain.com. Subdomains require separate entries to be verified.</bit-hint
+        >
+      </bit-form-field>
+
+      <bit-form-field>
+        <bit-label>DNS TXT record</bit-label>
+        <input bitInput formControlName="txt" />
+        <bit-hint>Copy and paste the TXT record into your DNS Provider.</bit-hint>
+      </bit-form-field>
+    </form>
+  </div>
+  <div bitDialogFooter class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+    <button bitButton buttonType="primary">{{ "verifyDomain" | i18n }}</button>
+    <button bitButton buttonType="secondary" (click)="dialogRef.close()">
+      {{ "cancel" | i18n }}
+    </button>
+    <button
+      *ngIf="data.orgDomain"
+      class="tw-ml-auto"
+      bitIconButton="bwi-trash"
+      buttonType="danger"
+      size="default"
+      title="Delete"
+      aria-label="Delete"
+    ></button>
+  </div>
+</bit-dialog>

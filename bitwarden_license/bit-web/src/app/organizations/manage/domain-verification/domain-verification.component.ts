@@ -9,6 +9,12 @@ import { OrgDomainServiceAbstraction } from "@bitwarden/common/abstractions/orga
 import { OrganizationDomainResponse } from "@bitwarden/common/abstractions/organization-domain/responses/organization-domain.response";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { DialogService } from "@bitwarden/components";
+
+import {
+  DomainAddEditDialogComponent,
+  DomainAddEditDialogData,
+} from "./domain-add-edit-dialog/domain-add-edit-dialog.component";
 
 @Component({
   selector: "app-org-manage-domain-verification",
@@ -30,7 +36,8 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private organizationService: OrganizationService,
     private orgDomainApiService: OrgDomainApiServiceAbstraction,
-    private orgDomainService: OrgDomainServiceAbstraction
+    private orgDomainService: OrgDomainServiceAbstraction,
+    private dialogService: DialogService
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -55,6 +62,17 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
     await this.orgDomainApiService.getAllByOrgId(this.organizationId);
 
     this.loading = false;
+  }
+
+  addDomain() {
+    const domainAddEditDialogData: DomainAddEditDialogData = {
+      organizationId: this.organizationId,
+      orgDomain: null,
+    };
+
+    this.dialogService.open(DomainAddEditDialogComponent, {
+      data: domainAddEditDialogData,
+    });
   }
 
   ngOnDestroy(): void {
