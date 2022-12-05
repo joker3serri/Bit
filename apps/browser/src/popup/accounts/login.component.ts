@@ -23,8 +23,6 @@ import { Utils } from "@bitwarden/common/misc/utils";
   templateUrl: "login.component.html",
 })
 export class LoginComponent extends BaseLoginComponent {
-  protected skipRememberEmail = true;
-
   constructor(
     apiService: ApiService,
     appIdService: AppIdService,
