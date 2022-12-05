@@ -206,7 +206,6 @@ export class LoginWithDeviceComponent
   private async setRememberEmailValues() {
     const rememberEmail = this.loginService.getRememberEmail();
     const rememberedEmail = this.loginService.getEmail();
-    await this.stateService.setRememberEmail(rememberEmail);
     await this.stateService.setRememberedEmail(rememberEmail ? rememberedEmail : null);
     this.loginService.clearValues();
   }
