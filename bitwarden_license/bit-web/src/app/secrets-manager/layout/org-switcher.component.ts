@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest, map, Observable } from "rxjs";
 
@@ -16,5 +16,18 @@ export class OrgSwitcherComponent {
     this.organizationService.organizations$,
   ]).pipe(map(([params, orgs]) => orgs.find((org) => org.id === params.get("organizationId"))));
 
+  /**
+   * Is `true` if the expanded content is visible
+   */
+  @Input()
+  open = false;
+  @Output()
+  openChange = new EventEmitter<boolean>();
+
   constructor(private route: ActivatedRoute, private organizationService: OrganizationService) {}
+
+  protected toggle(event?: MouseEvent) {
+    event?.stopPropagation();
+    this.open = !this.open;
+  }
 }

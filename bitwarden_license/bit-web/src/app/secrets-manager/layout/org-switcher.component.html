@@ -4,7 +4,7 @@
   [ariaLabel]="['organization' | i18n, activeOrganization.name].join(' ')"
   icon="bwi-business"
   [route]="['../', activeOrganization.id]"
-  #parentGroup
+  [(open)]="open"
 >
   <ng-container *ngIf="organizations$ | async as organizations">
     <bit-nav-item
@@ -12,7 +12,7 @@
       [text]="org.name"
       [ariaLabel]="['organization' | i18n, org.name].join(' ')"
       [route]="['../', org.id]"
-      (mainContentClicked)="parentGroup.toggle()"
+      (mainContentClicked)="toggle()"
       [hideActiveStyles]="true"
     >
       <button
