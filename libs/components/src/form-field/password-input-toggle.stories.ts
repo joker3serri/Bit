@@ -1,8 +1,11 @@
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+
 import { IconButtonModule } from "../icon-button";
 import { InputModule } from "../input/input.module";
+import { I18nMockService } from "../utils/i18n-mock.service";
 
 import { FormFieldModule } from "./form-field.module";
 import { BitPasswordInputToggleDirective } from "./password-input-toggle.directive";
@@ -13,6 +16,12 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [FormsModule, ReactiveFormsModule, FormFieldModule, InputModule, IconButtonModule],
+      providers: [
+        {
+          provide: I18nService,
+          useValue: new I18nMockService({ toggleVisibility: "Toggle visibility" }),
+        },
+      ],
     }),
   ],
   parameters: {
