@@ -19,6 +19,12 @@ import { CollectionDetailsResponse } from "@bitwarden/common/models/response/col
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
+import {
+  AccessItemType,
+  AccessItemValue,
+  AccessItemView,
+} from "../../shared/components/access-selector";
+
 export enum MemberDialogTab {
   Role = 0,
   Groups = 1,
@@ -58,9 +64,20 @@ export class MemberDialogComponent implements OnInit {
   collections: CollectionView[] = [];
   organizationUserType = OrganizationUserType;
 
+  protected accessItems: AccessItemView[] = [
+    {
+      id: "id",
+      listName: "listName",
+      labelName: "labelName",
+      type: AccessItemType.Collection,
+    },
+  ];
+
   protected tabIndex: MemberDialogTab;
   // Stub, to be filled out in upcoming PRs
-  protected formGroup = this.formBuilder.group({});
+  protected formGroup = this.formBuilder.group({
+    access: [] as AccessItemValue[],
+  });
 
   manageAllCollectionsCheckboxes = [
     {
