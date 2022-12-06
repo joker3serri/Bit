@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { I18nServiceImplementation } from "@bitwarden/common/services/i18n.service.implementation";
 
 import type eng from "../../locales/en/messages.json";
@@ -6,8 +6,7 @@ import type eng from "../../locales/en/messages.json";
 export type WebI18nKey = keyof typeof eng;
 
 @Injectable()
-export class WebI18nServiceImplementation extends I18nServiceImplementation<WebI18nKey>
-{
+export class WebI18nServiceImplementation extends I18nServiceImplementation<WebI18nKey> {
   constructor(systemLanguage: string, localesDirectory: string) {
     super(systemLanguage || "en-US", localesDirectory, async (formattedLocale: string) => {
       const filePath =
