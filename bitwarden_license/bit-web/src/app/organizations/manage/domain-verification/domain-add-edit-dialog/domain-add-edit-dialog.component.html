@@ -3,19 +3,30 @@
   <div bitDialogContent>
     <form [formGroup]="domainForm">
       <bit-form-field>
-        <bit-label>Domain name</bit-label>
+        <bit-label>{{ "domainName" | i18n }}</bit-label>
         <input bitInput formControlName="domainName" />
-        <bit-hint
-          >Example: mydomain.com. Subdomains require separate entries to be verified.</bit-hint
-        >
+        <bit-hint>{{ "domainNameInputHint" | i18n }}</bit-hint>
       </bit-form-field>
 
       <bit-form-field>
-        <bit-label>DNS TXT record</bit-label>
+        <bit-label>{{ "dnsTxtRecord" | i18n }}</bit-label>
         <input bitInput formControlName="txt" />
-        <bit-hint>Copy and paste the TXT record into your DNS Provider.</bit-hint>
+        <bit-hint>{{ "dnsTxtRecordInputHint" | i18n }}</bit-hint>
+        <button
+          type="button"
+          bitSuffix
+          bitButton
+          appA11yTitle="{{ 'copyDnsTxtRecord' | i18n }}"
+          (click)="copyDnsTxt()"
+        >
+          <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+        </button>
       </bit-form-field>
     </form>
+
+    <bit-callout type="info" title="{{ 'automaticDomainVerification' | i18n }}">
+      {{ "automaticDomainVerificationProcess" | i18n }}
+    </bit-callout>
   </div>
   <div bitDialogFooter class="tw-flex tw-flex-row tw-items-center tw-gap-2">
     <button bitButton buttonType="primary">{{ "verifyDomain" | i18n }}</button>
