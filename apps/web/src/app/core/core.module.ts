@@ -35,7 +35,7 @@ import { RouterService } from "./router.service";
 import { Account, GlobalState, StateService } from "./state";
 import { StateMigrationService } from "./state-migration.service";
 import { WebFileDownloadService } from "./web-file-download.service";
-import { WebI18nServiceImplementation, WebI18nService } from "./web-i18n.service";
+import { WebI18nServiceImplementation } from "./web-i18n.service";
 import { WebPlatformUtilsService } from "./web-platform-utils.service";
 
 @NgModule({
@@ -46,6 +46,7 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
     RouterService,
     EventService,
     PolicyListService,
+    WebI18nServiceImplementation,
     {
       provide: APP_INITIALIZER,
       useFactory: (initService: InitService) => initService.init(),
@@ -64,10 +65,6 @@ import { WebPlatformUtilsService } from "./web-platform-utils.service";
       provide: I18nService,
       useClass: WebI18nServiceImplementation,
       deps: [SYSTEM_LANGUAGE, LOCALES_DIRECTORY],
-    },
-    {
-      provide: WebI18nService,
-      useExisting: I18nService,
     },
     { provide: AbstractStorageService, useClass: HtmlStorageService },
     {
