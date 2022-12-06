@@ -2,12 +2,12 @@ import { NgModule } from "@angular/core";
 
 import { SharedModule } from "../../../shared/shared.module";
 
+import { MemberDialogComponent } from "./member-dialog.component";
 import { NestedCheckboxComponent } from "./nested-checkbox.component";
-import { UserDialogComponent } from "./user-dialog.component";
 
 @NgModule({
-  declarations: [UserDialogComponent, NestedCheckboxComponent],
+  declarations: [MemberDialogComponent, NestedCheckboxComponent],
   imports: [SharedModule],
-  exports: [UserDialogComponent],
+  exports: [MemberDialogComponent],
 })
 export class UserDialogModule {}

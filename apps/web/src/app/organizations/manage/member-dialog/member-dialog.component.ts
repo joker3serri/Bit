@@ -19,21 +19,21 @@ import { CollectionDetailsResponse } from "@bitwarden/common/models/response/col
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
-export enum UserDialogTab {
+export enum MemberDialogTab {
   Role = 0,
   Groups = 1,
   Collections = 2,
 }
 
-export interface UserDialogParams {
+export interface MemberDialogParams {
   name: string;
   organizationId: string;
   organizationUserId: string;
   usesKeyConnector: boolean;
-  initialTab?: UserDialogTab;
+  initialTab?: MemberDialogTab;
 }
 
-export enum UserDialogResult {
+export enum MemberDialogResult {
   Saved = "saved",
   Canceled = "canceled",
   Deleted = "deleted",
@@ -42,10 +42,10 @@ export enum UserDialogResult {
 }
 
 @Component({
-  selector: "app-user-dialog",
-  templateUrl: "user-dialog.component.html",
+  selector: "app-member-dialog",
+  templateUrl: "member-dialog.component.html",
 })
-export class UserDialogComponent implements OnInit {
+export class MemberDialogComponent implements OnInit {
   loading = true;
   editMode = false;
   isRevoked = false;
@@ -58,7 +58,7 @@ export class UserDialogComponent implements OnInit {
   collections: CollectionView[] = [];
   organizationUserType = OrganizationUserType;
 
-  protected tabIndex: UserDialogTab;
+  protected tabIndex: MemberDialogTab;
   // Stub, to be filled out in upcoming PRs
   protected formGroup = this.formBuilder.group({});
 
@@ -98,8 +98,8 @@ export class UserDialogComponent implements OnInit {
   }
 
   constructor(
-    @Inject(DIALOG_DATA) protected params: UserDialogParams,
-    private dialogRef: DialogRef<UserDialogResult>,
+    @Inject(DIALOG_DATA) protected params: MemberDialogParams,
+    private dialogRef: DialogRef<MemberDialogResult>,
     private apiService: ApiService,
     private i18nService: I18nService,
     private collectionService: CollectionService,
@@ -110,7 +110,7 @@ export class UserDialogComponent implements OnInit {
 
   async ngOnInit() {
     this.editMode = this.loading = this.params.organizationUserId != null;
-    this.tabIndex = this.params.initialTab ?? UserDialogTab.Role;
+    this.tabIndex = this.params.initialTab ?? MemberDialogTab.Role;
     await this.loadCollections();
 
     if (this.editMode) {
@@ -225,7 +225,7 @@ export class UserDialogComponent implements OnInit {
         null,
         this.i18nService.t(this.editMode ? "editedUserId" : "invitedUsers", this.params.name)
       );
-      this.close(UserDialogResult.Saved);
+      this.close(MemberDialogResult.Saved);
     } catch (e) {
       this.logService.error(e);
     }
@@ -261,7 +261,7 @@ export class UserDialogComponent implements OnInit {
         null,
         this.i18nService.t("removedUserId", this.params.name)
       );
-      this.close(UserDialogResult.Deleted);
+      this.close(MemberDialogResult.Deleted);
     } catch (e) {
       this.logService.error(e);
     }
@@ -295,7 +295,7 @@ export class UserDialogComponent implements OnInit {
         this.i18nService.t("revokedUserId", this.params.name)
       );
       this.isRevoked = true;
-      this.close(UserDialogResult.Revoked);
+      this.close(MemberDialogResult.Revoked);
     } catch (e) {
       this.logService.error(e);
     }
@@ -318,17 +318,17 @@ export class UserDialogComponent implements OnInit {
         this.i18nService.t("restoredUserId", this.params.name)
       );
       this.isRevoked = false;
-      this.close(UserDialogResult.Restored);
+      this.close(MemberDialogResult.Restored);
     } catch (e) {
       this.logService.error(e);
     }
   };
 
   protected async cancel() {
-    this.close(UserDialogResult.Canceled);
+    this.close(MemberDialogResult.Canceled);
   }
 
-  private close(result: UserDialogResult) {
+  private close(result: MemberDialogResult) {
     this.dialogRef.close(result);
   }
 }
@@ -340,7 +340,7 @@ export class UserDialogComponent implements OnInit {
  */
 export function openUserAddEditDialog(
   dialogService: DialogService,
-  config: DialogConfig<UserDialogParams>
+  config: DialogConfig<MemberDialogParams>
 ) {
-  return dialogService.open<UserDialogResult, UserDialogParams>(UserDialogComponent, config);
+  return dialogService.open<MemberDialogResult, MemberDialogParams>(MemberDialogComponent, config);
 }
