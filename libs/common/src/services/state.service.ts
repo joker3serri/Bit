@@ -2397,9 +2397,7 @@ export class StateService<
         ))
       : await this.storageService.get<TAccount>(options.userId, options);
 
-    if (this.useAccountCache) {
-      this.setDiskCache(options.userId, account);
-    }
+    this.setDiskCache(options.userId, account);
     return account;
   }
 
@@ -2430,9 +2428,7 @@ export class StateService<
 
     await storageLocation.save(`${options.userId}`, account, options);
 
-    if (this.useAccountCache) {
-      this.deleteDiskCache(options.userId);
-    }
+    this.deleteDiskCache(options.userId);
   }
 
   protected async saveAccountToMemory(account: TAccount): Promise<void> {
@@ -2643,9 +2639,7 @@ export class StateService<
       userId = userId ?? state.activeUserId;
       delete state.accounts[userId];
 
-      if (this.useAccountCache) {
-        this.deleteDiskCache(userId);
-      }
+      this.deleteDiskCache(userId);
 
       return state;
     });
