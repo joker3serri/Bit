@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+
 import { I18nServiceImplementation } from "@bitwarden/common/services/i18n.service.implementation";
 
 import type eng from "../../locales/en/messages.json";
