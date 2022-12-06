@@ -48,7 +48,7 @@ import { ElectronRendererMessagingService } from "../../services/electron-render
 import { ElectronRendererSecureStorageService } from "../../services/electron-renderer-secure-storage.service";
 import { ElectronRendererStorageService } from "../../services/electron-renderer-storage.service";
 import { EncryptedMessageHandlerService } from "../../services/encrypted-message-handler.service";
-import { DesktopI18nServiceImplementation } from "../../services/i18n.service";
+import { DesktopI18nServiceImplementation } from "../../services/desktop-i18n.service.implementation";
 import { NativeMessageHandlerService } from "../../services/native-message-handler.service";
 import { NativeMessagingService } from "../../services/native-messaging.service";
 import { PasswordRepromptService } from "../../services/password-reprompt.service";

@@ -101,7 +101,7 @@ import BrowserLocalStorageService from "../services/browserLocalStorage.service"
 import BrowserMessagingService from "../services/browserMessaging.service";
 import BrowserMessagingPrivateModeBackgroundService from "../services/browserMessagingPrivateModeBackground.service";
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
-import BrowserI18nServiceImplementation from "../services/i18n.service";
+import BrowserI18nServiceImplementation from "../services/browser-i18n.service.implementation";
 import { KeyGenerationService } from "../services/keyGeneration.service";
 import { LocalBackedSessionStorageService } from "../services/localBackedSessionStorage.service";
 import { VaultFilterService } from "../services/vaultFilter.service";

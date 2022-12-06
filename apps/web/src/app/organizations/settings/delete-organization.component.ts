@@ -12,7 +12,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { Verification } from "@bitwarden/common/types/verification";
 
-import { WebI18nKey } from "../../core/web-i18n.service";
+import { WebI18nKey } from "../../core/web-i18n.service.implementation";
 
 class CountBasedLocalizationKey {
   singular: WebI18nKey;

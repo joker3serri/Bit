@@ -1,4 +1,4 @@
-import { I18nServiceImplementation } from "@bitwarden/common/services/i18n.service";
+import { I18nServiceImplementation } from "@bitwarden/common/services/i18n.service.implementation";
 
 export default class BrowserI18nServiceImplementation extends I18nServiceImplementation {
   constructor(systemLanguage: string) {

@@ -17,7 +17,7 @@ import { ContainerService } from "@bitwarden/common/services/container.service";
 import { EventUploadService } from "@bitwarden/common/services/event/event-upload.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout/vaultTimeout.service";
 
-import { DesktopI18nServiceImplementation } from "../../services/i18n.service";
+import { DesktopI18nServiceImplementation } from "../../services/desktop-i18n.service.implementation";
 import { NativeMessagingService } from "../../services/native-messaging.service";
 
 @Injectable()

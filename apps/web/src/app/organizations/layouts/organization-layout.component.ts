@@ -14,7 +14,7 @@ import {
 } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { WebI18nKey } from "../../core/web-i18n.service";
+import { WebI18nKey } from "../../core/web-i18n.service.implementation";
 
 @Component({
   selector: "app-organization-layout",

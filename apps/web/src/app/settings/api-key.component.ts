@@ -6,7 +6,7 @@ import { SecretVerificationRequest } from "@bitwarden/common/models/request/secr
 import { ApiKeyResponse } from "@bitwarden/common/models/response/api-key.response";
 import { Verification } from "@bitwarden/common/types/verification";
 
-import { WebI18nKey } from "../core/web-i18n.service";
+import { WebI18nKey } from "../core/web-i18n.service.implementation";
 
 @Component({
   selector: "app-api-key",

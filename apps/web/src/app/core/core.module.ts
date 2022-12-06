@@ -35,7 +35,7 @@ import { RouterService } from "./router.service";
 import { Account, GlobalState, StateService } from "./state";
 import { StateMigrationService } from "./state-migration.service";
 import { WebFileDownloadService } from "./web-file-download.service";
-import { WebI18nServiceImplementation } from "./web-i18n.service";
+import { WebI18nServiceImplementation } from "./web-i18n.service.implementation";
 import { WebPlatformUtilsService } from "./web-platform-utils.service";
 
 @NgModule({

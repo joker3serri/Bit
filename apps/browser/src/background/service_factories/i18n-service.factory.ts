@@ -1,7 +1,7 @@
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { I18nServiceImplementation } from "@bitwarden/common/services/i18n.service";
+import { I18nServiceImplementation } from "@bitwarden/common/services/i18n.service.implementation";
 
-import BrowserI18nServiceImplementation from "../../services/i18n.service";
+import BrowserI18nServiceImplementation from "../../services/browser-i18n.service.implementation";
 
 import { FactoryOptions, CachedServices, factory } from "./factory-options";
 

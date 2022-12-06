@@ -10,7 +10,7 @@ import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { BadgeTypes } from "@bitwarden/components";
 
-import { WebI18nKey } from "../../core/web-i18n.service";
+import { WebI18nKey } from "../../core/web-i18n.service.implementation";
 
 import { CipherReportComponent } from "./cipher-report.component";
 
