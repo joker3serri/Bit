@@ -246,13 +246,22 @@ export class PeopleComponent
       this.users.length === this.organization.seats
     ) {
       // Show org upgrade modal
+
+      const dialogBodyText = this.organization.canManageBilling
+        ? this.i18nService.t(
+            "freeOrgInvLimitReachedManageBilling",
+            this.organization.seats.toString()
+          )
+        : this.i18nService.t(
+            "freeOrgInvLimitReachedNoManageBilling",
+            this.organization.seats.toString()
+          );
+
       this.dialogService.open(OrgUpgradeDialogComponent, {
         data: {
           orgId: this.organization.id,
-          dialogBodyText: this.i18nService.t(
-            "freeOrgInvitationLimitReached",
-            this.organization.seats.toString()
-          ),
+          orgCanManageBilling: this.organization.canManageBilling,
+          dialogBodyText: dialogBodyText,
         },
       });
       return;

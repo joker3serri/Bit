@@ -9,17 +9,25 @@
     {{ data.dialogBodyText }}
   </span>
   <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
-    <button
-      bitButton
-      buttonType="primary"
-      [routerLink]="['/organizations', data.orgId, 'billing', 'subscription']"
-      [queryParams]="{ upgrade: true }"
-      (click)="dialogRef.close()"
-    >
-      {{ "upgrade" | i18n }}
-    </button>
-    <button bitButton buttonType="secondary" (click)="dialogRef.close()">
-      {{ "cancel" | i18n }}
-    </button>
+    <ng-container *ngIf="data.orgCanManageBilling">
+      <button
+        bitButton
+        buttonType="primary"
+        [routerLink]="['/organizations', data.orgId, 'billing', 'subscription']"
+        [queryParams]="{ upgrade: true }"
+        (click)="dialogRef.close()"
+      >
+        {{ "upgrade" | i18n }}
+      </button>
+      <button bitButton buttonType="secondary" (click)="dialogRef.close()">
+        {{ "cancel" | i18n }}
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="!data.orgCanManageBilling">
+      <button bitButton buttonType="primary" (click)="dialogRef.close()">
+        {{ "ok" | i18n }}
+      </button>
+    </ng-container>
   </div>
 </bit-simple-dialog>

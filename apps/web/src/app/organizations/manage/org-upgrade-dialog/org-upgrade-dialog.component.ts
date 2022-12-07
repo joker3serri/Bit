@@ -3,6 +3,7 @@ import { Component, Inject } from "@angular/core";
 
 export interface OrgUpgradeDialogData {
   orgId: string;
+  orgCanManageBilling: boolean;
   dialogBodyText: string;
 }
 

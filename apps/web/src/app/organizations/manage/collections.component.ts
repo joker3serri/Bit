@@ -136,13 +136,21 @@ export class CollectionsComponent implements OnInit {
       this.collections.length === this.organization.maxCollections
     ) {
       // Show org upgrade modal
+      const dialogBodyText = this.organization.canManageBilling
+        ? this.i18nService.t(
+            "freeOrgMaxCollectionReachedManageBilling",
+            this.organization.maxCollections.toString()
+          )
+        : this.i18nService.t(
+            "freeOrgMaxCollectionReachedNoManageBilling",
+            this.organization.maxCollections.toString()
+          );
+
       this.dialogService.open(OrgUpgradeDialogComponent, {
         data: {
           orgId: this.organization.id,
-          dialogBodyText: this.i18nService.t(
-            "freeOrgMaxCollectionReached",
-            this.organization.maxCollections.toString()
-          ),
+          dialogBodyText: dialogBodyText,
+          orgCanManageBilling: this.organization.canManageBilling,
         },
       });
       return;
