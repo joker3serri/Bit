@@ -252,17 +252,14 @@ export class PeopleComponent
 
     const result = await lastValueFrom(dialog.closed);
     switch (result) {
-      case MemberDialogResult.Saved:
-        this.load();
-        break;
       case MemberDialogResult.Deleted:
         this.removeUser(user);
         break;
+      case MemberDialogResult.Saved:
       case MemberDialogResult.Revoked:
-        this.load();
-        break;
       case MemberDialogResult.Restored:
         this.load();
+        break;
     }
   }
 
