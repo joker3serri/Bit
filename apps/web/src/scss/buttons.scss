@@ -210,3 +210,8 @@ button.header-expandable {
   margin-bottom: 5px;
   text-transform: uppercase;
 }
+
+/* special case for Send options */
+h3 button.header-expandable .bwi {
+  line-height: 1.5;
+}
