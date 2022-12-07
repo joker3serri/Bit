@@ -29,7 +29,9 @@
     </bit-callout>
   </div>
   <div bitDialogFooter class="tw-flex tw-flex-row tw-items-center tw-gap-2">
-    <button bitButton buttonType="primary">{{ "verifyDomain" | i18n }}</button>
+    <button bitButton buttonType="primary" [disabled]="domainForm.invalid">
+      {{ "verifyDomain" | i18n }}
+    </button>
     <button bitButton buttonType="secondary" (click)="dialogRef.close()">
       {{ "cancel" | i18n }}
     </button>

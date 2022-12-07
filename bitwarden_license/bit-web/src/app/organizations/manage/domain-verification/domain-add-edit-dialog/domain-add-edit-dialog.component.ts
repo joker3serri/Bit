@@ -7,6 +7,8 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationDomainResponse } from "@bitwarden/common/abstractions/organization-domain/responses/organization-domain.response";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { Utils } from "@bitwarden/common/misc/utils";
+
+import { domainNameValidator } from "./domain-name.validator";
 export interface DomainAddEditDialogData {
   organizationId: string;
   orgDomain: OrganizationDomainResponse;
@@ -20,9 +22,11 @@ export class DomainAddEditDialogComponent implements OnInit {
   dialogSize: "small" | "default" | "large" = "default";
   disablePadding = false;
 
-  // TODO: custom validator for preventing https:// or www. on domainName
   domainForm: FormGroup = this.formBuilder.group({
-    domainName: ["", [Validators.required]],
+    domainName: [
+      "",
+      [Validators.required, domainNameValidator(this.i18nService.t("invalidDomainNameMessage"))],
+    ],
     txt: [{ value: null, disabled: true }],
   });
 
