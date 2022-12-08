@@ -344,6 +344,7 @@ export class PeopleComponent
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil
         comp.onSavedUser.subscribe(() => {
           modal.close();
+          this.load();
         });
       }
     );
