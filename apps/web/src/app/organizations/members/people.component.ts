@@ -6,6 +6,7 @@ import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -20,15 +21,20 @@ import { ValidationService } from "@bitwarden/common/abstractions/validation.ser
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { CollectionData } from "@bitwarden/common/models/data/collection.data";
+import { Collection } from "@bitwarden/common/models/domain/collection";
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organization-keys.request";
 import { OrganizationUserBulkRequest } from "@bitwarden/common/models/request/organization-user-bulk.request";
 import { OrganizationUserConfirmRequest } from "@bitwarden/common/models/request/organization-user-confirm.request";
+import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collection.response";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { OrganizationUserBulkResponse } from "@bitwarden/common/models/response/organization-user-bulk.response";
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
 
 import { BasePeopleComponent } from "../../common/base.people.component";
+import { OrganizationUserView } from "../core/views/organization-user.view";
 import { EntityEventsComponent } from "../manage/entity-events.component";
+import { GroupServiceAbstraction } from "../services/abstractions/group";
 
 import { BulkConfirmComponent } from "./components/bulk/bulk-confirm.component";
 import { BulkRemoveComponent } from "./components/bulk/bulk-remove.component";
@@ -43,7 +49,7 @@ import { UserGroupsComponent } from "./components/user-groups.component";
   templateUrl: "people.component.html",
 })
 export class PeopleComponent
-  extends BasePeopleComponent<OrganizationUserUserDetailsResponse>
+  extends BasePeopleComponent<OrganizationUserView>
   implements OnInit, OnDestroy
 {
   @ViewChild("addEdit", { read: ViewContainerRef, static: true }) addEditModalRef: ViewContainerRef;
@@ -93,7 +99,9 @@ export class PeopleComponent
     private syncService: SyncService,
     stateService: StateService,
     private organizationService: OrganizationService,
-    private organizationApiService: OrganizationApiServiceAbstraction
+    private organizationApiService: OrganizationApiServiceAbstraction,
+    private groupService: GroupServiceAbstraction,
+    private collectionService: CollectionService
   ) {
     super(
       apiService,
@@ -169,8 +177,65 @@ export class PeopleComponent
     await super.load();
   }
 
-  getUsers(): Promise<ListResponse<OrganizationUserUserDetailsResponse>> {
-    return this.apiService.getOrganizationUsers(this.organizationId);
+  async getUsers(): Promise<OrganizationUserView[]> {
+    let groupsPromise: Promise<Map<string, string>>;
+    let collectionsPromise: Promise<Map<string, string>>;
+
+    // We don't need both groups and collections for the table, so only load one
+    const userPromise = this.apiService.getOrganizationUsers(this.organizationId, {
+      includeGroups: this.accessGroups,
+      includeCollections: !this.accessGroups,
+    });
+
+    // Depending on which column is displayed, we need to load the group/collection names
+    if (this.accessGroups) {
+      groupsPromise = this.getGroupNameMap();
+    } else {
+      collectionsPromise = this.getCollectionNameMap();
+    }
+
+    const [usersResponse, groupNamesMap, collectionNamesMap] = await Promise.all([
+      userPromise,
+      groupsPromise,
+      collectionsPromise,
+    ]);
+
+    return usersResponse.data?.map<OrganizationUserView>((r) => {
+      const userView = OrganizationUserView.fromResponse(r);
+
+      userView.groupNames = userView.groups
+        .map((g) => groupNamesMap.get(g))
+        .sort(this.i18nService.collator?.compare);
+      userView.collectionNames = userView.collections
+        .map((c) => collectionNamesMap.get(c.id))
+        .sort(this.i18nService.collator?.compare);
+
+      return userView;
+    });
+  }
+
+  async getGroupNameMap(): Promise<Map<string, string>> {
+    const groups = await this.groupService.getAll(this.organizationId);
+    const groupNameMap = new Map<string, string>();
+    groups.forEach((g) => groupNameMap.set(g.id, g.name));
+    return groupNameMap;
+  }
+
+  /**
+   * Retrieve a map of all collection IDs <-> names for the organization.
+   */
+  async getCollectionNameMap() {
+    const collectionMap = new Map<string, string>();
+    const response = await this.apiService.getCollections(this.organizationId);
+
+    const collections = response.data.map(
+      (r) => new Collection(new CollectionData(r as CollectionDetailsResponse))
+    );
+    const decryptedCollections = await this.collectionService.decryptMany(collections);
+
+    decryptedCollections.forEach((c) => collectionMap.set(c.id, c.name));
+
+    return collectionMap;
   }
 
   deleteUser(id: string): Promise<void> {
@@ -189,10 +254,7 @@ export class PeopleComponent
     return this.apiService.postOrganizationUserReinvite(this.organizationId, id);
   }
 
-  async confirmUser(
-    user: OrganizationUserUserDetailsResponse,
-    publicKey: Uint8Array
-  ): Promise<void> {
+  async confirmUser(user: OrganizationUserView, publicKey: Uint8Array): Promise<void> {
     const orgKey = await this.cryptoService.getOrgKey(this.organizationId);
     const key = await this.cryptoService.rsaEncrypt(orgKey.key, publicKey.buffer);
     const request = new OrganizationUserConfirmRequest();
@@ -200,7 +262,7 @@ export class PeopleComponent
     await this.apiService.postOrganizationUserConfirm(this.organizationId, user.id, request);
   }
 
-  allowResetPassword(orgUser: OrganizationUserUserDetailsResponse): boolean {
+  allowResetPassword(orgUser: OrganizationUserView): boolean {
     // Hierarchy check
     let callingUserHasPermission = false;
 
@@ -238,7 +300,7 @@ export class PeopleComponent
     );
   }
 
-  async edit(user: OrganizationUserUserDetailsResponse) {
+  async edit(user: OrganizationUserView) {
     const [modal] = await this.modalService.openViewRef(
       UserAddEditComponent,
       this.addEditModalRef,
@@ -384,7 +446,7 @@ export class PeopleComponent
     await this.load();
   }
 
-  async events(user: OrganizationUserUserDetailsResponse) {
+  async events(user: OrganizationUserView) {
     await this.modalService.openViewRef(EntityEventsComponent, this.eventsModalRef, (comp) => {
       comp.name = this.userNamePipe.transform(user);
       comp.organizationId = this.organizationId;
@@ -394,7 +456,7 @@ export class PeopleComponent
     });
   }
 
-  async resetPassword(user: OrganizationUserUserDetailsResponse) {
+  async resetPassword(user: OrganizationUserView) {
     const [modal] = await this.modalService.openViewRef(
       ResetPasswordComponent,
       this.resetPasswordModalRef,
@@ -413,7 +475,7 @@ export class PeopleComponent
     );
   }
 
-  protected async removeUserConfirmationDialog(user: OrganizationUserUserDetailsResponse) {
+  protected async removeUserConfirmationDialog(user: OrganizationUserView) {
     const warningMessage = user.usesKeyConnector
       ? this.i18nService.t("removeUserConfirmationKeyConnector")
       : this.i18nService.t("removeOrgUserConfirmation");
@@ -428,8 +490,8 @@ export class PeopleComponent
   }
 
   private async showBulkStatus(
-    users: OrganizationUserUserDetailsResponse[],
-    filteredUsers: OrganizationUserUserDetailsResponse[],
+    users: OrganizationUserView[],
+    filteredUsers: OrganizationUserView[],
     request: Promise<ListResponse<OrganizationUserBulkResponse>>,
     successfullMessage: string
   ) {
