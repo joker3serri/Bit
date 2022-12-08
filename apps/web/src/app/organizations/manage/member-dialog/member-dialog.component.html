@@ -1,5 +1,5 @@
 <form [formGroup]="formGroup" [bitSubmit]="submit">
-  <bit-dialog dialogSize="large" [disablePadding]="!loading">
+  <bit-dialog [disablePadding]="!loading">
     <span bitDialogTitle>
       {{ title }}
       <span class="tw-text-sm tw-normal-case tw-text-muted" *ngIf="!loading && params.name">{{
@@ -379,7 +379,26 @@
         <bit-tab [label]="'groups' | i18n"> Groups </bit-tab>
         <bit-tab [label]="'collections' | i18n">
           <div class="tw-mb-6">{{ "userPermissionOverrideHelper" | i18n }}</div>
+          <div class="tw-mb-6">
+            <!-- TODO: Replace with bit-checkbox when feature has been merged into feature branch -->
+            <label>
+              <input type="checkbox" formControlName="accessAllCollections" />
+              <span class="tw-bold"
+                >{{ "accessAllCollectionsDesc" | i18n }}
+                <a
+                  target="_blank"
+                  rel="noopener"
+                  appA11yTitle="{{ 'learnMore' | i18n }}"
+                  href="https://bitwarden.com/help/user-types-access-control/#access-control"
+                >
+                  <i class="bwi bwi-question-circle" aria-hidden="true"></i>
+                </a>
+              </span>
+            </label>
+            <div class="tw-text-muted">{{ "accessAllCollectionsHelp" | i18n }}</div>
+          </div>
           <bit-access-selector
+            *ngIf="!accessAllCollections"
             permissionMode="edit"
             formControlName="access"
             [showGroupColumn]="true"

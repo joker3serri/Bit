@@ -77,6 +77,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   protected tabIndex: MemberDialogTab;
   // Stub, to be filled out in upcoming PRs
   protected formGroup = this.formBuilder.group({
+    accessAllCollections: false,
     access: [[] as AccessItemValue[]],
   });
 
@@ -115,6 +116,10 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
 
   get customUserTypeSelected(): boolean {
     return this.type === OrganizationUserType.Custom;
+  }
+
+  get accessAllCollections(): boolean {
+    return this.formGroup.value.accessAllCollections;
   }
 
   constructor(
@@ -225,6 +230,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
 
           const accessSelections = mapToAccessSelections(userDetails);
           this.formGroup.patchValue({
+            accessAllCollections: userDetails.accessAll,
             access: accessSelections,
           });
         }
@@ -286,7 +292,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       const userView = new OrganizationUserAdminView();
       userView.id = this.params.organizationUserId;
       userView.organizationId = this.params.organizationId;
-      userView.accessAll = this.access === "all";
+      userView.accessAll = this.accessAllCollections;
       userView.type = this.type;
       userView.permissions = this.setRequestPermissions(
         userView.permissions ?? new PermissionsApi(),
