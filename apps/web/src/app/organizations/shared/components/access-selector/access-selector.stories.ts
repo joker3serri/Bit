@@ -122,8 +122,8 @@ const memberCollectionAccessItems = itemsFactory(3, AccessItemType.Collection).c
   {
     id: "c1-group1",
     type: AccessItemType.Collection,
-    labelName: "Collection 1",
-    listName: "Collection 1",
+    labelName: "Collection 1 - Group 1",
+    listName: "Collection 1 - Group 1",
     viaGroupName: "Group 1",
     readonlyPermission: CollectionPermission.View,
     readonly: true,
@@ -131,8 +131,8 @@ const memberCollectionAccessItems = itemsFactory(3, AccessItemType.Collection).c
   {
     id: "c1-group2",
     type: AccessItemType.Collection,
-    labelName: "Collection 1",
-    listName: "Collection 1",
+    labelName: "Collection 1 - Group 2",
+    listName: "Collection 1 - Group 2",
     viaGroupName: "Group 2",
     readonlyPermission: CollectionPermission.ViewExceptPass,
     readonly: true,
