@@ -54,7 +54,7 @@ export class OrgDomainService implements OrgDomainInternalServiceAbstraction {
       );
       if (index !== -1) {
         // existing
-        delete existingOrgDomains[index];
+        existingOrgDomains.splice(index, 1);
       } else {
         // eslint-disable-next-line no-console
         console.warn(`Unable to delete OrgDomainId: ${orgDomainId}`);
