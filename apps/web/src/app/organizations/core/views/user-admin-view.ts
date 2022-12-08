@@ -5,7 +5,7 @@ import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
 
 import { CollectionAccessSelectionView } from "./collection-access-selection-view";
 
-export class UserAdminView {
+export class OrganizationUserAdminView {
   id: string;
   userId: string;
   organizationId: string;

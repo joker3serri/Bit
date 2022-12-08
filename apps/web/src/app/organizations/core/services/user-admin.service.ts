@@ -2,6 +2,8 @@ import { Injectable } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { OrganizationUserInviteRequest } from "@bitwarden/common/models/request/organization-user-invite.request";
+import { OrganizationUserUpdateRequest } from "@bitwarden/common/models/request/organization-user-update.request";
 // import { EncString } from "@bitwarden/common/models/domain/enc-string";
 // import { CollectionRequest } from "@bitwarden/common/models/request/collection.request";
 // import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selection-read-only.request";
@@ -9,10 +11,10 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 //   CollectionAccessDetailsResponse,
 //   CollectionResponse,
 // } from "@bitwarden/common/models/response/collection.response";
-import { OrganizationUserDetailsResponse } from "@bitwarden/common/src/models/response/organization-user.response";
+import { OrganizationUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
 
 import { CoreOrganizationModule } from "../core-organization.module";
-import { UserAdminView } from "../views/user-admin-view";
+import { OrganizationUserAdminView } from "../views/user-admin-view";
 
 @Injectable({ providedIn: CoreOrganizationModule })
 export class UserAdminService {
@@ -30,7 +32,7 @@ export class UserAdminService {
   async get(
     organizationId: string,
     organizationUserId: string
-  ): Promise<UserAdminView | undefined> {
+  ): Promise<OrganizationUserAdminView | undefined> {
     const userResponse = await this.apiService.getOrganizationUser(
       organizationId,
       organizationUserId
@@ -45,25 +47,26 @@ export class UserAdminService {
     return view;
   }
 
-  // async save(collection: CollectionAdminView): Promise<unknown> {
-  //   const request = await this.encrypt(collection);
+  async save(user: OrganizationUserAdminView): Promise<void> {
+    const request = new OrganizationUserUpdateRequest();
+    request.accessAll = user.accessAll;
+    request.permissions = user.permissions;
+    request.type = user.type;
+    request.collections = user.collections;
 
-  //   let response: CollectionResponse;
-  //   if (collection.id == null) {
-  //     response = await this.apiService.postCollection(collection.organizationId, request);
-  //     collection.id = response.id;
-  //   } else {
-  //     response = await this.apiService.putCollection(
-  //       collection.organizationId,
-  //       collection.id,
-  //       request
-  //     );
-  //   }
+    await this.apiService.putOrganizationUser(user.organizationId, user.id, request);
+  }
 
-  //   // TODO: Implement upsert when in PS-1083: Collection Service refactors
-  //   // await this.collectionService.upsert(data);
-  //   return;
-  // }
+  async invite(emails: string[], user: OrganizationUserAdminView): Promise<void> {
+    const request = new OrganizationUserInviteRequest();
+    request.emails = emails;
+    request.accessAll = user.accessAll;
+    request.permissions = user.permissions;
+    request.type = user.type;
+    request.collections = user.collections;
+
+    await this.apiService.postOrganizationUserInvite(user.organizationId, request);
+  }
 
   // async delete(organizationId: string, collectionId: string): Promise<void> {
   //   await this.apiService.deleteCollection(organizationId, collectionId);
@@ -72,11 +75,12 @@ export class UserAdminService {
   private async decryptMany(
     organizationId: string,
     users: OrganizationUserDetailsResponse[]
-  ): Promise<UserAdminView[]> {
+  ): Promise<OrganizationUserAdminView[]> {
     const promises = users.map(async (u) => {
-      const view = new UserAdminView();
+      const view = new OrganizationUserAdminView();
 
       view.id = u.id;
+      view.organizationId = organizationId;
       view.userId = u.userId;
       view.type = u.type;
       view.status = u.status;
@@ -95,7 +99,7 @@ export class UserAdminService {
     return await Promise.all(promises);
   }
 
-  // private async encrypt(model: CollectionAdminView): Promise<CollectionRequest> {
+  // private async encrypt(model: UserAdminView): Promise<OrganizationUserUpdateRequest> {
   //   if (model.organizationId == null) {
   //     throw new Error("Collection has no organization id.");
   //   }

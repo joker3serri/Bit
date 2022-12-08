@@ -14,9 +14,6 @@ import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserTy
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
 import { CollectionData } from "@bitwarden/common/models/data/collection.data";
 import { Collection } from "@bitwarden/common/models/domain/collection";
-import { OrganizationUserInviteRequest } from "@bitwarden/common/models/request/organization-user-invite.request";
-import { OrganizationUserUpdateRequest } from "@bitwarden/common/models/request/organization-user-update.request";
-import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selection-read-only.request";
 import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
@@ -25,7 +22,7 @@ import {
   CollectionAccessSelectionView,
   CollectionAdminService,
   UserAdminService,
-  UserAdminView,
+  OrganizationUserAdminView,
 } from "../../core";
 import { GroupServiceAbstraction } from "../../services/abstractions/group";
 import {
@@ -33,6 +30,7 @@ import {
   AccessItemValue,
   AccessItemView,
   convertToPermission,
+  convertToSelectionView,
 } from "../../shared/components/access-selector";
 import { GroupView } from "../../views/group.view";
 
@@ -273,39 +271,37 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   }
 
   submit = async () => {
-    let collections: SelectionReadOnlyRequest[] = null;
-    if (this.access !== "all") {
-      collections = this.collections
-        .filter((c) => (c as any).checked)
-        .map((c) => new SelectionReadOnlyRequest(c.id, !!c.readOnly, !!c.hidePasswords));
+    if (this.formGroup.invalid) {
+      return;
     }
 
+    // let collections: SelectionReadOnlyRequest[] = null;
+    // if (this.access !== "all") {
+    //   collections = this.collections
+    //     .filter((c) => (c as any).checked)
+    //     .map((c) => new SelectionReadOnlyRequest(c.id, !!c.readOnly, !!c.hidePasswords));
+    // }
+
     try {
+      const userView = new OrganizationUserAdminView();
+      userView.id = this.params.organizationUserId;
+      userView.organizationId = this.params.organizationId;
+      userView.accessAll = this.access === "all";
+      userView.type = this.type;
+      userView.permissions = this.setRequestPermissions(
+        userView.permissions ?? new PermissionsApi(),
+        userView.type !== OrganizationUserType.Custom
+      );
+      userView.collections = this.formGroup.controls.access.value
+        .filter((v) => v.type === AccessItemType.Collection)
+        .map(convertToSelectionView);
+
       if (this.editMode) {
-        const request = new OrganizationUserUpdateRequest();
-        request.accessAll = this.access === "all";
-        request.type = this.type;
-        request.collections = collections;
-        request.permissions = this.setRequestPermissions(
-          request.permissions ?? new PermissionsApi(),
-          request.type !== OrganizationUserType.Custom
-        );
-        await this.apiService.putOrganizationUser(
-          this.params.organizationId,
-          this.params.organizationUserId,
-          request
-        );
+        await this.userService.save(userView);
       } else {
-        const request = new OrganizationUserInviteRequest();
-        request.emails = [...new Set(this.emails.trim().split(/\s*,\s*/))];
-        request.accessAll = this.access === "all";
-        request.type = this.type;
-        request.permissions = this.setRequestPermissions(
-          request.permissions ?? new PermissionsApi(),
-          request.type !== OrganizationUserType.Custom
-        );
-        request.collections = collections;
-        await this.apiService.postOrganizationUserInvite(this.params.organizationId, request);
+        userView.id = this.params.organizationUserId;
+        const emails = [...new Set(this.emails.trim().split(/\s*,\s*/))];
+        await this.userService.invite(emails, userView);
       }
 
       this.platformUtilsService.showToast(
@@ -442,7 +438,7 @@ function mapCollectionToAccessItemView(
   };
 }
 
-function mapToAccessSelections(user: UserAdminView): AccessItemValue[] {
+function mapToAccessSelections(user: OrganizationUserAdminView): AccessItemValue[] {
   if (user == undefined) {
     return [];
   }
