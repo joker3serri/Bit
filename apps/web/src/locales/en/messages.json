@@ -5568,6 +5568,9 @@
   "domainVerified": {
     "message": "Domain verified"
   },
+  "duplicateDomainError": {
+    "message": "You can't claim the same domain twice."
+  },
   "domainNotVerified": {
     "message": "$DOMAIN$ not verified. Check your DNS record.",
     "placeholders": {
@@ -5577,5 +5580,4 @@
       }
     }
   }
-
 }

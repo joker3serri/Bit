@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
-import { concatMap, Observable, Subject, takeUntil } from "rxjs";
+import { concatMap, Observable, Subject, take, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -68,7 +68,7 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
     const domainAddEditDialogData: DomainAddEditDialogData = {
       organizationId: this.organizationId,
       orgDomain: null,
-      existingDomainNames: [],
+      existingDomainNames: this.getExistingDomainNames(),
     };
 
     this.dialogService.open(DomainAddEditDialogComponent, {
@@ -80,12 +80,21 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
     const domainAddEditDialogData: DomainAddEditDialogData = {
       organizationId: this.organizationId,
       orgDomain: orgDomain,
-      existingDomainNames: [],
+      existingDomainNames: this.getExistingDomainNames(),
     };
 
     this.dialogService.open(DomainAddEditDialogComponent, {
       data: domainAddEditDialogData,
     });
+  }
+
+  private getExistingDomainNames(): Array<string> {
+    let existingDomainNames: string[];
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+    this.orgDomains$.pipe(take(1)).subscribe((orgDomains: Array<OrganizationDomainResponse>) => {
+      existingDomainNames = orgDomains.map((o) => o.domainName);
+    });
+    return existingDomainNames;
   }
 
   ngOnDestroy(): void {

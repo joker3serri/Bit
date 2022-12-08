@@ -11,6 +11,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { OrganizationDomainRequest } from "@bitwarden/common/services/organization-domain/requests/organization-domain.request";
 
 import { domainNameValidator } from "./domain-name.validator";
+import { uniqueInArrayValidator } from "./unique-in-array.validator";
 export interface DomainAddEditDialogData {
   organizationId: string;
   orgDomain: OrganizationDomainResponse;
@@ -26,11 +27,17 @@ export class DomainAddEditDialogComponent implements OnInit {
   disablePadding = false;
 
   // TODO: should invalidDomainNameMessage have something like: "'https://', 'http://', or 'www.' domain prefixes not allowed."
-  // TODO: write separate uniqueIn validator w/ translated msg: "You can’t claim the same domain twice."
   domainForm: FormGroup = this.formBuilder.group({
     domainName: [
       "",
-      [Validators.required, domainNameValidator(this.i18nService.t("invalidDomainNameMessage"))],
+      [
+        Validators.required,
+        domainNameValidator(this.i18nService.t("invalidDomainNameMessage")),
+        uniqueInArrayValidator(
+          this.data.existingDomainNames,
+          this.i18nService.t("duplicateDomainError")
+        ),
+      ],
     ],
     txt: [{ value: null, disabled: true }],
   });
