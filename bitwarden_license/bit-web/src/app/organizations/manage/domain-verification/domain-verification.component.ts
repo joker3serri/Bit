@@ -68,6 +68,19 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
     const domainAddEditDialogData: DomainAddEditDialogData = {
       organizationId: this.organizationId,
       orgDomain: null,
+      existingDomainNames: [],
+    };
+
+    this.dialogService.open(DomainAddEditDialogComponent, {
+      data: domainAddEditDialogData,
+    });
+  }
+
+  editDomain(orgDomain: OrganizationDomainResponse) {
+    const domainAddEditDialogData: DomainAddEditDialogData = {
+      organizationId: this.organizationId,
+      orgDomain: orgDomain,
+      existingDomainNames: [],
     };
 
     this.dialogService.open(DomainAddEditDialogComponent, {

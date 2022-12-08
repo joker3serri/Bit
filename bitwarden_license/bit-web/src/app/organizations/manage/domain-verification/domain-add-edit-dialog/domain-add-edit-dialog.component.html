@@ -1,7 +1,20 @@
 <bit-dialog [dialogSize]="dialogSize" [disablePadding]="disablePadding">
-  <span bitDialogTitle>{{ "newDomain" | i18n }}</span>
+  <span bitDialogTitle>
+    <span *ngIf="!data.orgDomain">{{ "newDomain" | i18n }}</span>
+    <span *ngIf="data.orgDomain"> {{ "verifyDomain" | i18n }}</span>
+
+    <span *ngIf="data.orgDomain" class="tw-text-xs tw-text-muted">{{
+      data.orgDomain.domainName
+    }}</span>
+
+    <!-- TODO: get status badge here  -->
+  </span>
   <div bitDialogContent>
-    <form [formGroup]="domainForm">
+    <form [formGroup]="domainForm" [bitSubmit]="verifyDomain">
+      <!-- <input bitInput formControlName="domainName" /> -->
+      <!-- <span *ngIf="domainNameCtrl.touched && domainNameCtrl.invalid">Error</span> -->
+
+      <!-- TODO: investigate why bit-form-field breaks touched  -->
       <bit-form-field>
         <bit-label>{{ "domainName" | i18n }}</bit-label>
         <input bitInput formControlName="domainName" />
@@ -29,10 +42,17 @@
     </bit-callout>
   </div>
   <div bitDialogFooter class="tw-flex tw-flex-row tw-items-center tw-gap-2">
-    <button bitButton buttonType="primary" [disabled]="domainForm.invalid">
+    <button
+      type="submit"
+      bitButton
+      buttonType="primary"
+      [disabled]="domainForm.invalid"
+      (click)="data.orgDomain ? verifyDomain() : saveDomain()"
+      [loading]="submitting"
+    >
       {{ "verifyDomain" | i18n }}
     </button>
-    <button bitButton buttonType="secondary" (click)="dialogRef.close()">
+    <button bitButton buttonType="secondary" [disabled]="submitting" (click)="dialogRef.close()">
       {{ "cancel" | i18n }}
     </button>
     <button
@@ -43,6 +63,9 @@
       size="default"
       title="Delete"
       aria-label="Delete"
+      (click)="deleteDomain()"
+      [disabled]="submitting"
+      [loading]="deleting"
     ></button>
   </div>
 </bit-dialog>

@@ -5557,7 +5557,25 @@
     "message": "Bitwarden will attempt to verify the domain 3 times during the first 72 hours. If the domain can’t be verified, check the DNS record in your host and manually verify."
   },
   "invalidDomainNameMessage": {
-    "message": "'https://', 'http://', or 'www.' domain prefixes not allowed."
+    "message": "Input is not a valid format. Example: mydomain.com. Subdomains require separate entries to be verified."
+  },
+  "domainRemoved": {
+    "message": "Domain removed"
+  },
+  "domainSaved": {
+    "message": "Domain saved"
+  },
+  "domainVerified": {
+    "message": "Domain verified"
+  },
+  "domainNotVerified": {
+    "message": "$DOMAIN$ not verified. Check your DNS record.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "bitwarden.com"
+      }
+    }
   }
 
 }
