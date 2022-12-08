@@ -3,6 +3,7 @@ import { ComponentFactoryResolver, NgModule } from "@angular/core";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 
 import { LooseComponentsModule } from "../../shared";
+import { UserDialogModule } from "../manage/member-dialog";
 import { SharedOrganizationModule } from "../shared";
 
 import { BulkConfirmComponent } from "./components/bulk/bulk-confirm.component";
@@ -10,13 +11,17 @@ import { BulkRemoveComponent } from "./components/bulk/bulk-remove.component";
 import { BulkRestoreRevokeComponent } from "./components/bulk/bulk-restore-revoke.component";
 import { BulkStatusComponent } from "./components/bulk/bulk-status.component";
 import { ResetPasswordComponent } from "./components/reset-password.component";
-import { UserAddEditComponent } from "./components/user-add-edit.component";
 import { UserGroupsComponent } from "./components/user-groups.component";
 import { MembersRoutingModule } from "./members-routing.module";
 import { PeopleComponent } from "./people.component";
 
 @NgModule({
-  imports: [SharedOrganizationModule, LooseComponentsModule, MembersRoutingModule],
+  imports: [
+    SharedOrganizationModule,
+    LooseComponentsModule,
+    MembersRoutingModule,
+    UserDialogModule,
+  ],
   declarations: [
     BulkConfirmComponent,
     BulkRemoveComponent,
@@ -24,7 +29,6 @@ import { PeopleComponent } from "./people.component";
     BulkStatusComponent,
     PeopleComponent,
     ResetPasswordComponent,
-    UserAddEditComponent,
     UserGroupsComponent,
   ],
 })

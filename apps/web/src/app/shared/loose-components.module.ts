@@ -19,7 +19,6 @@ import { UpdatePasswordComponent } from "../accounts/update-password.component";
 import { UpdateTempPasswordComponent } from "../accounts/update-temp-password.component";
 import { VerifyEmailTokenComponent } from "../accounts/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "../accounts/verify-recover-delete.component";
-import { NestedCheckboxComponent } from "../components/nested-checkbox.component";
 import { OrganizationSwitcherComponent } from "../components/organization-switcher.component";
 import { PasswordRepromptComponent } from "../components/password-reprompt.component";
 import { PremiumBadgeComponent } from "../components/premium-badge.component";
@@ -165,7 +164,6 @@ import { SharedModule } from "./shared.module";
     HintComponent,
     LockComponent,
     NavbarComponent,
-    NestedCheckboxComponent,
     OrganizationSwitcherComponent,
     OrgAddEditComponent,
     OrganizationLayoutComponent,
@@ -278,7 +276,6 @@ import { SharedModule } from "./shared.module";
     HintComponent,
     LockComponent,
     NavbarComponent,
-    NestedCheckboxComponent,
     OrganizationSwitcherComponent,
     OrgAddEditComponent,
     OrganizationLayoutComponent,
