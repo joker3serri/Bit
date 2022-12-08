@@ -11,7 +11,11 @@ export function domainNameValidator(errorMessage: string): ValidatorFn {
     const forbiddenPatterns = [/^https:\/\//, /^http:\/\//, /^www\./];
     for (const pattern of forbiddenPatterns) {
       if (pattern.test(control.value)) {
-        return { invalidDomainName: errorMessage };
+        return {
+          invalidDomainName: {
+            message: errorMessage,
+          },
+        };
       }
     }
     return null;
