@@ -35,13 +35,13 @@ import { DialogService } from "@bitwarden/components";
 import { BasePeopleComponent } from "../../common/base.people.component";
 import { OrganizationUserView } from "../core/views/organization-user.view";
 import { EntityEventsComponent } from "../manage/entity-events.component";
-import { MemberDialogResult, openUserAddEditDialog } from "../manage/member-dialog";
 import { GroupServiceAbstraction } from "../services/abstractions/group";
 
 import { BulkConfirmComponent } from "./components/bulk/bulk-confirm.component";
 import { BulkRemoveComponent } from "./components/bulk/bulk-remove.component";
 import { BulkRestoreRevokeComponent } from "./components/bulk/bulk-restore-revoke.component";
 import { BulkStatusComponent } from "./components/bulk/bulk-status.component";
+import { MemberDialogResult, openUserAddEditDialog } from "./components/member-dialog";
 import { ResetPasswordComponent } from "./components/reset-password.component";
 import { UserGroupsComponent } from "./components/user-groups.component";
 
