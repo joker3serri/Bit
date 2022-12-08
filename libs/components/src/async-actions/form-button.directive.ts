@@ -16,6 +16,8 @@ import { BitActionDirective } from ".";
  *
  * When attached to a standalone button with `bitAction` directive:
  * - Disables the form while the `bitAction` directive is processing an async submit action.
+ *
+ * Note: you must use the bitButton directive along with this one in order to avoid provider errors.
  */
 @Directive({
   selector: "button[bitFormButton]",
