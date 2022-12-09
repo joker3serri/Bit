@@ -4,13 +4,6 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { OrganizationUserInviteRequest } from "@bitwarden/common/models/request/organization-user-invite.request";
 import { OrganizationUserUpdateRequest } from "@bitwarden/common/models/request/organization-user-update.request";
-// import { EncString } from "@bitwarden/common/models/domain/enc-string";
-// import { CollectionRequest } from "@bitwarden/common/models/request/collection.request";
-// import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selection-read-only.request";
-// import {
-//   CollectionAccessDetailsResponse,
-//   CollectionResponse,
-// } from "@bitwarden/common/models/response/collection.response";
 import { OrganizationUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
 
 import { CoreOrganizationModule } from "../core-organization.module";
@@ -19,15 +12,6 @@ import { OrganizationUserAdminView } from "../views/user-admin-view";
 @Injectable({ providedIn: CoreOrganizationModule })
 export class UserAdminService {
   constructor(private apiService: ApiService, private cryptoService: CryptoService) {}
-
-  // async getAll(organizationId: string): Promise<UserAdminView[]> {
-  //   const collectionResponse = await this.apiService.getCollections(organizationId);
-  //   if (collectionResponse?.data == null || collectionResponse.data.length === 0) {
-  //     return [];
-  //   }
-
-  //   return await this.decryptMany(organizationId, collectionResponse.data);
-  // }
 
   async get(
     organizationId: string,
@@ -68,10 +52,6 @@ export class UserAdminService {
     await this.apiService.postOrganizationUserInvite(user.organizationId, request);
   }
 
-  // async delete(organizationId: string, collectionId: string): Promise<void> {
-  //   await this.apiService.deleteCollection(organizationId, collectionId);
-  // }
-
   private async decryptMany(
     organizationId: string,
     users: OrganizationUserDetailsResponse[]
@@ -98,32 +78,4 @@ export class UserAdminService {
 
     return await Promise.all(promises);
   }
-
-  // private async encrypt(model: UserAdminView): Promise<OrganizationUserUpdateRequest> {
-  //   if (model.organizationId == null) {
-  //     throw new Error("Collection has no organization id.");
-  //   }
-  //   const key = await this.cryptoService.getOrgKey(model.organizationId);
-  //   if (key == null) {
-  //     throw new Error("No key for this collection's organization.");
-  //   }
-  //   const collection = new CollectionRequest();
-  //   collection.externalId = model.externalId;
-  //   collection.name = (await this.cryptoService.encrypt(model.name, key)).encryptedString;
-  //   collection.groups = model.groups.map(
-  //     (group) => new SelectionReadOnlyRequest(group.id, group.readOnly, group.hidePasswords)
-  //   );
-  //   collection.users = model.users.map(
-  //     (user) => new SelectionReadOnlyRequest(user.id, user.readOnly, user.hidePasswords)
-  //   );
-  //   return collection;
-  // }
 }
-
-// function isCollectionAccessDetailsResponse(
-//   response: CollectionResponse | CollectionAccessDetailsResponse
-// ): response is CollectionAccessDetailsResponse {
-//   const anyResponse = response as any;
-
-//   return anyResponse?.groups instanceof Array && anyResponse?.users instanceof Array;
-// }

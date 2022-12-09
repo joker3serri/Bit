@@ -281,13 +281,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // let collections: SelectionReadOnlyRequest[] = null;
-    // if (this.access !== "all") {
-    //   collections = this.collections
-    //     .filter((c) => (c as any).checked)
-    //     .map((c) => new SelectionReadOnlyRequest(c.id, !!c.readOnly, !!c.hidePasswords));
-    // }
-
     try {
       const userView = new OrganizationUserAdminView();
       userView.id = this.params.organizationUserId;
