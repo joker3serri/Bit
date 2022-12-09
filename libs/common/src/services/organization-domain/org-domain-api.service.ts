@@ -77,7 +77,7 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
   }
 
   async delete(orgId: string, orgDomainId: string): Promise<any> {
-    this.apiService.send(
+    await this.apiService.send(
       "DELETE",
       `/organizations/${orgId}/domain/${orgDomainId}`,
       null,
