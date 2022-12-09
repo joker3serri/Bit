@@ -97,6 +97,14 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
     return existingDomainNames;
   }
 
+  //#region Options
+
+  copyDnsTxt(dnsTxt: string): void {
+    this.orgDomainService.copyDnsTxt(dnsTxt);
+  }
+
+  //#endregion
+
   ngOnDestroy(): void {
     this.componentDestroyed$.next();
     this.componentDestroyed$.complete();

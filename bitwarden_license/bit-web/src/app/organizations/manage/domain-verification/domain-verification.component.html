@@ -54,7 +54,7 @@
                 <i class="bwi bwi-ellipsis-v bwi-lg" aria-hidden="true"></i>
               </button>
               <bit-menu #orgDomainOptions>
-                <button bitMenuItem>
+                <button bitMenuItem (click)="copyDnsTxt(orgDomain.txt)">
                   <i class="bwi bwi-fw bwi-clone" aria-hidden="true"></i>
                   Copy DNS TXT record
                 </button>

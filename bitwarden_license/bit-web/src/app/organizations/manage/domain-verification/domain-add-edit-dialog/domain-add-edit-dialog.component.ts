@@ -1,10 +1,12 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { Subject, takeUntil } from "rxjs";
 
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain-api.service.abstraction";
+import { OrgDomainServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain.service.abstraction";
 import { OrganizationDomainResponse } from "@bitwarden/common/abstractions/organization-domain/responses/organization-domain.response";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { Utils } from "@bitwarden/common/misc/utils";
@@ -22,11 +24,11 @@ export interface DomainAddEditDialogData {
   selector: "app-domain-add-edit-dialog",
   templateUrl: "domain-add-edit-dialog.component.html",
 })
-export class DomainAddEditDialogComponent implements OnInit {
+export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
+  private componentDestroyed$: Subject<void> = new Subject();
   dialogSize: "small" | "default" | "large" = "default";
   disablePadding = false;
 
-  // TODO: should invalidDomainNameMessage have something like: "'https://', 'http://', or 'www.' domain prefixes not allowed."
   domainForm: FormGroup = this.formBuilder.group({
     domainName: [
       "",
@@ -49,9 +51,6 @@ export class DomainAddEditDialogComponent implements OnInit {
     return this.domainForm.controls.txt as FormControl;
   }
 
-  submitting = false;
-  deleting = false;
-
   constructor(
     public dialogRef: DialogRef,
     @Inject(DIALOG_DATA) public data: DomainAddEditDialogData,
@@ -59,7 +58,8 @@ export class DomainAddEditDialogComponent implements OnInit {
     private cryptoFunctionService: CryptoFunctionServiceAbstraction,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
-    private orgDomainApiService: OrgDomainApiServiceAbstraction
+    private orgDomainApiService: OrgDomainApiServiceAbstraction,
+    private orgDomainService: OrgDomainServiceAbstraction
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -84,15 +84,20 @@ export class DomainAddEditDialogComponent implements OnInit {
       )}`;
       this.txtCtrl.setValue(generatedTxt);
     }
+
+    this.setupFormListeners();
+  }
+
+  setupFormListeners(): void {
+    // By default, <bit-form-field> suppresses touched state on change for reactive form control inputs
+    // I want validation errors to be shown as the user types (as validators are running on change anyhow by default).
+    this.domainForm.valueChanges.pipe(takeUntil(this.componentDestroyed$)).subscribe(() => {
+      this.domainForm.markAllAsTouched();
+    });
   }
 
   copyDnsTxt(): void {
-    this.platformUtilsService.copyToClipboard(this.txtCtrl.value);
-    this.platformUtilsService.showToast(
-      "success",
-      null,
-      this.i18nService.t("valueCopied", this.i18nService.t("dnsTxtRecord"))
-    );
+    this.orgDomainService.copyDnsTxt(this.txtCtrl.value);
   }
 
   // TODO: error handling?
@@ -104,8 +109,7 @@ export class DomainAddEditDialogComponent implements OnInit {
   // If verified, no action can be taken but delete
   // If saved & unverified, can prompt verification
 
-  async saveDomain(): Promise<void> {
-    this.submitting = true;
+  saveDomain = async (): Promise<void> => {
     this.domainForm.disable();
 
     const request: OrganizationDomainRequest = new OrganizationDomainRequest(
@@ -118,22 +122,18 @@ export class DomainAddEditDialogComponent implements OnInit {
     //TODO: figure out how to handle DomainVerifiedException
 
     this.platformUtilsService.showToast("success", null, this.i18nService.t("domainSaved"));
-    this.submitting = false;
 
     // TODO: verify before closing modal; close if successful
     this.dialogRef.close();
-  }
+  };
 
-  async verifyDomain(): Promise<void> {
-    this.submitting = true;
+  verifyDomain = async (): Promise<void> => {
     this.domainForm.disable();
 
     const success: boolean = await this.orgDomainApiService.verify(
       this.data.organizationId,
       this.data.orgDomain.id
     );
-
-    this.submitting = false;
 
     if (success) {
       this.platformUtilsService.showToast("success", null, this.i18nService.t("domainVerified"));
@@ -149,15 +149,19 @@ export class DomainAddEditDialogComponent implements OnInit {
       // Someone else is using [domain]. Use a different domain to continue.
       // I only have a bool to indicate success or failure.. not why it failed.
     }
-  }
+  };
 
-  async deleteDomain(): Promise<void> {
-    // TODO: Do I need an are you sure prompt?
+  deleteDomain = async (): Promise<void> => {
+    // TODO: Do I need an are you sure prompt? yes
 
-    this.deleting = true;
     await this.orgDomainApiService.delete(this.data.organizationId, this.data.orgDomain.id);
-    this.deleting = false;
+
     this.platformUtilsService.showToast("success", null, this.i18nService.t("domainRemoved"));
     this.dialogRef.close();
+  };
+
+  ngOnDestroy(): void {
+    this.componentDestroyed$.next();
+    this.componentDestroyed$.complete();
   }
 }

@@ -1,20 +1,21 @@
-<bit-dialog [dialogSize]="dialogSize" [disablePadding]="disablePadding">
-  <span bitDialogTitle>
-    <span *ngIf="!data.orgDomain">{{ "newDomain" | i18n }}</span>
-    <span *ngIf="data.orgDomain"> {{ "verifyDomain" | i18n }}</span>
+<form [formGroup]="domainForm" [bitSubmit]>
+  <bit-dialog [dialogSize]="dialogSize" [disablePadding]="disablePadding">
+    <span bitDialogTitle>
+      <span *ngIf="!data.orgDomain">{{ "newDomain" | i18n }}</span>
+      <span *ngIf="data.orgDomain"> {{ "verifyDomain" | i18n }}</span>
 
-    <span *ngIf="data.orgDomain" class="tw-text-xs tw-text-muted">{{
-      data.orgDomain.domainName
-    }}</span>
+      <span *ngIf="data.orgDomain" class="tw-text-xs tw-text-muted">{{
+        data.orgDomain.domainName
+      }}</span>
 
-    <!-- TODO: get status badge here  -->
-  </span>
-  <div bitDialogContent>
-    <form [formGroup]="domainForm" [bitSubmit]="verifyDomain">
-      <!-- <input bitInput formControlName="domainName" /> -->
-      <!-- <span *ngIf="domainNameCtrl.touched && domainNameCtrl.invalid">Error</span> -->
-
-      <!-- TODO: investigate why bit-form-field breaks touched  -->
+      <span *ngIf="data?.orgDomain && !data.orgDomain?.verifiedDate" bitBadge badgeType="warning"
+        >Unverified</span
+      >
+      <span *ngIf="data?.orgDomain && data?.orgDomain?.verifiedDate" bitBadge badgeType="success"
+        >Verified</span
+      >
+    </span>
+    <div bitDialogContent>
       <bit-form-field>
         <bit-label>{{ "domainName" | i18n }}</bit-label>
         <input bitInput formControlName="domainName" />
@@ -35,37 +36,40 @@
           <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
         </button>
       </bit-form-field>
-    </form>
 
-    <bit-callout type="info" title="{{ 'automaticDomainVerification' | i18n }}">
-      {{ "automaticDomainVerificationProcess" | i18n }}
-    </bit-callout>
-  </div>
-  <div bitDialogFooter class="tw-flex tw-flex-row tw-items-center tw-gap-2">
-    <button
-      type="submit"
-      bitButton
-      buttonType="primary"
-      [disabled]="domainForm.invalid"
-      (click)="data.orgDomain ? verifyDomain() : saveDomain()"
-      [loading]="submitting"
-    >
-      {{ "verifyDomain" | i18n }}
-    </button>
-    <button bitButton buttonType="secondary" [disabled]="submitting" (click)="dialogRef.close()">
-      {{ "cancel" | i18n }}
-    </button>
-    <button
-      *ngIf="data.orgDomain"
-      class="tw-ml-auto"
-      bitIconButton="bwi-trash"
-      buttonType="danger"
-      size="default"
-      title="Delete"
-      aria-label="Delete"
-      (click)="deleteDomain()"
-      [disabled]="submitting"
-      [loading]="deleting"
-    ></button>
-  </div>
-</bit-dialog>
+      <bit-callout type="info" title="{{ 'automaticDomainVerification' | i18n }}">
+        {{ "automaticDomainVerificationProcess" | i18n }}
+      </bit-callout>
+    </div>
+    <div bitDialogFooter class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+      <button
+        type="submit"
+        bitButton
+        bitFormButton
+        buttonType="primary"
+        [disabled]="domainForm.invalid"
+        [bitAction]="data.orgDomain ? verifyDomain : saveDomain"
+      >
+        <span *ngIf="!data?.orgDomain?.verifiedDate">{{ "verifyDomain" | i18n }}</span>
+        <span *ngIf="data?.orgDomain?.verifiedDate">{{ "reverifyDomain" | i18n }}</span>
+      </button>
+      <button bitButton buttonType="secondary" (click)="dialogRef.close()">
+        {{ "cancel" | i18n }}
+      </button>
+
+      <button
+        *ngIf="data.orgDomain"
+        class="tw-ml-auto"
+        bitIconButton="bwi-trash"
+        buttonType="danger"
+        size="default"
+        title="Delete"
+        aria-label="Delete"
+        [bitAction]="deleteDomain"
+        type="submit"
+        bitButton
+        bitFormButton
+      ></button>
+    </div>
+  </bit-dialog>
+</form>

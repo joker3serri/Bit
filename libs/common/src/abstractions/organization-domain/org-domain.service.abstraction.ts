@@ -6,6 +6,8 @@ export abstract class OrgDomainServiceAbstraction {
   orgDomains$: Observable<OrganizationDomainResponse[]>;
 
   get: (orgDomainId: string) => Promise<OrganizationDomainResponse>;
+
+  copyDnsTxt: (dnsTxt: string) => void;
 }
 
 // Note: this separate class is designed to hold methods that are not

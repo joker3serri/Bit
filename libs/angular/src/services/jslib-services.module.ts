@@ -609,7 +609,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: OrgDomainServiceAbstraction,
       useClass: OrgDomainService,
-      deps: [],
+      deps: [PlatformUtilsServiceAbstraction, I18nServiceAbstraction],
     },
     {
       provide: OrgDomainInternalServiceAbstraction,

@@ -2,19 +2,32 @@ import { BehaviorSubject } from "rxjs";
 
 import { OrgDomainInternalServiceAbstraction } from "../../abstractions/organization-domain/org-domain.service.abstraction";
 import { OrganizationDomainResponse } from "../../abstractions/organization-domain/responses/organization-domain.response";
+import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
+import { I18nService } from "../i18n.service";
 
 export class OrgDomainService implements OrgDomainInternalServiceAbstraction {
   protected _orgDomains$: BehaviorSubject<OrganizationDomainResponse[]> = new BehaviorSubject([]);
 
   orgDomains$ = this._orgDomains$.asObservable();
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  constructor() {}
+  constructor(
+    private platformUtilsService: PlatformUtilsService,
+    private i18nService: I18nService
+  ) {}
 
   async get(orgDomainId: string): Promise<OrganizationDomainResponse> {
     const orgDomains: OrganizationDomainResponse[] = this._orgDomains$.getValue();
 
     return orgDomains.find((orgDomain) => orgDomain.id === orgDomainId);
+  }
+
+  copyDnsTxt(dnsTxt: string): void {
+    this.platformUtilsService.copyToClipboard(dnsTxt);
+    this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t("valueCopied", this.i18nService.t("dnsTxtRecord"))
+    );
   }
 
   upsert(orgDomains: OrganizationDomainResponse[]): void {

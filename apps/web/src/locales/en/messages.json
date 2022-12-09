@@ -5538,6 +5538,9 @@
   "verifyDomain": {
     "message": "Verify domain"
   },
+  "reverifyDomain": {
+    "message": "Reverify domain"
+  },
   "copyDnsTxtRecord": {
     "message": "Copy DNS TXT record"
   },
@@ -5557,7 +5560,7 @@
     "message": "Bitwarden will attempt to verify the domain 3 times during the first 72 hours. If the domain can’t be verified, check the DNS record in your host and manually verify."
   },
   "invalidDomainNameMessage": {
-    "message": "Input is not a valid format. Example: mydomain.com. Subdomains require separate entries to be verified."
+    "message": "Input is not a valid format. Format: mydomain.com. Subdomains require separate entries to be verified."
   },
   "domainRemoved": {
     "message": "Domain removed"
