@@ -49,6 +49,7 @@ import { ExportComponent } from "./vault/export.component";
 import { FolderAddEditComponent } from "./vault/folder-add-edit.component";
 import { GeneratorComponent } from "./vault/generator.component";
 import { PasswordGeneratorHistoryComponent } from "./vault/password-generator-history.component";
+import { LoginApprovalComponent } from "./accounts/login/login-approval.component";
 
 const BroadcasterSubscriptionId = "AppComponent";
 const IdleTimeout = 60000 * 10; // 10 minutes
@@ -70,6 +71,7 @@ const systemTimeoutOptions = {
     <ng-template #appFolderAddEdit></ng-template>
     <ng-template #exportVault></ng-template>
     <ng-template #appGenerator></ng-template>
+    <ng-template #loginApproval></ng-template>
     <app-header></app-header>
     <div id="container">
       <div class="loading" *ngIf="loading">
@@ -90,6 +92,8 @@ export class AppComponent implements OnInit, OnDestroy {
   folderAddEditModalRef: ViewContainerRef;
   @ViewChild("appGenerator", { read: ViewContainerRef, static: true })
   generatorModalRef: ViewContainerRef;
+  @ViewChild("loginApproval", { read: ViewContainerRef, static: true })
+  loginApprovalModalRef: ViewContainerRef;
 
   loading = false;
 
@@ -359,6 +363,11 @@ export class AppComponent implements OnInit, OnDestroy {
           case "systemIdle":
             await this.checkForSystemTimeout(systemTimeoutOptions.onIdle);
             break;
+          case "openLoginApproval":
+            if (message.notificationId != null) {
+              await this.openLoginApproval(message.notificationId);
+            }
+            break;
         }
       });
     });
@@ -419,6 +428,21 @@ export class AppComponent implements OnInit, OnDestroy {
       GeneratorComponent,
       this.generatorModalRef,
       (comp) => (comp.comingFromAddEdit = false)
+    );
+
+    // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+    this.modal.onClosed.subscribe(() => {
+      this.modal = null;
+    });
+  }
+
+  async openLoginApproval(notificationId: string) {
+    this.modalService.closeAll();
+
+    [this.modal] = await this.modalService.openViewRef(
+      LoginApprovalComponent,
+      this.loginApprovalModalRef,
+      (comp) => (comp.notificationId = notificationId)
     );
 
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil

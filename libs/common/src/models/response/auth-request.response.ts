@@ -11,6 +11,8 @@ export class AuthRequestResponse extends BaseResponse {
   masterPasswordHash: string;
   creationDate: string;
   requestApproved: boolean;
+  requestFingerprint?: string;
+  responseDate?: string;
 
   constructor(response: any) {
     super(response);
@@ -22,5 +24,7 @@ export class AuthRequestResponse extends BaseResponse {
     this.masterPasswordHash = this.getResponseProperty("MasterPasswordHash");
     this.creationDate = this.getResponseProperty("CreationDate");
     this.requestApproved = this.getResponseProperty("RequestApproved");
+    this.requestFingerprint = this.getResponseProperty("RequestFingerprint");
+    this.responseDate = this.getResponseProperty("ResponseDate");
   }
 }

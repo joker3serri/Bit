@@ -102,6 +102,7 @@ import { VaultFilterModule } from "./vault/vault-filter/vault-filter.module";
 import { VaultComponent } from "./vault/vault.component";
 import { ViewCustomFieldsComponent } from "./vault/view-custom-fields.component";
 import { ViewComponent } from "./vault/view.component";
+import { LoginApprovalComponent } from "./accounts/login/login-approval.component";
 
 registerLocaleData(localeAf, "af");
 registerLocaleData(localeAr, "ar");
@@ -202,6 +203,7 @@ registerLocaleData(localeZhTw, "zh-TW");
     VaultTimeoutInputComponent,
     ViewComponent,
     ViewCustomFieldsComponent,
+    LoginApprovalComponent,
   ],
   bootstrap: [AppComponent],
 })

@@ -56,6 +56,7 @@ import { OrganizationSponsorshipRedeemRequest } from "../models/request/organiza
 import { PasswordHintRequest } from "../models/request/password-hint.request";
 import { PasswordRequest } from "../models/request/password.request";
 import { PasswordlessCreateAuthRequest } from "../models/request/passwordless-create-auth.request";
+import { PasswordlessAuthRequest } from "../models/request/passwordless-auth.request";
 import { PaymentRequest } from "../models/request/payment.request";
 import { PreloginRequest } from "../models/request/prelogin.request";
 import { ProviderAddOrganizationRequest } from "../models/request/provider/provider-add-organization.request";
@@ -276,6 +277,18 @@ export class ApiService implements ApiServiceAbstraction {
   async getAuthResponse(id: string, accessCode: string): Promise<AuthRequestResponse> {
     const path = `/auth-requests/${id}/response?code=${accessCode}`;
     const r = await this.send("GET", path, null, false, true);
+    return new AuthRequestResponse(r);
+  }
+
+  async getAuthRequest(id: string): Promise<AuthRequestResponse> {
+    const path = `/auth-requests/${id}`;
+    const r = await this.send("GET", path, null, true, true);
+    return new AuthRequestResponse(r);
+  }
+
+  async putAuthRequest(id: string, request: PasswordlessAuthRequest): Promise<AuthRequestResponse> {
+    const path = `/auth-requests/${id}`;
+    const r = await this.send("PUT", path, request, true, true);
     return new AuthRequestResponse(r);
   }
 

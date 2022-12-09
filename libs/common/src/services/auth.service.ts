@@ -33,6 +33,9 @@ import { TokenTwoFactorRequest } from "../models/request/identity-token/token-tw
 import { PreloginRequest } from "../models/request/prelogin.request";
 import { ErrorResponse } from "../models/response/error.response";
 import { AuthRequestPushNotification } from "../models/response/notification.response";
+import { Utils } from "../misc/utils";
+import { EncryptServiceImplementation } from "../services/cryptography/encrypt.service.implementation";
+import { PasswordlessAuthRequest } from "../models/request/passwordless-auth.request";
 
 const sessionTimeoutLength = 2 * 60 * 1000; // 2 minutes
 
@@ -87,7 +90,8 @@ export class AuthService implements AuthServiceAbstraction {
     protected environmentService: EnvironmentService,
     protected stateService: StateService,
     protected twoFactorService: TwoFactorService,
-    protected i18nService: I18nService
+    protected i18nService: I18nService,
+    protected encryptService: EncryptServiceImplementation
   ) {}
 
   async logIn(
@@ -268,6 +272,29 @@ export class AuthService implements AuthServiceAbstraction {
 
   getPushNotifcationObs$(): Observable<any> {
     return this.pushNotificationSubject.asObservable();
+  }
+
+  async passwordlessLogin(id: string, key: string, requestApproved: boolean): Promise<any> {
+    const pubKey = Utils.fromB64ToArray(key);
+    const masterKey = await this.cryptoService.getEncKey();
+    const encryptedKey = await this.cryptoService.rsaEncrypt(masterKey.key, pubKey.buffer);
+    const masterpassword = await this.stateService.getCryptoMasterKey();
+    const masterPasswordHash = await this.cryptoService.hashPassword(
+      masterpassword.keyB64,
+      masterKey
+    );
+    const encryptedMasterPassword = await this.cryptoService.rsaEncrypt(
+      Utils.fromB64ToArray(masterPasswordHash),
+      pubKey.buffer
+    );
+    const deviceId = await this.appIdService.getAppId();
+    const request = new PasswordlessAuthRequest(
+      encryptedKey.encryptedString,
+      encryptedMasterPassword.encryptedString,
+      deviceId,
+      requestApproved
+    );
+    return await this.apiService.putAuthRequest(id, request);
   }
 
   private saveState(

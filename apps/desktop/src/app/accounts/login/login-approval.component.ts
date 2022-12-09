@@ -1,0 +1,131 @@
+import { Input, Component, OnInit } from "@angular/core";
+
+import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
+import { AuthService } from "@bitwarden/common/abstractions/auth.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { AuthRequestResponse } from "@bitwarden/common/models/response/auth-request.response";
+
+const RequestTimeOut = 60000 * 15; //15 Minutes
+const RequestTimeUpdate = 60000 * 5; //5 Minutes
+
+@Component({
+  selector: "login-approval",
+  templateUrl: "login-approval.component.html",
+})
+export class LoginApprovalComponent implements OnInit {
+  @Input() notificationId: string;
+
+  email: string;
+  authRequestResponse: AuthRequestResponse;
+  interval: NodeJS.Timer;
+  requestTimeText: string;
+
+  constructor(
+    protected stateService: StateService,
+    protected platformUtilsService: PlatformUtilsService,
+    protected i18nService: I18nService,
+    protected logService: LogService,
+    protected apiService: ApiService,
+    protected authService: AuthService,
+    protected appIdService: AppIdService,
+    private modalRef: ModalRef
+  ) {}
+
+  async ngOnInit() {
+    if (this.notificationId != null) {
+      this.authRequestResponse = await this.apiService.getAuthRequest(this.notificationId);
+
+      this.email = await this.stateService.getEmail();
+      this.updateTimeText();
+
+      this.interval = setInterval(() => {
+        this.updateTimeText();
+      }, RequestTimeUpdate);
+    }
+  }
+
+  async approveLogin(approveLogin: boolean) {
+    clearInterval(this.interval);
+    this.modalRef.close();
+
+    this.authRequestResponse = await this.apiService.getAuthRequest(this.notificationId);
+    if (this.authRequestResponse.requestApproved || this.authRequestResponse.responseDate != null) {
+      this.platformUtilsService.showToast(
+        "info",
+        null,
+        this.i18nService.t("thisRequestIsNoLongerValid")
+      );
+    } else {
+      const loginResponse = await this.authService.passwordlessLogin(
+        this.authRequestResponse.id,
+        this.authRequestResponse.publicKey,
+        approveLogin
+      );
+      if (loginResponse.requestApproved) {
+        this.platformUtilsService.showToast(
+          "success",
+          null,
+          this.i18nService.t(
+            "logInConfirmedForEmailOnDevice",
+            this.email,
+            loginResponse.requestDeviceType
+          )
+        );
+      } else {
+        this.platformUtilsService.showToast(
+          "info",
+          null,
+          this.i18nService.t("youDeniedALogInAttemptFromAnotherDevice")
+        );
+      }
+    }
+  }
+
+  updateTimeText() {
+    const requestDate = new Date(this.authRequestResponse.creationDate);
+    const requestDateUTC = Date.UTC(
+      requestDate.getUTCFullYear(),
+      requestDate.getUTCMonth(),
+      requestDate.getDate(),
+      requestDate.getUTCHours(),
+      requestDate.getUTCMinutes(),
+      requestDate.getUTCSeconds(),
+      requestDate.getUTCMilliseconds()
+    );
+
+    const dateNow = new Date(Date.now());
+    const dateNowUTC = Date.UTC(
+      dateNow.getUTCFullYear(),
+      dateNow.getUTCMonth(),
+      dateNow.getDate(),
+      dateNow.getUTCHours(),
+      dateNow.getUTCMinutes(),
+      dateNow.getUTCSeconds(),
+      dateNow.getUTCMilliseconds()
+    );
+
+    const diffInMinutes = dateNowUTC - requestDateUTC;
+
+    if (diffInMinutes <= RequestTimeUpdate) {
+      this.requestTimeText = this.i18nService.t("justNow");
+    } else if (diffInMinutes < RequestTimeOut) {
+      this.requestTimeText = this.i18nService.t(
+        "requestedXMinutesAgo",
+        (diffInMinutes / 60000).toFixed()
+      );
+    } else {
+      clearInterval(this.interval);
+      this.modalRef.close();
+      this.platformUtilsService.showToast(
+        "info",
+        null,
+        this.i18nService.t("loginRequestHasAlreadyExpired")
+      );
+    }
+  }
+}

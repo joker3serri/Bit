@@ -252,3 +252,23 @@
     }
   }
 }
+
+#login-approval-page {
+  .section-title {
+    padding: 20px;
+  }
+  .content {
+    padding: 16px;
+    .section {
+      margin-bottom: 30px;
+      code {
+        @include themify($themes) {
+          color: themed("codeColor");
+        }
+      }
+      h4.label {
+        font-weight: bold;
+      }
+    }
+  }
+}

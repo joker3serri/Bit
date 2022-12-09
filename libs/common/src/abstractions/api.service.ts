@@ -48,6 +48,7 @@ import { OrganizationSponsorshipRedeemRequest } from "../models/request/organiza
 import { PasswordHintRequest } from "../models/request/password-hint.request";
 import { PasswordRequest } from "../models/request/password.request";
 import { PasswordlessCreateAuthRequest } from "../models/request/passwordless-create-auth.request";
+import { PasswordlessAuthRequest } from "../models/request/passwordless-auth.request";
 import { PaymentRequest } from "../models/request/payment.request";
 import { PreloginRequest } from "../models/request/prelogin.request";
 import { ProviderAddOrganizationRequest } from "../models/request/provider/provider-add-organization.request";
@@ -216,6 +217,8 @@ export abstract class ApiService {
   //passwordless
   postAuthRequest: (request: PasswordlessCreateAuthRequest) => Promise<AuthRequestResponse>;
   getAuthResponse: (id: string, accessCode: string) => Promise<AuthRequestResponse>;
+  getAuthRequest: (id: string) => Promise<AuthRequestResponse>;
+  putAuthRequest: (id: string, request: PasswordlessAuthRequest) => Promise<AuthRequestResponse>;
 
   getUserBillingHistory: () => Promise<BillingHistoryResponse>;
   getUserBillingPayment: () => Promise<BillingPaymentResponse>;

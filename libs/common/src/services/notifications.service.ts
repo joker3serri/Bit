@@ -11,6 +11,8 @@ import { StateService } from "../abstractions/state.service";
 import { SyncService } from "../abstractions/sync/sync.service.abstraction";
 import { AuthenticationStatus } from "../enums/authenticationStatus";
 import { NotificationType } from "../enums/notificationType";
+import { BroadcasterService, MessageBase } from "../abstractions/broadcaster.service";
+import { MessagingService } from "../abstractions/messaging.service";
 import {
   NotificationResponse,
   SyncCipherNotification,
@@ -34,7 +36,8 @@ export class NotificationsService implements NotificationsServiceAbstraction {
     private logoutCallback: (expired: boolean) => Promise<void>,
     private logService: LogService,
     private stateService: StateService,
-    private authService: AuthService
+    private authService: AuthService,
+    private messagingService: MessagingService
   ) {
     this.environmentService.urls.subscribe(() => {
       if (!this.inited) {
@@ -47,7 +50,8 @@ export class NotificationsService implements NotificationsServiceAbstraction {
 
   async init(): Promise<void> {
     this.inited = false;
-    this.url = this.environmentService.getNotificationsUrl();
+    //this.url = this.environmentService.getNotificationsUrl();
+    this.url = "https://notifications.qa.bitwarden.pw";
 
     // Set notifications server URL to `https://-` to effectively disable communication
     // with the notifications server from the client app
@@ -182,6 +186,14 @@ export class NotificationsService implements NotificationsServiceAbstraction {
         break;
       case NotificationType.SyncSendDelete:
         await this.syncService.syncDeleteSend(notification.payload as SyncSendNotification);
+        break;
+      case NotificationType.AuthRequest:
+        const approveLoginRequests = await this.stateService.getApproveLoginRequests();
+        if (approveLoginRequests) {
+          this.messagingService.send("openLoginApproval", {
+            notificationId: notification.payload.id,
+          });
+        }
         break;
       default:
         break;

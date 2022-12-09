@@ -37,6 +37,6 @@ export abstract class AuthService {
   authingWithPasswordless: () => boolean;
   getAuthStatus: (userId?: string) => Promise<AuthenticationStatus>;
   authResponsePushNotifiction: (notification: AuthRequestPushNotification) => Promise<any>;
-
+  passwordlessLogin: (id: string, key: string, requestApproved: boolean) => Promise<any>;
   getPushNotifcationObs$: () => Observable<any>;
 }
