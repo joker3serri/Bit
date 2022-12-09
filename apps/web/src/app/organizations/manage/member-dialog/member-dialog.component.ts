@@ -14,6 +14,7 @@ import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserTy
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
 import { CollectionData } from "@bitwarden/common/models/data/collection.data";
 import { Collection } from "@bitwarden/common/models/domain/collection";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
@@ -73,6 +74,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   collections: CollectionView[] = [];
   organizationUserType = OrganizationUserType;
 
+  protected organization: Organization;
   protected accessItems: AccessItemView[] = [];
   protected tabIndex: MemberDialogTab;
   // Stub, to be filled out in upcoming PRs
@@ -207,7 +209,8 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       userGroups: userGroups$,
     })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ collections, userDetails, groups, userGroups }) => {
+      .subscribe(({ organization, collections, userDetails, groups, userGroups }) => {
+        this.organization = organization;
         const collectionsFromGroups = groups
           .filter((group) => userGroups.includes(group.id))
           .flatMap((group) =>

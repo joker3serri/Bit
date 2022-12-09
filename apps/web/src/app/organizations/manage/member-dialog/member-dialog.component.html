@@ -273,9 +273,11 @@
             </div>
           </ng-container>
         </bit-tab>
-        <bit-tab [label]="'groups' | i18n"> Groups </bit-tab>
+        <bit-tab *ngIf="organization.useGroups" [label]="'groups' | i18n"> Groups </bit-tab>
         <bit-tab [label]="'collections' | i18n">
-          <div class="tw-mb-6">{{ "userPermissionOverrideHelper" | i18n }}</div>
+          <div *ngIf="organization.useGroups" class="tw-mb-6">
+            {{ "userPermissionOverrideHelper" | i18n }}
+          </div>
           <div class="tw-mb-6">
             <!-- TODO: Replace with bit-checkbox when feature has been merged into feature branch -->
             <label>
@@ -298,7 +300,7 @@
             *ngIf="!accessAllCollections"
             permissionMode="edit"
             formControlName="access"
-            [showGroupColumn]="true"
+            [showGroupColumn]="organization.useGroups"
             [items]="accessItems"
             [columnHeader]="'collection' | i18n"
             [selectorLabelText]="'selectCollections' | i18n"
