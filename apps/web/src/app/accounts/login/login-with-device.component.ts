@@ -11,9 +11,12 @@ import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunc
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { LoginService } from "@bitwarden/common/abstractions/login.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
+
+import { StateService } from "../../core/state/state.service";
 
 @Component({
   selector: "app-login-with-device",
@@ -36,7 +39,9 @@ export class LoginWithDeviceComponent
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
     anonymousHubService: AnonymousHubService,
-    validationService: ValidationService
+    validationService: ValidationService,
+    stateService: StateService,
+    loginService: LoginService
   ) {
     super(
       router,
@@ -51,7 +56,9 @@ export class LoginWithDeviceComponent
       i18nService,
       platformUtilsService,
       anonymousHubService,
-      validationService
+      validationService,
+      stateService,
+      loginService
     );
   }
 }

@@ -12,8 +12,10 @@ import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunc
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { LoginService } from "@bitwarden/common/abstractions/login.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 
@@ -46,7 +48,9 @@ export class LoginWithDeviceComponent
     anonymousHubService: AnonymousHubService,
     validationService: ValidationService,
     private modalService: ModalService,
-    syncService: SyncService
+    syncService: SyncService,
+    stateService: StateService,
+    loginService: LoginService
   ) {
     super(
       router,
@@ -61,7 +65,9 @@ export class LoginWithDeviceComponent
       i18nService,
       platformUtilsService,
       anonymousHubService,
-      validationService
+      validationService,
+      stateService,
+      loginService
     );
 
     super.onSuccessfulLogin = () => {

@@ -11,8 +11,10 @@ import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunc
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { LoginService } from "@bitwarden/common/abstractions/login.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { AuthRequestType } from "@bitwarden/common/enums/authRequestType";
 import { Utils } from "@bitwarden/common/misc/utils";
@@ -57,7 +59,9 @@ export class LoginWithDeviceComponent
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
     private anonymousHubService: AnonymousHubService,
-    private validationService: ValidationService
+    private validationService: ValidationService,
+    private stateService: StateService,
+    private loginService: LoginService
   ) {
     super(environmentService, i18nService, platformUtilsService);
 
@@ -136,6 +140,7 @@ export class LoginWithDeviceComponent
           this.router.navigate([this.forcePasswordResetRoute]);
         }
       } else {
+        await this.setRememberEmailValues();
         if (this.onSuccessfulLogin != null) {
           this.onSuccessfulLogin();
         }
@@ -154,6 +159,13 @@ export class LoginWithDeviceComponent
 
       this.logService.error(error);
     }
+  }
+
+  async setRememberEmailValues() {
+    const rememberEmail = this.loginService.getRememberEmail();
+    const rememberedEmail = this.loginService.getEmail();
+    await this.stateService.setRememberedEmail(rememberEmail ? rememberedEmail : null);
+    this.loginService.clearValues();
   }
 
   private async buildAuthRequest() {
