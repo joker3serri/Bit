@@ -312,7 +312,10 @@ export class IdentityAutoFillConstants {
     "familienname",
   ];
 
-  static readonly EmailFieldNames: string[] = ["e-mail", "email-address"];
+  static readonly EmailFieldNames: string[] = [
+    "e-mail", 
+    "email-address",
+  ];
 
   static readonly AddressFieldNames: string[] = [
     "address",
@@ -365,6 +368,9 @@ export class IdentityAutoFillConstants {
     "address-code",
     "address-postal-code",
     "address-zip-code",
+    
+   // german
+    "plz",
   ];
 
   static readonly CityFieldNames: string[] = [
@@ -373,6 +379,11 @@ export class IdentityAutoFillConstants {
     "address-level-2",
     "address-city",
     "address-town",
+    
+    // german
+    "ort",
+    "stadt",
+    "wohnort"
   ];
 
   static readonly StateFieldNames: string[] = [
