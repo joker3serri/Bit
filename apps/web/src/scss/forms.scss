@@ -254,3 +254,16 @@ input::-webkit-credentials-auto-fill-button {
     filter: themed("browserInputIconsFilter");
   }
 }
+
+// Custom styles for textareas with action buttons
+
+.input-group {
+  position: relative; // provide positioning anchor
+}
+
+.input-group-append-absolute {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 3;
+}

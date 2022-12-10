@@ -46,17 +46,26 @@
   "notes": {
     "message": "Notes"
   },
+  "copyNotes": {
+    "message": "Copy notes"
+  },
   "customFields": {
     "message": "Custom fields"
   },
   "cardholderName": {
     "message": "Cardholder name"
   },
+  "copyCardholderName": {
+    "message": "Copy cardholder name"
+  },
   "number": {
     "message": "Number"
   },
   "brand": {
     "message": "Brand"
+  },
+  "copyBrand": {
+    "message": "Copy brand"
   },
   "expiration": {
     "message": "Expiration"
@@ -70,20 +79,38 @@
   "company": {
     "message": "Company"
   },
+  "copyCompany": {
+    "message": "Copy company"
+  },
   "ssn": {
     "message": "Social Security number"
+  },
+  "copySsn": {
+    "message": "Copy Social Security number"
   },
   "passportNumber": {
     "message": "Passport number"
   },
+  "copyPassportNumber": {
+    "message": "Copy passport number"
+  },
   "licenseNumber": {
     "message": "License number"
+  },
+  "copyLicenseNumber": {
+    "message": "Copy license number"
   },
   "email": {
     "message": "Email"
   },
+  "copyEmail": {
+    "message": "Copy email"
+  },
   "phone": {
     "message": "Phone"
+  },
+  "copyPhone": {
+    "message": "Copy phone"
   },
   "january": {
     "message": "January"
@@ -124,6 +151,9 @@
   "title": {
     "message": "Title"
   },
+  "copyTitle": {
+    "message": "Copy title"
+  },
   "mr": {
     "message": "Mr"
   },
@@ -139,8 +169,14 @@
   "expirationMonth": {
     "message": "Expiration month"
   },
+  "copyExpirationMonth": {
+    "message": "Copy expiration month"
+  },
   "expirationYear": {
     "message": "Expiration year"
+  },
+  "copyExpirationYear": {
+    "message": "Copy expiration year"
   },
   "authenticatorKeyTotp": {
     "message": "Authenticator key (TOTP)"
@@ -326,11 +362,20 @@
   "firstName": {
     "message": "First name"
   },
+  "copyFirstName": {
+    "message": "Copy first name"
+  },
   "middleName": {
     "message": "Middle name"
   },
+  "copyMiddleName": {
+    "message": "Copy middle name"
+  },
   "lastName": {
     "message": "Last name"
+  },
+  "copyLastName": {
+    "message": "Copy last name"
   },
   "fullName": {
     "message": "Full name"
@@ -338,23 +383,44 @@
   "address1": {
     "message": "Address 1"
   },
+  "copyAddress1": {
+    "message": "Copy address 1"
+  },
   "address2": {
     "message": "Address 2"
+  },
+  "copyAddress2": {
+    "message": "Copy address 2"
   },
   "address3": {
     "message": "Address 3"
   },
+  "copyAddress3": {
+    "message": "Copy address 3"
+  },
   "cityTown": {
     "message": "City / Town"
+  },
+  "copyCityTown": {
+    "message": "Copy city / town"
   },
   "stateProvince": {
     "message": "State / Province"
   },
+  "copyStateProvince": {
+    "message": "Copy state / province"
+  },
   "zipPostalCode": {
     "message": "Zip / Postal code"
   },
+  "copyZipPostalCode": {
+    "message": "Copy zip / postal code"
+  },
   "country": {
     "message": "Country"
+  },
+  "copyCountry": {
+    "message": "Copy country"
   },
   "shared": {
     "message": "Shared"
@@ -420,6 +486,9 @@
   "copyUri": {
     "message": "Copy URI",
     "description": "Copy URI to clipboard"
+  },
+  "copyNote": {
+    "message": "Copy note"
   },
   "me": {
     "message": "Me"

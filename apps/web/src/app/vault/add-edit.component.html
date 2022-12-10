@@ -372,20 +372,33 @@
           <div class="row">
             <div class="col-6 form-group">
               <label for="cardCardholderName">{{ "cardholderName" | i18n }}</label>
-              <input
-                id="cardCardholderName"
-                class="form-control"
-                type="text"
-                name="Card.CardCardholderName"
-                [(ngModel)]="cipher.card.cardholderName"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="cardCardholderName"
+                  class="form-control"
+                  type="text"
+                  name="Card.CardCardholderName"
+                  [(ngModel)]="cipher.card.cardholderName"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyCardholderName' | i18n }}"
+                    (click)="copy(cipher.card.cardholderName, 'cardholderName', 'CardholderName')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col-6 form-group">
               <label for="cardBrand">{{ "brand" | i18n }}</label>
-              <span *ngIf="!(!cipher.edit && editMode); else readonlyCardBrand">
+              <div class="input-group">
                 <select
+                  *ngIf="!(!cipher.edit && editMode)"
                   id="cardBrand"
                   class="form-control"
                   name="Card.Brand"
@@ -396,9 +409,8 @@
                     {{ o.name }}
                   </option>
                 </select>
-              </span>
-              <ng-template #readonlyCardBrand>
                 <input
+                  *ngIf="!cipher.edit && editMode"
                   id="cardBrand"
                   class="form-control"
                   name="Card.Brand"
@@ -406,7 +418,17 @@
                   [readonly]="true"
                   [value]="cipher.card.brand"
                 />
-              </ng-template>
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyBrand' | i18n }}"
+                    (click)="copy(cipher.card.brand, 'brand', 'Brand')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
@@ -453,8 +475,9 @@
             </div>
             <div class="col form-group">
               <label for="cardExpMonth">{{ "expirationMonth" | i18n }}</label>
-              <span *ngIf="!(!cipher.edit && editMode); else readonlyCardExpMonth">
+              <div class="input-group">
                 <select
+                  *ngIf="!(!cipher.edit && editMode)"
                   id="cardExpMonth"
                   class="form-control"
                   name="Card.ExpMonth"
@@ -465,9 +488,8 @@
                     {{ o.name }}
                   </option>
                 </select>
-              </span>
-              <ng-template #readonlyCardExpMonth>
                 <input
+                  *ngIf="!cipher.edit && editMode"
                   id="cardExpMonth"
                   class="form-control"
                   type="text"
@@ -475,20 +497,42 @@
                   [readonly]="true"
                   [value]="getCardExpMonthDisplay()"
                 />
-              </ng-template>
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyExpirationMonth' | i18n }}"
+                    (click)="copy(cipher.card.expMonth, 'expirationMonth', 'ExpirationMonth')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col form-group">
               <label for="cardExpYear">{{ "expirationYear" | i18n }}</label>
-              <input
-                id="cardExpYear"
-                class="form-control"
-                type="text"
-                name="Card.ExpYear"
-                [(ngModel)]="cipher.card.expYear"
-                placeholder="{{ 'ex' | i18n }} 2019"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="cardExpYear"
+                  class="form-control"
+                  type="text"
+                  name="Card.ExpYear"
+                  [(ngModel)]="cipher.card.expYear"
+                  placeholder="{{ 'ex' | i18n }} 2019"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyExpirationYear' | i18n }}"
+                    (click)="copy(cipher.card.expYear, 'expirationYear', 'ExpirationYear')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
@@ -522,8 +566,8 @@
                   <button
                     type="button"
                     class="btn btn-outline-secondary"
-                    appA11yTitle="{{ 'securityCode' | i18n }}"
-                    (click)="copy(cipher.card.code, 'securityCode', 'Security Code')"
+                    appA11yTitle="{{ 'copySecurityCode' | i18n }}"
+                    (click)="copy(cipher.card.code, 'securityCode', 'SecurityCode')"
                   >
                     <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
                   </button>
@@ -537,8 +581,9 @@
           <div class="row">
             <div class="col-4 form-group">
               <label for="idTitle">{{ "title" | i18n }}</label>
-              <span *ngIf="!(!cipher.edit && editMode); else readonlyIdTitle">
+              <div class="input-group">
                 <select
+                  *ngIf="!(!cipher.edit && editMode)"
                   id="idTitle"
                   class="form-control"
                   name="Identity.Title"
@@ -549,9 +594,8 @@
                     {{ o.name }}
                   </option>
                 </select>
-              </span>
-              <ng-template #readonlyIdTitle>
                 <input
+                  *ngIf="!cipher.edit && editMode"
                   id="idTitle"
                   class="form-control"
                   name="Identity.Title"
@@ -559,248 +603,476 @@
                   [readonly]="true"
                   [value]="cipher.identity.title"
                 />
-              </ng-template>
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyTitle' | i18n }}"
+                    (click)="copy(cipher.identity.title, 'title', 'Title')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="col-4 form-group">
               <label for="idFirstName">{{ "firstName" | i18n }}</label>
-              <input
-                id="idFirstName"
-                class="form-control"
-                type="text"
-                name="Identity.FirstName"
-                [(ngModel)]="cipher.identity.firstName"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idFirstName"
+                  class="form-control"
+                  type="text"
+                  name="Identity.FirstName"
+                  [(ngModel)]="cipher.identity.firstName"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyFirstName' | i18n }}"
+                    (click)="copy(cipher.identity.firstName, 'firstName', 'FirstName')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col-4 form-group">
               <label for="idMiddleName">{{ "middleName" | i18n }}</label>
-              <input
-                id="idMiddleName"
-                class="form-control"
-                type="text"
-                name="Identity.MiddleName"
-                [(ngModel)]="cipher.identity.middleName"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idMiddleName"
+                  class="form-control"
+                  type="text"
+                  name="Identity.MiddleName"
+                  [(ngModel)]="cipher.identity.middleName"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyMiddleName' | i18n }}"
+                    (click)="copy(cipher.identity.middleName, 'middleName', 'MiddleName')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col-4 form-group">
               <label for="idLastName">{{ "lastName" | i18n }}</label>
-              <input
-                id="idLastName"
-                class="form-control"
-                type="text"
-                name="Identity.LastName"
-                [(ngModel)]="cipher.identity.lastName"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idLastName"
+                  class="form-control"
+                  type="text"
+                  name="Identity.LastName"
+                  [(ngModel)]="cipher.identity.lastName"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyLastName' | i18n }}"
+                    (click)="copy(cipher.identity.lastName, 'lastName', 'LastName')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="col-4 form-group">
               <label for="idUsername">{{ "username" | i18n }}</label>
-              <input
-                id="idUsername"
-                class="form-control"
-                type="text"
-                name="Identity.Username"
-                [(ngModel)]="cipher.identity.username"
-                appInputVerbatim
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idUsername"
+                  class="form-control"
+                  type="text"
+                  name="Identity.Username"
+                  [(ngModel)]="cipher.identity.username"
+                  appInputVerbatim
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyUsername' | i18n }}"
+                    (click)="copy(cipher.identity.username, 'username', 'Username')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col-4 form-group">
               <label for="idCompany">{{ "company" | i18n }}</label>
-              <input
-                id="idCompany"
-                class="form-control"
-                type="text"
-                name="Identity.Company"
-                [(ngModel)]="cipher.identity.company"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idCompany"
+                  class="form-control"
+                  type="text"
+                  name="Identity.Company"
+                  [(ngModel)]="cipher.identity.company"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyCompany' | i18n }}"
+                    (click)="copy(cipher.identity.company, 'company', 'Company')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="col-4 form-group">
               <label for="idSsn">{{ "ssn" | i18n }}</label>
-              <input
-                id="idSsn"
-                class="form-control"
-                type="text"
-                name="Identity.SSN"
-                [(ngModel)]="cipher.identity.ssn"
-                appInputVerbatim
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idSsn"
+                  class="form-control"
+                  type="text"
+                  name="Identity.SSN"
+                  [(ngModel)]="cipher.identity.ssn"
+                  appInputVerbatim
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copySsn' | i18n }}"
+                    (click)="copy(cipher.identity.ssn, 'ssn', 'SSN')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col-4 form-group">
               <label for="idPassportNumber">{{ "passportNumber" | i18n }}</label>
-              <input
-                id="idPassportNumber"
-                class="form-control"
-                type="text"
-                name="Identity.PassportNumber"
-                [(ngModel)]="cipher.identity.passportNumber"
-                appInputVerbatim
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idPassportNumber"
+                  class="form-control"
+                  type="text"
+                  name="Identity.PassportNumber"
+                  [(ngModel)]="cipher.identity.passportNumber"
+                  appInputVerbatim
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyPassportNumber' | i18n }}"
+                    (click)="
+                      copy(cipher.identity.passportNumber, 'passportNumber', 'PassportNumber')
+                    "
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col-4 form-group">
               <label for="idLicenseNumber">{{ "licenseNumber" | i18n }}</label>
-              <input
-                id="idLicenseNumber"
-                class="form-control"
-                type="text"
-                name="Identity.LicenseNumber"
-                [(ngModel)]="cipher.identity.licenseNumber"
-                appInputVerbatim
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idLicenseNumber"
+                  class="form-control"
+                  type="text"
+                  name="Identity.LicenseNumber"
+                  [(ngModel)]="cipher.identity.licenseNumber"
+                  appInputVerbatim
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyLicenseNumber' | i18n }}"
+                    (click)="copy(cipher.identity.licenseNumber, 'licenseNumber', 'LicenseNumber')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="col-6 form-group">
               <label for="idEmail">{{ "email" | i18n }}</label>
-              <input
-                id="idEmail"
-                class="form-control"
-                type="text"
-                inputmode="email"
-                name="Identity.Email"
-                [(ngModel)]="cipher.identity.email"
-                appInputVerbatim
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idEmail"
+                  class="form-control"
+                  type="text"
+                  inputmode="email"
+                  name="Identity.Email"
+                  [(ngModel)]="cipher.identity.email"
+                  appInputVerbatim
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyEmail' | i18n }}"
+                    (click)="copy(cipher.identity.email, 'email', 'Email')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col-6 form-group">
               <label for="idPhone">{{ "phone" | i18n }}</label>
-              <input
-                id="idPhone"
-                class="form-control"
-                type="text"
-                inputmode="tel"
-                name="Identity.Phone"
-                [(ngModel)]="cipher.identity.phone"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idPhone"
+                  class="form-control"
+                  type="text"
+                  inputmode="tel"
+                  name="Identity.Phone"
+                  [(ngModel)]="cipher.identity.phone"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyPhone' | i18n }}"
+                    (click)="copy(cipher.identity.phone, 'phone', 'Phone')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="col-6 form-group">
               <label for="idAddress1">{{ "address1" | i18n }}</label>
-              <input
-                id="idAddress1"
-                class="form-control"
-                type="text"
-                name="Identity.Address1"
-                [(ngModel)]="cipher.identity.address1"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idAddress1"
+                  class="form-control"
+                  type="text"
+                  name="Identity.Address1"
+                  [(ngModel)]="cipher.identity.address1"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyAddress1' | i18n }}"
+                    (click)="copy(cipher.identity.address1, 'address1', 'Address1')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col-6 form-group">
               <label for="idAddress2">{{ "address2" | i18n }}</label>
-              <input
-                id="idAddress2"
-                class="form-control"
-                type="text"
-                name="Identity.Address2"
-                [(ngModel)]="cipher.identity.address2"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idAddress2"
+                  class="form-control"
+                  type="text"
+                  name="Identity.Address2"
+                  [(ngModel)]="cipher.identity.address2"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyAddress2' | i18n }}"
+                    (click)="copy(cipher.identity.address2, 'address2', 'Address2')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="col-6 form-group">
               <label for="idAddress3">{{ "address3" | i18n }}</label>
-              <input
-                id="idAddress3"
-                class="form-control"
-                type="text"
-                name="Identity.Address3"
-                [(ngModel)]="cipher.identity.address3"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idAddress3"
+                  class="form-control"
+                  type="text"
+                  name="Identity.Address3"
+                  [(ngModel)]="cipher.identity.address3"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyAddress3' | i18n }}"
+                    (click)="copy(cipher.identity.address3, 'address3', 'Address3')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col-6 form-group">
               <label for="idCity">{{ "cityTown" | i18n }}</label>
-              <input
-                id="idCity"
-                class="form-control"
-                type="text"
-                name="Identity.City"
-                [(ngModel)]="cipher.identity.city"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idCity"
+                  class="form-control"
+                  type="text"
+                  name="Identity.City"
+                  [(ngModel)]="cipher.identity.city"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyCityTown' | i18n }}"
+                    (click)="copy(cipher.identity.city, 'cityTown', 'CityTown')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="col-6 form-group">
               <label for="idState">{{ "stateProvince" | i18n }}</label>
-              <input
-                id="idState"
-                class="form-control"
-                type="text"
-                name="Identity.State"
-                [(ngModel)]="cipher.identity.state"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idState"
+                  class="form-control"
+                  type="text"
+                  name="Identity.State"
+                  [(ngModel)]="cipher.identity.state"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyStateProvince' | i18n }}"
+                    (click)="copy(cipher.identity.state, 'stateProvince', 'StateProvince')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
             <div class="col-6 form-group">
               <label for="idPostalCode">{{ "zipPostalCode" | i18n }}</label>
-              <input
-                id="idPostalCode"
-                class="form-control"
-                type="text"
-                name="Identity.PostalCode"
-                [(ngModel)]="cipher.identity.postalCode"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idPostalCode"
+                  class="form-control"
+                  type="text"
+                  name="Identity.PostalCode"
+                  [(ngModel)]="cipher.identity.postalCode"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyZipPostalCode' | i18n }}"
+                    (click)="copy(cipher.identity.postalCode, 'zipPostalCode', 'ZipPostalCode')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <div class="row">
             <div class="col-6 form-group">
               <label for="idCountry">{{ "country" | i18n }}</label>
-              <input
-                id="idCountry"
-                class="form-control"
-                type="text"
-                name="Identity.Country"
-                [(ngModel)]="cipher.identity.country"
-                [disabled]="cipher.isDeleted || viewOnly"
-                [readonly]="!cipher.edit && editMode"
-              />
+              <div class="input-group">
+                <input
+                  id="idCountry"
+                  class="form-control"
+                  type="text"
+                  name="Identity.Country"
+                  [(ngModel)]="cipher.identity.country"
+                  [disabled]="cipher.isDeleted || viewOnly"
+                  [readonly]="!cipher.edit && editMode"
+                />
+                <div class="input-group-append">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    appA11yTitle="{{ 'copyCountry' | i18n }}"
+                    (click)="copy(cipher.identity.country, 'country', 'Country')"
+                  >
+                    <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </ng-container>
         <div class="form-group">
           <label for="notes">{{ "notes" | i18n }}</label>
-          <textarea
-            id="notes"
-            name="Notes"
-            rows="6"
-            [(ngModel)]="cipher.notes"
-            [disabled]="cipher.isDeleted || viewOnly"
-            [readonly]="!cipher.edit && editMode"
-            class="form-control"
-          ></textarea>
+          <div class="input-group">
+            <textarea
+              id="notes"
+              name="Notes"
+              rows="6"
+              [(ngModel)]="cipher.notes"
+              [disabled]="cipher.isDeleted || viewOnly"
+              [readonly]="!cipher.edit && editMode"
+              class="form-control"
+            ></textarea>
+            <div class="input-group-append-absolute">
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                appA11yTitle="{{ 'copyNotes' | i18n }}"
+                (click)="copy(cipher.notes, 'notes', 'Notes')"
+              >
+                <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
         </div>
         <app-vault-add-edit-custom-fields
           *ngIf="!(!cipher.hasFields && !cipher.edit && editMode)"
