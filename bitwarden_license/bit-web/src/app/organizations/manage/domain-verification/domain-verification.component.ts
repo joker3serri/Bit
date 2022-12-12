@@ -2,12 +2,10 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { concatMap, Observable, Subject, take, takeUntil } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain-api.service.abstraction";
 import { OrgDomainServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain.service.abstraction";
 import { OrganizationDomainResponse } from "@bitwarden/common/abstractions/organization-domain/responses/organization-domain.response";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { DialogService } from "@bitwarden/components";
 
@@ -26,15 +24,12 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
   loading = true;
 
   organizationId: string;
-  // organization: Organization;
   orgDomains$: Observable<OrganizationDomainResponse[]>;
 
   constructor(
     private route: ActivatedRoute,
-    private apiService: ApiService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
-    private organizationService: OrganizationService,
     private orgDomainApiService: OrgDomainApiServiceAbstraction,
     private orgDomainService: OrgDomainServiceAbstraction,
     private dialogService: DialogService
@@ -102,6 +97,23 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
   copyDnsTxt(dnsTxt: string): void {
     this.orgDomainService.copyDnsTxt(dnsTxt);
   }
+
+  deleteDomain = async (orgDomainId: string): Promise<void> => {
+    const confirmed = await this.platformUtilsService.showDialog(
+      this.i18nService.t("removeDomainWarning"),
+      this.i18nService.t("removeDomain"),
+      this.i18nService.t("yes"),
+      this.i18nService.t("no"),
+      "warning"
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    await this.orgDomainApiService.delete(this.organizationId, orgDomainId);
+
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("domainRemoved"));
+  };
 
   //#endregion
 

@@ -62,7 +62,7 @@
                   <i class="bwi bwi-fw bwi-check text-success" aria-hidden="true"></i>
                   Verify domain
                 </button>
-                <button bitMenuItem>
+                <button bitMenuItem (click)="deleteDomain(orgDomain.id)">
                   <span class="tw-text-danger">
                     <i class="bwi bwi-fw bwi-close" aria-hidden="true"></i>
                     {{ "remove" | i18n }}
