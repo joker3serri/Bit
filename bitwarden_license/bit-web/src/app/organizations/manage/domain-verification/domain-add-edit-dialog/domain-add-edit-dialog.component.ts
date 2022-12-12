@@ -105,10 +105,6 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
   // TODO: probably will be a need to split into different actions: save == save + verify
   // and if edit true, then verify is verify.
 
-  // Need to display verified status somewhere
-  // If verified, no action can be taken but delete
-  // If saved & unverified, can prompt verification
-
   saveDomain = async (): Promise<void> => {
     this.domainForm.disable();
 
@@ -117,6 +113,7 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
       this.domainNameCtrl.value
     );
 
+    // TODO: wire up DuplicateDomainException handling
     await this.orgDomainApiService.post(this.data.organizationId, request);
 
     //TODO: figure out how to handle DomainVerifiedException
