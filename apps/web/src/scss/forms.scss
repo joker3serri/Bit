@@ -267,3 +267,7 @@ input::-webkit-credentials-auto-fill-button {
   right: 0;
   z-index: 3;
 }
+
+.input-group textarea {
+  border-radius: 0.25em !important;
+}
