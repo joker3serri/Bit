@@ -8,12 +8,12 @@
         data.orgDomain.domainName
       }}</span>
 
-      <span *ngIf="data?.orgDomain && !data.orgDomain?.verifiedDate" bitBadge badgeType="warning"
-        >Unverified</span
-      >
-      <span *ngIf="data?.orgDomain && data?.orgDomain?.verifiedDate" bitBadge badgeType="success"
-        >Verified</span
-      >
+      <span *ngIf="data?.orgDomain && !data.orgDomain?.verifiedDate" bitBadge badgeType="warning">{{
+        "domainStatusUnverified" | i18n
+      }}</span>
+      <span *ngIf="data?.orgDomain && data?.orgDomain?.verifiedDate" bitBadge badgeType="success">{{
+        "domainStatusVerified" | i18n
+      }}</span>
     </span>
     <div bitDialogContent>
       <bit-form-field>

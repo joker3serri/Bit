@@ -21,10 +21,10 @@
       <bit-table class="tw-w-full tw-table-auto">
         <ng-container header>
           <tr>
-            <th bitCell>Name</th>
-            <th bitCell>Status</th>
-            <th bitCell>Last Checked</th>
-            <th bitCell>Options</th>
+            <th bitCell>{{ "name" | i18n }}</th>
+            <th bitCell>{{ "status" | i18n }}</th>
+            <th bitCell>{{ "lastChecked" | i18n }}</th>
+            <th bitCell>{{ "options" | i18n }}</th>
           </tr>
         </ng-container>
         <ng-container body>
@@ -36,12 +36,17 @@
               }}</a>
             </td>
             <td bitCell>
-              <span *ngIf="!orgDomain?.verifiedDate" bitBadge badgeType="warning">Unverified</span>
-              <span *ngIf="orgDomain?.verifiedDate" bitBadge badgeType="success">Verified</span>
+              <span *ngIf="!orgDomain?.verifiedDate" bitBadge badgeType="warning">{{
+                "domainStatusUnverified" | i18n
+              }}</span>
+              <span *ngIf="orgDomain?.verifiedDate" bitBadge badgeType="success">{{
+                "domainStatusVerified" | i18n
+              }}</span>
             </td>
             <td bitCell>
               <!-- TODO: next run date != last checked... -->
-              {{ orgDomain.nextRunDate | date: "medium" }}
+              TODO
+              <!-- {{ orgDomain.nextRunDate | date: "medium" }} -->
             </td>
 
             <td bitCell class="table-list-options">
@@ -56,11 +61,11 @@
               <bit-menu #orgDomainOptions>
                 <button bitMenuItem (click)="copyDnsTxt(orgDomain.txt)">
                   <i class="bwi bwi-fw bwi-clone" aria-hidden="true"></i>
-                  Copy DNS TXT record
+                  {{ "copyDnsTxtRecord" | i18n }}
                 </button>
                 <button bitMenuItem>
                   <i class="bwi bwi-fw bwi-check text-success" aria-hidden="true"></i>
-                  Verify domain
+                  {{ "verifyDomain" | i18n }}
                 </button>
                 <button bitMenuItem (click)="deleteDomain(orgDomain.id)">
                   <span class="tw-text-danger">
