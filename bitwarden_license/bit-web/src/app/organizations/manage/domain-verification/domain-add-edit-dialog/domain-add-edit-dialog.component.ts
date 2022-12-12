@@ -152,11 +152,20 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
   };
 
   deleteDomain = async (): Promise<void> => {
-    // TODO: Do I need an are you sure prompt? yes
+    const confirmed = await this.platformUtilsService.showDialog(
+      this.i18nService.t("removeDomainWarning"),
+      this.i18nService.t("removeDomain"),
+      this.i18nService.t("yes"),
+      this.i18nService.t("no"),
+      "warning"
+    );
+    if (!confirmed) {
+      return;
+    }
 
     await this.orgDomainApiService.delete(this.data.organizationId, this.data.orgDomain.id);
-
     this.platformUtilsService.showToast("success", null, this.i18nService.t("domainRemoved"));
+
     this.dialogRef.close();
   };
 
