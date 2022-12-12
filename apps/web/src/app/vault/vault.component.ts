@@ -27,6 +27,7 @@ import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 
+import { RoutedVaultFilterService } from "../core/vault-filter/routed-vault-filter.service";
 import { UpdateKeyComponent } from "../settings/update-key.component";
 
 import { AddEditComponent } from "./add-edit.component";
@@ -37,6 +38,7 @@ import { FolderAddEditComponent } from "./folder-add-edit.component";
 import { ShareComponent } from "./share.component";
 import { VaultFilterComponent } from "./vault-filter/components/vault-filter.component";
 import { VaultFilterService } from "./vault-filter/services/abstractions/vault-filter.service";
+import { RoutedVaultFilterBridgeService } from "./vault-filter/services/routed-vault-filter-bridge.service";
 import { VaultFilter } from "./vault-filter/shared/models/vault-filter.model";
 import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/vault-filter.type";
 
@@ -45,6 +47,7 @@ const BroadcasterSubscriptionId = "VaultComponent";
 @Component({
   selector: "app-vault",
   templateUrl: "vault.component.html",
+  providers: [RoutedVaultFilterService, RoutedVaultFilterBridgeService],
 })
 export class VaultComponent implements OnInit, OnDestroy {
   @ViewChild("vaultFilter", { static: true }) filterComponent: VaultFilterComponent;
@@ -67,6 +70,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   showPremiumCallout = false;
   trashCleanupWarning: string = null;
   activeFilter: VaultFilter = new VaultFilter();
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -85,6 +89,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private stateService: StateService,
     private organizationService: OrganizationService,
     private vaultFilterService: VaultFilterService,
+    private routedVaultFilterBridgeService: RoutedVaultFilterBridgeService,
     private cipherService: CipherService,
     private passwordRepromptService: PasswordRepromptService
   ) {}
@@ -166,6 +171,14 @@ export class VaultComponent implements OnInit, OnDestroy {
         }
       });
     });
+
+    this.routedVaultFilterBridgeService.activeFilter$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((activeFilter) => {
+        this.activeFilter = activeFilter;
+        // eslint-disable-next-line no-console
+        console.log("activeFilter", activeFilter);
+      });
   }
 
   get isShowingCards() {
@@ -182,19 +195,21 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
     this.destroy$.next();
     this.destroy$.complete();
   }
 
   async applyVaultFilter(filter: VaultFilter) {
-    this.activeFilter = filter;
+    // this.activeFilter = filter;
     this.ciphersComponent.showAddNew = !this.activeFilter.isDeleted;
     await this.ciphersComponent.reload(
       this.activeFilter.buildFilter(),
       this.activeFilter.isDeleted
     );
-    this.go();
+    // this.go();
   }
 
   async applyOrganizationFilter(orgId: string) {
