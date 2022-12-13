@@ -210,11 +210,14 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.searchBarService.setEnabled(true);
     this.searchBarService.setPlaceholderText(this.i18nService.t("searchVault"));
 
-    const authRequest = await this.apiService.getLastAuthRequest();
-    if(authRequest != null){
-      this.messagingService.send("openLoginApproval", {
-        notificationId: authRequest.id,
-      });
+    const approveLoginRequests = await this.stateService.getApproveLoginRequests();
+    if (approveLoginRequests) {
+      const authRequest = await this.apiService.getLastAuthRequest();
+      if (authRequest != null) {
+        this.messagingService.send("openLoginApproval", {
+          notificationId: authRequest.id,
+        });
+      }
     }
   }
 
