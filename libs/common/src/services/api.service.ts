@@ -55,8 +55,8 @@ import { OrganizationSponsorshipCreateRequest } from "../models/request/organiza
 import { OrganizationSponsorshipRedeemRequest } from "../models/request/organization/organization-sponsorship-redeem.request";
 import { PasswordHintRequest } from "../models/request/password-hint.request";
 import { PasswordRequest } from "../models/request/password.request";
-import { PasswordlessCreateAuthRequest } from "../models/request/passwordless-create-auth.request";
 import { PasswordlessAuthRequest } from "../models/request/passwordless-auth.request";
+import { PasswordlessCreateAuthRequest } from "../models/request/passwordless-create-auth.request";
 import { PaymentRequest } from "../models/request/payment.request";
 import { PreloginRequest } from "../models/request/prelogin.request";
 import { ProviderAddOrganizationRequest } from "../models/request/provider/provider-add-organization.request";
@@ -295,6 +295,21 @@ export class ApiService implements ApiServiceAbstraction {
     const path = `/auth-requests/${id}`;
     const r = await this.send("PUT", path, request, true, true);
     return new AuthRequestResponse(r);
+  }
+
+  async getAuthRequests(): Promise<ListResponse<AuthRequestResponse>> {
+    const path = `/auth-requests/`;
+    const r = await this.send("GET", path, null, true, true);
+    return new ListResponse(r, AuthRequestResponse);
+  }
+
+  async getLastAuthRequest(): Promise<AuthRequestResponse> {
+    const requests = await this.getAuthRequests();
+    const activeRequests = requests.data.filter((m) => !m.isAnswered && !m.isExpired);
+    const lastRequest = activeRequests.sort((a: AuthRequestResponse, b: AuthRequestResponse) =>
+      a.creationDate.localeCompare(b.creationDate)
+    )[activeRequests.length - 1];
+    return lastRequest;
   }
 
   // Account APIs

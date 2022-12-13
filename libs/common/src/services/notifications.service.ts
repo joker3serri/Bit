@@ -6,13 +6,12 @@ import { AppIdService } from "../abstractions/appId.service";
 import { AuthService } from "../abstractions/auth.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import { LogService } from "../abstractions/log.service";
+import { MessagingService } from "../abstractions/messaging.service";
 import { NotificationsService as NotificationsServiceAbstraction } from "../abstractions/notifications.service";
 import { StateService } from "../abstractions/state.service";
 import { SyncService } from "../abstractions/sync/sync.service.abstraction";
 import { AuthenticationStatus } from "../enums/authenticationStatus";
 import { NotificationType } from "../enums/notificationType";
-import { BroadcasterService, MessageBase } from "../abstractions/broadcaster.service";
-import { MessagingService } from "../abstractions/messaging.service";
 import {
   NotificationResponse,
   SyncCipherNotification,
@@ -50,8 +49,7 @@ export class NotificationsService implements NotificationsServiceAbstraction {
 
   async init(): Promise<void> {
     this.inited = false;
-    //this.url = this.environmentService.getNotificationsUrl();
-    this.url = "https://notifications.qa.bitwarden.pw";
+    this.url = this.environmentService.getNotificationsUrl();
 
     // Set notifications server URL to `https://-` to effectively disable communication
     // with the notifications server from the client app
@@ -136,6 +134,7 @@ export class NotificationsService implements NotificationsServiceAbstraction {
       return;
     }
 
+    const approveLoginRequests = await this.stateService.getApproveLoginRequests();
     switch (notification.type) {
       case NotificationType.SyncCipherCreate:
       case NotificationType.SyncCipherUpdate:
@@ -188,7 +187,6 @@ export class NotificationsService implements NotificationsServiceAbstraction {
         await this.syncService.syncDeleteSend(notification.payload as SyncSendNotification);
         break;
       case NotificationType.AuthRequest:
-        const approveLoginRequests = await this.stateService.getApproveLoginRequests();
         if (approveLoginRequests) {
           this.messagingService.send("openLoginApproval", {
             notificationId: notification.payload.id,
