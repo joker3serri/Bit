@@ -1,4 +1,4 @@
-<form [formGroup]="domainForm" [bitSubmit]>
+<form [formGroup]="domainForm" [bitSubmit]="data.orgDomain ? verifyDomain : saveDomain">
   <bit-dialog [dialogSize]="dialogSize" [disablePadding]="disablePadding">
     <span bitDialogTitle>
       <span *ngIf="!data.orgDomain">{{ "newDomain" | i18n }}</span>
@@ -48,7 +48,6 @@
         bitFormButton
         buttonType="primary"
         [disabled]="domainForm.invalid"
-        [bitAction]="data.orgDomain ? verifyDomain : saveDomain"
       >
         <span *ngIf="!data?.orgDomain?.verifiedDate">{{ "verifyDomain" | i18n }}</span>
         <span *ngIf="data?.orgDomain?.verifiedDate">{{ "reverifyDomain" | i18n }}</span>
