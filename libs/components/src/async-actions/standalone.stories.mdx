@@ -19,16 +19,15 @@ useful for aborting an action.
 **NOTE:** Defining the handlers as arrow-functions assigned to variables is mandatory if the handler needs access to the parent
 component using the variable `this`.
 
+**NOTE:** Handlers do not need to check if any previous requests have finished because the directives have built in protection against
+users attempting to trigger new actions before the previous ones has finished.
+
 #### Example using promises
 
 ```ts
 @Component({...})
 class PromiseExampleComponent {
   handler = async () => {
-    if (/* perform guard check */) {
-      return;
-    }
-
     await this.apiService.post(/* ... */);
   };
 }
@@ -40,10 +39,6 @@ class PromiseExampleComponent {
 @Component({...})
 class Component {
   handler = () => {
-    if (/* perform guard check */) {
-      return;
-    }
-
     return this.apiService.post$(/* ... */);
   };
 }

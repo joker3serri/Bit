@@ -18,12 +18,14 @@ Adding async actions to submit buttons requires the following 3 steps
 A handler is a function that returns a promise or an observable. Functions that return `void` are also supported which is
 useful for aborting an action.
 
-**NOTE:**
+**NOTE:** Defining the handlers as arrow-functions assigned to variables is mandatory if the handler needs access to the parent
+component using the variable `this`.
 
-- Defining the handlers as arrow-functions assigned to variables is mandatory if the handler needs access to the parent
-  component using the variable `this`.
-- `formGroup.invalid` will always return `true` after the first `await` operation, event if the form is not actually
-  invalid. This is due to the form getting disabled by the `bitSubmit` directive while waiting for the async action to complete.
+**NOTE:** `formGroup.invalid` will always return `true` after the first `await` operation, event if the form is not actually
+invalid. This is due to the form getting disabled by the `bitSubmit` directive while waiting for the async action to complete.
+
+**NOTE:** Handlers do not need to check if any previous requests have finished because the directives have built in protection against
+users attempting to trigger new actions before the previous ones has finished.
 
 ```ts
 @Component({...})
@@ -81,6 +83,9 @@ useful for aborting an action.
 **NOTE:** Defining the handlers as arrow-functions assigned to variables is mandatory if the handler needs access to the parent
 component using the variable `this`.
 
+**NOTE:** Handlers do not need to check if any previous requests have finished because the directives have built in protection against
+users attempting to trigger new actions before the previous ones has finished.
+
 ```ts
 @Component({...})
 class Component {
@@ -94,10 +99,6 @@ class Component {
 
   // action can also return Observable instead of Promise
   handler = async () => {
-    if (/* perform guard check */) {
-      return;
-    }
-
     await this.apiService.post(/* ... */);
   };
 }
