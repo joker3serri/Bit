@@ -60,6 +60,11 @@ This is different from how submit handlers are usually defined with the output s
 
 Add both `bitButton` and `bitFormButton` directives to the button.
 
+<details>
+  <summary>What do these directives do?</summary>
+  <p>A summary of what each directive does can be found inside the source code.</p>
+</details>
+
 ```html
 <button type="submit" bitButton bitFormButton>{{ "submit" | i18n }}</button>
 ```
@@ -82,7 +87,9 @@ class Component {
   formGroup = this.formBuilder.group({...});
 
   submit = async () => {
-    // not relevant for this example
+    // contents of this handler are not relevant for this example
+    // as this handler will not be trigger by standalone buttons using
+    // `bitAction`
   }
 
   // action can also return Observable instead of Promise
@@ -98,7 +105,7 @@ class Component {
 
 ### 2. Add directive to the `form` element
 
-The `bitSubmit` directive is required beacuse of its coordinating role.
+The `bitSubmit` directive is required beacuse of its coordinating role inside of a form.
 
 ```html
 <form [formGroup]="formGroup" [bitSubmit]="submit">...</form>
@@ -107,6 +114,11 @@ The `bitSubmit` directive is required beacuse of its coordinating role.
 ### 3. Add directives to the `button` element
 
 Add `bitButton`, `bitFormButton`, `bitAction` directives to the button. Make sure to supply a handler.
+
+<details>
+  <summary>What do these directives do?</summary>
+  <p>A summary of what each directive does can be found inside the source code.</p>
+</details>
 
 ```html
 <button type="button" bitFormButton bitButton [bitAction]="handler">Do action</button>
