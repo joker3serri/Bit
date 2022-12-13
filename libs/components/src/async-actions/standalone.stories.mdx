@@ -51,6 +51,8 @@ Add the `bitAction` directive and supply the handler defined in step 1.
 **NOTE:** The `directive` is defined using the input syntax: `[input]="handler"`.
 This is different from how click handlers are usually defined with the output syntax `(click)="handler()"`.
 
+**NOTE:** `[bitAction]` is used instead of `(click)`. Using both is not supported.
+
 ```html
 <button bitButton [bitAction]="handler">Do action</button>
 

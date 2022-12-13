@@ -54,6 +54,8 @@ Add the `bitSubmit` directive and supply the handler defined in step 1.
 **NOTE:** The `directive` is defined using the input syntax: `[input]="handler"`.
 This is different from how submit handlers are usually defined with the output syntax `(ngSubmit)="handler()"`.
 
+**NOTE:** `[bitSubmit]` is used instead of `(ngSubmit)`. Using both is not supported.
+
 ```html
 <form [formGroup]="formGroup" [bitSubmit]="submit">...</form>
 ```
