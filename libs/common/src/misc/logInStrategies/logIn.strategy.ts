@@ -50,6 +50,9 @@ export abstract class LogInStrategy {
       | PasswordlessLogInCredentials
   ): Promise<AuthResult>;
 
+  // The user key comes from different sources depending on the login strategy
+  protected abstract setUserKey(response: IdentityTokenResponse): Promise<void>;
+
   async logInTwoFactor(
     twoFactor: TokenTwoFactorRequest,
     captchaResponse: string = null
@@ -72,11 +75,6 @@ export abstract class LogInStrategy {
     }
 
     throw new Error("Invalid response object.");
-  }
-
-  protected onSuccessfulLogin(response: IdentityTokenResponse): Promise<void> {
-    // Implemented in subclass if required
-    return null;
   }
 
   protected async buildDeviceRequest() {
@@ -134,7 +132,7 @@ export abstract class LogInStrategy {
       await this.tokenService.setTwoFactorToken(response);
     }
 
-    await this.onSuccessfulLogin(response);
+    await this.setUserKey(response);
 
     // Must come after the user Key is set, otherwise createKeyPairForOldAccount will fail
     const newSsoUser = response.key == null;
