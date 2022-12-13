@@ -42,24 +42,31 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
   }
 
   async authedHandler(qParams: Params): Promise<void> {
-    this.actionPromise = this.prepareAcceptRequest(qParams).then(async (request) => {
-      await this.apiService.postOrganizationUserAccept(
-        qParams.organizationId,
-        qParams.organizationUserId,
-        request
+    const organizationInvitation = await this.stateService.getOrganizationInvitation();
+    if (organizationInvitation == null) {
+      // Forcing the user to login to evaluate if the user's current password meets the Organization password policy requirements
+      await this.stateService.setActiveUser(null);
+      await this.unauthedHandler(qParams);
+    } else {
+      this.actionPromise = this.prepareAcceptRequest(qParams).then(async (request) => {
+        await this.apiService.postOrganizationUserAccept(
+          qParams.organizationId,
+          qParams.organizationUserId,
+          request
+        );
+      });
+
+      await this.stateService.setOrganizationInvitation(null);
+      await this.actionPromise;
+      this.platformUtilService.showToast(
+        "success",
+        this.i18nService.t("inviteAccepted"),
+        this.i18nService.t("inviteAcceptedDesc"),
+        { timeout: 10000 }
       );
-    });
 
-    await this.actionPromise;
-    this.platformUtilService.showToast(
-      "success",
-      this.i18nService.t("inviteAccepted"),
-      this.i18nService.t("inviteAcceptedDesc"),
-      { timeout: 10000 }
-    );
-
-    await this.stateService.setOrganizationInvitation(null);
-    this.router.navigate(["/vault"]);
+      this.router.navigate(["/vault"]);
+    }
   }
 
   async unauthedHandler(qParams: Params): Promise<void> {
