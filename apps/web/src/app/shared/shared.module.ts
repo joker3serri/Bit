@@ -20,7 +20,6 @@ import {
   IconModule,
   MenuModule,
   NavigationModule,
-  ProductSwitcherModule,
   TableModule,
   TabsModule,
 } from "@bitwarden/components";
@@ -59,7 +58,6 @@ import "./locales";
     IconModule,
     MenuModule,
     NavigationModule,
-    ProductSwitcherModule,
     TableModule,
     TabsModule,
 
@@ -88,7 +86,6 @@ import "./locales";
     IconModule,
     MenuModule,
     NavigationModule,
-    ProductSwitcherModule,
     TableModule,
     TabsModule,
 

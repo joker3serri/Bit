@@ -2,17 +2,18 @@ import { Component } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { Meta, Story, moduleMetadata } from "@storybook/angular";
 
+import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-
-import { I18nMockService } from "../utils/i18n-mock.service";
+import { IconButtonModule, MenuModule } from "@bitwarden/components";
+import { I18nMockService } from "@bitwarden/components/src/utils/i18n-mock.service";
 
 import { MockOrganizationService } from "./organization-mock.service";
-import { ProductSwitcherModule } from "./product-switcher.module";
+import { ProductSwitcherComponent } from "./product-switcher.component";
 
 @Component({
   selector: "story-layout",
-  template: `<product-switcher></product-switcher><ng-content></ng-content>`,
+  template: `<ng-content></ng-content>`,
 })
 class StoryLayoutComponent {}
 
@@ -26,8 +27,16 @@ export default {
   title: "Web/Product Switcher",
   decorators: [
     moduleMetadata({
-      declarations: [MockOrganizationService, StoryLayoutComponent, StoryContentComponent],
+      declarations: [
+        ProductSwitcherComponent,
+        MockOrganizationService,
+        StoryLayoutComponent,
+        StoryContentComponent,
+      ],
       imports: [
+        JslibModule,
+        MenuModule,
+        IconButtonModule,
         RouterModule.forRoot(
           [
             {
@@ -52,7 +61,6 @@ export default {
           ],
           { useHash: true }
         ),
-        ProductSwitcherModule,
       ],
       providers: [
         { provide: OrganizationService, useClass: MockOrganizationService },
@@ -75,7 +83,7 @@ const Template: Story = (args) => ({
   props: args,
   template: `
     <router-outlet [mockOrgs]="mockOrgs"></router-outlet>
-    <!-- <product-switcher></product-switcher>  -->
+    <product-switcher></product-switcher>
   `,
 });
 

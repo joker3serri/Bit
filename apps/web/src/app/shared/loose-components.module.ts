@@ -21,6 +21,7 @@ import { NestedCheckboxComponent } from "../components/nested-checkbox.component
 import { OrganizationSwitcherComponent } from "../components/organization-switcher.component";
 import { PasswordRepromptComponent } from "../components/password-reprompt.component";
 import { PremiumBadgeComponent } from "../components/premium-badge.component";
+import { ProductSwitcherModule } from "../components/product-switcher/product-switcher.module";
 import { UserVerificationPromptComponent } from "../components/user-verification-prompt.component";
 import { UserVerificationComponent } from "../components/user-verification.component";
 import { FooterComponent } from "../layouts/footer.component";
@@ -131,7 +132,6 @@ import { SharedModule } from ".";
 // Please do not add to this list of declarations - we should refactor these into modules when doing so makes sense until there are none left.
 // If you are building new functionality, please create or extend a feature module instead.
 @NgModule({
-  imports: [SharedModule, VaultFilterModule, OrganizationCreateModule, RegisterFormModule],
   declarations: [
     PremiumBadgeComponent,
     AcceptEmergencyComponent,
@@ -380,6 +380,13 @@ import { SharedModule } from ".";
     VerifyEmailComponent,
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
+  ],
+  imports: [
+    SharedModule,
+    VaultFilterModule,
+    OrganizationCreateModule,
+    RegisterFormModule,
+    ProductSwitcherModule,
   ],
 })
 export class LooseComponentsModule {}
