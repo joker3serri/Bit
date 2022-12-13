@@ -134,6 +134,9 @@ export abstract class LogInStrategy {
       await this.tokenService.setTwoFactorToken(response);
     }
 
+    await this.onSuccessfulLogin(response);
+
+    // Must come after the user Key is set, otherwise createKeyPairForOldAccount will fail
     const newSsoUser = response.key == null;
     if (!newSsoUser) {
       await this.cryptoService.setEncKey(response.key);
@@ -141,8 +144,6 @@ export abstract class LogInStrategy {
         response.privateKey ?? (await this.createKeyPairForOldAccount())
       );
     }
-
-    await this.onSuccessfulLogin(response);
 
     this.messagingService.send("loggedIn");
 
