@@ -4,7 +4,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 let nextId = 0;
 
 @Component({
-  selector: "bit-search-input",
+  selector: "app-search-input",
   templateUrl: "./search-input.component.html",
   providers: [
     {

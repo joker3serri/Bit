@@ -33,9 +33,9 @@ import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/re
 import { DialogService } from "@bitwarden/components";
 
 import { BasePeopleComponent } from "../../common/base.people.component";
+import { GroupService } from "../core";
 import { OrganizationUserView } from "../core/views/organization-user.view";
 import { EntityEventsComponent } from "../manage/entity-events.component";
-import { GroupServiceAbstraction } from "../services/abstractions/group";
 
 import { BulkConfirmComponent } from "./components/bulk/bulk-confirm.component";
 import { BulkRemoveComponent } from "./components/bulk/bulk-remove.component";
@@ -101,7 +101,7 @@ export class PeopleComponent
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private dialogService: DialogService,
-    private groupService: GroupServiceAbstraction,
+    private groupService: GroupService,
     private collectionService: CollectionService
   ) {
     super(

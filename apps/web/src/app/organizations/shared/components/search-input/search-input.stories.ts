@@ -28,7 +28,7 @@ export default {
 const Template: Story<SearchInputComponent> = (args: SearchInputComponent) => ({
   props: args,
   template: `
-    <bit-search-input [(ngModel)]="searchText" [placeholder]="placeholder" [disabled]="disabled"></bit-search-input>
+    <app-search-input [(ngModel)]="searchText" [placeholder]="placeholder" [disabled]="disabled"></app-search-input>
   `,
 });
 

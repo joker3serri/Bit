@@ -3,7 +3,7 @@ import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserTy
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
 
-import { CollectionAccessSelectionView } from "../../views/collection-access-selection.view";
+import { CollectionAccessSelectionView } from "./collection-access-selection.view";
 
 export class OrganizationUserView {
   id: string;
