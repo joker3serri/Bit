@@ -1,7 +1,7 @@
 <button
   bitIconButton="bwi bwi-fw bwi-filter"
   [bitMenuTriggerFor]="menuRef"
-  [buttonType]="'light'"
+  [buttonType]="buttonType"
 ></button>
 <bit-menu #menuRef [focusStrategy]="'tab'">
   <div class="tw-px-4 tw-py-2" *ngIf="products$ | async as products">

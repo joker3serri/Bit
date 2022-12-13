@@ -1,8 +1,9 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest, map } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { IconButtonType } from "@bitwarden/components/src/icon-button/icon-button.component";
 
 type ProductSwitcherItem = {
   /**
@@ -36,6 +37,12 @@ type ProductSwitcherItem = {
   templateUrl: "./product-switcher.component.html",
 })
 export class ProductSwitcherComponent {
+  /**
+   * Passed to the product switcher's `bitIconButton`
+   */
+  @Input()
+  buttonType: IconButtonType = "main";
+
   protected products$ = combineLatest([
     this.organizationService.organizations$,
     this.route.paramMap,
