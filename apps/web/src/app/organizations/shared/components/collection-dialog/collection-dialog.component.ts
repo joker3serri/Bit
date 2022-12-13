@@ -1,5 +1,4 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
-import { Overlay } from "@angular/cdk/overlay";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { combineLatest, of, shareReplay, Subject, switchMap, takeUntil } from "rxjs";
@@ -25,6 +24,7 @@ import {
   AccessItemView,
   convertToPermission,
   convertToSelectionView,
+  PermissionMode,
 } from "../access-selector";
 
 export interface CollectionDialogParams {
@@ -57,6 +57,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     parent: null as string | null,
     access: [[] as AccessItemValue[]],
   });
+  protected PermissionMode = PermissionMode;
 
   constructor(
     @Inject(DIALOG_DATA) private params: CollectionDialogParams,
@@ -256,14 +257,10 @@ function mapToAccessSelections(collectionDetails: CollectionAdminView): AccessIt
  */
 export function openCollectionDialog(
   dialogService: DialogService,
-  overlay: Overlay,
   config: DialogConfig<CollectionDialogParams>
 ) {
   return dialogService.open<CollectionDialogResult, CollectionDialogParams>(
     CollectionDialogComponent,
-    {
-      positionStrategy: overlay.position().global().centerHorizontally().top(),
-      ...config,
-    }
+    config
   );
 }
