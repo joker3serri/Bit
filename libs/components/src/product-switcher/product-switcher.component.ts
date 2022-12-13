@@ -1,24 +1,6 @@
-import { Overlay, OverlayConfig, OverlayRef } from "@angular/cdk/overlay";
-import { TemplatePortal } from "@angular/cdk/portal";
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  TemplateRef,
-  ViewChild,
-  ViewContainerRef,
-} from "@angular/core";
+import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import {
-  combineLatest,
-  filter,
-  map,
-  mergeWith,
-  Observable,
-  Subject,
-  Subscription,
-  takeUntil,
-} from "rxjs";
+import { combineLatest, map } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 
@@ -53,49 +35,14 @@ type ProductSwitcherItem = {
   selector: "product-switcher",
   templateUrl: "./product-switcher.component.html",
 })
-export class ProductSwitcherComponent implements OnDestroy {
-  private _destroy$ = new Subject<void>();
-
-  protected isOpen = false;
-
-  @ViewChild(TemplateRef)
-  private templateRef!: TemplateRef<any>;
-
-  private overlayRef: OverlayRef;
-  private defaultMenuConfig: OverlayConfig = {
-    panelClass: "bit-menu-panel",
-    hasBackdrop: true,
-    backdropClass: "cdk-overlay-transparent-backdrop",
-    scrollStrategy: this.overlay.scrollStrategies.reposition(),
-    positionStrategy: this.overlay
-      .position()
-      .flexibleConnectedTo(this.elementRef)
-      .withPositions([
-        {
-          originX: "start",
-          originY: "bottom",
-          overlayX: "start",
-          overlayY: "top",
-        },
-        {
-          originX: "end",
-          originY: "bottom",
-          overlayX: "end",
-          overlayY: "top",
-        },
-      ])
-      .withLockedPosition(true)
-      .withFlexibleDimensions(false)
-      .withPush(false),
-  };
-  private closedEventsSub: Subscription;
-
+export class ProductSwitcherComponent {
   protected products$ = combineLatest([
     this.organizationService.organizations$,
     this.route.paramMap,
   ]).pipe(
     map(([orgs, paramMap]) => {
       const routeOrg = orgs.find((o) => o.id === paramMap.get("organizationId"));
+      // If the active route org doesn't have access to SM, find the first org that does.
       const smOrg = routeOrg?.canAccessSecretsManager
         ? routeOrg
         : orgs.find((o) => o.canAccessSecretsManager);
@@ -112,7 +59,7 @@ export class ProductSwitcherComponent implements OnDestroy {
           name: "Secrets Manager Beta",
           icon: "bwi-cli",
           appRoute: ["/sm", smOrg?.id],
-          // TODO update marketing link
+          // TODO: update marketing link
           marketingRoute: "#",
           visibility: smOrg ? "bento" : "hidden",
         },
@@ -128,64 +75,7 @@ export class ProductSwitcherComponent implements OnDestroy {
     })
   );
 
-  constructor(
-    private organizationService: OrganizationService,
-    private overlay: Overlay,
-    private elementRef: ElementRef<HTMLElement>,
-    private viewContainerRef: ViewContainerRef,
-    private route: ActivatedRoute
-  ) {}
-
-  protected toggleMenu() {
-    this.isOpen ? this.destroyMenu() : this.openMenu();
-  }
-
-  private openMenu() {
-    this.isOpen = true;
-    this.overlayRef = this.overlay.create(this.defaultMenuConfig);
-
-    const templatePortal = new TemplatePortal(this.templateRef, this.viewContainerRef);
-    this.overlayRef.attach(templatePortal);
-
-    this.closedEventsSub = this.getClosedEvents()
-      .pipe(takeUntil(this._destroy$))
-      .subscribe((event: KeyboardEvent | undefined) => {
-        if (event?.key === "Tab") {
-          // Required to ensure tab order resumes correctly
-          this.elementRef.nativeElement.focus();
-        }
-        this.destroyMenu();
-      });
-  }
-
-  ngOnDestroy() {
-    this.disposeAll();
-    this._destroy$.next();
-    this._destroy$.complete();
-  }
-
-  private destroyMenu() {
-    if (this.overlayRef == null || !this.isOpen) {
-      return;
-    }
-
-    this.isOpen = false;
-    this.disposeAll();
-  }
-
-  private getClosedEvents(): Observable<any> {
-    const detachments = this.overlayRef.detachments();
-    const escKey = this.overlayRef
-      .keydownEvents()
-      .pipe(filter((event: KeyboardEvent) => event.key === "Escape"));
-    const backdrop = this.overlayRef.backdropClick();
-    return detachments.pipe(mergeWith(escKey, backdrop));
-  }
-
-  private disposeAll() {
-    this.closedEventsSub?.unsubscribe();
-    this.overlayRef?.dispose();
-  }
+  constructor(private organizationService: OrganizationService, private route: ActivatedRoute) {}
 }
 
 /**

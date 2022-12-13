@@ -86,9 +86,11 @@ export class MenuTriggerForDirective implements OnDestroy {
       }
       this.destroyMenu();
     });
-    this.keyDownEventsSub = this.overlayRef
-      .keydownEvents()
-      .subscribe((event: KeyboardEvent) => this.menu.keyManager.onKeydown(event));
+    this.keyDownEventsSub =
+      this.menu.keyManager &&
+      this.overlayRef
+        .keydownEvents()
+        .subscribe((event: KeyboardEvent) => this.menu.keyManager.onKeydown(event));
   }
 
   private destroyMenu() {
@@ -102,9 +104,12 @@ export class MenuTriggerForDirective implements OnDestroy {
 
   private getClosedEvents(): Observable<any> {
     const detachments = this.overlayRef.detachments();
-    const escKey = this.overlayRef
-      .keydownEvents()
-      .pipe(filter((event: KeyboardEvent) => event.key === "Escape" || event.key === "Tab"));
+    const escKey = this.overlayRef.keydownEvents().pipe(
+      filter((event: KeyboardEvent) => {
+        const keys = this.menu.focusStrategy === "arrows" ? ["Escape", "Tab"] : ["Escape"];
+        return keys.includes(event.key);
+      })
+    );
     const backdrop = this.overlayRef.backdropClick();
     const menuClosed = this.menu.closed;
 

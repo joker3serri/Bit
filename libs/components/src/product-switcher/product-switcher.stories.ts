@@ -4,7 +4,6 @@ import { Meta, Story, moduleMetadata } from "@storybook/angular";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { IconButtonModule, IconModule } from "@bitwarden/components";
 
 import { I18nMockService } from "../utils/i18n-mock.service";
 
@@ -53,8 +52,6 @@ export default {
           ],
           { useHash: true }
         ),
-        IconButtonModule,
-        IconModule,
         ProductSwitcherModule,
       ],
       providers: [

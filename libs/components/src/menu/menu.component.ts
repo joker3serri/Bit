@@ -8,6 +8,7 @@ import {
   ContentChildren,
   QueryList,
   AfterContentInit,
+  Input,
 } from "@angular/core";
 
 import { MenuItemDirective } from "./menu-item.directive";
@@ -22,9 +23,13 @@ export class MenuComponent implements AfterContentInit {
   @Output() closed = new EventEmitter<void>();
   @ContentChildren(MenuItemDirective, { descendants: true })
   menuItems: QueryList<MenuItemDirective>;
-  keyManager: FocusKeyManager<MenuItemDirective>;
+  keyManager?: FocusKeyManager<MenuItemDirective>;
+
+  @Input() focusStrategy: "arrows" | "tab" = "arrows";
 
   ngAfterContentInit() {
-    this.keyManager = new FocusKeyManager(this.menuItems).withWrap();
+    if (this.focusStrategy === "arrows") {
+      this.keyManager = new FocusKeyManager(this.menuItems).withWrap();
+    }
   }
 }
