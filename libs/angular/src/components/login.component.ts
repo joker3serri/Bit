@@ -83,6 +83,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
         const queryParamsEmail = params["email"];
         if (queryParamsEmail != null && queryParamsEmail.indexOf("@") > -1) {
           this.formGroup.get("email").setValue(queryParamsEmail);
+          this.loginService.setEmail(queryParamsEmail);
           this.paramEmailSet = true;
         }
       }
@@ -132,11 +133,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
       this.formPromise = this.authService.logIn(credentials);
       const response = await this.formPromise;
       this.setFormValues();
-      if (data.rememberEmail) {
-        await this.stateService.setRememberedEmail(data.email);
-      } else {
-        await this.stateService.setRememberedEmail(null);
-      }
+      await this.loginService.saveEmailSettings();
       if (this.handleCaptchaRequired(response)) {
         return;
       } else if (response.requiresTwoFactor) {
@@ -154,7 +151,6 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
       } else {
         const disableFavicon = await this.stateService.getDisableFavicon();
         await this.stateService.setDisableFavicon(!!disableFavicon);
-        this.loginService.clearValues();
         if (this.onSuccessfulLogin != null) {
           this.onSuccessfulLogin();
         }
@@ -181,6 +177,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
   }
 
   async launchSsoBrowser(clientId: string, ssoRedirectUri: string) {
+    await this.saveEmailSettings();
     // Generate necessary sso params
     const passwordOptions: any = {
       type: "password",
@@ -233,6 +230,11 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
   setFormValues() {
     this.loginService.setEmail(this.formGroup.value.email);
     this.loginService.setRememberEmail(this.formGroup.value.rememberEmail);
+  }
+
+  async saveEmailSettings() {
+    this.setFormValues();
+    await this.loginService.saveEmailSettings();
   }
 
   private getErrorToastMessage() {
