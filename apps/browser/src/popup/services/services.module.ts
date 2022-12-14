@@ -357,6 +357,7 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: LoginServiceAbstraction,
       useClass: LoginService,
+      deps: [StateServiceAbstraction],
     },
     {
       provide: AbstractThemingService,
