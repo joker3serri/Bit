@@ -18,7 +18,7 @@
     <div bitDialogContent>
       <bit-form-field>
         <bit-label>{{ "domainName" | i18n }}</bit-label>
-        <input bitInput formControlName="domainName" />
+        <input bitInput appAutofocus formControlName="domainName" />
         <bit-hint>{{ "domainNameInputHint" | i18n }}</bit-hint>
       </bit-form-field>
 
@@ -42,13 +42,7 @@
       </bit-callout>
     </div>
     <div bitDialogFooter class="tw-flex tw-flex-row tw-items-center tw-gap-2">
-      <button
-        type="submit"
-        bitButton
-        bitFormButton
-        buttonType="primary"
-        [disabled]="domainForm.invalid"
-      >
+      <button type="submit" bitButton bitFormButton buttonType="primary">
         <span *ngIf="!data?.orgDomain?.verifiedDate">{{ "verifyDomain" | i18n }}</span>
         <span *ngIf="data?.orgDomain?.verifiedDate">{{ "reverifyDomain" | i18n }}</span>
       </button>
