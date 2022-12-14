@@ -5,6 +5,8 @@ import { combineLatest, map } from "rxjs";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { IconButtonType } from "@bitwarden/components/src/icon-button/icon-button.component";
 
+import { flagEnabled } from "../../../utils/flags";
+
 type ProductSwitcherItem = {
   /**
    * Displayed name
@@ -37,6 +39,8 @@ type ProductSwitcherItem = {
   templateUrl: "./product-switcher.component.html",
 })
 export class ProductSwitcherComponent {
+  protected isEnabled = flagEnabled("secretsManager");
+
   /**
    * Passed to the product switcher's `bitIconButton`
    */
