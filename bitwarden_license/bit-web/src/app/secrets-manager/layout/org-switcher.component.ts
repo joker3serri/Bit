@@ -10,11 +10,21 @@ import type { Organization } from "@bitwarden/common/models/domain/organization"
   templateUrl: "org-switcher.component.html",
 })
 export class OrgSwitcherComponent {
-  protected organizations$: Observable<Organization[]> = this.organizationService.organizations$;
+  protected organizations$: Observable<Organization[]> =
+    this.organizationService.organizations$.pipe(map((orgs) => orgs.filter(this.filter)));
   protected activeOrganization$: Observable<Organization> = combineLatest([
     this.route.paramMap,
-    this.organizationService.organizations$,
+    this.organizations$,
   ]).pipe(map(([params, orgs]) => orgs.find((org) => org.id === params.get("organizationId"))));
+
+  /**
+   * Filter function for displayed organizations in the `org-switcher`
+   * @example
+   * const smFilter = (org: Organization) => org.canAccessSecretsManager
+   * // <org-switcher [filter]="smFilter">
+   */
+  @Input()
+  filter: (org: Organization) => boolean = () => true;
 
   /**
    * Is `true` if the expanded content is visible
