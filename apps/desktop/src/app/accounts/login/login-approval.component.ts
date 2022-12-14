@@ -1,4 +1,5 @@
-import { Input, Component, OnInit } from "@angular/core";
+import { Input, Component, OnInit, OnDestroy } from "@angular/core";
+import { Subject } from "rxjs";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -17,13 +18,16 @@ const RequestTimeUpdate = 60000 * 5; //5 Minutes
   selector: "login-approval",
   templateUrl: "login-approval.component.html",
 })
-export class LoginApprovalComponent implements OnInit {
+export class LoginApprovalComponent implements OnInit, OnDestroy {
   @Input() notificationId: string;
+
+  private destroy$ = new Subject<void>();
 
   email: string;
   authRequestResponse: AuthRequestResponse;
   interval: NodeJS.Timer;
   requestTimeText: string;
+  dismissModal: boolean;
 
   constructor(
     protected stateService: StateService,
@@ -34,7 +38,21 @@ export class LoginApprovalComponent implements OnInit {
     protected authService: AuthService,
     protected appIdService: AppIdService,
     private modalRef: ModalRef
-  ) {}
+  ) {
+    this.dismissModal = true;
+    this.modalRef.onClosed
+      // eslint-disable-next-line rxjs-angular/prefer-takeuntil
+      .subscribe(() => {
+        if (this.dismissModal) {
+          this.approveLogin(false, false);
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   async ngOnInit() {
     if (this.notificationId != null) {
@@ -49,9 +67,13 @@ export class LoginApprovalComponent implements OnInit {
     }
   }
 
-  async approveLogin(approveLogin: boolean) {
+  async approveLogin(approveLogin: boolean, approveDenyButtonClicked: boolean) {
     clearInterval(this.interval);
-    this.modalRef.close();
+
+    this.dismissModal = !approveDenyButtonClicked;
+    if (approveDenyButtonClicked) {
+      this.modalRef.close();
+    }
 
     this.authRequestResponse = await this.apiService.getAuthRequest(this.notificationId);
     if (this.authRequestResponse.requestApproved || this.authRequestResponse.responseDate != null) {
@@ -66,23 +88,27 @@ export class LoginApprovalComponent implements OnInit {
         this.authRequestResponse.publicKey,
         approveLogin
       );
-      if (loginResponse.requestApproved) {
-        this.platformUtilsService.showToast(
-          "success",
-          null,
-          this.i18nService.t(
-            "logInConfirmedForEmailOnDevice",
-            this.email,
-            loginResponse.requestDeviceType
-          )
-        );
-      } else {
-        this.platformUtilsService.showToast(
-          "info",
-          null,
-          this.i18nService.t("youDeniedALogInAttemptFromAnotherDevice")
-        );
-      }
+      this.showResultToast(loginResponse);
+    }
+  }
+
+  showResultToast(loginResponse: AuthRequestResponse) {
+    if (loginResponse.requestApproved) {
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t(
+          "logInConfirmedForEmailOnDevice",
+          this.email,
+          loginResponse.requestDeviceType
+        )
+      );
+    } else {
+      this.platformUtilsService.showToast(
+        "info",
+        null,
+        this.i18nService.t("youDeniedALogInAttemptFromAnotherDevice")
+      );
     }
   }
 

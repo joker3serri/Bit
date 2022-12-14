@@ -21,6 +21,7 @@ import { PasswordLogInStrategy } from "../misc/logInStrategies/passwordLogin.str
 import { PasswordlessLogInStrategy } from "../misc/logInStrategies/passwordlessLogin.strategy";
 import { SsoLogInStrategy } from "../misc/logInStrategies/ssoLogin.strategy";
 import { UserApiLogInStrategy } from "../misc/logInStrategies/user-api-login.strategy";
+import { Utils } from "../misc/utils";
 import { AuthResult } from "../models/domain/auth-result";
 import {
   UserApiLogInCredentials,
@@ -30,12 +31,12 @@ import {
 } from "../models/domain/log-in-credentials";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
+import { PasswordlessAuthRequest } from "../models/request/passwordless-auth.request";
 import { PreloginRequest } from "../models/request/prelogin.request";
+import { AuthRequestResponse } from "../models/response/auth-request.response";
 import { ErrorResponse } from "../models/response/error.response";
 import { AuthRequestPushNotification } from "../models/response/notification.response";
-import { Utils } from "../misc/utils";
 import { EncryptServiceImplementation } from "../services/cryptography/encrypt.service.implementation";
-import { PasswordlessAuthRequest } from "../models/request/passwordless-auth.request";
 
 const sessionTimeoutLength = 2 * 60 * 1000; // 2 minutes
 
@@ -274,7 +275,11 @@ export class AuthService implements AuthServiceAbstraction {
     return this.pushNotificationSubject.asObservable();
   }
 
-  async passwordlessLogin(id: string, key: string, requestApproved: boolean): Promise<any> {
+  async passwordlessLogin(
+    id: string,
+    key: string,
+    requestApproved: boolean
+  ): Promise<AuthRequestResponse> {
     const pubKey = Utils.fromB64ToArray(key);
     const masterKey = await this.cryptoService.getEncKey();
     const encryptedKey = await this.cryptoService.rsaEncrypt(masterKey.key, pubKey.buffer);

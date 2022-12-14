@@ -11,17 +11,17 @@
 
         <div class="section">
           <h4 class="label">{{ "fingerprintPhraseHeader" | i18n }}</h4>
-          <code>{{ authRequestResponse.requestFingerprint }}</code>
+          <code>{{ authRequestResponse?.requestFingerprint }}</code>
         </div>
 
         <div class="section">
           <h4 class="label">{{ "deviceType" | i18n }}</h4>
-          <p>{{ authRequestResponse.requestDeviceType }}</p>
+          <p>{{ authRequestResponse?.requestDeviceType }}</p>
         </div>
 
         <div class="section">
           <h4 class="label">{{ "ipAddress" | i18n }}</h4>
-          <p>{{ authRequestResponse.requestIpAddress }}</p>
+          <p>{{ authRequestResponse?.requestIpAddress }}</p>
         </div>
 
         <div class="section">
@@ -31,10 +31,10 @@
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="primary" (click)="approveLogin(true)">
+        <button type="button" class="primary" (click)="approveLogin(true, true)">
           {{ "confirmLogIn" | i18n }}
         </button>
-        <button type="button" (click)="approveLogin(false)">
+        <button type="button" (click)="approveLogin(false, true)">
           {{ "denyLogIn" | i18n }}
         </button>
       </div>
