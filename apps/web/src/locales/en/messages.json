@@ -5776,10 +5776,10 @@
     "message": "This member can access and modify all items."
   },
   "domainVerification": {
-    "message": "Domain Verification"
+    "message": "Domain verification"
   },
   "newDomain": {
-    "message": "New Domain"
+    "message": "New domain"
   },
   "noDomains": {
     "message": "No domains"
@@ -5832,6 +5832,9 @@
   "duplicateDomainError": {
     "message": "You can't claim the same domain twice."
   },
+  "domainNotAvailable": {
+    "message": "Someone else is using this domain. Use a different domain to continue."
+  },
   "domainNotVerified": {
     "message": "$DOMAIN$ not verified. Check your DNS record.",
     "placeholders": {
@@ -5855,5 +5858,8 @@
   },
   "lastChecked": {
     "message": "Last checked"
+  },
+  "domainFormInvalid": {
+    "message": "There are form errors that need your attention"
   }
 }

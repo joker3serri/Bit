@@ -1,6 +1,6 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/abstractions/cryptoFunction.service";
@@ -9,11 +9,14 @@ import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/abstractions/o
 import { OrgDomainServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain.service.abstraction";
 import { OrganizationDomainResponse } from "@bitwarden/common/abstractions/organization-domain/responses/organization-domain.response";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
+import { HttpStatusCode } from "@bitwarden/common/enums/httpStatusCode.enum";
 import { Utils } from "@bitwarden/common/misc/utils";
+import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { OrganizationDomainRequest } from "@bitwarden/common/services/organization-domain/requests/organization-domain.request";
 
-import { domainNameValidator } from "./domain-name.validator";
-import { uniqueInArrayValidator } from "./unique-in-array.validator";
+import { domainNameValidator } from "./validators/domain-name.validator";
+import { uniqueInArrayValidator } from "./validators/unique-in-array.validator";
 export interface DomainAddEditDialogData {
   organizationId: string;
   orgDomain: OrganizationDomainResponse;
@@ -51,6 +54,9 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
     return this.domainForm.controls.txt as FormControl;
   }
 
+  rejectedDomainNameValidator: ValidatorFn = null;
+  rejectedDomainNames: Array<string> = [];
+
   constructor(
     public dialogRef: DialogRef,
     @Inject(DIALOG_DATA) public data: DomainAddEditDialogData,
@@ -59,13 +65,25 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private orgDomainApiService: OrgDomainApiServiceAbstraction,
-    private orgDomainService: OrgDomainServiceAbstraction
+    private orgDomainService: OrgDomainServiceAbstraction,
+    private validationService: ValidationService
   ) {}
+
+  //#region Angular Method Implementations
 
   async ngOnInit(): Promise<void> {
     // If we have data.orgDomain, then editing, otherwise creating new domain
     await this.populateForm();
   }
+
+  ngOnDestroy(): void {
+    this.componentDestroyed$.next();
+    this.componentDestroyed$.complete();
+  }
+
+  //#endregion
+
+  //#region Form methods
 
   async populateForm(): Promise<void> {
     if (this.data.orgDomain) {
@@ -100,12 +118,15 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
     this.orgDomainService.copyDnsTxt(this.txtCtrl.value);
   }
 
-  // TODO: error handling?
+  //#endregion
 
-  // TODO: probably will be a need to split into different actions: save == save + verify
-  // and if edit true, then verify is verify.
-
+  //#region Async Form Actions
   saveDomain = async (): Promise<void> => {
+    if (this.domainForm.invalid) {
+      this.platformUtilsService.showToast("error", null, this.i18nService.t("domainFormInvalid"));
+      return;
+    }
+
     this.domainForm.disable();
 
     const request: OrganizationDomainRequest = new OrganizationDomainRequest(
@@ -113,26 +134,72 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
       this.domainNameCtrl.value
     );
 
-    // TODO: wire up DuplicateDomainException handling
-    await this.orgDomainApiService.post(this.data.organizationId, request);
-
-    //TODO: figure out how to handle DomainVerifiedException
-
-    this.platformUtilsService.showToast("success", null, this.i18nService.t("domainSaved"));
-
-    // TODO: verify before closing modal; close if successful
-    this.dialogRef.close();
+    try {
+      this.data.orgDomain = await this.orgDomainApiService.post(this.data.organizationId, request);
+      this.platformUtilsService.showToast("success", null, this.i18nService.t("domainSaved"));
+      this.verifyDomain();
+    } catch (e) {
+      this.handleDomainSaveError(e);
+    }
   };
 
+  private handleDomainSaveError(e: any) {
+    if (e instanceof ErrorResponse) {
+      const errorResponse: ErrorResponse = e as ErrorResponse;
+      switch (errorResponse.statusCode) {
+        case HttpStatusCode.Conflict:
+          if (errorResponse.message.includes("The domain is not available to be claimed")) {
+            // If user has attempted to claim a different rejected domain first:
+            if (this.rejectedDomainNameValidator) {
+              // Remove the validator:
+              this.domainNameCtrl.removeValidators(this.rejectedDomainNameValidator);
+              this.domainNameCtrl.updateValueAndValidity();
+            }
+
+            // Update rejected domain names and add new unique in validator
+            // which will prevent future known bad domain name submissions.
+            this.rejectedDomainNames.push(this.domainNameCtrl.value);
+
+            this.rejectedDomainNameValidator = uniqueInArrayValidator(
+              this.rejectedDomainNames,
+              this.i18nService.t("domainNotAvailable")
+            );
+
+            this.domainNameCtrl.addValidators(this.rejectedDomainNameValidator);
+            this.domainNameCtrl.updateValueAndValidity();
+
+            // Give them another chance to enter a new domain name:
+            this.domainForm.enable();
+          } else {
+            this.validationService.showError(errorResponse);
+          }
+
+          break;
+
+        default:
+          this.validationService.showError(errorResponse);
+          break;
+      }
+    } else {
+      this.validationService.showError(e);
+    }
+  }
+
   verifyDomain = async (): Promise<void> => {
+    if (this.domainForm.invalid) {
+      // Note: shouldn't be possible, but going to leave this to be safe.
+      this.platformUtilsService.showToast("error", null, this.i18nService.t("domainFormInvalid"));
+      return;
+    }
+
     this.domainForm.disable();
 
-    const success: boolean = await this.orgDomainApiService.verify(
+    this.data.orgDomain = await this.orgDomainApiService.verify(
       this.data.organizationId,
       this.data.orgDomain.id
     );
 
-    if (success) {
+    if (this.data.orgDomain.verifiedDate) {
       this.platformUtilsService.showToast("success", null, this.i18nService.t("domainVerified"));
       this.dialogRef.close();
     } else {
@@ -141,10 +208,6 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
         null,
         this.i18nService.t("domainNotVerified", this.domainNameCtrl.value)
       );
-
-      // TODO: discuss with Danielle / Gbubemi:
-      // Someone else is using [domain]. Use a different domain to continue.
-      // I only have a bool to indicate success or failure.. not why it failed.
     }
   };
 
@@ -166,8 +229,5 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   };
 
-  ngOnDestroy(): void {
-    this.componentDestroyed$.next();
-    this.componentDestroyed$.complete();
-  }
+  //#endregion
 }
