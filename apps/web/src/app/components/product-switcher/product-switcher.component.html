@@ -3,6 +3,7 @@
     bitIconButton="bwi bwi-fw bwi-filter"
     [bitMenuTriggerFor]="menuRef"
     [buttonType]="buttonType"
+    [attr.aria-label]="'switchProducts' | i18n"
   ></button>
   <bit-menu #menuRef [focusStrategy]="'tab'">
     <div class="tw-px-4 tw-py-2" *ngIf="products$ | async as products">
