@@ -174,10 +174,12 @@
 
             <td bitCell (click)="edit(u)" class="tw-cursor-pointer">
               <bit-badge-list
+                *ngIf="accessGroups || !u.accessAll"
                 [items]="accessGroups ? u.groupNames : u.collectionNames"
                 [maxItems]="2"
                 badgeType="secondary"
               ></bit-badge-list>
+              <span *ngIf="!accessGroups && u.accessAll">{{ "all" | i18n }}</span>
             </td>
 
             <td bitCell (click)="edit(u)" class="tw-cursor-pointer">
