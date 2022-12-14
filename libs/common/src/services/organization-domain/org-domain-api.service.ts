@@ -64,8 +64,8 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
     return response;
   }
 
-  async verify(orgId: string, orgDomainId: string): Promise<boolean> {
-    const result: boolean = await this.apiService.send(
+  async verify(orgId: string, orgDomainId: string): Promise<OrganizationDomainResponse> {
+    const result = await this.apiService.send(
       "POST",
       `/organizations/${orgId}/domain/${orgDomainId}/verify`,
       null,
@@ -73,7 +73,11 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
       true
     );
 
-    return result;
+    const response = new OrganizationDomainResponse(result);
+
+    this.orgDomainService.upsert([response]);
+
+    return response;
   }
 
   async delete(orgId: string, orgDomainId: string): Promise<any> {
