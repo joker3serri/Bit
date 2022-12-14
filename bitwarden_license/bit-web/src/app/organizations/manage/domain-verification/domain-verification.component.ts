@@ -98,7 +98,24 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
     this.orgDomainService.copyDnsTxt(dnsTxt);
   }
 
-  deleteDomain = async (orgDomainId: string): Promise<void> => {
+  async verifyDomain(orgDomainId: string, domainName: string): Promise<void> {
+    const orgDomain: OrganizationDomainResponse = await this.orgDomainApiService.verify(
+      this.organizationId,
+      orgDomainId
+    );
+
+    if (orgDomain.verifiedDate) {
+      this.platformUtilsService.showToast("success", null, this.i18nService.t("domainVerified"));
+    } else {
+      this.platformUtilsService.showToast(
+        "error",
+        null,
+        this.i18nService.t("domainNotVerified", domainName)
+      );
+    }
+  }
+
+  async deleteDomain(orgDomainId: string): Promise<void> {
     const confirmed = await this.platformUtilsService.showDialog(
       this.i18nService.t("removeDomainWarning"),
       this.i18nService.t("removeDomain"),
@@ -113,7 +130,7 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
     await this.orgDomainApiService.delete(this.organizationId, orgDomainId);
 
     this.platformUtilsService.showToast("success", null, this.i18nService.t("domainRemoved"));
-  };
+  }
 
   //#endregion
 

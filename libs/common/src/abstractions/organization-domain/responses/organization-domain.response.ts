@@ -9,6 +9,7 @@ export class OrganizationDomainResponse extends BaseResponse {
   nextRunDate: string;
   jobRunCount: number;
   verifiedDate?: string;
+  lastCheckedDate?: string;
 
   constructor(response: any) {
     super(response);
@@ -20,6 +21,7 @@ export class OrganizationDomainResponse extends BaseResponse {
     this.nextRunDate = this.getResponseProperty("NextRunDate");
     this.jobRunCount = this.getResponseProperty("JobRunCount");
     this.verifiedDate = this.getResponseProperty("VerifiedDate");
+    this.lastCheckedDate = this.getResponseProperty("LastCheckedDate");
 
     // TODO: come back and eval if this is necessary or not
     // Might be worth converting string dates to actual dates for ease of use
