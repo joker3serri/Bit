@@ -2142,5 +2142,8 @@
   },
   "thisRequestIsNoLongerValid": {
     "message": "This request is no longer valid."
+  },
+  "approveLoginRequestDesc": {
+    "message": "Use this device to approve login requests made from other devices."
   }
 }
