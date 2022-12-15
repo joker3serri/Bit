@@ -1,9 +1,9 @@
 import { BehaviorSubject } from "rxjs";
 
+import { I18nService } from "../../abstractions/i18n.service";
 import { OrgDomainInternalServiceAbstraction } from "../../abstractions/organization-domain/org-domain.service.abstraction";
 import { OrganizationDomainResponse } from "../../abstractions/organization-domain/responses/organization-domain.response";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
-import { I18nService } from "../i18n.service";
 
 export class OrgDomainService implements OrgDomainInternalServiceAbstraction {
   protected _orgDomains$: BehaviorSubject<OrganizationDomainResponse[]> = new BehaviorSubject([]);
@@ -15,7 +15,7 @@ export class OrgDomainService implements OrgDomainInternalServiceAbstraction {
     private i18nService: I18nService
   ) {}
 
-  async get(orgDomainId: string): Promise<OrganizationDomainResponse> {
+  get(orgDomainId: string): OrganizationDomainResponse {
     const orgDomains: OrganizationDomainResponse[] = this._orgDomains$.getValue();
 
     return orgDomains.find((orgDomain) => orgDomain.id === orgDomainId);
@@ -54,7 +54,7 @@ export class OrgDomainService implements OrgDomainInternalServiceAbstraction {
     this._orgDomains$.next(orgDomains);
   }
 
-  async clearCache(): Promise<void> {
+  clearCache(): void {
     this._orgDomains$.next([]);
   }
 

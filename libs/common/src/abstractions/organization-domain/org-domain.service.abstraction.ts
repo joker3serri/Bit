@@ -5,7 +5,7 @@ import { OrganizationDomainResponse } from "./responses/organization-domain.resp
 export abstract class OrgDomainServiceAbstraction {
   orgDomains$: Observable<OrganizationDomainResponse[]>;
 
-  get: (orgDomainId: string) => Promise<OrganizationDomainResponse>;
+  get: (orgDomainId: string) => OrganizationDomainResponse;
 
   copyDnsTxt: (dnsTxt: string) => void;
 }
@@ -15,6 +15,6 @@ export abstract class OrgDomainServiceAbstraction {
 export abstract class OrgDomainInternalServiceAbstraction extends OrgDomainServiceAbstraction {
   upsert: (orgDomains: OrganizationDomainResponse[]) => void;
   replace: (orgDomains: OrganizationDomainResponse[]) => void;
-  clearCache: () => Promise<void>;
+  clearCache: () => void;
   delete: (orgDomainIds: string[]) => void;
 }
