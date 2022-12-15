@@ -1,3 +1,4 @@
+import * as objectHash from "object-hash";
 import { BehaviorSubject, concatMap, ReplaySubject, Subject, Subscription } from "rxjs";
 
 import { Utils } from "@bitwarden/common/misc/utils";
@@ -10,6 +11,7 @@ import { SyncedItemMetadata } from "./sync-item-metadata";
 export class SessionSyncer {
   subscription: Subscription;
   id = Utils.newGuid();
+  lastHash: string;
 
   // ignore initial values
   private ignoreNUpdates = 0;
@@ -92,8 +94,12 @@ export class SessionSyncer {
   }
 
   private async updateSession(value: any) {
-    await this.stateService.setInSessionMemory(this.metaData.sessionKey, value);
-    await BrowserApi.sendMessage(this.updateMessageCommand, { id: this.id });
+    const thisHash = objectHash(value);
+    if (thisHash !== this.lastHash) {
+      this.lastHash = thisHash;
+      await this.stateService.setInSessionMemory(this.metaData.sessionKey, value);
+      await BrowserApi.sendMessage(this.updateMessageCommand, { id: this.id });
+    }
   }
 
   private get updateMessageCommand() {
