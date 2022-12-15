@@ -299,7 +299,7 @@
           id="duckduckgo-apikey"
           class="form-control"
           type="password"
-          name="DuckDudkGoApiKey"
+          name="DuckDuckGoApiKey"
           [(ngModel)]="usernameOptions.forwardedDuckDuckGoToken"
           (blur)="saveUsernameOptions()"
         />
@@ -408,7 +408,7 @@
       type="button"
       class="btn btn-submit btn-primary"
       (click)="regenerate()"
-      [disabled]="form.loading"
+      [disabled]="$any(form).loading"
     >
       <i class="bwi bwi-spinner bwi-spin" title="{{ 'loading' | i18n }}" aria-hidden="true"></i>
       <span>{{ "regenerateUsername" | i18n }}</span>

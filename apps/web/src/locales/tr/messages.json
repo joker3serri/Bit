@@ -4119,6 +4119,21 @@
   "customDesc": {
     "message": "Gelişmiş yapılandırma için kullanıcı izinleri üzerinde daha detaylı kontrol sağlar."
   },
+  "customDescNonEnterpriseStart": {
+    "message": "Custom roles is an ",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Custom roles is an enterprise feature. Contact our support team to upgrade your subscription'"
+  },
+  "customDescNonEnterpriseLink": {
+    "message": "enterprise feature",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Custom roles is an enterprise feature. Contact our support team to upgrade your subscription'"
+  },
+  "customDescNonEnterpriseEnd": {
+    "message": ". Contact our support team to upgrade your subscription",
+    "description": "This will be used as part of a larger sentence, broken up to include links. The full sentence will read 'Custom roles is an enterprise feature. Contact our support team to upgrade your subscription'"
+  },
+  "customNonEnterpriseError": {
+    "message": "To enable custom permissions the organization must be on an Enterprise 2020 plan."
+  },
   "permissions": {
     "message": "İzinler"
   },
@@ -4390,13 +4405,13 @@
     "message": "Parola başarıyla sıfırlandı."
   },
   "resetPasswordEnrollmentWarning": {
-    "message": "Katılmak kuruluş yöneticilerinin ana parolanızı değiştirmesine izin verir. Katılmak istediğinize emin misiniz?"
+    "message": "Katılmak kuruluş yöneticilerinin ana parolanızı değiştirmesine izin verir"
   },
   "resetPasswordPolicy": {
     "message": "Ana parola sıfırlama"
   },
   "resetPasswordPolicyDescription": {
-    "message": "Kuruluş yöneticilerinin kuruluş kullanıcılarının ana parolalarını sıfırlamasına izin ver."
+    "message": "Kuruluş yöneticilerinin üyelerin ana parolalarını sıfırlamasına izin ver."
   },
   "resetPasswordPolicyWarning": {
     "message": "Yöneticilerin kullanıcıların ana parolalarını sıfırlayabilmesi önce kuruluştaki kullanıcıların kendileri katılmaları veya otomatik eklenmeleri gerekir."
@@ -4492,7 +4507,7 @@
     "message": "Kuruluş erişimi başarıyla geri getirildi"
   },
   "bulkFilteredMessage": {
-    "message": "İstisna. Bu eylem için geçerli değildir."
+    "message": "İstisna. Bu eylem için geçerli değildir"
   },
   "fingerprint": {
     "message": "Parmak izi"
@@ -4608,7 +4623,7 @@
     "message": "Sağlayıcı devre dışı."
   },
   "providerUpdated": {
-    "message": "Sağlayıcı güncellendi"
+    "message": "Sağlayıcı kaydedildi"
   },
   "yourProviderIs": {
     "message": "Sağlayıcınız: $PROVIDER$. Kuruluşunuzun yönetim ve ödeme yetkileri sağlayıcınıza aittir.",
@@ -4708,13 +4723,13 @@
     "message": "Tür"
   },
   "openIdConnectConfig": {
-    "message": "OpenID Connect Yapılandırması"
+    "message": "OpenID Connect yapılandırması"
   },
   "samlSpConfig": {
-    "message": "SAML Servis Sağlayıcı Yapılandırması"
+    "message": "SAML servis sağlayıcı yapılandırması"
   },
   "samlIdpConfig": {
-    "message": "SAML Kimlik Sağlayıcı Yapılandırması"
+    "message": "SAML kimlik sağlayıcı yapılandırması"
   },
   "callbackPath": {
     "message": "Callback yolu"
