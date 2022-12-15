@@ -1,13 +1,13 @@
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
-import { EventService } from "@bitwarden/common/abstractions/event.service";
+import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { EventType } from "@bitwarden/common/enums/eventType";
-import { CipherView } from "@bitwarden/common/models/view/cipherView";
+import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 
 import { BrowserApi } from "../browser/browserApi";
 
@@ -24,7 +24,7 @@ export default class ContextMenusBackground {
     private passwordGenerationService: PasswordGenerationService,
     private platformUtilsService: PlatformUtilsService,
     private authService: AuthService,
-    private eventService: EventService,
+    private eventCollectionService: EventCollectionService,
     private totpService: TotpService
   ) {
     this.contextMenus = chrome.contextMenus;
@@ -66,7 +66,7 @@ export default class ContextMenusBackground {
   }
 
   private async generatePasswordToClipboard() {
-    const options = (await this.passwordGenerationService.getOptions())[0];
+    const options = (await this.passwordGenerationService.getOptions())?.[0] ?? {};
     const password = await this.passwordGenerationService.generatePassword(options);
     this.platformUtilsService.copyToClipboard(password, { window: window });
     this.passwordGenerationService.addHistory(password);
@@ -124,7 +124,7 @@ export default class ContextMenusBackground {
       this.platformUtilsService.copyToClipboard(cipher.login.username, { window: window });
     } else if (info.parentMenuItemId === "copy-password") {
       this.platformUtilsService.copyToClipboard(cipher.login.password, { window: window });
-      this.eventService.collect(EventType.Cipher_ClientCopiedPassword, cipher.id);
+      this.eventCollectionService.collect(EventType.Cipher_ClientCopiedPassword, cipher.id);
     } else if (info.parentMenuItemId === "copy-totp") {
       const totpValue = await this.totpService.getCode(cipher.login.totp);
       this.platformUtilsService.copyToClipboard(totpValue, { window: window });

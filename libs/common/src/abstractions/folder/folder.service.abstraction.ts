@@ -1,9 +1,9 @@
 import { Observable } from "rxjs";
 
-import { FolderData } from "../../models/data/folderData";
+import { FolderData } from "../../models/data/folder.data";
 import { Folder } from "../../models/domain/folder";
-import { SymmetricCryptoKey } from "../../models/domain/symmetricCryptoKey";
-import { FolderView } from "../../models/view/folderView";
+import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
+import { FolderView } from "../../models/view/folder.view";
 
 export abstract class FolderService {
   folders$: Observable<Folder[]>;
@@ -12,6 +12,11 @@ export abstract class FolderService {
   clearCache: () => Promise<void>;
   encrypt: (model: FolderView, key?: SymmetricCryptoKey) => Promise<Folder>;
   get: (id: string) => Promise<Folder>;
+  getAllFromState: () => Promise<Folder[]>;
+  /**
+   * @deprecated Only use in CLI!
+   */
+  getFromState: (id: string) => Promise<Folder>;
   /**
    * @deprecated Only use in CLI!
    */

@@ -1,6 +1,12 @@
-import { AbstractStorageService } from "@bitwarden/common/abstractions/storage.service";
+import {
+  AbstractStorageService,
+  MemoryStorageServiceInterface,
+} from "../abstractions/storage.service";
 
-export class MemoryStorageService implements AbstractStorageService {
+export class MemoryStorageService
+  extends AbstractStorageService
+  implements MemoryStorageServiceInterface
+{
   private store = new Map<string, any>();
 
   get<T>(key: string): Promise<T> {
@@ -12,7 +18,7 @@ export class MemoryStorageService implements AbstractStorageService {
   }
 
   async has(key: string): Promise<boolean> {
-    return this.get(key) != null;
+    return (await this.get(key)) != null;
   }
 
   save(key: string, obj: any): Promise<any> {

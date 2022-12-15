@@ -4,7 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { EventService } from "@bitwarden/common/abstractions/event.service";
+import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { ExportService } from "@bitwarden/common/abstractions/export.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -27,7 +27,7 @@ export class OrganizationExportComponent extends ExportComponent {
     i18nService: I18nService,
     platformUtilsService: PlatformUtilsService,
     exportService: ExportService,
-    eventService: EventService,
+    eventCollectionService: EventCollectionService,
     private route: ActivatedRoute,
     policyService: PolicyService,
     logService: LogService,
@@ -41,7 +41,7 @@ export class OrganizationExportComponent extends ExportComponent {
       i18nService,
       platformUtilsService,
       exportService,
-      eventService,
+      eventCollectionService,
       policyService,
       logService,
       userVerificationService,
@@ -64,7 +64,11 @@ export class OrganizationExportComponent extends ExportComponent {
   }
 
   getExportData() {
-    return this.exportService.getOrganizationExport(this.organizationId, this.format);
+    if (this.isFileEncryptedExport) {
+      return this.exportService.getPasswordProtectedExport(this.filePassword, this.organizationId);
+    } else {
+      return this.exportService.getOrganizationExport(this.organizationId, this.format);
+    }
   }
 
   getFileName() {
@@ -72,7 +76,7 @@ export class OrganizationExportComponent extends ExportComponent {
   }
 
   async collectEvent(): Promise<void> {
-    await this.eventService.collect(
+    await this.eventCollectionService.collect(
       EventType.Organization_ClientExportedVault,
       null,
       null,

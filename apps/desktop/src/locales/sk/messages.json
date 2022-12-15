@@ -33,7 +33,7 @@
     "message": "Zbierky"
   },
   "searchVault": {
-    "message": "Hľadať v trezore"
+    "message": "Search vault"
   },
   "addItem": {
     "message": "Pridať položku"
@@ -151,7 +151,7 @@
     "message": "Bezpečnostný kód"
   },
   "identityName": {
-    "message": "Názov identity"
+    "message": "Meno identity"
   },
   "company": {
     "message": "Spoločnosť"
@@ -389,7 +389,7 @@
     "message": "Vygenerovať nové heslo"
   },
   "copyPassword": {
-    "message": "Kopírovať heslo"
+    "message": "Skopírovať heslo"
   },
   "copyUri": {
     "message": "Kopírovať URI"
@@ -420,7 +420,7 @@
   },
   "capitalize": {
     "message": "Veľké prvé písmená slov",
-    "description": "Make the first letter of a work uppercase."
+    "description": "Make the first letter of a word uppercase."
   },
   "includeNumber": {
     "message": "Zahrnúť číslo"
@@ -439,16 +439,16 @@
     "message": "Vyhnúť sa zameniteľným znakom"
   },
   "searchCollection": {
-    "message": "Hľadať v zbierke"
+    "message": "Search collection"
   },
   "searchFolder": {
-    "message": "Hľadať v priečinku"
+    "message": "Search folder"
   },
   "searchFavorites": {
-    "message": "Hľadať v obľúbených"
+    "message": "Search favorites"
   },
   "searchType": {
-    "message": "Hľadať podľa typu",
+    "message": "Search type",
     "description": "Search item type"
   },
   "newAttachment": {
@@ -698,7 +698,7 @@
     "message": "URL adresa servera pre oznámenia"
   },
   "iconsUrl": {
-    "message": "URL servera ikon"
+    "message": "URL servera ikôn"
   },
   "environmentSaved": {
     "message": "URL prostredia boli uložené."
@@ -1266,6 +1266,10 @@
     "message": "Aktualizované",
     "description": "ex. Date this item was updated"
   },
+  "dateCreated": {
+    "message": "Vytvorené",
+    "description": "ex. Date this item was created"
+  },
   "datePasswordUpdated": {
     "message": "Heslo bolo aktualizované",
     "description": "ex. Date this password was updated"
@@ -1570,6 +1574,12 @@
   "enableBrowserIntegrationDesc": {
     "message": "Integrácia v prehliadači sa používa na biometriu v prehliadači."
   },
+  "enableDuckDuckGoBrowserIntegration": {
+    "message": "Povoliť integráciu prehliadača DuckDuckGo"
+  },
+  "enableDuckDuckGoBrowserIntegrationDesc": {
+    "message": "Používajte svoj trezor Bitwarden pri prehliadaní pomocou DuckDuckGo."
+  },
   "browserIntegrationUnsupportedTitle": {
     "message": "Integrácia v prehliadači nie je podporovaná"
   },
@@ -1596,6 +1606,21 @@
   },
   "verifyBrowserDesc": {
     "message": "Uistite sa, že zobrazený odtlačok prsta je identický s odtlačkom prsta zobrazeným v rozšírení prehliadača."
+  },
+  "verifyNativeMessagingConnectionTitle": {
+    "message": "$APPID$ sa chce pripojiť k Bitwarden",
+    "placeholders": {
+      "appid": {
+        "content": "$1",
+        "example": "My App"
+      }
+    }
+  },
+  "verifyNativeMessagingConnectionDesc": {
+    "message": "Chcete túto žiadosť schváliť?"
+  },
+  "verifyNativeMessagingConnectionWarning": {
+    "message": "Ak ste túto žiadosť neiniciovali, neschvaľujte ju."
   },
   "biometricsNotEnabledTitle": {
     "message": "Biometria nie je aktivovaná"
@@ -1753,6 +1778,15 @@
   },
   "disabled": {
     "message": "Zakázané"
+  },
+  "removePassword": {
+    "message": "Odstrániť heslo"
+  },
+  "removedPassword": {
+    "message": "Heslo bolo odstránené"
+  },
+  "removePasswordConfirmation": {
+    "message": "Naozaj chcete odstrániť heslo?"
   },
   "maxAccessCountReached": {
     "message": "Bol dosiahnutý maximálny počet prístupov"
@@ -1993,5 +2027,35 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "vault": {
+    "message": "Trezor"
+  },
+  "loginWithMasterPassword": {
+    "message": "Prihlásenie pomocou hlavného hesla"
+  },
+  "loggingInAs": {
+    "message": "Prihlasujete sa ako"
+  },
+  "rememberEmail": {
+    "message": "Zapamätať si e-mail"
+  },
+  "notYou": {
+    "message": "Nie ste to vy?"
+  },
+  "newAroundHere": {
+    "message": "Ste tu nový?"
+  },
+  "loggingInTo": {
+    "message": "Prihlásenie do $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "logInWithAnotherDevice": {
+    "message": "Prihlásenie pomocou iného zariadenia"
   }
 }

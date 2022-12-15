@@ -1311,6 +1311,10 @@
     "message": "Güncəlləndi",
     "description": "ex. Date this item was updated"
   },
+  "dateCreated": {
+    "message": "Yaradıldı",
+    "description": "ex. Date this item was created"
+  },
   "datePasswordUpdated": {
     "message": "Parol güncəlləndi",
     "description": "ex. Date this password was updated"
@@ -2024,5 +2028,20 @@
         "example": "Jun 15, 2015"
       }
     }
+  },
+  "loginWithMasterPassword": {
+    "message": "Ana parolla giriş et"
+  },
+  "loggingInAs": {
+    "message": "Giriş et"
+  },
+  "notYou": {
+    "message": "Siz deyilsiniz?"
+  },
+  "newAroundHere": {
+    "message": "Burada yenisiniz?"
+  },
+  "rememberEmail": {
+    "message": "E-poçtu xatırla"
   }
 }

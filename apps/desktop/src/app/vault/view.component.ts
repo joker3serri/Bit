@@ -13,8 +13,9 @@ import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { EventService } from "@bitwarden/common/abstractions/event.service";
+import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -23,7 +24,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TokenService } from "@bitwarden/common/abstractions/token.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
-import { CipherView } from "@bitwarden/common/models/view/cipherView";
+import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 
 const BroadcasterSubscriptionId = "ViewComponent";
 
@@ -36,6 +37,7 @@ export class ViewComponent extends BaseViewComponent implements OnChanges {
 
   constructor(
     cipherService: CipherService,
+    folderService: FolderService,
     totpService: TotpService,
     tokenService: TokenService,
     i18nService: I18nService,
@@ -45,7 +47,7 @@ export class ViewComponent extends BaseViewComponent implements OnChanges {
     broadcasterService: BroadcasterService,
     ngZone: NgZone,
     changeDetectorRef: ChangeDetectorRef,
-    eventService: EventService,
+    eventCollectionService: EventCollectionService,
     apiService: ApiService,
     private messagingService: MessagingService,
     passwordRepromptService: PasswordRepromptService,
@@ -55,6 +57,7 @@ export class ViewComponent extends BaseViewComponent implements OnChanges {
   ) {
     super(
       cipherService,
+      folderService,
       totpService,
       tokenService,
       i18nService,
@@ -65,7 +68,7 @@ export class ViewComponent extends BaseViewComponent implements OnChanges {
       broadcasterService,
       ngZone,
       changeDetectorRef,
-      eventService,
+      eventCollectionService,
       apiService,
       passwordRepromptService,
       logService,

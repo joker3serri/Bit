@@ -1,8 +1,9 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { OrganizationUserConfirmRequest } from "@bitwarden/common/models/request/organizationUserConfirmRequest";
-import { Response } from "@bitwarden/node/cli/models/response";
+import { OrganizationUserConfirmRequest } from "@bitwarden/common/models/request/organization-user-confirm.request";
+
+import { Response } from "../models/response";
 
 export class ConfirmCommand {
   constructor(private apiService: ApiService, private cryptoService: CryptoService) {}

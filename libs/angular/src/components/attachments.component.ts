@@ -9,10 +9,10 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
-import { EncArrayBuffer } from "@bitwarden/common/models/domain/encArrayBuffer";
-import { ErrorResponse } from "@bitwarden/common/models/response/errorResponse";
-import { AttachmentView } from "@bitwarden/common/models/view/attachmentView";
-import { CipherView } from "@bitwarden/common/models/view/cipherView";
+import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
+import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
+import { AttachmentView } from "@bitwarden/common/models/view/attachment.view";
+import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 
 @Directive()
 export class AttachmentsComponent implements OnInit {
@@ -29,6 +29,7 @@ export class AttachmentsComponent implements OnInit {
   deletePromises: { [id: string]: Promise<any> } = {};
   reuploadPromises: { [id: string]: Promise<any> } = {};
   emergencyAccessId?: string = null;
+  protected componentName = "";
 
   constructor(
     protected cipherService: CipherService,
@@ -104,7 +105,9 @@ export class AttachmentsComponent implements OnInit {
       this.i18nService.t("deleteAttachment"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      "warning",
+      false,
+      this.componentName != "" ? this.componentName + " .modal-content" : null
     );
     if (!confirmed) {
       return;
@@ -291,5 +294,9 @@ export class AttachmentsComponent implements OnInit {
 
   protected deleteCipherAttachment(attachmentId: string) {
     return this.cipherService.deleteAttachmentWithServer(this.cipher.id, attachmentId);
+  }
+
+  protected async reupload(attachment: AttachmentView) {
+    // TODO: This should be removed but is needed since we re-use the same template
   }
 }

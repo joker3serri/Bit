@@ -420,7 +420,7 @@
   },
   "capitalize": {
     "message": "Izmantot lielos sākumburtus",
-    "description": "Make the first letter of a work uppercase."
+    "description": "Make the first letter of a word uppercase."
   },
   "includeNumber": {
     "message": "Iekļaut ciparu"
@@ -1266,6 +1266,10 @@
     "message": "Atjaunināts",
     "description": "ex. Date this item was updated"
   },
+  "dateCreated": {
+    "message": "Izveidots",
+    "description": "ex. Date this item was created"
+  },
   "datePasswordUpdated": {
     "message": "Parole atjaunināta",
     "description": "ex. Date this password was updated"
@@ -1570,6 +1574,12 @@
   "enableBrowserIntegrationDesc": {
     "message": "Pārlūka saistīšana tiek izmantota pārlūka biometrijas nodrošināšanai."
   },
+  "enableDuckDuckGoBrowserIntegration": {
+    "message": "Atļaut DuckDuckGo pārlūka saistīšanu"
+  },
+  "enableDuckDuckGoBrowserIntegrationDesc": {
+    "message": "Izmantot Bitwarden glabātavu, kad pārlūko ar DuckDuckGo."
+  },
   "browserIntegrationUnsupportedTitle": {
     "message": "Pārlūka saistīšana nav atbalstīta"
   },
@@ -1596,6 +1606,21 @@
   },
   "verifyBrowserDesc": {
     "message": "Lūgums pārliecināties, ka attēlotā atpazīšanas vārdkopa ir tāda pati kā tā, kas ir redzama pārlūka paplašinājumā."
+  },
+  "verifyNativeMessagingConnectionTitle": {
+    "message": "$APPID$ pieprasa savienojumu ar Bitwarden",
+    "placeholders": {
+      "appid": {
+        "content": "$1",
+        "example": "My App"
+      }
+    }
+  },
+  "verifyNativeMessagingConnectionDesc": {
+    "message": "Vai apstiprināt šo pieprasījumu?"
+  },
+  "verifyNativeMessagingConnectionWarning": {
+    "message": "Ja Tu neuzsāki šo pieprasījumu, neapstiprini to!"
   },
   "biometricsNotEnabledTitle": {
     "message": "Biometrija nav iespējota"
@@ -1753,6 +1778,15 @@
   },
   "disabled": {
     "message": "Atspējots"
+  },
+  "removePassword": {
+    "message": "Noņemt paroli"
+  },
+  "removedPassword": {
+    "message": "Parole noņemta"
+  },
+  "removePasswordConfirmation": {
+    "message": "Vai tiešām noņemt paroli?"
   },
   "maxAccessCountReached": {
     "message": "Sasniegts lielākais pieļaujamais piekļuvju skaits"
@@ -1993,5 +2027,35 @@
   },
   "cardBrandMir": {
     "message": "Mir"
+  },
+  "vault": {
+    "message": "Glabātava"
+  },
+  "loginWithMasterPassword": {
+    "message": "Pierakstīties ar galveno paroli"
+  },
+  "loggingInAs": {
+    "message": "Pierakstās kā"
+  },
+  "rememberEmail": {
+    "message": "Atcerēties e-pasta adresi"
+  },
+  "notYou": {
+    "message": "Tas neesi Tu?"
+  },
+  "newAroundHere": {
+    "message": "Jauns šeit?"
+  },
+  "loggingInTo": {
+    "message": "Pierakstās $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "logInWithAnotherDevice": {
+    "message": "Pierakstīties ar citu ierīci"
   }
 }

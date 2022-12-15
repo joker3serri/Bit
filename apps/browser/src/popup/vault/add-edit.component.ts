@@ -7,18 +7,18 @@ import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/com
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
-import { EventService } from "@bitwarden/common/abstractions/event.service";
+import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
-import { LoginUriView } from "@bitwarden/common/models/view/loginUriView";
+import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { PopupUtilsService } from "../services/popup-utils.service";
@@ -46,7 +46,7 @@ export class AddEditComponent extends BaseAddEditComponent {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    eventService: EventService,
+    eventCollectionService: EventCollectionService,
     policyService: PolicyService,
     private popupUtilsService: PopupUtilsService,
     organizationService: OrganizationService,
@@ -62,7 +62,7 @@ export class AddEditComponent extends BaseAddEditComponent {
       stateService,
       collectionService,
       messagingService,
-      eventService,
+      eventCollectionService,
       policyService,
       logService,
       passwordRepromptService,

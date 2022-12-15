@@ -8,14 +8,16 @@ import {
   OnInit,
   Output,
 } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { EventService } from "@bitwarden/common/abstractions/event.service";
+import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
+import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
@@ -27,11 +29,12 @@ import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
-import { EncArrayBuffer } from "@bitwarden/common/models/domain/encArrayBuffer";
-import { ErrorResponse } from "@bitwarden/common/models/response/errorResponse";
-import { AttachmentView } from "@bitwarden/common/models/view/attachmentView";
-import { CipherView } from "@bitwarden/common/models/view/cipherView";
-import { LoginUriView } from "@bitwarden/common/models/view/loginUriView";
+import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
+import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
+import { AttachmentView } from "@bitwarden/common/models/view/attachment.view";
+import { CipherView } from "@bitwarden/common/models/view/cipher.view";
+import { FolderView } from "@bitwarden/common/models/view/folder.view";
+import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
 
 const BroadcasterSubscriptionId = "ViewComponent";
 
@@ -58,6 +61,7 @@ export class ViewComponent implements OnDestroy, OnInit {
   totpLow: boolean;
   fieldType = FieldType;
   checkPasswordPromise: Promise<number>;
+  folder: FolderView;
 
   private totpInterval: any;
   private previousCipherId: string;
@@ -65,6 +69,7 @@ export class ViewComponent implements OnDestroy, OnInit {
 
   constructor(
     protected cipherService: CipherService,
+    protected folderService: FolderService,
     protected totpService: TotpService,
     protected tokenService: TokenService,
     protected i18nService: I18nService,
@@ -75,7 +80,7 @@ export class ViewComponent implements OnDestroy, OnInit {
     protected broadcasterService: BroadcasterService,
     protected ngZone: NgZone,
     protected changeDetectorRef: ChangeDetectorRef,
-    protected eventService: EventService,
+    protected eventCollectionService: EventCollectionService,
     protected apiService: ApiService,
     protected passwordRepromptService: PasswordRepromptService,
     private logService: LogService,
@@ -112,6 +117,12 @@ export class ViewComponent implements OnDestroy, OnInit {
     this.showPremiumRequiredTotp =
       this.cipher.login.totp && !this.canAccessPremium && !this.cipher.organizationUseTotp;
 
+    if (this.cipher.folderId) {
+      this.folder = await (
+        await firstValueFrom(this.folderService.folderViews$)
+      ).find((f) => f.id == this.cipher.folderId);
+    }
+
     if (
       this.cipher.type === CipherType.Login &&
       this.cipher.login.totp &&
@@ -127,7 +138,7 @@ export class ViewComponent implements OnDestroy, OnInit {
     }
 
     if (this.previousCipherId !== this.cipherId) {
-      this.eventService.collect(EventType.Cipher_ClientViewed, this.cipherId);
+      this.eventCollectionService.collect(EventType.Cipher_ClientViewed, this.cipherId);
     }
     this.previousCipherId = this.cipherId;
   }
@@ -227,7 +238,10 @@ export class ViewComponent implements OnDestroy, OnInit {
     this.showPassword = !this.showPassword;
     this.showPasswordCount = false;
     if (this.showPassword) {
-      this.eventService.collect(EventType.Cipher_ClientToggledPasswordVisible, this.cipherId);
+      this.eventCollectionService.collect(
+        EventType.Cipher_ClientToggledPasswordVisible,
+        this.cipherId
+      );
     }
   }
 
@@ -246,7 +260,10 @@ export class ViewComponent implements OnDestroy, OnInit {
 
     this.showCardNumber = !this.showCardNumber;
     if (this.showCardNumber) {
-      this.eventService.collect(EventType.Cipher_ClientToggledCardCodeVisible, this.cipherId);
+      this.eventCollectionService.collect(
+        EventType.Cipher_ClientToggledCardNumberVisible,
+        this.cipherId
+      );
     }
   }
 
@@ -257,7 +274,10 @@ export class ViewComponent implements OnDestroy, OnInit {
 
     this.showCardCode = !this.showCardCode;
     if (this.showCardCode) {
-      this.eventService.collect(EventType.Cipher_ClientToggledCardCodeVisible, this.cipherId);
+      this.eventCollectionService.collect(
+        EventType.Cipher_ClientToggledCardCodeVisible,
+        this.cipherId
+      );
     }
   }
 
@@ -317,11 +337,14 @@ export class ViewComponent implements OnDestroy, OnInit {
     );
 
     if (typeI18nKey === "password") {
-      this.eventService.collect(EventType.Cipher_ClientToggledHiddenFieldVisible, this.cipherId);
+      this.eventCollectionService.collect(
+        EventType.Cipher_ClientToggledHiddenFieldVisible,
+        this.cipherId
+      );
     } else if (typeI18nKey === "securityCode") {
-      this.eventService.collect(EventType.Cipher_ClientCopiedCardCode, this.cipherId);
+      this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, this.cipherId);
     } else if (aType === "H_Field") {
-      this.eventService.collect(EventType.Cipher_ClientCopiedHiddenField, this.cipherId);
+      this.eventCollectionService.collect(EventType.Cipher_ClientCopiedHiddenField, this.cipherId);
     }
   }
 

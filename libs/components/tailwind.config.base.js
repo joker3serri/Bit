@@ -50,11 +50,14 @@ module.exports = {
         muted: rgba("--color-text-muted"),
         contrast: rgba("--color-text-contrast"),
         alt2: rgba("--color-text-alt2"),
+        code: rgba("--color-text-code"),
       },
       background: {
         DEFAULT: rgba("--color-background"),
         alt: rgba("--color-background-alt"),
         alt2: rgba("--color-background-alt2"),
+        alt3: rgba("--color-background-alt3"),
+        alt4: rgba("--color-background-alt4"),
       },
     },
     textColor: {
@@ -62,6 +65,7 @@ module.exports = {
       muted: rgba("--color-text-muted"),
       contrast: rgba("--color-text-contrast"),
       alt2: rgba("--color-text-alt2"),
+      code: rgba("--color-text-code"),
       success: rgba("--color-success-500"),
       danger: rgba("--color-danger-500"),
       warning: rgba("--color-warning-500"),
@@ -81,9 +85,13 @@ module.exports = {
         "50vw": "50vw",
         "75vw": "75vw",
       },
-      maxWidth: {
-        "90vw": "90vw",
+      minWidth: {
+        52: "13rem",
       },
+      maxWidth: ({ theme }) => ({
+        ...theme("width"),
+        "90vw": "90vw",
+      }),
     },
   },
   plugins: [],

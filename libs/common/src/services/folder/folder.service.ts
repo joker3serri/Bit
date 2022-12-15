@@ -6,11 +6,11 @@ import { InternalFolderService as InternalFolderServiceAbstraction } from "../..
 import { I18nService } from "../../abstractions/i18n.service";
 import { StateService } from "../../abstractions/state.service";
 import { Utils } from "../../misc/utils";
-import { CipherData } from "../../models/data/cipherData";
-import { FolderData } from "../../models/data/folderData";
+import { CipherData } from "../../models/data/cipher.data";
+import { FolderData } from "../../models/data/folder.data";
 import { Folder } from "../../models/domain/folder";
-import { SymmetricCryptoKey } from "../../models/domain/symmetricCryptoKey";
-import { FolderView } from "../../models/view/folderView";
+import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
+import { FolderView } from "../../models/view/folder.view";
 
 export class FolderService implements InternalFolderServiceAbstraction {
   protected _folders: BehaviorSubject<Folder[]> = new BehaviorSubject([]);
@@ -62,6 +62,32 @@ export class FolderService implements InternalFolderServiceAbstraction {
     const folders = this._folders.getValue();
 
     return folders.find((folder) => folder.id === id);
+  }
+
+  async getAllFromState(): Promise<Folder[]> {
+    const folders = await this.stateService.getEncryptedFolders();
+    const response: Folder[] = [];
+    for (const id in folders) {
+      // eslint-disable-next-line
+      if (folders.hasOwnProperty(id)) {
+        response.push(new Folder(folders[id]));
+      }
+    }
+    return response;
+  }
+
+  /**
+   * @deprecated For the CLI only
+   * @param id id of the folder
+   */
+  async getFromState(id: string): Promise<Folder> {
+    const foldersMap = await this.stateService.getEncryptedFolders();
+    const folder = foldersMap[id];
+    if (folder == null) {
+      return null;
+    }
+
+    return new Folder(folder);
   }
 
   /**

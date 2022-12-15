@@ -5,7 +5,7 @@ import { FolderService } from "@bitwarden/common/abstractions/folder/folder.serv
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { FolderView } from "@bitwarden/common/models/view/folderView";
+import { FolderView } from "@bitwarden/common/models/view/folder.view";
 
 @Directive()
 export class FolderAddEditComponent implements OnInit {
@@ -18,6 +18,7 @@ export class FolderAddEditComponent implements OnInit {
   title: string;
   formPromise: Promise<any>;
   deletePromise: Promise<any>;
+  protected componentName = "";
 
   constructor(
     protected folderService: FolderService,
@@ -65,7 +66,9 @@ export class FolderAddEditComponent implements OnInit {
       this.i18nService.t("deleteFolder"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      "warning",
+      false,
+      this.componentName != "" ? this.componentName + " .modal-content" : null
     );
     if (!confirmed) {
       return false;

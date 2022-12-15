@@ -3,7 +3,7 @@ import { UntypedFormBuilder, Validators } from "@angular/forms";
 import { merge, takeUntil, Subject, startWith } from "rxjs";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { EventService } from "@bitwarden/common/abstractions/event.service";
+import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { ExportService } from "@bitwarden/common/abstractions/export.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -45,7 +45,7 @@ export class ExportComponent implements OnInit, OnDestroy {
     protected i18nService: I18nService,
     protected platformUtilsService: PlatformUtilsService,
     protected exportService: ExportService,
-    protected eventService: EventService,
+    protected eventCollectionService: EventCollectionService,
     private policyService: PolicyService,
     protected win: Window,
     private logService: LogService,
@@ -55,6 +55,13 @@ export class ExportComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
+    this.policyService
+      .policyAppliesToActiveUser$(PolicyType.DisablePersonalVaultExport)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((policyAppliesToActiveUser) => {
+        this.disabledByPolicy = policyAppliesToActiveUser;
+      });
+
     await this.checkExportDisabled();
 
     merge(
@@ -71,9 +78,6 @@ export class ExportComponent implements OnInit, OnDestroy {
   }
 
   async checkExportDisabled() {
-    this.disabledByPolicy = await this.policyService.policyAppliesToUser(
-      PolicyType.DisablePersonalVaultExport
-    );
     if (this.disabledByPolicy) {
       this.exportForm.disable();
     }
@@ -117,6 +121,7 @@ export class ExportComponent implements OnInit, OnDestroy {
       await this.userVerificationService.verifyUser(secret);
     } catch (e) {
       this.platformUtilsService.showToast("error", this.i18nService.t("errorOccurred"), e.message);
+      return;
     }
 
     this.doExport();
@@ -175,7 +180,7 @@ export class ExportComponent implements OnInit, OnDestroy {
   }
 
   protected async collectEvent(): Promise<void> {
-    await this.eventService.collect(EventType.User_ClientExportedVault);
+    await this.eventCollectionService.collect(EventType.User_ClientExportedVault);
   }
 
   get format() {
