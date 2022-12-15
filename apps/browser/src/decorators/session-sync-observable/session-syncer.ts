@@ -20,6 +20,9 @@ export class SessionSyncer {
 
   // ignore initial values
   private ignoreNUpdates = 0;
+  private get debounceMs() {
+    return 500;
+  }
 
   constructor(
     private subject: Subject<any>,
@@ -63,7 +66,7 @@ export class SessionSyncer {
     // contexts. If so, this is handled by destruction of the context.
     this.subscription = this.subject
       .pipe(
-        debounceTime(500),
+        debounceTime(this.debounceMs),
         concatMap(async (next) => {
           if (this.ignoreNUpdates > 0) {
             this.ignoreNUpdates -= 1;
@@ -98,13 +101,15 @@ export class SessionSyncer {
   }
 
   private async updateSession(value: any) {
-    await this.stateService.setInSessionMemory(this.metaData.sessionKey, value);
-    await BrowserApi.sendMessage(this.updateMessageCommand, { id: this.id }).catch((e) => {
+    try {
+      await this.stateService.setInSessionMemory(this.metaData.sessionKey, value);
+      await BrowserApi.sendMessage(this.updateMessageCommand, { id: this.id });
+    } catch (e) {
       if (e.message === "Could not establish connection. Receiving end does not exist.") {
         return;
       }
       throw e;
-    });
+    }
   }
 
   private get updateMessageCommand() {
