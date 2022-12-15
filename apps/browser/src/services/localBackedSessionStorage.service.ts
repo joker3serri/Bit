@@ -47,7 +47,7 @@ export class LocalBackedSessionStorageService
   async getBypassCache<T>(key: string, options?: MemoryStorageOptions<T>): Promise<T> {
     const session = await this.getLocalSession(await this.getSessionEncKey());
     if (session == null || !Object.keys(session).includes(key)) {
-      return null;
+      return options?.deserializer ? options.deserializer(null) : null;
     }
 
     let value = session[key];

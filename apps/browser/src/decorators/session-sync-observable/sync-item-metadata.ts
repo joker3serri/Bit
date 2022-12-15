@@ -13,7 +13,7 @@ export class SyncedItemMetadata {
         ? metadata.initializer
         : (o: any) => Object.assign(new metadata.ctor(), o);
     if (metadata.initializeAs === "array") {
-      return (keyValuePair: any) => keyValuePair.map((o: any) => itemBuilder(o));
+      return (keyValuePair: any) => keyValuePair?.map((o: any) => itemBuilder(o)) ?? [];
     } else if (metadata.initializeAs === "record") {
       return (keyValuePair: any) => {
         const record: Record<any, any> = {};
