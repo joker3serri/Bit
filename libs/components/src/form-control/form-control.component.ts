@@ -16,7 +16,7 @@ export class FormControlComponent {
   @Input() get inline() {
     return this._inline;
   }
-  set inline(value: boolean | string | null) {
+  set inline(value: boolean | "") {
     this._inline = coerceBooleanProperty(value);
   }
 

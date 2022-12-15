@@ -9,7 +9,7 @@ export class DialogComponent {
   @Input() dialogSize: "small" | "default" | "large" = "default";
 
   private _disablePadding: boolean;
-  @Input() set disablePadding(value: boolean | string) {
+  @Input() set disablePadding(value: boolean | "") {
     this._disablePadding = coerceBooleanProperty(value);
   }
   get disablePadding() {
