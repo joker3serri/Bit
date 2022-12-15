@@ -1,4 +1,5 @@
-// eslint-disable-next-line no-restricted-imports
+import { mock, MockProxy } from "jest-mock-extended";
+
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
@@ -21,7 +22,6 @@ import { TokenTwoFactorRequest } from "@bitwarden/common/models/request/identity
 import { IdentityCaptchaResponse } from "@bitwarden/common/models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "@bitwarden/common/models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "@bitwarden/common/models/response/identity-two-factor.response";
-import { mock, MockProxy } from "jest-mock-extended";
 
 const email = "hello@world.com";
 const masterPassword = "password";
