@@ -13,20 +13,14 @@ export class OrganizationDomainResponse extends BaseResponse {
 
   constructor(response: any) {
     super(response);
-    this.id = this.getResponseProperty("Id");
-    this.organizationId = this.getResponseProperty("OrganizationId");
-    this.txt = this.getResponseProperty("Txt");
-    this.domainName = this.getResponseProperty("DomainName");
-    this.creationDate = this.getResponseProperty("CreationDate");
-    this.nextRunDate = this.getResponseProperty("NextRunDate");
-    this.jobRunCount = this.getResponseProperty("JobRunCount");
-    this.verifiedDate = this.getResponseProperty("VerifiedDate");
-    this.lastCheckedDate = this.getResponseProperty("LastCheckedDate");
-
-    // TODO: come back and eval if this is necessary or not
-    // Might be worth converting string dates to actual dates for ease of use
-    // this.creationDate = obj.creationDate != null ? new Date(obj.creationDate) : null;
-    // this.nextRunDate = obj.nextRunDate != null ? new Date(obj.nextRunDate) : null;
-    // this.verifiedDate = obj.verifiedDate != null ? new Date(obj.verifiedDate) : null;
+    this.id = this.getResponseProperty("id");
+    this.organizationId = this.getResponseProperty("organizationId");
+    this.txt = this.getResponseProperty("txt");
+    this.domainName = this.getResponseProperty("domainName");
+    this.creationDate = this.getResponseProperty("creationDate");
+    this.nextRunDate = this.getResponseProperty("nextRunDate");
+    this.jobRunCount = this.getResponseProperty("jobRunCount");
+    this.verifiedDate = this.getResponseProperty("verifiedDate");
+    this.lastCheckedDate = this.getResponseProperty("lastCheckedDate");
   }
 }
