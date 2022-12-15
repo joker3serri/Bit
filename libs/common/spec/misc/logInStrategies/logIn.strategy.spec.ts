@@ -190,6 +190,13 @@ describe("LogInStrategy", () => {
 
       await passwordLogInStrategy.logIn(credentials);
 
+      // User key must be set before the new RSA keypair is generated, otherwise we can't decrypt the EncKey
+      expect(cryptoService.setKey).toHaveBeenCalled();
+      expect(cryptoService.makeKeyPair).toHaveBeenCalled();
+      expect(cryptoService.setKey.mock.invocationCallOrder[0]).toBeLessThan(
+        cryptoService.makeKeyPair.mock.invocationCallOrder[0]
+      );
+
       expect(apiService.postAccountKeys).toHaveBeenCalled();
     });
   });
