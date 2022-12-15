@@ -98,7 +98,12 @@ export class SessionSyncer {
     if (thisHash !== this.lastHash) {
       this.lastHash = thisHash;
       await this.stateService.setInSessionMemory(this.metaData.sessionKey, value);
-      await BrowserApi.sendMessage(this.updateMessageCommand, { id: this.id });
+      await BrowserApi.sendMessage(this.updateMessageCommand, { id: this.id }).catch((e) => {
+        if (e.message === "Could not establish connection. Receiving end does not exist.") {
+          return;
+        }
+        throw e;
+      });
     }
   }
 
