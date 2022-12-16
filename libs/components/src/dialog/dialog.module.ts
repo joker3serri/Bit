@@ -19,7 +19,13 @@ import { IconDirective, SimpleDialogComponent } from "./simple-dialog/simple-dia
     SimpleDialogComponent,
     IconDirective,
   ],
-  exports: [CdkDialogModule, DialogComponent, SimpleDialogComponent, IconDirective],
+  exports: [
+    CdkDialogModule,
+    DialogComponent,
+    SimpleDialogComponent,
+    DialogCloseDirective,
+    IconDirective,
+  ],
   providers: [DialogService],
 })
 export class DialogModule {}
