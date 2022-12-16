@@ -5809,7 +5809,7 @@
     "message": "Automatic Domain Verification"
   },
   "automaticDomainVerificationProcess": {
-    "message": "Bitwarden will attempt to verify the domain 3 times during the first 72 hours. If the domain can’t be verified, check the DNS record in your host and manually verify."
+    "message": "Bitwarden will attempt to verify the domain 3 times during the first 72 hours. If the domain can’t be verified, check the DNS record in your host and manually verify. The domain will be removed from your organization in 7 days if it is not verified"
   },
   "invalidDomainNameMessage": {
     "message": "Input is not a valid format. Format: mydomain.com. Subdomains require separate entries to be verified."
@@ -5833,7 +5833,13 @@
     "message": "You can't claim the same domain twice."
   },
   "domainNotAvailable": {
-    "message": "Someone else is using this domain. Use a different domain to continue."
+    "message": "Someone else is using $DOMAIN$. Use a different domain to continue.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "bitwarden.com"
+      }
+    }
   },
   "domainNotVerified": {
     "message": "$DOMAIN$ not verified. Check your DNS record.",

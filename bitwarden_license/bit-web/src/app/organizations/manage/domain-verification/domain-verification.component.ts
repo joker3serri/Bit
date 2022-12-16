@@ -7,6 +7,9 @@ import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/abstractions/o
 import { OrgDomainServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain.service.abstraction";
 import { OrganizationDomainResponse } from "@bitwarden/common/abstractions/organization-domain/responses/organization-domain.response";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
+import { HttpStatusCode } from "@bitwarden/common/enums/http-status-code.enum";
+import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { DialogService } from "@bitwarden/components";
 
 import {
@@ -32,7 +35,8 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private orgDomainApiService: OrgDomainApiServiceAbstraction,
     private orgDomainService: OrgDomainServiceAbstraction,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private validationService: ValidationService
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -99,19 +103,44 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
   }
 
   async verifyDomain(orgDomainId: string, domainName: string): Promise<void> {
-    const orgDomain: OrganizationDomainResponse = await this.orgDomainApiService.verify(
-      this.organizationId,
-      orgDomainId
-    );
-
-    if (orgDomain.verifiedDate) {
-      this.platformUtilsService.showToast("success", null, this.i18nService.t("domainVerified"));
-    } else {
-      this.platformUtilsService.showToast(
-        "error",
-        null,
-        this.i18nService.t("domainNotVerified", domainName)
+    try {
+      const orgDomain: OrganizationDomainResponse = await this.orgDomainApiService.verify(
+        this.organizationId,
+        orgDomainId
       );
+
+      if (orgDomain.verifiedDate) {
+        this.platformUtilsService.showToast("success", null, this.i18nService.t("domainVerified"));
+      } else {
+        this.platformUtilsService.showToast(
+          "error",
+          null,
+          this.i18nService.t("domainNotVerified", domainName)
+        );
+      }
+    } catch (e) {
+      this.handleVerifyDomainError(e, domainName);
+    }
+  }
+
+  private handleVerifyDomainError(e: any, domainName: string): void {
+    if (e instanceof ErrorResponse) {
+      const errorResponse: ErrorResponse = e as ErrorResponse;
+      switch (errorResponse.statusCode) {
+        case HttpStatusCode.Conflict:
+          if (errorResponse.message.includes("The domain is not available to be claimed")) {
+            this.platformUtilsService.showToast(
+              "error",
+              null,
+              this.i18nService.t("domainNotAvailable", domainName)
+            );
+          }
+          break;
+
+        default:
+          this.validationService.showError(errorResponse);
+          break;
+      }
     }
   }
 

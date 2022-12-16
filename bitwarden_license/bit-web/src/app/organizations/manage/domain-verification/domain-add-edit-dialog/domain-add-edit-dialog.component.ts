@@ -143,7 +143,7 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
     }
   };
 
-  private handleDomainSaveError(e: any) {
+  private handleDomainSaveError(e: any): void {
     if (e instanceof ErrorResponse) {
       const errorResponse: ErrorResponse = e as ErrorResponse;
       switch (errorResponse.statusCode) {
@@ -162,7 +162,7 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
 
             this.rejectedDomainNameValidator = uniqueInArrayValidator(
               this.rejectedDomainNames,
-              this.i18nService.t("domainNotAvailable")
+              this.i18nService.t("domainNotAvailable", this.domainNameCtrl.value)
             );
 
             this.domainNameCtrl.addValidators(this.rejectedDomainNameValidator);
