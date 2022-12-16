@@ -71,6 +71,7 @@ export class LoginComponent extends BaseLoginComponent {
   }
 
   async launchSsoBrowser() {
+    await this.loginService.saveEmailSettings();
     // Generate necessary sso params
     const passwordOptions: any = {
       type: "password",
