@@ -37,7 +37,11 @@
         </button>
       </bit-form-field>
 
-      <bit-callout type="info" title="{{ 'automaticDomainVerification' | i18n }}">
+      <bit-callout
+        *ngIf="!data?.orgDomain?.verifiedDate"
+        type="info"
+        title="{{ 'automaticDomainVerification' | i18n }}"
+      >
         {{ "automaticDomainVerificationProcess" | i18n }}
       </bit-callout>
     </div>
