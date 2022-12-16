@@ -1,13 +1,16 @@
+import { ApiService } from "../../abstractions/api.service";
 import { OrgDomainApiServiceAbstraction } from "../../abstractions/organization-domain/org-domain-api.service.abstraction";
+import { OrgDomainInternalServiceAbstraction } from "../../abstractions/organization-domain/org-domain.service.abstraction";
 import { OrganizationDomainResponse } from "../../abstractions/organization-domain/responses/organization-domain.response";
 import { ListResponse } from "../../models/response/list.response";
-import { ApiService } from "../api.service";
 
-import { OrgDomainService } from "./org-domain.service";
 import { OrganizationDomainRequest } from "./requests/organization-domain.request";
 
 export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
-  constructor(private orgDomainService: OrgDomainService, private apiService: ApiService) {}
+  constructor(
+    private orgDomainService: OrgDomainInternalServiceAbstraction,
+    private apiService: ApiService
+  ) {}
 
   async getAllByOrgId(orgId: string): Promise<Array<OrganizationDomainResponse>> {
     const listResponse: ListResponse<any> = await this.apiService.send(
