@@ -327,8 +327,8 @@ export class SyncService implements SyncServiceAbstraction {
     response.providerOrganizations.forEach((o) => {
       if (organizations[o.id] == null) {
         organizations[o.id] = new OrganizationData(o);
-        organizations[o.id].isProviderUser = true;
       }
+      organizations[o.id].isProviderUser = true;
     });
 
     await this.organizationService.replace(organizations);
