@@ -11,7 +11,7 @@
       <!-- grid-template-columns is dynamic so we can collapse empty columns  -->
       <section
         [ngStyle]="{
-          '--num-products': products['bento']?.length,
+          '--num-products': products.bento.length,
           'grid-template-columns': 'repeat(min(var(--num-products,1),3),92px)'
         }"
         class="tw-grid tw-gap-2"
@@ -30,11 +30,11 @@
 
       <!-- Other options -->
       <section
-        *ngIf="products['other']?.length > 0"
+        *ngIf="products.other.length > 0"
         class="tw-mt-4 tw-flex tw-w-full tw-flex-col tw-border-0 tw-border-t tw-border-solid tw-border-t-text-muted tw-p-2 tw-pb-0"
       >
         <span class="tw-mb-1 tw-text-xs tw-text-muted">{{ "moreFromBitwarden" | i18n }}</span>
-        <a *ngFor="let product of products['other']" [href]="product.marketingRoute">
+        <a *ngFor="let product of products.other" [href]="product.marketingRoute">
           <span class="tw-text-sm tw-text-primary-500"
             ><i class="bwi {{ product.icon }} tw-m-0 !tw-mr-3"></i>{{ product.name }}</span
           >

@@ -19,11 +19,6 @@ type ProductSwitcherItem = {
   icon: string;
 
   /**
-   * Which section to show the product in
-   */
-  visibility: "bento" | "other" | "hidden";
-
-  /**
    * Route for items in the `bentoProducts$` section
    */
   appRoute?: string | any[];
@@ -58,47 +53,48 @@ export class ProductSwitcherComponent {
         ? routeOrg
         : orgs.find((o) => o.canAccessSecretsManager);
 
-      const allProducts: ProductSwitcherItem[] = [
-        {
+      /**
+       * We can update this to the "satisfies" type upon upgrading to TypeScript 4.9
+       * https://devblogs.microsoft.com/typescript/announcing-typescript-4-9/#satisfies
+       */
+      const products: Record<"pm" | "sm" | "orgs", ProductSwitcherItem> = {
+        pm: {
           name: "Password Manager",
           icon: "bwi-lock",
           appRoute: "/vault",
           marketingRoute: "https://bitwarden.com/products/personal/",
-          visibility: "bento",
         },
-        {
+        sm: {
           name: "Secrets Manager Beta",
           icon: "bwi-cli",
           appRoute: ["/sm", smOrg?.id],
           // TODO: update marketing link
           marketingRoute: "#",
-          visibility: smOrg ? "bento" : "hidden",
         },
-        {
+        orgs: {
           name: "Organizations",
           icon: "bwi-business",
           marketingRoute: "https://bitwarden.com/products/business/",
-          visibility: orgs.length > 0 ? "hidden" : "other",
         },
-      ];
+      };
 
-      return arrayGroup(allProducts, (p) => p.visibility);
+      const bento: ProductSwitcherItem[] = [products.pm];
+      const other: ProductSwitcherItem[] = [];
+
+      if (smOrg) {
+        bento.push(products.sm);
+      }
+
+      if (orgs.length === 0) {
+        other.push(products.orgs);
+      }
+
+      return {
+        bento,
+        other,
+      };
     })
   );
 
   constructor(private organizationService: OrganizationService, private route: ActivatedRoute) {}
 }
-
-/**
- * Partition an array into groups
- *
- * To be replaced by `Array.prototype.group()` upon standardization:
- * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/group
- *
- * Source: https://stackoverflow.com/questions/14446511/most-efficient-method-to-groupby-on-an-array-of-objects#answer-64489535
- */
-const arrayGroup = <T>(array: T[], predicate: (value: T, index: number, array: T[]) => string) =>
-  array.reduce((acc, value, index, array) => {
-    (acc[predicate(value, index, array)] ||= []).push(value);
-    return acc;
-  }, {} as { [key: string]: T[] });
