@@ -110,9 +110,11 @@ describe("Org Domain Service", () => {
     const changedOrgDomain = new OrganizationDomainResponse(mockedVerifiedDomainServerResponse);
     changedOrgDomain.domainName = "changed domain name";
 
+    expect(mockedVerifiedOrgDomainResponse.domainName).not.toEqual(changedOrgDomain.domainName);
+
     orgDomainService.upsert([changedOrgDomain]);
 
-    expect(orgDomainService.get(mockedVerifiedOrgDomainResponse.id)).toEqual(
+    expect(orgDomainService.get(mockedVerifiedOrgDomainResponse.id).domainName).toEqual(
       changedOrgDomain.domainName
     );
 
