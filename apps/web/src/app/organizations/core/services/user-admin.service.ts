@@ -1,23 +1,24 @@
 import { Injectable } from "@angular/core";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { OrganizationUserInviteRequest } from "@bitwarden/common/models/request/organization-user-invite.request";
-import { OrganizationUserUpdateRequest } from "@bitwarden/common/models/request/organization-user-update.request";
-import { OrganizationUserDetailsResponse } from "@bitwarden/common/models/response/organization-user.response";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
+import {
+  OrganizationUserInviteRequest,
+  OrganizationUserUpdateRequest,
+} from "@bitwarden/common/abstractions/organization-user/requests";
+import { OrganizationUserDetailsResponse } from "@bitwarden/common/abstractions/organization-user/responses";
 
 import { CoreOrganizationModule } from "../core-organization.module";
 import { OrganizationUserAdminView } from "../views/user-admin-view";
 
 @Injectable({ providedIn: CoreOrganizationModule })
 export class UserAdminService {
-  constructor(private apiService: ApiService, private cryptoService: CryptoService) {}
+  constructor(private organizationUserService: OrganizationUserService) {}
 
   async get(
     organizationId: string,
     organizationUserId: string
   ): Promise<OrganizationUserAdminView | undefined> {
-    const userResponse = await this.apiService.getOrganizationUser(
+    const userResponse = await this.organizationUserService.getOrganizationUser(
       organizationId,
       organizationUserId
     );
@@ -38,7 +39,7 @@ export class UserAdminService {
     request.type = user.type;
     request.collections = user.collections;
 
-    await this.apiService.putOrganizationUser(user.organizationId, user.id, request);
+    await this.organizationUserService.putOrganizationUser(user.organizationId, user.id, request);
   }
 
   async invite(emails: string[], user: OrganizationUserAdminView): Promise<void> {
@@ -49,7 +50,7 @@ export class UserAdminService {
     request.type = user.type;
     request.collections = user.collections;
 
-    await this.apiService.postOrganizationUserInvite(user.organizationId, request);
+    await this.organizationUserService.postOrganizationUserInvite(user.organizationId, request);
   }
 
   private async decryptMany(

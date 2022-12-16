@@ -114,6 +114,7 @@
               id="userTypeCustom"
               [value]="organizationUserType.Custom"
               [(ngModel)]="type"
+              [ngModelOptions]="{ standalone: true }"
               [attr.disabled]="!canUseCustomPermissions || null"
             />
             <label class="form-check-label" for="userTypeCustom">

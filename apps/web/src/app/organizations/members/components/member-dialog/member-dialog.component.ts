@@ -7,6 +7,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
@@ -70,7 +71,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   emails: string;
   type: OrganizationUserType = OrganizationUserType.User;
   permissions = new PermissionsApi();
-  showCustom = false;
   access: "all" | "selected" = "selected";
   collections: CollectionView[] = [];
   organizationUserType = OrganizationUserType;
@@ -140,7 +140,8 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     // TODO: We should really look into consolidating naming conventions for these services
     private collectionAdminService: CollectionAdminService,
     private groupService: GroupService,
-    private userService: UserAdminService
+    private userService: UserAdminService,
+    private organizationUserService: OrganizationUserService
   ) {}
 
   async ngOnInit() {
@@ -155,7 +156,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       this.editMode = true;
       this.title = this.i18nService.t("editMember");
       try {
-        const user = await this.apiService.getOrganizationUser(
+        const user = await this.organizationUserService.getOrganizationUser(
           this.params.organizationId,
           this.params.organizationUserId
         );
@@ -198,7 +199,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     );
     const userGroups$ = this.params.organizationUserId
       ? of(
-          await this.apiService.getOrganizationUserGroups(
+          await this.organizationUserService.getOrganizationUserGroups(
             this.params.organizationId,
             this.params.organizationUserId
           )
@@ -354,7 +355,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     }
 
     try {
-      await this.apiService.deleteOrganizationUser(
+      await this.organizationUserService.deleteOrganizationUser(
         this.params.organizationId,
         this.params.organizationUserId
       );
@@ -389,7 +390,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     }
 
     try {
-      await this.apiService.revokeOrganizationUser(
+      await this.organizationUserService.revokeOrganizationUser(
         this.params.organizationId,
         this.params.organizationUserId
       );
@@ -412,7 +413,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     }
 
     try {
-      await this.apiService.restoreOrganizationUser(
+      await this.organizationUserService.restoreOrganizationUser(
         this.params.organizationId,
         this.params.organizationUserId
       );
