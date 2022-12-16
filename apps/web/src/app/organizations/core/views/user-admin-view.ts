@@ -2,7 +2,7 @@ import { OrganizationUserStatusType } from "@bitwarden/common/enums/organization
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
 
-import { CollectionAccessSelectionView } from "./collection-access-selection-view";
+import { CollectionAccessSelectionView } from "./collection-access-selection.view";
 
 export class OrganizationUserAdminView {
   id: string;

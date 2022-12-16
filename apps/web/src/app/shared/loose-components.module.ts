@@ -1,7 +1,5 @@
 import { NgModule } from "@angular/core";
 
-import { UserVerificationComponent } from "@bitwarden/angular/components/user-verification.component";
-
 import { AcceptEmergencyComponent } from "../accounts/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../accounts/accept-organization.component";
 import { HintComponent } from "../accounts/hint.component";
@@ -9,7 +7,6 @@ import { LockComponent } from "../accounts/lock.component";
 import { RecoverDeleteComponent } from "../accounts/recover-delete.component";
 import { RecoverTwoFactorComponent } from "../accounts/recover-two-factor.component";
 import { RegisterFormModule } from "../accounts/register-form/register-form.module";
-import { RegisterComponent } from "../accounts/register.component";
 import { RemovePasswordComponent } from "../accounts/remove-password.component";
 import { SetPasswordComponent } from "../accounts/set-password.component";
 import { SsoComponent } from "../accounts/sso.component";
@@ -23,22 +20,17 @@ import { OrganizationSwitcherComponent } from "../components/organization-switch
 import { PasswordRepromptComponent } from "../components/password-reprompt.component";
 import { PremiumBadgeComponent } from "../components/premium-badge.component";
 import { UserVerificationPromptComponent } from "../components/user-verification-prompt.component";
+import { UserVerificationComponent } from "../components/user-verification.component";
 import { FooterComponent } from "../layouts/footer.component";
 import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
 import { NavbarComponent } from "../layouts/navbar.component";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
 import { OrganizationCreateModule } from "../organizations/create/organization-create.module";
 import { OrganizationLayoutComponent } from "../organizations/layouts/organization-layout.component";
-import { BulkConfirmComponent as OrgBulkConfirmComponent } from "../organizations/manage/bulk/bulk-confirm.component";
-import { BulkRemoveComponent as OrgBulkRemoveComponent } from "../organizations/manage/bulk/bulk-remove.component";
-import { BulkRestoreRevokeComponent as OrgBulkRestoreRevokeComponent } from "../organizations/manage/bulk/bulk-restore-revoke.component";
-import { BulkStatusComponent as OrgBulkStatusComponent } from "../organizations/manage/bulk/bulk-status.component";
 import { CollectionsComponent as OrgManageCollectionsComponent } from "../organizations/manage/collections.component";
 import { EntityEventsComponent as OrgEntityEventsComponent } from "../organizations/manage/entity-events.component";
 import { EventsComponent as OrgEventsComponent } from "../organizations/manage/events.component";
 import { ManageComponent as OrgManageComponent } from "../organizations/manage/manage.component";
-import { PeopleComponent as OrgPeopleComponent } from "../organizations/manage/people.component";
-import { ResetPasswordComponent as OrgResetPasswordComponent } from "../organizations/manage/reset-password.component";
 import { UserConfirmComponent as OrgUserConfirmComponent } from "../organizations/manage/user-confirm.component";
 import { AcceptFamilySponsorshipComponent } from "../organizations/sponsorships/accept-family-sponsorship.component";
 import { FamiliesForEnterpriseSetupComponent } from "../organizations/sponsorships/families-for-enterprise-setup.component";
@@ -118,7 +110,6 @@ import { BulkRestoreComponent } from "../vault/bulk-restore.component";
 import { BulkShareComponent } from "../vault/bulk-share.component";
 import { CollectionsComponent } from "../vault/collections.component";
 import { FolderAddEditComponent } from "../vault/folder-add-edit.component";
-import { OrganizationBadgeModule } from "../vault/organization-badge/organization-badge.module";
 import { ShareComponent } from "../vault/share.component";
 
 import { SharedModule } from "./shared.module";
@@ -126,7 +117,7 @@ import { SharedModule } from "./shared.module";
 // Please do not add to this list of declarations - we should refactor these into modules when doing so makes sense until there are none left.
 // If you are building new functionality, please create or extend a feature module instead.
 @NgModule({
-  imports: [SharedModule, OrganizationBadgeModule, OrganizationCreateModule, RegisterFormModule],
+  imports: [SharedModule, OrganizationCreateModule, RegisterFormModule],
   declarations: [
     PremiumBadgeComponent,
     AcceptEmergencyComponent,
@@ -175,10 +166,6 @@ import { SharedModule } from "./shared.module";
     OrganizationLayoutComponent,
     OrganizationPlansComponent,
     OrgAttachmentsComponent,
-    OrgBulkConfirmComponent,
-    OrgBulkRestoreRevokeComponent,
-    OrgBulkRemoveComponent,
-    OrgBulkStatusComponent,
     OrgCollectionsComponent,
     OrgEntityEventsComponent,
     OrgEventsComponent,
@@ -186,8 +173,6 @@ import { SharedModule } from "./shared.module";
     OrgInactiveTwoFactorReportComponent,
     OrgManageCollectionsComponent,
     OrgManageComponent,
-    OrgPeopleComponent,
-    OrgResetPasswordComponent,
     OrgReusedPasswordsReportComponent,
     OrgToolsComponent,
     OrgUnsecuredWebsitesReportComponent,
@@ -207,7 +192,6 @@ import { SharedModule } from "./shared.module";
     PurgeVaultComponent,
     RecoverDeleteComponent,
     RecoverTwoFactorComponent,
-    RegisterComponent,
     RemovePasswordComponent,
     SecurityComponent,
     SecurityKeysComponent,
@@ -293,10 +277,6 @@ import { SharedModule } from "./shared.module";
     OrganizationLayoutComponent,
     OrganizationPlansComponent,
     OrgAttachmentsComponent,
-    OrgBulkConfirmComponent,
-    OrgBulkRestoreRevokeComponent,
-    OrgBulkRemoveComponent,
-    OrgBulkStatusComponent,
     OrgCollectionsComponent,
     OrgEntityEventsComponent,
     OrgEventsComponent,
@@ -304,8 +284,6 @@ import { SharedModule } from "./shared.module";
     OrgInactiveTwoFactorReportComponent,
     OrgManageCollectionsComponent,
     OrgManageComponent,
-    OrgPeopleComponent,
-    OrgResetPasswordComponent,
     OrgReusedPasswordsReportComponent,
     OrgToolsComponent,
     OrgUnsecuredWebsitesReportComponent,
@@ -324,7 +302,6 @@ import { SharedModule } from "./shared.module";
     PurgeVaultComponent,
     RecoverDeleteComponent,
     RecoverTwoFactorComponent,
-    RegisterComponent,
     RemovePasswordComponent,
     SecurityComponent,
     SecurityKeysComponent,
