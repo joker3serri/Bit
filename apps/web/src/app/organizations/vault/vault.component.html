@@ -30,8 +30,8 @@
             </ng-container>
           </small>
         </h1>
-        <div class="ml-auto d-flex">
-          <div class="dropdown mr-2" appListDropdown>
+        <div *ngIf="!activeFilter.isDeleted" class="ml-auto d-flex">
+          <div *ngIf="organization.canCreateNewCollections" class="dropdown mr-2" appListDropdown>
             <button
               class="btn"
               bitButton
@@ -60,6 +60,15 @@
               </button>
             </div>
           </div>
+          <button
+            *ngIf="!organization?.canCreateNewCollections"
+            type="button"
+            bitButton
+            buttonType="primary"
+            (click)="addCipher()"
+          >
+            <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>{{ "newItem" | i18n }}
+          </button>
         </div>
       </div>
       <app-callout
