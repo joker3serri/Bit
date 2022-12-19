@@ -9,6 +9,7 @@ import { IconButtonModule, MenuModule } from "@bitwarden/components";
 import { I18nMockService } from "@bitwarden/components/src/utils/i18n-mock.service";
 
 import { MockOrganizationService } from "./organization-mock.service";
+import { ProductSwitcherContentComponent } from "./product-switcher-content.component";
 import { ProductSwitcherComponent } from "./product-switcher.component";
 
 @Component({
@@ -28,6 +29,7 @@ export default {
   decorators: [
     moduleMetadata({
       declarations: [
+        ProductSwitcherContentComponent,
         ProductSwitcherComponent,
         MockOrganizationService,
         StoryLayoutComponent,
@@ -83,7 +85,21 @@ const Template: Story = (args) => ({
   props: args,
   template: `
     <router-outlet [mockOrgs]="mockOrgs"></router-outlet>
-    <product-switcher></product-switcher>
+    <div class="tw-flex tw-gap-[200px]">
+      <div>
+        <h1 class="tw-text-main tw-text-base tw-underline">Closed</h1>
+        <product-switcher></product-switcher>
+      </div>
+      <div>
+        <h1 class="tw-text-main tw-text-base tw-underline">Open</h1>
+        <product-switcher-content #content></product-switcher-content>
+        <div class="tw-h-40">
+          <div class="cdk-overlay-pane bit-menu-panel">
+            <ng-container *ngTemplateOutlet="content?.menu?.templateRef"></ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
   `,
 });
 

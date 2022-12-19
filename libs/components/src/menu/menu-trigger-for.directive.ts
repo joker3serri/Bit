@@ -20,7 +20,7 @@ import { MenuComponent } from "./menu.component";
 export class MenuTriggerForDirective implements OnDestroy {
   @HostBinding("attr.aria-expanded") isOpen = false;
   @HostBinding("attr.aria-haspopup") get hasPopup(): "menu" | "dialog" {
-    return this.menu.role;
+    return this.menu?.role || "menu";
   }
   @HostBinding("attr.role") role = "button";
 
