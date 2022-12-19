@@ -2145,5 +2145,17 @@
   },
   "approveLoginRequestDesc": {
     "message": "Use this device to approve login requests made from other devices."
+  },
+  "confirmLoginAtemptForMail": {
+    "message": "Confirm log in attempt for $EMAIL$",
+    "placeholders": {
+      "email": {
+        "content": "$1",
+        "example": "name@example.com"
+      }
+    }
+  },
+  "logInRequested": {
+    "message": "Log in requested"
   }
 }
