@@ -1,8 +1,8 @@
 import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
+import { WebI18nKey } from "../../../../../../../apps/web/src/app/core/web-i18n.service.implementation";
 import { AccessTokenView } from "../models/view/access-token.view";
-
 @Component({
   selector: "sm-access-list",
   templateUrl: "./access-list.component.html",
@@ -34,7 +34,7 @@ export class AccessListComponent {
       : this.selection.select(...this.tokens.map((s) => s.id));
   }
 
-  protected permission(token: AccessTokenView) {
+  protected permission(token: AccessTokenView): WebI18nKey {
     return "canRead";
   }
 }
