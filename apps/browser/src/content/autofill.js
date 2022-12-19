@@ -42,7 +42,8 @@
   9.  Add new handler, for new command that responds with page details in response callback
   10. Handle sandbox iframe and sandbox rule in CSP
   11. Work on array of saved urls instead of just one to determine if we should autofill non-https sites
-  12. Implement new HTML element query logic to be able to traverse into ShadowRoot
+  12. Remove setting of attribute com.browser.browser.userEdited on user-inputs
+  13. Implement new HTML element query logic to be able to traverse into ShadowRoot
   */
 
   /*
@@ -144,11 +145,6 @@
       // END MODIFICATION
 
       document.elementsByOPID = {};
-      document.addEventListener('input', function (inputevent) {
-          inputevent.a !== false &&
-              inputevent.target.tagName.toLowerCase() === 'input' &&
-              (inputevent.target.dataset['com.bitwarden.browser.userEdited'] = 'yes');
-      }, true);
 
       function getPageDetails(theDoc, oneShotId) {
           // start helpers
@@ -381,8 +377,6 @@
               addProp(field, 'title', getElementAttrValue(el, 'title'));
 
               // START MODIFICATION
-              addProp(field, 'userEdited', !!el.dataset['com.browser.browser.userEdited']);
-
               var elTagName = el.tagName.toLowerCase();
               addProp(field, 'tagName', elTagName);
 
