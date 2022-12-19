@@ -43,13 +43,13 @@ import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { MenuUpdateRequest } from "../main/menu/menu.updater";
 
 import { DeleteAccountComponent } from "./accounts/delete-account.component";
+import { LoginApprovalComponent } from "./accounts/login/login-approval.component";
 import { PremiumComponent } from "./accounts/premium.component";
 import { SettingsComponent } from "./accounts/settings.component";
 import { ExportComponent } from "./vault/export.component";
 import { FolderAddEditComponent } from "./vault/folder-add-edit.component";
 import { GeneratorComponent } from "./vault/generator.component";
 import { PasswordGeneratorHistoryComponent } from "./vault/password-generator-history.component";
-import { LoginApprovalComponent } from "./accounts/login/login-approval.component";
 
 const BroadcasterSubscriptionId = "AppComponent";
 const IdleTimeout = 60000 * 10; // 10 minutes

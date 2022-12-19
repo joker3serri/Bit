@@ -2080,7 +2080,7 @@
     "message": "Resend notification"
   },
   "areYouTryingtoLogin": {
-    "message": "ARE YOU TRYING TO LOG IN?"
+    "message": "Are you trying to log in?"
   },
   "logInAttemptBy": {
     "message": "Log in attempt by $EMAIL$",
