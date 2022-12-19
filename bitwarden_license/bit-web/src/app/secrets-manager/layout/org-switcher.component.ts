@@ -11,7 +11,9 @@ import type { Organization } from "@bitwarden/common/models/domain/organization"
 })
 export class OrgSwitcherComponent {
   protected organizations$: Observable<Organization[]> =
-    this.organizationService.organizations$.pipe(map((orgs) => orgs.filter(this.filter)));
+    this.organizationService.organizations$.pipe(
+      map((orgs) => orgs.filter(this.filter).sort((a, b) => a.name.localeCompare(b.name)))
+    );
   protected activeOrganization$: Observable<Organization> = combineLatest([
     this.route.paramMap,
     this.organizations$,
@@ -39,5 +41,6 @@ export class OrgSwitcherComponent {
   protected toggle(event?: MouseEvent) {
     event?.stopPropagation();
     this.open = !this.open;
+    this.openChange.emit(this.open);
   }
 }
