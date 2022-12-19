@@ -55,6 +55,7 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
   }
 
   rejectedDomainNameValidator: ValidatorFn = null;
+
   rejectedDomainNames: Array<string> = [];
 
   constructor(
@@ -127,7 +128,7 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.domainForm.disable();
+    this.domainNameCtrl.disable();
 
     const request: OrganizationDomainRequest = new OrganizationDomainRequest(
       this.txtCtrl.value,
@@ -137,7 +138,7 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
     try {
       this.data.orgDomain = await this.orgDomainApiService.post(this.data.organizationId, request);
       this.platformUtilsService.showToast("success", null, this.i18nService.t("domainSaved"));
-      this.verifyDomain();
+      await this.verifyDomain();
     } catch (e) {
       this.handleDomainSaveError(e);
     }
@@ -192,8 +193,6 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.domainForm.disable();
-
     this.data.orgDomain = await this.orgDomainApiService.verify(
       this.data.organizationId,
       this.data.orgDomain.id
@@ -203,11 +202,11 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
       this.platformUtilsService.showToast("success", null, this.i18nService.t("domainVerified"));
       this.dialogRef.close();
     } else {
-      this.platformUtilsService.showToast(
-        "error",
-        null,
-        this.i18nService.t("domainNotVerified", this.domainNameCtrl.value)
-      );
+      this.domainNameCtrl.setErrors({
+        errorPassthrough: {
+          message: this.i18nService.t("domainNotVerified", this.domainNameCtrl.value),
+        },
+      });
     }
   };
 
