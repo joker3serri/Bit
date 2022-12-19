@@ -84,7 +84,7 @@
               }}</label>
             </th>
             <th bitCell>{{ "name" | i18n }}</th>
-            <th bitCell>{{ (accessGroups ? "groups" : "collections") | i18n }}</th>
+            <th bitCell>{{ (organization.useGroups ? "groups" : "collections") | i18n }}</th>
             <th bitCell>{{ "role" | i18n }}</th>
             <th bitCell>{{ "policies" | i18n }}</th>
             <th bitCell class="tw-w-10">
@@ -133,7 +133,7 @@
         <ng-container body>
           <tr bitRow *ngFor="let u of searchedUsers" alignContent="middle">
             <td bitCell (click)="checkUser(u)">
-              <input type="checkbox" [(ngModel)]="u.checked" />
+              <input type="checkbox" [(ngModel)]="$any(u).checked" />
             </td>
             <td bitCell (click)="edit(u)" class="tw-cursor-pointer">
               <div class="tw-flex tw-items-center">
@@ -174,12 +174,12 @@
 
             <td bitCell (click)="edit(u)" class="tw-cursor-pointer">
               <bit-badge-list
-                *ngIf="accessGroups || !u.accessAll"
-                [items]="accessGroups ? u.groupNames : u.collectionNames"
+                *ngIf="organization.useGroups || !u.accessAll"
+                [items]="organization.useGroups ? u.groupNames : u.collectionNames"
                 [maxItems]="2"
                 badgeType="secondary"
               ></bit-badge-list>
-              <span *ngIf="!accessGroups && u.accessAll">{{ "all" | i18n }}</span>
+              <span *ngIf="!organization.useGroups && u.accessAll">{{ "all" | i18n }}</span>
             </td>
 
             <td bitCell (click)="edit(u)" class="tw-cursor-pointer">
@@ -195,7 +195,7 @@
                 ></i>
                 <span class="tw-sr-only">{{ "userUsingTwoStep" | i18n }}</span>
               </ng-container>
-              <ng-container *ngIf="showEnrolledStatus(u)">
+              <ng-container *ngIf="showEnrolledStatus($any(u))">
                 <i
                   class="bwi bwi-key"
                   title="{{ 'enrolledPasswordReset' | i18n }}"
@@ -241,7 +241,12 @@
                 <button type="button" bitMenuItem (click)="edit(u)">
                   <i aria-hidden="true" class="bwi bwi-user"></i> {{ "memberRole" | i18n }}
                 </button>
-                <button type="button" bitMenuItem (click)="groups(u)" *ngIf="accessGroups">
+                <button
+                  type="button"
+                  bitMenuItem
+                  (click)="groups($any(u))"
+                  *ngIf="organization.useGroups"
+                >
                   <i aria-hidden="true" class="bwi bwi-users"></i> {{ "groups" | i18n }}
                 </button>
                 <button type="button" bitMenuItem (click)="edit(u)">
@@ -252,7 +257,7 @@
                   type="button"
                   bitMenuItem
                   (click)="events(u)"
-                  *ngIf="accessEvents && u.status === userStatusType.Confirmed"
+                  *ngIf="organization.useEvents && u.status === userStatusType.Confirmed"
                 >
                   <i aria-hidden="true" class="bwi bwi-file-text"></i> {{ "eventLogs" | i18n }}
                 </button>

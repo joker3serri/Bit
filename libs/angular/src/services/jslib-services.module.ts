@@ -605,6 +605,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: LoginServiceAbstraction,
       useClass: LoginService,
+      deps: [StateServiceAbstraction],
     },
   ],
 })

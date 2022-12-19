@@ -27,8 +27,10 @@ import { ValidationService } from "@bitwarden/common/abstractions/validation.ser
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { ProductType } from "@bitwarden/common/enums/productType";
 import { CollectionData } from "@bitwarden/common/models/data/collection.data";
 import { Collection } from "@bitwarden/common/models/domain/collection";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organization-keys.request";
 import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collection.response";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
@@ -38,6 +40,7 @@ import { BasePeopleComponent } from "../../common/base.people.component";
 import { GroupService } from "../core";
 import { OrganizationUserView } from "../core/views/organization-user.view";
 import { EntityEventsComponent } from "../manage/entity-events.component";
+import { OrgUpgradeDialogComponent } from "../manage/org-upgrade-dialog/org-upgrade-dialog.component";
 
 import { BulkConfirmComponent } from "./components/bulk/bulk-confirm.component";
 import { BulkRemoveComponent } from "./components/bulk/bulk-remove.component";
@@ -73,15 +76,9 @@ export class PeopleComponent
   userType = OrganizationUserType;
   userStatusType = OrganizationUserStatusType;
 
-  organizationId: string;
+  organization: Organization;
   status: OrganizationUserStatusType = null;
-  accessEvents = false;
-  accessGroups = false;
-  canResetPassword = false; // User permission (admin/custom)
-  orgUseResetPassword = false; // Org plan ability
-  orgHasKeys = false; // Org public/private keys
   orgResetPasswordPolicyEnabled = false;
-  callingUserType: OrganizationUserType = null;
 
   private destroy$ = new Subject<void>();
 
@@ -126,26 +123,23 @@ export class PeopleComponent
     combineLatest([this.route.params, this.route.queryParams, this.policyService.policies$])
       .pipe(
         concatMap(async ([params, qParams, policies]) => {
-          this.organizationId = params.organizationId;
-          const organization = await this.organizationService.get(this.organizationId);
-          this.accessEvents = organization.useEvents;
-          this.accessGroups = organization.useGroups;
-          this.canResetPassword = organization.canManageUsersPassword;
-          this.orgUseResetPassword = organization.useResetPassword;
-          this.callingUserType = organization.type;
-          this.orgHasKeys = organization.hasPublicAndPrivateKeys;
+          this.organization = await this.organizationService.get(params.organizationId);
 
           // Backfill pub/priv key if necessary
-          if (this.canResetPassword && !this.orgHasKeys) {
-            const orgShareKey = await this.cryptoService.getOrgKey(this.organizationId);
+          if (
+            this.organization.canManageUsersPassword &&
+            !this.organization.hasPublicAndPrivateKeys
+          ) {
+            const orgShareKey = await this.cryptoService.getOrgKey(this.organization.id);
             const orgKeys = await this.cryptoService.makeKeyPair(orgShareKey);
             const request = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
             const response = await this.organizationApiService.updateKeys(
-              this.organizationId,
+              this.organization.id,
               request
             );
             if (response != null) {
-              this.orgHasKeys = response.publicKey != null && response.privateKey != null;
+              this.organization.hasPublicAndPrivateKeys =
+                response.publicKey != null && response.privateKey != null;
               await this.syncService.fullSync(true); // Replace oganizations with new data
             } else {
               throw new Error(this.i18nService.t("resetPasswordOrgKeysError"));
@@ -154,7 +148,7 @@ export class PeopleComponent
 
           const resetPasswordPolicy = policies
             .filter((policy) => policy.type === PolicyType.ResetPassword)
-            .find((p) => p.organizationId === this.organizationId);
+            .find((p) => p.organizationId === this.organization.id);
           this.orgResetPasswordPolicyEnabled = resetPasswordPolicy?.enabled;
 
           await this.load();
@@ -186,13 +180,13 @@ export class PeopleComponent
     let collectionsPromise: Promise<Map<string, string>>;
 
     // We don't need both groups and collections for the table, so only load one
-    const userPromise = this.organizationUserService.getAllUsers(this.organizationId, {
-      includeGroups: this.accessGroups,
-      includeCollections: !this.accessGroups,
+    const userPromise = this.organizationUserService.getAllUsers(this.organization.id, {
+      includeGroups: this.organization.useGroups,
+      includeCollections: !this.organization.useGroups,
     });
 
     // Depending on which column is displayed, we need to load the group/collection names
-    if (this.accessGroups) {
+    if (this.organization.useGroups) {
       groupsPromise = this.getGroupNameMap();
     } else {
       collectionsPromise = this.getCollectionNameMap();
@@ -219,7 +213,7 @@ export class PeopleComponent
   }
 
   async getGroupNameMap(): Promise<Map<string, string>> {
-    const groups = await this.groupService.getAll(this.organizationId);
+    const groups = await this.groupService.getAll(this.organization.id);
     const groupNameMap = new Map<string, string>();
     groups.forEach((g) => groupNameMap.set(g.id, g.name));
     return groupNameMap;
@@ -230,7 +224,7 @@ export class PeopleComponent
    */
   async getCollectionNameMap() {
     const collectionMap = new Map<string, string>();
-    const response = await this.apiService.getCollections(this.organizationId);
+    const response = await this.apiService.getCollections(this.organization.id);
 
     const collections = response.data.map(
       (r) => new Collection(new CollectionData(r as CollectionDetailsResponse))
@@ -243,28 +237,28 @@ export class PeopleComponent
   }
 
   deleteUser(id: string): Promise<void> {
-    return this.organizationUserService.deleteOrganizationUser(this.organizationId, id);
+    return this.organizationUserService.deleteOrganizationUser(this.organization.id, id);
   }
 
   revokeUser(id: string): Promise<void> {
-    return this.organizationUserService.revokeOrganizationUser(this.organizationId, id);
+    return this.organizationUserService.revokeOrganizationUser(this.organization.id, id);
   }
 
   restoreUser(id: string): Promise<void> {
-    return this.organizationUserService.restoreOrganizationUser(this.organizationId, id);
+    return this.organizationUserService.restoreOrganizationUser(this.organization.id, id);
   }
 
   reinviteUser(id: string): Promise<void> {
-    return this.organizationUserService.postOrganizationUserReinvite(this.organizationId, id);
+    return this.organizationUserService.postOrganizationUserReinvite(this.organization.id, id);
   }
 
   async confirmUser(user: OrganizationUserView, publicKey: Uint8Array): Promise<void> {
-    const orgKey = await this.cryptoService.getOrgKey(this.organizationId);
+    const orgKey = await this.cryptoService.getOrgKey(this.organization.id);
     const key = await this.cryptoService.rsaEncrypt(orgKey.key, publicKey.buffer);
     const request = new OrganizationUserConfirmRequest();
     request.key = key.encryptedString;
     await this.organizationUserService.postOrganizationUserConfirm(
-      this.organizationId,
+      this.organization.id,
       user.id,
       request
     );
@@ -274,7 +268,7 @@ export class PeopleComponent
     // Hierarchy check
     let callingUserHasPermission = false;
 
-    switch (this.callingUserType) {
+    switch (this.organization.type) {
       case OrganizationUserType.Owner:
         callingUserHasPermission = true;
         break;
@@ -290,10 +284,10 @@ export class PeopleComponent
 
     // Final
     return (
-      this.canResetPassword &&
+      this.organization.canManageUsersPassword &&
       callingUserHasPermission &&
-      this.orgUseResetPassword &&
-      this.orgHasKeys &&
+      this.organization.useResetPassword &&
+      this.organization.hasPublicAndPrivateKeys &&
       orgUser.resetPasswordEnrolled &&
       this.orgResetPasswordPolicyEnabled &&
       orgUser.status === OrganizationUserStatusType.Confirmed
@@ -302,17 +296,48 @@ export class PeopleComponent
 
   showEnrolledStatus(orgUser: OrganizationUserUserDetailsResponse): boolean {
     return (
-      this.orgUseResetPassword &&
+      this.organization.useResetPassword &&
       orgUser.resetPasswordEnrolled &&
       this.orgResetPasswordPolicyEnabled
     );
   }
 
   async edit(user: OrganizationUserView) {
+    // Invite User: Add Flow
+    // Click on user email: Edit Flow
+
+    // User attempting to invite new users in a free org with max users
+    if (
+      !user &&
+      this.organization.planProductType === ProductType.Free &&
+      this.users.length === this.organization.seats
+    ) {
+      // Show org upgrade modal
+
+      const dialogBodyText = this.organization.canManageBilling
+        ? this.i18nService.t(
+            "freeOrgInvLimitReachedManageBilling",
+            this.organization.seats.toString()
+          )
+        : this.i18nService.t(
+            "freeOrgInvLimitReachedNoManageBilling",
+            this.organization.seats.toString()
+          );
+
+      this.dialogService.open(OrgUpgradeDialogComponent, {
+        data: {
+          orgId: this.organization.id,
+          orgCanManageBilling: this.organization.canManageBilling,
+          dialogBodyText: dialogBodyText,
+        },
+      });
+      return;
+    }
+
     const dialog = openUserAddEditDialog(this.dialogService, {
       data: {
         name: this.userNamePipe.transform(user),
-        organizationId: this.organizationId,
+        organizationId: this.organization.id,
         organizationUserId: user != null ? user.id : null,
         usesKeyConnector: user?.usesKeyConnector,
       },
@@ -337,7 +362,7 @@ export class PeopleComponent
       this.groupsModalRef,
       (comp) => {
         comp.name = this.userNamePipe.transform(user);
-        comp.organizationId = this.organizationId;
+        comp.organizationId = this.organization.id;
         comp.organizationUserId = user != null ? user.id : null;
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil
         comp.onSavedUser.subscribe(() => {
@@ -357,7 +382,7 @@ export class PeopleComponent
       BulkRemoveComponent,
       this.bulkRemoveModalRef,
       (comp) => {
-        comp.organizationId = this.organizationId;
+        comp.organizationId = this.organization.id;
         comp.users = this.getCheckedUsers();
       }
     );
@@ -382,7 +407,7 @@ export class PeopleComponent
     const ref = this.modalService.open(BulkRestoreRevokeComponent, {
       allowMultipleModals: true,
       data: {
-        organizationId: this.organizationId,
+        organizationId: this.organization.id,
         users: this.getCheckedUsers(),
         isRevoking: isRevoking,
       },
@@ -411,7 +436,7 @@ export class PeopleComponent
 
     try {
       const response = this.organizationUserService.postManyOrganizationUserReinvite(
-        this.organizationId,
+        this.organization.id,
         filteredUsers.map((user) => user.id)
       );
       this.showBulkStatus(
@@ -435,7 +460,7 @@ export class PeopleComponent
       BulkConfirmComponent,
       this.bulkConfirmModalRef,
       (comp) => {
-        comp.organizationId = this.organizationId;
+        comp.organizationId = this.organization.id;
         comp.users = this.getCheckedUsers();
       }
     );
@@ -447,7 +472,7 @@ export class PeopleComponent
   async events(user: OrganizationUserView) {
     await this.modalService.openViewRef(EntityEventsComponent, this.eventsModalRef, (comp) => {
       comp.name = this.userNamePipe.transform(user);
-      comp.organizationId = this.organizationId;
+      comp.organizationId = this.organization.id;
       comp.entityId = user.id;
       comp.showUser = false;
       comp.entity = "user";
@@ -461,7 +486,7 @@ export class PeopleComponent
       (comp) => {
         comp.name = this.userNamePipe.transform(user);
         comp.email = user != null ? user.email : null;
-        comp.organizationId = this.organizationId;
+        comp.organizationId = this.organization.id;
         comp.id = user != null ? user.id : null;
 
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil

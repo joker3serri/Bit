@@ -11,6 +11,7 @@ import { CipherCreateRequest } from "../models/request/cipher-create.request";
 import { CipherPartialRequest } from "../models/request/cipher-partial.request";
 import { CipherShareRequest } from "../models/request/cipher-share.request";
 import { CipherRequest } from "../models/request/cipher.request";
+import { CollectionBulkDeleteRequest } from "../models/request/collection-bulk-delete.request";
 import { CollectionRequest } from "../models/request/collection.request";
 import { DeleteRecoverRequest } from "../models/request/delete-recover.request";
 import { DeviceVerificationRequest } from "../models/request/device-verification.request";
@@ -300,13 +301,16 @@ export abstract class ApiService {
   ) => Promise<AttachmentUploadDataResponse>;
   postAttachmentFile: (id: string, attachmentId: string, data: FormData) => Promise<any>;
 
-  getCollectionDetails: (
-    organizationId: string,
-    id: string
-  ) => Promise<CollectionAccessDetailsResponse>;
   getUserCollections: () => Promise<ListResponse<CollectionResponse>>;
   getCollections: (organizationId: string) => Promise<ListResponse<CollectionResponse>>;
   getCollectionUsers: (organizationId: string, id: string) => Promise<SelectionReadOnlyResponse[]>;
+  getCollectionAccessDetails: (
+    organizationId: string,
+    id: string
+  ) => Promise<CollectionAccessDetailsResponse>;
+  getManyCollectionsWithAccessDetails: (
+    orgId: string
+  ) => Promise<ListResponse<CollectionAccessDetailsResponse>>;
   postCollection: (
     organizationId: string,
     request: CollectionRequest
@@ -322,6 +326,7 @@ export abstract class ApiService {
     request: CollectionRequest
   ) => Promise<CollectionResponse>;
   deleteCollection: (organizationId: string, id: string) => Promise<any>;
+  deleteManyCollections: (request: CollectionBulkDeleteRequest) => Promise<any>;
   deleteCollectionUser: (
     organizationId: string,
     id: string,
