@@ -398,6 +398,14 @@
   "viewItem": {
     "message": "View item"
   },
+  "new":
+  {
+    "message": "New",
+    "description": "for adding new items"
+  },
+  "item": {
+      "message": "Item"
+  },
   "ex": {
     "message": "ex.",
     "description": "Short abbreviation for 'example'."
