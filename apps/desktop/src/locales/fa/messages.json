@@ -1779,6 +1779,15 @@
   "disabled": {
     "message": "غیرفعال شد"
   },
+  "removePassword": {
+    "message": "حذف رمز عبور"
+  },
+  "removedPassword": {
+    "message": "رمز عبور حذف شد"
+  },
+  "removePasswordConfirmation": {
+    "message": "مطمئنید که می‌خواهید رمز عبور حذف شود؟"
+  },
   "maxAccessCountReached": {
     "message": "به حداکثر تعداد دسترسی رسیده است"
   },
