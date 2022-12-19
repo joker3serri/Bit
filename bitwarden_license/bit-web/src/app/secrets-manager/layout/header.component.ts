@@ -4,8 +4,7 @@ import { combineLatest, map, Observable } from "rxjs";
 
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AccountProfile } from "@bitwarden/common/models/domain/account";
-
-import { WebI18nKey } from "../../../../../../apps/web/src/app/core/web-i18n.service.implementation";
+import { WebI18nKey } from "@bitwarden/web-vault/app/core/web-i18n.service.implementation";
 
 @Component({
   selector: "sm-header",
