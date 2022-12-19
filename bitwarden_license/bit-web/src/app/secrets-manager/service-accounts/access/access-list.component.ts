@@ -4,6 +4,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { WebI18nKey } from "@bitwarden/web-vault/app/core/web-i18n.service.implementation";
 
 import { AccessTokenView } from "../models/view/access-token.view";
+
 @Component({
   selector: "sm-access-list",
   templateUrl: "./access-list.component.html",
