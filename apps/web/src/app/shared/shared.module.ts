@@ -19,7 +19,6 @@ import {
   IconModule,
   LinkModule,
   MenuModule,
-  LinkModule,
   NavigationModule,
   TableModule,
   TabsModule,
