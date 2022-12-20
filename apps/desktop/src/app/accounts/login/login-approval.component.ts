@@ -1,13 +1,13 @@
-import { Input, Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { ipcRenderer } from "electron";
 import { Subject } from "rxjs";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
+import { ModalConfig } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthRequestResponse } from "@bitwarden/common/models/response/auth-request.response";
@@ -20,7 +20,7 @@ const RequestTimeUpdate = 60000 * 5; //5 Minutes
   templateUrl: "login-approval.component.html",
 })
 export class LoginApprovalComponent implements OnInit, OnDestroy {
-  @Input() notificationId: string;
+  notificationId: string;
 
   private destroy$ = new Subject<void>();
 
@@ -34,12 +34,14 @@ export class LoginApprovalComponent implements OnInit, OnDestroy {
     protected stateService: StateService,
     protected platformUtilsService: PlatformUtilsService,
     protected i18nService: I18nService,
-    protected logService: LogService,
     protected apiService: ApiService,
     protected authService: AuthService,
     protected appIdService: AppIdService,
-    private modalRef: ModalRef
+    private modalRef: ModalRef,
+    config: ModalConfig
   ) {
+    this.notificationId = config.data.notificationId;
+
     this.dismissModal = true;
     this.modalRef.onClosed
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil

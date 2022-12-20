@@ -69,11 +69,7 @@ export class ModalService {
     return [modalRef, modalComponentRef.instance.componentRef.instance];
   }
 
-  open(
-    componentType: Type<any>,
-    config: ModalConfig = {},
-    setComponentParameters: (component: any) => void = null
-  ) {
+  open(componentType: Type<any>, config: ModalConfig = {}) {
     const { replaceTopModal = false, allowMultipleModals = false } = config;
 
     if (this.modalCount > 0 && replaceTopModal) {
@@ -84,8 +80,7 @@ export class ModalService {
       return;
     }
 
-    const [modalRef, modalComponentRef] = this.openInternal(componentType, config, true);
-    modalComponentRef.instance.setComponentParameters = setComponentParameters;
+    const [modalRef] = this.openInternal(componentType, config, true);
 
     return modalRef;
   }

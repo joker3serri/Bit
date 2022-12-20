@@ -439,11 +439,9 @@ export class AppComponent implements OnInit, OnDestroy {
   async openLoginApproval(notificationId: string) {
     this.modalService.closeAll();
 
-    this.modal = await this.modalService.open(
-      LoginApprovalComponent,
-      {},
-      (comp) => (comp.notificationId = notificationId)
-    );
+    this.modal = await this.modalService.open(LoginApprovalComponent, {
+      data: { notificationId: notificationId },
+    });
 
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.modal.onClosed.subscribe(() => {
