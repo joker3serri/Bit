@@ -13,10 +13,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
-import { CollectionData } from "@bitwarden/common/models/data/collection.data";
-import { Collection } from "@bitwarden/common/models/domain/collection";
 import { Organization } from "@bitwarden/common/models/domain/organization";
-import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collection.response";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
@@ -149,43 +146,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.editMode = this.loading = this.params.organizationUserId != null;
     this.tabIndex = this.params.initialTab ?? MemberDialogTab.Role;
-
-    const organization = this.organizationService.get(this.params.organizationId);
-    this.canUseCustomPermissions = organization.useCustomPermissions;
-    await this.loadCollections();
-
-    if (this.editMode) {
-      this.editMode = true;
-      this.title = this.i18nService.t("editMember");
-      try {
-        const user = await this.organizationUserService.getOrganizationUser(
-          this.params.organizationId,
-          this.params.organizationUserId
-        );
-        this.access = user.accessAll ? "all" : "selected";
-        this.type = user.type;
-        this.isRevoked = user.status === OrganizationUserStatusType.Revoked;
-        if (user.type === OrganizationUserType.Custom) {
-          this.permissions = user.permissions;
-        }
-        if (user.collections != null && this.collections != null) {
-          user.collections.forEach((s) => {
-            const collection = this.collections.filter((c) => c.id === s.id);
-            if (collection != null && collection.length > 0) {
-              (collection[0] as any).checked = true;
-              collection[0].readOnly = s.readOnly;
-              collection[0].hidePasswords = s.hidePasswords;
-            }
-          });
-        }
-      } catch (e) {
-        this.logService.error(e);
-      }
-    } else {
-      this.title = this.i18nService.t("inviteMember");
-    }
-
-    // ----------- New data fetching below ---------------
+    this.title = this.i18nService.t(this.editMode ? "editMember" : "inviteMember");
 
     const organization$ = of(this.organizationService.get(this.params.organizationId)).pipe(
       shareReplay({ refCount: true, bufferSize: 1 })
@@ -220,6 +181,14 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ organization, collections, userDetails, groups, userGroups }) => {
         this.organization = organization;
+        this.canUseCustomPermissions = organization.useCustomPermissions;
+        this.type = userDetails.type;
+        this.isRevoked = userDetails.status === OrganizationUserStatusType.Revoked;
+
+        if (userDetails.type === OrganizationUserType.Custom) {
+          this.permissions = userDetails.permissions;
+        }
+
         const collectionsFromGroups = groups
           .filter((group) => userGroups.includes(group.id))
           .flatMap((group) =>
@@ -255,14 +224,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
 
         this.loading = false;
       });
-  }
-
-  async loadCollections() {
-    const response = await this.apiService.getCollections(this.params.organizationId);
-    const collections = response.data.map(
-      (r) => new Collection(new CollectionData(r as CollectionDetailsResponse))
-    );
-    this.collections = await this.collectionService.decryptMany(collections);
   }
 
   check(c: CollectionView, select?: boolean) {
