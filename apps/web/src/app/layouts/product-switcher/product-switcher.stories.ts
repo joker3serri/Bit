@@ -1,16 +1,30 @@
-import { Component } from "@angular/core";
+import { Component, Directive, Input } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { Meta, Story, moduleMetadata } from "@storybook/angular";
+import { BehaviorSubject } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 import { IconButtonModule, LinkModule, MenuModule } from "@bitwarden/components";
 import { I18nMockService } from "@bitwarden/components/src/utils/i18n-mock.service";
 
-import { MockOrganizationService } from "./organization-mock.service";
 import { ProductSwitcherContentComponent } from "./product-switcher-content.component";
 import { ProductSwitcherComponent } from "./product-switcher.component";
+
+@Directive({
+  selector: "[mockOrgs]",
+})
+class MockOrganizationService implements Partial<OrganizationService> {
+  private static _orgs = new BehaviorSubject<Organization[]>([]);
+  organizations$ = MockOrganizationService._orgs; // eslint-disable-line rxjs/no-exposed-subjects
+
+  @Input()
+  set mockOrgs(orgs: Organization[]) {
+    this.organizations$.next(orgs);
+  }
+}
 
 @Component({
   selector: "story-layout",
