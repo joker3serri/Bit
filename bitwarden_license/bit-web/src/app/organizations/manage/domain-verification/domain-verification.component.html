@@ -28,7 +28,6 @@
           </tr>
         </ng-container>
         <ng-container body>
-          <!-- [alignContent]="alignRowContent" -->
           <tr bitRow *ngFor="let orgDomain of orgDomains; index as i">
             <td bitCell>
               <a bitLink href appStopClick linkType="primary" (click)="editDomain(orgDomain)">{{
