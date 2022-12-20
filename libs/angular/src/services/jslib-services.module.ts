@@ -2,8 +2,8 @@ import { Injector, LOCALE_ID, NgModule } from "@angular/core";
 
 import { AccountApiService as AccountApiServiceAbstraction } from "@bitwarden/common/abstractions/account/account-api.service";
 import {
-  InternalAccountService,
   AccountService as AccountServiceAbstraction,
+  InternalAccountService,
 } from "@bitwarden/common/abstractions/account/account.service";
 import { AnonymousHubService as AnonymousHubServiceAbstraction } from "@bitwarden/common/abstractions/anonymousHub.service";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
@@ -19,7 +19,8 @@ import { CryptoService as CryptoServiceAbstraction } from "@bitwarden/common/abs
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { EnvironmentService as EnvironmentServiceAbstraction } from "@bitwarden/common/abstractions/environment.service";
-import { EventService as EventServiceAbstraction } from "@bitwarden/common/abstractions/event.service";
+import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
+import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { ExportService as ExportServiceAbstraction } from "@bitwarden/common/abstractions/export.service";
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/abstractions/fileUpload.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder-api.service.abstraction";
@@ -34,15 +35,19 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/abstractions/login.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/abstractions/messaging.service";
 import { NotificationsService as NotificationsServiceAbstraction } from "@bitwarden/common/abstractions/notifications.service";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationService as OrganizationServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import {
+  InternalOrganizationService,
+  OrganizationService as OrganizationServiceAbstraction,
+} from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PasswordGenerationService as PasswordGenerationServiceAbstraction } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import {
-  PolicyService as PolicyServiceAbstraction,
   InternalPolicyService,
+  PolicyService as PolicyServiceAbstraction,
 } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { ProviderService as ProviderServiceAbstraction } from "@bitwarden/common/abstractions/provider.service";
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/abstractions/search.service";
@@ -82,7 +87,8 @@ import { CryptoService } from "@bitwarden/common/services/crypto.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/services/cryptography/encrypt.service.implementation";
 import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/services/cryptography/multithread-encrypt.service.implementation";
 import { EnvironmentService } from "@bitwarden/common/services/environment.service";
-import { EventService } from "@bitwarden/common/services/event.service";
+import { EventCollectionService } from "@bitwarden/common/services/event/event-collection.service";
+import { EventUploadService } from "@bitwarden/common/services/event/event-upload.service";
 import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";
 import { FolderApiService } from "@bitwarden/common/services/folder/folder-api.service";
@@ -91,6 +97,7 @@ import { FormValidationErrorsService } from "@bitwarden/common/services/formVali
 import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
 import { LoginService } from "@bitwarden/common/services/login.service";
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
+import { OrganizationUserServiceImplementation } from "@bitwarden/common/services/organization-user/organization-user.service.implementation";
 import { OrganizationApiService } from "@bitwarden/common/services/organization/organization-api.service";
 import { OrganizationService } from "@bitwarden/common/services/organization/organization.service";
 import { PasswordGenerationService } from "@bitwarden/common/services/passwordGeneration.service";
@@ -121,16 +128,16 @@ import { UnauthGuard } from "../guards/unauth.guard";
 
 import { BroadcasterService } from "./broadcaster.service";
 import {
-  WINDOW,
+  LOCALES_DIRECTORY,
+  LOCKED_CALLBACK,
+  LOG_MAC_FAILURES,
+  LOGOUT_CALLBACK,
   MEMORY_STORAGE,
   SECURE_STORAGE,
   STATE_FACTORY,
   STATE_SERVICE_USE_CACHE,
-  LOGOUT_CALLBACK,
-  LOCKED_CALLBACK,
-  LOCALES_DIRECTORY,
   SYSTEM_LANGUAGE,
-  LOG_MAC_FAILURES,
+  WINDOW,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
 import { PasswordRepromptService } from "./passwordReprompt.service";
@@ -356,7 +363,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         StateServiceAbstraction,
         ProviderServiceAbstraction,
         FolderApiServiceAbstraction,
-        SyncNotifierServiceAbstraction,
+        OrganizationServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },
@@ -454,14 +461,18 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
       deps: [CryptoFunctionServiceAbstraction, LogService, LOG_MAC_FAILURES],
     },
     {
-      provide: EventServiceAbstraction,
-      useClass: EventService,
+      provide: EventUploadServiceAbstraction,
+      useClass: EventUploadService,
+      deps: [ApiServiceAbstraction, StateServiceAbstraction, LogService],
+    },
+    {
+      provide: EventCollectionServiceAbstraction,
+      useClass: EventCollectionService,
       deps: [
-        ApiServiceAbstraction,
         CipherServiceAbstraction,
         StateServiceAbstraction,
-        LogService,
         OrganizationServiceAbstraction,
+        EventUploadServiceAbstraction,
       ],
     },
     {
@@ -506,6 +517,8 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         LogService,
         OrganizationServiceAbstraction,
         CryptoFunctionServiceAbstraction,
+        SyncNotifierServiceAbstraction,
+        MessagingServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },
@@ -522,7 +535,16 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: OrganizationServiceAbstraction,
       useClass: OrganizationService,
-      deps: [StateServiceAbstraction, SyncNotifierServiceAbstraction],
+      deps: [StateServiceAbstraction],
+    },
+    {
+      provide: InternalOrganizationService,
+      useExisting: OrganizationServiceAbstraction,
+    },
+    {
+      provide: OrganizationUserService,
+      useClass: OrganizationUserServiceImplementation,
+      deps: [ApiServiceAbstraction],
     },
     {
       provide: ProviderServiceAbstraction,
@@ -583,6 +605,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: LoginServiceAbstraction,
       useClass: LoginService,
+      deps: [StateServiceAbstraction],
     },
   ],
 })
