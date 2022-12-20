@@ -79,11 +79,13 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
 
   protected organization: Organization;
   protected accessItems: AccessItemView[] = [];
+  protected groupAccessItems: AccessItemView[] = [];
   protected tabIndex: MemberDialogTab;
   // Stub, to be filled out in upcoming PRs
   protected formGroup = this.formBuilder.group({
     accessAllCollections: false,
     access: [[] as AccessItemValue[]],
+    groups: [[] as AccessItemValue[]],
   });
 
   private destroy$ = new Subject<void>();
@@ -233,15 +235,21 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
           collections.map((c) => mapCollectionToAccessItemView(c))
         );
 
+        this.groupAccessItems = [].concat(
+          groups.map<AccessItemView>((g) => mapGroupToAccessItemView(g))
+        );
+
         if (this.params.organizationUserId) {
           if (!userDetails) {
             throw new Error("Could not find user to edit.");
           }
 
           const accessSelections = mapToAccessSelections(userDetails);
+          const groupAccessSelections = mapToGroupAccessSelections(userGroups);
           this.formGroup.patchValue({
             accessAllCollections: userDetails.accessAll,
             access: accessSelections,
+            groups: groupAccessSelections,
           });
         }
 
@@ -313,6 +321,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       userView.collections = this.formGroup.controls.access.value
         .filter((v) => v.type === AccessItemType.Collection)
         .map(convertToSelectionView);
+      userView.groups = this.formGroup.controls.groups.value.map((m) => m.id);
 
       if (this.editMode) {
         await this.userService.save(userView);
@@ -460,6 +469,15 @@ function mapCollectionToAccessItemView(
   };
 }
 
+function mapGroupToAccessItemView(group: GroupView): AccessItemView {
+  return {
+    type: AccessItemType.Group,
+    id: group.id,
+    labelName: group.name,
+    listName: group.name,
+  };
+}
+
 function mapToAccessSelections(user: OrganizationUserAdminView): AccessItemValue[] {
   if (user == undefined) {
     return [];
@@ -469,6 +487,18 @@ function mapToAccessSelections(user: OrganizationUserAdminView): AccessItemValue
       id: selection.id,
       type: AccessItemType.Collection,
       permission: convertToPermission(selection),
+    }))
+  );
+}
+
+function mapToGroupAccessSelections(groups: string[]): AccessItemValue[] {
+  if (groups == undefined) {
+    return [];
+  }
+  return [].concat(
+    groups.map((groupId) => ({
+      id: groupId,
+      type: AccessItemType.Group,
     }))
   );
 }
