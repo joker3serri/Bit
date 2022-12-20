@@ -1787,7 +1787,7 @@
   },
   "removePasswordConfirmation": {
     "message": "Are you sure you want to remove the password?"
-  },  
+  },
   "maxAccessCountReached": {
     "message": "Max access count reached"
   },
@@ -2078,6 +2078,10 @@
   },
   "resendNotification": {
     "message": "Resend notification"
+  },
+  "toggleCharacterCount": {
+    "message": "Toggle character count",
+    "description": "'Character count' describes a feature that displays a number next to each character of the password."
   },
   "areYouTryingtoLogin": {
     "message": "Are you trying to log in?"

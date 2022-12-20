@@ -1779,6 +1779,15 @@
   "disabled": {
     "message": "Désactivé"
   },
+  "removePassword": {
+    "message": "Supprimer le mot de passe"
+  },
+  "removedPassword": {
+    "message": "Mot de passe supprimé"
+  },
+  "removePasswordConfirmation": {
+    "message": "Êtes-vous sûr(e) de vouloir supprimer le mot de passe ?"
+  },
   "maxAccessCountReached": {
     "message": "Nombre maximum d'accès atteint"
   },
