@@ -5,7 +5,7 @@ import { Meta, Story, moduleMetadata } from "@storybook/angular";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { IconButtonModule, MenuModule } from "@bitwarden/components";
+import { IconButtonModule, LinkModule, MenuModule } from "@bitwarden/components";
 import { I18nMockService } from "@bitwarden/components/src/utils/i18n-mock.service";
 
 import { MockOrganizationService } from "./organization-mock.service";
@@ -39,6 +39,7 @@ export default {
         JslibModule,
         MenuModule,
         IconButtonModule,
+        LinkModule,
         RouterModule.forRoot(
           [
             {
