@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 
-import { ProductSwitcherModule } from "@bitwarden/web-vault/app/components/product-switcher/product-switcher.module";
+import { ProductSwitcherModule } from "@bitwarden/web-vault/app/layouts/product-switcher/product-switcher.module";
 import { SharedModule } from "@bitwarden/web-vault/app/shared";
 
 import { BulkStatusDialogComponent } from "../layout/dialogs/bulk-status-dialog.component";

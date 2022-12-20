@@ -21,12 +21,12 @@ import { NestedCheckboxComponent } from "../components/nested-checkbox.component
 import { OrganizationSwitcherComponent } from "../components/organization-switcher.component";
 import { PasswordRepromptComponent } from "../components/password-reprompt.component";
 import { PremiumBadgeComponent } from "../components/premium-badge.component";
-import { ProductSwitcherModule } from "../components/product-switcher/product-switcher.module";
 import { UserVerificationPromptComponent } from "../components/user-verification-prompt.component";
 import { UserVerificationComponent } from "../components/user-verification.component";
 import { FooterComponent } from "../layouts/footer.component";
 import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
 import { NavbarComponent } from "../layouts/navbar.component";
+import { ProductSwitcherModule } from "../layouts/product-switcher/product-switcher.module";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
 import { OrganizationCreateModule } from "../organizations/create/organization-create.module";
 import { OrganizationLayoutComponent } from "../organizations/layouts/organization-layout.component";
