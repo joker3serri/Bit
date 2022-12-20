@@ -132,6 +132,13 @@ import { SharedModule } from ".";
 // Please do not add to this list of declarations - we should refactor these into modules when doing so makes sense until there are none left.
 // If you are building new functionality, please create or extend a feature module instead.
 @NgModule({
+  imports: [
+    SharedModule,
+    VaultFilterModule,
+    OrganizationCreateModule,
+    RegisterFormModule,
+    ProductSwitcherModule,
+  ],
   declarations: [
     PremiumBadgeComponent,
     AcceptEmergencyComponent,
@@ -380,13 +387,6 @@ import { SharedModule } from ".";
     VerifyEmailComponent,
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
-  ],
-  imports: [
-    SharedModule,
-    VaultFilterModule,
-    OrganizationCreateModule,
-    RegisterFormModule,
-    ProductSwitcherModule,
   ],
 })
 export class LooseComponentsModule {}
