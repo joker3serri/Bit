@@ -20,4 +20,5 @@ export * from "./table";
 export * from "./tabs";
 export * from "./toggle-group";
 export * from "./radio-button";
+export * from "./select";
 export * from "./utils/i18n-mock.service";
