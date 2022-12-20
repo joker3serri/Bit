@@ -118,7 +118,10 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     this.showPasswordCount = !this.showPasswordCount;
 
     if (this.editMode && this.showPasswordCount) {
-      this.eventService.collect(EventType.Cipher_ClientToggledPasswordVisible, this.cipherId);
+      this.eventCollectionService.collect(
+        EventType.Cipher_ClientToggledPasswordVisible,
+        this.cipherId
+      );
     }
   }
 
