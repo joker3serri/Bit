@@ -2,7 +2,6 @@ import { OrganizationDomainRequest } from "../../services/organization-domain/re
 
 import { OrganizationDomainResponse } from "./responses/organization-domain.response";
 
-// TODO: add service tests ala https://github.com/bitwarden/clients/blob/master/libs/common/spec/web/services/webCryptoFunction.service.spec.ts
 export abstract class OrgDomainApiServiceAbstraction {
   getAllByOrgId: (orgId: string) => Promise<Array<OrganizationDomainResponse>>;
   getByOrgIdAndOrgDomainId: (
