@@ -38,6 +38,7 @@ export class UserAdminService {
     request.permissions = user.permissions;
     request.type = user.type;
     request.collections = user.collections;
+    request.groups = user.groups;
 
     await this.organizationUserService.putOrganizationUser(user.organizationId, user.id, request);
   }
@@ -49,6 +50,7 @@ export class UserAdminService {
     request.permissions = user.permissions;
     request.type = user.type;
     request.collections = user.collections;
+    request.groups = user.groups;
 
     await this.organizationUserService.postOrganizationUserInvite(user.organizationId, request);
   }
