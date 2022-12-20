@@ -25,10 +25,12 @@ export class MenuComponent implements AfterContentInit {
   menuItems: QueryList<MenuItemDirective>;
   keyManager?: FocusKeyManager<MenuItemDirective>;
 
-  @Input() role: "menu" | "dialog" = "menu";
+  @Input() ariaRole: "menu" | "dialog" = "menu";
+
+  @Input() ariaLabel: string;
 
   ngAfterContentInit() {
-    if (this.role === "menu") {
+    if (this.ariaRole === "menu") {
       this.keyManager = new FocusKeyManager(this.menuItems).withWrap();
     }
   }

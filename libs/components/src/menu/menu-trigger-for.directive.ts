@@ -20,7 +20,7 @@ import { MenuComponent } from "./menu.component";
 export class MenuTriggerForDirective implements OnDestroy {
   @HostBinding("attr.aria-expanded") isOpen = false;
   @HostBinding("attr.aria-haspopup") get hasPopup(): "menu" | "dialog" {
-    return this.menu?.role || "menu";
+    return this.menu?.ariaRole || "menu";
   }
   @HostBinding("attr.role") role = "button";
 
@@ -108,7 +108,7 @@ export class MenuTriggerForDirective implements OnDestroy {
     const detachments = this.overlayRef.detachments();
     const escKey = this.overlayRef.keydownEvents().pipe(
       filter((event: KeyboardEvent) => {
-        const keys = this.menu.role === "menu" ? ["Escape", "Tab"] : ["Escape"];
+        const keys = this.menu.ariaRole === "menu" ? ["Escape", "Tab"] : ["Escape"];
         return keys.includes(event.key);
       })
     );

@@ -2,7 +2,8 @@
   <div
     (click)="closed.emit()"
     class="tw-flex tw-shrink-0 tw-flex-col tw-rounded tw-border tw-border-solid tw-border-secondary-500 tw-bg-background tw-bg-clip-padding tw-py-2"
-    [attr.role]="role"
+    [attr.role]="ariaRole"
+    [attr.aria-label]="ariaLabel"
     cdkTrapFocus
     [cdkTrapFocusAutoCapture]="true"
   >
