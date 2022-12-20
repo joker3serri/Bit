@@ -439,9 +439,9 @@ export class AppComponent implements OnInit, OnDestroy {
   async openLoginApproval(notificationId: string) {
     this.modalService.closeAll();
 
-    [this.modal] = await this.modalService.openViewRef(
+    this.modal = await this.modalService.open(
       LoginApprovalComponent,
-      this.loginApprovalModalRef,
+      {},
       (comp) => (comp.notificationId = notificationId)
     );
 
