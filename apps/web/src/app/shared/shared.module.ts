@@ -19,9 +19,11 @@ import {
   IconModule,
   LinkModule,
   MenuModule,
+  LinkModule,
   NavigationModule,
   TableModule,
   TabsModule,
+  ColorPasswordModule,
 } from "@bitwarden/components";
 
 // Register the locales for the application
@@ -60,6 +62,8 @@ import "./locales";
     NavigationModule,
     TableModule,
     TabsModule,
+    LinkModule,
+    ColorPasswordModule,
 
     // Web specific
   ],
@@ -88,6 +92,8 @@ import "./locales";
     NavigationModule,
     TableModule,
     TabsModule,
+    LinkModule,
+    ColorPasswordModule,
 
     // Web specific
   ],
