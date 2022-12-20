@@ -193,22 +193,49 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.data.orgDomain = await this.orgDomainApiService.verify(
-      this.data.organizationId,
-      this.data.orgDomain.id
-    );
+    try {
+      this.data.orgDomain = await this.orgDomainApiService.verify(
+        this.data.organizationId,
+        this.data.orgDomain.id
+      );
 
-    if (this.data.orgDomain.verifiedDate) {
-      this.platformUtilsService.showToast("success", null, this.i18nService.t("domainVerified"));
-      this.dialogRef.close();
-    } else {
-      this.domainNameCtrl.setErrors({
-        errorPassthrough: {
-          message: this.i18nService.t("domainNotVerified", this.domainNameCtrl.value),
-        },
-      });
+      if (this.data.orgDomain.verifiedDate) {
+        this.platformUtilsService.showToast("success", null, this.i18nService.t("domainVerified"));
+        this.dialogRef.close();
+      } else {
+        this.domainNameCtrl.setErrors({
+          errorPassthrough: {
+            message: this.i18nService.t("domainNotVerified", this.domainNameCtrl.value),
+          },
+        });
+      }
+    } catch (e) {
+      this.handleVerifyDomainError(e, this.domainNameCtrl.value);
     }
   };
+
+  private handleVerifyDomainError(e: any, domainName: string): void {
+    // I'm not sure this case can happen in the modal as we check if a domain is claimed & verified on save
+    // but since we have the back end handling in place, I'll add this here.
+    if (e instanceof ErrorResponse) {
+      const errorResponse: ErrorResponse = e as ErrorResponse;
+      switch (errorResponse.statusCode) {
+        case HttpStatusCode.Conflict:
+          if (errorResponse.message.includes("The domain is not available to be claimed")) {
+            this.domainNameCtrl.setErrors({
+              errorPassthrough: {
+                message: this.i18nService.t("domainNotAvailable", domainName),
+              },
+            });
+          }
+          break;
+
+        default:
+          this.validationService.showError(errorResponse);
+          break;
+      }
+    }
+  }
 
   deleteDomain = async (): Promise<void> => {
     const confirmed = await this.platformUtilsService.showDialog(
