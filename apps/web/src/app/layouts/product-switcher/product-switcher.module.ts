@@ -1,3 +1,4 @@
+import { A11yModule } from "@angular/cdk/a11y";
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
 
@@ -9,7 +10,7 @@ import { ProductSwitcherContentComponent } from "./product-switcher-content.comp
 import { ProductSwitcherComponent } from "./product-switcher.component";
 
 @NgModule({
-  imports: [SharedModule, RouterModule],
+  imports: [SharedModule, A11yModule, RouterModule],
   declarations: [ProductSwitcherComponent, ProductSwitcherContentComponent],
   exports: [ProductSwitcherComponent],
   providers: [I18nPipe],
