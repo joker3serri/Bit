@@ -27,19 +27,19 @@ const routes: Routes = [
         },
         children: [
           {
-            path: "sso",
-            component: SsoComponent,
-            canActivate: [OrganizationPermissionsGuard],
-            data: {
-              organizationPermissions: (org: Organization) => org.canManageSso,
-            },
-          },
-          {
             path: "domain-verification",
             component: DomainVerificationComponent,
             canActivate: [OrganizationPermissionsGuard],
             data: {
               organizationPermissions: (org: Organization) => org.canManageDomainVerification,
+            },
+          },
+          {
+            path: "sso",
+            component: SsoComponent,
+            canActivate: [OrganizationPermissionsGuard],
+            data: {
+              organizationPermissions: (org: Organization) => org.canManageSso,
             },
           },
           {
