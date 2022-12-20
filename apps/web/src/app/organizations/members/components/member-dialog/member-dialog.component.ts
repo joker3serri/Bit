@@ -75,7 +75,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   PermissionMode = PermissionMode;
 
   protected organization: Organization;
-  protected accessItems: AccessItemView[] = [];
+  protected collectionAccessItems: AccessItemView[] = [];
   protected groupAccessItems: AccessItemView[] = [];
   protected tabIndex: MemberDialogTab;
   // Stub, to be filled out in upcoming PRs
@@ -197,7 +197,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
               return { group, collection, accessSelection };
             })
           );
-        this.accessItems = [].concat(
+        this.collectionAccessItems = [].concat(
           collectionsFromGroups.map(({ collection, accessSelection, group }) =>
             mapCollectionToAccessItemView(collection, accessSelection, group)
           ),
