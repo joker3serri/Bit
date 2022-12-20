@@ -3,6 +3,7 @@
     <a
       bitLink
       linkType="primary"
+      class="tw-my-2 tw-inline-block"
       [routerLink]="breadcrumb.route"
       [queryParams]="breadcrumb.queryParams"
     >
@@ -10,7 +11,12 @@
     </a>
   </ng-container>
   <ng-container *ngIf="!breadcrumb.route">
-    <button bitLink linkType="primary" (click)="breadcrumb.onClick($event)">
+    <button
+      bitLink
+      linkType="primary"
+      class="tw-my-2 tw-inline-block"
+      (click)="breadcrumb.onClick($event)"
+    >
       <ng-container [ngTemplateOutlet]="breadcrumb.content"></ng-container>
     </button>
   </ng-container>
@@ -53,6 +59,7 @@
       <a
         bitLink
         linkType="primary"
+        class="tw-my-2 tw-inline-block"
         [routerLink]="breadcrumb.route"
         [queryParams]="breadcrumb.queryParams"
       >
@@ -60,7 +67,12 @@
       </a>
     </ng-container>
     <ng-container *ngIf="!breadcrumb.route">
-      <button bitLink linkType="primary" (click)="breadcrumb.onClick($event)">
+      <button
+        bitLink
+        linkType="primary"
+        class="tw-my-2 tw-inline-block"
+        (click)="breadcrumb.onClick($event)"
+      >
         <ng-container [ngTemplateOutlet]="breadcrumb.content"></ng-container>
       </button>
     </ng-container>
