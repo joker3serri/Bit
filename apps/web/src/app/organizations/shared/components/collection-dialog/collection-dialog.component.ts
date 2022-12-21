@@ -62,7 +62,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
   protected formGroup = this.formBuilder.group({
     name: ["", BitValidators.forbiddenCharacters(["/"])],
     externalId: "",
-    parent: null as string | null,
+    parent: undefined as string | undefined,
     access: [[] as AccessItemValue[]],
   });
   protected PermissionMode = PermissionMode;
@@ -228,7 +228,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
 function parseName(collection: CollectionView) {
   const nameParts = collection.name?.split("/");
   const name = nameParts[nameParts.length - 1];
-  const parent = nameParts.length > 1 ? nameParts.slice(0, -1).join("/") : null;
+  const parent = nameParts.length > 1 ? nameParts.slice(0, -1).join("/") : undefined;
 
   return { name, parent };
 }
