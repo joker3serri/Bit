@@ -1,4 +1,12 @@
-<ng-select [(ngModel)]="value" [disabled]="disabled" [placeholder]="placeholder" [items]="items">
+<ng-select
+  [(ngModel)]="value"
+  (ngModelChange)="onChange($event)"
+  [disabled]="disabled"
+  [placeholder]="placeholder"
+  [items]="items"
+  (blur)="onBlur()"
+  [labelForId]="labelForId"
+>
   <ng-template ng-option-tmp let-item="item">
     <div class="tw-flex">
       <div class="tw-mr-2 tw-flex-initial">
