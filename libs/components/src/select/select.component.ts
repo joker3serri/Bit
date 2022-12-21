@@ -32,7 +32,7 @@ export class SelectComponent<T> implements BitFormFieldControl, ControlValueAcce
   @Input() items: Option<T>[] = [];
   @Input() placeholder = this.i18nService.t("selectPlaceholder");
 
-  protected value: T;
+  protected selected: Option<T>;
 
   protected searchInputId = `bit-select-search-input-${nextId++}`;
 
@@ -64,7 +64,7 @@ export class SelectComponent<T> implements BitFormFieldControl, ControlValueAcce
 
   /**Implemented as part of NG_VALUE_ACCESSOR */
   writeValue(obj: T): void {
-    this.value = obj;
+    this.selected = this.items.find((item) => item.value === obj);
   }
 
   /**Implemented as part of NG_VALUE_ACCESSOR */

@@ -1,6 +1,6 @@
 <ng-select
-  [(ngModel)]="value"
-  (ngModelChange)="onChange($event)"
+  [(ngModel)]="selected"
+  (ngModelChange)="onChange($event.value)"
   [disabled]="disabled"
   [placeholder]="placeholder"
   [items]="items"
