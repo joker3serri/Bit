@@ -134,7 +134,6 @@ export class NotificationsService implements NotificationsServiceAbstraction {
       return;
     }
 
-    const approveLoginRequests = await this.stateService.getApproveLoginRequests();
     switch (notification.type) {
       case NotificationType.SyncCipherCreate:
       case NotificationType.SyncCipherUpdate:
@@ -187,7 +186,7 @@ export class NotificationsService implements NotificationsServiceAbstraction {
         await this.syncService.syncDeleteSend(notification.payload as SyncSendNotification);
         break;
       case NotificationType.AuthRequest:
-        if (approveLoginRequests) {
+        if (await this.stateService.getApproveLoginRequests()) {
           this.messagingService.send("openLoginApproval", {
             notificationId: notification.payload.id,
           });
