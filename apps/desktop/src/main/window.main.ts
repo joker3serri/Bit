@@ -122,6 +122,7 @@ export class WindowMain {
       show: false,
       backgroundColor: "#fff",
       alwaysOnTop: this.enableAlwaysOnTop,
+      autoHideMenuBar: true,
       webPreferences: {
         spellcheck: false,
         nodeIntegration: true,
