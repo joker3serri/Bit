@@ -66,7 +66,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   isRevoked = false;
   title: string;
   emails: string;
-  type: OrganizationUserType = OrganizationUserType.User;
   permissions = new PermissionsApi();
   access: "all" | "selected" = "selected";
   collections: CollectionView[] = [];
@@ -80,6 +79,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   protected tabIndex: MemberDialogTab;
   // Stub, to be filled out in upcoming PRs
   protected formGroup = this.formBuilder.group({
+    type: OrganizationUserType.User,
     accessAllCollections: false,
     access: [[] as AccessItemValue[]],
     groups: [[] as AccessItemValue[]],
@@ -119,7 +119,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   ];
 
   get customUserTypeSelected(): boolean {
-    return this.type === OrganizationUserType.Custom;
+    return this.formGroup.value.type === OrganizationUserType.Custom;
   }
 
   get accessAllCollections(): boolean {
@@ -173,7 +173,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       .subscribe(({ organization, collections, userDetails, groups }) => {
         this.organization = organization;
         this.canUseCustomPermissions = organization.useCustomPermissions;
-        this.type = userDetails.type;
         this.isRevoked = userDetails.status === OrganizationUserStatusType.Revoked;
 
         if (userDetails.type === OrganizationUserType.Custom) {
@@ -207,6 +206,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
           const accessSelections = mapToAccessSelections(userDetails);
           const groupAccessSelections = mapToGroupAccessSelections(userDetails.groups);
           this.formGroup.patchValue({
+            type: userDetails.type,
             accessAllCollections: userDetails.accessAll,
             access: accessSelections,
             groups: groupAccessSelections,
@@ -251,7 +251,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.canUseCustomPermissions && this.type === OrganizationUserType.Custom) {
+    if (!this.canUseCustomPermissions && this.customUserTypeSelected) {
       this.platformUtilsService.showToast(
         "error",
         null,
@@ -265,7 +265,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       userView.id = this.params.organizationUserId;
       userView.organizationId = this.params.organizationId;
       userView.accessAll = this.accessAllCollections;
-      userView.type = this.type;
+      userView.type = this.formGroup.value.type;
       userView.permissions = this.setRequestPermissions(
         userView.permissions ?? new PermissionsApi(),
         userView.type !== OrganizationUserType.Custom
