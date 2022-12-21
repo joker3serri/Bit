@@ -121,7 +121,7 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
           }
 
           const { name, parent } = parseName(this.collection);
-          if (parent !== null && !this.nestOptions.find((c) => c.name === parent)) {
+          if (parent !== undefined && !this.nestOptions.find((c) => c.name === parent)) {
             this.deletedParentName = parent;
           }
 
