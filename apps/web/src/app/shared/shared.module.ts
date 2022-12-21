@@ -25,6 +25,7 @@ import {
   TableModule,
   TabsModule,
   ToggleGroupModule,
+  ColorPasswordModule,
 } from "@bitwarden/components";
 
 import { BreadcrumbsModule } from "./components/breadcrumbs/breadcrumbs.module";
@@ -68,6 +69,8 @@ import "./locales";
     TableModule,
     TabsModule,
     ToggleGroupModule,
+    LinkModule,
+    ColorPasswordModule,
 
     // Web specific
     BreadcrumbsModule,
@@ -100,6 +103,8 @@ import "./locales";
     TableModule,
     TabsModule,
     ToggleGroupModule,
+    LinkModule,
+    ColorPasswordModule,
 
     // Web specific
     BreadcrumbsModule,
