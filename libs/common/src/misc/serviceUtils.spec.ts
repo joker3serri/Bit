@@ -1,4 +1,4 @@
-import { TreeNode } from "../models/domain/tree-node";
+import { ITreeNodeObject, TreeNode } from "../models/domain/tree-node";
 
 import { ServiceUtils } from "./serviceUtils";
 
@@ -54,9 +54,18 @@ describe("serviceUtils", () => {
   });
 });
 
-const createTreeNode =
-  (obj: FakeObject, children: ((parent: TreeNode<FakeObject>) => TreeNode<FakeObject>)[] = []) =>
-  (parent?: TreeNode<FakeObject>): TreeNode<FakeObject> => {
+type TreeNodeFactory<T extends ITreeNodeObject> = (
+  obj: T,
+  children?: TreeNodeFactoryWithoutParent<T>[]
+) => TreeNodeFactoryWithoutParent<T>;
+
+type TreeNodeFactoryWithoutParent<T extends ITreeNodeObject> = (
+  parent?: TreeNode<T>
+) => TreeNode<T>;
+
+const createTreeNode: TreeNodeFactory<FakeObject> =
+  (obj, children = []) =>
+  (parent) => {
     const node = new TreeNode<FakeObject>(obj, parent, obj.name, obj.id);
     node.children = children.map((childFunc) => childFunc(node));
     return node;
