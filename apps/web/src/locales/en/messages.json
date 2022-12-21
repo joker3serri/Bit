@@ -135,7 +135,7 @@
   },
   "mx": {
     "message": "Mx"
-  },  
+  },
   "dr": {
     "message": "Dr"
   },
@@ -5624,6 +5624,9 @@
    },
    "customColor": {
     "message": "Custom Color"
+   },
+  "selectPlaceholder": {
+    "message": "-- Select --"
   },
   "multiSelectPlaceholder": {
     "message": "-- Type to filter --"
