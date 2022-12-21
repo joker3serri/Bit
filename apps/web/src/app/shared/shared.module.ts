@@ -27,6 +27,7 @@ import {
 
 // Register the locales for the application
 import "./locales";
+import { WebI18nPipe } from "../core/web-i18n.pipe";
 
 /**
  * This NgModule should contain the most basic shared directives, pipes, and components. They
@@ -66,6 +67,7 @@ import "./locales";
 
     // Web specific
   ],
+  declarations: [WebI18nPipe],
   exports: [
     CommonModule,
     DragDropModule,
@@ -95,6 +97,7 @@ import "./locales";
     ColorPasswordModule,
 
     // Web specific
+    WebI18nPipe,
   ],
   providers: [DatePipe],
   bootstrap: [],
