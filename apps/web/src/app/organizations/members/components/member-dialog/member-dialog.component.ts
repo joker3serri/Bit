@@ -144,7 +144,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.editMode = this.loading = this.params.organizationUserId != null;
+    this.editMode = this.params.organizationUserId != null;
     this.tabIndex = this.params.initialTab ?? MemberDialogTab.Role;
     this.title = this.i18nService.t(this.editMode ? "editMember" : "inviteMember");
 
@@ -173,24 +173,8 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       .subscribe(({ organization, collections, userDetails, groups }) => {
         this.organization = organization;
         this.canUseCustomPermissions = organization.useCustomPermissions;
-        this.isRevoked = userDetails.status === OrganizationUserStatusType.Revoked;
 
-        if (userDetails.type === OrganizationUserType.Custom) {
-          this.permissions = userDetails.permissions;
-        }
-
-        const collectionsFromGroups = groups
-          .filter((group) => userDetails.groups.includes(group.id))
-          .flatMap((group) =>
-            group.collections.map((accessSelection) => {
-              const collection = collections.find((c) => c.id === accessSelection.id);
-              return { group, collection, accessSelection };
-            })
-          );
         this.collectionAccessItems = [].concat(
-          collectionsFromGroups.map(({ collection, accessSelection, group }) =>
-            mapCollectionToAccessItemView(collection, accessSelection, group)
-          ),
           collections.map((c) => mapCollectionToAccessItemView(c))
         );
 
@@ -202,6 +186,25 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
           if (!userDetails) {
             throw new Error("Could not find user to edit.");
           }
+          this.isRevoked = userDetails.status === OrganizationUserStatusType.Revoked;
+          if (userDetails.type === OrganizationUserType.Custom) {
+            this.permissions = userDetails.permissions;
+          }
+
+          const collectionsFromGroups = groups
+            .filter((group) => userDetails.groups.includes(group.id))
+            .flatMap((group) =>
+              group.collections.map((accessSelection) => {
+                const collection = collections.find((c) => c.id === accessSelection.id);
+                return { group, collection, accessSelection };
+              })
+            );
+
+          this.collectionAccessItems = this.collectionAccessItems.concat(
+            collectionsFromGroups.map(({ collection, accessSelection, group }) =>
+              mapCollectionToAccessItemView(collection, accessSelection, group)
+            )
+          );
 
           const accessSelections = mapToAccessSelections(userDetails);
           const groupAccessSelections = mapToGroupAccessSelections(userDetails.groups);
