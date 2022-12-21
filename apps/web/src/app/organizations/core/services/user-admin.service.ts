@@ -20,7 +20,10 @@ export class UserAdminService {
   ): Promise<OrganizationUserAdminView | undefined> {
     const userResponse = await this.organizationUserService.getOrganizationUser(
       organizationId,
-      organizationUserId
+      organizationUserId,
+      {
+        includeGroups: true,
+      }
     );
 
     if (userResponse == null) {
@@ -75,6 +78,7 @@ export class UserAdminService {
         hidePasswords: c.hidePasswords,
         readOnly: c.readOnly,
       }));
+      view.groups = u.groups;
 
       return view;
     });

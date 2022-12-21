@@ -160,14 +160,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
         return this.groupService.getAll(this.params.organizationId);
       })
     );
-    const userGroups$ = this.params.organizationUserId
-      ? of(
-          await this.organizationUserService.getOrganizationUserGroups(
-            this.params.organizationId,
-            this.params.organizationUserId
-          )
-        )
-      : of([]);
 
     combineLatest({
       organization: organization$,
@@ -176,10 +168,9 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
         ? this.userService.get(this.params.organizationId, this.params.organizationUserId)
         : of(null),
       groups: groups$,
-      userGroups: userGroups$,
     })
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ organization, collections, userDetails, groups, userGroups }) => {
+      .subscribe(({ organization, collections, userDetails, groups }) => {
         this.organization = organization;
         this.canUseCustomPermissions = organization.useCustomPermissions;
         this.type = userDetails.type;
@@ -190,7 +181,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
         }
 
         const collectionsFromGroups = groups
-          .filter((group) => userGroups.includes(group.id))
+          .filter((group) => userDetails.groups.includes(group.id))
           .flatMap((group) =>
             group.collections.map((accessSelection) => {
               const collection = collections.find((c) => c.id === accessSelection.id);
@@ -214,7 +205,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
           }
 
           const accessSelections = mapToAccessSelections(userDetails);
-          const groupAccessSelections = mapToGroupAccessSelections(userGroups);
+          const groupAccessSelections = mapToGroupAccessSelections(userDetails.groups);
           this.formGroup.patchValue({
             accessAllCollections: userDetails.accessAll,
             access: accessSelections,
