@@ -39,10 +39,8 @@ export class OrgDomainService implements OrgDomainInternalServiceAbstraction {
         (existingOrgDomain) => existingOrgDomain.id === orgDomain.id
       );
       if (index !== -1) {
-        // existing
         existingOrgDomains[index] = orgDomain;
       } else {
-        // new item
         existingOrgDomains.push(orgDomain);
       }
     });
@@ -66,11 +64,7 @@ export class OrgDomainService implements OrgDomainInternalServiceAbstraction {
         (existingOrgDomain) => existingOrgDomain.id === orgDomainId
       );
       if (index !== -1) {
-        // existing
         existingOrgDomains.splice(index, 1);
-      } else {
-        // eslint-disable-next-line no-console
-        console.warn(`Unable to delete OrgDomainId: ${orgDomainId}`);
       }
     });
 
