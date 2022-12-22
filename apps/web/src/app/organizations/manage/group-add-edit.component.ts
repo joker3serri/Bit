@@ -91,8 +91,8 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
 
   groupForm = this.formBuilder.group({
     accessAll: new FormControl(false),
-    name: new FormControl("", Validators.required),
-    externalId: new FormControl(""),
+    name: new FormControl("", [Validators.required, Validators.maxLength(100)]),
+    externalId: new FormControl("", Validators.maxLength(300)),
     members: new FormControl<AccessItemValue[]>([]),
     collections: new FormControl<AccessItemValue[]>([]),
   });
