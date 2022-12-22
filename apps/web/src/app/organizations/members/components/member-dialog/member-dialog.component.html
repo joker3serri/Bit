@@ -113,7 +113,7 @@
                 formControlName="type"
                 name="type"
                 class="tw-relative tw-bottom-[-1px] tw-mr-2"
-                [disabled]="!canUseCustomPermissions || null"
+                [attr.disabled]="!canUseCustomPermissions || null"
               />
               <label class="tw-m-0" for="userTypeCustom">
                 {{ "custom" | i18n }}
