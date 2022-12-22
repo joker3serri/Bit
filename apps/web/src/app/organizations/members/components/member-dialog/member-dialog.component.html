@@ -47,7 +47,7 @@
             />
             <label class="form-check-label" for="userTypeUser">
               {{ "user" | i18n }}
-              <small>{{ "userDesc" | i18n }}</small>
+              <small class="tw-text-base">{{ "userDesc" | i18n }}</small>
             </label>
           </div>
           <div class="form-check mt-2 form-check-block">
@@ -60,7 +60,7 @@
             />
             <label class="form-check-label" for="userTypeManager">
               {{ "manager" | i18n }}
-              <small>{{ "managerDesc" | i18n }}</small>
+              <small class="tw-text-base">{{ "managerDesc" | i18n }}</small>
             </label>
           </div>
           <div class="form-check mt-2 form-check-block">
@@ -73,7 +73,7 @@
             />
             <label class="form-check-label" for="userTypeAdmin">
               {{ "admin" | i18n }}
-              <small>{{ "adminDesc" | i18n }}</small>
+              <small class="tw-text-base">{{ "adminDesc" | i18n }}</small>
             </label>
           </div>
           <div class="form-check mt-2 form-check-block">
@@ -86,7 +86,7 @@
             />
             <label class="form-check-label" for="userTypeOwner">
               {{ "owner" | i18n }}
-              <small>{{ "ownerDesc" | i18n }}</small>
+              <small class="tw-text-base">{{ "ownerDesc" | i18n }}</small>
             </label>
           </div>
           <div class="form-check mt-2 form-check-block">
@@ -101,7 +101,7 @@
             <label class="form-check-label" for="userTypeCustom">
               {{ "custom" | i18n }}
               <ng-container *ngIf="!canUseCustomPermissions; else enterprise">
-                <small
+                <small class="tw-text-base"
                   >{{ "customDescNonEnterpriseStart" | i18n
                   }}<a href="https://bitwarden.com/contact/" target="_blank">{{
                     "customDescNonEnterpriseLink" | i18n
@@ -110,7 +110,7 @@
                 >
               </ng-container>
               <ng-template #enterprise>
-                <small>{{ "customDesc" | i18n }}</small>
+                <small class="tw-text-base">{{ "customDesc" | i18n }}</small>
               </ng-template>
             </label>
           </div>
