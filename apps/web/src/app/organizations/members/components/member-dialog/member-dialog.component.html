@@ -26,94 +26,114 @@
               <bit-hint>{{ "inviteMultipleEmailDesc" | i18n: "20" }}</bit-hint>
             </bit-form-field>
           </ng-container>
-          <h3 class="tw-font-semibold">
-            {{ "memberRole" | i18n }}
-            <a
-              target="_blank"
-              rel="noopener"
-              appA11yTitle="{{ 'learnMore' | i18n }}"
-              href="https://bitwarden.com/help/user-types-access-control/"
+          <fieldset role="radiogroup" aria-labelledby="roleGroupLabel">
+            <legend
+              id="roleGroupLabel"
+              class="tw-mb-2 tw-block tw-text-base tw-font-semibold tw-text-main"
             >
-              <i class="bwi bwi-question-circle" aria-hidden="true"></i>
-            </a>
-          </h3>
-          <div class="form-check mt-2 form-check-block">
-            <input
-              class="form-check-input"
-              type="radio"
-              id="userTypeUser"
-              [value]="organizationUserType.User"
-              formControlName="type"
-            />
-            <label class="form-check-label" for="userTypeUser">
-              {{ "user" | i18n }}
-              <small class="tw-text-base">{{ "userDesc" | i18n }}</small>
-            </label>
-          </div>
-          <div class="form-check mt-2 form-check-block">
-            <input
-              class="form-check-input"
-              type="radio"
-              id="userTypeManager"
-              [value]="organizationUserType.Manager"
-              formControlName="type"
-            />
-            <label class="form-check-label" for="userTypeManager">
-              {{ "manager" | i18n }}
-              <small class="tw-text-base">{{ "managerDesc" | i18n }}</small>
-            </label>
-          </div>
-          <div class="form-check mt-2 form-check-block">
-            <input
-              class="form-check-input"
-              type="radio"
-              id="userTypeAdmin"
-              [value]="organizationUserType.Admin"
-              formControlName="type"
-            />
-            <label class="form-check-label" for="userTypeAdmin">
-              {{ "admin" | i18n }}
-              <small class="tw-text-base">{{ "adminDesc" | i18n }}</small>
-            </label>
-          </div>
-          <div class="form-check mt-2 form-check-block">
-            <input
-              class="form-check-input"
-              type="radio"
-              id="userTypeOwner"
-              [value]="organizationUserType.Owner"
-              formControlName="type"
-            />
-            <label class="form-check-label" for="userTypeOwner">
-              {{ "owner" | i18n }}
-              <small class="tw-text-base">{{ "ownerDesc" | i18n }}</small>
-            </label>
-          </div>
-          <div class="form-check mt-2 form-check-block">
-            <input
-              class="form-check-input"
-              type="radio"
-              id="userTypeCustom"
-              [value]="organizationUserType.Custom"
-              formControlName="type"
-              [attr.disabled]="!canUseCustomPermissions || null"
-            />
-            <label class="form-check-label" for="userTypeCustom">
-              {{ "custom" | i18n }}
-              <ng-container *ngIf="!canUseCustomPermissions; else enterprise">
-                <small class="tw-text-base"
-                  >{{ "customDescNonEnterpriseStart" | i18n
-                  }}<a href="https://bitwarden.com/contact/" target="_blank">{{
-                    "customDescNonEnterpriseLink" | i18n
-                  }}</a
-                  >{{ "customDescNonEnterpriseEnd" | i18n }}</small
-                >
-              </ng-container>
-              <ng-template #enterprise>
-                <small class="tw-text-base">{{ "customDesc" | i18n }}</small>
-              </ng-template>
-            </label>
-          </div>
+              {{ "memberRole" | i18n }}
+              <a
+                target="_blank"
+                rel="noopener"
+                appA11yTitle="{{ 'learnMore' | i18n }}"
+                href="https://bitwarden.com/help/user-types-access-control/"
+              >
+                <i class="bwi bwi-question-circle" aria-hidden="true"></i>
+              </a>
+            </legend>
+            <div class="tw-mb-2 tw-flex tw-items-baseline">
+              <input
+                type="radio"
+                id="userTypeUser"
+                [value]="organizationUserType.User"
+                class="tw-relative tw-bottom-[-1px] tw-mr-2"
+                formControlName="type"
+                name="type"
+              />
+              <label class="tw-m-0" for="userTypeUser">
+                {{ "user" | i18n }}
+                <div class="text-base tw-block tw-font-normal tw-text-muted">
+                  {{ "userDesc" | i18n }}
+                </div>
+              </label>
+            </div>
+            <div class="tw-mb-2 tw-flex tw-items-baseline">
+              <input
+                type="radio"
+                id="userTypeManager"
+                [value]="organizationUserType.Manager"
+                class="tw-relative tw-bottom-[-1px] tw-mr-2"
+                formControlName="type"
+                name="type"
+              />
+              <label class="tw-m-0" for="userTypeManager">
+                {{ "manager" | i18n }}
+                <div class="text-base tw-block tw-font-normal tw-text-muted">
+                  {{ "managerDesc" | i18n }}
+                </div>
+              </label>
+            </div>
+            <div class="tw-mb-2 tw-flex tw-items-baseline">
+              <input
+                type="radio"
+                id="userTypeAdmin"
+                [value]="organizationUserType.Admin"
+                class="tw-relative tw-bottom-[-1px] tw-mr-2"
+                formControlName="type"
+                name="type"
+              />
+              <label class="tw-m-0" for="userTypeAdmin">
+                {{ "admin" | i18n }}
+                <div class="text-base tw-block tw-font-normal tw-text-muted">
+                  {{ "adminDesc" | i18n }}
+                </div>
+              </label>
+            </div>
+            <div class="tw-mb-2 tw-flex tw-items-baseline">
+              <input
+                type="radio"
+                id="userTypeOwner"
+                [value]="organizationUserType.Owner"
+                class="tw-relative tw-bottom-[-1px] tw-mr-2"
+                formControlName="type"
+                name="type"
+              />
+              <label class="tw-m-0" for="userTypeOwner">
+                {{ "owner" | i18n }}
+                <div class="text-base tw-block tw-font-normal tw-text-muted">
+                  {{ "ownerDesc" | i18n }}
+                </div>
+              </label>
+            </div>
+            <div class="tw-mb-2 tw-flex tw-items-baseline">
+              <input
+                type="radio"
+                id="userTypeCustom"
+                [value]="organizationUserType.Custom"
+                formControlName="type"
+                name="type"
+                class="tw-relative tw-bottom-[-1px] tw-mr-2"
+                [disabled]="!canUseCustomPermissions || null"
+              />
+              <label class="tw-m-0" for="userTypeCustom">
+                {{ "custom" | i18n }}
+                <ng-container *ngIf="!canUseCustomPermissions; else enterprise">
+                  <div class="text-base tw-block tw-font-normal tw-text-muted">
+                    {{ "customDescNonEnterpriseStart" | i18n
+                    }}<a href="https://bitwarden.com/contact/" target="_blank">{{
+                      "customDescNonEnterpriseLink" | i18n
+                    }}</a
+                    >{{ "customDescNonEnterpriseEnd" | i18n }}
+                  </div>
+                </ng-container>
+                <ng-template #enterprise>
+                  <div class="text-base tw-block tw-font-normal tw-text-muted">
+                    {{ "customDesc" | i18n }}
+                  </div>
+                </ng-template>
+              </label>
+            </div>
+          </fieldset>
           <ng-container *ngIf="customUserTypeSelected">
             <h3 class="mt-4 d-flex">
               {{ "permissions" | i18n }}
