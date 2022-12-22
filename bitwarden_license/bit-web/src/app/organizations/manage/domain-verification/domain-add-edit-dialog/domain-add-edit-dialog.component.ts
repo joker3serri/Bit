@@ -29,8 +29,6 @@ export interface DomainAddEditDialogData {
 })
 export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
   private componentDestroyed$: Subject<void> = new Subject();
-  dialogSize: "small" | "default" | "large" = "default";
-  disablePadding = false;
 
   domainForm: FormGroup = this.formBuilder.group({
     domainName: [
