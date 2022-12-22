@@ -53,6 +53,7 @@ export class LoginApprovalComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    clearInterval(this.interval);
     this.destroy$.next();
     this.destroy$.complete();
   }
