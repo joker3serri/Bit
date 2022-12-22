@@ -106,8 +106,8 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
   }
 
   setupFormListeners(): void {
-    // By default, <bit-form-field> suppresses touched state on change for reactive form control inputs
-    // I want validation errors to be shown as the user types (as validators are running on change anyhow by default).
+    // <bit-form-field> suppresses touched state on change for reactive form controls
+    // Manually set touched to show validation errors as the user stypes
     this.domainForm.valueChanges.pipe(takeUntil(this.componentDestroyed$)).subscribe(() => {
       this.domainForm.markAllAsTouched();
     });
@@ -213,8 +213,6 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
   };
 
   private handleVerifyDomainError(e: any, domainName: string): void {
-    // I'm not sure this case can happen in the modal as we check if a domain is claimed & verified on save
-    // but since we have the back end handling in place, I'll add this here.
     if (e instanceof ErrorResponse) {
       const errorResponse: ErrorResponse = e as ErrorResponse;
       switch (errorResponse.statusCode) {
