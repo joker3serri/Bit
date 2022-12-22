@@ -87,7 +87,7 @@ describe("Org Domain API Service", () => {
     expect(orgDomainApiService).not.toBeFalsy();
   });
 
-  it("getAllByOrgId", () => {
+  it("getAllByOrgId retrieves all org domains and calls orgDomainSvc replace", () => {
     apiService.send.mockResolvedValue(mockedGetAllByOrgIdResponse);
 
     expect(lastValueFrom(orgDomainService.orgDomains$)).resolves.toHaveLength(0);
@@ -104,7 +104,7 @@ describe("Org Domain API Service", () => {
       });
   });
 
-  it("getByOrgIdAndOrgDomainId", () => {
+  it("getByOrgIdAndOrgDomainId retrieves single org domain and calls orgDomainSvc upsert", () => {
     apiService.send.mockResolvedValue(mockedOrgDomainServerResponse);
 
     expect(lastValueFrom(orgDomainService.orgDomains$)).resolves.toHaveLength(0);
@@ -121,7 +121,7 @@ describe("Org Domain API Service", () => {
       });
   });
 
-  it("post", () => {
+  it("post success should call orgDomainSvc upsert", () => {
     apiService.send.mockResolvedValue(mockedOrgDomainServerResponse);
 
     expect(lastValueFrom(orgDomainService.orgDomains$)).resolves.toHaveLength(0);
@@ -138,7 +138,7 @@ describe("Org Domain API Service", () => {
       });
   });
 
-  it("verify", () => {
+  it("verify success should call orgDomainSvc upsert", () => {
     apiService.send.mockResolvedValue(mockedOrgDomainServerResponse);
 
     expect(lastValueFrom(orgDomainService.orgDomains$)).resolves.toHaveLength(0);
@@ -155,7 +155,7 @@ describe("Org Domain API Service", () => {
       });
   });
 
-  it("delete", () => {
+  it("delete success should call orgDomainSvc delete", () => {
     apiService.send.mockResolvedValue(true);
     orgDomainService.upsert([mockedOrgDomainResponse]);
     expect(lastValueFrom(orgDomainService.orgDomains$)).resolves.toHaveLength(1);

@@ -90,7 +90,7 @@ describe("Org Domain Service", () => {
     expect(lastValueFrom(orgDomainService.orgDomains$)).resolves.toEqual([]);
   });
 
-  it("get works", () => {
+  it("get successfully retrieves org domain by id", () => {
     const orgDomains = [mockedUnverifiedOrgDomainResponse, mockedVerifiedOrgDomainResponse];
     orgDomainService.replace(orgDomains);
 
@@ -103,7 +103,7 @@ describe("Org Domain Service", () => {
     );
   });
 
-  it("upsert works", () => {
+  it("upsert both updates an existing org domain and adds a new one", () => {
     const orgDomains = [mockedUnverifiedOrgDomainResponse, mockedVerifiedOrgDomainResponse];
     orgDomainService.replace(orgDomains);
 
@@ -140,7 +140,7 @@ describe("Org Domain Service", () => {
     expect(orgDomainService.get(newOrgDomain.id)).toEqual(newOrgDomain);
   });
 
-  it("delete works", () => {
+  it("delete successfully removes multiple org domains", () => {
     const orgDomains = [
       mockedUnverifiedOrgDomainResponse,
       mockedVerifiedOrgDomainResponse,
@@ -160,7 +160,7 @@ describe("Org Domain Service", () => {
     expect(orgDomainService.get(mockedExtraOrgDomainResponse.id)).toEqual(undefined);
   });
 
-  it("copyDnsTxt works", () => {
+  it("copyDnsTxt copies DNS TXT to clipboard and shows toast", () => {
     orgDomainService.copyDnsTxt("fakeTxt");
     expect(jest.spyOn(platformUtilService, "copyToClipboard")).toHaveBeenCalled();
     expect(jest.spyOn(platformUtilService, "showToast")).toHaveBeenCalled();
