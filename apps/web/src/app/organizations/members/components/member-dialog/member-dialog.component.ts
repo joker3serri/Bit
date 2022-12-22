@@ -76,47 +76,36 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   protected collectionAccessItems: AccessItemView[] = [];
   protected groupAccessItems: AccessItemView[] = [];
   protected tabIndex: MemberDialogTab;
-  // Stub, to be filled out in upcoming PRs
   protected formGroup = this.formBuilder.group({
     emails: ["", [Validators.required]],
     type: OrganizationUserType.User,
     accessAllCollections: false,
     access: [[] as AccessItemValue[]],
     groups: [[] as AccessItemValue[]],
+    permissions: this.formBuilder.group({
+      manageAssignedCollectionsGroup: this.formBuilder.group<Record<string, boolean>>({
+        manageAssignedCollections: false,
+        editAssignedCollections: false,
+        deleteAssignedCollections: false,
+      }),
+      manageAllCollectionsGroup: this.formBuilder.group<Record<string, boolean>>({
+        manageAllCollections: false,
+        createNewCollections: false,
+        editAnyCollection: false,
+        deleteAnyCollection: false,
+      }),
+      accessEventLogs: false,
+      accessImportExport: false,
+      accessReports: false,
+      manageGroups: false,
+      manageSso: false,
+      managePolicies: false,
+      manageUsers: false,
+      manageResetPassword: false,
+    }),
   });
 
   private destroy$ = new Subject<void>();
-
-  manageAllCollectionsCheckboxes = [
-    {
-      id: "createNewCollections",
-      get: () => this.permissions.createNewCollections,
-      set: (v: boolean) => (this.permissions.createNewCollections = v),
-    },
-    {
-      id: "editAnyCollection",
-      get: () => this.permissions.editAnyCollection,
-      set: (v: boolean) => (this.permissions.editAnyCollection = v),
-    },
-    {
-      id: "deleteAnyCollection",
-      get: () => this.permissions.deleteAnyCollection,
-      set: (v: boolean) => (this.permissions.deleteAnyCollection = v),
-    },
-  ];
-
-  manageAssignedCollectionsCheckboxes = [
-    {
-      id: "editAssignedCollections",
-      get: () => this.permissions.editAssignedCollections,
-      set: (v: boolean) => (this.permissions.editAssignedCollections = v),
-    },
-    {
-      id: "deleteAssignedCollections",
-      get: () => this.permissions.deleteAssignedCollections,
-      set: (v: boolean) => (this.permissions.deleteAssignedCollections = v),
-    },
-  ];
 
   get customUserTypeSelected(): boolean {
     return this.formGroup.value.type === OrganizationUserType.Custom;

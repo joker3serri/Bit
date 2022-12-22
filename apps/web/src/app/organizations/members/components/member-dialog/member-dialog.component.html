@@ -135,151 +135,121 @@
             </div>
           </fieldset>
           <ng-container *ngIf="customUserTypeSelected">
-            <h3 class="mt-4 d-flex">
+            <h3 class="mt-4 d-flex tw-font-semibold">
               {{ "permissions" | i18n }}
             </h3>
-            <div class="row">
+            <div class="row" formGroupName="permissions">
               <div class="col-6">
                 <div class="mb-3">
-                  <label class="font-weight-bold mb-0">{{ "managerPermissions" | i18n }}</label>
-                  <hr class="my-0 mr-2" />
+                  <label class="tw-font-semibold">{{ "managerPermissions" | i18n }}</label>
+                  <hr class="tw-mt-0 tw-mb-2 tw-mr-2" />
                   <app-nested-checkbox
                     parentId="manageAssignedCollections"
-                    [checkboxes]="manageAssignedCollectionsCheckboxes"
+                    [checkboxes]="
+                      formGroup.controls.permissions.controls.manageAssignedCollectionsGroup
+                    "
                   >
                   </app-nested-checkbox>
                 </div>
               </div>
               <div class="col-6">
                 <div class="mb-3">
-                  <label class="font-weight-bold mb-0">{{ "adminPermissions" | i18n }}</label>
-                  <hr class="my-0 mr-2" />
-                  <div class="form-group mb-0">
-                    <div class="form-check mt-1 form-check-block">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="accessEventLogs"
-                        id="accessEventLogs"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="permissions.accessEventLogs"
-                      />
-                      <label class="form-check-label font-weight-normal" for="accessEventLogs">
-                        {{ "accessEventLogs" | i18n }}
-                      </label>
-                    </div>
+                  <label class="tw-font-semibold">{{ "adminPermissions" | i18n }}</label>
+                  <hr class="tw-mt-0 tw-mb-2 tw-mr-2" />
+                  <div>
+                    <input
+                      type="checkbox"
+                      name="accessEventLogs"
+                      id="accessEventLogs"
+                      formControlName="accessEventLogs"
+                    />
+                    <label class="!tw-font-normal" for="accessEventLogs">
+                      {{ "accessEventLogs" | i18n }}
+                    </label>
                   </div>
-                  <div class="form-group mb-0">
-                    <div class="form-check mt-1 form-check-block">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="accessImportExport"
-                        id="accessImportExport"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="permissions.accessImportExport"
-                      />
-                      <label class="form-check-label font-weight-normal" for="accessImportExport">
-                        {{ "accessImportExport" | i18n }}
-                      </label>
-                    </div>
+                  <div>
+                    <input
+                      type="checkbox"
+                      name="accessImportExport"
+                      id="accessImportExport"
+                      formControlName="accessImportExport"
+                    />
+                    <label class="!tw-font-normal" for="accessImportExport">
+                      {{ "accessImportExport" | i18n }}
+                    </label>
                   </div>
-                  <div class="form-group mb-0">
-                    <div class="form-check mt-1 form-check-block">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="accessReports"
-                        id="accessReports"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="permissions.accessReports"
-                      />
-                      <label class="form-check-label font-weight-normal" for="accessReports">
-                        {{ "accessReports" | i18n }}
-                      </label>
-                    </div>
+                  <div>
+                    <input
+                      type="checkbox"
+                      name="accessReports"
+                      id="accessReports"
+                      formControlName="accessReports"
+                    />
+                    <label class="!tw-font-normal" for="accessReports">
+                      {{ "accessReports" | i18n }}
+                    </label>
                   </div>
                   <app-nested-checkbox
                     parentId="manageAllCollections"
-                    [checkboxes]="manageAllCollectionsCheckboxes"
+                    [checkboxes]="formGroup.controls.permissions.controls.manageAllCollectionsGroup"
                   >
                   </app-nested-checkbox>
-                  <div class="form-group mb-0">
-                    <div class="form-check mt-1 form-check-block">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="manageGroups"
-                        id="manageGroups"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="permissions.manageGroups"
-                      />
-                      <label class="form-check-label font-weight-normal" for="manageGroups">
-                        {{ "manageGroups" | i18n }}
-                      </label>
-                    </div>
+                  <div>
+                    <input
+                      type="checkbox"
+                      name="manageGroups"
+                      id="manageGroups"
+                      formControlName="manageGroups"
+                    />
+                    <label class="!tw-font-normal" for="manageGroups">
+                      {{ "manageGroups" | i18n }}
+                    </label>
                   </div>
-                  <div class="form-group mb-0">
-                    <div class="form-check mt-1 form-check-block">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="manageSso"
-                        id="manageSso"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="permissions.manageSso"
-                      />
-                      <label class="form-check-label font-weight-normal" for="manageSso">
-                        {{ "manageSso" | i18n }}
-                      </label>
-                    </div>
+                  <div>
+                    <input
+                      type="checkbox"
+                      name="manageSso"
+                      id="manageSso"
+                      formControlName="manageSso"
+                    />
+                    <label class="!tw-font-normal" for="manageSso">
+                      {{ "manageSso" | i18n }}
+                    </label>
                   </div>
-                  <div class="form-group mb-0">
-                    <div class="form-check mt-1 form-check-block">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="managePolicies"
-                        id="managePolicies"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="permissions.managePolicies"
-                      />
-                      <label class="form-check-label font-weight-normal" for="managePolicies">
-                        {{ "managePolicies" | i18n }}
-                      </label>
-                    </div>
+                  <div>
+                    <input
+                      type="checkbox"
+                      name="managePolicies"
+                      id="managePolicies"
+                      formControlName="managePolicies"
+                    />
+                    <label class="!tw-font-normal" for="managePolicies">
+                      {{ "managePolicies" | i18n }}
+                    </label>
                   </div>
-                  <div class="form-group mb-0">
-                    <div class="form-check mt-1 form-check-block">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="manageUsers"
-                        id="manageUsers"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="permissions.manageUsers"
-                        (change)="handleDependentPermissions()"
-                      />
-                      <label class="form-check-label font-weight-normal" for="manageUsers">
-                        {{ "manageUsers" | i18n }}
-                      </label>
-                    </div>
+                  <div>
+                    <input
+                      type="checkbox"
+                      name="manageUsers"
+                      id="manageUsers"
+                      formControlName="managePolicies"
+                      (change)="handleDependentPermissions()"
+                    />
+                    <label class="!tw-font-normal" for="manageUsers">
+                      {{ "manageUsers" | i18n }}
+                    </label>
                   </div>
-                  <div class="form-group mb-0">
-                    <div class="form-check mt-1 form-check-block">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="manageResetPassword"
-                        id="manageResetPassword"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="permissions.manageResetPassword"
-                        (change)="handleDependentPermissions()"
-                      />
-                      <label class="form-check-label font-weight-normal" for="manageResetPassword">
-                        {{ "manageResetPassword" | i18n }}
-                      </label>
-                    </div>
+                  <div>
+                    <input
+                      type="checkbox"
+                      name="manageResetPassword"
+                      id="manageResetPassword"
+                      formControlName="manageResetPassword"
+                      (change)="handleDependentPermissions()"
+                    />
+                    <label class="!tw-font-normal" for="manageResetPassword">
+                      {{ "manageResetPassword" | i18n }}
+                    </label>
                   </div>
                 </div>
               </div>
