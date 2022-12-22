@@ -138,16 +138,14 @@
             <h3 class="mt-4 d-flex tw-font-semibold">
               {{ "permissions" | i18n }}
             </h3>
-            <div class="row" formGroupName="permissions">
+            <div class="row" [formGroup]="permissionsGroup">
               <div class="col-6">
                 <div class="mb-3">
                   <label class="tw-font-semibold">{{ "managerPermissions" | i18n }}</label>
                   <hr class="tw-mt-0 tw-mb-2 tw-mr-2" />
                   <app-nested-checkbox
                     parentId="manageAssignedCollections"
-                    [checkboxes]="
-                      formGroup.controls.permissions.controls.manageAssignedCollectionsGroup
-                    "
+                    [checkboxes]="permissionsGroup.controls.manageAssignedCollectionsGroup"
                   >
                   </app-nested-checkbox>
                 </div>
@@ -191,7 +189,7 @@
                   </div>
                   <app-nested-checkbox
                     parentId="manageAllCollections"
-                    [checkboxes]="formGroup.controls.permissions.controls.manageAllCollectionsGroup"
+                    [checkboxes]="permissionsGroup.controls.manageAllCollectionsGroup"
                   >
                   </app-nested-checkbox>
                   <div>
