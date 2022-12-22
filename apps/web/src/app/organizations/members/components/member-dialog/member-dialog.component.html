@@ -20,20 +20,11 @@
         <bit-tab [label]="'role' | i18n">
           <ng-container *ngIf="!editMode">
             <p>{{ "inviteUserDesc" | i18n }}</p>
-            <div class="form-group mb-4">
-              <label for="emails">{{ "email" | i18n }}</label>
-              <input
-                id="emails"
-                class="form-control"
-                type="text"
-                name="Emails"
-                [ngModelOptions]="{ standalone: true }"
-                [(ngModel)]="emails"
-                required
-                appAutoFocus
-              />
-              <small class="text-muted">{{ "inviteMultipleEmailDesc" | i18n: "20" }}</small>
-            </div>
+            <bit-form-field>
+              <bit-label>{{ "email" | i18n }}</bit-label>
+              <input id="emails" type="text" appAutoFocus bitInput formControlName="emails" />
+              <bit-hint>{{ "inviteMultipleEmailDesc" | i18n: "20" }}</bit-hint>
+            </bit-form-field>
           </ng-container>
           <h3 class="tw-font-semibold">
             {{ "memberRole" | i18n }}

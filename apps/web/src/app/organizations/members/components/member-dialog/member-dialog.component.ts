@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogConfig, DialogRef } from "@angular/cdk/dialog";
 import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
-import { FormBuilder } from "@angular/forms";
+import { FormBuilder, Validators } from "@angular/forms";
 import { combineLatest, of, shareReplay, Subject, switchMap, takeUntil } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -65,7 +65,6 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   editMode = false;
   isRevoked = false;
   title: string;
-  emails: string;
   permissions = new PermissionsApi();
   access: "all" | "selected" = "selected";
   collections: CollectionView[] = [];
@@ -79,6 +78,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   protected tabIndex: MemberDialogTab;
   // Stub, to be filled out in upcoming PRs
   protected formGroup = this.formBuilder.group({
+    emails: ["", [Validators.required]],
     type: OrganizationUserType.User,
     accessAllCollections: false,
     access: [[] as AccessItemValue[]],
@@ -208,6 +208,8 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
 
           const accessSelections = mapToAccessSelections(userDetails);
           const groupAccessSelections = mapToGroupAccessSelections(userDetails.groups);
+
+          this.formGroup.removeControl("emails");
           this.formGroup.patchValue({
             type: userDetails.type,
             accessAllCollections: userDetails.accessAll,
@@ -282,7 +284,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
         await this.userService.save(userView);
       } else {
         userView.id = this.params.organizationUserId;
-        const emails = [...new Set(this.emails.trim().split(/\s*,\s*/))];
+        const emails = [...new Set(this.formGroup.value.emails.trim().split(/\s*,\s*/))];
         await this.userService.invite(emails, userView);
       }
 
