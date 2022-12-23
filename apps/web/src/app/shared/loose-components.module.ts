@@ -7,7 +7,6 @@ import { LockComponent } from "../accounts/lock.component";
 import { RecoverDeleteComponent } from "../accounts/recover-delete.component";
 import { RecoverTwoFactorComponent } from "../accounts/recover-two-factor.component";
 import { RegisterFormModule } from "../accounts/register-form/register-form.module";
-import { RegisterComponent } from "../accounts/register.component";
 import { RemovePasswordComponent } from "../accounts/remove-password.component";
 import { SetPasswordComponent } from "../accounts/set-password.component";
 import { SsoComponent } from "../accounts/sso.component";
@@ -26,6 +25,7 @@ import { UserVerificationComponent } from "../components/user-verification.compo
 import { FooterComponent } from "../layouts/footer.component";
 import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
 import { NavbarComponent } from "../layouts/navbar.component";
+import { ProductSwitcherModule } from "../layouts/product-switcher/product-switcher.module";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
 import { OrganizationCreateModule } from "../organizations/create/organization-create.module";
 import { OrganizationLayoutComponent } from "../organizations/layouts/organization-layout.component";
@@ -131,7 +131,13 @@ import { SharedModule } from ".";
 // Please do not add to this list of declarations - we should refactor these into modules when doing so makes sense until there are none left.
 // If you are building new functionality, please create or extend a feature module instead.
 @NgModule({
-  imports: [SharedModule, VaultFilterModule, OrganizationCreateModule, RegisterFormModule],
+  imports: [
+    SharedModule,
+    VaultFilterModule,
+    OrganizationCreateModule,
+    RegisterFormModule,
+    ProductSwitcherModule,
+  ],
   declarations: [
     PremiumBadgeComponent,
     AcceptEmergencyComponent,
@@ -218,7 +224,6 @@ import { SharedModule } from ".";
     PurgeVaultComponent,
     RecoverDeleteComponent,
     RecoverTwoFactorComponent,
-    RegisterComponent,
     RemovePasswordComponent,
     SecurityComponent,
     SecurityKeysComponent,
@@ -341,7 +346,6 @@ import { SharedModule } from ".";
     PurgeVaultComponent,
     RecoverDeleteComponent,
     RecoverTwoFactorComponent,
-    RegisterComponent,
     RemovePasswordComponent,
     SecurityComponent,
     SecurityKeysComponent,

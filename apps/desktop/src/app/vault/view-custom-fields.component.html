@@ -17,7 +17,6 @@
           >{{ f.name }}</label
         >
         <label *ngIf="f.type === fieldType.Linked" for="fieldName{{ i }}">{{ f.name }}</label>
-
         <input
           *ngIf="f.type === fieldType.Text"
           id="fieldName{{ i }}"
@@ -26,7 +25,6 @@
           readonly
           tabindex="-1"
         />
-
         <input
           *ngIf="f.type === fieldType.Hidden"
           id="fieldName{{ i }}"
@@ -36,15 +34,21 @@
           readonly
           tabindex="-1"
         />
-        <div *ngIf="f.type === fieldType.Hidden" aria-hidden="true">
-          <span *ngIf="!f.showValue" class="monospaced">{{ f.maskedValue }}</span>
+        <div *ngIf="f.type === fieldType.Hidden">
+          <span *ngIf="!f.showValue" class="monospaced" aria-hidden="true">{{
+            f.maskedValue
+          }}</span>
           <span
-            *ngIf="f.showValue"
+            *ngIf="f.showValue && !f.showCount"
             class="monospaced show-whitespace"
             [innerHTML]="f.value | colorPassword"
+            aria-hidden="true"
+          ></span>
+          <span
+            *ngIf="f.showValue && f.showCount"
+            [innerHTML]="f.value | colorPasswordCount"
           ></span>
         </div>
-
         <input
           *ngIf="f.type === fieldType.Boolean"
           id="fieldName{{ i }}"
@@ -57,7 +61,6 @@
           <i class="bwi bwi-check-square" *ngIf="f.value === 'true'" aria-hidden="true"></i>
           <i class="bwi bwi-square" *ngIf="f.value !== 'true'" aria-hidden="true"></i>
         </div>
-
         <input
           *ngIf="f.type === fieldType.Linked"
           id="fieldName{{ i }}"
@@ -78,7 +81,18 @@
           <span>{{ cipher.linkedFieldI18nKey(f.linkedId) | i18n }}</span>
         </div>
       </div>
-      <div class="action-buttons">
+      <div class="action-buttons action-buttons-fixed">
+        <button
+          type="button"
+          class="row-btn"
+          appStopClick
+          appA11yTitle="{{ 'toggleCharacterCount' | i18n }}"
+          *ngIf="f.type === fieldType.Hidden && cipher.viewPassword && f.showValue"
+          (click)="toggleFieldCount(f)"
+          [attr.aria-pressed]="f.showCount"
+        >
+          <i class="bwi bwi-lg bwi-numbered-list" aria-hidden="true"></i>
+        </button>
         <button
           type="button"
           class="row-btn"
