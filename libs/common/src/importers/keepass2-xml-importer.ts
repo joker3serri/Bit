@@ -1,5 +1,3 @@
-import { JSDOM } from "jsdom";
-
 import { FieldType } from "../enums/fieldType";
 import { ImportResult } from "../models/domain/import-result";
 import { FolderView } from "../models/view/folder.view";
@@ -11,13 +9,7 @@ export class KeePass2XmlImporter extends BaseImporter implements Importer {
   result = new ImportResult();
 
   parse(data: string): Promise<ImportResult> {
-    //const doc = this.parseXml(data);
-    const jsdom = new JSDOM();
-    const parser = new jsdom.window.DOMParser();
-    const doc = parser.parseFromString(data, "text/xml");
-
-    doc != null && doc.querySelector("parsererror") == null ? doc : null;
-
+    const doc = this.parseXml(data);
     if (doc == null) {
       this.result.success = false;
       return Promise.resolve(this.result);
@@ -25,6 +17,7 @@ export class KeePass2XmlImporter extends BaseImporter implements Importer {
 
     const rootGroup =
       doc.querySelector("KeePassFile") && doc.querySelector("Root") && doc.querySelector("Group");
+
     if (rootGroup == null) {
       this.result.errorMessage = "Missing `KeePassFile > Root > Group` node.";
       this.result.success = false;
