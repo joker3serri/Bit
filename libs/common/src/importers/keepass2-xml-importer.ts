@@ -15,9 +15,22 @@ export class KeePass2XmlImporter extends BaseImporter implements Importer {
       return Promise.resolve(this.result);
     }
 
-    const rootGroup =
-      doc.querySelector("KeePassFile") && doc.querySelector("Root") && doc.querySelector("Group");
+    const KeePassFileNode = doc.querySelector("KeePassFile");
 
+    if (KeePassFileNode == null) {
+      this.result.errorMessage = "Missing `KeePassFile` node.";
+      this.result.success = false;
+      return Promise.resolve(this.result);
+    }
+
+    const RootNode = KeePassFileNode.querySelector("Root");
+    if (RootNode == null) {
+      this.result.errorMessage = "Missing `KeePassFile > Root` node.";
+      this.result.success = false;
+      return Promise.resolve(this.result);
+    }
+
+    const rootGroup = RootNode.querySelector("Group");
     if (rootGroup == null) {
       this.result.errorMessage = "Missing `KeePassFile > Root > Group` node.";
       this.result.success = false;
