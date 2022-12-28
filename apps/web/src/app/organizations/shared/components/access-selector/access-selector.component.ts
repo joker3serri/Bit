@@ -230,7 +230,6 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
         return;
       }
       if (this.selectionList.formArray.disabled) {
-        this.selectionList.formArray.clear({ emitEvent: false });
         this.notifyOnChange([]);
         return;
       }
