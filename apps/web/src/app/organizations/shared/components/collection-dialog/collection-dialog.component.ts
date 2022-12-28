@@ -179,6 +179,15 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
 
     await this.collectionService.save(collectionView);
 
+    this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t(
+        this.editMode ? "editedCollectionId" : "createdCollectionId",
+        collectionView.name
+      )
+    );
+
     this.close(CollectionDialogResult.Saved);
   };
 
