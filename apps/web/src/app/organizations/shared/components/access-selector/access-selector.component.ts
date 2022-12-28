@@ -229,6 +229,8 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
       if (!this.notifyOnChange || this.pauseChangeNotification) {
         return;
       }
+      // Disabled form arrays emit values for disabled controls, we override this to emit an empty array to avoid
+      // emitting values for disabled controls that are "readonly" in the table
       if (this.selectionList.formArray.disabled) {
         this.notifyOnChange([]);
         return;
