@@ -14,7 +14,7 @@ export class KeePass2XmlImporter extends BaseImporter implements Importer {
       this.result.success = false;
       return Promise.resolve(this.result);
     }
-
+    //Note: The doc.querySelector("KeePassFile > Root > Group") no longers works on node and we have to breakdown the query by nodes
     const KeePassFileNode = doc.querySelector("KeePassFile");
 
     if (KeePassFileNode == null) {
