@@ -5496,6 +5496,9 @@
   "pink": {
     "message": "Pink"
    },
+   "customColor": {
+    "message": "Custom Color"
+  },
   "multiSelectPlaceholder": {
     "message": "-- Type to Filter --"
   },
