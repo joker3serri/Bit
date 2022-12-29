@@ -6,7 +6,6 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
     [title]="title"
     (click)="onFire()"
     (keyup.enter)="onFire()"
-    (keyup.space)="onFire()"
     tabindex="0"
     [ngClass]="classList"
   >
