@@ -44,12 +44,11 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
   }
 
   async authedHandler(qParams: Params): Promise<void> {
-    const organizationInvitation = await this.stateService.getOrganizationInvitation();
-    if (organizationInvitation == null) {
-      // User has clicked an invitation link and is visiting this component for the first time
-      await this.unauthedHandler(qParams);
-      // Logging out the user to force the user to login again to evaluate if the user's current password meets the Organization password policy requirements
+    const needsReAuth = (await this.stateService.getOrganizationInvitation()) != null;
+    if (!needsReAuth) {
+      // Accepting an org invite requires authentication from a logged out state
       this.messagingService.send("logout", { redirect: false });
+      await this.prepareOrganizationInvitation(qParams);
       return;
     }
 
@@ -75,12 +74,7 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
   }
 
   async unauthedHandler(qParams: Params): Promise<void> {
-    this.orgName = qParams.organizationName;
-    if (this.orgName != null) {
-      // Fix URL encoding of space issue with Angular
-      this.orgName = this.orgName.replace(/\+/g, " ");
-    }
-    await this.stateService.setOrganizationInvitation(qParams);
+    await this.prepareOrganizationInvitation(qParams);
   }
 
   private async prepareAcceptRequest(qParams: Params): Promise<OrganizationUserAcceptRequest> {
@@ -130,5 +124,14 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
     }
 
     return false;
+  }
+
+  private async prepareOrganizationInvitation(qParams: Params): Promise<void> {
+    this.orgName = qParams.organizationName;
+    if (this.orgName != null) {
+      // Fix URL encoding of space issue with Angular
+      this.orgName = this.orgName.replace(/\+/g, " ");
+    }
+    await this.stateService.setOrganizationInvitation(qParams);
   }
 }
