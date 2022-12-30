@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 
 import { AvatarUpdateService } from "@bitwarden/common/abstractions/account/avatar-update.service";
-type SizeTypes = "xlarge" | "large" | "default" | "small";
+type SizeTypes = "xlarge" | "large" | "default" | "small" | "xsmall";
 @Component({
   selector: "dynamic-avatar",
   template: `<span [title]="title">
