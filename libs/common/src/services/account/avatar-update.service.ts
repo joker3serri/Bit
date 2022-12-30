@@ -6,12 +6,11 @@ import { StateService } from "../../abstractions/state.service";
 import { UpdateAvatarRequest } from "../../models/request/update-avatar.request";
 import { ProfileResponse } from "../../models/response/profile.response";
 
-export class AvatarUpdateService extends AvatarUpdateServiceAbstraction {
+export class AvatarUpdateService implements AvatarUpdateServiceAbstraction {
   private _avatarUpdate$ = new BehaviorSubject<string | null>(null);
   avatarUpdate$: Observable<string | null> = this._avatarUpdate$.asObservable();
 
   constructor(private apiService: ApiService, private stateService: StateService) {
-    super();
     this.loadColorFromState();
   }
 
