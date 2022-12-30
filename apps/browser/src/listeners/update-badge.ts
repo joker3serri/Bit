@@ -81,9 +81,6 @@ export class UpdateBadge {
 
     const authStatus = await this.authService.getAuthStatus();
 
-    const tab = await this.getTab(opts?.tabId, opts?.windowId);
-    const windowId = tab?.windowId;
-
     await this.setBadgeBackgroundColor();
 
     switch (authStatus) {
@@ -96,7 +93,8 @@ export class UpdateBadge {
         break;
       }
       case AuthenticationStatus.Unlocked: {
-        await this.setUnlocked({ tab, windowId });
+        const tab = await this.getTab(opts?.tabId, opts?.windowId);
+        await this.setUnlocked({ tab, windowId: tab?.windowId });
         break;
       }
     }
