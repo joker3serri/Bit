@@ -124,7 +124,7 @@ export class UpdateBadge {
   async setUnlocked(opts: BadgeOptions) {
     await this.initServices();
 
-    await this.setBadgeIcon("", opts?.windowId);
+    await this.setBadgeIcon("");
 
     const disableBadgeCounter = await this.stateService.getDisableBadgeCounter();
     if (disableBadgeCounter) {
