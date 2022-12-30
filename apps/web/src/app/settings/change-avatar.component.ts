@@ -73,6 +73,7 @@ export class ChangeAvatarComponent implements OnInit, OnDestroy {
         this.currentSelection = color;
       });
 
+    //grab changes
     this.setSelection(await this.accountUpdateService.loadColorFromState());
   }
 
