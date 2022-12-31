@@ -164,7 +164,7 @@ export class UpdateBadge {
         38: "/images/icon38" + iconSuffix + ".png",
       },
     };
-    if (BrowserPlatformUtilsService.isFirefox()) {
+    if (windowId && BrowserPlatformUtilsService.isFirefox()) {
       options.windowId = windowId;
     }
 
