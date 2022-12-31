@@ -184,10 +184,14 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
     }
   }
 
+  goToHint() {
+    this.setFormValues();
+    this.router.navigateByUrl("/hint");
+  }
+
   async submit() {
     const rememberEmail = this.formGroup.value.rememberEmail;
 
-    await this.stateService.setRememberEmail(rememberEmail);
     if (!rememberEmail) {
       await this.stateService.setRememberedEmail(null);
     }
@@ -202,8 +206,8 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
       return;
     }
 
-    const email = this.formGroup.get("email").value;
-    this.router.navigate(["/login-with-device"], { state: { email: email } });
+    this.setFormValues();
+    this.router.navigate(["/login-with-device"]);
   }
 
   private getPasswordStrengthUserInput() {

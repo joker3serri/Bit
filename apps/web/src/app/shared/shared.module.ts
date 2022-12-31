@@ -1,5 +1,5 @@
 import { DragDropModule } from "@angular/cdk/drag-drop";
-import { DatePipe, CommonModule } from "@angular/common";
+import { CommonModule, DatePipe } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
@@ -13,9 +13,16 @@ import {
   BadgeModule,
   ButtonModule,
   CalloutModule,
+  DialogModule,
   FormFieldModule,
+  IconButtonModule,
   IconModule,
+  LinkModule,
   MenuModule,
+  NavigationModule,
+  TableModule,
+  TabsModule,
+  ColorPasswordModule,
 } from "@bitwarden/components";
 
 // Register the locales for the application
@@ -33,40 +40,61 @@ import "./locales";
     CommonModule,
     DragDropModule,
     FormsModule,
-    InfiniteScrollModule,
-    JslibModule,
     ReactiveFormsModule,
+    InfiniteScrollModule,
     RouterModule,
+    ToastrModule,
+    JslibModule,
+
+    // Component library
+    AsyncActionsModule,
+    AvatarModule,
     BadgeModule,
     ButtonModule,
     CalloutModule,
-    ToastrModule,
-    BadgeModule,
-    ButtonModule,
-    MenuModule,
+    DialogModule,
     FormFieldModule,
+    IconButtonModule,
     IconModule,
-    AvatarModule,
+    LinkModule,
+    MenuModule,
+    NavigationModule,
+    TableModule,
+    TabsModule,
+    LinkModule,
+    ColorPasswordModule,
+
+    // Web specific
   ],
   exports: [
     CommonModule,
-    AsyncActionsModule,
     DragDropModule,
     FormsModule,
-    InfiniteScrollModule,
-    JslibModule,
     ReactiveFormsModule,
+    InfiniteScrollModule,
     RouterModule,
+    ToastrModule,
+    JslibModule,
+
+    // Component library
+    AsyncActionsModule,
+    AvatarModule,
     BadgeModule,
     ButtonModule,
     CalloutModule,
-    ToastrModule,
-    BadgeModule,
-    ButtonModule,
-    MenuModule,
+    DialogModule,
     FormFieldModule,
+    IconButtonModule,
     IconModule,
-    AvatarModule,
+    LinkModule,
+    MenuModule,
+    NavigationModule,
+    TableModule,
+    TabsModule,
+    LinkModule,
+    ColorPasswordModule,
+
+    // Web specific
   ],
   providers: [DatePipe],
   bootstrap: [],

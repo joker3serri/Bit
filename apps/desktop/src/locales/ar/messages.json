@@ -1779,6 +1779,15 @@
   "disabled": {
     "message": "معطّل"
   },
+  "removePassword": {
+    "message": "إزالة كلمة المرور"
+  },
+  "removedPassword": {
+    "message": "تمت إزالة كلمة المرور"
+  },
+  "removePasswordConfirmation": {
+    "message": "هل أنت متأكد من أنك تريد إزالة كلمة المرور؟"
+  },
   "maxAccessCountReached": {
     "message": "تم بلوغ الحد الأقصى لعدد الدخول"
   },
@@ -2021,5 +2030,36 @@
   },
   "vault": {
     "message": "الخزنة"
+  },
+  "loginWithMasterPassword": {
+    "message": "تسجيل الدخول باستخدام كلمة المرور الرئيسية"
+  },
+  "loggingInAs": {
+    "message": "تسجيل الدخول كـ"
+  },
+  "rememberEmail": {
+    "message": "تذكر البريد الإلكتروني"
+  },
+  "notYou": {
+    "message": "ليس أنت؟"
+  },
+  "newAroundHere": {
+    "message": "جديد هنا؟"
+  },
+  "loggingInTo": {
+    "message": "جاري تسجيل الدخول إلى $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1",
+        "example": "example.com"
+      }
+    }
+  },
+  "logInWithAnotherDevice": {
+    "message": "تسجيل الدخول باستخدام جهاز آخر"
+  },
+  "toggleCharacterCount": {
+    "message": "تبديل عدد الأحرف",
+    "description": "'Character count' describes a feature that displays a number next to each character of the password."
   }
 }
