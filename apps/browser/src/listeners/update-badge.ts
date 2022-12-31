@@ -44,15 +44,19 @@ export class UpdateBadge {
   ];
 
   static async tabsOnActivatedListener(activeInfo: chrome.tabs.TabActiveInfo) {
-    await new UpdateBadge(self).run({ tabId: activeInfo.tabId });
+    await new UpdateBadge(self).run({ tabId: activeInfo.tabId, windowId: activeInfo.windowId });
   }
 
   static async tabsOnReplacedListener(addedTabId: number, removedTabId: number) {
     await new UpdateBadge(self).run({ tabId: addedTabId });
   }
 
-  static async tabsOnUpdatedListener(tabId: number) {
-    await new UpdateBadge(self).run({ tabId });
+  static async tabsOnUpdatedListener(
+    tabId: number,
+    changeInfo: chrome.tabs.TabChangeInfo,
+    tab: chrome.tabs.Tab
+  ) {
+    await new UpdateBadge(self).run({ tabId, windowId: tab.windowId });
   }
 
   static async messageListener(
@@ -211,7 +215,9 @@ export class UpdateBadge {
   private async getTab(tabId?: number, windowId?: number) {
     return (
       (await BrowserApi.getTab(tabId)) ??
-      (await BrowserApi.tabsQueryFirst({ active: true, windowId })) ??
+      (windowId
+        ? await BrowserApi.tabsQueryFirst({ active: true, windowId })
+        : await BrowserApi.tabsQueryFirst({ active: true, currentWindow: true })) ??
       (await BrowserApi.tabsQueryFirst({ active: true, lastFocusedWindow: true })) ??
       (await BrowserApi.tabsQueryFirst({ active: true }))
     );
