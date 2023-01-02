@@ -1,3 +1,5 @@
+import * as path from "path";
+
 import { app, dialog, ipcMain, Menu, MenuItem, nativeTheme, session, Notification } from "electron";
 
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -56,6 +58,7 @@ export class ElectronMainMessagingService implements MessagingService {
         title: options.alertTitle,
         body: options.alertBody,
         closeButtonText: options.buttonText,
+        icon: path.join(__dirname, "images/icon.png"),
       });
 
       alert.addListener("click", () => {
