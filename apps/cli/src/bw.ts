@@ -283,7 +283,8 @@ export class Main {
       this.environmentService,
       this.stateService,
       this.twoFactorService,
-      this.i18nService
+      this.i18nService,
+      this.encryptService
     );
 
     const lockedCallback = async () =>
