@@ -41,6 +41,9 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
   organizations: Organization[] = [];
   profileName: string;
   noItemIcon = Icons.Search;
+  sortedDescending = true;
+  sortBy: string = "name";
+  showData: string = "owner";
 
   private didScroll = false;
   private pagedCiphersCount = 0;
@@ -58,6 +61,7 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
     private logService: LogService,
     private organizationService: OrganizationService,
     private tokenService: TokenService
+
   ) {
     super(searchService);
   }
@@ -92,6 +96,79 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
     this.pagedCiphersCount = this.pagedCiphers.length;
     this.didScroll = this.pagedCiphers.length > this.pageSize;
   }
+
+  getOrganizationById(c: CipherView): string {
+    return c.organizationId != null
+      ? this.organizationNames.get(c.organizationId)
+      : this.i18nService.t("myVault");
+  }
+
+  async loadOrganizationNames(): Promise<Map<string, string>> {
+    const organizationNames = new Map<string, string>();
+
+    organizations.forEach((this.organization) => {
+      organizationNames.set(organization.id, organization.name);
+    });
+
+    return organizationNames;
+  }
+
+  sortCiphers(sortBy: string): void {
+    if (sortBy === this.sortBy) {
+      this.sortedDescending = !this.sortedDescending;
+    } else {
+      this.sortBy = sortBy;
+      this.sortedDescending = true;
+    }
+
+    if (sortBy === "lastEdited") {
+      if (this.sortedDescending) {
+        this.ciphers.sort((a: CipherView, b: CipherView) => {
+          return b.revisionDate.valueOf() - a.revisionDate.valueOf();
+        });
+      } else {
+        this.ciphers.sort((a: CipherView, b: CipherView) => {
+          return a.revisionDate.valueOf() - b.revisionDate.valueOf();
+        });
+      }
+      this.showData = "lastEdited";
+    } else if (sortBy === "dateCreated") {
+      // TO-DO
+    } else if (sortBy === "owner") {
+      this.ciphers.sort((a: CipherView, b: CipherView) => {
+        const sortingValue1 =
+          a.organizationId == null ? "Personal" : this.organizationNames.get(a.organizationId);
+        const sortingValue2 =
+          b.organizationId == null ? "Personal" : this.organizationNames.get(b.organizationId);
+
+        if (this.sortedDescending) {
+          return sortingValue1.localeCompare(sortingValue2);
+        } else {
+          return sortingValue2.localeCompare(sortingValue1);
+        }
+      });
+      this.showData = "owner";
+    } else if (sortBy === "name") {
+      if (this.sortedDescending) {
+        this.ciphers.sort((a, b) => a.name.localeCompare(b.name));
+      } else {
+        this.ciphers.sort((a, b) => b.name.localeCompare(a.name));
+      }
+    }
+  }
+
+  reverseSort(): void {
+    this.sortCiphers(this.sortBy);
+  }
+
+  changeDataToShow(type: string): void {
+    this.showData = type;
+  }
+
+  revisionDate(date: Date): string {
+    return date ? date.toLocaleDateString("en-US") : null;
+  }
+
 
   async refresh() {
     try {

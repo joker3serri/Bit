@@ -83,6 +83,27 @@
     }
   }
 
+  #sort-ciphers-table {
+    tr > th {
+      cursor: pointer;
+    }
+    tr > .cipher-sort-table-header {
+      padding-bottom: 4px;
+    }
+    .sorting-arrow {
+      opacity: 0;
+      transition: 0.3s;
+    }
+    .show-arrow-on-hover:hover {
+      .sorting-arrow {
+        opacity: 1;
+      }
+    }
+    .sort-name-arrow {
+      margin-right: 15px;
+    }
+  }
+
   td.table-list-icon {
     max-width: 45px;
     text-align: center;

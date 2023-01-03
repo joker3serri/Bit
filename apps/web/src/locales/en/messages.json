@@ -5863,5 +5863,14 @@
         "example": "2"
       }
     }
+  },
+  "dateCreated": {
+    "message": "Date created"
+  },
+  "lastEdited": {
+    "message": "Last edited"
+  },
+  "lastUsed": {
+    "message": "Last used"
   }
 }
