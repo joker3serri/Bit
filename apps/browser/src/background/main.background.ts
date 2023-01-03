@@ -378,7 +378,7 @@ export default class MainBackground {
       this.stateService,
       this.twoFactorService,
       this.i18nService,
-      new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, true)
+      this.encryptService
     );
 
     this.vaultTimeoutSettingsService = new VaultTimeoutSettingsService(

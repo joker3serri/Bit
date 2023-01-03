@@ -4,6 +4,7 @@ import { ApiService } from "../abstractions/api.service";
 import { AppIdService } from "../abstractions/appId.service";
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
 import { CryptoService } from "../abstractions/crypto.service";
+import { EncryptService } from "../abstractions/encrypt.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import { I18nService } from "../abstractions/i18n.service";
 import { KeyConnectorService } from "../abstractions/keyConnector.service";
@@ -36,7 +37,6 @@ import { PreloginRequest } from "../models/request/prelogin.request";
 import { AuthRequestResponse } from "../models/response/auth-request.response";
 import { ErrorResponse } from "../models/response/error.response";
 import { AuthRequestPushNotification } from "../models/response/notification.response";
-import { EncryptServiceImplementation } from "../services/cryptography/encrypt.service.implementation";
 
 const sessionTimeoutLength = 2 * 60 * 1000; // 2 minutes
 
@@ -92,7 +92,7 @@ export class AuthService implements AuthServiceAbstraction {
     protected stateService: StateService,
     protected twoFactorService: TwoFactorService,
     protected i18nService: I18nService,
-    protected encryptService: EncryptServiceImplementation
+    protected encryptService: EncryptService
   ) {}
 
   async logIn(
