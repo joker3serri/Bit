@@ -201,31 +201,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
       }
       this.onSavedSend.emit(this.send);
       if (this.copyLink && this.link != null) {
-        const copySuccess = await this.copyLinkToClipboard(this.link);
-        if (copySuccess ?? true) {
-          this.platformUtilsService.showToast(
-            "success",
-            null,
-            this.i18nService.t(this.editMode ? "editedSend" : "createdSend")
-          );
-        } else {
-          await this.platformUtilsService.showDialog(
-            this.i18nService.t(this.editMode ? "editedSend" : "createdSend"),
-            null,
-            this.i18nService.t("ok"),
-            null,
-            "success",
-            null
-          );
-          await this.copyLinkToClipboard(this.link);
-        }
-      } else {
-        this.platformUtilsService.showToast(
-          "success",
-          null,
-          this.i18nService.t(this.editMode ? "editedSend" : "createdSend")
-        );
+        await this.handleCopyLinkToClipboard();
+        return;
       }
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t(this.editMode ? "editedSend" : "createdSend")
+      );
     });
     try {
       await this.formPromise;
@@ -313,5 +296,26 @@ export class AddEditComponent implements OnInit, OnDestroy {
   protected togglePasswordVisible() {
     this.showPassword = !this.showPassword;
     document.getElementById("password").focus();
+  }
+
+  private async handleCopyLinkToClipboard() {
+    const copySuccess = await this.copyLinkToClipboard(this.link);
+    if (copySuccess ?? true) {
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t(this.editMode ? "editedSend" : "createdSend")
+      );
+    } else {
+      await this.platformUtilsService.showDialog(
+        this.i18nService.t(this.editMode ? "editedSend" : "createdSend"),
+        null,
+        this.i18nService.t("ok"),
+        null,
+        "success",
+        null
+      );
+      await this.copyLinkToClipboard(this.link);
+    }
   }
 }
