@@ -71,7 +71,7 @@
       </tr>
     </ng-container>
     <ng-container body>
-      <tr bitRow *ngFor="let col of filteredCollections">
+      <tr bitRow *ngFor="let col of filteredCollections" alignContent="middle">
         <td bitCell (click)="selectRow(col)">
           <input
             *ngIf="organization && col.node.id !== null"
@@ -149,7 +149,7 @@
           </bit-menu>
         </td>
       </tr>
-      <tr bitRow *ngFor="let c of filteredCiphers">
+      <tr bitRow *ngFor="let c of filteredCiphers" alignContent="middle">
         <td bitCell (click)="selectRow(c)">
           <input type="checkbox" [(ngModel)]="$any(c).checked" appStopProp />
         </td>
