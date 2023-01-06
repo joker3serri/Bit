@@ -200,7 +200,6 @@ export class MainContextMenuHandler {
         parentId: parent,
         title: sanitizedTitle,
         contexts: ["all"],
-        documentUrlPatterns: [url],
       });
     };
 
