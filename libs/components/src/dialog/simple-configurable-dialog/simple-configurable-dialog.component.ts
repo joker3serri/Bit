@@ -58,12 +58,12 @@ export class SimpleConfigurableDialogComponent {
     let p1: string | number, p2: string | number, p3: string | number;
 
     if (isTranslation(this.simpleDialogOpts.title)) {
-      [p1, p2, p3] = this.simpleDialogOpts.title.placeholderValues || undefArray;
+      [p1, p2, p3] = this.simpleDialogOpts.title.placeholders || undefArray;
       this.simpleDialogOpts.title = this.i18nService.t(this.simpleDialogOpts.title.key, p1, p2, p3);
     }
 
     if (isTranslation(this.simpleDialogOpts.content)) {
-      [p1, p2, p3] = this.simpleDialogOpts.content.placeholderValues || undefArray;
+      [p1, p2, p3] = this.simpleDialogOpts.content.placeholders || undefArray;
       this.simpleDialogOpts.content = this.i18nService.t(
         this.simpleDialogOpts.content.key,
         p1,
@@ -76,7 +76,7 @@ export class SimpleConfigurableDialogComponent {
       this.simpleDialogOpts.acceptButtonText !== undefined &&
       isTranslation(this.simpleDialogOpts.acceptButtonText)
     ) {
-      [p1, p2, p3] = this.simpleDialogOpts.acceptButtonText.placeholderValues || undefArray;
+      [p1, p2, p3] = this.simpleDialogOpts.acceptButtonText.placeholders || undefArray;
       this.simpleDialogOpts.acceptButtonText = this.i18nService.t(
         this.simpleDialogOpts.acceptButtonText.key,
         p1,
@@ -89,7 +89,7 @@ export class SimpleConfigurableDialogComponent {
       this.simpleDialogOpts.cancelButtonText !== undefined &&
       isTranslation(this.simpleDialogOpts.cancelButtonText)
     ) {
-      [p1, p2, p3] = this.simpleDialogOpts.cancelButtonText.placeholderValues || undefArray;
+      [p1, p2, p3] = this.simpleDialogOpts.cancelButtonText.placeholders || undefArray;
       this.simpleDialogOpts.cancelButtonText = this.i18nService.t(
         this.simpleDialogOpts.cancelButtonText.key,
         p1,

@@ -1,12 +1,12 @@
 export interface Translation {
   key: string;
-  placeholderValues?: Array<string | number>;
+  placeholders?: Array<string | number>;
 }
 
 export function isTranslation(obj: any): obj is Translation {
   return (
     typeof obj === "object" &&
     typeof obj.key === "string" &&
-    (obj.placeholderValues === undefined || Array.isArray(obj.placeholderValues))
+    (obj.placeholders === undefined || Array.isArray(obj.placeholders))
   );
 }
