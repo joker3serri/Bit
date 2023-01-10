@@ -8,6 +8,22 @@ import { SimpleDialogOptions } from "./models/simple-dialog-options";
 import { SimpleDialogType } from "./models/simple-dialog-type.enum";
 import { isTranslation } from "./models/translation";
 
+const DEFAULT_ICON: Record<SimpleDialogType, string> = {
+  [SimpleDialogType.PRIMARY]: "bwi-business",
+  [SimpleDialogType.SUCCESS]: "bwi-star",
+  [SimpleDialogType.INFO]: "bwi-info-circle",
+  [SimpleDialogType.WARNING]: "bwi-exclamation-triangle",
+  [SimpleDialogType.DANGER]: "bwi-error",
+};
+
+const DEFAULT_COLOR: Record<SimpleDialogType, string> = {
+  [SimpleDialogType.PRIMARY]: "tw-text-primary-500",
+  [SimpleDialogType.SUCCESS]: "tw-text-success",
+  [SimpleDialogType.INFO]: "tw-text-info",
+  [SimpleDialogType.WARNING]: "tw-text-warning",
+  [SimpleDialogType.DANGER]: "tw-text-danger",
+};
+
 @Component({
   selector: "bit-simple-configurable-dialog",
   templateUrl: "./simple-configurable-dialog.component.html",
@@ -16,7 +32,12 @@ export class SimpleConfigurableDialogComponent {
   SimpleDialogType = SimpleDialogType;
   SimpleDialogCloseType = SimpleDialogCloseType;
 
-  iconClasses: string;
+  get iconClasses() {
+    return [
+      this.simpleDialogOpts.icon ?? DEFAULT_ICON[this.simpleDialogOpts.type],
+      DEFAULT_COLOR[this.simpleDialogOpts.type],
+    ];
+  }
 
   constructor(
     public dialogRef: DialogRef,
@@ -30,8 +51,6 @@ export class SimpleConfigurableDialogComponent {
       // Must localize title, content, and button texts.
       this.localizeText();
     }
-
-    this.setIconClasses();
   }
 
   private localizeText() {
@@ -77,34 +96,6 @@ export class SimpleConfigurableDialogComponent {
         p2,
         p3
       );
-    }
-  }
-
-  private setIconClasses() {
-    if (this.simpleDialogOpts.icon) {
-      this.iconClasses = this.simpleDialogOpts.icon;
-    }
-    switch (this.simpleDialogOpts.type) {
-      case SimpleDialogType.PRIMARY:
-        this.iconClasses = this.iconClasses ?? "bwi-business";
-        this.iconClasses += " tw-text-primary-500";
-        break;
-      case SimpleDialogType.SUCCESS:
-        this.iconClasses = this.iconClasses ?? "bwi-star";
-        this.iconClasses += " tw-text-success";
-        break;
-      case SimpleDialogType.INFO:
-        this.iconClasses = this.iconClasses ?? "bwi-info-circle";
-        this.iconClasses += " tw-text-info";
-        break;
-      case SimpleDialogType.WARNING:
-        this.iconClasses = this.iconClasses ?? "bwi-exclamation-triangle";
-        this.iconClasses += " tw-text-warning";
-        break;
-      case SimpleDialogType.DANGER:
-        this.iconClasses = this.iconClasses ?? "bwi-error";
-        this.iconClasses += " tw-text-danger";
-        break;
     }
   }
 }
