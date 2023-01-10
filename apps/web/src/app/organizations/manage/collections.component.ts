@@ -158,7 +158,6 @@ export class CollectionsComponent implements OnInit {
         title: this.i18nService.t("upgradeOrganization"),
         content: dialogBodyText,
         type: SimpleDialogType.PRIMARY,
-        isLocalized: true,
       };
 
       if (this.organization.canManageBilling) {

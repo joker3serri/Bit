@@ -10,12 +10,12 @@ export type SimpleDialogOptions = {
   /**
    * Dialog title.
    *
-   * If not localized, set `isLocalized` to false and pass in a `Translation`. */
+   * If not localized, pass in a `Translation`. */
   title: string | Translation;
 
   /** Dialog content.
    *
-   * If not localized, set `isLocalized` to false and pass a `Translation`. */
+   * If not localized, pass in a `Translation`. */
   content: string | Translation;
 
   /** Dialog type. It controls default icons and icon colors. */
@@ -27,20 +27,11 @@ export type SimpleDialogOptions = {
    * Note: icon color is enforced based on dialog type.  */
   icon?: string;
 
-  /**
-   * Whether or not the dialog is localized (see `title`, `content`, `acceptButtonText`, and `cancelButtonText`).
-   *
-   * Defaults to true.
-   *
-   * If false, passed in strings will be treated as translation keys and translated
-   * (with placeholders interpolated if they are also passed in).   */
-  isLocalized?: boolean;
-
   /** Dialog custom accept button text.
    *
    * If not provided, ("yes" | i18n) will be used.
    *
-   * If not localized, set `isLocalized` to false and pass in a `Translation`  */
+   * If not localized, pass in a `Translation`  */
   acceptButtonText?: string | Translation;
 
   /**
@@ -52,7 +43,7 @@ export type SimpleDialogOptions = {
    *
    * If null is provided, the cancel button will be removed.
    *
-   * If not localized, set `isLocalized` to false and pass in a `Translation` */
+   * If not localized, pass in a `Translation` */
   cancelButtonText?: string | Translation;
 
   /** Whether or not the user can use escape or clicking the backdrop to close the dialog */

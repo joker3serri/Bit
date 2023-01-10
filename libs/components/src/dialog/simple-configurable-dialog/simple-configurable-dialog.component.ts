@@ -44,13 +44,8 @@ export class SimpleConfigurableDialogComponent {
     private i18nService: I18nService,
     @Inject(DIALOG_DATA) public simpleDialogOpts?: SimpleDialogOptions
   ) {
-    // Assume localized
-    if (this.simpleDialogOpts.isLocalized === undefined) {
-      this.simpleDialogOpts.isLocalized = true;
-    } else if (!this.simpleDialogOpts.isLocalized) {
-      // Must localize title, content, and button texts.
-      this.localizeText();
-    }
+    // localize title, content, and button texts as needed
+    this.localizeText();
   }
 
   private localizeText() {
