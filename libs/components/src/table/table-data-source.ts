@@ -43,7 +43,7 @@ export class TableDataSource<T> extends DataSource<T> {
 
   connect(): Observable<readonly T[]> {
     if (!this._renderChangesSubscription) {
-      this._updateChangeSubscription();
+      this.updateChangeSubscription();
     }
 
     return this._renderData;
@@ -54,16 +54,16 @@ export class TableDataSource<T> extends DataSource<T> {
     this._renderChangesSubscription = null;
   }
 
-  private _updateChangeSubscription() {
+  private updateChangeSubscription() {
     const orderedData = combineLatest([this._data, this._sort]).pipe(
-      map(([data]) => this._orderData(data))
+      map(([data]) => this.orderData(data))
     );
 
     this._renderChangesSubscription?.unsubscribe();
     this._renderChangesSubscription = orderedData.subscribe((data) => this._renderData.next(data));
   }
 
-  private _orderData(data: T[]): T[] {
+  private orderData(data: T[]): T[] {
     if (!this.sort) {
       return data;
     }
@@ -84,7 +84,7 @@ export class TableDataSource<T> extends DataSource<T> {
    * @param data Data object that is being accessed.
    * @param sortHeaderId The name of the column that represents the data.
    */
-  sortingDataAccessor(data: T, sortHeaderId: string): string | number {
+  protected sortingDataAccessor(data: T, sortHeaderId: string): string | number {
     const value = (data as unknown as Record<string, any>)[sortHeaderId];
 
     if (_isNumberValue(value)) {
@@ -109,7 +109,7 @@ export class TableDataSource<T> extends DataSource<T> {
    * @param data The array of data that should be sorted.
    * @param sort The connected MatSort that holds the current sort state.
    */
-  sortData(data: T[], sort: Sort): T[] {
+  protected sortData(data: T[], sort: Sort): T[] {
     const column = sort.column;
     const direction = sort.direction;
     if (!column) {
