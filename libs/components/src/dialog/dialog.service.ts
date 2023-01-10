@@ -95,7 +95,6 @@ export class DialogService extends Dialog implements OnDestroy {
     return this.open(SimpleConfigurableDialogComponent, {
       data: simpleDialogOptions,
       disableClose: simpleDialogOptions.disableClose,
-      backdropClass: this.backDropClasses,
     });
   }
 }
