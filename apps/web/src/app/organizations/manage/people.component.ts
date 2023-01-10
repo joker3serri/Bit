@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { combineLatest, concatMap, Subject, take, takeUntil } from "rxjs";
+import { combineLatest, concatMap, firstValueFrom, Subject, takeUntil } from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
@@ -258,19 +258,14 @@ export class PeopleComponent
       this.allUsers.length === this.organization.seats
     ) {
       // Show org upgrade modal
-      const dialogBodyText = this.organization.canManageBilling
-        ? this.i18nService.t(
-            "freeOrgInvLimitReachedManageBilling",
-            this.organization.seats.toString()
-          )
-        : this.i18nService.t(
-            "freeOrgInvLimitReachedNoManageBilling",
-            this.organization.seats.toString()
-          );
-
       const orgUpgradeSimpleDialogOpts: SimpleDialogOptions = {
         title: this.i18nService.t("upgradeOrganization"),
-        content: dialogBodyText,
+        content: this.i18nService.t(
+          this.organization.canManageBilling
+            ? "freeOrgInvLimitReachedManageBilling"
+            : "freeOrgInvLimitReachedNoManageBilling",
+          this.organization.seats
+        ),
         type: SimpleDialogType.PRIMARY,
       };
 
@@ -283,21 +278,18 @@ export class PeopleComponent
 
       const simpleDialog = this.dialogService.openSimpleDialog(orgUpgradeSimpleDialogOpts);
 
-      simpleDialog.closed
-        .pipe(take(1))
-        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-        .subscribe((result: SimpleDialogCloseType | undefined) => {
-          if (!result) {
-            return;
-          }
+      firstValueFrom(simpleDialog.closed).then((result: SimpleDialogCloseType | undefined) => {
+        if (!result) {
+          return;
+        }
 
-          if (result == SimpleDialogCloseType.ACCEPT && this.organization.canManageBilling) {
-            this.router.navigate(
-              ["/organizations", this.organization.id, "billing", "subscription"],
-              { queryParams: { upgrade: true } }
-            );
-          }
-        });
+        if (result == SimpleDialogCloseType.ACCEPT && this.organization.canManageBilling) {
+          this.router.navigate(
+            ["/organizations", this.organization.id, "billing", "subscription"],
+            { queryParams: { upgrade: true } }
+          );
+        }
+      });
 
       return;
     }

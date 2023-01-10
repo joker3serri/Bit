@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { first, take } from "rxjs/operators";
+import { firstValueFrom } from "rxjs";
+import { first } from "rxjs/operators";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -141,22 +142,17 @@ export class CollectionsComponent implements OnInit {
       this.collections.length === this.organization.maxCollections
     ) {
       // Show org upgrade modal
-      const dialogBodyText = this.organization.canManageBilling
-        ? this.i18nService.t(
-            "freeOrgMaxCollectionReachedManageBilling",
-            this.organization.maxCollections.toString()
-          )
-        : this.i18nService.t(
-            "freeOrgMaxCollectionReachedNoManageBilling",
-            this.organization.maxCollections.toString()
-          );
-
       // It might be worth creating a simple
       // org upgrade dialog service to launch the dialog here and in the people.comp
       // once the enterprise pod is done w/ their organization module refactor.
       const orgUpgradeSimpleDialogOpts: SimpleDialogOptions = {
         title: this.i18nService.t("upgradeOrganization"),
-        content: dialogBodyText,
+        content: this.i18nService.t(
+          this.organization.canManageBilling
+            ? "freeOrgMaxCollectionReachedManageBilling"
+            : "freeOrgMaxCollectionReachedNoManageBilling",
+          this.organization.maxCollections
+        ),
         type: SimpleDialogType.PRIMARY,
       };
 
@@ -169,21 +165,18 @@ export class CollectionsComponent implements OnInit {
 
       const simpleDialog = this.dialogService.openSimpleDialog(orgUpgradeSimpleDialogOpts);
 
-      simpleDialog.closed
-        .pipe(take(1))
-        // eslint-disable-next-line rxjs-angular/prefer-takeuntil
-        .subscribe((result: SimpleDialogCloseType | undefined) => {
-          if (!result) {
-            return;
-          }
+      firstValueFrom(simpleDialog.closed).then((result: SimpleDialogCloseType | undefined) => {
+        if (!result) {
+          return;
+        }
 
-          if (result == SimpleDialogCloseType.ACCEPT && this.organization.canManageBilling) {
-            this.router.navigate(
-              ["/organizations", this.organization.id, "billing", "subscription"],
-              { queryParams: { upgrade: true } }
-            );
-          }
-        });
+        if (result == SimpleDialogCloseType.ACCEPT && this.organization.canManageBilling) {
+          this.router.navigate(
+            ["/organizations", this.organization.id, "billing", "subscription"],
+            { queryParams: { upgrade: true } }
+          );
+        }
+      });
 
       return;
     }
