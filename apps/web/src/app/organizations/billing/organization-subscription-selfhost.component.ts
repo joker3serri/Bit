@@ -35,16 +35,32 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
   organizationId: string;
   userOrg: Organization;
 
-  licenseOptionsControl = new FormControl(LicenseOptions.SYNC);
+  licenseOptionsControl = new FormControl(LicenseOptions.UPLOAD);
   licenseOptions = LicenseOptions;
   disableLicenseSyncControl = false;
 
   firstLoaded = false;
   loading = false;
 
-  private existingBillingSyncConnection: OrganizationConnectionResponse<BillingSyncConfigApi>;
+  private _existingBillingSyncConnection: OrganizationConnectionResponse<BillingSyncConfigApi>;
 
   private destroy$ = new Subject<void>();
+
+  set existingBillingSyncConnection(value: OrganizationConnectionResponse<BillingSyncConfigApi>) {
+    this._existingBillingSyncConnection = value;
+
+    this.licenseOptionsControl.setValue(
+      this.billingSyncEnabled ? LicenseOptions.SYNC : LicenseOptions.UPLOAD
+    );
+  }
+
+  get existingBillingSyncConnection() {
+    return this._existingBillingSyncConnection;
+  }
+
+  get billingSyncEnabled() {
+    return this.existingBillingSyncConnection?.enabled;
+  }
 
   constructor(
     private modalService: ModalService,
@@ -63,27 +79,12 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
         concatMap(async (params) => {
           this.organizationId = params.organizationId;
           await this.load();
+          await this.loadOrganizationConnection();
           this.firstLoaded = true;
         }),
         takeUntil(this.destroy$)
       )
       .subscribe();
-
-    const cloudCommunicationEnabled = await this.apiService.getCloudCommunicationsEnabled();
-
-    if (cloudCommunicationEnabled) {
-      this.existingBillingSyncConnection = await this.apiService.getOrganizationConnection(
-        this.organizationId,
-        OrganizationConnectionType.CloudBillingSync,
-        BillingSyncConfigApi
-      );
-
-      if (this.existingBillingSyncConnection != null) {
-        this.licenseOptionsControl.setValue(LicenseOptions.SYNC);
-      }
-    } else {
-      this.disableLicenseSyncControl = true;
-    }
   }
 
   ngOnDestroy() {
@@ -102,6 +103,21 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
     }
 
     this.loading = false;
+  }
+
+  async loadOrganizationConnection() {
+    const cloudCommunicationEnabled = await this.apiService.getCloudCommunicationsEnabled();
+
+    if (!cloudCommunicationEnabled) {
+      this.disableLicenseSyncControl = true;
+      return;
+    }
+
+    this.existingBillingSyncConnection = await this.apiService.getOrganizationConnection(
+      this.organizationId,
+      OrganizationConnectionType.CloudBillingSync,
+      BillingSyncConfigApi
+    );
   }
 
   licenseUploaded() {

@@ -22,7 +22,7 @@
   [providerName]="userOrg.providerName"
 ></app-org-subscription-hidden>
 
-<ng-container *ngIf="sub">
+<ng-container *ngIf="sub && firstLoaded">
   <dl>
     <dt>{{ "billingPlan" | i18n }}</dt>
     <dd>{{ sub.plan.name }}</dd>
@@ -47,7 +47,6 @@
     </ng-container>
   </dl>
 
-  <!-- TODO: deep link -->
   <a
     bitButton
     buttonType="secondary"
@@ -90,7 +89,13 @@
       >
         {{ "manageBillingSync" | i18n }}
       </button>
-      <button bitButton buttonType="secondary" type="button" [bitAction]="syncLicense">
+      <button
+        bitButton
+        buttonType="secondary"
+        type="button"
+        [bitAction]="syncLicense"
+        [disabled]="!billingSyncEnabled"
+      >
         {{ "syncLicense" | i18n }}
       </button>
 
