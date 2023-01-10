@@ -6,7 +6,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { SimpleDialogCloseType } from "./models/simple-dialog-close-type.enum";
 import { SimpleDialogOptions } from "./models/simple-dialog-options";
 import { SimpleDialogType } from "./models/simple-dialog-type.enum";
-import { isTranslation } from "./models/translation";
+import { Translation } from "./models/translation";
 
 const DEFAULT_ICON: Record<SimpleDialogType, string> = {
   [SimpleDialogType.PRIMARY]: "bwi-business",
@@ -39,6 +39,13 @@ export class SimpleConfigurableDialogComponent {
     ];
   }
 
+  title: string;
+  content: string;
+  acceptButtonText: string;
+  cancelButtonText: string;
+
+  showCancelButton = this.simpleDialogOpts.cancelButtonText !== null;
+
   constructor(
     public dialogRef: DialogRef,
     private i18nService: I18nService,
@@ -49,48 +56,27 @@ export class SimpleConfigurableDialogComponent {
   }
 
   private localizeText() {
-    const undefArray: any[] = [undefined, undefined, undefined];
-    let p1: string | number, p2: string | number, p3: string | number;
+    this.title = this.translate(this.simpleDialogOpts.title);
+    this.content = this.translate(this.simpleDialogOpts.content);
+    this.acceptButtonText = this.translate(this.simpleDialogOpts.acceptButtonText, "yes");
 
-    if (isTranslation(this.simpleDialogOpts.title)) {
-      [p1, p2, p3] = this.simpleDialogOpts.title.placeholders || undefArray;
-      this.simpleDialogOpts.title = this.i18nService.t(this.simpleDialogOpts.title.key, p1, p2, p3);
-    }
-
-    if (isTranslation(this.simpleDialogOpts.content)) {
-      [p1, p2, p3] = this.simpleDialogOpts.content.placeholders || undefArray;
-      this.simpleDialogOpts.content = this.i18nService.t(
-        this.simpleDialogOpts.content.key,
-        p1,
-        p2,
-        p3
+    if (this.showCancelButton) {
+      // If accept text is overridden, use cancel, otherwise no
+      this.cancelButtonText = this.translate(
+        this.simpleDialogOpts.cancelButtonText,
+        this.simpleDialogOpts.acceptButtonText !== undefined ? "cancel" : "no"
       );
     }
+  }
 
-    if (
-      this.simpleDialogOpts.acceptButtonText !== undefined &&
-      isTranslation(this.simpleDialogOpts.acceptButtonText)
-    ) {
-      [p1, p2, p3] = this.simpleDialogOpts.acceptButtonText.placeholders || undefArray;
-      this.simpleDialogOpts.acceptButtonText = this.i18nService.t(
-        this.simpleDialogOpts.acceptButtonText.key,
-        p1,
-        p2,
-        p3
-      );
+  private translate(translation: string | Translation, defaultKey?: string): string {
+    // Translation interface use implies we must localize.
+
+    if (typeof translation === "object") {
+      return this.i18nService.t(translation.key, ...translation.placeholders);
     }
 
-    if (
-      this.simpleDialogOpts.cancelButtonText !== undefined &&
-      isTranslation(this.simpleDialogOpts.cancelButtonText)
-    ) {
-      [p1, p2, p3] = this.simpleDialogOpts.cancelButtonText.placeholders || undefArray;
-      this.simpleDialogOpts.cancelButtonText = this.i18nService.t(
-        this.simpleDialogOpts.cancelButtonText.key,
-        p1,
-        p2,
-        p3
-      );
-    }
+    // Use string that is already translated or use default key post translate
+    return translation ?? this.i18nService.t(defaultKey);
   }
 }

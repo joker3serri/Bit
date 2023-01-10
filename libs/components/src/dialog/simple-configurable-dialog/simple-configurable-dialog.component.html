@@ -2,33 +2,23 @@
   <i bit-dialog-icon class="bwi tw-text-3xl" [class]="iconClasses" aria-hidden="true"></i>
 
   <span bitDialogTitle>
-    {{ simpleDialogOpts.title }}
+    {{ title }}
   </span>
-  <div bitDialogContent>{{ simpleDialogOpts.content }}</div>
+
+  <div bitDialogContent>{{ content }}</div>
 
   <div bitDialogFooter>
     <button bitButton buttonType="primary" (click)="dialogRef.close(SimpleDialogCloseType.ACCEPT)">
-      <ng-container *ngIf="simpleDialogOpts.acceptButtonText">
-        {{ simpleDialogOpts.acceptButtonText }}
-      </ng-container>
-      <ng-container *ngIf="!simpleDialogOpts.acceptButtonText">
-        {{ "yes" | i18n }}
-      </ng-container>
+      {{ acceptButtonText }}
     </button>
+
     <button
-      *ngIf="simpleDialogOpts.cancelButtonText !== null"
+      *ngIf="showCancelButton"
       bitButton
       buttonType="secondary"
       (click)="dialogRef.close(SimpleDialogCloseType.CANCEL)"
     >
-      <ng-container *ngIf="simpleDialogOpts.cancelButtonText">
-        {{ simpleDialogOpts.cancelButtonText }}
-      </ng-container>
-      <ng-container *ngIf="!simpleDialogOpts.cancelButtonText">
-        <!--  if cancelButtonText empty, default to "No", unless acceptButtonText is overriden, 
-            in which case default to "Cancel" -->
-        {{ simpleDialogOpts.acceptButtonText ? ("cancel" | i18n) : ("no" | i18n) }}
-      </ng-container>
+      {{ simpleDialogOpts.cancelButtonText }}
     </button>
   </div>
 </bit-simple-dialog>
