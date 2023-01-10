@@ -15,12 +15,12 @@ export class ProjectsListComponent implements OnDestroy {
 
   @Input()
   get projects(): ProjectListView[] {
-    this.dataSource.data = this._projects;
     return this._projects;
   }
   set projects(projects: ProjectListView[]) {
     this.selection.clear();
     this._projects = projects;
+    this.dataSource.data = projects;
   }
   private _projects: ProjectListView[];
 

@@ -30,7 +30,7 @@ export class TableDataSource<T> extends DataSource<T> {
   }
 
   set data(data: T[]) {
-    this._data.next(data);
+    this._data.next(data ? [...data] : []);
   }
 
   set sort(sort: Sort) {

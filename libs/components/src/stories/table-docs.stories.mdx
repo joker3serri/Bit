@@ -8,7 +8,7 @@ import { Meta, Story, Source } from "@storybook/addon-docs";
 
 All tables should have a visible horizontal header and label for each column.
 
-<Story id="component-library-table--data-source" />
+<Story id="component-library-table--default" />
 
 The below code is the absolute minimum required to create a table. However we stronly advice you to
 use the `dataSource` input to provide a data source for your table. This allows you to easily sort
@@ -42,7 +42,7 @@ source.
 
 ```ts
 // External data source
-const data: Observable;
+const data: T[];
 
 const dataSource = new TableDataSource<T>();
 dataSource.data = data;
