@@ -168,7 +168,7 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
   }
 
   checkRow(item: VaultItemRow, select?: boolean) {
-    if (item instanceof TreeNode && item.node.name == "Unassigned") {
+    if (item instanceof TreeNode && item.node.id == null) {
       return;
     }
 
