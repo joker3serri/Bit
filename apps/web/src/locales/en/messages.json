@@ -5870,20 +5870,17 @@
     "projectPeopleSelectHint": {
     "message": "Type or select people or groups"
   },
-  "projectPeopleSelectLabel": {
-    "message": "People to add"
-  },
   "projectServiceAccountsDescription": {
     "message": "Grant service accounts access to this project."
-  },
-  "projectServiceAccountsSelectLabel": {
-    "message": "Service accounts to add"
   },
   "projectServiceAccountsSelectHint": {
     "message": "Type or select service accounts"
   },
   "projectEmptyPeopleAccessPolicies": {
     "message": "Add people or groups to start collaborating"
+  },
+  "projectEmptyServiceAccountAccessPolicies": {
+    "message": "Add service accounts to grant access"
   },
   "groupSlashUser": {
     "message": "Group/User"

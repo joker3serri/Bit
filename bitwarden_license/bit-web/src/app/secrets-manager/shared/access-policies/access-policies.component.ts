@@ -1,11 +1,10 @@
 import { Component, Input } from "@angular/core";
 
-export interface AccessPolicy {
-  icon: string;
-  id: string;
-  name: string;
-  policyType: string;
-}
+import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
+
+import { ProjectAccessPoliciesView } from "../../models/view/project-access-policies.view";
+
+import { AccessPolicyService } from "./access-policy.service";
 
 @Component({
   selector: "sm-access-policies",
@@ -14,5 +13,25 @@ export interface AccessPolicy {
 export class AccessPoliciesComponent {
   @Input() columnTitle: string;
   @Input() emptyMessage: string;
-  @Input() accessPolicies: AccessPolicy[];
+  @Input() tableType: "projectPeople" | "projectServiceAccounts";
+  @Input() projectAccessPolicies: ProjectAccessPoliciesView;
+
+  constructor(
+    private accessPolicyService: AccessPolicyService,
+    private validationService: ValidationService
+  ) {}
+
+  updateAccessPolicy(target: any, accessPolicyId: string) {
+    //console.log(target.value);
+    //console.log(accessPolicyId);
+    // TODO make service call to update accessPolicy type
+  }
+
+  async deleteAccessPolicy(accessPolicyId: string) {
+    try {
+      await this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
+    } catch (e) {
+      this.validationService.showError(e);
+    }
+  }
 }
