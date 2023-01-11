@@ -61,61 +61,61 @@
       <h2 class="mt-5">
         {{ "licenseAndBillingManagement" | i18n }}
       </h2>
-      <div class="tw-flex">
-        <bit-radio-button
-          id="automatic-sync"
-          [value]="licenseOptions.SYNC"
-          [disabled]="disableLicenseSyncControl"
-          class="tw-block"
-          >{{ "automaticSync" | i18n }}</bit-radio-button
-        >
-        <a
-          href="https://bitwarden.com/help/families-for-enterprise-self-hosted/"
-          target="_blank"
-          rel="noopener"
-        >
-          <i class="bwi bwi-question-circle" aria-hidden="true"></i>
-          <span class="sr-only">{{ "billingSyncHelp" | i18n }}</span>
-        </a>
-      </div>
-      <p>
-        {{ "billingSyncDesc" | i18n }}
-      </p>
-      <button
-        bitButton
-        buttonType="secondary"
-        type="button"
-        (click)="manageBillingSyncSelfHosted()"
-      >
-        {{ "manageBillingSync" | i18n }}
-      </button>
-      <button
-        bitButton
-        buttonType="secondary"
-        type="button"
-        [bitAction]="syncLicense"
-        [disabled]="!billingSyncEnabled"
-      >
-        {{ "syncLicense" | i18n }}
-      </button>
-
       <bit-radio-button
-        id="manual-upload"
-        [value]="licenseOptions.UPLOAD"
-        class="tw-mt-6 tw-block"
-        >{{ "manualUpload" | i18n }}</bit-radio-button
+        id="automatic-sync"
+        [value]="licenseOptions.SYNC"
+        [disabled]="disableLicenseSyncControl"
+        class="tw-block"
       >
-      <p>
-        {{ "manualUploadDesc" | i18n }}
-      </p>
-      <div class="mt-3" *ngIf="licenseOptionsControl.value === licenseOptions.UPLOAD">
+        <bit-label
+          >{{ "automaticSync" | i18n }}
+          <a
+            href="https://bitwarden.com/help/families-for-enterprise-self-hosted/"
+            target="_blank"
+            rel="noopener"
+          >
+            <i class="bwi bwi-question-circle" aria-hidden="true"></i>
+            <span class="sr-only">{{ "billingSyncHelp" | i18n }}</span>
+          </a>
+        </bit-label>
+        <bit-hint>
+          {{ "billingSyncDesc" | i18n }}
+        </bit-hint>
+      </bit-radio-button>
+      <ng-container *ngIf="licenseOptionsControl.value === licenseOptions.SYNC">
+        <button
+          bitButton
+          buttonType="secondary"
+          type="button"
+          (click)="manageBillingSyncSelfHosted()"
+        >
+          {{ "manageBillingSync" | i18n }}
+        </button>
+        <button
+          bitButton
+          buttonType="primary"
+          type="button"
+          [bitAction]="syncLicense"
+          [disabled]="!billingSyncEnabled"
+        >
+          {{ "syncLicense" | i18n }}
+        </button>
+      </ng-container>
+
+      <bit-radio-button id="manual-upload" [value]="licenseOptions.UPLOAD" class="tw-mt-6 tw-block">
+        <bit-label>{{ "manualUpload" | i18n }}</bit-label>
+        <bit-hint>
+          {{ "manualUploadDesc" | i18n }}
+        </bit-hint>
+      </bit-radio-button>
+      <ng-container *ngIf="licenseOptionsControl.value === licenseOptions.UPLOAD">
         <h3 class="tw-font-semibold">{{ "uploadLicense" | i18n }}</h3>
         <app-update-license
           [organizationId]="organizationId"
           [showCancel]="false"
           (onUpdated)="licenseUploaded()"
         ></app-update-license>
-      </div>
+      </ng-container>
     </bit-radio-group>
   </form>
 </ng-container>
