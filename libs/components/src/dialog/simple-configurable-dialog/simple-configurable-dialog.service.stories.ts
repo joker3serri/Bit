@@ -6,6 +6,7 @@ import { firstValueFrom } from "rxjs";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
 import { ButtonModule } from "../../button";
+import { CalloutModule } from "../../callout";
 import { IconButtonModule } from "../../icon-button";
 import { SharedModule } from "../../shared/shared.module";
 import { I18nMockService } from "../../utils/i18n-mock.service";
@@ -21,8 +22,6 @@ import { SimpleDialogType } from "./models/simple-dialog-type.enum";
 @Component({
   selector: "app-story-dialog",
   template: `
-    <!-- TODO: figure out if I should do pre-localized vs post-localized. 
-    Can I even do placeholders w/ a mock i18n Service? -->
     <h2 class="">Dialog Type Examples:</h2>
     <div class="tw-mb-4 tw-flex tw-flex-row tw-gap-2">
       <button
@@ -109,7 +108,7 @@ import { SimpleDialogType } from "./models/simple-dialog-type.enum";
     </div>
 
     <h2 class="">Additional Examples:</h2>
-    <div class="tw-flex tw-flex-row tw-gap-2">
+    <div class="tw-mb-4 tw-flex tw-flex-row tw-gap-2">
       <button
         bitButton
         buttonType="primary"
@@ -118,6 +117,11 @@ import { SimpleDialogType } from "./models/simple-dialog-type.enum";
         Open Simple Dialog with backdrop click / escape key press disabled
       </button>
     </div>
+
+    <bit-callout *ngIf="showCallout" [type]="calloutType" title="Dialog Close Result">
+      <span *ngIf="dialogCloseResult">{{ dialogCloseResult }}</span>
+      <span *ngIf="!dialogCloseResult">undefined</span>
+    </bit-callout>
   `,
 })
 class StoryDialogComponent {
@@ -188,28 +192,22 @@ class StoryDialogComponent {
     disableClose: true,
   };
 
-  constructor(
-    public dialogService: DialogService,
-    private i18nService: I18nService // TODO: can I get platformUtilsService: PlatformUtilsService or messagingService here for toasts?
-  ) {}
+  showCallout = false;
+  calloutType = "info";
+  dialogCloseResult: undefined | SimpleDialogCloseType;
+
+  constructor(public dialogService: DialogService, private i18nService: I18nService) {}
 
   openSimpleConfigurableDialog(opts: SimpleDialogOptions) {
     const dialogReference: DialogRef = this.dialogService.openSimpleDialog(opts);
 
     firstValueFrom(dialogReference.closed).then((result: SimpleDialogCloseType | undefined) => {
-      if (result === undefined) {
-        alert("undefined close result");
-      }
-      switch (result) {
-        case SimpleDialogCloseType.ACCEPT:
-          alert("SimpleDialogCloseType.ACCEPT");
-          break;
-        case SimpleDialogCloseType.CANCEL:
-          alert("SimpleDialogCloseType.CANCEL");
-          break;
-
-        default:
-          break;
+      this.showCallout = true;
+      this.dialogCloseResult = result;
+      if (result && result === SimpleDialogCloseType.ACCEPT) {
+        this.calloutType = "success";
+      } else {
+        this.calloutType = "info";
       }
     });
   }
@@ -221,7 +219,7 @@ export default {
   decorators: [
     moduleMetadata({
       declarations: [DialogCloseDirective, DialogTitleContainerDirective, SimpleDialogComponent],
-      imports: [SharedModule, IconButtonModule, ButtonModule, DialogModule],
+      imports: [SharedModule, IconButtonModule, ButtonModule, DialogModule, CalloutModule],
       providers: [
         DialogService,
         {
