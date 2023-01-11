@@ -12,12 +12,4 @@ module.exports = {
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions?.paths || {}, {
     prefix: "<rootDir>/",
   }),
-  globals: {
-    "ts-jest": {
-      ...sharedConfig.globals["ts-jest"],
-      astTransformers: {
-        before: ["<rootDir>/../shared/es2020-transformer.ts"],
-      },
-    },
-  },
 };

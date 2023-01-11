@@ -12,12 +12,4 @@ module.exports = {
     prefix: "<rootDir>/",
   }),
   modulePathIgnorePatterns: ["jslib"],
-  globals: {
-    "ts-jest": {
-      ...sharedConfig.globals["ts-jest"],
-      astTransformers: {
-        before: ["<rootDir>/../../libs/shared/es2020-transformer.ts"],
-      },
-    },
-  },
 };
