@@ -2433,7 +2433,7 @@
     }
   },
   "userUsingTwoStep": {
-    "message": "This user is using two-step login to protect their account."
+    "message": "This user is using two-step login to protect their account.",
     "description": "Tool tip text that appears for an administrator when hovering over a list of Organization members."
   },
   "userAccessAllItems": {
