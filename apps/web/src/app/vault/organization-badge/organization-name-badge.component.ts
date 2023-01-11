@@ -37,7 +37,7 @@ export class OrganizationNameBadgeComponent implements OnInit {
         this.color = Utils.stringToColor(userName.toUpperCase());
       }
     } else {
-      this.color = Utils.stringToColor(this.organizationName);
+      this.color = Utils.stringToColor(this.organizationName.toUpperCase());
     }
     this.textColor = Utils.pickTextColorBasedOnBgColor(this.color, 135, true) + "!important";
   }
