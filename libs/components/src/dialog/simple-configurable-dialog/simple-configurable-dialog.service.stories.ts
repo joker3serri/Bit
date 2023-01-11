@@ -34,8 +34,7 @@ import { SimpleDialogType } from "./models/simple-dialog-type.enum";
 
       <button
         bitButton
-        class="tw-text-success"
-        buttonType="unstyled"
+        buttonType="secondary"
         (click)="openSimpleConfigurableDialog(successLocalizedSimpleDialogOpts)"
       >
         Open Success Type Simple Dialog
@@ -43,8 +42,7 @@ import { SimpleDialogType } from "./models/simple-dialog-type.enum";
 
       <button
         bitButton
-        class="tw-text-info"
-        buttonType="unstyled"
+        buttonType="secondary"
         (click)="openSimpleConfigurableDialog(infoLocalizedSimpleDialogOpts)"
       >
         Open Info Type Simple Dialog
@@ -52,8 +50,7 @@ import { SimpleDialogType } from "./models/simple-dialog-type.enum";
 
       <button
         bitButton
-        class="tw-text-warning"
-        buttonType="unstyled"
+        buttonType="secondary"
         (click)="openSimpleConfigurableDialog(warningLocalizedSimpleDialogOpts)"
       >
         Open Warning Type Simple Dialog
@@ -61,8 +58,7 @@ import { SimpleDialogType } from "./models/simple-dialog-type.enum";
 
       <button
         bitButton
-        class="tw-text-danger"
-        buttonType="unstyled"
+        buttonType="secondary"
         (click)="openSimpleConfigurableDialog(dangerLocalizedSimpleDialogOpts)"
       >
         Open Danger Type Simple Dialog
