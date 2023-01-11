@@ -1,5 +1,6 @@
 import { KeePass2XmlImporter as Importer } from "@bitwarden/common/importers/keepass2-xml-importer";
 import { FolderView } from "@bitwarden/common/models/view/folder.view";
+
 import { TestData, TestData1, TestData2 } from "./keepass2-xml-importer-testdata";
 
 describe("KeePass2 Xml Importer", () => {
