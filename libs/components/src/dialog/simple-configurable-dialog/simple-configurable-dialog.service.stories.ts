@@ -22,7 +22,7 @@ import { SimpleDialogType } from "./models/simple-dialog-type.enum";
 @Component({
   selector: "app-story-dialog",
   template: `
-    <h2 class="">Dialog Type Examples:</h2>
+    <h2 class="tw-text-main">Dialog Type Examples:</h2>
     <div class="tw-mb-4 tw-flex tw-flex-row tw-gap-2">
       <button
         bitButton
@@ -69,7 +69,7 @@ import { SimpleDialogType } from "./models/simple-dialog-type.enum";
       </button>
     </div>
 
-    <h2 class="">Custom Button Examples:</h2>
+    <h2 class="tw-text-main">Custom Button Examples:</h2>
     <div class="tw-mb-4 tw-flex tw-flex-row tw-gap-2">
       <button
         bitButton
@@ -96,7 +96,7 @@ import { SimpleDialogType } from "./models/simple-dialog-type.enum";
       </button>
     </div>
 
-    <h2 class="">Custom Icon Example:</h2>
+    <h2 class="tw-text-main">Custom Icon Example:</h2>
     <div class="tw-mb-4 tw-flex tw-flex-row tw-gap-2">
       <button
         bitButton
@@ -107,7 +107,7 @@ import { SimpleDialogType } from "./models/simple-dialog-type.enum";
       </button>
     </div>
 
-    <h2 class="">Additional Examples:</h2>
+    <h2 class="tw-text-main">Additional Examples:</h2>
     <div class="tw-mb-4 tw-flex tw-flex-row tw-gap-2">
       <button
         bitButton
