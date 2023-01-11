@@ -7,7 +7,7 @@
 
   <div bitDialogContent>{{ content }}</div>
 
-  <div bitDialogFooter>
+  <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
     <button bitButton buttonType="primary" (click)="dialogRef.close(SimpleDialogCloseType.ACCEPT)">
       {{ acceptButtonText }}
     </button>
@@ -18,7 +18,7 @@
       buttonType="secondary"
       (click)="dialogRef.close(SimpleDialogCloseType.CANCEL)"
     >
-      {{ simpleDialogOpts.cancelButtonText }}
+      {{ cancelButtonText }}
     </button>
   </div>
 </bit-simple-dialog>
