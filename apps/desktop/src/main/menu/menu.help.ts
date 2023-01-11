@@ -166,7 +166,7 @@ export class HelpMenu implements IMenubarMenu {
       {
         id: "android",
         label: "Android",
-        visible: !isMacAppStore(),
+        visible: !isMacAppStore(), // Apple Guideline 2.3.10 - Accurate Metadata
         click: () => {
           shell.openExternal(
             "https://play.google.com/store/apps/" + "details?id=com.x8bit.bitwarden"
