@@ -55,7 +55,7 @@ describe("browserSession decorator", () => {
   });
 
   describe("interaction with @sessionSync decorator", () => {
-    let memoryStorageService: BrowserStateService;
+    let memoryStorageService: MemoryStorageService;
 
     @browserSession
     class TestClass {
