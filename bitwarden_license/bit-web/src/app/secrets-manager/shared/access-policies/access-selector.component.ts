@@ -9,6 +9,8 @@ import { SelectItemView } from "@bitwarden/components/src/multi-select/models/se
 
 import { ServiceAccountService } from "../../service-accounts/service-account.service";
 
+import { AccessPolicyService } from "./access-policy.service";
+
 @Component({
   selector: "sm-access-selector",
   templateUrl: "./access-selector.component.html",
@@ -17,6 +19,10 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
   @Input() label: string;
   @Input() hint: string;
   @Input() selectorType: "projectPeople" | "projectServiceAccounts";
+
+  private readonly userIcon = "bwi-user";
+  private readonly groupIcon = "bwi-family";
+  private readonly serviceAccountIcon = "bwi-wrench";
 
   formGroup = new FormGroup({
     multiSelect: new FormControl([], [Validators.required]),
@@ -31,6 +37,7 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private serviceAccountService: ServiceAccountService,
     private organizationUserService: OrganizationUserService,
+    private accessPolicyService: AccessPolicyService,
     private apiService: ApiService
   ) {}
 
@@ -53,7 +60,25 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
     if (this.formGroup.invalid) {
       return;
     }
-    // TODO call command to create access policies selected in the multi select form.
+
+    const userIds = this.formGroup.value.multiSelect
+      ?.filter((obj) => obj.icon === this.userIcon)
+      ?.map((filteredObj) => filteredObj.id);
+    const groupIds = this.formGroup.value.multiSelect
+      ?.filter((obj) => obj.icon === this.groupIcon)
+      ?.map((filteredObj) => filteredObj.id);
+    const serviceAccountIds = this.formGroup.value.multiSelect
+      ?.filter((obj) => obj.icon === this.serviceAccountIcon)
+      ?.map((filteredObj) => filteredObj.id);
+
+    await this.accessPolicyService.createProjectAccessPolicies(
+      this.organizationId,
+      this.projectId,
+      userIds,
+      groupIds,
+      serviceAccountIds
+    );
+    this.formGroup.reset();
   };
 
   private async setMultiSelect(organizationId: string): Promise<void> {
@@ -67,24 +92,11 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
-  private async getServiceAccountDetails(organizationId: string): Promise<SelectItemView[]> {
-    const serviceAccounts = await this.serviceAccountService.getServiceAccounts(organizationId);
-    return serviceAccounts.map((serviceAccount) => {
-      const selectItemView: SelectItemView = {
-        icon: "bwi-wrench",
-        id: serviceAccount.id,
-        labelName: serviceAccount.name,
-        listName: serviceAccount.name,
-      };
-      return selectItemView;
-    });
-  }
-
   private async getUserDetails(organizationId: string): Promise<SelectItemView[]> {
     const users = await this.organizationUserService.getAllUsers(organizationId);
     return users.data.map((user) => {
       const selectItemView: SelectItemView = {
-        icon: "bwi-user",
+        icon: this.userIcon,
         id: user.id,
         labelName: user.name,
         listName: user.name + ` (${user.email})`,
@@ -97,10 +109,23 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
     const groups = await this.apiService.getGroups(organizationId);
     return groups.data.map((group) => {
       const selectItemView: SelectItemView = {
-        icon: "bwi-family",
+        icon: this.groupIcon,
         id: group.id,
         labelName: group.name,
         listName: group.name,
+      };
+      return selectItemView;
+    });
+  }
+
+  private async getServiceAccountDetails(organizationId: string): Promise<SelectItemView[]> {
+    const serviceAccounts = await this.serviceAccountService.getServiceAccounts(organizationId);
+    return serviceAccounts.map((serviceAccount) => {
+      const selectItemView: SelectItemView = {
+        icon: this.serviceAccountIcon,
+        id: serviceAccount.id,
+        labelName: serviceAccount.name,
+        listName: serviceAccount.name,
       };
       return selectItemView;
     });

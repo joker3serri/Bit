@@ -14,6 +14,9 @@ import {
 } from "../../models/view/access-policy.view";
 import { ProjectAccessPoliciesView } from "../../models/view/project-access-policies.view";
 
+import { AccessPoliciesCreateRequest } from "./models/requests/access-policies-create.request";
+import { AccessPolicyUpdateRequest } from "./models/requests/access-policy-update.request";
+import { AccessPolicyRequest } from "./models/requests/access-policy.request";
 import {
   GroupProjectAccessPolicyResponse,
   ServiceAccountProjectAccessPolicyResponse,
@@ -52,6 +55,50 @@ export class AccessPolicyService {
     this._projectAccessPolicies.next(null);
   }
 
+  async updateAccessPolicy(accessPolicyId: string, read: boolean, write: boolean) {
+    const payload = new AccessPolicyUpdateRequest();
+    payload.read = read;
+    payload.write = write;
+    await this.apiService.send("PUT", "/access-policies/" + accessPolicyId, payload, true, true);
+    this._projectAccessPolicies.next(null);
+  }
+
+  async createProjectAccessPolicies(
+    organizationId: string,
+    projectId: string,
+    userIds?: string[],
+    groupIds?: string[],
+    serviceAccountIds?: string[]
+  ) {
+    const payload = new AccessPoliciesCreateRequest();
+
+    if (userIds?.length > 0) {
+      payload.userAccessPolicyRequests = userIds?.map((id) => {
+        return new AccessPolicyRequest(id);
+      });
+    }
+    if (groupIds?.length > 0) {
+      payload.groupAccessPolicyRequests = groupIds?.map((id) => {
+        return new AccessPolicyRequest(id);
+      });
+    }
+    if (serviceAccountIds?.length > 0) {
+      payload.serviceAccountAccessPolicyRequests = serviceAccountIds?.map((id) => {
+        return new AccessPolicyRequest(id);
+      });
+    }
+    const r = await this.apiService.send(
+      "POST",
+      "/projects/" + projectId + "/access-policies",
+      payload,
+      true,
+      true
+    );
+    const results = new ProjectAccessPoliciesResponse(r);
+    const view = await this.createProjectAccessPoliciesView(organizationId, results);
+    this._projectAccessPolicies.next(view);
+  }
+
   private async getOrganizationKey(organizationId: string): Promise<SymmetricCryptoKey> {
     return await this.cryptoService.getOrgKey(organizationId);
   }
@@ -66,16 +113,12 @@ export class AccessPolicyService {
     view.userAccessPolicies = projectAccessPoliciesResponse.userAccessPolicies.map((ap) => {
       return this.createUserProjectAccessPolicyView(ap);
     });
-
+    view.groupAccessPolicies = projectAccessPoliciesResponse.groupAccessPolicies.map((ap) => {
+      return this.createGroupProjectAccessPolicyView(ap);
+    });
     view.serviceAccountAccessPolicies = await Promise.all(
       projectAccessPoliciesResponse.serviceAccountAccessPolicies.map((ap) => {
         return this.createServiceAccountProjectAccessPolicyView(orgKey, ap);
-      })
-    );
-
-    view.groupAccessPolicies = await Promise.all(
-      projectAccessPoliciesResponse.groupAccessPolicies.map((ap) => {
-        return this.createGroupProjectAccessPolicyView(orgKey, ap);
       })
     );
 
@@ -97,10 +140,9 @@ export class AccessPolicyService {
     };
   }
 
-  private async createGroupProjectAccessPolicyView(
-    organizationKey: SymmetricCryptoKey,
+  private createGroupProjectAccessPolicyView(
     response: GroupProjectAccessPolicyResponse
-  ): Promise<GroupProjectAccessPolicyView> {
+  ): GroupProjectAccessPolicyView {
     return {
       id: response.id,
       read: response.read,
@@ -109,10 +151,7 @@ export class AccessPolicyService {
       revisionDate: response.revisionDate,
       grantedProjectId: response.grantedProjectId,
       groupId: response.groupId,
-      groupName: await this.encryptService.decryptToUtf8(
-        new EncString(response.groupName),
-        organizationKey
-      ),
+      groupName: response.groupName,
     };
   }
 

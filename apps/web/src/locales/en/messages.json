@@ -5882,6 +5882,12 @@
   "projectEmptyServiceAccountAccessPolicies": {
     "message": "Add service accounts to grant access"
   },
+  "writeOnly": {
+    "message": "Write only"
+  },
+  "readAndWrite": {
+    "message": "Read and write"
+  },
   "groupSlashUser": {
     "message": "Group/User"
   }

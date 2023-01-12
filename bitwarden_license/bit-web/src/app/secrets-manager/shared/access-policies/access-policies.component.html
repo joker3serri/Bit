@@ -26,6 +26,7 @@
           <ng-container
             [ngTemplateOutlet]="apRowData"
             [ngTemplateOutletContext]="{
+              type: 'user',
               name: accessPolicy.organizationUserName,
               id: accessPolicy.id,
               read: accessPolicy.read,
@@ -40,6 +41,7 @@
           <ng-container
             [ngTemplateOutlet]="apRowData"
             [ngTemplateOutletContext]="{
+              type: 'group',
               name: accessPolicy.groupName,
               id: accessPolicy.id,
               read: accessPolicy.read,
@@ -60,6 +62,7 @@
           <ng-container
             [ngTemplateOutlet]="apRowData"
             [ngTemplateOutletContext]="{
+              type: 'serviceAccount',
               name: accessPolicy.serviceAccountName,
               id: accessPolicy.id,
               read: accessPolicy.read,
@@ -82,6 +85,7 @@
 
 <ng-template
   #apRowData
+  let-type="type"
   let-name="name"
   let-id="id"
   let-read="read"
@@ -92,12 +96,21 @@
     <i [class]="icon" aria-hidden="true"></i>
   </td>
   <td bitCell>{{ name }}</td>
-  <td bitCell>
+  <td bitCell *ngIf="type == 'serviceAccount'">
     <bit-form-field class="tw-inline-block tw-w-auto">
-      <select bitInput (change)="updateAccessPolicy($event.target, id)">
-        <option value="readOnly" [selected]="read && write != true">Read only</option>
-        <option value="writeOnly" [selected]="read != true && write">Write only</option>
-        <option value="readAndWrite" [selected]="read && write">Read and Write</option>
+      <select bitInput disabled class="tw-border-none">
+        <option value="readOnly" selected>{{ "readOnly" | i18n }}</option>
+      </select>
+    </bit-form-field>
+  </td>
+  <td bitCell *ngIf="type != 'serviceAccount'">
+    <bit-form-field class="tw-inline-block tw-w-auto">
+      <select bitInput (change)="updateAccessPolicy($event.target, id)" class="tw-border-none">
+        <option value="readOnly" [selected]="read && write != true">{{ "readOnly" | i18n }}</option>
+        <option value="writeOnly" [selected]="read != true && write">
+          {{ "writeOnly" | i18n }}
+        </option>
+        <option value="readAndWrite" [selected]="read && write">{{ "readAndWrite" | i18n }}</option>
       </select>
     </bit-form-field>
   </td>

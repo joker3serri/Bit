@@ -21,10 +21,25 @@ export class AccessPoliciesComponent {
     private validationService: ValidationService
   ) {}
 
-  updateAccessPolicy(target: any, accessPolicyId: string) {
-    //console.log(target.value);
-    //console.log(accessPolicyId);
-    // TODO make service call to update accessPolicy type
+  async updateAccessPolicy(target: any, accessPolicyId: string) {
+    try {
+      let read: boolean;
+      let write: boolean;
+      if (target.value == "readOnly") {
+        read = true;
+        write = false;
+      } else if (target.value == "writeOnly") {
+        read = false;
+        write = true;
+      } else if (target.value == "readAndWrite") {
+        read = true;
+        write = true;
+      }
+
+      await this.accessPolicyService.updateAccessPolicy(accessPolicyId, read, write);
+    } catch (e) {
+      this.validationService.showError(e);
+    }
   }
 
   async deleteAccessPolicy(accessPolicyId: string) {
