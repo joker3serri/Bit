@@ -37,7 +37,10 @@ export class AccessPolicyService {
     private encryptService: EncryptService
   ) {}
 
-  async getProjectAccessPolicies(organizationId: string, projectId: string) {
+  async getProjectAccessPolicies(
+    organizationId: string,
+    projectId: string
+  ): Promise<ProjectAccessPoliciesView> {
     const r = await this.apiService.send(
       "GET",
       "/projects/" + projectId + "/access-policies",
@@ -50,12 +53,12 @@ export class AccessPolicyService {
     return await this.createProjectAccessPoliciesView(organizationId, results);
   }
 
-  async deleteAccessPolicy(accessPolicyId: string) {
+  async deleteAccessPolicy(accessPolicyId: string): Promise<void> {
     await this.apiService.send("DELETE", "/access-policies/" + accessPolicyId, null, true, false);
     this._projectAccessPolicies.next(null);
   }
 
-  async updateAccessPolicy(accessPolicyId: string, read: boolean, write: boolean) {
+  async updateAccessPolicy(accessPolicyId: string, read: boolean, write: boolean): Promise<void> {
     const payload = new AccessPolicyUpdateRequest();
     payload.read = read;
     payload.write = write;
@@ -69,7 +72,7 @@ export class AccessPolicyService {
     userIds?: string[],
     groupIds?: string[],
     serviceAccountIds?: string[]
-  ) {
+  ): Promise<void> {
     const payload = new AccessPoliciesCreateRequest();
 
     if (userIds?.length > 0) {

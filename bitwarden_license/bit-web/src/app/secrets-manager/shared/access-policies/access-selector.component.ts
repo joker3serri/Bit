@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
@@ -7,6 +7,7 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
+import { ProjectAccessPoliciesView } from "../../models/view/project-access-policies.view";
 import { ServiceAccountService } from "../../service-accounts/service-account.service";
 
 import { AccessPolicyService } from "./access-policy.service";
@@ -15,7 +16,8 @@ import { AccessPolicyService } from "./access-policy.service";
   selector: "sm-access-selector",
   templateUrl: "./access-selector.component.html",
 })
-export class AccessSelectorComponent implements OnInit, OnDestroy {
+export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
+  @Input() projectAccessPolicies: ProjectAccessPoliciesView;
   @Input() label: string;
   @Input() hint: string;
   @Input() selectorType: "projectPeople" | "projectServiceAccounts";
@@ -46,12 +48,18 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
       this.organizationId = params.organizationId;
       this.projectId = params.projectId;
     });
-    await this.setMultiSelect(this.organizationId);
+    await this.setMultiSelect();
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
+    if (!changes.projectAccessPolicies.firstChange) {
+      await this.setMultiSelect();
+    }
   }
 
   submit = async () => {
@@ -62,14 +70,14 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
     }
 
     const userIds = this.formGroup.value.multiSelect
-      ?.filter((obj) => obj.icon === this.userIcon)
-      ?.map((filteredObj) => filteredObj.id);
+      ?.filter((selection) => selection.icon === this.userIcon)
+      ?.map((filtered) => filtered.id);
     const groupIds = this.formGroup.value.multiSelect
-      ?.filter((obj) => obj.icon === this.groupIcon)
-      ?.map((filteredObj) => filteredObj.id);
+      ?.filter((selection) => selection.icon === this.groupIcon)
+      ?.map((filtered) => filtered.id);
     const serviceAccountIds = this.formGroup.value.multiSelect
-      ?.filter((obj) => obj.icon === this.serviceAccountIcon)
-      ?.map((filteredObj) => filteredObj.id);
+      ?.filter((selection) => selection.icon === this.serviceAccountIcon)
+      ?.map((filtered) => filtered.id);
 
     await this.accessPolicyService.createProjectAccessPolicies(
       this.organizationId,
@@ -81,13 +89,29 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
     this.formGroup.reset();
   };
 
-  private async setMultiSelect(organizationId: string): Promise<void> {
+  private async setMultiSelect(): Promise<void> {
     if (this.selectorType === "projectPeople") {
-      const orgUsers = await this.getUserDetails(organizationId);
-      const orgGroups = await this.getGroupDetails(organizationId);
+      let orgUsers = await this.getUserDetails(this.organizationId);
+      orgUsers = orgUsers.filter(
+        (orgUser) =>
+          !this.projectAccessPolicies.userAccessPolicies.some(
+            (ap) => ap.organizationUserId == orgUser.id
+          )
+      );
+      let orgGroups = await this.getGroupDetails(this.organizationId);
+      orgGroups = orgGroups.filter(
+        (orgGroup) =>
+          !this.projectAccessPolicies.groupAccessPolicies.some((ap) => ap.groupId == orgGroup.id)
+      );
       this.baseItems = [...orgUsers, ...orgGroups];
     } else {
-      this.baseItems = await this.getServiceAccountDetails(organizationId);
+      const orgServiceAccounts = await this.getServiceAccountDetails(this.organizationId);
+      this.baseItems = orgServiceAccounts.filter(
+        (orgServiceAccount) =>
+          !this.projectAccessPolicies.serviceAccountAccessPolicies.some(
+            (ap) => ap.serviceAccountId == orgServiceAccount.id
+          )
+      );
     }
     this.loading = false;
   }

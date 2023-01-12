@@ -21,7 +21,7 @@ export class AccessPoliciesComponent {
     private validationService: ValidationService
   ) {}
 
-  async updateAccessPolicy(target: any, accessPolicyId: string) {
+  async updateAccessPolicy(target: any, accessPolicyId: string): Promise<void> {
     try {
       let read: boolean;
       let write: boolean;
@@ -42,7 +42,7 @@ export class AccessPoliciesComponent {
     }
   }
 
-  async deleteAccessPolicy(accessPolicyId: string) {
+  async deleteAccessPolicy(accessPolicyId: string): Promise<void> {
     try {
       await this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
     } catch (e) {
