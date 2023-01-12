@@ -62,7 +62,7 @@ describe("browserSession decorator", () => {
       @sessionSync({ initializer: (s: string) => s })
       private behaviorSubject = new BehaviorSubject("");
 
-      constructor(private stateService: BrowserStateService) {}
+      constructor(private memoryStorageService: MemoryStorageService) {}
 
       fromJSON(json: any) {
         this.behaviorSubject.next(json);
