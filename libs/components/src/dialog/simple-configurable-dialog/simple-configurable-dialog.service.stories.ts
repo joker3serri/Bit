@@ -148,7 +148,7 @@ class StoryDialogComponent {
   dangerLocalizedSimpleDialogOpts: SimpleDialogOptions = {
     title: this.i18nService.t("dangerTypeSimpleDialog"),
     content: this.i18nService.t("dialogContent"),
-    type: SimpleDialogType.INFO,
+    type: SimpleDialogType.DANGER,
   };
 
   primarySingleBtnSimpleDialogOpts: SimpleDialogOptions = {
