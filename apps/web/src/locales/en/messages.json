@@ -5957,6 +5957,9 @@
   "collection": {
     "message": "Collection"
   },
+  "noCollection": {
+    "message": "No collection"
+  },
   "canView": {
     "message": "Can view"
   },
