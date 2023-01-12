@@ -459,6 +459,8 @@ export class EventService {
         return ["bwi-globe", this.i18nService.t("webVault") + " - Edge"];
       case DeviceType.IEBrowser:
         return ["bwi-globe", this.i18nService.t("webVault") + " - IE"];
+      case DeviceType.Server:
+        return ["bwi-server", this.i18nService.t("server")];
       case DeviceType.UnknownBrowser:
         return [
           "bwi-globe",

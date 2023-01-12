@@ -6017,5 +6017,8 @@
         "example": "2"
       }
     }
+  },
+  "server": {
+    "message": "Server"
   }
 }
