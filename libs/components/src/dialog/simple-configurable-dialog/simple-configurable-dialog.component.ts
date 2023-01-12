@@ -51,7 +51,6 @@ export class SimpleConfigurableDialogComponent {
     private i18nService: I18nService,
     @Inject(DIALOG_DATA) public simpleDialogOpts?: SimpleDialogOptions
   ) {
-    // localize title, content, and button texts as needed
     this.localizeText();
   }
 
