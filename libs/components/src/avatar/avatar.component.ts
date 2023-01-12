@@ -63,11 +63,11 @@ export class AvatarComponent implements OnChanges {
 
     if (!Utils.isNullOrWhitespace(this.color)) {
       svg = this.createSvgElement(this.svgSize, hexColor);
-    } else if (!Utils.isNullOrWhitespace(upperCaseText)) {
-      hexColor = Utils.stringToColor(upperCaseText);
-      svg = this.createSvgElement(this.svgSize, hexColor);
     } else if (!Utils.isNullOrWhitespace(this.id)) {
       hexColor = Utils.stringToColor(this.id.toString());
+      svg = this.createSvgElement(this.svgSize, hexColor);
+    } else {
+      hexColor = Utils.stringToColor(upperCaseText);
       svg = this.createSvgElement(this.svgSize, hexColor);
     }
 
