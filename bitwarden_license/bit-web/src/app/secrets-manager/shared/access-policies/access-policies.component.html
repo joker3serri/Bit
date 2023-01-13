@@ -14,7 +14,7 @@
       </tr>
     </ng-container>
 
-    <ng-container body *ngIf="tableType == 'projectPeople'">
+    <ng-template body *ngIf="tableType == 'projectPeople'">
       <ng-container
         *ngIf="
           projectAccessPolicies.groupAccessPolicies?.length > 0 ||
@@ -52,9 +52,9 @@
           </ng-container>
         </tr>
       </ng-container>
-    </ng-container>
+    </ng-template>
 
-    <ng-container body *ngIf="tableType == 'projectServiceAccounts'">
+    <ng-template body *ngIf="tableType == 'projectServiceAccounts'">
       <ng-container
         *ngIf="projectAccessPolicies.serviceAccountAccessPolicies?.length > 0; else empty"
       >
@@ -73,7 +73,7 @@
           </ng-container>
         </tr>
       </ng-container>
-    </ng-container>
+    </ng-template>
   </bit-table>
 </ng-container>
 

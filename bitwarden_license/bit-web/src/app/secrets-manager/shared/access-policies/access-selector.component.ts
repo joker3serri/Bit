@@ -7,6 +7,11 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
+import {
+  GroupProjectAccessPolicyView,
+  ServiceAccountProjectAccessPolicyView,
+  UserProjectAccessPolicyView,
+} from "../../models/view/access-policy.view";
 import { ProjectAccessPoliciesView } from "../../models/view/project-access-policies.view";
 import { ServiceAccountService } from "../../service-accounts/service-account.service";
 
@@ -69,22 +74,44 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
 
-    const userIds = this.formGroup.value.multiSelect
+    const projectAccessPoliciesView = new ProjectAccessPoliciesView();
+    projectAccessPoliciesView.userAccessPolicies = this.formGroup.value.multiSelect
       ?.filter((selection) => selection.icon === this.userIcon)
-      ?.map((filtered) => filtered.id);
-    const groupIds = this.formGroup.value.multiSelect
+      ?.map((filtered) => {
+        const view = new UserProjectAccessPolicyView();
+        view.grantedProjectId = this.projectId;
+        view.organizationUserId = filtered.id;
+        view.read = true;
+        view.write = false;
+        return view;
+      });
+
+    projectAccessPoliciesView.groupAccessPolicies = this.formGroup.value.multiSelect
       ?.filter((selection) => selection.icon === this.groupIcon)
-      ?.map((filtered) => filtered.id);
-    const serviceAccountIds = this.formGroup.value.multiSelect
+      ?.map((filtered) => {
+        const view = new GroupProjectAccessPolicyView();
+        view.grantedProjectId = this.projectId;
+        view.groupId = filtered.id;
+        view.read = true;
+        view.write = false;
+        return view;
+      });
+
+    projectAccessPoliciesView.serviceAccountAccessPolicies = this.formGroup.value.multiSelect
       ?.filter((selection) => selection.icon === this.serviceAccountIcon)
-      ?.map((filtered) => filtered.id);
+      ?.map((filtered) => {
+        const view = new ServiceAccountProjectAccessPolicyView();
+        view.grantedProjectId = this.projectId;
+        view.serviceAccountId = filtered.id;
+        view.read = true;
+        view.write = false;
+        return view;
+      });
 
     await this.accessPolicyService.createProjectAccessPolicies(
       this.organizationId,
       this.projectId,
-      userIds,
-      groupIds,
-      serviceAccountIds
+      projectAccessPoliciesView
     );
     this.formGroup.reset();
   };

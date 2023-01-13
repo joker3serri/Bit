@@ -2,6 +2,7 @@ import { Component, Input } from "@angular/core";
 
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 
+import { BaseAccessPolicyView } from "../../models/view/access-policy.view";
 import { ProjectAccessPoliciesView } from "../../models/view/project-access-policies.view";
 
 import { AccessPolicyService } from "./access-policy.service";
@@ -23,20 +24,20 @@ export class AccessPoliciesComponent {
 
   async updateAccessPolicy(target: any, accessPolicyId: string): Promise<void> {
     try {
-      let read: boolean;
-      let write: boolean;
+      const accessPolicyView = new BaseAccessPolicyView();
+      accessPolicyView.id = accessPolicyId;
       if (target.value == "canRead") {
-        read = true;
-        write = false;
+        accessPolicyView.read = true;
+        accessPolicyView.write = false;
       } else if (target.value == "canWrite") {
-        read = false;
-        write = true;
+        accessPolicyView.read = false;
+        accessPolicyView.write = true;
       } else if (target.value == "canReadWrite") {
-        read = true;
-        write = true;
+        accessPolicyView.read = true;
+        accessPolicyView.write = true;
       }
 
-      await this.accessPolicyService.updateAccessPolicy(accessPolicyId, read, write);
+      await this.accessPolicyService.updateAccessPolicy(accessPolicyView);
     } catch (e) {
       this.validationService.showError(e);
     }
