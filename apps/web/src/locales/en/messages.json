@@ -5748,7 +5748,7 @@
     "message": "Expires"
   },
   "canRead": {
-    "message": "Can Read"
+    "message": "Can read"
   },
   "accessTokensNoItemsTitle": {
     "message": "No access tokens to show"
@@ -5882,11 +5882,11 @@
   "projectEmptyServiceAccountAccessPolicies": {
     "message": "Add service accounts to grant access"
   },
-  "writeOnly": {
-    "message": "Write only"
+  "canWrite": {
+    "message": "Can write"
   },
-  "readAndWrite": {
-    "message": "Read and write"
+  "canReadWrite": {
+    "message": "Can read, write"
   },
   "groupSlashUser": {
     "message": "Group/User"

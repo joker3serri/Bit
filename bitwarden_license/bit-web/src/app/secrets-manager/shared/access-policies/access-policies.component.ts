@@ -25,13 +25,13 @@ export class AccessPoliciesComponent {
     try {
       let read: boolean;
       let write: boolean;
-      if (target.value == "readOnly") {
+      if (target.value == "canRead") {
         read = true;
         write = false;
-      } else if (target.value == "writeOnly") {
+      } else if (target.value == "canWrite") {
         read = false;
         write = true;
-      } else if (target.value == "readAndWrite") {
+      } else if (target.value == "canReadWrite") {
         read = true;
         write = true;
       }

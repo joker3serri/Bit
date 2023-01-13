@@ -98,19 +98,19 @@
   <td bitCell>{{ name }}</td>
   <td bitCell *ngIf="type == 'serviceAccount'">
     <bit-form-field class="tw-inline-block tw-w-auto">
-      <select bitInput disabled class="tw-border-none">
-        <option value="readOnly" selected>{{ "readOnly" | i18n }}</option>
+      <select bitInput disabled>
+        <option value="canRead" selected>{{ "canRead" | i18n }}</option>
       </select>
     </bit-form-field>
   </td>
   <td bitCell *ngIf="type != 'serviceAccount'">
     <bit-form-field class="tw-inline-block tw-w-auto">
-      <select bitInput (change)="updateAccessPolicy($event.target, id)" class="tw-border-none">
-        <option value="readOnly" [selected]="read && write != true">{{ "readOnly" | i18n }}</option>
-        <option value="writeOnly" [selected]="read != true && write">
-          {{ "writeOnly" | i18n }}
+      <select bitInput (change)="updateAccessPolicy($event.target, id)">
+        <option value="canRead" [selected]="read && write != true">{{ "canRead" | i18n }}</option>
+        <option value="canWrite" [selected]="read != true && write">
+          {{ "canWrite" | i18n }}
         </option>
-        <option value="readAndWrite" [selected]="read && write">{{ "readAndWrite" | i18n }}</option>
+        <option value="canReadWrite" [selected]="read && write">{{ "canReadWrite" | i18n }}</option>
       </select>
     </bit-form-field>
   </td>
