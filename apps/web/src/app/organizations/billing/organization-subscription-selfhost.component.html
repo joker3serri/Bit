@@ -56,8 +56,8 @@
   >
     {{ "manageSubscription" | i18n }}
   </a>
-  <form>
-    <bit-radio-group [formControl]="licenseOptionsControl">
+  <form [formGroup]="form">
+    <bit-radio-group formControlName="updateMethod">
       <h2 class="mt-5">
         {{ "licenseAndBillingManagement" | i18n }}
       </h2>
@@ -82,7 +82,7 @@
           {{ "billingSyncDesc" | i18n }}
         </bit-hint>
       </bit-radio-button>
-      <ng-container *ngIf="licenseOptionsControl.value === licenseOptions.SYNC">
+      <ng-container *ngIf="updateMethod === licenseOptions.SYNC">
         <button
           bitButton
           buttonType="secondary"
@@ -108,7 +108,7 @@
           {{ "manualUploadDesc" | i18n }}
         </bit-hint>
       </bit-radio-button>
-      <ng-container *ngIf="licenseOptionsControl.value === licenseOptions.UPLOAD">
+      <ng-container *ngIf="updateMethod === licenseOptions.UPLOAD">
         <h3 class="tw-font-semibold">{{ "uploadLicense" | i18n }}</h3>
         <app-update-license
           [organizationId]="organizationId"

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { concatMap, takeUntil, Subject } from "rxjs";
 
@@ -35,8 +35,11 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
   organizationId: string;
   userOrg: Organization;
 
-  licenseOptionsControl = new FormControl(LicenseOptions.UPLOAD);
   licenseOptions = LicenseOptions;
+  form = new FormGroup({
+    updateMethod: new FormControl(LicenseOptions.UPLOAD),
+  });
+
   disableLicenseSyncControl = false;
 
   firstLoaded = false;
@@ -49,9 +52,9 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
   set existingBillingSyncConnection(value: OrganizationConnectionResponse<BillingSyncConfigApi>) {
     this._existingBillingSyncConnection = value;
 
-    this.licenseOptionsControl.setValue(
-      this.billingSyncEnabled ? LicenseOptions.SYNC : LicenseOptions.UPLOAD
-    );
+    this.form
+      .get("updateMethod")
+      .setValue(this.billingSyncEnabled ? LicenseOptions.SYNC : LicenseOptions.UPLOAD);
   }
 
   get existingBillingSyncConnection() {
@@ -146,7 +149,7 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
   }
 
   syncLicense = async () => {
-    this.licenseOptionsControl.setValue(LicenseOptions.SYNC);
+    this.form.get("updateMethod").setValue(LicenseOptions.SYNC);
     await this.organizationApiService.selfHostedSyncLicense(this.organizationId);
 
     this.load();
@@ -160,5 +163,9 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
 
   get isExpired() {
     return this.sub?.expiration != null && new Date(this.sub.expiration) < new Date();
+  }
+
+  get updateMethod() {
+    return this.form.get("updateMethod").value;
   }
 }
