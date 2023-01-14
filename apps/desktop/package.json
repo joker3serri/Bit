@@ -54,5 +54,11 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:watch:all": "jest --watchAll"
+  },
+  "devDependencies": {
+    "electron-rebuild": "^3.2.9"
+  },
+  "dependencies": {
+    "dbus-next": "^0.10.2"
   }
 }

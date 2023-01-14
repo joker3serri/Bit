@@ -9,6 +9,7 @@ import { StateService } from "@bitwarden/common/services/state.service";
 
 import { BiometricMain } from "./main/biometric/biometric.main";
 import { DesktopCredentialStorageListener } from "./main/desktop-credential-storage-listener";
+import { LinuxLockMain } from "./main/linux-lock.main";
 import { MenuMain } from "./main/menu/menu.main";
 import { MessagingMain } from "./main/messaging.main";
 import { NativeMessagingMain } from "./main/native-messaging.main";
@@ -36,6 +37,7 @@ export class Main {
   updaterMain: UpdaterMain;
   menuMain: MenuMain;
   powerMonitorMain: PowerMonitorMain;
+  linuxLockMain: LinuxLockMain;
   trayMain: TrayMain;
   biometricMain: BiometricMain;
   nativeMessagingMain: NativeMessagingMain;
@@ -108,6 +110,7 @@ export class Main {
     this.updaterMain = new UpdaterMain(this.i18nService, this.windowMain, "bitwarden");
     this.menuMain = new MenuMain(this);
     this.powerMonitorMain = new PowerMonitorMain(this);
+    this.linuxLockMain = new LinuxLockMain(this);
     this.trayMain = new TrayMain(this.windowMain, this.i18nService, this.stateService);
 
     this.messagingService = new ElectronMainMessagingService(this.windowMain, (message) => {
@@ -162,6 +165,7 @@ export class Main {
           this.trayMain.hideToTray();
         }
         this.powerMonitorMain.init();
+        await this.linuxLockMain.init();
         await this.updaterMain.init();
         if (this.biometricMain != null) {
           await this.biometricMain.init();

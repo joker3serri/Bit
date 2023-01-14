@@ -118,11 +118,8 @@ export class SettingsComponent implements OnInit {
       { name: i18nService.t("fourHours"), value: 240 },
       { name: i18nService.t("onIdle"), value: -4 },
       { name: i18nService.t("onSleep"), value: -3 },
+      { name: i18nService.t("onLocked"), value: -2 },
     ];
-
-    if (this.platformUtilsService.getDevice() !== DeviceType.LinuxDesktop) {
-      this.vaultTimeouts.push({ name: i18nService.t("onLocked"), value: -2 });
-    }
 
     this.vaultTimeouts = this.vaultTimeouts.concat([
       { name: i18nService.t("onRestart"), value: -1 },
