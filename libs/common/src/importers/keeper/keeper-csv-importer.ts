@@ -27,7 +27,11 @@ export class KeeperCsvImporter extends BaseImporter implements Importer {
       if (value.length > 7) {
         // we have some custom fields.
         for (let i = 7; i < value.length; i = i + 2) {
-          this.processKvp(cipher, value[i], value[i + 1]);
+          if (value[i] == "TFC:Keeper") {
+            cipher.login.totp = value[i + 1];
+          } else {
+            this.processKvp(cipher, value[i], value[i + 1]);
+          }
         }
       }
 
