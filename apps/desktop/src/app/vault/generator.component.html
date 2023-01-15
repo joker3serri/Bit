@@ -11,55 +11,65 @@
         >
           {{ "passwordGeneratorPolicyInEffect" | i18n }}
         </app-callout>
-        <div class="generated-block" *ngIf="type === 'password'">
-          <div class="generated-wrapper" [innerHTML]="password | colorPassword" appSelectCopy></div>
-          <div class="action-buttons">
-            <button
-              type="button"
-              class="icon-btn primary"
-              appStopClick
-              appA11yTitle="{{ 'copyPassword' | i18n }}"
-              (click)="copy()"
-            >
-              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
-            </button>
-            <button
-              type="button"
-              class="icon-btn primary"
-              appStopClick
-              appA11yTitle="{{ 'regeneratePassword' | i18n }}"
-              (click)="regenerate()"
-            >
-              <i class="bwi bwi-lg bwi-generate" aria-hidden="true"></i>
-            </button>
+        <div class="box">
+          <div class="box-content generated-block" *ngIf="type === 'password'">
+            <div
+              class="generated-wrapper"
+              [innerHTML]="password | colorPassword"
+              appSelectCopy
+            ></div>
+            <div class="action-buttons">
+              <button
+                type="button"
+                class="icon-btn primary"
+                appStopClick
+                appA11yTitle="{{ 'copyPassword' | i18n }}"
+                (click)="copy()"
+              >
+                <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+              </button>
+              <button
+                type="button"
+                class="icon-btn primary"
+                appStopClick
+                appA11yTitle="{{ 'regeneratePassword' | i18n }}"
+                (click)="regenerate()"
+              >
+                <i class="bwi bwi-lg bwi-generate" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
-        </div>
-        <div class="generated-block" *ngIf="type === 'username'">
-          <div class="generated-wrapper" [innerHTML]="username | colorPassword" appSelectCopy></div>
-          <div class="action-buttons" #form [appApiAction]="usernameGeneratingPromise">
-            <button
-              type="button"
-              class="icon-btn primary"
-              appStopClick
-              appA11yTitle="{{ 'copyUsername' | i18n }}"
-              (click)="copy()"
-            >
-              <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
-            </button>
-            <button
-              type="button"
-              class="icon-btn primary"
-              appStopClick
-              appA11yTitle="{{ 'regenerateUsername' | i18n }}"
-              (click)="$any(form).loading ? false : regenerate()"
-              [attr.aria-disabled]="$any(form).loading ? 'true' : null"
-            >
-              <i
-                class="bwi bwi-lg bwi-generate"
-                [ngClass]="$any(form).loading ? 'bwi-spin' : ''"
-                aria-hidden="true"
-              ></i>
-            </button>
+          <div class="generated-block" *ngIf="type === 'username'">
+            <div
+              class="generated-wrapper"
+              [innerHTML]="username | colorPassword"
+              appSelectCopy
+            ></div>
+            <div class="action-buttons" #form [appApiAction]="usernameGeneratingPromise">
+              <button
+                type="button"
+                class="icon-btn primary"
+                appStopClick
+                appA11yTitle="{{ 'copyUsername' | i18n }}"
+                (click)="copy()"
+              >
+                <i class="bwi bwi-lg bwi-clone" aria-hidden="true"></i>
+              </button>
+              <button
+                type="button"
+                class="icon-btn primary"
+                appStopClick
+                appA11yTitle="{{ 'regenerateUsername' | i18n }}"
+                (click)="$any(form).loading ? false : regenerate()"
+                [attr.aria-disabled]="$any(form).loading ? 'true' : null"
+              >
+                <i
+                  class="bwi bwi-lg bwi-generate"
+                  [ngClass]="$any(form).loading ? 'bwi-spin' : ''"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            </div>
           </div>
         </div>
         <div class="box">
