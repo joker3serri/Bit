@@ -669,19 +669,19 @@
           }
       }
 
-      var ignoredInputTypes = [
-        'hidden',
-        'submit',
-        'reset',
-        'button',
-        'image',
-        'file',
-      ];
+      var ignoredInputTypes = {
+        hidden: true,
+        submit: true,
+        reset: true,
+        button: true,
+        image: true,
+        file: true,
+      };
 
       function isRelevantInputField(el) {
         if (
           el.attributes.type &&
-          ignoredInputTypes.indexOf(el.attributes.type.value.toLowerCase()) !== -1
+          ignoredInputTypes.hasOwnProperty(el.attributes.type.value.toLowerCase())
         ) {
           return false;
         }
