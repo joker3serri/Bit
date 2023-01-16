@@ -43,7 +43,8 @@
   10. Handle sandbox iframe and sandbox rule in CSP
   11. Work on array of saved urls instead of just one to determine if we should autofill non-https sites
   12. Remove setting of attribute com.browser.browser.userEdited on user-inputs
-  13. Implement new HTML element query logic to be able to traverse into ShadowRoot
+  13. Handle null value URLs in urlNotSecure
+  14. Implement new HTML element query logic to be able to traverse into ShadowRoot
   */
 
   /*
@@ -758,28 +759,15 @@
           animateTheFilling = true;
 
       // Check if URL is not secure when the original saved one was
-      // START MODIFICATION
       function urlNotSecure(savedURLs) {
-          if (document.location.protocol === 'https:') {
+          var passwordInputs = null;
+          if (!savedURLs) {
               return false;
           }
 
-          if (!savedURLs || !savedURLs.some(url => url.indexOf('https://') === 0)) {
-              // there are no saved URLs with https
-              return false;
-          }
-
-          var passwordInputs = queryDocAll(document, document.body, function (el) {
-              return el.nodeName === 'INPUT' &&
-                  el.attributes.type &&
-                  el.attributes.type.value.toLowerCase() === 'password';
-          });
-
-          if (passwordInputs.length === 0) {
-              return false;
-          }
-
-          return confirm('Warning: This is an unsecured HTTP page, and any information you submit can potentially be seen and changed by others. This Login was originally saved on a secure (HTTPS) page.\n\nDo you still wish to fill this login?');
+          return savedURLs.some(url => url?.indexOf('https://') === 0) && 'http:' === document.location.protocol && (passwordInputs = document.querySelectorAll('input[type=password]'),
+              0 < passwordInputs.length && (confirmResult = confirm('Warning: This is an unsecured HTTP page, and any information you submit can potentially be seen and changed by others. This Login was originally saved on a secure (HTTPS) page.\n\nDo you still wish to fill this login?'),
+                  0 == confirmResult)) ? true : false;
       }
 
       // Detect if within an iframe, and the iframe is sandboxed
@@ -787,7 +775,6 @@
           // self.origin is 'null' if inside a frame with sandboxed csp or iframe tag
           return self.origin == null || self.origin === 'null';
       }
-      // END MODIFICATION
 
       function doFill(fillScript) {
           var fillScriptOps,
