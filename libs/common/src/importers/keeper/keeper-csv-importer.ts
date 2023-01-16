@@ -18,7 +18,12 @@ export class KeeperCsvImporter extends BaseImporter implements Importer {
 
       this.processFolder(result, value[0]);
       const cipher = this.initLoginCipher();
-      cipher.notes = this.getValueOrDefault(value[5]) + "\n";
+
+      const notes = this.getValueOrDefault(value[5]);
+      if (notes) {
+        cipher.notes = `${notes}\n`;
+      }
+
       cipher.name = this.getValueOrDefault(value[1], "--");
       cipher.login.username = this.getValueOrDefault(value[2]);
       cipher.login.password = this.getValueOrDefault(value[3]);
