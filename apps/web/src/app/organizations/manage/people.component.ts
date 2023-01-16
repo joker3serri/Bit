@@ -1,6 +1,15 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { combineLatest, concatMap, Subject, takeUntil } from "rxjs";
+import {
+  combineLatest,
+  concatMap,
+  from,
+  map,
+  shareReplay,
+  Subject,
+  switchMap,
+  takeUntil,
+} from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
@@ -18,6 +27,7 @@ import {
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyApiServiceAbstraction as PolicyApiService } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
@@ -87,6 +97,7 @@ export class PeopleComponent
     searchService: SearchService,
     validationService: ValidationService,
     private policyService: PolicyService,
+    private policyApiService: PolicyApiService,
     logService: LogService,
     searchPipe: SearchPipe,
     userNamePipe: UserNamePipe,
@@ -113,10 +124,27 @@ export class PeopleComponent
   }
 
   async ngOnInit() {
-    combineLatest([this.route.params, this.route.queryParams, this.policyService.policies$])
+    const organization$ = this.route.params.pipe(
+      map((params) => this.organizationService.get(params.organizationId)),
+      shareReplay({ refCount: true, bufferSize: 1 })
+    );
+
+    const policies$ = organization$.pipe(
+      switchMap((organization) => {
+        if (organization.isProviderUser) {
+          return from(this.policyApiService.getPolicies(organization.id)).pipe(
+            map((response) => this.policyService.mapPoliciesFromToken(response))
+          );
+        }
+
+        return this.policyService.policies$;
+      })
+    );
+
+    combineLatest([this.route.queryParams, policies$, organization$])
       .pipe(
-        concatMap(async ([params, qParams, policies]) => {
-          this.organization = await this.organizationService.get(params.organizationId);
+        concatMap(async ([qParams, policies, organization]) => {
+          this.organization = organization;
 
           // Backfill pub/priv key if necessary
           if (
