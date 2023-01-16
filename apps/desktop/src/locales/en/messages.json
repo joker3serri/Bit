@@ -2087,7 +2087,7 @@
     "message": "Are you trying to log in?"
   },
   "logInAttemptBy": {
-    "message": "Log in attempt by $EMAIL$",
+    "message": "Login attempt by $EMAIL$",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2105,10 +2105,10 @@
     "message": "Time"
   },
   "confirmLogIn": {
-    "message": "Confirm log in"
+    "message": "Confirm login"
   },
   "denyLogIn": {
-    "message": "Deny log in"
+    "message": "Deny login"
   },
   "approveLoginRequests": {
     "message": "Approve login requests"
