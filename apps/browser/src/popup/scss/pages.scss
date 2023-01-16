@@ -14,13 +14,6 @@ app-generator .generated-block {
   margin: 8px;
   padding: 8px 10px 8px 0;
   display: flex;
-  border-radius: $border-radius;
-  border: 1px solid;
-
-  @include themify($themes) {
-    background-color: transparent;
-    border-color: themed("borderColorAlt");
-  }
 
   .generated-wrapper {
     text-align: left;
@@ -29,11 +22,6 @@ app-generator .generated-block {
     white-space: pre-wrap;
     word-break: break-all;
     padding: 15px;
-    border-radius: $border-radius;
-
-    @include themify($themes) {
-      background-color: themed("backgroundColor");
-    }
   }
 
   .action-buttons {
