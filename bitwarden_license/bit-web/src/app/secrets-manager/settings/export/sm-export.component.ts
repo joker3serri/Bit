@@ -9,7 +9,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { VerificationType } from "@bitwarden/common/enums/verificationType";
 
-import { SMSettingsService } from "../sm-settings.service";
+import { SMExportService } from "./sm-export.service";
 
 @Component({
   selector: "sm-export",
@@ -19,6 +19,7 @@ export class SMExportComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   protected orgName: string;
+  protected orgId: string;
   protected exportFormats: string[] = ["json"];
 
   protected formGroup = new FormGroup({
@@ -29,10 +30,10 @@ export class SMExportComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private i18nService: I18nService,
-    private settingsService: SMSettingsService,
     private organizationService: OrganizationService,
     private userVerificationService: UserVerificationService,
-    private platformUtilsService: PlatformUtilsService
+    private platformUtilsService: PlatformUtilsService,
+    private SMExportService: SMExportService
   ) {}
 
   async ngOnInit() {
@@ -43,6 +44,7 @@ export class SMExportComponent implements OnInit, OnDestroy {
       )
       .subscribe((organization) => {
         this.orgName = organization.name;
+        this.orgId = organization.id;
       });
 
     this.formGroup.get("format").disable();
@@ -75,7 +77,11 @@ export class SMExportComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Do API call, user is verified
-    alert("submitted");
+    let exportData = await this.SMExportService.getExport(
+      this.orgId,
+      this.formGroup.get("format").value
+    );
+
+    // TODO: download the file here
   };
 }
