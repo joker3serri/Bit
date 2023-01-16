@@ -669,17 +669,34 @@
           }
       }
 
+      var ignoredInputTypes = [
+        'hidden',
+        'submit',
+        'reset',
+        'button',
+        'image',
+        'file',
+      ];
+
+      function isRelevantInputField(el) {
+        if (
+          el.attributes.type &&
+          ignoredInputTypes.indexOf(el.attributes.type.value.toLowerCase()) !== -1
+        ) {
+          return false;
+        }
+
+        if (el.attributes['data-bwignore']) {
+          return false;
+        }
+
+        return true;
+      }
+
       // get all the form elements that we care about
       function getFormElements(theDoc, limit) {
           // START MODIFICATION
-          var ignoredInputTypes = [
-              'hidden',
-              'submit',
-              'reset',
-              'button',
-              'image',
-              'file',
-          ];
+
           var els = queryDocAll(theDoc, theDoc.body, function (el) {
               switch (el.nodeName) {
                   case 'SELECT':
@@ -687,18 +704,7 @@
                   case 'SPAN':
                       return el.attributes['data-bwautofill'];
                   case 'INPUT':
-                      if (
-                          el.attributes.type &&
-                          ignoredInputTypes.indexOf(el.attributes.type.value.toLowerCase()) !== -1
-                      ) {
-                          return false;
-                      }
-
-                      if (el.attributes['data-bwignore']) {
-                          return false;
-                      }
-
-                      return true;
+                      return isRelevantInputField(el);
                   default:
                       return false;
               }
@@ -732,8 +738,8 @@
           }
 
           return returnEls;
-          // END MODIFICATION
       }
+      // END MODIFICATION
 
       // focus the element and optionally restore its original value
       function focusElement(el, setVal) {
