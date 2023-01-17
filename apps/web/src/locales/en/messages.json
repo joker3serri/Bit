@@ -5888,5 +5888,14 @@
         "example": "2"
       }
     }
+  },
+  "secretsManagerBeta": {
+    "message": "Secrets Manager Beta"
+  },
+  "secretsManagerBetaDesc": {
+    "message": "Enable user access to the Secrets Manager at no charge during the Beta program."
+  },
+  "userAccessSecretsManager": {
+    "message": "This user can access the Secrets Manager Beta"
   }
 }

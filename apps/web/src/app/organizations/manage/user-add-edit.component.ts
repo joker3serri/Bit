@@ -49,6 +49,9 @@ export class UserAddEditComponent implements OnInit {
   organizationUserType = OrganizationUserType;
   canUseCustomPermissions: boolean;
 
+  canUseSecretsManager: boolean;
+  accessSecretsManager: boolean;
+
   manageAllCollectionsCheckboxes = [
     {
       id: "createNewCollections",
@@ -98,6 +101,7 @@ export class UserAddEditComponent implements OnInit {
     this.editMode = this.loading = this.organizationUserId != null;
     const organization = this.organizationService.get(this.organizationId);
     this.canUseCustomPermissions = organization.useCustomPermissions;
+    this.canUseSecretsManager = organization.useSecretsManager;
     await this.loadCollections();
 
     if (this.editMode) {
@@ -109,6 +113,7 @@ export class UserAddEditComponent implements OnInit {
           this.organizationUserId
         );
         this.access = user.accessAll ? "all" : "selected";
+        this.accessSecretsManager = user.accessSecretsManager;
         this.type = user.type;
         this.isRevoked = user.status === OrganizationUserStatusType.Revoked;
         if (user.type === OrganizationUserType.Custom) {
@@ -306,6 +311,7 @@ export class UserAddEditComponent implements OnInit {
   updateUser(collections: SelectionReadOnlyRequest[]) {
     const request = new OrganizationUserUpdateRequest();
     request.accessAll = this.access === "all";
+    request.accessSecretsManager = this.accessSecretsManager;
     request.type = this.type;
     request.collections = collections;
     request.permissions = this.setRequestPermissions(
@@ -323,6 +329,7 @@ export class UserAddEditComponent implements OnInit {
     const request = new OrganizationUserInviteRequest();
     request.emails = [...new Set(this.emails.trim().split(/\s*,\s*/))];
     request.accessAll = this.access === "all";
+    request.accessSecretsManager = this.accessSecretsManager;
     request.type = this.type;
     request.permissions = this.setRequestPermissions(
       request.permissions ?? new PermissionsApi(),
