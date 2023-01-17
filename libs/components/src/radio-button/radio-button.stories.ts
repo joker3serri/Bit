@@ -56,7 +56,7 @@ class ExampleComponent {
     }
   }
 
-  @Input() optionDisabled = [];
+  @Input() optionDisabled: number[] = [];
 
   get blockLayout() {
     return this.layout === "block";
