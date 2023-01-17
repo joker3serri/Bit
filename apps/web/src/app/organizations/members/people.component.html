@@ -144,7 +144,7 @@
                   class="tw-mr-3"
                 ></bit-avatar>
                 <div class="tw-flex tw-flex-col">
-                  <div class="tw-font-bold tw-text-primary-500">
+                  <div class="tw-font-semibold tw-text-primary-500">
                     {{ u.name ?? u.email }}
                     <span
                       bitBadge
@@ -168,7 +168,7 @@
                       >{{ "revoked" | i18n }}</span
                     >
                   </div>
-                  <div class="tw-text-xs tw-text-muted" *ngIf="u.name">
+                  <div class="tw-text-sm tw-text-muted" *ngIf="u.name">
                     {{ u.email }}
                   </div>
                 </div>
@@ -189,11 +189,15 @@
               <span *ngIf="!organization.useGroups && u.accessAll">{{ "all" | i18n }}</span>
             </td>
 
-            <td bitCell (click)="edit(u, memberTab.Role)" class="tw-cursor-pointer">
+            <td
+              bitCell
+              (click)="edit(u, memberTab.Role)"
+              class="tw-cursor-pointer tw-text-sm tw-text-muted"
+            >
               {{ u.type | userType }}
             </td>
 
-            <td bitCell>
+            <td bitCell class="tw-text-muted">
               <ng-container *ngIf="u.twoFactorEnabled">
                 <i
                   class="bwi bwi-lock"

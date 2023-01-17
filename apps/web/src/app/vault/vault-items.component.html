@@ -27,7 +27,7 @@
             {{ (activeFilter.selectedCollectionNode ? "groups" : "collections") | i18n }}
           </ng-container>
         </th>
-        <th bitCell class="tw-min-w-fit">
+        <th bitCell class="tw-min-w-fit tw-text-right">
           <button
             [bitMenuTriggerFor]="headerMenu"
             bitIconButton="bwi-ellipsis-v"
@@ -113,7 +113,7 @@
             ></app-group-badge>
           </ng-container>
         </td>
-        <td bitCell>
+        <td bitCell class="tw-text-right">
           <button
             *ngIf="canEditCollection(col.node) || canDeleteCollection(col.node)"
             [bitMenuTriggerFor]="collectionOptions"
@@ -189,7 +189,7 @@
             </ng-container>
           </ng-container>
           <br />
-          <small appStopProp>{{ c.subTitle }}</small>
+          <span class="tw-text-sm tw-text-muted" appStopProp>{{ c.subTitle }}</span>
         </td>
         <td bitCell>
           <ng-container *ngIf="!organization">
@@ -208,7 +208,7 @@
             ></app-collection-badge>
           </ng-container>
         </td>
-        <td bitCell>
+        <td bitCell class="tw-text-right">
           <button
             [bitMenuTriggerFor]="cipherOptions"
             size="small"
