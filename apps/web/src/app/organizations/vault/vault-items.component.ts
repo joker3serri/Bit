@@ -231,7 +231,7 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
     }
 
     // Filtering by a collection, so show message if user is not assigned
-    return !this.activeFilter.selectedCollectionNode.node.assigned;
+    return !this.activeFilter.selectedCollectionNode.node.assigned && !this.organization.isAdmin;
   }
 
   canDeleteCollection(c: CollectionAdminView): boolean {
