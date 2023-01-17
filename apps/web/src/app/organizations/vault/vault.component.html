@@ -47,19 +47,13 @@
               bitButton
               buttonType="primary"
               type="button"
-              data-toggle="dropdown"
+              [bitMenuTriggerFor]="addOptions"
               id="newItemDropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
               appA11yTitle="{{ 'new' | i18n }}"
             >
               {{ "new" | i18n }}<i class="bwi bwi-angle-down tw-ml-2" aria-hidden="true"></i>
             </button>
-            <div
-              id="dropdown"
-              class="dropdown-menu dropdown-menu-right tw-mt-2"
-              aria-labelledby="newItemDropdown"
-            >
+            <bit-menu #addOptions aria-labelledby="newItemDropdown">
               <button class="dropdown-item" appStopClick (click)="addCipher()">
                 <i class="bwi bwi-fw bwi-globe" aria-hidden="true"></i>
                 {{ "item" | i18n }}
@@ -68,7 +62,7 @@
                 <i class="bwi bwi-fw bwi-collection" aria-hidden="true"></i>
                 {{ "collection" | i18n }}
               </button>
-            </div>
+            </bit-menu>
           </div>
           <button
             *ngIf="!organization?.canCreateNewCollections"
