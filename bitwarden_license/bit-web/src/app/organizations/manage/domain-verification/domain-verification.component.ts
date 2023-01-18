@@ -117,10 +117,19 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
           null,
           this.i18nService.t("domainNotVerified", domainName)
         );
+        // Update this item so the last checked date gets updated.
+        await this.updateOrgDomain(orgDomainId);
       }
     } catch (e) {
       this.handleVerifyDomainError(e, domainName);
+      // Update this item so the last checked date gets updated.
+      await this.updateOrgDomain(orgDomainId);
     }
+  }
+
+  private async updateOrgDomain(orgDomainId: string) {
+    // Update this item so the last checked date gets updated.
+    await this.orgDomainApiService.getByOrgIdAndOrgDomainId(this.organizationId, orgDomainId);
   }
 
   private handleVerifyDomainError(e: any, domainName: string): void {

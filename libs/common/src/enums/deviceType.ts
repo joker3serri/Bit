@@ -20,4 +20,5 @@ export enum DeviceType {
   VivaldiBrowser = 18,
   VivaldiExtension = 19,
   SafariExtension = 20,
+  Server = 21,
 }
