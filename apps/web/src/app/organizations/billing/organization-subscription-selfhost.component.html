@@ -1,0 +1,90 @@
+<div class="page-header">
+  <h1>
+    {{ "subscription" | i18n }}
+    <small *ngIf="firstLoaded && loading">
+      <i
+        class="bwi bwi-spinner bwi-spin text-muted"
+        title="{{ 'loading' | i18n }}"
+        aria-hidden="true"
+      ></i>
+      <span class="sr-only">{{ "loading" | i18n }}</span>
+    </small>
+  </h1>
+</div>
+
+<ng-container *ngIf="!firstLoaded && loading">
+  <i class="bwi bwi-spinner bwi-spin text-muted" title="{{ 'loading' | i18n }}"></i>
+  <span class="sr-only">{{ "loading" | i18n }}</span>
+</ng-container>
+
+<app-org-subscription-hidden
+  *ngIf="firstLoaded && !userOrg.canManageBilling"
+  [providerName]="userOrg.providerName"
+></app-org-subscription-hidden>
+
+<ng-container *ngIf="sub">
+  <dl>
+    <dt>{{ "billingPlan" | i18n }}</dt>
+    <dd>{{ sub.plan.name }}</dd>
+    <dt>{{ "expiration" | i18n }}</dt>
+    <dd *ngIf="sub.expiration">
+      {{ sub.expiration | date: "mediumDate" }}
+      <span *ngIf="isExpired" class="text-danger ml-2">
+        <i class="bwi bwi-exclamation-triangle" aria-hidden="true"></i>
+        {{ "licenseIsExpired" | i18n }}
+      </span>
+    </dd>
+    <dd *ngIf="!sub.expiration">{{ "neverExpires" | i18n }}</dd>
+  </dl>
+  <div>
+    <button bitButton buttonType="secondary" type="button" (click)="updateLicense()">
+      {{ "updateLicense" | i18n }}
+    </button>
+    <a
+      bitButton
+      buttonType="secondary"
+      href="https://vault.bitwarden.com"
+      target="_blank"
+      rel="noopener"
+    >
+      {{ "manageSubscription" | i18n }}
+    </a>
+  </div>
+  <div class="card mt-3" *ngIf="showUpdateLicense">
+    <div class="card-body">
+      <button
+        bitIconButton="bwi-close"
+        type="button"
+        class="tw-float-right"
+        appA11yTitle="{{ 'cancel' | i18n }}"
+        (click)="closeUpdateLicense(false)"
+      ></button>
+      <h3 class="card-body-header">{{ "updateLicense" | i18n }}</h3>
+      <app-update-license
+        [organizationId]="organizationId"
+        (onUpdated)="closeUpdateLicense(true)"
+        (onCanceled)="closeUpdateLicense(false)"
+      ></app-update-license>
+    </div>
+  </div>
+  <div *ngIf="showBillingSyncKey">
+    <h2 class="mt-5">
+      {{ "billingSync" | i18n }}
+    </h2>
+    <p>
+      {{ "billingSyncDesc" | i18n }}
+    </p>
+    <button bitButton buttonType="secondary" type="button" (click)="manageBillingSyncSelfHosted()">
+      {{ "manageBillingSync" | i18n }}
+    </button>
+    <small class="form-text text-muted" *ngIf="billingSyncSetUp">
+      {{ "lastSync" | i18n }}:
+      <span *ngIf="userOrg.familySponsorshipLastSyncDate != null">
+        {{ userOrg.familySponsorshipLastSyncDate | date: "medium" }}
+      </span>
+      <span *ngIf="userOrg.familySponsorshipLastSyncDate == null">
+        {{ "never" | i18n | lowercase }}
+      </span>
+    </small>
+  </div>
+</ng-container>
