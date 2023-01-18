@@ -1,12 +1,15 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { concatMap, takeUntil, Subject } from "rxjs";
 
 import { ModalConfig, ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { OrganizationConnectionType } from "@bitwarden/common/enums/organizationConnectionType";
 import { BillingSyncConfigApi } from "@bitwarden/common/models/api/billing-sync-config.api";
 import { Organization } from "@bitwarden/common/models/domain/organization";
@@ -18,6 +21,11 @@ import {
   BillingSyncKeyModalData,
 } from "../../settings/billing-sync-key.component";
 
+enum LicenseOptions {
+  SYNC = 0,
+  UPLOAD = 1,
+}
+
 @Component({
   selector: "app-org-subscription-selfhost",
   templateUrl: "organization-subscription-selfhost.component.html",
@@ -26,15 +34,36 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
   sub: OrganizationSubscriptionResponse;
   organizationId: string;
   userOrg: Organization;
-  showUpdateLicense = false;
-  showBillingSyncKey = false;
+
+  licenseOptions = LicenseOptions;
+  form = new FormGroup({
+    updateMethod: new FormControl(LicenseOptions.UPLOAD),
+  });
+
+  disableLicenseSyncControl = false;
 
   firstLoaded = false;
   loading = false;
 
-  private existingBillingSyncConnection: OrganizationConnectionResponse<BillingSyncConfigApi>;
+  private _existingBillingSyncConnection: OrganizationConnectionResponse<BillingSyncConfigApi>;
 
   private destroy$ = new Subject<void>();
+
+  set existingBillingSyncConnection(value: OrganizationConnectionResponse<BillingSyncConfigApi>) {
+    this._existingBillingSyncConnection = value;
+
+    this.form
+      .get("updateMethod")
+      .setValue(this.billingSyncEnabled ? LicenseOptions.SYNC : LicenseOptions.UPLOAD);
+  }
+
+  get existingBillingSyncConnection() {
+    return this._existingBillingSyncConnection;
+  }
+
+  get billingSyncEnabled() {
+    return this.existingBillingSyncConnection?.enabled;
+  }
 
   constructor(
     private modalService: ModalService,
@@ -42,7 +71,9 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
     private apiService: ApiService,
     private organizationService: OrganizationService,
     private route: ActivatedRoute,
-    private organizationApiService: OrganizationApiServiceAbstraction
+    private organizationApiService: OrganizationApiServiceAbstraction,
+    private platformUtilsService: PlatformUtilsService,
+    private i18nService: I18nService
   ) {}
 
   async ngOnInit() {
@@ -51,21 +82,12 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
         concatMap(async (params) => {
           this.organizationId = params.organizationId;
           await this.load();
+          await this.loadOrganizationConnection();
           this.firstLoaded = true;
         }),
         takeUntil(this.destroy$)
       )
       .subscribe();
-
-    this.showBillingSyncKey = await this.apiService.getCloudCommunicationsEnabled();
-
-    if (this.showBillingSyncKey) {
-      this.existingBillingSyncConnection = await this.apiService.getOrganizationConnection(
-        this.organizationId,
-        OrganizationConnectionType.CloudBillingSync,
-        BillingSyncConfigApi
-      );
-    }
   }
 
   ngOnDestroy() {
@@ -86,19 +108,29 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
     this.loading = false;
   }
 
-  updateLicense() {
-    if (this.loading) {
+  async loadOrganizationConnection() {
+    const cloudCommunicationEnabled = await this.apiService.getCloudCommunicationsEnabled();
+
+    if (!cloudCommunicationEnabled) {
+      this.disableLicenseSyncControl = true;
       return;
     }
-    this.showUpdateLicense = true;
+
+    this.existingBillingSyncConnection = await this.apiService.getOrganizationConnection(
+      this.organizationId,
+      OrganizationConnectionType.CloudBillingSync,
+      BillingSyncConfigApi
+    );
   }
 
-  closeUpdateLicense(updated: boolean) {
-    this.showUpdateLicense = false;
-    if (updated) {
-      this.load();
-      this.messagingService.send("updatedOrgLicense");
-    }
+  licenseUploaded() {
+    this.load();
+    this.messagingService.send("updatedOrgLicense");
+    this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t("licenseUploadSuccess")
+    );
   }
 
   manageBillingSyncSelfHosted() {
@@ -116,11 +148,24 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
     this.modalService.open(BillingSyncKeyComponent, modalConfig);
   }
 
+  syncLicense = async () => {
+    this.form.get("updateMethod").setValue(LicenseOptions.SYNC);
+    await this.organizationApiService.selfHostedSyncLicense(this.organizationId);
+
+    this.load();
+    this.messagingService.send("updatedOrgLicense");
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("licenseSyncSuccess"));
+  };
+
   get billingSyncSetUp() {
     return this.existingBillingSyncConnection?.id != null;
   }
 
   get isExpired() {
     return this.sub?.expiration != null && new Date(this.sub.expiration) < new Date();
+  }
+
+  get updateMethod() {
+    return this.form.get("updateMethod").value;
   }
 }

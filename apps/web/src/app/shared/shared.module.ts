@@ -23,6 +23,7 @@ import {
   TableModule,
   TabsModule,
   ColorPasswordModule,
+  RadioButtonModule,
 } from "@bitwarden/components";
 
 // Register the locales for the application
@@ -63,6 +64,7 @@ import "./locales";
     TabsModule,
     LinkModule,
     ColorPasswordModule,
+    RadioButtonModule,
 
     // Web specific
   ],
@@ -93,6 +95,7 @@ import "./locales";
     TabsModule,
     LinkModule,
     ColorPasswordModule,
+    RadioButtonModule,
 
     // Web specific
   ],
