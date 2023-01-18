@@ -220,7 +220,24 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       return { isValid: false };
     }
 
-    if (this.passwordStrengthResult != null && this.passwordStrengthResult.score < 3) {
+    const passwordWeak =
+      this.passwordStrengthResult != null && this.passwordStrengthResult.score < 3;
+    const passwordLeak =
+      formValues.checkForBreaches &&
+      (await this.auditService.passwordLeaked(formValues.masterPassword)) > 0;
+
+    if (passwordWeak && passwordLeak) {
+      const result = await this.platformUtilsService.showDialog(
+        this.i18nService.t("weakAndBreachedMasterPasswordDesc"),
+        this.i18nService.t("weakAndExposedMasterPassword"),
+        this.i18nService.t("yes"),
+        this.i18nService.t("no"),
+        "warning"
+      );
+      if (!result) {
+        return { isValid: false };
+      }
+    } else if (passwordWeak) {
       const result = await this.platformUtilsService.showDialog(
         this.i18nService.t("weakMasterPasswordDesc"),
         this.i18nService.t("weakMasterPassword"),
@@ -231,13 +248,11 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       if (!result) {
         return { isValid: false };
       }
-    }
-
-    if (formValues.checkForBreaches) {
+    } else if (passwordLeak) {
       const matches = await this.auditService.passwordLeaked(formValues.masterPassword);
       if (matches > 0) {
         const result = await this.platformUtilsService.showDialog(
-          this.i18nService.t("breachedPasswordIdentified"),
+          this.i18nService.t("exposedMasterPasswordDesc"),
           this.i18nService.t("exposedMasterPassword"),
           this.i18nService.t("yes"),
           this.i18nService.t("no"),
