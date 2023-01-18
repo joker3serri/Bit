@@ -3,6 +3,7 @@ import { AbstractControl, UntypedFormBuilder, ValidatorFn, Validators } from "@a
 import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
@@ -38,6 +39,8 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
   showTerms = true;
   showErrorSummary = false;
   passwordStrengthResult: any;
+  characterMinimumMessage: string;
+  minimumLength = 8;
   color: string;
   text: string;
 
@@ -45,8 +48,8 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     {
       email: ["", [Validators.required, Validators.email]],
       name: [""],
-      masterPassword: ["", [Validators.required, Validators.minLength(8)]],
-      confirmMasterPassword: ["", [Validators.required, Validators.minLength(8)]],
+      masterPassword: ["", [Validators.required, Validators.minLength(this.minimumLength)]],
+      confirmMasterPassword: ["", [Validators.required, Validators.minLength(this.minimumLength)]],
       hint: [
         null,
         [
@@ -56,6 +59,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
           ),
         ],
       ],
+      checkForBreaches: [false],
       acceptPolicies: [false, [this.acceptPoliciesValidation()]],
     },
     {
@@ -85,10 +89,12 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     platformUtilsService: PlatformUtilsService,
     protected passwordGenerationService: PasswordGenerationService,
     environmentService: EnvironmentService,
-    protected logService: LogService
+    protected logService: LogService,
+    protected auditService: AuditService
   ) {
     super(environmentService, i18nService, platformUtilsService);
     this.showTerms = !platformUtilsService.isSelfHost();
+    this.characterMinimumMessage = this.i18nService.t("characterMinimum", this.minimumLength);
   }
 
   async ngOnInit() {
@@ -191,6 +197,8 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     this.formGroup.markAllAsTouched();
     this.showErrorSummary = true;
 
+    const formValues = this.formGroup.value;
+
     if (this.formGroup.get("acceptPolicies").hasError("required")) {
       this.platformUtilsService.showToast(
         "error",
@@ -224,6 +232,23 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
         return { isValid: false };
       }
     }
+
+    if (formValues.checkForBreaches) {
+      const matches = await this.auditService.passwordLeaked(formValues.masterPassword);
+      if (matches > 0) {
+        const result = await this.platformUtilsService.showDialog(
+          this.i18nService.t("breachedPasswordIdentified"),
+          this.i18nService.t("exposedMasterPassword"),
+          this.i18nService.t("yes"),
+          this.i18nService.t("no"),
+          "warning"
+        );
+        if (!result) {
+          return { isValid: false };
+        }
+      }
+    }
+
     return { isValid: true };
   }
 
