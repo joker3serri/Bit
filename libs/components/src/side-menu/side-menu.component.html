@@ -1,0 +1,16 @@
+<div class="tw-bg-[#1A41AC]">
+  <bit-side-menu-header *ngFor="let org of organizations" [name]="org.name">
+    <bit-side-menu-recursive-item
+      *ngFor="let collection of org.collections"
+      [item]="collection"
+      icon="bwi-collection"
+    ></bit-side-menu-recursive-item>
+  </bit-side-menu-header>
+  <bit-side-menu-header *ngIf="collections" name="Vault">
+    <bit-side-menu-recursive-item
+      *ngFor="let collection of collections"
+      [item]="collection"
+      icon="bwi-collection"
+    ></bit-side-menu-recursive-item>
+  </bit-side-menu-header>
+</div>

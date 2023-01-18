@@ -9,6 +9,7 @@ export * from "./callout";
 export * from "./checkbox";
 export * from "./color-password";
 export * from "./dialog";
+export * from "./side-menu";
 export * from "./form-field";
 export * from "./icon-button";
 export * from "./icon";
