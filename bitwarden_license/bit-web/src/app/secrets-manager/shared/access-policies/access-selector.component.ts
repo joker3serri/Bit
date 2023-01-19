@@ -58,7 +58,11 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
-    if (!changes.projectAccessPolicies.firstChange) {
+    if (
+      !changes.projectAccessPolicies.firstChange &&
+      this.getAccessPoliciesCount(changes.projectAccessPolicies.currentValue) <=
+        this.getAccessPoliciesCount(changes.projectAccessPolicies.previousValue)
+    ) {
       await this.setMultiSelect();
     }
   }
@@ -94,13 +98,39 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
         return view;
       });
 
-    this.projectAccessPolicies = await this.accessPolicyService.createProjectAccessPolicies(
+    const result = await this.accessPolicyService.createProjectAccessPolicies(
       this.organizationId,
       this.projectId,
       projectAccessPoliciesView
     );
-    await this.setMultiSelect();
+    this.clearCreatedItems(result);
+    this.loading = false;
+    this.formGroup.enable();
+    this.formGroup.reset();
   };
+
+  private clearCreatedItems(projectAccessPoliciesView: ProjectAccessPoliciesView) {
+    if (projectAccessPoliciesView.groupAccessPolicies?.length > 0) {
+      this.baseItems = this.baseItems.filter(
+        (item) => !projectAccessPoliciesView.groupAccessPolicies.some((ap) => ap.groupId == item.id)
+      );
+    }
+    if (projectAccessPoliciesView.userAccessPolicies?.length > 0) {
+      this.baseItems = this.baseItems.filter(
+        (item) =>
+          !projectAccessPoliciesView.userAccessPolicies.some(
+            (ap) => ap.organizationUserId == item.id
+          )
+      );
+    }
+  }
+
+  private getAccessPoliciesCount(projectAccessPoliciesView: ProjectAccessPoliciesView) {
+    return (
+      projectAccessPoliciesView.groupAccessPolicies.length +
+      projectAccessPoliciesView.userAccessPolicies.length
+    );
+  }
 
   private async setMultiSelect(): Promise<void> {
     this.loading = true;
