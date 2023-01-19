@@ -2060,7 +2060,7 @@
     "message": "Check known data breaches for this password"
   },
   "important": {
-    "message": "Important"
+    "message": "Important:"
   },
   "masterPasswordHint": {
     "message": "Your master password cannot be recovered if you forget it!"
