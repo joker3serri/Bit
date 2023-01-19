@@ -1,4 +1,6 @@
-<sm-header></sm-header>
+<sm-header>
+  <input bitInput [placeholder]="'searchProjects' | i18n" />
+</sm-header>
 <sm-projects-list
   (newProjectEvent)="openNewProjectDialog()"
   (editProjectEvent)="openEditProject($event)"
