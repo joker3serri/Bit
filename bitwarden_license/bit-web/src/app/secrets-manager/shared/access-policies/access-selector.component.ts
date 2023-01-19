@@ -3,9 +3,9 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
+import { GroupService } from "@bitwarden/web-vault/app/organizations/core";
 
 import {
   GroupProjectAccessPolicyView,
@@ -40,8 +40,8 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private route: ActivatedRoute,
     private organizationUserService: OrganizationUserService,
-    private accessPolicyService: AccessPolicyService,
-    private apiService: ApiService
+    private groupService: GroupService,
+    private accessPolicyService: AccessPolicyService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -169,8 +169,8 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private async getGroupDetails(organizationId: string): Promise<SelectItemView[]> {
-    const groups = await this.apiService.getGroups(organizationId);
-    return groups.data.map((group) => {
+    const groups = await this.groupService.getAll(organizationId);
+    return groups.map((group) => {
       const selectItemView: SelectItemView = {
         icon: this.groupIcon,
         id: group.id,
