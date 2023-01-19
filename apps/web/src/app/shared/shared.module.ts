@@ -46,7 +46,7 @@ import "./locales";
     JslibModule,
 
     // Component library modules
-    //  Only add components that are used almost everywhere in the application
+    // Only add components that are used almost everywhere in the application
     AsyncActionsModule,
     AvatarModule,
     BadgeModule,
