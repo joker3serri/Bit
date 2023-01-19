@@ -19,7 +19,7 @@ import { EditCommand } from "./edit.command";
 import { GenerateCommand } from "./generate.command";
 import { GetCommand } from "./get.command";
 import { ListCommand } from "./list.command";
-import { LockCommand } from "./lock.command";
+import { LockCommand } from "../auth/commands/lock.command";
 import { RestoreCommand } from "./restore.command";
 import { SendCreateCommand } from "./send/create.command";
 import { SendDeleteCommand } from "./send/delete.command";
@@ -30,7 +30,7 @@ import { SendRemovePasswordCommand } from "./send/remove-password.command";
 import { ShareCommand } from "./share.command";
 import { StatusCommand } from "./status.command";
 import { SyncCommand } from "./sync.command";
-import { UnlockCommand } from "./unlock.command";
+import { UnlockCommand } from "../auth/commands/unlock.command";
 
 export class ServeCommand {
   private listCommand: ListCommand;

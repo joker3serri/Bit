@@ -1,7 +1,7 @@
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 
-import { Response } from "../models/response";
-import { MessageResponse } from "../models/response/message.response";
+import { Response } from "../../models/response";
+import { MessageResponse } from "../../models/response/message.response";
 
 export class LockCommand {
   constructor(private vaultTimeoutService: VaultTimeoutService) {}
