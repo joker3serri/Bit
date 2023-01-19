@@ -501,12 +501,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: PolicyApiServiceAbstraction,
       useClass: PolicyApiService,
-      deps: [
-        PolicyServiceAbstraction,
-        ApiServiceAbstraction,
-        StateServiceAbstraction,
-        OrganizationServiceAbstraction,
-      ],
+      deps: [PolicyServiceAbstraction, ApiServiceAbstraction, StateServiceAbstraction],
     },
     {
       provide: SendServiceAbstraction,
