@@ -30,8 +30,8 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
   formGroup = new FormGroup({
     multiSelect: new FormControl([], [Validators.required]),
   });
+
   loading = true;
-  disabled = true;
   organizationId: string;
   projectId: string;
   baseItems: SelectItemView[];
@@ -59,9 +59,6 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (!changes.projectAccessPolicies.firstChange) {
-      this.loading = true;
-      this.disabled = true;
-      this.formGroup.reset();
       await this.setMultiSelect();
     }
   }
@@ -72,7 +69,7 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
     this.loading = true;
-    this.disabled = true;
+    this.formGroup.disable();
 
     const projectAccessPoliciesView = new ProjectAccessPoliciesView();
     projectAccessPoliciesView.userAccessPolicies = this.formGroup.value.multiSelect
@@ -97,16 +94,18 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
         return view;
       });
 
-    await this.accessPolicyService.createProjectAccessPolicies(
+    this.projectAccessPolicies = await this.accessPolicyService.createProjectAccessPolicies(
       this.organizationId,
       this.projectId,
       projectAccessPoliciesView
     );
+    await this.setMultiSelect();
   };
 
   private async setMultiSelect(): Promise<void> {
     this.loading = true;
-    this.disabled = true;
+    this.formGroup.disable();
+
     let orgUsers = await this.getUserDetails(this.organizationId);
     orgUsers = orgUsers.filter(
       (orgUser) =>
@@ -120,8 +119,10 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
         !this.projectAccessPolicies.groupAccessPolicies.some((ap) => ap.groupId == orgGroup.id)
     );
     this.baseItems = [...orgUsers, ...orgGroups];
+
     this.loading = false;
-    this.disabled = false;
+    this.formGroup.enable();
+    this.formGroup.reset();
   }
 
   private async getUserDetails(organizationId: string): Promise<SelectItemView[]> {

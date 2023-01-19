@@ -77,7 +77,7 @@ export class AccessPolicyService {
     organizationId: string,
     projectId: string,
     projectAccessPoliciesView: ProjectAccessPoliciesView
-  ): Promise<void> {
+  ): Promise<ProjectAccessPoliciesView> {
     const request = this.getAccessPoliciesCreateRequest(projectAccessPoliciesView);
     const r = await this.apiService.send(
       "POST",
@@ -89,6 +89,7 @@ export class AccessPolicyService {
     const results = new ProjectAccessPoliciesResponse(r);
     const view = await this.createProjectAccessPoliciesView(organizationId, results);
     this._projectAccessPolicies.next(view);
+    return view;
   }
 
   private async getOrganizationKey(organizationId: string): Promise<SymmetricCryptoKey> {

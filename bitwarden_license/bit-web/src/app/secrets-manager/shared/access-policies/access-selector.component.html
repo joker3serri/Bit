@@ -6,10 +6,9 @@
       formControlName="multiSelect"
       [baseItems]="baseItems"
       [loading]="loading"
-      [disabled]="disabled"
     ></bit-multi-select>
     <bit-hint>{{ hint | i18n }}</bit-hint>
-    <button type="submit" bitButton buttonType="primary" bitFormButton [disabled]="disabled">
+    <button type="submit" bitButton buttonType="primary" bitFormButton>
       {{ "add" | i18n }}
     </button>
   </bit-form-field>

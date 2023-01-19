@@ -26,7 +26,6 @@ export class SaAccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
     multiSelect: new FormControl([], [Validators.required]),
   });
   loading = true;
-  disabled = true;
   organizationId: string;
   projectId: string;
   baseItems: SelectItemView[];
@@ -53,11 +52,7 @@ export class SaAccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (!changes.projectAccessPolicies.firstChange) {
-      this.loading = true;
-      this.disabled = true;
-      this.formGroup.reset();
       await this.setMultiSelect();
-      this.formGroup.reset();
     }
   }
 
@@ -67,7 +62,7 @@ export class SaAccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
       return;
     }
     this.loading = true;
-    this.disabled = true;
+    this.formGroup.disable();
 
     const projectAccessPoliciesView = new ProjectAccessPoliciesView();
 
@@ -82,16 +77,18 @@ export class SaAccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
         return view;
       });
 
-    await this.accessPolicyService.createProjectAccessPolicies(
+    this.projectAccessPolicies = await this.accessPolicyService.createProjectAccessPolicies(
       this.organizationId,
       this.projectId,
       projectAccessPoliciesView
     );
+    await this.setMultiSelect();
   };
 
   private async setMultiSelect(): Promise<void> {
     this.loading = true;
-    this.disabled = true;
+    this.formGroup.disable();
+
     const orgServiceAccounts = await this.getServiceAccountDetails(this.organizationId);
     this.baseItems = orgServiceAccounts.filter(
       (orgServiceAccount) =>
@@ -99,8 +96,10 @@ export class SaAccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
           (ap) => ap.serviceAccountId == orgServiceAccount.id
         )
     );
+
     this.loading = false;
-    this.disabled = false;
+    this.formGroup.enable();
+    this.formGroup.reset();
   }
 
   private async getServiceAccountDetails(organizationId: string): Promise<SelectItemView[]> {
