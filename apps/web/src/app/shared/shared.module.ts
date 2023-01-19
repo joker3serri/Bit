@@ -19,7 +19,6 @@ import {
   IconModule,
   LinkModule,
   MenuModule,
-  NavigationModule,
   TableModule,
   TabsModule,
   ColorPasswordModule,
@@ -46,7 +45,8 @@ import "./locales";
     ToastrModule,
     JslibModule,
 
-    // Component library
+    // Component library modules
+    //  Only add components that are used almost everywhere in the application
     AsyncActionsModule,
     AvatarModule,
     BadgeModule,
@@ -58,7 +58,6 @@ import "./locales";
     IconModule,
     LinkModule,
     MenuModule,
-    NavigationModule,
     TableModule,
     TabsModule,
     LinkModule,
@@ -88,7 +87,6 @@ import "./locales";
     IconModule,
     LinkModule,
     MenuModule,
-    NavigationModule,
     TableModule,
     TabsModule,
     LinkModule,
