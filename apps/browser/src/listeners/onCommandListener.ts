@@ -3,7 +3,7 @@ import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStat
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 
-import { authServiceFactory } from "../background/service_factories/auth-service.factory";
+import { authServiceFactory } from "../auth/background/service-factories/auth-service.factory";
 import { autofillServiceFactory } from "../background/service_factories/autofill-service.factory";
 import { CachedServices } from "../background/service_factories/factory-options";
 import { logServiceFactory } from "../background/service_factories/log-service.factory";

@@ -1,26 +1,48 @@
 import { AuthService as AbstractAuthService } from "@bitwarden/common/abstractions/auth.service";
 import { AuthService } from "@bitwarden/common/services/auth.service";
 
-import { apiServiceFactory, ApiServiceInitOptions } from "./api-service.factory";
-import { appIdServiceFactory } from "./app-id-service.factory";
-import { cryptoServiceFactory, CryptoServiceInitOptions } from "./crypto-service.factory";
+import {
+  apiServiceFactory,
+  ApiServiceInitOptions,
+} from "../../../background/service_factories/api-service.factory";
+import { appIdServiceFactory } from "../../../background/service_factories/app-id-service.factory";
+import {
+  cryptoServiceFactory,
+  CryptoServiceInitOptions,
+} from "../../../background/service_factories/crypto-service.factory";
 import {
   environmentServiceFactory,
   EnvironmentServiceInitOptions,
-} from "./environment-service.factory";
-import { CachedServices, factory, FactoryOptions } from "./factory-options";
-import { I18nServiceInitOptions, i18nServiceFactory } from "./i18n-service.factory";
+} from "../../../background/service_factories/environment-service.factory";
+import {
+  CachedServices,
+  factory,
+  FactoryOptions,
+} from "../../../background/service_factories/factory-options";
+import {
+  I18nServiceInitOptions,
+  i18nServiceFactory,
+} from "../../../background/service_factories/i18n-service.factory";
 import {
   KeyConnectorServiceInitOptions,
   keyConnectorServiceFactory,
-} from "./key-connector-service.factory";
-import { logServiceFactory, LogServiceInitOptions } from "./log-service.factory";
-import { MessagingServiceInitOptions, messagingServiceFactory } from "./messaging-service.factory";
+} from "../../../background/service_factories/key-connector-service.factory";
+import {
+  logServiceFactory,
+  LogServiceInitOptions,
+} from "../../../background/service_factories/log-service.factory";
+import {
+  MessagingServiceInitOptions,
+  messagingServiceFactory,
+} from "../../../background/service_factories/messaging-service.factory";
 import {
   PlatformUtilsServiceInitOptions,
   platformUtilsServiceFactory,
-} from "./platform-utils-service.factory";
-import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
+} from "../../../background/service_factories/platform-utils-service.factory";
+import {
+  stateServiceFactory,
+  StateServiceInitOptions,
+} from "../../../background/service_factories/state-service.factory";
 import { TokenServiceInitOptions, tokenServiceFactory } from "./token-service.factory";
 import { TwoFactorServiceInitOptions, twoFactorServiceFactory } from "./two-factor-service.factory";
 

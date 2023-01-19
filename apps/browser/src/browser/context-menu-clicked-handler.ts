@@ -14,7 +14,7 @@ import LockedVaultPendingNotificationsItem from "../background/models/lockedVaul
 import {
   authServiceFactory,
   AuthServiceInitOptions,
-} from "../background/service_factories/auth-service.factory";
+} from "../auth/background/service-factories/auth-service.factory";
 import { autofillServiceFactory } from "../background/service_factories/autofill-service.factory";
 import {
   cipherServiceFactory,

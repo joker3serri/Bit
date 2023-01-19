@@ -9,7 +9,7 @@ import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { ContainerService } from "@bitwarden/common/services/container.service";
 
 import IconDetails from "../background/models/iconDetails";
-import { authServiceFactory } from "../background/service_factories/auth-service.factory";
+import { authServiceFactory } from "../auth/background/service-factories/auth-service.factory";
 import { cipherServiceFactory } from "../background/service_factories/cipher-service.factory";
 import { searchServiceFactory } from "../background/service_factories/search-service.factory";
 import { stateServiceFactory } from "../background/service_factories/state-service.factory";

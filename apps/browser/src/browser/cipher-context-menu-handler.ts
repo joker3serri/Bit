@@ -12,7 +12,7 @@ import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import {
   authServiceFactory,
   AuthServiceInitOptions,
-} from "../background/service_factories/auth-service.factory";
+} from "../auth/background/service-factories/auth-service.factory";
 import {
   cipherServiceFactory,
   CipherServiceInitOptions,
