@@ -1,5 +1,11 @@
 import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { AbstractControl, UntypedFormBuilder, ValidatorFn, Validators } from "@angular/forms";
+import {
+  AbstractControl,
+  FormControl,
+  UntypedFormBuilder,
+  ValidatorFn,
+  Validators,
+} from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -197,8 +203,6 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     this.formGroup.markAllAsTouched();
     this.showErrorSummary = true;
 
-    const formValues = this.formGroup.value;
-
     if (this.formGroup.get("acceptPolicies").hasError("required")) {
       this.platformUtilsService.showToast(
         "error",
@@ -223,8 +227,10 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     const passwordWeak =
       this.passwordStrengthResult != null && this.passwordStrengthResult.score < 3;
     const passwordLeak =
-      formValues.checkForBreaches &&
-      (await this.auditService.passwordLeaked(formValues.masterPassword)) > 0;
+      (this.formGroup.controls.checkForBreaches as FormControl).value &&
+      (await this.auditService.passwordLeaked(
+        (this.formGroup.controls.masterPassword as FormControl).value
+      )) > 0;
 
     if (passwordWeak && passwordLeak) {
       const result = await this.platformUtilsService.showDialog(
@@ -249,18 +255,15 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
         return { isValid: false };
       }
     } else if (passwordLeak) {
-      const matches = await this.auditService.passwordLeaked(formValues.masterPassword);
-      if (matches > 0) {
-        const result = await this.platformUtilsService.showDialog(
-          this.i18nService.t("exposedMasterPasswordDesc"),
-          this.i18nService.t("exposedMasterPassword"),
-          this.i18nService.t("yes"),
-          this.i18nService.t("no"),
-          "warning"
-        );
-        if (!result) {
-          return { isValid: false };
-        }
+      const result = await this.platformUtilsService.showDialog(
+        this.i18nService.t("exposedMasterPasswordDesc"),
+        this.i18nService.t("exposedMasterPassword"),
+        this.i18nService.t("yes"),
+        this.i18nService.t("no"),
+        "warning"
+      );
+      if (!result) {
+        return { isValid: false };
       }
     }
 
