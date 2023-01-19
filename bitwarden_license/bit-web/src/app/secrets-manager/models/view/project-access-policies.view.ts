@@ -1,12 +1,10 @@
-import { View } from "@bitwarden/common/models/view/view";
-
 import {
   GroupProjectAccessPolicyView,
   ServiceAccountProjectAccessPolicyView,
   UserProjectAccessPolicyView,
 } from "./access-policy.view";
 
-export class ProjectAccessPoliciesView extends View {
+export class ProjectAccessPoliciesView {
   userAccessPolicies: UserProjectAccessPolicyView[];
   groupAccessPolicies: GroupProjectAccessPolicyView[];
   serviceAccountAccessPolicies: ServiceAccountProjectAccessPolicyView[];

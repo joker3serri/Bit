@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 
+import { MultiSelectModule } from "@bitwarden/components";
 import { ProductSwitcherModule } from "@bitwarden/web-vault/app/layouts/product-switcher/product-switcher.module";
 import { SharedModule } from "@bitwarden/web-vault/app/shared";
 
@@ -10,10 +11,11 @@ import { NoItemsComponent } from "../layout/no-items.component";
 
 import { AccessPoliciesComponent } from "./access-policies/access-policies.component";
 import { AccessSelectorComponent } from "./access-policies/access-selector.component";
+import { SaAccessSelectorComponent } from "./access-policies/sa-access-selector.component";
 import { SecretsListComponent } from "./secrets-list.component";
 
 @NgModule({
-  imports: [SharedModule, ProductSwitcherModule],
+  imports: [SharedModule, ProductSwitcherModule, MultiSelectModule],
   exports: [
     SharedModule,
     BulkStatusDialogComponent,
@@ -23,6 +25,7 @@ import { SecretsListComponent } from "./secrets-list.component";
     SecretsListComponent,
     AccessPoliciesComponent,
     AccessSelectorComponent,
+    SaAccessSelectorComponent,
   ],
   declarations: [
     BulkStatusDialogComponent,
@@ -32,6 +35,7 @@ import { SecretsListComponent } from "./secrets-list.component";
     SecretsListComponent,
     AccessPoliciesComponent,
     AccessSelectorComponent,
+    SaAccessSelectorComponent,
   ],
   providers: [],
   bootstrap: [],

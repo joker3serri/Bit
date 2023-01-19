@@ -122,7 +122,7 @@
       size="default"
       [attr.title]="'close' | i18n"
       [attr.aria-label]="'close' | i18n"
-      (click)="deleteAccessPolicy(id)"
+      [bitAction]="deleteHandlerCreation(id)"
     ></button>
   </td>
 </ng-template>

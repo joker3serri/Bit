@@ -9,11 +9,9 @@ import { SelectItemView } from "@bitwarden/components/src/multi-select/models/se
 
 import {
   GroupProjectAccessPolicyView,
-  ServiceAccountProjectAccessPolicyView,
   UserProjectAccessPolicyView,
 } from "../../models/view/access-policy.view";
 import { ProjectAccessPoliciesView } from "../../models/view/project-access-policies.view";
-import { ServiceAccountService } from "../../service-accounts/service-account.service";
 
 import { AccessPolicyService } from "./access-policy.service";
 
@@ -25,16 +23,15 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
   @Input() projectAccessPolicies: ProjectAccessPoliciesView;
   @Input() label: string;
   @Input() hint: string;
-  @Input() selectorType: "projectPeople" | "projectServiceAccounts";
 
   private readonly userIcon = "bwi-user";
   private readonly groupIcon = "bwi-family";
-  private readonly serviceAccountIcon = "bwi-wrench";
 
   formGroup = new FormGroup({
     multiSelect: new FormControl([], [Validators.required]),
   });
   loading = true;
+  disabled = true;
   organizationId: string;
   projectId: string;
   baseItems: SelectItemView[];
@@ -42,7 +39,6 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     private route: ActivatedRoute,
-    private serviceAccountService: ServiceAccountService,
     private organizationUserService: OrganizationUserService,
     private accessPolicyService: AccessPolicyService,
     private apiService: ApiService
@@ -63,16 +59,20 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (!changes.projectAccessPolicies.firstChange) {
+      this.loading = true;
+      this.disabled = true;
+      this.formGroup.reset();
       await this.setMultiSelect();
     }
   }
 
   submit = async () => {
     this.formGroup.markAllAsTouched();
-
     if (this.formGroup.invalid) {
       return;
     }
+    this.loading = true;
+    this.disabled = true;
 
     const projectAccessPoliciesView = new ProjectAccessPoliciesView();
     projectAccessPoliciesView.userAccessPolicies = this.formGroup.value.multiSelect
@@ -97,50 +97,31 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
         return view;
       });
 
-    projectAccessPoliciesView.serviceAccountAccessPolicies = this.formGroup.value.multiSelect
-      ?.filter((selection) => selection.icon === this.serviceAccountIcon)
-      ?.map((filtered) => {
-        const view = new ServiceAccountProjectAccessPolicyView();
-        view.grantedProjectId = this.projectId;
-        view.serviceAccountId = filtered.id;
-        view.read = true;
-        view.write = false;
-        return view;
-      });
-
     await this.accessPolicyService.createProjectAccessPolicies(
       this.organizationId,
       this.projectId,
       projectAccessPoliciesView
     );
-    this.formGroup.reset();
   };
 
   private async setMultiSelect(): Promise<void> {
-    if (this.selectorType === "projectPeople") {
-      let orgUsers = await this.getUserDetails(this.organizationId);
-      orgUsers = orgUsers.filter(
-        (orgUser) =>
-          !this.projectAccessPolicies.userAccessPolicies.some(
-            (ap) => ap.organizationUserId == orgUser.id
-          )
-      );
-      let orgGroups = await this.getGroupDetails(this.organizationId);
-      orgGroups = orgGroups.filter(
-        (orgGroup) =>
-          !this.projectAccessPolicies.groupAccessPolicies.some((ap) => ap.groupId == orgGroup.id)
-      );
-      this.baseItems = [...orgUsers, ...orgGroups];
-    } else {
-      const orgServiceAccounts = await this.getServiceAccountDetails(this.organizationId);
-      this.baseItems = orgServiceAccounts.filter(
-        (orgServiceAccount) =>
-          !this.projectAccessPolicies.serviceAccountAccessPolicies.some(
-            (ap) => ap.serviceAccountId == orgServiceAccount.id
-          )
-      );
-    }
+    this.loading = true;
+    this.disabled = true;
+    let orgUsers = await this.getUserDetails(this.organizationId);
+    orgUsers = orgUsers.filter(
+      (orgUser) =>
+        !this.projectAccessPolicies.userAccessPolicies.some(
+          (ap) => ap.organizationUserId == orgUser.id
+        )
+    );
+    let orgGroups = await this.getGroupDetails(this.organizationId);
+    orgGroups = orgGroups.filter(
+      (orgGroup) =>
+        !this.projectAccessPolicies.groupAccessPolicies.some((ap) => ap.groupId == orgGroup.id)
+    );
+    this.baseItems = [...orgUsers, ...orgGroups];
     this.loading = false;
+    this.disabled = false;
   }
 
   private async getUserDetails(organizationId: string): Promise<SelectItemView[]> {
@@ -164,19 +145,6 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
         id: group.id,
         labelName: group.name,
         listName: group.name,
-      };
-      return selectItemView;
-    });
-  }
-
-  private async getServiceAccountDetails(organizationId: string): Promise<SelectItemView[]> {
-    const serviceAccounts = await this.serviceAccountService.getServiceAccounts(organizationId);
-    return serviceAccounts.map((serviceAccount) => {
-      const selectItemView: SelectItemView = {
-        icon: this.serviceAccountIcon,
-        id: serviceAccount.id,
-        labelName: serviceAccount.name,
-        listName: serviceAccount.name,
       };
       return selectItemView;
     });

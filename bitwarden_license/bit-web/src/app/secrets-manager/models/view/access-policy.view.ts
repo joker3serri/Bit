@@ -1,6 +1,4 @@
-import { View } from "@bitwarden/common/models/view/view";
-
-export class BaseAccessPolicyView implements View {
+export class BaseAccessPolicyView {
   id: string;
   read: boolean;
   write: boolean;

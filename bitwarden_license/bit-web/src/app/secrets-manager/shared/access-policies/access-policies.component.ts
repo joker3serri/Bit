@@ -43,11 +43,11 @@ export class AccessPoliciesComponent {
     }
   }
 
-  async deleteAccessPolicy(accessPolicyId: string): Promise<void> {
-    try {
-      await this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
-    } catch (e) {
-      this.validationService.showError(e);
-    }
+  deleteHandler = async (accessPolicyId: string) => {
+    await this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
+  };
+
+  deleteHandlerCreation(accessPolicyId: string) {
+    return () => this.deleteHandler(accessPolicyId);
   }
 }

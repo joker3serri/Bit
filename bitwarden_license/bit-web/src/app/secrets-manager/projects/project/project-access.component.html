@@ -4,12 +4,19 @@
       {{ description | i18n }}
     </p>
     <sm-access-selector
+      *ngIf="accessType == 'projectPeople'"
       [projectAccessPolicies]="projectAccessPoliciesView"
       [label]="label"
       [hint]="hint"
-      [selectorType]="accessType"
     >
     </sm-access-selector>
+    <sm-sa-access-selector
+      *ngIf="accessType == 'projectServiceAccounts'"
+      [projectAccessPolicies]="projectAccessPoliciesView"
+      [label]="label"
+      [hint]="hint"
+    >
+    </sm-sa-access-selector>
     <sm-access-policies
       [projectAccessPolicies]="projectAccessPoliciesView"
       [tableType]="accessType"

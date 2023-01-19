@@ -5890,7 +5890,7 @@
     }
   },
     "projectPeopleDescription": {
-    "message": "Grant groups or people access to this project. Permissions set for people will override permissions set by groups."
+    "message": "Grant groups or people access to this project."
   },
     "projectPeopleSelectHint": {
     "message": "Type or select people or groups"
