@@ -14,7 +14,7 @@ import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserTy
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
-import { DialogService } from "@bitwarden/components";
+import { BitValidators, DialogService } from "@bitwarden/components";
 
 import {
   CollectionAccessSelectionView,
@@ -75,7 +75,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   protected groupAccessItems: AccessItemView[] = [];
   protected tabIndex: MemberDialogTab;
   protected formGroup = this.formBuilder.group({
-    emails: ["", [Validators.required]],
+    emails: ["", [Validators.required, BitValidators.commaSeparatedEmails]],
     type: OrganizationUserType.User,
     accessAllCollections: false,
     access: [[] as AccessItemValue[]],
@@ -291,7 +291,16 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   }
 
   submit = async () => {
+    this.formGroup.markAllAsTouched();
+
     if (this.formGroup.invalid) {
+      if (this.tabIndex !== MemberDialogTab.Role) {
+        this.platformUtilsService.showToast(
+          "error",
+          null,
+          this.i18nService.t("fieldOnTabRequiresAttention", this.i18nService.t("role"))
+        );
+      }
       return;
     }
 

@@ -5532,6 +5532,9 @@
   "inputEmail": {
     "message": "Input is not an email address."
   },
+  "multipleInputEmails": {
+    "message": "1 or more emails are invalid"
+  },
   "inputMinLength": {
     "message": "Input must be at least $COUNT$ characters long.",
     "placeholders": {
