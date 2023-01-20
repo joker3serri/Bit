@@ -1,7 +1,10 @@
 <header
   *ngIf="routeData$ | async as routeData"
-  class="-tw-m-4 tw-mb-3 tw-flex tw-flex-col tw-p-4"
-  [ngClass]="{ 'tw-bg-background-alt tw-pb-0': tabs.childElementCount !== 0 }"
+  class="-tw-m-6 tw-mb-3 tw-flex tw-flex-col tw-p-6"
+  [ngClass]="{
+    'tw-border-0 tw-border-b tw-border-solid tw-border-secondary-300 tw-bg-background-alt tw-pb-0':
+      tabs.childElementCount !== 0
+  }"
 >
   <div class="tw-flex tw-items-center tw-gap-2">
     <div class="tw-flex tw-flex-1 tw-flex-col">
@@ -76,7 +79,11 @@
       </div>
     </div>
   </div>
-  <div #tabs class="-tw-mx-4" [ngClass]="{ 'tw-hidden': tabs.childElementCount === 0 }">
+  <div
+    #tabs
+    class="-tw-mx-4 -tw-mb-[1px]"
+    [ngClass]="{ 'tw-hidden': tabs.childElementCount === 0 }"
+  >
     <ng-content select="[slot=tabs]"></ng-content>
   </div>
 </header>
