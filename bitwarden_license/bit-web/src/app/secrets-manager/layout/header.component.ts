@@ -15,6 +15,11 @@ export class HeaderComponent {
    */
   @Input() title: string;
 
+  /**
+   * Icon to show before the title
+   */
+  @Input() icon: string;
+
   protected routeData$: Observable<{ titleId: string }>;
   protected account$: Observable<AccountProfile>;
 

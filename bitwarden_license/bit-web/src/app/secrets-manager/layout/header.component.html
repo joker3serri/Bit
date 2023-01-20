@@ -10,6 +10,7 @@
         class="tw-m-0 tw-mr-2 tw-max-w-screen-md tw-truncate tw-text-3xl tw-font-semibold"
         [title]="title || (routeData.titleId | i18n)"
       >
+        <i *ngIf="icon" class="bwi {{ icon }}" aria-hidden="true"></i>
         {{ title || (routeData.titleId | i18n) }}
       </h1>
     </div>
