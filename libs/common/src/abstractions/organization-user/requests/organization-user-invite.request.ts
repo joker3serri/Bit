@@ -8,5 +8,6 @@ export class OrganizationUserInviteRequest {
   accessAll: boolean;
   accessSecretsManager: boolean;
   collections: SelectionReadOnlyRequest[] = [];
+  groups: string[];
   permissions: PermissionsApi;
 }
