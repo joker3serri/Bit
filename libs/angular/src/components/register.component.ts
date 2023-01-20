@@ -1,11 +1,5 @@
 import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import {
-  AbstractControl,
-  FormControl,
-  UntypedFormBuilder,
-  ValidatorFn,
-  Validators,
-} from "@angular/forms";
+import { AbstractControl, UntypedFormBuilder, ValidatorFn, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -227,10 +221,8 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     const passwordWeak =
       this.passwordStrengthResult != null && this.passwordStrengthResult.score < 3;
     const passwordLeak =
-      (this.formGroup.controls.checkForBreaches as FormControl).value &&
-      (await this.auditService.passwordLeaked(
-        (this.formGroup.controls.masterPassword as FormControl).value
-      )) > 0;
+      this.formGroup.controls.checkForBreaches.value &&
+      (await this.auditService.passwordLeaked(this.formGroup.controls.masterPassword.value)) > 0;
 
     if (passwordWeak && passwordLeak) {
       const result = await this.platformUtilsService.showDialog(
