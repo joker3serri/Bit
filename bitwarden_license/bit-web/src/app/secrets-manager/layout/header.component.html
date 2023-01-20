@@ -75,7 +75,7 @@
       </div>
     </div>
   </div>
-  <div #tabs class="-tw-mx-4">
+  <div #tabs class="-tw-mx-4" [ngClass]="{ 'tw-hidden': tabs.childElementCount === 0 }">
     <ng-content select="[slot=tabs]"></ng-content>
   </div>
 </header>
