@@ -27,7 +27,7 @@
             <th bitCell class="tw-text-right">{{ "options" | i18n }}</th>
           </tr>
         </ng-container>
-        <ng-container body>
+        <ng-template body>
           <tr bitRow *ngFor="let orgDomain of orgDomains; index as i">
             <td bitCell>
               <a bitLink href appStopClick linkType="primary" (click)="editDomain(orgDomain)">{{
@@ -73,7 +73,7 @@
               </bit-menu>
             </td>
           </tr>
-        </ng-container>
+        </ng-template>
       </bit-table>
     </div>
 

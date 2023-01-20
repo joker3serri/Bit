@@ -91,7 +91,6 @@ export class BitInputDirective implements BitFormFieldControl {
 
   get hasError() {
     if (this.showErrorsWhenDisabled) {
-      // TODO: test if I need this.isActive on my check here
       return (
         (this.ngControl?.status === "INVALID" || this.ngControl?.status === "DISABLED") &&
         this.ngControl?.touched &&
