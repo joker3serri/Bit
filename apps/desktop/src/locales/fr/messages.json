@@ -61,7 +61,7 @@
     }
   },
   "moveToOrgDesc": {
-    "message": "Choisissez une organisation vers laquelle vous souhaitez déplacer cet élément. Déplacer un élément vers une organisation transfère la propriété de l'élément à cette organisation. Vous ne serez plus le propriétaire direct de cet élément une fois qu'il aura été déplacé."
+    "message": "Choisissez une organisation vers laquelle vous souhaitez déplacer cet élément. Déplacer un élément vers une organisation transfère la propriété de l'élément à cette organisation. Vous ne serez plus directement propriétaire de cet élément une fois qu'il aura été déplacé."
   },
   "attachments": {
     "message": "Pièces jointes"
@@ -89,7 +89,7 @@
     "message": "Nouvel URI"
   },
   "username": {
-    "message": "Nom d'utilisateur"
+    "message": "Identifiant"
   },
   "password": {
     "message": "Mot de passe"
@@ -136,7 +136,7 @@
     "description": "Toggling an expand/collapse state."
   },
   "cardholderName": {
-    "message": "Nom du titulaire de la carte"
+    "message": "Titulaire de la carte"
   },
   "number": {
     "message": "Numéro"
@@ -361,19 +361,19 @@
     "message": "Supprimer la pièce jointe"
   },
   "deleteItemConfirmation": {
-    "message": "Êtes-vous sûr de vouloir envoyer cet élément vers la corbeille ?"
+    "message": "Voulez-vous vraiment envoyer cet élément vers la corbeille ?"
   },
   "deletedItem": {
     "message": "L'élément a été envoyé à la corbeille"
   },
   "overwritePasswordConfirmation": {
-    "message": "Êtes-vous sûr de vouloir écraser le mot de passe actuel ?"
+    "message": "Voulez-vous vraiment écraser le mot de passe actuel ?"
   },
   "overwriteUsername": {
-    "message": "Remplacer le nom d'utilisateur"
+    "message": "Remplacer l'identifiant"
   },
   "overwriteUsernameConfirmation": {
-    "message": "Êtes-vous sûr de vouloir remplacer le mot de passe actuel ?"
+    "message": "Voulez-vous vraiment remplacer le mot de passe actuel ?"
   },
   "noneFolder": {
     "message": "Pas de dossier",
@@ -458,7 +458,7 @@
     "message": "Pièce jointe supprimée"
   },
   "deleteAttachmentConfirmation": {
-    "message": "Êtes-vous sûr de vouloir supprimer cette pièce jointe ?"
+    "message": "Voulez-vous vraiment supprimer cette pièce jointe ?"
   },
   "attachmentSaved": {
     "message": "La pièce jointe a été enregistrée."
@@ -482,7 +482,7 @@
     "message": "Dossier ajouté"
   },
   "deleteFolderConfirmation": {
-    "message": "Êtes-vous sûr de vouloir supprimer ce dossier ?"
+    "message": "Voulez-vous vraiment supprimer ce dossier ?"
   },
   "deletedFolder": {
     "message": "Dossier supprimé"
@@ -560,7 +560,7 @@
     "message": "Aucun élément à afficher."
   },
   "sendVerificationCode": {
-    "message": "Envoyer un code de vérification à votre adresse email"
+    "message": "Envoyer un code de vérification à votre adresse e-mail"
   },
   "sendCode": {
     "message": "Envoyer le code"
@@ -605,7 +605,7 @@
     }
   },
   "rememberMe": {
-    "message": "Rester connecté"
+    "message": "Maintenir la connexion"
   },
   "sendVerificationCodeEmailAgain": {
     "message": "Envoyer à nouveau l'e-mail du code de vérification"
@@ -620,7 +620,7 @@
     "message": "Insérez votre clé de sécurité dans le port USB de votre ordinateur. S'il dispose d'un bouton, appuyez dessus."
   },
   "recoveryCodeDesc": {
-    "message": "Accès perdu à tous vos services d'authentification à double facteurs ? Utilisez votre code de récupération pour désactiver tous les services de double authentifications sur votre compte."
+    "message": "Accès perdu à tous vos services d'authentification à double facteur ? Utilisez votre code de récupération pour désactiver tous les services de double authentifications sur votre compte."
   },
   "recoveryCodeTitle": {
     "message": "Code de récupération"
@@ -680,7 +680,7 @@
     "message": "Environnement personnalisé"
   },
   "customEnvironmentFooter": {
-    "message": "Pour utilisateurs avancés. Vous pouvez spécifier une URL de base indépendante pour chaque service."
+    "message": "Pour une utilisation avancée. Vous pouvez spécifier une URL de base indépendante pour chaque service."
   },
   "baseUrl": {
     "message": "URL du serveur"
@@ -722,13 +722,13 @@
     "message": "Fonctionnalité non disponible"
   },
   "loggedOut": {
-    "message": "Déconnecté"
+    "message": "Déconnexion réussie"
   },
   "loginExpired": {
     "message": "Votre session a expiré."
   },
   "logOutConfirmation": {
-    "message": "Êtes-vous sûr de vouloir vous déconnecter ?"
+    "message": "Voulez-vous vraiment vous déconnecter ?"
   },
   "logOut": {
     "message": "Se déconnecter"
@@ -1033,7 +1033,7 @@
     "message": "Inconnu"
   },
   "copyUsername": {
-    "message": "Copier nom d'utilisateur"
+    "message": "Copier l'identifiant"
   },
   "copyNumber": {
     "message": "Copier le numéro",
@@ -1056,7 +1056,7 @@
     "message": "Actualiser l'adhésion"
   },
   "premiumNotCurrentMember": {
-    "message": "Vous n'êtes pas actuellement un membre Premium."
+    "message": "Actuellement, vous n'êtes pas membre Premium."
   },
   "premiumSignUpAndGet": {
     "message": "Inscrivez-vous pour une adhésion Premium et obtenez :"
@@ -1074,7 +1074,7 @@
     "message": "Générateur de code de vérification TOTP (2FA) pour les identifiants dans votre coffre."
   },
   "premiumSignUpSupport": {
-    "message": "Assistance client prioritaire."
+    "message": "Assistance cliente prioritaire."
   },
   "premiumSignUpFuture": {
     "message": "Toutes les futures fonctionnalités Premium. Plus à venir prochainement !"
@@ -1086,7 +1086,7 @@
     "message": "Vous pouvez acheter une adhésion Premium sur le coffre web de bitwarden.com. Voulez-vous visiter le site web maintenant ?"
   },
   "premiumCurrentMember": {
-    "message": "Vous êtes un membre Premium !"
+    "message": "Vous êtes membre Premium !"
   },
   "premiumCurrentMemberThanks": {
     "message": "Merci de soutenir Bitwarden."
@@ -1288,7 +1288,7 @@
     "message": "Charger le cookie d'accessibilité"
   },
   "registerAccessibilityUser": {
-    "message": "S'inscrire en tant qu'utilisateur avec accessibilité à",
+    "message": "S'inscrire en mode accessibilité à",
     "description": "ex. Register as an accessibility user at hcaptcha.com"
   },
   "copyPasteLink": {
@@ -1328,10 +1328,10 @@
     "message": "Cet export chiffre vos données en utilisant la clé de chiffrement de votre compte. Si jamais vous modifiez la clé de chiffrement de votre compte, vous devriez exporter à nouveau car vous ne pourrez pas déchiffrer ce fichier."
   },
   "encExportAccountWarningDesc": {
-    "message": "Les clés de chiffrement du compte sont spécifiques à chaque utilisateur Bitwarden. Vous ne pouvez donc pas importer d'export chiffré dans un compte différent."
+    "message": "Les clés de chiffrement du compte sont spécifiques à chaque membre Bitwarden. Vous ne pouvez donc pas importer d'export chiffré dans un compte différent."
   },
   "noOrganizationsList": {
-    "message": "Vous ne faites partie d'aucune organisation. Les organisations vous permettent de partager des éléments de façon sécurisée avec d'autres utilisateurs."
+    "message": "Vous ne faites partie d'aucune organisation. Les organisations vous permettent de partager des éléments de façon sécurisée avec d'autres membres."
   },
   "noCollectionsInList": {
     "message": "Aucune collection à afficher."
@@ -1358,7 +1358,7 @@
     "message": "Mot de passe principal faible"
   },
   "weakMasterPasswordDesc": {
-    "message": "Le mot de passe principal que vous avez choisi est faible. Vous devriez utiliser un mot de passe principal fort (ou une phrase de passe) pour protéger correctement votre compte Bitwarden. Êtes-vous sûr de vouloir utiliser ce mot de passe principal ?"
+    "message": "Le mot de passe principal que vous avez choisi est faible. Vous devriez utiliser un mot de passe principal fort (ou une phrase de passe) pour protéger correctement votre compte Bitwarden. Voulez-vous vraiment utiliser ce mot de passe principal ?"
   },
   "pin": {
     "message": "Code PIN",
@@ -1386,7 +1386,7 @@
     "message": "Déverrouiller avec Touch ID"
   },
   "touchIdConsentMessage": {
-    "message": "déverouiller votre coffre"
+    "message": "déverrouiller votre coffre"
   },
   "autoPromptWindowsHello": {
     "message": "Demander à Windows Hello au démarrage"
@@ -1447,7 +1447,7 @@
     "message": "Politique de confidentialité"
   },
   "unsavedChangesConfirmation": {
-    "message": "Êtes-vous sûr de vouloir quitter ? Si vous le faites maintenant, vos informations actuelles ne seront pas sauvegardées."
+    "message": "Voulez-vous vraiment quitter ? Si vous le faites maintenant, vos informations actuelles ne seront pas sauvegardées."
   },
   "unsavedChangesTitle": {
     "message": "Il y a des modifications non enregistrées"
@@ -1482,7 +1482,7 @@
     "message": "Supprimer définitivement l'élément"
   },
   "permanentlyDeleteItemConfirmation": {
-    "message": "Êtes-vous sûr de vouloir supprimer définitivement cet élément ?"
+    "message": "Voulez-vous vraiment supprimer définitivement cet élément ?"
   },
   "permanentlyDeletedItem": {
     "message": "Élément supprimé définitivement"
@@ -1491,7 +1491,7 @@
     "message": "Restaurer l'élément"
   },
   "restoreItemConfirmation": {
-    "message": "Êtes-vous sûr de vouloir restaurer cet élément ?"
+    "message": "Voulez-vous vraiment restaurer cet élément ?"
   },
   "restoredItem": {
     "message": "Élément restauré"
@@ -1500,7 +1500,7 @@
     "message": "Supprimer définitivement"
   },
   "vaultTimeoutLogOutConfirmation": {
-    "message": "La déconnexion supprimera tout accès à votre coffre et nécessitera une authentification en ligne après la période d'expiration. Êtes-vous sûr de vouloir utiliser ce paramètre ?"
+    "message": "La déconnexion supprimera tout accès à votre coffre et nécessitera une authentification en ligne après la période d'expiration. Voulez-vous vraiment utiliser ce paramètre ?"
   },
   "vaultTimeoutLogOutConfirmationTitle": {
     "message": "Confirmation de l'action lors de l'expiration du délai"
@@ -1584,19 +1584,19 @@
     "message": "Intégration dans le navigateur non supportée"
   },
   "browserIntegrationMasOnlyDesc": {
-    "message": "Malheureusement l'intégration avec le navigateur est uniquement supportée dans la version Mac App Store pour le moment."
+    "message": "Malheureusement, l'intégration avec le navigateur est uniquement supportée dans la version Mac App Store pour le moment."
   },
   "browserIntegrationWindowsStoreDesc": {
-    "message": "Malheureusement l'intégration avec le navigateur n'est pas supportée dans la version Windows Store pour le moment."
+    "message": "Malheureusement, l'intégration avec le navigateur n'est pas supportée dans la version Windows Store pour le moment."
   },
   "browserIntegrationLinuxDesc": {
-    "message": "L'intégration dans le navigateur n'est malheureusement pas supportée dans la version Linux pour le moment."
+    "message": "Malheureusement, l'intégration dans le navigateur n'est pas supportée dans la version Linux pour le moment."
   },
   "enableBrowserIntegrationFingerprint": {
     "message": "Exiger une vérification pour l'intégration avec le navigateur"
   },
   "enableBrowserIntegrationFingerprintDesc": {
-    "message": "Activez une couche de sécurité supplémentaire en exigeant la validation de la phrase d'empreinte du compte lors de l'établissement d'un lien entre l'application et votre navigateur. Lorsque cette option est activée, cela nécessite une intervention et une vérification de l'utilisateur à chaque fois qu'une connexion est établie."
+    "message": "Activez une couche de sécurité supplémentaire en exigeant la validation de la phrase d'empreinte du compte lors de l'établissement d'un lien entre l'application et votre navigateur. Lorsque cette option est activée, cela nécessite une intervention et une vérification de la personne à chaque fois qu'une connexion est établie."
   },
   "approve": {
     "message": "Accepter"
@@ -1632,7 +1632,7 @@
     "message": "En raison d'une politique d'entreprise, il vous est interdit d'enregistrer des éléments dans votre coffre personnel. Sélectionnez une organisation dans l'option Propriété et choisissez parmi les collections disponibles."
   },
   "hintEqualsPassword": {
-    "message": "Votre indice de mot de passe ne peut pas être identique à votre nom d'utilisateur."
+    "message": "Votre indice de mot de passe ne peut pas être identique à votre identifiant."
   },
   "personalOwnershipPolicyInEffect": {
     "message": "Une politique d'organisation affecte vos options de propriété."
@@ -1680,7 +1680,7 @@
     "description": "This text will be displayed after a Send has been accessed the maximum amount of times."
   },
   "maxAccessCountDesc": {
-    "message": "Si défini, les utilisateurs ne seront plus en mesure d'accéder à ce Send une fois que le nombre maximum d'accès sera atteint.",
+    "message": "Si défini, les membres ne seront plus en mesure d'accéder à ce Send une fois que le nombre maximum d'accès sera atteint.",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "currentAccessCount": {
@@ -1755,7 +1755,7 @@
     "message": "Personnalisé"
   },
   "deleteSendConfirmation": {
-    "message": "Êtes-vous sûr de vouloir supprimer ce Send ?",
+    "message": "Voulez-vous vraiment supprimer ce Send ?",
     "description": "'Send' is a noun and the name of a feature called 'Bitwarden Send'. It should not be translated."
   },
   "copySendLinkToClipboard": {
@@ -1786,7 +1786,7 @@
     "message": "Mot de passe supprimé"
   },
   "removePasswordConfirmation": {
-    "message": "Êtes-vous sûr de vouloir supprimer le mot de passe ?"
+    "message": "Voulez-vous vraiment supprimer le mot de passe ?"
   },
   "maxAccessCountReached": {
     "message": "Nombre maximum d'accès atteint"
@@ -1828,7 +1828,7 @@
     "message": "Mettre à jour le mot de passe principal"
   },
   "updateMasterPasswordWarning": {
-    "message": "Votre mot de passe principal a été récemment changé par un administrateur de votre organisation. Pour pouvoir accéder au coffre, vous devez le mettre à jour maintenant. En poursuivant, vous serez déconnecté de votre session actuelle et vous devrez vous reconnecter. Les sessions actives sur d'autres appareils peuvent rester actives pendant encore une heure."
+    "message": "Votre mot de passe principal a été récemment changé par une personne administrant votre organisation. Pour pouvoir accéder au coffre, vous devez le mettre à jour maintenant. En poursuivant, votre session va expirer et vous devrez vous reconnecter. Les sessions actives sur d'autres appareils peuvent rester actives pendant encore une heure."
   },
   "hours": {
     "message": "Heures"
@@ -1856,7 +1856,7 @@
     "message": "Inscription automatique"
   },
   "resetPasswordAutoEnrollInviteWarning": {
-    "message": "Cette organisation dispose d'une politique d'entreprise qui vous inscrira automatiquement à la réinitialisation du mot de passe. L'inscription permettra aux administrateurs de l'organisation de changer votre mot de passe principal."
+    "message": "Cette organisation dispose d'une politique d'entreprise qui vous inscrira automatiquement à la réinitialisation du mot de passe. L'inscription permettra aux membres administrant l'organisation de changer votre mot de passe principal."
   },
   "vaultExportDisabled": {
     "message": "Export du coffre supprimé"
@@ -1886,13 +1886,13 @@
     "message": "Quitter l'organisation"
   },
   "leaveOrganizationConfirmation": {
-    "message": "Êtes-vous sûr de vouloir quitter cette organisation ?"
+    "message": "Voulez-vous vraiment quitter cette organisation ?"
   },
   "leftOrganization": {
     "message": "Vous avez quitté l'organisation."
   },
   "ssoKeyConnectorError": {
-    "message": "Erreur du connecteur de clé: veuillez vérifier que le connecteur de clé est disponible et qu'il fonctionne correctement."
+    "message": "Erreur du connecteur de clé : veuillez vérifier que le connecteur de clé est disponible et qu'il fonctionne correctement."
   },
   "lockAllVaults": {
     "message": "Verrouiller tous les coffres"
@@ -1955,20 +1955,20 @@
     "message": "Type de mot de passe"
   },
   "regenerateUsername": {
-    "message": "Régénérer le nom d'utilisateur"
+    "message": "Régénérer l'identifiant"
   },
   "generateUsername": {
-    "message": "Générer le nom d'utilisateur"
+    "message": "Générer l'identifiant"
   },
   "usernameType": {
-    "message": "Type de nom d'utilisateur"
+    "message": "Type d'identifiant"
   },
   "plusAddressedEmail": {
     "message": "E-mail sous-adressé",
     "description": "Username generator option that appends a random sub-address to the username. For example: address+subaddress@email.com"
   },
   "plusAddressedEmailDesc": {
-    "message": "Utilisez les capacités de sous-adressage de votre fournisseur de courriel."
+    "message": "Utilisez les capacités de sous-adressage de votre gestionnaire de courriel."
   },
   "catchallEmail": {
     "message": "Collecteur d'email"
@@ -2020,10 +2020,10 @@
     "message": "L'organisation est désactivée."
   },
   "disabledOrganizationFilterError": {
-    "message": "Les éléments des Organisations désactivées ne sont pas accessibles. Contactez le propriétaire de votre Organisation pour obtenir de l'aide."
+    "message": "Les éléments des Organisations désactivées ne sont pas accessibles. Contactez la personne gérant votre Organisation pour obtenir de l'aide."
   },
   "neverLockWarning": {
-    "message": "Êtes-vous sûr de vouloir utiliser l'option \"Jamais\" ? Définir le verrouillage sur \"Jamais\" stocke la clé de chiffrement de votre coffre sur votre appareil. Si vous utilisez cette option, vous devez vous assurer de correctement protéger votre appareil."
+    "message": "Voulez-vous vraiment utiliser l'option \"Jamais\" ? Définir le verrouillage sur \"Jamais\" stocke la clé de chiffrement de votre coffre sur votre appareil. Si vous utilisez cette option, vous devez vous assurer de correctement protéger votre appareil."
   },
   "cardBrandMir": {
     "message": "Mir"
@@ -2044,7 +2044,7 @@
     "message": "Ce n'est pas vous ?"
   },
   "newAroundHere": {
-    "message": "Vous êtes nouveau ici ?"
+    "message": "Vous venez d'arriver ?"
   },
   "loggingInTo": {
     "message": "Connexion à $DOMAIN$",
