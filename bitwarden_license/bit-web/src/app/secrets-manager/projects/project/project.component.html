@@ -3,8 +3,9 @@
     <bit-breadcrumb [route]="['..']" icon="bwi-angle-left">{{ "projects" | i18n }}</bit-breadcrumb>
   </bit-breadcrumbs>
   <bit-tab-nav-bar label="Main">
-    <bit-tab-link [route]="['secrets']">Secrets</bit-tab-link>
-    <bit-tab-link [route]="['access']">Access</bit-tab-link>
+    <bit-tab-link [route]="['secrets']">{{ "secrets" | i18n }}</bit-tab-link>
+    <bit-tab-link [route]="['people']">{{ "people" | i18n }}</bit-tab-link>
+    <bit-tab-link [route]="['serviceAccounts']">{{ "serviceAccounts" | i18n }}</bit-tab-link>
   </bit-tab-nav-bar>
 </sm-header>
 <router-outlet></router-outlet>
