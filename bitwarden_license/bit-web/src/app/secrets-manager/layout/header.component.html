@@ -5,7 +5,7 @@
 >
   <div class="tw-flex tw-items-center tw-gap-2">
     <div class="tw-flex tw-flex-1 tw-flex-col">
-      <ng-content select="bit-breadcrumbs"></ng-content>
+      <ng-content select="[slot=breadcrumbs]"></ng-content>
       <h1
         class="tw-m-0 tw-mr-2 tw-max-w-screen-md tw-truncate tw-text-3xl tw-font-semibold"
         [title]="title || (routeData.titleId | i18n)"
@@ -15,7 +15,7 @@
     </div>
     <div class="tw-mb-auto tw-ml-auto tw-flex tw-flex-col tw-gap-6">
       <div class="tw-flex tw-min-w-max tw-items-center tw-gap-2">
-        <ng-content select="[bitInput]"></ng-content>
+        <ng-content select="[slot=search]"></ng-content>
         <sm-new-menu></sm-new-menu>
         <product-switcher></product-switcher>
         <ng-container *ngIf="account$ | async as account">
@@ -71,11 +71,11 @@
         </ng-container>
       </div>
       <div class="tw-mr-auto">
-        <ng-content select="button"></ng-content>
+        <ng-content></ng-content>
       </div>
     </div>
   </div>
   <div #tabs class="-tw-mx-4">
-    <ng-content select="bit-tab-nav-bar"></ng-content>
+    <ng-content select="[slot=tabs]"></ng-content>
   </div>
 </header>

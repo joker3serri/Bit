@@ -1,5 +1,5 @@
 <sm-header>
-  <input bitInput [placeholder]="'searchProjects' | i18n" />
+  <input slot="search" bitInput [placeholder]="'searchProjects' | i18n" />
 </sm-header>
 <sm-projects-list
   (newProjectEvent)="openNewProjectDialog()"
