@@ -43,11 +43,7 @@ export class AccessPoliciesComponent {
     }
   }
 
-  deleteHandler = async (accessPolicyId: string) => {
+  delete = (accessPolicyId: string) => async () => {
     await this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
   };
-
-  deleteHandlerCreation(accessPolicyId: string) {
-    return () => this.deleteHandler(accessPolicyId);
-  }
 }
