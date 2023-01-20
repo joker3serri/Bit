@@ -1,4 +1,13 @@
-import { Directive, ElementRef, HostBinding, Input, NgZone, Optional, Self } from "@angular/core";
+import {
+  Directive,
+  ElementRef,
+  HostBinding,
+  HostListener,
+  Input,
+  NgZone,
+  Optional,
+  Self,
+} from "@angular/core";
 import { NgControl, Validators } from "@angular/forms";
 
 import { BitFormFieldControl, InputTypes } from "../form-field/form-field-control";
@@ -69,15 +78,27 @@ export class BitInputDirective implements BitFormFieldControl {
     return this.id;
   }
 
+  private isActive = true;
+  @HostListener("blur")
+  onBlur() {
+    this.isActive = true;
+  }
+
+  @HostListener("input")
+  onInput() {
+    this.isActive = false;
+  }
+
   get hasError() {
     if (this.showErrorsWhenDisabled) {
+      // TODO: test if I need this.isActive on my check here
       return (
         (this.ngControl?.status === "INVALID" || this.ngControl?.status === "DISABLED") &&
         this.ngControl?.touched &&
         this.ngControl?.errors != null
       );
     } else {
-      return this.ngControl?.status === "INVALID" && this.ngControl?.touched;
+      return this.ngControl?.status === "INVALID" && this.ngControl?.touched && this.isActive;
     }
   }
 
