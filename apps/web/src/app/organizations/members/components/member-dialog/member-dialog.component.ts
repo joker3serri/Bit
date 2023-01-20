@@ -3,8 +3,6 @@ import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { combineLatest, of, shareReplay, Subject, switchMap, takeUntil } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
@@ -117,9 +115,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   constructor(
     @Inject(DIALOG_DATA) protected params: MemberDialogParams,
     private dialogRef: DialogRef<MemberDialogResult>,
-    private apiService: ApiService,
     private i18nService: I18nService,
-    private collectionService: CollectionService,
     private platformUtilsService: PlatformUtilsService,
     private organizationService: OrganizationService,
     private formBuilder: FormBuilder,
