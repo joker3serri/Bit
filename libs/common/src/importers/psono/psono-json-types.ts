@@ -8,8 +8,8 @@ export type PsonoItemTypes =
   | BookmarkEntry;
 
 export interface PsonoJsonExport {
-  folders?: FoldersEntity[] | null;
-  items?: PsonoItemTypes[] | null;
+  folders?: FoldersEntity[];
+  items?: PsonoItemTypes[];
 }
 
 export interface FoldersEntity {
