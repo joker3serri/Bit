@@ -305,6 +305,9 @@
   "searchMembers": {
     "message": "Search members"
   },
+  "searchGroups": {
+    "message": "Search groups"
+  },
   "allItems": {
     "message": "All items"
   },
