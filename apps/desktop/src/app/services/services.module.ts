@@ -53,7 +53,7 @@ import { NativeMessageHandlerService } from "../../services/native-message-handl
 import { NativeMessagingService } from "../../services/native-messaging.service";
 import { PasswordRepromptService } from "../../services/password-reprompt.service";
 import { StateService } from "../../services/state.service";
-import { LoginGuard } from "../guards/login.guard";
+import { LoginGuard } from "../../auth/guards/login.guard";
 import { SearchBarService } from "../layout/search/search-bar.service";
 
 import { DesktopFileDownloadService } from "./desktop-file-download.service";
