@@ -3,9 +3,8 @@ import { Injectable } from "@angular/core";
 import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/passwordReprompt.service";
 
-import { PasswordRepromptComponent } from "../vault/components/password-reprompt.component";
-
-import { ModalService } from "./modal.service";
+import { ModalService } from "../../services/modal.service";
+import { PasswordRepromptComponent } from "../components/password-reprompt.component";
 
 /**
  * Used to verify the user's Master Password for the "Master Password Re-prompt" feature only.

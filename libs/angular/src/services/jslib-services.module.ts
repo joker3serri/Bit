@@ -127,6 +127,7 @@ import { WebCryptoFunctionService } from "@bitwarden/common/services/webCryptoFu
 import { AuthGuard } from "../guards/auth.guard";
 import { LockGuard } from "../guards/lock.guard";
 import { UnauthGuard } from "../guards/unauth.guard";
+import { PasswordRepromptService } from "../vault/services/passwordReprompt.service";
 
 import { BroadcasterService } from "./broadcaster.service";
 import {
@@ -142,7 +143,6 @@ import {
   WINDOW,
 } from "./injection-tokens";
 import { ModalService } from "./modal.service";
-import { PasswordRepromptService } from "./passwordReprompt.service";
 import { ThemingService } from "./theming/theming.service";
 import { AbstractThemingService } from "./theming/theming.service.abstraction";
 
