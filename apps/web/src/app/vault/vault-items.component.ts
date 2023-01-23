@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
 import { lastValueFrom } from "rxjs";
 
-import { VaultItemsComponent as BaseVaultItemsComponent } from "@bitwarden/angular/components/vault-items.component";
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
+import { VaultItemsComponent as BaseVaultItemsComponent } from "@bitwarden/angular/vault/components/vault-items.component";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";

@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, NgZone, OnDestroy, OnInit } from "@angula
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { VaultItemsComponent as BaseVaultItemsComponent } from "@bitwarden/angular/components/vault-items.component";
+import { VaultItemsComponent as BaseVaultItemsComponent } from "@bitwarden/angular/vault/components/vault-items.component";
 import { VaultFilter } from "@bitwarden/angular/vault/vault-filter/models/vault-filter.model";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
