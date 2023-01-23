@@ -265,7 +265,7 @@
                       // START MODIFICATION
                       var elId = JSON.stringify(el.id);
                       var labelsByReferencedId = queryDocAll(theDoc, theDoc.body, function (node) {
-                          return node.nodeName === 'LABEL' && node.attributes.for && node.attributes.for.value === elId;
+                          return node.nodeName === 'LABEL' && node.htmlFor === elId;
                       });
                       theLabels = theLabels.concat(labelsByReferencedId);
                       // END MODIFICATION
@@ -275,7 +275,7 @@
                       // START MODIFICATION
                       var elName = JSON.stringify(el.name);
                       docLabel = queryDocAll(theDoc, theDoc.body, function (node) {
-                          return node.nodeName === 'LABEL' && node.attributes.for && node.attributes.for.value === elName;
+                          return node.nodeName === 'LABEL' && node.htmlFor === elName;
                       });
                       // END MODIFICATION
 
@@ -499,7 +499,7 @@
           // get proper page title. maybe they are using the special meta tag?
           // START MODIFICATION
           var theTitle = queryDoc(theDoc, theDoc, function (node) {
-              return node.attributes['data-onepassword-title'];
+              return node.hasAttribute('data-onepassword-title');
           });
           // END MODIFICATION
           if (theTitle && theTitle.dataset[DISPLAY_TITLE_ATTRIBUE]) {
@@ -678,19 +678,17 @@
         file: true,
       };
 
-      function isRelevantInputField(el) {
-        if (
-          el.attributes.type &&
-          ignoredInputTypes.hasOwnProperty(el.attributes.type.value.toLowerCase())
-        ) {
+      /*
+       * inputEl MUST BE an instanceof HTMLInputElement, else inputEl.type.toLowerCase will throw an error
+       */
+      function isRelevantInputField(inputEl) {
+        if (inputEl.hasAttribute('data-bwignore')) {
           return false;
         }
 
-        if (el.attributes['data-bwignore']) {
-          return false;
-        }
+        const isIgnoredInputType = ignoredInputTypes.hasOwnProperty(inputEl.type.toLowerCase());
 
-        return true;
+        return !isIgnoredInputType;
       }
 
       // get all the form elements that we care about
@@ -702,7 +700,7 @@
                   case 'SELECT':
                       return true;
                   case 'SPAN':
-                      return el.attributes['data-bwautofill'];
+                      return el.hasAttribute('data-bwautofill');
                   case 'INPUT':
                       return isRelevantInputField(el);
                   default:
@@ -766,9 +764,7 @@
 
       function queryPasswordInputs() {
         return queryDocAll(document, document.body, function (el) {
-          return el.nodeName === 'INPUT' &&
-            el.attributes.type &&
-            el.attributes.type.value.toLowerCase() === 'password';
+          return el.nodeName === 'INPUT' && el.type.toLowerCase() === 'password';
         })
       }
 
@@ -1070,8 +1066,7 @@
           var r = RegExp('((\\\\b|_|-)pin(\\\\b|_|-)|password|passwort|kennwort|passe|contraseña|senha|密码|adgangskode|hasło|wachtwoord)', 'i');
           return queryDocAll(document, document.body, function (el) {
               return el.nodeName === 'INPUT' &&
-                  el.attributes.type &&
-                  el.attributes.type.value.toLowerCase() === 'text' &&
+                  el.type.toLowerCase() === 'text' &&
                   el.value &&
                   r.test(el.value);
           });
@@ -1132,7 +1127,7 @@
                       case 'BUTTON':
                           return el.opid === theOpId;
                       case 'SPAN':
-                          return el.attributes['data-bwautofill'] && el.opid === theOpId;
+                          return el.hasAttribute('data-bwautofill') && el.opid === theOpId;
                   }
 
                   return false;
