@@ -8,6 +8,8 @@ import { OrganizationService } from "@bitwarden/common/abstractions/organization
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { VerificationType } from "@bitwarden/common/enums/verificationType";
+import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
 
 import { SMExportService } from "./sm-export.service";
 
@@ -33,7 +35,9 @@ export class SMExportComponent implements OnInit, OnDestroy {
     private organizationService: OrganizationService,
     private userVerificationService: UserVerificationService,
     private platformUtilsService: PlatformUtilsService,
-    private SMExportService: SMExportService
+    private SMExportService: SMExportService,
+    protected fileDownloadService: FileDownloadService,
+    private logService: LogService
   ) {}
 
   async ngOnInit() {
@@ -77,11 +81,54 @@ export class SMExportComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let exportData = await this.SMExportService.getExport(
-      this.orgId,
-      this.formGroup.get("format").value
-    );
-
-    // TODO: download the file here
+    this.doExport();
   };
+
+  protected async doExport() {
+    try {
+      let exportData = await this.SMExportService.getExport(
+        this.orgId,
+        this.formGroup.get("format").value
+      );
+
+      this.downloadFile(exportData, this.formGroup.get("format").value);
+
+      this.formGroup.get("masterPassword").setValue("");
+      this.formGroup.get("masterPassword").setErrors(null);
+    } catch (e) {
+      this.logService.error(e);
+    }
+  }
+
+  private downloadFile(data: string, format: string): void {
+    const fileName = this.getFileName(null, format);
+    this.fileDownloadService.download({
+      fileName: fileName,
+      blobData: data,
+      blobOptions: { type: "text/plain" },
+    });
+  }
+
+  private getFileName(prefix: string = null, extension = "json"): string {
+    const now = new Date();
+    const dateString =
+      now.getFullYear() +
+      "" +
+      this.padNumber(now.getMonth() + 1, 2) +
+      "" +
+      this.padNumber(now.getDate(), 2) +
+      this.padNumber(now.getHours(), 2) +
+      "" +
+      this.padNumber(now.getMinutes(), 2) +
+      this.padNumber(now.getSeconds(), 2);
+
+    return "bitwarden" + (prefix ? "_" + prefix : "") + "_export_" + dateString + "." + extension;
+  }
+
+  private padNumber(num: number, width: number, padCharacter = "0"): string {
+    const numString = num.toString();
+    return numString.length >= width
+      ? numString
+      : new Array(width - numString.length + 1).join(padCharacter) + numString;
+  }
 }
