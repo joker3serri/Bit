@@ -7,7 +7,7 @@ import {
   Output,
 } from "@angular/core";
 
-import { ViewComponent as BaseViewComponent } from "@bitwarden/angular/components/view.component";
+import { ViewComponent as BaseViewComponent } from "@bitwarden/angular/vault/components/view.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
