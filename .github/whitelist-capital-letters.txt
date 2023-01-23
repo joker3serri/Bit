@@ -129,7 +129,6 @@
 ./libs/common/src/abstractions/appId.service.ts
 ./libs/common/src/abstractions/usernameGeneration.service.ts
 ./libs/common/src/abstractions/twoFactor.service.ts
-./libs/common/src/abstractions/sync/syncNotifier.service.abstraction.ts
 ./libs/common/src/services/userVerification/userVerification-api.service.ts
 ./libs/common/src/services/userVerification/userVerification.service.ts
 ./libs/common/src/services/azureFileUpload.service.ts
