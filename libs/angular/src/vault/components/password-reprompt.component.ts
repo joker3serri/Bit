@@ -4,7 +4,7 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 
-import { ModalRef } from "./modal/modal.ref";
+import { ModalRef } from "../../components/modal/modal.ref";
 
 /**
  * Used to verify the user's Master Password for the "Master Password Re-prompt" feature only.
