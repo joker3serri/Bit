@@ -5702,9 +5702,6 @@
   "serviceAccounts":{
     "message": "Service accounts"
   },
-  "new":{
-    "message": "New"
-  },
   "secrets":{
     "message":"Secrets"
   },
