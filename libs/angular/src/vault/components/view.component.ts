@@ -18,7 +18,6 @@ import { EventCollectionService } from "@bitwarden/common/abstractions/event/eve
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PasswordRepromptService } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TokenService } from "@bitwarden/common/abstractions/token.service";
@@ -35,6 +34,7 @@ import { FolderView } from "@bitwarden/common/models/view/folder.view";
 import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 
 const BroadcasterSubscriptionId = "ViewComponent";
 

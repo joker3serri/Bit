@@ -16,12 +16,12 @@ import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.s
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { PasswordRepromptService } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { DialogService } from "@bitwarden/components";
 

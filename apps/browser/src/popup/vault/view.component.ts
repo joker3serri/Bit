@@ -13,7 +13,6 @@ import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { PasswordRepromptService } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TokenService } from "@bitwarden/common/abstractions/token.service";
@@ -23,6 +22,7 @@ import { Cipher } from "@bitwarden/common/models/domain/cipher";
 import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { AutofillService } from "../../services/abstractions/autofill.service";

@@ -7,7 +7,6 @@ import { EventCollectionService } from "@bitwarden/common/abstractions/event/eve
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { PasswordRepromptService } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
@@ -21,6 +20,7 @@ import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { DialogService, Icons } from "@bitwarden/components";
 
 import { CollectionAdminView, GroupView } from "../organizations/core";

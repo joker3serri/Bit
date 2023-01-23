@@ -26,7 +26,6 @@ import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/abstr
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
@@ -57,6 +56,7 @@ import { SearchService } from "@bitwarden/common/services/search.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import MainBackground from "../../background/main.background";

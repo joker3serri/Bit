@@ -2,7 +2,6 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { PasswordRepromptService } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
@@ -10,6 +9,7 @@ import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
+import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 
 @Component({
   selector: "app-action-buttons",

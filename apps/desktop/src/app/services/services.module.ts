@@ -24,7 +24,6 @@ import {
 } from "@bitwarden/common/abstractions/log.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/abstractions/login.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/abstractions/messaging.service";
-import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PasswordGenerationService as PasswordGenerationServiceAbstraction } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService as PolicyServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
@@ -39,6 +38,7 @@ import { LoginService } from "@bitwarden/common/services/login.service";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 import { SystemService } from "@bitwarden/common/services/system.service";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 
 import { Account } from "../../models/account";
 import { ElectronCryptoService } from "../../services/electron-crypto.service";
