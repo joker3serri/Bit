@@ -72,6 +72,7 @@ const main = {
       patterns: [
         "./src/package.json",
         { from: "./src/images", to: "images" },
+        { from: "./src/auth/images", to: "images" },
         { from: "./src/locales", to: "locales" },
       ],
     }),
