@@ -739,11 +739,9 @@ export default class MainBackground {
   }
 
   async reseedStorage() {
-    if (
-      !this.platformUtilsService.isChrome() &&
-      !this.platformUtilsService.isVivaldi() &&
-      !this.platformUtilsService.isOpera()
-    ) {
+    // Skipping Safari as it does not support retrieving all data from localStorage via an empty key
+    // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/storage/StorageArea/get
+    if (this.platformUtilsService.isSafari) {
       return;
     }
 
