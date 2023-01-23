@@ -89,6 +89,30 @@ export class VaultItemsComponent {
     return !this.searchPending && this.searchService.isSearchable(this.searchText);
   }
 
+  previousCipher() {
+    if (this.activeCipherId === null && this.ciphers.length > 0) {
+      return this.ciphers[this.ciphers.length - 1];
+    }
+
+    const current_id = this.currentCipherIndex();
+    if (current_id <= 0) {
+      return undefined;
+    }
+    return this.ciphers[current_id - 1];
+  }
+
+  nextCipher() {
+    if (this.activeCipherId === null && this.ciphers.length > 0) {
+      return this.ciphers[0];
+    }
+
+    const current_id = this.currentCipherIndex();
+    if (current_id < 0 || current_id + 1 >= this.ciphers.length) {
+      return undefined;
+    }
+    return this.ciphers[current_id + 1];
+  }
+
   protected deletedFilter: (cipher: CipherView) => boolean = (c) => c.isDeleted === this.deleted;
 
   protected async doSearch(indexedCiphers?: CipherView[]) {
@@ -97,5 +121,9 @@ export class VaultItemsComponent {
       [this.filter, this.deletedFilter],
       indexedCiphers
     );
+  }
+
+  protected currentCipherIndex() {
+    return this.ciphers.findIndex((cipher) => cipher.id == this.activeCipherId);
   }
 }

@@ -1,6 +1,7 @@
 import {
   ChangeDetectorRef,
   Component,
+  HostListener,
   NgZone,
   OnDestroy,
   OnInit,
@@ -213,6 +214,29 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.searchBarService.setEnabled(false);
     this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
     document.body.classList.add("layout_frontend");
+  }
+
+  @HostListener("window:keydown", ["$event"])
+  async handleKeyDown(event: KeyboardEvent) {
+    if (!event.ctrlKey && event.code == "Escape") {
+      await this.closeCipher();
+    } else if (!event.ctrlKey && event.code == "ArrowUp") {
+      const cipher = this.vaultItemsComponent.previousCipher();
+      if (cipher) {
+        this.cipherId = cipher.id;
+        this.action = "view";
+        this.go();
+        await this.vaultItemsComponent.refresh();
+      }
+    } else if (!event.ctrlKey && event.code == "ArrowDown") {
+      const cipher = this.vaultItemsComponent.nextCipher();
+      if (cipher) {
+        this.cipherId = cipher.id;
+        this.action = "view";
+        this.go();
+        await this.vaultItemsComponent.refresh();
+      }
+    }
   }
 
   async load() {
@@ -433,6 +457,13 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async deletedCipher(cipher: CipherView) {
+    this.cipherId = null;
+    this.action = null;
+    this.go();
+    await this.vaultItemsComponent.refresh();
+  }
+
+  async closeCipher() {
     this.cipherId = null;
     this.action = null;
     this.go();
