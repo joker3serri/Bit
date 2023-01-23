@@ -2,8 +2,6 @@ import { ApiService } from "../../abstractions/api.service";
 import { CipherService } from "../../abstractions/cipher.service";
 import { CollectionService } from "../../abstractions/collection.service";
 import { CryptoService } from "../../abstractions/crypto.service";
-import { FolderApiServiceAbstraction } from "../../abstractions/folder/folder-api.service.abstraction";
-import { InternalFolderService } from "../../abstractions/folder/folder.service.abstraction";
 import { KeyConnectorService } from "../../abstractions/keyConnector.service";
 import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
@@ -34,6 +32,8 @@ import {
 import { PolicyResponse } from "../../models/response/policy.response";
 import { ProfileResponse } from "../../models/response/profile.response";
 import { SendResponse } from "../../models/response/send.response";
+import { FolderApiServiceAbstraction } from "../../vault/abstractions/folder/folder-api.service.abstraction";
+import { InternalFolderService } from "../../vault/abstractions/folder/folder.service.abstraction";
 
 export class SyncService implements SyncServiceAbstraction {
   syncInProgress = false;

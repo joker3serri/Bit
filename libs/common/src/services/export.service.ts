@@ -8,7 +8,6 @@ import {
   ExportFormat,
   ExportService as ExportServiceAbstraction,
 } from "../abstractions/export.service";
-import { FolderService } from "../abstractions/folder/folder.service.abstraction";
 import { CipherType } from "../enums/cipherType";
 import { DEFAULT_KDF_ITERATIONS, KdfType } from "../enums/kdfType";
 import { Utils } from "../misc/utils";
@@ -26,6 +25,7 @@ import { CipherView } from "../models/view/cipher.view";
 import { CollectionView } from "../models/view/collection.view";
 import { EventView } from "../models/view/event.view";
 import { FolderView } from "../models/view/folder.view";
+import { FolderService } from "../vault/abstractions/folder/folder.service.abstraction";
 
 export class ExportService implements ExportServiceAbstraction {
   constructor(

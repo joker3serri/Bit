@@ -2,7 +2,6 @@ import { ApiService } from "../abstractions/api.service";
 import { CipherService } from "../abstractions/cipher.service";
 import { CollectionService } from "../abstractions/collection.service";
 import { CryptoService } from "../abstractions/crypto.service";
-import { FolderService } from "../abstractions/folder/folder.service.abstraction";
 import { I18nService } from "../abstractions/i18n.service";
 import { ImportService as ImportServiceAbstraction } from "../abstractions/import.service";
 import { CipherType } from "../enums/cipherType";
@@ -81,6 +80,7 @@ import { ImportOrganizationCiphersRequest } from "../models/request/import-organ
 import { KvpRequest } from "../models/request/kvp.request";
 import { ErrorResponse } from "../models/response/error.response";
 import { CipherView } from "../models/view/cipher.view";
+import { FolderService } from "../vault/abstractions/folder/folder.service.abstraction";
 
 export class ImportService implements ImportServiceAbstraction {
   featuredImportOptions = featuredImportOptions as readonly ImportOption[];
