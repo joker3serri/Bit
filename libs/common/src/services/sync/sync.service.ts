@@ -11,7 +11,6 @@ import { ProviderService } from "../../abstractions/provider.service";
 import { SendService } from "../../abstractions/send.service";
 import { SettingsService } from "../../abstractions/settings.service";
 import { StateService } from "../../abstractions/state.service";
-import { SyncService as SyncServiceAbstraction } from "../../abstractions/sync/sync.service.abstraction";
 import { sequentialize } from "../../misc/sequentialize";
 import { CipherData } from "../../models/data/cipher.data";
 import { CollectionData } from "../../models/data/collection.data";
@@ -34,6 +33,7 @@ import { ProfileResponse } from "../../models/response/profile.response";
 import { SendResponse } from "../../models/response/send.response";
 import { FolderApiServiceAbstraction } from "../../vault/abstractions/folder/folder-api.service.abstraction";
 import { InternalFolderService } from "../../vault/abstractions/folder/folder.service.abstraction";
+import { SyncService as SyncServiceAbstraction } from "../../vault/abstractions/sync/sync.service.abstraction";
 
 export class SyncService implements SyncServiceAbstraction {
   syncInProgress = false;
