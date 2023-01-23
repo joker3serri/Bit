@@ -9,6 +9,9 @@ import { ServiceAccountService } from "./service-account.service";
   templateUrl: "./service-account.component.html",
 })
 export class ServiceAccountComponent {
+  /**
+   * TODO: remove when a server method is available that fetches a service account by ID
+   */
   protected serviceAccount$ = this.route.params.pipe(
     switchMap((params) =>
       this.serviceAccountService
