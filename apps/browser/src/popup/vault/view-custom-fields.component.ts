@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { ViewCustomFieldsComponent as BaseViewCustomFieldsComponent } from "@bitwarden/angular/components/view-custom-fields.component";
+import { ViewCustomFieldsComponent as BaseViewCustomFieldsComponent } from "@bitwarden/angular/vault/components/view-custom-fields.component";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 
 @Component({
