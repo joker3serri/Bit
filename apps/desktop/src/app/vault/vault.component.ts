@@ -17,7 +17,7 @@ import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.s
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";

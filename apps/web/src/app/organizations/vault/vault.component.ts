@@ -17,7 +17,7 @@ import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";

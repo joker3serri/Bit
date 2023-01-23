@@ -27,8 +27,8 @@ import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/abstr
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
-import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";

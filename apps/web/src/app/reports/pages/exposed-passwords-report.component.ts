@@ -4,7 +4,7 @@ import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 

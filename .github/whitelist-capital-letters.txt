@@ -120,7 +120,6 @@
 ./libs/common/src/abstractions/fileDownload/fileDownload.service.ts
 ./libs/common/src/abstractions/fileDownload/fileDownloadRequest.ts
 ./libs/common/src/abstractions/passwordGeneration.service.ts
-./libs/common/src/abstractions/passwordReprompt.service.ts
 ./libs/common/src/abstractions/formValidationErrors.service.ts
 ./libs/common/src/abstractions/vaultTimeout/vaultTimeoutSettings.service.ts
 ./libs/common/src/abstractions/vaultTimeout/vaultTimeout.service.ts

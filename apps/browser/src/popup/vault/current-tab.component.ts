@@ -7,7 +7,7 @@ import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.s
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";

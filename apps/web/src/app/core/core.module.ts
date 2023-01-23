@@ -15,7 +15,7 @@ import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/abstractions/login.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/abstractions/messaging.service";
-import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService as BaseStateServiceAbstraction } from "@bitwarden/common/abstractions/state.service";
 import { StateMigrationService as StateMigrationServiceAbstraction } from "@bitwarden/common/abstractions/stateMigration.service";

@@ -9,7 +9,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";

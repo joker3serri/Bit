@@ -5,7 +5,7 @@ import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 
 // eslint-disable-next-line no-restricted-imports

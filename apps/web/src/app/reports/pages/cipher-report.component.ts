@@ -2,7 +2,7 @@ import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
+import { PasswordRepromptService } from "@bitwarden/common/abstractions/password-reprompt.service";
 import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
