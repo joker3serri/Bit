@@ -12,7 +12,7 @@ import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserTy
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
-import { BitValidators, DialogService } from "@bitwarden/components";
+import { DialogService } from "@bitwarden/components";
 
 import {
   CollectionAccessSelectionView,
@@ -30,6 +30,8 @@ import {
   convertToSelectionView,
   PermissionMode,
 } from "../../../shared/components/access-selector";
+
+import { commaSeparatedEmails } from "./validators/comma-separated-emails.validator";
 
 export enum MemberDialogTab {
   Role = 0,
@@ -73,7 +75,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   protected groupAccessItems: AccessItemView[] = [];
   protected tabIndex: MemberDialogTab;
   protected formGroup = this.formBuilder.group({
-    emails: ["", [Validators.required, BitValidators.commaSeparatedEmails]],
+    emails: ["", [Validators.required, commaSeparatedEmails]],
     type: OrganizationUserType.User,
     accessAllCollections: false,
     access: [[] as AccessItemValue[]],
@@ -328,6 +330,12 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     } else {
       userView.id = this.params.organizationUserId;
       const emails = [...new Set(this.formGroup.value.emails.trim().split(/\s*,\s*/))];
+      if (emails.length > 20) {
+        this.formGroup.controls.emails.setErrors({
+          tooManyEmails: { message: this.i18nService.t("tooManyEmails", 20) },
+        });
+        return;
+      }
       await this.userService.invite(emails, userView);
     }
 

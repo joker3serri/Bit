@@ -13,5 +13,5 @@ export function commaSeparatedEmails(control: AbstractControl): ValidationErrors
   if (control.value === "" || !control.value || validateEmails(control.value)) {
     return null;
   }
-  return { multipleEmails: true };
+  return { multipleEmails: { message: "multipleInputEmails" } };
 }
