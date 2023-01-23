@@ -1,8 +1,8 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 
-import { DeprecatedVaultFilterService as DeprecatedVaultFilterServiceAbstraction } from "@bitwarden/angular/abstractions/deprecated-vault-filter.service";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { DeprecatedVaultFilterService as DeprecatedVaultFilterServiceAbstraction } from "@bitwarden/angular/vault/abstractions/deprecated-vault-filter.service";
 import { VaultFilterService } from "@bitwarden/angular/vault/vault-filter/services/vault-filter.service";
 
 import { CollectionFilterComponent } from "./filters/collection-filter.component";

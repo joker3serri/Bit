@@ -17,7 +17,7 @@ import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/models/view/folder.view";
 
-import { DeprecatedVaultFilterService as DeprecatedVaultFilterServiceAbstraction } from "../../../abstractions/deprecated-vault-filter.service";
+import { DeprecatedVaultFilterService as DeprecatedVaultFilterServiceAbstraction } from "../../abstractions/deprecated-vault-filter.service";
 import { DynamicTreeNode } from "../models/dynamic-tree-node.model";
 
 const NestingDelimiter = "/";

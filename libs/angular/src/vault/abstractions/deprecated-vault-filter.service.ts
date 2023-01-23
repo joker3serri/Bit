@@ -4,7 +4,7 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/models/view/folder.view";
 
-import { DynamicTreeNode } from "../vault/vault-filter/models/dynamic-tree-node.model";
+import { DynamicTreeNode } from "../vault-filter/models/dynamic-tree-node.model";
 
 /**
  * @deprecated August 30 2022: Use new VaultFilterService with observables
