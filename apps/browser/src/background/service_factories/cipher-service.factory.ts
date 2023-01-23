@@ -1,6 +1,6 @@
-import { CipherService as AbstractCipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { CipherService } from "@bitwarden/common/services/cipher.service";
+import { CipherService as AbstractCipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 
 import { apiServiceFactory, ApiServiceInitOptions } from "./api-service.factory";
 import { cryptoServiceFactory, CryptoServiceInitOptions } from "./crypto-service.factory";

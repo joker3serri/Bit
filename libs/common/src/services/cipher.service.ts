@@ -1,7 +1,6 @@
 import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "../abstractions/api.service";
-import { CipherService as CipherServiceAbstraction } from "../abstractions/cipher.service";
 import { CryptoService } from "../abstractions/crypto.service";
 import { EncryptService } from "../abstractions/encrypt.service";
 import { FileUploadService } from "../abstractions/fileUpload.service";
@@ -48,6 +47,7 @@ import { CipherView } from "../models/view/cipher.view";
 import { FieldView } from "../models/view/field.view";
 import { PasswordHistoryView } from "../models/view/password-history.view";
 import { View } from "../models/view/view";
+import { CipherService as CipherServiceAbstraction } from "../vault/abstractions/cipher.service";
 
 const DomainMatchBlacklist = new Map<string, Set<string>>([
   ["google.com", new Set(["script.google.com"])],

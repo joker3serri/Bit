@@ -1,5 +1,4 @@
 import { ApiService } from "../abstractions/api.service";
-import { CipherService } from "../abstractions/cipher.service";
 import { CollectionService } from "../abstractions/collection.service";
 import { CryptoService } from "../abstractions/crypto.service";
 import { I18nService } from "../abstractions/i18n.service";
@@ -80,6 +79,7 @@ import { ImportOrganizationCiphersRequest } from "../models/request/import-organ
 import { KvpRequest } from "../models/request/kvp.request";
 import { ErrorResponse } from "../models/response/error.response";
 import { CipherView } from "../models/view/cipher.view";
+import { CipherService } from "../vault/abstractions/cipher.service";
 import { FolderService } from "../vault/abstractions/folder/folder.service.abstraction";
 
 export class ImportService implements ImportServiceAbstraction {

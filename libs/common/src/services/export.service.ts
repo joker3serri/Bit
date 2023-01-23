@@ -1,7 +1,6 @@
 import * as papa from "papaparse";
 
 import { ApiService } from "../abstractions/api.service";
-import { CipherService } from "../abstractions/cipher.service";
 import { CryptoService } from "../abstractions/crypto.service";
 import { CryptoFunctionService } from "../abstractions/cryptoFunction.service";
 import {
@@ -25,6 +24,7 @@ import { CipherView } from "../models/view/cipher.view";
 import { CollectionView } from "../models/view/collection.view";
 import { EventView } from "../models/view/event.view";
 import { FolderView } from "../models/view/folder.view";
+import { CipherService } from "../vault/abstractions/cipher.service";
 import { FolderService } from "../vault/abstractions/folder/folder.service.abstraction";
 
 export class ExportService implements ExportServiceAbstraction {

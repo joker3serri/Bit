@@ -1,5 +1,4 @@
 import { ApiService } from "../../abstractions/api.service";
-import { CipherService } from "../../abstractions/cipher.service";
 import { CollectionService } from "../../abstractions/collection.service";
 import { CryptoService } from "../../abstractions/crypto.service";
 import { KeyConnectorService } from "../../abstractions/keyConnector.service";
@@ -31,6 +30,7 @@ import {
 import { PolicyResponse } from "../../models/response/policy.response";
 import { ProfileResponse } from "../../models/response/profile.response";
 import { SendResponse } from "../../models/response/send.response";
+import { CipherService } from "../../vault/abstractions/cipher.service";
 import { FolderApiServiceAbstraction } from "../../vault/abstractions/folder/folder-api.service.abstraction";
 import { InternalFolderService } from "../../vault/abstractions/folder/folder.service.abstraction";
 import { SyncService as SyncServiceAbstraction } from "../../vault/abstractions/sync/sync.service.abstraction";

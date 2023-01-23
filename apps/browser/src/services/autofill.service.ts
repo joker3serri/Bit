@@ -1,4 +1,3 @@
-import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
@@ -9,6 +8,7 @@ import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { FieldView } from "@bitwarden/common/models/view/field.view";
+import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 
 import { BrowserApi } from "../browser/browserApi";
 import AutofillField from "../models/autofillField";

@@ -1,6 +1,5 @@
 import { BehaviorSubject, concatMap } from "rxjs";
 
-import { CipherService } from "../../abstractions/cipher.service";
 import { CryptoService } from "../../abstractions/crypto.service";
 import { I18nService } from "../../abstractions/i18n.service";
 import { StateService } from "../../abstractions/state.service";
@@ -10,6 +9,7 @@ import { FolderData } from "../../models/data/folder.data";
 import { Folder } from "../../models/domain/folder";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { FolderView } from "../../models/view/folder.view";
+import { CipherService } from "../../vault/abstractions/cipher.service";
 import { InternalFolderService as InternalFolderServiceAbstraction } from "../../vault/abstractions/folder/folder.service.abstraction";
 
 export class FolderService implements InternalFolderServiceAbstraction {
