@@ -134,6 +134,7 @@ const plugins = [
       { from: "./src/404.html" },
       { from: "./src/404", to: "404" },
       { from: "./src/images", to: "images" },
+      { from: "./src/auth/images", to: "images" },
       { from: "./src/locales", to: "locales" },
       { from: "../../node_modules/qrious/dist/qrious.min.js", to: "scripts" },
       { from: "../../node_modules/braintree-web-drop-in/dist/browser/dropin.js", to: "scripts" },
