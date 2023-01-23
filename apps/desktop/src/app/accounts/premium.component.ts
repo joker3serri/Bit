@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 
-import { PremiumComponent as BasePremiumComponent } from "@bitwarden/angular/components/premium.component";
+import { PremiumComponent as BasePremiumComponent } from "@bitwarden/angular/vault/components/premium.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
