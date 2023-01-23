@@ -1,11 +1,11 @@
 import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
 import { FolderApiServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder-api.service.abstraction";
-import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { FolderView } from "@bitwarden/common/models/view/folder.view";
+import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 
 @Directive()
 export class FolderAddEditComponent implements OnInit {

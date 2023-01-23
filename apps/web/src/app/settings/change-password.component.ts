@@ -6,7 +6,6 @@ import { ChangePasswordComponent as BaseChangePasswordComponent } from "@bitward
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -30,6 +29,7 @@ import { FolderWithIdRequest } from "@bitwarden/common/models/request/folder-wit
 import { PasswordRequest } from "@bitwarden/common/models/request/password.request";
 import { SendWithIdRequest } from "@bitwarden/common/models/request/send-with-id.request";
 import { UpdateKeyRequest } from "@bitwarden/common/models/request/update-key.request";
+import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 
 @Component({
   selector: "app-change-password",

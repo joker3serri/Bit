@@ -1,4 +1,4 @@
-import { FolderService as AbstractFolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
+import { FolderService as AbstractFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 
 import { BrowserFolderService } from "../../services/browser-folder.service";
 

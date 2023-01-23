@@ -1,7 +1,6 @@
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
-import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
@@ -14,6 +13,7 @@ import {
 } from "@bitwarden/common/models/response/collection.response";
 import { ListResponse as ApiListResponse } from "@bitwarden/common/models/response/list.response";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
+import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 
 import { Response } from "../models/response";
 import { CipherResponse } from "../models/response/cipher.response";

@@ -4,10 +4,10 @@ import { FormBuilder, Validators } from "@angular/forms";
 import { firstValueFrom, Observable } from "rxjs";
 
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
-import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { FolderView } from "@bitwarden/common/models/view/folder.view";
+import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { DialogService } from "@bitwarden/components";
 
 export interface BulkMoveDialogParams {

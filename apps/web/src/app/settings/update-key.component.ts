@@ -4,7 +4,6 @@ import { firstValueFrom } from "rxjs";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -14,6 +13,7 @@ import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { CipherWithIdRequest } from "@bitwarden/common/models/request/cipher-with-id.request";
 import { FolderWithIdRequest } from "@bitwarden/common/models/request/folder-with-id.request";
 import { UpdateKeyRequest } from "@bitwarden/common/models/request/update-key.request";
+import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 
 @Component({
   selector: "app-update-key",
