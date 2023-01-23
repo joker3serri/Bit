@@ -6,8 +6,8 @@
       tabs.childElementCount !== 0
   }"
 >
-  <div class="tw-flex tw-items-center tw-gap-2">
-    <div class="tw-flex tw-flex-1 tw-flex-col">
+  <div class="tw-flex tw-items-start tw-gap-2">
+    <div class="tw-flex tw-flex-1 tw-flex-col tw-gap-2">
       <ng-content select="[slot=breadcrumbs]"></ng-content>
       <h1
         class="tw-m-0 tw-mr-2 tw-max-w-screen-md tw-truncate tw-text-3xl tw-font-semibold"
@@ -74,7 +74,7 @@
           </bit-menu>
         </ng-container>
       </div>
-      <div class="tw-mr-auto">
+      <div class="tw-ml-auto" #content [ngClass]="{ 'tw-hidden': content.childElementCount === 0 }">
         <ng-content></ng-content>
       </div>
     </div>
