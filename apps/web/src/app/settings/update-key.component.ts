@@ -8,12 +8,12 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { CipherWithIdRequest } from "@bitwarden/common/models/request/cipher-with-id.request";
 import { FolderWithIdRequest } from "@bitwarden/common/models/request/folder-with-id.request";
 import { UpdateKeyRequest } from "@bitwarden/common/models/request/update-key.request";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 @Component({
   selector: "app-update-key",

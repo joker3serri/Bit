@@ -20,13 +20,13 @@ import { MessagingService } from "@bitwarden/common/abstractions/messaging.servi
 import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/models/view/folder.view";
+import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { invokeMenu, RendererMenuItem } from "../../utils";
 import { SearchBarService } from "../layout/search/search-bar.service";

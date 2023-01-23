@@ -1,4 +1,4 @@
-import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
+import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { Response } from "../models/response";
 import { MessageResponse } from "../models/response/message.response";
