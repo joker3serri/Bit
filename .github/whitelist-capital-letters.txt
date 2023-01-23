@@ -27,7 +27,6 @@
 ./libs/angular/src/components/captchaProtected.component.ts
 ./libs/angular/src/validators/inputsFieldMatch.validator.ts
 ./libs/angular/src/validators/notAllowedValueAsync.validator.ts
-./libs/angular/src/services/passwordReprompt.service.ts
 ./libs/angular/src/services/theming/themeBuilder.ts
 ./libs/angular/src/interfaces/selectOptions.ts
 ./libs/components/src/stories/Introduction.stories.mdx
