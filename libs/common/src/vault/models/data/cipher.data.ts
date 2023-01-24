@@ -1,6 +1,6 @@
-import { CipherResponse } from "../../../models/response/cipher.response";
 import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
 import { CipherType } from "../../enums/cipher-type";
+import { CipherResponse } from "../response/cipher.response";
 
 import { AttachmentData } from "./attachment.data";
 import { CardData } from "./card.data";

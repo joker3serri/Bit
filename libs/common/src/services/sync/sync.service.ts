@@ -16,10 +16,8 @@ import { OrganizationData } from "../../models/data/organization.data";
 import { PolicyData } from "../../models/data/policy.data";
 import { ProviderData } from "../../models/data/provider.data";
 import { SendData } from "../../models/data/send.data";
-import { CipherResponse } from "../../models/response/cipher.response";
 import { CollectionDetailsResponse } from "../../models/response/collection.response";
 import { DomainsResponse } from "../../models/response/domains.response";
-import { FolderResponse } from "../../models/response/folder.response";
 import {
   SyncCipherNotification,
   SyncFolderNotification,
@@ -34,6 +32,8 @@ import { InternalFolderService } from "../../vault/abstractions/folder/folder.se
 import { SyncService as SyncServiceAbstraction } from "../../vault/abstractions/sync/sync.service.abstraction";
 import { CipherData } from "../../vault/models/data/cipher.data";
 import { FolderData } from "../../vault/models/data/folder.data";
+import { CipherResponse } from "../../vault/models/response/cipher.response";
+import { FolderResponse } from "../../vault/models/response/folder.response";
 
 export class SyncService implements SyncServiceAbstraction {
   syncInProgress = false;
