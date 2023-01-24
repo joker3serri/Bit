@@ -2,7 +2,6 @@
 import { Substitute, Arg } from "@fluffy-spoon/substitute";
 import { Jsonify } from "type-fest";
 
-import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
@@ -21,6 +20,7 @@ import { CardView } from "@bitwarden/common/models/view/card.view";
 import { IdentityView } from "@bitwarden/common/models/view/identity.view";
 import { LoginView } from "@bitwarden/common/models/view/login.view";
 import { InitializerKey } from "@bitwarden/common/services/cryptography/initializer-key";
+import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipherRepromptType";
 
 import { mockEnc, mockFromJson } from "../../utils";
 

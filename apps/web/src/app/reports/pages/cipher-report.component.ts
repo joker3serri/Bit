@@ -2,10 +2,10 @@ import { Directive, ViewChild, ViewContainerRef } from "@angular/core";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
+import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipherRepromptType";
 
 import { AddEditComponent as OrgAddEditComponent } from "../../organizations/vault/add-edit.component";
 import { AddEditComponent } from "../../vault/add-edit.component";

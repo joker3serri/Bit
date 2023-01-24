@@ -11,7 +11,6 @@ import { OrganizationService } from "@bitwarden/common/abstractions/organization
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
@@ -32,6 +31,7 @@ import { SecureNoteView } from "@bitwarden/common/models/view/secure-note.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
+import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipherRepromptType";
 
 @Directive()
 export class AddEditComponent implements OnInit, OnDestroy {

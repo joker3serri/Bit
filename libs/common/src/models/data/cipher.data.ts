@@ -1,5 +1,5 @@
-import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
+import { CipherRepromptType } from "../../vault/enums/cipherRepromptType";
 import { CipherResponse } from "../response/cipher.response";
 
 import { AttachmentData } from "./attachment.data";

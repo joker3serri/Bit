@@ -1,4 +1,3 @@
-import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
 import { FieldType } from "../../enums/fieldType";
 import { SecureNoteType } from "../../enums/secureNoteType";
@@ -9,6 +8,7 @@ import { IdentityView } from "../../models/view/identity.view";
 import { LoginView } from "../../models/view/login.view";
 import { PasswordHistoryView } from "../../models/view/password-history.view";
 import { SecureNoteView } from "../../models/view/secure-note.view";
+import { CipherRepromptType } from "../../vault/enums/cipherRepromptType";
 import { BaseImporter } from "../base-importer";
 import { Importer } from "../importer";
 

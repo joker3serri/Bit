@@ -1,5 +1,5 @@
-import { CipherRepromptType } from "../../enums/cipherRepromptType";
 import { CipherType } from "../../enums/cipherType";
+import { CipherRepromptType } from "../../vault/enums/cipherRepromptType";
 import { CardApi } from "../api/card.api";
 import { FieldApi } from "../api/field.api";
 import { IdentityApi } from "../api/identity.api";
