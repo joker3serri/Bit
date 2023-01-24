@@ -1,8 +1,8 @@
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
-import { Response } from "../models/response";
-import { MessageResponse } from "../models/response/message.response";
+import { Response } from "../../models/response";
+import { MessageResponse } from "../../models/response/message.response";
 
 export class LogoutCommand {
   constructor(

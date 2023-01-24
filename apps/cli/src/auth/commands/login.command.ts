@@ -31,8 +31,8 @@ import { TwoFactorEmailRequest } from "@bitwarden/common/models/request/two-fact
 import { UpdateTempPasswordRequest } from "@bitwarden/common/models/request/update-temp-password.request";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
-import { Response } from "../models/response";
-import { MessageResponse } from "../models/response/message.response";
+import { Response } from "../../models/response";
+import { MessageResponse } from "../../models/response/message.response";
 
 export class LoginCommand {
   protected canInteract: boolean;
