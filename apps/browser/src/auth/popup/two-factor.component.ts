@@ -19,7 +19,7 @@ import { TwoFactorService } from "@bitwarden/common/abstractions/twoFactor.servi
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
 
 import { BrowserApi } from "../../browser/browserApi";
-import { PopupUtilsService } from "../services/popup-utils.service";
+import { PopupUtilsService } from "../../popup/services/popup-utils.service";
 
 const BroadcasterSubscriptionId = "TwoFactorComponent";
 

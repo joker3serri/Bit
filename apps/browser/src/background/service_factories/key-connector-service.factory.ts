@@ -1,6 +1,11 @@
 import { KeyConnectorService as AbstractKeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
 
+import {
+  TokenServiceInitOptions,
+  tokenServiceFactory,
+} from "../../auth/background/service-factories/token-service.factory";
+
 import { apiServiceFactory, ApiServiceInitOptions } from "./api-service.factory";
 import {
   cryptoFunctionServiceFactory,
@@ -14,7 +19,6 @@ import {
   organizationServiceFactory,
 } from "./organization-service.factory";
 import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
-import { tokenServiceFactory, TokenServiceInitOptions } from "./token-service.factory";
 
 type KeyConnectorServiceFactoryOptions = FactoryOptions & {
   keyConnectorServiceOptions: {

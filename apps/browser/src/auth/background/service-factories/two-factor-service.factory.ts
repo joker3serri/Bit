@@ -1,12 +1,19 @@
 import { TwoFactorService as AbstractTwoFactorService } from "@bitwarden/common/abstractions/twoFactor.service";
 import { TwoFactorService } from "@bitwarden/common/services/twoFactor.service";
 
-import { FactoryOptions, CachedServices, factory } from "./factory-options";
-import { I18nServiceInitOptions, i18nServiceFactory } from "./i18n-service.factory";
 import {
-  platformUtilsServiceFactory,
+  FactoryOptions,
+  CachedServices,
+  factory,
+} from "../../../background/service_factories/factory-options";
+import {
+  I18nServiceInitOptions,
+  i18nServiceFactory,
+} from "../../../background/service_factories/i18n-service.factory";
+import {
   PlatformUtilsServiceInitOptions,
-} from "./platform-utils-service.factory";
+  platformUtilsServiceFactory,
+} from "../../../background/service_factories/platform-utils-service.factory";
 
 type TwoFactorServiceFactoryOptions = FactoryOptions;
 

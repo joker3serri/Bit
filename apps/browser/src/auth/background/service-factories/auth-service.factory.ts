@@ -43,6 +43,7 @@ import {
   stateServiceFactory,
   StateServiceInitOptions,
 } from "../../../background/service_factories/state-service.factory";
+
 import { TokenServiceInitOptions, tokenServiceFactory } from "./token-service.factory";
 import { TwoFactorServiceInitOptions, twoFactorServiceFactory } from "./two-factor-service.factory";
 

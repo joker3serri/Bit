@@ -1,3 +1,7 @@
+import {
+  TotpServiceInitOptions,
+  totpServiceFactory,
+} from "../../auth/background/service-factories/totp-service.factory";
 import { AutofillService as AbstractAutoFillService } from "../../services/abstractions/autofill.service";
 import AutofillService from "../../services/autofill.service";
 
@@ -9,7 +13,6 @@ import {
 import { CachedServices, factory, FactoryOptions } from "./factory-options";
 import { logServiceFactory, LogServiceInitOptions } from "./log-service.factory";
 import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
-import { totpServiceFactory, TotpServiceInitOptions } from "./totp-service.factory";
 
 type AutoFillServiceOptions = FactoryOptions;
 

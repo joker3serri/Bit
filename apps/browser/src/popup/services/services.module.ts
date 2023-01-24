@@ -59,6 +59,7 @@ import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service
 import { LoginService } from "@bitwarden/common/services/login.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
 
+import { LockGuardService, UnauthGuardService } from "../../auth/popup/services";
 import MainBackground from "../../background/main.background";
 import { BrowserApi } from "../../browser/browserApi";
 import { Account } from "../../models/account";
@@ -76,11 +77,9 @@ import { VaultFilterService } from "../../services/vaultFilter.service";
 
 import { DebounceNavigationService } from "./debounceNavigationService";
 import { InitService } from "./init.service";
-import { LockGuardService } from "./lock-guard.service";
 import { PasswordRepromptService } from "./password-reprompt.service";
 import { PopupSearchService } from "./popup-search.service";
 import { PopupUtilsService } from "./popup-utils.service";
-import { UnauthGuardService } from "./unauth-guard.service";
 
 const needsBackgroundInit = BrowserApi.getBackgroundPage() == null;
 const isPrivateMode = needsBackgroundInit && BrowserApi.manifestVersion !== 3;

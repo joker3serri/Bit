@@ -10,11 +10,12 @@ import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 
-import LockedVaultPendingNotificationsItem from "../background/models/lockedVaultPendingNotificationsItem";
 import {
   authServiceFactory,
   AuthServiceInitOptions,
 } from "../auth/background/service-factories/auth-service.factory";
+import { totpServiceFactory } from "../auth/background/service-factories/totp-service.factory";
+import LockedVaultPendingNotificationsItem from "../background/models/lockedVaultPendingNotificationsItem";
 import { autofillServiceFactory } from "../background/service_factories/autofill-service.factory";
 import {
   cipherServiceFactory,
@@ -25,7 +26,6 @@ import { CachedServices } from "../background/service_factories/factory-options"
 import { passwordGenerationServiceFactory } from "../background/service_factories/password-generation-service.factory";
 import { searchServiceFactory } from "../background/service_factories/search-service.factory";
 import { stateServiceFactory } from "../background/service_factories/state-service.factory";
-import { totpServiceFactory } from "../background/service_factories/totp-service.factory";
 import { BrowserApi } from "../browser/browserApi";
 import { copyToClipboard, GeneratePasswordToClipboardCommand } from "../clipboard";
 import { AutofillTabCommand } from "../commands/autofill-tab-command";

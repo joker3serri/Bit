@@ -1,8 +1,15 @@
 import { TokenService as AbstractTokenService } from "@bitwarden/common/abstractions/token.service";
 import { TokenService } from "@bitwarden/common/services/token.service";
 
-import { CachedServices, factory, FactoryOptions } from "./factory-options";
-import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
+import {
+  FactoryOptions,
+  CachedServices,
+  factory,
+} from "../../../background/service_factories/factory-options";
+import {
+  stateServiceFactory,
+  StateServiceInitOptions,
+} from "../../../background/service_factories/state-service.factory";
 
 type TokenServiceFactoryOptions = FactoryOptions;
 
