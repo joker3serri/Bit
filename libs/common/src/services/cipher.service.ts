@@ -13,7 +13,6 @@ import { FieldType } from "../enums/fieldType";
 import { UriMatchType } from "../enums/uriMatchType";
 import { sequentialize } from "../misc/sequentialize";
 import { Utils } from "../misc/utils";
-import { CipherData } from "../models/data/cipher.data";
 import { AccountSettingsSettings } from "../models/domain/account";
 import { Attachment } from "../models/domain/attachment";
 import { Card } from "../models/domain/card";
@@ -48,6 +47,7 @@ import { PasswordHistoryView } from "../models/view/password-history.view";
 import { View } from "../models/view/view";
 import { CipherService as CipherServiceAbstraction } from "../vault/abstractions/cipher.service";
 import { CipherType } from "../vault/enums/cipher-type";
+import { CipherData } from "../vault/models/data/cipher.data";
 
 const DomainMatchBlacklist = new Map<string, Set<string>>([
   ["google.com", new Set(["script.google.com"])],

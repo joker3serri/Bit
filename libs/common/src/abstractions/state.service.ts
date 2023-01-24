@@ -3,7 +3,6 @@ import { Observable } from "rxjs";
 import { KdfType } from "../enums/kdfType";
 import { ThemeType } from "../enums/themeType";
 import { UriMatchType } from "../enums/uriMatchType";
-import { CipherData } from "../models/data/cipher.data";
 import { CollectionData } from "../models/data/collection.data";
 import { EncryptedOrganizationKeyData } from "../models/data/encrypted-organization-key.data";
 import { EventData } from "../models/data/event.data";
@@ -25,6 +24,7 @@ import { WindowState } from "../models/domain/window-state";
 import { CipherView } from "../models/view/cipher.view";
 import { CollectionView } from "../models/view/collection.view";
 import { SendView } from "../models/view/send.view";
+import { CipherData } from "../vault/models/data/cipher.data";
 
 export abstract class StateService<T extends Account = Account> {
   accounts$: Observable<{ [userId: string]: T }>;

@@ -1,7 +1,7 @@
-import { CipherType } from "@bitwarden/common/src/enums/cipherType";
 import { Organization } from "@bitwarden/common/src/models/domain/organization";
 import { ITreeNodeObject } from "@bitwarden/common/src/models/domain/tree-node";
 import { FolderView } from "@bitwarden/common/src/models/view/folder.view";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 import { CollectionAdminView } from "../../../../organizations/core";
 

@@ -13,13 +13,13 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
-import { CipherData } from "@bitwarden/common/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
 import { CipherCreateRequest } from "@bitwarden/common/models/request/cipher-create.request";
 import { CipherRequest } from "@bitwarden/common/models/request/cipher.request";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
+import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
 
 import { AddEditComponent as BaseAddEditComponent } from "../../vault/add-edit.component";
 

@@ -1,14 +1,13 @@
-import { CipherRepromptType } from "../../vault/enums/cipher-reprompt-type";
-import { CipherType } from "../../vault/enums/cipher-type";
-import { CipherResponse } from "../response/cipher.response";
-
-import { AttachmentData } from "./attachment.data";
-import { CardData } from "./card.data";
-import { FieldData } from "./field.data";
-import { IdentityData } from "./identity.data";
-import { LoginData } from "./login.data";
-import { PasswordHistoryData } from "./password-history.data";
-import { SecureNoteData } from "./secure-note.data";
+import { AttachmentData } from "../../../models/data/attachment.data";
+import { CardData } from "../../../models/data/card.data";
+import { FieldData } from "../../../models/data/field.data";
+import { IdentityData } from "../../../models/data/identity.data";
+import { LoginData } from "../../../models/data/login.data";
+import { PasswordHistoryData } from "../../../models/data/password-history.data";
+import { SecureNoteData } from "../../../models/data/secure-note.data";
+import { CipherResponse } from "../../../models/response/cipher.response";
+import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
+import { CipherType } from "../../enums/cipher-type";
 
 export class CipherData {
   id: string;

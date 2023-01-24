@@ -5,7 +5,7 @@ import { KdfType } from "../../enums/kdfType";
 import { UriMatchType } from "../../enums/uriMatchType";
 import { Utils } from "../../misc/utils";
 import { DeepJsonify } from "../../types/deep-jsonify";
-import { CipherData } from "../data/cipher.data";
+import { CipherData } from "../../vault/models/data/cipher.data";
 import { CollectionData } from "../data/collection.data";
 import { EncryptedOrganizationKeyData } from "../data/encrypted-organization-key.data";
 import { EventData } from "../data/event.data";

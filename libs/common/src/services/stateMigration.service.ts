@@ -4,7 +4,6 @@ import { KdfType } from "../enums/kdfType";
 import { StateVersion } from "../enums/stateVersion";
 import { ThemeType } from "../enums/themeType";
 import { StateFactory } from "../factories/stateFactory";
-import { CipherData } from "../models/data/cipher.data";
 import { CollectionData } from "../models/data/collection.data";
 import { EventData } from "../models/data/event.data";
 import { FolderData } from "../models/data/folder.data";
@@ -23,6 +22,7 @@ import { EnvironmentUrls } from "../models/domain/environment-urls";
 import { GeneratedPasswordHistory } from "../models/domain/generated-password-history";
 import { GlobalState } from "../models/domain/global-state";
 import { StorageOptions } from "../models/domain/storage-options";
+import { CipherData } from "../vault/models/data/cipher.data";
 
 import { TokenService } from "./token.service";
 
