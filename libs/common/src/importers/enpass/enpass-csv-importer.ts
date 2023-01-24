@@ -1,11 +1,10 @@
-import { SecureNoteType } from "../enums/secureNoteType";
-import { ImportResult } from "../models/domain/import-result";
-import { CipherType } from "../vault/enums/cipher-type";
-import { CardView } from "../vault/models/view/card.view";
-import { SecureNoteView } from "../vault/models/view/secure-note.view";
-
-import { BaseImporter } from "./base-importer";
-import { Importer } from "./importer";
+import { SecureNoteType } from "../../enums/secureNoteType";
+import { ImportResult } from "../../models/domain/import-result";
+import { CipherType } from "../../vault/enums/cipher-type";
+import { CardView } from "../../vault/models/view/card.view";
+import { SecureNoteView } from "../../vault/models/view/secure-note.view";
+import { BaseImporter } from "../base-importer";
+import { Importer } from "../importer";
 
 export class EnpassCsvImporter extends BaseImporter implements Importer {
   parse(data: string): Promise<ImportResult> {
