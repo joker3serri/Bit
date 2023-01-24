@@ -1,8 +1,8 @@
 import { Jsonify } from "type-fest";
 
-import { IdentityLinkedId as LinkedId } from "../../enums/linkedIdType";
-import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
-import { Utils } from "../../misc/utils";
+import { IdentityLinkedId as LinkedId } from "../../../enums/linkedIdType";
+import { linkedFieldOption } from "../../../misc/linkedFieldOption.decorator";
+import { Utils } from "../../../misc/utils";
 
 import { ItemView } from "./item.view";
 

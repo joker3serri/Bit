@@ -6,7 +6,6 @@ import { SecureNoteType } from "../enums/secureNoteType";
 import { Utils } from "../misc/utils";
 import { ImportResult } from "../models/domain/import-result";
 import { CollectionView } from "../models/view/collection.view";
-import { SecureNoteView } from "../models/view/secure-note.view";
 import { ConsoleLogService } from "../services/consoleLog.service";
 import { CipherType } from "../vault/enums/cipher-type";
 import { CipherView } from "../vault/models/view/cipher.view";
@@ -14,6 +13,7 @@ import { FieldView } from "../vault/models/view/field.view";
 import { FolderView } from "../vault/models/view/folder.view";
 import { LoginUriView } from "../vault/models/view/login-uri.view";
 import { LoginView } from "../vault/models/view/login.view";
+import { SecureNoteView } from "../vault/models/view/secure-note.view";
 
 export abstract class BaseImporter {
   organizationId: string = null;

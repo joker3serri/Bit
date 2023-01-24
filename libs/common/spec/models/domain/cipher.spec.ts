@@ -6,7 +6,6 @@ import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { IdentityView } from "@bitwarden/common/models/view/identity.view";
 import { InitializerKey } from "@bitwarden/common/services/cryptography/initializer-key";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
@@ -20,6 +19,7 @@ import { Login } from "@bitwarden/common/vault/models/domain/login";
 import { Password } from "@bitwarden/common/vault/models/domain/password";
 import { SecureNote } from "@bitwarden/common/vault/models/domain/secure-note";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
+import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 
 import { mockEnc, mockFromJson } from "../../utils";

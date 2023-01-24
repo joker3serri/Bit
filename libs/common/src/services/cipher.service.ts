@@ -19,7 +19,6 @@ import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { ErrorResponse } from "../models/response/error.response";
-import { PasswordHistoryView } from "../models/view/password-history.view";
 import { View } from "../models/view/view";
 import { CipherService as CipherServiceAbstraction } from "../vault/abstractions/cipher.service";
 import { CipherType } from "../vault/enums/cipher-type";
@@ -48,6 +47,7 @@ import { CipherResponse } from "../vault/models/response/cipher.response";
 import { AttachmentView } from "../vault/models/view/attachment.view";
 import { CipherView } from "../vault/models/view/cipher.view";
 import { FieldView } from "../vault/models/view/field.view";
+import { PasswordHistoryView } from "../vault/models/view/password-history.view";
 
 const DomainMatchBlacklist = new Map<string, Set<string>>([
   ["google.com", new Set(["script.google.com"])],

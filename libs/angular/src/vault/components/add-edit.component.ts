@@ -22,8 +22,6 @@ import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
-import { IdentityView } from "@bitwarden/common/models/view/identity.view";
-import { SecureNoteView } from "@bitwarden/common/models/view/secure-note.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
@@ -33,8 +31,10 @@ import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CardView } from "@bitwarden/common/vault/models/view/card.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
 
 @Directive()
 export class AddEditComponent implements OnInit, OnDestroy {

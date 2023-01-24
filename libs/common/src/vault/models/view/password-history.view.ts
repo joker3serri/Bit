@@ -1,8 +1,7 @@
 import { Jsonify } from "type-fest";
 
-import { Password } from "../../vault/models/domain/password";
-
-import { View } from "./view";
+import { View } from "../../../models/view/view";
+import { Password } from "../domain/password";
 
 export class PasswordHistoryView implements View {
   password: string = null;

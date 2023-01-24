@@ -2,9 +2,6 @@ import { Jsonify } from "type-fest";
 
 import { LinkedIdType } from "../../../enums/linkedIdType";
 import { InitializerMetadata } from "../../../interfaces/initializer-metadata.interface";
-import { IdentityView } from "../../../models/view/identity.view";
-import { PasswordHistoryView } from "../../../models/view/password-history.view";
-import { SecureNoteView } from "../../../models/view/secure-note.view";
 import { View } from "../../../models/view/view";
 import { InitializerKey } from "../../../services/cryptography/initializer-key";
 import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
@@ -15,7 +12,10 @@ import { Cipher } from "../domain/cipher";
 import { AttachmentView } from "./attachment.view";
 import { CardView } from "./card.view";
 import { FieldView } from "./field.view";
+import { IdentityView } from "./identity.view";
 import { LoginView } from "./login.view";
+import { PasswordHistoryView } from "./password-history.view";
+import { SecureNoteView } from "./secure-note.view";
 
 export class CipherView implements View, InitializerMetadata {
   readonly initializerKey = InitializerKey.CipherView;

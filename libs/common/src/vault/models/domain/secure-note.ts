@@ -3,8 +3,8 @@ import { Jsonify } from "type-fest";
 import { SecureNoteType } from "../../../enums/secureNoteType";
 import Domain from "../../../models/domain/domain-base";
 import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
-import { SecureNoteView } from "../../../models/view/secure-note.view";
 import { SecureNoteData } from "../data/secure-note.data";
+import { SecureNoteView } from "../view/secure-note.view";
 
 export class SecureNote extends Domain {
   type: SecureNoteType;
