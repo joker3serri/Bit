@@ -1,4 +1,4 @@
-import { SyncResponse } from "../vault/models/response/sync.response";
+import { SyncResponse } from "../models/response/sync.response";
 
 type SyncStatus = "Started" | "Completed";
 
