@@ -1,4 +1,4 @@
-import { AttachmentResponse } from "../response/attachment.response";
+import { AttachmentResponse } from "../../../models/response/attachment.response";
 
 export class AttachmentData {
   id: string;

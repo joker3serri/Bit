@@ -1,7 +1,7 @@
 import { Jsonify } from "type-fest";
 
 import { Utils } from "../../misc/utils";
-import { AttachmentData } from "../data/attachment.data";
+import { AttachmentData } from "../../vault/models/data/attachment.data";
 import { AttachmentView } from "../view/attachment.view";
 
 import Domain from "./domain-base";
