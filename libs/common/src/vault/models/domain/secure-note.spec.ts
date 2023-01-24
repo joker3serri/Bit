@@ -1,6 +1,7 @@
 import { SecureNoteType } from "../../../enums/secureNoteType";
-import { SecureNoteData } from "../../../vault/models/data/secure-note.data";
-import { SecureNote } from "../../../vault/models/domain/secure-note";
+import { SecureNoteData } from "../data/secure-note.data";
+
+import { SecureNote } from "./secure-note";
 
 describe("SecureNote", () => {
   let data: SecureNoteData;

@@ -3,8 +3,9 @@ import { Jsonify } from "type-fest";
 import { mockEnc, mockFromJson } from "../../../../spec/utils";
 import { UriMatchType } from "../../../enums/uriMatchType";
 import { EncString } from "../../../models/domain/enc-string";
-import { LoginUriData } from "../../models/data/login-uri.data";
-import { LoginUri } from "../../models/domain/login-uri";
+import { LoginUriData } from "../data/login-uri.data";
+
+import { LoginUri } from "./login-uri";
 
 describe("LoginUri", () => {
   let data: LoginUriData;

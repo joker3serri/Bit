@@ -1,6 +1,7 @@
 import { mockFromJson } from "../../../../spec/utils";
 import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
-import { AttachmentView } from "../../models/view/attachment.view";
+
+import { AttachmentView } from "./attachment.view";
 
 jest.mock("../../../models/domain/symmetric-crypto-key");
 

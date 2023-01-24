@@ -1,6 +1,7 @@
 import { mockFromJson } from "../../../../spec/utils";
-import { LoginUriView } from "../../models/view/login-uri.view";
-import { LoginView } from "../../models/view/login.view";
+
+import { LoginUriView } from "./login-uri.view";
+import { LoginView } from "./login.view";
 
 jest.mock("../../models/view/login-uri.view");
 

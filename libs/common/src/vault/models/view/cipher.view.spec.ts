@@ -1,13 +1,14 @@
 import { mockFromJson } from "../../../../spec/utils";
 import { CipherType } from "../../enums/cipher-type";
-import { AttachmentView } from "../../models/view/attachment.view";
-import { CardView } from "../../models/view/card.view";
-import { CipherView } from "../../models/view/cipher.view";
-import { FieldView } from "../../models/view/field.view";
-import { IdentityView } from "../../models/view/identity.view";
-import { LoginView } from "../../models/view/login.view";
-import { PasswordHistoryView } from "../../models/view/password-history.view";
-import { SecureNoteView } from "../../models/view/secure-note.view";
+
+import { AttachmentView } from "./attachment.view";
+import { CardView } from "./card.view";
+import { CipherView } from "./cipher.view";
+import { FieldView } from "./field.view";
+import { IdentityView } from "./identity.view";
+import { LoginView } from "./login.view";
+import { PasswordHistoryView } from "./password-history.view";
+import { SecureNoteView } from "./secure-note.view";
 
 jest.mock("../../models/view/login.view");
 jest.mock("../../models/view/attachment.view");

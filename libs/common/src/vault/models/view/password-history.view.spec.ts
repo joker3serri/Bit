@@ -1,4 +1,4 @@
-import { PasswordHistoryView } from "../../models/view/password-history.view";
+import { PasswordHistoryView } from "./password-history.view";
 
 describe("PasswordHistoryView", () => {
   it("fromJSON initializes nested objects", () => {

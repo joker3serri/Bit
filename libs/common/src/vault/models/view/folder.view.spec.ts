@@ -1,4 +1,4 @@
-import { FolderView } from "../../models/view/folder.view";
+import { FolderView } from "./folder.view";
 
 describe("FolderView", () => {
   describe("fromJSON", () => {
