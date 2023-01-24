@@ -18,7 +18,6 @@ import { Utils } from "../misc/utils";
 import { CollectionData } from "../models/data/collection.data";
 import { EncryptedOrganizationKeyData } from "../models/data/encrypted-organization-key.data";
 import { EventData } from "../models/data/event.data";
-import { LocalData } from "../models/data/local.data";
 import { OrganizationData } from "../models/data/organization.data";
 import { PolicyData } from "../models/data/policy.data";
 import { ProviderData } from "../models/data/provider.data";
@@ -44,6 +43,7 @@ import { CollectionView } from "../models/view/collection.view";
 import { SendView } from "../models/view/send.view";
 import { CipherData } from "../vault/models/data/cipher.data";
 import { FolderData } from "../vault/models/data/folder.data";
+import { LocalData } from "../vault/models/data/local.data";
 
 const keys = {
   state: "state",

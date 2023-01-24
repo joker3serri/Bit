@@ -5,7 +5,7 @@ import { InitializerKey } from "../../services/cryptography/initializer-key";
 import { CipherRepromptType } from "../../vault/enums/cipher-reprompt-type";
 import { CipherType } from "../../vault/enums/cipher-type";
 import { CipherData } from "../../vault/models/data/cipher.data";
-import { LocalData } from "../data/local.data";
+import { LocalData } from "../../vault/models/data/local.data";
 import { CipherView } from "../view/cipher.view";
 
 import { Attachment } from "./attachment";

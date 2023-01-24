@@ -5,7 +5,7 @@ import { InitializerMetadata } from "../../interfaces/initializer-metadata.inter
 import { InitializerKey } from "../../services/cryptography/initializer-key";
 import { CipherRepromptType } from "../../vault/enums/cipher-reprompt-type";
 import { CipherType } from "../../vault/enums/cipher-type";
-import { LocalData } from "../data/local.data";
+import { LocalData } from "../../vault/models/data/local.data";
 import { Cipher } from "../domain/cipher";
 
 import { AttachmentView } from "./attachment.view";
