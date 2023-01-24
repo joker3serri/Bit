@@ -77,6 +77,9 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
   async ngOnInit() {
     await super.ngOnInit();
     await this.load();
+    if (this.cloneMode || !this.editMode) {
+      this.title = this.i18nService.t("newItem");
+    }
     this.showRevisionDate = this.cipher.passwordRevisionDisplayDate != null;
     this.hasPasswordHistory = this.cipher.hasPasswordHistory;
     this.cleanUp();
