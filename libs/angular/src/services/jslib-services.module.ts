@@ -121,8 +121,8 @@ import { SyncService as SyncServiceAbstraction } from "@bitwarden/common/vault/a
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
 import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
+import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-notifier.service";
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
-import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/syncNotifier.service";
 
 import { AuthGuard } from "../guards/auth.guard";
 import { LockGuard } from "../guards/lock.guard";

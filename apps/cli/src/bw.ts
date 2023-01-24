@@ -49,8 +49,8 @@ import { InternalFolderService } from "@bitwarden/common/vault/abstractions/fold
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
 import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
+import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-notifier.service";
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
-import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/syncNotifier.service";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/node-crypto-function.service";
 
 import { Program } from "./program";

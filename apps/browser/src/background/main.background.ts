@@ -80,8 +80,8 @@ import { SyncService as SyncServiceAbstraction } from "@bitwarden/common/vault/a
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
+import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-notifier.service";
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
-import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/syncNotifier.service";
 
 import { BrowserApi } from "../browser/browserApi";
 import { CipherContextMenuHandler } from "../browser/cipher-context-menu-handler";

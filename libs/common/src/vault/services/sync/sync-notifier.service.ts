@@ -1,7 +1,7 @@
 import { Subject } from "rxjs";
 
-import { SyncNotifierService as SyncNotifierServiceAbstraction } from "../../../vault/abstractions/sync/sync-notifier.service.abstraction";
-import { SyncEventArgs } from "../../types/syncEventArgs";
+import { SyncNotifierService as SyncNotifierServiceAbstraction } from "../../abstractions/sync/sync-notifier.service.abstraction";
+import { SyncEventArgs } from "../../types/sync-event-args";
 
 /**
  * This class should most likely have 0 dependencies because it will hopefully

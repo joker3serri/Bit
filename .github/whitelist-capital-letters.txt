@@ -62,7 +62,6 @@
 ./libs/common/src/misc/serviceUtils.spec.ts
 ./libs/common/src/types/twoFactorResponse.ts
 ./libs/common/src/types/authResponse.ts
-./libs/common/src/types/syncEventArgs.ts
 ./libs/common/src/enums/kdfType.ts
 ./libs/common/src/enums/fileUploadType.ts
 ./libs/common/src/enums/twoFactorProviderType.ts
@@ -143,7 +142,6 @@
 ./libs/common/src/services/usernameGeneration.service.ts
 ./libs/common/src/services/noopMessaging.service.ts
 ./libs/common/src/services/twoFactor.service.ts
-./libs/common/src/services/sync/syncNotifier.service.ts
 ./libs/common/src/services/memoryStorage.service.ts
 ./libs/common/src/services/bitwardenFileUpload.service.ts
 ./libs/common/src/services/webCryptoFunction.service.ts
