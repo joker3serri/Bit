@@ -1,8 +1,8 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { SMExportComponent } from "./export/sm-export.component";
-import { SMImportComponent } from "./import/sm-import.component";
+import { SMExportComponent } from "./porting/sm-export.component";
+import { SMImportComponent } from "./porting/sm-import.component";
 
 const routes: Routes = [
   {

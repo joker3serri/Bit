@@ -3,15 +3,15 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { Subject, switchMap, takeUntil } from "rxjs";
 
+import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { VerificationType } from "@bitwarden/common/enums/verificationType";
-import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
 
-import { SMExportService } from "./sm-export.service";
+import { SMPortingService } from "./sm-porting.service";
 
 @Component({
   selector: "sm-export",
@@ -35,7 +35,7 @@ export class SMExportComponent implements OnInit, OnDestroy {
     private organizationService: OrganizationService,
     private userVerificationService: UserVerificationService,
     private platformUtilsService: PlatformUtilsService,
-    private SMExportService: SMExportService,
+    private smPortingService: SMPortingService,
     protected fileDownloadService: FileDownloadService,
     private logService: LogService
   ) {}
@@ -86,7 +86,7 @@ export class SMExportComponent implements OnInit, OnDestroy {
 
   protected async doExport() {
     try {
-      let exportData = await this.SMExportService.getExport(
+      const exportData = await this.smPortingService.export(
         this.orgId,
         this.formGroup.get("format").value
       );

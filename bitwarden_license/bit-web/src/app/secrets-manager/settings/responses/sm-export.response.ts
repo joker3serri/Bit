@@ -14,6 +14,6 @@ export class SMExportResponse extends BaseResponse {
     const secrets = this.getResponseProperty("Secrets");
 
     this.projects = projects == null ? null : projects.map((k: any) => new ExportedProject(k));
-    this.secrets = secrets == null ? null : secrets.map((k: any) => new ExportedProject(k));
+    this.secrets = secrets == null ? null : secrets.map((k: any) => new ExportedSecret(k));
   }
 }
