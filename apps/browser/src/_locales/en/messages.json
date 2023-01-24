@@ -1984,9 +1984,6 @@
   "disabledOrganizationFilterError": {
     "message" : "Items in suspended Organizations cannot be accessed. Contact your Organization owner for assistance."
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "loggingInTo": {
     "message": "Logging in to $DOMAIN$",
     "placeholders": {
@@ -2052,7 +2049,7 @@
   },
   "exposedMasterPasswordDesc": {
     "message": "Password found in a data breach. Use a unique password to protect your account. Are you sure you want to use an exposed password?"
-  }, 
+  },
   "weakAndExposedMasterPassword": {
     "message": "Weak and Exposed Master Password"
   },

@@ -135,7 +135,7 @@
   },
   "mx": {
     "message": "Mx"
-  },  
+  },
   "dr": {
     "message": "Dr"
   },
@@ -5573,9 +5573,6 @@
   },
   "reporting": {
     "message": "Reporting"
-  },
-  "cardBrandMir": {
-    "message": "Mir"
   },
   "numberOfUsers": {
     "message": "Number of users"

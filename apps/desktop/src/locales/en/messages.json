@@ -1790,7 +1790,7 @@
   },
   "removePasswordConfirmation": {
     "message": "Are you sure you want to remove the password?"
-  },  
+  },
   "maxAccessCountReached": {
     "message": "Max access count reached"
   },
@@ -2027,9 +2027,6 @@
   },
   "neverLockWarning": {
     "message": "Are you sure you want to use the \"Never\" option? Setting your lock options to \"Never\" stores your vault's encryption key on your device. If you use this option you should ensure that you keep your device properly protected."
-  },
-  "cardBrandMir": {
-    "message": "Mir"
   },
   "vault": {
     "message": "Vault"
