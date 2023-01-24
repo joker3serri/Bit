@@ -3,10 +3,10 @@ import { Component, OnInit } from "@angular/core";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 import { BadgeTypes } from "@bitwarden/components";
 
 import { CipherReportComponent } from "./cipher-report.component";

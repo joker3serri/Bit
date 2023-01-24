@@ -3,7 +3,6 @@ import { firstValueFrom } from "rxjs";
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { ThemeType } from "@bitwarden/common/enums/themeType";
 import { Utils } from "@bitwarden/common/misc/utils";
@@ -12,6 +11,7 @@ import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/models/view/login.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 import { BrowserApi } from "../browser/browserApi";
 import { AutofillService } from "../services/abstractions/autofill.service";

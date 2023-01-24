@@ -4,7 +4,6 @@ import { Arg, Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { KdfType, DEFAULT_KDF_ITERATIONS } from "@bitwarden/common/enums/kdfType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
@@ -18,6 +17,7 @@ import { LoginView } from "@bitwarden/common/models/view/login.view";
 import { ExportService } from "@bitwarden/common/services/export.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 import { BuildTestObject, GetUniqueString } from "../utils";
 

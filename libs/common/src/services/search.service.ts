@@ -3,12 +3,12 @@ import * as lunr from "lunr";
 import { I18nService } from "../abstractions/i18n.service";
 import { LogService } from "../abstractions/log.service";
 import { SearchService as SearchServiceAbstraction } from "../abstractions/search.service";
-import { CipherType } from "../enums/cipherType";
 import { FieldType } from "../enums/fieldType";
 import { UriMatchType } from "../enums/uriMatchType";
 import { CipherView } from "../models/view/cipher.view";
 import { SendView } from "../models/view/send.view";
 import { CipherService } from "../vault/abstractions/cipher.service";
+import { CipherType } from "../vault/enums/cipherType";
 
 export class SearchService implements SearchServiceAbstraction {
   private static registeredPipeline = false;

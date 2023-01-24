@@ -6,11 +6,11 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstraction
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { Verification } from "@bitwarden/common/types/verification";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 class CountBasedLocalizationKey {
   singular: string;

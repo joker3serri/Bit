@@ -14,11 +14,11 @@ import { OrganizationService } from "@bitwarden/common/abstractions/organization
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { PopupUtilsService } from "../services/popup-utils.service";

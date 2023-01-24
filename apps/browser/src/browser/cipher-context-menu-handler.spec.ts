@@ -2,9 +2,9 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 import { CipherContextMenuHandler } from "./cipher-context-menu-handler";
 import { MainContextMenuHandler } from "./main-context-menu-handler";

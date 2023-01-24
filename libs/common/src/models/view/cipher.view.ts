@@ -1,10 +1,10 @@
 import { Jsonify } from "type-fest";
 
-import { CipherType } from "../../enums/cipherType";
 import { LinkedIdType } from "../../enums/linkedIdType";
 import { InitializerMetadata } from "../../interfaces/initializer-metadata.interface";
 import { InitializerKey } from "../../services/cryptography/initializer-key";
 import { CipherRepromptType } from "../../vault/enums/cipher-reprompt-type";
+import { CipherType } from "../../vault/enums/cipherType";
 import { LocalData } from "../data/local.data";
 import { Cipher } from "../domain/cipher";
 

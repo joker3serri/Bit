@@ -9,7 +9,6 @@ import { LogService } from "../abstractions/log.service";
 import { SearchService } from "../abstractions/search.service";
 import { SettingsService } from "../abstractions/settings.service";
 import { StateService } from "../abstractions/state.service";
-import { CipherType } from "../enums/cipherType";
 import { FieldType } from "../enums/fieldType";
 import { UriMatchType } from "../enums/uriMatchType";
 import { sequentialize } from "../misc/sequentialize";
@@ -48,6 +47,7 @@ import { FieldView } from "../models/view/field.view";
 import { PasswordHistoryView } from "../models/view/password-history.view";
 import { View } from "../models/view/view";
 import { CipherService as CipherServiceAbstraction } from "../vault/abstractions/cipher.service";
+import { CipherType } from "../vault/enums/cipherType";
 
 const DomainMatchBlacklist = new Map<string, Set<string>>([
   ["google.com", new Set(["script.google.com"])],

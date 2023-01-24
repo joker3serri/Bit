@@ -1,7 +1,6 @@
 import * as papa from "papaparse";
 
 import { LogService } from "../abstractions/log.service";
-import { CipherType } from "../enums/cipherType";
 import { FieldType } from "../enums/fieldType";
 import { SecureNoteType } from "../enums/secureNoteType";
 import { Utils } from "../misc/utils";
@@ -14,6 +13,7 @@ import { LoginUriView } from "../models/view/login-uri.view";
 import { LoginView } from "../models/view/login.view";
 import { SecureNoteView } from "../models/view/secure-note.view";
 import { ConsoleLogService } from "../services/consoleLog.service";
+import { CipherType } from "../vault/enums/cipherType";
 
 export abstract class BaseImporter {
   organizationId: string = null;

@@ -3,12 +3,12 @@ import { Directive, Input, OnChanges, SimpleChanges } from "@angular/core";
 
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { FieldView } from "@bitwarden/common/models/view/field.view";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 @Directive()
 export class AddEditCustomFieldsComponent implements OnChanges {

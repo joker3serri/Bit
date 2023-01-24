@@ -6,7 +6,6 @@ import { OrganizationService } from "@bitwarden/common/abstractions/organization
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { SendType } from "@bitwarden/common/enums/sendType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
@@ -26,6 +25,7 @@ import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/models/view/folder.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 import { OrganizationCollectionRequest } from "../models/request/organization-collection.request";
 import { Response } from "../models/response";

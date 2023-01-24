@@ -4,11 +4,11 @@ import { firstValueFrom, Subject, switchMap, takeUntil } from "rxjs";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/models/view/folder.view";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 import { VaultFilterService } from "../services/abstractions/vault-filter.service";
 import {

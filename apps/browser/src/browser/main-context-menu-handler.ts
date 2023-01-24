@@ -1,9 +1,9 @@
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 import { CachedServices } from "../background/service_factories/factory-options";
 import {

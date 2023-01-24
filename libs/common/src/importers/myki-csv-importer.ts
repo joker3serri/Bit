@@ -1,10 +1,10 @@
-import { CipherType } from "../enums/cipherType";
 import { SecureNoteType } from "../enums/secureNoteType";
 import { ImportResult } from "../models/domain/import-result";
 import { CardView } from "../models/view/card.view";
 import { CipherView } from "../models/view/cipher.view";
 import { IdentityView } from "../models/view/identity.view";
 import { SecureNoteView } from "../models/view/secure-note.view";
+import { CipherType } from "../vault/enums/cipherType";
 
 import { BaseImporter } from "./base-importer";
 import { Importer } from "./importer";

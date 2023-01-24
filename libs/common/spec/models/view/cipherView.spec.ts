@@ -1,4 +1,3 @@
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { AttachmentView } from "@bitwarden/common/models/view/attachment.view";
 import { CardView } from "@bitwarden/common/models/view/card.view";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
@@ -7,6 +6,7 @@ import { IdentityView } from "@bitwarden/common/models/view/identity.view";
 import { LoginView } from "@bitwarden/common/models/view/login.view";
 import { PasswordHistoryView } from "@bitwarden/common/models/view/password-history.view";
 import { SecureNoteView } from "@bitwarden/common/models/view/secure-note.view";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 import { mockFromJson } from "../../utils";
 

@@ -1,9 +1,9 @@
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/models/view/folder.view";
 import { DeepJsonify } from "@bitwarden/common/types/deep-jsonify";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 import { BrowserComponentState } from "./browserComponentState";
 

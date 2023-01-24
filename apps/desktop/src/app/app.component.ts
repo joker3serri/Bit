@@ -35,10 +35,10 @@ import { SystemService } from "@bitwarden/common/abstractions/system.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 import { MenuUpdateRequest } from "../main/menu/menu.updater";
 

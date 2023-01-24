@@ -9,13 +9,13 @@ import { OrganizationService } from "@bitwarden/common/abstractions/organization
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { AutofillService } from "../../services/abstractions/autofill.service";

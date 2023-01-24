@@ -1,13 +1,13 @@
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 import {
   authServiceFactory,

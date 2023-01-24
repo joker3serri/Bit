@@ -22,7 +22,6 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TokenService } from "@bitwarden/common/abstractions/token.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
-import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
@@ -35,6 +34,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
+import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
 
 const BroadcasterSubscriptionId = "ViewComponent";
 
