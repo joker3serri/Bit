@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 
-import { Folder } from "@bitwarden/common/models/domain/folder";
+import { Folder } from "@bitwarden/common/vault/models/domain/folder";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 import { FolderService as BaseFolderService } from "@bitwarden/common/vault/services/folder/folder.service";
 
