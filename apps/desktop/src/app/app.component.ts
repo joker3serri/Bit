@@ -40,10 +40,10 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 
+import { DeleteAccountComponent } from "../auth/delete-account.component";
+import { PremiumComponent } from "../auth/premium.component";
 import { MenuUpdateRequest } from "../main/menu/menu.updater";
 
-import { DeleteAccountComponent } from "./accounts/delete-account.component";
-import { PremiumComponent } from "./accounts/premium.component";
 import { SettingsComponent } from "./accounts/settings.component";
 import { ExportComponent } from "./vault/export.component";
 import { FolderAddEditComponent } from "./vault/folder-add-edit.component";
