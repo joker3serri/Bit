@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 
 import { VaultItemsComponent as BaseVaultItemsComponent } from "@bitwarden/angular/vault/components/vault-items.component";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
-import { CipherView } from "@bitwarden/common/models/view/cipher.view";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import { SearchBarService } from "../layout/search/search-bar.service";
 

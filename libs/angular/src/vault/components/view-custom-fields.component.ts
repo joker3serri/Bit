@@ -3,8 +3,8 @@ import { Directive, Input } from "@angular/core";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
-import { CipherView } from "@bitwarden/common/models/view/cipher.view";
-import { FieldView } from "@bitwarden/common/models/view/field.view";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
 
 @Directive()
 export class ViewCustomFieldsComponent {

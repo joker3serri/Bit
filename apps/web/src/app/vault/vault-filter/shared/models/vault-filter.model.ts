@@ -1,6 +1,6 @@
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
-import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import {
   CipherStatus,

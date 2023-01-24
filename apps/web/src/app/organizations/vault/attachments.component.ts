@@ -8,10 +8,10 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
-import { AttachmentView } from "@bitwarden/common/models/view/attachment.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
+import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 
 import { AttachmentsComponent as BaseAttachmentsComponent } from "../../vault/attachments.component";
 

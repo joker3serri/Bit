@@ -11,9 +11,9 @@ import {
   CollectionResponse as ApiCollectionResponse,
 } from "@bitwarden/common/models/response/collection.response";
 import { ListResponse as ApiListResponse } from "@bitwarden/common/models/response/list.response";
-import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import { Response } from "../models/response";
 import { CipherResponse } from "../models/response/cipher.response";

@@ -1,4 +1,4 @@
-import { CipherView } from "@bitwarden/common/models/view/cipher.view";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import AutofillField from "../../models/autofillField";
 import AutofillForm from "../../models/autofillForm";

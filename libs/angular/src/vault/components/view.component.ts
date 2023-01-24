@@ -26,15 +26,15 @@ import { EventType } from "@bitwarden/common/enums/eventType";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { AttachmentView } from "@bitwarden/common/models/view/attachment.view";
-import { CipherView } from "@bitwarden/common/models/view/cipher.view";
-import { FolderView } from "@bitwarden/common/models/view/folder.view";
 import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 const BroadcasterSubscriptionId = "ViewComponent";
 

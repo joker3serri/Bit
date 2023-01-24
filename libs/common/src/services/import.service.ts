@@ -75,12 +75,12 @@ import { ImportCiphersRequest } from "../models/request/import-ciphers.request";
 import { ImportOrganizationCiphersRequest } from "../models/request/import-organization-ciphers.request";
 import { KvpRequest } from "../models/request/kvp.request";
 import { ErrorResponse } from "../models/response/error.response";
-import { CipherView } from "../models/view/cipher.view";
 import { CipherService } from "../vault/abstractions/cipher.service";
 import { FolderService } from "../vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "../vault/enums/cipher-type";
 import { CipherRequest } from "../vault/models/request/cipher.request";
 import { FolderRequest } from "../vault/models/request/folder.request";
+import { CipherView } from "../vault/models/view/cipher.view";
 
 export class ImportService implements ImportServiceAbstraction {
   featuredImportOptions = featuredImportOptions as readonly ImportOption[];

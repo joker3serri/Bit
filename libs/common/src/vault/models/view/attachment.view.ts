@@ -1,9 +1,8 @@
 import { Jsonify } from "type-fest";
 
-import { Attachment } from "../../vault/models/domain/attachment";
-import { SymmetricCryptoKey } from "../domain/symmetric-crypto-key";
-
-import { View } from "./view";
+import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
+import { View } from "../../../models/view/view";
+import { Attachment } from "../domain/attachment";
 
 export class AttachmentView implements View {
   id: string = null;

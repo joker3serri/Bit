@@ -1,11 +1,11 @@
 import { UriMatchType } from "../../enums/uriMatchType";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
-import { CipherView } from "../../models/view/cipher.view";
-import { FieldView } from "../../models/view/field.view";
 import { CipherType } from "../enums/cipher-type";
 import { CipherData } from "../models/data/cipher.data";
 import { Cipher } from "../models/domain/cipher";
 import { Field } from "../models/domain/field";
+import { CipherView } from "../models/view/cipher.view";
+import { FieldView } from "../models/view/field.view";
 
 export abstract class CipherService {
   clearCache: (userId?: string) => Promise<void>;

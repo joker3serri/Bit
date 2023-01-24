@@ -1,9 +1,9 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import { BrowserStateService } from "../services/abstractions/browser-state.service";
 

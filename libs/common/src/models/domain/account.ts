@@ -7,6 +7,7 @@ import { Utils } from "../../misc/utils";
 import { DeepJsonify } from "../../types/deep-jsonify";
 import { CipherData } from "../../vault/models/data/cipher.data";
 import { FolderData } from "../../vault/models/data/folder.data";
+import { CipherView } from "../../vault/models/view/cipher.view";
 import { CollectionData } from "../data/collection.data";
 import { EncryptedOrganizationKeyData } from "../data/encrypted-organization-key.data";
 import { EventData } from "../data/event.data";
@@ -15,7 +16,6 @@ import { PolicyData } from "../data/policy.data";
 import { ProviderData } from "../data/provider.data";
 import { SendData } from "../data/send.data";
 import { ServerConfigData } from "../data/server-config.data";
-import { CipherView } from "../view/cipher.view";
 import { CollectionView } from "../view/collection.view";
 import { SendView } from "../view/send.view";
 

@@ -1,9 +1,8 @@
 import { Jsonify } from "type-fest";
 
-import { Folder } from "../../vault/models/domain/folder";
-import { ITreeNodeObject } from "../domain/tree-node";
-
-import { View } from "./view";
+import { ITreeNodeObject } from "../../../models/domain/tree-node";
+import { View } from "../../../models/view/view";
+import { Folder } from "../domain/folder";
 
 export class FolderView implements View, ITreeNodeObject {
   id: string = null;

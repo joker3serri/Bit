@@ -21,13 +21,8 @@ import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
-import { CardView } from "@bitwarden/common/models/view/card.view";
-import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
-import { FolderView } from "@bitwarden/common/models/view/folder.view";
 import { IdentityView } from "@bitwarden/common/models/view/identity.view";
-import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/models/view/login.view";
 import { SecureNoteView } from "@bitwarden/common/models/view/secure-note.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
@@ -35,6 +30,11 @@ import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/pa
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
+import { CardView } from "@bitwarden/common/vault/models/view/card.view";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
+import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 
 @Directive()
 export class AddEditComponent implements OnInit, OnDestroy {

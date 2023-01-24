@@ -1,11 +1,11 @@
 import { Jsonify } from "type-fest";
 
-import { LoginLinkedId as LinkedId } from "../../enums/linkedIdType";
-import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
-import { Utils } from "../../misc/utils";
-import { Login } from "../../vault/models/domain/login";
+import { LoginLinkedId as LinkedId } from "../../../enums/linkedIdType";
+import { linkedFieldOption } from "../../../misc/linkedFieldOption.decorator";
+import { Utils } from "../../../misc/utils";
+import { ItemView } from "../../../models/view/item.view";
+import { Login } from "../domain/login";
 
-import { ItemView } from "./item.view";
 import { LoginUriView } from "./login-uri.view";
 
 export class LoginView extends ItemView {

@@ -9,10 +9,10 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { AttachmentView } from "@bitwarden/common/models/view/attachment.view";
-import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
+import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 @Directive()
 export class AttachmentsComponent implements OnInit {

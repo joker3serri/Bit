@@ -2,7 +2,7 @@ import { Directive, EventEmitter, Input, Output } from "@angular/core";
 
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
-import { CipherView } from "@bitwarden/common/models/view/cipher.view";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 @Directive()
 export class VaultItemsComponent {

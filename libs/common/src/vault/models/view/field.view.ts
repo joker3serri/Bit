@@ -1,10 +1,9 @@
 import { Jsonify } from "type-fest";
 
-import { FieldType } from "../../enums/fieldType";
-import { LinkedIdType } from "../../enums/linkedIdType";
-import { Field } from "../../vault/models/domain/field";
-
-import { View } from "./view";
+import { FieldType } from "../../../enums/fieldType";
+import { LinkedIdType } from "../../../enums/linkedIdType";
+import { View } from "../../../models/view/view";
+import { Field } from "../domain/field";
 
 export class FieldView implements View {
   name: string = null;

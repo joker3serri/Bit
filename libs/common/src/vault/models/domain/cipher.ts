@@ -4,12 +4,12 @@ import { Decryptable } from "../../../interfaces/decryptable.interface";
 import Domain from "../../../models/domain/domain-base";
 import { EncString } from "../../../models/domain/enc-string";
 import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
-import { CipherView } from "../../../models/view/cipher.view";
 import { InitializerKey } from "../../../services/cryptography/initializer-key";
 import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
 import { CipherType } from "../../enums/cipher-type";
 import { CipherData } from "../data/cipher.data";
 import { LocalData } from "../data/local.data";
+import { CipherView } from "../view/cipher.view";
 
 import { Attachment } from "./attachment";
 import { Card } from "./card";

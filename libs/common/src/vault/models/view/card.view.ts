@@ -1,9 +1,8 @@
 import { Jsonify } from "type-fest";
 
-import { CardLinkedId as LinkedId } from "../../enums/linkedIdType";
-import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
-
-import { ItemView } from "./item.view";
+import { CardLinkedId as LinkedId } from "../../../enums/linkedIdType";
+import { linkedFieldOption } from "../../../misc/linkedFieldOption.decorator";
+import { ItemView } from "../../../models/view/item.view";
 
 export class CardView extends ItemView {
   @linkedFieldOption(LinkedId.CardholderName)

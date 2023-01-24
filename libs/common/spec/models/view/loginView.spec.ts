@@ -1,5 +1,5 @@
-import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/models/view/login.view";
+import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
+import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 
 import { mockFromJson } from "../../utils";
 

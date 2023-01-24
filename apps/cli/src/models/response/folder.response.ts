@@ -1,5 +1,5 @@
 import { FolderWithIdExport } from "@bitwarden/common/models/export/folder-with-id.export";
-import { FolderView } from "@bitwarden/common/models/view/folder.view";
+import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 import { BaseResponse } from "./base.response";
 

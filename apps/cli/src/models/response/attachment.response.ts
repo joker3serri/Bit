@@ -1,4 +1,4 @@
-import { AttachmentView } from "@bitwarden/common/models/view/attachment.view";
+import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 
 export class AttachmentResponse {
   id: string;

@@ -6,9 +6,9 @@ import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStat
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
-import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import LockedVaultPendingNotificationsItem from "../background/models/lockedVaultPendingNotificationsItem";
 import {

@@ -1,10 +1,9 @@
 import { Jsonify } from "type-fest";
 
-import { UriMatchType } from "../../enums/uriMatchType";
-import { Utils } from "../../misc/utils";
-import { LoginUri } from "../../vault/models/domain/login-uri";
-
-import { View } from "./view";
+import { UriMatchType } from "../../../enums/uriMatchType";
+import { Utils } from "../../../misc/utils";
+import { View } from "../../../models/view/view";
+import { LoginUri } from "../domain/login-uri";
 
 const CanLaunchWhitelist = [
   "https://",

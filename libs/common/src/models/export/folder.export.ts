@@ -1,6 +1,6 @@
 import { Folder as FolderDomain } from "../../vault/models/domain/folder";
+import { FolderView } from "../../vault/models/view/folder.view";
 import { EncString } from "../domain/enc-string";
-import { FolderView } from "../view/folder.view";
 
 export class FolderExport {
   static template(): FolderExport {
