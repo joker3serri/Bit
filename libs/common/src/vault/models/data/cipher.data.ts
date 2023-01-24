@@ -1,4 +1,3 @@
-import { SecureNoteData } from "../../../models/data/secure-note.data";
 import { CipherResponse } from "../../../models/response/cipher.response";
 import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
 import { CipherType } from "../../enums/cipher-type";
@@ -9,6 +8,7 @@ import { FieldData } from "./field.data";
 import { IdentityData } from "./identity.data";
 import { LoginData } from "./login.data";
 import { PasswordHistoryData } from "./password-history.data";
+import { SecureNoteData } from "./secure-note.data";
 
 export class CipherData {
   id: string;
