@@ -10,10 +10,10 @@ import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.
 
 import { mockFromJson } from "../../utils";
 
-jest.mock("@bitwarden/common/models/view/login.view");
+jest.mock("@bitwarden/common/vault/models/view/login.view");
 jest.mock("@bitwarden/common/vault/models/view/attachment.view");
 jest.mock("@bitwarden/common/vault/models/view/field.view");
-jest.mock("@bitwarden/common/models/view/password-history.view");
+jest.mock("@bitwarden/common/vault/models/view/password-history.view");
 
 describe("CipherView", () => {
   beforeEach(() => {
