@@ -1,9 +1,8 @@
-import { FieldType } from "@bitwarden/common/enums/fieldType";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { FieldData } from "@bitwarden/common/vault/models/data/field.data";
-import { Field } from "@bitwarden/common/vault/models/domain/field";
-
-import { mockEnc, mockFromJson } from "../../utils";
+import { mockEnc, mockFromJson } from "../../../../spec/utils";
+import { FieldType } from "../../../enums/fieldType";
+import { EncString } from "../../../models/domain/enc-string";
+import { FieldData } from "../../models/data/field.data";
+import { Field } from "../../models/domain/field";
 
 describe("Field", () => {
   let data: FieldData;

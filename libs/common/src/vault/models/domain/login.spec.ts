@@ -1,14 +1,13 @@
 // eslint-disable-next-line no-restricted-imports
 import { Substitute, Arg } from "@fluffy-spoon/substitute";
 
-import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { LoginData } from "@bitwarden/common/vault/models/data/login.data";
-import { Login } from "@bitwarden/common/vault/models/domain/login";
-import { LoginUri } from "@bitwarden/common/vault/models/domain/login-uri";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-
-import { mockEnc, mockFromJson } from "../../utils";
+import { mockEnc, mockFromJson } from "../../../../spec/utils";
+import { UriMatchType } from "../../../enums/uriMatchType";
+import { EncString } from "../../../models/domain/enc-string";
+import { LoginData } from "../../models/data/login.data";
+import { Login } from "../../models/domain/login";
+import { LoginUri } from "../../models/domain/login-uri";
+import { LoginUriView } from "../../models/view/login-uri.view";
 
 describe("Login DTO", () => {
   it("Convert from empty LoginData", () => {

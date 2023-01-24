@@ -1,8 +1,7 @@
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { CardData } from "@bitwarden/common/vault/models/data/card.data";
-import { Card } from "@bitwarden/common/vault/models/domain/card";
-
-import { mockEnc, mockFromJson } from "../../utils";
+import { mockEnc, mockFromJson } from "../../../../spec/utils";
+import { EncString } from "../../../models/domain/enc-string";
+import { CardData } from "../../../vault/models/data/card.data";
+import { Card } from "../../models/domain/card";
 
 describe("Card", () => {
   let data: CardData;

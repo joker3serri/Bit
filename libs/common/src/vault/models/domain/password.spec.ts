@@ -1,8 +1,7 @@
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { PasswordHistoryData } from "@bitwarden/common/vault/models/data/password-history.data";
-import { Password } from "@bitwarden/common/vault/models/domain/password";
-
-import { mockEnc, mockFromJson } from "../../utils";
+import { mockEnc, mockFromJson } from "../../../../spec/utils";
+import { EncString } from "../../../models/domain/enc-string";
+import { PasswordHistoryData } from "../../models/data/password-history.data";
+import { Password } from "../../models/domain/password";
 
 describe("Password", () => {
   let data: PasswordHistoryData;

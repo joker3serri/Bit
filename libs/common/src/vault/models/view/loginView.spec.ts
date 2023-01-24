@@ -1,9 +1,8 @@
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+import { mockFromJson } from "../../../../spec/utils";
+import { LoginUriView } from "../../models/view/login-uri.view";
+import { LoginView } from "../../models/view/login.view";
 
-import { mockFromJson } from "../../utils";
-
-jest.mock("@bitwarden/common/vault/models/view/login-uri.view");
+jest.mock("../../models/view/login-uri.view");
 
 describe("LoginView", () => {
   beforeEach(() => {

@@ -1,8 +1,7 @@
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { IdentityData } from "@bitwarden/common/vault/models/data/identity.data";
-import { Identity } from "@bitwarden/common/vault/models/domain/identity";
-
-import { mockEnc, mockFromJson } from "../../utils";
+import { mockEnc, mockFromJson } from "../../../../spec/utils";
+import { EncString } from "../../../models/domain/enc-string";
+import { IdentityData } from "../../models/data/identity.data";
+import { Identity } from "../../models/domain/identity";
 
 describe("Identity", () => {
   let data: IdentityData;

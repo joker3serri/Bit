@@ -1,20 +1,21 @@
 // eslint-disable-next-line no-restricted-imports
 import { Arg, Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
-import { FileUploadService } from "@bitwarden/common/abstractions/fileUpload.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { SearchService } from "@bitwarden/common/abstractions/search.service";
-import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
+import { ApiService } from "../../abstractions/api.service";
+import { CryptoService } from "../../abstractions/crypto.service";
+import { EncryptService } from "../../abstractions/encrypt.service";
+import { FileUploadService } from "../../abstractions/fileUpload.service";
+import { I18nService } from "../../abstractions/i18n.service";
+import { LogService } from "../../abstractions/log.service";
+import { SearchService } from "../../abstractions/search.service";
+import { SettingsService } from "../../abstractions/settings.service";
+import { StateService } from "../../abstractions/state.service";
+import { EncArrayBuffer } from "../../models/domain/enc-array-buffer";
+import { EncString } from "../../models/domain/enc-string";
+import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
+import { Cipher } from "../models/domain/cipher";
+
+import { CipherService } from "./cipher.service";
 
 const ENCRYPTED_TEXT = "This data has been encrypted";
 const ENCRYPTED_BYTES = Substitute.for<EncArrayBuffer>();

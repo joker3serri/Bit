@@ -2,16 +2,16 @@
 import { Arg, Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { ContainerService } from "@bitwarden/common/services/container.service";
-import { StateService } from "@bitwarden/common/services/state.service";
-import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { FolderData } from "@bitwarden/common/vault/models/data/folder.data";
-import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
+import { CryptoService } from "../../../abstractions/crypto.service";
+import { EncryptService } from "../../../abstractions/encrypt.service";
+import { I18nService } from "../../../abstractions/i18n.service";
+import { EncString } from "../../../models/domain/enc-string";
+import { ContainerService } from "../../../services/container.service";
+import { StateService } from "../../../services/state.service";
+import { CipherService } from "../../abstractions/cipher.service";
+import { FolderData } from "../../models/data/folder.data";
+import { FolderView } from "../../models/view/folder.view";
+import { FolderService } from "../../services/folder/folder.service";
 
 describe("Folder Service", () => {
   let folderService: FolderService;

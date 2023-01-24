@@ -2,27 +2,26 @@
 import { Substitute, Arg } from "@fluffy-spoon/substitute";
 import { Jsonify } from "type-fest";
 
-import { FieldType } from "@bitwarden/common/enums/fieldType";
-import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
-import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { InitializerKey } from "@bitwarden/common/services/cryptography/initializer-key";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
-import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
-import { Attachment } from "@bitwarden/common/vault/models/domain/attachment";
-import { Card } from "@bitwarden/common/vault/models/domain/card";
-import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
-import { Field } from "@bitwarden/common/vault/models/domain/field";
-import { Identity } from "@bitwarden/common/vault/models/domain/identity";
-import { Login } from "@bitwarden/common/vault/models/domain/login";
-import { Password } from "@bitwarden/common/vault/models/domain/password";
-import { SecureNote } from "@bitwarden/common/vault/models/domain/secure-note";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-
-import { mockEnc, mockFromJson } from "../../utils";
+import { mockEnc, mockFromJson } from "../../../../spec/utils";
+import { FieldType } from "../../../enums/fieldType";
+import { SecureNoteType } from "../../../enums/secureNoteType";
+import { UriMatchType } from "../../../enums/uriMatchType";
+import { EncString } from "../../../models/domain/enc-string";
+import { InitializerKey } from "../../../services/cryptography/initializer-key";
+import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
+import { CipherType } from "../../enums/cipher-type";
+import { CipherData } from "../../models/data/cipher.data";
+import { Attachment } from "../../models/domain/attachment";
+import { Card } from "../../models/domain/card";
+import { Cipher } from "../../models/domain/cipher";
+import { Field } from "../../models/domain/field";
+import { Identity } from "../../models/domain/identity";
+import { Login } from "../../models/domain/login";
+import { Password } from "../../models/domain/password";
+import { SecureNote } from "../../models/domain/secure-note";
+import { CardView } from "../../models/view/card.view";
+import { IdentityView } from "../../models/view/identity.view";
+import { LoginView } from "../../models/view/login.view";
 
 describe("Cipher DTO", () => {
   it("Convert from empty CipherData", () => {

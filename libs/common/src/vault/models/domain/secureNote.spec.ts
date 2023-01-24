@@ -1,6 +1,6 @@
-import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
-import { SecureNoteData } from "@bitwarden/common/vault/models/data/secure-note.data";
-import { SecureNote } from "@bitwarden/common/vault/models/domain/secure-note";
+import { SecureNoteType } from "../../../enums/secureNoteType";
+import { SecureNoteData } from "../../../vault/models/data/secure-note.data";
+import { SecureNote } from "../../../vault/models/domain/secure-note";
 
 describe("SecureNote", () => {
   let data: SecureNoteData;

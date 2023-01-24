@@ -1,11 +1,10 @@
 import { Jsonify } from "type-fest";
 
-import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { LoginUriData } from "@bitwarden/common/vault/models/data/login-uri.data";
-import { LoginUri } from "@bitwarden/common/vault/models/domain/login-uri";
-
-import { mockEnc, mockFromJson } from "../../utils";
+import { mockEnc, mockFromJson } from "../../../../spec/utils";
+import { UriMatchType } from "../../../enums/uriMatchType";
+import { EncString } from "../../../models/domain/enc-string";
+import { LoginUriData } from "../../models/data/login-uri.data";
+import { LoginUri } from "../../models/domain/login-uri";
 
 describe("LoginUri", () => {
   let data: LoginUriData;

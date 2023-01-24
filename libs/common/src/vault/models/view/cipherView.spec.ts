@@ -1,19 +1,18 @@
-import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
-import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
-import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { PasswordHistoryView } from "@bitwarden/common/vault/models/view/password-history.view";
-import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
+import { mockFromJson } from "../../../../spec/utils";
+import { CipherType } from "../../enums/cipher-type";
+import { AttachmentView } from "../../models/view/attachment.view";
+import { CardView } from "../../models/view/card.view";
+import { CipherView } from "../../models/view/cipher.view";
+import { FieldView } from "../../models/view/field.view";
+import { IdentityView } from "../../models/view/identity.view";
+import { LoginView } from "../../models/view/login.view";
+import { PasswordHistoryView } from "../../models/view/password-history.view";
+import { SecureNoteView } from "../../models/view/secure-note.view";
 
-import { mockFromJson } from "../../utils";
-
-jest.mock("@bitwarden/common/vault/models/view/login.view");
-jest.mock("@bitwarden/common/vault/models/view/attachment.view");
-jest.mock("@bitwarden/common/vault/models/view/field.view");
-jest.mock("@bitwarden/common/vault/models/view/password-history.view");
+jest.mock("../../models/view/login.view");
+jest.mock("../../models/view/attachment.view");
+jest.mock("../../models/view/field.view");
+jest.mock("../../models/view/password-history.view");
 
 describe("CipherView", () => {
   beforeEach(() => {

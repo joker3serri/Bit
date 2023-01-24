@@ -1,8 +1,7 @@
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { FolderData } from "@bitwarden/common/vault/models/data/folder.data";
-import { Folder } from "@bitwarden/common/vault/models/domain/folder";
-
-import { mockEnc, mockFromJson } from "../../utils";
+import { mockEnc, mockFromJson } from "../../../../spec/utils";
+import { EncString } from "../../../models/domain/enc-string";
+import { FolderData } from "../../models/data/folder.data";
+import { Folder } from "../../models/domain/folder";
 
 describe("Folder", () => {
   let data: FolderData;
@@ -41,7 +40,7 @@ describe("Folder", () => {
   });
 
   describe("fromJSON", () => {
-    jest.mock("@bitwarden/common/models/domain/enc-string");
+    jest.mock("../../../models/domain/enc-string");
     jest.spyOn(EncString, "fromJSON").mockImplementation(mockFromJson);
 
     it("initializes nested objects", () => {

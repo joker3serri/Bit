@@ -1,14 +1,13 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
-import { ContainerService } from "@bitwarden/common/services/container.service";
-import { AttachmentData } from "@bitwarden/common/vault/models/data/attachment.data";
-import { Attachment } from "@bitwarden/common/vault/models/domain/attachment";
-
-import { makeStaticByteArray, mockEnc, mockFromJson } from "../../utils";
+import { makeStaticByteArray, mockEnc, mockFromJson } from "../../../../spec/utils";
+import { CryptoService } from "../../../abstractions/crypto.service";
+import { EncryptService } from "../../../abstractions/encrypt.service";
+import { EncString } from "../../../models/domain/enc-string";
+import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
+import { ContainerService } from "../../../services/container.service";
+import { AttachmentData } from "../../models/data/attachment.data";
+import { Attachment } from "../../models/domain/attachment";
 
 describe("Attachment", () => {
   let data: AttachmentData;
