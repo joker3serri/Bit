@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { FolderData } from "../data/folder.data";
+import { FolderData } from "../../vault/models/data/folder.data";
 import { FolderView } from "../view/folder.view";
 
 import Domain from "./domain-base";

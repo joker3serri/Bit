@@ -6,7 +6,6 @@ import { UriMatchType } from "../enums/uriMatchType";
 import { CollectionData } from "../models/data/collection.data";
 import { EncryptedOrganizationKeyData } from "../models/data/encrypted-organization-key.data";
 import { EventData } from "../models/data/event.data";
-import { FolderData } from "../models/data/folder.data";
 import { LocalData } from "../models/data/local.data";
 import { OrganizationData } from "../models/data/organization.data";
 import { PolicyData } from "../models/data/policy.data";
@@ -25,6 +24,7 @@ import { CipherView } from "../models/view/cipher.view";
 import { CollectionView } from "../models/view/collection.view";
 import { SendView } from "../models/view/send.view";
 import { CipherData } from "../vault/models/data/cipher.data";
+import { FolderData } from "../vault/models/data/folder.data";
 
 export abstract class StateService<T extends Account = Account> {
   accounts$: Observable<{ [userId: string]: T }>;
