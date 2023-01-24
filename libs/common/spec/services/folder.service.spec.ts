@@ -7,11 +7,11 @@ import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { ContainerService } from "@bitwarden/common/services/container.service";
-import { FolderService } from "@bitwarden/common/services/folder/folder.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderData } from "@bitwarden/common/vault/models/data/folder.data";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
+import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
 
 describe("Folder Service", () => {
   let folderService: FolderService;

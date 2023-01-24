@@ -55,7 +55,6 @@ import { EventCollectionService } from "@bitwarden/common/services/event/event-c
 import { EventUploadService } from "@bitwarden/common/services/event/event-upload.service";
 import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";
-import { FolderApiService } from "@bitwarden/common/services/folder/folder-api.service";
 import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
@@ -82,6 +81,7 @@ import { InternalFolderService as InternalFolderServiceAbstraction } from "@bitw
 import { SyncNotifierService as SyncNotifierServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync-notifier.service.abstraction";
 import { SyncService as SyncServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
 
 import { BrowserApi } from "../browser/browserApi";
 import { CipherContextMenuHandler } from "../browser/cipher-context-menu-handler";

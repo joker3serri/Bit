@@ -24,8 +24,6 @@ import { EncryptServiceImplementation } from "@bitwarden/common/services/cryptog
 import { EnvironmentService } from "@bitwarden/common/services/environment.service";
 import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";
-import { FolderApiService } from "@bitwarden/common/services/folder/folder-api.service";
-import { FolderService } from "@bitwarden/common/services/folder/folder.service";
 import { ImportService } from "@bitwarden/common/services/import.service";
 import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
@@ -51,6 +49,8 @@ import { UserVerificationService } from "@bitwarden/common/services/userVerifica
 import { VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vaultTimeout/vaultTimeoutSettings.service";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
+import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
+import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/node-crypto-function.service";
 
 import { Program } from "./program";

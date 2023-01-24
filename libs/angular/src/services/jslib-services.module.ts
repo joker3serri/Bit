@@ -84,8 +84,6 @@ import { EventCollectionService } from "@bitwarden/common/services/event/event-c
 import { EventUploadService } from "@bitwarden/common/services/event/event-upload.service";
 import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";
-import { FolderApiService } from "@bitwarden/common/services/folder/folder-api.service";
-import { FolderService } from "@bitwarden/common/services/folder/folder.service";
 import { FormValidationErrorsService } from "@bitwarden/common/services/formValidationErrors.service";
 import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
 import { LoginService } from "@bitwarden/common/services/login.service";
@@ -123,6 +121,8 @@ import {
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncNotifierService as SyncNotifierServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync-notifier.service.abstraction";
 import { SyncService as SyncServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
+import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
 
 import { AuthGuard } from "../guards/auth.guard";
 import { LockGuard } from "../guards/lock.guard";

@@ -1,16 +1,16 @@
 import { BehaviorSubject, concatMap } from "rxjs";
 
-import { CryptoService } from "../../abstractions/crypto.service";
-import { I18nService } from "../../abstractions/i18n.service";
-import { StateService } from "../../abstractions/state.service";
-import { Utils } from "../../misc/utils";
-import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
-import { CipherService } from "../../vault/abstractions/cipher.service";
-import { InternalFolderService as InternalFolderServiceAbstraction } from "../../vault/abstractions/folder/folder.service.abstraction";
-import { CipherData } from "../../vault/models/data/cipher.data";
-import { FolderData } from "../../vault/models/data/folder.data";
-import { Folder } from "../../vault/models/domain/folder";
-import { FolderView } from "../../vault/models/view/folder.view";
+import { CryptoService } from "../../../abstractions/crypto.service";
+import { I18nService } from "../../../abstractions/i18n.service";
+import { StateService } from "../../../abstractions/state.service";
+import { Utils } from "../../../misc/utils";
+import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
+import { CipherService } from "../../../vault/abstractions/cipher.service";
+import { InternalFolderService as InternalFolderServiceAbstraction } from "../../../vault/abstractions/folder/folder.service.abstraction";
+import { CipherData } from "../../../vault/models/data/cipher.data";
+import { FolderData } from "../../../vault/models/data/folder.data";
+import { Folder } from "../../../vault/models/domain/folder";
+import { FolderView } from "../../../vault/models/view/folder.view";
 
 export class FolderService implements InternalFolderServiceAbstraction {
   protected _folders: BehaviorSubject<Folder[]> = new BehaviorSubject([]);

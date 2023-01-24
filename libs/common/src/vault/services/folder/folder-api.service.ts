@@ -1,10 +1,10 @@
-import { ApiService } from "../../abstractions/api.service";
-import { FolderApiServiceAbstraction } from "../../vault/abstractions/folder/folder-api.service.abstraction";
-import { InternalFolderService } from "../../vault/abstractions/folder/folder.service.abstraction";
-import { FolderData } from "../../vault/models/data/folder.data";
-import { Folder } from "../../vault/models/domain/folder";
-import { FolderRequest } from "../../vault/models/request/folder.request";
-import { FolderResponse } from "../../vault/models/response/folder.response";
+import { ApiService } from "../../../abstractions/api.service";
+import { FolderApiServiceAbstraction } from "../../../vault/abstractions/folder/folder-api.service.abstraction";
+import { InternalFolderService } from "../../../vault/abstractions/folder/folder.service.abstraction";
+import { FolderData } from "../../../vault/models/data/folder.data";
+import { Folder } from "../../../vault/models/domain/folder";
+import { FolderRequest } from "../../../vault/models/request/folder.request";
+import { FolderResponse } from "../../../vault/models/response/folder.response";
 
 export class FolderApiService implements FolderApiServiceAbstraction {
   constructor(private folderService: InternalFolderService, private apiService: ApiService) {}
