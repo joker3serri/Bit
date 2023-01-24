@@ -1,5 +1,5 @@
 import { SecureNoteType } from "../../enums/secureNoteType";
-import { SecureNote as SecureNoteDomain } from "../domain/secure-note";
+import { SecureNote as SecureNoteDomain } from "../../vault/models/domain/secure-note";
 import { SecureNoteView } from "../view/secure-note.view";
 
 export class SecureNoteExport {

@@ -3,7 +3,6 @@ import { Jsonify } from "type-fest";
 import { Decryptable } from "../../../interfaces/decryptable.interface";
 import Domain from "../../../models/domain/domain-base";
 import { EncString } from "../../../models/domain/enc-string";
-import { SecureNote } from "../../../models/domain/secure-note";
 import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
 import { CipherView } from "../../../models/view/cipher.view";
 import { InitializerKey } from "../../../services/cryptography/initializer-key";
@@ -18,6 +17,7 @@ import { Field } from "./field";
 import { Identity } from "./identity";
 import { Login } from "./login";
 import { Password } from "./password";
+import { SecureNote } from "./secure-note";
 
 export class Cipher extends Domain implements Decryptable<CipherView> {
   readonly initializerKey = InitializerKey.Cipher;

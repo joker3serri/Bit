@@ -17,7 +17,6 @@ import { AccountSettingsSettings } from "../models/domain/account";
 import Domain from "../models/domain/domain-base";
 import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";
-import { SecureNote } from "../models/domain/secure-note";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { AttachmentRequest } from "../models/request/attachment.request";
 import { CipherBulkDeleteRequest } from "../models/request/cipher-bulk-delete.request";
@@ -47,6 +46,7 @@ import { Identity } from "../vault/models/domain/identity";
 import { Login } from "../vault/models/domain/login";
 import { LoginUri } from "../vault/models/domain/login-uri";
 import { Password } from "../vault/models/domain/password";
+import { SecureNote } from "../vault/models/domain/secure-note";
 import { SortedCiphersCache } from "../vault/models/domain/sorted-ciphers-cache";
 
 const DomainMatchBlacklist = new Map<string, Set<string>>([
