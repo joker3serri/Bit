@@ -176,48 +176,45 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.vaultItemsComponent.search(200);
   }
 
+  private showFreeOrgUpgradeDialog(): void {
+    const orgUpgradeSimpleDialogOpts: SimpleDialogOptions = {
+      title: this.i18nService.t("upgradeOrganization"),
+      content: this.i18nService.t(
+        this.organization.canManageBilling
+          ? "freeOrgMaxCollectionReachedManageBilling"
+          : "freeOrgMaxCollectionReachedNoManageBilling",
+        this.organization.maxCollections
+      ),
+      type: SimpleDialogType.PRIMARY,
+    };
+
+    if (this.organization.canManageBilling) {
+      orgUpgradeSimpleDialogOpts.acceptButtonText = this.i18nService.t("upgrade");
+    } else {
+      orgUpgradeSimpleDialogOpts.acceptButtonText = this.i18nService.t("ok");
+      orgUpgradeSimpleDialogOpts.cancelButtonText = null; // hide secondary btn
+    }
+
+    const simpleDialog = this.dialogService.openSimpleDialog(orgUpgradeSimpleDialogOpts);
+
+    firstValueFrom(simpleDialog.closed).then((result: SimpleDialogCloseType | undefined) => {
+      if (!result) {
+        return;
+      }
+
+      if (result == SimpleDialogCloseType.ACCEPT && this.organization.canManageBilling) {
+        this.router.navigate(["/organizations", this.organization.id, "billing", "subscription"], {
+          queryParams: { upgrade: true },
+        });
+      }
+    });
+  }
+
   async addCollection() {
     if (this.organization.planProductType === ProductType.Free) {
       const collections = await this.collectionAdminService.getAll(this.organization.id);
-
       if (collections.length === this.organization.maxCollections) {
-        // Show org upgrade modal
-        // It might be worth creating a simple
-        // org upgrade dialog service to launch the dialog here and in the people.comp
-        // once the enterprise pod is done w/ their organization module refactor.
-        const orgUpgradeSimpleDialogOpts: SimpleDialogOptions = {
-          title: this.i18nService.t("upgradeOrganization"),
-          content: this.i18nService.t(
-            this.organization.canManageBilling
-              ? "freeOrgMaxCollectionReachedManageBilling"
-              : "freeOrgMaxCollectionReachedNoManageBilling",
-            this.organization.maxCollections
-          ),
-          type: SimpleDialogType.PRIMARY,
-        };
-
-        if (this.organization.canManageBilling) {
-          orgUpgradeSimpleDialogOpts.acceptButtonText = this.i18nService.t("upgrade");
-        } else {
-          orgUpgradeSimpleDialogOpts.acceptButtonText = this.i18nService.t("ok");
-          orgUpgradeSimpleDialogOpts.cancelButtonText = null; // hide secondary btn
-        }
-
-        const simpleDialog = this.dialogService.openSimpleDialog(orgUpgradeSimpleDialogOpts);
-
-        firstValueFrom(simpleDialog.closed).then((result: SimpleDialogCloseType | undefined) => {
-          if (!result) {
-            return;
-          }
-
-          if (result == SimpleDialogCloseType.ACCEPT && this.organization.canManageBilling) {
-            this.router.navigate(
-              ["/organizations", this.organization.id, "billing", "subscription"],
-              { queryParams: { upgrade: true } }
-            );
-          }
-        });
-
+        this.showFreeOrgUpgradeDialog();
         return;
       }
     }

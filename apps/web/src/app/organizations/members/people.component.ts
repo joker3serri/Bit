@@ -311,6 +311,40 @@ export class PeopleComponent
     );
   }
 
+  private async showFreeOrgUpgradeDialog(): Promise<void> {
+    const orgUpgradeSimpleDialogOpts: SimpleDialogOptions = {
+      title: this.i18nService.t("upgradeOrganization"),
+      content: this.i18nService.t(
+        this.organization.canManageBilling
+          ? "freeOrgInvLimitReachedManageBilling"
+          : "freeOrgInvLimitReachedNoManageBilling",
+        this.organization.seats
+      ),
+      type: SimpleDialogType.PRIMARY,
+    };
+
+    if (this.organization.canManageBilling) {
+      orgUpgradeSimpleDialogOpts.acceptButtonText = this.i18nService.t("upgrade");
+    } else {
+      orgUpgradeSimpleDialogOpts.acceptButtonText = this.i18nService.t("ok");
+      orgUpgradeSimpleDialogOpts.cancelButtonText = null; // hide secondary btn
+    }
+
+    const simpleDialog = this.dialogService.openSimpleDialog(orgUpgradeSimpleDialogOpts);
+
+    firstValueFrom(simpleDialog.closed).then((result: SimpleDialogCloseType | undefined) => {
+      if (!result) {
+        return;
+      }
+
+      if (result == SimpleDialogCloseType.ACCEPT && this.organization.canManageBilling) {
+        this.router.navigate(["/organizations", this.organization.id, "billing", "subscription"], {
+          queryParams: { upgrade: true },
+        });
+      }
+    });
+  }
+
   async edit(user: OrganizationUserView, initialTab: MemberDialogTab = MemberDialogTab.Role) {
     // Invite User: Add Flow
     // Click on user email: Edit Flow
@@ -322,39 +356,7 @@ export class PeopleComponent
       this.allUsers.length === this.organization.seats
     ) {
       // Show org upgrade modal
-      const orgUpgradeSimpleDialogOpts: SimpleDialogOptions = {
-        title: this.i18nService.t("upgradeOrganization"),
-        content: this.i18nService.t(
-          this.organization.canManageBilling
-            ? "freeOrgInvLimitReachedManageBilling"
-            : "freeOrgInvLimitReachedNoManageBilling",
-          this.organization.seats
-        ),
-        type: SimpleDialogType.PRIMARY,
-      };
-
-      if (this.organization.canManageBilling) {
-        orgUpgradeSimpleDialogOpts.acceptButtonText = this.i18nService.t("upgrade");
-      } else {
-        orgUpgradeSimpleDialogOpts.acceptButtonText = this.i18nService.t("ok");
-        orgUpgradeSimpleDialogOpts.cancelButtonText = null; // hide secondary btn
-      }
-
-      const simpleDialog = this.dialogService.openSimpleDialog(orgUpgradeSimpleDialogOpts);
-
-      firstValueFrom(simpleDialog.closed).then((result: SimpleDialogCloseType | undefined) => {
-        if (!result) {
-          return;
-        }
-
-        if (result == SimpleDialogCloseType.ACCEPT && this.organization.canManageBilling) {
-          this.router.navigate(
-            ["/organizations", this.organization.id, "billing", "subscription"],
-            { queryParams: { upgrade: true } }
-          );
-        }
-      });
-
+      await this.showFreeOrgUpgradeDialog();
       return;
     }
 
