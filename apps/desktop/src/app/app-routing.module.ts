@@ -4,17 +4,18 @@ import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
 import { LockGuard } from "@bitwarden/angular/guards/lock.guard";
 
-import { AccessibilityCookieComponent } from "./accounts/accessibility-cookie.component";
-import { HintComponent } from "./accounts/hint.component";
-import { LockComponent } from "./accounts/lock.component";
-import { LoginComponent } from "./accounts/login.component";
-import { RegisterComponent } from "./accounts/register.component";
-import { RemovePasswordComponent } from "./accounts/remove-password.component";
-import { SetPasswordComponent } from "./accounts/set-password.component";
-import { SsoComponent } from "./accounts/sso.component";
-import { TwoFactorComponent } from "./accounts/two-factor.component";
-import { UpdateTempPasswordComponent } from "./accounts/update-temp-password.component";
+import { AccessibilityCookieComponent } from "../auth/accessibility-cookie.component";
 import { LoginGuard } from "../auth/guards/login.guard";
+import { HintComponent } from "../auth/hint.component";
+import { LockComponent } from "../auth/lock.component";
+import { LoginComponent } from "../auth/login.component";
+import { RegisterComponent } from "../auth/register.component";
+import { SetPasswordComponent } from "../auth/set-password.component";
+import { SsoComponent } from "../auth/sso.component";
+import { TwoFactorComponent } from "../auth/two-factor.component";
+import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
+
+import { RemovePasswordComponent } from "./accounts/remove-password.component";
 import { SendComponent } from "./send/send.component";
 import { VaultComponent } from "./vault/vault.component";
 

@@ -40,6 +40,7 @@ import { LoginService } from "@bitwarden/common/services/login.service";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 import { SystemService } from "@bitwarden/common/services/system.service";
 
+import { LoginGuard } from "../../auth/guards/login.guard";
 import { Account } from "../../models/account";
 import { ElectronCryptoService } from "../../services/electron-crypto.service";
 import { ElectronLogService } from "../../services/electron-log.service";
@@ -53,7 +54,6 @@ import { NativeMessageHandlerService } from "../../services/native-message-handl
 import { NativeMessagingService } from "../../services/native-messaging.service";
 import { PasswordRepromptService } from "../../services/password-reprompt.service";
 import { StateService } from "../../services/state.service";
-import { LoginGuard } from "../../auth/guards/login.guard";
 import { SearchBarService } from "../layout/search/search-bar.service";
 
 import { DesktopFileDownloadService } from "./desktop-file-download.service";

@@ -11,11 +11,10 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { SecretVerificationRequest } from "@bitwarden/common/models/request/secret-verification.request";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
 
+import { ConvertToKeyConnectorCommand } from "../../commands/convert-to-key-connector.command";
 import { Response } from "../../models/response";
 import { MessageResponse } from "../../models/response/message.response";
 import { CliUtils } from "../../utils";
-
-import { ConvertToKeyConnectorCommand } from "../../commands/convert-to-key-connector.command";
 
 export class UnlockCommand {
   constructor(
