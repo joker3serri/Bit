@@ -1,6 +1,6 @@
-import { PasswordHistoryData } from "@bitwarden/common/models/data/password-history.data";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { Password } from "@bitwarden/common/models/domain/password";
+import { PasswordHistoryData } from "@bitwarden/common/vault/models/data/password-history.data";
 
 import { mockEnc, mockFromJson } from "../../utils";
 

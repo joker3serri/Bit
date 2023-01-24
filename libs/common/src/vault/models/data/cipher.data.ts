@@ -3,11 +3,12 @@ import { CardData } from "../../../models/data/card.data";
 import { FieldData } from "../../../models/data/field.data";
 import { IdentityData } from "../../../models/data/identity.data";
 import { LoginData } from "../../../models/data/login.data";
-import { PasswordHistoryData } from "../../../models/data/password-history.data";
 import { SecureNoteData } from "../../../models/data/secure-note.data";
 import { CipherResponse } from "../../../models/response/cipher.response";
 import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
 import { CipherType } from "../../enums/cipher-type";
+
+import { PasswordHistoryData } from "./password-history.data";
 
 export class CipherData {
   id: string;
