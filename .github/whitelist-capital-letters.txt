@@ -106,7 +106,6 @@
 ./libs/common/src/enums/authRequestType.ts
 ./libs/common/src/enums/emergencyAccessStatusType.ts
 ./libs/common/src/enums/nativeMessagingVersion.ts
-./libs/common/src/enums/cipherRepromptType.ts
 ./libs/common/src/enums/organizationUserType.ts
 ./libs/common/src/factories/accountFactory.ts
 ./libs/common/src/factories/globalStateFactory.ts

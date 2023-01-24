@@ -9,7 +9,7 @@ import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipherRepromptType";
+import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 
 @Component({
   selector: "app-action-buttons",

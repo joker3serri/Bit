@@ -8,7 +8,7 @@ import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { FieldView } from "@bitwarden/common/models/view/field.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipherRepromptType";
+import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 
 import { BrowserApi } from "../browser/browserApi";
 import AutofillField from "../models/autofillField";

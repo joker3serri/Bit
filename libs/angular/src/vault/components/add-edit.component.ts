@@ -31,7 +31,7 @@ import { SecureNoteView } from "@bitwarden/common/models/view/secure-note.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipherRepromptType";
+import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 
 @Directive()
 export class AddEditComponent implements OnInit, OnDestroy {

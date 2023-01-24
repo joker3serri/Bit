@@ -20,7 +20,7 @@ import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipherRepromptType";
+import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { DialogService, Icons } from "@bitwarden/components";
 
 import { CollectionAdminView, GroupView } from "../organizations/core";

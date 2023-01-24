@@ -15,7 +15,7 @@ import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipherRepromptType";
+import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { AutofillService } from "../../services/abstractions/autofill.service";

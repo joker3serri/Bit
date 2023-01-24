@@ -20,7 +20,7 @@ import { CardView } from "@bitwarden/common/models/view/card.view";
 import { IdentityView } from "@bitwarden/common/models/view/identity.view";
 import { LoginView } from "@bitwarden/common/models/view/login.view";
 import { InitializerKey } from "@bitwarden/common/services/cryptography/initializer-key";
-import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipherRepromptType";
+import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 
 import { mockEnc, mockFromJson } from "../../utils";
 

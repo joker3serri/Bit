@@ -7,7 +7,7 @@ import { CollectionView } from "../models/view/collection.view";
 import { FieldView } from "../models/view/field.view";
 import { LoginView } from "../models/view/login.view";
 import { SecureNoteView } from "../models/view/secure-note.view";
-import { CipherRepromptType } from "../vault/enums/cipherRepromptType";
+import { CipherRepromptType } from "../vault/enums/cipher-reprompt-type";
 
 import { BaseImporter } from "./base-importer";
 import { Importer } from "./importer";
