@@ -5,7 +5,6 @@ import { BreadcrumbsModule } from "@bitwarden/components";
 import { SecretsManagerSharedModule } from "../shared/sm-shared.module";
 
 import { AccessListComponent } from "./access/access-list.component";
-import { AccessTokenButtonComponent } from "./access/access-token-button.component";
 import { AccessTokenComponent } from "./access/access-tokens.component";
 import { AccessTokenCreateDialogComponent } from "./access/dialogs/access-token-create-dialog.component";
 import { AccessTokenDialogComponent } from "./access/dialogs/access-token-dialog.component";
@@ -21,7 +20,6 @@ import { ServiceAccountsComponent } from "./service-accounts.component";
   declarations: [
     AccessListComponent,
     ExpirationOptionsComponent,
-    AccessTokenButtonComponent,
     AccessTokenComponent,
     AccessTokenCreateDialogComponent,
     AccessTokenDialogComponent,

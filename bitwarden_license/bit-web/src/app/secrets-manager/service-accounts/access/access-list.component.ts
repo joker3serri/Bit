@@ -1,5 +1,5 @@
 import { SelectionModel } from "@angular/cdk/collections";
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { AccessTokenView } from "../models/view/access-token.view";
 
@@ -17,6 +17,8 @@ export class AccessListComponent {
     this._tokens = secrets;
   }
   private _tokens: AccessTokenView[];
+
+  @Output() newAccessTokenEvent = new EventEmitter();
 
   protected selection = new SelectionModel<string>(true, []);
 
