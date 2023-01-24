@@ -6,6 +6,7 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
+import { ListResponse } from "@bitwarden/common/models/response/list.response";
 
 import {
   BaseAccessPolicyView,
@@ -13,6 +14,7 @@ import {
   ServiceAccountProjectAccessPolicyView,
   UserProjectAccessPolicyView,
 } from "../../models/view/access-policy.view";
+import { PotentialGranteeView } from "../../models/view/potential-grantee.view";
 import { ProjectAccessPoliciesView } from "../../models/view/project-access-policies.view";
 
 import { AccessPoliciesCreateRequest } from "./models/requests/access-policies-create.request";
@@ -23,6 +25,7 @@ import {
   ServiceAccountProjectAccessPolicyResponse,
   UserProjectAccessPolicyResponse,
 } from "./models/responses/access-policy.response";
+import { PotentialGranteeResponse } from "./models/responses/potential-grantee.response";
 import { ProjectAccessPoliciesResponse } from "./models/responses/project-access-policies.response";
 
 @Injectable({
@@ -52,6 +55,18 @@ export class AccessPolicyService {
 
     const results = new ProjectAccessPoliciesResponse(r);
     return await this.createProjectAccessPoliciesView(organizationId, results);
+  }
+
+  async getPeoplePotentialGrantees(projectId: string) {
+    const r = await this.apiService.send(
+      "GET",
+      "/projects/" + projectId + "/access-policies/people/potential-grantees",
+      null,
+      true,
+      true
+    );
+    const results = new ListResponse(r, PotentialGranteeResponse);
+    return this.createPotentialGranteeViews(results.data);
   }
 
   async deleteAccessPolicy(accessPolicyId: string): Promise<void> {
@@ -209,5 +224,16 @@ export class AccessPolicyService {
       creationDate: response.creationDate,
       revisionDate: response.revisionDate,
     };
+  }
+
+  private createPotentialGranteeViews(results: PotentialGranteeResponse[]): PotentialGranteeView[] {
+    return results.map((r) => {
+      const view = new PotentialGranteeView();
+      view.id = r.id;
+      view.name = r.name;
+      view.type = r.type;
+      view.email = r.email;
+      return view;
+    });
   }
 }

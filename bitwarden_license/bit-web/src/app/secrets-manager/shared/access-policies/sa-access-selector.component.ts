@@ -21,15 +21,15 @@ export class SaAccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
   @Input() hint: string;
 
   private readonly serviceAccountIcon = "bwi-wrench";
+  loading = true;
+  organizationId: string;
+  projectId: string;
+  potentialGrantees: SelectItemView[];
+  private destroy$: Subject<void> = new Subject<void>();
 
   formGroup = new FormGroup({
     multiSelect: new FormControl([], [Validators.required]),
   });
-  loading = true;
-  organizationId: string;
-  projectId: string;
-  baseItems: SelectItemView[];
-  private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -53,7 +53,7 @@ export class SaAccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (
       !changes.projectAccessPolicies.firstChange &&
-      this.getAccessPoliciesCount(changes.projectAccessPolicies.currentValue) <=
+      this.getAccessPoliciesCount(changes.projectAccessPolicies.currentValue) <
         this.getAccessPoliciesCount(changes.projectAccessPolicies.previousValue)
     ) {
       await this.setMultiSelect();
@@ -94,7 +94,7 @@ export class SaAccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
 
   private clearCreatedItems(projectAccessPoliciesView: ProjectAccessPoliciesView) {
     if (projectAccessPoliciesView.serviceAccountAccessPolicies?.length > 0) {
-      this.baseItems = this.baseItems.filter(
+      this.potentialGrantees = this.potentialGrantees.filter(
         (item) =>
           !projectAccessPoliciesView.serviceAccountAccessPolicies.some(
             (ap) => ap.serviceAccountId == item.id
@@ -108,7 +108,7 @@ export class SaAccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
     this.formGroup.disable();
 
     const orgServiceAccounts = await this.getServiceAccountDetails(this.organizationId);
-    this.baseItems = orgServiceAccounts.filter(
+    this.potentialGrantees = orgServiceAccounts.filter(
       (orgServiceAccount) =>
         !this.projectAccessPolicies.serviceAccountAccessPolicies.some(
           (ap) => ap.serviceAccountId == orgServiceAccount.id

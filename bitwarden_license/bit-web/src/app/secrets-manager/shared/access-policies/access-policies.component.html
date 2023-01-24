@@ -1,11 +1,4 @@
-<div
-  *ngIf="!projectAccessPolicies"
-  class="tw-items-center tw-justify-center tw-pt-64 tw-text-center"
->
-  <i class="bwi bwi-spinner bwi-spin bwi-3x"></i>
-</div>
-
-<ng-container *ngIf="projectAccessPolicies">
+<ng-container *ngIf="rowData$ | async as rowData; else spinner">
   <bit-table>
     <ng-container header>
       <tr>
@@ -14,63 +7,46 @@
       </tr>
     </ng-container>
 
-    <ng-template body *ngIf="tableType == 'projectPeople'">
-      <ng-container
-        *ngIf="
-          projectAccessPolicies.groupAccessPolicies?.length > 0 ||
-            projectAccessPolicies.userAccessPolicies?.length > 0;
-          else empty
-        "
-      >
-        <tr bitRow *ngFor="let accessPolicy of projectAccessPolicies.userAccessPolicies">
-          <ng-container
-            [ngTemplateOutlet]="apRowData"
-            [ngTemplateOutletContext]="{
-              type: 'user',
-              name: accessPolicy.organizationUserName,
-              id: accessPolicy.id,
-              read: accessPolicy.read,
-              write: accessPolicy.write,
-              icon: 'bwi bwi-user tw-text-xl tw-text-muted'
-            }"
-          >
-          </ng-container>
-        </tr>
-
-        <tr bitRow *ngFor="let accessPolicy of projectAccessPolicies.groupAccessPolicies">
-          <ng-container
-            [ngTemplateOutlet]="apRowData"
-            [ngTemplateOutletContext]="{
-              type: 'group',
-              name: accessPolicy.groupName,
-              id: accessPolicy.id,
-              read: accessPolicy.read,
-              write: accessPolicy.write,
-              icon: 'bwi bwi-family tw-text-xl tw-text-muted'
-            }"
-          >
-          </ng-container>
-        </tr>
-      </ng-container>
-    </ng-template>
-
-    <ng-template body *ngIf="tableType == 'projectServiceAccounts'">
-      <ng-container
-        *ngIf="projectAccessPolicies.serviceAccountAccessPolicies?.length > 0; else empty"
-      >
-        <tr bitRow *ngFor="let accessPolicy of projectAccessPolicies.serviceAccountAccessPolicies">
-          <ng-container
-            [ngTemplateOutlet]="apRowData"
-            [ngTemplateOutletContext]="{
-              type: 'serviceAccount',
-              name: accessPolicy.serviceAccountName,
-              id: accessPolicy.id,
-              read: accessPolicy.read,
-              write: accessPolicy.write,
-              icon: 'bwi bwi-wrench tw-text-xl tw-text-muted'
-            }"
-          >
-          </ng-container>
+    <ng-template body>
+      <ng-container *ngIf="rowData?.length > 0; else empty">
+        <tr bitRow *ngFor="let row of rowData">
+          <td bitCell class="tw-w-0 tw-pr-0">
+            <i [class]="row.icon" aria-hidden="true"></i>
+          </td>
+          <td bitCell>{{ row.name }}</td>
+          <td bitCell *ngIf="row.type == 'serviceAccount'">
+            <bit-form-field class="tw-inline-block tw-w-auto">
+              <select bitInput disabled>
+                <option value="canRead" selected>{{ "canRead" | i18n }}</option>
+              </select>
+            </bit-form-field>
+          </td>
+          <td bitCell *ngIf="row.type != 'serviceAccount'">
+            <bit-form-field class="tw-inline-block tw-w-auto">
+              <select bitInput (change)="updateAccessPolicy($event.target, row.id)">
+                <option value="canRead" [selected]="row.read && row.write != true">
+                  {{ "canRead" | i18n }}
+                </option>
+                <option value="canWrite" [selected]="row.read != true && row.write">
+                  {{ "canWrite" | i18n }}
+                </option>
+                <option value="canReadWrite" [selected]="row.read && row.write">
+                  {{ "canReadWrite" | i18n }}
+                </option>
+              </select>
+            </bit-form-field>
+          </td>
+          <td bitCell class="tw-w-0">
+            <button
+              type="button"
+              bitIconButton="bwi-close"
+              buttonType="main"
+              size="default"
+              [attr.title]="'close' | i18n"
+              [attr.aria-label]="'close' | i18n"
+              [bitAction]="delete(row.id)"
+            ></button>
+          </td>
         </tr>
       </ng-container>
     </ng-template>
@@ -83,46 +59,8 @@
   </div>
 </ng-template>
 
-<ng-template
-  #apRowData
-  let-type="type"
-  let-name="name"
-  let-id="id"
-  let-read="read"
-  let-write="write"
-  let-icon="icon"
->
-  <td bitCell class="tw-w-0 tw-pr-0">
-    <i [class]="icon" aria-hidden="true"></i>
-  </td>
-  <td bitCell>{{ name }}</td>
-  <td bitCell *ngIf="type == 'serviceAccount'">
-    <bit-form-field class="tw-inline-block tw-w-auto">
-      <select bitInput disabled>
-        <option value="canRead" selected>{{ "canRead" | i18n }}</option>
-      </select>
-    </bit-form-field>
-  </td>
-  <td bitCell *ngIf="type != 'serviceAccount'">
-    <bit-form-field class="tw-inline-block tw-w-auto">
-      <select bitInput (change)="updateAccessPolicy($event.target, id)">
-        <option value="canRead" [selected]="read && write != true">{{ "canRead" | i18n }}</option>
-        <option value="canWrite" [selected]="read != true && write">
-          {{ "canWrite" | i18n }}
-        </option>
-        <option value="canReadWrite" [selected]="read && write">{{ "canReadWrite" | i18n }}</option>
-      </select>
-    </bit-form-field>
-  </td>
-  <td bitCell class="tw-w-0">
-    <button
-      type="button"
-      bitIconButton="bwi-close"
-      buttonType="main"
-      size="default"
-      [attr.title]="'close' | i18n"
-      [attr.aria-label]="'close' | i18n"
-      [bitAction]="delete(id)"
-    ></button>
-  </td>
+<ng-template #spinner>
+  <div class="tw-items-center tw-justify-center tw-pt-64 tw-text-center">
+    <i class="bwi bwi-spinner bwi-spin bwi-3x"></i>
+  </div>
 </ng-template>

@@ -3,9 +3,7 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
-import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
-import { GroupService } from "@bitwarden/web-vault/app/organizations/core";
 
 import {
   GroupProjectAccessPolicyView,
@@ -26,23 +24,17 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
 
   private readonly userIcon = "bwi-user";
   private readonly groupIcon = "bwi-family";
+  loading = true;
+  organizationId: string;
+  projectId: string;
+  potentialGrantees: SelectItemView[];
+  private destroy$: Subject<void> = new Subject<void>();
 
   formGroup = new FormGroup({
     multiSelect: new FormControl([], [Validators.required]),
   });
 
-  loading = true;
-  organizationId: string;
-  projectId: string;
-  baseItems: SelectItemView[];
-  private destroy$: Subject<void> = new Subject<void>();
-
-  constructor(
-    private route: ActivatedRoute,
-    private organizationUserService: OrganizationUserService,
-    private groupService: GroupService,
-    private accessPolicyService: AccessPolicyService
-  ) {}
+  constructor(private route: ActivatedRoute, private accessPolicyService: AccessPolicyService) {}
 
   async ngOnInit(): Promise<void> {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params: any) => {
@@ -60,7 +52,7 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (
       !changes.projectAccessPolicies.firstChange &&
-      this.getAccessPoliciesCount(changes.projectAccessPolicies.currentValue) <=
+      this.getAccessPoliciesCount(changes.projectAccessPolicies.currentValue) <
         this.getAccessPoliciesCount(changes.projectAccessPolicies.previousValue)
     ) {
       await this.setMultiSelect();
@@ -111,12 +103,12 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
 
   private clearCreatedItems(projectAccessPoliciesView: ProjectAccessPoliciesView) {
     if (projectAccessPoliciesView.groupAccessPolicies?.length > 0) {
-      this.baseItems = this.baseItems.filter(
+      this.potentialGrantees = this.potentialGrantees.filter(
         (item) => !projectAccessPoliciesView.groupAccessPolicies.some((ap) => ap.groupId == item.id)
       );
     }
     if (projectAccessPoliciesView.userAccessPolicies?.length > 0) {
-      this.baseItems = this.baseItems.filter(
+      this.potentialGrantees = this.potentialGrantees.filter(
         (item) =>
           !projectAccessPoliciesView.userAccessPolicies.some(
             (ap) => ap.organizationUserId == item.id
@@ -136,48 +128,44 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
     this.loading = true;
     this.formGroup.disable();
 
-    let orgUsers = await this.getUserDetails(this.organizationId);
-    orgUsers = orgUsers.filter(
-      (orgUser) =>
-        !this.projectAccessPolicies.userAccessPolicies.some(
-          (ap) => ap.organizationUserId == orgUser.id
-        )
-    );
-    let orgGroups = await this.getGroupDetails(this.organizationId);
-    orgGroups = orgGroups.filter(
-      (orgGroup) =>
-        !this.projectAccessPolicies.groupAccessPolicies.some((ap) => ap.groupId == orgGroup.id)
-    );
-    this.baseItems = [...orgUsers, ...orgGroups];
+    const potentialGrantees = await this.getPeopleDetails(this.projectId);
+    this.potentialGrantees = potentialGrantees
+      .filter(
+        (potentialGrantee) =>
+          !this.projectAccessPolicies.userAccessPolicies.some(
+            (ap) => ap.organizationUserId == potentialGrantee.id
+          )
+      )
+      .filter(
+        (potentialGrantee) =>
+          !this.projectAccessPolicies.groupAccessPolicies.some(
+            (ap) => ap.groupId == potentialGrantee.id
+          )
+      );
 
     this.loading = false;
     this.formGroup.enable();
     this.formGroup.reset();
   }
 
-  private async getUserDetails(organizationId: string): Promise<SelectItemView[]> {
-    const users = await this.organizationUserService.getAllUsers(organizationId);
-    return users.data.map((user) => {
-      const selectItemView: SelectItemView = {
-        icon: this.userIcon,
-        id: user.id,
-        labelName: user.name,
-        listName: user.name + ` (${user.email})`,
+  private async getPeopleDetails(projectId: string): Promise<SelectItemView[]> {
+    const potentialGrantees = await this.accessPolicyService.getPeoplePotentialGrantees(projectId);
+    return potentialGrantees.map((potentialGrantee) => {
+      let icon: string;
+      let listName: string;
+      if (potentialGrantee.type == "user") {
+        icon = this.userIcon;
+        listName = potentialGrantee.name + ` (${potentialGrantee.email})`;
+      } else {
+        icon = this.groupIcon;
+        listName = potentialGrantee.name;
+      }
+      return {
+        icon: icon,
+        id: potentialGrantee.id,
+        labelName: potentialGrantee.name,
+        listName: listName,
       };
-      return selectItemView;
-    });
-  }
-
-  private async getGroupDetails(organizationId: string): Promise<SelectItemView[]> {
-    const groups = await this.groupService.getAll(organizationId);
-    return groups.map((group) => {
-      const selectItemView: SelectItemView = {
-        icon: this.groupIcon,
-        id: group.id,
-        labelName: group.name,
-        listName: group.name,
-      };
-      return selectItemView;
     });
   }
 }
