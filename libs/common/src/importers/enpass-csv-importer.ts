@@ -2,7 +2,7 @@ import { SecureNoteType } from "../enums/secureNoteType";
 import { ImportResult } from "../models/domain/import-result";
 import { CardView } from "../models/view/card.view";
 import { SecureNoteView } from "../models/view/secure-note.view";
-import { CipherType } from "../vault/enums/cipherType";
+import { CipherType } from "../vault/enums/cipher-type";
 
 import { BaseImporter } from "./base-importer";
 import { Importer } from "./importer";

@@ -1,5 +1,5 @@
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
-import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 import { CipherStatus } from "./cipher-status.model";
 

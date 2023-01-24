@@ -10,7 +10,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { Verification } from "@bitwarden/common/types/verification";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
-import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 class CountBasedLocalizationKey {
   singular: string;

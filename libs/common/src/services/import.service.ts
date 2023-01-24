@@ -80,7 +80,7 @@ import { ErrorResponse } from "../models/response/error.response";
 import { CipherView } from "../models/view/cipher.view";
 import { CipherService } from "../vault/abstractions/cipher.service";
 import { FolderService } from "../vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "../vault/enums/cipherType";
+import { CipherType } from "../vault/enums/cipher-type";
 
 export class ImportService implements ImportServiceAbstraction {
   featuredImportOptions = featuredImportOptions as readonly ImportOption[];

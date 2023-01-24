@@ -25,7 +25,7 @@ import { EventView } from "../models/view/event.view";
 import { FolderView } from "../models/view/folder.view";
 import { CipherService } from "../vault/abstractions/cipher.service";
 import { FolderService } from "../vault/abstractions/folder/folder.service.abstraction";
-import { CipherType } from "../vault/enums/cipherType";
+import { CipherType } from "../vault/enums/cipher-type";
 
 export class ExportService implements ExportServiceAbstraction {
   constructor(

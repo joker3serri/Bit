@@ -6,7 +6,7 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
-import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { BadgeTypes } from "@bitwarden/components";
 
 import { CipherReportComponent } from "./cipher-report.component";

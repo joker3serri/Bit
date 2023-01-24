@@ -65,7 +65,6 @@
 ./libs/common/src/types/syncEventArgs.ts
 ./libs/common/src/enums/kdfType.ts
 ./libs/common/src/enums/fileUploadType.ts
-./libs/common/src/enums/cipherType.ts
 ./libs/common/src/enums/twoFactorProviderType.ts
 ./libs/common/src/enums/clientType.ts
 ./libs/common/src/enums/encryptedExportType.ts

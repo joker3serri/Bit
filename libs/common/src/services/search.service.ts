@@ -8,7 +8,7 @@ import { UriMatchType } from "../enums/uriMatchType";
 import { CipherView } from "../models/view/cipher.view";
 import { SendView } from "../models/view/send.view";
 import { CipherService } from "../vault/abstractions/cipher.service";
-import { CipherType } from "../vault/enums/cipherType";
+import { CipherType } from "../vault/enums/cipher-type";
 
 export class SearchService implements SearchServiceAbstraction {
   private static registeredPipeline = false;

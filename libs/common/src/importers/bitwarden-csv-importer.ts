@@ -7,7 +7,7 @@ import { FieldView } from "../models/view/field.view";
 import { LoginView } from "../models/view/login.view";
 import { SecureNoteView } from "../models/view/secure-note.view";
 import { CipherRepromptType } from "../vault/enums/cipher-reprompt-type";
-import { CipherType } from "../vault/enums/cipherType";
+import { CipherType } from "../vault/enums/cipher-type";
 
 import { BaseImporter } from "./base-importer";
 import { Importer } from "./importer";

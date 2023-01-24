@@ -4,7 +4,7 @@ import { CardView } from "../../models/view/card.view";
 import { CipherView } from "../../models/view/cipher.view";
 import { IdentityView } from "../../models/view/identity.view";
 import { LoginView } from "../../models/view/login.view";
-import { CipherType } from "../../vault/enums/cipherType";
+import { CipherType } from "../../vault/enums/cipher-type";
 import { BaseImporter } from "../base-importer";
 import { Importer } from "../importer";
 

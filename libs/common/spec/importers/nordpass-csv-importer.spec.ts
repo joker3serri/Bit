@@ -2,7 +2,7 @@ import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { NordPassCsvImporter as Importer } from "@bitwarden/common/importers/nordpass-csv-importer";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { IdentityView } from "@bitwarden/common/models/view/identity.view";
-import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 import { data as creditCardData } from "./test-data/nordpass-csv/nordpass.card.csv";
 import { data as identityData } from "./test-data/nordpass-csv/nordpass.identity.csv";

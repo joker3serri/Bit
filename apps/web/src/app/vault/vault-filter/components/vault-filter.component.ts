@@ -8,7 +8,7 @@ import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { FolderView } from "@bitwarden/common/models/view/folder.view";
-import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 import { VaultFilterService } from "../services/abstractions/vault-filter.service";
 import {

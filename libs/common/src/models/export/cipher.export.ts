@@ -1,5 +1,5 @@
 import { CipherRepromptType } from "../../vault/enums/cipher-reprompt-type";
-import { CipherType } from "../../vault/enums/cipherType";
+import { CipherType } from "../../vault/enums/cipher-type";
 import { Cipher as CipherDomain } from "../domain/cipher";
 import { EncString } from "../domain/enc-string";
 import { CipherView } from "../view/cipher.view";

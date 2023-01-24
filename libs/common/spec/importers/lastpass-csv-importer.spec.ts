@@ -3,7 +3,7 @@ import { LastPassCsvImporter as Importer } from "@bitwarden/common/importers/las
 import { ImportResult } from "@bitwarden/common/models/domain/import-result";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { FieldView } from "@bitwarden/common/models/view/field.view";
-import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 function baseExcept(result: ImportResult) {
   expect(result).not.toBeNull();

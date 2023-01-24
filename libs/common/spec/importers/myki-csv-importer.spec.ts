@@ -1,6 +1,6 @@
 import { MykiCsvImporter as Importer } from "@bitwarden/common/importers/myki-csv-importer";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
-import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 import { userAccountData } from "./test-data/myki-csv/user-account.csv";
 import { userCreditCardData } from "./test-data/myki-csv/user-credit-card.csv";

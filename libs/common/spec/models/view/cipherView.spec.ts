@@ -6,7 +6,7 @@ import { IdentityView } from "@bitwarden/common/models/view/identity.view";
 import { LoginView } from "@bitwarden/common/models/view/login.view";
 import { PasswordHistoryView } from "@bitwarden/common/models/view/password-history.view";
 import { SecureNoteView } from "@bitwarden/common/models/view/secure-note.view";
-import { CipherType } from "@bitwarden/common/vault/enums/cipherType";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 import { mockFromJson } from "../../utils";
 

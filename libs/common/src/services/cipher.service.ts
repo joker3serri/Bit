@@ -47,7 +47,7 @@ import { FieldView } from "../models/view/field.view";
 import { PasswordHistoryView } from "../models/view/password-history.view";
 import { View } from "../models/view/view";
 import { CipherService as CipherServiceAbstraction } from "../vault/abstractions/cipher.service";
-import { CipherType } from "../vault/enums/cipherType";
+import { CipherType } from "../vault/enums/cipher-type";
 
 const DomainMatchBlacklist = new Map<string, Set<string>>([
   ["google.com", new Set(["script.google.com"])],

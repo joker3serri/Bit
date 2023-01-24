@@ -5,7 +5,7 @@ import { Field } from "../../models/domain/field";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { CipherView } from "../../models/view/cipher.view";
 import { FieldView } from "../../models/view/field.view";
-import { CipherType } from "../enums/cipherType";
+import { CipherType } from "../enums/cipher-type";
 
 export abstract class CipherService {
   clearCache: (userId?: string) => Promise<void>;
