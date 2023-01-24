@@ -124,9 +124,9 @@ import { VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout/vau
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vaultTimeout/vaultTimeoutSettings.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/services/webCryptoFunction.service";
 
-import { AuthGuard } from "../guards/auth.guard";
-import { LockGuard } from "../guards/lock.guard";
-import { UnauthGuard } from "../guards/unauth.guard";
+import { AuthGuard } from "../auth/guards/auth.guard";
+import { LockGuard } from "../auth/guards/lock.guard";
+import { UnauthGuard } from "../auth/guards/unauth.guard";
 
 import { BroadcasterService } from "./broadcaster.service";
 import {
