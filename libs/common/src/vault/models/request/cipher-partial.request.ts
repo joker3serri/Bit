@@ -1,4 +1,4 @@
-import { Cipher } from "../../vault/models/domain/cipher";
+import { Cipher } from "../domain/cipher";
 
 export class CipherPartialRequest {
   folderId: string;

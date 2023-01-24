@@ -18,16 +18,6 @@ import Domain from "../models/domain/domain-base";
 import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
-import { AttachmentRequest } from "../models/request/attachment.request";
-import { CipherBulkDeleteRequest } from "../models/request/cipher-bulk-delete.request";
-import { CipherBulkMoveRequest } from "../models/request/cipher-bulk-move.request";
-import { CipherBulkRestoreRequest } from "../models/request/cipher-bulk-restore.request";
-import { CipherBulkShareRequest } from "../models/request/cipher-bulk-share.request";
-import { CipherCollectionsRequest } from "../models/request/cipher-collections.request";
-import { CipherCreateRequest } from "../models/request/cipher-create.request";
-import { CipherPartialRequest } from "../models/request/cipher-partial.request";
-import { CipherShareRequest } from "../models/request/cipher-share.request";
-import { CipherRequest } from "../models/request/cipher.request";
 import { CipherResponse } from "../models/response/cipher.response";
 import { ErrorResponse } from "../models/response/error.response";
 import { AttachmentView } from "../models/view/attachment.view";
@@ -48,6 +38,16 @@ import { LoginUri } from "../vault/models/domain/login-uri";
 import { Password } from "../vault/models/domain/password";
 import { SecureNote } from "../vault/models/domain/secure-note";
 import { SortedCiphersCache } from "../vault/models/domain/sorted-ciphers-cache";
+import { AttachmentRequest } from "../vault/models/request/attachment.request";
+import { CipherBulkDeleteRequest } from "../vault/models/request/cipher-bulk-delete.request";
+import { CipherBulkMoveRequest } from "../vault/models/request/cipher-bulk-move.request";
+import { CipherBulkRestoreRequest } from "../vault/models/request/cipher-bulk-restore.request";
+import { CipherBulkShareRequest } from "../vault/models/request/cipher-bulk-share.request";
+import { CipherCollectionsRequest } from "../vault/models/request/cipher-collections.request";
+import { CipherCreateRequest } from "../vault/models/request/cipher-create.request";
+import { CipherPartialRequest } from "../vault/models/request/cipher-partial.request";
+import { CipherShareRequest } from "../vault/models/request/cipher-share.request";
+import { CipherRequest } from "../vault/models/request/cipher.request";
 
 const DomainMatchBlacklist = new Map<string, Set<string>>([
   ["google.com", new Set(["script.google.com"])],

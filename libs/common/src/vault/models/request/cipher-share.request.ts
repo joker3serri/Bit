@@ -1,8 +1,8 @@
-import { Cipher } from "../../vault/models/domain/cipher";
+import { Cipher } from "../domain/cipher";
 
 import { CipherRequest } from "./cipher.request";
 
-export class CipherCreateRequest {
+export class CipherShareRequest {
   cipher: CipherRequest;
   collectionIds: string[];
 

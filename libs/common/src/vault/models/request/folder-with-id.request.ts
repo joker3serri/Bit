@@ -1,4 +1,4 @@
-import { Folder } from "../../vault/models/domain/folder";
+import { Folder } from "../domain/folder";
 
 import { FolderRequest } from "./folder.request";
 

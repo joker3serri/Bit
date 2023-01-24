@@ -7,16 +7,7 @@ import { DeviceType } from "../enums/deviceType";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { Utils } from "../misc/utils";
 import { SetKeyConnectorKeyRequest } from "../models/request/account/set-key-connector-key.request";
-import { AttachmentRequest } from "../models/request/attachment.request";
 import { BitPayInvoiceRequest } from "../models/request/bit-pay-invoice.request";
-import { CipherBulkDeleteRequest } from "../models/request/cipher-bulk-delete.request";
-import { CipherBulkMoveRequest } from "../models/request/cipher-bulk-move.request";
-import { CipherBulkShareRequest } from "../models/request/cipher-bulk-share.request";
-import { CipherCollectionsRequest } from "../models/request/cipher-collections.request";
-import { CipherCreateRequest } from "../models/request/cipher-create.request";
-import { CipherPartialRequest } from "../models/request/cipher-partial.request";
-import { CipherShareRequest } from "../models/request/cipher-share.request";
-import { CipherRequest } from "../models/request/cipher.request";
 import { CollectionBulkDeleteRequest } from "../models/request/collection-bulk-delete.request";
 import { CollectionRequest } from "../models/request/collection.request";
 import { DeleteRecoverRequest } from "../models/request/delete-recover.request";
@@ -155,6 +146,15 @@ import {
 import { TwoFactorYubiKeyResponse } from "../models/response/two-factor-yubi-key.response";
 import { UserKeyResponse } from "../models/response/user-key.response";
 import { SendAccessView } from "../models/view/send-access.view";
+import { AttachmentRequest } from "../vault/models/request/attachment.request";
+import { CipherBulkDeleteRequest } from "../vault/models/request/cipher-bulk-delete.request";
+import { CipherBulkMoveRequest } from "../vault/models/request/cipher-bulk-move.request";
+import { CipherBulkShareRequest } from "../vault/models/request/cipher-bulk-share.request";
+import { CipherCollectionsRequest } from "../vault/models/request/cipher-collections.request";
+import { CipherCreateRequest } from "../vault/models/request/cipher-create.request";
+import { CipherPartialRequest } from "../vault/models/request/cipher-partial.request";
+import { CipherShareRequest } from "../vault/models/request/cipher-share.request";
+import { CipherRequest } from "../vault/models/request/cipher.request";
 
 /**
  * @deprecated The `ApiService` class is deprecated and calls should be extracted into individual

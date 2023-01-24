@@ -1,4 +1,4 @@
-import { Cipher } from "../../vault/models/domain/cipher";
+import { Cipher } from "../domain/cipher";
 
 import { CipherRequest } from "./cipher.request";
 
