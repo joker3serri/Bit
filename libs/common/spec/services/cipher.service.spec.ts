@@ -13,8 +13,8 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
-import { CipherService } from "@bitwarden/common/services/cipher.service";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
+import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 
 const ENCRYPTED_TEXT = "This data has been encrypted";
 const ENCRYPTED_BYTES = Substitute.for<EncArrayBuffer>();
