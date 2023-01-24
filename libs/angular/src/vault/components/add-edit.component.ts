@@ -7,7 +7,10 @@ import { EventCollectionService } from "@bitwarden/common/abstractions/event/eve
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import {
+  isNotProviderUser,
+  OrganizationService,
+} from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
@@ -186,11 +189,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
     }
 
     const orgs = await this.organizationService.getAll();
-    orgs.sort(Utils.getSortFunction(this.i18nService, "name")).forEach((o) => {
-      if (o.enabled && o.status === OrganizationUserStatusType.Confirmed) {
-        this.ownershipOptions.push({ name: o.name, value: o.id });
-      }
-    });
+    orgs
+      .filter(isNotProviderUser)
+      .sort(Utils.getSortFunction(this.i18nService, "name"))
+      .forEach((o) => {
+        if (o.enabled && o.status === OrganizationUserStatusType.Confirmed) {
+          this.ownershipOptions.push({ name: o.name, value: o.id });
+        }
+      });
     if (!this.allowPersonal) {
       this.organizationId = this.ownershipOptions[0].value;
     }
