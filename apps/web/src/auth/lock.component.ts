@@ -14,7 +14,7 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 
-import { RouterService } from "../core";
+import { RouterService } from "../app/core";
 
 @Component({
   selector: "app-lock",

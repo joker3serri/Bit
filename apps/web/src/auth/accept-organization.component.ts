@@ -15,7 +15,7 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Policy } from "@bitwarden/common/models/domain/policy";
 
-import { BaseAcceptComponent } from "../common/base.accept.component";
+import { BaseAcceptComponent } from "../app/common/base.accept.component";
 
 @Component({
   selector: "app-accept-organization",

@@ -15,7 +15,7 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TwoFactorService } from "@bitwarden/common/abstractions/twoFactor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
 
-import { RouterService } from "../core";
+import { RouterService } from "../app/core";
 
 import { TwoFactorOptionsComponent } from "./two-factor-options.component";
 

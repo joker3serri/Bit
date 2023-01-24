@@ -25,8 +25,8 @@ import { Policy } from "@bitwarden/common/models/domain/policy";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { PolicyResponse } from "@bitwarden/common/models/response/policy.response";
 
-import { flagEnabled } from "../../../utils/flags";
-import { RouterService, StateService } from "../../core";
+import { RouterService, StateService } from "../../app/core";
+import { flagEnabled } from "../../utils/flags";
 
 @Component({
   selector: "app-login",

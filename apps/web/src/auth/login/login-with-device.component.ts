@@ -24,7 +24,7 @@ import { PasswordlessCreateAuthRequest } from "@bitwarden/common/models/request/
 import { AuthRequestResponse } from "@bitwarden/common/models/response/auth-request.response";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
-import { StateService } from "../../core/state/state.service";
+import { StateService } from "../../app/core";
 
 @Component({
   selector: "app-login-with-device",
