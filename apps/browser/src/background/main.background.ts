@@ -64,8 +64,6 @@ import { ProviderService } from "@bitwarden/common/services/provider.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { SendService } from "@bitwarden/common/services/send.service";
 import { StateMigrationService } from "@bitwarden/common/services/stateMigration.service";
-import { SyncService } from "@bitwarden/common/services/sync/sync.service";
-import { SyncNotifierService } from "@bitwarden/common/services/sync/syncNotifier.service";
 import { SystemService } from "@bitwarden/common/services/system.service";
 import { TokenService } from "@bitwarden/common/services/token.service";
 import { TotpService } from "@bitwarden/common/services/totp.service";
@@ -82,6 +80,8 @@ import { SyncNotifierService as SyncNotifierServiceAbstraction } from "@bitwarde
 import { SyncService as SyncServiceAbstraction } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
+import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
+import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/syncNotifier.service";
 
 import { BrowserApi } from "../browser/browserApi";
 import { CipherContextMenuHandler } from "../browser/cipher-context-menu-handler";

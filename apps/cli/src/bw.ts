@@ -39,8 +39,6 @@ import { SendService } from "@bitwarden/common/services/send.service";
 import { SettingsService } from "@bitwarden/common/services/settings.service";
 import { StateService } from "@bitwarden/common/services/state.service";
 import { StateMigrationService } from "@bitwarden/common/services/stateMigration.service";
-import { SyncService } from "@bitwarden/common/services/sync/sync.service";
-import { SyncNotifierService } from "@bitwarden/common/services/sync/syncNotifier.service";
 import { TokenService } from "@bitwarden/common/services/token.service";
 import { TotpService } from "@bitwarden/common/services/totp.service";
 import { TwoFactorService } from "@bitwarden/common/services/twoFactor.service";
@@ -51,6 +49,8 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vaultTim
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
 import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
+import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
+import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/syncNotifier.service";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/node-crypto-function.service";
 
 import { Program } from "./program";

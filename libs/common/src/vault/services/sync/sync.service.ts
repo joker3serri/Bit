@@ -1,39 +1,39 @@
-import { ApiService } from "../../abstractions/api.service";
-import { CollectionService } from "../../abstractions/collection.service";
-import { CryptoService } from "../../abstractions/crypto.service";
-import { KeyConnectorService } from "../../abstractions/keyConnector.service";
-import { LogService } from "../../abstractions/log.service";
-import { MessagingService } from "../../abstractions/messaging.service";
-import { InternalOrganizationService } from "../../abstractions/organization/organization.service.abstraction";
-import { InternalPolicyService } from "../../abstractions/policy/policy.service.abstraction";
-import { ProviderService } from "../../abstractions/provider.service";
-import { SendService } from "../../abstractions/send.service";
-import { SettingsService } from "../../abstractions/settings.service";
-import { StateService } from "../../abstractions/state.service";
-import { sequentialize } from "../../misc/sequentialize";
-import { CollectionData } from "../../models/data/collection.data";
-import { OrganizationData } from "../../models/data/organization.data";
-import { PolicyData } from "../../models/data/policy.data";
-import { ProviderData } from "../../models/data/provider.data";
-import { SendData } from "../../models/data/send.data";
-import { CollectionDetailsResponse } from "../../models/response/collection.response";
-import { DomainsResponse } from "../../models/response/domains.response";
+import { ApiService } from "../../../abstractions/api.service";
+import { CollectionService } from "../../../abstractions/collection.service";
+import { CryptoService } from "../../../abstractions/crypto.service";
+import { KeyConnectorService } from "../../../abstractions/keyConnector.service";
+import { LogService } from "../../../abstractions/log.service";
+import { MessagingService } from "../../../abstractions/messaging.service";
+import { InternalOrganizationService } from "../../../abstractions/organization/organization.service.abstraction";
+import { InternalPolicyService } from "../../../abstractions/policy/policy.service.abstraction";
+import { ProviderService } from "../../../abstractions/provider.service";
+import { SendService } from "../../../abstractions/send.service";
+import { SettingsService } from "../../../abstractions/settings.service";
+import { StateService } from "../../../abstractions/state.service";
+import { sequentialize } from "../../../misc/sequentialize";
+import { CollectionData } from "../../../models/data/collection.data";
+import { OrganizationData } from "../../../models/data/organization.data";
+import { PolicyData } from "../../../models/data/policy.data";
+import { ProviderData } from "../../../models/data/provider.data";
+import { SendData } from "../../../models/data/send.data";
+import { CollectionDetailsResponse } from "../../../models/response/collection.response";
+import { DomainsResponse } from "../../../models/response/domains.response";
 import {
   SyncCipherNotification,
   SyncFolderNotification,
   SyncSendNotification,
-} from "../../models/response/notification.response";
-import { PolicyResponse } from "../../models/response/policy.response";
-import { ProfileResponse } from "../../models/response/profile.response";
-import { SendResponse } from "../../models/response/send.response";
-import { CipherService } from "../../vault/abstractions/cipher.service";
-import { FolderApiServiceAbstraction } from "../../vault/abstractions/folder/folder-api.service.abstraction";
-import { InternalFolderService } from "../../vault/abstractions/folder/folder.service.abstraction";
-import { SyncService as SyncServiceAbstraction } from "../../vault/abstractions/sync/sync.service.abstraction";
-import { CipherData } from "../../vault/models/data/cipher.data";
-import { FolderData } from "../../vault/models/data/folder.data";
-import { CipherResponse } from "../../vault/models/response/cipher.response";
-import { FolderResponse } from "../../vault/models/response/folder.response";
+} from "../../../models/response/notification.response";
+import { PolicyResponse } from "../../../models/response/policy.response";
+import { ProfileResponse } from "../../../models/response/profile.response";
+import { SendResponse } from "../../../models/response/send.response";
+import { CipherService } from "../../../vault/abstractions/cipher.service";
+import { FolderApiServiceAbstraction } from "../../../vault/abstractions/folder/folder-api.service.abstraction";
+import { InternalFolderService } from "../../../vault/abstractions/folder/folder.service.abstraction";
+import { SyncService as SyncServiceAbstraction } from "../../../vault/abstractions/sync/sync.service.abstraction";
+import { CipherData } from "../../../vault/models/data/cipher.data";
+import { FolderData } from "../../../vault/models/data/folder.data";
+import { CipherResponse } from "../../../vault/models/response/cipher.response";
+import { FolderResponse } from "../../../vault/models/response/folder.response";
 
 export class SyncService implements SyncServiceAbstraction {
   syncInProgress = false;
