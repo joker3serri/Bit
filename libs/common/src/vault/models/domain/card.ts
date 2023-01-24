@@ -1,11 +1,10 @@
 import { Jsonify } from "type-fest";
 
-import { CardData } from "../../vault/models/data/card.data";
-import { CardView } from "../view/card.view";
-
-import Domain from "./domain-base";
-import { EncString } from "./enc-string";
-import { SymmetricCryptoKey } from "./symmetric-crypto-key";
+import Domain from "../../../models/domain/domain-base";
+import { EncString } from "../../../models/domain/enc-string";
+import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
+import { CardView } from "../../../models/view/card.view";
+import { CardData } from "../data/card.data";
 
 export class Card extends Domain {
   cardholderName: EncString;

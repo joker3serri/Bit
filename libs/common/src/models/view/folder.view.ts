@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { Folder } from "../domain/folder";
+import { Folder } from "../../vault/models/domain/folder";
 import { ITreeNodeObject } from "../domain/tree-node";
 
 import { View } from "./view";

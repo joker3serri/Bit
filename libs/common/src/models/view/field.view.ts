@@ -2,7 +2,7 @@ import { Jsonify } from "type-fest";
 
 import { FieldType } from "../../enums/fieldType";
 import { LinkedIdType } from "../../enums/linkedIdType";
-import { Field } from "../domain/field";
+import { Field } from "../../vault/models/domain/field";
 
 import { View } from "./view";
 

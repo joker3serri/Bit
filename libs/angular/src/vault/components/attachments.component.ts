@@ -7,12 +7,12 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { Cipher } from "@bitwarden/common/models/domain/cipher";
 import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { AttachmentView } from "@bitwarden/common/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
+import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 
 @Directive()
 export class AttachmentsComponent implements OnInit {

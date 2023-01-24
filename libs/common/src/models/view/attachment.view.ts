@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { Attachment } from "../domain/attachment";
+import { Attachment } from "../../vault/models/domain/attachment";
 import { SymmetricCryptoKey } from "../domain/symmetric-crypto-key";
 
 import { View } from "./view";

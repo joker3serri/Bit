@@ -3,7 +3,7 @@ import { Jsonify } from "type-fest";
 import { LoginLinkedId as LinkedId } from "../../enums/linkedIdType";
 import { linkedFieldOption } from "../../misc/linkedFieldOption.decorator";
 import { Utils } from "../../misc/utils";
-import { Login } from "../domain/login";
+import { Login } from "../../vault/models/domain/login";
 
 import { ItemView } from "./item.view";
 import { LoginUriView } from "./login-uri.view";

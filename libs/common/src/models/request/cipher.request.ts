@@ -1,12 +1,12 @@
 import { CipherRepromptType } from "../../vault/enums/cipher-reprompt-type";
 import { CipherType } from "../../vault/enums/cipher-type";
+import { Cipher } from "../../vault/models/domain/cipher";
 import { CardApi } from "../api/card.api";
 import { FieldApi } from "../api/field.api";
 import { IdentityApi } from "../api/identity.api";
 import { LoginUriApi } from "../api/login-uri.api";
 import { LoginApi } from "../api/login.api";
 import { SecureNoteApi } from "../api/secure-note.api";
-import { Cipher } from "../domain/cipher";
 
 import { AttachmentRequest } from "./attachment.request";
 import { PasswordHistoryRequest } from "./password-history.request";

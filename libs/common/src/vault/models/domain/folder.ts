@@ -1,10 +1,9 @@
 import { Jsonify } from "type-fest";
 
-import { FolderData } from "../../vault/models/data/folder.data";
-import { FolderView } from "../view/folder.view";
-
-import Domain from "./domain-base";
-import { EncString } from "./enc-string";
+import Domain from "../../../models/domain/domain-base";
+import { EncString } from "../../../models/domain/enc-string";
+import { FolderView } from "../../../models/view/folder.view";
+import { FolderData } from "../data/folder.data";
 
 export class Folder extends Domain {
   id: string;

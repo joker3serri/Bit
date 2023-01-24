@@ -10,9 +10,7 @@ import {
 import { DEFAULT_KDF_ITERATIONS, KdfType } from "../enums/kdfType";
 import { Utils } from "../misc/utils";
 import { CollectionData } from "../models/data/collection.data";
-import { Cipher } from "../models/domain/cipher";
 import { Collection } from "../models/domain/collection";
-import { Folder } from "../models/domain/folder";
 import { CipherWithIdExport as CipherExport } from "../models/export/cipher-with-ids.export";
 import { CollectionWithIdExport as CollectionExport } from "../models/export/collection-with-id.export";
 import { EventExport } from "../models/export/event.export";
@@ -26,6 +24,8 @@ import { CipherService } from "../vault/abstractions/cipher.service";
 import { FolderService } from "../vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "../vault/enums/cipher-type";
 import { CipherData } from "../vault/models/data/cipher.data";
+import { Cipher } from "../vault/models/domain/cipher";
+import { Folder } from "../vault/models/domain/folder";
 
 export class ExportService implements ExportServiceAbstraction {
   constructor(

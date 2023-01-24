@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { Password } from "../domain/password";
+import { Password } from "../../vault/models/domain/password";
 
 import { View } from "./view";
 

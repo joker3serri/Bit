@@ -5,14 +5,7 @@ import { Jsonify } from "type-fest";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
-import { Attachment } from "@bitwarden/common/models/domain/attachment";
-import { Card } from "@bitwarden/common/models/domain/card";
-import { Cipher } from "@bitwarden/common/models/domain/cipher";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { Field } from "@bitwarden/common/models/domain/field";
-import { Identity } from "@bitwarden/common/models/domain/identity";
-import { Login } from "@bitwarden/common/models/domain/login";
-import { Password } from "@bitwarden/common/models/domain/password";
 import { SecureNote } from "@bitwarden/common/models/domain/secure-note";
 import { CardView } from "@bitwarden/common/models/view/card.view";
 import { IdentityView } from "@bitwarden/common/models/view/identity.view";
@@ -21,6 +14,13 @@ import { InitializerKey } from "@bitwarden/common/services/cryptography/initiali
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
+import { Attachment } from "@bitwarden/common/vault/models/domain/attachment";
+import { Card } from "@bitwarden/common/vault/models/domain/card";
+import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
+import { Field } from "@bitwarden/common/vault/models/domain/field";
+import { Identity } from "@bitwarden/common/vault/models/domain/identity";
+import { Login } from "@bitwarden/common/vault/models/domain/login";
+import { Password } from "@bitwarden/common/vault/models/domain/password";
 
 import { mockEnc, mockFromJson } from "../../utils";
 

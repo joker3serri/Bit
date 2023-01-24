@@ -1,13 +1,12 @@
 import { Jsonify } from "type-fest";
 
-import { FieldType } from "../../enums/fieldType";
-import { LinkedIdType } from "../../enums/linkedIdType";
-import { FieldData } from "../../vault/models/data/field.data";
-import { FieldView } from "../view/field.view";
-
-import Domain from "./domain-base";
-import { EncString } from "./enc-string";
-import { SymmetricCryptoKey } from "./symmetric-crypto-key";
+import { FieldType } from "../../../enums/fieldType";
+import { LinkedIdType } from "../../../enums/linkedIdType";
+import Domain from "../../../models/domain/domain-base";
+import { EncString } from "../../../models/domain/enc-string";
+import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
+import { FieldView } from "../../../models/view/field.view";
+import { FieldData } from "../data/field.data";
 
 export class Field extends Domain {
   name: EncString;

@@ -1,4 +1,4 @@
-import { Folder as FolderDomain } from "../domain/folder";
+import { Folder as FolderDomain } from "../../vault/models/domain/folder";
 import { FolderView } from "../view/folder.view";
 
 import { FolderExport } from "./folder.export";

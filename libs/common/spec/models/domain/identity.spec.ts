@@ -1,6 +1,6 @@
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { Identity } from "@bitwarden/common/models/domain/identity";
 import { IdentityData } from "@bitwarden/common/vault/models/data/identity.data";
+import { Identity } from "@bitwarden/common/vault/models/domain/identity";
 
 import { mockEnc, mockFromJson } from "../../utils";
 

@@ -1,23 +1,23 @@
 import { Jsonify } from "type-fest";
 
-import { Decryptable } from "../../interfaces/decryptable.interface";
-import { InitializerKey } from "../../services/cryptography/initializer-key";
-import { CipherRepromptType } from "../../vault/enums/cipher-reprompt-type";
-import { CipherType } from "../../vault/enums/cipher-type";
-import { CipherData } from "../../vault/models/data/cipher.data";
-import { LocalData } from "../../vault/models/data/local.data";
-import { CipherView } from "../view/cipher.view";
+import { Decryptable } from "../../../interfaces/decryptable.interface";
+import Domain from "../../../models/domain/domain-base";
+import { EncString } from "../../../models/domain/enc-string";
+import { SecureNote } from "../../../models/domain/secure-note";
+import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
+import { CipherView } from "../../../models/view/cipher.view";
+import { InitializerKey } from "../../../services/cryptography/initializer-key";
+import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
+import { CipherType } from "../../enums/cipher-type";
+import { CipherData } from "../data/cipher.data";
+import { LocalData } from "../data/local.data";
 
 import { Attachment } from "./attachment";
 import { Card } from "./card";
-import Domain from "./domain-base";
-import { EncString } from "./enc-string";
 import { Field } from "./field";
 import { Identity } from "./identity";
 import { Login } from "./login";
 import { Password } from "./password";
-import { SecureNote } from "./secure-note";
-import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class Cipher extends Domain implements Decryptable<CipherView> {
   readonly initializerKey = InitializerKey.Cipher;

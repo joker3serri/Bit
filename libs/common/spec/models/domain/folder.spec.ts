@@ -1,6 +1,6 @@
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { Folder } from "@bitwarden/common/models/domain/folder";
 import { FolderData } from "@bitwarden/common/vault/models/data/folder.data";
+import { Folder } from "@bitwarden/common/vault/models/domain/folder";
 
 import { mockEnc, mockFromJson } from "../../utils";
 

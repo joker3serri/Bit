@@ -1,12 +1,11 @@
 import { Jsonify } from "type-fest";
 
-import { Utils } from "../../misc/utils";
-import { AttachmentData } from "../../vault/models/data/attachment.data";
-import { AttachmentView } from "../view/attachment.view";
-
-import Domain from "./domain-base";
-import { EncString } from "./enc-string";
-import { SymmetricCryptoKey } from "./symmetric-crypto-key";
+import { Utils } from "../../../misc/utils";
+import Domain from "../../../models/domain/domain-base";
+import { EncString } from "../../../models/domain/enc-string";
+import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
+import { AttachmentView } from "../../../models/view/attachment.view";
+import { AttachmentData } from "../data/attachment.data";
 
 export class Attachment extends Domain {
   id: string;

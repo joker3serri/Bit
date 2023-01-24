@@ -1,4 +1,4 @@
-import { CipherView } from "../view/cipher.view";
+import { CipherView } from "../../../models/view/cipher.view";
 
 const CacheTTL = 3000;
 

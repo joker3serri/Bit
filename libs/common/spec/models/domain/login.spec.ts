@@ -3,10 +3,10 @@ import { Substitute, Arg } from "@fluffy-spoon/substitute";
 
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { Login } from "@bitwarden/common/models/domain/login";
-import { LoginUri } from "@bitwarden/common/models/domain/login-uri";
 import { LoginUriView } from "@bitwarden/common/models/view/login-uri.view";
 import { LoginData } from "@bitwarden/common/vault/models/data/login.data";
+import { Login } from "@bitwarden/common/vault/models/domain/login";
+import { LoginUri } from "@bitwarden/common/vault/models/domain/login-uri";
 
 import { mockEnc, mockFromJson } from "../../utils";
 

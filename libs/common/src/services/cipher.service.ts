@@ -14,19 +14,10 @@ import { UriMatchType } from "../enums/uriMatchType";
 import { sequentialize } from "../misc/sequentialize";
 import { Utils } from "../misc/utils";
 import { AccountSettingsSettings } from "../models/domain/account";
-import { Attachment } from "../models/domain/attachment";
-import { Card } from "../models/domain/card";
-import { Cipher } from "../models/domain/cipher";
 import Domain from "../models/domain/domain-base";
 import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";
-import { Field } from "../models/domain/field";
-import { Identity } from "../models/domain/identity";
-import { Login } from "../models/domain/login";
-import { LoginUri } from "../models/domain/login-uri";
-import { Password } from "../models/domain/password";
 import { SecureNote } from "../models/domain/secure-note";
-import { SortedCiphersCache } from "../models/domain/sorted-ciphers-cache";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { AttachmentRequest } from "../models/request/attachment.request";
 import { CipherBulkDeleteRequest } from "../models/request/cipher-bulk-delete.request";
@@ -48,6 +39,15 @@ import { View } from "../models/view/view";
 import { CipherService as CipherServiceAbstraction } from "../vault/abstractions/cipher.service";
 import { CipherType } from "../vault/enums/cipher-type";
 import { CipherData } from "../vault/models/data/cipher.data";
+import { Attachment } from "../vault/models/domain/attachment";
+import { Card } from "../vault/models/domain/card";
+import { Cipher } from "../vault/models/domain/cipher";
+import { Field } from "../vault/models/domain/field";
+import { Identity } from "../vault/models/domain/identity";
+import { Login } from "../vault/models/domain/login";
+import { LoginUri } from "../vault/models/domain/login-uri";
+import { Password } from "../vault/models/domain/password";
+import { SortedCiphersCache } from "../vault/models/domain/sorted-ciphers-cache";
 
 const DomainMatchBlacklist = new Map<string, Set<string>>([
   ["google.com", new Set(["script.google.com"])],

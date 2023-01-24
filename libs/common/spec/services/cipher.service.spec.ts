@@ -10,11 +10,11 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { Cipher } from "@bitwarden/common/models/domain/cipher";
 import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { CipherService } from "@bitwarden/common/services/cipher.service";
+import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 
 const ENCRYPTED_TEXT = "This data has been encrypted";
 const ENCRYPTED_BYTES = Substitute.for<EncArrayBuffer>();

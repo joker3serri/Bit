@@ -6,10 +6,7 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { KdfType, DEFAULT_KDF_ITERATIONS } from "@bitwarden/common/enums/kdfType";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { Cipher } from "@bitwarden/common/models/domain/cipher";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { Folder } from "@bitwarden/common/models/domain/folder";
-import { Login } from "@bitwarden/common/models/domain/login";
 import { CipherWithIdExport as CipherExport } from "@bitwarden/common/models/export/cipher-with-ids.export";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/models/view/folder.view";
@@ -18,6 +15,9 @@ import { ExportService } from "@bitwarden/common/services/export.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
+import { Folder } from "@bitwarden/common/vault/models/domain/folder";
+import { Login } from "@bitwarden/common/vault/models/domain/login";
 
 import { BuildTestObject, GetUniqueString } from "../utils";
 
