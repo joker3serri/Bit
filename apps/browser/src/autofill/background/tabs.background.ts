@@ -1,4 +1,5 @@
-import MainBackground from "./main.background";
+import MainBackground from "../../background/main.background";
+
 import NotificationBackground from "./notification.background";
 
 export default class TabsBackground {

@@ -83,12 +83,15 @@ import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder
 import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-notifier.service";
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
 
+import ContextMenusBackground from "../autofill/background/contextMenus.background";
+import NotificationBackground from "../autofill/background/notification.background";
+import TabsBackground from "../autofill/background/tabs.background";
+import { CipherContextMenuHandler } from "../autofill/browser/cipher-context-menu-handler";
+import { ContextMenuClickedHandler } from "../autofill/browser/context-menu-clicked-handler";
+import { MainContextMenuHandler } from "../autofill/browser/main-context-menu-handler";
+import { AutofillTabCommand } from "../autofill/commands/autofill-tab-command";
 import { BrowserApi } from "../browser/browserApi";
-import { CipherContextMenuHandler } from "../browser/cipher-context-menu-handler";
-import { ContextMenuClickedHandler } from "../browser/context-menu-clicked-handler";
-import { MainContextMenuHandler } from "../browser/main-context-menu-handler";
 import { SafariApp } from "../browser/safariApp";
-import { AutofillTabCommand } from "../commands/autofill-tab-command";
 import { flagEnabled } from "../flags";
 import { UpdateBadge } from "../listeners/update-badge";
 import { Account } from "../models/account";
@@ -114,12 +117,9 @@ import { VaultFilterService } from "../services/vaultFilter.service";
 import VaultTimeoutService from "../services/vaultTimeout/vaultTimeout.service";
 
 import CommandsBackground from "./commands.background";
-import ContextMenusBackground from "./contextMenus.background";
 import IdleBackground from "./idle.background";
 import { NativeMessagingBackground } from "./nativeMessaging.background";
-import NotificationBackground from "./notification.background";
 import RuntimeBackground from "./runtime.background";
-import TabsBackground from "./tabs.background";
 import WebRequestBackground from "./webRequest.background";
 
 export default class MainBackground {

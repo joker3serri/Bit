@@ -12,16 +12,16 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import {
   authServiceFactory,
   AuthServiceInitOptions,
-} from "../background/service_factories/auth-service.factory";
+} from "../../background/service_factories/auth-service.factory";
 import {
   cipherServiceFactory,
   CipherServiceInitOptions,
-} from "../background/service_factories/cipher-service.factory";
-import { CachedServices } from "../background/service_factories/factory-options";
-import { searchServiceFactory } from "../background/service_factories/search-service.factory";
-import { Account } from "../models/account";
+} from "../../background/service_factories/cipher-service.factory";
+import { CachedServices } from "../../background/service_factories/factory-options";
+import { searchServiceFactory } from "../../background/service_factories/search-service.factory";
+import { BrowserApi } from "../../browser/browserApi";
+import { Account } from "../../models/account";
 
-import { BrowserApi } from "./browserApi";
 import { MainContextMenuHandler } from "./main-context-menu-handler";
 
 const NOT_IMPLEMENTED = (..._args: unknown[]) => Promise.resolve();

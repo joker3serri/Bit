@@ -2,9 +2,9 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 
-import { setAlarmTime } from "../alarms/alarm-state";
-import { BrowserApi } from "../browser/browserApi";
-import { BrowserStateService } from "../services/abstractions/browser-state.service";
+import { setAlarmTime } from "../../alarms/alarm-state";
+import { BrowserApi } from "../../browser/browserApi";
+import { BrowserStateService } from "../../services/abstractions/browser-state.service";
 
 import { clearClipboardAlarmName } from "./clear-clipboard";
 import { GeneratePasswordToClipboardCommand } from "./generate-password-to-clipboard-command";

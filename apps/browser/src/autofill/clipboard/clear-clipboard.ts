@@ -1,4 +1,4 @@
-import { BrowserApi } from "../browser/browserApi";
+import { BrowserApi } from "../../browser/browserApi";
 
 export const clearClipboardAlarmName = "clearClipboard";
 

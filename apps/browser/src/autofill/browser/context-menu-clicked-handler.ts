@@ -10,26 +10,26 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-import LockedVaultPendingNotificationsItem from "../background/models/lockedVaultPendingNotificationsItem";
+import LockedVaultPendingNotificationsItem from "../../background/models/lockedVaultPendingNotificationsItem";
 import {
   authServiceFactory,
   AuthServiceInitOptions,
-} from "../background/service_factories/auth-service.factory";
-import { autofillServiceFactory } from "../background/service_factories/autofill-service.factory";
+} from "../../background/service_factories/auth-service.factory";
+import { autofillServiceFactory } from "../../background/service_factories/autofill-service.factory";
 import {
   cipherServiceFactory,
   CipherServiceInitOptions,
-} from "../background/service_factories/cipher-service.factory";
-import { eventCollectionServiceFactory } from "../background/service_factories/event-collection-service.factory";
-import { CachedServices } from "../background/service_factories/factory-options";
-import { passwordGenerationServiceFactory } from "../background/service_factories/password-generation-service.factory";
-import { searchServiceFactory } from "../background/service_factories/search-service.factory";
-import { stateServiceFactory } from "../background/service_factories/state-service.factory";
-import { totpServiceFactory } from "../background/service_factories/totp-service.factory";
-import { BrowserApi } from "../browser/browserApi";
+} from "../../background/service_factories/cipher-service.factory";
+import { eventCollectionServiceFactory } from "../../background/service_factories/event-collection-service.factory";
+import { CachedServices } from "../../background/service_factories/factory-options";
+import { passwordGenerationServiceFactory } from "../../background/service_factories/password-generation-service.factory";
+import { searchServiceFactory } from "../../background/service_factories/search-service.factory";
+import { stateServiceFactory } from "../../background/service_factories/state-service.factory";
+import { totpServiceFactory } from "../../background/service_factories/totp-service.factory";
+import { BrowserApi } from "../../browser/browserApi";
+import { Account } from "../../models/account";
 import { copyToClipboard, GeneratePasswordToClipboardCommand } from "../clipboard";
 import { AutofillTabCommand } from "../commands/autofill-tab-command";
-import { Account } from "../models/account";
 
 import {
   AUTOFILL_ID,

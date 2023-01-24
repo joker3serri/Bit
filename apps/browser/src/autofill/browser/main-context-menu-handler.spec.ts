@@ -5,7 +5,7 @@ import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-import { BrowserStateService } from "../services/abstractions/browser-state.service";
+import { BrowserStateService } from "../../services/abstractions/browser-state.service";
 
 import { MainContextMenuHandler } from "./main-context-menu-handler";
 

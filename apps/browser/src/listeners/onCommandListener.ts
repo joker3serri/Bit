@@ -3,6 +3,8 @@ import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStat
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 
+import { GeneratePasswordToClipboardCommand } from "../autofill/clipboard";
+import { AutofillTabCommand } from "../autofill/commands/autofill-tab-command";
 import { authServiceFactory } from "../background/service_factories/auth-service.factory";
 import { autofillServiceFactory } from "../background/service_factories/autofill-service.factory";
 import { CachedServices } from "../background/service_factories/factory-options";
@@ -13,8 +15,6 @@ import {
 } from "../background/service_factories/password-generation-service.factory";
 import { stateServiceFactory } from "../background/service_factories/state-service.factory";
 import { BrowserApi } from "../browser/browserApi";
-import { GeneratePasswordToClipboardCommand } from "../clipboard";
-import { AutofillTabCommand } from "../commands/autofill-tab-command";
 import { Account } from "../models/account";
 
 export const onCommandListener = async (command: string, tab: chrome.tabs.Tab) => {
