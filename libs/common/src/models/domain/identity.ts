@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { IdentityData } from "../data/identity.data";
+import { IdentityData } from "../../vault/models/data/identity.data";
 import { IdentityView } from "../view/identity.view";
 
 import Domain from "./domain-base";
