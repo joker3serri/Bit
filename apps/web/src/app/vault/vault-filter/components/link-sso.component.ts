@@ -1,7 +1,7 @@
 import { AfterContentInit, Component, Input } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { SsoComponent } from "@bitwarden/angular/components/sso.component";
+import { SsoComponent } from "@bitwarden/angular/auth/components/sso.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";

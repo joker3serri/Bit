@@ -23,7 +23,7 @@ import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-cr
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
 import { SetPasswordRequest } from "@bitwarden/common/models/request/set-password.request";
 
-import { ChangePasswordComponent as BaseChangePasswordComponent } from "./change-password.component";
+import { ChangePasswordComponent as BaseChangePasswordComponent } from "../auth/components/change-password.component";
 
 @Directive()
 export class SetPasswordComponent extends BaseChangePasswordComponent {

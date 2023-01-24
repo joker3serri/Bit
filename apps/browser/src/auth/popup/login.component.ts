@@ -2,7 +2,7 @@ import { Component, NgZone } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/components/login.component";
+import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/auth/components/login.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
 import { AuthService } from "@bitwarden/common/abstractions/auth.service";

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { takeUntil } from "rxjs";
 
-import { ChangePasswordComponent } from "@bitwarden/angular/components/change-password.component";
+import { ChangePasswordComponent } from "@bitwarden/angular/auth/components/change-password.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";

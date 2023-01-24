@@ -1,7 +1,7 @@
 import { Component, NgZone } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { LockComponent as BaseLockComponent } from "@bitwarden/angular/components/lock.component";
+import { LockComponent as BaseLockComponent } from "@bitwarden/angular/auth/components/lock.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";

@@ -13,7 +13,7 @@ import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/master-password-policy-options";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 
-import { PasswordColorText } from "../shared/components/password-strength/password-strength.component";
+import { PasswordColorText } from "../../shared/components/password-strength/password-strength.component";
 
 @Directive()
 export class ChangePasswordComponent implements OnInit, OnDestroy {

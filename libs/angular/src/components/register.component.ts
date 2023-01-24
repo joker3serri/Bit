@@ -25,7 +25,7 @@ import { RegisterResponse } from "@bitwarden/common/models/response/authenticati
 import { PasswordColorText } from "../shared/components/password-strength/password-strength.component";
 import { InputsFieldMatch } from "../validators/inputsFieldMatch.validator";
 
-import { CaptchaProtectedComponent } from "./captchaProtected.component";
+import { CaptchaProtectedComponent } from "../auth/components/captchaProtected.component";
 
 @Directive()
 export class RegisterComponent extends CaptchaProtectedComponent implements OnInit {

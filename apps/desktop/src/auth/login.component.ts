@@ -2,7 +2,7 @@ import { Component, NgZone, OnDestroy, ViewChild, ViewContainerRef } from "@angu
 import { FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 
-import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/components/login.component";
+import { LoginComponent as BaseLoginComponent } from "@bitwarden/angular/auth/components/login.component";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
