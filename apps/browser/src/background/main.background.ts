@@ -83,7 +83,7 @@ import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder
 import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-notifier.service";
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
 
-import ContextMenusBackground from "../autofill/background/contextMenus.background";
+import ContextMenusBackground from "../autofill/background/context-menus.background";
 import NotificationBackground from "../autofill/background/notification.background";
 import TabsBackground from "../autofill/background/tabs.background";
 import { CipherContextMenuHandler } from "../autofill/browser/cipher-context-menu-handler";
