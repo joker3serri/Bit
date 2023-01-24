@@ -1,4 +1,3 @@
-import { CardData } from "../../../models/data/card.data";
 import { FieldData } from "../../../models/data/field.data";
 import { IdentityData } from "../../../models/data/identity.data";
 import { LoginData } from "../../../models/data/login.data";
@@ -8,6 +7,7 @@ import { CipherRepromptType } from "../../enums/cipher-reprompt-type";
 import { CipherType } from "../../enums/cipher-type";
 
 import { AttachmentData } from "./attachment.data";
+import { CardData } from "./card.data";
 import { PasswordHistoryData } from "./password-history.data";
 
 export class CipherData {

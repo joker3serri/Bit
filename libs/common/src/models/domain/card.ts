@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { CardData } from "../data/card.data";
+import { CardData } from "../../vault/models/data/card.data";
 import { CardView } from "../view/card.view";
 
 import Domain from "./domain-base";
