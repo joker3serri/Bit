@@ -1,6 +1,5 @@
-import { LoginApi } from "../api/login.api";
-
-import { LoginUriData } from "./login-uri.data";
+import { LoginApi } from "../../../models/api/login.api";
+import { LoginUriData } from "../../../models/data/login-uri.data";
 
 export class LoginData {
   uris: LoginUriData[];
