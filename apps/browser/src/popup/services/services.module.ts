@@ -59,10 +59,10 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
+import { AutofillService } from "../../autofill/services/abstractions/autofill.service";
 import MainBackground from "../../background/main.background";
 import { BrowserApi } from "../../browser/browserApi";
 import { Account } from "../../models/account";
-import { AutofillService } from "../../services/abstractions/autofill.service";
 import { BrowserStateService as StateServiceAbstraction } from "../../services/abstractions/browser-state.service";
 import { BrowserEnvironmentService } from "../../services/browser-environment.service";
 import { BrowserOrganizationService } from "../../services/browser-organization.service";

@@ -90,15 +90,15 @@ import { CipherContextMenuHandler } from "../autofill/browser/cipher-context-men
 import { ContextMenuClickedHandler } from "../autofill/browser/context-menu-clicked-handler";
 import { MainContextMenuHandler } from "../autofill/browser/main-context-menu-handler";
 import { AutofillTabCommand } from "../autofill/commands/autofill-tab-command";
+import { AutofillService as AutofillServiceAbstraction } from "../autofill/services/abstractions/autofill.service";
+import AutofillService from "../autofill/services/autofill.service";
 import { BrowserApi } from "../browser/browserApi";
 import { SafariApp } from "../browser/safariApp";
 import { flagEnabled } from "../flags";
 import { UpdateBadge } from "../listeners/update-badge";
 import { Account } from "../models/account";
 import { PopupUtilsService } from "../popup/services/popup-utils.service";
-import { AutofillService as AutofillServiceAbstraction } from "../services/abstractions/autofill.service";
 import { BrowserStateService as StateServiceAbstraction } from "../services/abstractions/browser-state.service";
-import AutofillService from "../services/autofill.service";
 import { BrowserEnvironmentService } from "../services/browser-environment.service";
 import { BrowserFolderService } from "../services/browser-folder.service";
 import { BrowserOrganizationService } from "../services/browser-organization.service";

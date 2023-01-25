@@ -1,15 +1,30 @@
-import { AutofillService as AbstractAutoFillService } from "../../services/abstractions/autofill.service";
-import AutofillService from "../../services/autofill.service";
-
-import { cipherServiceFactory, CipherServiceInitOptions } from "./cipher-service.factory";
+import {
+  cipherServiceFactory,
+  CipherServiceInitOptions,
+} from "../../../background/service_factories/cipher-service.factory";
 import {
   EventCollectionServiceInitOptions,
   eventCollectionServiceFactory,
-} from "./event-collection-service.factory";
-import { CachedServices, factory, FactoryOptions } from "./factory-options";
-import { logServiceFactory, LogServiceInitOptions } from "./log-service.factory";
-import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
-import { totpServiceFactory, TotpServiceInitOptions } from "./totp-service.factory";
+} from "../../../background/service_factories/event-collection-service.factory";
+import {
+  CachedServices,
+  factory,
+  FactoryOptions,
+} from "../../../background/service_factories/factory-options";
+import {
+  logServiceFactory,
+  LogServiceInitOptions,
+} from "../../../background/service_factories/log-service.factory";
+import {
+  stateServiceFactory,
+  StateServiceInitOptions,
+} from "../../../background/service_factories/state-service.factory";
+import {
+  totpServiceFactory,
+  TotpServiceInitOptions,
+} from "../../../background/service_factories/totp-service.factory";
+import { AutofillService as AbstractAutoFillService } from "../../services/abstractions/autofill.service";
+import AutofillService from "../../services/autofill.service";
 
 type AutoFillServiceOptions = FactoryOptions;
 

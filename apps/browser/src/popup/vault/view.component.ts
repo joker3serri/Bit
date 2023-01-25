@@ -24,8 +24,8 @@ import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 
+import { AutofillService } from "../../autofill/services/abstractions/autofill.service";
 import { BrowserApi } from "../../browser/browserApi";
-import { AutofillService } from "../../services/abstractions/autofill.service";
 import { PopupUtilsService } from "../services/popup-utils.service";
 
 const BroadcasterSubscriptionId = "ChildViewComponent";

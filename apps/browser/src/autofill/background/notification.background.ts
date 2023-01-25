@@ -20,8 +20,8 @@ import ChangePasswordRuntimeMessage from "../../background/models/changePassword
 import LockedVaultPendingNotificationsItem from "../../background/models/lockedVaultPendingNotificationsItem";
 import { NotificationQueueMessageType } from "../../background/models/notificationQueueMessageType";
 import { BrowserApi } from "../../browser/browserApi";
-import { AutofillService } from "../../services/abstractions/autofill.service";
 import { BrowserStateService } from "../../services/abstractions/browser-state.service";
+import { AutofillService } from "../services/abstractions/autofill.service";
 
 export default class NotificationBackground {
   private notificationQueue: (AddLoginQueueMessage | AddChangePasswordQueueMessage)[] = [];

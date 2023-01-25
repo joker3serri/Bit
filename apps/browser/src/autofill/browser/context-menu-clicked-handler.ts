@@ -15,7 +15,6 @@ import {
   authServiceFactory,
   AuthServiceInitOptions,
 } from "../../background/service_factories/auth-service.factory";
-import { autofillServiceFactory } from "../../background/service_factories/autofill-service.factory";
 import {
   cipherServiceFactory,
   CipherServiceInitOptions,
@@ -28,6 +27,7 @@ import { stateServiceFactory } from "../../background/service_factories/state-se
 import { totpServiceFactory } from "../../background/service_factories/totp-service.factory";
 import { BrowserApi } from "../../browser/browserApi";
 import { Account } from "../../models/account";
+import { autofillServiceFactory } from "../background/service_factories/autofill-service.factory";
 import { copyToClipboard, GeneratePasswordToClipboardCommand } from "../clipboard";
 import { AutofillTabCommand } from "../commands/autofill-tab-command";
 

@@ -10,10 +10,16 @@ import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
 
-import AutofillField from "../autofill/models/autofillField";
-import AutofillPageDetails from "../autofill/models/autofillPageDetails";
-import AutofillScript from "../autofill/models/autofillScript";
-import { BrowserApi } from "../browser/browserApi";
+import { BrowserApi } from "../../browser/browserApi";
+import { BrowserStateService } from "../../services/abstractions/browser-state.service";
+import {
+  AutoFillConstants,
+  CreditCardAutoFillConstants,
+  IdentityAutoFillConstants,
+} from "../../services/autofillConstants";
+import AutofillField from "../models/autofillField";
+import AutofillPageDetails from "../models/autofillPageDetails";
+import AutofillScript from "../models/autofillScript";
 
 import {
   AutoFillOptions,
@@ -21,12 +27,6 @@ import {
   PageDetail,
   FormData,
 } from "./abstractions/autofill.service";
-import { BrowserStateService } from "./abstractions/browser-state.service";
-import {
-  AutoFillConstants,
-  CreditCardAutoFillConstants,
-  IdentityAutoFillConstants,
-} from "./autofillConstants";
 
 export interface GenerateFillScriptOptions {
   skipUsernameOnlyFill: boolean;
