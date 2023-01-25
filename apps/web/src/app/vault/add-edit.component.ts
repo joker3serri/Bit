@@ -77,6 +77,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
   async ngOnInit() {
     await super.ngOnInit();
     await this.load();
+    // remove when all the title for all clients are updated to New Item
     if (this.cloneMode || !this.editMode) {
       this.title = this.i18nService.t("newItem");
     }
