@@ -6,15 +6,15 @@ import { ImportOrganizationCiphersRequest } from "../../models/request/import-or
 export class ImportApiService implements ImportApiServiceAbstraction {
   constructor(private apiService: ApiService) {}
 
-  postImportCiphers(request: ImportCiphersRequest): Promise<any> {
-    return this.apiService.send("POST", "/ciphers/import", request, true, false);
+  async postImportCiphers(request: ImportCiphersRequest): Promise<any> {
+    return await this.apiService.send("POST", "/ciphers/import", request, true, false);
   }
 
-  postImportOrganizationCiphers(
+  async postImportOrganizationCiphers(
     organizationId: string,
     request: ImportOrganizationCiphersRequest
   ): Promise<any> {
-    return this.apiService.send(
+    return await this.apiService.send(
       "POST",
       "/ciphers/import-organization?organizationId=" + organizationId,
       request,
