@@ -1,5 +1,5 @@
-import { TokenService as AbstractTokenService } from "@bitwarden/common/abstractions/token.service";
-import { TokenService } from "@bitwarden/common/services/token.service";
+import { TokenService as AbstractTokenService } from "@bitwarden/common/auth/abstractions/token.service";
+import { TokenService } from "@bitwarden/common/auth/services/token.service";
 
 import {
   FactoryOptions,

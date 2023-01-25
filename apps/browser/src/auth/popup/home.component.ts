@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { LoginService } from "@bitwarden/common/abstractions/login.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 
 @Component({
   selector: "app-home",

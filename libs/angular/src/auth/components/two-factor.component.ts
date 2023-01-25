@@ -5,20 +5,20 @@ import { first } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
-import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { LoginService } from "@bitwarden/common/abstractions/login.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { TwoFactorService } from "@bitwarden/common/abstractions/twoFactor.service";
-import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
+import { TwoFactorService } from "@bitwarden/common/auth/abstractions/twoFactor.service";
+import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/twoFactorProviderType";
+import { TwoFactorProviders } from "@bitwarden/common/auth/services/twoFactor.service";
 import { WebAuthnIFrame } from "@bitwarden/common/misc/webauthn_iframe";
 import { AuthResult } from "@bitwarden/common/models/domain/auth-result";
 import { TokenTwoFactorRequest } from "@bitwarden/common/models/request/identity-token/token-two-factor.request";
 import { TwoFactorEmailRequest } from "@bitwarden/common/models/request/two-factor-email.request";
-import { TwoFactorProviders } from "@bitwarden/common/services/twoFactor.service";
 
 import { CaptchaProtectedComponent } from "./captchaProtected.component";
 

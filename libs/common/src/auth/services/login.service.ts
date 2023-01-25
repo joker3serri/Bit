@@ -1,5 +1,5 @@
-import { StateService } from "../abstractions/state.service";
-import { LoginService as LoginServiceAbstraction } from "../auth/abstractions/login.service";
+import { StateService } from "../../abstractions/state.service";
+import { LoginService as LoginServiceAbstraction } from "../abstractions/login.service";
 
 export class LoginService implements LoginServiceAbstraction {
   private _email: string;

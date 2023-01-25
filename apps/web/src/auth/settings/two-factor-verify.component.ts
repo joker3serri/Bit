@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
-import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
+import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/twoFactorProviderType";
 import { VerificationType } from "@bitwarden/common/enums/verificationType";
 import { SecretVerificationRequest } from "@bitwarden/common/models/request/secret-verification.request";
 import { AuthResponse } from "@bitwarden/common/types/authResponse";

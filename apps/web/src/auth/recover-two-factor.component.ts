@@ -2,11 +2,11 @@ import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { TwoFactorRecoveryRequest } from "@bitwarden/common/models/request/two-factor-recovery.request";
 
 @Component({

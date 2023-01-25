@@ -1,3 +1,4 @@
+import { IdentityTwoFactorResponse } from "../auth/models/response/identity-two-factor.response";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { SetKeyConnectorKeyRequest } from "../models/request/account/set-key-connector-key.request";
 import { AttachmentRequest } from "../models/request/attachment.request";
@@ -99,7 +100,6 @@ import {
 import { EventResponse } from "../models/response/event.response";
 import { IdentityCaptchaResponse } from "../models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
-import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 import { KeyConnectorUserKeyResponse } from "../models/response/key-connector-user-key.response";
 import { ListResponse } from "../models/response/list.response";
 import {

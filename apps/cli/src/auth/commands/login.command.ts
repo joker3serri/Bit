@@ -6,7 +6,6 @@ import Separator from "inquirer/lib/objects/separator";
 import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
@@ -16,8 +15,9 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
-import { TwoFactorService } from "@bitwarden/common/abstractions/twoFactor.service";
-import { TwoFactorProviderType } from "@bitwarden/common/enums/twoFactorProviderType";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { TwoFactorService } from "@bitwarden/common/auth/abstractions/twoFactor.service";
+import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/twoFactorProviderType";
 import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { AuthResult } from "@bitwarden/common/models/domain/auth-result";

@@ -1,5 +1,5 @@
-import { TwoFactorService as AbstractTwoFactorService } from "@bitwarden/common/abstractions/twoFactor.service";
-import { TwoFactorService } from "@bitwarden/common/services/twoFactor.service";
+import { TwoFactorService as AbstractTwoFactorService } from "@bitwarden/common/auth/abstractions/twoFactor.service";
+import { TwoFactorService } from "@bitwarden/common/auth/services/twoFactor.service";
 
 import {
   FactoryOptions,

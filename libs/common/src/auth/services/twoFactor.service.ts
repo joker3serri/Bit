@@ -1,9 +1,9 @@
-import { I18nService } from "../abstractions/i18n.service";
-import { PlatformUtilsService } from "../abstractions/platformUtils.service";
+import { I18nService } from "../../abstractions/i18n.service";
+import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import {
   TwoFactorProviderDetails,
   TwoFactorService as TwoFactorServiceAbstraction,
-} from "../auth/abstractions/twoFactor.service";
+} from "../abstractions/twoFactor.service";
 import { TwoFactorProviderType } from "../enums/twoFactorProviderType";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 

@@ -3,7 +3,6 @@ import { AbstractControl, UntypedFormBuilder, ValidatorFn, Validators } from "@a
 import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AuthService } from "@bitwarden/common/abstractions/auth.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import {
@@ -15,6 +14,7 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { DEFAULT_KDF_ITERATIONS, DEFAULT_KDF_TYPE } from "@bitwarden/common/enums/kdfType";
 import { PasswordLogInCredentials } from "@bitwarden/common/models/domain/log-in-credentials";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
@@ -22,10 +22,9 @@ import { ReferenceEventRequest } from "@bitwarden/common/models/request/referenc
 import { RegisterRequest } from "@bitwarden/common/models/request/register.request";
 import { RegisterResponse } from "@bitwarden/common/models/response/authentication/register.response";
 
+import { CaptchaProtectedComponent } from "../auth/components/captchaProtected.component";
 import { PasswordColorText } from "../shared/components/password-strength/password-strength.component";
 import { InputsFieldMatch } from "../validators/inputsFieldMatch.validator";
-
-import { CaptchaProtectedComponent } from "../auth/components/captchaProtected.component";
 
 @Directive()
 export class RegisterComponent extends CaptchaProtectedComponent implements OnInit {

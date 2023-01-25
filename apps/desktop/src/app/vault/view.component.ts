@@ -22,8 +22,8 @@ import { MessagingService } from "@bitwarden/common/abstractions/messaging.servi
 import { PasswordRepromptService } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { TokenService } from "@bitwarden/common/abstractions/token.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
+import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 
 const BroadcasterSubscriptionId = "ViewComponent";

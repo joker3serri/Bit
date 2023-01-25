@@ -1,38 +1,38 @@
 import { Observable, Subject } from "rxjs";
 
-import { ApiService } from "../abstractions/api.service";
-import { AppIdService } from "../abstractions/appId.service";
-import { CryptoService } from "../abstractions/crypto.service";
-import { EnvironmentService } from "../abstractions/environment.service";
-import { I18nService } from "../abstractions/i18n.service";
-import { KeyConnectorService } from "../abstractions/keyConnector.service";
-import { LogService } from "../abstractions/log.service";
-import { MessagingService } from "../abstractions/messaging.service";
-import { PlatformUtilsService } from "../abstractions/platformUtils.service";
-import { StateService } from "../abstractions/state.service";
-import { AuthService as AuthServiceAbstraction } from "../auth/abstractions/auth.service";
-import { TokenService } from "../auth/abstractions/token.service";
-import { TwoFactorService } from "../auth/abstractions/twoFactor.service";
-import { AuthenticationStatus } from "../enums/authenticationStatus";
-import { AuthenticationType } from "../enums/authenticationType";
-import { KdfType } from "../enums/kdfType";
-import { KeySuffixOptions } from "../enums/keySuffixOptions";
-import { PasswordLogInStrategy } from "../misc/logInStrategies/passwordLogin.strategy";
-import { PasswordlessLogInStrategy } from "../misc/logInStrategies/passwordlessLogin.strategy";
-import { SsoLogInStrategy } from "../misc/logInStrategies/ssoLogin.strategy";
-import { UserApiLogInStrategy } from "../misc/logInStrategies/user-api-login.strategy";
-import { AuthResult } from "../models/domain/auth-result";
+import { ApiService } from "../../abstractions/api.service";
+import { AppIdService } from "../../abstractions/appId.service";
+import { CryptoService } from "../../abstractions/crypto.service";
+import { EnvironmentService } from "../../abstractions/environment.service";
+import { I18nService } from "../../abstractions/i18n.service";
+import { KeyConnectorService } from "../../abstractions/keyConnector.service";
+import { LogService } from "../../abstractions/log.service";
+import { MessagingService } from "../../abstractions/messaging.service";
+import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
+import { StateService } from "../../abstractions/state.service";
+import { AuthenticationStatus } from "../../enums/authenticationStatus";
+import { AuthenticationType } from "../../enums/authenticationType";
+import { KdfType } from "../../enums/kdfType";
+import { KeySuffixOptions } from "../../enums/keySuffixOptions";
+import { AuthResult } from "../../models/domain/auth-result";
 import {
   UserApiLogInCredentials,
   PasswordLogInCredentials,
   SsoLogInCredentials,
   PasswordlessLogInCredentials,
-} from "../models/domain/log-in-credentials";
-import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
-import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
-import { PreloginRequest } from "../models/request/prelogin.request";
-import { ErrorResponse } from "../models/response/error.response";
-import { AuthRequestPushNotification } from "../models/response/notification.response";
+} from "../../models/domain/log-in-credentials";
+import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
+import { TokenTwoFactorRequest } from "../../models/request/identity-token/token-two-factor.request";
+import { PreloginRequest } from "../../models/request/prelogin.request";
+import { ErrorResponse } from "../../models/response/error.response";
+import { AuthRequestPushNotification } from "../../models/response/notification.response";
+import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
+import { TokenService } from "../abstractions/token.service";
+import { TwoFactorService } from "../abstractions/twoFactor.service";
+import { PasswordLogInStrategy } from "../logInStrategies/passwordLogin.strategy";
+import { PasswordlessLogInStrategy } from "../logInStrategies/passwordlessLogin.strategy";
+import { SsoLogInStrategy } from "../logInStrategies/ssoLogin.strategy";
+import { UserApiLogInStrategy } from "../logInStrategies/user-api-login.strategy";
 
 const sessionTimeoutLength = 2 * 60 * 1000; // 2 minutes
 

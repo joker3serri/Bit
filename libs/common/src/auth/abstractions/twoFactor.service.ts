@@ -1,5 +1,5 @@
-import { TwoFactorProviderType } from "../../enums/twoFactorProviderType";
-import { IdentityTwoFactorResponse } from "../../models/response/identity-two-factor.response";
+import { TwoFactorProviderType } from "../enums/twoFactorProviderType";
+import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 
 export interface TwoFactorProviderDetails {
   type: TwoFactorProviderType;

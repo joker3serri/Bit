@@ -3,6 +3,7 @@ import { AppIdService } from "../abstractions/appId.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { TokenService } from "../auth/abstractions/token.service";
+import { IdentityTwoFactorResponse } from "../auth/models/response/identity-two-factor.response";
 import { DeviceType } from "../enums/deviceType";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { Utils } from "../misc/utils";
@@ -108,7 +109,6 @@ import { ErrorResponse } from "../models/response/error.response";
 import { EventResponse } from "../models/response/event.response";
 import { IdentityCaptchaResponse } from "../models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
-import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 import { KeyConnectorUserKeyResponse } from "../models/response/key-connector-user-key.response";
 import { ListResponse } from "../models/response/list.response";
 import {

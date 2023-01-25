@@ -18,7 +18,7 @@ import {
 import { NavigationEnd, Router } from "@angular/router";
 import { filter, Subject, switchMap, takeUntil } from "rxjs";
 
-import { AuthService } from "@bitwarden/common/abstractions/auth.service";
+import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
 
 @Injectable()
