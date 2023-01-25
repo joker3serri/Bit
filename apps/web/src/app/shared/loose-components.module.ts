@@ -111,6 +111,7 @@ import { CollectionsComponent } from "../vault/collections.component";
 import { FolderAddEditComponent } from "../vault/folder-add-edit.component";
 import { ShareComponent } from "../vault/share.component";
 
+import { LowKdfComponent } from "./../settings/low-kdf.component";
 import { SharedModule } from "./shared.module";
 
 // Please do not add to this list of declarations - we should refactor these into modules when doing so makes sense until there are none left.
@@ -227,6 +228,7 @@ import { SharedModule } from "./shared.module";
     VerifyEmailComponent,
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
+    LowKdfComponent,
   ],
   exports: [
     PremiumBadgeComponent,
@@ -335,6 +337,7 @@ import { SharedModule } from "./shared.module";
     VerifyEmailComponent,
     VerifyEmailTokenComponent,
     VerifyRecoverDeleteComponent,
+    LowKdfComponent,
   ],
 })
 export class LooseComponentsModule {}
