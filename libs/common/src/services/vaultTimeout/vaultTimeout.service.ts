@@ -12,7 +12,7 @@ import { StateService } from "../../abstractions/state.service";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "../../abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "../../abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { AuthService } from "../../auth/abstractions/auth.service";
-import { AuthenticationStatus } from "../../enums/authenticationStatus";
+import { AuthenticationStatus } from "../../auth/enums/authenticationStatus";
 
 export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
   private inited = false;

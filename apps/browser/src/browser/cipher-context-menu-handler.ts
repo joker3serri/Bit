@@ -1,7 +1,7 @@
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticationStatus";
 import { CipherRepromptType } from "@bitwarden/common/enums/cipherRepromptType";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";

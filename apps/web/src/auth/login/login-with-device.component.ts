@@ -16,7 +16,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
-import { AuthRequestType } from "@bitwarden/common/enums/authRequestType";
+import { AuthRequestType } from "@bitwarden/common/auth/enums/authRequestType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { PasswordlessLogInCredentials } from "@bitwarden/common/models/domain/log-in-credentials";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";

@@ -1,4 +1,4 @@
-import { OrganizationApiKeyType } from "../../enums/organizationApiKeyType";
+import { OrganizationApiKeyType } from "../../auth/enums/organizationApiKeyType";
 import { ImportDirectoryRequest } from "../../models/request/import-directory.request";
 import { OrganizationApiKeyRequest } from "../../models/request/organization-api-key.request";
 import { OrganizationCreateRequest } from "../../models/request/organization-create.request";

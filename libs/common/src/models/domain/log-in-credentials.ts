@@ -1,4 +1,4 @@
-import { AuthenticationType } from "../../enums/authenticationType";
+import { AuthenticationType } from "../../auth/enums/authenticationType";
 import { TokenTwoFactorRequest } from "../request/identity-token/token-two-factor.request";
 
 import { SymmetricCryptoKey } from "./symmetric-crypto-key";

@@ -10,8 +10,6 @@ import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
-import { AuthenticationStatus } from "../../enums/authenticationStatus";
-import { AuthenticationType } from "../../enums/authenticationType";
 import { KdfType } from "../../enums/kdfType";
 import { KeySuffixOptions } from "../../enums/keySuffixOptions";
 import { AuthResult } from "../../models/domain/auth-result";
@@ -29,6 +27,8 @@ import { AuthRequestPushNotification } from "../../models/response/notification.
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/twoFactor.service";
+import { AuthenticationStatus } from "../enums/authenticationStatus";
+import { AuthenticationType } from "../enums/authenticationType";
 import { PasswordLogInStrategy } from "../logInStrategies/passwordLogin.strategy";
 import { PasswordlessLogInStrategy } from "../logInStrategies/passwordlessLogin.strategy";
 import { SsoLogInStrategy } from "../logInStrategies/ssoLogin.strategy";

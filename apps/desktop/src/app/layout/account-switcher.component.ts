@@ -8,7 +8,7 @@ import { MessagingService } from "@bitwarden/common/abstractions/messaging.servi
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
-import { AuthenticationStatus } from "@bitwarden/common/enums/authenticationStatus";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticationStatus";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Account } from "@bitwarden/common/models/domain/account";
 

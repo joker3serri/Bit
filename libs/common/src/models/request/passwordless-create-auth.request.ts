@@ -1,4 +1,4 @@
-import { AuthRequestType } from "../../enums/authRequestType";
+import { AuthRequestType } from "../../auth/enums/authRequestType";
 
 export class PasswordlessCreateAuthRequest {
   constructor(

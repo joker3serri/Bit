@@ -1,4 +1,4 @@
-import { OrganizationApiKeyType } from "../../enums/organizationApiKeyType";
+import { OrganizationApiKeyType } from "../../auth/enums/organizationApiKeyType";
 
 import { SecretVerificationRequest } from "./secret-verification.request";
 
