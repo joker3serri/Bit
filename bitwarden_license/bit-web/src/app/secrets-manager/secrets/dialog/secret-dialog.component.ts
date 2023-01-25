@@ -51,7 +51,9 @@ export class SecretDialogComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.projects = await this.projectService.getProjects(this.data.organizationId);
+    this.projects = await this.projectService
+      .getProjects(this.data.organizationId)
+      .then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)));
 
     if (this.data.operation === OperationType.Edit && this.data.secretId) {
       await this.loadData();
