@@ -32,7 +32,7 @@ import { OrganizationImportComponent } from "./org-import.component";
       deps: [
         CipherService,
         FolderService,
-        ImportApiService,
+        ImportApiServiceAbstraction,
         I18nService,
         CollectionService,
         CryptoService,
