@@ -29,9 +29,7 @@ import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 import { OrganizationCollectionRequest } from "../models/request/organization-collection.request";
 import { Response } from "../models/response";
-import { CipherResponse } from "../models/response/cipher.response";
 import { CollectionResponse } from "../models/response/collection.response";
-import { FolderResponse } from "../models/response/folder.response";
 import { OrganizationCollectionResponse } from "../models/response/organization-collection.response";
 import { OrganizationResponse } from "../models/response/organization.response";
 import { SendResponse } from "../models/response/send.response";
@@ -39,6 +37,8 @@ import { StringResponse } from "../models/response/string.response";
 import { TemplateResponse } from "../models/response/template.response";
 import { SelectionReadOnly } from "../models/selection-read-only";
 import { CliUtils } from "../utils";
+import { CipherResponse } from "../vault/models/cipher.response";
+import { FolderResponse } from "../vault/models/folder.response";
 
 import { DownloadCommand } from "./download.command";
 

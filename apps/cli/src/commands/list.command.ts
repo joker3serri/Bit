@@ -16,13 +16,13 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import { Response } from "../models/response";
-import { CipherResponse } from "../models/response/cipher.response";
 import { CollectionResponse } from "../models/response/collection.response";
-import { FolderResponse } from "../models/response/folder.response";
 import { ListResponse } from "../models/response/list.response";
 import { OrganizationUserResponse } from "../models/response/organization-user.response";
 import { OrganizationResponse } from "../models/response/organization.response";
 import { CliUtils } from "../utils";
+import { CipherResponse } from "../vault/models/cipher.response";
+import { FolderResponse } from "../vault/models/folder.response";
 
 export class ListCommand {
   constructor(

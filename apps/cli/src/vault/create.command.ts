@@ -16,10 +16,11 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 
 import { OrganizationCollectionRequest } from "../models/request/organization-collection.request";
 import { Response } from "../models/response";
-import { CipherResponse } from "../models/response/cipher.response";
-import { FolderResponse } from "../models/response/folder.response";
 import { OrganizationCollectionResponse } from "../models/response/organization-collection.response";
 import { CliUtils } from "../utils";
+
+import { CipherResponse } from "./models/cipher.response";
+import { FolderResponse } from "./models/folder.response";
 
 export class CreateCommand {
   constructor(
