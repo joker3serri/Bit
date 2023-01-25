@@ -10,6 +10,8 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstraction
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/twoFactor.service";
+import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
+import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 import { ClientType } from "@bitwarden/common/enums/clientType";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
 import { LogLevelType } from "@bitwarden/common/enums/logLevelType";
@@ -47,8 +49,6 @@ import { StateMigrationService } from "@bitwarden/common/services/stateMigration
 import { SyncService } from "@bitwarden/common/services/sync/sync.service";
 import { SyncNotifierService } from "@bitwarden/common/services/sync/syncNotifier.service";
 import { TotpService } from "@bitwarden/common/services/totp.service";
-import { UserVerificationApiService } from "@bitwarden/common/services/userVerification/userVerification-api.service";
-import { UserVerificationService } from "@bitwarden/common/services/userVerification/userVerification.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vaultTimeout/vaultTimeoutSettings.service";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/node-crypto-function.service";

@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/twoFactor.service";
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/twoFactorProviderType";
+import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 
 @Directive()
 export class TwoFactorOptionsComponent implements OnInit {

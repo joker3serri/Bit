@@ -6,11 +6,11 @@ import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
-import { TokenService } from "../../auth/abstractions/token.service";
-import { TwoFactorService } from "../../auth/abstractions/twoFactor.service";
-import { SsoLogInCredentials } from "../../models/domain/log-in-credentials";
-import { SsoTokenRequest } from "../../models/request/identity-token/sso-token.request";
-import { IdentityTokenResponse } from "../../models/response/identity-token.response";
+import { TokenService } from "../abstractions/token.service";
+import { TwoFactorService } from "../abstractions/twoFactor.service";
+import { SsoLogInCredentials } from "../models/domain/log-in-credentials";
+import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
+import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
 import { LogInStrategy } from "./logIn.strategy";
 

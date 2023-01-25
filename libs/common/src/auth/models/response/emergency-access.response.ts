@@ -1,9 +1,8 @@
-import { EmergencyAccessStatusType } from "../../enums/emergencyAccessStatusType";
-import { EmergencyAccessType } from "../../enums/emergencyAccessType";
-import { KdfType } from "../../enums/kdfType";
-
-import { BaseResponse } from "./base.response";
-import { CipherResponse } from "./cipher.response";
+import { KdfType } from "../../../enums/kdfType";
+import { BaseResponse } from "../../../models/response/base.response";
+import { CipherResponse } from "../../../models/response/cipher.response";
+import { EmergencyAccessStatusType } from "../../enums/emergency-access-status-type";
+import { EmergencyAccessType } from "../../enums/emergency-access-type";
 
 export class EmergencyAccessGranteeDetailsResponse extends BaseResponse {
   id: string;

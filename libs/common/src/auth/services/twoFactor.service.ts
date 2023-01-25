@@ -4,7 +4,7 @@ import {
   TwoFactorProviderDetails,
   TwoFactorService as TwoFactorServiceAbstraction,
 } from "../abstractions/twoFactor.service";
-import { TwoFactorProviderType } from "../enums/twoFactorProviderType";
+import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 
 export const TwoFactorProviders: Partial<Record<TwoFactorProviderType, TwoFactorProviderDetails>> =

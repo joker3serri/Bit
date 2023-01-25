@@ -10,9 +10,9 @@ import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { Utils } from "../../misc/utils";
-import { UserApiLogInCredentials } from "../../models/domain/log-in-credentials";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/twoFactor.service";
+import { UserApiLogInCredentials } from "../models/domain/log-in-credentials";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { UserApiLogInStrategy } from "./user-api-login.strategy";

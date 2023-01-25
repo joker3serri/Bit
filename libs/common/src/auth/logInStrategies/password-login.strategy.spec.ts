@@ -9,14 +9,14 @@ import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { HashPurpose } from "../../enums/hashPurpose";
 import { Utils } from "../../misc/utils";
-import { PasswordLogInCredentials } from "../../models/domain/log-in-credentials";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/twoFactor.service";
+import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
-import { PasswordLogInStrategy } from "./passwordLogin.strategy";
+import { PasswordLogInStrategy } from "./password-login.strategy";
 
 const email = "hello@world.com";
 const masterPassword = "password";

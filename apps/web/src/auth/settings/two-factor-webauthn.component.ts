@@ -5,10 +5,10 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/twoFactorProviderType";
-import { SecretVerificationRequest } from "@bitwarden/common/models/request/secret-verification.request";
-import { UpdateTwoFactorWebAuthnDeleteRequest } from "@bitwarden/common/models/request/update-two-factor-web-authn-delete.request";
-import { UpdateTwoFactorWebAuthnRequest } from "@bitwarden/common/models/request/update-two-factor-web-authn.request";
+import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
+import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
+import { UpdateTwoFactorWebAuthnDeleteRequest } from "@bitwarden/common/auth/models/request/update-two-factor-web-authn-delete.request";
+import { UpdateTwoFactorWebAuthnRequest } from "@bitwarden/common/auth/models/request/update-two-factor-web-authn.request";
 import {
   ChallengeResponse,
   TwoFactorWebAuthnResponse,

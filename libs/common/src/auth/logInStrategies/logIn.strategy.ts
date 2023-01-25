@@ -6,24 +6,24 @@ import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { Account, AccountProfile, AccountTokens } from "../../models/domain/account";
+import { KeysRequest } from "../../models/request/keys.request";
+import { TokenService } from "../abstractions/token.service";
+import { TwoFactorService } from "../abstractions/twoFactor.service";
+import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
+import { AuthResult } from "../models/domain/auth-result";
 import {
   UserApiLogInCredentials,
   PasswordLogInCredentials,
   SsoLogInCredentials,
   PasswordlessLogInCredentials,
-} from "../../models/domain/log-in-credentials";
-import { DeviceRequest } from "../../models/request/device.request";
-import { PasswordTokenRequest } from "../../models/request/identity-token/password-token.request";
-import { SsoTokenRequest } from "../../models/request/identity-token/sso-token.request";
-import { TokenTwoFactorRequest } from "../../models/request/identity-token/token-two-factor.request";
-import { UserApiTokenRequest } from "../../models/request/identity-token/user-api-token.request";
-import { KeysRequest } from "../../models/request/keys.request";
-import { IdentityCaptchaResponse } from "../../models/response/identity-captcha.response";
-import { IdentityTokenResponse } from "../../models/response/identity-token.response";
-import { TokenService } from "../abstractions/token.service";
-import { TwoFactorService } from "../abstractions/twoFactor.service";
-import { TwoFactorProviderType } from "../enums/twoFactorProviderType";
-import { AuthResult } from "../models/domain/auth-result";
+} from "../models/domain/log-in-credentials";
+import { DeviceRequest } from "../models/request/identity-token/device.request";
+import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
+import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
+import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
+import { UserApiTokenRequest } from "../models/request/identity-token/user-api-token.request";
+import { IdentityCaptchaResponse } from "../models/response/identity-captcha.response";
+import { IdentityTokenResponse } from "../models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 
 export abstract class LogInStrategy {

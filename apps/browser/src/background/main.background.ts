@@ -46,6 +46,8 @@ import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/comm
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/twoFactor.service";
+import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
+import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
@@ -77,8 +79,6 @@ import { SyncService } from "@bitwarden/common/services/sync/sync.service";
 import { SyncNotifierService } from "@bitwarden/common/services/sync/syncNotifier.service";
 import { SystemService } from "@bitwarden/common/services/system.service";
 import { TotpService } from "@bitwarden/common/services/totp.service";
-import { UserVerificationApiService } from "@bitwarden/common/services/userVerification/userVerification-api.service";
-import { UserVerificationService } from "@bitwarden/common/services/userVerification/userVerification.service";
 import { UsernameGenerationService } from "@bitwarden/common/services/usernameGeneration.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vaultTimeout/vaultTimeoutSettings.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/services/webCryptoFunction.service";

@@ -19,7 +19,7 @@ import { NavigationEnd, Router } from "@angular/router";
 import { filter, Subject, switchMap, takeUntil } from "rxjs";
 
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticationStatus";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 
 @Injectable()
 export class DialogService extends Dialog implements OnDestroy {

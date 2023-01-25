@@ -10,14 +10,14 @@ import { MessagingService } from "@bitwarden/common/abstractions/messaging.servi
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { EmergencyAccessStatusType } from "@bitwarden/common/enums/emergencyAccessStatusType";
-import { EmergencyAccessType } from "@bitwarden/common/enums/emergencyAccessType";
-import { Utils } from "@bitwarden/common/misc/utils";
-import { EmergencyAccessConfirmRequest } from "@bitwarden/common/models/request/emergency-access-confirm.request";
+import { EmergencyAccessStatusType } from "@bitwarden/common/auth/enums/emergency-access-status-type";
+import { EmergencyAccessType } from "@bitwarden/common/auth/enums/emergency-access-type";
+import { EmergencyAccessConfirmRequest } from "@bitwarden/common/auth/models/request/emergency-access-confirm.request";
 import {
   EmergencyAccessGranteeDetailsResponse,
   EmergencyAccessGrantorDetailsResponse,
-} from "@bitwarden/common/models/response/emergency-access.response";
+} from "@bitwarden/common/auth/models/response/emergency-access.response";
+import { Utils } from "@bitwarden/common/misc/utils";
 
 import { EmergencyAccessAddEditComponent } from "./emergency-access-add-edit.component";
 import { EmergencyAccessConfirmComponent } from "./emergency-access-confirm.component";

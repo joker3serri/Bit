@@ -3,11 +3,46 @@ import { AppIdService } from "../abstractions/appId.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { TokenService } from "../auth/abstractions/token.service";
+import { EmailTokenRequest } from "../auth/models/request/email-token.request";
+import { EmailRequest } from "../auth/models/request/email.request";
+import { EmergencyAccessAcceptRequest } from "../auth/models/request/emergency-access-accept.request";
+import { EmergencyAccessConfirmRequest } from "../auth/models/request/emergency-access-confirm.request";
+import { EmergencyAccessInviteRequest } from "../auth/models/request/emergency-access-invite.request";
+import { EmergencyAccessPasswordRequest } from "../auth/models/request/emergency-access-password.request";
+import { EmergencyAccessUpdateRequest } from "../auth/models/request/emergency-access-update.request";
+import { DeviceRequest } from "../auth/models/request/identity-token/device.request";
+import { PasswordTokenRequest } from "../auth/models/request/identity-token/password-token.request";
+import { SsoTokenRequest } from "../auth/models/request/identity-token/sso-token.request";
+import { TokenTwoFactorRequest } from "../auth/models/request/identity-token/token-two-factor.request";
+import { UserApiTokenRequest } from "../auth/models/request/identity-token/user-api-token.request";
+import { PasswordHintRequest } from "../auth/models/request/password-hint.request";
+import { PasswordRequest } from "../auth/models/request/password.request";
+import { PasswordlessCreateAuthRequest } from "../auth/models/request/passwordless-create-auth.request";
+import { SecretVerificationRequest } from "../auth/models/request/secret-verification.request";
+import { SetKeyConnectorKeyRequest } from "../auth/models/request/set-key-connector-key.request";
+import { TwoFactorEmailRequest } from "../auth/models/request/two-factor-email.request";
+import { TwoFactorProviderRequest } from "../auth/models/request/two-factor-provider.request";
+import { TwoFactorRecoveryRequest } from "../auth/models/request/two-factor-recovery.request";
+import { UpdateProfileRequest } from "../auth/models/request/update-profile.request";
+import { UpdateTwoFactorAuthenticatorRequest } from "../auth/models/request/update-two-factor-authenticator.request";
+import { UpdateTwoFactorDuoRequest } from "../auth/models/request/update-two-factor-duo.request";
+import { UpdateTwoFactorEmailRequest } from "../auth/models/request/update-two-factor-email.request";
+import { UpdateTwoFactorWebAuthnDeleteRequest } from "../auth/models/request/update-two-factor-web-authn-delete.request";
+import { UpdateTwoFactorWebAuthnRequest } from "../auth/models/request/update-two-factor-web-authn.request";
+import { UpdateTwoFactorYubioOtpRequest } from "../auth/models/request/update-two-factor-yubio-otp.request";
+import {
+  EmergencyAccessGranteeDetailsResponse,
+  EmergencyAccessGrantorDetailsResponse,
+  EmergencyAccessTakeoverResponse,
+  EmergencyAccessViewResponse,
+} from "../auth/models/response/emergency-access.response";
+import { IdentityCaptchaResponse } from "../auth/models/response/identity-captcha.response";
+import { IdentityTokenResponse } from "../auth/models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../auth/models/response/identity-two-factor.response";
+import { SsoPreValidateResponse } from "../auth/models/response/sso-pre-validate.response";
 import { DeviceType } from "../enums/deviceType";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { Utils } from "../misc/utils";
-import { SetKeyConnectorKeyRequest } from "../models/request/account/set-key-connector-key.request";
 import { AttachmentRequest } from "../models/request/attachment.request";
 import { BitPayInvoiceRequest } from "../models/request/bit-pay-invoice.request";
 import { CipherBulkDeleteRequest } from "../models/request/cipher-bulk-delete.request";
@@ -22,20 +57,8 @@ import { CollectionBulkDeleteRequest } from "../models/request/collection-bulk-d
 import { CollectionRequest } from "../models/request/collection.request";
 import { DeleteRecoverRequest } from "../models/request/delete-recover.request";
 import { DeviceVerificationRequest } from "../models/request/device-verification.request";
-import { DeviceRequest } from "../models/request/device.request";
-import { EmailTokenRequest } from "../models/request/email-token.request";
-import { EmailRequest } from "../models/request/email.request";
-import { EmergencyAccessAcceptRequest } from "../models/request/emergency-access-accept.request";
-import { EmergencyAccessConfirmRequest } from "../models/request/emergency-access-confirm.request";
-import { EmergencyAccessInviteRequest } from "../models/request/emergency-access-invite.request";
-import { EmergencyAccessPasswordRequest } from "../models/request/emergency-access-password.request";
-import { EmergencyAccessUpdateRequest } from "../models/request/emergency-access-update.request";
 import { EventRequest } from "../models/request/event.request";
 import { IapCheckRequest } from "../models/request/iap-check.request";
-import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
-import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
-import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
-import { UserApiTokenRequest } from "../models/request/identity-token/user-api-token.request";
 import { ImportCiphersRequest } from "../models/request/import-ciphers.request";
 import { ImportOrganizationCiphersRequest } from "../models/request/import-organization-ciphers.request";
 import { KdfRequest } from "../models/request/kdf.request";
@@ -45,9 +68,6 @@ import { OrganizationConnectionRequest } from "../models/request/organization-co
 import { OrganizationImportRequest } from "../models/request/organization-import.request";
 import { OrganizationSponsorshipCreateRequest } from "../models/request/organization/organization-sponsorship-create.request";
 import { OrganizationSponsorshipRedeemRequest } from "../models/request/organization/organization-sponsorship-redeem.request";
-import { PasswordHintRequest } from "../models/request/password-hint.request";
-import { PasswordRequest } from "../models/request/password.request";
-import { PasswordlessCreateAuthRequest } from "../models/request/passwordless-create-auth.request";
 import { PaymentRequest } from "../models/request/payment.request";
 import { PreloginRequest } from "../models/request/prelogin.request";
 import { ProviderAddOrganizationRequest } from "../models/request/provider/provider-add-organization.request";
@@ -61,27 +81,16 @@ import { ProviderUserConfirmRequest } from "../models/request/provider/provider-
 import { ProviderUserInviteRequest } from "../models/request/provider/provider-user-invite.request";
 import { ProviderUserUpdateRequest } from "../models/request/provider/provider-user-update.request";
 import { RegisterRequest } from "../models/request/register.request";
-import { SecretVerificationRequest } from "../models/request/secret-verification.request";
 import { SelectionReadOnlyRequest } from "../models/request/selection-read-only.request";
 import { SendAccessRequest } from "../models/request/send-access.request";
 import { SendRequest } from "../models/request/send.request";
 import { SetPasswordRequest } from "../models/request/set-password.request";
 import { StorageRequest } from "../models/request/storage.request";
 import { TaxInfoUpdateRequest } from "../models/request/tax-info-update.request";
-import { TwoFactorEmailRequest } from "../models/request/two-factor-email.request";
-import { TwoFactorProviderRequest } from "../models/request/two-factor-provider.request";
-import { TwoFactorRecoveryRequest } from "../models/request/two-factor-recovery.request";
 import { UpdateAvatarRequest } from "../models/request/update-avatar.request";
 import { UpdateDomainsRequest } from "../models/request/update-domains.request";
 import { UpdateKeyRequest } from "../models/request/update-key.request";
-import { UpdateProfileRequest } from "../models/request/update-profile.request";
 import { UpdateTempPasswordRequest } from "../models/request/update-temp-password.request";
-import { UpdateTwoFactorAuthenticatorRequest } from "../models/request/update-two-factor-authenticator.request";
-import { UpdateTwoFactorDuoRequest } from "../models/request/update-two-factor-duo.request";
-import { UpdateTwoFactorEmailRequest } from "../models/request/update-two-factor-email.request";
-import { UpdateTwoFactorWebAuthnDeleteRequest } from "../models/request/update-two-factor-web-authn-delete.request";
-import { UpdateTwoFactorWebAuthnRequest } from "../models/request/update-two-factor-web-authn.request";
-import { UpdateTwoFactorYubioOtpRequest } from "../models/request/update-two-factor-yubio-otp.request";
 import { VerifyDeleteRecoverRequest } from "../models/request/verify-delete-recover.request";
 import { VerifyEmailRequest } from "../models/request/verify-email.request";
 import { ApiKeyResponse } from "../models/response/api-key.response";
@@ -99,16 +108,8 @@ import {
 } from "../models/response/collection.response";
 import { DeviceVerificationResponse } from "../models/response/device-verification.response";
 import { DomainsResponse } from "../models/response/domains.response";
-import {
-  EmergencyAccessGranteeDetailsResponse,
-  EmergencyAccessGrantorDetailsResponse,
-  EmergencyAccessTakeoverResponse,
-  EmergencyAccessViewResponse,
-} from "../models/response/emergency-access.response";
 import { ErrorResponse } from "../models/response/error.response";
 import { EventResponse } from "../models/response/event.response";
-import { IdentityCaptchaResponse } from "../models/response/identity-captcha.response";
-import { IdentityTokenResponse } from "../models/response/identity-token.response";
 import { KeyConnectorUserKeyResponse } from "../models/response/key-connector-user-key.response";
 import { ListResponse } from "../models/response/list.response";
 import {
@@ -138,7 +139,6 @@ import { SendAccessResponse } from "../models/response/send-access.response";
 import { SendFileDownloadDataResponse } from "../models/response/send-file-download-data.response";
 import { SendFileUploadDataResponse } from "../models/response/send-file-upload-data.response";
 import { SendResponse } from "../models/response/send.response";
-import { SsoPreValidateResponse } from "../models/response/sso-pre-validate.response";
 import { SubscriptionResponse } from "../models/response/subscription.response";
 import { SyncResponse } from "../models/response/sync.response";
 import { TaxInfoResponse } from "../models/response/tax-info.response";

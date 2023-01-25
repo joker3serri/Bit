@@ -6,9 +6,9 @@ import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
+import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
 import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { SecretVerificationRequest } from "@bitwarden/common/models/request/secret-verification.request";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
 
 import { ConvertToKeyConnectorCommand } from "../../commands/convert-to-key-connector.command";

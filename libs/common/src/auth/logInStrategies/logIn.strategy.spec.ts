@@ -10,19 +10,19 @@ import { StateService } from "../../abstractions/state.service";
 import { Utils } from "../../misc/utils";
 import { Account, AccountProfile, AccountTokens } from "../../models/domain/account";
 import { EncString } from "../../models/domain/enc-string";
-import { PasswordLogInCredentials } from "../../models/domain/log-in-credentials";
-import { PasswordTokenRequest } from "../../models/request/identity-token/password-token.request";
-import { TokenTwoFactorRequest } from "../../models/request/identity-token/token-two-factor.request";
-import { IdentityCaptchaResponse } from "../../models/response/identity-captcha.response";
-import { IdentityTokenResponse } from "../../models/response/identity-token.response";
 import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/twoFactor.service";
-import { TwoFactorProviderType } from "../enums/twoFactorProviderType";
+import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { AuthResult } from "../models/domain/auth-result";
+import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";
+import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
+import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
+import { IdentityCaptchaResponse } from "../models/response/identity-captcha.response";
+import { IdentityTokenResponse } from "../models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 
-import { PasswordLogInStrategy } from "./passwordLogin.strategy";
+import { PasswordLogInStrategy } from "./password-login.strategy";
 
 const email = "hello@world.com";
 const masterPassword = "password";

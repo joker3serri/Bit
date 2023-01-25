@@ -1,7 +1,6 @@
-import { AuthenticationType } from "../../auth/enums/authenticationType";
+import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
+import { AuthenticationType } from "../../enums/authentication-type";
 import { TokenTwoFactorRequest } from "../request/identity-token/token-two-factor.request";
-
-import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class PasswordLogInCredentials {
   readonly type = AuthenticationType.Password;

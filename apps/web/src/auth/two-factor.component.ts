@@ -13,7 +13,7 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/twoFactor.service";
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/twoFactorProviderType";
+import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 
 import { RouterService } from "../app/core";
 

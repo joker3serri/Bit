@@ -1,5 +1,5 @@
 import { BaseResponse } from "../../../models/response/base.response";
-import { TwoFactorProviderType } from "../../enums/twoFactorProviderType";
+import { TwoFactorProviderType } from "../../enums/two-factor-provider-type";
 
 export class IdentityTwoFactorResponse extends BaseResponse {
   twoFactorProviders: TwoFactorProviderType[];

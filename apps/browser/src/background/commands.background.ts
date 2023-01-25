@@ -2,7 +2,7 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticationStatus";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 
 import { BrowserApi } from "../browser/browserApi";
 

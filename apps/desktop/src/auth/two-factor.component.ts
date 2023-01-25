@@ -14,7 +14,7 @@ import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.ab
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/twoFactor.service";
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/twoFactorProviderType";
+import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 
 import { TwoFactorOptionsComponent } from "./two-factor-options.component";
 

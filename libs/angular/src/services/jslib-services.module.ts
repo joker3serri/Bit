@@ -74,6 +74,8 @@ import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 import { LoginService } from "@bitwarden/common/auth/services/login.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/twoFactor.service";
+import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
+import { UserVerificationService } from "@bitwarden/common/auth/services/user-verification/user-verification.service";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { flagEnabled } from "@bitwarden/common/misc/flags";
 import { Account } from "@bitwarden/common/models/domain/account";
@@ -116,8 +118,6 @@ import { StateMigrationService } from "@bitwarden/common/services/stateMigration
 import { SyncService } from "@bitwarden/common/services/sync/sync.service";
 import { SyncNotifierService } from "@bitwarden/common/services/sync/syncNotifier.service";
 import { TotpService } from "@bitwarden/common/services/totp.service";
-import { UserVerificationApiService } from "@bitwarden/common/services/userVerification/userVerification-api.service";
-import { UserVerificationService } from "@bitwarden/common/services/userVerification/userVerification.service";
 import { UsernameGenerationService } from "@bitwarden/common/services/usernameGeneration.service";
 import { ValidationService } from "@bitwarden/common/services/validation.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout/vaultTimeout.service";

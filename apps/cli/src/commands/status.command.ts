@@ -2,7 +2,7 @@ import { EnvironmentService } from "@bitwarden/common/abstractions/environment.s
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticationStatus";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 
 import { Response } from "../models/response";
 import { TemplateResponse } from "../models/response/template.response";

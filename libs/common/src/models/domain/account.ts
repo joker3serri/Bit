@@ -1,6 +1,6 @@
 import { Jsonify } from "type-fest";
 
-import { AuthenticationStatus } from "../../auth/enums/authenticationStatus";
+import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { KdfType } from "../../enums/kdfType";
 import { UriMatchType } from "../../enums/uriMatchType";

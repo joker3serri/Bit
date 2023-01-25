@@ -6,7 +6,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
-import { PasswordHintRequest } from "@bitwarden/common/models/request/password-hint.request";
+import { PasswordHintRequest } from "@bitwarden/common/auth/models/request/password-hint.request";
 
 @Directive()
 export class HintComponent implements OnInit {

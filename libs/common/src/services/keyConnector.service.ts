@@ -6,13 +6,13 @@ import { LogService } from "../abstractions/log.service";
 import { OrganizationService } from "../abstractions/organization/organization.service.abstraction";
 import { StateService } from "../abstractions/state.service";
 import { TokenService } from "../auth/abstractions/token.service";
+import { SetKeyConnectorKeyRequest } from "../auth/models/request/set-key-connector-key.request";
+import { IdentityTokenResponse } from "../auth/models/response/identity-token.response";
 import { OrganizationUserType } from "../enums/organizationUserType";
 import { Utils } from "../misc/utils";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
-import { SetKeyConnectorKeyRequest } from "../models/request/account/set-key-connector-key.request";
 import { KeyConnectorUserKeyRequest } from "../models/request/key-connector-user-key.request";
 import { KeysRequest } from "../models/request/keys.request";
-import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
 export class KeyConnectorService implements KeyConnectorServiceAbstraction {
   constructor(

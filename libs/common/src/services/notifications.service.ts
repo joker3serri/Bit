@@ -9,7 +9,7 @@ import { NotificationsService as NotificationsServiceAbstraction } from "../abst
 import { StateService } from "../abstractions/state.service";
 import { SyncService } from "../abstractions/sync/sync.service.abstraction";
 import { AuthService } from "../auth/abstractions/auth.service";
-import { AuthenticationStatus } from "../auth/enums/authenticationStatus";
+import { AuthenticationStatus } from "../auth/enums/authentication-status";
 import { NotificationType } from "../enums/notificationType";
 import {
   NotificationResponse,

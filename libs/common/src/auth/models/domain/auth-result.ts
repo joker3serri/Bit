@@ -1,5 +1,5 @@
 import { Utils } from "../../../misc/utils";
-import { TwoFactorProviderType } from "../../enums/twoFactorProviderType";
+import { TwoFactorProviderType } from "../../enums/two-factor-provider-type";
 
 export class AuthResult {
   captchaSiteKey = "";

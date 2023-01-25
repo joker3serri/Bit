@@ -1,16 +1,16 @@
 import { Observable } from "rxjs";
 
+import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
+import { AuthRequestPushNotification } from "../../models/response/notification.response";
+import { AuthenticationStatus } from "../enums/authentication-status";
+import { AuthResult } from "../models/domain/auth-result";
 import {
   UserApiLogInCredentials,
   PasswordLogInCredentials,
   SsoLogInCredentials,
   PasswordlessLogInCredentials,
-} from "../../models/domain/log-in-credentials";
-import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
-import { TokenTwoFactorRequest } from "../../models/request/identity-token/token-two-factor.request";
-import { AuthRequestPushNotification } from "../../models/response/notification.response";
-import { AuthenticationStatus } from "../enums/authenticationStatus";
-import { AuthResult } from "../models/domain/auth-result";
+} from "../models/domain/log-in-credentials";
+import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
 
 export abstract class AuthService {
   masterPasswordHash: string;

@@ -9,12 +9,12 @@ import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { Utils } from "../../misc/utils";
-import { SsoLogInCredentials } from "../../models/domain/log-in-credentials";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/twoFactor.service";
+import { SsoLogInCredentials } from "../models/domain/log-in-credentials";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
-import { SsoLogInStrategy } from "./ssoLogin.strategy";
+import { SsoLogInStrategy } from "./sso-login.strategy";
 
 describe("SsoLogInStrategy", () => {
   let cryptoService: MockProxy<CryptoService>;

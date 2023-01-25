@@ -5,10 +5,10 @@ import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { EmergencyAccessViewResponse } from "@bitwarden/common/auth/models/response/emergency-access.response";
 import { CipherData } from "@bitwarden/common/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
-import { EmergencyAccessViewResponse } from "@bitwarden/common/models/response/emergency-access.response";
 import { CipherView } from "@bitwarden/common/models/view/cipher.view";
 
 import { EmergencyAccessAttachmentsComponent } from "./emergency-access-attachments.component";

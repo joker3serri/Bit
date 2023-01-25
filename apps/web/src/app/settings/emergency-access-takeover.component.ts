@@ -11,11 +11,11 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { EmergencyAccessPasswordRequest } from "@bitwarden/common/auth/models/request/emergency-access-password.request";
 import { KdfType } from "@bitwarden/common/enums/kdfType";
 import { PolicyData } from "@bitwarden/common/models/data/policy.data";
 import { Policy } from "@bitwarden/common/models/domain/policy";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
-import { EmergencyAccessPasswordRequest } from "@bitwarden/common/models/request/emergency-access-password.request";
 import { PolicyResponse } from "@bitwarden/common/models/response/policy.response";
 
 @Component({

@@ -17,18 +17,18 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/twoFactor.service";
-import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/twoFactorProviderType";
+import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
-import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
-import { Utils } from "@bitwarden/common/misc/utils";
 import {
   UserApiLogInCredentials,
   PasswordLogInCredentials,
   SsoLogInCredentials,
-} from "@bitwarden/common/models/domain/log-in-credentials";
-import { TokenTwoFactorRequest } from "@bitwarden/common/models/request/identity-token/token-two-factor.request";
-import { TwoFactorEmailRequest } from "@bitwarden/common/models/request/two-factor-email.request";
-import { UpdateTempPasswordRequest } from "@bitwarden/common/models/request/update-temp-password.request";
+} from "@bitwarden/common/auth/models/domain/log-in-credentials";
+import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
+import { TwoFactorEmailRequest } from "@bitwarden/common/auth/models/request/two-factor-email.request";
+import { UpdateTempPasswordRequest } from "@bitwarden/common/auth/models/request/update-temp-password.request";
+import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
+import { Utils } from "@bitwarden/common/misc/utils";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
 import { Response } from "../../models/response";

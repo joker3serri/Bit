@@ -1,7 +1,7 @@
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authenticationStatus";
+import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 
 import { BrowserApi } from "../browser/browserApi";

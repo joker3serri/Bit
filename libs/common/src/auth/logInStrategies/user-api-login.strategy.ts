@@ -9,9 +9,9 @@ import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { TokenService } from "../../auth/abstractions/token.service";
 import { TwoFactorService } from "../../auth/abstractions/twoFactor.service";
-import { UserApiLogInCredentials } from "../../models/domain/log-in-credentials";
-import { UserApiTokenRequest } from "../../models/request/identity-token/user-api-token.request";
-import { IdentityTokenResponse } from "../../models/response/identity-token.response";
+import { UserApiLogInCredentials } from "../models/domain/log-in-credentials";
+import { UserApiTokenRequest } from "../models/request/identity-token/user-api-token.request";
+import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
 import { LogInStrategy } from "./logIn.strategy";
 

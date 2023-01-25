@@ -11,7 +11,7 @@ import { MessagingService } from "@bitwarden/common/abstractions/messaging.servi
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { OrganizationApiKeyType } from "@bitwarden/common/auth/enums/organizationApiKeyType";
+import { OrganizationApiKeyType } from "@bitwarden/common/auth/enums/organization-api-key-type";
 import { OrganizationConnectionType } from "@bitwarden/common/enums/organizationConnectionType";
 import { PlanType } from "@bitwarden/common/enums/planType";
 import { BillingSyncConfigApi } from "@bitwarden/common/models/api/billing-sync-config.api";

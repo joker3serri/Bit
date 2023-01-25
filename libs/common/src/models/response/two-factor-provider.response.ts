@@ -1,4 +1,4 @@
-import { TwoFactorProviderType } from "../../auth/enums/twoFactorProviderType";
+import { TwoFactorProviderType } from "../../auth/enums/two-factor-provider-type";
 
 import { BaseResponse } from "./base.response";
 

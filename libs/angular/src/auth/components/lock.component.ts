@@ -14,12 +14,12 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
+import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
 import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
-import { SecretVerificationRequest } from "@bitwarden/common/models/request/secret-verification.request";
 
 @Directive()
 export class LockComponent implements OnInit, OnDestroy {
