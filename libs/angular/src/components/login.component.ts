@@ -32,7 +32,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
   onSuccessfulLoginNavigate: () => Promise<any>;
   onSuccessfulLoginTwoFactorNavigate: () => Promise<any>;
   onSuccessfulLoginForceResetNavigate: () => Promise<any>;
-  private selfHosted = false;
+  selfHosted = false;
   showLoginWithDevice: boolean;
   validatedEmail = false;
   paramEmailSet = false;
@@ -271,7 +271,7 @@ export class LoginComponent extends CaptchaProtectedComponent implements OnInit 
     return `${error.controlName}${name}`;
   }
 
-  private async getLoginWithDevice(email: string) {
+  async getLoginWithDevice(email: string) {
     try {
       const deviceIdentifier = await this.appIdService.getAppId();
       const res = await this.apiService.getKnownDevice(email, deviceIdentifier);
