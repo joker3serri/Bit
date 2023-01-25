@@ -23,7 +23,7 @@ import {
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { VaultFilterService } from "../../services/vaultFilter.service";
+import { VaultFilterService } from "../../../../services/vaultFilter.service";
 
 @Component({
   selector: "app-vault-select",

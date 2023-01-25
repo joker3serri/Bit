@@ -20,8 +20,8 @@ import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/pa
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 
-import { BrowserApi } from "../../browser/browserApi";
-import { PopupUtilsService } from "../services/popup-utils.service";
+import { BrowserApi } from "../../../../browser/browserApi";
+import { PopupUtilsService } from "../../../../popup/services/popup-utils.service";
 
 @Component({
   selector: "app-vault-add-edit",

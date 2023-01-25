@@ -19,11 +19,11 @@ import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
-import { BrowserApi } from "../../browser/browserApi";
-import { BrowserComponentState } from "../../models/browserComponentState";
-import { BrowserStateService } from "../../services/abstractions/browser-state.service";
-import { VaultFilterService } from "../../services/vaultFilter.service";
-import { PopupUtilsService } from "../services/popup-utils.service";
+import { BrowserApi } from "../../../../browser/browserApi";
+import { BrowserComponentState } from "../../../../models/browserComponentState";
+import { PopupUtilsService } from "../../../../popup/services/popup-utils.service";
+import { BrowserStateService } from "../../../../services/abstractions/browser-state.service";
+import { VaultFilterService } from "../../../../services/vaultFilter.service";
 
 const ComponentId = "VaultItemsComponent";
 
