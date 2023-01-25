@@ -113,7 +113,11 @@
               }
           }
 
-          // get all the options for a "select" element
+          /**
+           * If `el` is a `<select>` element, return an array of all of the options' `text` properties.
+           * @param {HTMLElement} el 
+           * @returns {string[]} An array of options for the given `<select>` element
+           */
           function getSelectElementOptions(el) {
               if (!el.options) {
                   return null;
@@ -132,34 +136,51 @@
               };
           }
 
-          // get the top label
+          /**
+           * If `el` is in a data table, get the label in the row directly above it
+           * @param {HTMLElement} el 
+           * @returns {string} A string containing the label, or null if not found
+           */
           function getLabelTop(el) {
               var parent;
+
+              // Traverse up the DOM until we reach either the top or the table data element containing our field
               for (el = el.parentElement || el.parentNode; el && 'td' != toLowerString(el.tagName);) {
                   el = el.parentElement || el.parentNode;
               }
 
+              // If we reached the top, return null
               if (!el || void 0 === el) {
                   return null;
               }
 
+              // Establish the parent of the table and make sure it's a table row
               parent = el.parentElement || el.parentNode;
               if ('tr' != parent.tagName.toLowerCase()) {
                   return null;
               }
 
+              // Get the previous sibling of the table row and make sure it's a table row
               parent = parent.previousElementSibling;
               if (!parent || 'tr' != (parent.tagName + '').toLowerCase() ||
                   parent.cells && el.cellIndex >= parent.cells.length) {
                   return null;
               }
 
+              // Parent is established as the row above the table data element containing our field
+              // Now let's traverse over to the cell in the same column as our field
               el = parent.cells[el.cellIndex];
+
+              // Get the contents of this label
               var elText = el.textContent || el.innerText;
               return elText = cleanText(elText);
           }
 
-          // get all the tags for a given label
+          /**
+           * Get the contents of the elements that are labels for `el`
+           * @param {HTMLElement} el 
+           * @returns {string} A string containing all of the `innerText` or `textContent` values for all elements that are labels for `el`
+           */
           function getLabelTag(el) {
               var docLabel,
                   theLabels = [];
@@ -420,13 +441,24 @@
           return sVal;
       }
 
-      // check the node type and adjust the array accordingly
+      /**
+       * If `el` is a text node, add the node's text to `arr`.
+       * If `el` is an element node, add the element's `textContent or `innerText` to `arr`.
+       * @param {string[]} arr An array of `textContent` or `innerText` values 
+       * @param {HTMLElement} el The element to push to the array
+       */
       function checkNodeType(arr, el) {
           var theText = '';
           3 === el.nodeType ? theText = el.nodeValue : 1 === el.nodeType && (theText = el.textContent || el.innerText);
           (theText = cleanText(theText)) && arr.push(theText);
       }
 
+      /**
+       * Check if `el` is a type that indicates the transition to a new section of the page.
+       * If so, this indicates that we should not use `el` or its children for getting autofill context for the previous element.
+       * @param {HTMLElement} el The element to check
+       * @returns {boolean} Returns `true` if `el` is an HTML element from a known set and `false` otherwise
+       */
       function isKnownTag(el) {
           if (el && void 0 !== el) {
               var tags = 'select option input form textarea button table iframe body head script'.split(' ');
@@ -444,6 +476,12 @@
           }
       }
 
+      /**
+       * Recursively gather all of the text values from the elements preceding `el` in the DOM
+       * @param {HTMLElement} el 
+       * @param {string[]} arr An array of `textContent` or `innerText` values
+       * @param {number} steps The number of steps to take up the DOM tree 
+       */
       function shiftForLeftLabel(el, arr, steps) {
           var sib;
           for (steps || (steps = 0); el && el.previousSibling;) {
@@ -561,7 +599,12 @@
           }
       }
 
-      // get all the form elements that we care about
+      /**
+       * Query `theDoc` for form elements that we can use for autofill, ranked by importance and limited by `limit`
+       * @param {Document} theDoc The Document to query
+       * @param {number} limit The maximum number of elements to return
+       * @returns An array of HTMLElements
+       */
       function getFormElements(theDoc, limit) {
           // START MODIFICATION
           var els = [];
