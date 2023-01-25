@@ -1,6 +1,5 @@
 import { firstValueFrom } from "rxjs";
 
-import { AuthService } from "../../abstractions/auth.service";
 import { CipherService } from "../../abstractions/cipher.service";
 import { CollectionService } from "../../abstractions/collection.service";
 import { CryptoService } from "../../abstractions/crypto.service";
@@ -12,6 +11,7 @@ import { SearchService } from "../../abstractions/search.service";
 import { StateService } from "../../abstractions/state.service";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "../../abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "../../abstractions/vaultTimeout/vaultTimeoutSettings.service";
+import { AuthService } from "../../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../../enums/authenticationStatus";
 
 export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {

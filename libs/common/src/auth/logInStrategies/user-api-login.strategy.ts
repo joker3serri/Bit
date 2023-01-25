@@ -1,22 +1,22 @@
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../abstractions/appId.service";
 import { CryptoService } from "../../abstractions/crypto.service";
+import { EnvironmentService } from "../../abstractions/environment.service";
 import { KeyConnectorService } from "../../abstractions/keyConnector.service";
 import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
-import { TokenService } from "../../abstractions/token.service";
-import { TwoFactorService } from "../../abstractions/twoFactor.service";
-import { SsoLogInCredentials } from "../../models/domain/log-in-credentials";
-import { SsoTokenRequest } from "../../models/request/identity-token/sso-token.request";
+import { TokenService } from "../../auth/abstractions/token.service";
+import { TwoFactorService } from "../../auth/abstractions/twoFactor.service";
+import { UserApiLogInCredentials } from "../../models/domain/log-in-credentials";
+import { UserApiTokenRequest } from "../../models/request/identity-token/user-api-token.request";
 import { IdentityTokenResponse } from "../../models/response/identity-token.response";
 
 import { LogInStrategy } from "./logIn.strategy";
 
-export class SsoLogInStrategy extends LogInStrategy {
-  tokenRequest: SsoTokenRequest;
-  orgId: string;
+export class UserApiLogInStrategy extends LogInStrategy {
+  tokenRequest: UserApiTokenRequest;
 
   constructor(
     cryptoService: CryptoService,
@@ -28,6 +28,7 @@ export class SsoLogInStrategy extends LogInStrategy {
     logService: LogService,
     stateService: StateService,
     twoFactorService: TwoFactorService,
+    private environmentService: EnvironmentService,
     private keyConnectorService: KeyConnectorService
   ) {
     super(
@@ -44,27 +45,26 @@ export class SsoLogInStrategy extends LogInStrategy {
   }
 
   async setUserKey(tokenResponse: IdentityTokenResponse) {
-    const newSsoUser = tokenResponse.key == null;
-
-    if (tokenResponse.keyConnectorUrl != null) {
-      if (!newSsoUser) {
-        await this.keyConnectorService.getAndSetKey(tokenResponse.keyConnectorUrl);
-      } else {
-        await this.keyConnectorService.convertNewSsoUserToKeyConnector(tokenResponse, this.orgId);
-      }
+    if (tokenResponse.apiUseKeyConnector) {
+      const keyConnectorUrl = this.environmentService.getKeyConnectorUrl();
+      await this.keyConnectorService.getAndSetKey(keyConnectorUrl);
     }
   }
 
-  async logIn(credentials: SsoLogInCredentials) {
-    this.orgId = credentials.orgId;
-    this.tokenRequest = new SsoTokenRequest(
-      credentials.code,
-      credentials.codeVerifier,
-      credentials.redirectUrl,
-      await this.buildTwoFactor(credentials.twoFactor),
+  async logIn(credentials: UserApiLogInCredentials) {
+    this.tokenRequest = new UserApiTokenRequest(
+      credentials.clientId,
+      credentials.clientSecret,
+      await this.buildTwoFactor(),
       await this.buildDeviceRequest()
     );
 
     return this.startLogIn();
+  }
+
+  protected async saveAccountInformation(tokenResponse: IdentityTokenResponse) {
+    await super.saveAccountInformation(tokenResponse);
+    await this.stateService.setApiKeyClientId(this.tokenRequest.clientId);
+    await this.stateService.setApiKeyClientSecret(this.tokenRequest.clientSecret);
   }
 }

@@ -2,7 +2,7 @@ import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service
 import { AppIdService } from "../abstractions/appId.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
-import { TokenService } from "../abstractions/token.service";
+import { TokenService } from "../auth/abstractions/token.service";
 import { DeviceType } from "../enums/deviceType";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { Utils } from "../misc/utils";

@@ -5,8 +5,6 @@ import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
-import { TokenService } from "../../abstractions/token.service";
-import { TwoFactorService } from "../../abstractions/twoFactor.service";
 import { TwoFactorProviderType } from "../../enums/twoFactorProviderType";
 import { Account, AccountProfile, AccountTokens } from "../../models/domain/account";
 import { AuthResult } from "../../models/domain/auth-result";
@@ -25,6 +23,8 @@ import { KeysRequest } from "../../models/request/keys.request";
 import { IdentityCaptchaResponse } from "../../models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "../../models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../../models/response/identity-two-factor.response";
+import { TokenService } from "../abstractions/token.service";
+import { TwoFactorService } from "../abstractions/twoFactor.service";
 
 export abstract class LogInStrategy {
   protected abstract tokenRequest: UserApiTokenRequest | PasswordTokenRequest | SsoTokenRequest;

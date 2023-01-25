@@ -9,13 +9,13 @@ import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
-import { TokenService } from "../../abstractions/token.service";
-import { TwoFactorService } from "../../abstractions/twoFactor.service";
-import { UserApiLogInStrategy } from "../../misc/logInStrategies/user-api-login.strategy";
 import { Utils } from "../../misc/utils";
 import { UserApiLogInCredentials } from "../../models/domain/log-in-credentials";
+import { TokenService } from "../abstractions/token.service";
+import { TwoFactorService } from "../abstractions/twoFactor.service";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
+import { UserApiLogInStrategy } from "./user-api-login.strategy";
 
 describe("UserApiLogInStrategy", () => {
   let cryptoService: MockProxy<CryptoService>;

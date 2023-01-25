@@ -1,10 +1,10 @@
 import { firstValueFrom } from "rxjs";
 
-import { AuthService } from "../abstractions/auth.service";
 import { MessagingService } from "../abstractions/messaging.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { StateService } from "../abstractions/state.service";
 import { SystemService as SystemServiceAbstraction } from "../abstractions/system.service";
+import { AuthService } from "../auth/abstractions/auth.service";
 import { AuthenticationStatus } from "../enums/authenticationStatus";
 import { Utils } from "../misc/utils";
 

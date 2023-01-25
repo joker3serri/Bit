@@ -2,16 +2,12 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../abstractions/appId.service";
-import { AuthService } from "../../abstractions/auth.service";
 import { CryptoService } from "../../abstractions/crypto.service";
 import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
-import { TokenService } from "../../abstractions/token.service";
-import { TwoFactorService } from "../../abstractions/twoFactor.service";
 import { TwoFactorProviderType } from "../../enums/twoFactorProviderType";
-import { PasswordLogInStrategy } from "../../misc/logInStrategies/passwordLogin.strategy";
 import { Utils } from "../../misc/utils";
 import { Account, AccountProfile, AccountTokens } from "../../models/domain/account";
 import { AuthResult } from "../../models/domain/auth-result";
@@ -22,6 +18,11 @@ import { TokenTwoFactorRequest } from "../../models/request/identity-token/token
 import { IdentityCaptchaResponse } from "../../models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "../../models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../../models/response/identity-two-factor.response";
+import { AuthService } from "../abstractions/auth.service";
+import { TokenService } from "../abstractions/token.service";
+import { TwoFactorService } from "../abstractions/twoFactor.service";
+
+import { PasswordLogInStrategy } from "./passwordLogin.strategy";
 
 const email = "hello@world.com";
 const masterPassword = "password";

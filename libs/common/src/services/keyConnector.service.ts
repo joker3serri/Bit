@@ -5,7 +5,7 @@ import { KeyConnectorService as KeyConnectorServiceAbstraction } from "../abstra
 import { LogService } from "../abstractions/log.service";
 import { OrganizationService } from "../abstractions/organization/organization.service.abstraction";
 import { StateService } from "../abstractions/state.service";
-import { TokenService } from "../abstractions/token.service";
+import { TokenService } from "../auth/abstractions/token.service";
 import { OrganizationUserType } from "../enums/organizationUserType";
 import { Utils } from "../misc/utils";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
