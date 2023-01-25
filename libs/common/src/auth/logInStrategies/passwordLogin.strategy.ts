@@ -8,12 +8,12 @@ import { StateService } from "../../abstractions/state.service";
 import { TokenService } from "../../auth/abstractions/token.service";
 import { TwoFactorService } from "../../auth/abstractions/twoFactor.service";
 import { HashPurpose } from "../../enums/hashPurpose";
-import { AuthResult } from "../../models/domain/auth-result";
 import { PasswordLogInCredentials } from "../../models/domain/log-in-credentials";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { PasswordTokenRequest } from "../../models/request/identity-token/password-token.request";
 import { TokenTwoFactorRequest } from "../../models/request/identity-token/token-two-factor.request";
 import { AuthService } from "../abstractions/auth.service";
+import { AuthResult } from "../models/domain/auth-result";
 
 import { LogInStrategy } from "./logIn.strategy";
 

@@ -1,6 +1,5 @@
 import { Observable } from "rxjs";
 
-import { AuthResult } from "../../models/domain/auth-result";
 import {
   UserApiLogInCredentials,
   PasswordLogInCredentials,
@@ -11,6 +10,7 @@ import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { TokenTwoFactorRequest } from "../../models/request/identity-token/token-two-factor.request";
 import { AuthRequestPushNotification } from "../../models/response/notification.response";
 import { AuthenticationStatus } from "../enums/authenticationStatus";
+import { AuthResult } from "../models/domain/auth-result";
 
 export abstract class AuthService {
   masterPasswordHash: string;

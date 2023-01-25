@@ -1,5 +1,6 @@
 import { Observable } from "rxjs";
 
+import { EnvironmentUrls } from "../auth/models/domain/environment-urls";
 import { KdfType } from "../enums/kdfType";
 import { ThemeType } from "../enums/themeType";
 import { UriMatchType } from "../enums/uriMatchType";
@@ -16,7 +17,6 @@ import { SendData } from "../models/data/send.data";
 import { ServerConfigData } from "../models/data/server-config.data";
 import { Account, AccountSettingsSettings } from "../models/domain/account";
 import { EncString } from "../models/domain/enc-string";
-import { EnvironmentUrls } from "../models/domain/environment-urls";
 import { GeneratedPasswordHistory } from "../models/domain/generated-password-history";
 import { Policy } from "../models/domain/policy";
 import { StorageOptions } from "../models/domain/storage-options";

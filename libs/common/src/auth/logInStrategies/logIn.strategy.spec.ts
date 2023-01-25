@@ -9,7 +9,6 @@ import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { Utils } from "../../misc/utils";
 import { Account, AccountProfile, AccountTokens } from "../../models/domain/account";
-import { AuthResult } from "../../models/domain/auth-result";
 import { EncString } from "../../models/domain/enc-string";
 import { PasswordLogInCredentials } from "../../models/domain/log-in-credentials";
 import { PasswordTokenRequest } from "../../models/request/identity-token/password-token.request";
@@ -20,6 +19,7 @@ import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/twoFactor.service";
 import { TwoFactorProviderType } from "../enums/twoFactorProviderType";
+import { AuthResult } from "../models/domain/auth-result";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 
 import { PasswordLogInStrategy } from "./passwordLogin.strategy";

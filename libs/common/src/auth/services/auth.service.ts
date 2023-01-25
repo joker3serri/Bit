@@ -12,7 +12,6 @@ import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { KdfType } from "../../enums/kdfType";
 import { KeySuffixOptions } from "../../enums/keySuffixOptions";
-import { AuthResult } from "../../models/domain/auth-result";
 import {
   UserApiLogInCredentials,
   PasswordLogInCredentials,
@@ -33,6 +32,7 @@ import { PasswordLogInStrategy } from "../logInStrategies/passwordLogin.strategy
 import { PasswordlessLogInStrategy } from "../logInStrategies/passwordlessLogin.strategy";
 import { SsoLogInStrategy } from "../logInStrategies/ssoLogin.strategy";
 import { UserApiLogInStrategy } from "../logInStrategies/user-api-login.strategy";
+import { AuthResult } from "../models/domain/auth-result";
 
 const sessionTimeoutLength = 2 * 60 * 1000; // 2 minutes
 

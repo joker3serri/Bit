@@ -6,7 +6,6 @@ import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { Account, AccountProfile, AccountTokens } from "../../models/domain/account";
-import { AuthResult } from "../../models/domain/auth-result";
 import {
   UserApiLogInCredentials,
   PasswordLogInCredentials,
@@ -24,6 +23,7 @@ import { IdentityTokenResponse } from "../../models/response/identity-token.resp
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/twoFactor.service";
 import { TwoFactorProviderType } from "../enums/twoFactorProviderType";
+import { AuthResult } from "../models/domain/auth-result";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 
 export abstract class LogInStrategy {

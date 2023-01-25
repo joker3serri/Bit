@@ -18,9 +18,9 @@ import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.ab
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/twoFactor.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/twoFactorProviderType";
+import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { AuthResult } from "@bitwarden/common/models/domain/auth-result";
 import {
   UserApiLogInCredentials,
   PasswordLogInCredentials,
