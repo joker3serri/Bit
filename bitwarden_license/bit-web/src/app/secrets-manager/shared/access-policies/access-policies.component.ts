@@ -25,7 +25,6 @@ export class AccessPoliciesComponent implements OnInit {
   @Input() tableType: "projectPeople" | "projectServiceAccounts";
   @Input() columnTitle: string;
   @Input() emptyMessage: string;
-  @Input() projectAccessPolicies: ProjectAccessPoliciesView;
   @Input() projectAccessPolicies$: Observable<ProjectAccessPoliciesView>;
 
   constructor(
