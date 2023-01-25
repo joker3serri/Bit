@@ -159,7 +159,7 @@ export class SMImportComponent implements OnInit, OnDestroy {
       text: this.i18nService.t("importErrorDesc"),
       showConfirmButton: true,
       confirmButtonText: this.i18nService.t("ok"),
-      onOpen: (popupEl) => {
+      onOpen: (popupEl: any) => {
         popupEl.querySelector(".swal2-textarea").scrollTo(0, 0);
       },
     });

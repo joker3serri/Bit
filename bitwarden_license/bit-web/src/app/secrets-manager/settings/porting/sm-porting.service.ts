@@ -5,8 +5,6 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { ImportError } from "@bitwarden/common/importers/import-error";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
-//import { ImportResult } from "@bitwarden/common/models/domain/import-result";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 
 import { SMExport } from "../../models/porting/sm-export";
 import { SMExportProject } from "../../models/porting/sm-export-project";
@@ -43,18 +41,16 @@ export class SMPortingService {
   }
 
   async import(organizationId: string, request: string): Promise<ImportError> {
-    //const requestBody = this.encryptImport(organizationId, JSON.parse(request));
-    //const result = new ImportResult();
+    const requestObject = JSON.parse(request);
+    const requestBody = await this.encryptImport(organizationId, requestObject);
 
-    // const r = await this.apiService.send(
-    //   "POST",
-    //   "/sm/" + organizationId + "/import",
-    //   requestBody,
-    //   true,
-    //   true
-    // );
-
-    // TODO: finish implementing this
+    await this.apiService.send(
+      "POST",
+      "/sm/" + organizationId + "/import",
+      requestBody,
+      true,
+      true
+    );
 
     return null;
   }
@@ -63,7 +59,7 @@ export class SMPortingService {
     const encryptedImport = new SMImportRequest();
 
     try {
-      const orgKey = await this.getOrganizationKey(organizationId);
+      const orgKey = await this.cryptoService.getOrgKey(organizationId);
       encryptedImport.projects = [];
       encryptedImport.secrets = [];
 
@@ -103,7 +99,7 @@ export class SMPortingService {
     organizationId: string,
     exportData: SMExportResponse
   ): Promise<SMExport> {
-    const orgKey = await this.getOrganizationKey(organizationId);
+    const orgKey = await this.cryptoService.getOrgKey(organizationId);
     const decryptedExport = new SMExport();
     decryptedExport.projects = [];
     decryptedExport.secrets = [];
@@ -135,9 +131,5 @@ export class SMPortingService {
     );
 
     return decryptedExport;
-  }
-
-  private async getOrganizationKey(organizationId: string): Promise<SymmetricCryptoKey> {
-    return await this.cryptoService.getOrgKey(organizationId);
   }
 }
