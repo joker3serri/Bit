@@ -1,5 +1,5 @@
-import AutofillField from "./autofillField";
-import AutofillForm from "./autofillForm";
+import AutofillField from "./autofill-field";
+import AutofillForm from "./autofill-form";
 
 export default class AutofillPageDetails {
   documentUUID: string;

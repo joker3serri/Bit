@@ -1,6 +1,6 @@
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-import AutofillPageDetails from "../models/autofillPageDetails";
+import AutofillPageDetails from "../models/autofill-page-details";
 import { AutofillService } from "../services/abstractions/autofill.service";
 
 export class AutofillTabCommand {

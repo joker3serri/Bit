@@ -20,7 +20,7 @@
       "js": [
         "autofill/content/autofill.js",
         "autofill/content/autofiller.js",
-        "autofill/content/notificationBar.js",
+        "autofill/content/notification-bar.js",
         "autofill/content/contextMenuHandler.js"
       ],
       "matches": ["http://*/*", "https://*/*", "file:///*"],

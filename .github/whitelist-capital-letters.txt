@@ -171,16 +171,10 @@
 ./apps/browser/src/background/models/lockedVaultPendingNotificationsItem.ts
 ./apps/browser/src/background/webRequest.background.ts
 ./apps/browser/src/popup/services/debounceNavigationService.ts
-./apps/browser/src/content/contextMenuHandler.ts
-./apps/browser/src/content/notificationBar.ts
 ./apps/browser/src/models/browserComponentState.ts
-./apps/browser/src/models/autofillScript.ts
 ./apps/browser/src/models/browserSendComponentState.ts
 ./apps/browser/src/models/browserGroupingsComponentState.ts
 ./apps/browser/src/models/biometricErrors.ts
-./apps/browser/src/models/autofillPageDetails.ts
-./apps/browser/src/models/autofillForm.ts
-./apps/browser/src/models/autofillField.ts
 ./apps/browser/src/browser/safariApp.ts
 ./apps/browser/src/browser/browserApi.ts
 ./apps/browser/src/safari/desktop/ViewController.swift

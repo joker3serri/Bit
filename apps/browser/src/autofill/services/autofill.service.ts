@@ -17,9 +17,9 @@ import {
   CreditCardAutoFillConstants,
   IdentityAutoFillConstants,
 } from "../../services/autofillConstants";
-import AutofillField from "../models/autofillField";
-import AutofillPageDetails from "../models/autofillPageDetails";
-import AutofillScript from "../models/autofillScript";
+import AutofillField from "../models/autofill-field";
+import AutofillPageDetails from "../models/autofill-page-details";
+import AutofillScript from "../models/autofill-script";
 
 import {
   AutoFillOptions,
