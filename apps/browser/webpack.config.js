@@ -136,7 +136,7 @@ const mainConfig = {
   entry: {
     "popup/polyfills": "./src/popup/polyfills.ts",
     "popup/main": "./src/popup/main.ts",
-    "content/autofill": "./src/content/autofill.js",
+    "content/autofill": "./src/autofill/content/autofill.js",
     "content/autofiller": "./src/autofill/content/autofiller.ts",
     "content/notificationBar": "./src/autofill/content/notificationBar.ts",
     "content/contextMenuHandler": "./src/autofill/content/contextMenuHandler.ts",
