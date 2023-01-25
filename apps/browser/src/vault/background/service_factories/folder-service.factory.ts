@@ -1,15 +1,25 @@
 import { FolderService as AbstractFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 
-import { BrowserFolderService } from "../../services/browser-folder.service";
-
-import { cipherServiceFactory, CipherServiceInitOptions } from "./cipher-service.factory";
-import { cryptoServiceFactory, CryptoServiceInitOptions } from "./crypto-service.factory";
-import { CachedServices, factory, FactoryOptions } from "./factory-options";
-import { i18nServiceFactory, I18nServiceInitOptions } from "./i18n-service.factory";
+import {
+  cryptoServiceFactory,
+  CryptoServiceInitOptions,
+} from "../../../background/service_factories/crypto-service.factory";
+import {
+  CachedServices,
+  factory,
+  FactoryOptions,
+} from "../../../background/service_factories/factory-options";
+import {
+  i18nServiceFactory,
+  I18nServiceInitOptions,
+} from "../../../background/service_factories/i18n-service.factory";
 import {
   stateServiceFactory as stateServiceFactory,
   StateServiceInitOptions,
-} from "./state-service.factory";
+} from "../../../background/service_factories/state-service.factory";
+import { BrowserFolderService } from "../../../services/browser-folder.service";
+
+import { cipherServiceFactory, CipherServiceInitOptions } from "./cipher-service.factory";
 
 type FolderServiceFactoryOptions = FactoryOptions;
 

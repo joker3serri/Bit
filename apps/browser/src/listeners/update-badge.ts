@@ -8,15 +8,15 @@ import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { ContainerService } from "@bitwarden/common/services/container.service";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 
-import IconDetails from "../background/models/iconDetails";
 import { authServiceFactory } from "../background/service_factories/auth-service.factory";
-import { cipherServiceFactory } from "../background/service_factories/cipher-service.factory";
 import { searchServiceFactory } from "../background/service_factories/search-service.factory";
 import { stateServiceFactory } from "../background/service_factories/state-service.factory";
 import { BrowserApi } from "../browser/browserApi";
 import { Account } from "../models/account";
 import { BrowserStateService } from "../services/abstractions/browser-state.service";
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
+import IconDetails from "../vault/background/models/iconDetails";
+import { cipherServiceFactory } from "../vault/background/service_factories/cipher-service.factory";
 
 export type BadgeOptions = {
   tab?: chrome.tabs.Tab;

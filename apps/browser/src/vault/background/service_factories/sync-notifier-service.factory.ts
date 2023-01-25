@@ -1,7 +1,11 @@
 import { SyncNotifierService as AbstractSyncNotifierService } from "@bitwarden/common/vault/abstractions/sync/sync-notifier.service.abstraction";
 import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-notifier.service";
 
-import { FactoryOptions, CachedServices, factory } from "./factory-options";
+import {
+  FactoryOptions,
+  CachedServices,
+  factory,
+} from "../../../background/service_factories/factory-options";
 
 type SyncNotifierServiceFactoryOptions = FactoryOptions;
 

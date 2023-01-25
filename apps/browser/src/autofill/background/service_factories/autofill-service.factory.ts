@@ -1,8 +1,4 @@
 import {
-  cipherServiceFactory,
-  CipherServiceInitOptions,
-} from "../../../background/service_factories/cipher-service.factory";
-import {
   EventCollectionServiceInitOptions,
   eventCollectionServiceFactory,
 } from "../../../background/service_factories/event-collection-service.factory";
@@ -23,6 +19,10 @@ import {
   totpServiceFactory,
   TotpServiceInitOptions,
 } from "../../../background/service_factories/totp-service.factory";
+import {
+  cipherServiceFactory,
+  CipherServiceInitOptions,
+} from "../../../vault/background/service_factories/cipher-service.factory";
 import { AutofillService as AbstractAutoFillService } from "../../services/abstractions/autofill.service";
 import AutofillService from "../../services/autofill.service";
 

@@ -2,18 +2,43 @@ import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { CipherService as AbstractCipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 
-import { apiServiceFactory, ApiServiceInitOptions } from "./api-service.factory";
-import { cryptoServiceFactory, CryptoServiceInitOptions } from "./crypto-service.factory";
-import { encryptServiceFactory, EncryptServiceInitOptions } from "./encrypt-service.factory";
-import { CachedServices, factory, FactoryOptions } from "./factory-options";
+import {
+  apiServiceFactory,
+  ApiServiceInitOptions,
+} from "../../../background/service_factories/api-service.factory";
+import {
+  cryptoServiceFactory,
+  CryptoServiceInitOptions,
+} from "../../../background/service_factories/crypto-service.factory";
+import {
+  encryptServiceFactory,
+  EncryptServiceInitOptions,
+} from "../../../background/service_factories/encrypt-service.factory";
+import {
+  CachedServices,
+  factory,
+  FactoryOptions,
+} from "../../../background/service_factories/factory-options";
 import {
   FileUploadServiceInitOptions,
   fileUploadServiceFactory,
-} from "./file-upload-service.factory";
-import { i18nServiceFactory, I18nServiceInitOptions } from "./i18n-service.factory";
-import { logServiceFactory, LogServiceInitOptions } from "./log-service.factory";
-import { SettingsServiceInitOptions, settingsServiceFactory } from "./settings-service.factory";
-import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
+} from "../../../background/service_factories/file-upload-service.factory";
+import {
+  i18nServiceFactory,
+  I18nServiceInitOptions,
+} from "../../../background/service_factories/i18n-service.factory";
+import {
+  logServiceFactory,
+  LogServiceInitOptions,
+} from "../../../background/service_factories/log-service.factory";
+import {
+  SettingsServiceInitOptions,
+  settingsServiceFactory,
+} from "../../../background/service_factories/settings-service.factory";
+import {
+  stateServiceFactory,
+  StateServiceInitOptions,
+} from "../../../background/service_factories/state-service.factory";
 
 type CipherServiceFactoryOptions = FactoryOptions & {
   cipherServiceOptions?: {

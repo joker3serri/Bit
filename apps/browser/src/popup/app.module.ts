@@ -67,6 +67,10 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
 
+import { ActionButtonsComponent } from "../vault/popup/components/action-buttons.component";
+import { CipherRowComponent } from "../vault/popup/components/cipher-row.component";
+import { PasswordRepromptComponent } from "../vault/popup/components/password-reprompt.component";
+
 import { EnvironmentComponent } from "./accounts/environment.component";
 import { HintComponent } from "./accounts/hint.component";
 import { HomeComponent } from "./accounts/home.component";
@@ -81,9 +85,6 @@ import { TwoFactorComponent } from "./accounts/two-factor.component";
 import { UpdateTempPasswordComponent } from "./accounts/update-temp-password.component";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { ActionButtonsComponent } from "./components/action-buttons.component";
-import { CipherRowComponent } from "./components/cipher-row.component";
-import { PasswordRepromptComponent } from "./components/password-reprompt.component";
 import { PopOutComponent } from "./components/pop-out.component";
 import { PrivateModeWarningComponent } from "./components/private-mode-warning.component";
 import { SendListComponent } from "./components/send-list.component";

@@ -15,10 +15,6 @@ import {
   authServiceFactory,
   AuthServiceInitOptions,
 } from "../../background/service_factories/auth-service.factory";
-import {
-  cipherServiceFactory,
-  CipherServiceInitOptions,
-} from "../../background/service_factories/cipher-service.factory";
 import { eventCollectionServiceFactory } from "../../background/service_factories/event-collection-service.factory";
 import { CachedServices } from "../../background/service_factories/factory-options";
 import { passwordGenerationServiceFactory } from "../../background/service_factories/password-generation-service.factory";
@@ -27,6 +23,10 @@ import { stateServiceFactory } from "../../background/service_factories/state-se
 import { totpServiceFactory } from "../../background/service_factories/totp-service.factory";
 import { BrowserApi } from "../../browser/browserApi";
 import { Account } from "../../models/account";
+import {
+  cipherServiceFactory,
+  CipherServiceInitOptions,
+} from "../../vault/background/service_factories/cipher-service.factory";
 import { autofillServiceFactory } from "../background/service_factories/autofill-service.factory";
 import { copyToClipboard, GeneratePasswordToClipboardCommand } from "../clipboard";
 import { AutofillTabCommand } from "../commands/autofill-tab-command";

@@ -13,14 +13,14 @@ import {
   authServiceFactory,
   AuthServiceInitOptions,
 } from "../../background/service_factories/auth-service.factory";
-import {
-  cipherServiceFactory,
-  CipherServiceInitOptions,
-} from "../../background/service_factories/cipher-service.factory";
 import { CachedServices } from "../../background/service_factories/factory-options";
 import { searchServiceFactory } from "../../background/service_factories/search-service.factory";
 import { BrowserApi } from "../../browser/browserApi";
 import { Account } from "../../models/account";
+import {
+  cipherServiceFactory,
+  CipherServiceInitOptions,
+} from "../../vault/background/service_factories/cipher-service.factory";
 
 import { MainContextMenuHandler } from "./main-context-menu-handler";
 
