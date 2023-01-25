@@ -28,14 +28,14 @@ import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
-import { invokeMenu, RendererMenuItem } from "../../utils";
-import { SearchBarService } from "../layout/search/search-bar.service";
+import { SearchBarService } from "../../../app/layout/search/search-bar.service";
+import { CollectionsComponent } from "../../../app/vault/collections.component";
+import { GeneratorComponent } from "../../../app/vault/generator.component";
+import { invokeMenu, RendererMenuItem } from "../../../utils";
 
 import { AddEditComponent } from "./add-edit.component";
 import { AttachmentsComponent } from "./attachments.component";
-import { CollectionsComponent } from "./collections.component";
 import { FolderAddEditComponent } from "./folder-add-edit.component";
-import { GeneratorComponent } from "./generator.component";
 import { PasswordHistoryComponent } from "./password-history.component";
 import { ShareComponent } from "./share.component";
 import { VaultFilterComponent } from "./vault-filter/vault-filter.component";

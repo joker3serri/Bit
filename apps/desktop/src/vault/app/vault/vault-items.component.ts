@@ -4,7 +4,7 @@ import { VaultItemsComponent as BaseVaultItemsComponent } from "@bitwarden/angul
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-import { SearchBarService } from "../layout/search/search-bar.service";
+import { SearchBarService } from "../../../app/layout/search/search-bar.service";
 
 @Component({
   selector: "app-vault-items",

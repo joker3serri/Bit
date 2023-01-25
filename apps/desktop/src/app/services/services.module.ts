@@ -51,8 +51,8 @@ import { EncryptedMessageHandlerService } from "../../services/encrypted-message
 import { I18nService } from "../../services/i18n.service";
 import { NativeMessageHandlerService } from "../../services/native-message-handler.service";
 import { NativeMessagingService } from "../../services/native-messaging.service";
-import { PasswordRepromptService } from "../../services/password-reprompt.service";
 import { StateService } from "../../services/state.service";
+import { PasswordRepromptService } from "../../vault/services/password-reprompt.service";
 import { LoginGuard } from "../guards/login.guard";
 import { SearchBarService } from "../layout/search/search-bar.service";
 
