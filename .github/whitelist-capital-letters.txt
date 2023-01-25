@@ -164,7 +164,6 @@
 ./apps/browser/src/background/models/addLoginRuntimeMessage.ts
 ./apps/browser/src/background/models/addChangePasswordQueueMessage.ts
 ./apps/browser/src/background/models/addLoginQueueMessage.ts
-./apps/browser/src/background/models/iconDetails.ts
 ./apps/browser/src/background/models/changePasswordRuntimeMessage.ts
 ./apps/browser/src/background/models/notificationQueueMessage.ts
 ./apps/browser/src/background/models/notificationQueueMessageType.ts
@@ -201,7 +200,6 @@
 ./apps/browser/src/services/abstractions/abstractKeyGeneration.service.ts
 ./apps/browser/src/services/browserLocalStorage.service.ts
 ./apps/browser/src/services/localBackedSessionStorage.service.ts
-./apps/browser/src/services/vaultFilter.service.ts
 ./apps/browser/src/services/browserMessagingPrivateModePopup.service.ts
 ./apps/browser/src/services/browserMessaging.service.ts
 ./apps/browser/src/services/keyGeneration.service.ts

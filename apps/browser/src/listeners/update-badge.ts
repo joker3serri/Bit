@@ -15,7 +15,7 @@ import { BrowserApi } from "../browser/browserApi";
 import { Account } from "../models/account";
 import { BrowserStateService } from "../services/abstractions/browser-state.service";
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
-import IconDetails from "../vault/background/models/iconDetails";
+import IconDetails from "../vault/background/models/icon-details";
 import { cipherServiceFactory } from "../vault/background/service_factories/cipher-service.factory";
 
 export type BadgeOptions = {

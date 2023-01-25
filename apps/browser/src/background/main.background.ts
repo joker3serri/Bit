@@ -114,7 +114,7 @@ import { KeyGenerationService } from "../services/keyGeneration.service";
 import { LocalBackedSessionStorageService } from "../services/localBackedSessionStorage.service";
 import VaultTimeoutService from "../services/vaultTimeout/vaultTimeout.service";
 import { BrowserFolderService } from "../vault/services/browser-folder.service";
-import { VaultFilterService } from "../vault/services/vaultFilter.service";
+import { VaultFilterService } from "../vault/services/vault-filter.service";
 
 import CommandsBackground from "./commands.background";
 import IdleBackground from "./idle.background";

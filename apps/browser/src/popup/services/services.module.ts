@@ -73,7 +73,7 @@ import { BrowserFileDownloadService } from "../../services/browserFileDownloadSe
 import BrowserMessagingService from "../../services/browserMessaging.service";
 import BrowserMessagingPrivateModePopupService from "../../services/browserMessagingPrivateModePopup.service";
 import { PasswordRepromptService } from "../../vault/popup/services/password-reprompt.service";
-import { VaultFilterService } from "../../vault/services/vaultFilter.service";
+import { VaultFilterService } from "../../vault/services/vault-filter.service";
 
 import { DebounceNavigationService } from "./debounceNavigationService";
 import { InitService } from "./init.service";
