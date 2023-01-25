@@ -1,22 +1,22 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
-import { AuthService } from "@bitwarden/common/abstractions/auth.service";
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { TokenService } from "@bitwarden/common/abstractions/token.service";
-import { TwoFactorService } from "@bitwarden/common/abstractions/twoFactor.service";
-import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
-import { PasswordLogInStrategy } from "@bitwarden/common/misc/logInStrategies/passwordLogin.strategy";
-import { Utils } from "@bitwarden/common/misc/utils";
-import { PasswordLogInCredentials } from "@bitwarden/common/models/domain/log-in-credentials";
-import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
+import { ApiService } from "../../abstractions/api.service";
+import { AppIdService } from "../../abstractions/appId.service";
+import { AuthService } from "../../abstractions/auth.service";
+import { CryptoService } from "../../abstractions/crypto.service";
+import { LogService } from "../../abstractions/log.service";
+import { MessagingService } from "../../abstractions/messaging.service";
+import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
+import { StateService } from "../../abstractions/state.service";
+import { TokenService } from "../../abstractions/token.service";
+import { TwoFactorService } from "../../abstractions/twoFactor.service";
+import { HashPurpose } from "../../enums/hashPurpose";
+import { PasswordLogInStrategy } from "../../misc/logInStrategies/passwordLogin.strategy";
+import { Utils } from "../../misc/utils";
+import { PasswordLogInCredentials } from "../../models/domain/log-in-credentials";
+import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 
-import { identityTokenResponseFactory } from "./logIn.strategy.spec";
+import { identityTokenResponseFactory } from "./login.strategy.spec";
 
 const email = "hello@world.com";
 const masterPassword = "password";

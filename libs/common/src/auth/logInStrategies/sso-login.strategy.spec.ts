@@ -1,20 +1,20 @@
 import { mock, MockProxy } from "jest-mock-extended";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AppIdService } from "@bitwarden/common/abstractions/appId.service";
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
-import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { TokenService } from "@bitwarden/common/abstractions/token.service";
-import { TwoFactorService } from "@bitwarden/common/abstractions/twoFactor.service";
-import { SsoLogInStrategy } from "@bitwarden/common/misc/logInStrategies/ssoLogin.strategy";
-import { Utils } from "@bitwarden/common/misc/utils";
-import { SsoLogInCredentials } from "@bitwarden/common/models/domain/log-in-credentials";
+import { ApiService } from "../../abstractions/api.service";
+import { AppIdService } from "../../abstractions/appId.service";
+import { CryptoService } from "../../abstractions/crypto.service";
+import { KeyConnectorService } from "../../abstractions/keyConnector.service";
+import { LogService } from "../../abstractions/log.service";
+import { MessagingService } from "../../abstractions/messaging.service";
+import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
+import { StateService } from "../../abstractions/state.service";
+import { TokenService } from "../../abstractions/token.service";
+import { TwoFactorService } from "../../abstractions/twoFactor.service";
+import { SsoLogInStrategy } from "../../misc/logInStrategies/ssoLogin.strategy";
+import { Utils } from "../../misc/utils";
+import { SsoLogInCredentials } from "../../models/domain/log-in-credentials";
 
-import { identityTokenResponseFactory } from "./logIn.strategy.spec";
+import { identityTokenResponseFactory } from "./login.strategy.spec";
 
 describe("SsoLogInStrategy", () => {
   let cryptoService: MockProxy<CryptoService>;
