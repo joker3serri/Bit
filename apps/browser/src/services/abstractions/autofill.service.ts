@@ -1,8 +1,8 @@
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-import AutofillField from "../../models/autofillField";
-import AutofillForm from "../../models/autofillForm";
-import AutofillPageDetails from "../../models/autofillPageDetails";
+import AutofillField from "../../autofill/models/autofillField";
+import AutofillForm from "../../autofill/models/autofillForm";
+import AutofillPageDetails from "../../autofill/models/autofillPageDetails";
 
 export interface PageDetail {
   frameId: number;

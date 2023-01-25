@@ -10,10 +10,10 @@ import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
 
+import AutofillField from "../autofill/models/autofillField";
+import AutofillPageDetails from "../autofill/models/autofillPageDetails";
+import AutofillScript from "../autofill/models/autofillScript";
 import { BrowserApi } from "../browser/browserApi";
-import AutofillField from "../models/autofillField";
-import AutofillPageDetails from "../models/autofillPageDetails";
-import AutofillScript from "../models/autofillScript";
 
 import {
   AutoFillOptions,
