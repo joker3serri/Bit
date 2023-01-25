@@ -38,11 +38,7 @@
     <ng-container *ngIf="billingSyncSetUp">
       <dt>{{ "lastLicenseSync" | i18n }}</dt>
       <dd>
-        {{
-          userOrg.familySponsorshipLastSyncDate != null
-            ? (userOrg.familySponsorshipLastSyncDate | date: "medium")
-            : ("never" | i18n)
-        }}
+        {{ lastLicenseSync != null ? (lastLicenseSync | date: "medium") : ("never" | i18n) }}
       </dd>
     </ng-container>
   </dl>

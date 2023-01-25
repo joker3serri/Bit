@@ -109,10 +109,12 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
   }
 
   async loadOrganizationConnection() {
-    const cloudCommunicationEnabled = await this.apiService.getCloudCommunicationsEnabled();
+    if (!this.firstLoaded) {
+      const cloudCommunicationEnabled = await this.apiService.getCloudCommunicationsEnabled();
+      this.disableLicenseSyncControl = !cloudCommunicationEnabled;
+    }
 
-    if (!cloudCommunicationEnabled) {
-      this.disableLicenseSyncControl = true;
+    if (this.disableLicenseSyncControl) {
       return;
     }
 
@@ -153,6 +155,7 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
     await this.organizationApiService.selfHostedSyncLicense(this.organizationId);
 
     this.load();
+    await this.loadOrganizationConnection();
     this.messagingService.send("updatedOrgLicense");
     this.platformUtilsService.showToast("success", null, this.i18nService.t("licenseSyncSuccess"));
   };
@@ -167,5 +170,9 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
 
   get updateMethod() {
     return this.form.get("updateMethod").value;
+  }
+
+  get lastLicenseSync() {
+    return this.existingBillingSyncConnection?.config?.lastLicenseSync;
   }
 }
