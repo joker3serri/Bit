@@ -87,7 +87,7 @@ const plugins = [
     chunks: ["popup/polyfills", "popup/vendor-angular", "popup/vendor", "popup/main"],
   }),
   new HtmlWebpackPlugin({
-    template: "./src/notification/bar.html",
+    template: "./src/autofill/notification/bar.html",
     filename: "notification/bar.html",
     chunks: ["notification/bar"],
   }),
@@ -141,7 +141,7 @@ const mainConfig = {
     "content/notificationBar": "./src/autofill/content/notificationBar.ts",
     "content/contextMenuHandler": "./src/autofill/content/contextMenuHandler.ts",
     "content/message_handler": "./src/autofill/content/message_handler.ts",
-    "notification/bar": "./src/notification/bar.js",
+    "notification/bar": "./src/autofill/notification/bar.js",
     "encrypt-worker": "../../libs/common/src/services/cryptography/encrypt.worker.ts",
   },
   optimization: {
