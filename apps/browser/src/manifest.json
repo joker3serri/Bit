@@ -18,10 +18,10 @@
     {
       "all_frames": true,
       "js": [
-        "autofill/content/autofill.js",
-        "autofill/content/autofiller.js",
-        "autofill/content/notification-bar.js",
-        "autofill/content/contextMenuHandler.js"
+        "content/autofill.js",
+        "content/autofiller.js",
+        "content/notificationBar.js",
+        "content/contextMenuHandler.js"
       ],
       "matches": ["http://*/*", "https://*/*", "file:///*"],
       "run_at": "document_start"
