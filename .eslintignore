@@ -12,10 +12,10 @@ storybook-static
 
 apps/browser/config/config.js
 apps/browser/src/content/autofill.js
-apps/browser/src/scripts/duo.js
+apps/browser/src/auth/scripts/duo.js
 
 apps/desktop/desktop_native
-apps/desktop/src/scripts/duo.js
+apps/desktop/src/auth/scripts/duo.js
 
 apps/web/config.js
 apps/web/scripts/*.js
