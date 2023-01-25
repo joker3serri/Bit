@@ -33,7 +33,7 @@
     "eslint.options": {
       "overrideConfig": {
         "parserOptions": {
-          "project": ["${workspaceFolder}/tsconfig.json"]
+          "project": ["${workspaceFolder}/tsconfig.eslint.json"]
         }
       }
     },
