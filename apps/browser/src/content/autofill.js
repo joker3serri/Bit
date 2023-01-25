@@ -261,7 +261,12 @@
               return 'string' === typeof s ? s.toLowerCase() : ('' + s).toLowerCase();
           }
 
-          // query the document helper
+          /**
+           * Query the document `doc` for elements matching the selector `selector`
+           * @param {Document} doc 
+           * @param {string} query 
+           * @returns {HTMLElement[]} An array of elements matching the selector
+           */
           function queryDoc(doc, query) {
               var els = [];
               try {
@@ -445,6 +450,12 @@
 
       document.elementForOPID = getElementForOPID;
 
+      /**
+       * Do the event on the element.
+       * @param {HTMLElement} kedol The element to do the event on
+       * @param {string} fonor The event name 
+       * @returns 
+       */
       function doEventOnElement(kedol, fonor) {
           var quebo;
           isFirefox ? (quebo = document.createEvent('KeyboardEvent'), quebo.initKeyEvent(fonor, true, false, null, false, false, false, false, 0, 0)) : (quebo = kedol.ownerDocument.createEvent('Events'),
@@ -453,7 +464,11 @@
           return quebo;
       }
 
-      // clean up the text
+      /**
+       * Clean up the string `s` to non-printable characters and trim it.
+       * @param {string} s 
+       * @returns {string} Clean text
+       */
       function cleanText(s) {
           var sVal = null;
           s && (sVal = s.replace(/^\\s+|\\s+$|\\r?\\n.*$/gm, ''), sVal = 0 < sVal.length ? sVal : null);
@@ -527,7 +542,11 @@
           }
       }
 
-      // is a dom element visible on screen?
+      /**
+       * Determine if the element is visible
+       * @param {HTMLElement} el 
+       * @returns {boolean} Returns `true` if the element is visible and `false` otherwise
+       */
       function isElementVisible(el) {
           var theEl = el;
           el = (el = el.ownerDocument) ? el.defaultView : {};
@@ -550,7 +569,11 @@
           return theEl === document;
       }
 
-      // is a dom element "viewable" on screen?
+      /**
+       * Determine if the element is "viewable" on the screen
+       * @param {HTMLElement} el 
+       * @returns {boolean} Returns `true` if the element is viewable and `false` otherwise
+       */
       function isElementViewable(el) {
           var theDoc = el.ownerDocument.documentElement,
               rect = el.getBoundingClientRect(),
@@ -593,6 +616,11 @@
           return pointEl === el;
       }
 
+      /**
+       * Retrieve the element from the document with the specified `opid` property
+       * @param {number} opId 
+       * @returns {HTMLElement} The element with the specified `opiId`, or `null` if no such element exists
+       */
       function getElementForOPID(opId) {
           var theEl;
           if (void 0 === opId || null === opId) {
@@ -665,7 +693,11 @@
           // END MODIFICATION
       }
 
-      // focus the element and optionally restore its original value
+      /**
+       * Focus the element `el` and optionally restore its original value
+       * @param {HTMLElement} el 
+       * @param {boolean} setVal Set the value of the element to its original value
+       */
       function focusElement(el, setVal) {
           if (setVal) {
               var initialValue = el.value;
@@ -817,7 +849,12 @@
           return el ? (fillTheElement(el, op), [el]) : null;
       }
 
-      // do a fill by query operation
+      /**
+       * Do a fill by query operation
+       * @param {string} query 
+       * @param {string} op 
+       * @returns {HTMLElement}
+       */
       function doFillByQuery(query, op) {
           var elements = selectAllFromDoc(query);
           return Array.prototype.map.call(Array.prototype.slice.call(elements), function (el) {
@@ -826,7 +863,12 @@
           }, this);
       }
 
-      // do a simple set value by query
+      /**
+       * Assign `valueToSet` to all elements in the DOM that match `query`.
+       * @param {string} query 
+       * @param {string} valueToSet 
+       * @returns {Array} Array of elements that were set.
+       */
       function doSimpleSetByQuery(query, valueToSet) {
           var elements = selectAllFromDoc(query),
               arr = [];
@@ -836,7 +878,11 @@
           return arr;
       }
 
-      // focus by opid
+      /**
+       * Do a a click and focus on the element with the given `opId`.
+       * @param {number} opId 
+       * @returns 
+       */
       function doFocusByOpId(opId) {
           var el = getElementByOpId(opId)
           if (el) {
@@ -847,13 +893,21 @@
           return null;
       }
 
-      // do a click by opid operation
+      /**
+       * Do a click on the element with the given `opId`.
+       * @param {number} opId 
+       * @returns 
+       */
       function doClickByOpId(opId) {
           var el = getElementByOpId(opId);
           return el ? clickElement(el) ? [el] : null : null;
       }
 
-      // do a click by query operation
+      /**
+       * Do a `click` and `focus` on all elements that match the query. 
+       * @param {string} query 
+       * @returns 
+       */
       function doClickByQuery(query) {
           query = selectAllFromDoc(query);
           return Array.prototype.map.call(Array.prototype.slice.call(query), function (el) {
@@ -873,7 +927,11 @@
       },
           styleTimeout = 200;
 
-      // fill an element
+      /**
+       * Fll an element `el` using the value `op` from the fill script
+       * @param {HTMLElement} el 
+       * @param {string} op 
+       */
       function fillTheElement(el, op) {
           var shouldCheck;
           if (el && null !== op && void 0 !== op && !(el.disabled || el.a || el.readOnly)) {
@@ -902,7 +960,11 @@
           }
       }
 
-      // do all the full operations needed
+      /**
+       * Do all the fill operations needed on the element `el`.
+       * @param {HTMLElement} el 
+       * @param {*} afterValSetFunc The function to perform after the operations are complete.
+       */
       function doAllFillOperations(el, afterValSetFunc) {
           setValueForElement(el);
           afterValSetFunc(el);
@@ -922,7 +984,12 @@
 
       document.elementForOPID = getElementByOpId;
 
-      // normalize the event based on API support
+      /**
+       * Normalize the event based on API support
+       * @param {HTMLElement} el 
+       * @param {string} eventName 
+       * @returns {Event} A normalized event
+       */
       function normalizeEvent(el, eventName) {
           var ev;
           if ('KeyboardEvent' in window) {
@@ -944,7 +1011,11 @@
           return ev;
       }
 
-      // set value of the given element
+      /**
+       * Simulate the entry of a value into an element.
+       * Clicks the element, focuses it, and then fires a keydown, keypress, and keyup event.
+       * @param {HTMLElement} el 
+       */
       function setValueForElement(el) {
           var valueToSet = el.value;
           clickElement(el);
@@ -955,7 +1026,11 @@
           el.value !== valueToSet && (el.value = valueToSet);
       }
 
-      // set value of the given element by using events
+      /**
+       * Simulate the entry of a value into an element by using events.
+       * Dispatches a keydown, keypress, and keyup event, then fires the `input` and `change` events before removing focus.
+       * @param {HTMLElement} el 
+       */
       function setValueForElementByEvent(el) {
           var valueToSet = el.value,
               ev1 = el.ownerDocument.createEvent('HTMLEvents'),
@@ -972,7 +1047,11 @@
           el.value !== valueToSet && (el.value = valueToSet);
       }
 
-      // click on an element
+      /**
+       * Click on an element `el`
+       * @param {HTMLElement} el 
+       * @returns {boolean} Returns true if the element was clicked and false if it was not able to be clicked
+       */
       function clickElement(el) {
           if (!el || el && 'function' !== typeof el.click) {
               return false;
@@ -981,7 +1060,10 @@
           return true;
       }
 
-      // get all fields we care about
+      /**
+       * Get all the elements on the DOM that are likely to be a password field
+       * @returns {Array} Array of elements
+       */
       function getAllFields() {
           var r = RegExp('((\\\\b|_|-)pin(\\\\b|_|-)|password|passwort|kennwort|passe|contraseña|senha|密码|adgangskode|hasło|wachtwoord)', 'i');
           return Array.prototype.slice.call(selectAllFromDoc("input[type='text']")).filter(function (el) {
@@ -989,7 +1071,9 @@
           }, this);
       }
 
-      // touch all the fields
+      /**
+       * Touch all the fields
+       */
       function touchAllFields() {
           getAllFields().forEach(function (el) {
               setValueForElement(el);
@@ -998,7 +1082,11 @@
           });
       }
 
-      // can we see the element to apply some styling?
+      /**
+       * Determine if we can apply styling to `el` to indicate that it was filled.
+       * @param {HTMLElement} el 
+       * @returns {boolean} Returns true if we can see the element to apply styling.
+       */
       function canSeeElementToStyle(el) {
           var currentEl;
           if (currentEl = animateTheFilling) {
@@ -1027,7 +1115,11 @@
           return currentEl ? -1 !== 'email text password number tel url'.split(' ').indexOf(el.type || '') : false;
       }
 
-      // find the element for this operation
+      /**
+       * Find the element for the given `opid`.
+       * @param {number} theOpId 
+       * @returns {HTMLElement} The element for the given `opid`, or `null` if not found.
+       */
       function getElementByOpId(theOpId) {
           var theElement;
           if (void 0 === theOpId || null === theOpId) {
@@ -1055,7 +1147,11 @@
           }
       }
 
-      // helper for doc.querySelectorAll
+      /**
+       * Helper for doc.querySelectorAll
+       * @param {string} theSelector 
+       * @returns 
+       */
       function selectAllFromDoc(theSelector) {
           var d = document, elements = [];
           try {
@@ -1064,7 +1160,11 @@
           return elements;
       }
 
-      // focus an element and optionally re-set its value after focusing
+      /**
+       * Focus an element and optionally re-set its value after focusing
+       * @param {HTMLElement} el 
+       * @param {boolean} setValue Re-set the value after focusing
+       */
       function doFocusElement(el, setValue) {
           if (setValue) {
               var existingValue = el.value;
