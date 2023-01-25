@@ -21,11 +21,6 @@ export default {
           useFactory: () => {
             return new I18nMockService({
               selectPlaceholder: "-- Select --",
-              // multiSelectLoading: "Retrieving options...",
-              // multiSelectNotFound: "No items found",
-              // multiSelectClearAll: "Clear all",
-              // required: "required",
-              // inputRequired: "Input is required.",
             });
           },
         },
