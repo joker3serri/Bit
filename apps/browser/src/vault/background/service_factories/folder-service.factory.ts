@@ -17,7 +17,7 @@ import {
   stateServiceFactory as stateServiceFactory,
   StateServiceInitOptions,
 } from "../../../background/service_factories/state-service.factory";
-import { BrowserFolderService } from "../../../services/browser-folder.service";
+import { BrowserFolderService } from "../../services/browser-folder.service";
 
 import { cipherServiceFactory, CipherServiceInitOptions } from "./cipher-service.factory";
 

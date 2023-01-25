@@ -20,7 +20,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { AutofillService } from "../../../../autofill/services/abstractions/autofill.service";
 import { BrowserApi } from "../../../../browser/browserApi";
 import { PopupUtilsService } from "../../../../popup/services/popup-utils.service";
-import { VaultFilterService } from "../../../../services/vaultFilter.service";
+import { VaultFilterService } from "../../../services/vaultFilter.service";
 
 const BroadcasterSubscriptionId = "CurrentTabComponent";
 

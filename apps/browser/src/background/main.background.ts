@@ -100,7 +100,6 @@ import { Account } from "../models/account";
 import { PopupUtilsService } from "../popup/services/popup-utils.service";
 import { BrowserStateService as StateServiceAbstraction } from "../services/abstractions/browser-state.service";
 import { BrowserEnvironmentService } from "../services/browser-environment.service";
-import { BrowserFolderService } from "../services/browser-folder.service";
 import { BrowserOrganizationService } from "../services/browser-organization.service";
 import { BrowserPolicyService } from "../services/browser-policy.service";
 import { BrowserSettingsService } from "../services/browser-settings.service";
@@ -113,8 +112,9 @@ import BrowserPlatformUtilsService from "../services/browserPlatformUtils.servic
 import I18nService from "../services/i18n.service";
 import { KeyGenerationService } from "../services/keyGeneration.service";
 import { LocalBackedSessionStorageService } from "../services/localBackedSessionStorage.service";
-import { VaultFilterService } from "../services/vaultFilter.service";
 import VaultTimeoutService from "../services/vaultTimeout/vaultTimeout.service";
+import { BrowserFolderService } from "../vault/services/browser-folder.service";
+import { VaultFilterService } from "../vault/services/vaultFilter.service";
 
 import CommandsBackground from "./commands.background";
 import IdleBackground from "./idle.background";
