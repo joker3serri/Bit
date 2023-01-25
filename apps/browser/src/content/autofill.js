@@ -56,7 +56,12 @@
       function getPageDetails(theDoc, oneShotId) {
           // start helpers
 
-          // get the value of a dom element's attribute
+          /**
+           * For a given element `el`, returns the value of the attribute `attrName`.
+           * @param {HTMLElement} el 
+           * @param {string} attrName 
+           * @returns {string} The value of the attribute
+           */
           function getElementAttrValue(el, attrName) {
               var attrVal = el[attrName];
               if ('string' == typeof attrVal) {
@@ -89,7 +94,11 @@
               return elType !== el.type;
           }
 
-          // get the value of a dom element
+          /**
+           * Returns the value of the given element.
+           * @param {HTMLElement} el 
+           * @returns {any} Value of the element
+           */
           function getElementValue(el) {
               switch (toLowerString(el.type)) {
                   case 'checkbox':
@@ -228,7 +237,13 @@
               }).join('');
           }
 
-          // add property and value to the object if there is a value
+          /**
+           * Add property `prop` with value `val` to the object `obj`
+           * @param {object} obj 
+           * @param {string} prop 
+           * @param {any} val 
+           * @param {*} d 
+           */
           function addProp(obj, prop, val, d) {
               if (0 !== d && d === val || null === val || void 0 === val) {
                   return;
@@ -237,7 +252,11 @@
               obj[prop] = val;
           }
 
-          // lowercase helper
+          /**
+           * Converts the string `s` to lowercase
+           * @param {string} s 
+           * @returns Lowercase string
+           */
           function toLowerString(s) {
               return 'string' === typeof s ? s.toLowerCase() : ('' + s).toLowerCase();
           }
