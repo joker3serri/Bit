@@ -76,6 +76,7 @@
 ./libs/common/src/enums/nativeMessagingVersion.ts
 ./libs/common/src/enums/cipherRepromptType.ts
 ./libs/common/src/enums/organizationUserType.ts
+./libs/common/src/enums/scimProviderType.ts
 ./libs/common/src/factories/accountFactory.ts
 ./libs/common/src/factories/globalStateFactory.ts
 ./libs/common/src/factories/stateFactory.ts
