@@ -2,11 +2,11 @@ import { Directive, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
+import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
 @Directive()

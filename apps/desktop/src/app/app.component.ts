@@ -22,7 +22,6 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
 import { InternalFolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
@@ -37,6 +36,7 @@ import { SystemService } from "@bitwarden/common/abstractions/system.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 import { CipherType } from "@bitwarden/common/enums/cipherType";
 

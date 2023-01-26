@@ -24,10 +24,6 @@ import {
   i18nServiceFactory,
 } from "../../../background/service_factories/i18n-service.factory";
 import {
-  KeyConnectorServiceInitOptions,
-  keyConnectorServiceFactory,
-} from "../../../background/service_factories/key-connector-service.factory";
-import {
   logServiceFactory,
   LogServiceInitOptions,
 } from "../../../background/service_factories/log-service.factory";
@@ -44,6 +40,10 @@ import {
   StateServiceInitOptions,
 } from "../../../background/service_factories/state-service.factory";
 
+import {
+  KeyConnectorServiceInitOptions,
+  keyConnectorServiceFactory,
+} from "./key-connector-service.factory";
 import { TokenServiceInitOptions, tokenServiceFactory } from "./token-service.factory";
 import { TwoFactorServiceInitOptions, twoFactorServiceFactory } from "./two-factor-service.factory";
 

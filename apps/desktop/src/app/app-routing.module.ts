@@ -10,12 +10,12 @@ import { HintComponent } from "../auth/hint.component";
 import { LockComponent } from "../auth/lock.component";
 import { LoginComponent } from "../auth/login.component";
 import { RegisterComponent } from "../auth/register.component";
+import { RemovePasswordComponent } from "../auth/remove-password.component";
 import { SetPasswordComponent } from "../auth/set-password.component";
 import { SsoComponent } from "../auth/sso.component";
 import { TwoFactorComponent } from "../auth/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
 
-import { RemovePasswordComponent } from "./accounts/remove-password.component";
 import { SendComponent } from "./send/send.component";
 import { VaultComponent } from "./vault/vault.component";
 

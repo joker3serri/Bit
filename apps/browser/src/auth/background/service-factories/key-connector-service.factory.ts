@@ -1,24 +1,37 @@
-import { KeyConnectorService as AbstractKeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
-import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
+import { KeyConnectorService as AbstractKeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
+import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 
 import {
-  TokenServiceInitOptions,
-  tokenServiceFactory,
-} from "../../auth/background/service-factories/token-service.factory";
-
-import { apiServiceFactory, ApiServiceInitOptions } from "./api-service.factory";
+  apiServiceFactory,
+  ApiServiceInitOptions,
+} from "../../../background/service_factories/api-service.factory";
 import {
   cryptoFunctionServiceFactory,
   CryptoFunctionServiceInitOptions,
-} from "./crypto-function-service.factory";
-import { CryptoServiceInitOptions, cryptoServiceFactory } from "./crypto-service.factory";
-import { FactoryOptions, CachedServices, factory } from "./factory-options";
-import { logServiceFactory, LogServiceInitOptions } from "./log-service.factory";
+} from "../../../background/service_factories/crypto-function-service.factory";
+import {
+  CryptoServiceInitOptions,
+  cryptoServiceFactory,
+} from "../../../background/service_factories/crypto-service.factory";
+import {
+  FactoryOptions,
+  CachedServices,
+  factory,
+} from "../../../background/service_factories/factory-options";
+import {
+  logServiceFactory,
+  LogServiceInitOptions,
+} from "../../../background/service_factories/log-service.factory";
 import {
   OrganizationServiceInitOptions,
   organizationServiceFactory,
-} from "./organization-service.factory";
-import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
+} from "../../../background/service_factories/organization-service.factory";
+import {
+  stateServiceFactory,
+  StateServiceInitOptions,
+} from "../../../background/service_factories/state-service.factory";
+
+import { TokenServiceInitOptions, tokenServiceFactory } from "./token-service.factory";
 
 type KeyConnectorServiceFactoryOptions = FactoryOptions & {
   keyConnectorServiceOptions: {

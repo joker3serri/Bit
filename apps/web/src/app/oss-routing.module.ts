@@ -13,6 +13,7 @@ import { LoginWithDeviceComponent } from "../auth/login/login-with-device.compon
 import { LoginComponent } from "../auth/login/login.component";
 import { RecoverDeleteComponent } from "../auth/recover-delete.component";
 import { RecoverTwoFactorComponent } from "../auth/recover-two-factor.component";
+import { RemovePasswordComponent } from "../auth/remove-password.component";
 import { SetPasswordComponent } from "../auth/set-password.component";
 import { SsoComponent } from "../auth/sso.component";
 import { TwoFactorComponent } from "../auth/two-factor.component";
@@ -22,7 +23,6 @@ import { VerifyEmailTokenComponent } from "../auth/verify-email-token.component"
 import { VerifyRecoverDeleteComponent } from "../auth/verify-recover-delete.component";
 import { flagEnabled, Flags } from "../utils/flags";
 
-import { RemovePasswordComponent } from "./accounts/remove-password.component";
 import { TrialInitiationComponent } from "./accounts/trial-initiation/trial-initiation.component";
 import { HomeGuard } from "./guards/home.guard";
 import { FrontendLayoutComponent } from "./layouts/frontend-layout.component";

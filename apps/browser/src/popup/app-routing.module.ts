@@ -11,13 +11,13 @@ import { HomeComponent } from "../auth/popup/home.component";
 import { LockComponent } from "../auth/popup/lock.component";
 import { LoginComponent } from "../auth/popup/login.component";
 import { RegisterComponent } from "../auth/popup/register.component";
+import { RemovePasswordComponent } from "../auth/popup/remove-password.component";
 import { SetPasswordComponent } from "../auth/popup/set-password.component";
 import { SsoComponent } from "../auth/popup/sso.component";
 import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/popup/update-temp-password.component";
 
-import { RemovePasswordComponent } from "./accounts/remove-password.component";
 import { GeneratorComponent } from "./generator/generator.component";
 import { PasswordGeneratorHistoryComponent } from "./generator/password-generator-history.component";
 import { SendAddEditComponent } from "./send/send-add-edit.component";

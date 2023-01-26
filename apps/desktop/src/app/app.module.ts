@@ -69,13 +69,13 @@ import { LockComponent } from "../auth/lock.component";
 import { LoginComponent } from "../auth/login.component";
 import { PremiumComponent } from "../auth/premium.component";
 import { RegisterComponent } from "../auth/register.component";
+import { RemovePasswordComponent } from "../auth/remove-password.component";
 import { SetPasswordComponent } from "../auth/set-password.component";
 import { SsoComponent } from "../auth/sso.component";
 import { TwoFactorOptionsComponent } from "../auth/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
 
-import { RemovePasswordComponent } from "./accounts/remove-password.component";
 import { SettingsComponent } from "./accounts/settings.component";
 import { VaultTimeoutInputComponent } from "./accounts/vault-timeout-input.component";
 import { AppRoutingModule } from "./app-routing.module";

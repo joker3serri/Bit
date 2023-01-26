@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 
-import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 
 @Injectable()

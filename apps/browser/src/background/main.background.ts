@@ -14,7 +14,6 @@ import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/co
 import { FolderApiServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder-api.service.abstraction";
 import { InternalFolderService as InternalFolderServiceAbstraction } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
-import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/abstractions/keyConnector.service";
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/abstractions/messaging.service";
 import { NotificationsService as NotificationsServiceAbstraction } from "@bitwarden/common/abstractions/notifications.service";
@@ -41,9 +40,11 @@ import { UsernameGenerationService as UsernameGenerationServiceAbstraction } fro
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
+import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/twoFactor.service";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
+import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/twoFactor.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
@@ -66,7 +67,6 @@ import { EventUploadService } from "@bitwarden/common/services/event/event-uploa
 import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";
 import { FolderApiService } from "@bitwarden/common/services/folder/folder-api.service";
-import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
 import { PasswordGenerationService } from "@bitwarden/common/services/passwordGeneration.service";

@@ -25,7 +25,6 @@ import {
 } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { FormValidationErrorsService as FormValidationErrorsServiceAbstraction } from "@bitwarden/common/abstractions/formValidationErrors.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
-import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/abstractions/keyConnector.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/abstractions/messaging.service";
 import { NotificationsService as NotificationsServiceAbstraction } from "@bitwarden/common/abstractions/notifications.service";
@@ -65,12 +64,14 @@ import {
   InternalAccountService,
 } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
+import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/twoFactor.service";
 import { AccountApiServiceImplementation } from "@bitwarden/common/auth/services/account-api.service";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
+import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { LoginService } from "@bitwarden/common/auth/services/login.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/twoFactor.service";
@@ -101,7 +102,6 @@ import { FileUploadService } from "@bitwarden/common/services/fileUpload.service
 import { FolderApiService } from "@bitwarden/common/services/folder/folder-api.service";
 import { FolderService } from "@bitwarden/common/services/folder/folder.service";
 import { FormValidationErrorsService } from "@bitwarden/common/services/formValidationErrors.service";
-import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
 import { OrganizationUserServiceImplementation } from "@bitwarden/common/services/organization-user/organization-user.service.implementation";
 import { OrganizationApiService } from "@bitwarden/common/services/organization/organization-api.service";

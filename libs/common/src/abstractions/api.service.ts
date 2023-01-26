@@ -9,6 +9,7 @@ import { EmergencyAccessUpdateRequest } from "../auth/models/request/emergency-a
 import { PasswordTokenRequest } from "../auth/models/request/identity-token/password-token.request";
 import { SsoTokenRequest } from "../auth/models/request/identity-token/sso-token.request";
 import { UserApiTokenRequest } from "../auth/models/request/identity-token/user-api-token.request";
+import { KeyConnectorUserKeyRequest } from "../auth/models/request/key-connector-user-key.request";
 import { PasswordHintRequest } from "../auth/models/request/password-hint.request";
 import { PasswordRequest } from "../auth/models/request/password.request";
 import { PasswordlessCreateAuthRequest } from "../auth/models/request/passwordless-create-auth.request";
@@ -37,6 +38,7 @@ import {
 import { IdentityCaptchaResponse } from "../auth/models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "../auth/models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../auth/models/response/identity-two-factor.response";
+import { KeyConnectorUserKeyResponse } from "../auth/models/response/key-connector-user-key.response";
 import { PreloginResponse } from "../auth/models/response/prelogin.response";
 import { RegisterResponse } from "../auth/models/response/register.response";
 import { SsoPreValidateResponse } from "../auth/models/response/sso-pre-validate.response";
@@ -70,7 +72,6 @@ import { IapCheckRequest } from "../models/request/iap-check.request";
 import { ImportCiphersRequest } from "../models/request/import-ciphers.request";
 import { ImportOrganizationCiphersRequest } from "../models/request/import-organization-ciphers.request";
 import { KdfRequest } from "../models/request/kdf.request";
-import { KeyConnectorUserKeyRequest } from "../models/request/key-connector-user-key.request";
 import { KeysRequest } from "../models/request/keys.request";
 import { OrganizationConnectionRequest } from "../models/request/organization-connection.request";
 import { OrganizationImportRequest } from "../models/request/organization-import.request";
@@ -112,7 +113,6 @@ import {
 } from "../models/response/collection.response";
 import { DomainsResponse } from "../models/response/domains.response";
 import { EventResponse } from "../models/response/event.response";
-import { KeyConnectorUserKeyResponse } from "../models/response/key-connector-user-key.response";
 import { ListResponse } from "../models/response/list.response";
 import {
   OrganizationConnectionConfigApis,

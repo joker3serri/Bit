@@ -5,8 +5,8 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstraction
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 
-import { Response } from "../models/response";
-import { MessageResponse } from "../models/response/message.response";
+import { Response } from "../../models/response";
+import { MessageResponse } from "../../models/response/message.response";
 
 export class ConvertToKeyConnectorCommand {
   constructor(

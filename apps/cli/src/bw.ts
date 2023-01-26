@@ -8,6 +8,7 @@ import { InternalFolderService } from "@bitwarden/common/abstractions/folder/fol
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
+import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/twoFactor.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
@@ -32,7 +33,6 @@ import { FileUploadService } from "@bitwarden/common/services/fileUpload.service
 import { FolderApiService } from "@bitwarden/common/services/folder/folder-api.service";
 import { FolderService } from "@bitwarden/common/services/folder/folder.service";
 import { ImportService } from "@bitwarden/common/services/import.service";
-import { KeyConnectorService } from "@bitwarden/common/services/keyConnector.service";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 import { NoopMessagingService } from "@bitwarden/common/services/noopMessaging.service";
 import { OrganizationUserServiceImplementation } from "@bitwarden/common/services/organization-user/organization-user.service.implementation";

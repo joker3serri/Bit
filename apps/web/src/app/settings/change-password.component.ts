@@ -8,7 +8,6 @@ import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationUserResetPasswordEnrollmentRequest } from "@bitwarden/common/abstractions/organization-user/requests";
@@ -20,6 +19,7 @@ import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.serv
 import { SendService } from "@bitwarden/common/abstractions/send.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
+import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { EmergencyAccessStatusType } from "@bitwarden/common/auth/enums/emergency-access-status-type";
 import { EmergencyAccessUpdateRequest } from "@bitwarden/common/auth/models/request/emergency-access-update.request";
 import { PasswordRequest } from "@bitwarden/common/auth/models/request/password.request";
