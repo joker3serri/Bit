@@ -23,13 +23,13 @@ import { DialogService } from "@bitwarden/components";
 import {
   BulkDeleteDialogResult,
   openBulkDeleteDialog,
-} from "../../vault/bulk-action-dialogs/bulk-delete-dialog/bulk-delete-dialog.component";
-import { VaultFilterService } from "../../vault/vault-filter/services/abstractions/vault-filter.service";
-import { CollectionFilter } from "../../vault/vault-filter/shared/models/vault-filter.type";
+} from "../../../vault/app/vault/bulk-action-dialogs/bulk-delete-dialog/bulk-delete-dialog.component";
+import { VaultFilterService } from "../../../vault/app/vault/vault-filter/services/abstractions/vault-filter.service";
+import { CollectionFilter } from "../../../vault/app/vault/vault-filter/shared/models/vault-filter.type";
 import {
   VaultItemRow,
   VaultItemsComponent as BaseVaultItemsComponent,
-} from "../../vault/vault-items.component";
+} from "../../../vault/app/vault/vault-items.component";
 import { CollectionAdminView } from "../core";
 import { GroupService } from "../core/services/group/group.service";
 import {
@@ -42,7 +42,7 @@ const MaxCheckedCount = 500;
 
 @Component({
   selector: "app-org-vault-items",
-  templateUrl: "../../vault/vault-items.component.html",
+  templateUrl: "../../../vault/app/vault/vault-items.component.html",
 })
 export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDestroy {
   @Input() set initOrganization(value: Organization) {

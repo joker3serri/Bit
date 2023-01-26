@@ -14,8 +14,8 @@ import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 
-import { VaultFilterService as BaseVaultFilterService } from "../../../vault/vault-filter/services/vault-filter.service";
-import { CollectionFilter } from "../../../vault/vault-filter/shared/models/vault-filter.type";
+import { VaultFilterService as BaseVaultFilterService } from "../../../../vault/app/vault/vault-filter/services/vault-filter.service";
+import { CollectionFilter } from "../../../../vault/app/vault/vault-filter/shared/models/vault-filter.type";
 import { CollectionAdminView } from "../../core";
 import { CollectionAdminService } from "../../core/services/collection-admin.service";
 

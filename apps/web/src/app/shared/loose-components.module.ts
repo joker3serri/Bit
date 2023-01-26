@@ -2,6 +2,12 @@ import { NgModule } from "@angular/core";
 
 import { PasswordRepromptComponent } from "../../../src/vault/app/components/password-reprompt.component";
 import { PremiumBadgeComponent } from "../../vault/app/components/premium-badge.component";
+import { AddEditCustomFieldsComponent } from "../../vault/app/vault/add-edit-custom-fields.component";
+import { AddEditComponent } from "../../vault/app/vault/add-edit.component";
+import { AttachmentsComponent } from "../../vault/app/vault/attachments.component";
+import { CollectionsComponent } from "../../vault/app/vault/collections.component";
+import { FolderAddEditComponent } from "../../vault/app/vault/folder-add-edit.component";
+import { ShareComponent } from "../../vault/app/vault/share.component";
 import { AcceptEmergencyComponent } from "../accounts/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../accounts/accept-organization.component";
 import { HintComponent } from "../accounts/hint.component";
@@ -104,12 +110,6 @@ import { VerifyEmailComponent } from "../settings/verify-email.component";
 import { GeneratorComponent } from "../tools/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/password-generator-history.component";
 import { ToolsComponent } from "../tools/tools.component";
-import { AddEditCustomFieldsComponent } from "../vault/add-edit-custom-fields.component";
-import { AddEditComponent } from "../vault/add-edit.component";
-import { AttachmentsComponent } from "../vault/attachments.component";
-import { CollectionsComponent } from "../vault/collections.component";
-import { FolderAddEditComponent } from "../vault/folder-add-edit.component";
-import { ShareComponent } from "../vault/share.component";
 
 import { SharedModule } from "./shared.module";
 

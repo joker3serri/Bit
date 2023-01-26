@@ -24,7 +24,7 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
-import { CollectionAdminView } from "../../../organizations/core";
+import { CollectionAdminView } from "../../../../../app/organizations/core";
 import {
   CipherTypeFilter,
   CollectionFilter,

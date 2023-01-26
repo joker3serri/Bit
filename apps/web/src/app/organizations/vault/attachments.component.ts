@@ -13,11 +13,11 @@ import { CipherData } from "@bitwarden/common/vault/models/data/cipher.data";
 import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 
-import { AttachmentsComponent as BaseAttachmentsComponent } from "../../vault/attachments.component";
+import { AttachmentsComponent as BaseAttachmentsComponent } from "../../../vault/app/vault/attachments.component";
 
 @Component({
   selector: "app-org-vault-attachments",
-  templateUrl: "../../vault/attachments.component.html",
+  templateUrl: "../../../vault/app/vault/attachments.component.html",
 })
 export class AttachmentsComponent extends BaseAttachmentsComponent {
   viewOnly = false;
