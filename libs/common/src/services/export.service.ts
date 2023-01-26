@@ -7,7 +7,7 @@ import {
   ExportFormat,
   ExportService as ExportServiceAbstraction,
 } from "../abstractions/export.service";
-import { DEFAULT_KDF_ITERATIONS, KdfType } from "../enums/kdfType";
+import { DEFAULT_PBKDF2_ITERATIONS, KdfType } from "../enums/kdfType";
 import { Utils } from "../misc/utils";
 import { CollectionData } from "../models/data/collection.data";
 import { Collection } from "../models/domain/collection";
@@ -54,7 +54,7 @@ export class ExportService implements ExportServiceAbstraction {
       : await this.getExport("json");
 
     const salt = Utils.fromBufferToB64(await this.cryptoFunctionService.randomBytes(16));
-    const kdfIterations = DEFAULT_KDF_ITERATIONS;
+    const kdfIterations = DEFAULT_PBKDF2_ITERATIONS;
     const key = await this.cryptoService.makePinKey(
       password,
       salt,
