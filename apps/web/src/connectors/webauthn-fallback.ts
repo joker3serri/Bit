@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { I18nService } from "../app/core/i18n.service";
+import { LocaleService } from "../app/core/locale.service";
 
 import { b64Decode, getQsParam } from "./common";
 import { buildDataString, parseWebauthnJson } from "./common-webauthn";
@@ -11,7 +11,7 @@ let webauthnJson: any;
 let parentUrl: string = null;
 let sentSuccess = false;
 let locale: string = null;
-let i18nService: I18nService = null;
+let localeService: LocaleService = null;
 
 function parseParameters() {
   if (parsed) {
@@ -63,19 +63,19 @@ function parseParametersV2() {
 document.addEventListener("DOMContentLoaded", async () => {
   parseParameters();
   try {
-    i18nService = new I18nService(locale, "locales");
+    localeService = new LocaleService(locale, "locales");
   } catch {
     error("Failed to load the provided locale " + locale);
-    i18nService = new I18nService("en", "locales");
+    localeService = new LocaleService("en", "locales");
   }
 
-  await i18nService.init();
+  await localeService.init();
 
-  document.getElementById("msg").innerText = i18nService.t("webAuthnFallbackMsg");
-  document.getElementById("remember-label").innerText = i18nService.t("rememberMe");
+  document.getElementById("msg").innerText = localeService.t("webAuthnFallbackMsg");
+  document.getElementById("remember-label").innerText = localeService.t("rememberMe");
 
   const button = document.getElementById("webauthn-button");
-  button.innerText = i18nService.t("webAuthnAuthenticate");
+  button.innerText = localeService.t("webAuthnAuthenticate");
   button.onclick = start;
 
   document.getElementById("spinner").classList.add("d-none");
@@ -90,7 +90,7 @@ function start() {
   }
 
   if (!("credentials" in navigator)) {
-    error(i18nService.t("webAuthnNotSupported"));
+    error(localeService.t("webAuthnNotSupported"));
     return;
   }
 
@@ -126,7 +126,7 @@ async function initWebAuthn(obj: any) {
     window.postMessage({ command: "webAuthnResult", data: dataString, remember: remember }, "*");
 
     sentSuccess = true;
-    success(i18nService.t("webAuthnSuccess"));
+    success(localeService.t("webAuthnSuccess"));
   } catch (err) {
     error(err);
   }
