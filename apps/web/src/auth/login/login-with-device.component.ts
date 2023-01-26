@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Subject, takeUntil } from "rxjs";
 
-import { CaptchaProtectedComponent } from "@bitwarden/angular/auth/components/captchaProtected.component";
+import { CaptchaProtectedComponent } from "@bitwarden/angular/auth/components/captcha-protected.component";
 import { AnonymousHubService } from "@bitwarden/common/abstractions/anonymousHub.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService } from "@bitwarden/common/abstractions/appId.service";

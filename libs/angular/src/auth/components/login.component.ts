@@ -22,7 +22,7 @@ import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import { PasswordLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
 import { Utils } from "@bitwarden/common/misc/utils";
 
-import { CaptchaProtectedComponent } from "./captchaProtected.component";
+import { CaptchaProtectedComponent } from "./captcha-protected.component";
 
 @Directive()
 export class LoginComponent extends CaptchaProtectedComponent implements OnInit {

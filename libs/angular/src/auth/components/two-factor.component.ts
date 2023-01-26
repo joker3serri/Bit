@@ -20,7 +20,7 @@ import { TwoFactorEmailRequest } from "@bitwarden/common/auth/models/request/two
 import { TwoFactorProviders } from "@bitwarden/common/auth/services/twoFactor.service";
 import { WebAuthnIFrame } from "@bitwarden/common/auth/webauthn-iframe";
 
-import { CaptchaProtectedComponent } from "./captchaProtected.component";
+import { CaptchaProtectedComponent } from "./captcha-protected.component";
 
 @Directive()
 export class TwoFactorComponent extends CaptchaProtectedComponent implements OnInit, OnDestroy {

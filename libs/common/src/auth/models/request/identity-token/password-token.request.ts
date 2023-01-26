@@ -1,6 +1,6 @@
 import { ClientType } from "../../../../enums/clientType";
 import { Utils } from "../../../../misc/utils";
-import { CaptchaProtectedRequest } from "../../../../models/request/captcha-protected.request";
+import { CaptchaProtectedRequest } from "../captcha-protected.request";
 
 import { DeviceRequest } from "./device.request";
 import { TokenTwoFactorRequest } from "./token-two-factor.request";
