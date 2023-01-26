@@ -1,6 +1,5 @@
-import { KdfType } from "../../enums/kdfType";
-
-import { KeysRequest } from "./keys.request";
+import { KdfType } from "../../../enums/kdfType";
+import { KeysRequest } from "../../../models/request/keys.request";
 
 export class SetPasswordRequest {
   masterPasswordHash: string;

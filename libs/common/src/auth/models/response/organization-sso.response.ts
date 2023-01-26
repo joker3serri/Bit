@@ -1,5 +1,5 @@
-import { SsoConfigApi } from "../../api/sso-config.api";
-import { BaseResponse } from "../base.response";
+import { BaseResponse } from "../../../models/response/base.response";
+import { SsoConfigApi } from "../api/sso-config.api";
 
 export class OrganizationSsoResponse extends BaseResponse {
   enabled: boolean;

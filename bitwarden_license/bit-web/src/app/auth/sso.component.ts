@@ -22,13 +22,13 @@ import {
   Saml2NameIdFormat,
   Saml2SigningBehavior,
   SsoType,
-} from "@bitwarden/common/enums/ssoEnums";
+} from "@bitwarden/common/auth/enums/sso";
+import { SsoConfigApi } from "@bitwarden/common/auth/models/api/sso-config.api";
+import { OrganizationSsoRequest } from "@bitwarden/common/auth/models/request/organization-sso.request";
+import { OrganizationSsoResponse } from "@bitwarden/common/auth/models/response/organization-sso.response";
+import { SsoConfigView } from "@bitwarden/common/auth/models/view/sso-config.view";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { SsoConfigApi } from "@bitwarden/common/models/api/sso-config.api";
 import { Organization } from "@bitwarden/common/models/domain/organization";
-import { OrganizationSsoRequest } from "@bitwarden/common/models/request/organization/organization-sso.request";
-import { OrganizationSsoResponse } from "@bitwarden/common/models/response/organization/organization-sso.response";
-import { SsoConfigView } from "@bitwarden/common/models/view/sso-config.view";
 
 const defaultSigningAlgorithm = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256";
 

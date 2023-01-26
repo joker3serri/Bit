@@ -7,6 +7,7 @@ import { LockComponent } from "../../auth/lock.component";
 import { RecoverDeleteComponent } from "../../auth/recover-delete.component";
 import { RecoverTwoFactorComponent } from "../../auth/recover-two-factor.component";
 import { RegisterFormModule } from "../../auth/register-form/register-form.module";
+import { SetPasswordComponent } from "../../auth/set-password.component";
 import { DeauthorizeSessionsComponent } from "../../auth/settings/deauthorize-sessions.component";
 import { TwoFactorAuthenticatorComponent } from "../../auth/settings/two-factor-authenticator.component";
 import { TwoFactorDuoComponent } from "../../auth/settings/two-factor-duo.component";
@@ -25,7 +26,6 @@ import { UpdateTempPasswordComponent } from "../../auth/update-temp-password.com
 import { VerifyEmailTokenComponent } from "../../auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "../../auth/verify-recover-delete.component";
 import { RemovePasswordComponent } from "../accounts/remove-password.component";
-import { SetPasswordComponent } from "../accounts/set-password.component";
 import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
 import { OrganizationSwitcherComponent } from "../components/organization-switcher.component";
 import { PasswordRepromptComponent } from "../components/password-reprompt.component";

@@ -2,8 +2,10 @@ import { ApiService } from "../../abstractions/api.service";
 import { OrganizationApiServiceAbstraction } from "../../abstractions/organization/organization-api.service.abstraction";
 import { SyncService } from "../../abstractions/sync/sync.service.abstraction";
 import { OrganizationApiKeyType } from "../../auth/enums/organization-api-key-type";
+import { OrganizationSsoRequest } from "../../auth/models/request/organization-sso.request";
 import { SecretVerificationRequest } from "../../auth/models/request/secret-verification.request";
 import { ApiKeyResponse } from "../../auth/models/response/api-key.response";
+import { OrganizationSsoResponse } from "../../auth/models/response/organization-sso.response";
 import { ImportDirectoryRequest } from "../../models/request/import-directory.request";
 import { OrganizationApiKeyRequest } from "../../models/request/organization-api-key.request";
 import { OrganizationCreateRequest } from "../../models/request/organization-create.request";
@@ -12,7 +14,6 @@ import { OrganizationSubscriptionUpdateRequest } from "../../models/request/orga
 import { OrganizationTaxInfoUpdateRequest } from "../../models/request/organization-tax-info-update.request";
 import { OrganizationUpdateRequest } from "../../models/request/organization-update.request";
 import { OrganizationUpgradeRequest } from "../../models/request/organization-upgrade.request";
-import { OrganizationSsoRequest } from "../../models/request/organization/organization-sso.request";
 import { PaymentRequest } from "../../models/request/payment.request";
 import { SeatRequest } from "../../models/request/seat.request";
 import { StorageRequest } from "../../models/request/storage.request";
@@ -24,7 +25,6 @@ import { OrganizationAutoEnrollStatusResponse } from "../../models/response/orga
 import { OrganizationKeysResponse } from "../../models/response/organization-keys.response";
 import { OrganizationSubscriptionResponse } from "../../models/response/organization-subscription.response";
 import { OrganizationResponse } from "../../models/response/organization.response";
-import { OrganizationSsoResponse } from "../../models/response/organization/organization-sso.response";
 import { PaymentResponse } from "../../models/response/payment.response";
 import { TaxInfoResponse } from "../../models/response/tax-info.response";
 

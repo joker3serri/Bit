@@ -58,7 +58,6 @@
 ./libs/common/src/enums/notificationType.ts
 ./libs/common/src/enums/keySuffixOptions.ts
 ./libs/common/src/enums/productType.ts
-./libs/common/src/enums/scimProviderType.ts
 ./libs/common/src/enums/eventType.ts
 ./libs/common/src/enums/hashPurpose.ts
 ./libs/common/src/enums/uriMatchType.ts
@@ -74,7 +73,6 @@
 ./libs/common/src/enums/stateVersion.ts
 ./libs/common/src/enums/fieldType.ts
 ./libs/common/src/enums/paymentMethodType.ts
-./libs/common/src/enums/ssoEnums.ts
 ./libs/common/src/enums/nativeMessagingVersion.ts
 ./libs/common/src/enums/cipherRepromptType.ts
 ./libs/common/src/enums/organizationUserType.ts
