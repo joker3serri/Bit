@@ -1,5 +1,7 @@
 import { NgModule } from "@angular/core";
 
+import { PasswordRepromptComponent } from "../../../src/vault/app/components/password-reprompt.component";
+import { PremiumBadgeComponent } from "../../vault/app/components/premium-badge.component";
 import { AcceptEmergencyComponent } from "../accounts/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../accounts/accept-organization.component";
 import { HintComponent } from "../accounts/hint.component";
@@ -18,8 +20,6 @@ import { VerifyEmailTokenComponent } from "../accounts/verify-email-token.compon
 import { VerifyRecoverDeleteComponent } from "../accounts/verify-recover-delete.component";
 import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
 import { OrganizationSwitcherComponent } from "../components/organization-switcher.component";
-import { PasswordRepromptComponent } from "../components/password-reprompt.component";
-import { PremiumBadgeComponent } from "../components/premium-badge.component";
 import { SelectableAvatarComponent } from "../components/selectable-avatar.component";
 import { UserVerificationPromptComponent } from "../components/user-verification-prompt.component";
 import { UserVerificationComponent } from "../components/user-verification.component";
