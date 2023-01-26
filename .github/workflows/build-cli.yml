@@ -67,7 +67,10 @@ jobs:
 
   cli:
     name: Build CLI
-    runs-on: windows-2019
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-2019, macos-latest]
+    runs-on: ${{ matrix.os }}
     needs:
       - setup
     env:
@@ -79,6 +82,7 @@ jobs:
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
       - name: Setup Windows builder
+        if: runner.os == 'Windows'
         run: |
           choco install checksum --no-progress
           choco install reshack --no-progress
@@ -98,6 +102,7 @@ jobs:
 
       - name: Get pkg-fetch
         shell: pwsh
+        if: runner.os == 'Windows'
         run: |
           cd $HOME
           $fetchedUrl = "https://github.com/vercel/pkg-fetch/releases/download/v$env:_WIN_PKG_VERSION/node-v$env:_WIN_PKG_FETCH_VERSION-win-x64"
@@ -108,6 +113,7 @@ jobs:
 
       - name: Setup Version Info
         shell: pwsh
+        if: runner.os == 'Windows'
         run: |
           $major,$minor,$patch = $env:_PACKAGE_VERSION.split('.')
           $versionInfo = @"
@@ -142,6 +148,7 @@ jobs:
 
       - name: Resource Hacker
         shell: cmd
+        if: runner.os == 'Windows'
         run: |
           set PATH=%PATH%;C:\Program Files (x86)\Resource Hacker
           set WIN_PKG=C:\Users\runneradmin\.pkg-cache\v%_WIN_PKG_VERSION%\fetched-v%_WIN_PKG_FETCH_VERSION%-win-x64
@@ -155,25 +162,38 @@ jobs:
         run: npm ci
         working-directory: ./
 
-      - name: Build & Package
-        run: npm run dist --quiet
+      - name: Build & Package Windows
+        if: runner.os == 'Windows'
+        run: npm run dist:win --quiet
+
+      - name: Build & Package Linux
+        if: runner.os == 'Linux'
+        run: npm run dist:lin --quiet
+
+      - name: Build & Package macOS
+        if: runner.os == 'macOS'
+        run: npm run dist:mac --quiet
 
       - name: Package Chocolatey
         shell: pwsh
+        if: runner.os == 'Windows'
         run: |
           Copy-Item -Path stores/chocolatey -Destination dist/chocolatey -Recurse
           Copy-Item dist/windows/bw.exe -Destination dist/chocolatey/tools
           Copy-Item ${{ github.workspace }}/LICENSE.txt -Destination dist/chocolatey/tools
           choco pack dist/chocolatey/bitwarden-cli.nuspec --version ${{ env._PACKAGE_VERSION }} --out dist/chocolatey
 
-      - name: Zip
+      - name: Zip Windows
         shell: cmd
-        run: |
-          7z a ./dist/bw-windows-%_PACKAGE_VERSION%.zip ./dist/windows/bw.exe
-          7z a ./dist/bw-macos-%_PACKAGE_VERSION%.zip ./dist/macos/bw
-          7z a ./dist/bw-linux-%_PACKAGE_VERSION%.zip ./dist/linux/bw
+        if: runner.os == 'Windows'
+        run: 7z a ./dist/bw-windows-%_PACKAGE_VERSION%.zip ./dist/windows/bw.exe
+
+      - name: Zip UNix
+        if: runner.os != 'Windows'
+        run: zip -r ./dist/bw-${{ _PACKAGE_VERSION }}.zip ./dist/${{ runner.os }}/bw
 
       - name: Version Test
+        if: runner.os == 'Windows'
         run: |
           dir ./dist/
           Expand-Archive -Path "./dist/bw-windows-${env:_PACKAGE_VERSION}.zip" -DestinationPath "./test/windows"
@@ -184,16 +204,15 @@ jobs:
             Throw "Version test failed."
           }
 
-      - name: Create checksums
+      - name: Create checksums Windows
+        if: runner.os == 'Windows'
         run: |
           checksum -f="./dist/bw-windows-${env:_PACKAGE_VERSION}.zip" `
             -t sha256 | Out-File -Encoding ASCII ./dist/bw-windows-sha256-${env:_PACKAGE_VERSION}.txt
           checksum -f="./dist/bw-macos-${env:_PACKAGE_VERSION}.zip" `
-            -t sha256 | Out-File -Encoding ASCII ./dist/bw-macos-sha256-${env:_PACKAGE_VERSION}.txt
-          checksum -f="./dist/bw-linux-${env:_PACKAGE_VERSION}.zip" `
-            -t sha256 | Out-File -Encoding ASCII ./dist/bw-linux-sha256-${env:_PACKAGE_VERSION}.txt
 
       - name: Upload windows zip asset
+        if: runner.os == 'Windows'
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-windows-${{ env._PACKAGE_VERSION }}.zip
@@ -201,6 +220,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload windows checksum asset
+        if: runner.os == 'Windows'
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-windows-sha256-${{ env._PACKAGE_VERSION }}.txt
@@ -208,6 +228,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload macos zip asset
+        if: runner.os == 'macOS'
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-macos-${{ env._PACKAGE_VERSION }}.zip
@@ -215,6 +236,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload macos checksum asset
+        if: runner.os == 'macOS'
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-macos-sha256-${{ env._PACKAGE_VERSION }}.txt
@@ -222,6 +244,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload linux zip asset
+        if: runner.os == 'Linux'
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-linux-${{ env._PACKAGE_VERSION }}.zip
@@ -229,6 +252,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload linux checksum asset
+        if: runner.os == 'Linux'
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bw-linux-sha256-${{ env._PACKAGE_VERSION }}.txt
@@ -236,6 +260,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload Chocolatey asset
+        if: runner.os == 'Windows'
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bitwarden-cli.${{ env._PACKAGE_VERSION }}.nupkg
@@ -243,6 +268,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload NPM Build Directory asset
+        if: runner.os == 'Windows'
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
           name: bitwarden-cli-${{ env._PACKAGE_VERSION }}-npm-build.zip
