@@ -198,6 +198,16 @@ jobs:
           checksum -f="./dist/bw-windows-${env:_PACKAGE_VERSION}.zip" `
             -t sha256 | Out-File -Encoding ASCII ./dist/bw-windows-sha256-${env:_PACKAGE_VERSION}.txt
 
+      - name: Create checksums macOS
+        if: runner.os == 'macOS'
+        run: |
+          echo "$(shasum ./dist/bw-macos-${{ env._PACKAGE_VERSION }}.zip" | awk '{ print $1 }')" > ./dist/bw-macos-sha256-${{ env._PACKAGE_VERSION }}.txt
+
+      - name: Create checksums Linux
+        if: runner.os == 'Linux'
+        run: |
+          echo "$(shasum ./dist/bw-linux-${{ env._PACKAGE_VERSION }}.zip" | awk '{ print $1 }')" > ./dist/bw-linux-sha256-${{ env._PACKAGE_VERSION }}.txt
+
       - name: Upload windows zip asset
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
