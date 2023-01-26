@@ -41,7 +41,10 @@
     "bw": "build/bw.js"
   },
   "pkg": {
-    "assets": "./build/**/*"
+    "assets": [
+      "./build/**/*",
+      "../../node_modules/argon2/**/*"
+    ]
   },
   "dependencies": {
     "@koa/multer": "^3.0.0",
