@@ -172,9 +172,13 @@ jobs:
         if: runner.os == 'Windows'
         run: 7z a ./dist/bw-windows-%_PACKAGE_VERSION%.zip ./dist/windows/bw.exe
 
-      - name: Zip Unix
-        if: runner.os != 'Windows'
-        run: zip -r ./dist/bw-${{ env._PACKAGE_VERSION }}.zip ./dist/${{ runner.os }}/bw
+      - name: Zip macOS
+        if: runner.os == 'macOS'
+        run: zip -r ./dist/bw-${{ env._PACKAGE_VERSION }}.zip ./dist/macos/bw
+
+      - name: Zip Linux
+        if: runner.os == 'Linux'
+        run: zip -r ./dist/bw-${{ env._PACKAGE_VERSION }}.zip ./dist/linux/bw
 
       - name: Version Test
         if: runner.os == 'Windows'
