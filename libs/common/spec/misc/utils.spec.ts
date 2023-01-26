@@ -326,4 +326,12 @@ describe("Utils Service", () => {
       );
     });
   });
+
+  describe("normalizePath", () => {
+    it("returns normalized paths devoid of traversals", () => {
+      expect(
+        Utils.normalizePath("api/sends/access/..%2f..%2f..%2fapi%2fsends%2faccess%2fsendkey")
+      ).toBe("api/sends/access/sendkey");
+    });
+  });
 });

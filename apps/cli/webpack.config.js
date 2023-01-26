@@ -67,6 +67,9 @@ const webpackConfig = {
     symlinks: false,
     modules: [path.resolve("../../node_modules")],
     plugins: [new TsconfigPathsPlugin({ configFile: "./tsconfig.json" })],
+    fallback: {
+      path: require.resolve("path-browserify"),
+    },
   },
   output: {
     filename: "[name].js",
