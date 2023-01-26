@@ -70,6 +70,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   showBrowserOutdated = false;
   showUpdateKey = false;
   showPremiumCallout = false;
+  showLowKdf = false;
   trashCleanupWarning: string = null;
   kdfIterations: number;
   activeFilter: VaultFilter = new VaultFilter();
@@ -98,6 +99,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.showVerifyEmail = !(await this.tokenService.getEmailVerified());
     this.showBrowserOutdated = window.navigator.userAgent.indexOf("MSIE") !== -1;
+    this.showLowKdf = await this.isLowKdfIteration();
     this.trashCleanupWarning = this.i18nService.t(
       this.platformUtilsService.isSelfHost()
         ? "trashCleanupWarningSelfHosted"

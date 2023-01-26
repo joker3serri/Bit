@@ -74,6 +74,7 @@ import { EmergencyAccessTakeoverComponent } from "../settings/emergency-access-t
 import { EmergencyAccessViewComponent } from "../settings/emergency-access-view.component";
 import { EmergencyAccessComponent } from "../settings/emergency-access.component";
 import { EmergencyAddEditComponent } from "../settings/emergency-add-edit.component";
+import { LowKdfComponent } from "../settings/low-kdf.component";
 import { OrganizationPlansComponent } from "../settings/organization-plans.component";
 import { PaymentMethodComponent } from "../settings/payment-method.component";
 import { PaymentComponent } from "../settings/payment.component";
@@ -111,7 +112,6 @@ import { CollectionsComponent } from "../vault/collections.component";
 import { FolderAddEditComponent } from "../vault/folder-add-edit.component";
 import { ShareComponent } from "../vault/share.component";
 
-import { LowKdfComponent } from "./../settings/low-kdf.component";
 import { SharedModule } from "./shared.module";
 
 // Please do not add to this list of declarations - we should refactor these into modules when doing so makes sense until there are none left.

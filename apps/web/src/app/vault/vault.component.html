@@ -83,9 +83,9 @@
           </button>
         </div>
       </div>
-      <app-low-kdf *ngIf="isLowKdfIteration()"></app-low-kdf>
+      <app-low-kdf *ngIf="showLowKdf"></app-low-kdf>
       <app-verify-email
-        *ngIf="showVerifyEmail"
+        *ngIf="false"
         class="d-block mb-4"
         (onVerified)="emailVerified($event)"
       ></app-verify-email>
