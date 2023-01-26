@@ -17,11 +17,11 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { Cipher } from "@bitwarden/common/models/domain/cipher";
 
-import { AddEditComponent as BaseAddEditComponent } from "../vault/add-edit.component";
+import { AddEditComponent as BaseAddEditComponent } from "../../../app/vault/add-edit.component";
 
 @Component({
   selector: "app-org-vault-add-edit",
-  templateUrl: "../vault/add-edit.component.html",
+  templateUrl: "../../../app/vault/add-edit.component.html",
 })
 export class EmergencyAddEditComponent extends BaseAddEditComponent {
   originalCipher: Cipher = null;

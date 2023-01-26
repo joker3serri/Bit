@@ -13,7 +13,7 @@ import { AttachmentView } from "@bitwarden/common/models/view/attachment.view";
 
 @Component({
   selector: "emergency-access-attachments",
-  templateUrl: "../vault/attachments.component.html",
+  templateUrl: "../../../app/vault/attachments.component.html",
 })
 export class EmergencyAccessAttachmentsComponent extends BaseAttachmentsComponent {
   viewOnly = true;
