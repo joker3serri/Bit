@@ -12,8 +12,8 @@ import { UpdateTwoFactorWebAuthnRequest } from "@bitwarden/common/auth/models/re
 import {
   ChallengeResponse,
   TwoFactorWebAuthnResponse,
-} from "@bitwarden/common/models/response/two-factor-web-authn.response";
-import { AuthResponse } from "@bitwarden/common/types/authResponse";
+} from "@bitwarden/common/auth/models/response/two-factor-web-authn.response";
+import { AuthResponse } from "@bitwarden/common/auth/types/auth-response";
 
 import { TwoFactorBaseComponent } from "./two-factor-base.component";
 

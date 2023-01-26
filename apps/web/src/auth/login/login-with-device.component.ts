@@ -19,9 +19,9 @@ import { LoginService } from "@bitwarden/common/auth/abstractions/login.service"
 import { AuthRequestType } from "@bitwarden/common/auth/enums/auth-request-type";
 import { PasswordlessLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
 import { PasswordlessCreateAuthRequest } from "@bitwarden/common/auth/models/request/passwordless-create-auth.request";
+import { AuthRequestResponse } from "@bitwarden/common/auth/models/response/auth-request.response";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
-import { AuthRequestResponse } from "@bitwarden/common/models/response/auth-request.response";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
 import { StateService } from "../../app/core";

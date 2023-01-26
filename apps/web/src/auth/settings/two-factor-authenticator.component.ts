@@ -8,8 +8,8 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { UpdateTwoFactorAuthenticatorRequest } from "@bitwarden/common/auth/models/request/update-two-factor-authenticator.request";
-import { TwoFactorAuthenticatorResponse } from "@bitwarden/common/models/response/two-factor-authenticator.response";
-import { AuthResponse } from "@bitwarden/common/types/authResponse";
+import { TwoFactorAuthenticatorResponse } from "@bitwarden/common/auth/models/response/two-factor-authenticator.response";
+import { AuthResponse } from "@bitwarden/common/auth/types/auth-response";
 
 import { TwoFactorBaseComponent } from "./two-factor-base.component";
 

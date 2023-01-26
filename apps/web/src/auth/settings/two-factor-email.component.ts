@@ -9,8 +9,8 @@ import { UserVerificationService } from "@bitwarden/common/abstractions/userVeri
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { TwoFactorEmailRequest } from "@bitwarden/common/auth/models/request/two-factor-email.request";
 import { UpdateTwoFactorEmailRequest } from "@bitwarden/common/auth/models/request/update-two-factor-email.request";
-import { TwoFactorEmailResponse } from "@bitwarden/common/models/response/two-factor-email.response";
-import { AuthResponse } from "@bitwarden/common/types/authResponse";
+import { TwoFactorEmailResponse } from "@bitwarden/common/auth/models/response/two-factor-email.response";
+import { AuthResponse } from "@bitwarden/common/auth/types/auth-response";
 
 import { TwoFactorBaseComponent } from "./two-factor-base.component";
 

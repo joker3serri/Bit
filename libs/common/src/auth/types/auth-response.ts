@@ -1,6 +1,6 @@
-import { VerificationType } from "../enums/verificationType";
+import { VerificationType } from "../enums/verification-type";
 
-import { TwoFactorResponse } from "./twoFactorResponse";
+import { TwoFactorResponse } from "./two-factor-response";
 
 export type AuthResponseBase = {
   secret: string;

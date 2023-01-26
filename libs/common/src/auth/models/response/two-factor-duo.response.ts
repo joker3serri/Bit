@@ -1,4 +1,4 @@
-import { BaseResponse } from "./base.response";
+import { BaseResponse } from "../../../models/response/base.response";
 
 export class TwoFactorDuoResponse extends BaseResponse {
   enabled: boolean;

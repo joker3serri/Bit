@@ -16,11 +16,11 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { PasswordLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
+import { RegisterResponse } from "@bitwarden/common/auth/models/response/register.response";
 import { DEFAULT_KDF_ITERATIONS, DEFAULT_KDF_TYPE } from "@bitwarden/common/enums/kdfType";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";
 import { RegisterRequest } from "@bitwarden/common/models/request/register.request";
-import { RegisterResponse } from "@bitwarden/common/models/response/authentication/register.response";
 
 import { CaptchaProtectedComponent } from "../auth/components/captchaProtected.component";
 import { PasswordColorText } from "../shared/components/password-strength/password-strength.component";

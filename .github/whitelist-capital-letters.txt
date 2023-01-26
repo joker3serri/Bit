@@ -79,7 +79,6 @@
 ./libs/common/src/enums/htmlStorageLocation.ts
 ./libs/common/src/enums/providerUserType.ts
 ./libs/common/src/enums/organizationUserStatusType.ts
-./libs/common/src/enums/verificationType.ts
 ./libs/common/src/enums/notificationType.ts
 ./libs/common/src/enums/keySuffixOptions.ts
 ./libs/common/src/enums/productType.ts

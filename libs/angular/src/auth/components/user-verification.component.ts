@@ -3,7 +3,7 @@ import { ControlValueAccessor, FormControl } from "@angular/forms";
 
 import { KeyConnectorService } from "@bitwarden/common/abstractions/keyConnector.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
-import { VerificationType } from "@bitwarden/common/enums/verificationType";
+import { VerificationType } from "@bitwarden/common/auth/enums/verification-type";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Verification } from "@bitwarden/common/types/verification";
 

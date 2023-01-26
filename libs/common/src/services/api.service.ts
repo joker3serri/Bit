@@ -3,6 +3,7 @@ import { AppIdService } from "../abstractions/appId.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { TokenService } from "../auth/abstractions/token.service";
+import { DeviceVerificationRequest } from "../auth/models/request/device-verification.request";
 import { EmailTokenRequest } from "../auth/models/request/email-token.request";
 import { EmailRequest } from "../auth/models/request/email.request";
 import { EmergencyAccessAcceptRequest } from "../auth/models/request/emergency-access-accept.request";
@@ -30,6 +31,9 @@ import { UpdateTwoFactorEmailRequest } from "../auth/models/request/update-two-f
 import { UpdateTwoFactorWebAuthnDeleteRequest } from "../auth/models/request/update-two-factor-web-authn-delete.request";
 import { UpdateTwoFactorWebAuthnRequest } from "../auth/models/request/update-two-factor-web-authn.request";
 import { UpdateTwoFactorYubioOtpRequest } from "../auth/models/request/update-two-factor-yubio-otp.request";
+import { ApiKeyResponse } from "../auth/models/response/api-key.response";
+import { AuthRequestResponse } from "../auth/models/response/auth-request.response";
+import { DeviceVerificationResponse } from "../auth/models/response/device-verification.response";
 import {
   EmergencyAccessGranteeDetailsResponse,
   EmergencyAccessGrantorDetailsResponse,
@@ -39,7 +43,19 @@ import {
 import { IdentityCaptchaResponse } from "../auth/models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "../auth/models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../auth/models/response/identity-two-factor.response";
+import { PreloginResponse } from "../auth/models/response/prelogin.response";
+import { RegisterResponse } from "../auth/models/response/register.response";
 import { SsoPreValidateResponse } from "../auth/models/response/sso-pre-validate.response";
+import { TwoFactorAuthenticatorResponse } from "../auth/models/response/two-factor-authenticator.response";
+import { TwoFactorDuoResponse } from "../auth/models/response/two-factor-duo.response";
+import { TwoFactorEmailResponse } from "../auth/models/response/two-factor-email.response";
+import { TwoFactorProviderResponse } from "../auth/models/response/two-factor-provider.response";
+import { TwoFactorRecoverResponse } from "../auth/models/response/two-factor-recover.response";
+import {
+  ChallengeResponse,
+  TwoFactorWebAuthnResponse,
+} from "../auth/models/response/two-factor-web-authn.response";
+import { TwoFactorYubiKeyResponse } from "../auth/models/response/two-factor-yubi-key.response";
 import { DeviceType } from "../enums/deviceType";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { Utils } from "../misc/utils";
@@ -56,7 +72,6 @@ import { CipherRequest } from "../models/request/cipher.request";
 import { CollectionBulkDeleteRequest } from "../models/request/collection-bulk-delete.request";
 import { CollectionRequest } from "../models/request/collection.request";
 import { DeleteRecoverRequest } from "../models/request/delete-recover.request";
-import { DeviceVerificationRequest } from "../models/request/device-verification.request";
 import { EventRequest } from "../models/request/event.request";
 import { IapCheckRequest } from "../models/request/iap-check.request";
 import { ImportCiphersRequest } from "../models/request/import-ciphers.request";
@@ -93,11 +108,8 @@ import { UpdateKeyRequest } from "../models/request/update-key.request";
 import { UpdateTempPasswordRequest } from "../models/request/update-temp-password.request";
 import { VerifyDeleteRecoverRequest } from "../models/request/verify-delete-recover.request";
 import { VerifyEmailRequest } from "../models/request/verify-email.request";
-import { ApiKeyResponse } from "../models/response/api-key.response";
 import { AttachmentUploadDataResponse } from "../models/response/attachment-upload-data.response";
 import { AttachmentResponse } from "../models/response/attachment.response";
-import { AuthRequestResponse } from "../models/response/auth-request.response";
-import { RegisterResponse } from "../models/response/authentication/register.response";
 import { BillingHistoryResponse } from "../models/response/billing-history.response";
 import { BillingPaymentResponse } from "../models/response/billing-payment.response";
 import { BreachAccountResponse } from "../models/response/breach-account.response";
@@ -106,7 +118,6 @@ import {
   CollectionAccessDetailsResponse,
   CollectionResponse,
 } from "../models/response/collection.response";
-import { DeviceVerificationResponse } from "../models/response/device-verification.response";
 import { DomainsResponse } from "../models/response/domains.response";
 import { ErrorResponse } from "../models/response/error.response";
 import { EventResponse } from "../models/response/event.response";
@@ -121,7 +132,6 @@ import { OrganizationSponsorshipSyncStatusResponse } from "../models/response/or
 import { PaymentResponse } from "../models/response/payment.response";
 import { PlanResponse } from "../models/response/plan.response";
 import { PolicyResponse } from "../models/response/policy.response";
-import { PreloginResponse } from "../models/response/prelogin.response";
 import { ProfileResponse } from "../models/response/profile.response";
 import {
   ProviderOrganizationOrganizationDetailsResponse,
@@ -143,16 +153,6 @@ import { SubscriptionResponse } from "../models/response/subscription.response";
 import { SyncResponse } from "../models/response/sync.response";
 import { TaxInfoResponse } from "../models/response/tax-info.response";
 import { TaxRateResponse } from "../models/response/tax-rate.response";
-import { TwoFactorAuthenticatorResponse } from "../models/response/two-factor-authenticator.response";
-import { TwoFactorDuoResponse } from "../models/response/two-factor-duo.response";
-import { TwoFactorEmailResponse } from "../models/response/two-factor-email.response";
-import { TwoFactorProviderResponse } from "../models/response/two-factor-provider.response";
-import { TwoFactorRecoverResponse } from "../models/response/two-factor-recover.response";
-import {
-  ChallengeResponse,
-  TwoFactorWebAuthnResponse,
-} from "../models/response/two-factor-web-authn.response";
-import { TwoFactorYubiKeyResponse } from "../models/response/two-factor-yubi-key.response";
 import { UserKeyResponse } from "../models/response/user-key.response";
 import { SendAccessView } from "../models/view/send-access.view";
 

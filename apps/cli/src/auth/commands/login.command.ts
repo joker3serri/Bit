@@ -26,9 +26,9 @@ import {
 } from "@bitwarden/common/auth/models/domain/log-in-credentials";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
 import { TwoFactorEmailRequest } from "@bitwarden/common/auth/models/request/two-factor-email.request";
-import { UpdateTempPasswordRequest } from "@bitwarden/common/auth/models/request/update-temp-password.request";
 import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
 import { Utils } from "@bitwarden/common/misc/utils";
+import { UpdateTempPasswordRequest } from "@bitwarden/common/models/request/update-temp-password.request";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
 import { Response } from "../../models/response";
