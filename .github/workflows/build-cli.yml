@@ -174,11 +174,11 @@ jobs:
 
       - name: Zip macOS
         if: runner.os == 'macOS'
-        run: zip -r ./dist/bw-${{ env._PACKAGE_VERSION }}.zip ./dist/macos/bw
+        run: zip -r ./dist/bw-macos-${{ env._PACKAGE_VERSION }}.zip ./dist/macos/bw
 
       - name: Zip Linux
         if: runner.os == 'Linux'
-        run: zip -r ./dist/bw-${{ env._PACKAGE_VERSION }}.zip ./dist/linux/bw
+        run: zip -r ./dist/bw-linux-${{ env._PACKAGE_VERSION }}.zip ./dist/linux/bw
 
       - name: Version Test
         if: runner.os == 'Windows'
