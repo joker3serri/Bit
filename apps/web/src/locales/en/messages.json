@@ -6084,7 +6084,7 @@
     }
   },
   "lowKdfIterations": {
-    "message": "Low Kdf Iterations"
+    "message": "Low KDF Iterations"
   },
   "lowKdfIterationsDesc": {
     "message": "Increase your KDF encryption settings to improve the security of your account."
