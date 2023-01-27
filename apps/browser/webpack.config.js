@@ -254,7 +254,7 @@ if (manifestVersion == 2) {
 } else {
   // Manifest v3 needs an extra helper for utilities in the content script.
   // The javascript output of this should be added to manifest.v3.json
-  mainConfig.entry["content/misc-utils"] = "./src/content/misc-utils.ts";
+  mainConfig.entry["content/misc-utils"] = "./src/autofill/content/misc-utils.ts";
 
   /**
    * @type {import("webpack").Configuration}
