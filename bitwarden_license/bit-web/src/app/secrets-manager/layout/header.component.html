@@ -7,9 +7,11 @@
   }"
 >
   <div class="tw-flex tw-items-start tw-gap-2">
-    <div class="tw-flex tw-flex-1 tw-flex-col tw-gap-2">
+    <div class="tw-mb-auto tw-flex tw-flex-1 tw-flex-col tw-gap-2">
       <ng-content select="[slot=breadcrumbs]"></ng-content>
-      <div #titleContainer><ng-content select="[slot=title]"></ng-content></div>
+      <div #titleContainer [ngClass]="{ 'tw-hidden': titleContainer.childElementCount === 0 }">
+        <ng-content select="[slot=title]"></ng-content>
+      </div>
       <h1
         *ngIf="titleContainer.childElementCount === 0"
         class="tw-m-0 tw-mr-2 tw-max-w-screen-md tw-truncate tw-text-3xl tw-font-semibold"
@@ -19,10 +21,9 @@
         {{ title || (routeData.titleId | i18n) }}
       </h1>
     </div>
-    <div class="tw-mb-auto tw-ml-auto tw-flex tw-flex-col tw-gap-6">
-      <div class="tw-flex tw-min-w-max tw-items-center tw-gap-2">
-        <ng-content select="[slot=search]"></ng-content>
-        <sm-new-menu></sm-new-menu>
+    <div class="tw-mb-auto tw-ml-auto tw-flex tw-flex-col tw-gap-4">
+      <div class="tw-flex tw-min-w-max tw-items-center tw-justify-end tw-gap-2">
+        <ng-content></ng-content>
         <product-switcher></product-switcher>
         <ng-container *ngIf="account$ | async as account">
           <button [bitMenuTriggerFor]="accountMenu" class="tw-border-0 tw-bg-transparent tw-p-0">
@@ -81,7 +82,7 @@
         #contentContainer
         [ngClass]="{ 'tw-hidden': contentContainer.childElementCount === 0 }"
       >
-        <ng-content></ng-content>
+        <ng-content select="[slot=secondary]"></ng-content>
       </div>
     </div>
   </div>

@@ -30,12 +30,6 @@ class MockStateService {
 })
 class MockProductSwitcher {}
 
-@Component({
-  selector: "sm-new-menu",
-  template: `<button bitButton buttonType="primary">New</button>`,
-})
-class MockNewMenu {}
-
 export default {
   title: "Web/Header",
   component: HeaderComponent,
@@ -64,7 +58,7 @@ export default {
         PreloadedEnglishI18nModule,
         TabsModule,
       ],
-      declarations: [HeaderComponent, MockNewMenu, MockProductSwitcher],
+      declarations: [HeaderComponent, MockProductSwitcher],
       providers: [{ provide: StateService, useClass: MockStateService }],
     }),
   ],
@@ -82,9 +76,9 @@ export const KitchenSink: Story = (args) => ({
         bitInput
         placeholder="Ask Jeeves"
         type="text"
-        slot="search"
       />
-      <button bitButton>Click Me 🎉</button>
+      <button bitButton buttonType="primary">New</button>
+      <button bitButton slot="secondary">Click Me 🎉</button>
       <bit-tab-nav-bar slot="tabs">
         <bit-tab-link route="">Foo</bit-tab-link>
         <bit-tab-link route="#bar">Bar</bit-tab-link>
@@ -127,17 +121,16 @@ export const WithSearch: Story = (args) => ({
         bitInput
         placeholder="Ask Jeeves"
         type="text"
-        slot="search"
       />
     </sm-header>
   `,
 });
 
-export const WithArbitraryContent: Story = (args) => ({
+export const WithSecondaryContent: Story = (args) => ({
   props: args,
   template: `
     <sm-header title="Foobar" icon="bwi-bug" class="tw-text-main">
-      <button bitButton>Click Me 🎉</button>
+      <button bitButton slot="secondary">Click Me 🎉</button>
     </sm-header>
   `,
 });
