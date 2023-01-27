@@ -87,7 +87,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
         with:
-          ref: ${{ env._ENVIRONMNET_BRANCH }}
+          ref: ${{ env._ENVIRONMENT_BRANCH }}
           path: deployment
 
       - name: Setup git config
@@ -107,9 +107,7 @@ jobs:
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             git add .
-            git status
             git commit -m "Deploy ${{ github.ref_name }} to ${{ env._ENVIRONMENT }} Cloudflare pages"
-            echo "Changes committed"
             git push -u origin ${{ env._ENVIRONMENT_BRANCH }}
           else
             echo "No changes to commit!";
