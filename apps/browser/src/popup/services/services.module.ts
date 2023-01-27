@@ -16,6 +16,7 @@ import { ConfigApiServiceAbstraction } from "@bitwarden/common/abstractions/conf
 import { ConfigServiceAbstraction } from "@bitwarden/common/abstractions/config/config.service.abstraction";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
+import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
@@ -67,6 +68,7 @@ import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { AuthService } from "@bitwarden/common/services/auth.service";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
+import { ContainerService } from "@bitwarden/common/services/container.service";
 import { FolderApiService } from "@bitwarden/common/services/folder/folder-api.service";
 import { LoginService } from "@bitwarden/common/services/login.service";
 import { PolicyApiService } from "@bitwarden/common/services/policy/policy-api.service";
@@ -233,7 +235,15 @@ function getBgService<T>(service: keyof MainBackground) {
       },
       deps: [StateService],
     },
-    { provide: CryptoService, useFactory: getBgService<CryptoService>("cryptoService"), deps: [] },
+    {
+      provide: CryptoService,
+      useFactory: (encryptService: EncryptService) => {
+        const cryptoService = getBgService<CryptoService>("cryptoService")();
+        new ContainerService(cryptoService, encryptService).attachToGlobal(self);
+        return cryptoService;
+      },
+      deps: [EncryptService],
+    },
     {
       provide: EventUploadService,
       useFactory: getBgService<EventUploadService>("eventUploadService"),
