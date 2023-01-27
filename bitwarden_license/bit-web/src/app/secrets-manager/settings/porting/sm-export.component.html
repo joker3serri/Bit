@@ -11,11 +11,8 @@
   <bit-form-field class="tw-mb-0">
     <bit-label>{{ "masterPassword" | i18n }}</bit-label>
     <input bitInput required type="password" formControlName="masterPassword" />
+    <bit-hint>{{ "confirmIdentity" | i18n }}</bit-hint>
   </bit-form-field>
-
-  <div>
-    <small class="form-text text-muted">{{ "confirmIdentity" | i18n }}</small>
-  </div>
 
   <div class="tw-my-4">
     <app-callout type="info" title="{{ 'exportingOrganizationSecretDataTitle' | i18n }}">

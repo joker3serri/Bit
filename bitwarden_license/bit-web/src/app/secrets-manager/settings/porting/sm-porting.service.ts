@@ -6,9 +6,11 @@ import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { ImportError } from "@bitwarden/common/importers/import-error";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 
-import { SMExport } from "../../models/porting/sm-export";
-import { SMExportProject } from "../../models/porting/sm-export-project";
-import { SMExportSecret } from "../../models/porting/sm-export-secret";
+import {
+  SecretsManagerExport,
+  SMExportProject,
+  SMExportSecret,
+} from "../../models/porting/sm-export";
 import { ImportedProjectRequest } from "../requests/imported-project.request";
 import { ImportedSecretRequest } from "../requests/imported-secret.request";
 import { SMImportRequest } from "../requests/sm-import.request";
@@ -98,9 +100,9 @@ export class SMPortingService {
   private async decryptExport(
     organizationId: string,
     exportData: SMExportResponse
-  ): Promise<SMExport> {
+  ): Promise<SecretsManagerExport> {
     const orgKey = await this.cryptoService.getOrgKey(organizationId);
-    const decryptedExport = new SMExport();
+    const decryptedExport = new SecretsManagerExport();
     decryptedExport.projects = [];
     decryptedExport.secrets = [];
 

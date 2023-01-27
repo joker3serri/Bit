@@ -81,7 +81,7 @@ export class SMExportComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.doExport();
+    await this.doExport();
   };
 
   protected async doExport() {

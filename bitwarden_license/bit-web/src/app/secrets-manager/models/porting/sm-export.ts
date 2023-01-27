@@ -1,7 +1,17 @@
-import { SMExportProject } from "./sm-export-project";
-import { SMExportSecret } from "./sm-export-secret";
-
-export class SMExport {
+export class SecretsManagerExport {
   projects: SMExportProject[];
   secrets: SMExportSecret[];
+}
+
+export class SMExportProject {
+  id: string;
+  name: string;
+}
+
+export class SMExportSecret {
+  id: string;
+  key: string;
+  value: string;
+  note: string;
+  projectIds: string[];
 }

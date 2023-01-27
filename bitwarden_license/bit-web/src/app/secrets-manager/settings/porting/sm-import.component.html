@@ -18,6 +18,7 @@
       (change)="setSelectedFile($event)"
       hidden
     />
+    <bit-hint>{{ "acceptedFormats" | i18n }} JSON</bit-hint>
   </div>
   <br />
   <div>
@@ -34,8 +35,10 @@
         bitInput
         [(ngModel)]="fileContents"
       ></textarea>
+      <bit-hint>{{ "acceptedFormats" | i18n }} JSON</bit-hint>
     </div>
   </div>
+  <br />
   <button bitButton type="submit" buttonType="primary" [disabled]="loading">
     {{ "importData" | i18n }}
   </button>
