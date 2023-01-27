@@ -67,7 +67,7 @@ jobs:
 
       - name: Setup Unix Vars
         if: runner.os != 'Windows'
-        run: echo "RUNNER_OS=$(echo $runner.os | awk '{print tolower($0)}')" >> $GITHUB_ENV
+        run: echo "LOWER_RUNNER_OS=$(echo $RUNNER_OS | awk '{print tolower($0)}')" >> $GITHUB_ENV
 
       - name: Setup Windows builder
         if: runner.os == 'Windows'
@@ -178,7 +178,7 @@ jobs:
 
       - name: Zip Unix
         if: runner.os != 'Windows'
-        run: zip -r ./dist/bw-${{ env.RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip ./dist/${{ env.RUNNER_OS }}/bw
+        run: zip -r ./dist/bw-${{ env.LOWER_RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip ./dist/${{ env.LOWER_RUNNER_OS }}/bw
 
       - name: Version Test
         if: runner.os == 'Windows'
