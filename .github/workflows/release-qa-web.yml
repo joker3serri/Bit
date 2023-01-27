@@ -37,7 +37,7 @@ jobs:
             echo "environment-name=Web\ Vault\ -\ POC" >> $GITHUB_OUTPUT
             echo "environment-branch=cf-pages-poc" >> $GITHUB_OUTPUT
             echo "environment-artifact=web-*-cloud-POC.zip" >> $GITHUB_OUTPUT
-          elseif [ "${{ inputs.environment }}" == "QA" ]; then
+          elif [ "${{ inputs.environment }}" == "QA" ]; then
             echo "Environment ${{ inputs.environments }}: Not yet supported"
             exit 1
           else
