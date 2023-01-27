@@ -11,7 +11,6 @@ import {
   UserProjectAccessPolicyView,
 } from "../../models/view/access-policy.view";
 import { ProjectAccessPoliciesView } from "../../models/view/project-access-policies.view";
-import { ServiceAccountService } from "../../service-accounts/service-account.service";
 
 import { AccessPolicyService } from "./access-policy.service";
 
@@ -39,18 +38,14 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
     multiSelect: new FormControl([], [Validators.required]),
   });
 
-  constructor(
-    private route: ActivatedRoute,
-    private serviceAccountService: ServiceAccountService,
-    private accessPolicyService: AccessPolicyService
-  ) {}
+  constructor(private route: ActivatedRoute, private accessPolicyService: AccessPolicyService) {}
 
   async ngOnInit(): Promise<void> {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params: any) => {
       this.organizationId = params.organizationId;
       this.projectId = params.projectId;
     });
-    await this.setMultiSelect();
+    await this.refreshMultiSelect(this.projectAccessPolicies);
   }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
@@ -59,7 +54,7 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
       this.getAccessPoliciesCount(changes.projectAccessPolicies.currentValue) <
         this.getAccessPoliciesCount(changes.projectAccessPolicies.previousValue)
     ) {
-      await this.setMultiSelect();
+      await this.refreshMultiSelect(this.projectAccessPolicies);
     }
   }
 
@@ -77,57 +72,48 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
     this.formGroup.disable();
 
     const projectAccessPoliciesView = this.createProjectAccessPoliciesViewFromSelected();
-    const createdAccessPolicies = await this.accessPolicyService.createProjectAccessPolicies(
+    const results = await this.accessPolicyService.createProjectAccessPolicies(
       this.organizationId,
       this.projectId,
       projectAccessPoliciesView
     );
 
-    this.clearFromPotentialGrantees(createdAccessPolicies);
+    await this.setMultiSelect(results);
 
     this.loading = false;
     this.formGroup.enable();
     this.formGroup.reset();
   };
 
-  private async setMultiSelect(): Promise<void> {
+  private async refreshMultiSelect(
+    projectAccessPolicies: ProjectAccessPoliciesView
+  ): Promise<void> {
     this.loading = true;
     this.formGroup.disable();
-
-    let potentialGrantees;
-    if (this.accessType == "projectPeople") {
-      potentialGrantees = await this.getPeoplePotentialGrantees(this.projectId);
-    } else {
-      potentialGrantees = await this.getServiceAccountPotentialGrantees(this.organizationId);
-    }
-
-    this.potentialGrantees = this.filterExistingAccessPolicies(potentialGrantees);
-
+    await this.setMultiSelect(projectAccessPolicies);
     this.loading = false;
     this.formGroup.enable();
     this.formGroup.reset();
   }
 
-  private clearFromPotentialGrantees(createdAccessPolicies: ProjectAccessPoliciesView) {
-    if (createdAccessPolicies.groupAccessPolicies?.length > 0) {
-      this.potentialGrantees = this.potentialGrantees.filter(
-        (item) => !createdAccessPolicies.groupAccessPolicies.some((ap) => ap.groupId == item.id)
+  private async setMultiSelect(projectAccessPolicies: ProjectAccessPoliciesView): Promise<void> {
+    let potentialGrantees;
+    if (this.accessType == "projectPeople") {
+      potentialGrantees = await this.getPeoplePotentialGrantees(
+        this.organizationId,
+        this.projectId
+      );
+    } else {
+      potentialGrantees = await this.getServiceAccountPotentialGrantees(
+        this.organizationId,
+        this.projectId
       );
     }
-    if (createdAccessPolicies.userAccessPolicies?.length > 0) {
-      this.potentialGrantees = this.potentialGrantees.filter(
-        (item) =>
-          !createdAccessPolicies.userAccessPolicies.some((ap) => ap.organizationUserId == item.id)
-      );
-    }
-    if (createdAccessPolicies.serviceAccountAccessPolicies?.length > 0) {
-      this.potentialGrantees = this.potentialGrantees.filter(
-        (item) =>
-          !createdAccessPolicies.serviceAccountAccessPolicies.some(
-            (ap) => ap.serviceAccountId == item.id
-          )
-      );
-    }
+
+    this.potentialGrantees = this.filterExistingAccessPolicies(
+      potentialGrantees,
+      projectAccessPolicies
+    );
   }
 
   private createProjectAccessPoliciesViewFromSelected(): ProjectAccessPoliciesView {
@@ -175,8 +161,12 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
-  private async getPeoplePotentialGrantees(projectId: string): Promise<SelectItemView[]> {
+  private async getPeoplePotentialGrantees(
+    organizationId: string,
+    projectId: string
+  ): Promise<SelectItemView[]> {
     const peoplePotentialGrantees = await this.accessPolicyService.getPeoplePotentialGrantees(
+      organizationId,
       projectId
     );
     return peoplePotentialGrantees.map((potentialGrantee) => {
@@ -199,9 +189,13 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private async getServiceAccountPotentialGrantees(
-    organizationId: string
+    organizationId: string,
+    projectId: string
   ): Promise<SelectItemView[]> {
-    const serviceAccounts = await this.serviceAccountService.getServiceAccounts(organizationId);
+    const serviceAccounts = await this.accessPolicyService.getServiceAccountPotentialGrantees(
+      organizationId,
+      projectId
+    );
     return serviceAccounts.map((serviceAccount) => {
       const selectItemView: SelectItemView = {
         icon: this.serviceAccountIcon,
@@ -213,25 +207,26 @@ export class AccessSelectorComponent implements OnInit, OnDestroy, OnChanges {
     });
   }
 
-  private filterExistingAccessPolicies(potentialGrantees: SelectItemView[]): SelectItemView[] {
+  private filterExistingAccessPolicies(
+    potentialGrantees: SelectItemView[],
+    projectAccessPolicies: ProjectAccessPoliciesView
+  ): SelectItemView[] {
     return potentialGrantees
       .filter(
         (potentialGrantee) =>
-          !this.projectAccessPolicies.serviceAccountAccessPolicies.some(
+          !projectAccessPolicies.serviceAccountAccessPolicies.some(
             (ap) => ap.serviceAccountId == potentialGrantee.id
           )
       )
       .filter(
         (potentialGrantee) =>
-          !this.projectAccessPolicies.userAccessPolicies.some(
+          !projectAccessPolicies.userAccessPolicies.some(
             (ap) => ap.organizationUserId == potentialGrantee.id
           )
       )
       .filter(
         (potentialGrantee) =>
-          !this.projectAccessPolicies.groupAccessPolicies.some(
-            (ap) => ap.groupId == potentialGrantee.id
-          )
+          !projectAccessPolicies.groupAccessPolicies.some((ap) => ap.groupId == potentialGrantee.id)
       );
   }
 }

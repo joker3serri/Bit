@@ -57,7 +57,7 @@ export class AccessPolicyService {
     return await this.createProjectAccessPoliciesView(organizationId, results);
   }
 
-  async getPeoplePotentialGrantees(projectId: string) {
+  async getPeoplePotentialGrantees(organizationId: string, projectId: string) {
     const r = await this.apiService.send(
       "GET",
       "/projects/" + projectId + "/access-policies/people/potential-grantees",
@@ -66,7 +66,19 @@ export class AccessPolicyService {
       true
     );
     const results = new ListResponse(r, PotentialGranteeResponse);
-    return this.createPotentialGranteeViews(results.data);
+    return await this.createPotentialGranteeViews(organizationId, results.data);
+  }
+
+  async getServiceAccountPotentialGrantees(organizationId: string, projectId: string) {
+    const r = await this.apiService.send(
+      "GET",
+      "/projects/" + projectId + "/access-policies/service-accounts/potential-grantees",
+      null,
+      true,
+      true
+    );
+    const results = new ListResponse(r, PotentialGranteeResponse);
+    return await this.createPotentialGranteeViews(organizationId, results.data);
   }
 
   async deleteAccessPolicy(accessPolicyId: string): Promise<void> {
@@ -169,11 +181,10 @@ export class AccessPolicyService {
       return this.createGroupProjectAccessPolicyView(ap);
     });
     view.serviceAccountAccessPolicies = await Promise.all(
-      projectAccessPoliciesResponse.serviceAccountAccessPolicies.map((ap) => {
-        return this.createServiceAccountProjectAccessPolicyView(orgKey, ap);
+      projectAccessPoliciesResponse.serviceAccountAccessPolicies.map(async (ap) => {
+        return await this.createServiceAccountProjectAccessPolicyView(orgKey, ap);
       })
     );
-
     return view;
   }
 
@@ -226,14 +237,25 @@ export class AccessPolicyService {
     };
   }
 
-  private createPotentialGranteeViews(results: PotentialGranteeResponse[]): PotentialGranteeView[] {
-    return results.map((r) => {
-      const view = new PotentialGranteeView();
-      view.id = r.id;
-      view.name = r.name;
-      view.type = r.type;
-      view.email = r.email;
-      return view;
-    });
+  private async createPotentialGranteeViews(
+    organizationId: string,
+    results: PotentialGranteeResponse[]
+  ): Promise<PotentialGranteeView[]> {
+    const orgKey = await this.getOrganizationKey(organizationId);
+    return await Promise.all(
+      results.map(async (r) => {
+        const view = new PotentialGranteeView();
+        view.id = r.id;
+        view.type = r.type;
+        view.email = r.email;
+
+        if (r.type == "serviceAccount") {
+          view.name = await this.encryptService.decryptToUtf8(new EncString(r.name), orgKey);
+        } else {
+          view.name = r.name;
+        }
+        return view;
+      })
+    );
   }
 }
