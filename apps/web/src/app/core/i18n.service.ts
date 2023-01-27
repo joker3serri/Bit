@@ -1,6 +1,6 @@
 import { I18nService as BaseI18nService } from "@bitwarden/common/services/i18n.service";
 
-import { TranslationConstants } from "../../translationConstants";
+import { TranslationConstants } from "../../translation-constants";
 
 export class I18nService extends BaseI18nService {
   constructor(systemLanguage: string, localesDirectory: string) {

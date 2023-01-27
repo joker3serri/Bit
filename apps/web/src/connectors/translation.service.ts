@@ -1,6 +1,6 @@
 import { TranslationService as BaseTranslationService } from "@bitwarden/common/services/translation.service";
 
-import { TranslationConstants } from "../translationConstants";
+import { TranslationConstants } from "../translation-constants";
 
 export class TranslationService extends BaseTranslationService {
   private _translationLocale: string;
