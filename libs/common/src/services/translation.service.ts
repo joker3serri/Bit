@@ -1,10 +1,10 @@
-import { LocaleService as LocaleServiceAbstraction } from "../abstractions/locale.service";
+import { TranslationService as TranslationServiceAbstraction } from "../abstractions/translation.service";
 
-export class LocaleService implements LocaleServiceAbstraction {
+export abstract class TranslationService implements TranslationServiceAbstraction {
   // First locale is the default (English)
   supportedTranslationLocales: string[] = ["en"];
   defaultLocale = "en";
-  translationLocale: string;
+  abstract translationLocale: string;
   collator: Intl.Collator;
   localeNames = new Map<string, string>([
     ["af", "Afrikaans"],

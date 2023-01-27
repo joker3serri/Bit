@@ -1,7 +1,7 @@
 import { Observable } from "rxjs";
 
-import { LocaleService } from "./locale.service";
+import { TranslationService } from "./translation.service";
 
-export abstract class I18nService extends LocaleService {
+export abstract class I18nService extends TranslationService {
   locale$: Observable<string>;
 }

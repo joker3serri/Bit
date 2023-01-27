@@ -1,8 +1,6 @@
-// eslint-disable-next-line no-restricted-imports
-import { LocaleService } from "../app/core/locale.service";
-
 import { b64Decode, getQsParam } from "./common";
 import { buildDataString, parseWebauthnJson } from "./common-webauthn";
+import { TranslationService } from "./translation.service";
 
 require("./webauthn.scss");
 
@@ -11,7 +9,7 @@ let webauthnJson: any;
 let parentUrl: string = null;
 let sentSuccess = false;
 let locale: string = null;
-let localeService: LocaleService = null;
+let localeService: TranslationService = null;
 
 function parseParameters() {
   if (parsed) {
@@ -63,10 +61,10 @@ function parseParametersV2() {
 document.addEventListener("DOMContentLoaded", async () => {
   parseParameters();
   try {
-    localeService = new LocaleService(locale, "locales");
+    localeService = new TranslationService(locale, "locales");
   } catch {
     error("Failed to load the provided locale " + locale);
-    localeService = new LocaleService("en", "locales");
+    localeService = new TranslationService("en", "locales");
   }
 
   await localeService.init();

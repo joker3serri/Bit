@@ -1,4 +1,4 @@
-export abstract class LocaleService {
+export abstract class TranslationService {
   supportedTranslationLocales: string[];
   translationLocale: string;
   collator: Intl.Collator;
