@@ -159,7 +159,7 @@ jobs:
 
       - name: Build & Package Unix
         if: runner.os != 'Windows'
-        run: npm run dist:$(env.SHORT_RUNNER_OS) --quiet
+        run: npm run dist:${{ env.SHORT_RUNNER_OS }} --quiet
 
       - name: Package Chocolatey
         shell: pwsh
