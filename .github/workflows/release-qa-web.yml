@@ -35,7 +35,7 @@ jobs:
           if [ "${{ inputs.environment }}" == "POC" ]; then
             echo "environment=POC" >> $GITHUB_OUTPUT
             echo "environment-url=http://vault.poc.bitwarden.pw" >> $GITHUB_OUTPUT
-            echo "environment-name=Web\ Vault\ -\ POC" >> $GITHUB_OUTPUT
+            echo "environment-name=Web Vault - POC" >> $GITHUB_OUTPUT
             echo "environment-branch=cf-pages-poc" >> $GITHUB_OUTPUT
             echo "environment-artifact=web-*-cloud-POC.zip" >> $GITHUB_OUTPUT
           elif [ "${{ inputs.environment }}" == "QA" ]; then
