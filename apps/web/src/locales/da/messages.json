@@ -133,6 +133,9 @@
   "ms": {
     "message": "Frk."
   },
+  "mx": {
+    "message": "Neutral"
+  },
   "dr": {
     "message": "Dr."
   },
@@ -277,12 +280,36 @@
   "searchFavorites": {
     "message": "Søg i favoritter"
   },
-  "searchType": {
-    "message": "Søg type",
-    "description": "Search item type"
+  "searchLogin": {
+    "message": "Søg i logins",
+    "description": "Search Login type"
+  },
+  "searchCard": {
+    "message": "Søg i kort",
+    "description": "Search Card type"
+  },
+  "searchIdentity": {
+    "message": "Søg i identiteter",
+    "description": "Search Identity type"
+  },
+  "searchSecureNote": {
+    "message": "Søg i sikre notater",
+    "description": "Search Secure Note type"
   },
   "searchVault": {
     "message": "Søg i boks"
+  },
+  "searchMyVault": {
+    "message": "Søg i min boks"
+  },
+  "searchOrganization": {
+    "message": "Søg i organisation"
+  },
+  "searchMembers": {
+    "message": "Søg i medlemmer"
+  },
+  "searchGroups": {
+    "message": "Søg grupper"
   },
   "allItems": {
     "message": "Alle emner"
@@ -365,6 +392,9 @@
   "select": {
     "message": "Vælg"
   },
+  "newItem": {
+    "message": "Nyt emne"
+  },
   "addItem": {
     "message": "Tilføj emne"
   },
@@ -373,6 +403,13 @@
   },
   "viewItem": {
     "message": "Vis emne"
+  },
+  "new": {
+    "message": "New",
+    "description": "for adding new items"
+  },
+  "item": {
+    "message": "Emne"
   },
   "ex": {
     "message": "eks.",
@@ -438,6 +475,9 @@
   },
   "vaultItems": {
     "message": "Boksemner"
+  },
+  "filter": {
+    "message": "Filter"
   },
   "moveSelectedToOrg": {
     "message": "Flyt valgte til organisation"
@@ -544,6 +584,12 @@
   },
   "deletedFolder": {
     "message": "Mappe slettet"
+  },
+  "editInfo": {
+    "message": "Redigér info"
+  },
+  "access": {
+    "message": "Adgang"
   },
   "loggedOut": {
     "message": "Logget ud"
@@ -702,6 +748,9 @@
   "noItemsInList": {
     "message": "Der er ingen emner at vise."
   },
+  "noPermissionToViewAllCollectionItems": {
+    "message": "Ingen tilladelse til at se alle emner i denne samling."
+  },
   "noCollectionsInList": {
     "message": "Der er ingen samlinger at vise."
   },
@@ -710,6 +759,9 @@
   },
   "noUsersInList": {
     "message": "Der er ingen brugere at vise."
+  },
+  "noMembersInList": {
+    "message": "Ingen medlemmer at vise."
   },
   "noEventsInList": {
     "message": "Der er ingen begivenheder at vise."
@@ -855,6 +907,18 @@
       }
     }
   },
+  "deleteSelectedCollectionsDesc": {
+    "message": "$COUNT$ samling(er) slettes permanent.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "150"
+      }
+    }
+  },
+  "deleteSelectedConfirmation": {
+    "message": "Sikker på, at du vil fortsætte?"
+  },
   "moveSelectedItemsDesc": {
     "message": "Vælg en mappe, hvortil de(t) $COUNT$ valgte emne(r) ønskes flyttet.",
     "placeholders": {
@@ -929,17 +993,17 @@
   "confirmFilePassword": {
     "message": "Bekræft filadgangskode"
   },
-  "accountBackupOptionDescription": {
-    "message": "Brug din kontos krypteringsnøgle til at kryptere eksporten og begrænse importen til udelukkende den aktuelle Bitwarden-konto."
+  "accountRestrictedOptionDescription": {
+    "message": "Brug kontokrypteringsnøglen, dannet af dit kontobrugernavn samt hovedadgangskode, for at kryptere eksporten og hindre import til andre end den aktuelle Bitwarden-konto."
   },
   "passwordProtectedOptionDescription": {
     "message": "Opsæt en adgangskode til både at kryptere eksporten samt dekryptere denne ved import til enhver Bitwarden-konto."
   },
-  "fileTypeHeading": {
-    "message": "Filtype"
+  "exportTypeHeading": {
+    "message": "Eksporttype"
   },
-  "accountBackup": {
-    "message": "Kontosikkerhedskopi"
+  "accountRestricted": {
+    "message": "Konto begrænset"
   },
   "passwordProtected": {
     "message": "Adgangskodebeskyttet"
@@ -1558,7 +1622,7 @@
   },
   "orgsReportsDesc": {
     "message": "Identificér og luk sikkerhedshuller i organisationskonti ved at klikke på rapporterne nedenfor.",
-    "description": "Vault health reports can be used to evaluate the security of your Bitwarden individual or organization Vault."
+    "description": "Vault health reports can be used to evaluate the security of your Bitwarden individual or organization vault."
   },
   "unsecuredWebsitesReport": {
     "message": "Usikre websteder"
@@ -1699,7 +1763,7 @@
     "message": "Kontroller eventuelle brugernavne eller e-mailadresser, som du bruger."
   },
   "checkBreaches": {
-    "message": "Kontroller læk"
+    "message": "Tjek læk"
   },
   "breachUsernameNotFound": {
     "message": "$USERNAME$ blev ikke fundet i nogen kendte datalæk.",
@@ -1752,7 +1816,7 @@
     "message": "Fakturering"
   },
   "billingPlanLabel": {
-    "message": "Faktureringsplan"
+    "message": "Faktureringsabonnementstype"
   },
   "paymentType": {
     "message": "Betalingstype"
@@ -1821,6 +1885,22 @@
         "example": "$10"
       }
     }
+  },
+  "premiumPriceWithFamilyPlan": {
+    "message": "Køb Premium for kun $PRICE$ /år, eller køb Premium-konti til $FAMILYPLANUSERCOUNT$ brugere og ubegrænset familiedeling med et ",
+    "placeholders": {
+      "price": {
+        "content": "$1",
+        "example": "$10"
+      },
+      "familyplanusercount": {
+        "content": "$2",
+        "example": "6"
+      }
+    }
+  },
+  "bitwardenFamiliesPlan": {
+    "message": "Bitwarden Families-abonnement."
   },
   "addons": {
     "message": "Tilføjelser"
@@ -2356,6 +2436,15 @@
   "deleteGroupConfirmation": {
     "message": "Er du sikker på, at du vil slette denne gruppe?"
   },
+  "deleteMultipleGroupsConfirmation": {
+    "message": "Sikker på, at flg. $QUANTITY$ gruppe(r) skal slettes?",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
   "removeUserConfirmation": {
     "message": "Er du sikker på, at du vil fjerne denne bruger?"
   },
@@ -2373,6 +2462,9 @@
   },
   "externalIdDesc": {
     "message": "Det eksterne id kan bruges som reference eller til at forbinde denne ressource til et eksternt system som f.eks. et brugerkartotek."
+  },
+  "nestCollectionUnder": {
+    "message": "Placér samling under"
   },
   "accessControl": {
     "message": "Adgangskontrol"
@@ -2395,20 +2487,29 @@
   "editCollection": {
     "message": "Redigér samling"
   },
+  "collectionInfo": {
+    "message": "Info om samling"
+  },
   "deleteCollectionConfirmation": {
     "message": "Er du sikker på, at du vil slette denne samling?"
   },
-  "editUser": {
-    "message": "Redigér bruger"
+  "editMember": {
+    "message": "Redigér medlem"
   },
-  "inviteUser": {
-    "message": "Invitér bruger"
+  "fieldOnTabRequiresAttention": {
+    "message": "Et felt på fanen '$TAB$' kræver din opmærksomhed.",
+    "placeholders": {
+      "tab": {
+        "content": "$1",
+        "example": "Collection info"
+      }
+    }
   },
   "inviteUserDesc": {
     "message": "Inviter en ny bruger til din organisation ved at indtaste e-mailadressen på deres Bitwarden-konto nedenfor. Hvis de ikke allerede har en Bitwarden-konto, bliver de bedt om at oprette en ny konto."
   },
   "inviteMultipleEmailDesc": {
-    "message": "Du kan invitere op til $COUNT$ brugere ad gangen ved at kommaseparere en liste med e-mailadresser.",
+    "message": "Du kan invitere op til $COUNT$ brugere ad gangen ved at kommaseparere en liste med emailadresser.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -2668,6 +2769,9 @@
       }
     }
   },
+  "deletedCollections": {
+    "message": "Slet samlinger"
+  },
   "deletedCollectionId": {
     "message": "Slettede samling $ID$.",
     "placeholders": {
@@ -2710,6 +2814,15 @@
       "id": {
         "content": "$1",
         "example": "Developers"
+      }
+    }
+  },
+  "deletedManyGroups": {
+    "message": "$QUANTITY$ gruppe(r) slettet.",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "3"
       }
     }
   },
@@ -2891,7 +3004,7 @@
     "message": "Redigér de grupper, som denne bruger tilhører."
   },
   "invitedUsers": {
-    "message": "Inviterede bruger(e)."
+    "message": "Bruger(e) inviteret"
   },
   "resendInvitation": {
     "message": "Send invitation igen"
@@ -2915,7 +3028,7 @@
     "message": "Bekræft bruger"
   },
   "hasBeenConfirmed": {
-    "message": "$USER$ er blevet bekræftet.",
+    "message": "$USER$ bekræftet.",
     "placeholders": {
       "user": {
         "content": "$1",
@@ -2936,7 +3049,7 @@
     "message": "Slutdato"
   },
   "verifyEmail": {
-    "message": "Bekræft email"
+    "message": "Bekræft e-mail"
   },
   "verifyEmailDesc": {
     "message": "Bekræft din e-mailadresse for at låse op for adgangen til alle funktioner."
@@ -2948,7 +3061,7 @@
     "message": "Tjek din e-mail indbakke for et bekræftelseslink."
   },
   "emailVerified": {
-    "message": "Din email er blevet bekræftet."
+    "message": "Kontoe-mail bekræftet"
   },
   "emailVerifiedFailed": {
     "message": "Kan ikke bekræfte din e-mail. Prøv at sende en ny verifikations-email."
@@ -3137,7 +3250,7 @@
     "message": "Indtast dit installations-id"
   },
   "limitSubscriptionDesc": {
-    "message": "Indstil en pladsgrænse for dit abonnement. Når denne grænse er nået, vil du ikke kunne invitere nye brugere."
+    "message": "Opsæt pladskvote for abonnementet. Når kvoten er opbrugt, vil du ikke kunne invitere nye brugere."
   },
   "maxSeatLimit": {
     "message": "Pladskvote (valgfrit)",
@@ -3182,10 +3295,10 @@
     "message": "For yderligere hjælp til håndtering af dit abonnement, kontakt venligst kundesupport."
   },
   "subscriptionUserSeatsUnlimitedAutoscale": {
-    "message": "Justeringer af dit abonnement vil resultere i forholdsmæssige ændringer af dine faktureringstotaler. Hvis nyligt inviterede brugere overstiger dine abonnementspladser, vil du straks modtage en forholdsmæssig opkrævning for de ekstra brugere."
+    "message": "Abonnementsjusteringer vil resultere i forholdsmæssige ændringer af dine faktureringstotaler. Overstiger antal nyligt inviterede brugere abonnementskvoten, modtager du straks en forholdsmæssig opkrævning for de ekstra brugere."
   },
   "subscriptionUserSeatsLimitedAutoscale": {
-    "message": "Justeringer af dit abonnement vil resultere i forholdsmæssige ændringer af dine faktureringstotaler. Hvis nyligt inviterede brugere overskrider dine abonnementspladser, vil du straks modtage en forholdsmæssig opkrævning for de ekstra brugere, indtil din pladsgrænse på $MAX$ er nået.",
+    "message": "Abonnementsjusteringer vil resultere i forholdsmæssige ændringer af dine faktureringstotaler. Overstiger antal nyligt inviterede brugere abonnementskvoten, modtager du straks en forholdsmæssig opkrævning for de ekstra brugere, indtil pladskvoten på $MAX$ er nået.",
     "placeholders": {
       "max": {
         "content": "$1",
@@ -3194,7 +3307,7 @@
     }
   },
   "subscriptionFreePlan": {
-    "message": "Du kan ikke invitere mere end $COUNT$ brugere uden at opgradere dit abonnement.",
+    "message": "Der kan ikke inviteres flere end $COUNT$ brugere uden en abonnementsopgradering.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -3203,7 +3316,7 @@
     }
   },
   "subscriptionFamiliesPlan": {
-    "message": "Du kan ikke invitere mere end $COUNT$ brugere uden at opgradere dit abonnement. Kontakt venligst kundesupport for at opgradere.",
+    "message": "Der kan ikke inviteres flere end $COUNT$ brugere uden en abonnementsopgradering. Kontakt Kundesupport vedr. opgradering.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -3212,7 +3325,7 @@
     }
   },
   "subscriptionSponsoredFamiliesPlan": {
-    "message": "Dit abonnement muliggør i alt $COUNT$ brugere. Abonnement er sponsoreret og faktureres til en ekstern organisation.",
+    "message": "Dit abonnement muliggør i alt $COUNT$ brugere. Abonnement er sponseret og faktureres til en ekstern organisation.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -3221,7 +3334,7 @@
     }
   },
   "subscriptionMaxReached": {
-    "message": "Justeringer af dit abonnement vil resultere i forholdsmæssige ændringer af dine faktureringstotaler. Du kan ikke invitere flere end $COUNT$ brugere uden at øge dine abonnementspladser.",
+    "message": "Abonnementsjusteringer vil resultere i forholdsmæssige ændringer af dine faktureringstotaler. Der kan ikke inviteres flere end $COUNT$ brugere uden at øge antallet af abonnementspladser.",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -4117,7 +4230,7 @@
     "message": "Tilpasset"
   },
   "customDesc": {
-    "message": "Tillader mere granulær kontrol af brugertilladelser for avancerede opsætninger."
+    "message": "Tildel tilpassede tilladelser til medlemmer"
   },
   "customDescNonEnterpriseStart": {
     "message": "Tilpassede roller er en ",
@@ -5442,6 +5555,27 @@
       }
     }
   },
+  "inputForbiddenCharacters": {
+    "message": "Flg. tegn er ikke tilladt: $CHARACTERS$",
+    "placeholders": {
+      "characters": {
+        "content": "$1",
+        "example": "@, #, $, %"
+      }
+    }
+  },
+  "multipleInputEmails": {
+    "message": "1 eller flere e-mails er ugyldige"
+  },
+  "tooManyEmails": {
+    "message": "Der kan kun indsendes op til $COUNT$ e-mails ad gangen",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "20"
+      }
+    }
+  },
   "fieldsNeedAttention": {
     "message": "$COUNT$ felt(er) ovenfor kræver din opmærksomhed.",
     "placeholders": {
@@ -5475,8 +5609,47 @@
   "notYou": {
     "message": "Ikke dig?"
   },
+  "pickAnAvatarColor": {
+    "message": "Vælg avatarfarve"
+  },
+  "customizeAvatar": {
+    "message": "Tilpas avatar"
+  },
+  "avatarUpdated": {
+    "message": "Avatar opdateret"
+  },
+  "brightBlue": {
+    "message": "Klar blå"
+  },
+  "green": {
+    "message": "Grøn"
+  },
+  "orange": {
+    "message": "Orange"
+  },
+  "lavender": {
+    "message": "Lavendel"
+  },
+  "yellow": {
+    "message": "Gul"
+  },
+  "indigo": {
+    "message": "Mørkeblå (indigo)"
+  },
+  "teal": {
+    "message": "Blågrøn"
+  },
+  "salmon": {
+    "message": "Laksefarvet"
+  },
+  "pink": {
+    "message": "Lyserød"
+  },
+  "customColor": {
+    "message": "Tilpasset farve"
+  },
   "multiSelectPlaceholder": {
-    "message": "-- Type at filtrere --"
+    "message": "-- Skriv for at filtrere --"
   },
   "multiSelectLoading": {
     "message": "Henter indstillinger..."
@@ -5486,6 +5659,272 @@
   },
   "multiSelectClearAll": {
     "message": "Ryd alt"
+  },
+  "toggleCharacterCount": {
+    "message": "Vis/skjul tegnantal",
+    "description": "'Character count' describes a feature that displays a number next to each character of the password."
+  },
+  "passwordCharacterCount": {
+    "message": "Adgangskodetegnantal",
+    "description": "'Character count' describes a feature that displays a number next to each character of the password."
+  },
+  "hide": {
+    "message": "Skjul"
+  },
+  "projects": {
+    "message": "Projekter"
+  },
+  "lastEdited": {
+    "message": "Senest redigeret"
+  },
+  "editSecret": {
+    "message": "Redigér hemmelighed"
+  },
+  "addSecret": {
+    "message": "Tilføj hemmelighed"
+  },
+  "copySecretName": {
+    "message": "Kopiér hemmeligheds navn"
+  },
+  "copySecretValue": {
+    "message": "Kopér hemmeligheds værdi"
+  },
+  "deleteSecret": {
+    "message": "Slet hemmelighed"
+  },
+  "deleteSecrets": {
+    "message": "Slet hemmeligheder"
+  },
+  "secretProjectAssociationDescription": {
+    "message": "Vælg projekter, som hemmeligheden vil blive tilknyttet. Den vil kun kunne ses af organisationsbrugere med adgang til disse projekter."
+  },
+  "typeOrSelectProjects": {
+    "message": "Angiv eller vælg Projekter"
+  },
+  "typeOrSelectProject": {
+    "message": "Angiv eller vælg Projekt"
+  },
+  "project": {
+    "message": "Projekt"
+  },
+  "editProject": {
+    "message": "Redigér projekt"
+  },
+  "viewProject": {
+    "message": "Vis projekt"
+  },
+  "deleteProject": {
+    "message": "Slet projekt"
+  },
+  "deleteProjects": {
+    "message": "Slet projekter"
+  },
+  "secret": {
+    "message": "Hemmelighed"
+  },
+  "serviceAccount": {
+    "message": "Tjenestekonto"
+  },
+  "serviceAccounts": {
+    "message": "Tjenestekonti"
+  },
+  "secrets": {
+    "message": "Hemmelighed"
+  },
+  "nameValuePair": {
+    "message": "Navn/værdipar"
+  },
+  "secretEdited": {
+    "message": "Hemmelighed redigeret"
+  },
+  "secretCreated": {
+    "message": "Hemmelighed oprettet"
+  },
+  "newSecret": {
+    "message": "Ny hemmelighed"
+  },
+  "newServiceAccount": {
+    "message": "Ny tjenestekonto"
+  },
+  "secretsNoItemsTitle": {
+    "message": "Ingen hemmeligheder at vise"
+  },
+  "secretsNoItemsMessage": {
+    "message": "Tilføj en ny hemmelighed eller importér hemmeligheder for at komme i gang."
+  },
+  "serviceAccountsNoItemsTitle": {
+    "message": "Intet at vise endnu"
+  },
+  "serviceAccountsNoItemsMessage": {
+    "message": "Create a new service account to get started automating secret access."
+  },
+  "searchSecrets": {
+    "message": "Søg i hemmeligheder"
+  },
+  "deleteServiceAccounts": {
+    "message": "Slet tjenestekonti"
+  },
+  "deleteServiceAccount": {
+    "message": "Slet tjenestekonto"
+  },
+  "viewServiceAccount": {
+    "message": "Vis tjenestekonto"
+  },
+  "searchServiceAccounts": {
+    "message": "Søg efter tjenestekonti"
+  },
+  "addProject": {
+    "message": "Tilføj projekt"
+  },
+  "projectEdited": {
+    "message": "Projekt redigeret"
+  },
+  "projectSaved": {
+    "message": "Projekt gemt"
+  },
+  "projectCreated": {
+    "message": "Projekt oprettet"
+  },
+  "projectName": {
+    "message": "Projektnavn"
+  },
+  "newProject": {
+    "message": "Nyt projekt"
+  },
+  "softDeleteSecretWarning": {
+    "message": "Sletning af hemmeligheder kan påvirke eksisterende integrationer."
+  },
+  "softDeletesSuccessToast": {
+    "message": "Hemmelighed sendt til papirkurv"
+  },
+  "serviceAccountCreated": {
+    "message": "Tjenestekonto oprettet"
+  },
+  "smAccess": {
+    "message": "Adgang"
+  },
+  "projectCommaSecret": {
+    "message": "Projekt, Hemmelighed"
+  },
+  "serviceAccountName": {
+    "message": "Tjenestekontonavn"
+  },
+  "newSaSelectAccess": {
+    "message": "Angiv/vælg projekter eller hemmeligheder"
+  },
+  "newSaTypeToFilter": {
+    "message": "Angiv for at filtrere"
+  },
+  "deleteProjectsToast": {
+    "message": "Projekter slettet"
+  },
+  "deleteProjectToast": {
+    "message": "Projektet og alle tilknyttede hemmeligheder er slettet"
+  },
+  "deleteProjectDialogMessage": {
+    "message": "Sletning af projektet $PROJECT$ er permanent og irreversibelt.",
+    "placeholders": {
+      "project": {
+        "content": "$1",
+        "example": "project name"
+      }
+    }
+  },
+  "deleteProjectInputLabel": {
+    "message": "Angiv \"$CONFIRM$\" for at fortsætte",
+    "placeholders": {
+      "confirm": {
+        "content": "$1",
+        "example": "Delete 3 projects"
+      }
+    }
+  },
+  "deleteProjectConfirmMessage": {
+    "message": "Slet $PROJECT$",
+    "placeholders": {
+      "project": {
+        "content": "$1",
+        "example": "project name"
+      }
+    }
+  },
+  "deleteProjectsConfirmMessage": {
+    "message": "Slet $COUNT$ projekter",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "deleteProjectsDialogMessage": {
+    "message": "Sletning af projekter er permanent og irreversibelt."
+  },
+  "projectsNoItemsTitle": {
+    "message": "Ingen projekter at vise"
+  },
+  "projectsNoItemsMessage": {
+    "message": "Tilføj et nyt projekt for at komme i gang med at organisere hemmeligheder."
+  },
+  "smConfirmationRequired": {
+    "message": "Bekræftelse kræves"
+  },
+  "bulkDeleteProjectsErrorMessage": {
+    "message": "Flg. projekter kunne ikke slettes:"
+  },
+  "softDeleteSuccessToast": {
+    "message": "Hemmelighed sendt til papirkurv"
+  },
+  "searchProjects": {
+    "message": "Søg i projekter"
+  },
+  "accessTokens": {
+    "message": "Adgangstokener"
+  },
+  "createAccessToken": {
+    "message": "Opret adgangstoken"
+  },
+  "expires": {
+    "message": "Udløber"
+  },
+  "canRead": {
+    "message": "Kan læse"
+  },
+  "accessTokensNoItemsTitle": {
+    "message": "Ingen adgangstokener at vise"
+  },
+  "accessTokensNoItemsDesc": {
+    "message": "Opret et adgangstoken for at komme i gang"
+  },
+  "downloadAccessToken": {
+    "message": "Download eller kopiér før lukning."
+  },
+  "expiresOnAccessToken": {
+    "message": "Udløber:"
+  },
+  "accessTokenCallOutTitle": {
+    "message": "Adgangstokener er ikke gemt og kan ikke hentes"
+  },
+  "copyToken": {
+    "message": "Kopiér token"
+  },
+  "accessToken": {
+    "message": "Adgangstoken"
+  },
+  "accessTokenExpirationRequired": {
+    "message": "Udløbsdato er obligatorisk"
+  },
+  "accessTokenCreatedAndCopied": {
+    "message": "Adgangstoken oprettet og kopieret til udklipsholder"
+  },
+  "accessTokenPermissionsBetaNotification": {
+    "message": "Tilladelseshåndtering er utilgængelig i beta."
+  },
+  "revokeAccessToken": {
+    "message": "Ophæv adgangstoken"
+  },
+  "submenu": {
+    "message": "Undermenu"
   },
   "from": {
     "message": "Fra"
@@ -5499,8 +5938,44 @@
   "update": {
     "message": "Opdatér"
   },
+  "plusNMore": {
+    "message": "+ $QUANTITY$ flere",
+    "placeholders": {
+      "quantity": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "groupInfo": {
+    "message": "Gruppeinfo"
+  },
+  "editGroupMembersDesc": {
+    "message": "Tildel medlemmer adgang til gruppens tildelte samlinger."
+  },
+  "editGroupCollectionsDesc": {
+    "message": "Tildel adgang til samlinger ved at føje dem til denne gruppe."
+  },
+  "accessAllCollectionsDesc": {
+    "message": "Tildel adgang til alle nuværende og fremtidige samlinger."
+  },
+  "accessAllCollectionsHelp": {
+    "message": "Hvis afkrydset, erstatter dette alle andre samlingstilladelser."
+  },
+  "selectMembers": {
+    "message": "Vælg medlemmer"
+  },
+  "selectCollections": {
+    "message": "Vælg samlinger"
+  },
   "role": {
     "message": "Rolle"
+  },
+  "removeMember": {
+    "message": "Fjern medlem"
+  },
+  "collection": {
+    "message": "Samling"
   },
   "canView": {
     "message": "Kan se"
@@ -5514,6 +5989,15 @@
   "canEditExceptPass": {
     "message": "Kan redigere, undtagen adgangskoder"
   },
+  "noCollectionsAdded": {
+    "message": "Ingen samlinger tilføjet"
+  },
+  "noMembersAdded": {
+    "message": "Ingen medlemmer tilføjet"
+  },
+  "noGroupsAdded": {
+    "message": "Ingen grupper tilføjet"
+  },
   "group": {
     "message": "Gruppe"
   },
@@ -5522,5 +6006,89 @@
   },
   "memberAccessAll": {
     "message": "Dette medlem kan tilgå og ændre alle emner."
+  },
+  "membersColumnHeader": {
+    "message": "Medlem/Gruppe"
+  },
+  "groupAndMemberColumnHeader": {
+    "message": "Medlem"
+  },
+  "selectGroupsAndMembers": {
+    "message": "Vælg grupper og medlemmer"
+  },
+  "selectGroups": {
+    "message": "Vælg grupper"
+  },
+  "userPermissionOverrideHelper": {
+    "message": "Tilladelser angivet for et medlem vil erstatte tilladelser angivet af medlemmets gruppe"
+  },
+  "noMembersOrGroupsAdded": {
+    "message": "Ingen medlemmer eller grupper tilføjet"
+  },
+  "deleted": {
+    "message": "Slettet"
+  },
+  "memberStatusFilter": {
+    "message": "Medlemsstatusfilter"
+  },
+  "inviteMember": {
+    "message": "Invitér medlem"
+  },
+  "needsConfirmation": {
+    "message": "Behøver bekræftelse"
+  },
+  "memberRole": {
+    "message": "Medlemsrolle"
+  },
+  "moreFromBitwarden": {
+    "message": "Mere fra Bitwarden"
+  },
+  "switchProducts": {
+    "message": "Skift produkter"
+  },
+  "freeOrgInvLimitReachedManageBilling": {
+    "message": "Gratis organisationer kan have op til $SEATCOUNT$ medlemmer. Opgradér til en betalt abonnementstype for at invitere flere medlemmer.",
+    "placeholders": {
+      "seatcount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "freeOrgInvLimitReachedNoManageBilling": {
+    "message": "Gratis organisationer kan have op til $SEATCOUNT$ medlemmer. Kontakt organisationsejeren for at opgradere.",
+    "placeholders": {
+      "seatcount": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "freeOrgMaxCollectionReachedManageBilling": {
+    "message": "Gratis organisationer kan have op til $COLLECTIONCOUNT$ samlinger. Opgradér til en betalt abonnementstype for at tilføje flere samlinger.",
+    "placeholders": {
+      "COLLECTIONCOUNT": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "freeOrgMaxCollectionReachedNoManageBilling": {
+    "message": "Gratis organisationer kan have op til $COLLECTIONCOUNT$ samlinger. Kontakt organisationsejeren for at opgradere.",
+    "placeholders": {
+      "COLLECTIONCOUNT": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "lowKdfIterations": {
+    "message": "Low KDF Iterations"
+  },
+  "lowKdfIterationsDesc": {
+    "message": "Increase your KDF encryption settings to improve the security of your account."
+  },
+  "changeKdfSettings": {
+    "message": "Change KDF settings"
   }
 }

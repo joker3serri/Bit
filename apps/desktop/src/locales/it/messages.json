@@ -238,6 +238,9 @@
   "ms": {
     "message": "Sig.na"
   },
+  "mx": {
+    "message": "Mx"
+  },
   "dr": {
     "message": "Dott."
   },
@@ -2057,5 +2060,9 @@
   },
   "logInWithAnotherDevice": {
     "message": "Accedi con un altro dispositivo"
+  },
+  "toggleCharacterCount": {
+    "message": "Attiva/disattiva conteggio caratteri",
+    "description": "'Character count' describes a feature that displays a number next to each character of the password."
   }
 }

@@ -1,4 +1,13 @@
-import { Directive, ElementRef, HostBinding, Input, NgZone, Optional, Self } from "@angular/core";
+import {
+  Directive,
+  ElementRef,
+  HostBinding,
+  HostListener,
+  Input,
+  NgZone,
+  Optional,
+  Self,
+} from "@angular/core";
 import { NgControl, Validators } from "@angular/forms";
 
 import { BitFormFieldControl, InputTypes } from "../form-field/form-field-control";
@@ -31,6 +40,7 @@ export class BitInputDirective implements BitFormFieldControl {
       "focus:tw-outline-none",
       "focus:tw-border-primary-700",
       "focus:tw-ring-1",
+      "focus:tw-ring-inset",
       "focus:tw-ring-primary-700",
       "focus:tw-z-10",
       "disabled:tw-bg-secondary-100",
@@ -66,8 +76,19 @@ export class BitInputDirective implements BitFormFieldControl {
     return this.id;
   }
 
+  private isActive = true;
+  @HostListener("blur")
+  onBlur() {
+    this.isActive = true;
+  }
+
+  @HostListener("input")
+  onInput() {
+    this.isActive = false;
+  }
+
   get hasError() {
-    return this.ngControl?.status === "INVALID" && this.ngControl?.touched;
+    return this.ngControl?.status === "INVALID" && this.ngControl?.touched && this.isActive;
   }
 
   get error(): [string, any] {

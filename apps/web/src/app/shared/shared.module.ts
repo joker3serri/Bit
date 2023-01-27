@@ -10,17 +10,22 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import {
   AsyncActionsModule,
   AvatarModule,
+  BadgeListModule,
   BadgeModule,
   ButtonModule,
   CalloutModule,
+  CheckboxModule,
+  ColorPasswordModule,
   DialogModule,
   FormFieldModule,
   IconButtonModule,
   IconModule,
+  LinkModule,
   MenuModule,
-  NavigationModule,
+  MultiSelectModule,
   TableModule,
   TabsModule,
+  ToggleGroupModule,
 } from "@bitwarden/components";
 
 // Register the locales for the application
@@ -44,20 +49,26 @@ import "./locales";
     ToastrModule,
     JslibModule,
 
-    // Component library
+    // Component library modules
+    // Only add components that are used almost everywhere in the application
     AsyncActionsModule,
     AvatarModule,
+    BadgeListModule,
     BadgeModule,
     ButtonModule,
     CalloutModule,
+    CheckboxModule,
+    ColorPasswordModule,
     DialogModule,
     FormFieldModule,
     IconButtonModule,
     IconModule,
+    LinkModule,
     MenuModule,
-    NavigationModule,
+    MultiSelectModule,
     TableModule,
     TabsModule,
+    ToggleGroupModule,
 
     // Web specific
   ],
@@ -74,17 +85,22 @@ import "./locales";
     // Component library
     AsyncActionsModule,
     AvatarModule,
+    BadgeListModule,
     BadgeModule,
     ButtonModule,
     CalloutModule,
+    CheckboxModule,
+    ColorPasswordModule,
     DialogModule,
     FormFieldModule,
     IconButtonModule,
     IconModule,
+    LinkModule,
     MenuModule,
-    NavigationModule,
+    MultiSelectModule,
     TableModule,
     TabsModule,
+    ToggleGroupModule,
 
     // Web specific
   ],

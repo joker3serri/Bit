@@ -1,5 +1,4 @@
 import * as papa from "papaparse";
-import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "../abstractions/api.service";
 import { CipherService } from "../abstractions/cipher.service";
@@ -11,7 +10,7 @@ import {
 } from "../abstractions/export.service";
 import { FolderService } from "../abstractions/folder/folder.service.abstraction";
 import { CipherType } from "../enums/cipherType";
-import { DEFAULT_KDF_ITERATIONS, KdfType } from "../enums/kdfType";
+import { DEFAULT_PBKDF2_ITERATIONS, KdfType } from "../enums/kdfType";
 import { Utils } from "../misc/utils";
 import { CipherData } from "../models/data/cipher.data";
 import { CollectionData } from "../models/data/collection.data";
@@ -55,7 +54,7 @@ export class ExportService implements ExportServiceAbstraction {
       : await this.getExport("json");
 
     const salt = Utils.fromBufferToB64(await this.cryptoFunctionService.randomBytes(16));
-    const kdfIterations = DEFAULT_KDF_ITERATIONS;
+    const kdfIterations = DEFAULT_PBKDF2_ITERATIONS;
     const key = await this.cryptoService.makePinKey(
       password,
       salt,
@@ -116,7 +115,7 @@ export class ExportService implements ExportServiceAbstraction {
     const promises = [];
 
     promises.push(
-      firstValueFrom(this.folderService.folderViews$).then((folders) => {
+      this.folderService.getAllDecryptedFromState().then((folders) => {
         decFolders = folders;
       })
     );
@@ -192,7 +191,7 @@ export class ExportService implements ExportServiceAbstraction {
     const promises = [];
 
     promises.push(
-      firstValueFrom(this.folderService.folders$).then((f) => {
+      this.folderService.getAllFromState().then((f) => {
         folders = f;
       })
     );

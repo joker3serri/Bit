@@ -238,6 +238,9 @@
   "ms": {
     "message": "Hörmətli"
   },
+  "mx": {
+    "message": "Hörmətli"
+  },
   "dr": {
     "message": "Dr"
   },
@@ -2057,5 +2060,9 @@
   },
   "logInWithAnotherDevice": {
     "message": "Başqa cihazla giriş et"
+  },
+  "toggleCharacterCount": {
+    "message": "Simvol sayını dəyişdir",
+    "description": "'Character count' describes a feature that displays a number next to each character of the password."
   }
 }

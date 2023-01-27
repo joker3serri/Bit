@@ -238,6 +238,9 @@
   "ms": {
     "message": "জনাবা"
   },
+  "mx": {
+    "message": "Mx"
+  },
   "dr": {
     "message": "ডাঃ"
   },
@@ -2057,5 +2060,9 @@
   },
   "logInWithAnotherDevice": {
     "message": "Log in with another device"
+  },
+  "toggleCharacterCount": {
+    "message": "Toggle character count",
+    "description": "'Character count' describes a feature that displays a number next to each character of the password."
   }
 }

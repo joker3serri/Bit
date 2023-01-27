@@ -238,6 +238,9 @@
   "ms": {
     "message": "Mej."
   },
+  "mx": {
+    "message": "Mx"
+  },
   "dr": {
     "message": "Dr."
   },
@@ -2057,5 +2060,9 @@
   },
   "logInWithAnotherDevice": {
     "message": "Inloggen met een ander apparaat"
+  },
+  "toggleCharacterCount": {
+    "message": "Tekentelling in-/uitschakelen",
+    "description": "'Character count' describes a feature that displays a number next to each character of the password."
   }
 }

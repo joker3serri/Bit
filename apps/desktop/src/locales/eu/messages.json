@@ -238,6 +238,9 @@
   "ms": {
     "message": "And."
   },
+  "mx": {
+    "message": "Mx"
+  },
   "dr": {
     "message": "Jn."
   },
@@ -2057,5 +2060,9 @@
   },
   "logInWithAnotherDevice": {
     "message": "Hasi saioa beste gailu batekin"
+  },
+  "toggleCharacterCount": {
+    "message": "Toggle character count",
+    "description": "'Character count' describes a feature that displays a number next to each character of the password."
   }
 }
