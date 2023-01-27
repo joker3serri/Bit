@@ -44,8 +44,10 @@ jobs:
         run: |
           sudo apt update
           sudo apt -y install cloc
+
       - name: Print lines of code
         run: cloc --include-lang TypeScript,JavaScript --vcs git
+
 
   setup:
     name: Setup
@@ -283,6 +285,7 @@ jobs:
           echo "GitHub ref: $GITHUB_REF"
           echo "GitHub event: $GITHUB_EVENT"
           echo "BW Package Version: $_PACKAGE_VERSION"
+
       - name: Get bw linux cli
         uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741
         with:
@@ -295,6 +298,7 @@ jobs:
           sed -i s/__version__/${{ env._PACKAGE_VERSION }}/g dist/snap/snapcraft.yaml
           cd dist/snap
           ls -alth
+
       - name: Build snap
         uses: snapcore/action-build@ea14cdeb353272f75977040488ca191880509a8c  # v1.1.0
         with:
@@ -306,6 +310,7 @@ jobs:
           ls -alth
           sha256sum bw_${{ env._PACKAGE_VERSION }}_amd64.snap \
             | awk '{split($0, a); print a[1]}' > bw-snap-sha256-${{ env._PACKAGE_VERSION }}.txt
+
       - name: Install Snap
         run: sudo snap install dist/snap/bw*.snap --dangerous
 
@@ -366,6 +371,7 @@ jobs:
           elif [ "$SNAP_STATUS" = "failure" ]; then
               exit 1
           fi
+
       - name: Login to Azure - Prod Subscription
         uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
         if: failure()
