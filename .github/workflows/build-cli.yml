@@ -194,8 +194,8 @@ jobs:
       - name: Zip Unix
         if: runner.os != 'Windows'
         run: |
-          zip -r ./dist/bw-${{ env.LOWER_RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip \
-            ./dist/${{ env.LOWER_RUNNER_OS }}/bw
+          cd ./dist/${{ env.LOWER_RUNNER_OS }}
+          zip ../bw-${{ env.LOWER_RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip ./bw
 
       - name: Version Test
         if: runner.os == 'Windows'
