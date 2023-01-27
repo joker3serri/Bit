@@ -29,25 +29,13 @@ jobs:
       - name: Configure
         id: config
         run: |
+          ENV_NAME_LOWER=$(echo "${{ inputs.environment }}" | awk '{print tolower($0)}')
           echo "configuring the Web deploy for ${{ inputs.environment }}"
-
-          if [ "${{ inputs.environment }}" == "POC" ]; then
-            echo "environment=POC" >> $GITHUB_OUTPUT
-            echo "environment-url=http://vault.poc.bitwarden.pw" >> $GITHUB_OUTPUT
-            echo "environment-name=Web Vault - POC" >> $GITHUB_OUTPUT
-            echo "environment-branch=cf-pages-poc" >> $GITHUB_OUTPUT
-            echo "environment-artifact=web-*-cloud-POC.zip" >> $GITHUB_OUTPUT
-          elif [ "${{ inputs.environment }}" == "QA" ]; then
-            echo "environment=QA" >> $GITHUB_OUTPUT
-            echo "environment-url=http://vault.qa.bitwarden.pw" >> $GITHUB_OUTPUT
-            echo "environment-name=Web Vault - QA" >> $GITHUB_OUTPUT
-            echo "environment-branch=cf-pages-qa" >> $GITHUB_OUTPUT
-            echo "environment-artifact=web-*-cloud-QA.zip" >> $GITHUB_OUTPUT
-            exit 1
-          else
-            echo "Environment ${{ inputs.environments }}: Not yet supported"
-            exit 1
-          fi
+          echo "environment=${{ inputs.environment }}" >> $GITHUB_OUTPUT
+          echo "environment-url=http://vault.$ENV_NAME_LOWER.bitwarden.pw" >> $GITHUB_OUTPUT
+          echo "environment-name=Web Vault - ${{ inputs.environment }}" >> $GITHUB_OUTPUT
+          echo "environment-branch=cf-pages-$ENV_NAME_LOWER" >> $GITHUB_OUTPUT
+          echo "environment-artifact=web-*-cloud-${{ inputs.environment }}.zip" >> $GITHUB_OUTPUT
 
 
   cfpages-deploy:
