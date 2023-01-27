@@ -107,7 +107,9 @@ jobs:
         run: |
           if [ -n "$(git status --porcelain)" ]; then
             git add .
+            git status
             git commit -m "Deploy ${{ github.ref_name }} to ${{ env._ENVIRONMENT }} Cloudflare pages"
+            echo "Changes committed"
             git push -u origin ${{ env._ENVIRONMENT_BRANCH }}
           else
             echo "No changes to commit!";
