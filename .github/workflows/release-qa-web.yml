@@ -1,6 +1,5 @@
 ---
-name: QA - Web Release
-#name: Deploy Web - Non-Prod
+name: Deploy Web - Non-Prod
 run-name: Deploy Web ${{ inputs.environment }}
 
 on:
@@ -39,7 +38,11 @@ jobs:
             echo "environment-branch=cf-pages-poc" >> $GITHUB_OUTPUT
             echo "environment-artifact=web-*-cloud-POC.zip" >> $GITHUB_OUTPUT
           elif [ "${{ inputs.environment }}" == "QA" ]; then
-            echo "Environment ${{ inputs.environments }}: Not yet supported"
+            echo "environment=QA" >> $GITHUB_OUTPUT
+            echo "environment-url=http://vault.qa.bitwarden.pw" >> $GITHUB_OUTPUT
+            echo "environment-name=Web Vault - QA" >> $GITHUB_OUTPUT
+            echo "environment-branch=cf-pages-qa" >> $GITHUB_OUTPUT
+            echo "environment-artifact=web-*-cloud-QA.zip" >> $GITHUB_OUTPUT
             exit 1
           else
             echo "Environment ${{ inputs.environments }}: Not yet supported"
