@@ -67,7 +67,7 @@ export default {
 export const KitchenSink: Story = (args) => ({
   props: args,
   template: `
-    <sm-header title="Foobar" icon="bwi-bug">
+    <sm-header title="LongTitleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" icon="bwi-bug">
       <bit-breadcrumbs slot="breadcrumbs">
         <bit-breadcrumb>Foo</bit-breadcrumb>
         <bit-breadcrumb>Bar</bit-breadcrumb>
@@ -143,6 +143,15 @@ export const WithTabs: Story = (args) => ({
         <bit-tab-link route="">Foo</bit-tab-link>
         <bit-tab-link route="#bar">Bar</bit-tab-link>
       </bit-tab-nav-bar>
+    </sm-header>
+  `,
+});
+
+export const WithCustomTitleComponent: Story = (args) => ({
+  props: args,
+  template: `
+    <sm-header title="Foobar" icon="bwi-bug" class="tw-text-main">
+      <h1 slot="title" class="tw-text-3xl tw-font-semibold" style="font-family: 'Comic Sans MS'">Bitwarden</h1>
     </sm-header>
   `,
 });
