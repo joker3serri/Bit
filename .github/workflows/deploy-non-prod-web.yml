@@ -46,7 +46,7 @@ jobs:
       _ENVIRONMENT: ${{ needs.setup.outputs.environment }}
       _ENVIRONMENT_URL: ${{ needs.setup.outputs.environment-url }}
       _ENVIRONMENT_NAME: ${{ needs.setup.outputs.environment-name }}
-      _ENVIRONMENT_BRANCH: ${{ needs.setup.outputs.environment-branch}}
+      _ENVIRONMENT_BRANCH: ${{ needs.setup.outputs.environment-branch }}
       _ENVIRONMENT_ARTIFACT: ${{ needs.setup.outputs.environment-artifact }}
     steps:
       - name: Create GitHub deployment
