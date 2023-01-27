@@ -218,8 +218,9 @@ jobs:
       - name: Create checksums Unix
         if: runner.os != 'Windows'
         run: |
-          echo "$(shasum -a 256 ./dist/bw-${{ env.LOWER_RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip | awk '{ print $1 }')" > \
-            ./dist/bw-${{ env.LOWER_RUNNER_OS }}-sha256-${{ env._PACKAGE_VERSION }}.txt
+          cd ./dist
+          sha256sum bw-${{ env.LOWER_RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip \
+            | awk '{split($0, a); print a[1]}' > bw-${{ env.LOWER_RUNNER_OS }}-sha256-${{ env._PACKAGE_VERSION }}.txt
 
       - name: Upload windows zip asset
         if: runner.os == 'Windows'
