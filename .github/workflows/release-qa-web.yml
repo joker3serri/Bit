@@ -1,5 +1,6 @@
 ---
-name: Deploy Web - Non-Prod
+name: QA - Web Release
+#name: Deploy Web - Non-Prod
 run-name: Deploy Web ${{ inputs.environment }}
 
 on:
