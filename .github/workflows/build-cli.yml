@@ -67,7 +67,10 @@ jobs:
 
       - name: Setup Unix Vars
         if: runner.os != 'Windows'
-        run: echo "LOWER_RUNNER_OS=$(echo $RUNNER_OS | awk '{print tolower($0)}')" >> $GITHUB_ENV
+        run: |
+          echo "LOWER_RUNNER_OS=$(echo $RUNNER_OS | awk '{print tolower($0)}')" >> $GITHUB_ENV
+          echo "SHORT_RUNNER_OS=$(echo $RUNNER_OS | awk '{print substr($0, 1, 3)}' | \
+            awk '{print tolower($0)}')" >> $GITHUB_ENV
 
       - name: Setup Windows builder
         if: runner.os == 'Windows'
@@ -154,13 +157,9 @@ jobs:
         if: runner.os == 'Windows'
         run: npm run dist:win --quiet
 
-      - name: Build & Package Linux
-        if: runner.os == 'Linux'
-        run: npm run dist:lin --quiet
-
-      - name: Build & Package macOS
-        if: runner.os == 'macOS'
-        run: npm run dist:mac --quiet
+      - name: Build & Package Unix
+        if: runner.os != 'Windows'
+        run: npm run dist:$(env.SHORT_RUNNER_OS) --quiet
 
       - name: Package Chocolatey
         shell: pwsh
@@ -178,7 +177,9 @@ jobs:
 
       - name: Zip Unix
         if: runner.os != 'Windows'
-        run: zip -r ./dist/bw-${{ env.LOWER_RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip ./dist/${{ env.LOWER_RUNNER_OS }}/bw
+        run: |
+          zip -r ./dist/bw-${{ env.LOWER_RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip \
+            ./dist/${{ env.LOWER_RUNNER_OS }}/bw
 
       - name: Version Test
         if: runner.os == 'Windows'
@@ -198,17 +199,11 @@ jobs:
           checksum -f="./dist/bw-windows-${env:_PACKAGE_VERSION}.zip" `
             -t sha256 | Out-File -Encoding ASCII ./dist/bw-windows-sha256-${env:_PACKAGE_VERSION}.txt
 
-      - name: Create checksums macOS
-        if: runner.os == 'macOS'
+      - name: Create checksums Unix
+        if: runner.os != 'Windows'
         run: |
-          echo "$(shasum -a 256 ./dist/bw-macos-${{ env._PACKAGE_VERSION }}.zip | awk '{ print $1 }')" > \
-            ./dist/bw-macos-sha256-${{ env._PACKAGE_VERSION }}.txt
-
-      - name: Create checksums Linux
-        if: runner.os == 'Linux'
-        run: |
-          echo "$(shasum -a 256 ./dist/bw-linux-${{ env._PACKAGE_VERSION }}.zip | awk '{ print $1 }')" > \
-            ./dist/bw-linux-sha256-${{ env._PACKAGE_VERSION }}.txt
+          echo "$(shasum -a 256 ./dist/bw-${{ env.LOWER_RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip | awk '{ print $1 }')" > \
+            ./dist/bw-${{ env.LOWER_RUNNER_OS }}-sha256-${{ env._PACKAGE_VERSION }}.txt
 
       - name: Upload windows zip asset
         if: runner.os == 'Windows'
