@@ -101,34 +101,11 @@ export class SMExportComponent implements OnInit, OnDestroy {
   }
 
   private downloadFile(data: string, format: string): void {
-    const fileName = this.getFileName(null, format);
+    const fileName = this.smPortingService.getFileName(null, format);
     this.fileDownloadService.download({
       fileName: fileName,
       blobData: data,
       blobOptions: { type: "text/plain" },
     });
-  }
-
-  private getFileName(prefix: string = null, extension = "json"): string {
-    const now = new Date();
-    const dateString =
-      now.getFullYear() +
-      "" +
-      this.padNumber(now.getMonth() + 1, 2) +
-      "" +
-      this.padNumber(now.getDate(), 2) +
-      this.padNumber(now.getHours(), 2) +
-      "" +
-      this.padNumber(now.getMinutes(), 2) +
-      this.padNumber(now.getSeconds(), 2);
-
-    return "bitwarden" + (prefix ? "_" + prefix : "") + "_export_" + dateString + "." + extension;
-  }
-
-  private padNumber(num: number, width: number, padCharacter = "0"): string {
-    const numString = num.toString();
-    return numString.length >= width
-      ? numString
-      : new Array(width - numString.length + 1).join(padCharacter) + numString;
   }
 }

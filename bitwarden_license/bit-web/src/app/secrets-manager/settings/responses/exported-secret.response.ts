@@ -1,6 +1,6 @@
 import { BaseResponse } from "@bitwarden/common/models/response/base.response";
 
-export class ExportedSecret extends BaseResponse {
+export class ExportedSecretResponse extends BaseResponse {
   id: string;
   key: string;
   value: string;
@@ -16,6 +16,6 @@ export class ExportedSecret extends BaseResponse {
     this.note = this.getResponseProperty("Note");
 
     const projectIds = this.getResponseProperty("ProjectIds");
-    this.projectIds = projectIds == null ? null : projectIds.map((id: any) => id.toString());
+    this.projectIds = projectIds?.map((id: any) => id.toString());
   }
 }
