@@ -65,6 +65,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
 
+      - name: Setup Unix Vars
+        if: runner.os != 'Windows'
+        run: echo "RUNNER_OS=$(echo $runner.os | awk '{print tolower($0)}')" >> $GITHUB_ENV
+
       - name: Setup Windows builder
         if: runner.os == 'Windows'
         run: |
@@ -172,13 +176,9 @@ jobs:
         if: runner.os == 'Windows'
         run: 7z a ./dist/bw-windows-%_PACKAGE_VERSION%.zip ./dist/windows/bw.exe
 
-      - name: Zip macOS
-        if: runner.os == 'macOS'
-        run: zip -r ./dist/bw-macos-${{ env._PACKAGE_VERSION }}.zip ./dist/macos/bw
-
-      - name: Zip Linux
-        if: runner.os == 'Linux'
-        run: zip -r ./dist/bw-linux-${{ env._PACKAGE_VERSION }}.zip ./dist/linux/bw
+      - name: Zip Unix
+        if: runner.os != 'Windows'
+        run: zip -r ./dist/bw-${{ env.RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip ./dist/${{ env.RUNNER_OS }}/bw
 
       - name: Version Test
         if: runner.os == 'Windows'
