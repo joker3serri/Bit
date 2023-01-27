@@ -221,36 +221,20 @@ jobs:
           path: apps/cli/dist/bw-windows-sha256-${{ env._PACKAGE_VERSION }}.txt
           if-no-files-found: error
 
-      - name: Upload macos zip asset
+      - name: Upload unix zip asset
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
-          name: bw-macos-${{ env._PACKAGE_VERSION }}.zip
-          path: apps/cli/dist/bw-macos-${{ env._PACKAGE_VERSION }}.zip
+          name: bw-${{ env.LOWER_RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip
+          path: apps/cli/dist/bw-${{ env.LOWER_RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip
           if-no-files-found: error
 
-      - name: Upload macos checksum asset
-        if: runner.os == 'macOS'
+      - name: Upload unix checksum asset
+        if: runner.os != 'Windows'
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
         with:
-          name: bw-macos-sha256-${{ env._PACKAGE_VERSION }}.txt
-          path: apps/cli/dist/bw-macos-sha256-${{ env._PACKAGE_VERSION }}.txt
-          if-no-files-found: error
-
-      - name: Upload linux zip asset
-        if: runner.os == 'Linux'
-        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
-        with:
-          name: bw-linux-${{ env._PACKAGE_VERSION }}.zip
-          path: apps/cli/dist/bw-linux-${{ env._PACKAGE_VERSION }}.zip
-          if-no-files-found: error
-
-      - name: Upload linux checksum asset
-        if: runner.os == 'Linux'
-        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
-        with:
-          name: bw-linux-sha256-${{ env._PACKAGE_VERSION }}.txt
-          path: apps/cli/dist/bw-linux-sha256-${{ env._PACKAGE_VERSION }}.txt
+          name: bw-${{ env.LOWER_RUNNER_OS }}-sha256-${{ env._PACKAGE_VERSION }}.txt
+          path: apps/cli/dist/bw-${{ env.LOWER_RUNNER_OS }}-sha256-${{ env._PACKAGE_VERSION }}.txt
           if-no-files-found: error
 
       - name: Upload Chocolatey asset
