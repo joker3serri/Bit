@@ -33,6 +33,20 @@ defaults:
     working-directory: apps/cli
 
 jobs:
+  cloc:
+    name: CLOC
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+
+      - name: Set up cloc
+        run: |
+          sudo apt update
+          sudo apt -y install cloc
+      - name: Print lines of code
+        run: cloc --include-lang TypeScript,JavaScript --vcs git
+
   setup:
     name: Setup
     runs-on: ubuntu-20.04
@@ -252,3 +266,124 @@ jobs:
           name: bitwarden-cli-${{ env._PACKAGE_VERSION }}-npm-build.zip
           path: apps/cli/build
           if-no-files-found: error
+
+  snap:
+    name: Build Snap
+    runs-on: ubuntu-20.04
+    needs: [setup, cli]
+    env:
+      _PACKAGE_VERSION: ${{ needs.setup.outputs.package_version }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  # v3.0.2
+
+      - name: Print environment
+        run: |
+          whoami
+          echo "GitHub ref: $GITHUB_REF"
+          echo "GitHub event: $GITHUB_EVENT"
+          echo "BW Package Version: $_PACKAGE_VERSION"
+      - name: Get bw linux cli
+        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741
+        with:
+          name: bw-linux-${{ env._PACKAGE_VERSION }}.zip
+          path: apps/cli/dist/snap
+
+      - name: Setup Snap Package
+        run: |
+          cp -r stores/snap/* -t dist/snap
+          sed -i s/__version__/${{ env._PACKAGE_VERSION }}/g dist/snap/snapcraft.yaml
+          cd dist/snap
+          ls -alth
+      - name: Build snap
+        uses: snapcore/action-build@ea14cdeb353272f75977040488ca191880509a8c  # v1.1.0
+        with:
+          path: apps/cli/dist/snap
+
+      - name: Create checksum
+        run: |
+          cd dist/snap
+          ls -alth
+          sha256sum bw_${{ env._PACKAGE_VERSION }}_amd64.snap \
+            | awk '{split($0, a); print a[1]}' > bw-snap-sha256-${{ env._PACKAGE_VERSION }}.txt
+      - name: Install Snap
+        run: sudo snap install dist/snap/bw*.snap --dangerous
+
+      - name: Test Snap
+        shell: pwsh
+        run: |
+          $testVersion = Invoke-Expression '& bw -v'
+          if($testVersion -ne $env:_PACKAGE_VERSION) {
+            Throw "Version test failed."
+          }
+        env:
+          BITWARDENCLI_APPDATA_DIR: "/home/runner/snap/bw/x1/.config/Bitwarden CLI"
+
+      - name: Cleanup Test & Update Snap for Publish
+        shell: pwsh
+        run: sudo snap remove bw
+
+      - name: Upload snap asset
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
+        with:
+          name: bw_${{ env._PACKAGE_VERSION }}_amd64.snap
+          path: apps/cli/dist/snap/bw_${{ env._PACKAGE_VERSION }}_amd64.snap
+          if-no-files-found: error
+
+      - name: Upload snap checksum asset
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8  # v3.1.0
+        with:
+          name: bw-snap-sha256-${{ env._PACKAGE_VERSION }}.txt
+          path: apps/cli/dist/snap/bw-snap-sha256-${{ env._PACKAGE_VERSION }}.txt
+          if-no-files-found: error
+
+
+  check-failures:
+    name: Check for failures
+    if: always()
+    runs-on: ubuntu-20.04
+    needs:
+      - cloc
+      - setup
+      - cli
+      - snap
+    steps:
+      - name: Check if any job failed
+        working-directory: ${{ github.workspace }}
+        if: ${{ (github.ref == 'refs/heads/master') || (github.ref == 'refs/heads/rc') }}
+        env:
+          CLOC_STATUS: ${{ needs.cloc.result }}
+          SETUP_STATUS: ${{ needs.setup.result }}
+          CLI_STATUS: ${{ needs.cli.result }}
+          SNAP_STATUS: ${{ needs.snap.result }}
+        run: |
+          if [ "$CLOC_STATUS" = "failure" ]; then
+              exit 1
+          elif [ "$SETUP_STATUS" = "failure" ]; then
+              exit 1
+          elif [ "$CLI_STATUS" = "failure" ]; then
+              exit 1
+          elif [ "$SNAP_STATUS" = "failure" ]; then
+              exit 1
+          fi
+      - name: Login to Azure - Prod Subscription
+        uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
+        if: failure()
+        with:
+          creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
+
+      - name: Retrieve secrets
+        id: retrieve-secrets
+        if: failure()
+        uses: bitwarden/gh-actions/get-keyvault-secrets@c3b3285993151c5af47cefcb3b9134c28ab479af
+        with:
+          keyvault: "bitwarden-prod-kv"
+          secrets: "devops-alerts-slack-webhook-url"
+
+      - name: Notify Slack on failure
+        uses: act10ns/slack@da3191ebe2e67f49b46880b4633f5591a96d1d33
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ steps.retrieve-secrets.outputs.devops-alerts-slack-webhook-url }}
+        with:
+          status: ${{ job.status }}
