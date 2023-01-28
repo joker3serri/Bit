@@ -124,18 +124,6 @@ export class SMImportComponent implements OnInit, OnDestroy {
       const reader = new FileReader();
       reader.readAsText(file, "utf-8");
       reader.onload = (evt) => {
-        if (file.type === "text/html") {
-          const parser = new DOMParser();
-          const doc = parser.parseFromString((evt.target as any).result, "text/html");
-          const pre = doc.querySelector("pre");
-          if (pre != null) {
-            resolve(pre.textContent);
-            return;
-          }
-          reject();
-          return;
-        }
-
         resolve((evt.target as any).result);
       };
       reader.onerror = () => {
