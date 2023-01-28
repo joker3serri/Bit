@@ -3,13 +3,14 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { Subject, switchMap, takeUntil } from "rxjs";
 
+import { UserVerificationPromptComponent } from "@bitwarden/angular/components/user-verification-prompt.component";
+import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
-import { VerificationType } from "@bitwarden/common/enums/verificationType";
 
 import { SMPortingService } from "./sm-porting.service";
 
@@ -26,7 +27,6 @@ export class SMExportComponent implements OnInit, OnDestroy {
 
   protected formGroup = new FormGroup({
     format: new FormControl("json", [Validators.required]),
-    masterPassword: new FormControl("", [Validators.required]),
   });
 
   constructor(
@@ -37,7 +37,8 @@ export class SMExportComponent implements OnInit, OnDestroy {
     private platformUtilsService: PlatformUtilsService,
     private smPortingService: SMPortingService,
     protected fileDownloadService: FileDownloadService,
-    private logService: LogService
+    private logService: LogService,
+    private modalService: ModalService
   ) {}
 
   async ngOnInit() {
@@ -66,18 +67,8 @@ export class SMExportComponent implements OnInit, OnDestroy {
       return;
     }
 
-    try {
-      // Incorrect secret will throw an invalid password error.
-      await this.userVerificationService.verifyUser({
-        type: VerificationType.MasterPassword,
-        secret: this.formGroup.get("masterPassword").value,
-      });
-    } catch (e) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("error"),
-        this.i18nService.t("invalidMasterPassword")
-      );
+    const userVerified = await this.verifyUser();
+    if (!userVerified) {
       return;
     }
 
@@ -92,9 +83,6 @@ export class SMExportComponent implements OnInit, OnDestroy {
       );
 
       this.downloadFile(exportData, this.formGroup.get("format").value);
-
-      this.formGroup.get("masterPassword").setValue("");
-      this.formGroup.get("masterPassword").setErrors(null);
     } catch (e) {
       this.logService.error(e);
     }
@@ -107,5 +95,22 @@ export class SMExportComponent implements OnInit, OnDestroy {
       blobData: data,
       blobOptions: { type: "text/plain" },
     });
+  }
+
+  private verifyUser() {
+    const ref = this.modalService.open(UserVerificationPromptComponent, {
+      allowMultipleModals: true,
+      data: {
+        confirmDescription: "exportWarningDesc",
+        confirmButtonText: "exportVault",
+        modalTitle: "confirmVaultExport",
+      },
+    });
+
+    if (ref == null) {
+      return;
+    }
+
+    return ref.onClosedPromise();
   }
 }
