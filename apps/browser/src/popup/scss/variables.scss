@@ -1,4 +1,4 @@
-﻿@import "~nord/src/sass/nord.scss";
+@import "~nord/src/sass/nord.scss";
 
 $dark-icon-themes: "theme_dark", "theme_solarizedDark", "theme_nord";
 
@@ -59,6 +59,11 @@ $solarizedDarkViolet: #6c71c4;
 $solarizedDarkBlue: #268bd2;
 $solarizedDarkCyan: #2aa198;
 $solarizedDarkGreen: #859900;
+
+$purpleDarkBackground: #16121f;
+$purpleDarkBackgroundAlt: #110e18;
+$purpleDarkPrimary: #d5d6e8;
+$purpleDarkAccent: #747e9d;
 
 $themes: (
   light: (
@@ -304,6 +309,66 @@ $themes: (
       hue-rotate(138deg) brightness(92%) contrast(90%),
     webkitCalendarPickerHoverFilter: brightness(0) saturate(100%) invert(94%) sepia(10%)
       saturate(462%) hue-rotate(345deg) brightness(103%) contrast(87%),
+  ),
+  purpleDark: (
+    textColor: $purpleDarkPrimary,
+    hoverColorTransparent: rgba($text-color, 0.15),
+    borderColor: $purpleDarkBackground,
+    backgroundColor: $purpleDarkBackground,
+    borderColorAlt: lighten($purpleDarkBackground, 10%),
+    backgroundColorAlt: $purpleDarkBackgroundAlt,
+    scrollbarColor: lighten($purpleDarkBackground, 15%),
+    scrollbarHoverColor: $purpleDarkPrimary,
+    boxBackgroundColor: $purpleDarkBackgroundAlt,
+    boxBackgroundHoverColor: lighten($purpleDarkBackgroundAlt, 10%),
+    boxBorderColor: $purpleDarkBackgroundAlt,
+    tabBackgroundColor: $purpleDarkBackgroundAlt,
+    tabBackgroundHoverColor: lighten($purpleDarkBackground, 10%),
+    headerColor: lighten($purpleDarkPrimary, 15%),
+    headerBackgroundColor: $purpleDarkBackgroundAlt,
+    headerBackgroundHoverColor: lighten($purpleDarkBackground, 10%),
+    headerBorderColor: $purpleDarkBackground,
+    headerInputBackgroundColor: lighten($purpleDarkBackground, 10%),
+    headerInputBackgroundFocusColor: lighten($purpleDarkBackground, 20%),
+    headerInputColor: $purpleDarkPrimary,
+    headerInputPlaceholderColor: darken($purpleDarkPrimary, 10%),
+    listItemBackgroundHoverColor: lighten($purpleDarkBackgroundAlt, 10%),
+    disabledIconColor: lighten($purpleDarkBackground, 15%),
+    disabledBoxOpacity: 0.5,
+    headingColor: lighten($purpleDarkBackground, 20%),
+    labelColor: lighten($purpleDarkBackground, 20%),
+    mutedColor: lighten($purpleDarkBackground, 30%),
+    totpStrokeColor: lighten($purpleDarkBackground, 15%),
+    boxRowButtonColor: lighten($purpleDarkBackground, 15%),
+    boxRowButtonHoverColor: $purpleDarkPrimary,
+    inputBorderColor: $purpleDarkBackground,
+    inputBackgroundColor: lighten($purpleDarkBackground, 10%),
+    inputPlaceholderColor: lighten($purpleDarkBackground, 30%),
+    buttonBackgroundColor: lighten($purpleDarkBackground, 15%),
+    buttonBorderColor: $purpleDarkBackground,
+    buttonColor: $purpleDarkPrimary,
+    buttonPrimaryColor: $purpleDarkAccent,
+    buttonDangerColor: $brand-danger,
+    primaryColor: $purpleDarkAccent,
+    primaryAccentColor: $purpleDarkAccent,
+    dangerColor: $brand-danger,
+    successColor: $purpleDarkAccent,
+    infoColor: $purpleDarkAccent,
+    warningColor: $brand-warning,
+    logoSuffix: "white",
+    passwordNumberColor: $purpleDarkAccent,
+    passwordSpecialColor: $brand-warning,
+    passwordCountText: $purpleDarkPrimary,
+    calloutBorderColor: $purpleDarkBackground,
+    calloutBackgroundColor: lighten($purpleDarkBackground, 10%),
+    toastTextColor: $purpleDarkPrimary,
+    svgSuffix: "-dark.svg",
+    transparentColor: rgba(0, 0, 0, 0),
+    dateInputColorScheme: dark,
+    webkitCalendarPickerFilter: brightness(0) saturate(100%) invert(86%) sepia(19%) saturate(152%)
+      hue-rotate(184deg) brightness(87%) contrast(93%),
+    webkitCalendarPickerHoverFilter: brightness(0) saturate(100%) invert(100%) sepia(0%)
+      saturate(0%) hue-rotate(93deg) brightness(103%) contrast(103%),
   ),
 );
 

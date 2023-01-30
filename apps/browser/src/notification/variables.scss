@@ -1,4 +1,4 @@
-﻿@import "~nord/src/sass/nord.scss";
+@import "~nord/src/sass/nord.scss";
 
 $font-family-sans-serif: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $font-size-base: 14px;
@@ -16,6 +16,11 @@ $solarizedDarkBase01: #586e75;
 $solarizedDarkBase2: #eee8d5;
 $solarizedDarkCyan: #2aa198;
 $solarizedDarkGreen: #859900;
+
+$purpleDarkBackground: #16121f;
+$purpleDarkBackgroundAlt: #110e18;
+$purpleDarkPrimary: #d5d6e8;
+$purpleDarkAccent: #747e9d;
 
 $themes: (
   light: (
@@ -53,6 +58,15 @@ $themes: (
     textContrast: $solarizedDarkBase02,
     inputBorderColor: rgba($solarizedDarkBase2, 0.2),
     inputBackgroundColor: $solarizedDarkBase01,
+  ),
+  purpleDark: (
+    textColor: $purpleDarkPrimary,
+    backgroundColor: $purpleDarkBackground,
+    buttonPrimaryColor: $purpleDarkAccent,
+    primaryColor: $purpleDarkAccent,
+    textContrast: $purpleDarkBackgroundAlt,
+    inputBorderColor: rgba($purpleDarkPrimary, 0.2),
+    inputBackgroundColor: $purpleDarkBackgroundAlt,
   ),
 );
 

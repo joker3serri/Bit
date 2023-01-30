@@ -645,6 +645,9 @@
     "message": "Solarized dark",
     "description": "'Solarized' is a noun and the name of a color scheme. It should not be translated."
   },
+  "purpleDark": {
+    "message": "Purple dark"
+  },
   "exportVault": {
     "message": "Export vault"
   },

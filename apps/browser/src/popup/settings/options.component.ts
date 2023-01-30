@@ -48,6 +48,7 @@ export class OptionsComponent implements OnInit {
       { name: i18nService.t("dark"), value: ThemeType.Dark },
       { name: "Nord", value: ThemeType.Nord },
       { name: i18nService.t("solarizedDark"), value: ThemeType.SolarizedDark },
+      { name: i18nService.t("purpleDark"), value: ThemeType.PurpleDark },
     ];
     this.uriMatchOptions = [
       { name: i18nService.t("baseDomain"), value: UriMatchType.Domain },
