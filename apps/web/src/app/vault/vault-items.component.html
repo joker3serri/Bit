@@ -12,6 +12,7 @@
           <input
             class="tw-mr-2"
             type="checkbox"
+            bitCheckbox
             id="checkAll"
             (change)="checkAll($any($event.target).checked)"
             [(ngModel)]="isAllChecked"
@@ -83,6 +84,7 @@
             *ngIf="canDeleteCollection(col.node)"
             class="tw-cursor-pointer"
             type="checkbox"
+            bitCheckbox
             [(ngModel)]="$any(col).checked"
             appStopProp
           />
@@ -168,7 +170,7 @@
         alignContent="middle"
       >
         <td bitCell (click)="checkRow(c)" appStopProp>
-          <input type="checkbox" [(ngModel)]="$any(c).checked" appStopProp />
+          <input type="checkbox" bitCheckbox [(ngModel)]="$any(c).checked" appStopProp />
         </td>
         <td bitCell>
           <app-vault-icon [cipher]="c"></app-vault-icon>
