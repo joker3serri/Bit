@@ -286,22 +286,20 @@ export class AuthService implements AuthServiceAbstraction {
     requestApproved: boolean
   ): Promise<AuthRequestResponse> {
     const pubKey = Utils.fromB64ToArray(key);
-    const masterKey = await this.cryptoService.getEncKey();
-    const encryptedKey = await this.cryptoService.rsaEncrypt(masterKey.key, pubKey.buffer);
-    const masterpassword = await this.stateService.getCryptoMasterKey();
-    const masterPasswordHash = await this.cryptoService.hashPassword(
-      masterpassword.keyB64,
-      masterKey
-    );
-    const encryptedMasterPassword = await this.cryptoService.rsaEncrypt(
-      Utils.fromB64ToArray(masterPasswordHash),
+    const encryptedKey = await this.cryptoService.rsaEncrypt(
+      (
+        await this.cryptoService.getKey()
+      ).encKey,
       pubKey.buffer
     );
-    const deviceId = await this.appIdService.getAppId();
+    const encryptedMasterPassword = await this.cryptoService.rsaEncrypt(
+      Utils.fromUtf8ToArray(await this.stateService.getKeyHash()),
+      pubKey.buffer
+    );
     const request = new PasswordlessAuthRequest(
       encryptedKey.encryptedString,
       encryptedMasterPassword.encryptedString,
-      deviceId,
+      await this.appIdService.getAppId(),
       requestApproved
     );
     return await this.apiService.putAuthRequest(id, request);

@@ -2090,7 +2090,7 @@
     "message": "Are you trying to log in?"
   },
   "logInAttemptBy": {
-    "message": "Log in attempt by $EMAIL$",
+    "message": "Login attempt by $EMAIL$",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2108,16 +2108,16 @@
     "message": "Time"
   },
   "confirmLogIn": {
-    "message": "Confirm log in"
+    "message": "Confirm login"
   },
   "denyLogIn": {
-    "message": "Deny log in"
+    "message": "Deny login"
   },
   "approveLoginRequests": {
     "message": "Approve login requests"
   },
   "logInConfirmedForEmailOnDevice": {
-    "message": "Log in confirmed for $EMAIL$ on $DEVICE$",
+    "message": "Login confirmed for $EMAIL$ on $DEVICE$",
     "placeholders": {
       "email": {
         "content": "$1",
@@ -2130,7 +2130,7 @@
     }
   },
   "youDeniedALogInAttemptFromAnotherDevice": {
-    "message": "You denied a log in attempt from another device. If this really was you, try to log in with the device again."
+    "message": "You denied a login attempt from another device. If this really was you, try to log in with the device again."
   },
   "justNow": {
     "message": "Just now"
@@ -2154,7 +2154,7 @@
     "message": "Use this device to approve login requests made from other devices."
   },
   "confirmLoginAtemptForMail": {
-    "message": "Confirm log in attempt for $EMAIL$",
+    "message": "Confirm login attempt for $EMAIL$",
     "placeholders": {
       "email": {
         "content": "$1",
