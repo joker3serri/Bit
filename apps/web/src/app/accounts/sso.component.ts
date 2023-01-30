@@ -9,9 +9,15 @@ import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunc
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { LoginService } from "@bitwarden/common/abstractions/login.service";
+import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain-api.service.abstraction";
+import { OrganizationDomainSsoDetailsResponse } from "@bitwarden/common/abstractions/organization-domain/responses/organization-domain-sso-details.response";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
+import { HttpStatusCode } from "@bitwarden/common/enums/http-status-code.enum";
+import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
 @Component({
   selector: "app-sso",
@@ -30,7 +36,10 @@ export class SsoComponent extends BaseSsoComponent {
     cryptoFunctionService: CryptoFunctionService,
     environmentService: EnvironmentService,
     passwordGenerationService: PasswordGenerationService,
-    logService: LogService
+    logService: LogService,
+    private orgDomainApiService: OrgDomainApiServiceAbstraction,
+    private loginService: LoginService,
+    private validationService: ValidationService
   ) {
     super(
       authService,
@@ -51,17 +60,61 @@ export class SsoComponent extends BaseSsoComponent {
 
   async ngOnInit() {
     super.ngOnInit();
+
+    const userEmail = this.loginService.getEmail();
+    this.loginService.saveEmailSettings(); // clear login service
+
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
       if (qParams.identifier != null) {
+        // SSO Org Identifier in query params takes precedence over claimed domains
         this.identifier = qParams.identifier;
       } else {
+        // Check if email matches any claimed domains
+        if (userEmail) {
+          // show loading spinner
+          this.loggingIn = true;
+          try {
+            const response: OrganizationDomainSsoDetailsResponse =
+              await this.orgDomainApiService.getClaimedOrgDomainByEmail(userEmail);
+
+            if (response) {
+              this.identifier = response.organizationIdentifier;
+              await this.submit();
+              return;
+            }
+          } catch (error) {
+            this.handleGetClaimedDomainByEmailError(error);
+          }
+
+          this.loggingIn = false;
+        }
+
+        // Fallback to state svc if domain is unclaimed
         const storedIdentifier = await this.stateService.getSsoOrgIdentifier();
         if (storedIdentifier != null) {
           this.identifier = storedIdentifier;
         }
       }
     });
+  }
+
+  private handleGetClaimedDomainByEmailError(error: any): void {
+    if (error instanceof ErrorResponse) {
+      const errorResponse: ErrorResponse = error as ErrorResponse;
+      switch (errorResponse.statusCode) {
+        case HttpStatusCode.NotFound:
+          if (errorResponse?.message?.includes("Claimed org domain not found")) {
+            // Do nothing. This is a valid case.
+            return;
+          }
+          break;
+
+        default:
+          this.validationService.showError(errorResponse);
+          break;
+      }
+    }
   }
 
   async submit() {

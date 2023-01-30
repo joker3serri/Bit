@@ -1,9 +1,11 @@
 import { ApiService } from "../../abstractions/api.service";
 import { OrgDomainApiServiceAbstraction } from "../../abstractions/organization-domain/org-domain-api.service.abstraction";
 import { OrgDomainInternalServiceAbstraction } from "../../abstractions/organization-domain/org-domain.service.abstraction";
+import { OrganizationDomainSsoDetailsResponse } from "../../abstractions/organization-domain/responses/organization-domain-sso-details.response";
 import { OrganizationDomainResponse } from "../../abstractions/organization-domain/responses/organization-domain.response";
 import { ListResponse } from "../../models/response/list.response";
 
+import { OrganizationDomainSsoDetailsRequest } from "./requests/organization-domain-sso-details.request";
 import { OrganizationDomainRequest } from "./requests/organization-domain.request";
 
 export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
@@ -29,6 +31,7 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
 
     return orgDomains;
   }
+
   async getByOrgIdAndOrgDomainId(
     orgId: string,
     orgDomainId: string
@@ -94,6 +97,16 @@ export class OrgDomainApiService implements OrgDomainApiServiceAbstraction {
     this.orgDomainService.delete([orgDomainId]);
   }
 
-  // TODO: add Get Domain SSO method: Retrieves SSO provider information given a domain name
-  // when added on back end
+  async getClaimedOrgDomainByEmail(email: string): Promise<OrganizationDomainSsoDetailsResponse> {
+    const result = await this.apiService.send(
+      "POST",
+      `/organizations/domain/sso/details`,
+      new OrganizationDomainSsoDetailsRequest(email),
+      false, // anonymous
+      true
+    );
+    const response = new OrganizationDomainSsoDetailsResponse(result);
+
+    return response;
+  }
 }
