@@ -31,6 +31,8 @@ import {
   PermissionMode,
 } from "../../../shared/components/access-selector";
 
+import { commaSeparatedEmails } from "./validators/comma-separated-emails.validator";
+
 export enum MemberDialogTab {
   Role = 0,
   Groups = 1,
@@ -74,7 +76,7 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   protected groupAccessItems: AccessItemView[] = [];
   protected tabIndex: MemberDialogTab;
   protected formGroup = this.formBuilder.group({
-    emails: ["", [Validators.required]],
+    emails: ["", [Validators.required, commaSeparatedEmails]],
     type: OrganizationUserType.User,
     accessAllCollections: false,
     accessSecretsManager: false,
@@ -174,15 +176,20 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
           }
           this.isRevoked = userDetails.status === OrganizationUserStatusType.Revoked;
           const assignedCollectionsPermissions = {
-            manageAssignedCollections: userDetails.permissions.manageAssignedCollections,
             editAssignedCollections: userDetails.permissions.editAssignedCollections,
             deleteAssignedCollections: userDetails.permissions.deleteAssignedCollections,
+            manageAssignedCollections:
+              userDetails.permissions.editAssignedCollections &&
+              userDetails.permissions.deleteAssignedCollections,
           };
           const allCollectionsPermissions = {
-            manageAllCollections: userDetails.permissions.manageAllCollections,
             createNewCollections: userDetails.permissions.createNewCollections,
             editAnyCollection: userDetails.permissions.editAnyCollection,
             deleteAnyCollection: userDetails.permissions.deleteAnyCollection,
+            manageAllCollections:
+              userDetails.permissions.createNewCollections &&
+              userDetails.permissions.editAnyCollection &&
+              userDetails.permissions.deleteAnyCollection,
           };
           if (userDetails.type === OrganizationUserType.Custom) {
             this.permissionsGroup.patchValue({
@@ -255,15 +262,11 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       managePolicies: this.permissionsGroup.value.managePolicies,
       manageUsers: this.permissionsGroup.value.manageUsers,
       manageResetPassword: this.permissionsGroup.value.manageResetPassword,
-      manageAllCollections:
-        this.permissionsGroup.value.manageAllCollectionsGroup.manageAllCollections,
       createNewCollections:
         this.permissionsGroup.value.manageAllCollectionsGroup.createNewCollections,
       editAnyCollection: this.permissionsGroup.value.manageAllCollectionsGroup.editAnyCollection,
       deleteAnyCollection:
         this.permissionsGroup.value.manageAllCollectionsGroup.deleteAnyCollection,
-      manageAssignedCollections:
-        this.permissionsGroup.value.manageAssignedCollectionsGroup.manageAssignedCollections,
       editAssignedCollections:
         this.permissionsGroup.value.manageAssignedCollectionsGroup.editAssignedCollections,
       deleteAssignedCollections:
@@ -290,7 +293,16 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
   }
 
   submit = async () => {
+    this.formGroup.markAllAsTouched();
+
     if (this.formGroup.invalid) {
+      if (this.tabIndex !== MemberDialogTab.Role) {
+        this.platformUtilsService.showToast(
+          "error",
+          null,
+          this.i18nService.t("fieldOnTabRequiresAttention", this.i18nService.t("role"))
+        );
+      }
       return;
     }
 
@@ -323,6 +335,12 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     } else {
       userView.id = this.params.organizationUserId;
       const emails = [...new Set(this.formGroup.value.emails.trim().split(/\s*,\s*/))];
+      if (emails.length > 20) {
+        this.formGroup.controls.emails.setErrors({
+          tooManyEmails: { message: this.i18nService.t("tooManyEmails", 20) },
+        });
+        return;
+      }
       await this.userService.invite(emails, userView);
     }
 
