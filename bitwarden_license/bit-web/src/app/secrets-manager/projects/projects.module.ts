@@ -1,5 +1,7 @@
 import { NgModule } from "@angular/core";
 
+import { BreadcrumbsModule } from "@bitwarden/components";
+
 import { SecretsManagerSharedModule } from "../shared/sm-shared.module";
 
 import { ProjectDeleteDialogComponent } from "./dialog/project-delete-dialog.component";
@@ -14,7 +16,7 @@ import { ProjectsRoutingModule } from "./projects-routing.module";
 import { ProjectsComponent } from "./projects/projects.component";
 
 @NgModule({
-  imports: [SecretsManagerSharedModule, ProjectsRoutingModule],
+  imports: [SecretsManagerSharedModule, ProjectsRoutingModule, BreadcrumbsModule],
   declarations: [
     ProjectsComponent,
     ProjectsListComponent,
