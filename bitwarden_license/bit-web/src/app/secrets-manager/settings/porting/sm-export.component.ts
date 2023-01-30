@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { Subject, switchMap, takeUntil } from "rxjs";
 
-import { UserVerificationPromptComponent } from "@bitwarden/angular/components/user-verification-prompt.component";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -11,6 +10,7 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
+import { UserVerificationPromptComponent } from "@bitwarden/web-vault/app/components/user-verification-prompt.component";
 
 import { SMPortingService } from "./sm-porting.service";
 
