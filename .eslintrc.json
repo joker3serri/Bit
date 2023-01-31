@@ -4,15 +4,15 @@
     "browser": true,
     "webextensions": true
   },
-  "ignorePatterns": ["**/*.js"],
   "overrides": [
     {
-      "files": ["*.ts"],
+      "files": ["*.ts", "*.js"],
       "plugins": ["@typescript-eslint", "rxjs", "rxjs-angular", "import"],
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
         "project": ["./tsconfig.eslint.json"],
-        "sourceType": "module"
+        "sourceType": "module",
+        "ecmaVersion": 2020
       },
       "extends": [
         "eslint:recommended",
