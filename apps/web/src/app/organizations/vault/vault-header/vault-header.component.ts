@@ -100,7 +100,7 @@ export class VaultHeaderComponent {
     if (this.activeFilter.isUnassignedCollectionSelected) {
       return this.i18nService.t("unassigned");
     }
-    return `${this.organization.name} ${this.i18nService.t("vault")}`;
+    return `${this.organization.name} ${this.i18nService.t("vault").toLowerCase()}`;
   }
 
   private showFreeOrgUpgradeDialog(): void {

@@ -64,9 +64,9 @@ export class VaultHeaderComponent {
     }
 
     if (this.activeFilter?.selectedOrganizationNode != null) {
-      return `${this.activeFilter.selectedOrganizationNode.node.name} ${this.i18nService.t(
-        "vault"
-      )}`;
+      return `${this.activeFilter.selectedOrganizationNode.node.name} ${this.i18nService
+        .t("vault")
+        .toLowerCase()}`;
     }
 
     return this.i18nService.t("allVaults");
