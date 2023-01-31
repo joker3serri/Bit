@@ -1,6 +1,7 @@
-import { Directive, OnDestroy, OnInit, Inject } from "@angular/core";
+import { Directive, OnDestroy, OnInit } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
+import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -15,7 +16,6 @@ import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/mas
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 
 import { PasswordColorText } from "../shared/components/password-strength/password-strength.component";
-import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 
 @Directive()
 export class ChangePasswordComponent implements OnInit, OnDestroy {
@@ -158,7 +158,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     const breachedPassword =
       this.checkBreach && (await this.auditServiceInstance.passwordLeaked(this.masterPassword)) > 0;
 
-    if (weakPassword) {
+    if (weakPassword && breachedPassword) {
       const result = await this.platformUtilsService.showDialog(
         this.i18nService.t("weakMasterPasswordDesc"),
         this.i18nService.t("weakMasterPassword"),

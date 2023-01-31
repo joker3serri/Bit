@@ -1,3 +1,5 @@
+import { Injectable } from "@angular/core";
+
 import { ApiService } from "../abstractions/api.service";
 import { AuditService as AuditServiceAbstraction } from "../abstractions/audit.service";
 import { CryptoFunctionService } from "../abstractions/cryptoFunction.service";
@@ -5,7 +7,6 @@ import { throttle } from "../misc/throttle";
 import { Utils } from "../misc/utils";
 import { BreachAccountResponse } from "../models/response/breach-account.response";
 import { ErrorResponse } from "../models/response/error.response";
-import { Injectable } from "@angular/core";
 
 const PwnedPasswordsApi = "https://api.pwnedpasswords.com/range/";
 
