@@ -5,9 +5,13 @@ import { throttle } from "../misc/throttle";
 import { Utils } from "../misc/utils";
 import { BreachAccountResponse } from "../models/response/breach-account.response";
 import { ErrorResponse } from "../models/response/error.response";
+import { Injectable } from "@angular/core";
 
 const PwnedPasswordsApi = "https://api.pwnedpasswords.com/range/";
 
+@Injectable({
+  providedIn: "root",
+})
 export class AuditService implements AuditServiceAbstraction {
   constructor(
     private cryptoFunctionService: CryptoFunctionService,

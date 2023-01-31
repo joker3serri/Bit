@@ -30,6 +30,7 @@ import { FolderWithIdRequest } from "@bitwarden/common/models/request/folder-wit
 import { PasswordRequest } from "@bitwarden/common/models/request/password.request";
 import { SendWithIdRequest } from "@bitwarden/common/models/request/send-with-id.request";
 import { UpdateKeyRequest } from "@bitwarden/common/models/request/update-key.request";
+import { AuditService } from "@bitwarden/common/services/audit.service";
 
 @Component({
   selector: "app-change-password",
@@ -48,6 +49,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     passwordGenerationService: PasswordGenerationService,
     platformUtilsService: PlatformUtilsService,
     policyService: PolicyService,
+    auditService: AuditService,
     private folderService: FolderService,
     private cipherService: CipherService,
     private syncService: SyncService,
@@ -68,6 +70,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
       policyService,
       stateService
     );
+    this.auditServiceInstance = auditService;
   }
 
   async ngOnInit() {

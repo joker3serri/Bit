@@ -6113,5 +6113,8 @@
   },
   "changeKdfSettings": {
     "message": "Change KDF settings"
+  },
+  "checkForBreaches": {
+    "message": "Check known data breaches for this password"
   }
 }

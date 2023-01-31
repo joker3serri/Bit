@@ -1,4 +1,4 @@
-import { Directive, OnDestroy, OnInit } from "@angular/core";
+import { Directive, OnDestroy, OnInit, Inject } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -15,6 +15,7 @@ import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/mas
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 
 import { PasswordColorText } from "../shared/components/password-strength/password-strength.component";
+import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 
 @Directive()
 export class ChangePasswordComponent implements OnInit, OnDestroy {
@@ -25,12 +26,14 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
   passwordStrengthResult: any;
   color: string;
   text: string;
+  checkBreach = false;
 
   protected email: string;
   protected kdf: KdfType;
   protected kdfConfig: KdfConfig;
 
   protected destroy$ = new Subject<void>();
+  protected auditServiceInstance: AuditService;
 
   constructor(
     protected i18nService: I18nService,
@@ -59,7 +62,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
   }
 
   async submit() {
-    if (!(await this.strongPassword())) {
+    if (!(await this.validPassword())) {
       return;
     }
 
@@ -105,6 +108,70 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     encKey: [SymmetricCryptoKey, EncString]
   ) {
     // Override in sub-class
+  }
+
+  async validPassword(): Promise<boolean> {
+    if (this.masterPassword == null || this.masterPassword === "") {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("masterPasswordRequired")
+      );
+      return false;
+    }
+    if (this.masterPassword.length < 8) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("masterPasswordMinlength")
+      );
+      return false;
+    }
+    if (this.masterPassword !== this.masterPasswordRetype) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("masterPassDoesntMatch")
+      );
+      return false;
+    }
+
+    const strengthResult = this.passwordStrengthResult;
+
+    if (
+      this.enforcedPolicyOptions != null &&
+      !this.policyService.evaluateMasterPassword(
+        strengthResult.score,
+        this.masterPassword,
+        this.enforcedPolicyOptions
+      )
+    ) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("masterPasswordPolicyRequirementsNotMet")
+      );
+      return false;
+    }
+
+    const weakPassword = strengthResult != null && strengthResult.score < 3;
+    const breachedPassword =
+      this.checkBreach && (await this.auditServiceInstance.passwordLeaked(this.masterPassword)) > 0;
+
+    if (weakPassword) {
+      const result = await this.platformUtilsService.showDialog(
+        this.i18nService.t("weakMasterPasswordDesc"),
+        this.i18nService.t("weakMasterPassword"),
+        this.i18nService.t("yes"),
+        this.i18nService.t("no"),
+        "warning"
+      );
+      if (!result) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   async strongPassword(): Promise<boolean> {
