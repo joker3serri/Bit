@@ -75,7 +75,7 @@ export class SMExportComponent implements OnInit, OnDestroy {
     await this.doExport();
   };
 
-  protected async doExport() {
+  private async doExport() {
     try {
       const exportData = await this.smPortingService.export(
         this.orgId,

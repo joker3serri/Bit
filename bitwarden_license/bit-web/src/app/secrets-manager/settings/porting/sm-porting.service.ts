@@ -5,6 +5,7 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { ImportError } from "@bitwarden/common/importers/import-error";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
+import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
 import {
   SecretsManagerExport,
@@ -42,19 +43,45 @@ export class SMPortingService {
     );
   }
 
-  async import(organizationId: string, request: string): Promise<ImportError> {
-    const requestObject = JSON.parse(request);
+  async import(organizationId: string, fileContents: string): Promise<ImportError> {
+    const requestObject = JSON.parse(fileContents);
     const requestBody = await this.encryptImport(organizationId, requestObject);
 
-    await this.apiService.send(
-      "POST",
-      "/sm/" + organizationId + "/import",
-      requestBody,
-      true,
-      true
-    );
+    try {
+      await this.apiService.send(
+        "POST",
+        "/sm/" + organizationId + "/import",
+        requestBody,
+        true,
+        true
+      );
+    } catch (error) {
+      const errorResponse = new ErrorResponse(error, 400);
+      return this.handleServerError(errorResponse, requestObject);
+    }
+  }
 
-    return null;
+  getFileName(prefix: string = null, extension = "json"): string {
+    const now = new Date();
+    const dateString =
+      now.getFullYear() +
+      "" +
+      this.padNumber(now.getMonth() + 1, 2) +
+      "" +
+      this.padNumber(now.getDate(), 2) +
+      this.padNumber(now.getHours(), 2) +
+      "" +
+      this.padNumber(now.getMinutes(), 2) +
+      this.padNumber(now.getSeconds(), 2);
+
+    return "bitwarden" + (prefix ? "_" + prefix : "") + "_export_" + dateString + "." + extension;
+  }
+
+  padNumber(num: number, width: number, padCharacter = "0"): string {
+    const numString = num.toString();
+    return numString.length >= width
+      ? numString
+      : new Array(width - numString.length + 1).join(padCharacter) + numString;
   }
 
   private async encryptImport(organizationId: string, importData: any): Promise<SMImportRequest> {
@@ -135,26 +162,38 @@ export class SMPortingService {
     return decryptedExport;
   }
 
-  getFileName(prefix: string = null, extension = "json"): string {
-    const now = new Date();
-    const dateString =
-      now.getFullYear() +
-      "" +
-      this.padNumber(now.getMonth() + 1, 2) +
-      "" +
-      this.padNumber(now.getDate(), 2) +
-      this.padNumber(now.getHours(), 2) +
-      "" +
-      this.padNumber(now.getMinutes(), 2) +
-      this.padNumber(now.getSeconds(), 2);
+  private handleServerError(errorResponse: ErrorResponse, importResult: any): ImportError {
+    if (errorResponse.validationErrors == null) {
+      return new ImportError(errorResponse.message);
+    }
 
-    return "bitwarden" + (prefix ? "_" + prefix : "") + "_export_" + dateString + "." + extension;
-  }
+    let errorMessage = "";
 
-  padNumber(num: number, width: number, padCharacter = "0"): string {
-    const numString = num.toString();
-    return numString.length >= width
-      ? numString
-      : new Array(width - numString.length + 1).join(padCharacter) + numString;
+    Object.entries(errorResponse.validationErrors).forEach(([key, value], index) => {
+      let item;
+      let itemType;
+      const i = Number(key.match(/[0-9]+/)[0]);
+
+      switch (key.match(/^\w+/)[0]) {
+        case "Projects":
+          item = importResult.projects[i];
+          itemType = "Project";
+          break;
+        case "Secrets":
+          item = importResult.secrets[i];
+          itemType = "Secret";
+          break;
+        default:
+          return;
+      }
+
+      if (index > 0) {
+        errorMessage += "\n\n";
+      }
+
+      errorMessage += "[" + (i + 1) + "] " + "[" + itemType + '] "' + item.key + '": ' + value;
+    });
+
+    return new ImportError(errorMessage);
   }
 }

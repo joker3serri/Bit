@@ -10,7 +10,6 @@ import { OrganizationService } from "@bitwarden/common/abstractions/organization
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { ImportType } from "@bitwarden/common/enums/importOptions";
-import { ImportError } from "@bitwarden/common/importers/import-error";
 
 import { SMPortingService } from "./sm-porting.service";
 
@@ -24,7 +23,6 @@ export class SMImportComponent implements OnInit, OnDestroy {
   format: ImportType = "bitwardenjson";
   fileSelected: File;
   fileContents: string;
-  formPromise: Promise<ImportError>;
   loading = false;
   protected orgId: string = null;
 
@@ -96,8 +94,7 @@ export class SMImportComponent implements OnInit, OnDestroy {
     }
 
     try {
-      this.formPromise = this.smPortingService.import(this.orgId, fileContents);
-      const error = await this.formPromise;
+      const error = await this.smPortingService.import(this.orgId, fileContents);
 
       if (error != null) {
         this.error(error);
@@ -105,7 +102,6 @@ export class SMImportComponent implements OnInit, OnDestroy {
         return;
       }
 
-      //No errors, display success message
       this.platformUtilsService.showToast("success", null, this.i18nService.t("importSuccess"));
     } catch (e) {
       this.logService.error(e);
@@ -114,7 +110,7 @@ export class SMImportComponent implements OnInit, OnDestroy {
     this.loading = false;
   }
 
-  setSelectedFile(event: Event) {
+  protected setSelectedFile(event: Event) {
     const fileInputEl = <HTMLInputElement>event.target;
     this.fileSelected = fileInputEl.files.length > 0 ? fileInputEl.files[0] : null;
   }
@@ -132,6 +128,7 @@ export class SMImportComponent implements OnInit, OnDestroy {
     });
   }
 
+  // TODO: make this a simple dialog
   private async error(error: Error) {
     await Swal.fire({
       heightAuto: false,
