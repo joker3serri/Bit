@@ -1,3 +1,5 @@
+import type { Jsonify } from "type-fest";
+
 import type { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 require("./bar.scss");
@@ -149,15 +151,15 @@ function contentLoaded() {
     content.appendChild(newElement);
   }
 
-  function sendPlatformMessage(msg: unknown) {
+  function sendPlatformMessage(msg: Record<string, any>) {
     chrome.runtime.sendMessage(msg);
   }
 
-  function fillSelectorWithFolders(folders: FolderView[]) {
+  function fillSelectorWithFolders(folders: Jsonify<FolderView[]>) {
     const select = document.querySelector("#template-add-clone .select-folder");
     select.appendChild(new Option(chrome.i18n.getMessage("selectFolder"), null, true));
     folders.forEach((folder) => {
-      //Select "No Folder" (id=null) folder by default
+      // Select "No Folder" (id=null) folder by default
       select.appendChild(new Option(folder.name, folder.id || "", false));
     });
   }
