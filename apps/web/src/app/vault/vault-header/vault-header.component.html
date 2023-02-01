@@ -14,13 +14,13 @@
         <ng-container *ngIf="!first">{{ collection.node.name }}</ng-container>
       </bit-breadcrumb>
     </bit-breadcrumbs>
-    <h1 class="tw-mb-0 tw-mt-1">
+    <h1 class="tw-mb-0 tw-mt-1 tw-flex tw-items-center tw-space-x-2">
       <i
         *ngIf="activeFilter.isCollectionSelected"
-        class="bwi bwi-collection tw- tw-mr-1"
+        class="bwi bwi-collection"
         aria-hidden="true"
       ></i>
-      {{ title }}
+      <span>{{ title }}</span>
       <small #actionSpinner [appApiAction]="actionPromise">
         <ng-container *ngIf="$any(actionSpinner).loading">
           <i
