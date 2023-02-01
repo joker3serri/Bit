@@ -6,11 +6,11 @@ import { OrganizationService } from "../../abstractions/organization/organizatio
 import { StateService } from "../../abstractions/state.service";
 import { OrganizationUserType } from "../../enums/organizationUserType";
 import { Utils } from "../../misc/utils";
-import { KdfConfig } from "../../models/domain/kdf-config";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { KeysRequest } from "../../models/request/keys.request";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
+import { KdfConfig } from "../models/domain/kdf-config";
 import { KeyConnectorUserKeyRequest } from "../models/request/key-connector-user-key.request";
 import { SetKeyConnectorKeyRequest } from "../models/request/set-key-connector-key.request";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";

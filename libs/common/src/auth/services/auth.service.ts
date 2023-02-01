@@ -11,7 +11,6 @@ import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { KdfType } from "../../enums/kdfType";
 import { KeySuffixOptions } from "../../enums/keySuffixOptions";
-import { KdfConfig } from "../../models/domain/kdf-config";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { PreloginRequest } from "../../models/request/prelogin.request";
 import { ErrorResponse } from "../../models/response/error.response";
@@ -27,6 +26,7 @@ import { PasswordlessLogInStrategy } from "../logInStrategies/passwordless-login
 import { SsoLogInStrategy } from "../logInStrategies/sso-login.strategy";
 import { UserApiLogInStrategy } from "../logInStrategies/user-api-login.strategy";
 import { AuthResult } from "../models/domain/auth-result";
+import { KdfConfig } from "../models/domain/kdf-config";
 import {
   UserApiLogInCredentials,
   PasswordLogInCredentials,
