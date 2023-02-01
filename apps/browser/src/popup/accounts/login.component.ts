@@ -108,7 +108,9 @@ export class LoginComponent extends BaseLoginComponent {
         "&state=" +
         state +
         "&codeChallenge=" +
-        codeChallenge
+        codeChallenge +
+        "&email=" +
+        encodeURIComponent(this.formGroup.controls.email.value)
     );
   }
 }

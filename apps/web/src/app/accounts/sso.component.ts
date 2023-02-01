@@ -61,24 +61,24 @@ export class SsoComponent extends BaseSsoComponent {
   async ngOnInit() {
     super.ngOnInit();
 
-    const userEmail = this.loginService.getEmail();
-    this.loginService.saveEmailSettings(); // clear login service
-
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     this.route.queryParams.pipe(first()).subscribe(async (qParams) => {
       if (qParams.identifier != null) {
         // SSO Org Identifier in query params takes precedence over claimed domains
         this.identifier = qParams.identifier;
       } else {
+        // Note: this flow is written for web but both browser and desktop
+        // redirect here on SSO button click.
+
         // Check if email matches any claimed domains
-        if (userEmail) {
+        if (qParams.email) {
           // show loading spinner
           this.loggingIn = true;
           try {
             const response: OrganizationDomainSsoDetailsResponse =
-              await this.orgDomainApiService.getClaimedOrgDomainByEmail(userEmail);
+              await this.orgDomainApiService.getClaimedOrgDomainByEmail(qParams.email);
 
-            if (response) {
+            if (response?.ssoAvailable) {
               this.identifier = response.organizationIdentifier;
               await this.submit();
               return;

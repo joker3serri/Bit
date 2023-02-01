@@ -107,7 +107,8 @@
   <div class="tw-mb-3">
     <a
       routerLink="/sso"
-      (click)="setFormValues()"
+      [queryParams]="{ email: formGroup.value.email }"
+      (click)="saveEmailSettings()"
       bitButton
       buttonType="secondary"
       class="tw-w-full"
