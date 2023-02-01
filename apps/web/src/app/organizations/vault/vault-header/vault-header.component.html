@@ -28,10 +28,12 @@
           bitIconButton="bwi-angle-down"
           [bitMenuTriggerFor]="editCollectionMenu"
           size="small"
+          type="button"
           aria-haspopup
         ></button>
         <bit-menu #editCollectionMenu>
           <button
+            type="button"
             *ngIf="canEditCollection(activeFilter.selectedCollectionNode.node)"
             bitMenuItem
             (click)="editCollection(activeFilter.selectedCollectionNode.node, 'info')"
@@ -40,6 +42,7 @@
             {{ "editInfo" | i18n }}
           </button>
           <button
+            type="button"
             *ngIf="canEditCollection(activeFilter.selectedCollectionNode.node)"
             bitMenuItem
             (click)="editCollection(activeFilter.selectedCollectionNode.node, 'access')"
@@ -48,6 +51,7 @@
             {{ "access" | i18n }}
           </button>
           <button
+            type="button"
             *ngIf="canDeleteCollection(activeFilter.selectedCollectionNode.node)"
             bitMenuItem
             (click)="deleteCollection(activeFilter.selectedCollectionNode.node)"

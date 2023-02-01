@@ -18,9 +18,9 @@ import {
   SimpleDialogType,
 } from "@bitwarden/components";
 
-import { VaultFilterService } from "../../../vault/vault-filter/services/abstractions/vault-filter.service";
-import { VaultFilter } from "../../../vault/vault-filter/shared/models/vault-filter.model";
-import { CollectionFilter } from "../../../vault/vault-filter/shared/models/vault-filter.type";
+import { VaultFilterService } from "../../../../vault/app/vault/vault-filter/services/abstractions/vault-filter.service";
+import { VaultFilter } from "../../../../vault/app/vault/vault-filter/shared/models/vault-filter.model";
+import { CollectionFilter } from "../../../../vault/app/vault/vault-filter/shared/models/vault-filter.type";
 import { CollectionAdminService, CollectionAdminView } from "../../core";
 import {
   CollectionDialogResult,
