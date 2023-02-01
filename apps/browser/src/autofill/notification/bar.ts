@@ -34,26 +34,32 @@ function contentLoaded() {
 
     document.getElementById("logo-link").title = i18n.appName;
 
-    const neverButton = document.querySelector("#template-add .never-save");
+    // i18n for "Add" template
+    const addTemplate = document.getElementById("template-add") as HTMLTemplateElement;
+
+    const neverButton = addTemplate.content.getElementById("never-save");
     neverButton.textContent = i18n.never;
 
-    const selectFolder = document.querySelector("#template-add .select-folder");
+    const selectFolder = addTemplate.content.getElementById("select-folder");
     selectFolder.setAttribute("aria-label", i18n.folder);
     selectFolder.setAttribute("isVaultLocked", isVaultLocked.toString());
 
-    const addButton = document.querySelector("#template-add .add-save");
+    const addButton = addTemplate.content.getElementById("add-save");
     addButton.textContent = i18n.notificationAddSave;
 
-    const changeButton = document.querySelector("#template-change .change-save");
+    addTemplate.content.getElementById("add-text").textContent = i18n.notificationAddDesc;
+
+    // i18n for "Change" (update password) template
+    const changeTemplate = document.getElementById("template-change") as HTMLTemplateElement;
+
+    const changeButton = changeTemplate.content.getElementById("change-save");
     changeButton.textContent = i18n.notificationChangeSave;
 
+    changeTemplate.content.getElementById("change-text").textContent = i18n.notificationChangeDesc;
+
+    // i18n for body content
     const closeButton = document.getElementById("close-button");
     closeButton.title = i18n.close;
-    closeButton.setAttribute("aria-label", i18n.close);
-
-    document.querySelector("#template-add .add-text").textContent = i18n.notificationAddDesc;
-    document.querySelector("#template-change .change-text").textContent =
-      i18n.notificationChangeDesc;
 
     if (getQueryVariable("type") === "add") {
       handleTypeAdd(isVaultLocked);
@@ -87,17 +93,15 @@ function contentLoaded() {
   }
 
   function handleTypeAdd(isVaultLocked: boolean) {
-    setContent(document.getElementById("template-add"));
+    setContent(document.getElementById("template-add") as HTMLTemplateElement);
 
-    var addButton = document.querySelector("#template-add-clone .add-save"), // eslint-disable-line
-      neverButton = document.querySelector("#template-add-clone .never-save"); // eslint-disable-line
+    const addButton = document.getElementById("add-save");
+    const neverButton = document.getElementById("never-save");
 
     addButton.addEventListener("click", (e) => {
       e.preventDefault();
 
-      const folderId = (
-        document.querySelector("#template-add-clone .select-folder") as HTMLSelectElement
-      ).value;
+      const folderId = (document.getElementById("select-folder") as HTMLSelectElement).value;
 
       const bgAddSaveMessage = {
         command: "bgAddSave",
@@ -128,8 +132,8 @@ function contentLoaded() {
   }
 
   function handleTypeChange() {
-    setContent(document.getElementById("template-change"));
-    var changeButton = document.querySelector("#template-change-clone .change-save"); // eslint-disable-line
+    setContent(document.getElementById("template-change") as HTMLTemplateElement);
+    const changeButton = document.getElementById("change-save");
     changeButton.addEventListener("click", (e) => {
       e.preventDefault();
 
@@ -140,14 +144,13 @@ function contentLoaded() {
     });
   }
 
-  function setContent(element: HTMLElement) {
+  function setContent(template: HTMLTemplateElement) {
     const content = document.getElementById("content");
     while (content.firstChild) {
       content.removeChild(content.firstChild);
     }
 
-    const newElement = element.cloneNode(true) as HTMLElement;
-    newElement.id = newElement.id + "-clone";
+    const newElement = template.content.cloneNode(true) as HTMLElement;
     content.appendChild(newElement);
   }
 
@@ -156,7 +159,7 @@ function contentLoaded() {
   }
 
   function fillSelectorWithFolders(folders: Jsonify<FolderView[]>) {
-    const select = document.querySelector("#template-add-clone .select-folder");
+    const select = document.getElementById("select-folder");
     select.appendChild(new Option(chrome.i18n.getMessage("selectFolder"), null, true));
     folders.forEach((folder) => {
       // Select "No Folder" (id=null) folder by default
