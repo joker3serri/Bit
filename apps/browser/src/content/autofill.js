@@ -465,7 +465,7 @@
       }
 
       /**
-       * Clean up the string `s` to non-printable characters and trim it.
+       * Clean up the string `s` to remove non-printable characters and whitespace.
        * @param {string} s 
        * @returns {string} Clean text
        */
