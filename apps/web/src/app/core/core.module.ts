@@ -14,7 +14,6 @@ import { ModalService as ModalServiceAbstraction } from "@bitwarden/angular/serv
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/abstractions/messaging.service";
-import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/abstractions/passwordReprompt.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService as BaseStateServiceAbstraction } from "@bitwarden/common/abstractions/state.service";
 import { StateMigrationService as StateMigrationServiceAbstraction } from "@bitwarden/common/abstractions/stateMigration.service";
@@ -23,6 +22,11 @@ import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/
 import { LoginService } from "@bitwarden/common/auth/services/login.service";
 import { StateFactory } from "@bitwarden/common/factories/stateFactory";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
+import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
+
+// TODO refine elsint rule for **/app/core/*
+// eslint-disable-next-line no-restricted-imports
+import { PasswordRepromptService } from "../../vault/app/core/password-reprompt.service";
 
 import { BroadcasterMessagingService } from "./broadcaster-messaging.service";
 import { EventService } from "./event.service";
@@ -30,7 +34,6 @@ import { HtmlStorageService } from "./html-storage.service";
 import { I18nService } from "./i18n.service";
 import { InitService } from "./init.service";
 import { ModalService } from "./modal.service";
-import { PasswordRepromptService } from "./password-reprompt.service";
 import { PolicyListService } from "./policy-list.service";
 import { RouterService } from "./router.service";
 import { Account, GlobalState, StateService } from "./state";

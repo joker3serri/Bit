@@ -10,6 +10,7 @@ import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-p
 import { UpdateTwoFactorAuthenticatorRequest } from "@bitwarden/common/auth/models/request/update-two-factor-authenticator.request";
 import { TwoFactorAuthenticatorResponse } from "@bitwarden/common/auth/models/response/two-factor-authenticator.response";
 import { AuthResponse } from "@bitwarden/common/auth/types/auth-response";
+import { Utils } from "@bitwarden/common/misc/utils";
 
 import { TwoFactorBaseComponent } from "./two-factor-base.component";
 
@@ -99,7 +100,7 @@ export class TwoFactorAuthenticatorComponent
         element: document.getElementById("qr"),
         value:
           "otpauth://totp/Bitwarden:" +
-          encodeURIComponent(email) +
+          Utils.encodeRFC3986URIComponent(email) +
           "?secret=" +
           encodeURIComponent(this.key) +
           "&issuer=Bitwarden",

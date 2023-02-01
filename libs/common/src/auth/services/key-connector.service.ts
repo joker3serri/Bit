@@ -6,6 +6,7 @@ import { OrganizationService } from "../../abstractions/organization/organizatio
 import { StateService } from "../../abstractions/state.service";
 import { OrganizationUserType } from "../../enums/organizationUserType";
 import { Utils } from "../../misc/utils";
+import { KdfConfig } from "../../models/domain/kdf-config";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { KeysRequest } from "../../models/request/keys.request";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "../abstractions/key-connector.service";
@@ -82,14 +83,14 @@ export class KeyConnectorService implements KeyConnectorServiceAbstraction {
   }
 
   async convertNewSsoUserToKeyConnector(tokenResponse: IdentityTokenResponse, orgId: string) {
-    const { kdf, kdfIterations, keyConnectorUrl } = tokenResponse;
+    const { kdf, kdfIterations, kdfMemory, kdfParallelism, keyConnectorUrl } = tokenResponse;
     const password = await this.cryptoFunctionService.randomBytes(64);
 
     const k = await this.cryptoService.makeKey(
       Utils.fromBufferToB64(password),
       await this.tokenService.getEmail(),
       kdf,
-      kdfIterations
+      new KdfConfig(kdfIterations, kdfMemory, kdfParallelism)
     );
     const keyConnectorRequest = new KeyConnectorUserKeyRequest(k.encKeyB64);
     await this.cryptoService.setKey(k);

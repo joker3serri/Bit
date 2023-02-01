@@ -14,6 +14,7 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { EmergencyAccessPasswordRequest } from "@bitwarden/common/auth/models/request/emergency-access-password.request";
 import { KdfType } from "@bitwarden/common/enums/kdfType";
 import { PolicyData } from "@bitwarden/common/models/data/policy.data";
+import { KdfConfig } from "@bitwarden/common/models/domain/kdf-config";
 import { Policy } from "@bitwarden/common/models/domain/policy";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { PolicyResponse } from "@bitwarden/common/models/response/policy.response";
@@ -102,7 +103,11 @@ export class EmergencyAccessTakeoverComponent
       this.masterPassword,
       this.email,
       takeoverResponse.kdf,
-      takeoverResponse.kdfIterations
+      new KdfConfig(
+        takeoverResponse.kdfIterations,
+        takeoverResponse.kdfMemory,
+        takeoverResponse.kdfParallelism
+      )
     );
     const masterPasswordHash = await this.cryptoService.hashPassword(this.masterPassword, key);
 

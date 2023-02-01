@@ -11,6 +11,7 @@ import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { KdfType } from "../../enums/kdfType";
 import { KeySuffixOptions } from "../../enums/keySuffixOptions";
+import { KdfConfig } from "../../models/domain/kdf-config";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { PreloginRequest } from "../../models/request/prelogin.request";
 import { ErrorResponse } from "../../models/response/error.response";
@@ -247,19 +248,23 @@ export class AuthService implements AuthServiceAbstraction {
   async makePreloginKey(masterPassword: string, email: string): Promise<SymmetricCryptoKey> {
     email = email.trim().toLowerCase();
     let kdf: KdfType = null;
-    let kdfIterations: number = null;
+    let kdfConfig: KdfConfig = null;
     try {
       const preloginResponse = await this.apiService.postPrelogin(new PreloginRequest(email));
       if (preloginResponse != null) {
         kdf = preloginResponse.kdf;
-        kdfIterations = preloginResponse.kdfIterations;
+        kdfConfig = new KdfConfig(
+          preloginResponse.kdfIterations,
+          preloginResponse.kdfMemory,
+          preloginResponse.kdfParallelism
+        );
       }
     } catch (e) {
       if (e == null || e.statusCode !== 404) {
         throw e;
       }
     }
-    return this.cryptoService.makeKey(masterPassword, email, kdf, kdfIterations);
+    return this.cryptoService.makeKey(masterPassword, email, kdf, kdfConfig);
   }
 
   async authResponsePushNotifiction(notification: AuthRequestPushNotification): Promise<any> {

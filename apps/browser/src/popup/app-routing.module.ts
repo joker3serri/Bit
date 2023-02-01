@@ -17,6 +17,14 @@ import { SsoComponent } from "../auth/popup/sso.component";
 import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/popup/update-temp-password.component";
+import { AddEditComponent } from "../vault/popup/components/vault/add-edit.component";
+import { AttachmentsComponent } from "../vault/popup/components/vault/attachments.component";
+import { CurrentTabComponent } from "../vault/popup/components/vault/current-tab.component";
+import { PasswordHistoryComponent } from "../vault/popup/components/vault/password-history.component";
+import { ShareComponent } from "../vault/popup/components/vault/share.component";
+import { VaultFilterComponent } from "../vault/popup/components/vault/vault-filter.component";
+import { VaultItemsComponent } from "../vault/popup/components/vault/vault-items.component";
+import { ViewComponent } from "../vault/popup/components/vault/view.component";
 
 import { GeneratorComponent } from "./generator/generator.component";
 import { PasswordGeneratorHistoryComponent } from "./generator/password-generator-history.component";
@@ -33,15 +41,7 @@ import { PremiumComponent } from "./settings/premium.component";
 import { SettingsComponent } from "./settings/settings.component";
 import { SyncComponent } from "./settings/sync.component";
 import { TabsComponent } from "./tabs.component";
-import { AddEditComponent } from "./vault/add-edit.component";
-import { AttachmentsComponent } from "./vault/attachments.component";
 import { CollectionsComponent } from "./vault/collections.component";
-import { CurrentTabComponent } from "./vault/current-tab.component";
-import { PasswordHistoryComponent } from "./vault/password-history.component";
-import { ShareComponent } from "./vault/share.component";
-import { VaultFilterComponent } from "./vault/vault-filter.component";
-import { VaultItemsComponent } from "./vault/vault-items.component";
-import { ViewComponent } from "./vault/view.component";
 
 const routes: Routes = [
   {

@@ -1,6 +1,6 @@
 import { KdfType } from "../../../enums/kdfType";
 import { BaseResponse } from "../../../models/response/base.response";
-import { CipherResponse } from "../../../models/response/cipher.response";
+import { CipherResponse } from "../../../vault/models/response/cipher.response";
 import { EmergencyAccessStatusType } from "../../enums/emergency-access-status-type";
 import { EmergencyAccessType } from "../../enums/emergency-access-type";
 
@@ -13,6 +13,7 @@ export class EmergencyAccessGranteeDetailsResponse extends BaseResponse {
   status: EmergencyAccessStatusType;
   waitTimeDays: number;
   creationDate: string;
+  avatarColor: string;
 
   constructor(response: any) {
     super(response);
@@ -24,6 +25,7 @@ export class EmergencyAccessGranteeDetailsResponse extends BaseResponse {
     this.status = this.getResponseProperty("Status");
     this.waitTimeDays = this.getResponseProperty("WaitTimeDays");
     this.creationDate = this.getResponseProperty("CreationDate");
+    this.avatarColor = this.getResponseProperty("AvatarColor");
   }
 }
 
@@ -36,6 +38,7 @@ export class EmergencyAccessGrantorDetailsResponse extends BaseResponse {
   status: EmergencyAccessStatusType;
   waitTimeDays: number;
   creationDate: string;
+  avatarColor: string;
 
   constructor(response: any) {
     super(response);
@@ -47,6 +50,7 @@ export class EmergencyAccessGrantorDetailsResponse extends BaseResponse {
     this.status = this.getResponseProperty("Status");
     this.waitTimeDays = this.getResponseProperty("WaitTimeDays");
     this.creationDate = this.getResponseProperty("CreationDate");
+    this.avatarColor = this.getResponseProperty("AvatarColor");
   }
 }
 
@@ -54,6 +58,8 @@ export class EmergencyAccessTakeoverResponse extends BaseResponse {
   keyEncrypted: string;
   kdf: KdfType;
   kdfIterations: number;
+  kdfMemory?: number;
+  kdfParallelism?: number;
 
   constructor(response: any) {
     super(response);
@@ -61,6 +67,8 @@ export class EmergencyAccessTakeoverResponse extends BaseResponse {
     this.keyEncrypted = this.getResponseProperty("KeyEncrypted");
     this.kdf = this.getResponseProperty("Kdf");
     this.kdfIterations = this.getResponseProperty("KdfIterations");
+    this.kdfMemory = this.getResponseProperty("KdfMemory");
+    this.kdfParallelism = this.getResponseProperty("KdfParallelism");
   }
 }
 

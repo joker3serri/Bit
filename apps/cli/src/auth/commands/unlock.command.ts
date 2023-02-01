@@ -4,12 +4,12 @@ import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunc
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
 import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
+import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { ConvertToKeyConnectorCommand } from "../../commands/convert-to-key-connector.command";
 import { Response } from "../../models/response";
@@ -43,8 +43,8 @@ export class UnlockCommand {
     await this.setNewSessionKey();
     const email = await this.stateService.getEmail();
     const kdf = await this.stateService.getKdfType();
-    const kdfIterations = await this.stateService.getKdfIterations();
-    const key = await this.cryptoService.makeKey(password, email, kdf, kdfIterations);
+    const kdfConfig = await this.stateService.getKdfConfig();
+    const key = await this.cryptoService.makeKey(password, email, kdf, kdfConfig);
     const storedKeyHash = await this.cryptoService.getKeyHash();
 
     let passwordValid = false;
