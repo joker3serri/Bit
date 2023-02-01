@@ -21,6 +21,7 @@ import { PasswordColorText } from "../shared/components/password-strength/passwo
 export class ChangePasswordComponent implements OnInit, OnDestroy {
   masterPassword: string;
   masterPasswordRetype: string;
+  masterPasswordHint: string;
   formPromise: Promise<any>;
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
   passwordStrengthResult: any;
@@ -116,6 +117,14 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
         "error",
         this.i18nService.t("errorOccurred"),
         this.i18nService.t("masterPasswordRequired")
+      );
+      return false;
+    }
+    if (this.masterPasswordHint != null && this.masterPasswordHint == this.masterPassword) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("hintEqualsPassword")
       );
       return false;
     }
