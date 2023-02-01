@@ -4,6 +4,7 @@ import { firstValueFrom } from "rxjs";
 
 import { ChangePasswordComponent as BaseChangePasswordComponent } from "@bitwarden/angular/components/change-password.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CipherService } from "@bitwarden/common/abstractions/cipher.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { FolderService } from "@bitwarden/common/abstractions/folder/folder.service.abstraction";
@@ -30,7 +31,6 @@ import { FolderWithIdRequest } from "@bitwarden/common/models/request/folder-wit
 import { PasswordRequest } from "@bitwarden/common/models/request/password.request";
 import { SendWithIdRequest } from "@bitwarden/common/models/request/send-with-id.request";
 import { UpdateKeyRequest } from "@bitwarden/common/models/request/update-key.request";
-import { AuditService } from "@bitwarden/common/services/audit.service";
 
 @Component({
   selector: "app-change-password",
@@ -68,7 +68,8 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
       passwordGenerationService,
       platformUtilsService,
       policyService,
-      stateService
+      stateService,
+      auditService
     );
     this.auditServiceInstance = auditService;
   }

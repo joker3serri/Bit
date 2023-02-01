@@ -3,6 +3,7 @@ import { takeUntil } from "rxjs";
 
 import { ChangePasswordComponent } from "@bitwarden/angular/components/change-password.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -46,7 +47,8 @@ export class EmergencyAccessTakeoverComponent
     platformUtilsService: PlatformUtilsService,
     policyService: PolicyService,
     private apiService: ApiService,
-    private logService: LogService
+    private logService: LogService,
+    auditService: AuditService
   ) {
     super(
       i18nService,
@@ -55,7 +57,8 @@ export class EmergencyAccessTakeoverComponent
       passwordGenerationService,
       platformUtilsService,
       policyService,
-      stateService
+      stateService,
+      auditService
     );
   }
 
@@ -79,7 +82,7 @@ export class EmergencyAccessTakeoverComponent
   }
 
   async submit() {
-    if (!(await this.strongPassword())) {
+    if (!(await this.validPassword())) {
       return;
     }
 

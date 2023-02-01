@@ -33,7 +33,6 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
   protected kdfConfig: KdfConfig;
 
   protected destroy$ = new Subject<void>();
-  protected auditServiceInstance: AuditService;
 
   constructor(
     protected i18nService: I18nService,
@@ -42,7 +41,8 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     protected passwordGenerationService: PasswordGenerationService,
     protected platformUtilsService: PlatformUtilsService,
     protected policyService: PolicyService,
-    protected stateService: StateService
+    protected stateService: StateService,
+    protected auditServiceInstance: AuditService
   ) {}
 
   async ngOnInit() {
@@ -155,13 +155,13 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     }
 
     const weakPassword = strengthResult != null && strengthResult.score < 3;
-    const breachedPassword =
+    const leakedPassword =
       this.checkBreach && (await this.auditServiceInstance.passwordLeaked(this.masterPassword)) > 0;
 
-    if (weakPassword && breachedPassword) {
+    if (weakPassword && leakedPassword) {
       const result = await this.platformUtilsService.showDialog(
-        this.i18nService.t("weakMasterPasswordDesc"),
-        this.i18nService.t("weakMasterPassword"),
+        this.i18nService.t("weakAndBreachedMasterPasswordDesc"),
+        this.i18nService.t("weakAndExposedMasterPassword"),
         this.i18nService.t("yes"),
         this.i18nService.t("no"),
         "warning"
@@ -169,65 +169,31 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
       if (!result) {
         return false;
       }
-    }
-
-    return true;
-  }
-
-  async strongPassword(): Promise<boolean> {
-    if (this.masterPassword == null || this.masterPassword === "") {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPasswordRequired")
-      );
-      return false;
-    }
-    if (this.masterPassword.length < 8) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPasswordMinlength")
-      );
-      return false;
-    }
-    if (this.masterPassword !== this.masterPasswordRetype) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPassDoesntMatch")
-      );
-      return false;
-    }
-
-    const strengthResult = this.passwordStrengthResult;
-
-    if (
-      this.enforcedPolicyOptions != null &&
-      !this.policyService.evaluateMasterPassword(
-        strengthResult.score,
-        this.masterPassword,
-        this.enforcedPolicyOptions
-      )
-    ) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPasswordPolicyRequirementsNotMet")
-      );
-      return false;
-    }
-
-    if (strengthResult != null && strengthResult.score < 3) {
-      const result = await this.platformUtilsService.showDialog(
-        this.i18nService.t("weakMasterPasswordDesc"),
-        this.i18nService.t("weakMasterPassword"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("no"),
-        "warning"
-      );
-      if (!result) {
-        return false;
+    } else {
+      if (weakPassword) {
+        const result = await this.platformUtilsService.showDialog(
+          this.i18nService.t("weakMasterPasswordDesc"),
+          this.i18nService.t("weakMasterPassword"),
+          this.i18nService.t("yes"),
+          this.i18nService.t("no"),
+          "warning"
+        );
+        if (!result) {
+          return false;
+        }
+      } else {
+        if (leakedPassword) {
+          const result = await this.platformUtilsService.showDialog(
+            this.i18nService.t("exposedMasterPasswordDesc"),
+            this.i18nService.t("exposedMasterPassword"),
+            this.i18nService.t("yes"),
+            this.i18nService.t("no"),
+            "warning"
+          );
+          if (!result) {
+            return false;
+          }
+        }
       }
     }
 

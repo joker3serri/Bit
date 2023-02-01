@@ -1,6 +1,7 @@
 import { Directive } from "@angular/core";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
+import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -36,7 +37,8 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
     private apiService: ApiService,
     stateService: StateService,
     private syncService: SyncService,
-    private logService: LogService
+    private logService: LogService,
+    auditService: AuditService
   ) {
     super(
       i18nService,
@@ -45,7 +47,8 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
       passwordGenerationService,
       platformUtilsService,
       policyService,
-      stateService
+      stateService,
+      auditService
     );
   }
 
@@ -68,7 +71,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
 
   async submit() {
     // Validation
-    if (!(await this.strongPassword())) {
+    if (!(await this.validPassword())) {
       return;
     }
 
