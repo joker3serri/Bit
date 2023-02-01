@@ -850,7 +850,7 @@
       }
 
       /**
-       * Do a fill by query operation
+       * Find all elements matching `query` and fill them using the value `op` from the fill script
        * @param {string} query 
        * @param {string} op 
        * @returns {HTMLElement}
