@@ -42,7 +42,7 @@ function contentLoaded() {
 
     const selectFolder = addTemplate.content.getElementById("select-folder");
     selectFolder.setAttribute("aria-label", i18n.folder);
-    selectFolder.setAttribute("isVaultLocked", isVaultLocked.toString());
+    selectFolder.dataset.isVaultLocked = isVaultLocked.toString();
 
     const addButton = addTemplate.content.getElementById("add-save");
     addButton.textContent = i18n.notificationAddSave;
