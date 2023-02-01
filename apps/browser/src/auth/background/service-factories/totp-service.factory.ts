@@ -15,7 +15,6 @@ import {
   logServiceFactory,
 } from "../../../background/service_factories/log-service.factory";
 
-
 type TotpServiceOptions = FactoryOptions;
 
 export type TotpServiceInitOptions = TotpServiceOptions &
