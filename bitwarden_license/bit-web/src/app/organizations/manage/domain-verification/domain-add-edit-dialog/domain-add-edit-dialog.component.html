@@ -54,7 +54,7 @@
         <span *ngIf="!data?.orgDomain?.verifiedDate">{{ "verifyDomain" | i18n }}</span>
         <span *ngIf="data?.orgDomain?.verifiedDate">{{ "reverifyDomain" | i18n }}</span>
       </button>
-      <button bitButton buttonType="secondary" (click)="dialogRef.close()">
+      <button bitButton buttonType="secondary" (click)="dialogRef.close()" type="button">
         {{ "cancel" | i18n }}
       </button>
 

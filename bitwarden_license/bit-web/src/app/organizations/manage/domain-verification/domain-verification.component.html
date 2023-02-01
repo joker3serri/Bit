@@ -56,15 +56,19 @@
                 <i class="bwi bwi-ellipsis-v bwi-lg" aria-hidden="true"></i>
               </button>
               <bit-menu #orgDomainOptions>
-                <button bitMenuItem (click)="copyDnsTxt(orgDomain.txt)">
+                <button bitMenuItem (click)="copyDnsTxt(orgDomain.txt)" type="button">
                   <i class="bwi bwi-fw bwi-clone" aria-hidden="true"></i>
                   {{ "copyDnsTxtRecord" | i18n }}
                 </button>
-                <button bitMenuItem (click)="verifyDomain(orgDomain.id, orgDomain.domainName)">
+                <button
+                  bitMenuItem
+                  (click)="verifyDomain(orgDomain.id, orgDomain.domainName)"
+                  type="button"
+                >
                   <i class="bwi bwi-fw bwi-check" aria-hidden="true"></i>
                   {{ "verifyDomain" | i18n }}
                 </button>
-                <button bitMenuItem (click)="deleteDomain(orgDomain.id)">
+                <button bitMenuItem (click)="deleteDomain(orgDomain.id)" type="button">
                   <span class="tw-text-danger">
                     <i class="bwi bwi-fw bwi-close" aria-hidden="true"></i>
                     {{ "remove" | i18n }}
