@@ -8,7 +8,7 @@ import { StateService } from "../../abstractions/state.service";
 import { Account, AccountProfile, AccountTokens } from "../../models/domain/account";
 import { KeysRequest } from "../../models/request/keys.request";
 import { TokenService } from "../abstractions/token.service";
-import { TwoFactorService } from "../abstractions/twoFactor.service";
+import { TwoFactorService } from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { AuthResult } from "../models/domain/auth-result";
 import {

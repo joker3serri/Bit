@@ -18,13 +18,13 @@ import { AuthRequestPushNotification } from "../../models/response/notification.
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
-import { TwoFactorService } from "../abstractions/twoFactor.service";
+import { TwoFactorService } from "../abstractions/two-factor.service";
 import { AuthenticationStatus } from "../enums/authentication-status";
 import { AuthenticationType } from "../enums/authentication-type";
-import { PasswordLogInStrategy } from "../logInStrategies/password-login.strategy";
-import { PasswordlessLogInStrategy } from "../logInStrategies/passwordless-login.strategy";
-import { SsoLogInStrategy } from "../logInStrategies/sso-login.strategy";
-import { UserApiLogInStrategy } from "../logInStrategies/user-api-login.strategy";
+import { PasswordLogInStrategy } from "../login-strategies/password-login.strategy";
+import { PasswordlessLogInStrategy } from "../login-strategies/passwordless-login.strategy";
+import { SsoLogInStrategy } from "../login-strategies/sso-login.strategy";
+import { UserApiLogInStrategy } from "../login-strategies/user-api-login.strategy";
 import { AuthResult } from "../models/domain/auth-result";
 import { KdfConfig } from "../models/domain/kdf-config";
 import {

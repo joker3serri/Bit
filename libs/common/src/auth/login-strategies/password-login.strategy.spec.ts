@@ -12,7 +12,7 @@ import { Utils } from "../../misc/utils";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
-import { TwoFactorService } from "../abstractions/twoFactor.service";
+import { TwoFactorService } from "../abstractions/two-factor.service";
 import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";

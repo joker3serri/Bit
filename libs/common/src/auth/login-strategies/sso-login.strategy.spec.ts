@@ -3,7 +3,6 @@ import { mock, MockProxy } from "jest-mock-extended";
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../abstractions/appId.service";
 import { CryptoService } from "../../abstractions/crypto.service";
-import { EnvironmentService } from "../../abstractions/environment.service";
 import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
@@ -11,13 +10,13 @@ import { StateService } from "../../abstractions/state.service";
 import { Utils } from "../../misc/utils";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
-import { TwoFactorService } from "../abstractions/twoFactor.service";
-import { UserApiLogInCredentials } from "../models/domain/log-in-credentials";
+import { TwoFactorService } from "../abstractions/two-factor.service";
+import { SsoLogInCredentials } from "../models/domain/log-in-credentials";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
-import { UserApiLogInStrategy } from "./user-api-login.strategy";
+import { SsoLogInStrategy } from "./sso-login.strategy";
 
-describe("UserApiLogInStrategy", () => {
+describe("SsoLogInStrategy", () => {
   let cryptoService: MockProxy<CryptoService>;
   let apiService: MockProxy<ApiService>;
   let tokenService: MockProxy<TokenService>;
@@ -28,15 +27,17 @@ describe("UserApiLogInStrategy", () => {
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
   let keyConnectorService: MockProxy<KeyConnectorService>;
-  let environmentService: MockProxy<EnvironmentService>;
 
-  let apiLogInStrategy: UserApiLogInStrategy;
-  let credentials: UserApiLogInCredentials;
+  let ssoLogInStrategy: SsoLogInStrategy;
+  let credentials: SsoLogInCredentials;
 
   const deviceId = Utils.newGuid();
   const keyConnectorUrl = "KEY_CONNECTOR_URL";
-  const apiClientId = "API_CLIENT_ID";
-  const apiClientSecret = "API_CLIENT_SECRET";
+
+  const ssoCode = "SSO_CODE";
+  const ssoCodeVerifier = "SSO_CODE_VERIFIER";
+  const ssoRedirectUrl = "SSO_REDIRECT_URL";
+  const ssoOrgId = "SSO_ORG_ID";
 
   beforeEach(async () => {
     cryptoService = mock<CryptoService>();
@@ -49,13 +50,12 @@ describe("UserApiLogInStrategy", () => {
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
     keyConnectorService = mock<KeyConnectorService>();
-    environmentService = mock<EnvironmentService>();
 
-    appIdService.getAppId.mockResolvedValue(deviceId);
     tokenService.getTwoFactorToken.mockResolvedValue(null);
+    appIdService.getAppId.mockResolvedValue(deviceId);
     tokenService.decodeToken.mockResolvedValue({});
 
-    apiLogInStrategy = new UserApiLogInStrategy(
+    ssoLogInStrategy = new SsoLogInStrategy(
       cryptoService,
       apiService,
       tokenService,
@@ -65,21 +65,21 @@ describe("UserApiLogInStrategy", () => {
       logService,
       stateService,
       twoFactorService,
-      environmentService,
       keyConnectorService
     );
-
-    credentials = new UserApiLogInCredentials(apiClientId, apiClientSecret);
+    credentials = new SsoLogInCredentials(ssoCode, ssoCodeVerifier, ssoRedirectUrl, ssoOrgId);
   });
 
-  it("sends api key credentials to the server", async () => {
+  it("sends SSO information to server", async () => {
     apiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
-    await apiLogInStrategy.logIn(credentials);
+
+    await ssoLogInStrategy.logIn(credentials);
 
     expect(apiService.postIdentityToken).toHaveBeenCalledWith(
       expect.objectContaining({
-        clientId: apiClientId,
-        clientSecret: apiClientSecret,
+        code: ssoCode,
+        codeVerifier: ssoCodeVerifier,
+        redirectUri: ssoRedirectUrl,
         device: expect.objectContaining({
           identifier: deviceId,
         }),
@@ -91,25 +91,40 @@ describe("UserApiLogInStrategy", () => {
     );
   });
 
-  it("sets the local environment after a successful login", async () => {
-    apiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
+  it("does not set keys for new SSO user flow", async () => {
+    const tokenResponse = identityTokenResponseFactory();
+    tokenResponse.key = null;
+    apiService.postIdentityToken.mockResolvedValue(tokenResponse);
 
-    await apiLogInStrategy.logIn(credentials);
+    await ssoLogInStrategy.logIn(credentials);
 
-    expect(stateService.setApiKeyClientId).toHaveBeenCalledWith(apiClientId);
-    expect(stateService.setApiKeyClientSecret).toHaveBeenCalledWith(apiClientSecret);
-    expect(stateService.addAccount).toHaveBeenCalled();
+    expect(cryptoService.setEncPrivateKey).not.toHaveBeenCalled();
+    expect(cryptoService.setEncKey).not.toHaveBeenCalled();
   });
 
-  it("gets and sets the Key Connector key from environmentUrl", async () => {
+  it("gets and sets KeyConnector key for enrolled user", async () => {
     const tokenResponse = identityTokenResponseFactory();
-    tokenResponse.apiUseKeyConnector = true;
+    tokenResponse.keyConnectorUrl = keyConnectorUrl;
 
     apiService.postIdentityToken.mockResolvedValue(tokenResponse);
-    environmentService.getKeyConnectorUrl.mockReturnValue(keyConnectorUrl);
 
-    await apiLogInStrategy.logIn(credentials);
+    await ssoLogInStrategy.logIn(credentials);
 
     expect(keyConnectorService.getAndSetKey).toHaveBeenCalledWith(keyConnectorUrl);
+  });
+
+  it("converts new SSO user to Key Connector on first login", async () => {
+    const tokenResponse = identityTokenResponseFactory();
+    tokenResponse.keyConnectorUrl = keyConnectorUrl;
+    tokenResponse.key = null;
+
+    apiService.postIdentityToken.mockResolvedValue(tokenResponse);
+
+    await ssoLogInStrategy.logIn(credentials);
+
+    expect(keyConnectorService.convertNewSsoUserToKeyConnector).toHaveBeenCalledWith(
+      tokenResponse,
+      ssoOrgId
+    );
   });
 });

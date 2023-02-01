@@ -3,7 +3,7 @@ import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import {
   TwoFactorProviderDetails,
   TwoFactorService as TwoFactorServiceAbstraction,
-} from "../abstractions/twoFactor.service";
+} from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 

@@ -12,7 +12,7 @@ import { Account, AccountProfile, AccountTokens } from "../../models/domain/acco
 import { EncString } from "../../models/domain/enc-string";
 import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
-import { TwoFactorService } from "../abstractions/twoFactor.service";
+import { TwoFactorService } from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { AuthResult } from "../models/domain/auth-result";
 import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";

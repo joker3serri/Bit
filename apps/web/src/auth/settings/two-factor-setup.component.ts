@@ -8,7 +8,7 @@ import { MessagingService } from "@bitwarden/common/abstractions/messaging.servi
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
-import { TwoFactorProviders } from "@bitwarden/common/auth/services/twoFactor.service";
+import { TwoFactorProviders } from "@bitwarden/common/auth/services/two-factor.service";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 
 import { TwoFactorAuthenticatorComponent } from "./two-factor-authenticator.component";
