@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
+import { combineLatestWith, Observable, shareReplay, startWith, switchMap } from "rxjs";
 
 import { PotentialGranteeView } from "../../models/view/potential-grantee.view";
 import { ProjectAccessPoliciesView } from "../../models/view/project-access-policies.view";
@@ -11,7 +11,6 @@ import { AccessPolicyService } from "../../shared/access-policies/access-policy.
   templateUrl: "./project-access.component.html",
 })
 export class ProjectAccessComponent implements OnInit {
-  @Input() getPotentialGrantees: () => Promise<PotentialGranteeView[]>;
   @Input() accessType: "projectPeople" | "projectServiceAccounts";
   @Input() description: string;
   @Input() label: string;
@@ -20,6 +19,7 @@ export class ProjectAccessComponent implements OnInit {
   @Input() emptyMessage: string;
 
   protected projectAccessPolicies$: Observable<ProjectAccessPoliciesView>;
+  protected potentialGrantees$: Observable<PotentialGranteeView[]>;
 
   constructor(private route: ActivatedRoute, private accessPolicyService: AccessPolicyService) {}
 
@@ -32,7 +32,27 @@ export class ProjectAccessComponent implements OnInit {
           params.organizationId,
           params.projectId
         );
-      })
+      }),
+      shareReplay({ refCount: true, bufferSize: 1 })
+    );
+
+    this.potentialGrantees$ = this.accessPolicyService.projectAccessPolicies$.pipe(
+      startWith(null),
+      combineLatestWith(this.route.params),
+      switchMap(([_, params]) => {
+        if (this.accessType == "projectPeople") {
+          return this.accessPolicyService.getPeoplePotentialGrantees(
+            params.organizationId,
+            params.projectId
+          );
+        } else {
+          return this.accessPolicyService.getServiceAccountPotentialGrantees(
+            params.organizationId,
+            params.projectId
+          );
+        }
+      }),
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
   }
 }
