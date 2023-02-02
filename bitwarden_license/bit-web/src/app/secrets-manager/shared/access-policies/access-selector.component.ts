@@ -96,7 +96,7 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
       map((policies) => {
         const rowData: RowItemView[] = [];
 
-        if (this.tableType == "projectPeople") {
+        if (this.tableType === "projectPeople") {
           policies.userAccessPolicies.forEach((policy) => {
             rowData.push({
               type: "user",
@@ -120,7 +120,7 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
           });
         }
 
-        if (this.tableType == "projectServiceAccounts") {
+        if (this.tableType === "projectServiceAccounts") {
           policies.serviceAccountAccessPolicies.forEach((policy) => {
             rowData.push({
               type: "serviceAccount",
@@ -260,13 +260,13 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
     try {
       const accessPolicyView = new BaseAccessPolicyView();
       accessPolicyView.id = accessPolicyId;
-      if (target.value == "canRead") {
+      if (target.value === "canRead") {
         accessPolicyView.read = true;
         accessPolicyView.write = false;
-      } else if (target.value == "canWrite") {
+      } else if (target.value === "canWrite") {
         accessPolicyView.read = false;
         accessPolicyView.write = true;
-      } else if (target.value == "canReadWrite") {
+      } else if (target.value === "canReadWrite") {
         accessPolicyView.read = true;
         accessPolicyView.write = true;
       }

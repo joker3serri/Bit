@@ -249,7 +249,7 @@ export class AccessPolicyService {
         view.type = r.type;
         view.email = r.email;
 
-        if (r.type == "serviceAccount") {
+        if (r.type === "serviceAccount") {
           view.name = await this.encryptService.decryptToUtf8(new EncString(r.name), orgKey);
         } else {
           view.name = r.name;
