@@ -7,6 +7,7 @@ import { UnauthGuard } from "@bitwarden/angular/auth/guards/unauth.guard";
 
 import { AcceptEmergencyComponent } from "../auth/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../auth/accept-organization.component";
+import { HintComponent } from "../auth/hint.component";
 import { LockComponent } from "../auth/lock.component";
 import { LoginWithDeviceComponent } from "../auth/login/login-with-device.component";
 import { LoginComponent } from "../auth/login/login.component";
@@ -25,7 +26,6 @@ import { VerifyRecoverDeleteComponent } from "../auth/verify-recover-delete.comp
 import { flagEnabled, Flags } from "../utils/flags";
 import { VaultModule } from "../vault/app/vault/vault.module";
 
-import { HintComponent } from "./accounts/hint.component";
 import { TrialInitiationComponent } from "./accounts/trial-initiation/trial-initiation.component";
 import { HomeGuard } from "./guards/home.guard";
 import { FrontendLayoutComponent } from "./layouts/frontend-layout.component";

@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { PasswordRepromptComponent } from "../../../src/vault/app/components/password-reprompt.component";
 import { AcceptEmergencyComponent } from "../../auth/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../../auth/accept-organization.component";
+import { HintComponent } from "../../auth/hint.component";
 import { LockComponent } from "../../auth/lock.component";
 import { RecoverDeleteComponent } from "../../auth/recover-delete.component";
 import { RecoverTwoFactorComponent } from "../../auth/recover-two-factor.component";
@@ -40,7 +41,6 @@ import { AttachmentsComponent } from "../../vault/app/vault/attachments.componen
 import { CollectionsComponent } from "../../vault/app/vault/collections.component";
 import { FolderAddEditComponent } from "../../vault/app/vault/folder-add-edit.component";
 import { ShareComponent } from "../../vault/app/vault/share.component";
-import { HintComponent } from "../accounts/hint.component";
 import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
 import { OrganizationSwitcherComponent } from "../components/organization-switcher.component";
 import { SelectableAvatarComponent } from "../components/selectable-avatar.component";
