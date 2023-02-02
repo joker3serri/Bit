@@ -20,7 +20,6 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstraction
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
-import { SyncService } from "@bitwarden/common/abstractions/sync/sync.service.abstraction";
 import { PaymentMethodType } from "@bitwarden/common/enums/paymentMethodType";
 import { PlanType } from "@bitwarden/common/enums/planType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
@@ -32,6 +31,7 @@ import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organi
 import { OrganizationUpgradeRequest } from "@bitwarden/common/models/request/organization-upgrade.request";
 import { ProviderOrganizationCreateRequest } from "@bitwarden/common/models/request/provider/provider-organization-create.request";
 import { PlanResponse } from "@bitwarden/common/models/response/plan.response";
+import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { PaymentComponent } from "./payment.component";
 import { TaxInfoComponent } from "./tax-info.component";
@@ -52,8 +52,25 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
   @Input() showFree = true;
   @Input() showCancel = false;
   @Input() acceptingSponsorship = false;
-  @Input() product: ProductType = ProductType.Free;
-  @Input() plan: PlanType = PlanType.Free;
+  @Input()
+  get product(): ProductType {
+    return this._product;
+  }
+  set product(product: ProductType) {
+    this._product = product;
+    this.formGroup?.controls?.product?.setValue(product);
+  }
+  private _product = ProductType.Free;
+
+  @Input()
+  get plan(): PlanType {
+    return this._plan;
+  }
+  set plan(plan: PlanType) {
+    this._plan = plan;
+    this.formGroup?.controls?.plan?.setValue(plan);
+  }
+  private _plan = PlanType.Free;
   @Input() providerId: string;
   @Output() onSuccess = new EventEmitter<OnSuccessArgs>();
   @Output() onCanceled = new EventEmitter<void>();
