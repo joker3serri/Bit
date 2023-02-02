@@ -15,9 +15,9 @@ import { LoginService } from "@bitwarden/common/auth/abstractions/login.service"
 export class HintComponent extends BaseHintComponent {
   constructor(
     router: Router,
-    platformUtilsService: PlatformUtilsService,
     i18nService: I18nService,
     apiService: ApiService,
+    platformUtilsService: PlatformUtilsService,
     logService: LogService,
     loginService: LoginService
   ) {
