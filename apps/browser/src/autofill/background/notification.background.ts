@@ -359,7 +359,7 @@ export default class NotificationBackground {
         if (edit) {
           const cipherView = AddLoginQueueMessage.toCipherView(
             queueMessage,
-            this.folderExists(folderId) ? folderId : null
+            (await this.folderExists(folderId)) ? folderId : null
           );
           await this.openNewLoginForEditing(cipherView, tab);
           return;
@@ -401,7 +401,7 @@ export default class NotificationBackground {
   private async createNewCipher(queueMessage: AddLoginQueueMessage, folderId: string) {
     const model = AddLoginQueueMessage.toCipherView(
       queueMessage,
-      this.folderExists(folderId) ? folderId : null
+      (await this.folderExists(folderId)) ? folderId : null
     );
 
     const cipher = await this.cipherService.encrypt(model);
@@ -409,7 +409,7 @@ export default class NotificationBackground {
   }
 
   private async folderExists(folderId: string) {
-    if (Utils.isNullOrWhitespace(folderId)) {
+    if (Utils.isNullOrWhitespace(folderId) || folderId === "null") {
       return false;
     }
 
