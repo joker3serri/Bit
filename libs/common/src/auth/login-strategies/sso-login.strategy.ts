@@ -12,7 +12,7 @@ import { SsoLogInCredentials } from "../models/domain/log-in-credentials";
 import { SsoTokenRequest } from "../models/request/identity-token/sso-token.request";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
-import { LogInStrategy } from "./logIn.strategy";
+import { LogInStrategy } from "./login.strategy";
 
 export class SsoLogInStrategy extends LogInStrategy {
   tokenRequest: SsoTokenRequest;

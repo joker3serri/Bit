@@ -15,7 +15,7 @@ import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
 
-import { LogInStrategy } from "./logIn.strategy";
+import { LogInStrategy } from "./login.strategy";
 
 export class PasswordLogInStrategy extends LogInStrategy {
   get email() {

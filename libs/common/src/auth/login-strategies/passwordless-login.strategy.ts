@@ -13,7 +13,7 @@ import { PasswordlessLogInCredentials } from "../models/domain/log-in-credential
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
 
-import { LogInStrategy } from "./logIn.strategy";
+import { LogInStrategy } from "./login.strategy";
 
 export class PasswordlessLogInStrategy extends LogInStrategy {
   get email() {
