@@ -67,6 +67,17 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
     this.loadingText = this.i18nService.t("multiSelectLoading");
   }
 
+  /** Function for customizing keyboard navigation */
+  /** Needs to be arrow function to retain `this` scope. */
+  keyDown = (event: KeyboardEvent) => {
+    if (event.key === "Enter") {
+      this.select.close();
+      return false;
+    }
+
+    return true;
+  };
+
   /** Helper method for showing selected state in custom template */
   isSelected(item: any): boolean {
     return this.selectedItems?.find((selected) => selected.id === item.id) != undefined;
