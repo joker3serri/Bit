@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -52,8 +51,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
     private route: ActivatedRoute,
     stateService: StateService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private organizationUserService: OrganizationUserService,
-    auditService: AuditService
+    private organizationUserService: OrganizationUserService
   ) {
     super(
       i18nService,
@@ -62,8 +60,7 @@ export class SetPasswordComponent extends BaseChangePasswordComponent {
       passwordGenerationService,
       platformUtilsService,
       policyService,
-      stateService,
-      auditService
+      stateService
     );
   }
 

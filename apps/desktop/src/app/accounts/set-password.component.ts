@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { SetPasswordComponent as BaseSetPasswordComponent } from "@bitwarden/angular/components/set-password.component";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -40,8 +39,7 @@ export class SetPasswordComponent extends BaseSetPasswordComponent implements On
     private ngZone: NgZone,
     stateService: StateService,
     organizationApiService: OrganizationApiServiceAbstraction,
-    organizationUserService: OrganizationUserService,
-    auditService: AuditService
+    organizationUserService: OrganizationUserService
   ) {
     super(
       i18nService,
@@ -57,8 +55,7 @@ export class SetPasswordComponent extends BaseSetPasswordComponent implements On
       route,
       stateService,
       organizationApiService,
-      organizationUserService,
-      auditService
+      organizationUserService
     );
   }
 
