@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Subject, switchMap, takeUntil } from "rxjs";
-import Swal, { SweetAlertIcon } from "sweetalert2";
 
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -10,6 +9,12 @@ import { OrganizationService } from "@bitwarden/common/abstractions/organization
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { ImportType } from "@bitwarden/common/enums/importOptions";
+import { DialogService } from "@bitwarden/components";
+
+import {
+  SMImportErrorDialogComponent,
+  SMImportErrorDialogOperation,
+} from "../dialog/sm-import-error-dialog.component";
 
 import { SMPortingService } from "./sm-porting.service";
 
@@ -34,7 +39,8 @@ export class SMImportComponent implements OnInit, OnDestroy {
     private platformUtilsService: PlatformUtilsService,
     protected fileDownloadService: FileDownloadService,
     private logService: LogService,
-    private smPortingService: SMPortingService
+    private smPortingService: SMPortingService,
+    private dialogService: DialogService
   ) {}
 
   async ngOnInit() {
@@ -128,24 +134,14 @@ export class SMImportComponent implements OnInit, OnDestroy {
     });
   }
 
-  // TODO: make this a simple dialog
   private async error(error: Error) {
-    await Swal.fire({
-      heightAuto: false,
-      buttonsStyling: false,
-      icon: "error" as SweetAlertIcon,
-      iconHtml: `<i class="swal-custom-icon bwi bwi-error text-danger"></i>`,
-      input: "textarea",
-      inputValue: error.message,
-      inputAttributes: {
-        readonly: "true",
-      },
-      titleText: this.i18nService.t("importError"),
-      text: this.i18nService.t("importErrorDesc"),
-      showConfirmButton: true,
-      confirmButtonText: this.i18nService.t("ok"),
-      onOpen: (popupEl: any) => {
-        popupEl.querySelector(".swal2-textarea").scrollTo(0, 0);
+    this.openImportErrorDialog(error);
+  }
+
+  private openImportErrorDialog(error: Error) {
+    this.dialogService.open<unknown, SMImportErrorDialogOperation>(SMImportErrorDialogComponent, {
+      data: {
+        error: error,
       },
     });
   }

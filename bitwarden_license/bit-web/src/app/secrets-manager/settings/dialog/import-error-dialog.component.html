@@ -1,0 +1,13 @@
+<bit-simple-dialog>
+  <span bitDialogTitle>
+    {{ "importError" | i18n }}
+  </span>
+  <span bitDialogContent>
+    <ng-container>
+      {{ data.error.message }}
+    </ng-container>
+  </span>
+  <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
+    <button bitButton bitDialogClose buttonType="primary" type="button">{{ "ok" | i18n }}</button>
+  </div>
+</bit-simple-dialog>

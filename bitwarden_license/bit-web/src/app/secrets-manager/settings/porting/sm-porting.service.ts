@@ -118,7 +118,7 @@ export class SMPortingService {
         })
       );
     } catch (e) {
-      // TODO: handle exception
+      return null;
     }
 
     return encryptedImport;
