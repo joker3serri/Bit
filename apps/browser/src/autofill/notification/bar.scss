@@ -130,7 +130,7 @@ button {
   font-family: $font-family-sans-serif;
 }
 
-#select-folder[data-is-vault-locked="true"] {
+[data-is-vault-locked="true"] {
   display: none;
 }
 

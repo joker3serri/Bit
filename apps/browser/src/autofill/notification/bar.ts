@@ -25,6 +25,7 @@ function load() {
     folder: chrome.i18n.getMessage("folder"),
     notificationAddSave: chrome.i18n.getMessage("notificationAddSave"),
     notificationAddDesc: chrome.i18n.getMessage("notificationAddDesc"),
+    notificationAddEdit: chrome.i18n.getMessage("edit"),
     notificationChangeSave: chrome.i18n.getMessage("notificationChangeSave"),
     notificationChangeDesc: chrome.i18n.getMessage("notificationChangeDesc"),
   };
@@ -43,6 +44,10 @@ function load() {
 
   const addButton = addTemplate.content.getElementById("add-save");
   addButton.textContent = i18n.notificationAddSave;
+
+  const editButton = addTemplate.content.getElementById("add-edit");
+  editButton.textContent = i18n.notificationAddEdit;
+  editButton.dataset.isVaultLocked = isVaultLocked.toString();
 
   addTemplate.content.getElementById("add-text").textContent = i18n.notificationAddDesc;
 
@@ -93,6 +98,7 @@ function handleTypeAdd(isVaultLocked: boolean) {
   setContent(document.getElementById("template-add") as HTMLTemplateElement);
 
   const addButton = document.getElementById("add-save");
+  const editButton = document.getElementById("add-edit");
   const neverButton = document.getElementById("never-save");
 
   addButton.addEventListener("click", (e) => {
@@ -103,8 +109,21 @@ function handleTypeAdd(isVaultLocked: boolean) {
     const bgAddSaveMessage = {
       command: "bgAddSave",
       folder: folderId,
+      edit: false,
     };
     sendPlatformMessage(bgAddSaveMessage);
+  });
+
+  editButton.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    const folderId = (document.getElementById("select-folder") as HTMLSelectElement).value;
+
+    sendPlatformMessage({
+      command: "bgAddSave",
+      folder: folderId,
+      edit: true,
+    });
   });
 
   neverButton.addEventListener("click", (e) => {

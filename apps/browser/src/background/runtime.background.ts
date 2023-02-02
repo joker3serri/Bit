@@ -106,6 +106,13 @@ export default class RuntimeBackground {
       case "promptForLogin":
         await BrowserApi.createNewTab("popup/index.html?uilocation=popout", true, true);
         break;
+      case "openAddEditCipher":
+        await BrowserApi.createNewTab(
+          "popup/index.html#/edit-cipher?uilocation=popout",
+          true,
+          true
+        );
+        break;
       case "showDialogResolve":
         this.platformUtilsService.resolveDialogPromise(msg.dialogId, msg.confirmed);
         break;

@@ -10,8 +10,6 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 
 import AddChangePasswordQueueMessage from "../../background/models/addChangePasswordQueueMessage";
 import AddLoginQueueMessage from "../../background/models/addLoginQueueMessage";
@@ -95,7 +93,7 @@ export default class NotificationBackground {
           await BrowserApi.tabSendMessageData(sender.tab, "promptForLogin");
           return;
         }
-        await this.saveOrUpdateCredentials(sender.tab, msg.folder);
+        await this.saveOrUpdateCredentials(sender.tab, msg.edit, msg.folder);
         break;
       case "bgNeverSave":
         await this.saveNever(sender.tab);
@@ -332,14 +330,10 @@ export default class NotificationBackground {
     await this.checkNotificationQueue(tab);
   }
 
-  private async saveOrUpdateCredentials(tab: chrome.tabs.Tab, folderId?: string) {
+  private async saveOrUpdateCredentials(tab: chrome.tabs.Tab, edit: boolean, folderId?: string) {
     for (let i = this.notificationQueue.length - 1; i >= 0; i--) {
       const queueMessage = this.notificationQueue[i];
-      if (
-        queueMessage.tabId !== tab.id ||
-        (queueMessage.type !== NotificationQueueMessageType.AddLogin &&
-          queueMessage.type !== NotificationQueueMessageType.ChangePassword)
-      ) {
+      if (queueMessage.tabId !== tab.id || !(queueMessage.type in NotificationQueueMessageType)) {
         continue;
       }
 
@@ -362,6 +356,15 @@ export default class NotificationBackground {
       }
 
       if (queueMessage.type === NotificationQueueMessageType.AddLogin) {
+        if (edit) {
+          const cipherView = AddLoginQueueMessage.toCipherView(
+            queueMessage,
+            this.folderExists(folderId) ? folderId : null
+          );
+          await this.openNewLoginForEditing(cipherView, tab);
+          return;
+        }
+
         if (!queueMessage.wasVaultLocked) {
           await this.createNewCipher(queueMessage as AddLoginQueueMessage, folderId);
           BrowserApi.tabSendMessageData(tab, "addedCipher");
@@ -387,28 +390,31 @@ export default class NotificationBackground {
     }
   }
 
-  private async createNewCipher(queueMessage: AddLoginQueueMessage, folderId: string) {
-    const loginModel = new LoginView();
-    const loginUri = new LoginUriView();
-    loginUri.uri = queueMessage.uri;
-    loginModel.uris = [loginUri];
-    loginModel.username = queueMessage.username;
-    loginModel.password = queueMessage.password;
-    const model = new CipherView();
-    model.name = Utils.getHostname(queueMessage.uri) || queueMessage.domain;
-    model.name = model.name.replace(/^www\./, "");
-    model.type = CipherType.Login;
-    model.login = loginModel;
+  private async openNewLoginForEditing(cipherView: CipherView, senderTab: chrome.tabs.Tab) {
+    await this.stateService.setAddEditCipherInfo({
+      cipher: cipherView,
+    });
 
-    if (!Utils.isNullOrWhitespace(folderId)) {
-      const folders = await firstValueFrom(this.folderService.folderViews$);
-      if (folders.some((x) => x.id === folderId)) {
-        model.folderId = folderId;
-      }
-    }
+    await BrowserApi.tabSendMessageData(senderTab, "openAddEditCipher");
+  }
+
+  private async createNewCipher(queueMessage: AddLoginQueueMessage, folderId: string) {
+    const model = AddLoginQueueMessage.toCipherView(
+      queueMessage,
+      this.folderExists(folderId) ? folderId : null
+    );
 
     const cipher = await this.cipherService.encrypt(model);
     await this.cipherService.createWithServer(cipher);
+  }
+
+  private async folderExists(folderId: string) {
+    if (Utils.isNullOrWhitespace(folderId)) {
+      return false;
+    }
+
+    const folders = await firstValueFrom(this.folderService.folderViews$);
+    return folders.some((x) => x.id === folderId);
   }
 
   private async getDecryptedCipherById(cipherId: string) {
