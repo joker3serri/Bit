@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Subject, switchMap, takeUntil } from "rxjs";
+import { firstValueFrom, Subject, switchMap, takeUntil } from "rxjs";
 
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -14,6 +14,7 @@ import { DialogService } from "@bitwarden/components";
 import {
   SMImportErrorDialogComponent,
   SMImportErrorDialogOperation,
+  SMImportErrorDialogResult,
 } from "../dialog/sm-import-error-dialog.component";
 
 import { SMPortingService } from "./sm-porting.service";
@@ -138,11 +139,20 @@ export class SMImportComponent implements OnInit, OnDestroy {
     this.openImportErrorDialog(error);
   }
 
-  private openImportErrorDialog(error: Error) {
-    this.dialogService.open<unknown, SMImportErrorDialogOperation>(SMImportErrorDialogComponent, {
+  private async openImportErrorDialog(error: Error) {
+    const dialogResult = this.dialogService.open<
+      SMImportErrorDialogResult,
+      SMImportErrorDialogOperation
+    >(SMImportErrorDialogComponent, {
       data: {
         error: error,
       },
     });
+
+    const result = await firstValueFrom(dialogResult.closed);
+
+    if (result == SMImportErrorDialogResult.ErrorDuringDialog) {
+      this.platformUtilsService.showToast("error", null, this.i18nService.t("errorOccurred"));
+    }
   }
 }

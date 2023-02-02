@@ -1,13 +1,27 @@
-<bit-simple-dialog>
+<bit-dialog>
   <span bitDialogTitle>
     {{ "importError" | i18n }}
   </span>
   <span bitDialogContent>
-    <ng-container>
-      {{ data.error.message }}
-    </ng-container>
+    <div>{{ "resolveTheErrorsBelowAndTryAgain" | i18n }}</div>
+    <bit-table>
+      <ng-container header>
+        <tr>
+          <th bitCell>{{ "name" | i18n }}</th>
+          <th bitCell>{{ "description" | i18n }}</th>
+        </tr>
+      </ng-container>
+      <ng-template body>
+        <tr bitRow *ngFor="let item of errorInfoList" length="100%">
+          <td bitCell class="tw-break-all">{{ item.name }}</td>
+          <td bitCell>{{ item.description }}</td>
+        </tr>
+      </ng-template>
+    </bit-table>
   </span>
-  <div bitDialogFooter class="tw-flex tw-flex-row tw-gap-2">
-    <button bitButton bitDialogClose buttonType="primary" type="button">{{ "ok" | i18n }}</button>
+  <div bitDialogFooter class="tw-flex tw-flex-row tw-items-center tw-gap-2">
+    <button bitButton buttonType="primary" type="button" (click)="close()">
+      {{ "ok" | i18n }}
+    </button>
   </div>
-</bit-simple-dialog>
+</bit-dialog>
