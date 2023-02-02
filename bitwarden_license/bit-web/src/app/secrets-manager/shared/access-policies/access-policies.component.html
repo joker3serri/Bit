@@ -1,4 +1,4 @@
-<ng-container *ngIf="rowData$ | async as rowData; else spinner">
+<ng-container *ngIf="rows$ | async as rows; else spinner">
   <bit-table>
     <ng-container header>
       <tr>
@@ -8,8 +8,8 @@
     </ng-container>
 
     <ng-template body>
-      <ng-container *ngIf="rowData?.length > 0; else empty">
-        <tr bitRow *ngFor="let row of rowData">
+      <ng-container *ngIf="rows?.length > 0; else empty">
+        <tr bitRow *ngFor="let row of rows">
           <td bitCell class="tw-w-0 tw-pr-0">
             <i [class]="row.icon" aria-hidden="true"></i>
           </td>

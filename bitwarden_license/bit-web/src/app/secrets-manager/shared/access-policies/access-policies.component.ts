@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { Observable, map } from "rxjs";
+import { Observable, map, firstValueFrom } from "rxjs";
 
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 
@@ -8,7 +8,7 @@ import { ProjectAccessPoliciesView } from "../../models/view/project-access-poli
 
 import { AccessPolicyService } from "./access-policy.service";
 
-type RowData = {
+type RowItemView = {
   type: "user" | "group" | "serviceAccount";
   name: string;
   id: string;
@@ -32,12 +32,12 @@ export class AccessPoliciesComponent implements OnInit {
     private validationService: ValidationService
   ) {}
 
-  protected rowData$: Observable<RowData[]>;
+  protected rows$: Observable<RowItemView[]>;
 
   ngOnInit() {
-    this.rowData$ = this.projectAccessPolicies$.pipe(
+    this.rows$ = this.projectAccessPolicies$.pipe(
       map((policies) => {
-        const rowData: RowData[] = [];
+        const rowData: RowItemView[] = [];
 
         if (this.tableType == "projectPeople") {
           policies.userAccessPolicies.forEach((policy) => {
@@ -103,5 +103,6 @@ export class AccessPoliciesComponent implements OnInit {
 
   delete = (accessPolicyId: string) => async () => {
     await this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
+    return firstValueFrom(this.rows$);
   };
 }

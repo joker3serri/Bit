@@ -4,7 +4,7 @@
     <bit-multi-select
       class="tw-mr-4 tw-w-full"
       formControlName="multiSelect"
-      [baseItems]="potentialGrantees"
+      [baseItems]="selectItemsView$ | async"
       [loading]="loading"
     ></bit-multi-select>
     <bit-hint>{{ hint | i18n }}</bit-hint>

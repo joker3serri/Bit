@@ -1,17 +1,17 @@
-<ng-container *ngIf="projectAccessPoliciesView$ | async as projectAccessPoliciesView; else spinner">
+<ng-container *ngIf="projectAccessPolicies$; else spinner">
   <div class="tw-w-2/5">
     <p class="tw-mt-8">
       {{ description | i18n }}
     </p>
     <sm-access-selector
-      [accessType]="accessType"
-      [projectAccessPolicies]="projectAccessPoliciesView"
+      [projectAccessPolicies$]="projectAccessPolicies$"
+      [potentialGrantees$]="potentialGrantees$"
       [label]="label"
       [hint]="hint"
     >
     </sm-access-selector>
     <sm-access-policies
-      [projectAccessPolicies$]="projectAccessPoliciesView$"
+      [projectAccessPolicies$]="projectAccessPolicies$"
       [tableType]="accessType"
       [columnTitle]="columnTitle"
       [emptyMessage]="emptyMessage"
