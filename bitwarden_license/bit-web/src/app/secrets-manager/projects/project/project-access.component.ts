@@ -11,7 +11,7 @@ import { AccessPolicyService } from "../../shared/access-policies/access-policy.
   templateUrl: "./project-access.component.html",
 })
 export class ProjectAccessComponent implements OnInit {
-  @Input() potentialGrantees$: Observable<PotentialGranteeView[]>;
+  @Input() getPotentialGrantees: () => Promise<PotentialGranteeView[]>;
   @Input() accessType: "projectPeople" | "projectServiceAccounts";
   @Input() description: string;
   @Input() label: string;

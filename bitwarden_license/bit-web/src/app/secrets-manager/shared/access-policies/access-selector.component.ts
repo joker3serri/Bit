@@ -2,12 +2,12 @@ import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import {
-  combineLatestWith,
   distinctUntilChanged,
   firstValueFrom,
   map,
   Observable,
   Subject,
+  switchMap,
   takeUntil,
   tap,
 } from "rxjs";
@@ -51,7 +51,7 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
   private readonly serviceAccountIcon = "bwi-wrench";
 
   @Input() projectAccessPolicies$: Observable<ProjectAccessPoliciesView>;
-  @Input() potentialGrantees$: Observable<PotentialGranteeView[]>;
+  @Input() getPotentialGrantees: () => Promise<PotentialGranteeView[]>;
 
   private projectId: string;
   private organizationId: string;
@@ -81,10 +81,10 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
       distinctUntilChanged(
         (prev, curr) => this.getAccessPoliciesCount(curr) === this.getAccessPoliciesCount(prev)
       ),
-      combineLatestWith(this.potentialGrantees$),
-      map(([projectAccessPolicies, potentialGrantees]) =>
-        this.createSelectView(projectAccessPolicies, potentialGrantees)
-      ),
+      switchMap(async (projectAccessPolicies) => {
+        const grantees = await this.getPotentialGrantees();
+        return this.createSelectView(projectAccessPolicies, grantees);
+      }),
       tap(() => {
         this.loading = false;
         this.formGroup.enable();
