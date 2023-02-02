@@ -11,26 +11,23 @@ import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 export class AutofillComponent implements OnInit {
   enableAutoFillOnPageLoad = false;
   autoFillOnPageLoadDefault = false;
-  autoFillOnPageLoadOptions: any[]; 
+  autoFillOnPageLoadOptions: any[];
   defaultUriMatch = UriMatchType.Domain;
   uriMatchOptions: any[];
 
-  constructor(
-    private stateService: StateService,
-    i18nService: I18nService
-  ) {
+  constructor(private stateService: StateService, i18nService: I18nService) {
     this.autoFillOnPageLoadOptions = [
       { name: i18nService.t("autoFillOnPageLoadYes"), value: true },
       { name: i18nService.t("autoFillOnPageLoadNo"), value: false },
     ];
     this.uriMatchOptions = [
-        { name: i18nService.t("baseDomain"), value: UriMatchType.Domain },
-        { name: i18nService.t("host"), value: UriMatchType.Host },
-        { name: i18nService.t("startsWith"), value: UriMatchType.StartsWith },
-        { name: i18nService.t("regEx"), value: UriMatchType.RegularExpression },
-        { name: i18nService.t("exact"), value: UriMatchType.Exact },
-        { name: i18nService.t("never"), value: UriMatchType.Never },
-      ];
+      { name: i18nService.t("baseDomain"), value: UriMatchType.Domain },
+      { name: i18nService.t("host"), value: UriMatchType.Host },
+      { name: i18nService.t("startsWith"), value: UriMatchType.StartsWith },
+      { name: i18nService.t("regEx"), value: UriMatchType.RegularExpression },
+      { name: i18nService.t("exact"), value: UriMatchType.Exact },
+      { name: i18nService.t("never"), value: UriMatchType.Never },
+    ];
   }
 
   async ngOnInit() {
@@ -38,7 +35,7 @@ export class AutofillComponent implements OnInit {
 
     this.autoFillOnPageLoadDefault =
       (await this.stateService.getAutoFillOnPageLoadDefault()) ?? true;
-      
+
     const defaultUriMatch = await this.stateService.getDefaultUriMatch();
     this.defaultUriMatch = defaultUriMatch == null ? UriMatchType.Domain : defaultUriMatch;
   }

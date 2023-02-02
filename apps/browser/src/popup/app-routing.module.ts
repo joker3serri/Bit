@@ -32,7 +32,7 @@ import { SendAddEditComponent } from "./send/send-add-edit.component";
 import { SendGroupingsComponent } from "./send/send-groupings.component";
 import { SendTypeComponent } from "./send/send-type.component";
 import { DebounceNavigationService } from "./services/debounceNavigationService";
-import { AutofillComponent } from './settings/autofill.component';
+import { AutofillComponent } from "./settings/autofill.component";
 import { ExcludedDomainsComponent } from "./settings/excluded-domains.component";
 import { ExportComponent } from "./settings/export.component";
 import { FolderAddEditComponent } from "./settings/folder-add-edit.component";
