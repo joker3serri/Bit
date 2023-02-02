@@ -83,6 +83,7 @@ export class SMExportComponent implements OnInit, OnDestroy {
       );
 
       this.downloadFile(exportData, this.formGroup.get("format").value);
+      this.platformUtilsService.showToast("success", null, this.i18nService.t("dataExportSuccess"));
     } catch (e) {
       this.logService.error(e);
     }

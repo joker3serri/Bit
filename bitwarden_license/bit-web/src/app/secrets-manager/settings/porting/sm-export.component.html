@@ -1,18 +1,18 @@
-<sm-header hideSearchAndNewMenu="true"></sm-header>
+<sm-header></sm-header>
 
 <form [formGroup]="formGroup" [bitSubmit]="submit">
-  <bit-form-field>
+  <div class="tw-my-4 tw-max-w-xl">
+    <app-callout type="info" title="{{ 'exportingOrganizationSecretDataTitle' | i18n }}">
+      {{ "exportingOrganizationSecretDataDescription" | i18n: orgName }}
+    </app-callout>
+  </div>
+
+  <bit-form-field class="tw-max-w-sm">
     <bit-label>{{ "fileFormat" | i18n }}</bit-label>
     <select bitInput required formControlName="format">
       <option *ngFor="let format of exportFormats" [ngValue]="format">{{ format }}</option>
     </select>
   </bit-form-field>
-
-  <div class="tw-my-4">
-    <app-callout type="info" title="{{ 'exportingOrganizationSecretDataTitle' | i18n }}">
-      {{ "exportingOrganizationSecretDataDescription" | i18n: orgName }}
-    </app-callout>
-  </div>
 
   <button bitButton bitFormButton type="submit" buttonType="primary">
     {{ "exportData" | i18n }}

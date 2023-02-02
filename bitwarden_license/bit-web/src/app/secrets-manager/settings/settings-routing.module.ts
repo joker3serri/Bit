@@ -9,14 +9,14 @@ const routes: Routes = [
     path: "import",
     component: SMImportComponent,
     data: {
-      title: "importData",
+      titleId: "importData",
     },
   },
   {
     path: "export",
     component: SMExportComponent,
     data: {
-      title: "exportData",
+      titleId: "exportData",
     },
   },
 ];

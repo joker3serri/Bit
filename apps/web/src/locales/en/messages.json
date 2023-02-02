@@ -1249,6 +1249,9 @@
   "importSuccess": {
     "message": "Data successfully imported"
   },
+  "dataExportSuccess": {
+    "message": "Data successfully exported"
+  },
   "importWarning": {
     "message": "You are importing data to $ORGANIZATION$. Your data may be shared with members of this organization. Do you want to proceed?",
     "placeholders": {
