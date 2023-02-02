@@ -151,7 +151,7 @@ function setContent(template: HTMLTemplateElement) {
   content.appendChild(newElement);
 }
 
-function sendPlatformMessage(msg: Record<string, any>) {
+function sendPlatformMessage(msg: Record<string, unknown>) {
   chrome.runtime.sendMessage(msg);
 }
 
