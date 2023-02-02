@@ -367,7 +367,7 @@ export default class NotificationBackground {
         }
 
         folderId = (await this.folderExists(folderId)) ? folderId : null;
-        const newCipher = AddLoginQueueMessage.toCipherView(queueMessage);
+        const newCipher = AddLoginQueueMessage.toCipherView(queueMessage, folderId);
 
         if (edit) {
           await this.editItem(newCipher, tab);
