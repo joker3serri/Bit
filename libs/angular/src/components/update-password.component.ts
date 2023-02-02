@@ -2,7 +2,6 @@ import { Directive } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -42,8 +41,7 @@ export class UpdatePasswordComponent extends BaseChangePasswordComponent {
     private apiService: ApiService,
     stateService: StateService,
     private userVerificationService: UserVerificationService,
-    private logService: LogService,
-    auditService: AuditService
+    private logService: LogService
   ) {
     super(
       i18nService,
@@ -52,8 +50,7 @@ export class UpdatePasswordComponent extends BaseChangePasswordComponent {
       passwordGenerationService,
       platformUtilsService,
       policyService,
-      stateService,
-      auditService
+      stateService
     );
   }
 

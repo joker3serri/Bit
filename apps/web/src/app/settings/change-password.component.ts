@@ -39,6 +39,8 @@ import { FolderWithIdRequest } from "@bitwarden/common/vault/models/request/fold
 export class ChangePasswordComponent extends BaseChangePasswordComponent {
   rotateEncKey = false;
   currentMasterPassword: string;
+  masterPasswordHint: string;
+  checkBreach = false;
 
   constructor(
     i18nService: I18nService,
@@ -48,7 +50,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     passwordGenerationService: PasswordGenerationService,
     platformUtilsService: PlatformUtilsService,
     policyService: PolicyService,
-    auditService: AuditService,
+    private auditService: AuditService,
     private folderService: FolderService,
     private cipherService: CipherService,
     private syncService: SyncService,
@@ -67,10 +69,8 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
       passwordGenerationService,
       platformUtilsService,
       policyService,
-      stateService,
-      auditService
+      stateService
     );
-    this.auditServiceInstance = auditService;
   }
 
   async ngOnInit() {
@@ -134,6 +134,20 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     if (!hasEncKey) {
       this.platformUtilsService.showToast("error", null, this.i18nService.t("updateKey"));
       return;
+    }
+
+    if (this.masterPasswordHint != null && this.masterPasswordHint == this.masterPassword) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("hintEqualsPassword")
+      );
+      return;
+    }
+
+    this.leakedPassword = false;
+    if (this.checkBreach) {
+      this.leakedPassword = (await this.auditService.passwordLeaked(this.masterPassword)) > 0;
     }
 
     await super.submit();

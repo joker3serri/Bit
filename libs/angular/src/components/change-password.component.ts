@@ -1,7 +1,6 @@
 import { Directive, OnDestroy, OnInit } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
-import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -21,13 +20,12 @@ import { PasswordColorText } from "../shared/components/password-strength/passwo
 export class ChangePasswordComponent implements OnInit, OnDestroy {
   masterPassword: string;
   masterPasswordRetype: string;
-  masterPasswordHint: string;
   formPromise: Promise<any>;
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
   passwordStrengthResult: any;
   color: string;
   text: string;
-  checkBreach = false;
+  leakedPassword: boolean;
 
   protected email: string;
   protected kdf: KdfType;
@@ -42,8 +40,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     protected passwordGenerationService: PasswordGenerationService,
     protected platformUtilsService: PlatformUtilsService,
     protected policyService: PolicyService,
-    protected stateService: StateService,
-    protected auditServiceInstance: AuditService
+    protected stateService: StateService
   ) {}
 
   async ngOnInit() {
@@ -63,7 +60,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
   }
 
   async submit() {
-    if (!(await this.validPassword())) {
+    if (!(await this.strongPassword())) {
       return;
     }
 
@@ -111,20 +108,12 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     // Override in sub-class
   }
 
-  async validPassword(): Promise<boolean> {
+  async strongPassword(): Promise<boolean> {
     if (this.masterPassword == null || this.masterPassword === "") {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
         this.i18nService.t("masterPasswordRequired")
-      );
-      return false;
-    }
-    if (this.masterPasswordHint != null && this.masterPasswordHint == this.masterPassword) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("hintEqualsPassword")
       );
       return false;
     }
@@ -164,13 +153,8 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     }
 
     const weakPassword = strengthResult != null && strengthResult.score < 3;
-    let leakedPassword = false;
 
-    if (this.checkBreach) {
-      leakedPassword = (await this.auditServiceInstance.passwordLeaked(this.masterPassword)) > 0;
-    }
-
-    if (weakPassword && leakedPassword) {
+    if (weakPassword && this.leakedPassword) {
       const result = await this.platformUtilsService.showDialog(
         this.i18nService.t("weakAndBreachedMasterPasswordDesc"),
         this.i18nService.t("weakAndExposedMasterPassword"),
@@ -181,34 +165,31 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
       if (!result) {
         return false;
       }
-    } else {
-      if (weakPassword) {
-        const result = await this.platformUtilsService.showDialog(
-          this.i18nService.t("weakMasterPasswordDesc"),
-          this.i18nService.t("weakMasterPassword"),
-          this.i18nService.t("yes"),
-          this.i18nService.t("no"),
-          "warning"
-        );
-        if (!result) {
-          return false;
-        }
-      } else {
-        if (leakedPassword) {
-          const result = await this.platformUtilsService.showDialog(
-            this.i18nService.t("exposedMasterPasswordDesc"),
-            this.i18nService.t("exposedMasterPassword"),
-            this.i18nService.t("yes"),
-            this.i18nService.t("no"),
-            "warning"
-          );
-          if (!result) {
-            return false;
-          }
-        }
+    }
+    if (weakPassword) {
+      const result = await this.platformUtilsService.showDialog(
+        this.i18nService.t("weakMasterPasswordDesc"),
+        this.i18nService.t("weakMasterPassword"),
+        this.i18nService.t("yes"),
+        this.i18nService.t("no"),
+        "warning"
+      );
+      if (!result) {
+        return false;
       }
     }
-
+    if (this.leakedPassword) {
+      const result = await this.platformUtilsService.showDialog(
+        this.i18nService.t("exposedMasterPasswordDesc"),
+        this.i18nService.t("exposedMasterPassword"),
+        this.i18nService.t("yes"),
+        this.i18nService.t("no"),
+        "warning"
+      );
+      if (!result) {
+        return false;
+      }
+    }
     return true;
   }
 
