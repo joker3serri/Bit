@@ -97,7 +97,6 @@ export class AccessPolicyService {
       true,
       true
     );
-    this._projectAccessPolicies.next(null);
   }
 
   async createProjectAccessPolicies(
