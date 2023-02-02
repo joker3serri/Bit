@@ -165,11 +165,6 @@ export class AccessSelectorComponent implements ControlValueAccessor, OnInit, On
    */
   @Input() showGroupColumn: boolean;
 
-  /**
-   * Flag for if the component should be focused on init
-   */
-  @Input() appAutofocus: boolean | string;
-
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly i18nService: I18nService
