@@ -8,6 +8,8 @@ import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { ThemeType } from "@bitwarden/common/enums/themeType";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
 
+import { BrowserApi } from "../../browser/browserApi";
+
 @Component({
   selector: "app-options",
   templateUrl: "options.component.html",
@@ -156,5 +158,9 @@ export class OptionsComponent implements OnInit {
 
   async saveClearClipboard() {
     await this.stateService.setClearClipboard(this.clearClipboard);
+  }
+
+  AboutAutofill() {
+    BrowserApi.createNewTab("https://bitwarden.com/help/auto-fill-browser/");
   }
 }

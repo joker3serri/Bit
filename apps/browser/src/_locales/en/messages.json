@@ -962,6 +962,9 @@
   "experimentalFeature": {
     "message": "Compromised or untrusted websites can exploit auto-fill on page load."
   },
+  "learnMoreAboutAutofill":{
+    "message": "Learn more about auto-fill"
+  },
   "defaultAutoFillOnPageLoad": {
     "message": "Default autofill setting for login items"
   },
