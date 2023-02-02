@@ -45,7 +45,7 @@ import { CipherData } from "../vault/models/data/cipher.data";
 import { FolderData } from "../vault/models/data/folder.data";
 import { LocalData } from "../vault/models/data/local.data";
 import { CipherView } from "../vault/models/view/cipher.view";
-import { AddEditCipherInfo } from "../vault/types/addEditCipherInfo";
+import { AddEditCipherInfo } from "../vault/types/add-edit-cipher-info";
 
 const keys = {
   state: "state",
