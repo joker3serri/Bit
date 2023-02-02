@@ -10,7 +10,6 @@ import { HeaderComponent } from "../layout/header.component";
 import { NewMenuComponent } from "../layout/new-menu.component";
 import { NoItemsComponent } from "../layout/no-items.component";
 
-import { AccessPoliciesComponent } from "./access-policies/access-policies.component";
 import { AccessSelectorComponent } from "./access-policies/access-selector.component";
 import { SecretsListComponent } from "./secrets-list.component";
 
@@ -23,7 +22,6 @@ import { SecretsListComponent } from "./secrets-list.component";
     NewMenuComponent,
     NoItemsComponent,
     SecretsListComponent,
-    AccessPoliciesComponent,
     AccessSelectorComponent,
   ],
   declarations: [
@@ -32,7 +30,6 @@ import { SecretsListComponent } from "./secrets-list.component";
     NewMenuComponent,
     NoItemsComponent,
     SecretsListComponent,
-    AccessPoliciesComponent,
     AccessSelectorComponent,
   ],
   providers: [],

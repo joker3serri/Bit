@@ -12,9 +12,11 @@ import {
   tap,
 } from "rxjs";
 
+import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
 import {
+  BaseAccessPolicyView,
   GroupProjectAccessPolicyView,
   ServiceAccountProjectAccessPolicyView,
   UserProjectAccessPolicyView,
@@ -24,6 +26,15 @@ import { ProjectAccessPoliciesView } from "../../models/view/project-access-poli
 
 import { AccessPolicyService } from "./access-policy.service";
 
+type RowItemView = {
+  type: "user" | "group" | "serviceAccount";
+  name: string;
+  id: string;
+  read: boolean;
+  write: boolean;
+  icon: string;
+};
+
 @Component({
   selector: "sm-access-selector",
   templateUrl: "./access-selector.component.html",
@@ -31,6 +42,9 @@ import { AccessPolicyService } from "./access-policy.service";
 export class AccessSelectorComponent implements OnInit, OnDestroy {
   @Input() label: string;
   @Input() hint: string;
+  @Input() tableType: "projectPeople" | "projectServiceAccounts";
+  @Input() columnTitle: string;
+  @Input() emptyMessage: string;
 
   private readonly userIcon = "bwi-user";
   private readonly groupIcon = "bwi-family";
@@ -47,9 +61,15 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
   protected formGroup = new FormGroup({
     multiSelect: new FormControl([], [Validators.required]),
   });
-  protected selectItemsView$: Observable<SelectItemView[]>;
 
-  constructor(private route: ActivatedRoute, private accessPolicyService: AccessPolicyService) {}
+  protected selectItemsView$: Observable<SelectItemView[]>;
+  protected rows$: Observable<RowItemView[]>;
+
+  constructor(
+    private route: ActivatedRoute,
+    private accessPolicyService: AccessPolicyService,
+    private validationService: ValidationService
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params: any) => {
@@ -69,6 +89,50 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.formGroup.enable();
         this.formGroup.reset();
+      })
+    );
+
+    this.rows$ = this.projectAccessPolicies$.pipe(
+      map((policies) => {
+        const rowData: RowItemView[] = [];
+
+        if (this.tableType == "projectPeople") {
+          policies.userAccessPolicies.forEach((policy) => {
+            rowData.push({
+              type: "user",
+              name: policy.organizationUserName,
+              id: policy.id,
+              read: policy.read,
+              write: policy.write,
+              icon: "bwi bwi-user tw-text-xl tw-text-muted",
+            });
+          });
+
+          policies.groupAccessPolicies.forEach((policy) => {
+            rowData.push({
+              type: "group",
+              name: policy.groupName,
+              id: policy.id,
+              read: policy.read,
+              write: policy.write,
+              icon: "bwi bwi-family tw-text-xl tw-text-muted",
+            });
+          });
+        }
+
+        if (this.tableType == "projectServiceAccounts") {
+          policies.serviceAccountAccessPolicies.forEach((policy) => {
+            rowData.push({
+              type: "serviceAccount",
+              name: policy.serviceAccountName,
+              id: policy.id,
+              read: policy.read,
+              write: policy.write,
+              icon: "bwi bwi-wrench tw-text-xl tw-text-muted",
+            });
+          });
+        }
+        return rowData;
       })
     );
   }
@@ -191,4 +255,30 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
           )
       );
   }
+
+  async updateAccessPolicy(target: any, accessPolicyId: string): Promise<void> {
+    try {
+      const accessPolicyView = new BaseAccessPolicyView();
+      accessPolicyView.id = accessPolicyId;
+      if (target.value == "canRead") {
+        accessPolicyView.read = true;
+        accessPolicyView.write = false;
+      } else if (target.value == "canWrite") {
+        accessPolicyView.read = false;
+        accessPolicyView.write = true;
+      } else if (target.value == "canReadWrite") {
+        accessPolicyView.read = true;
+        accessPolicyView.write = true;
+      }
+
+      await this.accessPolicyService.updateAccessPolicy(accessPolicyView);
+    } catch (e) {
+      this.validationService.showError(e);
+    }
+  }
+
+  delete = (accessPolicyId: string) => async () => {
+    await this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
+    return firstValueFrom(this.rows$);
+  };
 }
