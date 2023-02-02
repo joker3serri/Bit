@@ -145,7 +145,6 @@ function handleTypeAdd(isVaultLocked: boolean) {
 
 function handleTypeChange() {
   setContent(document.getElementById("template-change") as HTMLTemplateElement);
-
   const changeButton = document.getElementById("change-save");
   changeButton.addEventListener("click", (e) => {
     e.preventDefault();
@@ -177,7 +176,7 @@ function setContent(template: HTMLTemplateElement) {
   content.appendChild(newElement);
 }
 
-function sendPlatformMessage(msg: Record<string, any>) {
+function sendPlatformMessage(msg: Record<string, unknown>) {
   chrome.runtime.sendMessage(msg);
 }
 
