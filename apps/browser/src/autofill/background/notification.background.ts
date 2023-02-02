@@ -346,25 +346,12 @@ export default class NotificationBackground {
       BrowserApi.tabSendMessageData(tab, "closeNotificationBar");
 
       if (queueMessage.type === NotificationQueueMessageType.ChangePassword) {
-        const changePasswordMessage = queueMessage as AddChangePasswordQueueMessage;
-        const cipher = await this.getDecryptedCipherById(changePasswordMessage.cipherId);
-        if (cipher == null) {
-          return;
-        }
-        await this.updateCipher(cipher, changePasswordMessage.newPassword);
+        const cipher = await this.getDecryptedCipherById(queueMessage.cipherId);
+        await this.updateItem(cipher, queueMessage.newPassword, edit, tab);
         return;
       }
 
       if (queueMessage.type === NotificationQueueMessageType.AddLogin) {
-        if (edit) {
-          const cipherView = AddLoginQueueMessage.toCipherView(
-            queueMessage,
-            (await this.folderExists(folderId)) ? folderId : null
-          );
-          await this.openNewLoginForEditing(cipherView, tab);
-          return;
-        }
-
         // If the vault was locked, check if a cipher needs updating instead of creating a new one
         if (queueMessage.wasVaultLocked) {
           const ciphers = await this.cipherService.getAllDecryptedForUrl(queueMessage.uri);
@@ -374,18 +361,26 @@ export default class NotificationBackground {
           );
 
           if (usernameMatches.length >= 1) {
-            await this.updateCipher(usernameMatches[0], queueMessage.password);
+            await this.updateItem(usernameMatches[0], queueMessage.password, edit, tab);
             return;
           }
         }
 
-        await this.createNewCipher(queueMessage, folderId);
+        folderId = (await this.folderExists(folderId)) ? folderId : null;
+        const cipherView = AddLoginQueueMessage.toCipherView(queueMessage);
+
+        if (edit) {
+          await this.editItem(cipherView, tab);
+          return;
+        }
+
+        await this.createNewItem(cipherView, folderId);
         BrowserApi.tabSendMessageData(tab, "addedCipher");
       }
     }
   }
 
-  private async openNewLoginForEditing(cipherView: CipherView, senderTab: chrome.tabs.Tab) {
+  private async editItem(cipherView: CipherView, senderTab: chrome.tabs.Tab) {
     await this.stateService.setAddEditCipherInfo({
       cipher: cipherView,
     });
@@ -393,13 +388,8 @@ export default class NotificationBackground {
     await BrowserApi.tabSendMessageData(senderTab, "openAddEditCipher");
   }
 
-  private async createNewCipher(queueMessage: AddLoginQueueMessage, folderId: string) {
-    const model = AddLoginQueueMessage.toCipherView(
-      queueMessage,
-      (await this.folderExists(folderId)) ? folderId : null
-    );
-
-    const cipher = await this.cipherService.encrypt(model);
+  private async createNewItem(cipherView: CipherView, folderId: string) {
+    const cipher = await this.cipherService.encrypt(cipherView);
     await this.cipherService.createWithServer(cipher);
   }
 
@@ -420,12 +410,25 @@ export default class NotificationBackground {
     return null;
   }
 
-  private async updateCipher(cipher: CipherView, newPassword: string) {
-    if (cipher != null && cipher.type === CipherType.Login) {
-      cipher.login.password = newPassword;
-      const newCipher = await this.cipherService.encrypt(cipher);
-      await this.cipherService.updateWithServer(newCipher);
+  private async updateItem(
+    cipherView: CipherView,
+    newPassword: string,
+    edit: boolean,
+    tab: chrome.tabs.Tab
+  ) {
+    if (cipherView == null || cipherView.type !== CipherType.Login) {
+      return;
     }
+
+    cipherView.login.password = newPassword;
+
+    if (edit) {
+      await this.editItem(cipherView, tab);
+      return;
+    }
+
+    const cipher = await this.cipherService.encrypt(cipherView);
+    await this.cipherService.updateWithServer(cipher);
   }
 
   private async saveNever(tab: chrome.tabs.Tab) {
