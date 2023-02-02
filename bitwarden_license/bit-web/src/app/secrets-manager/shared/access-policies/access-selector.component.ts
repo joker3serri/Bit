@@ -79,7 +79,7 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
 
     this.selectItemsView$ = this.projectAccessPolicies$.pipe(
       distinctUntilChanged(
-        (prev, curr) => this.getAccessPoliciesCount(curr) >= this.getAccessPoliciesCount(prev)
+        (prev, curr) => this.getAccessPoliciesCount(curr) === this.getAccessPoliciesCount(prev)
       ),
       combineLatestWith(this.potentialGrantees$),
       map(([projectAccessPolicies, potentialGrantees]) =>
@@ -150,7 +150,7 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.formGroup.disable();
 
-    await this.accessPolicyService.createProjectAccessPolicies(
+    this.accessPolicyService.createProjectAccessPolicies(
       this.organizationId,
       this.projectId,
       this.createProjectAccessPoliciesViewFromSelected()
@@ -278,7 +278,9 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
   }
 
   delete = (accessPolicyId: string) => async () => {
+    this.loading = true;
+    this.formGroup.disable();
     await this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
-    return firstValueFrom(this.rows$);
+    return firstValueFrom(this.selectItemsView$);
   };
 }
