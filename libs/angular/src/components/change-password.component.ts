@@ -164,8 +164,11 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     }
 
     const weakPassword = strengthResult != null && strengthResult.score < 3;
-    const leakedPassword =
-      this.checkBreach && (await this.auditServiceInstance.passwordLeaked(this.masterPassword)) > 0;
+    let leakedPassword = false;
+
+    if (this.checkBreach) {
+      leakedPassword = (await this.auditServiceInstance.passwordLeaked(this.masterPassword)) > 0;
+    }
 
     if (weakPassword && leakedPassword) {
       const result = await this.platformUtilsService.showDialog(

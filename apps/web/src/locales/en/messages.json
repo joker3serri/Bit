@@ -6173,5 +6173,8 @@
   },
   "important": {
     "message": "Important:"
+  },
+  "xCharacterMinimum": {
+    "message": "8 character minimum"
   }
 }

@@ -39,7 +39,6 @@ import { FolderWithIdRequest } from "@bitwarden/common/vault/models/request/fold
 export class ChangePasswordComponent extends BaseChangePasswordComponent {
   rotateEncKey = false;
   currentMasterPassword: string;
-  masterPasswordHint: string;
 
   constructor(
     i18nService: I18nService,
