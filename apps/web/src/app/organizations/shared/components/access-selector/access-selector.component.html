@@ -13,6 +13,7 @@
       [(ngModel)]="initialPermission"
       [ngModelOptions]="{ standalone: true }"
       (blur)="handleBlur()"
+      [appAutofocus]="appAutofocus"
     >
       <option *ngFor="let p of permissionList" [value]="p.perm">
         {{ p.labelId | i18n }}
@@ -29,6 +30,7 @@
       [disabled]="disabled"
       (onItemsConfirmed)="selectItems($event)"
       (blur)="handleBlur()"
+      [appAutofocus]="permissionMode != 'edit' ? appAutofocus : false"
     ></bit-multi-select>
     <bit-hint *ngIf="selectorHelpText">{{ selectorHelpText }}</bit-hint>
   </bit-form-field>

@@ -19,7 +19,7 @@
         <bit-tab label="{{ 'collectionInfo' | i18n }}">
           <bit-form-field>
             <bit-label>{{ "name" | i18n }}</bit-label>
-            <input bitInput formControlName="name" />
+            <input bitInput appAutofocus formControlName="name" />
           </bit-form-field>
 
           <bit-form-field>
@@ -44,6 +44,7 @@
         <bit-tab label="{{ 'access' | i18n }}">
           <bit-access-selector
             *ngIf="organization.useGroups"
+            appAutofocus
             [permissionMode]="PermissionMode.Edit"
             formControlName="access"
             [items]="accessItems"
@@ -54,6 +55,8 @@
           ></bit-access-selector>
           <bit-access-selector
             *ngIf="!organization.useGroups"
+            appAutofocus
+            [permissionMode]="PermissionMode.Edit"
             [permissionMode]="PermissionMode.Edit"
             formControlName="access"
             [items]="accessItems"
