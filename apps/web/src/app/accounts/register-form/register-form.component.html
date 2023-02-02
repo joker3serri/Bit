@@ -45,8 +45,8 @@
           [(toggled)]="showPassword"
         ></button>
         <bit-hint>
-          <span class="tw-font-semibold">Important:</span>
-          {{ "masterPassImportant" | i18n }}
+          <span class="tw-font-semibold">{{ "important" | i18n }}</span>
+          {{ "masterPassImportant" | i18n }} {{ "xCharacterMinimum" | i18n }}
         </bit-hint>
       </bit-form-field>
       <app-password-strength
