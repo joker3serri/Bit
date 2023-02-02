@@ -1,10 +1,10 @@
 <sm-project-access
   accessType="projectPeople"
-  description="projectPeopleDescription"
-  label="people"
-  hint="projectPeopleSelectHint"
-  columnTitle="groupSlashUser"
-  emptyMessage="projectEmptyPeopleAccessPolicies"
+  [description]="'projectPeopleDescription' | i18n"
+  [label]="'people' | i18n"
+  [hint]="'projectPeopleSelectHint' | i18n"
+  [columnTitle]="'groupSlashUser' | i18n"
+  [emptyMessage]="'projectEmptyPeopleAccessPolicies' | i18n"
   [potentialGrantees$]="potentialGrantees$"
 >
 </sm-project-access>

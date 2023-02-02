@@ -1,13 +1,13 @@
 <form [formGroup]="formGroup" [bitSubmit]="submit" class="tw-mt-5">
   <bit-form-field>
-    <bit-label>{{ label | i18n }}</bit-label>
+    <bit-label>{{ label }}</bit-label>
     <bit-multi-select
       class="tw-mr-4 tw-w-full"
       formControlName="multiSelect"
       [baseItems]="selectItemsView$ | async"
       [loading]="loading"
     ></bit-multi-select>
-    <bit-hint>{{ hint | i18n }}</bit-hint>
+    <bit-hint>{{ hint }}</bit-hint>
     <button type="submit" bitButton buttonType="primary" bitFormButton>
       {{ "add" | i18n }}
     </button>
@@ -18,7 +18,7 @@
   <bit-table>
     <ng-container header>
       <tr>
-        <th bitCell colspan="2">{{ columnTitle | i18n }}</th>
+        <th bitCell colspan="2">{{ columnTitle }}</th>
         <th bitCell>{{ "permissions" | i18n }}</th>
       </tr>
     </ng-container>
@@ -71,7 +71,7 @@
 
 <ng-template #empty>
   <div class="tw-mt-4 tw-text-center">
-    {{ emptyMessage | i18n }}
+    {{ emptyMessage }}
   </div>
 </ng-template>
 

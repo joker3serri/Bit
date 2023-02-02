@@ -1,7 +1,7 @@
 <ng-container *ngIf="projectAccessPolicies$; else spinner">
   <div class="tw-w-2/5">
     <p class="tw-mt-8">
-      {{ description | i18n }}
+      {{ description }}
     </p>
     <sm-access-selector
       [projectAccessPolicies$]="projectAccessPolicies$"
