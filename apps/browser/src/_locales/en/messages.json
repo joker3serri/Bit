@@ -1982,7 +1982,7 @@
     "message": "Organization suspended."
   },
   "disabledOrganizationFilterError": {
-    "message" : "Items in suspended Organizations cannot be accessed. Contact your Organization owner for assistance."
+    "message": "Items in suspended Organizations cannot be accessed. Contact your Organization owner for assistance."
   },
   "cardBrandMir": {
     "message": "Mir"
@@ -2052,7 +2052,7 @@
   },
   "exposedMasterPasswordDesc": {
     "message": "Password found in a data breach. Use a unique password to protect your account. Are you sure you want to use an exposed password?"
-  }, 
+  },
   "weakAndExposedMasterPassword": {
     "message": "Weak and Exposed Master Password"
   },
@@ -2076,5 +2076,26 @@
         "example": "14"
       }
     }
+  },
+  "tryAutofillPageLoad": {
+    "message": "Try auto-fill on page load?"
+  },
+  "tryAutofill": {
+    "message": "Try auto-fill"
+  },
+  "autofillPageLoadInfo": {
+    "message": "Login forms will automatically fill in matching credentials if you turn on auto-fill on page load."
+  },
+  "autofillSelectInfo": {
+    "message": "Select an item from this page to auto-fill the active tab's form."
+  },
+  "autofillTurnedOn": {
+    "message": "Auto-fill on page load turned on"
+  },
+  "turnOn": {
+    "message": "Turn on"
+  },
+  "notNow": {
+    "message": "Not now"
   }
 }
