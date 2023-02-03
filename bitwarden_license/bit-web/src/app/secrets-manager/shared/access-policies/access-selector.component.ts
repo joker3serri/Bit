@@ -104,7 +104,7 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
               id: policy.id,
               read: policy.read,
               write: policy.write,
-              icon: "bwi bwi-user tw-text-xl tw-text-muted",
+              icon: this.userIcon,
             });
           });
 
@@ -115,7 +115,7 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
               id: policy.id,
               read: policy.read,
               write: policy.write,
-              icon: "bwi bwi-family tw-text-xl tw-text-muted",
+              icon: this.groupIcon,
             });
           });
         }
@@ -128,7 +128,7 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
               id: policy.id,
               read: policy.read,
               write: policy.write,
-              icon: "bwi bwi-wrench tw-text-xl tw-text-muted",
+              icon: this.serviceAccountIcon,
             });
           });
         }

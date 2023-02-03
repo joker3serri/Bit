@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { combineLatestWith, Observable, shareReplay, startWith, switchMap } from "rxjs";
+import { combineLatestWith, Observable, share, startWith, switchMap } from "rxjs";
 
 import { PotentialGranteeView } from "../../models/view/potential-grantee.view";
 import { ProjectAccessPoliciesView } from "../../models/view/project-access-policies.view";
@@ -33,7 +33,7 @@ export class ProjectAccessComponent implements OnInit {
           params.projectId
         );
       }),
-      shareReplay({ refCount: true, bufferSize: 1 })
+      share()
     );
 
     this.potentialGrantees$ = this.accessPolicyService.projectAccessPolicies$.pipe(
@@ -52,7 +52,7 @@ export class ProjectAccessComponent implements OnInit {
           );
         }
       }),
-      shareReplay({ refCount: true, bufferSize: 1 })
+      share()
     );
   }
 }
