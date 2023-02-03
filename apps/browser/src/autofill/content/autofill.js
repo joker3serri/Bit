@@ -543,26 +543,32 @@
       }
 
       /**
-       * Determine if the element is visible
+       * Determine if the element is visible.
+       * Visible is define as not having `display: none` or `visibility: hidden`.
        * @param {HTMLElement} el 
        * @returns {boolean} Returns `true` if the element is visible and `false` otherwise
        */
       function isElementVisible(el) {
+          // Store the element we're checking
           var theEl = el;
+          // Get the top level document
           el = (el = el.ownerDocument) ? el.defaultView : {};
 
-          // walk the dom tree
+          // walk the dom tree until we reach the top
           for (var elStyle; theEl && theEl !== document;) {
+              // Calculate the style of the element
               elStyle = el.getComputedStyle ? el.getComputedStyle(theEl, null) : theEl.style;
+              // If there's no computed style at all, we're done, as we know that it's not hidden
               if (!elStyle) {
                   return true;
               }
 
+              // If the element's computed style includes `display: none` or `visibility: hidden`, we know it's hidden
               if ('none' === elStyle.display || 'hidden' == elStyle.visibility) {
                   return false;
               }
 
-              // walk up
+              // At this point, we aren't sure if the element is hidden or not, so we need to keep walking up the tree
               theEl = theEl.parentNode;
           }
 
@@ -570,17 +576,18 @@
       }
 
       /**
-       * Determine if the element is "viewable" on the screen
+       * Determine if the element is "viewable" on the screen.
+       * "Viewa"
        * @param {HTMLElement} el 
        * @returns {boolean} Returns `true` if the element is viewable and `false` otherwise
        */
       function isElementViewable(el) {
           var theDoc = el.ownerDocument.documentElement,
-              rect = el.getBoundingClientRect(),
-              docScrollWidth = theDoc.scrollWidth,
-              docScrollHeight = theDoc.scrollHeight,
-              leftOffset = rect.left - theDoc.clientLeft,
-              topOffset = rect.top - theDoc.clientTop,
+              rect = el.getBoundingClientRect(), // getBoundingClientRect is relative to the viewport
+              docScrollWidth = theDoc.scrollWidth, // scrollWidth is the width of the document including any overflow
+              docScrollHeight = theDoc.scrollHeight, // scrollHeight is the height of the document including any overflow
+              leftOffset = rect.left - theDoc.clientLeft, // How far from the left of the viewport is the element, minus the left border width?
+              topOffset = rect.top - theDoc.clientTop, // How far from the top of the viewport is the element, minus the top border width?
               theRect;
 
           if (!isElementVisible(el) || !el.offsetParent || 10 > el.clientWidth || 10 > el.clientHeight) {
@@ -592,27 +599,44 @@
               return false;
           }
 
+          // If any of the rects are outside of the viewport, we consider the element to be not viewable
           for (var i = 0; i < rects.length; i++) {
               if (theRect = rects[i], theRect.left > docScrollWidth || 0 > theRect.right) {
                   return false;
               }
           }
 
+          // If the element is outside of the viewport, we know that it's not viewable
           if (0 > leftOffset || leftOffset > docScrollWidth || 0 > topOffset || topOffset > docScrollHeight) {
               return false;
           }
 
-          // walk the tree
-          for (var pointEl = el.ownerDocument.elementFromPoint(leftOffset + (rect.right > window.innerWidth ? (window.innerWidth - leftOffset) / 2 : rect.width / 2), topOffset + (rect.bottom > window.innerHeight ? (window.innerHeight - topOffset) / 2 : rect.height / 2)); pointEl && pointEl !== el && pointEl !== document;) {
-              if (pointEl.tagName && 'string' === typeof pointEl.tagName && 'label' === pointEl.tagName.toLowerCase()
+          // If the right side of the bounding rectangle is outside the viewport, the center point is the window width (minus offset) divided by 2.
+          // If the right side of the bounding rectangle is inside the viewport, the center point is the width of the bounding rectangle divided by 2.
+          var boundingClientXCenterCoordinate = (rect.right > window.innerWidth ? (window.innerWidth - leftOffset) / 2 : rect.width / 2);
+          var xCoordinate = leftOffset + boundingClientXCenterCoordinate;
+
+          // If the bottom of the bounding rectangle is outside the viewport, the center point is the window height (minus offset) divided by 2.
+          // If the bottom side of the bounding rectangle is inside the viewport, the center point is the height of the bounding rectangle divided by 2.
+          var boundingClientYCenterCoordinate = (rect.bottom > window.innerHeight ? (window.innerHeight - topOffset) / 2 : rect.height / 2);
+          var yCoordinate = topOffset + boundingClientYCenterCoordinate;
+         
+          // Using the bounding rectangle of the element we are checking, we find the center point of of the viewable portion.
+          // We then use elementFromPoint to find the element at that point.
+          for (var pointEl = el.ownerDocument.elementFromPoint(xCoordinate, yCoordinate); pointEl && pointEl !== el && pointEl !== document;) {
+                // If the element we found is a label, and the element we're checking has labels
+                if (pointEl.tagName && 'string' === typeof pointEl.tagName && 'label' === pointEl.tagName.toLowerCase()
                   && el.labels && 0 < el.labels.length) {
+                    // Return true if the element we found is one of the labels for the element we're checking.
+                    // This means that the element we're looking for is considered viewable
                   return 0 <= Array.prototype.slice.call(el.labels).indexOf(pointEl);
               }
 
-              // walk up
+              // Walk up the DOM tree to check the parent element
               pointEl = pointEl.parentNode;
           }
 
+          // If the for loop exited because we found the element we're checking, return true
           return pointEl === el;
       }
 
