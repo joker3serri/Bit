@@ -5649,6 +5649,9 @@
    "customColor": {
     "message": "Custom Color"
   },
+  "selectPlaceholder": {
+    "message": "-- Select --"
+  },
   "multiSelectPlaceholder": {
     "message": "-- Type to filter --"
   },
@@ -5704,6 +5707,9 @@
   },
   "typeOrSelectProject" :{
     "message": "Type or select project"
+  },
+  "selectProjects": {
+    "message": "Select projects"
   },
   "project":{
     "message": "Project"
