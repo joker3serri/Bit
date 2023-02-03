@@ -39,16 +39,16 @@ export class ProjectAccessComponent implements OnInit {
     this.potentialGrantees$ = this.accessPolicyService.projectAccessPolicies$.pipe(
       startWith(null),
       combineLatestWith(this.route.params),
-      switchMap(([_, params]) => {
+      switchMap(async ([_, params]) => {
         if (this.accessType == "projectPeople") {
-          return this.accessPolicyService.getPeoplePotentialGrantees(
-            params.organizationId,
-            params.projectId
-          );
+          return await this.accessPolicyService.getPotentialGrantees(params.organizationId, false);
         } else {
-          return this.accessPolicyService.getServiceAccountPotentialGrantees(
+          const potentialGrantees = await this.accessPolicyService.getPotentialGrantees(
             params.organizationId,
-            params.projectId
+            true
+          );
+          return potentialGrantees.filter(
+            (potentialGrantee) => potentialGrantee.type === "serviceAccount"
           );
         }
       }),
