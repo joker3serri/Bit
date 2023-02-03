@@ -16,6 +16,7 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
+import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 @Component({
   selector: "app-login-with-device",
@@ -40,7 +41,8 @@ export class LoginWithDeviceComponent
     anonymousHubService: AnonymousHubService,
     validationService: ValidationService,
     stateService: StateService,
-    loginService: LoginService
+    loginService: LoginService,
+    syncService: SyncService
   ) {
     super(
       router,
@@ -59,5 +61,8 @@ export class LoginWithDeviceComponent
       stateService,
       loginService
     );
+    super.onSuccessfulLogin = async () => {
+      await syncService.fullSync(true);
+    };
   }
 }

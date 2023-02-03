@@ -51,6 +51,8 @@ export class Main {
       appDataPath = path.join(process.env.SNAP_USER_DATA, "appdata");
     }
 
+    app.commandLine.appendSwitch("ignore-certificate-errors");
+
     app.on("ready", () => {
       // on ready stuff...
     });
