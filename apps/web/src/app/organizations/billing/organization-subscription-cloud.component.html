@@ -108,6 +108,9 @@
       *ngIf="showChangePlan"
     ></app-change-plan>
   </ng-container>
+
+  <sm-enroll [enabled]="sub?.useSecretsManager"></sm-enroll>
+
   <h2 class="spaced-header">{{ "manageSubscription" | i18n }}</h2>
   <p class="mb-4">{{ subscriptionDesc }}</p>
   <ng-container
