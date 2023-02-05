@@ -577,7 +577,7 @@
 
       /**
        * Determine if the element is "viewable" on the screen.
-       * "Viewa"
+       * "Viewable" is defined as being visible in the DOM and being within the confines of the viewport.
        * @param {HTMLElement} el 
        * @returns {boolean} Returns `true` if the element is viewable and `false` otherwise
        */
@@ -599,18 +599,22 @@
               return false;
           }
 
-          // If any of the rects are outside of the viewport, we consider the element to be not viewable
+          // If any of the rects have a left side that is further right than the document width or a right side that is
+          // further left than the origin (i.e. is negative), we consider the element to be not viewable
           for (var i = 0; i < rects.length; i++) {
               if (theRect = rects[i], theRect.left > docScrollWidth || 0 > theRect.right) {
                   return false;
               }
           }
 
-          // If the element is outside of the viewport, we know that it's not viewable
+          // If the element is further left than the document width, or further down than the document height, we know that it's not viewable
           if (0 > leftOffset || leftOffset > docScrollWidth || 0 > topOffset || topOffset > docScrollHeight) {
               return false;
           }
 
+          // Our next check is going to get the center point of the element, and then use elementFromPoint to see if the element
+          // is actually returned from that point. If it is, we know that it's viewable. If it isn't, we know that it's not viewable.
+          
           // If the right side of the bounding rectangle is outside the viewport, the center point is the window width (minus offset) divided by 2.
           // If the right side of the bounding rectangle is inside the viewport, the center point is the width of the bounding rectangle divided by 2.
           var boundingClientXCenterCoordinate = (rect.right > window.innerWidth ? (window.innerWidth - leftOffset) / 2 : rect.width / 2);
@@ -621,7 +625,6 @@
           var boundingClientYCenterCoordinate = (rect.bottom > window.innerHeight ? (window.innerHeight - topOffset) / 2 : rect.height / 2);
           var yCoordinate = topOffset + boundingClientYCenterCoordinate;
          
-          // Using the bounding rectangle of the element we are checking, we find the center point of of the viewable portion.
           // We then use elementFromPoint to find the element at that point.
           for (var pointEl = el.ownerDocument.elementFromPoint(xCoordinate, yCoordinate); pointEl && pointEl !== el && pointEl !== document;) {
                 // If the element we found is a label, and the element we're checking has labels
@@ -636,7 +639,8 @@
               pointEl = pointEl.parentNode;
           }
 
-          // If the for loop exited because we found the element we're checking, return true
+          // If the for loop exited because we found the element we're looking for, return true, as it's viewable
+          // If the element that we found isn't the element we're looking for, it means the element we're looking for is not viewable
           return pointEl === el;
       }
 
