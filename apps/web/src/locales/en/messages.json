@@ -6174,7 +6174,13 @@
   "important": {
     "message": "Important:"
   },
-  "xCharacterMinimum": {
-    "message": "8 character minimum"
+  "characterMinimum": {
+    "message": "$LENGTH$ character minimum",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
   }
 }

@@ -28,6 +28,8 @@ export class RegisterFormComponent extends BaseRegisterComponent {
   @Input() referenceDataValue: ReferenceEventRequest;
 
   showErrorSummary = false;
+  characterMinimumMessage: string;
+  minimumLength = 10;
 
   constructor(
     formValidationErrorService: FormValidationErrorsService,
@@ -68,6 +70,10 @@ export class RegisterFormComponent extends BaseRegisterComponent {
 
     if (this.queryParamEmail) {
       this.formGroup.get("email")?.setValue(this.queryParamEmail);
+    }
+
+    if (this.enforcedPolicyOptions == null) {
+      this.characterMinimumMessage = this.i18nService.t("characterMinimum", this.minimumLength);
     }
   }
 
