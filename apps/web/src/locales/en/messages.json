@@ -5702,12 +5702,6 @@
   "secretProjectAssociationDescription" :{
     "message": "Select projects that the secret will be associated with. Only organization users with access to these projects will be able to see the secret."
   },
-  "typeOrSelectProjects" :{
-    "message": "Type or select projects"
-  },
-  "typeOrSelectProject" :{
-    "message": "Type or select project"
-  },
   "selectProjects": {
     "message": "Select projects"
   },
