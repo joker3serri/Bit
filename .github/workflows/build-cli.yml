@@ -114,6 +114,7 @@ jobs:
       - name: Version Test
         run: |
           cd ./dist/
+          ls -lRf
           unzip "./dist/bw-${{ env.LOWER_RUNNER_OS }}-${{ env._PACKAGE_VERSION }}.zip" -d "./test"
           testVersion=$(bw -v)
           echo "version: $_PACKAGE_VERSION"
