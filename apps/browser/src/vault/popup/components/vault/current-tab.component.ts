@@ -147,7 +147,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     this.router.navigate(["/view-cipher"], { queryParams: { cipherId: cipher.id } });
   }
 
-  async fillCipher(cipher: CipherView) {
+  async fillCipher(cipher: CipherView, closePopupDelay?: number) {
     if (
       cipher.reprompt !== CipherRepromptType.None &&
       !(await this.passwordRepromptService.showPasswordPrompt())
@@ -177,11 +177,15 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
         this.platformUtilsService.copyToClipboard(this.totpCode, { window: window });
       }
       if (this.popupUtilsService.inPopup(window)) {
-        if (this.platformUtilsService.isFirefox() || this.platformUtilsService.isSafari()) {
-          BrowserApi.closePopup(window);
+        if (!closePopupDelay) {
+          if (this.platformUtilsService.isFirefox() || this.platformUtilsService.isSafari()) {
+            BrowserApi.closePopup(window);
+          } else {
+            // Slight delay to fix bug in Chromium browsers where popup closes without copying totp to clipboard
+            setTimeout(() => BrowserApi.closePopup(window), 50);
+          }
         } else {
-          // Slight delay to fix bug in Chromium browsers where popup closes without copying totp to clipboard
-          setTimeout(() => BrowserApi.closePopup(window), 50);
+          setTimeout(() => BrowserApi.closePopup(window), closePopupDelay);
         }
       }
     } catch {
@@ -273,9 +277,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
   async setAutofillOnPageLoad() {
     await this.stateService.setEnableAutoFillOnPageLoad(true);
     this.platformUtilsService.showToast("success", null, this.i18nService.t("autofillTurnedOn"));
-    setTimeout(async () => {
-      await this.fillCipher(this.loginCiphers[0]);
-    }, 500);
+    await this.fillCipher(this.loginCiphers[0], 3000);
     await this.stateService.setDismissedAutofillCallout(true);
     this.showTryAutofillOnPageLoad = false;
   }
