@@ -29,7 +29,7 @@ export class RegisterFormComponent extends BaseRegisterComponent {
 
   showErrorSummary = false;
   characterMinimumMessage: string;
-  minimumLength = 10;
+  minimumLength = 8;
 
   constructor(
     formValidationErrorService: FormValidationErrorsService,
