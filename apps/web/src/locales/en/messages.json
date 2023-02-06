@@ -6188,5 +6188,14 @@
         "example": "14"
       }
     }
+  },
+  "masterPasswordMinimumlength": {
+    "message": "Master password must be at least $LENGTH$ characters long.",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
   }
 }
