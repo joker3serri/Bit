@@ -57,13 +57,22 @@ export class AccessPolicyService {
     return await this.createProjectAccessPoliciesView(organizationId, results);
   }
 
-  async getPotentialGrantees(organizationId: string, includeServiceAccounts: boolean) {
+  async getPeoplePotentialGrantees(organizationId: string) {
     const r = await this.apiService.send(
       "GET",
-      "/organizations/" +
-        organizationId +
-        "/access-policies/potential-grantees?includeServiceAccounts=" +
-        includeServiceAccounts,
+      "/organizations/" + organizationId + "/access-policies/people/potential-grantees",
+      null,
+      true,
+      true
+    );
+    const results = new ListResponse(r, PotentialGranteeResponse);
+    return await this.createPotentialGranteeViews(organizationId, results.data);
+  }
+
+  async getServiceAccountsPotentialGrantees(organizationId: string) {
+    const r = await this.apiService.send(
+      "GET",
+      "/organizations/" + organizationId + "/access-policies/service-accounts/potential-grantees",
       null,
       true,
       true

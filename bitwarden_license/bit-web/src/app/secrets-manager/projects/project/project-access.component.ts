@@ -41,14 +41,10 @@ export class ProjectAccessComponent implements OnInit {
       combineLatestWith(this.route.params),
       switchMap(async ([_, params]) => {
         if (this.accessType == "projectPeople") {
-          return await this.accessPolicyService.getPotentialGrantees(params.organizationId, false);
+          return await this.accessPolicyService.getPeoplePotentialGrantees(params.organizationId);
         } else {
-          const potentialGrantees = await this.accessPolicyService.getPotentialGrantees(
-            params.organizationId,
-            true
-          );
-          return potentialGrantees.filter(
-            (potentialGrantee) => potentialGrantee.type === "serviceAccount"
+          return await this.accessPolicyService.getServiceAccountsPotentialGrantees(
+            params.organizationId
           );
         }
       }),
