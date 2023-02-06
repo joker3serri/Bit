@@ -72,7 +72,9 @@ export class RegisterFormComponent extends BaseRegisterComponent {
       this.formGroup.get("email")?.setValue(this.queryParamEmail);
     }
 
-    if (this.enforcedPolicyOptions == null) {
+    if (this.enforcedPolicyOptions != null && this.enforcedPolicyOptions.minLength > 0) {
+      this.characterMinimumMessage = "";
+    } else {
       this.characterMinimumMessage = this.i18nService.t("characterMinimum", this.minimumLength);
     }
   }

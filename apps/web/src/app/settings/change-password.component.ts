@@ -41,6 +41,8 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
   currentMasterPassword: string;
   masterPasswordHint: string;
   checkBreach = false;
+  characterMinimumMessage = "";
+  minimumLength = 8;
 
   constructor(
     i18nService: I18nService,
@@ -77,6 +79,8 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     if (await this.keyConnectorService.getUsesKeyConnector()) {
       this.router.navigate(["/settings/security/two-factor"]);
     }
+
+    this.characterMinimumMessage = this.i18nService.t("characterMinimum", this.minimumLength);
 
     this.masterPasswordHint = (await this.apiService.getProfile()).masterPasswordHint;
     await super.ngOnInit();
