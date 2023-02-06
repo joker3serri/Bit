@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from "@angular/core";
 import { Router } from "@angular/router";
 
-import { LoginWithDeviceComponent as BaseLoginWithDeviceComponent } from "@bitwarden/angular/components/login-with-device.component";
+import { LoginWithDeviceComponent as BaseLoginWithDeviceComponent } from "@bitwarden/angular/auth/components/login-with-device.component";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { AnonymousHubService } from "@bitwarden/common/abstractions/anonymousHub.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
