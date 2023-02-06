@@ -1,4 +1,4 @@
-import { ScimProviderType } from "../../enums/scimProviderType";
+import { ScimProviderType } from "../../admin-console/enums/scimProviderType";
 import { BaseResponse } from "../response/base.response";
 
 export class ScimConfigApi extends BaseResponse {
