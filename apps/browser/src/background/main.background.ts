@@ -97,7 +97,6 @@ import { SafariApp } from "../browser/safariApp";
 import { flagEnabled } from "../flags";
 import { UpdateBadge } from "../listeners/update-badge";
 import { Account } from "../models/account";
-import { PopupUtilsService } from "../popup/services/popup-utils.service";
 import { BrowserStateService as StateServiceAbstraction } from "../services/abstractions/browser-state.service";
 import { BrowserEnvironmentService } from "../services/browser-environment.service";
 import { BrowserI18nService } from "../services/browser-i18n.service";
@@ -158,7 +157,6 @@ export default class MainBackground {
   eventCollectionService: EventCollectionServiceAbstraction;
   eventUploadService: EventUploadServiceAbstraction;
   policyService: InternalPolicyServiceAbstraction;
-  popupUtilsService: PopupUtilsService;
   sendService: SendServiceAbstraction;
   fileUploadService: FileUploadServiceAbstraction;
   organizationService: InternalOrganizationServiceAbstraction;
@@ -359,7 +357,7 @@ export default class MainBackground {
       // AuthService should send the messages to the background not popup.
       send = (subscriber: string, arg: any = {}) => {
         const message = Object.assign({}, { command: subscriber }, arg);
-        that.runtimeBackground.processMessage(message, that, null);
+        that.runtimeBackground.processMessage(message, that as chrome.runtime.MessageSender, null);
       };
     })();
     this.authService = new AuthService(
@@ -462,7 +460,6 @@ export default class MainBackground {
       this.stateService,
       this.authService
     );
-    this.popupUtilsService = new PopupUtilsService(isPrivateMode);
 
     this.userVerificationApiService = new UserVerificationApiService(this.apiService);
 
