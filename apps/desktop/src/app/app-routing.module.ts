@@ -8,6 +8,7 @@ import { AccessibilityCookieComponent } from "../auth/accessibility-cookie.compo
 import { LoginGuard } from "../auth/guards/login.guard";
 import { LockComponent } from "../auth/lock.component";
 import { LoginComponent } from "../auth/login.component";
+import { LoginWithDeviceComponent } from "../auth/login/login-with-device.component";
 import { RegisterComponent } from "../auth/register.component";
 import { RemovePasswordComponent } from "../auth/remove-password.component";
 import { SetPasswordComponent } from "../auth/set-password.component";
@@ -17,7 +18,6 @@ import { UpdateTempPasswordComponent } from "../auth/update-temp-password.compon
 import { VaultComponent } from "../vault/app/vault/vault.component";
 
 import { HintComponent } from "./accounts/hint.component";
-import { LoginWithDeviceComponent } from "./accounts/login/login-with-device.component";
 import { SendComponent } from "./send/send.component";
 
 const routes: Routes = [

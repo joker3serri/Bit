@@ -41,11 +41,11 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 
 import { DeleteAccountComponent } from "../auth/delete-account.component";
+import { LoginApprovalComponent } from "../auth/login/login-approval.component";
 import { MenuUpdateRequest } from "../main/menu/menu.updater";
 import { PremiumComponent } from "../vault/app/accounts/premium.component";
 import { FolderAddEditComponent } from "../vault/app/vault/folder-add-edit.component";
 
-import { LoginApprovalComponent } from "./accounts/login/login-approval.component";
 import { SettingsComponent } from "./accounts/settings.component";
 import { ExportComponent } from "./vault/export.component";
 import { GeneratorComponent } from "./vault/generator.component";

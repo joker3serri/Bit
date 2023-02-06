@@ -12,6 +12,7 @@ import { UserApiTokenRequest } from "../auth/models/request/identity-token/user-
 import { KeyConnectorUserKeyRequest } from "../auth/models/request/key-connector-user-key.request";
 import { PasswordHintRequest } from "../auth/models/request/password-hint.request";
 import { PasswordRequest } from "../auth/models/request/password.request";
+import { PasswordlessAuthRequest } from "../auth/models/request/passwordless-auth.request";
 import { PasswordlessCreateAuthRequest } from "../auth/models/request/passwordless-create-auth.request";
 import { SecretVerificationRequest } from "../auth/models/request/secret-verification.request";
 import { SetKeyConnectorKeyRequest } from "../auth/models/request/set-key-connector-key.request";
@@ -65,7 +66,6 @@ import { OrganizationConnectionRequest } from "../models/request/organization-co
 import { OrganizationImportRequest } from "../models/request/organization-import.request";
 import { OrganizationSponsorshipCreateRequest } from "../models/request/organization/organization-sponsorship-create.request";
 import { OrganizationSponsorshipRedeemRequest } from "../models/request/organization/organization-sponsorship-redeem.request";
-import { PasswordlessAuthRequest } from "../models/request/passwordless-auth.request";
 import { PaymentRequest } from "../models/request/payment.request";
 import { PreloginRequest } from "../models/request/prelogin.request";
 import { ProviderAddOrganizationRequest } from "../models/request/provider/provider-add-organization.request";

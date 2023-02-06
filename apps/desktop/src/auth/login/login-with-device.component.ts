@@ -19,7 +19,7 @@ import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
-import { EnvironmentComponent } from "../../../auth/environment.component";
+import { EnvironmentComponent } from "../environment.component";
 
 @Component({
   selector: "app-login-with-device",

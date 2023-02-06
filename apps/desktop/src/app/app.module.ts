@@ -12,6 +12,8 @@ import { AccessibilityCookieComponent } from "../auth/accessibility-cookie.compo
 import { DeleteAccountComponent } from "../auth/delete-account.component";
 import { EnvironmentComponent } from "../auth/environment.component";
 import { LockComponent } from "../auth/lock.component";
+import { LoginApprovalComponent } from "../auth/login/login-approval.component";
+import { LoginModule } from "../auth/login/login.module";
 import { RegisterComponent } from "../auth/register.component";
 import { RemovePasswordComponent } from "../auth/remove-password.component";
 import { SetPasswordComponent } from "../auth/set-password.component";
@@ -34,8 +36,6 @@ import { ViewCustomFieldsComponent } from "../vault/app/vault/view-custom-fields
 import { ViewComponent } from "../vault/app/vault/view.component";
 
 import { HintComponent } from "./accounts/hint.component";
-import { LoginApprovalComponent } from "./accounts/login/login-approval.component";
-import { LoginModule } from "./accounts/login/login.module";
 import { SettingsComponent } from "./accounts/settings.component";
 import { VaultTimeoutInputComponent } from "./accounts/vault-timeout-input.component";
 import { AppRoutingModule } from "./app-routing.module";

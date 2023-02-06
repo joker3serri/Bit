@@ -24,7 +24,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
-import { CaptchaProtectedComponent } from "../auth/components/captcha-protected.component";
+import { CaptchaProtectedComponent } from "./captcha-protected.component";
 
 @Directive()
 export class LoginWithDeviceComponent
