@@ -23,6 +23,7 @@ import { EnvironmentComponent } from "../auth/popup/environment.component";
 import { HintComponent } from "../auth/popup/hint.component";
 import { HomeComponent } from "../auth/popup/home.component";
 import { LockComponent } from "../auth/popup/lock.component";
+import { LoginWithDeviceComponent } from "../auth/popup/login-with-device.component";
 import { LoginComponent } from "../auth/popup/login.component";
 import { RegisterComponent } from "../auth/popup/register.component";
 import { RemovePasswordComponent } from "../auth/popup/remove-password.component";
@@ -117,6 +118,7 @@ import { TabsComponent } from "./tabs.component";
     HomeComponent,
     LockComponent,
     LoginComponent,
+    LoginWithDeviceComponent,
     OptionsComponent,
     GeneratorComponent,
     PasswordGeneratorHistoryComponent,

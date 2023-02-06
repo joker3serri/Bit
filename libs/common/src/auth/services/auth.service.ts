@@ -3,6 +3,7 @@ import { Observable, Subject } from "rxjs";
 import { ApiService } from "../../abstractions/api.service";
 import { AppIdService } from "../../abstractions/appId.service";
 import { CryptoService } from "../../abstractions/crypto.service";
+import { EncryptService } from "../../abstractions/encrypt.service";
 import { EnvironmentService } from "../../abstractions/environment.service";
 import { I18nService } from "../../abstractions/i18n.service";
 import { LogService } from "../../abstractions/log.service";
@@ -11,7 +12,9 @@ import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { KdfType } from "../../enums/kdfType";
 import { KeySuffixOptions } from "../../enums/keySuffixOptions";
+import { Utils } from "../../misc/utils";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
+import { PasswordlessAuthRequest } from "../../models/request/passwordless-auth.request";
 import { PreloginRequest } from "../../models/request/prelogin.request";
 import { ErrorResponse } from "../../models/response/error.response";
 import { AuthRequestPushNotification } from "../../models/response/notification.response";
@@ -34,6 +37,7 @@ import {
   PasswordlessLogInCredentials,
 } from "../models/domain/log-in-credentials";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
+import { AuthRequestResponse } from "../models/response/auth-request.response";
 
 const sessionTimeoutLength = 2 * 60 * 1000; // 2 minutes
 
@@ -88,7 +92,8 @@ export class AuthService implements AuthServiceAbstraction {
     protected environmentService: EnvironmentService,
     protected stateService: StateService,
     protected twoFactorService: TwoFactorService,
-    protected i18nService: I18nService
+    protected i18nService: I18nService,
+    protected encryptService: EncryptService
   ) {}
 
   async logIn(
@@ -273,6 +278,31 @@ export class AuthService implements AuthServiceAbstraction {
 
   getPushNotifcationObs$(): Observable<any> {
     return this.pushNotificationSubject.asObservable();
+  }
+
+  async passwordlessLogin(
+    id: string,
+    key: string,
+    requestApproved: boolean
+  ): Promise<AuthRequestResponse> {
+    const pubKey = Utils.fromB64ToArray(key);
+    const encryptedKey = await this.cryptoService.rsaEncrypt(
+      (
+        await this.cryptoService.getKey()
+      ).encKey,
+      pubKey.buffer
+    );
+    const encryptedMasterPassword = await this.cryptoService.rsaEncrypt(
+      Utils.fromUtf8ToArray(await this.stateService.getKeyHash()),
+      pubKey.buffer
+    );
+    const request = new PasswordlessAuthRequest(
+      encryptedKey.encryptedString,
+      encryptedMasterPassword.encryptedString,
+      await this.appIdService.getAppId(),
+      requestApproved
+    );
+    return await this.apiService.putAuthRequest(id, request);
   }
 
   private saveState(

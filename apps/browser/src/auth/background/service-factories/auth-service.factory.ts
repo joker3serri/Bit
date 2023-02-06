@@ -11,6 +11,10 @@ import {
   CryptoServiceInitOptions,
 } from "../../../background/service_factories/crypto-service.factory";
 import {
+  EncryptServiceInitOptions,
+  encryptServiceFactory,
+} from "../../../background/service_factories/encrypt-service.factory";
+import {
   environmentServiceFactory,
   EnvironmentServiceInitOptions,
 } from "../../../background/service_factories/environment-service.factory";
@@ -60,7 +64,8 @@ export type AuthServiceInitOptions = AuthServiceFactoyOptions &
   EnvironmentServiceInitOptions &
   StateServiceInitOptions &
   TwoFactorServiceInitOptions &
-  I18nServiceInitOptions;
+  I18nServiceInitOptions &
+  EncryptServiceInitOptions;
 
 export function authServiceFactory(
   cache: { authService?: AbstractAuthService } & CachedServices,
@@ -83,7 +88,8 @@ export function authServiceFactory(
         await environmentServiceFactory(cache, opts),
         await stateServiceFactory(cache, opts),
         await twoFactorServiceFactory(cache, opts),
-        await i18nServiceFactory(cache, opts)
+        await i18nServiceFactory(cache, opts),
+        await encryptServiceFactory(cache, opts)
       )
   );
 }

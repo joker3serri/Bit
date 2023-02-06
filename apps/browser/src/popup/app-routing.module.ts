@@ -9,6 +9,7 @@ import { EnvironmentComponent } from "../auth/popup/environment.component";
 import { HintComponent } from "../auth/popup/hint.component";
 import { HomeComponent } from "../auth/popup/home.component";
 import { LockComponent } from "../auth/popup/lock.component";
+import { LoginWithDeviceComponent } from "../auth/popup/login-with-device.component";
 import { LoginComponent } from "../auth/popup/login.component";
 import { RegisterComponent } from "../auth/popup/register.component";
 import { RemovePasswordComponent } from "../auth/popup/remove-password.component";
@@ -66,6 +67,12 @@ const routes: Routes = [
     component: LoginComponent,
     canActivate: [UnauthGuard],
     data: { state: "login" },
+  },
+  {
+    path: "login-with-device",
+    component: LoginWithDeviceComponent,
+    canActivate: [UnauthGuard],
+    data: { state: "login-with-device" },
   },
   {
     path: "lock",

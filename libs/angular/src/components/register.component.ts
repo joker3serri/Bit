@@ -19,6 +19,7 @@ import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { PasswordLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
 import { RegisterResponse } from "@bitwarden/common/auth/models/response/register.response";
 import { DEFAULT_KDF_CONFIG, DEFAULT_KDF_TYPE } from "@bitwarden/common/enums/kdfType";
+import { Utils } from "@bitwarden/common/misc/utils";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";
 import { RegisterRequest } from "@bitwarden/common/models/request/register.request";
@@ -39,7 +40,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
   showErrorSummary = false;
   passwordStrengthResult: any;
   characterMinimumMessage: string;
-  minimumLength = 8;
+  minimumLength = Utils.minimumPasswordLength;
   color: string;
   text: string;
 

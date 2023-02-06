@@ -17,6 +17,7 @@ import { UpdateTempPasswordComponent } from "../auth/update-temp-password.compon
 import { VaultComponent } from "../vault/app/vault/vault.component";
 
 import { HintComponent } from "./accounts/hint.component";
+import { LoginWithDeviceComponent } from "./accounts/login/login-with-device.component";
 import { SendComponent } from "./send/send.component";
 
 const routes: Routes = [
@@ -30,6 +31,10 @@ const routes: Routes = [
     path: "login",
     component: LoginComponent,
     canActivate: [LoginGuard],
+  },
+  {
+    path: "login-with-device",
+    component: LoginWithDeviceComponent,
   },
   { path: "2fa", component: TwoFactorComponent },
   { path: "register", component: RegisterComponent },
