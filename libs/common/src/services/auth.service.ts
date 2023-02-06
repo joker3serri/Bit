@@ -4,6 +4,7 @@ import { ApiService } from "../abstractions/api.service";
 import { AppIdService } from "../abstractions/appId.service";
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
 import { CryptoService } from "../abstractions/crypto.service";
+import { EncryptService } from "../abstractions/encrypt.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import { I18nService } from "../abstractions/i18n.service";
 import { KeyConnectorService } from "../abstractions/keyConnector.service";
@@ -21,7 +22,9 @@ import { PasswordLogInStrategy } from "../misc/logInStrategies/passwordLogin.str
 import { PasswordlessLogInStrategy } from "../misc/logInStrategies/passwordlessLogin.strategy";
 import { SsoLogInStrategy } from "../misc/logInStrategies/ssoLogin.strategy";
 import { UserApiLogInStrategy } from "../misc/logInStrategies/user-api-login.strategy";
+import { Utils } from "../misc/utils";
 import { AuthResult } from "../models/domain/auth-result";
+import { KdfConfig } from "../models/domain/kdf-config";
 import {
   UserApiLogInCredentials,
   PasswordLogInCredentials,
@@ -30,7 +33,9 @@ import {
 } from "../models/domain/log-in-credentials";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
+import { PasswordlessAuthRequest } from "../models/request/passwordless-auth.request";
 import { PreloginRequest } from "../models/request/prelogin.request";
+import { AuthRequestResponse } from "../models/response/auth-request.response";
 import { ErrorResponse } from "../models/response/error.response";
 import { AuthRequestPushNotification } from "../models/response/notification.response";
 
@@ -87,7 +92,8 @@ export class AuthService implements AuthServiceAbstraction {
     protected environmentService: EnvironmentService,
     protected stateService: StateService,
     protected twoFactorService: TwoFactorService,
-    protected i18nService: I18nService
+    protected i18nService: I18nService,
+    protected encryptService: EncryptService
   ) {}
 
   async logIn(
@@ -247,19 +253,23 @@ export class AuthService implements AuthServiceAbstraction {
   async makePreloginKey(masterPassword: string, email: string): Promise<SymmetricCryptoKey> {
     email = email.trim().toLowerCase();
     let kdf: KdfType = null;
-    let kdfIterations: number = null;
+    let kdfConfig: KdfConfig = null;
     try {
       const preloginResponse = await this.apiService.postPrelogin(new PreloginRequest(email));
       if (preloginResponse != null) {
         kdf = preloginResponse.kdf;
-        kdfIterations = preloginResponse.kdfIterations;
+        kdfConfig = new KdfConfig(
+          preloginResponse.kdfIterations,
+          preloginResponse.kdfMemory,
+          preloginResponse.kdfParallelism
+        );
       }
     } catch (e) {
       if (e == null || e.statusCode !== 404) {
         throw e;
       }
     }
-    return this.cryptoService.makeKey(masterPassword, email, kdf, kdfIterations);
+    return this.cryptoService.makeKey(masterPassword, email, kdf, kdfConfig);
   }
 
   async authResponsePushNotifiction(notification: AuthRequestPushNotification): Promise<any> {
@@ -268,6 +278,31 @@ export class AuthService implements AuthServiceAbstraction {
 
   getPushNotifcationObs$(): Observable<any> {
     return this.pushNotificationSubject.asObservable();
+  }
+
+  async passwordlessLogin(
+    id: string,
+    key: string,
+    requestApproved: boolean
+  ): Promise<AuthRequestResponse> {
+    const pubKey = Utils.fromB64ToArray(key);
+    const encryptedKey = await this.cryptoService.rsaEncrypt(
+      (
+        await this.cryptoService.getKey()
+      ).encKey,
+      pubKey.buffer
+    );
+    const encryptedMasterPassword = await this.cryptoService.rsaEncrypt(
+      Utils.fromUtf8ToArray(await this.stateService.getKeyHash()),
+      pubKey.buffer
+    );
+    const request = new PasswordlessAuthRequest(
+      encryptedKey.encryptedString,
+      encryptedMasterPassword.encryptedString,
+      await this.appIdService.getAppId(),
+      requestApproved
+    );
+    return await this.apiService.putAuthRequest(id, request);
   }
 
   private saveState(
