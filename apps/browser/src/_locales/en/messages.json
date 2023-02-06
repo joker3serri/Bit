@@ -962,7 +962,7 @@
   "experimentalFeature": {
     "message": "Compromised or untrusted websites can exploit auto-fill on page load."
   },
-  "learnMoreAboutAutofill":{
+  "learnMoreAboutAutofill": {
     "message": "Learn more about auto-fill"
   },
   "defaultAutoFillOnPageLoad": {
@@ -2084,7 +2084,7 @@
     "message": "Try auto-fill on page load?"
   },
   "tryAutofill": {
-    "message": "Try auto-fill"
+    "message": "How to auto-fill"
   },
   "autofillPageLoadInfo": {
     "message": "Login forms will automatically fill in matching credentials if you turn on auto-fill on page load."
