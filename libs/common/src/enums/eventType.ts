@@ -72,4 +72,6 @@ export enum EventType {
   ProviderOrganization_Added = 1901,
   ProviderOrganization_Removed = 1902,
   ProviderOrganization_VaultAccessed = 1903,
+
+  Secret_Retrieved = 2000,
 }

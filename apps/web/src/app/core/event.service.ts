@@ -397,6 +397,19 @@ export class EventService {
           this.getShortId(ev.providerOrganizationId)
         );
         break;
+      // Secrets Manager
+      case EventType.Secret_Retrieved:
+        msg = this.i18nService.t(
+          "serviceAccountAccessSecret",
+          this.formatServiceAccountId(ev),
+          this.formatSecretId(ev)
+        );
+        humanReadableMsg = this.i18nService.t(
+          "serviceAccountAccessSecret",
+          this.getShortId(ev.serviceAccountId),
+          this.getShortId(ev.secretId)
+        );
+        break;
       default:
         break;
     }
@@ -531,6 +544,26 @@ export class EventService {
 
   private formatPolicyId(ev: EventResponse) {
     const shortId = this.getShortId(ev.policyId);
+    const a = this.makeAnchor(shortId);
+    a.setAttribute(
+      "href",
+      "#/organizations/" + ev.organizationId + "/manage/policies?policyId=" + ev.policyId
+    );
+    return a.outerHTML;
+  }
+
+  formatSecretId(ev: EventResponse): string {
+    const shortId = this.getShortId(ev.secretId);
+    const a = this.makeAnchor(shortId);
+    a.setAttribute(
+      "href",
+      "#/organizations/" + ev.organizationId + "/manage/policies?policyId=" + ev.policyId
+    );
+    return a.outerHTML;
+  }
+
+  formatServiceAccountId(ev: EventResponse): string {
+    const shortId = this.getShortId(ev.serviceAccountId);
     const a = this.makeAnchor(shortId);
     a.setAttribute(
       "href",
