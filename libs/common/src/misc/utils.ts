@@ -1,4 +1,6 @@
 /* eslint-disable no-useless-escape */
+import * as path from "path";
+
 import { getHostname, parse } from "tldts";
 import { Merge } from "type-fest";
 
@@ -484,6 +486,27 @@ export class Utils {
     source: Source
   ): Merge<Destination, Source> {
     return Object.assign(destination, source) as unknown as Merge<Destination, Source>;
+  }
+
+  /**
+   * encodeURIComponent escapes all characters except the following:
+   * alphabetic, decimal digits, - _ . ! ~ * ' ( )
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent#encoding_for_rfc3986
+   */
+  static encodeRFC3986URIComponent(str: string): string {
+    return encodeURIComponent(str).replace(
+      /[!'()*]/g,
+      (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`
+    );
+  }
+
+  /**
+   * Normalizes a path for defense against attacks like traversals
+   * @param denormalizedPath
+   * @returns
+   */
+  static normalizePath(denormalizedPath: string): string {
+    return path.normalize(decodeURIComponent(denormalizedPath)).replace(/^(\.\.(\/|\\|$))+/, "");
   }
 
   private static isMobile(win: Window) {
