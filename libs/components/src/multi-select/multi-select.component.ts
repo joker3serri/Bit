@@ -1,3 +1,4 @@
+import { hasModifierKey } from "@angular/cdk/keycodes";
 import {
   Component,
   Input,
@@ -70,9 +71,16 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   /** Function for customizing keyboard navigation */
   /** Needs to be arrow function to retain `this` scope. */
   keyDown = (event: KeyboardEvent) => {
-    if (event.key === "Enter") {
+    if (this.select.isOpen && event.key === "Enter" && !hasModifierKey(event)) {
       this.select.close();
       event.preventDefault();
+      return false;
+    }
+
+    if (this.select.isOpen && event.key === "Escape" && !hasModifierKey(event)) {
+      this.selectedItems = [];
+      this.select.close();
+      event.stopPropagation();
       return false;
     }
 
