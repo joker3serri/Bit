@@ -20,7 +20,6 @@ import { PasswordLogInCredentials } from "@bitwarden/common/auth/models/domain/l
 import { RegisterResponse } from "@bitwarden/common/auth/models/response/register.response";
 import { DEFAULT_KDF_CONFIG, DEFAULT_KDF_TYPE } from "@bitwarden/common/enums/kdfType";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { PasswordLogInCredentials } from "@bitwarden/common/models/domain/log-in-credentials";
 import { KeysRequest } from "@bitwarden/common/models/request/keys.request";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";
 import { RegisterRequest } from "@bitwarden/common/models/request/register.request";
