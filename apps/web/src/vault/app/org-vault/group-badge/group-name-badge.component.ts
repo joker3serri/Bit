@@ -3,7 +3,7 @@ import { Component, Input, OnChanges } from "@angular/core";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/models/request/selection-read-only.request";
 
-import { GroupView } from "../../core";
+import { GroupView } from "../../../../app/organizations/core";
 
 @Component({
   selector: "app-group-badge",

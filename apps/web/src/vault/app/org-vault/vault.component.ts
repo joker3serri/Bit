@@ -24,10 +24,10 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService } from "@bitwarden/components";
 
+import { EntityEventsComponent } from "../../../app/organizations/manage/entity-events.component";
+import { CollectionsComponent } from "../../../app/organizations/vault/collections.component";
 import { VaultFilterService } from "../../../vault/app/vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../../vault/app/vault/vault-filter/shared/models/vault-filter.model";
-import { EntityEventsComponent } from "../manage/entity-events.component";
-import { CollectionsComponent } from "../vault/collections.component";
 
 import { AddEditComponent } from "./add-edit.component";
 import { AttachmentsComponent } from "./attachments.component";

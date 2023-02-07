@@ -35,6 +35,8 @@ import { UpdateTempPasswordComponent } from "../../auth/update-temp-password.com
 import { VerifyEmailTokenComponent } from "../../auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "../../auth/verify-recover-delete.component";
 import { PremiumBadgeComponent } from "../../vault/app/components/premium-badge.component";
+import { AddEditComponent as OrgAddEditComponent } from "../../vault/app/org-vault/add-edit.component";
+import { AttachmentsComponent as OrgAttachmentsComponent } from "../../vault/app/org-vault/attachments.component";
 import { AddEditCustomFieldsComponent } from "../../vault/app/vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../../vault/app/vault/add-edit.component";
 import { AttachmentsComponent } from "../../vault/app/vault/attachments.component";
@@ -58,8 +60,6 @@ import { EntityEventsComponent as OrgEntityEventsComponent } from "../organizati
 import { EventsComponent as OrgEventsComponent } from "../organizations/manage/events.component";
 import { ManageComponent as OrgManageComponent } from "../organizations/manage/manage.component";
 import { UserConfirmComponent as OrgUserConfirmComponent } from "../organizations/manage/user-confirm.component";
-import { AddEditComponent as OrgAddEditComponent } from "../organizations/org-vault/add-edit.component";
-import { AttachmentsComponent as OrgAttachmentsComponent } from "../organizations/org-vault/attachments.component";
 import { AcceptFamilySponsorshipComponent } from "../organizations/sponsorships/accept-family-sponsorship.component";
 import { FamiliesForEnterpriseSetupComponent } from "../organizations/sponsorships/families-for-enterprise-setup.component";
 import { ExposedPasswordsReportComponent as OrgExposedPasswordsReportComponent } from "../organizations/tools/exposed-passwords-report.component";

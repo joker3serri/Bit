@@ -2,10 +2,12 @@ import { NgModule } from "@angular/core";
 
 import { BreadcrumbsModule } from "@bitwarden/components";
 
+// eslint-disable-next-line no-restricted-imports
+import { LooseComponentsModule } from "../../../app/shared/loose-components.module"; //"../../shared/loose-components.module";
+// eslint-disable-next-line no-restricted-imports
+import { SharedModule } from "../../../app/shared/shared.module";
 import { OrganizationBadgeModule } from "../../../vault/app/vault/organization-badge/organization-badge.module";
 import { PipesModule } from "../../../vault/app/vault/pipes/pipes.module";
-import { LooseComponentsModule } from "../../shared/loose-components.module";
-import { SharedModule } from "../../shared/shared.module";
 
 import { CollectionBadgeModule } from "./collection-badge/collection-badge.module";
 import { GroupBadgeModule } from "./group-badge/group-badge.module";

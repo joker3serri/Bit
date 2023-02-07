@@ -20,6 +20,13 @@ import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/pa
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService } from "@bitwarden/components";
 
+import { CollectionAdminView } from "../../../app/organizations/core";
+import { GroupService } from "../../../app/organizations/core/services/group/group.service";
+import {
+  CollectionDialogResult,
+  CollectionDialogTabType,
+  openCollectionDialog,
+} from "../../../app/organizations/shared/components/collection-dialog/collection-dialog.component";
 import {
   BulkDeleteDialogResult,
   openBulkDeleteDialog,
@@ -30,13 +37,6 @@ import {
   VaultItemRow,
   VaultItemsComponent as BaseVaultItemsComponent,
 } from "../../../vault/app/vault/vault-items.component";
-import { CollectionAdminView } from "../core";
-import { GroupService } from "../core/services/group/group.service";
-import {
-  CollectionDialogResult,
-  CollectionDialogTabType,
-  openCollectionDialog,
-} from "../shared/components/collection-dialog/collection-dialog.component";
 
 const MaxCheckedCount = 500;
 
