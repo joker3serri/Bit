@@ -38,6 +38,7 @@ export class OrgSwitcherComponent {
 
   /**
    * Visibility of the New Organization button
+   * (Temporary; will be removed when ability to create organizations is added to SM.)
    */
   @Input()
   hideNewButton = false;
