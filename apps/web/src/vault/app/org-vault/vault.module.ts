@@ -2,8 +2,9 @@ import { NgModule } from "@angular/core";
 
 import { BreadcrumbsModule } from "@bitwarden/components";
 
+// TODO refine elsint rule for **/app/shared/* for both of these imports
 // eslint-disable-next-line no-restricted-imports
-import { LooseComponentsModule } from "../../../app/shared/loose-components.module"; //"../../shared/loose-components.module";
+import { LooseComponentsModule } from "../../../app/shared/loose-components.module";
 // eslint-disable-next-line no-restricted-imports
 import { SharedModule } from "../../../app/shared/shared.module";
 import { OrganizationBadgeModule } from "../../../vault/app/individual-vault/organization-badge/organization-badge.module";
