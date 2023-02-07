@@ -12,15 +12,15 @@
         </tr>
       </ng-container>
       <ng-template body>
-        <tr bitRow *ngFor="let item of errorInfoList" length="100%">
+        <tr bitRow *ngFor="let item of errorInfoList">
           <td bitCell class="tw-break-all">{{ item.name }}</td>
           <td bitCell>{{ item.description }}</td>
         </tr>
       </ng-template>
     </bit-table>
   </span>
-  <div bitDialogFooter class="tw-flex tw-flex-row tw-items-center tw-gap-2">
-    <button bitButton buttonType="primary" type="button" (click)="close()">
+  <div bitDialogFooter>
+    <button bitButton bitDialogClose buttonType="primary" type="button">
       {{ "ok" | i18n }}
     </button>
   </div>

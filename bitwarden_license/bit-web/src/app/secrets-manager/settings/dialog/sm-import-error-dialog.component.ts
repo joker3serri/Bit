@@ -7,11 +7,6 @@ export interface SMImportErrorDialogOperation {
   error: Error;
 }
 
-export enum SMImportErrorDialogResult {
-  Normal = "normal",
-  ErrorDuringDialog = "error",
-}
-
 class ErrorInfo {
   name: string;
   description: string;
@@ -32,23 +27,10 @@ export class SMImportErrorDialogComponent implements OnInit {
 
   ngOnInit(): void {
     try {
-      if (this.data.error == undefined || this.data.error == null) {
-        throw new Error(
-          "The SM import error dialog was not called with the appropriate operation values."
-        );
-      }
       this.errorInfoList = this.parseError(this.data.error);
     } catch {
-      this.close(SMImportErrorDialogResult.ErrorDuringDialog);
+      this.dialogRef.close();
     }
-  }
-
-  close(result: SMImportErrorDialogResult = null) {
-    if (result == null) {
-      this.dialogRef.close(SMImportErrorDialogResult.Normal);
-    }
-
-    this.dialogRef.close(result);
   }
 
   parseError(error: Error): ErrorInfo[] {

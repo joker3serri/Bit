@@ -36,7 +36,7 @@ export class SMExportComponent implements OnInit, OnDestroy {
     private userVerificationService: UserVerificationService,
     private platformUtilsService: PlatformUtilsService,
     private smPortingService: SMPortingService,
-    protected fileDownloadService: FileDownloadService,
+    private fileDownloadService: FileDownloadService,
     private logService: LogService,
     private modalService: ModalService
   ) {}

@@ -1,14 +1,14 @@
 export class SecretsManagerExport {
-  projects: SMExportProject[];
-  secrets: SMExportSecret[];
+  projects: SecretsManagerExportProject[];
+  secrets: SecretsManagerExportSecret[];
 }
 
-export class SMExportProject {
+export class SecretsManagerExportProject {
   id: string;
   name: string;
 }
 
-export class SMExportSecret {
+export class SecretsManagerExportSecret {
   id: string;
   key: string;
   value: string;

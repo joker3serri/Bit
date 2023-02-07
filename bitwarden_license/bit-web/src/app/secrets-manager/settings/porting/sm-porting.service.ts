@@ -9,8 +9,8 @@ import { ErrorResponse } from "@bitwarden/common/models/response/error.response"
 
 import {
   SecretsManagerExport,
-  SMExportProject,
-  SMExportSecret,
+  SecretsManagerExportProject,
+  SecretsManagerExportSecret,
 } from "../../models/porting/sm-export";
 import { ImportedProjectRequest } from "../requests/imported-project.request";
 import { ImportedSecretRequest } from "../requests/imported-secret.request";
@@ -135,7 +135,7 @@ export class SMPortingService {
 
     decryptedExport.projects = await Promise.all(
       exportData.projects.map(async (p) => {
-        const project = new SMExportProject();
+        const project = new SecretsManagerExportProject();
         project.id = p.id;
         project.name = await this.encryptService.decryptToUtf8(new EncString(p.name), orgKey);
         return project;
@@ -144,7 +144,7 @@ export class SMPortingService {
 
     decryptedExport.secrets = await Promise.all(
       exportData.secrets.map(async (s) => {
-        const secret = new SMExportSecret();
+        const secret = new SecretsManagerExportSecret();
 
         [secret.key, secret.value, secret.note] = await Promise.all([
           this.encryptService.decryptToUtf8(new EncString(s.key), orgKey),

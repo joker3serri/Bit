@@ -1,20 +1,19 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { firstValueFrom, Subject, switchMap, takeUntil } from "rxjs";
+import { Subject, switchMap, takeUntil } from "rxjs";
 
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { ImportType } from "@bitwarden/common/enums/importOptions";
 import { DialogService } from "@bitwarden/components";
 
 import {
   SMImportErrorDialogComponent,
   SMImportErrorDialogOperation,
-  SMImportErrorDialogResult,
 } from "../dialog/sm-import-error-dialog.component";
 
 import { SMPortingService } from "./sm-porting.service";
@@ -26,17 +25,18 @@ import { SMPortingService } from "./sm-porting.service";
 export class SMImportComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
+  protected formGroup = new FormGroup({
+    fileSelected: new FormControl(null, [Validators.required]),
+    fileContents: new FormControl("", [Validators.required]),
+  });
+
   format: ImportType = "bitwardenjson";
-  fileSelected: File;
-  fileContents: string;
-  loading = false;
   protected orgId: string = null;
 
   constructor(
     private route: ActivatedRoute,
     private i18nService: I18nService,
     private organizationService: OrganizationService,
-    private userVerificationService: UserVerificationService,
     private platformUtilsService: PlatformUtilsService,
     protected fileDownloadService: FileDownloadService,
     private logService: LogService,
@@ -60,25 +60,24 @@ export class SMImportComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  async submit() {
-    this.loading = true;
-
+  submit = async () => {
     const fileEl = document.getElementById("file") as HTMLInputElement;
     const files = fileEl.files;
+
     if (
       (files == null || files.length === 0) &&
-      (this.fileContents == null || this.fileContents === "")
+      (this.formGroup.get("fileContents").value == null ||
+        this.formGroup.get("fileContents").value.trim() === "")
     ) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
         this.i18nService.t("selectFile")
       );
-      this.loading = false;
       return;
     }
 
-    let fileContents = this.fileContents;
+    let fileContents = this.formGroup.get("fileContents").value;
     if (files != null && files.length > 0) {
       try {
         const content = await this.getFileContents(files[0]);
@@ -96,7 +95,6 @@ export class SMImportComponent implements OnInit, OnDestroy {
         this.i18nService.t("errorOccurred"),
         this.i18nService.t("selectFile")
       );
-      this.loading = false;
       return;
     }
 
@@ -104,22 +102,27 @@ export class SMImportComponent implements OnInit, OnDestroy {
       const error = await this.smPortingService.import(this.orgId, fileContents);
 
       if (error != null) {
-        this.error(error);
-        this.loading = false;
+        this.openImportErrorDialog(error);
         return;
       }
 
       this.platformUtilsService.showToast("success", null, this.i18nService.t("importSuccess"));
+      this.clearForm();
     } catch (e) {
       this.logService.error(e);
     }
+  };
 
-    this.loading = false;
+  private clearForm() {
+    (document.getElementById("file") as HTMLInputElement).value = "";
+    this.formGroup.get("fileSelected").setValue(null);
+    this.formGroup.get("fileContents").setValue("");
   }
 
   protected setSelectedFile(event: Event) {
     const fileInputEl = <HTMLInputElement>event.target;
-    this.fileSelected = fileInputEl.files.length > 0 ? fileInputEl.files[0] : null;
+    const file = fileInputEl.files.length > 0 ? fileInputEl.files[0] : null;
+    this.formGroup.get("fileSelected")?.setValue(file);
   }
 
   private getFileContents(file: File): Promise<string> {
@@ -135,24 +138,11 @@ export class SMImportComponent implements OnInit, OnDestroy {
     });
   }
 
-  private async error(error: Error) {
-    this.openImportErrorDialog(error);
-  }
-
-  private async openImportErrorDialog(error: Error) {
-    const dialogResult = this.dialogService.open<
-      SMImportErrorDialogResult,
-      SMImportErrorDialogOperation
-    >(SMImportErrorDialogComponent, {
+  private openImportErrorDialog(error: Error) {
+    this.dialogService.open<unknown, SMImportErrorDialogOperation>(SMImportErrorDialogComponent, {
       data: {
         error: error,
       },
     });
-
-    const result = await firstValueFrom(dialogResult.closed);
-
-    if (result == SMImportErrorDialogResult.ErrorDuringDialog) {
-      this.platformUtilsService.showToast("error", null, this.i18nService.t("errorOccurred"));
-    }
   }
 }
