@@ -71,6 +71,10 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   /** Function for customizing keyboard navigation */
   /** Needs to be arrow function to retain `this` scope. */
   keyDown = (event: KeyboardEvent) => {
+    if (!this.select.isOpen && event.key === "Enter" && !hasModifierKey(event)) {
+      return false;
+    }
+
     if (this.select.isOpen && event.key === "Enter" && !hasModifierKey(event)) {
       this.select.close();
       event.preventDefault();
