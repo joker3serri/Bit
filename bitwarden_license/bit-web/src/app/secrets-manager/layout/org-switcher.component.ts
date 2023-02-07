@@ -36,6 +36,12 @@ export class OrgSwitcherComponent {
   @Output()
   openChange = new EventEmitter<boolean>();
 
+  /**
+   * Visibility of the New Organization button
+   */
+  @Input()
+  hideNewButton = false;
+
   constructor(private route: ActivatedRoute, private organizationService: OrganizationService) {}
 
   protected toggle(event?: MouseEvent) {
