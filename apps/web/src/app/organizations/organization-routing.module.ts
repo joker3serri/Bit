@@ -18,7 +18,7 @@ import { OrganizationLayoutComponent } from "./layouts/organization-layout.compo
 import { CollectionsComponent } from "./manage/collections.component";
 import { GroupsComponent } from "./manage/groups.component";
 import { ManageComponent } from "./manage/manage.component";
-import { VaultModule } from "./vault/vault.module";
+import { VaultModule } from "./org-vault/vault.module";
 
 const routes: Routes = [
   {

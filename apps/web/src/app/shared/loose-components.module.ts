@@ -58,6 +58,8 @@ import { EntityEventsComponent as OrgEntityEventsComponent } from "../organizati
 import { EventsComponent as OrgEventsComponent } from "../organizations/manage/events.component";
 import { ManageComponent as OrgManageComponent } from "../organizations/manage/manage.component";
 import { UserConfirmComponent as OrgUserConfirmComponent } from "../organizations/manage/user-confirm.component";
+import { AddEditComponent as OrgAddEditComponent } from "../organizations/org-vault/add-edit.component";
+import { AttachmentsComponent as OrgAttachmentsComponent } from "../organizations/org-vault/attachments.component";
 import { AcceptFamilySponsorshipComponent } from "../organizations/sponsorships/accept-family-sponsorship.component";
 import { FamiliesForEnterpriseSetupComponent } from "../organizations/sponsorships/families-for-enterprise-setup.component";
 import { ExposedPasswordsReportComponent as OrgExposedPasswordsReportComponent } from "../organizations/tools/exposed-passwords-report.component";
@@ -66,8 +68,6 @@ import { ReusedPasswordsReportComponent as OrgReusedPasswordsReportComponent } f
 import { ToolsComponent as OrgToolsComponent } from "../organizations/tools/tools.component";
 import { UnsecuredWebsitesReportComponent as OrgUnsecuredWebsitesReportComponent } from "../organizations/tools/unsecured-websites-report.component";
 import { WeakPasswordsReportComponent as OrgWeakPasswordsReportComponent } from "../organizations/tools/weak-passwords-report.component";
-import { AddEditComponent as OrgAddEditComponent } from "../organizations/vault/add-edit.component";
-import { AttachmentsComponent as OrgAttachmentsComponent } from "../organizations/vault/attachments.component";
 import { CollectionsComponent as OrgCollectionsComponent } from "../organizations/vault/collections.component";
 import { ProvidersComponent } from "../providers/providers.component";
 import { AccessComponent } from "../send/access.component";

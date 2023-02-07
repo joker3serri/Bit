@@ -8,7 +8,7 @@ import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-repromp
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import { AddEditComponent } from "../../../vault/app/vault/add-edit.component";
-import { AddEditComponent as OrgAddEditComponent } from "../../organizations/vault/add-edit.component";
+import { AddEditComponent as OrgAddEditComponent } from "../../organizations/org-vault/add-edit.component";
 
 @Directive()
 export class CipherReportComponent {

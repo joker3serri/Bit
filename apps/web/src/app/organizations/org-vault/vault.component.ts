@@ -27,10 +27,10 @@ import { DialogService } from "@bitwarden/components";
 import { VaultFilterService } from "../../../vault/app/vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../../vault/app/vault/vault-filter/shared/models/vault-filter.model";
 import { EntityEventsComponent } from "../manage/entity-events.component";
+import { CollectionsComponent } from "../vault/collections.component";
 
 import { AddEditComponent } from "./add-edit.component";
 import { AttachmentsComponent } from "./attachments.component";
-import { CollectionsComponent } from "./collections.component";
 import { VaultFilterComponent } from "./vault-filter/vault-filter.component";
 import { VaultItemsComponent } from "./vault-items.component";
 
