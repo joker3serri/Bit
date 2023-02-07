@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 
-import { VaultFilterSharedModule } from "../../vault/vault-filter/shared/vault-filter-shared.module";
+import { VaultFilterSharedModule } from "../../individual-vault/vault-filter/shared/vault-filter-shared.module";
 
 import { LinkSsoComponent } from "./components/link-sso.component";
 import { OrganizationOptionsComponent } from "./components/organization-options.component";

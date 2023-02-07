@@ -16,8 +16,8 @@ import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folde
 
 import { CollectionAdminView } from "../../../../app/organizations/core";
 import { CollectionAdminService } from "../../../../app/organizations/core/services/collection-admin.service";
-import { VaultFilterService as BaseVaultFilterService } from "../../vault/vault-filter/services/vault-filter.service";
-import { CollectionFilter } from "../../vault/vault-filter/shared/models/vault-filter.type";
+import { VaultFilterService as BaseVaultFilterService } from "../../individual-vault/vault-filter/services/vault-filter.service";
+import { CollectionFilter } from "../../individual-vault/vault-filter/shared/models/vault-filter.type";
 
 @Injectable()
 export class VaultFilterService extends BaseVaultFilterService implements OnDestroy {

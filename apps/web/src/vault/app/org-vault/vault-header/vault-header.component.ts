@@ -24,9 +24,9 @@ import {
   CollectionDialogTabType,
   openCollectionDialog,
 } from "../../../../app/organizations/shared";
-import { VaultFilterService } from "../../vault/vault-filter/services/abstractions/vault-filter.service";
-import { VaultFilter } from "../../vault/vault-filter/shared/models/vault-filter.model";
-import { CollectionFilter } from "../../vault/vault-filter/shared/models/vault-filter.type";
+import { VaultFilterService } from "../../individual-vault/vault-filter/services/abstractions/vault-filter.service";
+import { VaultFilter } from "../../individual-vault/vault-filter/shared/models/vault-filter.model";
+import { CollectionFilter } from "../../individual-vault/vault-filter/shared/models/vault-filter.type";
 
 @Component({
   selector: "app-org-vault-header",

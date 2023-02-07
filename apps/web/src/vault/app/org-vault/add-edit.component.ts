@@ -21,11 +21,11 @@ import { Cipher } from "@bitwarden/common/vault/models/domain/cipher";
 import { CipherCreateRequest } from "@bitwarden/common/vault/models/request/cipher-create.request";
 import { CipherRequest } from "@bitwarden/common/vault/models/request/cipher.request";
 
-import { AddEditComponent as BaseAddEditComponent } from "../../../vault/app/vault/add-edit.component";
+import { AddEditComponent as BaseAddEditComponent } from "../../../vault/app/individual-vault/add-edit.component";
 
 @Component({
   selector: "app-org-vault-add-edit",
-  templateUrl: "../../../vault/app/vault/add-edit.component.html",
+  templateUrl: "../../../vault/app/individual-vault/add-edit.component.html",
 })
 export class AddEditComponent extends BaseAddEditComponent {
   originalCipher: Cipher = null;

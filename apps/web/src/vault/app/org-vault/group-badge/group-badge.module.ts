@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 
 import { SharedModule } from "../../../../app/shared";
-import { PipesModule } from "../../vault/pipes/pipes.module";
+import { PipesModule } from "../../individual-vault/pipes/pipes.module";
 
 import { GroupNameBadgeComponent } from "./group-name-badge.component";
 

@@ -26,8 +26,8 @@ import { DialogService } from "@bitwarden/components";
 
 import { EntityEventsComponent } from "../../../app/organizations/manage/entity-events.component";
 import { CollectionsComponent } from "../../../app/organizations/vault/collections.component";
-import { VaultFilterService } from "../../../vault/app/vault/vault-filter/services/abstractions/vault-filter.service";
-import { VaultFilter } from "../../../vault/app/vault/vault-filter/shared/models/vault-filter.model";
+import { VaultFilterService } from "../../../vault/app/individual-vault/vault-filter/services/abstractions/vault-filter.service";
+import { VaultFilter } from "../../../vault/app/individual-vault/vault-filter/shared/models/vault-filter.model";
 
 import { AddEditComponent } from "./add-edit.component";
 import { AttachmentsComponent } from "./attachments.component";
