@@ -72,6 +72,7 @@ export class MultiSelectComponent implements OnInit, BitFormFieldControl, Contro
   keyDown = (event: KeyboardEvent) => {
     if (event.key === "Enter") {
       this.select.close();
+      event.preventDefault();
       return false;
     }
 
