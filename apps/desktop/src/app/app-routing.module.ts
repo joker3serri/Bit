@@ -15,7 +15,7 @@ import { SetPasswordComponent } from "../auth/set-password.component";
 import { SsoComponent } from "../auth/sso.component";
 import { TwoFactorComponent } from "../auth/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
-import { VaultComponent } from "../vault/app/individual-vault/vault.component";
+import { VaultComponent } from "../vault/app/vault/vault.component";
 
 import { HintComponent } from "./accounts/hint.component";
 import { SendComponent } from "./send/send.component";
