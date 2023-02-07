@@ -139,7 +139,17 @@ export class EventsComponent extends BaseEventsComponent implements OnInit, OnDe
       };
     }
 
+    if (r.serviceAccountId) {
+      return {
+        name: `Service account: ${this.getShortId(r.serviceAccountId)}`,
+      };
+    }
+
     return null;
+  }
+
+  private getShortId(id: string) {
+    return id?.substring(0, 8);
   }
 
   ngOnDestroy() {

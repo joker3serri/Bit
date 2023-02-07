@@ -6189,17 +6189,17 @@
   "userAccessSecretsManager": {
     "message": "This user can access the Secrets Manager Beta"
   },
-  "serviceAccountAccessSecret": {
-    "message": "Service Account $SERVICE_ACCOUNT_ID$ accessed secret $SECRET_ID$.",
+  "accessedSecret": {
+    "message": "Accessed secret $SECRET_ID$.",
     "placeholders": {
-      "service_account_id": {
-        "content": "$1",
-        "example": "4d34e8a8"
-      },
       "secret_id": {
         "content": "$1",
         "example": "4d34e8a8"
       }
     }
+  },
+  "sdk": {
+    "message": "SDK",
+    "description": "Software Development Kit"
   }
 }
