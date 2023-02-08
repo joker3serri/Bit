@@ -1,6 +1,6 @@
 import { BaseResponse } from "@bitwarden/common/models/response/base.response";
 
-export class ExportedSecretResponse extends BaseResponse {
+export class SecretsManagerExportedSecretResponse extends BaseResponse {
   id: string;
   key: string;
   value: string;

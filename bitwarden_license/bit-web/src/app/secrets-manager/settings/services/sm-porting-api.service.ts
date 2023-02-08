@@ -1,6 +1,4 @@
-import { formatDate } from "@angular/common";
 import { Injectable } from "@angular/core";
-import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -9,21 +7,21 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
+import { SecretsManagerImportError } from "../models/error/sm-import-error";
+import { SecretsManagerImportRequest } from "../models/requests/sm-import.request";
+import { SecretsManagerImportedProjectRequest } from "../models/requests/sm-imported-project.request";
+import { SecretsManagerImportedSecretRequest } from "../models/requests/sm-imported-secret.request";
+import { SecretsManagerExportResponse } from "../models/responses/sm-export.response";
 import {
   SecretsManagerExport,
   SecretsManagerExportProject,
   SecretsManagerExportSecret,
-} from "../../models/porting/sm-export";
-import { SecretsManagerImportError } from "../models/error/sm-import-error";
-import { ImportedProjectRequest } from "../models/requests/imported-project.request";
-import { ImportedSecretRequest } from "../models/requests/imported-secret.request";
-import { SecretsManagerImportRequest } from "../models/requests/sm-import.request";
-import { SecretsManagerExportResponse } from "../models/responses/sm-export.response";
+} from "../models/sm-export";
 
 @Injectable({
   providedIn: "root",
 })
-export class SMPortingService {
+export class SecretsManagerPortingApiService {
   constructor(
     private apiService: ApiService,
     private encryptService: EncryptService,
@@ -32,26 +30,34 @@ export class SMPortingService {
   ) {}
 
   async export(organizationId: string, exportFormat = "json"): Promise<string> {
-    const r = await this.apiService.send(
-      "GET",
-      "/sm/" + organizationId + "/export?format=" + exportFormat,
-      null,
-      true,
-      true
-    );
+    let response = {};
+
+    try {
+      response = await this.apiService.send(
+        "GET",
+        "/sm/" + organizationId + "/export?format=" + exportFormat,
+        null,
+        true,
+        true
+      );
+    } catch (error) {
+      return null;
+    }
 
     return JSON.stringify(
-      await this.decryptExport(organizationId, new SecretsManagerExportResponse(r)),
+      await this.decryptExport(organizationId, new SecretsManagerExportResponse(response)),
       null,
       "  "
     );
   }
 
   async import(organizationId: string, fileContents: string): Promise<SecretsManagerImportError> {
-    const requestObject = JSON.parse(fileContents);
-    const requestBody = await this.encryptImport(organizationId, requestObject);
+    let requestObject = {};
 
     try {
+      requestObject = JSON.parse(fileContents);
+      const requestBody = await this.encryptImport(organizationId, requestObject);
+
       await this.apiService.send(
         "POST",
         "/sm/" + organizationId + "/import",
@@ -63,19 +69,6 @@ export class SMPortingService {
       const errorResponse = new ErrorResponse(error, 400);
       return this.handleServerError(errorResponse, requestObject);
     }
-  }
-
-  async getFileName(prefix: string = null, extension = "json"): Promise<string> {
-    const locale = await firstValueFrom(this.i18nService.locale$);
-    const dateString = formatDate(new Date(), "yyyyMMddHHmmss", locale);
-    return "bitwarden" + (prefix ? "_" + prefix : "") + "_export_" + dateString + "." + extension;
-  }
-
-  padNumber(num: number, width: number, padCharacter = "0"): string {
-    const numString = num.toString();
-    return numString.length >= width
-      ? numString
-      : new Array(width - numString.length + 1).join(padCharacter) + numString;
   }
 
   private async encryptImport(
@@ -91,7 +84,7 @@ export class SMPortingService {
 
       encryptedImport.projects = await Promise.all(
         importData.projects.map(async (p: any) => {
-          const project = new ImportedProjectRequest();
+          const project = new SecretsManagerImportedProjectRequest();
           project.id = p.id;
           project.name = await this.encryptService.encrypt(p.name, orgKey);
           return project;
@@ -100,7 +93,7 @@ export class SMPortingService {
 
       encryptedImport.secrets = await Promise.all(
         importData.secrets.map(async (s: any) => {
-          const secret = new ImportedSecretRequest();
+          const secret = new SecretsManagerImportedSecretRequest();
 
           [secret.key, secret.value, secret.note] = await Promise.all([
             this.encryptService.encrypt(s.key, orgKey),
@@ -114,7 +107,7 @@ export class SMPortingService {
           return secret;
         })
       );
-    } catch (e) {
+    } catch (error) {
       return null;
     }
 

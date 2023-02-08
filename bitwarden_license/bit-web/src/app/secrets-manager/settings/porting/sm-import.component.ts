@@ -8,22 +8,20 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { ImportType } from "@bitwarden/common/enums/importOptions";
 import { DialogService } from "@bitwarden/components";
 
 import {
-  SMImportErrorDialogComponent,
-  SMImportErrorDialogOperation,
+  SecretsManagerImportErrorDialogComponent,
+  SecretsManagerImportErrorDialogOperation,
 } from "../dialog/sm-import-error-dialog.component";
 import { SecretsManagerImportError } from "../models/error/sm-import-error";
-
-import { SMPortingService } from "./sm-porting.service";
+import { SecretsManagerPortingApiService } from "../services/sm-porting-api.service";
 
 @Component({
   selector: "sm-import",
   templateUrl: "./sm-import.component.html",
 })
-export class SMImportComponent implements OnInit, OnDestroy {
+export class SecretsManagerImportComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   protected formGroup = new FormGroup({
@@ -31,7 +29,6 @@ export class SMImportComponent implements OnInit, OnDestroy {
     fileContents: new FormControl("", [Validators.required]),
   });
 
-  format: ImportType = "bitwardenjson";
   protected orgId: string = null;
 
   constructor(
@@ -41,7 +38,7 @@ export class SMImportComponent implements OnInit, OnDestroy {
     private platformUtilsService: PlatformUtilsService,
     protected fileDownloadService: FileDownloadService,
     private logService: LogService,
-    private smPortingService: SMPortingService,
+    private secretsManagerPortingApiService: SecretsManagerPortingApiService,
     private dialogService: DialogService
   ) {}
 
@@ -62,14 +59,13 @@ export class SMImportComponent implements OnInit, OnDestroy {
   }
 
   submit = async () => {
-    const fileEl = document.getElementById("file") as HTMLInputElement;
-    const files = fileEl.files;
+    const fileElement = document.getElementById("file") as HTMLInputElement;
+    const importContents = await this.getImportContents(
+      fileElement,
+      this.formGroup.get("fileContents").value.trim()
+    );
 
-    if (
-      (files == null || files.length === 0) &&
-      (this.formGroup.get("fileContents").value == null ||
-        this.formGroup.get("fileContents").value.trim() === "")
-    ) {
+    if (importContents == null) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
@@ -78,7 +74,42 @@ export class SMImportComponent implements OnInit, OnDestroy {
       return;
     }
 
-    let fileContents = this.formGroup.get("fileContents").value;
+    try {
+      const error = await this.secretsManagerPortingApiService.import(this.orgId, importContents);
+
+      if (error?.lines?.length > 0) {
+        this.openImportErrorDialog(error);
+        return;
+      } else if (error != null) {
+        this.platformUtilsService.showToast(
+          "error",
+          this.i18nService.t("errorOccurred"),
+          this.i18nService.t("errorReadingImportFile")
+        );
+        return;
+      }
+
+      this.platformUtilsService.showToast("success", null, this.i18nService.t("importSuccess"));
+      this.clearForm();
+    } catch (e) {
+      this.logService.error(e);
+    }
+  };
+
+  protected async getImportContents(
+    fileElement: HTMLInputElement,
+    pastedContents: string
+  ): Promise<string> {
+    const files = fileElement.files;
+
+    if (
+      (files == null || files.length === 0) &&
+      (pastedContents == null || pastedContents === "")
+    ) {
+      return null;
+    }
+
+    let fileContents = pastedContents;
     if (files != null && files.length > 0) {
       try {
         const content = await this.getFileContents(files[0]);
@@ -91,39 +122,22 @@ export class SMImportComponent implements OnInit, OnDestroy {
     }
 
     if (fileContents == null || fileContents === "") {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("selectFile")
-      );
-      return;
+      return null;
     }
 
-    try {
-      const error = await this.smPortingService.import(this.orgId, fileContents);
-
-      if (error != null) {
-        this.openImportErrorDialog(error);
-        return;
-      }
-
-      this.platformUtilsService.showToast("success", null, this.i18nService.t("importSuccess"));
-      this.clearForm();
-    } catch (e) {
-      this.logService.error(e);
-    }
-  };
-
-  private clearForm() {
-    (document.getElementById("file") as HTMLInputElement).value = "";
-    this.formGroup.get("fileSelected").setValue(null);
-    this.formGroup.get("fileContents").setValue("");
+    return fileContents;
   }
 
   protected setSelectedFile(event: Event) {
     const fileInputEl = <HTMLInputElement>event.target;
     const file = fileInputEl.files.length > 0 ? fileInputEl.files[0] : null;
     this.formGroup.get("fileSelected")?.setValue(file);
+  }
+
+  private clearForm() {
+    (document.getElementById("file") as HTMLInputElement).value = "";
+    this.formGroup.get("fileSelected").setValue(null);
+    this.formGroup.get("fileContents").setValue("");
   }
 
   private getFileContents(file: File): Promise<string> {
@@ -140,10 +154,13 @@ export class SMImportComponent implements OnInit, OnDestroy {
   }
 
   private openImportErrorDialog(error: SecretsManagerImportError) {
-    this.dialogService.open<unknown, SMImportErrorDialogOperation>(SMImportErrorDialogComponent, {
-      data: {
-        error: error,
-      },
-    });
+    this.dialogService.open<unknown, SecretsManagerImportErrorDialogOperation>(
+      SecretsManagerImportErrorDialogComponent,
+      {
+        data: {
+          error: error,
+        },
+      }
+    );
   }
 }

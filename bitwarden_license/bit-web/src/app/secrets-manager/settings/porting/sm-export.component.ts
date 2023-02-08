@@ -9,16 +9,16 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { UserVerificationPromptComponent } from "@bitwarden/web-vault/app/components/user-verification-prompt.component";
 
-import { SMPortingService } from "./sm-porting.service";
+import { SecretsManagerPortingApiService } from "../services/sm-porting-api.service";
+import { SecretsManagerPortingService } from "../services/sm-porting.service";
 
 @Component({
   selector: "sm-export",
   templateUrl: "./sm-export.component.html",
 })
-export class SMExportComponent implements OnInit, OnDestroy {
+export class SecretsManagerExportComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   protected orgName: string;
@@ -33,12 +33,12 @@ export class SMExportComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private i18nService: I18nService,
     private organizationService: OrganizationService,
-    private userVerificationService: UserVerificationService,
     private platformUtilsService: PlatformUtilsService,
-    private smPortingService: SMPortingService,
+    private smPortingService: SecretsManagerPortingService,
     private fileDownloadService: FileDownloadService,
     private logService: LogService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private secretsManagerApiService: SecretsManagerPortingApiService
   ) {}
 
   async ngOnInit() {
@@ -77,7 +77,7 @@ export class SMExportComponent implements OnInit, OnDestroy {
 
   private async doExport() {
     try {
-      const exportData = await this.smPortingService.export(
+      const exportData = await this.secretsManagerApiService.export(
         this.orgId,
         this.formGroup.get("format").value
       );

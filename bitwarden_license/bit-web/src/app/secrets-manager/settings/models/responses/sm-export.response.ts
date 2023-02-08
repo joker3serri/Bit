@@ -1,11 +1,11 @@
 import { BaseResponse } from "@bitwarden/common/models/response/base.response";
 
-import { ExportedProjectResponse } from "./exported-project.response";
-import { ExportedSecretResponse } from "./exported-secret.response";
+import { SecretsManagerExportedProjectResponse } from "./sm-exported-project.response";
+import { SecretsManagerExportedSecretResponse } from "./sm-exported-secret.response";
 
 export class SecretsManagerExportResponse extends BaseResponse {
-  projects: ExportedProjectResponse[];
-  secrets: ExportedSecretResponse[];
+  projects: SecretsManagerExportedProjectResponse[];
+  secrets: SecretsManagerExportedSecretResponse[];
 
   constructor(response: any) {
     super(response);
@@ -13,7 +13,7 @@ export class SecretsManagerExportResponse extends BaseResponse {
     const projects = this.getResponseProperty("Projects");
     const secrets = this.getResponseProperty("Secrets");
 
-    this.projects = projects?.map((k: any) => new ExportedProjectResponse(k));
-    this.secrets = secrets?.map((k: any) => new ExportedSecretResponse(k));
+    this.projects = projects?.map((k: any) => new SecretsManagerExportedProjectResponse(k));
+    this.secrets = secrets?.map((k: any) => new SecretsManagerExportedSecretResponse(k));
   }
 }

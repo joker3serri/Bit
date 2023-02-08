@@ -6224,5 +6224,8 @@
   },
   "description": {
     "message": "Description"
+  },
+  "errorReadingImportFile": {
+    "message": "An error occurred when trying to read the import file"
   }
 }

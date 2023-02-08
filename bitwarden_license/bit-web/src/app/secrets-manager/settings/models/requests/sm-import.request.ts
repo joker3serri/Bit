@@ -1,7 +1,7 @@
-import { ImportedProjectRequest } from "./imported-project.request";
-import { ImportedSecretRequest } from "./imported-secret.request";
+import { SecretsManagerImportedProjectRequest } from "./sm-imported-project.request";
+import { SecretsManagerImportedSecretRequest } from "./sm-imported-secret.request";
 
 export class SecretsManagerImportRequest {
-  projects: ImportedProjectRequest[];
-  secrets: ImportedSecretRequest[];
+  projects: SecretsManagerImportedProjectRequest[];
+  secrets: SecretsManagerImportedSecretRequest[];
 }
