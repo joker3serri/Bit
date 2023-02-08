@@ -82,15 +82,15 @@ export class SMExportComponent implements OnInit, OnDestroy {
         this.formGroup.get("format").value
       );
 
-      this.downloadFile(exportData, this.formGroup.get("format").value);
+      await this.downloadFile(exportData, this.formGroup.get("format").value);
       this.platformUtilsService.showToast("success", null, this.i18nService.t("dataExportSuccess"));
     } catch (e) {
       this.logService.error(e);
     }
   }
 
-  private downloadFile(data: string, format: string): void {
-    const fileName = this.smPortingService.getFileName(null, format);
+  private async downloadFile(data: string, format: string) {
+    const fileName = await this.smPortingService.getFileName(null, format);
     this.fileDownloadService.download({
       fileName: fileName,
       blobData: data,

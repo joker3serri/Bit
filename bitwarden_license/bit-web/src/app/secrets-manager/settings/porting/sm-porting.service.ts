@@ -1,9 +1,11 @@
+import { formatDate } from "@angular/common";
 import { Injectable } from "@angular/core";
+import { firstValueFrom } from "rxjs";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
-import { ImportError } from "@bitwarden/common/importers/import-error";
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 
@@ -12,10 +14,11 @@ import {
   SecretsManagerExportProject,
   SecretsManagerExportSecret,
 } from "../../models/porting/sm-export";
-import { ImportedProjectRequest } from "../requests/imported-project.request";
-import { ImportedSecretRequest } from "../requests/imported-secret.request";
-import { SMImportRequest } from "../requests/sm-import.request";
-import { SMExportResponse } from "../responses/sm-export.response";
+import { SecretsManagerImportError } from "../models/error/sm-import-error";
+import { ImportedProjectRequest } from "../models/requests/imported-project.request";
+import { ImportedSecretRequest } from "../models/requests/imported-secret.request";
+import { SecretsManagerImportRequest } from "../models/requests/sm-import.request";
+import { SecretsManagerExportResponse } from "../models/responses/sm-export.response";
 
 @Injectable({
   providedIn: "root",
@@ -24,7 +27,8 @@ export class SMPortingService {
   constructor(
     private apiService: ApiService,
     private encryptService: EncryptService,
-    private cryptoService: CryptoService
+    private cryptoService: CryptoService,
+    private i18nService: I18nService
   ) {}
 
   async export(organizationId: string, exportFormat = "json"): Promise<string> {
@@ -37,13 +41,13 @@ export class SMPortingService {
     );
 
     return JSON.stringify(
-      await this.decryptExport(organizationId, new SMExportResponse(r)),
+      await this.decryptExport(organizationId, new SecretsManagerExportResponse(r)),
       null,
       "  "
     );
   }
 
-  async import(organizationId: string, fileContents: string): Promise<ImportError> {
+  async import(organizationId: string, fileContents: string): Promise<SecretsManagerImportError> {
     const requestObject = JSON.parse(fileContents);
     const requestBody = await this.encryptImport(organizationId, requestObject);
 
@@ -61,19 +65,9 @@ export class SMPortingService {
     }
   }
 
-  getFileName(prefix: string = null, extension = "json"): string {
-    const now = new Date();
-    const dateString =
-      now.getFullYear() +
-      "" +
-      this.padNumber(now.getMonth() + 1, 2) +
-      "" +
-      this.padNumber(now.getDate(), 2) +
-      this.padNumber(now.getHours(), 2) +
-      "" +
-      this.padNumber(now.getMinutes(), 2) +
-      this.padNumber(now.getSeconds(), 2);
-
+  async getFileName(prefix: string = null, extension = "json"): Promise<string> {
+    const locale = await firstValueFrom(this.i18nService.locale$);
+    const dateString = formatDate(new Date(), "yyyyMMddHHmmss", locale);
     return "bitwarden" + (prefix ? "_" + prefix : "") + "_export_" + dateString + "." + extension;
   }
 
@@ -84,8 +78,11 @@ export class SMPortingService {
       : new Array(width - numString.length + 1).join(padCharacter) + numString;
   }
 
-  private async encryptImport(organizationId: string, importData: any): Promise<SMImportRequest> {
-    const encryptedImport = new SMImportRequest();
+  private async encryptImport(
+    organizationId: string,
+    importData: any
+  ): Promise<SecretsManagerImportRequest> {
+    const encryptedImport = new SecretsManagerImportRequest();
 
     try {
       const orgKey = await this.cryptoService.getOrgKey(organizationId);
@@ -126,7 +123,7 @@ export class SMPortingService {
 
   private async decryptExport(
     organizationId: string,
-    exportData: SMExportResponse
+    exportData: SecretsManagerExportResponse
   ): Promise<SecretsManagerExport> {
     const orgKey = await this.cryptoService.getOrgKey(organizationId);
     const decryptedExport = new SecretsManagerExport();
@@ -162,38 +159,43 @@ export class SMPortingService {
     return decryptedExport;
   }
 
-  private handleServerError(errorResponse: ErrorResponse, importResult: any): ImportError {
+  private handleServerError(
+    errorResponse: ErrorResponse,
+    importResult: any
+  ): SecretsManagerImportError {
     if (errorResponse.validationErrors == null) {
-      return new ImportError(errorResponse.message);
+      return new SecretsManagerImportError(errorResponse.message);
     }
 
-    let errorMessage = "";
+    const result = new SecretsManagerImportError();
+    result.lines = [];
 
     Object.entries(errorResponse.validationErrors).forEach(([key, value], index) => {
       let item;
       let itemType;
-      const i = Number(key.match(/[0-9]+/)[0]);
+      const id = Number(key.match(/[0-9]+/)[0]);
 
       switch (key.match(/^\w+/)[0]) {
         case "Projects":
-          item = importResult.projects[i];
+          item = importResult.projects[id];
           itemType = "Project";
           break;
         case "Secrets":
-          item = importResult.secrets[i];
+          item = importResult.secrets[id];
           itemType = "Secret";
           break;
         default:
           return;
       }
 
-      if (index > 0) {
-        errorMessage += "\n\n";
-      }
-
-      errorMessage += "[" + (i + 1) + "] " + "[" + itemType + '] "' + item.key + '": ' + value;
+      result.lines.push({
+        id: id + 1,
+        type: itemType == "Project" ? "Project" : "Secret",
+        key: item.key,
+        errorMessage: value.length > 0 ? value[0] : "",
+      });
     });
 
-    return new ImportError(errorMessage);
+    return result;
   }
 }

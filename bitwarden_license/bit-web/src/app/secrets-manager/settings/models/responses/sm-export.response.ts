@@ -3,7 +3,7 @@ import { BaseResponse } from "@bitwarden/common/models/response/base.response";
 import { ExportedProjectResponse } from "./exported-project.response";
 import { ExportedSecretResponse } from "./exported-secret.response";
 
-export class SMExportResponse extends BaseResponse {
+export class SecretsManagerExportResponse extends BaseResponse {
   projects: ExportedProjectResponse[];
   secrets: ExportedSecretResponse[];
 

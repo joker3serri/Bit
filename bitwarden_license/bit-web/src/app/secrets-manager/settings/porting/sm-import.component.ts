@@ -15,6 +15,7 @@ import {
   SMImportErrorDialogComponent,
   SMImportErrorDialogOperation,
 } from "../dialog/sm-import-error-dialog.component";
+import { SecretsManagerImportError } from "../models/error/sm-import-error";
 
 import { SMPortingService } from "./sm-porting.service";
 
@@ -138,7 +139,7 @@ export class SMImportComponent implements OnInit, OnDestroy {
     });
   }
 
-  private openImportErrorDialog(error: Error) {
+  private openImportErrorDialog(error: SecretsManagerImportError) {
     this.dialogService.open<unknown, SMImportErrorDialogOperation>(SMImportErrorDialogComponent, {
       data: {
         error: error,
