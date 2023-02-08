@@ -1,6 +1,8 @@
 import { NgModule } from "@angular/core";
 
 import { PasswordRepromptComponent } from "../../../src/vault/app/components/password-reprompt.component";
+import { AddCreditComponent } from "../../billing/settings/add-credit.component";
+import { AdjustPaymentComponent } from "../../billing/settings/adjust-payment.component";
 import { PremiumBadgeComponent } from "../../vault/app/components/premium-badge.component";
 import { AddEditCustomFieldsComponent } from "../../vault/app/vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../../vault/app/vault/add-edit.component";
@@ -58,8 +60,6 @@ import { AddEditComponent as SendAddEditComponent } from "../send/add-edit.compo
 import { EffluxDatesComponent as SendEffluxDatesComponent } from "../send/efflux-dates.component";
 import { SendComponent } from "../send/send.component";
 import { AccountComponent } from "../settings/account.component";
-import { AddCreditComponent } from "../settings/add-credit.component";
-import { AdjustPaymentComponent } from "../settings/adjust-payment.component";
 import { AdjustStorageComponent } from "../settings/adjust-storage.component";
 import { ApiKeyComponent } from "../settings/api-key.component";
 import { BillingHistoryViewComponent } from "../settings/billing-history-view.component";
