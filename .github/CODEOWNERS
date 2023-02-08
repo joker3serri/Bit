@@ -3,3 +3,17 @@
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
 
 bitwarden_license/bit-web/src/app/secrets-manager @bitwarden/pod-sm-dev
+
+# The following owners will be the default owners for everything in the repo.
+# Unless a later match takes precedence,
+# @bitwarden/team-leads
+
+## Auth team files ##
+apps/browser/src/auth @bitwarden/team-auth-dev
+apps/cli/src/auth @bitwarden/team-auth-dev
+apps/desktop/src/auth @bitwarden/team-auth-dev
+apps/web/src/auth @bitwarden/team-auth-dev
+# web connectors used for auth
+apps/web/src/connectors @bitwarden/team-auth-dev
+libs/angular/src/auth @bitwarden/team-auth-dev
+libs/common/src/auth @bitwarden/team-auth-dev
