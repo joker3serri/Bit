@@ -26,7 +26,7 @@ export class SecretsManagerImportComponent implements OnInit, OnDestroy {
 
   protected formGroup = new FormGroup({
     fileSelected: new FormControl(null, [Validators.required]),
-    fileContents: new FormControl("", [Validators.required]),
+    pastedContents: new FormControl("", [Validators.required]),
   });
 
   protected orgId: string = null;
@@ -62,7 +62,7 @@ export class SecretsManagerImportComponent implements OnInit, OnDestroy {
     const fileElement = document.getElementById("file") as HTMLInputElement;
     const importContents = await this.getImportContents(
       fileElement,
-      this.formGroup.get("fileContents").value.trim()
+      this.formGroup.get("pastedContents").value.trim()
     );
 
     if (importContents == null) {
@@ -137,7 +137,7 @@ export class SecretsManagerImportComponent implements OnInit, OnDestroy {
   private clearForm() {
     (document.getElementById("file") as HTMLInputElement).value = "";
     this.formGroup.get("fileSelected").setValue(null);
-    this.formGroup.get("fileContents").setValue("");
+    this.formGroup.get("pastedContents").setValue("");
   }
 
   private getFileContents(file: File): Promise<string> {
