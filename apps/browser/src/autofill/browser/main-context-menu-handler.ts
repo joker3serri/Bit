@@ -89,10 +89,15 @@ export class MainContextMenuHandler {
    */
   async init(): Promise<boolean> {
     const menuDisabled = await this.stateService.getDisableContextMenuItem();
+    if (menuDisabled) {
+      await MainContextMenuHandler.removeAll();
+      return false;
+    }
 
     if (this.initRunning) {
-      return menuDisabled;
+      return true;
     }
+    this.initRunning = true;
 
     try {
       if (menuDisabled) {
