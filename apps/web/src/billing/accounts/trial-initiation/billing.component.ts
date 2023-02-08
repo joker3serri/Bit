@@ -14,7 +14,7 @@ import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.serv
 import { ProductType } from "@bitwarden/common/enums/productType";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
-import { OrganizationPlansComponent } from "../../../../app/settings/organization-plans.component";
+import { OrganizationPlansComponent } from "../../../app/settings/organization-plans.component";
 
 @Component({
   selector: "app-billing",
