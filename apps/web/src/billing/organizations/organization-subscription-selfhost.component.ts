@@ -19,7 +19,7 @@ import { OrganizationSubscriptionResponse } from "@bitwarden/common/models/respo
 import {
   BillingSyncKeyComponent,
   BillingSyncKeyModalData,
-} from "../../settings/billing-sync-key.component";
+} from "../../billing/settings/billing-sync-key.component";
 
 enum LicenseOptions {
   SYNC = 0,

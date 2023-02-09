@@ -1,7 +1,8 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { BillingHistoryViewComponent } from "./billing-history-view.component";
+import { BillingHistoryViewComponent } from "../../billing/settings/billing-history-view.component";
+
 import { PaymentMethodComponent } from "./payment-method.component";
 import { PremiumComponent } from "./premium.component";
 import { SubscriptionComponent } from "./subscription.component";
