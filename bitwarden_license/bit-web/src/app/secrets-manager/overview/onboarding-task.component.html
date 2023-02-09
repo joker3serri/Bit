@@ -8,4 +8,6 @@
 <a bitLink *ngIf="route" [routerLink]="route"
   ><ng-container *ngTemplateOutlet="content"></ng-container
 ></a>
-<button bitLink *ngIf="!route"><ng-container *ngTemplateOutlet="content"></ng-container></button>
+<button type="button" bitLink *ngIf="!route">
+  <ng-container *ngTemplateOutlet="content"></ng-container>
+</button>
