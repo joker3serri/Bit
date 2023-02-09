@@ -3,9 +3,11 @@ import { RouterModule, Routes } from "@angular/router";
 
 import { canAccessBillingTab } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 
-import { WebPlatformUtilsService } from "../../core/web-platform-utils.service";
-import { PaymentMethodComponent } from "../../settings/payment-method.component";
-import { OrganizationPermissionsGuard } from "../guards/org-permissions.guard";
+// TODO refine elsint rule for src/**/* and/or figure out why this can't work as-is
+// eslint-disable-next-line no-restricted-imports
+import { WebPlatformUtilsService } from "../../app/core/web-platform-utils.service";
+import { OrganizationPermissionsGuard } from "../../app/organizations/guards/org-permissions.guard";
+import { PaymentMethodComponent } from "../../billing/settings/payment-method.component";
 
 import { OrgBillingHistoryViewComponent } from "./organization-billing-history-view.component";
 import { OrganizationBillingTabComponent } from "./organization-billing-tab.component";

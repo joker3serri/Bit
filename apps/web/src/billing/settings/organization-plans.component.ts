@@ -33,8 +33,9 @@ import { ProviderOrganizationCreateRequest } from "@bitwarden/common/models/requ
 import { PlanResponse } from "@bitwarden/common/models/response/plan.response";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
+import { TaxInfoComponent } from "../../app/settings/tax-info.component";
+
 import { PaymentComponent } from "./payment.component";
-import { TaxInfoComponent } from "./tax-info.component";
 
 interface OnSuccessArgs {
   organizationId: string;

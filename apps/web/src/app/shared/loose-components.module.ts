@@ -39,6 +39,9 @@ import { AdjustPaymentComponent } from "../../billing/settings/adjust-payment.co
 import { BillingHistoryViewComponent } from "../../billing/settings/billing-history-view.component";
 import { BillingHistoryComponent } from "../../billing/settings/billing-history.component";
 import { BillingSyncKeyComponent } from "../../billing/settings/billing-sync-key.component";
+import { OrganizationPlansComponent } from "../../billing/settings/organization-plans.component";
+import { PaymentMethodComponent } from "../../billing/settings/payment-method.component";
+import { PaymentComponent } from "../../billing/settings/payment.component";
 import { PremiumBadgeComponent } from "../../vault/components/premium-badge.component";
 import { AddEditCustomFieldsComponent } from "../../vault/individual-vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../../vault/individual-vault/add-edit.component";
@@ -90,9 +93,6 @@ import { CreateOrganizationComponent } from "../settings/create-organization.com
 import { DeleteAccountComponent } from "../settings/delete-account.component";
 import { DomainRulesComponent } from "../settings/domain-rules.component";
 import { LowKdfComponent } from "../settings/low-kdf.component";
-import { OrganizationPlansComponent } from "../settings/organization-plans.component";
-import { PaymentMethodComponent } from "../settings/payment-method.component";
-import { PaymentComponent } from "../settings/payment.component";
 import { PreferencesComponent } from "../settings/preferences.component";
 import { PremiumComponent } from "../settings/premium.component";
 import { ProfileComponent } from "../settings/profile.component";
