@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { AuthGuard } from "@bitwarden/angular/guards/auth.guard";
+import { AuthGuard } from "@bitwarden/angular/auth/guards/auth.guard";
 import { canAccessSettingsTab } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { OrganizationPermissionsGuard } from "@bitwarden/web-vault/app/organizations/guards/org-permissions.guard";
@@ -9,8 +9,7 @@ import { OrganizationLayoutComponent } from "@bitwarden/web-vault/app/organizati
 import { SettingsComponent } from "@bitwarden/web-vault/app/organizations/settings/settings.component";
 
 import { ScimComponent } from "../../admin-console/organizations/manage/scim.component";
-
-import { SsoComponent } from "./manage/sso.component";
+import { SsoComponent } from "../auth/sso.component";
 
 const routes: Routes = [
   {
