@@ -1,3 +1,17 @@
 <sm-header>
   <sm-new-menu></sm-new-menu>
 </sm-header>
+
+<sm-onboarding title="Get started">
+  <sm-onboarding-task title="Import secrets" icon="bwi-wrench"></sm-onboarding-task>
+  <sm-onboarding-task
+    title="Create a secret"
+    icon="bwi-wrench"
+    [completed]="true"
+  ></sm-onboarding-task>
+  <sm-onboarding-task title="Create a project"></sm-onboarding-task>
+  <sm-onboarding-task
+    title="Download the Secrets Manager CLI"
+    [completed]="true"
+  ></sm-onboarding-task>
+</sm-onboarding>
