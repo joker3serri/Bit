@@ -161,11 +161,15 @@ export default class NotificationBackground {
       }
 
       if (this.notificationQueue[i].type === NotificationQueueMessageType.AddLogin) {
+        const isVaultLocked = this.notificationQueue[i].wasVaultLocked;
+        const allowPersonalOwnership = await this.allowPersonalOwnership();
+
         BrowserApi.tabSendMessageData(tab, "openNotificationBar", {
           type: "add",
           typeData: {
-            isVaultLocked: this.notificationQueue[i].wasVaultLocked,
+            isVaultLocked: isVaultLocked,
             theme: await this.getCurrentTheme(),
+            showFolderSelector: allowPersonalOwnership && !isVaultLocked,
           },
         });
       } else if (this.notificationQueue[i].type === NotificationQueueMessageType.ChangePassword) {
@@ -223,10 +227,6 @@ export default class NotificationBackground {
         return;
       }
 
-      if (!(await this.allowPersonalOwnership())) {
-        return;
-      }
-
       this.pushAddLoginToQueue(loginDomain, loginInfo, tab, true);
       return;
     }
@@ -237,10 +237,6 @@ export default class NotificationBackground {
     );
     if (usernameMatches.length === 0) {
       if (disabledAddLogin) {
-        return;
-      }
-
-      if (!(await this.allowPersonalOwnership())) {
         return;
       }
 

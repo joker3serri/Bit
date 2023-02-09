@@ -502,6 +502,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
       type,
       isVaultLocked: typeData.isVaultLocked,
       theme: typeData.theme,
+      showFolderSelector: typeData.showFolderSelector,
     };
     const barQueryString = new URLSearchParams(barQueryParams).toString();
     const barPage = "notification/bar.html?" + barQueryString;

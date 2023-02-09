@@ -39,8 +39,9 @@ function load() {
   neverButton.textContent = i18n.never;
 
   const selectFolder = addTemplate.content.getElementById("select-folder");
+  const showFolderSelector = getQueryVariable("showFolderSelector") == "true";
+  selectFolder.hidden = !showFolderSelector;
   selectFolder.setAttribute("aria-label", i18n.folder);
-  selectFolder.dataset.isVaultLocked = isVaultLocked.toString();
 
   const addButton = addTemplate.content.getElementById("add-save");
   addButton.textContent = i18n.notificationAddSave;
@@ -66,7 +67,7 @@ function load() {
   closeButton.title = i18n.close;
 
   if (getQueryVariable("type") === "add") {
-    handleTypeAdd(isVaultLocked);
+    handleTypeAdd(showFolderSelector);
   } else if (getQueryVariable("type") === "change") {
     handleTypeChange();
   }
@@ -96,7 +97,7 @@ function getQueryVariable(variable: string) {
   return null;
 }
 
-function handleTypeAdd(isVaultLocked: boolean) {
+function handleTypeAdd(showFolderSelector: boolean) {
   setContent(document.getElementById("template-add") as HTMLTemplateElement);
 
   const addButton = document.getElementById("add-save");
@@ -129,7 +130,7 @@ function handleTypeAdd(isVaultLocked: boolean) {
     });
   });
 
-  if (!isVaultLocked) {
+  if (showFolderSelector) {
     const responseFoldersCommand = "notificationBarGetFoldersList";
     chrome.runtime.onMessage.addListener((msg) => {
       if (msg.command === responseFoldersCommand && msg.data) {
