@@ -7,24 +7,25 @@
       <button type="button" class="btn btn-outline-primary" (click)="fileSelector.click()">
         {{ "chooseFile" | i18n }}
       </button>
-      {{ this.formGroup.get("fileSelected")?.value?.name ?? ("noFileChosen" | i18n) }}
+      {{ selectedFile?.name ?? ("noFileChosen" | i18n) }}
     </div>
     <input
       #fileSelector
+      hidden
       type="file"
       id="file"
       class="form-control-file"
       name="file"
       (change)="setSelectedFile($event)"
-      hidden
+      accept="application/JSON"
     />
     <bit-hint>{{ "acceptedFormats" | i18n }} JSON</bit-hint>
   </div>
   <div class="my-4">
     {{ "or" | i18n }}
   </div>
-  <div class="form-group">
-    <label for="pastedContents">{{ "copyPasteImportContents" | i18n }}</label>
+  <bit-form-field>
+    <bit-label for="pastedContents">{{ "copyPasteImportContents" | i18n }}</bit-label>
     <textarea
       bitInput
       id="pastedContents"
@@ -33,7 +34,7 @@
       formControlName="pastedContents"
     ></textarea>
     <bit-hint>{{ "acceptedFormats" | i18n }} JSON</bit-hint>
-  </div>
+  </bit-form-field>
   <button bitButton bitformButton type="submit" buttonType="primary">
     {{ "importData" | i18n }}
   </button>

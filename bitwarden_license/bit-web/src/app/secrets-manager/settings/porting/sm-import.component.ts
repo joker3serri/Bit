@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { Subject, switchMap, takeUntil } from "rxjs";
 
@@ -23,13 +23,11 @@ import { SecretsManagerPortingApiService } from "../services/sm-porting-api.serv
 })
 export class SecretsManagerImportComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-
-  protected formGroup = new FormGroup({
-    fileSelected: new FormControl(null, [Validators.required]),
-    pastedContents: new FormControl("", [Validators.required]),
-  });
-
   protected orgId: string = null;
+  protected selectedFile: File;
+  protected formGroup = new FormGroup({
+    pastedContents: new FormControl(""),
+  });
 
   constructor(
     private route: ActivatedRoute,
@@ -91,8 +89,13 @@ export class SecretsManagerImportComponent implements OnInit, OnDestroy {
 
       this.platformUtilsService.showToast("success", null, this.i18nService.t("importSuccess"));
       this.clearForm();
-    } catch (e) {
-      this.logService.error(e);
+    } catch (error) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("errorReadingImportFile")
+      );
+      this.logService.error(error);
     }
   };
 
@@ -131,13 +134,15 @@ export class SecretsManagerImportComponent implements OnInit, OnDestroy {
   protected setSelectedFile(event: Event) {
     const fileInputEl = <HTMLInputElement>event.target;
     const file = fileInputEl.files.length > 0 ? fileInputEl.files[0] : null;
-    this.formGroup.get("fileSelected")?.setValue(file);
+    this.selectedFile = file;
   }
 
   private clearForm() {
     (document.getElementById("file") as HTMLInputElement).value = "";
-    this.formGroup.get("fileSelected").setValue(null);
-    this.formGroup.get("pastedContents").setValue("");
+    this.selectedFile = null;
+    this.formGroup.reset({
+      pastedContents: "",
+    });
   }
 
   private getFileContents(file: File): Promise<string> {
