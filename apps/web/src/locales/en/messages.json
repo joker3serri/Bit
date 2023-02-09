@@ -6157,7 +6157,7 @@
     "message": "This user can access the Secrets Manager Beta"
   },
   "secretsManagerSubscriptionDesc": {
-    "message": "Turn on organization access to the Secrets Manager at no charge during the Beta program. Users can be granted access to the Beta in Manage > Members."
+    "message": "Turn on organization access to the Secrets Manager at no charge during the Beta program. Users can be granted access to the Beta in Members."
   },
   "secretsManagerEnable": {
     "message": "Enable Secrets Manager Beta"
