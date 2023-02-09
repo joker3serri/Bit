@@ -549,7 +549,6 @@
        * @returns {boolean} Returns `true` if the element is visible and `false` otherwise
        */
       function isElementVisible(el) {
-          // Store the element we're checking
           var theEl = el;
           // Get the top level document
           el = (el = el.ownerDocument) ? el.defaultView : {};
@@ -614,29 +613,22 @@
 
           // Our next check is going to get the center point of the element, and then use elementFromPoint to see if the element
           // is actually returned from that point. If it is, we know that it's viewable. If it isn't, we know that it's not viewable.
-          
-          // If the right side of the bounding rectangle is outside the viewport, the center point is the window width (minus offset) divided by 2.
-          // If the right side of the bounding rectangle is inside the viewport, the center point is the width of the bounding rectangle divided by 2.
-          var boundingClientXCenterCoordinate = (rect.right > window.innerWidth ? (window.innerWidth - leftOffset) / 2 : rect.width / 2);
-          var xCoordinate = leftOffset + boundingClientXCenterCoordinate;
-
-          // If the bottom of the bounding rectangle is outside the viewport, the center point is the window height (minus offset) divided by 2.
-          // If the bottom side of the bounding rectangle is inside the viewport, the center point is the height of the bounding rectangle divided by 2.
-          var boundingClientYCenterCoordinate = (rect.bottom > window.innerHeight ? (window.innerHeight - topOffset) / 2 : rect.height / 2);
-          var yCoordinate = topOffset + boundingClientYCenterCoordinate;
-         
+          // If the right side of the bounding rectangle is outside the viewport, the x coordinate of the center point is the window width (minus offset) divided by 2.
+          // If the right side of the bounding rectangle is inside the viewport, the x coordinate of the center point is the width of the bounding rectangle divided by 2.
+          // If the bottom of the bounding rectangle is outside the viewport, the y coordinate of the center point is the window height (minus offset) divided by 2.
+          // If the bottom side of the bounding rectangle is inside the viewport, the y coordinate of the center point is the height of the bounding rectangle divided by 
           // We then use elementFromPoint to find the element at that point.
-          for (var pointEl = el.ownerDocument.elementFromPoint(xCoordinate, yCoordinate); pointEl && pointEl !== el && pointEl !== document;) {
-                // If the element we found is a label, and the element we're checking has labels
-                if (pointEl.tagName && 'string' === typeof pointEl.tagName && 'label' === pointEl.tagName.toLowerCase()
-                  && el.labels && 0 < el.labels.length) {
-                    // Return true if the element we found is one of the labels for the element we're checking.
-                    // This means that the element we're looking for is considered viewable
-                  return 0 <= Array.prototype.slice.call(el.labels).indexOf(pointEl);
-              }
+          for (var pointEl = el.ownerDocument.elementFromPoint(leftOffset + (rect.right > window.innerWidth ? (window.innerWidth - leftOffset) / 2 : rect.width / 2), topOffset + (rect.bottom > window.innerHeight ? (window.innerHeight - topOffset) / 2 : rect.height / 2)); pointEl && pointEl !== el && pointEl !== document;) {
+             // If the element we found is a label, and the element we're checking has labels
+             if (pointEl.tagName && 'string' === typeof pointEl.tagName && 'label' === pointEl.tagName.toLowerCase()
+                && el.labels && 0 < el.labels.length) {
+                // Return true if the element we found is one of the labels for the element we're checking.
+                // This means that the element we're looking for is considered viewable
+                return 0 <= Array.prototype.slice.call(el.labels).indexOf(pointEl);
+            }
 
-              // Walk up the DOM tree to check the parent element
-              pointEl = pointEl.parentNode;
+            // Walk up the DOM tree to check the parent element
+            pointEl = pointEl.parentNode;
           }
 
           // If the for loop exited because we found the element we're looking for, return true, as it's viewable
