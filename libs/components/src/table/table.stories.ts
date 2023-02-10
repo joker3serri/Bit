@@ -138,6 +138,7 @@ export const Scrollable = ScrollableTemplate.bind({});
 
 const data3 = new TableDataSource<{ value: string; name: string }>();
 
+// Chromatic has a max page size, lowering the number of entries to ensure we don't hit it
 data3.data = countries.slice(0, 100);
 
 const FilterableTemplate: Story = (args) => ({
