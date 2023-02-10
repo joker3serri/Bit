@@ -3,6 +3,7 @@
   <sm-new-menu></sm-new-menu>
 </sm-header>
 <sm-projects-list
+  [baseRoute]="baseRoute"
   (newProjectEvent)="openNewProjectDialog()"
   (editProjectEvent)="openEditProject($event)"
   (deleteProjectEvent)="openDeleteProjectDialog($event)"

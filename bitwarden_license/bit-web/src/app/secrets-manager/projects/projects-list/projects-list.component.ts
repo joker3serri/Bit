@@ -13,6 +13,8 @@ import { ProjectListView } from "../../models/view/project-list.view";
 export class ProjectsListComponent implements OnDestroy {
   protected dataSource = new TableDataSource<ProjectListView>();
 
+  @Input() baseRoute = ".";
+
   @Input()
   get projects(): ProjectListView[] {
     return this._projects;

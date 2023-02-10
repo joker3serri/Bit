@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
@@ -24,6 +24,8 @@ export class ProjectsComponent implements OnInit {
   projects$: Observable<ProjectListView[]>;
 
   private organizationId: string;
+
+  @Input() baseRoute = ".";
 
   constructor(
     private route: ActivatedRoute,

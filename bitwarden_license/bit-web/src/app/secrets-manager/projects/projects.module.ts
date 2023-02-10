@@ -28,6 +28,7 @@ import { ProjectsComponent } from "./projects/projects.component";
     ProjectComponent,
     ProjectSecretsComponent,
   ],
+  exports: [ProjectsComponent],
   providers: [],
 })
 export class ProjectsModule {}

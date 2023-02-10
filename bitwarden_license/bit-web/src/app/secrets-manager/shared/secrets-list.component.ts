@@ -9,6 +9,8 @@ import { SecretListView } from "../models/view/secret-list.view";
   templateUrl: "./secrets-list.component.html",
 })
 export class SecretsListComponent implements OnDestroy {
+  @Input() baseRoute = ".";
+
   @Input()
   get secrets(): SecretListView[] {
     return this._secrets;
