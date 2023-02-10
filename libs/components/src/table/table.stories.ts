@@ -138,7 +138,7 @@ export const Scrollable = ScrollableTemplate.bind({});
 
 const data3 = new TableDataSource<{ value: string; name: string }>();
 
-data3.data = countries;
+data3.data = countries.slice(0, 100);
 
 const FilterableTemplate: Story = (args) => ({
   props: {
