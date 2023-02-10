@@ -4,6 +4,8 @@ import { BrowserApi } from "../../browser/browserApi";
 
 @Injectable()
 export class PopupUtilsService {
+  private tabCloseWarningCallback: (e: BeforeUnloadEvent) => string;
+
   constructor(private privateMode: boolean = false) {}
 
   inSidebar(win: Window): boolean {
@@ -79,5 +81,32 @@ export class PopupUtilsService {
         url: href,
       });
     }
+  }
+
+  /**
+   * Attaches a "beforeunload" event listener, which will display a pop-up warning before the user exits the window/tab,
+   * or navigates away. (Note: navigating within the Angular app will not trigger it because it's an SPA.)
+   * Make sure you call `disableTabCloseWarning` when it is no longer relevant.
+   */
+  enableCloseTabWarning() {
+    this.disableCloseTabWarning();
+
+    this.tabCloseWarningCallback = (e: BeforeUnloadEvent) => {
+      // Recommended method but not widely supported
+      e.preventDefault();
+
+      // Modern browsers do not display this message, it just needs to be a non-nullish value
+      const confirmationMessage = "";
+
+      // Older methods with better support
+      e.returnValue = confirmationMessage;
+      return confirmationMessage;
+    };
+
+    window.addEventListener("beforeunload", this.tabCloseWarningCallback);
+  }
+
+  disableCloseTabWarning() {
+    window.removeEventListener("beforeunload", this.tabCloseWarningCallback);
   }
 }
