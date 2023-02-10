@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { Subject, switchMap, takeUntil } from "rxjs";
+import { Subject, takeUntil } from "rxjs";
 
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -41,14 +41,9 @@ export class SecretsManagerImportComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.route.params
-      .pipe(
-        switchMap(async (params) => await this.organizationService.get(params.organizationId)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe((organization) => {
-        this.orgId = organization.id;
-      });
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.orgId = params.organizationId;
+    });
   }
 
   async ngOnDestroy() {

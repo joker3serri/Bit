@@ -1,10 +1,10 @@
 <sm-header></sm-header>
 
 <form [formGroup]="formGroup" [bitSubmit]="submit" class="tw-max-w-xl">
-  <div>
-    <label>{{ "fileUpload" | i18n }}</label>
+  <bit-form-field>
+    <bit-label>{{ "fileUpload" | i18n }}</bit-label>
     <div class="file-selector">
-      <button type="button" class="btn btn-outline-primary" (click)="fileSelector.click()">
+      <button bitButton type="submit" buttonType="secondary" (click)="fileSelector.click()">
         {{ "chooseFile" | i18n }}
       </button>
       {{ selectedFile?.name ?? ("noFileChosen" | i18n) }}
@@ -12,6 +12,7 @@
     <input
       #fileSelector
       hidden
+      bitInput
       type="file"
       id="file"
       class="form-control-file"
@@ -20,7 +21,7 @@
       accept="application/JSON"
     />
     <bit-hint>{{ "acceptedFormats" | i18n }} JSON</bit-hint>
-  </div>
+  </bit-form-field>
   <div class="my-4">
     {{ "or" | i18n }}
   </div>
