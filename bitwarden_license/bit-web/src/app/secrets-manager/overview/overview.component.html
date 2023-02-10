@@ -1,7 +1,13 @@
 <sm-header [title]="orgName$ | async">
   <sm-new-menu></sm-new-menu>
 </sm-header>
-<div class="[&_sm-header]:tw-hidden">
-  <sm-projects baseRoute="projects"></sm-projects>
-  <sm-secrets baseRoute="secrets"></sm-secrets>
+<div class="tw-flex tw-flex-col tw-gap-6 [&_sm-header]:tw-hidden">
+  <sm-section>
+    <h2 slot="summary" class="tw-mb-0 tw-text-2xl tw-font-semibold">{{ "projects" | i18n }}</h2>
+    <sm-projects baseRoute="projects"></sm-projects>
+  </sm-section>
+  <sm-section>
+    <h2 slot="summary" class="tw-mb-0 tw-text-2xl tw-font-semibold">{{ "secrets" | i18n }}</h2>
+    <sm-secrets baseRoute="secrets"></sm-secrets>
+  </sm-section>
 </div>
