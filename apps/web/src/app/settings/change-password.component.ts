@@ -40,7 +40,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
   rotateEncKey = false;
   currentMasterPassword: string;
   masterPasswordHint: string;
-  checkBreach = false;
+  checkForBreaches = true;
   characterMinimumMessage = "";
 
   constructor(
@@ -149,7 +149,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     }
 
     this.leakedPassword = false;
-    if (this.checkBreach) {
+    if (this.checkForBreaches) {
       this.leakedPassword = (await this.auditService.passwordLeaked(this.masterPassword)) > 0;
     }
 
