@@ -23,6 +23,7 @@ import { UpdatePasswordComponent } from "../auth/update-password.component";
 import { UpdateTempPasswordComponent } from "../auth/update-temp-password.component";
 import { VerifyEmailTokenComponent } from "../auth/verify-email-token.component";
 import { VerifyRecoverDeleteComponent } from "../auth/verify-recover-delete.component";
+import { SubscriptionRoutingModule } from "../billing/settings/subscription-routing.module";
 import { flagEnabled, Flags } from "../utils/flags";
 import { VaultModule } from "../vault/individual-vault/vault.module";
 
@@ -43,7 +44,6 @@ import { PreferencesComponent } from "./settings/preferences.component";
 import { SecurityRoutingModule } from "./settings/security-routing.module";
 import { SettingsComponent } from "./settings/settings.component";
 import { SponsoredFamiliesComponent } from "./settings/sponsored-families.component";
-import { SubscriptionRoutingModule } from "./settings/subscription-routing.module";
 import { GeneratorComponent } from "./tools/generator.component";
 import { ToolsComponent } from "./tools/tools.component";
 

@@ -8,9 +8,9 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { PaymentMethodType } from "@bitwarden/common/enums/paymentMethodType";
 import { PaymentRequest } from "@bitwarden/common/models/request/payment.request";
 
-import { TaxInfoComponent } from "../../app/settings/tax-info.component";
-
 import { PaymentComponent } from "./payment.component";
+import { TaxInfoComponent } from "./tax-info.component";
+
 
 @Component({
   selector: "app-adjust-payment",

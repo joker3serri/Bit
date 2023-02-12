@@ -11,7 +11,7 @@ import { TokenService } from "@bitwarden/common/auth/abstractions/token.service"
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { PaymentComponent } from "../../billing/settings/payment.component";
-import { TaxInfoComponent } from "./tax-info.component";
+import { TaxInfoComponent } from "../../billing/settings/tax-info.component";
 
 @Component({
   selector: "app-premium",

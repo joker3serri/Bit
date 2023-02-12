@@ -42,6 +42,8 @@ import { BillingSyncKeyComponent } from "../../billing/settings/billing-sync-key
 import { OrganizationPlansComponent } from "../../billing/settings/organization-plans.component";
 import { PaymentMethodComponent } from "../../billing/settings/payment-method.component";
 import { PaymentComponent } from "../../billing/settings/payment.component";
+import { SubscriptionComponent } from "../../billing/settings/subscription.component";
+import { TaxInfoComponent } from "../../billing/settings/tax-info.component";
 import { PremiumBadgeComponent } from "../../vault/components/premium-badge.component";
 import { AddEditCustomFieldsComponent } from "../../vault/individual-vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../../vault/individual-vault/add-edit.component";
@@ -102,8 +104,6 @@ import { SecurityComponent } from "../settings/security.component";
 import { SettingsComponent } from "../settings/settings.component";
 import { SponsoredFamiliesComponent } from "../settings/sponsored-families.component";
 import { SponsoringOrgRowComponent } from "../settings/sponsoring-org-row.component";
-import { SubscriptionComponent } from "../settings/subscription.component";
-import { TaxInfoComponent } from "../settings/tax-info.component";
 import { UpdateKeyComponent } from "../settings/update-key.component";
 import { UpdateLicenseComponent } from "../settings/update-license.component";
 import { UserSubscriptionComponent } from "../settings/user-subscription.component";
