@@ -12,7 +12,7 @@ import { VerifyBankRequest } from "@bitwarden/common/models/request/verify-bank.
 import { BillingPaymentResponse } from "@bitwarden/common/models/response/billing-payment.response";
 import { OrganizationResponse } from "@bitwarden/common/models/response/organization.response";
 
-import { TaxInfoComponent } from "./tax-info.component";
+import { TaxInfoComponent } from "../../../src/app/settings/tax-info.component";
 
 @Component({
   selector: "app-payment-method",
