@@ -4,7 +4,7 @@
   <bit-form-field>
     <bit-label>{{ "fileUpload" | i18n }}</bit-label>
     <div class="file-selector">
-      <button bitButton type="submit" buttonType="secondary" (click)="fileSelector.click()">
+      <button bitButton type="button" buttonType="secondary" (click)="fileSelector.click()">
         {{ "chooseFile" | i18n }}
       </button>
       {{ selectedFile?.name ?? ("noFileChosen" | i18n) }}
