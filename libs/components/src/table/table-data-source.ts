@@ -65,31 +65,31 @@ export class TableDataSource<T> extends DataSource<T> {
 
   private updateChangeSubscription() {
     const filteredData = combineLatest([this._data, this._filter]).pipe(
-      map(([data]) => this.filterData(data))
+      map(([data, filter]) => this.filterData(data, filter))
     );
 
     const orderedData = combineLatest([filteredData, this._sort]).pipe(
-      map(([data]) => this.orderData(data))
+      map(([data, sort]) => this.orderData(data, sort))
     );
 
     this._renderChangesSubscription?.unsubscribe();
     this._renderChangesSubscription = orderedData.subscribe((data) => this._renderData.next(data));
   }
 
-  private filterData(data: T[]): T[] {
-    if (this.filter == null || this.filter == "") {
+  private filterData(data: T[], filter: string): T[] {
+    if (filter == null || filter == "") {
       return data;
     }
 
-    return data.filter((obj) => this.filterPredicate(obj, this.filter));
+    return data.filter((obj) => this.filterPredicate(obj, filter));
   }
 
-  private orderData(data: T[]): T[] {
-    if (!this.sort) {
+  private orderData(data: T[], sort: Sort): T[] {
+    if (!sort) {
       return data;
     }
 
-    return this.sortData(data, this.sort);
+    return this.sortData(data, sort);
   }
 
   /**
