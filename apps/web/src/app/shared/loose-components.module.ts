@@ -44,6 +44,7 @@ import { PaymentMethodComponent } from "../../billing/settings/payment-method.co
 import { PaymentComponent } from "../../billing/settings/payment.component";
 import { SubscriptionComponent } from "../../billing/settings/subscription.component";
 import { TaxInfoComponent } from "../../billing/settings/tax-info.component";
+import { UserSubscriptionComponent } from "../../billing/settings/user-subscription.component";
 import { PremiumBadgeComponent } from "../../vault/components/premium-badge.component";
 import { AddEditCustomFieldsComponent } from "../../vault/individual-vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../../vault/individual-vault/add-edit.component";
@@ -106,7 +107,6 @@ import { SponsoredFamiliesComponent } from "../settings/sponsored-families.compo
 import { SponsoringOrgRowComponent } from "../settings/sponsoring-org-row.component";
 import { UpdateKeyComponent } from "../settings/update-key.component";
 import { UpdateLicenseComponent } from "../settings/update-license.component";
-import { UserSubscriptionComponent } from "../settings/user-subscription.component";
 import { VaultTimeoutInputComponent } from "../settings/vault-timeout-input.component";
 import { GeneratorComponent } from "../tools/generator.component";
 import { PasswordGeneratorHistoryComponent } from "../tools/password-generator-history.component";
