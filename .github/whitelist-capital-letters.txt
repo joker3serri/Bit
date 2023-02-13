@@ -64,7 +64,6 @@
 ./libs/common/src/enums/deviceType.ts
 ./libs/common/src/enums/organizationConnectionType.ts
 ./libs/common/src/enums/secureNoteType.ts
-./libs/common/src/enums/transactionType.ts
 ./libs/common/src/enums/providerUserStatusType.ts
 ./libs/common/src/enums/storageLocation.ts
 ./libs/common/src/enums/themeType.ts

@@ -1,5 +1,5 @@
 import { PaymentMethodType } from "../../billing/enums/payment-method-type";
-import { TransactionType } from "../../enums/transactionType";
+import { TransactionType } from "../../billing/enums/transaction-type";
 
 import { BaseResponse } from "./base.response";
 
