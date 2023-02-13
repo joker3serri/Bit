@@ -1,17 +1,14 @@
 <sm-header>
-  <input bitInput [placeholder]="'searchSecrets' | i18n" />
   <sm-new-menu></sm-new-menu>
 </sm-header>
 <sm-secrets-list
   (deleteSecretsEvent)="openDeleteSecret($event)"
-  (newSecretEvent)="openNewSecretDialog()"
-  (editSecretEvent)="openEditSecret($event)"
   [secrets]="secrets$ | async"
   [itemActions]="{
-    editSecret: true,
+    editSecret: false,
     copyName: true,
     copyValue: true,
-    projects: true,
+    projects: false,
     delete: true
   }"
 ></sm-secrets-list>

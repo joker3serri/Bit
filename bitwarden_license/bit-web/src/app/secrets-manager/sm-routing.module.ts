@@ -12,6 +12,7 @@ import { ProjectsModule } from "./projects/projects.module";
 import { SecretsModule } from "./secrets/secrets.module";
 import { ServiceAccountsModule } from "./service-accounts/service-accounts.module";
 import { SMGuard } from "./sm.guard";
+import { TrashModule } from "./trash/trash.module";
 
 const routes: Routes = [
   buildFlaggedRoute("secretsManager", {
@@ -46,6 +47,13 @@ const routes: Routes = [
         loadChildren: () => ServiceAccountsModule,
         data: {
           titleId: "serviceAccounts",
+        },
+      },
+      {
+        path: "trash",
+        loadChildren: () => TrashModule,
+        data: {
+          titleId: "trash",
         },
       },
       {

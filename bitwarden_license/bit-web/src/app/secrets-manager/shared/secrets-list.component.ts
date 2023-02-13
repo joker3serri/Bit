@@ -2,6 +2,7 @@ import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
+import { SecretListItemActionsView } from "../models/view/secret-list-item-actions.view";
 import { SecretListView } from "../models/view/secret-list.view";
 
 @Component({
@@ -18,6 +19,9 @@ export class SecretsListComponent implements OnDestroy {
     this._secrets = secrets;
   }
   private _secrets: SecretListView[];
+
+  @Input()
+  protected itemActions: SecretListItemActionsView;
 
   @Output() editSecretEvent = new EventEmitter<string>();
   @Output() copySecretNameEvent = new EventEmitter<string>();
