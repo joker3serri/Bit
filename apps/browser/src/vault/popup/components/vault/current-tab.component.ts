@@ -271,11 +271,6 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
     this.isLoading = this.loaded = true;
   }
 
-  async setAutofillOnPageLoad() {
-    await this.stateService.setDismissedAutofillCallout(true);
-    this.showHowToAutofill = false;
-  }
-
   async goToSettings() {
     this.router.navigate(["autofill"]);
   }
