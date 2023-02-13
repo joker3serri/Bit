@@ -62,6 +62,8 @@ import { BillingPaymentResponse } from "../billing/models/response/billing-payme
 import { PaymentResponse } from "../billing/models/response/payment.response";
 import { PlanResponse } from "../billing/models/response/plan.response";
 import { SubscriptionResponse } from "../billing/models/response/subscription.response";
+import { TaxInfoResponse } from "../billing/models/response/tax-info.response";
+import { TaxRateResponse } from "../billing/models/response/tax-rate.response";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { CollectionBulkDeleteRequest } from "../models/request/collection-bulk-delete.request";
 import { CollectionRequest } from "../models/request/collection.request";
@@ -127,8 +129,6 @@ import { SendAccessResponse } from "../models/response/send-access.response";
 import { SendFileDownloadDataResponse } from "../models/response/send-file-download-data.response";
 import { SendFileUploadDataResponse } from "../models/response/send-file-upload-data.response";
 import { SendResponse } from "../models/response/send.response";
-import { TaxInfoResponse } from "../models/response/tax-info.response";
-import { TaxRateResponse } from "../models/response/tax-rate.response";
 import { UserKeyResponse } from "../models/response/user-key.response";
 import { SendAccessView } from "../models/view/send-access.view";
 import { AttachmentRequest } from "../vault/models/request/attachment.request";
