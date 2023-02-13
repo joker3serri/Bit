@@ -62,6 +62,7 @@ import {
 } from "../auth/models/response/two-factor-web-authn.response";
 import { TwoFactorYubiKeyResponse } from "../auth/models/response/two-factor-yubi-key.response";
 import { BitPayInvoiceRequest } from "../billing/models/request/bit-pay-invoice.request";
+import { PaymentRequest } from "../billing/models/request/payment.request";
 import { DeviceType } from "../enums/deviceType";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { Utils } from "../misc/utils";
@@ -76,7 +77,6 @@ import { OrganizationConnectionRequest } from "../models/request/organization-co
 import { OrganizationImportRequest } from "../models/request/organization-import.request";
 import { OrganizationSponsorshipCreateRequest } from "../models/request/organization/organization-sponsorship-create.request";
 import { OrganizationSponsorshipRedeemRequest } from "../models/request/organization/organization-sponsorship-redeem.request";
-import { PaymentRequest } from "../models/request/payment.request";
 import { PreloginRequest } from "../models/request/prelogin.request";
 import { ProviderAddOrganizationRequest } from "../models/request/provider/provider-add-organization.request";
 import { ProviderOrganizationCreateRequest } from "../models/request/provider/provider-organization-create.request";
