@@ -141,7 +141,7 @@ export class EventsComponent extends BaseEventsComponent implements OnInit, OnDe
 
     if (r.serviceAccountId) {
       return {
-        name: `Service account: ${this.getShortId(r.serviceAccountId)}`,
+        name: this.i18nService.t("serviceAccount") + " " + this.getShortId(r.serviceAccountId),
       };
     }
 
