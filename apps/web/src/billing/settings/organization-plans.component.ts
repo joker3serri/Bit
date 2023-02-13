@@ -22,6 +22,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { PaymentMethodType } from "@bitwarden/common/billing/enums/payment-method-type";
 import { PlanType } from "@bitwarden/common/billing/enums/plan-type";
+import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { ProductType } from "@bitwarden/common/enums/productType";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
@@ -30,7 +31,6 @@ import { OrganizationCreateRequest } from "@bitwarden/common/models/request/orga
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organization-keys.request";
 import { OrganizationUpgradeRequest } from "@bitwarden/common/models/request/organization-upgrade.request";
 import { ProviderOrganizationCreateRequest } from "@bitwarden/common/models/request/provider/provider-organization-create.request";
-import { PlanResponse } from "@bitwarden/common/models/response/plan.response";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { PaymentComponent } from "./payment.component";

@@ -8,6 +8,7 @@ import { OrganizationTaxInfoUpdateRequest } from "../../billing/models/request/o
 import { PaymentRequest } from "../../billing/models/request/payment.request";
 import { BillingResponse } from "../../billing/models/response/billing.response";
 import { OrganizationSubscriptionResponse } from "../../billing/models/response/organization-subscription.response";
+import { PaymentResponse } from "../../billing/models/response/payment.response";
 import { ImportDirectoryRequest } from "../../models/request/import-directory.request";
 import { OrganizationApiKeyRequest } from "../../models/request/organization-api-key.request";
 import { OrganizationCreateRequest } from "../../models/request/organization-create.request";
@@ -22,7 +23,6 @@ import { OrganizationApiKeyInformationResponse } from "../../models/response/org
 import { OrganizationAutoEnrollStatusResponse } from "../../models/response/organization-auto-enroll-status.response";
 import { OrganizationKeysResponse } from "../../models/response/organization-keys.response";
 import { OrganizationResponse } from "../../models/response/organization.response";
-import { PaymentResponse } from "../../models/response/payment.response";
 import { TaxInfoResponse } from "../../models/response/tax-info.response";
 
 export class OrganizationApiServiceAbstraction {

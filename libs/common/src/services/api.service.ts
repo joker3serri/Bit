@@ -66,6 +66,8 @@ import { PaymentRequest } from "../billing/models/request/payment.request";
 import { TaxInfoUpdateRequest } from "../billing/models/request/tax-info-update.request";
 import { BillingHistoryResponse } from "../billing/models/response/billing-history.response";
 import { BillingPaymentResponse } from "../billing/models/response/billing-payment.response";
+import { PaymentResponse } from "../billing/models/response/payment.response";
+import { PlanResponse } from "../billing/models/response/plan.response";
 import { DeviceType } from "../enums/deviceType";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { Utils } from "../misc/utils";
@@ -116,8 +118,6 @@ import {
 } from "../models/response/organization-connection.response";
 import { OrganizationExportResponse } from "../models/response/organization-export.response";
 import { OrganizationSponsorshipSyncStatusResponse } from "../models/response/organization-sponsorship-sync-status.response";
-import { PaymentResponse } from "../models/response/payment.response";
-import { PlanResponse } from "../models/response/plan.response";
 import { PolicyResponse } from "../models/response/policy.response";
 import { ProfileResponse } from "../models/response/profile.response";
 import {

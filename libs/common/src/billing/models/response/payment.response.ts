@@ -1,5 +1,5 @@
-import { BaseResponse } from "./base.response";
-import { ProfileResponse } from "./profile.response";
+import { BaseResponse } from "../../../models/response/base.response";
+import { ProfileResponse } from "../../../models/response/profile.response";
 
 export class PaymentResponse extends BaseResponse {
   userProfile: ProfileResponse;

@@ -1,7 +1,6 @@
-import { PlanType } from "../../billing/enums/plan-type";
-import { ProductType } from "../../enums/productType";
-
-import { BaseResponse } from "./base.response";
+import { ProductType } from "../../../enums/productType";
+import { BaseResponse } from "../../../models/response/base.response";
+import { PlanType } from "../../enums/plan-type";
 
 export class PlanResponse extends BaseResponse {
   type: PlanType;

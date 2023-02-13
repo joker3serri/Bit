@@ -1,7 +1,7 @@
 import { PlanType } from "../../billing/enums/plan-type";
+import { PlanResponse } from "../../billing/models/response/plan.response";
 
 import { BaseResponse } from "./base.response";
-import { PlanResponse } from "./plan.response";
 
 export class OrganizationResponse extends BaseResponse {
   id: string;
