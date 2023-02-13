@@ -68,12 +68,7 @@ export class AutofillComponent implements OnInit {
   }
 
   private async setAutofillKeyboardHelperText(command: string) {
-    if (this.platformUtilsService.isSafari()) {
-      this.autofillKeyboardHelperText = this.i18nService.t(
-        "autofillShortcutTextSafari",
-        "Cmd+Shift+L"
-      );
-    } else if (command) {
+    if (command) {
       this.autofillKeyboardHelperText = this.i18nService.t("autofillShortcutText", command);
     } else {
       this.autofillKeyboardHelperText = this.i18nService.t("autofillShortcutNotSet");
