@@ -1,8 +1,9 @@
 import { OrganizationResponse } from "../../../models/response/organization.response";
+
 import {
   BillingSubscriptionResponse,
   BillingSubscriptionUpcomingInvoiceResponse,
-} from "../../../models/response/subscription.response";
+} from "./subscription.response";
 
 export class OrganizationSubscriptionResponse extends OrganizationResponse {
   storageName: string;
