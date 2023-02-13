@@ -6,6 +6,7 @@ import { OrganizationSsoResponse } from "../../auth/models/response/organization
 import { OrganizationSubscriptionUpdateRequest } from "../../billing/models/request/organization-subscription-update.request";
 import { OrganizationTaxInfoUpdateRequest } from "../../billing/models/request/organization-tax-info-update.request";
 import { PaymentRequest } from "../../billing/models/request/payment.request";
+import { BillingResponse } from "../../billing/models/response/billing.response";
 import { ImportDirectoryRequest } from "../../models/request/import-directory.request";
 import { OrganizationApiKeyRequest } from "../../models/request/organization-api-key.request";
 import { OrganizationCreateRequest } from "../../models/request/organization-create.request";
@@ -15,7 +16,6 @@ import { OrganizationUpgradeRequest } from "../../models/request/organization-up
 import { SeatRequest } from "../../models/request/seat.request";
 import { StorageRequest } from "../../models/request/storage.request";
 import { VerifyBankRequest } from "../../models/request/verify-bank.request";
-import { BillingResponse } from "../../models/response/billing.response";
 import { ListResponse } from "../../models/response/list.response";
 import { OrganizationApiKeyInformationResponse } from "../../models/response/organization-api-key-information.response";
 import { OrganizationAutoEnrollStatusResponse } from "../../models/response/organization-auto-enroll-status.response";

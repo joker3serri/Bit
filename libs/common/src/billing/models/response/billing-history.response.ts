@@ -1,4 +1,5 @@
-import { BaseResponse } from "./base.response";
+import { BaseResponse } from "../../../models/response/base.response";
+
 import { BillingInvoiceResponse, BillingTransactionResponse } from "./billing.response";
 
 export class BillingHistoryResponse extends BaseResponse {

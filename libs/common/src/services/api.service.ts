@@ -64,6 +64,8 @@ import { TwoFactorYubiKeyResponse } from "../auth/models/response/two-factor-yub
 import { BitPayInvoiceRequest } from "../billing/models/request/bit-pay-invoice.request";
 import { PaymentRequest } from "../billing/models/request/payment.request";
 import { TaxInfoUpdateRequest } from "../billing/models/request/tax-info-update.request";
+import { BillingHistoryResponse } from "../billing/models/response/billing-history.response";
+import { BillingPaymentResponse } from "../billing/models/response/billing-payment.response";
 import { DeviceType } from "../enums/deviceType";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { Utils } from "../misc/utils";
@@ -99,8 +101,6 @@ import { UpdateDomainsRequest } from "../models/request/update-domains.request";
 import { UpdateKeyRequest } from "../models/request/update-key.request";
 import { VerifyDeleteRecoverRequest } from "../models/request/verify-delete-recover.request";
 import { VerifyEmailRequest } from "../models/request/verify-email.request";
-import { BillingHistoryResponse } from "../models/response/billing-history.response";
-import { BillingPaymentResponse } from "../models/response/billing-payment.response";
 import { BreachAccountResponse } from "../models/response/breach-account.response";
 import {
   CollectionAccessDetailsResponse,
