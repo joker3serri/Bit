@@ -1,4 +1,4 @@
-import { PlanType } from "../../enums/planType";
+import { PlanType } from "../../billing/enums/plan-type";
 
 import { BaseResponse } from "./base.response";
 import { PlanResponse } from "./plan.response";

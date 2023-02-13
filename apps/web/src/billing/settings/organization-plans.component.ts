@@ -20,8 +20,8 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstraction
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
-import { PaymentMethodType } from "@bitwarden/common/enums/paymentMethodType";
-import { PlanType } from "@bitwarden/common/enums/planType";
+import { PaymentMethodType } from "@bitwarden/common/billing/enums/payment-method-type";
+import { PlanType } from "@bitwarden/common/billing/enums/plan-type";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { ProductType } from "@bitwarden/common/enums/productType";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
@@ -35,7 +35,6 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 
 import { PaymentComponent } from "./payment.component";
 import { TaxInfoComponent } from "./tax-info.component";
-
 
 interface OnSuccessArgs {
   organizationId: string;

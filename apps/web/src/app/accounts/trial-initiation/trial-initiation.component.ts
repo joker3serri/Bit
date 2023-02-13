@@ -10,7 +10,7 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { PlanType } from "@bitwarden/common/enums/planType";
+import { PlanType } from "@bitwarden/common/billing/enums/plan-type";
 import { ProductType } from "@bitwarden/common/enums/productType";
 import { PolicyData } from "@bitwarden/common/models/data/policy.data";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/master-password-policy-options";

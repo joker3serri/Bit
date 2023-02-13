@@ -12,7 +12,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { ProviderService } from "@bitwarden/common/abstractions/provider.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
-import { PlanType } from "@bitwarden/common/enums/planType";
+import { PlanType } from "@bitwarden/common/billing/enums/plan-type";
 import { ProviderUserType } from "@bitwarden/common/enums/providerUserType";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/models/response/provider/provider-organization.response";

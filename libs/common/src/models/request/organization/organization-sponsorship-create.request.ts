@@ -1,4 +1,4 @@
-import { PlanSponsorshipType } from "../../../enums/planSponsorshipType";
+import { PlanSponsorshipType } from "../../../billing/enums/plan-sponsorship-type";
 
 export class OrganizationSponsorshipCreateRequest {
   sponsoredEmail: string;

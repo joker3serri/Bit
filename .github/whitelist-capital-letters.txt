@@ -50,7 +50,6 @@
 ./libs/common/src/enums/sendType.ts
 ./libs/common/src/enums/importOptions.ts
 ./libs/common/src/enums/policyType.ts
-./libs/common/src/enums/planSponsorshipType.ts
 ./libs/common/src/enums/encryptionType.ts
 ./libs/common/src/enums/htmlStorageLocation.ts
 ./libs/common/src/enums/providerUserType.ts
@@ -70,10 +69,8 @@
 ./libs/common/src/enums/storageLocation.ts
 ./libs/common/src/enums/themeType.ts
 ./libs/common/src/enums/logLevelType.ts
-./libs/common/src/enums/planType.ts
 ./libs/common/src/enums/stateVersion.ts
 ./libs/common/src/enums/fieldType.ts
-./libs/common/src/enums/paymentMethodType.ts
 ./libs/common/src/enums/nativeMessagingVersion.ts
 ./libs/common/src/enums/organizationUserType.ts
 ./libs/common/src/factories/accountFactory.ts

@@ -5,12 +5,11 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { PaymentMethodType } from "@bitwarden/common/enums/paymentMethodType";
+import { PaymentMethodType } from "@bitwarden/common/billing/enums/payment-method-type";
 import { PaymentRequest } from "@bitwarden/common/models/request/payment.request";
 
 import { PaymentComponent } from "./payment.component";
 import { TaxInfoComponent } from "./tax-info.component";
-
 
 @Component({
   selector: "app-adjust-payment",
