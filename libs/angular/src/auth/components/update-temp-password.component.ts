@@ -9,6 +9,7 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-password-reset-options";
 import { UpdateTempPasswordRequest } from "@bitwarden/common/auth/models/request/update-temp-password.request";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/master-password-policy-options";
@@ -23,6 +24,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
   key: string;
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
   showPassword = false;
+  reason: ForceResetPasswordReason = ForceResetPasswordReason.AdminForcePasswordReset;
 
   onSuccessfulChangePassword: () => Promise<any>;
 
@@ -51,7 +53,20 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
 
   async ngOnInit() {
     await this.syncService.fullSync(true);
-    super.ngOnInit();
+
+    const options = await this.stateService.getForcePasswordResetOptions();
+
+    if (options != undefined) {
+      this.reason = options.reason;
+    }
+
+    await super.ngOnInit();
+  }
+
+  get masterPasswordWarningText(): string {
+    return this.reason == ForceResetPasswordReason.WeakMasterPasswordOnLogin
+      ? this.i18nService.t("updateWeakMasterPasswordWarning")
+      : this.i18nService.t("updateMasterPasswordWarning");
   }
 
   togglePassword(confirmField: boolean) {
@@ -118,6 +133,8 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
         null,
         this.i18nService.t("updatedMasterPassword")
       );
+
+      await this.stateService.setForcePasswordResetOptions(undefined);
 
       if (this.onSuccessfulChangePassword != null) {
         this.onSuccessfulChangePassword();
