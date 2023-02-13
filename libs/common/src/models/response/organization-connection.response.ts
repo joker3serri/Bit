@@ -1,6 +1,6 @@
 import { ScimConfigApi } from "../../admin-console/models/api/scim-config.api";
+import { BillingSyncConfigApi } from "../../billing/models/api/billing-sync-config.api";
 import { OrganizationConnectionType } from "../../enums/organizationConnectionType";
-import { BillingSyncConfigApi } from "../api/billing-sync-config.api";
 
 import { BaseResponse } from "./base.response";
 

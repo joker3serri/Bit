@@ -10,8 +10,8 @@ import { MessagingService } from "@bitwarden/common/abstractions/messaging.servi
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { BillingSyncConfigApi } from "@bitwarden/common/billing/models/api/billing-sync-config.api";
 import { OrganizationConnectionType } from "@bitwarden/common/enums/organizationConnectionType";
-import { BillingSyncConfigApi } from "@bitwarden/common/models/api/billing-sync-config.api";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { OrganizationConnectionResponse } from "@bitwarden/common/models/response/organization-connection.response";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/models/response/organization-subscription.response";
