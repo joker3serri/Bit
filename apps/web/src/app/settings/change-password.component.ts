@@ -40,7 +40,8 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
   rotateEncKey = false;
   currentMasterPassword: string;
   masterPasswordHint: string;
-  checkBreach = false;
+  checkForBreaches = true;
+  characterMinimumMessage = "";
 
   constructor(
     i18nService: I18nService,
@@ -80,6 +81,8 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
 
     this.masterPasswordHint = (await this.apiService.getProfile()).masterPasswordHint;
     await super.ngOnInit();
+
+    this.characterMinimumMessage = this.i18nService.t("characterMinimum", this.minimumLength);
   }
 
   async rotateEncKeyClicked() {
@@ -146,7 +149,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     }
 
     this.leakedPassword = false;
-    if (this.checkBreach) {
+    if (this.checkForBreaches) {
       this.leakedPassword = (await this.auditService.passwordLeaked(this.masterPassword)) > 0;
     }
 
