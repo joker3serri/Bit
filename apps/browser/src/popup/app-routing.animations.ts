@@ -177,6 +177,9 @@ export const routerTransition = trigger("routerTransition", [
   transition("tabs => export", inSlideLeft),
   transition("export => tabs", outSlideRight),
 
+  transition("tabs => autofill", inSlideLeft),
+  transition("autofill => tabs", outSlideRight),
+
   transition("tabs => folders", inSlideLeft),
   transition("folders => tabs", outSlideRight),
 
