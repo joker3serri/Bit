@@ -551,7 +551,7 @@ export class EventService {
   formatSecretId(ev: EventResponse): string {
     const shortId = this.getShortId(ev.secretId);
     const a = this.makeAnchor(shortId);
-    a.setAttribute("href", "#/sm/" + ev.organizationId + "/secrets?secretId=" + ev.secretId);
+    a.setAttribute("href", "#/sm/" + ev.organizationId + "/secrets?search=" + shortId);
     return a.outerHTML;
   }
 
