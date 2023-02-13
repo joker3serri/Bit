@@ -56,6 +56,7 @@ import {
 import { TwoFactorYubiKeyResponse } from "../auth/models/response/two-factor-yubi-key.response";
 import { BitPayInvoiceRequest } from "../billing/models/request/bit-pay-invoice.request";
 import { PaymentRequest } from "../billing/models/request/payment.request";
+import { TaxInfoUpdateRequest } from "../billing/models/request/tax-info-update.request";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
 import { CollectionBulkDeleteRequest } from "../models/request/collection-bulk-delete.request";
 import { CollectionRequest } from "../models/request/collection.request";
@@ -84,7 +85,6 @@ import { SelectionReadOnlyRequest } from "../models/request/selection-read-only.
 import { SendAccessRequest } from "../models/request/send-access.request";
 import { SendRequest } from "../models/request/send.request";
 import { StorageRequest } from "../models/request/storage.request";
-import { TaxInfoUpdateRequest } from "../models/request/tax-info-update.request";
 import { UpdateAvatarRequest } from "../models/request/update-avatar.request";
 import { UpdateDomainsRequest } from "../models/request/update-domains.request";
 import { UpdateKeyRequest } from "../models/request/update-key.request";
