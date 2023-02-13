@@ -1,5 +1,5 @@
 import { PaymentMethodType } from "../../billing/enums/payment-method-type";
-import { PlanType } from "../../enums/planType";
+import { PlanType } from "../../billing/enums/plan-type";
 
 import { OrganizationKeysRequest } from "./organization-keys.request";
 

@@ -1,4 +1,4 @@
-import { TaxInfoUpdateRequest } from "./tax-info-update.request";
+import { TaxInfoUpdateRequest } from "../../../models/request/tax-info-update.request";
 
 export class OrganizationTaxInfoUpdateRequest extends TaxInfoUpdateRequest {
   taxId: string;
