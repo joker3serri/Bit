@@ -4,7 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationTaxInfoUpdateRequest } from "@bitwarden/common/models/request/organization-tax-info-update.request";
+import { OrganizationTaxInfoUpdateRequest } from "@bitwarden/common/billing/models/request/organization-tax-info-update.request";
 import { TaxInfoUpdateRequest } from "@bitwarden/common/models/request/tax-info-update.request";
 import { TaxInfoResponse } from "@bitwarden/common/models/response/tax-info.response";
 import { TaxRateResponse } from "@bitwarden/common/models/response/tax-rate.response";

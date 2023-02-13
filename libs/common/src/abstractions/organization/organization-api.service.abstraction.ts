@@ -3,12 +3,12 @@ import { OrganizationSsoRequest } from "../../auth/models/request/organization-s
 import { SecretVerificationRequest } from "../../auth/models/request/secret-verification.request";
 import { ApiKeyResponse } from "../../auth/models/response/api-key.response";
 import { OrganizationSsoResponse } from "../../auth/models/response/organization-sso.response";
+import { OrganizationSubscriptionUpdateRequest } from "../../billing/models/request/organization-subscription-update.request";
+import { OrganizationTaxInfoUpdateRequest } from "../../billing/models/request/organization-tax-info-update.request";
 import { ImportDirectoryRequest } from "../../models/request/import-directory.request";
 import { OrganizationApiKeyRequest } from "../../models/request/organization-api-key.request";
 import { OrganizationCreateRequest } from "../../models/request/organization-create.request";
 import { OrganizationKeysRequest } from "../../models/request/organization-keys.request";
-import { OrganizationSubscriptionUpdateRequest } from "../../models/request/organization-subscription-update.request";
-import { OrganizationTaxInfoUpdateRequest } from "../../models/request/organization-tax-info-update.request";
 import { OrganizationUpdateRequest } from "../../models/request/organization-update.request";
 import { OrganizationUpgradeRequest } from "../../models/request/organization-upgrade.request";
 import { PaymentRequest } from "../../models/request/payment.request";
