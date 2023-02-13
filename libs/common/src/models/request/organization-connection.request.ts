@@ -1,7 +1,7 @@
 import { ScimConfigRequest } from "../../admin-console/models/request/scim-config.request";
+import { BillingSyncConfigRequest } from "../../billing/models/request/billing-sync-config.request";
 import { OrganizationConnectionType } from "../../enums/organizationConnectionType";
 
-import { BillingSyncConfigRequest } from "./billing-sync-config.request";
 
 /**API request config types for OrganizationConnectionRequest */
 export type OrganizationConnectionRequestConfigs = BillingSyncConfigRequest | ScimConfigRequest;

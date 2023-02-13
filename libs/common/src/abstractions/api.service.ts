@@ -54,8 +54,8 @@ import {
   TwoFactorWebAuthnResponse,
 } from "../auth/models/response/two-factor-web-authn.response";
 import { TwoFactorYubiKeyResponse } from "../auth/models/response/two-factor-yubi-key.response";
+import { BitPayInvoiceRequest } from "../billing/models/request/bit-pay-invoice.request";
 import { OrganizationConnectionType } from "../enums/organizationConnectionType";
-import { BitPayInvoiceRequest } from "../models/request/bit-pay-invoice.request";
 import { CollectionBulkDeleteRequest } from "../models/request/collection-bulk-delete.request";
 import { CollectionRequest } from "../models/request/collection.request";
 import { DeleteRecoverRequest } from "../models/request/delete-recover.request";
