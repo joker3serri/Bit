@@ -1,6 +1,15 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { combineLatestWith, map, Observable, startWith, Subject, switchMap, takeUntil } from "rxjs";
+import {
+  combineLatest,
+  combineLatestWith,
+  map,
+  Observable,
+  startWith,
+  Subject,
+  switchMap,
+  takeUntil,
+} from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { DialogService } from "@bitwarden/components";
@@ -34,11 +43,17 @@ export class OverviewComponent implements OnInit, OnDestroy {
    * Number of items to show in tables
    */
   private tableSize = 10;
+  private projects$: Observable<ProjectListView[]>;
+  private secrets$: Observable<SecretListView[]>;
   private organizationId: string;
 
   protected organizationName: string;
-  protected projects$: Observable<ProjectListView[]>;
-  protected secrets$: Observable<SecretListView[]>;
+  protected view$: Observable<{
+    allProjects: ProjectListView[];
+    allSecrets: SecretListView[];
+    latestProjects: ProjectListView[];
+    latestSecrets: SecretListView[];
+  }>;
 
   constructor(
     private route: ActivatedRoute,
@@ -62,15 +77,24 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.projects$ = this.projectService.project$.pipe(
       startWith(null),
       combineLatestWith(this.route.params),
-      switchMap(() => this.getProjects()),
-      this.getLatestItems(this.tableSize)
+      switchMap(() => this.getProjects())
     );
 
     this.secrets$ = this.secretService.secret$.pipe(
       startWith(null),
       combineLatestWith(this.route.params),
-      switchMap(() => this.getSecrets()),
-      this.getLatestItems(this.tableSize)
+      switchMap(() => this.getSecrets())
+    );
+
+    this.view$ = combineLatest([this.projects$, this.secrets$]).pipe(
+      map(([projects, secrets]) => {
+        return {
+          allProjects: projects,
+          allSecrets: secrets,
+          latestProjects: this.getRecentItems(projects, this.tableSize),
+          latestSecrets: this.getRecentItems(secrets, this.tableSize),
+        };
+      })
     );
   }
 
@@ -79,15 +103,12 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private getLatestItems<T extends { revisionDate: string }[]>(length: number) {
-    return map<T, T>(
-      (items) =>
-        items
-          .sort((a, b) => {
-            return new Date(b.revisionDate).getTime() - new Date(a.revisionDate).getTime();
-          })
-          .slice(0, length) as T
-    );
+  private getRecentItems<T extends { revisionDate: string }[]>(items: T, length: number): T {
+    return items
+      .sort((a, b) => {
+        return new Date(b.revisionDate).getTime() - new Date(a.revisionDate).getTime();
+      })
+      .slice(0, length) as T;
   }
 
   // Projects ---
