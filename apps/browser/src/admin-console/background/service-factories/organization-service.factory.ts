@@ -1,9 +1,16 @@
 import { OrganizationService as AbstractOrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 
-import { BrowserOrganizationService } from "../../services/browser-organization.service";
 
-import { FactoryOptions, CachedServices, factory } from "./factory-options";
-import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
+import {
+  FactoryOptions,
+  CachedServices,
+  factory,
+} from "../../../background/service_factories/factory-options";
+import {
+  stateServiceFactory,
+  StateServiceInitOptions,
+} from "../../../background/service_factories/state-service.factory";
+import { BrowserOrganizationService } from "../../../services/browser-organization.service";
 
 type OrganizationServiceFactoryOptions = FactoryOptions;
 
