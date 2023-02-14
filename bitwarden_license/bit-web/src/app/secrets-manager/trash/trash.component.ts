@@ -46,6 +46,8 @@ export class TrashComponent implements OnInit {
     this.dialogService.open<unknown, SecretDeleteOperation>(SecretDeleteDialogComponent, {
       data: {
         secretIds: secretIds,
+        hardDelete: true,
+        organizationId: this.organizationId,
       },
     });
   }

@@ -16,6 +16,8 @@ import { SecretProjectResponse } from "../../secrets/responses/secret-project.re
 import { SecretWithProjectsListResponse } from "../../secrets/responses/secret-with-projects-list.response";
 import { SecretResponse } from "../../secrets/responses/secret.response";
 
+import { TrashApiService } from "./trash-api.service";
+
 @Injectable({
   providedIn: "root",
 })
@@ -27,31 +29,23 @@ export class TrashService {
   constructor(
     private cryptoService: CryptoService,
     private apiService: ApiService,
-    private encryptService: EncryptService
+    private encryptService: EncryptService,
+    private trashApiService: TrashApiService
   ) {}
 
-  async getBySecretId(secretId: string): Promise<SecretView> {
-    const r = await this.apiService.send("GET", "/secrets/" + secretId, null, true, true);
-    const secretResponse = new SecretResponse(r);
-
-    return await this.createSecretView(secretResponse);
-  }
-
   async getSecrets(organizationId: string): Promise<SecretListView[]> {
-    const r = await this.apiService.send(
-      "GET",
-      "/organizations/" + organizationId + "/secrets",
-      null,
-      true,
-      true
-    );
-
-    const results = new SecretWithProjectsListResponse(r);
+    const results = await this.trashApiService.getSecrets(organizationId);
     return await this.createSecretsListView(organizationId, results);
   }
 
-  async delete(secretIds: string[]) {
-    const r = await this.apiService.send("POST", "/secrets/delete", secretIds, true, true);
+  async delete(organizationId: string, secretIds: string[]) {
+    const r = await this.apiService.send(
+      "POST",
+      "/secrets/" + organizationId + "/trash/empty",
+      secretIds,
+      true,
+      true
+    );
 
     const responseErrors: string[] = [];
     r.data.forEach((element: { error: string }) => {

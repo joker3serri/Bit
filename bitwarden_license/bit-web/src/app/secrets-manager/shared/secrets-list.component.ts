@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core
 import { Subject, takeUntil } from "rxjs";
 
 import { SecretListItemActionsView } from "../models/view/secret-list-item-actions.view";
+import { SecretListNoItemsView } from "../models/view/secret-list-no-items.view";
 import { SecretListView } from "../models/view/secret-list.view";
 
 @Component({
@@ -22,6 +23,9 @@ export class SecretsListComponent implements OnDestroy {
 
   @Input()
   protected itemActions: SecretListItemActionsView;
+
+  @Input()
+  protected noItemsView: SecretListNoItemsView;
 
   @Output() editSecretEvent = new EventEmitter<string>();
   @Output() copySecretNameEvent = new EventEmitter<string>();

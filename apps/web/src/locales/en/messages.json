@@ -5778,6 +5778,9 @@
   "secretsNoItemsMessage":{
     "message": "To get started, add a new secret or import secrets."
   },
+  "secretsTrashNoItemsMessage":{
+    "message": "There are no secrets in the trash."
+  },
   "serviceAccountsNoItemsTitle":{
     "message":"Nothing to show yet"
   },
@@ -5822,6 +5825,9 @@
   },
   "softDeletesSuccessToast":{
     "message":"Secrets sent to trash"
+  },
+  "hardDeletesSuccessToast":{
+    "message":"Secrets permanently deleted"
   },
   "serviceAccountCreated":{
     "message":"Service account created"
@@ -5900,6 +5906,9 @@
   },
   "softDeleteSuccessToast":{
     "message":"Secret sent to trash"
+  },
+  "hardDeleteSuccessToast":{
+    "message":"Secret permanently deleted"
   },
   "searchProjects":{
     "message":"Search projects"
