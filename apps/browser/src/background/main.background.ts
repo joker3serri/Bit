@@ -357,7 +357,7 @@ export default class MainBackground {
       // AuthService should send the messages to the background not popup.
       send = (subscriber: string, arg: any = {}) => {
         const message = Object.assign({}, { command: subscriber }, arg);
-        that.runtimeBackground.processMessage(message, that as chrome.runtime.MessageSender, null);
+        that.runtimeBackground.processMessage(message, that as any, null);
       };
     })();
     this.authService = new AuthService(
