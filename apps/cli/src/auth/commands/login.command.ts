@@ -293,7 +293,7 @@ export class LoginCommand {
 
       return await this.handleSuccessResponse();
     } catch (e) {
-      return Response.error(e);
+      return Response.error("Login failed.");
     }
   }
 
