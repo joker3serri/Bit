@@ -3,6 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { DialogService } from "@bitwarden/components";
 import { UserVerificationPromptComponent } from "@bitwarden/web-vault/app/components/user-verification-prompt.component";
 
@@ -25,7 +26,8 @@ export class AccessTokenComponent implements OnInit {
     private route: ActivatedRoute,
     private accessService: AccessService,
     private dialogService: DialogService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private platformUtilsService: PlatformUtilsService
   ) {}
 
   ngOnInit() {
@@ -49,6 +51,8 @@ export class AccessTokenComponent implements OnInit {
       this.serviceAccountId,
       tokens.map((t) => t.id)
     );
+
+    this.platformUtilsService.showToast("success", null, "Access tokens revoked.");
   }
 
   protected openNewAccessTokenDialog() {
