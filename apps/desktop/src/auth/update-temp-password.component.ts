@@ -10,6 +10,7 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 @Component({
@@ -27,7 +28,8 @@ export class UpdateTempPasswordComponent extends BaseUpdateTempPasswordComponent
     apiService: ApiService,
     syncService: SyncService,
     logService: LogService,
-    stateService: StateService
+    stateService: StateService,
+    userVerificationService: UserVerificationService
   ) {
     super(
       i18nService,
@@ -39,7 +41,8 @@ export class UpdateTempPasswordComponent extends BaseUpdateTempPasswordComponent
       apiService,
       stateService,
       syncService,
-      logService
+      logService,
+      userVerificationService
     );
   }
 }
