@@ -2,16 +2,31 @@
   <sm-new-menu></sm-new-menu>
 </sm-header>
 
-<sm-onboarding title="Get started">
-  <sm-onboarding-task title="Import secrets" icon="bwi-wrench"></sm-onboarding-task>
-  <sm-onboarding-task
-    title="Create a secret"
-    icon="bwi-wrench"
-    [completed]="true"
-  ></sm-onboarding-task>
-  <sm-onboarding-task title="Create a project"></sm-onboarding-task>
-  <sm-onboarding-task
-    title="Download the Secrets Manager CLI"
-    [completed]="true"
-  ></sm-onboarding-task>
+<sm-onboarding title="Get started" *ngIf="onboardingIncomplete$ | async">
+  <ng-container *ngIf="completed$ | async as completed">
+    <sm-onboarding-task
+      title="Import secrets"
+      icon="bwi-wrench"
+      [completed]="completed.importSecrets"
+    ></sm-onboarding-task>
+    <sm-onboarding-task
+      title="Create a secret"
+      icon="bwi-wrench"
+      [completed]="completed.createSecret"
+    ></sm-onboarding-task>
+    <sm-onboarding-task
+      title="Create a project"
+      [completed]="completed.createProject"
+    ></sm-onboarding-task>
+    <sm-onboarding-task
+      title="Create a service account"
+      [completed]="completed.createServiceAccount"
+    ></sm-onboarding-task>
+  </ng-container>
 </sm-onboarding>
+
+<ng-template #spinner>
+  <div class="tw-items-center tw-justify-center tw-pt-64 tw-text-center">
+    <i class="bwi bwi-spinner bwi-spin bwi-3x"></i>
+  </div>
+</ng-template>
