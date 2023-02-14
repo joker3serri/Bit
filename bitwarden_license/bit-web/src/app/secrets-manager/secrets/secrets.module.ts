@@ -10,7 +10,6 @@ import { SecretsComponent } from "./secrets.component";
 @NgModule({
   imports: [SecretsManagerSharedModule, SecretsRoutingModule],
   declarations: [SecretsComponent, SecretDialogComponent, SecretDeleteDialogComponent],
-  exports: [SecretsComponent],
   providers: [],
 })
 export class SecretsModule {}

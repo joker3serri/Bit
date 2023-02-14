@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
@@ -25,8 +25,6 @@ export class SecretsComponent implements OnInit {
   secrets$: Observable<SecretListView[]>;
 
   private organizationId: string;
-
-  @Input() baseRoute = ".";
 
   constructor(
     private route: ActivatedRoute,

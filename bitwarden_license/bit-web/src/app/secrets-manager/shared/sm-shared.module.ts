@@ -11,6 +11,7 @@ import { NewMenuComponent } from "../layout/new-menu.component";
 import { NoItemsComponent } from "../layout/no-items.component";
 
 import { AccessSelectorComponent } from "./access-policies/access-selector.component";
+import { ProjectsListComponent } from "./projects-list.component";
 import { SecretsListComponent } from "./secrets-list.component";
 
 @NgModule({
@@ -21,6 +22,7 @@ import { SecretsListComponent } from "./secrets-list.component";
     HeaderComponent,
     NewMenuComponent,
     NoItemsComponent,
+    ProjectsListComponent,
     SecretsListComponent,
     AccessSelectorComponent,
   ],
@@ -29,6 +31,7 @@ import { SecretsListComponent } from "./secrets-list.component";
     HeaderComponent,
     NewMenuComponent,
     NoItemsComponent,
+    ProjectsListComponent,
     SecretsListComponent,
     AccessSelectorComponent,
   ],
