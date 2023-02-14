@@ -8,7 +8,7 @@ import { TableComponent } from "./table.component";
   selector: "th[bitSortable]",
   template: `
     <button
-      class="tw-group"
+      class="tw-group tw-min-w-max"
       [ngClass]="classList"
       [attr.aria-pressed]="isActive"
       (click)="setActive()"
