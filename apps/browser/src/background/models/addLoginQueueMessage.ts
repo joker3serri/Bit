@@ -23,8 +23,7 @@ export default class AddLoginQueueMessage extends NotificationQueueMessage {
     loginView.password = message.password;
 
     const cipherView = new CipherView();
-    cipherView.name = Utils.getHostname(message.uri) || message.domain;
-    cipherView.name = cipherView.name.replace(/^www\./, "");
+    cipherView.name = (Utils.getHostname(message.uri) || message.domain).replace(/^www\./, "");
     cipherView.folderId = folderId;
     cipherView.type = CipherType.Login;
     cipherView.login = loginView;

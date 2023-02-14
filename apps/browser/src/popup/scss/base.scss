@@ -408,15 +408,11 @@ app-root {
   }
 }
 
+// Adds padding on each side of the content if opened in a tab
 @media only screen and (min-width: 601px) {
-  app-login,
-  app-two-factor,
-  app-lock,
-  app-vault-add-edit {
-    header,
-    main {
-      padding: 0 calc((100% - 500px) / 2);
-    }
+  header,
+  main {
+    padding: 0 calc((100% - 500px) / 2);
   }
 }
 
