@@ -166,20 +166,29 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
     const selectItemsView = potentialGrantees.map((granteeView) => {
       let icon: string;
       let listName: string;
+      let labelName: string;
       if (granteeView.type === "user") {
         icon = this.userIcon;
-        listName = `${granteeView.name} (${granteeView.email})`;
+        if (granteeView.name) {
+          listName = `${granteeView.name} (${granteeView.email})`;
+          labelName = granteeView.name;
+        } else {
+          listName = granteeView.email;
+          labelName = granteeView.email;
+        }
       } else if (granteeView.type === "group") {
         icon = this.groupIcon;
         listName = granteeView.name;
+        labelName = granteeView.name;
       } else {
         icon = this.serviceAccountIcon;
         listName = granteeView.name;
+        labelName = granteeView.name;
       }
       return {
         icon: icon,
         id: granteeView.id,
-        labelName: granteeView.name,
+        labelName: labelName,
         listName: listName,
       };
     });
