@@ -1,4 +1,4 @@
-import { Component, ContentChildren, EventEmitter, Input, Output, QueryList } from "@angular/core";
+import { Component, ContentChildren, Input, QueryList } from "@angular/core";
 
 import { OnboardingTaskComponent } from "./onboarding-task.component";
 
@@ -10,8 +10,6 @@ export class OnboardingComponent {
   @ContentChildren(OnboardingTaskComponent) tasks: QueryList<OnboardingTaskComponent>;
 
   @Input() title: string;
-
-  @Output() onDismiss = new EventEmitter();
 
   open = true;
 
