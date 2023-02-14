@@ -11,6 +11,7 @@ import { OverviewModule } from "./overview/overview.module";
 import { ProjectsModule } from "./projects/projects.module";
 import { SecretsModule } from "./secrets/secrets.module";
 import { ServiceAccountsModule } from "./service-accounts/service-accounts.module";
+import { SettingsModule } from "./settings/settings.module";
 import { SMGuard } from "./sm.guard";
 import { TrashModule } from "./trash/trash.module";
 
@@ -55,6 +56,10 @@ const routes: Routes = [
         data: {
           titleId: "trash",
         },
+      },
+      {
+        path: "settings",
+        loadChildren: () => SettingsModule,
       },
       {
         path: "",
