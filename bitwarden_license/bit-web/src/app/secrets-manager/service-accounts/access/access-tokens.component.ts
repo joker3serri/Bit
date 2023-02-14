@@ -2,7 +2,9 @@ import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
+import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { DialogService } from "@bitwarden/components";
+import { UserVerificationPromptComponent } from "@bitwarden/web-vault/app/components/user-verification-prompt.component";
 
 import { AccessTokenView } from "../models/view/access-token.view";
 
@@ -22,7 +24,8 @@ export class AccessTokenComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private accessService: AccessService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private modalService: ModalService
   ) {}
 
   ngOnInit() {
@@ -37,8 +40,15 @@ export class AccessTokenComponent implements OnInit {
     );
   }
 
-  private async getAccessTokens(): Promise<AccessTokenView[]> {
-    return await this.accessService.getAccessTokens(this.organizationId, this.serviceAccountId);
+  protected async revoke(tokens: AccessTokenView[]) {
+    if (!(await this.verifyUser())) {
+      return;
+    }
+
+    await this.accessService.revokeAccessTokens(
+      this.serviceAccountId,
+      tokens.map((t) => t.id)
+    );
   }
 
   protected openNewAccessTokenDialog() {
@@ -47,5 +57,26 @@ export class AccessTokenComponent implements OnInit {
       this.serviceAccountId,
       this.organizationId
     );
+  }
+
+  private verifyUser() {
+    const ref = this.modalService.open(UserVerificationPromptComponent, {
+      allowMultipleModals: true,
+      data: {
+        confirmDescription: "revokeAccessTokenDesc",
+        confirmButtonText: "revokeAccessToken",
+        modalTitle: "revokeAccessToken",
+      },
+    });
+
+    if (ref == null) {
+      return;
+    }
+
+    return ref.onClosedPromise();
+  }
+
+  private async getAccessTokens(): Promise<AccessTokenView[]> {
+    return await this.accessService.getAccessTokens(this.organizationId, this.serviceAccountId);
   }
 }

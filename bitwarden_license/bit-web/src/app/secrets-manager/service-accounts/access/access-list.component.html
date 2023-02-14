@@ -35,6 +35,7 @@
         <button
           bitIconButton="bwi-ellipsis-v"
           buttonType="main"
+          [bitMenuTriggerFor]="tableMenu"
           [title]="'options' | i18n"
           [attr.aria-label]="'options' | i18n"
         ></button>
@@ -67,7 +68,7 @@
       </td>
 
       <bit-menu #tokenMenu>
-        <button type="button" bitMenuItem>
+        <button type="button" bitMenuItem (click)="revokeAccessTokensEvent.emit([token])">
           <span class="tw-text-danger">
             <i class="bwi bwi-fw bwi-minus-circle" aria-hidden="true"></i>
             {{ "revokeAccessToken" | i18n }}
@@ -77,3 +78,10 @@
     </tr>
   </ng-template>
 </bit-table>
+
+<bit-menu #tableMenu>
+  <button type="button" bitMenuItem (click)="revokeSelected()">
+    <i class="bwi bwi-fw bwi-minus-circle" aria-hidden="true"></i>
+    <span class="tw-text-danger">{{ "revokeAccessTokens" | i18n }}</span>
+  </button>
+</bit-menu>
