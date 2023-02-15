@@ -15,8 +15,8 @@ import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstraction
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 
 import { OrganizationCollectionRequest } from "../admin-console/models/request/organization-collection.request";
+import { OrganizationCollectionResponse } from "../admin-console/models/response/organization-collection.response";
 import { Response } from "../models/response";
-import { OrganizationCollectionResponse } from "../models/response/organization-collection.response";
 import { CliUtils } from "../utils";
 
 import { CipherResponse } from "./models/cipher.response";

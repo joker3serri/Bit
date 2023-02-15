@@ -28,10 +28,10 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 import { OrganizationCollectionRequest } from "../admin-console/models/request/organization-collection.request";
+import { OrganizationCollectionResponse } from "../admin-console/models/response/organization-collection.response";
+import { OrganizationResponse } from "../admin-console/models/response/organization.response";
 import { Response } from "../models/response";
 import { CollectionResponse } from "../models/response/collection.response";
-import { OrganizationCollectionResponse } from "../models/response/organization-collection.response";
-import { OrganizationResponse } from "../models/response/organization.response";
 import { SendResponse } from "../models/response/send.response";
 import { StringResponse } from "../models/response/string.response";
 import { TemplateResponse } from "../models/response/template.response";

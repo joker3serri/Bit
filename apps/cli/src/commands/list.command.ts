@@ -15,11 +15,11 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
+import { OrganizationUserResponse } from "../admin-console/models/response/organization-user.response";
+import { OrganizationResponse } from "../admin-console/models/response/organization.response";
 import { Response } from "../models/response";
 import { CollectionResponse } from "../models/response/collection.response";
 import { ListResponse } from "../models/response/list.response";
-import { OrganizationUserResponse } from "../models/response/organization-user.response";
-import { OrganizationResponse } from "../models/response/organization.response";
 import { CliUtils } from "../utils";
 import { CipherResponse } from "../vault/models/cipher.response";
 import { FolderResponse } from "../vault/models/folder.response";
