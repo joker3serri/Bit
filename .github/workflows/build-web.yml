@@ -224,7 +224,7 @@ jobs:
       - name: Login to Azure ACR
         run: az acr login -n bitwardenprod
 
-      - name: Tag and Push to Azure QA ACR
+      - name: Tag and Push to Azure PROD ACR
         env:
           REGISTRY: bitwardenprod.azurecr.io
         run: |
