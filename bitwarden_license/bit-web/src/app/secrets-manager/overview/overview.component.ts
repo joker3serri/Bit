@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { map, Observable, switchMap, Subject, takeUntil } from "rxjs";
+import { map, Observable, switchMap, Subject, takeUntil, combineLatest, startWith } from "rxjs";
 
 import { DialogService } from "@bitwarden/components";
 
@@ -34,8 +34,13 @@ export class OverviewComponent implements OnInit, OnDestroy {
     createSecret: boolean;
     createProject: boolean;
     createServiceAccount: boolean;
-  }> = this.route.params.pipe(
-    switchMap(({ organizationId }) =>
+  }> = combineLatest([
+    this.route.params,
+    this.projectService.project$.pipe(startWith(null)),
+    this.secretService.secret$.pipe(startWith(null)),
+    this.serviceAccountService.serviceAccount$.pipe(startWith(null)),
+  ]).pipe(
+    switchMap(([{ organizationId }]) =>
       Promise.all([
         this.projectService.getProjects(organizationId),
         this.secretService.getSecrets(organizationId),
