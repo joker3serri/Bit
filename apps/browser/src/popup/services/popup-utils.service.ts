@@ -84,8 +84,9 @@ export class PopupUtilsService {
   }
 
   /**
-   * Attaches a "beforeunload" event listener, which will display a pop-up warning before the user exits the window/tab,
-   * or navigates away. (Note: navigating within the Angular app will not trigger it because it's an SPA.)
+   * Enables a pop-up warning before the user exits the window/tab, or navigates away.
+   * This warns the user that they may lose unsaved data if they leave the page.
+   * (Note: navigating within the Angular app will not trigger it because it's an SPA.)
    * Make sure you call `disableTabCloseWarning` when it is no longer relevant.
    */
   enableCloseTabWarning() {
@@ -96,6 +97,7 @@ export class PopupUtilsService {
       e.preventDefault();
 
       // Modern browsers do not display this message, it just needs to be a non-nullish value
+      // Exact wording is determined by the browser
       const confirmationMessage = "";
 
       // Older methods with better support
@@ -106,6 +108,9 @@ export class PopupUtilsService {
     window.addEventListener("beforeunload", this.tabCloseWarningCallback);
   }
 
+  /**
+   * Disables the warning enabled by enableCloseTabWarning.
+   */
   disableCloseTabWarning() {
     window.removeEventListener("beforeunload", this.tabCloseWarningCallback);
   }
