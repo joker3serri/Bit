@@ -28,6 +28,14 @@ export class SecretDeleteDialogComponent {
   ) {}
 
   get title() {
+    if (this.data.hardDelete) {
+      return this.data.secretIds.length === 1 ? "hardDeleteSecret" : "hardDeleteSecrets";
+    } else {
+      return this.data.secretIds.length === 1 ? "deleteSecret" : "deleteSecrets";
+    }
+  }
+
+  get submitButtonText() {
     return this.data.secretIds.length === 1 ? "deleteSecret" : "deleteSecrets";
   }
 

@@ -2,6 +2,7 @@ import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
+import { SecretListBulkActionsView } from "../models/view/secret-list-bulk-actions.view";
 import { SecretListItemActionsView } from "../models/view/secret-list-item-actions.view";
 import { SecretListNoItemsView } from "../models/view/secret-list-no-items.view";
 import { SecretListView } from "../models/view/secret-list.view";
@@ -27,6 +28,9 @@ export class SecretsListComponent implements OnDestroy {
   @Input()
   protected noItemsView: SecretListNoItemsView;
 
+  @Input()
+  protected bulkActions: SecretListBulkActionsView;
+
   @Output() editSecretEvent = new EventEmitter<string>();
   @Output() copySecretNameEvent = new EventEmitter<string>();
   @Output() copySecretValueEvent = new EventEmitter<string>();
@@ -34,6 +38,7 @@ export class SecretsListComponent implements OnDestroy {
   @Output() onSecretCheckedEvent = new EventEmitter<string[]>();
   @Output() deleteSecretsEvent = new EventEmitter<string[]>();
   @Output() newSecretEvent = new EventEmitter();
+  @Output() restoreSecretsEvent = new EventEmitter();
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -65,6 +70,12 @@ export class SecretsListComponent implements OnDestroy {
   bulkDeleteSecrets() {
     if (this.selection.selected.length >= 1) {
       this.deleteSecretsEvent.emit(this.selection.selected);
+    }
+  }
+
+  bulkRestoreSecrets() {
+    if (this.selection.selected.length >= 1) {
+      this.restoreSecretsEvent.emit(this.selection.selected);
     }
   }
 }

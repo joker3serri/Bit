@@ -9,6 +9,10 @@ import {
   SecretDeleteDialogComponent,
   SecretDeleteOperation,
 } from "../secrets/dialog/secret-delete.component";
+import {
+  SecretRestoreDialogComponent,
+  SecretRestoreOperation,
+} from "../secrets/dialog/secret-restore.component";
 
 import { TrashService } from "./services/trash.service";
 
@@ -47,6 +51,15 @@ export class TrashComponent implements OnInit {
       data: {
         secretIds: secretIds,
         hardDelete: true,
+        organizationId: this.organizationId,
+      },
+    });
+  }
+
+  openRestoreSecret(secretIds: string[]) {
+    this.dialogService.open<unknown, SecretRestoreOperation>(SecretRestoreDialogComponent, {
+      data: {
+        secretIds: secretIds,
         organizationId: this.organizationId,
       },
     });

@@ -4,4 +4,5 @@ export class SecretListItemActionsView {
   copyValue: boolean;
   projects: boolean;
   delete: boolean;
+  restore: boolean;
 }

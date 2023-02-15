@@ -63,6 +63,31 @@ export class TrashService {
     this._secret.next(null);
   }
 
+  async restore(organizationId: string, secretIds: string[]) {
+    const r = await this.apiService.send(
+      "POST",
+      "/secrets/" + organizationId + "/trash/restore",
+      secretIds,
+      true,
+      true
+    );
+
+    const responseErrors: string[] = [];
+    r.data.forEach((element: { error: string }) => {
+      if (element.error) {
+        responseErrors.push(element.error);
+      }
+    });
+
+    // TODO waiting to hear back on how to display multiple errors.
+    // for now send as a list of strings to be displayed in toast.
+    if (responseErrors?.length >= 1) {
+      throw new Error(responseErrors.join(","));
+    }
+
+    this._secret.next(null);
+  }
+
   private async getOrganizationKey(organizationId: string): Promise<SymmetricCryptoKey> {
     return await this.cryptoService.getOrgKey(organizationId);
   }
