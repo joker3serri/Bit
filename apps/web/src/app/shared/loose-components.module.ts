@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 
 import { PasswordRepromptComponent } from "../../../src/vault/components/password-reprompt.component";
 import { OrganizationSwitcherComponent } from "../../admin-console/components/organization-switcher.component";
+import { OrganizationCreateModule } from "../../admin-console/organizations/create/organization-create.module";
 import { AcceptEmergencyComponent } from "../../auth/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../../auth/accept-organization.component";
 import { HintComponent } from "../../auth/hint.component";
@@ -64,7 +65,6 @@ import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
 import { NavbarComponent } from "../layouts/navbar.component";
 import { ProductSwitcherModule } from "../layouts/product-switcher/product-switcher.module";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
-import { OrganizationCreateModule } from "../organizations/create/organization-create.module";
 import { OrganizationLayoutComponent } from "../organizations/layouts/organization-layout.component";
 import { CollectionsComponent as OrgManageCollectionsComponent } from "../organizations/manage/collections.component";
 import { EntityEventsComponent as OrgEntityEventsComponent } from "../organizations/manage/entity-events.component";
