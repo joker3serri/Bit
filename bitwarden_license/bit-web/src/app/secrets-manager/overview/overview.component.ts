@@ -44,7 +44,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     ),
     map(([projects, secrets, serviceAccounts]) => {
       return {
-        importSecrets: false,
+        importSecrets: secrets.length > 0,
         createSecret: secrets.length > 0,
         createProject: projects.length > 0,
         createServiceAccount: serviceAccounts.length > 0,
