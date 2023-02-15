@@ -4,8 +4,8 @@ import { RouterModule, Routes } from "@angular/router";
 import { canAccessReportingTab } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { OrganizationPermissionsGuard } from "../guards/org-permissions.guard";
-import { OrganizationRedirectGuard } from "../guards/org-redirect.guard";
+import { OrganizationPermissionsGuard } from "../../../admin-console/organizations/guards/org-permissions.guard";
+import { OrganizationRedirectGuard } from "../../../admin-console/organizations/guards/org-redirect.guard";
 import { EventsComponent } from "../manage/events.component";
 import { ExposedPasswordsReportComponent } from "../tools/exposed-passwords-report.component";
 import { InactiveTwoFactorReportComponent } from "../tools/inactive-two-factor-report.component";
