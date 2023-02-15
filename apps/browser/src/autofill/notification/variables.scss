@@ -51,7 +51,8 @@ $themes: (
   ),
   solarizedDark: (
     textColor: $solarizedDarkBase2,
-    mutedTextColor: $solarizedDarkBase0,
+    // Muted uses main text color to avoid contrast issues
+    mutedTextColor: $solarizedDarkBase2,
     backgroundColor: $solarizedDarkBase03,
     buttonPrimaryColor: $solarizedDarkCyan,
     primaryColor: $solarizedDarkGreen,
