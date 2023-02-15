@@ -2,7 +2,7 @@ import { OrganizationUserStatusType } from "@bitwarden/common/enums/organization
 import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { SelectItemView } from "@bitwarden/components";
 
-import { CollectionAccessSelectionView } from "../../../core";
+import { CollectionAccessSelectionView } from "../../../../../app/organizations/core";
 
 /**
  * Permission options that replace/correspond with readOnly and hidePassword server fields.
