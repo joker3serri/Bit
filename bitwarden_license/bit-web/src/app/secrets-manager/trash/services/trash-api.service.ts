@@ -22,4 +22,42 @@ export class TrashApiService {
 
     return new SecretWithProjectsListResponse(r);
   }
+
+  async deleteSecrets(organizationId: string, secretIds: string[]): Promise<string[]> {
+    const r = await this.apiService.send(
+      "POST",
+      "/secrets/" + organizationId + "/trash/empty",
+      secretIds,
+      true,
+      true
+    );
+
+    const responseErrors: string[] = [];
+    r.data.forEach((element: { error: string }) => {
+      if (element.error) {
+        responseErrors.push(element.error);
+      }
+    });
+
+    return responseErrors;
+  }
+
+  async restoreSecrets(organizationId: string, secretIds: string[]): Promise<string[]> {
+    const r = await this.apiService.send(
+      "POST",
+      "/secrets/" + organizationId + "/trash/restore",
+      secretIds,
+      true,
+      true
+    );
+
+    const responseErrors: string[] = [];
+    r.data.forEach((element: { error: string }) => {
+      if (element.error) {
+        responseErrors.push(element.error);
+      }
+    });
+
+    return responseErrors;
+  }
 }

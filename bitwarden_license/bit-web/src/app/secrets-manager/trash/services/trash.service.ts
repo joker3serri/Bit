@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Subject } from "rxjs";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
@@ -10,11 +9,9 @@ import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-cr
 import { SecretListView } from "../../models/view/secret-list.view";
 import { SecretProjectView } from "../../models/view/secret-project.view";
 import { SecretView } from "../../models/view/secret.view";
-import { SecretRequest } from "../../secrets/requests/secret.request";
 import { SecretListItemResponse } from "../../secrets/responses/secret-list-item.response";
 import { SecretProjectResponse } from "../../secrets/responses/secret-project.response";
 import { SecretWithProjectsListResponse } from "../../secrets/responses/secret-with-projects-list.response";
-import { SecretResponse } from "../../secrets/responses/secret.response";
 
 import { TrashApiService } from "./trash-api.service";
 
@@ -28,7 +25,6 @@ export class TrashService {
 
   constructor(
     private cryptoService: CryptoService,
-    private apiService: ApiService,
     private encryptService: EncryptService,
     private trashApiService: TrashApiService
   ) {}
@@ -39,20 +35,7 @@ export class TrashService {
   }
 
   async delete(organizationId: string, secretIds: string[]) {
-    const r = await this.apiService.send(
-      "POST",
-      "/secrets/" + organizationId + "/trash/empty",
-      secretIds,
-      true,
-      true
-    );
-
-    const responseErrors: string[] = [];
-    r.data.forEach((element: { error: string }) => {
-      if (element.error) {
-        responseErrors.push(element.error);
-      }
-    });
+    const responseErrors = await this.trashApiService.deleteSecrets(organizationId, secretIds);
 
     // TODO waiting to hear back on how to display multiple errors.
     // for now send as a list of strings to be displayed in toast.
@@ -64,20 +47,7 @@ export class TrashService {
   }
 
   async restore(organizationId: string, secretIds: string[]) {
-    const r = await this.apiService.send(
-      "POST",
-      "/secrets/" + organizationId + "/trash/restore",
-      secretIds,
-      true,
-      true
-    );
-
-    const responseErrors: string[] = [];
-    r.data.forEach((element: { error: string }) => {
-      if (element.error) {
-        responseErrors.push(element.error);
-      }
-    });
+    const responseErrors = await this.trashApiService.restoreSecrets(organizationId, secretIds);
 
     // TODO waiting to hear back on how to display multiple errors.
     // for now send as a list of strings to be displayed in toast.
@@ -90,55 +60,6 @@ export class TrashService {
 
   private async getOrganizationKey(organizationId: string): Promise<SymmetricCryptoKey> {
     return await this.cryptoService.getOrgKey(organizationId);
-  }
-
-  private async getSecretRequest(
-    organizationId: string,
-    secretView: SecretView
-  ): Promise<SecretRequest> {
-    const orgKey = await this.getOrganizationKey(organizationId);
-    const request = new SecretRequest();
-    const [key, value, note] = await Promise.all([
-      this.encryptService.encrypt(secretView.name, orgKey),
-      this.encryptService.encrypt(secretView.value, orgKey),
-      this.encryptService.encrypt(secretView.note, orgKey),
-    ]);
-    request.key = key.encryptedString;
-    request.value = value.encryptedString;
-    request.note = note.encryptedString;
-    request.projectIds = [];
-
-    secretView.projects?.forEach((e) => request.projectIds.push(e.id));
-
-    return request;
-  }
-
-  private async createSecretView(secretResponse: SecretResponse): Promise<SecretView> {
-    const orgKey = await this.getOrganizationKey(secretResponse.organizationId);
-
-    const secretView = new SecretView();
-    secretView.id = secretResponse.id;
-    secretView.organizationId = secretResponse.organizationId;
-    secretView.creationDate = secretResponse.creationDate;
-    secretView.revisionDate = secretResponse.revisionDate;
-
-    const [name, value, note] = await Promise.all([
-      this.encryptService.decryptToUtf8(new EncString(secretResponse.name), orgKey),
-      this.encryptService.decryptToUtf8(new EncString(secretResponse.value), orgKey),
-      this.encryptService.decryptToUtf8(new EncString(secretResponse.note), orgKey),
-    ]);
-    secretView.name = name;
-    secretView.value = value;
-    secretView.note = note;
-
-    if (secretResponse.projects != null) {
-      secretView.projects = await this.decryptProjectsMappedToSecrets(
-        orgKey,
-        secretResponse.projects
-      );
-    }
-
-    return secretView;
   }
 
   private async createSecretsListView(
