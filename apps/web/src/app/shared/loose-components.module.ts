@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 
 import { PasswordRepromptComponent } from "../../../src/vault/components/password-reprompt.component";
+import { OrganizationSwitcherComponent } from "../../admin-console/components/organization-switcher.component";
 import { AcceptEmergencyComponent } from "../../auth/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../../auth/accept-organization.component";
 import { HintComponent } from "../../auth/hint.component";
@@ -55,7 +56,6 @@ import { ShareComponent } from "../../vault/individual-vault/share.component";
 import { AddEditComponent as OrgAddEditComponent } from "../../vault/org-vault/add-edit.component";
 import { AttachmentsComponent as OrgAttachmentsComponent } from "../../vault/org-vault/attachments.component";
 import { DynamicAvatarComponent } from "../components/dynamic-avatar.component";
-import { OrganizationSwitcherComponent } from "../components/organization-switcher.component";
 import { SelectableAvatarComponent } from "../components/selectable-avatar.component";
 import { UserVerificationPromptComponent } from "../components/user-verification-prompt.component";
 import { UserVerificationComponent } from "../components/user-verification.component";
