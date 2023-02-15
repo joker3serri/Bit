@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 
 import { DialogService } from "@bitwarden/components";
@@ -28,6 +28,7 @@ export class ProjectsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private projectService: ProjectService,
     private dialogService: DialogService
   ) {}
@@ -72,5 +73,9 @@ export class ProjectsComponent implements OnInit {
         projects: event,
       },
     });
+  }
+
+  viewProjectPage(project: string) {
+    this.router.navigate([project], { relativeTo: this.route });
   }
 }

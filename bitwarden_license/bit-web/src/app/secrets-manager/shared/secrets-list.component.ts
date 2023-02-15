@@ -13,8 +13,6 @@ import { SecretListView } from "../models/view/secret-list.view";
 export class SecretsListComponent implements OnDestroy {
   protected dataSource = new TableDataSource<SecretListView>();
 
-  @Input() baseRoute = ".";
-
   @Input()
   get secrets(): SecretListView[] {
     return this._secrets;

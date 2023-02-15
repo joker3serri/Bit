@@ -13,8 +13,6 @@ import { ProjectListView } from "../models/view/project-list.view";
 export class ProjectsListComponent implements OnDestroy {
   protected dataSource = new TableDataSource<ProjectListView>();
 
-  @Input() baseRoute = ".";
-
   @Input()
   get projects(): ProjectListView[] {
     return this._projects;
@@ -35,6 +33,7 @@ export class ProjectsListComponent implements OnDestroy {
   @Output() deleteProjectEvent = new EventEmitter<ProjectListView[]>();
   @Output() onProjectCheckedEvent = new EventEmitter<string[]>();
   @Output() newProjectEvent = new EventEmitter();
+  @Output() viewProjectEvent = new EventEmitter<string>();
 
   private destroy$: Subject<void> = new Subject<void>();
 
