@@ -2050,6 +2050,30 @@
   "rememberEmail": {
     "message": "Husk e-mail"
   },
+  "loginWithDevice": {
+    "message": "Log ind med enhed"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Log ind med enhed skal være opsat i indstillingerne i Bitwarden mobil-appen. Behov for en anden mulighed?"
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Fingeraftrykssætning"
+  },
+  "fingerprintMatchInfo": {
+    "message": "Sørg for, at din boks er oplåst, samt at Fingeraftrykssætningen på den anden enhed matcher."
+  },
+  "resendNotification": {
+    "message": "Gensend notifikation"
+  },
+  "viewAllLoginOptions": {
+    "message": "Vis alle indlogningsmuligheder"
+  },
+  "notificationSentDevice": {
+    "message": "En notifikation er sendt til din enhed."
+  },
+  "logInInitiated": {
+    "message": "Indlogning påbegyndt"
+  },
   "exposedMasterPassword": {
     "message": "Kompromitteret hovedadgangskode"
   },
@@ -2079,5 +2103,26 @@
         "example": "14"
       }
     }
+  },
+  "tryAutofillPageLoad": {
+    "message": "Prøv autoudfyldning ved sideindlæsning?"
+  },
+  "tryAutofill": {
+    "message": "Sådan autoudfyldes"
+  },
+  "autofillPageLoadInfo": {
+    "message": "Login-formularer udfyldes automatisk med matchende legitimationsoplysninger, hvis autoudfyldning ved sideindlæsning aktiveres."
+  },
+  "autofillSelectInfo": {
+    "message": "Vælg et element fra denne side for at autoudfylde den aktive fanes formular."
+  },
+  "autofillTurnedOn": {
+    "message": "Autoudfyldning ved sideindlæsning aktiveret"
+  },
+  "turnOn": {
+    "message": "Aktivér"
+  },
+  "notNow": {
+    "message": "Ikke nu"
   }
 }

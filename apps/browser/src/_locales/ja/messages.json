@@ -1512,7 +1512,7 @@
     "message": "デスクトップ同期の検証"
   },
   "desktopIntegrationVerificationText": {
-    "message": "デスクトップアプリにこの指紋が表示されていることを確認してください: "
+    "message": "デスクトップアプリにこれが表示されていることを確認してください: "
   },
   "desktopIntegrationDisabledTitle": {
     "message": "ブラウザ統合が有効になっていません"
@@ -2050,6 +2050,30 @@
   "rememberEmail": {
     "message": "メールアドレスを保存"
   },
+  "loginWithDevice": {
+    "message": "デバイスでログイン"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Bitwarden アプリの設定でデバイスでログインする必要があります。別のオプションが必要ですか？"
+  },
+  "fingerprintPhraseHeader": {
+    "message": "パスフレーズ"
+  },
+  "fingerprintMatchInfo": {
+    "message": "保管庫がロックされていることと、パスフレーズが他のデバイスと一致していることを確認してください。"
+  },
+  "resendNotification": {
+    "message": "通知を再送信する"
+  },
+  "viewAllLoginOptions": {
+    "message": "すべてのログインオプションを表示"
+  },
+  "notificationSentDevice": {
+    "message": "デバイスに通知を送信しました。"
+  },
+  "logInInitiated": {
+    "message": "ログイン開始"
+  },
   "exposedMasterPassword": {
     "message": "流出したマスターパスワード"
   },
@@ -2079,5 +2103,26 @@
         "example": "14"
       }
     }
+  },
+  "tryAutofillPageLoad": {
+    "message": "ページ読み込み時に自動入力しますか？"
+  },
+  "tryAutofill": {
+    "message": "自動入力する方法"
+  },
+  "autofillPageLoadInfo": {
+    "message": "ページ読み込み時の自動入力をオンにすると、一致するログイン情報を自動的にフォームに入力します。"
+  },
+  "autofillSelectInfo": {
+    "message": "アクティブなタブのフォームを自動入力するには、このページでアイテムを選択してください。"
+  },
+  "autofillTurnedOn": {
+    "message": "ページ読み込み時の自動入力をオンにしました"
+  },
+  "turnOn": {
+    "message": "オンにする"
+  },
+  "notNow": {
+    "message": "後でする"
   }
 }

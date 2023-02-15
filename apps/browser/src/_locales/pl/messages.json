@@ -960,7 +960,7 @@
     "message": "Jeśli zostanie wykryty formularz logowania, automatycznie uzupełnij dane logowania po załadowaniu strony."
   },
   "experimentalFeature": {
-    "message": "Compromised or untrusted websites can exploit auto-fill on page load."
+    "message": "Zaatakowane lub niezaufane witryny internetowe mogą wykorzystać funkcję autouzupełniania podczas wczytywania strony, aby wyrządzić szkody."
   },
   "learnMoreAboutAutofill": {
     "message": "Dowiedz się więcej o autouzupełnianiu"
@@ -2050,6 +2050,30 @@
   "rememberEmail": {
     "message": "Zapamiętaj adres e-mail"
   },
+  "loginWithDevice": {
+    "message": "Zaloguj się za pomocą urządzenia"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Logowanie za pomocą urządzenia musi być włączone w ustawieniach aplikacji Bitwarden. Potrzebujesz innej opcji?"
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Unikalny identyfikator konta"
+  },
+  "fingerprintMatchInfo": {
+    "message": "Upewnij się, że sejf jest odblokowany, a unikalny identyfikator konta pasuje do drugiego urządzenia."
+  },
+  "resendNotification": {
+    "message": "Wyślij ponownie powiadomienie"
+  },
+  "viewAllLoginOptions": {
+    "message": "Zobacz wszystkie sposoby logowania"
+  },
+  "notificationSentDevice": {
+    "message": "Powiadomienie zostało wysłane na urządzenie."
+  },
+  "logInInitiated": {
+    "message": "Logowanie rozpoczęte"
+  },
   "exposedMasterPassword": {
     "message": "Ujawnione hasło główne"
   },
@@ -2079,5 +2103,26 @@
         "example": "14"
       }
     }
+  },
+  "tryAutofillPageLoad": {
+    "message": "Spróbować autouzupełnić po załadowaniu strony?"
+  },
+  "tryAutofill": {
+    "message": "Jak autouzupełniać"
+  },
+  "autofillPageLoadInfo": {
+    "message": "Formularze logowania automatycznie wypełnią się pasującymi danymi uwierzytelniającymi, jeśli włączysz autouzupełnianie po załadowaniu strony."
+  },
+  "autofillSelectInfo": {
+    "message": "Wybierz element z tej strony, aby automatycznie wypełnić formularz na aktywnej karcie."
+  },
+  "autofillTurnedOn": {
+    "message": "Automatyczne uzupełnianie przy wczytywaniu strony zostało włączone"
+  },
+  "turnOn": {
+    "message": "Włącz"
+  },
+  "notNow": {
+    "message": "Nie teraz"
   }
 }

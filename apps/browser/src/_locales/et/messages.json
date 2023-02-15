@@ -2050,6 +2050,30 @@
   "rememberEmail": {
     "message": "Mäleta e-posti aadressi"
   },
+  "loginWithDevice": {
+    "message": "Logi sisse seadme kaudu"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Bitwardeni rakenduse seadistuses peab olema konfigureeritud sisselogimine läbi seadme. Vajad teist valikut?"
+  },
+  "fingerprintPhraseHeader": {
+    "message": "Sõrmejälje fraas"
+  },
+  "fingerprintMatchInfo": {
+    "message": "Veendu, et hoidla on lahti lukustatud ja sõrmejälje fraasid seadmete vahel ühtivad."
+  },
+  "resendNotification": {
+    "message": "Saada märguanne uuesti"
+  },
+  "viewAllLoginOptions": {
+    "message": "Vaata kõiki valikuid"
+  },
+  "notificationSentDevice": {
+    "message": "Sinu seadmesse saadeti teavitus."
+  },
+  "logInInitiated": {
+    "message": "Sisselogimine on käivitatud"
+  },
   "exposedMasterPassword": {
     "message": "Exposed Master Password"
   },
@@ -2079,5 +2103,26 @@
         "example": "14"
       }
     }
+  },
+  "tryAutofillPageLoad": {
+    "message": "Try auto-fill on page load?"
+  },
+  "tryAutofill": {
+    "message": "How to auto-fill"
+  },
+  "autofillPageLoadInfo": {
+    "message": "Login forms will automatically fill in matching credentials if you turn on auto-fill on page load."
+  },
+  "autofillSelectInfo": {
+    "message": "Select an item from this page to auto-fill the active tab's form."
+  },
+  "autofillTurnedOn": {
+    "message": "Auto-fill on page load turned on"
+  },
+  "turnOn": {
+    "message": "Turn on"
+  },
+  "notNow": {
+    "message": "Not now"
   }
 }
