@@ -6,7 +6,7 @@
       <bit-progress class="tw-flex-1" [showText]="false" [barWidth]="barWidth"></bit-progress>
       <div>
         <span *ngIf="tasks.length > 0; else spinner">{{ completed }}/{{ tasks?.length }}</span>
-        complete
+        {{ "complete" | i18n }}
       </div>
       <i
         class="bwi tw-my-auto"
