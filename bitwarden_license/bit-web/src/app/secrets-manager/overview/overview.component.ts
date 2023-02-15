@@ -144,7 +144,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   viewProjectPage(project: string) {
-    this.router.navigate([project], { relativeTo: this.route });
+    this.router.navigate(["projects", project], { relativeTo: this.route });
   }
 
   // Secrets ---
