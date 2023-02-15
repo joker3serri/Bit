@@ -27,7 +27,7 @@ import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
-import { OrganizationCollectionRequest } from "../models/request/organization-collection.request";
+import { OrganizationCollectionRequest } from "../admin-console/models/request/organization-collection.request";
 import { Response } from "../models/response";
 import { CollectionResponse } from "../models/response/collection.response";
 import { OrganizationCollectionResponse } from "../models/response/organization-collection.response";
