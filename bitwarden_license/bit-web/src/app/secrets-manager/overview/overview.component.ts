@@ -43,8 +43,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
    * Number of items to show in tables
    */
   private tableSize = 10;
-  private projects$: Observable<ProjectListView[]>;
-  private secrets$: Observable<SecretListView[]>;
   private organizationId: string;
 
   protected organizationName: string;
@@ -74,19 +72,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.organizationName = org.name;
       });
 
-    this.projects$ = this.projectService.project$.pipe(
+    const projects$ = this.projectService.project$.pipe(
       startWith(null),
       combineLatestWith(this.route.params),
       switchMap(() => this.getProjects())
     );
 
-    this.secrets$ = this.secretService.secret$.pipe(
+    const secrets$ = this.secretService.secret$.pipe(
       startWith(null),
       combineLatestWith(this.route.params),
       switchMap(() => this.getSecrets())
     );
 
-    this.view$ = combineLatest([this.projects$, this.secrets$]).pipe(
+    this.view$ = combineLatest([projects$, secrets$]).pipe(
       map(([projects, secrets]) => {
         return {
           allProjects: projects,
