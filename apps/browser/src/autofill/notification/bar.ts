@@ -39,13 +39,15 @@ function load() {
   neverButton.textContent = i18n.never;
 
   const selectFolder = addTemplate.content.getElementById("select-folder");
-  selectFolder.hidden = !showFolderSelector();
+  selectFolder.hidden = isVaultLocked || removeIndividualVault();
   selectFolder.setAttribute("aria-label", i18n.folder);
 
   const addButton = addTemplate.content.getElementById("add-save");
   addButton.textContent = i18n.notificationAddSave;
 
   const addEditButton = addTemplate.content.getElementById("add-edit");
+  // If Remove Individual Vault policy applies, "Add" opens the edit tab, so we hide the Edit button
+  addEditButton.hidden = removeIndividualVault();
   addEditButton.textContent = i18n.notificationEdit;
 
   addTemplate.content.getElementById("add-text").textContent = i18n.notificationAddDesc;
@@ -103,12 +105,18 @@ function handleTypeAdd() {
   addButton.addEventListener("click", (e) => {
     e.preventDefault();
 
+    // If Remove Individual Vault policy applies, "Add" opens the edit tab
     sendPlatformMessage({
       command: "bgAddSave",
       folder: getSelectedFolder(),
-      edit: false,
+      edit: removeIndividualVault(),
     });
   });
+
+  if (removeIndividualVault()) {
+    // Everything past this point is only required if user has an individual vault
+    return;
+  }
 
   const editButton = document.getElementById("add-edit");
   editButton.addEventListener("click", (e) => {
@@ -129,9 +137,7 @@ function handleTypeAdd() {
     });
   });
 
-  if (showFolderSelector()) {
-    loadFolderSelector();
-  }
+  loadFolderSelector();
 }
 
 function handleTypeChange() {
@@ -198,8 +204,8 @@ function getSelectedFolder(): string {
   return (document.getElementById("select-folder") as HTMLSelectElement).value;
 }
 
-function showFolderSelector(): boolean {
-  return getQueryVariable("showFolderSelector") == "true";
+function removeIndividualVault(): boolean {
+  return getQueryVariable("removeIndividualVault") == "true";
 }
 
 function adjustHeight() {
