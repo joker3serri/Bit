@@ -6,22 +6,29 @@
   <ng-container *ngIf="completed$ | async as completed">
     <sm-onboarding-task
       title="Import secrets"
+      [route]="['settings', 'import']"
       icon="bwi-wrench"
       [completed]="completed.importSecrets"
     ></sm-onboarding-task>
     <sm-onboarding-task
       title="Create a secret"
+      (click)="openSecretDialog()"
       icon="bwi-wrench"
       [completed]="completed.createSecret"
     ></sm-onboarding-task>
     <sm-onboarding-task
       title="Create a project"
+      (click)="openProjectDialog()"
       [completed]="completed.createProject"
     ></sm-onboarding-task>
     <sm-onboarding-task
       title="Create a service account"
+      (click)="openServiceAccountDialog()"
+      icon="bwi-wrench"
       [completed]="completed.createServiceAccount"
-    ></sm-onboarding-task>
+    >
+      <span>Download the <a bitLink routerLink="">Secrets Manager CLI</a></span>
+    </sm-onboarding-task>
   </ng-container>
 </sm-onboarding>
 

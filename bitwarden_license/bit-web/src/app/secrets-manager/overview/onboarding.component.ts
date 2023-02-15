@@ -18,7 +18,7 @@ export class OnboardingComponent {
   }
 
   protected get barWidth(): number {
-    return (this.completed / this.tasks.length) * 100;
+    return this.tasks.length === 0 ? 0 : (this.completed / this.tasks.length) * 100;
   }
 
   protected toggle() {
