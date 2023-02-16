@@ -57,10 +57,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     })
   );
 
-  protected onboardingIncomplete$ = this.completed$.pipe(
-    map((completed) => Object.values(completed).includes(false))
-  );
-
   constructor(
     private route: ActivatedRoute,
     private projectService: ProjectService,
