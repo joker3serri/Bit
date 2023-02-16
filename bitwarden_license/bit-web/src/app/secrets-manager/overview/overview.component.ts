@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import {
   combineLatest,
   combineLatestWith,
@@ -55,7 +55,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private projectService: ProjectService,
     private dialogService: DialogService,
     private organizationService: OrganizationService,
@@ -141,10 +140,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
         projects: event,
       },
     });
-  }
-
-  viewProjectPage(project: string) {
-    this.router.navigate(["projects", project], { relativeTo: this.route });
   }
 
   // Secrets ---

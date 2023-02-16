@@ -8,8 +8,6 @@
   <sm-section>
     <h2 slot="summary" class="tw-mb-0 tw-text-2xl tw-font-semibold">{{ "projects" | i18n }}</h2>
     <sm-projects-list
-      baseRoute="projects"
-      (viewProjectEvent)="viewProjectPage($event)"
       (newProjectEvent)="openNewProjectDialog()"
       (editProjectEvent)="openEditProject($event)"
       (deleteProjectEvent)="openDeleteProjectDialog($event)"
