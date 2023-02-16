@@ -17,7 +17,7 @@ import {
   CollectionAdminView,
   GroupService,
   GroupView,
-} from "../../../core";
+} from "../../../../../app/organizations/core";
 import {
   AccessItemType,
   AccessItemValue,
