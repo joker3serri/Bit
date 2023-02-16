@@ -172,7 +172,7 @@ jobs:
           fi
 
       ########## ACRs ##########
-      - name: Login to Azure - QA 
+      - name: Login to Azure - QA
         uses: Azure/login@ec3c14589bd3e9312b3cc8c41e6860e258df9010  # v1.1
         with:
           creds: ${{ secrets.AZURE_QA_KV_CREDENTIALS }}
@@ -251,11 +251,11 @@ jobs:
             "GH_PAT=${{ steps.retrieve-secret-pat.outputs.github-pat-bitwarden-devops-bot-repo-scope }}"
 
       - name: Push to DockerHub
-        if: contains(matrix.docker_repos, 'bitwarden') && env.is_publish_branch == 'true'
+        if: contains(matrix.registries, 'bitwarden') && env.is_publish_branch == 'true'
         env:
           IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
           DOCKER_CONTENT_TRUST: 1
-          DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ steps.setup-dct.outputs.dct-delegate-repo-passphrase }}BS>
+          DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ steps.setup-dct.outputs.dct-delegate-repo-passphrase }}
         run: |
           docker tag bitwardenprod.azurecr.io/$PROJECT_NAME:${{ env.IMAGE_TAG }} \
             bitwarden/$PROJECT_NAME:${{ env.IMAGE_TAG }}
@@ -308,7 +308,6 @@ jobs:
       - cloc
       - setup
       - build-artifacts
-      - build-commercial-selfhost-image
       - build-containers
       - crowdin-push
     steps:
@@ -318,7 +317,6 @@ jobs:
           CLOC_STATUS: ${{ needs.cloc.result }}
           SETUP_STATUS: ${{ needs.setup.result }}
           ARTIFACT_STATUS: ${{ needs.build-artifacts.result }}
-          BUILD_SELFHOST_STATUS: ${{ needs.build-commercial-selfhost-image.result }}
           BUILD_CONTAINERS_STATUS: ${{ needs.build-containers.result }}
           CROWDIN_PUSH_STATUS: ${{ needs.crowdin-push.result }}
         run: |
