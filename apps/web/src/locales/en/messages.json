@@ -6251,7 +6251,16 @@
     "message": "Get started"
   },
   "complete": {
-    "message": "Complete",
-    "description": "Example: 1/4 Complete"
+    "message": "$COMPLETED$/$TOTAL$ Complete",
+    "placeholders": {
+      "COMPLETED": {
+        "content": "$1",
+        "example": "1"
+      },
+      "TOTAL": {
+        "content": "$2",
+        "example": "4"
+      }
+    }
   }
 }
