@@ -1157,6 +1157,19 @@
       }
     }
   },
+  "kdfMemory": {
+    "message": "Memòria KDF (MB)",
+    "description": "Memory refers to computer memory (RAM). MB is short for megabytes."
+  },
+  "argon2Warning": {
+    "message": "La configuració de les iteracions, la memòria i el paral·lelisme de KDF massa alts podria provocar un rendiment baix quan inicieu sessió (i desbloquegeu) Bitwarden en dispositius més lents o antics. Us recomanem que els canvieu individualment en increments més menuts i després proveu tots els vostres dispositius."
+  },
+  "kdfParallelism": {
+    "message": "Paral·lelisme KDF"
+  },
+  "argon2Desc": {
+    "message": "Les iteracions de KDF, la memòria i el paral·lelisme més alts poden ajudar a protegir la vostra contrasenya mestra de ser forçada per força bruta per un atacant."
+  },
   "changeKdf": {
     "message": "Canvia KDF"
   },
@@ -1234,6 +1247,9 @@
   },
   "importSuccess": {
     "message": "Les dades s'han importat amb èxit"
+  },
+  "dataExportSuccess": {
+    "message": "Les dades s'han exportat correctament"
   },
   "importWarning": {
     "message": "Esteu important dades a $ORGANIZATION$. Les vostres dades es poden compartir amb membres d'aquesta organització. Voleu continuar?",
@@ -2043,6 +2059,9 @@
   },
   "manageSubscription": {
     "message": "Administra la subscripció"
+  },
+  "launchCloudSubscription": {
+    "message": "Inicia la subscripció al núvol"
   },
   "storage": {
     "message": "Emmagatzematge"
@@ -5225,9 +5244,6 @@
   "billingSyncApiKeyRotated": {
     "message": "Token girat."
   },
-  "billingSync": {
-    "message": "Sincronització de facturació"
-  },
   "billingSyncDesc": {
     "message": "La sincronització de facturació ofereix plans familiars gratuïts i capacitats de facturació avançades enllaçant el vostre Bitwarden autoallotjat amb el vostre servidor al núvol de Bitwarden."
   },
@@ -5278,6 +5294,15 @@
   },
   "required": {
     "message": "requerit"
+  },
+  "characterMaximum": {
+    "message": "$MAX$ caràcters màxim",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
   },
   "idpSingleSignOnServiceUrlRequired": {
     "message": "Requerit si l'identificador d'entitat no és un URL."
@@ -5648,6 +5673,9 @@
   "customColor": {
     "message": "Color personalitzat"
   },
+  "selectPlaceholder": {
+    "message": "-- Selecciona --"
+  },
   "multiSelectPlaceholder": {
     "message": "-- Escriviu per filtrar --"
   },
@@ -5698,11 +5726,8 @@
   "secretProjectAssociationDescription": {
     "message": "Selecciona los proyectos a los que se asociará el secreto. Sólo los usuarios de la organización con acceso a estos proyectos podrán verlo."
   },
-  "typeOrSelectProjects": {
-    "message": "Teclea o selecciona proyectos"
-  },
-  "typeOrSelectProject": {
-    "message": "Teclea o selecciona proyecto"
+  "selectProjects": {
+    "message": "Selecciona projectes"
   },
   "project": {
     "message": "Projecte"
@@ -5888,7 +5913,7 @@
     "message": "Caduca"
   },
   "canRead": {
-    "message": "Pot llegir"
+    "message": "Es pot llegir"
   },
   "accessTokensNoItemsTitle": {
     "message": "No hi ha tokens d'accés per mostrar"
@@ -5976,6 +6001,9 @@
   },
   "collection": {
     "message": "Col·lecció"
+  },
+  "noCollection": {
+    "message": "Cap col·lecció"
   },
   "canView": {
     "message": "Pot veure"
@@ -6082,6 +6110,90 @@
       }
     }
   },
+  "exportData": {
+    "message": "Exportar dades"
+  },
+  "exportingOrganizationSecretDataTitle": {
+    "message": "Exportació de dades secretes de l’organització"
+  },
+  "exportingOrganizationSecretDataDescription": {
+    "message": "Només s'exportaran les dades del gestor de Secrets associades a $ORGANIZATION$. No s'inclouran elements d'altres productes o d'altres organitzacions.",
+    "placeholders": {
+      "ORGANIZATION": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
+  "fileUpload": {
+    "message": "Càrrega de fitxers"
+  },
+  "acceptedFormats": {
+    "message": "Formats acceptats:"
+  },
+  "copyPasteImportContents": {
+    "message": "Copia i enganxa contingut d'importació:"
+  },
+  "or": {
+    "message": "o"
+  },
+  "licenseAndBillingManagement": {
+    "message": "Gestió de llicències i facturació"
+  },
+  "automaticSync": {
+    "message": "Sincronització automàtica"
+  },
+  "manualUpload": {
+    "message": "Pujada manual"
+  },
+  "manualUploadDesc": {
+    "message": "Si no voleu activar la sincronització de facturació, pugeu manualment la vostra llicència ací."
+  },
+  "syncLicense": {
+    "message": "Sincronització de la llicència"
+  },
+  "licenseSyncSuccess": {
+    "message": "Llicència sincronitzada correctament"
+  },
+  "licenseUploadSuccess": {
+    "message": "Llicència pujada correctament"
+  },
+  "lastLicenseSync": {
+    "message": "Última sincronització de llicència"
+  },
+  "billingSyncHelp": {
+    "message": "Ajuda de sincronització de facturació"
+  },
+  "uploadLicense": {
+    "message": "Puja la llicència"
+  },
+  "projectPeopleDescription": {
+    "message": "Dona accés a aquest projecte a grups o persones."
+  },
+  "projectPeopleSelectHint": {
+    "message": "Escriu o selecciona persones o grups"
+  },
+  "projectServiceAccountsDescription": {
+    "message": "Dona accés a aquest projecte als comptes de servei."
+  },
+  "projectServiceAccountsSelectHint": {
+    "message": "Escriu o selecciona comptes de servei"
+  },
+  "projectEmptyPeopleAccessPolicies": {
+    "message": "Afegeix persones o grups per començar a col·laborar"
+  },
+  "projectEmptyServiceAccountAccessPolicies": {
+    "message": "Afig comptes de servei per concedir accés"
+  },
+  "canWrite": {
+    "message": "Es pot escriure"
+  },
+  "canReadWrite": {
+    "message": "Es pot llegir, escriure"
+  },
+  "groupSlashUser": {
+    "message": "Grup/Usuari"
+  },
   "lowKdfIterations": {
     "message": "Iteracions de KDF baixes"
   },
@@ -6090,5 +6202,26 @@
   },
   "changeKdfSettings": {
     "message": "Canvia la configuració de KDF"
+  },
+  "changeKdfLoggedOutWarning": {
+    "message": "Si continueu, es tancarà la sessió de la vostra sessió actual i us demanarà que torneu a iniciar sessió. Les sessions actives en altres dispositius poden continuar romanent actives fins a una hora. Us recomanem que exporteu la vostra caixa forta abans de canviar la configuració d'encriptació per evitar la pèrdua de dades."
+  },
+  "secretsManagerBeta": {
+    "message": "Administrador de secrets Beta"
+  },
+  "secretsManagerBetaDesc": {
+    "message": "Activa l'accés dels usuaris a l'administrador de secrets sense cap càrrec durant el programa beta."
+  },
+  "userAccessSecretsManager": {
+    "message": "Aquest usuari pot accedir a la beta de l'administrador de secrets"
+  },
+  "resolveTheErrorsBelowAndTryAgain": {
+    "message": "Resoleu els errors següents i torneu-ho a provar."
+  },
+  "description": {
+    "message": "Descripció"
+  },
+  "errorReadingImportFile": {
+    "message": "S'ha produït un error en intentar llegir el fitxer d'importació"
   }
 }

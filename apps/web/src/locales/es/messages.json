@@ -1157,6 +1157,19 @@
       }
     }
   },
+  "kdfMemory": {
+    "message": "Memoria KDF (MB)",
+    "description": "Memory refers to computer memory (RAM). MB is short for megabytes."
+  },
+  "argon2Warning": {
+    "message": "Establecer sus iteraciones, memorias y paralelismo KDF demasiado altos podría resultar en un mal rendimiento al iniciar sesión (y desbloquear) en dispositivos más lentos o antiguos. Recomendamos cambiarlos individualmente en pequeños incrementos y luego probar todos sus dispositivos."
+  },
+  "kdfParallelism": {
+    "message": "Paralelismo KDF"
+  },
+  "argon2Desc": {
+    "message": "Las iteraciones, memorias y paralelismos de KDF más altos pueden ayudar a proteger su contraseña maestra de ser calculada por un atacante."
+  },
   "changeKdf": {
     "message": "Modificar KDF"
   },
@@ -1234,6 +1247,9 @@
   },
   "importSuccess": {
     "message": "La información ha sido importada correctamente en tu caja fuerte."
+  },
+  "dataExportSuccess": {
+    "message": "Datos exportados con éxito"
   },
   "importWarning": {
     "message": "Estás importando datos a $ORGANIZATION$. Tus datos pueden ser compartidos con miembros de esta organización. ¿Quieres continuar?",
@@ -2043,6 +2059,9 @@
   },
   "manageSubscription": {
     "message": "Administrar suscripción"
+  },
+  "launchCloudSubscription": {
+    "message": "Iniciar suscripción en la nube"
   },
   "storage": {
     "message": "Almacenamiento"
@@ -5225,9 +5244,6 @@
   "billingSyncApiKeyRotated": {
     "message": "Token rotado."
   },
-  "billingSync": {
-    "message": "Facturación sincronizada"
-  },
   "billingSyncDesc": {
     "message": "La sincronización de facturación ofrece planes familiares gratuitos para los miembros y facilidades de facturación avanzada, conectando la caja fuerte autoalojada de Bitwarden al servidor en la nube de Bitwarden."
   },
@@ -5278,6 +5294,15 @@
   },
   "required": {
     "message": "requerido"
+  },
+  "characterMaximum": {
+    "message": "$MAX$ caracteres como máximo",
+    "placeholders": {
+      "max": {
+        "content": "$1",
+        "example": "100"
+      }
+    }
   },
   "idpSingleSignOnServiceUrlRequired": {
     "message": "Requerido si el ID de la entidad no es una URL."
@@ -5648,6 +5673,9 @@
   "customColor": {
     "message": "Color personalizado"
   },
+  "selectPlaceholder": {
+    "message": "-- Selecciona --"
+  },
   "multiSelectPlaceholder": {
     "message": "-- Escriba para filtrar --"
   },
@@ -5698,11 +5726,8 @@
   "secretProjectAssociationDescription": {
     "message": "Seleccione los proyectos con los que se asociará el secreto. Sólo los usuarios de la organización con acceso a estos proyectos podrán ver el secreto."
   },
-  "typeOrSelectProjects": {
-    "message": "Escriba o seleccione proyectos"
-  },
-  "typeOrSelectProject": {
-    "message": "Escriba o seleccione un proyecto"
+  "selectProjects": {
+    "message": "Seleccionar proyectos"
   },
   "project": {
     "message": "Proyecto"
@@ -5977,6 +6002,9 @@
   "collection": {
     "message": "Colección"
   },
+  "noCollection": {
+    "message": "Sin colecciones"
+  },
   "canView": {
     "message": "Puede ver"
   },
@@ -6082,6 +6110,90 @@
       }
     }
   },
+  "exportData": {
+    "message": "Exportar datos"
+  },
+  "exportingOrganizationSecretDataTitle": {
+    "message": "Exportando caja fuerte de la organización"
+  },
+  "exportingOrganizationSecretDataDescription": {
+    "message": "Solo se exportarán los secretos de la organización asociada con $ORGANIZATION$. No se incluirán elementos personales de otras organizaciones.",
+    "placeholders": {
+      "ORGANIZATION": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
+  "fileUpload": {
+    "message": "Subir archivo"
+  },
+  "acceptedFormats": {
+    "message": "Formatos aceptados:"
+  },
+  "copyPasteImportContents": {
+    "message": "Copiar y pegar contenido importado:"
+  },
+  "or": {
+    "message": "o"
+  },
+  "licenseAndBillingManagement": {
+    "message": "Gestión de licencias y facturación"
+  },
+  "automaticSync": {
+    "message": "Sincronización automática"
+  },
+  "manualUpload": {
+    "message": "Carga manual"
+  },
+  "manualUploadDesc": {
+    "message": "Si no quieres optar por sincronizar la facturación, sube manualmente tu licencia aquí."
+  },
+  "syncLicense": {
+    "message": "Sincronizar licencia"
+  },
+  "licenseSyncSuccess": {
+    "message": "Licencia sincronizada correctamente"
+  },
+  "licenseUploadSuccess": {
+    "message": "Licencia cargada correctamente"
+  },
+  "lastLicenseSync": {
+    "message": "Última sincronización de la licencia"
+  },
+  "billingSyncHelp": {
+    "message": "Ayuda de sincronización de facturación"
+  },
+  "uploadLicense": {
+    "message": "Subir licencia"
+  },
+  "projectPeopleDescription": {
+    "message": "Otorgar acceso a grupos o personas a este proyecto."
+  },
+  "projectPeopleSelectHint": {
+    "message": "Escriba o seleccione personas o grupos"
+  },
+  "projectServiceAccountsDescription": {
+    "message": "Otorgar acceso a las cuentas de servicio a este proyecto."
+  },
+  "projectServiceAccountsSelectHint": {
+    "message": "Escriba o seleccione cuentas de servicio"
+  },
+  "projectEmptyPeopleAccessPolicies": {
+    "message": "Añadir personas o grupos para empezar a colaborar"
+  },
+  "projectEmptyServiceAccountAccessPolicies": {
+    "message": "Añadir cuentas de servicio para conceder acceso"
+  },
+  "canWrite": {
+    "message": "Puede escribir"
+  },
+  "canReadWrite": {
+    "message": "Puede leer, escribir"
+  },
+  "groupSlashUser": {
+    "message": "Grupo/Usuario"
+  },
   "lowKdfIterations": {
     "message": "Iteraciones KDF bajas"
   },
@@ -6090,5 +6202,26 @@
   },
   "changeKdfSettings": {
     "message": "Cambiar ajustes de KDF"
+  },
+  "changeKdfLoggedOutWarning": {
+    "message": "Proceder le desconectará de su sesión actual, requiriendo que vuelva a iniciar sesión. Las sesiones activas en otros dispositivos pueden seguir estando activas durante hasta una hora. Recomendamos exportar su caja fuerte antes de cambiar su configuración de cifrado para prevenir la pérdida de datos."
+  },
+  "secretsManagerBeta": {
+    "message": "Administrador de secretos Beta"
+  },
+  "secretsManagerBetaDesc": {
+    "message": "Habilitar el acceso de usuario al Administrador de Secretos sin costo alguno durante el programa Beta."
+  },
+  "userAccessSecretsManager": {
+    "message": "Este usuario puede acceder al Administrador Secretos Beta"
+  },
+  "resolveTheErrorsBelowAndTryAgain": {
+    "message": "Corrija los siguientes errores e inténtelo de nuevo"
+  },
+  "description": {
+    "message": "Descripción"
+  },
+  "errorReadingImportFile": {
+    "message": "Ocurrió un error al intentar leer el archivo importado"
   }
 }
