@@ -1,6 +1,15 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { map, Observable, switchMap, Subject, takeUntil, combineLatest, startWith } from "rxjs";
+import {
+  map,
+  Observable,
+  switchMap,
+  Subject,
+  takeUntil,
+  combineLatest,
+  startWith,
+  first,
+} from "rxjs";
 
 import { DialogService } from "@bitwarden/components";
 
@@ -56,6 +65,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
       };
     })
   );
+
+  protected pageLoaded$ = this.completed$.pipe(first());
 
   constructor(
     private route: ActivatedRoute,
