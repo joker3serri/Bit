@@ -6392,5 +6392,8 @@
   },
   "errorReadingImportFile": {
     "message": "An error occurred when trying to read the import file"
+  },
+  "selectionIsRequired": {
+    "message": "Selection is required."
   }
 }
