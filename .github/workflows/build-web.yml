@@ -254,12 +254,12 @@ jobs:
         if: contains(matrix.registries, 'bitwarden') && env.is_publish_branch == 'true'
         env:
           IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
+          PROJECT_NAME: ${{ matrix.image_name }}
           DOCKER_CONTENT_TRUST: 1
           DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ steps.setup-dct.outputs.dct-delegate-repo-passphrase }}
         run: |
-          docker tag bitwardenprod.azurecr.io/$PROJECT_NAME:${{ env.IMAGE_TAG }} \
-            bitwarden/$PROJECT_NAME:${{ env.IMAGE_TAG }}
-          docker push bitwarden/$PROJECT_NAME:${{ env.IMAGE_TAG }}
+          docker tag bitwardenprod.azurecr.io/$PROJECT_NAME:$IMAGE_TAG bitwarden/$PROJECT_NAME:$IMAGE_TAG
+          docker push bitwarden/$PROJECT_NAME:$IMAGE_TAG
 
       - name: Log out of Docker
         run: docker logout
