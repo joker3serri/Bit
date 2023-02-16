@@ -144,10 +144,13 @@ jobs:
       matrix:
         include:
           - artifact_name: cloud-QA
+            registries: [bitwardenprod.azurecr.io, bitwardenqa.azurecr.io]
             image_name: web-qa-cloud
           - artifact_name: ee
+            registries: [bitwardenprod.azurecr.io, bitwardenqa.azurecr.io]
             image_name: web-ee
           - artifact_name: selfhosted-COMMERCIAL
+            registries: [bitwarden, bitwardenprod.azurecr.io, bitwardenqa.azurecr.io]
             image_name: web
     env:
       _VERSION: ${{ needs.setup.outputs.version }}
@@ -214,12 +217,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
           PROJECT_NAME: ${{ matrix.image_name }}
-        run: |
-          if [ "${{ env.is_publish_branch }}" == "true" ]; then
-            echo "tags=bitwardenqa.azurecr.io/${PROJECT_NAME}:${IMAGE_TAG},bitwardenprod.azurecr.io/${PROJECT_NAME}:${IMAGE_TAG},bitwarden/${PROJECT_NAME}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
-          else
-            echo "tags=bitwardenqa.azurecr.io/${PROJECT_NAME}:${IMAGE_TAG},bitwardenprod.azurecr.io/${PROJECT_NAME}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
-          fi
+        run: echo "tags=bitwardenqa.azurecr.io/${PROJECT_NAME}:${IMAGE_TAG},bitwardenprod.azurecr.io/${PROJECT_NAME}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
       ########## Build Image ##########
       - name: Extract artifact
@@ -251,6 +249,17 @@ jobs:
           tags: ${{ steps.tag-list.outputs.tags }}
           secrets: |
             "GH_PAT=${{ steps.retrieve-secret-pat.outputs.github-pat-bitwarden-devops-bot-repo-scope }}"
+
+      - name: Push to DockerHub
+        if: contains(matrix.docker_repos, 'bitwarden') && env.is_publish_branch == 'true'
+        env:
+          IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
+          DOCKER_CONTENT_TRUST: 1
+          DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE: ${{ steps.setup-dct.outputs.dct-delegate-repo-passphrase }}BS>
+        run: |
+          docker tag bitwardenprod.azurecr.io/$PROJECT_NAME:${{ env.IMAGE_TAG }} \
+            bitwarden/$PROJECT_NAME:${{ env.IMAGE_TAG }}
+          docker push bitwarden/$PROJECT_NAME:${{ env.IMAGE_TAG }}
 
       - name: Log out of Docker
         run: docker logout
