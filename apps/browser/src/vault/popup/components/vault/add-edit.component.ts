@@ -130,15 +130,7 @@ export class AddEditComponent extends BaseAddEditComponent {
           : tabs.filter((tab) => tab.url != null && tab.url !== "").map((tab) => tab.url);
     }
 
-    window.setTimeout(() => {
-      if (!this.editMode) {
-        if (this.cipher.name != null && this.cipher.name !== "") {
-          document.getElementById("loginUsername").focus();
-        } else {
-          document.getElementById("name").focus();
-        }
-      }
-    }, 200);
+    this.setFocus();
 
     if (this.popupUtilsService.inTab(window)) {
       this.popupUtilsService.enableCloseTabWarning();
@@ -251,5 +243,19 @@ export class AddEditComponent extends BaseAddEditComponent {
           ? []
           : this.collections.filter((c) => (c as any).checked).map((c) => c.id),
     });
+  }
+
+  private setFocus() {
+    window.setTimeout(() => {
+      if (this.editMode) {
+        return;
+      }
+
+      if (this.cipher.name != null && this.cipher.name !== "") {
+        document.getElementById("loginUsername").focus();
+      } else {
+        document.getElementById("name").focus();
+      }
+    }, 200);
   }
 }
