@@ -16,8 +16,8 @@ import { EventSystemUser } from "@bitwarden/common/enums/event-system-user";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { EventResponse } from "@bitwarden/common/models/response/event.response";
 
-import { BaseEventsComponent } from "../../common/base.events.component";
-import { EventService } from "../../core";
+import { BaseEventsComponent } from "../../../app/common/base.events.component";
+import { EventService } from "../../../app/core";
 
 const EVENT_SYSTEM_USER_TO_TRANSLATION: Record<EventSystemUser, string> = {
   [EventSystemUser.SCIM]: null, // SCIM acronym not able to be translated so just display SCIM

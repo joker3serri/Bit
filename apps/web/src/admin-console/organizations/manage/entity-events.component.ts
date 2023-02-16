@@ -9,7 +9,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { EventResponse } from "@bitwarden/common/models/response/event.response";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 
-import { EventService } from "../../core";
+import { EventService } from "../../../app/core";
 
 @Component({
   selector: "app-entity-events",

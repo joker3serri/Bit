@@ -6,7 +6,7 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { OrganizationPermissionsGuard } from "../../../admin-console/organizations/guards/org-permissions.guard";
 import { OrganizationRedirectGuard } from "../../../admin-console/organizations/guards/org-redirect.guard";
-import { EventsComponent } from "../manage/events.component";
+import { EventsComponent } from "../../../admin-console/organizations/manage/events.component";
 import { ExposedPasswordsReportComponent } from "../tools/exposed-passwords-report.component";
 import { InactiveTwoFactorReportComponent } from "../tools/inactive-two-factor-report.component";
 import { ReusedPasswordsReportComponent } from "../tools/reused-passwords-report.component";

@@ -28,9 +28,11 @@ import {
   SimpleDialogType,
 } from "@bitwarden/components";
 
-import { EntityUsersComponent } from "../../../app/organizations/manage/entity-users.component";
-import { CollectionDialogResult, openCollectionDialog } from "../../../app/organizations/shared";
-
+import { EntityUsersComponent } from "../manage/entity-users.component";
+import {
+  CollectionDialogResult,
+  openCollectionDialog,
+} from "../shared/components/collection-dialog";
 
 @Component({
   selector: "app-org-manage-collections",

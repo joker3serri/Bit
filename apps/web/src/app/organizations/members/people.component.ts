@@ -53,10 +53,10 @@ import {
   SimpleDialogType,
 } from "@bitwarden/components";
 
+import { EntityEventsComponent } from "../../../admin-console/organizations/manage/entity-events.component";
 import { BasePeopleComponent } from "../../common/base.people.component";
 import { GroupService } from "../core";
 import { OrganizationUserView } from "../core/views/organization-user.view";
-import { EntityEventsComponent } from "../manage/entity-events.component";
 
 import { BulkConfirmComponent } from "./components/bulk/bulk-confirm.component";
 import { BulkRemoveComponent } from "./components/bulk/bulk-remove.component";
