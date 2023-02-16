@@ -15,9 +15,9 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 import { OrganizationPermissionsGuard } from "../../admin-console/organizations/guards/org-permissions.guard";
 import { OrganizationRedirectGuard } from "../../admin-console/organizations/guards/org-redirect.guard";
 import { OrganizationLayoutComponent } from "../../admin-console/organizations/layouts/organization-layout.component";
+import { CollectionsComponent } from "../../admin-console/organizations/manage/collections.component";
 import { VaultModule } from "../../vault/org-vault/vault.module";
 
-import { CollectionsComponent } from "./manage/collections.component";
 import { GroupsComponent } from "./manage/groups.component";
 import { ManageComponent } from "./manage/manage.component";
 

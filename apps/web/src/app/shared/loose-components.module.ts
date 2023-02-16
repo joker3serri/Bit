@@ -4,6 +4,7 @@ import { PasswordRepromptComponent } from "../../../src/vault/components/passwor
 import { OrganizationSwitcherComponent } from "../../admin-console/components/organization-switcher.component";
 import { OrganizationCreateModule } from "../../admin-console/organizations/create/organization-create.module";
 import { OrganizationLayoutComponent } from "../../admin-console/organizations/layouts/organization-layout.component";
+import { CollectionsComponent as OrgManageCollectionsComponent } from "../../admin-console/organizations/manage/collections.component";
 import { AcceptEmergencyComponent } from "../../auth/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../../auth/accept-organization.component";
 import { HintComponent } from "../../auth/hint.component";
@@ -66,7 +67,6 @@ import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
 import { NavbarComponent } from "../layouts/navbar.component";
 import { ProductSwitcherModule } from "../layouts/product-switcher/product-switcher.module";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
-import { CollectionsComponent as OrgManageCollectionsComponent } from "../organizations/manage/collections.component";
 import { EntityEventsComponent as OrgEntityEventsComponent } from "../organizations/manage/entity-events.component";
 import { EventsComponent as OrgEventsComponent } from "../organizations/manage/events.component";
 import { ManageComponent as OrgManageComponent } from "../organizations/manage/manage.component";
