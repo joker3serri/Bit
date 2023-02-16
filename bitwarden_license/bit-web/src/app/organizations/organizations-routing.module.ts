@@ -11,6 +11,8 @@ import { SettingsComponent } from "@bitwarden/web-vault/app/organizations/settin
 import { ScimComponent } from "../../admin-console/organizations/manage/scim.component";
 import { SsoComponent } from "../auth/sso.component";
 
+import { DomainVerificationComponent } from "./manage/domain-verification/domain-verification.component";
+
 const routes: Routes = [
   {
     path: "organizations/:organizationId",
@@ -25,6 +27,14 @@ const routes: Routes = [
           organizationPermissions: canAccessSettingsTab,
         },
         children: [
+          {
+            path: "domain-verification",
+            component: DomainVerificationComponent,
+            canActivate: [OrganizationPermissionsGuard],
+            data: {
+              organizationPermissions: (org: Organization) => org.canManageDomainVerification,
+            },
+          },
           {
             path: "sso",
             component: SsoComponent,
