@@ -698,7 +698,14 @@
     "message": "Master password retype is required."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least 8 characters long."
+    "message": "Master password must be at least $VALUE$ characters long.",
+    "description": "The Master Password must be at least a specific number of characters long.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
   },
   "masterPassDoesntMatch": {
     "message": "Master password confirmation does not match."
@@ -6360,6 +6367,25 @@
   },
   "userAccessSecretsManager": {
     "message": "This user can access the Secrets Manager Beta"
+  },
+  "important": {
+    "message": "Important:"
+  },
+  "viewAll": {
+    "message": "View all"
+  },
+  "showingPortionOfTotal": {
+    "message": "Showing $PORTION$ of $TOTAL$",
+    "placeholders": {
+      "portion": {
+        "content": "$1",
+        "example": "2"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
   },
   "resolveTheErrorsBelowAndTryAgain": {
     "message": "Resolve the errors below and try again."
