@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { map, Observable, switchMap, Subject, takeUntil, combineLatest, startWith } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
@@ -62,12 +62,15 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private projectService: ProjectService,
     private secretService: SecretService,
     private serviceAccountService: ServiceAccountService,
     private dialogService: DialogService,
     private organizationService: OrganizationService
-  ) {}
+  ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+  }
 
   ngOnInit() {
     this.route.params
