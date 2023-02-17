@@ -1,6 +1,15 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { map, Observable, switchMap, Subject, takeUntil, combineLatest, startWith } from "rxjs";
+import {
+  map,
+  Observable,
+  switchMap,
+  Subject,
+  takeUntil,
+  combineLatest,
+  startWith,
+  distinct,
+} from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { DialogService } from "@bitwarden/components";
@@ -45,9 +54,6 @@ type Tasks = {
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
-  /**
-   * Number of items to show in tables
-   */
   private tableSize = 10;
   private organizationId: string;
   protected organizationName: string;
@@ -69,13 +75,22 @@ export class OverviewComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private organizationService: OrganizationService
   ) {
+    /**
+     * We want to remount the `sm-onboarding` component on route change.
+     * The component only toggles its visibility on init and on user dismissal.
+     */
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnInit() {
-    this.route.params
+    const orgId$ = this.route.params.pipe(
+      map((p) => p.organizationId),
+      distinct()
+    );
+
+    orgId$
       .pipe(
-        map((params) => this.organizationService.get(params.organizationId)),
+        map((orgId) => this.organizationService.get(orgId)),
         takeUntil(this.destroy$)
       )
       .subscribe((org) => {
@@ -83,19 +98,21 @@ export class OverviewComponent implements OnInit, OnDestroy {
         this.organizationName = org.name;
       });
 
-    this.view$ = combineLatest([
-      this.route.params,
+    const projects$ = combineLatest([
+      orgId$,
       this.projectService.project$.pipe(startWith(null)),
-      this.secretService.secret$.pipe(startWith(null)),
+    ]).pipe(switchMap(([orgId]) => this.projectService.getProjects(orgId)));
+
+    const secrets$ = combineLatest([orgId$, this.secretService.secret$.pipe(startWith(null))]).pipe(
+      switchMap(([orgId]) => this.secretService.getSecrets(orgId))
+    );
+
+    const serviceAccounts$ = combineLatest([
+      orgId$,
       this.serviceAccountService.serviceAccount$.pipe(startWith(null)),
-    ]).pipe(
-      switchMap(([{ organizationId }]) =>
-        Promise.all([
-          this.projectService.getProjects(organizationId),
-          this.secretService.getSecrets(organizationId),
-          this.serviceAccountService.getServiceAccounts(organizationId),
-        ])
-      ),
+    ]).pipe(switchMap(([orgId]) => this.serviceAccountService.getServiceAccounts(orgId)));
+
+    this.view$ = combineLatest([projects$, secrets$, serviceAccounts$]).pipe(
       map(([projects, secrets, serviceAccounts]) => {
         return {
           latestProjects: this.getRecentItems(projects, this.tableSize),

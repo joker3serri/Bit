@@ -35,38 +35,58 @@ export default {
   ],
 } as Meta;
 
-export const Empty: Story = (args) => ({
-  props: args,
+const Template: Story = (args) => ({
+  props: {
+    createServiceAccount: false,
+    importSecrets$: of(false),
+    createSecret: false,
+    createProject: false,
+    ...args,
+  },
   template: `
     <sm-onboarding title="Get started">
-        <sm-onboarding-task title="Foo"></sm-onboarding-task>
-        <sm-onboarding-task title="Bar"></sm-onboarding-task>
+      <sm-onboarding-task
+        [title]="'createServiceAccount' | i18n"
+        icon="bwi-cli"
+        [completed]="createServiceAccount"
+      >
+        <span>
+          {{ "downloadThe" | i18n }} <a bitLink routerLink="">{{ "smCLI" | i18n }}</a>
+        </span>
+      </sm-onboarding-task>
+      <sm-onboarding-task
+        [title]="'importSecrets' | i18n"
+        icon="bwi-download"
+        [completed]="importSecrets$ | async"
+      ></sm-onboarding-task>
+      <sm-onboarding-task
+        [title]="'createSecret' | i18n"
+        icon="bwi-key"
+        [completed]="createSecret"
+      ></sm-onboarding-task>
+      <sm-onboarding-task
+        [title]="'createProject' | i18n"
+        icon="bwi-collection"
+        [completed]="createProject"
+      ></sm-onboarding-task>
     </sm-onboarding>
   `,
 });
 
-export const Partial: Story = (args) => ({
-  props: args,
-  template: `
-      <sm-onboarding title="Get started">
-          <sm-onboarding-task title="Foo"></sm-onboarding-task>
-          <sm-onboarding-task title="Bar" [completed]="true"></sm-onboarding-task>
-      </sm-onboarding>
-    `,
-});
+export const Empty = Template.bind({});
 
-export const Full: Story = (args) => ({
-  props: {
-    completed$: of(true).pipe(delay(0), startWith(false)),
-    ...args,
-  },
-  template: `
-      <sm-onboarding title="Get started">
-          <sm-onboarding-task title="Bar" [completed]="true"></sm-onboarding-task>
-          <sm-onboarding-task title="Bar" [completed]="true"></sm-onboarding-task>
-          <sm-onboarding-task title="Bar" [completed]="true"></sm-onboarding-task>
-          <sm-onboarding-task title="Bar" [completed]="true"></sm-onboarding-task>
-          <sm-onboarding-task title="Bar" [completed]="completed$ | async"></sm-onboarding-task>
-      </sm-onboarding>
-    `,
-});
+export const Partial = Template.bind({});
+Partial.args = {
+  ...Template.args,
+  createServiceAccount: true,
+  createProject: true,
+};
+
+export const Full = Template.bind({});
+Full.args = {
+  ...Template.args,
+  createServiceAccount: true,
+  createProject: true,
+  createSecret: true,
+  importSecrets$: of(true).pipe(delay(0), startWith(false)),
+};
