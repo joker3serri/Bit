@@ -277,6 +277,7 @@ export class CurrentTabComponent implements OnInit, OnDestroy {
 
   async dismissCallout() {
     await this.stateService.setDismissedAutofillCallout(true);
+    this.showHowToAutofill = false;
   }
 
   private async setCallout() {
