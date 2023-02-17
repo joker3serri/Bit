@@ -1,5 +1,6 @@
 import { RouterModule } from "@angular/router";
 import { Meta, Story, moduleMetadata } from "@storybook/angular";
+import { delay, of, startWith } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { LinkModule, IconModule, ProgressModule } from "@bitwarden/components";
@@ -55,14 +56,17 @@ export const Partial: Story = (args) => ({
 });
 
 export const Full: Story = (args) => ({
-  props: args,
+  props: {
+    completed$: of(true).pipe(delay(0), startWith(false)),
+    ...args,
+  },
   template: `
       <sm-onboarding title="Get started">
           <sm-onboarding-task title="Bar" [completed]="true"></sm-onboarding-task>
           <sm-onboarding-task title="Bar" [completed]="true"></sm-onboarding-task>
           <sm-onboarding-task title="Bar" [completed]="true"></sm-onboarding-task>
           <sm-onboarding-task title="Bar" [completed]="true"></sm-onboarding-task>
-          <sm-onboarding-task title="Bar" [completed]="true"></sm-onboarding-task>
+          <sm-onboarding-task title="Bar" [completed]="completed$ | async"></sm-onboarding-task>
       </sm-onboarding>
     `,
 });
