@@ -6146,6 +6146,9 @@
   "lastChecked": {
     "message": "Last checked"
   },
+  "editDomain": {
+    "message": "Edit domain"
+  },
   "domainFormInvalid": {
     "message": "There are form errors that need your attention"
   },
