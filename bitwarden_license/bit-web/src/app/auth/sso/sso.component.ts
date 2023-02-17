@@ -256,10 +256,10 @@ export class SsoComponent implements OnInit, OnDestroy {
       this.readOutErrors();
       return;
     }
-
     const request = new OrganizationSsoRequest();
     request.enabled = this.enabledCtrl.value;
-    request.identifier = this.ssoIdentifierCtrl.value;
+    // Return null instead of empty string to avoid duplicate id errors in database
+    request.identifier = this.ssoIdentifierCtrl.value === "" ? null : this.ssoIdentifierCtrl.value;
     request.data = SsoConfigApi.fromView(this.ssoConfigForm.getRawValue());
 
     this.formPromise = this.organizationApiService.updateSso(this.organizationId, request);
