@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/bitwarden/brand/master/screenshots/apps-combo-logo.png" alt="Bitwarden" />
+  <img src="https://raw.githubusercontent.com/bitwarden/brand/master/screenshots/apps-combo.png" alt="Bitwarden" />
+  <picture>
+      <source srcset="https://github.com/bitwarden/brand/raw/master/logos/logo-horizontal.svg" media="(prefers-color-scheme: light),(prefers-color-scheme: dark)" class="source-dark">
+      <img src="https://github.com/bitwarden/brand/raw/master/logos/logo-horizontal-white.svg" width="77%" alt="Bitwarden" style="visibility:visible;max-width:100%;">
+  </picture>
 </p>
 <p align="center">
   <a href="https://github.com/bitwarden/clients/actions/workflows/build-browser.yml?query=branch:master" target="_blank">
