@@ -5,7 +5,7 @@ import { BrowserApi } from "../../browser/browserApi";
 
 @Injectable()
 export class PopupUtilsService {
-  private tabCloseSubscription: Subscription;
+  private unloadSubscription: Subscription;
 
   constructor(private privateMode: boolean = false) {}
 
@@ -93,7 +93,7 @@ export class PopupUtilsService {
   enableCloseTabWarning() {
     this.disableCloseTabWarning();
 
-    this.tabCloseSubscription = fromEvent(window, "beforeunload").subscribe(
+    this.unloadSubscription = fromEvent(window, "beforeunload").subscribe(
       (e: BeforeUnloadEvent) => {
         // Recommended method but not widely supported
         e.preventDefault();
@@ -113,6 +113,6 @@ export class PopupUtilsService {
    * Disables the warning enabled by enableCloseTabWarning.
    */
   disableCloseTabWarning() {
-    this.tabCloseSubscription?.unsubscribe();
+    this.unloadSubscription?.unsubscribe();
   }
 }
