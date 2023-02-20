@@ -6,22 +6,22 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 
 import { SecretService } from "../../secrets/secret.service";
 
-export interface SecretDeletePermanentlyOperation {
+export interface SecretHardDeleteOperation {
   secretIds: string[];
   organizationId: string;
 }
 
 @Component({
-  selector: "sm-secret-delete-permanently-dialog",
-  templateUrl: "./secret-delete-permanently.component.html",
+  selector: "sm-secret-hard-delete-dialog",
+  templateUrl: "./secret-hard-delete.component.html",
 })
-export class SecretDeletePermanentlyDialogComponent {
+export class SecretHardDeleteDialogComponent {
   constructor(
     public dialogRef: DialogRef,
     private secretService: SecretService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    @Inject(DIALOG_DATA) public data: SecretDeletePermanentlyOperation
+    @Inject(DIALOG_DATA) public data: SecretHardDeleteOperation
   ) {}
 
   get title() {

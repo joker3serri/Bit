@@ -8,9 +8,9 @@ import { SecretListView } from "../models/view/secret-list.view";
 import { SecretService } from "../secrets/secret.service";
 
 import {
-  SecretDeletePermanentlyDialogComponent,
-  SecretDeletePermanentlyOperation,
-} from "./dialog/secret-delete-permanently.component";
+  SecretHardDeleteDialogComponent,
+  SecretHardDeleteOperation,
+} from "./dialog/secret-hard-delete.component";
 import {
   SecretRestoreDialogComponent,
   SecretRestoreOperation,
@@ -47,15 +47,12 @@ export class TrashComponent implements OnInit {
   }
 
   openDeleteSecret(secretIds: string[]) {
-    this.dialogService.open<unknown, SecretDeletePermanentlyOperation>(
-      SecretDeletePermanentlyDialogComponent,
-      {
-        data: {
-          secretIds: secretIds,
-          organizationId: this.organizationId,
-        },
-      }
-    );
+    this.dialogService.open<unknown, SecretHardDeleteOperation>(SecretHardDeleteDialogComponent, {
+      data: {
+        secretIds: secretIds,
+        organizationId: this.organizationId,
+      },
+    });
   }
 
   openRestoreSecret(secretIds: string[]) {
