@@ -35,25 +35,12 @@ export class TrashService {
   }
 
   async delete(organizationId: string, secretIds: string[]) {
-    const responseErrors = await this.trashApiService.deleteSecrets(organizationId, secretIds);
-
-    // TODO waiting to hear back on how to display multiple errors.
-    // for now send as a list of strings to be displayed in toast.
-    if (responseErrors?.length >= 1) {
-      throw new Error(responseErrors.join(","));
-    }
-
+    await this.trashApiService.deleteSecrets(organizationId, secretIds);
     this._secret.next(null);
   }
 
   async restore(organizationId: string, secretIds: string[]) {
-    const responseErrors = await this.trashApiService.restoreSecrets(organizationId, secretIds);
-
-    // TODO waiting to hear back on how to display multiple errors.
-    // for now send as a list of strings to be displayed in toast.
-    if (responseErrors?.length >= 1) {
-      throw new Error(responseErrors.join(","));
-    }
+    await this.trashApiService.restoreSecrets(organizationId, secretIds);
 
     this._secret.next(null);
   }
