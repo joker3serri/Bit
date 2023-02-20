@@ -66,7 +66,8 @@ import {
   MemberDialogTab,
   openUserAddEditDialog,
 } from "../../../app/organizations/members/components/member-dialog";
-import { ResetPasswordComponent } from "../../../app/organizations/members/components/reset-password.component";
+
+import { ResetPasswordComponent } from "./components/reset-password.component";
 
 @Component({
   selector: "app-org-people",

@@ -1,2 +1,3 @@
 export * from "./shared-organization.module";
-export * from "./components/collection-dialog";
+// TODO Enable the below export when shared folder migration is complete
+//export * from "./components/collection-dialog";
