@@ -2,9 +2,6 @@ import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
-import { SecretListBulkActionsView } from "../models/view/secret-list-bulk-actions.view";
-import { SecretListItemActionsView } from "../models/view/secret-list-item-actions.view";
-import { SecretListNoItemsView } from "../models/view/secret-list-no-items.view";
 import { SecretListView } from "../models/view/secret-list.view";
 
 @Component({
@@ -22,19 +19,11 @@ export class SecretsListComponent implements OnDestroy {
   }
   private _secrets: SecretListView[];
 
-  @Input()
-  protected itemActions: SecretListItemActionsView;
-
-  @Input()
-  protected noItemsView: SecretListNoItemsView;
-
-  @Input()
-  protected bulkActions: SecretListBulkActionsView;
+  @Input() trash: boolean;
 
   @Output() editSecretEvent = new EventEmitter<string>();
   @Output() copySecretNameEvent = new EventEmitter<string>();
   @Output() copySecretValueEvent = new EventEmitter<string>();
-  @Output() projectsEvent = new EventEmitter<string>();
   @Output() onSecretCheckedEvent = new EventEmitter<string[]>();
   @Output() deleteSecretsEvent = new EventEmitter<string[]>();
   @Output() newSecretEvent = new EventEmitter();

@@ -5,22 +5,5 @@
   (deleteSecretsEvent)="openDeleteSecret($event)"
   (restoreSecretsEvent)="openRestoreSecret($event)"
   [secrets]="secrets$ | async"
-  [itemActions]="{
-    editSecret: false,
-    copyName: true,
-    copyValue: true,
-    projects: false,
-    restore: true,
-    delete: true
-  }"
-  [noItemsView]="{
-    title: 'secretsNoItemsTitle' | i18n,
-    description: 'secretsTrashNoItemsMessage' | i18n,
-    showNewSecretButton: false
-  }"
-  [bulkActions]="{
-    projects: true,
-    restore: true,
-    delete: true
-  }"
+  [trash]="true"
 ></sm-secrets-list>
