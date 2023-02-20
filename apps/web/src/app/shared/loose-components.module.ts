@@ -7,6 +7,8 @@ import { OrganizationLayoutComponent } from "../../admin-console/organizations/l
 import { CollectionsComponent as OrgManageCollectionsComponent } from "../../admin-console/organizations/manage/collections.component";
 import { EntityEventsComponent as OrgEntityEventsComponent } from "../../admin-console/organizations/manage/entity-events.component";
 import { EventsComponent as OrgEventsComponent } from "../../admin-console/organizations/manage/events.component";
+import { ManageComponent as OrgManageComponent } from "../../admin-console/organizations/manage/manage.component";
+import { UserConfirmComponent as OrgUserConfirmComponent } from "../../admin-console/organizations/manage/user-confirm.component";
 import { AcceptEmergencyComponent } from "../../auth/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../../auth/accept-organization.component";
 import { HintComponent } from "../../auth/hint.component";
@@ -69,8 +71,6 @@ import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
 import { NavbarComponent } from "../layouts/navbar.component";
 import { ProductSwitcherModule } from "../layouts/product-switcher/product-switcher.module";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
-import { ManageComponent as OrgManageComponent } from "../organizations/manage/manage.component";
-import { UserConfirmComponent as OrgUserConfirmComponent } from "../organizations/manage/user-confirm.component";
 import { AcceptFamilySponsorshipComponent } from "../organizations/sponsorships/accept-family-sponsorship.component";
 import { FamiliesForEnterpriseSetupComponent } from "../organizations/sponsorships/families-for-enterprise-setup.component";
 import { ExposedPasswordsReportComponent as OrgExposedPasswordsReportComponent } from "../organizations/tools/exposed-passwords-report.component";
