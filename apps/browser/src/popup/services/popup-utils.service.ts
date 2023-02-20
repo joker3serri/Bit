@@ -1,10 +1,11 @@
 import { Injectable } from "@angular/core";
+import { fromEvent, Subscription } from "rxjs";
 
 import { BrowserApi } from "../../browser/browserApi";
 
 @Injectable()
 export class PopupUtilsService {
-  private tabCloseWarningCallback: (e: BeforeUnloadEvent) => string;
+  private tabCloseSubscription: Subscription;
 
   constructor(private privateMode: boolean = false) {}
 
@@ -92,26 +93,26 @@ export class PopupUtilsService {
   enableCloseTabWarning() {
     this.disableCloseTabWarning();
 
-    this.tabCloseWarningCallback = (e: BeforeUnloadEvent) => {
-      // Recommended method but not widely supported
-      e.preventDefault();
+    this.tabCloseSubscription = fromEvent(window, "beforeunload").subscribe(
+      (e: BeforeUnloadEvent) => {
+        // Recommended method but not widely supported
+        e.preventDefault();
 
-      // Modern browsers do not display this message, it just needs to be a non-nullish value
-      // Exact wording is determined by the browser
-      const confirmationMessage = "";
+        // Modern browsers do not display this message, it just needs to be a non-nullish value
+        // Exact wording is determined by the browser
+        const confirmationMessage = "";
 
-      // Older methods with better support
-      e.returnValue = confirmationMessage;
-      return confirmationMessage;
-    };
-
-    window.addEventListener("beforeunload", this.tabCloseWarningCallback);
+        // Older methods with better support
+        e.returnValue = confirmationMessage;
+        return confirmationMessage;
+      }
+    );
   }
 
   /**
    * Disables the warning enabled by enableCloseTabWarning.
    */
   disableCloseTabWarning() {
-    window.removeEventListener("beforeunload", this.tabCloseWarningCallback);
+    this.tabCloseSubscription?.unsubscribe();
   }
 }
