@@ -5,15 +5,16 @@ import { combineLatestWith, Observable, startWith, switchMap } from "rxjs";
 import { DialogService } from "@bitwarden/components";
 
 import { SecretListView } from "../models/view/secret-list.view";
+import { SecretService } from "../secrets/secret.service";
+
 import {
-  SecretDeleteDialogComponent,
-  SecretDeleteOperation,
-} from "../secrets/dialog/secret-delete.component";
+  SecretDeletePermanentlyDialogComponent,
+  SecretDeletePermanentlyOperation,
+} from "./dialog/secret-delete-permanently.component";
 import {
   SecretRestoreDialogComponent,
   SecretRestoreOperation,
-} from "../secrets/dialog/secret-restore.component";
-import { SecretService } from "../secrets/secret.service";
+} from "./dialog/secret-restore.component";
 
 @Component({
   selector: "sm-trash",
@@ -46,13 +47,15 @@ export class TrashComponent implements OnInit {
   }
 
   openDeleteSecret(secretIds: string[]) {
-    this.dialogService.open<unknown, SecretDeleteOperation>(SecretDeleteDialogComponent, {
-      data: {
-        secretIds: secretIds,
-        hardDelete: true,
-        organizationId: this.organizationId,
-      },
-    });
+    this.dialogService.open<unknown, SecretDeletePermanentlyOperation>(
+      SecretDeletePermanentlyDialogComponent,
+      {
+        data: {
+          secretIds: secretIds,
+          organizationId: this.organizationId,
+        },
+      }
+    );
   }
 
   openRestoreSecret(secretIds: string[]) {

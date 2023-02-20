@@ -4,7 +4,7 @@ import { Component, Inject } from "@angular/core";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 
-import { SecretService } from "../secret.service";
+import { SecretService } from "../../secrets/secret.service";
 
 export interface SecretRestoreOperation {
   secretIds: string[];
