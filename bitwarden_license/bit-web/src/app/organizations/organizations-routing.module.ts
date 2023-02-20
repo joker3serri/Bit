@@ -9,7 +9,7 @@ import { OrganizationLayoutComponent } from "@bitwarden/web-vault/admin-console/
 import { SettingsComponent } from "@bitwarden/web-vault/app/organizations/settings/settings.component";
 
 import { ScimComponent } from "../../admin-console/organizations/manage/scim.component";
-import { SsoComponent } from "../auth/sso.component";
+import { SsoComponent } from "../auth/sso/sso.component";
 
 import { DomainVerificationComponent } from "./manage/domain-verification/domain-verification.component";
 
