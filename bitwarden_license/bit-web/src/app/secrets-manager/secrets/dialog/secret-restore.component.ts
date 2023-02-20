@@ -4,7 +4,6 @@ import { Component, Inject } from "@angular/core";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 
-import { TrashService } from "../../trash/services/trash.service";
 import { SecretService } from "../secret.service";
 
 export interface SecretRestoreOperation {
@@ -22,7 +21,6 @@ export class SecretRestoreDialogComponent {
     private secretService: SecretService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private trashService: TrashService,
     @Inject(DIALOG_DATA) public data: SecretRestoreOperation
   ) {}
 
@@ -32,7 +30,7 @@ export class SecretRestoreDialogComponent {
 
   restore = async () => {
     let message = "";
-    await this.trashService.restore(this.data.organizationId, this.data.secretIds);
+    await this.secretService.restoreTrashed(this.data.organizationId, this.data.secretIds);
     message =
       this.data.secretIds.length === 1
         ? "secretRestoredSuccessToast"

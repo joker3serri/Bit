@@ -13,8 +13,7 @@ import {
   SecretRestoreDialogComponent,
   SecretRestoreOperation,
 } from "../secrets/dialog/secret-restore.component";
-
-import { TrashService } from "./services/trash.service";
+import { SecretService } from "../secrets/secret.service";
 
 @Component({
   selector: "sm-trash",
@@ -27,12 +26,12 @@ export class TrashComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private trashService: TrashService,
+    private secretService: SecretService,
     private dialogService: DialogService
   ) {}
 
   ngOnInit() {
-    this.secrets$ = this.trashService.secret$.pipe(
+    this.secrets$ = this.secretService.secret$.pipe(
       startWith(null),
       combineLatestWith(this.route.params),
       switchMap(async ([_, params]) => {
@@ -43,7 +42,7 @@ export class TrashComponent implements OnInit {
   }
 
   private async getSecrets(): Promise<SecretListView[]> {
-    return await this.trashService.getSecrets(this.organizationId);
+    return await this.secretService.getTrashedSecrets(this.organizationId);
   }
 
   openDeleteSecret(secretIds: string[]) {
