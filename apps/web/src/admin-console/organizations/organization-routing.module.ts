@@ -20,7 +20,6 @@ import { GroupsComponent } from "../../admin-console/organizations/manage/groups
 import { ManageComponent } from "../../admin-console/organizations/manage/manage.component";
 import { VaultModule } from "../../vault/org-vault/vault.module";
 
-
 const routes: Routes = [
   {
     path: ":organizationId",
@@ -45,11 +44,12 @@ const routes: Routes = [
       },
       {
         path: "settings",
-        loadChildren: () => import("./settings").then((m) => m.OrganizationSettingsModule),
+        loadChildren: () =>
+          import("../../app/organizations/settings").then((m) => m.OrganizationSettingsModule),
       },
       {
         path: "members",
-        loadChildren: () => import("./members").then((m) => m.MembersModule),
+        loadChildren: () => import("../../app/organizations/members").then((m) => m.MembersModule),
       },
       {
         path: "groups",
@@ -76,7 +76,7 @@ const routes: Routes = [
       {
         path: "reporting",
         loadChildren: () =>
-          import("./reporting/organization-reporting.module").then(
+          import("../../app/organizations/reporting/organization-reporting.module").then(
             (m) => m.OrganizationReportingModule
           ),
       },

@@ -5,6 +5,7 @@ import { AuthGuard } from "@bitwarden/angular/auth/guards/auth.guard";
 import { LockGuard } from "@bitwarden/angular/auth/guards/lock.guard";
 import { UnauthGuard } from "@bitwarden/angular/auth/guards/unauth.guard";
 
+import { OrganizationModule } from "../admin-console/organizations/organization.module";
 import { AcceptEmergencyComponent } from "../auth/accept-emergency.component";
 import { AcceptOrganizationComponent } from "../auth/accept-organization.component";
 import { HintComponent } from "../auth/hint.component";
@@ -31,7 +32,6 @@ import { TrialInitiationComponent } from "./accounts/trial-initiation/trial-init
 import { HomeGuard } from "./guards/home.guard";
 import { FrontendLayoutComponent } from "./layouts/frontend-layout.component";
 import { UserLayoutComponent } from "./layouts/user-layout.component";
-import { OrganizationModule } from "./organizations/organization.module";
 import { AcceptFamilySponsorshipComponent } from "./organizations/sponsorships/accept-family-sponsorship.component";
 import { FamiliesForEnterpriseSetupComponent } from "./organizations/sponsorships/families-for-enterprise-setup.component";
 import { ReportsModule } from "./reports";
