@@ -54,20 +54,19 @@ import {
 } from "@bitwarden/components";
 
 import { EntityEventsComponent } from "../../../admin-console/organizations/manage/entity-events.component";
-import { BasePeopleComponent } from "../../common/base.people.component";
-import { GroupService } from "../core";
-import { OrganizationUserView } from "../core/views/organization-user.view";
-
-import { BulkConfirmComponent } from "./components/bulk/bulk-confirm.component";
-import { BulkRemoveComponent } from "./components/bulk/bulk-remove.component";
-import { BulkRestoreRevokeComponent } from "./components/bulk/bulk-restore-revoke.component";
-import { BulkStatusComponent } from "./components/bulk/bulk-status.component";
+import { BasePeopleComponent } from "../../../app/common/base.people.component";
+import { GroupService } from "../../../app/organizations/core";
+import { OrganizationUserView } from "../../../app/organizations/core/views/organization-user.view";
+import { BulkConfirmComponent } from "../../../app/organizations/members/components/bulk/bulk-confirm.component";
+import { BulkRemoveComponent } from "../../../app/organizations/members/components/bulk/bulk-remove.component";
+import { BulkRestoreRevokeComponent } from "../../../app/organizations/members/components/bulk/bulk-restore-revoke.component";
+import { BulkStatusComponent } from "../../../app/organizations/members/components/bulk/bulk-status.component";
 import {
   MemberDialogResult,
   MemberDialogTab,
   openUserAddEditDialog,
-} from "./components/member-dialog";
-import { ResetPasswordComponent } from "./components/reset-password.component";
+} from "../../../app/organizations/members/components/member-dialog";
+import { ResetPasswordComponent } from "../../../app/organizations/members/components/reset-password.component";
 
 @Component({
   selector: "app-org-people",
