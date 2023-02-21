@@ -6,6 +6,7 @@ import { AnonAddyForwarder } from "../email-forwarders/anon-addy-forwarder";
 import { DuckDuckGoForwarder } from "../email-forwarders/duck-duck-go-forwarder";
 import { FastmailForwarder } from "../email-forwarders/fastmail-forwarder";
 import { FirefoxRelayForwarder } from "../email-forwarders/firefox-relay-forwarder";
+import { ForwardEmailForwarder } from "../email-forwarders/forward-email-forwarder";
 import { Forwarder } from "../email-forwarders/forwarder";
 import { ForwarderOptions } from "../email-forwarders/forwarder-options";
 import { SimpleLoginForwarder } from "../email-forwarders/simple-login-forwarder";
@@ -19,6 +20,7 @@ const DefaultOptions = {
   catchallType: "random",
   forwardedService: "",
   forwardedAnonAddyDomain: "anonaddy.me",
+  forwardedForwardEmailDomain: "hideaddress.net",
 };
 
 export class UsernameGenerationService implements BaseUsernameGenerationService {
@@ -134,6 +136,10 @@ export class UsernameGenerationService implements BaseUsernameGenerationService 
     } else if (o.forwardedService === "duckduckgo") {
       forwarder = new DuckDuckGoForwarder();
       forwarderOptions.apiKey = o.forwardedDuckDuckGoToken;
+    } else if (o.forwardedService === "forwardemail") {
+      forwarder = new ForwardEmailForwarder();
+      forwarderOptions.apiKey = o.forwardedForwardEmailApiToken;
+      forwarderOptions.forwardemail.domain = o.forwardedForwardEmailDomain;
     }
 
     if (forwarder == null) {
