@@ -62,12 +62,8 @@ const routes: Routes = [
         loadChildren: () => SettingsModule,
       },
       {
-        path: "overview",
-        loadChildren: () => OverviewModule,
-      },
-      {
         path: "",
-        redirectTo: "overview",
+        loadChildren: () => OverviewModule,
         pathMatch: "full",
       },
     ],
