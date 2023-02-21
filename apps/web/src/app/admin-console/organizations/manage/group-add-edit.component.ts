@@ -15,7 +15,7 @@ import { CollectionDetailsResponse } from "@bitwarden/common/models/response/col
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { DialogService } from "@bitwarden/components";
 
-import { GroupService, GroupView } from "../../../app/organizations/core";
+import { GroupService, GroupView } from "../../../organizations/core";
 import {
   AccessItemType,
   AccessItemValue,

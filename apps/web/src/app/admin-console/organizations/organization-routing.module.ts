@@ -12,13 +12,13 @@ import {
 } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
+import { VaultModule } from "../../../vault/org-vault/vault.module";
 import { OrganizationPermissionsGuard } from "../../admin-console/organizations/guards/org-permissions.guard";
 import { OrganizationRedirectGuard } from "../../admin-console/organizations/guards/org-redirect.guard";
 import { OrganizationLayoutComponent } from "../../admin-console/organizations/layouts/organization-layout.component";
 import { CollectionsComponent } from "../../admin-console/organizations/manage/collections.component";
 import { GroupsComponent } from "../../admin-console/organizations/manage/groups.component";
 import { ManageComponent } from "../../admin-console/organizations/manage/manage.component";
-import { VaultModule } from "../../vault/org-vault/vault.module";
 
 const routes: Routes = [
   {
@@ -45,11 +45,11 @@ const routes: Routes = [
       {
         path: "settings",
         loadChildren: () =>
-          import("../../app/organizations/settings").then((m) => m.OrganizationSettingsModule),
+          import("../../organizations/settings").then((m) => m.OrganizationSettingsModule),
       },
       {
         path: "members",
-        loadChildren: () => import("../../app/organizations/members").then((m) => m.MembersModule),
+        loadChildren: () => import("../../organizations/members").then((m) => m.MembersModule),
       },
       {
         path: "groups",
@@ -76,7 +76,7 @@ const routes: Routes = [
       {
         path: "reporting",
         loadChildren: () =>
-          import("../../app/organizations/reporting/organization-reporting.module").then(
+          import("../../organizations/reporting/organization-reporting.module").then(
             (m) => m.OrganizationReportingModule
           ),
       },

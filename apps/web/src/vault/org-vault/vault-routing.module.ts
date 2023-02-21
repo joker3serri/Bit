@@ -3,7 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 
 import { canAccessVaultTab } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 
-import { OrganizationPermissionsGuard } from "../../app/organizations/guards/org-permissions.guard";
+import { OrganizationPermissionsGuard } from "../../app/admin-console/organizations/guards/org-permissions.guard";
 
 import { VaultComponent } from "./vault.component";
 const routes: Routes = [

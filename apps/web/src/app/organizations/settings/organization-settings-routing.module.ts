@@ -4,8 +4,8 @@ import { RouterModule, Routes } from "@angular/router";
 import { canAccessSettingsTab } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { OrganizationPermissionsGuard } from "../../../admin-console/organizations/guards/org-permissions.guard";
-import { OrganizationRedirectGuard } from "../../../admin-console/organizations/guards/org-redirect.guard";
+import { OrganizationPermissionsGuard } from "../../admin-console/organizations/guards/org-permissions.guard";
+import { OrganizationRedirectGuard } from "../../admin-console/organizations/guards/org-redirect.guard";
 import { PoliciesComponent } from "../policies";
 
 import { AccountComponent } from "./account.component";

@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 
-import { LooseComponentsModule, SharedModule } from "../../app/shared";
+import { LooseComponentsModule, SharedModule } from "../../shared";
 
 import { AdjustSubscription } from "./adjust-subscription.component";
 import { BillingSyncApiKeyComponent } from "./billing-sync-api-key.component";

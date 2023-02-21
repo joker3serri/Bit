@@ -9,7 +9,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { PaymentResponse } from "@bitwarden/common/billing/models/response/payment.response";
 import { StorageRequest } from "@bitwarden/common/models/request/storage.request";
 
-import { PaymentComponent } from "../../billing/settings/payment.component";
+import { PaymentComponent } from "../billing/settings/payment.component";
 
 @Component({
   selector: "app-adjust-storage",

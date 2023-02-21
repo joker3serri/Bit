@@ -26,7 +26,7 @@ import {
   CollectionDialogResult,
   CollectionDialogTabType,
   openCollectionDialog,
-} from "../../app/organizations/shared/components/collection-dialog/collection-dialog.component";
+} from "../../app/admin-console/organizations/shared/components/collection-dialog";
 import {
   BulkDeleteDialogResult,
   openBulkDeleteDialog,

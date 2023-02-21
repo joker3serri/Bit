@@ -3,7 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { OrganizationPermissionsGuard } from "../../guards/org-permissions.guard";
+import { OrganizationPermissionsGuard } from "../../../admin-console/organizations/guards/org-permissions.guard";
 
 import { OrganizationExportComponent } from "./org-export.component";
 import { OrganizationImportComponent } from "./org-import.component";
