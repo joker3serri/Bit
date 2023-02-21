@@ -27,6 +27,7 @@ import { VaultComponent } from "./vault.component";
     LooseComponentsModule,
     BulkDialogsModule,
     BreadcrumbsModule,
+    VaultItemsModule,
   ],
   declarations: [VaultComponent, VaultItemsComponent, VaultHeaderComponent],
   exports: [VaultComponent],
