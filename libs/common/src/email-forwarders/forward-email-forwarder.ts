@@ -31,7 +31,7 @@ export class ForwardEmailForwarder implements Forwarder {
     const response = await apiService.nativeFetch(request);
     if (response.status === 200 || response.status === 201) {
       const json = await response.json();
-      return json?.alias?.name + "@" + options.forwardemail.domain;
+      return json?.name + "@" + (json?.domain?.name || options.forwardemail.domain);
     }
     if (response.status === 401) {
       throw "Invalid Forward Email API key.";
