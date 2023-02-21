@@ -162,7 +162,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.dialogService.open<unknown, SecretDeleteOperation>(SecretDeleteDialogComponent, {
       data: {
         secretIds: secretIds,
-        organizationId: this.organizationId,
       },
     });
   }

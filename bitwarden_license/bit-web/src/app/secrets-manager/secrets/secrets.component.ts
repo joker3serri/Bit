@@ -61,7 +61,6 @@ export class SecretsComponent implements OnInit {
     this.dialogService.open<unknown, SecretDeleteOperation>(SecretDeleteDialogComponent, {
       data: {
         secretIds: secretIds,
-        organizationId: this.organizationId,
       },
     });
   }

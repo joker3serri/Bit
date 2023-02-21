@@ -8,7 +8,6 @@ import { SecretService } from "../secret.service";
 
 export interface SecretDeleteOperation {
   secretIds: string[];
-  organizationId: string;
 }
 
 @Component({
