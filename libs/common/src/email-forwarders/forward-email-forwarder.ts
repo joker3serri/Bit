@@ -38,6 +38,9 @@ export class ForwardEmailForwarder implements Forwarder {
     }
     try {
       const json = await response.json();
+      if (json?.message != null) {
+        throw "Forward Email error:" + json.message;
+      }
       if (json?.error != null) {
         throw "Forward Email error:" + json.error;
       }
