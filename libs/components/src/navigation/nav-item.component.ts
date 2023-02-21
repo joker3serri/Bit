@@ -20,7 +20,7 @@ export class NavItemComponent extends NavBaseComponent {
     return this._active && !this.hideActiveStyles;
   }
   protected rlaOptions: IsActiveMatchOptions = {
-    paths: "exact",
+    paths: "subset",
     queryParams: "exact",
     fragment: "ignored",
     matrixParams: "ignored",
