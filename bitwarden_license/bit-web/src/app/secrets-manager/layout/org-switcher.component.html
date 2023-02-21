@@ -3,7 +3,7 @@
   [text]="activeOrganization.name"
   [ariaLabel]="['organization' | i18n, activeOrganization.name].join(' ')"
   icon="bwi-business"
-  [route]="['../', activeOrganization.id]"
+  [route]="['../', activeOrganization.id, 'overview']"
   [(open)]="open"
 >
   <ng-container *ngIf="organizations$ | async as organizations">
@@ -11,7 +11,7 @@
       *ngFor="let org of organizations"
       [text]="org.name"
       [ariaLabel]="['organization' | i18n, org.name].join(' ')"
-      [route]="['../', org.id]"
+      [route]="['../', org.id, 'overview']"
       (mainContentClicked)="toggle()"
       [hideActiveStyles]="true"
     >
