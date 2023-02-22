@@ -2,7 +2,6 @@ import { NgModule } from "@angular/core";
 
 import { LoginModule } from "../auth/login/login.module";
 
-
 import { TrialInitiationModule } from "./accounts/trial-initiation/trial-initiation.module";
 import { OrganizationCreateModule } from "./organizations/create/organization-create.module";
 import { OrganizationManageModule } from "./organizations/manage/organization-manage.module";
