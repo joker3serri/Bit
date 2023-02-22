@@ -1,46 +1,48 @@
-<bit-table>
-  <ng-container header>
-    <tr>
-      <th bitCell class="tw-min-w-fit" colspan="2">
-        <input class="tw-mr-2" type="checkbox" bitCheckbox id="checkAll" />
-        <label class="tw-mb-0 !tw-font-bold !tw-text-muted" for="checkAll">{{
-          "all" | i18n
-        }}</label>
-      </th>
-      <th bitCell class="tw-w-1/2">{{ "name" | i18n }}</th>
-      <th bitCell class="tw-w-max">
-        <!-- <ng-container *ngIf="!organization">{{ "owner" | i18n }}</ng-container>
+<cdk-virtual-scroll-viewport itemSize="50" scrollWindow>
+  <bit-table>
+    <ng-container header>
+      <tr>
+        <th bitCell class="tw-min-w-fit" colspan="2">
+          <input class="tw-mr-2" type="checkbox" bitCheckbox id="checkAll" />
+          <label class="tw-mb-0 !tw-font-bold !tw-text-muted" for="checkAll">{{
+            "all" | i18n
+          }}</label>
+        </th>
+        <th bitCell class="tw-w-1/2">{{ "name" | i18n }}</th>
+        <th bitCell class="tw-w-max">
+          <!-- <ng-container *ngIf="!organization">{{ "owner" | i18n }}</ng-container>
         <ng-container *ngIf="organization">
           {{ (activeFilter.selectedCollectionNode ? "groups" : "collections") | i18n }}
         </ng-container> -->
-        org?
-      </th>
-      <th bitCell class="tw-min-w-fit tw-text-right">
-        <button
-          bitIconButton="bwi-ellipsis-v"
-          size="small"
-          type="button"
-          appA11yTitle="{{ 'options' | i18n }}"
-        ></button>
-      </th>
-    </tr>
-  </ng-container>
-  <ng-template body>
-    <ng-container *ngFor="let item of items">
-      <tr
-        *ngIf="item.collection"
-        bitRow
-        appVaultCollectionRow
-        alignContent="middle"
-        [collection]="item.collection"
-      ></tr>
-      <tr
-        *ngIf="item.cipher"
-        bitRow
-        appVaultCipherRow
-        alignContent="middle"
-        [cipher]="item.cipher"
-      ></tr>
+          org?
+        </th>
+        <th bitCell class="tw-min-w-fit tw-text-right">
+          <button
+            bitIconButton="bwi-ellipsis-v"
+            size="small"
+            type="button"
+            appA11yTitle="{{ 'options' | i18n }}"
+          ></button>
+        </th>
+      </tr>
     </ng-container>
-  </ng-template>
-</bit-table>
+    <ng-template body>
+      <ng-container *cdkVirtualFor="let item of items">
+        <tr
+          *ngIf="item.collection"
+          bitRow
+          appVaultCollectionRow
+          alignContent="middle"
+          [collection]="item.collection"
+        ></tr>
+        <tr
+          *ngIf="item.cipher"
+          bitRow
+          appVaultCipherRow
+          alignContent="middle"
+          [cipher]="item.cipher"
+        ></tr>
+      </ng-container>
+    </ng-template>
+  </bit-table>
+</cdk-virtual-scroll-viewport>
