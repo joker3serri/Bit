@@ -49,6 +49,7 @@ import { ReusedPasswordsReportComponent as OrgReusedPasswordsReportComponent } f
 import { ToolsComponent as OrgToolsComponent } from "../admin-console/organizations/tools/tools.component";
 import { UnsecuredWebsitesReportComponent as OrgUnsecuredWebsitesReportComponent } from "../admin-console/organizations/tools/unsecured-websites-report.component";
 import { WeakPasswordsReportComponent as OrgWeakPasswordsReportComponent } from "../admin-console/organizations/tools/weak-passwords-report.component";
+import { CollectionsComponent as OrgCollectionsComponent } from "../admin-console/organizations/vault/collections.component";
 import { AddCreditComponent } from "../billing/settings/add-credit.component";
 import { AdjustPaymentComponent } from "../billing/settings/adjust-payment.component";
 import { BillingHistoryViewComponent } from "../billing/settings/billing-history-view.component";
@@ -69,7 +70,6 @@ import { FrontendLayoutComponent } from "../layouts/frontend-layout.component";
 import { NavbarComponent } from "../layouts/navbar.component";
 import { ProductSwitcherModule } from "../layouts/product-switcher/product-switcher.module";
 import { UserLayoutComponent } from "../layouts/user-layout.component";
-import { CollectionsComponent as OrgCollectionsComponent } from "../organizations/vault/collections.component";
 import { ProvidersComponent } from "../providers/providers.component";
 import { AccessComponent } from "../send/access.component";
 import { AddEditComponent as SendAddEditComponent } from "../send/add-edit.component";
