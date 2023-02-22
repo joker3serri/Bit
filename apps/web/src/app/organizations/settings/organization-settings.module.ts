@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 
+import { PoliciesModule } from "../../admin-console/organizations/policies";
 import { LooseComponentsModule, SharedModule } from "../../shared";
-import { PoliciesModule } from "../policies";
 
 import { AccountComponent } from "./account.component";
 import { DeleteOrganizationComponent } from "./delete-organization.component";

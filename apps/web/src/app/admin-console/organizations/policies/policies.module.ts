@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 
-import { LooseComponentsModule, SharedModule } from "../../shared";
+import { LooseComponentsModule, SharedModule } from "../../../shared";
 
 import { DisableSendPolicyComponent } from "./disable-send.component";
 import { MasterPasswordPolicyComponent } from "./master-password.component";

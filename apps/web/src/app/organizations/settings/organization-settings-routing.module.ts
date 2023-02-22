@@ -6,7 +6,7 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { OrganizationPermissionsGuard } from "../../admin-console/organizations/guards/org-permissions.guard";
 import { OrganizationRedirectGuard } from "../../admin-console/organizations/guards/org-redirect.guard";
-import { PoliciesComponent } from "../policies";
+import { PoliciesComponent } from "../../admin-console/organizations/policies";
 
 import { AccountComponent } from "./account.component";
 import { SettingsComponent } from "./settings.component";

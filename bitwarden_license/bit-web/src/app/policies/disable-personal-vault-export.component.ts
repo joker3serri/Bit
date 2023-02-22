@@ -4,7 +4,7 @@ import { PolicyType } from "@bitwarden/common/enums/policyType";
 import {
   BasePolicy,
   BasePolicyComponent,
-} from "@bitwarden/web-vault/app/organizations/policies/base-policy.component";
+} from "@bitwarden/web-vault/app/admin-console/organizations/policies/base-policy.component";
 
 export class DisablePersonalVaultExportPolicy extends BasePolicy {
   name = "disablePersonalVaultExport";

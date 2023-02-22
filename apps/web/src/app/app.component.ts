@@ -26,7 +26,6 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
-import { PolicyListService, RouterService } from "./core";
 import {
   DisableSendPolicy,
   MasterPasswordPolicy,
@@ -37,7 +36,8 @@ import {
   SendOptionsPolicy,
   SingleOrgPolicy,
   TwoFactorAuthenticationPolicy,
-} from "./organizations/policies";
+} from "./admin-console/organizations/policies";
+import { PolicyListService, RouterService } from "./core";
 
 const BroadcasterSubscriptionId = "AppComponent";
 const IdleTimeout = 60000 * 10; // 10 minutes
