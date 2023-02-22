@@ -1,0 +1,23 @@
+<td bitCell>
+  <input class="tw-cursor-pointer" type="checkbox" bitCheckbox appStopProp />
+</td>
+<td bitCell>
+  <div class="icon" aria-hidden="true">
+    <i class="bwi bwi-fw bwi-lg bwi-collection"></i>
+  </div>
+</td>
+<td bitCell>
+  <button bitLink class="tw-text-start" linkType="secondary" type="button">
+    {{ collection.name }}
+  </button>
+</td>
+<td bitCell>org badge</td>
+<td bitCell class="tw-text-right">
+  <button
+    size="small"
+    bitIconButton="bwi-ellipsis-v"
+    type="button"
+    appA11yTitle="{{ 'options' | i18n }}"
+    appStopProp
+  ></button>
+</td>
