@@ -24,8 +24,8 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService } from "@bitwarden/components";
 
-import { EntityEventsComponent } from "../../app/admin-console/organizations/manage/entity-events.component";
-import { CollectionsComponent } from "../../app/organizations/vault/collections.component";
+import { EntityEventsComponent } from "../../admin-console/organizations/manage/entity-events.component";
+import { CollectionsComponent } from "../../organizations/vault/collections.component";
 import { VaultFilterService } from "../../vault/individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../vault/individual-vault/vault-filter/shared/models/vault-filter.model";
 

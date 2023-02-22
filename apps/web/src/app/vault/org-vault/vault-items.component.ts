@@ -24,7 +24,7 @@ import {
   CollectionDialogResult,
   CollectionDialogTabType,
   openCollectionDialog,
-} from "../../app/admin-console/organizations/shared/components/collection-dialog";
+} from "../../admin-console/organizations/shared/components/collection-dialog";
 import { CollectionAdminView } from "../../organizations/core";
 import { GroupService } from "../../organizations/core/services/group/group.service";
 import {

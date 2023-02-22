@@ -22,7 +22,7 @@ import {
   CollectionDialogResult,
   CollectionDialogTabType,
   openCollectionDialog,
-} from "../../../app/admin-console/organizations/shared/components/collection-dialog";
+} from "../../../admin-console/organizations/shared/components/collection-dialog";
 import { CollectionAdminService, CollectionAdminView } from "../../../organizations/core";
 import { VaultFilterService } from "../../individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../individual-vault/vault-filter/shared/models/vault-filter.model";
