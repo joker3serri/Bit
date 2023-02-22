@@ -9,6 +9,6 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VaultItemsComponent {
-  @Input() items: CipherView[];
+  @Input() ciphers: CipherView[];
   @Input() collections: CollectionView[];
 }

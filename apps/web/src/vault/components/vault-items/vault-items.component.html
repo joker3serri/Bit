@@ -33,6 +33,12 @@
       alignContent="middle"
       [collection]="collection"
     ></tr>
-    <tr *ngFor="let item of items" bitRow appVaultItemRow alignContent="middle" [item]="item"></tr>
+    <tr
+      *ngFor="let cipher of ciphers"
+      bitRow
+      appVaultCipherRow
+      alignContent="middle"
+      [cipher]="cipher"
+    ></tr>
   </ng-template>
 </bit-table>

@@ -2,21 +2,21 @@
   <input type="checkbox" bitCheckbox />
 </td>
 <td bitCell>
-  <app-vault-icon [cipher]="item"></app-vault-icon>
+  <app-vault-icon [cipher]="cipher"></app-vault-icon>
 </td>
 <td bitCell class="tw-break-all">
   <button
     bitLink
     class="tw-text-start"
     [routerLink]="[]"
-    [queryParams]="{ itemId: item.id }"
+    [queryParams]="{ itemId: cipher.id }"
     queryParamsHandling="merge"
     title="{{ 'editItem' | i18n }}"
     type="button"
   >
-    {{ item.name }}
+    {{ cipher.name }}
   </button>
-  <ng-container *ngIf="item.hasAttachments">
+  <ng-container *ngIf="cipher.hasAttachments">
     <i
       class="bwi bwi-paperclip"
       appStopProp
@@ -35,7 +35,7 @@
       </ng-container> -->
   </ng-container>
   <br />
-  <span class="tw-text-sm tw-text-muted" appStopProp>{{ item.subTitle }}</span>
+  <span class="tw-text-sm tw-text-muted" appStopProp>{{ cipher.subTitle }}</span>
 </td>
 <td bitCell>
   <!-- <ng-container *ngIf="!organization">
@@ -66,7 +66,7 @@
   ></button>
   <bit-menu #cipherOptions>
     <button bitMenuItem type="button">Button</button>
-    <!-- <ng-container *ngIf="item.type === cipherType.Login && !c.isDeleted">
+    <!-- <ng-container *ngIf="cipher.type === cipherType.Login && !c.isDeleted">
         <button bitMenuItem (click)="copy(c, c.login.username, 'username', 'Username')">
           <i class="bwi bwi-fw bwi-clone" aria-hidden="true"></i>
           {{ "copyUsername" | i18n }}
