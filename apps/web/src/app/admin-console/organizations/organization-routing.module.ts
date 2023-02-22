@@ -45,7 +45,9 @@ const routes: Routes = [
       {
         path: "settings",
         loadChildren: () =>
-          import("../../organizations/settings").then((m) => m.OrganizationSettingsModule),
+          import("./settings/organization-settings.module").then(
+            (m) => m.OrganizationSettingsModule
+          ),
       },
       {
         path: "members",

@@ -4,9 +4,9 @@ import { RouterModule, Routes } from "@angular/router";
 import { canAccessSettingsTab } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { OrganizationPermissionsGuard } from "../../admin-console/organizations/guards/org-permissions.guard";
-import { OrganizationRedirectGuard } from "../../admin-console/organizations/guards/org-redirect.guard";
-import { PoliciesComponent } from "../../admin-console/organizations/policies";
+import { OrganizationPermissionsGuard } from "../../organizations/guards/org-permissions.guard";
+import { OrganizationRedirectGuard } from "../../organizations/guards/org-redirect.guard";
+import { PoliciesComponent } from "../../organizations/policies";
 
 import { AccountComponent } from "./account.component";
 import { SettingsComponent } from "./settings.component";
@@ -46,7 +46,7 @@ const routes: Routes = [
       {
         path: "tools",
         loadChildren: () =>
-          import("../tools/import-export/org-import-export.module").then(
+          import("../../../organizations/tools/import-export/org-import-export.module").then(
             (m) => m.OrganizationImportExportModule
           ),
       },

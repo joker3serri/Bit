@@ -6,7 +6,7 @@ import { canAccessSettingsTab } from "@bitwarden/common/abstractions/organizatio
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { OrganizationPermissionsGuard } from "@bitwarden/web-vault/app/admin-console/organizations/guards/org-permissions.guard";
 import { OrganizationLayoutComponent } from "@bitwarden/web-vault/app/admin-console/organizations/layouts/organization-layout.component";
-import { SettingsComponent } from "@bitwarden/web-vault/app/organizations/settings/settings.component";
+import { SettingsComponent } from "@bitwarden/web-vault/app/admin-console/organizations/settings/settings.component";
 
 import { ScimComponent } from "../admin-console/organizations/manage/scim.component";
 import { SsoComponent } from "../auth/sso/sso.component";
