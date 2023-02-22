@@ -50,6 +50,7 @@ import { ToolsComponent as OrgToolsComponent } from "../admin-console/organizati
 import { UnsecuredWebsitesReportComponent as OrgUnsecuredWebsitesReportComponent } from "../admin-console/organizations/tools/unsecured-websites-report.component";
 import { WeakPasswordsReportComponent as OrgWeakPasswordsReportComponent } from "../admin-console/organizations/tools/weak-passwords-report.component";
 import { CollectionsComponent as OrgCollectionsComponent } from "../admin-console/organizations/vault/collections.component";
+import { CreateOrganizationComponent } from "../admin-console/settings/create-organization.component";
 import { AddCreditComponent } from "../billing/settings/add-credit.component";
 import { AdjustPaymentComponent } from "../billing/settings/adjust-payment.component";
 import { BillingHistoryViewComponent } from "../billing/settings/billing-history-view.component";
@@ -82,7 +83,6 @@ import { ChangeAvatarComponent } from "../settings/change-avatar.component";
 import { ChangeEmailComponent } from "../settings/change-email.component";
 import { ChangeKdfComponent } from "../settings/change-kdf.component";
 import { ChangePasswordComponent } from "../settings/change-password.component";
-import { CreateOrganizationComponent } from "../settings/create-organization.component";
 import { DeleteAccountComponent } from "../settings/delete-account.component";
 import { DomainRulesComponent } from "../settings/domain-rules.component";
 import { LowKdfComponent } from "../settings/low-kdf.component";
