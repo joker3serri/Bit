@@ -6,16 +6,21 @@ import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { Account, AccountProfile, AccountTokens } from "../../models/domain/account";
+import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
 import { KeysRequest } from "../../models/request/keys.request";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { AuthResult } from "../models/domain/auth-result";
 import {
-  UserApiLogInCredentials,
+  ForcePasswordResetOptions,
+  ForceResetPasswordReason,
+} from "../models/domain/force-password-reset-options";
+import {
+  PasswordlessLogInCredentials,
   PasswordLogInCredentials,
   SsoLogInCredentials,
-  PasswordlessLogInCredentials,
+  UserApiLogInCredentials,
 } from "../models/domain/log-in-credentials";
 import { DeviceRequest } from "../models/request/identity-token/device.request";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
@@ -29,6 +34,7 @@ import { IdentityTwoFactorResponse } from "../models/response/identity-two-facto
 export abstract class LogInStrategy {
   protected abstract tokenRequest: UserApiTokenRequest | PasswordTokenRequest | SsoTokenRequest;
   protected captchaBypassToken: string = null;
+  protected masterPasswordPolicy: MasterPasswordPolicyOptions = undefined;
 
   constructor(
     protected cryptoService: CryptoService,
@@ -128,6 +134,16 @@ export abstract class LogInStrategy {
     result.resetMasterPassword = response.resetMasterPassword;
     result.forcePasswordReset = response.forcePasswordReset;
 
+    if (response.forcePasswordReset) {
+      result.forcePasswordResetOptions = new ForcePasswordResetOptions(
+        ForceResetPasswordReason.AdminForcePasswordReset
+      );
+    }
+
+    this.masterPasswordPolicy = MasterPasswordPolicyOptions.fromResponse(
+      response.masterPasswordPolicy
+    );
+
     await this.saveAccountInformation(response);
 
     if (response.twoFactorToken != null) {
@@ -153,6 +169,10 @@ export abstract class LogInStrategy {
   private async processTwoFactorResponse(response: IdentityTwoFactorResponse): Promise<AuthResult> {
     const result = new AuthResult();
     result.twoFactorProviders = response.twoFactorProviders2;
+
+    this.masterPasswordPolicy = MasterPasswordPolicyOptions.fromResponse(
+      response.masterPasswordPolicy
+    );
     this.twoFactorService.setProviders(response);
     this.captchaBypassToken = response.captchaToken ?? null;
     return result;
