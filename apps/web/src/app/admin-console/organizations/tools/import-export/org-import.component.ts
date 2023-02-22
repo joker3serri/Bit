@@ -10,11 +10,11 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
-import { ImportComponent } from "../../../tools/import-export/import.component";
+import { ImportComponent } from "../../../../tools/import-export/import.component";
 
 @Component({
   selector: "app-org-import",
-  templateUrl: "../../../tools/import-export/import.component.html",
+  templateUrl: "../../../../tools/import-export/import.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class OrganizationImportComponent extends ImportComponent {

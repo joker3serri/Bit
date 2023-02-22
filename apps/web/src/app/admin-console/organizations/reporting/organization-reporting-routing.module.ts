@@ -4,11 +4,11 @@ import { RouterModule, Routes } from "@angular/router";
 import { canAccessReportingTab } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { ExposedPasswordsReportComponent } from "../../../organizations/tools/exposed-passwords-report.component";
-import { InactiveTwoFactorReportComponent } from "../../../organizations/tools/inactive-two-factor-report.component";
-import { ReusedPasswordsReportComponent } from "../../../organizations/tools/reused-passwords-report.component";
-import { UnsecuredWebsitesReportComponent } from "../../../organizations/tools/unsecured-websites-report.component";
-import { WeakPasswordsReportComponent } from "../../../organizations/tools/weak-passwords-report.component";
+import { ExposedPasswordsReportComponent } from "../../../admin-console/organizations/tools/exposed-passwords-report.component";
+import { InactiveTwoFactorReportComponent } from "../../../admin-console/organizations/tools/inactive-two-factor-report.component";
+import { ReusedPasswordsReportComponent } from "../../../admin-console/organizations/tools/reused-passwords-report.component";
+import { UnsecuredWebsitesReportComponent } from "../../../admin-console/organizations/tools/unsecured-websites-report.component";
+import { WeakPasswordsReportComponent } from "../../../admin-console/organizations/tools/weak-passwords-report.component";
 import { OrganizationPermissionsGuard } from "../guards/org-permissions.guard";
 import { OrganizationRedirectGuard } from "../guards/org-redirect.guard";
 import { EventsComponent } from "../manage/events.component";

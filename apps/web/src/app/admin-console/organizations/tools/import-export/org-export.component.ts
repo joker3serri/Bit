@@ -14,11 +14,11 @@ import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.serv
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
 import { EventType } from "@bitwarden/common/enums/eventType";
 
-import { ExportComponent } from "../../../tools/import-export/export.component";
+import { ExportComponent } from "../../../../tools/import-export/export.component";
 
 @Component({
   selector: "app-org-export",
-  templateUrl: "../../../tools/import-export/export.component.html",
+  templateUrl: "../../../../tools/import-export/export.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class OrganizationExportComponent extends ExportComponent {

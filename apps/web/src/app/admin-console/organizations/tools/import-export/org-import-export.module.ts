@@ -11,7 +11,7 @@ import { ImportService } from "@bitwarden/common/services/import/import.service"
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 
-import { LooseComponentsModule, SharedModule } from "../../../shared";
+import { LooseComponentsModule, SharedModule } from "../../../../shared";
 
 import { OrganizationExportComponent } from "./org-export.component";
 import { OrganizationImportExportRoutingModule } from "./org-import-export-routing.module";

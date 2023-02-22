@@ -10,11 +10,11 @@ import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/pa
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 // eslint-disable-next-line no-restricted-imports
-import { InactiveTwoFactorReportComponent as BaseInactiveTwoFactorReportComponent } from "../../reports/pages/inactive-two-factor-report.component";
+import { InactiveTwoFactorReportComponent as BaseInactiveTwoFactorReportComponent } from "../../../reports/pages/inactive-two-factor-report.component";
 
 @Component({
   selector: "app-inactive-two-factor-report",
-  templateUrl: "../../reports/pages/inactive-two-factor-report.component.html",
+  templateUrl: "../../../reports/pages/inactive-two-factor-report.component.html",
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class InactiveTwoFactorReportComponent extends BaseInactiveTwoFactorReportComponent {
