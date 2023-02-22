@@ -16,8 +16,8 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 import { OrganizationSponsorshipRedeemRequest } from "@bitwarden/common/models/request/organization/organization-sponsorship-redeem.request";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
-import { DeleteOrganizationComponent } from "../../admin-console/organizations/settings";
-import { OrganizationPlansComponent } from "../../billing/settings/organization-plans.component";
+import { OrganizationPlansComponent } from "../../../billing/settings/organization-plans.component";
+import { DeleteOrganizationComponent } from "../../organizations/settings";
 
 @Component({
   selector: "families-for-enterprise-setup",
