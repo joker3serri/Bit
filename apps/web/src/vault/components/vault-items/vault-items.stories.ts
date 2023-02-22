@@ -52,8 +52,8 @@ export default {
     }),
   ],
   args: {
-    items: [...Array(200).keys()].map(createCipherView),
     collections: [...Array(5).keys()].map(createCollectionView),
+    ciphers: [...Array(200).keys()].map(createCipherView),
   },
 } as Meta;
 

@@ -26,19 +26,21 @@
     </tr>
   </ng-container>
   <ng-template body>
-    <tr
-      *ngFor="let collection of collections"
-      bitRow
-      appVaultCollectionRow
-      alignContent="middle"
-      [collection]="collection"
-    ></tr>
-    <tr
-      *ngFor="let cipher of ciphers"
-      bitRow
-      appVaultCipherRow
-      alignContent="middle"
-      [cipher]="cipher"
-    ></tr>
+    <ng-container *ngFor="let item of items">
+      <tr
+        *ngIf="item.collection"
+        bitRow
+        appVaultCollectionRow
+        alignContent="middle"
+        [collection]="item.collection"
+      ></tr>
+      <tr
+        *ngIf="item.cipher"
+        bitRow
+        appVaultCipherRow
+        alignContent="middle"
+        [cipher]="item.cipher"
+      ></tr>
+    </ng-container>
   </ng-template>
 </bit-table>
