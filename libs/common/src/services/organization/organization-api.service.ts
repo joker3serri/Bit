@@ -18,6 +18,7 @@ import { OrganizationCreateRequest } from "../../models/request/organization-cre
 import { OrganizationKeysRequest } from "../../models/request/organization-keys.request";
 import { OrganizationUpdateRequest } from "../../models/request/organization-update.request";
 import { OrganizationUpgradeRequest } from "../../models/request/organization-upgrade.request";
+import { OrganizationEnrollSecretsManagerRequest } from "../../models/request/organization/organization-enroll-secrets-manager.request";
 import { SeatRequest } from "../../models/request/seat.request";
 import { StorageRequest } from "../../models/request/storage.request";
 import { VerifyBankRequest } from "../../models/request/verify-bank.request";
@@ -290,6 +291,16 @@ export class OrganizationApiService implements OrganizationApiServiceAbstraction
       null,
       true,
       false
+    );
+  }
+
+  async updateEnrollSecretsManager(id: string, request: OrganizationEnrollSecretsManagerRequest) {
+    await this.apiService.send(
+      "POST",
+      "/organizations/" + id + "/enroll-secrets-manager",
+      request,
+      true,
+      true
     );
   }
 }
