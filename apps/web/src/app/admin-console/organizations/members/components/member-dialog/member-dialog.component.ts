@@ -14,15 +14,7 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
-import { flagEnabled } from "../../../../../utils/flags";
-import {
-  AccessItemType,
-  AccessItemValue,
-  AccessItemView,
-  convertToPermission,
-  convertToSelectionView,
-  PermissionMode,
-} from "../../../../admin-console/organizations/shared/components/access-selector";
+import { flagEnabled } from "../../../../../../utils/flags";
 import {
   CollectionAccessSelectionView,
   CollectionAdminService,
@@ -30,7 +22,15 @@ import {
   GroupView,
   OrganizationUserAdminView,
   UserAdminService,
-} from "../../../core";
+} from "../../../../../organizations/core";
+import {
+  AccessItemType,
+  AccessItemValue,
+  AccessItemView,
+  convertToPermission,
+  convertToSelectionView,
+  PermissionMode,
+} from "../../../shared/components/access-selector";
 
 import { commaSeparatedEmails } from "./validators/comma-separated-emails.validator";
 

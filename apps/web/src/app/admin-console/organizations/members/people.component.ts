@@ -61,12 +61,12 @@ import { BulkConfirmComponent } from "../../../organizations/members/components/
 import { BulkRemoveComponent } from "../../../organizations/members/components/bulk/bulk-remove.component";
 import { BulkRestoreRevokeComponent } from "../../../organizations/members/components/bulk/bulk-restore-revoke.component";
 import { BulkStatusComponent } from "../../../organizations/members/components/bulk/bulk-status.component";
+
 import {
   MemberDialogResult,
   MemberDialogTab,
   openUserAddEditDialog,
-} from "../../../organizations/members/components/member-dialog";
-
+} from "./components/member-dialog";
 import { ResetPasswordComponent } from "./components/reset-password.component";
 
 @Component({
