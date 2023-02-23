@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 
+import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/src/models/view/collection.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
@@ -15,6 +16,7 @@ export class VaultItemsComponent {
   @Input() showOwner: boolean;
   @Input() showCollections: boolean;
   @Input() showGroups: boolean;
+  @Input() organizations: Organization[];
 
   private _ciphers: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {

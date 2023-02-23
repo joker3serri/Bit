@@ -1,5 +1,6 @@
 import { Component, Input } from "@angular/core";
 
+import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 
 @Component({
@@ -11,4 +12,5 @@ export class VaultCollectionRowComponent {
   @Input() showOwner: boolean;
   @Input() showCollections: boolean;
   @Input() showGroups: boolean;
+  @Input() organizations: Organization[];
 }
