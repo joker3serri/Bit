@@ -242,6 +242,22 @@ export default class MainBackground {
       this.stateMigrationService,
       new StateFactory(GlobalState, Account)
     );
+
+    const recordActivity = async () => {
+      const activeUserId = await this.stateService.getUserId();
+
+      if (activeUserId == null) {
+        return;
+      }
+      const now = new Date().getTime();
+      const lastActivity = await this.stateService.getLastActive();
+      if (lastActivity != null && now - lastActivity < 250) {
+        return;
+      }
+
+      await this.stateService.setLastActive(now, { userId: activeUserId });
+    };
+
     this.platformUtilsService = new BrowserPlatformUtilsService(
       this.messagingService,
       (clipboardValue, clearMs) => {
@@ -252,6 +268,8 @@ export default class MainBackground {
       async () => {
         if (this.nativeMessagingBackground != null) {
           const promise = this.nativeMessagingBackground.getResponse();
+
+          await recordActivity();
 
           try {
             await this.nativeMessagingBackground.send({ command: "biometricUnlock" });
