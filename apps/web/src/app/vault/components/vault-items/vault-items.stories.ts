@@ -54,6 +54,9 @@ export default {
   args: {
     collections: [...Array(5).keys()].map(createCollectionView),
     ciphers: [...Array(200).keys()].map(createCipherView),
+    showOwner: false,
+    showCollections: false,
+    showGroups: false,
   },
 } as Meta;
 

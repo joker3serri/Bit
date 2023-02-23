@@ -8,4 +8,7 @@ import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 })
 export class VaultCollectionRowComponent {
   @Input() collection: CollectionView;
+  @Input() showOwner: boolean;
+  @Input() showCollections: boolean;
+  @Input() showGroups: boolean;
 }

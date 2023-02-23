@@ -12,6 +12,10 @@ import { VaultItem } from "./vault-item";
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VaultItemsComponent {
+  @Input() showOwner: boolean;
+  @Input() showCollections: boolean;
+  @Input() showGroups: boolean;
+
   private _ciphers: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {
     return this._ciphers;

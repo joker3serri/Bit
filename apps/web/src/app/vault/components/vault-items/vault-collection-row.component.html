@@ -11,7 +11,9 @@
     {{ collection.name }}
   </button>
 </td>
-<td bitCell>org badge</td>
+<td bitCell *ngIf="showOwner">owner</td>
+<td bitCell *ngIf="showCollections">collections</td>
+<td bitCell *ngIf="showGroups">groups</td>
 <td bitCell class="tw-text-right">
   <button
     size="small"

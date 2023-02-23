@@ -37,8 +37,8 @@
   <br />
   <span class="tw-text-sm tw-text-muted" appStopProp>{{ cipher.subTitle }}</span>
 </td>
-<td bitCell>
-  <!-- <ng-container *ngIf="!organization">
+<!--  <td bitCell>
+  <ng-container *ngIf="!organization">
       <app-org-badge
         organizationName="{{ c.organizationId | orgNameFromId: organizations }}"
         profileName="{{ profileName }}"
@@ -53,8 +53,11 @@
         [collectionIds]="c.collectionIds"
         [collections]="vaultFilterService.filteredCollections$ | async"
       ></app-collection-badge>
-    </ng-container> -->
-</td>
+    </ng-container>
+</td> -->
+<td bitCell *ngIf="showOwner">owner</td>
+<td bitCell *ngIf="showCollections">collections</td>
+<td bitCell *ngIf="showGroups">groups</td>
 <td bitCell class="tw-text-right">
   <button
     [bitMenuTriggerFor]="cipherOptions"

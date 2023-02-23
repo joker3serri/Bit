@@ -8,4 +8,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 })
 export class VaultCipherRowComponent {
   @Input() cipher: CipherView;
+  @Input() showOwner: boolean;
+  @Input() showCollections: boolean;
+  @Input() showGroups: boolean;
 }
