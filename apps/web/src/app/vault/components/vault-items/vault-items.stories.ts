@@ -22,7 +22,7 @@ import { VaultItemsModule } from "./vault-items.module";
 })
 class EmptyComponent {}
 
-const organizations: (Organization | undefined)[] = [...new Array(5).keys()].map(
+const organizations: (Organization | undefined)[] = [...new Array(3).keys()].map(
   createOrganization
 );
 
@@ -98,7 +98,7 @@ export const Primary = Template.bind({});
 Primary.args = {};
 
 function createCipherView(i: number): CipherView {
-  const organization = organizations[(organizations.length + 1) % i];
+  const organization = organizations[i % (organizations.length + 1)];
   const view = new CipherView();
   view.id = `cipher-${i}`;
   view.name = `Vault item ${i}`;
@@ -108,7 +108,7 @@ function createCipherView(i: number): CipherView {
 }
 
 function createCollectionView(i: number): CollectionView {
-  const organization = organizations[(organizations.length + 1) % i];
+  const organization = organizations[i % (organizations.length + 1)];
   const view = new CollectionView();
   view.id = `collection-${i}`;
   view.name = `Collection ${i}`;

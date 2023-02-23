@@ -13,7 +13,7 @@
 </td>
 <td bitCell *ngIf="showOwner">
   <app-org-badge
-    organizationName="{{ collection.organizationId | orgNameFromId: organizations }}"
+    [organizationName]="collection.organizationId | orgNameFromId: organizations"
     appStopProp
   >
   </app-org-badge>
