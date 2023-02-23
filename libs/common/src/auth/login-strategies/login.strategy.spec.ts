@@ -5,7 +5,9 @@ import { AppIdService } from "../../abstractions/appId.service";
 import { CryptoService } from "../../abstractions/crypto.service";
 import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
+import { PasswordGenerationService } from "../../abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
+import { PolicyService } from "../../abstractions/policy/policy.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
 import { Utils } from "../../misc/utils";
 import { Account, AccountProfile, AccountTokens } from "../../models/domain/account";
@@ -15,12 +17,14 @@ import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { AuthResult } from "../models/domain/auth-result";
+import { ForceResetPasswordReason } from "../models/domain/force-password-reset-options";
 import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
 import { IdentityCaptchaResponse } from "../models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
+import { MasterPasswordPolicyResponse } from "../models/response/master-password-policy.response";
 
 import { PasswordLogInStrategy } from "./password-login.strategy";
 
@@ -50,7 +54,9 @@ const twoFactorProviderType = TwoFactorProviderType.Authenticator;
 const twoFactorToken = "TWO_FACTOR_TOKEN";
 const twoFactorRemember = true;
 
-export function identityTokenResponseFactory() {
+export function identityTokenResponseFactory(
+  masterPasswordPolicyResponse: MasterPasswordPolicyResponse = null
+) {
   return new IdentityTokenResponse({
     ForcePasswordReset: false,
     Kdf: kdf,
@@ -63,6 +69,7 @@ export function identityTokenResponseFactory() {
     refresh_token: refreshToken,
     scope: "api offline_access",
     token_type: "Bearer",
+    MasterPasswordPolicy: masterPasswordPolicyResponse,
   });
 }
 
@@ -77,6 +84,8 @@ describe("LogInStrategy", () => {
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
   let authService: MockProxy<AuthService>;
+  let policyService: MockProxy<PolicyService>;
+  let passwordGenerationService: MockProxy<PasswordGenerationService>;
 
   let passwordLogInStrategy: PasswordLogInStrategy;
   let credentials: PasswordLogInCredentials;
@@ -92,6 +101,8 @@ describe("LogInStrategy", () => {
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
     authService = mock<AuthService>();
+    policyService = mock<PolicyService>();
+    passwordGenerationService = mock<PasswordGenerationService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
     tokenService.decodeToken.calledWith(accessToken).mockResolvedValue(decodedToken);
@@ -107,6 +118,8 @@ describe("LogInStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      passwordGenerationService,
+      policyService,
       authService
     );
     credentials = new PasswordLogInCredentials(email, masterPassword);
@@ -156,6 +169,9 @@ describe("LogInStrategy", () => {
 
       expect(result).toEqual({
         forcePasswordReset: true,
+        forcePasswordResetOptions: {
+          reason: ForceResetPasswordReason.AdminForcePasswordReset,
+        },
         resetMasterPassword: true,
         twoFactorProviders: null,
         captchaSiteKey: "",

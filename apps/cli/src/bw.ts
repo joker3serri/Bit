@@ -274,6 +274,12 @@ export class Main {
 
     this.twoFactorService = new TwoFactorService(this.i18nService, this.platformUtilsService);
 
+    this.passwordGenerationService = new PasswordGenerationService(
+      this.cryptoService,
+      this.policyService,
+      this.stateService
+    );
+
     this.authService = new AuthService(
       this.cryptoService,
       this.apiService,
@@ -287,7 +293,9 @@ export class Main {
       this.stateService,
       this.twoFactorService,
       this.i18nService,
-      this.encryptService
+      this.encryptService,
+      this.passwordGenerationService,
+      this.policyService
     );
 
     const lockedCallback = async () =>
@@ -333,12 +341,6 @@ export class Main {
       this.folderApiService,
       this.organizationService,
       async (expired: boolean) => await this.logout()
-    );
-
-    this.passwordGenerationService = new PasswordGenerationService(
-      this.cryptoService,
-      this.policyService,
-      this.stateService
     );
 
     this.totpService = new TotpService(this.cryptoFunctionService, this.logService);

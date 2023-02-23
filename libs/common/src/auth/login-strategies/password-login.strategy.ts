@@ -3,14 +3,21 @@ import { AppIdService } from "../../abstractions/appId.service";
 import { CryptoService } from "../../abstractions/crypto.service";
 import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
+import { PasswordGenerationService } from "../../abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
+import { PolicyService } from "../../abstractions/policy/policy.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
 import { HashPurpose } from "../../enums/hashPurpose";
+import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { AuthResult } from "../models/domain/auth-result";
+import {
+  ForcePasswordResetOptions,
+  ForceResetPasswordReason,
+} from "../models/domain/force-password-reset-options";
 import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
@@ -31,6 +38,12 @@ export class PasswordLogInStrategy extends LogInStrategy {
   private localHashedPassword: string;
   private key: SymmetricCryptoKey;
 
+  /**
+   * Options to track if the user needs to update their password due to a password that does not meet an organization's
+   * master password policy.
+   */
+  private forcePasswordResetOptions?: ForcePasswordResetOptions = undefined;
+
   constructor(
     cryptoService: CryptoService,
     apiService: ApiService,
@@ -39,8 +52,10 @@ export class PasswordLogInStrategy extends LogInStrategy {
     platformUtilsService: PlatformUtilsService,
     messagingService: MessagingService,
     logService: LogService,
-    stateService: StateService,
+    protected stateService: StateService,
     twoFactorService: TwoFactorService,
+    private passwordGenerationService: PasswordGenerationService,
+    private policyService: PolicyService,
     private authService: AuthService
   ) {
     super(
@@ -66,7 +81,19 @@ export class PasswordLogInStrategy extends LogInStrategy {
     captchaResponse: string
   ): Promise<AuthResult> {
     this.tokenRequest.captchaResponse = captchaResponse ?? this.captchaBypassToken;
-    return super.logInTwoFactor(twoFactor);
+    const result = await super.logInTwoFactor(twoFactor);
+
+    // 2FA was successful, save the force update password options with the state service if defined
+    if (
+      (await this.stateService.getIsAuthenticated()) &&
+      this.forcePasswordResetOptions != undefined
+    ) {
+      await this.stateService.setForcePasswordResetOptions(this.forcePasswordResetOptions);
+      result.forcePasswordReset = true;
+      result.forcePasswordResetOptions = this.forcePasswordResetOptions;
+    }
+
+    return result;
   }
 
   async logIn(credentials: PasswordLogInCredentials) {
@@ -90,6 +117,56 @@ export class PasswordLogInStrategy extends LogInStrategy {
       await this.buildDeviceRequest()
     );
 
-    return this.startLogIn();
+    const result = await this.startLogIn();
+
+    // The identity result can contain master password policies for the user's organizations
+    if (this.masterPasswordPolicy != null && this.masterPasswordPolicy.enforceOnLogin) {
+      // If there is a policy active, evaluate the supplied password before its no longer in memory
+      const meetsRequirements = this.evaluateMasterPassword(credentials, this.masterPasswordPolicy);
+
+      if (!meetsRequirements) {
+        const resetOptions = new ForcePasswordResetOptions(
+          ForceResetPasswordReason.WeakMasterPasswordOnLogin
+        );
+        // Authentication was successful, save the force update password options with the state service
+        if (await this.stateService.getIsAuthenticated()) {
+          await this.stateService.setForcePasswordResetOptions(resetOptions);
+          result.forcePasswordReset = true;
+          result.forcePasswordResetOptions = resetOptions;
+        } else {
+          // Authentication was not fully successful (likely 2FA), save the flag to this strategy for later use
+          this.forcePasswordResetOptions = resetOptions;
+        }
+      }
+    }
+
+    return result;
+  }
+
+  private evaluateMasterPassword(
+    { masterPassword, email }: PasswordLogInCredentials,
+    options: MasterPasswordPolicyOptions
+  ): boolean {
+    const passwordStrength = this.passwordGenerationService.passwordStrength(
+      masterPassword,
+      this.getPasswordStrengthUserInput(email)
+    )?.score;
+
+    return this.policyService.evaluateMasterPassword(passwordStrength, masterPassword, options);
+  }
+
+  protected getPasswordStrengthUserInput(email: string) {
+    let userInput: string[] = [];
+    const atPosition = email.indexOf("@");
+    if (atPosition > -1) {
+      userInput = userInput.concat(
+        email
+          .substr(0, atPosition)
+          .trim()
+          .toLowerCase()
+          .split(/[^A-Za-z0-9]/)
+      );
+    }
+    return userInput;
   }
 }

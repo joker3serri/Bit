@@ -5,7 +5,9 @@ import { AppIdService } from "../../abstractions/appId.service";
 import { CryptoService } from "../../abstractions/crypto.service";
 import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
+import { PasswordGenerationService } from "../../abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
+import { PolicyService } from "../../abstractions/policy/policy.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
 import { HashPurpose } from "../../enums/hashPurpose";
 import { Utils } from "../../misc/utils";
@@ -13,7 +15,10 @@ import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
+import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
+import { ForceResetPasswordReason } from "../models/domain/force-password-reset-options";
 import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";
+import { MasterPasswordPolicyResponse } from "../models/response/master-password-policy.response";
 
 import { identityTokenResponseFactory } from "./login.strategy.spec";
 import { PasswordLogInStrategy } from "./password-login.strategy";
@@ -28,6 +33,10 @@ const preloginKey = new SymmetricCryptoKey(
   )
 );
 const deviceId = Utils.newGuid();
+const masterPasswordPolicy = new MasterPasswordPolicyResponse({
+  EnforceOnLogin: true,
+  MinLength: 8,
+});
 
 describe("PasswordLogInStrategy", () => {
   let cryptoService: MockProxy<CryptoService>;
@@ -40,6 +49,8 @@ describe("PasswordLogInStrategy", () => {
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
   let authService: MockProxy<AuthService>;
+  let policyService: MockProxy<PolicyService>;
+  let passwordGenerationService: MockProxy<PasswordGenerationService>;
 
   let passwordLogInStrategy: PasswordLogInStrategy;
   let credentials: PasswordLogInCredentials;
@@ -55,6 +66,8 @@ describe("PasswordLogInStrategy", () => {
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
     authService = mock<AuthService>();
+    policyService = mock<PolicyService>();
+    passwordGenerationService = mock<PasswordGenerationService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
     tokenService.decodeToken.mockResolvedValue({});
@@ -68,6 +81,8 @@ describe("PasswordLogInStrategy", () => {
       .calledWith(masterPassword, expect.anything(), HashPurpose.LocalAuthorization)
       .mockResolvedValue(localHashedPassword);
 
+    policyService.evaluateMasterPassword.mockReturnValue(true);
+
     passwordLogInStrategy = new PasswordLogInStrategy(
       cryptoService,
       apiService,
@@ -78,11 +93,15 @@ describe("PasswordLogInStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      passwordGenerationService,
+      policyService,
       authService
     );
     credentials = new PasswordLogInCredentials(email, masterPassword);
 
-    apiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
+    apiService.postIdentityToken.mockResolvedValue(
+      identityTokenResponseFactory(masterPasswordPolicy)
+    );
   });
 
   it("sends master password credentials to the server", async () => {
@@ -109,5 +128,63 @@ describe("PasswordLogInStrategy", () => {
 
     expect(cryptoService.setKey).toHaveBeenCalledWith(preloginKey);
     expect(cryptoService.setKeyHash).toHaveBeenCalledWith(localHashedPassword);
+  });
+
+  it("evaluates the master password when policies are returned by the server", async () => {
+    passwordGenerationService.passwordStrength.mockReturnValue({ score: 0 } as any);
+
+    await passwordLogInStrategy.logIn(credentials);
+
+    expect(policyService.evaluateMasterPassword).toHaveBeenCalled();
+  });
+
+  it("saves force password reset options in state when the master password is weak and login was successful", async () => {
+    passwordGenerationService.passwordStrength.mockReturnValue({ score: 0 } as any);
+    policyService.evaluateMasterPassword.mockReturnValue(false);
+    stateService.getIsAuthenticated.mockResolvedValue(true);
+
+    const result = await passwordLogInStrategy.logIn(credentials);
+
+    const expectedResetOptions = expect.objectContaining({
+      reason: ForceResetPasswordReason.WeakMasterPasswordOnLogin,
+    });
+
+    expect(policyService.evaluateMasterPassword).toHaveBeenCalled();
+    expect(stateService.setForcePasswordResetOptions).toHaveBeenCalledWith(expectedResetOptions);
+    expect(result.forcePasswordReset).toBeTruthy();
+    expect(result.forcePasswordResetOptions).toEqual(expectedResetOptions);
+  });
+
+  it("saves force password reset options to the strategy when the master password is weak and login requires 2FA", async () => {
+    passwordGenerationService.passwordStrength.mockReturnValue({ score: 0 } as any);
+    policyService.evaluateMasterPassword.mockReturnValue(false);
+
+    // First login request fails requiring 2FA
+    stateService.getIsAuthenticated.mockResolvedValueOnce(false);
+    const firstResult = await passwordLogInStrategy.logIn(credentials);
+
+    // Second login request succeeds
+    stateService.getIsAuthenticated.mockResolvedValueOnce(true);
+    const secondResult = await passwordLogInStrategy.logInTwoFactor(
+      {
+        provider: TwoFactorProviderType.Authenticator,
+        token: "123456",
+        remember: false,
+      },
+      ""
+    );
+
+    const expectedResetOptions = expect.objectContaining({
+      reason: ForceResetPasswordReason.WeakMasterPasswordOnLogin,
+    });
+
+    // First login attempt should not save the force password reset options
+    expect(firstResult.forcePasswordReset).toBeFalsy();
+    expect(firstResult.forcePasswordResetOptions).toBeUndefined();
+
+    // Second login attempt should save the force password reset options and return in result
+    expect(stateService.setForcePasswordResetOptions).toHaveBeenCalledWith(expectedResetOptions);
+    expect(secondResult.forcePasswordReset).toBeTruthy();
+    expect(secondResult.forcePasswordResetOptions).toEqual(expectedResetOptions);
   });
 });
