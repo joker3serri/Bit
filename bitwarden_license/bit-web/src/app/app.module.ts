@@ -12,9 +12,9 @@ import { OssRoutingModule } from "@bitwarden/web-vault/app/oss-routing.module";
 import { OssModule } from "@bitwarden/web-vault/app/oss.module";
 import { WildcardRoutingModule } from "@bitwarden/web-vault/app/wildcard-routing.module";
 
+import { OrganizationsModule } from "./admin-console/organizations/organizations.module";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { OrganizationsModule } from "./organizations/organizations.module";
 import { DisablePersonalVaultExportPolicyComponent } from "./policies/disable-personal-vault-export.component";
 import { MaximumVaultTimeoutPolicyComponent } from "./policies/maximum-vault-timeout.component";
 

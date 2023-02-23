@@ -8,10 +8,10 @@ import { OrganizationPermissionsGuard } from "@bitwarden/web-vault/app/admin-con
 import { OrganizationLayoutComponent } from "@bitwarden/web-vault/app/admin-console/organizations/layouts/organization-layout.component";
 import { SettingsComponent } from "@bitwarden/web-vault/app/admin-console/organizations/settings/settings.component";
 
-import { ScimComponent } from "../admin-console/organizations/manage/scim.component";
-import { SsoComponent } from "../auth/sso/sso.component";
+import { SsoComponent } from "../../auth/sso/sso.component";
+import { DomainVerificationComponent } from "../../organizations/manage/domain-verification/domain-verification.component";
 
-import { DomainVerificationComponent } from "./manage/domain-verification/domain-verification.component";
+import { ScimComponent } from "./manage/scim.component";
 
 const routes: Routes = [
   {
