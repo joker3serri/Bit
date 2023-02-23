@@ -6,7 +6,7 @@ import { RouterModule } from "@angular/router";
 import { TableModule } from "@bitwarden/components";
 
 // eslint-disable-next-line no-restricted-imports
-import { SharedModule } from "../../../app/shared/shared.module";
+import { SharedModule } from "../../../shared/shared.module";
 
 import { VaultCipherRowComponent } from "./vault-cipher-row.component";
 import { VaultCollectionRowComponent } from "./vault-collection-row.component";

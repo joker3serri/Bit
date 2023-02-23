@@ -9,7 +9,7 @@ import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CipherType } from "@bitwarden/common/src/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-import { PreloadedEnglishI18nModule } from "../../../app/tests/preloaded-english-i18n.module";
+import { PreloadedEnglishI18nModule } from "../../../tests/preloaded-english-i18n.module";
 
 import { VaultItemsComponent } from "./vault-items.component";
 import { VaultItemsModule } from "./vault-items.module";

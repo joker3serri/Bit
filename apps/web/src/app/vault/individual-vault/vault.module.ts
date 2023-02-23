@@ -3,6 +3,7 @@ import { NgModule } from "@angular/core";
 import { BreadcrumbsModule } from "@bitwarden/components";
 
 import { LooseComponentsModule, SharedModule } from "../../shared";
+import { VaultItemsModule } from "../components/vault-items/vault-items.module";
 import { CollectionBadgeModule } from "../org-vault/collection-badge/collection-badge.module";
 import { GroupBadgeModule } from "../org-vault/group-badge/group-badge.module";
 
