@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, Output } from "@angular/core";
 
 import { AvatarUpdateService } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -9,7 +9,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
   selector: "app-org-badge",
   templateUrl: "organization-name-badge.component.html",
 })
-export class OrganizationNameBadgeComponent implements OnInit {
+export class OrganizationNameBadgeComponent implements OnChanges {
   @Input() organizationName: string;
 
   @Output() onOrganizationClicked = new EventEmitter<string>();
@@ -24,12 +24,13 @@ export class OrganizationNameBadgeComponent implements OnInit {
     private tokenService: TokenService
   ) {}
 
-  async ngOnInit(): Promise<void> {
-    if (this.organizationName == null || this.organizationName === "") {
-      this.organizationName = this.i18nService.t("me");
-      this.isMe = true;
-    }
+  // ngOnChanges is required since this component might be reused as part of
+  // cdk virtual scrolling
+  async ngOnChanges() {
+    this.isMe = this.organizationName == null || this.organizationName === "";
+
     if (this.isMe) {
+      this.organizationName = this.i18nService.t("me");
       this.color = await this.avatarService.loadColorFromState();
       if (this.color == null) {
         const userId = await this.tokenService.getUserId();
