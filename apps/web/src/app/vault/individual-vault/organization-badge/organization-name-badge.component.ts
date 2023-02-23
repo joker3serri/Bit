@@ -11,7 +11,6 @@ import { Utils } from "@bitwarden/common/misc/utils";
 })
 export class OrganizationNameBadgeComponent implements OnInit {
   @Input() organizationName: string;
-  @Input() profileName: string;
 
   @Output() onOrganizationClicked = new EventEmitter<string>();
 

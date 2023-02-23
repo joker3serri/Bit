@@ -7,13 +7,23 @@ import { TableModule } from "@bitwarden/components";
 
 // eslint-disable-next-line no-restricted-imports
 import { SharedModule } from "../../../shared/shared.module";
+import { OrganizationBadgeModule } from "../../individual-vault/organization-badge/organization-badge.module";
+import { PipesModule } from "../../individual-vault/pipes/pipes.module";
 
 import { VaultCipherRowComponent } from "./vault-cipher-row.component";
 import { VaultCollectionRowComponent } from "./vault-collection-row.component";
 import { VaultItemsComponent } from "./vault-items.component";
 
 @NgModule({
-  imports: [CommonModule, RouterModule, ScrollingModule, SharedModule, TableModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ScrollingModule,
+    SharedModule,
+    TableModule,
+    OrganizationBadgeModule,
+    PipesModule,
+  ],
   declarations: [VaultItemsComponent, VaultCipherRowComponent, VaultCollectionRowComponent],
   exports: [VaultItemsComponent],
 })

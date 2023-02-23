@@ -3,8 +3,10 @@ import { RouterModule } from "@angular/router";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 import { BehaviorSubject } from "rxjs";
 
+import { AvatarUpdateService } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CipherType } from "@bitwarden/common/src/vault/enums/cipher-type";
@@ -20,9 +22,9 @@ import { VaultItemsModule } from "./vault-items.module";
 })
 class EmptyComponent {}
 
-const organizations: (Organization | undefined)[] = [...new Array(5).keys()]
-  .map(createOrganization)
-  .concat(undefined);
+const organizations: (Organization | undefined)[] = [...new Array(5).keys()].map(
+  createOrganization
+);
 
 export default {
   title: "Web/Vault/Items",
@@ -53,6 +55,28 @@ export default {
             },
           } as Partial<StateService>,
         },
+        {
+          provide: AvatarUpdateService,
+          useValue: {
+            async loadColorFromState() {
+              return "#FF0000";
+            },
+          } as Partial<AvatarUpdateService>,
+        },
+        {
+          provide: TokenService,
+          useValue: {
+            async getUserId() {
+              return "user-id";
+            },
+            async getName() {
+              return "name";
+            },
+            async getEmail() {
+              return "email";
+            },
+          } as Partial<TokenService>,
+        },
       ],
     }),
   ],
@@ -74,7 +98,7 @@ export const Primary = Template.bind({});
 Primary.args = {};
 
 function createCipherView(i: number): CipherView {
-  const organization = organizations[organizations.length % i];
+  const organization = organizations[(organizations.length + 1) % i];
   const view = new CipherView();
   view.id = `cipher-${i}`;
   view.name = `Vault item ${i}`;
@@ -84,7 +108,7 @@ function createCipherView(i: number): CipherView {
 }
 
 function createCollectionView(i: number): CollectionView {
-  const organization = organizations[organizations.length % i];
+  const organization = organizations[(organizations.length + 1) % i];
   const view = new CollectionView();
   view.id = `collection-${i}`;
   view.name = `Collection ${i}`;
