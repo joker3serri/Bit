@@ -5,7 +5,7 @@ import { BulkRemoveComponent as OrganizationBulkRemoveComponent } from "@bitward
 
 @Component({
   templateUrl:
-    "../../../../../../../apps/web/src/app/organizations/members/components/bulk/bulk-remove.component.html",
+    "../../../../../../../../apps/web/src/app/organizations/members/components/bulk/bulk-remove.component.html",
 })
 export class BulkRemoveComponent extends OrganizationBulkRemoveComponent {
   @Input() providerId: string;

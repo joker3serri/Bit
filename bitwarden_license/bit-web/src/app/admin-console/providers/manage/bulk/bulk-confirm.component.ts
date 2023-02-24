@@ -8,7 +8,7 @@ import { BulkUserDetails } from "@bitwarden/web-vault/app/organizations/members/
 
 @Component({
   templateUrl:
-    "../../../../../../../apps/web/src/app/organizations/members/components/bulk/bulk-confirm.component.html",
+    "../../../../../../../../apps/web/src/app/organizations/members/components/bulk/bulk-confirm.component.html",
 })
 export class BulkConfirmComponent extends OrganizationBulkConfirmComponent {
   @Input() providerId: string;
