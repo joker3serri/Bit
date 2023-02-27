@@ -1,7 +1,9 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
+
+import { VaultItemEvent } from "./vault-item-event";
 
 @Component({
   selector: "tr[appVaultCollectionRow]",
@@ -14,4 +16,6 @@ export class VaultCollectionRowComponent {
   @Input() showGroups: boolean;
   @Input() editable: boolean;
   @Input() organizations: Organization[];
+
+  @Output() onEvent = new EventEmitter<VaultItemEvent>();
 }

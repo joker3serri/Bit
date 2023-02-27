@@ -10,6 +10,7 @@ import { TokenService } from "@bitwarden/common/auth/abstractions/token.service"
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CipherType } from "@bitwarden/common/src/vault/enums/cipher-type";
+import { LoginView } from "@bitwarden/common/src/vault/models/view/login.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import { PreloadedEnglishI18nModule } from "../../../tests/preloaded-english-i18n.module";
@@ -87,8 +88,10 @@ export default {
     showOwner: false,
     showCollections: false,
     showGroups: false,
+    showPremiumFeatures: false,
     editableCollections: false,
   },
+  argTypes: { onEvent: { action: "onEvent" } },
 } as Meta;
 
 const Template: Story<VaultItemsComponent> = (args: VaultItemsComponent) => ({
@@ -105,6 +108,8 @@ function createCipherView(i: number): CipherView {
   view.name = `Vault item ${i}`;
   view.type = CipherType.Login;
   view.organizationId = organization?.id;
+  view.login = new LoginView();
+  view.login.totp = i % 2 === 0 ? "I65VU7K5ZQL7WB4E" : undefined;
   return view;
 }
 

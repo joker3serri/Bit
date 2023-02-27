@@ -19,6 +19,7 @@ export class VaultItemsComponent {
   @Input() showCollections: boolean;
   @Input() showGroups: boolean;
   @Input() editableCollections: boolean;
+  @Input() showPremiumFeatures: boolean;
   @Input() organizations: Organization[];
 
   private _ciphers: CipherView[] = [];
@@ -42,6 +43,10 @@ export class VaultItemsComponent {
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
   protected dataSource = new TableDataSource<VaultItem>();
+
+  protected event(event: VaultItemEvent) {
+    this.onEvent.emit(event);
+  }
 
   private refreshItems() {
     const collections: VaultItem[] = this.collections.map((collection) => ({ collection }));
