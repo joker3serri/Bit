@@ -10,6 +10,7 @@ import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.serv
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { KdfType } from "@bitwarden/common/enums/kdfType";
+import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/master-password-policy-options";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
@@ -25,6 +26,8 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
   passwordStrengthResult: any;
   color: string;
   text: string;
+  leakedPassword: boolean;
+  minimumLength = Utils.minimumPasswordLength;
 
   protected email: string;
   protected kdf: KdfType;
@@ -116,11 +119,11 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
       );
       return false;
     }
-    if (this.masterPassword.length < 8) {
+    if (this.masterPassword.length < this.minimumLength) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPasswordMinlength")
+        this.i18nService.t("masterPasswordMinimumlength", this.minimumLength)
       );
       return false;
     }
@@ -151,7 +154,21 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    if (strengthResult != null && strengthResult.score < 3) {
+    const weakPassword = strengthResult != null && strengthResult.score < 3;
+
+    if (weakPassword && this.leakedPassword) {
+      const result = await this.platformUtilsService.showDialog(
+        this.i18nService.t("weakAndBreachedMasterPasswordDesc"),
+        this.i18nService.t("weakAndExposedMasterPassword"),
+        this.i18nService.t("yes"),
+        this.i18nService.t("no"),
+        "warning"
+      );
+      if (!result) {
+        return false;
+      }
+    }
+    if (weakPassword) {
       const result = await this.platformUtilsService.showDialog(
         this.i18nService.t("weakMasterPasswordDesc"),
         this.i18nService.t("weakMasterPassword"),
@@ -163,7 +180,18 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
         return false;
       }
     }
-
+    if (this.leakedPassword) {
+      const result = await this.platformUtilsService.showDialog(
+        this.i18nService.t("exposedMasterPasswordDesc"),
+        this.i18nService.t("exposedMasterPassword"),
+        this.i18nService.t("yes"),
+        this.i18nService.t("no"),
+        "warning"
+      );
+      if (!result) {
+        return false;
+      }
+    }
     return true;
   }
 
