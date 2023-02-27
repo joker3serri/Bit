@@ -1257,7 +1257,7 @@
     "message": "Data successfully imported"
   },
   "importSuccessNumberOfItems": {
-    "message": "We were able to import a total of $AMOUNT$ items.",
+    "message": "A total of $AMOUNT$ items were imported.",
     "placeholders": {
       "amount": {
         "content": "$1",
