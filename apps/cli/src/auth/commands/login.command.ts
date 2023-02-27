@@ -304,7 +304,7 @@ export class LoginCommand {
 
       return await this.handleSuccessResponse();
     } catch (e) {
-      return Response.error("Something went wrong. Try again: " + JSON.stringify(e));
+      return Response.error(e);
     }
   }
 
