@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/src/models/view/collection.view";
@@ -6,6 +6,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { TableDataSource } from "@bitwarden/components";
 
 import { VaultItem } from "./vault-item";
+import { VaultItemEvent } from "./vault-item-event";
 
 @Component({
   selector: "app-new-vault-items",
@@ -37,6 +38,8 @@ export class VaultItemsComponent {
     this._collections = value;
     this.refreshItems();
   }
+
+  @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
   protected dataSource = new TableDataSource<VaultItem>();
 
