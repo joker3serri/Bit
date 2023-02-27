@@ -5815,6 +5815,33 @@
   "viewServiceAccount":{
     "message":"View service account"
   },
+  "deleteServiceAccountDialogMessage": {
+    "message":  "Deleting service account $PROJECT$ is permanent and irreversible.",
+    "placeholders": {
+      "project": {
+        "content": "$1",
+        "example": "project name"
+      }
+    }
+  },
+  "deleteServiceAccountsDialogMessage":{
+    "message": "Deleting service accounts is permanent and irreversible."
+  },
+  "deleteServiceAccountsConfirmMessage":{
+    "message":  "Delete $COUNT$ service accounts",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "deleteServiceAccountToast":{
+    "message": "The service account have been deleted"
+  },
+  "deleteServiceAccountsToast":{
+    "message": "Service accounts deleted"
+  },
   "searchServiceAccounts":{
     "message":"Search service accounts"
   },
@@ -5875,15 +5902,6 @@
   "deleteProjectToast":{
     "message": "The project and all associated secrets have been deleted"
   },
-  "deleteProjectDialogMessage": {
-    "message":  "Deleting project $PROJECT$ is permanent and irreversible.",
-    "placeholders": {
-      "project": {
-        "content": "$1",
-        "example": "project name"
-      }
-    }
-  },
   "deleteProjectInputLabel": {
     "message":  "Type \"$CONFIRM$\" to continue",
     "placeholders": {
@@ -5908,6 +5926,15 @@
       "count": {
         "content": "$1",
         "example": "2"
+      }
+    }
+  },
+  "deleteProjectDialogMessage": {
+    "message":  "Deleting project $PROJECT$ is permanent and irreversible.",
+    "placeholders": {
+      "project": {
+        "content": "$1",
+        "example": "project name"
       }
     }
   },
