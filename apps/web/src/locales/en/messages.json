@@ -6362,9 +6362,6 @@
   "projectEmptyServiceAccountAccessPolicies": {
     "message": "Add service accounts to grant access"
   },
-  "canWrite": {
-    "message": "Can write"
-  },
   "canReadWrite": {
     "message": "Can read, write"
   },
