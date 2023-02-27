@@ -87,6 +87,7 @@ export default {
     showOwner: false,
     showCollections: false,
     showGroups: false,
+    editableCollections: false,
   },
 } as Meta;
 

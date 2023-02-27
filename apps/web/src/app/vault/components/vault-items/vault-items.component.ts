@@ -16,6 +16,7 @@ export class VaultItemsComponent {
   @Input() showOwner: boolean;
   @Input() showCollections: boolean;
   @Input() showGroups: boolean;
+  @Input() editableCollections: boolean;
   @Input() organizations: Organization[];
 
   private _ciphers: CipherView[] = [];

@@ -12,5 +12,6 @@ export class VaultCollectionRowComponent {
   @Input() showOwner: boolean;
   @Input() showCollections: boolean;
   @Input() showGroups: boolean;
+  @Input() editable: boolean;
   @Input() organizations: Organization[];
 }
