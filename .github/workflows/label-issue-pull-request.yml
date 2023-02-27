@@ -10,7 +10,7 @@ on:
     paths-ignore:
       - .github/workflows/** # We don't need QA on workflow changes
     branches:
-      - 'master'
+      - 'master' # We only want to check when PRs target master
 
 jobs:
   add-needs-qa-label:
