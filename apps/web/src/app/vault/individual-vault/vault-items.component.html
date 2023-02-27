@@ -114,7 +114,6 @@
           <ng-container *ngIf="!organization">
             <app-org-badge
               organizationName="{{ col.node.organizationId | orgNameFromId: organizations }}"
-              [profileName]="profileName"
               (onOrganizationClicked)="onOrganizationClicked(col.node.organizationId)"
               appStopProp
             >
@@ -225,7 +224,6 @@
           <ng-container *ngIf="!organization">
             <app-org-badge
               organizationName="{{ c.organizationId | orgNameFromId: organizations }}"
-              profileName="{{ profileName }}"
               (onOrganizationClicked)="onOrganizationClicked(c.organizationId)"
               appStopProp
             >
