@@ -268,9 +268,6 @@ export class AccessSelectorComponent implements OnInit, OnDestroy {
       if (target.value === "canRead") {
         accessPolicyView.read = true;
         accessPolicyView.write = false;
-      } else if (target.value === "canWrite") {
-        accessPolicyView.read = false;
-        accessPolicyView.write = true;
       } else if (target.value === "canReadWrite") {
         accessPolicyView.read = true;
         accessPolicyView.write = true;
