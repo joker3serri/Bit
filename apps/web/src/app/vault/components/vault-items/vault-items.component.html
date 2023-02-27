@@ -1,5 +1,5 @@
 <cdk-virtual-scroll-viewport itemSize="52" scrollWindow>
-  <bit-table>
+  <bit-table [dataSource]="dataSource">
     <ng-container header>
       <tr>
         <th bitCell class="tw-min-w-fit" colspan="2">
@@ -22,8 +22,8 @@
         </th>
       </tr>
     </ng-container>
-    <ng-template body>
-      <ng-container *cdkVirtualFor="let item of items">
+    <ng-template body let-rows$>
+      <ng-container *cdkVirtualFor="let item of rows$">
         <tr
           *ngIf="item.collection"
           bitRow

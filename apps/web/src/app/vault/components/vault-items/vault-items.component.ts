@@ -3,6 +3,7 @@ import { Component, Input } from "@angular/core";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/src/models/view/collection.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { TableDataSource } from "@bitwarden/components";
 
 import { VaultItem } from "./vault-item";
 
@@ -37,12 +38,13 @@ export class VaultItemsComponent {
     this.refreshItems();
   }
 
-  protected items: VaultItem[] = [];
+  protected dataSource = new TableDataSource<VaultItem>();
 
   private refreshItems() {
     const collections: VaultItem[] = this.collections.map((collection) => ({ collection }));
     const ciphers: VaultItem[] = this.ciphers.map((cipher) => ({ cipher }));
+    const items = [].concat(collections).concat(ciphers);
 
-    this.items = [].concat(collections).concat(ciphers);
+    this.dataSource.data = items;
   }
 }
