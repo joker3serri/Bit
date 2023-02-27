@@ -31,6 +31,7 @@ import { ServiceAccountsComponent } from "./service-accounts.component";
     ServiceAccountProjectsComponent,
     ServiceAccountsComponent,
     ServiceAccountsListComponent,
+    ServiceAccountPeopleComponent,
   ],
   providers: [],
 })
