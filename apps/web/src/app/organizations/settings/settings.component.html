@@ -48,7 +48,7 @@
             routerLink="domain-verification"
             class="list-group-item"
             routerLinkActive="active"
-            *ngIf="organization?.canManageDomainVerification"
+            *ngIf="org?.canManageDomainVerification"
           >
             {{ "domainVerification" | i18n }}
           </a>
