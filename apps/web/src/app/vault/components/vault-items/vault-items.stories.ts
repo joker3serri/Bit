@@ -27,6 +27,8 @@ const organizations: (Organization | undefined)[] = [...new Array(3).keys()].map
   createOrganization
 );
 
+const collections = [...Array(5).keys()].map(createCollectionView);
+
 export default {
   title: "Web/Vault/Items",
   component: VaultItemsComponent,
@@ -82,7 +84,8 @@ export default {
     }),
   ],
   args: {
-    collections: [...Array(5).keys()].map(createCollectionView),
+    collections,
+    allCollections: collections,
     ciphers: [...Array(200).keys()].map(createCipherView),
     organizations,
     showOwner: false,
@@ -103,6 +106,7 @@ Primary.args = {};
 
 function createCipherView(i: number): CipherView {
   const organization = organizations[i % (organizations.length + 1)];
+  const collection = collections[i % (collections.length + 1)];
   const view = new CipherView();
   view.id = `cipher-${i}`;
   view.name = `Vault item ${i}`;
@@ -110,6 +114,7 @@ function createCipherView(i: number): CipherView {
   view.organizationId = organization?.id;
   view.login = new LoginView();
   view.login.totp = i % 2 === 0 ? "I65VU7K5ZQL7WB4E" : undefined;
+  view.collectionIds = collection ? [collection.id] : [];
   return view;
 }
 

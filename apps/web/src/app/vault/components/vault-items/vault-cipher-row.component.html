@@ -62,7 +62,13 @@
   >
   </app-org-badge>
 </td>
-<td bitCell *ngIf="showCollections">collections</td>
+<td bitCell *ngIf="showCollections">
+  <app-collection-badge
+    *ngIf="cipher.collectionIds"
+    [collectionIds]="cipher.collectionIds"
+    [collections]="collections"
+  ></app-collection-badge>
+</td>
 <td bitCell *ngIf="showGroups">groups</td>
 <td bitCell class="tw-text-right">
   <button

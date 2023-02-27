@@ -9,6 +9,7 @@ import { TableModule } from "@bitwarden/components";
 import { SharedModule } from "../../../shared/shared.module";
 import { OrganizationBadgeModule } from "../../individual-vault/organization-badge/organization-badge.module";
 import { PipesModule } from "../../individual-vault/pipes/pipes.module";
+import { CollectionBadgeModule } from "../../org-vault/collection-badge/collection-badge.module";
 
 import { VaultCipherRowComponent } from "./vault-cipher-row.component";
 import { VaultCollectionRowComponent } from "./vault-collection-row.component";
@@ -22,6 +23,7 @@ import { VaultItemsComponent } from "./vault-items.component";
     SharedModule,
     TableModule,
     OrganizationBadgeModule,
+    CollectionBadgeModule,
     PipesModule,
   ],
   declarations: [VaultItemsComponent, VaultCipherRowComponent, VaultCollectionRowComponent],

@@ -21,6 +21,7 @@ export class VaultItemsComponent {
   @Input() editableCollections: boolean;
   @Input() showPremiumFeatures: boolean;
   @Input() organizations: Organization[];
+  @Input() allCollections: CollectionView[];
 
   private _ciphers: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {

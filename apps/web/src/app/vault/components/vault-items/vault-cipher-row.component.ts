@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";
+import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
@@ -17,6 +18,7 @@ export class VaultCipherRowComponent {
   @Input() showGroups: boolean;
   @Input() showPremiumFeatures: boolean;
   @Input() organizations: Organization[];
+  @Input() collections: CollectionView[];
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
