@@ -1,5 +1,5 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject } from "@angular/core";
 import {
   FormControl,
   FormGroup,
@@ -28,7 +28,7 @@ export interface ServiceAccountDeleteOperation {
   selector: "sm-service-account-delete-dialog",
   templateUrl: "./service-account-delete-dialog.component.html",
 })
-export class ServiceAccountDeleteDialogComponent implements OnInit {
+export class ServiceAccountDeleteDialogComponent {
   formGroup = new FormGroup({
     confirmDelete: new FormControl("", [this.matchConfirmationMessageValidator()]),
   });
@@ -41,9 +41,6 @@ export class ServiceAccountDeleteDialogComponent implements OnInit {
     private platformUtilsService: PlatformUtilsService,
     private dialogService: DialogService
   ) {}
-  ngOnInit(): void {
-    throw new Error("Method not implemented.");
-  }
 
   get title() {
     return this.data.serviceAccounts.length === 1
@@ -73,12 +70,12 @@ export class ServiceAccountDeleteDialogComponent implements OnInit {
   };
 
   async delete() {
-    //const bulkResponses = await this.serviceAccountService.delete(this.data.serviceAccounts);
+    const bulkResponses = await this.serviceAccountService.delete(this.data.serviceAccounts);
 
-    //if (bulkResponses.find((response) => response.errorMessage)) {
-    //  this.openBulkStatusDialog(bulkResponses.filter((response) => response.errorMessage));
-    //  return;
-    //}
+    if (bulkResponses.find((response) => response.errorMessage)) {
+      this.openBulkStatusDialog(bulkResponses.filter((response) => response.errorMessage));
+      return;
+    }
 
     const message =
       this.data.serviceAccounts.length === 1
