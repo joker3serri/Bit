@@ -19,7 +19,13 @@
   </app-org-badge>
 </td>
 <td bitCell *ngIf="showCollections"></td>
-<td bitCell *ngIf="showGroups">groups</td>
+<td bitCell *ngIf="showGroups">
+  <app-group-badge
+    *ngIf="collectionGroups"
+    [selectedGroups]="collectionGroups"
+    [allGroups]="groups"
+  ></app-group-badge>
+</td>
 <td bitCell class="tw-text-right">
   <button
     *ngIf="editable"

@@ -29,11 +29,12 @@
           bitRow
           appVaultCollectionRow
           alignContent="middle"
-          [organizations]="organizations"
           [collection]="item.collection"
           [showOwner]="showOwner"
           [showCollections]="showCollections"
           [showGroups]="showGroups"
+          [organizations]="organizations"
+          [groups]="allGroups"
           [editable]="editableCollections"
         ></tr>
         <tr
@@ -41,12 +42,12 @@
           bitRow
           appVaultCipherRow
           alignContent="middle"
-          [organizations]="organizations"
           [cipher]="item.cipher"
           [showOwner]="showOwner"
           [showCollections]="showCollections"
           [showGroups]="showGroups"
           [showPremiumFeatures]="showPremiumFeatures"
+          [organizations]="organizations"
           [collections]="allCollections"
           (onEvent)="event($event)"
         ></tr>

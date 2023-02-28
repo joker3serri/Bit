@@ -8,11 +8,15 @@ import { EnvironmentService } from "@bitwarden/common/abstractions/environment.s
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
-import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CipherType } from "@bitwarden/common/src/vault/enums/cipher-type";
 import { LoginView } from "@bitwarden/common/src/vault/models/view/login.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
+import {
+  CollectionAccessSelectionView,
+  CollectionAdminView,
+  GroupView,
+} from "../../../organizations/core";
 import { PreloadedEnglishI18nModule } from "../../../tests/preloaded-english-i18n.module";
 
 import { VaultItemsComponent } from "./vault-items.component";
@@ -23,10 +27,8 @@ import { VaultItemsModule } from "./vault-items.module";
 })
 class EmptyComponent {}
 
-const organizations: (Organization | undefined)[] = [...new Array(3).keys()].map(
-  createOrganization
-);
-
+const organizations = [...new Array(3).keys()].map(createOrganization);
+const groups = [...Array(3).keys()].map(createGroupView);
 const collections = [...Array(5).keys()].map(createCollectionView);
 
 export default {
@@ -86,6 +88,7 @@ export default {
   args: {
     collections,
     allCollections: collections,
+    allGroups: groups,
     ciphers: [...Array(200).keys()].map(createCipherView),
     organizations,
     showOwner: false,
@@ -118,12 +121,33 @@ function createCipherView(i: number): CipherView {
   return view;
 }
 
-function createCollectionView(i: number): CollectionView {
+function createCollectionView(i: number): CollectionAdminView {
   const organization = organizations[i % (organizations.length + 1)];
-  const view = new CollectionView();
+  const group = groups[i % (groups.length + 1)];
+  const view = new CollectionAdminView();
   view.id = `collection-${i}`;
   view.name = `Collection ${i}`;
   view.organizationId = organization?.id;
+
+  if (group !== undefined) {
+    view.groups = [
+      new CollectionAccessSelectionView({
+        id: group.id,
+        hidePasswords: false,
+        readOnly: false,
+      }),
+    ];
+  }
+
+  return view;
+}
+
+function createGroupView(i: number): GroupView {
+  const organization = organizations[i % organizations.length];
+  const view = new GroupView();
+  view.id = `group-${i}`;
+  view.name = `Group ${i}`;
+  view.organizationId = organization.id;
   return view;
 }
 

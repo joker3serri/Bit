@@ -3,6 +3,8 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 
+import { CollectionAdminView, GroupView } from "../../../organizations/core";
+
 import { VaultItemEvent } from "./vault-item-event";
 
 @Component({
@@ -16,6 +18,15 @@ export class VaultCollectionRowComponent {
   @Input() showGroups: boolean;
   @Input() editable: boolean;
   @Input() organizations: Organization[];
+  @Input() groups: GroupView[];
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
+
+  get collectionGroups() {
+    if (!(this.collection instanceof CollectionAdminView)) {
+      return [];
+    }
+
+    return this.collection.groups;
+  }
 }

@@ -5,6 +5,8 @@ import { CollectionView } from "@bitwarden/common/src/models/view/collection.vie
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { TableDataSource } from "@bitwarden/components";
 
+import { GroupView } from "../../../organizations/core";
+
 import { VaultItem } from "./vault-item";
 import { VaultItemEvent } from "./vault-item-event";
 
@@ -22,6 +24,7 @@ export class VaultItemsComponent {
   @Input() showPremiumFeatures: boolean;
   @Input() organizations: Organization[];
   @Input() allCollections: CollectionView[];
+  @Input() allGroups: GroupView[];
 
   private _ciphers: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {
