@@ -11,7 +11,6 @@ import { ProjectService } from "../project.service";
 })
 export class ProjectComponent implements OnInit {
   project$: Observable<ProjectPermissionDetailsView>;
-  userHasWriteAccess$: Observable<boolean>;
 
   constructor(private route: ActivatedRoute, private projectService: ProjectService) {}
 
