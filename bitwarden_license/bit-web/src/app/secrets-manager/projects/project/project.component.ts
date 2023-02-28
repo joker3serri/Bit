@@ -17,7 +17,7 @@ export class ProjectComponent implements OnInit {
 
   ngOnInit(): void {
     this.project$ = this.route.params.pipe(
-      switchMap(async (params) => {
+      switchMap((params) => {
         return this.projectService.getByProjectId(params.projectId);
       })
     );
