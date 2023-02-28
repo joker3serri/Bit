@@ -9,8 +9,10 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
@@ -19,15 +21,17 @@ import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor
 import { TwoFactorProviderType } from "@bitwarden/common/auth/enums/two-factor-provider-type";
 import { AuthResult } from "@bitwarden/common/auth/models/domain/auth-result";
 import {
-  UserApiLogInCredentials,
   PasswordLogInCredentials,
   SsoLogInCredentials,
+  UserApiLogInCredentials,
 } from "@bitwarden/common/auth/models/domain/log-in-credentials";
 import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/identity-token/token-two-factor.request";
 import { TwoFactorEmailRequest } from "@bitwarden/common/auth/models/request/two-factor-email.request";
 import { UpdateTempPasswordRequest } from "@bitwarden/common/auth/models/request/update-temp-password.request";
+import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
 import { Utils } from "@bitwarden/common/misc/utils";
+import { Policy } from "@bitwarden/common/models/domain/policy";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
@@ -41,6 +45,7 @@ export class LoginCommand {
 
   private ssoRedirectUri: string = null;
   private options: program.OptionValues;
+  private masterPasswordPolicies?: Policy[] = undefined;
 
   constructor(
     protected authService: AuthService,
@@ -55,6 +60,8 @@ export class LoginCommand {
     protected twoFactorService: TwoFactorService,
     protected syncService: SyncService,
     protected keyConnectorService: KeyConnectorService,
+    protected policyApiService: PolicyApiServiceAbstraction,
+    protected orgService: OrganizationService,
     protected logoutCallback: () => Promise<void>
   ) {}
 
@@ -658,5 +665,19 @@ export class LoginCommand {
     const stateSplit = state.split("_identifier=");
     const checkStateSplit = checkState.split("_identifier=");
     return stateSplit[0] === checkStateSplit[0];
+  }
+
+  private async loadMasterPasswordPolicies(): Promise<void> {
+    const policiesResponse = await this.policyApiService.getAllPolicies();
+
+    if (policiesResponse == null || policiesResponse.data.length === 0) {
+      this.masterPasswordPolicies = [];
+      return;
+    }
+
+    // We only care about enabled master password policies
+    this.masterPasswordPolicies = this.policyService
+      .mapPoliciesFromToken(policiesResponse)
+      .filter((p) => p.type === PolicyType.MasterPassword && p.enabled);
   }
 }
