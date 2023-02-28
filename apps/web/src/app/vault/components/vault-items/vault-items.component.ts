@@ -22,7 +22,7 @@ export class VaultItemsComponent {
   @Input() showGroups: boolean;
   @Input() editableCollections: boolean;
   @Input() showPremiumFeatures: boolean;
-  @Input() organizations: Organization[];
+  @Input() allOrganizations: Organization[];
   @Input() allCollections: CollectionView[];
   @Input() allGroups: GroupView[];
 
