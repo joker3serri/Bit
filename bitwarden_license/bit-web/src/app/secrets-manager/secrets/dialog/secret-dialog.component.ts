@@ -76,7 +76,7 @@ export class SecretDialogComponent implements OnInit {
       name: secret.name,
       value: secret.value,
       notes: secret.note,
-      project: secret.projects[0].id,
+      project: secret.projects[0]?.id,
     });
     this.loading = false;
   }
