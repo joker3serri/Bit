@@ -5,11 +5,13 @@ import { combineLatest, firstValueFrom, Observable, share, Subject, switchMap, t
 
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/misc/utils";
+import { DialogService } from "@bitwarden/components";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
 import { BaseAccessPolicyView } from "../../models/view/access-policy.view";
 
 import { AccessPolicyService } from "./access-policy.service";
+import { SaPeopleWarningDialogComponent } from "./dialogs/sa-people-warning-dialog.component";
 
 export type AccessSelectorRowView = {
   type: "user" | "group" | "serviceAccount" | "project";
@@ -38,7 +40,7 @@ export class AccessSelectorComponent implements OnInit {
   @Input() hint: string;
   @Input() columnTitle: string;
   @Input() emptyMessage: string;
-  @Input() granteeType: "people" | "serviceAccounts" | "projects";
+  @Input() granteeType: "people" | "people-sa" | "serviceAccounts" | "projects";
 
   protected rows$ = new Subject<AccessSelectorRowView[]>();
   @Input() private set rows(value: AccessSelectorRowView[]) {
@@ -98,6 +100,7 @@ export class AccessSelectorComponent implements OnInit {
   constructor(
     private accessPolicyService: AccessPolicyService,
     private validationService: ValidationService,
+    private dialogService: DialogService,
     private route: ActivatedRoute
   ) {}
 
@@ -143,11 +146,15 @@ export class AccessSelectorComponent implements OnInit {
     this.loading = true;
     this.formGroup.disable();
     await this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
+    if (this.granteeType == "people-sa") {
+      this.dialogService.open(SaPeopleWarningDialogComponent);
+    }
     return firstValueFrom(this.selectItems$);
   };
 
   private getPotentialGrantees(organizationId: string) {
     switch (this.granteeType) {
+      case "people-sa":
       case "people":
         return this.accessPolicyService.getPeoplePotentialGrantees(organizationId);
       case "serviceAccounts":
