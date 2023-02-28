@@ -5739,19 +5739,23 @@
     "message": "Delete secrets",
     "description": "The action to delete multiple secrets from the system."
   },
-  "secretProjectAssociationDescription": {
-    "message": "Select projects that the secret will be associated with. Only organization users with access to these projects will be able to see the secret.",
-    "description": "A prompt explaining how secrets can be associated with projects."
-  },
   "hardDeleteSecret":{
     "message": "Permanently delete secret"
   },
   "hardDeleteSecrets":{
     "message": "Permanently delete secrets"
   },
+  "secretProjectAssociationDescription": {
+    "message": "Select projects that the secret will be associated with. Only organization users with access to these projects will be able to see the secret.",
+    "description": "A prompt explaining how secrets can be associated with projects."
+  },
   "selectProjects": {
     "message": "Select projects",
     "description": "A label for a type-to-filter input field to choose projects."
+  },
+  "searchProjects": {
+    "message": "Search projects",
+    "description": "Label for the search bar used to search projects."
   },
   "project": {
     "message": "Project",
@@ -5817,16 +5821,16 @@
     "message": "To get started, add a new secret or import secrets.",
     "description": "Message to encourage the user to start adding secrets."
   },
-  "serviceAccountsNoItemsTitle": {
-    "message": "Nothing to show yet",
-    "description": "Title to indicate that there are no service accounts to display."
-  },
   "secretsTrashNoItemsMessage":{
     "message": "There are no secrets in the trash."
   },
   "serviceAccountsNoItemsMessage": {
     "message": "Create a new service account to get started automating secret access.",
     "description": "Message to encourage the user to start creating service accounts."
+  },
+   "serviceAccountsNoItemsTitle": {
+    "message": "Nothing to show yet",
+    "description": "Title to indicate that there are no service accounts to display."
   },
   "searchSecrets": {
     "message": "Search secrets",
@@ -5880,10 +5884,6 @@
     "message": "Secrets sent to trash",
     "description": "Notifies that the selected secrets have been moved to the trash"
   },
-  "serviceAccountCreated": {
-    "message": "Service account created",
-    "description": "Notifies that a new service account has been created"
-  },
   "hardDeleteSecretConfirmation": {
     "message": "Are you sure you want to permanently delete this secret?"
   },
@@ -5904,6 +5904,10 @@
   "serviceAccountName": {
     "message": "Service account name",
     "description": "Label for the name of a service account"
+  },
+   "serviceAccountCreated": {
+    "message": "Service account created",
+    "description": "Notifies that a new service account has been created"
   },
   "newSaSelectAccess": {
     "message": "Type or select projects or secrets",
@@ -5984,10 +5988,6 @@
   "softDeleteSuccessToast": {
     "message": "Secret sent to trash",
     "description": "Notification to be displayed when a secret is successfully sent to the trash."
-  },
-  "searchProjects": {
-    "message": "Search projects",
-    "description": "Label for the search bar used to search projects."
   },
   "hardDeleteSuccessToast":{
     "message":"Secret permanently deleted"
