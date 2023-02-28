@@ -102,6 +102,20 @@ export default {
 
 const Template: Story<VaultItemsComponent> = (args: VaultItemsComponent) => ({
   props: args,
+  template: `
+    <app-new-vault-items
+      [collections]="collections"
+      [allCollections]="allCollections"
+      [allGroups]="allGroups"
+      [allOrganizations]="allOrganizations"
+      [ciphers]="ciphers"
+      [showOwner]="showOwner"
+      [showCollections]="showCollections"
+      [showGroups]="showGroups"
+      [showPremiumFeatures]="showPremiumFeatures"
+      [editableCollections]="editableCollections"
+    ></app-new-vault-items>
+  `,
 });
 
 export const Primary = Template.bind({});
