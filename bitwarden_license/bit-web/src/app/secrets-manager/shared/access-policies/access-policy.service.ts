@@ -32,7 +32,6 @@ import {
   ServiceAccountProjectAccessPolicyResponse,
   UserProjectAccessPolicyResponse,
 } from "./models/responses/access-policy.response";
-import { AccessResponse } from "./models/responses/access.reponse";
 import { PotentialGranteeResponse } from "./models/responses/potential-grantee.response";
 
 @Injectable({
@@ -73,19 +72,6 @@ export class AccessPolicyService {
 
     const results = new ProjectAccessPoliciesResponse(r);
     return await this.createProjectAccessPoliciesView(organizationId, results);
-  }
-
-  async getProjectAccess(projectId: string): Promise<[read: boolean, write: boolean]> {
-    const r = await this.apiService.send(
-      "GET",
-      "/projects/" + projectId + "/access",
-      null,
-      true,
-      true
-    );
-
-    const results = new AccessResponse(r);
-    return [results.read, results.write];
   }
 
   async getServiceAccountAccessPolicies(

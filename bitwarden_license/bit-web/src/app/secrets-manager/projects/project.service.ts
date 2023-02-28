@@ -108,7 +108,8 @@ export class ProjectService {
       new EncString(projectResponse.name),
       orgKey
     );
-
+    projectView.read = projectResponse.read;
+    projectView.write = projectResponse.write;
     return projectView;
   }
 
