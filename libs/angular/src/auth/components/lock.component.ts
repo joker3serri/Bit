@@ -1,6 +1,6 @@
 import { Directive, NgZone, OnDestroy, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subject } from "rxjs";
+import { firstValueFrom, Subject } from "rxjs";
 import { concatMap, take, takeUntil } from "rxjs/operators";
 
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -22,15 +22,13 @@ import {
   ForceResetPasswordReason,
 } from "@bitwarden/common/auth/models/domain/force-password-reset-options";
 import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
+import { VerifyMasterPasswordResponse } from "@bitwarden/common/auth/models/response/verify-master-password.response";
 import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
-import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { PolicyData } from "@bitwarden/common/models/data/policy.data";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
+import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/master-password-policy-options";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
-import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { PolicyResponse } from "@bitwarden/common/models/response/policy.response";
 
 @Directive()
 export class LockComponent implements OnInit, OnDestroy {
@@ -52,6 +50,8 @@ export class LockComponent implements OnInit, OnDestroy {
 
   private invalidPinAttempts = 0;
   private pinSet: [boolean, boolean];
+
+  private enforcedMasterPasswordOptions: MasterPasswordPolicyOptions = undefined;
 
   private destroy$ = new Subject<void>();
 
@@ -223,7 +223,10 @@ export class LockComponent implements OnInit, OnDestroy {
       request.masterPasswordHash = serverKeyHash;
       try {
         this.formPromise = this.apiService.postAccountVerifyPassword(request);
-        await this.formPromise;
+        const response = await this.formPromise;
+        this.enforcedMasterPasswordOptions = MasterPasswordPolicyOptions.fromResponse(
+          (response as VerifyMasterPasswordResponse).masterPasswordPolicy
+        );
         passwordValid = true;
         const localKeyHash = await this.cryptoService.hashPassword(
           this.masterPassword,
@@ -267,13 +270,24 @@ export class LockComponent implements OnInit, OnDestroy {
     await this.stateService.setDisableFavicon(!!disableFavicon);
     this.messagingService.send("unlocked");
 
-    const [requiresChange, orgId] = await this.requirePasswordChange();
-    if (requiresChange) {
-      await this.stateService.setForcePasswordResetOptions(
-        new ForcePasswordResetOptions(ForceResetPasswordReason.WeakMasterPasswordOnLogin, orgId)
-      );
-      this.router.navigate([this.forcePasswordResetRoute]);
-      return;
+    try {
+      // If we do not have any saved policies, attempt to load them from the service
+      if (this.enforcedMasterPasswordOptions == undefined) {
+        this.enforcedMasterPasswordOptions = await firstValueFrom(
+          this.policyService.masterPasswordPolicyOptions$()
+        );
+      }
+
+      if (this.requirePasswordChange()) {
+        await this.stateService.setForcePasswordResetOptions(
+          new ForcePasswordResetOptions(ForceResetPasswordReason.WeakMasterPasswordOnLogin)
+        );
+        this.router.navigate([this.forcePasswordResetRoute]);
+        return;
+      }
+    } catch (e) {
+      // Do not prevent unlock if there is an error evaluating policies
+      this.logService.error(e);
     }
 
     if (this.onSuccessfulSubmit != null) {
@@ -310,41 +324,27 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Checks if the master password meets the requirements of all organizations
-   * If not, returns false and the ID of the first organization that the password doesn't
-   * meet the requirements for
-   * @returns [requiresChange, failedOrgId?]
+   * Checks if the master password meets the enforced policy requirements
+   * If not, returns false
    */
-  private async requirePasswordChange(): Promise<[boolean, string?]> {
+  private requirePasswordChange(): boolean {
+    if (
+      this.enforcedMasterPasswordOptions == undefined ||
+      !this.enforcedMasterPasswordOptions.enforceOnLogin
+    ) {
+      return false;
+    }
+
     const passwordStrength = this.passwordGenerationService.passwordStrength(
       this.masterPassword,
       this.getPasswordStrengthUserInput()
     )?.score;
 
-    // Must fetch policies from the API because we have not synced yet
-    const policiesResponse = await this.policyApiService.getAllPolicies();
-
-    // Only care about enabled, master password policies, with enforce on login enabled
-    const policies = this.policyService
-      .mapPoliciesFromToken(policiesResponse)
-      .filter((p) => p.type === PolicyType.MasterPassword && p.enabled && p.data.enforceOnLogin);
-
-    const [meetsRequirements, failedOrgId] = this.policyService.evaluateMasterPasswordByEachPolicy(
+    return !this.policyService.evaluateMasterPassword(
       passwordStrength,
       this.masterPassword,
-      policies
+      this.enforcedMasterPasswordOptions
     );
-
-    // Password meets the requirements of all required organizations
-    if (meetsRequirements) {
-      return [false];
-    }
-
-    // Password doesn't meet the requirements for all organizations
-    // Save the policies and return true to force navigation to update password page
-    await this.savePolicies(policiesResponse);
-
-    return [true, failedOrgId];
   }
 
   protected getPasswordStrengthUserInput() {
@@ -360,11 +360,5 @@ export class LockComponent implements OnInit, OnDestroy {
       );
     }
     return userInput;
-  }
-
-  protected async savePolicies(policyResponse: ListResponse<PolicyResponse>) {
-    const policiesData: { [id: string]: PolicyData } = {};
-    policyResponse.data.map((p) => (policiesData[p.id] = new PolicyData(p)));
-    await this.policyService.replace(policiesData);
   }
 }
