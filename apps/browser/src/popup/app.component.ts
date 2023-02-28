@@ -32,6 +32,7 @@ import { routerTransition } from "./app-routing.animations";
   </div>`,
 })
 export class AppComponent implements OnInit, OnDestroy {
+  private lastActivity: number = null;
   private activeUserId: string;
 
   private destroy$ = new Subject<void>();
@@ -65,6 +66,7 @@ export class AppComponent implements OnInit, OnDestroy {
       window.onclick = () => this.recordActivity();
       window.onscroll = () => this.recordActivity();
       window.onkeypress = () => this.recordActivity();
+      window.onblur = () => this.recordActivity();
     });
 
     (window as any).bitwardenPopupMainMessageListener = async (
@@ -185,12 +187,11 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     const now = new Date().getTime();
-    const lastActivity = await this.stateService.getLastActive();
-
-    if (lastActivity != null && now - lastActivity < 250) {
+    if (this.lastActivity != null && now - this.lastActivity < 250) {
       return;
     }
 
+    this.lastActivity = now;
     await this.stateService.setLastActive(now, { userId: this.activeUserId });
   }
 
