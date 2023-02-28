@@ -114,6 +114,10 @@ export class TableDataSource<T> extends DataSource<T> {
       return numberValue < Number.MAX_SAFE_INTEGER ? numberValue : value;
     }
 
+    if (this._isStringValue(value)) {
+      return value.toLowerCase();
+    }
+
     return value;
   }
 
@@ -215,5 +219,9 @@ export class TableDataSource<T> extends DataSource<T> {
     const transformedFilter = filter.trim().toLowerCase();
 
     return dataStr.indexOf(transformedFilter) != -1;
+  }
+
+  private _isStringValue(value: any): value is string {
+    return typeof value === "string" || value instanceof String;
   }
 }
