@@ -242,7 +242,6 @@ export default class MainBackground {
       this.stateMigrationService,
       new StateFactory(GlobalState, Account)
     );
-
     this.platformUtilsService = new BrowserPlatformUtilsService(
       this.messagingService,
       (clipboardValue, clearMs) => {
