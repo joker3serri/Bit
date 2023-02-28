@@ -60,11 +60,12 @@ export class ServiceAccountDialogComponent implements OnInit {
 
   async loadData() {
     this.loading = true;
-    const serviceAccount: ServiceAccountView = await (
-      await this.serviceAccountService.getServiceAccounts(this.data.organizationId)
-    )[0];
+    const serviceAccount: ServiceAccountView =
+      await await this.serviceAccountService.getByServiceAccountId(
+        this.data.serviceAccountId,
+        this.data.organizationId
+      );
     this.formGroup.get("name").setValue(serviceAccount.name);
-    this.formGroup.setValue({ name: serviceAccount.name });
     this.loading = false;
   }
 

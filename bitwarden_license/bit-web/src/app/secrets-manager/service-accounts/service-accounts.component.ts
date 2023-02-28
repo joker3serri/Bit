@@ -32,7 +32,7 @@ export class ServiceAccountsComponent implements OnInit {
     private serviceAccountService: ServiceAccountService
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     this.serviceAccounts$ = this.serviceAccountService.serviceAccount$.pipe(
       startWith(null),
       combineLatestWith(this.route.params),

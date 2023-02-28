@@ -40,6 +40,22 @@ export class ServiceAccountService {
     return await this.createServiceAccountViews(organizationId, results.data);
   }
 
+  async getByServiceAccountId(
+    serviceAccountId: string,
+    organizationId: string
+  ): Promise<ServiceAccountView> {
+    const orgKey = await this.getOrganizationKey(organizationId);
+    const r = await this.apiService.send(
+      "GET",
+      "/service-account/" + serviceAccountId + "/" + organizationId + "/service-accounts",
+      null,
+      true,
+      true
+    );
+
+    return await this.createServiceAccountView(orgKey, new ServiceAccountResponse(r));
+  }
+
   async update(
     serviceAccountId: string,
     organizationId: string,
