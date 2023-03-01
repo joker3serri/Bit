@@ -5,12 +5,12 @@ import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationResponse } from "@bitwarden/common/admin-console/models/response/organization.response";
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organization-keys.request";
 import { OrganizationUpdateRequest } from "@bitwarden/common/models/request/organization-update.request";
-import { OrganizationResponse } from "@bitwarden/common/models/response/organization.response";
 
 import { ApiKeyComponent } from "../../../settings/api-key.component";
 import { PurgeVaultComponent } from "../../../settings/purge-vault.component";

@@ -7,15 +7,15 @@ import { EventCollectionService } from "@bitwarden/common/abstractions/event/eve
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import {
-  isNotProviderUser,
-  OrganizationService,
-} from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import {
+  isNotProviderUser,
+  OrganizationService,
+} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organizationUserStatusType";
 import { EventType } from "@bitwarden/common/enums/eventType";
-import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";

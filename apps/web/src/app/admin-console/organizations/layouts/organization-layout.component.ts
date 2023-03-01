@@ -11,7 +11,7 @@ import {
   canAccessVaultTab,
   getOrganizationById,
   OrganizationService,
-} from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
 @Component({

@@ -6,10 +6,10 @@ import { ModalConfig, ModalService } from "@bitwarden/angular/services/modal.ser
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { OrganizationApiKeyType } from "@bitwarden/common/auth/enums/organization-api-key-type";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationApiKeyType } from "@bitwarden/common/admin-console/enums/organization-api-key-type";
 import { PlanType } from "@bitwarden/common/billing/enums/plan-type";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
 import { Organization } from "@bitwarden/common/models/domain/organization";

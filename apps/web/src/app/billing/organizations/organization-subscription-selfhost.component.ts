@@ -7,14 +7,14 @@ import { ModalConfig, ModalService } from "@bitwarden/angular/services/modal.ser
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationConnectionType } from "@bitwarden/common/admin-console/enums/organizationConnectionType";
+import { OrganizationConnectionResponse } from "@bitwarden/common/admin-console/models/response/organization-connection.response";
 import { BillingSyncConfigApi } from "@bitwarden/common/billing/models/api/billing-sync-config.api";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
-import { OrganizationConnectionType } from "@bitwarden/common/enums/organizationConnectionType";
 import { Organization } from "@bitwarden/common/models/domain/organization";
-import { OrganizationConnectionResponse } from "@bitwarden/common/models/response/organization-connection.response";
 
 import {
   BillingSyncKeyComponent,

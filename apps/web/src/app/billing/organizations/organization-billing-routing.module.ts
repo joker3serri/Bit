@@ -1,7 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
-import { canAccessBillingTab } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { canAccessBillingTab } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { OrganizationPermissionsGuard } from "../../admin-console/organizations/guards/org-permissions.guard";

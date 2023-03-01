@@ -3,8 +3,8 @@ import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { PaymentMethodType } from "@bitwarden/common/billing/enums/payment-method-type";
 import { PaymentRequest } from "@bitwarden/common/billing/models/request/payment.request";
 

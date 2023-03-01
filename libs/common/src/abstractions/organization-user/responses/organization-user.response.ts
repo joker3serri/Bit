@@ -1,7 +1,7 @@
+import { OrganizationUserStatusType } from "../../../admin-console/enums/organizationUserStatusType";
+import { OrganizationUserType } from "../../../admin-console/enums/organizationUserType";
 import { SelectionReadOnlyResponse } from "../../../admin-console/models/response/selection-read-only.response";
 import { KdfType } from "../../../enums/kdfType";
-import { OrganizationUserStatusType } from "../../../enums/organizationUserStatusType";
-import { OrganizationUserType } from "../../../enums/organizationUserType";
 import { PermissionsApi } from "../../../models/api/permissions.api";
 import { BaseResponse } from "../../../models/response/base.response";
 

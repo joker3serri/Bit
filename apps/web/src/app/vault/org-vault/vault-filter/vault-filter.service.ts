@@ -3,12 +3,12 @@ import { filter, map, Observable, ReplaySubject, Subject, switchMap, takeUntil }
 
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 import {
   canAccessVaultTab,
   OrganizationService,
-} from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
+} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";

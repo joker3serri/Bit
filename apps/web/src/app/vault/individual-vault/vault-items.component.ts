@@ -6,11 +6,11 @@ import { VaultItemsComponent as BaseVaultItemsComponent } from "@bitwarden/angul
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { Organization } from "@bitwarden/common/models/domain/organization";

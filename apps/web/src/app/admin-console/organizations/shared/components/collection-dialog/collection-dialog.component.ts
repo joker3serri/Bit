@@ -6,8 +6,8 @@ import { combineLatest, of, shareReplay, Subject, switchMap, takeUntil } from "r
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/abstractions/organization-user/responses";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/src/models/view/collection.view";
 import { BitValidators, DialogService } from "@bitwarden/components";

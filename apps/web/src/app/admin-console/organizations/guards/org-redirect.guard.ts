@@ -4,7 +4,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from
 import {
   canAccessOrgAdmin,
   OrganizationService,
-} from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 
 @Injectable({
   providedIn: "root",

@@ -27,16 +27,16 @@ import {
   OrganizationUserBulkResponse,
   OrganizationUserUserDetailsResponse,
 } from "@bitwarden/common/abstractions/organization-user/responses";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyApiServiceAbstraction as PolicyApiService } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
-import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
-import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organizationUserStatusType";
+import { OrganizationUserType } from "@bitwarden/common/admin-console/enums/organizationUserType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { ProductType } from "@bitwarden/common/enums/productType";
 import { CollectionData } from "@bitwarden/common/models/data/collection.data";

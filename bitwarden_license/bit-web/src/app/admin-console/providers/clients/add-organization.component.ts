@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { ProviderService } from "@bitwarden/common/abstractions/provider.service";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
+import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { Provider } from "@bitwarden/common/models/domain/provider";
 

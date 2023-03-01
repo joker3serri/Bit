@@ -16,10 +16,11 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { ProviderOrganizationCreateRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-organization-create.request";
 import { PaymentMethodType } from "@bitwarden/common/billing/enums/payment-method-type";
 import { PlanType } from "@bitwarden/common/billing/enums/plan-type";
 import { PlanResponse } from "@bitwarden/common/billing/models/response/plan.response";
@@ -30,7 +31,6 @@ import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-cr
 import { OrganizationCreateRequest } from "@bitwarden/common/models/request/organization-create.request";
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organization-keys.request";
 import { OrganizationUpgradeRequest } from "@bitwarden/common/models/request/organization-upgrade.request";
-import { ProviderOrganizationCreateRequest } from "@bitwarden/common/models/request/provider/provider-organization-create.request";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { PaymentComponent } from "./payment.component";

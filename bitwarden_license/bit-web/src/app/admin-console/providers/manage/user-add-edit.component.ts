@@ -4,10 +4,10 @@ import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { ProviderUserType } from "@bitwarden/common/enums/providerUserType";
+import { ProviderUserType } from "@bitwarden/common/admin-console/enums/providerUserType";
+import { ProviderUserInviteRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-user-invite.request";
+import { ProviderUserUpdateRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-user-update.request";
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
-import { ProviderUserInviteRequest } from "@bitwarden/common/models/request/provider/provider-user-invite.request";
-import { ProviderUserUpdateRequest } from "@bitwarden/common/models/request/provider/provider-user-update.request";
 
 @Component({
   selector: "provider-user-add-edit",

@@ -1,7 +1,7 @@
-import { CipherResponse } from "../../vault/models/response/cipher.response";
 
-import { BaseResponse } from "./base.response";
-import { CollectionResponse } from "./collection.response";
+import { BaseResponse } from "../../../models/response/base.response";
+import { CollectionResponse } from "../../../models/response/collection.response";
+import { CipherResponse } from "../../../vault/models/response/cipher.response";
 
 export class OrganizationExportResponse extends BaseResponse {
   collections: CollectionResponse[];

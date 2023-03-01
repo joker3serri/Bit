@@ -5,10 +5,10 @@ import { combineLatest, of, shareReplay, Subject, switchMap, takeUntil } from "r
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
-import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organizationUserStatusType";
+import { OrganizationUserType } from "@bitwarden/common/admin-console/enums/organizationUserType";
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";

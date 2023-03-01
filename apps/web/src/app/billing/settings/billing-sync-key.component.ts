@@ -4,11 +4,11 @@ import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
 import { ModalConfig } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { OrganizationConnectionType } from "@bitwarden/common/admin-console/enums/organizationConnectionType";
+import { OrganizationConnectionResponse } from "@bitwarden/common/admin-console/models/response/organization-connection.response";
 import { BillingSyncConfigApi } from "@bitwarden/common/billing/models/api/billing-sync-config.api";
 import { BillingSyncConfigRequest } from "@bitwarden/common/billing/models/request/billing-sync-config.request";
-import { OrganizationConnectionType } from "@bitwarden/common/enums/organizationConnectionType";
 import { OrganizationConnectionRequest } from "@bitwarden/common/models/request/organization-connection.request";
-import { OrganizationConnectionResponse } from "@bitwarden/common/models/response/organization-connection.response";
 
 export interface BillingSyncKeyModalData {
   entityId: string;

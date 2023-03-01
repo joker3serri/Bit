@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 
-import { ProviderService } from "@bitwarden/common/abstractions/provider.service";
+import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { Provider } from "@bitwarden/common/models/domain/provider";
 
 @Component({

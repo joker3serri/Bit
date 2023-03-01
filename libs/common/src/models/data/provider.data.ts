@@ -1,6 +1,6 @@
 import { ProviderUserStatusType } from "../../admin-console/enums/providerUserStatusType";
-import { ProviderUserType } from "../../enums/providerUserType";
-import { ProfileProviderResponse } from "../response/profile-provider.response";
+import { ProviderUserType } from "../../admin-console/enums/providerUserType";
+import { ProfileProviderResponse } from "../../admin-console/models/response/profile-provider.response";
 
 export class ProviderData {
   id: string;

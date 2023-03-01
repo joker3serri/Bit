@@ -1,8 +1,7 @@
-import { ScimConfigApi } from "../../admin-console/models/api/scim-config.api";
-import { BillingSyncConfigApi } from "../../billing/models/api/billing-sync-config.api";
+import { BillingSyncConfigApi } from "../../../billing/models/api/billing-sync-config.api";
+import { BaseResponse } from "../../../models/response/base.response";
 import { OrganizationConnectionType } from "../../enums/organizationConnectionType";
-
-import { BaseResponse } from "./base.response";
+import { ScimConfigApi } from "../api/scim-config.api";
 
 /**API response config types for OrganizationConnectionResponse */
 export type OrganizationConnectionConfigApis = BillingSyncConfigApi | ScimConfigApi;

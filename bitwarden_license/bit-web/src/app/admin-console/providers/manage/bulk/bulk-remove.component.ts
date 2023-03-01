@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 
-import { ProviderUserBulkRequest } from "@bitwarden/common/models/request/provider/provider-user-bulk.request";
+import { ProviderUserBulkRequest } from "@bitwarden/common/admin-console/models/request/provider/provider-user-bulk.request";
 import { BulkRemoveComponent as OrganizationBulkRemoveComponent } from "@bitwarden/web-vault/app/organizations/members/components/bulk/bulk-remove.component";
 
 @Component({

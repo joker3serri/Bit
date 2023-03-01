@@ -5,16 +5,16 @@ import { ActivatedRoute } from "@angular/router";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationApiKeyType } from "@bitwarden/common/admin-console/enums/organization-api-key-type";
+import { OrganizationConnectionType } from "@bitwarden/common/admin-console/enums/organizationConnectionType";
 import { ScimConfigApi } from "@bitwarden/common/admin-console/models/api/scim-config.api";
 import { ScimConfigRequest } from "@bitwarden/common/admin-console/models/request/scim-config.request";
-import { OrganizationApiKeyType } from "@bitwarden/common/auth/enums/organization-api-key-type";
+import { OrganizationConnectionResponse } from "@bitwarden/common/admin-console/models/response/organization-connection.response";
 import { ApiKeyResponse } from "@bitwarden/common/auth/models/response/api-key.response";
-import { OrganizationConnectionType } from "@bitwarden/common/enums/organizationConnectionType";
 import { OrganizationApiKeyRequest } from "@bitwarden/common/models/request/organization-api-key.request";
 import { OrganizationConnectionRequest } from "@bitwarden/common/models/request/organization-connection.request";
-import { OrganizationConnectionResponse } from "@bitwarden/common/models/response/organization-connection.response";
 
 @Component({
   selector: "app-org-manage-scim",

@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";
-import { OrganizationPermissionsGuard } from "@bitwarden/web-vault/app/organizations/guards/org-permissions.guard";
+import { OrganizationPermissionsGuard } from "@bitwarden/web-vault/app/admin-console/organizations/guards/org-permissions.guard";
 
 import { SecretsManagerExportComponent } from "./porting/sm-export.component";
 import { SecretsManagerImportComponent } from "./porting/sm-import.component";

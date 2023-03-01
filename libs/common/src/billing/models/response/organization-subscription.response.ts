@@ -1,4 +1,4 @@
-import { OrganizationResponse } from "../../../models/response/organization.response";
+import { OrganizationResponse } from "../../../admin-console/models/response/organization.response";
 
 import {
   BillingSubscriptionResponse,

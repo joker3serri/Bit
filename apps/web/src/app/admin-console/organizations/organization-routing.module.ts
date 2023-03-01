@@ -9,7 +9,7 @@ import {
   canAccessVaultTab,
   canAccessReportingTab,
   canAccessSettingsTab,
-} from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { OrganizationPermissionsGuard } from "../../admin-console/organizations/guards/org-permissions.guard";
