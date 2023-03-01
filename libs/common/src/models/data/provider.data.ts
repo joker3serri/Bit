@@ -1,4 +1,4 @@
-import { ProviderUserStatusType } from "../../enums/providerUserStatusType";
+import { ProviderUserStatusType } from "../../admin-console/enums/providerUserStatusType";
 import { ProviderUserType } from "../../enums/providerUserType";
 import { ProfileProviderResponse } from "../response/profile-provider.response";
 

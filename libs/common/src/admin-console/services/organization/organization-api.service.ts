@@ -1,5 +1,5 @@
 import { ApiService } from "../../../abstractions/api.service";
-import { OrganizationApiKeyType } from "../../../auth/enums/organization-api-key-type";
+import { OrganizationApiKeyType } from "../../enums/organization-api-key-type";
 import { OrganizationSsoRequest } from "../../../auth/models/request/organization-sso.request";
 import { SecretVerificationRequest } from "../../../auth/models/request/secret-verification.request";
 import { ApiKeyResponse } from "../../../auth/models/response/api-key.response";

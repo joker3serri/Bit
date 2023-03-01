@@ -1,4 +1,3 @@
-import { OrganizationApiKeyType } from "../../../auth/enums/organization-api-key-type";
 import { OrganizationSsoRequest } from "../../../auth/models/request/organization-sso.request";
 import { SecretVerificationRequest } from "../../../auth/models/request/secret-verification.request";
 import { ApiKeyResponse } from "../../../auth/models/response/api-key.response";
@@ -21,6 +20,7 @@ import { SeatRequest } from "../../../models/request/seat.request";
 import { StorageRequest } from "../../../models/request/storage.request";
 import { VerifyBankRequest } from "../../../models/request/verify-bank.request";
 import { ListResponse } from "../../../models/response/list.response";
+import { OrganizationApiKeyType } from "../../enums/organization-api-key-type";
 import { OrganizationApiKeyInformationResponse } from "../../models/response/organization-api-key-information.response";
 import { OrganizationAutoEnrollStatusResponse } from "../../models/response/organization-auto-enroll-status.response";
 import { OrganizationKeysResponse } from "../../models/response/organization-keys.response";
