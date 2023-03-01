@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
-import { SecretsManagerLogoLight } from "./secrets-manager-logo";
+import { SecretsManagerLogo } from "./secrets-manager-logo";
 
 @Component({
   selector: "sm-navigation",
@@ -10,5 +10,5 @@ import { SecretsManagerLogoLight } from "./secrets-manager-logo";
 })
 export class NavigationComponent {
   protected orgFilter = (org: Organization) => org.canAccessSecretsManager;
-  protected readonly logo = SecretsManagerLogoLight;
+  protected readonly logo = SecretsManagerLogo;
 }
