@@ -20,6 +20,7 @@ enum CharacterType {
       i + 1
     }}</span>
   </span>`,
+  preserveWhitespaces: false,
 })
 export class ColorPasswordComponent {
   @Input() private password: string = null;
