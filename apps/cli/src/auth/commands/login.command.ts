@@ -184,13 +184,6 @@ export class LoginCommand {
           // Pass error up to be handled by the outer catch block below
           throw e;
         }
-          response = await this.authService.logIn(
-            new UserApiLogInCredentials(clientId, clientSecret)
-          );
-        } catch {
-          // handle API login failures immediately since they make captcha/2FA irrelevant
-          return Response.badRequest("API login failed.");
-        }
       } else if (ssoCode != null && ssoCodeVerifier != null) {
         response = await this.authService.logIn(
           new SsoLogInCredentials(
