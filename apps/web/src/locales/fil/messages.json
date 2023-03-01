@@ -697,7 +697,14 @@
     "message": "Kinakailangan ang ulitin ang master password."
   },
   "masterPasswordMinlength": {
-    "message": "Ang master password ay dapat hindi bababa sa 8 na mga character."
+    "message": "Ang master password ay dapat na hindi bababa sa $VALUE$ na mga character.",
+    "description": "The Master Password must be at least a specific number of characters long.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
   },
   "masterPassDoesntMatch": {
     "message": "Hindi tumutugma ang kumpirmasyon ng master password."
@@ -1247,6 +1254,9 @@
   },
   "importSuccess": {
     "message": "Matagumpay na na import ang data"
+  },
+  "dataExportSuccess": {
+    "message": "Matagumpay na nai-export ang data"
   },
   "importWarning": {
     "message": "Nag-aangkat ka ng data sa $ORGANIZATION$. Ang iyong data ay maaaring ibahagi sa mga miyembro ng organisasyong ito. Gusto mo bang magpatuloy?",
@@ -3770,7 +3780,7 @@
     "message": "Ibalik muli ang mga item"
   },
   "restoreSelectedItemsDesc": {
-    "message": "Pumili ka ng $COUNT (mga) item na ibabalik. Sigurado ka bang gusto mong ibalik ang mga item na ito?",
+    "message": "Pumili ka ng $COUNT$ (mga) item na ibabalik. Sigurado ka bang gusto mong ibalik ang mga item na ito?",
     "placeholders": {
       "count": {
         "content": "$1",
@@ -5670,6 +5680,9 @@
   "customColor": {
     "message": "Pasadyang Kulay"
   },
+  "selectPlaceholder": {
+    "message": "--Piliin--"
+  },
   "multiSelectPlaceholder": {
     "message": "-- Uri ng filter --"
   },
@@ -5717,14 +5730,17 @@
   "deleteSecrets": {
     "message": "Tanggalin ang mga lihim"
   },
+  "hardDeleteSecret": {
+    "message": "Permanenteng burahin ang lihim"
+  },
+  "hardDeleteSecrets": {
+    "message": "Permanenteng burahin ang mga lihim"
+  },
   "secretProjectAssociationDescription": {
     "message": "Pumili ng mga proyekto na ang lihim ay maiugnay. Tanging ang mga gumagamit ng organisasyon na may access sa mga proyektong ito ang makakakita ng lihim."
   },
-  "typeOrSelectProjects": {
-    "message": "Uri o piliin ang Mga Proyekto"
-  },
-  "typeOrSelectProject": {
-    "message": "Uri o piliin ang Proyekto"
+  "selectProjects": {
+    "message": "Pilipitin ang mga proyekto"
   },
   "project": {
     "message": "Proyekto"
@@ -5774,6 +5790,9 @@
   "secretsNoItemsMessage": {
     "message": "Upang makapagsimula, magdagdag ng isang bagong lihim o mga lihim ng pag import."
   },
+  "secretsTrashNoItemsMessage": {
+    "message": "Walang mga lihim sa basurahan."
+  },
   "serviceAccountsNoItemsTitle": {
     "message": "Wala pang maipapakita"
   },
@@ -5818,6 +5837,15 @@
   },
   "softDeletesSuccessToast": {
     "message": "Mga lihim na ipinadala sa basurahan"
+  },
+  "hardDeleteSecretConfirmation": {
+    "message": "Sigurado ka bang gusto mong i-permanenteng burahin ang lihim na ito?"
+  },
+  "hardDeleteSecretsConfirmation": {
+    "message": "Sigurado ka bang gusto mong i-permanenteng burahin ang mga lihim na ito?"
+  },
+  "hardDeletesSuccessToast": {
+    "message": "Lihim na permanenteng nabura"
   },
   "serviceAccountCreated": {
     "message": "Nilikha ang service account"
@@ -5897,6 +5925,9 @@
   "softDeleteSuccessToast": {
     "message": "Lihim na ipinadala sa basurahan"
   },
+  "hardDeleteSuccessToast": {
+    "message": "Lihim na permanenteng nabura"
+  },
   "searchProjects": {
     "message": "Maghanap ng mga proyekto"
   },
@@ -5944,6 +5975,16 @@
   },
   "revokeAccessToken": {
     "message": "Bawiin ang access token"
+  },
+  "revokeAccessTokens": {
+    "message": "Tanggalin ang access tokens"
+  },
+  "revokeAccessTokenDesc": {
+    "message": "Ang pag-tanggal ng access tokens ay permanente at hindi mababawi."
+  },
+  "accessTokenRevoked": {
+    "message": "Na-revoke ang mga access token",
+    "description": "Toast message after deleting one or multiple access tokens."
   },
   "submenu": {
     "message": "Submenu"
@@ -5999,6 +6040,9 @@
   "collection": {
     "message": "Koleksyon"
   },
+  "noCollection": {
+    "message": "Walang koleksyon"
+  },
   "canView": {
     "message": "Maaaring tingnan"
   },
@@ -6028,6 +6072,138 @@
   },
   "memberAccessAll": {
     "message": "Maaaring ma-access at baguhin ng miyembrong ito ang lahat ng item."
+  },
+  "domainVerification": {
+    "message": "Pagpapatunay ng domain"
+  },
+  "newDomain": {
+    "message": "Bagong domain"
+  },
+  "noDomains": {
+    "message": "Walang domain"
+  },
+  "noDomainsSubText": {
+    "message": "Ang pag-connect ng isang domain ay nagpapahintulot sa mga miyembro na laktawan ang field ng SSO identifier habang nag-Login with SSO."
+  },
+  "verifyDomain": {
+    "message": "Patunayan ang domain"
+  },
+  "reverifyDomain": {
+    "message": "Patunayin muli ang domain"
+  },
+  "copyDnsTxtRecord": {
+    "message": "Kopyahin ang DNS TXT record"
+  },
+  "dnsTxtRecord": {
+    "message": "DNS TXT record"
+  },
+  "dnsTxtRecordInputHint": {
+    "message": "Kopyahin at i-paste ang TXT record sa iyong DNS Provider."
+  },
+  "domainNameInputHint": {
+    "message": "Ang aking domain.com. Kinakailangan ng mga naiibang entry upang mapatunayan."
+  },
+  "automaticDomainVerification": {
+    "message": "Awtomatikong Pagpapatunay sa Domain"
+  },
+  "automaticDomainVerificationProcess": {
+    "message": "Susubukan ng Bitwarden na patunayan ang domain 3 beses sa loob ng unang 72 oras. Kung hindi makapagpatunayan ang domain, suriin ang DNS record sa iyong host at patunayan ito nang mano-mano. Ang domain ay alisin sa iyong organisasyon sa loob ng 7 araw kung hindi ito mapatunayan"
+  },
+  "invalidDomainNameMessage": {
+    "message": "Hindi wastong anyo ang ipinasok. Anyo: akingdomain.com. Kinakailangan ng mga hiwalay na entry upang ma-verify ang mga subdomain."
+  },
+  "removeDomain": {
+    "message": "Tanggalin ang domain"
+  },
+  "removeDomainWarning": {
+    "message": "Alisin ang domain ay hindi mababalik. Sigurado ka bang gusto mong magpatuloy?"
+  },
+  "domainRemoved": {
+    "message": "Naisalis na ang domain"
+  },
+  "domainSaved": {
+    "message": "Naisapanatili ang domain"
+  },
+  "domainVerified": {
+    "message": "Nasuri ang Domain"
+  },
+  "duplicateDomainError": {
+    "message": "Hindi mo maaaring mag-reklamo ng parehong domain nang dalawang beses."
+  },
+  "domainNotAvailable": {
+    "message": "May iba pang gumagamit ng $DOMAIN$. Gamitin ang ibang domain upang magpatuloy.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "bitwarden.com"
+      }
+    }
+  },
+  "domainNotVerified": {
+    "message": "$DOMAIN$ hindi napatunayan. Suriin ang iyong DNS record.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "bitwarden.com"
+      }
+    }
+  },
+  "domainStatusVerified": {
+    "message": "Na-verify"
+  },
+  "domainStatusUnverified": {
+    "message": "Hindi na-verify"
+  },
+  "domainNameTh": {
+    "message": "Pangalan"
+  },
+  "domainStatusTh": {
+    "message": "Katayuan"
+  },
+  "lastChecked": {
+    "message": "Huling pagsusuri"
+  },
+  "editDomain": {
+    "message": "Lumikha ng Domain"
+  },
+  "domainFormInvalid": {
+    "message": "May mga error sa form na nangangailangan ng iyong pansin"
+  },
+  "addedDomain": {
+    "message": "Idinagdag ang domain $DOMAIN$",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "bitwarden.com"
+      }
+    }
+  },
+  "removedDomain": {
+    "message": "Tinanggal ang domain $DOMAIN$",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "bitwarden.com"
+      }
+    }
+  },
+  "domainVerifiedEvent": {
+    "message": "$DOMAIN$ na-verify",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "bitwarden.com"
+      }
+    }
+  },
+  "domainNotVerifiedEvent": {
+    "message": "$DOMAIN$ hindi na-verify",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "bitwarden.com"
+      }
+    }
   },
   "membersColumnHeader": {
     "message": "Miyembro/Grupo"
@@ -6104,6 +6280,36 @@
       }
     }
   },
+  "server": {
+    "message": "Server"
+  },
+  "exportData": {
+    "message": "I-export ang mga datos"
+  },
+  "exportingOrganizationSecretDataTitle": {
+    "message": "Pag-eexport ng Sekretong Data ng Organisasyon"
+  },
+  "exportingOrganizationSecretDataDescription": {
+    "message": "Tanging ang data ng Manager ng Mga Lihim na nauugnay sa $ORGANIZATION$ ang ma-export. Ang mga item sa iba pang mga produkto o mula sa iba pang mga organisasyon ay hindi kasama.",
+    "placeholders": {
+      "ORGANIZATION": {
+        "content": "$1",
+        "example": "My Org Name"
+      }
+    }
+  },
+  "fileUpload": {
+    "message": "Mag-upload ng File"
+  },
+  "acceptedFormats": {
+    "message": "Tinatanggap na Mga Format:"
+  },
+  "copyPasteImportContents": {
+    "message": "Kopyahin & i paste ang mga nilalaman ng import:"
+  },
+  "or": {
+    "message": "o"
+  },
   "licenseAndBillingManagement": {
     "message": "Pamamahala ng lisensya at pagsingil"
   },
@@ -6134,6 +6340,33 @@
   "uploadLicense": {
     "message": "Mag-upload ng lisensya"
   },
+  "projectPeopleDescription": {
+    "message": "Bigyan ng access ang mga grupo o tao sa proyektong ito."
+  },
+  "projectPeopleSelectHint": {
+    "message": "I-type o piliin ang mga tao o grupo"
+  },
+  "projectServiceAccountsDescription": {
+    "message": "Bigyan ng access ang mga service account sa proyektong ito."
+  },
+  "projectServiceAccountsSelectHint": {
+    "message": "I-type o piliin ang mga service account"
+  },
+  "projectEmptyPeopleAccessPolicies": {
+    "message": "Magdagdag ng mga tao o grupo upang magsimulang mag-collaborate"
+  },
+  "projectEmptyServiceAccountAccessPolicies": {
+    "message": "Magdagdag ng mga service account upang mabigyan ng access"
+  },
+  "canWrite": {
+    "message": "Maaaring magsulat"
+  },
+  "canReadWrite": {
+    "message": "Maaaring magbasa, magsulat"
+  },
+  "groupSlashUser": {
+    "message": "Grupo/User"
+  },
   "lowKdfIterations": {
     "message": "Mababang KDF Iterations"
   },
@@ -6154,5 +6387,128 @@
   },
   "userAccessSecretsManager": {
     "message": "Maaaring ma access ng gumagamit na ito ang Secrets Manager Beta"
+  },
+  "important": {
+    "message": "Mahalaga:"
+  },
+  "viewAll": {
+    "message": "Tingnan ang lahat"
+  },
+  "showingPortionOfTotal": {
+    "message": "Ipinapakita ang $PORTION$ ng $TOTAL$",
+    "placeholders": {
+      "portion": {
+        "content": "$1",
+        "example": "2"
+      },
+      "total": {
+        "content": "$2",
+        "example": "5"
+      }
+    }
+  },
+  "resolveTheErrorsBelowAndTryAgain": {
+    "message": "Lutasin ang mga error sa ibaba at subukang muli."
+  },
+  "description": {
+    "message": "Paglalarawan"
+  },
+  "errorReadingImportFile": {
+    "message": "May nangyaring error kapag sinusubukang basahin ang import file"
+  },
+  "createSecret": {
+    "message": "Lumikha ng lihim"
+  },
+  "createProject": {
+    "message": "Create a project"
+  },
+  "createServiceAccount": {
+    "message": "Lumikha ng account ng serbisyo"
+  },
+  "downloadThe": {
+    "message": "I-download ang",
+    "description": "Link to a downloadable resource. This will be used as part of a larger phrase. Example: Download the Secrets Manager CLI"
+  },
+  "smCLI": {
+    "message": "Secrets Manager CLI"
+  },
+  "importSecrets": {
+    "message": "I-import ang mga lihim"
+  },
+  "getStarted": {
+    "message": "Magsimula"
+  },
+  "complete": {
+    "message": "$COMPLETED$/$TOTAL$ Tapos na",
+    "placeholders": {
+      "COMPLETED": {
+        "content": "$1",
+        "example": "1"
+      },
+      "TOTAL": {
+        "content": "$2",
+        "example": "4"
+      }
+    }
+  },
+  "restoreSecret": {
+    "message": "Ibalik ang lihim"
+  },
+  "restoreSecrets": {
+    "message": "Ibalik ang mga lihim"
+  },
+  "restoreSecretPrompt": {
+    "message": "Sigurado ka bang gusto mong ibalik ang lihim na ito?"
+  },
+  "restoreSecretsPrompt": {
+    "message": "Sigurado ka bang gusto mong ibalik ang mga lihim na ito?"
+  },
+  "secretRestoredSuccessToast": {
+    "message": "Lihim na naibalik"
+  },
+  "secretsRestoredSuccessToast": {
+    "message": "Mga lihim na naibalik"
+  },
+  "selectionIsRequired": {
+    "message": "Kinakailangan ang pagpili."
+  },
+  "secretsManagerSubscriptionDesc": {
+    "message": "I-on ang access sa Organisasyon sa Secrets Manager nang walang bayad sa loob ng Beta program. Mga user ay maaaring granted access sa Beta sa Members."
+  },
+  "secretsManagerEnable": {
+    "message": "Paganahin ang Secrets Manager Beta"
+  },
+  "checkForBreaches": {
+    "message": "Check known data breaches for this password"
+  },
+  "exposedMasterPassword": {
+    "message": "Exposed Master Password"
+  },
+  "exposedMasterPasswordDesc": {
+    "message": "Password found in a data breach. Use a unique password to protect your account. Are you sure you want to use an exposed password?"
+  },
+  "weakAndExposedMasterPassword": {
+    "message": "Weak and Exposed Master Password"
+  },
+  "weakAndBreachedMasterPasswordDesc": {
+    "message": "Weak password identified and found in a data breach. Use a strong and unique password to protect your account. Are you sure you want to use this password?"
+  },
+  "characterMinimum": {
+    "message": "$LENGTH$ character minimum",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "masterPasswordMinimumlength": {
+    "message": "Master password must be at least $LENGTH$ characters long.",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
   }
 }
