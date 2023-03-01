@@ -1,5 +1,4 @@
 import { ApiService } from "../../../abstractions/api.service";
-import { OrganizationApiServiceAbstraction } from "../../../abstractions/organization/organization-api.service.abstraction";
 import { OrganizationApiKeyType } from "../../../auth/enums/organization-api-key-type";
 import { OrganizationSsoRequest } from "../../../auth/models/request/organization-sso.request";
 import { SecretVerificationRequest } from "../../../auth/models/request/secret-verification.request";
@@ -27,6 +26,7 @@ import { OrganizationAutoEnrollStatusResponse } from "../../../models/response/o
 import { OrganizationKeysResponse } from "../../../models/response/organization-keys.response";
 import { OrganizationResponse } from "../../../models/response/organization.response";
 import { SyncService } from "../../../vault/abstractions/sync/sync.service.abstraction";
+import { OrganizationApiServiceAbstraction } from "../../abstractions/organization/organization-api.service.abstraction";
 import { OrganizationApiKeyInformationResponse } from "../../models/response/organization-api-key-information.response";
 
 export class OrganizationApiService implements OrganizationApiServiceAbstraction {
