@@ -62,6 +62,16 @@ export class ServiceAccountProjectsComponent {
     );
   }
 
+  protected handleDeleteAccessPolicy(policy: AccessSelectorRowView) {
+    return this.accessPolicyService.deleteAccessPolicy(policy.accessPolicyId);
+  }
+
+  protected handleUpdateAccessPolicy(policy: AccessSelectorRowView) {
+    return this.accessPolicyService.updateAccessPolicy(
+      AccessSelectorComponent.getBaseAccessPolicyView(policy)
+    );
+  }
+
   constructor(private route: ActivatedRoute, private accessPolicyService: AccessPolicyService) {}
 
   ngOnInit(): void {

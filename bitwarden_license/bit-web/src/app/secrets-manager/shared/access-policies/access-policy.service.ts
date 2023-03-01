@@ -68,6 +68,14 @@ export class AccessPolicyService {
     protected encryptService: EncryptService
   ) {}
 
+  refreshProjectAccessPolicyChanges() {
+    this._projectAccessPolicyChanges$.next(null);
+  }
+
+  refreshServiceAccountAccessPolicyChanges() {
+    this._serviceAccountAccessPolicyChanges$.next(null);
+  }
+
   async getGrantedPolicies(
     serviceAccountId: string,
     organizationId: string
@@ -277,10 +285,12 @@ export class AccessPolicyService {
       ...this.createBaseAccessPolicyView(response),
       grantedProjectId: response.grantedProjectId,
       serviceAccountId: response.serviceAccountId,
-      grantedProjectName: await this.encryptService.decryptToUtf8(
-        new EncString(response.grantedProjectName),
-        organizationKey
-      ),
+      grantedProjectName: response.grantedProjectName
+        ? await this.encryptService.decryptToUtf8(
+            new EncString(response.grantedProjectName),
+            organizationKey
+          )
+        : null,
       serviceAccountName: await this.encryptService.decryptToUtf8(
         new EncString(response.serviceAccountName),
         organizationKey

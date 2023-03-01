@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { map, Observable, startWith, Subject, switchMap, takeUntil } from "rxjs";
 
-import { SelectItemView } from "@bitwarden/components";
+import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
+import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { DialogService, SelectItemView } from "@bitwarden/components";
 
 import {
   GroupProjectAccessPolicyView,
@@ -14,6 +16,10 @@ import {
   AccessSelectorComponent,
   AccessSelectorRowView,
 } from "../../shared/access-policies/access-selector.component";
+import {
+  AccessRemovalDetails,
+  AccessRemovalDialogComponent,
+} from "../../shared/access-policies/dialogs/access-removal-dialog.component";
 
 @Component({
   selector: "sm-project-people",
@@ -90,7 +96,52 @@ export class ProjectPeopleComponent implements OnInit, OnDestroy {
     );
   }
 
-  constructor(private route: ActivatedRoute, private accessPolicyService: AccessPolicyService) {}
+  protected async handleDeleteAccessPolicy(policy: AccessSelectorRowView) {
+    const organization = this.organizationService.get(this.organizationId);
+
+    if (organization.isOwner || organization.isAdmin) {
+      return await this.accessPolicyService.deleteAccessPolicy(policy.accessPolicyId);
+    }
+
+    if (await this.needToShowWarning(policy, organization.userId)) {
+      this.launchDeleteWarningDialog(policy.accessPolicyId);
+      return;
+    }
+
+    return await this.accessPolicyService.deleteAccessPolicy(policy.accessPolicyId);
+  }
+
+  protected async handleUpdateAccessPolicy(policy: AccessSelectorRowView) {
+    const organization = this.organizationService.get(this.organizationId);
+
+    if (organization.isOwner || organization.isAdmin) {
+      return await this.accessPolicyService.updateAccessPolicy(
+        AccessSelectorComponent.getBaseAccessPolicyView(policy)
+      );
+    }
+
+    if (
+      policy.read === true &&
+      policy.write === false &&
+      (await this.needToShowWarning(policy, organization.userId))
+    ) {
+      this.launchUpdateWarningDialog(policy);
+      return;
+    }
+
+    return await this.accessPolicyService.updateAccessPolicy(
+      AccessSelectorComponent.getBaseAccessPolicyView(policy)
+    );
+  }
+
+  constructor(
+    private route: ActivatedRoute,
+    private organizationUserService: OrganizationUserService,
+    private organizationService: OrganizationService,
+    private dialogService: DialogService,
+    private router: Router,
+    private accessPolicyService: AccessPolicyService
+  ) {}
 
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
@@ -102,5 +153,66 @@ export class ProjectPeopleComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private async needToShowWarning(policy: AccessSelectorRowView, userId: string): Promise<boolean> {
+    // FIXME this doesn't work if the user doesn't have ManageUsers permission
+    const orgUsers = await this.organizationUserService.getAllUsers(this.organizationId);
+    const currentOrgUser = orgUsers.data.find((x) => x.userId == userId);
+
+    if (policy.type === "user" && currentOrgUser.id == policy.id) {
+      return true;
+    } else if (policy.type === "group") {
+      const groups = await this.organizationUserService.getOrganizationUserGroups(
+        this.organizationId,
+        currentOrgUser.id
+      );
+      if (groups.includes(policy.id)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private launchDeleteWarningDialog(accessPolicyId: string) {
+    const dialogRef = this.dialogService.open<unknown, AccessRemovalDetails>(
+      AccessRemovalDialogComponent,
+      {
+        data: {
+          title: "smAccessRemovalWarningProjectTitle",
+          message: "smAccessRemovalWarningProjectMessage",
+        },
+      }
+    );
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((result) => {
+      if (result === "confirmed") {
+        this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
+        this.router.navigate(["sm", this.organizationId, "projects"]);
+      } else {
+        this.accessPolicyService.refreshProjectAccessPolicyChanges();
+      }
+    });
+  }
+
+  private launchUpdateWarningDialog(policy: AccessSelectorRowView) {
+    const dialogRef = this.dialogService.open<unknown, AccessRemovalDetails>(
+      AccessRemovalDialogComponent,
+      {
+        data: {
+          title: "smAccessRemovalWarningProjectTitle",
+          message: "smAccessRemovalWarningProjectMessage",
+        },
+      }
+    );
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((result) => {
+      if (result === "confirmed") {
+        this.accessPolicyService.updateAccessPolicy(
+          AccessSelectorComponent.getBaseAccessPolicyView(policy)
+        );
+        this.router.navigate(["sm", this.organizationId, "projects"]);
+      } else {
+        this.accessPolicyService.refreshProjectAccessPolicyChanges();
+      }
+    });
   }
 }
