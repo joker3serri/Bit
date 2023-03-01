@@ -55,8 +55,10 @@
               "pendingCancellation" | i18n
             }}</span>
           </dd>
-          <dt>{{ "subscriptionExpiration" | i18n }}</dt>
-          <dd>
+          <dt [ngClass]="{ 'tw-text-danger': isExpired }">
+            {{ "subscriptionExpiration" | i18n }}
+          </dt>
+          <dd [ngClass]="{ 'tw-text-danger': isExpired }">
             {{
               nextInvoice
                 ? (nextInvoice.date | date: "mediumDate") +
