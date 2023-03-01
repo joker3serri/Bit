@@ -171,6 +171,22 @@ export class LoginCommand {
           response = await this.authService.logIn(
             new UserApiLogInCredentials(clientId, clientSecret)
           );
+        } catch (e) {
+          // handle API key login failures
+          // Handle invalid client error as server doesn't return a useful message
+          if (
+            e?.response?.error &&
+            typeof e.response.error === "string" &&
+            e.response.error === "invalid_client"
+          ) {
+            return Response.badRequest("client_id or client_secret is incorrect. Try again.");
+          }
+          // Pass error up to be handled by the outer catch block below
+          throw e;
+        }
+          response = await this.authService.logIn(
+            new UserApiLogInCredentials(clientId, clientSecret)
+          );
         } catch {
           // handle API login failures immediately since they make captcha/2FA irrelevant
           return Response.badRequest("API login failed.");
