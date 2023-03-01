@@ -5873,7 +5873,7 @@
     "message": "Projects deleted"
   },
   "deleteProjectToast":{
-    "message": "The project and all associated secrets have been deleted"
+    "message": "Project deleted"
   },
   "deleteProjectDialogMessage": {
     "message":  "Deleting project $PROJECT$ is permanent and irreversible.",
