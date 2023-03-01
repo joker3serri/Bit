@@ -5815,11 +5815,12 @@
   "viewServiceAccount":{
     "message":"View service account"
   },
+  "searchServiceAccounts": {
+    "message": "Search service accounts",
+    "description": "Placeholder text for searching service accounts."
+  },
   "editServiceAccount":{
     "message":"Edit service account"
-  },
-  "searchServiceAccounts":{
-    "message":"Search service accounts"
   },
   "addProject":{
     "message": "Add project"
