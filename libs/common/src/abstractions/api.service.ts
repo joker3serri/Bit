@@ -89,18 +89,18 @@ import { OrganizationImportRequest } from "../models/request/organization-import
 import { OrganizationSponsorshipCreateRequest } from "../models/request/organization/organization-sponsorship-create.request";
 import { OrganizationSponsorshipRedeemRequest } from "../models/request/organization/organization-sponsorship-redeem.request";
 import { PreloginRequest } from "../models/request/prelogin.request";
-import { ProviderAddOrganizationRequest } from "../models/request/provider/provider-add-organization.request";
-import { ProviderOrganizationCreateRequest } from "../models/request/provider/provider-organization-create.request";
-import { ProviderSetupRequest } from "../models/request/provider/provider-setup.request";
-import { ProviderUpdateRequest } from "../models/request/provider/provider-update.request";
-import { ProviderUserAcceptRequest } from "../models/request/provider/provider-user-accept.request";
-import { ProviderUserBulkConfirmRequest } from "../models/request/provider/provider-user-bulk-confirm.request";
-import { ProviderUserBulkRequest } from "../models/request/provider/provider-user-bulk.request";
-import { ProviderUserConfirmRequest } from "../models/request/provider/provider-user-confirm.request";
-import { ProviderUserInviteRequest } from "../models/request/provider/provider-user-invite.request";
-import { ProviderUserUpdateRequest } from "../models/request/provider/provider-user-update.request";
+import { ProviderAddOrganizationRequest } from "../admin-console/models/request/provider/provider-add-organization.request";
+import { ProviderOrganizationCreateRequest } from "../admin-console/models/request/provider/provider-organization-create.request";
+import { ProviderSetupRequest } from "../admin-console/models/request/provider/provider-setup.request";
+import { ProviderUpdateRequest } from "../admin-console/models/request/provider/provider-update.request";
+import { ProviderUserAcceptRequest } from "../admin-console/models/request/provider/provider-user-accept.request";
+import { ProviderUserBulkConfirmRequest } from "../admin-console/models/request/provider/provider-user-bulk-confirm.request";
+import { ProviderUserBulkRequest } from "../admin-console/models/request/provider/provider-user-bulk.request";
+import { ProviderUserConfirmRequest } from "../admin-console/models/request/provider/provider-user-confirm.request";
+import { ProviderUserInviteRequest } from "../admin-console/models/request/provider/provider-user-invite.request";
+import { ProviderUserUpdateRequest } from "../admin-console/models/request/provider/provider-user-update.request";
 import { RegisterRequest } from "../models/request/register.request";
-import { SelectionReadOnlyRequest } from "../models/request/selection-read-only.request";
+import { SelectionReadOnlyRequest } from "../admin-console/models/request/selection-read-only.request";
 import { SendAccessRequest } from "../models/request/send-access.request";
 import { SendRequest } from "../models/request/send.request";
 import { StorageRequest } from "../models/request/storage.request";
@@ -120,9 +120,9 @@ import { ListResponse } from "../models/response/list.response";
 import {
   OrganizationConnectionConfigApis,
   OrganizationConnectionResponse,
-} from "../models/response/organization-connection.response";
-import { OrganizationExportResponse } from "../models/response/organization-export.response";
-import { OrganizationSponsorshipSyncStatusResponse } from "../models/response/organization-sponsorship-sync-status.response";
+} from "../admin-console/models/response/organization-connection.response";
+import { OrganizationExportResponse } from "../admin-console/models/response/organization-export.response";
+import { OrganizationSponsorshipSyncStatusResponse } from "../admin-console/models/response/organization-sponsorship-sync-status.response";
 import { PolicyResponse } from "../models/response/policy.response";
 import { ProfileResponse } from "../models/response/profile.response";
 import { SendAccessResponse } from "../models/response/send-access.response";
