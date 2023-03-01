@@ -6,6 +6,7 @@ import { EncryptService } from "../abstractions/encrypt.service";
 import { LogService } from "../abstractions/log.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { StateService } from "../abstractions/state.service";
+import { ProfileOrganizationResponse } from "../admin-console/models/response/profile-organization.response";
 import { KdfConfig } from "../auth/models/domain/kdf-config";
 import { EncryptionType } from "../enums/encryptionType";
 import { HashPurpose } from "../enums/hashPurpose";
@@ -24,7 +25,6 @@ import { EncArrayBuffer } from "../models/domain/enc-array-buffer";
 import { EncString } from "../models/domain/enc-string";
 import { BaseEncryptedOrganizationKey } from "../models/domain/encrypted-organization-key";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
-import { ProfileOrganizationResponse } from "../models/response/profile-organization.response";
 import { ProfileProviderOrganizationResponse } from "../models/response/profile-provider-organization.response";
 import { ProfileProviderResponse } from "../models/response/profile-provider.response";
 

@@ -1,9 +1,8 @@
-import { OrganizationUserStatusType } from "../../enums/organizationUserStatusType";
-import { OrganizationUserType } from "../../enums/organizationUserType";
-import { ProductType } from "../../enums/productType";
-import { PermissionsApi } from "../api/permissions.api";
-
-import { BaseResponse } from "./base.response";
+import { OrganizationUserStatusType } from "../../../enums/organizationUserStatusType";
+import { OrganizationUserType } from "../../../enums/organizationUserType";
+import { ProductType } from "../../../enums/productType";
+import { PermissionsApi } from "../../../models/api/permissions.api";
+import { BaseResponse } from "../../../models/response/base.response";
 
 export class ProfileOrganizationResponse extends BaseResponse {
   id: string;

@@ -23,11 +23,11 @@ import { SeatRequest } from "../../../models/request/seat.request";
 import { StorageRequest } from "../../../models/request/storage.request";
 import { VerifyBankRequest } from "../../../models/request/verify-bank.request";
 import { ListResponse } from "../../../models/response/list.response";
-import { OrganizationApiKeyInformationResponse } from "../../../models/response/organization-api-key-information.response";
 import { OrganizationAutoEnrollStatusResponse } from "../../../models/response/organization-auto-enroll-status.response";
 import { OrganizationKeysResponse } from "../../../models/response/organization-keys.response";
 import { OrganizationResponse } from "../../../models/response/organization.response";
 import { SyncService } from "../../../vault/abstractions/sync/sync.service.abstraction";
+import { OrganizationApiKeyInformationResponse } from "../../models/response/organization-api-key-information.response";
 
 export class OrganizationApiService implements OrganizationApiServiceAbstraction {
   constructor(private apiService: ApiService, private syncService: SyncService) {}

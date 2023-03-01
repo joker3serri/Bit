@@ -1,3 +1,4 @@
+import { OrganizationApiKeyInformationResponse } from "../../admin-console/models/response/organization-api-key-information.response";
 import { OrganizationApiKeyType } from "../../auth/enums/organization-api-key-type";
 import { OrganizationSsoRequest } from "../../auth/models/request/organization-sso.request";
 import { SecretVerificationRequest } from "../../auth/models/request/secret-verification.request";
@@ -21,7 +22,6 @@ import { SeatRequest } from "../../models/request/seat.request";
 import { StorageRequest } from "../../models/request/storage.request";
 import { VerifyBankRequest } from "../../models/request/verify-bank.request";
 import { ListResponse } from "../../models/response/list.response";
-import { OrganizationApiKeyInformationResponse } from "../../models/response/organization-api-key-information.response";
 import { OrganizationAutoEnrollStatusResponse } from "../../models/response/organization-auto-enroll-status.response";
 import { OrganizationKeysResponse } from "../../models/response/organization-keys.response";
 import { OrganizationResponse } from "../../models/response/organization.response";
