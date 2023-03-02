@@ -112,8 +112,9 @@ export class Send extends Domain {
 
     return Object.assign(new Send(), obj, {
       name: EncString.fromJSON(obj.name),
-      text: EncString.fromJSON(obj.text.text),
       notes: EncString.fromJSON(obj.notes),
+      text: SendText.fromJSON(obj.text),
+      file: SendFile.fromJSON(obj.file),
       revisionDate,
       expirationDate,
       deletionDate,

@@ -1,3 +1,5 @@
+import { Jsonify } from "type-fest";
+
 import { SendTextData } from "../data/send-text.data";
 import { SendTextView } from "../view/send-text.view";
 
@@ -35,5 +37,11 @@ export class SendText extends Domain {
       null,
       key
     );
+  }
+
+  static fromJSON(obj: Jsonify<SendText>) {
+    return Object.assign(new SendText(), obj, {
+      text: EncString.fromJSON(obj.text),
+    });
   }
 }
