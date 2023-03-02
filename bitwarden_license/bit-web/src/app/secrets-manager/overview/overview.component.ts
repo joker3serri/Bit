@@ -8,7 +8,7 @@ import {
   takeUntil,
   combineLatest,
   startWith,
-  distinct,
+  distinctUntilChanged,
 } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -85,7 +85,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const orgId$ = this.route.params.pipe(
       map((p) => p.organizationId),
-      distinct()
+      distinctUntilChanged()
     );
 
     orgId$
