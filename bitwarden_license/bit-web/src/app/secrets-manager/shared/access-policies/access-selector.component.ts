@@ -11,7 +11,6 @@ import { SelectItemView } from "@bitwarden/components/src/multi-select/models/se
 import { BaseAccessPolicyView } from "../../models/view/access-policy.view";
 
 import { AccessPolicyService } from "./access-policy.service";
-import { SaPeopleWarningDialogComponent } from "./dialogs/sa-people-warning-dialog.component";
 
 export type AccessSelectorRowView = {
   type: "user" | "group" | "serviceAccount" | "project";
@@ -34,13 +33,21 @@ export class AccessSelectorComponent implements OnInit {
   static readonly serviceAccountIcon = "bwi-wrench";
   static readonly projectIcon = "bwi-collection";
 
+  /**
+   * Emits the selected itemss on submit.
+   */
   @Output() onCreateAccessPolicies = new EventEmitter<SelectItemView[]>();
+
+  /**
+   * Emits after an access policy has been deleted.
+   */
+  @Output() onAccessPolicyDeleted = new EventEmitter<void>();
 
   @Input() label: string;
   @Input() hint: string;
   @Input() columnTitle: string;
   @Input() emptyMessage: string;
-  @Input() granteeType: "people" | "people-sa" | "serviceAccounts" | "projects";
+  @Input() granteeType: "people" | "serviceAccounts" | "projects";
 
   protected rows$ = new Subject<AccessSelectorRowView[]>();
   @Input() private set rows(value: AccessSelectorRowView[]) {
@@ -143,15 +150,15 @@ export class AccessSelectorComponent implements OnInit {
     this.loading = true;
     this.formGroup.disable();
     await this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
-    if (this.granteeType == "people-sa") {
-      this.dialogService.open(SaPeopleWarningDialogComponent);
-    }
+    // if (this.granteeType == "people-sa") {
+    //   this.dialogService.open(SaPeopleWarningDialogComponent);
+    // }
+    this.onAccessPolicyDeleted.emit();
     return firstValueFrom(this.selectItems$);
   };
 
   private getPotentialGrantees(organizationId: string) {
     switch (this.granteeType) {
-      case "people-sa":
       case "people":
         return this.accessPolicyService.getPeoplePotentialGrantees(organizationId);
       case "serviceAccounts":

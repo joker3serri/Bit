@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatestWith, map, Observable, startWith, Subject, switchMap, takeUntil } from "rxjs";
 
+import { DialogService } from "@bitwarden/components";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
 import {
@@ -14,6 +15,8 @@ import {
   AccessSelectorComponent,
   AccessSelectorRowView,
 } from "../../shared/access-policies/access-selector.component";
+
+import { ServiceAccountPeopleWarningDialogComponent } from "./sa-people-warning-dialog.component";
 
 @Component({
   selector: "sm-service-account-people",
@@ -92,7 +95,15 @@ export class ServiceAccountPeopleComponent {
     );
   }
 
-  constructor(private route: ActivatedRoute, private accessPolicyService: AccessPolicyService) {}
+  protected handleAccessPolicyDeleted() {
+    this.dialogService.open(ServiceAccountPeopleWarningDialogComponent);
+  }
+
+  constructor(
+    private route: ActivatedRoute,
+    private accessPolicyService: AccessPolicyService,
+    private dialogService: DialogService
+  ) {}
 
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
