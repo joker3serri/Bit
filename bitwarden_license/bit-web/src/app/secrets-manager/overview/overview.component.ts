@@ -11,7 +11,9 @@ import {
   distinct,
 } from "rxjs";
 
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { DialogService } from "@bitwarden/components";
 
 import { ProjectListView } from "../models/view/project-list.view";
@@ -54,9 +56,11 @@ type Tasks = {
 })
 export class OverviewComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
+  private prevShouldReuseRoute: any;
   private tableSize = 10;
   private organizationId: string;
   protected organizationName: string;
+  protected userIsAdmin: boolean;
 
   protected view$: Observable<{
     allProjects: ProjectListView[];
@@ -73,12 +77,15 @@ export class OverviewComponent implements OnInit, OnDestroy {
     private secretService: SecretService,
     private serviceAccountService: ServiceAccountService,
     private dialogService: DialogService,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    private platformUtilsService: PlatformUtilsService,
+    private i18nService: I18nService
   ) {
     /**
      * We want to remount the `sm-onboarding` component on route change.
      * The component only toggles its visibility on init and on user dismissal.
      */
+    this.prevShouldReuseRoute = this.router.routeReuseStrategy.shouldReuseRoute;
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
@@ -96,6 +103,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       .subscribe((org) => {
         this.organizationId = org.id;
         this.organizationName = org.name;
+        this.userIsAdmin = org.isAdmin;
       });
 
     const projects$ = combineLatest([
@@ -131,6 +139,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.router.routeReuseStrategy.shouldReuseRoute = this.prevShouldReuseRoute;
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -216,5 +225,24 @@ export class OverviewComponent implements OnInit, OnDestroy {
         operation: OperationType.Add,
       },
     });
+  }
+
+  copySecretName(name: string) {
+    this.platformUtilsService.copyToClipboard(name);
+    this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t("valueCopied", this.i18nService.t("name"))
+    );
+  }
+
+  async copySecretValue(id: string) {
+    const secret = await this.secretService.getBySecretId(id);
+    this.platformUtilsService.copyToClipboard(secret.value);
+    this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t("valueCopied", this.i18nService.t("value"))
+    );
   }
 }
