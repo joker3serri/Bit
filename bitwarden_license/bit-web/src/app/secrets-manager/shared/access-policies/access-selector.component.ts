@@ -5,7 +5,6 @@ import { combineLatest, firstValueFrom, Observable, share, Subject, switchMap, t
 
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { DialogService } from "@bitwarden/components";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
 import { BaseAccessPolicyView } from "../../models/view/access-policy.view";
@@ -107,7 +106,6 @@ export class AccessSelectorComponent implements OnInit {
   constructor(
     private accessPolicyService: AccessPolicyService,
     private validationService: ValidationService,
-    private dialogService: DialogService,
     private route: ActivatedRoute
   ) {}
 
@@ -150,9 +148,6 @@ export class AccessSelectorComponent implements OnInit {
     this.loading = true;
     this.formGroup.disable();
     await this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
-    // if (this.granteeType == "people-sa") {
-    //   this.dialogService.open(SaPeopleWarningDialogComponent);
-    // }
     this.onAccessPolicyDeleted.emit();
     return firstValueFrom(this.selectItems$);
   };
