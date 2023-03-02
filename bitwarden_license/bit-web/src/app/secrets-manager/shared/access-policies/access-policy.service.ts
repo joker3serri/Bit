@@ -202,6 +202,7 @@ export class AccessPolicyService {
       true,
       true
     );
+    this._projectAccessPolicyChanges$.next(null);
   }
 
   private async createProjectAccessPoliciesView(
@@ -483,14 +484,18 @@ export class AccessPolicyService {
         view.revisionDate = response.revisionDate;
         view.serviceAccountId = response.serviceAccountId;
         view.grantedProjectId = response.grantedProjectId;
-        view.serviceAccountName = await this.encryptService.decryptToUtf8(
-          new EncString(response.serviceAccountName),
-          orgKey
-        );
-        view.grantedProjectName = await this.encryptService.decryptToUtf8(
-          new EncString(response.grantedProjectName),
-          orgKey
-        );
+        view.serviceAccountName = response.serviceAccountName
+          ? await this.encryptService.decryptToUtf8(
+              new EncString(response.serviceAccountName),
+              orgKey
+            )
+          : null;
+        view.grantedProjectName = response.grantedProjectName
+          ? await this.encryptService.decryptToUtf8(
+              new EncString(response.grantedProjectName),
+              orgKey
+            )
+          : null;
         return view;
       })
     );

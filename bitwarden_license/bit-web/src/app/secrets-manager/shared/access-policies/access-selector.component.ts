@@ -123,18 +123,14 @@ export class AccessSelectorComponent implements OnInit {
   };
 
   async update(target: any, row: AccessSelectorRowView): Promise<void> {
-    try {
-      if (target.value === "canRead") {
-        row.read = true;
-        row.write = false;
-      } else if (target.value === "canReadWrite") {
-        row.read = true;
-        row.write = true;
-      }
-      this.onUpdateAccessPolicy.emit(row);
-    } catch (e) {
-      this.validationService.showError(e);
+    if (target.value === "canRead") {
+      row.read = true;
+      row.write = false;
+    } else if (target.value === "canReadWrite") {
+      row.read = true;
+      row.write = true;
     }
+    this.onUpdateAccessPolicy.emit(row);
   }
 
   delete = (row: AccessSelectorRowView) => async () => {
