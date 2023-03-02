@@ -13,7 +13,7 @@ import { BaseAcceptComponent } from "../app/common/base.accept.component";
 
 @Component({
   selector: "app-accept-init-organization",
-  templateUrl: "accept-init-organization.component.html",
+  templateUrl: "accept-organization.component.html",
 })
 export class AcceptInitOrganizationComponent extends BaseAcceptComponent {
   orgName: string;
