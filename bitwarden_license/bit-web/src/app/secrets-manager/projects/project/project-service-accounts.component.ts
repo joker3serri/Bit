@@ -69,12 +69,6 @@ export class ProjectServiceAccountsComponent implements OnInit, OnDestroy {
     return this.accessPolicyService.deleteAccessPolicy(policy.accessPolicyId);
   }
 
-  protected handleUpdateAccessPolicy(policy: AccessSelectorRowView) {
-    return this.accessPolicyService.updateAccessPolicy(
-      AccessSelectorComponent.getBaseAccessPolicyView(policy)
-    );
-  }
-
   constructor(private route: ActivatedRoute, private accessPolicyService: AccessPolicyService) {}
 
   ngOnInit(): void {
