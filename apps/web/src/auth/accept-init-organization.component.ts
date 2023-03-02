@@ -61,12 +61,21 @@ export class AcceptInitOrganizationComponent extends BaseAcceptComponent {
     const request = new OrganizationUserAcceptInitRequest();
     request.token = qParams.token;
 
-    const shareKey = await this.cryptoService.makeShareKey();
-    const key = shareKey[0].encryptedString;
-    const orgKeys = await this.cryptoService.makeKeyPair(shareKey[1]);
+    const [encryptedOrgShareKey, orgShareKey] = await this.cryptoService.makeShareKey();
+    const [orgPublicKey, encryptedOrgPrivateKey] = await this.cryptoService.makeKeyPair(
+      orgShareKey
+    );
+    const collection = await this.cryptoService.encrypt(
+      this.i18nService.t("defaultCollection"),
+      orgShareKey
+    );
 
-    request.key = key;
-    request.keys = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);
+    request.key = encryptedOrgShareKey.encryptedString;
+    request.keys = new OrganizationKeysRequest(
+      orgPublicKey,
+      encryptedOrgPrivateKey.encryptedString
+    );
+    request.collectionName = collection.encryptedString;
 
     return request;
   }

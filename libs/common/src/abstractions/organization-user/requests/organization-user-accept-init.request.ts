@@ -4,4 +4,5 @@ export class OrganizationUserAcceptInitRequest {
   token: string;
   key: string;
   keys: OrganizationKeysRequest;
+  collectionName: string;
 }
