@@ -18,6 +18,7 @@ import { PreloginRequest } from "../../models/request/prelogin.request";
 import { ErrorResponse } from "../../models/response/error.response";
 import { AuthRequestPushNotification } from "../../models/response/notification.response";
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
+import { IdentityApiService } from "../abstractions/identity-api.service";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
@@ -93,7 +94,8 @@ export class AuthService implements AuthServiceAbstraction {
     protected stateService: StateService,
     protected twoFactorService: TwoFactorService,
     protected i18nService: I18nService,
-    protected encryptService: EncryptService
+    protected encryptService: EncryptService,
+    protected identityApiService: IdentityApiService
   ) {}
 
   async logIn(
@@ -123,6 +125,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
+          this.identityApiService,
           this
         );
         break;
@@ -137,6 +140,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
+          this.identityApiService,
           this.keyConnectorService
         );
         break;
@@ -151,6 +155,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
+          this.identityApiService,
           this.environmentService,
           this.keyConnectorService
         );
@@ -166,6 +171,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
+          this.identityApiService,
           this
         );
         break;

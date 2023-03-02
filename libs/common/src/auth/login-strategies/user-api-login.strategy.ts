@@ -8,6 +8,7 @@ import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { TokenService } from "../../auth/abstractions/token.service";
 import { TwoFactorService } from "../../auth/abstractions/two-factor.service";
+import { IdentityApiService } from "../abstractions/identity-api.service";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { UserApiLogInCredentials } from "../models/domain/log-in-credentials";
 import { UserApiTokenRequest } from "../models/request/identity-token/user-api-token.request";
@@ -28,6 +29,7 @@ export class UserApiLogInStrategy extends LogInStrategy {
     logService: LogService,
     stateService: StateService,
     twoFactorService: TwoFactorService,
+    identityApiService: IdentityApiService,
     private environmentService: EnvironmentService,
     private keyConnectorService: KeyConnectorService
   ) {
@@ -40,7 +42,8 @@ export class UserApiLogInStrategy extends LogInStrategy {
       messagingService,
       logService,
       stateService,
-      twoFactorService
+      twoFactorService,
+      identityApiService
     );
   }
 

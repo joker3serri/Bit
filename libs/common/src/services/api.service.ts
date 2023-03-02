@@ -12,8 +12,6 @@ import { EmergencyAccessInviteRequest } from "../auth/models/request/emergency-a
 import { EmergencyAccessPasswordRequest } from "../auth/models/request/emergency-access-password.request";
 import { EmergencyAccessUpdateRequest } from "../auth/models/request/emergency-access-update.request";
 import { DeviceRequest } from "../auth/models/request/identity-token/device.request";
-import { PasswordTokenRequest } from "../auth/models/request/identity-token/password-token.request";
-import { SsoTokenRequest } from "../auth/models/request/identity-token/sso-token.request";
 import { TokenTwoFactorRequest } from "../auth/models/request/identity-token/token-two-factor.request";
 import { UserApiTokenRequest } from "../auth/models/request/identity-token/user-api-token.request";
 import { KeyConnectorUserKeyRequest } from "../auth/models/request/key-connector-user-key.request";
@@ -44,9 +42,7 @@ import {
   EmergencyAccessTakeoverResponse,
   EmergencyAccessViewResponse,
 } from "../auth/models/response/emergency-access.response";
-import { IdentityCaptchaResponse } from "../auth/models/response/identity-captcha.response";
 import { IdentityTokenResponse } from "../auth/models/response/identity-token.response";
-import { IdentityTwoFactorResponse } from "../auth/models/response/identity-two-factor.response";
 import { KeyConnectorUserKeyResponse } from "../auth/models/response/key-connector-user-key.response";
 import { PreloginResponse } from "../auth/models/response/prelogin.response";
 import { RegisterResponse } from "../auth/models/response/register.response";
@@ -193,60 +189,12 @@ export class ApiService implements ApiServiceAbstraction {
 
   // Auth APIs
 
-  async postIdentityToken(
-    request: UserApiTokenRequest | PasswordTokenRequest | SsoTokenRequest
-  ): Promise<IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse> {
-    const headers = new Headers({
-      "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-      Accept: "application/json",
-      "Device-Type": this.deviceType,
-    });
-    if (this.customUserAgent != null) {
-      headers.set("User-Agent", this.customUserAgent);
-    }
-    request.alterIdentityTokenHeaders(headers);
+  // public refreshIdentityToken() (used in premium.comp.ts & sync.service) --> private doAuthRefresh()
+  // public getActiveBearerToken() (used in notifications.service) --> private doAuthRefresh()
 
-    const identityToken =
-      request instanceof UserApiTokenRequest
-        ? request.toIdentityToken()
-        : request.toIdentityToken(this.platformUtilsService.getClientType());
+  // doAuthRefresh --> doRefreshToken (calls identity svc) or doApiTokenRefresh (calls postIdentityToken)
 
-    const response = await this.fetch(
-      new Request(this.environmentService.getIdentityUrl() + "/connect/token", {
-        body: this.qsStringify(identityToken),
-        credentials: this.getCredentials(),
-        cache: "no-store",
-        headers: headers,
-        method: "POST",
-      })
-    );
-
-    let responseJson: any = null;
-    if (this.isJsonResponse(response)) {
-      responseJson = await response.json();
-    }
-
-    if (responseJson != null) {
-      if (response.status === 200) {
-        return new IdentityTokenResponse(responseJson);
-      } else if (
-        response.status === 400 &&
-        responseJson.TwoFactorProviders2 &&
-        Object.keys(responseJson.TwoFactorProviders2).length
-      ) {
-        await this.tokenService.clearTwoFactorToken();
-        return new IdentityTwoFactorResponse(responseJson);
-      } else if (
-        response.status === 400 &&
-        responseJson.HCaptcha_SiteKey &&
-        Object.keys(responseJson.HCaptcha_SiteKey).length
-      ) {
-        return new IdentityCaptchaResponse(responseJson);
-      }
-    }
-
-    return Promise.reject(new ErrorResponse(responseJson, response.status, true));
-  }
+  // TODO: Identity API remains simple API service and move refreshIdentityToken && getActiveBearerToken to token svc
 
   async refreshIdentityToken(): Promise<any> {
     try {
@@ -2075,7 +2023,7 @@ export class ApiService implements ApiServiceAbstraction {
     return new ErrorResponse(responseJson, response.status, tokenError);
   }
 
-  private qsStringify(params: any): string {
+  qsStringify(params: any): string {
     return Object.keys(params)
       .map((key) => {
         return encodeURIComponent(key) + "=" + encodeURIComponent(params[key]);
@@ -2105,7 +2053,7 @@ export class ApiService implements ApiServiceAbstraction {
     return base;
   }
 
-  private isJsonResponse(response: Response): boolean {
+  isJsonResponse(response: Response): boolean {
     const typeHeader = response.headers.get("content-type");
     return typeHeader != null && typeHeader.indexOf("application/json") > -1;
   }

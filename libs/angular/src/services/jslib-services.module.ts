@@ -60,6 +60,7 @@ import {
   InternalAccountService,
 } from "@bitwarden/common/auth/abstractions/account.service";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
+import { IdentityApiService as IdentityApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/identity-api.service";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
@@ -67,6 +68,7 @@ import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/comm
 import { AccountApiServiceImplementation } from "@bitwarden/common/auth/services/account-api.service";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
+import { IdentityApiServiceImplementation } from "@bitwarden/common/auth/services/identity-api.service.implementation";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { LoginService } from "@bitwarden/common/auth/services/login.service";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
@@ -224,6 +226,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         StateServiceAbstraction,
         TwoFactorServiceAbstraction,
         I18nServiceAbstraction,
+        IdentityApiServiceAbstraction,
       ],
     },
     {
@@ -630,6 +633,17 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
       provide: OrgDomainApiServiceAbstraction,
       useClass: OrgDomainApiService,
       deps: [OrgDomainServiceAbstraction, ApiServiceAbstraction],
+    },
+    {
+      provide: IdentityApiServiceAbstraction,
+      useClass: IdentityApiServiceImplementation,
+      deps: [
+        TokenServiceAbstraction,
+        PlatformUtilsServiceAbstraction,
+        EnvironmentServiceAbstraction,
+        AppIdServiceAbstraction,
+        ApiServiceAbstraction,
+      ],
     },
   ],
 })

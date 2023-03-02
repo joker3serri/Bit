@@ -11,6 +11,7 @@ import { HashPurpose } from "../../enums/hashPurpose";
 import { Utils } from "../../misc/utils";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { AuthService } from "../abstractions/auth.service";
+import { IdentityApiService } from "../abstractions/identity-api.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";
@@ -39,6 +40,7 @@ describe("PasswordLogInStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
+  let identityApiService: MockProxy<IdentityApiService>;
   let authService: MockProxy<AuthService>;
 
   let passwordLogInStrategy: PasswordLogInStrategy;
@@ -54,6 +56,7 @@ describe("PasswordLogInStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
+    identityApiService = mock<IdentityApiService>();
     authService = mock<AuthService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
@@ -78,17 +81,18 @@ describe("PasswordLogInStrategy", () => {
       logService,
       stateService,
       twoFactorService,
+      identityApiService,
       authService
     );
     credentials = new PasswordLogInCredentials(email, masterPassword);
 
-    apiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
+    identityApiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
   });
 
   it("sends master password credentials to the server", async () => {
     await passwordLogInStrategy.logIn(credentials);
 
-    expect(apiService.postIdentityToken).toHaveBeenCalledWith(
+    expect(identityApiService.postIdentityToken).toHaveBeenCalledWith(
       expect.objectContaining({
         email: email,
         masterPasswordHash: hashedPassword,
