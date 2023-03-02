@@ -80,14 +80,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     private organizationService: OrganizationService,
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService
-  ) {
-    /**
-     * We want to remount the `sm-onboarding` component on route change.
-     * The component only toggles its visibility on init and on user dismissal.
-     */
-    this.prevShouldReuseRoute = this.router.routeReuseStrategy.shouldReuseRoute;
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-  }
+  ) {}
 
   ngOnInit() {
     const orgId$ = this.route.params.pipe(
@@ -139,7 +132,6 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.router.routeReuseStrategy.shouldReuseRoute = this.prevShouldReuseRoute;
     this.destroy$.next();
     this.destroy$.complete();
   }
