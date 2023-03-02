@@ -2,7 +2,6 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { combineLatestWith, map, Observable, startWith, Subject, switchMap, takeUntil } from "rxjs";
 
-import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { DialogService } from "@bitwarden/components";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
@@ -48,6 +47,7 @@ export class ServiceAccountPeopleComponent {
             accessPolicyId: policy.id,
             read: policy.read,
             write: policy.write,
+            userId: policy.userId,
             icon: AccessSelectorComponent.userIcon,
             static: true,
           });
@@ -61,6 +61,7 @@ export class ServiceAccountPeopleComponent {
             accessPolicyId: policy.id,
             read: policy.read,
             write: policy.write,
+            currentUserInGroup: policy.currentUserInGroup,
             icon: AccessSelectorComponent.groupIcon,
             static: true,
           });
@@ -140,7 +141,6 @@ export class ServiceAccountPeopleComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private organizationUserService: OrganizationUserService,
     private organizationService: OrganizationService,
     private dialogService: DialogService,
     private router: Router,
@@ -160,20 +160,10 @@ export class ServiceAccountPeopleComponent {
   }
 
   private async needToShowWarning(policy: AccessSelectorRowView, userId: string): Promise<boolean> {
-    // FIXME this doesn't work if the user doesn't have ManageUsers permission
-    const orgUsers = await this.organizationUserService.getAllUsers(this.organizationId);
-    const currentOrgUser = orgUsers.data.find((x) => x.userId == userId);
-
-    if (policy.type === "user" && currentOrgUser.id == policy.id) {
+    if (policy.type === "user" && policy.userId == userId) {
       return true;
-    } else if (policy.type === "group") {
-      const groups = await this.organizationUserService.getOrganizationUserGroups(
-        this.organizationId,
-        currentOrgUser.id
-      );
-      if (groups.includes(policy.id)) {
-        return true;
-      }
+    } else if (policy.type === "group" && policy.currentUserInGroup) {
+      return true;
     }
     return false;
   }

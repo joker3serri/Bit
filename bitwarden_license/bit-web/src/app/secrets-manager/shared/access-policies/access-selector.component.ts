@@ -19,6 +19,8 @@ export type AccessSelectorRowView = {
   read: boolean;
   write: boolean;
   icon: string;
+  userId?: string;
+  currentUserInGroup?: boolean;
   static?: boolean;
 };
 

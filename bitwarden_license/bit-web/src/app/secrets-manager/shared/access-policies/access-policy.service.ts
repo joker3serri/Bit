@@ -263,6 +263,7 @@ export class AccessPolicyService {
       grantedProjectId: response.grantedProjectId,
       organizationUserId: response.organizationUserId,
       organizationUserName: response.organizationUserName,
+      userId: response.userId,
     };
   }
 
@@ -274,6 +275,7 @@ export class AccessPolicyService {
       grantedProjectId: response.grantedProjectId,
       groupId: response.groupId,
       groupName: response.groupName,
+      currentUserInGroup: response.currentUserInGroup,
     };
   }
 
@@ -343,6 +345,7 @@ export class AccessPolicyService {
       grantedServiceAccountId: response.grantedServiceAccountId,
       organizationUserId: response.organizationUserId,
       organizationUserName: response.organizationUserName,
+      userId: response.userId,
     };
   }
 
@@ -354,6 +357,7 @@ export class AccessPolicyService {
       grantedServiceAccountId: response.grantedServiceAccountId,
       groupId: response.groupId,
       groupName: response.groupName,
+      currentUserInGroup: response.currentUserInGroup,
     };
   }
 
