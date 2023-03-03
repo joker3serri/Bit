@@ -253,6 +253,7 @@ export class ApiService implements ApiServiceAbstraction {
     return this.send("PUT", "/accounts/tax", request, true, false);
   }
 
+  // TODO: move to identity api service
   async postPrelogin(request: PreloginRequest): Promise<PreloginResponse> {
     const r = await this.send(
       "POST",
@@ -298,6 +299,7 @@ export class ApiService implements ApiServiceAbstraction {
     return this.send("POST", "/accounts/password-hint", request, false, false);
   }
 
+  // TODO: move to identity api service
   async postRegister(request: RegisterRequest): Promise<RegisterResponse> {
     const r = await this.send(
       "POST",
@@ -1702,6 +1704,7 @@ export class ApiService implements ApiServiceAbstraction {
     return fetch(request);
   }
 
+  // TODO: move to identity api service
   async preValidateSso(identifier: string): Promise<SsoPreValidateResponse> {
     if (identifier == null || identifier === "") {
       throw new Error("Organization Identifier was not provided.");
