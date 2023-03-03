@@ -224,7 +224,6 @@ export class TokenService implements TokenServiceAbstraction {
     throw new Error("Cannot refresh token, no refresh token or api keys are stored");
   }
 
-  // TODO: should this method stay here or be moved to the identity service?
   private async doApiTokenRefresh(clientId: string, clientSecret: string): Promise<void> {
     const appId = await this.appIdService.getAppId();
     const deviceRequest = new DeviceRequest(appId, this.platformUtilsService);
