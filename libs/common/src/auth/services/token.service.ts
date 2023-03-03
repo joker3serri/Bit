@@ -211,7 +211,7 @@ export class TokenService implements TokenServiceAbstraction {
     // if we have a refresh token, use it to get a new access token and refresh token
     const refreshToken = await this.getRefreshToken();
     if (refreshToken != null && refreshToken !== "") {
-      return this.identityApiService.doRefreshToken();
+      return this.identityApiService.renewAuthViaRefreshToken();
     }
 
     // if we have api keys, use them to get a new access token and refresh token

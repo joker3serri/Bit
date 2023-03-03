@@ -69,7 +69,7 @@ export class IdentityApiServiceImplementation implements IdentityApiService {
     return Promise.reject(new ErrorResponse(responseJson, response.status, true));
   }
 
-  async doRefreshToken(): Promise<any> {
+  async renewAuthViaRefreshToken(): Promise<any> {
     const refreshToken = await this.tokenService.getRefreshToken();
     if (refreshToken == null || refreshToken === "") {
       throw new Error();
