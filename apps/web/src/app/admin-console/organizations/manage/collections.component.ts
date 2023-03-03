@@ -11,10 +11,10 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { CollectionData } from "@bitwarden/common/admin-console/models/data/collection.data";
+import { Collection } from "@bitwarden/common/admin-console/models/domain/collection";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ProductType } from "@bitwarden/common/enums/productType";
-import { CollectionData } from "@bitwarden/common/models/data/collection.data";
-import { Collection } from "@bitwarden/common/models/domain/collection";
-import { Organization } from "@bitwarden/common/models/domain/organization";
 import {
   CollectionDetailsResponse,
   CollectionResponse,

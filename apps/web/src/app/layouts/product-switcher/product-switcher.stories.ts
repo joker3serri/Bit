@@ -6,7 +6,7 @@ import { BehaviorSubject } from "rxjs";
 import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/models/domain/organization";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { IconButtonModule, LinkModule, MenuModule } from "@bitwarden/components";
 import { I18nMockService } from "@bitwarden/components/src/utils/i18n-mock.service";
 

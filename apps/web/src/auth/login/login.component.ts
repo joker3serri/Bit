@@ -17,11 +17,11 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
+import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { PolicyData } from "@bitwarden/common/models/data/policy.data";
-import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/master-password-policy-options";
-import { Policy } from "@bitwarden/common/models/domain/policy";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { PolicyResponse } from "@bitwarden/common/models/response/policy.response";
 

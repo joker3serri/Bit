@@ -1,6 +1,6 @@
-import { OrganizationKeysRequest } from "../../admin-console/models/request/organization-keys.request";
-import { PlanType } from "../../billing/enums/plan-type";
+import { PlanType } from "../../../billing/enums/plan-type";
 
+import { OrganizationKeysRequest } from "./organization-keys.request";
 
 export class OrganizationUpgradeRequest {
   businessName: string;

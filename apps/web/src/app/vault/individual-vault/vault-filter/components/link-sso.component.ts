@@ -10,8 +10,8 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { Organization } from "@bitwarden/common/models/domain/organization";
 
 @Component({
   selector: "app-link-sso",

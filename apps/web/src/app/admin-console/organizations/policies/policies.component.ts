@@ -5,8 +5,8 @@ import { first } from "rxjs/operators";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
-import { Organization } from "@bitwarden/common/models/domain/organization";
 import { PolicyResponse } from "@bitwarden/common/models/response/policy.response";
 
 import { PolicyListService } from "../../../core";

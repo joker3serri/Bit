@@ -10,9 +10,9 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationApiKeyType } from "@bitwarden/common/admin-console/enums/organization-api-key-type";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { PlanType } from "@bitwarden/common/billing/enums/plan-type";
 import { OrganizationSubscriptionResponse } from "@bitwarden/common/billing/models/response/organization-subscription.response";
-import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import {
   BillingSyncApiKeyComponent,

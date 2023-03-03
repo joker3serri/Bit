@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { canAccessReportingTab } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/models/domain/organization";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 
 import { ExposedPasswordsReportComponent } from "../../../admin-console/organizations/tools/exposed-passwords-report.component";
 import { InactiveTwoFactorReportComponent } from "../../../admin-console/organizations/tools/inactive-two-factor-report.component";

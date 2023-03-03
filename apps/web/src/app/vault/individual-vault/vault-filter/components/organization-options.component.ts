@@ -10,9 +10,9 @@ import { OrganizationUserResetPasswordEnrollmentRequest } from "@bitwarden/commo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
-import { Organization } from "@bitwarden/common/models/domain/organization";
-import { Policy } from "@bitwarden/common/models/domain/policy";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 import { EnrollMasterPasswordReset } from "../../../../admin-console/organizations/users/enroll-master-password-reset.component";

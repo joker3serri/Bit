@@ -7,7 +7,7 @@ import {
   canAccessOrgAdmin,
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/models/domain/organization";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
 @Injectable({

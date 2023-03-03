@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { map, Observable, shareReplay, startWith, switchMap } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/models/domain/organization";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 
 @Component({
   selector: "app-org-reporting",

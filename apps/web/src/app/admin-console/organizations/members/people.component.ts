@@ -37,12 +37,12 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-conso
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/admin-console/enums/organizationUserType";
+import { CollectionData } from "@bitwarden/common/admin-console/models/data/collection.data";
+import { Collection } from "@bitwarden/common/admin-console/models/domain/collection";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
+import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { ProductType } from "@bitwarden/common/enums/productType";
-import { CollectionData } from "@bitwarden/common/models/data/collection.data";
-import { Collection } from "@bitwarden/common/models/domain/collection";
-import { Organization } from "@bitwarden/common/models/domain/organization";
-import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organization-keys.request";
 import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collection.response";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";

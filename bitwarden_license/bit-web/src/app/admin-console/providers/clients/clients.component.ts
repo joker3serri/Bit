@@ -13,9 +13,9 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-conso
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { ProviderUserType } from "@bitwarden/common/admin-console/enums/providerUserType";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
 import { PlanType } from "@bitwarden/common/billing/enums/plan-type";
-import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { WebProviderService } from "../services/webProvider.service";
 

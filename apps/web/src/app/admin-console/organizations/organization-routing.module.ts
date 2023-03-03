@@ -10,7 +10,7 @@ import {
   canAccessReportingTab,
   canAccessSettingsTab,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { Organization } from "@bitwarden/common/models/domain/organization";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 
 import { OrganizationPermissionsGuard } from "../../admin-console/organizations/guards/org-permissions.guard";
 import { OrganizationRedirectGuard } from "../../admin-console/organizations/guards/org-redirect.guard";
