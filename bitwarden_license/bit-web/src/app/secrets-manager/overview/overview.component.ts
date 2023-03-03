@@ -124,31 +124,28 @@ export class OverviewComponent implements OnInit, OnDestroy {
     const serviceAccounts$ = combineLatest([
       orgId$,
       this.serviceAccountService.serviceAccount$.pipe(startWith(null)),
-    ]).pipe(switchMap(([orgId]) => this.serviceAccountService.getServiceAccounts(orgId)));
+    ]).pipe(
+      switchMap(([orgId]) => this.serviceAccountService.getServiceAccounts(orgId)),
+      share()
+    );
 
-    const tasks$ = orgId$.pipe(
+    this.view$ = orgId$.pipe(
       switchMap((orgId) =>
         combineLatest([projects$, secrets$, serviceAccounts$]).pipe(
-          switchMap(([projects, secrets, serviceAccounts]) =>
-            this.saveCompletedTasks(orgId, {
+          switchMap(async ([projects, secrets, serviceAccounts]) => ({
+            latestProjects: this.getRecentItems(projects, this.tableSize),
+            latestSecrets: this.getRecentItems(secrets, this.tableSize),
+            allProjects: projects,
+            allSecrets: secrets,
+            tasks: await this.saveCompletedTasks(orgId, {
               importSecrets: secrets.length > 0,
               createSecret: secrets.length > 0,
               createProject: projects.length > 0,
               createServiceAccount: serviceAccounts.length > 0,
-            })
-          )
+            }),
+          }))
         )
       )
-    );
-
-    this.view$ = combineLatest([projects$, secrets$, tasks$]).pipe(
-      map(([projects, secrets, tasks]) => ({
-        latestProjects: this.getRecentItems(projects, this.tableSize),
-        latestSecrets: this.getRecentItems(secrets, this.tableSize),
-        allProjects: projects,
-        allSecrets: secrets,
-        tasks,
-      }))
     );
 
     // Refresh onboarding status when orgId changes by fetching the first value from view$.
