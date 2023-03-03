@@ -11,7 +11,6 @@ import { ReportVariant } from "../models/report-variant";
 export class ReportCardComponent {
   @Input() title: string;
   @Input() description: string;
-  @Input() route: string;
   @Input() icon: Icon;
   @Input() variant: ReportVariant;
 
