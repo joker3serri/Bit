@@ -1,3 +1,4 @@
+import { Utils } from "@bitwarden/common/misc/utils";
 import { ApiService } from "../abstractions/api.service";
 
 import { Forwarder } from "./forwarder";
@@ -16,7 +17,7 @@ export class ForwardEmailForwarder implements Forwarder {
       cache: "no-store",
       method: "POST",
       headers: new Headers({
-        Authorization: "Basic " + Buffer.from(options.apiKey + ":").toString("base64"),
+        Authorization: "Basic " + Utils.fromBufferToB64(options.apiKey + ":"),
         "Content-Type": "application/json",
       }),
     };
