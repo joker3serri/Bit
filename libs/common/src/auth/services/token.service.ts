@@ -219,18 +219,14 @@ export class TokenService implements TokenServiceAbstraction {
     const clientId = await this.getClientId();
     const clientSecret = await this.getClientSecret();
     if (!Utils.isNullOrWhitespace(clientId) && !Utils.isNullOrWhitespace(clientSecret)) {
-      return this.doApiTokenRefresh();
+      return this.doApiTokenRefresh(clientId, clientSecret);
     }
 
     throw new Error("Cannot refresh token, no refresh token or api keys are stored");
   }
 
   // TODO: should this method stay here or be moved to the identity service?
-  private async doApiTokenRefresh(): Promise<void> {
-    // TODO: consider passing in the client id and secret
-    const clientId = await this.getClientId();
-    const clientSecret = await this.getClientSecret();
-
+  private async doApiTokenRefresh(clientId: string, clientSecret: string): Promise<void> {
     const appId = await this.appIdService.getAppId();
     const deviceRequest = new DeviceRequest(appId, this.platformUtilsService);
     const tokenRequest = new UserApiTokenRequest(
