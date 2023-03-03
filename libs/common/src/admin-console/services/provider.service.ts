@@ -1,7 +1,7 @@
-import { StateService } from "../abstractions/state.service";
-import { ProviderService as ProviderServiceAbstraction } from "../admin-console/abstractions/provider.service";
-import { ProviderData } from "../admin-console/models/data/provider.data";
-import { Provider } from "../models/domain/provider";
+import { StateService } from "../../abstractions/state.service";
+import { Provider } from "../../models/domain/provider";
+import { ProviderService as ProviderServiceAbstraction } from "../abstractions/provider.service";
+import { ProviderData } from "../models/data/provider.data";
 
 export class ProviderService implements ProviderServiceAbstraction {
   constructor(private stateService: StateService) {}
