@@ -22,7 +22,6 @@ export class IdentityApiServiceImplementation implements IdentityApiService {
     private apiService: ApiService
   ) {}
 
-  // TODO: consider alternative name for this method to improve clarity.
   async postIdentityToken(
     request: UserApiTokenRequest | PasswordTokenRequest | SsoTokenRequest
   ): Promise<IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse> {
