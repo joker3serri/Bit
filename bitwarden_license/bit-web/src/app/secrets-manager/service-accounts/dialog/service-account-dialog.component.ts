@@ -65,7 +65,7 @@ export class ServiceAccountDialogComponent implements OnInit {
         this.data.serviceAccountId,
         this.data.organizationId
       );
-    this.formGroup.get("name").setValue(serviceAccount.name);
+    this.formGroup.patchValue({ name: serviceAccount.name});
     this.loading = false;
   }
 
