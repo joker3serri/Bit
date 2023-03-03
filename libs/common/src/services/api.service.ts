@@ -1556,7 +1556,7 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   async postEventsCollect(request: EventRequest[]): Promise<any> {
-    const authHeader = await this.tokenService.getActiveBearerToken();
+    const authHeader = await this.tokenService.getActiveAccessToken();
     const headers = new Headers({
       "Device-Type": this.deviceType,
       Authorization: "Bearer " + authHeader,
@@ -1608,7 +1608,7 @@ export class ApiService implements ApiServiceAbstraction {
   // Key Connector
 
   async getUserKeyFromKeyConnector(keyConnectorUrl: string): Promise<KeyConnectorUserKeyResponse> {
-    const authHeader = await this.tokenService.getActiveBearerToken();
+    const authHeader = await this.tokenService.getActiveAccessToken();
 
     const response = await this.fetch(
       new Request(keyConnectorUrl + "/user-keys", {
@@ -1633,7 +1633,7 @@ export class ApiService implements ApiServiceAbstraction {
     keyConnectorUrl: string,
     request: KeyConnectorUserKeyRequest
   ): Promise<void> {
-    const authHeader = await this.tokenService.getActiveBearerToken();
+    const authHeader = await this.tokenService.getActiveAccessToken();
 
     const response = await this.fetch(
       new Request(keyConnectorUrl + "/user-keys", {
@@ -1853,7 +1853,7 @@ export class ApiService implements ApiServiceAbstraction {
     };
 
     if (authed) {
-      const authHeader = await this.tokenService.getActiveBearerToken();
+      const authHeader = await this.tokenService.getActiveAccessToken();
       headers.set("Authorization", "Bearer " + authHeader);
     }
     if (body != null) {

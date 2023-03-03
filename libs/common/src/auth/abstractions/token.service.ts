@@ -30,5 +30,5 @@ export abstract class TokenService {
   getIsExternalFromAccessToken: () => Promise<boolean>;
 
   refreshIdentityToken: () => Promise<any>;
-  getActiveBearerToken: () => Promise<string>;
+  getActiveAccessToken: () => Promise<string>;
 }
