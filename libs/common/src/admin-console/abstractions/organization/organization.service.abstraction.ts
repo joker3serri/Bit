@@ -2,8 +2,8 @@ import { map, Observable } from "rxjs";
 
 import { I18nService } from "../../../abstractions/i18n.service";
 import { Utils } from "../../../misc/utils";
-import { OrganizationData } from "../../../models/data/organization.data";
 import { Organization } from "../../../models/domain/organization";
+import { OrganizationData } from "../../models/data/organization.data";
 
 export function canAccessVaultTab(org: Organization): boolean {
   return org.canViewAssignedCollections || org.canViewAllCollections || org.canManageGroups;

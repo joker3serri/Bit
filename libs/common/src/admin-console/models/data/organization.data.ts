@@ -1,8 +1,8 @@
-import { OrganizationUserStatusType } from "../../admin-console/enums/organizationUserStatusType";
-import { OrganizationUserType } from "../../admin-console/enums/organizationUserType";
-import { ProfileOrganizationResponse } from "../../admin-console/models/response/profile-organization.response";
-import { ProductType } from "../../enums/productType";
-import { PermissionsApi } from "../api/permissions.api";
+import { ProductType } from "../../../enums/productType";
+import { PermissionsApi } from "../../../models/api/permissions.api";
+import { OrganizationUserStatusType } from "../../enums/organizationUserStatusType";
+import { OrganizationUserType } from "../../enums/organizationUserType";
+import { ProfileOrganizationResponse } from "../response/profile-organization.response";
 
 export class OrganizationData {
   id: string;

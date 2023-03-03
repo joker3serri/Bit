@@ -7,10 +7,10 @@ import {
   ExportFormat,
   ExportService as ExportServiceAbstraction,
 } from "../abstractions/export.service";
+import { CollectionData } from "../admin-console/models/data/collection.data";
 import { KdfConfig } from "../auth/models/domain/kdf-config";
 import { DEFAULT_PBKDF2_ITERATIONS, KdfType } from "../enums/kdfType";
 import { Utils } from "../misc/utils";
-import { CollectionData } from "../models/data/collection.data";
 import { Collection } from "../models/domain/collection";
 import { CipherWithIdExport as CipherExport } from "../models/export/cipher-with-ids.export";
 import { CollectionWithIdExport as CollectionExport } from "../models/export/collection-with-id.export";

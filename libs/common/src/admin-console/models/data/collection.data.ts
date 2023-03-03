@@ -1,4 +1,4 @@
-import { CollectionDetailsResponse } from "../response/collection.response";
+import { CollectionDetailsResponse } from "../../../models/response/collection.response";
 
 export class CollectionData {
   id: string;
