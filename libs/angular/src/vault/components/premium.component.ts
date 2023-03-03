@@ -5,6 +5,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 
 @Directive()
 export class PremiumComponent implements OnInit {
@@ -17,7 +18,8 @@ export class PremiumComponent implements OnInit {
     protected platformUtilsService: PlatformUtilsService,
     protected apiService: ApiService,
     private logService: LogService,
-    protected stateService: StateService
+    protected stateService: StateService,
+    private tokenService: TokenService
   ) {}
 
   async ngOnInit() {
@@ -26,7 +28,7 @@ export class PremiumComponent implements OnInit {
 
   async refresh() {
     try {
-      this.refreshPromise = this.apiService.refreshIdentityToken();
+      this.refreshPromise = this.tokenService.refreshIdentityToken();
       await this.refreshPromise;
       this.platformUtilsService.showToast("success", null, this.i18nService.t("refreshComplete"));
       this.isPremium = await this.stateService.getCanAccessPremium();

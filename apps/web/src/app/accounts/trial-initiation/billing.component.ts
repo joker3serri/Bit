@@ -11,6 +11,7 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstraction
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
+import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { ProductType } from "@bitwarden/common/enums/productType";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
@@ -36,7 +37,8 @@ export class BillingComponent extends OrganizationPlansComponent {
     logService: LogService,
     messagingService: MessagingService,
     formBuilder: UntypedFormBuilder,
-    organizationApiService: OrganizationApiServiceAbstraction
+    organizationApiService: OrganizationApiServiceAbstraction,
+    tokenService: TokenService
   ) {
     super(
       apiService,
@@ -50,7 +52,8 @@ export class BillingComponent extends OrganizationPlansComponent {
       logService,
       messagingService,
       formBuilder,
-      organizationApiService
+      organizationApiService,
+      tokenService
     );
   }
 

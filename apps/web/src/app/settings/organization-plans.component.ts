@@ -20,6 +20,7 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstraction
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
+import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { PaymentMethodType } from "@bitwarden/common/enums/paymentMethodType";
 import { PlanType } from "@bitwarden/common/enums/planType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
@@ -113,7 +114,8 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     private logService: LogService,
     private messagingService: MessagingService,
     private formBuilder: UntypedFormBuilder,
-    private organizationApiService: OrganizationApiServiceAbstraction
+    private organizationApiService: OrganizationApiServiceAbstraction,
+    private tokenService: TokenService
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
   }
@@ -365,7 +367,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
           );
         }
 
-        await this.apiService.refreshIdentityToken();
+        await this.tokenService.refreshIdentityToken();
         await this.syncService.fullSync(true);
 
         if (!this.acceptingSponsorship && !this.isInTrialFlow) {
@@ -492,7 +494,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     const response = await this.organizationApiService.createLicense(fd);
     const orgId = response.id;
 
-    await this.apiService.refreshIdentityToken();
+    await this.tokenService.refreshIdentityToken();
 
     // Org Keys live outside of the OrganizationLicense - add the keys to the org here
     const request = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);

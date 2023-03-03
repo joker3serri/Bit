@@ -146,6 +146,15 @@ import { SyncResponse } from "../vault/models/response/sync.response";
  * of this decision please read https://contributing.bitwarden.com/architecture/adr/refactor-api-service.
  */
 export abstract class ApiService {
+  createRequest: (
+    method: "GET" | "POST" | "PUT" | "DELETE",
+    requestUrl: string,
+    body: any,
+    authed: boolean,
+    hasResponse: boolean,
+    alterHeaders?: (headers: Headers) => void
+  ) => Promise<Request>;
+
   send: (
     method: "GET" | "POST" | "PUT" | "DELETE",
     path: string,
@@ -155,8 +164,6 @@ export abstract class ApiService {
     apiUrl?: string,
     alterHeaders?: (headers: Headers) => void
   ) => Promise<any>;
-
-  refreshIdentityToken: () => Promise<any>;
 
   getProfile: () => Promise<ProfileResponse>;
   getUserSubscription: () => Promise<SubscriptionResponse>;
@@ -519,7 +526,6 @@ export abstract class ApiService {
   postBitPayInvoice: (request: BitPayInvoiceRequest) => Promise<string>;
   postSetupPayment: () => Promise<string>;
 
-  getActiveBearerToken: () => Promise<string>;
   fetch: (request: Request) => Promise<Response>;
   nativeFetch: (request: Request) => Promise<Response>;
 

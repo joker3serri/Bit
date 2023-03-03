@@ -324,7 +324,16 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
       useClass: TotpService,
       deps: [CryptoFunctionServiceAbstraction, LogService, StateServiceAbstraction],
     },
-    { provide: TokenServiceAbstraction, useClass: TokenService, deps: [StateServiceAbstraction] },
+    {
+      provide: TokenServiceAbstraction,
+      useClass: TokenService,
+      deps: [
+        StateServiceAbstraction,
+        PlatformUtilsServiceAbstraction,
+        AppIdServiceAbstraction,
+        IdentityApiServiceAbstraction,
+      ],
+    },
     {
       provide: CryptoServiceAbstraction,
       useClass: CryptoService,
@@ -353,7 +362,6 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         TokenServiceAbstraction,
         PlatformUtilsServiceAbstraction,
         EnvironmentServiceAbstraction,
-        AppIdServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },
@@ -381,6 +389,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         ProviderServiceAbstraction,
         FolderApiServiceAbstraction,
         OrganizationServiceAbstraction,
+        TokenServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },
@@ -466,6 +475,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         StateServiceAbstraction,
         AuthServiceAbstraction,
         MessagingServiceAbstraction,
+        TokenServiceAbstraction,
       ],
     },
     {
@@ -634,6 +644,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
       useClass: OrgDomainApiService,
       deps: [OrgDomainServiceAbstraction, ApiServiceAbstraction],
     },
+    // TODO: this should probably move to a new auth module at some point in the future
     {
       provide: IdentityApiServiceAbstraction,
       useClass: IdentityApiServiceImplementation,

@@ -10,4 +10,7 @@ export abstract class IdentityApiService {
   postIdentityToken: (
     request: PasswordTokenRequest | SsoTokenRequest | UserApiTokenRequest
   ) => Promise<IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse>;
+
+  // TODO: consider alternative name for this method to improve clarity.
+  doRefreshToken: () => Promise<any>; // TODO: this was originally void... but had returns..
 }

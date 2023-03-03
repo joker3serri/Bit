@@ -70,7 +70,7 @@ export class PremiumComponent implements OnInit {
 
     try {
       if (this.selfHosted) {
-        if (!this.tokenService.getEmailVerified()) {
+        if (!this.tokenService.getEmailVerifiedFromAccessToken()) {
           this.platformUtilsService.showToast(
             "error",
             this.i18nService.t("errorOccurred"),
@@ -116,7 +116,7 @@ export class PremiumComponent implements OnInit {
   }
 
   async finalizePremium() {
-    await this.apiService.refreshIdentityToken();
+    await this.tokenService.refreshIdentityToken();
     await this.syncService.fullSync(true);
     this.platformUtilsService.showToast("success", null, this.i18nService.t("premiumUpdated"));
     this.messagingService.send("purchasedPremium");

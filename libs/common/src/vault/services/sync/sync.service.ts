@@ -10,6 +10,7 @@ import { SendService } from "../../../abstractions/send.service";
 import { SettingsService } from "../../../abstractions/settings.service";
 import { StateService } from "../../../abstractions/state.service";
 import { KeyConnectorService } from "../../../auth/abstractions/key-connector.service";
+import { TokenService } from "../../../auth/abstractions/token.service";
 import { sequentialize } from "../../../misc/sequentialize";
 import { CollectionData } from "../../../models/data/collection.data";
 import { OrganizationData } from "../../../models/data/organization.data";
@@ -54,6 +55,7 @@ export class SyncService implements SyncServiceAbstraction {
     private providerService: ProviderService,
     private folderApiService: FolderApiServiceAbstraction,
     private organizationService: InternalOrganizationService,
+    private tokenService: TokenService,
     private logoutCallback: (expired: boolean) => Promise<void>
   ) {}
 
@@ -98,7 +100,7 @@ export class SyncService implements SyncServiceAbstraction {
     }
 
     try {
-      await this.apiService.refreshIdentityToken();
+      await this.tokenService.refreshIdentityToken();
       const response = await this.apiService.getSync();
 
       await this.syncProfile(response.profile);

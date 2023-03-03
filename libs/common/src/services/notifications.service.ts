@@ -9,6 +9,7 @@ import { MessagingService } from "../abstractions/messaging.service";
 import { NotificationsService as NotificationsServiceAbstraction } from "../abstractions/notifications.service";
 import { StateService } from "../abstractions/state.service";
 import { AuthService } from "../auth/abstractions/auth.service";
+import { TokenService } from "../auth/abstractions/token.service";
 import { AuthenticationStatus } from "../auth/enums/authentication-status";
 import { NotificationType } from "../enums/notificationType";
 import {
@@ -36,7 +37,8 @@ export class NotificationsService implements NotificationsServiceAbstraction {
     private logService: LogService,
     private stateService: StateService,
     private authService: AuthService,
-    private messagingService: MessagingService
+    private messagingService: MessagingService,
+    private tokenService: TokenService
   ) {
     this.environmentService.urls.subscribe(() => {
       if (!this.inited) {
@@ -67,7 +69,7 @@ export class NotificationsService implements NotificationsServiceAbstraction {
 
     this.signalrConnection = new signalR.HubConnectionBuilder()
       .withUrl(this.url + "/hub", {
-        accessTokenFactory: () => this.apiService.getActiveBearerToken(),
+        accessTokenFactory: () => this.tokenService.getActiveBearerToken(),
         skipNegotiation: true,
         transport: signalR.HttpTransportType.WebSockets,
       })

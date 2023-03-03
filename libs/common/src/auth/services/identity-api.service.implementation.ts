@@ -12,10 +12,9 @@ import { IdentityTwoFactorResponse } from "../models/response/identity-two-facto
 
 import { TokenService } from "./token.service";
 
-// TODO: figure out on which module to put this
-// TODO: replace all uses of the api service method calls with this service
-
 export class IdentityApiServiceImplementation implements IdentityApiService {
+  private identityBaseUrl: string = this.environmentService.getIdentityUrl();
+
   constructor(
     private tokenService: TokenService,
     private platformUtilsService: PlatformUtilsService,
@@ -23,6 +22,7 @@ export class IdentityApiServiceImplementation implements IdentityApiService {
     private apiService: ApiService
   ) {}
 
+  // TODO: consider alternative name for this method to improve clarity.
   async postIdentityToken(
     request: UserApiTokenRequest | PasswordTokenRequest | SsoTokenRequest
   ): Promise<IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse> {
@@ -31,15 +31,16 @@ export class IdentityApiServiceImplementation implements IdentityApiService {
         ? request.toIdentityToken()
         : request.toIdentityToken(this.platformUtilsService.getClientType());
 
-    const response = (await this.apiService.send(
+    const fetchReq = await this.apiService.createRequest(
       "POST",
-      this.environmentService.getIdentityUrl() + "/connect/token",
+      this.identityBaseUrl + "/connect/token",
       this.apiService.qsStringify(identityToken),
       false,
       true,
-      undefined,
       request.alterIdentityTokenHeaders
-    )) as Response;
+    );
+
+    const response = await this.apiService.fetch(fetchReq);
 
     let responseJson: any = null;
     if (this.apiService.isJsonResponse(response)) {
@@ -66,5 +67,29 @@ export class IdentityApiServiceImplementation implements IdentityApiService {
     }
 
     return Promise.reject(new ErrorResponse(responseJson, response.status, true));
+  }
+
+  async doRefreshToken(): Promise<any> {
+    const refreshToken = await this.tokenService.getRefreshToken();
+    if (refreshToken == null || refreshToken === "") {
+      throw new Error();
+    }
+
+    const decodedAccessToken = await this.tokenService.decodeAccessToken();
+
+    const responseJson = await this.apiService.send(
+      "POST",
+      this.identityBaseUrl + "/connect/token",
+      this.apiService.qsStringify({
+        grant_type: "refresh_token",
+        client_id: decodedAccessToken.client_id,
+        refresh_token: refreshToken,
+      }),
+      false,
+      true
+    );
+
+    const tokenResponse = new IdentityTokenResponse(responseJson);
+    await this.tokenService.setTokens(tokenResponse.accessToken, tokenResponse.refreshToken, null);
   }
 }

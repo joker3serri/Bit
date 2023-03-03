@@ -1,5 +1,4 @@
 import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service";
-import { AppIdService } from "../abstractions/appId.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
 import { TokenService } from "../auth/abstractions/token.service";
@@ -11,9 +10,6 @@ import { EmergencyAccessConfirmRequest } from "../auth/models/request/emergency-
 import { EmergencyAccessInviteRequest } from "../auth/models/request/emergency-access-invite.request";
 import { EmergencyAccessPasswordRequest } from "../auth/models/request/emergency-access-password.request";
 import { EmergencyAccessUpdateRequest } from "../auth/models/request/emergency-access-update.request";
-import { DeviceRequest } from "../auth/models/request/identity-token/device.request";
-import { TokenTwoFactorRequest } from "../auth/models/request/identity-token/token-two-factor.request";
-import { UserApiTokenRequest } from "../auth/models/request/identity-token/user-api-token.request";
 import { KeyConnectorUserKeyRequest } from "../auth/models/request/key-connector-user-key.request";
 import { PasswordHintRequest } from "../auth/models/request/password-hint.request";
 import { PasswordRequest } from "../auth/models/request/password.request";
@@ -42,7 +38,6 @@ import {
   EmergencyAccessTakeoverResponse,
   EmergencyAccessViewResponse,
 } from "../auth/models/response/emergency-access.response";
-import { IdentityTokenResponse } from "../auth/models/response/identity-token.response";
 import { KeyConnectorUserKeyResponse } from "../auth/models/response/key-connector-user-key.response";
 import { PreloginResponse } from "../auth/models/response/prelogin.response";
 import { RegisterResponse } from "../auth/models/response/register.response";
@@ -151,6 +146,7 @@ import { AttachmentResponse } from "../vault/models/response/attachment.response
 import { CipherResponse } from "../vault/models/response/cipher.response";
 import { SyncResponse } from "../vault/models/response/sync.response";
 
+// TODO: argh, figure out if send is required to be used in API services or not.
 /**
  * @deprecated The `ApiService` class is deprecated and calls should be extracted into individual
  * api services. The `send` method is still allowed to be used within api services. For background
@@ -166,7 +162,6 @@ export class ApiService implements ApiServiceAbstraction {
     private tokenService: TokenService,
     private platformUtilsService: PlatformUtilsService,
     private environmentService: EnvironmentService,
-    private appIdService: AppIdService,
     private logoutCallback: (expired: boolean) => Promise<void>,
     private customUserAgent: string = null
   ) {
@@ -188,21 +183,6 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // Auth APIs
-
-  // public refreshIdentityToken() (used in premium.comp.ts & sync.service) --> private doAuthRefresh()
-  // public getActiveBearerToken() (used in notifications.service) --> private doAuthRefresh()
-
-  // doAuthRefresh --> doRefreshToken (calls identity svc) or doApiTokenRefresh (calls postIdentityToken)
-
-  // TODO: Identity API remains simple API service and move refreshIdentityToken && getActiveBearerToken to token svc
-
-  async refreshIdentityToken(): Promise<any> {
-    try {
-      await this.doAuthRefresh();
-    } catch (e) {
-      return Promise.reject(null);
-    }
-  }
 
   async postAuthRequest(request: PasswordlessCreateAuthRequest): Promise<AuthRequestResponse> {
     const r = await this.send("POST", "/auth-requests/", request, false, true);
@@ -1576,7 +1556,7 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   async postEventsCollect(request: EventRequest[]): Promise<any> {
-    const authHeader = await this.getActiveBearerToken();
+    const authHeader = await this.tokenService.getActiveBearerToken();
     const headers = new Headers({
       "Device-Type": this.deviceType,
       Authorization: "Bearer " + authHeader,
@@ -1628,7 +1608,7 @@ export class ApiService implements ApiServiceAbstraction {
   // Key Connector
 
   async getUserKeyFromKeyConnector(keyConnectorUrl: string): Promise<KeyConnectorUserKeyResponse> {
-    const authHeader = await this.getActiveBearerToken();
+    const authHeader = await this.tokenService.getActiveBearerToken();
 
     const response = await this.fetch(
       new Request(keyConnectorUrl + "/user-keys", {
@@ -1653,7 +1633,7 @@ export class ApiService implements ApiServiceAbstraction {
     keyConnectorUrl: string,
     request: KeyConnectorUserKeyRequest
   ): Promise<void> {
-    const authHeader = await this.getActiveBearerToken();
+    const authHeader = await this.tokenService.getActiveBearerToken();
 
     const response = await this.fetch(
       new Request(keyConnectorUrl + "/user-keys", {
@@ -1704,15 +1684,6 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   // Helpers
-
-  async getActiveBearerToken(): Promise<string> {
-    let accessToken = await this.tokenService.getToken();
-    if (await this.tokenService.tokenNeedsRefresh()) {
-      await this.doAuthRefresh();
-      accessToken = await this.tokenService.getToken();
-    }
-    return accessToken;
-  }
 
   async fetch(request: Request): Promise<Response> {
     if (request.method === "GET") {
@@ -1848,101 +1819,26 @@ export class ApiService implements ApiServiceAbstraction {
     );
   }
 
-  protected async doAuthRefresh(): Promise<void> {
-    const refreshToken = await this.tokenService.getRefreshToken();
-    if (refreshToken != null && refreshToken !== "") {
-      return this.doRefreshToken();
-    }
-
-    const clientId = await this.tokenService.getClientId();
-    const clientSecret = await this.tokenService.getClientSecret();
-    if (!Utils.isNullOrWhitespace(clientId) && !Utils.isNullOrWhitespace(clientSecret)) {
-      return this.doApiTokenRefresh();
-    }
-
-    throw new Error("Cannot refresh token, no refresh token or api keys are stored");
-  }
-
-  protected async doRefreshToken(): Promise<void> {
-    const refreshToken = await this.tokenService.getRefreshToken();
-    if (refreshToken == null || refreshToken === "") {
-      throw new Error();
-    }
-    const headers = new Headers({
-      "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-      Accept: "application/json",
-      "Device-Type": this.deviceType,
-    });
-    if (this.customUserAgent != null) {
-      headers.set("User-Agent", this.customUserAgent);
-    }
-
-    const decodedToken = await this.tokenService.decodeToken();
-    const response = await this.fetch(
-      new Request(this.environmentService.getIdentityUrl() + "/connect/token", {
-        body: this.qsStringify({
-          grant_type: "refresh_token",
-          client_id: decodedToken.client_id,
-          refresh_token: refreshToken,
-        }),
-        cache: "no-store",
-        credentials: this.getCredentials(),
-        headers: headers,
-        method: "POST",
-      })
-    );
-
-    if (response.status === 200) {
-      const responseJson = await response.json();
-      const tokenResponse = new IdentityTokenResponse(responseJson);
-      await this.tokenService.setTokens(
-        tokenResponse.accessToken,
-        tokenResponse.refreshToken,
-        null
-      );
-    } else {
-      const error = await this.handleError(response, true, true);
-      return Promise.reject(error);
-    }
-  }
-
-  protected async doApiTokenRefresh(): Promise<void> {
-    const clientId = await this.tokenService.getClientId();
-    const clientSecret = await this.tokenService.getClientSecret();
-
-    const appId = await this.appIdService.getAppId();
-    const deviceRequest = new DeviceRequest(appId, this.platformUtilsService);
-    const tokenRequest = new UserApiTokenRequest(
-      clientId,
-      clientSecret,
-      new TokenTwoFactorRequest(),
-      deviceRequest
-    );
-
-    const response = await this.postIdentityToken(tokenRequest);
-    if (!(response instanceof IdentityTokenResponse)) {
-      throw new Error("Invalid response received when refreshing api token");
-    }
-
-    await this.tokenService.setToken(response.accessToken);
-  }
-
-  async send(
+  /**
+   * Creates a bitwarden request object with appropriate headers based on method inputs.
+   *
+   * Useful in cases where API services cannot use `send(...)` because they require custom error handling
+   * @param method - GET, POST, PUT, DELETE
+   * @param requestUrl - url to send request to
+   * @param body - body of request
+   * @param authed - whether or not to include auth header
+   * @param hasResponse - whether or not to expect a response
+   * @param alterHeaders - function to alter headers before sending request
+   * @returns Request object
+   */
+  async createRequest(
     method: "GET" | "POST" | "PUT" | "DELETE",
-    path: string,
+    requestUrl: string,
     body: any,
     authed: boolean,
     hasResponse: boolean,
-    apiUrl?: string,
     alterHeaders?: (headers: Headers) => void
-  ): Promise<any> {
-    apiUrl = Utils.isNullOrWhitespace(apiUrl) ? this.environmentService.getApiUrl() : apiUrl;
-
-    // Prevent directory traversal from malicious paths
-    const pathParts = path.split("?");
-    const requestUrl =
-      apiUrl + Utils.normalizePath(pathParts[0]) + (pathParts.length > 1 ? `?${pathParts[1]}` : "");
-
+  ): Promise<Request> {
     const headers = new Headers({
       "Device-Type": this.deviceType,
     });
@@ -1957,7 +1853,7 @@ export class ApiService implements ApiServiceAbstraction {
     };
 
     if (authed) {
-      const authHeader = await this.getActiveBearerToken();
+      const authHeader = await this.tokenService.getActiveBearerToken();
       headers.set("Authorization", "Bearer " + authHeader);
     }
     if (body != null) {
@@ -1981,7 +1877,35 @@ export class ApiService implements ApiServiceAbstraction {
     }
 
     requestInit.headers = headers;
-    const response = await this.fetch(new Request(requestUrl, requestInit));
+
+    return new Request(requestUrl, requestInit);
+  }
+
+  async send(
+    method: "GET" | "POST" | "PUT" | "DELETE",
+    path: string,
+    body: any,
+    authed: boolean,
+    hasResponse: boolean,
+    apiUrl?: string,
+    alterHeaders?: (headers: Headers) => void
+  ): Promise<any> {
+    apiUrl = Utils.isNullOrWhitespace(apiUrl) ? this.environmentService.getApiUrl() : apiUrl;
+
+    // Prevent directory traversal from malicious paths
+    const pathParts = path.split("?");
+    const requestUrl =
+      apiUrl + Utils.normalizePath(pathParts[0]) + (pathParts.length > 1 ? `?${pathParts[1]}` : "");
+
+    const request = await this.createRequest(
+      method,
+      requestUrl,
+      body,
+      authed,
+      hasResponse,
+      alterHeaders
+    );
+    const response = await this.fetch(request);
 
     const responseType = response.headers.get("content-type");
     const responseIsJson = responseType != null && responseType.indexOf("application/json") !== -1;
