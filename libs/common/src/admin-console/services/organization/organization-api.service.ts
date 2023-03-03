@@ -13,10 +13,10 @@ import { TaxInfoResponse } from "../../../billing/models/response/tax-info.respo
 import { ImportDirectoryRequest } from "../../../models/request/import-directory.request";
 import { OrganizationApiKeyRequest } from "../../../models/request/organization-api-key.request";
 import { OrganizationCreateRequest } from "../../../models/request/organization-create.request";
-import { OrganizationKeysRequest } from "../../../models/request/organization-keys.request";
-import { OrganizationUpdateRequest } from "../../../models/request/organization-update.request";
+import { OrganizationKeysRequest } from "../../models/request/organization-keys.request";
+import { OrganizationUpdateRequest } from "../../models/request/organization-update.request";
 import { OrganizationUpgradeRequest } from "../../../models/request/organization-upgrade.request";
-import { OrganizationEnrollSecretsManagerRequest } from "../../../models/request/organization/organization-enroll-secrets-manager.request";
+import { OrganizationEnrollSecretsManagerRequest } from "../../models/request/organization/organization-enroll-secrets-manager.request";
 import { SeatRequest } from "../../../models/request/seat.request";
 import { StorageRequest } from "../../../models/request/storage.request";
 import { VerifyBankRequest } from "../../../models/request/verify-bank.request";
