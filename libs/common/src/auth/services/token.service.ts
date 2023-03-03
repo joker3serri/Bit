@@ -198,7 +198,6 @@ export class TokenService implements TokenServiceAbstraction {
     }
   }
 
-  // TODO: rename to getActiveAccessToken to keep naming consistent after updating references
   async getActiveAccessToken(): Promise<string> {
     let accessToken = await this.getAccessToken();
     if (await this.accessTokenNeedsRefresh()) {
