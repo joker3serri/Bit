@@ -17,7 +17,7 @@ export class ForwardEmailForwarder implements Forwarder {
       cache: "no-store",
       method: "POST",
       headers: new Headers({
-        Authorization: "Basic " + Utils.fromBufferToB64(options.apiKey + ":"),
+        Authorization: "Basic " + Utils.fromUtf8ToB64(options.apiKey + ":"),
         "Content-Type": "application/json",
       }),
     };
