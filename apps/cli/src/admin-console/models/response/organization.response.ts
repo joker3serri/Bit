@@ -1,6 +1,6 @@
-import { OrganizationUserStatusType } from "@bitwarden/common/enums/organizationUserStatusType";
-import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
-import { Organization } from "@bitwarden/common/models/domain/organization";
+import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organizationUserStatusType";
+import { OrganizationUserType } from "@bitwarden/common/admin-console/enums/organizationUserType";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 
 import { BaseResponse } from "../../../models/response/base.response";
 
