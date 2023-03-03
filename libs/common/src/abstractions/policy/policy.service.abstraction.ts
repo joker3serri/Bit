@@ -1,10 +1,10 @@
 import { Observable } from "rxjs";
 
+import { MasterPasswordPolicyOptions } from "../../admin-console/models/domain/master-password-policy-options";
+import { Policy } from "../../admin-console/models/domain/policy";
+import { ResetPasswordPolicyOptions } from "../../admin-console/models/domain/reset-password-policy-options";
 import { PolicyType } from "../../enums/policyType";
 import { PolicyData } from "../../models/data/policy.data";
-import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
-import { Policy } from "../../models/domain/policy";
-import { ResetPasswordPolicyOptions } from "../../models/domain/reset-password-policy-options";
 import { ListResponse } from "../../models/response/list.response";
 import { PolicyResponse } from "../../models/response/policy.response";
 

@@ -12,6 +12,7 @@ import { CollectionData } from "../admin-console/models/data/collection.data";
 import { EncryptedOrganizationKeyData } from "../admin-console/models/data/encrypted-organization-key.data";
 import { OrganizationData } from "../admin-console/models/data/organization.data";
 import { ProviderData } from "../admin-console/models/data/provider.data";
+import { Policy } from "../admin-console/models/domain/policy";
 import { EnvironmentUrls } from "../auth/models/domain/environment-urls";
 import { KdfConfig } from "../auth/models/domain/kdf-config";
 import { HtmlStorageLocation } from "../enums/htmlStorageLocation";
@@ -34,7 +35,6 @@ import {
 import { EncString } from "../models/domain/enc-string";
 import { GeneratedPasswordHistory } from "../models/domain/generated-password-history";
 import { GlobalState } from "../models/domain/global-state";
-import { Policy } from "../models/domain/policy";
 import { State } from "../models/domain/state";
 import { StorageOptions } from "../models/domain/storage-options";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";

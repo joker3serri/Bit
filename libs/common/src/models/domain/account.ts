@@ -4,6 +4,7 @@ import { CollectionData } from "../../admin-console/models/data/collection.data"
 import { EncryptedOrganizationKeyData } from "../../admin-console/models/data/encrypted-organization-key.data";
 import { OrganizationData } from "../../admin-console/models/data/organization.data";
 import { ProviderData } from "../../admin-console/models/data/provider.data";
+import { Policy } from "../../admin-console/models/domain/policy";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
 import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { KdfType } from "../../enums/kdfType";
@@ -22,7 +23,6 @@ import { SendView } from "../view/send.view";
 
 import { EncString } from "./enc-string";
 import { GeneratedPasswordHistory } from "./generated-password-history";
-import { Policy } from "./policy";
 import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class EncryptionPair<TEncrypted, TDecrypted> {

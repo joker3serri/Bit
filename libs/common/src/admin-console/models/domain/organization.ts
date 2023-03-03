@@ -1,10 +1,10 @@
 import { Jsonify } from "type-fest";
 
-import { OrganizationUserStatusType } from "../../admin-console/enums/organizationUserStatusType";
-import { OrganizationUserType } from "../../admin-console/enums/organizationUserType";
-import { OrganizationData } from "../../admin-console/models/data/organization.data";
-import { ProductType } from "../../enums/productType";
-import { PermissionsApi } from "../api/permissions.api";
+import { ProductType } from "../../../enums/productType";
+import { PermissionsApi } from "../../../models/api/permissions.api";
+import { OrganizationUserStatusType } from "../../enums/organizationUserStatusType";
+import { OrganizationUserType } from "../../enums/organizationUserType";
+import { OrganizationData } from "../data/organization.data";
 
 export class Organization {
   id: string;

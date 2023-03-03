@@ -1,7 +1,6 @@
-import { PolicyType } from "../../enums/policyType";
-import { PolicyData } from "../data/policy.data";
-
-import Domain from "./domain-base";
+import { PolicyType } from "../../../enums/policyType";
+import { PolicyData } from "../../../models/data/policy.data";
+import Domain from "../../../models/domain/domain-base";
 
 export class Policy extends Domain {
   id: string;

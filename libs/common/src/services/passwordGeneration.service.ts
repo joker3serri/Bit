@@ -4,12 +4,12 @@ import { CryptoService } from "../abstractions/crypto.service";
 import { PasswordGenerationService as PasswordGenerationServiceAbstraction } from "../abstractions/passwordGeneration.service";
 import { PolicyService } from "../abstractions/policy/policy.service.abstraction";
 import { StateService } from "../abstractions/state.service";
+import { PasswordGeneratorPolicyOptions } from "../admin-console/models/domain/password-generator-policy-options";
 import { PolicyType } from "../enums/policyType";
 import { EFFLongWordList } from "../misc/wordlist";
 import { EncString } from "../models/domain/enc-string";
 import { GeneratedPasswordHistory } from "../models/domain/generated-password-history";
 import { PasswordGeneratorOptions } from "../models/domain/password-generator-options";
-import { PasswordGeneratorPolicyOptions } from "../models/domain/password-generator-policy-options";
 
 const DefaultOptions: PasswordGeneratorOptions = {
   length: 14,

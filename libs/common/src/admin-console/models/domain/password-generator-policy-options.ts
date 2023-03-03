@@ -1,4 +1,4 @@
-import Domain from "./domain-base";
+import Domain from "../../../models/domain/domain-base";
 
 export class PasswordGeneratorPolicyOptions extends Domain {
   defaultType = "";

@@ -1,4 +1,4 @@
-import { Collection as CollectionDomain } from "../domain/collection";
+import { Collection as CollectionDomain } from "../../admin-console/models/domain/collection";
 import { CollectionView } from "../view/collection.view";
 
 import { CollectionExport } from "./collection.export";

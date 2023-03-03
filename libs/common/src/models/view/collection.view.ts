@@ -1,4 +1,4 @@
-import { Collection } from "../domain/collection";
+import { Collection } from "../../admin-console/models/domain/collection";
 import { ITreeNodeObject } from "../domain/tree-node";
 import { CollectionAccessDetailsResponse } from "../response/collection.response";
 

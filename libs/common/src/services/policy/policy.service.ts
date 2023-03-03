@@ -5,13 +5,13 @@ import { StateService } from "../../abstractions/state.service";
 import { OrganizationService } from "../../admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserStatusType } from "../../admin-console/enums/organizationUserStatusType";
 import { OrganizationUserType } from "../../admin-console/enums/organizationUserType";
+import { MasterPasswordPolicyOptions } from "../../admin-console/models/domain/master-password-policy-options";
+import { Organization } from "../../admin-console/models/domain/organization";
+import { Policy } from "../../admin-console/models/domain/policy";
+import { ResetPasswordPolicyOptions } from "../../admin-console/models/domain/reset-password-policy-options";
 import { PolicyType } from "../../enums/policyType";
 import { Utils } from "../../misc/utils";
 import { PolicyData } from "../../models/data/policy.data";
-import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
-import { Organization } from "../../models/domain/organization";
-import { Policy } from "../../models/domain/policy";
-import { ResetPasswordPolicyOptions } from "../../models/domain/reset-password-policy-options";
 import { ListResponse } from "../../models/response/list.response";
 import { PolicyResponse } from "../../models/response/policy.response";
 
