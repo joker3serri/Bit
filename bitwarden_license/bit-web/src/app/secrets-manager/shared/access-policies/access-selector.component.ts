@@ -1,7 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { combineLatest, firstValueFrom, Observable, share, Subject, switchMap, tap } from "rxjs";
+import {
+  combineLatest,
+  firstValueFrom,
+  map,
+  Observable,
+  share,
+  Subject,
+  switchMap,
+  tap,
+} from "rxjs";
 
 import { Utils } from "@bitwarden/common/misc/utils";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
@@ -93,6 +102,7 @@ export class AccessSelectorComponent implements OnInit {
           })
       )
     ),
+    map((selectItems) => selectItems.sort((a, b) => a.listName.localeCompare(b.listName))),
     tap(() => {
       this.loading = false;
       this.formGroup.reset();
