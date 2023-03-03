@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { map, Observable, startWith, Subject, switchMap, takeUntil } from "rxjs";
 
+import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { SelectItemView } from "@bitwarden/components";
 
 import {
@@ -65,11 +66,19 @@ export class ProjectServiceAccountsComponent implements OnInit, OnDestroy {
     );
   }
 
-  protected handleDeleteAccessPolicy(policy: AccessSelectorRowView) {
-    return this.accessPolicyService.deleteAccessPolicy(policy.accessPolicyId);
+  protected async handleDeleteAccessPolicy(policy: AccessSelectorRowView) {
+    try {
+      await this.accessPolicyService.deleteAccessPolicy(policy.accessPolicyId);
+    } catch (e) {
+      this.validationService.showError(e);
+    }
   }
 
-  constructor(private route: ActivatedRoute, private accessPolicyService: AccessPolicyService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private validationService: ValidationService,
+    private accessPolicyService: AccessPolicyService
+  ) {}
 
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {

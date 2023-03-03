@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { map, Observable, share, startWith, Subject, switchMap, takeUntil } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { DialogService, SelectItemView } from "@bitwarden/components";
 
@@ -101,10 +100,12 @@ export class ProjectPeopleComponent implements OnInit, OnDestroy {
   }
 
   protected async handleDeleteAccessPolicy(policy: AccessSelectorRowView) {
-    const organization = this.organizationService.get(this.organizationId);
     if (
-      !(organization.isOwner || organization.isAdmin) &&
-      (await this.needToShowWarning(policy, organization.userId))
+      await this.accessPolicyService.needToShowAccessRemovalWarning(
+        this.organizationId,
+        policy,
+        this.rows
+      )
     ) {
       this.launchDeleteWarningDialog(policy);
       return;
@@ -118,13 +119,14 @@ export class ProjectPeopleComponent implements OnInit, OnDestroy {
   }
 
   protected async handleUpdateAccessPolicy(policy: AccessSelectorRowView) {
-    const organization = this.organizationService.get(this.organizationId);
-
     if (
-      !(organization.isOwner || organization.isAdmin) &&
       policy.read === true &&
       policy.write === false &&
-      (await this.needToShowWarning(policy, organization.userId))
+      (await this.accessPolicyService.needToShowAccessRemovalWarning(
+        this.organizationId,
+        policy,
+        this.rows
+      ))
     ) {
       this.launchUpdateWarningDialog(policy);
       return;
@@ -141,7 +143,6 @@ export class ProjectPeopleComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private organizationService: OrganizationService,
     private dialogService: DialogService,
     private validationService: ValidationService,
     private accessPolicyService: AccessPolicyService
@@ -161,30 +162,6 @@ export class ProjectPeopleComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  private async needToShowWarning(
-    policy: AccessSelectorRowView,
-    currentUserId: string
-  ): Promise<boolean> {
-    const readWriteGroupPolicies = this.rows
-      .filter((x) => x.accessPolicyId != policy.accessPolicyId)
-      .filter((x) => x.currentUserInGroup && x.read && x.write).length;
-    const readWriteUserPolicies = this.rows
-      .filter((x) => x.accessPolicyId != policy.accessPolicyId)
-      .filter((x) => x.userId == currentUserId && x.read && x.write).length;
-
-    if (policy.type === "user" && policy.userId == currentUserId && readWriteGroupPolicies == 0) {
-      return true;
-    } else if (
-      policy.type === "group" &&
-      policy.currentUserInGroup &&
-      readWriteUserPolicies == 0 &&
-      readWriteGroupPolicies == 0
-    ) {
-      return true;
-    }
-    return false;
   }
 
   private async launchDeleteWarningDialog(policy: AccessSelectorRowView) {

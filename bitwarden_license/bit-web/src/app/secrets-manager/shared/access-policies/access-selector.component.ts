@@ -3,7 +3,6 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { combineLatest, firstValueFrom, Observable, share, Subject, switchMap, tap } from "rxjs";
 
-import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
@@ -99,11 +98,7 @@ export class AccessSelectorComponent implements OnInit {
     share()
   );
 
-  constructor(
-    private accessPolicyService: AccessPolicyService,
-    private validationService: ValidationService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private accessPolicyService: AccessPolicyService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.formGroup.disable();

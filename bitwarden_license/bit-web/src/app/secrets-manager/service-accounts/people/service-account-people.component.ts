@@ -11,7 +11,6 @@ import {
   takeUntil,
 } from "rxjs";
 
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { DialogService } from "@bitwarden/components";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
@@ -114,11 +113,12 @@ export class ServiceAccountPeopleComponent {
   }
 
   protected async handleDeleteAccessPolicy(policy: AccessSelectorRowView) {
-    const organization = this.organizationService.get(this.organizationId);
-
     if (
-      !(organization.isOwner || organization.isAdmin) &&
-      (await this.needToShowWarning(policy, organization.userId))
+      await this.accessPolicyService.needToShowAccessRemovalWarning(
+        this.organizationId,
+        policy,
+        this.rows
+      )
     ) {
       this.launchDeleteWarningDialog(policy);
       return;
@@ -133,7 +133,6 @@ export class ServiceAccountPeopleComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private organizationService: OrganizationService,
     private dialogService: DialogService,
     private validationService: ValidationService,
     private accessPolicyService: AccessPolicyService
@@ -153,30 +152,6 @@ export class ServiceAccountPeopleComponent {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  private async needToShowWarning(
-    policy: AccessSelectorRowView,
-    currentUserId: string
-  ): Promise<boolean> {
-    const readWriteGroupPolicies = this.rows
-      .filter((x) => x.accessPolicyId != policy.accessPolicyId)
-      .filter((x) => x.currentUserInGroup && x.read && x.write).length;
-    const readWriteUserPolicies = this.rows
-      .filter((x) => x.accessPolicyId != policy.accessPolicyId)
-      .filter((x) => x.userId == currentUserId && x.read && x.write).length;
-
-    if (policy.type === "user" && policy.userId == currentUserId && readWriteGroupPolicies == 0) {
-      return true;
-    } else if (
-      policy.type === "group" &&
-      policy.currentUserInGroup &&
-      readWriteUserPolicies == 0 &&
-      readWriteGroupPolicies == 0
-    ) {
-      return true;
-    }
-    return false;
   }
 
   private launchDeleteWarningDialog(policy: AccessSelectorRowView) {
