@@ -47,7 +47,7 @@ export class ServiceAccountService {
     const orgKey = await this.getOrganizationKey(organizationId);
     const r = await this.apiService.send(
       "GET",
-      "/service-account/" + serviceAccountId + "/service-accounts",
+      "/service-account/" + serviceAccountId",
       null,
       true,
       true
