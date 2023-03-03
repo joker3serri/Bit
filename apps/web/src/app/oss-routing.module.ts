@@ -6,7 +6,6 @@ import { LockGuard } from "@bitwarden/angular/auth/guards/lock.guard";
 import { UnauthGuard } from "@bitwarden/angular/auth/guards/unauth.guard";
 
 import { AcceptEmergencyComponent } from "../auth/accept-emergency.component";
-import { AcceptInitOrganizationComponent } from "../auth/accept-init-organization.component";
 import { AcceptOrganizationComponent } from "../auth/accept-organization.component";
 import { HintComponent } from "../auth/hint.component";
 import { LockComponent } from "../auth/lock.component";
@@ -101,11 +100,6 @@ const routes: Routes = [
         canActivate: [LockGuard],
       },
       { path: "verify-email", component: VerifyEmailTokenComponent },
-      {
-        path: "accept-init-organization",
-        component: AcceptInitOrganizationComponent,
-        data: { titleId: "joinOrganization", doNotSaveUrl: false },
-      },
       {
         path: "accept-organization",
         component: AcceptOrganizationComponent,
