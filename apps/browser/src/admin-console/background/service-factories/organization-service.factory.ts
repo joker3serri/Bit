@@ -1,4 +1,4 @@
-import { OrganizationService as AbstractOrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { OrganizationService as AbstractOrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 
 import {
   FactoryOptions,

@@ -2,15 +2,15 @@ import { Injectable } from "@angular/core";
 import { firstValueFrom, from, mergeMap, Observable } from "rxjs";
 
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
+import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
+import { StateService } from "@bitwarden/common/abstractions/state.service";
 import {
   isNotProviderUser,
   OrganizationService,
-} from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
-import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
+} from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
-import { Organization } from "@bitwarden/common/models/domain/organization";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";

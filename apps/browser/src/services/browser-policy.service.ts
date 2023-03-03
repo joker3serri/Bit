@@ -1,7 +1,7 @@
 import { BehaviorSubject } from "rxjs";
 import { Jsonify } from "type-fest";
 
-import { Policy } from "@bitwarden/common/models/domain/policy";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { PolicyService } from "@bitwarden/common/services/policy/policy.service";
 
 import { browserSession, sessionSync } from "../decorators/session-sync-observable";
