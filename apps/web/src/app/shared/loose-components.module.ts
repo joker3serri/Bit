@@ -84,8 +84,6 @@ import { BillingHistoryComponent } from "../settings/billing-history.component";
 import { BillingSyncKeyComponent } from "../settings/billing-sync-key.component";
 import { ChangeAvatarComponent } from "../settings/change-avatar.component";
 import { ChangeEmailComponent } from "../settings/change-email.component";
-import { ChangeKdfConfirmationComponent } from "../settings/change-kdf-confirmation.component";
-import { ChangeKdfComponent } from "../settings/change-kdf.component";
 import { ChangePasswordComponent } from "../settings/change-password.component";
 import { CreateOrganizationComponent } from "../settings/create-organization.component";
 import { DeleteAccountComponent } from "../settings/delete-account.component";
@@ -98,8 +96,7 @@ import { PreferencesComponent } from "../settings/preferences.component";
 import { PremiumComponent } from "../settings/premium.component";
 import { ProfileComponent } from "../settings/profile.component";
 import { PurgeVaultComponent } from "../settings/purge-vault.component";
-import { SecurityKeysComponent } from "../settings/security-keys.component";
-import { SecurityComponent } from "../settings/security.component";
+import { SecurityModule } from "../settings/security.module";
 import { SettingsComponent } from "../settings/settings.component";
 import { SponsoredFamiliesComponent } from "../settings/sponsored-families.component";
 import { SponsoringOrgRowComponent } from "../settings/sponsoring-org-row.component";
@@ -118,7 +115,13 @@ import { SharedModule } from "./shared.module";
 // Please do not add to this list of declarations - we should refactor these into modules when doing so makes sense until there are none left.
 // If you are building new functionality, please create or extend a feature module instead.
 @NgModule({
-  imports: [SharedModule, OrganizationCreateModule, RegisterFormModule, ProductSwitcherModule],
+  imports: [
+    SharedModule,
+    OrganizationCreateModule,
+    RegisterFormModule,
+    ProductSwitcherModule,
+    SecurityModule,
+  ],
   declarations: [
     PremiumBadgeComponent,
     AcceptEmergencyComponent,
@@ -136,8 +139,6 @@ import { SharedModule } from "./shared.module";
     AttachmentsComponent,
     BillingSyncKeyComponent,
     ChangeEmailComponent,
-    ChangeKdfComponent,
-    ChangeKdfConfirmationComponent,
     ChangePasswordComponent,
     CollectionsComponent,
     CreateOrganizationComponent,
@@ -192,8 +193,6 @@ import { SharedModule } from "./shared.module";
     RecoverDeleteComponent,
     RecoverTwoFactorComponent,
     RemovePasswordComponent,
-    SecurityComponent,
-    SecurityKeysComponent,
     SelectableAvatarComponent,
     SendAddEditComponent,
     SendComponent,
@@ -247,8 +246,6 @@ import { SharedModule } from "./shared.module";
     ApiKeyComponent,
     AttachmentsComponent,
     ChangeEmailComponent,
-    ChangeKdfComponent,
-    ChangeKdfConfirmationComponent,
     ChangePasswordComponent,
     CollectionsComponent,
     CreateOrganizationComponent,
@@ -302,8 +299,6 @@ import { SharedModule } from "./shared.module";
     RecoverDeleteComponent,
     RecoverTwoFactorComponent,
     RemovePasswordComponent,
-    SecurityComponent,
-    SecurityKeysComponent,
     SelectableAvatarComponent,
     SendAddEditComponent,
     SendComponent,
