@@ -28,7 +28,7 @@
 </td>
 <td bitCell class="tw-text-right">
   <button
-    *ngIf="editable"
+    *ngIf="editable && (canEditCollection || canDeleteCollection)"
     [bitMenuTriggerFor]="collectionOptions"
     size="small"
     bitIconButton="bwi-ellipsis-v"
