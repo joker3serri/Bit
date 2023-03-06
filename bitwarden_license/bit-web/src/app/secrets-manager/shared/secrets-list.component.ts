@@ -2,6 +2,8 @@ import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
+import { TableDataSource } from "@bitwarden/components";
+
 import { SecretListView } from "../models/view/secret-list.view";
 
 @Component({
@@ -9,6 +11,8 @@ import { SecretListView } from "../models/view/secret-list.view";
   templateUrl: "./secrets-list.component.html",
 })
 export class SecretsListComponent implements OnDestroy {
+  protected dataSource = new TableDataSource<SecretListView>();
+
   @Input()
   get secrets(): SecretListView[] {
     return this._secrets;
@@ -16,16 +20,24 @@ export class SecretsListComponent implements OnDestroy {
   set secrets(secrets: SecretListView[]) {
     this.selection.clear();
     this._secrets = secrets;
+    this.dataSource.data = secrets;
   }
   private _secrets: SecretListView[];
+
+  @Input()
+  set search(search: string) {
+    this.dataSource.filter = search;
+  }
+
+  @Input() trash: boolean;
 
   @Output() editSecretEvent = new EventEmitter<string>();
   @Output() copySecretNameEvent = new EventEmitter<string>();
   @Output() copySecretValueEvent = new EventEmitter<string>();
-  @Output() projectsEvent = new EventEmitter<string>();
   @Output() onSecretCheckedEvent = new EventEmitter<string[]>();
   @Output() deleteSecretsEvent = new EventEmitter<string[]>();
   @Output() newSecretEvent = new EventEmitter();
+  @Output() restoreSecretsEvent = new EventEmitter();
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -59,4 +71,20 @@ export class SecretsListComponent implements OnDestroy {
       this.deleteSecretsEvent.emit(this.selection.selected);
     }
   }
+
+  bulkRestoreSecrets() {
+    if (this.selection.selected.length >= 1) {
+      this.restoreSecretsEvent.emit(this.selection.selected);
+    }
+  }
+
+  sortProjects = (a: SecretListView, b: SecretListView): number => {
+    const aProjects = a.projects;
+    const bProjects = b.projects;
+    if (aProjects.length !== bProjects.length) {
+      return aProjects.length - bProjects.length;
+    }
+
+    return aProjects[0]?.name.localeCompare(bProjects[0].name);
+  };
 }
