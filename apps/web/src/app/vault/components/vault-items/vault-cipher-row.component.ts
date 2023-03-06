@@ -24,14 +24,22 @@ export class VaultCipherRowComponent {
 
   protected CipherType = CipherType;
 
-  protected copy(field: "username" | "password" | "totp") {
-    this.onEvent.emit({ type: "copy", item: this.cipher, field });
-  }
-
-  get showTotpCopyButton() {
+  protected get showTotpCopyButton() {
     return (
       (this.cipher.login?.hasTotp ?? false) &&
       (this.cipher.organizationUseTotp || this.showPremiumFeatures)
     );
+  }
+
+  protected get showFixOldAttachments() {
+    return this.cipher.hasOldAttachments && this.cipher.organizationId == null;
+  }
+
+  protected copy(field: "username" | "password" | "totp") {
+    this.onEvent.emit({ type: "copy", item: this.cipher, field });
+  }
+
+  protected attachments() {
+    this.onEvent.emit({ type: "attachements", item: this.cipher });
   }
 }

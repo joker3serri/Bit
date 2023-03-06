@@ -8,7 +8,9 @@ import { EnvironmentService } from "@bitwarden/common/abstractions/environment.s
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
+import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
+import { AttachmentView } from "@bitwarden/common/vault/models/view/attachment.view";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
@@ -103,20 +105,6 @@ export default {
 
 const Template: Story<VaultItemsComponent> = (args: VaultItemsComponent) => ({
   props: args,
-  template: `
-    <app-new-vault-items
-      [collections]="collections"
-      [allCollections]="allCollections"
-      [allGroups]="allGroups"
-      [allOrganizations]="allOrganizations"
-      [ciphers]="ciphers"
-      [showOwner]="showOwner"
-      [showCollections]="showCollections"
-      [showGroups]="showGroups"
-      [showPremiumFeatures]="showPremiumFeatures"
-      [editableCollections]="editableCollections"
-    ></app-new-vault-items>
-  `,
 });
 
 export const Primary = Template.bind({});
@@ -135,6 +123,19 @@ function createCipherView(i: number): CipherView {
   view.login.uris = [new LoginUriView()];
   view.login.uris[0].uri = "https://bitwarden.com";
   view.collectionIds = collection ? [collection.id] : [];
+
+  if (i === 0) {
+    // Old attachment
+    const attachement = new AttachmentView();
+    view.organizationId = null;
+    view.collectionIds = [];
+    view.attachments = [attachement];
+  } else if (i % 5 === 0) {
+    const attachement = new AttachmentView();
+    attachement.key = new SymmetricCryptoKey(new ArrayBuffer(32));
+    view.attachments = [attachement];
+  }
+
   return view;
 }
 
