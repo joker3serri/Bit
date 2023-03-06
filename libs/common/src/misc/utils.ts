@@ -268,6 +268,15 @@ export class Utils {
     }
   }
 
+  static getOrigin(uriString: string): string {
+    const url = Utils.getUrl(uriString);
+    try {
+      return url != null && url.origin !== "" ? url.origin : null;
+    } catch {
+      return null;
+    }
+  }
+
   static getDomain(uriString: string): string {
     if (Utils.isNullOrWhitespace(uriString)) {
       return null;

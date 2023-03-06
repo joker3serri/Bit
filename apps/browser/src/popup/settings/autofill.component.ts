@@ -31,6 +31,7 @@ export class AutofillComponent implements OnInit {
     this.uriMatchOptions = [
       { name: i18nService.t("baseDomain"), value: UriMatchType.Domain },
       { name: i18nService.t("host"), value: UriMatchType.Host },
+      { name: i18nService.t("origin"), value: UriMatchType.Origin },
       { name: i18nService.t("startsWith"), value: UriMatchType.StartsWith },
       { name: i18nService.t("regEx"), value: UriMatchType.RegularExpression },
       { name: i18nService.t("exact"), value: UriMatchType.Exact },

@@ -473,6 +473,13 @@ export class CipherService implements CipherServiceAbstraction {
               }
               break;
             }
+            case UriMatchType.Origin: {
+              const urlOrigin = Utils.getOrigin(url);
+              if (urlOrigin != null && urlOrigin === Utils.getOrigin(u.uri)) {
+                return true;
+              }
+              break;
+            }
             case UriMatchType.Exact:
               if (url === u.uri) {
                 return true;

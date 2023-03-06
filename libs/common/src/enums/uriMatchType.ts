@@ -5,4 +5,5 @@ export enum UriMatchType {
   Exact = 3,
   RegularExpression = 4,
   Never = 5,
+  Origin = 6,
 }
