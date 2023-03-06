@@ -75,4 +75,12 @@ export class VaultCollectionRowComponent {
   protected edit() {
     this.onEvent.next({ type: "edit", item: this.collection });
   }
+
+  protected access() {
+    this.onEvent.next({ type: "access", item: this.collection });
+  }
+
+  protected deleteCollection() {
+    this.onEvent.next({ type: "delete", item: [{ collection: this.collection }] });
+  }
 }

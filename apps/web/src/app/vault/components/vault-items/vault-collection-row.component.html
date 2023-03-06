@@ -41,19 +41,15 @@
       <i class="bwi bwi-fw bwi-pencil-square" aria-hidden="true"></i>
       {{ "editInfo" | i18n }}
     </button>
-    <!-- <button
-      *ngIf="canEditCollection(col.node)"
-      bitMenuItem
-      (click)="editCollection(col.node, 'access')"
-    >
+    <button *ngIf="canEditCollection" type="button" bitMenuItem (click)="access()">
       <i class="bwi bwi-fw bwi-users" aria-hidden="true"></i>
       {{ "access" | i18n }}
     </button>
-    <button *ngIf="canDeleteCollection(col.node)" bitMenuItem (click)="deleteCollection(col.node)">
+    <button *ngIf="canDeleteCollection" type="button" bitMenuItem (click)="deleteCollection()">
       <span class="tw-text-danger">
         <i class="bwi bwi-fw bwi-trash" aria-hidden="true"></i>
         {{ "delete" | i18n }}
       </span>
-    </button> -->
+    </button>
   </bit-menu>
 </td>
