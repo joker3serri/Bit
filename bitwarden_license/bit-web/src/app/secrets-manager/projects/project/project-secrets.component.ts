@@ -58,11 +58,10 @@ export class ProjectSecretsComponent {
     });
   }
 
-  openDeleteSecret(secretIds: string[]) {
+  openDeleteSecret(event: SecretListView[]) {
     this.dialogService.open<unknown, SecretDeleteOperation>(SecretDeleteDialogComponent, {
       data: {
-        secretIds: secretIds,
-        organizationId: this.organizationId,
+        secrets: event,
       },
     });
   }

@@ -5,6 +5,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { DialogService } from "@bitwarden/components";
 
+import { SecretListView } from "../../models/view/secret-list.view";
 import {
   BulkOperationStatus,
   BulkStatusDetails,
@@ -13,8 +14,7 @@ import {
 import { SecretService } from "../secret.service";
 
 export interface SecretDeleteOperation {
-  secretIds: string[];
-  organizationId: string;
+  secrets: SecretListView[];
 }
 
 @Component({
@@ -31,26 +31,23 @@ export class SecretDeleteDialogComponent {
     private dialogService: DialogService
   ) {}
 
-  secretIds = this.data.secretIds;
+  secretIds = this.data.secrets.map((secret) => secret.id);
 
   get title() {
-    return this.data.secretIds.length === 1 ? "deleteSecret" : "deleteSecrets";
+    return this.secretIds.length === 1 ? "deleteSecret" : "deleteSecrets";
   }
 
   get submitButtonText() {
-    return this.data.secretIds.length === 1 ? "deleteSecret" : "deleteSecrets";
+    return this.secretIds.length === 1 ? "deleteSecret" : "deleteSecrets";
   }
 
   delete = async () => {
-    const bulkResponses = await this.secretService.delete(
-      this.data.secretIds,
-      this.data.organizationId
-    );
+    const bulkResponses = await this.secretService.delete(this.data.secrets);
 
     const message =
-      this.data.secretIds.length === 1 ? "softDeleteSuccessToast" : "softDeletesSuccessToast";
+      this.secretIds.length === 1 ? "softDeleteSuccessToast" : "softDeletesSuccessToast";
 
-    this.dialogRef.close(this.data.secretIds);
+    this.dialogRef.close(this.secretIds);
 
     if (bulkResponses.find((response) => response.errorMessage)) {
       this.openBulkStatusDialog(bulkResponses.filter((response) => response.errorMessage));

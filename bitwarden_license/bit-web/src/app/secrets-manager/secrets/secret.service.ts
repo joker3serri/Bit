@@ -83,22 +83,18 @@ export class SecretService {
     this._secret.next(await this.createSecretView(new SecretResponse(r)));
   }
 
-  async delete(secretIds: string[], organizationId: string): Promise<BulkOperationStatus[]> {
+  async delete(secrets: SecretListView[]): Promise<BulkOperationStatus[]> {
+    const secretIds = secrets.map((secret) => secret.id);
     const r = await this.apiService.send("POST", "/secrets/delete", secretIds, true, true);
-    const orgKey = await this.getOrganizationKey(organizationId);
+
     this._secret.next(null);
-    return await Promise.all(
-      r.data.map(async (element: { id: string; error: string; objectDescription: string }) => {
-        const bulkOperationStatus = new BulkOperationStatus();
-        bulkOperationStatus.id = element.id;
-        bulkOperationStatus.name = await this.encryptService.decryptToUtf8(
-          new EncString(element.objectDescription),
-          orgKey
-        );
-        bulkOperationStatus.errorMessage = element.error;
-        return bulkOperationStatus;
-      })
-    );
+    return r.data.map((element: { id: string; error: string }) => {
+      const bulkOperationStatus = new BulkOperationStatus();
+      bulkOperationStatus.id = element.id;
+      bulkOperationStatus.name = secrets.find((secret) => secret.id == element.id).name;
+      bulkOperationStatus.errorMessage = element.error;
+      return bulkOperationStatus;
+    });
   }
 
   async getTrashedSecrets(organizationId: string): Promise<SecretListView[]> {

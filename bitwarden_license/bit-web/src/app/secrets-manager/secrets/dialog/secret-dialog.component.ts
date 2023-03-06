@@ -8,6 +8,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { DialogService } from "@bitwarden/components";
 
 import { ProjectListView } from "../../models/view/project-list.view";
+import { SecretListView } from "../../models/view/secret-list.view";
 import { SecretProjectView } from "../../models/view/secret-project.view";
 import { SecretView } from "../../models/view/secret.view";
 import { ProjectService } from "../../projects/project.service";
@@ -146,12 +147,13 @@ export class SecretDialogComponent implements OnInit {
   }
 
   protected openDeleteSecretDialog() {
+    const secretListView: SecretListView[] = this.getSecretListView();
+
     const dialogRef = this.dialogService.open<unknown, SecretDeleteOperation>(
       SecretDeleteDialogComponent,
       {
         data: {
-          secretIds: [this.data.secretId],
-          organizationId: this.data.organizationId,
+          secrets: secretListView,
         },
       }
     );
@@ -182,5 +184,17 @@ export class SecretDialogComponent implements OnInit {
     secretView.note = this.formGroup.value.notes;
     secretView.projects = this.selectedProjects ? this.selectedProjects : emptyProjects;
     return secretView;
+  }
+
+  private getSecretListView() {
+    const secretListViews: SecretListView[] = [];
+    const emptyProjects: SecretProjectView[] = [];
+
+    const secretListView = new SecretListView();
+    secretListView.organizationId = this.data.organizationId;
+    secretListView.name = this.formGroup.value.name;
+    secretListView.projects = this.selectedProjects ? this.selectedProjects : emptyProjects;
+    secretListViews.push(secretListView);
+    return secretListViews;
   }
 }
