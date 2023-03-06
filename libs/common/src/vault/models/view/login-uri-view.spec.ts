@@ -9,6 +9,11 @@ const testData = [
     expected: "http://example.com/login",
   },
   {
+    match: UriMatchType.Origin,
+    uri: "https://example.com/path",
+    expected: "https://example.com/path",
+  },
+  {
     match: UriMatchType.Host,
     uri: "bitwarden.com",
     expected: "http://bitwarden.com",
@@ -62,5 +67,17 @@ describe("LoginUriView", () => {
     const uri = new LoginUriView();
     Object.assign(uri, { match: UriMatchType.Host, uri: "someprotocol://bitwarden.com" });
     expect(uri.canLaunch).toBe(false);
+  });
+
+  it(`canLaunch() should return false when origin does not match`, async () => {
+    const uri = new LoginUriView();
+    Object.assign(uri, { match: UriMatchType.Origin, uri: "someprotocol://bitwarden.com" });
+    expect(uri.canLaunch).toBe(false);
+  });
+
+  it(`canLaunch() should return true when origin does match`, async () => {
+    const uri = new LoginUriView();
+    Object.assign(uri, { match: UriMatchType.Origin, uri: "http://bitwarden.com" });
+    expect(uri.canLaunch).toBe(true);
   });
 });
