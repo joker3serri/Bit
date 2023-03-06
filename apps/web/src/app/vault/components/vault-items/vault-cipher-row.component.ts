@@ -48,6 +48,10 @@ export class VaultCipherRowComponent {
     this.onEvent.emit({ type: "moveToOrganization", item: [this.cipher] });
   }
 
+  protected editCollections() {
+    this.onEvent.emit({ type: "collections", item: this.cipher });
+  }
+
   protected attachments() {
     this.onEvent.emit({ type: "attachements", item: this.cipher });
   }
