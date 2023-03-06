@@ -2062,9 +2062,6 @@
   "updateLicense": {
     "message": "Update license"
   },
-  "updatedLicense": {
-    "message": "Updated license"
-  },
   "manageSubscription": {
     "message": "Manage subscription"
   },
@@ -5922,8 +5919,8 @@
     "description": "Notifies that the selected projects have been deleted"
   },
   "deleteProjectToast": {
-    "message": "The project and all associated secrets have been deleted",
-    "description": "Notifies that a project and its secrets have been deleted"
+    "message": "Project deleted",
+    "description": "Notifies that a project has been deleted"
   },
   "deleteProjectDialogMessage": {
     "message": "Deleting project $PROJECT$ is permanent and irreversible.",
@@ -6573,6 +6570,27 @@
   "secretsManagerEnable": {
     "message": "Enable Secrets Manager Beta"
   },
+  "saPeopleWarningTitle": {
+    "message": "Access tokens still available"
+  },
+  "saPeopleWarningMessage": {
+    "message": "Removing people from a service account does not remove the access tokens they created. For security best practice, it is recommended to revoke access tokens created by people removed from a service account."
+  },
+  "smAccessRemovalWarningProjectTitle": {
+    "message": "Remove access to this project"
+  },
+  "smAccessRemovalWarningProjectMessage": {
+    "message": "This action will remove your access to the project."
+  },
+  "smAccessRemovalWarningSaTitle": {
+    "message": "Remove access to this service account"
+  },
+  "smAccessRemovalWarningSaMessage": {
+    "message": "This action will remove your access to the service account."
+  },
+  "removeAccess": {
+    "message": "Remove access"
+  },
   "checkForBreaches": {
     "message": "Check known data breaches for this password"
   },
@@ -6605,5 +6623,8 @@
         "example": "14"
       }
     }
+  },
+  "dismiss": {
+    "message": "Dismiss"
   }
 }
