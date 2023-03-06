@@ -218,6 +218,9 @@ export class SecretService {
           projectIds.includes(p.id)
         );
 
+        secretListView.read = s.read;
+        secretListView.write = s.write;
+
         return secretListView;
       })
     );

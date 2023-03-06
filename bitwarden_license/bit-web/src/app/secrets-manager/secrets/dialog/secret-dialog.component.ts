@@ -39,11 +39,14 @@ export class SecretDialogComponent implements OnInit {
     project: new FormControl(""),
   });
 
+  protected readOnly: boolean;
+
   protected loading = false;
   projects: ProjectListView[];
   selectedProjects: SecretProjectView[] = [];
 
   private destroy$ = new Subject<void>();
+
   constructor(
     public dialogRef: DialogRef,
     @Inject(DIALOG_DATA) private data: SecretOperation,
@@ -88,6 +91,10 @@ export class SecretDialogComponent implements OnInit {
       notes: secret.note,
       project: "",
     });
+    if (!secret.write) {
+      this.formGroup.disable();
+    }
+    this.readOnly = !secret.write;
   }
 
   ngOnDestroy(): void {
