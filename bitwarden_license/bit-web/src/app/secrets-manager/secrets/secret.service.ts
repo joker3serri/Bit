@@ -180,6 +180,9 @@ export class SecretService {
     secretView.value = value;
     secretView.note = note;
 
+    secretView.read = secretResponse.read;
+    secretView.write = secretResponse.write;
+
     if (secretResponse.projects != null) {
       secretView.projects = await this.decryptProjectsMappedToSecrets(
         orgKey,
