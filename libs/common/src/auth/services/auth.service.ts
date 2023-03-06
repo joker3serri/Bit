@@ -261,7 +261,9 @@ export class AuthService implements AuthServiceAbstraction {
     let kdf: KdfType = null;
     let kdfConfig: KdfConfig = null;
     try {
-      const preloginResponse = await this.apiService.postPrelogin(new PreloginRequest(email));
+      const preloginResponse = await this.identityApiService.postPrelogin(
+        new PreloginRequest(email)
+      );
       if (preloginResponse != null) {
         kdf = preloginResponse.kdf;
         kdfConfig = new KdfConfig(

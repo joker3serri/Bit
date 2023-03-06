@@ -39,7 +39,6 @@ import {
   EmergencyAccessViewResponse,
 } from "../auth/models/response/emergency-access.response";
 import { KeyConnectorUserKeyResponse } from "../auth/models/response/key-connector-user-key.response";
-import { PreloginResponse } from "../auth/models/response/prelogin.response";
 import { RegisterResponse } from "../auth/models/response/register.response";
 import { SsoPreValidateResponse } from "../auth/models/response/sso-pre-validate.response";
 import { TwoFactorAuthenticatorResponse } from "../auth/models/response/two-factor-authenticator.response";
@@ -68,7 +67,6 @@ import { OrganizationImportRequest } from "../models/request/organization-import
 import { OrganizationSponsorshipCreateRequest } from "../models/request/organization/organization-sponsorship-create.request";
 import { OrganizationSponsorshipRedeemRequest } from "../models/request/organization/organization-sponsorship-redeem.request";
 import { PaymentRequest } from "../models/request/payment.request";
-import { PreloginRequest } from "../models/request/prelogin.request";
 import { ProviderAddOrganizationRequest } from "../models/request/provider/provider-add-organization.request";
 import { ProviderOrganizationCreateRequest } from "../models/request/provider/provider-organization-create.request";
 import { ProviderSetupRequest } from "../models/request/provider/provider-setup.request";
@@ -251,19 +249,6 @@ export class ApiService implements ApiServiceAbstraction {
 
   putTaxInfo(request: TaxInfoUpdateRequest): Promise<any> {
     return this.send("PUT", "/accounts/tax", request, true, false);
-  }
-
-  // TODO: move to identity api service
-  async postPrelogin(request: PreloginRequest): Promise<PreloginResponse> {
-    const r = await this.send(
-      "POST",
-      "/accounts/prelogin",
-      request,
-      false,
-      true,
-      this.environmentService.getIdentityUrl()
-    );
-    return new PreloginResponse(r);
   }
 
   postEmailToken(request: EmailTokenRequest): Promise<any> {
