@@ -33,6 +33,7 @@ class EmptyComponent {}
 const organizations = [...new Array(3).keys()].map(createOrganization);
 const groups = [...Array(3).keys()].map(createGroupView);
 const collections = [...Array(5).keys()].map(createCollectionView);
+const ciphers = [...Array(200).keys()].map(createCipherView);
 
 export default {
   title: "Web/Vault/Items",
@@ -93,12 +94,7 @@ export default {
     allCollections: collections,
     allGroups: groups,
     allOrganizations: organizations,
-    ciphers: [...Array(200).keys()].map(createCipherView),
-    showOwner: false,
-    showCollections: false,
-    showGroups: false,
-    showPremiumFeatures: false,
-    editableCollections: false,
+    ciphers,
   },
   argTypes: { onEvent: { action: "onEvent" } },
 } as Meta;
@@ -107,8 +103,69 @@ const Template: Story<VaultItemsComponent> = (args: VaultItemsComponent) => ({
   props: args,
 });
 
-export const Primary = Template.bind({});
-Primary.args = {};
+export const Individual = Template.bind({});
+Individual.args = {
+  collections: [],
+  showOwner: true,
+  showCollections: false,
+  showGroups: false,
+  showPremiumFeatures: true,
+  editableCollections: false,
+  cloneableOrganizationCiphers: false,
+};
+
+export const IndividualTopLevelCollection = Template.bind({});
+IndividualTopLevelCollection.args = {
+  ciphers: [],
+  showOwner: true,
+  showCollections: false,
+  showGroups: false,
+  showPremiumFeatures: true,
+  editableCollections: false,
+  cloneableOrganizationCiphers: false,
+};
+
+export const IndividualSecondLevelCollection = Template.bind({});
+IndividualSecondLevelCollection.args = {
+  showOwner: true,
+  showCollections: false,
+  showGroups: false,
+  showPremiumFeatures: true,
+  editableCollections: false,
+  cloneableOrganizationCiphers: false,
+};
+
+export const OrganizationVault = Template.bind({});
+OrganizationVault.args = {
+  collections: [],
+  showOwner: false,
+  showCollections: true,
+  showGroups: false,
+  showPremiumFeatures: true,
+  editableCollections: true,
+  cloneableOrganizationCiphers: true,
+};
+
+export const OrganizationTopLevelCollection = Template.bind({});
+OrganizationTopLevelCollection.args = {
+  ciphers: [],
+  showOwner: false,
+  showCollections: false,
+  showGroups: true,
+  showPremiumFeatures: true,
+  editableCollections: true,
+  cloneableOrganizationCiphers: true,
+};
+
+export const OrganizationSecondLevelCollection = Template.bind({});
+OrganizationSecondLevelCollection.args = {
+  showOwner: false,
+  showCollections: false,
+  showGroups: true,
+  showPremiumFeatures: true,
+  editableCollections: true,
+  cloneableOrganizationCiphers: true,
+};
 
 function createCipherView(i: number): CipherView {
   const organization = organizations[i % (organizations.length + 1)];
