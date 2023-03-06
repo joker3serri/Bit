@@ -3,7 +3,6 @@ import { UntypedFormBuilder } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { RegisterComponent as BaseRegisterComponent } from "@bitwarden/angular/components/register.component";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -15,6 +14,7 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { IdentityApiService } from "@bitwarden/common/auth/abstractions/identity-api.service";
 
 const BroadcasterSubscriptionId = "RegisterComponent";
 
@@ -30,7 +30,7 @@ export class RegisterComponent extends BaseRegisterComponent implements OnInit, 
     router: Router,
     i18nService: I18nService,
     cryptoService: CryptoService,
-    apiService: ApiService,
+    identityApiService: IdentityApiService,
     stateService: StateService,
     platformUtilsService: PlatformUtilsService,
     passwordGenerationService: PasswordGenerationService,
@@ -47,7 +47,7 @@ export class RegisterComponent extends BaseRegisterComponent implements OnInit, 
       router,
       i18nService,
       cryptoService,
-      apiService,
+      identityApiService,
       stateService,
       platformUtilsService,
       passwordGenerationService,

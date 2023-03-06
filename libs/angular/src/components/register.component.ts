@@ -2,7 +2,6 @@ import { Directive, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AbstractControl, UntypedFormBuilder, ValidatorFn, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
@@ -16,6 +15,7 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { IdentityApiService } from "@bitwarden/common/auth/abstractions/identity-api.service";
 import { PasswordLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
 import { RegisterResponse } from "@bitwarden/common/auth/models/response/register.response";
 import { DEFAULT_KDF_CONFIG, DEFAULT_KDF_TYPE } from "@bitwarden/common/enums/kdfType";
@@ -84,7 +84,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     protected router: Router,
     i18nService: I18nService,
     protected cryptoService: CryptoService,
-    protected apiService: ApiService,
+    protected identityApiService: IdentityApiService,
     protected stateService: StateService,
     platformUtilsService: PlatformUtilsService,
     protected passwordGenerationService: PasswordGenerationService,
@@ -305,7 +305,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     if (!(await this.validateRegistration(showToast)).isValid) {
       return { successful: false };
     }
-    this.formPromise = this.apiService.postRegister(request);
+    this.formPromise = this.identityApiService.postRegister(request);
     try {
       const response = await this.formPromise;
       return { successful: true, captchaBypassToken: response.captchaBypassToken };

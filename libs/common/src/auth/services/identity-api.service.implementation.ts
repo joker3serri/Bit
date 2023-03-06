@@ -3,6 +3,7 @@
 import { ApiService } from "../../abstractions/api.service";
 import { EnvironmentService } from "../../abstractions/environment.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
+import { RegisterRequest } from "../../models/request/register.request";
 import { ErrorResponse } from "../../models/response/error.response";
 import { IdentityApiService } from "../abstractions/identity-api.service";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
@@ -13,6 +14,7 @@ import { IdentityCaptchaResponse } from "../models/response/identity-captcha.res
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 import { IdentityTwoFactorResponse } from "../models/response/identity-two-factor.response";
 import { PreloginResponse } from "../models/response/prelogin.response";
+import { RegisterResponse } from "../models/response/register.response";
 
 import { TokenService } from "./token.service";
 
@@ -106,5 +108,18 @@ export class IdentityApiServiceImplementation implements IdentityApiService {
       this.identityBaseUrl
     );
     return new PreloginResponse(r);
+  }
+
+  // TODO: figure out if I'm supposed to be moving requests or not.
+  async postRegister(request: RegisterRequest): Promise<RegisterResponse> {
+    const r = await this.apiService.send(
+      "POST",
+      "/accounts/register",
+      request,
+      false,
+      true,
+      this.identityBaseUrl
+    );
+    return new RegisterResponse(r);
   }
 }

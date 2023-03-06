@@ -35,7 +35,6 @@ import {
   EmergencyAccessViewResponse,
 } from "../auth/models/response/emergency-access.response";
 import { KeyConnectorUserKeyResponse } from "../auth/models/response/key-connector-user-key.response";
-import { RegisterResponse } from "../auth/models/response/register.response";
 import { SsoPreValidateResponse } from "../auth/models/response/sso-pre-validate.response";
 import { TwoFactorAuthenticatorResponse } from "../auth/models/response/two-factor-authenticator.response";
 import { TwoFactorDuoResponse } from "../auth/models/response/two-factor-duo.response";
@@ -71,7 +70,6 @@ import { ProviderUserBulkRequest } from "../models/request/provider/provider-use
 import { ProviderUserConfirmRequest } from "../models/request/provider/provider-user-confirm.request";
 import { ProviderUserInviteRequest } from "../models/request/provider/provider-user-invite.request";
 import { ProviderUserUpdateRequest } from "../models/request/provider/provider-user-update.request";
-import { RegisterRequest } from "../models/request/register.request";
 import { SelectionReadOnlyRequest } from "../models/request/selection-read-only.request";
 import { SendAccessRequest } from "../models/request/send-access.request";
 import { SendRequest } from "../models/request/send.request";
@@ -177,7 +175,6 @@ export abstract class ApiService {
   postSecurityStamp: (request: SecretVerificationRequest) => Promise<any>;
   getAccountRevisionDate: () => Promise<number>;
   postPasswordHint: (request: PasswordHintRequest) => Promise<any>;
-  postRegister: (request: RegisterRequest) => Promise<RegisterResponse>;
   postPremium: (data: FormData) => Promise<PaymentResponse>;
   postIapCheck: (request: IapCheckRequest) => Promise<any>;
   postReinstatePremium: () => Promise<any>;

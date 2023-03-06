@@ -3,7 +3,6 @@ import { UntypedFormBuilder } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { RegisterComponent as BaseRegisterComponent } from "@bitwarden/angular/components/register.component";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
@@ -14,6 +13,7 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { IdentityApiService } from "@bitwarden/common/auth/abstractions/identity-api.service";
 
 @Component({
   selector: "app-register",
@@ -30,7 +30,7 @@ export class RegisterComponent extends BaseRegisterComponent {
     router: Router,
     i18nService: I18nService,
     cryptoService: CryptoService,
-    apiService: ApiService,
+    identityApiService: IdentityApiService,
     stateService: StateService,
     platformUtilsService: PlatformUtilsService,
     passwordGenerationService: PasswordGenerationService,
@@ -45,7 +45,7 @@ export class RegisterComponent extends BaseRegisterComponent {
       router,
       i18nService,
       cryptoService,
-      apiService,
+      identityApiService,
       stateService,
       platformUtilsService,
       passwordGenerationService,

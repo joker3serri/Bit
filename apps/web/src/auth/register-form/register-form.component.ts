@@ -3,7 +3,6 @@ import { UntypedFormBuilder } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { RegisterComponent as BaseRegisterComponent } from "@bitwarden/angular/components/register.component";
-import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
@@ -15,6 +14,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
+import { IdentityApiService } from "@bitwarden/common/auth/abstractions/identity-api.service";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/master-password-policy-options";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";
 
@@ -37,7 +37,7 @@ export class RegisterFormComponent extends BaseRegisterComponent {
     router: Router,
     i18nService: I18nService,
     cryptoService: CryptoService,
-    apiService: ApiService,
+    identityApiService: IdentityApiService,
     stateService: StateService,
     platformUtilsService: PlatformUtilsService,
     passwordGenerationService: PasswordGenerationService,
@@ -53,7 +53,7 @@ export class RegisterFormComponent extends BaseRegisterComponent {
       router,
       i18nService,
       cryptoService,
-      apiService,
+      identityApiService,
       stateService,
       platformUtilsService,
       passwordGenerationService,

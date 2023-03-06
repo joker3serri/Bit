@@ -4,6 +4,7 @@ import { KdfType } from "../../enums/kdfType";
 import { KeysRequest } from "./keys.request";
 import { ReferenceEventRequest } from "./reference-event.request";
 
+// TODO: should this be moved under auth?
 export class RegisterRequest implements CaptchaProtectedRequest {
   masterPasswordHint: string;
   keys: KeysRequest;
