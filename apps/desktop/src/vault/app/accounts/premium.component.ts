@@ -6,6 +6,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 
 @Component({
   selector: "app-premium",
@@ -17,8 +18,9 @@ export class PremiumComponent extends BasePremiumComponent {
     platformUtilsService: PlatformUtilsService,
     apiService: ApiService,
     logService: LogService,
-    stateService: StateService
+    stateService: StateService,
+    tokenService: TokenService
   ) {
-    super(i18nService, platformUtilsService, apiService, logService, stateService);
+    super(i18nService, platformUtilsService, apiService, logService, stateService, tokenService);
   }
 }
