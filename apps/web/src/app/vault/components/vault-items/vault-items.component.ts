@@ -20,6 +20,7 @@ export class VaultItemsComponent {
   @Input() showOwner: boolean;
   @Input() showCollections: boolean;
   @Input() showGroups: boolean;
+  @Input() useEvents: boolean;
   @Input() editableCollections: boolean;
   @Input() cloneableOrganizationCiphers: boolean;
   @Input() showPremiumFeatures: boolean;

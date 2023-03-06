@@ -111,6 +111,7 @@ Individual.args = {
   showCollections: false,
   showGroups: false,
   showPremiumFeatures: true,
+  useEvents: false,
   editableCollections: false,
   cloneableOrganizationCiphers: false,
 };
@@ -122,6 +123,7 @@ IndividualTopLevelCollection.args = {
   showCollections: false,
   showGroups: false,
   showPremiumFeatures: true,
+  useEvents: false,
   editableCollections: false,
   cloneableOrganizationCiphers: false,
 };
@@ -132,6 +134,7 @@ IndividualSecondLevelCollection.args = {
   showCollections: false,
   showGroups: false,
   showPremiumFeatures: true,
+  useEvents: false,
   editableCollections: false,
   cloneableOrganizationCiphers: false,
 };
@@ -144,6 +147,7 @@ OrganizationVault.args = {
   showCollections: true,
   showGroups: false,
   showPremiumFeatures: true,
+  useEvents: true,
   editableCollections: true,
   cloneableOrganizationCiphers: true,
 };
@@ -155,6 +159,7 @@ OrganizationTopLevelCollection.args = {
   showCollections: false,
   showGroups: true,
   showPremiumFeatures: true,
+  useEvents: true,
   editableCollections: true,
   cloneableOrganizationCiphers: true,
 };
@@ -166,6 +171,7 @@ OrganizationSecondLevelCollection.args = {
   showCollections: false,
   showGroups: true,
   showPremiumFeatures: true,
+  useEvents: true,
   editableCollections: true,
   cloneableOrganizationCiphers: true,
 };

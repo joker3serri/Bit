@@ -17,6 +17,7 @@ export class VaultCipherRowComponent {
   @Input() showCollections: boolean;
   @Input() showGroups: boolean;
   @Input() showPremiumFeatures: boolean;
+  @Input() useEvents: boolean;
   @Input() cloneable: boolean;
   @Input() organizations: Organization[];
   @Input() collections: CollectionView[];
@@ -50,6 +51,10 @@ export class VaultCipherRowComponent {
 
   protected editCollections() {
     this.onEvent.emit({ type: "collections", item: this.cipher });
+  }
+
+  protected events() {
+    this.onEvent.emit({ type: "events", item: this.cipher });
   }
 
   protected attachments() {
