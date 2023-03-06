@@ -21,6 +21,7 @@ export class VaultItemsComponent {
   @Input() showCollections: boolean;
   @Input() showGroups: boolean;
   @Input() editableCollections: boolean;
+  @Input() cloneableOrganizationCiphers: boolean;
   @Input() showPremiumFeatures: boolean;
   @Input() allOrganizations: Organization[];
   @Input() allCollections: CollectionView[];

@@ -47,6 +47,10 @@
           [showCollections]="showCollections"
           [showGroups]="showGroups"
           [showPremiumFeatures]="showPremiumFeatures"
+          [cloneable]="
+            (item.cipher.organizationId && cloneableOrganizationCiphers) ||
+            item.cipher.organizationId == null
+          "
           [organizations]="allOrganizations"
           [collections]="allCollections"
           (onEvent)="event($event)"

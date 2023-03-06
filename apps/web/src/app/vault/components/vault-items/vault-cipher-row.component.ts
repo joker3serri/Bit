@@ -17,6 +17,7 @@ export class VaultCipherRowComponent {
   @Input() showCollections: boolean;
   @Input() showGroups: boolean;
   @Input() showPremiumFeatures: boolean;
+  @Input() cloneable: boolean;
   @Input() organizations: Organization[];
   @Input() collections: CollectionView[];
 
@@ -37,6 +38,10 @@ export class VaultCipherRowComponent {
 
   protected copy(field: "username" | "password" | "totp") {
     this.onEvent.emit({ type: "copy", item: this.cipher, field });
+  }
+
+  protected clone() {
+    this.onEvent.emit({ type: "clone", item: this.cipher });
   }
 
   protected attachments() {

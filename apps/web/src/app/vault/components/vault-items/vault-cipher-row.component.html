@@ -90,16 +90,11 @@
       <i class="bwi bwi-fw bwi-paperclip" aria-hidden="true"></i>
       {{ "attachments" | i18n }}
     </button>
-    <!--<button
-      bitMenuItem
-      *ngIf="((!organization && !c.organizationId) || organization) && !c.isDeleted"
-      type="button"
-      (click)="clone(cipher)"
-    >
+    <button bitMenuItem *ngIf="cloneable && !cipher.isDeleted" type="button" (click)="clone()">
       <i class="bwi bwi-fw bwi-files" aria-hidden="true"></i>
       {{ "clone" | i18n }}
     </button>
-    <button
+    <!--<button
       bitMenuItem
       *ngIf="!organization && !c.organizationId && !c.isDeleted"
       type="button"
