@@ -11,6 +11,8 @@ import { AccessTokenDialogComponent } from "./access/dialogs/access-token-dialog
 import { ExpirationOptionsComponent } from "./access/dialogs/expiration-options.component";
 import { ServiceAccountDeleteDialogComponent } from "./dialog/service-account-delete-dialog.component";
 import { ServiceAccountDialogComponent } from "./dialog/service-account-dialog.component";
+import { ServiceAccountPeopleComponent } from "./people/service-account-people.component";
+import { ServiceAccountProjectsComponent } from "./projects/service-account-projects.component";
 import { ServiceAccountComponent } from "./service-account.component";
 import { ServiceAccountsListComponent } from "./service-accounts-list.component";
 import { ServiceAccountsRoutingModule } from "./service-accounts-routing.module";
@@ -27,8 +29,11 @@ import { ServiceAccountsComponent } from "./service-accounts.component";
     ServiceAccountComponent,
     ServiceAccountDeleteDialogComponent,
     ServiceAccountDialogComponent,
+    ServiceAccountPeopleComponent,
+    ServiceAccountProjectsComponent,
     ServiceAccountsComponent,
     ServiceAccountsListComponent,
+    ServiceAccountPeopleComponent,
   ],
   providers: [],
 })
