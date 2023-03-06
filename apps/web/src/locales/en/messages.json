@@ -5949,8 +5949,6 @@
     "message": "Project deleted",
     "description": "Notifies that a project has been deleted"
   },
-<<<<<<< HEAD
-=======
   "deleteProjectDialogMessage": {
     "message": "Deleting project $PROJECT$ is permanent and irreversible.",
     "description": "Informs users that projects are hard deleted and not sent to trash",
@@ -5961,7 +5959,6 @@
       }
     }
   },
->>>>>>> f717c3d619a955c870fe006d8c3823693c72594a
   "deleteProjectInputLabel": {
     "message": "Type \"$CONFIRM$\" to continue",
     "description": "Users are prompted to type 'confirm' to delete a project",
@@ -5992,23 +5989,9 @@
       }
     }
   },
-<<<<<<< HEAD
-  "deleteProjectDialogMessage": {
-    "message":  "Deleting project $PROJECT$ is permanent and irreversible.",
-    "placeholders": {
-      "project": {
-        "content": "$1",
-        "example": "project name"
-      }
-    }
-  },
-  "deleteProjectsDialogMessage":{
-    "message": "Deleting projects is permanent and irreversible."
-=======
   "deleteProjectsDialogMessage": {
     "message": "Deleting projects is permanent and irreversible.",
     "description": "This message is displayed in a dialog box as a warning before proceeding with project deletion."
->>>>>>> f717c3d619a955c870fe006d8c3823693c72594a
   },
   "projectsNoItemsTitle": {
     "message": "No projects to display",

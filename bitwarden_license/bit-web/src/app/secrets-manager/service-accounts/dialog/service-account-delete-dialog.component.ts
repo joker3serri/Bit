@@ -44,8 +44,8 @@ export class ServiceAccountDeleteDialogComponent {
 
   get title() {
     return this.data.serviceAccounts.length === 1
-      ? "deleteServiceAccount"
-      : "deleteServiceAccounts";
+      ? this.i18nService.t("deleteServiceAccount")
+      : this.i18nService.t("deleteServiceAccounts");
   }
 
   get dialogContent() {
@@ -72,8 +72,9 @@ export class ServiceAccountDeleteDialogComponent {
   async delete() {
     const bulkResponses = await this.serviceAccountService.delete(this.data.serviceAccounts);
 
-    if (bulkResponses.find((response) => response.errorMessage)) {
-      this.openBulkStatusDialog(bulkResponses.filter((response) => response.errorMessage));
+    const errors = bulkResponses.filter((response) => response.errorMessage);
+    if (errors.length > 0) {
+      this.openBulkStatusDialog(errors);
       return;
     }
 
