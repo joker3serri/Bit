@@ -94,16 +94,16 @@
       <i class="bwi bwi-fw bwi-files" aria-hidden="true"></i>
       {{ "clone" | i18n }}
     </button>
-    <!--<button
+    <button
       bitMenuItem
-      *ngIf="!organization && !c.organizationId && !c.isDeleted"
+      *ngIf="!cipher.organizationId && !cipher.isDeleted"
       type="button"
-      (click)="share(cipher)"
+      (click)="moveToOrganization()"
     >
       <i class="bwi bwi-fw bwi-arrow-circle-right" aria-hidden="true"></i>
       {{ "moveToOrganization" | i18n }}
     </button>
-    <button
+    <!--<button
       bitMenuItem
       *ngIf="c.organizationId && !c.isDeleted"
       type="button"

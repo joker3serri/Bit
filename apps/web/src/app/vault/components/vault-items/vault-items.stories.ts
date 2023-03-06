@@ -34,6 +34,7 @@ const organizations = [...new Array(3).keys()].map(createOrganization);
 const groups = [...Array(3).keys()].map(createGroupView);
 const collections = [...Array(5).keys()].map(createCollectionView);
 const ciphers = [...Array(200).keys()].map(createCipherView);
+const organizationOnlyCiphers = ciphers.filter((c) => c.organizationId != undefined);
 
 export default {
   title: "Web/Vault/Items",
@@ -138,6 +139,7 @@ IndividualSecondLevelCollection.args = {
 export const OrganizationVault = Template.bind({});
 OrganizationVault.args = {
   collections: [],
+  ciphers: organizationOnlyCiphers,
   showOwner: false,
   showCollections: true,
   showGroups: false,
@@ -159,6 +161,7 @@ OrganizationTopLevelCollection.args = {
 
 export const OrganizationSecondLevelCollection = Template.bind({});
 OrganizationSecondLevelCollection.args = {
+  ciphers: organizationOnlyCiphers,
   showOwner: false,
   showCollections: false,
   showGroups: true,
