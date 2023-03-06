@@ -1,8 +1,10 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { filter, Subject, takeUntil } from "rxjs";
 
+import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { ReportVariant, reports, ReportType, ReportEntry } from "../../reports";
 
@@ -12,15 +14,20 @@ import { ReportVariant, reports, ReportType, ReportEntry } from "../../reports";
 })
 export class ReportsHomeComponent implements OnInit, OnDestroy {
   reports: ReportEntry[];
-
+  organization: Organization;
   homepage = true;
-  private destrory$: Subject<void> = new Subject<void>();
+  private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private stateService: StateService, router: Router) {
+  constructor(
+    private route: ActivatedRoute,
+    private stateService: StateService,
+    private organizationService: OrganizationService,
+    router: Router
+  ) {
     router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.destrory$)
+        takeUntil(this.destroy$)
       )
       .subscribe((event) => {
         this.homepage = (event as NavigationEnd).urlAfterRedirects.endsWith("/reports");
@@ -28,38 +35,52 @@ export class ReportsHomeComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    const userHasPremium = await this.stateService.getCanAccessPremium();
+    this.route.parent.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.organization = this.organizationService.get(params.organizationId);
+    });
 
-    const reportRequiresPremium = userHasPremium
-      ? ReportVariant.Enabled
-      : ReportVariant.RequiresPremium;
+    const reportRequiresUpgrade = this.upgradeRequired()
+      ? ReportVariant.RequiresUpgrade
+      : ReportVariant.Enabled;
 
     this.reports = [
       {
         ...reports[ReportType.ExposedPasswords],
-        variant: reportRequiresPremium,
+        variant: reportRequiresUpgrade,
       },
       {
         ...reports[ReportType.ReusedPasswords],
-        variant: reportRequiresPremium,
+        variant: reportRequiresUpgrade,
       },
       {
         ...reports[ReportType.WeakPasswords],
-        variant: reportRequiresPremium,
+        variant: reportRequiresUpgrade,
       },
       {
         ...reports[ReportType.UnsecuredWebsites],
-        variant: reportRequiresPremium,
+        variant: reportRequiresUpgrade,
       },
       {
         ...reports[ReportType.Inactive2fa],
-        variant: reportRequiresPremium,
+        variant: reportRequiresUpgrade,
       },
     ];
   }
 
   ngOnDestroy(): void {
-    this.destrory$.next();
-    this.destrory$.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  upgradeRequired() {
+    if (this.organization != null) {
+      // TODO: Maybe we want to just make sure they are not on a free plan? Just compare useTotp for now
+      // since all paid plans include useTotp
+      if (!this.organization.useTotp) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

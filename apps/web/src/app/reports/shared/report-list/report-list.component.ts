@@ -35,7 +35,7 @@ export class ReportListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  checkAccess(route: string) {
+  upgradeRequired(route: string) {
     if (this.organization != null) {
       // TODO: Maybe we want to just make sure they are not on a free plan? Just compare useTotp for now
       // since all paid plans include useTotp
