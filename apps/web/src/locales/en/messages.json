@@ -5846,11 +5846,11 @@
     "description": "Action to view the details of a service account."
   },
   "deleteServiceAccountDialogMessage": {
-    "message":  "Deleting service account $PROJECT$ is permanent and irreversible.",
+    "message":  "Deleting service account $SERVICE_ACCOUNT$ is permanent and irreversible.",
     "placeholders": {
-      "project": {
+      "service_account": {
         "content": "$1",
-        "example": "service account name"
+        "example": "Service account name"
       }
     }
   },
