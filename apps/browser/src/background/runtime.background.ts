@@ -102,9 +102,15 @@ export default class RuntimeBackground {
       case "promptForLogin":
         BrowserApi.openBitwardenExtensionTab("popup/index.html", true, sender.tab);
         break;
-      case "openAddEditCipher":
-        BrowserApi.openBitwardenExtensionTab("popup/index.html#/edit-cipher", true, sender.tab);
+      case "openAddEditCipher": {
+        const addEditCipherUrl =
+          msg.data?.cipherId == null
+            ? "popup/index.html#/edit-cipher"
+            : "popup/index.html#/edit-cipher?cipherId=" + msg.data.cipherId;
+
+        BrowserApi.openBitwardenExtensionTab(addEditCipherUrl, true, sender.tab);
         break;
+      }
       case "closeTab":
         setTimeout(() => {
           BrowserApi.closeBitwardenExtensionTab();
