@@ -116,15 +116,15 @@
       <i class="bwi bwi-fw bwi-file-text" aria-hidden="true"></i>
       {{ "eventLogs" | i18n }}
     </button>
-    <!--<button bitMenuItem (click)="restore(cipher)" type="button" *ngIf="c.isDeleted">
+    <button bitMenuItem (click)="restore()" type="button" *ngIf="cipher.isDeleted">
       <i class="bwi bwi-fw bwi-undo" aria-hidden="true"></i>
       {{ "restore" | i18n }}
     </button>
-    <button bitMenuItem (click)="deleteCipher(cipher)" type="button">
+    <button bitMenuItem (click)="deleteCipher()" type="button">
       <span class="tw-text-danger">
         <i class="bwi bwi-fw bwi-trash" aria-hidden="true"></i>
-        {{ (c.isDeleted ? "permanentlyDelete" : "delete") | i18n }}
+        {{ (cipher.isDeleted ? "permanentlyDelete" : "delete") | i18n }}
       </span>
-    </button> -->
+    </button>
   </bit-menu>
 </td>

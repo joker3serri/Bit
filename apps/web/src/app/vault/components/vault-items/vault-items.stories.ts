@@ -33,8 +33,10 @@ class EmptyComponent {}
 const organizations = [...new Array(3).keys()].map(createOrganization);
 const groups = [...Array(3).keys()].map(createGroupView);
 const collections = [...Array(5).keys()].map(createCollectionView);
-const ciphers = [...Array(200).keys()].map(createCipherView);
+const ciphers = [...Array(200).keys()].map((i) => createCipherView(i));
+const deletedCiphers = [...Array(15).keys()].map((i) => createCipherView(i, true));
 const organizationOnlyCiphers = ciphers.filter((c) => c.organizationId != undefined);
+const deletedOrganizationOnlyCiphers = deletedCiphers.filter((c) => c.organizationId != undefined);
 
 export default {
   title: "Web/Vault/Items",
@@ -116,6 +118,19 @@ Individual.args = {
   cloneableOrganizationCiphers: false,
 };
 
+export const IndividualTrash = Template.bind({});
+IndividualTrash.args = {
+  ciphers: deletedCiphers,
+  collections: [],
+  showOwner: true,
+  showCollections: false,
+  showGroups: false,
+  showPremiumFeatures: true,
+  useEvents: false,
+  editableCollections: false,
+  cloneableOrganizationCiphers: false,
+};
+
 export const IndividualTopLevelCollection = Template.bind({});
 IndividualTopLevelCollection.args = {
   ciphers: [],
@@ -152,6 +167,19 @@ OrganizationVault.args = {
   cloneableOrganizationCiphers: true,
 };
 
+export const OrganizationTrash = Template.bind({});
+OrganizationTrash.args = {
+  ciphers: deletedOrganizationOnlyCiphers,
+  collections: [],
+  showOwner: false,
+  showCollections: true,
+  showGroups: false,
+  showPremiumFeatures: true,
+  useEvents: true,
+  editableCollections: true,
+  cloneableOrganizationCiphers: true,
+};
+
 export const OrganizationTopLevelCollection = Template.bind({});
 OrganizationTopLevelCollection.args = {
   ciphers: [],
@@ -176,7 +204,7 @@ OrganizationSecondLevelCollection.args = {
   cloneableOrganizationCiphers: true,
 };
 
-function createCipherView(i: number): CipherView {
+function createCipherView(i: number, deleted = false): CipherView {
   const organization = organizations[i % (organizations.length + 1)];
   const collection = collections[i % (collections.length + 1)];
   const view = new CipherView();
@@ -184,6 +212,7 @@ function createCipherView(i: number): CipherView {
   view.name = `Vault item ${i}`;
   view.type = CipherType.Login;
   view.organizationId = organization?.id;
+  view.deletedDate = deleted ? new Date() : undefined;
   view.login = new LoginView();
   view.login.totp = i % 2 === 0 ? "I65VU7K5ZQL7WB4E" : undefined;
   view.login.uris = [new LoginUriView()];
