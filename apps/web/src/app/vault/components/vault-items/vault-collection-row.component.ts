@@ -29,4 +29,50 @@ export class VaultCollectionRowComponent {
 
     return this.collection.groups;
   }
+
+  get organization() {
+    return this.organizations.find((o) => o.id === this.collection.organizationId);
+  }
+
+  protected get canEditCollection(): boolean {
+    if (!(this.collection instanceof CollectionAdminView)) {
+      return false;
+    }
+
+    const organization = this.organization;
+
+    // Only edit collection if it is editable and not deleting "Unassigned"
+    if (!this.editable || this.collection.id == undefined) {
+      return false;
+    }
+
+    // Otherwise, check if we can edit the specified collection
+    return (
+      organization?.canEditAnyCollection ||
+      (organization?.canEditAssignedCollections && this.collection.assigned)
+    );
+  }
+
+  protected get canDeleteCollection(): boolean {
+    if (!(this.collection instanceof CollectionAdminView)) {
+      return false;
+    }
+
+    const organization = this.organization;
+
+    // Only delete collection if it is editable and not deleting "Unassigned"
+    if (!this.editable || this.collection.id == undefined) {
+      return false;
+    }
+
+    // Otherwise, check if we can delete the specified collection
+    return (
+      organization?.canDeleteAnyCollection ||
+      (organization?.canDeleteAssignedCollections && this.collection.assigned)
+    );
+  }
+
+  protected edit() {
+    this.onEvent.next({ type: "edit", item: this.collection });
+  }
 }

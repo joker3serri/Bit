@@ -7,6 +7,7 @@ import { AvatarUpdateService } from "@bitwarden/common/abstractions/account/avat
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
+import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserType";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
@@ -268,5 +269,6 @@ function createOrganization(i: number): Organization {
   const organization = new Organization();
   organization.id = `organization-${i}`;
   organization.name = `Organization ${i}`;
+  organization.type = OrganizationUserType.Owner;
   return organization;
 }

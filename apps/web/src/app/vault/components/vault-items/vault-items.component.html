@@ -36,6 +36,7 @@
           [organizations]="allOrganizations"
           [groups]="allGroups"
           [editable]="editableCollections"
+          (onEvent)="event($event)"
         ></tr>
         <tr
           *ngIf="item.cipher"

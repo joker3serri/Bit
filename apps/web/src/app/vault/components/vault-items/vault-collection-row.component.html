@@ -29,10 +29,31 @@
 <td bitCell class="tw-text-right">
   <button
     *ngIf="editable"
+    [bitMenuTriggerFor]="collectionOptions"
     size="small"
     bitIconButton="bwi-ellipsis-v"
     type="button"
     appA11yTitle="{{ 'options' | i18n }}"
     appStopProp
   ></button>
+  <bit-menu #collectionOptions>
+    <button *ngIf="canEditCollection" type="button" bitMenuItem (click)="edit()">
+      <i class="bwi bwi-fw bwi-pencil-square" aria-hidden="true"></i>
+      {{ "editInfo" | i18n }}
+    </button>
+    <!-- <button
+      *ngIf="canEditCollection(col.node)"
+      bitMenuItem
+      (click)="editCollection(col.node, 'access')"
+    >
+      <i class="bwi bwi-fw bwi-users" aria-hidden="true"></i>
+      {{ "access" | i18n }}
+    </button>
+    <button *ngIf="canDeleteCollection(col.node)" bitMenuItem (click)="deleteCollection(col.node)">
+      <span class="tw-text-danger">
+        <i class="bwi bwi-fw bwi-trash" aria-hidden="true"></i>
+        {{ "delete" | i18n }}
+      </span>
+    </button> -->
+  </bit-menu>
 </td>
