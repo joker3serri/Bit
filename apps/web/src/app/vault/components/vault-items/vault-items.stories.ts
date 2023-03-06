@@ -8,9 +8,10 @@ import { EnvironmentService } from "@bitwarden/common/abstractions/environment.s
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
-import { CipherType } from "@bitwarden/common/src/vault/enums/cipher-type";
-import { LoginView } from "@bitwarden/common/src/vault/models/view/login.view";
+import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
+import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 
 import {
   CollectionAccessSelectionView,
@@ -131,6 +132,8 @@ function createCipherView(i: number): CipherView {
   view.organizationId = organization?.id;
   view.login = new LoginView();
   view.login.totp = i % 2 === 0 ? "I65VU7K5ZQL7WB4E" : undefined;
+  view.login.uris = [new LoginUriView()];
+  view.login.uris[0].uri = "https://bitwarden.com";
   view.collectionIds = collection ? [collection.id] : [];
   return view;
 }

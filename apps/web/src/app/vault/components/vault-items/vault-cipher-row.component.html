@@ -75,15 +75,16 @@
         <i class="bwi bwi-fw bwi-clone" aria-hidden="true"></i>
         {{ "copyVerificationCode" | i18n }}
       </button>
-      <!-- <button
+      <a
         bitMenuItem
-        *ngIf="c.login.canLaunch"
+        *ngIf="cipher.login.canLaunch"
         type="button"
-        (click)="launch(c.login.launchUri)"
+        [href]="cipher.login.launchUri"
+        target="_blank"
       >
         <i class="bwi bwi-fw bwi-share-square" aria-hidden="true"></i>
         {{ "launch" | i18n }}
-      </button> -->
+      </a>
     </ng-container>
     <!--<button bitMenuItem type="button" (click)="attachments(c)">
       <i class="bwi bwi-fw bwi-paperclip" aria-hidden="true"></i>
