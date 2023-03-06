@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 
 import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 import {
   BasePolicy,
   BasePolicyComponent,
@@ -11,6 +12,10 @@ export class ActivateAutofillPolicy extends BasePolicy {
   description = "activateAutofillDesc";
   type = PolicyType.ActivateAutofill;
   component = ActivateAutofillPolicyComponent;
+
+  display(organization: Organization) {
+    return organization.useActivateAutofillPolicy;
+  }
 }
 
 @Component({
