@@ -56,19 +56,15 @@ export class ServiceAccountService {
   }
 
   async delete(serviceAccounts: ServiceAccountView[]): Promise<BulkOperationStatus[]> {
-    const projectIds = serviceAccounts.map((project) => project.id);
-    const r = await this.apiService.send(
-      "POST",
-      "/service-accounts/delete",
-      projectIds,
-      true,
-      true
-    );
+    const ids = serviceAccounts.map((serviceAccount) => serviceAccount.id);
+    const r = await this.apiService.send("POST", "/service-accounts/delete", ids, true, true);
+
     this._serviceAccount.next(null);
+
     return r.data.map((element: { id: string; error: string }) => {
       const bulkOperationStatus = new BulkOperationStatus();
       bulkOperationStatus.id = element.id;
-      bulkOperationStatus.name = serviceAccounts.find((project) => project.id == element.id).name;
+      bulkOperationStatus.name = serviceAccounts.find((sa) => sa.id == element.id).name;
       bulkOperationStatus.errorMessage = element.error;
       return bulkOperationStatus;
     });
