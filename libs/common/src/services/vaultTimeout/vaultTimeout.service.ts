@@ -11,6 +11,7 @@ import { VaultTimeoutSettingsService } from "../../abstractions/vaultTimeout/vau
 import { AuthService } from "../../auth/abstractions/auth.service";
 import { KeyConnectorService } from "../../auth/abstractions/key-connector.service";
 import { AuthenticationStatus } from "../../auth/enums/authentication-status";
+import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 import { CipherService } from "../../vault/abstractions/cipher.service";
 import { FolderService } from "../../vault/abstractions/folder/folder.service.abstraction";
 
@@ -133,6 +134,8 @@ export class VaultTimeoutService implements VaultTimeoutServiceAbstraction {
 
   private async executeTimeoutAction(userId: string): Promise<void> {
     const timeoutAction = await this.vaultTimeoutSettingsService.getVaultTimeoutAction(userId);
-    timeoutAction === "logOut" ? await this.logOut(userId) : await this.lock(userId);
+    timeoutAction === VaultTimeoutAction.LogOut
+      ? await this.logOut(userId)
+      : await this.lock(userId);
   }
 }

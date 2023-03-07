@@ -17,6 +17,7 @@ import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaul
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { DeviceType } from "@bitwarden/common/enums/deviceType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { BiometricErrors, BiometricErrorTypes } from "../../models/biometricErrors";
@@ -51,7 +52,7 @@ export class SettingsComponent implements OnInit {
   vaultTimeoutActionOptions: any[];
   vaultTimeoutPolicyCallout: Observable<{
     timeout: { hours: number; minutes: number };
-    action: "lock" | "logOut";
+    action: VaultTimeoutAction;
   }>;
   supportsBiometric: boolean;
   previousVaultTimeout: number = null;
@@ -59,7 +60,7 @@ export class SettingsComponent implements OnInit {
 
   form = this.formBuilder.group({
     vaultTimeout: new FormControl<number>(null),
-    vaultTimeoutAction: new FormControl<string>("lock"),
+    vaultTimeoutAction: [VaultTimeoutAction.Lock],
     pin: new FormControl<boolean>(null),
     biometric: new FormControl<boolean>(false),
     enableAutoBiometricsPrompt: new FormControl<boolean>(true),
@@ -129,8 +130,8 @@ export class SettingsComponent implements OnInit {
     this.vaultTimeoutOptions.push({ name: this.i18nService.t("never"), value: null });
 
     this.vaultTimeoutActionOptions = [
-      { name: this.i18nService.t("lock"), value: "lock" },
-      { name: this.i18nService.t("logOut"), value: "logOut" },
+      { name: this.i18nService.t(VaultTimeoutAction.Lock), value: VaultTimeoutAction.Lock },
+      { name: this.i18nService.t(VaultTimeoutAction.LogOut), value: VaultTimeoutAction.LogOut },
     ];
 
     let timeout = await this.vaultTimeoutSettingsService.getVaultTimeout();
@@ -218,8 +219,8 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  async saveVaultTimeoutAction(newValue: string) {
-    if (newValue === "logOut") {
+  async saveVaultTimeoutAction(newValue: VaultTimeoutAction) {
+    if (newValue === VaultTimeoutAction.LogOut) {
       const confirmed = await this.platformUtilsService.showDialog(
         this.i18nService.t("vaultTimeoutLogOutConfirmation"),
         this.i18nService.t("vaultTimeoutLogOutConfirmationTitle"),
@@ -234,7 +235,9 @@ export class SettingsComponent implements OnInit {
               i + ": " + this.form.value.vaultTimeoutAction;
           }
         });
-        this.form.controls.vaultTimeoutAction.patchValue("lock", { emitEvent: false });
+        this.form.controls.vaultTimeoutAction.patchValue(VaultTimeoutAction.Lock, {
+          emitEvent: false,
+        });
         return;
       }
     }
@@ -373,7 +376,7 @@ export class SettingsComponent implements OnInit {
   async logOut() {
     const confirmed = await this.platformUtilsService.showDialog(
       this.i18nService.t("logOutConfirmation"),
-      this.i18nService.t("logOut"),
+      this.i18nService.t(VaultTimeoutAction.LogOut),
       this.i18nService.t("yes"),
       this.i18nService.t("cancel")
     );

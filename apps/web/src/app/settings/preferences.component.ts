@@ -11,6 +11,7 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { ThemeType } from "@bitwarden/common/enums/themeType";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { Utils } from "@bitwarden/common/misc/utils";
 
 @Component({
@@ -20,7 +21,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 export class PreferencesComponent implements OnInit {
   vaultTimeoutPolicyCallout: Observable<{
     timeout: { hours: number; minutes: number };
-    action: "lock" | "logOut";
+    action: VaultTimeoutAction;
   }>;
   vaultTimeoutOptions: { name: string; value: number }[];
   localeOptions: any[];
@@ -32,7 +33,7 @@ export class PreferencesComponent implements OnInit {
 
   form = this.formBuilder.group({
     vaultTimeout: new FormControl<number>(null),
-    vaultTimeoutAction: new FormControl<string>("lock"),
+    vaultTimeoutAction: [VaultTimeoutAction.Lock],
     enableFavicons: new FormControl<boolean>(true),
     enableFullWidth: new FormControl<boolean>(false),
     theme: new FormControl<ThemeType>(ThemeType.Light),
@@ -105,7 +106,7 @@ export class PreferencesComponent implements OnInit {
     this.form.controls.vaultTimeoutAction.valueChanges
       .pipe(
         tap(async (action) => {
-          if (action === "logOut") {
+          if (action === VaultTimeoutAction.LogOut) {
             const confirmed = await this.platformUtilsService.showDialog(
               this.i18nService.t("vaultTimeoutLogOutConfirmation"),
               this.i18nService.t("vaultTimeoutLogOutConfirmationTitle"),
@@ -114,7 +115,9 @@ export class PreferencesComponent implements OnInit {
               "warning"
             );
             if (!confirmed) {
-              this.form.controls.vaultTimeoutAction.patchValue("lock", { emitEvent: false });
+              this.form.controls.vaultTimeoutAction.patchValue(VaultTimeoutAction.Lock, {
+                emitEvent: false,
+              });
               return;
             }
           }

@@ -3,6 +3,7 @@ import { FormBuilder, FormControl } from "@angular/forms";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { PolicyRequest } from "@bitwarden/common/models/request/policy.request";
 import {
   BasePolicy,
@@ -32,8 +33,8 @@ export class MaximumVaultTimeoutPolicyComponent extends BasePolicyComponent {
     super();
     this.vaultTimeoutActionOptions = [
       { name: i18nService.t("userPreference"), value: null },
-      { name: i18nService.t("lock"), value: "lock" },
-      { name: i18nService.t("logOut"), value: "logOut" },
+      { name: i18nService.t(VaultTimeoutAction.Lock), value: VaultTimeoutAction.Lock },
+      { name: i18nService.t(VaultTimeoutAction.LogOut), value: VaultTimeoutAction.LogOut },
     ];
   }
 

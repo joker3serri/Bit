@@ -4,6 +4,7 @@ import { StateService } from "../../abstractions/state.service";
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "../../abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { TokenService } from "../../auth/abstractions/token.service";
 import { PolicyType } from "../../enums/policyType";
+import { VaultTimeoutAction } from "../../enums/vault-timeout-action.enum";
 
 export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceAbstraction {
   constructor(
@@ -13,7 +14,7 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
     private stateService: StateService
   ) {}
 
-  async setVaultTimeoutOptions(timeout: number, action: string): Promise<void> {
+  async setVaultTimeoutOptions(timeout: number, action: VaultTimeoutAction): Promise<void> {
     await this.stateService.setVaultTimeout(timeout);
 
     // We swap these tokens from being on disk for lock actions, and in memory for logout actions
@@ -24,7 +25,11 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
     const clientSecret = await this.tokenService.getClientSecret();
 
     const currentAction = await this.stateService.getVaultTimeoutAction();
-    if ((timeout != null || timeout === 0) && action === "logOut" && action !== currentAction) {
+    if (
+      (timeout != null || timeout === 0) &&
+      action === VaultTimeoutAction.LogOut &&
+      action !== currentAction
+    ) {
       // if we have a vault timeout and the action is log out, reset tokens
       await this.tokenService.clearToken();
     }
@@ -74,8 +79,8 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
     return vaultTimeout;
   }
 
-  async getVaultTimeoutAction(userId?: string): Promise<string> {
-    const vaultTimeoutAction = await this.stateService.getVaultTimeoutAction({ userId: userId });
+  async getVaultTimeoutAction(userId?: string): Promise<VaultTimeoutAction> {
+    let vaultTimeoutAction = await this.stateService.getVaultTimeoutAction({ userId: userId });
 
     if (
       await this.policyService.policyAppliesToUser(PolicyType.MaximumVaultTimeout, null, userId)
@@ -88,12 +93,13 @@ export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceA
         if (action && vaultTimeoutAction !== action) {
           await this.stateService.setVaultTimeoutAction(action, { userId: userId });
         }
-
-        return action;
+        vaultTimeoutAction = action;
       }
     }
 
-    return vaultTimeoutAction;
+    return vaultTimeoutAction === VaultTimeoutAction.LogOut
+      ? VaultTimeoutAction.LogOut
+      : VaultTimeoutAction.Lock;
   }
 
   async clear(userId?: string): Promise<void> {
