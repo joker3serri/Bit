@@ -30,7 +30,6 @@ export interface ServiceAccountOperation {
 export class ServiceAccountDialogComponent implements OnInit {
   projects: ProjectListView[];
   secrets: SecretListView[];
-  showProjectsSecretsInfo = true;
 
   protected loading = false;
 
@@ -53,7 +52,6 @@ export class ServiceAccountDialogComponent implements OnInit {
       this.projects = await this.projectService.getProjects(this.data.organizationId);
       this.secrets = await this.secretService.getSecrets(this.data.organizationId);
     } else {
-      this.showProjectsSecretsInfo = false;
       this.loadData();
     }
   }
@@ -65,7 +63,7 @@ export class ServiceAccountDialogComponent implements OnInit {
         this.data.serviceAccountId,
         this.data.organizationId
       );
-    this.formGroup.patchValue({ name: serviceAccount.name});
+    this.formGroup.patchValue({ name: serviceAccount.name });
     this.loading = false;
   }
 

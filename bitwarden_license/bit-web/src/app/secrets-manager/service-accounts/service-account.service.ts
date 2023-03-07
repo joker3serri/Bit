@@ -108,8 +108,7 @@ export class ServiceAccountService {
     serviceAccountView: ServiceAccountView
   ) {
     const request = new ServiceAccountUpdateRequest();
-    request.name = await this.encryptService.encrypt(serviceAccountView.name, organizationKey);
-    return request;
+    request.name = serviceAccountView.name;
   }
 
   private async createServiceAccountView(

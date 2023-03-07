@@ -5855,9 +5855,6 @@
   "editServiceAccount":{
     "message":"Edit service account"
   },
-  "searchServiceAccounts":{
-    "message":"Search service accounts"
-  },
   "addProject": {
     "message": "Add project",
     "description": "Title for creating a new project."
