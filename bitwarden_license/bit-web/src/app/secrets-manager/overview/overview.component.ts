@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import {
   map,
   Observable,
@@ -8,10 +8,13 @@ import {
   takeUntil,
   combineLatest,
   startWith,
-  distinct,
+  distinctUntilChanged,
+  take,
 } from "rxjs";
 
+import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
+import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { DialogService } from "@bitwarden/components";
 
 import { ProjectListView } from "../models/view/project-list.view";
@@ -57,6 +60,8 @@ export class OverviewComponent implements OnInit, OnDestroy {
   private tableSize = 10;
   private organizationId: string;
   protected organizationName: string;
+  protected userIsAdmin: boolean;
+  protected showOnboarding = false;
 
   protected view$: Observable<{
     allProjects: ProjectListView[];
@@ -68,24 +73,19 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private projectService: ProjectService,
     private secretService: SecretService,
     private serviceAccountService: ServiceAccountService,
     private dialogService: DialogService,
-    private organizationService: OrganizationService
-  ) {
-    /**
-     * We want to remount the `sm-onboarding` component on route change.
-     * The component only toggles its visibility on init and on user dismissal.
-     */
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
-  }
+    private organizationService: OrganizationService,
+    private platformUtilsService: PlatformUtilsService,
+    private i18nService: I18nService
+  ) {}
 
   ngOnInit() {
     const orgId$ = this.route.params.pipe(
       map((p) => p.organizationId),
-      distinct()
+      distinctUntilChanged()
     );
 
     orgId$
@@ -96,6 +96,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
       .subscribe((org) => {
         this.organizationId = org.id;
         this.organizationName = org.name;
+        this.userIsAdmin = org.isAdmin;
       });
 
     const projects$ = combineLatest([
@@ -128,6 +129,16 @@ export class OverviewComponent implements OnInit, OnDestroy {
         };
       })
     );
+
+    // Refresh onboarding status when orgId changes by fetching the first value from view$.
+    orgId$
+      .pipe(
+        switchMap(() => this.view$.pipe(take(1))),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((view) => {
+        this.showOnboarding = Object.values(view.tasks).includes(false);
+      });
   }
 
   ngOnDestroy(): void {
@@ -216,5 +227,28 @@ export class OverviewComponent implements OnInit, OnDestroy {
         operation: OperationType.Add,
       },
     });
+  }
+
+  copySecretName(name: string) {
+    this.platformUtilsService.copyToClipboard(name);
+    this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t("valueCopied", this.i18nService.t("name"))
+    );
+  }
+
+  async copySecretValue(id: string) {
+    const secret = await this.secretService.getBySecretId(id);
+    this.platformUtilsService.copyToClipboard(secret.value);
+    this.platformUtilsService.showToast(
+      "success",
+      null,
+      this.i18nService.t("valueCopied", this.i18nService.t("value"))
+    );
+  }
+
+  protected hideOnboarding() {
+    this.showOnboarding = false;
   }
 }

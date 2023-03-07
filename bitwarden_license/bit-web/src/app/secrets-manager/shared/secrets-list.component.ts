@@ -24,6 +24,11 @@ export class SecretsListComponent implements OnDestroy {
   }
   private _secrets: SecretListView[];
 
+  @Input()
+  set search(search: string) {
+    this.dataSource.filter = search;
+  }
+
   @Input() trash: boolean;
 
   @Output() editSecretEvent = new EventEmitter<string>();
@@ -72,4 +77,14 @@ export class SecretsListComponent implements OnDestroy {
       this.restoreSecretsEvent.emit(this.selection.selected);
     }
   }
+
+  sortProjects = (a: SecretListView, b: SecretListView): number => {
+    const aProjects = a.projects;
+    const bProjects = b.projects;
+    if (aProjects.length !== bProjects.length) {
+      return aProjects.length - bProjects.length;
+    }
+
+    return aProjects[0]?.name.localeCompare(bProjects[0].name);
+  };
 }

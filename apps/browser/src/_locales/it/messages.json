@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Aiuto e segnalazioni"
   },
+  "helpCenter": {
+    "message": "Bitwarden Help center"
+  },
+  "communityForums": {
+    "message": "Explore Bitwarden community forums"
+  },
+  "contactSupport": {
+    "message": "Contact Bitwarden support"
+  },
   "sync": {
     "message": "Sincronizza"
   },
@@ -2111,25 +2120,49 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Vuoi provare l'autocompletamento al caricamento della pagina?"
-  },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "Come utilizzare l'autocompletamento"
   },
-  "autofillPageLoadInfo": {
-    "message": "I moduli di accesso verranno completati automaticamente con le credenziali corrispondenti se si attiva l'autocompletamento al caricamento della pagina."
-  },
   "autofillSelectInfo": {
-    "message": "Seleziona un elemento da questa pagina per completare automaticamente il modulo della scheda attiva."
+    "message": "Select an item from this page or use the shortcut: $COMMAND$. You can also try auto-fill on page load.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillTurnedOn": {
-    "message": "Autocompletamento al caricamento della pagina attivato"
+  "autofillSelectInfoNoCommand": {
+    "message": "Seleziona un elemento da questa pagina o imposta una scorciatoia nelle impostazioni. Puoi anche provare il completamento automatico al caricamento della pagina."
   },
-  "turnOn": {
-    "message": "Attiva"
+  "gotIt": {
+    "message": "Capito"
   },
-  "notNow": {
-    "message": "Non ora"
+  "autofillSettings": {
+    "message": "Impostazioni di autocompletamento"
+  },
+  "autofillShortcut": {
+    "message": "Scorciatoia da tastiera per l'autocompletamento"
+  },
+  "autofillShortcutNotSet": {
+    "message": "La scorciatoia per l'autocompletamento non è stata impostata. Impostala nelle impostazioni del browser."
+  },
+  "autofillShortcutText": {
+    "message": "La scorciatoia per l'autocompletamento è: $COMMAND$. Cambiala nelle impostazioni del browser.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Scorciatoia per l'autocompletamento di default: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Súgó és visszajelzés"
   },
+  "helpCenter": {
+    "message": "Bitwardsn Segítségközpont"
+  },
+  "communityForums": {
+    "message": "Bitwarden közösségi fórum felfedezése"
+  },
+  "contactSupport": {
+    "message": "Kapcsolatfelvétel a Bitwarden támogatással"
+  },
   "sync": {
     "message": "Szinkronizálás"
   },
@@ -430,7 +439,7 @@
     "message": "A mesterjelszó ismételt megadása kötelező."
   },
   "masterPasswordMinlength": {
-    "message": "Master password must be at least $VALUE$ characters long.",
+    "message": "A mesterjelszónak legalább $VALUE$ karakter hosszúnak kell lennie.",
     "description": "The Master Password must be at least a specific number of characters long.",
     "placeholders": {
       "value": {
@@ -2111,25 +2120,49 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Az automatikus kitöltést kipróbálása oldalbetöltésnél?"
-  },
-  "tryAutofill": {
-    "message": "Automatikus kitöltés működése"
-  },
-  "autofillPageLoadInfo": {
-    "message": "A bejelentkező űrlapok akutomatikusan kitöltődnek hozzáillő adatokkal ha az automatikus kitöltés oldalbetöltésnél be van kapcsolva."
+  "howToAutofill": {
+    "message": "Az automatikus kitöltés működése"
   },
   "autofillSelectInfo": {
-    "message": "Erről az oldalról egy elemet kiválasztva az aktív fül űrlapját automatikusan kitölti."
+    "message": "Válasszunk ki egy elemet erről az oldalról vagy használjuk a billentyűparancsot: $COMMAND$. Kipróbálhatjuk az automatikus kitöltést is az oldal betöltésekor.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillTurnedOn": {
-    "message": "Automatikus kitöltés oldalbetöltésnél bekapcsolva"
+  "autofillSelectInfoNoCommand": {
+    "message": "Válasszunk ki egy elemet erről az oldalról vagy állítsunk be egy billentyűparancs a beállításokban. Kipróbálhatjuk az automatikus kitöltést is az oldal betöltésekor."
   },
-  "turnOn": {
-    "message": "Bekapcsolás"
+  "gotIt": {
+    "message": "Rendben"
   },
-  "notNow": {
-    "message": "Most nem"
+  "autofillSettings": {
+    "message": "Automatikus kitöltés beállítások"
+  },
+  "autofillShortcut": {
+    "message": "Automatikus kitöltés billentyűparancs"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Az automatikus kitöltés billentyűzetparancs nincs beállítva. Módosítsuk ezt a böngésző beállításaiban."
+  },
+  "autofillShortcutText": {
+    "message": "Az automatikus kitöltés billentyűparancsa: $COMMAND$. Módosítsuk ezt a böngésző beállításaiban.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Alapértelmezett automatikus kitöltési billenytűparancs: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }
