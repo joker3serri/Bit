@@ -5877,7 +5877,8 @@
     "description": "Placeholder text for searching service accounts."
   },
   "editServiceAccount":{
-    "message":"Edit service account"
+    "message":"Edit service account",
+    "description" : "Title for editing a service account."
   },
   "addProject": {
     "message": "Add project",
