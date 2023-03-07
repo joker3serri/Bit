@@ -1,8 +1,8 @@
 import { OrganizationUserStatusType } from "../../../admin-console/enums/organizationUserStatusType";
 import { OrganizationUserType } from "../../../admin-console/enums/organizationUserType";
 import { ProductType } from "../../../enums/productType";
-import { PermissionsApi } from "../../../models/api/permissions.api";
 import { BaseResponse } from "../../../models/response/base.response";
+import { PermissionsApi } from "../api/permissions.api";
 
 export class ProfileOrganizationResponse extends BaseResponse {
   id: string;

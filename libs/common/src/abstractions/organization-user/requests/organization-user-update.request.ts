@@ -1,6 +1,6 @@
 import { OrganizationUserType } from "../../../admin-console/enums/organizationUserType";
+import { PermissionsApi } from "../../../admin-console/models/api/permissions.api";
 import { SelectionReadOnlyRequest } from "../../../admin-console/models/request/selection-read-only.request";
-import { PermissionsApi } from "../../../models/api/permissions.api";
 
 export class OrganizationUserUpdateRequest {
   type: OrganizationUserType;

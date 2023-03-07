@@ -1,7 +1,7 @@
 import { ProductType } from "../../../enums/productType";
-import { PermissionsApi } from "../../../models/api/permissions.api";
 import { OrganizationUserStatusType } from "../../enums/organizationUserStatusType";
 import { OrganizationUserType } from "../../enums/organizationUserType";
+import { PermissionsApi } from "../api/permissions.api";
 import { ProfileOrganizationResponse } from "../response/profile-organization.response";
 
 export class OrganizationData {
