@@ -32,7 +32,7 @@ import { HtmlStorageService } from "./html-storage.service";
 import { I18nService } from "./i18n.service";
 import { InitService } from "./init.service";
 import { ModalService } from "./modal.service";
-import { PolicyListService } from "./policy-list.service";
+import { PolicyListService } from "../admin-console/core/policy-list.service";
 import { RouterService } from "./router.service";
 import { Account, GlobalState, StateService } from "./state";
 import { StateMigrationService } from "./state-migration.service";

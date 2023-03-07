@@ -1,16 +1,21 @@
 import { PolicyService as AbstractPolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 
-import {
-  organizationServiceFactory,
-  OrganizationServiceInitOptions,
-} from "../../admin-console/background/service-factories/organization-service.factory";
-import { BrowserPolicyService } from "../../services/browser-policy.service";
 
-import { CachedServices, factory, FactoryOptions } from "./factory-options";
+import {
+  CachedServices,
+  factory,
+  FactoryOptions,
+} from "../../../background/service_factories/factory-options";
 import {
   stateServiceFactory as stateServiceFactory,
   StateServiceInitOptions,
-} from "./state-service.factory";
+} from "../../../background/service_factories/state-service.factory";
+import { BrowserPolicyService } from "../../services/browser-policy.service";
+
+import {
+  organizationServiceFactory,
+  OrganizationServiceInitOptions,
+} from "./organization-service.factory";
 
 type PolicyServiceFactoryOptions = FactoryOptions;
 

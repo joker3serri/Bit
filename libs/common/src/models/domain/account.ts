@@ -15,7 +15,7 @@ import { CipherData } from "../../vault/models/data/cipher.data";
 import { FolderData } from "../../vault/models/data/folder.data";
 import { CipherView } from "../../vault/models/view/cipher.view";
 import { EventData } from "../data/event.data";
-import { PolicyData } from "../data/policy.data";
+import { PolicyData } from "../../admin-console/models/data/policy.data";
 import { SendData } from "../data/send.data";
 import { ServerConfigData } from "../data/server-config.data";
 import { CollectionView } from "../view/collection.view";

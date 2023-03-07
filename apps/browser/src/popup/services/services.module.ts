@@ -84,7 +84,7 @@ import { BrowserStateService as StateServiceAbstraction } from "../../services/a
 import { BrowserConfigService } from "../../services/browser-config.service";
 import { BrowserEnvironmentService } from "../../services/browser-environment.service";
 import { BrowserI18nService } from "../../services/browser-i18n.service";
-import { BrowserPolicyService } from "../../services/browser-policy.service";
+import { BrowserPolicyService } from "../../admin-console/services/browser-policy.service";
 import { BrowserSettingsService } from "../../services/browser-settings.service";
 import { BrowserStateService } from "../../services/browser-state.service";
 import { BrowserFileDownloadService } from "../../services/browserFileDownloadService";

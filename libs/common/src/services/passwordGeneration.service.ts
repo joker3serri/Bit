@@ -2,10 +2,10 @@ import * as zxcvbn from "zxcvbn";
 
 import { CryptoService } from "../abstractions/crypto.service";
 import { PasswordGenerationService as PasswordGenerationServiceAbstraction } from "../abstractions/passwordGeneration.service";
-import { PolicyService } from "../abstractions/policy/policy.service.abstraction";
+import { PolicyService } from "../admin-console/abstractions/policy/policy.service.abstraction";
 import { StateService } from "../abstractions/state.service";
 import { PasswordGeneratorPolicyOptions } from "../admin-console/models/domain/password-generator-policy-options";
-import { PolicyType } from "../enums/policyType";
+import { PolicyType } from "../admin-console/enums/policyType";
 import { EFFLongWordList } from "../misc/wordlist";
 import { EncString } from "../models/domain/enc-string";
 import { GeneratedPasswordHistory } from "../models/domain/generated-password-history";

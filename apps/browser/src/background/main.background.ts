@@ -101,7 +101,7 @@ import { PopupUtilsService } from "../popup/services/popup-utils.service";
 import { BrowserStateService as StateServiceAbstraction } from "../services/abstractions/browser-state.service";
 import { BrowserEnvironmentService } from "../services/browser-environment.service";
 import { BrowserI18nService } from "../services/browser-i18n.service";
-import { BrowserPolicyService } from "../services/browser-policy.service";
+import { BrowserPolicyService } from "../admin-console/services/browser-policy.service";
 import { BrowserSettingsService } from "../services/browser-settings.service";
 import { BrowserStateService } from "../services/browser-state.service";
 import { BrowserCryptoService } from "../services/browserCrypto.service";

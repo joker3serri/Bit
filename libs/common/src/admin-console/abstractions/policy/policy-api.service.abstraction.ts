@@ -1,7 +1,7 @@
-import { MasterPasswordPolicyOptions } from "../../admin-console/models/domain/master-password-policy-options";
+import { ListResponse } from "../../../models/response/list.response";
 import { PolicyType } from "../../enums/policyType";
+import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
 import { PolicyRequest } from "../../models/request/policy.request";
-import { ListResponse } from "../../models/response/list.response";
 import { PolicyResponse } from "../../models/response/policy.response";
 
 export class PolicyApiServiceAbstraction {

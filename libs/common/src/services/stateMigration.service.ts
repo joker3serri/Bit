@@ -10,7 +10,7 @@ import { StateVersion } from "../enums/stateVersion";
 import { ThemeType } from "../enums/themeType";
 import { StateFactory } from "../factories/stateFactory";
 import { EventData } from "../models/data/event.data";
-import { PolicyData } from "../models/data/policy.data";
+import { PolicyData } from "../admin-console/models/data/policy.data";
 import { SendData } from "../models/data/send.data";
 import {
   Account,

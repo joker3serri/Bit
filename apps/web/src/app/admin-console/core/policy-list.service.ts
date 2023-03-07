@@ -1,4 +1,4 @@
-import { BasePolicy } from "../admin-console/organizations/policies";
+import { BasePolicy } from "../organizations/policies";
 
 export class PolicyListService {
   private policies: BasePolicy[] = [];

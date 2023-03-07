@@ -3,7 +3,7 @@ import { CollectionService } from "../../../abstractions/collection.service";
 import { CryptoService } from "../../../abstractions/crypto.service";
 import { LogService } from "../../../abstractions/log.service";
 import { MessagingService } from "../../../abstractions/messaging.service";
-import { InternalPolicyService } from "../../../abstractions/policy/policy.service.abstraction";
+import { InternalPolicyService } from "../../../admin-console/abstractions/policy/policy.service.abstraction";
 import { SendService } from "../../../abstractions/send.service";
 import { SettingsService } from "../../../abstractions/settings.service";
 import { StateService } from "../../../abstractions/state.service";
@@ -14,7 +14,7 @@ import { OrganizationData } from "../../../admin-console/models/data/organizatio
 import { ProviderData } from "../../../admin-console/models/data/provider.data";
 import { KeyConnectorService } from "../../../auth/abstractions/key-connector.service";
 import { sequentialize } from "../../../misc/sequentialize";
-import { PolicyData } from "../../../models/data/policy.data";
+import { PolicyData } from "../../../admin-console/models/data/policy.data";
 import { SendData } from "../../../models/data/send.data";
 import { CollectionDetailsResponse } from "../../../models/response/collection.response";
 import { DomainsResponse } from "../../../models/response/domains.response";
@@ -23,7 +23,7 @@ import {
   SyncFolderNotification,
   SyncSendNotification,
 } from "../../../models/response/notification.response";
-import { PolicyResponse } from "../../../models/response/policy.response";
+import { PolicyResponse } from "../../../admin-console/models/response/policy.response";
 import { ProfileResponse } from "../../../models/response/profile.response";
 import { SendResponse } from "../../../models/response/send.response";
 import { CipherService } from "../../../vault/abstractions/cipher.service";

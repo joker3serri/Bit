@@ -1,15 +1,15 @@
 import { firstValueFrom } from "rxjs";
 
-import { ApiService } from "../../abstractions/api.service";
+import { ApiService } from "../../../abstractions/api.service";
+import { StateService } from "../../../abstractions/state.service";
+import { Utils } from "../../../misc/utils";
+import { ListResponse } from "../../../models/response/list.response";
 import { PolicyApiServiceAbstraction } from "../../abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "../../abstractions/policy/policy.service.abstraction";
-import { StateService } from "../../abstractions/state.service";
-import { MasterPasswordPolicyOptions } from "../../admin-console/models/domain/master-password-policy-options";
 import { PolicyType } from "../../enums/policyType";
-import { Utils } from "../../misc/utils";
 import { PolicyData } from "../../models/data/policy.data";
+import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
 import { PolicyRequest } from "../../models/request/policy.request";
-import { ListResponse } from "../../models/response/list.response";
 import { PolicyResponse } from "../../models/response/policy.response";
 
 export class PolicyApiService implements PolicyApiServiceAbstraction {

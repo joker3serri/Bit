@@ -11,7 +11,7 @@ import { KdfType } from "../enums/kdfType";
 import { ThemeType } from "../enums/themeType";
 import { UriMatchType } from "../enums/uriMatchType";
 import { EventData } from "../models/data/event.data";
-import { PolicyData } from "../models/data/policy.data";
+import { PolicyData } from "../admin-console/models/data/policy.data";
 import { SendData } from "../models/data/send.data";
 import { ServerConfigData } from "../models/data/server-config.data";
 import { Account, AccountSettingsSettings } from "../models/domain/account";
