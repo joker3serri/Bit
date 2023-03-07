@@ -5880,11 +5880,6 @@
     "message": "Add project",
     "description": "Title for creating a new project."
   },
-  "secretName":{
-    "message":"Secret name"
-  },
-  "newProject":{
-    "message":"New project"
   "projectEdited": {
     "message": "Project edited",
     "description": "Notification for the successful editing of a project."

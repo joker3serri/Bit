@@ -8,6 +8,8 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { DialogService } from "@bitwarden/components";
 
 import { ProjectListView } from "../../models/view/project-list.view";
+import { SecretListView } from "../../models/view/secret-list.view";
+import { SecretProjectView } from "../../models/view/secret-project.view";
 import { SecretView } from "../../models/view/secret.view";
 import { ProjectService } from "../../projects/project.service";
 import { SecretService } from "../secret.service";
@@ -152,11 +154,12 @@ export class SecretDialogComponent implements OnInit {
   private getSecretListView() {
     const secretListViews: SecretListView[] = [];
     const emptyProjects: SecretProjectView[] = [];
+    const selectedProject = [this.projects.find((p) => p.id == this.formGroup.value.project)];
 
     const secretListView = new SecretListView();
     secretListView.organizationId = this.data.organizationId;
     secretListView.name = this.formGroup.value.name;
-    secretListView.projects = this.selectedProjects ? this.selectedProjects : emptyProjects;
+    secretListView.projects = selectedProject ? selectedProject : emptyProjects;
     secretListViews.push(secretListView);
     return secretListViews;
   }
