@@ -3,6 +3,7 @@ import { Jsonify } from "type-fest";
 import { OrganizationUserStatusType } from "../../enums/organizationUserStatusType";
 import { OrganizationUserType } from "../../enums/organizationUserType";
 import { ProductType } from "../../enums/productType";
+import { ProviderType } from "../../enums/providerType";
 import { PermissionsApi } from "../api/permissions.api";
 import { OrganizationData } from "../data/organization.data";
 
@@ -38,6 +39,7 @@ export class Organization {
   hasPublicAndPrivateKeys: boolean;
   providerId: string;
   providerName: string;
+  providerType?: ProviderType;
   isProviderUser: boolean;
   familySponsorshipFriendlyName: string;
   familySponsorshipAvailable: boolean;
@@ -85,6 +87,7 @@ export class Organization {
     this.hasPublicAndPrivateKeys = obj.hasPublicAndPrivateKeys;
     this.providerId = obj.providerId;
     this.providerName = obj.providerName;
+    this.providerType = obj.providerType;
     this.isProviderUser = obj.isProviderUser;
     this.familySponsorshipFriendlyName = obj.familySponsorshipFriendlyName;
     this.familySponsorshipAvailable = obj.familySponsorshipAvailable;
@@ -196,8 +199,20 @@ export class Organization {
     return this.canManagePolicies;
   }
 
+  get canAccessBilling() {
+    return (
+      this.isOwner &&
+      ((this.isProviderUser && this.providerType == ProviderType.Msp) ||
+        !this.hasProvider ||
+        this.providerType == ProviderType.Reseller)
+    );
+  }
+
   get canManageBilling() {
-    return this.isOwner && (this.isProviderUser || !this.hasProvider);
+    return (
+      this.isOwner &&
+      ((this.isProviderUser && this.providerType == ProviderType.Msp) || !this.hasProvider)
+    );
   }
 
   get hasProvider() {
