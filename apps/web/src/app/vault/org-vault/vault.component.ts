@@ -223,7 +223,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     );
 
     await this.editCipher(null, (comp) => {
-      comp.organizationId = this.organization.id;
       comp.type = this.activeFilter.cipherType;
       comp.collections = collections;
       if (this.activeFilter.collectionId) {
@@ -302,7 +301,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     await this.editCipher(cipher, (comp) => {
       comp.cloneMode = true;
       comp.collections = collections;
-      comp.organizationId = this.organization.id;
       comp.collectionIds = cipher.collectionIds;
     });
   }
