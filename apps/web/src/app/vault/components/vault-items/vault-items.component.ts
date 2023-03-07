@@ -1,3 +1,4 @@
+import { SelectionModel } from "@angular/cdk/collections";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 import { Organization } from "@bitwarden/common/models/domain/organization";
@@ -28,6 +29,10 @@ export class VaultItemsComponent {
   @Input() allCollections: CollectionView[];
   @Input() allGroups: GroupView[];
 
+  ngOnInit() {
+    this.selection.changed.subscribe(console.log);
+  }
+
   private _ciphers: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {
     return this._ciphers;
@@ -49,6 +54,44 @@ export class VaultItemsComponent {
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
   protected dataSource = new TableDataSource<VaultItem>();
+  protected selection = new SelectionModel<{ collectionId?: string; cipherId?: string }>(
+    true,
+    [],
+    true,
+    (a, b) =>
+      (a.cipherId !== undefined && a.cipherId === b.cipherId) ||
+      (a.collectionId !== undefined && a.collectionId === b.collectionId)
+  );
+
+  get isAllSelected() {
+    return this.dataSource.data.every((item) => {
+      return this.selection.isSelected({
+        collectionId: item.collection?.id,
+        cipherId: item.cipher?.id,
+      });
+    });
+  }
+
+  toggleAll() {
+    console.log(
+      "selecting",
+      this.dataSource.data.map((item) => ({
+        collectionId: item.collection?.id,
+        cipherId: item.cipher?.id,
+      }))
+    );
+
+    this.isAllSelected
+      ? this.selection.clear()
+      : this.selection.select(
+          ...this.dataSource.data.map((item) => ({
+            collectionId: item.collection?.id,
+            cipherId: item.cipher?.id,
+          }))
+        );
+
+    console.log("selected", this.selection.selected);
+  }
 
   protected event(event: VaultItemEvent) {
     this.onEvent.emit(event);

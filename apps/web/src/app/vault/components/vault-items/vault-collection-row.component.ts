@@ -22,6 +22,9 @@ export class VaultCollectionRowComponent {
 
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
+  @Input() checked: boolean;
+  @Output() checkedToggled = new EventEmitter<void>();
+
   get collectionGroups() {
     if (!(this.collection instanceof CollectionAdminView)) {
       return [];

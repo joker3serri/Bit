@@ -3,7 +3,14 @@
     <ng-container header>
       <tr>
         <th bitCell class="tw-min-w-fit" colspan="2">
-          <input class="tw-mr-2" type="checkbox" bitCheckbox id="checkAll" />
+          <input
+            class="tw-mr-2"
+            type="checkbox"
+            bitCheckbox
+            id="checkAll"
+            (change)="$event ? toggleAll() : null"
+            [checked]="selection.hasValue() && isAllSelected"
+          />
           <label class="tw-mb-0 !tw-font-bold !tw-text-muted" for="checkAll">{{
             "all" | i18n
           }}</label>
@@ -36,6 +43,8 @@
           [organizations]="allOrganizations"
           [groups]="allGroups"
           [editable]="editableCollections"
+          [checked]="selection.isSelected({ collectionId: item.collection.id })"
+          (checkedToggled)="selection.toggle({ collectionId: item.collection.id })"
           (onEvent)="event($event)"
         ></tr>
         <tr
@@ -55,6 +64,8 @@
           "
           [organizations]="allOrganizations"
           [collections]="allCollections"
+          [checked]="selection.isSelected({ cipherId: item.cipher.id })"
+          (checkedToggled)="selection.toggle({ cipherId: item.cipher.id })"
           (onEvent)="event($event)"
         ></tr>
       </ng-container>

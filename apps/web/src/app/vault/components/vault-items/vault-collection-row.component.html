@@ -1,5 +1,11 @@
 <td bitCell>
-  <input class="tw-cursor-pointer" type="checkbox" bitCheckbox appStopProp />
+  <input
+    type="checkbox"
+    bitCheckbox
+    appStopProp
+    [checked]="checked"
+    (change)="$event ? this.checkedToggled.next() : null"
+  />
 </td>
 <td bitCell>
   <div class="icon" aria-hidden="true">
