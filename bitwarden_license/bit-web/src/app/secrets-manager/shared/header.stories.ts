@@ -1,17 +1,21 @@
 import { Component, Injectable } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { Meta, Story, moduleMetadata, componentWrapperDecorator } from "@storybook/angular";
-import { Observable } from "rxjs";
+import { BehaviorSubject } from "rxjs";
 
 import { JslibModule } from "@bitwarden/angular/jslib.module";
+import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import {
+  AvatarModule,
   BreadcrumbsModule,
   ButtonModule,
-  NavigationModule,
-  IconModule,
   IconButtonModule,
+  IconModule,
+  MenuModule,
+  NavigationModule,
   TabsModule,
+  TypographyModule,
 } from "@bitwarden/components";
 import { InputModule } from "@bitwarden/components/src/input/input.module";
 import { PreloadedEnglishI18nModule } from "@bitwarden/web-vault/app/tests/preloaded-english-i18n.module";
@@ -20,8 +24,14 @@ import { HeaderComponent } from "./header.component";
 
 @Injectable()
 class MockStateService {
-  activeAccount$ = new Observable();
-  accounts$ = new Observable();
+  activeAccount$ = new BehaviorSubject("1").asObservable();
+  accounts$ = new BehaviorSubject({ "1": { profile: { name: "Foo" } } }).asObservable();
+}
+
+class MockMessagingService implements MessagingService {
+  send(subscriber: string, arg?: any) {
+    alert(subscriber);
+  }
 }
 
 @Component({
@@ -49,17 +59,28 @@ export default {
           ],
           { useHash: true }
         ),
+        AvatarModule,
         BreadcrumbsModule,
         ButtonModule,
-        InputModule,
-        IconModule,
         IconButtonModule,
+        IconModule,
+        InputModule,
+        MenuModule,
+        TabsModule,
+        TypographyModule,
         NavigationModule,
         PreloadedEnglishI18nModule,
-        TabsModule,
       ],
       declarations: [HeaderComponent, MockProductSwitcher],
-      providers: [{ provide: StateService, useClass: MockStateService }],
+      providers: [
+        { provide: StateService, useClass: MockStateService },
+        {
+          provide: MessagingService,
+          useFactory: () => {
+            return new MockMessagingService();
+          },
+        },
+      ],
     }),
   ],
 } as Meta;
