@@ -162,6 +162,7 @@ describe("PolicyService", () => {
         requireNumbers: false,
         requireSpecial: false,
         requireUpper: true,
+        enforceOnLogin: false,
       });
     });
 
@@ -201,6 +202,7 @@ describe("PolicyService", () => {
         requireNumbers: false,
         requireSpecial: false,
         requireUpper: false,
+        enforceOnLogin: false,
       });
     });
   });
