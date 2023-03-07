@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { map, Observable, Subject, takeUntil, tap } from "rxjs";
+import { concatMap, filter, map, Observable, Subject, takeUntil, tap } from "rxjs";
 
 import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -86,29 +86,29 @@ export class PreferencesComponent implements OnInit {
 
   async ngOnInit() {
     this.vaultTimeoutPolicyCallout = this.policyService.get$(PolicyType.MaximumVaultTimeout).pipe(
+      filter((policy) => policy != null),
       map((policy) => {
-        if (!policy) {
-          return null;
-        }
         let timeout;
         if (policy.data?.minutes) {
           timeout = {
-            hours: Math.floor(policy.data.minutes / 60),
-            minutes: policy.data.minutes % 60,
+            hours: Math.floor(policy.data?.minutes / 60),
+            minutes: policy.data?.minutes % 60,
           };
         }
-        if (policy.data?.action) {
+        return { timeout: timeout, action: policy.data?.action };
+      }),
+      tap((policy) => {
+        if (policy.action) {
           this.form.controls.vaultTimeoutAction.disable({ emitEvent: false });
         } else {
           this.form.controls.vaultTimeoutAction.enable({ emitEvent: false });
         }
-        return { timeout: timeout, action: policy.data?.action };
       })
     );
 
     this.form.controls.vaultTimeoutAction.valueChanges
       .pipe(
-        tap(async (action) => {
+        concatMap(async (action) => {
           if (action === VaultTimeoutAction.LogOut) {
             const confirmed = await this.platformUtilsService.showDialog(
               this.i18nService.t("vaultTimeoutLogOutConfirmation"),

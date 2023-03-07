@@ -6,7 +6,7 @@ import {
   ValidationErrors,
   Validator,
 } from "@angular/forms";
-import { Subject, takeUntil } from "rxjs";
+import { filter, Subject, takeUntil } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
@@ -56,11 +56,11 @@ export class VaultTimeoutInputComponent
   async ngOnInit() {
     this.policyService
       .get$(PolicyType.MaximumVaultTimeout)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        filter((policy) => policy != null),
+        takeUntil(this.destroy$)
+      )
       .subscribe((policy) => {
-        if (!policy) {
-          return;
-        }
         this.vaultTimeoutPolicy = policy;
         this.applyVaultTimeoutPolicy();
       });
@@ -72,19 +72,20 @@ export class VaultTimeoutInputComponent
     });
 
     // Assign the previous value to the custom fields
-    this.form.get("vaultTimeout").valueChanges.subscribe((value) => {
-      if (value !== VaultTimeoutInputComponent.CUSTOM_VALUE) {
-        return;
-      }
-
-      const current = Math.max(this.form.value.vaultTimeout, 0);
-      this.form.patchValue({
-        custom: {
-          hours: Math.floor(current / 60),
-          minutes: current % 60,
-        },
+    this.form.controls.vaultTimeout.valueChanges
+      .pipe(
+        filter((value) => value !== VaultTimeoutInputComponent.CUSTOM_VALUE),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((_) => {
+        const current = Math.max(this.form.value.vaultTimeout, 0);
+        this.form.patchValue({
+          custom: {
+            hours: Math.floor(current / 60),
+            minutes: current % 60,
+          },
+        });
       });
-    });
   }
 
   ngOnDestroy() {

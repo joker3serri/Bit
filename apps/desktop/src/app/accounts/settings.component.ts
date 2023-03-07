@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { Observable, Subject } from "rxjs";
-import { debounceTime, map, takeUntil, tap } from "rxjs/operators";
+import { concatMap, debounceTime, filter, map, takeUntil, tap } from "rxjs/operators";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
@@ -191,10 +191,8 @@ export class SettingsComponent implements OnInit {
 
     // Load timeout policy
     this.vaultTimeoutPolicyCallout = this.policyService.get$(PolicyType.MaximumVaultTimeout).pipe(
+      filter((policy) => policy != null),
       map((policy) => {
-        if (!policy) {
-          return null;
-        }
         let timeout;
         if (policy.data?.minutes) {
           timeout = {
@@ -202,12 +200,14 @@ export class SettingsComponent implements OnInit {
             minutes: policy.data?.minutes % 60,
           };
         }
-        if (policy.data?.action) {
+        return { timeout: timeout, action: policy.data?.action };
+      }),
+      tap((policy) => {
+        if (policy.action) {
           this.form.controls.vaultTimeoutAction.disable({ emitEvent: false });
         } else {
           this.form.controls.vaultTimeoutAction.enable({ emitEvent: false });
         }
-        return { timeout: timeout, action: policy.data?.action };
       })
     );
 
@@ -255,7 +255,7 @@ export class SettingsComponent implements OnInit {
     this.form.controls.vaultTimeout.valueChanges
       .pipe(
         debounceTime(500),
-        tap(async (value) => {
+        concatMap(async (value) => {
           await this.saveVaultTimeout(value);
         }),
         takeUntil(this.destroy$)
@@ -264,7 +264,7 @@ export class SettingsComponent implements OnInit {
 
     this.form.controls.vaultTimeoutAction.valueChanges
       .pipe(
-        tap(async (action) => {
+        concatMap(async (action) => {
           await this.saveVaultTimeoutAction(action);
         }),
         takeUntil(this.destroy$)

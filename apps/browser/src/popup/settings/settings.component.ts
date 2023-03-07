@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { Router } from "@angular/router";
-import { map, Observable, Subject, takeUntil, tap } from "rxjs";
+import { concatMap, filter, map, Observable, Subject, takeUntil, tap } from "rxjs";
 import Swal from "sweetalert2";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -87,10 +87,8 @@ export class SettingsComponent implements OnInit {
 
   async ngOnInit() {
     this.vaultTimeoutPolicyCallout = this.policyService.get$(PolicyType.MaximumVaultTimeout).pipe(
+      filter((policy) => policy != null),
       map((policy) => {
-        if (!policy) {
-          return null;
-        }
         let timeout;
         if (policy.data?.minutes) {
           timeout = {
@@ -98,12 +96,14 @@ export class SettingsComponent implements OnInit {
             minutes: policy.data?.minutes % 60,
           };
         }
-        if (policy.data?.action) {
+        return { timeout: timeout, action: policy.data?.action };
+      }),
+      tap((policy) => {
+        if (policy.action) {
           this.form.controls.vaultTimeoutAction.disable({ emitEvent: false });
         } else {
           this.form.controls.vaultTimeoutAction.enable({ emitEvent: false });
         }
-        return { timeout: timeout, action: policy.data?.action };
       })
     );
 
@@ -155,7 +155,7 @@ export class SettingsComponent implements OnInit {
 
     this.form.controls.vaultTimeout.valueChanges
       .pipe(
-        tap(async (value) => {
+        concatMap(async (value) => {
           await this.saveVaultTimeout(value);
         }),
         takeUntil(this.destroy$)
@@ -164,7 +164,7 @@ export class SettingsComponent implements OnInit {
 
     this.form.controls.vaultTimeoutAction.valueChanges
       .pipe(
-        tap(async (action) => {
+        concatMap(async (action) => {
           await this.saveVaultTimeoutAction(action);
         }),
         takeUntil(this.destroy$)
