@@ -87,4 +87,8 @@ export class ServiceAccountDialogComponent {
     serviceAccountView.name = this.formGroup.value.name;
     return serviceAccountView;
   }
+
+  get title() {
+    return this.data.operation === OperationType.Add ? "newServiceAccount" : "editServiceAccount";
+  }
 }

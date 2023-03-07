@@ -5936,6 +5936,10 @@
     "message": "Service account created",
     "description": "Notifies that a new service account has been created"
   },
+  "serviceAccountUpdated": {
+    "message": "Service account updated",
+    "description": "Notifies that a service account has been updated"
+  },
   "newSaSelectAccess": {
     "message": "Type or select projects or secrets",
     "description": "Instructions for selecting projects or secrets for a new service account"

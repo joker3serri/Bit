@@ -124,7 +124,9 @@ export class ServiceAccountService {
     serviceAccountView: ServiceAccountView
   ) {
     const request = new ServiceAccountUpdateRequest();
-    request.name = serviceAccountView.name;
+    request.name = await this.encryptService.encrypt(serviceAccountView.name, organizationKey);
+
+    return request;
   }
 
   private async createServiceAccountView(
