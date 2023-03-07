@@ -1,9 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { combineLatest, firstValueFrom, Observable, share, Subject, switchMap, tap } from "rxjs";
+import {
+  combineLatest,
+  firstValueFrom,
+  map,
+  Observable,
+  share,
+  Subject,
+  switchMap,
+  tap,
+} from "rxjs";
 
-import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { SelectItemView } from "@bitwarden/components/src/multi-select/models/select-item-view";
 
@@ -12,13 +20,15 @@ import { BaseAccessPolicyView } from "../../models/view/access-policy.view";
 import { AccessPolicyService } from "./access-policy.service";
 
 export type AccessSelectorRowView = {
-  type: "user" | "group" | "serviceAccount";
+  type: "user" | "group" | "serviceAccount" | "project";
   name: string;
-  granteeId: string;
+  id: string;
   accessPolicyId: string;
   read: boolean;
   write: boolean;
   icon: string;
+  userId?: string;
+  currentUserInGroup?: boolean;
   static?: boolean;
 };
 
@@ -30,14 +40,20 @@ export class AccessSelectorComponent implements OnInit {
   static readonly userIcon = "bwi-user";
   static readonly groupIcon = "bwi-family";
   static readonly serviceAccountIcon = "bwi-wrench";
+  static readonly projectIcon = "bwi-collection";
 
+  /**
+   * Emits the selected itemss on submit.
+   */
   @Output() onCreateAccessPolicies = new EventEmitter<SelectItemView[]>();
+  @Output() onDeleteAccessPolicy = new EventEmitter<AccessSelectorRowView>();
+  @Output() onUpdateAccessPolicy = new EventEmitter<AccessSelectorRowView>();
 
   @Input() label: string;
   @Input() hint: string;
   @Input() columnTitle: string;
   @Input() emptyMessage: string;
-  @Input() granteeType: "people" | "serviceAccounts";
+  @Input() granteeType: "people" | "serviceAccounts" | "projects";
 
   protected rows$ = new Subject<AccessSelectorRowView[]>();
   @Input() private set rows(value: AccessSelectorRowView[]) {
@@ -57,7 +73,7 @@ export class AccessSelectorComponent implements OnInit {
     switchMap(([rows, params]) =>
       this.getPotentialGrantees(params.organizationId).then((grantees) =>
         grantees
-          .filter((g) => !rows.some((row) => row.granteeId === g.id))
+          .filter((g) => !rows.some((row) => row.id === g.id))
           .map((granteeView) => {
             let icon: string;
             let listName = granteeView.name;
@@ -74,6 +90,8 @@ export class AccessSelectorComponent implements OnInit {
               icon = AccessSelectorComponent.groupIcon;
             } else if (granteeView.type === "serviceAccount") {
               icon = AccessSelectorComponent.serviceAccountIcon;
+            } else if (granteeView.type === "project") {
+              icon = AccessSelectorComponent.projectIcon;
             }
             return {
               icon: icon,
@@ -84,6 +102,7 @@ export class AccessSelectorComponent implements OnInit {
           })
       )
     ),
+    map((selectItems) => selectItems.sort((a, b) => a.listName.localeCompare(b.listName))),
     tap(() => {
       this.loading = false;
       this.formGroup.reset();
@@ -92,11 +111,7 @@ export class AccessSelectorComponent implements OnInit {
     share()
   );
 
-  constructor(
-    private accessPolicyService: AccessPolicyService,
-    private validationService: ValidationService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private accessPolicyService: AccessPolicyService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.formGroup.disable();
@@ -115,38 +130,33 @@ export class AccessSelectorComponent implements OnInit {
     return firstValueFrom(this.selectItems$);
   };
 
-  async update(target: any, accessPolicyId: string): Promise<void> {
-    try {
-      const accessPolicyView = new BaseAccessPolicyView();
-      accessPolicyView.id = accessPolicyId;
-      if (target.value === "canRead") {
-        accessPolicyView.read = true;
-        accessPolicyView.write = false;
-      } else if (target.value === "canWrite") {
-        accessPolicyView.read = false;
-        accessPolicyView.write = true;
-      } else if (target.value === "canReadWrite") {
-        accessPolicyView.read = true;
-        accessPolicyView.write = true;
-      }
-
-      await this.accessPolicyService.updateAccessPolicy(accessPolicyView);
-    } catch (e) {
-      this.validationService.showError(e);
+  async update(target: any, row: AccessSelectorRowView): Promise<void> {
+    if (target.value === "canRead") {
+      row.read = true;
+      row.write = false;
+    } else if (target.value === "canReadWrite") {
+      row.read = true;
+      row.write = true;
     }
+    this.onUpdateAccessPolicy.emit(row);
   }
 
-  delete = (accessPolicyId: string) => async () => {
+  delete = (row: AccessSelectorRowView) => async () => {
     this.loading = true;
     this.formGroup.disable();
-    await this.accessPolicyService.deleteAccessPolicy(accessPolicyId);
+    this.onDeleteAccessPolicy.emit(row);
     return firstValueFrom(this.selectItems$);
   };
 
   private getPotentialGrantees(organizationId: string) {
-    return this.granteeType === "people"
-      ? this.accessPolicyService.getPeoplePotentialGrantees(organizationId)
-      : this.accessPolicyService.getServiceAccountsPotentialGrantees(organizationId);
+    switch (this.granteeType) {
+      case "people":
+        return this.accessPolicyService.getPeoplePotentialGrantees(organizationId);
+      case "serviceAccounts":
+        return this.accessPolicyService.getServiceAccountsPotentialGrantees(organizationId);
+      case "projects":
+        return this.accessPolicyService.getProjectsPotentialGrantees(organizationId);
+    }
   }
 
   static getAccessItemType(item: SelectItemView) {
@@ -157,6 +167,16 @@ export class AccessSelectorComponent implements OnInit {
         return "group";
       case AccessSelectorComponent.serviceAccountIcon:
         return "serviceAccount";
+      case AccessSelectorComponent.projectIcon:
+        return "project";
     }
+  }
+
+  static getBaseAccessPolicyView(row: AccessSelectorRowView) {
+    const view = new BaseAccessPolicyView();
+    view.id = row.accessPolicyId;
+    view.read = row.read;
+    view.write = row.write;
+    return view;
   }
 }
