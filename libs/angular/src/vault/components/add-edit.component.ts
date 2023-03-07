@@ -626,8 +626,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
       this.cipher = addEditCipherInfo.cipher;
       this.collectionIds = addEditCipherInfo.collectionIds;
 
-      if (!this.allowPersonal && this.cipher.organizationId == null) {
-        // Personal ownership isn't allowed, so 'null' must mean it hasn't been set yet
+      if (!this.editMode && !this.allowPersonal && this.cipher.organizationId == null) {
+        // This is a new cipher and personal ownership isn't allowed, so we need to set the default owner
         this.cipher.organizationId = this.defaultOwnerId;
       }
     }

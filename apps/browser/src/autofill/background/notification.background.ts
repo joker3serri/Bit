@@ -397,9 +397,12 @@ export default class NotificationBackground {
   private async editItem(cipherView: CipherView, senderTab: chrome.tabs.Tab) {
     await this.stateService.setAddEditCipherInfo({
       cipher: cipherView,
+      collectionIds: cipherView.collectionIds,
     });
 
-    await BrowserApi.tabSendMessageData(senderTab, "openAddEditCipher");
+    await BrowserApi.tabSendMessageData(senderTab, "openAddEditCipher", {
+      cipherId: cipherView.id,
+    });
   }
 
   private async folderExists(folderId: string) {
