@@ -1,23 +1,23 @@
-import { Component, HostBinding, Input } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
+import { Component, Input } from "@angular/core";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 import { Icon, isIcon } from "./icon";
 
 @Component({
   selector: "bit-icon",
-  template: ``,
+  template: `<div *ngIf="html" [outerHTML]="html"></div>`,
 })
 export class BitIconComponent {
-  @Input() icon: Icon;
+  protected html: SafeHtml;
 
-  @HostBinding()
-  protected get innerHtml() {
-    if (!isIcon(this.icon)) {
-      return "";
+  @Input() set icon(icon: Icon) {
+    if (!isIcon(icon)) {
+      this.html = "";
+      return;
     }
 
-    const svg = this.icon.svg;
-    return this.domSanitizer.bypassSecurityTrustHtml(svg);
+    const svg = icon.svg;
+    this.html = this.domSanitizer.bypassSecurityTrustHtml(svg);
   }
 
   constructor(private domSanitizer: DomSanitizer) {}
