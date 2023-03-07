@@ -239,6 +239,7 @@ export class AccountSettings {
   approveLoginRequests?: boolean;
   avatarColor?: string;
   activateAutoFillOnPageLoadFromPolicy?: boolean;
+  smOnboardingTasks?: Record<string, Record<string, boolean>>;
 
   static fromJSON(obj: Jsonify<AccountSettings>): AccountSettings {
     if (obj == null) {
