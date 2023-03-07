@@ -4,7 +4,7 @@ import { OrganizationUserService } from "@bitwarden/common/abstractions/organiza
 import { OrganizationUserConfirmRequest } from "@bitwarden/common/abstractions/organization-user/requests";
 import { Utils } from "@bitwarden/common/misc/utils";
 
-import { Response } from "../models/response";
+import { Response } from "../../models/response";
 
 export class ConfirmCommand {
   constructor(

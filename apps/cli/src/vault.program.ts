@@ -1,8 +1,8 @@
 import * as program from "commander";
 
+import { ConfirmCommand } from "./admin-console/commands/confirm.command";
 import { ShareCommand } from "./admin-console/commands/share.command";
 import { Main } from "./bw";
-import { ConfirmCommand } from "./commands/confirm.command";
 import { EditCommand } from "./commands/edit.command";
 import { ExportCommand } from "./commands/export.command";
 import { GetCommand } from "./commands/get.command";

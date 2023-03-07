@@ -8,6 +8,7 @@ import * as koaJson from "koa-json";
 import { KeySuffixOptions } from "@bitwarden/common/enums/keySuffixOptions";
 import { Utils } from "@bitwarden/common/misc/utils";
 
+import { ConfirmCommand } from "../admin-console/commands/confirm.command";
 import { ShareCommand } from "../admin-console/commands/share.command";
 import { LockCommand } from "../auth/commands/lock.command";
 import { UnlockCommand } from "../auth/commands/unlock.command";
@@ -18,7 +19,6 @@ import { CreateCommand } from "../vault/create.command";
 import { DeleteCommand } from "../vault/delete.command";
 import { SyncCommand } from "../vault/sync.command";
 
-import { ConfirmCommand } from "./confirm.command";
 import { EditCommand } from "./edit.command";
 import { GenerateCommand } from "./generate.command";
 import { GetCommand } from "./get.command";
