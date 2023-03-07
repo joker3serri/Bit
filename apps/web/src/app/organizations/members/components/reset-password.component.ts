@@ -20,6 +20,7 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
+import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/master-password-policy-options";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
@@ -108,11 +109,11 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    if (this.newPassword.length < 8) {
+    if (this.newPassword.length < Utils.minimumPasswordLength) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
-        this.i18nService.t("masterPasswordMinlength")
+        this.i18nService.t("masterPasswordMinlength", Utils.minimumPasswordLength)
       );
       return false;
     }

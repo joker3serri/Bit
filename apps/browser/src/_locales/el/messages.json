@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "Βοήθεια & Σχόλια"
   },
+  "helpCenter": {
+    "message": "Κέντρο βοήθειας Bitwarden"
+  },
+  "communityForums": {
+    "message": "Εξερευνήστε τα φόρουμ της κοινότητας του Bitwarden"
+  },
+  "contactSupport": {
+    "message": "Επικοινωνία με την υποστήριξη Bitwarden"
+  },
   "sync": {
     "message": "Συγχρονισμός"
   },
@@ -430,7 +439,14 @@
     "message": "Απαιτείται ξανά ο κύριος κωδικός πρόσβασης."
   },
   "masterPasswordMinlength": {
-    "message": "Ο κύριος κωδικός πρέπει να έχει μήκος τουλάχιστον 8 χαρακτήρες."
+    "message": "Ο κύριος κωδικός πρέπει να έχει μήκος τουλάχιστον $VALUE$ χαρακτήρες.",
+    "description": "The Master Password must be at least a specific number of characters long.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
   },
   "masterPassDoesntMatch": {
     "message": "Η επιβεβαίωση κύριου κωδικού δεν ταιριάζει."
@@ -2104,25 +2120,49 @@
       }
     }
   },
-  "tryAutofillPageLoad": {
-    "message": "Αυτόματη συμπλήρωση κατά τη φόρτωση της σελίδας;"
-  },
-  "tryAutofill": {
+  "howToAutofill": {
     "message": "Πώς να συμπληρώσετε αυτόματα"
   },
-  "autofillPageLoadInfo": {
-    "message": "Οι φόρμες σύνδεσης θα συμπληρώσουν αυτόματα τα αντίστοιχα διαπιστευτήρια αν ενεργοποιήσετε την αυτόματη συμπλήρωση κατά τη φόρτωση της σελίδας."
-  },
   "autofillSelectInfo": {
-    "message": "Επιλέξτε ένα στοιχείο από αυτή τη σελίδα για να συμπληρώσετε αυτόματα τη φόρμα της ενεργής καρτέλας."
+    "message": "Επιλέξτε ένα αντικείμενο από αυτή τη σελίδα ή χρησιμοποιήστε τη συντόμευση: $COMMAND$. Μπορείτε επίσης να δοκιμάσετε την αυτόματη συμπλήρωση κατά τη φόρτωση της σελίδας.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   },
-  "autofillTurnedOn": {
-    "message": "Η αυτόματη συμπλήρωση κατά τη φόρτωση της σελίδας ενεργοποιήθηκε"
+  "autofillSelectInfoNoCommand": {
+    "message": "Επιλέξτε ένα στοιχείο από αυτή τη σελίδα ή ορίστε μια συντόμευση στις ρυθμίσεις. Μπορείτε επίσης να δοκιμάσετε την αυτόματη συμπλήρωση κατά τη φόρτωση της σελίδας."
   },
-  "turnOn": {
-    "message": "Ενεργοποίηση"
+  "gotIt": {
+    "message": "Το κατάλαβα"
   },
-  "notNow": {
-    "message": "Όχι τώρα"
+  "autofillSettings": {
+    "message": "Ρυθμίσεις αυτόματης συμπλήρωσης"
+  },
+  "autofillShortcut": {
+    "message": "Συντόμευση πληκτρολογίου αυτόματης συμπλήρωσης"
+  },
+  "autofillShortcutNotSet": {
+    "message": "Η συντόμευση αυτόματης συμπλήρωσης δεν έχει οριστεί. Αλλάξτε τη στις ρυθμίσεις του περιηγητή."
+  },
+  "autofillShortcutText": {
+    "message": "Η συντόμευση αυτόματης συμπλήρωσης είναι: $COMMAND$. Αλλάξτε τη στις ρυθμίσεις του προγράμματος περιήγησης.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "Προεπιλεγμένη συντόμευση αυτόματης συμπλήρωσης: $COMMAND$.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

@@ -23,10 +23,10 @@ export class SecretsManagerExportComponent implements OnInit, OnDestroy {
 
   protected orgName: string;
   protected orgId: string;
-  protected exportFormats: string[] = ["json"];
+  protected exportFormats: string[] = ["Bitwarden (json)"];
 
   protected formGroup = new FormGroup({
-    format: new FormControl("json", [Validators.required]),
+    format: new FormControl("Bitwarden (json)", [Validators.required]),
   });
 
   constructor(
@@ -76,17 +76,13 @@ export class SecretsManagerExportComponent implements OnInit, OnDestroy {
   };
 
   private async doExport() {
-    try {
-      const exportData = await this.secretsManagerApiService.export(
-        this.orgId,
-        this.formGroup.get("format").value
-      );
+    const exportData = await this.secretsManagerApiService.export(
+      this.orgId,
+      this.formGroup.get("format").value
+    );
 
-      await this.downloadFile(exportData, this.formGroup.get("format").value);
-      this.platformUtilsService.showToast("success", null, this.i18nService.t("dataExportSuccess"));
-    } catch (e) {
-      this.logService.error(e);
-    }
+    await this.downloadFile(exportData, this.formGroup.get("format").value);
+    this.platformUtilsService.showToast("success", null, this.i18nService.t("dataExportSuccess"));
   }
 
   private async downloadFile(data: string, format: string) {
