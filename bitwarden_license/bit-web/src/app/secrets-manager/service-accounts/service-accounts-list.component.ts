@@ -30,7 +30,7 @@ export class ServiceAccountsListComponent implements OnDestroy {
   }
 
   @Output() newServiceAccountEvent = new EventEmitter();
-  @Output() deleteServiceAccountsEvent = new EventEmitter<string[]>();
+  @Output() deleteServiceAccountsEvent = new EventEmitter<ServiceAccountView[]>();
   @Output() onServiceAccountCheckedEvent = new EventEmitter<string[]>();
 
   private destroy$: Subject<void> = new Subject<void>();
@@ -60,9 +60,15 @@ export class ServiceAccountsListComponent implements OnDestroy {
       : this.selection.select(...this.serviceAccounts.map((s) => s.id));
   }
 
+  delete(serviceAccount: ServiceAccountView) {
+    this.deleteServiceAccountsEvent.emit([serviceAccount]);
+  }
+
   bulkDeleteServiceAccounts() {
     if (this.selection.selected.length >= 1) {
-      this.deleteServiceAccountsEvent.emit(this.selection.selected);
+      this.deleteServiceAccountsEvent.emit(
+        this.serviceAccounts.filter((sa) => this.selection.isSelected(sa.id))
+      );
     }
   }
 }
