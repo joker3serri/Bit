@@ -3,14 +3,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { Icon, svgIcon } from "./icon";
 import { BitIconComponent } from "./icon.component";
 
-/**
- * Remove comments from HTML string.
- * Necessary to prevent Angular bindings comments from failing tests.
- **/
-const stripComments = (html: string) => {
-  return html.replace(/<!--(?:.|\n)*?-->/gm, "");
-};
-
 describe("IconComponent", () => {
   let component: BitIconComponent;
   let fixture: ComponentFixture<BitIconComponent>;
@@ -32,7 +24,7 @@ describe("IconComponent", () => {
     fixture.detectChanges();
 
     const el = fixture.nativeElement as HTMLElement;
-    expect(stripComments(el.innerHTML)).toBe("");
+    expect(el.innerHTML).toBe("");
   });
 
   it("should contain icon when input is a safe Icon", () => {
@@ -42,6 +34,6 @@ describe("IconComponent", () => {
     fixture.detectChanges();
 
     const el = fixture.nativeElement as HTMLElement;
-    expect(stripComments(el.innerHTML)).toBe(`<svg><text x="0" y="15">safe icon</text></svg>`);
+    expect(el.innerHTML).toBe(`<svg><text x="0" y="15">safe icon</text></svg>`);
   });
 });
