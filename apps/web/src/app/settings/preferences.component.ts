@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { FormBuilder } from "@angular/forms";
 import { map, Observable, Subject, takeUntil, tap } from "rxjs";
 
 import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
@@ -19,6 +19,9 @@ import { Utils } from "@bitwarden/common/misc/utils";
   templateUrl: "preferences.component.html",
 })
 export class PreferencesComponent implements OnInit {
+  // For use in template
+  readonly VaultTimeoutAction = VaultTimeoutAction;
+
   vaultTimeoutPolicyCallout: Observable<{
     timeout: { hours: number; minutes: number };
     action: VaultTimeoutAction;
@@ -32,12 +35,12 @@ export class PreferencesComponent implements OnInit {
   private destroy$ = new Subject<void>();
 
   form = this.formBuilder.group({
-    vaultTimeout: new FormControl<number>(null),
+    vaultTimeout: [null as number | null],
     vaultTimeoutAction: [VaultTimeoutAction.Lock],
-    enableFavicons: new FormControl<boolean>(true),
-    enableFullWidth: new FormControl<boolean>(false),
-    theme: new FormControl<ThemeType>(ThemeType.Light),
-    locale: new FormControl<string>(null),
+    enableFavicons: true,
+    enableFullWidth: false,
+    theme: [ThemeType.Light],
+    locale: [null as string | null],
   });
 
   constructor(

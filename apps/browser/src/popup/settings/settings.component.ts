@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { FormBuilder } from "@angular/forms";
 import { Router } from "@angular/router";
 import { map, Observable, Subject, takeUntil, tap } from "rxjs";
 import Swal from "sweetalert2";
@@ -59,11 +59,11 @@ export class SettingsComponent implements OnInit {
   showChangeMasterPass = true;
 
   form = this.formBuilder.group({
-    vaultTimeout: new FormControl<number>(null),
+    vaultTimeout: [null as number | null],
     vaultTimeoutAction: [VaultTimeoutAction.Lock],
-    pin: new FormControl<boolean>(null),
-    biometric: new FormControl<boolean>(false),
-    enableAutoBiometricsPrompt: new FormControl<boolean>(true),
+    pin: [null as boolean | null],
+    biometric: false,
+    enableAutoBiometricsPrompt: true,
   });
 
   private destroy$ = new Subject<void>();

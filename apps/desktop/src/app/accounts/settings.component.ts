@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormControl } from "@angular/forms";
+import { FormBuilder } from "@angular/forms";
 import { Observable, Subject } from "rxjs";
 import { debounceTime, map, takeUntil, tap } from "rxjs/operators";
 
@@ -16,6 +16,7 @@ import { DeviceType } from "@bitwarden/common/enums/deviceType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { StorageLocation } from "@bitwarden/common/enums/storageLocation";
 import { ThemeType } from "@bitwarden/common/enums/themeType";
+import { VaultTimeoutAction } from "@bitwarden/common/enums/vault-timeout-action.enum";
 import { Utils } from "@bitwarden/common/misc/utils";
 
 import { flagEnabled } from "../../flags";
@@ -28,6 +29,9 @@ import { SetPinComponent } from "../components/set-pin.component";
 })
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class SettingsComponent implements OnInit {
+  // For use in template
+  readonly VaultTimeoutAction = VaultTimeoutAction;
+
   showMinToTray = false;
   vaultTimeoutOptions: any[];
   localeOptions: any[];
@@ -63,28 +67,31 @@ export class SettingsComponent implements OnInit {
 
   form = this.formBuilder.group({
     // Security
-    vaultTimeout: new FormControl<number>(null),
-    vaultTimeoutAction: new FormControl<string>("lock"),
-    pin: new FormControl<boolean>(null),
-    biometric: new FormControl<boolean>(false),
-    autoPromptBiometrics: new FormControl<boolean>(false),
-    approveLoginRequests: new FormControl<boolean>(false),
+    vaultTimeout: [null as number | null],
+    vaultTimeoutAction: [VaultTimeoutAction.Lock],
+    pin: [null as boolean | null],
+    biometric: false,
+    autoPromptBiometrics: false,
+    approveLoginRequests: false,
     // Account Preferences
-    clearClipboard: new FormControl<number>(null),
-    minimizeOnCopyToClipboard: new FormControl<boolean>(false),
-    enableFavicons: new FormControl<boolean>(false),
+    clearClipboard: [null as number | null],
+    minimizeOnCopyToClipboard: false,
+    enableFavicons: false,
     // App Settings
-    enableTray: new FormControl<boolean>(false),
-    enableMinToTray: new FormControl<boolean>(false),
-    enableCloseToTray: new FormControl<boolean>(false),
-    startToTray: new FormControl<boolean>(false),
-    openAtLogin: new FormControl<boolean>(false),
-    alwaysShowDock: new FormControl<boolean>(false),
-    enableBrowserIntegration: new FormControl<boolean>(false),
-    enableBrowserIntegrationFingerprint: new FormControl<boolean>({ value: false, disabled: true }),
-    enableDuckDuckGoBrowserIntegration: new FormControl<boolean>(false),
-    theme: new FormControl<ThemeType>(null),
-    locale: new FormControl<string>(null),
+    enableTray: false,
+    enableMinToTray: false,
+    enableCloseToTray: false,
+    startToTray: false,
+    openAtLogin: false,
+    alwaysShowDock: false,
+    enableBrowserIntegration: false,
+    enableBrowserIntegrationFingerprint: this.formBuilder.control<boolean>({
+      value: false,
+      disabled: true,
+    }),
+    enableDuckDuckGoBrowserIntegration: false,
+    theme: [null as ThemeType | null],
+    locale: [null as string | null],
   });
 
   private destroy$ = new Subject<void>();
@@ -312,7 +319,7 @@ export class SettingsComponent implements OnInit {
     );
   }
 
-  async saveVaultTimeoutAction(newValue: string) {
+  async saveVaultTimeoutAction(newValue: VaultTimeoutAction) {
     if (newValue === "logOut") {
       const confirmed = await this.platformUtilsService.showDialog(
         this.i18nService.t("vaultTimeoutLogOutConfirmation"),
@@ -322,7 +329,9 @@ export class SettingsComponent implements OnInit {
         "warning"
       );
       if (!confirmed) {
-        this.form.controls.vaultTimeoutAction.patchValue("lock", { emitEvent: false });
+        this.form.controls.vaultTimeoutAction.patchValue(VaultTimeoutAction.Lock, {
+          emitEvent: false,
+        });
         return;
       }
     }
