@@ -1,13 +1,14 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { lastValueFrom, Subject, takeUntil } from "rxjs";
+import { lastValueFrom, Subject } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { DialogService } from "@bitwarden/components";
 
 import { ProjectListView } from "../../models/view/project-list.view";
+import { SecretListView } from "../../models/view/secret-list.view";
 import { SecretProjectView } from "../../models/view/secret-project.view";
 import { SecretView } from "../../models/view/secret.view";
 import { ProjectService } from "../../projects/project.service";
@@ -36,12 +37,11 @@ export class SecretDialogComponent implements OnInit {
     name: new FormControl("", [Validators.required]),
     value: new FormControl("", [Validators.required]),
     notes: new FormControl(""),
-    project: new FormControl(""),
+    project: new FormControl("", [Validators.required]),
   });
 
   protected loading = false;
   projects: ProjectListView[];
-  selectedProjects: SecretProjectView[] = [];
 
   private destroy$ = new Subject<void>();
   constructor(
@@ -66,11 +66,6 @@ export class SecretDialogComponent implements OnInit {
       throw new Error(`The secret dialog was not called with the appropriate operation values.`);
     }
 
-    this.formGroup
-      .get("project")
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.updateProjectList());
-
     if (this.data.projectId) {
       this.formGroup.get("project").setValue(this.data.projectId);
     }
@@ -79,15 +74,13 @@ export class SecretDialogComponent implements OnInit {
   async loadData() {
     this.loading = true;
     const secret: SecretView = await this.secretService.getBySecretId(this.data.secretId);
-    this.loading = false;
-    this.selectedProjects = secret.projects;
-    this.loading = false;
     this.formGroup.setValue({
       name: secret.name,
       value: secret.value,
       notes: secret.note,
-      project: "",
+      project: secret.projects[0]?.id,
     });
+    this.loading = false;
   }
 
   ngOnDestroy(): void {
@@ -97,31 +90,6 @@ export class SecretDialogComponent implements OnInit {
 
   get title() {
     return this.data.operation === OperationType.Add ? "newSecret" : "editSecret";
-  }
-
-  async removeProjectAssociation(id: string) {
-    this.selectedProjects = this.selectedProjects.filter((e) => e.id != id);
-    this.formGroup.get("project").setValue("");
-  }
-
-  updateProjectList() {
-    const newList: SecretProjectView[] = [];
-    const projectId = this.formGroup.get("project").value;
-
-    if (projectId) {
-      const selectedProject = this.projects?.filter((p) => p.id == projectId)[0];
-
-      if (selectedProject != undefined) {
-        const projectSecretView = new SecretProjectView();
-
-        projectSecretView.id = selectedProject.id;
-        projectSecretView.name = selectedProject.name;
-
-        newList.push(projectSecretView);
-      }
-    }
-
-    this.selectedProjects = newList;
   }
 
   submit = async () => {
@@ -146,11 +114,13 @@ export class SecretDialogComponent implements OnInit {
   }
 
   protected openDeleteSecretDialog() {
+    const secretListView: SecretListView[] = this.getSecretListView();
+
     const dialogRef = this.dialogService.open<unknown, SecretDeleteOperation>(
       SecretDeleteDialogComponent,
       {
         data: {
-          secretIds: [this.data.secretId],
+          secrets: secretListView,
         },
       }
     );
@@ -172,14 +142,25 @@ export class SecretDialogComponent implements OnInit {
   }
 
   private getSecretView() {
-    const emptyProjects: SecretProjectView[] = [];
-
     const secretView = new SecretView();
     secretView.organizationId = this.data.organizationId;
     secretView.name = this.formGroup.value.name;
     secretView.value = this.formGroup.value.value;
     secretView.note = this.formGroup.value.notes;
-    secretView.projects = this.selectedProjects ? this.selectedProjects : emptyProjects;
+    secretView.projects = [this.projects.find((p) => p.id == this.formGroup.value.project)];
     return secretView;
+  }
+
+  private getSecretListView() {
+    const secretListViews: SecretListView[] = [];
+    const emptyProjects: SecretProjectView[] = [];
+    const selectedProject = [this.projects.find((p) => p.id == this.formGroup.value.project)];
+
+    const secretListView = new SecretListView();
+    secretListView.organizationId = this.data.organizationId;
+    secretListView.name = this.formGroup.value.name;
+    secretListView.projects = selectedProject ? selectedProject : emptyProjects;
+    secretListViews.push(secretListView);
+    return secretListViews;
   }
 }
