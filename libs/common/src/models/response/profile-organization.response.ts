@@ -1,7 +1,7 @@
 import { OrganizationUserStatusType } from "../../enums/organizationUserStatusType";
 import { OrganizationUserType } from "../../enums/organizationUserType";
 import { ProductType } from "../../enums/productType";
-import { ProviderType } from "../../enums/providerType";
+import { ProviderType } from "../../enums/provider-type";
 import { PermissionsApi } from "../api/permissions.api";
 
 import { BaseResponse } from "./base.response";
