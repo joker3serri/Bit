@@ -41,11 +41,11 @@
               <i class="bwi bwi-fw bwi-arrow-circle-right" aria-hidden="true"></i>
               {{ "moveSelectedToOrg" | i18n }}
             </button>
-            <!--   <button bitMenuItem (click)="bulkRestore()" *ngIf="activeFilter.isDeleted">
-                <i class="bwi bwi-fw bwi-undo" aria-hidden="true"></i>
-                {{ "restoreSelected" | i18n }}
-              </button>
-              <button bitMenuItem (click)="bulkDelete()">
+            <button *ngIf="showBulkRestore" type="button" bitMenuItem (click)="bulkRestore()">
+              <i class="bwi bwi-fw bwi-undo" aria-hidden="true"></i>
+              {{ "restoreSelected" | i18n }}
+            </button>
+            <!--     <button bitMenuItem (click)="bulkDelete()">
                 <span class="tw-text-danger">
                   <i class="bwi bwi-fw bwi-trash" aria-hidden="true"></i>
                   {{

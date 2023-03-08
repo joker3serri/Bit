@@ -61,11 +61,11 @@ export class VaultCipherRowComponent {
   }
 
   protected restore() {
-    this.onEvent.emit({ type: "restore", item: [{ cipher: this.cipher }] });
+    this.onEvent.emit({ type: "restore", items: [{ cipher: this.cipher }] });
   }
 
   protected deleteCipher() {
-    this.onEvent.emit({ type: "delete", item: [{ cipher: this.cipher }] });
+    this.onEvent.emit({ type: "delete", items: [{ cipher: this.cipher }] });
   }
 
   protected attachments() {

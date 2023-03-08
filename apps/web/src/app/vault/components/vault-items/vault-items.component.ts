@@ -84,6 +84,13 @@ export class VaultItemsComponent {
     });
   }
 
+  protected bulkRestore() {
+    this.event({
+      type: "restore",
+      items: this.selection.selected,
+    });
+  }
+
   private refreshItems() {
     const collections: VaultItem[] = this.collections.map((collection) => ({ collection }));
     const ciphers: VaultItem[] = this.ciphers.map((cipher) => ({ cipher }));
