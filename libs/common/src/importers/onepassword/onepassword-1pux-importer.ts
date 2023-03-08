@@ -343,12 +343,8 @@ export class OnePassword1PuxImporter extends BaseImporter implements Importer {
     if (this.isNullOrWhitespace(title)) {
       return id;
     }
-
-    // Naive approach of checking if the fields id is usable
-    if (id.length > 25 && RegExp(/[0-9]{2}[A-Z]{2}/, "i").test(id)) {
-      return title;
-    }
-    return id;
+    // Removed the regex and length check for id since it is not needed if we want title of custom field as it is, as we have checked for nullable or emptiness of title above
+    return title;
   }
 
   private extractValue(value: Value, valueKey: string): string {
