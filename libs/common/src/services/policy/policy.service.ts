@@ -1,4 +1,4 @@
-import { of, concatMap, BehaviorSubject, Observable, map, combineLatest } from "rxjs";
+import { of, concatMap, BehaviorSubject, Observable, map } from "rxjs";
 
 import { OrganizationService } from "../../abstractions/organization/organization.service.abstraction";
 import { InternalPolicyService as InternalPolicyServiceAbstraction } from "../../abstractions/policy/policy.service.abstraction";
@@ -50,13 +50,19 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
    * @param policyFilter Additional filter to apply to the policy
    */
   get$(policyType: PolicyType, policyFilter?: (policy: Policy) => boolean): Observable<Policy> {
-    return combineLatest(
-      [this.policyAppliesToActiveUser$(policyType, policyFilter), this.policies$],
-      (policyAppliesToActiveUser, policies) => {
-        if (policyAppliesToActiveUser) {
+    return this.policies$.pipe(
+      concatMap(async (policies) => {
+        const userId = await this.stateService.getUserId();
+        const appliesToCurrentUser = await this.checkPoliciesThatApplyToUser(
+          policies,
+          policyType,
+          policyFilter,
+          userId
+        );
+        if (appliesToCurrentUser) {
           return policies.find((policy) => policy.type === policyType && policy.enabled);
         }
-      }
+      })
     );
   }
 
