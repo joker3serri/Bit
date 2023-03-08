@@ -30,7 +30,7 @@ import { SetPinComponent } from "../components/set-pin.component";
 // eslint-disable-next-line rxjs-angular/prefer-takeuntil
 export class SettingsComponent implements OnInit {
   // For use in template
-  readonly VaultTimeoutAction = VaultTimeoutAction;
+  protected readonly VaultTimeoutAction = VaultTimeoutAction;
 
   showMinToTray = false;
   vaultTimeoutOptions: any[];

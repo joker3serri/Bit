@@ -20,7 +20,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 })
 export class PreferencesComponent implements OnInit {
   // For use in template
-  readonly VaultTimeoutAction = VaultTimeoutAction;
+  protected readonly VaultTimeoutAction = VaultTimeoutAction;
 
   vaultTimeoutPolicyCallout: Observable<{
     timeout: { hours: number; minutes: number };
