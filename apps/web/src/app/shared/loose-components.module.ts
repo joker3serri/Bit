@@ -52,6 +52,8 @@ import { WeakPasswordsReportComponent as OrgWeakPasswordsReportComponent } from 
 import { CollectionsComponent as OrgCollectionsComponent } from "../admin-console/organizations/vault/collections.component";
 import { ProvidersComponent } from "../admin-console/providers/providers.component";
 import { CreateOrganizationComponent } from "../admin-console/settings/create-organization.component";
+import { SponsoredFamiliesComponent } from "../admin-console/settings/sponsored-families.component";
+import { SponsoringOrgRowComponent } from "../admin-console/settings/sponsoring-org-row.component";
 import { AddCreditComponent } from "../billing/settings/add-credit.component";
 import { AdjustPaymentComponent } from "../billing/settings/adjust-payment.component";
 import { BillingHistoryViewComponent } from "../billing/settings/billing-history-view.component";
@@ -93,8 +95,6 @@ import { PurgeVaultComponent } from "../settings/purge-vault.component";
 import { SecurityKeysComponent } from "../settings/security-keys.component";
 import { SecurityComponent } from "../settings/security.component";
 import { SettingsComponent } from "../settings/settings.component";
-import { SponsoredFamiliesComponent } from "../settings/sponsored-families.component";
-import { SponsoringOrgRowComponent } from "../settings/sponsoring-org-row.component";
 import { UpdateKeyComponent } from "../settings/update-key.component";
 import { UpdateLicenseComponent } from "../settings/update-license.component";
 import { VaultTimeoutInputComponent } from "../settings/vault-timeout-input.component";
