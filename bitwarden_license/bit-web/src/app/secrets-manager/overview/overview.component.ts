@@ -91,6 +91,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.stateService.setSMOnboardingTasks(null);
     const orgId$ = this.route.params.pipe(
       map((p) => p.organizationId),
       distinctUntilChanged()
