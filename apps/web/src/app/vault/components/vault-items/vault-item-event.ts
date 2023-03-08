@@ -19,5 +19,5 @@ export type VaultItemEvent =
   | { type: "restore"; item: VaultItem[] }
   | { type: "delete"; item: VaultItem[] }
   | { type: "copy"; item: CipherView; field: "username" | "password" | "totp" }
-  | { type: "moveFolder"; items: CipherView[] }
-  | { type: "moveToOrganization"; item: CipherView[] };
+  | { type: "moveToFolder"; items: CipherView[] }
+  | { type: "moveToOrganization"; items: CipherView[] };

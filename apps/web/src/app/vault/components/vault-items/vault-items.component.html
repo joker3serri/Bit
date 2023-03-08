@@ -28,20 +28,20 @@
             appA11yTitle="{{ 'options' | i18n }}"
           ></button>
           <bit-menu #headerMenu>
-            <!-- <ng-container> -->
-            <button *ngIf="showBulkMove" type="button" bitMenuItem (click)="bulkMove()">
+            <button *ngIf="showBulkMove" type="button" bitMenuItem (click)="bulkMoveToFolder()">
               <i class="bwi bwi-fw bwi-folder" aria-hidden="true"></i>
               {{ "moveSelected" | i18n }}
             </button>
-            <!-- <button
-                bitMenuItem
-                (click)="bulkShare()"
-                *ngIf="!activeFilter.isDeleted && !organization"
-              >
-                <i class="bwi bwi-fw bwi-arrow-circle-right" aria-hidden="true"></i>
-                {{ "moveSelectedToOrg" | i18n }}
-              </button>
-              <button bitMenuItem (click)="bulkRestore()" *ngIf="activeFilter.isDeleted">
+            <button
+              *ngIf="showBulkMove"
+              type="button"
+              bitMenuItem
+              (click)="bulkMoveToOrganization()"
+            >
+              <i class="bwi bwi-fw bwi-arrow-circle-right" aria-hidden="true"></i>
+              {{ "moveSelectedToOrg" | i18n }}
+            </button>
+            <!--   <button bitMenuItem (click)="bulkRestore()" *ngIf="activeFilter.isDeleted">
                 <i class="bwi bwi-fw bwi-undo" aria-hidden="true"></i>
                 {{ "restoreSelected" | i18n }}
               </button>

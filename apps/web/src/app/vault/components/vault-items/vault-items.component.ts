@@ -25,11 +25,11 @@ export class VaultItemsComponent {
   @Input() editableCollections: boolean;
   @Input() cloneableOrganizationCiphers: boolean;
   @Input() showPremiumFeatures: boolean;
+  @Input() showBulkMove: boolean;
+  @Input() showBulkRestore: boolean;
   @Input() allOrganizations: Organization[];
   @Input() allCollections: CollectionView[];
   @Input() allGroups: GroupView[];
-
-  protected showBulkMove: boolean;
 
   private _ciphers: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {
@@ -66,10 +66,19 @@ export class VaultItemsComponent {
     this.onEvent.emit(event);
   }
 
-  protected bulkMove() {
+  protected bulkMoveToFolder() {
+    this.event({
+      type: "moveToFolder",
+      items: this.selection.selected
+        .filter((item) => item.cipher !== undefined)
+        .map((item) => item.cipher),
+    });
+  }
+
+  protected bulkMoveToOrganization() {
     this.event({
       type: "moveToOrganization",
-      item: this.selection.selected
+      items: this.selection.selected
         .filter((item) => item.cipher !== undefined)
         .map((item) => item.cipher),
     });
@@ -81,10 +90,6 @@ export class VaultItemsComponent {
     const items = [].concat(collections).concat(ciphers);
 
     this.selection.clear();
-    this.showBulkMove = this.ciphers.some(
-      (cipher) => !cipher.isDeleted && !cipher.organizationId !== null
-    );
-
     this.dataSource.data = items;
   }
 }
