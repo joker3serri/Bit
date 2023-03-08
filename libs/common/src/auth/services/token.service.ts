@@ -10,6 +10,7 @@ import { UserApiTokenRequest } from "../models/request/identity-token/user-api-t
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
 export class TokenService implements TokenServiceAbstraction {
+  // TODO: add type for JWT token
   static decodeJwtToken(token: string): Promise<any> {
     if (token == null) {
       throw new Error("Token not provided.");
@@ -211,7 +212,12 @@ export class TokenService implements TokenServiceAbstraction {
     // if we have a refresh token, use it to get a new access token and refresh token
     const refreshToken = await this.getRefreshToken();
     if (refreshToken != null && refreshToken !== "") {
-      return this.identityApiService.renewAuthViaRefreshToken();
+      const decodedAccessToken = await this.decodeAccessToken();
+      const tokenResponse = await this.identityApiService.renewAuthViaRefreshToken(
+        refreshToken,
+        decodedAccessToken
+      );
+      await this.setTokens(tokenResponse.accessToken, tokenResponse.refreshToken, null);
     }
 
     // if we have api keys, use them to get a new access token and refresh token

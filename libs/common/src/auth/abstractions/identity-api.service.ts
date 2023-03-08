@@ -15,7 +15,10 @@ export abstract class IdentityApiService {
     request: PasswordTokenRequest | SsoTokenRequest | UserApiTokenRequest
   ) => Promise<IdentityTokenResponse | IdentityTwoFactorResponse | IdentityCaptchaResponse>;
 
-  renewAuthViaRefreshToken: () => Promise<any>;
+  renewAuthViaRefreshToken: (
+    refreshToken: string,
+    decodedAccessToken: any
+  ) => Promise<IdentityTokenResponse>;
 
   postPrelogin: (request: PreloginRequest) => Promise<PreloginResponse>;
 

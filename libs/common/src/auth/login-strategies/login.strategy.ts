@@ -153,6 +153,7 @@ export abstract class LogInStrategy {
   }
 
   private async processTwoFactorResponse(response: IdentityTwoFactorResponse): Promise<AuthResult> {
+    await this.tokenService.clearTwoFactorToken();
     const result = new AuthResult();
     result.twoFactorProviders = response.twoFactorProviders2;
     this.twoFactorService.setProviders(response);

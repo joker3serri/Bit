@@ -16,13 +16,10 @@ import { IdentityTwoFactorResponse } from "../models/response/identity-two-facto
 import { PreloginResponse } from "../models/response/prelogin.response";
 import { RegisterResponse } from "../models/response/register.response";
 
-import { TokenService } from "./token.service";
-
 export class IdentityApiServiceImplementation implements IdentityApiService {
   private identityBaseUrl: string = this.environmentService.getIdentityUrl();
 
   constructor(
-    private tokenService: TokenService,
     private platformUtilsService: PlatformUtilsService,
     private environmentService: EnvironmentService,
     private apiService: ApiService
@@ -60,7 +57,6 @@ export class IdentityApiServiceImplementation implements IdentityApiService {
         responseJson.TwoFactorProviders2 &&
         Object.keys(responseJson.TwoFactorProviders2).length
       ) {
-        await this.tokenService.clearTwoFactorToken();
         return new IdentityTwoFactorResponse(responseJson);
       } else if (
         response.status === 400 &&
@@ -74,13 +70,13 @@ export class IdentityApiServiceImplementation implements IdentityApiService {
     return Promise.reject(new ErrorResponse(responseJson, response.status, true));
   }
 
-  async renewAuthViaRefreshToken(): Promise<any> {
-    const refreshToken = await this.tokenService.getRefreshToken();
+  async renewAuthViaRefreshToken(
+    refreshToken: string,
+    decodedAccessToken: any
+  ): Promise<IdentityTokenResponse> {
     if (refreshToken == null || refreshToken === "") {
       throw new Error();
     }
-
-    const decodedAccessToken = await this.tokenService.decodeAccessToken();
 
     const responseJson = await this.apiService.send(
       "POST",
@@ -94,8 +90,7 @@ export class IdentityApiServiceImplementation implements IdentityApiService {
       true
     );
 
-    const tokenResponse = new IdentityTokenResponse(responseJson);
-    await this.tokenService.setTokens(tokenResponse.accessToken, tokenResponse.refreshToken, null);
+    return new IdentityTokenResponse(responseJson);
   }
 
   async postPrelogin(request: PreloginRequest): Promise<PreloginResponse> {
@@ -110,7 +105,7 @@ export class IdentityApiServiceImplementation implements IdentityApiService {
     return new PreloginResponse(r);
   }
 
-  // TODO: figure out if I'm supposed to be moving requests or not.
+  // TODO: figure out if I'm supposed to be moving requests to auth > requests or not. Moved PreLoginRequest already.
   async postRegister(request: RegisterRequest): Promise<RegisterResponse> {
     const r = await this.apiService.send(
       "POST",

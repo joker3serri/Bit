@@ -468,7 +468,6 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
       deps: [
         SyncServiceAbstraction,
         AppIdServiceAbstraction,
-        ApiServiceAbstraction,
         EnvironmentServiceAbstraction,
         LOGOUT_CALLBACK,
         LogService,
@@ -649,7 +648,6 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
       provide: IdentityApiServiceAbstraction,
       useClass: IdentityApiServiceImplementation,
       deps: [
-        TokenServiceAbstraction,
         PlatformUtilsServiceAbstraction,
         EnvironmentServiceAbstraction,
         AppIdServiceAbstraction,
