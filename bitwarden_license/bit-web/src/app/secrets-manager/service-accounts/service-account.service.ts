@@ -11,7 +11,6 @@ import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { ServiceAccountView } from "../models/view/service-account.view";
 import { BulkOperationStatus } from "../shared/dialogs/bulk-status-dialog.component";
 
-import { ServiceAccountUpdateRequest } from "./models/requests/service-account-update.request";
 import { ServiceAccountRequest } from "./models/requests/service-account.request";
 import { ServiceAccountResponse } from "./models/responses/service-account.response";
 
@@ -63,7 +62,7 @@ export class ServiceAccountService {
     serviceAccountView: ServiceAccountView
   ) {
     const orgKey = await this.getOrganizationKey(organizationId);
-    const request = await this.getServiceAccountUpdateRequest(orgKey, serviceAccountView);
+    const request = await this.getServiceAccountRequest(orgKey, serviceAccountView);
     const r = await this.apiService.send(
       "PUT",
       "/service-accounts/" + serviceAccountId,
@@ -116,16 +115,6 @@ export class ServiceAccountService {
   ) {
     const request = new ServiceAccountRequest();
     request.name = await this.encryptService.encrypt(serviceAccountView.name, organizationKey);
-    return request;
-  }
-
-  private async getServiceAccountUpdateRequest(
-    organizationKey: SymmetricCryptoKey,
-    serviceAccountView: ServiceAccountView
-  ) {
-    const request = new ServiceAccountUpdateRequest();
-    request.name = await this.encryptService.encrypt(serviceAccountView.name, organizationKey);
-
     return request;
   }
 

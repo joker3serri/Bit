@@ -47,7 +47,7 @@ export class ServiceAccountDialogComponent {
   async loadData() {
     this.loading = true;
     const serviceAccount: ServiceAccountView =
-      await await this.serviceAccountService.getByServiceAccountId(
+      await this.serviceAccountService.getByServiceAccountId(
         this.data.serviceAccountId,
         this.data.organizationId
       );

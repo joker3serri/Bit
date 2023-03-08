@@ -12,15 +12,11 @@ import {
   ServiceAccountDeleteOperation,
 } from "./dialog/service-account-delete-dialog.component";
 import {
+  OperationType,
   ServiceAccountDialogComponent,
   ServiceAccountOperation,
 } from "./dialog/service-account-dialog.component";
 import { ServiceAccountService } from "./service-account.service";
-
-export enum OperationType {
-  Add,
-  Edit,
-}
 
 @Component({
   selector: "sm-service-accounts",
