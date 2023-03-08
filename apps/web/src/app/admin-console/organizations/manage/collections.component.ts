@@ -5,22 +5,22 @@ import { first } from "rxjs/operators";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
+import { CollectionService } from "@bitwarden/common/admin-console/abstractions/collection.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { CollectionData } from "@bitwarden/common/admin-console/models/data/collection.data";
 import { Collection } from "@bitwarden/common/admin-console/models/domain/collection";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { ProductType } from "@bitwarden/common/enums/productType";
 import {
   CollectionDetailsResponse,
   CollectionResponse,
-} from "@bitwarden/common/models/response/collection.response";
+} from "@bitwarden/common/admin-console/models/response/collection.response";
+import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
+import { ProductType } from "@bitwarden/common/enums/productType";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import {
   DialogService,
   SimpleDialogCloseType,

@@ -17,20 +17,20 @@ import { first } from "rxjs/operators";
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
+import { CollectionService } from "@bitwarden/common/admin-console/abstractions/collection.service";
 import { CollectionData } from "@bitwarden/common/admin-console/models/data/collection.data";
 import { Collection } from "@bitwarden/common/admin-console/models/domain/collection";
-import { Utils } from "@bitwarden/common/misc/utils";
 import {
   CollectionDetailsResponse,
   CollectionResponse,
-} from "@bitwarden/common/models/response/collection.response";
+} from "@bitwarden/common/admin-console/models/response/collection.response";
+import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
+import { Utils } from "@bitwarden/common/misc/utils";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
-import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
 import { GroupService, GroupView } from "../../../organizations/core";

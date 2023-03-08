@@ -9,9 +9,9 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organizationUserStatusType";
 import { OrganizationUserType } from "@bitwarden/common/admin-console/enums/organizationUserType";
+import { PermissionsApi } from "@bitwarden/common/admin-console/models/api/permissions.api";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
-import { CollectionView } from "@bitwarden/common/models/view/collection.view";
+import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 import { DialogService } from "@bitwarden/components";
 
 import { flagEnabled } from "../../../../../../utils/flags";

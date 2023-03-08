@@ -1,10 +1,10 @@
 import { Directive, Input, OnInit } from "@angular/core";
 import { UntypedFormControl, UntypedFormGroup } from "@angular/forms";
 
+import { PolicyType } from "@bitwarden/common/admin-console/enums/policyType";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
-import { PolicyType } from "@bitwarden/common/enums/policyType";
-import { PolicyRequest } from "@bitwarden/common/models/request/policy.request";
-import { PolicyResponse } from "@bitwarden/common/models/response/policy.response";
+import { PolicyRequest } from "@bitwarden/common/admin-console/models/request/policy.request";
+import { PolicyResponse } from "@bitwarden/common/admin-console/models/response/policy.response";
 
 export abstract class BasePolicy {
   abstract name: string;
