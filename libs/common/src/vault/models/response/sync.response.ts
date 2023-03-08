@@ -1,5 +1,5 @@
 import { BaseResponse } from "../../../models/response/base.response";
-import { CollectionDetailsResponse } from "../../../models/response/collection.response";
+import { CollectionDetailsResponse } from "../../../admin-console/models/response/collection.response";
 import { DomainsResponse } from "../../../models/response/domains.response";
 import { PolicyResponse } from "../../../admin-console/models/response/policy.response";
 import { ProfileResponse } from "../../../models/response/profile.response";

@@ -78,7 +78,7 @@ import { TaxInfoResponse } from "../billing/models/response/tax-info.response";
 import { TaxRateResponse } from "../billing/models/response/tax-rate.response";
 import { OrganizationConnectionType } from "../admin-console/enums/organizationConnectionType";
 import { CollectionBulkDeleteRequest } from "../models/request/collection-bulk-delete.request";
-import { CollectionRequest } from "../models/request/collection.request";
+import { CollectionRequest } from "../admin-console/models/request/collection.request";
 import { DeleteRecoverRequest } from "../models/request/delete-recover.request";
 import { EventRequest } from "../models/request/event.request";
 import { IapCheckRequest } from "../models/request/iap-check.request";
@@ -113,7 +113,7 @@ import { BreachAccountResponse } from "../models/response/breach-account.respons
 import {
   CollectionAccessDetailsResponse,
   CollectionResponse,
-} from "../models/response/collection.response";
+} from "../admin-console/models/response/collection.response";
 import { DomainsResponse } from "../models/response/domains.response";
 import { EventResponse } from "../models/response/event.response";
 import { ListResponse } from "../models/response/list.response";

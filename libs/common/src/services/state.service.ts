@@ -39,7 +39,7 @@ import { State } from "../models/domain/state";
 import { StorageOptions } from "../models/domain/storage-options";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { WindowState } from "../models/domain/window-state";
-import { CollectionView } from "../models/view/collection.view";
+import { CollectionView } from "../admin-console/models/view/collection.view";
 import { SendView } from "../models/view/send.view";
 import { CipherData } from "../vault/models/data/cipher.data";
 import { FolderData } from "../vault/models/data/folder.data";

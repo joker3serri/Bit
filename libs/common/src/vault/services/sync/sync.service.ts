@@ -1,5 +1,5 @@
 import { ApiService } from "../../../abstractions/api.service";
-import { CollectionService } from "../../../abstractions/collection.service";
+import { CollectionService } from "../../../admin-console/abstractions/collection.service";
 import { CryptoService } from "../../../abstractions/crypto.service";
 import { LogService } from "../../../abstractions/log.service";
 import { MessagingService } from "../../../abstractions/messaging.service";
@@ -16,7 +16,7 @@ import { KeyConnectorService } from "../../../auth/abstractions/key-connector.se
 import { sequentialize } from "../../../misc/sequentialize";
 import { PolicyData } from "../../../admin-console/models/data/policy.data";
 import { SendData } from "../../../models/data/send.data";
-import { CollectionDetailsResponse } from "../../../models/response/collection.response";
+import { CollectionDetailsResponse } from "../../../admin-console/models/response/collection.response";
 import { DomainsResponse } from "../../../models/response/domains.response";
 import {
   SyncCipherNotification,

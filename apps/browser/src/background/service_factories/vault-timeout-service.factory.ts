@@ -21,7 +21,7 @@ import {
 import {
   collectionServiceFactory,
   CollectionServiceInitOptions,
-} from "./collection-service.factory";
+} from "../../admin-console/background/service-factories/collection-service.factory";
 import { cryptoServiceFactory, CryptoServiceInitOptions } from "./crypto-service.factory";
 import { CachedServices, factory, FactoryOptions } from "./factory-options";
 import { messagingServiceFactory, MessagingServiceInitOptions } from "./messaging-service.factory";

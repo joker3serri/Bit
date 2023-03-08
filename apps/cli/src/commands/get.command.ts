@@ -32,7 +32,7 @@ import { OrganizationCollectionResponse } from "../admin-console/models/response
 import { OrganizationResponse } from "../admin-console/models/response/organization.response";
 import { SelectionReadOnly } from "../admin-console/models/selection-read-only";
 import { Response } from "../models/response";
-import { CollectionResponse } from "../models/response/collection.response";
+import { CollectionResponse } from "../admin-console/models/response/collection.response";
 import { SendResponse } from "../models/response/send.response";
 import { StringResponse } from "../models/response/string.response";
 import { TemplateResponse } from "../models/response/template.response";

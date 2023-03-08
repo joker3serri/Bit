@@ -1,6 +1,6 @@
-import { CollectionData } from "../admin-console/models/data/collection.data";
-import { Collection } from "../admin-console/models/domain/collection";
-import { TreeNode } from "../models/domain/tree-node";
+import { TreeNode } from "../../models/domain/tree-node";
+import { CollectionData } from "../models/data/collection.data";
+import { Collection } from "../models/domain/collection";
 import { CollectionView } from "../models/view/collection.view";
 
 export abstract class CollectionService {

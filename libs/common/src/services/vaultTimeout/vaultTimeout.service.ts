@@ -1,6 +1,6 @@
 import { firstValueFrom } from "rxjs";
 
-import { CollectionService } from "../../abstractions/collection.service";
+import { CollectionService } from "../../admin-console/abstractions/collection.service";
 import { CryptoService } from "../../abstractions/crypto.service";
 import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";

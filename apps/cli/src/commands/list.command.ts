@@ -18,7 +18,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { OrganizationUserResponse } from "../admin-console/models/response/organization-user.response";
 import { OrganizationResponse } from "../admin-console/models/response/organization.response";
 import { Response } from "../models/response";
-import { CollectionResponse } from "../models/response/collection.response";
+import { CollectionResponse } from "../admin-console/models/response/collection.response";
 import { ListResponse } from "../models/response/list.response";
 import { CliUtils } from "../utils";
 import { CipherResponse } from "../vault/models/cipher.response";

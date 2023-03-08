@@ -44,7 +44,7 @@ import { PremiumComponent } from "./settings/premium.component";
 import { SettingsComponent } from "./settings/settings.component";
 import { SyncComponent } from "./settings/sync.component";
 import { TabsComponent } from "./tabs.component";
-import { CollectionsComponent } from "./vault/collections.component";
+import { CollectionsComponent } from "../admin-console/vault/collections.component";
 
 const routes: Routes = [
   {

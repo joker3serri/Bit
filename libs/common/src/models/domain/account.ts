@@ -18,7 +18,7 @@ import { EventData } from "../data/event.data";
 import { PolicyData } from "../../admin-console/models/data/policy.data";
 import { SendData } from "../data/send.data";
 import { ServerConfigData } from "../data/server-config.data";
-import { CollectionView } from "../view/collection.view";
+import { CollectionView } from "../../admin-console/models/view/collection.view";
 import { SendView } from "../view/send.view";
 
 import { EncString } from "./enc-string";

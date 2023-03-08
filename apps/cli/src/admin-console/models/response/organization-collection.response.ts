@@ -1,6 +1,6 @@
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 
-import { CollectionResponse } from "../../../models/response/collection.response";
+import { CollectionResponse } from "./collection.response";
 import { SelectionReadOnly } from "../selection-read-only";
 
 export class OrganizationCollectionResponse extends CollectionResponse {

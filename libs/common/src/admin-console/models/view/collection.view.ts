@@ -1,8 +1,7 @@
-import { Collection } from "../../admin-console/models/domain/collection";
-import { ITreeNodeObject } from "../domain/tree-node";
+import { ITreeNodeObject } from "../../../models/domain/tree-node";
+import { View } from "../../../models/view/view";
+import { Collection } from "../domain/collection";
 import { CollectionAccessDetailsResponse } from "../response/collection.response";
-
-import { View } from "./view";
 
 export class CollectionView implements View, ITreeNodeObject {
   id: string = null;
