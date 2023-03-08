@@ -91,6 +91,7 @@ import { BrowserOrganizationService } from "../services/browser-organization.ser
 import { BrowserPolicyService } from "../services/browser-policy.service";
 import { BrowserSettingsService } from "../services/browser-settings.service";
 import { BrowserStateService } from "../services/browser-state.service";
+import BrowserApiMemoryStorageService from "../services/browserApiMemoryStorage.service";
 import { BrowserCryptoService } from "../services/browserCrypto.service";
 import BrowserLocalStorageService from "../services/browserLocalStorage.service";
 import BrowserMessagingService from "../services/browserMessaging.service";
@@ -106,6 +107,7 @@ import CommandsBackground from "./commands.background";
 import IdleBackground from "./idle.background";
 import { NativeMessagingBackground } from "./nativeMessaging.background";
 import RuntimeBackground from "./runtime.background";
+import { listenForStorageServiceProxyCommands } from "./storage-service-proxy.background";
 import WebRequestBackground from "./webRequest.background";
 
 export default class MainBackground {
@@ -202,13 +204,18 @@ export default class MainBackground {
     this.cryptoFunctionService = new WebCryptoFunctionService(window);
     this.storageService = new BrowserLocalStorageService();
     this.secureStorageService = new BrowserLocalStorageService();
-    this.memoryStorageService =
-      BrowserApi.manifestVersion === 3
-        ? new LocalBackedSessionStorageService(
-            new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
-            new KeyGenerationService(this.cryptoFunctionService)
-          )
-        : new MemoryStorageService();
+    let sessionStorage: AbstractStorageService;
+    if (BrowserApi.manifestVersion === 3) {
+      sessionStorage = new BrowserApiMemoryStorageService();
+    } else {
+      sessionStorage = new MemoryStorageService();
+      listenForStorageServiceProxyCommands(sessionStorage);
+    }
+    this.memoryStorageService = new LocalBackedSessionStorageService(
+      new EncryptServiceImplementation(this.cryptoFunctionService, this.logService, false),
+      new KeyGenerationService(this.cryptoFunctionService),
+      sessionStorage
+    );
     this.stateMigrationService = new StateMigrationService(
       this.storageService,
       this.secureStorageService,

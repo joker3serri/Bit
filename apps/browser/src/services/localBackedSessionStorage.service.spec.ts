@@ -1,25 +1,26 @@
 // eslint-disable-next-line no-restricted-imports
 import { Arg, Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
+import { mock, MockProxy } from "jest-mock-extended";
 
+import { AbstractMemoryStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { EncryptServiceImplementation } from "@bitwarden/common/services/cryptography/encrypt.service.implementation";
 
 import BrowserLocalStorageService from "./browserLocalStorage.service";
-import BrowserMemoryStorageService from "./browserMemoryStorage.service";
 import { KeyGenerationService } from "./keyGeneration.service";
 import { LocalBackedSessionStorageService } from "./localBackedSessionStorage.service";
 
 describe("Browser Session Storage Service", () => {
   let encryptService: SubstituteOf<EncryptServiceImplementation>;
   let keyGenerationService: SubstituteOf<KeyGenerationService>;
+  let sessionStorage: MockProxy<AbstractMemoryStorageService>;
 
   let cache: Map<string, any>;
   const testObj = { a: 1, b: 2 };
 
   let localStorage: BrowserLocalStorageService;
-  let sessionStorage: BrowserMemoryStorageService;
 
   const key = new SymmetricCryptoKey(
     Utils.fromUtf8ToArray("00000000000000000000000000000000").buffer
@@ -32,12 +33,16 @@ describe("Browser Session Storage Service", () => {
   beforeEach(() => {
     encryptService = Substitute.for();
     keyGenerationService = Substitute.for();
+    sessionStorage = mock();
 
-    sut = new LocalBackedSessionStorageService(encryptService, keyGenerationService);
+    sut = new LocalBackedSessionStorageService(
+      encryptService,
+      keyGenerationService,
+      sessionStorage
+    );
 
     cache = sut["cache"];
     localStorage = sut["localStorage"];
-    sessionStorage = sut["sessionStorage"];
     getSessionKeySpy = jest.spyOn(sut, "getSessionEncKey");
     getSessionKeySpy.mockResolvedValue(key);
   });
