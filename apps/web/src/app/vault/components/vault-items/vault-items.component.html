@@ -21,11 +21,40 @@
         <th bitCell class="tw-w-max" *ngIf="showGroups">{{ "groups" | i18n }}</th>
         <th bitCell class="tw-min-w-fit tw-text-right">
           <button
+            [bitMenuTriggerFor]="headerMenu"
             bitIconButton="bwi-ellipsis-v"
             size="small"
             type="button"
             appA11yTitle="{{ 'options' | i18n }}"
           ></button>
+          <bit-menu #headerMenu>
+            <!-- <ng-container> -->
+            <button *ngIf="showBulkMove" type="button" bitMenuItem (click)="bulkMove()">
+              <i class="bwi bwi-fw bwi-folder" aria-hidden="true"></i>
+              {{ "moveSelected" | i18n }}
+            </button>
+            <!-- <button
+                bitMenuItem
+                (click)="bulkShare()"
+                *ngIf="!activeFilter.isDeleted && !organization"
+              >
+                <i class="bwi bwi-fw bwi-arrow-circle-right" aria-hidden="true"></i>
+                {{ "moveSelectedToOrg" | i18n }}
+              </button>
+              <button bitMenuItem (click)="bulkRestore()" *ngIf="activeFilter.isDeleted">
+                <i class="bwi bwi-fw bwi-undo" aria-hidden="true"></i>
+                {{ "restoreSelected" | i18n }}
+              </button>
+              <button bitMenuItem (click)="bulkDelete()">
+                <span class="tw-text-danger">
+                  <i class="bwi bwi-fw bwi-trash" aria-hidden="true"></i>
+                  {{
+                    (activeFilter.isDeleted ? "permanentlyDeleteSelected" : "deleteSelected") | i18n
+                  }}
+                </span>
+              </button>
+            </ng-container> -->
+          </bit-menu>
         </th>
       </tr>
     </ng-container>
@@ -43,8 +72,8 @@
           [organizations]="allOrganizations"
           [groups]="allGroups"
           [editable]="editableCollections"
-          [checked]="selection.isSelected({ collectionId: item.collection.id })"
-          (checkedToggled)="selection.toggle({ collectionId: item.collection.id })"
+          [checked]="selection.isSelected(item)"
+          (checkedToggled)="selection.toggle(item)"
           (onEvent)="event($event)"
         ></tr>
         <tr
@@ -64,8 +93,8 @@
           "
           [organizations]="allOrganizations"
           [collections]="allCollections"
-          [checked]="selection.isSelected({ cipherId: item.cipher.id })"
-          (checkedToggled)="selection.toggle({ cipherId: item.cipher.id })"
+          [checked]="selection.isSelected(item)"
+          (checkedToggled)="selection.toggle(item)"
           (onEvent)="event($event)"
         ></tr>
       </ng-container>

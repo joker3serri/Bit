@@ -29,9 +29,7 @@ export class VaultItemsComponent {
   @Input() allCollections: CollectionView[];
   @Input() allGroups: GroupView[];
 
-  ngOnInit() {
-    this.selection.changed.subscribe(console.log);
-  }
+  protected showBulkMove: boolean;
 
   private _ciphers: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {
@@ -54,53 +52,38 @@ export class VaultItemsComponent {
   @Output() onEvent = new EventEmitter<VaultItemEvent>();
 
   protected dataSource = new TableDataSource<VaultItem>();
-  protected selection = new SelectionModel<{ collectionId?: string; cipherId?: string }>(
-    true,
-    [],
-    true,
-    (a, b) =>
-      (a.cipherId !== undefined && a.cipherId === b.cipherId) ||
-      (a.collectionId !== undefined && a.collectionId === b.collectionId)
-  );
+  protected selection = new SelectionModel<VaultItem>(true, [], true);
 
   get isAllSelected() {
-    return this.dataSource.data.every((item) => {
-      return this.selection.isSelected({
-        collectionId: item.collection?.id,
-        cipherId: item.cipher?.id,
-      });
-    });
+    return this.dataSource.data.every((item) => this.selection.isSelected(item));
   }
 
   toggleAll() {
-    console.log(
-      "selecting",
-      this.dataSource.data.map((item) => ({
-        collectionId: item.collection?.id,
-        cipherId: item.cipher?.id,
-      }))
-    );
-
-    this.isAllSelected
-      ? this.selection.clear()
-      : this.selection.select(
-          ...this.dataSource.data.map((item) => ({
-            collectionId: item.collection?.id,
-            cipherId: item.cipher?.id,
-          }))
-        );
-
-    console.log("selected", this.selection.selected);
+    this.isAllSelected ? this.selection.clear() : this.selection.select(...this.dataSource.data);
   }
 
   protected event(event: VaultItemEvent) {
     this.onEvent.emit(event);
   }
 
+  protected bulkMove() {
+    this.event({
+      type: "moveToOrganization",
+      item: this.selection.selected
+        .filter((item) => item.cipher !== undefined)
+        .map((item) => item.cipher),
+    });
+  }
+
   private refreshItems() {
     const collections: VaultItem[] = this.collections.map((collection) => ({ collection }));
     const ciphers: VaultItem[] = this.ciphers.map((cipher) => ({ cipher }));
     const items = [].concat(collections).concat(ciphers);
+
+    this.selection.clear();
+    this.showBulkMove = this.ciphers.some(
+      (cipher) => !cipher.isDeleted && !cipher.organizationId !== null
+    );
 
     this.dataSource.data = items;
   }
