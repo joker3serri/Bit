@@ -49,7 +49,7 @@
                 <div class="tw-ml-2 tw-block tw-overflow-hidden tw-whitespace-nowrap">
                   <span>{{ "loggedInAs" | i18n }}</span>
                   <small class="tw-block tw-overflow-hidden tw-whitespace-nowrap tw-text-muted">
-                    {{ account.name }}
+                    {{ account.name || account.email }}
                   </small>
                 </div>
               </div>
