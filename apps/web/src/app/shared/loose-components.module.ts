@@ -84,6 +84,7 @@ import { BillingHistoryComponent } from "../settings/billing-history.component";
 import { BillingSyncKeyComponent } from "../settings/billing-sync-key.component";
 import { ChangeAvatarComponent } from "../settings/change-avatar.component";
 import { ChangeEmailComponent } from "../settings/change-email.component";
+import { ChangeKdfModule } from "../settings/change-kdf/change-kdf.module";
 import { ChangePasswordComponent } from "../settings/change-password.component";
 import { CreateOrganizationComponent } from "../settings/create-organization.component";
 import { DeleteAccountComponent } from "../settings/delete-account.component";
@@ -96,7 +97,8 @@ import { PreferencesComponent } from "../settings/preferences.component";
 import { PremiumComponent } from "../settings/premium.component";
 import { ProfileComponent } from "../settings/profile.component";
 import { PurgeVaultComponent } from "../settings/purge-vault.component";
-import { SecurityModule } from "../settings/security.module";
+import { SecurityKeysComponent } from "../settings/security-keys.component";
+import { SecurityComponent } from "../settings/security.component";
 import { SettingsComponent } from "../settings/settings.component";
 import { SponsoredFamiliesComponent } from "../settings/sponsored-families.component";
 import { SponsoringOrgRowComponent } from "../settings/sponsoring-org-row.component";
@@ -120,7 +122,7 @@ import { SharedModule } from "./shared.module";
     OrganizationCreateModule,
     RegisterFormModule,
     ProductSwitcherModule,
-    SecurityModule,
+    ChangeKdfModule,
   ],
   declarations: [
     PremiumBadgeComponent,
@@ -193,6 +195,8 @@ import { SharedModule } from "./shared.module";
     RecoverDeleteComponent,
     RecoverTwoFactorComponent,
     RemovePasswordComponent,
+    SecurityComponent,
+    SecurityKeysComponent,
     SelectableAvatarComponent,
     SendAddEditComponent,
     SendComponent,
@@ -299,6 +303,8 @@ import { SharedModule } from "./shared.module";
     RecoverDeleteComponent,
     RecoverTwoFactorComponent,
     RemovePasswordComponent,
+    SecurityComponent,
+    SecurityKeysComponent,
     SelectableAvatarComponent,
     SendAddEditComponent,
     SendComponent,
