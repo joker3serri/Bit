@@ -11,8 +11,8 @@ import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunc
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { TwoFactorService } from "@bitwarden/common/auth/abstractions/two-factor.service";
