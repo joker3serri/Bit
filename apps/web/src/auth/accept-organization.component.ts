@@ -48,6 +48,15 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
   }
 
   async authedHandler(qParams: Params): Promise<void> {
+    const needsReAuth = (await this.stateService.getOrganizationInvitation()) == null;
+    if (needsReAuth) {
+      // Accepting an org invite requires authentication from a logged out state
+      this.messagingService.send("logout", { redirect: false });
+      await this.prepareOrganizationInvitation(qParams);
+      return;
+    }
+
+    // User has already logged in and passed the Master Password policy check
     const initOrganization =
       qParams.initOrganization != null && qParams.initOrganization.toLocaleLowerCase() === "true";
     if (initOrganization) {
@@ -56,8 +65,8 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
       this.actionPromise = this.acceptFlow(qParams);
     }
 
-    await this.stateService.setOrganizationInvitation(null);
     await this.actionPromise;
+    await this.stateService.setOrganizationInvitation(null);
     this.platformUtilService.showToast(
       "success",
       this.i18nService.t("inviteAccepted"),
@@ -74,32 +83,23 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
   }
 
   private async acceptInitOrganizationFlow(qParams: Params): Promise<any> {
-    return this.prepareAcceptInitRequest(qParams).then(async (request) => {
-      await this.organizationUserService.postOrganizationUserAcceptInit(
+    return this.prepareAcceptInitRequest(qParams).then((request) =>
+      this.organizationUserService.postOrganizationUserAcceptInit(
         qParams.organizationId,
         qParams.organizationUserId,
         request
-      );
-    });
+      )
+    );
   }
 
   private async acceptFlow(qParams: Params): Promise<any> {
-    const needsReAuth = (await this.stateService.getOrganizationInvitation()) != null;
-    if (!needsReAuth) {
-      // Accepting an org invite requires authentication from a logged out state
-      this.messagingService.send("logout", { redirect: false });
-      await this.prepareOrganizationInvitation(qParams);
-      return;
-    }
-
-    // User has already logged in and passed the Master Password policy check
-    return this.prepareAcceptRequest(qParams).then(async (request) => {
-      await this.organizationUserService.postOrganizationUserAccept(
+    return this.prepareAcceptRequest(qParams).then((request) =>
+      this.organizationUserService.postOrganizationUserAccept(
         qParams.organizationId,
         qParams.organizationUserId,
         request
-      );
-    });
+      )
+    );
   }
 
   private async prepareAcceptInitRequest(
