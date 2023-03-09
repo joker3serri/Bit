@@ -97,7 +97,7 @@ export abstract class OrganizationUserService {
 
   /**
    * Accept an invitation to initialize and join an organization created via the Admin Portal **only**.
-   * This only used once for the initial Owner, because it includes the organization's encryption keys.
+   * This is only used once for the initial Owner, because it also creates the organization's encryption keys.
    * This should not be used for organizations created via the Web client.
    * @param organizationId - Identifier for the organization to accept
    * @param id - Organization user identifier
