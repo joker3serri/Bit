@@ -41,7 +41,6 @@ import { RoutedVaultFilterBridgeService } from "./vault-filter/services/routed-v
 import { RoutedVaultFilterService } from "./vault-filter/services/routed-vault-filter.service";
 import { VaultFilter } from "./vault-filter/shared/models/vault-filter.model";
 import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/vault-filter.type";
-import { VaultItemsComponent } from "./vault-items.component";
 
 const BroadcasterSubscriptionId = "VaultComponent";
 
@@ -52,7 +51,7 @@ const BroadcasterSubscriptionId = "VaultComponent";
 })
 export class VaultComponent implements OnInit, OnDestroy {
   @ViewChild("vaultFilter", { static: true }) filterComponent: VaultFilterComponent;
-  @ViewChild(VaultItemsComponent, { static: true }) vaultItemsComponent: VaultItemsComponent;
+  // @ViewChild(VaultItemsComponent, { static: true }) vaultItemsComponent: VaultItemsComponent;
   @ViewChild("attachments", { read: ViewContainerRef, static: true })
   attachmentsModalRef: ViewContainerRef;
   @ViewChild("folderAddEdit", { read: ViewContainerRef, static: true })
@@ -112,7 +111,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         switchMap(async (params: Params) => {
           await this.syncService.fullSync(false);
           await this.vaultFilterService.reloadCollections();
-          await this.vaultItemsComponent.reload();
+          // await this.vaultItemsComponent.reload();
 
           const canAccessPremium = await this.stateService.getCanAccessPremium();
           this.showPremiumCallout =
@@ -161,7 +160,7 @@ export class VaultComponent implements OnInit, OnDestroy {
             if (message.successfully) {
               await Promise.all([
                 this.vaultFilterService.reloadCollections(),
-                this.vaultItemsComponent.load(this.vaultItemsComponent.filter),
+                // TODO: this.vaultItemsComponent.load(this.vaultItemsComponent.filter),
               ]);
               this.changeDetectorRef.detectChanges();
             }
@@ -239,8 +238,8 @@ export class VaultComponent implements OnInit, OnDestroy {
   };
 
   filterSearchText(searchText: string) {
-    this.vaultItemsComponent.searchText = searchText;
-    this.vaultItemsComponent.search(200);
+    // TODO: this.vaultItemsComponent.searchText = searchText;
+    // TODO: this.vaultItemsComponent.search(200);
   }
 
   async editCipherAttachments(cipher: CipherView) {
@@ -276,7 +275,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     modal.onClosed.subscribe(async () => {
       if (madeAttachmentChanges) {
-        await this.vaultItemsComponent.refresh();
+        // await this.vaultItemsComponent.refresh();
       }
       madeAttachmentChanges = false;
     });
@@ -291,7 +290,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onSharedCipher.subscribe(async () => {
           modal.close();
-          await this.vaultItemsComponent.refresh();
+          // TODO: await this.vaultItemsComponent.refresh();
         });
       }
     );
@@ -306,7 +305,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onSavedCollections.subscribe(async () => {
           modal.close();
-          await this.vaultItemsComponent.refresh();
+          // TODO: await this.vaultItemsComponent.refresh();
         });
       }
     );
@@ -353,17 +352,17 @@ export class VaultComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onSavedCipher.subscribe(async () => {
           modal.close();
-          await this.vaultItemsComponent.refresh();
+          // TODO: await this.vaultItemsComponent.refresh();
         });
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onDeletedCipher.subscribe(async () => {
           modal.close();
-          await this.vaultItemsComponent.refresh();
+          // TODO: await this.vaultItemsComponent.refresh();
         });
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onRestoredCipher.subscribe(async () => {
           modal.close();
-          await this.vaultItemsComponent.refresh();
+          // TODO: await this.vaultItemsComponent.refresh();
         });
       }
     );

@@ -18,13 +18,31 @@
     <div [ngClass]="{ 'col-6': isShowingCards, 'col-9': !isShowingCards }">
       <app-vault-header
         [activeFilter]="activeFilter"
-        [actionPromise]="vaultItemsComponent.actionPromise"
+        [actionPromise]="null"
         (onAddCipher)="addCipher()"
       ></app-vault-header>
       <app-callout type="warning" *ngIf="activeFilter.isDeleted" icon="bwi-exclamation-triangle">
         {{ trashCleanupWarning }}
       </app-callout>
-      <app-vault-items
+      <app-new-vault-items
+        [ciphers]="[]"
+        [collections]="[]"
+        [allCollections]="[]"
+        [allGroups]="[]"
+        [allOrganizations]="[]"
+        [disabled]="false"
+        [showOwner]="true"
+        [showCollections]="false"
+        [showGroups]="false"
+        [showPremiumFeatures]="true"
+        [showBulkMove]="true"
+        [showBulkTrashOptions]="false"
+        [useEvents]="false"
+        [editableCollections]="false"
+        [cloneableOrganizationCiphers]="false"
+      >
+      </app-new-vault-items>
+      <!-- <app-vault-items
         [activeFilter]="activeFilter"
         (onCipherClicked)="navigateToCipher($event)"
         (onAttachmentsClicked)="editCipherAttachments($event)"
@@ -34,7 +52,7 @@
         (onCloneClicked)="cloneCipher($event)"
         (onOrganzationBadgeClicked)="applyOrganizationFilter($event)"
       >
-      </app-vault-items>
+      </app-vault-items> -->
     </div>
     <div class="col-3">
       <div class="card border-warning mb-4" *ngIf="showUpdateKey">
