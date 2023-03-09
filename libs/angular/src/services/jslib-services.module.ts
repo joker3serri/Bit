@@ -57,6 +57,8 @@ import { ProviderService as ProviderServiceAbstraction } from "@bitwarden/common
 import { CollectionService } from "@bitwarden/common/admin-console/services/collection.service";
 import { OrganizationApiService } from "@bitwarden/common/admin-console/services/organization/organization-api.service";
 import { OrganizationService } from "@bitwarden/common/admin-console/services/organization/organization.service";
+import { PolicyApiService } from "@bitwarden/common/admin-console/services/policy/policy-api.service";
+import { PolicyService } from "@bitwarden/common/admin-console/services/policy/policy.service";
 import { ProviderService } from "@bitwarden/common/admin-console/services/provider.service";
 import { AccountApiService as AccountApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/account-api.service";
 import {
@@ -114,8 +116,6 @@ import { ValidationService } from "@bitwarden/common/services/validation.service
 import { VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vaultTimeout/vaultTimeoutSettings.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/services/webCryptoFunction.service";
-import { PolicyApiService } from "@bitwarden/common/src/admin-console/services/policy/policy-api.service";
-import { PolicyService } from "@bitwarden/common/src/admin-console/services/policy/policy.service";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import {
