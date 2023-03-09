@@ -30,7 +30,6 @@ import { TokenTwoFactorRequest } from "@bitwarden/common/auth/models/request/ide
 import { PasswordRequest } from "@bitwarden/common/auth/models/request/password.request";
 import { TwoFactorEmailRequest } from "@bitwarden/common/auth/models/request/two-factor-email.request";
 import { UpdateTempPasswordRequest } from "@bitwarden/common/auth/models/request/update-temp-password.request";
-import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
@@ -297,6 +296,9 @@ export class LoginCommand {
         );
       }
 
+      // Run full sync before handling success response or password reset flows
+      await this.syncService.fullSync(true);
+
       // Handle updating passwords if NOT using an API Key for authentication
       if (response.forcePasswordReset && clientId == null && clientSecret == null) {
         if (
@@ -324,8 +326,6 @@ export class LoginCommand {
   }
 
   private async handleSuccessResponse(): Promise<Response> {
-    await this.syncService.fullSync(true);
-
     const usesKeyConnector = await this.keyConnectorService.getUsesKeyConnector();
 
     if (
@@ -497,6 +497,25 @@ export class LoginCommand {
       this.getPasswordStrengthUserInput()
     );
 
+    const enforcedPolicyOptions = await firstValueFrom(
+      this.policyService.masterPasswordPolicyOptions$()
+    );
+
+    // Verify master password meets policy requirements
+    if (
+      enforcedPolicyOptions != null &&
+      !this.policyService.evaluateMasterPassword(
+        strengthResult.score,
+        masterPassword,
+        enforcedPolicyOptions
+      )
+    ) {
+      return this.collectNewMasterPasswordDetails(
+        prompt,
+        "Your new master password does not meet the policy requirements.\n"
+      );
+    }
+
     // Get New Master Password Re-type
     const reTypeMessage = "Re-type New Master password (Strength: " + strengthResult.score + ")";
     const retype: inquirer.Answers = await inquirer.createPromptModule({ output: process.stderr })({
@@ -521,30 +540,6 @@ export class LoginCommand {
       message: "Master Password Hint (optional):",
     });
     const masterPasswordHint = hint.input;
-
-    // Ensure master password policies are loaded
-    if (this.masterPasswordPolicies == undefined) {
-      await this.loadMasterPasswordPolicies();
-    }
-
-    const enforcedPolicyOptions = await firstValueFrom(
-      this.policyService.masterPasswordPolicyOptions$(this.masterPasswordPolicies)
-    );
-
-    // Verify master password meets policy requirements
-    if (
-      enforcedPolicyOptions != null &&
-      !this.policyService.evaluateMasterPassword(
-        strengthResult.score,
-        masterPassword,
-        enforcedPolicyOptions
-      )
-    ) {
-      return this.collectNewMasterPasswordDetails(
-        prompt,
-        "Your new master password does not meet the policy requirements.\n"
-      );
-    }
     const kdf = await this.stateService.getKdfType();
     const kdfConfig = await this.stateService.getKdfConfig();
 
@@ -763,19 +758,5 @@ export class LoginCommand {
     const stateSplit = state.split("_identifier=");
     const checkStateSplit = checkState.split("_identifier=");
     return stateSplit[0] === checkStateSplit[0];
-  }
-
-  private async loadMasterPasswordPolicies(): Promise<void> {
-    const policiesResponse = await this.policyApiService.getAllPolicies();
-
-    if (policiesResponse == null || policiesResponse.data.length === 0) {
-      this.masterPasswordPolicies = [];
-      return;
-    }
-
-    // We only care about enabled master password policies
-    this.masterPasswordPolicies = this.policyService
-      .mapPoliciesFromToken(policiesResponse)
-      .filter((p) => p.type === PolicyType.MasterPassword && p.enabled);
   }
 }
