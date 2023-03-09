@@ -21,6 +21,7 @@
 <td bitCell *ngIf="showOwner">
   <app-org-badge
     [disabled]="disabled"
+    [organizationId]="collection.organizationId"
     [organizationName]="collection.organizationId | orgNameFromId: organizations"
     appStopProp
   >

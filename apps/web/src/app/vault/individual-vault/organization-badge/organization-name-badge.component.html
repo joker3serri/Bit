@@ -1,12 +1,13 @@
-<!-- Please remove this disable statement when editing this file! -->
-<!-- eslint-disable @angular-eslint/template/button-has-type -->
 <button
   bitBadge
+  type="button"
   [disabled]="disabled"
   [style.color]="textColor"
   [style.background-color]="color"
   appA11yTitle="{{ organizationName }}"
-  (click)="emitOnOrganizationClicked()"
+  [routerLink]="[]"
+  [queryParams]="{ organizationId: organizationId }"
+  queryParamsHandling="merge"
 >
   {{ organizationName | ellipsis: 13 }}
 </button>

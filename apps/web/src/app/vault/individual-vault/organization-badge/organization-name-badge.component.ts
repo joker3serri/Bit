@@ -10,6 +10,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
   templateUrl: "organization-name-badge.component.html",
 })
 export class OrganizationNameBadgeComponent implements OnChanges {
+  @Input() organizationId?: string;
   @Input() organizationName: string;
   @Input() disabled: boolean;
 

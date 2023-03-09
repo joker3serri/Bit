@@ -48,6 +48,7 @@
 <td bitCell *ngIf="showOwner">
   <app-org-badge
     [disabled]="disabled"
+    [organizationId]="cipher.organizationId"
     [organizationName]="cipher.organizationId | orgNameFromId: organizations"
     appStopProp
   >
