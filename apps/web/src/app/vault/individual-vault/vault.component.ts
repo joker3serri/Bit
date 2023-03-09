@@ -13,6 +13,7 @@ import { filter, first, map, switchMap, takeUntil } from "rxjs/operators";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
+import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -30,7 +31,6 @@ import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/pa
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
-import { GroupView } from "../../organizations/core";
 import { UpdateKeyComponent } from "../../settings/update-key.component";
 
 import { AddEditComponent } from "./add-edit.component";
@@ -43,6 +43,7 @@ import { VaultFilterService } from "./vault-filter/services/abstractions/vault-f
 import { RoutedVaultFilterBridgeService } from "./vault-filter/services/routed-vault-filter-bridge.service";
 import { RoutedVaultFilterService } from "./vault-filter/services/routed-vault-filter.service";
 import { createFilterFunction } from "./vault-filter/shared/models/filter-function";
+import { All } from "./vault-filter/shared/models/routed-vault-filter.model";
 import { VaultFilter } from "./vault-filter/shared/models/vault-filter.model";
 import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/vault-filter.type";
 
@@ -77,11 +78,10 @@ export class VaultComponent implements OnInit, OnDestroy {
   kdfIterations: number;
   activeFilter: VaultFilter = new VaultFilter();
 
+  protected allCollections$: Observable<CollectionView[]>;
+  protected allOrganizations$: Observable<Organization[]>;
   protected ciphers$: Observable<CipherView[]>;
   protected collections$: Observable<CollectionView[]>;
-  protected allCollections$: Observable<CollectionView[]>;
-  protected allGroups$: Observable<GroupView[]>;
-  protected allOrganizations$: Observable<Organization[]>;
 
   // Subject to support legacy promise-based services
   private refresh$ = new Subject<void>();
@@ -107,7 +107,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     private routedVaultFilterService: RoutedVaultFilterService,
     private routedVaultFilterBridgeService: RoutedVaultFilterBridgeService,
     private cipherService: CipherService,
-    private passwordRepromptService: PasswordRepromptService
+    private passwordRepromptService: PasswordRepromptService,
+    private collectionService: CollectionService
   ) {}
 
   async ngOnInit() {
@@ -189,12 +190,39 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.activeFilter = activeFilter;
       });
 
+    this.allCollections$ = this.refresh$.pipe(
+      switchMap(() => this.collectionService.getAllDecrypted())
+    );
+    this.allOrganizations$ = this.refresh$.pipe(switchMap(() => this.organizationService.getAll()));
+
     this.ciphers$ = combineLatest([
       this.refresh$.pipe(switchMap(() => this.cipherService.getAllDecrypted())),
       this.routedVaultFilterService.filter$,
     ]).pipe(
       filter(([ciphers, filter]) => ciphers != undefined && filter != undefined),
       map(([ciphers, filter]) => ciphers.filter(createFilterFunction(filter)))
+    );
+
+    this.collections$ = combineLatest([
+      this.refresh$.pipe(switchMap(() => this.collectionService.getAllNested())),
+      this.routedVaultFilterService.filter$,
+    ]).pipe(
+      filter(([collections, filter]) => collections != undefined && filter != undefined),
+      map(([collections, filter]) => {
+        if (filter.collectionId === undefined) {
+          return [];
+        }
+
+        if (filter.collectionId === undefined || filter.collectionId === All) {
+          return collections.map((c) => c.node);
+        }
+
+        const selectedCollection = ServiceUtils.getTreeNodeObjectFromList(
+          collections,
+          filter.collectionId
+        );
+        return selectedCollection.children.map((c) => c.node);
+      })
     );
   }
 

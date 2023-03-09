@@ -26,10 +26,9 @@
       </app-callout>
       <app-new-vault-items
         [ciphers]="ciphers$ | async"
-        [collections]="[]"
-        [allCollections]="[]"
-        [allGroups]="[]"
-        [allOrganizations]="[]"
+        [collections]="collections$ | async"
+        [allCollections]="allCollections$ | async"
+        [allOrganizations]="allOrganizations$ | async"
         [disabled]="false"
         [showOwner]="true"
         [showCollections]="false"
