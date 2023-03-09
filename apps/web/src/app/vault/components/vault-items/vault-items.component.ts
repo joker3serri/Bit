@@ -26,7 +26,7 @@ export class VaultItemsComponent {
   @Input() cloneableOrganizationCiphers: boolean;
   @Input() showPremiumFeatures: boolean;
   @Input() showBulkMove: boolean;
-  @Input() showBulkRestore: boolean;
+  @Input() showBulkTrashOptions: boolean;
   @Input() allOrganizations: Organization[];
   @Input() allCollections: CollectionView[];
   @Input() allGroups: GroupView[];
@@ -87,6 +87,15 @@ export class VaultItemsComponent {
   protected bulkRestore() {
     this.event({
       type: "restore",
+      items: this.selection.selected
+        .filter((item) => item.cipher !== undefined)
+        .map((item) => item.cipher),
+    });
+  }
+
+  protected bulkDelete() {
+    this.event({
+      type: "delete",
       items: this.selection.selected,
     });
   }

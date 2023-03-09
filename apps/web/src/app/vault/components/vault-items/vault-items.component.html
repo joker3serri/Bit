@@ -41,19 +41,16 @@
               <i class="bwi bwi-fw bwi-arrow-circle-right" aria-hidden="true"></i>
               {{ "moveSelectedToOrg" | i18n }}
             </button>
-            <button *ngIf="showBulkRestore" type="button" bitMenuItem (click)="bulkRestore()">
+            <button *ngIf="showBulkTrashOptions" type="button" bitMenuItem (click)="bulkRestore()">
               <i class="bwi bwi-fw bwi-undo" aria-hidden="true"></i>
               {{ "restoreSelected" | i18n }}
             </button>
-            <!--     <button bitMenuItem (click)="bulkDelete()">
-                <span class="tw-text-danger">
-                  <i class="bwi bwi-fw bwi-trash" aria-hidden="true"></i>
-                  {{
-                    (activeFilter.isDeleted ? "permanentlyDeleteSelected" : "deleteSelected") | i18n
-                  }}
-                </span>
-              </button>
-            </ng-container> -->
+            <button type="button" bitMenuItem (click)="bulkDelete()">
+              <span class="tw-text-danger">
+                <i class="bwi bwi-fw bwi-trash" aria-hidden="true"></i>
+                {{ (showBulkTrashOptions ? "permanentlyDeleteSelected" : "deleteSelected") | i18n }}
+              </span>
+            </button>
           </bit-menu>
         </th>
       </tr>

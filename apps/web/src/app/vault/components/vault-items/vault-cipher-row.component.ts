@@ -61,7 +61,7 @@ export class VaultCipherRowComponent {
   }
 
   protected restore() {
-    this.onEvent.emit({ type: "restore", items: [{ cipher: this.cipher }] });
+    this.onEvent.emit({ type: "restore", items: [this.cipher] });
   }
 
   protected deleteCipher() {

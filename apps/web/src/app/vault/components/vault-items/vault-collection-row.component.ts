@@ -84,6 +84,6 @@ export class VaultCollectionRowComponent {
   }
 
   protected deleteCollection() {
-    this.onEvent.next({ type: "delete", item: [{ collection: this.collection }] });
+    this.onEvent.next({ type: "delete", items: [{ collection: this.collection }] });
   }
 }
