@@ -91,6 +91,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.stateService.setSMOnboardingTasks(null);
     const orgId$ = this.route.params.pipe(
       map((p) => p.organizationId),
       distinctUntilChanged()
@@ -116,7 +117,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
       share()
     );
 
-    const secrets$ = combineLatest([orgId$, this.secretService.secret$.pipe(startWith(null))]).pipe(
+    const secrets$ = combineLatest([
+      orgId$,
+      this.secretService.secret$.pipe(startWith(null)),
+      this.projectService.project$.pipe(startWith(null)),
+    ]).pipe(
       switchMap(([orgId]) => this.secretService.getSecrets(orgId)),
       share()
     );
@@ -221,6 +226,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.dialogService.open<unknown, ServiceAccountOperation>(ServiceAccountDialogComponent, {
       data: {
         organizationId: this.organizationId,
+        operation: OperationType.Add,
       },
     });
   }
@@ -292,5 +298,11 @@ export class OverviewComponent implements OnInit, OnDestroy {
 
   protected hideOnboarding() {
     this.showOnboarding = false;
+    this.saveCompletedTasks(this.organizationId, {
+      importSecrets: true,
+      createSecret: true,
+      createProject: true,
+      createServiceAccount: true,
+    });
   }
 }
