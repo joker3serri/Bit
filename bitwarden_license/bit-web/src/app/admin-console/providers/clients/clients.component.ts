@@ -12,7 +12,7 @@ import { ValidationService } from "@bitwarden/common/abstractions/validation.ser
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
-import { ProviderUserType } from "@bitwarden/common/admin-console/enums/providerUserType";
+import { ProviderUserType } from "@bitwarden/common/admin-console/enums/provider-user-type";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
 import { PlanType } from "@bitwarden/common/billing/enums/plan-type";

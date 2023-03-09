@@ -7,8 +7,8 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/abstractions/organization-user/responses";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organizationUserStatusType";
-import { OrganizationUserType } from "@bitwarden/common/admin-console/enums/organizationUserType";
+import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organization-user-status-type";
+import { OrganizationUserType } from "@bitwarden/common/admin-console/enums/organization-user-type";
 import { SelectionReadOnlyRequest } from "@bitwarden/common/admin-console/models/request/selection-read-only.request";
 import { Utils } from "@bitwarden/common/misc/utils";
 

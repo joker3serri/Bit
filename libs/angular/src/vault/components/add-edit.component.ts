@@ -14,8 +14,8 @@ import {
   OrganizationService,
 } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organizationUserStatusType";
-import { PolicyType } from "@bitwarden/common/admin-console/enums/policyType";
+import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organization-user-status-type";
+import { PolicyType } from "@bitwarden/common/admin-console/enums/policy-type";
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 import { EventType } from "@bitwarden/common/enums/eventType";

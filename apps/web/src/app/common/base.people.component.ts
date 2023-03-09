@@ -11,10 +11,10 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { ValidationService } from "@bitwarden/common/abstractions/validation.service";
-import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organizationUserStatusType";
-import { OrganizationUserType } from "@bitwarden/common/admin-console/enums/organizationUserType";
-import { ProviderUserStatusType } from "@bitwarden/common/admin-console/enums/providerUserStatusType";
-import { ProviderUserType } from "@bitwarden/common/admin-console/enums/providerUserType";
+import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organization-user-status-type";
+import { OrganizationUserType } from "@bitwarden/common/admin-console/enums/organization-user-type";
+import { ProviderUserStatusType } from "@bitwarden/common/admin-console/enums/provider-user-status-type";
+import { ProviderUserType } from "@bitwarden/common/admin-console/enums/provider-user-type";
 import { ProviderUserUserDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-user.response";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";

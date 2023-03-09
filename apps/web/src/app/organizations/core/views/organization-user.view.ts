@@ -1,6 +1,6 @@
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/abstractions/organization-user/responses";
-import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organizationUserStatusType";
-import { OrganizationUserType } from "@bitwarden/common/admin-console/enums/organizationUserType";
+import { OrganizationUserStatusType } from "@bitwarden/common/admin-console/enums/organization-user-status-type";
+import { OrganizationUserType } from "@bitwarden/common/admin-console/enums/organization-user-type";
 import { PermissionsApi } from "@bitwarden/common/admin-console/models/api/permissions.api";
 
 import { CollectionAccessSelectionView } from "./collection-access-selection.view";

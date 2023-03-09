@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { UntypedFormBuilder } from "@angular/forms";
 
-import { PolicyType } from "@bitwarden/common/admin-console/enums/policyType";
+import { PolicyType } from "@bitwarden/common/admin-console/enums/policy-type";
 
 import { BasePolicy, BasePolicyComponent } from "./base-policy.component";
 

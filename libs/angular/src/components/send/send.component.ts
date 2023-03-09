@@ -8,7 +8,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { SendService } from "@bitwarden/common/abstractions/send.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/admin-console/enums/policyType";
+import { PolicyType } from "@bitwarden/common/admin-console/enums/policy-type";
 import { SendType } from "@bitwarden/common/enums/sendType";
 import { SendView } from "@bitwarden/common/models/view/send.view";
 
