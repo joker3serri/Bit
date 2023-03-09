@@ -8,6 +8,7 @@ import { NgModule } from "@angular/core";
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
 
+import { CollectionsComponent } from "../admin-console/vault/collections.component";
 import { AccessibilityCookieComponent } from "../auth/accessibility-cookie.component";
 import { DeleteAccountComponent } from "../auth/delete-account.component";
 import { EnvironmentComponent } from "../auth/environment.component";
@@ -50,7 +51,6 @@ import { AddEditComponent as SendAddEditComponent } from "./send/add-edit.compon
 import { EffluxDatesComponent as SendEffluxDatesComponent } from "./send/efflux-dates.component";
 import { SendComponent } from "./send/send.component";
 import { SharedModule } from "./shared/shared.module";
-import { CollectionsComponent } from "./vault/collections.component";
 import { ExportComponent } from "./vault/export.component";
 import { GeneratorComponent } from "./vault/generator.component";
 import { PasswordGeneratorHistoryComponent } from "./vault/password-generator-history.component";
