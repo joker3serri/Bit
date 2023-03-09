@@ -92,13 +92,26 @@ export class SecretsComponent implements OnInit {
     );
   }
 
-  async copySecretValue(id: string) {
-    const secret = await this.secretService.getBySecretId(id);
-    this.platformUtilsService.copyToClipboard(secret.value);
-    this.platformUtilsService.showToast(
-      "success",
-      null,
-      this.i18nService.t("valueCopied", this.i18nService.t("value"))
-    );
+  copySecretValue(id: string) {
+    const value = this.secretService.getBySecretId(id).then((secret) => secret.value);
+    this.copyToClipboardAsync(value).then(() => {
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("valueCopied", this.i18nService.t("value"))
+      );
+    });
+  }
+
+  copyToClipboardAsync(text: Promise<string>) {
+    if (this.platformUtilsService.isSafari()) {
+      return navigator.clipboard.write([
+        new ClipboardItem({
+          ["text/plain"]: text,
+        }),
+      ]);
+    }
+
+    return text.then((t) => this.platformUtilsService.copyToClipboard(t));
   }
 }
