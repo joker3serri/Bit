@@ -43,7 +43,11 @@ import { VaultFilterService } from "./vault-filter/services/abstractions/vault-f
 import { RoutedVaultFilterBridgeService } from "./vault-filter/services/routed-vault-filter-bridge.service";
 import { RoutedVaultFilterService } from "./vault-filter/services/routed-vault-filter.service";
 import { createFilterFunction } from "./vault-filter/shared/models/filter-function";
-import { All } from "./vault-filter/shared/models/routed-vault-filter.model";
+import {
+  All,
+  RoutedVaultFilterModel,
+  Unassigned,
+} from "./vault-filter/shared/models/routed-vault-filter.model";
 import { VaultFilter } from "./vault-filter/shared/models/vault-filter.model";
 import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/vault-filter.type";
 
@@ -78,6 +82,9 @@ export class VaultComponent implements OnInit, OnDestroy {
   kdfIterations: number;
   activeFilter: VaultFilter = new VaultFilter();
 
+  protected filter$: Observable<RoutedVaultFilterModel>;
+  protected showBulkMove$: Observable<boolean>;
+  protected canAccessPremium$: Observable<boolean>;
   protected allCollections$: Observable<CollectionView[]>;
   protected allOrganizations$: Observable<Organization[]>;
   protected ciphers$: Observable<CipherView[]>;
@@ -190,6 +197,17 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.activeFilter = activeFilter;
       });
 
+    this.filter$ = this.routedVaultFilterService.filter$;
+    this.showBulkMove$ = this.filter$.pipe(
+      map(
+        (filter) =>
+          filter.type !== "trash" &&
+          (filter.organizationId === undefined || filter.organizationId === Unassigned)
+      )
+    );
+    this.canAccessPremium$ = this.refresh$.pipe(
+      switchMap(() => this.stateService.getCanAccessPremium())
+    );
     this.allCollections$ = this.refresh$.pipe(
       switchMap(() => this.collectionService.getAllDecrypted())
     );
@@ -197,7 +215,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     this.ciphers$ = combineLatest([
       this.refresh$.pipe(switchMap(() => this.cipherService.getAllDecrypted())),
-      this.routedVaultFilterService.filter$,
+      this.filter$,
     ]).pipe(
       filter(([ciphers, filter]) => ciphers != undefined && filter != undefined),
       map(([ciphers, filter]) => ciphers.filter(createFilterFunction(filter)))
@@ -205,7 +223,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     this.collections$ = combineLatest([
       this.refresh$.pipe(switchMap(() => this.collectionService.getAllNested())),
-      this.routedVaultFilterService.filter$,
+      this.filter$,
     ]).pipe(
       filter(([collections, filter]) => collections != undefined && filter != undefined),
       map(([collections, filter]) => {
