@@ -82,6 +82,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   kdfIterations: number;
   activeFilter: VaultFilter = new VaultFilter();
 
+  protected performingAsyncAction = false;
   protected filter$: Observable<RoutedVaultFilterModel>;
   protected showBulkMove$: Observable<boolean>;
   protected canAccessPremium$: Observable<boolean>;
