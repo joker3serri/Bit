@@ -686,4 +686,16 @@ describe("1Password 1Pux Importer", () => {
     expect(collections[3].name).toBe("Education");
     expect(collections[4].name).toBe("Starter Kit");
   });
+
+  //Unit tests for checking custom fields name, "if title null or empty then id else title"
+  it("should return the id when title is null or empty", async () => {
+    const importer = new Importer();
+    const result = await importer.parse(OnePuxExampleFileJson);
+    expect(result != null).toBe(true);
+    const cipher = result.ciphers.shift();
+    expect(cipher.fields[0].name).toBe("PIN");
+    expect(cipher.fields[1].name).toBe("What was the model of your first car?");
+    expect(cipher.fields[2].name).toBe("Name");
+    expect(cipher.fields[3].name).toBe("mm67c5aacgyk2ozl4goqmhriva");
+  });
 });
