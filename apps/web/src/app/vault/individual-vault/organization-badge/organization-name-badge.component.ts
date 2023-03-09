@@ -5,6 +5,8 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 
+import { Unassigned } from "../vault-filter/shared/models/routed-vault-filter.model";
+
 @Component({
   selector: "app-org-badge",
   templateUrl: "organization-name-badge.component.html",
@@ -48,6 +50,10 @@ export class OrganizationNameBadgeComponent implements OnChanges {
       this.color = Utils.stringToColor(this.organizationName.toUpperCase());
     }
     this.textColor = Utils.pickTextColorBasedOnBgColor(this.color, 135, true) + "!important";
+  }
+
+  get organizationIdLink() {
+    return this.organizationId ?? Unassigned;
   }
 
   emitOnOrganizationClicked() {
