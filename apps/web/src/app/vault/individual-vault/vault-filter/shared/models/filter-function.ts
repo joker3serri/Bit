@@ -11,9 +11,6 @@ export function createFilterFunction(filter: RoutedVaultFilterModel): FilterFunc
     if (filter.type === "favorites" && cipherPassesFilter) {
       cipherPassesFilter = cipher.favorite;
     }
-    if (filter.type === "trash" && cipherPassesFilter) {
-      cipherPassesFilter = cipher.isDeleted;
-    }
     if (filter.type === "card" && cipherPassesFilter) {
       cipherPassesFilter = cipher.type === CipherType.Card;
     }
@@ -25,6 +22,13 @@ export function createFilterFunction(filter: RoutedVaultFilterModel): FilterFunc
     }
     if (filter.type === "note" && cipherPassesFilter) {
       cipherPassesFilter = cipher.type === CipherType.SecureNote;
+    }
+    if (filter.type === "trash" && cipherPassesFilter) {
+      cipherPassesFilter = cipher.isDeleted;
+    }
+    // Hide trash unless explicitly selected
+    if (filter.type !== "trash" && cipherPassesFilter) {
+      cipherPassesFilter = !cipher.isDeleted;
     }
     // No folder
     if (filter.folderId === Unassigned && cipherPassesFilter) {

@@ -5,7 +5,7 @@ import { createFilterFunction } from "./filter-function";
 import { Unassigned, All } from "./routed-vault-filter.model";
 
 describe("createFilter", () => {
-  describe("generic cipher", () => {
+  describe("given a generic cipher", () => {
     it("should return true when no filter is applied", () => {
       const cipher = createCipher();
       const filterFunction = createFilterFunction({});
@@ -49,6 +49,14 @@ describe("createFilter", () => {
 
     it("should return false when filtering for favorites", () => {
       const filterFunction = createFilterFunction({ type: "favorites" });
+
+      const result = filterFunction(cipher);
+
+      expect(result).toBe(false);
+    });
+
+    it("should return false when type is not specified in filter", () => {
+      const filterFunction = createFilterFunction({});
 
       const result = filterFunction(cipher);
 
