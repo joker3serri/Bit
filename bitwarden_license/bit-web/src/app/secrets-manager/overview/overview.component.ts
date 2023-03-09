@@ -45,6 +45,7 @@ import {
   ServiceAccountOperation,
 } from "../service-accounts/dialog/service-account-dialog.component";
 import { ServiceAccountService } from "../service-accounts/service-account.service";
+import { SecretsListComponent } from "../shared/secrets-list.component";
 
 type Tasks = {
   [organizationId: string]: OrganizationTasks;
@@ -278,35 +279,16 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   copySecretName(name: string) {
-    this.platformUtilsService.copyToClipboard(name);
-    this.platformUtilsService.showToast(
-      "success",
-      null,
-      this.i18nService.t("valueCopied", this.i18nService.t("name"))
-    );
+    SecretsListComponent.copySecretName(name, this.platformUtilsService, this.i18nService);
   }
 
   copySecretValue(id: string) {
-    const value = this.secretService.getBySecretId(id).then((secret) => secret.value);
-    this.copyToClipboardAsync(value).then(() => {
-      this.platformUtilsService.showToast(
-        "success",
-        null,
-        this.i18nService.t("valueCopied", this.i18nService.t("value"))
-      );
-    });
-  }
-
-  copyToClipboardAsync(text: Promise<string>) {
-    if (this.platformUtilsService.isSafari()) {
-      return navigator.clipboard.write([
-        new ClipboardItem({
-          ["text/plain"]: text,
-        }),
-      ]);
-    }
-
-    return text.then((t) => this.platformUtilsService.copyToClipboard(t));
+    SecretsListComponent.copySecretValue(
+      id,
+      this.platformUtilsService,
+      this.i18nService,
+      this.secretService
+    );
   }
 
   protected hideOnboarding() {
