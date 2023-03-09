@@ -12,6 +12,7 @@ import { VaultItemEvent } from "./vault-item-event";
   templateUrl: "vault-cipher-row.component.html",
 })
 export class VaultCipherRowComponent {
+  @Input() disabled: boolean;
   @Input() cipher: CipherView;
   @Input() showOwner: boolean;
   @Input() showCollections: boolean;

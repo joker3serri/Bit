@@ -11,6 +11,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 })
 export class OrganizationNameBadgeComponent implements OnChanges {
   @Input() organizationName: string;
+  @Input() disabled: boolean;
 
   @Output() onOrganizationClicked = new EventEmitter<string>();
 

@@ -18,6 +18,7 @@ import { VaultItemEvent } from "./vault-item-event";
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VaultItemsComponent {
+  @Input() disabled: boolean;
   @Input() showOwner: boolean;
   @Input() showCollections: boolean;
   @Input() showGroups: boolean;

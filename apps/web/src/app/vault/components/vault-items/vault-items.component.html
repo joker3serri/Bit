@@ -8,6 +8,7 @@
             type="checkbox"
             bitCheckbox
             id="checkAll"
+            [disabled]="disabled"
             (change)="$event ? toggleAll() : null"
             [checked]="selection.hasValue() && isAllSelected"
           />
@@ -21,6 +22,7 @@
         <th bitCell class="tw-w-max" *ngIf="showGroups">{{ "groups" | i18n }}</th>
         <th bitCell class="tw-min-w-fit tw-text-right">
           <button
+            [disabled]="disabled"
             [bitMenuTriggerFor]="headerMenu"
             bitIconButton="bwi-ellipsis-v"
             size="small"
@@ -62,6 +64,7 @@
           bitRow
           appVaultCollectionRow
           alignContent="middle"
+          [disabled]="disabled"
           [collection]="item.collection"
           [showOwner]="showOwner"
           [showCollections]="showCollections"
@@ -78,6 +81,7 @@
           bitRow
           appVaultCipherRow
           alignContent="middle"
+          [disabled]="disabled"
           [cipher]="item.cipher"
           [showOwner]="showOwner"
           [showCollections]="showCollections"

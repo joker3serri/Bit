@@ -12,6 +12,7 @@ import { VaultItemEvent } from "./vault-item-event";
   templateUrl: "vault-collection-row.component.html",
 })
 export class VaultCollectionRowComponent {
+  @Input() disabled: boolean;
   @Input() collection: CollectionView;
   @Input() showOwner: boolean;
   @Input() showCollections: boolean;

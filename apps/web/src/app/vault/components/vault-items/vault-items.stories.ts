@@ -94,11 +94,10 @@ export default {
     }),
   ],
   args: {
-    collections,
+    disabled: false,
     allCollections: collections,
     allGroups: groups,
     allOrganizations: organizations,
-    ciphers,
   },
   argTypes: { onEvent: { action: "onEvent" } },
 } as Meta;
@@ -109,7 +108,24 @@ const Template: Story<VaultItemsComponent> = (args: VaultItemsComponent) => ({
 
 export const Individual = Template.bind({});
 Individual.args = {
+  ciphers,
   collections: [],
+  showOwner: true,
+  showCollections: false,
+  showGroups: false,
+  showPremiumFeatures: true,
+  showBulkMove: true,
+  showBulkTrashOptions: false,
+  useEvents: false,
+  editableCollections: false,
+  cloneableOrganizationCiphers: false,
+};
+
+export const IndividualDisabled = Template.bind({});
+IndividualDisabled.args = {
+  ciphers,
+  collections: [],
+  disabled: true,
   showOwner: true,
   showCollections: false,
   showGroups: false,
@@ -139,6 +155,7 @@ IndividualTrash.args = {
 export const IndividualTopLevelCollection = Template.bind({});
 IndividualTopLevelCollection.args = {
   ciphers: [],
+  collections,
   showOwner: true,
   showCollections: false,
   showGroups: false,
@@ -152,6 +169,8 @@ IndividualTopLevelCollection.args = {
 
 export const IndividualSecondLevelCollection = Template.bind({});
 IndividualSecondLevelCollection.args = {
+  ciphers,
+  collections,
   showOwner: true,
   showCollections: false,
   showGroups: false,
@@ -165,8 +184,8 @@ IndividualSecondLevelCollection.args = {
 
 export const OrganizationVault = Template.bind({});
 OrganizationVault.args = {
-  collections: [],
   ciphers: organizationOnlyCiphers,
+  collections: [],
   showOwner: false,
   showCollections: true,
   showGroups: false,
@@ -196,6 +215,7 @@ OrganizationTrash.args = {
 export const OrganizationTopLevelCollection = Template.bind({});
 OrganizationTopLevelCollection.args = {
   ciphers: [],
+  collections,
   showOwner: false,
   showCollections: false,
   showGroups: true,
@@ -210,6 +230,7 @@ OrganizationTopLevelCollection.args = {
 export const OrganizationSecondLevelCollection = Template.bind({});
 OrganizationSecondLevelCollection.args = {
   ciphers: organizationOnlyCiphers,
+  collections,
   showOwner: false,
   showCollections: false,
   showGroups: true,

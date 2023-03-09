@@ -2,6 +2,7 @@
 <!-- eslint-disable @angular-eslint/template/button-has-type -->
 <button
   bitBadge
+  [disabled]="disabled"
   [style.color]="textColor"
   [style.background-color]="color"
   appA11yTitle="{{ organizationName }}"

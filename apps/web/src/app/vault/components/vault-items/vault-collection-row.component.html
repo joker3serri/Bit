@@ -3,6 +3,7 @@
     type="checkbox"
     bitCheckbox
     appStopProp
+    [disabled]="disabled"
     [checked]="checked"
     (change)="$event ? this.checkedToggled.next() : null"
   />
@@ -19,6 +20,7 @@
 </td>
 <td bitCell *ngIf="showOwner">
   <app-org-badge
+    [disabled]="disabled"
     [organizationName]="collection.organizationId | orgNameFromId: organizations"
     appStopProp
   >
@@ -35,6 +37,7 @@
 <td bitCell class="tw-text-right">
   <button
     *ngIf="editable && (canEditCollection || canDeleteCollection)"
+    [disabled]="disabled"
     [bitMenuTriggerFor]="collectionOptions"
     size="small"
     bitIconButton="bwi-ellipsis-v"
