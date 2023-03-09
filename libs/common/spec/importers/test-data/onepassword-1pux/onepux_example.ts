@@ -77,7 +77,7 @@ export const OnePuxExampleFile: ExportData = {
                         },
                       },
                       {
-                        title: "Name",
+                        title: null,
                         id: "brrpwptxbxr3x7rj4mxxw6ixai",
                         value: {
                           concealed: "beastborn1",

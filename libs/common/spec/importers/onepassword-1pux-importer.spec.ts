@@ -695,7 +695,7 @@ describe("1Password 1Pux Importer", () => {
     const cipher = result.ciphers.shift();
     expect(cipher.fields[0].name).toBe("PIN");
     expect(cipher.fields[1].name).toBe("What was the model of your first car?");
-    expect(cipher.fields[2].name).toBe("Name");
+    expect(cipher.fields[2].name).toBe("brrpwptxbxr3x7rj4mxxw6ixai");
     expect(cipher.fields[3].name).toBe("mm67c5aacgyk2ozl4goqmhriva");
   });
 });
