@@ -1,5 +1,5 @@
-import { CollectionService as AbstractCollectionService } from "@bitwarden/common/abstractions/collection.service";
-import { CollectionService } from "@bitwarden/common/services/collection.service";
+import { CollectionService as AbstractCollectionService } from "@bitwarden/common/admin-console/abstractions/collection.service";
+import { CollectionService } from "@bitwarden/common/admin-console/services/collection.service";
 
 import {
   cryptoServiceFactory,
