@@ -4854,10 +4854,10 @@
     "message": "One or more organization policies prevents you from exporting your individual vault."
   },
   "activateAutofill": {
-    "message": "Activate autofill"
+    "message": "Activate auto-fill"
   },
   "activateAutofillDesc": {
-    "message": "Activate the autofill with page load settings on the browser extension for all existing and new members."
+    "message": "Activate the auto-fill with page load settings on the browser extension for all existing and new members."
   },
   "experimentalFeature": {
     "message": "Compromised or untrusted websites can exploit auto-fill on page load."
