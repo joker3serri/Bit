@@ -28,25 +28,25 @@ export class VaultItemsComponent {
   @Input() showPremiumFeatures: boolean;
   @Input() showBulkMove: boolean;
   @Input() showBulkTrashOptions: boolean;
-  @Input() allOrganizations: Organization[];
-  @Input() allCollections: CollectionView[];
-  @Input() allGroups: GroupView[];
+  @Input() allOrganizations: Organization[] = [];
+  @Input() allCollections: CollectionView[] = [];
+  @Input() allGroups: GroupView[] = [];
 
-  private _ciphers: CipherView[] = [];
+  private _ciphers?: CipherView[] = [];
   @Input() get ciphers(): CipherView[] {
     return this._ciphers;
   }
-  set ciphers(value: CipherView[]) {
-    this._ciphers = value;
+  set ciphers(value: CipherView[] | undefined) {
+    this._ciphers = value ?? [];
     this.refreshItems();
   }
 
-  private _collections: CollectionView[] = [];
+  private _collections?: CollectionView[] = [];
   @Input() get collections(): CollectionView[] {
     return this._collections;
   }
-  set collections(value: CollectionView[]) {
-    this._collections = value;
+  set collections(value: CollectionView[] | undefined) {
+    this._collections = value ?? [];
     this.refreshItems();
   }
 

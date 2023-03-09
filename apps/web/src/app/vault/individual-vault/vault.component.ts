@@ -8,8 +8,8 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { firstValueFrom, Subject } from "rxjs";
-import { first, switchMap, takeUntil } from "rxjs/operators";
+import { combineLatest, firstValueFrom, Observable, Subject } from "rxjs";
+import { filter, first, map, switchMap, takeUntil } from "rxjs/operators";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
@@ -22,12 +22,15 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { KdfType, DEFAULT_PBKDF2_ITERATIONS } from "@bitwarden/common/enums/kdfType";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
+import { Organization } from "@bitwarden/common/models/domain/organization";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
+import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
+import { GroupView } from "../../organizations/core";
 import { UpdateKeyComponent } from "../../settings/update-key.component";
 
 import { AddEditComponent } from "./add-edit.component";
@@ -39,6 +42,7 @@ import { VaultFilterComponent } from "./vault-filter/components/vault-filter.com
 import { VaultFilterService } from "./vault-filter/services/abstractions/vault-filter.service";
 import { RoutedVaultFilterBridgeService } from "./vault-filter/services/routed-vault-filter-bridge.service";
 import { RoutedVaultFilterService } from "./vault-filter/services/routed-vault-filter.service";
+import { createFilterFunction } from "./vault-filter/shared/models/filter-function";
 import { VaultFilter } from "./vault-filter/shared/models/vault-filter.model";
 import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/vault-filter.type";
 
@@ -72,6 +76,16 @@ export class VaultComponent implements OnInit, OnDestroy {
   trashCleanupWarning: string = null;
   kdfIterations: number;
   activeFilter: VaultFilter = new VaultFilter();
+
+  protected ciphers$: Observable<CipherView[]>;
+  protected collections$: Observable<CollectionView[]>;
+  protected allCollections$: Observable<CollectionView[]>;
+  protected allGroups$: Observable<GroupView[]>;
+  protected allOrganizations$: Observable<Organization[]>;
+
+  // Subject to support legacy promise-based services
+  private refresh$ = new Subject<void>();
+
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -90,6 +104,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private stateService: StateService,
     private organizationService: OrganizationService,
     private vaultFilterService: VaultFilterService,
+    private routedVaultFilterService: RoutedVaultFilterService,
     private routedVaultFilterBridgeService: RoutedVaultFilterBridgeService,
     private cipherService: CipherService,
     private passwordRepromptService: PasswordRepromptService
@@ -111,6 +126,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         switchMap(async (params: Params) => {
           await this.syncService.fullSync(false);
           await this.vaultFilterService.reloadCollections();
+          this.refresh$.next();
           // await this.vaultItemsComponent.reload();
 
           const canAccessPremium = await this.stateService.getCanAccessPremium();
@@ -158,10 +174,8 @@ export class VaultComponent implements OnInit, OnDestroy {
         switch (message.command) {
           case "syncCompleted":
             if (message.successfully) {
-              await Promise.all([
-                this.vaultFilterService.reloadCollections(),
-                // TODO: this.vaultItemsComponent.load(this.vaultItemsComponent.filter),
-              ]);
+              await Promise.all([this.vaultFilterService.reloadCollections()]);
+              this.refresh$.next();
               this.changeDetectorRef.detectChanges();
             }
             break;
@@ -174,6 +188,14 @@ export class VaultComponent implements OnInit, OnDestroy {
       .subscribe((activeFilter) => {
         this.activeFilter = activeFilter;
       });
+
+    this.ciphers$ = combineLatest([
+      this.refresh$.pipe(switchMap(() => this.cipherService.getAllDecrypted())),
+      this.routedVaultFilterService.filter$,
+    ]).pipe(
+      filter(([ciphers, filter]) => ciphers != undefined && filter != undefined),
+      map(([ciphers, filter]) => ciphers.filter(createFilterFunction(filter)))
+    );
   }
 
   get isShowingCards() {
@@ -275,7 +297,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     modal.onClosed.subscribe(async () => {
       if (madeAttachmentChanges) {
-        // await this.vaultItemsComponent.refresh();
+        this.refresh$.next();
       }
       madeAttachmentChanges = false;
     });
@@ -290,7 +312,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onSharedCipher.subscribe(async () => {
           modal.close();
-          // TODO: await this.vaultItemsComponent.refresh();
+          this.refresh$.next();
         });
       }
     );
@@ -305,7 +327,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onSavedCollections.subscribe(async () => {
           modal.close();
-          // TODO: await this.vaultItemsComponent.refresh();
+          this.refresh$.next();
         });
       }
     );
@@ -352,17 +374,17 @@ export class VaultComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onSavedCipher.subscribe(async () => {
           modal.close();
-          // TODO: await this.vaultItemsComponent.refresh();
+          this.refresh$.next();
         });
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onDeletedCipher.subscribe(async () => {
           modal.close();
-          // TODO: await this.vaultItemsComponent.refresh();
+          this.refresh$.next();
         });
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onRestoredCipher.subscribe(async () => {
           modal.close();
-          // TODO: await this.vaultItemsComponent.refresh();
+          this.refresh$.next();
         });
       }
     );

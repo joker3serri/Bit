@@ -25,7 +25,7 @@
         {{ trashCleanupWarning }}
       </app-callout>
       <app-new-vault-items
-        [ciphers]="[]"
+        [ciphers]="ciphers$ | async"
         [collections]="[]"
         [allCollections]="[]"
         [allGroups]="[]"
