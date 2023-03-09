@@ -14,7 +14,15 @@
   </div>
 </td>
 <td bitCell>
-  <button bitLink class="tw-text-start" linkType="secondary" type="button">
+  <button
+    bitLink
+    type="button"
+    class="tw-text-start"
+    linkType="secondary"
+    [routerLink]="[]"
+    [queryParams]="{ collectionId: collection.id }"
+    queryParamsHandling="merge"
+  >
     {{ collection.name }}
   </button>
 </td>
