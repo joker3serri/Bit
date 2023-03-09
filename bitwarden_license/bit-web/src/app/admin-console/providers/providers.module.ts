@@ -19,7 +19,7 @@ import { PeopleComponent } from "./manage/people.component";
 import { UserAddEditComponent } from "./manage/user-add-edit.component";
 import { ProvidersLayoutComponent } from "./providers-layout.component";
 import { ProvidersRoutingModule } from "./providers-routing.module";
-import { WebProviderService } from "./services/webProvider.service";
+import { WebProviderService } from "./services/web-provider.service";
 import { AccountComponent } from "./settings/account.component";
 import { SettingsComponent } from "./settings/settings.component";
 import { SetupProviderComponent } from "./setup/setup-provider.component";

@@ -1,5 +1,5 @@
 import { BaseResponse } from "../../../models/response/base.response";
-import { ScimProviderType } from "../../enums/scimProviderType";
+import { ScimProviderType } from "../../enums/scim-provider-type";
 
 export class ScimConfigApi extends BaseResponse {
   enabled: boolean;

@@ -1,5 +1,5 @@
 import { BillingSyncConfigRequest } from "../../../billing/models/request/billing-sync-config.request";
-import { OrganizationConnectionType } from "../../enums/organizationConnectionType";
+import { OrganizationConnectionType } from "../../enums/organization-connection-type";
 
 import { ScimConfigRequest } from "./scim-config.request";
 

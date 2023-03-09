@@ -1,4 +1,4 @@
-import { PolicyType } from "../../enums/policyType";
+import { PolicyType } from "../../enums/policy-type";
 import { PolicyResponse } from "../response/policy.response";
 
 export class PolicyData {

@@ -3,7 +3,7 @@ import { PolicyService } from "../../admin-console/abstractions/policy/policy.se
 import { StateService } from "../../abstractions/state.service";
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "../../abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { TokenService } from "../../auth/abstractions/token.service";
-import { PolicyType } from "../../admin-console/enums/policyType";
+import { PolicyType } from "../../admin-console/enums/policy-type";
 
 export class VaultTimeoutSettingsService implements VaultTimeoutSettingsServiceAbstraction {
   constructor(

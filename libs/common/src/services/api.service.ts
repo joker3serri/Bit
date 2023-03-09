@@ -84,7 +84,7 @@ import { SubscriptionResponse } from "../billing/models/response/subscription.re
 import { TaxInfoResponse } from "../billing/models/response/tax-info.response";
 import { TaxRateResponse } from "../billing/models/response/tax-rate.response";
 import { DeviceType } from "../enums/deviceType";
-import { OrganizationConnectionType } from "../admin-console/enums/organizationConnectionType";
+import { OrganizationConnectionType } from "../admin-console/enums/organization-connection-type";
 import { Utils } from "../misc/utils";
 import { CollectionBulkDeleteRequest } from "../models/request/collection-bulk-delete.request";
 import { CollectionRequest } from "../admin-console/models/request/collection.request";

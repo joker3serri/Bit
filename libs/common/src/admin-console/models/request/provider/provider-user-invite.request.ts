@@ -1,4 +1,4 @@
-import { ProviderUserType } from "../../../../admin-console/enums/providerUserType";
+import { ProviderUserType } from "../../../enums/provider-user-type";
 
 export class ProviderUserInviteRequest {
   emails: string[] = [];

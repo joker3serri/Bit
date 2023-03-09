@@ -17,7 +17,7 @@ import { Organization } from "@bitwarden/common/admin-console/models/domain/orga
 import { ProviderOrganizationOrganizationDetailsResponse } from "@bitwarden/common/admin-console/models/response/provider/provider-organization.response";
 import { PlanType } from "@bitwarden/common/billing/enums/plan-type";
 
-import { WebProviderService } from "../services/webProvider.service";
+import { WebProviderService } from "../services/web-provider.service";
 
 import { AddOrganizationComponent } from "./add-organization.component";
 

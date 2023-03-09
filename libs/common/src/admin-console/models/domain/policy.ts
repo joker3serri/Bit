@@ -1,4 +1,4 @@
-import { PolicyType } from "../../enums/policyType";
+import { PolicyType } from "../../enums/policy-type";
 import { PolicyData } from "../data/policy.data";
 import Domain from "../../../models/domain/domain-base";
 
