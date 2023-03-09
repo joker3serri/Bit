@@ -8,11 +8,6 @@ export class PolicyApiServiceAbstraction {
   getPolicy: (organizationId: string, type: PolicyType) => Promise<PolicyResponse>;
   getPolicies: (organizationId: string) => Promise<ListResponse<PolicyResponse>>;
 
-  /**
-   * Get all policies, across all organizations, for the current user.
-   */
-  getAllPolicies: () => Promise<ListResponse<PolicyResponse>>;
-
   getPoliciesByToken: (
     organizationId: string,
     token: string,
