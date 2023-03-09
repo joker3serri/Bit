@@ -10,7 +10,6 @@ import { InputCheckboxComponent } from "./components/input-checkbox.component";
 import { ScimComponent } from "./manage/scim.component";
 import { OrganizationsRoutingModule } from "./organizations-routing.module";
 
-
 @NgModule({
   imports: [SharedModule, OrganizationsRoutingModule],
   declarations: [

@@ -2,7 +2,6 @@ import { BaseResponse } from "../../../models/response/base.response";
 
 import { SelectionReadOnlyResponse } from "./selection-read-only.response";
 
-
 export class CollectionResponse extends BaseResponse {
   id: string;
   organizationId: string;
