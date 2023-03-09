@@ -31,7 +31,7 @@ export class SecretsManagerExportComponent implements OnInit, OnDestroy {
   protected exportFormats: ExportFormat[] = [{ name: "Bitwarden (json)", fileExtension: "json" }];
 
   protected formGroup = new FormGroup({
-    format: new FormControl(this.exportFormats[0].name, [Validators.required]),
+    format: new FormControl(0, [Validators.required]),
   });
 
   constructor(
@@ -81,10 +81,7 @@ export class SecretsManagerExportComponent implements OnInit, OnDestroy {
   };
 
   private async doExport() {
-    const fileExtension = this.exportFormats.filter(
-      (format) => format.name == this.formGroup.get("format").value
-    )[0].fileExtension;
-
+    const fileExtension = this.exportFormats[this.formGroup.get("format").value].fileExtension;
     const exportData = await this.secretsManagerApiService.export(this.orgId, fileExtension);
 
     await this.downloadFile(exportData, fileExtension);
