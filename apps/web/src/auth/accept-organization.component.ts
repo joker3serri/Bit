@@ -48,20 +48,20 @@ export class AcceptOrganizationComponent extends BaseAcceptComponent {
   }
 
   async authedHandler(qParams: Params): Promise<void> {
-    const needsReAuth = (await this.stateService.getOrganizationInvitation()) == null;
-    if (needsReAuth) {
-      // Accepting an org invite requires authentication from a logged out state
-      this.messagingService.send("logout", { redirect: false });
-      await this.prepareOrganizationInvitation(qParams);
-      return;
-    }
-
-    // User has already logged in and passed the Master Password policy check
     const initOrganization =
       qParams.initOrganization != null && qParams.initOrganization.toLocaleLowerCase() === "true";
     if (initOrganization) {
       this.actionPromise = this.acceptInitOrganizationFlow(qParams);
     } else {
+      const needsReAuth = (await this.stateService.getOrganizationInvitation()) == null;
+      if (needsReAuth) {
+        // Accepting an org invite requires authentication from a logged out state
+        this.messagingService.send("logout", { redirect: false });
+        await this.prepareOrganizationInvitation(qParams);
+        return;
+      }
+
+      // User has already logged in and passed the Master Password policy check
       this.actionPromise = this.acceptFlow(qParams);
     }
 
