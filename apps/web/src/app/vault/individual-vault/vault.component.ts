@@ -36,7 +36,7 @@ import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/pa
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService } from "@bitwarden/components";
+import { DialogService, Icons } from "@bitwarden/components";
 
 import { UpdateKeyComponent } from "../../settings/update-key.component";
 import { VaultItemEvent } from "../components/vault-items/vault-item-event";
@@ -106,7 +106,8 @@ export class VaultComponent implements OnInit, OnDestroy {
   kdfIterations: number;
   activeFilter: VaultFilter = new VaultFilter();
 
-  protected performingAsyncAction = false;
+  protected noItemIcon = Icons.Search;
+
   protected loading$: Observable<boolean>;
   protected filter$: Observable<RoutedVaultFilterModel>;
   protected showBulkMove$: Observable<boolean>;
@@ -115,6 +116,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected allOrganizations$: Observable<Organization[]>;
   protected ciphers$: Observable<CipherView[]>;
   protected collections$: Observable<CollectionView[]>;
+  protected isEmpty$: Observable<boolean>;
 
   // Support for legacy promise-based services
   private refresh$ = new Subject<void>();
@@ -277,6 +279,17 @@ export class VaultComponent implements OnInit, OnDestroy {
         );
         return selectedCollection.children.map((c) => c.node);
       })
+    );
+
+    this.isEmpty$ = combineLatest([
+      this.refreshTracker.loading$,
+      this.collections$,
+      this.ciphers$,
+    ]).pipe(
+      map(
+        ([loading, collections, ciphers]) =>
+          !loading && collections?.length === 0 && ciphers?.length === 0
+      )
     );
   }
 

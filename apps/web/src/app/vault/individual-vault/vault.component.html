@@ -25,6 +25,7 @@
         {{ trashCleanupWarning }}
       </app-callout>
       <app-new-vault-items
+        *ngIf="!(isEmpty$ | async)"
         [ciphers]="ciphers$ | async"
         [collections]="collections$ | async"
         [allCollections]="allCollections$ | async"
@@ -42,6 +43,23 @@
         (onEvent)="onVaultItemsEvent($event)"
       >
       </app-new-vault-items>
+      <div
+        *ngIf="isEmpty$ | async"
+        class="tw-mt-6 tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-start"
+      >
+        <bit-icon [icon]="noItemIcon" aria-hidden="true"></bit-icon>
+        <p>{{ "noItemsInList" | i18n }}</p>
+        <button
+          type="button"
+          buttonType="primary"
+          bitButton
+          (click)="addCipher()"
+          *ngIf="(filter$ | async)?.type !== 'trash'"
+        >
+          <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
+          {{ "newItem" | i18n }}
+        </button>
+      </div>
       <!-- <app-vault-items
         [activeFilter]="activeFilter"
         (onCipherClicked)="navigateToCipher($event)"
