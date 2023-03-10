@@ -29,7 +29,7 @@
         [collections]="collections$ | async"
         [allCollections]="allCollections$ | async"
         [allOrganizations]="allOrganizations$ | async"
-        [disabled]="performingAsyncAction"
+        [disabled]="loading$ | async"
         [showOwner]="true"
         [showCollections]="false"
         [showGroups]="false"

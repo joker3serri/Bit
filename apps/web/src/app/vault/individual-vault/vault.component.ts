@@ -26,6 +26,7 @@ import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { KdfType, DEFAULT_PBKDF2_ITERATIONS } from "@bitwarden/common/enums/kdfType";
+import { RefreshTracker } from "@bitwarden/common/misc/refresh-tracker";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
@@ -106,6 +107,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   activeFilter: VaultFilter = new VaultFilter();
 
   protected performingAsyncAction = false;
+  protected loading$: Observable<boolean>;
   protected filter$: Observable<RoutedVaultFilterModel>;
   protected showBulkMove$: Observable<boolean>;
   protected canAccessPremium$: Observable<boolean>;
@@ -114,8 +116,9 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected ciphers$: Observable<CipherView[]>;
   protected collections$: Observable<CollectionView[]>;
 
-  // Subject to support legacy promise-based services
+  // Support for legacy promise-based services
   private refresh$ = new Subject<void>();
+  private refreshTracker = new RefreshTracker();
 
   private destroy$ = new Subject<void>();
 
@@ -147,6 +150,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
+    this.loading$ = this.refreshTracker.loading$;
     this.showVerifyEmail = !(await this.tokenService.getEmailVerified());
     this.showBrowserOutdated = window.navigator.userAgent.indexOf("MSIE") !== -1;
     this.showLowKdf = await this.isLowKdfIteration();
@@ -234,15 +238,17 @@ export class VaultComponent implements OnInit, OnDestroy {
       )
     );
     this.canAccessPremium$ = this.refresh$.pipe(
-      switchMap(() => this.stateService.getCanAccessPremium())
+      this.refreshTracker.switchMap(() => this.stateService.getCanAccessPremium())
     );
     this.allCollections$ = this.refresh$.pipe(
-      switchMap(() => this.collectionService.getAllDecrypted())
+      this.refreshTracker.switchMap(() => this.collectionService.getAllDecrypted())
     );
-    this.allOrganizations$ = this.refresh$.pipe(switchMap(() => this.organizationService.getAll()));
+    this.allOrganizations$ = this.refresh$.pipe(
+      this.refreshTracker.switchMap(() => this.organizationService.getAll())
+    );
 
     this.ciphers$ = combineLatest([
-      this.refresh$.pipe(switchMap(() => this.cipherService.getAllDecrypted())),
+      this.refresh$.pipe(this.refreshTracker.switchMap(() => this.cipherService.getAllDecrypted())),
       this.filter$,
     ]).pipe(
       filter(([ciphers, filter]) => ciphers != undefined && filter != undefined),
@@ -250,7 +256,9 @@ export class VaultComponent implements OnInit, OnDestroy {
     );
 
     this.collections$ = combineLatest([
-      this.refresh$.pipe(switchMap(() => this.collectionService.getAllNested())),
+      this.refresh$.pipe(
+        this.refreshTracker.switchMap(() => this.collectionService.getAllNested())
+      ),
       this.filter$,
     ]).pipe(
       filter(([collections, filter]) => collections != undefined && filter != undefined),
