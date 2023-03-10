@@ -596,7 +596,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
 
     try {
-      this.deleteCipherWithServer(c.id, permanent);
+      await this.deleteCipherWithServer(c.id, permanent);
       // TODO await this.actionPromise;
       this.platformUtilsService.showToast(
         "success",
