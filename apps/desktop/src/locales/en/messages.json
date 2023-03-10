@@ -1524,6 +1524,9 @@
   "ssoCompleteRegistration": {
     "message": "In order to complete logging in with SSO, please set a master password to access and protect your vault."
   },
+  "currentMasterPass": {
+    "message": "Current master password"
+  },
   "newMasterPass": {
     "message": "New master password"
   },
