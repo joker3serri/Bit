@@ -11,6 +11,8 @@ import { GroupView } from "../../../organizations/core";
 import { VaultItem } from "./vault-item";
 import { VaultItemEvent } from "./vault-item-event";
 
+const MaxSelectionCount = 500;
+
 @Component({
   selector: "app-new-vault-items",
   templateUrl: "vault-items.component.html",
@@ -56,11 +58,15 @@ export class VaultItemsComponent {
   protected selection = new SelectionModel<VaultItem>(true, [], true);
 
   get isAllSelected() {
-    return this.dataSource.data.every((item) => this.selection.isSelected(item));
+    return this.dataSource.data
+      .slice(0, MaxSelectionCount)
+      .every((item) => this.selection.isSelected(item));
   }
 
   toggleAll() {
-    this.isAllSelected ? this.selection.clear() : this.selection.select(...this.dataSource.data);
+    this.isAllSelected
+      ? this.selection.clear()
+      : this.selection.select(...this.dataSource.data.slice(0, MaxSelectionCount));
   }
 
   protected event(event: VaultItemEvent) {
