@@ -8,19 +8,23 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { combineLatest, firstValueFrom, Observable, Subject } from "rxjs";
+import { combineLatest, firstValueFrom, lastValueFrom, Observable, Subject } from "rxjs";
 import { filter, first, map, switchMap, takeUntil } from "rxjs/operators";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
+import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
+import { EventType } from "@bitwarden/common/enums/eventType";
 import { KdfType, DEFAULT_PBKDF2_ITERATIONS } from "@bitwarden/common/enums/kdfType";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
@@ -29,12 +33,31 @@ import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
+import { DialogService } from "@bitwarden/components";
 
 import { UpdateKeyComponent } from "../../settings/update-key.component";
+import { VaultItemEvent } from "../components/vault-items/vault-item-event";
 
 import { AddEditComponent } from "./add-edit.component";
 import { AttachmentsComponent } from "./attachments.component";
+import {
+  BulkDeleteDialogResult,
+  openBulkDeleteDialog,
+} from "./bulk-action-dialogs/bulk-delete-dialog/bulk-delete-dialog.component";
+import {
+  BulkMoveDialogResult,
+  openBulkMoveDialog,
+} from "./bulk-action-dialogs/bulk-move-dialog/bulk-move-dialog.component";
+import {
+  BulkRestoreDialogResult,
+  openBulkRestoreDialog,
+} from "./bulk-action-dialogs/bulk-restore-dialog/bulk-restore-dialog.component";
+import {
+  BulkShareDialogResult,
+  openBulkShareDialog,
+} from "./bulk-action-dialogs/bulk-share-dialog/bulk-share-dialog.component";
 import { CollectionsComponent } from "./collections.component";
 import { FolderAddEditComponent } from "./folder-add-edit.component";
 import { ShareComponent } from "./share.component";
@@ -103,6 +126,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
     private i18nService: I18nService,
     private modalService: ModalService,
+    private dialogService: DialogService,
     private tokenService: TokenService,
     private cryptoService: CryptoService,
     private messagingService: MessagingService,
@@ -116,7 +140,10 @@ export class VaultComponent implements OnInit, OnDestroy {
     private routedVaultFilterBridgeService: RoutedVaultFilterBridgeService,
     private cipherService: CipherService,
     private passwordRepromptService: PasswordRepromptService,
-    private collectionService: CollectionService
+    private collectionService: CollectionService,
+    private logService: LogService,
+    private totpService: TotpService,
+    private eventCollectionService: EventCollectionService
   ) {}
 
   async ngOnInit() {
@@ -135,7 +162,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         switchMap(async (params: Params) => {
           await this.syncService.fullSync(false);
           await this.vaultFilterService.reloadCollections();
-          this.refresh$.next();
+          this.refresh();
           // await this.vaultItemsComponent.reload();
 
           const canAccessPremium = await this.stateService.getCanAccessPremium();
@@ -184,7 +211,7 @@ export class VaultComponent implements OnInit, OnDestroy {
           case "syncCompleted":
             if (message.successfully) {
               await Promise.all([this.vaultFilterService.reloadCollections()]);
-              this.refresh$.next();
+              this.refresh();
               this.changeDetectorRef.detectChanges();
             }
             break;
@@ -263,6 +290,45 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.broadcasterService.unsubscribe(BroadcasterSubscriptionId);
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  onVaultItemsEvent(event: VaultItemEvent) {
+    if (event.type === "attachements") {
+      this.editCipherAttachments(event.item);
+    } else if (event.type === "collections") {
+      this.editCipherCollections(event.item);
+    } else if (event.type === "clone") {
+      this.cloneCipher(event.item);
+    } else if (event.type === "restore") {
+      if (event.items.length === 1) {
+        this.restore(event.items[0]);
+      } else {
+        this.bulkRestore(event.items);
+      }
+    } else if (event.type === "delete") {
+      const ciphers = event.items.filter((i) => i.collection === undefined).map((i) => i.cipher);
+      if (ciphers.length === 1) {
+        this.deleteCipher(ciphers[0]);
+      } else {
+        this.bulkDelete(ciphers);
+      }
+    } else if (event.type === "moveToFolder") {
+      this.bulkMove(event.items);
+    } else if (event.type === "moveToOrganization") {
+      if (event.items.length === 1) {
+        this.shareCipher(event.items[0]);
+      } else {
+        this.bulkShare(event.items);
+      }
+    } else if (event.type === "copy") {
+      if (event.field === "username") {
+        this.copy(event.item, event.item.login.username, "Username", "username");
+      } else if (event.field === "password") {
+        this.copy(event.item, event.item.login.password, "Password", "password");
+      } else if (event.field === "totp") {
+        this.copy(event.item, event.item.login.totp, "verificationCodeTotp", "TOTP");
+      }
+    }
   }
 
   async applyOrganizationFilter(orgId: string) {
@@ -344,7 +410,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     modal.onClosed.subscribe(async () => {
       if (madeAttachmentChanges) {
-        this.refresh$.next();
+        this.refresh();
       }
       madeAttachmentChanges = false;
     });
@@ -359,7 +425,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onSharedCipher.subscribe(async () => {
           modal.close();
-          this.refresh$.next();
+          this.refresh();
         });
       }
     );
@@ -374,7 +440,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onSavedCollections.subscribe(async () => {
           modal.close();
-          this.refresh$.next();
+          this.refresh();
         });
       }
     );
@@ -421,17 +487,17 @@ export class VaultComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onSavedCipher.subscribe(async () => {
           modal.close();
-          this.refresh$.next();
+          this.refresh();
         });
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onDeletedCipher.subscribe(async () => {
           modal.close();
-          this.refresh$.next();
+          this.refresh();
         });
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onRestoredCipher.subscribe(async () => {
           modal.close();
-          this.refresh$.next();
+          this.refresh();
         });
       }
     );
@@ -448,6 +514,222 @@ export class VaultComponent implements OnInit, OnDestroy {
     component.cloneMode = true;
   }
 
+  async restore(c: CipherView): Promise<boolean> {
+    // REVIEW QUESTION: Original restore didn't reprompt cipher. I added it now.
+    // Should I remove again? Was it just a bug that it was missing?
+    if (!(await this.repromptCipher([c]))) {
+      return;
+    }
+
+    if (!c.isDeleted) {
+      return;
+    }
+    const confirmed = await this.platformUtilsService.showDialog(
+      this.i18nService.t("restoreItemConfirmation"),
+      this.i18nService.t("restoreItem"),
+      this.i18nService.t("yes"),
+      this.i18nService.t("no"),
+      "warning"
+    );
+    if (!confirmed) {
+      return false;
+    }
+
+    try {
+      this.cipherService.restoreWithServer(c.id);
+      // TODO: await this.actionPromise;
+      this.platformUtilsService.showToast("success", null, this.i18nService.t("restoredItem"));
+      this.refresh();
+    } catch (e) {
+      this.logService.error(e);
+    }
+    // TODO: this.actionPromise = null;
+  }
+
+  async bulkRestore(ciphers: CipherView[]) {
+    if (!(await this.repromptCipher(ciphers))) {
+      return;
+    }
+
+    const selectedCipherIds = ciphers.map((cipher) => cipher.id);
+    if (selectedCipherIds.length === 0) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("nothingSelected")
+      );
+      return;
+    }
+
+    const dialog = openBulkRestoreDialog(this.dialogService, {
+      data: { cipherIds: selectedCipherIds },
+    });
+
+    const result = await lastValueFrom(dialog.closed);
+    if (result === BulkRestoreDialogResult.Restored) {
+      this.refresh();
+      // TODO this.actionPromise = this.refresh();
+      // await this.actionPromise;
+      // this.actionPromise = null;
+    }
+  }
+
+  async deleteCipher(c: CipherView): Promise<boolean> {
+    if (!(await this.repromptCipher([c]))) {
+      return;
+    }
+    // if (this.actionPromise != null) {
+    //   return;
+    // }
+    const permanent = c.isDeleted;
+    const confirmed = await this.platformUtilsService.showDialog(
+      this.i18nService.t(
+        permanent ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation"
+      ),
+      this.i18nService.t(permanent ? "permanentlyDeleteItem" : "deleteItem"),
+      this.i18nService.t("yes"),
+      this.i18nService.t("no"),
+      "warning"
+    );
+    if (!confirmed) {
+      return false;
+    }
+
+    try {
+      this.deleteCipherWithServer(c.id, permanent);
+      // TODO await this.actionPromise;
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t(permanent ? "permanentlyDeletedItem" : "deletedItem")
+      );
+      this.refresh();
+    } catch (e) {
+      this.logService.error(e);
+    }
+    // this.actionPromise = null;
+  }
+
+  async bulkDelete(ciphers: CipherView[]) {
+    if (!(await this.repromptCipher(ciphers))) {
+      return;
+    }
+
+    const selectedIds = ciphers.map((cipher) => cipher.id);
+    if (selectedIds.length === 0) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("nothingSelected")
+      );
+      return;
+    }
+    const currentFilter = await firstValueFrom(this.filter$);
+    const dialog = openBulkDeleteDialog(this.dialogService, {
+      data: { permanent: currentFilter.type === "trash", cipherIds: selectedIds },
+    });
+
+    const result = await lastValueFrom(dialog.closed);
+    if (result === BulkDeleteDialogResult.Deleted) {
+      this.refresh();
+      // TODO this.actionPromise = this.refresh();
+      // await this.actionPromise;
+      // this.actionPromise = null;
+    }
+  }
+
+  async bulkMove(ciphers: CipherView[]) {
+    if (!(await this.repromptCipher(ciphers))) {
+      return;
+    }
+
+    const selectedCipherIds = ciphers.map((cipher) => cipher.id);
+    if (selectedCipherIds.length === 0) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("nothingSelected")
+      );
+      return;
+    }
+
+    const dialog = openBulkMoveDialog(this.dialogService, {
+      data: { cipherIds: selectedCipherIds },
+    });
+
+    const result = await lastValueFrom(dialog.closed);
+    if (result === BulkMoveDialogResult.Moved) {
+      this.refresh();
+      // this.actionPromise = this.refresh();
+      // await this.actionPromise;
+      // this.actionPromise = null;
+    }
+  }
+
+  async copy(cipher: CipherView, value: string, typeI18nKey: string, aType: string) {
+    if (
+      this.passwordRepromptService.protectedFields().includes(aType) &&
+      !(await this.repromptCipher([cipher]))
+    ) {
+      return;
+    }
+
+    if (value === cipher.login.totp) {
+      value = await this.totpService.getCode(value);
+    }
+
+    if (!cipher.viewPassword) {
+      return;
+    }
+
+    this.platformUtilsService.copyToClipboard(value, { window: window });
+    this.platformUtilsService.showToast(
+      "info",
+      null,
+      this.i18nService.t("valueCopied", this.i18nService.t(typeI18nKey))
+    );
+
+    if (typeI18nKey === "password" || typeI18nKey === "verificationCodeTotp") {
+      this.eventCollectionService.collect(
+        EventType.Cipher_ClientToggledHiddenFieldVisible,
+        cipher.id
+      );
+    } else if (typeI18nKey === "securityCode") {
+      this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, cipher.id);
+    }
+  }
+
+  async bulkShare(ciphers: CipherView[]) {
+    if (!(await this.repromptCipher(ciphers))) {
+      return;
+    }
+
+    if (ciphers.length === 0) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("nothingSelected")
+      );
+      return;
+    }
+
+    const dialog = openBulkShareDialog(this.dialogService, { data: { ciphers } });
+
+    const result = await lastValueFrom(dialog.closed);
+    if (result === BulkShareDialogResult.Shared) {
+      this.refresh();
+      // this.actionPromise = this.refresh();
+      // await this.actionPromise;
+      // this.actionPromise = null;
+    }
+  }
+
+  protected deleteCipherWithServer(id: string, permanent: boolean) {
+    return permanent
+      ? this.cipherService.deleteWithServer(id)
+      : this.cipherService.softDeleteWithServer(id);
+  }
+
   async updateKey() {
     await this.modalService.openViewRef(UpdateKeyComponent, this.updateKeyModalRef);
   }
@@ -456,6 +738,16 @@ export class VaultComponent implements OnInit, OnDestroy {
     const kdfType = await this.stateService.getKdfType();
     const kdfOptions = await this.stateService.getKdfConfig();
     return kdfType === KdfType.PBKDF2_SHA256 && kdfOptions.iterations < DEFAULT_PBKDF2_ITERATIONS;
+  }
+
+  protected async repromptCipher(ciphers: CipherView[]) {
+    const notProtected = !ciphers.find((cipher) => cipher.reprompt !== CipherRepromptType.None);
+
+    return notProtected || (await this.passwordRepromptService.showPasswordPrompt());
+  }
+
+  private refresh() {
+    this.refresh$.next();
   }
 
   private go(queryParams: any = null) {

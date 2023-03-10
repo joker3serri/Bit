@@ -39,6 +39,7 @@
         [useEvents]="false"
         [editableCollections]="false"
         [cloneableOrganizationCiphers]="false"
+        (onEvent)="onVaultItemsEvent($event)"
       >
       </app-new-vault-items>
       <!-- <app-vault-items
