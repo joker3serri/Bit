@@ -20,6 +20,7 @@ export class ProfileOrganizationResponse extends BaseResponse {
   useCustomPermissions: boolean;
   useResetPassword: boolean;
   useSecretsManager: boolean;
+  useActivateAutofillPolicy: boolean;
   selfHost: boolean;
   usersGetPremium: boolean;
   seats: number;
@@ -64,6 +65,7 @@ export class ProfileOrganizationResponse extends BaseResponse {
     this.useCustomPermissions = this.getResponseProperty("UseCustomPermissions") ?? false;
     this.useResetPassword = this.getResponseProperty("UseResetPassword");
     this.useSecretsManager = this.getResponseProperty("UseSecretsManager");
+    this.useActivateAutofillPolicy = this.getResponseProperty("UseActivateAutofillPolicy");
     this.selfHost = this.getResponseProperty("SelfHost");
     this.usersGetPremium = this.getResponseProperty("UsersGetPremium");
     this.seats = this.getResponseProperty("Seats");
