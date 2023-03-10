@@ -10,5 +10,14 @@
     </ng-container>
   </bit-tab-nav-bar>
   <sm-new-menu></sm-new-menu>
+  <button
+    type="button"
+    slot="secondary"
+    bitButton
+    buttonType="secondary"
+    (click)="openEditDialog()"
+  >
+    {{ "editProject" | i18n }}
+  </button>
 </sm-header>
 <router-outlet></router-outlet>
