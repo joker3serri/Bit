@@ -1,6 +1,7 @@
 import { AbstractStorageService } from "../abstractions/storage.service";
 import { CollectionData } from "../admin-console/models/data/collection.data";
 import { OrganizationData } from "../admin-console/models/data/organization.data";
+import { PolicyData } from "../admin-console/models/data/policy.data";
 import { ProviderData } from "../admin-console/models/data/provider.data";
 import { EnvironmentUrls } from "../auth/models/domain/environment-urls";
 import { TokenService } from "../auth/services/token.service";
@@ -10,7 +11,6 @@ import { StateVersion } from "../enums/stateVersion";
 import { ThemeType } from "../enums/themeType";
 import { StateFactory } from "../factories/stateFactory";
 import { EventData } from "../models/data/event.data";
-import { PolicyData } from "../admin-console/models/data/policy.data";
 import { SendData } from "../models/data/send.data";
 import {
   Account,

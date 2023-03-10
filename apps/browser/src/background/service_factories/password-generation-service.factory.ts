@@ -1,12 +1,13 @@
 import { PasswordGenerationService as AbstractPasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PasswordGenerationService } from "@bitwarden/common/services/passwordGeneration.service";
 
-import { cryptoServiceFactory, CryptoServiceInitOptions } from "./crypto-service.factory";
-import { CachedServices, factory, FactoryOptions } from "./factory-options";
 import {
   policyServiceFactory,
   PolicyServiceInitOptions,
 } from "../../admin-console/background/service-factories/policy-service.factory";
+
+import { cryptoServiceFactory, CryptoServiceInitOptions } from "./crypto-service.factory";
+import { CachedServices, factory, FactoryOptions } from "./factory-options";
 import { stateServiceFactory, StateServiceInitOptions } from "./state-service.factory";
 
 type PasswordGenerationServiceFactoryOptions = FactoryOptions;

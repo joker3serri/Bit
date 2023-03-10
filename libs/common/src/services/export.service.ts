@@ -9,6 +9,8 @@ import {
 } from "../abstractions/export.service";
 import { CollectionData } from "../admin-console/models/data/collection.data";
 import { Collection } from "../admin-console/models/domain/collection";
+import { CollectionDetailsResponse } from "../admin-console/models/response/collection.response";
+import { CollectionView } from "../admin-console/models/view/collection.view";
 import { KdfConfig } from "../auth/models/domain/kdf-config";
 import { DEFAULT_PBKDF2_ITERATIONS, KdfType } from "../enums/kdfType";
 import { Utils } from "../misc/utils";
@@ -16,8 +18,6 @@ import { CipherWithIdExport as CipherExport } from "../models/export/cipher-with
 import { CollectionWithIdExport as CollectionExport } from "../models/export/collection-with-id.export";
 import { EventExport } from "../models/export/event.export";
 import { FolderWithIdExport as FolderExport } from "../models/export/folder-with-id.export";
-import { CollectionDetailsResponse } from "../admin-console/models/response/collection.response";
-import { CollectionView } from "../admin-console/models/view/collection.view";
 import { EventView } from "../models/view/event.view";
 import { CipherService } from "../vault/abstractions/cipher.service";
 import { FolderService } from "../vault/abstractions/folder/folder.service.abstraction";
