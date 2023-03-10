@@ -40,8 +40,6 @@ export class SecretDialogComponent implements OnInit {
     project: new FormControl("", [Validators.required]),
   });
 
-  protected readOnly: boolean;
-
   protected loading = false;
   projects: ProjectListView[];
 
@@ -84,8 +82,7 @@ export class SecretDialogComponent implements OnInit {
       project: secret.projects[0]?.id ?? "",
     });
 
-    this.readOnly = !secret.write;
-    if (this.readOnly) {
+    if (!secret.write) {
       this.formGroup.disable();
     }
 
