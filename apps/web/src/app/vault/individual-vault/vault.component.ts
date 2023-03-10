@@ -8,7 +8,14 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { combineLatest, firstValueFrom, lastValueFrom, Observable, Subject } from "rxjs";
+import {
+  BehaviorSubject,
+  combineLatest,
+  firstValueFrom,
+  lastValueFrom,
+  Observable,
+  Subject,
+} from "rxjs";
 import { filter, first, map, switchMap, takeUntil } from "rxjs/operators";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
@@ -107,7 +114,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   activeFilter: VaultFilter = new VaultFilter();
 
   protected noItemIcon = Icons.Search;
-
+  protected initialSyncCompleted = false;
   protected loading$: Observable<boolean>;
   protected filter$: Observable<RoutedVaultFilterModel>;
   protected showBulkMove$: Observable<boolean>;
@@ -119,7 +126,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected isEmpty$: Observable<boolean>;
 
   // Support for legacy promise-based services
-  private refresh$ = new Subject<void>();
+  private refresh$ = new BehaviorSubject<void>(null);
   private refreshTracker = new RefreshTracker();
 
   private destroy$ = new Subject<void>();
@@ -218,6 +225,7 @@ export class VaultComponent implements OnInit, OnDestroy {
             if (message.successfully) {
               await Promise.all([this.vaultFilterService.reloadCollections()]);
               this.refresh();
+              this.initialSyncCompleted = true;
               this.changeDetectorRef.detectChanges();
             }
             break;
