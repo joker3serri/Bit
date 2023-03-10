@@ -16,6 +16,7 @@
     bitButton
     buttonType="secondary"
     (click)="openEditDialog()"
+    *ngIf="project.write"
   >
     {{ "editProject" | i18n }}
   </button>
