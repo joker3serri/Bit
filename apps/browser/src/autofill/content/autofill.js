@@ -486,8 +486,6 @@
               //addProp(field, 'fakeTested', checkIfFakeTested(field, el), false);
               // END MODIFICATION
 
-              console.log("Added field: " + field);
-
               return field;
           });
 
