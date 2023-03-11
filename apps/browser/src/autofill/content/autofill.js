@@ -82,13 +82,6 @@
     }
   }
 
-  function treeWalkerFilter(node) {
-    if (node.tagName == "IFRAME") {
-        return NodeFilter.FILTER_REJECT;
-    }
-    return NodeFilter.FILTER_ACCEPT;
-  }
-
   /*
    * Returns elements like Document.querySelectorAll does, but traverses the document and shadow
    * roots, yielding a visited node only if it passes the predicate in filterCallback.
@@ -103,7 +96,7 @@
   }
 
   function accumulatingQueryDocAll(doc, rootEl, filterCallback, accumulatedNodes) {
-      var treeWalker = doc.createTreeWalker(rootEl, NodeFilter.SHOW_ELEMENT, treeWalkerFilter);
+      var treeWalker = doc.createTreeWalker(rootEl, NodeFilter.SHOW_ELEMENT);
       var node;
 
       while (node = treeWalker.nextNode()) {
