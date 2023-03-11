@@ -74,6 +74,21 @@
       };
   }
 
+  function checkIfIFrame() {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return false;
+    }
+  }
+
+  function treeWalkerFilter(node) {
+    if (node.tagName == "IFRAME") {
+        return NodeFilter.FILTER_REJECT;
+    }
+    return NodeFilter.FILTER_ACCEPT;
+  }
+
   /*
    * Returns elements like Document.querySelectorAll does, but traverses the document and shadow
    * roots, yielding a visited node only if it passes the predicate in filterCallback.
@@ -88,7 +103,7 @@
   }
 
   function accumulatingQueryDocAll(doc, rootEl, filterCallback, accumulatedNodes) {
-      var treeWalker = doc.createTreeWalker(rootEl, NodeFilter.SHOW_ELEMENT);
+      var treeWalker = doc.createTreeWalker(rootEl, NodeFilter.SHOW_ELEMENT, treeWalkerFilter);
       var node;
 
       while (node = treeWalker.nextNode()) {
@@ -364,6 +379,7 @@
           function toLowerString(s) {
               return 'string' === typeof s ? s.toLowerCase() : ('' + s).toLowerCase();
           }
+
           // START MODIFICATION
           // renamed queryDoc to queryDocAll and moved to top
           // END MODIFICATION
@@ -416,6 +432,7 @@
               addProp(field, 'htmlClass', getElementAttrValue(el, 'class'));
               addProp(field, 'tabindex', getElementAttrValue(el, 'tabindex'));
               addProp(field, 'title', getElementAttrValue(el, 'title'));
+              addProp(field, 'inIFrame', checkIfIFrame());
 
               // START MODIFICATION
               var elTagName = el.tagName.toLowerCase();
@@ -475,6 +492,8 @@
               // START MODIFICATION
               //addProp(field, 'fakeTested', checkIfFakeTested(field, el), false);
               // END MODIFICATION
+
+              console.log("Added field: " + field);
 
               return field;
           });
@@ -907,6 +926,13 @@
           fillScriptProperties &&
               fillScriptProperties.delay_between_operations &&
               (operationDelayMs = fillScriptProperties.delay_between_operations);
+
+          if(checkIfIFrame())
+          {
+            var okToFill = confirm("You are auto-filling to " + window.location.hostname + ". Click OK to continue, or Cancel to stop.");
+            if(!okToFill)
+                return;
+          }
 
           if (isSandboxed() || urlNotSecure(fillScript.savedUrls)) {
               return;
