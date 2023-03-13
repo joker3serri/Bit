@@ -24,7 +24,6 @@ import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstrac
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { NotificationsService } from "@bitwarden/common/abstractions/notifications.service";
-import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/abstractions/search.service";
 import { SendService } from "@bitwarden/common/abstractions/send.service";
@@ -40,7 +39,6 @@ import {
 } from "@bitwarden/common/abstractions/storage.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { UserVerificationService } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
-import { UsernameGenerationService } from "@bitwarden/common/abstractions/usernameGeneration.service";
 import { VaultTimeoutService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { CollectionService } from "@bitwarden/common/admin-console/abstractions/collection.service";
@@ -64,6 +62,8 @@ import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
 import { ContainerService } from "@bitwarden/common/services/container.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import {
@@ -280,8 +280,8 @@ function getBgService<T>(service: keyof MainBackground) {
       deps: [],
     },
     {
-      provide: PasswordGenerationService,
-      useFactory: getBgService<PasswordGenerationService>("passwordGenerationService"),
+      provide: PasswordGenerationServiceAbstraction,
+      useFactory: getBgService<PasswordGenerationServiceAbstraction>("passwordGenerationService"),
       deps: [],
     },
     { provide: ApiService, useFactory: getBgService<ApiService>("apiService"), deps: [] },
@@ -409,8 +409,8 @@ function getBgService<T>(service: keyof MainBackground) {
       ],
     },
     {
-      provide: UsernameGenerationService,
-      useFactory: getBgService<UsernameGenerationService>("usernameGenerationService"),
+      provide: UsernameGenerationServiceAbstraction,
+      useFactory: getBgService<UsernameGenerationServiceAbstraction>("usernameGenerationService"),
       deps: [],
     },
     {

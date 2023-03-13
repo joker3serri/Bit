@@ -38,7 +38,6 @@ import { ImportService } from "@bitwarden/common/services/import/import.service"
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 import { NoopMessagingService } from "@bitwarden/common/services/noopMessaging.service";
 import { OrganizationUserServiceImplementation } from "@bitwarden/common/services/organization-user/organization-user.service.implementation";
-import { PasswordGenerationService } from "@bitwarden/common/services/passwordGeneration.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { SendService } from "@bitwarden/common/services/send.service";
 import { SettingsService } from "@bitwarden/common/services/settings.service";
@@ -47,6 +46,10 @@ import { StateMigrationService } from "@bitwarden/common/services/stateMigration
 import { TotpService } from "@bitwarden/common/services/totp.service";
 import { VaultTimeoutService } from "@bitwarden/common/services/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vaultTimeout/vaultTimeoutSettings.service";
+import {
+  PasswordGenerationService,
+  PasswordGenerationServiceAbstraction,
+} from "@bitwarden/common/tools/generator/password";
 import { InternalFolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
@@ -91,7 +94,7 @@ export class Main {
   vaultTimeoutService: VaultTimeoutService;
   vaultTimeoutSettingsService: VaultTimeoutSettingsService;
   syncService: SyncService;
-  passwordGenerationService: PasswordGenerationService;
+  passwordGenerationService: PasswordGenerationServiceAbstraction;
   totpService: TotpService;
   containerService: ContainerService;
   auditService: AuditService;

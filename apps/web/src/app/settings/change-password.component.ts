@@ -10,7 +10,6 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationUserResetPasswordEnrollmentRequest } from "@bitwarden/common/abstractions/organization-user/requests";
-import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SendService } from "@bitwarden/common/abstractions/send.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
@@ -26,6 +25,7 @@ import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { SendWithIdRequest } from "@bitwarden/common/models/request/send-with-id.request";
 import { UpdateKeyRequest } from "@bitwarden/common/models/request/update-key.request";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
@@ -48,7 +48,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     cryptoService: CryptoService,
     messagingService: MessagingService,
     stateService: StateService,
-    passwordGenerationService: PasswordGenerationService,
+    passwordGenerationService: PasswordGenerationServiceAbstraction,
     platformUtilsService: PlatformUtilsService,
     policyService: PolicyService,
     private auditService: AuditService,

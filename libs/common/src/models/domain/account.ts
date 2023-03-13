@@ -12,6 +12,7 @@ import { EnvironmentUrls } from "../../auth/models/domain/environment-urls";
 import { KdfType } from "../../enums/kdfType";
 import { UriMatchType } from "../../enums/uriMatchType";
 import { Utils } from "../../misc/utils";
+import { GeneratedPasswordHistory } from "../../tools/generator/password";
 import { DeepJsonify } from "../../types/deep-jsonify";
 import { CipherData } from "../../vault/models/data/cipher.data";
 import { FolderData } from "../../vault/models/data/folder.data";
@@ -22,7 +23,6 @@ import { ServerConfigData } from "../data/server-config.data";
 import { SendView } from "../view/send.view";
 
 import { EncString } from "./enc-string";
-import { GeneratedPasswordHistory } from "./generated-password-history";
 import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class EncryptionPair<TEncrypted, TDecrypted> {

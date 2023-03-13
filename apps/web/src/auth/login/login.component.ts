@@ -13,7 +13,6 @@ import { FormValidationErrorsService } from "@bitwarden/common/abstractions/form
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -24,6 +23,7 @@ import { PolicyResponse } from "@bitwarden/common/admin-console/models/response/
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { LoginService } from "@bitwarden/common/auth/abstractions/login.service";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 import { RouterService, StateService } from "../../app/core";
 import { flagEnabled } from "../../utils/flags";
@@ -49,7 +49,7 @@ export class LoginComponent extends BaseLoginComponent implements OnInit, OnDest
     route: ActivatedRoute,
     platformUtilsService: PlatformUtilsService,
     environmentService: EnvironmentService,
-    passwordGenerationService: PasswordGenerationService,
+    passwordGenerationService: PasswordGenerationServiceAbstraction,
     cryptoFunctionService: CryptoFunctionService,
     private policyApiService: PolicyApiServiceAbstraction,
     private policyService: InternalPolicyService,

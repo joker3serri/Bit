@@ -15,12 +15,12 @@ import { UnlockCommand } from "../auth/commands/unlock.command";
 import { Main } from "../bw";
 import { Response } from "../models/response";
 import { FileResponse } from "../models/response/file.response";
+import { GenerateCommand } from "../tools/generate.command";
 import { CreateCommand } from "../vault/create.command";
 import { DeleteCommand } from "../vault/delete.command";
 import { SyncCommand } from "../vault/sync.command";
 
 import { EditCommand } from "./edit.command";
-import { GenerateCommand } from "./generate.command";
 import { GetCommand } from "./get.command";
 import { ListCommand } from "./list.command";
 import { RestoreCommand } from "./restore.command";

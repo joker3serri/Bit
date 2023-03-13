@@ -6,7 +6,6 @@ import { EventCollectionService } from "@bitwarden/common/abstractions/event/eve
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
@@ -15,6 +14,7 @@ import { OrganizationService } from "@bitwarden/common/admin-console/abstraction
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { ProductType } from "@bitwarden/common/enums/productType";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
@@ -50,7 +50,7 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     stateService: StateService,
     collectionService: CollectionService,
     protected totpService: TotpService,
-    protected passwordGenerationService: PasswordGenerationService,
+    protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     protected messagingService: MessagingService,
     eventCollectionService: EventCollectionService,
     protected policyService: PolicyService,

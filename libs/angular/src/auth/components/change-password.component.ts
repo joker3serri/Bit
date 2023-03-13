@@ -4,7 +4,6 @@ import { Subject, takeUntil } from "rxjs";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
@@ -14,6 +13,7 @@ import { KdfType } from "@bitwarden/common/enums/kdfType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 import { PasswordColorText } from "../../shared/components/password-strength/password-strength.component";
 
@@ -39,7 +39,7 @@ export class ChangePasswordComponent implements OnInit, OnDestroy {
     protected i18nService: I18nService,
     protected cryptoService: CryptoService,
     protected messagingService: MessagingService,
-    protected passwordGenerationService: PasswordGenerationService,
+    protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     protected platformUtilsService: PlatformUtilsService,
     protected policyService: PolicyService,
     protected stateService: StateService

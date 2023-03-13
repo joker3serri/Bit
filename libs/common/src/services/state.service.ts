@@ -34,13 +34,13 @@ import {
   AccountSettingsSettings,
 } from "../models/domain/account";
 import { EncString } from "../models/domain/enc-string";
-import { GeneratedPasswordHistory } from "../models/domain/generated-password-history";
 import { GlobalState } from "../models/domain/global-state";
 import { State } from "../models/domain/state";
 import { StorageOptions } from "../models/domain/storage-options";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { WindowState } from "../models/domain/window-state";
 import { SendView } from "../models/view/send.view";
+import { GeneratedPasswordHistory } from "../tools/generator/password";
 import { CipherData } from "../vault/models/data/cipher.data";
 import { FolderData } from "../vault/models/data/folder.data";
 import { LocalData } from "../vault/models/data/local.data";

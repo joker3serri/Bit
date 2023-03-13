@@ -13,7 +13,6 @@ import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstrac
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService as MessagingServiceAbstraction } from "@bitwarden/common/abstractions/messaging.service";
 import { NotificationsService as NotificationsServiceAbstraction } from "@bitwarden/common/abstractions/notifications.service";
-import { PasswordGenerationService as PasswordGenerationServiceAbstraction } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService as PlatformUtilsServiceAbstraction } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService as SearchServiceAbstraction } from "@bitwarden/common/abstractions/search.service";
 import { SendService as SendServiceAbstraction } from "@bitwarden/common/abstractions/send.service";
@@ -26,7 +25,6 @@ import { SystemService as SystemServiceAbstraction } from "@bitwarden/common/abs
 import { TotpService as TotpServiceAbstraction } from "@bitwarden/common/abstractions/totp.service";
 import { UserVerificationApiServiceAbstraction } from "@bitwarden/common/abstractions/userVerification/userVerification-api.service.abstraction";
 import { UserVerificationService as UserVerificationServiceAbstraction } from "@bitwarden/common/abstractions/userVerification/userVerification.service.abstraction";
-import { UsernameGenerationService as UsernameGenerationServiceAbstraction } from "@bitwarden/common/abstractions/usernameGeneration.service";
 import { VaultTimeoutService as VaultTimeoutServiceAbstraction } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeout.service";
 import { VaultTimeoutSettingsService as VaultTimeoutSettingsServiceAbstraction } from "@bitwarden/common/abstractions/vaultTimeout/vaultTimeoutSettings.service";
 import { CollectionService as CollectionServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/collection.service";
@@ -63,15 +61,21 @@ import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
-import { PasswordGenerationService } from "@bitwarden/common/services/passwordGeneration.service";
 import { SearchService } from "@bitwarden/common/services/search.service";
 import { SendService } from "@bitwarden/common/services/send.service";
 import { StateMigrationService } from "@bitwarden/common/services/stateMigration.service";
 import { SystemService } from "@bitwarden/common/services/system.service";
 import { TotpService } from "@bitwarden/common/services/totp.service";
-import { UsernameGenerationService } from "@bitwarden/common/services/usernameGeneration.service";
 import { VaultTimeoutSettingsService } from "@bitwarden/common/services/vaultTimeout/vaultTimeoutSettings.service";
 import { WebCryptoFunctionService } from "@bitwarden/common/services/webCryptoFunction.service";
+import {
+  PasswordGenerationService,
+  PasswordGenerationServiceAbstraction,
+} from "@bitwarden/common/tools/generator/password";
+import {
+  UsernameGenerationService,
+  UsernameGenerationServiceAbstraction,
+} from "@bitwarden/common/tools/generator/username";
 import { CipherService as CipherServiceAbstraction } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderApiServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder-api.service.abstraction";
 import { InternalFolderService as InternalFolderServiceAbstraction } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
