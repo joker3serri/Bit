@@ -12,6 +12,7 @@ import {
   ServiceAccountDeleteOperation,
 } from "./dialog/service-account-delete-dialog.component";
 import {
+  OperationType,
   ServiceAccountDialogComponent,
   ServiceAccountOperation,
 } from "./dialog/service-account-dialog.component";
@@ -22,7 +23,8 @@ import { ServiceAccountService } from "./service-account.service";
   templateUrl: "./service-accounts.component.html",
 })
 export class ServiceAccountsComponent implements OnInit {
-  serviceAccounts$: Observable<ServiceAccountView[]>;
+  protected serviceAccounts$: Observable<ServiceAccountView[]>;
+  protected search: string;
 
   private organizationId: string;
 
@@ -50,6 +52,17 @@ export class ServiceAccountsComponent implements OnInit {
     this.dialogService.open<unknown, ServiceAccountOperation>(ServiceAccountDialogComponent, {
       data: {
         organizationId: this.organizationId,
+        operation: OperationType.Add,
+      },
+    });
+  }
+
+  openEditServiceAccountDialog(serviceAccountId: string) {
+    this.dialogService.open<unknown, ServiceAccountOperation>(ServiceAccountDialogComponent, {
+      data: {
+        organizationId: this.organizationId,
+        serviceAccountId: serviceAccountId,
+        operation: OperationType.Edit,
       },
     });
   }

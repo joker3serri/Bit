@@ -24,9 +24,15 @@ export class ServiceAccountsListComponent implements OnDestroy {
   }
   private _serviceAccounts: ServiceAccountView[];
 
+  @Input()
+  set search(search: string) {
+    this.dataSource.filter = search;
+  }
+
   @Output() newServiceAccountEvent = new EventEmitter();
   @Output() deleteServiceAccountsEvent = new EventEmitter<ServiceAccountView[]>();
   @Output() onServiceAccountCheckedEvent = new EventEmitter<string[]>();
+  @Output() editServiceAccountEvent = new EventEmitter<string>();
 
   private destroy$: Subject<void> = new Subject<void>();
 
