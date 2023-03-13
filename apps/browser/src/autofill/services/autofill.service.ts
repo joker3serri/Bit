@@ -36,7 +36,7 @@ export interface GenerateFillScriptOptions {
   onlyVisibleFields: boolean;
   fillNewPassword: boolean;
   cipher: CipherView;
-  realTabUrl: string; // The tab url taken from the sender of the message. Should we just ovewrite pd.tabUrl instead?
+  realTabUrl: string; // The tab url taken from the sender of the message. pageDetails.tabUrl is wrong. TODO: should we just ovewrite pd.tabUrl instead?
 }
 
 export default class AutofillService implements AutofillServiceInterface {
