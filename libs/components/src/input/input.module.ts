@@ -1,12 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
-import { FormsModule } from "@angular/forms";
 
 import { BitInputDirective } from "./input.directive";
 
 @NgModule({
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule],
   declarations: [BitInputDirective],
-  exports: [BitInputDirective, FormsModule],
+  exports: [BitInputDirective],
 })
 export class InputModule {}
