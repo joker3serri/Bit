@@ -3,11 +3,11 @@ import { mock, MockProxy } from "jest-mock-extended";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { ProviderService } from "@bitwarden/common/abstractions/provider.service";
+import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { ProviderUserType } from "@bitwarden/common/admin-console/enums/provider-user-type";
 import { Provider } from "@bitwarden/common/models/domain/provider";
 
-import { ProviderPermissionsGuard } from "./provider-permissions.guard";
+import { ProviderPermissionsGuard } from "../../../admin-console/providers/guards/provider-permissions.guard";
 
 const providerFactory = (props: Partial<Provider> = {}) =>
   Object.assign(
