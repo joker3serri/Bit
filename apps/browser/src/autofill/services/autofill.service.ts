@@ -309,6 +309,8 @@ export default class AutofillService implements AutofillServiceInterface {
     fillScript.savedUrls =
       login?.uris?.filter((u) => u.match != UriMatchType.Never).map((u) => u.uri) ?? [];
 
+    fillScript.untrustedIframe = this.untrustedIframe(pageDetails, options.cipher);
+
     if (!login.password || login.password === "") {
       // No password for this login. Maybe they just wanted to auto-fill some custom fields?
       fillScript = AutofillService.setFillScriptForFocus(filledFields, fillScript);
@@ -740,6 +742,11 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     return fillScript;
+  }
+
+  private untrustedIframe(pageDetails: AutofillPageDetails, cipher: CipherView): boolean {
+    // TODO
+    return true;
   }
 
   private fieldAttrsContain(field: AutofillField, containsVal: string) {

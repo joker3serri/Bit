@@ -367,6 +367,18 @@
           // START MODIFICATION
           // renamed queryDoc to queryDocAll and moved to top
           // END MODIFICATION
+
+          /**
+           * Detect whether the content script is running in an iframe
+           */
+          function isInIframe() {
+            try {
+              return window.self !== window.top;
+            } catch {
+              return true;
+            }
+          }
+
           // end helpers
 
           var theView = theDoc.defaultView ? theDoc.defaultView : window,
@@ -533,7 +545,8 @@
                   return formObj;
               }(theForms),
               fields: theFields,
-              collectedTimestamp: new Date().getTime()
+              collectedTimestamp: new Date().getTime(),
+              isInIframe: isInIframe()
           };
 
           // get proper page title. maybe they are using the special meta tag?
