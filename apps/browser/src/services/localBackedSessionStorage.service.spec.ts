@@ -1,6 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { Arg, Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
-import { mock } from "jest-mock-extended";
+import { mock, MockProxy } from "jest-mock-extended";
 
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
@@ -22,8 +21,8 @@ jest.mock("../browser/browserApi", () => {
 });
 
 describe("Browser Session Storage Service", () => {
-  let encryptService: SubstituteOf<EncryptServiceImplementation>;
-  let keyGenerationService: SubstituteOf<KeyGenerationService>;
+  let encryptService: MockProxy<EncryptServiceImplementation>;
+  let keyGenerationService: MockProxy<KeyGenerationService>;
   let sessionStorage: BrowserApiMemoryStorageService;
 
   let cache: Map<string, any>;
@@ -40,8 +39,8 @@ describe("Browser Session Storage Service", () => {
   let sut: LocalBackedSessionStorageService;
 
   beforeEach(() => {
-    encryptService = Substitute.for();
-    keyGenerationService = Substitute.for();
+    encryptService = mock();
+    keyGenerationService = mock();
     sessionStorage = new BrowserApiMemoryStorageService();
 
     sut = new LocalBackedSessionStorageService(
@@ -54,10 +53,14 @@ describe("Browser Session Storage Service", () => {
     localStorage = sut["localStorage"];
     getSessionKeySpy = jest.spyOn(sut, "getSessionEncKey");
     getSessionKeySpy.mockResolvedValue(key);
+
+    keyGenerationService.makeEphemeralKey.mockResolvedValue(key);
+    encryptService.decryptToUtf8.mockResolvedValue("");
+    encryptService.encrypt.mockImplementation(mockEnc);
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   it("should exist", () => {
@@ -237,7 +240,7 @@ describe("Browser Session Storage Service", () => {
     describe("new key creation", () => {
       beforeEach(() => {
         jest.spyOn(sessionStorage, "get").mockResolvedValue(null);
-        keyGenerationService.makeEphemeralKey().resolves(key);
+        keyGenerationService.makeEphemeralKey.mockResolvedValue(key);
         jest.spyOn(sut, "setSessionEncKey").mockResolvedValue();
       });
 
@@ -245,7 +248,7 @@ describe("Browser Session Storage Service", () => {
         const result = await sut.getSessionEncKey();
 
         expect(result).toStrictEqual(key);
-        keyGenerationService.received(1).makeEphemeralKey();
+        expect(keyGenerationService.makeEphemeralKey).toHaveBeenCalledTimes(1);
       });
 
       it("should store a symmetric crypto key if it makes one", async () => {
@@ -276,19 +279,20 @@ describe("Browser Session Storage Service", () => {
       });
 
       it("should decrypt returned sessions", async () => {
-        encryptService.decryptToUtf8(encSession, key).resolves(decryptedSession);
+        encryptService.decryptToUtf8.mockResolvedValue(decryptedSession);
         await sut.getLocalSession(key);
-        encryptService.received(1).decryptToUtf8(encSession, key);
+        expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(encSession, key);
       });
 
       it("should parse session", async () => {
-        encryptService.decryptToUtf8(encSession, key).resolves(decryptedSession);
+        encryptService.decryptToUtf8.mockResolvedValue(decryptedSession);
         const result = await sut.getLocalSession(key);
+        expect(encryptService.decryptToUtf8).toHaveBeenCalledWith(encSession, key);
         expect(result).toEqual(session);
       });
 
       it("should remove state if decryption fails", async () => {
-        encryptService.decryptToUtf8(Arg.any(), Arg.any()).resolves(null);
+        encryptService.decryptToUtf8.mockResolvedValue(null);
         const setSessionEncKeySpy = jest.spyOn(sut, "setSessionEncKey").mockResolvedValue();
         const removeLocalSessionSpy = jest.spyOn(localStorage, "remove").mockResolvedValue();
 
@@ -306,15 +310,15 @@ describe("Browser Session Storage Service", () => {
     const testJSON = JSON.stringify(testSession);
 
     it("should encrypt a stringified session", async () => {
-      encryptService.encrypt(Arg.any(), Arg.any()).mimicks(mockEnc);
+      encryptService.encrypt.mockImplementation(mockEnc);
       jest.spyOn(localStorage, "save").mockResolvedValue();
       await sut.setLocalSession(testSession, key);
 
-      encryptService.received(1).encrypt(testJSON, key);
+      expect(encryptService.encrypt).toHaveBeenCalledWith(testJSON, key);
     });
 
     it("should remove local session if null", async () => {
-      encryptService.encrypt(Arg.any(), Arg.any()).resolves(null);
+      encryptService.encrypt.mockResolvedValue(null);
       const spy = jest.spyOn(localStorage, "remove").mockResolvedValue();
       await sut.setLocalSession(null, key);
 
@@ -322,7 +326,7 @@ describe("Browser Session Storage Service", () => {
     });
 
     it("should save encrypted string", async () => {
-      encryptService.encrypt(Arg.any(), Arg.any()).mimicks(mockEnc);
+      encryptService.encrypt.mockImplementation(mockEnc);
       const spy = jest.spyOn(localStorage, "save").mockResolvedValue();
       await sut.setLocalSession(testSession, key);
 
