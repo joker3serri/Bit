@@ -100,13 +100,6 @@ export default class AutofillService implements AutofillServiceInterface {
         return;
       }
 
-      // don't auto-fill if the url doesn't match, as this indicates an iframe
-      const tabDomain = new URL(tab.url).hostname;
-      const pageDomain = new URL(pd.details.documentUrl).hostname;
-      if (tabDomain !== pageDomain) {
-        return;
-      }
-
       const fillScript = this.generateFillScript(pd.details, {
         skipUsernameOnlyFill: options.skipUsernameOnlyFill || false,
         onlyEmptyFields: options.onlyEmptyFields || false,
