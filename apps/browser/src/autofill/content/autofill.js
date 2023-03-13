@@ -913,10 +913,14 @@
           }
 
           if (fillScript.untrustedIframe) {
-            var acceptedIframeWarning = confirm("Are you sure you want to auto-fill your credentials on " + window.location.hostname + "? Choose OK to auto-fill, or Cancel to stop.");
-            if (!acceptedIframeWarning) {
-              return;
-            }
+              try {
+                  var acceptedIframeWarning = confirm("Are you sure you want to auto-fill your credentials on " + window.location.hostname + "? Choose OK to auto-fill, or Cancel to stop.");
+                  if (!acceptedIframeWarning) {
+                      return;
+                  }
+              } catch(e) {
+                  return;
+              }
           }
 
           doOperation = function (ops, theOperation) {
