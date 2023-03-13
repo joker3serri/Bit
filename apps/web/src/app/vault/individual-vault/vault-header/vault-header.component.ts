@@ -13,10 +13,10 @@ import { CollectionFilter } from "../vault-filter/shared/models/vault-filter.typ
 })
 export class VaultHeaderComponent {
   /**
-   * Promise that is used to determine the loading state of the header via the ApiAction directive.
-   * When the promise exists and is not resolved, the loading spinner will be shown.
+   * Boolean to determine the loading state of the header.
+   * Shows a loading spinner if set to true.
    */
-  @Input() actionPromise: Promise<any>;
+  @Input() loading: boolean;
 
   /**
    * The filter being actively applied to the vault view

@@ -21,15 +21,13 @@
         aria-hidden="true"
       ></i>
       <span>{{ title }}</span>
-      <small #actionSpinner [appApiAction]="actionPromise">
-        <ng-container *ngIf="$any(actionSpinner).loading">
-          <i
-            class="bwi bwi-spinner bwi-spin text-muted"
-            title="{{ 'loading' | i18n }}"
-            aria-hidden="true"
-          ></i>
-          <span class="sr-only">{{ "loading" | i18n }}</span>
-        </ng-container>
+      <small *ngIf="loading">
+        <i
+          class="bwi bwi-spinner bwi-spin text-muted"
+          title="{{ 'loading' | i18n }}"
+          aria-hidden="true"
+        ></i>
+        <span class="sr-only">{{ "loading" | i18n }}</span>
       </small>
     </h1>
   </div>

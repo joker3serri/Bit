@@ -17,8 +17,8 @@
     </div>
     <div [ngClass]="{ 'col-6': isShowingCards, 'col-9': !isShowingCards }">
       <app-vault-header
+        [loading]="loading$ | async"
         [activeFilter]="activeFilter"
-        [actionPromise]="null"
         (onAddCipher)="addCipher()"
       ></app-vault-header>
       <app-callout type="warning" *ngIf="activeFilter.isDeleted" icon="bwi-exclamation-triangle">
