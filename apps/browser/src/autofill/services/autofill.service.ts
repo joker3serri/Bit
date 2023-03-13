@@ -35,7 +35,7 @@ export interface GenerateFillScriptOptions {
   onlyVisibleFields: boolean;
   fillNewPassword: boolean;
   cipher: CipherView;
-  tabUrl: string; // The tab url taken from the sender of the message. Should we just ovewrite pd.tabUrl instead?
+  realTabUrl: string; // The tab url taken from the sender of the message. Should we just ovewrite pd.tabUrl instead?
 }
 
 export default class AutofillService implements AutofillServiceInterface {
@@ -113,7 +113,7 @@ export default class AutofillService implements AutofillServiceInterface {
         onlyVisibleFields: options.onlyVisibleFields || false,
         fillNewPassword: options.fillNewPassword || false,
         cipher: options.cipher,
-        tabUrl: tab.url,
+        realTabUrl: tab.url,
       });
 
       if (!fillScript || !fillScript.script || !fillScript.script.length) {
@@ -779,7 +779,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
     // Step 1: we trust the page if the pageDetails hostname matches the hostname of the tab to be filled.
     // This means there's either no iframe or the iframe has the same host and can be trusted
-    if (Utils.getHostname(pageDetails.url) === Utils.getHostname(options.tabUrl)) {
+    if (Utils.getHostname(pageDetails.url) === Utils.getHostname(options.realTabUrl)) {
       return false;
     }
 
