@@ -122,6 +122,14 @@ export default class AutofillService implements AutofillServiceInterface {
         return;
       }
 
+      if (
+        fillScript.untrustedIframe &&
+        options.allowUntrustedIframe != undefined &&
+        !options.allowUntrustedIframe
+      ) {
+        return;
+      }
+
       // Add a small delay between operations
       fillScript.properties.delay_between_operations = 20;
 
@@ -209,6 +217,7 @@ export default class AutofillService implements AutofillServiceInterface {
       onlyEmptyFields: !fromCommand,
       onlyVisibleFields: !fromCommand,
       fillNewPassword: fromCommand,
+      allowUntrustedIframe: fromCommand,
     });
 
     // Update last used index as autofill has succeed
