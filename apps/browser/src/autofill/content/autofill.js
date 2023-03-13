@@ -913,8 +913,7 @@
           }
 
           if (fillScript.untrustedIframe) {
-            // TODO: wording of this warning to be advised
-            var acceptedIframeWarning = confirm("You are auto-filling to " + window.location.hostname + ". Click OK to continue, or Cancel to stop.");
+            var acceptedIframeWarning = confirm("Are you sure you want to auto-fill your credentials on " + window.location.hostname + "? Choose OK to auto-fill, or Cancel to stop.");
             if (!acceptedIframeWarning) {
               return;
             }
