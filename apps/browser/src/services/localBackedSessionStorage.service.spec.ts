@@ -1,21 +1,30 @@
 // eslint-disable-next-line no-restricted-imports
 import { Arg, Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
-import { mock, MockProxy } from "jest-mock-extended";
+import { mock } from "jest-mock-extended";
 
-import { AbstractMemoryStorageService } from "@bitwarden/common/abstractions/storage.service";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 import { EncryptServiceImplementation } from "@bitwarden/common/services/cryptography/encrypt.service.implementation";
 
+import { BrowserApi } from "../browser/browserApi";
+
+import BrowserApiMemoryStorageService from "./browser-api-memory-storage.service";
 import BrowserLocalStorageService from "./browserLocalStorage.service";
 import { KeyGenerationService } from "./keyGeneration.service";
 import { LocalBackedSessionStorageService } from "./localBackedSessionStorage.service";
 
+// Override browserApi to avoid waiting on messaging
+jest.mock("../browser/browserApi", () => {
+  return {
+    BrowserApi: mock<BrowserApi>(),
+  };
+});
+
 describe("Browser Session Storage Service", () => {
   let encryptService: SubstituteOf<EncryptServiceImplementation>;
   let keyGenerationService: SubstituteOf<KeyGenerationService>;
-  let sessionStorage: MockProxy<AbstractMemoryStorageService>;
+  let sessionStorage: BrowserApiMemoryStorageService;
 
   let cache: Map<string, any>;
   const testObj = { a: 1, b: 2 };
@@ -33,7 +42,7 @@ describe("Browser Session Storage Service", () => {
   beforeEach(() => {
     encryptService = Substitute.for();
     keyGenerationService = Substitute.for();
-    sessionStorage = mock();
+    sessionStorage = new BrowserApiMemoryStorageService();
 
     sut = new LocalBackedSessionStorageService(
       encryptService,
@@ -47,8 +56,16 @@ describe("Browser Session Storage Service", () => {
     getSessionKeySpy.mockResolvedValue(key);
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it("should exist", () => {
     expect(sut).toBeInstanceOf(LocalBackedSessionStorageService);
+  });
+
+  it("should listen for messages", () => {
+    expect(BrowserApi.receiveMessage).toHaveBeenCalled();
   });
 
   describe("get", () => {
@@ -162,6 +179,14 @@ describe("Browser Session Storage Service", () => {
         await sut.save("test", testObj);
         expect(cache.get("test")).toBe(testObj);
         expect(setSpy).toHaveBeenCalledWith("test", testObj);
+      });
+
+      it("should send an update message", () => {
+        sut.save("test", testObj);
+        expect(BrowserApi.sendMessageWithResponse).toHaveBeenCalledWith(
+          "localbackedsessionstorage_updatecache",
+          { key: "test", value: testObj }
+        );
       });
     });
 
