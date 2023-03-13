@@ -336,7 +336,11 @@ export default class AutofillService implements AutofillServiceInterface {
     fillScript.savedUrls =
       login?.uris?.filter((u) => u.match != UriMatchType.Never).map((u) => u.uri) ?? [];
 
-    fillScript.untrustedIframe = this.untrustedIframe(pageDetails, options);
+    fillScript.untrustedIframe = this.untrustedIframe(
+      pageDetails.url,
+      options.realTabUrl,
+      options.cipher
+    );
 
     if (!login.password || login.password === "") {
       // No password for this login. Maybe they just wanted to auto-fill some custom fields?
@@ -771,26 +775,30 @@ export default class AutofillService implements AutofillServiceInterface {
     return fillScript;
   }
 
-  private untrustedIframe(
-    pageDetails: AutofillPageDetails,
-    options: GenerateFillScriptOptions
-  ): boolean {
+  /**
+   * Determines whether to warn the user about filling an iframe
+   * @param pageUrl The url of the page/iframe, usually from AutofillPageDetails
+   * @param tabUrl The url of the tab, usually from the message sender (NOT from the AutofillPageDetails)
+   * @param loginItem The cipher to be filled
+   * @returns `true` if the iframe is untrusted and the warning should be shown, `false` otherwise
+   */
+  private untrustedIframe(pageUrl: string, tabUrl: string, loginItem: CipherView): boolean {
     // Step 1: we trust the page if the pageDetails hostname matches the hostname of the tab to be filled.
     // This means there's either no iframe or the iframe has the same host and can be trusted
-    if (Utils.getHostname(pageDetails.url) === Utils.getHostname(options.realTabUrl)) {
+    if (Utils.getHostname(pageUrl) === Utils.getHostname(tabUrl)) {
       return false;
     }
 
     // Step 2: same as above but check for equivalent domains
     // TODO: this is now comparing domains, not hostnames, we should reconcile this difference
-    const equivalentDomains = this.settingsService.getEquivalentDomains(options.realTabUrl);
-    if (equivalentDomains?.includes(Utils.getDomain(pageDetails.url))) {
+    const equivalentDomains = this.settingsService.getEquivalentDomains(tabUrl);
+    if (equivalentDomains?.includes(Utils.getDomain(pageUrl))) {
       return false;
     }
 
     // Step 3: we trust the page if it's an exact match in the cipher's saved URIs
-    const uriMatch = options.cipher.login.uris?.find(
-      (uri) => uri.match === UriMatchType.Exact && uri.uri === pageDetails.url
+    const uriMatch = loginItem.login.uris?.find(
+      (uri) => uri.match === UriMatchType.Exact && uri.uri === pageUrl
     );
     if (uriMatch) {
       return false;
