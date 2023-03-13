@@ -40,7 +40,7 @@ export class SettingsService implements SettingsServiceAbstraction {
     await this.stateService.setSettings(settings);
   }
 
-  async getEquivalentDomains(url: string): Promise<string[]> {
+  getEquivalentDomains(url: string): string[] {
     const domain = Utils.getDomain(url);
     if (domain == null) {
       return null;

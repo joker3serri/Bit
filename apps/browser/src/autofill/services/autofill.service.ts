@@ -1,5 +1,6 @@
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
@@ -44,7 +45,8 @@ export default class AutofillService implements AutofillServiceInterface {
     private stateService: BrowserStateService,
     private totpService: TotpService,
     private eventCollectionService: EventCollectionService,
-    private logService: LogService
+    private logService: LogService,
+    private settingsService: SettingsService
   ) {}
 
   getFormsWithPasswordFields(pageDetails: AutofillPageDetails): FormData[] {
@@ -334,7 +336,7 @@ export default class AutofillService implements AutofillServiceInterface {
     fillScript.savedUrls =
       login?.uris?.filter((u) => u.match != UriMatchType.Never).map((u) => u.uri) ?? [];
 
-    fillScript.untrustedIframe = this.inUntrustedIframe(pageDetails, options);
+    fillScript.untrustedIframe = this.untrustedIframe(pageDetails, options);
 
     if (!login.password || login.password === "") {
       // No password for this login. Maybe they just wanted to auto-fill some custom fields?
@@ -769,25 +771,30 @@ export default class AutofillService implements AutofillServiceInterface {
     return fillScript;
   }
 
-  private inUntrustedIframe(
+  private untrustedIframe(
     pageDetails: AutofillPageDetails,
     options: GenerateFillScriptOptions
   ): boolean {
-    // TODO: compare pageDetails.url to cipherView.login.uris to determine whether we're filling an untrusted site
-    // BUT: you can autofill arbitrary pages, they don't have to be saved
-    // SO: we do still need to compare tab url to pageDetails url, and THEN to cipherView urls
-
     // Step 1: we trust the page if the pageDetails hostname matches the hostname of the tab to be filled.
     // This means there's either no iframe or the iframe has the same host and can be trusted
     if (Utils.getHostname(pageDetails.url) === Utils.getHostname(options.realTabUrl)) {
       return false;
     }
 
-    // Step 2: same but check for equivalent domains when comparing hostnames
-    // TODO
+    // Step 2: same as above but check for equivalent domains
+    // TODO: this is now comparing domains, not hostnames, we should reconcile this difference
+    const equivalentDomains = this.settingsService.getEquivalentDomains(options.realTabUrl);
+    if (equivalentDomains?.includes(Utils.getDomain(pageDetails.url))) {
+      return false;
+    }
 
     // Step 3: we trust the page if it's an exact match in the cipher's saved URIs
-    // TODO
+    const uriMatch = options.cipher.login.uris?.find(
+      (uri) => uri.match === UriMatchType.Exact && uri.uri === pageDetails.url
+    );
+    if (uriMatch) {
+      return false;
+    }
 
     return true;
   }
