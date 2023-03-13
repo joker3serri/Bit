@@ -145,7 +145,7 @@ export class LocalBackedSessionStorageService extends AbstractMemoryStorageServi
     }
   }
 
-  async refreshCache(key: string, value: any, sync = true) {
+  async refreshCache(key: string, value: unknown, sync = true) {
     if (value == null) {
       this.cache.delete(key);
     } else {

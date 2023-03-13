@@ -18,7 +18,7 @@ export class ProxyStorageService extends AbstractStorageService {
     return this.forward("remove", key);
   }
 
-  private async forward<T>(method: string, ...args: any[]): Promise<T> {
+  private async forward<T>(method: keyof AbstractStorageService, ...args: unknown[]): Promise<T> {
     const result = await BrowserApi.sendMessageWithResponse<T>(PROXY_STORAGE_SERVICE_COMMAND, {
       method: method,
       args: args,

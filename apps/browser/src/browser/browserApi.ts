@@ -149,7 +149,7 @@ export class BrowserApi {
 
   static sendMessageWithResponse<TResponse>(
     subscriber: string,
-    args: any = {}
+    args: Record<string, unknown> = {}
   ): Promise<TResponse> {
     const message = Object.assign({}, { command: subscriber }, args);
     return new Promise((resolve) => {
