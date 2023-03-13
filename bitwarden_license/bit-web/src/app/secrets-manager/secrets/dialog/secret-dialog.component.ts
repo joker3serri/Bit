@@ -40,7 +40,7 @@ export class SecretDialogComponent implements OnInit {
     project: new FormControl("", [Validators.required]),
   });
 
-  protected loading = false;
+  private loading = true;
   projects: ProjectListView[];
 
   private destroy$ = new Subject<void>();
@@ -56,10 +56,6 @@ export class SecretDialogComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.projects = await this.projectService
-      .getProjects(this.data.organizationId)
-      .then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)));
-
     if (this.data.operation === OperationType.Edit && this.data.secretId) {
       await this.loadData();
     } else if (this.data.operation !== OperationType.Add) {
@@ -70,10 +66,14 @@ export class SecretDialogComponent implements OnInit {
     if (this.data.projectId) {
       this.formGroup.get("project").setValue(this.data.projectId);
     }
+
+    this.projects = await this.projectService
+      .getProjects(this.data.organizationId)
+      .then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)));
   }
 
   async loadData() {
-    this.loading = true;
+    this.formGroup.disable();
     const secret: SecretView = await this.secretService.getBySecretId(this.data.secretId);
     this.formGroup.setValue({
       name: secret.name,
@@ -87,6 +87,7 @@ export class SecretDialogComponent implements OnInit {
     }
 
     this.loading = false;
+    this.formGroup.enable();
   }
 
   ngOnDestroy(): void {
@@ -96,6 +97,10 @@ export class SecretDialogComponent implements OnInit {
 
   get title() {
     return this.data.operation === OperationType.Add ? "newSecret" : "editSecret";
+  }
+
+  get showSpinner() {
+    return this.data.operation === OperationType.Edit && this.loading;
   }
 
   submit = async () => {
