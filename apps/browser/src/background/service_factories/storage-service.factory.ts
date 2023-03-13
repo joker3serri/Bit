@@ -3,7 +3,7 @@ import {
   AbstractStorageService,
 } from "@bitwarden/common/abstractions/storage.service";
 
-import BrowserApiMemoryStorageService from "../../services/browserApiMemoryStorage.service";
+import BrowserApiMemoryStorageService from "../../services/browser-api-memory-storage.service";
 import BrowserLocalStorageService from "../../services/browserLocalStorage.service";
 import { LocalBackedSessionStorageService } from "../../services/localBackedSessionStorage.service";
 

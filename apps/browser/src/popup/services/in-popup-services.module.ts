@@ -63,9 +63,9 @@ import { NativeMessagingBackground } from "../../background/nativeMessaging.back
 import { BrowserApi } from "../../browser/browserApi";
 import { Account } from "../../models/account";
 import { BrowserStateService as StateServiceAbstraction } from "../../services/abstractions/browser-state.service";
+import BrowserApiMemoryStorageService from "../../services/browser-api-memory-storage.service";
 import { BrowserEnvironmentService } from "../../services/browser-environment.service";
 import { BrowserStateService } from "../../services/browser-state.service";
-import BrowserApiMemoryStorageService from "../../services/browserApiMemoryStorage.service";
 import { BrowserFileDownloadService } from "../../services/browserFileDownloadService";
 import BrowserLocalStorageService from "../../services/browserLocalStorage.service";
 import BrowserMessagingService from "../../services/browserMessaging.service";
