@@ -127,6 +127,7 @@ export default class AutofillService implements AutofillServiceInterface {
         options.allowUntrustedIframe != undefined &&
         !options.allowUntrustedIframe
       ) {
+        this.logService.info("Auto-fill on page load was blocked due to an untrusted iframe.");
         return;
       }
 
@@ -802,6 +803,9 @@ export default class AutofillService implements AutofillServiceInterface {
     // TODO: this is now comparing domains, not hostnames, we should reconcile this difference
     const equivalentDomains = this.settingsService.getEquivalentDomains(tabUrl);
     if (equivalentDomains?.includes(Utils.getDomain(pageUrl))) {
+      this.logService.debug(
+        "iframe at " + pageUrl + " trusted because it is considered equivalent to " + tabUrl
+      );
       return false;
     }
 
@@ -810,6 +814,7 @@ export default class AutofillService implements AutofillServiceInterface {
       (uri) => uri.match === UriMatchType.Exact && uri.uri === pageUrl
     );
     if (uriMatch) {
+      this.logService.debug("iframe at " + pageUrl + " trusted because it matches a saved URI");
       return false;
     }
 
