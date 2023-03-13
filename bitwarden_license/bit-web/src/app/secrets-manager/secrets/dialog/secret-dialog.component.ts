@@ -82,12 +82,11 @@ export class SecretDialogComponent implements OnInit {
       project: secret.projects[0]?.id ?? "",
     });
 
-    if (!secret.write) {
-      this.formGroup.disable();
-    }
-
     this.loading = false;
-    this.formGroup.enable();
+
+    if (secret.write) {
+      this.formGroup.enable();
+    }
   }
 
   ngOnDestroy(): void {
