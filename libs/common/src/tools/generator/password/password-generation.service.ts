@@ -12,7 +12,6 @@ import { GeneratedPasswordHistory } from "./generated-password-history";
 import { PasswordGenerationServiceAbstraction } from "./password-generation.service.abstraction";
 import { PasswordGeneratorOptions } from "./password-generator-options";
 
-
 const DefaultOptions: PasswordGeneratorOptions = {
   length: 14,
   ambiguous: false,
