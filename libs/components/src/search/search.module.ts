@@ -9,6 +9,6 @@ import { SearchComponent } from "./search.component";
 @NgModule({
   imports: [SharedModule, InputModule, FormsModule],
   declarations: [SearchComponent],
-  exports: [SearchComponent, InputModule],
+  exports: [SearchComponent],
 })
 export class SearchModule {}
