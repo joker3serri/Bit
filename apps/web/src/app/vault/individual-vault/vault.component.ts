@@ -124,6 +124,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected ciphers$: Observable<CipherView[]>;
   protected collections$: Observable<CollectionView[]>;
   protected isEmpty$: Observable<boolean>;
+  protected selectedCollection$: Observable<TreeNode<CollectionView> | undefined>;
 
   // Support for legacy promise-based services
   private refresh$ = new BehaviorSubject<void>(null);
@@ -273,11 +274,11 @@ export class VaultComponent implements OnInit, OnDestroy {
     ]).pipe(
       filter(([collections, filter]) => collections != undefined && filter != undefined),
       map(([collections, filter]) => {
-        if (filter.collectionId === undefined) {
+        if (filter.collectionId === undefined || filter.collectionId === Unassigned) {
           return [];
         }
 
-        if (filter.collectionId === undefined || filter.collectionId === All) {
+        if (filter.collectionId === All) {
           return collections.map((c) => c.node);
         }
 
@@ -285,7 +286,27 @@ export class VaultComponent implements OnInit, OnDestroy {
           collections,
           filter.collectionId
         );
-        return selectedCollection.children.map((c) => c.node);
+        return selectedCollection?.children.map((c) => c.node) ?? [];
+      })
+    );
+
+    this.selectedCollection$ = combineLatest([
+      this.refresh$.pipe(
+        this.refreshTracker.switchMap(() => this.collectionService.getAllNested())
+      ),
+      this.filter$,
+    ]).pipe(
+      filter(([collections, filter]) => collections != undefined && filter != undefined),
+      map(([collections, filter]) => {
+        if (
+          filter.collectionId === undefined ||
+          filter.collectionId === All ||
+          filter.collectionId === Unassigned
+        ) {
+          return undefined;
+        }
+
+        return ServiceUtils.getTreeNodeObjectFromList(collections, filter.collectionId);
       })
     );
 

@@ -8,7 +8,7 @@ import { Organization } from "@bitwarden/common/models/domain/organization";
 })
 export class GetOrgNameFromIdPipe implements PipeTransform {
   transform(value: string, organizations: Organization[]) {
-    const orgName = organizations.find((o) => o.id === value)?.name;
+    const orgName = organizations?.find((o) => o.id === value)?.name;
     return orgName;
   }
 }
