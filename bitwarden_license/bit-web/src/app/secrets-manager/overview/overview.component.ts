@@ -45,6 +45,7 @@ import {
   ServiceAccountOperation,
 } from "../service-accounts/dialog/service-account-dialog.component";
 import { ServiceAccountService } from "../service-accounts/service-account.service";
+import { SecretsListComponent } from "../shared/secrets-list.component";
 
 type Tasks = {
   [organizationId: string]: OrganizationTasks;
@@ -225,6 +226,7 @@ export class OverviewComponent implements OnInit, OnDestroy {
     this.dialogService.open<unknown, ServiceAccountOperation>(ServiceAccountDialogComponent, {
       data: {
         organizationId: this.organizationId,
+        operation: OperationType.Add,
       },
     });
   }
@@ -276,25 +278,25 @@ export class OverviewComponent implements OnInit, OnDestroy {
   }
 
   copySecretName(name: string) {
-    this.platformUtilsService.copyToClipboard(name);
-    this.platformUtilsService.showToast(
-      "success",
-      null,
-      this.i18nService.t("valueCopied", this.i18nService.t("name"))
-    );
+    SecretsListComponent.copySecretName(name, this.platformUtilsService, this.i18nService);
   }
 
-  async copySecretValue(id: string) {
-    const secret = await this.secretService.getBySecretId(id);
-    this.platformUtilsService.copyToClipboard(secret.value);
-    this.platformUtilsService.showToast(
-      "success",
-      null,
-      this.i18nService.t("valueCopied", this.i18nService.t("value"))
+  copySecretValue(id: string) {
+    SecretsListComponent.copySecretValue(
+      id,
+      this.platformUtilsService,
+      this.i18nService,
+      this.secretService
     );
   }
 
   protected hideOnboarding() {
     this.showOnboarding = false;
+    this.saveCompletedTasks(this.organizationId, {
+      importSecrets: true,
+      createSecret: true,
+      createProject: true,
+      createServiceAccount: true,
+    });
   }
 }
