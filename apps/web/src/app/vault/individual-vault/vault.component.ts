@@ -16,7 +16,7 @@ import {
   Observable,
   Subject,
 } from "rxjs";
-import { filter, first, map, switchMap, takeUntil } from "rxjs/operators";
+import { filter, first, map, shareReplay, switchMap, takeUntil } from "rxjs/operators";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
@@ -246,16 +246,24 @@ export class VaultComponent implements OnInit, OnDestroy {
         (filter) =>
           filter.type !== "trash" &&
           (filter.organizationId === undefined || filter.organizationId === Unassigned)
-      )
+      ),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
     );
     this.canAccessPremium$ = this.refresh$.pipe(
-      this.refreshTracker.switchMap(() => this.stateService.getCanAccessPremium())
+      this.refreshTracker.switchMap(() => this.stateService.getCanAccessPremium()),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
     );
     this.allCollections$ = this.refresh$.pipe(
-      this.refreshTracker.switchMap(() => this.collectionService.getAllDecrypted())
+      this.refreshTracker.switchMap(() => this.collectionService.getAllDecrypted()),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
     );
     this.allOrganizations$ = this.refresh$.pipe(
-      this.refreshTracker.switchMap(() => this.organizationService.getAll())
+      this.refreshTracker.switchMap(() => this.organizationService.getAll()),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
     );
 
     this.ciphers$ = combineLatest([
@@ -263,7 +271,9 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.filter$,
     ]).pipe(
       filter(([ciphers, filter]) => ciphers != undefined && filter != undefined),
-      map(([ciphers, filter]) => ciphers.filter(createFilterFunction(filter)))
+      map(([ciphers, filter]) => ciphers.filter(createFilterFunction(filter))),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
     );
 
     this.collections$ = combineLatest([
@@ -287,7 +297,9 @@ export class VaultComponent implements OnInit, OnDestroy {
           filter.collectionId
         );
         return selectedCollection?.children.map((c) => c.node) ?? [];
-      })
+      }),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
     );
 
     this.selectedCollection$ = combineLatest([
@@ -307,7 +319,9 @@ export class VaultComponent implements OnInit, OnDestroy {
         }
 
         return ServiceUtils.getTreeNodeObjectFromList(collections, filter.collectionId);
-      })
+      }),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
     );
 
     this.isEmpty$ = combineLatest([
@@ -318,7 +332,9 @@ export class VaultComponent implements OnInit, OnDestroy {
       map(
         ([loading, collections, ciphers]) =>
           !loading && collections?.length === 0 && ciphers?.length === 0
-      )
+      ),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
     );
   }
 
