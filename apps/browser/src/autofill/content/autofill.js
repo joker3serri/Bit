@@ -925,6 +925,14 @@
               return;
           }
 
+          if (fillScript.untrustedIframe) {
+            // TODO: wording of this warning to be advised
+            var acceptedIframeWarning = confirm("You are auto-filling to " + window.location.hostname + ". Click OK to continue, or Cancel to stop.");
+            if (!acceptedIframeWarning) {
+              return;
+            }
+          }
+
           doOperation = function (ops, theOperation) {
               var op = ops[0];
               if (void 0 === op) {
