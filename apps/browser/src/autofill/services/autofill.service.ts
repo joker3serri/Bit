@@ -36,7 +36,7 @@ export interface GenerateFillScriptOptions {
   onlyVisibleFields: boolean;
   fillNewPassword: boolean;
   cipher: CipherView;
-  realTabUrl: string; // The tab url taken from the sender of the message. pageDetails.tabUrl is wrong. TODO: should we just ovewrite pd.tabUrl instead?
+  tabUrl: string;
 }
 
 export default class AutofillService implements AutofillServiceInterface {
@@ -115,7 +115,7 @@ export default class AutofillService implements AutofillServiceInterface {
         onlyVisibleFields: options.onlyVisibleFields || false,
         fillNewPassword: options.fillNewPassword || false,
         cipher: options.cipher,
-        realTabUrl: tab.url,
+        tabUrl: tab.url,
       });
 
       if (!fillScript || !fillScript.script || !fillScript.script.length) {
@@ -348,7 +348,7 @@ export default class AutofillService implements AutofillServiceInterface {
 
     fillScript.untrustedIframe = this.untrustedIframe(
       pageDetails.url,
-      options.realTabUrl,
+      options.tabUrl,
       options.cipher
     );
 
@@ -788,7 +788,8 @@ export default class AutofillService implements AutofillServiceInterface {
   /**
    * Determines whether to warn the user about filling an iframe
    * @param pageUrl The url of the page/iframe, usually from AutofillPageDetails
-   * @param tabUrl The url of the tab, usually from the message sender (NOT from the AutofillPageDetails)
+   * @param tabUrl The url of the tab, usually from the message sender (should not come from a content script because
+   *  that is likely to be incorrect in the case of iframes)
    * @param loginItem The cipher to be filled
    * @returns `true` if the iframe is untrusted and the warning should be shown, `false` otherwise
    */

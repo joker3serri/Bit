@@ -524,7 +524,6 @@
               title: theDoc.title,
               url: theView.location.href,
               documentUrl: theDoc.location.href,
-              tabUrl: theView.location.href,
               forms: function (forms) {
                   var formObj = {};
                   forms.forEach(function (f) {
