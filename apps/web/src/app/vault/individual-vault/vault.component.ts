@@ -16,8 +16,19 @@ import {
   Observable,
   Subject,
 } from "rxjs";
-import { filter, first, map, shareReplay, switchMap, takeUntil } from "rxjs/operators";
+import {
+  concatMap,
+  debounceTime,
+  filter,
+  first,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  takeUntil,
+} from "rxjs/operators";
 
+import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
@@ -28,6 +39,7 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
@@ -83,6 +95,7 @@ import { VaultFilter } from "./vault-filter/shared/models/vault-filter.model";
 import { FolderFilter, OrganizationFilter } from "./vault-filter/shared/models/vault-filter.type";
 
 const BroadcasterSubscriptionId = "VaultComponent";
+const SearchTextDebounceInterval = 200;
 
 @Component({
   selector: "app-vault",
@@ -130,6 +143,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   private refresh$ = new BehaviorSubject<void>(null);
   private refreshTracker = new RefreshTracker();
 
+  private searchText$ = new Subject<string>();
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -156,7 +170,9 @@ export class VaultComponent implements OnInit, OnDestroy {
     private collectionService: CollectionService,
     private logService: LogService,
     private totpService: TotpService,
-    private eventCollectionService: EventCollectionService
+    private eventCollectionService: EventCollectionService,
+    private searchService: SearchService,
+    private searchPipe: SearchPipe
   ) {}
 
   async ngOnInit() {
@@ -266,12 +282,26 @@ export class VaultComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: false, bufferSize: 1 })
     );
 
+    const debouncedSearchText$ = this.searchText$.pipe(
+      debounceTime(SearchTextDebounceInterval),
+      startWith("")
+    );
+
     this.ciphers$ = combineLatest([
       this.refresh$.pipe(this.refreshTracker.switchMap(() => this.cipherService.getAllDecrypted())),
       this.filter$,
+      debouncedSearchText$,
     ]).pipe(
       filter(([ciphers, filter]) => ciphers != undefined && filter != undefined),
-      map(([ciphers, filter]) => ciphers.filter(createFilterFunction(filter))),
+      concatMap(async ([ciphers, filter, searchText]) => {
+        const filterFunction = createFilterFunction(filter);
+
+        if (this.searchService.isSearchable(searchText)) {
+          return await this.searchService.searchCiphers(searchText, [filterFunction], ciphers);
+        }
+
+        return ciphers.filter(filterFunction);
+      }),
       takeUntil(this.destroy$),
       shareReplay({ refCount: false, bufferSize: 1 })
     );
@@ -281,22 +311,35 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.refreshTracker.switchMap(() => this.collectionService.getAllNested())
       ),
       this.filter$,
+      debouncedSearchText$,
     ]).pipe(
       filter(([collections, filter]) => collections != undefined && filter != undefined),
-      map(([collections, filter]) => {
+      map(([collections, filter, searchText]) => {
         if (filter.collectionId === undefined || filter.collectionId === Unassigned) {
           return [];
         }
 
+        let collectionsToReturn = [];
         if (filter.collectionId === All) {
-          return collections.map((c) => c.node);
+          collectionsToReturn = collections.map((c) => c.node);
+        } else {
+          const selectedCollection = ServiceUtils.getTreeNodeObjectFromList(
+            collections,
+            filter.collectionId
+          );
+          collectionsToReturn = selectedCollection?.children.map((c) => c.node) ?? [];
         }
 
-        const selectedCollection = ServiceUtils.getTreeNodeObjectFromList(
-          collections,
-          filter.collectionId
-        );
-        return selectedCollection?.children.map((c) => c.node) ?? [];
+        if (this.searchService.isSearchable(searchText)) {
+          collectionsToReturn = this.searchPipe.transform(
+            collectionsToReturn,
+            searchText,
+            (collection) => collection.name,
+            (collection) => collection.id
+          );
+        }
+
+        return collectionsToReturn;
       }),
       takeUntil(this.destroy$),
       shareReplay({ refCount: false, bufferSize: 1 })
@@ -439,8 +482,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   };
 
   filterSearchText(searchText: string) {
-    // TODO: this.vaultItemsComponent.searchText = searchText;
-    // TODO: this.vaultItemsComponent.search(200);
+    this.searchText$.next(searchText);
   }
 
   async editCipherAttachments(cipher: CipherView) {
