@@ -112,27 +112,33 @@ describe("AutofillService", () => {
       expect(actual).toBe(false);
     });
 
-    const uriMatchCases = [
-      [UriMatchType[UriMatchType.Domain], UriMatchType.Domain],
-      [UriMatchType[UriMatchType.Host], UriMatchType.Host],
-      [UriMatchType[UriMatchType.Never], UriMatchType.Never],
-      [UriMatchType[UriMatchType.RegularExpression], UriMatchType.RegularExpression],
-      [UriMatchType[UriMatchType.StartsWith], UriMatchType.StartsWith],
-    ];
+    it('doesn\'t trust the page URL if there is no matching saved URI with "Exact" match settings', () => {
+      // Uri matches but MatchType is incorrect
+      const wrongUriMatchTypes = [
+        UriMatchType.Domain,
+        UriMatchType.Host,
+        UriMatchType.Never,
+        UriMatchType.RegularExpression,
+        UriMatchType.StartsWith,
+      ];
 
-    it.each(uriMatchCases)(
-      "doesn't trust the page URL if the saved URI uses %p match settings",
-      (matchTypeName: string, matchType: UriMatchType) => {
+      wrongUriMatchTypes.forEach((matchType) => {
         const uri = new LoginUriView();
         uri.uri = pageUrl;
         uri.match = matchType;
         loginItem.login.uris.push(uri);
+      });
 
-        const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
+      // MatchType is correct but uri doesn't match
+      const uriWrongUri = new LoginUriView();
+      uriWrongUri.uri = pageUrl + "#login";
+      uriWrongUri.match = UriMatchType.Exact;
+      loginItem.login.uris.push(uriWrongUri);
 
-        expect(actual).toBe(true);
-      }
-    );
+      const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
+
+      expect(actual).toBe(true);
+    });
 
     it("doesn't trust the page URL if saved URIs are null", () => {
       delete loginItem.login.uris;
