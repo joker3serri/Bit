@@ -11,6 +11,7 @@ import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-repromp
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
+import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 
 import { BrowserApi } from "../../browser/browserApi";
 import { BrowserStateService } from "../../services/abstractions/browser-state.service";
@@ -811,16 +812,71 @@ export default class AutofillService implements AutofillServiceInterface {
       return false;
     }
 
-    // Step 3: we trust the page if its URI is saved against the item using "Exact" matching
-    const uriMatch = loginItem.login.uris?.find(
-      (uri) => uri.match === UriMatchType.Exact && uri.uri === pageUrl
-    );
-    if (uriMatch) {
+    // Step 3: Check the pageUrl against cipher URIs using the configured match detection.
+    // If we get to this point, it is assumed that the tabUrl already matches,
+    // need to verify the pageUrl also matches one of the saved URIs using the match detection selected.
+    let urlMatched = false;
+    loginItem.login.uris?.forEach((uri) => {
+      if (this.uriMatches(uri, pageUrl)) {
+        urlMatched = true;
+      }
+    });
+    if (loginItem.login.uris?.length > 0 && urlMatched) {
       this.logService.debug("iframe at " + pageUrl + " trusted because it matches a saved URI");
       return false;
     }
 
     return true;
+  }
+
+  // TODO should this be put in a common place (Utils maybe?) to be used both here and by CipherService?
+  private uriMatches(uri: LoginUriView, url: string): boolean {
+    switch (uri.match) {
+      case UriMatchType.Domain:
+        if (url != null && uri.domain != null) {
+          if (Utils.DomainMatchBlacklist.has(uri.domain)) {
+            const domainUrlHost = Utils.getHost(url);
+            if (!Utils.DomainMatchBlacklist.get(uri.domain).has(domainUrlHost)) {
+              return true;
+            }
+          } else {
+            return true;
+          }
+        }
+        break;
+      case UriMatchType.Host: {
+        const urlHost = Utils.getHost(url);
+        if (urlHost != null && urlHost === Utils.getHost(uri.uri)) {
+          return true;
+        }
+        break;
+      }
+      case UriMatchType.Exact:
+        if (url === uri.uri) {
+          return true;
+        }
+        break;
+      case UriMatchType.StartsWith:
+        if (url.startsWith(uri.uri)) {
+          return true;
+        }
+        break;
+      case UriMatchType.RegularExpression:
+        try {
+          const regex = new RegExp(uri.uri, "i");
+          if (regex.test(url)) {
+            return true;
+          }
+        } catch (e) {
+          this.logService.error(e);
+          return false;
+        }
+        break;
+      case UriMatchType.Never:
+      default:
+        break;
+    }
+    return false;
   }
 
   private fieldAttrsContain(field: AutofillField, containsVal: string) {
