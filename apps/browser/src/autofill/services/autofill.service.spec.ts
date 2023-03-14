@@ -5,6 +5,7 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { SettingsService } from "@bitwarden/common/abstractions/settings.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
+import { Utils } from "@bitwarden/common/misc/utils";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
@@ -103,28 +104,55 @@ describe("AutofillService", () => {
       expect(actual).toBe(false);
     });
 
-    it('doesn\'t trust the pageUrl if there is no matching saved URI with "Exact" match settings', () => {
-      // Uri matches but MatchType is incorrect
-      const wrongUriMatchTypes = [
-        UriMatchType.Domain,
-        UriMatchType.Host,
-        UriMatchType.Never,
-        UriMatchType.RegularExpression,
-        UriMatchType.StartsWith,
-      ];
+    it('trusts the pageUrl if it matches a saved URI with "Host" match settings', () => {
+      const uri = new LoginUriView();
+      uri.uri = Utils.getHost(pageUrl);
+      uri.match = UriMatchType.Host;
+      loginItem.login.uris.push(uri);
 
-      wrongUriMatchTypes.forEach((matchType) => {
-        const uri = new LoginUriView();
-        uri.uri = pageUrl;
-        uri.match = matchType;
-        loginItem.login.uris.push(uri);
-      });
+      const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
 
-      // MatchType is correct but uri doesn't match
-      const uriWrongUri = new LoginUriView();
-      uriWrongUri.uri = pageUrl + "#login";
-      uriWrongUri.match = UriMatchType.Exact;
-      loginItem.login.uris.push(uriWrongUri);
+      expect(actual).toBe(false);
+    });
+
+    it('trusts the pageUrl if it matches a saved URI with "Domain" match settings', () => {
+      const uri = new LoginUriView();
+      uri.uri = Utils.getDomain(pageUrl);
+      uri.match = UriMatchType.Domain;
+      loginItem.login.uris.push(uri);
+
+      const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
+
+      expect(actual).toBe(false);
+    });
+
+    it('trusts the pageUrl if it matches a saved URI with "StartsWith" match settings', () => {
+      const uri = new LoginUriView();
+      uri.uri = "www.exampleapp.com.au";
+      uri.match = UriMatchType.StartsWith;
+      loginItem.login.uris.push(uri);
+
+      const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
+
+      expect(actual).toBe(false);
+    });
+
+    it('trusts the pageUrl if it matches a saved URI with "Regex" match settings', () => {
+      const uri = new LoginUriView();
+      uri.uri = "www.exampleapp.com.au/[A-Za-z0-9]+/login.html";
+      uri.match = UriMatchType.RegularExpression;
+      loginItem.login.uris.push(uri);
+
+      const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
+
+      expect(actual).toBe(false);
+    });
+
+    it('does not trust the pageUrl if it matches a saved URI with "Never" match settings', () => {
+      const uri = new LoginUriView();
+      uri.uri = pageUrl;
+      uri.match = UriMatchType.Never;
+      loginItem.login.uris.push(uri);
 
       const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
 
