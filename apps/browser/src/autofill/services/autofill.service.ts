@@ -815,13 +815,8 @@ export default class AutofillService implements AutofillServiceInterface {
     // Step 3: Check the pageUrl against cipher URIs using the configured match detection.
     // If we are in this function at all, it is assumed that the tabUrl already matches a URL for `loginItem`,
     // need to verify the pageUrl also matches one of the saved URIs using the match detection selected.
-    let urlMatched = false;
-    loginItem.login.uris?.forEach((uri) => {
-      if (this.uriMatches(uri, pageUrl)) {
-        urlMatched = true;
-      }
-    });
-    if (loginItem.login.uris?.length > 0 && urlMatched) {
+    const urlMatched = loginItem.login.uris?.some((uri) => this.uriMatches(uri, pageUrl));
+    if (urlMatched) {
       this.logService.debug("iframe at " + pageUrl + " trusted because it matches a saved URI");
       return false;
     }
