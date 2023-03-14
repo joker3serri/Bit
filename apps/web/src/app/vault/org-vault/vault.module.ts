@@ -6,6 +6,7 @@ import { LooseComponentsModule } from "../../shared/loose-components.module";
 import { SharedModule } from "../../shared/shared.module";
 import { OrganizationBadgeModule } from "../../vault/individual-vault/organization-badge/organization-badge.module";
 import { PipesModule } from "../../vault/individual-vault/pipes/pipes.module";
+import { VaultItemsModule } from "../components/vault-items/vault-items.module";
 
 import { CollectionBadgeModule } from "./collection-badge/collection-badge.module";
 import { GroupBadgeModule } from "./group-badge/group-badge.module";
@@ -26,6 +27,7 @@ import { VaultComponent } from "./vault.component";
     OrganizationBadgeModule,
     PipesModule,
     BreadcrumbsModule,
+    VaultItemsModule,
   ],
   declarations: [VaultComponent, VaultItemsComponent, VaultHeaderComponent],
   exports: [VaultComponent],

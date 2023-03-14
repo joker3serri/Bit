@@ -8,35 +8,57 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { combineLatest, firstValueFrom, Subject } from "rxjs";
-import { first, switchMap, takeUntil } from "rxjs/operators";
+import { BehaviorSubject, combineLatest, firstValueFrom, Observable, Subject } from "rxjs";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  takeUntil,
+} from "rxjs/operators";
 
+import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { SearchService } from "@bitwarden/common/abstractions/search.service";
+import { RefreshTracker } from "@bitwarden/common/misc/refresh-tracker";
+import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
+import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
+import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService } from "@bitwarden/components";
 
+import { CollectionAdminService } from "../../organizations/core";
 import { EntityEventsComponent } from "../../organizations/manage/entity-events.component";
 import { CollectionsComponent } from "../../organizations/vault/collections.component";
 import { VaultFilterService } from "../../vault/individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../vault/individual-vault/vault-filter/shared/models/vault-filter.model";
 import { RoutedVaultFilterBridgeService } from "../individual-vault/vault-filter/services/routed-vault-filter-bridge.service";
 import { RoutedVaultFilterService } from "../individual-vault/vault-filter/services/routed-vault-filter.service";
+import {
+  All,
+  RoutedVaultFilterModel,
+  Unassigned,
+} from "../individual-vault/vault-filter/shared/models/routed-vault-filter.model";
+import { getNestedCollectionTree } from "../utils/collection-utils";
 
 import { AddEditComponent } from "./add-edit.component";
 import { AttachmentsComponent } from "./attachments.component";
 import { VaultFilterComponent } from "./vault-filter/vault-filter.component";
-import { VaultItemsComponent } from "./vault-items.component";
 
 const BroadcasterSubscriptionId = "OrgVaultComponent";
+const SearchTextDebounceInterval = 200;
 
 @Component({
   selector: "app-org-vault",
@@ -46,7 +68,7 @@ const BroadcasterSubscriptionId = "OrgVaultComponent";
 export class VaultComponent implements OnInit, OnDestroy {
   @ViewChild("vaultFilter", { static: true })
   vaultFilterComponent: VaultFilterComponent;
-  @ViewChild(VaultItemsComponent, { static: true }) vaultItemsComponent: VaultItemsComponent;
+  // @ViewChild(VaultItemsComponent, { static: true }) vaultItemsComponent: VaultItemsComponent;
   @ViewChild("attachments", { read: ViewContainerRef, static: true })
   attachmentsModalRef: ViewContainerRef;
   @ViewChild("cipherAddEdit", { read: ViewContainerRef, static: true })
@@ -59,6 +81,21 @@ export class VaultComponent implements OnInit, OnDestroy {
   organization: Organization;
   trashCleanupWarning: string = null;
   activeFilter: VaultFilter = new VaultFilter();
+
+  protected initialSyncCompleted = false;
+  protected loading$: Observable<boolean>;
+  protected filter$: Observable<RoutedVaultFilterModel>;
+  protected allCollections$: Observable<CollectionView[]>;
+  protected allOrganizations$: Observable<Organization[]>;
+  protected ciphers$: Observable<CipherView[]>;
+  protected collections$: Observable<CollectionView[]>;
+  protected isEmpty$: Observable<boolean>;
+  protected selectedCollection$: Observable<TreeNode<CollectionView> | undefined>;
+
+  private refreshTracker = new RefreshTracker();
+  private refresh$ = new BehaviorSubject<void>(null);
+
+  private searchText$ = new Subject<string>();
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -66,6 +103,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private organizationService: OrganizationService,
     protected vaultFilterService: VaultFilterService,
     private routedVaultFilterBridgeService: RoutedVaultFilterBridgeService,
+    private routedVaultFilterService: RoutedVaultFilterService,
     private router: Router,
     private changeDetectorRef: ChangeDetectorRef,
     private syncService: SyncService,
@@ -77,7 +115,10 @@ export class VaultComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private platformUtilsService: PlatformUtilsService,
     private cipherService: CipherService,
-    private passwordRepromptService: PasswordRepromptService
+    private passwordRepromptService: PasswordRepromptService,
+    private collectionAdminService: CollectionAdminService,
+    private searchService: SearchService,
+    private searchPipe: SearchPipe
   ) {}
 
   async ngOnInit() {
@@ -91,9 +132,10 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.organization = this.organizationService.get(params.organizationId);
     });
 
-    this.route.queryParams.pipe(first(), takeUntil(this.destroy$)).subscribe((qParams) => {
-      this.vaultItemsComponent.searchText = this.vaultFilterComponent.searchText = qParams.search;
-    });
+    // TODO
+    // this.route.queryParams.pipe(first(), takeUntil(this.destroy$)).subscribe((qParams) => {
+    //   this.vaultItemsComponent.searchText = this.vaultFilterComponent.searchText = qParams.search;
+    // });
 
     // verifies that the organization has been set
     combineLatest([this.route.queryParams, this.route.parent.params])
@@ -133,8 +175,9 @@ export class VaultComponent implements OnInit, OnDestroy {
               if (message.successfully) {
                 await Promise.all([
                   this.vaultFilterService.reloadCollections(),
-                  this.vaultItemsComponent.refresh(),
+                  // this.vaultItemsComponent.refresh(),
                 ]);
+                this.refresh();
                 this.changeDetectorRef.detectChanges();
               }
               break;
@@ -149,6 +192,83 @@ export class VaultComponent implements OnInit, OnDestroy {
       .subscribe((activeFilter) => {
         this.activeFilter = activeFilter;
       });
+
+    const debouncedSearchText$ = this.searchText$.pipe(
+      debounceTime(SearchTextDebounceInterval),
+      startWith("")
+    );
+
+    // loading$: Observable<boolean>;
+    this.filter$ = this.routedVaultFilterService.filter$;
+
+    const organizationId$ = this.filter$.pipe(
+      map((filter) => filter.organizationId),
+      distinctUntilChanged()
+    );
+
+    this.allCollections$ = this.refresh$.pipe(
+      switchMap(() => organizationId$),
+      this.refreshTracker.switchMap((orgId) => this.collectionAdminService.getAll(orgId)),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
+    );
+
+    this.allOrganizations$ = this.refresh$.pipe(
+      switchMap(() => organizationId$),
+      map((organizationId) => [this.organizationService.get(organizationId)]),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
+    );
+    // this.ciphers$: Observable<CipherView[]>;
+
+    const nestedCollections$ = this.allCollections$.pipe(
+      map((collections) => getNestedCollectionTree(collections)),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
+    );
+
+    this.collections$ = combineLatest([
+      nestedCollections$,
+      this.filter$,
+      debouncedSearchText$,
+    ]).pipe(
+      filter(([collections, filter]) => collections != undefined && filter != undefined),
+      map(([collections, filter, searchText]) => {
+        if (
+          filter.collectionId === Unassigned ||
+          (filter.collectionId === undefined && filter.type !== undefined)
+        ) {
+          return [];
+        }
+
+        let collectionsToReturn = [];
+        if (filter.collectionId === undefined || filter.collectionId === All) {
+          collectionsToReturn = collections.map((c) => c.node);
+        } else {
+          const selectedCollection = ServiceUtils.getTreeNodeObjectFromList(
+            collections,
+            filter.collectionId
+          );
+          collectionsToReturn = selectedCollection?.children.map((c) => c.node) ?? [];
+        }
+
+        if (this.searchService.isSearchable(searchText)) {
+          collectionsToReturn = this.searchPipe.transform(
+            collectionsToReturn,
+            searchText,
+            (collection) => collection.name,
+            (collection) => collection.id
+          );
+        }
+
+        return collectionsToReturn;
+      }),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
+    );
+
+    // this.isEmpty$: Observable<boolean>;
+    // this.selectedCollection$: Observable<TreeNode<CollectionView> | undefined>;
   }
 
   ngOnDestroy() {
@@ -158,14 +278,16 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async refreshItems() {
-    this.vaultItemsComponent.actionPromise = this.vaultItemsComponent.refresh();
-    await this.vaultItemsComponent.actionPromise;
-    this.vaultItemsComponent.actionPromise = null;
+    // this.vaultItemsComponent.actionPromise = this.vaultItemsComponent.refresh();
+    // await this.vaultItemsComponent.actionPromise;
+    // this.vaultItemsComponent.actionPromise = null;
+    this.refresh();
   }
 
   filterSearchText(searchText: string) {
-    this.vaultItemsComponent.searchText = searchText;
-    this.vaultItemsComponent.search(200);
+    // TODO
+    // this.vaultItemsComponent.searchText = searchText;
+    // this.vaultItemsComponent.search(200);
   }
 
   async editCipherAttachments(cipher: CipherView) {
@@ -192,7 +314,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
     modal.onClosed.subscribe(async () => {
       if (madeAttachmentChanges) {
-        await this.vaultItemsComponent.refresh();
+        this.refresh();
+        // await this.vaultItemsComponent.refresh();
       }
       madeAttachmentChanges = false;
     });
@@ -211,7 +334,8 @@ export class VaultComponent implements OnInit, OnDestroy {
         // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
         comp.onSavedCollections.subscribe(async () => {
           modal.close();
-          await this.vaultItemsComponent.refresh();
+          this.refresh();
+          // await this.vaultItemsComponent.refresh();
         });
       }
     );
@@ -261,17 +385,20 @@ export class VaultComponent implements OnInit, OnDestroy {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
       comp.onSavedCipher.subscribe(async () => {
         modal.close();
-        await this.vaultItemsComponent.refresh();
+        // await this.vaultItemsComponent.refresh();
+        this.refresh();
       });
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
       comp.onDeletedCipher.subscribe(async () => {
         modal.close();
-        await this.vaultItemsComponent.refresh();
+        // await this.vaultItemsComponent.refresh();
+        this.refresh();
       });
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
       comp.onRestoredCipher.subscribe(async () => {
         modal.close();
-        await this.vaultItemsComponent.refresh();
+        // await this.vaultItemsComponent.refresh();
+        this.refresh();
       });
     };
 
@@ -314,6 +441,10 @@ export class VaultComponent implements OnInit, OnDestroy {
       comp.showUser = true;
       comp.entity = "cipher";
     });
+  }
+
+  private refresh() {
+    this.refresh$.next();
   }
 
   private go(queryParams: any = null) {

@@ -4,6 +4,8 @@ import { CollectionView } from "../view/collection.view";
 import Domain from "./domain-base";
 import { EncString } from "./enc-string";
 
+export const NestingDelimiter = "/";
+
 export class Collection extends Domain {
   id: string;
   organizationId: string;

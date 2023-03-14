@@ -20,7 +20,7 @@
       <app-org-vault-header
         [activeFilter]="activeFilter"
         (onCollectionChanged)="refreshItems()"
-        [actionPromise]="vaultItemsComponent.actionPromise"
+        [actionPromise]="null"
         (onAddCipher)="addCipher()"
         [organization]="organization"
       ></app-org-vault-header>
@@ -31,7 +31,25 @@
       >
         {{ trashCleanupWarning }}
       </app-callout>
-      <app-org-vault-items
+      <app-new-vault-items
+        *ngIf="!(isEmpty$ | async)"
+        [ciphers]="ciphers$ | async"
+        [collections]="collections$ | async"
+        [allCollections]="allCollections$ | async"
+        [allOrganizations]="allOrganizations$ | async"
+        [disabled]="loading$ | async"
+        [showOwner]="true"
+        [showCollections]="false"
+        [showGroups]="false"
+        [showPremiumFeatures]="true"
+        [showBulkMove]="false"
+        [showBulkTrashOptions]="(filter$ | async)?.type === 'trash'"
+        [useEvents]="false"
+        [editableCollections]="false"
+        [cloneableOrganizationCiphers]="false"
+      >
+      </app-new-vault-items>
+      <!-- <app-org-vault-items
         [activeFilter]="activeFilter"
         [initOrganization]="organization"
         (onCipherClicked)="navigateToCipher($event)"
@@ -41,7 +59,7 @@
         (onEventsClicked)="viewEvents($event)"
         (onCloneClicked)="cloneCipher($event)"
       >
-      </app-org-vault-items>
+      </app-org-vault-items> -->
     </div>
   </div>
 </div>
