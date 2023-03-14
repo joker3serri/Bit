@@ -7,7 +7,7 @@ import { ProviderService } from "@bitwarden/common/admin-console/abstractions/pr
 import { ProviderUserType } from "@bitwarden/common/admin-console/enums/provider-user-type";
 import { Provider } from "@bitwarden/common/models/domain/provider";
 
-import { ProviderPermissionsGuard } from "../../../admin-console/providers/guards/provider-permissions.guard";
+import { ProviderPermissionsGuard } from "./provider-permissions.guard";
 
 const providerFactory = (props: Partial<Provider> = {}) =>
   Object.assign(
