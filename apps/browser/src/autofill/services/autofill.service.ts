@@ -792,7 +792,7 @@ export default class AutofillService implements AutofillServiceInterface {
    * @param loginItem The cipher to be filled
    * @returns `true` if the iframe is untrusted and the warning should be shown, `false` otherwise
    */
-  private untrustedIframe(pageUrl: string, tabUrl: string, loginItem: CipherView): boolean {
+  untrustedIframe(pageUrl: string, tabUrl: string, loginItem: CipherView): boolean {
     // Step 1: we trust the page if the pageDetails hostname matches the hostname of the tab to be filled.
     // This means there's either no iframe or the iframe has the same host and can be trusted
     if (Utils.getHostname(pageUrl) === Utils.getHostname(tabUrl)) {

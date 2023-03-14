@@ -14,7 +14,6 @@ import { BrowserStateService } from "../../services/abstractions/browser-state.s
 
 import AutofillService from "./autofill.service";
 
-
 describe("AutofillService", () => {
   let cipherService: MockProxy<CipherService>;
   let browserStateService: MockProxy<BrowserStateService>;
@@ -44,20 +43,31 @@ describe("AutofillService", () => {
   });
 
   describe("untrusted iframe detection", () => {
-    // Testing the private method isn't ideal but setting up full autofill details is too complex for now
     let loginItem: CipherView;
 
+    // The top level URL of the tab - this is what Bitwarden uses to find matching websites
     const tabUrl = "www.example.com/login";
+
+    // The URL of the iframe - this is where we the user wants to autofill
     const pageUrl = "www.auth.example.com/userauth/login.html";
 
     beforeEach(() => {
       loginItem = new CipherView();
       loginItem.login = new LoginView();
+
+      const uri1 = new LoginUriView();
+      uri1.uri = "mail.example.com";
+      uri1.match = UriMatchType.Domain;
+
+      const uri2 = new LoginUriView();
+      uri2.uri = "sso.example.com";
+      uri2.match = UriMatchType.StartsWith;
+
+      loginItem.login.uris = [uri1, uri2];
     });
 
     it("trusts the pageUrl if it matches the tabUrl exactly", () => {
-      const actual = (autofillService as any).untrustedIframe(tabUrl, tabUrl, loginItem);
-
+      const actual = autofillService.untrustedIframe(tabUrl, tabUrl, loginItem);
       expect(actual).toBe(false);
     });
 
@@ -72,7 +82,7 @@ describe("AutofillService", () => {
         .calledWith(tabUrl)
         .mockReturnValue(mockEquivalentDomains);
 
-      const actual = (autofillService as any).untrustedIframe(pageUrl, tabUrl, loginItem);
+      const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
 
       expect(actual).toBe(false);
     });
@@ -83,28 +93,18 @@ describe("AutofillService", () => {
         .calledWith(tabUrl)
         .mockReturnValue(mockEquivalentDomains);
 
-      const actual = (autofillService as any).untrustedIframe(pageUrl, tabUrl, loginItem);
+      const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
 
       expect(actual).toBe(true);
     });
 
     it('trusts the pageUrl if it matches a saved URI with "Exact" match settings', () => {
-      const uri1 = new LoginUriView();
-      uri1.uri = "mail.example.com";
-      uri1.match = UriMatchType.Domain;
+      const uri = new LoginUriView();
+      uri.uri = pageUrl;
+      uri.match = UriMatchType.Exact;
+      loginItem.login.uris.push(uri);
 
-      // Should match
-      const uri2 = new LoginUriView();
-      uri2.uri = pageUrl;
-      uri2.match = UriMatchType.Exact;
-
-      const uri3 = new LoginUriView();
-      uri3.uri = "sso.example.com";
-      uri3.match = UriMatchType.StartsWith;
-
-      loginItem.login.uris = [uri1, uri2, uri3];
-
-      const actual = (autofillService as any).untrustedIframe(pageUrl, tabUrl, loginItem);
+      const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
 
       expect(actual).toBe(false);
     });
@@ -120,27 +120,31 @@ describe("AutofillService", () => {
     it.each(uriMatchCases)(
       "doesn't trust the page URL if the saved URI uses %p match settings",
       (matchTypeName: string, matchType: UriMatchType) => {
-        const uri1 = new LoginUriView();
-        uri1.uri = "mail.example.com";
-        uri1.match = UriMatchType.Domain;
+        const uri = new LoginUriView();
+        uri.uri = pageUrl;
+        uri.match = matchType;
+        loginItem.login.uris.push(uri);
 
-        // Should match
-        const uri2 = new LoginUriView();
-        uri2.uri = pageUrl;
-        uri2.match = matchType;
-
-        const uri3 = new LoginUriView();
-        uri3.uri = "sso.example.com";
-        uri3.match = UriMatchType.StartsWith;
-
-        loginItem.login.uris = [uri1, uri2, uri3];
-
-        const actual = (autofillService as any).untrustedIframe(pageUrl, tabUrl, loginItem);
+        const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
 
         expect(actual).toBe(true);
       }
     );
 
-    it.todo("what happens if something is null?");
+    it("doesn't trust the page URL if saved URIs are null", () => {
+      delete loginItem.login.uris;
+      const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
+      expect(actual).toBe(true);
+    });
+
+    it("doesn't trust the page URL if the pageURL is null", () => {
+      const actual = autofillService.untrustedIframe(null, tabUrl, loginItem);
+      expect(actual).toBe(true);
+    });
+
+    it("doesn't trust the page URL if the tabURL is null", () => {
+      const actual = autofillService.untrustedIframe(pageUrl, null, loginItem);
+      expect(actual).toBe(true);
+    });
   });
 });

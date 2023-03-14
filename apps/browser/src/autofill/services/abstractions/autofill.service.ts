@@ -39,4 +39,5 @@ export abstract class AutofillService {
     fromCommand: boolean
   ) => Promise<string>;
   doAutoFillActiveTab: (pageDetails: PageDetail[], fromCommand: boolean) => Promise<string>;
+  untrustedIframe: (pageUrl: string, tabUrl: string, loginItem: CipherView) => boolean;
 }
