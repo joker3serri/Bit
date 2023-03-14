@@ -813,7 +813,7 @@ export default class AutofillService implements AutofillServiceInterface {
     }
 
     // Step 3: Check the pageUrl against cipher URIs using the configured match detection.
-    // If we get to this point, it is assumed that the tabUrl already matches,
+    // If we are in this function at all, it is assumed that the tabUrl already matches a URL for `loginItem`,
     // need to verify the pageUrl also matches one of the saved URIs using the match detection selected.
     let urlMatched = false;
     loginItem.login.uris?.forEach((uri) => {
