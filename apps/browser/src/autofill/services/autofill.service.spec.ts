@@ -54,16 +54,7 @@ describe("AutofillService", () => {
     beforeEach(() => {
       loginItem = new CipherView();
       loginItem.login = new LoginView();
-
-      const uri1 = new LoginUriView();
-      uri1.uri = "mail.example.com";
-      uri1.match = UriMatchType.Domain;
-
-      const uri2 = new LoginUriView();
-      uri2.uri = "sso.example.com";
-      uri2.match = UriMatchType.StartsWith;
-
-      loginItem.login.uris = [uri1, uri2];
+      loginItem.login.uris = [];
     });
 
     it("trusts the pageUrl if it has the same domain as the tabUrl", () => {
@@ -112,7 +103,7 @@ describe("AutofillService", () => {
       expect(actual).toBe(false);
     });
 
-    it('doesn\'t trust the page URL if there is no matching saved URI with "Exact" match settings', () => {
+    it('doesn\'t trust the pageUrl if there is no matching saved URI with "Exact" match settings', () => {
       // Uri matches but MatchType is incorrect
       const wrongUriMatchTypes = [
         UriMatchType.Domain,
@@ -140,18 +131,18 @@ describe("AutofillService", () => {
       expect(actual).toBe(true);
     });
 
-    it("doesn't trust the page URL if saved URIs are null", () => {
+    it("doesn't trust the pageUrl if saved URIs are null", () => {
       delete loginItem.login.uris;
       const actual = autofillService.untrustedIframe(pageUrl, tabUrl, loginItem);
       expect(actual).toBe(true);
     });
 
-    it("doesn't trust the page URL if the pageURL is null", () => {
+    it("doesn't trust the pageUrl if the pageUrl is null", () => {
       const actual = autofillService.untrustedIframe(null, tabUrl, loginItem);
       expect(actual).toBe(true);
     });
 
-    it("doesn't trust the page URL if the tabURL is null", () => {
+    it("doesn't trust the pageUrl if the tabUrl is null", () => {
       const actual = autofillService.untrustedIframe(pageUrl, null, loginItem);
       expect(actual).toBe(true);
     });
