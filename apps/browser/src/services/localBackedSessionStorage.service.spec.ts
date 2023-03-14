@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-restricted-imports
 import { mock, MockProxy } from "jest-mock-extended";
 
 import { Utils } from "@bitwarden/common/misc/utils";
