@@ -794,15 +794,17 @@ export default class AutofillService implements AutofillServiceInterface {
    * @returns `true` if the iframe is untrusted and the warning should be shown, `false` otherwise
    */
   untrustedIframe(pageUrl: string, tabUrl: string, loginItem: CipherView): boolean {
+    const pageUrlDomain = Utils.getDomain(pageUrl);
+
     // Step 1: we trust the page if the page domain matches the tab domain
     // This means there's either no iframe or the iframe has the same domain and can be trusted
-    if (Utils.getDomain(pageUrl) === Utils.getDomain(tabUrl)) {
+    if (pageUrlDomain === Utils.getDomain(tabUrl)) {
       return false;
     }
 
     // Step 2: we trust the page if the page domain matches an equivalent domain of the tab
     const equivalentDomains = this.settingsService.getEquivalentDomains(tabUrl);
-    if (equivalentDomains?.includes(Utils.getDomain(pageUrl))) {
+    if (equivalentDomains?.includes(pageUrlDomain)) {
       this.logService.debug(
         "iframe at " + pageUrl + " trusted because it is considered equivalent to " + tabUrl
       );
