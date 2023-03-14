@@ -913,7 +913,11 @@
           }
 
           if (fillScript.untrustedIframe) {
-            var acceptedIframeWarning = confirm("Are you sure you want to auto-fill your credentials on " + window.location.hostname + "? Choose OK to auto-fill, or Cancel to stop.");
+            // confirm() is blocked by sandboxed iframes, but we don't want to fill sandboxed iframes anyway.
+            // If this occurs, confirm() returns false without displaying the dialog box, and autofill will be aborted.
+            // The browser may print a message to the console, but this is not a standard error that we can handle.
+            var acceptedIframeWarning = confirm("Are you sure you want to auto-fill your credentials on " +
+              window.location.hostname + "? Choose OK to auto-fill, or Cancel to stop.");
             if (!acceptedIframeWarning) {
               return;
             }
