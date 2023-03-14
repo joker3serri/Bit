@@ -49,7 +49,7 @@ describe("AutofillService", () => {
     const tabUrl = "www.example.com/login";
 
     // The URL of the iframe - this is where we the user wants to autofill
-    const pageUrl = "www.auth.example.com/userauth/login.html";
+    const pageUrl = "www.exampleapp.com.au/userauth/login.html";
 
     beforeEach(() => {
       loginItem = new CipherView();
@@ -66,17 +66,20 @@ describe("AutofillService", () => {
       loginItem.login.uris = [uri1, uri2];
     });
 
-    it("trusts the pageUrl if it matches the tabUrl exactly", () => {
-      const actual = autofillService.untrustedIframe(tabUrl, tabUrl, loginItem);
+    it("trusts the pageUrl if it has the same domain as the tabUrl", () => {
+      const pageUrlSubdomain = "www.auth.example.com/userauth/login.html";
+
+      const actual = autofillService.untrustedIframe(pageUrlSubdomain, tabUrl, loginItem);
+
       expect(actual).toBe(false);
     });
 
     it("trusts the pageUrl if it is an equivalent domain of the tabUrl", () => {
       const mockEquivalentDomains = [
         "example.com",
-        "api.example.com",
-        "auth.example.com",
-        "mail.example.com",
+        "exampleapp.com",
+        "exampleapp.co.uk",
+        "exampleapp.com.au", // Should match pageUrl domain
       ];
       settingsService.getEquivalentDomains
         .calledWith(tabUrl)
@@ -88,7 +91,7 @@ describe("AutofillService", () => {
     });
 
     it("doesn't trust the pageUrl if it isn't an equivalent domain of the tabUrl", () => {
-      const mockEquivalentDomains = ["example.com", "api.example.com", "mail.example.com"];
+      const mockEquivalentDomains = ["example.com", "exampleflights.com", "examplehotels.com"];
       settingsService.getEquivalentDomains
         .calledWith(tabUrl)
         .mockReturnValue(mockEquivalentDomains);

@@ -793,14 +793,13 @@ export default class AutofillService implements AutofillServiceInterface {
    * @returns `true` if the iframe is untrusted and the warning should be shown, `false` otherwise
    */
   untrustedIframe(pageUrl: string, tabUrl: string, loginItem: CipherView): boolean {
-    // Step 1: we trust the page if the pageDetails hostname matches the hostname of the tab to be filled.
-    // This means there's either no iframe or the iframe has the same host and can be trusted
-    if (Utils.getHostname(pageUrl) === Utils.getHostname(tabUrl)) {
+    // Step 1: we trust the page if the page domain matches the tab domain
+    // This means there's either no iframe or the iframe has the same domain and can be trusted
+    if (Utils.getDomain(pageUrl) === Utils.getDomain(tabUrl)) {
       return false;
     }
 
-    // Step 2: same as above but check for equivalent domains
-    // TODO: this is now comparing domains, not hostnames, we should reconcile this difference
+    // Step 2: we trust the page if the page domain matches an equivalent domain of the tab
     const equivalentDomains = this.settingsService.getEquivalentDomains(tabUrl);
     if (equivalentDomains?.includes(Utils.getDomain(pageUrl))) {
       this.logService.debug(
@@ -809,7 +808,7 @@ export default class AutofillService implements AutofillServiceInterface {
       return false;
     }
 
-    // Step 3: we trust the page if it's an exact match in the cipher's saved URIs
+    // Step 3: we trust the page if its URI is saved against the item using "Exact" matching
     const uriMatch = loginItem.login.uris?.find(
       (uri) => uri.match === UriMatchType.Exact && uri.uri === pageUrl
     );
