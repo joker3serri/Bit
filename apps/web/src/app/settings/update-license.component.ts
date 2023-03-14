@@ -12,6 +12,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 })
 export class UpdateLicenseComponent {
   @Input() organizationId: string;
+  @Input() showCancel = true;
   @Output() onUpdated = new EventEmitter();
   @Output() onCanceled = new EventEmitter();
 
@@ -53,7 +54,11 @@ export class UpdateLicenseComponent {
       });
 
       await this.formPromise;
-      this.platformUtilsService.showToast("success", null, this.i18nService.t("updatedLicense"));
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("licenseUploadSuccess")
+      );
       this.onUpdated.emit();
     } catch (e) {
       this.logService.error(e);

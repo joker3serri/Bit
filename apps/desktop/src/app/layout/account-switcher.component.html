@@ -1,3 +1,5 @@
+<!-- Please remove this disable statement when editing this file! -->
+<!-- eslint-disable @angular-eslint/template/button-has-type -->
 <button
   class="account-switcher"
   (click)="toggle()"
@@ -12,6 +14,7 @@
     <app-avatar
       [text]="activeAccount.name"
       [id]="activeAccount.id"
+      [color]="activeAccount.avatarColor"
       [size]="25"
       [circle]="true"
       [fontSize]="14"
@@ -27,7 +30,7 @@
   <i
     class="bwi"
     aria-hidden="true"
-    [ngClass]="{ 'bwi-angle-down': !isOpen, 'bwi-chevron-up': isOpen }"
+    [ngClass]="{ 'bwi-angle-down': !isOpen, 'bwi-angle-up': isOpen }"
   ></i>
 </button>
 
@@ -65,6 +68,7 @@
           [circle]="true"
           [fontSize]="14"
           [dynamic]="true"
+          [color]="a.value.avatarColor"
           *ngIf="a.value.profile.email != null"
           aria-hidden="true"
         ></app-avatar>

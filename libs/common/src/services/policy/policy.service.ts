@@ -21,7 +21,7 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
   policies$ = this._policies.asObservable();
 
   constructor(
-    private stateService: StateService,
+    protected stateService: StateService,
     private organizationService: OrganizationService
   ) {
     this.stateService.activeAccountUnlocked$
@@ -268,7 +268,6 @@ export class PolicyService implements InternalPolicyServiceAbstraction {
 
     return organizations.some(
       (o) =>
-        o.enabled &&
         o.status >= OrganizationUserStatusType.Accepted &&
         o.usePolicies &&
         policySet.has(o.id) &&

@@ -195,6 +195,15 @@
   "helpFeedback": {
     "message": "帮助与反馈"
   },
+  "helpCenter": {
+    "message": "Bitwarden 帮助中心"
+  },
+  "communityForums": {
+    "message": "探索 Bitwarden 社区论坛"
+  },
+  "contactSupport": {
+    "message": "联系 Bitwarden 支持"
+  },
   "sync": {
     "message": "同步"
   },
@@ -430,7 +439,14 @@
     "message": "必须填写确认主密码。"
   },
   "masterPasswordMinlength": {
-    "message": "主密码至少需要 8 个字符。"
+    "message": "Master password must be at least $VALUE$ characters long.",
+    "description": "The Master Password must be at least a specific number of characters long.",
+    "placeholders": {
+      "value": {
+        "content": "$1",
+        "example": "8"
+      }
+    }
   },
   "masterPassDoesntMatch": {
     "message": "两次填写的主密码不一致。"
@@ -960,7 +976,10 @@
     "message": "网页加载时如果检测到登录表单，则执行自动填充。"
   },
   "experimentalFeature": {
-    "message": "目前这是一项实验功能。使用需自担风险。"
+    "message": "Compromised or untrusted websites can exploit auto-fill on page load."
+  },
+  "learnMoreAboutAutofill": {
+    "message": "了解更多关于自动填充的信息"
   },
   "defaultAutoFillOnPageLoad": {
     "message": "登录项目的默认自动填充设置"
@@ -1122,6 +1141,9 @@
   },
   "dr": {
     "message": "博士"
+  },
+  "mx": {
+    "message": "Mx"
   },
   "firstName": {
     "message": "名"
@@ -2043,5 +2065,104 @@
   },
   "rememberEmail": {
     "message": "记住电子邮件地址"
+  },
+  "loginWithDevice": {
+    "message": "使用设备登录"
+  },
+  "loginWithDeviceEnabledInfo": {
+    "message": "Log in with device must be set up in the settings of the Bitwarden app. Need another option?"
+  },
+  "fingerprintPhraseHeader": {
+    "message": "指纹短语"
+  },
+  "fingerprintMatchInfo": {
+    "message": "Please make sure your vault is unlocked and the Fingerprint phrase matches on the other device."
+  },
+  "resendNotification": {
+    "message": "重新发送通知"
+  },
+  "viewAllLoginOptions": {
+    "message": "查看所有登录选项"
+  },
+  "notificationSentDevice": {
+    "message": "通知已发送到您的设备。"
+  },
+  "logInInitiated": {
+    "message": "登录已发起"
+  },
+  "exposedMasterPassword": {
+    "message": "暴露的主密码"
+  },
+  "exposedMasterPasswordDesc": {
+    "message": "数据泄露中发现的密码。使用独特的密码来保护您的帐户。您确定要使用已暴露的密码吗？"
+  },
+  "weakAndExposedMasterPassword": {
+    "message": "弱而暴露的主密码"
+  },
+  "weakAndBreachedMasterPasswordDesc": {
+    "message": "已经识别和发现在数据泄露中的弱密码。使用强大且独特的密码来保护您的帐户。您确定要使用此密码吗？"
+  },
+  "checkForBreaches": {
+    "message": "检查已知的数据泄露是否包含此密码。"
+  },
+  "important": {
+    "message": "简体中文：重要"
+  },
+  "masterPasswordHint": {
+    "message": "检查此密码的已知数据泄露"
+  },
+  "characterMinimum": {
+    "message": "$LENGTH$ character minimum",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "howToAutofill": {
+    "message": "如何自动填充"
+  },
+  "autofillSelectInfo": {
+    "message": "Select an item from this page or use the shortcut: $COMMAND$. You can also try auto-fill on page load.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillSelectInfoNoCommand": {
+    "message": "Select an item from this page or set a shortcut in settings. You can also try auto-fill on page load."
+  },
+  "gotIt": {
+    "message": "明白了"
+  },
+  "autofillSettings": {
+    "message": "自动填充设置"
+  },
+  "autofillShortcut": {
+    "message": "自动填充键盘快捷键"
+  },
+  "autofillShortcutNotSet": {
+    "message": "The auto-fill shortcut is not set. Change this in the browser's settings."
+  },
+  "autofillShortcutText": {
+    "message": "The auto-fill shortcut is: $COMMAND$. Change this in the browser's settings.",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
+  },
+  "autofillShortcutTextSafari": {
+    "message": "默认自动填充快捷键：$COMMAND$",
+    "placeholders": {
+      "command": {
+        "content": "$1",
+        "example": "CTRL+Shift+L"
+      }
+    }
   }
 }

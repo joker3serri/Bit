@@ -23,6 +23,7 @@ export class OrganizationData {
   useCustomPermissions: boolean;
   useResetPassword: boolean;
   useSecretsManager: boolean;
+  useActivateAutofillPolicy: boolean;
   selfHost: boolean;
   usersGetPremium: boolean;
   seats: number;
@@ -45,6 +46,7 @@ export class OrganizationData {
   familySponsorshipLastSyncDate?: Date;
   familySponsorshipValidUntil?: Date;
   familySponsorshipToDelete?: boolean;
+  accessSecretsManager: boolean;
 
   constructor(response: ProfileOrganizationResponse) {
     this.id = response.id;
@@ -65,6 +67,7 @@ export class OrganizationData {
     this.useCustomPermissions = response.useCustomPermissions;
     this.useResetPassword = response.useResetPassword;
     this.useSecretsManager = response.useSecretsManager;
+    this.useActivateAutofillPolicy = response.useActivateAutofillPolicy;
     this.selfHost = response.selfHost;
     this.usersGetPremium = response.usersGetPremium;
     this.seats = response.seats;
@@ -86,5 +89,6 @@ export class OrganizationData {
     this.familySponsorshipLastSyncDate = response.familySponsorshipLastSyncDate;
     this.familySponsorshipValidUntil = response.familySponsorshipValidUntil;
     this.familySponsorshipToDelete = response.familySponsorshipToDelete;
+    this.accessSecretsManager = response.accessSecretsManager;
   }
 }
