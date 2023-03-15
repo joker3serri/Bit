@@ -25,6 +25,7 @@ import {
   shareReplay,
   switchMap,
   takeUntil,
+  tap,
 } from "rxjs/operators";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
@@ -44,7 +45,6 @@ import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
 import { EventType } from "@bitwarden/common/enums/eventType";
 import { KdfType, DEFAULT_PBKDF2_ITERATIONS } from "@bitwarden/common/enums/kdfType";
-import { RefreshTracker } from "@bitwarden/common/misc/refresh-tracker";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
@@ -112,7 +112,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   @ViewChild("cipherAddEdit", { read: ViewContainerRef, static: true })
   cipherAddEditModalRef: ViewContainerRef;
   @ViewChild("share", { read: ViewContainerRef, static: true }) shareModalRef: ViewContainerRef;
-  @ViewChild("collections", { read: ViewContainerRef, static: true })
+  @ViewChild("collectionsModal", { read: ViewContainerRef, static: true })
   collectionsModalRef: ViewContainerRef;
   @ViewChild("updateKeyTemplate", { read: ViewContainerRef, static: true })
   updateKeyModalRef: ViewContainerRef;
@@ -127,7 +127,18 @@ export class VaultComponent implements OnInit, OnDestroy {
   activeFilter: VaultFilter = new VaultFilter();
 
   protected noItemIcon = Icons.Search;
-  protected syncing = false;
+  protected performingInitialLoad = true;
+  protected refreshing = false;
+  protected filter: RoutedVaultFilterModel = {};
+  protected showBulkMove: boolean;
+  protected canAccessPremium: boolean;
+  protected allCollections: CollectionView[];
+  protected allOrganizations: Organization[];
+  protected ciphers: CipherView[];
+  protected collections: CollectionView[];
+  protected isEmpty: boolean;
+  protected selectedCollection: TreeNode<CollectionView> | undefined;
+
   protected loading$: Observable<boolean>;
   protected filter$: Observable<RoutedVaultFilterModel>;
   protected showBulkMove$: Observable<boolean>;
@@ -139,10 +150,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected isEmpty$: Observable<boolean>;
   protected selectedCollection$: Observable<TreeNode<CollectionView> | undefined>;
 
-  // Support for legacy promise-based services
   private refresh$ = new BehaviorSubject<void>(null);
-  private refreshTracker = new RefreshTracker();
-
   private searchText$ = new Subject<string>();
   private destroy$ = new Subject<void>();
 
@@ -176,78 +184,50 @@ export class VaultComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.loading$ = this.refreshTracker.loading$;
-    this.showVerifyEmail = !(await this.tokenService.getEmailVerified());
     this.showBrowserOutdated = window.navigator.userAgent.indexOf("MSIE") !== -1;
-    this.showLowKdf = await this.isLowKdfIteration();
     this.trashCleanupWarning = this.i18nService.t(
       this.platformUtilsService.isSelfHost()
         ? "trashCleanupWarningSelfHosted"
         : "trashCleanupWarning"
     );
 
-    this.route.queryParams
-      .pipe(
-        first(),
-        switchMap(async (params: Params) => {
-          await this.syncService.fullSync(false);
-          await this.vaultFilterService.reloadCollections();
-          this.refresh();
-          // await this.vaultItemsComponent.reload();
+    const firstSetup$ = this.route.queryParams.pipe(
+      first(),
+      switchMap(async (params: Params) => {
+        this.showVerifyEmail = !(await this.tokenService.getEmailVerified());
+        this.showLowKdf = await this.isLowKdfIteration();
+        await this.syncService.fullSync(false);
+        await this.vaultFilterService.reloadCollections();
 
-          const canAccessPremium = await this.stateService.getCanAccessPremium();
-          this.showPremiumCallout =
-            !this.showVerifyEmail && !canAccessPremium && !this.platformUtilsService.isSelfHost();
-          this.showUpdateKey = !(await this.cryptoService.hasEncKey());
+        const canAccessPremium = await this.stateService.getCanAccessPremium();
+        this.showPremiumCallout =
+          !this.showVerifyEmail && !canAccessPremium && !this.platformUtilsService.isSelfHost();
+        this.showUpdateKey = !(await this.cryptoService.hasEncKey());
 
-          const cipherId = getCipherIdFromParams(params);
-          if (!cipherId) {
-            return;
-          }
-          const cipherView = new CipherView();
-          cipherView.id = cipherId;
-          if (params.action === "clone") {
-            await this.cloneCipher(cipherView);
-          } else if (params.action === "edit") {
-            await this.editCipher(cipherView);
-          }
-        }),
-        switchMap(() => this.route.queryParams),
-        switchMap(async (params) => {
-          const cipherId = getCipherIdFromParams(params);
-          if (cipherId) {
-            if ((await this.cipherService.get(cipherId)) != null) {
-              this.editCipherId(cipherId);
-            } else {
-              this.platformUtilsService.showToast(
-                "error",
-                this.i18nService.t("errorOccurred"),
-                this.i18nService.t("unknownCipher")
-              );
-              this.router.navigate([], {
-                queryParams: { itemId: null, cipherId: null },
-                queryParamsHandling: "merge",
-              });
-            }
-          }
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
+        const cipherId = getCipherIdFromParams(params);
+        if (!cipherId) {
+          return;
+        }
+        const cipherView = new CipherView();
+        cipherView.id = cipherId;
+        if (params.action === "clone") {
+          await this.cloneCipher(cipherView);
+        } else if (params.action === "edit") {
+          await this.editCipher(cipherView);
+        }
+      }),
+      shareReplay({ refCount: true, bufferSize: 1 })
+    );
 
     this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
       this.ngZone.run(async () => {
         switch (message.command) {
-          case "syncStarted":
-            this.syncing = true;
-            break;
           case "syncCompleted":
             if (message.successfully) {
               await Promise.all([this.vaultFilterService.reloadCollections()]);
               this.refresh();
               this.changeDetectorRef.detectChanges();
             }
-            this.syncing = false;
             break;
         }
       });
@@ -266,23 +246,19 @@ export class VaultComponent implements OnInit, OnDestroy {
           filter.type !== "trash" &&
           (filter.organizationId === undefined || filter.organizationId === Unassigned)
       ),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
     this.canAccessPremium$ = this.refresh$.pipe(
-      this.refreshTracker.switchMap(() => this.stateService.getCanAccessPremium()),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      switchMap(() => this.stateService.getCanAccessPremium()),
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
     this.allCollections$ = this.refresh$.pipe(
-      this.refreshTracker.switchMap(() => this.collectionService.getAllDecrypted()),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      switchMap(() => this.collectionService.getAllDecrypted()),
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
     this.allOrganizations$ = this.refresh$.pipe(
-      this.refreshTracker.switchMap(() => this.organizationService.getAll()),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      switchMap(() => this.organizationService.getAll()),
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
 
     this.searchText$
@@ -298,7 +274,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     const querySearchText$ = this.route.queryParams.pipe(map((queryParams) => queryParams.search));
 
     this.ciphers$ = combineLatest([
-      this.refresh$.pipe(this.refreshTracker.switchMap(() => this.cipherService.getAllDecrypted())),
+      this.refresh$.pipe(switchMap(() => this.cipherService.getAllDecrypted())),
       this.filter$,
       querySearchText$,
     ]).pipe(
@@ -312,14 +288,11 @@ export class VaultComponent implements OnInit, OnDestroy {
 
         return ciphers.filter(filterFunction);
       }),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
 
     this.collections$ = combineLatest([
-      this.refresh$.pipe(
-        this.refreshTracker.switchMap(() => this.collectionService.getAllNested())
-      ),
+      this.refresh$.pipe(switchMap(() => this.collectionService.getAllNested())),
       this.filter$,
       querySearchText$,
     ]).pipe(
@@ -351,14 +324,11 @@ export class VaultComponent implements OnInit, OnDestroy {
 
         return collectionsToReturn;
       }),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
 
     this.selectedCollection$ = combineLatest([
-      this.refresh$.pipe(
-        this.refreshTracker.switchMap(() => this.collectionService.getAllNested())
-      ),
+      this.refresh$.pipe(switchMap(() => this.collectionService.getAllNested())),
       this.filter$,
     ]).pipe(
       filter(([collections, filter]) => collections != undefined && filter != undefined),
@@ -373,22 +343,83 @@ export class VaultComponent implements OnInit, OnDestroy {
 
         return ServiceUtils.getTreeNodeObjectFromList(collections, filter.collectionId);
       }),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
 
-    this.isEmpty$ = combineLatest([
-      this.refreshTracker.loading$,
-      this.collections$,
-      this.ciphers$,
-    ]).pipe(
-      map(
-        ([loading, collections, ciphers]) =>
-          !loading && collections?.length === 0 && ciphers?.length === 0
-      ),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+    this.isEmpty$ = combineLatest([this.collections$, this.ciphers$]).pipe(
+      map(([collections, ciphers]) => collections?.length === 0 && ciphers?.length === 0),
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
+
+    firstSetup$
+      .pipe(
+        switchMap(() => this.route.queryParams),
+        switchMap(async (params) => {
+          const cipherId = getCipherIdFromParams(params);
+          if (cipherId) {
+            if ((await this.cipherService.get(cipherId)) != null) {
+              this.editCipherId(cipherId);
+            } else {
+              this.platformUtilsService.showToast(
+                "error",
+                this.i18nService.t("errorOccurred"),
+                this.i18nService.t("unknownCipher")
+              );
+              this.router.navigate([], {
+                queryParams: { itemId: null, cipherId: null },
+                queryParamsHandling: "merge",
+              });
+            }
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+
+    firstSetup$
+      .pipe(
+        switchMap(() => this.refresh$),
+        tap(() => (this.refreshing = true)),
+        switchMap(() =>
+          combineLatest([
+            this.filter$,
+            this.showBulkMove$,
+            this.canAccessPremium$,
+            this.allCollections$,
+            this.allOrganizations$,
+            this.ciphers$,
+            this.collections$,
+            this.isEmpty$,
+            this.selectedCollection$,
+          ])
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(
+        ([
+          filter,
+          showBulkMove,
+          canAccessPremium,
+          allCollections,
+          allOrganizations,
+          ciphers,
+          collections,
+          isEmpty,
+          selectedCollection,
+        ]) => {
+          this.filter = filter;
+          this.showBulkMove = showBulkMove;
+          this.canAccessPremium = canAccessPremium;
+          this.allCollections = allCollections;
+          this.allOrganizations = allOrganizations;
+          this.ciphers = ciphers;
+          this.collections = collections;
+          this.isEmpty = isEmpty;
+          this.selectedCollection = selectedCollection;
+          this.performingInitialLoad = false;
+          this.refreshing = false;
+        }
+      );
   }
 
   get isShowingCards() {
