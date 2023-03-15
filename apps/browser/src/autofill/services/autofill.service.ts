@@ -38,6 +38,7 @@ export interface GenerateFillScriptOptions {
   fillNewPassword: boolean;
   cipher: CipherView;
   tabUrl: string;
+  defaultUriMatch: UriMatchType;
 }
 
 export default class AutofillService implements AutofillServiceInterface {
@@ -103,6 +104,8 @@ export default class AutofillService implements AutofillServiceInterface {
     let totpPromise: Promise<string> = null;
 
     const canAccessPremium = await this.stateService.getCanAccessPremium();
+    const defaultUriMatch = (await this.stateService.getDefaultUriMatch()) ?? UriMatchType.Domain;
+
     let didAutofill = false;
     options.pageDetails.forEach((pd) => {
       // make sure we're still on correct tab
@@ -117,6 +120,7 @@ export default class AutofillService implements AutofillServiceInterface {
         fillNewPassword: options.fillNewPassword || false,
         cipher: options.cipher,
         tabUrl: tab.url,
+        defaultUriMatch: defaultUriMatch,
       });
 
       if (!fillScript || !fillScript.script || !fillScript.script.length) {
@@ -347,11 +351,9 @@ export default class AutofillService implements AutofillServiceInterface {
     fillScript.savedUrls =
       login?.uris?.filter((u) => u.match != UriMatchType.Never).map((u) => u.uri) ?? [];
 
-    fillScript.untrustedIframe = this.untrustedIframe(
-      pageDetails.url,
-      options.tabUrl,
-      options.cipher
-    );
+    fillScript.untrustedIframe =
+      pageDetails.url !== options.tabUrl && // If page URL matches tab URL, we're not in an iframe
+      !this.iframeUrlMatches(pageDetails.url, options.cipher, options.defaultUriMatch);
 
     if (!login.password || login.password === "") {
       // No password for this login. Maybe they just wanted to auto-fill some custom fields?
@@ -794,46 +796,30 @@ export default class AutofillService implements AutofillServiceInterface {
    * @param loginItem The cipher to be filled
    * @returns `true` if the iframe is untrusted and the warning should be shown, `false` otherwise
    */
-  untrustedIframe(pageUrl: string, tabUrl: string, loginItem: CipherView): boolean {
-    const pageUrlDomain = Utils.getDomain(pageUrl);
-
-    // Step 1: we trust the page if the page domain matches the tab domain
-    // This means there's either no iframe or the iframe has the same domain and can be trusted
-    if (pageUrlDomain === Utils.getDomain(tabUrl)) {
-      return false;
-    }
-
-    // Step 2: we trust the page if the page domain matches an equivalent domain of the tab
-    const equivalentDomains = this.settingsService.getEquivalentDomains(tabUrl);
-    if (equivalentDomains?.includes(pageUrlDomain)) {
-      this.logService.debug(
-        "iframe at " + pageUrl + " trusted because it is considered equivalent to " + tabUrl
-      );
-      return false;
-    }
-
-    // Step 3: Check the pageUrl against cipher URIs using the configured match detection.
+  iframeUrlMatches(pageUrl: string, loginItem: CipherView, defaultUriMatch: UriMatchType): boolean {
+    // Check the pageUrl against cipher URIs using the configured match detection.
     // If we are in this function at all, it is assumed that the tabUrl already matches a URL for `loginItem`,
     // need to verify the pageUrl also matches one of the saved URIs using the match detection selected.
-    let urlMatched = false;
-    loginItem.login.uris?.forEach((uri) => {
-      if (this.uriMatches(uri, pageUrl)) {
-        urlMatched = true;
-      }
-    });
-    if (loginItem.login.uris?.length > 0 && urlMatched) {
-      this.logService.debug("iframe at " + pageUrl + " trusted because it matches a saved URI");
-      return false;
-    }
+    const uriMatched = loginItem.login.uris?.some((uri) =>
+      this.uriMatches(uri, pageUrl, defaultUriMatch)
+    );
 
-    return true;
+    return uriMatched;
   }
 
   // TODO should this be put in a common place (Utils maybe?) to be used both here and by CipherService?
-  private uriMatches(uri: LoginUriView, url: string): boolean {
-    switch (uri.match) {
+  private uriMatches(uri: LoginUriView, url: string, defaultUriMatch: UriMatchType): boolean {
+    const matchType = uri.match ?? defaultUriMatch;
+
+    const matchDomains = [Utils.getDomain(url)];
+    const equivalentDomains = this.settingsService.getEquivalentDomains(url);
+    if (equivalentDomains != null) {
+      matchDomains.push(...equivalentDomains);
+    }
+
+    switch (matchType) {
       case UriMatchType.Domain:
-        if (url != null && uri.domain != null) {
+        if (url != null && uri.domain != null && matchDomains.includes(uri.domain)) {
           if (Utils.DomainMatchBlacklist.has(uri.domain)) {
             const domainUrlHost = Utils.getHost(url);
             if (!Utils.DomainMatchBlacklist.get(uri.domain).has(domainUrlHost)) {
@@ -876,6 +862,7 @@ export default class AutofillService implements AutofillServiceInterface {
       default:
         break;
     }
+
     return false;
   }
 

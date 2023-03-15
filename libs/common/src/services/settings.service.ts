@@ -48,6 +48,7 @@ export class SettingsService implements SettingsServiceAbstraction {
 
     const settings = this._settings.getValue();
 
+    // TODO: need to concat all equivalent domains, there might be multiple matching arrays
     return settings?.equivalentDomains?.find((ed) => ed.length > 0 && ed.includes(domain));
   }
 
