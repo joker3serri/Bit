@@ -41,7 +41,11 @@
         [disabled]="loading$ | async"
         [showOwner]="false"
         [showCollections]="(filter$ | async)?.type !== undefined"
-        [showGroups]="false"
+        [showGroups]="
+          ((filter$ | async)?.type === undefined &&
+            (filter$ | async)?.collectionId === undefined) ||
+          (filter$ | async)?.collectionId !== undefined
+        "
         [showPremiumFeatures]="true"
         [showBulkMove]="false"
         [showBulkTrashOptions]="(filter$ | async)?.type === 'trash'"
