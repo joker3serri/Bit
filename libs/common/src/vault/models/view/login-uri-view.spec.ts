@@ -25,7 +25,12 @@ const testData = [
   },
 ];
 
-const exampleUrl = "www.exampleapp.com.au:4000/userauth/login.html";
+const exampleUris = {
+  standard: "www.exampleapp.com.au:4000/userauth/login.html",
+  subdomain: "www.auth.exampleapp.com.au",
+  differentDomain: "www.exampleapp.co.uk/subpage",
+  equivalentDomains: ["exampleapp.com.au", "exampleapp.com", "exampleapp.co.uk", "example.com"],
+};
 
 describe("LoginUriView", () => {
   it("isWebsite() given an invalid domain should return false", async () => {
@@ -68,10 +73,33 @@ describe("LoginUriView", () => {
 
   describe("uri matching", () => {
     describe("using domain matching", () => {
-      it.todo("matches the same domain");
-      it.todo("matches equivalent domains");
-      it.todo("does not match a different domain");
-      it.todo("does not match domains that are blacklisted");
+      it("matches the same domain", () => {
+        const uri = uriFactory(UriMatchType.Domain);
+        const actual = uri.matchesUri(exampleUris.subdomain, []);
+        expect(actual).toBe(true);
+      });
+
+      it("matches equivalent domains", () => {
+        const uri = uriFactory(UriMatchType.Domain);
+        const actual = uri.matchesUri(exampleUris.differentDomain, exampleUris.equivalentDomains);
+        expect(actual).toBe(true);
+      });
+
+      it("does not match a different domain", () => {
+        const uri = uriFactory(UriMatchType.Domain);
+        const actual = uri.matchesUri(exampleUris.differentDomain, []);
+        expect(actual).toBe(false);
+      });
+
+      // Actual integration test with the real blacklist, not ideal
+      it("does not match domains that are blacklisted", () => {
+        const googleEquivalentDomains = ["google.com", "script.google.com"];
+        const uri = uriFactory(UriMatchType.Domain, "google.com");
+
+        const actual = uri.matchesUri("script.google.com", googleEquivalentDomains);
+
+        expect(actual).toBe(false);
+      });
     });
 
     describe("using host matching", () => {
@@ -97,14 +125,14 @@ describe("LoginUriView", () => {
     describe("using never matching", () => {
       it("does not match even if uris are identical", () => {
         const uri = uriFactory(UriMatchType.Never);
-        const actual = uri.matchesUri(exampleUrl, []);
+        const actual = uri.matchesUri(exampleUris.standard, []);
         expect(actual).toBe(false);
       });
     });
   });
 });
 
-function uriFactory(match: UriMatchType, uri: string = exampleUrl) {
+function uriFactory(match: UriMatchType, uri: string = exampleUris.standard) {
   const loginUri = new LoginUriView();
   loginUri.match = match;
   loginUri.uri = uri;
