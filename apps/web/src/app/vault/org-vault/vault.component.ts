@@ -51,9 +51,14 @@ import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/pa
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService } from "@bitwarden/components";
+import { DialogService, Icons } from "@bitwarden/components";
 
-import { CollectionAdminService, GroupService, GroupView } from "../../organizations/core";
+import {
+  CollectionAdminService,
+  CollectionAdminView,
+  GroupService,
+  GroupView,
+} from "../../organizations/core";
 import { EntityEventsComponent } from "../../organizations/manage/entity-events.component";
 import {
   CollectionDialogResult,
@@ -111,17 +116,19 @@ export class VaultComponent implements OnInit, OnDestroy {
   trashCleanupWarning: string = null;
   activeFilter: VaultFilter = new VaultFilter();
 
+  protected noItemIcon = Icons.Search;
   protected initialSyncCompleted = false;
   protected loading$: Observable<boolean>;
   protected filter$: Observable<RoutedVaultFilterModel>;
   protected organization$: Observable<Organization>;
-  protected allCollections$: Observable<CollectionView[]>;
+  protected allCollections$: Observable<CollectionAdminView[]>;
   protected allOrganizations$: Observable<Organization[]>;
   protected allGroups$: Observable<GroupView[]>;
   protected ciphers$: Observable<CipherView[]>;
-  protected collections$: Observable<CollectionView[]>;
+  protected collections$: Observable<CollectionAdminView[]>;
+  protected selectedCollection$: Observable<TreeNode<CollectionAdminView> | undefined>;
   protected isEmpty$: Observable<boolean>;
-  protected selectedCollection$: Observable<TreeNode<CollectionView> | undefined>;
+  protected showMissingCollectionPermissionMessage$: Observable<boolean>;
 
   private refreshTracker = new RefreshTracker();
   private refresh$ = new BehaviorSubject<void>(null);
@@ -158,6 +165,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
+    this.loading$ = this.refreshTracker.loading$;
     this.trashCleanupWarning = this.i18nService.t(
       this.platformUtilsService.isSelfHost()
         ? "trashCleanupWarningSelfHosted"
@@ -204,10 +212,8 @@ export class VaultComponent implements OnInit, OnDestroy {
           switch (message.command) {
             case "syncCompleted":
               if (message.successfully) {
-                await Promise.all([
-                  this.vaultFilterService.reloadCollections(),
-                  // this.vaultItemsComponent.refresh(),
-                ]);
+                await Promise.all([this.vaultFilterService.reloadCollections()]);
+                this.initialSyncCompleted = true;
                 this.refresh();
                 this.changeDetectorRef.detectChanges();
               }
@@ -216,6 +222,8 @@ export class VaultComponent implements OnInit, OnDestroy {
         });
       });
       await this.syncService.fullSync(false);
+    } else {
+      this.initialSyncCompleted = true;
     }
 
     this.routedVaultFilterBridgeService.activeFilter$
@@ -342,8 +350,52 @@ export class VaultComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: false, bufferSize: 1 })
     );
 
-    // this.isEmpty$: Observable<boolean>;
-    // this.selectedCollection$: Observable<TreeNode<CollectionView> | undefined>;
+    this.isEmpty$ = combineLatest([
+      this.refreshTracker.loading$,
+      this.collections$,
+      this.ciphers$,
+    ]).pipe(
+      map(
+        ([loading, collections, ciphers]) =>
+          !loading && collections?.length === 0 && ciphers?.length === 0
+      ),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
+    );
+
+    this.selectedCollection$ = combineLatest([nestedCollections$, this.filter$]).pipe(
+      filter(([collections, filter]) => collections != undefined && filter != undefined),
+      map(([collections, filter]) => {
+        if (
+          filter.collectionId === undefined ||
+          filter.collectionId === All ||
+          filter.collectionId === Unassigned
+        ) {
+          return undefined;
+        }
+
+        return ServiceUtils.getTreeNodeObjectFromList(collections, filter.collectionId);
+      }),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
+    );
+
+    this.showMissingCollectionPermissionMessage$ = combineLatest([
+      this.selectedCollection$,
+      this.organization$,
+    ]).pipe(
+      map(([collection, organization]) => {
+        // Not filtering by collections or filtering by all collections, so no need to show message
+        if (collection === null) {
+          return false;
+        }
+
+        // Filtering by a collection, so show message if user is not assigned
+        return !collection.node.assigned && !organization.isAdmin;
+      }),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
+    );
   }
 
   ngOnDestroy() {

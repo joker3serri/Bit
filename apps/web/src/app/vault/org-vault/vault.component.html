@@ -55,21 +55,42 @@
         (onEvent)="onVaultItemsEvent($event)"
       >
       </app-new-vault-items>
-      <!-- <app-org-vault-items
-        [activeFilter]="activeFilter"
-        [initOrganization]="organization"
-        (onCipherClicked)="navigateToCipher($event)"
-        (onAttachmentsClicked)="editCipherAttachments($event)"
-        (onAddCipher)="addCipher()"
-        (onEditCipherCollectionsClicked)="editCipherCollections($event)"
-        (onEventsClicked)="viewEvents($event)"
-        (onCloneClicked)="cloneCipher($event)"
+      <div
+        class="tw-mt-6 tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-start"
+        *ngIf="(showMissingCollectionPermissionMessage$ | async) || (isEmpty$ | async)"
       >
-      </app-org-vault-items> -->
+        <ng-container *ngIf="!initialSyncCompleted">
+          <i
+            class="bwi bwi-spinner bwi-spin text-muted"
+            title="{{ 'loading' | i18n }}"
+            aria-hidden="true"
+          ></i>
+          <span class="sr-only">{{ "loading" | i18n }}</span>
+        </ng-container>
+        <ng-container *ngIf="initialSyncCompleted">
+          <bit-icon [icon]="noItemIcon" aria-hidden="true"></bit-icon>
+          <ng-container *ngIf="showMissingCollectionPermissionMessage$ | async">
+            <p>{{ "noPermissionToViewAllCollectionItems" | i18n }}</p>
+          </ng-container>
+          <ng-container *ngIf="!(showMissingCollectionPermissionMessage$ | async)">
+            <p>{{ "noItemsInList" | i18n }}</p>
+            <button
+              type="button"
+              buttonType="primary"
+              bitButton
+              (click)="addCipher()"
+              *ngIf="(filter$ | async)?.type !== 'trash'"
+            >
+              <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
+              {{ "newItem" | i18n }}
+            </button>
+          </ng-container>
+        </ng-container>
+      </div>
     </div>
   </div>
+  <ng-template #attachments></ng-template>
+  <ng-template #cipherAddEdit></ng-template>
+  <ng-template #collections></ng-template>
+  <ng-template #eventsTemplate></ng-template>
 </div>
-<ng-template #attachments></ng-template>
-<ng-template #cipherAddEdit></ng-template>
-<ng-template #collections></ng-template>
-<ng-template #eventsTemplate></ng-template>
