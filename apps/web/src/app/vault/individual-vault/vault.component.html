@@ -28,7 +28,6 @@
         {{ trashCleanupWarning }}
       </app-callout>
       <app-new-vault-items
-        *ngIf="!(isEmpty$ | async)"
         [ciphers]="ciphers$ | async"
         [collections]="collections$ | async"
         [allCollections]="allCollections$ | async"
