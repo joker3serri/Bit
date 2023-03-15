@@ -23,7 +23,6 @@ import {
   first,
   map,
   shareReplay,
-  startWith,
   switchMap,
   takeUntil,
 } from "rxjs/operators";
@@ -47,6 +46,7 @@ import { EventType } from "@bitwarden/common/enums/eventType";
 import { KdfType, DEFAULT_PBKDF2_ITERATIONS } from "@bitwarden/common/enums/kdfType";
 import { RefreshTracker } from "@bitwarden/common/misc/refresh-tracker";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
+import { Utils } from "@bitwarden/common/misc/utils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
@@ -282,15 +282,22 @@ export class VaultComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: false, bufferSize: 1 })
     );
 
-    const debouncedSearchText$ = this.searchText$.pipe(
-      debounceTime(SearchTextDebounceInterval),
-      startWith("")
-    );
+    this.searchText$
+      .pipe(debounceTime(SearchTextDebounceInterval), takeUntil(this.destroy$))
+      .subscribe((searchText) =>
+        this.router.navigate([], {
+          queryParams: { search: Utils.isNullOrEmpty(searchText) ? null : searchText },
+          queryParamsHandling: "merge",
+          replaceUrl: true,
+        })
+      );
+
+    const querySearchText$ = this.route.queryParams.pipe(map((queryParams) => queryParams.search));
 
     this.ciphers$ = combineLatest([
       this.refresh$.pipe(this.refreshTracker.switchMap(() => this.cipherService.getAllDecrypted())),
       this.filter$,
-      debouncedSearchText$,
+      querySearchText$,
     ]).pipe(
       filter(([ciphers, filter]) => ciphers != undefined && filter != undefined),
       concatMap(async ([ciphers, filter, searchText]) => {
@@ -311,7 +318,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.refreshTracker.switchMap(() => this.collectionService.getAllNested())
       ),
       this.filter$,
-      debouncedSearchText$,
+      querySearchText$,
     ]).pipe(
       filter(([collections, filter]) => collections != undefined && filter != undefined),
       map(([collections, filter, searchText]) => {

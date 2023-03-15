@@ -16,7 +16,6 @@ import {
   filter,
   map,
   shareReplay,
-  startWith,
   switchMap,
   takeUntil,
 } from "rxjs/operators";
@@ -31,6 +30,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { RefreshTracker } from "@bitwarden/common/misc/refresh-tracker";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
+import { Utils } from "@bitwarden/common/misc/utils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
@@ -137,11 +137,6 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.organization = this.organizationService.get(params.organizationId);
     });
 
-    // TODO
-    // this.route.queryParams.pipe(first(), takeUntil(this.destroy$)).subscribe((qParams) => {
-    //   this.vaultItemsComponent.searchText = this.vaultFilterComponent.searchText = qParams.search;
-    // });
-
     // verifies that the organization has been set
     combineLatest([this.route.queryParams, this.route.parent.params])
       .pipe(
@@ -198,10 +193,17 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.activeFilter = activeFilter;
       });
 
-    const debouncedSearchText$ = this.searchText$.pipe(
-      debounceTime(SearchTextDebounceInterval),
-      startWith("")
-    );
+    this.searchText$
+      .pipe(debounceTime(SearchTextDebounceInterval), takeUntil(this.destroy$))
+      .subscribe((searchText) =>
+        this.router.navigate([], {
+          queryParams: { search: Utils.isNullOrEmpty(searchText) ? null : searchText },
+          queryParamsHandling: "merge",
+          replaceUrl: true,
+        })
+      );
+
+    const querySearchText$ = this.route.queryParams.pipe(map((queryParams) => queryParams.search));
 
     // loading$: Observable<boolean>;
     this.filter$ = this.routedVaultFilterService.filter$;
@@ -248,7 +250,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.ciphers$ = combineLatest([allCiphers$, this.filter$, debouncedSearchText$]).pipe(
+    this.ciphers$ = combineLatest([allCiphers$, this.filter$, querySearchText$]).pipe(
       filter(([ciphers, filter]) => ciphers != undefined && filter != undefined),
       concatMap(async ([ciphers, filter, searchText]) => {
         if (filter.collectionId === undefined && filter.type === undefined) {
@@ -273,11 +275,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: false, bufferSize: 1 })
     );
 
-    this.collections$ = combineLatest([
-      nestedCollections$,
-      this.filter$,
-      debouncedSearchText$,
-    ]).pipe(
+    this.collections$ = combineLatest([nestedCollections$, this.filter$, querySearchText$]).pipe(
       filter(([collections, filter]) => collections != undefined && filter != undefined),
       map(([collections, filter, searchText]) => {
         if (
@@ -331,9 +329,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   filterSearchText(searchText: string) {
-    // TODO
-    // this.vaultItemsComponent.searchText = searchText;
-    // this.vaultItemsComponent.search(200);
+    this.searchText$.next(searchText);
   }
 
   async editCipherAttachments(cipher: CipherView) {
