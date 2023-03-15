@@ -2127,7 +2127,7 @@
     "message": "How to auto-fill"
   },
   "autofillSelectInfo": {
-    "message": "Select an item from this page or use the shortcut: $COMMAND$.",
+    "message": "Select an item from this page or use the shortcut: $COMMAND$",
     "placeholders": {
       "command": {
         "content": "$1",
