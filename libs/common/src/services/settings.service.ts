@@ -48,8 +48,17 @@ export class SettingsService implements SettingsServiceAbstraction {
 
     const settings = this._settings.getValue();
 
-    // TODO: need to concat all equivalent domains, there might be multiple matching arrays
-    return settings?.equivalentDomains?.find((ed) => ed.length > 0 && ed.includes(domain));
+    let result: string[] = [];
+
+    if (settings?.equivalentDomains != null) {
+      settings.equivalentDomains
+        .filter((ed) => ed.length > 0 && ed.includes(domain))
+        .forEach((ed) => {
+          result = result.concat(ed);
+        });
+    }
+
+    return result;
   }
 
   async clear(userId?: string): Promise<void> {
