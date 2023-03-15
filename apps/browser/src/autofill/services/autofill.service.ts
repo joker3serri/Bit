@@ -351,9 +351,9 @@ export default class AutofillService implements AutofillServiceInterface {
     fillScript.savedUrls =
       login?.uris?.filter((u) => u.match != UriMatchType.Never).map((u) => u.uri) ?? [];
 
+    const inIframe = pageDetails.url !== options.tabUrl;
     fillScript.untrustedIframe =
-      pageDetails.url !== options.tabUrl && // If page URL matches tab URL, we're not in an iframe
-      !this.iframeUrlMatches(pageDetails.url, options.cipher, options.defaultUriMatch);
+      inIframe && !this.iframeUrlMatches(pageDetails.url, options.cipher, options.defaultUriMatch);
 
     if (!login.password || login.password === "") {
       // No password for this login. Maybe they just wanted to auto-fill some custom fields?
