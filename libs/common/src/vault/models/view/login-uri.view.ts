@@ -129,4 +129,67 @@ export class LoginUriView implements View {
   static fromJSON(obj: Partial<Jsonify<LoginUriView>>): LoginUriView {
     return Object.assign(new LoginUriView(), obj);
   }
+
+  matchesUri(
+    targetUri: string,
+    equivalentDomains: string[],
+    defaultUriMatch: UriMatchType = UriMatchType.Domain
+  ): boolean {
+    const matchType = this.match ?? defaultUriMatch;
+    const targetDomain = Utils.getDomain(targetUri);
+
+    // equivalentDomains probably already includes the targetDomain, but we add it just in case
+    const matchDomains: string[] = equivalentDomains?.length
+      ? equivalentDomains.concat(targetDomain)
+      : [targetDomain];
+
+    switch (matchType) {
+      case UriMatchType.Domain:
+        if (targetUri != null && this.domain != null && matchDomains.includes(this.domain)) {
+          if (Utils.DomainMatchBlacklist.has(this.domain)) {
+            const domainUrlHost = Utils.getHost(targetUri);
+            if (!Utils.DomainMatchBlacklist.get(this.domain).has(domainUrlHost)) {
+              return true;
+            }
+          } else {
+            return true;
+          }
+        }
+        break;
+      case UriMatchType.Host: {
+        const urlHost = Utils.getHost(targetUri);
+        if (urlHost != null && urlHost === Utils.getHost(this.uri)) {
+          return true;
+        }
+        break;
+      }
+      case UriMatchType.Exact:
+        if (targetUri === this.uri) {
+          return true;
+        }
+        break;
+      case UriMatchType.StartsWith:
+        if (targetUri.startsWith(this.uri)) {
+          return true;
+        }
+        break;
+      case UriMatchType.RegularExpression:
+        try {
+          const regex = new RegExp(this.uri, "i");
+          if (regex.test(targetUri)) {
+            return true;
+          }
+        } catch (e) {
+          // TODO: how to log from within a model?
+          // this.logService.error(e);
+          return false;
+        }
+        break;
+      case UriMatchType.Never:
+      default:
+        break;
+    }
+
+    return false;
+  }
 }
