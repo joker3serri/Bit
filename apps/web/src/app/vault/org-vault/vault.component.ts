@@ -29,6 +29,7 @@ import {
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
+import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -54,6 +55,11 @@ import { DialogService } from "@bitwarden/components";
 
 import { CollectionAdminService, GroupService, GroupView } from "../../organizations/core";
 import { EntityEventsComponent } from "../../organizations/manage/entity-events.component";
+import {
+  CollectionDialogResult,
+  CollectionDialogTabType,
+  openCollectionDialog,
+} from "../../organizations/shared";
 import { CollectionsComponent } from "../../organizations/vault/collections.component";
 import { VaultFilterService } from "../../vault/individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../vault/individual-vault/vault-filter/shared/models/vault-filter.model";
@@ -62,10 +68,6 @@ import {
   BulkDeleteDialogResult,
   openBulkDeleteDialog,
 } from "../individual-vault/bulk-action-dialogs/bulk-delete-dialog/bulk-delete-dialog.component";
-import {
-  BulkMoveDialogResult,
-  openBulkMoveDialog,
-} from "../individual-vault/bulk-action-dialogs/bulk-move-dialog/bulk-move-dialog.component";
 import {
   BulkRestoreDialogResult,
   openBulkRestoreDialog,
@@ -151,7 +153,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     private groupService: GroupService,
     private logService: LogService,
     private eventCollectionService: EventCollectionService,
-    private totpService: TotpService
+    private totpService: TotpService,
+    private apiService: ApiService
   ) {}
 
   async ngOnInit() {
@@ -364,13 +367,16 @@ export class VaultComponent implements OnInit, OnDestroy {
       }
     } else if (event.type === "delete") {
       const ciphers = event.items.filter((i) => i.collection === undefined).map((i) => i.cipher);
-      if (ciphers.length === 1) {
+      const collections = event.items
+        .filter((i) => i.cipher === undefined)
+        .map((i) => i.collection);
+      if (ciphers.length === 1 && collections.length === 0) {
         this.deleteCipher(ciphers[0]);
+      } else if (ciphers.length === 0 && collections.length === 1) {
+        this.deleteCollection(collections[0]);
       } else {
-        this.bulkDelete(ciphers);
+        this.bulkDelete(ciphers, collections, this.organization);
       }
-    } else if (event.type === "moveToFolder") {
-      this.bulkMove(event.items);
     } else if (event.type === "copy") {
       if (event.field === "username") {
         this.copy(event.item, event.item.login.username, "Username", "username");
@@ -379,13 +385,16 @@ export class VaultComponent implements OnInit, OnDestroy {
       } else if (event.field === "totp") {
         this.copy(event.item, event.item.login.totp, "verificationCodeTotp", "TOTP");
       }
+    } else if (event.type === "edit") {
+      this.editCollection(event.item, "info");
+    } else if (event.type === "access") {
+      this.editCollection(event.item, "access");
+    } else if (event.type === "events") {
+      this.viewEvents(event.item);
     }
   }
 
   async refreshItems() {
-    // this.vaultItemsComponent.actionPromise = this.vaultItemsComponent.refresh();
-    // await this.vaultItemsComponent.actionPromise;
-    // this.vaultItemsComponent.actionPromise = null;
     this.refresh();
   }
 
@@ -623,13 +632,48 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
   }
 
-  async bulkDelete(ciphers: CipherView[]) {
+  async deleteCollection(collection: CollectionView): Promise<void> {
+    if (!this.organization.canDeleteAssignedCollections) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("missingPermissions")
+      );
+      return;
+    }
+    const confirmed = await this.platformUtilsService.showDialog(
+      this.i18nService.t("deleteCollectionConfirmation"),
+      collection.name,
+      this.i18nService.t("yes"),
+      this.i18nService.t("no"),
+      "warning"
+    );
+    if (!confirmed) {
+      return;
+    }
+    try {
+      await this.apiService.deleteCollection(this.organization?.id, collection.id);
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t("deletedCollectionId", collection.name)
+      );
+      this.refresh();
+    } catch (e) {
+      this.logService.error(e);
+    }
+  }
+
+  async bulkDelete(
+    ciphers: CipherView[],
+    collections: CollectionView[],
+    organization: Organization
+  ) {
     if (!(await this.repromptCipher(ciphers))) {
       return;
     }
 
-    const selectedIds = ciphers.map((cipher) => cipher.id);
-    if (selectedIds.length === 0) {
+    if (ciphers.length === 0 && collections.length === 0) {
       this.platformUtilsService.showToast(
         "error",
         this.i18nService.t("errorOccurred"),
@@ -639,36 +683,16 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
     const currentFilter = await firstValueFrom(this.filter$);
     const dialog = openBulkDeleteDialog(this.dialogService, {
-      data: { permanent: currentFilter.type === "trash", cipherIds: selectedIds },
+      data: {
+        permanent: currentFilter.type === "trash",
+        cipherIds: ciphers.map((c) => c.id),
+        collectionIds: collections.map((c) => c.id),
+        organization,
+      },
     });
 
     const result = await lastValueFrom(dialog.closed);
     if (result === BulkDeleteDialogResult.Deleted) {
-      this.refresh();
-    }
-  }
-
-  async bulkMove(ciphers: CipherView[]) {
-    if (!(await this.repromptCipher(ciphers))) {
-      return;
-    }
-
-    const selectedCipherIds = ciphers.map((cipher) => cipher.id);
-    if (selectedCipherIds.length === 0) {
-      this.platformUtilsService.showToast(
-        "error",
-        this.i18nService.t("errorOccurred"),
-        this.i18nService.t("nothingSelected")
-      );
-      return;
-    }
-
-    const dialog = openBulkMoveDialog(this.dialogService, {
-      data: { cipherIds: selectedCipherIds },
-    });
-
-    const result = await lastValueFrom(dialog.closed);
-    if (result === BulkMoveDialogResult.Moved) {
       this.refresh();
     }
   }
@@ -703,6 +727,19 @@ export class VaultComponent implements OnInit, OnDestroy {
       );
     } else if (typeI18nKey === "securityCode") {
       this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, cipher.id);
+    }
+  }
+
+  async editCollection(c: CollectionView, tab: "info" | "access"): Promise<void> {
+    const tabType = tab == "info" ? CollectionDialogTabType.Info : CollectionDialogTabType.Access;
+
+    const dialog = openCollectionDialog(this.dialogService, {
+      data: { collectionId: c?.id, organizationId: this.organization?.id, initialTab: tabType },
+    });
+
+    const result = await lastValueFrom(dialog.closed);
+    if (result === CollectionDialogResult.Saved || result === CollectionDialogResult.Deleted) {
+      this.refresh();
     }
   }
 
