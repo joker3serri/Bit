@@ -2126,7 +2126,7 @@
   "howToAutofill": {
     "message": "How to auto-fill"
   },
-  "autofillSelectInfo": {
+  "autofillSelectInfoWithCommand": {
     "message": "Select an item from this page or use the shortcut: $COMMAND$",
     "placeholders": {
       "command": {
@@ -2135,7 +2135,7 @@
       }
     }
   },
-  "autofillSelectInfoNoCommand": {
+  "autofillSelectInfoWithoutCommand": {
     "message": "Select an item from this page or set a shortcut in settings."
   },
   "gotIt": {
