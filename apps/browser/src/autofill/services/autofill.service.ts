@@ -349,9 +349,7 @@ export default class AutofillService implements AutofillServiceInterface {
     fillScript.savedUrls =
       login?.uris?.filter((u) => u.match != UriMatchType.Never).map((u) => u.uri) ?? [];
 
-    const inIframe = pageDetails.url !== options.tabUrl;
-    fillScript.untrustedIframe =
-      inIframe && !this.iframeUrlMatches(pageDetails.url, options.cipher, options.defaultUriMatch);
+    fillScript.untrustedIframe = this.inUntrustedIframe(pageDetails.url, options);
 
     if (!login.password || login.password === "") {
       // No password for this login. Maybe they just wanted to auto-fill some custom fields?
@@ -787,27 +785,27 @@ export default class AutofillService implements AutofillServiceInterface {
   }
 
   /**
-   * Determines whether to warn the user about filling an iframe
+   * Determines whether an iframe is potentially dangerous ("untrusted") to autofill
    * @param pageUrl The url of the page/iframe, usually from AutofillPageDetails
-   * @param tabUrl The url of the tab, usually from the message sender (should not come from a content script because
-   *  that is likely to be incorrect in the case of iframes)
-   * @param loginItem The cipher to be filled
-   * @returns `true` if the iframe is untrusted and the warning should be shown, `false` otherwise
+   * @param options The GenerateFillScript options
+   * @returns `true` if the iframe is untrusted and a warning should be shown, `false` otherwise
    */
-  private iframeUrlMatches(
-    pageUrl: string,
-    loginItem: CipherView,
-    defaultUriMatch: UriMatchType
-  ): boolean {
+  private inUntrustedIframe(pageUrl: string, options: GenerateFillScriptOptions): boolean {
+    // If the pageUrl (from the content script) matches the tabUrl (from the sender tab), we are not in an iframe
+    // This also avoids a false positive if no URI is saved and the user triggers auto-fill anyway
+    if (pageUrl === options.tabUrl) {
+      return false;
+    }
+
     // Check the pageUrl against cipher URIs using the configured match detection.
-    // If we are in this function at all, it is assumed that the tabUrl already matches a URL for `loginItem`,
-    // need to verify the pageUrl also matches one of the saved URIs using the match detection selected.
+    // Remember: if we are in this function, the tabUrl already matches a saved URI for the login.
+    // We need to verify the pageUrl also matches one of the saved URIs using the match detection selected.
     const equivalentDomains = this.settingsService.getEquivalentDomains(pageUrl);
-    const uriMatched = loginItem.login.uris?.some((uri) =>
-      uri.matchesUri(pageUrl, equivalentDomains, defaultUriMatch)
+    const uriMatched = options.cipher.login.uris?.some((uri) =>
+      uri.matchesUri(pageUrl, equivalentDomains, options.defaultUriMatch)
     );
 
-    return uriMatched;
+    return !uriMatched;
   }
 
   private fieldAttrsContain(field: AutofillField, containsVal: string) {
