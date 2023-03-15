@@ -8,7 +8,7 @@
             type="checkbox"
             bitCheckbox
             id="checkAll"
-            [disabled]="disabled"
+            [disabled]="disabled || isEmpty"
             (change)="$event ? toggleAll() : null"
             [checked]="selection.hasValue() && isAllSelected"
           />
@@ -22,7 +22,7 @@
         <th bitCell class="tw-w-max" *ngIf="showGroups">{{ "groups" | i18n }}</th>
         <th bitCell class="tw-min-w-fit tw-text-right">
           <button
-            [disabled]="disabled"
+            [disabled]="disabled || isEmpty"
             [bitMenuTriggerFor]="headerMenu"
             bitIconButton="bwi-ellipsis-v"
             size="small"

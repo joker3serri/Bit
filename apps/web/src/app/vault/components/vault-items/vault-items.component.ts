@@ -69,6 +69,10 @@ export class VaultItemsComponent {
       .every((item) => this.selection.isSelected(item));
   }
 
+  get isEmpty() {
+    return this.dataSource.data.length === 0;
+  }
+
   toggleAll() {
     this.isAllSelected
       ? this.selection.clear()
