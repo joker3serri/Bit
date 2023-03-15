@@ -49,9 +49,9 @@
         [showPremiumFeatures]="true"
         [showBulkMove]="false"
         [showBulkTrashOptions]="(filter$ | async)?.type === 'trash'"
-        [useEvents]="false"
-        [editableCollections]="false"
-        [cloneableOrganizationCiphers]="false"
+        [useEvents]="(organization$ | async).useEvents"
+        [editableCollections]="true"
+        [cloneableOrganizationCiphers]="true"
       >
       </app-new-vault-items>
       <!-- <app-org-vault-items
