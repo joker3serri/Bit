@@ -10,6 +10,7 @@ import {
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { BehaviorSubject, combineLatest, firstValueFrom, Observable, Subject } from "rxjs";
 import {
+  concatMap,
   debounceTime,
   distinctUntilChanged,
   filter,
@@ -39,13 +40,14 @@ import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.serv
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService } from "@bitwarden/components";
 
-import { CollectionAdminService } from "../../organizations/core";
+import { CollectionAdminService, GroupService, GroupView } from "../../organizations/core";
 import { EntityEventsComponent } from "../../organizations/manage/entity-events.component";
 import { CollectionsComponent } from "../../organizations/vault/collections.component";
 import { VaultFilterService } from "../../vault/individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../vault/individual-vault/vault-filter/shared/models/vault-filter.model";
 import { RoutedVaultFilterBridgeService } from "../individual-vault/vault-filter/services/routed-vault-filter-bridge.service";
 import { RoutedVaultFilterService } from "../individual-vault/vault-filter/services/routed-vault-filter.service";
+import { createFilterFunction } from "../individual-vault/vault-filter/shared/models/filter-function";
 import {
   All,
   RoutedVaultFilterModel,
@@ -85,8 +87,10 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected initialSyncCompleted = false;
   protected loading$: Observable<boolean>;
   protected filter$: Observable<RoutedVaultFilterModel>;
+  protected organization$: Observable<Organization>;
   protected allCollections$: Observable<CollectionView[]>;
   protected allOrganizations$: Observable<Organization[]>;
+  protected allGroups$: Observable<GroupView[]>;
   protected ciphers$: Observable<CipherView[]>;
   protected collections$: Observable<CollectionView[]>;
   protected isEmpty$: Observable<boolean>;
@@ -118,7 +122,8 @@ export class VaultComponent implements OnInit, OnDestroy {
     private passwordRepromptService: PasswordRepromptService,
     private collectionAdminService: CollectionAdminService,
     private searchService: SearchService,
-    private searchPipe: SearchPipe
+    private searchPipe: SearchPipe,
+    private groupService: GroupService
   ) {}
 
   async ngOnInit() {
@@ -213,13 +218,54 @@ export class VaultComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: false, bufferSize: 1 })
     );
 
-    this.allOrganizations$ = this.refresh$.pipe(
+    this.organization$ = this.refresh$.pipe(
       switchMap(() => organizationId$),
-      map((organizationId) => [this.organizationService.get(organizationId)]),
+      map((organizationId) => this.organizationService.get(organizationId)),
       takeUntil(this.destroy$),
       shareReplay({ refCount: false, bufferSize: 1 })
     );
-    // this.ciphers$: Observable<CipherView[]>;
+
+    this.allGroups$ = this.refresh$.pipe(
+      switchMap(() => organizationId$),
+      this.refreshTracker.switchMap((organizationId) => this.groupService.getAll(organizationId)),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
+    );
+
+    const allCiphers$ = this.refresh$.pipe(
+      switchMap(() => this.organization$),
+      concatMap(async (organization) => {
+        let ciphers;
+        if (organization?.canEditAnyCollection) {
+          ciphers = await this.cipherService.getAllFromApiForOrganization(this.organization?.id);
+        } else {
+          ciphers = (await this.cipherService.getAllDecrypted()).filter(
+            (c) => c.organizationId === this.organization?.id
+          );
+        }
+        await this.searchService.indexCiphers(this.organization?.id, ciphers);
+        return ciphers;
+      })
+    );
+
+    this.ciphers$ = combineLatest([allCiphers$, this.filter$, debouncedSearchText$]).pipe(
+      filter(([ciphers, filter]) => ciphers != undefined && filter != undefined),
+      concatMap(async ([ciphers, filter, searchText]) => {
+        if (filter.collectionId === undefined && filter.type === undefined) {
+          return [];
+        }
+
+        const filterFunction = createFilterFunction(filter);
+
+        if (this.searchService.isSearchable(searchText)) {
+          return await this.searchService.searchCiphers(searchText, [filterFunction], ciphers);
+        }
+
+        return ciphers.filter(filterFunction);
+      }),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
+    );
 
     const nestedCollections$ = this.allCollections$.pipe(
       map((collections) => getNestedCollectionTree(collections)),
