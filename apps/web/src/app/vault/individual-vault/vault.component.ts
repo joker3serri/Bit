@@ -683,9 +683,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     const result = await lastValueFrom(dialog.closed);
     if (result === BulkRestoreDialogResult.Restored) {
       this.refresh();
-      // TODO this.actionPromise = this.refresh();
-      // await this.actionPromise;
-      // this.actionPromise = null;
     }
   }
 
@@ -693,9 +690,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     if (!(await this.repromptCipher([c]))) {
       return;
     }
-    // if (this.actionPromise != null) {
-    //   return;
-    // }
+
     const permanent = c.isDeleted;
     const confirmed = await this.platformUtilsService.showDialog(
       this.i18nService.t(

@@ -8,7 +8,14 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { BehaviorSubject, combineLatest, firstValueFrom, Observable, Subject } from "rxjs";
+import {
+  BehaviorSubject,
+  combineLatest,
+  firstValueFrom,
+  lastValueFrom,
+  Observable,
+  Subject,
+} from "rxjs";
 import {
   concatMap,
   debounceTime,
@@ -23,11 +30,15 @@ import {
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
+import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
+import { TotpService } from "@bitwarden/common/abstractions/totp.service";
+import { EventType } from "@bitwarden/common/enums/eventType";
 import { RefreshTracker } from "@bitwarden/common/misc/refresh-tracker";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
 import { Utils } from "@bitwarden/common/misc/utils";
@@ -37,6 +48,7 @@ import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
+import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService } from "@bitwarden/components";
 
@@ -45,6 +57,19 @@ import { EntityEventsComponent } from "../../organizations/manage/entity-events.
 import { CollectionsComponent } from "../../organizations/vault/collections.component";
 import { VaultFilterService } from "../../vault/individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../vault/individual-vault/vault-filter/shared/models/vault-filter.model";
+import { VaultItemEvent } from "../components/vault-items/vault-item-event";
+import {
+  BulkDeleteDialogResult,
+  openBulkDeleteDialog,
+} from "../individual-vault/bulk-action-dialogs/bulk-delete-dialog/bulk-delete-dialog.component";
+import {
+  BulkMoveDialogResult,
+  openBulkMoveDialog,
+} from "../individual-vault/bulk-action-dialogs/bulk-move-dialog/bulk-move-dialog.component";
+import {
+  BulkRestoreDialogResult,
+  openBulkRestoreDialog,
+} from "../individual-vault/bulk-action-dialogs/bulk-restore-dialog/bulk-restore-dialog.component";
 import { RoutedVaultFilterBridgeService } from "../individual-vault/vault-filter/services/routed-vault-filter-bridge.service";
 import { RoutedVaultFilterService } from "../individual-vault/vault-filter/services/routed-vault-filter.service";
 import { createFilterFunction } from "../individual-vault/vault-filter/shared/models/filter-function";
@@ -123,7 +148,10 @@ export class VaultComponent implements OnInit, OnDestroy {
     private collectionAdminService: CollectionAdminService,
     private searchService: SearchService,
     private searchPipe: SearchPipe,
-    private groupService: GroupService
+    private groupService: GroupService,
+    private logService: LogService,
+    private eventCollectionService: EventCollectionService,
+    private totpService: TotpService
   ) {}
 
   async ngOnInit() {
@@ -321,6 +349,39 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  onVaultItemsEvent(event: VaultItemEvent) {
+    if (event.type === "attachements") {
+      this.editCipherAttachments(event.item);
+    } else if (event.type === "collections") {
+      this.editCipherCollections(event.item);
+    } else if (event.type === "clone") {
+      this.cloneCipher(event.item);
+    } else if (event.type === "restore") {
+      if (event.items.length === 1) {
+        this.restore(event.items[0]);
+      } else {
+        this.bulkRestore(event.items);
+      }
+    } else if (event.type === "delete") {
+      const ciphers = event.items.filter((i) => i.collection === undefined).map((i) => i.cipher);
+      if (ciphers.length === 1) {
+        this.deleteCipher(ciphers[0]);
+      } else {
+        this.bulkDelete(ciphers);
+      }
+    } else if (event.type === "moveToFolder") {
+      this.bulkMove(event.items);
+    } else if (event.type === "copy") {
+      if (event.field === "username") {
+        this.copy(event.item, event.item.login.username, "Username", "username");
+      } else if (event.field === "password") {
+        this.copy(event.item, event.item.login.password, "Password", "password");
+      } else if (event.field === "totp") {
+        this.copy(event.item, event.item.login.totp, "verificationCodeTotp", "TOTP");
+      }
+    }
+  }
+
   async refreshItems() {
     // this.vaultItemsComponent.actionPromise = this.vaultItemsComponent.refresh();
     // await this.vaultItemsComponent.actionPromise;
@@ -475,6 +536,176 @@ export class VaultComponent implements OnInit, OnDestroy {
     });
   }
 
+  async restore(c: CipherView): Promise<boolean> {
+    // REVIEW QUESTION: Original restore didn't reprompt cipher. I added it now.
+    // Should I remove again? Was it just a bug that it was missing?
+    if (!(await this.repromptCipher([c]))) {
+      return;
+    }
+
+    if (!c.isDeleted) {
+      return;
+    }
+    const confirmed = await this.platformUtilsService.showDialog(
+      this.i18nService.t("restoreItemConfirmation"),
+      this.i18nService.t("restoreItem"),
+      this.i18nService.t("yes"),
+      this.i18nService.t("no"),
+      "warning"
+    );
+    if (!confirmed) {
+      return false;
+    }
+
+    try {
+      this.cipherService.restoreWithServer(c.id);
+      this.platformUtilsService.showToast("success", null, this.i18nService.t("restoredItem"));
+      this.refresh();
+    } catch (e) {
+      this.logService.error(e);
+    }
+  }
+
+  async bulkRestore(ciphers: CipherView[]) {
+    if (!(await this.repromptCipher(ciphers))) {
+      return;
+    }
+
+    const selectedCipherIds = ciphers.map((cipher) => cipher.id);
+    if (selectedCipherIds.length === 0) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("nothingSelected")
+      );
+      return;
+    }
+
+    const dialog = openBulkRestoreDialog(this.dialogService, {
+      data: { cipherIds: selectedCipherIds },
+    });
+
+    const result = await lastValueFrom(dialog.closed);
+    if (result === BulkRestoreDialogResult.Restored) {
+      this.refresh();
+    }
+  }
+
+  async deleteCipher(c: CipherView): Promise<boolean> {
+    if (!(await this.repromptCipher([c]))) {
+      return;
+    }
+
+    const permanent = c.isDeleted;
+    const confirmed = await this.platformUtilsService.showDialog(
+      this.i18nService.t(
+        permanent ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation"
+      ),
+      this.i18nService.t(permanent ? "permanentlyDeleteItem" : "deleteItem"),
+      this.i18nService.t("yes"),
+      this.i18nService.t("no"),
+      "warning"
+    );
+    if (!confirmed) {
+      return false;
+    }
+
+    try {
+      await this.deleteCipherWithServer(c.id, permanent);
+      this.platformUtilsService.showToast(
+        "success",
+        null,
+        this.i18nService.t(permanent ? "permanentlyDeletedItem" : "deletedItem")
+      );
+      this.refresh();
+    } catch (e) {
+      this.logService.error(e);
+    }
+  }
+
+  async bulkDelete(ciphers: CipherView[]) {
+    if (!(await this.repromptCipher(ciphers))) {
+      return;
+    }
+
+    const selectedIds = ciphers.map((cipher) => cipher.id);
+    if (selectedIds.length === 0) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("nothingSelected")
+      );
+      return;
+    }
+    const currentFilter = await firstValueFrom(this.filter$);
+    const dialog = openBulkDeleteDialog(this.dialogService, {
+      data: { permanent: currentFilter.type === "trash", cipherIds: selectedIds },
+    });
+
+    const result = await lastValueFrom(dialog.closed);
+    if (result === BulkDeleteDialogResult.Deleted) {
+      this.refresh();
+    }
+  }
+
+  async bulkMove(ciphers: CipherView[]) {
+    if (!(await this.repromptCipher(ciphers))) {
+      return;
+    }
+
+    const selectedCipherIds = ciphers.map((cipher) => cipher.id);
+    if (selectedCipherIds.length === 0) {
+      this.platformUtilsService.showToast(
+        "error",
+        this.i18nService.t("errorOccurred"),
+        this.i18nService.t("nothingSelected")
+      );
+      return;
+    }
+
+    const dialog = openBulkMoveDialog(this.dialogService, {
+      data: { cipherIds: selectedCipherIds },
+    });
+
+    const result = await lastValueFrom(dialog.closed);
+    if (result === BulkMoveDialogResult.Moved) {
+      this.refresh();
+    }
+  }
+
+  async copy(cipher: CipherView, value: string, typeI18nKey: string, aType: string) {
+    if (
+      this.passwordRepromptService.protectedFields().includes(aType) &&
+      !(await this.repromptCipher([cipher]))
+    ) {
+      return;
+    }
+
+    if (value === cipher.login.totp) {
+      value = await this.totpService.getCode(value);
+    }
+
+    if (!cipher.viewPassword) {
+      return;
+    }
+
+    this.platformUtilsService.copyToClipboard(value, { window: window });
+    this.platformUtilsService.showToast(
+      "info",
+      null,
+      this.i18nService.t("valueCopied", this.i18nService.t(typeI18nKey))
+    );
+
+    if (typeI18nKey === "password" || typeI18nKey === "verificationCodeTotp") {
+      this.eventCollectionService.collect(
+        EventType.Cipher_ClientToggledHiddenFieldVisible,
+        cipher.id
+      );
+    } else if (typeI18nKey === "securityCode") {
+      this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, cipher.id);
+    }
+  }
+
   async viewEvents(cipher: CipherView) {
     await this.modalService.openViewRef(EntityEventsComponent, this.eventsModalRef, (comp) => {
       comp.name = cipher.name;
@@ -483,6 +714,18 @@ export class VaultComponent implements OnInit, OnDestroy {
       comp.showUser = true;
       comp.entity = "cipher";
     });
+  }
+
+  protected deleteCipherWithServer(id: string, permanent: boolean) {
+    return permanent
+      ? this.cipherService.deleteWithServer(id)
+      : this.cipherService.softDeleteWithServer(id);
+  }
+
+  protected async repromptCipher(ciphers: CipherView[]) {
+    const notProtected = !ciphers.find((cipher) => cipher.reprompt !== CipherRepromptType.None);
+
+    return notProtected || (await this.passwordRepromptService.showPasswordPrompt());
   }
 
   private refresh() {

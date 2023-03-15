@@ -52,6 +52,7 @@
         [useEvents]="(organization$ | async).useEvents"
         [editableCollections]="true"
         [cloneableOrganizationCiphers]="true"
+        (onEvent)="onVaultItemsEvent($event)"
       >
       </app-new-vault-items>
       <!-- <app-org-vault-items
