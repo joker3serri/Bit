@@ -6,12 +6,15 @@ import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { CollectionAdminView, GroupView } from "../../../organizations/core";
 
 import { VaultItemEvent } from "./vault-item-event";
+import { RowHeightClass } from "./vault-items.component";
 
 @Component({
   selector: "tr[appVaultCollectionRow]",
   templateUrl: "vault-collection-row.component.html",
 })
 export class VaultCollectionRowComponent {
+  protected RowHeightClass = RowHeightClass;
+
   @Input() disabled: boolean;
   @Input() collection: CollectionView;
   @Input() showOwner: boolean;

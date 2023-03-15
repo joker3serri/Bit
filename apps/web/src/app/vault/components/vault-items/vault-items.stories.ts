@@ -252,6 +252,7 @@ function createCipherView(i: number, deleted = false): CipherView {
   view.organizationId = organization?.id;
   view.deletedDate = deleted ? new Date() : undefined;
   view.login = new LoginView();
+  view.login.username = i % 10 === 0 ? undefined : `username-${i}`;
   view.login.totp = i % 2 === 0 ? "I65VU7K5ZQL7WB4E" : undefined;
   view.login.uris = [new LoginUriView()];
   view.login.uris[0].uri = "https://bitwarden.com";

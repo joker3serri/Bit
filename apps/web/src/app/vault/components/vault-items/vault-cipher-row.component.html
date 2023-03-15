@@ -1,4 +1,4 @@
-<td bitCell>
+<td bitCell [ngClass]="RowHeightClass">
   <input
     type="checkbox"
     bitCheckbox
@@ -8,10 +8,10 @@
     (change)="$event ? this.checkedToggled.next() : null"
   />
 </td>
-<td bitCell>
+<td bitCell [ngClass]="RowHeightClass">
   <app-vault-icon [cipher]="cipher"></app-vault-icon>
 </td>
-<td bitCell class="tw-break-all">
+<td bitCell [ngClass]="RowHeightClass" class="tw-break-all">
   <button
     bitLink
     class="tw-text-start"
@@ -45,7 +45,7 @@
   <br />
   <span class="tw-text-sm tw-text-muted" appStopProp>{{ cipher.subTitle }}</span>
 </td>
-<td bitCell *ngIf="showOwner">
+<td bitCell [ngClass]="RowHeightClass" *ngIf="showOwner">
   <app-org-badge
     [disabled]="disabled"
     [organizationId]="cipher.organizationId"
@@ -54,15 +54,15 @@
   >
   </app-org-badge>
 </td>
-<td bitCell *ngIf="showCollections">
+<td bitCell [ngClass]="RowHeightClass" *ngIf="showCollections">
   <app-collection-badge
     *ngIf="cipher.collectionIds"
     [collectionIds]="cipher.collectionIds"
     [collections]="collections"
   ></app-collection-badge>
 </td>
-<td bitCell *ngIf="showGroups"></td>
-<td bitCell class="tw-text-right">
+<td bitCell [ngClass]="RowHeightClass" *ngIf="showGroups"></td>
+<td bitCell [ngClass]="RowHeightClass" class="tw-text-right">
   <button
     [disabled]="disabled"
     [bitMenuTriggerFor]="cipherOptions"

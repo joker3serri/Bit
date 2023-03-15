@@ -1,4 +1,4 @@
-<td bitCell>
+<td bitCell [ngClass]="RowHeightClass">
   <input
     type="checkbox"
     bitCheckbox
@@ -8,7 +8,7 @@
     (change)="$event ? this.checkedToggled.next() : null"
   />
 </td>
-<td bitCell>
+<td bitCell class="tw-h-[65px]">
   <div class="icon" aria-hidden="true">
     <i class="bwi bwi-fw bwi-lg bwi-collection"></i>
   </div>
@@ -26,7 +26,7 @@
     {{ collection.name }}
   </button>
 </td>
-<td bitCell *ngIf="showOwner">
+<td bitCell [ngClass]="RowHeightClass" *ngIf="showOwner">
   <app-org-badge
     [disabled]="disabled"
     [organizationId]="collection.organizationId"
@@ -35,15 +35,15 @@
   >
   </app-org-badge>
 </td>
-<td bitCell *ngIf="showCollections"></td>
-<td bitCell *ngIf="showGroups">
+<td bitCell [ngClass]="RowHeightClass" *ngIf="showCollections"></td>
+<td bitCell [ngClass]="RowHeightClass" *ngIf="showGroups">
   <app-group-badge
     *ngIf="collectionGroups"
     [selectedGroups]="collectionGroups"
     [allGroups]="groups"
   ></app-group-badge>
 </td>
-<td bitCell class="tw-text-right">
+<td bitCell [ngClass]="RowHeightClass" class="tw-text-right">
   <button
     *ngIf="editable && (canEditCollection || canDeleteCollection)"
     [disabled]="disabled"

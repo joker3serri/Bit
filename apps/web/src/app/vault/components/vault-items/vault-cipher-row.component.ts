@@ -6,12 +6,15 @@ import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import { VaultItemEvent } from "./vault-item-event";
+import { RowHeightClass } from "./vault-items.component";
 
 @Component({
   selector: "tr[appVaultCipherRow]",
   templateUrl: "vault-cipher-row.component.html",
 })
 export class VaultCipherRowComponent {
+  protected RowHeightClass = RowHeightClass;
+
   @Input() disabled: boolean;
   @Input() cipher: CipherView;
   @Input() showOwner: boolean;

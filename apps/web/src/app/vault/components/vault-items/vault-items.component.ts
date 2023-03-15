@@ -11,6 +11,10 @@ import { GroupView } from "../../../organizations/core";
 import { VaultItem } from "./vault-item";
 import { VaultItemEvent } from "./vault-item-event";
 
+// Fixed manual row height required due to how cdk-virtual-scroll works
+export const RowHeight = 65;
+export const RowHeightClass = `tw-h-[${RowHeight}px]`;
+
 const MaxSelectionCount = 500;
 
 @Component({
@@ -20,6 +24,8 @@ const MaxSelectionCount = 500;
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VaultItemsComponent {
+  protected RowHeight = RowHeight;
+
   @Input() disabled: boolean;
   @Input() showOwner: boolean;
   @Input() showCollections: boolean;
