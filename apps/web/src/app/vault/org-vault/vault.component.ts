@@ -21,10 +21,12 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  first,
   map,
   shareReplay,
   switchMap,
   takeUntil,
+  tap,
 } from "rxjs/operators";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
@@ -40,7 +42,6 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
 import { TotpService } from "@bitwarden/common/abstractions/totp.service";
 import { EventType } from "@bitwarden/common/enums/eventType";
-import { RefreshTracker } from "@bitwarden/common/misc/refresh-tracker";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Organization } from "@bitwarden/common/models/domain/organization";
@@ -107,22 +108,31 @@ export class VaultComponent implements OnInit, OnDestroy {
   attachmentsModalRef: ViewContainerRef;
   @ViewChild("cipherAddEdit", { read: ViewContainerRef, static: true })
   cipherAddEditModalRef: ViewContainerRef;
-  @ViewChild("collections", { read: ViewContainerRef, static: true })
+  @ViewChild("collectionsModal", { read: ViewContainerRef, static: true })
   collectionsModalRef: ViewContainerRef;
   @ViewChild("eventsTemplate", { read: ViewContainerRef, static: true })
   eventsModalRef: ViewContainerRef;
 
-  organization: Organization;
   trashCleanupWarning: string = null;
   activeFilter: VaultFilter = new VaultFilter();
 
   protected noItemIcon = Icons.Search;
-  protected syncing = false;
+  protected performingInitialLoad = true;
+  protected refreshing = false;
+  protected filter: RoutedVaultFilterModel = {};
+  protected organization: Organization;
+  protected allCollections: CollectionAdminView[];
+  protected allGroups: GroupView[];
+  protected ciphers: CipherView[];
+  protected collections: CollectionAdminView[];
+  protected selectedCollection: TreeNode<CollectionAdminView> | undefined;
+  protected isEmpty: boolean;
+  protected showMissingCollectionPermissionMessage: boolean;
+
   protected loading$: Observable<boolean>;
   protected filter$: Observable<RoutedVaultFilterModel>;
   protected organization$: Observable<Organization>;
   protected allCollections$: Observable<CollectionAdminView[]>;
-  protected allOrganizations$: Observable<Organization[]>;
   protected allGroups$: Observable<GroupView[]>;
   protected ciphers$: Observable<CipherView[]>;
   protected collections$: Observable<CollectionAdminView[]>;
@@ -130,9 +140,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected isEmpty$: Observable<boolean>;
   protected showMissingCollectionPermissionMessage$: Observable<boolean>;
 
-  private refreshTracker = new RefreshTracker();
   private refresh$ = new BehaviorSubject<void>(null);
-
   private searchText$ = new Subject<string>();
   private destroy$ = new Subject<void>();
 
@@ -165,67 +173,53 @@ export class VaultComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    this.loading$ = this.refreshTracker.loading$;
     this.trashCleanupWarning = this.i18nService.t(
       this.platformUtilsService.isSelfHost()
         ? "trashCleanupWarningSelfHosted"
         : "trashCleanupWarning"
     );
+    this.filter$ = this.routedVaultFilterService.filter$;
 
-    this.route.parent.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.organization = this.organizationService.get(params.organizationId);
-    });
+    const organizationId$ = this.filter$.pipe(
+      map((filter) => filter.organizationId),
+      filter((filter) => filter !== undefined),
+      distinctUntilChanged()
+    );
 
-    // verifies that the organization has been set
-    combineLatest([this.route.queryParams, this.route.parent.params])
-      .pipe(
-        switchMap(async ([qParams]) => {
-          const cipherId = getCipherIdFromParams(qParams);
-          if (!cipherId) {
-            return;
-          }
-          if (
-            // Handle users with implicit collection access since they use the admin endpoint
-            this.organization.canUseAdminCollections ||
-            (await this.cipherService.get(cipherId)) != null
-          ) {
-            this.editCipherId(cipherId);
-          } else {
-            this.platformUtilsService.showToast(
-              "error",
-              this.i18nService.t("errorOccurred"),
-              this.i18nService.t("unknownCipher")
-            );
-            this.router.navigate([], {
-              queryParams: { cipherId: null, itemId: null },
-              queryParamsHandling: "merge",
-            });
-          }
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
+    this.organization$ = this.refresh$.pipe(
+      switchMap(() => organizationId$),
+      map((organizationId) => this.organizationService.get(organizationId)),
+      takeUntil(this.destroy$),
+      shareReplay({ refCount: false, bufferSize: 1 })
+    );
 
-    if (!this.organization.canUseAdminCollections) {
-      this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
-        this.ngZone.run(async () => {
-          switch (message.command) {
-            case "syncStarted":
-              this.syncing = true;
-              break;
-            case "syncCompleted":
-              if (message.successfully) {
-                await Promise.all([this.vaultFilterService.reloadCollections()]);
-                this.refresh();
-                this.changeDetectorRef.detectChanges();
-              }
-              this.syncing = false;
-              break;
-          }
-        });
+    const firstSetup$ = combineLatest([this.organization$, this.route.queryParams]).pipe(
+      first(),
+      switchMap(async ([organization]) => {
+        this.organization = organization;
+
+        if (!organization.canUseAdminCollections) {
+          await this.syncService.fullSync(false);
+        }
+
+        return undefined;
+      }),
+      shareReplay({ refCount: true, bufferSize: 1 })
+    );
+
+    this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
+      this.ngZone.run(async () => {
+        switch (message.command) {
+          case "syncCompleted":
+            if (message.successfully) {
+              await Promise.all([this.vaultFilterService.reloadCollections()]);
+              this.refresh();
+              this.changeDetectorRef.detectChanges();
+            }
+            break;
+        }
       });
-      await this.syncService.fullSync(false);
-    }
+    });
 
     this.routedVaultFilterBridgeService.activeFilter$
       .pipe(takeUntil(this.destroy$))
@@ -245,31 +239,16 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const querySearchText$ = this.route.queryParams.pipe(map((queryParams) => queryParams.search));
 
-    // loading$: Observable<boolean>;
-    this.filter$ = this.routedVaultFilterService.filter$;
-
-    const organizationId$ = this.filter$.pipe(
-      map((filter) => filter.organizationId),
-      distinctUntilChanged()
-    );
-
     this.allCollections$ = this.refresh$.pipe(
       switchMap(() => organizationId$),
-      this.refreshTracker.switchMap((orgId) => this.collectionAdminService.getAll(orgId)),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
-    );
-
-    this.organization$ = this.refresh$.pipe(
-      switchMap(() => organizationId$),
-      map((organizationId) => this.organizationService.get(organizationId)),
+      switchMap((orgId) => this.collectionAdminService.getAll(orgId)),
       takeUntil(this.destroy$),
       shareReplay({ refCount: false, bufferSize: 1 })
     );
 
     this.allGroups$ = this.refresh$.pipe(
       switchMap(() => organizationId$),
-      this.refreshTracker.switchMap((organizationId) => this.groupService.getAll(organizationId)),
+      switchMap((organizationId) => this.groupService.getAll(organizationId)),
       takeUntil(this.destroy$),
       shareReplay({ refCount: false, bufferSize: 1 })
     );
@@ -278,14 +257,14 @@ export class VaultComponent implements OnInit, OnDestroy {
       switchMap(() => this.organization$),
       concatMap(async (organization) => {
         let ciphers;
-        if (organization?.canEditAnyCollection) {
-          ciphers = await this.cipherService.getAllFromApiForOrganization(this.organization?.id);
+        if (organization.canEditAnyCollection) {
+          ciphers = await this.cipherService.getAllFromApiForOrganization(organization.id);
         } else {
           ciphers = (await this.cipherService.getAllDecrypted()).filter(
-            (c) => c.organizationId === this.organization?.id
+            (c) => c.organizationId === organization.id
           );
         }
-        await this.searchService.indexCiphers(this.organization?.id, ciphers);
+        await this.searchService.indexCiphers(organization.id, ciphers);
         return ciphers;
       })
     );
@@ -351,15 +330,8 @@ export class VaultComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: false, bufferSize: 1 })
     );
 
-    this.isEmpty$ = combineLatest([
-      this.refreshTracker.loading$,
-      this.collections$,
-      this.ciphers$,
-    ]).pipe(
-      map(
-        ([loading, collections, ciphers]) =>
-          !loading && collections?.length === 0 && ciphers?.length === 0
-      ),
+    this.isEmpty$ = combineLatest([this.collections$, this.ciphers$]).pipe(
+      map(([collections, ciphers]) => collections?.length === 0 && ciphers?.length === 0),
       takeUntil(this.destroy$),
       shareReplay({ refCount: false, bufferSize: 1 })
     );
@@ -397,6 +369,82 @@ export class VaultComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$),
       shareReplay({ refCount: false, bufferSize: 1 })
     );
+
+    firstSetup$
+      .pipe(
+        switchMap(() => combineLatest([this.route.queryParams, this.organization$])),
+        switchMap(async ([qParams, organization]) => {
+          const cipherId = getCipherIdFromParams(qParams);
+          if (!cipherId) {
+            return;
+          }
+          if (
+            // Handle users with implicit collection access since they use the admin endpoint
+            organization.canUseAdminCollections ||
+            (await this.cipherService.get(cipherId)) != null
+          ) {
+            this.editCipherId(cipherId);
+          } else {
+            this.platformUtilsService.showToast(
+              "error",
+              this.i18nService.t("errorOccurred"),
+              this.i18nService.t("unknownCipher")
+            );
+            this.router.navigate([], {
+              queryParams: { cipherId: null, itemId: null },
+              queryParamsHandling: "merge",
+            });
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
+
+    firstSetup$
+      .pipe(
+        switchMap(() => this.refresh$),
+        tap(() => (this.refreshing = true)),
+        switchMap(() =>
+          combineLatest([
+            this.filter$,
+            this.allCollections$,
+            this.allGroups$,
+            this.ciphers$,
+            this.collections$,
+            this.selectedCollection$,
+            this.isEmpty$,
+            this.showMissingCollectionPermissionMessage$,
+          ])
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(
+        ([
+          filter,
+          allCollections,
+          allGroups,
+          ciphers,
+          collections,
+          selectedCollection,
+          isEmpty,
+          showMissingCollectionPermissionMessage,
+        ]) => {
+          this.filter = filter;
+          this.allCollections = allCollections;
+          this.allGroups = allGroups;
+          this.ciphers = ciphers;
+          this.collections = collections;
+          this.selectedCollection = selectedCollection;
+          this.isEmpty = isEmpty;
+          this.showMissingCollectionPermissionMessage = showMissingCollectionPermissionMessage;
+          this.refreshing = false;
+          this.performingInitialLoad = false;
+        }
+      );
+  }
+
+  get loading() {
+    return this.refreshing;
   }
 
   ngOnDestroy() {
@@ -500,7 +548,6 @@ export class VaultComponent implements OnInit, OnDestroy {
         comp.onSavedCollections.subscribe(async () => {
           modal.close();
           this.refresh();
-          // await this.vaultItemsComponent.refresh();
         });
       }
     );

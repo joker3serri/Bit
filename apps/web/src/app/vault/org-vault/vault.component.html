@@ -32,23 +32,22 @@
         {{ trashCleanupWarning }}
       </app-callout>
       <app-new-vault-items
-        [ciphers]="ciphers$ | async"
-        [collections]="collections$ | async"
-        [allCollections]="allCollections$ | async"
-        [allOrganizations]="[organization$ | async]"
-        [allGroups]="allGroups$ | async"
-        [disabled]="loading$ | async"
+        [ciphers]="ciphers"
+        [collections]="collections"
+        [allCollections]="allCollections"
+        [allOrganizations]="organization ? [organization] : []"
+        [allGroups]="allGroups"
+        [disabled]="loading"
         [showOwner]="false"
-        [showCollections]="(filter$ | async)?.type !== undefined"
+        [showCollections]="filter.type !== undefined"
         [showGroups]="
-          ((filter$ | async)?.type === undefined &&
-            (filter$ | async)?.collectionId === undefined) ||
-          (filter$ | async)?.collectionId !== undefined
+          (filter.type === undefined && filter.collectionId === undefined) ||
+          filter.collectionId !== undefined
         "
         [showPremiumFeatures]="true"
         [showBulkMove]="false"
-        [showBulkTrashOptions]="(filter$ | async)?.type === 'trash'"
-        [useEvents]="(organization$ | async).useEvents"
+        [showBulkTrashOptions]="filter.type === 'trash'"
+        [useEvents]="organization?.useEvents"
         [editableCollections]="true"
         [cloneableOrganizationCiphers]="true"
         (onEvent)="onVaultItemsEvent($event)"
@@ -56,40 +55,43 @@
       </app-new-vault-items>
       <div
         class="tw-mt-6 tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-start"
-        *ngIf="(showMissingCollectionPermissionMessage$ | async) || (isEmpty$ | async)"
+        *ngIf="showMissingCollectionPermissionMessage"
       >
-        <ng-container *ngIf="syncing">
-          <i
-            class="bwi bwi-spinner bwi-spin text-muted"
-            title="{{ 'loading' | i18n }}"
-            aria-hidden="true"
-          ></i>
-          <span class="sr-only">{{ "loading" | i18n }}</span>
-        </ng-container>
-        <ng-container *ngIf="!syncing">
-          <bit-icon [icon]="noItemIcon" aria-hidden="true"></bit-icon>
-          <ng-container *ngIf="showMissingCollectionPermissionMessage$ | async">
-            <p>{{ "noPermissionToViewAllCollectionItems" | i18n }}</p>
-          </ng-container>
-          <ng-container *ngIf="!(showMissingCollectionPermissionMessage$ | async)">
-            <p>{{ "noItemsInList" | i18n }}</p>
-            <button
-              type="button"
-              buttonType="primary"
-              bitButton
-              (click)="addCipher()"
-              *ngIf="(filter$ | async)?.type !== 'trash'"
-            >
-              <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
-              {{ "newItem" | i18n }}
-            </button>
-          </ng-container>
-        </ng-container>
+        <bit-icon [icon]="noItemIcon" aria-hidden="true"></bit-icon>
+        <p>{{ "noPermissionToViewAllCollectionItems" | i18n }}</p>
+      </div>
+      <div
+        class="tw-mt-6 tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-start"
+        *ngIf="isEmpty && !showMissingCollectionPermissionMessage && !performingInitialLoad"
+      >
+        <bit-icon [icon]="noItemIcon" aria-hidden="true"></bit-icon>
+        <p>{{ "noItemsInList" | i18n }}</p>
+        <button
+          type="button"
+          buttonType="primary"
+          bitButton
+          (click)="addCipher()"
+          *ngIf="filter.type !== 'trash'"
+        >
+          <i class="bwi bwi-plus bwi-fw" aria-hidden="true"></i>
+          {{ "newItem" | i18n }}
+        </button>
+      </div>
+      <div
+        class="tw-mt-6 tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-start"
+        *ngIf="performingInitialLoad"
+      >
+        <i
+          class="bwi bwi-spinner bwi-spin text-muted"
+          title="{{ 'loading' | i18n }}"
+          aria-hidden="true"
+        ></i>
+        <span class="sr-only">{{ "loading" | i18n }}</span>
       </div>
     </div>
   </div>
   <ng-template #attachments></ng-template>
   <ng-template #cipherAddEdit></ng-template>
-  <ng-template #collections></ng-template>
+  <ng-template #collectionsModal></ng-template>
   <ng-template #eventsTemplate></ng-template>
 </div>
