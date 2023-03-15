@@ -58,7 +58,7 @@
         class="tw-mt-6 tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-start"
         *ngIf="(showMissingCollectionPermissionMessage$ | async) || (isEmpty$ | async)"
       >
-        <ng-container *ngIf="!initialSyncCompleted">
+        <ng-container *ngIf="syncing">
           <i
             class="bwi bwi-spinner bwi-spin text-muted"
             title="{{ 'loading' | i18n }}"
@@ -66,7 +66,7 @@
           ></i>
           <span class="sr-only">{{ "loading" | i18n }}</span>
         </ng-container>
-        <ng-container *ngIf="initialSyncCompleted">
+        <ng-container *ngIf="!syncing">
           <bit-icon [icon]="noItemIcon" aria-hidden="true"></bit-icon>
           <ng-container *ngIf="showMissingCollectionPermissionMessage$ | async">
             <p>{{ "noPermissionToViewAllCollectionItems" | i18n }}</p>

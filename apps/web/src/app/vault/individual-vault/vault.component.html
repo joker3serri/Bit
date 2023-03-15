@@ -49,7 +49,7 @@
         *ngIf="isEmpty$ | async"
         class="tw-mt-6 tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-start"
       >
-        <ng-container *ngIf="!initialSyncCompleted">
+        <ng-container *ngIf="syncing">
           <i
             class="bwi bwi-spinner bwi-spin text-muted"
             title="{{ 'loading' | i18n }}"
@@ -57,7 +57,7 @@
           ></i>
           <span class="sr-only">{{ "loading" | i18n }}</span>
         </ng-container>
-        <ng-container *ngIf="initialSyncCompleted">
+        <ng-container *ngIf="!syncing">
           <bit-icon [icon]="noItemIcon" aria-hidden="true"></bit-icon>
           <p>{{ "noItemsInList" | i18n }}</p>
           <button

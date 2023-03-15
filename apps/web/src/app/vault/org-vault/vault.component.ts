@@ -117,7 +117,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   activeFilter: VaultFilter = new VaultFilter();
 
   protected noItemIcon = Icons.Search;
-  protected initialSyncCompleted = false;
+  protected syncing = false;
   protected loading$: Observable<boolean>;
   protected filter$: Observable<RoutedVaultFilterModel>;
   protected organization$: Observable<Organization>;
@@ -210,20 +210,21 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
         this.ngZone.run(async () => {
           switch (message.command) {
+            case "syncStarted":
+              this.syncing = true;
+              break;
             case "syncCompleted":
               if (message.successfully) {
                 await Promise.all([this.vaultFilterService.reloadCollections()]);
-                this.initialSyncCompleted = true;
                 this.refresh();
                 this.changeDetectorRef.detectChanges();
               }
+              this.syncing = false;
               break;
           }
         });
       });
       await this.syncService.fullSync(false);
-    } else {
-      this.initialSyncCompleted = true;
     }
 
     this.routedVaultFilterBridgeService.activeFilter$
@@ -386,7 +387,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     ]).pipe(
       map(([collection, organization]) => {
         // Not filtering by collections or filtering by all collections, so no need to show message
-        if (collection === null) {
+        if (collection == undefined) {
           return false;
         }
 

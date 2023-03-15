@@ -127,7 +127,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   activeFilter: VaultFilter = new VaultFilter();
 
   protected noItemIcon = Icons.Search;
-  protected initialSyncCompleted = false;
+  protected syncing = false;
   protected loading$: Observable<boolean>;
   protected filter$: Observable<RoutedVaultFilterModel>;
   protected showBulkMove$: Observable<boolean>;
@@ -238,13 +238,16 @@ export class VaultComponent implements OnInit, OnDestroy {
     this.broadcasterService.subscribe(BroadcasterSubscriptionId, (message: any) => {
       this.ngZone.run(async () => {
         switch (message.command) {
+          case "syncStarted":
+            this.syncing = true;
+            break;
           case "syncCompleted":
             if (message.successfully) {
               await Promise.all([this.vaultFilterService.reloadCollections()]);
               this.refresh();
-              this.initialSyncCompleted = true;
               this.changeDetectorRef.detectChanges();
             }
+            this.syncing = false;
             break;
         }
       });
