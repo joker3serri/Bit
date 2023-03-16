@@ -4,11 +4,12 @@ import { first } from "rxjs/operators";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
-import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { UsernameGenerationService } from "@bitwarden/common/abstractions/usernameGeneration.service";
+import { EmailForwarderOptions } from "@bitwarden/common/models/domain/email-forwarder-options";
 import { PasswordGeneratorPolicyOptions } from "@bitwarden/common/models/domain/password-generator-policy-options";
+import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
+import { UsernameGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/username";
 
 @Directive()
 export class GeneratorComponent implements OnInit {
@@ -22,7 +23,7 @@ export class GeneratorComponent implements OnInit {
   usernameTypeOptions: any[];
   subaddressOptions: any[];
   catchallOptions: any[];
-  forwardOptions: any[];
+  forwardOptions: EmailForwarderOptions[];
   usernameOptions: any = {};
   passwordOptions: any = {};
   username = "-";
@@ -33,8 +34,8 @@ export class GeneratorComponent implements OnInit {
   usernameWebsite: string = null;
 
   constructor(
-    protected passwordGenerationService: PasswordGenerationService,
-    protected usernameGenerationService: UsernameGenerationService,
+    protected passwordGenerationService: PasswordGenerationServiceAbstraction,
+    protected usernameGenerationService: UsernameGenerationServiceAbstraction,
     protected platformUtilsService: PlatformUtilsService,
     protected stateService: StateService,
     protected i18nService: I18nService,
@@ -236,11 +237,11 @@ export class GeneratorComponent implements OnInit {
 
   private async initForwardOptions() {
     this.forwardOptions = [
-      { name: "AnonAddy", value: "anonaddy" },
-      { name: "DuckDuckGo", value: "duckduckgo" },
-      { name: "Fastmail", value: "fastmail" },
-      { name: "Firefox Relay", value: "firefoxrelay" },
-      { name: "SimpleLogin", value: "simplelogin" },
+      { name: "AnonAddy", value: "anonaddy", validForSelfHosted: true },
+      { name: "DuckDuckGo", value: "duckduckgo", validForSelfHosted: false },
+      { name: "Fastmail", value: "fastmail", validForSelfHosted: true },
+      { name: "Firefox Relay", value: "firefoxrelay", validForSelfHosted: false },
+      { name: "SimpleLogin", value: "simplelogin", validForSelfHosted: true },
     ];
 
     this.usernameOptions = await this.usernameGenerationService.getOptions();
@@ -248,7 +249,7 @@ export class GeneratorComponent implements OnInit {
       this.usernameOptions.forwardedService == null ||
       this.usernameOptions.forwardedService === ""
     ) {
-      this.forwardOptions.push({ name: "", value: null });
+      this.forwardOptions.push({ name: "", value: null, validForSelfHosted: false });
     }
 
     this.forwardOptions = this.forwardOptions.sort((a, b) => a.name.localeCompare(b.name));
