@@ -8,14 +8,7 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import {
-  BehaviorSubject,
-  combineLatest,
-  firstValueFrom,
-  lastValueFrom,
-  Observable,
-  Subject,
-} from "rxjs";
+import { BehaviorSubject, combineLatest, firstValueFrom, lastValueFrom, Subject } from "rxjs";
 import {
   concatMap,
   debounceTime,
@@ -129,17 +122,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected isEmpty: boolean;
   protected showMissingCollectionPermissionMessage: boolean;
 
-  protected loading$: Observable<boolean>;
-  protected filter$: Observable<RoutedVaultFilterModel>;
-  protected organization$: Observable<Organization>;
-  protected allCollections$: Observable<CollectionAdminView[]>;
-  protected allGroups$: Observable<GroupView[]>;
-  protected ciphers$: Observable<CipherView[]>;
-  protected collections$: Observable<CollectionAdminView[]>;
-  protected selectedCollection$: Observable<TreeNode<CollectionAdminView> | undefined>;
-  protected isEmpty$: Observable<boolean>;
-  protected showMissingCollectionPermissionMessage$: Observable<boolean>;
-
   private refresh$ = new BehaviorSubject<void>(null);
   private searchText$ = new Subject<string>();
   private destroy$ = new Subject<void>();
@@ -178,22 +160,21 @@ export class VaultComponent implements OnInit, OnDestroy {
         ? "trashCleanupWarningSelfHosted"
         : "trashCleanupWarning"
     );
-    this.filter$ = this.routedVaultFilterService.filter$;
 
-    const organizationId$ = this.filter$.pipe(
+    const filter$ = this.routedVaultFilterService.filter$;
+    const organizationId$ = filter$.pipe(
       map((filter) => filter.organizationId),
       filter((filter) => filter !== undefined),
       distinctUntilChanged()
     );
 
-    this.organization$ = this.refresh$.pipe(
-      switchMap(() => organizationId$),
+    const organization$ = organizationId$.pipe(
       map((organizationId) => this.organizationService.get(organizationId)),
       takeUntil(this.destroy$),
       shareReplay({ refCount: false, bufferSize: 1 })
     );
 
-    const firstSetup$ = combineLatest([this.organization$, this.route.queryParams]).pipe(
+    const firstSetup$ = combineLatest([organization$, this.route.queryParams]).pipe(
       first(),
       switchMap(async ([organization]) => {
         this.organization = organization;
@@ -239,22 +220,17 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const querySearchText$ = this.route.queryParams.pipe(map((queryParams) => queryParams.search));
 
-    this.allCollections$ = this.refresh$.pipe(
-      switchMap(() => organizationId$),
+    const allCollections$ = organizationId$.pipe(
       switchMap((orgId) => this.collectionAdminService.getAll(orgId)),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
 
-    this.allGroups$ = this.refresh$.pipe(
-      switchMap(() => organizationId$),
+    const allGroups$ = organizationId$.pipe(
       switchMap((organizationId) => this.groupService.getAll(organizationId)),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
 
-    const allCiphers$ = this.refresh$.pipe(
-      switchMap(() => this.organization$),
+    const allCiphers$ = organization$.pipe(
       concatMap(async (organization) => {
         let ciphers;
         if (organization.canEditAnyCollection) {
@@ -269,7 +245,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       })
     );
 
-    this.ciphers$ = combineLatest([allCiphers$, this.filter$, querySearchText$]).pipe(
+    const ciphers$ = combineLatest([allCiphers$, filter$, querySearchText$]).pipe(
       filter(([ciphers, filter]) => ciphers != undefined && filter != undefined),
       concatMap(async ([ciphers, filter, searchText]) => {
         if (filter.collectionId === undefined && filter.type === undefined) {
@@ -284,17 +260,15 @@ export class VaultComponent implements OnInit, OnDestroy {
 
         return ciphers.filter(filterFunction);
       }),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
 
-    const nestedCollections$ = this.allCollections$.pipe(
+    const nestedCollections$ = allCollections$.pipe(
       map((collections) => getNestedCollectionTree(collections)),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
 
-    this.collections$ = combineLatest([nestedCollections$, this.filter$, querySearchText$]).pipe(
+    const collections$ = combineLatest([nestedCollections$, filter$, querySearchText$]).pipe(
       filter(([collections, filter]) => collections != undefined && filter != undefined),
       map(([collections, filter, searchText]) => {
         if (
@@ -327,16 +301,10 @@ export class VaultComponent implements OnInit, OnDestroy {
         return collectionsToReturn;
       }),
       takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
 
-    this.isEmpty$ = combineLatest([this.collections$, this.ciphers$]).pipe(
-      map(([collections, ciphers]) => collections?.length === 0 && ciphers?.length === 0),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
-    );
-
-    this.selectedCollection$ = combineLatest([nestedCollections$, this.filter$]).pipe(
+    const selectedCollection$ = combineLatest([nestedCollections$, filter$]).pipe(
       filter(([collections, filter]) => collections != undefined && filter != undefined),
       map(([collections, filter]) => {
         if (
@@ -349,13 +317,12 @@ export class VaultComponent implements OnInit, OnDestroy {
 
         return ServiceUtils.getTreeNodeObjectFromList(collections, filter.collectionId);
       }),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
 
-    this.showMissingCollectionPermissionMessage$ = combineLatest([
-      this.selectedCollection$,
-      this.organization$,
+    const showMissingCollectionPermissionMessage$ = combineLatest([
+      selectedCollection$,
+      organization$,
     ]).pipe(
       map(([collection, organization]) => {
         // Not filtering by collections or filtering by all collections, so no need to show message
@@ -366,13 +333,12 @@ export class VaultComponent implements OnInit, OnDestroy {
         // Filtering by a collection, so show message if user is not assigned
         return !collection.node.assigned && !organization.isAdmin;
       }),
-      takeUntil(this.destroy$),
-      shareReplay({ refCount: false, bufferSize: 1 })
+      shareReplay({ refCount: true, bufferSize: 1 })
     );
 
     firstSetup$
       .pipe(
-        switchMap(() => combineLatest([this.route.queryParams, this.organization$])),
+        switchMap(() => combineLatest([this.route.queryParams, organization$])),
         switchMap(async ([qParams, organization]) => {
           const cipherId = getCipherIdFromParams(qParams);
           if (!cipherId) {
@@ -406,14 +372,13 @@ export class VaultComponent implements OnInit, OnDestroy {
         tap(() => (this.refreshing = true)),
         switchMap(() =>
           combineLatest([
-            this.filter$,
-            this.allCollections$,
-            this.allGroups$,
-            this.ciphers$,
-            this.collections$,
-            this.selectedCollection$,
-            this.isEmpty$,
-            this.showMissingCollectionPermissionMessage$,
+            filter$,
+            allCollections$,
+            allGroups$,
+            ciphers$,
+            collections$,
+            selectedCollection$,
+            showMissingCollectionPermissionMessage$,
           ])
         ),
         takeUntil(this.destroy$)
@@ -426,7 +391,6 @@ export class VaultComponent implements OnInit, OnDestroy {
           ciphers,
           collections,
           selectedCollection,
-          isEmpty,
           showMissingCollectionPermissionMessage,
         ]) => {
           this.filter = filter;
@@ -435,8 +399,10 @@ export class VaultComponent implements OnInit, OnDestroy {
           this.ciphers = ciphers;
           this.collections = collections;
           this.selectedCollection = selectedCollection;
-          this.isEmpty = isEmpty;
           this.showMissingCollectionPermissionMessage = showMissingCollectionPermissionMessage;
+
+          this.isEmpty = collections?.length === 0 && ciphers?.length === 0;
+
           this.refreshing = false;
           this.performingInitialLoad = false;
         }
@@ -781,10 +747,9 @@ export class VaultComponent implements OnInit, OnDestroy {
       );
       return;
     }
-    const currentFilter = await firstValueFrom(this.filter$);
     const dialog = openBulkDeleteDialog(this.dialogService, {
       data: {
-        permanent: currentFilter.type === "trash",
+        permanent: this.filter.type === "trash",
         cipherIds: ciphers.map((c) => c.id),
         collectionIds: collections.map((c) => c.id),
         organization,

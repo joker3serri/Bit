@@ -8,14 +8,7 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import {
-  BehaviorSubject,
-  combineLatest,
-  firstValueFrom,
-  lastValueFrom,
-  Observable,
-  Subject,
-} from "rxjs";
+import { BehaviorSubject, combineLatest, firstValueFrom, from, lastValueFrom, Subject } from "rxjs";
 import {
   concatMap,
   debounceTime,
@@ -59,6 +52,7 @@ import { DialogService, Icons } from "@bitwarden/components";
 
 import { UpdateKeyComponent } from "../../settings/update-key.component";
 import { VaultItemEvent } from "../components/vault-items/vault-item-event";
+import { getNestedCollectionTree } from "../utils/collection-utils";
 
 import { AddEditComponent } from "./add-edit.component";
 import { AttachmentsComponent } from "./attachments.component";
@@ -138,17 +132,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   protected collections: CollectionView[];
   protected isEmpty: boolean;
   protected selectedCollection: TreeNode<CollectionView> | undefined;
-
-  protected loading$: Observable<boolean>;
-  protected filter$: Observable<RoutedVaultFilterModel>;
-  protected showBulkMove$: Observable<boolean>;
-  protected canAccessPremium$: Observable<boolean>;
-  protected allCollections$: Observable<CollectionView[]>;
-  protected allOrganizations$: Observable<Organization[]>;
-  protected ciphers$: Observable<CipherView[]>;
-  protected collections$: Observable<CollectionView[]>;
-  protected isEmpty$: Observable<boolean>;
-  protected selectedCollection$: Observable<TreeNode<CollectionView> | undefined>;
 
   private refresh$ = new BehaviorSubject<void>(null);
   private searchText$ = new Subject<string>();
@@ -239,25 +222,18 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.activeFilter = activeFilter;
       });
 
-    this.filter$ = this.routedVaultFilterService.filter$;
-    this.showBulkMove$ = this.filter$.pipe(
-      map(
-        (filter) =>
-          filter.type !== "trash" &&
-          (filter.organizationId === undefined || filter.organizationId === Unassigned)
-      ),
+    const filter$ = this.routedVaultFilterService.filter$;
+    const canAccessPremium$ = from(this.stateService.getCanAccessPremium()).pipe(
       shareReplay({ refCount: true, bufferSize: 1 })
     );
-    this.canAccessPremium$ = this.refresh$.pipe(
-      switchMap(() => this.stateService.getCanAccessPremium()),
+    const allCollections$ = from(this.collectionService.getAllDecrypted()).pipe(
       shareReplay({ refCount: true, bufferSize: 1 })
     );
-    this.allCollections$ = this.refresh$.pipe(
-      switchMap(() => this.collectionService.getAllDecrypted()),
+    const nestedCollections$ = allCollections$.pipe(
+      map((collections) => getNestedCollectionTree(collections)),
       shareReplay({ refCount: true, bufferSize: 1 })
     );
-    this.allOrganizations$ = this.refresh$.pipe(
-      switchMap(() => this.organizationService.getAll()),
+    const allOrganizations$ = from(this.organizationService.getAll()).pipe(
       shareReplay({ refCount: true, bufferSize: 1 })
     );
 
@@ -273,9 +249,9 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const querySearchText$ = this.route.queryParams.pipe(map((queryParams) => queryParams.search));
 
-    this.ciphers$ = combineLatest([
-      this.refresh$.pipe(switchMap(() => this.cipherService.getAllDecrypted())),
-      this.filter$,
+    const ciphers$ = combineLatest([
+      this.cipherService.getAllDecrypted(),
+      filter$,
       querySearchText$,
     ]).pipe(
       filter(([ciphers, filter]) => ciphers != undefined && filter != undefined),
@@ -291,11 +267,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: true, bufferSize: 1 })
     );
 
-    this.collections$ = combineLatest([
-      this.refresh$.pipe(switchMap(() => this.collectionService.getAllNested())),
-      this.filter$,
-      querySearchText$,
-    ]).pipe(
+    const collections$ = combineLatest([nestedCollections$, filter$, querySearchText$]).pipe(
       filter(([collections, filter]) => collections != undefined && filter != undefined),
       map(([collections, filter, searchText]) => {
         if (filter.collectionId === undefined || filter.collectionId === Unassigned) {
@@ -327,10 +299,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: true, bufferSize: 1 })
     );
 
-    this.selectedCollection$ = combineLatest([
-      this.refresh$.pipe(switchMap(() => this.collectionService.getAllNested())),
-      this.filter$,
-    ]).pipe(
+    const selectedCollection$ = combineLatest([nestedCollections$, filter$]).pipe(
       filter(([collections, filter]) => collections != undefined && filter != undefined),
       map(([collections, filter]) => {
         if (
@@ -343,11 +312,6 @@ export class VaultComponent implements OnInit, OnDestroy {
 
         return ServiceUtils.getTreeNodeObjectFromList(collections, filter.collectionId);
       }),
-      shareReplay({ refCount: true, bufferSize: 1 })
-    );
-
-    this.isEmpty$ = combineLatest([this.collections$, this.ciphers$]).pipe(
-      map(([collections, ciphers]) => collections?.length === 0 && ciphers?.length === 0),
       shareReplay({ refCount: true, bufferSize: 1 })
     );
 
@@ -382,15 +346,13 @@ export class VaultComponent implements OnInit, OnDestroy {
         tap(() => (this.refreshing = true)),
         switchMap(() =>
           combineLatest([
-            this.filter$,
-            this.showBulkMove$,
-            this.canAccessPremium$,
-            this.allCollections$,
-            this.allOrganizations$,
-            this.ciphers$,
-            this.collections$,
-            this.isEmpty$,
-            this.selectedCollection$,
+            filter$,
+            canAccessPremium$,
+            allCollections$,
+            allOrganizations$,
+            ciphers$,
+            collections$,
+            selectedCollection$,
           ])
         ),
         takeUntil(this.destroy$)
@@ -398,24 +360,26 @@ export class VaultComponent implements OnInit, OnDestroy {
       .subscribe(
         ([
           filter,
-          showBulkMove,
           canAccessPremium,
           allCollections,
           allOrganizations,
           ciphers,
           collections,
-          isEmpty,
           selectedCollection,
         ]) => {
           this.filter = filter;
-          this.showBulkMove = showBulkMove;
           this.canAccessPremium = canAccessPremium;
           this.allCollections = allCollections;
           this.allOrganizations = allOrganizations;
           this.ciphers = ciphers;
           this.collections = collections;
-          this.isEmpty = isEmpty;
           this.selectedCollection = selectedCollection;
+
+          this.showBulkMove =
+            filter.type !== "trash" &&
+            (filter.organizationId === undefined || filter.organizationId === Unassigned);
+          this.isEmpty = collections?.length === 0 && ciphers?.length === 0;
+
           this.performingInitialLoad = false;
           this.refreshing = false;
         }
@@ -768,9 +732,8 @@ export class VaultComponent implements OnInit, OnDestroy {
       );
       return;
     }
-    const currentFilter = await firstValueFrom(this.filter$);
     const dialog = openBulkDeleteDialog(this.dialogService, {
-      data: { permanent: currentFilter.type === "trash", cipherIds: selectedIds },
+      data: { permanent: this.filter.type === "trash", cipherIds: selectedIds },
     });
 
     const result = await lastValueFrom(dialog.closed);
