@@ -3,6 +3,7 @@ import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { combineLatest, of, shareReplay, Subject, switchMap, takeUntil } from "rxjs";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/abstractions/organization-user/responses";
@@ -10,7 +11,7 @@ import { OrganizationService } from "@bitwarden/common/abstractions/organization
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/src/models/view/collection.view";
-import { BitValidators, DialogService } from "@bitwarden/components";
+import { BitValidators } from "@bitwarden/components";
 
 import {
   CollectionAdminService,
@@ -292,7 +293,7 @@ function mapToAccessSelections(collectionDetails: CollectionAdminView): AccessIt
  * @param config Configuration for the dialog
  */
 export function openCollectionDialog(
-  dialogService: DialogService,
+  dialogService: DialogServiceAbstraction,
   config: DialogConfig<CollectionDialogParams>
 ) {
   return dialogService.open<CollectionDialogResult, CollectionDialogParams>(

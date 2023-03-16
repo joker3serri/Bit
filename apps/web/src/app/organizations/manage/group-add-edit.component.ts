@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from "@angula
 import { FormBuilder, Validators } from "@angular/forms";
 import { catchError, combineLatest, from, map, of, Subject, switchMap, takeUntil } from "rxjs";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -13,7 +14,6 @@ import { CollectionData } from "@bitwarden/common/models/data/collection.data";
 import { Collection } from "@bitwarden/common/models/domain/collection";
 import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collection.response";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { DialogService } from "@bitwarden/components";
 
 import { GroupService, GroupView } from "../core";
 import {
@@ -64,7 +64,7 @@ export enum GroupAddEditDialogResultType {
  * @param config Configuration for the dialog
  */
 export const openGroupAddEditDialog = (
-  dialogService: DialogService,
+  dialogService: DialogServiceAbstraction,
   config: DialogConfig<GroupAddEditDialogParams>
 ) => {
   return dialogService.open<GroupAddEditDialogResultType, GroupAddEditDialogParams>(

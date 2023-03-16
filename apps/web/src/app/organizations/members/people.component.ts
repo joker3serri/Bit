@@ -15,6 +15,12 @@ import {
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
+import {
+  SimpleDialogType,
+  DialogServiceAbstraction,
+  SimpleDialogCloseType,
+  SimpleDialogOptions,
+} from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
@@ -46,12 +52,6 @@ import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organi
 import { CollectionDetailsResponse } from "@bitwarden/common/models/response/collection.response";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
-import {
-  DialogService,
-  SimpleDialogCloseType,
-  SimpleDialogOptions,
-  SimpleDialogType,
-} from "@bitwarden/components";
 
 import { BasePeopleComponent } from "../../common/base.people.component";
 import { GroupService } from "../core";
@@ -121,7 +121,7 @@ export class PeopleComponent
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private organizationUserService: OrganizationUserService,
-    private dialogService: DialogService,
+    private dialogService: DialogServiceAbstraction,
     private router: Router,
     private groupService: GroupService,
     private collectionService: CollectionService
@@ -360,7 +360,7 @@ export class PeopleComponent
       orgUpgradeSimpleDialogOpts.cancelButtonText = null; // hide secondary btn
     }
 
-    const simpleDialog = this.dialogService.openSimpleDialog(orgUpgradeSimpleDialogOpts);
+    const simpleDialog = this.dialogService.openSimpleDialogRef(orgUpgradeSimpleDialogOpts);
 
     firstValueFrom(simpleDialog.closed).then((result: SimpleDialogCloseType | undefined) => {
       if (!result) {

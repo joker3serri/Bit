@@ -1,6 +1,7 @@
 import { DialogConfig, DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -11,7 +12,6 @@ import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { Checkable, isChecked } from "@bitwarden/common/types/checkable";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService } from "@bitwarden/components";
 
 export interface BulkShareDialogParams {
   ciphers: CipherView[];
@@ -29,7 +29,7 @@ export enum BulkShareDialogResult {
  * @param config Configuration for the dialog
  */
 export const openBulkShareDialog = (
-  dialogService: DialogService,
+  dialogService: DialogServiceAbstraction,
   config: DialogConfig<BulkShareDialogParams>
 ) => {
   return dialogService.open<BulkShareDialogResult, BulkShareDialogParams>(

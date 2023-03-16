@@ -3,6 +3,7 @@ import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { combineLatest, of, shareReplay, Subject, switchMap, takeUntil } from "rxjs";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
@@ -12,7 +13,6 @@ import { OrganizationUserType } from "@bitwarden/common/enums/organizationUserTy
 import { PermissionsApi } from "@bitwarden/common/models/api/permissions.api";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
-import { DialogService } from "@bitwarden/components";
 
 import { flagEnabled } from "../../../../../utils/flags";
 import {
@@ -510,7 +510,7 @@ function mapToGroupAccessSelections(groups: string[]): AccessItemValue[] {
  * @param config Configuration for the dialog
  */
 export function openUserAddEditDialog(
-  dialogService: DialogService,
+  dialogService: DialogServiceAbstraction,
   config: DialogConfig<MemberDialogParams>
 ) {
   return dialogService.open<MemberDialogResult, MemberDialogParams>(MemberDialogComponent, config);

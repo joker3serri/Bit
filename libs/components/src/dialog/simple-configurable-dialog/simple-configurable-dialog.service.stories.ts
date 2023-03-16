@@ -3,8 +3,10 @@ import { Component } from "@angular/core";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 import { firstValueFrom } from "rxjs";
 
+import { SimpleDialogType, SimpleDialogCloseType } from "@bitwarden/angular/services/dialog";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
+import { SimpleDialogOptions } from "../../../../angular/src/services/dialog/simple-dialog-options";
 import { ButtonModule } from "../../button";
 import { CalloutModule } from "../../callout";
 import { IconButtonModule } from "../../icon-button";
@@ -14,10 +16,6 @@ import { DialogService } from "../dialog.service";
 import { DialogCloseDirective } from "../directives/dialog-close.directive";
 import { DialogTitleContainerDirective } from "../directives/dialog-title-container.directive";
 import { SimpleDialogComponent } from "../simple-dialog/simple-dialog.component";
-
-import { SimpleDialogCloseType } from "./models/simple-dialog-close-type.enum";
-import { SimpleDialogOptions } from "./models/simple-dialog-options";
-import { SimpleDialogType } from "./models/simple-dialog-type.enum";
 
 @Component({
   selector: "app-story-dialog",
@@ -192,10 +190,10 @@ class StoryDialogComponent {
   calloutType = "info";
   dialogCloseResult: undefined | SimpleDialogCloseType;
 
-  constructor(public dialogService: DialogService, private i18nService: I18nService) {}
+  constructor(public dialogService: DialogServiceAbstraction, private i18nService: I18nService) {}
 
   openSimpleConfigurableDialog(opts: SimpleDialogOptions) {
-    const dialogReference: DialogRef = this.dialogService.openSimpleDialog(opts);
+    const dialogReference: DialogRef = this.dialogService.openSimpleDialogRef(opts);
 
     firstValueFrom(dialogReference.closed).then((result: SimpleDialogCloseType | undefined) => {
       this.showCallout = true;

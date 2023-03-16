@@ -3,6 +3,12 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 import { first } from "rxjs/operators";
 
+import {
+  SimpleDialogType,
+  DialogServiceAbstraction,
+  SimpleDialogCloseType,
+  SimpleDialogOptions,
+} from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
@@ -21,12 +27,6 @@ import {
 } from "@bitwarden/common/models/response/collection.response";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
-import {
-  DialogService,
-  SimpleDialogCloseType,
-  SimpleDialogOptions,
-  SimpleDialogType,
-} from "@bitwarden/components";
 
 import { CollectionDialogResult, openCollectionDialog } from "../shared";
 
@@ -66,7 +66,7 @@ export class CollectionsComponent implements OnInit {
     private searchService: SearchService,
     private logService: LogService,
     private organizationService: OrganizationService,
-    private dialogService: DialogService,
+    private dialogService: DialogServiceAbstraction,
     private router: Router
   ) {}
 
@@ -164,7 +164,7 @@ export class CollectionsComponent implements OnInit {
         orgUpgradeSimpleDialogOpts.cancelButtonText = null; // hide secondary btn
       }
 
-      const simpleDialog = this.dialogService.openSimpleDialog(orgUpgradeSimpleDialogOpts);
+      const simpleDialog = this.dialogService.openSimpleDialogRef(orgUpgradeSimpleDialogOpts);
 
       firstValueFrom(simpleDialog.closed).then((result: SimpleDialogCloseType | undefined) => {
         if (!result) {

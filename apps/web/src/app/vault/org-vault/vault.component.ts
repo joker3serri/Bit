@@ -11,6 +11,7 @@ import { ActivatedRoute, Params, Router } from "@angular/router";
 import { combineLatest, firstValueFrom, Subject } from "rxjs";
 import { first, switchMap, takeUntil } from "rxjs/operators";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -22,7 +23,6 @@ import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.servi
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService } from "@bitwarden/components";
 
 import { EntityEventsComponent } from "../../organizations/manage/entity-events.component";
 import { CollectionsComponent } from "../../organizations/vault/collections.component";
@@ -71,7 +71,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     private syncService: SyncService,
     private i18nService: I18nService,
     private modalService: ModalService,
-    private dialogService: DialogService,
+    private dialogService: DialogServiceAbstraction,
     private messagingService: MessagingService,
     private broadcasterService: BroadcasterService,
     private ngZone: NgZone,

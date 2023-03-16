@@ -1,12 +1,11 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject } from "@angular/core";
 
+import { SimpleDialogType, SimpleDialogCloseType } from "@bitwarden/angular/services/dialog";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
-import { SimpleDialogCloseType } from "./models/simple-dialog-close-type.enum";
-import { SimpleDialogOptions } from "./models/simple-dialog-options";
-import { SimpleDialogType } from "./models/simple-dialog-type.enum";
-import { Translation } from "./models/translation";
+import { SimpleDialogOptions } from "../../../../angular/src/services/dialog/simple-dialog-options";
+import { Translation } from "../../../../angular/src/services/dialog/translation";
 
 const DEFAULT_ICON: Record<SimpleDialogType, string> = {
   [SimpleDialogType.PRIMARY]: "bwi-business",

@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core
 import { lastValueFrom } from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { VaultItemsComponent as BaseVaultItemsComponent } from "@bitwarden/angular/vault/components/vault-items.component";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -21,7 +22,7 @@ import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/pa
 import { CipherRepromptType } from "@bitwarden/common/vault/enums/cipher-reprompt-type";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { DialogService, Icons } from "@bitwarden/components";
+import { Icons } from "@bitwarden/components";
 
 import { CollectionAdminView, GroupView } from "../../organizations/core";
 
@@ -123,7 +124,7 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
     protected totpService: TotpService,
     protected stateService: StateService,
     protected passwordRepromptService: PasswordRepromptService,
-    protected dialogService: DialogService,
+    protected dialogService: DialogServiceAbstraction,
     protected logService: LogService,
     private searchPipe: SearchPipe,
     private organizationService: OrganizationService,

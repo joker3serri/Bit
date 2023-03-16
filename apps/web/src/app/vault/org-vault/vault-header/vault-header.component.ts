@@ -2,6 +2,12 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom, lastValueFrom } from "rxjs";
 
+import {
+  SimpleDialogType,
+  DialogServiceAbstraction,
+  SimpleDialogCloseType,
+  SimpleDialogOptions,
+} from "@bitwarden/angular/services/dialog";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -11,12 +17,6 @@ import { ProductType } from "@bitwarden/common/enums/productType";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
 import { CollectionView } from "@bitwarden/common/models/view/collection.view";
-import {
-  DialogService,
-  SimpleDialogCloseType,
-  SimpleDialogOptions,
-  SimpleDialogType,
-} from "@bitwarden/components";
 
 import { CollectionAdminService, CollectionAdminView } from "../../../organizations/core";
 import {
@@ -69,7 +69,7 @@ export class VaultHeaderComponent {
   constructor(
     private organizationService: OrganizationService,
     private i18nService: I18nService,
-    private dialogService: DialogService,
+    private dialogService: DialogServiceAbstraction,
     private vaultFilterService: VaultFilterService,
     private platformUtilsService: PlatformUtilsService,
     private apiService: ApiService,
@@ -122,7 +122,7 @@ export class VaultHeaderComponent {
       orgUpgradeSimpleDialogOpts.cancelButtonText = null; // hide secondary btn
     }
 
-    const simpleDialog = this.dialogService.openSimpleDialog(orgUpgradeSimpleDialogOpts);
+    const simpleDialog = this.dialogService.openSimpleDialogRef(orgUpgradeSimpleDialogOpts);
 
     firstValueFrom(simpleDialog.closed).then((result: SimpleDialogCloseType | undefined) => {
       if (!result) {

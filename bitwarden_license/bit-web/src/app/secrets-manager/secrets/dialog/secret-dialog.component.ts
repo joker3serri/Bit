@@ -3,9 +3,9 @@ import { Component, Inject, OnInit } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { lastValueFrom, Subject } from "rxjs";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { DialogService } from "@bitwarden/components";
 
 import { ProjectListView } from "../../models/view/project-list.view";
 import { SecretListView } from "../../models/view/secret-list.view";
@@ -51,7 +51,7 @@ export class SecretDialogComponent implements OnInit {
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
     private projectService: ProjectService,
-    private dialogService: DialogService
+    private dialogService: DialogServiceAbstraction
   ) {}
 
   async ngOnInit() {
