@@ -18,7 +18,11 @@ import {
 import { NavigationEnd, Router } from "@angular/router";
 import { filter, firstValueFrom, Subject, switchMap, takeUntil } from "rxjs";
 
-import { SimpleDialogCloseType, SimpleDialogType } from "@bitwarden/angular/services/dialog";
+import {
+  DialogServiceAbstraction,
+  SimpleDialogCloseType,
+  SimpleDialogType,
+} from "@bitwarden/angular/services/dialog";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
 
@@ -27,7 +31,7 @@ import { SimpleDialogOptions } from "../../../angular/src/services/dialog/simple
 import { SimpleConfigurableDialogComponent } from "./simple-configurable-dialog/simple-configurable-dialog.component";
 
 @Injectable()
-export class DialogService extends Dialog implements OnDestroy {
+export class DialogService extends Dialog implements OnDestroy, DialogServiceAbstraction {
   private _destroy$ = new Subject<void>();
 
   private backDropClasses = ["tw-fixed", "tw-bg-black", "tw-bg-opacity-30", "tw-inset-0"];

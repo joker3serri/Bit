@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/vault/components/add-edit.component";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
@@ -56,7 +57,8 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
     protected policyService: PolicyService,
     organizationService: OrganizationService,
     logService: LogService,
-    passwordRepromptService: PasswordRepromptService
+    passwordRepromptService: PasswordRepromptService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       cipherService,
@@ -71,7 +73,8 @@ export class AddEditComponent extends BaseAddEditComponent implements OnInit, On
       policyService,
       logService,
       passwordRepromptService,
-      organizationService
+      organizationService,
+      dialogService
     );
   }
 

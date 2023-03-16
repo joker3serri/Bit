@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -43,7 +44,8 @@ export class EmergencyAddEditComponent extends BaseAddEditComponent {
     policyService: PolicyService,
     passwordRepromptService: PasswordRepromptService,
     organizationService: OrganizationService,
-    logService: LogService
+    logService: LogService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       cipherService,
@@ -60,7 +62,8 @@ export class EmergencyAddEditComponent extends BaseAddEditComponent {
       policyService,
       organizationService,
       logService,
-      passwordRepromptService
+      passwordRepromptService,
+      dialogService
     );
   }
 

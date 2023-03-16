@@ -36,6 +36,8 @@ import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
 import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "../../services/dialog";
+
 @Directive()
 export class AddEditComponent implements OnInit, OnDestroy {
   @Input() cloneMode = false;
@@ -99,7 +101,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
     protected policyService: PolicyService,
     private logService: LogService,
     protected passwordRepromptService: PasswordRepromptService,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
+    protected dialogService: DialogServiceAbstraction
   ) {
     this.typeOptions = [
       { name: i18nService.t("typeLogin"), value: CipherType.Login },
@@ -391,16 +394,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   async delete(): Promise<boolean> {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t(
         this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation"
       ),
       this.i18nService.t("deleteItem"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning",
-      false,
-      this.componentName != "" ? this.componentName + " .modal-content" : null
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;
@@ -430,12 +431,12 @@ export class AddEditComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("restoreItemConfirmation"),
       this.i18nService.t("restoreItem"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;
@@ -473,7 +474,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   async generatePassword(): Promise<boolean> {
     if (this.cipher.login?.password?.length) {
-      const confirmed = await this.platformUtilsService.showDialog(
+      const confirmed = await this.dialogService.legacyShowDialog(
         this.i18nService.t("overwritePasswordConfirmation"),
         this.i18nService.t("overwritePassword"),
         this.i18nService.t("yes"),
