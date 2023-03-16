@@ -8,7 +8,7 @@ import {
   ViewContainerRef,
 } from "@angular/core";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { BehaviorSubject, combineLatest, firstValueFrom, from, lastValueFrom, Subject } from "rxjs";
+import { BehaviorSubject, combineLatest, firstValueFrom, lastValueFrom, Subject } from "rxjs";
 import {
   concatMap,
   debounceTime,
@@ -223,12 +223,12 @@ export class VaultComponent implements OnInit, OnDestroy {
       });
 
     const filter$ = this.routedVaultFilterService.filter$;
-    const canAccessPremium$ = from(this.stateService.getCanAccessPremium()).pipe(
-      shareReplay({ refCount: true, bufferSize: 1 })
-    );
-    const allCollections$ = from(this.collectionService.getAllDecrypted()).pipe(
-      shareReplay({ refCount: true, bufferSize: 1 })
-    );
+    const canAccessPremium$ = Utils.asyncToObservable(() =>
+      this.stateService.getCanAccessPremium()
+    ).pipe(shareReplay({ refCount: true, bufferSize: 1 }));
+    const allCollections$ = Utils.asyncToObservable(() =>
+      this.collectionService.getAllDecrypted()
+    ).pipe(shareReplay({ refCount: true, bufferSize: 1 }));
     const nestedCollections$ = allCollections$.pipe(
       map((collections) => getNestedCollectionTree(collections)),
       shareReplay({ refCount: true, bufferSize: 1 })
@@ -247,7 +247,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     const querySearchText$ = this.route.queryParams.pipe(map((queryParams) => queryParams.search));
 
     const ciphers$ = combineLatest([
-      this.cipherService.getAllDecrypted(),
+      Utils.asyncToObservable(() => this.cipherService.getAllDecrypted()),
       filter$,
       querySearchText$,
     ]).pipe(
