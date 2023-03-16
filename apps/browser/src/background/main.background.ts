@@ -8,7 +8,6 @@ import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitw
 import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { EventCollectionService as EventCollectionServiceAbstraction } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { EventUploadService as EventUploadServiceAbstraction } from "@bitwarden/common/abstractions/event/event-upload.service";
-import { ExportService as ExportServiceAbstraction } from "@bitwarden/common/abstractions/export.service";
 import { FileUploadService as FileUploadServiceAbstraction } from "@bitwarden/common/abstractions/fileUpload.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService as LogServiceAbstraction } from "@bitwarden/common/abstractions/log.service";
@@ -55,7 +54,6 @@ import { EncryptServiceImplementation } from "@bitwarden/common/services/cryptog
 import { MultithreadEncryptServiceImplementation } from "@bitwarden/common/services/cryptography/multithread-encrypt.service.implementation";
 import { EventCollectionService } from "@bitwarden/common/services/event/event-collection.service";
 import { EventUploadService } from "@bitwarden/common/services/event/event-upload.service";
-import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";
 import { MemoryStorageService } from "@bitwarden/common/services/memoryStorage.service";
 import { NotificationsService } from "@bitwarden/common/services/notifications.service";
@@ -86,6 +84,10 @@ import { CipherService } from "@bitwarden/common/vault/services/cipher.service";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
 import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-notifier.service";
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
+import {
+  VaultExportService,
+  VaultExportServiceAbstraction,
+} from "@bitwarden/exporter/vault-export";
 
 import ContextMenusBackground from "../autofill/background/context-menus.background";
 import NotificationBackground from "../autofill/background/notification.background";
@@ -151,7 +153,7 @@ export default class MainBackground {
   containerService: ContainerService;
   auditService: AuditServiceAbstraction;
   authService: AuthServiceAbstraction;
-  exportService: ExportServiceAbstraction;
+  exportService: VaultExportServiceAbstraction;
   searchService: SearchServiceAbstraction;
   notificationsService: NotificationsServiceAbstraction;
   stateService: StateServiceAbstraction;
@@ -447,7 +449,7 @@ export default class MainBackground {
     );
     this.containerService = new ContainerService(this.cryptoService, this.encryptService);
     this.auditService = new AuditService(this.cryptoFunctionService, this.apiService);
-    this.exportService = new ExportService(
+    this.exportService = new VaultExportService(
       this.folderService,
       this.cipherService,
       this.apiService,

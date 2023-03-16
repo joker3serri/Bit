@@ -18,7 +18,6 @@ import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { EventUploadService } from "@bitwarden/common/abstractions/event/event-upload.service";
-import { ExportService } from "@bitwarden/common/abstractions/export.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { FileUploadService } from "@bitwarden/common/abstractions/fileUpload.service";
 import { I18nService as I18nServiceAbstraction } from "@bitwarden/common/abstractions/i18n.service";
@@ -73,6 +72,7 @@ import {
 import { PasswordRepromptService as PasswordRepromptServiceAbstraction } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder-api.service";
+import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
 import { LockGuardService, UnauthGuardService } from "../../auth/popup/services";
 import { AutofillService } from "../../autofill/services/abstractions/autofill.service";
@@ -304,7 +304,11 @@ function getBgService<T>(service: keyof MainBackground) {
       useFactory: getBgService<AutofillService>("autofillService"),
       deps: [],
     },
-    { provide: ExportService, useFactory: getBgService<ExportService>("exportService"), deps: [] },
+    {
+      provide: VaultExportServiceAbstraction,
+      useFactory: getBgService<VaultExportServiceAbstraction>("exportService"),
+      deps: [],
+    },
     { provide: SendService, useFactory: getBgService<SendService>("sendService"), deps: [] },
     {
       provide: KeyConnectorService,
