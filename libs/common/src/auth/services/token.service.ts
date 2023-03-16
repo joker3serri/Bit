@@ -1,12 +1,6 @@
-import { AppIdService } from "../../abstractions/appId.service";
-import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { Utils } from "../../misc/utils";
-import { IdentityApiService } from "../abstractions/identity-api.service";
 import { TokenService as TokenServiceAbstraction } from "../abstractions/token.service";
-import { DeviceRequest } from "../models/request/identity-token/device.request";
-import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
-import { UserApiTokenRequest } from "../models/request/identity-token/user-api-token.request";
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
 export class TokenService implements TokenServiceAbstraction {
@@ -30,12 +24,7 @@ export class TokenService implements TokenServiceAbstraction {
     return decodedToken;
   }
 
-  constructor(
-    private stateService: StateService,
-    private platformUtilsService: PlatformUtilsService,
-    private appIdService: AppIdService,
-    private identityApiService: IdentityApiService
-  ) {}
+  constructor(private stateService: StateService) {}
 
   async setTokens(
     accessToken: string,
@@ -189,62 +178,5 @@ export class TokenService implements TokenServiceAbstraction {
     const decoded = await this.decodeAccessToken();
 
     return Array.isArray(decoded.amr) && decoded.amr.includes("external");
-  }
-
-  async refreshIdentityToken(): Promise<any> {
-    try {
-      await this.doAuthRefresh();
-    } catch (e) {
-      return Promise.reject(null);
-    }
-  }
-
-  async getActiveAccessToken(): Promise<string> {
-    let accessToken = await this.getAccessToken();
-    if (await this.accessTokenNeedsRefresh()) {
-      await this.doAuthRefresh();
-      accessToken = await this.getAccessToken();
-    }
-    return accessToken;
-  }
-
-  private async doAuthRefresh(): Promise<void> {
-    // if we have a refresh token, use it to get a new access token and refresh token
-    const refreshToken = await this.getRefreshToken();
-    if (refreshToken != null && refreshToken !== "") {
-      const decodedAccessToken = await this.decodeAccessToken();
-      const tokenResponse = await this.identityApiService.renewAuthViaRefreshToken(
-        refreshToken,
-        decodedAccessToken
-      );
-      await this.setTokens(tokenResponse.accessToken, tokenResponse.refreshToken, null);
-    }
-
-    // if we have api keys, use them to get a new access token and refresh token
-    const clientId = await this.getClientId();
-    const clientSecret = await this.getClientSecret();
-    if (!Utils.isNullOrWhitespace(clientId) && !Utils.isNullOrWhitespace(clientSecret)) {
-      return this.doApiTokenRefresh(clientId, clientSecret);
-    }
-
-    throw new Error("Cannot refresh token, no refresh token or api keys are stored");
-  }
-
-  private async doApiTokenRefresh(clientId: string, clientSecret: string): Promise<void> {
-    const appId = await this.appIdService.getAppId();
-    const deviceRequest = new DeviceRequest(appId, this.platformUtilsService);
-    const tokenRequest = new UserApiTokenRequest(
-      clientId,
-      clientSecret,
-      new TokenTwoFactorRequest(),
-      deviceRequest
-    );
-
-    const response = await this.identityApiService.postIdentityToken(tokenRequest);
-    if (!(response instanceof IdentityTokenResponse)) {
-      throw new Error("Invalid response received when refreshing api token");
-    }
-
-    await this.setAccessToken(response.accessToken);
   }
 }

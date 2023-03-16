@@ -2,6 +2,7 @@ import { Injector, LOCALE_ID, NgModule } from "@angular/core";
 
 import { AvatarUpdateService as AccountUpdateServiceAbstraction } from "@bitwarden/common/abstractions/account/avatar-update.service";
 import { AnonymousHubService as AnonymousHubServiceAbstraction } from "@bitwarden/common/abstractions/anonymousHub.service";
+import { ApiHelperService as ApiHelperServiceAbstraction } from "@bitwarden/common/abstractions/api-helper.service.abstraction";
 import { ApiService as ApiServiceAbstraction } from "@bitwarden/common/abstractions/api.service";
 import { AppIdService as AppIdServiceAbstraction } from "@bitwarden/common/abstractions/appId.service";
 import { AuditService as AuditServiceAbstraction } from "@bitwarden/common/abstractions/audit.service";
@@ -59,18 +60,20 @@ import {
   AccountService as AccountServiceAbstraction,
   InternalAccountService,
 } from "@bitwarden/common/auth/abstractions/account.service";
+import { AccountsApiService as AccountsApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/accounts-api.service.abstraction";
 import { AuthService as AuthServiceAbstraction } from "@bitwarden/common/auth/abstractions/auth.service";
-import { IdentityApiService as IdentityApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/identity-api.service";
 import { KeyConnectorService as KeyConnectorServiceAbstraction } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { LoginService as LoginServiceAbstraction } from "@bitwarden/common/auth/abstractions/login.service";
+import { TokenApiService as TokenApiServiceAbstraction } from "@bitwarden/common/auth/abstractions/token-api.service.abstraction";
 import { TokenService as TokenServiceAbstraction } from "@bitwarden/common/auth/abstractions/token.service";
 import { TwoFactorService as TwoFactorServiceAbstraction } from "@bitwarden/common/auth/abstractions/two-factor.service";
 import { AccountApiServiceImplementation } from "@bitwarden/common/auth/services/account-api.service";
 import { AccountServiceImplementation } from "@bitwarden/common/auth/services/account.service";
+import { AccountsApiServiceImplementation } from "@bitwarden/common/auth/services/accounts-api.service.implementation";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
-import { IdentityApiServiceImplementation } from "@bitwarden/common/auth/services/identity-api.service.implementation";
 import { KeyConnectorService } from "@bitwarden/common/auth/services/key-connector.service";
 import { LoginService } from "@bitwarden/common/auth/services/login.service";
+import { TokenApiServiceImplementation } from "@bitwarden/common/auth/services/token-api.service.implementation";
 import { TokenService } from "@bitwarden/common/auth/services/token.service";
 import { TwoFactorService } from "@bitwarden/common/auth/services/two-factor.service";
 import { UserVerificationApiService } from "@bitwarden/common/auth/services/user-verification/user-verification-api.service";
@@ -81,6 +84,7 @@ import { Account } from "@bitwarden/common/models/domain/account";
 import { GlobalState } from "@bitwarden/common/models/domain/global-state";
 import { AvatarUpdateService } from "@bitwarden/common/services/account/avatar-update.service";
 import { AnonymousHubService } from "@bitwarden/common/services/anonymousHub.service";
+import { ApiHelperServiceImplementation } from "@bitwarden/common/services/api-helper.service.implementation";
 import { ApiService } from "@bitwarden/common/services/api.service";
 import { AppIdService } from "@bitwarden/common/services/appId.service";
 import { AuditService } from "@bitwarden/common/services/audit.service";
@@ -226,7 +230,8 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
         StateServiceAbstraction,
         TwoFactorServiceAbstraction,
         I18nServiceAbstraction,
-        IdentityApiServiceAbstraction,
+        TokenApiServiceAbstraction,
+        AccountsApiServiceAbstraction,
       ],
     },
     {
@@ -327,12 +332,7 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
     {
       provide: TokenServiceAbstraction,
       useClass: TokenService,
-      deps: [
-        StateServiceAbstraction,
-        PlatformUtilsServiceAbstraction,
-        AppIdServiceAbstraction,
-        IdentityApiServiceAbstraction,
-      ],
+      deps: [StateServiceAbstraction],
     },
     {
       provide: CryptoServiceAbstraction,
@@ -359,9 +359,10 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
       provide: ApiServiceAbstraction,
       useClass: ApiService,
       deps: [
-        TokenServiceAbstraction,
         PlatformUtilsServiceAbstraction,
         EnvironmentServiceAbstraction,
+        ApiHelperServiceAbstraction,
+        TokenApiServiceAbstraction,
         LOGOUT_CALLBACK,
       ],
     },
@@ -643,17 +644,30 @@ import { AbstractThemingService } from "./theming/theming.service.abstraction";
       useClass: OrgDomainApiService,
       deps: [OrgDomainServiceAbstraction, ApiServiceAbstraction],
     },
-    // TODO: this should probably move to a new auth module at some point in the future
+    //#region Auth Services
+    // TODO: Auth services should probably move to a new auth module at some point in the future
     {
-      provide: IdentityApiServiceAbstraction,
-      useClass: IdentityApiServiceImplementation,
+      provide: AccountsApiServiceAbstraction,
+      useClass: AccountsApiServiceImplementation,
+      deps: [EnvironmentServiceAbstraction, ApiServiceAbstraction],
+    },
+    {
+      provide: ApiHelperServiceAbstraction,
+      useClass: ApiHelperServiceImplementation,
+      deps: [PlatformUtilsServiceAbstraction, EnvironmentServiceAbstraction],
+    },
+    {
+      provide: TokenApiServiceAbstraction,
+      useClass: TokenApiServiceImplementation,
       deps: [
         PlatformUtilsServiceAbstraction,
         EnvironmentServiceAbstraction,
+        TokenServiceAbstraction,
         AppIdServiceAbstraction,
-        ApiServiceAbstraction,
+        ApiHelperServiceAbstraction,
       ],
     },
+    //#endregion Auth Services
   ],
 })
 export class JslibServicesModule {}

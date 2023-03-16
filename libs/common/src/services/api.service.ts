@@ -1,7 +1,8 @@
+import { ApiHelperService } from "../abstractions/api-helper.service.abstraction";
 import { ApiService as ApiServiceAbstraction } from "../abstractions/api.service";
 import { EnvironmentService } from "../abstractions/environment.service";
 import { PlatformUtilsService } from "../abstractions/platformUtils.service";
-import { TokenService } from "../auth/abstractions/token.service";
+import { TokenApiService } from "../auth/abstractions/token-api.service.abstraction";
 import { DeviceVerificationRequest } from "../auth/models/request/device-verification.request";
 import { EmailTokenRequest } from "../auth/models/request/email-token.request";
 import { EmailRequest } from "../auth/models/request/email.request";
@@ -142,7 +143,6 @@ import { AttachmentResponse } from "../vault/models/response/attachment.response
 import { CipherResponse } from "../vault/models/response/cipher.response";
 import { SyncResponse } from "../vault/models/response/sync.response";
 
-// TODO: argh, figure out if send is required to be used in API services or not.
 /**
  * @deprecated The `ApiService` class is deprecated and calls should be extracted into individual
  * api services. The `send` method is still allowed to be used within api services. For background
@@ -155,9 +155,10 @@ export class ApiService implements ApiServiceAbstraction {
   private isDesktopClient = false;
 
   constructor(
-    private tokenService: TokenService,
     private platformUtilsService: PlatformUtilsService,
     private environmentService: EnvironmentService,
+    private apiHelperService: ApiHelperService,
+    private tokenApiService: TokenApiService,
     private logoutCallback: (expired: boolean) => Promise<void>,
     private customUserAgent: string = null
   ) {
@@ -1528,7 +1529,7 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   async postEventsCollect(request: EventRequest[]): Promise<any> {
-    const authHeader = await this.tokenService.getActiveAccessToken();
+    const authHeader = await this.tokenApiService.getActiveAccessToken();
     const headers = new Headers({
       "Device-Type": this.deviceType,
       Authorization: "Bearer " + authHeader,
@@ -1580,7 +1581,7 @@ export class ApiService implements ApiServiceAbstraction {
   // Key Connector
 
   async getUserKeyFromKeyConnector(keyConnectorUrl: string): Promise<KeyConnectorUserKeyResponse> {
-    const authHeader = await this.tokenService.getActiveAccessToken();
+    const authHeader = await this.tokenApiService.getActiveAccessToken();
 
     const response = await this.fetch(
       new Request(keyConnectorUrl + "/user-keys", {
@@ -1605,7 +1606,7 @@ export class ApiService implements ApiServiceAbstraction {
     keyConnectorUrl: string,
     request: KeyConnectorUserKeyRequest
   ): Promise<void> {
-    const authHeader = await this.tokenService.getActiveAccessToken();
+    const authHeader = await this.tokenApiService.getActiveAccessToken();
 
     const response = await this.fetch(
       new Request(keyConnectorUrl + "/user-keys", {
@@ -1674,7 +1675,7 @@ export class ApiService implements ApiServiceAbstraction {
     return fetch(request);
   }
 
-  // TODO: move to identity api service
+  // TODO: move to new sso-api service & replace account w/ sso; see id api in server
   async preValidateSso(identifier: string): Promise<SsoPreValidateResponse> {
     if (identifier == null || identifier === "") {
       throw new Error("Organization Identifier was not provided.");
@@ -1795,7 +1796,7 @@ export class ApiService implements ApiServiceAbstraction {
   /**
    * Creates a bitwarden request object with appropriate headers based on method inputs.
    *
-   * Useful in cases where API services cannot use `send(...)` because they require custom error handling
+   * Useful in cases where API services cannot use `send(...)` because they require custom response handling
    * @param method - GET, POST, PUT, DELETE
    * @param requestUrl - url to send request to
    * @param body - body of request
@@ -1826,7 +1827,7 @@ export class ApiService implements ApiServiceAbstraction {
     };
 
     if (authed) {
-      const authHeader = await this.tokenService.getActiveAccessToken();
+      const authHeader = await this.tokenApiService.getActiveAccessToken();
       headers.set("Authorization", "Bearer " + authHeader);
     }
     if (body != null) {
@@ -1863,26 +1864,50 @@ export class ApiService implements ApiServiceAbstraction {
     apiUrl?: string,
     alterHeaders?: (headers: Headers) => void
   ): Promise<any> {
-    apiUrl = Utils.isNullOrWhitespace(apiUrl) ? this.environmentService.getApiUrl() : apiUrl;
+    if (authed) {
+      // TODO: test that this works
+      const originalAlterHeaders = alterHeaders;
+      // Modify the alterHeaders function to include the auth header
+      alterHeaders = async (headers: Headers) => {
+        const activeAccessToken = await this.tokenApiService.getActiveAccessToken();
+        headers.set("Authorization", "Bearer " + activeAccessToken);
 
-    // Prevent directory traversal from malicious paths
-    const pathParts = path.split("?");
-    const requestUrl =
-      apiUrl + Utils.normalizePath(pathParts[0]) + (pathParts.length > 1 ? `?${pathParts[1]}` : "");
+        originalAlterHeaders(headers);
+      };
+    }
 
-    const request = await this.createRequest(
+    const requestUrl = this.apiHelperService.buildRequestUrl(path, apiUrl);
+    const request = await this.apiHelperService.createRequest(
       method,
       requestUrl,
       body,
-      authed,
       hasResponse,
       alterHeaders
     );
-    const response = await this.fetch(request);
+    const response = await this.apiHelperService.fetch(request);
 
     const responseType = response.headers.get("content-type");
     const responseIsJson = responseType != null && responseType.indexOf("application/json") !== -1;
     if (hasResponse && response.status === 200 && responseIsJson) {
+      // TODO Is it worth creating a handleSuccess method for two lines?
+      const responseJson = await response.json();
+      return responseJson;
+    } else if (response.status !== 200) {
+      const error = await this.handleError(response, false, authed);
+
+      return Promise.reject(error);
+    }
+  }
+
+  private async handleResponse(
+    response: Response,
+    hasResponse: boolean,
+    authed: boolean
+  ): Promise<any> {
+    const responseType = response.headers.get("content-type");
+    const responseIsJson = responseType != null && responseType.indexOf("application/json") !== -1;
+    if (hasResponse && response.status === 200 && responseIsJson) {
+      // TODO Is it worth creating a handleSuccess method for two lines?
       const responseJson = await response.json();
       return responseJson;
     } else if (response.status !== 200) {
@@ -1892,32 +1917,46 @@ export class ApiService implements ApiServiceAbstraction {
   }
 
   private async handleError(
-    response: Response,
+    errorResponse: Response,
     tokenError: boolean,
     authed: boolean
   ): Promise<ErrorResponse> {
-    let responseJson: any = null;
-    if (this.isJsonResponse(response)) {
-      responseJson = await response.json();
-    } else if (this.isTextResponse(response)) {
-      responseJson = { Message: await response.text() };
-    }
+    const errorResponseJson = await this.apiHelperService.getErrorResponseJson(errorResponse);
 
     if (authed) {
-      if (
-        response.status === 401 ||
-        response.status === 403 ||
-        (tokenError &&
-          response.status === 400 &&
-          responseJson != null &&
-          responseJson.error === "invalid_grant")
-      ) {
-        await this.logoutCallback(true);
-        return null;
-      }
+      // If we are authed, we could receive errors which require us to logout
+      return await this.handleAuthedError(errorResponse, tokenError, errorResponseJson);
+    } else {
+      return this.apiHelperService.handleUnauthedError(
+        errorResponse,
+        tokenError,
+        errorResponseJson
+      );
+    }
+  }
+
+  private async handleAuthedError(
+    errorResponse: Response,
+    tokenError: boolean,
+    errorResponseJson: any
+  ) {
+    if (
+      errorResponse.status === 401 ||
+      errorResponse.status === 403 ||
+      (tokenError &&
+        errorResponse.status === 400 &&
+        errorResponseJson != null &&
+        errorResponseJson.error === "invalid_grant")
+    ) {
+      await this.logoutCallback(true);
+      return null;
     }
 
-    return new ErrorResponse(responseJson, response.status, tokenError);
+    return this.apiHelperService.buildErrorResponse(
+      errorResponseJson,
+      errorResponse.status,
+      tokenError
+    );
   }
 
   qsStringify(params: any): string {

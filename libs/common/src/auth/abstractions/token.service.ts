@@ -1,5 +1,6 @@
 import { IdentityTokenResponse } from "../models/response/identity-token.response";
 
+// TODO: refactor this abstraction to have an internal abstraction
 export abstract class TokenService {
   setTokens: (
     accessToken: string,
@@ -28,7 +29,4 @@ export abstract class TokenService {
   getNameFromAccessToken: () => Promise<string>;
   getIssuerFromAccessToken: () => Promise<string>;
   getIsExternalFromAccessToken: () => Promise<boolean>;
-
-  refreshIdentityToken: () => Promise<any>;
-  getActiveAccessToken: () => Promise<string>;
 }

@@ -16,9 +16,10 @@ import { Utils } from "../../misc/utils";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { ErrorResponse } from "../../models/response/error.response";
 import { AuthRequestPushNotification } from "../../models/response/notification.response";
+import { AccountsApiService } from "../abstractions/accounts-api.service.abstraction";
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
-import { IdentityApiService } from "../abstractions/identity-api.service";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
+import { TokenApiService } from "../abstractions/token-api.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { AuthenticationStatus } from "../enums/authentication-status";
@@ -95,7 +96,8 @@ export class AuthService implements AuthServiceAbstraction {
     protected twoFactorService: TwoFactorService,
     protected i18nService: I18nService,
     protected encryptService: EncryptService,
-    protected identityApiService: IdentityApiService
+    protected tokenApiService: TokenApiService,
+    protected accountsApiService: AccountsApiService
   ) {}
 
   async logIn(
@@ -125,7 +127,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
-          this.identityApiService,
+          this.tokenApiService,
           this
         );
         break;
@@ -140,7 +142,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
-          this.identityApiService,
+          this.tokenApiService,
           this.keyConnectorService
         );
         break;
@@ -155,7 +157,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
-          this.identityApiService,
+          this.tokenApiService,
           this.environmentService,
           this.keyConnectorService
         );
@@ -171,7 +173,7 @@ export class AuthService implements AuthServiceAbstraction {
           this.logService,
           this.stateService,
           this.twoFactorService,
-          this.identityApiService,
+          this.tokenApiService,
           this
         );
         break;
@@ -261,7 +263,7 @@ export class AuthService implements AuthServiceAbstraction {
     let kdf: KdfType = null;
     let kdfConfig: KdfConfig = null;
     try {
-      const preloginResponse = await this.identityApiService.postPrelogin(
+      const preloginResponse = await this.accountsApiService.postPrelogin(
         new PreloginRequest(email)
       );
       if (preloginResponse != null) {
