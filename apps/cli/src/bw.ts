@@ -27,7 +27,6 @@ import { ContainerService } from "@bitwarden/common/services/container.service";
 import { CryptoService } from "@bitwarden/common/services/crypto.service";
 import { EncryptServiceImplementation } from "@bitwarden/common/services/cryptography/encrypt.service.implementation";
 import { EnvironmentService } from "@bitwarden/common/services/environment.service";
-import { ExportService } from "@bitwarden/common/services/export.service";
 import { FileUploadService } from "@bitwarden/common/services/fileUpload.service";
 import { ImportApiService } from "@bitwarden/common/services/import/import-api.service";
 import { ImportService } from "@bitwarden/common/services/import/import.service";
@@ -56,6 +55,10 @@ import { FolderApiService } from "@bitwarden/common/vault/services/folder/folder
 import { FolderService } from "@bitwarden/common/vault/services/folder/folder.service";
 import { SyncNotifierService } from "@bitwarden/common/vault/services/sync/sync-notifier.service";
 import { SyncService } from "@bitwarden/common/vault/services/sync/sync.service";
+import {
+  VaultExportService,
+  VaultExportServiceAbstraction,
+} from "@bitwarden/exporter/vault-export";
 import { NodeCryptoFunctionService } from "@bitwarden/node/services/node-crypto-function.service";
 
 import { Program } from "./program";
@@ -100,7 +103,7 @@ export class Main {
   auditService: AuditService;
   importService: ImportService;
   importApiService: ImportApiServiceAbstraction;
-  exportService: ExportService;
+  exportService: VaultExportServiceAbstraction;
   searchService: SearchService;
   cryptoFunctionService: NodeCryptoFunctionService;
   encryptService: EncryptServiceImplementation;
@@ -356,7 +359,7 @@ export class Main {
       this.collectionService,
       this.cryptoService
     );
-    this.exportService = new ExportService(
+    this.exportService = new VaultExportService(
       this.folderService,
       this.cipherService,
       this.apiService,
