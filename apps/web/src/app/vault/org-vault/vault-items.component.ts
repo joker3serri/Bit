@@ -114,13 +114,13 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
   }
 
   async refreshCollections(): Promise<void> {
-    await this.vaultFilterService.reloadCollections();
-    if (this.activeFilter.selectedCollectionNode) {
-      this.activeFilter.selectedCollectionNode =
-        await this.vaultFilterService.getCollectionNodeFromTree(
-          this.activeFilter.selectedCollectionNode.node.id
-        );
-    }
+    // await this.vaultFilterService.reloadCollections();
+    // if (this.activeFilter.selectedCollectionNode) {
+    //   this.activeFilter.selectedCollectionNode =
+    //     await this.vaultFilterService.getCollectionNodeFromTree(
+    //       this.activeFilter.selectedCollectionNode.node.id
+    //     );
+    // }
   }
 
   async load(filter: (cipher: CipherView) => boolean = null, deleted = false) {

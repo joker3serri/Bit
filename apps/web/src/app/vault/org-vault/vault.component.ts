@@ -193,7 +193,6 @@ export class VaultComponent implements OnInit, OnDestroy {
         switch (message.command) {
           case "syncCompleted":
             if (message.successfully) {
-              await Promise.all([this.vaultFilterService.reloadCollections()]);
               this.refresh();
               this.changeDetectorRef.detectChanges();
             }
@@ -402,6 +401,10 @@ export class VaultComponent implements OnInit, OnDestroy {
           this.showMissingCollectionPermissionMessage = showMissingCollectionPermissionMessage;
 
           this.isEmpty = collections?.length === 0 && ciphers?.length === 0;
+
+          // This is a temporary fix to avoid double fetching collections.
+          // TODO: Remove when implementing new VVR menu
+          this.vaultFilterService.reloadCollections(allCollections);
 
           this.refreshing = false;
           this.performingInitialLoad = false;

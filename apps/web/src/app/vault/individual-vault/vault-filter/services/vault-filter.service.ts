@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import {
   BehaviorSubject,
+  combineLatest,
   combineLatestWith,
   firstValueFrom,
   map,
@@ -10,7 +11,6 @@ import {
   switchMap,
 } from "rxjs";
 
-import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
@@ -64,8 +64,10 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
   // TODO: Remove once collections is refactored with observables
   // replace with collection service observable
   private collectionViews$ = new ReplaySubject<CollectionView[]>(1);
-  filteredCollections$: Observable<CollectionView[]> = this.collectionViews$.pipe(
-    combineLatestWith(this._organizationFilter),
+  filteredCollections$: Observable<CollectionView[]> = combineLatest([
+    this.collectionViews$,
+    this._organizationFilter,
+  ]).pipe(
     switchMap(([collections, org]) => {
       return this.filterCollections(collections, org);
     })
@@ -81,14 +83,12 @@ export class VaultFilterService implements VaultFilterServiceAbstraction {
     protected organizationService: OrganizationService,
     protected folderService: FolderService,
     protected cipherService: CipherService,
-    protected collectionService: CollectionService,
     protected policyService: PolicyService,
     protected i18nService: I18nService
   ) {}
 
-  // TODO: Remove once collections is refactored with observables
-  async reloadCollections() {
-    this.collectionViews$.next(await this.collectionService.getAllDecrypted());
+  async reloadCollections(collections: CollectionView[]) {
+    this.collectionViews$.next(collections);
   }
 
   async getCollectionNodeFromTree(id: string) {

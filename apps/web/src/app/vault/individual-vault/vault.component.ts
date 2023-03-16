@@ -180,7 +180,6 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.showVerifyEmail = !(await this.tokenService.getEmailVerified());
         this.showLowKdf = await this.isLowKdfIteration();
         await this.syncService.fullSync(false);
-        await this.vaultFilterService.reloadCollections();
 
         const canAccessPremium = await this.stateService.getCanAccessPremium();
         this.showPremiumCallout =
@@ -207,7 +206,6 @@ export class VaultComponent implements OnInit, OnDestroy {
         switch (message.command) {
           case "syncCompleted":
             if (message.successfully) {
-              await Promise.all([this.vaultFilterService.reloadCollections()]);
               this.refresh();
               this.changeDetectorRef.detectChanges();
             }
@@ -376,6 +374,10 @@ export class VaultComponent implements OnInit, OnDestroy {
             filter.type !== "trash" &&
             (filter.organizationId === undefined || filter.organizationId === Unassigned);
           this.isEmpty = collections?.length === 0 && ciphers?.length === 0;
+
+          // This is a temporary fix to avoid double fetching collections.
+          // TODO: Remove when implementing new VVR menu
+          this.vaultFilterService.reloadCollections(allCollections);
 
           this.performingInitialLoad = false;
           this.refreshing = false;
