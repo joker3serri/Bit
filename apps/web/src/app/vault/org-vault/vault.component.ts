@@ -169,7 +169,7 @@ export class VaultComponent implements OnInit, OnDestroy {
     );
 
     const organization$ = organizationId$.pipe(
-      map((organizationId) => this.organizationService.get(organizationId)),
+      switchMap((organizationId) => this.organizationService.get$(organizationId)),
       takeUntil(this.destroy$),
       shareReplay({ refCount: false, bufferSize: 1 })
     );

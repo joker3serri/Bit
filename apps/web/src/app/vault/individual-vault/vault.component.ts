@@ -233,9 +233,6 @@ export class VaultComponent implements OnInit, OnDestroy {
       map((collections) => getNestedCollectionTree(collections)),
       shareReplay({ refCount: true, bufferSize: 1 })
     );
-    const allOrganizations$ = from(this.organizationService.getAll()).pipe(
-      shareReplay({ refCount: true, bufferSize: 1 })
-    );
 
     this.searchText$
       .pipe(debounceTime(SearchTextDebounceInterval), takeUntil(this.destroy$))
@@ -349,7 +346,7 @@ export class VaultComponent implements OnInit, OnDestroy {
             filter$,
             canAccessPremium$,
             allCollections$,
-            allOrganizations$,
+            this.organizationService.organizations$,
             ciphers$,
             collections$,
             selectedCollection$,
