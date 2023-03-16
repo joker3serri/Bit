@@ -300,7 +300,6 @@ export default class MainBackground {
       this.fileUploadService,
       this.i18nService,
       () => this.searchService,
-      this.logService,
       this.stateService,
       this.encryptService
     );

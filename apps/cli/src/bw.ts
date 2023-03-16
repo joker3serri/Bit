@@ -223,7 +223,6 @@ export class Main {
       this.fileUploadService,
       this.i18nService,
       null,
-      this.logService,
       this.stateService,
       this.encryptService
     );
