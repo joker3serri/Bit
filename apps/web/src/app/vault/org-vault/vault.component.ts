@@ -724,6 +724,16 @@ export class VaultComponent implements OnInit, OnDestroy {
         null,
         this.i18nService.t("deletedCollectionId", collection.name)
       );
+
+      // Navigate away if we deleted the colletion we were viewing
+      if (this.selectedCollection.node.id === collection.id) {
+        this.router.navigate([], {
+          queryParams: { collectionId: this.selectedCollection.parent?.node.id ?? null },
+          queryParamsHandling: "merge",
+          replaceUrl: true,
+        });
+      }
+
       this.refresh();
     } catch (e) {
       this.logService.error(e);
@@ -792,6 +802,20 @@ export class VaultComponent implements OnInit, OnDestroy {
       );
     } else if (typeI18nKey === "securityCode") {
       this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, cipher.id);
+    }
+  }
+
+  async addCollection(): Promise<void> {
+    const dialog = openCollectionDialog(this.dialogService, {
+      data: {
+        organizationId: this.organization?.id,
+        parentCollectionId: this.selectedCollection?.node.id,
+      },
+    });
+
+    const result = await lastValueFrom(dialog.closed);
+    if (result === CollectionDialogResult.Saved || result === CollectionDialogResult.Deleted) {
+      this.refresh();
     }
   }
 

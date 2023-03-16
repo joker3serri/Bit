@@ -18,11 +18,14 @@
     </div>
     <div class="col-9">
       <app-org-vault-header
-        [activeFilter]="activeFilter"
-        (onCollectionChanged)="refreshItems()"
-        [actionPromise]="null"
-        (onAddCipher)="addCipher()"
+        [filter]="filter"
+        [loading]="refreshing"
         [organization]="organization"
+        [collection]="selectedCollection"
+        (onAddCipher)="addCipher()"
+        (onAddCollection)="addCollection()"
+        (onEditCollection)="editCollection(selectedCollection.node, $event.tab)"
+        (onDeleteCollection)="deleteCollection(selectedCollection.node)"
       ></app-org-vault-header>
       <app-callout
         type="warning"
