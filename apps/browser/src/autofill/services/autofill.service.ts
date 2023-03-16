@@ -799,13 +799,14 @@ export default class AutofillService implements AutofillServiceInterface {
 
     // Check the pageUrl against cipher URIs using the configured match detection.
     // Remember: if we are in this function, the tabUrl already matches a saved URI for the login.
-    // We need to verify the pageUrl also matches one of the saved URIs using the match detection selected.
+    // We need to verify the pageUrl also matches.
     const equivalentDomains = this.settingsService.getEquivalentDomains(pageUrl);
-    const uriMatched = options.cipher.login.uris?.some((uri) =>
-      uri.matchesUri(pageUrl, equivalentDomains, options.defaultUriMatch)
+    const matchesUri = options.cipher.login.matchesUri(
+      pageUrl,
+      equivalentDomains,
+      options.defaultUriMatch
     );
-
-    return !uriMatched;
+    return !matchesUri;
   }
 
   private fieldAttrsContain(field: AutofillField, containsVal: string) {
