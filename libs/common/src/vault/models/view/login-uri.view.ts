@@ -154,34 +154,23 @@ export class LoginUriView implements View {
         return this.matchesDomain(targetUri, matchDomains);
       case UriMatchType.Host: {
         const urlHost = Utils.getHost(targetUri);
-        if (urlHost != null && urlHost === Utils.getHost(this.uri)) {
-          return true;
-        }
-        break;
+        return urlHost != null && urlHost === Utils.getHost(this.uri);
       }
       case UriMatchType.Exact:
-        if (targetUri === this.uri) {
-          return true;
-        }
-        break;
+        return targetUri === this.uri;
       case UriMatchType.StartsWith:
-        if (targetUri.startsWith(this.uri)) {
-          return true;
-        }
-        break;
+        return targetUri.startsWith(this.uri);
       case UriMatchType.RegularExpression:
         try {
           const regex = new RegExp(this.uri, "i");
-          if (regex.test(targetUri)) {
-            return true;
-          }
+          return regex.test(targetUri);
         } catch (e) {
           // TODO: how to log from within a model?
           // this.logService.error(e);
           return false;
         }
-        break;
       case UriMatchType.Never:
+        return false;
       default:
         break;
     }
