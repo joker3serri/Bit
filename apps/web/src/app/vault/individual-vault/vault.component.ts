@@ -98,7 +98,6 @@ const SearchTextDebounceInterval = 200;
 })
 export class VaultComponent implements OnInit, OnDestroy {
   @ViewChild("vaultFilter", { static: true }) filterComponent: VaultFilterComponent;
-  // @ViewChild(VaultItemsComponent, { static: true }) vaultItemsComponent: VaultItemsComponent;
   @ViewChild("attachments", { read: ViewContainerRef, static: true })
   attachmentsModalRef: ViewContainerRef;
   @ViewChild("folderAddEdit", { read: ViewContainerRef, static: true })
@@ -649,13 +648,11 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     try {
       this.cipherService.restoreWithServer(c.id);
-      // TODO: await this.actionPromise;
       this.platformUtilsService.showToast("success", null, this.i18nService.t("restoredItem"));
       this.refresh();
     } catch (e) {
       this.logService.error(e);
     }
-    // TODO: this.actionPromise = null;
   }
 
   async bulkRestore(ciphers: CipherView[]) {
@@ -704,7 +701,6 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     try {
       await this.deleteCipherWithServer(c.id, permanent);
-      // TODO await this.actionPromise;
       this.platformUtilsService.showToast(
         "success",
         null,
@@ -714,7 +710,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     } catch (e) {
       this.logService.error(e);
     }
-    // this.actionPromise = null;
   }
 
   async bulkDelete(ciphers: CipherView[]) {
@@ -738,9 +733,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     const result = await lastValueFrom(dialog.closed);
     if (result === BulkDeleteDialogResult.Deleted) {
       this.refresh();
-      // TODO this.actionPromise = this.refresh();
-      // await this.actionPromise;
-      // this.actionPromise = null;
     }
   }
 
@@ -766,9 +758,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     const result = await lastValueFrom(dialog.closed);
     if (result === BulkMoveDialogResult.Moved) {
       this.refresh();
-      // this.actionPromise = this.refresh();
-      // await this.actionPromise;
-      // this.actionPromise = null;
     }
   }
 
@@ -824,9 +813,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     const result = await lastValueFrom(dialog.closed);
     if (result === BulkShareDialogResult.Shared) {
       this.refresh();
-      // this.actionPromise = this.refresh();
-      // await this.actionPromise;
-      // this.actionPromise = null;
     }
   }
 

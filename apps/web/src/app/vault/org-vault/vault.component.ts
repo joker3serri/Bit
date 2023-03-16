@@ -96,7 +96,6 @@ const SearchTextDebounceInterval = 200;
 export class VaultComponent implements OnInit, OnDestroy {
   @ViewChild("vaultFilter", { static: true })
   vaultFilterComponent: VaultFilterComponent;
-  // @ViewChild(VaultItemsComponent, { static: true }) vaultItemsComponent: VaultItemsComponent;
   @ViewChild("attachments", { read: ViewContainerRef, static: true })
   attachmentsModalRef: ViewContainerRef;
   @ViewChild("cipherAddEdit", { read: ViewContainerRef, static: true })
@@ -464,10 +463,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
   }
 
-  async refreshItems() {
-    this.refresh();
-  }
-
   filterSearchText(searchText: string) {
     this.searchText$.next(searchText);
   }
@@ -497,7 +492,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     modal.onClosed.subscribe(async () => {
       if (madeAttachmentChanges) {
         this.refresh();
-        // await this.vaultItemsComponent.refresh();
       }
       madeAttachmentChanges = false;
     });
@@ -566,19 +560,16 @@ export class VaultComponent implements OnInit, OnDestroy {
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
       comp.onSavedCipher.subscribe(async () => {
         modal.close();
-        // await this.vaultItemsComponent.refresh();
         this.refresh();
       });
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
       comp.onDeletedCipher.subscribe(async () => {
         modal.close();
-        // await this.vaultItemsComponent.refresh();
         this.refresh();
       });
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
       comp.onRestoredCipher.subscribe(async () => {
         modal.close();
-        // await this.vaultItemsComponent.refresh();
         this.refresh();
       });
     };
