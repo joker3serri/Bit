@@ -133,9 +133,15 @@ export class LoginUriView implements View {
   matchesUri(
     targetUri: string,
     equivalentDomains: string[],
-    defaultUriMatch: UriMatchType = UriMatchType.Domain
+    defaultUriMatch: UriMatchType = null
   ): boolean {
-    const matchType = this.match ?? defaultUriMatch;
+    if (!this.uri || !targetUri) {
+      return false;
+    }
+
+    let matchType = this.match ?? defaultUriMatch;
+    matchType ??= UriMatchType.Domain; // Default parameters only work for undefined, we want to catch null here as well
+
     const targetDomain = Utils.getDomain(targetUri);
 
     // equivalentDomains probably already includes the targetDomain, but we add it just in case
