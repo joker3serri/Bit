@@ -15,13 +15,13 @@ import { SendData } from "../models/data/send.data";
 import { ServerConfigData } from "../models/data/server-config.data";
 import { Account, AccountSettingsSettings } from "../models/domain/account";
 import { EncString } from "../models/domain/enc-string";
-import { GeneratedPasswordHistory } from "../models/domain/generated-password-history";
 import { Policy } from "../models/domain/policy";
 import { StorageOptions } from "../models/domain/storage-options";
 import { SymmetricCryptoKey } from "../models/domain/symmetric-crypto-key";
 import { WindowState } from "../models/domain/window-state";
 import { CollectionView } from "../models/view/collection.view";
 import { SendView } from "../models/view/send.view";
+import { GeneratedPasswordHistory } from "../tools/generator/password";
 import { CipherData } from "../vault/models/data/cipher.data";
 import { FolderData } from "../vault/models/data/folder.data";
 import { LocalData } from "../vault/models/data/local.data";
@@ -245,7 +245,7 @@ export abstract class StateService<T extends Account = Account> {
   setEntityType: (value: string, options?: StorageOptions) => Promise<void>;
   getEnvironmentUrls: (options?: StorageOptions) => Promise<EnvironmentUrls>;
   setEnvironmentUrls: (value: EnvironmentUrls, options?: StorageOptions) => Promise<void>;
-  getEquivalentDomains: (options?: StorageOptions) => Promise<any>;
+  getEquivalentDomains: (options?: StorageOptions) => Promise<string[][]>;
   setEquivalentDomains: (value: string, options?: StorageOptions) => Promise<void>;
   getEventCollection: (options?: StorageOptions) => Promise<EventData[]>;
   setEventCollection: (value: EventData[], options?: StorageOptions) => Promise<void>;
@@ -358,7 +358,13 @@ export abstract class StateService<T extends Account = Account> {
 
   getAvatarColor: (options?: StorageOptions) => Promise<string | null | undefined>;
   setAvatarColor: (value: string, options?: StorageOptions) => Promise<void>;
-
+  getActivateAutoFillOnPageLoadFromPolicy: (
+    options?: StorageOptions
+  ) => Promise<boolean | undefined>;
+  setActivateAutoFillOnPageLoadFromPolicy: (
+    value: boolean,
+    options?: StorageOptions
+  ) => Promise<void>;
   getSMOnboardingTasks: (
     options?: StorageOptions
   ) => Promise<Record<string, Record<string, boolean>>>;

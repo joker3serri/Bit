@@ -177,7 +177,8 @@ export class VaultComponent implements OnInit, OnDestroy {
       first(),
       switchMap(async (params: Params) => {
         this.showVerifyEmail = !(await this.tokenService.getEmailVerified());
-        this.showLowKdf = await this.isLowKdfIteration();
+        // disable warning for March release -> add await this.isLowKdfIteration(); when ready
+        this.showLowKdf = false;
         await this.syncService.fullSync(false);
 
         const canAccessPremium = await this.stateService.getCanAccessPremium();
