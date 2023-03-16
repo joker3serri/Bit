@@ -12,7 +12,6 @@ import { OrganizationBadgeModule } from "./organization-badge/organization-badge
 import { PipesModule } from "./pipes/pipes.module";
 import { VaultFilterModule } from "./vault-filter/vault-filter.module";
 import { VaultHeaderComponent } from "./vault-header/vault-header.component";
-import { VaultItemsComponent } from "./vault-items.component";
 import { VaultRoutingModule } from "./vault-routing.module";
 import { VaultComponent } from "./vault.component";
 
@@ -30,7 +29,7 @@ import { VaultComponent } from "./vault.component";
     BreadcrumbsModule,
     VaultItemsModule,
   ],
-  declarations: [VaultComponent, VaultItemsComponent, VaultHeaderComponent],
+  declarations: [VaultComponent, VaultHeaderComponent],
   exports: [VaultComponent],
 })
 export class VaultModule {}
