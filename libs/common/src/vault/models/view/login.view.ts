@@ -1,6 +1,7 @@
 import { Jsonify } from "type-fest";
 
 import { LoginLinkedId as LinkedId } from "../../../enums/linkedIdType";
+import { UriMatchType } from "../../../enums/uriMatchType";
 import { linkedFieldOption } from "../../../misc/linkedFieldOption.decorator";
 import { Utils } from "../../../misc/utils";
 import { Login } from "../domain/login";
@@ -61,6 +62,18 @@ export class LoginView extends ItemView {
 
   get hasUris(): boolean {
     return this.uris != null && this.uris.length > 0;
+  }
+
+  matchesUri(
+    targetUri: string,
+    equivalentDomains: string[],
+    defaultUriMatch: UriMatchType = null
+  ): boolean {
+    if (this.uris == null) {
+      return false;
+    }
+
+    return this.uris.some((uri) => uri.matchesUri(targetUri, equivalentDomains, defaultUriMatch));
   }
 
   static fromJSON(obj: Partial<Jsonify<LoginView>>): LoginView {
