@@ -151,17 +151,7 @@ export class LoginUriView implements View {
 
     switch (matchType) {
       case UriMatchType.Domain:
-        if (targetUri != null && this.domain != null && matchDomains.includes(this.domain)) {
-          if (Utils.DomainMatchBlacklist.has(this.domain)) {
-            const domainUrlHost = Utils.getHost(targetUri);
-            if (!Utils.DomainMatchBlacklist.get(this.domain).has(domainUrlHost)) {
-              return true;
-            }
-          } else {
-            return true;
-          }
-        }
-        break;
+        return this.matchesDomain(targetUri, matchDomains);
       case UriMatchType.Host: {
         const urlHost = Utils.getHost(targetUri);
         if (urlHost != null && urlHost === Utils.getHost(this.uri)) {
@@ -197,5 +187,18 @@ export class LoginUriView implements View {
     }
 
     return false;
+  }
+
+  private matchesDomain(targetUri: string, matchDomains: string[]) {
+    if (targetUri == null || this.domain == null || !matchDomains.includes(this.domain)) {
+      return false;
+    }
+
+    if (Utils.DomainMatchBlacklist.has(this.domain)) {
+      const domainUrlHost = Utils.getHost(targetUri);
+      return !Utils.DomainMatchBlacklist.get(this.domain).has(domainUrlHost);
+    }
+
+    return true;
   }
 }
