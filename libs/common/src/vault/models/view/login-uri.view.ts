@@ -132,7 +132,7 @@ export class LoginUriView implements View {
 
   matchesUri(
     targetUri: string,
-    equivalentDomains: string[],
+    equivalentDomains: Set<string>,
     defaultUriMatch: UriMatchType = null
   ): boolean {
     if (!this.uri || !targetUri) {
@@ -141,13 +141,10 @@ export class LoginUriView implements View {
 
     let matchType = this.match ?? defaultUriMatch;
     matchType ??= UriMatchType.Domain; // Default parameters only work for undefined, we want to catch null here as well
+    // TODO: wrap this logic ^ in settingsService
 
     const targetDomain = Utils.getDomain(targetUri);
-
-    // equivalentDomains probably already includes the targetDomain, but we add it just in case
-    const matchDomains: string[] = equivalentDomains?.length
-      ? equivalentDomains.concat(targetDomain)
-      : [targetDomain];
+    const matchDomains = equivalentDomains.add(targetDomain);
 
     switch (matchType) {
       case UriMatchType.Domain:
@@ -178,8 +175,8 @@ export class LoginUriView implements View {
     return false;
   }
 
-  private matchesDomain(targetUri: string, matchDomains: string[]) {
-    if (targetUri == null || this.domain == null || !matchDomains.includes(this.domain)) {
+  private matchesDomain(targetUri: string, matchDomains: Set<string>) {
+    if (targetUri == null || this.domain == null || !matchDomains.has(this.domain)) {
       return false;
     }
 
