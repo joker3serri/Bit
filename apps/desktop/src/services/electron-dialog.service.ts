@@ -2,6 +2,16 @@ import { ipcRenderer } from "electron";
 
 import { DialogService, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 
+// Electron supports a limited set of dialog types
+// https://www.electronjs.org/docs/latest/api/dialog#dialogshowmessageboxbrowserwindow-options
+const electronTypeMap: Record<SimpleDialogType, string> = {
+  [SimpleDialogType.PRIMARY]: "info",
+  [SimpleDialogType.SUCCESS]: "info",
+  [SimpleDialogType.INFO]: "info",
+  [SimpleDialogType.WARNING]: "warning",
+  [SimpleDialogType.DANGER]: "error",
+};
+
 export class ElectronDialogService extends DialogService {
   async legacyShowDialog(
     body: string,
@@ -16,7 +26,7 @@ export class ElectronDialogService extends DialogService {
     }
 
     const result = await ipcRenderer.invoke("showMessageBox", {
-      type: type,
+      type: electronTypeMap[type] ?? "none",
       title: title,
       message: title,
       detail: body,

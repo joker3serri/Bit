@@ -202,7 +202,8 @@ export class AttachmentsComponent implements OnInit {
         this.i18nService.t("premiumRequiredDesc"),
         this.i18nService.t("premiumRequired"),
         this.i18nService.t("learnMore"),
-        this.i18nService.t("cancel")
+        this.i18nService.t("cancel"),
+        SimpleDialogType.SUCCESS
       );
       if (confirmed) {
         this.platformUtilsService.launchUri("https://vault.bitwarden.com/#/?premium=purchase");

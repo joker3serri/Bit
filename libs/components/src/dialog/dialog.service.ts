@@ -132,7 +132,7 @@ export class DialogService extends Dialog implements OnDestroy, DialogServiceAbs
       content: body,
       acceptButtonText: confirmText,
       cancelButtonText: cancelText,
-      type: type,
+      type: type ?? SimpleDialogType.WARNING,
     });
   }
 }

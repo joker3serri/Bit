@@ -14,7 +14,7 @@ import { IndividualConfig, ToastrService } from "ngx-toastr";
 import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
@@ -263,7 +263,8 @@ export class AppComponent implements OnInit, OnDestroy {
               this.i18nService.t("premiumRequiredDesc"),
               this.i18nService.t("premiumRequired"),
               this.i18nService.t("learnMore"),
-              this.i18nService.t("cancel")
+              this.i18nService.t("cancel"),
+              SimpleDialogType.SUCCESS
             );
             if (premiumConfirmed) {
               await this.openModal<PremiumComponent>(PremiumComponent, this.premiumRef);

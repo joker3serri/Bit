@@ -7,7 +7,7 @@ import { IndividualConfig, ToastrService } from "ngx-toastr";
 import { Subject, takeUntil } from "rxjs";
 import Swal from "sweetalert2";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -152,7 +152,8 @@ export class AppComponent implements OnDestroy, OnInit {
               this.i18nService.t("premiumRequiredDesc"),
               this.i18nService.t("premiumRequired"),
               this.i18nService.t("upgrade"),
-              this.i18nService.t("cancel")
+              this.i18nService.t("cancel"),
+              SimpleDialogType.SUCCESS
             );
             if (premiumConfirmed) {
               this.router.navigate(["settings/subscription/premium"]);
