@@ -111,11 +111,13 @@
     ></app-change-plan>
   </ng-container>
 
-  <sm-enroll
-    *ngIf="isAdmin"
-    [enabled]="sub?.useSecretsManager"
-    [organizationId]="organizationId"
-  ></sm-enroll>
+  <ng-container *ngIf="userOrg.canManageBilling">
+    <sm-enroll
+      *ngIf="isAdmin"
+      [enabled]="sub?.useSecretsManager"
+      [organizationId]="organizationId"
+    ></sm-enroll>
+  </ng-container>
 
   <ng-container *ngIf="userOrg.canManageBilling">
     <h2 class="spaced-header">{{ "manageSubscription" | i18n }}</h2>
