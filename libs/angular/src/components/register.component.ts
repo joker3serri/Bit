@@ -25,6 +25,7 @@ import { RegisterRequest } from "@bitwarden/common/models/request/register.reque
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 
 import { CaptchaProtectedComponent } from "../auth/components/captcha-protected.component";
+import { DialogServiceAbstraction, SimpleDialogType } from "../services/dialog";
 import { PasswordColorText } from "../shared/components/password-strength/password-strength.component";
 import { InputsFieldMatch } from "../validators/inputsFieldMatch.validator";
 
@@ -90,7 +91,8 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     environmentService: EnvironmentService,
     protected logService: LogService,
-    protected auditService: AuditService
+    protected auditService: AuditService,
+    protected dialogService: DialogServiceAbstraction
   ) {
     super(environmentService, i18nService, platformUtilsService);
     this.showTerms = !platformUtilsService.isSelfHost();
@@ -227,34 +229,34 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
       (await this.auditService.passwordLeaked(this.formGroup.controls.masterPassword.value)) > 0;
 
     if (passwordWeak && passwordLeak) {
-      const result = await this.platformUtilsService.showDialog(
+      const result = await this.dialogService.legacyShowDialog(
         this.i18nService.t("weakAndBreachedMasterPasswordDesc"),
         this.i18nService.t("weakAndExposedMasterPassword"),
         this.i18nService.t("yes"),
         this.i18nService.t("no"),
-        "warning"
+        SimpleDialogType.WARNING
       );
       if (!result) {
         return { isValid: false };
       }
     } else if (passwordWeak) {
-      const result = await this.platformUtilsService.showDialog(
+      const result = await this.dialogService.legacyShowDialog(
         this.i18nService.t("weakMasterPasswordDesc"),
         this.i18nService.t("weakMasterPassword"),
         this.i18nService.t("yes"),
         this.i18nService.t("no"),
-        "warning"
+        SimpleDialogType.WARNING
       );
       if (!result) {
         return { isValid: false };
       }
     } else if (passwordLeak) {
-      const result = await this.platformUtilsService.showDialog(
+      const result = await this.dialogService.legacyShowDialog(
         this.i18nService.t("exposedMasterPasswordDesc"),
         this.i18nService.t("exposedMasterPassword"),
         this.i18nService.t("yes"),
         this.i18nService.t("no"),
-        "warning"
+        SimpleDialogType.WARNING
       );
       if (!result) {
         return { isValid: false };

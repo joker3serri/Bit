@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { ImportService } from "@bitwarden/common/abstractions/import/import.service.abstraction";
@@ -30,7 +31,8 @@ export class OrganizationImportComponent extends ImportComponent {
     private organizationService: OrganizationService,
     logService: LogService,
     modalService: ModalService,
-    syncService: SyncService
+    syncService: SyncService,
+    private dialogService: DialogServiceAbstraction
   ) {
     super(
       i18nService,
@@ -56,12 +58,12 @@ export class OrganizationImportComponent extends ImportComponent {
   }
 
   async submit() {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("importWarning", this.organizationName),
       this.i18nService.t("warning"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return;

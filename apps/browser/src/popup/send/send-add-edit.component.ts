@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
 import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/components/send/add-edit.component";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -43,7 +44,8 @@ export class SendAddEditComponent extends BaseAddEditComponent {
     private router: Router,
     private location: Location,
     private popupUtilsService: PopupUtilsService,
-    logService: LogService
+    logService: LogService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       i18nService,
@@ -54,7 +56,8 @@ export class SendAddEditComponent extends BaseAddEditComponent {
       messagingService,
       policyService,
       logService,
-      stateService
+      stateService,
+      dialogService
     );
   }
 

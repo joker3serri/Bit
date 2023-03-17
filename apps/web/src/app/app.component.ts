@@ -7,6 +7,7 @@ import { IndividualConfig, ToastrService } from "ngx-toastr";
 import { Subject, takeUntil } from "rxjs";
 import Swal from "sweetalert2";
 
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -77,7 +78,8 @@ export class AppComponent implements OnDestroy, OnInit {
     private eventUploadService: EventUploadService,
     private policyService: InternalPolicyService,
     protected policyListService: PolicyListService,
-    private keyConnectorService: KeyConnectorService
+    private keyConnectorService: KeyConnectorService,
+    private dialogService: DialogServiceAbstraction
   ) {}
 
   ngOnInit() {
@@ -129,7 +131,7 @@ export class AppComponent implements OnDestroy, OnInit {
           case "syncCompleted":
             break;
           case "upgradeOrganization": {
-            const upgradeConfirmed = await this.platformUtilsService.showDialog(
+            const upgradeConfirmed = await this.dialogService.legacyShowDialog(
               this.i18nService.t("upgradeOrganizationDesc"),
               this.i18nService.t("upgradeOrganization"),
               this.i18nService.t("upgradeOrganization"),
@@ -146,7 +148,7 @@ export class AppComponent implements OnDestroy, OnInit {
             break;
           }
           case "premiumRequired": {
-            const premiumConfirmed = await this.platformUtilsService.showDialog(
+            const premiumConfirmed = await this.dialogService.legacyShowDialog(
               this.i18nService.t("premiumRequiredDesc"),
               this.i18nService.t("premiumRequired"),
               this.i18nService.t("upgrade"),
@@ -158,7 +160,7 @@ export class AppComponent implements OnDestroy, OnInit {
             break;
           }
           case "emailVerificationRequired": {
-            const emailVerificationConfirmed = await this.platformUtilsService.showDialog(
+            const emailVerificationConfirmed = await this.dialogService.legacyShowDialog(
               this.i18nService.t("emailVerificationRequiredDesc"),
               this.i18nService.t("emailVerificationRequired"),
               this.i18nService.t("learnMore"),

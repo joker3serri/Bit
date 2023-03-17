@@ -3,6 +3,7 @@ import { UntypedFormControl } from "@angular/forms";
 import { Router } from "@angular/router";
 import Swal from "sweetalert2";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
@@ -68,7 +69,8 @@ export class SettingsComponent implements OnInit {
     private stateService: StateService,
     private popupUtilsService: PopupUtilsService,
     private modalService: ModalService,
-    private keyConnectorService: KeyConnectorService
+    private keyConnectorService: KeyConnectorService,
+    private dialogService: DialogServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -126,12 +128,12 @@ export class SettingsComponent implements OnInit {
 
   async saveVaultTimeout(newValue: number) {
     if (newValue == null) {
-      const confirmed = await this.platformUtilsService.showDialog(
+      const confirmed = await this.dialogService.legacyShowDialog(
         this.i18nService.t("neverLockWarning"),
         null,
         this.i18nService.t("yes"),
         this.i18nService.t("cancel"),
-        "warning"
+        SimpleDialogType.WARNING
       );
       if (!confirmed) {
         this.vaultTimeout.setValue(this.previousVaultTimeout);
@@ -163,12 +165,12 @@ export class SettingsComponent implements OnInit {
 
   async saveVaultTimeoutAction(newValue: string) {
     if (newValue === "logOut") {
-      const confirmed = await this.platformUtilsService.showDialog(
+      const confirmed = await this.dialogService.legacyShowDialog(
         this.i18nService.t("vaultTimeoutLogOutConfirmation"),
         this.i18nService.t("vaultTimeoutLogOutConfirmationTitle"),
         this.i18nService.t("yes"),
         this.i18nService.t("cancel"),
-        "warning"
+        SimpleDialogType.WARNING
       );
       if (!confirmed) {
         this.vaultTimeoutActions.forEach((option: any, i) => {
@@ -223,7 +225,7 @@ export class SettingsComponent implements OnInit {
         console.error(e);
 
         if (this.platformUtilsService.isFirefox() && this.popupUtilsService.inSidebar(window)) {
-          await this.platformUtilsService.showDialog(
+          await this.dialogService.legacyShowDialog(
             this.i18nService.t("nativeMessaginPermissionSidebarDesc"),
             this.i18nService.t("nativeMessaginPermissionSidebarTitle"),
             this.i18nService.t("ok"),
@@ -235,7 +237,7 @@ export class SettingsComponent implements OnInit {
       }
 
       if (!granted) {
-        await this.platformUtilsService.showDialog(
+        await this.dialogService.legacyShowDialog(
           this.i18nService.t("nativeMessaginPermissionErrorDesc"),
           this.i18nService.t("nativeMessaginPermissionErrorTitle"),
           this.i18nService.t("ok"),
@@ -288,12 +290,12 @@ export class SettingsComponent implements OnInit {
 
             const error = BiometricErrors[e as BiometricErrorTypes];
 
-            this.platformUtilsService.showDialog(
+            this.dialogService.legacyShowDialog(
               this.i18nService.t(error.description),
               this.i18nService.t(error.title),
               this.i18nService.t("ok"),
               null,
-              "error"
+              SimpleDialogType.DANGER
             );
           }),
       ]);
@@ -312,7 +314,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async logOut() {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("logOutConfirmation"),
       this.i18nService.t("logOut"),
       this.i18nService.t("yes"),
@@ -324,7 +326,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async changePassword() {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("changeMasterPasswordConfirmation"),
       this.i18nService.t("changeMasterPassword"),
       this.i18nService.t("yes"),
@@ -338,7 +340,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async twoStep() {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("twoStepLoginConfirmation"),
       this.i18nService.t("twoStepLogin"),
       this.i18nService.t("yes"),
@@ -350,7 +352,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async share() {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("learnOrgConfirmation"),
       this.i18nService.t("learnOrg"),
       this.i18nService.t("yes"),

@@ -3,7 +3,7 @@ import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { combineLatest, of, shareReplay, Subject, switchMap, takeUntil } from "rxjs";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
@@ -129,7 +129,8 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     private collectionAdminService: CollectionAdminService,
     private groupService: GroupService,
     private userService: UserAdminService,
-    private organizationUserService: OrganizationUserService
+    private organizationUserService: OrganizationUserService,
+    private dialogService: DialogServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -363,14 +364,12 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     const message = this.params.usesKeyConnector
       ? "removeUserConfirmationKeyConnector"
       : "removeOrgUserConfirmation";
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t(message),
       this.i18nService.t("removeUserIdAccess", this.params.name),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning",
-      false,
-      "app-user-add-edit .modal-content"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;
@@ -394,14 +393,12 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("revokeUserConfirmation"),
       this.i18nService.t("revokeUserId", this.params.name),
       this.i18nService.t("revokeAccess"),
       this.i18nService.t("cancel"),
-      "warning",
-      false,
-      "app-user-add-edit .modal-content"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;

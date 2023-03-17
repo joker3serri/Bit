@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, Params } from "@angular/router";
 import { concatMap, Observable, Subject, take, takeUntil } from "rxjs";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain-api.service.abstraction";
 import { OrgDomainServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain.service.abstraction";
@@ -154,12 +154,12 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
   }
 
   async deleteDomain(orgDomainId: string): Promise<void> {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("removeDomainWarning"),
       this.i18nService.t("removeDomain"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return;

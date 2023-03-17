@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { UntypedFormBuilder, FormControl } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -43,7 +44,8 @@ export class ScimComponent implements OnInit {
     private platformUtilsService: PlatformUtilsService,
     private i18nService: I18nService,
     private environmentService: EnvironmentService,
-    private organizationApiService: OrganizationApiServiceAbstraction
+    private organizationApiService: OrganizationApiServiceAbstraction,
+    private dialogService: DialogServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -82,12 +84,12 @@ export class ScimComponent implements OnInit {
   }
 
   async rotateScimKey() {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("rotateScimKeyWarning"),
       this.i18nService.t("rotateScimKey"),
       this.i18nService.t("rotateKey"),
       this.i18nService.t("cancel"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;

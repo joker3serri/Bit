@@ -121,7 +121,7 @@ export class PeopleComponent
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
     private organizationUserService: OrganizationUserService,
-    private dialogService: DialogServiceAbstraction,
+    dialogService: DialogServiceAbstraction,
     private router: Router,
     private groupService: GroupService,
     private collectionService: CollectionService
@@ -137,7 +137,8 @@ export class PeopleComponent
       logService,
       searchPipe,
       userNamePipe,
-      stateService
+      stateService,
+      dialogService
     );
   }
 
@@ -543,12 +544,12 @@ export class PeopleComponent
       ? this.i18nService.t("removeUserConfirmationKeyConnector")
       : this.i18nService.t("removeOrgUserConfirmation");
 
-    return this.platformUtilsService.showDialog(
+    return this.dialogService.legacyShowDialog(
       warningMessage,
       this.i18nService.t("removeUserIdAccess", this.userNamePipe.transform(user)),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
   }
 

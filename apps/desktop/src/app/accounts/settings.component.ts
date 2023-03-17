@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 import { debounceTime } from "rxjs/operators";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -83,7 +84,8 @@ export class SettingsComponent implements OnInit {
     private messagingService: MessagingService,
     private cryptoService: CryptoService,
     private modalService: ModalService,
-    private themingService: AbstractThemingService
+    private themingService: AbstractThemingService,
+    private dialogService: DialogServiceAbstraction
   ) {
     const isMac = this.platformUtilsService.getDevice() === DeviceType.MacOsDesktop;
 
@@ -211,12 +213,12 @@ export class SettingsComponent implements OnInit {
 
   async saveVaultTimeoutOptions() {
     if (this.vaultTimeout.value == null) {
-      const confirmed = await this.platformUtilsService.showDialog(
+      const confirmed = await this.dialogService.legacyShowDialog(
         this.i18nService.t("neverLockWarning"),
         "",
         this.i18nService.t("yes"),
         this.i18nService.t("cancel"),
-        "warning"
+        SimpleDialogType.WARNING
       );
       if (!confirmed) {
         this.vaultTimeout.setValue(this.previousVaultTimeout);
@@ -225,12 +227,12 @@ export class SettingsComponent implements OnInit {
     }
 
     if (this.vaultTimeoutAction === "logOut") {
-      const confirmed = await this.platformUtilsService.showDialog(
+      const confirmed = await this.dialogService.legacyShowDialog(
         this.i18nService.t("vaultTimeoutLogOutConfirmation"),
         this.i18nService.t("vaultTimeoutLogOutConfirmationTitle"),
         this.i18nService.t("yes"),
         this.i18nService.t("cancel"),
-        "warning"
+        SimpleDialogType.WARNING
       );
       if (!confirmed) {
         this.vaultTimeoutAction = "lock";
@@ -337,12 +339,12 @@ export class SettingsComponent implements OnInit {
       !this.enableTray &&
       (this.startToTray || this.enableCloseToTray)
     ) {
-      const confirm = await this.platformUtilsService.showDialog(
+      const confirm = await this.dialogService.legacyShowDialog(
         this.i18nService.t("confirmTrayDesc"),
         this.i18nService.t("confirmTrayTitle"),
         this.i18nService.t("yes"),
         this.i18nService.t("no"),
-        "warning"
+        SimpleDialogType.WARNING
       );
 
       if (confirm) {
@@ -397,34 +399,34 @@ export class SettingsComponent implements OnInit {
 
   async saveBrowserIntegration() {
     if (process.platform === "darwin" && !this.platformUtilsService.isMacAppStore()) {
-      await this.platformUtilsService.showDialog(
+      await this.dialogService.legacyShowDialog(
         this.i18nService.t("browserIntegrationMasOnlyDesc"),
         this.i18nService.t("browserIntegrationUnsupportedTitle"),
         this.i18nService.t("ok"),
         null,
-        "warning"
+        SimpleDialogType.WARNING
       );
 
       this.enableBrowserIntegration = false;
       return;
     } else if (isWindowsStore()) {
-      await this.platformUtilsService.showDialog(
+      await this.dialogService.legacyShowDialog(
         this.i18nService.t("browserIntegrationWindowsStoreDesc"),
         this.i18nService.t("browserIntegrationUnsupportedTitle"),
         this.i18nService.t("ok"),
         null,
-        "warning"
+        SimpleDialogType.WARNING
       );
 
       this.enableBrowserIntegration = false;
       return;
     } else if (process.platform == "linux") {
-      await this.platformUtilsService.showDialog(
+      await this.dialogService.legacyShowDialog(
         this.i18nService.t("browserIntegrationLinuxDesc"),
         this.i18nService.t("browserIntegrationUnsupportedTitle"),
         this.i18nService.t("ok"),
         null,
-        "warning"
+        SimpleDialogType.WARNING
       );
 
       this.enableBrowserIntegration = false;

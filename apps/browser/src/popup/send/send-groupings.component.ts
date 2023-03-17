@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, NgZone } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { SendComponent as BaseSendComponent } from "@bitwarden/angular/components/send/send.component";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -47,7 +48,8 @@ export class SendGroupingsComponent extends BaseSendComponent {
     private syncService: SyncService,
     private changeDetectorRef: ChangeDetectorRef,
     private broadcasterService: BroadcasterService,
-    logService: LogService
+    logService: LogService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       sendService,
@@ -57,7 +59,8 @@ export class SendGroupingsComponent extends BaseSendComponent {
       ngZone,
       searchService,
       policyService,
-      logService
+      logService,
+      dialogService
     );
     super.onSuccessfulLoad = async () => {
       this.calculateTypeCounts();

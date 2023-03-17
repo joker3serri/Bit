@@ -6,6 +6,8 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 
+import { DialogServiceAbstraction } from "../../services/dialog";
+
 @Directive()
 export class PremiumComponent implements OnInit {
   isPremium = false;
@@ -17,7 +19,8 @@ export class PremiumComponent implements OnInit {
     protected platformUtilsService: PlatformUtilsService,
     protected apiService: ApiService,
     private logService: LogService,
-    protected stateService: StateService
+    protected stateService: StateService,
+    protected dialogService: DialogServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -36,7 +39,7 @@ export class PremiumComponent implements OnInit {
   }
 
   async purchase() {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("premiumPurchaseAlert"),
       this.i18nService.t("premiumPurchase"),
       this.i18nService.t("yes"),
@@ -48,7 +51,7 @@ export class PremiumComponent implements OnInit {
   }
 
   async manage() {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("premiumManageAlert"),
       this.i18nService.t("premiumManage"),
       this.i18nService.t("yes"),

@@ -3,6 +3,7 @@ import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { Subject, takeUntil } from "rxjs";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { CryptoFunctionService as CryptoFunctionServiceAbstraction } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrgDomainApiServiceAbstraction } from "@bitwarden/common/abstractions/organization-domain/org-domain-api.service.abstraction";
@@ -65,7 +66,8 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
     private i18nService: I18nService,
     private orgDomainApiService: OrgDomainApiServiceAbstraction,
     private orgDomainService: OrgDomainServiceAbstraction,
-    private validationService: ValidationService
+    private validationService: ValidationService,
+    private dialogService: DialogServiceAbstraction
   ) {}
 
   //#region Angular Method Implementations
@@ -249,12 +251,12 @@ export class DomainAddEditDialogComponent implements OnInit, OnDestroy {
   }
 
   deleteDomain = async (): Promise<void> => {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("removeDomainWarning"),
       this.i18nService.t("removeDomain"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return;

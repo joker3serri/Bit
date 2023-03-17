@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 
 import { UpdateTempPasswordComponent as BaseUpdateTempPasswordComponent } from "@bitwarden/angular/auth/components/update-temp-password.component";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -27,7 +28,8 @@ export class UpdateTempPasswordComponent extends BaseUpdateTempPasswordComponent
     apiService: ApiService,
     syncService: SyncService,
     logService: LogService,
-    stateService: StateService
+    stateService: StateService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       i18nService,
@@ -39,7 +41,8 @@ export class UpdateTempPasswordComponent extends BaseUpdateTempPasswordComponent
       apiService,
       stateService,
       syncService,
-      logService
+      logService,
+      dialogService
     );
   }
 }

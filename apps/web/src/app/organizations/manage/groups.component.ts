@@ -15,7 +15,7 @@ import {
 import { first } from "rxjs/operators";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
@@ -233,12 +233,12 @@ export class GroupsComponent implements OnInit, OnDestroy {
   }
 
   async delete(groupRow: GroupDetailsRow) {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("deleteGroupConfirmation"),
       groupRow.details.name,
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;
@@ -265,12 +265,12 @@ export class GroupsComponent implements OnInit, OnDestroy {
     }
 
     const deleteMessage = groupsToDelete.map((g) => g.details.name).join(", ");
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       deleteMessage,
       this.i18nService.t("deleteMultipleGroupsConfirmation", groupsToDelete.length.toString()),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;

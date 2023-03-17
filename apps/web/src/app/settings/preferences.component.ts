@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { UntypedFormControl } from "@angular/forms";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { AbstractThemingService } from "@bitwarden/angular/services/theming/theming.service.abstraction";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -35,7 +36,8 @@ export class PreferencesComponent implements OnInit {
     private vaultTimeoutSettingsService: VaultTimeoutSettingsService,
     private platformUtilsService: PlatformUtilsService,
     private messagingService: MessagingService,
-    private themingService: AbstractThemingService
+    private themingService: AbstractThemingService,
+    private dialogService: DialogServiceAbstraction
   ) {
     this.vaultTimeouts = [
       { name: i18nService.t("oneMinute"), value: 1 },
@@ -116,12 +118,12 @@ export class PreferencesComponent implements OnInit {
 
   async vaultTimeoutActionChanged(newValue: string) {
     if (newValue === "logOut") {
-      const confirmed = await this.platformUtilsService.showDialog(
+      const confirmed = await this.dialogService.legacyShowDialog(
         this.i18nService.t("vaultTimeoutLogOutConfirmation"),
         this.i18nService.t("vaultTimeoutLogOutConfirmationTitle"),
         this.i18nService.t("yes"),
         this.i18nService.t("cancel"),
-        "warning"
+        SimpleDialogType.WARNING
       );
       if (!confirmed) {
         this.vaultTimeoutAction = "lock";

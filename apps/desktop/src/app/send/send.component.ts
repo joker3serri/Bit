@@ -1,6 +1,7 @@
 import { Component, NgZone, OnDestroy, OnInit, ViewChild } from "@angular/core";
 
 import { SendComponent as BaseSendComponent } from "@bitwarden/angular/components/send/send.component";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -44,7 +45,8 @@ export class SendComponent extends BaseSendComponent implements OnInit, OnDestro
     searchService: SearchService,
     policyService: PolicyService,
     private searchBarService: SearchBarService,
-    logService: LogService
+    logService: LogService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       sendService,
@@ -54,7 +56,8 @@ export class SendComponent extends BaseSendComponent implements OnInit, OnDestro
       ngZone,
       searchService,
       policyService,
-      logService
+      logService,
+      dialogService
     );
     // eslint-disable-next-line rxjs-angular/prefer-takeuntil
     this.searchBarService.searchText$.subscribe((searchText) => {

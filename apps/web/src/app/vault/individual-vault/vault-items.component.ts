@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core
 import { lastValueFrom } from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { VaultItemsComponent as BaseVaultItemsComponent } from "@bitwarden/angular/vault/components/vault-items.component";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -270,14 +270,14 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
       return;
     }
     const permanent = c.isDeleted;
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t(
         permanent ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation"
       ),
       this.i18nService.t(permanent ? "permanentlyDeleteItem" : "deleteItem"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;
@@ -329,12 +329,12 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
     if (this.actionPromise != null || !c.isDeleted) {
       return;
     }
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("restoreItemConfirmation"),
       this.i18nService.t("restoreItem"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;

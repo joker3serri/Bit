@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -55,7 +56,8 @@ export class PaymentMethodComponent implements OnInit {
     private router: Router,
     private logService: LogService,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private dialogService: DialogServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -93,12 +95,12 @@ export class PaymentMethodComponent implements OnInit {
 
   addCredit() {
     if (this.paymentSourceInApp) {
-      this.platformUtilsService.showDialog(
+      this.dialogService.legacyShowDialog(
         this.i18nService.t("cannotPerformInAppPurchase"),
         this.i18nService.t("addCredit"),
         null,
         null,
-        "warning"
+        SimpleDialogType.WARNING
       );
       return;
     }
@@ -114,12 +116,12 @@ export class PaymentMethodComponent implements OnInit {
 
   changePayment() {
     if (this.paymentSourceInApp) {
-      this.platformUtilsService.showDialog(
+      this.dialogService.legacyShowDialog(
         this.i18nService.t("cannotPerformInAppPurchase"),
         this.i18nService.t("changePaymentMethod"),
         null,
         null,
-        "warning"
+        SimpleDialogType.WARNING
       );
       return;
     }

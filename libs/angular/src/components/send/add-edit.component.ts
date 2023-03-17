@@ -18,6 +18,8 @@ import { SendFileView } from "@bitwarden/common/models/view/send-file.view";
 import { SendTextView } from "@bitwarden/common/models/view/send-text.view";
 import { SendView } from "@bitwarden/common/models/view/send.view";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "../../services/dialog";
+
 @Directive()
 export class AddEditComponent implements OnInit, OnDestroy {
   @Input() sendId: string;
@@ -58,7 +60,8 @@ export class AddEditComponent implements OnInit, OnDestroy {
     protected messagingService: MessagingService,
     protected policyService: PolicyService,
     private logService: LogService,
-    protected stateService: StateService
+    protected stateService: StateService,
+    protected dialogService: DialogServiceAbstraction
   ) {
     this.typeOptions = [
       { name: i18nService.t("sendTypeFile"), value: SendType.File },
@@ -227,14 +230,12 @@ export class AddEditComponent implements OnInit, OnDestroy {
     if (this.deletePromise != null) {
       return false;
     }
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("deleteSendConfirmation"),
       this.i18nService.t("deleteSend"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning",
-      false,
-      this.componentName != "" ? this.componentName + " .modal-content" : null
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;
@@ -306,13 +307,12 @@ export class AddEditComponent implements OnInit, OnDestroy {
         this.i18nService.t(this.editMode ? "editedSend" : "createdSend")
       );
     } else {
-      await this.platformUtilsService.showDialog(
+      await this.dialogService.legacyShowDialog(
         this.i18nService.t(this.editMode ? "editedSend" : "createdSend"),
         null,
         this.i18nService.t("ok"),
         null,
-        "success",
-        null
+        SimpleDialogType.SUCCESS
       );
       await this.copyLinkToClipboard(this.link);
     }

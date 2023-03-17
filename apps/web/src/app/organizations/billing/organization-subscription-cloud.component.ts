@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { concatMap, Subject, takeUntil } from "rxjs";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ModalConfig, ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -46,7 +47,8 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
     private modalService: ModalService,
     private organizationService: OrganizationService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialogService: DialogServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -193,12 +195,12 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       return;
     }
 
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("cancelConfirmation"),
       this.i18nService.t("cancelSubscription"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return;
@@ -222,7 +224,7 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       return;
     }
 
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("reinstateConfirmation"),
       this.i18nService.t("reinstateSubscription"),
       this.i18nService.t("yes"),
@@ -293,12 +295,12 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   }
 
   removeSponsorship = async () => {
-    const isConfirmed = await this.platformUtilsService.showDialog(
+    const isConfirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("removeSponsorshipConfirmation"),
       this.i18nService.t("removeSponsorship"),
       this.i18nService.t("remove"),
       this.i18nService.t("cancel"),
-      "warning"
+      SimpleDialogType.WARNING
     );
 
     if (!isConfirmed) {

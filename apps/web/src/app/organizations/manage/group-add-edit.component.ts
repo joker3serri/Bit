@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from "@angula
 import { FormBuilder, Validators } from "@angular/forms";
 import { catchError, combineLatest, from, map, of, Subject, switchMap, takeUntil } from "rxjs";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -180,7 +180,8 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
     private platformUtilsService: PlatformUtilsService,
     private logService: LogService,
     private formBuilder: FormBuilder,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private dialogService: DialogServiceAbstraction
   ) {
     this.tabIndex = params.initialTab ?? GroupAddEditTabType.Info;
   }
@@ -269,14 +270,12 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("deleteGroupConfirmation"),
       this.group.name,
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning",
-      false,
-      "app-group-add-edit .modal-content"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;

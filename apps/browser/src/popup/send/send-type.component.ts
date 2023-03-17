@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
 import { SendComponent as BaseSendComponent } from "@bitwarden/angular/components/send/send.component";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -47,7 +48,8 @@ export class SendTypeComponent extends BaseSendComponent {
     private changeDetectorRef: ChangeDetectorRef,
     private broadcasterService: BroadcasterService,
     private router: Router,
-    logService: LogService
+    logService: LogService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       sendService,
@@ -57,7 +59,8 @@ export class SendTypeComponent extends BaseSendComponent {
       ngZone,
       searchService,
       policyService,
-      logService
+      logService,
+      dialogService
     );
     super.onSuccessfulLoad = async () => {
       this.selectType(this.type);

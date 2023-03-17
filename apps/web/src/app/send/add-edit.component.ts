@@ -2,6 +2,7 @@ import { DatePipe } from "@angular/common";
 import { Component } from "@angular/core";
 
 import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/components/send/add-edit.component";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -27,7 +28,8 @@ export class AddEditComponent extends BaseAddEditComponent {
     stateService: StateService,
     messagingService: MessagingService,
     policyService: PolicyService,
-    logService: LogService
+    logService: LogService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       i18nService,
@@ -38,7 +40,8 @@ export class AddEditComponent extends BaseAddEditComponent {
       messagingService,
       policyService,
       logService,
-      stateService
+      stateService,
+      dialogService
     );
   }
 

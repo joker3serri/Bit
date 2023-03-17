@@ -176,29 +176,6 @@ export default class BrowserPlatformUtilsService implements PlatformUtilsService
     });
   }
 
-  showDialog(
-    body: string,
-    title?: string,
-    confirmText?: string,
-    cancelText?: string,
-    type?: string,
-    bodyIsHtml = false
-  ) {
-    const dialogId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-    this.messagingService.send("showDialog", {
-      text: bodyIsHtml ? null : body,
-      html: bodyIsHtml ? body : null,
-      title: title,
-      confirmText: confirmText,
-      cancelText: cancelText,
-      type: type,
-      dialogId: dialogId,
-    });
-    return new Promise<boolean>((resolve) => {
-      this.showDialogResolves.set(dialogId, { resolve: resolve, date: new Date() });
-    });
-  }
-
   isDev(): boolean {
     return process.env.ENV === "development";
   }

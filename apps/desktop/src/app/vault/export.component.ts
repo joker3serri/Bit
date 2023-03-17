@@ -4,6 +4,7 @@ import { Component, OnInit } from "@angular/core";
 import { UntypedFormBuilder } from "@angular/forms";
 
 import { ExportComponent as BaseExportComponent } from "@bitwarden/angular/components/export.component";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
@@ -33,7 +34,8 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
     formBuilder: UntypedFormBuilder,
     private broadcasterService: BroadcasterService,
     logService: LogService,
-    fileDownloadService: FileDownloadService
+    fileDownloadService: FileDownloadService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       cryptoService,
@@ -46,7 +48,8 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
       logService,
       userVerificationService,
       formBuilder,
-      fileDownloadService
+      fileDownloadService,
+      dialogService
     );
   }
 
@@ -56,7 +59,7 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
 
   async warningDialog() {
     if (this.encryptedFormat) {
-      return await this.platformUtilsService.showDialog(
+      return await this.dialogService.legacyShowDialog(
         this.i18nService.t("encExportKeyWarningDesc") +
           os.EOL +
           os.EOL +
@@ -64,16 +67,15 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
         this.i18nService.t("confirmVaultExport"),
         this.i18nService.t("exportVault"),
         this.i18nService.t("cancel"),
-        "warning",
-        true
+        SimpleDialogType.WARNING
       );
     } else {
-      return await this.platformUtilsService.showDialog(
+      return await this.dialogService.legacyShowDialog(
         this.i18nService.t("exportWarningDesc"),
         this.i18nService.t("confirmVaultExport"),
         this.i18nService.t("exportVault"),
         this.i18nService.t("cancel"),
-        "warning"
+        SimpleDialogType.WARNING
       );
     }
   }

@@ -15,6 +15,8 @@ import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-cr
 import { PasswordGenerationServiceAbstraction } from "@bitwarden/common/tools/generator/password";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 
+import { DialogServiceAbstraction } from "../../services/dialog";
+
 import { ChangePasswordComponent as BaseChangePasswordComponent } from "./change-password.component";
 
 @Directive()
@@ -36,7 +38,8 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
     private apiService: ApiService,
     stateService: StateService,
     private syncService: SyncService,
-    private logService: LogService
+    private logService: LogService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       i18nService,
@@ -45,7 +48,8 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
       passwordGenerationService,
       platformUtilsService,
       policyService,
-      stateService
+      stateService,
+      dialogService
     );
   }
 

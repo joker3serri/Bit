@@ -457,7 +457,7 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   async generateUsername(): Promise<boolean> {
     if (this.cipher.login?.username?.length) {
-      const confirmed = await this.platformUtilsService.showDialog(
+      const confirmed = await this.dialogService.legacyShowDialog(
         this.i18nService.t("overwriteUsernameConfirmation"),
         this.i18nService.t("overwriteUsername"),
         this.i18nService.t("yes"),

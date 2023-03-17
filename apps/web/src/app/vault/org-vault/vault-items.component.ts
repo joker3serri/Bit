@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core
 import { lastValueFrom } from "rxjs";
 
 import { SearchPipe } from "@bitwarden/angular/pipes/search.pipe";
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { EventCollectionService } from "@bitwarden/common/abstractions/event/event-collection.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -255,12 +255,12 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
       );
       return;
     }
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("deleteCollectionConfirmation"),
       collection.name,
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return;

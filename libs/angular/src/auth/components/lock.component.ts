@@ -21,6 +21,8 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 
+import { DialogServiceAbstraction } from "../../services/dialog";
+
 @Directive()
 export class LockComponent implements OnInit, OnDestroy {
   masterPassword = "";
@@ -56,7 +58,8 @@ export class LockComponent implements OnInit, OnDestroy {
     protected apiService: ApiService,
     protected logService: LogService,
     private keyConnectorService: KeyConnectorService,
-    protected ngZone: NgZone
+    protected ngZone: NgZone,
+    protected dialogService: DialogServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -84,7 +87,7 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   async logOut() {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("logOutConfirmation"),
       this.i18nService.t("logOut"),
       this.i18nService.t("logOut"),

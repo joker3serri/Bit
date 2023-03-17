@@ -14,6 +14,7 @@ import { IndividualConfig, ToastrService } from "ngx-toastr";
 import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
 import { ModalRef } from "@bitwarden/angular/components/modal/modal.ref";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
@@ -132,7 +133,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private eventUploadService: EventUploadService,
     private policyService: InternalPolicyService,
     private modalService: ModalService,
-    private keyConnectorService: KeyConnectorService
+    private keyConnectorService: KeyConnectorService,
+    private dialogService: DialogServiceAbstraction
   ) {}
 
   ngOnInit() {
@@ -223,7 +225,7 @@ export class AppComponent implements OnInit, OnDestroy {
             const fingerprint = await this.cryptoService.getFingerprint(
               await this.stateService.getUserId()
             );
-            const result = await this.platformUtilsService.showDialog(
+            const result = await this.dialogService.legacyShowDialog(
               this.i18nService.t("yourAccountsFingerprint") + ":\n" + fingerprint.join("-"),
               this.i18nService.t("fingerprintPhrase"),
               this.i18nService.t("learnMore"),
@@ -257,7 +259,7 @@ export class AppComponent implements OnInit, OnDestroy {
             });
             break;
           case "premiumRequired": {
-            const premiumConfirmed = await this.platformUtilsService.showDialog(
+            const premiumConfirmed = await this.dialogService.legacyShowDialog(
               this.i18nService.t("premiumRequiredDesc"),
               this.i18nService.t("premiumRequired"),
               this.i18nService.t("learnMore"),
@@ -269,7 +271,7 @@ export class AppComponent implements OnInit, OnDestroy {
             break;
           }
           case "emailVerificationRequired": {
-            const emailVerificationConfirmed = await this.platformUtilsService.showDialog(
+            const emailVerificationConfirmed = await this.dialogService.legacyShowDialog(
               this.i18nService.t("emailVerificationRequiredDesc"),
               this.i18nService.t("emailVerificationRequired"),
               this.i18nService.t("learnMore"),

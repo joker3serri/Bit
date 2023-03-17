@@ -220,12 +220,12 @@ export class VaultHeaderComponent {
       );
       return;
     }
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("deleteCollectionConfirmation"),
       collection.name,
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return;

@@ -1,6 +1,7 @@
 import { Component, NgZone, ViewChild, ViewContainerRef } from "@angular/core";
 
 import { SendComponent as BaseSendComponent } from "@bitwarden/angular/components/send/send.component";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
@@ -36,7 +37,8 @@ export class SendComponent extends BaseSendComponent {
     policyService: PolicyService,
     private modalService: ModalService,
     private broadcasterService: BroadcasterService,
-    logService: LogService
+    logService: LogService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       sendService,
@@ -46,7 +48,8 @@ export class SendComponent extends BaseSendComponent {
       ngZone,
       searchService,
       policyService,
-      logService
+      logService,
+      dialogService
     );
   }
 

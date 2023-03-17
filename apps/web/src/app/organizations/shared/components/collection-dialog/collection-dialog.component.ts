@@ -3,7 +3,7 @@ import { Component, Inject, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { combineLatest, of, shareReplay, Subject, switchMap, takeUntil } from "rxjs";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { OrganizationUserService } from "@bitwarden/common/abstractions/organization-user/organization-user.service";
 import { OrganizationUserUserDetailsResponse } from "@bitwarden/common/abstractions/organization-user/responses";
@@ -77,7 +77,8 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
     private collectionService: CollectionAdminService,
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService,
-    private organizationUserService: OrganizationUserService
+    private organizationUserService: OrganizationUserService,
+    private dialogService: DialogServiceAbstraction
   ) {
     this.tabIndex = params.initialTab ?? CollectionDialogTabType.Info;
   }
@@ -202,12 +203,12 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
   };
 
   protected delete = async () => {
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("deleteCollectionConfirmation"),
       this.collection?.name,
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
 
     if (!confirmed && this.params.collectionId) {

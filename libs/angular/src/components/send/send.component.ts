@@ -12,6 +12,8 @@ import { PolicyType } from "@bitwarden/common/enums/policyType";
 import { SendType } from "@bitwarden/common/enums/sendType";
 import { SendView } from "@bitwarden/common/models/view/send.view";
 
+import { DialogServiceAbstraction, SimpleDialogType } from "../../services/dialog";
+
 @Directive()
 export class SendComponent implements OnInit, OnDestroy {
   disableSend = false;
@@ -47,7 +49,8 @@ export class SendComponent implements OnInit, OnDestroy {
     protected ngZone: NgZone,
     protected searchService: SearchService,
     protected policyService: PolicyService,
-    private logService: LogService
+    private logService: LogService,
+    protected dialogService: DialogServiceAbstraction
   ) {}
 
   async ngOnInit() {
@@ -122,12 +125,12 @@ export class SendComponent implements OnInit, OnDestroy {
     if (this.actionPromise != null || s.password == null) {
       return;
     }
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("removePasswordConfirmation"),
       this.i18nService.t("removePassword"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;
@@ -153,12 +156,12 @@ export class SendComponent implements OnInit, OnDestroy {
     if (this.actionPromise != null) {
       return false;
     }
-    const confirmed = await this.platformUtilsService.showDialog(
+    const confirmed = await this.dialogService.legacyShowDialog(
       this.i18nService.t("deleteSendConfirmation"),
       this.i18nService.t("deleteSend"),
       this.i18nService.t("yes"),
       this.i18nService.t("no"),
-      "warning"
+      SimpleDialogType.WARNING
     );
     if (!confirmed) {
       return false;

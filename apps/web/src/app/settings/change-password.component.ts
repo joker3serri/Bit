@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { firstValueFrom } from "rxjs";
 
 import { ChangePasswordComponent as BaseChangePasswordComponent } from "@bitwarden/angular/auth/components/change-password.component";
+import { DialogServiceAbstraction, SimpleDialogType } from "@bitwarden/angular/services/dialog";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
@@ -61,7 +62,8 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
     private keyConnectorService: KeyConnectorService,
     private router: Router,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private organizationUserService: OrganizationUserService
+    private organizationUserService: OrganizationUserService,
+    dialogService: DialogServiceAbstraction
   ) {
     super(
       i18nService,
@@ -70,7 +72,8 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
       passwordGenerationService,
       platformUtilsService,
       policyService,
-      stateService
+      stateService,
+      dialogService
     );
   }
 
@@ -99,12 +102,12 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
       }
 
       if (hasOldAttachments) {
-        const learnMore = await this.platformUtilsService.showDialog(
+        const learnMore = await this.dialogService.legacyShowDialog(
           this.i18nService.t("oldAttachmentsNeedFixDesc"),
           null,
           this.i18nService.t("learnMore"),
           this.i18nService.t("close"),
-          "warning"
+          SimpleDialogType.WARNING
         );
         if (learnMore) {
           this.platformUtilsService.launchUri(
@@ -115,7 +118,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
         return;
       }
 
-      const result = await this.platformUtilsService.showDialog(
+      const result = await this.dialogService.legacyShowDialog(
         this.i18nService.t("updateEncryptionKeyWarning") +
           " " +
           this.i18nService.t("updateEncryptionKeyExportWarning") +
@@ -124,7 +127,7 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
         this.i18nService.t("rotateEncKeyTitle"),
         this.i18nService.t("yes"),
         this.i18nService.t("no"),
-        "warning"
+        SimpleDialogType.WARNING
       );
       if (!result) {
         this.rotateEncKey = false;
