@@ -1,7 +1,6 @@
-import { DialogModule, DialogRef } from "@angular/cdk/dialog";
+import { DialogModule } from "@angular/cdk/dialog";
 import { Component } from "@angular/core";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
-import { firstValueFrom } from "rxjs";
 
 import { SimpleDialogType, SimpleDialogCloseType } from "@bitwarden/angular/services/dialog";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -193,17 +192,14 @@ class StoryDialogComponent {
   constructor(public dialogService: DialogService, private i18nService: I18nService) {}
 
   openSimpleConfigurableDialog(opts: SimpleDialogOptions) {
-    const dialogReference: DialogRef = this.dialogService.openSimpleDialogRef(opts);
+    const result = this.dialogService.openSimpleDialog(opts);
 
-    firstValueFrom(dialogReference.closed).then((result: SimpleDialogCloseType | undefined) => {
-      this.showCallout = true;
-      this.dialogCloseResult = result;
-      if (result && result === SimpleDialogCloseType.ACCEPT) {
-        this.calloutType = "success";
-      } else {
-        this.calloutType = "info";
-      }
-    });
+    this.showCallout = true;
+    if (result) {
+      this.calloutType = "success";
+    } else {
+      this.calloutType = "info";
+    }
   }
 }
 

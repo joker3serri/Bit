@@ -16,6 +16,7 @@ import { SimpleDialogOptions } from "./simple-dialog-options";
 import { SimpleDialogType } from "./simple-dialog-type";
 import { Translation } from "./translation";
 
+// This is a temporary base class for Dialogs. It is intended to be removed once the Component Library is adoped by each app.
 export abstract class DialogService extends Dialog implements DialogServiceAbstraction {
   constructor(
     /** Parent class constructor */

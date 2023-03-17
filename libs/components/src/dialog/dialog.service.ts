@@ -98,6 +98,24 @@ export class DialogService extends Dialog implements OnDestroy, DialogServiceAbs
   }
 
   /**
+   * Opens a simple dialog.
+   *
+   * @deprecated Use `openSimpleDialog` instead. If you find a use case for the `dialogRef`
+   * please let #wg-component-library know and we can un-deprecate this method.
+   *
+   * @param {SimpleDialogOptions} simpleDialogOptions - An object containing options for the dialog.
+   * @returns `DialogRef` - The reference to the opened dialog.
+   * Contains a closed observable which can be subscribed to for determining which button
+   * a user pressed (see `SimpleDialogCloseType`)
+   */
+  openSimpleDialogRef(simpleDialogOptions: SimpleDialogOptions): DialogRef {
+    return this.open(SimpleConfigurableDialogComponent, {
+      data: simpleDialogOptions,
+      disableClose: simpleDialogOptions.disableClose,
+    });
+  }
+
+  /**
    * Migrated from `platformUtilsService.showDialog`.
    *
    * @deprecated Use `openSimpleDialog` instead.
@@ -115,24 +133,6 @@ export class DialogService extends Dialog implements OnDestroy, DialogServiceAbs
       acceptButtonText: confirmText,
       cancelButtonText: cancelText,
       type: type,
-    });
-  }
-
-  /**
-   * Opens a simple dialog.
-   *
-   * @deprecated Use `openSimpleDialog` instead. If you find a use case for the `dialogRef`
-   * please let #wg-component-library know and we can un-deprecate this method.
-   *
-   * @param {SimpleDialogOptions} simpleDialogOptions - An object containing options for the dialog.
-   * @returns `DialogRef` - The reference to the opened dialog.
-   * Contains a closed observable which can be subscribed to for determining which button
-   * a user pressed (see `SimpleDialogCloseType`)
-   */
-  openSimpleDialogRef(simpleDialogOptions: SimpleDialogOptions): DialogRef {
-    return this.open(SimpleConfigurableDialogComponent, {
-      data: simpleDialogOptions,
-      disableClose: simpleDialogOptions.disableClose,
     });
   }
 }
