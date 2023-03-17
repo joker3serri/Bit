@@ -2,6 +2,7 @@ import { APP_INITIALIZER, LOCALE_ID, NgModule } from "@angular/core";
 
 import { LockGuard as BaseLockGuardService } from "@bitwarden/angular/auth/guards/lock.guard";
 import { UnauthGuard as BaseUnauthGuardService } from "@bitwarden/angular/auth/guards/unauth.guard";
+import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
 import { MEMORY_STORAGE, SECURE_STORAGE } from "@bitwarden/angular/services/injection-tokens";
 import { JslibServicesModule } from "@bitwarden/angular/services/jslib-services.module";
 import { ThemingService } from "@bitwarden/angular/services/theming/theming.service";
@@ -90,10 +91,12 @@ import { BrowserStateService } from "../../services/browser-state.service";
 import { BrowserFileDownloadService } from "../../services/browserFileDownloadService";
 import BrowserMessagingService from "../../services/browserMessaging.service";
 import BrowserMessagingPrivateModePopupService from "../../services/browserMessagingPrivateModePopup.service";
+import { DialogResolverService } from "../../services/dialog-resolver.service";
 import { PasswordRepromptService } from "../../vault/popup/services/password-reprompt.service";
 import { BrowserFolderService } from "../../vault/services/browser-folder.service";
 import { VaultFilterService } from "../../vault/services/vault-filter.service";
 
+import { BACKGROUND_MESSAGING_SERVICE, BrowserDialogService } from "./browser-dialog.service";
 import { DebounceNavigationService } from "./debounceNavigationService";
 import { InitService } from "./init.service";
 import { PopupSearchService } from "./popup-search.service";
@@ -447,6 +450,18 @@ function getBgService<T>(service: keyof MainBackground) {
       provide: ConfigServiceAbstraction,
       useClass: BrowserConfigService,
       deps: [StateServiceAbstraction, ConfigApiServiceAbstraction],
+    },
+    {
+      provide: DialogServiceAbstraction,
+      useClass: BrowserDialogService,
+    },
+    {
+      provide: BACKGROUND_MESSAGING_SERVICE,
+      useFactory: getBgService<MessagingService>("messagingService"),
+    },
+    {
+      provide: DialogResolverService,
+      useFactory: getBgService<DialogResolverService>("dialogResolverService"),
     },
   ],
 })

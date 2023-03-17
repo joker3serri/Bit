@@ -121,7 +121,7 @@ export class DialogService extends Dialog implements OnDestroy, DialogServiceAbs
   /**
    * Opens a simple dialog.
    *
-   * @deprecated Use `openSimpleDialogAcceptedPromise` instead. If you find a use case for the `dialogRef`
+   * @deprecated Use `openSimpleDialog` instead. If you find a use case for the `dialogRef`
    * please let #wg-component-library know and we can un-deprecate this method.
    *
    * @param {SimpleDialogOptions} simpleDialogOptions - An object containing options for the dialog.

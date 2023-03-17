@@ -9,6 +9,7 @@ import { AutofillService } from "../autofill/services/abstractions/autofill.serv
 import { BrowserApi } from "../browser/browserApi";
 import { BrowserEnvironmentService } from "../services/browser-environment.service";
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
+import { DialogResolverService } from "../services/dialog-resolver.service";
 
 import MainBackground from "./main.background";
 import LockedVaultPendingNotificationsItem from "./models/lockedVaultPendingNotificationsItem";
@@ -28,7 +29,8 @@ export default class RuntimeBackground {
     private systemService: SystemService,
     private environmentService: BrowserEnvironmentService,
     private messagingService: MessagingService,
-    private logService: LogService
+    private logService: LogService,
+    private dialogResolverService: DialogResolverService
   ) {
     // onInstalled listener must be wired up before anything else, so we do it in the ctor
     chrome.runtime.onInstalled.addListener((details: any) => {
@@ -117,7 +119,7 @@ export default class RuntimeBackground {
         }, msg.delay ?? 0);
         break;
       case "showDialogResolve":
-        this.platformUtilsService.resolveDialogPromise(msg.dialogId, msg.confirmed);
+        this.dialogResolverService.resolveDialogPromise(msg.dialogId, msg.confirmed);
         break;
       case "bgCollectPageDetails":
         await this.main.collectPageDetailsForContentScript(sender.tab, msg.sender, sender.frameId);

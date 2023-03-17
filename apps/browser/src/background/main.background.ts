@@ -112,6 +112,7 @@ import BrowserLocalStorageService from "../services/browserLocalStorage.service"
 import BrowserMessagingService from "../services/browserMessaging.service";
 import BrowserMessagingPrivateModeBackgroundService from "../services/browserMessagingPrivateModeBackground.service";
 import BrowserPlatformUtilsService from "../services/browserPlatformUtils.service";
+import { DialogResolverService } from "../services/dialog-resolver.service";
 import { KeyGenerationService } from "../services/keyGeneration.service";
 import { LocalBackedSessionStorageService } from "../services/localBackedSessionStorage.service";
 import VaultTimeoutService from "../services/vaultTimeout/vaultTimeout.service";
@@ -177,6 +178,7 @@ export default class MainBackground {
   avatarUpdateService: AvatarUpdateServiceAbstraction;
   mainContextMenuHandler: MainContextMenuHandler;
   cipherContextMenuHandler: CipherContextMenuHandler;
+  dialogResolverService: DialogResolverService;
 
   // Passed to the popup for Safari to workaround issues with theming, downloading, etc.
   backgroundWindow = window;
@@ -475,6 +477,8 @@ export default class MainBackground {
       this.userVerificationApiService
     );
 
+    this.dialogResolverService = new DialogResolverService();
+
     const systemUtilsServiceReloadCallback = () => {
       const forceWindowReload =
         this.platformUtilsService.isSafari() ||
@@ -504,7 +508,8 @@ export default class MainBackground {
       this.systemService,
       this.environmentService,
       this.messagingService,
-      this.logService
+      this.logService,
+      this.dialogResolverService
     );
     this.nativeMessagingBackground = new NativeMessagingBackground(
       this.cryptoService,
