@@ -229,7 +229,8 @@ export class AppComponent implements OnInit, OnDestroy {
               this.i18nService.t("yourAccountsFingerprint") + ":\n" + fingerprint.join("-"),
               this.i18nService.t("fingerprintPhrase"),
               this.i18nService.t("learnMore"),
-              this.i18nService.t("close")
+              this.i18nService.t("close"),
+              SimpleDialogType.INFO
             );
             if (result) {
               this.platformUtilsService.launchUri("https://bitwarden.com/help/fingerprint-phrase/");

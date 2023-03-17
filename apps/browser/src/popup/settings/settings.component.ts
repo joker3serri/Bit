@@ -229,7 +229,8 @@ export class SettingsComponent implements OnInit {
             this.i18nService.t("nativeMessaginPermissionSidebarDesc"),
             this.i18nService.t("nativeMessaginPermissionSidebarTitle"),
             this.i18nService.t("ok"),
-            null
+            null,
+            SimpleDialogType.INFO
           );
           this.biometric = false;
           return;
@@ -241,7 +242,8 @@ export class SettingsComponent implements OnInit {
           this.i18nService.t("nativeMessaginPermissionErrorDesc"),
           this.i18nService.t("nativeMessaginPermissionErrorTitle"),
           this.i18nService.t("ok"),
-          null
+          null,
+          SimpleDialogType.DANGER
         );
         this.biometric = false;
         return;
@@ -318,7 +320,8 @@ export class SettingsComponent implements OnInit {
       this.i18nService.t("logOutConfirmation"),
       this.i18nService.t("logOut"),
       this.i18nService.t("yes"),
-      this.i18nService.t("cancel")
+      this.i18nService.t("cancel"),
+      SimpleDialogType.INFO
     );
     if (confirmed) {
       this.messagingService.send("logout");
@@ -330,7 +333,8 @@ export class SettingsComponent implements OnInit {
       this.i18nService.t("changeMasterPasswordConfirmation"),
       this.i18nService.t("changeMasterPassword"),
       this.i18nService.t("yes"),
-      this.i18nService.t("cancel")
+      this.i18nService.t("cancel"),
+      SimpleDialogType.INFO
     );
     if (confirmed) {
       BrowserApi.createNewTab(
@@ -344,7 +348,8 @@ export class SettingsComponent implements OnInit {
       this.i18nService.t("twoStepLoginConfirmation"),
       this.i18nService.t("twoStepLogin"),
       this.i18nService.t("yes"),
-      this.i18nService.t("cancel")
+      this.i18nService.t("cancel"),
+      SimpleDialogType.INFO
     );
     if (confirmed) {
       BrowserApi.createNewTab("https://bitwarden.com/help/setup-two-step-login/");
@@ -356,7 +361,8 @@ export class SettingsComponent implements OnInit {
       this.i18nService.t("learnOrgConfirmation"),
       this.i18nService.t("learnOrg"),
       this.i18nService.t("yes"),
-      this.i18nService.t("cancel")
+      this.i18nService.t("cancel"),
+      SimpleDialogType.INFO
     );
     if (confirmed) {
       BrowserApi.createNewTab("https://bitwarden.com/help/about-organizations/");
