@@ -190,7 +190,7 @@ class StoryDialogComponent {
   calloutType = "info";
   dialogCloseResult: undefined | SimpleDialogCloseType;
 
-  constructor(public dialogService: DialogServiceAbstraction, private i18nService: I18nService) {}
+  constructor(public dialogService: DialogService, private i18nService: I18nService) {}
 
   openSimpleConfigurableDialog(opts: SimpleDialogOptions) {
     const dialogReference: DialogRef = this.dialogService.openSimpleDialogRef(opts);
