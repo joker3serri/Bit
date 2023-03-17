@@ -2,10 +2,9 @@ import { DialogModule } from "@angular/cdk/dialog";
 import { Component } from "@angular/core";
 import { Meta, moduleMetadata, Story } from "@storybook/angular";
 
-import { SimpleDialogType, SimpleDialogCloseType } from "@bitwarden/angular/services/dialog";
+import { SimpleDialogType, SimpleDialogOptions } from "@bitwarden/angular/services/dialog";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
-import { SimpleDialogOptions } from "../../../../angular/src/services/dialog/simple-dialog-options";
 import { ButtonModule } from "../../button";
 import { CalloutModule } from "../../callout";
 import { IconButtonModule } from "../../icon-button";
@@ -112,8 +111,7 @@ import { SimpleDialogComponent } from "../simple-dialog/simple-dialog.component"
     </div>
 
     <bit-callout *ngIf="showCallout" [type]="calloutType" title="Dialog Close Result">
-      <span *ngIf="dialogCloseResult">{{ dialogCloseResult }}</span>
-      <span *ngIf="!dialogCloseResult">undefined</span>
+      {{ dialogCloseResult }}
     </bit-callout>
   `,
 })
@@ -187,15 +185,15 @@ class StoryDialogComponent {
 
   showCallout = false;
   calloutType = "info";
-  dialogCloseResult: undefined | SimpleDialogCloseType;
+  dialogCloseResult: boolean;
 
   constructor(public dialogService: DialogService, private i18nService: I18nService) {}
 
-  openSimpleConfigurableDialog(opts: SimpleDialogOptions) {
-    const result = this.dialogService.openSimpleDialog(opts);
+  async openSimpleConfigurableDialog(opts: SimpleDialogOptions) {
+    this.dialogCloseResult = await this.dialogService.openSimpleDialog(opts);
 
     this.showCallout = true;
-    if (result) {
+    if (this.dialogCloseResult) {
       this.calloutType = "success";
     } else {
       this.calloutType = "info";
