@@ -17,7 +17,7 @@
 </ng-container>
 
 <app-org-subscription-hidden
-  *ngIf="firstLoaded && !userOrg.canAccessBilling"
+  *ngIf="firstLoaded && !userOrg.canViewSubscription"
   [providerName]="userOrg.providerName"
 ></app-org-subscription-hidden>
 
@@ -68,7 +68,7 @@
         </ng-container>
       </dl>
     </div>
-    <ng-container *ngIf="userOrg.canManageBilling">
+    <ng-container *ngIf="userOrg.canEditSubscription">
       <div class="col-8" *ngIf="subscription">
         <strong class="d-block mb-1">{{ "details" | i18n }}</strong>
         <table class="table">
@@ -111,7 +111,7 @@
     ></app-change-plan>
   </ng-container>
 
-  <ng-container *ngIf="userOrg.canManageBilling">
+  <ng-container *ngIf="userOrg.canEditSubscription">
     <sm-enroll
       *ngIf="isAdmin"
       [enabled]="sub?.useSecretsManager"
@@ -119,7 +119,7 @@
     ></sm-enroll>
   </ng-container>
 
-  <ng-container *ngIf="userOrg.canManageBilling">
+  <ng-container *ngIf="userOrg.canEditSubscription">
     <h2 class="spaced-header">{{ "manageSubscription" | i18n }}</h2>
     <p class="mb-4">{{ subscriptionDesc }}</p>
     <ng-container
@@ -224,7 +224,7 @@
       (onCanceled)="closeDownloadLicense()"
     ></app-download-license>
   </div>
-  <ng-container *ngIf="userOrg.canManageBilling">
+  <ng-container *ngIf="userOrg.canEditSubscription">
     <h2 class="spaced-header">{{ "additionalOptions" | i18n }}</h2>
     <p class="mb-4">
       {{ "additionalOptionsDesc" | i18n }}

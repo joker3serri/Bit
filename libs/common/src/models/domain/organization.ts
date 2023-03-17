@@ -199,20 +199,22 @@ export class Organization {
     return this.canManagePolicies;
   }
 
-  get canAccessBilling() {
-    return (
-      this.isOwner &&
-      ((this.isProviderUser && this.providerType == ProviderType.Msp) ||
-        !this.hasProvider ||
-        this.providerType == ProviderType.Reseller)
-    );
+  get canViewSubscription() {
+    return this.hasProvider && this.providerType == ProviderType.Msp
+      ? this.isProviderUser
+      : this.isOwner;
   }
 
-  get canManageBilling() {
-    return (
-      this.isOwner &&
-      ((this.isProviderUser && this.providerType == ProviderType.Msp) || !this.hasProvider)
-    );
+  get canEditSubscription() {
+    return this.hasProvider ? this.isProviderUser : this.isOwner;
+  }
+
+  get canEditPaymentMethods() {
+    return this.hasProvider ? this.isProviderUser : this.isOwner;
+  }
+
+  get canViewBillingHistory() {
+    return this.hasProvider ? this.isProviderUser : this.isOwner;
   }
 
   get hasProvider() {
