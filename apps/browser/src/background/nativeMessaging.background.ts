@@ -377,13 +377,8 @@ export class NativeMessagingBackground {
       await this.cryptoService.getFingerprint(await this.stateService.getUserId(), this.publicKey)
     ).join(" ");
 
-    this.messagingService.send("showDialog", {
-      html: `${this.i18nService.t(
-        "desktopIntegrationVerificationText"
-      )}<br><br><strong>${fingerprint}</strong>`,
-      title: this.i18nService.t("desktopSyncVerificationTitle"),
-      confirmText: this.i18nService.t("ok"),
-      type: "warning",
+    this.messagingService.send("showNativeMessagingFinterprintDialog", {
+      fingerprint: fingerprint,
     });
   }
 }

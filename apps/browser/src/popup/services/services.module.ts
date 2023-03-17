@@ -91,12 +91,11 @@ import { BrowserStateService } from "../../services/browser-state.service";
 import { BrowserFileDownloadService } from "../../services/browserFileDownloadService";
 import BrowserMessagingService from "../../services/browserMessaging.service";
 import BrowserMessagingPrivateModePopupService from "../../services/browserMessagingPrivateModePopup.service";
-import { DialogResolverService } from "../../services/dialog-resolver.service";
 import { PasswordRepromptService } from "../../vault/popup/services/password-reprompt.service";
 import { BrowserFolderService } from "../../vault/services/browser-folder.service";
 import { VaultFilterService } from "../../vault/services/vault-filter.service";
 
-import { BACKGROUND_MESSAGING_SERVICE, BrowserDialogService } from "./browser-dialog.service";
+import { BrowserDialogService } from "./browser-dialog.service";
 import { DebounceNavigationService } from "./debounceNavigationService";
 import { InitService } from "./init.service";
 import { PopupSearchService } from "./popup-search.service";
@@ -454,14 +453,6 @@ function getBgService<T>(service: keyof MainBackground) {
     {
       provide: DialogServiceAbstraction,
       useClass: BrowserDialogService,
-    },
-    {
-      provide: BACKGROUND_MESSAGING_SERVICE,
-      useFactory: getBgService<MessagingService>("messagingService"),
-    },
-    {
-      provide: DialogResolverService,
-      useFactory: getBgService<DialogResolverService>("dialogResolverService"),
     },
   ],
 })

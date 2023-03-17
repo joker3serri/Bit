@@ -1,47 +1,10 @@
-import {
-  DEFAULT_DIALOG_CONFIG,
-  Dialog,
-  DialogConfig,
-  DIALOG_SCROLL_STRATEGY,
-} from "@angular/cdk/dialog";
-import { Overlay, OverlayContainer } from "@angular/cdk/overlay";
-import { Inject, Injectable, InjectionToken, Injector, Optional, SkipSelf } from "@angular/core";
+import { Injectable } from "@angular/core";
+import Swal, { SweetAlertIcon } from "sweetalert2";
 
 import { DialogService, SimpleDialogType } from "@bitwarden/angular/services/dialog";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-
-import { DialogResolverService } from "../../services/dialog-resolver.service";
-
-export const BACKGROUND_MESSAGING_SERVICE = new InjectionToken<MessagingService>(
-  "BACKGROUND_MESSAGING_SERVICE"
-);
 
 @Injectable()
 export class BrowserDialogService extends DialogService {
-  constructor(
-    /** Parent class constructor */
-    _overlay: Overlay,
-    _injector: Injector,
-    @Optional() @Inject(DEFAULT_DIALOG_CONFIG) _defaultOptions: DialogConfig,
-    @Optional() @SkipSelf() _parentDialog: Dialog,
-    _overlayContainer: OverlayContainer,
-    @Inject(DIALOG_SCROLL_STRATEGY) scrollStrategy: any,
-    protected i18nService: I18nService,
-    @Inject(BACKGROUND_MESSAGING_SERVICE) protected messagingService: MessagingService,
-    protected dialogResolverService: DialogResolverService
-  ) {
-    super(
-      _overlay,
-      _injector,
-      _defaultOptions,
-      _parentDialog,
-      _overlayContainer,
-      scrollStrategy,
-      i18nService
-    );
-  }
-
   async legacyShowDialog(
     body: string,
     title?: string,
@@ -49,16 +12,47 @@ export class BrowserDialogService extends DialogService {
     cancelText?: string,
     type?: SimpleDialogType
   ) {
-    const dialogId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-    this.messagingService.send("showDialog", {
+    let iconClasses: string = null;
+    let icon: SweetAlertIcon = null;
+    if (type != null) {
+      // If you add custom types to this part, the type to SweetAlertIcon cast below needs to be changed.
+      switch (type) {
+        case "success":
+          iconClasses = "bwi-check text-success";
+          icon = "success";
+          break;
+        case "warning":
+          iconClasses = "bwi-exclamation-triangle text-warning";
+          icon = "warning";
+          break;
+        case "danger":
+          iconClasses = "bwi-error text-danger";
+          icon = "error";
+          break;
+        case "info":
+          iconClasses = "bwi-info-circle text-info";
+          icon = "info";
+          break;
+        default:
+          break;
+      }
+    }
+
+    const confirmed = await Swal.fire({
+      heightAuto: false,
+      buttonsStyling: false,
+      icon: icon,
+      iconHtml:
+        iconClasses != null ? `<i class="swal-custom-icon bwi ${iconClasses}"></i>` : undefined,
       text: body,
-      title: title,
-      confirmText: confirmText,
-      cancelText: cancelText,
-      type: type,
-      dialogId: dialogId,
+      titleText: title,
+      showCancelButton: cancelText != null,
+      cancelButtonText: cancelText,
+      showConfirmButton: true,
+      confirmButtonText: confirmText == null ? this.i18nService.t("ok") : confirmText,
+      timer: 300000,
     });
 
-    return this.dialogResolverService.await(dialogId);
+    return confirmed.value;
   }
 }
