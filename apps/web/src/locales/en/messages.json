@@ -5708,9 +5708,6 @@
   "reporting": {
     "message": "Reporting"
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "numberOfUsers": {
     "message": "Number of users"
   },
@@ -5948,7 +5945,7 @@
     }
   },
   "deleteServiceAccountToast":{
-    "message": "The service account have been deleted"
+    "message": "Service account deleted"
   },
   "deleteServiceAccountsToast":{
     "message": "Service accounts deleted"
@@ -6109,8 +6106,8 @@
     "message": "Access tokens",
     "description": "Title for the section displaying access tokens."
   },
-  "createAccessToken": {
-    "message": "Create access token",
+  "newAccessToken": {
+    "message": "New access token",
     "description": "Button label for creating a new access token."
   },
   "expires": {
