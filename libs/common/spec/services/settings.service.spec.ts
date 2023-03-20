@@ -55,6 +55,11 @@ describe("SettingsService", () => {
       ]);
       expect(actual).toEqual(expected);
     });
+
+    it("returns an empty set if there are no equivalent domains", () => {
+      const actual = settingsService.getEquivalentDomains("asdf");
+      expect(actual).toEqual(new Set());
+    });
   });
 
   it("setEquivalentDomains", async () => {
