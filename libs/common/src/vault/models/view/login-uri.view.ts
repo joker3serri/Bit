@@ -161,8 +161,7 @@ export class LoginUriView implements View {
           const regex = new RegExp(this.uri, "i");
           return regex.test(targetUri);
         } catch (e) {
-          // TODO: how to log from within a model?
-          // this.logService.error(e);
+          // Invalid regex
           return false;
         }
       case UriMatchType.Never:
