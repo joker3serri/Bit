@@ -10,12 +10,12 @@ import { OrganizationSubscriptionResponse } from "../../../billing/models/respon
 import { PaymentResponse } from "../../../billing/models/response/payment.response";
 import { TaxInfoResponse } from "../../../billing/models/response/tax-info.response";
 import { ImportDirectoryRequest } from "../../../models/request/import-directory.request";
+import { OrganizationApiKeyRequest } from "../../../models/request/organization-api-key.request";
 import { SeatRequest } from "../../../models/request/seat.request";
 import { StorageRequest } from "../../../models/request/storage.request";
 import { VerifyBankRequest } from "../../../models/request/verify-bank.request";
 import { ListResponse } from "../../../models/response/list.response";
 import { OrganizationApiKeyType } from "../../enums/organization-api-key-type";
-import { OrganizationApiKeyRequest } from "../../models/request/organization-api-key.request";
 import { OrganizationCreateRequest } from "../../models/request/organization-create.request";
 import { OrganizationKeysRequest } from "../../models/request/organization-keys.request";
 import { OrganizationUpdateRequest } from "../../models/request/organization-update.request";
