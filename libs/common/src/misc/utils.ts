@@ -546,13 +546,9 @@ export class Utils {
     try {
       if (nodeURL != null) {
         return new nodeURL.URL(uriString);
-      } else if (typeof URL === "function") {
-        return new URL(uriString);
-      } else if (typeof window !== "undefined") {
-        const anchor = window.document.createElement("a");
-        anchor.href = uriString;
-        return anchor as any;
       }
+
+      return new URL(uriString);
     } catch (e) {
       // Ignore error
     }
