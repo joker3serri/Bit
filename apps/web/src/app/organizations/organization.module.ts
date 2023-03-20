@@ -8,7 +8,6 @@ import { AccessSelectorModule } from "../admin-console/organizations/shared/comp
 import { CoreOrganizationModule } from "./core";
 import { SharedOrganizationModule } from "./shared";
 
-
 @NgModule({
   imports: [
     SharedOrganizationModule,
