@@ -19,7 +19,6 @@ import { JslibModule } from "@bitwarden/angular/jslib.module";
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
 
-import { CollectionsComponent } from "../admin-console/vault/collections.component";
 import { EnvironmentComponent } from "../auth/popup/environment.component";
 import { HintComponent } from "../auth/popup/hint.component";
 import { HomeComponent } from "../auth/popup/home.component";
@@ -41,6 +40,7 @@ import { PasswordRepromptComponent } from "../vault/popup/components/password-re
 import { AddEditCustomFieldsComponent } from "../vault/popup/components/vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments.component";
+import { CollectionsComponent } from "../vault/popup/components/vault/collections.component";
 import { CurrentTabComponent } from "../vault/popup/components/vault/current-tab.component";
 import { PasswordHistoryComponent } from "../vault/popup/components/vault/password-history.component";
 import { ShareComponent } from "../vault/popup/components/vault/share.component";

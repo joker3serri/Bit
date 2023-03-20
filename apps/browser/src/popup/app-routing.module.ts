@@ -5,7 +5,6 @@ import { AuthGuard } from "@bitwarden/angular/auth/guards/auth.guard";
 import { LockGuard } from "@bitwarden/angular/auth/guards/lock.guard";
 import { UnauthGuard } from "@bitwarden/angular/auth/guards/unauth.guard";
 
-import { CollectionsComponent } from "../admin-console/vault/collections.component";
 import { EnvironmentComponent } from "../auth/popup/environment.component";
 import { HintComponent } from "../auth/popup/hint.component";
 import { HomeComponent } from "../auth/popup/home.component";
@@ -23,6 +22,7 @@ import { GeneratorComponent } from "../tools/popup/generator/generator.component
 import { PasswordGeneratorHistoryComponent } from "../tools/popup/generator/password-generator-history.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments.component";
+import { CollectionsComponent } from "../vault/popup/components/vault/collections.component";
 import { CurrentTabComponent } from "../vault/popup/components/vault/current-tab.component";
 import { PasswordHistoryComponent } from "../vault/popup/components/vault/password-history.component";
 import { ShareComponent } from "../vault/popup/components/vault/share.component";

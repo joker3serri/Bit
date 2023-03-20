@@ -25,7 +25,6 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService } from "@bitwarden/components";
 
 import { EntityEventsComponent } from "../../admin-console/organizations/manage/entity-events.component";
-import { CollectionsComponent } from "../../admin-console/organizations/vault/collections.component";
 import { VaultFilterService } from "../../vault/individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../vault/individual-vault/vault-filter/shared/models/vault-filter.model";
 import { RoutedVaultFilterBridgeService } from "../individual-vault/vault-filter/services/routed-vault-filter-bridge.service";
@@ -33,6 +32,7 @@ import { RoutedVaultFilterService } from "../individual-vault/vault-filter/servi
 
 import { AddEditComponent } from "./add-edit.component";
 import { AttachmentsComponent } from "./attachments.component";
+import { CollectionsComponent } from "./collections.component";
 import { VaultFilterComponent } from "./vault-filter/vault-filter.component";
 import { VaultItemsComponent } from "./vault-items.component";
 

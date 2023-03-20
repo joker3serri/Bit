@@ -8,7 +8,6 @@ import { NgModule } from "@angular/core";
 import { ColorPasswordCountPipe } from "@bitwarden/angular/pipes/color-password-count.pipe";
 import { ColorPasswordPipe } from "@bitwarden/angular/pipes/color-password.pipe";
 
-import { CollectionsComponent } from "../admin-console/vault/collections.component";
 import { AccessibilityCookieComponent } from "../auth/accessibility-cookie.component";
 import { DeleteAccountComponent } from "../auth/delete-account.component";
 import { EnvironmentComponent } from "../auth/environment.component";
@@ -28,6 +27,7 @@ import { PasswordRepromptComponent } from "../vault/app/components/password-repr
 import { AddEditCustomFieldsComponent } from "../vault/app/vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/app/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/app/vault/attachments.component";
+import { CollectionsComponent } from "../vault/app/vault/collections.component";
 import { FolderAddEditComponent } from "../vault/app/vault/folder-add-edit.component";
 import { PasswordHistoryComponent } from "../vault/app/vault/password-history.component";
 import { ShareComponent } from "../vault/app/vault/share.component";

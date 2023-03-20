@@ -29,10 +29,10 @@ import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
-import { CollectionsComponent } from "../../../admin-console/vault/collections.component";
 import { SearchBarService } from "../../../app/layout/search/search-bar.service";
 import { GeneratorComponent } from "../../../app/tools/generator.component";
 import { invokeMenu, RendererMenuItem } from "../../../utils";
+import { CollectionsComponent } from "../../../vault/app/vault/collections.component";
 
 import { AddEditComponent } from "./add-edit.component";
 import { AttachmentsComponent } from "./attachments.component";

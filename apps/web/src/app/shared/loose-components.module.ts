@@ -49,7 +49,6 @@ import { ReusedPasswordsReportComponent as OrgReusedPasswordsReportComponent } f
 import { ToolsComponent as OrgToolsComponent } from "../admin-console/organizations/tools/tools.component";
 import { UnsecuredWebsitesReportComponent as OrgUnsecuredWebsitesReportComponent } from "../admin-console/organizations/tools/unsecured-websites-report.component";
 import { WeakPasswordsReportComponent as OrgWeakPasswordsReportComponent } from "../admin-console/organizations/tools/weak-passwords-report.component";
-import { CollectionsComponent as OrgCollectionsComponent } from "../admin-console/organizations/vault/collections.component";
 import { ProvidersComponent } from "../admin-console/providers/providers.component";
 import { CreateOrganizationComponent } from "../admin-console/settings/create-organization.component";
 import { SponsoredFamiliesComponent } from "../admin-console/settings/sponsored-families.component";
@@ -111,6 +110,7 @@ import { FolderAddEditComponent } from "../vault/individual-vault/folder-add-edi
 import { ShareComponent } from "../vault/individual-vault/share.component";
 import { AddEditComponent as OrgAddEditComponent } from "../vault/org-vault/add-edit.component";
 import { AttachmentsComponent as OrgAttachmentsComponent } from "../vault/org-vault/attachments.component";
+import { CollectionsComponent as OrgCollectionsComponent } from "../vault/org-vault/collections.component";
 
 import { SharedModule } from "./shared.module";
 
