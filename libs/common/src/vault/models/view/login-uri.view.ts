@@ -140,8 +140,7 @@ export class LoginUriView implements View {
     }
 
     let matchType = this.match ?? defaultUriMatch;
-    matchType ??= UriMatchType.Domain; // Default parameters only work for undefined, we want to catch null here as well
-    // TODO: wrap this logic ^ in settingsService
+    matchType ??= UriMatchType.Domain;
 
     const targetDomain = Utils.getDomain(targetUri);
     const matchDomains = equivalentDomains.add(targetDomain);
