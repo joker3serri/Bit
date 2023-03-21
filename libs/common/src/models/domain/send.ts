@@ -111,10 +111,11 @@ export class Send extends Domain {
     const deletionDate = obj.deletionDate == null ? null : new Date(obj.deletionDate);
 
     return Object.assign(new Send(), obj, {
+      key: EncString.fromJSON(obj.key),
       name: EncString.fromJSON(obj.name),
       notes: EncString.fromJSON(obj.notes),
-      text: SendText.fromJSON(obj.text),
-      file: SendFile.fromJSON(obj.file),
+      text: obj.text ? SendText.fromJSON(obj.text) : null,
+      file: obj.file ? SendFile.fromJSON(obj.file) : null,
       revisionDate,
       expirationDate,
       deletionDate,
