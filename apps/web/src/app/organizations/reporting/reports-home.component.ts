@@ -4,7 +4,6 @@ import { filter, map, Observable, Subject, takeUntil } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { Organization } from "@bitwarden/common/models/domain/organization";
 
 import { ReportVariant, reports, ReportType, ReportEntry } from "../../reports";
 
@@ -14,7 +13,6 @@ import { ReportVariant, reports, ReportType, ReportEntry } from "../../reports";
 })
 export class ReportsHomeComponent implements OnInit, OnDestroy {
   reports$: Observable<ReportEntry[]>;
-  organization: Organization;
   homepage = true;
   private destroy$: Subject<void> = new Subject<void>();
 
