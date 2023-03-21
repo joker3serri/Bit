@@ -35,11 +35,19 @@ export class ReportsHomeComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    this.route.parent.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.organization = this.organizationService.get(params.organizationId);
+      this.loadReports(this.organization.isUpgradeRequired);
     });
+  }
 
-    const reportRequiresUpgrade = this.upgradeRequired()
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private loadReports(upgradeRequired: boolean) {
+    const reportRequiresUpgrade = upgradeRequired
       ? ReportVariant.RequiresUpgrade
       : ReportVariant.Enabled;
 
@@ -65,22 +73,5 @@ export class ReportsHomeComponent implements OnInit, OnDestroy {
         variant: reportRequiresUpgrade,
       },
     ];
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  upgradeRequired() {
-    if (this.organization != null) {
-      // TODO: Maybe we want to just make sure they are not on a free plan? Just compare useTotp for now
-      // since all paid plans include useTotp
-      if (!this.organization.useTotp) {
-        return true;
-      }
-    }
-
-    return false;
   }
 }

@@ -13,6 +13,7 @@ import { ReusedPasswordsReportComponent } from "../tools/reused-passwords-report
 import { UnsecuredWebsitesReportComponent } from "../tools/unsecured-websites-report.component";
 import { WeakPasswordsReportComponent } from "../tools/weak-passwords-report.component";
 
+import { OrganizationUpgradeRequiredGuard } from "./../guards/org-upgrade-required.guard";
 import { ReportingComponent } from "./reporting.component";
 import { ReportsHomeComponent } from "./reports-home.component";
 
@@ -46,6 +47,7 @@ const routes: Routes = [
             data: {
               titleId: "exposedPasswordsReport",
             },
+            canActivate: [OrganizationUpgradeRequiredGuard],
           },
           {
             path: "inactive-two-factor-report",
@@ -53,6 +55,7 @@ const routes: Routes = [
             data: {
               titleId: "inactive2faReport",
             },
+            canActivate: [OrganizationUpgradeRequiredGuard],
           },
           {
             path: "reused-passwords-report",
@@ -60,6 +63,7 @@ const routes: Routes = [
             data: {
               titleId: "reusedPasswordsReport",
             },
+            canActivate: [OrganizationUpgradeRequiredGuard],
           },
           {
             path: "unsecured-websites-report",
@@ -67,6 +71,7 @@ const routes: Routes = [
             data: {
               titleId: "unsecuredWebsitesReport",
             },
+            canActivate: [OrganizationUpgradeRequiredGuard],
           },
           {
             path: "weak-passwords-report",
@@ -74,6 +79,7 @@ const routes: Routes = [
             data: {
               titleId: "weakPasswordsReport",
             },
+            canActivate: [OrganizationUpgradeRequiredGuard],
           },
         ],
       },
