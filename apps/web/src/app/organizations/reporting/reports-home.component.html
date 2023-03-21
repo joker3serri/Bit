@@ -5,7 +5,7 @@
 
   <p>{{ "orgsReportsDesc" | i18n }}</p>
 
-  <app-report-list [reports]="reports"></app-report-list>
+  <app-report-list [reports]="reports$ | async"></app-report-list>
 </ng-container>
 
 <router-outlet></router-outlet>

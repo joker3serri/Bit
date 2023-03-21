@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { filter, Subject, takeUntil } from "rxjs";
+import { filter, map, Observable, Subject, takeUntil } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
@@ -13,7 +13,7 @@ import { ReportVariant, reports, ReportType, ReportEntry } from "../../reports";
   templateUrl: "reports-home.component.html",
 })
 export class ReportsHomeComponent implements OnInit, OnDestroy {
-  reports: ReportEntry[];
+  reports$: Observable<ReportEntry[]>;
   organization: Organization;
   homepage = true;
   private destroy$: Subject<void> = new Subject<void>();
@@ -35,10 +35,10 @@ export class ReportsHomeComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.organization = this.organizationService.get(params.organizationId);
-      this.loadReports(this.organization.isUpgradeRequired);
-    });
+    this.reports$ = this.route.params.pipe(
+      map((params) => this.organizationService.get(params.organizationId)),
+      map((org) => this.buildReports(org.isFreeOrg))
+    );
   }
 
   ngOnDestroy(): void {
@@ -46,12 +46,12 @@ export class ReportsHomeComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private loadReports(upgradeRequired: boolean) {
+  private buildReports(upgradeRequired: boolean): ReportEntry[] {
     const reportRequiresUpgrade = upgradeRequired
       ? ReportVariant.RequiresUpgrade
       : ReportVariant.Enabled;
 
-    this.reports = [
+    return [
       {
         ...reports[ReportType.ExposedPasswords],
         variant: reportRequiresUpgrade,
