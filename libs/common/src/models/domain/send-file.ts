@@ -45,6 +45,10 @@ export class SendFile extends Domain {
   }
 
   static fromJSON(obj: Jsonify<SendFile>) {
+    if (obj == null) {
+      return null;
+    }
+
     return Object.assign(new SendFile(), obj, {
       fileName: EncString.fromJSON(obj.fileName),
     });

@@ -40,6 +40,10 @@ export class SendText extends Domain {
   }
 
   static fromJSON(obj: Jsonify<SendText>) {
+    if (obj == null) {
+      return null;
+    }
+
     return Object.assign(new SendText(), obj, {
       text: EncString.fromJSON(obj.text),
     });

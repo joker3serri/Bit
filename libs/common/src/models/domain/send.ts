@@ -106,6 +106,10 @@ export class Send extends Domain {
   }
 
   static fromJSON(obj: Jsonify<Send>) {
+    if (obj == null) {
+      return null;
+    }
+
     const revisionDate = obj.revisionDate == null ? null : new Date(obj.revisionDate);
     const expirationDate = obj.expirationDate == null ? null : new Date(obj.expirationDate);
     const deletionDate = obj.deletionDate == null ? null : new Date(obj.deletionDate);
@@ -114,8 +118,8 @@ export class Send extends Domain {
       key: EncString.fromJSON(obj.key),
       name: EncString.fromJSON(obj.name),
       notes: EncString.fromJSON(obj.notes),
-      text: obj.text ? SendText.fromJSON(obj.text) : null,
-      file: obj.file ? SendFile.fromJSON(obj.file) : null,
+      text: SendText.fromJSON(obj.text),
+      file: SendFile.fromJSON(obj.file),
       revisionDate,
       expirationDate,
       deletionDate,
