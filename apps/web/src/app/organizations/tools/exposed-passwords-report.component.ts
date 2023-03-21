@@ -38,6 +38,7 @@ export class ExposedPasswordsReportComponent extends BaseExposedPasswordsReportC
     this.route.parent.parent.params.subscribe(async (params) => {
       this.organization = await this.organizationService.get(params.organizationId);
       this.manageableCiphers = await this.cipherService.getAll();
+      await this.checkAccess();
     });
   }
 

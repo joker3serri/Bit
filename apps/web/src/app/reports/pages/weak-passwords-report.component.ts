@@ -31,7 +31,9 @@ export class WeakPasswordsReportComponent extends CipherReportComponent implemen
   }
 
   async ngOnInit() {
-    await super.load();
+    if (await this.checkAccess()) {
+      await super.load();
+    }
   }
 
   async setCiphers() {

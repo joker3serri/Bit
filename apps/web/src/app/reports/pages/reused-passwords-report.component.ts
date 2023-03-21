@@ -28,7 +28,9 @@ export class ReusedPasswordsReportComponent extends CipherReportComponent implem
   }
 
   async ngOnInit() {
-    await super.load();
+    if (await this.checkAccess()) {
+      await super.load();
+    }
   }
 
   async setCiphers() {

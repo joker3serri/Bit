@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 
 import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { AuditService } from "@bitwarden/common/abstractions/audit.service";
@@ -14,7 +14,7 @@ import { CipherReportComponent } from "./cipher-report.component";
   selector: "app-exposed-passwords-report",
   templateUrl: "exposed-passwords-report.component.html",
 })
-export class ExposedPasswordsReportComponent extends CipherReportComponent {
+export class ExposedPasswordsReportComponent extends CipherReportComponent implements OnInit {
   exposedPasswordMap = new Map<string, number>();
 
   constructor(
@@ -27,8 +27,14 @@ export class ExposedPasswordsReportComponent extends CipherReportComponent {
     super(modalService, messagingService, true, passwordRepromptService);
   }
 
+  ngOnInit() {
+    this.checkAccess();
+  }
+
   async load() {
-    super.load();
+    if (await this.checkAccess()) {
+      super.load();
+    }
   }
 
   async setCiphers() {
