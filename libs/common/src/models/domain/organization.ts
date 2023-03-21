@@ -210,7 +210,7 @@ export class Organization {
     return this.useSecretsManager && this.accessSecretsManager;
   }
 
-  get isUpgradeRequired() {
+  get isFreeOrg() {
     // return true if organization needs to be upgraded from a free org
     return !this.useTotp;
   }

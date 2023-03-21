@@ -20,10 +20,10 @@ export class OrganizationUpgradeRequiredGuard implements CanActivate {
       return this.router.createUrlTree(["/"]);
     }
 
-    if (org.isUpgradeRequired) {
+    if (org.isFreeOrg) {
       this.messagingService.send("upgradeOrganization", { organizationId: org.id });
     }
 
-    return !org.isUpgradeRequired;
+    return !org.isFreeOrg;
   }
 }
