@@ -1,10 +1,8 @@
 import * as program from "commander";
 import * as inquirer from "inquirer";
 
-import { ImportService } from "@bitwarden/common/abstractions/import/import.service.abstraction";
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
-import { ImportType } from "@bitwarden/common/enums/importOptions";
-import { Importer } from "@bitwarden/common/importers/importer";
+import { ImportServiceAbstraction, Importer, ImportType } from "@bitwarden/importer/index";
 
 import { Response } from "../models/response";
 import { MessageResponse } from "../models/response/message.response";
@@ -12,7 +10,7 @@ import { CliUtils } from "../utils";
 
 export class ImportCommand {
   constructor(
-    private importService: ImportService,
+    private importService: ImportServiceAbstraction,
     private organizationService: OrganizationService
   ) {}
 
