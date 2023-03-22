@@ -206,7 +206,7 @@ export class Organization {
   }
 
   get canEditSubscription() {
-    return this.hasProvider ? this.isProviderUser : this.isOwner;
+    return this.canViewSubscription && (this.hasProvider ? this.isProviderUser : this.isOwner);
   }
 
   get canEditPaymentMethods() {
