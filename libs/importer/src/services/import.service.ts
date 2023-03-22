@@ -1,8 +1,8 @@
-import { CollectionService } from "@bitwarden/common/abstractions/collection.service";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
+import { CollectionService } from "@bitwarden/common/admin-console/abstractions/collection.service";
+import { CollectionRequest } from "@bitwarden/common/admin-console/models/request/collection.request";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { CollectionRequest } from "@bitwarden/common/models/request/collection.request";
 import { ImportCiphersRequest } from "@bitwarden/common/models/request/import-ciphers.request";
 import { ImportOrganizationCiphersRequest } from "@bitwarden/common/models/request/import-organization-ciphers.request";
 import { KvpRequest } from "@bitwarden/common/models/request/kvp.request";

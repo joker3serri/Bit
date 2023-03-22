@@ -1,10 +1,10 @@
 import * as papa from "papaparse";
 
 import { LogService } from "@bitwarden/common/abstractions/log.service";
+import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 import { ConsoleLogService } from "@bitwarden/common/services/consoleLog.service";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
@@ -300,12 +300,6 @@ export abstract class BaseImporter {
     re = new RegExp("^(4026|417500|4508|4844|491(3|7))");
     if (cardNum.match(re) != null) {
       return "Visa";
-    }
-
-    // Mir
-    re = new RegExp("^220[0-4]");
-    if (cardNum.match(re) != null) {
-      return "Mir";
     }
 
     return null;
