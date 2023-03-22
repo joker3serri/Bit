@@ -1,4 +1,4 @@
-export { ImportType, ImportOption } from "./importOptions";
+export { ImportType, ImportOption } from "./models/import-options";
 
 export { ImportError } from "./models/import-error";
 

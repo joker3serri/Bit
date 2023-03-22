@@ -1,6 +1,6 @@
-import { ImportOption, ImportType } from "../importOptions";
 import { Importer } from "../importers/importer";
 import { ImportError } from "../models/import-error";
+import { ImportOption, ImportType } from "../models/import-options";
 
 export abstract class ImportServiceAbstraction {
   featuredImportOptions: readonly ImportOption[];

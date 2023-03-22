@@ -15,12 +15,6 @@ import { FolderRequest } from "@bitwarden/common/vault/models/request/folder.req
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import {
-  featuredImportOptions,
-  ImportOption,
-  ImportType,
-  regularImportOptions,
-} from "../importOptions";
-import {
   AscendoCsvImporter,
   AvastCsvImporter,
   AvastJsonImporter,
@@ -83,6 +77,12 @@ import {
 } from "../importers";
 import { Importer } from "../importers/importer";
 import { ImportError } from "../models/import-error";
+import {
+  featuredImportOptions,
+  ImportOption,
+  ImportType,
+  regularImportOptions,
+} from "../models/import-options";
 import { ImportResult } from "../models/import-result";
 import { ImportApiServiceAbstraction } from "../services/import-api.service.abstraction";
 import { ImportServiceAbstraction } from "../services/import.service.abstraction";
