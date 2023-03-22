@@ -4,8 +4,8 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { lastValueFrom, Subject } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
 import { DialogService } from "@bitwarden/components";
 
 import { ProjectListView } from "../../models/view/project-list.view";
@@ -159,10 +159,10 @@ export class SecretDialogComponent implements OnInit {
     secretView.name = this.formGroup.value.name;
     secretView.value = this.formGroup.value.value;
     secretView.note = this.formGroup.value.notes;
-    secretView.projects =
-      this.projects.length > 0
-        ? [this.projects.find((p) => p.id == this.formGroup.value.project)]
-        : [];
+
+    const project = this.projects.find((p) => p.id == this.formGroup.value.project);
+    secretView.projects = project != undefined ? [project] : [];
+
     return secretView;
   }
 
