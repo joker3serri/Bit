@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
 
-import { Icons } from "@bitwarden/components";
+import { Icons } from "..";
 
 @Component({
-  selector: "sm-no-items",
+  selector: "bit-no-items",
   templateUrl: "./no-items.component.html",
 })
 export class NoItemsComponent {
