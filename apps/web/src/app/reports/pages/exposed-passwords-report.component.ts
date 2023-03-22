@@ -28,7 +28,7 @@ export class ExposedPasswordsReportComponent extends CipherReportComponent imple
   }
 
   async ngOnInit() {
-    super.load();
+    await super.load();
   }
 
   async setCiphers() {

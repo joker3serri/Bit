@@ -13,7 +13,7 @@ import { ReusedPasswordsReportComponent } from "../tools/reused-passwords-report
 import { UnsecuredWebsitesReportComponent } from "../tools/unsecured-websites-report.component";
 import { WeakPasswordsReportComponent } from "../tools/weak-passwords-report.component";
 
-import { OrganizationUpgradeRequiredGuard } from "./../guards/org-upgrade-required.guard";
+import { IsPaidOrgGuard } from "../guards/is-paid-org.guard";
 import { ReportingComponent } from "./reporting.component";
 import { ReportsHomeComponent } from "./reports-home.component";
 
@@ -47,7 +47,7 @@ const routes: Routes = [
             data: {
               titleId: "exposedPasswordsReport",
             },
-            canActivate: [OrganizationUpgradeRequiredGuard],
+            canActivate: [IsPaidOrgGuard],
           },
           {
             path: "inactive-two-factor-report",
@@ -55,7 +55,7 @@ const routes: Routes = [
             data: {
               titleId: "inactive2faReport",
             },
-            canActivate: [OrganizationUpgradeRequiredGuard],
+            canActivate: [IsPaidOrgGuard],
           },
           {
             path: "reused-passwords-report",
@@ -63,7 +63,7 @@ const routes: Routes = [
             data: {
               titleId: "reusedPasswordsReport",
             },
-            canActivate: [OrganizationUpgradeRequiredGuard],
+            canActivate: [IsPaidOrgGuard],
           },
           {
             path: "unsecured-websites-report",
@@ -71,7 +71,7 @@ const routes: Routes = [
             data: {
               titleId: "unsecuredWebsitesReport",
             },
-            canActivate: [OrganizationUpgradeRequiredGuard],
+            canActivate: [IsPaidOrgGuard],
           },
           {
             path: "weak-passwords-report",
@@ -79,7 +79,7 @@ const routes: Routes = [
             data: {
               titleId: "weakPasswordsReport",
             },
-            canActivate: [OrganizationUpgradeRequiredGuard],
+            canActivate: [IsPaidOrgGuard],
           },
         ],
       },

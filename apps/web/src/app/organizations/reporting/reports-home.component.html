@@ -1,4 +1,4 @@
-<ng-container *ngIf="homepage">
+<ng-container *ngIf="homepage$ | async">
   <div class="page-header">
     <h1>{{ "reports" | i18n }}</h1>
   </div>
@@ -12,7 +12,7 @@
 
 <div class="row mt-4">
   <div class="col">
-    <a bitButton routerLink="./" *ngIf="!homepage">
+    <a bitButton routerLink="./" *ngIf="!(homepage$ | async)">
       <i class="bwi bwi-angle-left" aria-hidden="true"></i>
       {{ "backToReports" | i18n }}
     </a>
