@@ -200,7 +200,7 @@ export class Organization {
   }
 
   get canViewSubscription() {
-    return this.hasProvider && this.providerType == ProviderType.Msp
+    return this.hasProvider && this.providerType === ProviderType.Msp
       ? this.isProviderUser
       : this.isOwner;
   }
