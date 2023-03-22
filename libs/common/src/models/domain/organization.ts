@@ -210,11 +210,11 @@ export class Organization {
   }
 
   get canEditPaymentMethods() {
-    return this.hasProvider ? this.isProviderUser : this.isOwner;
+    return this.canEditSubscription;
   }
 
   get canViewBillingHistory() {
-    return this.hasProvider ? this.isProviderUser : this.isOwner;
+    return this.canEditSubscription;
   }
 
   get hasProvider() {
