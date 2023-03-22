@@ -83,14 +83,6 @@
           </tbody>
         </table>
       </div>
-      <ng-container *ngIf="userOrg?.providerId != null">
-        <div class="col-sm">
-          <dl>
-            <dt>{{ "provider" | i18n }}</dt>
-            <dd>{{ "yourProviderIs" | i18n: userOrg.providerName }}</dd>
-          </dl>
-        </div>
-      </ng-container>
     </ng-container>
   </div>
   <ng-container *ngIf="userOrg.canEditSubscription">
