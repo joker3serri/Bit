@@ -8,7 +8,6 @@ import { GroupsComponent } from "./manage/groups.component";
 import { OrganizationsRoutingModule } from "./organization-routing.module";
 import { AccessSelectorModule } from "./shared/components/access-selector";
 
-
 @NgModule({
   imports: [
     SharedOrganizationModule,
