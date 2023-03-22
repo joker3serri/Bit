@@ -4,6 +4,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { canAccessReportingTab } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { Organization } from "@bitwarden/common/models/domain/organization";
 
+import { IsPaidOrgGuard } from "../guards/is-paid-org.guard";
 import { OrganizationPermissionsGuard } from "../guards/org-permissions.guard";
 import { OrganizationRedirectGuard } from "../guards/org-redirect.guard";
 import { EventsComponent } from "../manage/events.component";
@@ -13,7 +14,6 @@ import { ReusedPasswordsReportComponent } from "../tools/reused-passwords-report
 import { UnsecuredWebsitesReportComponent } from "../tools/unsecured-websites-report.component";
 import { WeakPasswordsReportComponent } from "../tools/weak-passwords-report.component";
 
-import { IsPaidOrgGuard } from "../guards/is-paid-org.guard";
 import { ReportingComponent } from "./reporting.component";
 import { ReportsHomeComponent } from "./reports-home.component";
 
