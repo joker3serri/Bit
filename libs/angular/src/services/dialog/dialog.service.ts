@@ -7,7 +7,7 @@ import {
 } from "@angular/cdk/dialog";
 import { Overlay, OverlayContainer } from "@angular/cdk/overlay";
 import { ComponentType } from "@angular/cdk/portal";
-import { Inject, Injector, Optional, SkipSelf, TemplateRef } from "@angular/core";
+import { Inject, Injectable, Injector, Optional, SkipSelf, TemplateRef } from "@angular/core";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
@@ -17,6 +17,7 @@ import { SimpleDialogType } from "./simple-dialog-type";
 import { Translation } from "./translation";
 
 // This is a temporary base class for Dialogs. It is intended to be removed once the Component Library is adoped by each app.
+@Injectable()
 export abstract class DialogService extends Dialog implements DialogServiceAbstraction {
   constructor(
     /** Parent class constructor */
