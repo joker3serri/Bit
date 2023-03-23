@@ -1,4 +1,4 @@
-import "zone.js/dist/zone";
+import "zone.js";
 
 // Register the locales for the application
 import "./locales";
@@ -27,6 +27,7 @@ import { PasswordRepromptComponent } from "../vault/app/components/password-repr
 import { AddEditCustomFieldsComponent } from "../vault/app/vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/app/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/app/vault/attachments.component";
+import { CollectionsComponent } from "../vault/app/vault/collections.component";
 import { FolderAddEditComponent } from "../vault/app/vault/folder-add-edit.component";
 import { PasswordHistoryComponent } from "../vault/app/vault/password-history.component";
 import { ShareComponent } from "../vault/app/vault/share.component";
@@ -50,10 +51,9 @@ import { AddEditComponent as SendAddEditComponent } from "./send/add-edit.compon
 import { EffluxDatesComponent as SendEffluxDatesComponent } from "./send/efflux-dates.component";
 import { SendComponent } from "./send/send.component";
 import { SharedModule } from "./shared/shared.module";
-import { CollectionsComponent } from "./vault/collections.component";
+import { GeneratorComponent } from "./tools/generator.component";
+import { PasswordGeneratorHistoryComponent } from "./tools/password-generator-history.component";
 import { ExportComponent } from "./vault/export.component";
-import { GeneratorComponent } from "./vault/generator.component";
-import { PasswordGeneratorHistoryComponent } from "./vault/password-generator-history.component";
 
 @NgModule({
   imports: [SharedModule, AppRoutingModule, VaultFilterModule, LoginModule],

@@ -1,11 +1,11 @@
 import * as papa from "papaparse";
 
 import { LogService } from "../abstractions/log.service";
+import { CollectionView } from "../admin-console/models/view/collection.view";
 import { FieldType } from "../enums/fieldType";
 import { SecureNoteType } from "../enums/secureNoteType";
 import { Utils } from "../misc/utils";
 import { ImportResult } from "../models/domain/import-result";
-import { CollectionView } from "../models/view/collection.view";
 import { ConsoleLogService } from "../services/consoleLog.service";
 import { CipherType } from "../vault/enums/cipher-type";
 import { CipherView } from "../vault/models/view/cipher.view";
@@ -299,12 +299,6 @@ export abstract class BaseImporter {
     re = new RegExp("^(4026|417500|4508|4844|491(3|7))");
     if (cardNum.match(re) != null) {
       return "Visa";
-    }
-
-    // Mir
-    re = new RegExp("^220[0-4]");
-    if (cardNum.match(re) != null) {
-      return "Mir";
     }
 
     return null;
