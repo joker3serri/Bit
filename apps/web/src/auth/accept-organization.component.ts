@@ -10,16 +10,14 @@ import {
   OrganizationUserAcceptInitRequest,
   OrganizationUserAcceptRequest,
 } from "@bitwarden/common/abstractions/organization-user/requests";
-import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
 import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
+import { OrganizationKeysRequest } from "@bitwarden/common/admin-console/models/request/organization-keys.request";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { Policy } from "@bitwarden/common/models/domain/policy";
-import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organization-keys.request";
 
 import { BaseAcceptComponent } from "../app/common/base.accept.component";
 
