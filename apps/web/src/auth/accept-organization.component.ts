@@ -12,9 +12,11 @@ import {
 } from "@bitwarden/common/abstractions/organization-user/requests";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { PolicyApiServiceAbstraction } from "@bitwarden/common/abstractions/policy/policy-api.service.abstraction";
-import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/policy/policy-api.service.abstraction";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { Policy } from "@bitwarden/common/admin-console/models/domain/policy";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { Policy } from "@bitwarden/common/models/domain/policy";
 import { OrganizationKeysRequest } from "@bitwarden/common/models/request/organization-keys.request";

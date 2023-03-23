@@ -15,17 +15,16 @@ import { ModalService } from "@bitwarden/angular/services/modal.service";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
-import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { Organization } from "@bitwarden/common/models/domain/organization";
+import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
+import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { PasswordRepromptService } from "@bitwarden/common/vault/abstractions/password-reprompt.service";
 import { SyncService } from "@bitwarden/common/vault/abstractions/sync/sync.service.abstraction";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { DialogService } from "@bitwarden/components";
 
-import { EntityEventsComponent } from "../../organizations/manage/entity-events.component";
-import { CollectionsComponent } from "../../organizations/vault/collections.component";
+import { EntityEventsComponent } from "../../admin-console/organizations/manage/entity-events.component";
 import { VaultFilterService } from "../../vault/individual-vault/vault-filter/services/abstractions/vault-filter.service";
 import { VaultFilter } from "../../vault/individual-vault/vault-filter/shared/models/vault-filter.model";
 import { RoutedVaultFilterBridgeService } from "../individual-vault/vault-filter/services/routed-vault-filter-bridge.service";
@@ -33,6 +32,7 @@ import { RoutedVaultFilterService } from "../individual-vault/vault-filter/servi
 
 import { AddEditComponent } from "./add-edit.component";
 import { AttachmentsComponent } from "./attachments.component";
+import { CollectionsComponent } from "./collections.component";
 import { VaultFilterComponent } from "./vault-filter/vault-filter.component";
 import { VaultItemsComponent } from "./vault-items.component";
 
@@ -223,7 +223,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     );
 
     await this.editCipher(null, (comp) => {
-      comp.organizationId = this.organization.id;
       comp.type = this.activeFilter.cipherType;
       comp.collections = collections;
       if (this.activeFilter.collectionId) {
@@ -257,6 +256,7 @@ export class VaultComponent implements OnInit, OnDestroy {
 
     const defaultComponentParameters = (comp: AddEditComponent) => {
       comp.organization = this.organization;
+      comp.organizationId = this.organization.id;
       comp.cipherId = cipherId;
       // eslint-disable-next-line rxjs-angular/prefer-takeuntil, rxjs/no-async-subscribe
       comp.onSavedCipher.subscribe(async () => {
@@ -301,7 +301,6 @@ export class VaultComponent implements OnInit, OnDestroy {
     await this.editCipher(cipher, (comp) => {
       comp.cloneMode = true;
       comp.collections = collections;
-      comp.organizationId = this.organization.id;
       comp.collectionIds = cipher.collectionIds;
     });
   }
