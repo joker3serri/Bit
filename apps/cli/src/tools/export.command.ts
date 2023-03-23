@@ -1,8 +1,8 @@
 import * as program from "commander";
 import * as inquirer from "inquirer";
 
-import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
-import { PolicyType } from "@bitwarden/common/enums/policyType";
+import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { PolicyType } from "@bitwarden/common/admin-console/enums/policy-type";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { ExportFormat, VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
 
