@@ -19,16 +19,16 @@ export class ReportsHomeComponent implements OnInit {
     private route: ActivatedRoute,
     private stateService: StateService,
     private organizationService: OrganizationService,
-    router: Router
-  ) {
-    this.homepage$ = router.events.pipe(
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    this.homepage$ = this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
       map((event) => (event as NavigationEnd).urlAfterRedirects.endsWith("/reports")),
       startWith(true)
     );
-  }
 
-  ngOnInit() {
     this.reports$ = this.route.params.pipe(
       map((params) => this.organizationService.get(params.organizationId)),
       map((org) => this.buildReports(org.isFreeOrg))
