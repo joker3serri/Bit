@@ -1,6 +1,7 @@
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { OnePasswordMacCsvImporter as Importer } from "@bitwarden/importer/importers/onepassword/onepassword-mac-csv-importer";
+
+import { OnePasswordMacCsvImporter } from "../src/importers";
 
 import { data as creditCardData } from "./test-data/onepassword-csv/credit-card.mac.csv";
 import { data as identityData } from "./test-data/onepassword-csv/identity.mac.csv";
@@ -40,7 +41,7 @@ function expectCreditCard(cipher: CipherView) {
 
 describe("1Password mac CSV Importer", () => {
   it("should parse identity records", async () => {
-    const importer = new Importer();
+    const importer = new OnePasswordMacCsvImporter();
     const result = await importer.parse(identityData);
 
     expect(result).not.toBeNull();
@@ -51,7 +52,7 @@ describe("1Password mac CSV Importer", () => {
   });
 
   it("should parse credit card records", async () => {
-    const importer = new Importer();
+    const importer = new OnePasswordMacCsvImporter();
     const result = await importer.parse(creditCardData);
 
     expect(result).not.toBeNull();
@@ -62,7 +63,7 @@ describe("1Password mac CSV Importer", () => {
   });
 
   it("should parse csv's with multiple record type", async () => {
-    const importer = new Importer();
+    const importer = new OnePasswordMacCsvImporter();
     const result = await importer.parse(multiTypeData);
 
     expect(result).not.toBeNull();

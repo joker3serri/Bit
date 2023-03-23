@@ -1,4 +1,4 @@
-import { KeeperJsonExport } from "@bitwarden/importer/importers/keeper/types/keeper-json-types";
+import { KeeperJsonExport } from "../../../src/importers/keeper/types/keeper-json-types";
 
 export const testData: KeeperJsonExport = {
   shared_folders: [

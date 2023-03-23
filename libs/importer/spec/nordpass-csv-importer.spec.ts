@@ -2,7 +2,8 @@ import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
-import { NordPassCsvImporter as Importer } from "@bitwarden/importer/importers/nordpass-csv-importer";
+
+import { NordPassCsvImporter } from "../src/importers";
 
 import { data as creditCardData } from "./test-data/nordpass-csv/nordpass.card.csv";
 import { data as identityData } from "./test-data/nordpass-csv/nordpass.identity.csv";
@@ -108,9 +109,9 @@ function expectSecureNote(cipher: CipherView) {
 }
 
 describe("NordPass CSV Importer", () => {
-  let importer: Importer;
+  let importer: NordPassCsvImporter;
   beforeEach(() => {
-    importer = new Importer();
+    importer = new NordPassCsvImporter();
   });
 
   it("should parse login records", async () => {

@@ -1,4 +1,4 @@
-import { ExportData } from "@bitwarden/importer/importers/onepassword/types/onepassword-1pux-importer-types";
+import { ExportData } from "../../../src/importers/onepassword/types/onepassword-1pux-importer-types";
 
 export const EmailFieldOnIdentityData: ExportData = {
   accounts: [

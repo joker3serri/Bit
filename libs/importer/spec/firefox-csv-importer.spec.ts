@@ -1,7 +1,8 @@
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { FirefoxCsvImporter as Importer } from "@bitwarden/importer/importers/firefox-csv-importer";
+
+import { FirefoxCsvImporter } from "../src/importers";
 
 import { data as firefoxAccountsData } from "./test-data/firefox-csv/firefox-accounts-data.csv";
 import { data as simplePasswordData } from "./test-data/firefox-csv/simple-password-data.csv";
@@ -54,7 +55,7 @@ const CipherData = [
 describe("Firefox CSV Importer", () => {
   CipherData.forEach((data) => {
     it(data.title, async () => {
-      const importer = new Importer();
+      const importer = new FirefoxCsvImporter();
       const result = await importer.parse(data.csv);
       expect(result != null).toBe(true);
       expect(result.ciphers.length).toBeGreaterThan(0);

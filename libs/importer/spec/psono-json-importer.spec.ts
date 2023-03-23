@@ -1,7 +1,8 @@
 import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { PsonoJsonImporter as Importer } from "@bitwarden/importer/importers/psono/psono-json-importer";
+
+import { PsonoJsonImporter } from "../src/importers";
 
 import { ApplicationPasswordsData } from "./test-data/psono-json/application-passwords";
 import { BookmarkData } from "./test-data/psono-json/bookmark.json";
@@ -39,7 +40,7 @@ describe("PSONO JSON Importer", () => {
   const EnvVariablesDataJson = JSON.stringify(EnvVariablesData);
 
   it("should parse Website/Password data", async () => {
-    const importer = new Importer();
+    const importer = new PsonoJsonImporter();
     const result = await importer.parse(WebsiteLoginsDataJson);
     expect(result != null).toBe(true);
 
@@ -65,7 +66,7 @@ describe("PSONO JSON Importer", () => {
   });
 
   it("should parse Application Password data", async () => {
-    const importer = new Importer();
+    const importer = new PsonoJsonImporter();
     const result = await importer.parse(ApplicationPasswordsDataJson);
     expect(result != null).toBe(true);
 
@@ -84,7 +85,7 @@ describe("PSONO JSON Importer", () => {
   });
 
   it("should parse bookmark data", async () => {
-    const importer = new Importer();
+    const importer = new PsonoJsonImporter();
     const result = await importer.parse(BookmarkDataJson);
     expect(result != null).toBe(true);
 
@@ -103,7 +104,7 @@ describe("PSONO JSON Importer", () => {
   });
 
   it("should parse notes", async () => {
-    const importer = new Importer();
+    const importer = new PsonoJsonImporter();
     const result = await importer.parse(NotesDataJson);
     expect(result != null).toBe(true);
 
@@ -118,7 +119,7 @@ describe("PSONO JSON Importer", () => {
   });
 
   it("should parse TOTP", async () => {
-    const importer = new Importer();
+    const importer = new PsonoJsonImporter();
     const result = await importer.parse(TOTPDataJson);
     expect(result != null).toBe(true);
 
@@ -139,7 +140,7 @@ describe("PSONO JSON Importer", () => {
 
   // Skipping this test until we can save GPG into notes/custom fields
   it.skip("should parse GPG data", async () => {
-    const importer = new Importer();
+    const importer = new PsonoJsonImporter();
     const result = await importer.parse(GPGDataJson);
     expect(result != null).toBe(true);
 
@@ -168,7 +169,7 @@ describe("PSONO JSON Importer", () => {
   });
 
   it("should parse Environment variables data", async () => {
-    const importer = new Importer();
+    const importer = new PsonoJsonImporter();
     const result = await importer.parse(EnvVariablesDataJson);
     expect(result != null).toBe(true);
 
@@ -185,7 +186,7 @@ describe("PSONO JSON Importer", () => {
   });
 
   it("should not create empty folders", async () => {
-    const importer = new Importer();
+    const importer = new PsonoJsonImporter();
     const result = await importer.parse(EmptyTestFolderDataJson);
     expect(result != null).toBe(true);
 
@@ -193,7 +194,7 @@ describe("PSONO JSON Importer", () => {
   });
 
   it("should create folders", async () => {
-    const importer = new Importer();
+    const importer = new PsonoJsonImporter();
     const result = await importer.parse(FoldersTestDataJson);
     expect(result != null).toBe(true);
 
@@ -204,7 +205,7 @@ describe("PSONO JSON Importer", () => {
   });
 
   it("should assign entries to folders", async () => {
-    const importer = new Importer();
+    const importer = new PsonoJsonImporter();
     const result = await importer.parse(FoldersTestDataJson);
     expect(result != null).toBe(true);
 
@@ -215,7 +216,7 @@ describe("PSONO JSON Importer", () => {
   });
 
   it("should create collections if part of an organization", async () => {
-    const importer = new Importer();
+    const importer = new PsonoJsonImporter();
     importer.organizationId = "someOrg";
     const result = await importer.parse(FoldersTestDataJson);
     expect(result != null).toBe(true);

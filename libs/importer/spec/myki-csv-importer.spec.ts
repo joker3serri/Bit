@@ -1,6 +1,7 @@
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
-import { MykiCsvImporter as Importer } from "@bitwarden/importer/importers/myki-csv-importer";
+
+import { MykiCsvImporter } from "../src/importers";
 
 import { userAccountData } from "./test-data/myki-csv/user-account.csv";
 import { userCreditCardData } from "./test-data/myki-csv/user-credit-card.csv";
@@ -432,9 +433,9 @@ function expectTourVisa(cipher: CipherView) {
 }
 
 describe("Myki CSV Importer", () => {
-  let importer: Importer;
+  let importer: MykiCsvImporter;
   beforeEach(() => {
-    importer = new Importer();
+    importer = new MykiCsvImporter();
   });
 
   it("should parse userAccount records", async () => {

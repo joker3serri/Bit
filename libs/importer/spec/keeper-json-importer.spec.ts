@@ -1,14 +1,15 @@
 import { Utils } from "@bitwarden/common/misc/utils";
-import { KeeperJsonImporter as Importer } from "@bitwarden/importer/importers/keeper/keeper-json-importer";
+
+import { KeeperJsonImporter } from "../src/importers";
 
 import { testData as TestData } from "./test-data/keeper-json/testdata.json";
 
 describe("Keeper Json Importer", () => {
   const testDataJson = JSON.stringify(TestData);
 
-  let importer: Importer;
+  let importer: KeeperJsonImporter;
   beforeEach(() => {
-    importer = new Importer();
+    importer = new KeeperJsonImporter();
   });
 
   it("should parse login data", async () => {

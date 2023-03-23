@@ -1,4 +1,4 @@
-import { PasskyJsonExport } from "@bitwarden/importer/importers/passky/passky-json-types";
+import { PasskyJsonExport } from "../../../src/importers/passky/passky-json-types";
 
 export const testData: PasskyJsonExport = {
   encrypted: true,

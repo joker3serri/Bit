@@ -1,6 +1,7 @@
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { EnpassJsonImporter as Importer } from "@bitwarden/importer/importers/enpass/enpass-json-importer";
+
+import { EnpassJsonImporter } from "../src/importers";
 
 import { creditCard } from "./test-data/enpass-json/credit-card";
 import { folders } from "./test-data/enpass-json/folders";
@@ -18,7 +19,7 @@ function validateCustomField(fields: FieldView[], fieldName: string, expectedVal
 
 describe("Enpass JSON Importer", () => {
   it("should create folders/ nested folder and assignment", async () => {
-    const importer = new Importer();
+    const importer = new EnpassJsonImporter();
     const testDataString = JSON.stringify(folders);
     const result = await importer.parse(testDataString);
     expect(result != null).toBe(true);
@@ -37,7 +38,7 @@ describe("Enpass JSON Importer", () => {
   });
 
   it("should parse login items", async () => {
-    const importer = new Importer();
+    const importer = new EnpassJsonImporter();
     const testDataString = JSON.stringify(login);
     const result = await importer.parse(testDataString);
     expect(result != null).toBe(true);
@@ -64,7 +65,7 @@ describe("Enpass JSON Importer", () => {
   });
 
   it("should parse login items with Android Autofill information", async () => {
-    const importer = new Importer();
+    const importer = new EnpassJsonImporter();
     const testDataString = JSON.stringify(loginAndroidUrl);
     const result = await importer.parse(testDataString);
     expect(result != null).toBe(true);
@@ -82,7 +83,7 @@ describe("Enpass JSON Importer", () => {
   });
 
   it("should parse credit card items", async () => {
-    const importer = new Importer();
+    const importer = new EnpassJsonImporter();
     const testDataString = JSON.stringify(creditCard);
     const result = await importer.parse(testDataString);
     expect(result != null).toBe(true);
@@ -119,7 +120,7 @@ describe("Enpass JSON Importer", () => {
   });
 
   it("should parse notes", async () => {
-    const importer = new Importer();
+    const importer = new EnpassJsonImporter();
     const testDataString = JSON.stringify(note);
     const result = await importer.parse(testDataString);
     expect(result != null).toBe(true);

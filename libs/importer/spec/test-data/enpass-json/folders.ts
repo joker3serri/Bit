@@ -1,4 +1,4 @@
-import { EnpassJsonFile } from "@bitwarden/importer/importers/enpass/types/enpass-json-type";
+import { EnpassJsonFile } from "../../../src/importers/enpass/types/enpass-json-type";
 
 export const folders: EnpassJsonFile = {
   folders: [

@@ -1,12 +1,13 @@
 import { Utils } from "@bitwarden/common/misc/utils";
-import { KeeperCsvImporter as Importer } from "@bitwarden/importer/importers/keeper/keeper-csv-importer";
+
+import { KeeperCsvImporter } from "../src/importers";
 
 import { testData as TestData } from "./test-data/keeper-csv/testdata.csv";
 
 describe("Keeper CSV Importer", () => {
-  let importer: Importer;
+  let importer: KeeperCsvImporter;
   beforeEach(() => {
-    importer = new Importer();
+    importer = new KeeperCsvImporter();
   });
 
   it("should parse login data", async () => {

@@ -1,12 +1,12 @@
-import { PasskyJsonImporter as Importer } from "@bitwarden/importer/importers/passky/passky-json-importer";
+import { PasskyJsonImporter } from "../src/importers";
 
 import { testData as EncryptedData } from "./test-data/passky-json/passky-encrypted.json";
 import { testData as UnencryptedData } from "./test-data/passky-json/passky-unencrypted.json";
 
 describe("Passky Json Importer", () => {
-  let importer: Importer;
+  let importer: PasskyJsonImporter;
   beforeEach(() => {
-    importer = new Importer();
+    importer = new PasskyJsonImporter();
   });
 
   it("should not import encrypted backups", async () => {

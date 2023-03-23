@@ -3,7 +3,8 @@ import { Substitute, SubstituteOf } from "@fluffy-spoon/substitute";
 
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { BitwardenJsonImporter } from "@bitwarden/importer/importers/bitwarden/bitwarden-json-importer";
+
+import { BitwardenJsonImporter } from "../src/importers";
 
 import { data as passwordProtectedData } from "./test-data/bitwarden-json/password-protected.json";
 

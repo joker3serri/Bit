@@ -5,8 +5,9 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { KdfType } from "@bitwarden/common/enums/kdfType";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { BitwardenPasswordProtectedImporter } from "@bitwarden/importer/importers/bitwarden/bitwarden-password-protected-importer";
-import { ImportResult } from "@bitwarden/importer/models/import-result";
+
+import { BitwardenPasswordProtectedImporter } from "../src/importers";
+import { ImportResult } from "../src/models/import-result";
 
 import { data as emptyDecryptedData } from "./test-data/bitwarden-json/empty.json";
 

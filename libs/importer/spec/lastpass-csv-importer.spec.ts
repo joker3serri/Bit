@@ -2,8 +2,9 @@ import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { LastPassCsvImporter as Importer } from "@bitwarden/importer/importers/lastpass-csv-importer";
-import { ImportResult } from "@bitwarden/importer/models/import-result";
+
+import { LastPassCsvImporter } from "../src/importers";
+import { ImportResult } from "../src/models/import-result";
 
 function baseExcept(result: ImportResult) {
   expect(result).not.toBeNull();
@@ -170,7 +171,7 @@ Notes:",nomonth,,0`,
 describe("Lastpass CSV Importer", () => {
   CipherData.forEach((data) => {
     it(data.title, async () => {
-      const importer = new Importer();
+      const importer = new LastPassCsvImporter();
       const result = await importer.parse(data.csv);
       expect(result != null).toBe(true);
       expect(result.ciphers.length).toBeGreaterThan(0);
@@ -192,7 +193,7 @@ describe("Lastpass CSV Importer", () => {
     const input = `url,username,password,totp,extra,name,grouping,fav
         http://example.com,someUser,myPassword,Y64VEVMBTSXCYIWRSHRNDZW62MPGVU2G,super secure notes,example.com,,0`;
 
-    const importer = new Importer();
+    const importer = new LastPassCsvImporter();
     const result = await importer.parse(input);
     baseExcept(result);
 

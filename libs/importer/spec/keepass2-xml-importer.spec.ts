@@ -1,5 +1,6 @@
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
-import { KeePass2XmlImporter as Importer } from "@bitwarden/importer/importers/keepass2-xml-importer";
+
+import { KeePass2XmlImporter } from "../src/importers";
 
 import {
   TestData,
@@ -9,13 +10,13 @@ import {
 
 describe("KeePass2 Xml Importer", () => {
   it("should parse XML data", async () => {
-    const importer = new Importer();
+    const importer = new KeePass2XmlImporter();
     const result = await importer.parse(TestData);
     expect(result != null).toBe(true);
   });
 
   it("parse XML should contains folders", async () => {
-    const importer = new Importer();
+    const importer = new KeePass2XmlImporter();
     const folder = new FolderView();
     folder.name = "Folder2";
     const actual = [folder];
@@ -25,7 +26,7 @@ describe("KeePass2 Xml Importer", () => {
   });
 
   it("parse XML should contains login details", async () => {
-    const importer = new Importer();
+    const importer = new KeePass2XmlImporter();
     const result = await importer.parse(TestData);
     expect(result.ciphers[0].login.uri != null).toBe(true);
     expect(result.ciphers[0].login.username != null).toBe(true);
@@ -33,13 +34,13 @@ describe("KeePass2 Xml Importer", () => {
   });
 
   it("should return error with missing root tag", async () => {
-    const importer = new Importer();
+    const importer = new KeePass2XmlImporter();
     const result = await importer.parse(TestData1);
     expect(result.errorMessage).toBe("Missing `KeePassFile > Root` node.");
   });
 
   it("should return error with missing KeePassFile tag", async () => {
-    const importer = new Importer();
+    const importer = new KeePass2XmlImporter();
     const result = await importer.parse(TestData2);
     expect(result.success).toBe(false);
   });

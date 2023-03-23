@@ -3,7 +3,8 @@ import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { OnePassword1PuxImporter as Importer } from "@bitwarden/importer/importers/onepassword/onepassword-1pux-importer";
+
+import { OnePassword1PuxImporter } from "../src/importers";
 
 import { APICredentialsData } from "./test-data/onepassword-1pux/api-credentials";
 import { BankAccountData } from "./test-data/onepassword-1pux/bank-account";
@@ -47,7 +48,7 @@ describe("1Password 1Pux Importer", () => {
   const SanitizedExportJson = JSON.stringify(SanitizedExport);
 
   it("should parse login data", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const result = await importer.parse(LoginDataJson);
     expect(result != null).toBe(true);
 
@@ -70,7 +71,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse notes", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const result = await importer.parse(OnePuxExampleFileJson);
     expect(result != null).toBe(true);
 
@@ -79,7 +80,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should set favourite if favIndex equals 1", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const result = await importer.parse(OnePuxExampleFileJson);
     expect(result != null).toBe(true);
 
@@ -88,7 +89,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should handle custom boolean fields", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const result = await importer.parse(LoginDataJson);
     expect(result != null).toBe(true);
 
@@ -106,7 +107,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should add fields of type email as custom fields", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const EmailFieldDataJson = JSON.stringify(EmailFieldData);
     const result = await importer.parse(EmailFieldDataJson);
     expect(result != null).toBe(true);
@@ -125,7 +126,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it('should create concealed field as "hidden" type', async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const result = await importer.parse(OnePuxExampleFileJson);
     expect(result != null).toBe(true);
 
@@ -143,7 +144,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should create password history", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const result = await importer.parse(OnePuxExampleFileJson);
     const cipher = result.ciphers.shift();
 
@@ -154,7 +155,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should create credit card records", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const result = await importer.parse(CreditCardDataJson);
     expect(result != null).toBe(true);
     const cipher = result.ciphers.shift();
@@ -186,7 +187,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should create identity records", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const result = await importer.parse(IdentityDataJson);
     expect(result != null).toBe(true);
     const cipher = result.ciphers.shift();
@@ -228,7 +229,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("emails fields on identity types should be added to the identity email field", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const EmailFieldOnIdentityDataJson = JSON.stringify(EmailFieldOnIdentityData);
     const result = await importer.parse(EmailFieldOnIdentityDataJson);
     expect(result != null).toBe(true);
@@ -246,7 +247,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("emails fields on identity types should be added to custom fields if identity.email has been filled", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const EmailFieldOnIdentityPrefilledDataJson = JSON.stringify(EmailFieldOnIdentityPrefilledData);
     const result = await importer.parse(EmailFieldOnIdentityPrefilledDataJson);
     expect(result != null).toBe(true);
@@ -268,7 +269,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 005 - Password (Legacy)", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(PasswordData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -282,7 +283,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 100 - SoftwareLicense", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(SoftwareLicenseData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -312,7 +313,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 101 - BankAccount", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(BankAccountData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -336,7 +337,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 102 - Database", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(DatabaseData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -361,7 +362,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 103 - Drivers license", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(DriversLicenseData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -389,7 +390,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 104 - Outdoor License", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(OutdoorLicenseData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -415,7 +416,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 105 - Membership", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(MembershipData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -440,7 +441,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 106 - Passport", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(PassportData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -467,7 +468,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 107 - RewardsProgram", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(RewardsProgramData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -493,7 +494,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 108 - SSN", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(SSNData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -508,7 +509,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 109 - WirelessRouter", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(WirelessRouterData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -531,7 +532,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 110 - Server", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(ServerData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -564,7 +565,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 111 - EmailAccount", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(EmailAccountData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -595,7 +596,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 112 - API Credentials", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(APICredentialsData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -617,7 +618,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should create secure notes", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const result = await importer.parse(SecureNoteDataJson);
     expect(result != null).toBe(true);
     const cipher = result.ciphers.shift();
@@ -630,7 +631,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should parse category 113 - Medical Record", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const jsonString = JSON.stringify(MedicalRecordData);
     const result = await importer.parse(jsonString);
     expect(result != null).toBe(true);
@@ -652,7 +653,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should create folders", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     const result = await importer.parse(SanitizedExportJson);
     expect(result != null).toBe(true);
 
@@ -673,7 +674,7 @@ describe("1Password 1Pux Importer", () => {
   });
 
   it("should create collections if part of an organization", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PuxImporter();
     importer.organizationId = Utils.newGuid();
     const result = await importer.parse(SanitizedExportJson);
     expect(result != null).toBe(true);

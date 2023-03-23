@@ -1,5 +1,6 @@
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
-import { DashlaneCsvImporter as Importer } from "@bitwarden/importer/importers/dashlane/dashlane-csv-importer";
+
+import { DashlaneCsvImporter } from "../src/importers";
 
 import { credentialsData } from "./test-data/dashlane-csv/credentials.csv";
 import { identityData } from "./test-data/dashlane-csv/id.csv";
@@ -9,9 +10,9 @@ import { personalInfoData } from "./test-data/dashlane-csv/personal-info.csv";
 import { secureNoteData } from "./test-data/dashlane-csv/securenotes.csv";
 
 describe("Dashlane CSV Importer", () => {
-  let importer: Importer;
+  let importer: DashlaneCsvImporter;
   beforeEach(() => {
-    importer = new Importer();
+    importer = new DashlaneCsvImporter();
   });
 
   it("should parse login records", async () => {

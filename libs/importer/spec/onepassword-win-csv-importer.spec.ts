@@ -2,7 +2,8 @@ import { FieldType } from "@bitwarden/common/enums/fieldType";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FieldView } from "@bitwarden/common/vault/models/view/field.view";
-import { OnePasswordWinCsvImporter as Importer } from "@bitwarden/importer/importers/onepassword/onepassword-win-csv-importer";
+
+import { OnePasswordWinCsvImporter } from "../src/importers";
 
 import { data as creditCardData } from "./test-data/onepassword-csv/credit-card.windows.csv";
 import { data as identityData } from "./test-data/onepassword-csv/identity.windows.csv";
@@ -49,9 +50,9 @@ function expectCreditCard(cipher: CipherView) {
 }
 
 describe("1Password windows CSV Importer", () => {
-  let importer: Importer;
+  let importer: OnePasswordWinCsvImporter;
   beforeEach(() => {
-    importer = new Importer();
+    importer = new OnePasswordWinCsvImporter();
   });
 
   it("should parse identity records", async () => {

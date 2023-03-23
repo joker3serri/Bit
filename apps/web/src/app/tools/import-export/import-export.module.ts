@@ -11,7 +11,7 @@ import {
   ImportServiceAbstraction,
   ImportApiService,
   ImportApiServiceAbstraction,
-} from "@bitwarden/importer/index";
+} from "@bitwarden/importer";
 
 import { LooseComponentsModule, SharedModule } from "../../shared";
 

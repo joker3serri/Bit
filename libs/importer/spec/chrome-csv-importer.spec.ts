@@ -1,7 +1,8 @@
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { ChromeCsvImporter as Importer } from "@bitwarden/importer/importers/chrome-csv-importer";
+
+import { ChromeCsvImporter } from "../src/importers";
 
 import { data as androidData } from "./test-data/chrome-csv/android-data.csv";
 import { data as simplePasswordData } from "./test-data/chrome-csv/simple-password-data.csv";
@@ -54,7 +55,7 @@ const CipherData = [
 describe("Chrome CSV Importer", () => {
   CipherData.forEach((data) => {
     it(data.title, async () => {
-      const importer = new Importer();
+      const importer = new ChromeCsvImporter();
       const result = await importer.parse(data.csv);
       expect(result != null).toBe(true);
       expect(result.ciphers.length).toBeGreaterThan(0);

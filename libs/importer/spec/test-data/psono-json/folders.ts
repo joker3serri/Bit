@@ -1,4 +1,4 @@
-import { PsonoJsonExport } from "@bitwarden/importer/importers/psono/psono-json-types";
+import { PsonoJsonExport } from "../../../src/importers/psono/psono-json-types";
 
 export const FoldersTestData: PsonoJsonExport = {
   folders: [

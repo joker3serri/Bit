@@ -16,7 +16,7 @@ import {
   ImportType,
   ImportError,
   ImportServiceAbstraction,
-} from "@bitwarden/importer/index";
+} from "@bitwarden/importer";
 
 import { FilePasswordPromptComponent } from "./file-password-prompt.component";
 

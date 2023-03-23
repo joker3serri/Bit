@@ -1,7 +1,8 @@
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
 import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
-import { SafariCsvImporter as Importer } from "@bitwarden/importer/importers/safari-csv-importer";
+
+import { SafariCsvImporter } from "../src/importers";
 
 import { data as oldSimplePasswordData } from "./test-data/safari-csv/old-simple-password-data.csv";
 import { data as simplePasswordData } from "./test-data/safari-csv/simple-password-data.csv";
@@ -54,7 +55,7 @@ const CipherData = [
 describe("Safari CSV Importer", () => {
   CipherData.forEach((data) => {
     it(data.title, async () => {
-      const importer = new Importer();
+      const importer = new SafariCsvImporter();
       const result = await importer.parse(data.csv);
       expect(result != null).toBe(true);
       expect(result.ciphers.length).toBeGreaterThan(0);

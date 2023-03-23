@@ -1,5 +1,6 @@
 import { FieldType } from "@bitwarden/common/enums/fieldType";
-import { OnePassword1PifImporter as Importer } from "@bitwarden/importer/importers/onepassword/onepassword-1pif-importer";
+
+import { OnePassword1PifImporter } from "../src/importers";
 
 const TestData: string =
   "***aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee***\n" +
@@ -425,7 +426,7 @@ const IdentityTestData = JSON.stringify({
 
 describe("1Password 1Pif Importer", () => {
   it("should parse data", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PifImporter();
     const result = await importer.parse(TestData);
     expect(result != null).toBe(true);
 
@@ -438,7 +439,7 @@ describe("1Password 1Pif Importer", () => {
   });
 
   it('should create concealed field as "hidden" type', async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PifImporter();
     const result = await importer.parse(TestData);
     expect(result != null).toBe(true);
 
@@ -456,7 +457,7 @@ describe("1Password 1Pif Importer", () => {
   });
 
   it("should create identity records", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PifImporter();
     const result = await importer.parse(IdentityTestData);
     expect(result != null).toBe(true);
     const cipher = result.ciphers.shift();
@@ -492,7 +493,7 @@ describe("1Password 1Pif Importer", () => {
   });
 
   it("should create password history", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PifImporter();
     const result = await importer.parse(TestData);
     const cipher = result.ciphers.shift();
 
@@ -503,7 +504,7 @@ describe("1Password 1Pif Importer", () => {
   });
 
   it("should create password history from windows opvault 1pif format", async () => {
-    const importer = new Importer();
+    const importer = new OnePassword1PifImporter();
     const result = await importer.parse(WindowsOpVaultTestData);
     const cipher = result.ciphers.shift();
 
