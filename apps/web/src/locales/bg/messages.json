@@ -4852,6 +4852,18 @@
   "personalVaultExportPolicyInEffect": {
     "message": "Една или повече от настройките на организацията Ви не позволяват да изнасяте личния си трезор."
   },
+  "activateAutofill": {
+    "message": "Включване на автоматичното попълване"
+  },
+  "activateAutofillDesc": {
+    "message": "Включване на автоматичното попълване при зареждане на страница в браузърното разширение на всички текущи и бъдещи членове."
+  },
+  "experimentalFeature": {
+    "message": "Компроментирани и измамни уеб сайтове могат да се възползват от автоматичното попълване при зареждане на страницата."
+  },
+  "learnMoreAboutAutofill": {
+    "message": "Научете повече относно автоматичното попълване"
+  },
   "selectType": {
     "message": "Изберете вид еднократна идентификация"
   },
@@ -5626,9 +5638,6 @@
   "reporting": {
     "message": "Докладване"
   },
-  "cardBrandMir": {
-    "message": "Мир"
-  },
   "numberOfUsers": {
     "message": "Брой потребители"
   },
@@ -5844,9 +5853,40 @@
     "message": "View service account",
     "description": "Action to view the details of a service account."
   },
+  "deleteServiceAccountDialogMessage": {
+    "message": "Deleting service account $SERVICE_ACCOUNT$ is permanent and irreversible.",
+    "placeholders": {
+      "service_account": {
+        "content": "$1",
+        "example": "Service account name"
+      }
+    }
+  },
+  "deleteServiceAccountsDialogMessage": {
+    "message": "Deleting service accounts is permanent and irreversible."
+  },
+  "deleteServiceAccountsConfirmMessage": {
+    "message": "Delete $COUNT$ service accounts",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "deleteServiceAccountToast": {
+    "message": "The service account have been deleted"
+  },
+  "deleteServiceAccountsToast": {
+    "message": "Service accounts deleted"
+  },
   "searchServiceAccounts": {
     "message": "Search service accounts",
     "description": "Placeholder text for searching service accounts."
+  },
+  "editServiceAccount": {
+    "message": "Edit service account",
+    "description": "Title for editing a service account."
   },
   "addProject": {
     "message": "Добавяне на проект",
@@ -5904,6 +5944,10 @@
   "serviceAccountCreated": {
     "message": "Service account created",
     "description": "Notifies that a new service account has been created"
+  },
+  "serviceAccountUpdated": {
+    "message": "Service account updated",
+    "description": "Notifies that a service account has been updated"
   },
   "newSaSelectAccess": {
     "message": "Пишете тук или изберете проекти или тайни",
@@ -6455,7 +6499,7 @@
     "message": "Промяна на настройките за KDF"
   },
   "changeKdfLoggedOutWarning": {
-    "message": "Ако продължите, ще излезете от текущата си сесия и ще трябва да се впишете отново. Активните сесии на други устройства може да продължат да бъдат активни още един час. Препоръчително е да изнесете трезора си преди да променяте настройките за шифроване, за да избегнете загуба на данни."
+    "message": "Proceeding will log you out of all active sessions. You will need to log back in and complete two-step login setup. We recommend exporting your vault before changing your encryption settings to prevent data loss."
   },
   "secretsManagerBeta": {
     "message": "Управление на тайни (Бета)"
@@ -6568,6 +6612,27 @@
   },
   "secretsManagerEnable": {
     "message": "Включване на управлението на тайни (Бета)"
+  },
+  "saPeopleWarningTitle": {
+    "message": "Идентификаторите за достъп все още са налични"
+  },
+  "saPeopleWarningMessage": {
+    "message": "Removing people from a service account does not remove the access tokens they created. For security best practice, it is recommended to revoke access tokens created by people removed from a service account."
+  },
+  "smAccessRemovalWarningProjectTitle": {
+    "message": "Премахване на достъпа до този проект"
+  },
+  "smAccessRemovalWarningProjectMessage": {
+    "message": "Това действие ще премахне достъпа Ви до проекта."
+  },
+  "smAccessRemovalWarningSaTitle": {
+    "message": "Remove access to this service account"
+  },
+  "smAccessRemovalWarningSaMessage": {
+    "message": "This action will remove your access to the service account."
+  },
+  "removeAccess": {
+    "message": "Премахване на достъпа"
   },
   "checkForBreaches": {
     "message": "Проверяване в известните случаи на изтекли данни за тази парола"

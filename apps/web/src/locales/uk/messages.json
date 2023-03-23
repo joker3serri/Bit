@@ -4852,6 +4852,18 @@
   "personalVaultExportPolicyInEffect": {
     "message": "Одна чи декілька політик організації не дозволяють вам експортувати особисте сховище."
   },
+  "activateAutofill": {
+    "message": "Activate auto-fill"
+  },
+  "activateAutofillDesc": {
+    "message": "Activate the auto-fill with page load settings on the browser extension for all existing and new members."
+  },
+  "experimentalFeature": {
+    "message": "Compromised or untrusted websites can exploit auto-fill on page load."
+  },
+  "learnMoreAboutAutofill": {
+    "message": "Learn more about auto-fill"
+  },
   "selectType": {
     "message": "Оберіть тип SSO"
   },
@@ -5626,9 +5638,6 @@
   "reporting": {
     "message": "Звіти"
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "numberOfUsers": {
     "message": "Кількість користувачів"
   },
@@ -5844,9 +5853,40 @@
     "message": "Переглянути службовий обліковий запис",
     "description": "Action to view the details of a service account."
   },
+  "deleteServiceAccountDialogMessage": {
+    "message": "Видалення службового облікового запису $SERVICE_ACCOUNT$ – це остаточна й незворотна дія.",
+    "placeholders": {
+      "service_account": {
+        "content": "$1",
+        "example": "Service account name"
+      }
+    }
+  },
+  "deleteServiceAccountsDialogMessage": {
+    "message": "Видалення службових облікових записів – це остаточна й незворотна дія."
+  },
+  "deleteServiceAccountsConfirmMessage": {
+    "message": "Видалити $COUNT$ службових облікових записів",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "deleteServiceAccountToast": {
+    "message": "Службовий обліковий запис було видалено"
+  },
+  "deleteServiceAccountsToast": {
+    "message": "Службові облікові записи видалено"
+  },
   "searchServiceAccounts": {
     "message": "Пошук службових облікових записів",
     "description": "Placeholder text for searching service accounts."
+  },
+  "editServiceAccount": {
+    "message": "Редагувати службовий обліковий запис",
+    "description": "Title for editing a service account."
   },
   "addProject": {
     "message": "Додати проєкт",
@@ -5904,6 +5944,10 @@
   "serviceAccountCreated": {
     "message": "Службовий обліковий запис створено",
     "description": "Notifies that a new service account has been created"
+  },
+  "serviceAccountUpdated": {
+    "message": "Службовий обліковий запис оновлено",
+    "description": "Notifies that a service account has been updated"
   },
   "newSaSelectAccess": {
     "message": "Введіть або виберіть проєкти чи секрети",
@@ -6455,7 +6499,7 @@
     "message": "Змінити налаштування KDF"
   },
   "changeKdfLoggedOutWarning": {
-    "message": "Продовжуючи, ви вийдете з поточного сеансу і необхідно буде виконати вхід знову. Активні сеанси на інших пристроях можуть залишатися активними протягом години. Ми рекомендуємо експортувати ваше сховище перед зміною налаштувань шифрування для запобігання втрати даних."
+    "message": "Proceeding will log you out of all active sessions. You will need to log back in and complete two-step login setup. We recommend exporting your vault before changing your encryption settings to prevent data loss."
   },
   "secretsManagerBeta": {
     "message": "Керування секретами (бета-версія)"
@@ -6569,6 +6613,27 @@
   "secretsManagerEnable": {
     "message": "Увімкнути керування секретами (бета-версія)"
   },
+  "saPeopleWarningTitle": {
+    "message": "Токени доступу все ще доступні"
+  },
+  "saPeopleWarningMessage": {
+    "message": "Вилучення людей зі службового облікового запису не вилучає створені ними токени доступу. З міркувань безпеки рекомендовано відкликати токени доступу, створені людьми, вилученими зі службового облікового запису."
+  },
+  "smAccessRemovalWarningProjectTitle": {
+    "message": "Відкликати доступ до цього проєкту"
+  },
+  "smAccessRemovalWarningProjectMessage": {
+    "message": "Ця дія призведе до відкликання вашого доступу до цього проєкту."
+  },
+  "smAccessRemovalWarningSaTitle": {
+    "message": "Відкликати доступ до цього службового облікового запису"
+  },
+  "smAccessRemovalWarningSaMessage": {
+    "message": "Ця дія призведе до відкликання вашого доступу до цього службового облікового запису."
+  },
+  "removeAccess": {
+    "message": "Відкликати доступ"
+  },
   "checkForBreaches": {
     "message": "Перевірити відомі витоки даних для цього пароля"
   },
@@ -6603,6 +6668,6 @@
     }
   },
   "dismiss": {
-    "message": "Dismiss"
+    "message": "Відхилити"
   }
 }

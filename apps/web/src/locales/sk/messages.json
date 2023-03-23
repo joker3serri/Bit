@@ -4852,6 +4852,18 @@
   "personalVaultExportPolicyInEffect": {
     "message": "Jedna alebo viacero zásad organizácie vám bráni exportovať váš osobný trezor."
   },
+  "activateAutofill": {
+    "message": "Activate auto-fill"
+  },
+  "activateAutofillDesc": {
+    "message": "Activate the auto-fill with page load settings on the browser extension for all existing and new members."
+  },
+  "experimentalFeature": {
+    "message": "Compromised or untrusted websites can exploit auto-fill on page load."
+  },
+  "learnMoreAboutAutofill": {
+    "message": "Learn more about auto-fill"
+  },
   "selectType": {
     "message": "Vyberte typ SSO"
   },
@@ -5626,9 +5638,6 @@
   "reporting": {
     "message": "Reportuje"
   },
-  "cardBrandMir": {
-    "message": "Mir"
-  },
   "numberOfUsers": {
     "message": "Počet používateľov"
   },
@@ -5844,9 +5853,40 @@
     "message": "View service account",
     "description": "Action to view the details of a service account."
   },
+  "deleteServiceAccountDialogMessage": {
+    "message": "Deleting service account $SERVICE_ACCOUNT$ is permanent and irreversible.",
+    "placeholders": {
+      "service_account": {
+        "content": "$1",
+        "example": "Service account name"
+      }
+    }
+  },
+  "deleteServiceAccountsDialogMessage": {
+    "message": "Deleting service accounts is permanent and irreversible."
+  },
+  "deleteServiceAccountsConfirmMessage": {
+    "message": "Delete $COUNT$ service accounts",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "deleteServiceAccountToast": {
+    "message": "The service account have been deleted"
+  },
+  "deleteServiceAccountsToast": {
+    "message": "Service accounts deleted"
+  },
   "searchServiceAccounts": {
     "message": "Search service accounts",
     "description": "Placeholder text for searching service accounts."
+  },
+  "editServiceAccount": {
+    "message": "Edit service account",
+    "description": "Title for editing a service account."
   },
   "addProject": {
     "message": "Add project",
@@ -5904,6 +5944,10 @@
   "serviceAccountCreated": {
     "message": "Service account created",
     "description": "Notifies that a new service account has been created"
+  },
+  "serviceAccountUpdated": {
+    "message": "Service account updated",
+    "description": "Notifies that a service account has been updated"
   },
   "newSaSelectAccess": {
     "message": "Type or select projects or secrets",
@@ -6455,7 +6499,7 @@
     "message": "Zmeniť nastavenia KDF"
   },
   "changeKdfLoggedOutWarning": {
-    "message": "Ak budete pokračovať, budete odhlásený z aktuálnej relácie a budete sa musieť opätovne prihlásiť. Aktívne relácie na iných zariadeniach môžu zostať aktívne až hodinu. Pred zmenou nastavení šifrovania odporúčame exportovať váš trezor aby ste predišli strate dát."
+    "message": "Proceeding will log you out of all active sessions. You will need to log back in and complete two-step login setup. We recommend exporting your vault before changing your encryption settings to prevent data loss."
   },
   "secretsManagerBeta": {
     "message": "Beta verzia Secrets Manager"
@@ -6568,6 +6612,27 @@
   },
   "secretsManagerEnable": {
     "message": "Enable Secrets Manager Beta"
+  },
+  "saPeopleWarningTitle": {
+    "message": "Prístupové tokeny sú naďalej dostupné"
+  },
+  "saPeopleWarningMessage": {
+    "message": "Odobranie ľudí zo služobného konta neodstráni prístupové tokeny, ktoré vytvorili. Z ohľadom na dobré bezpečnostné praktiky odporúčame zrušiť prístupové tokeny vytvorené ľudmi ktorí boli odobraní zo služobného konta."
+  },
+  "smAccessRemovalWarningProjectTitle": {
+    "message": "Odstrániť prístup k tomuto projektu"
+  },
+  "smAccessRemovalWarningProjectMessage": {
+    "message": "Táto akcia odstráni váš prístup k projektu."
+  },
+  "smAccessRemovalWarningSaTitle": {
+    "message": "Odstrániť prístup k tomuto služobnému kontu"
+  },
+  "smAccessRemovalWarningSaMessage": {
+    "message": "Táto akcia odstráni váš prístup k služobnému kontu."
+  },
+  "removeAccess": {
+    "message": "Odstrániť prístup"
   },
   "checkForBreaches": {
     "message": "Skontrolovať známe úniky údajov pre toto heslo"

@@ -8,6 +8,8 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { DialogService } from "@bitwarden/components";
 
 import { ProjectListView } from "../../models/view/project-list.view";
+import { SecretListView } from "../../models/view/secret-list.view";
+import { SecretProjectView } from "../../models/view/secret-project.view";
 import { SecretView } from "../../models/view/secret.view";
 import { ProjectService } from "../../projects/project.service";
 import { SecretService } from "../secret.service";
@@ -38,7 +40,7 @@ export class SecretDialogComponent implements OnInit {
     project: new FormControl("", [Validators.required]),
   });
 
-  protected loading = false;
+  private loading = true;
   projects: ProjectListView[];
 
   private destroy$ = new Subject<void>();
@@ -53,10 +55,6 @@ export class SecretDialogComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.projects = await this.projectService
-      .getProjects(this.data.organizationId)
-      .then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)));
-
     if (this.data.operation === OperationType.Edit && this.data.secretId) {
       await this.loadData();
     } else if (this.data.operation !== OperationType.Add) {
@@ -67,18 +65,23 @@ export class SecretDialogComponent implements OnInit {
     if (this.data.projectId) {
       this.formGroup.get("project").setValue(this.data.projectId);
     }
+
+    this.projects = await this.projectService
+      .getProjects(this.data.organizationId)
+      .then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)));
   }
 
   async loadData() {
-    this.loading = true;
+    this.formGroup.disable();
     const secret: SecretView = await this.secretService.getBySecretId(this.data.secretId);
     this.formGroup.setValue({
       name: secret.name,
       value: secret.value,
       notes: secret.note,
-      project: secret.projects[0]?.id,
+      project: secret.projects[0]?.id ?? "",
     });
     this.loading = false;
+    this.formGroup.enable();
   }
 
   ngOnDestroy(): void {
@@ -88,6 +91,10 @@ export class SecretDialogComponent implements OnInit {
 
   get title() {
     return this.data.operation === OperationType.Add ? "newSecret" : "editSecret";
+  }
+
+  get showSpinner() {
+    return this.data.operation === OperationType.Edit && this.loading;
   }
 
   submit = async () => {
@@ -112,11 +119,13 @@ export class SecretDialogComponent implements OnInit {
   }
 
   protected openDeleteSecretDialog() {
+    const secretListView: SecretListView[] = this.getSecretListView();
+
     const dialogRef = this.dialogService.open<unknown, SecretDeleteOperation>(
       SecretDeleteDialogComponent,
       {
         data: {
-          secretIds: [this.data.secretId],
+          secrets: secretListView,
         },
       }
     );
@@ -145,5 +154,24 @@ export class SecretDialogComponent implements OnInit {
     secretView.note = this.formGroup.value.notes;
     secretView.projects = [this.projects.find((p) => p.id == this.formGroup.value.project)];
     return secretView;
+  }
+
+  private getSecretListView() {
+    const secretListViews: SecretListView[] = [];
+    const emptyProjects: SecretProjectView[] = [];
+
+    const secretListView = new SecretListView();
+
+    if (this.formGroup.value.project) {
+      secretListView.projects = [this.projects.find((p) => p.id == this.formGroup.value.project)];
+    } else {
+      secretListView.projects = emptyProjects;
+    }
+
+    secretListView.organizationId = this.data.organizationId;
+    secretListView.id = this.data.secretId;
+    secretListView.name = this.formGroup.value.name;
+    secretListViews.push(secretListView);
+    return secretListViews;
   }
 }
