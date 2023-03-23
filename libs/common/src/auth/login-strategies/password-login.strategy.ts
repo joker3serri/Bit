@@ -3,13 +3,13 @@ import { AppIdService } from "../../abstractions/appId.service";
 import { CryptoService } from "../../abstractions/crypto.service";
 import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
-import { PasswordGenerationService } from "../../abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
-import { PolicyService } from "../../abstractions/policy/policy.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
+import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
+import { MasterPasswordPolicyOptions } from "../../admin-console/models/domain/master-password-policy-options";
 import { HashPurpose } from "../../enums/hashPurpose";
-import { MasterPasswordPolicyOptions } from "../../models/domain/master-password-policy-options";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
+import { PasswordGenerationServiceAbstraction } from "../../tools/generator/password";
 import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
@@ -54,7 +54,7 @@ export class PasswordLogInStrategy extends LogInStrategy {
     logService: LogService,
     protected stateService: StateService,
     twoFactorService: TwoFactorService,
-    private passwordGenerationService: PasswordGenerationService,
+    private passwordGenerationService: PasswordGenerationServiceAbstraction,
     private policyService: PolicyService,
     private authService: AuthService
   ) {

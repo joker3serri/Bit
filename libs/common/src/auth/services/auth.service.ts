@@ -8,10 +8,9 @@ import { EnvironmentService } from "../../abstractions/environment.service";
 import { I18nService } from "../../abstractions/i18n.service";
 import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
-import { PasswordGenerationService } from "../../abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
-import { PolicyService } from "../../abstractions/policy/policy.service.abstraction";
 import { StateService } from "../../abstractions/state.service";
+import { PolicyService } from "../../admin-console/abstractions/policy/policy.service.abstraction";
 import { KdfType } from "../../enums/kdfType";
 import { KeySuffixOptions } from "../../enums/keySuffixOptions";
 import { Utils } from "../../misc/utils";
@@ -19,6 +18,7 @@ import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
 import { PreloginRequest } from "../../models/request/prelogin.request";
 import { ErrorResponse } from "../../models/response/error.response";
 import { AuthRequestPushNotification } from "../../models/response/notification.response";
+import { PasswordGenerationServiceAbstraction } from "../../tools/generator/password";
 import { AuthService as AuthServiceAbstraction } from "../abstractions/auth.service";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
@@ -96,7 +96,7 @@ export class AuthService implements AuthServiceAbstraction {
     protected twoFactorService: TwoFactorService,
     protected i18nService: I18nService,
     protected encryptService: EncryptService,
-    protected passwordGenerationService: PasswordGenerationService,
+    protected passwordGenerationService: PasswordGenerationServiceAbstraction,
     protected policyService: PolicyService
   ) {}
 

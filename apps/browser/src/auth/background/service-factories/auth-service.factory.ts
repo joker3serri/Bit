@@ -1,6 +1,7 @@
 import { AuthService as AbstractAuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthService } from "@bitwarden/common/auth/services/auth.service";
 
+import { policyServiceFactory } from "../../../admin-console/background/service-factories/policy-service.factory";
 import {
   apiServiceFactory,
   ApiServiceInitOptions,
@@ -11,8 +12,8 @@ import {
   CryptoServiceInitOptions,
 } from "../../../background/service_factories/crypto-service.factory";
 import {
-  EncryptServiceInitOptions,
   encryptServiceFactory,
+  EncryptServiceInitOptions,
 } from "../../../background/service_factories/encrypt-service.factory";
 import {
   environmentServiceFactory,
@@ -24,34 +25,33 @@ import {
   FactoryOptions,
 } from "../../../background/service_factories/factory-options";
 import {
-  I18nServiceInitOptions,
   i18nServiceFactory,
+  I18nServiceInitOptions,
 } from "../../../background/service_factories/i18n-service.factory";
 import {
   logServiceFactory,
   LogServiceInitOptions,
 } from "../../../background/service_factories/log-service.factory";
 import {
-  MessagingServiceInitOptions,
   messagingServiceFactory,
+  MessagingServiceInitOptions,
 } from "../../../background/service_factories/messaging-service.factory";
 import { passwordGenerationServiceFactory } from "../../../background/service_factories/password-generation-service.factory";
 import {
-  PlatformUtilsServiceInitOptions,
   platformUtilsServiceFactory,
+  PlatformUtilsServiceInitOptions,
 } from "../../../background/service_factories/platform-utils-service.factory";
-import { policyServiceFactory } from "../../../background/service_factories/policy-service.factory";
 import {
   stateServiceFactory,
   StateServiceInitOptions,
 } from "../../../background/service_factories/state-service.factory";
 
 import {
-  KeyConnectorServiceInitOptions,
   keyConnectorServiceFactory,
+  KeyConnectorServiceInitOptions,
 } from "./key-connector-service.factory";
-import { TokenServiceInitOptions, tokenServiceFactory } from "./token-service.factory";
-import { TwoFactorServiceInitOptions, twoFactorServiceFactory } from "./two-factor-service.factory";
+import { tokenServiceFactory, TokenServiceInitOptions } from "./token-service.factory";
+import { twoFactorServiceFactory, TwoFactorServiceInitOptions } from "./two-factor-service.factory";
 
 type AuthServiceFactoyOptions = FactoryOptions;
 
