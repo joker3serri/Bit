@@ -202,13 +202,17 @@ export class Organization {
   }
 
   get canViewSubscription() {
+    if (this.canEditSubscription) {
+      return true;
+    }
+
     return this.hasProvider && this.providerType === ProviderType.Msp
       ? this.isProviderUser
       : this.isOwner;
   }
 
   get canEditSubscription() {
-    return this.canViewSubscription && (this.hasProvider ? this.isProviderUser : this.isOwner);
+    return this.hasProvider ? this.isProviderUser : this.isOwner;
   }
 
   get canEditPaymentMethods() {
