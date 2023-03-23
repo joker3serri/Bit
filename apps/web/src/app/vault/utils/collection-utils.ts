@@ -1,7 +1,7 @@
+import { NestingDelimiter } from "@bitwarden/common/admin-console/models/domain/collection";
+import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
 import { ServiceUtils } from "@bitwarden/common/misc/serviceUtils";
-import { NestingDelimiter } from "@bitwarden/common/models/domain/collection";
 import { TreeNode } from "@bitwarden/common/models/domain/tree-node";
-import { CollectionView } from "@bitwarden/common/models/view/collection.view";
 
 import { CollectionAdminView } from "../../organizations/core";
 
