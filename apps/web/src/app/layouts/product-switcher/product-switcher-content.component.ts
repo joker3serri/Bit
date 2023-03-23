@@ -1,5 +1,5 @@
 import { Component, ViewChild } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { combineLatest, map } from "rxjs";
 
 import { OrganizationService } from "@bitwarden/common/admin-console/abstractions/organization/organization.service.abstraction";
@@ -90,5 +90,20 @@ export class ProductSwitcherContentComponent {
     })
   );
 
-  constructor(private organizationService: OrganizationService, private route: ActivatedRoute) {}
+  selectedClass(product: ProductSwitcherItem) {
+    const isSecretsManagerUrl = this.router.url.includes("/sm");
+    const isSecretsProduct = product.appRoute.includes("/sm");
+    const secretsManagerSelected = isSecretsProduct && isSecretsManagerUrl;
+    const passwordManagerSelected = !isSecretsManagerUrl && !isSecretsProduct;
+
+    return secretsManagerSelected || passwordManagerSelected
+      ? "tw-font-bold tw-bg-primary-500 hover:tw-bg-primary-500 !tw-text-contrast tw-ring-offset-2"
+      : "";
+  }
+
+  constructor(
+    private organizationService: OrganizationService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 }
