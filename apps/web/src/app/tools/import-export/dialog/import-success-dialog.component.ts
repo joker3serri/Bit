@@ -1,9 +1,9 @@
 import { DialogRef, DIALOG_DATA } from "@angular/cdk/dialog";
 import { Component, Inject, OnInit } from "@angular/core";
 
-import { ImportResult } from "@bitwarden/common/models/domain/import-result";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
 import { TableDataSource } from "@bitwarden/components";
+import { ImportResult } from "@bitwarden/importer";
 
 export interface ResultList {
   icon: string;
