@@ -23,7 +23,11 @@ interface BitwardenPasswordProtectedFileFormat {
 export class BitwardenPasswordProtectedImporter extends BitwardenJsonImporter implements Importer {
   private key: SymmetricCryptoKey;
 
-  constructor(cryptoService: CryptoService, i18nService: I18nService) {
+  constructor(
+    cryptoService: CryptoService,
+    i18nService: I18nService,
+    private promptForPassword_callback: () => Promise<string>
+  ) {
     super(cryptoService, i18nService);
   }
 

@@ -152,19 +152,22 @@ export class ImportService implements ImportServiceAbstraction {
     promptForPassword_callback: () => Promise<string>,
     organizationId: string = null
   ): Importer {
-    const importer = this.getImporterInstance(format);
-    if (importer == null) {
-      return null;
-    }
     if (promptForPassword_callback == null) {
       return null;
     }
-    importer.promptForPassword_callback = promptForPassword_callback;
+
+    const importer = this.getImporterInstance(format, promptForPassword_callback);
+    if (importer == null) {
+      return null;
+    }
     importer.organizationId = organizationId;
     return importer;
   }
 
-  private getImporterInstance(format: ImportType | "bitwardenpasswordprotected") {
+  private getImporterInstance(
+    format: ImportType | "bitwardenpasswordprotected",
+    promptForPassword_callback: () => Promise<string>
+  ) {
     if (format == null) {
       return null;
     }
@@ -174,7 +177,11 @@ export class ImportService implements ImportServiceAbstraction {
         return new BitwardenCsvImporter();
       case "bitwardenjson":
       case "bitwardenpasswordprotected":
-        return new BitwardenPasswordProtectedImporter(this.cryptoService, this.i18nService);
+        return new BitwardenPasswordProtectedImporter(
+          this.cryptoService,
+          this.i18nService,
+          promptForPassword_callback
+        );
       case "lastpasscsv":
       case "passboltcsv":
         return new LastPassCsvImporter();

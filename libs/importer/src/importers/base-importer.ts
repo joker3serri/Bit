@@ -18,7 +18,6 @@ import { ImportResult } from "../models/import-result";
 
 export abstract class BaseImporter {
   organizationId: string = null;
-  promptForPassword_callback: () => Promise<string>;
 
   protected logService: LogService = new ConsoleLogService(false);
 
