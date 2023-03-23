@@ -15,7 +15,7 @@ import {
 
 import { LooseComponentsModule, SharedModule } from "../../shared";
 
-import { ImportSuccessDialogComponent, FilePasswordPromptComponent } from "./dialog/index";
+import { ImportSuccessDialogComponent, FilePasswordPromptComponent } from "./dialog";
 import { ExportComponent } from "./export.component";
 import { ImportExportRoutingModule } from "./import-export-routing.module";
 import { ImportComponent } from "./import.component";

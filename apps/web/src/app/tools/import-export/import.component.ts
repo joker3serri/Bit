@@ -19,7 +19,7 @@ import {
   ImportServiceAbstraction,
 } from "@bitwarden/importer";
 
-import { ImportSuccessDialogComponent, FilePasswordPromptComponent } from "./dialog/index";
+import { ImportSuccessDialogComponent, FilePasswordPromptComponent } from "./dialog";
 
 @Component({
   selector: "app-import",
