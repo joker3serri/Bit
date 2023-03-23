@@ -60,8 +60,7 @@
             {{
               nextInvoice
                 ? (nextInvoice.date | date : "mediumDate") +
-                  ", " +
-                  (nextInvoice.amount | currency : "$")
+                  (userOrg.canEditSubscription ? ", " + (nextInvoice.amount | currency : "$") : "")
                 : "-"
             }}
           </dd>
