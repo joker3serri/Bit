@@ -4,7 +4,7 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { VaultItem } from "./vault-item";
 
 export type VaultItemEvent =
-  | { type: "attachements"; item: CipherView }
+  | { type: "attachments"; item: CipherView }
   | { type: "collections"; item: CipherView }
   | { type: "edit"; item: CollectionView }
   | { type: "access"; item: CollectionView }

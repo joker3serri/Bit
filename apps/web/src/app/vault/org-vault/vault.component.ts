@@ -422,7 +422,7 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   onVaultItemsEvent(event: VaultItemEvent) {
-    if (event.type === "attachements") {
+    if (event.type === "attachments") {
       this.editCipherAttachments(event.item);
     } else if (event.type === "collections") {
       this.editCipherCollections(event.item);

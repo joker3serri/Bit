@@ -73,6 +73,6 @@ export class VaultCipherRowComponent {
   }
 
   protected attachments() {
-    this.onEvent.emit({ type: "attachements", item: this.cipher });
+    this.onEvent.emit({ type: "attachments", item: this.cipher });
   }
 }
