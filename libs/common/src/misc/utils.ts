@@ -538,8 +538,8 @@ export class Utils {
   /**
    * Generate an observable from a function that returns a promise.
    * Similar to the rxjs function {@link from} with one big exception:
-   * {@link from} will not re-execture the function when observers resubscribe.
-   * {@link observableFromAsync} will execute {@argument generator} for every
+   * {@link from} will not re-execute the function when observers resubscribe.
+   * {@link Util.asyncToObservable} will execute `generator` for every
    * subscribe, making it ideal if the value ever needs to be refreshed.
    * */
   static asyncToObservable<T>(generator: () => Promise<T>): Observable<T> {
