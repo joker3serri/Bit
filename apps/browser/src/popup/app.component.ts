@@ -12,7 +12,7 @@ import { IndividualConfig, ToastrService } from "ngx-toastr";
 import { Subject, takeUntil } from "rxjs";
 import Swal from "sweetalert2";
 
-import { DialogServiceAbstraction } from "@bitwarden/angular/services/dialog";
+import { DialogServiceAbstraction, SimpleDialogOptions } from "@bitwarden/angular/services/dialog";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
@@ -227,14 +227,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.toastrService.show(message, msg.title, options, "toast-" + msg.type);
   }
 
-  private async showDialog(msg: any) {
-    await this.dialogService.legacyShowDialog(
-      msg.text,
-      msg.title,
-      msg.confirmText,
-      msg.cancelText,
-      msg.type
-    );
+  private async showDialog(msg: SimpleDialogOptions) {
+    await this.dialogService.openSimpleDialog(msg);
   }
 
   private async showNativeMessagingFingerprintDialog(msg: any) {

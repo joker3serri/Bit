@@ -198,10 +198,10 @@ export default class RuntimeBackground {
         break;
       case "emailVerificationRequired":
         this.messagingService.send("showDialog", {
-          dialogId: "emailVerificationRequired",
-          title: this.i18nService.t("emailVerificationRequired"),
-          text: this.i18nService.t("emailVerificationRequiredDesc"),
-          confirmText: this.i18nService.t("ok"),
+          title: { key: "emailVerificationRequired" },
+          content: { key: "emailVerificationRequiredDesc" },
+          acceptButtonText: { key: "ok" },
+          cancelButtonText: null,
           type: "info",
         });
         break;

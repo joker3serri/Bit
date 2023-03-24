@@ -153,9 +153,10 @@ export class NativeMessagingBackground {
             this.connected = false;
 
             this.messagingService.send("showDialog", {
-              text: this.i18nService.t("nativeMessagingInvalidEncryptionDesc"),
-              title: this.i18nService.t("nativeMessagingInvalidEncryptionTitle"),
-              confirmText: this.i18nService.t("ok"),
+              title: { key: "nativeMessagingInvalidEncryptionTitle" },
+              content: { key: "nativeMessagingInvalidEncryptionDesc" },
+              acceptButtonText: { key: "ok" },
+              cancelButtonText: null,
               type: "danger",
             });
             break;
@@ -199,9 +200,10 @@ export class NativeMessagingBackground {
 
   showWrongUserDialog() {
     this.messagingService.send("showDialog", {
-      text: this.i18nService.t("nativeMessagingWrongUserDesc"),
-      title: this.i18nService.t("nativeMessagingWrongUserTitle"),
-      confirmText: this.i18nService.t("ok"),
+      title: { key: "nativeMessagingWrongUserTitle" },
+      content: { key: "nativeMessagingWrongUserDesc" },
+      acceptButtonText: { key: "ok" },
+      cancelButtonText: null,
       type: "danger",
     });
   }
@@ -258,9 +260,10 @@ export class NativeMessagingBackground {
       this.connected = false;
 
       this.messagingService.send("showDialog", {
-        text: this.i18nService.t("nativeMessagingInvalidEncryptionDesc"),
-        title: this.i18nService.t("nativeMessagingInvalidEncryptionTitle"),
-        confirmText: this.i18nService.t("ok"),
+        title: { key: "nativeMessagingInvalidEncryptionTitle" },
+        content: { key: "nativeMessagingInvalidEncryptionDesc" },
+        acceptButtonText: { key: "ok" },
+        cancelButtonText: null,
         type: "danger",
       });
     }
@@ -285,17 +288,19 @@ export class NativeMessagingBackground {
 
         if (message.response === "not enabled") {
           this.messagingService.send("showDialog", {
-            text: this.i18nService.t("biometricsNotEnabledDesc"),
-            title: this.i18nService.t("biometricsNotEnabledTitle"),
-            confirmText: this.i18nService.t("ok"),
+            title: { key: "biometricsNotEnabledTitle" },
+            content: { key: "biometricsNotEnabledDesc" },
+            acceptButtonText: { key: "ok" },
+            cancelButtonText: null,
             type: "danger",
           });
           break;
         } else if (message.response === "not supported") {
           this.messagingService.send("showDialog", {
-            text: this.i18nService.t("biometricsNotSupportedDesc"),
-            title: this.i18nService.t("biometricsNotSupportedTitle"),
-            confirmText: this.i18nService.t("ok"),
+            title: { key: "biometricsNotSupportedTitle" },
+            content: { key: "biometricsNotSupportedDesc" },
+            acceptButtonText: { key: "ok" },
+            cancelButtonText: null,
             type: "danger",
           });
           break;
