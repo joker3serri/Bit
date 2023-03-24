@@ -51,13 +51,14 @@ export class AddOrganizationComponent implements OnInit {
       return;
     }
 
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("addOrganizationConfirmation", organization.name, this.provider.name),
-      organization.name,
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: organization.name,
+      content: {
+        key: "addOrganizationConfirmation",
+        placeholders: [organization.name, this.provider.name],
+      },
+      type: SimpleDialogType.WARNING,
+    });
 
     if (!confirmed) {
       return false;

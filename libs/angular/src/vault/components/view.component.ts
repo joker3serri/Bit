@@ -178,15 +178,14 @@ export class ViewComponent implements OnDestroy, OnInit {
       return;
     }
 
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t(
-        this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation"
-      ),
-      this.i18nService.t("deleteItem"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "deleteItem" },
+      content: {
+        key: this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation",
+      },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }
@@ -211,13 +210,12 @@ export class ViewComponent implements OnDestroy, OnInit {
       return false;
     }
 
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("restoreItemConfirmation"),
-      this.i18nService.t("restoreItem"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "restoreItem" },
+      content: { key: "restoreItemConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }

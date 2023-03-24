@@ -203,13 +203,11 @@ export class CollectionDialogComponent implements OnInit, OnDestroy {
   };
 
   protected delete = async () => {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("deleteCollectionConfirmation"),
-      this.collection?.name,
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: this.collection?.name,
+      content: { key: "deleteCollectionConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
 
     if (!confirmed && this.params.collectionId) {
       return false;

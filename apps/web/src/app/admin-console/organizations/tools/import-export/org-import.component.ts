@@ -58,13 +58,12 @@ export class OrganizationImportComponent extends ImportComponent {
   }
 
   async submit() {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("importWarning", this.organizationName),
-      this.i18nService.t("warning"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "warning" },
+      content: { key: "importWarning", placeholders: [this.organizationName] },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return;
     }

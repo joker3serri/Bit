@@ -270,13 +270,11 @@ export class GroupAddEditComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("deleteGroupConfirmation"),
-      this.group.name,
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: this.group.name,
+      content: { key: "deleteGroupConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
     if (!confirmed) {
       return false;
     }

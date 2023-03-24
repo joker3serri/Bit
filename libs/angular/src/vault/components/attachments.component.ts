@@ -103,13 +103,12 @@ export class AttachmentsComponent implements OnInit {
       return;
     }
 
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("deleteAttachmentConfirmation"),
-      this.i18nService.t("deleteAttachment"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "deleteAttachment" },
+      content: { key: "deleteAttachmentConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return;
     }
@@ -198,24 +197,24 @@ export class AttachmentsComponent implements OnInit {
     this.canAccessAttachments = canAccessPremium || this.cipher.organizationId != null;
 
     if (!this.canAccessAttachments) {
-      const confirmed = await this.dialogService.legacyShowDialog(
-        this.i18nService.t("premiumRequiredDesc"),
-        this.i18nService.t("premiumRequired"),
-        this.i18nService.t("learnMore"),
-        this.i18nService.t("cancel"),
-        SimpleDialogType.SUCCESS
-      );
+      const confirmed = await this.dialogService.openSimpleDialog({
+        title: { key: "premiumRequired" },
+        content: { key: "premiumRequiredDesc" },
+        acceptButtonText: { key: "learnMore" },
+        type: SimpleDialogType.SUCCESS,
+      });
+
       if (confirmed) {
         this.platformUtilsService.launchUri("https://vault.bitwarden.com/#/?premium=purchase");
       }
     } else if (!this.hasUpdatedKey) {
-      const confirmed = await this.dialogService.legacyShowDialog(
-        this.i18nService.t("updateKey"),
-        this.i18nService.t("featureUnavailable"),
-        this.i18nService.t("learnMore"),
-        this.i18nService.t("cancel"),
-        SimpleDialogType.WARNING
-      );
+      const confirmed = await this.dialogService.openSimpleDialog({
+        title: { key: "featureUnavailable" },
+        content: { key: "updateKey" },
+        acceptButtonText: { key: "learnMore" },
+        type: SimpleDialogType.WARNING,
+      });
+
       if (confirmed) {
         this.platformUtilsService.launchUri(
           "https://bitwarden.com/help/account-encryption-key/#rotate-your-encryption-key"

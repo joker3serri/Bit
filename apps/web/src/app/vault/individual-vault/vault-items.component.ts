@@ -270,15 +270,13 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
       return;
     }
     const permanent = c.isDeleted;
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t(
-        permanent ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation"
-      ),
-      this.i18nService.t(permanent ? "permanentlyDeleteItem" : "deleteItem"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: permanent ? "permanentlyDeleteItem" : "deleteItem" },
+      content: { key: permanent ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }
@@ -329,13 +327,13 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
     if (this.actionPromise != null || !c.isDeleted) {
       return;
     }
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("restoreItemConfirmation"),
-      this.i18nService.t("restoreItem"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "restoreItem" },
+      content: { key: "restoreItemConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }

@@ -58,13 +58,12 @@ export class RemovePasswordComponent implements OnInit {
   }
 
   async leave() {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("leaveOrganizationConfirmation"),
-      this.organization.name,
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: this.organization.name,
+      content: { key: "leaveOrganizationConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }

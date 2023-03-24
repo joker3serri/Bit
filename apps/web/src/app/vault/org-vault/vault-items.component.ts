@@ -255,13 +255,13 @@ export class VaultItemsComponent extends BaseVaultItemsComponent implements OnDe
       );
       return;
     }
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("deleteCollectionConfirmation"),
-      collection.name,
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: collection.name,
+      content: { key: "deleteCollectionConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return;
     }

@@ -394,15 +394,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
   }
 
   async delete(): Promise<boolean> {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t(
-        this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation"
-      ),
-      this.i18nService.t("deleteItem"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "deleteItem" },
+      content: {
+        key: this.cipher.isDeleted ? "permanentlyDeleteItemConfirmation" : "deleteItemConfirmation",
+      },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }
@@ -431,13 +430,12 @@ export class AddEditComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("restoreItemConfirmation"),
-      this.i18nService.t("restoreItem"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "restoreItem" },
+      content: { key: "restoreItemConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }
@@ -457,12 +455,12 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   async generateUsername(): Promise<boolean> {
     if (this.cipher.login?.username?.length) {
-      const confirmed = await this.dialogService.legacyShowDialog(
-        this.i18nService.t("overwriteUsernameConfirmation"),
-        this.i18nService.t("overwriteUsername"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("no")
-      );
+      const confirmed = await this.dialogService.openSimpleDialog({
+        title: { key: "overwriteUsername" },
+        content: { key: "overwriteUsernameConfirmation" },
+        type: SimpleDialogType.WARNING,
+      });
+
       if (!confirmed) {
         return false;
       }
@@ -474,12 +472,12 @@ export class AddEditComponent implements OnInit, OnDestroy {
 
   async generatePassword(): Promise<boolean> {
     if (this.cipher.login?.password?.length) {
-      const confirmed = await this.dialogService.legacyShowDialog(
-        this.i18nService.t("overwritePasswordConfirmation"),
-        this.i18nService.t("overwritePassword"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("no")
-      );
+      const confirmed = await this.dialogService.openSimpleDialog({
+        title: { key: "overwritePassword" },
+        content: { key: "overwritePasswordConfirmation" },
+        type: SimpleDialogType.WARNING,
+      });
+
       if (!confirmed) {
         return false;
       }

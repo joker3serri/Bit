@@ -84,13 +84,13 @@ export class ScimComponent implements OnInit {
   }
 
   async rotateScimKey() {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("rotateScimKeyWarning"),
-      this.i18nService.t("rotateScimKey"),
-      this.i18nService.t("rotateKey"),
-      this.i18nService.t("cancel"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "rotateScimKey" },
+      content: { key: "rotateScimKeyWarning" },
+      acceptButtonText: this.i18nService.t("rotateKey"),
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }

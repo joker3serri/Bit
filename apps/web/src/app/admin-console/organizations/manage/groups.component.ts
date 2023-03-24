@@ -233,13 +233,11 @@ export class GroupsComponent implements OnInit, OnDestroy {
   }
 
   async delete(groupRow: GroupDetailsRow) {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("deleteGroupConfirmation"),
-      groupRow.details.name,
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: groupRow.details.name,
+      content: { key: "deleteGroupConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
     if (!confirmed) {
       return false;
     }
@@ -265,13 +263,14 @@ export class GroupsComponent implements OnInit, OnDestroy {
     }
 
     const deleteMessage = groupsToDelete.map((g) => g.details.name).join(", ");
-    const confirmed = await this.dialogService.legacyShowDialog(
-      deleteMessage,
-      this.i18nService.t("deleteMultipleGroupsConfirmation", groupsToDelete.length.toString()),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: {
+        key: "deleteMultipleGroupsConfirmation",
+        placeholders: [groupsToDelete.length.toString()],
+      },
+      content: deleteMessage,
+      type: SimpleDialogType.WARNING,
+    });
     if (!confirmed) {
       return false;
     }

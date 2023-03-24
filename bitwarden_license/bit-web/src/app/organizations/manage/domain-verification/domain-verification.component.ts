@@ -154,13 +154,12 @@ export class DomainVerificationComponent implements OnInit, OnDestroy {
   }
 
   async deleteDomain(orgDomainId: string): Promise<void> {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("removeDomainWarning"),
-      this.i18nService.t("removeDomain"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "removeDomain" },
+      content: { key: "removeDomainWarning" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return;
     }

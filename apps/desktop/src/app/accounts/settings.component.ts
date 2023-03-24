@@ -213,13 +213,11 @@ export class SettingsComponent implements OnInit {
 
   async saveVaultTimeoutOptions() {
     if (this.vaultTimeout.value == null) {
-      const confirmed = await this.dialogService.legacyShowDialog(
-        this.i18nService.t("neverLockWarning"),
-        "",
-        this.i18nService.t("yes"),
-        this.i18nService.t("cancel"),
-        SimpleDialogType.WARNING
-      );
+      const confirmed = await this.dialogService.openSimpleDialog({
+        title: { key: "warning" },
+        content: { key: "neverLockWarning" },
+        type: SimpleDialogType.WARNING,
+      });
       if (!confirmed) {
         this.vaultTimeout.setValue(this.previousVaultTimeout);
         return;
@@ -227,13 +225,11 @@ export class SettingsComponent implements OnInit {
     }
 
     if (this.vaultTimeoutAction === "logOut") {
-      const confirmed = await this.dialogService.legacyShowDialog(
-        this.i18nService.t("vaultTimeoutLogOutConfirmation"),
-        this.i18nService.t("vaultTimeoutLogOutConfirmationTitle"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("cancel"),
-        SimpleDialogType.WARNING
-      );
+      const confirmed = await this.dialogService.openSimpleDialog({
+        title: { key: "vaultTimeoutLogOutConfirmationTitle" },
+        content: { key: "vaultTimeoutLogOutConfirmation" },
+        type: SimpleDialogType.WARNING,
+      });
       if (!confirmed) {
         this.vaultTimeoutAction = "lock";
         return;
@@ -339,13 +335,11 @@ export class SettingsComponent implements OnInit {
       !this.enableTray &&
       (this.startToTray || this.enableCloseToTray)
     ) {
-      const confirm = await this.dialogService.legacyShowDialog(
-        this.i18nService.t("confirmTrayDesc"),
-        this.i18nService.t("confirmTrayTitle"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("no"),
-        SimpleDialogType.WARNING
-      );
+      const confirm = await this.dialogService.openSimpleDialog({
+        title: { key: "confirmTrayTitle" },
+        content: { key: "confirmTrayDesc" },
+        type: SimpleDialogType.WARNING,
+      });
 
       if (confirm) {
         this.startToTray = false;
@@ -399,35 +393,35 @@ export class SettingsComponent implements OnInit {
 
   async saveBrowserIntegration() {
     if (process.platform === "darwin" && !this.platformUtilsService.isMacAppStore()) {
-      await this.dialogService.legacyShowDialog(
-        this.i18nService.t("browserIntegrationMasOnlyDesc"),
-        this.i18nService.t("browserIntegrationUnsupportedTitle"),
-        this.i18nService.t("ok"),
-        null,
-        SimpleDialogType.WARNING
-      );
+      await this.dialogService.openSimpleDialog({
+        title: { key: "browserIntegrationUnsupportedTitle" },
+        content: { key: "browserIntegrationMasOnlyDesc" },
+        acceptButtonText: { key: "ok" },
+        cancelButtonText: null,
+        type: SimpleDialogType.WARNING,
+      });
 
       this.enableBrowserIntegration = false;
       return;
     } else if (isWindowsStore()) {
-      await this.dialogService.legacyShowDialog(
-        this.i18nService.t("browserIntegrationWindowsStoreDesc"),
-        this.i18nService.t("browserIntegrationUnsupportedTitle"),
-        this.i18nService.t("ok"),
-        null,
-        SimpleDialogType.WARNING
-      );
+      await this.dialogService.openSimpleDialog({
+        title: { key: "browserIntegrationUnsupportedTitle" },
+        content: { key: "browserIntegrationWindowsStoreDesc" },
+        acceptButtonText: { key: "ok" },
+        cancelButtonText: null,
+        type: SimpleDialogType.WARNING,
+      });
 
       this.enableBrowserIntegration = false;
       return;
     } else if (process.platform == "linux") {
-      await this.dialogService.legacyShowDialog(
-        this.i18nService.t("browserIntegrationLinuxDesc"),
-        this.i18nService.t("browserIntegrationUnsupportedTitle"),
-        this.i18nService.t("ok"),
-        null,
-        SimpleDialogType.WARNING
-      );
+      await this.dialogService.openSimpleDialog({
+        title: { key: "browserIntegrationUnsupportedTitle" },
+        content: { key: "browserIntegrationLinuxDesc" },
+        acceptButtonText: { key: "ok" },
+        cancelButtonText: null,
+        type: SimpleDialogType.WARNING,
+      });
 
       this.enableBrowserIntegration = false;
       return;

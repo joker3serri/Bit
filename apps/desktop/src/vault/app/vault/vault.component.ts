@@ -681,13 +681,11 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   private async wantsToSaveChanges(): Promise<boolean> {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("unsavedChangesConfirmation"),
-      this.i18nService.t("unsavedChangesTitle"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "unsavedChangesTitle" },
+      content: { key: "unsavedChangesConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
     return !confirmed;
   }
 

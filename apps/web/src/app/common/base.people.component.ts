@@ -217,13 +217,11 @@ export abstract class BasePeopleComponent<
   }
 
   protected async removeUserConfirmationDialog(user: UserType) {
-    return this.dialogService.legacyShowDialog(
-      this.i18nService.t("removeUserConfirmation"),
-      this.userNamePipe.transform(user),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    return this.dialogService.openSimpleDialog({
+      title: this.userNamePipe.transform(user),
+      content: { key: "removeUserConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
   }
 
   async remove(user: UserType) {
@@ -248,13 +246,12 @@ export abstract class BasePeopleComponent<
   }
 
   async revoke(user: UserType) {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.revokeWarningMessage(),
-      this.i18nService.t("revokeUserId", this.userNamePipe.transform(user)),
-      this.i18nService.t("revokeAccess"),
-      this.i18nService.t("cancel"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "revokeAccess", placeholders: [this.userNamePipe.transform(user)] },
+      content: this.revokeWarningMessage(),
+      acceptButtonText: { key: "revokeAccess" },
+      type: SimpleDialogType.WARNING,
+    });
 
     if (!confirmed) {
       return false;

@@ -66,22 +66,23 @@ export class UserSubscriptionComponent implements OnInit {
     }
 
     if (this.usingInAppPurchase) {
-      this.dialogService.legacyShowDialog(
-        this.i18nService.t("manageSubscriptionFromStore"),
-        this.i18nService.t("cancelSubscription"),
-        null,
-        null,
-        SimpleDialogType.WARNING
-      );
+      this.dialogService.openSimpleDialog({
+        title: { key: "cancelSubscription" },
+        content: { key: "manageSubscriptionFromStore" },
+        acceptButtonText: { key: "ok" },
+        cancelButtonText: null,
+        type: SimpleDialogType.WARNING,
+      });
+
       return;
     }
 
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("reinstateConfirmation"),
-      this.i18nService.t("reinstateSubscription"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("cancel")
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "reinstateSubscription" },
+      content: { key: "reinstateConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return;
     }
@@ -102,23 +103,23 @@ export class UserSubscriptionComponent implements OnInit {
     }
 
     if (this.usingInAppPurchase) {
-      this.dialogService.legacyShowDialog(
-        this.i18nService.t("manageSubscriptionFromStore"),
-        this.i18nService.t("cancelSubscription"),
-        null,
-        null,
-        SimpleDialogType.WARNING
-      );
+      this.dialogService.openSimpleDialog({
+        title: { key: "cancelSubscription" },
+        content: { key: "manageSubscriptionFromStore" },
+        acceptButtonText: { key: "ok" },
+        cancelButtonText: null,
+        type: SimpleDialogType.WARNING,
+      });
+
       return;
     }
 
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("cancelConfirmation"),
-      this.i18nService.t("cancelSubscription"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "cancelSubscription" },
+      content: { key: "cancelConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return;
     }
@@ -165,13 +166,14 @@ export class UserSubscriptionComponent implements OnInit {
 
   adjustStorage(add: boolean) {
     if (this.usingInAppPurchase) {
-      this.dialogService.legacyShowDialog(
-        this.i18nService.t("cannotPerformInAppPurchase"),
-        this.i18nService.t(add ? "addStorage" : "removeStorage"),
-        null,
-        null,
-        SimpleDialogType.WARNING
-      );
+      this.dialogService.openSimpleDialog({
+        title: { key: add ? "addStorage" : "removeStorage" },
+        content: { key: "cannotPerformInAppPurchase" },
+        acceptButtonText: { key: "ok" },
+        cancelButtonText: null,
+        type: SimpleDialogType.WARNING,
+      });
+
       return;
     }
     this.adjustStorageAdd = add;

@@ -95,13 +95,14 @@ export class PaymentMethodComponent implements OnInit {
 
   addCredit() {
     if (this.paymentSourceInApp) {
-      this.dialogService.legacyShowDialog(
-        this.i18nService.t("cannotPerformInAppPurchase"),
-        this.i18nService.t("addCredit"),
-        null,
-        null,
-        SimpleDialogType.WARNING
-      );
+      this.dialogService.openSimpleDialog({
+        title: { key: "addCredit" },
+        content: { key: "cannotPerformInAppPurchase" },
+        acceptButtonText: { key: "ok" },
+        cancelButtonText: null,
+        type: SimpleDialogType.WARNING,
+      });
+
       return;
     }
     this.showAddCredit = true;
@@ -116,13 +117,14 @@ export class PaymentMethodComponent implements OnInit {
 
   changePayment() {
     if (this.paymentSourceInApp) {
-      this.dialogService.legacyShowDialog(
-        this.i18nService.t("cannotPerformInAppPurchase"),
-        this.i18nService.t("changePaymentMethod"),
-        null,
-        null,
-        SimpleDialogType.WARNING
-      );
+      this.dialogService.openSimpleDialog({
+        title: { key: "changePaymentMethod" },
+        content: { key: "cannotPerformInAppPurchase" },
+        acceptButtonText: { key: "ok" },
+        cancelButtonText: null,
+        type: SimpleDialogType.WARNING,
+      });
+
       return;
     }
     this.showAdjustPayment = true;

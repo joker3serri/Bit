@@ -32,13 +32,20 @@ export abstract class DialogService extends Dialog implements DialogServiceAbstr
     super(_overlay, _injector, _defaultOptions, _parentDialog, _overlayContainer, scrollStrategy);
   }
 
-  async openSimpleDialog(simpleDialogOptions: SimpleDialogOptions) {
+  async openSimpleDialog(options: SimpleDialogOptions) {
+    const defaultCancel =
+      options.cancelButtonText === undefined
+        ? options.acceptButtonText == null
+          ? "no"
+          : "cancel"
+        : null;
+
     return this.legacyShowDialog(
-      this.translate(simpleDialogOptions.content),
-      this.translate(simpleDialogOptions.title),
-      this.translate(simpleDialogOptions.acceptButtonText),
-      this.translate(simpleDialogOptions.cancelButtonText),
-      simpleDialogOptions.type
+      this.translate(options.content),
+      this.translate(options.title),
+      this.translate(options.acceptButtonText, "yes"),
+      this.translate(options.cancelButtonText, defaultCancel),
+      options.type
     );
   }
 
@@ -64,12 +71,19 @@ export abstract class DialogService extends Dialog implements DialogServiceAbstr
   }
 
   private translate(translation: string | Translation, defaultKey?: string): string {
-    // Translation interface use implies we must localize.
-    if (typeof translation === "object") {
-      return this.i18nService.t(translation.key, ...translation.placeholders);
+    if (translation == null && defaultKey == null) {
+      return null;
     }
 
-    // Use string that is already translated or use default key post translate
-    return translation ?? this.i18nService.t(defaultKey);
+    if (translation == null) {
+      return this.i18nService.t(defaultKey);
+    }
+
+    // Translation interface use implies we must localize.
+    if (typeof translation === "object") {
+      return this.i18nService.t(translation.key, ...(translation.placeholders ?? []));
+    }
+
+    return translation;
   }
 }

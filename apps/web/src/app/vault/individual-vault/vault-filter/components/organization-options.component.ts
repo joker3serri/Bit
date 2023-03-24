@@ -82,13 +82,12 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
   }
 
   async unlinkSso(org: Organization) {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("unlinkSsoConfirmation"),
-      org.name,
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: org.name,
+      content: { key: "unlinkSsoConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }
@@ -105,13 +104,12 @@ export class OrganizationOptionsComponent implements OnInit, OnDestroy {
   }
 
   async leave(org: Organization) {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("leaveOrganizationConfirmation"),
-      org.name,
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: org.name,
+      content: { key: "leaveOrganizationConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }

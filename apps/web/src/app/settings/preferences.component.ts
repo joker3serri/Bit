@@ -118,13 +118,12 @@ export class PreferencesComponent implements OnInit {
 
   async vaultTimeoutActionChanged(newValue: string) {
     if (newValue === "logOut") {
-      const confirmed = await this.dialogService.legacyShowDialog(
-        this.i18nService.t("vaultTimeoutLogOutConfirmation"),
-        this.i18nService.t("vaultTimeoutLogOutConfirmationTitle"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("cancel"),
-        SimpleDialogType.WARNING
-      );
+      const confirmed = await this.dialogService.openSimpleDialog({
+        title: { key: "vaultTimeoutLogOutConfirmationTitle" },
+        content: { key: "vaultTimeoutLogOutConfirmation" },
+        type: SimpleDialogType.WARNING,
+      });
+
       if (!confirmed) {
         this.vaultTimeoutAction = "lock";
         return;

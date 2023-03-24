@@ -540,17 +540,18 @@ export class PeopleComponent
   }
 
   protected async removeUserConfirmationDialog(user: OrganizationUserView) {
-    const warningMessage = user.usesKeyConnector
-      ? this.i18nService.t("removeUserConfirmationKeyConnector")
-      : this.i18nService.t("removeOrgUserConfirmation");
+    const content = user.usesKeyConnector
+      ? "removeUserConfirmationKeyConnector"
+      : "removeOrgUserConfirmation";
 
-    return this.dialogService.legacyShowDialog(
-      warningMessage,
-      this.i18nService.t("removeUserIdAccess", this.userNamePipe.transform(user)),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    return await this.dialogService.openSimpleDialog({
+      title: {
+        key: "removeUserIdAccess",
+        placeholders: [this.userNamePipe.transform(user)],
+      },
+      content: { key: content },
+      type: SimpleDialogType.WARNING,
+    });
   }
 
   private async showBulkStatus(

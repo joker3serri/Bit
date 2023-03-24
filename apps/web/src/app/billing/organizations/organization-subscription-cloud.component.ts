@@ -195,13 +195,12 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       return;
     }
 
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("cancelConfirmation"),
-      this.i18nService.t("cancelSubscription"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "cancelSubscription" },
+      content: { key: "cancelConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return;
     }
@@ -224,12 +223,12 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
       return;
     }
 
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("reinstateConfirmation"),
-      this.i18nService.t("reinstateSubscription"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("cancel")
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "reinstateSubscription" },
+      content: { key: "reinstateConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return;
     }
@@ -295,15 +294,14 @@ export class OrganizationSubscriptionCloudComponent implements OnInit, OnDestroy
   }
 
   removeSponsorship = async () => {
-    const isConfirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("removeSponsorshipConfirmation"),
-      this.i18nService.t("removeSponsorship"),
-      this.i18nService.t("remove"),
-      this.i18nService.t("cancel"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "removeSponsorship" },
+      content: { key: "removeSponsorshipConfirmation" },
+      acceptButtonText: { key: "remove" },
+      type: SimpleDialogType.WARNING,
+    });
 
-    if (!isConfirmed) {
+    if (!confirmed) {
       return;
     }
 

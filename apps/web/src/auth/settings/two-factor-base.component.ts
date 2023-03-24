@@ -50,13 +50,12 @@ export abstract class TwoFactorBaseComponent {
   }
 
   protected async disable(promise: Promise<unknown>) {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("twoStepDisableDesc"),
-      this.i18nService.t("disable"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "disable" },
+      content: { key: "twoStepDisableDesc" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return;
     }

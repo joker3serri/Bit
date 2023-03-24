@@ -131,12 +131,13 @@ export class AppComponent implements OnDestroy, OnInit {
           case "syncCompleted":
             break;
           case "upgradeOrganization": {
-            const upgradeConfirmed = await this.dialogService.legacyShowDialog(
-              this.i18nService.t("upgradeOrganizationDesc"),
-              this.i18nService.t("upgradeOrganization"),
-              this.i18nService.t("upgradeOrganization"),
-              this.i18nService.t("cancel")
-            );
+            const upgradeConfirmed = await this.dialogService.openSimpleDialog({
+              title: { key: "upgradeOrganization" },
+              content: { key: "upgradeOrganizationDesc" },
+              acceptButtonText: { key: "upgradeOrganization" },
+              cancelButtonText: { key: "cancel" },
+              type: SimpleDialogType.INFO,
+            });
             if (upgradeConfirmed) {
               this.router.navigate([
                 "organizations",
@@ -148,25 +149,26 @@ export class AppComponent implements OnDestroy, OnInit {
             break;
           }
           case "premiumRequired": {
-            const premiumConfirmed = await this.dialogService.legacyShowDialog(
-              this.i18nService.t("premiumRequiredDesc"),
-              this.i18nService.t("premiumRequired"),
-              this.i18nService.t("upgrade"),
-              this.i18nService.t("cancel"),
-              SimpleDialogType.SUCCESS
-            );
+            const premiumConfirmed = await this.dialogService.openSimpleDialog({
+              title: { key: "premiumRequired" },
+              content: { key: "premiumRequiredDesc" },
+              acceptButtonText: { key: "upgrade" },
+              cancelButtonText: { key: "cancel" },
+              type: SimpleDialogType.SUCCESS,
+            });
             if (premiumConfirmed) {
               this.router.navigate(["settings/subscription/premium"]);
             }
             break;
           }
           case "emailVerificationRequired": {
-            const emailVerificationConfirmed = await this.dialogService.legacyShowDialog(
-              this.i18nService.t("emailVerificationRequiredDesc"),
-              this.i18nService.t("emailVerificationRequired"),
-              this.i18nService.t("learnMore"),
-              this.i18nService.t("cancel")
-            );
+            const emailVerificationConfirmed = await this.dialogService.openSimpleDialog({
+              title: { key: "emailVerificationRequired" },
+              content: { key: "emailVerificationRequiredDesc" },
+              acceptButtonText: { key: "learnMore" },
+              cancelButtonText: { key: "cancel" },
+              type: SimpleDialogType.INFO,
+            });
             if (emailVerificationConfirmed) {
               this.platformUtilsService.launchUri(
                 "https://bitwarden.com/help/create-bitwarden-account/"

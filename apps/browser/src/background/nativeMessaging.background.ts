@@ -156,7 +156,7 @@ export class NativeMessagingBackground {
               text: this.i18nService.t("nativeMessagingInvalidEncryptionDesc"),
               title: this.i18nService.t("nativeMessagingInvalidEncryptionTitle"),
               confirmText: this.i18nService.t("ok"),
-              type: "error",
+              type: "danger",
             });
             break;
           case "verifyFingerprint": {
@@ -202,7 +202,7 @@ export class NativeMessagingBackground {
       text: this.i18nService.t("nativeMessagingWrongUserDesc"),
       title: this.i18nService.t("nativeMessagingWrongUserTitle"),
       confirmText: this.i18nService.t("ok"),
-      type: "error",
+      type: "danger",
     });
   }
 
@@ -261,7 +261,7 @@ export class NativeMessagingBackground {
         text: this.i18nService.t("nativeMessagingInvalidEncryptionDesc"),
         title: this.i18nService.t("nativeMessagingInvalidEncryptionTitle"),
         confirmText: this.i18nService.t("ok"),
-        type: "error",
+        type: "danger",
       });
     }
   }
@@ -288,7 +288,7 @@ export class NativeMessagingBackground {
             text: this.i18nService.t("biometricsNotEnabledDesc"),
             title: this.i18nService.t("biometricsNotEnabledTitle"),
             confirmText: this.i18nService.t("ok"),
-            type: "error",
+            type: "danger",
           });
           break;
         } else if (message.response === "not supported") {
@@ -296,7 +296,7 @@ export class NativeMessagingBackground {
             text: this.i18nService.t("biometricsNotSupportedDesc"),
             title: this.i18nService.t("biometricsNotSupportedTitle"),
             confirmText: this.i18nService.t("ok"),
-            type: "error",
+            type: "danger",
           });
           break;
         }

@@ -72,7 +72,7 @@ export class SimpleConfigurableDialogComponent {
   private translate(translation: string | Translation, defaultKey?: string): string {
     // Translation interface use implies we must localize.
     if (typeof translation === "object") {
-      return this.i18nService.t(translation.key, ...translation.placeholders);
+      return this.i18nService.t(translation.key, ...(translation.placeholders ?? []));
     }
 
     // Use string that is already translated or use default key post translate

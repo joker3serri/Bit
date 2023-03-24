@@ -92,13 +92,13 @@ export class TwoFactorWebAuthnComponent extends TwoFactorBaseComponent {
       return;
     }
     const name = key.name != null ? key.name : this.i18nService.t("webAuthnkeyX", key.id as any);
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("removeU2fConfirmation"),
-      name,
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: name,
+      content: { key: "removeU2fConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return;
     }

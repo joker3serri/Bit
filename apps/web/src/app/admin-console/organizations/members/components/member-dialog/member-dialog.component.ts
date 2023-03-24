@@ -364,13 +364,13 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
     const message = this.params.usesKeyConnector
       ? "removeUserConfirmationKeyConnector"
       : "removeOrgUserConfirmation";
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t(message),
-      this.i18nService.t("removeUserIdAccess", this.params.name),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "removeUserIdAccess", placeholders: [this.params.name] },
+      content: { key: message },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }
@@ -393,13 +393,13 @@ export class MemberDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("revokeUserConfirmation"),
-      this.i18nService.t("revokeUserId", this.params.name),
-      this.i18nService.t("revokeAccess"),
-      this.i18nService.t("cancel"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "revokeUserId", placeholders: [this.params.name] },
+      content: { key: "revokeUserConfirmation" },
+      acceptButtonText: { key: "revokeAccess" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }

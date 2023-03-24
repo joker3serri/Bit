@@ -230,13 +230,13 @@ export class AddEditComponent implements OnInit, OnDestroy {
     if (this.deletePromise != null) {
       return false;
     }
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("deleteSendConfirmation"),
-      this.i18nService.t("deleteSend"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "deleteSend" },
+      content: { key: "deleteSendConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }
@@ -307,13 +307,14 @@ export class AddEditComponent implements OnInit, OnDestroy {
         this.i18nService.t(this.editMode ? "editedSend" : "createdSend")
       );
     } else {
-      await this.dialogService.legacyShowDialog(
-        this.i18nService.t(this.editMode ? "editedSend" : "createdSend"),
-        null,
-        this.i18nService.t("ok"),
-        null,
-        SimpleDialogType.SUCCESS
-      );
+      await this.dialogService.openSimpleDialog({
+        title: "",
+        content: { key: this.editMode ? "editedSend" : "createdSend" },
+        acceptButtonText: { key: "ok" },
+        cancelButtonText: null,
+        type: SimpleDialogType.SUCCESS,
+      });
+
       await this.copyLinkToClipboard(this.link);
     }
   }

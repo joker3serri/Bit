@@ -102,13 +102,14 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
       }
 
       if (hasOldAttachments) {
-        const learnMore = await this.dialogService.legacyShowDialog(
-          this.i18nService.t("oldAttachmentsNeedFixDesc"),
-          null,
-          this.i18nService.t("learnMore"),
-          this.i18nService.t("close"),
-          SimpleDialogType.WARNING
-        );
+        const learnMore = await this.dialogService.openSimpleDialog({
+          title: { key: "warning" },
+          content: { key: "oldAttachmentsNeedFixDesc" },
+          acceptButtonText: { key: "learnMore" },
+          cancelButtonText: { key: "close" },
+          type: SimpleDialogType.WARNING,
+        });
+
         if (learnMore) {
           this.platformUtilsService.launchUri(
             "https://bitwarden.com/help/attachments/#add-storage-space"
@@ -118,17 +119,17 @@ export class ChangePasswordComponent extends BaseChangePasswordComponent {
         return;
       }
 
-      const result = await this.dialogService.legacyShowDialog(
-        this.i18nService.t("updateEncryptionKeyWarning") +
+      const result = await this.dialogService.openSimpleDialog({
+        title: { key: "rotateEncKeyTitle" },
+        content:
+          this.i18nService.t("updateEncryptionKeyWarning") +
           " " +
           this.i18nService.t("updateEncryptionKeyExportWarning") +
           " " +
           this.i18nService.t("rotateEncKeyConfirmation"),
-        this.i18nService.t("rotateEncKeyTitle"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("no"),
-        SimpleDialogType.WARNING
-      );
+        type: SimpleDialogType.WARNING,
+      });
+
       if (!result) {
         this.rotateEncKey = false;
       }

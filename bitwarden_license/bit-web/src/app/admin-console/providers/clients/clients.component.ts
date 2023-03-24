@@ -155,13 +155,11 @@ export class ClientsComponent implements OnInit {
   }
 
   async remove(organization: ProviderOrganizationOrganizationDetailsResponse) {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("detachOrganizationConfirmation"),
-      organization.organizationName,
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: organization.organizationName,
+      content: { key: "detachOrganizationConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
 
     if (!confirmed) {
       return false;

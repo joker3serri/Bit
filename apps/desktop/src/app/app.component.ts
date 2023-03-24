@@ -225,13 +225,15 @@ export class AppComponent implements OnInit, OnDestroy {
             const fingerprint = await this.cryptoService.getFingerprint(
               await this.stateService.getUserId()
             );
-            const result = await this.dialogService.legacyShowDialog(
-              this.i18nService.t("yourAccountsFingerprint") + ":\n" + fingerprint.join("-"),
-              this.i18nService.t("fingerprintPhrase"),
-              this.i18nService.t("learnMore"),
-              this.i18nService.t("close"),
-              SimpleDialogType.INFO
-            );
+            const result = await this.dialogService.openSimpleDialog({
+              title: { key: "fingerprintPhrase" },
+              content:
+                this.i18nService.t("yourAccountsFingerprint") + ":\n" + fingerprint.join("-"),
+              acceptButtonText: { key: "learnMore" },
+              cancelButtonText: { key: "close" },
+              type: SimpleDialogType.INFO,
+            });
+
             if (result) {
               this.platformUtilsService.launchUri("https://bitwarden.com/help/fingerprint-phrase/");
             }
@@ -260,25 +262,26 @@ export class AppComponent implements OnInit, OnDestroy {
             });
             break;
           case "premiumRequired": {
-            const premiumConfirmed = await this.dialogService.legacyShowDialog(
-              this.i18nService.t("premiumRequiredDesc"),
-              this.i18nService.t("premiumRequired"),
-              this.i18nService.t("learnMore"),
-              this.i18nService.t("cancel"),
-              SimpleDialogType.SUCCESS
-            );
+            const premiumConfirmed = await this.dialogService.openSimpleDialog({
+              title: { key: "premiumRequired" },
+              content: { key: "premiumRequiredDesc" },
+              acceptButtonText: { key: "learnMore" },
+              cancelButtonText: { key: "cancel" },
+              type: SimpleDialogType.SUCCESS,
+            });
             if (premiumConfirmed) {
               await this.openModal<PremiumComponent>(PremiumComponent, this.premiumRef);
             }
             break;
           }
           case "emailVerificationRequired": {
-            const emailVerificationConfirmed = await this.dialogService.legacyShowDialog(
-              this.i18nService.t("emailVerificationRequiredDesc"),
-              this.i18nService.t("emailVerificationRequired"),
-              this.i18nService.t("learnMore"),
-              this.i18nService.t("cancel")
-            );
+            const emailVerificationConfirmed = await this.dialogService.openSimpleDialog({
+              title: { key: "emailVerificationRequired" },
+              content: { key: "emailVerificationRequiredDesc" },
+              acceptButtonText: { key: "learnMore" },
+              cancelButtonText: { key: "cancel" },
+              type: SimpleDialogType.INFO,
+            });
             if (emailVerificationConfirmed) {
               this.platformUtilsService.launchUri(
                 "https://bitwarden.com/help/create-bitwarden-account/"

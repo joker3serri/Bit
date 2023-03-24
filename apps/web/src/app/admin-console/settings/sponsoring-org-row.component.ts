@@ -69,15 +69,14 @@ export class SponsoringOrgRowComponent implements OnInit {
   }
 
   private async doRevokeSponsorship() {
-    const isConfirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("revokeSponsorshipConfirmation"),
-      `${this.i18nService.t("remove")} ${this.sponsoringOrg.familySponsorshipFriendlyName}?`,
-      this.i18nService.t("remove"),
-      this.i18nService.t("cancel"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: `${this.i18nService.t("remove")} ${this.sponsoringOrg.familySponsorshipFriendlyName}?`,
+      content: { key: "revokeSponsorshipConfirmation" },
+      acceptButtonText: { key: "remove" },
+      type: SimpleDialogType.WARNING,
+    });
 
-    if (!isConfirmed) {
+    if (!confirmed) {
       return;
     }
 

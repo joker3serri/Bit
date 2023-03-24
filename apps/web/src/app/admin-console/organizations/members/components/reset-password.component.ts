@@ -137,13 +137,12 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     }
 
     if (this.passwordStrengthResult.score < 3) {
-      const result = await this.dialogService.legacyShowDialog(
-        this.i18nService.t("weakMasterPasswordDesc"),
-        this.i18nService.t("weakMasterPassword"),
-        this.i18nService.t("yes"),
-        this.i18nService.t("no"),
-        SimpleDialogType.WARNING
-      );
+      const result = await this.dialogService.openSimpleDialog({
+        title: { key: "weakMasterPassword" },
+        content: { key: "weakMasterPasswordDesc" },
+        type: SimpleDialogType.WARNING,
+      });
+
       if (!result) {
         return false;
       }

@@ -64,13 +64,12 @@ export class FolderAddEditComponent implements OnInit {
   }
 
   async delete(): Promise<boolean> {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("deleteFolderConfirmation"),
-      this.i18nService.t("deleteFolder"),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "deleteFolder" },
+      content: { key: "deleteFolderConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }

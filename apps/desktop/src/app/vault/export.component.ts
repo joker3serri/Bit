@@ -59,24 +59,25 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
 
   async warningDialog() {
     if (this.encryptedFormat) {
-      return await this.dialogService.legacyShowDialog(
-        this.i18nService.t("encExportKeyWarningDesc") +
+      return await this.dialogService.openSimpleDialog({
+        title: { key: "confirmVaultExport" },
+        content:
+          this.i18nService.t("encExportKeyWarningDesc") +
           os.EOL +
           os.EOL +
           this.i18nService.t("encExportAccountWarningDesc"),
-        this.i18nService.t("confirmVaultExport"),
-        this.i18nService.t("exportVault"),
-        this.i18nService.t("cancel"),
-        SimpleDialogType.WARNING
-      );
+        acceptButtonText: { key: "exportVault" },
+        cancelButtonText: { key: "cancel" },
+        type: SimpleDialogType.WARNING,
+      });
     } else {
-      return await this.dialogService.legacyShowDialog(
-        this.i18nService.t("exportWarningDesc"),
-        this.i18nService.t("confirmVaultExport"),
-        this.i18nService.t("exportVault"),
-        this.i18nService.t("cancel"),
-        SimpleDialogType.WARNING
-      );
+      return await this.dialogService.openSimpleDialog({
+        title: { key: "confirmVaultExport" },
+        content: { key: "exportWarningDesc" },
+        acceptButtonText: { key: "exportVault" },
+        cancelButtonText: { key: "cancel" },
+        type: SimpleDialogType.WARNING,
+      });
     }
   }
 }

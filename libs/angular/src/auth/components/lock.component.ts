@@ -21,7 +21,7 @@ import { Utils } from "@bitwarden/common/misc/utils";
 import { EncString } from "@bitwarden/common/models/domain/enc-string";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
 
-import { DialogServiceAbstraction } from "../../services/dialog";
+import { DialogServiceAbstraction, SimpleDialogType } from "../../services/dialog";
 
 @Directive()
 export class LockComponent implements OnInit, OnDestroy {
@@ -87,12 +87,13 @@ export class LockComponent implements OnInit, OnDestroy {
   }
 
   async logOut() {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("logOutConfirmation"),
-      this.i18nService.t("logOut"),
-      this.i18nService.t("logOut"),
-      this.i18nService.t("cancel")
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: { key: "logOut" },
+      content: { key: "logOutConfirmation" },
+      acceptButtonText: { key: "logOut" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (confirmed) {
       this.messagingService.send("logout");
     }

@@ -171,13 +171,12 @@ export class EmergencyAccessComponent implements OnInit {
   async remove(
     details: EmergencyAccessGranteeDetailsResponse | EmergencyAccessGrantorDetailsResponse
   ) {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("removeUserConfirmation"),
-      this.userNamePipe.transform(details),
-      this.i18nService.t("yes"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: this.userNamePipe.transform(details),
+      content: { key: "removeUserConfirmation" },
+      type: SimpleDialogType.WARNING,
+    });
+
     if (!confirmed) {
       return false;
     }
@@ -201,13 +200,15 @@ export class EmergencyAccessComponent implements OnInit {
   }
 
   async requestAccess(details: EmergencyAccessGrantorDetailsResponse) {
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("requestAccessConfirmation", details.waitTimeDays.toString()),
-      this.userNamePipe.transform(details),
-      this.i18nService.t("requestAccess"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: this.userNamePipe.transform(details),
+      content: {
+        key: "requestAccessConfirmation",
+        placeholders: [details.waitTimeDays.toString()],
+      },
+      acceptButtonText: this.i18nService.t("requestAccess"),
+      type: SimpleDialogType.WARNING,
+    });
 
     if (!confirmed) {
       return false;
@@ -228,13 +229,15 @@ export class EmergencyAccessComponent implements OnInit {
       details.type === EmergencyAccessType.View ? "view" : "takeover"
     );
 
-    const confirmed = await this.dialogService.legacyShowDialog(
-      this.i18nService.t("approveAccessConfirmation", this.userNamePipe.transform(details), type),
-      this.userNamePipe.transform(details),
-      this.i18nService.t("approve"),
-      this.i18nService.t("no"),
-      SimpleDialogType.WARNING
-    );
+    const confirmed = await this.dialogService.openSimpleDialog({
+      title: this.userNamePipe.transform(details),
+      content: {
+        key: "approveAccessConfirmation",
+        placeholders: [this.userNamePipe.transform(details), type],
+      },
+      acceptButtonText: this.i18nService.t("approve"),
+      type: SimpleDialogType.WARNING,
+    });
 
     if (!confirmed) {
       return false;
