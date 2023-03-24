@@ -23,6 +23,7 @@ import { SecretsListComponent } from "./secrets-list.component";
   ],
   exports: [
     SharedModule,
+    NoItemsModule,
     AccessRemovalDialogComponent,
     BulkStatusDialogComponent,
     HeaderComponent,
