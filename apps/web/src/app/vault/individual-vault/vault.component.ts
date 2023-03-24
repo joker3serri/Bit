@@ -434,13 +434,7 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.bulkShare(event.items);
       }
     } else if (event.type === "copy") {
-      if (event.field === "username") {
-        this.copy(event.item, event.item.login.username, "Username", "username");
-      } else if (event.field === "password") {
-        this.copy(event.item, event.item.login.password, "Password", "password");
-      } else if (event.field === "totp") {
-        this.copy(event.item, event.item.login.totp, "verificationCodeTotp", "TOTP");
-      }
+      this.copy(event.item, event.field);
     }
   }
 
@@ -754,16 +748,33 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
   }
 
-  async copy(cipher: CipherView, value: string, typeI18nKey: string, aType: string) {
+  async copy(cipher: CipherView, field: "username" | "password" | "totp") {
+    let aType;
+    let value;
+    let typeI18nKey;
+
+    if (field === "username") {
+      aType = "Username";
+      value = cipher.login.username;
+      typeI18nKey = "username";
+    } else if (field === "password") {
+      aType = "Password";
+      value = cipher.login.password;
+      typeI18nKey = "password";
+    } else if (field === "totp") {
+      aType = "TOTP";
+      value = await this.totpService.getCode(cipher.login.totp);
+      typeI18nKey = "verificationCodeTotp";
+    } else {
+      this.platformUtilsService.showToast("info", null, this.i18nService.t("unexpectedError"));
+      return;
+    }
+
     if (
       this.passwordRepromptService.protectedFields().includes(aType) &&
       !(await this.repromptCipher([cipher]))
     ) {
       return;
-    }
-
-    if (value === cipher.login.totp) {
-      value = await this.totpService.getCode(value);
     }
 
     if (!cipher.viewPassword) {
@@ -777,7 +788,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       this.i18nService.t("valueCopied", this.i18nService.t(typeI18nKey))
     );
 
-    if (typeI18nKey === "password" || typeI18nKey === "verificationCodeTotp") {
+    if (field === "password" || field === "totp") {
       this.eventCollectionService.collect(
         EventType.Cipher_ClientToggledHiddenFieldVisible,
         cipher.id
