@@ -87,7 +87,7 @@ export class ScimComponent implements OnInit {
     const confirmed = await this.dialogService.openSimpleDialog({
       title: { key: "rotateScimKey" },
       content: { key: "rotateScimKeyWarning" },
-      acceptButtonText: this.i18nService.t("rotateKey"),
+      acceptButtonText: { key: "rotateKey" },
       type: SimpleDialogType.WARNING,
     });
 

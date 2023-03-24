@@ -206,7 +206,7 @@ export class EmergencyAccessComponent implements OnInit {
         key: "requestAccessConfirmation",
         placeholders: [details.waitTimeDays.toString()],
       },
-      acceptButtonText: this.i18nService.t("requestAccess"),
+      acceptButtonText: { key: "requestAccess" },
       type: SimpleDialogType.WARNING,
     });
 
@@ -235,7 +235,7 @@ export class EmergencyAccessComponent implements OnInit {
         key: "approveAccessConfirmation",
         placeholders: [this.userNamePipe.transform(details), type],
       },
-      acceptButtonText: this.i18nService.t("approve"),
+      acceptButtonText: { key: "approve" },
       type: SimpleDialogType.WARNING,
     });
 

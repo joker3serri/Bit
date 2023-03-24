@@ -135,7 +135,7 @@ export class ServiceAccountPeopleComponent {
         title: this.i18nService.t("saPeopleWarningTitle"),
         content: this.i18nService.t("saPeopleWarningMessage"),
         type: SimpleDialogType.WARNING,
-        acceptButtonText: this.i18nService.t("close"),
+        acceptButtonText: { key: "close" },
         cancelButtonText: null,
       };
       this.dialogService.openSimpleDialogRef(simpleDialogOpts);
