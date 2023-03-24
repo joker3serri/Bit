@@ -16,7 +16,7 @@
     bitLink
     class="tw-text-start"
     [disabled]="disabled"
-    [routerLink]="[]"
+    routerLink
     [queryParams]="{ itemId: cipher.id }"
     queryParamsHandling="merge"
     title="{{ 'editItem' | i18n }}"
@@ -49,7 +49,7 @@
   <app-org-badge
     [disabled]="disabled"
     [organizationId]="cipher.organizationId"
-    [organizationName]="cipher.organizationId | orgNameFromId: organizations"
+    [organizationName]="cipher.organizationId | orgNameFromId : organizations"
     appStopProp
   >
   </app-org-badge>
