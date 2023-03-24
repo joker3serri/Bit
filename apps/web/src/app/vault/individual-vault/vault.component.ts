@@ -406,9 +406,9 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   onVaultItemsEvent(event: VaultItemEvent) {
-    if (event.type === "attachments") {
+    if (event.type === "viewAttachments") {
       this.editCipherAttachments(event.item);
-    } else if (event.type === "collections") {
+    } else if (event.type === "viewCollections") {
       this.editCipherCollections(event.item);
     } else if (event.type === "clone") {
       this.cloneCipher(event.item);
@@ -433,7 +433,7 @@ export class VaultComponent implements OnInit, OnDestroy {
       } else {
         this.bulkShare(event.items);
       }
-    } else if (event.type === "copy") {
+    } else if (event.type === "copyField") {
       this.copy(event.item, event.field);
     }
   }

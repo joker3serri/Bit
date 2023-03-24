@@ -45,7 +45,7 @@ export class VaultCipherRowComponent {
   }
 
   protected copy(field: "username" | "password" | "totp") {
-    this.onEvent.emit({ type: "copy", item: this.cipher, field });
+    this.onEvent.emit({ type: "copyField", item: this.cipher, field });
   }
 
   protected clone() {
@@ -57,11 +57,11 @@ export class VaultCipherRowComponent {
   }
 
   protected editCollections() {
-    this.onEvent.emit({ type: "collections", item: this.cipher });
+    this.onEvent.emit({ type: "viewCollections", item: this.cipher });
   }
 
   protected events() {
-    this.onEvent.emit({ type: "events", item: this.cipher });
+    this.onEvent.emit({ type: "viewEvents", item: this.cipher });
   }
 
   protected restore() {
@@ -73,6 +73,6 @@ export class VaultCipherRowComponent {
   }
 
   protected attachments() {
-    this.onEvent.emit({ type: "attachments", item: this.cipher });
+    this.onEvent.emit({ type: "viewAttachments", item: this.cipher });
   }
 }

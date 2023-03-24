@@ -422,9 +422,9 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   onVaultItemsEvent(event: VaultItemEvent) {
-    if (event.type === "attachments") {
+    if (event.type === "viewAttachments") {
       this.editCipherAttachments(event.item);
-    } else if (event.type === "collections") {
+    } else if (event.type === "viewCollections") {
       this.editCipherCollections(event.item);
     } else if (event.type === "clone") {
       this.cloneCipher(event.item);
@@ -446,13 +446,13 @@ export class VaultComponent implements OnInit, OnDestroy {
       } else {
         this.bulkDelete(ciphers, collections, this.organization);
       }
-    } else if (event.type === "copy") {
+    } else if (event.type === "copyField") {
       this.copy(event.item, event.field);
     } else if (event.type === "edit") {
       this.editCollection(event.item, CollectionDialogTabType.Info);
-    } else if (event.type === "access") {
+    } else if (event.type === "viewAccess") {
       this.editCollection(event.item, CollectionDialogTabType.Access);
-    } else if (event.type === "events") {
+    } else if (event.type === "viewEvents") {
       this.viewEvents(event.item);
     }
   }

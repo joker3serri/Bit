@@ -4,14 +4,14 @@ import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { VaultItem } from "./vault-item";
 
 export type VaultItemEvent =
-  | { type: "attachments"; item: CipherView }
-  | { type: "collections"; item: CipherView }
+  | { type: "viewAttachments"; item: CipherView }
+  | { type: "viewCollections"; item: CipherView }
+  | { type: "viewAccess"; item: CollectionView }
+  | { type: "viewEvents"; item: CipherView }
   | { type: "edit"; item: CollectionView }
-  | { type: "access"; item: CollectionView }
   | { type: "clone"; item: CipherView }
-  | { type: "events"; item: CipherView }
   | { type: "restore"; items: CipherView[] }
   | { type: "delete"; items: VaultItem[] }
-  | { type: "copy"; item: CipherView; field: "username" | "password" | "totp" }
+  | { type: "copyField"; item: CipherView; field: "username" | "password" | "totp" }
   | { type: "moveToFolder"; items: CipherView[] }
   | { type: "moveToOrganization"; items: CipherView[] };
