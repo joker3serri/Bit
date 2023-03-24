@@ -794,8 +794,6 @@ export class VaultComponent implements OnInit, OnDestroy {
         EventType.Cipher_ClientToggledHiddenFieldVisible,
         cipher.id
       );
-    } else if (typeI18nKey === "securityCode") {
-      this.eventCollectionService.collect(EventType.Cipher_ClientCopiedCardCode, cipher.id);
     }
   }
 
