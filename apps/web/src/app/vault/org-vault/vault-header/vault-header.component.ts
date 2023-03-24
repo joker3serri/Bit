@@ -15,6 +15,7 @@ import {
 } from "@bitwarden/components";
 
 import { CollectionAdminService, CollectionAdminView } from "../../../organizations/core";
+import { CollectionDialogTabType } from "../../../organizations/shared";
 import {
   All,
   RoutedVaultFilterModel,
@@ -50,11 +51,12 @@ export class VaultHeaderComponent {
   @Output() onAddCollection = new EventEmitter<void>();
 
   /** Emits an event when the edit collection button is clicked in the header */
-  @Output() onEditCollection = new EventEmitter<{ tab: "info" | "access" }>();
+  @Output() onEditCollection = new EventEmitter<{ tab: CollectionDialogTabType }>();
 
   /** Emits an event when the delete collection button is clicked in the header */
   @Output() onDeleteCollection = new EventEmitter<void>();
 
+  protected CollectionDialogTabType = CollectionDialogTabType;
   protected organizations$ = this.organizationService.organizations$;
 
   constructor(
@@ -164,7 +166,7 @@ export class VaultHeaderComponent {
     this.onAddCollection.emit();
   }
 
-  async editCollection(tab: "info" | "access"): Promise<void> {
+  async editCollection(tab: CollectionDialogTabType): Promise<void> {
     this.onEditCollection.emit({ tab });
   }
 

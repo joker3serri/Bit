@@ -455,9 +455,9 @@ export class VaultComponent implements OnInit, OnDestroy {
         this.copy(event.item, event.item.login.totp, "verificationCodeTotp", "TOTP");
       }
     } else if (event.type === "edit") {
-      this.editCollection(event.item, "info");
+      this.editCollection(event.item, CollectionDialogTabType.Info);
     } else if (event.type === "access") {
-      this.editCollection(event.item, "access");
+      this.editCollection(event.item, CollectionDialogTabType.Access);
     } else if (event.type === "events") {
       this.viewEvents(event.item);
     }
@@ -808,11 +808,9 @@ export class VaultComponent implements OnInit, OnDestroy {
     }
   }
 
-  async editCollection(c: CollectionView, tab: "info" | "access"): Promise<void> {
-    const tabType = tab == "info" ? CollectionDialogTabType.Info : CollectionDialogTabType.Access;
-
+  async editCollection(c: CollectionView, tab: CollectionDialogTabType): Promise<void> {
     const dialog = openCollectionDialog(this.dialogService, {
-      data: { collectionId: c?.id, organizationId: this.organization?.id, initialTab: tabType },
+      data: { collectionId: c?.id, organizationId: this.organization?.id, initialTab: tab },
     });
 
     const result = await lastValueFrom(dialog.closed);
