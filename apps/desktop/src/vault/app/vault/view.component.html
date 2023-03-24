@@ -440,7 +440,7 @@
         </div>
       </div>
     </div>
-    <div class="box" *ngIf="cipher.folderId">
+    <div class="box" *ngIf="cipher.folderId && folder">
       <div class="box-content">
         <div class="box-content-row">
           <label
@@ -450,7 +450,7 @@
             (dragstart)="setTextDataOnDrag($event, folder.name)"
             >{{ "folder" | i18n }}</label
           >
-          <input id="folderName" type="text" name="folderName" [value]="folder?.name" readonly />
+          <input id="folderName" type="text" name="folderName" [value]="folder.name" readonly />
         </div>
       </div>
     </div>
