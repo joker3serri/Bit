@@ -1,5 +1,5 @@
-import { Cipher as CipherDomain } from "../../vault/models/domain/cipher";
-import { CipherView } from "../../vault/models/view/cipher.view";
+import { Cipher as CipherDomain } from "@bitwarden/common/vault/models/domain/cipher";
+import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 
 import { CipherExport } from "./cipher.export";
 

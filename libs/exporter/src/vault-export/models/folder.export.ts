@@ -1,6 +1,6 @@
-import { Folder as FolderDomain } from "../../vault/models/domain/folder";
-import { FolderView } from "../../vault/models/view/folder.view";
-import { EncString } from "../domain/enc-string";
+import { EncString } from "@bitwarden/common/models/domain/enc-string";
+import { Folder as FolderDomain } from "@bitwarden/common/vault/models/domain/folder";
+import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 export class FolderExport {
   static template(): FolderExport {

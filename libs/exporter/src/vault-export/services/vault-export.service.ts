@@ -10,9 +10,6 @@ import { CollectionView } from "@bitwarden/common/admin-console/models/view/coll
 import { KdfConfig } from "@bitwarden/common/auth/models/domain/kdf-config";
 import { DEFAULT_PBKDF2_ITERATIONS, KdfType } from "@bitwarden/common/enums/kdfType";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { CipherWithIdExport } from "@bitwarden/common/models/export/cipher-with-ids.export";
-import { CollectionWithIdExport } from "@bitwarden/common/models/export/collection-with-id.export";
-import { FolderWithIdExport } from "@bitwarden/common/models/export/folder-with-id.export";
 import { CipherService } from "@bitwarden/common/vault/abstractions/cipher.service";
 import { FolderService } from "@bitwarden/common/vault/abstractions/folder/folder.service.abstraction";
 import { CipherType } from "@bitwarden/common/vault/enums/cipher-type";
@@ -22,7 +19,8 @@ import { Folder } from "@bitwarden/common/vault/models/domain/folder";
 import { CipherView } from "@bitwarden/common/vault/models/view/cipher.view";
 import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
-import { ExportHelper } from "../export-helper";
+import { ExportHelper } from "../../export-helper";
+import { CipherWithIdExport, CollectionWithIdExport, FolderWithIdExport } from "../models";
 
 import { ExportFormat, VaultExportServiceAbstraction } from "./vault-export.service.abstraction";
 

@@ -1,5 +1,5 @@
-import { Folder as FolderDomain } from "../../vault/models/domain/folder";
-import { FolderView } from "../../vault/models/view/folder.view";
+import { Folder as FolderDomain } from "@bitwarden/common/vault/models/domain/folder";
+import { FolderView } from "@bitwarden/common/vault/models/view/folder.view";
 
 import { FolderExport } from "./folder.export";
 

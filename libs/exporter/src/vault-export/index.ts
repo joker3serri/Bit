@@ -1,2 +1,2 @@
-export * from "./vault-export.service.abstraction";
-export * from "./vault-export.service";
+export * from "./services/vault-export.service.abstraction";
+export * from "./services/vault-export.service";
