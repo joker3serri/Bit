@@ -3,13 +3,13 @@ import { ActivatedRoute, Router } from "@angular/router";
 
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { ExportService } from "@bitwarden/common/abstractions/export.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { ProviderService } from "@bitwarden/common/admin-console/abstractions/provider.service";
 import { EventResponse } from "@bitwarden/common/models/response/event.response";
+import { EventExportServiceAbstraction } from "@bitwarden/exporter/event-export";
 import { BaseEventsComponent } from "@bitwarden/web-vault/app/common/base.events.component";
 import { EventService } from "@bitwarden/web-vault/app/core";
 
@@ -31,7 +31,7 @@ export class EventsComponent extends BaseEventsComponent implements OnInit {
     eventService: EventService,
     i18nService: I18nService,
     private providerService: ProviderService,
-    exportService: ExportService,
+    exportService: EventExportServiceAbstraction,
     platformUtilsService: PlatformUtilsService,
     private router: Router,
     logService: LogService,

@@ -4,7 +4,6 @@ import { concatMap, Subject, takeUntil } from "rxjs";
 
 import { UserNamePipe } from "@bitwarden/angular/pipes/user-name.pipe";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
-import { ExportService } from "@bitwarden/common/abstractions/export.service";
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
@@ -15,6 +14,7 @@ import { ProviderService } from "@bitwarden/common/admin-console/abstractions/pr
 import { Organization } from "@bitwarden/common/admin-console/models/domain/organization";
 import { EventSystemUser } from "@bitwarden/common/enums/event-system-user";
 import { EventResponse } from "@bitwarden/common/models/response/event.response";
+import { EventExportServiceAbstraction } from "@bitwarden/exporter/event-export";
 
 import { BaseEventsComponent } from "../../../common/base.events.component";
 import { EventService } from "../../../core";
@@ -41,7 +41,7 @@ export class EventsComponent extends BaseEventsComponent implements OnInit, OnDe
     private route: ActivatedRoute,
     eventService: EventService,
     i18nService: I18nService,
-    exportService: ExportService,
+    exportService: EventExportServiceAbstraction,
     platformUtilsService: PlatformUtilsService,
     private router: Router,
     logService: LogService,

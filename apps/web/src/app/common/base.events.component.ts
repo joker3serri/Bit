@@ -7,7 +7,7 @@ import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUti
 import { EventResponse } from "@bitwarden/common/models/response/event.response";
 import { ListResponse } from "@bitwarden/common/models/response/list.response";
 import { EventView } from "@bitwarden/common/models/view/event.view";
-import { VaultExportServiceAbstraction } from "@bitwarden/exporter/vault-export";
+import { EventExportServiceAbstraction } from "@bitwarden/exporter/event-export";
 
 import { EventService } from "../core";
 
@@ -29,7 +29,7 @@ export abstract class BaseEventsComponent {
   constructor(
     protected eventService: EventService,
     protected i18nService: I18nService,
-    protected exportService: VaultExportServiceAbstraction,
+    protected exportService: EventExportServiceAbstraction,
     protected platformUtilsService: PlatformUtilsService,
     protected logService: LogService,
     protected fileDownloadService: FileDownloadService
