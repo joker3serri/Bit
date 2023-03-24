@@ -7,74 +7,75 @@ export type FilterFunction = (cipher: CipherView) => boolean;
 
 export function createFilterFunction(filter: RoutedVaultFilterModel): FilterFunction {
   return (cipher) => {
-    let cipherPassesFilter = true;
-    if (filter.type === "favorites" && cipherPassesFilter) {
-      cipherPassesFilter = cipher.favorite;
+    if (filter.type === "favorites" && !cipher.favorite) {
+      return false;
     }
-    if (filter.type === "card" && cipherPassesFilter) {
-      cipherPassesFilter = cipher.type === CipherType.Card;
+    if (filter.type === "card" && cipher.type !== CipherType.Card) {
+      return false;
     }
-    if (filter.type === "identity" && cipherPassesFilter) {
-      cipherPassesFilter = cipher.type === CipherType.Identity;
+    if (filter.type === "identity" && cipher.type !== CipherType.Identity) {
+      return false;
     }
-    if (filter.type === "login" && cipherPassesFilter) {
-      cipherPassesFilter = cipher.type === CipherType.Login;
+    if (filter.type === "login" && cipher.type !== CipherType.Login) {
+      return false;
     }
-    if (filter.type === "note" && cipherPassesFilter) {
-      cipherPassesFilter = cipher.type === CipherType.SecureNote;
+    if (filter.type === "note" && cipher.type !== CipherType.SecureNote) {
+      return false;
     }
-    if (filter.type === "trash" && cipherPassesFilter) {
-      cipherPassesFilter = cipher.isDeleted;
+    if (filter.type === "trash" && !cipher.isDeleted) {
+      return false;
     }
     // Hide trash unless explicitly selected
-    if (filter.type !== "trash" && cipherPassesFilter) {
-      cipherPassesFilter = !cipher.isDeleted;
+    if (filter.type !== "trash" && cipher.isDeleted) {
+      return false;
     }
     // No folder
-    if (filter.folderId === Unassigned && cipherPassesFilter) {
-      cipherPassesFilter = cipher.folderId === null;
+    if (filter.folderId === Unassigned && cipher.folderId !== null) {
+      return false;
     }
     // Folder
     if (
       filter.folderId !== undefined &&
       filter.folderId !== All &&
       filter.folderId !== Unassigned &&
-      cipherPassesFilter
+      cipher.folderId !== filter.folderId
     ) {
-      cipherPassesFilter = cipher.folderId === filter.folderId;
+      return false;
     }
     // All collections (top level)
-    if (filter.collectionId === All && cipherPassesFilter) {
-      cipherPassesFilter = false;
+    if (filter.collectionId === All) {
+      return false;
     }
     // Unassigned
-    if (filter.collectionId === Unassigned && cipherPassesFilter) {
-      cipherPassesFilter =
-        cipher.organizationId != null &&
-        (cipher.collectionIds == null || cipher.collectionIds.length === 0);
+    if (
+      filter.collectionId === Unassigned &&
+      (cipher.organizationId == null ||
+        (cipher.collectionIds != null && cipher.collectionIds.length > 0))
+    ) {
+      return false;
     }
     // Collection
     if (
       filter.collectionId !== undefined &&
       filter.collectionId !== All &&
       filter.collectionId !== Unassigned &&
-      cipherPassesFilter
+      (cipher.collectionIds == null || !cipher.collectionIds.includes(filter.collectionId))
     ) {
-      cipherPassesFilter =
-        cipher.collectionIds != null && cipher.collectionIds.includes(filter.collectionId);
+      return false;
     }
     // My Vault
-    if (filter.organizationId === Unassigned && cipherPassesFilter) {
-      cipherPassesFilter = cipher.organizationId === null;
+    if (filter.organizationId === Unassigned && cipher.organizationId != null) {
+      return false;
     }
     // Organization
     else if (
       filter.organizationId !== undefined &&
       filter.organizationId !== Unassigned &&
-      cipherPassesFilter
+      cipher.organizationId !== filter.organizationId
     ) {
-      cipherPassesFilter = cipher.organizationId === filter.organizationId;
+      return false;
     }
-    return cipherPassesFilter;
+
+    return true;
   };
 }
