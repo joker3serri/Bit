@@ -58,7 +58,7 @@ export class BillingSubscriptionResponse extends BaseResponse {
 
 export class BillingSubscriptionItemResponse extends BaseResponse {
   name: string;
-  amount?: number;
+  amount: number;
   quantity: number;
   interval: string;
   sponsoredSubscriptionItem: boolean;
