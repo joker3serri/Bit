@@ -16,6 +16,7 @@
 <td bitCell>
   <button
     bitLink
+    [disabled]="disabled"
     type="button"
     class="tw-text-start"
     linkType="secondary"
@@ -30,7 +31,7 @@
   <app-org-badge
     [disabled]="disabled"
     [organizationId]="collection.organizationId"
-    [organizationName]="collection.organizationId | orgNameFromId: organizations"
+    [organizationName]="collection.organizationId | orgNameFromId : organizations"
     appStopProp
   >
   </app-org-badge>
