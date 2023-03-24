@@ -62,7 +62,6 @@ export class ApiHelperServiceImplementation implements ApiHelperService {
    * @param method - GET, POST, PUT, DELETE
    * @param requestUrl - url to send request to
    * @param body - body of request
-   * @param authed - whether or not to include auth header
    * @param hasResponse - whether or not to expect a response
    * @param alterHeaders - function to alter headers before sending request
    * @returns Request object
