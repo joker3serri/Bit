@@ -605,8 +605,6 @@ export class VaultComponent implements OnInit, OnDestroy {
   }
 
   async restore(c: CipherView): Promise<boolean> {
-    // REVIEW QUESTION: Original restore didn't reprompt cipher. I added it now.
-    // Should I remove again? Was it just a bug that it was missing?
     if (!(await this.repromptCipher([c]))) {
       return;
     }
