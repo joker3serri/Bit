@@ -10,8 +10,8 @@ import { StateService } from "../../abstractions/state.service";
 import { HashPurpose } from "../../enums/hashPurpose";
 import { Utils } from "../../misc/utils";
 import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
+import { AccountsApiService } from "../abstractions/accounts-api.service.abstraction";
 import { AuthService } from "../abstractions/auth.service";
-import { IdentityApiService } from "../abstractions/identity-api.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";
@@ -40,7 +40,7 @@ describe("PasswordLogInStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
-  let identityApiService: MockProxy<IdentityApiService>;
+  let identityApiService: MockProxy<AccountsApiService>;
   let authService: MockProxy<AuthService>;
 
   let passwordLogInStrategy: PasswordLogInStrategy;
@@ -56,7 +56,7 @@ describe("PasswordLogInStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
-    identityApiService = mock<IdentityApiService>();
+    identityApiService = mock<AccountsApiService>();
     authService = mock<AuthService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);

@@ -9,7 +9,7 @@ import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { Utils } from "../../misc/utils";
-import { IdentityApiService } from "../abstractions/identity-api.service";
+import { AccountsApiService } from "../abstractions/accounts-api.service.abstraction";
 import { KeyConnectorService } from "../abstractions/key-connector.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
@@ -28,7 +28,7 @@ describe("UserApiLogInStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
-  let identityApiService: MockProxy<IdentityApiService>;
+  let identityApiService: MockProxy<AccountsApiService>;
   let keyConnectorService: MockProxy<KeyConnectorService>;
   let environmentService: MockProxy<EnvironmentService>;
 
@@ -50,7 +50,7 @@ describe("UserApiLogInStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
-    identityApiService = mock<IdentityApiService>();
+    identityApiService = mock<AccountsApiService>();
     keyConnectorService = mock<KeyConnectorService>();
     environmentService = mock<EnvironmentService>();
 

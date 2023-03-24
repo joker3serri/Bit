@@ -7,11 +7,11 @@ import { LogService } from "../../abstractions/log.service";
 import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
-import { IdentityApiService } from "../../auth/abstractions/identity-api.service";
 import { Utils } from "../../misc/utils";
 import { Account, AccountProfile, AccountTokens } from "../../models/domain/account";
 import { EncString } from "../../models/domain/enc-string";
 import { AuthService } from "../abstractions/auth.service";
+import { TokenApiService } from "../abstractions/token-api.service.abstraction";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
@@ -77,7 +77,7 @@ describe("LogInStrategy", () => {
   let logService: MockProxy<LogService>;
   let stateService: MockProxy<StateService>;
   let twoFactorService: MockProxy<TwoFactorService>;
-  let identityApiService: MockProxy<IdentityApiService>;
+  let tokenApiService: MockProxy<TokenApiService>;
   let authService: MockProxy<AuthService>;
 
   let passwordLogInStrategy: PasswordLogInStrategy;
@@ -93,7 +93,7 @@ describe("LogInStrategy", () => {
     logService = mock<LogService>();
     stateService = mock<StateService>();
     twoFactorService = mock<TwoFactorService>();
-    identityApiService = mock<IdentityApiService>();
+    tokenApiService = mock<TokenApiService>();
     authService = mock<AuthService>();
 
     appIdService.getAppId.mockResolvedValue(deviceId);
@@ -110,7 +110,7 @@ describe("LogInStrategy", () => {
       logService,
       stateService,
       twoFactorService,
-      identityApiService,
+      tokenApiService,
       authService
     );
     credentials = new PasswordLogInCredentials(email, masterPassword);
@@ -118,7 +118,7 @@ describe("LogInStrategy", () => {
 
   describe("base class", () => {
     it("sets the local environment after a successful login", async () => {
-      identityApiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
+      tokenApiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
 
       await passwordLogInStrategy.logIn(credentials);
 
@@ -154,7 +154,7 @@ describe("LogInStrategy", () => {
       tokenResponse.forcePasswordReset = true;
       tokenResponse.resetMasterPassword = true;
 
-      identityApiService.postIdentityToken.mockResolvedValue(tokenResponse);
+      tokenApiService.postIdentityToken.mockResolvedValue(tokenResponse);
 
       const result = await passwordLogInStrategy.logIn(credentials);
 
@@ -174,7 +174,7 @@ describe("LogInStrategy", () => {
         HCaptcha_SiteKey: captchaSiteKey,
       });
 
-      identityApiService.postIdentityToken.mockResolvedValue(tokenResponse);
+      tokenApiService.postIdentityToken.mockResolvedValue(tokenResponse);
 
       const result = await passwordLogInStrategy.logIn(credentials);
 
@@ -191,7 +191,7 @@ describe("LogInStrategy", () => {
       tokenResponse.privateKey = null;
       cryptoService.makeKeyPair.mockResolvedValue(["PUBLIC_KEY", new EncString("PRIVATE_KEY")]);
 
-      identityApiService.postIdentityToken.mockResolvedValue(tokenResponse);
+      tokenApiService.postIdentityToken.mockResolvedValue(tokenResponse);
 
       await passwordLogInStrategy.logIn(credentials);
 
@@ -206,6 +206,7 @@ describe("LogInStrategy", () => {
     });
   });
 
+  // TODO: add test for the the await this.tokenService.clearTwoFactorToken();
   describe("Two-factor authentication", () => {
     it("rejects login if 2FA is required", async () => {
       // Sample response where TOTP 2FA required
@@ -216,7 +217,7 @@ describe("LogInStrategy", () => {
         error_description: "Two factor required.",
       });
 
-      identityApiService.postIdentityToken.mockResolvedValue(tokenResponse);
+      tokenApiService.postIdentityToken.mockResolvedValue(tokenResponse);
 
       const result = await passwordLogInStrategy.logIn(credentials);
 
@@ -231,11 +232,11 @@ describe("LogInStrategy", () => {
 
     it("sends stored 2FA token to server", async () => {
       tokenService.getTwoFactorToken.mockResolvedValue(twoFactorToken);
-      identityApiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
+      tokenApiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
 
       await passwordLogInStrategy.logIn(credentials);
 
-      expect(identityApiService.postIdentityToken).toHaveBeenCalledWith(
+      expect(tokenApiService.postIdentityToken).toHaveBeenCalledWith(
         expect.objectContaining({
           twoFactor: {
             provider: TwoFactorProviderType.Remember,
@@ -248,7 +249,7 @@ describe("LogInStrategy", () => {
 
     it("sends 2FA token provided by user to server (single step)", async () => {
       // This occurs if the user enters the 2FA code as an argument in the CLI
-      identityApiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
+      tokenApiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
       credentials.twoFactor = new TokenTwoFactorRequest(
         twoFactorProviderType,
         twoFactorToken,
@@ -257,7 +258,7 @@ describe("LogInStrategy", () => {
 
       await passwordLogInStrategy.logIn(credentials);
 
-      expect(identityApiService.postIdentityToken).toHaveBeenCalledWith(
+      expect(tokenApiService.postIdentityToken).toHaveBeenCalledWith(
         expect.objectContaining({
           twoFactor: {
             provider: twoFactorProviderType,
@@ -277,14 +278,14 @@ describe("LogInStrategy", () => {
         null
       );
 
-      identityApiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
+      tokenApiService.postIdentityToken.mockResolvedValue(identityTokenResponseFactory());
 
       await passwordLogInStrategy.logInTwoFactor(
         new TokenTwoFactorRequest(twoFactorProviderType, twoFactorToken, twoFactorRemember),
         null
       );
 
-      expect(identityApiService.postIdentityToken).toHaveBeenCalledWith(
+      expect(tokenApiService.postIdentityToken).toHaveBeenCalledWith(
         expect.objectContaining({
           twoFactor: {
             provider: twoFactorProviderType,

@@ -6,7 +6,7 @@ import { MessagingService } from "../../abstractions/messaging.service";
 import { PlatformUtilsService } from "../../abstractions/platformUtils.service";
 import { StateService } from "../../abstractions/state.service";
 import { AuthService } from "../abstractions/auth.service";
-import { IdentityApiService } from "../abstractions/identity-api.service";
+import { TokenApiService } from "../abstractions/token-api.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { AuthResult } from "../models/domain/auth-result";
@@ -42,7 +42,7 @@ export class PasswordlessLogInStrategy extends LogInStrategy {
     logService: LogService,
     stateService: StateService,
     twoFactorService: TwoFactorService,
-    identityApiService: IdentityApiService,
+    tokenApiService: TokenApiService,
     private authService: AuthService
   ) {
     super(
@@ -55,7 +55,7 @@ export class PasswordlessLogInStrategy extends LogInStrategy {
       logService,
       stateService,
       twoFactorService,
-      identityApiService
+      tokenApiService
     );
   }
 
