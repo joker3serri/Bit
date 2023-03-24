@@ -266,7 +266,6 @@ export class AppComponent implements OnInit, OnDestroy {
               title: { key: "premiumRequired" },
               content: { key: "premiumRequiredDesc" },
               acceptButtonText: { key: "learnMore" },
-              cancelButtonText: { key: "cancel" },
               type: SimpleDialogType.SUCCESS,
             });
             if (premiumConfirmed) {
@@ -279,7 +278,6 @@ export class AppComponent implements OnInit, OnDestroy {
               title: { key: "emailVerificationRequired" },
               content: { key: "emailVerificationRequiredDesc" },
               acceptButtonText: { key: "learnMore" },
-              cancelButtonText: { key: "cancel" },
               type: SimpleDialogType.INFO,
             });
             if (emailVerificationConfirmed) {

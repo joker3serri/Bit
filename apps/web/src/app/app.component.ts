@@ -135,7 +135,6 @@ export class AppComponent implements OnDestroy, OnInit {
               title: { key: "upgradeOrganization" },
               content: { key: "upgradeOrganizationDesc" },
               acceptButtonText: { key: "upgradeOrganization" },
-              cancelButtonText: { key: "cancel" },
               type: SimpleDialogType.INFO,
             });
             if (upgradeConfirmed) {
@@ -153,7 +152,6 @@ export class AppComponent implements OnDestroy, OnInit {
               title: { key: "premiumRequired" },
               content: { key: "premiumRequiredDesc" },
               acceptButtonText: { key: "upgrade" },
-              cancelButtonText: { key: "cancel" },
               type: SimpleDialogType.SUCCESS,
             });
             if (premiumConfirmed) {
@@ -166,7 +164,6 @@ export class AppComponent implements OnDestroy, OnInit {
               title: { key: "emailVerificationRequired" },
               content: { key: "emailVerificationRequiredDesc" },
               acceptButtonText: { key: "learnMore" },
-              cancelButtonText: { key: "cancel" },
               type: SimpleDialogType.INFO,
             });
             if (emailVerificationConfirmed) {

@@ -67,7 +67,6 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
           os.EOL +
           this.i18nService.t("encExportAccountWarningDesc"),
         acceptButtonText: { key: "exportVault" },
-        cancelButtonText: { key: "cancel" },
         type: SimpleDialogType.WARNING,
       });
     } else {
@@ -75,7 +74,6 @@ export class ExportComponent extends BaseExportComponent implements OnInit {
         title: { key: "confirmVaultExport" },
         content: { key: "exportWarningDesc" },
         acceptButtonText: { key: "exportVault" },
-        cancelButtonText: { key: "cancel" },
         type: SimpleDialogType.WARNING,
       });
     }
