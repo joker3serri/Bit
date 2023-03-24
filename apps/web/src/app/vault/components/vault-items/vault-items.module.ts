@@ -5,7 +5,6 @@ import { RouterModule } from "@angular/router";
 
 import { TableModule } from "@bitwarden/components";
 
-// eslint-disable-next-line no-restricted-imports
 import { SharedModule } from "../../../shared/shared.module";
 import { OrganizationBadgeModule } from "../../individual-vault/organization-badge/organization-badge.module";
 import { PipesModule } from "../../individual-vault/pipes/pipes.module";
