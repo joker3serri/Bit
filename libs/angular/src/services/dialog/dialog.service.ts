@@ -13,7 +13,6 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 
 import { DialogServiceAbstraction } from "./dialog.service.abstraction";
 import { SimpleDialogOptions } from "./simple-dialog-options";
-import { SimpleDialogType } from "./simple-dialog-type";
 import { Translation } from "./translation";
 
 // This is a temporary base class for Dialogs. It is intended to be removed once the Component Library is adoped by each app.
@@ -32,30 +31,7 @@ export abstract class DialogService extends Dialog implements DialogServiceAbstr
     super(_overlay, _injector, _defaultOptions, _parentDialog, _overlayContainer, scrollStrategy);
   }
 
-  async openSimpleDialog(options: SimpleDialogOptions) {
-    const defaultCancel =
-      options.cancelButtonText === undefined
-        ? options.acceptButtonText == null
-          ? "no"
-          : "cancel"
-        : null;
-
-    return this.legacyShowDialog(
-      this.translate(options.content),
-      this.translate(options.title),
-      this.translate(options.acceptButtonText, "yes"),
-      this.translate(options.cancelButtonText, defaultCancel),
-      options.type
-    );
-  }
-
-  legacyShowDialog(
-    body: string,
-    title?: string,
-    confirmText?: string,
-    cancelText?: string,
-    type?: SimpleDialogType
-  ): Promise<boolean> {
+  async openSimpleDialog(options: SimpleDialogOptions): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
 
@@ -70,7 +46,7 @@ export abstract class DialogService extends Dialog implements DialogServiceAbstr
     throw new Error("Method not implemented.");
   }
 
-  private translate(translation: string | Translation, defaultKey?: string): string {
+  protected translate(translation: string | Translation, defaultKey?: string): string {
     if (translation == null && defaultKey == null) {
       return null;
     }

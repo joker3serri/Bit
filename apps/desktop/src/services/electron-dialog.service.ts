@@ -1,6 +1,10 @@
 import { ipcRenderer } from "electron";
 
-import { DialogService, SimpleDialogType } from "@bitwarden/angular/services/dialog";
+import {
+  DialogService,
+  SimpleDialogOptions,
+  SimpleDialogType,
+} from "@bitwarden/angular/services/dialog";
 
 // Electron supports a limited set of dialog types
 // https://www.electronjs.org/docs/latest/api/dialog#dialogshowmessageboxbrowserwindow-options
@@ -13,7 +17,24 @@ const electronTypeMap: Record<SimpleDialogType, string> = {
 };
 
 export class ElectronDialogService extends DialogService {
-  async legacyShowDialog(
+  async openSimpleDialog(options: SimpleDialogOptions) {
+    const defaultCancel =
+      options.cancelButtonText === undefined
+        ? options.acceptButtonText == null
+          ? "no"
+          : "cancel"
+        : null;
+
+    return this.legacyShowDialog(
+      this.translate(options.content),
+      this.translate(options.title),
+      this.translate(options.acceptButtonText, "yes"),
+      this.translate(options.cancelButtonText, defaultCancel),
+      options.type
+    );
+  }
+
+  private async legacyShowDialog(
     body: string,
     title?: string,
     confirmText?: string,

@@ -1,11 +1,32 @@
 import { Injectable } from "@angular/core";
 import Swal, { SweetAlertIcon } from "sweetalert2";
 
-import { DialogService, SimpleDialogType } from "@bitwarden/angular/services/dialog";
+import {
+  DialogService,
+  SimpleDialogOptions,
+  SimpleDialogType,
+} from "@bitwarden/angular/services/dialog";
 
 @Injectable()
 export class BrowserDialogService extends DialogService {
-  async legacyShowDialog(
+  async openSimpleDialog(options: SimpleDialogOptions) {
+    const defaultCancel =
+      options.cancelButtonText === undefined
+        ? options.acceptButtonText == null
+          ? "no"
+          : "cancel"
+        : null;
+
+    return this.legacyShowDialog(
+      this.translate(options.content),
+      this.translate(options.title),
+      this.translate(options.acceptButtonText, "yes"),
+      this.translate(options.cancelButtonText, defaultCancel),
+      options.type
+    );
+  }
+
+  private async legacyShowDialog(
     body: string,
     title?: string,
     confirmText?: string,

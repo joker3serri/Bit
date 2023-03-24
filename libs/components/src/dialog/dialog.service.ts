@@ -21,7 +21,6 @@ import { filter, firstValueFrom, Subject, switchMap, takeUntil } from "rxjs";
 import {
   DialogServiceAbstraction,
   SimpleDialogCloseType,
-  SimpleDialogType,
 } from "@bitwarden/angular/services/dialog";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
@@ -112,27 +111,6 @@ export class DialogService extends Dialog implements OnDestroy, DialogServiceAbs
     return this.open(SimpleConfigurableDialogComponent, {
       data: simpleDialogOptions,
       disableClose: simpleDialogOptions.disableClose,
-    });
-  }
-
-  /**
-   * Migrated from `platformUtilsService.showDialog`.
-   *
-   * @deprecated Use `openSimpleDialog` instead.
-   */
-  async legacyShowDialog(
-    body: string,
-    title?: string,
-    confirmText?: string,
-    cancelText?: string,
-    type?: SimpleDialogType
-  ): Promise<boolean> {
-    return this.openSimpleDialog({
-      title: title,
-      content: body,
-      acceptButtonText: confirmText,
-      cancelButtonText: cancelText,
-      type: type ?? SimpleDialogType.WARNING,
     });
   }
 }

@@ -1,7 +1,6 @@
 import { Dialog, DialogRef } from "@angular/cdk/dialog";
 
 import { SimpleDialogOptions } from "./simple-dialog-options";
-import { SimpleDialogType } from "./simple-dialog-type";
 
 export abstract class DialogServiceAbstraction extends Dialog {
   /**
@@ -24,17 +23,4 @@ export abstract class DialogServiceAbstraction extends Dialog {
    * a user pressed (see `SimpleDialogCloseType`)
    */
   openSimpleDialogRef: (simpleDialogOptions: SimpleDialogOptions) => DialogRef;
-
-  /**
-   * Migrated from `platformUtilsService.showDialog`.
-   *
-   * @deprecated Use `openSimpleDialog` instead.
-   */
-  legacyShowDialog: (
-    body: string,
-    title?: string,
-    confirmText?: string,
-    cancelText?: string,
-    type?: SimpleDialogType
-  ) => Promise<boolean>;
 }
