@@ -34,7 +34,7 @@
       >
         {{ trashCleanupWarning }}
       </app-callout>
-      <app-new-vault-items
+      <app-vault-items
         [ciphers]="ciphers"
         [collections]="collections"
         [allCollections]="allCollections"
@@ -55,7 +55,7 @@
         [cloneableOrganizationCiphers]="true"
         (onEvent)="onVaultItemsEvent($event)"
       >
-      </app-new-vault-items>
+      </app-vault-items>
       <div
         class="tw-mt-6 tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-start"
         *ngIf="showMissingCollectionPermissionMessage"

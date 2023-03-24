@@ -26,7 +26,7 @@
       <app-callout type="warning" *ngIf="activeFilter.isDeleted" icon="bwi-exclamation-triangle">
         {{ trashCleanupWarning }}
       </app-callout>
-      <app-new-vault-items
+      <app-vault-items
         [ciphers]="ciphers"
         [collections]="collections"
         [allCollections]="allCollections"
@@ -43,7 +43,7 @@
         [cloneableOrganizationCiphers]="false"
         (onEvent)="onVaultItemsEvent($event)"
       >
-      </app-new-vault-items>
+      </app-vault-items>
       <div
         *ngIf="performingInitialLoad"
         class="tw-mt-6 tw-flex tw-h-full tw-flex-col tw-items-center tw-justify-start"

@@ -18,7 +18,7 @@ export const RowHeightClass = `tw-h-[${RowHeight}px]`;
 const MaxSelectionCount = 500;
 
 @Component({
-  selector: "app-new-vault-items",
+  selector: "app-vault-items",
   templateUrl: "vault-items.component.html",
   // TODO: Improve change detection, see: https://bitwarden.atlassian.net/browse/TDL-220
   // changeDetection: ChangeDetectionStrategy.OnPush,
