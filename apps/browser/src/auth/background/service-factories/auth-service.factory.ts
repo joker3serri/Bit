@@ -45,15 +45,20 @@ import {
 } from "../../../background/service_factories/state-service.factory";
 
 import {
+  accountsApiServiceFactory,
+  AccountsApiServiceInitOptions,
+} from "./accounts-api-service.factory";
+import {
   KeyConnectorServiceInitOptions,
   keyConnectorServiceFactory,
 } from "./key-connector-service.factory";
+import { tokenApiServiceFactory, TokenApiServiceInitOptions } from "./token-api-service.factory";
 import { TokenServiceInitOptions, tokenServiceFactory } from "./token-service.factory";
 import { TwoFactorServiceInitOptions, twoFactorServiceFactory } from "./two-factor-service.factory";
 
-type AuthServiceFactoyOptions = FactoryOptions;
+type AuthServiceFactoryOptions = FactoryOptions;
 
-export type AuthServiceInitOptions = AuthServiceFactoyOptions &
+export type AuthServiceInitOptions = AuthServiceFactoryOptions &
   CryptoServiceInitOptions &
   ApiServiceInitOptions &
   TokenServiceInitOptions &
@@ -65,7 +70,9 @@ export type AuthServiceInitOptions = AuthServiceFactoyOptions &
   StateServiceInitOptions &
   TwoFactorServiceInitOptions &
   I18nServiceInitOptions &
-  EncryptServiceInitOptions;
+  EncryptServiceInitOptions &
+  TokenApiServiceInitOptions &
+  AccountsApiServiceInitOptions;
 
 export function authServiceFactory(
   cache: { authService?: AbstractAuthService } & CachedServices,
@@ -89,7 +96,9 @@ export function authServiceFactory(
         await stateServiceFactory(cache, opts),
         await twoFactorServiceFactory(cache, opts),
         await i18nServiceFactory(cache, opts),
-        await encryptServiceFactory(cache, opts)
+        await encryptServiceFactory(cache, opts),
+        await tokenApiServiceFactory(cache, opts),
+        await accountsApiServiceFactory(cache, opts)
       )
   );
 }
