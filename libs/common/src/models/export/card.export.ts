@@ -1,6 +1,6 @@
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { Card as CardDomain } from "@bitwarden/common/vault/models/domain/card";
-import { CardView } from "@bitwarden/common/vault/models/view/card.view";
+import { Card as CardDomain } from "../../vault/models/domain/card";
+import { CardView } from "../../vault/models/view/card.view";
+import { EncString } from "../domain/enc-string";
 
 export class CardExport {
   static template(): CardExport {

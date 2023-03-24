@@ -1,6 +1,6 @@
-import { Collection as CollectionDomain } from "@bitwarden/common/admin-console/models/domain/collection";
-import { CollectionView } from "@bitwarden/common/admin-console/models/view/collection.view";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
+import { Collection as CollectionDomain } from "../../admin-console/models/domain/collection";
+import { CollectionView } from "../../admin-console/models/view/collection.view";
+import { EncString } from "../../models/domain/enc-string";
 
 export class CollectionExport {
   static template(): CollectionExport {

@@ -5,7 +5,7 @@ import {
   CipherWithIdExport,
   CollectionWithIdExport,
   FolderWithIdExport,
-} from "@bitwarden/exporter/vault-export/models";
+} from "@bitwarden/common/models/export";
 
 import { ImportResult } from "../../models/import-result";
 import { BaseImporter } from "../base-importer";

@@ -1,6 +1,6 @@
-import { SecureNoteType } from "@bitwarden/common/enums/secureNoteType";
-import { SecureNote as SecureNoteDomain } from "@bitwarden/common/vault/models/domain/secure-note";
-import { SecureNoteView } from "@bitwarden/common/vault/models/view/secure-note.view";
+import { SecureNoteType } from "../../enums/secureNoteType";
+import { SecureNote as SecureNoteDomain } from "../../vault/models/domain/secure-note";
+import { SecureNoteView } from "../../vault/models/view/secure-note.view";
 
 export class SecureNoteExport {
   static template(): SecureNoteExport {

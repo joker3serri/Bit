@@ -1,6 +1,6 @@
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { Identity as IdentityDomain } from "@bitwarden/common/vault/models/domain/identity";
-import { IdentityView } from "@bitwarden/common/vault/models/view/identity.view";
+import { EncString } from "../../models/domain/enc-string";
+import { Identity as IdentityDomain } from "../../vault/models/domain/identity";
+import { IdentityView } from "../../vault/models/view/identity.view";
 
 export class IdentityExport {
   static template(): IdentityExport {

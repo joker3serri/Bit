@@ -1,7 +1,7 @@
-import { UriMatchType } from "@bitwarden/common/enums/uriMatchType";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { LoginUri as LoginUriDomain } from "@bitwarden/common/vault/models/domain/login-uri";
-import { LoginUriView } from "@bitwarden/common/vault/models/view/login-uri.view";
+import { UriMatchType } from "../../enums/uriMatchType";
+import { EncString } from "../../models/domain/enc-string";
+import { LoginUri as LoginUriDomain } from "../../vault/models/domain/login-uri";
+import { LoginUriView } from "../../vault/models/view/login-uri.view";
 
 export class LoginUriExport {
   static template(): LoginUriExport {

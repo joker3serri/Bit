@@ -1,6 +1,6 @@
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { Login as LoginDomain } from "@bitwarden/common/vault/models/domain/login";
-import { LoginView } from "@bitwarden/common/vault/models/view/login.view";
+import { EncString } from "../../models/domain/enc-string";
+import { Login as LoginDomain } from "../../vault/models/domain/login";
+import { LoginView } from "../../vault/models/view/login.view";
 
 import { LoginUriExport } from "./login-uri.export";
 
