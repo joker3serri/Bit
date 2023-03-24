@@ -13,8 +13,8 @@ import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwo
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { AccountsApiService } from "@bitwarden/common/auth/abstractions/accounts-api.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { IdentityApiService } from "@bitwarden/common/auth/abstractions/identity-api.service";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/models/domain/master-password-policy-options";
 import { ReferenceEventRequest } from "@bitwarden/common/models/request/reference-event.request";
 
@@ -37,7 +37,7 @@ export class RegisterFormComponent extends BaseRegisterComponent {
     router: Router,
     i18nService: I18nService,
     cryptoService: CryptoService,
-    identityApiService: IdentityApiService,
+    accountsApiService: AccountsApiService,
     stateService: StateService,
     platformUtilsService: PlatformUtilsService,
     passwordGenerationService: PasswordGenerationService,
@@ -53,7 +53,7 @@ export class RegisterFormComponent extends BaseRegisterComponent {
       router,
       i18nService,
       cryptoService,
-      identityApiService,
+      accountsApiService,
       stateService,
       platformUtilsService,
       passwordGenerationService,

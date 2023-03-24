@@ -14,8 +14,8 @@ import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PasswordGenerationService } from "@bitwarden/common/abstractions/passwordGeneration.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
+import { AccountsApiService } from "@bitwarden/common/auth/abstractions/accounts-api.service.abstraction";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
-import { IdentityApiService } from "@bitwarden/common/auth/abstractions/identity-api.service";
 import { PasswordLogInCredentials } from "@bitwarden/common/auth/models/domain/log-in-credentials";
 import { RegisterResponse } from "@bitwarden/common/auth/models/response/register.response";
 import { DEFAULT_KDF_CONFIG, DEFAULT_KDF_TYPE } from "@bitwarden/common/enums/kdfType";
@@ -84,7 +84,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     protected router: Router,
     i18nService: I18nService,
     protected cryptoService: CryptoService,
-    protected identityApiService: IdentityApiService,
+    protected accountsApiService: AccountsApiService,
     protected stateService: StateService,
     platformUtilsService: PlatformUtilsService,
     protected passwordGenerationService: PasswordGenerationService,
@@ -305,7 +305,7 @@ export class RegisterComponent extends CaptchaProtectedComponent implements OnIn
     if (!(await this.validateRegistration(showToast)).isValid) {
       return { successful: false };
     }
-    this.formPromise = this.identityApiService.postRegister(request);
+    this.formPromise = this.accountsApiService.postRegister(request);
     try {
       const response = await this.formPromise;
       return { successful: true, captchaBypassToken: response.captchaBypassToken };

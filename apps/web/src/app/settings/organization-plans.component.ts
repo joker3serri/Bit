@@ -20,7 +20,7 @@ import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstraction
 import { OrganizationService } from "@bitwarden/common/abstractions/organization/organization.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { PolicyService } from "@bitwarden/common/abstractions/policy/policy.service.abstraction";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
+import { TokenApiService } from "@bitwarden/common/auth/abstractions/token-api.service.abstraction";
 import { PaymentMethodType } from "@bitwarden/common/enums/paymentMethodType";
 import { PlanType } from "@bitwarden/common/enums/planType";
 import { PolicyType } from "@bitwarden/common/enums/policyType";
@@ -115,7 +115,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     private messagingService: MessagingService,
     private formBuilder: UntypedFormBuilder,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private tokenService: TokenService
+    private tokenApiService: TokenApiService
   ) {
     this.selfHosted = platformUtilsService.isSelfHost();
   }
@@ -367,7 +367,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
           );
         }
 
-        await this.tokenService.refreshIdentityToken();
+        await this.tokenApiService.refreshIdentityToken();
         await this.syncService.fullSync(true);
 
         if (!this.acceptingSponsorship && !this.isInTrialFlow) {
@@ -494,7 +494,7 @@ export class OrganizationPlansComponent implements OnInit, OnDestroy {
     const response = await this.organizationApiService.createLicense(fd);
     const orgId = response.id;
 
-    await this.tokenService.refreshIdentityToken();
+    await this.tokenApiService.refreshIdentityToken();
 
     // Org Keys live outside of the OrganizationLicense - add the keys to the org here
     const request = new OrganizationKeysRequest(orgKeys[0], orgKeys[1].encryptedString);

@@ -7,7 +7,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
+import { TokenApiService } from "@bitwarden/common/auth/abstractions/token-api.service.abstraction";
 import { VerifyEmailRequest } from "@bitwarden/common/models/request/verify-email.request";
 
 @Component({
@@ -24,7 +24,7 @@ export class VerifyEmailTokenComponent implements OnInit {
     private apiService: ApiService,
     private logService: LogService,
     private stateService: StateService,
-    private tokenService: TokenService
+    private tokenApiService: TokenApiService
   ) {}
 
   ngOnInit() {
@@ -36,7 +36,7 @@ export class VerifyEmailTokenComponent implements OnInit {
             new VerifyEmailRequest(qParams.userId, qParams.token)
           );
           if (await this.stateService.getIsAuthenticated()) {
-            await this.tokenService.refreshIdentityToken();
+            await this.tokenApiService.refreshIdentityToken();
           }
           this.platformUtilsService.showToast("success", null, this.i18nService.t("emailVerified"));
           this.router.navigate(["/"]);

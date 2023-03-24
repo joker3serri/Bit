@@ -5,7 +5,7 @@ import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/abstractions/organization/organization-api.service.abstraction";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { TokenService } from "@bitwarden/common/auth/abstractions/token.service";
+import { TokenApiService } from "@bitwarden/common/auth/abstractions/token-api.service.abstraction";
 
 @Component({
   selector: "app-update-license",
@@ -25,7 +25,7 @@ export class UpdateLicenseComponent {
     private platformUtilsService: PlatformUtilsService,
     private logService: LogService,
     private organizationApiService: OrganizationApiServiceAbstraction,
-    private tokenService: TokenService
+    private tokenApiService: TokenApiService
   ) {}
 
   async submit() {
@@ -52,7 +52,7 @@ export class UpdateLicenseComponent {
       }
 
       this.formPromise = updatePromise.then(() => {
-        return this.tokenService.refreshIdentityToken();
+        return this.tokenApiService.refreshIdentityToken();
       });
 
       await this.formPromise;
