@@ -75,7 +75,7 @@
               class="sr-only"
               type="{{ showPassword ? 'text' : 'password' }}"
               name="Login.Password"
-              value="cipher.login.password"
+              value="{{ cipher.login.password }}"
               readonly
               tabindex="-1"
             />
@@ -235,7 +235,7 @@
               id="cardCardholderName"
               type="text"
               name="Card.CardCardholderName"
-              value="cipher.card.cardholderName"
+              value="{{ cipher.card.cardholderName }}"
               readonly
               tabindex="-1"
             />
@@ -324,7 +324,7 @@
               id="cardBrand"
               type="text"
               name="Card.Brand"
-              value="cipher.card.brand"
+              value="{{ cipher.card.brand }}"
               readonly
               tabindex="-1"
             />
@@ -355,7 +355,7 @@
               id="cardExp"
               type="text"
               name="Card.Exp"
-              value="cipher.card.expiration"
+              value="{{ cipher.card.expiration }}"
               readonly
               tabindex="-1"
             />
@@ -387,7 +387,7 @@
               class="monospaced"
               type="{{ showCardCode ? 'text' : 'password' }}"
               name="Card.Code"
-              value="cipher.card.code"
+              value="{{ cipher.card.code }}"
               readonly
               tabindex="-1"
             />
@@ -436,7 +436,7 @@
               id="idFullName"
               type="text"
               name="Identity.FullName"
-              value="cipher.identity.fullName"
+              value="{{ cipher.identity.fullName }}"
               readonly
               tabindex="-1"
             />
@@ -467,7 +467,7 @@
               id="idUsername"
               type="text"
               name="Identity.Username"
-              value="cipher.identity.username"
+              value="{{ cipher.identity.username }}"
               readonly
               tabindex="-1"
             />
@@ -498,7 +498,7 @@
               id="idCompany"
               type="text"
               name="Identity.Company"
-              value="cipher.identity.company"
+              value="{{ cipher.identity.company }}"
               readonly
               tabindex="-1"
             />
@@ -529,7 +529,7 @@
               id="idSsn"
               type="text"
               name="Identity.SSN"
-              value="cipher.identity.ssn"
+              value="{{ cipher.identity.ssn }}"
               readonly
               tabindex="-1"
             />
@@ -560,7 +560,7 @@
               id="idPassportNumber"
               type="text"
               name="Identity.PassportNumber"
-              value="cipher.identity.passportNumber"
+              value="{{ cipher.identity.passportNumber }}"
               readonly
               tabindex="-1"
             />
@@ -591,7 +591,7 @@
               id="idLicenseNumber"
               type="text"
               name="Identity.licenseNumber"
-              value="cipher.identity.licenseNumber"
+              value="{{ cipher.identity.licenseNumber }}"
               readonly
               tabindex="-1"
             />
@@ -622,7 +622,7 @@
               id="idEmail"
               type="text"
               name="Identity.Email"
-              value="cipher.identity.email"
+              value="{{ cipher.identity.email }}"
               readonly
               tabindex="-1"
             />
@@ -653,7 +653,7 @@
               id="idPhone"
               type="text"
               name="Identity.Phone"
-              value="cipher.identity.phone"
+              value="{{ cipher.identity.phone }}"
               readonly
               tabindex="-1"
             />
