@@ -63,7 +63,7 @@
                 class="sr-only"
                 type="{{ showPassword ? 'text' : 'password' }}"
                 name="Login.Password"
-                [(ngModel)]="cipher.login.password"
+                value="cipher.login.password"
                 readonly
                 tabindex="-1"
               />
@@ -226,7 +226,7 @@
                 id="cardCardholderName"
                 type="text"
                 name="Card.CardCardholderName"
-                [(ngModel)]="cipher.card.cardholderName"
+                value="cipher.card.cardholderName"
                 readonly
                 tabindex="-1"
               />
@@ -254,11 +254,22 @@
                 >{{ "number" | i18n }}</label
               >
               <input
+                *ngIf="!showCardNumber"
                 id="cardNumber"
                 class="monospaced"
-                type="{{ showCardNumber ? 'text' : 'password' }}"
+                type="text"
                 name="Card.Number"
-                [(ngModel)]="cipher.card.number"
+                value="{{ cipher.card.number | creditCardNumber: cipher.card.brand }}"
+                readonly
+                tabindex="-1"
+              />
+              <input
+                *ngIf="showCardNumber"
+                id="cardNumber"
+                class="monospaced"
+                type="text"
+                name="Card.Number"
+                value="{{ cipher.card.maskedNumber | creditCardNumber: cipher.card.brand }}"
                 readonly
                 tabindex="-1"
               />
@@ -304,7 +315,7 @@
                 id="cardBrand"
                 type="text"
                 name="Card.Brand"
-                [(ngModel)]="cipher.card.brand"
+                value="cipher.card.brand"
                 readonly
                 tabindex="-1"
               />
@@ -335,7 +346,7 @@
                 id="cardExp"
                 type="text"
                 name="Card.Exp"
-                [(ngModel)]="cipher.card.expiration"
+                value="cipher.card.expiration"
                 readonly
                 tabindex="-1"
               />
@@ -367,7 +378,7 @@
                 class="monospaced"
                 type="{{ showCardCode ? 'text' : 'password' }}"
                 name="Card.Code"
-                [(ngModel)]="cipher.card.code"
+                value="cipher.card.code"
                 readonly
                 tabindex="-1"
               />
@@ -416,7 +427,7 @@
                 id="idFullName"
                 type="text"
                 name="Identity.FullName"
-                [(ngModel)]="cipher.identity.fullName"
+                value="cipher.identity.fullName"
                 readonly
                 tabindex="-1"
               />
@@ -447,7 +458,7 @@
                 id="idUsername"
                 type="text"
                 name="Identity.Username"
-                [(ngModel)]="cipher.identity.username"
+                value="cipher.identity.username"
                 readonly
                 tabindex="-1"
               />
@@ -478,7 +489,7 @@
                 id="idCompany"
                 type="text"
                 name="Identity.Company"
-                [(ngModel)]="cipher.identity.company"
+                value="cipher.identity.company"
                 readonly
                 tabindex="-1"
               />
@@ -509,7 +520,7 @@
                 id="idSsn"
                 type="text"
                 name="Identity.SSN"
-                [(ngModel)]="cipher.identity.ssn"
+                value="cipher.identity.ssn"
                 readonly
                 tabindex="-1"
               />
@@ -540,7 +551,7 @@
                 id="idPassportNumber"
                 type="text"
                 name="Identity.PassportNumber"
-                [(ngModel)]="cipher.identity.passportNumber"
+                value="cipher.identity.passportNumber"
                 readonly
                 tabindex="-1"
               />
@@ -571,7 +582,7 @@
                 id="idLicenseNumber"
                 type="text"
                 name="Identity.licenseNumber"
-                [(ngModel)]="cipher.identity.licenseNumber"
+                value="cipher.identity.licenseNumber"
                 readonly
                 tabindex="-1"
               />
@@ -602,7 +613,7 @@
                 id="idEmail"
                 type="text"
                 name="Identity.Email"
-                [(ngModel)]="cipher.identity.email"
+                value="cipher.identity.email"
                 readonly
                 tabindex="-1"
               />
@@ -633,7 +644,7 @@
                 id="idPhone"
                 type="text"
                 name="Identity.Phone"
-                [(ngModel)]="cipher.identity.phone"
+                value="cipher.identity.phone"
                 readonly
                 tabindex="-1"
               />
@@ -839,12 +850,7 @@
         [copy]="copy.bind(this)"
       ></app-vault-view-custom-fields>
     </div>
-    <div
-      class="box"
-      *ngIf="
-        cipher.hasAttachments && (canAccessPremium || cipher.organizationId) && showAttachments
-      "
-    >
+    <div class="box" *ngIf="cipher.hasAttachments && (canAccessPremium || cipher.organizationId)">
       <h2 class="box-header">
         {{ "attachments" | i18n }}
       </h2>

@@ -32,13 +32,15 @@ import { SsoComponent } from "../auth/popup/sso.component";
 import { TwoFactorOptionsComponent } from "../auth/popup/two-factor-options.component";
 import { TwoFactorComponent } from "../auth/popup/two-factor.component";
 import { UpdateTempPasswordComponent } from "../auth/popup/update-temp-password.component";
-import { CollectionsComponent } from "../popup/vault/collections.component";
+import { GeneratorComponent } from "../tools/popup/generator/generator.component";
+import { PasswordGeneratorHistoryComponent } from "../tools/popup/generator/password-generator-history.component";
 import { ActionButtonsComponent } from "../vault/popup/components/action-buttons.component";
 import { CipherRowComponent } from "../vault/popup/components/cipher-row.component";
 import { PasswordRepromptComponent } from "../vault/popup/components/password-reprompt.component";
 import { AddEditCustomFieldsComponent } from "../vault/popup/components/vault/add-edit-custom-fields.component";
 import { AddEditComponent } from "../vault/popup/components/vault/add-edit.component";
 import { AttachmentsComponent } from "../vault/popup/components/vault/attachments.component";
+import { CollectionsComponent } from "../vault/popup/components/vault/collections.component";
 import { CurrentTabComponent } from "../vault/popup/components/vault/current-tab.component";
 import { PasswordHistoryComponent } from "../vault/popup/components/vault/password-history.component";
 import { ShareComponent } from "../vault/popup/components/vault/share.component";
@@ -55,8 +57,6 @@ import { PrivateModeWarningComponent } from "./components/private-mode-warning.c
 import { SendListComponent } from "./components/send-list.component";
 import { SetPinComponent } from "./components/set-pin.component";
 import { UserVerificationComponent } from "./components/user-verification.component";
-import { GeneratorComponent } from "./generator/generator.component";
-import { PasswordGeneratorHistoryComponent } from "./generator/password-generator-history.component";
 import { EffluxDatesComponent as SendEffluxDatesComponent } from "./send/efflux-dates.component";
 import { SendAddEditComponent } from "./send/send-add-edit.component";
 import { SendGroupingsComponent } from "./send/send-groupings.component";
@@ -68,6 +68,7 @@ import { ExcludedDomainsComponent } from "./settings/excluded-domains.component"
 import { ExportComponent } from "./settings/export.component";
 import { FolderAddEditComponent } from "./settings/folder-add-edit.component";
 import { FoldersComponent } from "./settings/folders.component";
+import { HelpAndFeedbackComponent } from "./settings/help-and-feedback.component";
 import { OptionsComponent } from "./settings/options.component";
 import { PremiumComponent } from "./settings/premium.component";
 import { SettingsComponent } from "./settings/settings.component";
@@ -150,6 +151,7 @@ import { TabsComponent } from "./tabs.component";
     RemovePasswordComponent,
     VaultSelectComponent,
     AboutComponent,
+    HelpAndFeedbackComponent,
     AutofillComponent,
   ],
   providers: [CurrencyPipe, DatePipe],
