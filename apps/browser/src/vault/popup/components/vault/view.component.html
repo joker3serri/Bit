@@ -263,7 +263,7 @@
               >{{ "number" | i18n }}</label
             >
             <input
-              *ngIf="!showCardNumber"
+              *ngIf="showCardNumber"
               id="cardNumber"
               class="monospaced"
               type="text"
@@ -273,7 +273,7 @@
               tabindex="-1"
             />
             <input
-              *ngIf="showCardNumber"
+              *ngIf="!showCardNumber"
               id="cardNumber"
               class="monospaced"
               type="text"
