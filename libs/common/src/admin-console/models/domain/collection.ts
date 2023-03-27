@@ -3,8 +3,6 @@ import { EncString } from "../../../models/domain/enc-string";
 import { CollectionData } from "../data/collection.data";
 import { CollectionView } from "../view/collection.view";
 
-export const NestingDelimiter = "/";
-
 export class Collection extends Domain {
   id: string;
   organizationId: string;
