@@ -1994,7 +1994,7 @@
   "ssoKeyConnectorError": {
     "message": "Key connector error: make sure key connector is available and working correctly."
   },
-  "premiumSubcriptionRequired": {
+  "premiumSubscriptionRequired": {
     "message": "Premium subscription required"
   },
   "organizationIsDisabled": {

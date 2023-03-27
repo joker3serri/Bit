@@ -2023,7 +2023,7 @@
   "apiKey": {
     "message": "API key"
   },
-  "premiumSubcriptionRequired": {
+  "premiumSubscriptionRequired": {
     "message": "Premium subscription required"
   },
   "organizationIsDisabled": {
