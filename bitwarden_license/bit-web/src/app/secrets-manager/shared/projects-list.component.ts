@@ -1,5 +1,5 @@
 import { SelectionModel } from "@angular/cdk/collections";
-import { Component, EventEmitter, Input, OnDestroy, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
 import { Subject, takeUntil } from "rxjs";
 
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
@@ -12,8 +12,9 @@ import { ProjectListView } from "../models/view/project-list.view";
   selector: "sm-projects-list",
   templateUrl: "./projects-list.component.html",
 })
-export class ProjectsListComponent implements OnDestroy {
+export class ProjectsListComponent implements OnInit, OnDestroy {
   protected dataSource = new TableDataSource<ProjectListView>();
+  protected hasWriteAccessOnSelected = false;
 
   @Input()
   get projects(): ProjectListView[] {
@@ -33,7 +34,6 @@ export class ProjectsListComponent implements OnDestroy {
 
   @Output() editProjectEvent = new EventEmitter<string>();
   @Output() deleteProjectEvent = new EventEmitter<ProjectListView[]>();
-  @Output() onProjectCheckedEvent = new EventEmitter<string[]>();
   @Output() newProjectEvent = new EventEmitter();
 
   private destroy$: Subject<void> = new Subject<void>();
@@ -43,10 +43,12 @@ export class ProjectsListComponent implements OnDestroy {
   constructor(
     private i18nService: I18nService,
     private platformUtilsService: PlatformUtilsService
-  ) {
-    this.selection.changed
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((_) => this.onProjectCheckedEvent.emit(this.selection.selected));
+  ) {}
+
+  ngOnInit(): void {
+    this.selection.changed.pipe(takeUntil(this.destroy$)).subscribe((_) => {
+      this.hasWriteAccessOnSelected = this.selectedHasWriteAccess();
+    });
   }
 
   ngOnDestroy(): void {
@@ -82,5 +84,18 @@ export class ProjectsListComponent implements OnDestroy {
         this.i18nService.t("nothingSelected")
       );
     }
+  }
+
+  private selectedHasWriteAccess() {
+    const selectedProjects = this.projects.filter((project) =>
+      this.selection.isSelected(project.id)
+    );
+    if (
+      selectedProjects.length == selectedProjects.filter((project) => project.write).length &&
+      selectedProjects.length != 0
+    ) {
+      return true;
+    }
+    return false;
   }
 }
