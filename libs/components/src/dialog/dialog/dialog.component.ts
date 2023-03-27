@@ -1,5 +1,4 @@
 import { coerceBooleanProperty } from "@angular/cdk/coercion";
-import { DialogRef } from "@angular/cdk/dialog";
 import { Component, HostBinding, Input } from "@angular/core";
 
 import { fadeIn } from "../animations";
@@ -19,8 +18,6 @@ export class DialogComponent {
   get disablePadding() {
     return this._disablePadding;
   }
-
-  constructor(private dialogRef: DialogRef) {}
 
   @HostBinding("class") get classes() {
     return ["tw-flex", "tw-flex-col", "tw-max-h-screen", "tw-w-screen", "tw-p-4"].concat(
