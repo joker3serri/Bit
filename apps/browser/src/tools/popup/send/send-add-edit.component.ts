@@ -3,18 +3,18 @@ import { Component } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/components/send/add-edit.component";
+import { AddEditComponent as BaseAddEditComponent } from "@bitwarden/angular/tools/send/add-edit.component";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { MessagingService } from "@bitwarden/common/abstractions/messaging.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { SendApiService } from "@bitwarden/common/abstractions/send/send-api.service.abstraction";
-import { SendService } from "@bitwarden/common/abstractions/send/send.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
+import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
+import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 
-import { BrowserStateService } from "../../services/abstractions/browser-state.service";
-import { PopupUtilsService } from "../services/popup-utils.service";
+import { PopupUtilsService } from "../../../popup/services/popup-utils.service";
+import { BrowserStateService } from "../../../services/abstractions/browser-state.service";
 
 @Component({
   selector: "app-send-add-edit",

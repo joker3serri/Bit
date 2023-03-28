@@ -2,7 +2,7 @@ import { DatePipe } from "@angular/common";
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { ControlContainer, NgForm } from "@angular/forms";
 
-import { EffluxDatesComponent as BaseEffluxDatesComponent } from "@bitwarden/angular/components/send/efflux-dates.component";
+import { EffluxDatesComponent as BaseEffluxDatesComponent } from "@bitwarden/angular/tools/send/efflux-dates.component";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 

@@ -3,22 +3,22 @@ import { ChangeDetectorRef, Component, NgZone } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
 
-import { SendComponent as BaseSendComponent } from "@bitwarden/angular/components/send/send.component";
+import { SendComponent as BaseSendComponent } from "@bitwarden/angular/tools/send/send.component";
 import { BroadcasterService } from "@bitwarden/common/abstractions/broadcaster.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { LogService } from "@bitwarden/common/abstractions/log.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
-import { SendApiService } from "@bitwarden/common/abstractions/send/send-api.service.abstraction";
-import { SendService } from "@bitwarden/common/abstractions/send/send.service.abstraction";
 import { PolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
-import { SendType } from "@bitwarden/common/enums/sendType";
-import { SendView } from "@bitwarden/common/models/view/send.view";
+import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
+import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
+import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
+import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 
-import { BrowserComponentState } from "../../models/browserComponentState";
-import { BrowserStateService } from "../../services/abstractions/browser-state.service";
-import { PopupUtilsService } from "../services/popup-utils.service";
+import { BrowserComponentState } from "../../../models/browserComponentState";
+import { PopupUtilsService } from "../../../popup/services/popup-utils.service";
+import { BrowserStateService } from "../../../services/abstractions/browser-state.service";
 
 const ComponentId = "SendTypeComponent";
 
