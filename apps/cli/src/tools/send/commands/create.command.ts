@@ -2,16 +2,16 @@ import * as fs from "fs";
 import * as path from "path";
 
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
-import { SendApiService } from "@bitwarden/common/abstractions/send/send-api.service.abstraction";
-import { SendService } from "@bitwarden/common/abstractions/send/send.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { SendType } from "@bitwarden/common/enums/sendType";
 import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
+import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
+import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
+import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 
-import { Response } from "../../models/response";
-import { SendTextResponse } from "../../models/response/send-text.response";
-import { SendResponse } from "../../models/response/send.response";
-import { CliUtils } from "../../utils";
+import { Response } from "../../../models/response";
+import { CliUtils } from "../../../utils";
+import { SendTextResponse } from "../models/send-text.response";
+import { SendResponse } from "../models/send.response";
 
 export class SendCreateCommand {
   constructor(

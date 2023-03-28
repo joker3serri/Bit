@@ -3,13 +3,13 @@ import * as program from "commander";
 import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { SearchService } from "@bitwarden/common/abstractions/search.service";
-import { SendService } from "@bitwarden/common/abstractions/send/send.service.abstraction";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { SendView } from "@bitwarden/common/models/view/send.view";
+import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
+import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 
-import { Response } from "../../models/response";
-import { SendResponse } from "../../models/response/send.response";
-import { DownloadCommand } from "../download.command";
+import { DownloadCommand } from "../../../commands/download.command";
+import { Response } from "../../../models/response";
+import { SendResponse } from "../models/send.response";
 
 export class SendGetCommand extends DownloadCommand {
   constructor(

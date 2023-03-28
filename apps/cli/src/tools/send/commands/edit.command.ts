@@ -1,11 +1,11 @@
-import { SendApiService } from "@bitwarden/common/abstractions/send/send-api.service.abstraction";
-import { SendService } from "@bitwarden/common/abstractions/send/send.service.abstraction";
 import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { SendType } from "@bitwarden/common/enums/sendType";
+import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
+import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
+import { SendService } from "@bitwarden/common/tools/send/services/send.service.abstraction";
 
-import { Response } from "../../models/response";
-import { SendResponse } from "../../models/response/send.response";
-import { CliUtils } from "../../utils";
+import { Response } from "../../../models/response";
+import { CliUtils } from "../../../utils";
+import { SendResponse } from "../models/send.response";
 
 import { SendGetCommand } from "./get.command";
 

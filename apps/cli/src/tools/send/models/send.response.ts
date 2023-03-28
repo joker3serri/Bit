@@ -1,8 +1,9 @@
-import { SendType } from "@bitwarden/common/enums/sendType";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { SendView } from "@bitwarden/common/models/view/send.view";
+import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
+import { SendView } from "@bitwarden/common/tools/send/models/view/send.view";
 
-import { BaseResponse } from "./base.response";
+import { BaseResponse } from "../../../models/response/base.response";
+
 import { SendFileResponse } from "./send-file.response";
 import { SendTextResponse } from "./send-text.response";
 

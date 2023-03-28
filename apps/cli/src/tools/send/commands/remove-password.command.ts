@@ -1,8 +1,8 @@
-import { SendApiService } from "@bitwarden/common/abstractions/send/send-api.service.abstraction";
-import { SendService } from "@bitwarden/common/abstractions/send/send.service.abstraction";
+import { SendService } from "@bitwarden/common/tools/send/services//send.service.abstraction";
+import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 
-import { Response } from "../../models/response";
-import { SendResponse } from "../../models/response/send.response";
+import { Response } from "../../../models/response";
+import { SendResponse } from "../models/send.response";
 
 export class SendRemovePasswordCommand {
   constructor(private sendService: SendService, private sendApiService: SendApiService) {}

@@ -1,4 +1,4 @@
-import { SendFileView } from "@bitwarden/common/models/view/send-file.view";
+import { SendFileView } from "@bitwarden/common/tools/send/models/view/send-file.view";
 
 export class SendFileResponse {
   static template(fileName = "file attachment location"): SendFileResponse {

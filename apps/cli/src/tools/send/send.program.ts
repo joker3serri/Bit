@@ -4,24 +4,27 @@ import * as path from "path";
 import * as chalk from "chalk";
 import * as program from "commander";
 
-import { SendType } from "@bitwarden/common/enums/sendType";
 import { Utils } from "@bitwarden/common/misc/utils";
+import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
 
-import { Main } from "./bw";
-import { GetCommand } from "./commands/get.command";
-import { SendCreateCommand } from "./commands/send/create.command";
-import { SendDeleteCommand } from "./commands/send/delete.command";
-import { SendEditCommand } from "./commands/send/edit.command";
-import { SendGetCommand } from "./commands/send/get.command";
-import { SendListCommand } from "./commands/send/list.command";
-import { SendReceiveCommand } from "./commands/send/receive.command";
-import { SendRemovePasswordCommand } from "./commands/send/remove-password.command";
-import { Response } from "./models/response";
-import { SendFileResponse } from "./models/response/send-file.response";
-import { SendTextResponse } from "./models/response/send-text.response";
-import { SendResponse } from "./models/response/send.response";
-import { Program } from "./program";
-import { CliUtils } from "./utils";
+import { Main } from "../../bw";
+import { GetCommand } from "../../commands/get.command";
+import { Response } from "../../models/response";
+import { Program } from "../../program";
+import { CliUtils } from "../../utils";
+
+import {
+  SendCreateCommand,
+  SendDeleteCommand,
+  SendEditCommand,
+  SendGetCommand,
+  SendListCommand,
+  SendReceiveCommand,
+  SendRemovePasswordCommand,
+} from "./commands";
+import { SendFileResponse } from "./models/send-file.response";
+import { SendTextResponse } from "./models/send-text.response";
+import { SendResponse } from "./models/send.response";
 
 const writeLn = CliUtils.writeLn;
 

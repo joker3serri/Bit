@@ -6,19 +6,19 @@ import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
 import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
 import { EnvironmentService } from "@bitwarden/common/abstractions/environment.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { SendApiService } from "@bitwarden/common/abstractions/send/send-api.service.abstraction";
-import { SendType } from "@bitwarden/common/enums/sendType";
 import { NodeUtils } from "@bitwarden/common/misc/nodeUtils";
 import { Utils } from "@bitwarden/common/misc/utils";
-import { SendAccess } from "@bitwarden/common/models/domain/send-access";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
-import { SendAccessRequest } from "@bitwarden/common/models/request/send-access.request";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { SendAccessView } from "@bitwarden/common/models/view/send-access.view";
+import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
+import { SendAccess } from "@bitwarden/common/tools/send/models/domain/send-access";
+import { SendAccessRequest } from "@bitwarden/common/tools/send/models/request/send-access.request";
+import { SendAccessView } from "@bitwarden/common/tools/send/models/view/send-access.view";
+import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 
-import { Response } from "../../models/response";
-import { SendAccessResponse } from "../../models/response/send-access.response";
-import { DownloadCommand } from "../download.command";
+import { DownloadCommand } from "../../../commands/download.command";
+import { Response } from "../../../models/response";
+import { SendAccessResponse } from "../models/send-access.response";
 
 export class SendReceiveCommand extends DownloadCommand {
   private canInteract: boolean;
