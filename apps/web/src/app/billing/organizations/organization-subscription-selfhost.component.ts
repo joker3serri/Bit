@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { concatMap, takeUntil, Subject } from "rxjs";
+import { concatMap, Subject, takeUntil } from "rxjs";
 
 import { ModalConfig, ModalService } from "@bitwarden/angular/services/modal.service";
 import { ApiService } from "@bitwarden/common/abstractions/api.service";
@@ -160,7 +160,22 @@ export class OrganizationSubscriptionSelfhostComponent implements OnInit, OnDest
   }
 
   get isExpired() {
-    return this.sub?.expiration != null && new Date(this.sub.expiration) < new Date();
+    return (
+      this.subscriptionExpiration != null && new Date(this.subscriptionExpiration) < new Date()
+    );
+  }
+
+  get hasGracePeriod() {
+    // There is a known grace period if there are values for both expiration and subscription expiration
+    return this.sub?.expiration != null && this.sub?.selfHostSubscriptionExpiration != null;
+  }
+
+  get subscriptionExpiration() {
+    return this.sub.selfHostSubscriptionExpiration ?? this.sub.expiration;
+  }
+
+  get gracePeriodExpiration() {
+    return this.hasGracePeriod ? this.sub.expiration : null;
   }
 
   get updateMethod() {
