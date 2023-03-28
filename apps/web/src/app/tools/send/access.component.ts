@@ -7,17 +7,17 @@ import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunc
 import { FileDownloadService } from "@bitwarden/common/abstractions/fileDownload/fileDownload.service";
 import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
 import { PlatformUtilsService } from "@bitwarden/common/abstractions/platformUtils.service";
-import { SendApiService } from "@bitwarden/common/abstractions/send/send-api.service.abstraction";
 import { SEND_KDF_ITERATIONS } from "@bitwarden/common/enums/kdfType";
-import { SendType } from "@bitwarden/common/enums/sendType";
 import { Utils } from "@bitwarden/common/misc/utils";
 import { EncArrayBuffer } from "@bitwarden/common/models/domain/enc-array-buffer";
-import { SendAccess } from "@bitwarden/common/models/domain/send-access";
 import { SymmetricCryptoKey } from "@bitwarden/common/models/domain/symmetric-crypto-key";
-import { SendAccessRequest } from "@bitwarden/common/models/request/send-access.request";
 import { ErrorResponse } from "@bitwarden/common/models/response/error.response";
-import { SendAccessResponse } from "@bitwarden/common/models/response/send-access.response";
-import { SendAccessView } from "@bitwarden/common/models/view/send-access.view";
+import { SendType } from "@bitwarden/common/tools/send/enums/send-type";
+import { SendAccess } from "@bitwarden/common/tools/send/models/domain/send-access";
+import { SendAccessRequest } from "@bitwarden/common/tools/send/models/request/send-access.request";
+import { SendAccessResponse } from "@bitwarden/common/tools/send/models/response/send-access.response";
+import { SendAccessView } from "@bitwarden/common/tools/send/models/view/send-access.view";
+import { SendApiService } from "@bitwarden/common/tools/send/services/send-api.service.abstraction";
 
 @Component({
   selector: "app-send-access",
