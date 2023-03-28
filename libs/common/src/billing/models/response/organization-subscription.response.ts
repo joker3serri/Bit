@@ -11,7 +11,7 @@ export class OrganizationSubscriptionResponse extends OrganizationResponse {
   subscription: BillingSubscriptionResponse;
   upcomingInvoice: BillingSubscriptionUpcomingInvoiceResponse;
   expiration: string;
-
+  selfHostSubscriptionExpiration: string;
   constructor(response: any) {
     super(response);
     this.storageName = this.getResponseProperty("StorageName");
@@ -24,5 +24,8 @@ export class OrganizationSubscriptionResponse extends OrganizationResponse {
         ? null
         : new BillingSubscriptionUpcomingInvoiceResponse(upcomingInvoice);
     this.expiration = this.getResponseProperty("Expiration");
+    this.selfHostSubscriptionExpiration = this.getResponseProperty(
+      "SelfHostSubscriptionExpiration"
+    );
   }
 }
