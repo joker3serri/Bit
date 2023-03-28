@@ -1,11 +1,10 @@
 import { Jsonify } from "type-fest";
 
+import Domain from "../../../../models/domain/domain-base";
+import { EncString } from "../../../../models/domain/enc-string";
+import { SymmetricCryptoKey } from "../../../../models/domain/symmetric-crypto-key";
 import { SendTextData } from "../data/send-text.data";
 import { SendTextView } from "../view/send-text.view";
-
-import Domain from "./domain-base";
-import { EncString } from "./enc-string";
-import { SymmetricCryptoKey } from "./symmetric-crypto-key";
 
 export class SendText extends Domain {
   text: EncString;

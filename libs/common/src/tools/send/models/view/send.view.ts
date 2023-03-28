@@ -1,12 +1,12 @@
-import { SendType } from "../../enums/sendType";
-import { Utils } from "../../misc/utils";
-import { DeepJsonify } from "../../types/deep-jsonify";
+import { Utils } from "../../../../misc/utils";
+import { SymmetricCryptoKey } from "../../../../models/domain/symmetric-crypto-key";
+import { View } from "../../../../models/view/view";
+import { DeepJsonify } from "../../../../types/deep-jsonify";
+import { SendType } from "../../enums/send-type";
 import { Send } from "../domain/send";
-import { SymmetricCryptoKey } from "../domain/symmetric-crypto-key";
 
 import { SendFileView } from "./send-file.view";
 import { SendTextView } from "./send-text.view";
-import { View } from "./view";
 
 export class SendView implements View {
   id: string = null;

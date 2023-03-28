@@ -1,7 +1,7 @@
-import { SendTextData } from "@bitwarden/common/models/data/send-text.data";
-import { SendText } from "@bitwarden/common/models/domain/send-text";
+import { mockEnc } from "../../../../../spec/utils";
+import { SendTextData } from "../data/send-text.data";
 
-import { mockEnc } from "../../utils";
+import { SendText } from "./send-text";
 
 describe("SendText", () => {
   let data: SendTextData;

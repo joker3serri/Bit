@@ -1,17 +1,18 @@
 import { any, mock, MockProxy } from "jest-mock-extended";
 import { BehaviorSubject, firstValueFrom } from "rxjs";
 
-import { CryptoService } from "@bitwarden/common/abstractions/crypto.service";
-import { CryptoFunctionService } from "@bitwarden/common/abstractions/cryptoFunction.service";
-import { EncryptService } from "@bitwarden/common/abstractions/encrypt.service";
-import { I18nService } from "@bitwarden/common/abstractions/i18n.service";
-import { StateService } from "@bitwarden/common/abstractions/state.service";
-import { SendData } from "@bitwarden/common/models/data/send.data";
-import { EncString } from "@bitwarden/common/models/domain/enc-string";
-import { Send } from "@bitwarden/common/models/domain/send";
-import { SendView } from "@bitwarden/common/models/view/send.view";
-import { ContainerService } from "@bitwarden/common/services/container.service";
-import { SendService } from "@bitwarden/common/services/send/send.service";
+import { CryptoService } from "../../../abstractions/crypto.service";
+import { CryptoFunctionService } from "../../../abstractions/cryptoFunction.service";
+import { EncryptService } from "../../../abstractions/encrypt.service";
+import { I18nService } from "../../../abstractions/i18n.service";
+import { StateService } from "../../../abstractions/state.service";
+import { EncString } from "../../../models/domain/enc-string";
+import { ContainerService } from "../../../services/container.service";
+import { SendData } from "../models/data/send.data";
+import { Send } from "../models/domain/send";
+import { SendView } from "../models/view/send.view";
+
+import { SendService } from "./send.service";
 
 describe("SendService", () => {
   const cryptoService = mock<CryptoService>();

@@ -1,21 +1,22 @@
 import { BehaviorSubject, concatMap } from "rxjs";
 
-import { CryptoService } from "../../abstractions/crypto.service";
-import { CryptoFunctionService } from "../../abstractions/cryptoFunction.service";
-import { I18nService } from "../../abstractions/i18n.service";
-import { InternalSendService as InternalSendServiceAbstraction } from "../../abstractions/send/send.service.abstraction";
-import { StateService } from "../../abstractions/state.service";
-import { SEND_KDF_ITERATIONS } from "../../enums/kdfType";
-import { SendType } from "../../enums/sendType";
-import { Utils } from "../../misc/utils";
-import { SendData } from "../../models/data/send.data";
-import { EncArrayBuffer } from "../../models/domain/enc-array-buffer";
-import { EncString } from "../../models/domain/enc-string";
-import { Send } from "../../models/domain/send";
-import { SendFile } from "../../models/domain/send-file";
-import { SendText } from "../../models/domain/send-text";
-import { SymmetricCryptoKey } from "../../models/domain/symmetric-crypto-key";
-import { SendView } from "../../models/view/send.view";
+import { CryptoService } from "../../../abstractions/crypto.service";
+import { CryptoFunctionService } from "../../../abstractions/cryptoFunction.service";
+import { I18nService } from "../../../abstractions/i18n.service";
+import { StateService } from "../../../abstractions/state.service";
+import { SEND_KDF_ITERATIONS } from "../../../enums/kdfType";
+import { Utils } from "../../../misc/utils";
+import { EncArrayBuffer } from "../../../models/domain/enc-array-buffer";
+import { EncString } from "../../../models/domain/enc-string";
+import { SymmetricCryptoKey } from "../../../models/domain/symmetric-crypto-key";
+import { SendType } from "../enums/send-type";
+import { SendData } from "../models/data/send.data";
+import { Send } from "../models/domain/send";
+import { SendFile } from "../models/domain/send-file";
+import { SendText } from "../models/domain/send-text";
+import { SendView } from "../models/view/send.view";
+
+import { InternalSendService as InternalSendServiceAbstraction } from "./send.service.abstraction";
 
 export class SendService implements InternalSendServiceAbstraction {
   protected _sends: BehaviorSubject<Send[]> = new BehaviorSubject([]);

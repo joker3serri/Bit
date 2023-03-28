@@ -1,4 +1,4 @@
-import { SendType } from "../../enums/sendType";
+import { SendType } from "../../enums/send-type";
 import { SendFileApi } from "../api/send-file.api";
 import { SendTextApi } from "../api/send-text.api";
 import { Send } from "../domain/send";

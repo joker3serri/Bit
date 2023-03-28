@@ -1,12 +1,12 @@
 import { Jsonify } from "type-fest";
 
-import { SendType } from "../../enums/sendType";
-import { Utils } from "../../misc/utils";
+import { Utils } from "../../../../misc/utils";
+import Domain from "../../../../models/domain/domain-base";
+import { EncString } from "../../../../models/domain/enc-string";
+import { SendType } from "../../enums/send-type";
 import { SendData } from "../data/send.data";
 import { SendView } from "../view/send.view";
 
-import Domain from "./domain-base";
-import { EncString } from "./enc-string";
 import { SendFile } from "./send-file";
 import { SendText } from "./send-text";
 

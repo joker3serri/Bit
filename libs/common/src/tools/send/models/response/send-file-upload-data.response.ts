@@ -1,6 +1,6 @@
-import { FileUploadType } from "../../enums/fileUploadType";
+import { FileUploadType } from "../../../../enums/fileUploadType";
+import { BaseResponse } from "../../../../models/response/base.response";
 
-import { BaseResponse } from "./base.response";
 import { SendResponse } from "./send.response";
 
 export class SendFileUploadDataResponse extends BaseResponse {

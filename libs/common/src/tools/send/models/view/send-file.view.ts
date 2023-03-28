@@ -1,7 +1,6 @@
-import { DeepJsonify } from "../../types/deep-jsonify";
+import { View } from "../../../../models/view/view";
+import { DeepJsonify } from "../../../../types/deep-jsonify";
 import { SendFile } from "../domain/send-file";
-
-import { View } from "./view";
 
 export class SendFileView implements View {
   id: string = null;

@@ -1,24 +1,25 @@
-import { SendType } from "../../../../common/src/enums/sendType";
-import { Utils } from "../../../../common/src/misc/utils";
-import { ErrorResponse } from "../../../../common/src/models/response/error.response";
-import { ApiService } from "../../abstractions/api.service";
+import { ApiService } from "../../../abstractions/api.service";
 import {
   FileUploadApiMethods,
   FileUploadService,
-} from "../../abstractions/file-upload/file-upload.service";
-import { SendApiService as SendApiServiceAbstraction } from "../../abstractions/send/send-api.service.abstraction";
-import { InternalSendService } from "../../abstractions/send/send.service.abstraction";
-import { SendData } from "../../models/data/send.data";
-import { EncArrayBuffer } from "../../models/domain/enc-array-buffer";
-import { Send } from "../../models/domain/send";
-import { SendAccessRequest } from "../../models/request/send-access.request";
-import { SendRequest } from "../../models/request/send.request";
-import { ListResponse } from "../../models/response/list.response";
-import { SendAccessResponse } from "../../models/response/send-access.response";
-import { SendFileDownloadDataResponse } from "../../models/response/send-file-download-data.response";
-import { SendFileUploadDataResponse } from "../../models/response/send-file-upload-data.response";
-import { SendResponse } from "../../models/response/send.response";
-import { SendAccessView } from "../../models/view/send-access.view";
+} from "../../../abstractions/file-upload/file-upload.service";
+import { Utils } from "../../../misc/utils";
+import { EncArrayBuffer } from "../../../models/domain/enc-array-buffer";
+import { ErrorResponse } from "../../../models/response/error.response";
+import { ListResponse } from "../../../models/response/list.response";
+import { SendType } from "../enums/send-type";
+import { SendData } from "../models/data/send.data";
+import { Send } from "../models/domain/send";
+import { SendAccessRequest } from "../models/request/send-access.request";
+import { SendRequest } from "../models/request/send.request";
+import { SendAccessResponse } from "../models/response/send-access.response";
+import { SendFileDownloadDataResponse } from "../models/response/send-file-download-data.response";
+import { SendFileUploadDataResponse } from "../models/response/send-file-upload-data.response";
+import { SendResponse } from "../models/response/send.response";
+import { SendAccessView } from "../models/view/send-access.view";
+
+import { SendApiService as SendApiServiceAbstraction } from "./send-api.service.abstraction";
+import { InternalSendService } from "./send.service.abstraction";
 
 export class SendApiService implements SendApiServiceAbstraction {
   constructor(

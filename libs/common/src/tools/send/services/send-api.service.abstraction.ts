@@ -1,13 +1,13 @@
-import { EncArrayBuffer } from "../../models/domain/enc-array-buffer";
-import { Send } from "../../models/domain/send";
-import { SendAccessRequest } from "../../models/request/send-access.request";
-import { SendRequest } from "../../models/request/send.request";
-import { ListResponse } from "../../models/response/list.response";
-import { SendAccessResponse } from "../../models/response/send-access.response";
-import { SendFileDownloadDataResponse } from "../../models/response/send-file-download-data.response";
-import { SendFileUploadDataResponse } from "../../models/response/send-file-upload-data.response";
-import { SendResponse } from "../../models/response/send.response";
-import { SendAccessView } from "../../models/view/send-access.view";
+import { EncArrayBuffer } from "../../../models/domain/enc-array-buffer";
+import { ListResponse } from "../../../models/response/list.response";
+import { Send } from "../models/domain/send";
+import { SendAccessRequest } from "../models/request/send-access.request";
+import { SendRequest } from "../models/request/send.request";
+import { SendAccessResponse } from "../models/response/send-access.response";
+import { SendFileDownloadDataResponse } from "../models/response/send-file-download-data.response";
+import { SendFileUploadDataResponse } from "../models/response/send-file-upload-data.response";
+import { SendResponse } from "../models/response/send.response";
+import { SendAccessView } from "../models/view/send-access.view";
 
 export abstract class SendApiService {
   getSend: (id: string) => Promise<SendResponse>;

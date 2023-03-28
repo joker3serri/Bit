@@ -1,4 +1,4 @@
-import { SendType } from "../../enums/sendType";
+import { SendType } from "../../enums/send-type";
 import { SendResponse } from "../response/send.response";
 
 import { SendFileData } from "./send-file.data";
