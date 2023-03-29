@@ -1,5 +1,10 @@
 export enum ForceResetPasswordReason {
   /**
+   * A password reset should not be forced.
+   */
+  None,
+
+  /**
    * Occurs when an organization admin forces a user to reset their password.
    */
   AdminForcePasswordReset,
