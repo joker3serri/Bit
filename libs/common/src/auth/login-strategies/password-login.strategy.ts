@@ -116,7 +116,7 @@ export class PasswordLogInStrategy extends LogInStrategy {
     const result = await this.startLogIn();
 
     // The identity result can contain master password policies for the user's organizations
-    if (this.masterPasswordPolicy != null && this.masterPasswordPolicy.enforceOnLogin) {
+    if (this.masterPasswordPolicy?.enforceOnLogin) {
       // If there is a policy active, evaluate the supplied password before its no longer in memory
       const meetsRequirements = this.evaluateMasterPassword(credentials, this.masterPasswordPolicy);
 
