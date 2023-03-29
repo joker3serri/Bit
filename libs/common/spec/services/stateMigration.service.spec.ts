@@ -57,7 +57,7 @@ describe("State Migration Service", () => {
           lastSync: "LAST_SYNC",
           userId: userId,
           usesKeyConnector: false,
-          forcePasswordResetOptions: null,
+          forcePasswordResetReason: null,
         },
       };
 

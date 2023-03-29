@@ -14,10 +14,7 @@ import { AuthService } from "../abstractions/auth.service";
 import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { AuthResult } from "../models/domain/auth-result";
-import {
-  ForcePasswordResetOptions,
-  ForceResetPasswordReason,
-} from "../models/domain/force-password-reset-options";
+import { ForceResetPasswordReason } from "../models/domain/force-password-reset-options";
 import { PasswordLogInCredentials } from "../models/domain/log-in-credentials";
 import { PasswordTokenRequest } from "../models/request/identity-token/password-token.request";
 import { TokenTwoFactorRequest } from "../models/request/identity-token/token-two-factor.request";
@@ -42,7 +39,7 @@ export class PasswordLogInStrategy extends LogInStrategy {
    * Options to track if the user needs to update their password due to a password that does not meet an organization's
    * master password policy.
    */
-  private forcePasswordResetOptions?: ForcePasswordResetOptions = undefined;
+  private forcePasswordResetReason: ForceResetPasswordReason = ForceResetPasswordReason.None;
 
   constructor(
     cryptoService: CryptoService,
@@ -86,11 +83,10 @@ export class PasswordLogInStrategy extends LogInStrategy {
     // 2FA was successful, save the force update password options with the state service if defined
     if (
       (await this.stateService.getIsAuthenticated()) &&
-      this.forcePasswordResetOptions != undefined
+      this.forcePasswordResetReason != ForceResetPasswordReason.None
     ) {
-      await this.stateService.setForcePasswordResetOptions(this.forcePasswordResetOptions);
-      result.forcePasswordReset = true;
-      result.forcePasswordResetOptions = this.forcePasswordResetOptions;
+      await this.stateService.setForcePasswordResetReason(this.forcePasswordResetReason);
+      result.forcePasswordReset = this.forcePasswordResetReason;
     }
 
     return result;
@@ -125,17 +121,15 @@ export class PasswordLogInStrategy extends LogInStrategy {
       const meetsRequirements = this.evaluateMasterPassword(credentials, this.masterPasswordPolicy);
 
       if (!meetsRequirements) {
-        const resetOptions = new ForcePasswordResetOptions(
-          ForceResetPasswordReason.WeakMasterPassword
-        );
         // Authentication was successful, save the force update password options with the state service
         if (await this.stateService.getIsAuthenticated()) {
-          await this.stateService.setForcePasswordResetOptions(resetOptions);
-          result.forcePasswordReset = true;
-          result.forcePasswordResetOptions = resetOptions;
+          await this.stateService.setForcePasswordResetReason(
+            ForceResetPasswordReason.WeakMasterPassword
+          );
+          result.forcePasswordReset = ForceResetPasswordReason.WeakMasterPassword;
         } else {
           // Authentication was not fully successful (likely 2FA), save the flag to this strategy for later use
-          this.forcePasswordResetOptions = resetOptions;
+          this.forcePasswordResetReason = ForceResetPasswordReason.WeakMasterPassword;
         }
       }
     }

@@ -168,10 +168,7 @@ describe("LogInStrategy", () => {
       const result = await passwordLogInStrategy.logIn(credentials);
 
       expect(result).toEqual({
-        forcePasswordReset: true,
-        forcePasswordResetOptions: {
-          reason: ForceResetPasswordReason.AdminForcePasswordReset,
-        },
+        forcePasswordReset: ForceResetPasswordReason.AdminForcePasswordReset,
         resetMasterPassword: true,
         twoFactorProviders: null,
         captchaSiteKey: "",

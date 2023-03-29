@@ -15,10 +15,7 @@ import { ProviderData } from "../../../admin-console/models/data/provider.data";
 import { CollectionDetailsResponse } from "../../../admin-console/models/response/collection.response";
 import { PolicyResponse } from "../../../admin-console/models/response/policy.response";
 import { KeyConnectorService } from "../../../auth/abstractions/key-connector.service";
-import {
-  ForcePasswordResetOptions,
-  ForceResetPasswordReason,
-} from "../../../auth/models/domain/force-password-reset-options";
+import { ForceResetPasswordReason } from "../../../auth/models/domain/force-password-reset-options";
 import { sequentialize } from "../../../misc/sequentialize";
 import { DomainsResponse } from "../../../models/response/domains.response";
 import {
@@ -319,8 +316,8 @@ export class SyncService implements SyncServiceAbstraction {
 
     // The `forcePasswordReset` flag indicates an admin has reset the user's password and must be updated
     if (response.forcePasswordReset) {
-      await this.stateService.setForcePasswordResetOptions(
-        new ForcePasswordResetOptions(ForceResetPasswordReason.AdminForcePasswordReset)
+      await this.stateService.setForcePasswordResetReason(
+        ForceResetPasswordReason.AdminForcePasswordReset
       );
     }
 

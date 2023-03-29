@@ -145,14 +145,11 @@ describe("PasswordLogInStrategy", () => {
 
     const result = await passwordLogInStrategy.logIn(credentials);
 
-    const expectedResetOptions = expect.objectContaining({
-      reason: ForceResetPasswordReason.WeakMasterPassword,
-    });
-
     expect(policyService.evaluateMasterPassword).toHaveBeenCalled();
-    expect(stateService.setForcePasswordResetOptions).toHaveBeenCalledWith(expectedResetOptions);
-    expect(result.forcePasswordReset).toBeTruthy();
-    expect(result.forcePasswordResetOptions).toEqual(expectedResetOptions);
+    expect(stateService.setForcePasswordResetReason).toHaveBeenCalledWith(
+      ForceResetPasswordReason.WeakMasterPassword
+    );
+    expect(result.forcePasswordReset).toEqual(ForceResetPasswordReason.WeakMasterPassword);
   });
 
   it("saves force password reset options to the strategy when the master password is weak and login requires 2FA", async () => {
@@ -174,17 +171,14 @@ describe("PasswordLogInStrategy", () => {
       ""
     );
 
-    const expectedResetOptions = expect.objectContaining({
-      reason: ForceResetPasswordReason.WeakMasterPassword,
-    });
-
     // First login attempt should not save the force password reset options
     expect(firstResult.forcePasswordReset).toBeFalsy();
-    expect(firstResult.forcePasswordResetOptions).toBeUndefined();
+    expect(firstResult.forcePasswordReset).toEqual(ForceResetPasswordReason.None);
 
     // Second login attempt should save the force password reset options and return in result
-    expect(stateService.setForcePasswordResetOptions).toHaveBeenCalledWith(expectedResetOptions);
-    expect(secondResult.forcePasswordReset).toBeTruthy();
-    expect(secondResult.forcePasswordResetOptions).toEqual(expectedResetOptions);
+    expect(stateService.setForcePasswordResetReason).toHaveBeenCalledWith(
+      ForceResetPasswordReason.WeakMasterPassword
+    );
+    expect(secondResult.forcePasswordReset).toEqual(ForceResetPasswordReason.WeakMasterPassword);
   });
 });

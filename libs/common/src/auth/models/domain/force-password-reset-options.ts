@@ -15,17 +15,3 @@ export enum ForceResetPasswordReason {
    */
   WeakMasterPassword,
 }
-
-/**
- * Options that describe the reason/cause for forcing a password reset.
- */
-export class ForcePasswordResetOptions {
-  /**
-   * The reason the user is being forced to reset their password.
-   */
-  reason: ForceResetPasswordReason;
-
-  constructor(reason: ForceResetPasswordReason) {
-    this.reason = reason;
-  }
-}

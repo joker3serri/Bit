@@ -8,7 +8,7 @@ import { ProviderData } from "../admin-console/models/data/provider.data";
 import { Policy } from "../admin-console/models/domain/policy";
 import { CollectionView } from "../admin-console/models/view/collection.view";
 import { EnvironmentUrls } from "../auth/models/domain/environment-urls";
-import { ForcePasswordResetOptions } from "../auth/models/domain/force-password-reset-options";
+import { ForceResetPasswordReason } from "../auth/models/domain/force-password-reset-options";
 import { KdfConfig } from "../auth/models/domain/kdf-config";
 import { KdfType } from "../enums/kdfType";
 import { ThemeType } from "../enums/themeType";
@@ -264,9 +264,9 @@ export abstract class StateService<T extends Account = Account> {
   setEventCollection: (value: EventData[], options?: StorageOptions) => Promise<void>;
   getEverBeenUnlocked: (options?: StorageOptions) => Promise<boolean>;
   setEverBeenUnlocked: (value: boolean, options?: StorageOptions) => Promise<void>;
-  getForcePasswordResetOptions: (options?: StorageOptions) => Promise<ForcePasswordResetOptions>;
-  setForcePasswordResetOptions: (
-    value: ForcePasswordResetOptions,
+  getForcePasswordResetReason: (options?: StorageOptions) => Promise<ForceResetPasswordReason>;
+  setForcePasswordResetReason: (
+    value: ForceResetPasswordReason,
     options?: StorageOptions
   ) => Promise<void>;
   getInstalledVersion: (options?: StorageOptions) => Promise<string>;

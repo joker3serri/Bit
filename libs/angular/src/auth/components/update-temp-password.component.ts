@@ -28,7 +28,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
   key: string;
   enforcedPolicyOptions: MasterPasswordPolicyOptions;
   showPassword = false;
-  reason: ForceResetPasswordReason = ForceResetPasswordReason.AdminForcePasswordReset;
+  reason: ForceResetPasswordReason = ForceResetPasswordReason.None;
   currentMasterPassword: string;
 
   onSuccessfulChangePassword: () => Promise<any>;
@@ -64,10 +64,11 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
   async ngOnInit() {
     await this.syncService.fullSync(true);
 
-    const options = await this.stateService.getForcePasswordResetOptions();
+    this.reason = await this.stateService.getForcePasswordResetReason();
 
-    if (options != undefined) {
-      this.reason = options.reason;
+    // If we somehow end up here without a reason, fallback to the original behavior of an admin password reset
+    if (this.reason == ForceResetPasswordReason.None) {
+      this.reason = ForceResetPasswordReason.AdminForcePasswordReset;
     }
 
     await super.ngOnInit();
@@ -171,7 +172,7 @@ export class UpdateTempPasswordComponent extends BaseChangePasswordComponent {
         this.i18nService.t("updatedMasterPassword")
       );
 
-      await this.stateService.setForcePasswordResetOptions(undefined);
+      await this.stateService.setForcePasswordResetReason(ForceResetPasswordReason.None);
 
       if (this.onSuccessfulChangePassword != null) {
         this.onSuccessfulChangePassword();

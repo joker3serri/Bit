@@ -12,10 +12,7 @@ import { TokenService } from "../abstractions/token.service";
 import { TwoFactorService } from "../abstractions/two-factor.service";
 import { TwoFactorProviderType } from "../enums/two-factor-provider-type";
 import { AuthResult } from "../models/domain/auth-result";
-import {
-  ForcePasswordResetOptions,
-  ForceResetPasswordReason,
-} from "../models/domain/force-password-reset-options";
+import { ForceResetPasswordReason } from "../models/domain/force-password-reset-options";
 import {
   PasswordlessLogInCredentials,
   PasswordLogInCredentials,
@@ -132,12 +129,9 @@ export abstract class LogInStrategy {
   protected async processTokenResponse(response: IdentityTokenResponse): Promise<AuthResult> {
     const result = new AuthResult();
     result.resetMasterPassword = response.resetMasterPassword;
-    result.forcePasswordReset = response.forcePasswordReset;
 
     if (response.forcePasswordReset) {
-      result.forcePasswordResetOptions = new ForcePasswordResetOptions(
-        ForceResetPasswordReason.AdminForcePasswordReset
-      );
+      result.forcePasswordReset = ForceResetPasswordReason.AdminForcePasswordReset;
     }
 
     this.masterPasswordPolicy = MasterPasswordPolicyOptions.fromResponse(

@@ -17,10 +17,7 @@ import { PolicyApiServiceAbstraction } from "@bitwarden/common/admin-console/abs
 import { InternalPolicyService } from "@bitwarden/common/admin-console/abstractions/policy/policy.service.abstraction";
 import { MasterPasswordPolicyOptions } from "@bitwarden/common/admin-console/models/domain/master-password-policy-options";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
-import {
-  ForcePasswordResetOptions,
-  ForceResetPasswordReason,
-} from "@bitwarden/common/auth/models/domain/force-password-reset-options";
+import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-password-reset-options";
 import { SecretVerificationRequest } from "@bitwarden/common/auth/models/request/secret-verification.request";
 import { VerifyMasterPasswordResponse } from "@bitwarden/common/auth/models/response/verify-master-password.response";
 import { HashPurpose } from "@bitwarden/common/enums/hashPurpose";
@@ -279,8 +276,8 @@ export class LockComponent implements OnInit, OnDestroy {
       }
 
       if (this.requirePasswordChange()) {
-        await this.stateService.setForcePasswordResetOptions(
-          new ForcePasswordResetOptions(ForceResetPasswordReason.WeakMasterPassword)
+        await this.stateService.setForcePasswordResetReason(
+          ForceResetPasswordReason.WeakMasterPassword
         );
         this.router.navigate([this.forcePasswordResetRoute]);
         return;

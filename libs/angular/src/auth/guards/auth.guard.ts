@@ -6,6 +6,7 @@ import { StateService } from "@bitwarden/common/abstractions/state.service";
 import { AuthService } from "@bitwarden/common/auth/abstractions/auth.service";
 import { KeyConnectorService } from "@bitwarden/common/auth/abstractions/key-connector.service";
 import { AuthenticationStatus } from "@bitwarden/common/auth/enums/authentication-status";
+import { ForceResetPasswordReason } from "@bitwarden/common/auth/models/domain/force-password-reset-options";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -41,7 +42,7 @@ export class AuthGuard implements CanActivate {
 
     if (
       !routerState.url.includes("update-temp-password") &&
-      (await this.stateService.getForcePasswordResetOptions()) != undefined
+      (await this.stateService.getForcePasswordResetReason()) != ForceResetPasswordReason.None
     ) {
       return this.router.createUrlTree(["/update-temp-password"]);
     }
